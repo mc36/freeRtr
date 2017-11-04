@@ -1,0 +1,15 @@
+include ../misc/image/image.beg
+
+select-one libgcj-common       #gcc java lib
+select-one libgcj17-dev        #gcc java lib
+
+exec cp ../misc/image/init.nat %tmp%/init
+exec cp rtr.bin %tmp%/rtr/rtr.bin
+exec cp rtr.ver %tmp%/rtr/rtr.ver
+exec cp ../rtr.zip %tmp%/rtr/rtr.zip
+
+select-sum
+package-down
+package-inst
+
+include ../misc/image/image.end

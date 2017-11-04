@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+        <title></title>
+    </head>
+    <body lang="en-US" dir="ltr">
+        <p align="center"><font size="7" style="font-size: 36pt">The Path
+                Vector Routing Protocol specification</font></p>
+        <p><br/>
+            <br/>
+
+        </p>
+        <p><font size="7" style="font-size: 36pt">there are some captures of
+                the protocol:<br/>
+                <a href="pvrp4.pcap">ipv4 capture</a><br/>
+                <a href="pvrp6.pcap">ipv6
+                    capture</a><br/>
+            </font><br/>
+            <br/>
+
+        </p>
+        <p><font size="7" style="font-size: 36pt">there are some text decodes
+                of the protocol:<br/>
+                <a href="pvrp4.txt">ipv4 decode</a><br/>
+                <a href="pvrp6.txt">ipv6
+                    decode</a><br/>
+            </font><br/>
+            <br/>
+
+        </p>
+        <p><br/>
+            <br/>
+
+        </p>
+        <p><font size="7" style="font-size: 36pt">here is a specification
+                about it:<br/>
+                <a href="http://www.cs.ucc.ie/~cjs/docs/2006/lcn-creagh06.pdf">pvrp
+                    specification</a> by J. Sreenan</font></p>
+        <p><br/>
+            <br/>
+
+        </p>
+        <p><font size="7" style="font-size: 36pt">this is a clear text
+                protocol.<br/>
+            </font><br/>
+            <br/>
+
+        </p>
+        <p><font size="7" style="font-size: 36pt">the prefix descriptor have
+                the following
+                parameters:<br/>
+                -prefix=&lt;addr&gt;/&lt;len&gt;<br/>
+                -label=&lt;num&gt;<br/>
+                -metric=&lt;num&gt;<br/>
+                -tag=&lt;num&gt;<br/>
+                -path=&lt;rtrid&gt;
+                [rtrid]...<br/>
+                <br/>
+                there are these types
+                of messages:<br/>
+                -open rtrid=&lt;addr&gt; name=&lt;text&gt;<br/>
+                -reachable
+                &lt;prefix&gt;<br/>
+                -withdraw &lt;prefix&gt;<br/>
+                -startEncrypt
+                &lt;proto&gt;<br/>
+                -password-request
+                &lt;base64channenge&gt;<br/>
+                -password-reply &lt;base64response&gt;<br/>
+                -error
+                &lt;text&gt;<br/>
+                -warning &lt;text&gt;<br/>
+                -discard &lt;text&gt;<br/>
+                -echo
+                &lt;text&gt;<br/>
+                -echoed &lt;text&gt;<br/>
+                -close<br/>
+                -resend<br/>
+                -keepalive &lt;num&gt;<br/>
+            </font><br/>
+            <br/>
+
+        </p>
+    </body>
+</html>

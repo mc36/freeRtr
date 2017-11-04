@@ -1,0 +1,54 @@
+download 2
+arch i386
+distro sid
+mirror http://ftp.de.debian.org/debian/
+
+del-alw %img%.ird
+del-alw %img%.krn
+del-alw %img%.wrp
+del-alw %img%.iso
+del-alw %img%.torrent
+del-alw %img%.sha256
+del-ifdn %dwn%
+exec mkdir %dwn%
+del-alw %tmp%
+exec mkdir %tmp%
+exec mkdir %tmp%/rtr
+exec mkdir -m 0755 %tmp%/root
+exec mkdir -m 0755 %tmp%/sys
+exec mkdir -m 0755 %tmp%/proc
+exec mkdir -m 0755 %tmp%/tmp
+exec mkdir -m 0755 %tmp%/mnt
+exec mkdir -m 0755 %tmp%/var
+exec mkdir -m 0755 %tmp%/var/lock
+exec mkdir -m 0755 %tmp%/dev
+exec mkdir -m 0755 %tmp%/run
+exec mkdir -m 0755 %tmp%/etc
+exec mkdir -m 0755 %tmp%/usr
+exec mkdir -m 0755 %tmp%/usr/bin
+exec mkdir -m 0755 %tmp%/usr/sbin
+exec mkdir -m 0755 %tmp%/bin
+exec mkdir -m 0755 %tmp%/sbin
+
+catalog-read main
+catalog-read contrib
+catalog-read non-free
+
+catalog-sort
+
+select-dis debconf
+select-dis adduser
+select-dis passwd
+select-dis util-linux
+select-dis dpkg
+select-dis perl
+select-dis perl-base
+select-dis init-system-helpers
+select-dis initramfs-tools
+select-dis multiarch-support
+
+select-one linux-image-686-pae #kernel
+select-one socat               #devices
+select-one busybox             #small utils
+select-one udev                #bring up hw
+select-one ethtool             #disable hw chksum

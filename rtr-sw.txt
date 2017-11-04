@@ -1,0 +1,712 @@
+hostname rtr
+buggy
+enable $V10$Bk45WwxyuisDgdTOjjYZq9sDdjT+BinHUXVmLBcIJUMW59DxVz0=
+banner encoded WFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFgNClhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYDQpYWFhYIFhYWFhYIFhYWCAgICBYWFggICAgIFhYWCBYWCBYWCBYWFhYIFhYWFhYWFhYWFhYWFhYWFhYWA0KWFhYWCAgWFhYWCBYWCBYWFhYIFhYIFhYWFggWFggWFggWFggWFhYWCBYWFhYWFhYL35+fn5+XFhYWFgNClhYWFggWCBYWFggWFggWFhYWCBYWCBYWFhYIFhYIFhYIFhYIFhYWFggWFhYWFhYfCB0ZXN6dCB8WFhYDQpYWFhYIFhYIFhYIFhYIFhYWFggWFggICAgIFhYWCAgICBYWCBYWFhYIFhYWFhYWFhcX19fX18vWFhYWA0KWFhYWCBYWFggWCBYWCBYWFhYIFhYIFhYWFhYWFggWFggWFggWFhYWCBYWFhYWFhYWFhYWFhYWFhYWFgNClhYWFggWFhYWCAgWFggWFhYWCBYWCBYWFhYWFhYIFhYIFhYIFhYWFggWFhYWFhYWFhYWFhYWFhYWFhYDQpYWFhYIFhYWFhYIFhYWCAgICBYWFggWFhYIFhYWCBYWCBYWFggICAgWFhYWFhYWFhYWFhYWFhYWFhYWA0KWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFgNClhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYDQo=
+!
+logging buffered debug 10240
+logging file debug zzz.log
+!
+crypto rsakey rsa import MIICXAIBAAKBgQCB2LNWaE3Kyq8PF4d5RxMjGcbID678fkf1ZQlgHmLK1uhphGFq5oK3csyjm4/pVrimAAPRcvJ/R+x8C4AlA9Oa6HLgC0BovBisKhCFQWbCIjvqlk6N+FD0+z/a5c7Du5RNTybPygrx7CYRgJz7SeUnbZhCcwhxC281amsAOhydwQIDAQABAoGAd6ux9XQiJkHRP9aOrE6+K36JPz99JgZ46YjaMDUxFgMlpoI0iqKyXMK4Kh2ocATWH2AqJLKNHpO6N8UdsH+rWF31Al9ENKQUuVz6xsN/TG8G3wVtYrsjnl7EctBTOT1uw2UaMJueM2nR/tRxDWC8NIXKECHCghDpDVCjyFnnfTECQQD1JeTpzrltHj/u8Ulgv8Mv2eoQgons/V3R9p2BT9aFUGeufCVdWINUC0rtoxUkUabrkX11RT4eSAQS7FLppq9FAkEAh5gq8TNqXc+UanjfJDlTK3NmdSwlGeARb43nF6m7QHrHrQKuKeOLtziDa4We87jr07N2BN4TMkaTompiRYWuTQJBALtDHR/1B/PwnYnayuCa23DcF05RSSa9TEOtDRfQcuAXUXwZ3Tj2+irjDXOFlgrOTKG524oPQKpE/Mevuo49A7kCQACuyXiRc7WpN+wZU7ZQ+5Q6boekg0NQF4ZiRomd9y1p8Nt0KgBX/vobNL4z3AsKIVXdj3iSzbHxHQkyU/BZrfkCQDV6H9wRU2U5Yf7ZBdb9CCpPWiE/0/uhmbgcyRePCJ/cGMXcpAqD0dqSJGRXJiPpwfgBClHHysQa+Xo9Mnu53+Q=
+!
+crypto dsakey dsa import MIIBuwIBAAKBgQCfkjvRXNe8e2XYfGJYkjOQ57MRliaHWKBfioZGF2lP1+sLGzq1uXNGfJUOuBvwVUZ5BFUGjgdVTVOtSJzwrIA8AApuleyL0PHXUdwZDSCVB6i8hjpKBbYWHOD6+oWIrFTue/TRaKlhw2Uyx2wRyGf43HU2wA/LMTq/pFYyzgYrYwIVAPEQ3Y229BDtgN433N54JAcPzV/xAoGAN4VjMhC/4T6XjJ8w+rsdJJT7YPcLh81mULuzkpllDWUEj1EbsoWulN4eKT6gcOA82327w+J6HAqlg7J3qZ14Al9r8w9Pdknhj3+plHkorKDPCrEBVtkYJqdoCoGfqXjg5rqKJg7Rj+1NFcQnDDZzA4glMZjbt1KVCXWbbaaMwncCgYEAlhZE00Uui+c147dN4S0hcINwUZPt0XP5sU0P3j+Vcn7xk3vNv7hV5jby8PFvsV6tI3KuurrIFxkneAyQfF7rSN2mxXtnXhi94TLmMGLVWmYIl30Kq2G/NWl0IEbUTkf6YQuu95MPjUntA0Sgsg/TTJvu5oYCO+JEgix/0WJRM6gCFFoUb62md6lcQAhckshQfp5tQZ1z
+!
+crypto ecdsakey ecdsa import MEQCAQEEEACtT1ZwRkfDhndc4zXN/1GgBwYFK4EEAByhJAMiAASucERsdb81h9FyhNEdSrMbnK55VVz3W22q6dz+ggcGQA==
+!
+crypto certificate dsa import dsa dsa MIICUzCCAhGgAwIBAgIEJcnVfjAJBgcqhkjOOAQDMA4xDDAKBgNVBAMTA3J0cjAeFw0xNDEwMTYxNjA3MDNaFw0yNDEwMTMxNjA3MDNaMA4xDDAKBgNVBAMTA3J0cjCCAbcwggErBgcqhkjOOAQBMIIBHgKBgQCfkjvRXNe8e2XYfGJYkjOQ57MRliaHWKBfioZGF2lP1+sLGzq1uXNGfJUOuBvwVUZ5BFUGjgdVTVOtSJzwrIA8AApuleyL0PHXUdwZDSCVB6i8hjpKBbYWHOD6+oWIrFTue/TRaKlhw2Uyx2wRyGf43HU2wA/LMTq/pFYyzgYrYwIVAPEQ3Y229BDtgN433N54JAcPzV/xAoGAN4VjMhC/4T6XjJ8w+rsdJJT7YPcLh81mULuzkpllDWUEj1EbsoWulN4eKT6gcOA82327w+J6HAqlg7J3qZ14Al9r8w9Pdknhj3+plHkorKDPCrEBVtkYJqdoCoGfqXjg5rqKJg7Rj+1NFcQnDDZzA4glMZjbt1KVCXWbbaaMwncDgYUAAoGBAJYWRNNFLovnNeO3TeEtIXCDcFGT7dFz+bFND94/lXJ+8ZN7zb+4VeY28vDxb7FerSNyrrq6yBcZJ3gMkHxe60jdpsV7Z14YveEy5jBi1VpmCJd9CqthvzVpdCBG1E5H+mELrveTD41J7QNEoLIP00yb7uaGAjviRIIsf9FiUTOoMAkGByqGSM44BAMDMQAwLgIVAJDN7aTiSjaSr3f39DdxTsBj0pTcAhUA7ugyNSi+R73J0Fsu7dcv7JfN06A=
+!
+crypto certificate ecdsa import ecdsa ecdsa MIHlMIGOoAMCAQICBHdcELYwCQYHKoZIzj0EATAOMQwwCgYDVQQDEwNydHIwHhcNMTQxMDIzMDc1NjQ4WhcNMjQxMDIwMDc1NjQ4WjAOMQwwCgYDVQQDEwNydHIwNjAQBgcqhkjOPQIBBgUrgQQAHAMiAASucERsdb81h9FyhNEdSrMbnK55VVz3W22q6dz+ggcGQDAJBgcqhkjOPQQBA0cAMEQCEQCj1kFVhYyMmgeEsIMMCTalAi8Wvrl1ZghtS9ybZuiheuKZCFHKHPDOWPd4C6dKxyvvBsLep0GvqeRn/Un7+8QB0w==
+!
+crypto certificate rsa import rsa rsa MIIBjTCB+qADAgECAgQnONKiMAsGCSqGSIb3DQEBBTAOMQwwCgYDVQQDEwNydHIwHhcNMTQxMDE2MTYwNjU5WhcNMjQxMDEzMTYwNjU5WjAOMQwwCgYDVQQDEwNydHIwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAIHYs1ZoTcrKrw8Xh3lHEyMZxsgPrvx+R/VlCWAeYsrW6GmEYWrmgrdyzKObj+lWuKYAA9Fy8n9H7HwLgCUD05rocuALQGi8GKwqEIVBZsIiO+qWTo34UPT7P9rlzsO7lE1PJs/KCvHsJhGAnPtJ5SdtmEJzCHELbzVqawA6HJ3BAgMBAAEwCwYJKoZIhvcNAQEFA4GAH8MNl1VQVFLaXq0zucP7Eq2Bg2JtgZrBCsdpIzuR8mYPEdUqphcQtK2yIvcRqBIVqZdbE/+iHbgiYzJ/eo35acC18LeZ+ziRWgqi00gX+IyFPV2dVwYF19zZPwckxke+87owYKxC/kto2AjenZ49/hlceChGaIB8U/a4Vd9O+6g=
+!
+aaa userlist access
+ no log-error
+ username mc36
+ username mc36 password $v10$ZmFzem9t
+ exit
+!
+access-list fs4
+ sequence 10 permit 12-13 10.10.10.0 255.255.255.0 179 10.10.255.0 255.255.255.128 25-80
+ sequence 20 permit 12-13 10.10.10.0 255.255.255.0 179 10.10.254.128 255.255.255.128 179
+ exit
+!
+access-list fs6
+ sequence 10 permit 13-14 2001:db8:1101:: ffff:ffff:ffff:ffff:: 179 2001:db8:1101:123:: ffff:ffff:ffff:ffff:ff00:: 25-80
+ sequence 20 permit 13-14 2001:db8:1101:: ffff:ffff:ffff:ffff:: 179 2001:db8:1101:123:100:: ffff:ffff:ffff:ffff:ff00:: 179
+ exit
+!
+prefix-list all
+ sequence 10 permit 0.0.0.0/0 ge 0 le 32
+ sequence 20 permit ::/0 ge 0 le 128
+ exit
+!
+route-policy nht4
+ sequence 10 if network 0.0.0.0/0 ge 0 le 0
+ sequence 20   drop
+ sequence 30 elsif distance 70
+ sequence 40   pass
+ sequence 50 elsif distance 0
+ sequence 60   pass
+ sequence 70 enif
+ exit
+!
+route-policy nht6
+ sequence 10 if network ::/0 ge 0 le 0
+ sequence 20   drop
+ sequence 30 elsif distance 70
+ sequence 40   pass
+ sequence 50 elsif distance 0
+ sequence 60   pass
+ sequence 70 enif
+ exit
+!
+policy-map fs4
+ sequence 10 action transit
+ sequence 10 match access-group fs4
+ sequence 10 match length 123-321
+ sequence 10 access-rate 512000
+ !
+ sequence 20 action transit
+ sequence 20 match length 3333-4444
+ sequence 20 access-rate 768000
+ !
+ exit
+!
+policy-map fs6
+ sequence 10 action transit
+ sequence 10 match access-group fs6
+ sequence 10 match length 123-321
+ sequence 10 access-rate 512000
+ !
+ sequence 20 action transit
+ sequence 20 match length 3333-4444
+ sequence 20 access-rate 768000
+ !
+ exit
+!
+bridge 1
+ rd 65535:1
+ rt-import 65535:1
+ rt-export 65535:1
+ mac-learn
+ mac-move
+ private-bridge
+ exit
+!
+bridge 11
+ rd 1:1
+ rt-import 1:1
+ rt-export 1:1
+ mac-learn
+ private-bridge
+ exit
+!
+bridge 12
+ rd 1:2
+ rt-import 1:2
+ rt-export 1:2
+ mac-learn
+ private-bridge
+ exit
+!
+bridge 13
+ rd 1:4321
+ rt-import 1:4321
+ rt-export 1:4321
+ mac-learn
+ private-bridge
+ exit
+!
+bridge 14
+ rd 1:12345
+ rt-import 1:12345
+ rt-export 1:12345
+ mac-learn
+ private-bridge
+ exit
+!
+bridge 2
+ rd 65535:2
+ rt-import 65535:2
+ rt-export 65535:2
+ mac-learn
+ mac-move
+ private-bridge
+ exit
+!
+bridge 3
+ rd 65535:1
+ rt-import 65535:1
+ rt-export 65535:1
+ mac-learn
+ mac-move
+ private-bridge
+ exit
+!
+bridge 4
+ rd 65535:2
+ rt-import 65535:2
+ rt-export 65535:2
+ mac-learn
+ mac-move
+ private-bridge
+ exit
+!
+vrf definition bvi
+ rd 65535:2
+ label-mode per-prefix
+ exit
+!
+vrf definition v1
+ rd 1:1
+ rt-import 1:1
+ rt-export 1:1
+ label-mode per-prefix
+ exit
+!
+vrf definition v2
+ rd 1:2
+ rt-import 1:2
+ rt-export 1:2
+ label-mode per-prefix
+ exit
+!
+vrf definition v3
+ rd 1:3
+ rt-import 1:3
+ rt-export 1:3
+ label-mode per-prefix
+ exit
+!
+vrf definition v4
+ rd 1:4
+ rt-import 1:4
+ rt-export 1:4
+ label-mode per-prefix
+ exit
+!
+vrf definition v5
+ rd 1:2
+ rt-import 1:2
+ rt-export 1:2
+ label-mode per-prefix
+ exit
+!
+vrf definition vpn
+ rd 65535:1
+ rt-import 65535:1
+ rt-export 65535:1
+ label-mode per-prefix
+ mdt4
+ mdt6
+ exit
+!
+vrf definition vv
+ rd 1:1
+ rt-import 1:1
+ rt-export 1:1
+ label-mode per-prefix
+ exit
+!
+router lsrp4 1
+ vrf v1
+ router-id 10.10.10.227
+ refresh 100000
+ lifetime 300000
+ segrout 300 299
+ bier 256 300 299
+ redistribute connected
+ exit
+!
+router lsrp6 1
+ vrf v1
+ router-id 10.10.10.227
+ refresh 100000
+ lifetime 300000
+ segrout 300 299
+ bier 256 300 299
+ redistribute connected
+ exit
+!
+interface loopback0
+ no description
+ vrf forwarding v1
+ ipv4 address 10.10.10.227 255.255.255.255
+ ipv4 pim enable
+ ipv4 pim bier-tunnel 299
+ ipv4 pim join-source loopback0
+ ipv6 address 2001:db8:1101::227:227 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ ipv6 pim enable
+ ipv6 pim bier-tunnel 299
+ ipv6 pim join-source loopback0
+ mpls rsvp4
+ mpls rsvp6
+ no shutdown
+ no log-link-change
+ exit
+!
+interface loopback6
+ no description
+ vrf forwarding vv
+ ipv4 address 1.1.1.227 255.255.255.255
+ ipv6 address 1234::227 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ no shutdown
+ no log-link-change
+ exit
+!
+interface loopback65535
+ no description
+ vrf forwarding vpn
+ ipv4 address 172.16.27.4 255.255.255.255
+ ipv6 address fd42:1234::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ no shutdown
+ no log-link-change
+ exit
+!
+interface bvi1
+ no description
+ lldp enable
+ cdp enable
+ no shutdown
+ no log-link-change
+ exit
+!
+interface bvi11
+ no description
+ no shutdown
+ no log-link-change
+ exit
+!
+interface bvi12
+ no description
+ no shutdown
+ no log-link-change
+ exit
+!
+interface bvi13
+ no description
+ no shutdown
+ no log-link-change
+ exit
+!
+interface bvi14
+ no description
+ no shutdown
+ no log-link-change
+ exit
+!
+interface bvi2
+ no description
+ lldp enable
+ cdp enable
+ no shutdown
+ no log-link-change
+ exit
+!
+interface bvi3
+ no description
+ lldp enable
+ cdp enable
+ vrf forwarding bvi
+ ipv4 address 2.2.2.1 255.255.255.0
+ no shutdown
+ no log-link-change
+ exit
+!
+interface bvi4
+ no description
+ lldp enable
+ cdp enable
+ no shutdown
+ no log-link-change
+ exit
+!
+interface ethernet1
+ no description
+ monitor-buffer 10240000
+ cdp enable
+ cdp odr4 10.1.123.91
+ cdp odr6 2001:db8:1123::91
+ ptp enable
+ ptp receive
+ carrier-delay 123
+ vrf forwarding v1
+ ipv4 address 10.1.123.91 255.255.255.0
+ ipv4 host-watch
+ ipv4 ptp enable
+ ipv4 ptp receive
+ ipv4 bfd 1000 3000 3
+ ipv4 pim enable
+ ipv4 pim bier-tunnel 299
+ ipv4 pim join-source loopback0
+ ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
+ ipv6 host-watch
+ ipv6 ptp enable
+ ipv6 ptp receive
+ ipv6 bfd 1000 3000 3
+ ipv6 pim enable
+ ipv6 pim bier-tunnel 299
+ ipv6 pim join-source loopback0
+ mpls enable
+ mpls rsvp4
+ mpls rsvp6
+ router lsrp4 1 enable
+ router lsrp4 1 bfd
+ router lsrp6 1 enable
+ router lsrp6 1 bfd
+ no shutdown
+ log-link-change
+ exit
+!
+router bgp4 1
+ vrf v1
+ local-as 1
+ router-id 10.10.10.227
+ address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ conquer
+ flapstat
+ nexthop route-policy nht4
+ flowspec fs4
+ dump a bgp4.log
+ template a remote-as 1
+ no template a description
+ template a password $v10$dGVzdGluZw==
+ template a local-as 1
+ template a address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a distance 200
+ template a compression both
+ template a buffer-size 1024000
+ template a ttl-security 123
+ template a additional-path-rx unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a additional-path-tx unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a update-source loopback0
+ template a dump a
+ template a hostname
+ template a fall-over
+ template a aigp
+ template a traffeng
+ template a segrout
+ template a route-reflector-client
+ template a send-community all
+ neighbor 10.10.10.32 template a
+ neighbor 10.10.10.33 template a
+ neighbor 10.10.10.34 template a
+ neighbor 10.10.10.35 template a
+ neighbor 10.10.10.36 template a
+ neighbor 10.10.10.37 template a
+ neighbor 10.10.10.91 template a
+ neighbor 10.10.10.92 template a
+ neighbor 10.10.10.93 template a
+ neighbor 10.10.10.94 template a
+ neighbor 10.10.10.95 template a
+ neighbor 10.10.10.96 template a
+ neighbor 10.10.10.225 template a
+ neighbor 10.10.10.226 template a
+ neighbor 10.10.10.228 template a
+ neighbor 10.10.10.229 template a
+ afi-vrf vv enable
+ afi-vrf vv flowspec fs4
+ afi-vrf vv mvpn loopback0
+ afi-vrf vv redistribute connected
+ afi-ovrf vv enable
+ afi-ovrf vv flowspec fs6
+ afi-ovrf vv mvpn loopback0
+ afi-ovrf vv redistribute connected
+ afi-vpls 1:1 bridge-group 11
+ afi-vpls 1:1 update-source loopback0
+ afi-vpls 1:2 bridge-group 12
+ afi-vpls 1:2 ve-id 9 10
+ afi-vpls 1:2 update-source loopback0
+ afi-evpn 4321 bridge-group 13
+ afi-evpn 4321 bmac 0068.432f.2759
+ afi-evpn 4321 encapsulation vxlan
+ afi-evpn 4321 update-source loopback0
+ afi-evpn 100001 bridge-group 14
+ afi-evpn 100001 bmac 0012.3456.9999
+ afi-evpn 100001 encapsulation pbb
+ afi-evpn 100001 update-source loopback0
+ redistribute connected
+ exit
+!
+router bgp4 65535
+ vrf v1
+ local-as 65535
+ router-id 10.10.10.227
+ address-family labeled multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ dump mrt bgp1.log
+ neighbor 10.5.1.10 remote-as 65535
+ no neighbor 10.5.1.10 description
+ neighbor 10.5.1.10 local-as 65535
+ neighbor 10.5.1.10 address-family labeled multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ neighbor 10.5.1.10 distance 200
+ neighbor 10.5.1.10 compression both
+ neighbor 10.5.1.10 update-source loopback0
+ neighbor 10.5.1.10 dump mrt
+ neighbor 10.5.1.10 hostname
+ neighbor 10.5.1.10 aigp
+ neighbor 10.5.1.10 traffeng
+ neighbor 10.5.1.10 segrout
+ neighbor 10.5.1.10 send-community all
+ afi-vrf vpn enable
+ afi-vrf vpn mvpn loopback0
+ afi-vrf vpn redistribute connected
+ afi-vrf vpn redistribute static
+ afi-vpls 65535:1 bridge-group 1
+ afi-vpls 65535:1 update-source loopback0
+ afi-evpn 2 bridge-group 2
+ afi-evpn 2 bmac 006e.085c.1743
+ afi-evpn 2 encapsulation pbb
+ afi-evpn 2 update-source loopback0
+ redistribute connected
+ redistribute static
+ exit
+!
+router bgp6 1
+ vrf v1
+ local-as 1
+ router-id 10.10.10.227
+ address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ conquer
+ flapstat
+ nexthop route-policy nht6
+ flowspec fs6
+ dump a bgp6.log
+ template a remote-as 1
+ no template a description
+ template a password $v10$dGVzdGluZw==
+ template a local-as 1
+ template a address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a distance 200
+ template a compression both
+ template a buffer-size 1024000
+ template a ttl-security 123
+ template a additional-path-rx unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a additional-path-tx unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a update-source loopback0
+ template a dump a
+ template a hostname
+ template a fall-over
+ template a aigp
+ template a traffeng
+ template a segrout
+ template a route-reflector-client
+ template a send-community all
+ neighbor 2001:db8:1101::32 template a
+ neighbor 2001:db8:1101::33 template a
+ neighbor 2001:db8:1101::34 template a
+ neighbor 2001:db8:1101::35 template a
+ neighbor 2001:db8:1101::36 template a
+ neighbor 2001:db8:1101::37 template a
+ neighbor 2001:db8:1101::91 template a
+ neighbor 2001:db8:1101::92 template a
+ neighbor 2001:db8:1101::93 template a
+ neighbor 2001:db8:1101::94 template a
+ neighbor 2001:db8:1101::95 template a
+ neighbor 2001:db8:1101::96 template a
+ redistribute connected
+ exit
+!
+router bgp6 65535
+ vrf v1
+ local-as 65535
+ router-id 10.10.10.227
+ address-family labeled multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ dump mrt bgp2.log
+ neighbor 2001:db8:36::2 remote-as 65535
+ no neighbor 2001:db8:36::2 description
+ neighbor 2001:db8:36::2 local-as 65535
+ neighbor 2001:db8:36::2 address-family labeled multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ neighbor 2001:db8:36::2 distance 200
+ neighbor 2001:db8:36::2 compression both
+ neighbor 2001:db8:36::2 update-source loopback0
+ neighbor 2001:db8:36::2 dump mrt
+ neighbor 2001:db8:36::2 hostname
+ neighbor 2001:db8:36::2 aigp
+ neighbor 2001:db8:36::2 traffeng
+ neighbor 2001:db8:36::2 segrout
+ neighbor 2001:db8:36::2 send-community all
+ afi-vrf vpn enable
+ afi-vrf vpn mvpn loopback0
+ afi-vrf vpn redistribute connected
+ afi-vrf vpn redistribute static
+ afi-vpls 65535:1 bridge-group 3
+ afi-vpls 65535:1 update-source loopback0
+ afi-evpn 2 bridge-group 4
+ afi-evpn 2 bmac 0002.4276.7a16
+ afi-evpn 2 encapsulation pbb
+ afi-evpn 2 update-source loopback0
+ redistribute connected
+ redistribute static
+ exit
+!
+proxy-profile p1
+ vrf v1
+ source loopback0
+ exit
+!
+proxy-profile p2
+ vrf v2
+ exit
+!
+proxy-profile p3
+ vrf v3
+ exit
+!
+proxy-profile p4
+ vrf v4
+ exit
+!
+proxy-profile p5
+ vrf v5
+ exit
+!
+mtracker v4
+ logging
+ target 10.5.1.10
+ vrf v1
+ source loopback0
+ start
+ exit
+!
+mtracker v4m
+ logging
+ target 10.5.1.10
+ vrf v1
+ source loopback0
+ port 5488
+ start
+ exit
+!
+mtracker v6
+ logging
+ target 2001:db8:36::2
+ vrf v1
+ source loopback0
+ start
+ exit
+!
+mtracker v6m
+ logging
+ target 2001:db8:36::2
+ vrf v1
+ source loopback0
+ port 5488
+ start
+ exit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+alias test bash description 
+alias test bash parameter optional
+!
+server telnet ssh
+ security protocol ssh
+ security authentication access
+ security rsakey rsa
+ security dsakey dsa
+ security ecdsakey ecdsa
+ security rsacert rsa
+ security dsacert dsa
+ security ecdsacert ecdsa
+ port 22
+ no login authentication
+ vrf v1
+ exit
+!
+server telnet tel
+ security protocol telnet
+ exec width 134
+ exec height 35
+ no login authentication
+ vrf v1
+ exit
+!
+server http web
+ host * path /home/mc36/
+ host * dirlist
+ host * webdav
+ vrf v1
+ exit
+!
+server bmp2mrt bmp
+ datafile bgp.log
+ vrf v1
+ exit
+!
+client proxy p1
+client prefer-ipv6
+client name-server 8.8.8.8
+client upgrade-config
+client config-save
+client time-zone CET
+!
+end

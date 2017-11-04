@@ -1,0 +1,9 @@
+[Unit]
+Description=router processes
+
+[Service]
+Type=forking
+ExecStart=/rtr/hwdet-all.sh
+
+[Install]
+WantedBy=network.target

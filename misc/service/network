@@ -1,0 +1,4 @@
+iface lo inet loopback
+#allow-hotplug eth0
+#iface eth0 inet dhcp
+#iface eth0 inet6 auto

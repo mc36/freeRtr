@@ -1,0 +1,28 @@
+exec cp %tmp%/boot/vmlinuz* %img%.krn
+del-alw %tmp%/boot
+del-alw %tmp%/usr/src
+del-alw %tmp%/usr/include
+del-alw %tmp%/usr/share/info
+del-alw %tmp%/usr/share/man
+del-alw %tmp%/usr/share/doc
+del-alw %tmp%/usr/share/bug
+
+exec chmod 777 %tmp%/init
+exec touch %tmp%/rtr/rtr-hw.txt
+exec cp ../misc/default.cfg %tmp%/rtr/rtr-sw.txt
+exec for a in `busybox --list`; do ln -s /bin/busybox %tmp%/bin/$a; done
+
+exec du -sh %tmp%
+exec cd %tmp%;find . | tail -n +2 >filist
+exec cd %tmp%;cpio --quiet -H newc -O cpio -o <filist
+exec gzip -n <%tmp%/cpio >%img%.ird
+exec wraplinux -M -l -i %img%.ird -o %img%.wrp %img%.krn
+exec cp /usr/lib/ISOLINUX/isolinux.bin %tmp%/isolinux.bin
+exec cp /usr/lib/syslinux/modules/bios/ldlinux.c32 %tmp%/ldlinux.c32
+exec cp ../misc/image/boot.cfg %tmp%/isolinux.cfg
+exec genisoimage -o %img%.iso -r -J -l -b isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux.cat %img%.krn %img%.ird %tmp%/isolinux.cfg %tmp%/isolinux.bin %tmp%/ldlinux.c32
+exec isohybrid %img%.iso
+exec mktorrent -o %img%.torrent -a udp://tracker.openbittorrent.com:80 -w http://src.nop.hu/src/binImg/rtr.iso %img%.iso
+exec sha256sum -b %img%.* >%img%.sha256
+del-alw %tmp%
+exec ls -l %img%.*

@@ -1,0 +1,34 @@
+hostname r4
+logging file debug ../binTmp/zzz-log-r4.txt
+vrf def v1
+ rd 1:1
+ exit
+proxy-profile p1
+ vrf v1
+ exit
+server telnet tel
+ sec prot tel
+ vrf v1
+ exit
+int lo0
+ vrf for v1
+ ipv4 addr 2.2.2.4 255.255.255.255
+ ipv6 addr 4321::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int eth1
+ desc r3 e1
+ lldp ena
+ vrf for v1
+ ipv4 addr 1.1.1.14 255.255.255.252
+ ipv6 addr 1234:4::2 ffff:ffff::
+ exit
+int eth2
+ desc r2 e2
+ lldp ena
+ vrf for v1
+ ipv4 addr 1.1.1.10 255.255.255.252
+ ipv6 addr 1234:3::2 ffff:ffff::
+ exit
+serv tel tel
+ vrf v1
+ exit

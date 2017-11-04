@@ -1,0 +1,54 @@
+package cry;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
+import util.logger;
+
+/**
+ * digital encryption standard
+ *
+ * @author matecsaba
+ */
+public class cryEncrECBdes extends cryEncrGeneric {
+
+    private Cipher crypter;
+
+    public void init(byte[] key, byte[] iv, boolean encrypt) {
+        final String name = "DES";
+        int mode;
+        if (encrypt) {
+            mode = Cipher.ENCRYPT_MODE;
+        } else {
+            mode = Cipher.DECRYPT_MODE;
+        }
+        try {
+            SecretKeySpec keyspec = new SecretKeySpec(key, name);
+            crypter = Cipher.getInstance(name + "/ECB/NoPadding");
+            crypter.init(mode, keyspec);
+        } catch (Exception e) {
+            logger.exception(e);
+        }
+    }
+
+    public String getName() {
+        return "des";
+    }
+
+    public int getBlockSize() {
+        return 8;
+    }
+
+    public int getKeySize() {
+        return 8;
+    }
+
+    public byte[] compute(byte[] buf, int ofs, int siz) {
+        return crypter.update(buf, ofs, siz);
+    }
+
+    public byte[] getNextIV() {
+        return crypter.getIV();
+    }
+
+}

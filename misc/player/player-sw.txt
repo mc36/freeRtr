@@ -1,0 +1,111 @@
+hostname player
+!
+no logging file debug
+no logging syslog debug
+logging irc debug  
+!
+crypto rsakey rsa import MIICXQIBAAKBgQDgQpbTWzY6Z7Y1dEAP3n8QfnBPjUan53OIxbXAHKvCGlbkXgMxxWNpCp1Nlu8z2eE/InBtNerNrQ0FzHcseIk7r101P2ZABpBFA8GNWQF93Bvst3qQ9xbwZ1PU/0YlY7TD77bt5Jkm9QbAA0lUduWiEj1itdLge8Hcb0MLl15XCwIDAQABAoGBAN+r6qyxW5vTFxunb8GkI816nl/pw1/x6/ytXQJYVkMJbELnNX5tpiH9UTky4i8wD4Wdvs5eKWusPsHa1b4IFq4PXKEMvfRtbt8lxddkl/oN1hwuEqUdD5uVc16w36z/C5pyIfkr2UjJS+rGGZZ4qzF2Y47TJ+rtQnwd6pKF8RxhAkEA+sJaB9vri14vlGAj1oaLcNQGw1rgKgiBt2W4RG+R5/34UbRPA2YFPEVXnCkcUos2bTF0L1vl4baiPupQ2b1N+wJBAOTydVIbEf5lbCWoLZ0JUN6OvEEWRlM6VV31Z3WC5riX3HaG0+LIvAQ9H/i6HV42Z3SqmEsmndbnd+0vLYvNHjECQQC4Gzuoq4HbuFIsmQ2W8v+r3i/8/Fq64bYDZc6NiHDSqLfJnR2p/Bx57NtvDwv5WraiIv4Py2QTfVjP4o9r3j5DAkAHkfjNITYEGmhsClaPxboV0dRptonWwKwH8lBcc1qbqfHRPX4OFqMY5MiE2eqUrenX0rg8a+d2LqspfZDc+YhRAkBwVUfGTaiN20Gx1BvQ2QF64BVepO1G42cLnccfU2S+WLB5qE2WjX9l32b6Out4SngD4k1ZoIDNtVOYMsFDBON0
+!
+crypto dsakey dsa import MIIBtwIBAAKBgCks/Lrh6NYP+7rojFbKnoI6rsCQ5DrP/w0bdeXnEzOn7UFZwbDIc7SfBaqacYoFyTyPuuQW1HG0H5ZSAd6kLnvR1RfJH9Tj5FvhQlBiHtUoqGdHYQJSDZ1JONRYtMPpfNhBMVVc8cWHy8r7tdDq7PC7fRyVyJSoxRzFBTCrfcSFAhUAtrgHK8mg2zfCAyAewDYU3SqDjKkCgYAGEq5Iw+Xd6uB1XMWILysg7eBQClJzEC4K9Sm1Ua50mE0TqD/ZYE8OmL5RchiLZ9/8/238fRCt/V6fc00THyB4n9LB7zcrdjq6EuCVTXxRf2pWmEEUi1ZVK8FVSXa4kEODxE5oa1qqsmsO5wY9205+7XbcOznpdWx0tCtWgtmLUwJ/XcXX5+MDCctQWAjWu+X1PBClzubABjUEYOXytnRsCficOd/G2foFH2AQ1h7SFpi+Ep71PkhRvDNYw3tV0QjmXUYFMH6vuOrGTjVe7FT7D9JoBjVygg+NAFrbSozw2YhnP7T8t4PLnwpauFUMg6cgypCaiNEioQB97ibmNz15UAIUJebn+EEUj/nbD876hUwjgJSnruk=
+!
+crypto certificate dsa import dsa dsa MIICUzCCAhOgAwIBAgIEWqMJYjAJBgcqhkjOOAQDMBExDzANBgNVBAMTBnBsYXllcjAeFw0xMjA1MzEyMDIwMjhaFw0yMjA1MjkyMDIwMjhaMBExDzANBgNVBAMTBnBsYXllcjCCAbMwggEqBgcqhkjOOAQBMIIBHQKBgCks/Lrh6NYP+7rojFbKnoI6rsCQ5DrP/w0bdeXnEzOn7UFZwbDIc7SfBaqacYoFyTyPuuQW1HG0H5ZSAd6kLnvR1RfJH9Tj5FvhQlBiHtUoqGdHYQJSDZ1JONRYtMPpfNhBMVVc8cWHy8r7tdDq7PC7fRyVyJSoxRzFBTCrfcSFAhUAtrgHK8mg2zfCAyAewDYU3SqDjKkCgYAGEq5Iw+Xd6uB1XMWILysg7eBQClJzEC4K9Sm1Ua50mE0TqD/ZYE8OmL5RchiLZ9/8/238fRCt/V6fc00THyB4n9LB7zcrdjq6EuCVTXxRf2pWmEEUi1ZVK8FVSXa4kEODxE5oa1qqsmsO5wY9205+7XbcOznpdWx0tCtWgtmLUwOBggACf13F1+fjAwnLUFgI1rvl9TwQpc7mwAY1BGDl8rZ0bAn4nDnfxtn6BR9gENYe0haYvhKe9T5IUbwzWMN7VdEI5l1GBTB+r7jqxk41XuxU+w/SaAY1coIPjQBa20qM8NmIZz+0/LeDy58KWrhVDIOnIMqQmojRIqEAfe4m5jc9eVAwCQYHKoZIzjgEAwMvADAsAhR9FDtVx+SCrow1Tf3W8f8Zun367QIUSOvqE65DzpdHqPec4K7dYL75Nzk=
+!
+crypto certificate rsa import rsa rsa MIIBlDCCAQCgAwIBAgIEBVOQcDALBgkqhkiG9w0BAQUwETEPMA0GA1UEAxMGcGxheWVyMB4XDTEyMDUzMTIwMjAyMVoXDTIyMDUyOTIwMjAyMVowETEPMA0GA1UEAxMGcGxheWVyMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDgQpbTWzY6Z7Y1dEAP3n8QfnBPjUan53OIxbXAHKvCGlbkXgMxxWNpCp1Nlu8z2eE/InBtNerNrQ0FzHcseIk7r101P2ZABpBFA8GNWQF93Bvst3qQ9xbwZ1PU/0YlY7TD77bt5Jkm9QbAA0lUduWiEj1itdLge8Hcb0MLl15XCwIDAQABMAsGCSqGSIb3DQEBBQOBgCMoHn9lh7XrIkglYhQq8NeHVGXEP5eTWNLgkqhMionVlQ+twoEBxElhIihUe78v7BQtQ0mmRcA4qsofdYA/SBuVmHTaPgEFHhlLUqit0iPdBCBR4UeLrbiTnqL/CMjfl7hHcPdQ3uL6JpaNVuKnFA6h+DcNP91UxDuYLKKFZb+Q
+!
+vrf definition ply
+ rd 666:666
+ exit
+!
+aaa userlist usr
+ username c
+ username c password $v10$Yw==
+ username c privilege 1
+ username mc36
+ username mc36 password $v10$ZmFzem9t
+ username mc36 privilege 1
+ exit
+!
+proxy-profile p
+ protocol hostos
+ exit
+!
+scheduler self
+ time 10000
+ delay 5000
+ command flash receive /dev/null http://127.0.0.1:8080/player.class
+ start
+ exit
+!
+!
+!
+!
+!
+!
+!
+alias test bash command test shell1 socat - exec:bash,ctty,pty,stderr
+alias test bash description 
+alias test bash parameter forbidden
+!
+server telnet ssh
+ security protocol ssh
+ security authentication usr
+ security rsakey rsa
+ security dsakey dsa
+ security rsacert rsa
+ security dsacert dsa
+ port 22
+ protocol ipv4 ipv6 tcp
+ no login authentication
+ vrf ply
+ exit
+!
+server telnet tel
+ security protocol telnet
+ port 23
+ protocol ipv4 ipv6 tcp
+ no login authentication
+ login logging
+ vrf ply
+ exit
+!
+server rfb vnc
+ port 5900
+ protocol ipv4 ipv6 tcp
+ no login authentication
+ vrf ply
+ exit
+!
+server http sweb
+ security protocol tls
+ security rsakey rsa
+ security dsakey dsa
+ security rsacert rsa
+ security dsacert dsa
+ port 443
+ protocol ipv4 ipv6 tcp
+ host * path /home/mc36/rtr/src/zzz/
+ host * style bgcolor="#000000" text="#00FF00" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF"
+ host * dirlist
+ host * script
+ host * class
+ vrf ply
+ exit
+!
+server http web
+ port 80
+ protocol ipv4 ipv6 tcp
+ host * path /home/mc36/.guayadeque/lyrics/
+ host * style bgcolor="#000000" text="#00FF00" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF"
+ host * dirlist
+ host * script
+ host * class
+ vrf ply
+ exit
+!
+client proxy p
+client name-server 10.10.10.1
+client mail-server gw4.mchome.nop.hu
+client mail-username mc36
+client mail-password $v10$ZmFzem9t
+!
+end
