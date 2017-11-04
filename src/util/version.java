@@ -19,25 +19,25 @@ public class version {
     /**
      * 9.1.1
      */
-    public final static String verNum = verCore.year + "." + verCore.month + "." + verCore.day + verCore.state;
+    public final static String verNum = verCore.year + "." + verCore.month + "." + verCore.day;
 
     /**
-     * v9.1.1
+     * v9.1.1-rel
      */
-    public final static String VerNam = "v" + verNum;
+    public final static String VerNam = "v" + verNum + verCore.state;
 
     /**
-     * ros v9.1.1
+     * ros v9.1.1-rel
      */
     public final static String namVer = verCore.name + " " + VerNam;
 
     /**
-     * ros/9.1.1
+     * ros/9.1.1-rel
      */
-    public final static String usrAgnt = verCore.name + "/" + verNum;
+    public final static String usrAgnt = verCore.name + "/" + verNum + verCore.state;
 
     /**
-     * ros v9.1.1, done by mc.
+     * ros v9.1.1-rel, done by me.
      */
     public final static String headLine = namVer + ", done by " + verCore.author + ".";
 
@@ -141,6 +141,9 @@ public class version {
         }
         if ((head & 0x100) != 0) {
             sa.add("");
+        }
+        if ((head & 0x200) != 0) {
+            sa.add(verNum);
         }
         return sa;
     }
