@@ -91,6 +91,11 @@ public class userShow {
             return alias.getCommand(cmd);
         }
         if (a.equals("version")) {
+            a = cmd.word();
+            if (a.equals("number")) {
+                rdr.putStrArr(version.shLogo(0x200));
+                return null;
+            }
             rdr.putStrArr(version.shLogo(0xe0));
             return null;
         }

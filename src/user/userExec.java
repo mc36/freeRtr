@@ -451,7 +451,8 @@ public class userExec {
         hl.add("3 3,.      [text]                directory to print");
         hl.add("2 3      transproxy              transparent proxy connections");
         hl.add("3 .        <name>                name of interface");
-        hl.add("2 .      version                 version information");
+        hl.add("2 3,.    version                 version information");
+        hl.add("3 .        number                just numbers");
         hl.add("2 .      alias                   defined alieses");
         hl.add("2 .      platform                platform information");
         hl.add("2 3      me-the                  show something");
