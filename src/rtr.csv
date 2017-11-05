@@ -1,6 +1,6 @@
 file;code;test;stage;command
 -;-;freeRouter v17.11.4-testing, done by matecsaba.;-;-
--;-;2017-11-04 17:23:15, took 10:21:24 on 1318 cases;-;-
+-;-;2017-11-05 04:02:09, took 10:14:02 on 1318 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -640,10 +640,10 @@ mpls-sr01.tst;0;segment routing in chain;successfully;finished
 mpls-sr02.tst;0;segment routing in star;successfully;finished
 mpls-sr03.tst;0;te over segment routing;successfully;finished
 mpls-sr04.tst;0;pwe over segment routing;successfully;finished
-mpls-sr05.tst;0;bgp with segment routing;successfully;finished
-mpls-sr06.tst;0;bgp with labels and segment routing;successfully;finished
-mpls-sr07.tst;0;vpns over bgp with segment routing;successfully;finished
-mpls-sr08.tst;0;othervpns over bgp with segment routing;successfully;finished
+mpls-sr05.tst;0;bgp over segment routing;successfully;finished
+mpls-sr06.tst;0;bgp with labels over segment routing;successfully;finished
+mpls-sr07.tst;0;vpns over bgp over segment routing;successfully;finished
+mpls-sr08.tst;0;othervpns over bgp over segment routing;successfully;finished
 mpls-te01.tst;0;te over ethernet;successfully;finished
 mpls-te02.tst;0;te over ethernet vlan;successfully;finished
 mpls-te03.tst;0;te over ethernet bridge;successfully;finished

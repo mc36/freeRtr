@@ -638,9 +638,9 @@ qc pass: segment routing in star
 qc pass: te over segment routing
 qc pass: pwe over segment routing
 qc pass: bgp over segment routing
-qc pass: bgp with labels and segment routing
-qc pass: vpns over bgp with segment routing
-qc pass: othervpns over bgp with segment routing
+qc pass: bgp with labels over segment routing
+qc pass: vpns over bgp over segment routing
+qc pass: othervpns over bgp over segment routing
 qc pass: te over ethernet
 qc pass: te over ethernet vlan
 qc pass: te over ethernet bridge
