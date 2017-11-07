@@ -1688,6 +1688,8 @@ public class userShow {
                 prf2.bierI = 0;
                 prf1.bierB = 0;
                 prf2.bierB = 0;
+                prf1.bierR = 0;
+                prf2.bierR = 0;
                 prf1.bierS = 0;
                 prf2.bierS = 0;
             }
