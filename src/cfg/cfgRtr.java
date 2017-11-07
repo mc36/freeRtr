@@ -265,6 +265,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! no template .* aigp",
         "router bgp[4|6].*! no template .* traffeng",
         "router bgp[4|6].*! no template .* segrout",
+        "router bgp[4|6].*! no template .* bier",
         "router bgp[4|6].*! no template .* egress-engineering",
         "router bgp[4|6].*! no template .* monitor",
         "router bgp[4|6].*! no template .* dump",
