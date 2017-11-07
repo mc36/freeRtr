@@ -4,6 +4,7 @@ import addr.addrIP;
 import java.util.ArrayList;
 import java.util.List;
 import tab.tabLabel;
+import tab.tabLabelBier;
 import tab.tabLabelNtry;
 import tab.tabRoute;
 import tab.tabRouteEntry;
@@ -398,6 +399,11 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.segRoutS = lower.segrouMax;
             ntry.segRoutB = lower.segrouLab[0].getValue();
         }
+        if (lower.bierLab != null) {
+            ntry.bierS = tabLabelBier.num2bsl(lower.bierLen);
+            ntry.bierR = lower.bierLab.length;
+            ntry.bierB = lower.bierLab[0].getValue();
+        }
     }
 
     private void updateAttribs(tabRouteEntry<addrIP> ntry) {
@@ -426,6 +432,12 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.segRoutI = 0;
             ntry.segRoutB = 0;
             ntry.segRoutS = 0;
+        }
+        if (!bier) {
+            ntry.bierI = 0;
+            ntry.bierB = 0;
+            ntry.bierR = 0;
+            ntry.bierS = 0;
         }
         if (removePrivAsOut) {
             rtrBgpUtil.removePrivateAs(ntry.pathSeq);
@@ -466,6 +478,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 break;
         }
         ntry.segRoutI = lower.segrouIdx;
+        ntry.bierI = lower.bierIdx;
         clearAttribs(ntry);
     }
 

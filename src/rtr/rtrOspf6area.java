@@ -11,6 +11,7 @@ import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabLabel;
+import tab.tabLabelBier;
 import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
@@ -48,6 +49,11 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     protected boolean[] segrouUsd;
 
     /**
+     * bier results
+     */
+    protected tabLabelBier bierRes;
+
+    /**
      * computed routes
      */
     protected final tabRoute<addrIP> routes;
@@ -76,6 +82,11 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
      * segment routing enabled
      */
     public boolean segrouEna;
+
+    /**
+     * bier enabled
+     */
+    public boolean bierEna;
 
     /**
      * advertise default route
@@ -525,6 +536,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     }
 
     private void createErtrLsa() {
+        if (!segrouEna) {
+            return;
+        }
         packHolder pck = new packHolder(true, true);
         pck.msbPutD(0, getCapabilities()); // optional capabilities
         pck.putByte(0, getCapaFlags()); // flags
@@ -610,6 +624,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 break;
             }
             rtrOspfSr.getPref(tlv, ntry);
+            rtrOspfBr.getPref(tlv, ntry);
         }
         return ntry;
     }
@@ -779,18 +794,24 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         advertiseLsa(rtrOspf6lsa.lsaRtrInfo, 0, pck);
     }
 
-    private void createSrLsas() {
-        if (!segrouEna) {
+    private void createEprfLsas() {
+        if (!segrouEna && !bierEna) {
             return;
         }
-        createErtrLsa();
         int seq = 1;
         for (int i = 0; i < lower.ifaces.size(); i++) {
             rtrOspf6iface ifc = lower.ifaces.get(i);
             if (ifc == null) {
                 continue;
             }
-            if (ifc.srIndex < 1) {
+            byte[] buf = new byte[0];
+            if (ifc.srIndex > 0) {
+                buf = rtrOspfSr.putPref(ifc.srIndex, ifc.srNode);
+            }
+            if (ifc.brIndex > 0) {
+                buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ifc.brIndex));
+            }
+            if (buf.length < 1) {
                 continue;
             }
             int o;
@@ -802,7 +823,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 o = rtrOspf6lsa.lsaEinterPrf;
                 p = rtrOspf6lsa.tlvInterPrf;
             }
-            createEprfLsa(seq++, ifc.iface.network, o, p, ifc.metric, rtrOspfSr.putPref(ifc.srIndex, ifc.srNode));
+            createEprfLsa(seq++, ifc.iface.network, o, p, ifc.metric, buf);
         }
         if (stub || nssa) {
             return;
@@ -815,10 +836,17 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ntry.rouSrc == area) {
                 continue;
             }
-            if (ntry.segRoutI < 1) {
+            byte[] buf = new byte[0];
+            if (ntry.segRoutI > 0) {
+                buf = rtrOspfSr.putPref(ntry.segRoutI, false);
+            }
+            if (ntry.bierI > 0) {
+                buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ntry.bierI));
+            }
+            if (buf.length < 1) {
                 continue;
             }
-            createEprfLsa(seq++, ntry.prefix, rtrOspf6lsa.lsaEinterPrf, rtrOspf6lsa.tlvInterPrf, ntry.metric, rtrOspfSr.putPref(ntry.segRoutI, false));
+            createEprfLsa(seq++, ntry.prefix, rtrOspf6lsa.lsaEinterPrf, rtrOspf6lsa.tlvInterPrf, ntry.metric, buf);
         }
     }
 
@@ -835,7 +863,8 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         createSumLsas();
         createTeLsas();
         createRiLsa();
-        createSrLsas();
+        createErtrLsa();
+        createEprfLsas();
         advertiseLsas();
     }
 
@@ -914,6 +943,23 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         spf.addSegRouB(src, o);
                     }
                     break;
+                case rtrOspf6lsa.lsaEinterPrf:
+                case rtrOspf6lsa.lsaEprefix:
+                    if (!bierEna) {
+                        continue;
+                    }
+                    tlv = rtrOspfTe.getTlvHandler();
+                    for (;;) {
+                        if (tlv.getBytes(pck)) {
+                            break;
+                        }
+                        tabRouteEntry<addrIP> pref = parseEprfTlv(tlv);
+                        if (pref == null) {
+                            continue;
+                        }
+                        spf.addBierB(new rtrOspf6areaSpf(ntry.rtrID, 0), pref.bierB);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -975,6 +1021,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             ipFwdIface iface = (ipFwdIface) spf.getNextIfc(src);
             int met = spf.getMetric(src);
             int srb = spf.getSegRouB(src);
+            int brb = spf.getBierB(src);
             tabRouteEntry<addrIP> pref;
             rtrOspf6areaPref prf6;
             packHolder pck = ntry.getPayload();
@@ -1056,10 +1103,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     break;
                 case rtrOspf6lsa.lsaEinterPrf:
                 case rtrOspf6lsa.lsaEprefix:
-                    if (segrouUsd == null) {
-                        continue;
-                    }
-                    if (srb < 1) {
+                    if ((segrouUsd == null) && !bierEna) {
                         continue;
                     }
                     typLenVal tlv = rtrOspfTe.getTlvHandler();
@@ -1071,10 +1115,6 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         if (pref == null) {
                             continue;
                         }
-                        spf.addSegRouI(src, pref.segRoutI);
-                        if ((pref.segRoutI < 1) || (pref.segRoutI >= lower.segrouMax)) {
-                            continue;
-                        }
                         tabRouteEntry<addrIP> old = rs.find(pref);
                         if (old == null) {
                             continue;
@@ -1082,8 +1122,16 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         if (hop.compare(hop, old.nextHop) != 0) {
                             continue;
                         }
+                        spf.addSegRouI(src, pref.segRoutI);
+                        spf.addBierI(src, pref.bierI, old.origin == 109);
                         old.segRoutI = pref.segRoutI;
                         old.segRoutB = srb;
+                        old.bierI = pref.bierI;
+                        old.bierS = pref.bierS;
+                        old.bierB = brb;
+                        if ((pref.segRoutI < 1) || (pref.segRoutI >= lower.segrouMax) || (srb < 1)) {
+                            continue;
+                        }
                         List<Integer> lab = tabLabel.int2labels(srb + pref.segRoutI);
                         if (((pref.rouSrc & 16) != 0) && (hops <= 1)) {
                             lab = tabLabel.int2labels(ipMpls.labelImp);
@@ -1100,6 +1148,11 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         routes.clear();
         tabRoute.addUpdatedTable(2, routes, rs, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(routes, null, lower.fwdCore.commonLabel, 0, null, 0);
+        if (bierEna) {
+            bierRes = spf.getBierI();
+        } else {
+            bierRes = null;
+        }
         if (debugger.rtrOspf6evnt) {
             logger.debug("unreachable:" + spf.listUnreachables());
             logger.debug("reachable:" + spf.listReachables());

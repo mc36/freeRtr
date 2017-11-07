@@ -85,6 +85,28 @@ public class tabLabelBier {
     }
 
     /**
+     * merge from other
+     *
+     * @param src source
+     */
+    public void mergeFrom(tabLabelBier src) {
+        if (src == null) {
+            return;
+        }
+        for (int i = 0; i < src.peers.size(); i++) {
+            tabLabelBierN ntry = src.peers.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            peers.add(ntry);
+        }
+        if (idx != 0) {
+            return;
+        }
+        idx = src.idx;
+    }
+
+    /**
      * dump this entry
      *
      * @return dump
@@ -93,6 +115,7 @@ public class tabLabelBier {
         List<String> lst = new ArrayList<String>();
         lst.add("bier base|" + base);
         lst.add("bier bsl|" + bsl + "-" + bsl2num(bsl));
+        lst.add("bier idx|" + idx);
         lst.add("bier fwdr|" + fwdr);
         for (int i = 0; i < peers.size(); i++) {
             lst.add("bier peer|" + peers.get(i));

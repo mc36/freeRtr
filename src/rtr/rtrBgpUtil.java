@@ -538,6 +538,11 @@ public class rtrBgpUtil {
     public static final int attrPrefSid = 40;
 
     /**
+     * bier
+     */
+    public static final int attrBier = 44;
+
+    /**
      * attribute set
      */
     public static final int attrAttribSet = 128;
@@ -1750,11 +1755,36 @@ public class rtrBgpUtil {
             }
             switch (tlv.valTyp) {
                 case 1: // label index
-                    ntry.segRoutI = bits.msbGetD(tlv.valDat, 3);
+                    ntry.segRoutI = bits.msbGetD(tlv.valDat, 3); // index
                     break;
                 case 3: // srgb
-                    ntry.segRoutB = bits.msbGetD(tlv.valDat, 2) >>> 8;
-                    ntry.segRoutS = bits.msbGetD(tlv.valDat, 5) >>> 8;
+                    ntry.segRoutB = bits.msbGetD(tlv.valDat, 2) >>> 8; // base
+                    ntry.segRoutS = bits.msbGetD(tlv.valDat, 5) >>> 8; // range
+                    break;
+            }
+        }
+    }
+
+    /**
+     * parse bier attribute
+     *
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parseBier(tabRouteEntry<addrIP> ntry, packHolder pck) {
+        typLenVal tlv = getBierTlv();
+        for (;;) {
+            if (tlv.getBytes(pck)) {
+                break;
+            }
+            switch (tlv.valTyp) {
+                case 1: // bier
+                    ntry.bierI = bits.msbGetW(tlv.valDat, 1); // bfr id
+                    break;
+                case 2: // mpls
+                    ntry.bierB = bits.msbGetD(tlv.valDat, 0) >>> 8; // base
+                    ntry.bierR = tlv.valDat[3] & 0xff; // range
+                    ntry.bierS = (tlv.valDat[4] >>> 4) & 0xf; // bsl
                     break;
             }
         }
@@ -1886,6 +1916,15 @@ public class rtrBgpUtil {
      * @return tlv
      */
     public static typLenVal getPrefSidTlv() {
+        return new typLenVal(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
+    }
+
+    /**
+     * get bier tlv
+     *
+     * @return tlv
+     */
+    public static typLenVal getBierTlv() {
         return new typLenVal(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
     }
 
@@ -2044,6 +2083,9 @@ public class rtrBgpUtil {
             case attrPrefSid:
                 parsePrefSid(ntry, pck);
                 break;
+            case attrBier:
+                parseBier(ntry, pck);
+                break;
             case attrClustList:
                 parseClustList(ntry, pck);
                 break;
@@ -2132,6 +2174,7 @@ public class rtrBgpUtil {
         placePmsiTun(pck, hlp, ntry);
         placeTunEnc(pck, hlp, ntry);
         placePrefSid(pck, hlp, ntry);
+        placeBier(pck, hlp, ntry);
         placeAttribSet(pck, hlp, ntry);
         if (safi == safiAttrib) {
             pck.merge2beg();
@@ -2512,12 +2555,39 @@ public class rtrBgpUtil {
         bits.msbPutD(tlv.valDat, 3, ntry.segRoutI); // index
         tlv.putBytes(hlp, 1, 7, tlv.valDat);
         if (ntry.segRoutS != 0) {
+            tlv = getPrefSidTlv();
             bits.msbPutW(tlv.valDat, 0, 0); // flags
             bits.msbPutD(tlv.valDat, 2, ntry.segRoutB << 8); // base
             bits.msbPutD(tlv.valDat, 5, ntry.segRoutS << 8); // range
             tlv.putBytes(hlp, 3, 8, tlv.valDat);
         }
         placeAttrib(flagOptional | flagTransitive, attrPrefSid, trg, hlp);
+    }
+
+    /**
+     * place bier attribute
+     *
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placeBier(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.bierI == 0) {
+            return;
+        }
+        hlp.clear();
+        typLenVal tlv = getBierTlv();
+        tlv.valDat[0] = 0; // subdomain
+        bits.msbPutW(tlv.valDat, 1, ntry.bierI); // bfr id
+        tlv.putBytes(hlp, 1, 4, tlv.valDat);
+        if (ntry.bierR != 0) {
+            tlv = getBierTlv();
+            bits.msbPutD(tlv.valDat, 0, ntry.bierB << 8); // base
+            tlv.valDat[3] = (byte) ntry.bierR; // range
+            tlv.valDat[4] = (byte) (ntry.bierS << 4); // bsl
+            tlv.putBytes(hlp, 2, 8, tlv.valDat);
+        }
+        placeAttrib(flagOptional | flagTransitive, attrBier, trg, hlp);
     }
 
     /**

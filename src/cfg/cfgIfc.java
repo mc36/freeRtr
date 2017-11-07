@@ -1381,6 +1381,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router ospf[4|6] .* traffeng srlg 0",
         "interface .*! no router ospf[4|6] .* segrout index",
         "interface .*! no router ospf[4|6] .* segrout node",
+        "interface .*! no router ospf[4|6] .* bier index",
         // pvrp
         "interface .*! router pvrp[4|6] .* split-horizon",
         "interface .*! no router pvrp[4|6] .* passive",
@@ -1446,6 +1447,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router isis[4|6] .* traffeng srlg 0",
         "interface .*! no router isis[4|6] .* segrout index",
         "interface .*! no router isis[4|6] .* segrout node",
+        "interface .*! no router isis[4|6] .* bier index",
         // sep
         "interface .*! sep mode peer",
         "interface .*! sep keepalive 5",

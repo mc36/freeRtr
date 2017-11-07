@@ -22,6 +22,7 @@ import ip.ipFwdIface;
 import ip.ipMpls;
 import java.util.List;
 import tab.tabLabel;
+import tab.tabLabelBier;
 import tab.tabRtrplcN;
 import util.state;
 
@@ -93,6 +94,11 @@ public class rtrIsisLevel implements Runnable {
     public boolean segrouEna;
 
     /**
+     * bier enabled
+     */
+    public boolean bierEna;
+
+    /**
      * max lsp size
      */
     public int maxLspSize;
@@ -146,6 +152,11 @@ public class rtrIsisLevel implements Runnable {
      * segment routing usage
      */
     protected boolean[] segrouUsd;
+
+    /**
+     * bier results
+     */
+    protected tabLabelBier bierRes;
 
     private final rtrIsis lower;
 
@@ -420,6 +431,7 @@ public class rtrIsisLevel implements Runnable {
             if (ifc.srNode) {
                 ntry.rouSrc |= 8;
             }
+            ntry.bierI = ifc.brIndex;
             rs.add(2, ntry, false, false);
         }
         for (int i = 0; i < lower.routerRedistedU.size(); i++) {
@@ -431,6 +443,7 @@ public class rtrIsisLevel implements Runnable {
             ntry.distance = 1;
             ntry.rouSrc = 1;
             ntry.segRoutI = 0;
+            ntry.bierI = 0;
             rs.add(2, ntry, false, false);
         }
         if (interLevels) {
@@ -465,6 +478,9 @@ public class rtrIsisLevel implements Runnable {
             byte[] subs = new byte[0];
             if (segrouEna && (ntry.segRoutI > 0)) {
                 subs = rtrIsisSr.putPref(ntry.segRoutI, (ntry.rouSrc & 3) != 0, (ntry.rouSrc & 8) != 0);
+            }
+            if (bierEna && (ntry.bierI > 0)) {
+                subs = bits.byteConcat(subs, rtrIsisBr.putPref(lower, ntry.bierI));
             }
             advertiseTlv(pck, lower.putAddrReach(ntry.prefix, ntry.rouSrc, ntry.metric, subs));
         }
@@ -552,15 +568,32 @@ public class rtrIsisLevel implements Runnable {
                     continue;
                 }
                 tabGen<rtrIsisLsp> nel = lower.getISneigh(tlv);
-                if (nel == null) {
+                if (nel != null) {
+                    for (o = 0; o < nel.size(); o++) {
+                        rtrIsisLsp nei = nel.get(o);
+                        if (nei == null) {
+                            continue;
+                        }
+                        spf.addConn(src, new rtrIsisLevelSpf(nei.srcID, nei.nodID), nei.lspNum, nei.nodID == 0);
+                    }
                     continue;
                 }
-                for (o = 0; o < nel.size(); o++) {
-                    rtrIsisLsp nei = nel.get(o);
-                    if (nei == null) {
+                if (!bierEna) {
+                    continue;
+                }
+                tabGen<tabRouteEntry<addrIP>> rou = lower.getAddrReach(tlv);
+                if (rou == null) {
+                    continue;
+                }
+                for (o = 0; o < rou.size(); o++) {
+                    tabRouteEntry<addrIP> pref = rou.get(o);
+                    if (pref == null) {
                         continue;
                     }
-                    spf.addConn(src, new rtrIsisLevelSpf(nei.srcID, nei.nodID), nei.lspNum, nei.nodID == 0);
+                    if (pref.bierB == 0) {
+                        continue;
+                    }
+                    spf.addBierB(src, pref.bierB);
                 }
             }
         }
@@ -607,6 +640,7 @@ public class rtrIsisLevel implements Runnable {
             ipFwdIface iface = (ipFwdIface) spf.getNextIfc(src);
             int met = spf.getMetric(src);
             int srb = spf.getSegRouB(src);
+            int brb = spf.getBierB(src);
             packHolder pck = lsp.getPayload();
             typLenVal tlv = rtrIsis.getTlv();
             if ((lsp.flags & rtrIsisLsp.flgAttach) != 0) {
@@ -643,7 +677,9 @@ public class rtrIsisLevel implements Runnable {
                     pref.nextHop = hop.copyBytes();
                     pref.iface = iface;
                     spf.addSegRouI(src, pref.segRoutI);
+                    spf.addBierI(src, pref.bierI, (pref.rouSrc & 3) == 0);
                     pref.segRoutB = srb;
+                    pref.bierB = brb;
                     if ((segrouUsd != null) && (pref.segRoutI > 0) && (pref.segRoutI < lower.segrouMax) && (srb > 0)) {
                         List<Integer> lab = tabLabel.int2labels(srb + pref.segRoutI);
                         if (((pref.rouSrc & 16) != 0) && (hops <= 1)) {
@@ -660,6 +696,11 @@ public class rtrIsisLevel implements Runnable {
         routes.clear();
         tabRoute.addUpdatedTable(2, routes, rs, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(routes, null, lower.fwdCore.commonLabel, 0, null, 0);
+        if (bierEna) {
+            bierRes = spf.getBierI();
+        } else {
+            bierRes = null;
+        }
         if (debugger.rtrIsisEvnt) {
             logger.debug("unreachable:" + spf.listUnreachables());
             logger.debug("reachable:" + spf.listReachables());

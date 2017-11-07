@@ -185,6 +185,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     public int bierS;
 
     /**
+     * bier range
+     */
+    public int bierR;
+
+    /**
      * origin type
      */
     public int origin;
@@ -453,6 +458,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         prf.bierI = bierI;
         prf.bierS = bierS;
         prf.bierB = bierB;
+        prf.bierR = bierR;
         prf.locPref = locPref;
         prf.accIgp = accIgp;
         prf.tunelTyp = tunelTyp;
@@ -610,6 +616,9 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
             return true;
         }
         if (bierB != other.bierB) {
+            return true;
+        }
+        if (bierR != other.bierR) {
             return true;
         }
         if (bierS != other.bierS) {
@@ -1050,6 +1059,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         l.add("segment routing size = " + segRoutS);
         l.add("bier index = " + bierI);
         l.add("bier base = " + bierB);
+        l.add("bier range = " + bierR);
         l.add("bier size = " + bierS + "-" + tabLabelBier.bsl2num(bierS));
         l.add("updated = " + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(time) + " ago)");
         l.add("version = " + version);

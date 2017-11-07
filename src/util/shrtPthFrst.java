@@ -121,6 +121,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param beg base label
      */
     public void addSegRouB(Ta nod, int beg) {
+        if (beg < 1) {
+            return;
+        }
         shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
         shrtPthFrstNode<Ta> old = nodes.add(ntry);
         if (old != null) {
@@ -136,6 +139,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param idx node index
      */
     public void addSegRouI(Ta nod, int idx) {
+        if (idx < 1) {
+            return;
+        }
         shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
         shrtPthFrstNode<Ta> old = nodes.add(ntry);
         if (old != null) {
@@ -151,6 +157,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param beg base label
      */
     public void addBierB(Ta nod, int beg) {
+        if (beg < 1) {
+            return;
+        }
         shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
         shrtPthFrstNode<Ta> old = nodes.add(ntry);
         if (old != null) {
@@ -167,6 +176,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param pri primary index
      */
     public void addBierI(Ta nod, int idx, boolean pri) {
+        if (idx < 1) {
+            return;
+        }
         shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
         shrtPthFrstNode<Ta> old = nodes.add(ntry);
         if (old != null) {

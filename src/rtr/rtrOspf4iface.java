@@ -116,6 +116,11 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
     public int srIndex;
 
     /**
+     * bier index
+     */
+    public int brIndex;
+
+    /**
      * segment rou node
      */
     public boolean srNode;
@@ -286,6 +291,10 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             cmds.cfgLine(l, srIndex < 1, cmds.tabulator, a + "index", "" + srIndex);
             cmds.cfgLine(l, !srNode, cmds.tabulator, a + "node", "");
         }
+        if (area.bierEna) {
+            a = beg + "bier ";
+            cmds.cfgLine(l, brIndex < 1, cmds.tabulator, a + "index", "" + brIndex);
+        }
         for (int i = 0; i < neighs.size(); i++) {
             rtrOspf4neigh ntry = neighs.get(i);
             if (!ntry.statNeigh) {
@@ -441,6 +450,16 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             cmd.badCmd();
             return;
         }
+        if (a.equals("bier")) {
+            a = cmd.word();
+            if (a.equals("index")) {
+                brIndex = bits.str2num(cmd.word());
+                area.schedWork(3);
+                return;
+            }
+            cmd.badCmd();
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -506,6 +525,16 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             cmd.badCmd();
             return;
         }
+        if (a.equals("bier")) {
+            a = cmd.word();
+            if (a.equals("index")) {
+                brIndex = 0;
+                area.schedWork(3);
+                return;
+            }
+            cmd.badCmd();
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -557,6 +586,9 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add("5 6           index                 set index");
         l.add("6 .             <num>               index");
         l.add("5 .           node                  set node flag");
+        l.add("4 5         bier                    bier parameters");
+        l.add("5 6           index                 set index");
+        l.add("6 .             <num>               index");
     }
 
     /**

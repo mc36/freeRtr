@@ -7761,3 +7761,15 @@ no qc pass: bgp with labels and segment routing
 qc pass: bgp with labels over segment routing
 qc pass: vpns over bgp over segment routing
 qc pass: othervpns over bgp over segment routing
+---------------------------------- 2017-11-05 14:56:51
+qc pass: bier over broadcast subnet
+qc pass: segment routing over broadcast subnet
+---------------------------------- 2017-11-06 14:06:48
+qc pass: mixed protocol over bier
+qc pass: mpls over bier
+qc pass: bgp with bier
+qc pass: isis with bier
+qc pass: isis inter-level with bier
+qc pass: isis multi-topology with bier
+qc pass: ospf with bier
+qc pass: ospf transit area with bier

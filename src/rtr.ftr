@@ -571,6 +571,9 @@ qc pass: bier with 512b bsl
 qc pass: bier with 1k bsl
 qc pass: bier with 2k bsl
 qc pass: bier with 4k bsl
+qc pass: bier over broadcast subnet
+qc pass: mixed protocol over bier
+qc pass: mpls over bier
 qc pass: ldp over ethernet
 qc pass: ldp over ethernet vlan
 qc pass: ldp over ethernet bridge
@@ -641,6 +644,7 @@ qc pass: bgp over segment routing
 qc pass: bgp with labels over segment routing
 qc pass: vpns over bgp over segment routing
 qc pass: othervpns over bgp over segment routing
+qc pass: segment routing over broadcast subnet
 qc pass: te over ethernet
 qc pass: te over ethernet vlan
 qc pass: te over ethernet bridge
@@ -1055,6 +1059,7 @@ qc pass: bgp none compression
 qc pass: bgp prefix packing
 qc pass: ebgp with nexthop tracking interface
 qc pass: ibgp with nexthop tracking interface
+qc pass: bgp with bier
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -1124,6 +1129,9 @@ qc pass: isis aggregate
 qc pass: isis auto mesh tunnel
 qc pass: isis triangle connection
 qc pass: isis prefix movement
+qc pass: isis with bier
+qc pass: isis inter-level with bier
+qc pass: isis multi-topology with bier
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -1221,6 +1229,8 @@ qc pass: ospf aggregate
 qc pass: ospf auto mesh tunnel
 qc pass: ospf triangle connection
 qc pass: ospf prefix movement
+qc pass: ospf with bier
+qc pass: ospf transit area with bier
 qc pass: pvrp point2point connection
 qc pass: pvrp point2multipoint connection
 qc pass: pvrp point2point chain

@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v17.11.4-testing, done by matecsaba.;-;-
--;-;2017-11-05 04:02:09, took 10:14:02 on 1318 cases;-;-
+-;-;freeRouter v17.11.6-testing, done by matecsaba.;-;-
+-;-;2017-11-07 00:49:23, took 10:42:35 on 1328 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -574,6 +574,9 @@ mpls-bier10.tst;0;bier with 512b bsl;successfully;finished
 mpls-bier11.tst;0;bier with 1k bsl;successfully;finished
 mpls-bier12.tst;0;bier with 2k bsl;successfully;finished
 mpls-bier13.tst;0;bier with 4k bsl;successfully;finished
+mpls-bier14.tst;0;bier over broadcast subnet;successfully;finished
+mpls-bier15.tst;0;mixed protocol over bier;successfully;finished
+mpls-bier16.tst;0;mpls over bier;successfully;finished
 mpls-ldp01.tst;0;ldp over ethernet;successfully;finished
 mpls-ldp02.tst;0;ldp over ethernet vlan;successfully;finished
 mpls-ldp03.tst;0;ldp over ethernet bridge;successfully;finished
@@ -644,6 +647,7 @@ mpls-sr05.tst;0;bgp over segment routing;successfully;finished
 mpls-sr06.tst;0;bgp with labels over segment routing;successfully;finished
 mpls-sr07.tst;0;vpns over bgp over segment routing;successfully;finished
 mpls-sr08.tst;0;othervpns over bgp over segment routing;successfully;finished
+mpls-sr09.tst;0;segment routing over broadcast subnet;successfully;finished
 mpls-te01.tst;0;te over ethernet;successfully;finished
 mpls-te02.tst;0;te over ethernet vlan;successfully;finished
 mpls-te03.tst;0;te over ethernet bridge;successfully;finished
@@ -1058,6 +1062,7 @@ rout-bgp309.tst;0;bgp none compression;successfully;finished
 rout-bgp310.tst;0;bgp prefix packing;successfully;finished
 rout-bgp311.tst;0;ebgp with nexthop tracking interface;successfully;finished
 rout-bgp312.tst;0;ibgp with nexthop tracking interface;successfully;finished
+rout-bgp313.tst;0;bgp with bier;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished
@@ -1127,6 +1132,9 @@ rout-isis46.tst;0;isis aggregate;successfully;finished
 rout-isis47.tst;0;isis auto mesh tunnel;successfully;finished
 rout-isis48.tst;0;isis triangle connection;successfully;finished
 rout-isis49.tst;0;isis prefix movement;successfully;finished
+rout-isis50.tst;0;isis with bier;successfully;finished
+rout-isis51.tst;0;isis inter-level with bier;successfully;finished
+rout-isis52.tst;0;isis multi-topology with bier;successfully;finished
 rout-lsrp01.tst;0;lsrp point2point connection;successfully;finished
 rout-lsrp02.tst;0;lsrp point2multipoint connection;successfully;finished
 rout-lsrp03.tst;0;lsrp point2point chain;successfully;finished
@@ -1224,6 +1232,8 @@ rout-ospf34.tst;0;ospf aggregate;successfully;finished
 rout-ospf35.tst;0;ospf auto mesh tunnel;successfully;finished
 rout-ospf36.tst;0;ospf triangle connection;successfully;finished
 rout-ospf37.tst;0;ospf prefix movement;successfully;finished
+rout-ospf38.tst;0;ospf with bier;successfully;finished
+rout-ospf39.tst;0;ospf transit area with bier;successfully;finished
 rout-pvrp01.tst;0;pvrp point2point connection;successfully;finished
 rout-pvrp02.tst;0;pvrp point2multipoint connection;successfully;finished
 rout-pvrp03.tst;0;pvrp point2point chain;successfully;finished

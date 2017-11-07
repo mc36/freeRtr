@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v17.11.4-testing, done by matecsaba.<br/>
-tested: 2017-11-05 04:02:09, took 10:14:02 on 1318 cases<br/>
+release: freeRouter v17.11.6-testing, done by matecsaba.<br/>
+tested: 2017-11-07 00:49:23, took 10:42:35 on 1328 cases<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -578,6 +578,9 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier11.tst">mpls-bier11.tst</a></td><td>0</td><td>bier with 1k bsl</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier12.tst">mpls-bier12.tst</a></td><td>0</td><td>bier with 2k bsl</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier13.tst">mpls-bier13.tst</a></td><td>0</td><td>bier with 4k bsl</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-bier14.tst">mpls-bier14.tst</a></td><td>0</td><td>bier over broadcast subnet</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-bier15.tst">mpls-bier15.tst</a></td><td>0</td><td>mixed protocol over bier</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-bier16.tst">mpls-bier16.tst</a></td><td>0</td><td>mpls over bier</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp01.tst">mpls-ldp01.tst</a></td><td>0</td><td>ldp over ethernet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp02.tst">mpls-ldp02.tst</a></td><td>0</td><td>ldp over ethernet vlan</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp03.tst">mpls-ldp03.tst</a></td><td>0</td><td>ldp over ethernet bridge</td><td>successfully</td><td>finished</td></tr>
@@ -648,6 +651,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr06.tst">mpls-sr06.tst</a></td><td>0</td><td>bgp with labels over segment routing</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr07.tst">mpls-sr07.tst</a></td><td>0</td><td>vpns over bgp over segment routing</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr08.tst">mpls-sr08.tst</a></td><td>0</td><td>othervpns over bgp over segment routing</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-sr09.tst">mpls-sr09.tst</a></td><td>0</td><td>segment routing over broadcast subnet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-te01.tst">mpls-te01.tst</a></td><td>0</td><td>te over ethernet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-te02.tst">mpls-te02.tst</a></td><td>0</td><td>te over ethernet vlan</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-te03.tst">mpls-te03.tst</a></td><td>0</td><td>te over ethernet bridge</td><td>successfully</td><td>finished</td></tr>
@@ -1062,6 +1066,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp310.tst">rout-bgp310.tst</a></td><td>0</td><td>bgp prefix packing</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp311.tst">rout-bgp311.tst</a></td><td>0</td><td>ebgp with nexthop tracking interface</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp312.tst">rout-bgp312.tst</a></td><td>0</td><td>ibgp with nexthop tracking interface</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp313.tst">rout-bgp313.tst</a></td><td>0</td><td>bgp with bier</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp01.tst">rout-eigrp01.tst</a></td><td>0</td><td>eigrp point2point connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp02.tst">rout-eigrp02.tst</a></td><td>0</td><td>eigrp point2multipoint connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp03.tst">rout-eigrp03.tst</a></td><td>0</td><td>eigrp point2point chain</td><td>successfully</td><td>finished</td></tr>
@@ -1131,6 +1136,9 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis47.tst">rout-isis47.tst</a></td><td>0</td><td>isis auto mesh tunnel</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis48.tst">rout-isis48.tst</a></td><td>0</td><td>isis triangle connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis49.tst">rout-isis49.tst</a></td><td>0</td><td>isis prefix movement</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-isis50.tst">rout-isis50.tst</a></td><td>0</td><td>isis with bier</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-isis51.tst">rout-isis51.tst</a></td><td>0</td><td>isis inter-level with bier</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-isis52.tst">rout-isis52.tst</a></td><td>0</td><td>isis multi-topology with bier</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp01.tst">rout-lsrp01.tst</a></td><td>0</td><td>lsrp point2point connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp02.tst">rout-lsrp02.tst</a></td><td>0</td><td>lsrp point2multipoint connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp03.tst">rout-lsrp03.tst</a></td><td>0</td><td>lsrp point2point chain</td><td>successfully</td><td>finished</td></tr>
@@ -1228,6 +1236,8 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf35.tst">rout-ospf35.tst</a></td><td>0</td><td>ospf auto mesh tunnel</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf36.tst">rout-ospf36.tst</a></td><td>0</td><td>ospf triangle connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf37.tst">rout-ospf37.tst</a></td><td>0</td><td>ospf prefix movement</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-ospf38.tst">rout-ospf38.tst</a></td><td>0</td><td>ospf with bier</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-ospf39.tst">rout-ospf39.tst</a></td><td>0</td><td>ospf transit area with bier</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp01.tst">rout-pvrp01.tst</a></td><td>0</td><td>pvrp point2point connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp02.tst">rout-pvrp02.tst</a></td><td>0</td><td>pvrp point2multipoint connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp03.tst">rout-pvrp03.tst</a></td><td>0</td><td>pvrp point2point chain</td><td>successfully</td><td>finished</td></tr>

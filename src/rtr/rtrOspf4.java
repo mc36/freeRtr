@@ -15,6 +15,7 @@ import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabLabel;
+import tab.tabLabelBier;
 import tab.tabLabelNtry;
 import tab.tabRoute;
 import tab.tabRouteEntry;
@@ -64,6 +65,16 @@ public class rtrOspf4 extends ipRtr {
     public int segrouMax = 0;
 
     /**
+     * bier length
+     */
+    public int bierLen = 0;
+
+    /**
+     * bier maximum
+     */
+    public int bierMax = 0;
+
+    /**
      * external distance
      */
     public int distantExt;
@@ -97,6 +108,11 @@ public class rtrOspf4 extends ipRtr {
      * segment routing labels
      */
     protected tabLabelNtry[] segrouLab;
+
+    /**
+     * bier labels
+     */
+    protected tabLabelNtry[] bierLab;
 
     /**
      * create one ospf process
@@ -151,6 +167,35 @@ public class rtrOspf4 extends ipRtr {
                 }
             }
         }
+        if (bierLab != null) {
+            int o = 0;
+            for (int i = 0; i < ifaces.size(); i++) {
+                rtrOspf4iface ifc = ifaces.get(i);
+                if (ifc == null) {
+                    continue;
+                }
+                if (ifc.brIndex < 1) {
+                    continue;
+                }
+                o = ifc.brIndex;
+                break;
+            }
+            tabLabelBier res = new tabLabelBier();
+            res.base = bierLab[0].getValue();
+            res.fwdr = fwdCore;
+            res.bsl = tabLabelBier.num2bsl(bierLen);
+            res.idx = o;
+            for (int i = 0; i < areas.size(); i++) {
+                rtrOspf4area ntry = areas.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                res.mergeFrom(ntry.bierRes);
+            }
+            for (int i = 0; i < bierLab.length; i++) {
+                bierLab[i].setBierMpls(20, fwdCore, res);
+            }
+        }
         routerComputedU = tab;
         fwdCore.routerChg(this);
     }
@@ -169,6 +214,9 @@ public class rtrOspf4 extends ipRtr {
         l.add("2 .     <addr>                    te id");
         l.add("1 2   segrout                     segment routing parameters");
         l.add("2 .     <num>                     maximum index");
+        l.add("1 2   bier                        bier parameters");
+        l.add("2 3     <num>                     bitstring length");
+        l.add("3 .       <num>                   maximum index");
         l.add("1 2   area                        configure one area");
         l.add("2 3     <num>                     area number");
         l.add("3 .       enable                  create this area");
@@ -176,6 +224,7 @@ public class rtrOspf4 extends ipRtr {
         l.add("3 .       nssa                    configure as nssa");
         l.add("3 .       traffeng                configure for traffic engineering");
         l.add("3 .       segrout                 configure for segment routing");
+        l.add("3 .       bier                    configure for bier");
         l.add("3 .       hostname                advertise hostname");
         l.add("3 .       default-originate       advertise default route");
         l.add("3 4       route-map-from          process prefixes from this area");
@@ -200,6 +249,7 @@ public class rtrOspf4 extends ipRtr {
         l.add(beg + "router-id " + routerID);
         l.add(beg + "traffeng-id " + traffEngID);
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax);
+        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax);
         for (int i = 0; i < areas.size(); i++) {
             rtrOspf4area ntry = areas.get(i);
             String s = "area " + ntry.area + " ";
@@ -208,6 +258,7 @@ public class rtrOspf4 extends ipRtr {
             cmds.cfgLine(l, !ntry.nssa, beg, s + "nssa", "");
             cmds.cfgLine(l, !ntry.traffEng, beg, s + "traffeng", "");
             cmds.cfgLine(l, !ntry.segrouEna, beg, s + "segrout", "");
+            cmds.cfgLine(l, !ntry.bierEna, beg, s + "bier", "");
             cmds.cfgLine(l, !ntry.hostname, beg, s + "hostname", "");
             cmds.cfgLine(l, !ntry.defOrigin, beg, s + "default-originate", "");
             cmds.cfgLine(l, ntry.prflstFrom == null, beg, s + "prefix-list-from", "" + ntry.prflstFrom);
@@ -236,6 +287,14 @@ public class rtrOspf4 extends ipRtr {
             tabLabel.release(segrouLab, 8);
             segrouMax = bits.str2num(cmd.word());
             segrouLab = tabLabel.allocate(8, segrouMax);
+            genLsas(3);
+            return false;
+        }
+        if (s.equals("bier")) {
+            tabLabel.release(bierLab, 20);
+            bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
+            bierMax = bits.str2num(cmd.word());
+            bierLab = tabLabel.allocate(20, (bierMax + bierLen - 1) / bierLen);
             genLsas(3);
             return false;
         }
@@ -282,6 +341,11 @@ public class rtrOspf4 extends ipRtr {
             }
             if (s.equals("segrout")) {
                 dat.segrouEna = true;
+                dat.schedWork(3);
+                return false;
+            }
+            if (s.equals("bier")) {
+                dat.bierEna = true;
                 dat.schedWork(3);
                 return false;
             }
@@ -368,6 +432,14 @@ public class rtrOspf4 extends ipRtr {
             genLsas(3);
             return false;
         }
+        if (s.equals("bier")) {
+            tabLabel.release(bierLab, 20);
+            bierLab = null;
+            bierLen = 0;
+            bierMax = 0;
+            genLsas(3);
+            return false;
+        }
         if (s.equals("area")) {
             rtrOspf4area dat = new rtrOspf4area(this, bits.str2num(cmd.word()));
             dat = areas.find(dat);
@@ -399,6 +471,11 @@ public class rtrOspf4 extends ipRtr {
             }
             if (s.equals("segrout")) {
                 dat.segrouEna = false;
+                dat.schedWork(3);
+                return false;
+            }
+            if (s.equals("bier")) {
+                dat.bierEna = false;
                 dat.schedWork(3);
                 return false;
             }
@@ -465,6 +542,7 @@ public class rtrOspf4 extends ipRtr {
             ntry.closeNeighbors(true);
         }
         tabLabel.release(segrouLab, 8);
+        tabLabel.release(bierLab, 20);
     }
 
     /**

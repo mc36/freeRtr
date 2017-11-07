@@ -21,6 +21,7 @@ import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabLabel;
+import tab.tabLabelBier;
 import tab.tabLabelNtry;
 import tab.tabRoute;
 import tab.tabRouteEntry;
@@ -111,6 +112,15 @@ public class rtrIsis extends ipRtr {
     public int segrouMax = 0;
 
     /**
+     * bier length
+     */
+    public int bierLen = 0;
+
+    /**
+     * bier maximum
+     */
+    public int bierMax = 0;
+    /**
      * forwarding core
      */
     public final ipFwd fwdCore;
@@ -134,6 +144,11 @@ public class rtrIsis extends ipRtr {
      * segment routing labels
      */
     protected tabLabelNtry[] segrouLab;
+
+    /**
+     * bier labels
+     */
+    protected tabLabelNtry[] bierLab;
 
     /**
      * create one isis process
@@ -461,6 +476,7 @@ public class rtrIsis extends ipRtr {
                 break;
             }
             rtrIsisSr.getPref(tlv, prf);
+            rtrIsisBr.getPref(tlv, prf);
         }
     }
 
@@ -885,6 +901,30 @@ public class rtrIsis extends ipRtr {
                 }
             }
         }
+        if (bierLab != null) {
+            int o = 0;
+            for (int i = 0; i < ifaces.size(); i++) {
+                rtrIsisIface ifc = ifaces.get(i);
+                if (ifc == null) {
+                    continue;
+                }
+                if (ifc.brIndex < 1) {
+                    continue;
+                }
+                o = ifc.brIndex;
+                break;
+            }
+            tabLabelBier res = new tabLabelBier();
+            res.base = bierLab[0].getValue();
+            res.fwdr = fwdCore;
+            res.bsl = tabLabelBier.num2bsl(bierLen);
+            res.idx = o;
+            res.mergeFrom(level1.bierRes);
+            res.mergeFrom(level2.bierRes);
+            for (int i = 0; i < bierLab.length; i++) {
+                bierLab[i].setBierMpls(19, fwdCore, res);
+            }
+        }
         routerComputedU = tab;
         fwdCore.routerChg(this);
     }
@@ -914,6 +954,9 @@ public class rtrIsis extends ipRtr {
         l.add("1 .   multi-topology              advertise multi topology");
         l.add("1 2   segrout                     segment routing parameters");
         l.add("2 .     <num>                     maximum index");
+        l.add("1 2   bier                        bier parameters");
+        l.add("2 3     <num>                     bitstring length");
+        l.add("3 .       <num>                   maximum index");
         l.add("1 2   level1                      change level1 parameters");
         l.add("1 2   level2                      change level2 parameters");
         l.add("1 2   both                        change l1 and l2 parameters");
@@ -929,6 +972,7 @@ public class rtrIsis extends ipRtr {
         l.add("2 .     clear-attached            never signal that route all packets");
         l.add("2 .     traffeng                  configure for traffic engineering");
         l.add("2 .     segrout                   configure for segment routing");
+        l.add("2 .     bier                      configure for bier");
         l.add("2 .     hostname                  advertise hostname");
         l.add("2 .     inter-level               advertise inter-level routes");
         l.add("2 .     default-originate         advertise default route");
@@ -954,6 +998,7 @@ public class rtrIsis extends ipRtr {
         cmds.cfgLine(l, !metricWide, beg, "metric-wide", "");
         cmds.cfgLine(l, !multiTopo, beg, "multi-topology", "");
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax);
+        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax);
         l.add(beg + "distance " + distantInt + " " + distantExt);
         getConfig(level2, l, beg);
         getConfig(level1, l, beg);
@@ -1005,6 +1050,14 @@ public class rtrIsis extends ipRtr {
             genLsps(3);
             return false;
         }
+        if (s.equals("bier")) {
+            tabLabel.release(bierLab, 19);
+            bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
+            bierMax = bits.str2num(cmd.word());
+            bierLab = tabLabel.allocate(19, (bierMax + bierLen - 1) / bierLen);
+            genLsps(3);
+            return false;
+        }
         if (s.equals("level1")) {
             return doConfig(level1, cmd, false);
         }
@@ -1038,6 +1091,14 @@ public class rtrIsis extends ipRtr {
             genLsps(3);
             return false;
         }
+        if (s.equals("bier")) {
+            tabLabel.release(bierLab, 19);
+            bierLab = null;
+            bierLen = 0;
+            bierMax = 0;
+            genLsps(3);
+            return false;
+        }
         if (s.equals("level1")) {
             return doConfig(level1, cmd, true);
         }
@@ -1067,6 +1128,7 @@ public class rtrIsis extends ipRtr {
         cmds.cfgLine(l, !lev.attachedAlw, beg, s + "allow-attached", "");
         cmds.cfgLine(l, !lev.traffEng, beg, s + "traffeng", "");
         cmds.cfgLine(l, !lev.segrouEna, beg, s + "segrout", "");
+        cmds.cfgLine(l, !lev.bierEna, beg, s + "bier", "");
         cmds.cfgLine(l, !lev.hostname, beg, s + "hostname", "");
         cmds.cfgLine(l, !lev.interLevels, beg, s + "inter-level", "");
         cmds.cfgLine(l, !lev.defOrigin, beg, s + "default-originate", "");
@@ -1133,6 +1195,11 @@ public class rtrIsis extends ipRtr {
         }
         if (s.equals("segrout")) {
             lev.segrouEna = !negated;
+            lev.schedWork(3);
+            return false;
+        }
+        if (s.equals("bier")) {
+            lev.bierEna = !negated;
             lev.schedWork(3);
             return false;
         }
@@ -1257,6 +1324,7 @@ public class rtrIsis extends ipRtr {
             ntry.closeNeighbors();
         }
         tabLabel.release(segrouLab, 7);
+        tabLabel.release(bierLab, 19);
     }
 
     /**

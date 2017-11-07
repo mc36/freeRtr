@@ -20,6 +20,7 @@ import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
 import ip.ipRtr;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.ArrayList;
 import pipe.pipeLine;
@@ -31,6 +32,8 @@ import tab.tabListing;
 import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabLabel;
+import tab.tabLabelBier;
+import tab.tabLabelBierN;
 import tab.tabLabelNtry;
 import tab.tabPlcmapN;
 import tab.tabPrfxlstN;
@@ -87,6 +90,26 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * segment routing labels
      */
     protected tabLabelNtry[] segrouLab;
+
+    /**
+     * bier index
+     */
+    public int bierIdx = 0;
+
+    /**
+     * bier length
+     */
+    public int bierLen = 0;
+
+    /**
+     * bier maximum
+     */
+    public int bierMax = 0;
+
+    /**
+     * bier labels
+     */
+    protected tabLabelNtry[] bierLab;
 
     /**
      * scan time interval
@@ -1274,6 +1297,46 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 segrouLab[i].setFwdDrop(13);
             }
         }
+        if (bierLab != null) {
+            if (debugger.rtrBgpComp) {
+                logger.debug("round " + compRound + " bier");
+            }
+            tabLabelBier res = new tabLabelBier();
+            res.base = bierLab[0].getValue();
+            res.fwdr = fwdCore;
+            res.bsl = tabLabelBier.num2bsl(bierLen);
+            res.idx = bierIdx;
+            for (int i = 0; i < nUni.size(); i++) {
+                tabRouteEntry<addrIP> ntry = nUni.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.bierB < 1) {
+                    continue;
+                }
+                if ((ntry.bierI <= 0) || (ntry.bierI >= bierMax)) {
+                    continue;
+                }
+                rtrBgpNeigh nei = findPeer(ntry.nextHop);
+                if (nei == null) {
+                    continue;
+                }
+                tabLabelBierN per = new tabLabelBierN(nei.localIfc, nei.peerAddr, ntry.bierB);
+                per.ned = BigInteger.ZERO;
+                tabLabelBierN old = res.peers.add(per);
+                if (old != null) {
+                    per = old;
+                }
+                per.ned = per.ned.setBit(ntry.bierI);
+            }
+            for (int i = 0; i < res.peers.size(); i++) {
+                tabLabelBierN ntry = res.peers.get(i);
+                ntry.ned = ntry.ned.shiftRight(1);
+            }
+            for (int i = 0; i < bierLab.length; i++) {
+                bierLab[i].setBierMpls(22, fwdCore, res);
+            }
+        }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " export");
         }
@@ -1421,7 +1484,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
 
     private boolean computeIncr() {
         long tim = bits.getTime();
-        if (segrouLab != null) {
+        if ((segrouLab != null) || (bierLab != null)) {
             return true;
         }
         for (int i = 0; i < groups.size(); i++) {
@@ -1716,6 +1779,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         tabLabel.release(evpnUni, 10);
         tabLabel.release(evpnMul, 10);
         tabLabel.release(segrouLab, 13);
+        tabLabel.release(bierLab, 22);
         fwdCore.routerDel(this);
     }
 
@@ -1747,6 +1811,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("1 2   segrout                     segment routing parameters");
         l.add("2 3     <num>                     maximum index");
         l.add("3 .       <num>                   this node index");
+        l.add("1 2   bier                        bier parameters");
+        l.add("2 3     <num>                     bitstring length");
+        l.add("3 4       <num>                   maximum index");
+        l.add("4 .         <num>                 this node index");
         l.add("1 2   flowspec                    specify flowspec parameter");
         l.add("2 .     <name>                    name of policy map");
         l.add("1 2   neighbor                    specify neighbor parameters");
@@ -1831,6 +1899,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         cmds.cfgLine(l, nhtRouplc == null, beg, "nexthop route-policy", "" + nhtRouplc);
         cmds.cfgLine(l, nhtPfxlst == null, beg, "nexthop prefix-list", "" + nhtPfxlst);
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + " " + segrouIdx);
+        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
         cmds.cfgLine(l, flowSpec == null, beg, "flowspec", "" + flowSpec);
         for (int i = 0; i < mons.size(); i++) {
             mons.get(i).getConfig(l, beg);
@@ -1932,6 +2001,25 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             segrouMax = bits.str2num(cmd.word());
             segrouIdx = bits.str2num(cmd.word());
             segrouLab = tabLabel.allocate(13, segrouMax);
+            needFull = true;
+            compute.wakeup();
+            return false;
+        }
+        if (s.equals("bier")) {
+            tabLabel.release(bierLab, 22);
+            bierLab = null;
+            if (negated) {
+                bierIdx = 0;
+                bierMax = 0;
+                bierLen = 0;
+                needFull = true;
+                compute.wakeup();
+                return false;
+            }
+            bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
+            bierMax = bits.str2num(cmd.word());
+            bierIdx = bits.str2num(cmd.word());
+            bierLab = tabLabel.allocate(22, (bierMax + bierLen - 1) / bierLen);
             needFull = true;
             compute.wakeup();
             return false;

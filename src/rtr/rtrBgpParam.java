@@ -93,6 +93,11 @@ public abstract class rtrBgpParam {
     public boolean segRout;
 
     /**
+     * send bier
+     */
+    public boolean bier;
+
+    /**
      * egress engineering index
      */
     public int egressEng;
@@ -644,6 +649,7 @@ public abstract class rtrBgpParam {
         accIgp = src.accIgp;
         traffEng = src.traffEng;
         segRout = src.segRout;
+        bier = src.bier;
         egressEng = src.egressEng;
         bfdTrigger = src.bfdTrigger;
         softReconfig = src.softReconfig;
@@ -725,6 +731,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (segRout != src.segRout) {
+            return true;
+        }
+        if (bier != src.bier) {
             return true;
         }
         if (addpathTmode != src.addpathTmode) {
@@ -860,6 +869,7 @@ public abstract class rtrBgpParam {
         l.add("3 .       aigp                    send accumulated igp attribute");
         l.add("3 .       traffeng                send traffic engineering attribute");
         l.add("3 .       segrout                 send segment routing attribute");
+        l.add("3 .       bier                    send bier attribute");
         l.add("3 .       internal-vpn-client     preserve attributes from peer");
         l.add("3 .       allow-as-in             allow my as to relearn from peer");
         l.add("3 .       allow-as-out            allow peer as to advertised out");
@@ -1009,6 +1019,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !accIgp, beg, nei + "aigp", "");
         cmds.cfgLine(l, !traffEng, beg, nei + "traffeng", "");
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
+        cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, egressEng == 0, beg, nei + "egress-engineering", "" + egressEng);
         cmds.cfgLine(l, !reflectClnt, beg, nei + "route-reflector-client", "");
         cmds.cfgLine(l, !remoteConfed, beg, nei + "confederation-peer", "");
@@ -1338,6 +1349,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("segrout")) {
             segRout = !negated;
+            return false;
+        }
+        if (s.equals("bier")) {
+            bier = !negated;
             return false;
         }
         if (s.equals("egress-engineering")) {

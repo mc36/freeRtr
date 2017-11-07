@@ -165,6 +165,18 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
             case 18:
                 s = "lsrp bier";
                 break;
+            case 19:
+                s = "isis bier";
+                break;
+            case 20:
+                s = "ospf4 bier";
+                break;
+            case 21:
+                s = "ospf6 bier";
+                break;
+            case 22:
+                s = "bgp bier";
+                break;
             default:
                 s = "unknown";
                 break;

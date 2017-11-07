@@ -165,6 +165,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     public boolean srNode;
 
     /**
+     * bier index
+     */
+    public int brIndex;
+
+    /**
      * neighbors
      */
     protected tabGen<rtrIsisNeigh> neighs;
@@ -278,6 +283,17 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             s = beg + "segrout ";
             cmds.cfgLine(l, srIndex < 1, cmds.tabulator, s + "index", "" + srIndex);
             cmds.cfgLine(l, !srNode, cmds.tabulator, s + "node", "");
+        }
+        b = false;
+        if ((circuitLevel & 1) != 0) {
+            b |= lower.level1.bierEna;
+        }
+        if ((circuitLevel & 2) != 0) {
+            b |= lower.level2.bierEna;
+        }
+        if (b) {
+            s = beg + "bier ";
+            cmds.cfgLine(l, brIndex < 1, cmds.tabulator, s + "index", "" + brIndex);
         }
     }
 
@@ -400,6 +416,16 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             cmd.badCmd();
             return;
         }
+        if (a.equals("bier")) {
+            a = cmd.word();
+            if (a.equals("index")) {
+                brIndex = bits.str2num(cmd.word());
+                lower.genLsps(3);
+                return;
+            }
+            cmd.badCmd();
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -463,6 +489,16 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             cmd.badCmd();
             return;
         }
+        if (a.equals("bier")) {
+            a = cmd.word();
+            if (a.equals("index")) {
+                brIndex = 0;
+                lower.genLsps(3);
+                return;
+            }
+            cmd.badCmd();
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -511,6 +547,9 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add("5 6           index                 set index");
         l.add("6 .             <num>               index");
         l.add("5 .           node                  set node flag");
+        l.add("4 5         bier                    bier parameters");
+        l.add("5 6           index                 set index");
+        l.add("6 .             <num>               index");
     }
 
     /**
