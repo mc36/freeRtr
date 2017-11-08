@@ -70,6 +70,8 @@ import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
 import serv.servOpenflow;
+import serv.servUpnpFwd;
+import serv.servUpnpHub;
 import tab.tabGen;
 import tab.tabRouteEntry;
 import user.userFilter;
@@ -280,6 +282,16 @@ public class cfgAll {
      * chargen daemons
      */
     public static servGenList<servCharGen> dmnCharGen = new servGenList<servCharGen>();
+
+    /**
+     * upnpfwd daemons
+     */
+    public static servGenList<servUpnpFwd> dmnUpnpFwd = new servGenList<servUpnpFwd>();
+
+    /**
+     * upnphub daemons
+     */
+    public static servGenList<servUpnpHub> dmnUpnpHub = new servGenList<servUpnpHub>();
 
     /**
      * openflow daemons
@@ -2522,6 +2534,8 @@ public class cfgAll {
         dmnDiscard.getShRun(l, filter);
         dmnQuote.getShRun(l, filter);
         dmnCharGen.getShRun(l, filter);
+        dmnUpnpFwd.getShRun(l, filter);
+        dmnUpnpHub.getShRun(l, filter);
         dmnOpenflow.getShRun(l, filter);
         dmnForwarder.getShRun(l, filter);
         dmnSyslog.getShRun(l, filter);

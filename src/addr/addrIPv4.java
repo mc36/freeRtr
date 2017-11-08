@@ -133,7 +133,11 @@ public final static int size = 4;
      * @return true if yes
      */
     public boolean isRoutedMcast() {
-        return bits.msbGetW(addr, 0) > 0xe000;
+        int i = bits.msbGetW(addr, 0);
+        if (i == 0xefff) { // 239.255.x.x
+            return false;
+        }
+        return i > 0xe000; // 224.0.x.x
     }
 
     /**

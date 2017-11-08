@@ -1,6 +1,5 @@
 #!/bin/sh
 echo net.ipv6.conf.all.disable_ipv6=1>/etc/sysctl.d/disableipv6.conf
-apt-get install openjdk-9-jdk gcc libpcap-dev socat telnet busybox ethtool
 cp systemd /lib/systemd/system/rtr.service
 cp initd /etc/init.d/rtr
 cp network /etc/network/interfaces

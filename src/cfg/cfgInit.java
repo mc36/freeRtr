@@ -72,6 +72,8 @@ import serv.servUdptn;
 import serv.servVxlan;
 import serv.servGeneve;
 import serv.servOpenflow;
+import serv.servUpnpFwd;
+import serv.servUpnpHub;
 import tab.tabGen;
 import user.userConfig;
 import user.userExec;
@@ -560,6 +562,8 @@ public class cfgInit implements Runnable {
         servDhcp6.defaultF = createFilter(servDhcp6.defaultL, srvdefsF);
         servDiscard.defaultF = createFilter(servDiscard.defaultL, srvdefsF);
         servDns.defaultF = createFilter(servDns.defaultL, srvdefsF);
+        servUpnpFwd.defaultF = createFilter(servUpnpFwd.defaultL, srvdefsF);
+        servUpnpHub.defaultF = createFilter(servUpnpHub.defaultL, srvdefsF);
         servEchoP.defaultF = createFilter(servEchoP.defaultL, srvdefsF);
         servEchoS.defaultF = createFilter(servEchoS.defaultL, srvdefsF);
         servForwarder.defaultF = createFilter(servForwarder.defaultL, srvdefsF);

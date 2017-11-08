@@ -99,6 +99,8 @@ import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
 import serv.servOpenflow;
+import serv.servUpnpFwd;
+import serv.servUpnpHub;
 import tab.tabGen;
 import tab.tabNatCfgN;
 import tab.tabRouteEntry;
@@ -552,6 +554,10 @@ public class userConfig {
         l.add("3  .      <name>                     name of server");
         l.add("2  3    chargen                      configure a chargen server");
         l.add("3  .      <name>                     name of server");
+        l.add("2  3    upnpfwd                      configure an upnp forwarder server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    upnphub                      configure an upnp hub server");
+        l.add("3  .      <name>                     name of server");
         l.add("2  3    openflow                     configure an openflow server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    quote                        configure a quote server");
@@ -988,6 +994,14 @@ public class userConfig {
             }
             if (a.equals("chargen")) {
                 daemonMake(new servCharGen(), cfgAll.dmnCharGen);
+                return;
+            }
+            if (a.equals("upnpfwd")) {
+                daemonMake(new servUpnpFwd(), cfgAll.dmnUpnpFwd);
+                return;
+            }
+            if (a.equals("upnphub")) {
+                daemonMake(new servUpnpHub(), cfgAll.dmnUpnpHub);
                 return;
             }
             if (a.equals("openflow")) {
@@ -1571,6 +1585,14 @@ public class userConfig {
             }
             if (a.equals("chargen")) {
                 daemonErase(new servCharGen(), cfgAll.dmnCharGen);
+                return;
+            }
+            if (a.equals("upnpfwd")) {
+                daemonErase(new servUpnpFwd(), cfgAll.dmnUpnpFwd);
+                return;
+            }
+            if (a.equals("upnphub")) {
+                daemonErase(new servUpnpHub(), cfgAll.dmnUpnpHub);
                 return;
             }
             if (a.equals("openflow")) {
