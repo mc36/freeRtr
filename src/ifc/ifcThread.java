@@ -7,6 +7,7 @@ import cfg.cfgIfc;
 import cfg.cfgInit;
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.concurrent.atomic.AtomicInteger;
 import pack.packHolder;
 import user.userFormat;
 import util.bits;
@@ -57,9 +58,9 @@ public abstract class ifcThread implements ifcDn, Runnable {
      */
     public boolean booter = false;
 
-    private boolean procRun = false;
+    private int procRun = 0;
 
-    private boolean procNow = false;
+    private AtomicInteger procNow = new AtomicInteger();
 
     private int procCnt = 0;
 
@@ -69,7 +70,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
 
     private RandomAccessFile logFile = null;
 
-    private Thread started;
+    private Thread started[] = new Thread[0];
 
     private boolean need2run = true;
 
@@ -109,13 +110,13 @@ public abstract class ifcThread implements ifcDn, Runnable {
      * @return show output
      */
     public static userFormat showStalls() {
-        userFormat res = new userFormat("|", "iface|stall|pack|last|run|work|time");
+        userFormat res = new userFormat("|", "iface|stall|pack|last|cfg|run|busy|time");
         for (int i = 0; i < cfgAll.ifaces.size(); i++) {
             cfgIfc ntry = cfgAll.ifaces.get(i);
             if (ntry.thread == null) {
                 continue;
             }
-            res.add(ntry.name + "|" + ntry.thread.checkStalled() + "|" + ntry.thread.procCnt + "|" + ntry.thread.procLst + "|" + ntry.thread.procRun + "|" + ntry.thread.procNow + "|" + bits.timePast(ntry.thread.procTim));
+            res.add(ntry.name + "|" + ntry.thread.checkStalled() + "|" + ntry.thread.procCnt + "|" + ntry.thread.procLst + "|" + ntry.thread.started.length + "|" + ntry.thread.procRun + "|" + ntry.thread.procNow.get() + "|" + bits.timePast(ntry.thread.procTim));
         }
         return res;
     }
@@ -125,13 +126,16 @@ public abstract class ifcThread implements ifcDn, Runnable {
      *
      * @return decoded stack trace
      */
-    public String stallPoint() {
-        try {
-            StackTraceElement[] st = started.getStackTrace();
-            return logger.dumpStackTrace(st);
-        } catch (Exception e) {
-            return "";
+    protected String stallPoint() {
+        String s = "";
+        for (int i = 0; i < started.length; i++) {
+            try {
+                StackTraceElement[] st = started[i].getStackTrace();
+                s += logger.dumpStackTrace(st) + " ";
+            } catch (Exception e) {
+            }
         }
+        return s.trim();
     }
 
     /**
@@ -140,11 +144,11 @@ public abstract class ifcThread implements ifcDn, Runnable {
      * @return true if interface stalled
      */
     public boolean checkStalled() {
-        if (!procRun) {
+        if (procRun != started.length) {
             return true;
         }
         long t = bits.getTime();
-        if (!procNow) {
+        if (procNow.get() == 0) {
             procTim = t;
             return false;
         }
@@ -347,14 +351,14 @@ public abstract class ifcThread implements ifcDn, Runnable {
             if (debugger.ifcThread) {
                 logger.debug(this + " rx" + pck.dump());
             }
-            procNow = true;
+            procNow.addAndGet(+1);
             procCnt++;
             try {
                 upper.recvPack(pck);
             } catch (Exception e) {
                 logger.exception(e);
             }
-            procNow = false;
+            procNow.addAndGet(-1);
         }
     }
 
@@ -362,22 +366,29 @@ public abstract class ifcThread implements ifcDn, Runnable {
      * run the worker
      */
     public void run() {
-        procRun = true;
+        procRun++;
         try {
             doRecvLoop();
         } catch (Exception e) {
-            procRun = false;
             logger.exception(e);
         }
-        procRun = false;
+        procRun--;
     }
 
     /**
      * start this interface receiver loop in background
+     *
+     * @param thrd worker threads
      */
-    public void startLoop() {
-        started = new Thread(this);
-        started.start();
+    public void startLoop(int thrd) {
+        if (thrd < 1) {
+            thrd = 1;
+        }
+        started = new Thread[thrd];
+        for (int i = 0; i < started.length; i++) {
+            started[i] = new Thread(this);
+            started[i].start();
+        }
     }
 
     /**

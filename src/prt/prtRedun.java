@@ -188,7 +188,7 @@ class prtRedunIfc implements ifcUp {
         time = 0;
         lower.setFilter(false);
         lower.setUpper(this);
-        lower.startLoop();
+        lower.startLoop(1);
         hwaddr = (addrMac) lower.getHwAddr();
     }
 

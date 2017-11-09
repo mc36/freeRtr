@@ -50,7 +50,7 @@ interface loopback0
  ip igmp version 3
  ipv6 pim
  ip igmp join-group 232.2.2.2 source 2.2.2.1
- ipv6 mld join-group ff33::1 4321::1
+ ipv6 mld join-group ff06::1 4321::1
  exit
 !
 
@@ -59,4 +59,4 @@ r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
 r1 tping 100 60 4321::2 /vrf v1 /int lo0
 
 r1 tping 100 60 232.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 ff33::1 /vrf v1 /int lo0
+r1 tping 100 60 ff06::1 /vrf v1 /int lo0

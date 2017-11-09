@@ -345,6 +345,7 @@ public class cfgInit implements Runnable {
                 int loc = bits.str2num(cmd.word());
                 String peer = cmd.word();
                 int rem = bits.str2num(cmd.word());
+                int thrd = bits.str2num(cmd.word());
                 ifcUdpInt hdr = new ifcUdpInt(loop, loc, peer, rem, mac,
                         typ != cfgIfc.ifaceType.ether, stat == 1);
                 switch (stat) {
@@ -358,7 +359,7 @@ public class cfgInit implements Runnable {
                         break;
                     default:
                         ifaceLst.add(new cfgVdcIfc(cfgIfc.normName(nam, false), old));
-                        cfgIfc ifc = cfgAll.ifcAdd(nam, typ, hdr);
+                        cfgIfc ifc = cfgAll.ifcAdd(nam, typ, hdr, thrd);
                         ifc.initPhysical();
                         if (debugger.cfgInitHw) {
                             logger.debug("iface " + hdr);

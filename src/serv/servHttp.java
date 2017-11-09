@@ -2026,7 +2026,7 @@ class servHttpConn implements Runnable {
             }
             uniResLoc url = uniResLoc.parseOne(gotDstntn);
             url.normalizePath();
-            pipeLine pip = new pipeLine(16384, false);
+            pipeLine pip = new pipeLine(32768, false);
             pipeDiscard.discard(pip.getSide());
             userFlash fls = new userFlash(pip.getSide());
             if (fls.copy(gotHost.path + pn, gotHost.path + url.toPathName())) {

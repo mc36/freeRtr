@@ -235,7 +235,7 @@ router bgp6 1
  red conn
  exit
 ipv4 multi v1 join 232.2.2.2 2.2.2.1
-ipv6 multi v1 join ff33::1 4321::1
+ipv6 multi v1 join ff06::1 4321::1
 !
 
 
@@ -273,4 +273,4 @@ r4 tping 100 20 2.2.2.11 /vrf v1 /int lo2
 r4 tping 100 20 4321::11 /vrf v1 /int lo2
 
 r1 tping 100 10 232.2.2.2 /vrf v1 /int lo1
-r1 tping 100 10 ff33::1 /vrf v1 /int lo1
+r1 tping 100 10 ff06::1 /vrf v1 /int lo1

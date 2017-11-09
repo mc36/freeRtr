@@ -291,7 +291,7 @@ ipv6 route v1 :: :: 5555::2
 ipv4 mroute v1 0.0.0.0 0.0.0.0 5.5.5.2
 ipv6 mroute v1 :: :: 5555::2
 ipv4 multi v1 join 232.2.2.2 4.4.4.1
-ipv6 multi v1 join ff33::1 4444::1
+ipv6 multi v1 join ff06::1 4444::1
 !
 
 
@@ -343,4 +343,4 @@ r6 tping 100 20 2.2.2.14 /vrf v1 /int eth1
 r6 tping 100 20 4321::14 /vrf v1 /int eth1
 
 r5 tping 100 10 232.2.2.2 /vrf v1 /int eth1
-r5 tping 100 10 ff33::1 /vrf v1 /int eth1
+r5 tping 100 10 ff06::1 /vrf v1 /int eth1

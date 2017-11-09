@@ -45,9 +45,14 @@ public class player implements Runnable {
     protected String path = null;
 
     /**
-     * where i'm located on net
+     * where i'm located on net, relative
      */
-    protected String url = null;
+    protected String urlR = null;
+
+    /**
+     * where i'm located on net, full
+     */
+    protected String urlF = null;
 
     /**
      * wether i'm initialized or nor
@@ -91,11 +96,11 @@ public class player implements Runnable {
      * @throws Exception if something went wrong
      */
     public static String httpRequest(String url, String path, String peer, String agent, String[] par, ByteArrayOutputStream buf) throws Exception {
-        url = new URL(url).getPath();
         if (staticPlayer == null) {
             staticPlayer = new player();
             staticPlayer.path = path.substring(0, path.lastIndexOf("."));
-            staticPlayer.url = url;
+            staticPlayer.urlF = url;
+            staticPlayer.urlR = new URL(url).getPath();
             new Thread(staticPlayer).start();
         }
         int i = staticPlayer.doRequest(par, buf);
@@ -113,6 +118,29 @@ public class player implements Runnable {
             return sng.file + "\"" + s;
         }
         return sng.file + "\"" + sng.title + s.substring(i, s.length());
+    }
+
+    private synchronized void startPlay() {
+        currSong = 0;
+        currTime = new Date().getTime();
+        currLyrc = new playerLyric();
+        currLyrc.add("dlna render");
+        try {
+            currProc.destroy();
+        } catch (Exception e) {
+        }
+        currProc = null;
+        try {
+            Runtime rtm = Runtime.getRuntime();
+            String[] cmd = new String[5];
+            cmd[0] = "gmediarender";
+            cmd[1] = "--gstout-audiosink=alsasink";
+            cmd[2] = "--gstout-videosink=fbdevsink";
+            cmd[3] = "--friendly-name=" + urlF;
+            cmd[4] = "--uuid=00001234-1234-1234-" + rndSeed.nextInt();
+            currProc = rtm.exec(cmd);
+        } catch (Exception e) {
+        }
     }
 
     private synchronized void startPlay(String url) {
@@ -136,7 +164,7 @@ public class player implements Runnable {
             cmd[2] = "--output-file";
             cmd[3] = "/tmp/player.url";
             cmd[4] = "--exec";
-            cmd[5] = "mplayer -ao sdl -vo none /tmp/player.url";
+            cmd[5] = "mplayer -ao alsa -vo none /tmp/player.url";
             cmd[6] = "" + url;
             currProc = rtm.exec(cmd);
         } catch (Exception e) {
@@ -174,7 +202,7 @@ public class player implements Runnable {
             String[] cmd = new String[8];
             cmd[0] = "mplayer";
             cmd[1] = "-ao";
-            cmd[2] = "sdl";
+            cmd[2] = "alsa";
             cmd[3] = "-vo";
             cmd[4] = "none";
             cmd[5] = "-ss";
@@ -248,7 +276,7 @@ public class player implements Runnable {
         String a = "<html><head><title>music player</title>";
         buf.write(a.getBytes());
         if (refresh > 0) {
-            a = "<meta http-equiv=refresh content=\"" + refresh + ";url=" + url + "\">";
+            a = "<meta http-equiv=refresh content=\"" + refresh + ";url=" + urlR + "\">";
             buf.write(a.getBytes());
         }
         a = "</head><body bgcolor=\"#000000\" text=\"#00FF00\" link=\"#00FFFF\" vlink=\"#00FFFF\" alink=\"#00FFFF\">";
@@ -276,13 +304,13 @@ public class player implements Runnable {
      * @throws Exception on error
      */
     public playerSong putMenu(ByteArrayOutputStream buf) throws Exception {
-        putLink(buf, url + "?cmd=list&song=", "playlist");
-        putLink(buf, url + "?cmd=song&song=", "find");
-        putLink(buf, url, "fresh");
-        putLink(buf, url + "?cmd=play&song=-1", "stop");
-        putLink(buf, url + "?cmd=play&song=" + prevSong, "prev");
-        putLink(buf, url + "?cmd=play&song=" + nextSong.get(0), "next");
-        putLink(buf, url + "?cmd=queue&song=", "queue");
+        putLink(buf, urlR + "?cmd=list&song=", "playlist");
+        putLink(buf, urlR + "?cmd=song&song=", "find");
+        putLink(buf, urlR, "fresh");
+        putLink(buf, urlR + "?cmd=play&song=-1", "stop");
+        putLink(buf, urlR + "?cmd=play&song=" + prevSong, "prev");
+        putLink(buf, urlR + "?cmd=play&song=" + nextSong.get(0), "next");
+        putLink(buf, urlR + "?cmd=queue&song=", "queue");
         buf.write("<br/>".getBytes());
         if (currSong >= playlist.size()) {
             currSong = -1;
@@ -295,12 +323,12 @@ public class player implements Runnable {
         buf.write(s.getBytes());
         s = "song: " + sng.title + "<br/>";
         buf.write(s.getBytes());
-        putLink(buf, url + "?cmd=play&song=" + currSong, "replay");
-        putLink(buf, url + "?cmd=artistsong&song=" + currSong, "artist");
-        putLink(buf, url + "?cmd=albumsong&song=" + currSong, "album");
-        putLink(buf, url + "?cmd=download&song=" + currSong, "download");
-        putLink(buf, url + "?cmd=vol", "volume");
-        putLink(buf, url + "?cmd=seek", "seek");
+        putLink(buf, urlR + "?cmd=play&song=" + currSong, "replay");
+        putLink(buf, urlR + "?cmd=artistsong&song=" + currSong, "artist");
+        putLink(buf, urlR + "?cmd=albumsong&song=" + currSong, "album");
+        putLink(buf, urlR + "?cmd=download&song=" + currSong, "download");
+        putLink(buf, urlR + "?cmd=vol", "volume");
+        putLink(buf, urlR + "?cmd=seek", "seek");
         buf.write("<br/>".getBytes());
         return sng;
     }
@@ -313,7 +341,7 @@ public class player implements Runnable {
      * @throws Exception on error
      */
     public void putFind(ByteArrayOutputStream buf, String flt) throws Exception {
-        String s = "<form action=\"" + url + "\" method=get><input type=text name=song value=\"" + flt + "\">";
+        String s = "<form action=\"" + urlR + "\" method=get><input type=text name=song value=\"" + flt + "\">";
         buf.write(s.getBytes());
         buf.write("<input type=submit name=cmd value=\"song\">".getBytes());
         buf.write("<input type=submit name=cmd value=\"album\">".getBytes());
@@ -360,7 +388,7 @@ public class player implements Runnable {
      * @return string to add
      */
     public String toFound1(int num, playerSong ntry) {
-        return "((<a href=\"" + url + "?cmd=enq&song=" + num + "\">Q</a>))<a href=\"" + url + "?cmd=play&song=" + num + "\">" + ntry.title + "</a><br/>";
+        return "((<a href=\"" + urlR + "?cmd=enq&song=" + num + "\">Q</a>))<a href=\"" + urlR + "?cmd=play&song=" + num + "\">" + ntry.title + "</a><br/>";
     }
 
     /**
@@ -371,7 +399,7 @@ public class player implements Runnable {
      */
     public String toFound2(playerSong ntry) {
         String a = ntry.justPath();
-        return "<a href=\"" + url + "?cmd=album&song=" + a + "\">" + a + "</a><br/>";
+        return "<a href=\"" + urlR + "?cmd=album&song=" + a + "\">" + a + "</a><br/>";
     }
 
     /**
@@ -541,7 +569,7 @@ public class player implements Runnable {
                 if (o == tim) {
                     a = "*" + a + "*";
                 }
-                putLink(buf, url + "?cmd=seek&song=" + o, a);
+                putLink(buf, urlR + "?cmd=seek&song=" + o, a);
             }
             a = "<br/><br/>seek to:";
             buf.write(a.getBytes());
@@ -552,7 +580,7 @@ public class player implements Runnable {
                 if (i == tim) {
                     a = "*" + a + "*";
                 }
-                putLink(buf, url + "?cmd=seek&song=" + o, a);
+                putLink(buf, urlR + "?cmd=seek&song=" + o, a);
             }
             return -1;
         }
@@ -584,7 +612,7 @@ public class player implements Runnable {
                 if (o == currVlme) {
                     a = "*" + a + "*";
                 }
-                putLink(buf, url + "?cmd=vol&song=" + o, a);
+                putLink(buf, urlR + "?cmd=vol&song=" + o, a);
             }
             return -1;
         }
@@ -656,16 +684,18 @@ public class player implements Runnable {
                 buf.write(a.getBytes());
             }
             for (i = 0; i < playlists.size(); i++) {
-                String a = "<a href=\"" + url + "?cmd=list&song=" + (i + 1) + "\">" + playlists.get(i) + "</a><br/>";
+                String a = "<a href=\"" + urlR + "?cmd=list&song=" + (i + 1) + "\">" + playlists.get(i) + "</a><br/>";
                 buf.write(a.getBytes());
             }
-            String a = "<br/><a href=\"" + url + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
+            String a = "<br/><a href=\"" + urlR + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
             buf.write(a.getBytes());
-            a = "<a href=\"" + url + "?cmd=unlock\">!unlock!</a><br/>";
+            a = "<a href=\"" + urlR + "?cmd=unlock\">!unlock!</a><br/>";
             buf.write(a.getBytes());
-            a = "<a href=\"" + url + "?cmd=pendrive\">!pendrive!</a><br/>";
+            a = "<a href=\"" + urlR + "?cmd=pendrive\">!pendrive!</a><br/>";
             buf.write(a.getBytes());
-            a = "<br/><form action=\"" + url + "\" method=get>url:<input type=text name=song value=\"\"><input type=submit name=cmd value=\"url\"></form><br/>";
+            a = "<a href=\"" + urlR + "?cmd=dlna\">!dlna!</a><br/>";
+            buf.write(a.getBytes());
+            a = "<br/><form action=\"" + urlR + "\" method=get>url:<input type=text name=song value=\"\"><input type=submit name=cmd value=\"url\"></form><br/>";
             buf.write(a.getBytes());
             return -1;
         }
@@ -675,6 +705,14 @@ public class player implements Runnable {
             String a = "<br/>downloading song, please wait.<br/>";
             buf.write(a.getBytes());
             startPlay(song);
+            return -1;
+        }
+        if (cmd.equals("dlna")) {
+            putStart(buf, 5);
+            putMenu(buf);
+            String a = "<br/>starting dlna server.<br/>";
+            buf.write(a.getBytes());
+            startPlay();
             return -1;
         }
         if (cmd.equals("download")) {

@@ -63,11 +63,10 @@ public class temper implements Runnable {
     public static String httpRequest(String url, String path, String peer,
             String agent, String[] par, ByteArrayOutputStream buf)
             throws Exception {
-        url = new URL(url).getPath();
         if (staticTemper == null) {
             staticTemper = new temper();
             staticTemper.path = path.substring(0, path.lastIndexOf("."));
-            staticTemper.url = url;
+            staticTemper.url = new URL(url).getPath();
             new Thread(staticTemper).start();
         }
         if (staticTemper.doRequest(par, buf, peer) == 2) {

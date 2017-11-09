@@ -10,7 +10,7 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
- ipv4 multi static 226.2.2.2 1.1.1.1
+ ipv4 multi static 232.2.2.2 1.1.1.1
  ipv6 multi static ff06::1 1234:1::1
  exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2
@@ -33,7 +33,7 @@ int eth2
  vrf for v1
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
- ipv4 multi static 226.2.2.2 1.1.1.1
+ ipv4 multi static 232.2.2.2 1.1.1.1
  ipv6 multi static ff06::1 1234:1::1
  exit
 !
@@ -53,7 +53,7 @@ ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.6
 ipv6 route v1 :: :: 1234:2::2
 ipv4 mroute v1 0.0.0.0 0.0.0.0 1.1.1.6
 ipv6 mroute v1 :: :: 1234:2::2
-ipv4 multi v1 join 226.2.2.2 1.1.1.1
+ipv4 multi v1 join 232.2.2.2 1.1.1.1
 ipv6 multi v1 join ff06::1 1234:1::1
 !
 
@@ -67,7 +67,7 @@ r1 tping 100 3 1234:2::1 /vrf v1
 r3 tping 100 3 1.1.1.1 /vrf v1
 r3 tping 100 3 1234:1::1 /vrf v1
 
-r1 tping 100 3 226.2.2.2 /vrf v1 /int eth1
+r1 tping 100 3 232.2.2.2 /vrf v1 /int eth1
 r1 tping 100 3 ff06::1 /vrf v1 /int eth1
 
 

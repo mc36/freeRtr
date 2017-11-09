@@ -182,7 +182,7 @@ public class addrIPv6 extends addrType {
      * @return true if yes
      */
     public boolean isRoutedMcast() {
-        return bits.msbGetW(addr, 0) > 0xff02;
+        return (bits.msbGetW(addr, 0) & 0xff0f) > 0xff03;
     }
 
     /**

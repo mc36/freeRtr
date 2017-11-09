@@ -124,6 +124,9 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     }
 
     private void restartTimer(boolean shutdown) {
+        if (trgt != null) {
+            trgt.setClose();
+        }
         try {
             purgeTimer.cancel();
         } catch (Exception e) {
@@ -171,7 +174,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
                 return;
             }
             logger.info("reconnecting " + target);
-            trgt = udp.streamConnect(new pipeLine(32768, true), null, 0, target, srvPort, srvName(), null, -1);
+            trgt = udp.streamConnect(new pipeLine(32768, true), ifc, 0, target, srvPort, srvName(), null, -1);
             if (trgt == null) {
                 return;
             }
