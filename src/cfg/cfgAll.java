@@ -69,6 +69,7 @@ import serv.servHoneyPot;
 import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
+import serv.servNetflow;
 import serv.servOpenflow;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -282,6 +283,11 @@ public class cfgAll {
      * chargen daemons
      */
     public static servGenList<servCharGen> dmnCharGen = new servGenList<servCharGen>();
+
+    /**
+     * netflow daemons
+     */
+    public static servGenList<servNetflow> dmnNetflow = new servGenList<servNetflow>();
 
     /**
      * upnpfwd daemons
@@ -727,13 +733,14 @@ public class cfgAll {
      * @param proto protocol to use from servGeneric
      * @param addr target address
      * @param port target port
+     * @param name client name
      * @return pipeline, null on error
      */
-    public static pipeSide clntConnect(int proto, addrIP addr, int port) {
+    public static pipeSide clntConnect(int proto, addrIP addr, int port, String name) {
         if (clientProxy == null) {
             return null;
         }
-        return clientProxy.doConnect(proto, addr, port);
+        return clientProxy.doConnect(proto, addr, port, name);
     }
 
     /**
@@ -2533,6 +2540,7 @@ public class cfgAll {
         dmnDiscard.getShRun(l, filter);
         dmnQuote.getShRun(l, filter);
         dmnCharGen.getShRun(l, filter);
+        dmnNetflow.getShRun(l, filter);
         dmnUpnpFwd.getShRun(l, filter);
         dmnUpnpHub.getShRun(l, filter);
         dmnOpenflow.getShRun(l, filter);

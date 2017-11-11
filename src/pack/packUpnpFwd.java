@@ -3,11 +3,16 @@ package pack;
 import addr.addrIP;
 
 /**
- * our proprietary forwarder packets
+ * our proprietary upnp forwarder packets
  *
  * @author matecsaba
  */
-public class packForwarder {
+public class packUpnpFwd {
+
+    /**
+     * port number
+     */
+    public static final int portNum = 1900;
 
     /**
      * keepalive

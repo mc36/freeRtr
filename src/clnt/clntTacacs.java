@@ -81,7 +81,7 @@ public class clntTacacs {
         if (trg == null) {
             return true;
         }
-        pipeSide conn = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servTacacs().srvPort());
+        pipeSide conn = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servTacacs().srvPort(), "tacacs");
         if (conn == null) {
             return true;
         }

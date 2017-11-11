@@ -36,6 +36,7 @@ import cfg.cfgPrcss;
 import cfg.cfgVpdn;
 import cfg.cfgVrf;
 import clnt.clntIrc;
+import clnt.clntNetflow;
 import clnt.clntNtp;
 import clnt.clntSyslog;
 import cry.cryBase64;
@@ -98,6 +99,7 @@ import serv.servHoneyPot;
 import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
+import serv.servNetflow;
 import serv.servOpenflow;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -554,6 +556,8 @@ public class userConfig {
         l.add("3  .      <name>                     name of server");
         l.add("2  3    chargen                      configure a chargen server");
         l.add("3  .      <name>                     name of server");
+        l.add("2  3    netflow                      configure an netflow server");
+        l.add("3  .      <name>                     name of server");
         l.add("2  3    upnpfwd                      configure an upnp forwarder server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    upnphub                      configure an upnp hub server");
@@ -994,6 +998,10 @@ public class userConfig {
             }
             if (a.equals("chargen")) {
                 daemonMake(new servCharGen(), cfgAll.dmnCharGen);
+                return;
+            }
+            if (a.equals("netflow")) {
+                daemonMake(new servNetflow(), cfgAll.dmnNetflow);
                 return;
             }
             if (a.equals("upnpfwd")) {
@@ -1587,6 +1595,10 @@ public class userConfig {
                 daemonErase(new servCharGen(), cfgAll.dmnCharGen);
                 return;
             }
+            if (a.equals("netflow")) {
+                daemonErase(new servNetflow(), cfgAll.dmnNetflow);
+                return;
+            }
             if (a.equals("upnpfwd")) {
                 daemonErase(new servUpnpFwd(), cfgAll.dmnUpnpFwd);
                 return;
@@ -1933,6 +1945,52 @@ public class userConfig {
         return vrf;
     }
 
+    private void parseUpFlow(int ver, boolean create) {
+        cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+        if (vrf == null) {
+            cmd.error("no such vrf");
+            return;
+        }
+        ipFwd fwd;
+        if (ver == 4) {
+            fwd = vrf.fwd4;
+        } else {
+            fwd = vrf.fwd6;
+        }
+        String a = cmd.word();
+        if (fwd.netflow != null) {
+            fwd.netflow.stopTimer();
+        }
+        fwd.netflow = null;
+        if (!create) {
+            return;
+        }
+        if (a.equals("collect")) {
+            fwd.netflow = new clntNetflow(ver);
+            fwd.netflow.startTimer();
+            return;
+        }
+        if (!a.equals("export")) {
+            cmd.badCmd();
+            return;
+        }
+        clntNetflow flw = new clntNetflow(ver);
+        cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+        if (prx == null) {
+            cmd.error("no such profile");
+            return;
+        }
+        flw.proxy = prx.proxy;
+        flw.trgAddr = new addrIP();
+        if (flw.trgAddr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        flw.trgPort = bits.str2num(cmd.word());
+        flw.startTimer();
+        fwd.netflow = flw;
+    }
+
     private void parseUpPool(int ver, boolean create) {
         String nam = cmd.word();
         addrIPv4 net4 = new addrIPv4();
@@ -1982,10 +2040,17 @@ public class userConfig {
         l.add("4  5        join-group               unconditionally process multicast traffic");
         l.add("5  6          <addr>                 group address");
         l.add("6  .            <addr>               source address");
+        l.add("2  3    flow                         configure netflow parameters");
+        l.add("3  4      <vrf>                      name of routing table");
+        l.add("4  .        collect                  just collect");
+        l.add("4  5        export                   collect and export");
+        l.add("5  6          <name>                 proxy profile");
+        l.add("6  7            <addr>               target address");
+        l.add("7  .              <num>              port number");
         l.add("2  3    nat                          configure network address translation");
         l.add("3  4,6    <vrf>                      name of routing table");
         l.add("4  5        sequence                 sequence number");
-        l.add("5  6          <num>                  original address");
+        l.add("5  6          <num>                  number");
         l.add("6  7            srclist              source address translation");
         l.add("7  8              <name>             access list name");
         l.add("8  9                interface        translated interface");
@@ -2094,6 +2159,10 @@ public class userConfig {
             parseUpMcast(4, true);
             return;
         }
+        if (a.equals("flow")) {
+            parseUpFlow(4, true);
+            return;
+        }
         if (a.equals("nat")) {
             tabNatCfgN red = new tabNatCfgN();
             cfgVrf vrf = parseUpNat(4, red);
@@ -2145,6 +2214,10 @@ public class userConfig {
             parseUpMcast(4, false);
             return;
         }
+        if (a.equals("flow")) {
+            parseUpFlow(4, false);
+            return;
+        }
         if (a.equals("nat")) {
             tabNatCfgN red = new tabNatCfgN();
             cfgVrf vrf = parseUpNat(4, red);
@@ -2191,6 +2264,10 @@ public class userConfig {
         String a = cmd.word();
         if (a.equals("multicast")) {
             parseUpMcast(6, true);
+            return;
+        }
+        if (a.equals("flow")) {
+            parseUpFlow(6, true);
             return;
         }
         if (a.equals("nat")) {
@@ -2242,6 +2319,10 @@ public class userConfig {
         String a = cmd.word();
         if (a.equals("multicast")) {
             parseUpMcast(6, false);
+            return;
+        }
+        if (a.equals("flow")) {
+            parseUpFlow(6, false);
             return;
         }
         if (a.equals("nat")) {

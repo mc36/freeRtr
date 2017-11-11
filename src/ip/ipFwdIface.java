@@ -93,7 +93,7 @@ public class ipFwdIface extends tabRouteIface {
     /**
      * inspection information
      */
-    public tabSession<addrIP> inspect = null;
+    public tabSession inspect = null;
 
     /**
      * interface handler
@@ -713,7 +713,7 @@ public class ipFwdIface extends tabRouteIface {
             if (inspect != null) {
                 inspect.stopTimer();
             }
-            inspect = new tabSession<addrIP>();
+            inspect = new tabSession();
             inspect.startTimer();
             a = cmd.word();
             if (a.equals("mac")) {

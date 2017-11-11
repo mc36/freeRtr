@@ -284,7 +284,7 @@ public class clntSmtp implements Runnable {
             return true;
         }
         lastS = "failed to open connection to " + serv;
-        pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, serv, new servSmtp().srvPort());
+        pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, serv, new servSmtp().srvPort(), "smtp");
         if (pipe == null) {
             return true;
         }

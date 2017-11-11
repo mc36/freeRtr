@@ -214,7 +214,7 @@ public class clntPptp implements Runnable, ipPrt, ifcDn {
             return;
         }
         fwdCor.protoAdd(this, fwdIfc, fwdTrg);
-        conn = clntProxy.makeTemp(vrf, srcIfc).doConnect(servGeneric.protoTcp, fwdTrg, packPptp.port);
+        conn = clntProxy.makeTemp(vrf, srcIfc).doConnect(servGeneric.protoTcp, fwdTrg, packPptp.port, "pptp");
         if (conn == null) {
             return;
         }

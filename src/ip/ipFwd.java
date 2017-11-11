@@ -3,6 +3,7 @@ package ip;
 import addr.addrIP;
 import addr.addrPrefix;
 import clnt.clntMplsTeP2p;
+import clnt.clntNetflow;
 import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
@@ -180,6 +181,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * historic for this vrf
      */
     public history hstry;
+
+    /**
+     * netflow exporter
+     */
+    public clntNetflow netflow;
 
     /**
      * allocate label for which prefix
@@ -1432,6 +1438,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (debugger.ipFwdTraf) {
             logger.debug("fwd " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
+        }
+        if (netflow != null) {
+            netflow.session.doPack(pck, true);
         }
         tabNatTraN natT = tabNatTraN.fromPack(pck);
         natT = natTrns.find(natT);

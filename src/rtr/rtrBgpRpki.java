@@ -121,7 +121,7 @@ public class rtrBgpRpki implements Comparator<rtrBgpRpki>, Runnable {
         if (adr == null) {
             return;
         }
-        pipe = proxy.doConnect(servGeneric.protoTcp, adr, port);
+        pipe = proxy.doConnect(servGeneric.protoTcp, adr, port, "rpki");
         if (pipe == null) {
             return;
         }

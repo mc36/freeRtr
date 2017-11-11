@@ -255,7 +255,7 @@ public class userPacket {
             for (;;) {
                 cmd.error("connecting " + trg);
                 clntProxy prx = clntProxy.makeTemp(vrf, ifc);
-                strm = prx.doConnect(servGeneric.protoTcp, trg, rtrBgp.port);
+                strm = prx.doConnect(servGeneric.protoTcp, trg, rtrBgp.port, "mrtplay");
                 if (strm != null) {
                     break;
                 }
@@ -378,7 +378,7 @@ public class userPacket {
             for (;;) {
                 cmd.error("connecting " + trg);
                 clntProxy prx = clntProxy.makeTemp(vrf, ifc);
-                strm = prx.doConnect(servGeneric.protoTcp, trg, rtrBgp.port);
+                strm = prx.doConnect(servGeneric.protoTcp, trg, rtrBgp.port, "bgpgen");
                 if (strm != null) {
                     break;
                 }

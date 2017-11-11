@@ -6,7 +6,7 @@ import ip.ipFwdIface;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import pack.packForwarder;
+import pack.packUpnpFwd;
 import pack.packHolder;
 import pipe.pipeLine;
 import pipe.pipeSide;
@@ -27,15 +27,10 @@ import util.logger;
 public class servUpnpFwd extends servGeneric implements prtServS {
 
     /**
-     * port number
-     */
-    public static final int port = 1900;
-
-    /**
      * defaults text
      */
     public final static String defaultL[] = {
-        "server upnpfwd .*! port " + port,
+        "server upnpfwd .*! port " + packUpnpFwd.portNum,
         "server upnpfwd .*! protocol " + proto2string(protoNets + protoUdp),
         "server upnpfwd .*! target null"
     };
@@ -106,7 +101,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     }
 
     public int srvPort() {
-        return port;
+        return packUpnpFwd.portNum;
     }
 
     public int srvProto() {
@@ -182,8 +177,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
             new servUpnpFwdServ(this, trgt);
         }
         packHolder pckB = new packHolder(true, true);
-        packForwarder pckF = new packForwarder();
-        pckF.typ = packForwarder.typKeep;
+        packUpnpFwd pckF = new packUpnpFwd();
+        pckF.typ = packUpnpFwd.typKeep;
         pckF.createPacket(pckB);
         pckB.pipeSend(trgt, 0, pckB.dataSize(), 2);
     }
@@ -198,8 +193,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         if (trgt == null) {
             return;
         }
-        packForwarder pckF = new packForwarder();
-        pckF.typ = packForwarder.typData;
+        packUpnpFwd pckF = new packUpnpFwd();
+        pckF.typ = packUpnpFwd.typData;
         pckF.addr.setAddr(conn.peerAddr);
         pckF.port = conn.portRem;
         pckF.createPacket(pck);
@@ -212,9 +207,9 @@ public class servUpnpFwd extends servGeneric implements prtServS {
      * @param pck packet
      */
     protected void doPackSrv(packHolder pck) {
-        packForwarder pckF = new packForwarder();
+        packUpnpFwd pckF = new packUpnpFwd();
         pckF.parsePacket(pck);
-        if (pckF.typ != packForwarder.typData) {
+        if (pckF.typ != packUpnpFwd.typData) {
             return;
         }
         pck.putDefaults();

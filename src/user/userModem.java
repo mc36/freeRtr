@@ -137,7 +137,7 @@ public class userModem {
                     doResult(6);
                     return false;
                 }
-                pipeSide con = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servTelnet().srvPort());
+                pipeSide con = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servTelnet().srvPort(), "modem");
                 if (con == null) {
                     doResult(3);
                     return false;

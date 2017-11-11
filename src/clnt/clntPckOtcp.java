@@ -146,7 +146,7 @@ public class clntPckOtcp implements Runnable, ifcDn {
         if (trg == null) {
             return;
         }
-        pipe = proxy.doConnect(servGeneric.protoTcp, trg, prtR);
+        pipe = proxy.doConnect(servGeneric.protoTcp, trg, prtR, "pckotcp");
         if (pipe == null) {
             return;
         }

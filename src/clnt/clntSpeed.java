@@ -83,11 +83,11 @@ public class clntSpeed {
         userTerminal t = new userTerminal(new pipeProgress(cmd.pipe));
         String a = cmd.word();
         clntSpeed s = new clntSpeed();
-        s.rxp = t.resolvAndConn(servGeneric.protoTcp, a, new servCharGen().srvPort());
+        s.rxp = t.resolvAndConn(servGeneric.protoTcp, a, new servCharGen().srvPort(), "speed");
         if (s.rxp == null) {
             return;
         }
-        s.txp = t.resolvAndConn(servGeneric.protoTcp, a, new servDiscard().srvPort());
+        s.txp = t.resolvAndConn(servGeneric.protoTcp, a, new servDiscard().srvPort(), "speed");
         if (s.txp == null) {
             s.rxp.setClose();
             return;

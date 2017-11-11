@@ -88,7 +88,7 @@ public class clntSyslog {
             b = pipe.isClosed() != 0;
         }
         if (b) {
-            pipe = cfgAll.clntConnect(servGeneric.protoUdp, addr, new servSyslog().srvPort());
+            pipe = cfgAll.clntConnect(servGeneric.protoUdp, addr, new servSyslog().srvPort(), "syslog");
         }
         if (pipe == null) {
             return;

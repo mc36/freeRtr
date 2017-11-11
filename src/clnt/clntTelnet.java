@@ -155,7 +155,7 @@ public class clntTelnet implements Runnable, ifcDn {
         if (trg == null) {
             return;
         }
-        pipeSide conn = proxy.doConnect(servGeneric.protoTcp, trg, port);
+        pipeSide conn = proxy.doConnect(servGeneric.protoTcp, trg, port, "telnet");
         if (tls) {
             conn = secClient.openSec(conn, servGeneric.protoTls, null, null);
         }

@@ -169,6 +169,10 @@ public class clntProxy {
         name = nam;
     }
 
+    public String toString() {
+        return name;
+    }
+
     /**
      * create new proxy config
      *
@@ -189,9 +193,10 @@ public class clntProxy {
      * @param cProto protocol to use from servGeneric
      * @param cAddr target address
      * @param cPort target port
+     * @param cName client name
      * @return pipeline, null on error
      */
-    public pipeSide doConnect(int cProto, addrIP cAddr, int cPort) {
+    public pipeSide doConnect(int cProto, addrIP cAddr, int cPort, String cName) {
         if (debugger.clntProxyTraf) {
             logger.debug("connecting to " + servGeneric.proto2string(cProto) + " " + cAddr + " " + cPort);
         }
@@ -277,7 +282,7 @@ public class clntProxy {
                 default:
                     return null;
             }
-            pip = prt.streamConnect(pil, ipif, 0, cAddr, cPort, "client", null, -1);
+            pip = prt.streamConnect(pil, ipif, 0, cAddr, cPort, cName, null, -1);
             if (pip == null) {
                 return null;
             }
@@ -305,9 +310,9 @@ public class clntProxy {
             return null;
         }
         if (lowProxy != null) {
-            pip = lowProxy.doConnect(servGeneric.protoTcp, adr, port);
+            pip = lowProxy.doConnect(servGeneric.protoTcp, adr, port, cName);
         } else {
-            pip = clntProxy.makeTemp(vrf, srcIfc).doConnect(servGeneric.protoTcp, adr, port);
+            pip = clntProxy.makeTemp(vrf, srcIfc).doConnect(servGeneric.protoTcp, adr, port, cName);
         }
         if (pip == null) {
             return null;

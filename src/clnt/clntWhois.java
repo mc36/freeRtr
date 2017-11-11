@@ -37,7 +37,7 @@ public class clntWhois {
      */
     public void doQuery(String h, String q) {
         pipeProgress con = new pipeProgress(pipeDiscard.needAny(cons));
-        pipeSide pipe = new userTerminal(con).resolvAndConn(servGeneric.protoTcp, h, port);
+        pipeSide pipe = new userTerminal(con).resolvAndConn(servGeneric.protoTcp, h, port, "whois");
         if (pipe == null) {
             return;
         }

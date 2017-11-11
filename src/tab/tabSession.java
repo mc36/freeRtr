@@ -1,6 +1,8 @@
 package tab;
 
-import addr.addrType;
+import addr.addrIP;
+import cfg.cfgInit;
+import java.util.ArrayList;
 import pack.packHolder;
 import prt.prtDccp;
 import prt.prtSctp;
@@ -11,21 +13,45 @@ import user.userFormat;
 import util.bits;
 import util.logger;
 import java.util.Comparator;
+import java.util.List;
+import pack.packNetflow;
+import pipe.pipeSide;
 
 /**
  * one session record
  *
- * @param <T> address type
  * @author matecsaba
  */
-public class tabSession<T extends addrType> implements Runnable {
+public class tabSession implements Runnable {
 
     /**
      * list of prefixes
      */
-    public final tabGen<tabSessionEntry<T>> connects = new tabGen<tabSessionEntry<T>>();
+    public final tabGen<tabSessionEntry> connects = new tabGen<tabSessionEntry>();
 
     private boolean need2run;
+
+    private int count;
+
+    /**
+     * protocol version
+     */
+    public boolean ipv4;
+
+    /**
+     * flows / export
+     */
+    public int limit;
+
+    /**
+     * source id
+     */
+    public int source;
+
+    /**
+     * unidirection collecting
+     */
+    public boolean unidir = true;
 
     /**
      * log before session
@@ -62,7 +88,6 @@ public class tabSession<T extends addrType> implements Runnable {
      * @param dir direction of packet
      * @return true to drop, false to forward
      */
-    @SuppressWarnings("unchecked")
     public boolean doPack(packHolder pck, boolean dir) {
         int i = pck.dataSize();
         pck.getSkip(pck.IPsiz);
@@ -84,27 +109,27 @@ public class tabSession<T extends addrType> implements Runnable {
                 b = prtSctp.parseSCTPheader(pck);
                 break;
             default:
-                pck.getSkip(-pck.IPsiz);
-                return false;
+                b = false;
+                break;
         }
         int o = pck.dataSize();
         pck.getSkip(o - i);
         if (b) {
             return true;
         }
-        tabSessionEntry<T> ses = new tabSessionEntry<T>(logMacs);
+        tabSessionEntry ses = new tabSessionEntry(logMacs);
         ses.ipPrt = pck.IPprt;
         ses.dir = dir;
         ses.srcPrt = pck.UDPsrc;
         ses.trgPrt = pck.UDPtrg;
-        ses.srcAdr = (T) pck.IPsrc.copyBytes();
-        ses.trgAdr = (T) pck.IPtrg.copyBytes();
-        tabSessionEntry<T> res = connects.find(ses);
-        if (res == null) {
+        ses.srcAdr = pck.IPsrc.copyBytes();
+        ses.trgAdr = pck.IPtrg.copyBytes();
+        tabSessionEntry res = connects.find(ses);
+        if ((res == null) && unidir) {
             ses.srcPrt = pck.UDPtrg;
             ses.trgPrt = pck.UDPsrc;
-            ses.srcAdr = (T) pck.IPtrg.copyBytes();
-            ses.trgAdr = (T) pck.IPsrc.copyBytes();
+            ses.srcAdr = pck.IPtrg.copyBytes();
+            ses.trgAdr = pck.IPsrc.copyBytes();
             res = connects.find(ses);
         }
         if (res == null) {
@@ -138,9 +163,9 @@ public class tabSession<T extends addrType> implements Runnable {
     public userFormat doShowInsp() {
         userFormat l;
         if (logMacs) {
-            l = new userFormat("|", "dir|prt|src|src|trg|trg|rx|tx|time|src|trg");
+            l = new userFormat("|", "dir|prt|tos|src|src|trg|trg|rx|tx|time|src|trg");
         } else {
-            l = new userFormat("|", "dir|prt|src|src|trg|trg|rx|tx|time");
+            l = new userFormat("|", "dir|prt|tos|src|src|trg|trg|rx|tx|time");
         }
         for (int i = 0; i < connects.size(); i++) {
             l.add(connects.get(i).dump());
@@ -154,7 +179,7 @@ public class tabSession<T extends addrType> implements Runnable {
      * @return show output
      */
     public userFormat doShowTalk() {
-        tabGen<tabSessionEndpoint<T>> ept = getTopTalker();
+        tabGen<tabSessionEndpoint> ept = getTopTalker();
         userFormat l = new userFormat("|", "addr|rx|tx|time");
         for (int i = 0; i < ept.size(); i++) {
             l.add(ept.get(i).dump());
@@ -162,21 +187,23 @@ public class tabSession<T extends addrType> implements Runnable {
         return l;
     }
 
-    private tabGen<tabSessionEndpoint<T>> getTopTalker() {
-        tabGen<tabSessionEndpoint<T>> ept = new tabGen<tabSessionEndpoint<T>>();
+    private tabGen<tabSessionEndpoint> getTopTalker() {
+        tabGen<tabSessionEndpoint> ept = new tabGen<tabSessionEndpoint>();
         for (int i = 0; i < connects.size(); i++) {
-            tabSessionEntry<T> ntry = connects.get(i);
-            updateTalker(ept, ntry.srcAdr, ntry.rxByte, ntry.txByte, ntry.startTime);
-            updateTalker(ept, ntry.trgAdr, ntry.rxByte, ntry.txByte, ntry.startTime);
+            tabSessionEntry cur = connects.get(i);
+            if (cur == null) {
+                continue;
+            }
+            updateTalker(ept, cur.srcAdr, cur.rxByte, cur.txByte, cur.startTime);
+            updateTalker(ept, cur.trgAdr, cur.rxByte, cur.txByte, cur.startTime);
         }
         return ept;
     }
 
-    @SuppressWarnings("unchecked")
-    private void updateTalker(tabGen<tabSessionEndpoint<T>> ept, T adr, long rx, long tx, long tim) {
-        tabSessionEndpoint<T> ntry = new tabSessionEndpoint<T>();
-        ntry.adr = (T) adr.copyBytes();
-        tabSessionEndpoint<T> res = ept.find(ntry);
+    private void updateTalker(tabGen<tabSessionEndpoint> ept, addrIP adr, long rx, long tx, long tim) {
+        tabSessionEndpoint ntry = new tabSessionEndpoint();
+        ntry.adr = adr.copyBytes();
+        tabSessionEndpoint res = ept.find(ntry);
         if (res == null) {
             res = ntry;
             ept.add(res);
@@ -203,25 +230,89 @@ public class tabSession<T extends addrType> implements Runnable {
         need2run = false;
     }
 
+    /**
+     * inspect processing
+     */
+    public void doInspect() {
+        long tim = bits.getTime();
+        for (int i = connects.size() - 1; i >= 0; i--) {
+            tabSessionEntry cur = connects.get(i);
+            if (cur == null) {
+                continue;
+            }
+            if ((tim - cur.lastTime) < timeout) {
+                continue;
+            }
+            connects.del(cur);
+            if (logAfter) {
+                logger.info("finished " + cur);
+            }
+        }
+    }
+
+    private void doNetflow(packHolder pckB, pipeSide pipe, List<tabSessionEntry> lst, boolean tmp) {
+        if (pipe == null) {
+            return;
+        }
+        count++;
+        pckB.clear();
+        packNetflow pckF = new packNetflow();
+        pckF.seq = count;
+        pckF.tim = (int) (bits.getTime() / 1000);
+        pckF.upt = pckF.tim - (int) (cfgInit.jvmStarted / 1000);
+        pckF.sou = source;
+        pckF.ipv4 = ipv4;
+        if (tmp) {
+            pckF.putTemp(pckB);
+        }
+        pckF.putFlow(pckB, lst);
+        pckF.putHead(pckB);
+        pckB.pipeSend(pipe, 0, pckB.dataSize(), 2);
+    }
+
+    /**
+     * netflow processing
+     *
+     * @param pipe where to send
+     */
+    public void doNetflow(pipeSide pipe) {
+        long tim = bits.getTime();
+        List<tabSessionEntry> lst = new ArrayList<tabSessionEntry>();
+        boolean tmp = true;
+        packHolder pck = new packHolder(true, true);
+        for (int i = connects.size() - 1; i >= 0; i--) {
+            tabSessionEntry cur = connects.get(i);
+            if (cur == null) {
+                continue;
+            }
+            lst.add(cur.copyBytes());
+            cur.clearCounts();
+            if (lst.size() > limit) {
+                doNetflow(pck, pipe, lst, tmp);
+                lst.clear();
+                tmp = false;
+            }
+            if ((tim - cur.lastTime) < timeout) {
+                continue;
+            }
+            connects.del(cur);
+            if (logAfter) {
+                logger.info("finished " + cur);
+            }
+        }
+        if (lst.size() > 0) {
+            doNetflow(pck, pipe, lst, tmp);
+        }
+    }
+
     public void run() {
         for (;;) {
             if (!need2run) {
                 return;
             }
-            bits.sleep(30000);
+            bits.sleep(timeout / 4);
             try {
-                long tim = bits.getTime();
-                for (int i = connects.size() - 1; i >= 0; i--) {
-                    tabSessionEntry<T> cur = connects.get(i);
-                    if ((tim - cur.lastTime) < timeout) {
-                        continue;
-                    }
-                    connects.del(cur);
-                    if (!logAfter) {
-                        continue;
-                    }
-                    logger.info("finished " + cur);
-                }
+                doInspect();
             } catch (Exception e) {
                 logger.traceback(e);
             }
@@ -230,10 +321,9 @@ public class tabSession<T extends addrType> implements Runnable {
 
 }
 
-class tabSessionEndpoint<T extends addrType> implements
-        Comparator<tabSessionEndpoint<T>> {
+class tabSessionEndpoint implements Comparator<tabSessionEndpoint> {
 
-    public T adr;
+    public addrIP adr;
 
     public long rx;
 
@@ -245,7 +335,7 @@ class tabSessionEndpoint<T extends addrType> implements
         return adr + "|" + rx + "|" + tx + "|" + bits.timePast(tim);
     }
 
-    public int compare(tabSessionEndpoint<T> o1, tabSessionEndpoint<T> o2) {
+    public int compare(tabSessionEndpoint o1, tabSessionEndpoint o2) {
         return o1.adr.compare(o1.adr, o2.adr);
     }
 

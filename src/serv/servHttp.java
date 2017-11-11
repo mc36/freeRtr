@@ -750,8 +750,7 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
         if (adr == null) {
             return;
         }
-        pipeSide cnn = streamP.doConnect(servGeneric.protoTcp, adr,
-                srvUrl.getPort(new servHttp().srvPort()));
+        pipeSide cnn = streamP.doConnect(servGeneric.protoTcp, adr, srvUrl.getPort(new servHttp().srvPort()), "http");
         if (cnn == null) {
             return;
         }
@@ -1688,8 +1687,7 @@ class servHttpConn implements Runnable {
                 sendRespError(502, "bad gateway");
                 return;
             }
-            pipeSide cnn = lower.proxy.doConnect(servGeneric.protoTcp, adr,
-                    gotUrl.getPort(lower.srvPort()));
+            pipeSide cnn = lower.proxy.doConnect(servGeneric.protoTcp, adr, gotUrl.getPort(lower.srvPort()), "http");
             if (cnn == null) {
                 sendRespError(504, "gateway timeout");
                 return;
@@ -1816,8 +1814,7 @@ class servHttpConn implements Runnable {
                 if (adrs[i] == null) {
                     continue;
                 }
-                cons[i] = gotHost.multiAccP.doConnect(servGeneric.protoTcp,
-                        adrs[i], urls.get(i).getPort(lower.srvPort()));
+                cons[i] = gotHost.multiAccP.doConnect(servGeneric.protoTcp, adrs[i], urls.get(i).getPort(lower.srvPort()), "http");
             }
             pipeSide fin = null;
             for (int i = 0; i < cons.length; i++) {
@@ -1860,8 +1857,7 @@ class servHttpConn implements Runnable {
                 sendRespError(502, "bad gateway");
                 return;
             }
-            pipeSide cnn = gotHost.reconnP.doConnect(servGeneric.protoTcp, adr,
-                    srvUrl.getPort(lower.srvPort()));
+            pipeSide cnn = gotHost.reconnP.doConnect(servGeneric.protoTcp, adr, srvUrl.getPort(lower.srvPort()), "http");
             if (cnn == null) {
                 sendRespError(504, "gateway timeout");
                 return;

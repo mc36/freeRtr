@@ -156,7 +156,7 @@ public class clntBstun implements Runnable, ifcDn {
         if (trg == null) {
             return;
         }
-        pipeSide conn = proxy.doConnect(servGeneric.protoTcp, trg, new servBstun().srvPort());
+        pipeSide conn = proxy.doConnect(servGeneric.protoTcp, trg, new servBstun().srvPort(), "bstun");
         if (conn == null) {
             return;
         }

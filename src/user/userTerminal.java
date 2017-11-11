@@ -76,14 +76,15 @@ public class userTerminal {
      * @param proto protocol to use
      * @param addr address of remote
      * @param port port to connect to
+     * @param name client name
      * @return pipeline of this connection, null=error
      */
-    public pipeSide startConn(clntProxy prx, int proto, addrIP addr, int port) {
+    public pipeSide startConn(clntProxy prx, int proto, addrIP addr, int port, String name) {
         console.debugStat("connecting to " + addr + " " + port);
         if (prx == null) {
             return null;
         }
-        stream = prx.doConnect(proto, addr, port);
+        stream = prx.doConnect(proto, addr, port, name);
         return stream;
     }
 
@@ -122,9 +123,10 @@ public class userTerminal {
      * @param proto protocol to use
      * @param server server name
      * @param port port number
+     * @param name client name
      * @return pipeside
      */
-    public pipeSide resolvAndConn(int proto, String server, int port) {
+    public pipeSide resolvAndConn(int proto, String server, int port, String name) {
         int prf;
         switch (proto & servGeneric.protoNets) {
             case servGeneric.protoIp4:
@@ -141,7 +143,7 @@ public class userTerminal {
         if (adr == null) {
             return null;
         }
-        pipeSide pipe = startConn(cfgAll.getClntPrx(), proto, adr, port);
+        pipeSide pipe = startConn(cfgAll.getClntPrx(), proto, adr, port, name);
         if (pipe == null) {
             return null;
         }

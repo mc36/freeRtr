@@ -140,7 +140,7 @@ public class clntStun implements Runnable, ifcDn {
         if (trg == null) {
             return;
         }
-        pipeSide conn = proxy.doConnect(servGeneric.protoTcp, trg, new servStun().srvPort());
+        pipeSide conn = proxy.doConnect(servGeneric.protoTcp, trg, new servStun().srvPort(), "stun");
         if (conn == null) {
             return;
         }

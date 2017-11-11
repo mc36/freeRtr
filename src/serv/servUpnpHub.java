@@ -2,7 +2,7 @@ package serv;
 
 import java.util.Comparator;
 import java.util.List;
-import pack.packForwarder;
+import pack.packUpnpFwd;
 import pack.packHolder;
 import pipe.pipeLine;
 import pipe.pipeSide;
@@ -25,7 +25,7 @@ public class servUpnpHub extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String defaultL[] = {
-        "server upnphub .*! port " + servUpnpFwd.port,
+        "server upnphub .*! port " + packUpnpFwd.portNum,
         "server upnphub .*! protocol " + proto2string(protoNets + protoUdp)
     };
 
@@ -64,7 +64,7 @@ public class servUpnpHub extends servGeneric implements prtServS {
     }
 
     public int srvPort() {
-        return servUpnpFwd.port;
+        return packUpnpFwd.portNum;
     }
 
     public int srvProto() {
@@ -86,10 +86,10 @@ public class servUpnpHub extends servGeneric implements prtServS {
      * @param pck packet
      */
     protected void doPacket(servUpnpHubConn conn, packHolder pck) {
-        packForwarder pckF = new packForwarder();
+        packUpnpFwd pckF = new packUpnpFwd();
         pckF.parsePacket(pck);
         pckF.createPacket(pck);
-        if (pckF.typ != packForwarder.typData) {
+        if (pckF.typ != packUpnpFwd.typData) {
             conn.doPack(pck);
             return;
         }

@@ -194,7 +194,7 @@ public class clntSstp implements Runnable, ifcDn {
         if (debugger.clntSstpTraf) {
             logger.debug("connecting " + trg);
         }
-        pipe = proxy.doConnect(servGeneric.protoTcp, trg, url.getPort(0));
+        pipe = proxy.doConnect(servGeneric.protoTcp, trg, url.getPort(0), "sstp");
         if (pipe == null) {
             return;
         }

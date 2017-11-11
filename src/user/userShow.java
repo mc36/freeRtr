@@ -21,6 +21,7 @@ import cfg.cfgVdcIfc;
 import cfg.cfgPrcss;
 import cfg.cfgVrf;
 import clnt.clntDns;
+import clnt.clntNetflow;
 import ifc.ifcThread;
 import ip.ipFwd;
 import ip.ipFwdIface;
@@ -697,6 +698,10 @@ public class userShow {
                 doShowIpXtoptalk(4);
                 return null;
             }
+            if (a.equals("flow")) {
+                doShowIpXnetflow(4);
+                return null;
+            }
             if (a.equals("hsrp")) {
                 doShowIpXhsrp(4);
                 return null;
@@ -900,6 +905,10 @@ public class userShow {
             }
             if (a.equals("toptalk")) {
                 doShowIpXtoptalk(6);
+                return null;
+            }
+            if (a.equals("flow")) {
+                doShowIpXnetflow(6);
                 return null;
             }
             if (a.equals("hsrp")) {
@@ -1260,13 +1269,15 @@ public class userShow {
             cmd.error("no such interface");
             return;
         }
-        tabSession<addrIP> ins = null;
+        tabSession ins = null;
         if (ver == 4) {
             if (ifc.fwdIf4 != null) {
                 ins = ifc.fwdIf4.inspect;
             }
-        } else if (ifc.fwdIf6 != null) {
-            ins = ifc.fwdIf6.inspect;
+        } else {
+            if (ifc.fwdIf6 != null) {
+                ins = ifc.fwdIf6.inspect;
+            }
         }
         if (ins == null) {
             cmd.error("not active");
@@ -1281,19 +1292,46 @@ public class userShow {
             cmd.error("no such interface");
             return;
         }
-        tabSession<addrIP> ins = null;
+        tabSession ins = null;
         if (ver == 4) {
             if (ifc.fwdIf4 != null) {
                 ins = ifc.fwdIf4.inspect;
             }
-        } else if (ifc.fwdIf6 != null) {
-            ins = ifc.fwdIf6.inspect;
+        } else {
+            if (ifc.fwdIf6 != null) {
+                ins = ifc.fwdIf6.inspect;
+            }
         }
         if (ins == null) {
             cmd.error("not active");
             return;
         }
         rdr.putStrTab(ins.doShowInsp());
+    }
+
+    private void doShowIpXnetflow(int ver) {
+        cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+        ipFwd fwd;
+        if (ver == 4) {
+            fwd = vrf.fwd4;
+        } else {
+            fwd = vrf.fwd6;
+        }
+        clntNetflow flw = fwd.netflow;
+        if (flw == null) {
+            cmd.error("not active");
+            return;
+        }
+        String a = cmd.word();
+        if (a.equals("session")) {
+            rdr.putStrTab(flw.session.doShowInsp());
+            return;
+        }
+        if (a.equals("toptalk")) {
+            rdr.putStrTab(flw.session.doShowTalk());
+            return;
+        }
+        cmd.badCmd();
     }
 
     private void doShowIpXhsrp(int ver) {

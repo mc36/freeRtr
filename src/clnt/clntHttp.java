@@ -105,11 +105,11 @@ public class clntHttp {
             pipe.setClose();
         }
         if (!url.proto.equals("https")) {
-            pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(new servHttp().srvPort()));
+            pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(new servHttp().srvPort()), "http");
             return pipe == null;
         }
         userTerminal t = new userTerminal(cons);
-        pipe = t.resolvAndConn(servGeneric.protoTcp, url.server, servHttp.securePort);
+        pipe = t.resolvAndConn(servGeneric.protoTcp, url.server, servHttp.securePort, "https");
         if (pipe == null) {
             return true;
         }

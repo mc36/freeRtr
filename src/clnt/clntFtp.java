@@ -141,7 +141,7 @@ public class clntFtp implements prtServS {
         addrIPv4 adr = new addrIPv4();
         adr.fromBuf(buf, 0);
         int prt = bits.msbGetW(buf, 4);
-        data = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, "" + adr, prt);
+        data = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, "" + adr, prt, "ftp");
         return data == null;
     }
 
@@ -163,7 +163,7 @@ public class clntFtp implements prtServS {
     public boolean download(uniResLoc src, File trg) {
         setAnonymFtp(src);
         servFtp srv = new servFtp();
-        pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, src.server, srv.srvPort());
+        pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, src.server, srv.srvPort(), "ftp");
         if (pipe == null) {
             return true;
         }
@@ -245,7 +245,7 @@ public class clntFtp implements prtServS {
     public boolean upload(uniResLoc trg, File src) {
         setAnonymFtp(trg);
         servFtp srv = new servFtp();
-        pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, trg.server, srv.srvPort());
+        pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, trg.server, srv.srvPort(), "ftp");
         if (pipe == null) {
             return true;
         }

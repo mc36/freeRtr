@@ -133,7 +133,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         if (adr == null) {
             return;
         }
-        pipe = proxy.doConnect(servGeneric.protoTcp, adr, port);
+        pipe = proxy.doConnect(servGeneric.protoTcp, adr, port, "bmp");
         if (pipe == null) {
             return;
         }

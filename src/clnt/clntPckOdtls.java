@@ -142,7 +142,7 @@ public class clntPckOdtls implements Runnable, ifcDn {
         if (trg == null) {
             return;
         }
-        pipe = proxy.doConnect(servGeneric.protoUdp, trg, prtR);
+        pipe = proxy.doConnect(servGeneric.protoUdp, trg, prtR, "pckodtls");
         if (pipe == null) {
             return;
         }

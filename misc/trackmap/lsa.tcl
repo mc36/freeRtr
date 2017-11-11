@@ -1,6 +1,7 @@
 proc dosh { cmd } {
 set res [exec "term tab html" $cmd]
-puts "<b><u>$cmd</b></u><br><table border=1>$res</table>"
+puts "<b><u>$cmd</b></u><br>"
+puts "<table border=1>$res</table>"
 }
 
 
@@ -15,11 +16,11 @@ for {} {1<2} {} {
  }
 
 
-puts "<html><head><title>status</title></head>"
+puts "<html><head><title>lsa</title></head>"
+puts "<body bgcolor=black text=white>"
 puts "<form action=$path>"
 puts "rtrid: <input type=text name=rtrid value=$rtrid><br>"
 puts "<br><input type=submit value=query><br></form>"
-puts "<body bgcolor=black text=white>"
 dosh "show ipv4 lsrp 1 database $rtrid"
 dosh "show ipv6 lsrp 1 database $rtrid"
 puts "</body></html>"

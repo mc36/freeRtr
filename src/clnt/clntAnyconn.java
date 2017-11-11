@@ -187,7 +187,7 @@ public class clntAnyconn implements Runnable, ifcDn {
         if (debugger.clntAnyconnTraf) {
             logger.debug("connecting " + trg);
         }
-        pipe = proxy.doConnect(servGeneric.protoTcp, trg, url.getPort(0));
+        pipe = proxy.doConnect(servGeneric.protoTcp, trg, url.getPort(0), "anyconn");
         if (pipe == null) {
             return true;
         }

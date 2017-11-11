@@ -105,7 +105,7 @@ public class clntIrc implements Runnable {
         if (trg == null) {
             return;
         }
-        pipe = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servIrc().srvPort());
+        pipe = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servIrc().srvPort(), "irc");
         if (pipe == null) {
             return;
         }

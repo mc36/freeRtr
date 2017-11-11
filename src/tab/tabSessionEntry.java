@@ -1,32 +1,36 @@
 package tab;
 
+import addr.addrIP;
 import addr.addrMac;
-import addr.addrType;
 import java.util.Comparator;
 import util.bits;
 
 /**
  * session entry
  *
- * @param <T> address type
  * @author matecsaba
  */
-public class tabSessionEntry<T extends addrType> implements Comparator<tabSessionEntry<T>> {
+public class tabSessionEntry implements Comparator<tabSessionEntry> {
 
     /**
      * source address
      */
-    public T srcAdr;
+    public addrIP srcAdr;
 
     /**
      * target address
      */
-    public T trgAdr;
+    public addrIP trgAdr;
 
     /**
      * ip protocol number
      */
     public int ipPrt;
+
+    /**
+     * ip tos number
+     */
+    public int ipTos;
 
     /**
      * source port
@@ -97,11 +101,17 @@ public class tabSessionEntry<T extends addrType> implements Comparator<tabSessio
         logMacs = macs;
     }
 
-    public int compare(tabSessionEntry<T> o1, tabSessionEntry<T> o2) {
+    public int compare(tabSessionEntry o1, tabSessionEntry o2) {
         if (o1.ipPrt < o2.ipPrt) {
             return -1;
         }
         if (o1.ipPrt > o2.ipPrt) {
+            return +1;
+        }
+        if (o1.ipTos < o2.ipTos) {
+            return -1;
+        }
+        if (o1.ipTos > o2.ipTos) {
             return +1;
         }
         if (o1.srcPrt < o2.srcPrt) {
@@ -121,6 +131,58 @@ public class tabSessionEntry<T extends addrType> implements Comparator<tabSessio
             return i;
         }
         return o1.trgAdr.compare(o1.trgAdr, o2.trgAdr);
+    }
+
+    /**
+     * copy data
+     *
+     * @return copy
+     */
+    public tabSessionEntry copyBytes() {
+        tabSessionEntry n = new tabSessionEntry(logMacs);
+        n.srcAdr = srcAdr.copyBytes();
+        n.trgAdr = trgAdr.copyBytes();
+        n.ipPrt = ipPrt;
+        n.ipTos = ipTos;
+        n.srcPrt = srcPrt;
+        n.trgPrt = trgPrt;
+        n.rxByte = rxByte;
+        n.txByte = txByte;
+        n.rxPack = rxPack;
+        n.txPack = txPack;
+        n.startTime = startTime;
+        n.lastTime = lastTime;
+        n.dir = dir;
+        n.logMacs = logMacs;
+        if (srcMac != null) {
+            n.srcMac = srcMac.copyBytes();
+        }
+        if (trgMac != null) {
+            n.trgMac = trgMac.copyBytes();
+        }
+        return n;
+    }
+
+    /**
+     * clear counters
+     */
+    public void clearCounts() {
+        rxByte = 0;
+        txByte = 0;
+        rxPack = 0;
+        txPack = 0;
+    }
+
+    /**
+     * add counters
+     *
+     * @param old where from
+     */
+    public void addCounts(tabSessionEntry old) {
+        rxByte += old.rxByte;
+        txByte += old.txByte;
+        rxPack += old.rxPack;
+        txPack += old.txPack;
     }
 
     private String getSrc(String sep) {
@@ -156,7 +218,7 @@ public class tabSessionEntry<T extends addrType> implements Comparator<tabSessio
      */
     public String dump() {
         String s;
-        s = getDir() + "|" + ipPrt + "|" + getSrc("|") + "|" + getTrg("|") + "|" + rxByte + "|" + txByte + "|" + getDur();
+        s = getDir() + "|" + ipPrt + "|" + ipTos + "|" + getSrc("|") + "|" + getTrg("|") + "|" + rxByte + "|" + txByte + "|" + getDur();
         if (!logMacs) {
             return s;
         }

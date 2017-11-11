@@ -475,6 +475,13 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
     }
 
+    private void addCfgFlow(List<String> l, int p, ipFwd f) {
+        if (f.netflow == null) {
+            return;
+        }
+        l.add("ipv" + p + " flow " + name + " " + f.netflow);
+    }
+
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("vrf definition " + name);
@@ -546,6 +553,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         addCfgMcast(l, 4, fwd4);
         l.add(cmds.comment);
         addCfgMcast(l, 6, fwd6);
+        l.add(cmds.comment);
+        addCfgFlow(l, 4, fwd4);
+        l.add(cmds.comment);
+        addCfgFlow(l, 6, fwd6);
         l.add(cmds.comment);
         return l;
     }

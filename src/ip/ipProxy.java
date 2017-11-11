@@ -240,7 +240,7 @@ public class ipProxy implements ifcUp {
                     return;
                 }
                 conn = ipProxyConn.fromPack(pck);
-                conn.pipe = upper.doConnect(servGeneric.protoUdp, conn.trgA, conn.trgP);
+                conn.pipe = upper.doConnect(servGeneric.protoUdp, conn.trgA, conn.trgP, "transproxy");
                 if (conn.pipe == null) {
                     return;
                 }
@@ -265,7 +265,7 @@ public class ipProxy implements ifcUp {
                         return;
                     }
                     conn = ipProxyConn.fromPack(pck);
-                    conn.pipe = upper.doConnect(servGeneric.protoTcp, conn.trgA, conn.trgP);
+                    conn.pipe = upper.doConnect(servGeneric.protoTcp, conn.trgA, conn.trgP, "transproxy");
                     if (conn.pipe == null) {
                         conn.toPack(pck);
                         pck.putStart();

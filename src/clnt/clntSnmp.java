@@ -61,7 +61,7 @@ public class clntSnmp {
     }
 
     private boolean doQuery(int cmd) {
-        pipeSide pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoUdp, host, packSnmp.port);
+        pipeSide pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoUdp, host, packSnmp.port, "snmp");
         if (pipe == null) {
             return true;
         }

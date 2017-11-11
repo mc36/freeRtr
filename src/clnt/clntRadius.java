@@ -80,7 +80,7 @@ public class clntRadius {
         if (trg == null) {
             return true;
         }
-        pipeSide conn = cfgAll.clntConnect(servGeneric.protoUdp, trg, new servRadius().srvPort());
+        pipeSide conn = cfgAll.clntConnect(servGeneric.protoUdp, trg, new servRadius().srvPort(), "radius");
         if (conn == null) {
             return true;
         }
