@@ -33,7 +33,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     /**
      * transport address of peer
      */
-    public addrIP peer;
+    public final addrIP peer;
 
     /**
      * hostname of peer
@@ -43,7 +43,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     /**
      * router id of peer
      */
-    public addrIPv4 rtrId;
+    public final addrIPv4 rtrId;
 
     /**
      * time last heard
@@ -53,7 +53,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     /**
      * notified on route change
      */
-    protected notifier notif = new notifier();
+    protected final notifier notif = new notifier();
 
     /**
      * protocol handler
@@ -69,6 +69,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
      * uptime
      */
     protected long upTime;
+
+    /**
+     * ready state
+     */
+    protected boolean isReady;
 
     /**
      * segment routing label
@@ -89,12 +94,14 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
      *
      * @param parent protocol handler
      * @param ifc interface handler
-     * @param peer transport address
+     * @param peerId router id
+     * @param peerAd transport address
      */
-    public rtrLsrpNeigh(rtrLsrp parent, rtrLsrpIface ifc, addrIPv4 peer) {
+    public rtrLsrpNeigh(rtrLsrp parent, rtrLsrpIface ifc, addrIPv4 peerId, addrIP peerAd) {
         lower = parent;
         iface = ifc;
-        rtrId = peer.copyBytes();
+        rtrId = peerId.copyBytes();
+        peer = peerAd.copyBytes();
         lastHeard = bits.getTime();
         advert = new tabGen<rtrLsrpData>();
     }
@@ -133,6 +140,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         }
         boolean oldrun = need2run;
         need2run = false;
+        isReady = false;
         if (conn != null) {
             conn.setClose();
         }
@@ -329,6 +337,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             segrouLab = tabLabel.allocate(14);
             segrouLab.setFwdMpls(14, lower.fwdCore, iface.iface, peer, tabLabel.int2labels(ipMpls.labelImp));
         }
+        isReady = true;
         lower.todo = 0;
         lower.notif.wakeup();
         if (iface.bfdTrigger) {

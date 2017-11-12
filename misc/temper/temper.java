@@ -446,9 +446,15 @@ public class temper implements Runnable {
                 String a = (tmpMin + ((i * tmpMax) / 580)) + "       ";
                 g2d.drawString(a.substring(0, 6), 1, 590 - i);
             }
+            String a;
+            if ((history.get(history.size() - 1).time - history.get(0).time) < (86400 * 3000)) {
+                a = "HH:MM";
+            } else {
+                a = "MMMdd";
+            }
             for (int i = 0; i < 780; i += 100) {
                 temperHist l = history.get((i * history.size()) / 780);
-                DateFormat dat = new SimpleDateFormat("MMMdd", Locale.US);
+                DateFormat dat = new SimpleDateFormat(a, Locale.US);
                 g2d.drawString(dat.format(new Date((long) l.time)), i + 10, 599);
             }
             ImageIO.write(img, "png", buf);

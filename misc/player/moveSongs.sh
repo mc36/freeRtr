@@ -1,4 +1,13 @@
-#!/bin/sh
+mv /nfs/temp/\!new/0* /nfs/music/0/
+mv /nfs/temp/\!new/1* /nfs/music/0/
+mv /nfs/temp/\!new/2* /nfs/music/0/
+mv /nfs/temp/\!new/3* /nfs/music/0/
+mv /nfs/temp/\!new/4* /nfs/music/0/
+mv /nfs/temp/\!new/5* /nfs/music/0/
+mv /nfs/temp/\!new/6* /nfs/music/0/
+mv /nfs/temp/\!new/7* /nfs/music/0/
+mv /nfs/temp/\!new/8* /nfs/music/0/
+mv /nfs/temp/\!new/9* /nfs/music/0/
 mv /nfs/temp/\!new/A* /nfs/music/a/
 mv /nfs/temp/\!new/B* /nfs/music/b/
 mv /nfs/temp/\!new/C* /nfs/music/c/

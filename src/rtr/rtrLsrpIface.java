@@ -167,7 +167,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
     protected void showNeighs(userFormat res) {
         for (int i = 0; i < neighs.size(); i++) {
             rtrLsrpNeigh nei = neighs.get(i);
-            res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.peer + "|" + bits.timePast(nei.upTime));
+            if (nei == null) {
+                continue;
+            }
+            res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.peer + "|" + nei.isReady + "|" + bits.timePast(nei.upTime));
         }
     }
 
@@ -397,10 +400,9 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         if (debugger.rtrLsrpEvnt) {
             logger.debug("rx hello " + id);
         }
-        rtrLsrpNeigh nei = new rtrLsrpNeigh(lower, this, peer);
+        rtrLsrpNeigh nei = new rtrLsrpNeigh(lower, this, peer, id.peerAddr);
         rtrLsrpNeigh old = neighs.add(nei);
         if (old == null) {
-            nei.peer = id.peerAddr.copyBytes();
             nei.startWork();
             sendHello(conn);
         } else {

@@ -1,15 +1,16 @@
 #!/bin/sh
-echo net.ipv6.conf.all.disable_ipv6=1>/etc/sysctl.d/disableipv6.conf
+echo net.ipv6.conf.all.disable_ipv6=1 > /etc/sysctl.d/disableipv6.conf
 cp systemd /lib/systemd/system/rtr.service
 cp initd /etc/init.d/rtr
 cp network /etc/network/interfaces
-systemctl disable network-manager
-systemctl disable NetworkManager
-systemctl disable ModemManager
-systemctl enable rtr
-systemctl set-default multi-user.target
 cp resolv /etc/resolv.conf
 chmod 777 /etc/init.d/rtr
+systemctl set-default multi-user.target
+export SVC="network-manager NetworkManager ModemManager"
+systemctl disable $SVC
+systemctl mask $SVC
+systemctl stop $SVC
+systemctl enable rtr
 update-rc.d rtr defaults
 mkdir /rtr
 cp ../default.cfg /rtr/rtr-sw.txt

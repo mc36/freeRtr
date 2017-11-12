@@ -261,7 +261,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return list
      */
     public userFormat showNeighs() {
-        userFormat res = new userFormat("|", "iface|router|name|peer|uptime");
+        userFormat res = new userFormat("|", "iface|router|name|peer|ready|uptime");
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);
             ifc.showNeighs(res);
@@ -451,6 +451,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (nei == null) {
                     continue;
                 }
+                if (!nei.isReady) {
+                    continue;
+                }
                 int adj = 0;
                 if (nei.segrouLab != null) {
                     adj = nei.segrouLab.getValue();
@@ -525,6 +528,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
             for (int i = 0; i < ifc.neighs.size(); i++) {
                 rtrLsrpNeigh nei = ifc.neighs.get(i);
                 if (nei == null) {
+                    continue;
+                }
+                if (!nei.isReady) {
                     continue;
                 }
                 spf.addNextHop(ifc.metric, nei.rtrId, nei.peer.copyBytes(), ifc.iface);
