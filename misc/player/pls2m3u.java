@@ -22,6 +22,8 @@ public class pls2m3u {
         playerLyric txt = playerUtil.readup(args[0]);
         playerUtil.put("converting " + txt.size() + " lines");
         List<playerSong> pls = playerSong.txt2pls(null, txt);
+        playerUtil.put("sorting " + pls.size() + " songs");
+        playerSong.sort(pls);
         playerUtil.put("converting " + pls.size() + " songs");
         txt = playerSong.m3u2txt(pls);
         playerUtil.put("writing " + txt.size() + " lines to " + args[1]);

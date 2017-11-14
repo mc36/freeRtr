@@ -98,7 +98,7 @@ server http sweb
  security dsacert dsa
  security ecdsacert ecdsa
  port 443
- host * path ./
+ host * path /nfs2/own/web/player/
  host * style bgcolor="#000000" text="#00FF00" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF"
  host * dirlist
  host * script
@@ -107,7 +107,7 @@ server http sweb
  exit
 !
 server http web
- host * path ./
+ host * path /nfs2/own/web/player/
  host * style bgcolor="#000000" text="#00FF00" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF"
  host * dirlist
  host * script

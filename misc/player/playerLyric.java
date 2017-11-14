@@ -315,6 +315,18 @@ public class playerLyric {
             if (b.indexOf("<a href") >= 0) {
                 continue;
             }
+            if (b.indexOf("can't find lyrics for") >= 0) {
+                continue;
+            }
+            if (b.indexOf("we don't have lyrics for") >= 0) {
+                continue;
+            }
+            if (b.indexOf("no lyrics found") >= 0) {
+                continue;
+            }
+            if (b.indexOf("<title>") >= 0) {
+                return new playerLyric();
+            }
             res.add(a);
         }
         return res;

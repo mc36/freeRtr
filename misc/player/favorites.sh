@@ -1,2 +1,2 @@
 #!/bin/sh
-java -cp /nfs/lyrx/lyrics favorites player-fav.pls $1
+java -cp /nfs/own/web/player favorites player-fav.pls $1

@@ -21,12 +21,13 @@ public class favorites {
         if (args.length > 1) {
             path = args[1];
         }
-        List<playerSong> need = playerSong.txt2pls(null, playerUtil.readup(favf));
         if (path == null) {
             playerUtil.put("checking " + favf + "'s...");
         } else {
             playerUtil.put("copying " + favf + "'s to " + path + "...");
         }
+        List<playerSong> need = playerSong.txt2pls(null, playerUtil.readup(favf));
+        playerSong.sort(need);
         playerUtil.saveas(playerSong.pls2txt(need), favf);
         for (int o = 0; o < need.size(); o++) {
             playerSong ntry = need.get(o);
@@ -34,10 +35,14 @@ public class favorites {
                 playerUtil.put("missing: " + ntry.file);
                 continue;
             }
+            int i = playerSong.find(need, ntry);
+            if (i != o) {
+                playerUtil.put("duplicate: " + ntry.file);
+            }
             if (path == null) {
                 continue;
             }
-            int i = ntry.file.lastIndexOf(".");
+            i = ntry.file.lastIndexOf(".");
             copyFile(ntry.file, path + ntry.title + ntry.file.substring(i, ntry.file.length()));
         }
     }

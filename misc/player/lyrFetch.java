@@ -20,6 +20,9 @@ public class lyrFetch {
         List<playerSong> fail = new ArrayList<playerSong>();
         List<playerSong> skip = new ArrayList<playerSong>();
         for (int i = 0; i < need.size(); i++) {
+            if (playerUtil.keyPress()) {
+                break;
+            }
             playerSong ntry = need.get(i);
             switch (doSong(ntry)) {
                 case 0:
@@ -33,10 +36,13 @@ public class lyrFetch {
                     break;
             }
         }
+        need.removeAll(skip);
+        need.removeAll(done);
+        playerUtil.put("--> need=" + need.size() + " skip=" + skip.size() + " done=" + done.size() + " fail=" + fail.size());
+        playerUtil.saveas(playerSong.pls2txt(need), "need.pls");
         playerUtil.saveas(playerSong.pls2txt(done), "done.pls");
         playerUtil.saveas(playerSong.pls2txt(fail), "fail.pls");
         playerUtil.saveas(playerSong.pls2txt(skip), "skip.pls");
-        playerUtil.put("--> need=" + need.size() + " skip=" + skip.size() + " done=" + done.size() + " fail=" + fail.size());
     }
 
     /**
@@ -46,15 +52,24 @@ public class lyrFetch {
      * @return 0 on success
      */
     public static int doSong(playerSong song) {
-        playerUtil.put("--> song " + song.file + " <--");
+        String cm[] = new String[3];
+        cm[0] = "./lyrFetch.sh";
+        cm[1] = song.justArtist();
+        cm[2] = song.justTitle();
+        playerUtil.put("--> song " + song.file + " : " + cm[1] + " - " + cm[2] + " <--");
         playerLyric lyric = playerUtil.readup(song.lyrFile());
         if (lyric != null) {
             playerUtil.put("already exists!");
             return 1;
         }
-        String cm[] = new String[2];
-        cm[0] = "./lyrFetch.sh";
-        cm[1] = song.title;
+        if (cm[1].length() < 1) {
+            playerUtil.put("no artist!");
+            return 1;
+        }
+        if (cm[2].length() < 1) {
+            playerUtil.put("no title!");
+            return 1;
+        }
         Process prc;
         try {
             Runtime rtm = Runtime.getRuntime();

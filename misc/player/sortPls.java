@@ -2,11 +2,11 @@
 import java.util.List;
 
 /**
- * convert playlist
+ * sort playlist
  *
  * @author matecsaba
  */
-public class m3u2pls {
+public class sortPls {
 
     /**
      * the main
@@ -15,13 +15,13 @@ public class m3u2pls {
      */
     public static void main(String[] args) {
         if (args.length != 2) {
-            playerUtil.put("usage: m3u2pls <source.m3u> <target.pls>");
+            playerUtil.put("usage: sortpls <source.pls> <target.pls>");
             return;
         }
         playerUtil.put("reading " + args[0]);
         playerLyric txt = playerUtil.readup(args[0]);
         playerUtil.put("converting " + txt.size() + " lines");
-        List<playerSong> pls = playerSong.txt2m3u(null, txt);
+        List<playerSong> pls = playerSong.txt2pls(null, txt);
         playerUtil.put("sorting " + pls.size() + " songs");
         playerSong.sort(pls);
         playerUtil.put("converting " + pls.size() + " songs");

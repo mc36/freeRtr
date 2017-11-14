@@ -53,6 +53,19 @@ public class playerUtil {
     }
 
     /**
+     * check if key pressed
+     *
+     * @return true if was
+     */
+    public static boolean keyPress() {
+        try {
+            return System.in.available() > 0;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    /**
      * put out lines
      *
      * @param l lines to write
@@ -232,6 +245,25 @@ public class playerUtil {
             return 0;
         }
     }
+
+    /**
+     * sleep some time without wakeups
+     *
+     * @param msec
+     */
+    public static void sleep(int msec) {
+        if (msec < 1) {
+            return;
+        }
+        try {
+            synchronized (sleeper) {
+                sleeper.wait(msec);
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    private final static Object sleeper = Integer.valueOf(123);
 
     /**
      * html to text

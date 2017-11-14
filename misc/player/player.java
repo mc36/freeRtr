@@ -665,6 +665,7 @@ public class player implements Runnable {
             findSongs fnd = new findSongs();
             fnd.doFind("/media");
             fnd.doFind("/mnt");
+            fnd.doSort();
             playlist = fnd.lst;
             prelock = playlist;
             String a = "media scanned, " + playlist.size() + " songs found.<br/><br/>";

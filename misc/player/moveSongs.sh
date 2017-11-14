@@ -1,3 +1,4 @@
+#!/bin/sh
 mv /nfs/temp/\!new/0* /nfs/music/0/
 mv /nfs/temp/\!new/1* /nfs/music/0/
 mv /nfs/temp/\!new/2* /nfs/music/0/

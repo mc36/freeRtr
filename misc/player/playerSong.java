@@ -17,12 +17,38 @@ public class playerSong implements Comparator<playerSong> {
     public String file;
 
     /**
-     * title
+     * artist - title
      */
     public String title;
 
     public String toString() {
         return file + "|" + title;
+    }
+
+    /**
+     * just artist
+     *
+     * @return path
+     */
+    public String justArtist() {
+        int i = title.indexOf(" - ");
+        if (i < 0) {
+            return "";
+        }
+        return title.substring(0, i).trim();
+    }
+
+    /**
+     * just artist
+     *
+     * @return path
+     */
+    public String justTitle() {
+        int i = title.indexOf(" - ");
+        if (i < 0) {
+            return "";
+        }
+        return title.substring(i + 2, title.length()).trim();
     }
 
     /**
@@ -186,6 +212,23 @@ public class playerSong implements Comparator<playerSong> {
      */
     public static void sort(List<playerSong> lst) {
         Collections.sort(lst, new playerSong());
+    }
+
+    /**
+     * find entry
+     *
+     * @param trg where to find
+     * @param ntry entry to find
+     * @return index, -1 on error
+     */
+    public static int find(List<playerSong> trg, playerSong ntry) {
+        for (int i = 0; i < trg.size(); i++) {
+            if (ntry.compare(ntry, trg.get(i)) != 0) {
+                continue;
+            }
+            return i;
+        }
+        return -1;
     }
 
 }

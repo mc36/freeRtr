@@ -48,7 +48,7 @@ public class renamer {
             }
         }
         String s = args[0];
-        put("reading " + s + "...");
+        playerUtil.put("reading " + s + "...");
         String[] l1 = new File(s).list();
         int tried = 0;
         int failed = 0;
@@ -58,7 +58,7 @@ public class renamer {
             a = guessName(a, basic);
             a = guessName(a, basic);
             if (a == null) {
-                put("no guess to " + s);
+                playerUtil.put("no guess to " + s);
                 continue;
             }
             if (a.startsWith(remover)) {
@@ -67,7 +67,7 @@ public class renamer {
             if (a.equals(s)) {
                 continue;
             }
-            put(s + " --> " + a);
+            playerUtil.put(s + " --> " + a);
             tried++;
             if (!really) {
                 continue;
@@ -78,16 +78,7 @@ public class renamer {
                 failed++;
             }
         }
-        put(l1.length + " files, " + tried + " need renaming, " + failed + " failed.");
-    }
-
-    /**
-     * put out line
-     *
-     * @param s string to write
-     */
-    public static void put(String s) {
-        System.out.println(s);
+        playerUtil.put(l1.length + " files, " + tried + " need renaming, " + failed + " failed.");
     }
 
     /**

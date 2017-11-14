@@ -1,2 +1,3 @@
 #!/bin/sh
-java -jar rtr.jar routerc player-
+cd /home/mc36/
+java -jar /rtr/rtr.jar routerc /nfs2/own/web/player/player-
