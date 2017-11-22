@@ -1032,7 +1032,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         pck.INTupper = 0;
         ipMpls.beginMPLSfields(pck, mplsPropTtl);
-        natCfg.packParse(true, true, true, pck);
         forwardPacket(true, false, lower, pck);
     }
 
@@ -1383,7 +1382,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         pck.INTupper = ifc.ifwNum;
-        natCfg.packParse(true, true, true, pck);
         forwardPacket(true, true, ifc, pck);
     }
 
@@ -1442,22 +1440,25 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (netflow != null) {
             netflow.session.doPack(pck, true);
         }
-        tabNatTraN natT = tabNatTraN.fromPack(pck);
-        natT = natTrns.find(natT);
-        if (natT != null) {
-            long tim = bits.getTime();
-            natT.lastUsed = tim;
-            natT.reverse.lastUsed = tim;
-            natT.updatePack(pck);
-            natCfg.packUpdate(pck);
-        } else {
-            tabNatCfgN natC = natCfg.find(pck);
-            if (natC != null) {
-                natT = natC.createEntry(pck);
-                natTrns.add(natT);
-                natTrns.add(natT.reverseEntry());
+        if (natCfg.size() > 0) {
+            natCfg.packParse(true, true, true, pck);
+            tabNatTraN natT = tabNatTraN.fromPack(pck);
+            natT = natTrns.find(natT);
+            if (natT != null) {
+                long tim = bits.getTime();
+                natT.lastUsed = tim;
+                natT.reverse.lastUsed = tim;
                 natT.updatePack(pck);
                 natCfg.packUpdate(pck);
+            } else {
+                tabNatCfgN natC = natCfg.find(pck);
+                if (natC != null) {
+                    natT = natC.createEntry(pck);
+                    natTrns.add(natT);
+                    natTrns.add(natT.reverseEntry());
+                    natT.updatePack(pck);
+                    natCfg.packUpdate(pck);
+                }
             }
         }
         boolean alerted = (pck.IPalrt != -1);
