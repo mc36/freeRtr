@@ -49,6 +49,11 @@ public class rtrMsdp extends ipRtr {
     protected tabGen<rtrMsdpNeigh> neighs = new tabGen<rtrMsdpNeigh>();
 
     /**
+     * router number
+     */
+    protected int rtrNum;
+
+    /**
      * accepted sas
      */
     public tabGen<ipFwdMcast> cache = new tabGen<ipFwdMcast>();
@@ -58,10 +63,12 @@ public class rtrMsdp extends ipRtr {
      *
      * @param forwarder forwarder to update
      * @param protocol tcp protocol to use
+     * @param id process id
      */
-    public rtrMsdp(ipFwd forwarder, prtTcp protocol) {
+    public rtrMsdp(ipFwd forwarder, prtTcp protocol, int id) {
         fwdCore = forwarder;
         tcpCore = protocol;
+        rtrNum = id;
     }
 
     public String toString() {

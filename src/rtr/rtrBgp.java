@@ -164,7 +164,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * route type
      */
-    protected tabRouteEntry.routeType rouTyp;
+    protected final tabRouteEntry.routeType rouTyp;
 
     /**
      * unicast afi
@@ -254,7 +254,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * router number
      */
-    protected int rtrNum;
+    protected final int rtrNum;
 
     /**
      * next hop tracking route map
@@ -290,11 +290,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * the computed other routes
      */
     public tabRoute<addrIP> computedOtr = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed flowspec routes
-     */
-    public tabRoute<addrIP> computedFlw = new tabRoute<addrIP>("rx");
 
     /**
      * the computed vpnuni routes
@@ -718,6 +713,26 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMvpn = rtrBgpUtil.safiIp6mvpn;
                 afiMvpo = rtrBgpUtil.safiIp4mvpn;
                 break;
+            default:
+                rouTyp = null;
+                afiUni = 0;
+                afiLab = 0;
+                afiMlt = 0;
+                afiOtr = 0;
+                afiFlw = 0;
+                afiVpnU = 0;
+                afiVpnM = 0;
+                afiVpnF = 0;
+                afiVpoU = 0;
+                afiVpoM = 0;
+                afiVpoF = 0;
+                afiVpls = 0;
+                afiMspw = 0;
+                afiEvpn = 0;
+                afiMdt = 0;
+                afiMvpn = 0;
+                afiMvpo = 0;
+                break;
         }
         incrLimit = 1000;
         conquer = false;
@@ -735,6 +750,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         temps = new tabGen<rtrBgpTemp>();
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
+        routerComputedF = new tabRoute<addrIP>("rx");
         needFull = true;
         compRound = 1;
         routerCreateComputed();
@@ -937,7 +953,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return computedOtr;
         }
         if (safi == afiFlw) {
-            return computedFlw;
+            return routerComputedF;
         }
         if (safi == afiVpnU) {
             return computedVpnU;
@@ -1147,6 +1163,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), afiUni == rtrBgpUtil.safiIp6uni, localAs);
         }
+        nFlw.mergeFrom(2, routerRedistedF, null, true);
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doAdvertise(nVpnU, nVpnM, nVpnF, nMvpn);
         }
@@ -1211,7 +1228,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             computeConquerTable(routerComputedU, nUni);
             computeConquerTable(routerComputedM, nMlt);
             computeConquerTable(computedOtr, nOtr);
-            computeConquerTable(computedFlw, nFlw);
+            computeConquerTable(routerComputedF, nFlw);
             computeConquerTable(computedVpnU, nVpnU);
             computeConquerTable(computedVpnM, nVpnM);
             computeConquerTable(computedVpnF, nVpnF);
@@ -1237,7 +1254,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         routerComputedU = nUni;
         routerComputedM = nMlt;
         computedOtr = nOtr;
-        computedFlw = nFlw;
+        routerComputedF = nFlw;
         computedVpnU = nVpnU;
         computedVpnM = nVpnM;
         computedVpnF = nVpnF;
@@ -1341,10 +1358,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " export");
         }
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doPeers(nVpnU, nVpnM);
+            vrfs.get(i).doer.doPeers(nVpnU, nVpnM, nVpnF);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doPeers(nVpoU, nVpoM);
+            ovrfs.get(i).doer.doPeers(nVpoU, nVpoM, nVpoF);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doPeers(nVpls);
@@ -1564,7 +1581,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computeIncrUpdate(afiUni, changedUni, routerComputedU, routerRedistedU);
         computeIncrUpdate(afiMlt, changedMlt, routerComputedM, routerRedistedM);
         computeIncrUpdate(afiOtr, changedOtr, computedOtr, origntedOtr);
-        computeIncrUpdate(afiFlw, changedFlw, computedFlw, origntedFlw);
+        computeIncrUpdate(afiFlw, changedFlw, routerComputedF, origntedFlw);
         computeIncrUpdate(afiVpnU, changedVpnU, computedVpnU, origntedVpnU);
         computeIncrUpdate(afiVpnM, changedVpnM, computedVpnM, origntedVpnM);
         computeIncrUpdate(afiVpnF, changedVpnF, computedVpnF, origntedVpnF);
@@ -1581,10 +1598,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " export");
         }
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doPeers(computedVpnU, computedVpnM);
+            vrfs.get(i).doer.doPeers(computedVpnU, computedVpnM, computedVpnF);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doPeers(computedVpoU, computedVpoM);
+            ovrfs.get(i).doer.doPeers(computedVpoU, computedVpoM, computedVpoF);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doPeers(computedVpls);
@@ -2782,7 +2799,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("unicast table|" + routerComputedU.size() + ", list=" + changedUni.size());
         l.add("multicast table|" + routerComputedM.size() + ", list=" + changedMlt.size());
         l.add("other table|" + computedOtr.size() + ", list=" + changedOtr.size());
-        l.add("flowspec table|" + computedFlw.size() + ", list=" + changedFlw.size());
+        l.add("flowspec table|" + routerComputedF.size() + ", list=" + changedFlw.size());
         l.add("vpnuni table|" + computedVpnU.size() + ", list=" + changedVpnU.size());
         l.add("vpnmlt table|" + computedVpnM.size() + ", list=" + changedVpnM.size());
         l.add("vpnflw table|" + computedVpnF.size() + ", list=" + changedVpnF.size());

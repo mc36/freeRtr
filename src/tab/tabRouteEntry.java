@@ -126,7 +126,16 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         /**
          * ipv6 msdp
          */
-        msdp6
+        msdp6,
+        /**
+         * ipv4 flowspec
+         */
+        flwspc4,
+        /**
+         * ipv6 flowspec
+         */
+        flwspc6,
+
     }
 
     /**
@@ -429,6 +438,12 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                 return "DEF";
             case automesh:
                 return "MSH";
+            case msdp4:
+            case msdp6:
+                return "M";
+            case flwspc4:
+            case flwspc6:
+                return "F";
             default:
                 return "?";
         }

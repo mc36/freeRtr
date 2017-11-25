@@ -280,7 +280,9 @@ public class ipFwdTab {
         userFormat res = new userFormat("|", "protocol|process|interfaces|neighbors|computed|advertised");
         for (int o = 0; o < lower.routers.size(); o++) {
             ipRtr rtr = lower.routers.get(o);
-            res.add(cfgRtr.num2name(rtr.routerProtoTyp) + "|" + rtr.routerProcNum + "|" + rtr.routerIfaceCount() + "|" + rtr.routerNeighCount() + "|" + rtr.routerComputedU.size() + "/" + rtr.routerComputedM.size() + "|" + rtr.routerRedistedU.size() + "/" + rtr.routerRedistedM.size());
+            res.add(cfgRtr.num2name(rtr.routerProtoTyp) + "|" + rtr.routerProcNum + "|" + rtr.routerIfaceCount() + "|" + rtr.routerNeighCount() + "|"
+                    + rtr.routerComputedU.size() + "/" + rtr.routerComputedM.size() + "/" + rtr.routerComputedF.size() + "|"
+                    + rtr.routerRedistedU.size() + "/" + rtr.routerRedistedM.size() + "/" + rtr.routerRedistedF.size());
         }
         return res;
     }
@@ -313,7 +315,7 @@ public class ipFwdTab {
      * @return output
      */
     public static String vrfListShow(ipFwd lower) {
-        return lower.ifaces.size() + "|" + lower.actualU.size() + "|" + lower.actualM.size() + "|" + lower.labeldR.size() + "|" + lower.groups.size() + "|" + lower.trafEngs.size() + "|" + lower.mp2mpLsp.size() + "|" + lower.natTrns.size() + "|" + lower.routers.size() + "|" + lower.cntr.packRx + "|" + lower.cntr.byteRx;
+        return lower.ifaces.size() + "|" + lower.actualU.size() + "|" + lower.actualM.size() + "|" + lower.labeldR.size() + "|" + lower.groups.size() + "|" + lower.actualF.size() + "|" + lower.trafEngs.size() + "|" + lower.mp2mpLsp.size() + "|" + lower.natTrns.size() + "|" + lower.routers.size() + "|" + lower.cntr.packRx + "|" + lower.cntr.byteRx;
     }
 
     /**
@@ -369,6 +371,7 @@ public class ipFwdTab {
             }
             tabRoute<addrIP> tabU = new tabRoute<addrIP>("redist");
             tabRoute<addrIP> tabM = new tabRoute<addrIP>("redist");
+            tabRoute<addrIP> tabF = new tabRoute<addrIP>("redist");
             for (int o = 0; o < rtr.routerRedisting.size(); o++) {
                 ipRtrRed ntry = rtr.routerRedisting.get(o);
                 if (ntry == null) {
@@ -376,6 +379,7 @@ public class ipFwdTab {
                 }
                 ntry.filter(tabU, lower.actualU);
                 ntry.filter(tabM, lower.actualM);
+                ntry.filter(tabF, lower.actualF);
             }
             for (int o = 0; o < rtr.routerAdverting.size(); o++) {
                 ipRtrAdv ntry = rtr.routerAdverting.get(o);
@@ -384,8 +388,9 @@ public class ipFwdTab {
                 }
                 ntry.filter(tabU, lower.actualU);
                 ntry.filter(tabM, lower.actualM);
+                ntry.filter(tabF, lower.actualF);
             }
-            boolean diff = tabU.differs(rtr.routerRedistedU) || tabM.differs(rtr.routerRedistedM);
+            boolean diff = tabU.differs(rtr.routerRedistedU) || tabM.differs(rtr.routerRedistedM) || tabF.differs(rtr.routerRedistedF);
             if (chg) {
                 rtr.routerOthersChanged();
             }
@@ -394,8 +399,10 @@ public class ipFwdTab {
             }
             tabU.version = rtr.routerRedistedU.version + 1;
             tabM.version = tabU.version;
+            tabF.version = tabU.version;
             rtr.routerRedistedU = tabU;
             rtr.routerRedistedM = tabM;
+            rtr.routerRedistedF = tabF;
             rtr.routerRedistChanged();
         }
     }
@@ -446,6 +453,8 @@ public class ipFwdTab {
         tabL.defDist = tabRouteEntry.distanMax;
         tabRoute<addrIP> tabM = new tabRoute<addrIP>("rpf");
         tabM.defDist = tabRouteEntry.distanMax;
+        tabRoute<addrIP> tabF = new tabRoute<addrIP>("flwspc");
+        tabF.defDist = tabRouteEntry.distanMax;
         tabRoute<addrIP> tabA = new tabRoute<addrIP>("locals");
         tabA.defDist = 0;
         tabA.defMetr = 1;
@@ -515,9 +524,13 @@ public class ipFwdTab {
             tabT = rtr.routerComputedM;
             tabT.setProto(rtr.routerProtoTyp, rtr.routerProcNum);
             tabM.mergeFrom(2, tabT, null, true);
+            tabT = rtr.routerComputedF;
+            tabT.setProto(rtr.routerProtoTyp, rtr.routerProcNum);
+            tabF.mergeFrom(2, tabT, null, true);
         }
         tabL.delDistance(tabRouteEntry.distanMax);
         tabM.delDistance(tabRouteEntry.distanMax);
+        tabF.delDistance(tabRouteEntry.distanMax);
         tabA = new tabRoute<addrIP>("locals");
         tabA.mergeFrom(2, tabL, null, true);
         for (int i = 0; i < lower.routers.size(); i++) {
@@ -530,6 +543,7 @@ public class ipFwdTab {
             }
             tabA.mergeFrom(2, rtr.routerComputedU, tabL, true);
             tabM.mergeFrom(2, rtr.routerComputedM, tabL, true);
+            tabF.mergeFrom(2, rtr.routerComputedF, null, true);
         }
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
@@ -541,9 +555,11 @@ public class ipFwdTab {
             }
             tabA.mergeFrom(2, rtr.routerComputedU, null, true);
             tabM.mergeFrom(2, rtr.routerComputedM, null, true);
+            tabF.mergeFrom(2, rtr.routerComputedF, null, true);
         }
         tabA.delDistance(tabRouteEntry.distanMax);
         tabM.delDistance(tabRouteEntry.distanMax);
+        tabF.delDistance(tabRouteEntry.distanMax);
         switch (lower.prefixMode) {
             case igp:
                 break;
@@ -646,17 +662,19 @@ public class ipFwdTab {
             updateTableRouteLabels(ntry, loc, rem);
         }
         lower.commonLabel.setFwdCommon(1, lower);
-        if ((!tabA.differs(lower.actualU)) && (!tabM.differs(lower.actualM))) {
+        if ((!tabA.differs(lower.actualU)) && (!tabM.differs(lower.actualM)) && (!tabF.differs(lower.actualF))) {
             return false;
         }
         tabA.version = lower.actualU.version + 1;
         tabL.version = tabA.version;
         tabC.version = tabA.version;
         tabM.version = tabA.version;
+        tabF.version = tabA.version;
         lower.connedR = tabC;
         lower.labeldR = tabL;
         lower.actualU = tabA;
         lower.actualM = tabM;
+        lower.actualF = tabF;
         return true;
     }
 
@@ -706,8 +724,8 @@ public class ipFwdTab {
     protected static void updateOneGroup(ipFwd lower, ipFwdMcast grp) {
         tabRouteEntry<addrIP> prf = lower.actualM.route(grp.source);
         if (prf == null) {
-        grp.iface = null;
-        grp.upstream = null;
+            grp.iface = null;
+            grp.upstream = null;
             return;
         }
         grp.iface = (ipFwdIface) prf.iface;

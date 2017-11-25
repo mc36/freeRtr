@@ -474,6 +474,10 @@ public class userConfig {
         l.add("3  .      <num>                      process id");
         l.add("2  3    msdp6                        multicast source discovery protocol for ipv6");
         l.add("3  .      <num>                      process id");
+        l.add("2  3    flowspec4                    flowspec rewriter for ipv4");
+        l.add("3  .      <num>                      process id");
+        l.add("2  3    flowspec6                    flowspec rewriter for ipv6");
+        l.add("3  .      <num>                      process id");
         l.add("1  2  chat-script                    build a chat script");
         l.add("2  .    <name>                       name of script");
         l.add("1  2  access-list                    build an access list");

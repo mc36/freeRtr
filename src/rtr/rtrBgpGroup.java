@@ -691,6 +691,16 @@ public class rtrBgpGroup extends rtrBgpParam {
             originatePrefix(ntry);
             tabRoute.addUpdatedEntry(2, nMlt, ntry, roumapOut, roupolOut, prflstOut);
         }
+        for (int i = 0; i < lower.routerRedistedF.size(); i++) {
+            tabRouteEntry<addrIP> ntry = lower.routerRedistedF.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry = ntry.copyBytes();
+            ntry.rouSrc = rtrBgpUtil.peerOriginate;
+            originatePrefix(ntry);
+            tabRoute.addUpdatedEntry(2, nFlw, ntry, voumapOut, voupolOut, null);
+        }
         readvertTable(true, nUni, cUni);
         readvertTable(false, nMlt, cMlt);
         importTable(nOtr, cOtr);

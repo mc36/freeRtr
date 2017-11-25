@@ -51,6 +51,11 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     public tabRoute<addrIP> routerComputedM = new tabRoute<addrIP>("computed");
 
     /**
+     * the flowspec routes computed from protocol
+     */
+    public tabRoute<addrIP> routerComputedF = new tabRoute<addrIP>("computed");
+
+    /**
      * the imported unicast routes
      */
     public tabRoute<addrIP> routerRedistedU = new tabRoute<addrIP>("imported");
@@ -59,6 +64,11 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      * the imported multicast routes
      */
     public tabRoute<addrIP> routerRedistedM = new tabRoute<addrIP>("imported");
+
+    /**
+     * the imported flowspec routes
+     */
+    public tabRoute<addrIP> routerRedistedF = new tabRoute<addrIP>("imported");
 
     /**
      * list of route imports
@@ -97,6 +107,11 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      */
     public int isBGP() {
         switch (routerProtoTyp) {
+            case msdp4:
+            case msdp6:
+            case flwspc4:
+            case flwspc6:
+                return 1;
             case bgp4:
             case bgp6:
                 if (routerVpn) {

@@ -801,6 +801,10 @@ public class userShow {
                 doShowRouteM(4);
                 return null;
             }
+            if (a.equals("flwspc")) {
+                doShowRouteF(4);
+                return null;
+            }
             if (a.equals("mroute")) {
                 doShowMroute(4);
                 return null;
@@ -1008,6 +1012,10 @@ public class userShow {
             }
             if (a.equals("rpf")) {
                 doShowRouteM(6);
+                return null;
+            }
+            if (a.equals("flwspc")) {
+                doShowRouteF(6);
                 return null;
             }
             if (a.equals("mroute")) {
@@ -2301,7 +2309,7 @@ public class userShow {
             doShowHistory(cmd.word(), fwd.hstry);
             return;
         }
-        userFormat l = new userFormat("|", "vrf|interface|unicast|multicast|label|mroute|p2p|mp2mp|nat|proto|pack|byte");
+        userFormat l = new userFormat("|", "vrf|interface|unicast|multicast|label|mroute|flwspc|p2p|mp2mp|nat|proto|pack|byte");
         for (int i = 0; i < cfgAll.vrfs.size(); i++) {
             cfgVrf v = cfgAll.vrfs.get(i);
             String s;
@@ -2377,6 +2385,14 @@ public class userShow {
             return;
         }
         doShowRoutes(fwd, fwd.actualM, 1);
+    }
+
+    private void doShowRouteF(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        doShowRoutes(fwd, fwd.actualF, 5);
     }
 
     private void doShowRoutes(ipFwd fwd, tabRoute<addrIP> tab, int typ) {

@@ -155,6 +155,10 @@ public class userExec {
         hl.add("3 4        rpf                   multicast routing table entries");
         hl.add("4 5,.        <vrf>               name of routing table");
         hl.add("5 .            [addr]            prefix to view");
+        hl.add("3 4        flwspc                flowspec routing table entries");
+        hl.add("4 5,.        <vrf>               name of routing table");
+        hl.add("5 6,.          [addr]            prefix to view");
+        hl.add("6 .              [rd]            route distinguisher");
         hl.add("3 4        protocol              routing protocol summary");
         hl.add("4 .          <vrf>               name of routing table");
         hl.add("3 4        mroute                multicast forwarding table entries");

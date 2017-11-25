@@ -426,6 +426,7 @@ router bgp4 1
  afi-evpn 100001 encapsulation pbb
  afi-evpn 100001 update-source loopback0
  redistribute connected
+ redistribute flowspec4 2
  exit
 !
 router bgp4 65535

@@ -142,6 +142,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         for (int i = 0; i < routerRedistedM.size(); i++) {
             doExportRoute(routerRedistedM.get(i), nMlt, rt);
         }
+        for (int i = 0; i < routerRedistedF.size(); i++) {
+            doExportRoute(routerRedistedF.get(i), nFlw, rt);
+        }
         if (flowSpec != null) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.extComm = new ArrayList<Long>();
@@ -206,11 +209,13 @@ public class rtrBgpVrfRtr extends ipRtr {
      *
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
+     * @param cmpF flowspec table to read
      */
-    public void doPeers(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM) {
+    public void doPeers(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
         final long rt = tabRtrmapN.rt2comm(vrf.rtImp);
         tabRoute<addrIP> tabU = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> tabM = new tabRoute<addrIP>("bgp");
+        tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
         peers = new tabGen<addrIP>();
         for (int i = 0; i < cmpU.size(); i++) {
             doImportRoutes(cmpU.get(i), tabU, rt);
@@ -218,10 +223,14 @@ public class rtrBgpVrfRtr extends ipRtr {
         for (int i = 0; i < cmpM.size(); i++) {
             doImportRoutes(cmpM.get(i), tabM, rt);
         }
+        for (int i = 0; i < cmpF.size(); i++) {
+            doImportRoutes(cmpF.get(i), tabF, rt);
+        }
         routerDoAggregates(tabU, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
         routerDoAggregates(tabM, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
         routerComputedU = tabU;
         routerComputedM = tabM;
+        routerComputedF = tabF;
         fwd.routerChg(this);
     }
 

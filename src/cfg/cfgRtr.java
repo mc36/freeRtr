@@ -12,6 +12,7 @@ import java.util.List;
 import rtr.rtrBabel;
 import rtr.rtrBgp;
 import rtr.rtrEigrp;
+import rtr.rtrFlowspec;
 import rtr.rtrIsis;
 import rtr.rtrMsdp;
 import rtr.rtrOspf4;
@@ -109,6 +110,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * msdp handler
      */
     public rtrMsdp msdp;
+
+    /**
+     * flowspec handler
+     */
+    public rtrFlowspec flwspc;
 
     /**
      * state of this process
@@ -309,7 +315,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router msdp[4|6] .*! no neighbor .* shutdown",
         "router msdp[4|6] .*! no neighbor .* update-source",
         "router msdp[4|6] .*! no neighbor .* password",
-        "router msdp[4|6] .*! no neighbor .* bfd"};
+        "router msdp[4|6] .*! no neighbor .* bfd",
+        // router flowspec
+        "router flowspec[4|6] .*! distance 254",};
 
     /**
      * defaults filter
@@ -389,6 +397,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (a.equals("msdp6")) {
             return tabRouteEntry.routeType.msdp6;
         }
+        if (a.equals("flowspec4")) {
+            return tabRouteEntry.routeType.flwspc4;
+        }
+        if (a.equals("flowspec6")) {
+            return tabRouteEntry.routeType.flwspc6;
+        }
         return null;
     }
 
@@ -440,6 +454,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "msdp4";
             case msdp6:
                 return "msdp6";
+            case flwspc4:
+                return "flowspec4";
+            case flwspc6:
+                return "flowspec6";
             case staticRoute:
                 return "static";
             case conn:
@@ -755,7 +773,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         }
         return agr;
     }
-    
+
     public int compare(cfgRtr o1, cfgRtr o2) {
         int i = o1.type.compareTo(o2.type);
         if (i != 0) {
@@ -769,7 +787,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         }
         return 0;
     }
-    
+
     public String toString() {
         return "rtr " + number;
     }
@@ -838,6 +856,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             msdp.routerCloseNow();
             msdp = null;
         }
+        if (flwspc != null) {
+            flwspc.routerCloseNow();
+            flwspc = null;
+        }
     }
 
     /**
@@ -879,6 +901,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case msdp4:
             case msdp6:
                 return msdp;
+            case flwspc4:
+            case flwspc6:
+                return flwspc;
             default:
                 return null;
         }
@@ -950,17 +975,23 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 bgp = new rtrBgp(vrf.fwd6, vrf, vrf.tcp6, number);
                 break;
             case msdp4:
-                msdp = new rtrMsdp(vrf.fwd4, vrf.tcp4);
+                msdp = new rtrMsdp(vrf.fwd4, vrf.tcp4, number);
                 break;
             case msdp6:
-                msdp = new rtrMsdp(vrf.fwd6, vrf.tcp6);
+                msdp = new rtrMsdp(vrf.fwd6, vrf.tcp6, number);
+                break;
+            case flwspc4:
+                flwspc = new rtrFlowspec(vrf.fwd4, number);
+                break;
+            case flwspc6:
+                flwspc = new rtrFlowspec(vrf.fwd6, number);
                 break;
             default:
                 return true;
         }
         return false;
     }
-    
+
     private synchronized List<String> getShRun(int mode, boolean filter) {
         boolean need2nd;
         switch (type) {
@@ -1014,7 +1045,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         }
         return userFilter.filterText(l, defaultF);
     }
-    
+
     public List<String> getShRun(boolean filter) {
         return getShRun(2, filter);
     }
@@ -1057,6 +1088,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 2) + " " + (p + 3) + "     babel6                babel routes");
         l.add((p + 2) + " " + (p + 3) + "     olsr4                 olsr routes");
         l.add((p + 2) + " " + (p + 3) + "     olsr6                 olsr routes");
+        l.add((p + 2) + " " + (p + 3) + "     flowspec4             flowspec routes");
+        l.add((p + 2) + " " + (p + 3) + "     flowspec6             flowspec routes");
         l.add((p + 3) + " " + (p + 4) + ",.     <proc>              process number");
         l.add((p + 4) + " " + (p + 5) + "         route-map         process prefixes on importing");
         l.add((p + 5) + " " + (p + 4) + ",.         <name>          name of route map");
@@ -1081,7 +1114,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 3) + " " + (p + 3) + ",.     as-set              generate as path information");
         l.add((p + 3) + " " + (p + 3) + ",.     summary-only        filter more specific prefixes");
     }
-    
+
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
         l.add("1 2   vrf                     specify vrf to use");
@@ -1095,7 +1128,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         }
         return l;
     }
-    
+
     public synchronized void doCfgStr(cmds cmd) {
         ipRtr rtr = getRouter();
         if (rtr != null) {
@@ -1149,9 +1182,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             cmd.badCmd();
         }
     }
-    
+
     public String getPrompt() {
         return "rtr";
     }
-    
+
 }

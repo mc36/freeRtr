@@ -128,6 +128,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public tabRoute<addrIP> actualM;
 
     /**
+     * the computed flowspec routing table
+     */
+    public tabRoute<addrIP> actualF;
+
+    /**
      * list of multicast groups
      */
     public final tabGen<ipFwdMcast> groups;
@@ -353,6 +358,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         labeldR = new tabRoute<addrIP>("labeled");
         actualU = new tabRoute<addrIP>("computed");
         actualM = new tabRoute<addrIP>("computed");
+        actualF = new tabRoute<addrIP>("computed");
         staticU = new tabGen<ipFwdRoute>();
         staticM = new tabGen<ipFwdRoute>();
         natTrns = new tabGen<tabNatTraN>();
