@@ -346,7 +346,7 @@ public class userHwdet {
         lop.add("fi");
         makeLoop(path + prefix + "main.sh", bits.str2lst("cd " + path), lop);
         starter.add("");
-        starter.add("sleep 3");
+        starter.add("sleep 5");
         starter.add("route add default gw 10.255.255.254");
         starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
         starter.add("echo 0 > /proc/sys/net/ipv6/conf/tap20001/disable_ipv6");

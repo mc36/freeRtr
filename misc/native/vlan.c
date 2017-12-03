@@ -41,7 +41,7 @@ void doLowerLoop() {
     unsigned char*bufP;
     int bufS;
     struct sockaddr_in addrTmp;
-    int addrLen;
+    unsigned int addrLen;
     int vln;
     for (;;) {
         addrLen = sizeof (addrTmp);
@@ -66,10 +66,10 @@ void doLowerLoop() {
 }
 
 void doNativeLoop() {
-    char bufD[16384];
+    unsigned char bufD[16384];
     int bufS;
     struct sockaddr_in addrTmp;
-    int addrLen;
+    unsigned int addrLen;
     for (;;) {
         addrLen = sizeof (addrTmp);
         bufS = sizeof (bufD);
@@ -84,10 +84,10 @@ void doNativeLoop() {
 
 void doUpperLoop(void *arg) {
     int myVlan = *((int *) arg);
-    char bufD[16384];
+    unsigned char bufD[16384];
     int bufS;
     struct sockaddr_in addrTmp;
-    int addrLen;
+    unsigned int addrLen;
     for (;;) {
         addrLen = sizeof (addrTmp);
         bufS = sizeof (bufD);

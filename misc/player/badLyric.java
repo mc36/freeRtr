@@ -59,7 +59,7 @@ public class badLyric {
                 delFile(s + "/" + a, false);
                 continue;
             }
-            if (".ini.torrent.pdf.rtf.doc.docx.ppt.pptx.exe.iso.txt.m3u.m3u8.pls.txt.log.jpg.jpeg.png.gif.tif.nfo.sfv.tags.".indexOf(b) >= 0) {
+            if (".ini.torrent.url.pdf.rtf.doc.docx.ppt.pptx.exe.iso.txt.m3u.m3u8.pls.txt.log.jpg.jpeg.png.gif.tif.nfo.sfv.tags.".indexOf(b) >= 0) {
                 delFile(s + "/" + a, true);
                 continue;
             }

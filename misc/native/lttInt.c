@@ -30,7 +30,7 @@ void err(char*buf) {
 }
 
 void doTapLoop() {
-    char bufD[16384];
+    unsigned char bufD[16384];
     int bufS;
     struct sockaddr_in addrTmp;
     for (;;) {
@@ -45,7 +45,7 @@ void doTapLoop() {
 }
 
 void doUdpLoop() {
-    char bufD[16384];
+    unsigned char bufD[16384];
     int bufS;
     struct sockaddr_in addrTmp;
     int addrLen;

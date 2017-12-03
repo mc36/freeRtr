@@ -32,10 +32,10 @@ void err(char*buf) {
 }
 
 void doLowerLoop() {
-    char bufD[16384];
+    unsigned char bufD[16384];
     int bufS;
     struct sockaddr_in addrTmp;
-    int addrLen;
+    unsigned int addrLen;
     for (;;) {
         addrLen = sizeof (addrTmp);
         bufS = sizeof (bufD);
@@ -51,10 +51,10 @@ void doLowerLoop() {
 
 void doUpperLoop(void *arg) {
     int myBun = *((int *) arg);
-    char bufD[16384];
+    unsigned char bufD[16384];
     int bufS;
     struct sockaddr_in addrTmp;
-    int addrLen;
+    unsigned int addrLen;
     for (;;) {
         addrLen = sizeof (addrTmp);
         bufS = sizeof (bufD);

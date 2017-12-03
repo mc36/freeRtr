@@ -44,10 +44,10 @@ void doRawLoop() {
 }
 
 void doUdpLoop() {
-    char bufD[16384];
+    unsigned char bufD[16384];
     int bufS;
     struct sockaddr_in addrTmp;
-    int addrLen;
+    unsigned int addrLen;
     for (;;) {
         addrLen = sizeof (addrTmp);
         bufS = sizeof (bufD);

@@ -22,6 +22,7 @@ import rtr.rtrLsrp;
 import rtr.rtrOlsr;
 import rtr.rtrRip4;
 import rtr.rtrRip6;
+import rtr.rtrUni2multi;
 import tab.tabGen;
 import tab.tabRouteEntry;
 import user.userFilter;
@@ -115,6 +116,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * flowspec handler
      */
     public rtrFlowspec flwspc;
+
+    /**
+     * unicast to multicast handler
+     */
+    public rtrUni2multi uni2multi;
 
     /**
      * state of this process
@@ -403,6 +409,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (a.equals("flowspec6")) {
             return tabRouteEntry.routeType.flwspc6;
         }
+        if (a.equals("uni2multi4")) {
+            return tabRouteEntry.routeType.uni2multi4;
+        }
+        if (a.equals("uni2multi6")) {
+            return tabRouteEntry.routeType.uni2multi6;
+        }
         return null;
     }
 
@@ -458,6 +470,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "flowspec4";
             case flwspc6:
                 return "flowspec6";
+            case uni2multi4:
+                return "uni2multi4";
+            case uni2multi6:
+                return "uni2multi6";
             case staticRoute:
                 return "static";
             case conn:
@@ -860,6 +876,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             flwspc.routerCloseNow();
             flwspc = null;
         }
+        if (uni2multi != null) {
+            uni2multi.routerCloseNow();
+            uni2multi = null;
+        }
     }
 
     /**
@@ -904,6 +924,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case flwspc4:
             case flwspc6:
                 return flwspc;
+            case uni2multi4:
+            case uni2multi6:
+                return uni2multi;
             default:
                 return null;
         }
@@ -985,6 +1008,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 break;
             case flwspc6:
                 flwspc = new rtrFlowspec(vrf.fwd6, number);
+                break;
+            case uni2multi4:
+                uni2multi = new rtrUni2multi(vrf.fwd4, number);
+                break;
+            case uni2multi6:
+                uni2multi = new rtrUni2multi(vrf.fwd6, number);
                 break;
             default:
                 return true;
@@ -1090,6 +1119,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 2) + " " + (p + 3) + "     olsr6                 olsr routes");
         l.add((p + 2) + " " + (p + 3) + "     flowspec4             flowspec routes");
         l.add((p + 2) + " " + (p + 3) + "     flowspec6             flowspec routes");
+        l.add((p + 2) + " " + (p + 3) + "     uni2multi4            uni2multi routes");
+        l.add((p + 2) + " " + (p + 3) + "     uni2multi6            uni2multi routes");
         l.add((p + 3) + " " + (p + 4) + ",.     <proc>              process number");
         l.add((p + 4) + " " + (p + 5) + "         route-map         process prefixes on importing");
         l.add((p + 5) + " " + (p + 4) + ",.         <name>          name of route map");

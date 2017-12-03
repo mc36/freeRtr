@@ -33,7 +33,6 @@ long int packTx;
 long int byteBd;
 long int packBd;
 
-
 void err(char*buf) {
     printf("%s\n", buf);
     exit(1);
@@ -129,7 +128,7 @@ void doUdpLoop() {
     char buf2d[32768];
     int buf2s;
     struct sockaddr_in addrTmp;
-    int addrLen;
+    unsigned int addrLen;
     int i, o;
     for (;;) {
         addrLen = sizeof (addrTmp);
