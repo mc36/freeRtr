@@ -1163,7 +1163,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), afiUni == rtrBgpUtil.safiIp6uni, localAs);
         }
-        nFlw.mergeFrom(2, routerRedistedF, null, true);
+        for (int i = 0; i < routerRedistedF.size(); i++) {
+            tabRouteEntry<addrIP> ntry = routerRedistedF.get(i);
+            ntry = ntry.copyBytes();
+            ntry.rouTyp = rouTyp;
+            ntry.protoNum = rtrNum;
+            ntry.distance = distantLoc;
+            nFlw.add(2, ntry, false, false);
+        }
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doAdvertise(nVpnU, nVpnM, nVpnF, nMvpn);
         }

@@ -226,7 +226,7 @@ public class player implements Runnable {
             String[] cmd = new String[4];
             cmd[0] = "amixer";
             cmd[1] = "sset";
-            cmd[2] = "Master";
+            cmd[2] = "PCM";
             cmd[3] = vol + "%";
             Process prc = rtm.exec(cmd);
             prc.waitFor();
