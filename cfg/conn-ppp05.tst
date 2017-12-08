@@ -8,6 +8,8 @@ vrf def v1
  exit
 int ser1
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  ppp user c
  ppp pass c
  ppp refuseauth eap
@@ -28,6 +30,8 @@ aaa userlist usr
  exit
 int ser1
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  ppp auth usr
  ppp refuseauth chap
  vrf for v1

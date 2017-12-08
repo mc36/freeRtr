@@ -13,6 +13,16 @@ import util.bits;
 public class ifcPppIp6 extends ifcPppNcp {
 
     /**
+     * my address, null=negotiated
+     */
+    public addrEui locAddrCur;
+
+    /**
+     * peer address, null=negotiated
+     */
+    public addrEui remAddrCur;
+
+    /**
      * ethertype
      */
     public final static int ethTyp = ipIfc6.type;
@@ -68,6 +78,12 @@ public class ifcPppIp6 extends ifcPppNcp {
     }
 
     public void clearState() {
+        if (parent.locIfIdCfg != null) {
+            locAddrCur = parent.locIfIdCfg.copyBytes();
+        } else {
+            locAddrCur = addrEui.getRandom();
+        }
+        remAddrCur = new addrEui();
         clearUpperState();
     }
 
@@ -77,7 +93,7 @@ public class ifcPppIp6 extends ifcPppNcp {
         if (!txReq) {
             return cfg;
         }
-        cfg.ifid = addrEui.getRandom();
+        cfg.ifid = locAddrCur.copyBytes();
         return cfg;
     }
 
@@ -122,6 +138,9 @@ public class ifcPppIp6 extends ifcPppNcp {
         }
         if (rej) {
             return null;
+        }
+        if (dat.ifid != null) {
+            remAddrCur = dat.ifid;
         }
         return null;
     }

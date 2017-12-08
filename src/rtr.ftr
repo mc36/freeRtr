@@ -1329,7 +1329,6 @@ qc pass: tacacs server
 todo: interface range command
 todo: reload vdc asdf looping as experimental
 todo: bdi infrastructure, service instances, etc
-todo: ncp close should honored again
 todo: reenable which elliptic courves? sure? why that?
 todo: https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 todo: parse privilege levels from radius and tacacs

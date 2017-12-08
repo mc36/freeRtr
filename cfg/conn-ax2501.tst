@@ -16,6 +16,8 @@ int eth1
  exit
 int di1
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  ipv6 addr 4321::1 ffff::
@@ -45,6 +47,8 @@ int eth1
  exit
 int di1
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  ipv6 addr 4321::2 ffff::

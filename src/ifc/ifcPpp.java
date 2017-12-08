@@ -1,6 +1,7 @@
 package ifc;
 
 import addr.addrEmpty;
+import addr.addrEui;
 import addr.addrIPv4;
 import addr.addrType;
 import auth.authGeneric;
@@ -57,6 +58,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      * authentication list to use for remote
      */
     public authGeneric authenRem = null;
+
+    /**
+     * my configured address
+     */
+    public addrEui locIfIdCfg;
 
     /**
      * my configured address
@@ -309,6 +315,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add("2 3     ip6cp                       ipv6 control protocol");
         l.add("3 .       open                      force to open state");
         l.add("3 .       close                     force to close state");
+        l.add("3 4       local                     set local address");
+        l.add("4 .         <text>                  address");
         l.add("2 3     bcp                         bridge control protocol");
         l.add("3 .       open                      force to open state");
         l.add("3 .       close                     force to close state");
@@ -352,6 +360,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         cmds.cfgLine(l, !locAddrReq, cmds.tabulator, "ppp ip4cp reqaddr", "");
         cmds.cfgLine(l, !ctrlIp6.forced2close(), cmds.tabulator, "ppp ip6cp close", "");
         cmds.cfgLine(l, !ctrlIp6.forced2open(), cmds.tabulator, "ppp ip6cp open", "");
+        cmds.cfgLine(l, locIfIdCfg == null, cmds.tabulator, "ppp ip6cp local", "" + locIfIdCfg);
         cmds.cfgLine(l, !ctrlBrdg.forced2close(), cmds.tabulator, "ppp bcp close", "");
         cmds.cfgLine(l, !ctrlBrdg.forced2open(), cmds.tabulator, "ppp bcp open", "");
         cmds.cfgLine(l, !ctrlMpls.forced2close(), cmds.tabulator, "ppp mplscp close", "");
@@ -449,6 +458,15 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             }
             if (a.equals("close")) {
                 ctrlIp6.forceClose(true);
+                return;
+            }
+            if (a.equals("local")) {
+                addrEui adr = new addrEui();
+                if (adr.fromString(cmd.word())) {
+                    cmd.error("bad ip address");
+                    return;
+                }
+                locIfIdCfg = adr;
                 return;
             }
         }
@@ -608,6 +626,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             }
             if (a.equals("close")) {
                 ctrlIp6.forceClose(false);
+                return;
+            }
+            if (a.equals("local")) {
+                locIfIdCfg = null;
                 return;
             }
         }
@@ -806,9 +828,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      *
      * @param pck packet received
      * @param cp control protocol got it
+     * @param proto protocol id
      * @return true went up
      */
-    public boolean recvNcpCtrl(packHolder pck, ifcPppNcp cp) {
+    public boolean recvNcpCtrl(packHolder pck, ifcPppNcp cp, int proto) {
         authenHead cis = new authenHead();
         if (cis.parsePack(pck)) {
             cntr.drop(pck, counter.reasons.tooSmall);
@@ -822,8 +845,16 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         if (b || (!cp.getReady())) {
             return false;
         }
-        if (cfger != null) {
-            cfger.addr4changed(ctrlIp4.locAddrCur, cfger.mask4, ctrlIp4.remAddrCur);
+        if (cfger == null) {
+            return true;
+        }
+        switch (proto) {
+            case ifcPppIp4.pppCtrl:
+                cfger.addr4changed(ctrlIp4.locAddrCur, cfger.mask4, ctrlIp4.remAddrCur);
+                break;
+            case ifcPppIp6.pppCtrl:
+                cfger.addr6changed(ctrlIp6.locAddrCur.toIPv6(), cfger.mask6, ctrlIp6.remAddrCur.toIPv6());
+                break;
         }
         return true;
     }
@@ -1006,28 +1037,28 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 newProt = ifcPppMpls.ethTypM;
                 break;
             case ifcPppIp4.pppCtrl:
-                recvNcpCtrl(pck, ctrlIp4);
+                recvNcpCtrl(pck, ctrlIp4, prot);
                 break;
             case ifcPppIp6.pppCtrl:
-                recvNcpCtrl(pck, ctrlIp6);
+                recvNcpCtrl(pck, ctrlIp6, prot);
                 break;
             case ifcPppBrdg.pppCtrl:
-                recvNcpCtrl(pck, ctrlBrdg);
+                recvNcpCtrl(pck, ctrlBrdg, prot);
                 break;
             case ifcPppMpls.pppCtrl:
-                recvNcpCtrl(pck, ctrlMpls);
+                recvNcpCtrl(pck, ctrlMpls, prot);
                 break;
             case ifcPppOsi.pppCtrl:
-                recvNcpCtrl(pck, ctrlOsi);
+                recvNcpCtrl(pck, ctrlOsi, prot);
                 break;
             case ifcPppIpx.pppCtrl:
-                recvNcpCtrl(pck, ctrlIpx);
+                recvNcpCtrl(pck, ctrlIpx, prot);
                 break;
             case ifcPppCrypt.pppCtrl:
-                recvNcpCtrl(pck, ctrlCrypt);
+                recvNcpCtrl(pck, ctrlCrypt, prot);
                 break;
             case ifcPppLcp.pppCtrl:
-                recvNcpCtrl(pck, ctrlLcp);
+                recvNcpCtrl(pck, ctrlLcp, prot);
                 checkPeerState(state.states.up);
                 break;
             case autherEap.pppCtrl:

@@ -24,6 +24,8 @@ int lo1
  exit
 int ser1
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  router isis4 1 ena
@@ -31,6 +33,8 @@ int ser1
  exit
 int ser2
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  vrf for v1
  ipv6 addr 1234::1 ffff::
  router isis6 1 ena
@@ -62,6 +66,8 @@ int lo1
  exit
 int ser1
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  router isis4 1 ena
@@ -69,6 +75,8 @@ int ser1
  exit
 int ser2
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  vrf for v1
  ipv6 addr 1234::2 ffff::
  router isis6 1 ena

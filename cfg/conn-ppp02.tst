@@ -8,6 +8,8 @@ vrf def v1
  exit
 int ser1
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  ppp user c
  ppp pass c
  vrf for v1
@@ -27,6 +29,8 @@ aaa userlist usr
  exit
 int ser1
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  ppp auth usr
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0

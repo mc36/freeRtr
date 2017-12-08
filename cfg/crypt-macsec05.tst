@@ -14,6 +14,8 @@ crypto ipsec ips
  exit
 int ser1
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  vrf for v1
  macsec ips
  ipv4 addr 1.1.1.1 255.255.255.0
@@ -35,6 +37,8 @@ crypto ipsec ips
  exit
 int ser1
  enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  vrf for v1
  macsec ips
  ipv4 addr 1.1.1.2 255.255.255.0

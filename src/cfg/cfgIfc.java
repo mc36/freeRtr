@@ -1470,6 +1470,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ppp ip4cp reqaddr",
         "interface .*! no ppp ip6cp close",
         "interface .*! no ppp ip6cp open",
+        "interface .*! no ppp ip6cp local",
         "interface .*! no ppp bcp close",
         "interface .*! no ppp bcp open",
         "interface .*! no ppp mplscp close",

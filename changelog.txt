@@ -7773,3 +7773,9 @@ qc pass: isis inter-level with bier
 qc pass: isis multi-topology with bier
 qc pass: ospf with bier
 qc pass: ospf transit area with bier
+---------------------------------- 2017-12-07 09:28:36
+no qc pass: ldp over ppp
+no work: ldp over ppp
+---------------------------------- 2017-12-07 21:38:51
+no todo: ncp close should honored again
+qc pass: ldp over ppp
