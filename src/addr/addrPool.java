@@ -1,6 +1,8 @@
 package addr;
 
 import java.math.BigInteger;
+import util.bits;
+import util.logger;
 
 /**
  * address pool
@@ -100,8 +102,9 @@ public class addrPool<T extends addrType> {
      *
      * @return address allocated, null if none
      */
-    public T addrAlloc() {
-        for (int i = 0; i < used.length; i++) {
+    public synchronized T addrAlloc() {
+        for (int retry = 0; retry < 64; retry++) {
+            int i = bits.random(0, used.length);
             if (used[i]) {
                 continue;
             }
@@ -109,6 +112,7 @@ public class addrPool<T extends addrType> {
             BigInteger b = new BigInteger("" + i).multiply(incr).add(frst);
             return bn2addr(b);
         }
+        logger.warn("unable to allocate new address");
         return null;
     }
 

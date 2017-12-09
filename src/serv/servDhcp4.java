@@ -466,6 +466,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 bindings.add(ntry);
                 return ntry;
             }
+            logger.warn("unable to bind new address");
             return null;
         }
     }

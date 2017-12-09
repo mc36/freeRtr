@@ -53,6 +53,7 @@ int di1
  enc ppp
  vrf for v1
  ipv4 addr 3.3.3.3 255.255.255.128
+ ppp ip4cp open
  ppp ip4cp local 0.0.0.0
  ipv4 gateway-prefix p1
  exit

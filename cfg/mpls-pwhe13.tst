@@ -20,6 +20,8 @@ ipv4 route v1 2.2.2.2 255.255.255.255 1.1.1.2
 ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::2
 int virt1
  enc ppp
+ ppp ip4cp open
+ ppp ip4cp local 0.0.0.0
  vrf for v1
  ipv4 addr 3.3.3.1 255.255.255.0
  pseudo v1 lo0 pptp 2.2.2.2 1234
@@ -50,8 +52,8 @@ int di1
  vrf for v1
  ipv4 addr 3.3.3.0 255.255.255.255
  ppp ip4cp local 3.3.3.0
- ipv4 pool p4
  ppp ip4cp open
+ ipv4 pool p4
  exit
 server pptp pptp
  clone di1
