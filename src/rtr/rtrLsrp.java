@@ -439,7 +439,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             tabRouteEntry<addrIP> ntry = dat.network.add(2, ifc.iface.network, null);
             ntry.rouTyp = tabRouteEntry.routeType.conn;
             ntry.iface = ifc.iface;
-            ntry.distance = tabRouteEntry.distanMax;
+            ntry.distance = tabRouteEntry.distanIfc;
         }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrLsrpIface ifc = ifaces.get(o);

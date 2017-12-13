@@ -251,7 +251,7 @@ public class rtrRip6 extends ipRtr implements prtServP {
             ntry = tab.add(2, ifc.iface.network, null);
             ntry.rouTyp = tabRouteEntry.routeType.conn;
             ntry.iface = ifc.iface;
-            ntry.distance = tabRouteEntry.distanMax;
+            ntry.distance = tabRouteEntry.distanIfc;
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrRip6neigh nei = neighs.get(i);

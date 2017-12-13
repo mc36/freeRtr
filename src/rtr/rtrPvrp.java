@@ -228,7 +228,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             ntry = tab1.add(2, ifc.iface.network, null);
             ntry.rouTyp = tabRouteEntry.routeType.conn;
             ntry.iface = ifc.iface;
-            ntry.distance = tabRouteEntry.distanMax;
+            ntry.distance = tabRouteEntry.distanIfc;
         }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrPvrpIface ifc = ifaces.get(o);

@@ -426,6 +426,7 @@ public class rtrIsisLevel implements Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = ifc.iface.network.copyBytes();
+            ntry.distance = tabRouteEntry.distanIfc;
             ntry.metric = ifc.metric;
             ntry.segRoutI = ifc.srIndex;
             if (ifc.srNode) {
@@ -440,7 +441,7 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             ntry = ntry.copyBytes();
-            ntry.distance = 1;
+            ntry.distance = tabRouteEntry.distanIfc + 1;
             ntry.rouSrc = 1;
             ntry.segRoutI = 0;
             ntry.bierI = 0;

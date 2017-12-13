@@ -578,6 +578,7 @@ class userTesterOne {
         }
         if (s.equals("description")) {
             testName = cmd.getRemaining();
+            rdr.debugRes("test: " + testName);
             return;
         }
         if (s.equals("exit")) {

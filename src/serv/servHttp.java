@@ -1862,12 +1862,16 @@ class servHttpConn implements Runnable {
                 sendRespError(504, "gateway timeout");
                 return;
             }
+            srvUrl.filPath = gotUrl.filPath;
+            srvUrl.filName = gotUrl.filName;
+            srvUrl.filExt = gotUrl.filExt;
+            srvUrl.param = gotUrl.param;
             pipeSide.modTyp old = cnn.lineTx;
             cnn.lineTx = pipeSide.modTyp.modeCRLF;
-            cnn.linePut(gotCmd.toUpperCase() + " " + gotUrl.toURL(false, true) + " HTTP/1.1");
+            cnn.linePut(gotCmd.toUpperCase() + " " + srvUrl.toURL(false, true) + " HTTP/1.1");
             cnn.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + "]");
             cnn.linePut("Referer: " + gotReferer);
-            cnn.linePut("Host: " + gotUrl.server);
+            cnn.linePut("Host: " + srvUrl.server);
             cnn.linePut("Accept: */*");
             cnn.linePut("Accept-Language: *");
             cnn.linePut("Accept-Charset: *");

@@ -343,7 +343,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
             ntry = tab.add(2, ifc.iface.network, null);
             ntry.rouTyp = tabRouteEntry.routeType.conn;
             ntry.iface = ifc.iface;
-            ntry.distance = tabRouteEntry.distanMax;
+            ntry.distance = tabRouteEntry.distanIfc;
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrOlsrNeigh nei = neighs.get(i);

@@ -729,12 +729,14 @@ public class userExec {
         hl.add("2 3      mail                    mail exchange record");
         hl.add("2 3      dns                     name server record");
         hl.add("2 3      soa                     authority record");
+        hl.add("2 3      txt                     text record");
         hl.add("2 3      reverse                 reverse of address record");
         hl.add("2 3      recur-ipv4              ipv4 address record");
         hl.add("2 3      recur-ipv6              ipv6 address record");
         hl.add("2 3      recur-mail              mail exchange record");
         hl.add("2 3      recur-dns               name server record");
         hl.add("2 3      recur-soa               authority record");
+        hl.add("2 3      recur-txt               text record");
         hl.add("2 3      zone                    download whole zone");
         hl.add("3 4,.      <domain>              domain to look up");
         hl.add("4 .          [server]            address of ns server");
@@ -2282,6 +2284,9 @@ public class userExec {
         }
         if (a.equals("soa")) {
             i = packDnsRec.typeSOA;
+        }
+        if (a.equals("txt")) {
+            i = packDnsRec.typeTXT;
         }
         if (a.equals("zone")) {
             i = packDnsRec.typeAXFR;

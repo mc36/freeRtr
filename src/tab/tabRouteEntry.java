@@ -152,6 +152,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     public final static int distanMax = 255;
 
     /**
+     * iface distance
+     */
+    public final static int distanIfc = 1;
+
+    /**
      * distance of prefix
      */
     public int distance;

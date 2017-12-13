@@ -33,9 +33,9 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * header size
      */
     public static final int size = 6;
-    
+
     private String fileName;
-    
+
     private RandomAccessFile fileHandle;
 
     /**
@@ -51,15 +51,15 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * defaults filter
      */
     public static tabGen<userFilter> defaultF;
-    
+
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
     }
-    
+
     public void srvShRun(String beg, List<String> l) {
         cmds.cfgLine(l, fileName == null, beg, "datafile", fileName);
     }
-    
+
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("datafile")) {
@@ -91,32 +91,32 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         }
         return true;
     }
-    
+
     public void srvHelp(userHelping l) {
         l.add("1 2    datafile                  log user to file");
         l.add("2 2,.    <file>                  name of file");
     }
-    
+
     public String srvName() {
         return "bmp2mrt";
     }
-    
+
     public int srvPort() {
         return port;
     }
-    
+
     public int srvProto() {
         return protoAllStrm;
     }
-    
+
     public boolean srvInit() {
         return genStrmStart(this, new pipeLine(32768, false), 0);
     }
-    
+
     public boolean srvDeinit() {
         return genericStop(0);
     }
-    
+
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.timeout = 120000;
         new servBmp2mrtConn(pipe, this, id);
@@ -141,24 +141,24 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         } catch (Exception e) {
         }
     }
-    
+
 }
 
 class servBmp2mrtConn implements Runnable {
-    
+
     private pipeSide pipe;
-    
+
     private servBmp2mrt lower;
-    
+
     private addrIP peer;
-    
+
     public servBmp2mrtConn(pipeSide pip, servBmp2mrt prnt, prtGenConn id) {
         pipe = pip;
         lower = prnt;
         peer = id.peerAddr.copyBytes();
         new Thread(this).start();
     }
-    
+
     public void run() {
         try {
             doer();
@@ -167,8 +167,9 @@ class servBmp2mrtConn implements Runnable {
         }
         pipe.setClose();
     }
-    
+
     private void doer() {
+        logger.warn("neighbor " + peer + " up");
         packHolder pck = new packHolder(true, true);
         addrIP adr = new addrIP();
         for (;;) {
@@ -205,6 +206,7 @@ class servBmp2mrtConn implements Runnable {
             }
             lower.gotMessage((flg & 0x40) != 0, as, adr, peer, pck.getCopy());
         }
+        logger.error("neighbor " + peer + " down");
     }
-    
+
 }

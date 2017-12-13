@@ -210,8 +210,8 @@ vrf definition vv
 router lsrp4 1
  vrf v1
  router-id 10.10.10.227
- refresh 100000
- lifetime 300000
+ refresh 60000
+ lifetime 2147483000
  segrout 300 299
  bier 256 300 299
  redistribute connected
@@ -220,8 +220,8 @@ router lsrp4 1
 router lsrp6 1
  vrf v1
  router-id 10.10.10.227
- refresh 100000
- lifetime 300000
+ refresh 60000
+ lifetime 2147483000
  segrout 300 299
  bier 256 300 299
  redistribute connected

@@ -220,11 +220,12 @@ public class clntDns {
     public packDnsZone doZoneXfer(addrIP srv, packDnsZone zon, boolean forced) {
         query = new packDns();
         reply = new packDns();
-        packDnsRec rr1 = new packDnsRec();
+        packDnsRec rrF = new packDnsRec();
+        packDnsRec rrL = new packDnsRec();
         packHolder pck = new packHolder(true, true);
-        rr1.name = zon.name;
-        rr1.typ = packDnsRec.typeAXFR;
-        query.queries.add(rr1);
+        rrF.name = zon.name;
+        rrF.typ = packDnsRec.typeAXFR;
+        query.queries.add(rrF);
         query.id = bits.randomW();
         query.opcode = packDns.opcodeQuery;
         query.recDsrd = true;
@@ -237,69 +238,63 @@ public class clntDns {
         query.createHeader(pck);
         blck.sendPacket(pck);
         conn.timeout = 60000;
-        pck.clear();
         if (debugger.clntDnsTraf) {
             logger.debug("tx " + query);
         }
-        pck = blck.recvPacket();
-        if (pck == null) {
-            conn.setClose();
-            return null;
-        }
-        if (reply.parseHeader(pck)) {
-            conn.setClose();
-            return null;
-        }
-        if (debugger.clntDnsTraf) {
-            logger.debug("rx " + reply);
-        }
-        if (reply.answers.size() != 1) {
-            conn.setClose();
-            return null;
-        }
-        rr1 = reply.answers.get(0);
-        if (rr1.typ != packDnsRec.typeSOA) {
-            conn.setClose();
-            return null;
-        }
-        packDnsRec rr2 = zon.findUser(zon.name, packDnsRec.typeSOA);
-        boolean dl = rr2 == null;
-        if (!dl) {
-            dl = rr1.sequence != rr2.sequence;
-        }
-        dl |= forced;
-        if (!dl) {
-            conn.setClose();
-            return zon;
-        }
         packDnsZone zon2 = new packDnsZone(zon.name);
         zon2.defttl = zon.defttl;
+        rrF = null;
+        rrL = null;
+        boolean end = false;
         for (;;) {
             reply = new packDns();
             pck = blck.recvPacket();
             if (pck == null) {
-                break;
+                conn.setClose();
+                return null;
             }
             if (reply.parseHeader(pck)) {
-                break;
+                conn.setClose();
+                return null;
             }
             if (debugger.clntDnsTraf) {
-                logger.debug("zone " + reply);
+                logger.debug("rx " + reply);
             }
-            if (reply.answers.size() < 1) {
-                continue;
+            for (int i = 0; i < reply.answers.size(); i++) {
+                packDnsRec rrC = reply.answers.get(i);
+                if (rrF == null) {
+                    rrF = rrC;
+                    continue;
+                }
+                rrL = rrC;
+                zon2.addBin(rrC);
+                end |= (rrC.typ == packDnsRec.typeSOA) && rrC.name.equals(zon.name);
             }
-            zon2.addBin(reply.answers.get(0));
+            if (end) {
+                break;
+            }
         }
         conn.setClose();
-        rr2 = zon2.findUser(zon2.name, packDnsRec.typeSOA);
-        if (rr2 == null) {
+        if ((!end) || (rrF == null) || (rrL == null)) {
             return null;
         }
-        if (rr1.sequence != rr2.sequence) {
+        if ((rrF.typ != packDnsRec.typeSOA) || (rrL.typ != packDnsRec.typeSOA)) {
             return null;
         }
-        return zon2;
+        if (rrF.sequence != rrL.sequence) {
+            return null;
+        }
+        packDnsRec rrO = zon.findUser(zon.name, packDnsRec.typeSOA);
+        boolean dl = rrO == null;
+        if (!dl) {
+            dl = rrF.sequence != rrO.sequence;
+        }
+        dl |= forced;
+        if (!dl) {
+            return zon;
+        } else {
+            return zon2;
+        }
     }
 
     /**
