@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v17.12.12-testing, done by matecsaba.;-;-
--;-;2017-12-13 06:52:43, took 10:23:42 on 1328 cases;-;-
+-;-;freeRouter v17.12.13-testing, done by matecsaba.;-;-
+-;-;2017-12-13 19:22:26, took 10:17:12 on 1328 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
