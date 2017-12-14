@@ -287,9 +287,23 @@ public class userTest {
             return null;
         }
         if (a.equals("digsig")) {
-            boolean showKeys = cmd.word().equals("keys");
+            int keysiz = 384;
+            boolean showKeys = false;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("keys")) {
+                    showKeys = true;
+                    continue;
+                }
+                if (a.equals("len")) {
+                    keysiz = bits.str2num(cmd.word());
+                    continue;
+                }
+            }
             cmd.error("performing test");
-            final int keysiz = 512;
             cryKeyRSA krsa = new cryKeyRSA();
             cryKeyDSA kdsa = new cryKeyDSA();
             cryKeyECDSA kecdsa = new cryKeyECDSA();
@@ -301,24 +315,39 @@ public class userTest {
             buf = krsa.doEncrypt(buf);
             buf = krsa.doDecrypt(buf);
             cmd.error("rsa: " + krsa.keyVerify() + " " + krsa.keySize() + " " + !init.equals(new String(buf)));
+            if (showKeys) {
+                cmd.error("rsa: " + krsa.pemWriteStr(true) + " " + krsa.pemWriteStr(false));
+            }
             kdsa.keyMake(keysiz);
             kdsa.doSigning(buf);
             cmd.error("dsa: " + kdsa.keyVerify() + " " + kdsa.keySize() + " " + kdsa.doVerify(buf));
+            if (showKeys) {
+                cmd.error("dsa: " + kdsa.pemWriteStr(true) + " " + kdsa.pemWriteStr(false));
+            }
             kecdsa.keyMake(keysiz);
             kecdsa.doSigning(buf);
             cmd.error("ecdsa: " + kecdsa.keyVerify() + " " + kecdsa.keySize() + " " + kecdsa.doVerify(buf));
+            if (showKeys) {
+                cmd.error("ecdsa: " + kecdsa.pemWriteStr(true) + " " + kecdsa.pemWriteStr(false));
+            }
             kdh.keyMake(keysiz);
             kdh.clntXchg();
             kdh.servXchg();
             kdh.clntKey();
             kdh.servKey();
             cmd.error("dh: " + kdh.keyVerify() + " " + kdh.keySize());
+            if (showKeys) {
+                cmd.error("dh: " + kdh.pemWriteStr(false));
+            }
             kecdh.keyMake(keysiz);
             kecdh.clntXchg();
             kecdh.servXchg();
             kecdh.clntKey();
             kecdh.servKey();
             cmd.error("ecdh: " + kecdh.keyVerify() + " " + kecdh.keySize());
+            if (showKeys) {
+                cmd.error("ecdh: " + kecdh.pemWriteStr(false));
+            }
             String sdsa = cryCertificate.createSelfSigned(kdsa, "test", 3650).pemWriteStr();
             String secdsa = cryCertificate.createSelfSigned(kecdsa, "test", 3650).pemWriteStr();
             String srsa = cryCertificate.createSelfSigned(krsa, "test", 3650).pemWriteStr();
@@ -327,20 +356,14 @@ public class userTest {
             cryCertificate crsa = new cryCertificate();
             cmd.error("pemio: " + cdsa.pemReadStr(sdsa) + " " + cecdsa.pemReadStr(secdsa) + " " + crsa.pemReadStr(srsa));
             cmd.error("cert: " + cryCertificate.testClientCert(cdsa, cdsa) + " " + cryCertificate.testClientCert(cecdsa, cecdsa) + " " + cryCertificate.testClientCert(crsa, crsa));
+            if (showKeys) {
+                cmd.error("dcrt: " + cdsa.pemWriteStr());
+                cmd.error("edcrt: " + cecdsa.pemWriteStr());
+                cmd.error("rcrt: " + crsa.pemWriteStr());
+            }
             cmd.error("dsa: " + cdsa);
             cmd.error("ecdsa: " + cecdsa);
             cmd.error("rsa: " + crsa);
-            if (!showKeys) {
-                return null;
-            }
-            cmd.error("dsa: " + kdsa.pemWriteStr(true) + " " + kdsa.pemWriteStr(false));
-            cmd.error("ecdsa: " + kecdsa.pemWriteStr(true) + " " + kecdsa.pemWriteStr(false));
-            cmd.error("rsa: " + krsa.pemWriteStr(true) + " " + krsa.pemWriteStr(false));
-            cmd.error("dh: " + kdh.pemWriteStr(false));
-            cmd.error("ecdh: " + kecdh.pemWriteStr(false));
-            cmd.error("dcrt: " + cdsa.pemWriteStr());
-            cmd.error("edcrt: " + cecdsa.pemWriteStr());
-            cmd.error("rcrt: " + crsa.pemWriteStr());
             return null;
         }
         if (a.equals("crypto")) {

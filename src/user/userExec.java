@@ -1029,7 +1029,9 @@ public class userExec {
         hl.add("2 .      gc                      run garbage collector");
         hl.add("2 .      crypto                  test encryption and hash");
         hl.add("2 3,.    digsig                  test digital signatures");
-        hl.add("3 .        keys                  print keys after tests");
+        hl.add("3 3,.      keys                  print keys after tests");
+        hl.add("3 4        len                   specify key length");
+        hl.add("4 3,.        <num>               key length");
         hl.add("2 .      window                  test window handler");
         hl.add("2 3      vercore                 test vercore updater");
         hl.add("3 .        <key>                 key file to use");

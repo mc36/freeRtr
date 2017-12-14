@@ -6,7 +6,7 @@ import cry.cryBase64;
 import cry.cryHashGeneric;
 import cry.cryHashSha256;
 import cry.cryHashSha512;
-import cry.cryKeyDSA;
+import cry.cryKeyRSA;
 import cry.cryUtils;
 import java.io.File;
 import java.util.ArrayList;
@@ -107,7 +107,7 @@ public class userUpgrade {
      * generate release version file
      */
     public void doRelease() {
-        cryKeyDSA ky = readUpKey(cmd.word());
+        cryKeyRSA ky = readUpKey(cmd.word());
         userUpgradeBlob blb = new userUpgradeBlob();
         blb.putSelf();
         for (;;) {
@@ -136,7 +136,7 @@ public class userUpgrade {
      * update version core file
      */
     public void doVerCore() {
-        cryKeyDSA k = readUpKey(cmd.word());
+        cryKeyRSA k = readUpKey(cmd.word());
         final String fn = "util/verCore.java";
         final String sy = "    public final static int year = ";
         final String sm = "    public final static int month = ";
@@ -350,29 +350,19 @@ public class userUpgrade {
         logger.info("upgrade finished!");
     }
 
-    private cryKeyDSA readUpKey(String s) {
+    private cryKeyRSA readUpKey(String s) {
         List<String> l = bits.txt2buf(s);
         if (l == null) {
             return null;
         }
-        s = null;
-        for (int i = 0; i < l.size(); i++) {
-            String a = l.get(i);
-            if (a.startsWith("% dsa:")) {
-                s = a;
-            }
-        }
-        if (s == null) {
+        if (l.size() != 2) {
             return null;
         }
-        cmds cmd = new cmds("key", s);
-        cmd.word();
-        cmd.word();
-        cryKeyDSA k = new cryKeyDSA();
-        if (k.pemReadStr(cmd.word(), true)) {
+        cryKeyRSA k = new cryKeyRSA();
+        if (k.pemReadStr(l.get(0), true)) {
             return null;
         }
-        if (k.pemReadStr(cmd.word(), false)) {
+        if (k.pemReadStr(l.get(1), false)) {
             return null;
         }
         if (k.keyVerify()) {
@@ -554,7 +544,7 @@ class userUpgradeBlob {
         for (int i = 3; i < len; i++) {
             files.put(userUpgradeNtry.fromString(txt.get(i)));
         }
-        cryKeyDSA k = new cryKeyDSA();
+        cryKeyRSA k = new cryKeyRSA();
         if (k.pemReadStr(verCore.pubKey, true)) {
             return "error reading embedded key!";
         }
@@ -568,7 +558,7 @@ class userUpgradeBlob {
         return null;
     }
 
-    public void signSelf(cryKeyDSA k) {
+    public void signSelf(cryKeyRSA k) {
         time = bits.getTime();
         sign = cryBase64.encodeBytes(k.certSigning(getBinSum(0)));
     }
