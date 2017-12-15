@@ -215,7 +215,13 @@ public class cfgInit implements Runnable {
         return "*/*";
     }
 
-    private static List<String> httpGet(String url) {
+    /**
+     * get http url
+     *
+     * @param url url
+     * @return text read
+     */
+    public static List<String> httpGet(String url) {
         if (url == null) {
             url = "";
         }

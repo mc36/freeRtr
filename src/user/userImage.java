@@ -65,7 +65,7 @@ public class userImage {
                 return false;
         }
         delete(fil);
-        return exec("curl --stderr - -o " + fil + " " + url) != 0;
+        return exec("wget -O " + fil + " " + url) != 0;
     }
 
     private boolean readUpCatalog(String pool) {

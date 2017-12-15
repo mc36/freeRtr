@@ -108,6 +108,10 @@ public class userUpgrade {
      */
     public void doRelease() {
         cryKeyRSA ky = readUpKey(cmd.word());
+        if (ky == null) {
+            cmd.error("failed to get key!");
+            return;
+        }
         userUpgradeBlob blb = new userUpgradeBlob();
         blb.putSelf();
         for (;;) {
@@ -136,7 +140,11 @@ public class userUpgrade {
      * update version core file
      */
     public void doVerCore() {
-        cryKeyRSA k = readUpKey(cmd.word());
+        cryKeyRSA ky = readUpKey(cmd.word());
+        if (ky == null) {
+            cmd.error("failed to get key!");
+            return;
+        }
         final String fn = "util/verCore.java";
         final String sy = "    public final static int year = ";
         final String sm = "    public final static int month = ";
@@ -146,10 +154,10 @@ public class userUpgrade {
         String vy = (bits.time2num(cfgAll.timeZoneName, tim, 1) % 100) + ";";
         String vm = bits.time2num(cfgAll.timeZoneName, tim, 2) + ";";
         String vd = bits.time2num(cfgAll.timeZoneName, tim, 3) + ";";
-        String vk = "\"" + k.pemWriteStr(true) + "\";";
+        String vk = "\"" + ky.pemWriteStr(true) + "\";";
         List<String> txt = bits.txt2buf(fn);
         if (txt == null) {
-            cmd.error("not found!");
+            cmd.error(fn + " not found!");
             return;
         }
         int o = 0;
@@ -351,11 +359,11 @@ public class userUpgrade {
     }
 
     private cryKeyRSA readUpKey(String s) {
-        List<String> l = bits.txt2buf(s);
+        List<String> l = cfgInit.httpGet(s);
         if (l == null) {
             return null;
         }
-        if (l.size() != 2) {
+        if (l.size() < 2) {
             return null;
         }
         cryKeyRSA k = new cryKeyRSA();
@@ -479,7 +487,7 @@ class userUpgradeBlob {
     }
 
     public String getTime() {
-        return bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3);
+        return bits.time2str(cfgAll.timeZoneName, time, 3);
     }
 
     public List<String> getText(int level) {
