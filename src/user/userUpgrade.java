@@ -131,7 +131,7 @@ public class userUpgrade {
             }
             blb.files.put(new userUpgradeNtry(s, a));
         }
-        blb.signSelf(ky);
+        blb.doSign(ky);
         bits.buf2txt(true, blb.getText(2), myVerFile());
         cmd.error(myVerFile() + " written!");
     }
@@ -140,21 +140,28 @@ public class userUpgrade {
      * update version core file
      */
     public void doVerCore() {
-        cryKeyRSA ky = readUpKey(cmd.word());
-        if (ky == null) {
-            cmd.error("failed to get key!");
+        cryKeyRSA kc = readUpKey(cmd.word());
+        if (kc == null) {
+            cmd.error("failed to get current key!");
+            return;
+        }
+        cryKeyRSA ko = readUpKey(cmd.word());
+        if (ko == null) {
+            cmd.error("failed to get old key!");
             return;
         }
         final String fn = "util/verCore.java";
         final String sy = "    public final static int year = ";
         final String sm = "    public final static int month = ";
         final String sd = "    public final static int day = ";
-        final String sk = "    public final static String pubKey = ";
+        final String sc = "    public final static String pubKeyC = ";
+        final String so = "    public final static String pubKeyO = ";
         long tim = bits.getTime();
         String vy = (bits.time2num(cfgAll.timeZoneName, tim, 1) % 100) + ";";
         String vm = bits.time2num(cfgAll.timeZoneName, tim, 2) + ";";
         String vd = bits.time2num(cfgAll.timeZoneName, tim, 3) + ";";
-        String vk = "\"" + ky.pemWriteStr(true) + "\";";
+        String vc = "\"" + kc.pemWriteStr(true) + "\";";
+        String vo = "\"" + ko.pemWriteStr(true) + "\";";
         List<String> txt = bits.txt2buf(fn);
         if (txt == null) {
             cmd.error(fn + " not found!");
@@ -166,18 +173,27 @@ public class userUpgrade {
             if (a.startsWith(sy)) {
                 txt.set(i, sy + vy);
                 o++;
+                continue;
             }
             if (a.startsWith(sm)) {
                 txt.set(i, sm + vm);
                 o++;
+                continue;
             }
             if (a.startsWith(sd)) {
                 txt.set(i, sd + vd);
                 o++;
+                continue;
             }
-            if (a.startsWith(sk)) {
-                txt.set(i, sk + vk);
+            if (a.startsWith(sc)) {
+                txt.set(i, sc + vc);
                 o++;
+                continue;
+            }
+            if (a.startsWith(so)) {
+                txt.set(i, so + vo);
+                o++;
+                continue;
             }
         }
         if (bits.buf2txt(true, txt, fn)) {
@@ -265,6 +281,7 @@ public class userUpgrade {
             forces = (oldf | bits.str2num(cmd.word())) ^ justSimu;
             upgraderDoer(s);
         } catch (Exception e) {
+            logger.traceback(e);
         }
         forces = oldf;
         inProgress = false;
@@ -552,21 +569,37 @@ class userUpgradeBlob {
         for (int i = 3; i < len; i++) {
             files.put(userUpgradeNtry.fromString(txt.get(i)));
         }
-        cryKeyRSA k = new cryKeyRSA();
-        if (k.pemReadStr(verCore.pubKey, true)) {
-            return "error reading embedded key!";
-        }
         byte[] buf = cryBase64.decodeBytes(sign);
         if (buf == null) {
             return "error reading signature!";
         }
-        if (k.certVerify(getBinSum(0), buf)) {
-            return "signature mismatch!";
+        String res = doVrfy(verCore.pubKeyC, buf);
+        if (res == null) {
+            return null;
         }
-        return null;
+        return doVrfy(verCore.pubKeyO, buf);
     }
 
-    public void signSelf(cryKeyRSA k) {
+    public String doVrfy(String ks, byte[] buf) {
+        try {
+            if (ks == null) {
+                return "public key not exists!";
+            }
+            cryKeyRSA ky = new cryKeyRSA();
+            if (ky.pemReadStr(ks, true)) {
+                return "error reading public key!";
+            }
+            if (ky.certVerify(getBinSum(0), buf)) {
+                return "signature mismatch!";
+            }
+            return null;
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        return "error during verify!";
+    }
+
+    public void doSign(cryKeyRSA k) {
         time = bits.getTime();
         sign = cryBase64.encodeBytes(k.certSigning(getBinSum(0)));
     }

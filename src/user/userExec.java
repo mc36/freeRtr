@@ -1034,9 +1034,10 @@ public class userExec {
         hl.add("4 3,.        <num>               key length");
         hl.add("2 .      window                  test window handler");
         hl.add("2 3      vercore                 test vercore updater");
-        hl.add("3 .        <key>                 key file to use");
-        hl.add("2 3,.    verfile                 test version updater");
         hl.add("3 4        <key>                 key file to use");
+        hl.add("4 .          <key>               key file to include");
+        hl.add("2 3      verfile                 test version updater");
+        hl.add("3 4,.      <key>                 key file to use");
         hl.add("4 4,.        [str]               file to include in release");
         hl.add("2 .      gomoku                  play game");
         hl.add("2 .      tetris                  play game");
