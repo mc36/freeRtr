@@ -7779,3 +7779,5 @@ no work: ldp over ppp
 ---------------------------------- 2017-12-07 21:38:51
 no todo: ncp close should honored again
 qc pass: ldp over ppp
+---------------------------------- 2017-12-19 12:12:12
+no todo: new release signing key

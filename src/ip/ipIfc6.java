@@ -75,8 +75,6 @@ public class ipIfc6 implements ipIfc, ifcUp {
 
     private counter cntr = new counter();
 
-    private packHolder senderPack = new packHolder(true, true);
-
     public counter getCounter() {
         return cntr;
     }
@@ -320,9 +318,14 @@ public class ipIfc6 implements ipIfc, ifcUp {
     }
 
     /**
-     * send router advertisement
+     * send advertisements
      */
-    public void sendRouterAdv() {
+    public void sendAdverts() {
+        packHolder pck = new packHolder(true, true);
+        icc.createNeighAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), false);
+        sendProto(pck, pck.IPtrg);
+        icc.createNeighAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), ipaddr.toIPv6(), false);
+        sendProto(pck, pck.IPtrg);
         if (rtrAdvInterval < 1) {
             return;
         }
@@ -333,16 +336,8 @@ public class ipIfc6 implements ipIfc, ifcUp {
         if (rtrAdvDns != null) {
             dns = rtrAdvDns.toIPv6();
         }
-        icc.createRouterAdv(lower.getHwAddr(), senderPack, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu, dns);
-        sendProto(senderPack, senderPack.IPtrg);
-    }
-
-    /**
-     * send neighbor advertisement
-     */
-    public void sendNeighborAdv() {
-        icc.createNeighAdv(lower.getHwAddr(), senderPack, addrIPv6.getAllNodes(), lladdr.toIPv6(), false);
-        sendProto(senderPack, senderPack.IPtrg);
+        icc.createRouterAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu, dns);
+        sendProto(pck, pck.IPtrg);
     }
 
     public ifcUp getPeerHdr() {
@@ -365,8 +360,7 @@ class ipIfc6timer extends TimerTask {
 
     public void run() {
         try {
-            parent.sendRouterAdv();
-            parent.sendNeighborAdv();
+            parent.sendAdverts();
         } catch (Exception e) {
             logger.traceback(e);
         }

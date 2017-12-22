@@ -595,6 +595,11 @@ public class cfgAll {
     public static String mailServerPass;
 
     /**
+     * upgrade public key
+     */
+    public static String upgradePubKey = null;
+
+    /**
      * upgrade server url
      */
     public static String upgradeServer = verCore.homeUrl;
@@ -603,6 +608,11 @@ public class cfgAll {
      * upgrade config save
      */
     public static boolean upgradeConfig = false;
+
+    /**
+     * upgrade just own key
+     */
+    public static boolean upgradeOwnKey = false;
 
     /**
      * passive mode ftp
@@ -668,8 +678,10 @@ public class cfgAll {
         "!no client name-server",
         "!client time-zone Z",
         "!no client time-server",
+        "!no client upgrade-pubkey",
         "!client upgrade-server " + verCore.homeUrl,
         "!no client upgrade-config",
+        "!no client upgrade-ownkey",
         "!no client config-server",
         "!no client config-username",
         "!no client config-password",
@@ -2464,8 +2476,10 @@ public class cfgAll {
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
         cmds.cfgLine(l, nameServerAddr == null, "", "client name-server", "" + nameServerAddr);
         cmds.cfgLine(l, !ftpPassive, "", "client ftp-passive", "");
+        cmds.cfgLine(l, upgradePubKey == null, "", "client upgrade-pubkey", "" + upgradePubKey);
         cmds.cfgLine(l, upgradeServer == null, "", "client upgrade-server", "" + upgradeServer);
         cmds.cfgLine(l, !upgradeConfig, "", "client upgrade-config", "");
+        cmds.cfgLine(l, !upgradeOwnKey, "", "client upgrade-ownkey", "");
         cmds.cfgLine(l, configServer == null, "", "client config-server", "" + configServer);
         cmds.cfgLine(l, configUser == null, "", "client config-username", "" + configUser);
         cmds.cfgLine(l, configPass == null, "", "client config-password", "" + authLocal.passwdEncode(configPass));

@@ -376,12 +376,15 @@ public class userConfig {
         l.add("2  3    name-server                  specify address of name server");
         l.add("3  .      <addr>                     address of server");
         l.add("2  .    upgrade-config               automatically save configuration on upgrade");
+        l.add("2  .    upgrade-ownkey               use just the configured key");
         l.add("2  3    upgrade-server               specify url of upgrade server");
         l.add("3  .      <name>                     url of server");
+        l.add("2  3    upgrade-pubkey               specify key of upgrade");
+        l.add("3  .      <text>                     public key");
         l.add("2  3    config-server                specify url of config server");
         l.add("3  .      <name>                     url of server");
         l.add("2  3    config-username              specify username on config server");
-        l.add("3  .      <name>                     set username");
+        l.add("3  .      <text>                     set username");
         l.add("2  3    config-password              specify password on config server");
         l.add("3  .      <text>                     set password");
         l.add("2  3    config-backup                specify backup config file");
@@ -1249,8 +1252,16 @@ public class userConfig {
                 cfgAll.upgradeConfig = true;
                 return;
             }
+            if (a.equals("upgrade-ownkey")) {
+                cfgAll.upgradeOwnKey = true;
+                return;
+            }
             if (a.equals("upgrade-server")) {
                 cfgAll.upgradeServer = cmd.word();
+                return;
+            }
+            if (a.equals("upgrade-pubkey")) {
+                cfgAll.upgradePubKey = cmd.word();
                 return;
             }
             if (a.equals("config-server")) {
@@ -1832,8 +1843,16 @@ public class userConfig {
                 cfgAll.upgradeConfig = false;
                 return;
             }
+            if (a.equals("upgrade-ownkey")) {
+                cfgAll.upgradeOwnKey = false;
+                return;
+            }
             if (a.equals("upgrade-server")) {
                 cfgAll.upgradeServer = verCore.homeUrl;
+                return;
+            }
+            if (a.equals("upgrade-pubkey")) {
+                cfgAll.upgradePubKey = null;
                 return;
             }
             if (a.equals("config-server")) {

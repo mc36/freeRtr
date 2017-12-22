@@ -308,6 +308,10 @@ public class cfgInit implements Runnable {
                 cfgAll.upgradeServer = cmd.getRemaining();
                 continue;
             }
+            if (s.equals("key")) {
+                cfgAll.upgradePubKey = cmd.getRemaining();
+                continue;
+            }
             if (s.equals("tcp2vrf")) {
                 int loc = bits.str2num(cmd.word());
                 cfgVrf vrf = cfgAll.vrfFind(cmd.word(), true);

@@ -612,6 +612,13 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
     }
 
+    private void addParam(List<String> l, String typ, String val) {
+        if (val == null) {
+            return;
+        }
+        l.add(typ + " " + val);
+    }
+
     /**
      * start this vdc now
      *
@@ -635,8 +642,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("hwid " + cfgInit.hwIdNum + "-" + name);
         l.add("port " + beg + " " + end);
-        l.add("jvm " + cfgInit.jvmParam);
-        l.add("url " + cfgAll.upgradeServer);
+        addParam(l, "jvm", cfgInit.jvmParam);
+        addParam(l, "url", cfgAll.upgradeServer);
+        addParam(l, "key", cfgAll.upgradePubKey);
         for (i = 0; i < defs.size(); i++) {
             l.add("def " + defs.get(i));
         }

@@ -61,6 +61,10 @@ public class player implements Runnable {
 
     private final static Object sleeper = Integer.valueOf(123);
 
+    private String mixer = "Master";
+
+    private String srate = "44100";
+
     private Random rndSeed = new Random();
 
     private playerLyric playlists = null;
@@ -135,7 +139,7 @@ public class player implements Runnable {
             String[] cmd = new String[5];
             cmd[0] = "gmediarender";
             cmd[1] = "--gstout-audiosink=alsasink";
-            cmd[2] = "--gstout-videosink=fbdevsink";
+            cmd[2] = "--gstout-videosink=appsink";
             cmd[3] = "--friendly-name=" + urlF;
             cmd[4] = "--uuid=00001234-1234-1234-" + rndSeed.nextInt();
             currProc = rtm.exec(cmd);
@@ -164,7 +168,7 @@ public class player implements Runnable {
             cmd[2] = "--output-file";
             cmd[3] = "/tmp/player.url";
             cmd[4] = "--exec";
-            cmd[5] = "mplayer -ao alsa -vo none /tmp/player.url";
+            cmd[5] = "mplayer -ao alsa -vo none -srate " + srate + " /tmp/player.url";
             cmd[6] = "" + url;
             currProc = rtm.exec(cmd);
         } catch (Exception e) {
@@ -199,15 +203,17 @@ public class player implements Runnable {
         }
         try {
             Runtime rtm = Runtime.getRuntime();
-            String[] cmd = new String[8];
+            String[] cmd = new String[10];
             cmd[0] = "mplayer";
             cmd[1] = "-ao";
             cmd[2] = "alsa";
             cmd[3] = "-vo";
             cmd[4] = "none";
-            cmd[5] = "-ss";
-            cmd[6] = ss;
-            cmd[7] = playlist.get(ntry).file;
+            cmd[5] = "-srate";
+            cmd[6] = srate;
+            cmd[7] = "-ss";
+            cmd[8] = ss;
+            cmd[9] = playlist.get(ntry).file;
             currProc = rtm.exec(cmd);
             currSong = ntry;
         } catch (Exception e) {
@@ -226,7 +232,7 @@ public class player implements Runnable {
             String[] cmd = new String[4];
             cmd[0] = "amixer";
             cmd[1] = "sset";
-            cmd[2] = "PCM";
+            cmd[2] = mixer;
             cmd[3] = vol + "%";
             Process prc = rtm.exec(cmd);
             prc.waitFor();
@@ -236,6 +242,26 @@ public class player implements Runnable {
     }
 
     public void run() {
+        playlists = playerUtil.readup("/etc/asound.conf");
+        if (playlists != null) {
+            for (int i = 0; i < playlists.size(); i++) {
+                String a = playlists.get(i);
+                int o = a.indexOf("=");
+                if (o < 0) {
+                    continue;
+                }
+                String b = a.substring(o + 1, a.length()).trim();
+                a = a.substring(0, o).trim();
+                if (a.equals("#player.class mixer")) {
+                    mixer = b;
+                    continue;
+                }
+                if (a.equals("#player.class srate")) {
+                    srate = b;
+                    continue;
+                }
+            }
+        }
         playlists = playerUtil.readup(path + ".cfg");
         playlist = playerSong.txt2pls(null, playerUtil.readup(playlists.get(0)));
         prelock = playlist;
@@ -602,14 +628,29 @@ public class player implements Runnable {
             int i = playerUtil.str2int(song);
             if (i >= 0) {
                 setVolume(i);
-                String a = "volume set to " + currVlme + "%.<br/><br/>";
+                String a = "volume set to " + currVlme + " percent.<br/><br/>";
                 buf.write(a.getBytes());
+            }
+            buf.write("<br/><br/>volume:".getBytes());
+            for (i = -15; i < 15; i++) {
+                int o = currVlme + i;
+                if (o < 0) {
+                    continue;
+                }
+                if (o > 100) {
+                    continue;
+                }
+                String a = "" + o;
+                if (o == currVlme) {
+                    a = "*" + a + "*";
+                }
+                putLink(buf, urlR + "?cmd=vol&song=" + o, a);
             }
             buf.write("<br/><br/>volume:".getBytes());
             for (i = 0; i < 11; i++) {
                 int o = i * 10;
                 String a = "" + o;
-                if (o == currVlme) {
+                if ((o / 10) == (currVlme / 10)) {
                     a = "*" + a + "*";
                 }
                 putLink(buf, urlR + "?cmd=vol&song=" + o, a);
@@ -688,7 +729,9 @@ public class player implements Runnable {
                 String a = "<a href=\"" + urlR + "?cmd=list&song=" + (i + 1) + "\">" + playlists.get(i) + "</a><br/>";
                 buf.write(a.getBytes());
             }
-            String a = "<br/><a href=\"" + urlR + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
+            String a = "mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", lists=" + playlists.size() + "<br/>";
+            buf.write(a.getBytes());
+            a = "<br/><a href=\"" + urlR + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=unlock\">!unlock!</a><br/>";
             buf.write(a.getBytes());

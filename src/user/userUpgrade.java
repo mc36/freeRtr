@@ -573,11 +573,23 @@ class userUpgradeBlob {
         if (buf == null) {
             return "error reading signature!";
         }
-        String res = doVrfy(verCore.pubKeyC, buf);
+        if (cfgAll.upgradeOwnKey) {
+            return doVrfy(cfgAll.upgradePubKey, buf);
+        }
+        String res;
+        res = doVrfy(cfgAll.upgradePubKey, buf);
         if (res == null) {
             return null;
         }
-        return doVrfy(verCore.pubKeyO, buf);
+        res = doVrfy(verCore.pubKeyC, buf);
+        if (res == null) {
+            return null;
+        }
+        res = doVrfy(verCore.pubKeyO, buf);
+        if (res == null) {
+            return null;
+        }
+        return res;
     }
 
     public String doVrfy(String ks, byte[] buf) {
