@@ -241,6 +241,26 @@ public class player implements Runnable {
         }
     }
 
+    private synchronized void stopPlay(String s) {
+        try {
+            Runtime rtm = Runtime.getRuntime();
+            String[] cmd = new String[3];
+            cmd[0] = "killall";
+            cmd[1] = "-9";
+            cmd[2] = s;
+            Process prc = rtm.exec(cmd);
+            prc.waitFor();
+        } catch (Exception e) {
+        }
+    }
+
+    private synchronized void stopPlay() {
+        stopPlay("gmediarender");
+        stopPlay("mplayer");
+        stopPlay("cclive");
+        stopPlay("amixer");
+    }
+
     public void run() {
         playlists = playerUtil.readup("/etc/asound.conf");
         if (playlists != null) {
@@ -739,6 +759,8 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=dlna\">!dlna!</a><br/>";
             buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=nodlna\">!nodlna!</a><br/>";
+            buf.write(a.getBytes());
             a = "<br/><form action=\"" + urlR + "\" method=get>url:<input type=text name=song value=\"\"><input type=submit name=cmd value=\"url\"></form><br/>";
             buf.write(a.getBytes());
             return -1;
@@ -749,6 +771,14 @@ public class player implements Runnable {
             String a = "<br/>downloading song, please wait.<br/>";
             buf.write(a.getBytes());
             startPlay(song);
+            return -1;
+        }
+        if (cmd.equals("nodlna")) {
+            putStart(buf, 5);
+            putMenu(buf);
+            String a = "<br/>stopping dlna server.<br/>";
+            buf.write(a.getBytes());
+            stopPlay();
             return -1;
         }
         if (cmd.equals("dlna")) {

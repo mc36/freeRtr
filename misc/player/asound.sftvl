@@ -1,0 +1,19 @@
+#player.class mixer = sftvol
+#player.class srate = 192000
+
+pcm.!default  {
+    type plug
+    slave.pcm "myvol"
+}
+
+ctl.!default {
+    type hw
+    card 1
+}
+
+pcm.myvol {
+    type softvol
+    slave.pcm "plughw:1"
+    control.name "sftvol"
+    control.card 1
+}
