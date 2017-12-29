@@ -838,6 +838,9 @@ public class packRadius {
             byte[] mdR = mdC.finish();
             auth = new byte[mdR.length];
             for (int i = 0; i < mdR.length; i++) {
+                if ((o + i) >= pwd.length) {
+                    break;
+                }
                 auth[i] = pwd[o + i];
                 res[o + i] = (byte) (mdR[i] ^ pwd[o + i]);
             }
@@ -853,7 +856,7 @@ public class packRadius {
     }
 
     /**
-     * decrypt user password
+     * encrypt user password
      *
      * @param sec shared secret
      * @param auth authenticator
