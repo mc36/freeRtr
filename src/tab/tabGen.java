@@ -24,6 +24,20 @@ public class tabGen<T extends Comparator<? super T>> {
     }
 
     /**
+     * clone one generic table
+     *
+     * @param old where from copy
+     */
+    public tabGen(tabGen<T> old) {
+        lst = new ArrayList<T>();
+        synchronized (old.lst) {
+            for (int i = 0; i < old.lst.size(); i++) {
+                lst.add(old.lst.get(i));
+            }
+        }
+    }
+
+    /**
      * delete all values
      */
     public void clear() {

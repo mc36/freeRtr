@@ -1127,6 +1127,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpIncr) {
             logger.debug("bestpath for everything");
         }
+        needFull = false;
+        tabGen<rtrBgpNeigh> lstn = new tabGen<rtrBgpNeigh>(lstnNei);
         changedUni = new tabRoute<addrIP>("bgp");
         changedMlt = new tabRoute<addrIP>("bgp");
         changedOtr = new tabRoute<addrIP>("bgp");
@@ -1143,7 +1145,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         changedMdt = new tabRoute<addrIP>("bgp");
         changedMvpn = new tabRoute<addrIP>("bgp");
         changedMvpo = new tabRoute<addrIP>("bgp");
-        needFull = false;
         tabRoute<addrIP> nUni = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nMlt = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nOtr = new tabRoute<addrIP>("bst");
@@ -1208,8 +1209,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " neighbors");
         }
         groups = new ArrayList<rtrBgpGroup>();
-        for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpNeigh nei = lstnNei.get(i);
+        for (int i = 0; i < lstn.size(); i++) {
+            rtrBgpNeigh nei = lstn.get(i);
             if (nei == null) {
                 continue;
             }
@@ -1274,8 +1275,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computedMdt = nMdt;
         computedMvpn = nMvpn;
         computedMvpo = nMvpo;
-        for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpNeigh nei = lstnNei.get(i);
+        for (int i = 0; i < lstn.size(); i++) {
+            rtrBgpNeigh nei = lstn.get(i);
             if (nei == null) {
                 continue;
             }
