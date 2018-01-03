@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import util.logger;
 
 /**
- * secure hash algorithm 2-32 (fips180-2) hash
+ * secure hash algorithm 2-28 (fips180-2) hash
  *
  * @author matecsaba
  */
