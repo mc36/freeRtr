@@ -24,7 +24,9 @@ import cry.cryHashHmac;
 import cry.cryHashMd2;
 import cry.cryHashMd5;
 import cry.cryHashSha1;
+import cry.cryHashSha224;
 import cry.cryHashSha256;
+import cry.cryHashSha384;
 import cry.cryHashSha512;
 import cry.cryKeyDH;
 import cry.cryKeyDSA;
@@ -375,12 +377,16 @@ public class userTest {
             doTestHash(new cryHashMd2());
             doTestHash(new cryHashMd5());
             doTestHash(new cryHashSha1());
+            doTestHash(new cryHashSha224());
             doTestHash(new cryHashSha256());
+            doTestHash(new cryHashSha384());
             doTestHash(new cryHashSha512());
             doTestHash(new cryHashHmac(new cryHashMd2(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashMd5(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha1(), new byte[16]));
+            doTestHash(new cryHashHmac(new cryHashSha224(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha256(), new byte[16]));
+            doTestHash(new cryHashHmac(new cryHashSha384(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha512(), new byte[16]));
             return null;
         }
