@@ -5,16 +5,16 @@ import java.security.MessageDigest;
 import util.logger;
 
 /**
- * secure hash algorithm 2-28 (fips180-2) hash
+ * secure hash algorithm 3-32 (fips202) hash
  *
  * @author matecsaba
  */
-public class cryHashSha224 extends cryHashGeneric {
+public class cryHashSha3256 extends cryHashGeneric {
 
     private MessageDigest digest;
 
     public void init() {
-        final String name = "SHA-224";
+        final String name = "SHA3-256";
         try {
             digest = MessageDigest.getInstance(name);
             digest.reset();
@@ -24,7 +24,7 @@ public class cryHashSha224 extends cryHashGeneric {
     }
 
     public String getName() {
-        return "sha224";
+        return "sha3-256";
     }
 
     public int getHashSize() {
@@ -35,8 +35,8 @@ public class cryHashSha224 extends cryHashGeneric {
         return 64;
     }
 
-    public void update(int i) {
-        digest.update((byte) i);
+    public void update(byte[] buf, int ofs, int siz) {
+        digest.update(buf, ofs, siz);
     }
 
     public byte[] finish() {

@@ -73,8 +73,14 @@ public class cryHashCrc32c extends cryHashGeneric {
         return 1;
     }
 
-    public void update(int i) {
+    private void updateByte(int i) {
         crc = (crc >>> 8) ^ tab[(crc ^ i) & 0xFF];
+    }
+
+    public void update(byte[] buf, int ofs, int siz) {
+        for (int i = 0; i < siz; i++) {
+            updateByte(buf[ofs + i]);
+        }
     }
 
     public byte[] finish() {

@@ -461,29 +461,29 @@ public class cryCertificate {
             case typRsaSha1:
                 return new cryHashSha1();
             case typRsaSha224:
-                return new cryHashSha224();
+                return new cryHashSha2224();
             case typRsaSha256:
-                return new cryHashSha256();
+                return new cryHashSha2256();
             case typRsaSha384:
-                return new cryHashSha384();
+                return new cryHashSha2384();
             case typRsaSha512:
-                return new cryHashSha512();
+                return new cryHashSha2512();
             case typDssSha1:
                 return new cryHashSha1();
             case typDssSha224:
-                return new cryHashSha224();
+                return new cryHashSha2224();
             case typDssSha256:
-                return new cryHashSha256();
+                return new cryHashSha2256();
             case typEcDssSha1:
                 return new cryHashSha1();
             case typEcDssSha224:
-                return new cryHashSha224();
+                return new cryHashSha2224();
             case typEcDssSha256:
-                return new cryHashSha256();
+                return new cryHashSha2256();
             case typEcDssSha384:
-                return new cryHashSha384();
+                return new cryHashSha2384();
             case typEcDssSha512:
-                return new cryHashSha512();
+                return new cryHashSha2512();
             default:
                 return null;
         }

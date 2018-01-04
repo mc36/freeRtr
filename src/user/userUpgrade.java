@@ -4,8 +4,8 @@ import cfg.cfgAll;
 import cfg.cfgInit;
 import cry.cryBase64;
 import cry.cryHashGeneric;
-import cry.cryHashSha256;
-import cry.cryHashSha512;
+import cry.cryHashSha2256;
+import cry.cryHashSha2512;
 import cry.cryKeyRSA;
 import cry.cryUtils;
 import java.io.File;
@@ -55,7 +55,7 @@ public class userUpgrade {
     public static String calcFileHash(cryHashGeneric h, String n) {
         File f = new File(n);
         if (h == null) {
-            h = new cryHashSha512();
+            h = new cryHashSha2512();
         }
         h.init();
         if (cryUtils.hashFile(h, f)) {
@@ -71,7 +71,7 @@ public class userUpgrade {
      * @return calculated hash
      */
     public static String calcTextHash(List<String> l) {
-        cryHashGeneric h = new cryHashSha256();
+        cryHashGeneric h = new cryHashSha2256();
         h.init();
         if (cryUtils.hashText(h, l)) {
             return null;

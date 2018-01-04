@@ -4,7 +4,7 @@ import cfg.cfgAll;
 import cry.cryBase64;
 import cry.cryHashHmac;
 import cry.cryHashSha1;
-import cry.cryHashSha256;
+import cry.cryHashSha2256;
 import cry.cryOtp;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -70,7 +70,7 @@ public class authLocal extends authGeneric {
      * @return compressed password
      */
     public static byte[] hashPass(byte[] k, String s) {
-        cryHashHmac h = new cryHashHmac(new cryHashSha256(), k);
+        cryHashHmac h = new cryHashHmac(new cryHashSha2256(), k);
         h.init();
         h.update(s.getBytes());
         return bits.byteConcat(k, h.finish());

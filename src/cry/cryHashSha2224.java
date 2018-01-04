@@ -5,16 +5,16 @@ import java.security.MessageDigest;
 import util.logger;
 
 /**
- * the message digest 2 (rfc1319) hash
+ * secure hash algorithm 2-28 (fips180-2) hash
  *
  * @author matecsaba
  */
-public class cryHashMd2 extends cryHashGeneric {
+public class cryHashSha2224 extends cryHashGeneric {
 
     private MessageDigest digest;
 
     public void init() {
-        final String name = "MD2";
+        final String name = "SHA-224";
         try {
             digest = MessageDigest.getInstance(name);
             digest.reset();
@@ -24,11 +24,11 @@ public class cryHashMd2 extends cryHashGeneric {
     }
 
     public String getName() {
-        return "md2";
+        return "sha224";
     }
 
     public int getHashSize() {
-        return 16;
+        return 28;
     }
 
     public int getBlockSize() {

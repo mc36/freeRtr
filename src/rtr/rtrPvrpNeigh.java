@@ -5,7 +5,7 @@ import addr.addrIPv4;
 import addr.addrPrefix;
 import auth.authConstant;
 import cry.cryBase64;
-import cry.cryHashSha512;
+import cry.cryHashSha2512;
 import java.util.ArrayList;
 import java.util.Comparator;
 import cfg.cfgAll;
@@ -295,7 +295,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             }
             a = cmd.word();
             byte[] chl = cryBase64.decodeBytes(a);
-            cryHashSha512 hsh = new cryHashSha512();
+            cryHashSha2512 hsh = new cryHashSha2512();
             hsh.init();
             hsh.update(chl);
             hsh.update(iface.authentication.getBytes());

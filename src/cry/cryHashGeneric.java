@@ -34,11 +34,13 @@ public abstract class cryHashGeneric {
     public abstract int getBlockSize();
 
     /**
-     * update with a byte
+     * update with buffer
      *
-     * @param i byte value
+     * @param buf buffer to use
+     * @param ofs offset in buffer
+     * @param siz bytes to add
      */
-    public abstract void update(int i);
+    public abstract void update(byte[] buf, int ofs, int siz);
 
     /**
      * finish hash
@@ -48,16 +50,14 @@ public abstract class cryHashGeneric {
     public abstract byte[] finish();
 
     /**
-     * update with buffer
+     * update with a byte
      *
-     * @param buf buffer to use
-     * @param ofs offset in buffer
-     * @param siz bytes to add
+     * @param i byte value
      */
-    public void update(byte[] buf, int ofs, int siz) {
-        for (int i = 0; i < siz; i++) {
-            update(buf[ofs + i] & 0xff);
-        }
+    public void update(int i) {
+        byte[] buf = new byte[1];
+        buf[0] = (byte) (i & 0xff);
+        update(buf, 0, buf.length);
     }
 
     /**

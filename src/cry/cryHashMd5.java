@@ -35,8 +35,8 @@ public class cryHashMd5 extends cryHashGeneric {
         return 64;
     }
 
-    public void update(int i) {
-        digest.update((byte) i);
+    public void update(byte[] buf, int ofs, int siz) {
+        digest.update(buf, ofs, siz);
     }
 
     public byte[] finish() {

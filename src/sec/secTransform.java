@@ -9,8 +9,8 @@ import cry.cryHashGeneric;
 import cry.cryHashHmac;
 import cry.cryHashMd5;
 import cry.cryHashSha1;
-import cry.cryHashSha256;
-import cry.cryHashSha512;
+import cry.cryHashSha2256;
+import cry.cryHashSha2512;
 import cry.cryKeyDH;
 import java.util.List;
 import pack.packHolder;
@@ -847,10 +847,10 @@ public class secTransform {
                 h = new cryHashSha1();
                 break;
             case 3:
-                h = new cryHashSha256();
+                h = new cryHashSha2256();
                 break;
             case 4:
-                h = new cryHashSha512();
+                h = new cryHashSha2512();
                 break;
             default:
                 return null;

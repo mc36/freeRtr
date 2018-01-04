@@ -640,12 +640,18 @@ class prtDccpConn {
             byte[] add = new byte[0];
             switch (typ) {
                 case optTimReq:
+                    if (dat.length < 4) {
+                        continue;
+                    }
                     add = new byte[6];
                     bits.msbPutD(add, 0, bits.msbGetD(dat, 0));
                     bits.msbPutW(add, 4, 3);
                     typ = optTimRep;
                     break;
                 case optChgL:
+                    if (dat.length < 2) {
+                        continue;
+                    }
                     add = new byte[3];
                     add[0] = dat[0];
                     add[1] = (byte) getFeatVal(dat[0], dat[1]);
@@ -653,6 +659,9 @@ class prtDccpConn {
                     typ = optCnfR;
                     break;
                 case optChgR:
+                    if (dat.length < 2) {
+                        continue;
+                    }
                     add = new byte[3];
                     add[0] = dat[0];
                     add[1] = (byte) getFeatVal(dat[0], dat[1]);

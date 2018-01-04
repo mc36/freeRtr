@@ -15,7 +15,7 @@ import cry.cryHashGeneric;
 import cry.cryHashHmac;
 import cry.cryHashMd5;
 import cry.cryHashSha1;
-import cry.cryHashSha256;
+import cry.cryHashSha2256;
 import cry.cryKeyDH;
 import cry.cryKeyDSA;
 import cry.cryKeyGeneric;
@@ -138,7 +138,7 @@ public class packSshInit {
         cryHashGeneric h;
         switch (lst[0]) {
             case 0:
-                h = new cryHashSha256();
+                h = new cryHashSha2256();
                 break;
             case 1:
                 h = new cryHashSha1();

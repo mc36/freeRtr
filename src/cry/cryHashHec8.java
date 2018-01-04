@@ -57,8 +57,14 @@ public class cryHashHec8 extends cryHashGeneric {
         return 1;
     }
 
-    public void update(int i) {
+    private void updateByte(int i) {
         sum = tab[(sum ^ i) & 0xff];
+    }
+
+    public void update(byte[] buf, int ofs, int siz) {
+        for (int i = 0; i < siz; i++) {
+            updateByte(buf[ofs + i]);
+        }
     }
 
     public byte[] finish() {

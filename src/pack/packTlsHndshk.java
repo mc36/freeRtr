@@ -15,8 +15,8 @@ import cry.cryHashGeneric;
 import cry.cryHashHmac;
 import cry.cryHashMd5;
 import cry.cryHashSha1;
-import cry.cryHashSha256;
-import cry.cryHashSha512;
+import cry.cryHashSha2256;
+import cry.cryHashSha2512;
 import cry.cryHashSslMac;
 import cry.cryKeyDH;
 import cry.cryKeyDSA;
@@ -878,10 +878,10 @@ public class packTlsHndshk {
                     alg = new cryHashSha1();
                     break;
                 case 4:
-                    alg = new cryHashSha256();
+                    alg = new cryHashSha2256();
                     break;
                 case 6:
-                    alg = new cryHashSha512();
+                    alg = new cryHashSha2512();
                     break;
                 default:
                     return null;
@@ -1202,7 +1202,7 @@ public class packTlsHndshk {
                 h2 = calcExchangeSum(new cryHashSha1(), null, null);
                 return genHashV10(masterSec, s, h1, h2, 12);
             case 0x303:
-                h1 = calcExchangeSum(new cryHashSha256(), null, null);
+                h1 = calcExchangeSum(new cryHashSha2256(), null, null);
                 h2 = new byte[0];
                 return genHashV12(masterSec, s, h1, h2, 12);
             default:
@@ -1271,7 +1271,7 @@ public class packTlsHndshk {
     }
 
     private static byte[] genHashV12(byte[] sec, String lab, byte[] sd1, byte[] sd2, int siz) {
-        sd1 = genHashV10h(new cryHashSha256(), sec, getHashV10c(lab.getBytes(), sd1, sd2), siz);
+        sd1 = genHashV10h(new cryHashSha2256(), sec, getHashV10c(lab.getBytes(), sd1, sd2), siz);
         sd2 = new byte[siz];
         bits.byteCopy(sd1, 0, sd2, 0, siz);
         return sd2;
@@ -1304,7 +1304,7 @@ public class packTlsHndshk {
             case 0x2:
                 return new cryHashSha1();
             case 0x3:
-                return new cryHashSha256();
+                return new cryHashSha2256();
             default:
                 return null;
         }

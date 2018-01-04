@@ -26,10 +26,8 @@ import java.util.List;
 import cry.cryBase64;
 import cry.cryHashMd5;
 import cry.cryHashSha1;
-import cry.cryHashSha224;
-import cry.cryHashSha256;
-import cry.cryHashSha384;
-import cry.cryHashSha512;
+import cry.cryHashSha2256;
+import cry.cryHashSha2512;
 import line.lineHdlc;
 import pack.packDnsRec;
 import pack.packDnsZone;
@@ -2469,10 +2467,8 @@ public class userExec {
             cmd.error("file=" + a);
             cmd.error("md5=" + userUpgrade.calcFileHash(new cryHashMd5(), a));
             cmd.error("sha1=" + userUpgrade.calcFileHash(new cryHashSha1(), a));
-            cmd.error("sha224=" + userUpgrade.calcFileHash(new cryHashSha224(), a));
-            cmd.error("sha256=" + userUpgrade.calcFileHash(new cryHashSha256(), a));
-            cmd.error("sha384=" + userUpgrade.calcFileHash(new cryHashSha384(), a));
-            cmd.error("sha512=" + userUpgrade.calcFileHash(new cryHashSha512(), a));
+            cmd.error("sha256=" + userUpgrade.calcFileHash(new cryHashSha2256(), a));
+            cmd.error("sha512=" + userUpgrade.calcFileHash(new cryHashSha2512(), a));
             return;
         }
         if (a.equals("disk")) {

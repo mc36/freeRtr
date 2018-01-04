@@ -54,8 +54,8 @@ public class cryHashHmac extends cryHashGeneric {
         return alg.getBlockSize();
     }
 
-    public void update(int i) {
-        alg.update(i);
+    public void update(byte[] buf, int ofs, int siz) {
+        alg.update(buf, ofs, siz);
     }
 
     public byte[] finish() {
