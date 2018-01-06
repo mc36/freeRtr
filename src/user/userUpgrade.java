@@ -415,10 +415,17 @@ public class userUpgrade {
             fl.cons.debugStat("skipping " + loc + " since up to date!");
             return 0;
         }
-        fl.cons.debugStat("downloading " + loc);
         if (needStop(justSimu)) {
+            fl.cons.debugStat("skipping " + loc + " since just simulating!");
             return 0;
         }
+        if (cfgAll.upgradeBackup) {
+            String a = loc + ".bak";
+            fl.cons.debugStat("backing up " + loc + " to " + a);
+            userFlash.delete(a);
+            fl.copy(loc, a);
+        }
+        fl.cons.debugStat("downloading " + loc);
         uniResLoc url = uniResLoc.parseOne(rem);
         userFlash.delete(tmp);
         userFlash.doReceive(cmd.pipe, url, new File(tmp));

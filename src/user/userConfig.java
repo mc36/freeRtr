@@ -376,6 +376,7 @@ public class userConfig {
         l.add("2  3    name-server                  specify address of name server");
         l.add("3  .      <addr>                     address of server");
         l.add("2  .    upgrade-config               automatically save configuration on upgrade");
+        l.add("2  .    upgrade-backup               automatically backup image on upgrade");
         l.add("2  .    upgrade-ownkey               use just the configured key");
         l.add("2  3    upgrade-server               specify url of upgrade server");
         l.add("3  .      <name>                     url of server");
@@ -1252,6 +1253,10 @@ public class userConfig {
                 cfgAll.upgradeConfig = true;
                 return;
             }
+            if (a.equals("upgrade-backup")) {
+                cfgAll.upgradeBackup = true;
+                return;
+            }
             if (a.equals("upgrade-ownkey")) {
                 cfgAll.upgradeOwnKey = true;
                 return;
@@ -1841,6 +1846,10 @@ public class userConfig {
             }
             if (a.equals("upgrade-config")) {
                 cfgAll.upgradeConfig = false;
+                return;
+            }
+            if (a.equals("upgrade-backup")) {
+                cfgAll.upgradeBackup = false;
                 return;
             }
             if (a.equals("upgrade-ownkey")) {

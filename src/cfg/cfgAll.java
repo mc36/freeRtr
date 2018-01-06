@@ -605,6 +605,11 @@ public class cfgAll {
     public static String upgradeServer = verCore.homeUrl;
 
     /**
+     * upgrade backup files
+     */
+    public static boolean upgradeBackup = false;
+
+    /**
      * upgrade config save
      */
     public static boolean upgradeConfig = false;
@@ -681,6 +686,7 @@ public class cfgAll {
         "!no client upgrade-pubkey",
         "!client upgrade-server " + verCore.homeUrl,
         "!no client upgrade-config",
+        "!no client upgrade-backup",
         "!no client upgrade-ownkey",
         "!no client config-server",
         "!no client config-username",
@@ -2479,6 +2485,7 @@ public class cfgAll {
         cmds.cfgLine(l, upgradePubKey == null, "", "client upgrade-pubkey", "" + upgradePubKey);
         cmds.cfgLine(l, upgradeServer == null, "", "client upgrade-server", "" + upgradeServer);
         cmds.cfgLine(l, !upgradeConfig, "", "client upgrade-config", "");
+        cmds.cfgLine(l, !upgradeBackup, "", "client upgrade-backup", "");
         cmds.cfgLine(l, !upgradeOwnKey, "", "client upgrade-ownkey", "");
         cmds.cfgLine(l, configServer == null, "", "client config-server", "" + configServer);
         cmds.cfgLine(l, configUser == null, "", "client config-username", "" + configUser);
