@@ -21,6 +21,7 @@ import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabNatCfgN;
 import tab.tabNatTraN;
+import tab.tabPbrN;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
@@ -46,6 +47,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * the ip version
      */
     public final int ipVersion;
+
+    /**
+     * configured name of routing table
+     */
+    public final String cfgName;
 
     /**
      * name of routing table
@@ -136,6 +142,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * list of multicast groups
      */
     public final tabGen<ipFwdMcast> groups;
+
+    /**
+     * the configured pbr entries
+     */
+    public final tabListing<tabPbrN, addrIP> pbrCfg;
 
     /**
      * the configured nat entries
@@ -333,10 +344,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param ipc handler of ip core
      * @param icc handler of icmp core
      * @param mhst handler of igmp/mdl core
+     * @param cfg configured name of this vrf
      * @param nam name of this vrf
      */
-    public ipFwd(ipCor ipc, ipIcmp icc, ipMhost mhst, String nam) {
+    public ipFwd(ipCor ipc, ipIcmp icc, ipMhost mhst, String cfg, String nam) {
         nextVrfNumber++;
+        cfgName = cfg;
         vrfName = nam;
         vrfNum = nextVrfNumber;
         ipCore = ipc;
@@ -362,6 +375,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         staticU = new tabGen<ipFwdRoute>();
         staticM = new tabGen<ipFwdRoute>();
         natTrns = new tabGen<tabNatTraN>();
+        pbrCfg = new tabListing<tabPbrN, addrIP>();
+        pbrCfg.myCor = ipCore;
+        pbrCfg.myIcmp = icc;
         natCfg = new tabListing<tabNatCfgN, addrIP>();
         natCfg.myCor = ipCore;
         natCfg.myIcmp = icc;
@@ -1038,6 +1054,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         pck.INTupper = 0;
         ipMpls.beginMPLSfields(pck, mplsPropTtl);
+        if (doPbrFwd(lower.pbrCfg, true, false, lower, pck)) {
+            return;
+        }
         forwardPacket(true, false, lower, pck);
     }
 
@@ -1426,6 +1445,40 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     }
 
     /**
+     * forwards one parsed packet by policy routing
+     */
+    private boolean doPbrFwd(tabListing<tabPbrN, addrIP> cfg, boolean fromIfc, boolean fromMpls, ipFwdIface rxIfc, packHolder pck) {
+        if (cfg.size() < 1) {
+            return false;
+        }
+        cfg.packParse(true, true, true, pck);
+        tabPbrN pbr = cfg.find(pck);
+        if (pbr == null) {
+            return false;
+        }
+        if (pbr.setIfc != null) {
+            pck.INTiface = -2;
+            ifaceProto(pbr.setIfc, pck, pbr.setHop);
+            return true;
+        }
+        if (pbr.setHop == null) {
+            pck.INTiface = -2;
+            pbr.setVrf.forwardPacket(fromIfc, fromMpls, rxIfc, pck);
+            return true;
+        }
+        tabRouteEntry<addrIP> ntry = pbr.setVrf.actualU.route(pbr.setHop);
+        if (ntry == null) {
+            return false;
+        }
+        if (ntry.iface == null) {
+            return false;
+        }
+        pck.INTiface = -2;
+        ifaceProto((ipFwdIface) ntry.iface, pck, pbr.setHop);
+        return true;
+    }
+
+    /**
      * forwards one parsed packet
      */
     private void forwardPacket(boolean fromIfc, boolean fromMpls, ipFwdIface rxIfc, packHolder pck) {
@@ -1466,6 +1519,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                     natCfg.packUpdate(pck);
                 }
             }
+        }
+        if (doPbrFwd(pbrCfg, fromIfc, fromMpls, rxIfc, pck)) {
+            return;
         }
         boolean alerted = (pck.IPalrt != -1);
         pck.IPalrt = -1;

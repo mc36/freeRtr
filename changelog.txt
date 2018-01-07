@@ -7781,3 +7781,10 @@ no todo: ncp close should honored again
 qc pass: ldp over ppp
 ---------------------------------- 2017-12-19 12:12:12
 no todo: new release signing key
+---------------------------------- 2018-01-06 23:12:45
+qc pass: policy routing with nexthop
+qc pass: policy routing with interface and nexthop between vrfs
+qc pass: policy routing with interface and nexthop
+qc pass: policy routing with interface and nexthop between vrfs
+qc pass: policy routing between vrfs with routing
+qc pass: policy routing with nexthop on interface

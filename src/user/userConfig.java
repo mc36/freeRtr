@@ -105,6 +105,7 @@ import serv.servUpnpFwd;
 import serv.servUpnpHub;
 import tab.tabGen;
 import tab.tabNatCfgN;
+import tab.tabPbrN;
 import tab.tabRouteEntry;
 import util.bits;
 import util.cmds;
@@ -1959,6 +1960,26 @@ public class userConfig {
         cmd.badCmd();
     }
 
+    private cfgVrf parseUpPbr(int p, tabPbrN ntry) {
+        cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+        if (vrf == null) {
+            cmd.error("no such vrf");
+            return null;
+        }
+        ipFwd fwd;
+        if (p == 4) {
+            fwd = vrf.fwd4;
+        } else {
+            fwd = vrf.fwd6;
+        }
+        ntry.sequence = fwd.pbrCfg.nextseq();
+        if (ntry.fromString(p, cmd.getRemaining())) {
+            return null;
+        }
+        ntry.matcher.copyCores(fwd.pbrCfg);
+        return vrf;
+    }
+
     private cfgVrf parseUpNat(int p, tabNatCfgN ntry) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
@@ -2083,6 +2104,16 @@ public class userConfig {
         l.add("5  6          <name>                 proxy profile");
         l.add("6  7            <addr>               target address");
         l.add("7  .              <num>              port number");
+        l.add("2  3    pbr                          configure policy based routing");
+        l.add("3  4,6    <vrf>                      name of routing table");
+        l.add("4  5        sequence                 sequence number");
+        l.add("5  6          <num>                  number");
+        l.add("6  7            <name>               access list name");
+        l.add("7  8,.            <vrf>              target vrf");
+        l.add("8  9                interface        set target interface");
+        l.add("9  8,.                <name>         interface name");
+        l.add("8  9                nexthop          set target address");
+        l.add("9  8,.                <addr>         target address");
         l.add("2  3    nat                          configure network address translation");
         l.add("3  4,6    <vrf>                      name of routing table");
         l.add("4  5        sequence                 sequence number");
@@ -2209,6 +2240,15 @@ public class userConfig {
             vrf.fwd4.routerStaticChg();
             return;
         }
+        if (a.equals("pbr")) {
+            tabPbrN red = new tabPbrN();
+            cfgVrf vrf = parseUpPbr(4, red);
+            if (vrf == null) {
+                return;
+            }
+            vrf.fwd4.pbrCfg.add(red);
+            return;
+        }
         if (a.equals("pool")) {
             parseUpPool(4, true);
             return;
@@ -2261,6 +2301,15 @@ public class userConfig {
                 return;
             }
             vrf.fwd4.natCfg.del(red);
+            return;
+        }
+        if (a.equals("pbr")) {
+            tabPbrN red = new tabPbrN();
+            cfgVrf vrf = parseUpPbr(4, red);
+            if (vrf == null) {
+                return;
+            }
+            vrf.fwd4.pbrCfg.del(red);
             return;
         }
         if (a.equals("pool")) {
@@ -2316,6 +2365,15 @@ public class userConfig {
             vrf.fwd6.routerStaticChg();
             return;
         }
+        if (a.equals("pbr")) {
+            tabPbrN red = new tabPbrN();
+            cfgVrf vrf = parseUpPbr(6, red);
+            if (vrf == null) {
+                return;
+            }
+            vrf.fwd6.pbrCfg.add(red);
+            return;
+        }
         if (a.equals("pool")) {
             parseUpPool(6, true);
             return;
@@ -2368,6 +2426,15 @@ public class userConfig {
                 return;
             }
             vrf.fwd6.natCfg.del(red);
+            return;
+        }
+        if (a.equals("pbr")) {
+            tabPbrN red = new tabPbrN();
+            cfgVrf vrf = parseUpPbr(6, red);
+            if (vrf == null) {
+                return;
+            }
+            vrf.fwd6.pbrCfg.del(red);
             return;
         }
         if (a.equals("pool")) {

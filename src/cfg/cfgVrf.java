@@ -22,6 +22,7 @@ import prt.prtUdp;
 import prt.prtLudp;
 import tab.tabGen;
 import tab.tabNatCfgN;
+import tab.tabPbrN;
 import tab.tabRtrmapN;
 import user.userFilter;
 import user.userFormat;
@@ -402,8 +403,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         mhst4 = new ipMhost4();
         mhst6 = new ipMhost6();
         ipx = new ipxFwd(name);
-        fwd4 = new ipFwd(core4, icmp4, mhst4, name + ":4");
-        fwd6 = new ipFwd(core6, icmp6, mhst6, name + ":6");
+        fwd4 = new ipFwd(core4, icmp4, mhst4, name, name + ":4");
+        fwd6 = new ipFwd(core6, icmp6, mhst6, name, name + ":6");
         udp4 = new prtUdp(fwd4);
         udp6 = new prtUdp(fwd6);
         ludp4 = new prtLudp(fwd4);
@@ -459,6 +460,13 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         for (int i = 0; i < f.natCfg.size(); i++) {
             tabNatCfgN nat = f.natCfg.get(i);
             l.addAll(nat.usrString("ipv" + p + " nat " + name + " "));
+        }
+    }
+
+    private void addCfgPbrs(List<String> l, int p, ipFwd f) {
+        for (int i = 0; i < f.pbrCfg.size(); i++) {
+            tabPbrN pbr = f.pbrCfg.get(i);
+            l.addAll(pbr.usrString("ipv" + p + " pbr " + name + " "));
         }
     }
 
@@ -549,6 +557,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         addCfgNats(l, 4, fwd4);
         l.add(cmds.comment);
         addCfgNats(l, 6, fwd6);
+        l.add(cmds.comment);
+        addCfgPbrs(l, 4, fwd4);
+        l.add(cmds.comment);
+        addCfgPbrs(l, 6, fwd6);
         l.add(cmds.comment);
         addCfgMcast(l, 4, fwd4);
         l.add(cmds.comment);

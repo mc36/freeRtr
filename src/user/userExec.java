@@ -171,6 +171,8 @@ public class userExec {
         hl.add("4 5          <vrf>               name of routing table");
         hl.add("5 .            session           list of sessions");
         hl.add("5 .            toptalk           top talker list");
+        hl.add("3 4        pbr                   pbr table entries");
+        hl.add("4 .          <vrf>               name of routing table");
         hl.add("3 4        nat                   nat table entries");
         hl.add("4 5          <vrf>               name of routing table");
         hl.add("5 .            statistics        list of configuration entries");

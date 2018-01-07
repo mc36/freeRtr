@@ -780,6 +780,10 @@ public class userShow {
                 doShowIpXnat(4);
                 return null;
             }
+            if (a.equals("pbr")) {
+                doShowIpXpbr(4);
+                return null;
+            }
             if (a.equals("arp")) {
                 cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
                 if (ifc == null) {
@@ -991,6 +995,10 @@ public class userShow {
             }
             if (a.equals("nat")) {
                 doShowIpXnat(6);
+                return null;
+            }
+            if (a.equals("pbr")) {
+                doShowIpXpbr(6);
                 return null;
             }
             if (a.equals("neighbors")) {
@@ -2278,6 +2286,14 @@ public class userShow {
             default:
                 return 2;
         }
+    }
+
+    private void doShowIpXpbr(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        rdr.putStrArr(fwd.pbrCfg.getStats());
     }
 
     private void doShowIpXnat(int ver) {

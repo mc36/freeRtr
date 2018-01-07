@@ -24,6 +24,7 @@ import rtr.rtrVrrpIface;
 import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabListing;
+import tab.tabPbrN;
 import tab.tabPrfxlstN;
 import tab.tabRouteIface;
 import tab.tabRtrmapN;
@@ -144,6 +145,11 @@ public class ipFwdIface extends tabRouteIface {
      * egress acl
      */
     public tabListing<tabAceslstN<addrIP>, addrIP> filterOut;
+
+    /**
+     * the pbr entries
+     */
+    public final tabListing<tabPbrN, addrIP> pbrCfg = new tabListing<tabPbrN, addrIP>();
 
     /**
      * ingress tcp mss
@@ -377,6 +383,15 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 4       tracker                   set tracker to use");
         l.add("4 5         <name>                  name of tracker");
         l.add("5 .           <num>                 decrement value");
+        l.add("2 3,5  pbr                          configure policy based routing");
+        l.add("3 4      sequence                   sequence number");
+        l.add("4 5        <num>                    number");
+        l.add("5 6          <name>                 access list name");
+        l.add("6 7,.          <vrf>                target vrf");
+        l.add("7 8              interface          set target interface");
+        l.add("8 7,.              <name>           interface name");
+        l.add("7 8              nexthop            set target address");
+        l.add("8 7,.              <addr>           target address");
     }
 
     /**
@@ -409,6 +424,10 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, filterOut == null, cmds.tabulator, beg + "access-group-out", "" + filterOut);
         cmds.cfgLine(l, inspect == null, cmds.tabulator, beg + "inspect", "" + inspect);
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "");
+        for (int i = 0; i < pbrCfg.size(); i++) {
+            tabPbrN pbr = pbrCfg.get(i);
+            l.addAll(pbr.usrString(cmds.tabulator + beg + "pbr "));
+        }
         if (ptpCfg == null) {
             l.add(cmds.tabulator + "no " + beg + "ptp enable");
         } else {
@@ -607,6 +626,18 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("tcp-mss-out")) {
             tcpMssOut = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("pbr")) {
+            pbrCfg.myCor = cor;
+            pbrCfg.myIcmp = fwd.icmpCore;
+            tabPbrN ntry = new tabPbrN();
+            ntry.sequence = pbrCfg.nextseq();
+            if (ntry.fromString(fwd.ipVersion, cmd.getRemaining())) {
+                return true;
+            }
+            ntry.matcher.copyCores(fwd.pbrCfg);
+            pbrCfg.add(ntry);
             return false;
         }
         if (a.equals("multicast")) {
@@ -947,6 +978,15 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("tcp-mss-out")) {
             tcpMssOut = 0;
+            return false;
+        }
+        if (a.equals("pbr")) {
+            tabPbrN ntry = new tabPbrN();
+            ntry.sequence = pbrCfg.nextseq();
+            if (ntry.fromString(fwd.ipVersion, cmd.getRemaining())) {
+                return true;
+            }
+            pbrCfg.del(ntry);
             return false;
         }
         if (a.equals("multicast")) {
