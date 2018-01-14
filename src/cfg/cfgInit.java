@@ -165,6 +165,11 @@ public class cfgInit implements Runnable {
     public static final tabGen<cfgVdc> vdcLst = new tabGen<cfgVdc>();
 
     /**
+     * no stall check
+     */
+    public static boolean noStallCheck = false;
+
+    /**
      * vdc port range
      */
     public static int vdcPortBeg = 10240;
@@ -328,6 +333,10 @@ public class cfgInit implements Runnable {
             if (s.equals("port")) {
                 vdcPortBeg = bits.str2num(cmd.word());
                 vdcPortEnd = bits.str2num(cmd.word());
+                continue;
+            }
+            if (s.equals("nostall")) {
+                noStallCheck = true;
                 continue;
             }
             if (s.equals("int")) {

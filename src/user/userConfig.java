@@ -396,6 +396,7 @@ public class userConfig {
         l.add("2  .    config-exclusive             allow only one user in configuration mode");
         l.add("2  .    prefer-ipv6                  prefer ipv6 for domains");
         l.add("2  .    prefer-ipv4                  prefer ipv4 for domains");
+        l.add("2  .    udp-checksum                 use udp checksum");
         l.add("2  .    ftp-passive                  use passive mode ftp");
         l.add("2  .    ftp-active                   use active mode ftp");
         l.add("2  3    time-server                  specify name of time server");
@@ -1218,6 +1219,10 @@ public class userConfig {
                 cfgAll.preferIpv6 = false;
                 return;
             }
+            if (a.equals("udp-checksum")) {
+                cfgAll.udpChecksum = true;
+                return;
+            }
             if (a.equals("ftp-passive")) {
                 cfgAll.ftpPassive = true;
                 return;
@@ -1823,6 +1828,10 @@ public class userConfig {
             }
             if (a.equals("prefer-ipv4")) {
                 cfgAll.preferIpv6 = true;
+                return;
+            }
+            if (a.equals("udp-checksum")) {
+                cfgAll.udpChecksum = false;
                 return;
             }
             if (a.equals("ftp-passive")) {

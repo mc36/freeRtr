@@ -743,6 +743,7 @@ server bmp2mrt bmp
 client proxy p1
 client prefer-ipv6
 client name-server 8.8.8.8
+no client udp-checksum
 client upgrade-config
 client config-save
 client time-zone CET

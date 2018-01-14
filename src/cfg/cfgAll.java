@@ -625,6 +625,11 @@ public class cfgAll {
     public static boolean ftpPassive = true;
 
     /**
+     * udp checksum
+     */
+    public static boolean udpChecksum = true;
+
+    /**
      * name of config server
      */
     public static String configServer;
@@ -699,7 +704,8 @@ public class cfgAll {
         "!no client mail-username",
         "!no client mail-password",
         "!no client prefer-ipv6",
-        "!client ftp-passive",};
+        "!client ftp-passive",
+        "!client udp-checksum",};
 
     /**
      * defaults filter
@@ -2481,6 +2487,7 @@ public class cfgAll {
         }
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
         cmds.cfgLine(l, nameServerAddr == null, "", "client name-server", "" + nameServerAddr);
+        cmds.cfgLine(l, !udpChecksum, "", "client udp-checksum", "");
         cmds.cfgLine(l, !ftpPassive, "", "client ftp-passive", "");
         cmds.cfgLine(l, upgradePubKey == null, "", "client upgrade-pubkey", "" + upgradePubKey);
         cmds.cfgLine(l, upgradeServer == null, "", "client upgrade-server", "" + upgradeServer);

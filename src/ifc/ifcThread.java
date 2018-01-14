@@ -101,6 +101,10 @@ public abstract class ifcThread implements ifcDn, Runnable {
         if (s.length() < 1) {
             return;
         }
+        if (cfgInit.noStallCheck) {
+            logger.debug(s + " stalled!");
+            return;
+        }
         cfgInit.stopRouter(false, 7, s + "stalled!");
     }
 
