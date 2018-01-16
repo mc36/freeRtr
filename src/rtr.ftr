@@ -1060,6 +1060,10 @@ qc pass: bgp prefix packing
 qc pass: ebgp with nexthop tracking interface
 qc pass: ibgp with nexthop tracking interface
 qc pass: bgp with bier
+qc pass: bgp routemap filtering with rd
+qc pass: bgp routepolicy filtering with rd
+qc pass: bgp routemap filtering with rd with soft-reconfig
+qc pass: bgp routepolicy filtering with rd with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

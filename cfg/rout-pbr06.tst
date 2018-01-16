@@ -1,4 +1,4 @@
-description policy routing with nexthop on interface
+description policy routing with nexthop on interface between vrfs
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -33,6 +33,9 @@ int eth2 eth 0000.0000.2222 $2a$ $2b$
 vrf def v1
  rd 1:1
  exit
+vrf def v2
+ rd 1:1
+ exit
 access-list a2b4
  permit all 2.2.2.101 255.255.255.255 all 2.2.2.201 255.255.255.255 all
  exit
@@ -49,11 +52,11 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
  ipv6 addr 1234:1::2 ffff:ffff::
- ipv4 pbr a2b4 v1 next 1.1.1.5
- ipv6 pbr a2b6 v1 next 1234:2::1
+ ipv4 pbr a2b4 v2 next 1.1.1.5
+ ipv6 pbr a2b6 v2 next 1234:2::1
  exit
 int eth2
- vrf for v1
+ vrf for v2
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  ipv4 pbr b2a4 v1 next 1.1.1.1

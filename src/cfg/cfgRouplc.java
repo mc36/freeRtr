@@ -130,6 +130,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("2 3     tag                 match tag");
         l.add("3 .       <num>             tag");
         l.add("3 .       all               any value");
+        l.add("2 3     rd                  match route distinguisher");
+        l.add("3 .       <str>             rd");
         l.add("2 3     network             match network");
         l.add("3 4,.     <net/mask>        network in perfix/mask format");
         l.add("4 5         ge              minimum prefix length to be matched");
@@ -258,6 +260,11 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         if (a.equals("lrgcomm")) {
             ntry.ifMode = tabRtrplcN.ifType.lrgcomm;
             ntry.lrgLst = tabRtrmapN.string2lrgComms(cmd.getRemaining());
+            return;
+        }
+        if (a.equals("rd")) {
+            ntry.ifMode = tabRtrplcN.ifType.roudst;
+            ntry.rouDstMatch = tabRtrmapN.string2rd(cmd.word());
             return;
         }
         if (a.equals("network")) {

@@ -2037,6 +2037,18 @@ public class userShow {
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
+            if (a.equals("rd")) {
+                a = cmd.getRemaining();
+                cmd = new cmds("", "");
+                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+                tabRtrmapN ntry = new tabRtrmapN();
+                ntry.rouDstMatch = tabRtrmapN.string2rd(a);
+                roumap.add(ntry);
+                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                doShowRoutes(r.bgp.fwdCore, res, dsp);
+                return;
+            }
             if (a.equals("regexp")) {
                 a = cmd.getRemaining();
                 cmd = new cmds("", "");

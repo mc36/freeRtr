@@ -416,6 +416,8 @@ public class userExec {
         hl.add("7 .                <str>         metric matcher");
         hl.add("6 7              tag             list of routes with tag");
         hl.add("7 .                <str>         tag matcher");
+        hl.add("6 7              rd              list of routes with rd");
+        hl.add("7 .                <str>         tag matcher");
         hl.add("6 7              network         list of routes from network");
         hl.add("7 7,.              <str>         prefix matcher");
         hl.add("6 7              allroute        list of specific routes");

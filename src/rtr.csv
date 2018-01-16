@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.1.6-testing, done by matecsaba.;-;-
--;-;2018-01-07 08:31:18, took 09:18:32 on 1334 cases;-;-
+-;-;freeRouter v18.1.15-testing, done by matecsaba.;-;-
+-;-;2018-01-15 15:46:14, took 09:25:30 on 1338 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -1063,6 +1063,10 @@ rout-bgp310.tst;0;bgp prefix packing;successfully;finished
 rout-bgp311.tst;0;ebgp with nexthop tracking interface;successfully;finished
 rout-bgp312.tst;0;ibgp with nexthop tracking interface;successfully;finished
 rout-bgp313.tst;0;bgp with bier;successfully;finished
+rout-bgp314.tst;0;bgp routemap filtering with rd;successfully;finished
+rout-bgp315.tst;0;bgp routepolicy filtering with rd;successfully;finished
+rout-bgp316.tst;0;bgp routemap filtering with rd with soft-reconfig;successfully;finished
+rout-bgp317.tst;0;bgp routepolicy filtering with rd with soft-reconfig;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished

@@ -20,6 +20,11 @@ import util.cmds;
 public class tabRtrmapN extends tabListingEntry<addrIP> {
 
     /**
+     * route distinguisher matcher
+     */
+    public long rouDstMatch;
+
+    /**
      * network matcher
      */
     public tabPrfxlstN networkMatch;
@@ -563,6 +568,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         cmds.cfgLine(l, prfxlstMatch == null, beg, "match prefix-list", "" + prfxlstMatch);
         cmds.cfgLine(l, roumapMatch == null, beg, "match route-map", "" + roumapMatch);
         cmds.cfgLine(l, rouplcMatch == null, beg, "match route-policy", "" + rouplcMatch);
+        if (rouDstMatch == 0) {
+            l.add(beg + "no match rd");
+        } else {
+            l.add(beg + "match rd " + rd2string(rouDstMatch));
+        }
         if (networkMatch == null) {
             l.add(beg + "no match network");
         } else {
@@ -648,6 +658,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     }
 
     public boolean matches(tabRouteEntry<addrIP> net) {
+        if (rouDstMatch != 0) {
+            if (rouDstMatch != net.rouDst) {
+                return false;
+            }
+        }
         if (!distanceMatch.matches(net.distance)) {
             return false;
         }

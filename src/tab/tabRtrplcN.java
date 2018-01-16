@@ -158,6 +158,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         lrgcomm,
         /**
+         * route distinguisher
+         */
+        roudst,
+        /**
          * network
          */
         network,
@@ -257,6 +261,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
      * large list
      */
     public List<tabLargeComm> lrgLst;
+
+    /**
+     * route distinguisher matcher
+     */
+    public long rouDstMatch;
 
     /**
      * network matcher
@@ -378,6 +387,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "extcomm " + tabRtrmapN.extComms2string(lngLst);
             case lrgcomm:
                 return "lrgcomm " + tabRtrmapN.lrgComms2string(lrgLst);
+            case roudst:
+                return "rd " + tabRtrmapN.rd2string(rouDstMatch);
             case network:
                 return "network " + networkMatch;
             case nostdcomm:
@@ -444,6 +455,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                     }
                 }
                 return true;
+            case roudst:
+                return rouDstMatch == net.rouDst;
             case network:
                 return networkMatch.matches(net.prefix);
             case nostdcomm:

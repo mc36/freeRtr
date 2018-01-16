@@ -48,6 +48,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no match prefix-list",
         "route-map .*! sequence .* no match route-map",
         "route-map .*! sequence .* no match route-policy",
+        "route-map .*! sequence .* no match rd",
         "route-map .*! sequence .* no match network",
         "route-map .*! sequence .* no match aspath",
         "route-map .*! sequence .* no match stdcomm",
@@ -182,6 +183,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("2 3     tag                 match tag");
         l.add("3 .       <num>             tag");
         l.add("3 .       all               any value");
+        l.add("2 3     rd                  match route distinguisher");
+        l.add("3 .       <str>             rd");
         l.add("2 3     network             match network");
         l.add("3 4,.     <net/mask>        network in perfix/mask format");
         l.add("4 5         ge              minimum prefix length to be matched");
@@ -342,6 +345,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("lrgcomm")) {
                 ntry.lrgCommMatch = tabRtrmapN.string2lrgComms(cmd.getRemaining());
+                return;
+            }
+            if (a.equals("rd")) {
+                ntry.rouDstMatch = tabRtrmapN.string2rd(cmd.word());
                 return;
             }
             if (a.equals("network")) {
@@ -608,6 +615,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("lrgcomm")) {
                 ntry.lrgCommMatch = null;
+                return;
+            }
+            if (a.equals("rd")) {
+                ntry.rouDstMatch = 0;
                 return;
             }
             if (a.equals("network")) {
