@@ -113,6 +113,8 @@ public abstract class ipRtr implements Comparator<ipRtr> {
             case flwspc6:
             case uni2multi4:
             case uni2multi6:
+            case uni2flow4:
+            case uni2flow6:
                 return 1;
             case bgp4:
             case bgp6:

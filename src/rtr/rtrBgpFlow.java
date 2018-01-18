@@ -38,10 +38,11 @@ public class rtrBgpFlow {
         }
         attr.nextHop = new addrIP();
         attr.rouSrc = rtrBgpUtil.peerOriginate;
+        boolean res = true;
         for (int i = 0; i < plcy.size(); i++) {
-            advertPolicy(tab, plcy.get(i), attr, ipv6, as);
+            res &= advertPolicy(tab, plcy.get(i), attr, ipv6, as);
         }
-        return false;
+        return res;
     }
 
     private static boolean advertPolicy(tabRoute<addrIP> tab, tabPlcmapN plcy, tabRouteEntry<addrIP> attr, boolean ipv6, int as) {
@@ -58,6 +59,21 @@ public class rtrBgpFlow {
             res &= advertEntry(tab, pck, attr, as, plcy.accessRate);
         }
         return res;
+    }
+
+    /**
+     * advertise target network
+     *
+     * @param tab table to update
+     * @param trg target to match
+     * @param ipv6 ipv6 route
+     * @param attr attributes
+     * @return false on success, true on error
+     */
+    public static boolean advertNetwork(tabRoute<addrIP> tab, addrPrefix<addrIP> trg, boolean ipv6, tabRouteEntry<addrIP> attr) {
+        packHolder pck = new packHolder(true, true);
+        encodeAddrMtch(pck, 1, ipv6, trg.network, trg.mask);
+        return advertEntry(tab, pck, attr, 0, 0);
     }
 
     private static boolean advertEntry(tabRoute<addrIP> tab, packHolder pck, tabRouteEntry<addrIP> attr, int as, int rate) {
@@ -86,7 +102,9 @@ public class rtrBgpFlow {
         if (attr.extComm == null) {
             attr.extComm = new ArrayList<Long>();
         }
-        attr.extComm.add(tabRtrmapN.rate2comm(as, rate));
+        if (rate > 0) {
+            attr.extComm.add(tabRtrmapN.rate2comm(as, rate));
+        }
         tab.add(2, attr, true, true);
         return false;
     }
@@ -98,6 +116,8 @@ public class rtrBgpFlow {
         encodeIntMtch(pck, 5, plcy.trgPort);
         encodeIntMtch(pck, 6, plcy.srcPort);
         encodeIntMtch(pck, 9, plcy.flag);
+        encodeIntMtch(pck, 10, plcy.len);
+        encodeIntMtch(pck, 11, plcy.dscp);
     }
 
     private static void encodeOthers(packHolder pck, tabPlcmapN plcy) {

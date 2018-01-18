@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.1.15-testing, done by matecsaba.;-;-
--;-;2018-01-15 15:46:14, took 09:25:30 on 1338 cases;-;-
+-;-;freeRouter v18.1.17-testing, done by matecsaba.;-;-
+-;-;2018-01-18 05:45:40, took 09:54:50 on 1338 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -1241,9 +1241,9 @@ rout-ospf39.tst;0;ospf transit area with bier;successfully;finished
 rout-pbr01.tst;0;policy routing with nexthop;successfully;finished
 rout-pbr02.tst;0;policy routing with interface and nexthop between vrfs;successfully;finished
 rout-pbr03.tst;0;policy routing with interface and nexthop;successfully;finished
-rout-pbr04.tst;0;policy routing with interface and nexthop between vrfs;successfully;finished
-rout-pbr05.tst;0;policy routing between vrfs with routing;successfully;finished
-rout-pbr06.tst;0;policy routing with nexthop on interface;successfully;finished
+rout-pbr04.tst;0;policy routing between vrfs with routing;successfully;finished
+rout-pbr05.tst;0;policy routing with nexthop on interface;successfully;finished
+rout-pbr06.tst;0;policy routing with nexthop on interface between vrfs;successfully;finished
 rout-pvrp01.tst;0;pvrp point2point connection;successfully;finished
 rout-pvrp02.tst;0;pvrp point2multipoint connection;successfully;finished
 rout-pvrp03.tst;0;pvrp point2point chain;successfully;finished

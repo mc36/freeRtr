@@ -1238,9 +1238,9 @@ qc pass: ospf transit area with bier
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
-qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing between vrfs with routing
 qc pass: policy routing with nexthop on interface
+qc pass: policy routing with nexthop on interface between vrfs
 qc pass: pvrp point2point connection
 qc pass: pvrp point2multipoint connection
 qc pass: pvrp point2point chain

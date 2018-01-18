@@ -22,6 +22,7 @@ import rtr.rtrLsrp;
 import rtr.rtrOlsr;
 import rtr.rtrRip4;
 import rtr.rtrRip6;
+import rtr.rtrUni2flow;
 import rtr.rtrUni2multi;
 import tab.tabGen;
 import tab.tabRouteEntry;
@@ -121,6 +122,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * unicast to multicast handler
      */
     public rtrUni2multi uni2multi;
+
+    /**
+     * unicast to flowspec handler
+     */
+    public rtrUni2flow uni2flow;
 
     /**
      * state of this process
@@ -323,7 +329,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router msdp[4|6] .*! no neighbor .* password",
         "router msdp[4|6] .*! no neighbor .* bfd",
         // router flowspec
-        "router flowspec[4|6] .*! distance 254",};
+        "router flowspec[4|6] .*! distance 254",
+        // router uni2multi
+        "router uni2multi[4|6] .*! distance 254",
+        // router uni2flow
+        "router uni2flow[4|6] .*! distance 15",
+        "router uni2flow[4|6] .*! as 0",
+        "router uni2flow[4|6] .*! rate 0",};
 
     /**
      * defaults filter
@@ -415,6 +427,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (a.equals("uni2multi6")) {
             return tabRouteEntry.routeType.uni2multi6;
         }
+        if (a.equals("uni2flow4")) {
+            return tabRouteEntry.routeType.uni2flow4;
+        }
+        if (a.equals("uni2flow6")) {
+            return tabRouteEntry.routeType.uni2flow6;
+        }
         return null;
     }
 
@@ -474,6 +492,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "uni2multi4";
             case uni2multi6:
                 return "uni2multi6";
+            case uni2flow4:
+                return "uni2flow4";
+            case uni2flow6:
+                return "uni2flow6";
             case staticRoute:
                 return "static";
             case conn:
@@ -880,6 +902,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             uni2multi.routerCloseNow();
             uni2multi = null;
         }
+        if (uni2flow != null) {
+            uni2flow.routerCloseNow();
+            uni2flow = null;
+        }
     }
 
     /**
@@ -927,6 +953,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case uni2multi4:
             case uni2multi6:
                 return uni2multi;
+            case uni2flow4:
+            case uni2flow6:
+                return uni2flow;
             default:
                 return null;
         }
@@ -1014,6 +1043,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 break;
             case uni2multi6:
                 uni2multi = new rtrUni2multi(vrf.fwd6, number);
+                break;
+            case uni2flow4:
+                uni2flow = new rtrUni2flow(vrf.fwd4, number);
+                break;
+            case uni2flow6:
+                uni2flow = new rtrUni2flow(vrf.fwd6, number);
                 break;
             default:
                 return true;
@@ -1121,6 +1156,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 2) + " " + (p + 3) + "     flowspec6             flowspec routes");
         l.add((p + 2) + " " + (p + 3) + "     uni2multi4            uni2multi routes");
         l.add((p + 2) + " " + (p + 3) + "     uni2multi6            uni2multi routes");
+        l.add((p + 2) + " " + (p + 3) + "     uni2flow4             uni2flow routes");
+        l.add((p + 2) + " " + (p + 3) + "     uni2flow6             uni2flow routes");
         l.add((p + 3) + " " + (p + 4) + ",.     <proc>              process number");
         l.add((p + 4) + " " + (p + 5) + "         route-map         process prefixes on importing");
         l.add((p + 5) + " " + (p + 4) + ",.         <name>          name of route map");

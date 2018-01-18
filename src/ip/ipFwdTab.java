@@ -305,6 +305,7 @@ public class ipFwdTab {
         res.add("labeled|" + lower.labeldR.size() + " routes");
         res.add("unicast|" + lower.actualU.size() + " routes");
         res.add("multicast|" + lower.actualM.size() + " routes");
+        res.add("flowspec|" + lower.actualF.size() + " routes");
         return res;
     }
 

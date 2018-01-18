@@ -1725,6 +1725,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 ntry.clustList.add(a);
                 break;
+            default:
+                break;
         }
         if (neigh.nxtHopPeer) {
             ntry.nextHop = neigh.peerAddr.copyBytes();

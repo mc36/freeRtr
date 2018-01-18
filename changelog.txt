@@ -7794,3 +7794,5 @@ qc pass: bgp routepolicy filtering with rd
 qc pass: bgp routemap filtering with rd with soft-reconfig
 qc pass: bgp routepolicy filtering with rd with soft-reconfig
 qc pass: policy routing with interface and nexthop between vrfs
+---------------------------------- 2018-01-16 06:59:54
+qc pass: policy routing with nexthop on interface between vrfs

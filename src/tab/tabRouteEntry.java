@@ -143,6 +143,14 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
          * ipv6 unicast to multicast
          */
         uni2multi6,
+        /**
+         * ipv4 unicast to flowspec
+         */
+        uni2flow4,
+        /**
+         * ipv6 unicast to flowspec
+         */
+        uni2flow6,
 
     }
 
@@ -459,6 +467,9 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                 return "F";
             case uni2multi4:
             case uni2multi6:
+                return "U";
+            case uni2flow4:
+            case uni2flow6:
                 return "U";
             default:
                 return "?";
