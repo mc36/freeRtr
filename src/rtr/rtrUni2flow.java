@@ -47,6 +47,11 @@ public class rtrUni2flow extends ipRtr {
     protected int distance;
 
     /**
+     * direction: 1=trg, 2=src
+     */
+    protected int direction;
+
+    /**
      * as to give
      */
     protected int trgAs;
@@ -80,6 +85,7 @@ public class rtrUni2flow extends ipRtr {
                 break;
         }
         distance = 15;
+        direction = 1;
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
@@ -118,7 +124,7 @@ public class rtrUni2flow extends ipRtr {
                 }
                 attr.extComm.add(tabRtrmapN.rate2comm(trgAs, trgRate));
             }
-            rtrBgpFlow.advertNetwork(res, ntry.prefix, ipv6, attr);
+            rtrBgpFlow.advertNetwork(res, ntry.prefix, ipv6, direction, attr);
         }
         routerComputedF = res;
         fwdCore.routerChg(this);
@@ -134,6 +140,9 @@ public class rtrUni2flow extends ipRtr {
     public void routerGetHelp(userHelping l) {
         l.add("1 2   distance                    specify default distance");
         l.add("2 .     <num>                     distance");
+        l.add("1 2   direction                   specify direction of rule");
+        l.add("2 .     source                    match source address");
+        l.add("2 .     target                    match target address");
         l.add("1 2   as                          specify target as");
         l.add("2 .     <num>                     as");
         l.add("1 2   rate                        specify target rate");
@@ -142,6 +151,7 @@ public class rtrUni2flow extends ipRtr {
 
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "distance " + distance);
+        l.add(beg + "direction " + ((direction == 1) ? "target" : "source"));
         l.add(beg + "as " + trgAs);
         l.add(beg + "rate " + trgRate);
     }
@@ -155,6 +165,15 @@ public class rtrUni2flow extends ipRtr {
         }
         if (s.equals("distance")) {
             distance = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("direction")) {
+            s = cmd.word();
+            if (s.equals("source")) {
+                direction = 2;
+            } else {
+                direction = 1;
+            }
             return false;
         }
         if (s.equals("as")) {

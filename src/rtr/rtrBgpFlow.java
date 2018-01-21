@@ -67,12 +67,13 @@ public class rtrBgpFlow {
      * @param tab table to update
      * @param trg target to match
      * @param ipv6 ipv6 route
+     * @param dir direction
      * @param attr attributes
      * @return false on success, true on error
      */
-    public static boolean advertNetwork(tabRoute<addrIP> tab, addrPrefix<addrIP> trg, boolean ipv6, tabRouteEntry<addrIP> attr) {
+    public static boolean advertNetwork(tabRoute<addrIP> tab, addrPrefix<addrIP> trg, boolean ipv6, int dir, tabRouteEntry<addrIP> attr) {
         packHolder pck = new packHolder(true, true);
-        encodeAddrMtch(pck, 1, ipv6, trg.network, trg.mask);
+        encodeAddrMtch(pck, dir, ipv6, trg.network, trg.mask);
         return advertEntry(tab, pck, attr, 0, 0);
     }
 
