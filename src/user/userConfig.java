@@ -492,6 +492,14 @@ public class userConfig {
         l.add("3  .      <num>                      process id");
         l.add("2  3    uni2flow6                    unicast to flowspec for ipv6");
         l.add("3  .      <num>                      process id");
+        l.add("2  3    logger4                      logger for ipv4");
+        l.add("3  .      <num>                      process id");
+        l.add("2  3    logger6                      logger for ipv6");
+        l.add("3  .      <num>                      process id");
+        l.add("2  3    download4                    downloader for ipv4");
+        l.add("3  .      <num>                      process id");
+        l.add("2  3    download6                    downloader for ipv6");
+        l.add("3  .      <num>                      process id");
         l.add("1  2  chat-script                    build a chat script");
         l.add("2  .    <name>                       name of script");
         l.add("1  2  access-list                    build an access list");

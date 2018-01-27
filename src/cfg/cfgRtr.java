@@ -11,9 +11,11 @@ import java.util.Comparator;
 import java.util.List;
 import rtr.rtrBabel;
 import rtr.rtrBgp;
+import rtr.rtrDownload;
 import rtr.rtrEigrp;
 import rtr.rtrFlowspec;
 import rtr.rtrIsis;
+import rtr.rtrLogger;
 import rtr.rtrMsdp;
 import rtr.rtrOspf4;
 import rtr.rtrOspf6;
@@ -127,6 +129,16 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * unicast to flowspec handler
      */
     public rtrUni2flow uni2flow;
+
+    /**
+     * logger handler
+     */
+    public rtrLogger logger;
+
+    /**
+     * downloader handler
+     */
+    public rtrDownload download;
 
     /**
      * state of this process
@@ -336,7 +348,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router uni2flow[4|6] .*! distance 15",
         "router uni2flow[4|6] .*! direction target",
         "router uni2flow[4|6] .*! as 0",
-        "router uni2flow[4|6] .*! rate 0",};
+        "router uni2flow[4|6] .*! rate 0",
+        // router download
+        "router download[4|6] .*! no hidden",
+        "router download[4|6] .*! no log",
+        "router download[4|6] .*! url ",
+        "router download[4|6] .*! no range",
+        "router download[4|6] .*! delay 0",
+        "router download[4|6] .*! time 0",};
 
     /**
      * defaults filter
@@ -434,6 +453,18 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (a.equals("uni2flow6")) {
             return tabRouteEntry.routeType.uni2flow6;
         }
+        if (a.equals("logger4")) {
+            return tabRouteEntry.routeType.logger4;
+        }
+        if (a.equals("logger6")) {
+            return tabRouteEntry.routeType.logger6;
+        }
+        if (a.equals("download4")) {
+            return tabRouteEntry.routeType.download4;
+        }
+        if (a.equals("download6")) {
+            return tabRouteEntry.routeType.download6;
+        }
         return null;
     }
 
@@ -497,6 +528,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "uni2flow4";
             case uni2flow6:
                 return "uni2flow6";
+            case logger4:
+                return "logger4";
+            case logger6:
+                return "logger6";
+            case download4:
+                return "download4";
+            case download6:
+                return "download6";
             case staticRoute:
                 return "static";
             case conn:
@@ -907,6 +946,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             uni2flow.routerCloseNow();
             uni2flow = null;
         }
+        if (logger != null) {
+            logger.routerCloseNow();
+            logger = null;
+        }
+        if (download != null) {
+            download.routerCloseNow();
+            download = null;
+        }
     }
 
     /**
@@ -957,6 +1004,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case uni2flow4:
             case uni2flow6:
                 return uni2flow;
+            case logger4:
+            case logger6:
+                return logger;
+            case download4:
+            case download6:
+                return download;
             default:
                 return null;
         }
@@ -1050,6 +1103,18 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 break;
             case uni2flow6:
                 uni2flow = new rtrUni2flow(vrf.fwd6, number);
+                break;
+            case logger4:
+                logger = new rtrLogger(vrf.fwd4, number);
+                break;
+            case logger6:
+                logger = new rtrLogger(vrf.fwd6, number);
+                break;
+            case download4:
+                download = new rtrDownload(vrf.fwd4, number);
+                break;
+            case download6:
+                download = new rtrDownload(vrf.fwd6, number);
                 break;
             default:
                 return true;
@@ -1159,6 +1224,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 2) + " " + (p + 3) + "     uni2multi6            uni2multi routes");
         l.add((p + 2) + " " + (p + 3) + "     uni2flow4             uni2flow routes");
         l.add((p + 2) + " " + (p + 3) + "     uni2flow6             uni2flow routes");
+        l.add((p + 2) + " " + (p + 3) + "     logger4               logger routes");
+        l.add((p + 2) + " " + (p + 3) + "     logger6               logger routes");
+        l.add((p + 2) + " " + (p + 3) + "     download4             download routes");
+        l.add((p + 2) + " " + (p + 3) + "     download6             download routes");
         l.add((p + 3) + " " + (p + 4) + ",.     <proc>              process number");
         l.add((p + 4) + " " + (p + 5) + "         route-map         process prefixes on importing");
         l.add((p + 5) + " " + (p + 4) + ",.         <name>          name of route map");

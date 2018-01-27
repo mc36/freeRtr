@@ -175,6 +175,7 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
                 continue;
             }
             cmd.badCmd();
+            return true;
         }
         return false;
     }

@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.1.20-testing, done by matecsaba.;-;-
--;-;2018-01-21 03:47:30, took 09:04:12 on 1338 cases;-;-
+-;-;freeRouter v18.1.26-testing, done by matecsaba.;-;-
+-;-;2018-01-27 05:26:15, took 09:52:04 on 1338 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished

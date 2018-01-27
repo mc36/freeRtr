@@ -151,6 +151,22 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
          * ipv6 unicast to flowspec
          */
         uni2flow6,
+        /**
+         * ipv4 logger
+         */
+        logger4,
+        /**
+         * ipv6 logger
+         */
+        logger6,
+        /**
+         * ipv4 download
+         */
+        download4,
+        /**
+         * ipv6 download
+         */
+        download6,
 
     }
 
@@ -461,16 +477,22 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                 return "MSH";
             case msdp4:
             case msdp6:
-                return "M";
+                return "MSD";
             case flwspc4:
             case flwspc6:
-                return "F";
+                return "FLW";
             case uni2multi4:
             case uni2multi6:
-                return "U";
+                return "UNI";
             case uni2flow4:
             case uni2flow6:
-                return "U";
+                return "UNI";
+            case logger4:
+            case logger6:
+                return "LOG";
+            case download4:
+            case download6:
+                return "DWN";
             default:
                 return "?";
         }
