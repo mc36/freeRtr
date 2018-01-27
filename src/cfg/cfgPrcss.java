@@ -43,6 +43,16 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public String execArgs = null;
 
     /**
+     * time between runs
+     */
+    protected int interval = 5000;
+
+    /**
+     * initial delay
+     */
+    protected int initial = 1000;
+
+    /**
      * console pipeline
      */
     public pipeSide con;
@@ -69,7 +79,9 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public final static String defaultL[] = {
         "process definition .*! no description",
         "process definition .*! exec null",
-        "process definition .*! args null",};
+        "process definition .*! args null",
+        "process definition .*! time 5000",
+        "process definition .*! delay 1000",};
 
     /**
      * defaults filter
@@ -125,6 +137,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add("2 2,.  <name>            name of image");
         l.add("1 2  args                set arguments to use");
         l.add("2 2,.  <name>            name of image");
+        l.add("1 2  time                specify time between runs");
+        l.add("2 .    <num>             milliseconds between runs");
+        l.add("1 2  delay               specify initial delay");
+        l.add("2 .    <num>             milliseconds between start");
         l.add("1 .  stop                stop working");
         l.add("1 .  start               start working");
         l.add("1 .  runnow              run one round now");
@@ -137,6 +153,8 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         l.add(cmds.tabulator + "exec " + execName);
         l.add(cmds.tabulator + "args " + execArgs);
+        l.add(cmds.tabulator + "delay " + initial);
+        l.add(cmds.tabulator + "time " + interval);
         if (need2run) {
             l.add(cmds.tabulator + "start");
         } else {
@@ -172,6 +190,14 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         }
         if (a.equals("args")) {
             execArgs = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("delay")) {
+            initial = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("time")) {
+            interval = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("stop")) {
@@ -219,16 +245,17 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     }
 
     public void run() {
+        bits.sleep(initial);
         for (;;) {
             try {
+                logger.info("restarting process " + name);
                 restartT = bits.getTime();
                 doRound();
                 restartC++;
                 if (!need2run) {
                     break;
                 }
-                bits.sleep(5000);
-                logger.info("restarting process " + name);
+                bits.sleep(interval);
             } catch (Exception e) {
                 logger.traceback(e);
             }

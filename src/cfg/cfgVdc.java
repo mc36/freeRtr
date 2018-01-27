@@ -93,6 +93,16 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public String nicType = "e1000";
 
     /**
+     * time between runs
+     */
+    protected int interval = 5000;
+
+    /**
+     * initial delay
+     */
+    protected int initial = 1000;
+
+    /**
      * list of interfaces
      */
     public final tabGen<cfgVdcIfc> ifaces = new tabGen<cfgVdcIfc>();
@@ -145,8 +155,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! mac null",
         "vdc definition .*! memory 512",
         "vdc definition .*! cores 1",
-        "vdc definition .*! nic e1000"
-    };
+        "vdc definition .*! nic e1000",
+        "vdc definition .*! time 5000",
+        "vdc definition .*! delay 1000",};
 
     /**
      * defaults filter
@@ -179,6 +190,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         cfgVdc n = new cfgVdc(name);
         n.description = description;
         n.uuidValue = uuidValue;
+        n.initial = initial;
+        n.interval = interval;
         n.image1name = image1name;
         n.image2name = image2name;
         n.image3name = image3name;
@@ -252,6 +265,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("2 .    <addr>            address");
         l.add("1 2  nic                 type of nic");
         l.add("2 .    <name>            vendor");
+        l.add("1 2  time                specify time between runs");
+        l.add("2 .    <num>             milliseconds between runs");
+        l.add("1 2  delay               specify initial delay");
+        l.add("2 .    <num>             milliseconds between start");
         return l;
     }
 
@@ -279,6 +296,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "cores " + imageCpu);
         l.add(cmds.tabulator + "nic " + nicType);
         l.add(cmds.tabulator + "mac " + macBase);
+        l.add(cmds.tabulator + "delay " + initial);
+        l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if (!filter) {
@@ -426,6 +445,14 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             peer.conns.add(c2);
             return;
         }
+        if (a.equals("delay")) {
+            initial = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("time")) {
+            interval = bits.str2num(cmd.word());
+            return;
+        }
         if (!a.equals("no")) {
             cmd.badCmd();
             return;
@@ -499,16 +526,17 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     }
 
     public void run() {
+        bits.sleep(initial);
         for (;;) {
             try {
+                logger.info("restarting vdc " + name);
                 restartT = bits.getTime();
                 doRound();
                 restartC++;
                 if (!need2run) {
                     break;
                 }
-                bits.sleep(5000);
-                logger.info("restarting vdc " + name);
+                bits.sleep(interval);
             } catch (Exception e) {
                 logger.traceback(e);
             }
@@ -629,7 +657,6 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      */
     public synchronized void startNow(List<String> defs, List<String> mibs,
             int beg, int end) {
-        logger.info("starting vdc " + name);
         need2run = true;
         cfgBase = cfgInit.cfgFileSw;
         int i = cfgBase.lastIndexOf("/");
