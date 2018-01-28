@@ -42,6 +42,11 @@ public class servLoadBalancer extends servGeneric implements prtServS {
     public cfgIfc originate;
 
     /**
+     * logging
+     */
+    public boolean logging = false;
+
+    /**
      * list of servers
      */
     public tabGen<servLoadBalancerEntry> servLst = new tabGen<servLoadBalancerEntry>();
@@ -58,8 +63,8 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         "server loadbalancer .*! port " + port,
         "server loadbalancer .*! protocol " + proto2string(protoAllStrm),
         "server loadbalancer .*! no source",
-        "server loadbalancer .*! timeout 60000"
-    };
+        "server loadbalancer .*! timeout 60000",
+        "server loadbalancer .*! no logging",};
 
     /**
      * defaults filter
@@ -71,6 +76,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> l) {
+        cmds.cfgLine(l, !logging, beg, "logging", "");
         if (originate == null) {
             l.add(beg + "no source");
         } else {
@@ -84,6 +90,10 @@ public class servLoadBalancer extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("logging")) {
+            logging = true;
+            return false;
+        }
         if (a.equals("timeout")) {
             timeOut = bits.str2num(cmd.word());
             return false;
@@ -111,6 +121,10 @@ public class servLoadBalancer extends servGeneric implements prtServS {
             return true;
         }
         a = cmd.word();
+        if (a.equals("logging")) {
+            logging = false;
+            return false;
+        }
         if (a.equals("source")) {
             originate = null;
             return false;
@@ -125,6 +139,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add("1 .  logging                      set logging");
         l.add("1 2  timeout                      set timeout on connection");
         l.add("2 .    <num>                      timeout in ms");
         l.add("1 2  source                       set source interface");
@@ -157,6 +172,9 @@ public class servLoadBalancer extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
+        if (logging) {
+            logger.info("connection from " + id.peerAddr);
+        }
         pipe.timeout = timeOut;
         new servLoadBalancerDoer(this, pipe);
         return false;

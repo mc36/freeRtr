@@ -1828,7 +1828,7 @@ class servHttpConn implements Runnable {
                 pipeSide.modTyp old = fin.lineTx;
                 fin.lineTx = pipeSide.modTyp.modeCRLF;
                 fin.linePut(gotCmd.toUpperCase() + " " + gotUrl.toURL(false, true) + " HTTP/1.1");
-                fin.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + "]");
+                fin.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + conn.peerAddr + "]");
                 fin.linePut("Referer: " + gotReferer);
                 fin.linePut("Host: " + gotUrl.server);
                 fin.linePut("Accept: */*");
@@ -1869,7 +1869,7 @@ class servHttpConn implements Runnable {
             pipeSide.modTyp old = cnn.lineTx;
             cnn.lineTx = pipeSide.modTyp.modeCRLF;
             cnn.linePut(gotCmd.toUpperCase() + " " + srvUrl.toURL(false, true) + " HTTP/1.1");
-            cnn.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + "]");
+            cnn.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + conn.peerAddr + "]");
             cnn.linePut("Referer: " + gotReferer);
             cnn.linePut("Host: " + srvUrl.server);
             cnn.linePut("Accept: */*");

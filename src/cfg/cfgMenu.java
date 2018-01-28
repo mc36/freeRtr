@@ -76,6 +76,10 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
 
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
+        boolean negated = a.equals("no");
+        if (negated) {
+            a = cmd.word();
+        }
         if (!a.equals("letter")) {
             cmd.badCmd();
             return;
@@ -89,10 +93,16 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
         a = cmd.word();
         if (a.equals("command")) {
             ntry.command = cmd.getRemaining();
+            if (negated) {
+                letter.del(ntry);
+            }
             return;
         }
         if (a.equals("text")) {
             ntry.text = cmd.getRemaining();
+            if (negated) {
+                ntry.text = "";
+            }
             return;
         }
         cmd.badCmd();
@@ -130,7 +140,6 @@ class cfgMenuEntry implements Comparator<cfgMenuEntry> {
 
     public String command;
 
-    //
     public String text;
 
     public cfgMenuEntry(String s) {

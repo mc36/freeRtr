@@ -79,6 +79,11 @@ public class servForwarder extends servGeneric implements prtServS {
     public String trgPass = null;
 
     /**
+     * logging
+     */
+    public boolean logging = false;
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
@@ -89,8 +94,8 @@ public class servForwarder extends servGeneric implements prtServS {
         "server forwarder .*! no target username",
         "server forwarder .*! no target password",
         "server forwarder .*! target protocol tcp",
-        "server forwarder .*! timeout 60000"
-    };
+        "server forwarder .*! timeout 60000",
+        "server forwarder .*! no logging",};
 
     /**
      * defaults filter
@@ -102,6 +107,7 @@ public class servForwarder extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> l) {
+        cmds.cfgLine(l, !logging, beg, "logging", "");
         if (trgVrf == null) {
             l.add(beg + "no target vrf");
         } else {
@@ -123,6 +129,10 @@ public class servForwarder extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("logging")) {
+            logging = true;
+            return false;
+        }
         if (a.equals("timeout")) {
             trgTimeout = bits.str2num(cmd.word());
             return false;
@@ -182,6 +192,10 @@ public class servForwarder extends servGeneric implements prtServS {
             return true;
         }
         a = cmd.word();
+        if (a.equals("logging")) {
+            logging = false;
+            return false;
+        }
         if (a.equals("target")) {
             a = cmd.word();
             if (a.equals("address")) {
@@ -226,6 +240,7 @@ public class servForwarder extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add("1 .  logging                      set logging");
         l.add("1 2  timeout                      set timeout on connection");
         l.add("2 .    <num>                      timeout in ms");
         l.add("1 2  target                       set session target");
@@ -276,6 +291,9 @@ public class servForwarder extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
+        if (logging) {
+            logger.info("connection from " + id.peerAddr);
+        }
         pipe.timeout = trgTimeout;
         new servForwarderDoer(this, pipe);
         return false;
