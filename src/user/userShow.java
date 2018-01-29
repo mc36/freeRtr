@@ -1108,7 +1108,7 @@ public class userShow {
         }
         String a = cmd.word();
         if (a.equals("flapstat")) {
-            rdr.putStrTab(r.logger.getFlapstat());
+            rdr.putStrTab(r.logger.getFlapstat(bits.str2num(cmd.word())));
             return;
         }
         if (a.equals("unicast")) {

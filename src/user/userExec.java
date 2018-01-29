@@ -458,6 +458,7 @@ public class userExec {
         hl.add("5 6,.          flowspec          list of database");
         hl.add("6 .              [addr]          entry to view");
         hl.add("5 6,.          flapstat          prefix flap statistics");
+        hl.add("6 .              [num]           minimum count");
     }
 
     private void getHelpShow(userHelping hl) {

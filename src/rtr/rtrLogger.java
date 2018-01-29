@@ -155,14 +155,26 @@ public class rtrLogger extends ipRtr {
     /**
      * get flap stats
      *
+     * @param cnt minimum counter
      * @return list of statistics
      */
-    public userFormat getFlapstat() {
+    public userFormat getFlapstat(int cnt) {
         userFormat l = new userFormat("|", "afi|prefix|count|ago|last");
         if (flaps == null) {
             return l;
         }
+        if (cnt == -1) {
+            flaps = new tabGen<rtrLoggerFlap>();
+            return l;
+        }
         for (int i = 0; i < flaps.size(); i++) {
+            rtrLoggerFlap ntry = flaps.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.count < cnt) {
+                continue;
+            }
             l.add(flaps.get(i) + "");
         }
         return l;
@@ -197,8 +209,8 @@ public class rtrLogger extends ipRtr {
         if (old != null) {
             stat = old;
         }
-        stat.cnt++;
-        stat.tim = bits.getTime();
+        stat.count++;
+        stat.last = bits.getTime();
     }
 
     private void doDiff(int afi, tabRoute<addrIP> o, tabRoute<addrIP> n) {
@@ -291,15 +303,15 @@ class rtrLoggerFlap implements Comparator<rtrLoggerFlap> {
 
     public final int afi;
 
-    public final addrPrefix<addrIP> prf;
+    public final addrPrefix<addrIP> prefix;
 
-    public long cnt;
+    public long count;
 
-    public long tim;
+    public long last;
 
     public rtrLoggerFlap(int a, addrPrefix<addrIP> p) {
         afi = a;
-        prf = p.copyBytes();
+        prefix = p.copyBytes();
     }
 
     public int compare(rtrLoggerFlap o1, rtrLoggerFlap o2) {
@@ -309,11 +321,11 @@ class rtrLoggerFlap implements Comparator<rtrLoggerFlap> {
         if (o1.afi > o2.afi) {
             return +1;
         }
-        return o1.prf.compare(o1.prf, o2.prf);
+        return o1.prefix.compare(o1.prefix, o2.prefix);
     }
 
     public String toString() {
-        return rtrLogger.afi2str(afi) + "|" + rtrLogger.prf2str(afi, prf) + "|" + cnt + "|" + bits.timePast(tim) + "|" + bits.time2str(cfgAll.timeZoneName, tim + cfgAll.timeServerOffset, 3);
+        return rtrLogger.afi2str(afi) + "|" + rtrLogger.prf2str(afi, prefix) + "|" + count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 
 }
