@@ -1696,6 +1696,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry = old;
         }
         ntry.count++;
+        ntry.last = bits.getTime();
         for (int i = 0; i < ntry.paths.size(); i++) {
             if (pth.equals(ntry.paths.get(i))) {
                 return;
@@ -2754,7 +2755,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of statistics
      */
     public userFormat getFlapstat() {
-        userFormat l = new userFormat("|", "prefix|count");
+        userFormat l = new userFormat("|", "prefix|count|ago|last");
         if (flaps == null) {
             return l;
         }
@@ -2781,8 +2782,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (ntry == null) {
             return l;
         }
-        l.add("prefix=" + ntry.prefix);
+        l.add("prefix=" + addrPrefix.ip2str(ntry.prefix));
         l.add("count=" + ntry.count);
+        l.add("last=" + bits.time2str(cfgAll.timeZoneName, ntry.last + cfgAll.timeServerOffset, 3));
+        l.add("ago=" + bits.timePast(ntry.last));
         l.add("paths");
         l.addAll(ntry.paths);
         return l;

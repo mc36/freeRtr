@@ -617,6 +617,10 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(4));
                 return null;
             }
+            if (a.equals("logger")) {
+                doShowIpXlogger(tabRouteEntry.routeType.logger4);
+                return null;
+            }
             if (a.equals("isis")) {
                 doShowIpXisis(tabRouteEntry.routeType.isis4);
                 return null;
@@ -832,6 +836,10 @@ public class userShow {
             }
             if (a.equals("interface")) {
                 rdr.putStrTab(cfgAll.getShIntTab(5));
+                return null;
+            }
+            if (a.equals("logger")) {
+                doShowIpXlogger(tabRouteEntry.routeType.logger6);
                 return null;
             }
             if (a.equals("isis")) {
@@ -1090,6 +1098,31 @@ public class userShow {
         }
         cmd.badCmd();
         return;
+    }
+
+    private void doShowIpXlogger(tabRouteEntry.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        String a = cmd.word();
+        if (a.equals("flapstat")) {
+            rdr.putStrTab(r.logger.getFlapstat());
+            return;
+        }
+        if (a.equals("unicast")) {
+            doShowRoutes(r.logger.fwdCore, r.logger.getRoutes(1), 1);
+            return;
+        }
+        if (a.equals("multicast")) {
+            doShowRoutes(r.logger.fwdCore, r.logger.getRoutes(2), 1);
+            return;
+        }
+        if (a.equals("flowspec")) {
+            doShowRoutes(r.logger.fwdCore, r.logger.getRoutes(3), 5);
+            return;
+        }
     }
 
     private void doShowIpXlsrp(tabRouteEntry.routeType afi) {

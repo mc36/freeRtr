@@ -227,6 +227,18 @@ router lsrp6 1
  redistribute connected
  exit
 !
+router logger4 1
+ vrf v1
+ flapstat
+ redistribute bgp4 1
+ exit
+!
+router logger6 1
+ vrf v1
+ flapstat
+ redistribute bgp6 1
+ exit
+!
 interface loopback0
  no description
  vrf forwarding v1

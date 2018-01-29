@@ -2,9 +2,11 @@ package rtr;
 
 import addr.addrIP;
 import addr.addrPrefix;
+import cfg.cfgAll;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import util.bits;
 
 /**
  * bgp4 flap statistic
@@ -24,6 +26,11 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
     public long count;
 
     /**
+     * last
+     */
+    public long last;
+
+    /**
      * paths seen
      */
     public List<String> paths = new ArrayList<String>();
@@ -33,7 +40,7 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
     }
 
     public String toString() {
-        return prefix + "|" + count;
+        return addrPrefix.ip2str(prefix) + "|" + count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 
 }

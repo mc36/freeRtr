@@ -449,6 +449,15 @@ public class userExec {
         hl.add("9 9,.                  pmsi      ignore pmsi");
         hl.add("9 9,.                  segrout   ignore segment routing");
         hl.add("9 9,.                  tunnel    ignore tunnel");
+        hl.add("3 4        logger                route logger");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 6,.          unicast           list of database");
+        hl.add("6 .              [addr]          entry to view");
+        hl.add("5 6,.          multicast         list of database");
+        hl.add("6 .              [addr]          entry to view");
+        hl.add("5 6,.          flowspec          list of database");
+        hl.add("6 .              [addr]          entry to view");
+        hl.add("5 6,.          flapstat          prefix flap statistics");
     }
 
     private void getHelpShow(userHelping hl) {
