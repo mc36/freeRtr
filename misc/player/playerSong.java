@@ -107,6 +107,22 @@ public class playerSong implements Comparator<playerSong> {
         return res;
     }
 
+    /**
+     * playlist entry
+     *
+     * @param num number
+     * @return text
+     */
+    public playerLyric cueEntry(int num) {
+        playerLyric res = new playerLyric();
+        res.add("FILE \"" + file + "\"");
+        res.add("  TRACK " + num + " AUDIO");
+        res.add("    TITLE \"" + justTitle() + "\"");
+        res.add("    PERFORMER \"" + justArtist() + "\"");
+        res.add("    INDEX 01 00:00:00");
+        return res;
+    }
+
     public int compare(playerSong o1, playerSong o2) {
         return o1.file.compareTo(o2.file);
     }
@@ -191,7 +207,7 @@ public class playerSong implements Comparator<playerSong> {
     }
 
     /**
-     * write down pls
+     * write down m3u
      *
      * @param src songs
      * @return text
@@ -201,6 +217,20 @@ public class playerSong implements Comparator<playerSong> {
         res.add("#EXTM3U");
         for (int i = 0; i < src.size(); i++) {
             res.addAll(src.get(i).m3uEntry());
+        }
+        return res;
+    }
+
+    /**
+     * write down cue
+     *
+     * @param src songs
+     * @return text
+     */
+    public static playerLyric cue2txt(List<playerSong> src) {
+        playerLyric res = new playerLyric();
+        for (int i = 0; i < src.size(); i++) {
+            res.addAll(src.get(i).cueEntry(i + 1));
         }
         return res;
     }

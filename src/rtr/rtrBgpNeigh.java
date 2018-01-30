@@ -1001,8 +1001,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             if (ntry.peerType != peerType) {
                 continue;
             }
-            if (localAddr.compare(localAddr, ntry.localAddr) != 0) {
-                continue;
+            if (nxtHopSelf || (!nxtHopUnchgd)) {
+                if (localAddr.compare(localAddr, ntry.localAddr) != 0) {
+                    continue;
+                }
             }
             if (ntry.sameOutput(this)) {
                 continue;

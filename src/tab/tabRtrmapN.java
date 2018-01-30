@@ -827,16 +827,24 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         userScript t = new userScript(pip, "");
         t.allowExec = true;
-        t.addLine("set prefix " + net.prefix);
+        t.addLine("set prefix " + addrPrefix.ip2str(net.prefix));
+        t.addLine("set network " + net.prefix.network);
+        t.addLine("set masklen " + net.prefix.maskLen);
+        t.addLine("set netmask " + net.prefix.mask);
+        t.addLine("set wildcard " + net.prefix.wildcard);
+        t.addLine("set broadcast " + net.prefix.broadcast);
+        t.addLine("set rd " + rd2string(net.rouDst));
         t.addLine("set nexthop " + net.nextHop);
         t.addLine("set distance " + net.distance);
+        t.addLine("set validity " + net.validity);
         t.addLine("set locpref " + net.locPref);
         t.addLine("set accigp " + net.accIgp);
         t.addLine("set bandwidth " + net.bandwidth);
         t.addLine("set origin " + net.origin);
         t.addLine("set metric " + net.metric);
         t.addLine("set tag " + net.tag);
-        t.addLine("set aspath \"" + tabRouteEntry.dumpIntList(net.pathSeq, "", "") + "\"");
+        t.addLine("set aspath \"" + net.asPathStr() + "\"");
+        t.addLine("set pathlen \"" + net.asPathLen() + "\"");
         t.addLine("set stdcomm \"" + stdComms2string(net.stdComm) + "\"");
         t.addLine("set extcomm \"" + extComms2string(net.extComm) + "\"");
         t.addLine("set lrgcomm \"" + lrgComms2string(net.lrgComm) + "\"");
@@ -877,6 +885,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             if (a.equals("bandwidth")) {
                 net.bandwidth = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("validity")) {
+                net.validity = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("origin")) {
