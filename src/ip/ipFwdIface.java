@@ -319,6 +319,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 .       <num>                     value");
         l.add("2 3     tcp-mss-out                 rewrite tcp mss in egress packets");
         l.add("3 .       <num>                     value");
+        l.add("2 3     host-reach                  set next hop cache timeout");
+        l.add("3 .       <num>                     time in ms");
         l.add("2 .     host-watch                  monitor next hop changes");
         l.add("2 3     multicast                   multicast configuration options");
         l.add("3 .       mldp-enable               enable mdlp processing");
@@ -424,6 +426,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, filterOut == null, cmds.tabulator, beg + "access-group-out", "" + filterOut);
         cmds.cfgLine(l, inspect == null, cmds.tabulator, beg + "inspect", "" + inspect);
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "");
+        l.add(cmds.tabulator + beg + "host-reach " + lower.getCacheTimer());
         for (int i = 0; i < pbrCfg.size(); i++) {
             tabPbrN pbr = pbrCfg.get(i);
             l.addAll(pbr.usrString(cmds.tabulator + beg + "pbr "));
@@ -532,6 +535,10 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("host-watch")) {
             hostWatch = new ipHostWatch(lower);
+            return false;
+        }
+        if (a.equals("host-reach")) {
+            lower.setCacheTimer(bits.str2num(cmd.word()));
             return false;
         }
         if (a.equals("unreach-source")) {
@@ -933,6 +940,10 @@ public class ipFwdIface extends tabRouteIface {
                 hostWatch.stopWork();
             }
             hostWatch = null;
+            return false;
+        }
+        if (a.equals("host-reach")) {
+            lower.setCacheTimer(ipIfcLoop.defaultCacheTime);
             return false;
         }
         if (a.equals("unreach-source")) {

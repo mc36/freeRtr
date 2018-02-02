@@ -240,11 +240,25 @@ public class ipIfc4 implements ipIfc, ifcUp {
     public void gotIcmpPack(packHolder pck) {
     }
 
-    public userFormat getShArp() {
+    public userFormat getShCache() {
         if (arpCache == null) {
             return null;
         }
         return arpCache.getShCache();
+    }
+
+    public int getCacheTimer() {
+        if (arpCache == null) {
+            return ipIfcLoop.defaultCacheTime;
+        }
+        return arpCache.arpCacheTimeout;
+    }
+
+    public void setCacheTimer(int tim) {
+        if (arpCache == null) {
+            return;
+        }
+        arpCache.arpCacheTimeout = tim;
     }
 
     public ifcUp getPeerHdr() {

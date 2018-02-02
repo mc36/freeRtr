@@ -30,7 +30,7 @@ public class ipIfc6nei implements ifcUp {
     /**
      * neighbor cache timeout
      */
-    public int neiCacheTimeout = 12 * 60 * 60 * 1000;
+    public int neiCacheTimeout = ipIfcLoop.defaultCacheTime;
 
     private addrMac hwaddr;
 

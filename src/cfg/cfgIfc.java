@@ -1268,6 +1268,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[4|6] access-group-out",
         "interface .*! no ipv[4|6] bfd",
         "interface .*! no ipv[4|6] host-watch",
+        "interface .*! ipv[4|6] host-reach 480000",
         "interface .*! no ipv[4|6] proxy-remote",
         "interface .*! no ipv[4|6] proxy-local",
         "interface .*! no ipv[4|6] tcp-mss-in",
@@ -2120,6 +2121,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @return false on no, true on yes
      */
     public boolean ifaceNeedType() {
+        if (parent != null) {
+            return parent.ifaceNeedType();
+        }
         switch (type) {
             case template:
             case loopback:
@@ -2135,6 +2139,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @return false on no, true on yes
      */
     public boolean ifaceNeedArp() {
+        if (parent != null) {
+            return parent.ifaceNeedArp();
+        }
         switch (type) {
             case serial:
             case atm:
@@ -2159,6 +2166,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @return false on no, true on yes
      */
     public boolean ifaceNeedMacs() {
+        if (parent != null) {
+            return parent.ifaceNeedMacs();
+        }
         switch (type) {
             case ether:
             case bridge:
@@ -2704,10 +2714,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 break;
             case pweth:
                 ethtyp.forcedMac = addrMac.getRandom();
+                ethtyp.forcedMTU = 1500;
                 lower = new ifcNull();
                 break;
             case openflow:
                 ethtyp.forcedMac = addrMac.getRandom();
+                ethtyp.forcedMTU = 1500;
                 lower = new ifcNull();
                 break;
             case ether:
@@ -3149,7 +3161,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case prPwom:
                 pwePweOmpls = new clntMplsPwe();
                 pwePweOmpls.pwType = type == ifaceType.virtppp ? packLdpPwe.pwtPpp : packLdpPwe.pwtEthPort;
-                pwePweOmpls.pwMtu = 1500;
+                pwePweOmpls.pwMtu = ethtyp.getMTUsize();
                 pwePweOmpls.target = "" + trg;
                 pwePweOmpls.vrf = vrf;
                 pwePweOmpls.srcIfc = src;

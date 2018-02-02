@@ -42,7 +42,7 @@ ipv6 unicast-routing
 interface gigabit0/0
  ip address 1.1.1.2 255.255.255.0
  ipv6 address 1234::2/64
- no shutdown
+ shutdown
  exit
 crypto ikev2 proposal pr1
  encryption des
@@ -79,6 +79,9 @@ interface tunnel1
  tunnel destination 1.1.1.1
  tunnel mode ipsec ipv4
  tunnel protection ipsec profile pr1
+ exit
+interface gigabit0/0
+ no shutdown
  exit
 !
 

@@ -35,7 +35,7 @@ public class ipIfc4arp implements ifcUp {
     /**
      * arp cache timeout
      */
-    public int arpCacheTimeout = 12 * 60 * 60 * 1000;
+    public int arpCacheTimeout = ipIfcLoop.defaultCacheTime;
 
     private ifcDn lower = new ifcNull();
 

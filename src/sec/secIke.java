@@ -353,6 +353,7 @@ public class secIke implements ifcDn, ifcUp {
                 }
                 conn.msgR = pckRx.pckBin;
                 conn.cookieR = pckRx.cookieR;
+                conn.diffie = pckRx.diffie;
                 conn.nonceR = pckRx.nonceI;
                 conn.computeKeys();
                 conn.spiValI = bits.randomD();

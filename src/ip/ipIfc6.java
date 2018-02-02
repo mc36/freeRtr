@@ -121,11 +121,25 @@ public class ipIfc6 implements ipIfc, ifcUp {
         lladdr.fromIPv6addr(addrIPv6.genLinkLocal(hwaddr));
     }
 
-    public userFormat getShArp() {
+    public userFormat getShCache() {
         if (neiCache == null) {
             return null;
         }
         return neiCache.getShCache();
+    }
+
+    public int getCacheTimer() {
+        if (neiCache == null) {
+            return ipIfcLoop.defaultCacheTime;
+        }
+        return neiCache.neiCacheTimeout;
+    }
+
+    public void setCacheTimer(int tim) {
+        if (neiCache == null) {
+            return;
+        }
+        neiCache.neiCacheTimeout = tim;
     }
 
     /**

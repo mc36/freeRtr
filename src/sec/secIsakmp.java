@@ -538,6 +538,7 @@ public class secIsakmp implements ifcDn, ifcUp {
                 continue;
             }
             if (!pckRx.keyXchgParse()) {
+                conn.diffie = pckRx.diffie;
                 if (pckRx.nonceParse()) {
                     continue;
                 }

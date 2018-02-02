@@ -141,11 +141,25 @@ public interface ipIfc {
     public addrIP getLinkLocalAddr();
 
     /**
-     * get arp cache in text
+     * get cache in text
      *
      * @return result
      */
-    public userFormat getShArp();
+    public userFormat getShCache();
+
+    /**
+     * get cache timeout
+     *
+     * @return result
+     */
+    public int getCacheTimer();
+
+    /**
+     * set cache timeout
+     *
+     * @param tim timeout
+     */
+    public void setCacheTimer(int tim);
 
     /**
      * get peer handler

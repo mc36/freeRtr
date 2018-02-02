@@ -17,6 +17,11 @@ import util.state;
  */
 public class ipIfcLoop implements ipIfc {
 
+    /**
+     * default arp/nd cache timeout
+     */
+    public final static int defaultCacheTime = 8 * 60 * 1000;
+
     private counter cntr = new counter();
 
     private ipFwd upper;
@@ -26,6 +31,8 @@ public class ipIfcLoop implements ipIfc {
     private addrIP ipaddr = new addrIP();
 
     private int ipmask;
+
+    private int cacheTime = defaultCacheTime;
 
     /**
      * set ip network
@@ -94,7 +101,7 @@ public class ipIfcLoop implements ipIfc {
     }
 
     public int getMTUsize() {
-        return 65536;
+        return 65535;
     }
 
     public state.states getState() {
@@ -124,8 +131,16 @@ public class ipIfcLoop implements ipIfc {
         return null;
     }
 
-    public userFormat getShArp() {
+    public userFormat getShCache() {
         return null;
+    }
+
+    public int getCacheTimer() {
+        return cacheTime;
+    }
+
+    public void setCacheTimer(int tim) {
+        cacheTime = tim;
     }
 
     public ifcUp getPeerHdr() {

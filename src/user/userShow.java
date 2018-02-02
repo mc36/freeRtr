@@ -798,7 +798,7 @@ public class userShow {
                     cmd.error("protocol not enabled");
                     return null;
                 }
-                rdr.putStrTab(ifc.ipIf4.getShArp());
+                rdr.putStrTab(ifc.ipIf4.getShCache());
                 return null;
             }
             if (a.equals("route")) {
@@ -1019,7 +1019,7 @@ public class userShow {
                     cmd.error("protocol not enabled");
                     return null;
                 }
-                rdr.putStrTab(ifc.ipIf6.getShArp());
+                rdr.putStrTab(ifc.ipIf6.getShCache());
                 return null;
             }
             if (a.equals("route")) {
