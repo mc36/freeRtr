@@ -87,7 +87,7 @@ public class rtrMsdp extends ipRtr {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peer, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(2, tab, ntry, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, null, null, routerAutoMesh);
         }
     }
 

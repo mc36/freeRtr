@@ -498,9 +498,9 @@ public class rtrRip6iface implements Comparator<rtrRip6iface> {
         packHolder pck = new packHolder(true, true);
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("copy");
         if (defOrigin) {
-            tab1.add(2, addrPrefix.ip6toIP(addrPrefix.defaultRoute6()), new addrIP());
+            tab1.add(tabRoute.addType.better, addrPrefix.ip6toIP(addrPrefix.defaultRoute6()), new addrIP());
         }
-        tab1.mergeFrom(2, lower.routerComputedU, null, true);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, null, true);
         if (splitHorizon) {
             if (poisonReverse) {
                 for (int i = 0; i < tab1.size(); i++) {
@@ -514,9 +514,9 @@ public class rtrRip6iface implements Comparator<rtrRip6iface> {
                 tab1.delIface(conn.iface);
             }
         }
-        tab1.mergeFrom(2, lower.routerRedistedU, null, true);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true);
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("copy");
-        tabRoute.addUpdatedTable(2, tab2, tab1, roumapOut, roupolOut, prflstOut);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, tab2, tab1, roumapOut, roupolOut, prflstOut);
         if (debugger.rtrRip6traf) {
             logger.debug("tx " + conn);
         }

@@ -19,7 +19,6 @@ import pipe.pipeLine;
 import pipe.pipeSide;
 import tab.tabRoute;
 import tab.tabRouteEntry;
-import tab.tabRtrmapN;
 import user.userFlash;
 import user.userHelping;
 import util.bits;
@@ -210,7 +209,7 @@ public class rtrDownload extends ipRtr {
             }
             ntry.rouTyp = rouTyp;
             ntry.protoNum = rtrNum;
-            res.add(2, ntry, false, false);
+            res.add(tabRoute.addType.better, ntry, false, false);
         }
         routerComputedU = res;
         fwdCore.routerChg(this);

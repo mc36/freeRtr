@@ -885,8 +885,8 @@ public class rtrIsis extends ipRtr {
             logger.debug("create table");
         }
         tabRoute<addrIP> tab = new tabRoute<addrIP>("isis");
-        tab.mergeFrom(2, level1.routes, null, true);
-        tab.mergeFrom(2, level2.routes, null, true);
+        tab.mergeFrom(tabRoute.addType.better, level1.routes, null, true);
+        tab.mergeFrom(tabRoute.addType.better, level2.routes, null, true);
         if (segrouLab != null) {
             for (int i = 0; i < segrouLab.length; i++) {
                 boolean b = false;
@@ -1538,7 +1538,7 @@ public class rtrIsis extends ipRtr {
                 }
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = new addrPrefix<addrIP>(nei.ifcAddr, addrIP.size * 8);
-                tabRoute.addUpdatedEntry(2, tab, ntry, null, null, routerAutoMesh);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, null, null, routerAutoMesh);
             }
         }
     }

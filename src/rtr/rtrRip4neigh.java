@@ -108,7 +108,7 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
             return false;
         }
         tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(2, learned, null, true);
+        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true);
         for (; pck.dataSize() >= rtrRip4.sizeNtry; pck.getSkip(rtrRip4.sizeNtry)) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.rouTyp = tabRouteEntry.routeType.rip4;
@@ -161,7 +161,7 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
                     continue;
                 }
             }
-            tabRoute.addUpdatedEntry(3, learned, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+            tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
         }
         return learned.differs(oldTab);
     }

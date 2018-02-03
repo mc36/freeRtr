@@ -130,6 +130,12 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("2 3     tag                 match tag");
         l.add("3 .       <num>             tag");
         l.add("3 .       all               any value");
+        l.add("2 3     afi                 match afi");
+        l.add("3 .       <num>             afi");
+        l.add("3 .       all               any value");
+        l.add("2 3     safi                match safi");
+        l.add("3 .       <num>             safi");
+        l.add("3 .       all               any value");
         l.add("2 3     rd                  match route distinguisher");
         l.add("3 .       <str>             rd");
         l.add("2 3     network             match network");
@@ -386,6 +392,22 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("tag")) {
             ntry.ifMode = tabRtrplcN.ifType.tag;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("afi")) {
+            ntry.ifMode = tabRtrplcN.ifType.afi;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("safi")) {
+            ntry.ifMode = tabRtrplcN.ifType.safi;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;

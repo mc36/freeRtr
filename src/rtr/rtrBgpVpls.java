@@ -156,7 +156,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
         ntry.extComm.add(tabRtrmapN.rt2comm(bridge.bridgeHed.rtExp));
         ntry.rouSrc = rtrBgpUtil.peerOriginate;
         ntry.rouDst = bridge.bridgeHed.rd;
-        tab.add(2, ntry, true, true);
+        tab.add(tabRoute.addType.better, ntry, true, true);
         adverted = true;
     }
 
@@ -285,7 +285,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             rtrBgpVplsPeer nei = peers.get(i);
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peer, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(2, tab, ntry, null, null, parent.routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, null, null, parent.routerAutoMesh);
         }
     }
 

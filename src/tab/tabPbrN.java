@@ -112,11 +112,11 @@ public class tabPbrN extends tabListingEntry<addrIP> {
         return l;
     }
 
-    public boolean matches(addrPrefix<addrIP> net) {
+    public boolean matches(int afi, addrPrefix<addrIP> net) {
         return false;
     }
 
-    public boolean matches(tabRouteEntry<addrIP> net) {
+    public boolean matches(int afi, tabRouteEntry<addrIP> net) {
         return false;
     }
 
@@ -124,7 +124,7 @@ public class tabPbrN extends tabListingEntry<addrIP> {
         return matcher.matches(false, false, pck);
     }
 
-    public void update(tabRouteEntry<addrIP> net) {
+    public void update(int afi, tabRouteEntry<addrIP> net) {
     }
 
 }

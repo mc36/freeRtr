@@ -499,11 +499,11 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 logger.debug("rx reachable prefix=" + ntry.prefix);
             }
             if (filterIn != null) {
-                if (!filterIn.matches(ntry.prefix)) {
+                if (!filterIn.matches(rtrBgpUtil.safiUnicast, ntry.prefix)) {
                     continue;
                 }
             }
-            prefLearn.add(3, ntry, true, true);
+            prefLearn.add(tabRoute.addType.always, ntry, true, true);
         }
         for (int i = 0; i < pck.pweLst.size(); i++) {
             packLdpPwe pwe = pck.pweLst.get(i);
@@ -646,7 +646,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 continue;
             }
             if (filterOut != null) {
-                if (!filterOut.matches(ntry)) {
+                if (!filterOut.matches(rtrBgpUtil.safiUnicast, ntry)) {
                     continue;
                 }
             }
@@ -820,11 +820,11 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 continue;
             }
             if (filterOut != null) {
-                if (!filterOut.matches(ntry.prefix)) {
+                if (!filterOut.matches(rtrBgpUtil.safiUnicast, ntry.prefix)) {
                     continue;
                 }
             }
-            prefAdvert.add(3, ntry, true, true);
+            prefAdvert.add(tabRoute.addType.always, ntry, true, true);
             sendLabelMap(ntry);
             if (conn.ready2tx() < 4096) {
                 return;

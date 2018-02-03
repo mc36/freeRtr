@@ -63,6 +63,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* match origin all",
         "route-map .*! sequence .* match metric all",
         "route-map .*! sequence .* match tag all",
+        "route-map .*! sequence .* match afi all",
+        "route-map .*! sequence .* match safi all",
         "route-map .*! sequence .* no match nostdcomm",
         "route-map .*! sequence .* no match noextcomm",
         "route-map .*! sequence .* no match nolrgcomm",
@@ -182,6 +184,12 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("3 .       all               any value");
         l.add("2 3     tag                 match tag");
         l.add("3 .       <num>             tag");
+        l.add("3 .       all               any value");
+        l.add("2 3     afi                 match afi");
+        l.add("3 .       <num>             afi");
+        l.add("3 .       all               any value");
+        l.add("2 3     safi                match safi");
+        l.add("3 .       <num>             safi");
         l.add("3 .       all               any value");
         l.add("2 3     rd                  match route distinguisher");
         l.add("3 .       <str>             rd");
@@ -463,6 +471,20 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("afi")) {
+                if (ntry.afiMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("safi")) {
+                if (ntry.safiMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -683,6 +705,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("tag")) {
                 ntry.tagMatch.set2always();
+                return;
+            }
+            if (a.equals("afi")) {
+                ntry.afiMatch.set2always();
+                return;
+            }
+            if (a.equals("safi")) {
+                ntry.safiMatch.set2always();
                 return;
             }
             cmd.badCmd();

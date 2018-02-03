@@ -139,18 +139,20 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
     /**
      * test if this entry contains a network
      *
+     * @param afi address family
      * @param net network to test
      * @return true if matches, false if not matches
      */
-    public abstract boolean matches(addrPrefix<T> net);
+    public abstract boolean matches(int afi, addrPrefix<T> net);
 
     /**
      * test if this entry contains a network
      *
+     * @param afi address family
      * @param net network to test
      * @return true if matches, false if not matches
      */
-    public abstract boolean matches(tabRouteEntry<T> net);
+    public abstract boolean matches(int afi, tabRouteEntry<T> net);
 
     /**
      * test if this entry matches a packet
@@ -163,8 +165,9 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
     /**
      * update one entry
      *
+     * @param afi address family
      * @param net network number
      */
-    public abstract void update(tabRouteEntry<T> net);
+    public abstract void update(int afi, tabRouteEntry<T> net);
 
 }

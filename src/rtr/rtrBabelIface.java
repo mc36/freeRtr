@@ -492,18 +492,18 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("copy");
         if (defOrigin) {
             if (iface.addr.isIPv4()) {
-                tab1.add(2, addrPrefix.ip4toIP(addrPrefix.defaultRoute4()), new addrIP());
+                tab1.add(tabRoute.addType.better, addrPrefix.ip4toIP(addrPrefix.defaultRoute4()), new addrIP());
             } else {
-                tab1.add(2, addrPrefix.ip6toIP(addrPrefix.defaultRoute6()), new addrIP());
+                tab1.add(tabRoute.addType.better, addrPrefix.ip6toIP(addrPrefix.defaultRoute6()), new addrIP());
             }
         }
-        tab1.mergeFrom(2, lower.routerComputedU, null, true);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, null, true);
         if (splitHorizon) {
             tab1.delIface(conn.iface);
         }
-        tab1.mergeFrom(2, lower.routerRedistedU, null, true);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true);
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("copy");
-        tabRoute.addUpdatedTable(2, tab2, tab1, roumapOut, roupolOut, prflstOut);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, tab2, tab1, roumapOut, roupolOut, prflstOut);
         advert = tab2;
         if (debugger.rtrBabelTraf) {
             logger.debug("tx " + conn);

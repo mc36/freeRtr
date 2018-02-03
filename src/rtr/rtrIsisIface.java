@@ -202,7 +202,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         circuitLevel = lower.operateLevel;
         helloTimer = 10000;
         deadTimer = 30000;
-        retransTimer = 5000;
+        retransTimer = 3000;
         disPriority = 64;
         metric = 10;
         suppressInt = true;

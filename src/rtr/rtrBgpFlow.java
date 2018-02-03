@@ -106,7 +106,7 @@ public class rtrBgpFlow {
         if (rate > 0) {
             attr.extComm.add(tabRtrmapN.rate2comm(as, rate));
         }
-        tab.add(2, attr, true, true);
+        tab.add(tabRoute.addType.better, attr, true, true);
         return false;
     }
 

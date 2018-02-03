@@ -601,7 +601,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 lst.clear();
                 sen = ntry.copyBytes();
             }
-            done.add(3, ntry, false, false);
+            done.add(tabRoute.addType.always, ntry, false, false);
             lst.add(ntry);
             if (lst.size() > 64) {
                 sen = null;
@@ -731,7 +731,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 if (!wil.differs(don)) {
                     continue;
                 }
-                done.add(3, wil, false, false);
+                done.add(tabRoute.addType.always, wil, false, false);
                 lst.clear();
                 lst.add(wil);
                 conn.sendUpdate(safi, lst, true);
@@ -868,7 +868,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             if (rou == null) {
                 return;
             }
-            tabRtrmapN rme = lower.nhtRoumap.find(rou);
+            tabRtrmapN rme = lower.nhtRoumap.find(lower.afiUni, rou);
             if (rme == null) {
                 return;
             }
@@ -881,7 +881,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             if (rou == null) {
                 return;
             }
-            rou = tabRtrplc.doRpl(rou, lower.nhtRouplc, true);
+            rou = tabRtrplc.doRpl(lower.afiUni, rou, lower.nhtRouplc, true);
             if (rou == null) {
                 return;
             }
@@ -891,7 +891,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             if (rou == null) {
                 return;
             }
-            tabPrfxlstN ple = lower.nhtPfxlst.find(rou);
+            tabPrfxlstN ple = lower.nhtPfxlst.find(lower.afiUni, rou);
             if (ple == null) {
                 return;
             }
@@ -919,22 +919,22 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             accMvpo = conn.lrnMvpo;
             return;
         }
-        tabRoute.addUpdatedTable(2, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(2, accMlt, conn.lrnMlt, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(2, accOtr, conn.lrnOtr, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accFlw, conn.lrnFlw, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accVpnU, conn.lrnVpnU, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accVpnM, conn.lrnVpnM, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accVpnF, conn.lrnVpnF, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accVpoU, conn.lrnVpoU, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accVpoM, conn.lrnVpoM, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accVpoF, conn.lrnVpoF, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accVpls, conn.lrnVpls, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accMspw, conn.lrnMspw, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accEvpn, conn.lrnEvpn, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accMdt, conn.lrnMdt, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accMvpn, conn.lrnMvpn, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(2, accMvpo, conn.lrnMvpo, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiUni, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMlt, accMlt, conn.lrnMlt, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiOtr, accOtr, conn.lrnOtr, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiFlw, accFlw, conn.lrnFlw, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpnU, accVpnU, conn.lrnVpnU, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpnM, accVpnM, conn.lrnVpnM, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpnF, accVpnF, conn.lrnVpnF, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpoU, accVpoU, conn.lrnVpoU, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpoM, accVpoM, conn.lrnVpoM, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpoF, accVpoF, conn.lrnVpoF, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpls, accVpls, conn.lrnVpls, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMspw, accMspw, conn.lrnMspw, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiEvpn, accEvpn, conn.lrnEvpn, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMdt, accMdt, conn.lrnMdt, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMvpn, accMvpn, conn.lrnMvpn, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMvpo, accMvpo, conn.lrnMvpo, voumapIn, voupolIn, null);
     }
 
     /**
@@ -962,22 +962,22 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             tabRoute<addrIP> vpoU, tabRoute<addrIP> vpoM, tabRoute<addrIP> vpoF,
             tabRoute<addrIP> vpls, tabRoute<addrIP> mspw, tabRoute<addrIP> evpn,
             tabRoute<addrIP> mdt, tabRoute<addrIP> mvpn, tabRoute<addrIP> mvpo) {
-        uni.mergeFrom(2, new tabRoute<addrIP>(accUni), null, false);
-        mlt.mergeFrom(2, new tabRoute<addrIP>(accMlt), null, false);
-        otr.mergeFrom(2, new tabRoute<addrIP>(accOtr), null, false);
-        flw.mergeFrom(2, new tabRoute<addrIP>(accFlw), null, false);
-        vpnU.mergeFrom(2, new tabRoute<addrIP>(accVpnU), null, false);
-        vpnM.mergeFrom(2, new tabRoute<addrIP>(accVpnM), null, false);
-        vpnF.mergeFrom(2, new tabRoute<addrIP>(accVpnF), null, false);
-        vpoU.mergeFrom(2, new tabRoute<addrIP>(accVpoU), null, false);
-        vpoM.mergeFrom(2, new tabRoute<addrIP>(accVpoM), null, false);
-        vpoF.mergeFrom(2, new tabRoute<addrIP>(accVpoF), null, false);
-        vpls.mergeFrom(2, new tabRoute<addrIP>(accVpls), null, false);
-        mspw.mergeFrom(2, new tabRoute<addrIP>(accMspw), null, false);
-        evpn.mergeFrom(2, new tabRoute<addrIP>(accEvpn), null, false);
-        mdt.mergeFrom(2, new tabRoute<addrIP>(accMdt), null, false);
-        mvpn.mergeFrom(2, new tabRoute<addrIP>(accMvpn), null, false);
-        mvpo.mergeFrom(2, new tabRoute<addrIP>(accMvpo), null, false);
+        uni.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accUni), null, false);
+        mlt.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accMlt), null, false);
+        otr.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accOtr), null, false);
+        flw.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accFlw), null, false);
+        vpnU.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accVpnU), null, false);
+        vpnM.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accVpnM), null, false);
+        vpnF.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accVpnF), null, false);
+        vpoU.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accVpoU), null, false);
+        vpoM.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accVpoM), null, false);
+        vpoF.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accVpoF), null, false);
+        vpls.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accVpls), null, false);
+        mspw.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accMspw), null, false);
+        evpn.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accEvpn), null, false);
+        mdt.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accMdt), null, false);
+        mvpn.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accMvpn), null, false);
+        mvpo.mergeFrom(tabRoute.addType.better, new tabRoute<addrIP>(accMvpo), null, false);
     }
 
     /**

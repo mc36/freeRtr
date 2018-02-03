@@ -91,7 +91,7 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
         int pckSeq = pck.msbGetW(2);
         pck.getSkip(4);
         tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(2, learned, null, true);
+        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true);
         long tim = bits.getTime();
         boolean ipv4 = conn.peerAddr.isIPv4();
         for (;;) {
@@ -167,7 +167,7 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
                     if (debugger.rtrOlsrTraf) {
                         logger.debug("rxnet " + ntry);
                     }
-                    tabRoute.addUpdatedEntry(3, learned, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+                    tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     break;
                 default:
                     logger.info("invalid msg " + msgTyp);

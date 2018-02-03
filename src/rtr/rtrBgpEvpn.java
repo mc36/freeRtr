@@ -235,14 +235,14 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 bbmac.toBuffer(buf, 10);
                 ntry.prefix.network.fromBuf(buf, 0);
                 ntry.evpnLab = convLab(parent.evpnUni);
-                tab.add(2, ntry, true, true);
+                tab.add(tabRoute.addType.better, ntry, true, true);
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
                 bits.msbPutD(buf, 2, id);
                 ntry.prefix.network.fromBuf(buf, 0);
                 ntry.prefix.broadcast = ntry.nextHop.copyBytes();
                 putPmsi(ntry, convLab(parent.evpnMul));
-                tab.add(2, ntry, true, true);
+                tab.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
             case vxlan:
@@ -253,14 +253,14 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 for (int i = 0; i < cmac.size(); i++) {
                     cmac.get(i).toBuffer(buf, 10);
                     ntry.prefix.network.fromBuf(buf, 0);
-                    tab.add(2, ntry, true, true);
+                    tab.add(tabRoute.addType.better, ntry, true, true);
                 }
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
                 ntry.prefix.network.fromBuf(buf, 0);
                 ntry.prefix.broadcast = ntry.nextHop.copyBytes();
                 putPmsi(ntry, id);
-                tab.add(2, ntry, true, true);
+                tab.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
             case cmac:
@@ -279,7 +279,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 for (int i = 0; i < cmac.size(); i++) {
                     cmac.get(i).toBuffer(buf, 10);
                     ntry.prefix.network.fromBuf(buf, 0);
-                    tab.add(2, ntry, true, true);
+                    tab.add(tabRoute.addType.better, ntry, true, true);
                 }
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
@@ -287,7 +287,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 ntry.prefix.network.fromBuf(buf, 0);
                 ntry.prefix.broadcast = ntry.nextHop.copyBytes();
                 putPmsi(ntry, convLab(label));
-                tab.add(2, ntry, true, true);
+                tab.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
         }
@@ -532,7 +532,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
             rtrBgpEvpnPeer nei = peers.get(i);
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peer, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(2, tab, ntry, null, null, parent.routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, null, null, parent.routerAutoMesh);
         }
     }
 

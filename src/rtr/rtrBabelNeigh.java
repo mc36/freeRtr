@@ -117,7 +117,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
         typLenVal tlv = rtrBabel.getTlv();
         addrIP rtrid = new addrIP();
         tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(2, learned, null, true);
+        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true);
         long tim = bits.getTime();
         for (;;) {
             if (tlv.getBytes(pck)) {
@@ -154,9 +154,9 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
                         logger.debug("rxnet " + ntry);
                     }
                     if (ntry.metric >= 0xffff) {
-                        tabRoute.delUpdatedEntry(learned, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+                        tabRoute.delUpdatedEntry(learned, rtrBgpUtil.safiUnicast, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     } else {
-                        tabRoute.addUpdatedEntry(3, learned, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+                        tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     }
                     break;
                 case rtrBabel.tlvRouReq:

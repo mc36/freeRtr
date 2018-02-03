@@ -266,15 +266,15 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         return l;
     }
 
-    public boolean matches(addrPrefix<T> net) {
+    public boolean matches(int afi, addrPrefix<T> net) {
         return false;
     }
 
-    public boolean matches(tabRouteEntry<T> net) {
+    public boolean matches(int afi, tabRouteEntry<T> net) {
         return false;
     }
 
-    public void update(tabRouteEntry<T> net) {
+    public void update(int afi, tabRouteEntry<T> net) {
     }
 
     public boolean matches(packHolder pck) {

@@ -400,7 +400,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 }
                 ntry.metric = metric;
                 ntry.tag = tag;
-                network.add(2, ntry, true, true);
+                network.add(tabRoute.addType.better, ntry, true, true);
                 continue;
             }
             if (a.equals("neighbor")) {

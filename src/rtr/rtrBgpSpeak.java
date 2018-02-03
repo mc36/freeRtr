@@ -1449,7 +1449,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribed(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currUni, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currMlt, parent.afiMlt, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribed(currOtr, parent.afiOtr, ntry, neigh.voumapIn, neigh.voupolIn, null);
+        addAttribed(currOtr, parent.afiOtr, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currFlw, parent.afiFlw, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currVpnU, parent.afiVpnU, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currVpnM, parent.afiVpnM, ntry, neigh.voumapIn, neigh.voupolIn, null);
@@ -1519,13 +1519,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 parent.prefixFlapped(cur.prefix, cur.asPathStr());
             }
             if (!neigh.softReconfig) {
-                tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(cur, roumap, roupol, prflst);
+                tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, cur, roumap, roupol, prflst);
                 if (res == null) {
                     if (learned.del(cur)) {
                         continue;
                     }
                     currChg++;
-                    changed.add(3, cur, false, false);
+                    changed.add(tabRoute.addType.always, cur, false, false);
                     continue;
                 }
                 cur = res;
@@ -1535,12 +1535,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     continue;
                 }
                 currChg++;
-                changed.add(3, cur, false, false);
+                changed.add(tabRoute.addType.always, cur, false, false);
                 continue;
             }
-            learned.add(3, cur, false, true);
+            learned.add(tabRoute.addType.always, cur, false, true);
             currChg++;
-            changed.add(3, cur, false, false);
+            changed.add(tabRoute.addType.always, cur, false, false);
         }
     }
 
@@ -1573,7 +1573,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             parent.needFull = true;
             return;
         }
-        changed.add(3, ntry.copyBytes(), false, false);
+        changed.add(tabRoute.addType.always, ntry.copyBytes(), false, false);
     }
 
     /**
@@ -1644,7 +1644,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (trg == null) {
             return;
         }
-        trg.add(3, ntry, true, true);
+        trg.add(tabRoute.addType.always, ntry, true, true);
     }
 
     private boolean prefixReachable(tabRouteEntry<addrIP> ntry) {

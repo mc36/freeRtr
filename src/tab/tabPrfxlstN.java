@@ -5,6 +5,7 @@ import java.util.List;
 import pack.packHolder;
 import addr.addrIP;
 import addr.addrPrefix;
+import rtr.rtrBgpUtil;
 
 /**
  * represents one prefix list entry (network and a range)
@@ -152,18 +153,18 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
         return false;
     }
 
-    public boolean matches(tabRouteEntry<addrIP> net) {
-        return matches(net.prefix);
+    public boolean matches(int afi, tabRouteEntry<addrIP> net) {
+        return matches(afi, net.prefix);
     }
 
     public boolean matches(packHolder pck) {
-        return matches(new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
+        return matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
-    public void update(tabRouteEntry<addrIP> net) {
+    public void update(int afi, tabRouteEntry<addrIP> net) {
     }
 
-    public boolean matches(addrPrefix<addrIP> net) {
+    public boolean matches(int afi, addrPrefix<addrIP> net) {
         if (net.maskLen < lenMin) {
             return false;
         }

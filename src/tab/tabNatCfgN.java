@@ -228,11 +228,11 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         return l;
     }
 
-    public boolean matches(addrPrefix<addrIP> net) {
+    public boolean matches(int afi, addrPrefix<addrIP> net) {
         return false;
     }
 
-    public boolean matches(tabRouteEntry<addrIP> net) {
+    public boolean matches(int afi, tabRouteEntry<addrIP> net) {
         return false;
     }
 
@@ -278,7 +278,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         return true;
     }
 
-    public void update(tabRouteEntry<addrIP> net) {
+    public void update(int afi, tabRouteEntry<addrIP> net) {
     }
 
     /**

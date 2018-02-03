@@ -277,7 +277,7 @@ public class userTest {
                 byte[] buf = new byte[addrIP.size];
                 bits.msbPutD(buf, 0, i);
                 adr.fromBuf(buf, 0);
-                tab1.add(3, new addrPrefix<addrIP>(adr, 32), adr);
+                tab1.add(tabRoute.addType.always, new addrPrefix<addrIP>(adr, 32), adr);
             }
             beg = (rnd1 * 1000) / (bits.getTime() - beg);
             cmd.error(beg + " adds/sec");

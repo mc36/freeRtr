@@ -1645,7 +1645,7 @@ public class userShow {
             tabRouteEntry<addrIP> prf1 = nei1.get(i);
             tabRouteEntry<addrIP> prf2 = nei2.find(prf1);
             if (prf2 == null) {
-                uniq.add(3, prf1, false, false);
+                uniq.add(tabRoute.addType.always, prf1, false, false);
                 continue;
             }
             prf1 = prf1.copyBytes();
@@ -1783,7 +1783,7 @@ public class userShow {
             if (!prf1.differs(prf2)) {
                 continue;
             }
-            diff.add(3, prf1, false, false);
+            diff.add(tabRoute.addType.always, prf1, false, false);
         }
     }
 
@@ -2042,7 +2042,7 @@ public class userShow {
                 ntry.stdCommMatch = tabRtrmapN.string2stdComms(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2054,7 +2054,7 @@ public class userShow {
                 ntry.extCommMatch = tabRtrmapN.string2extComms(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2066,7 +2066,7 @@ public class userShow {
                 ntry.lrgCommMatch = tabRtrmapN.string2lrgComms(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2078,7 +2078,7 @@ public class userShow {
                 ntry.rouDstMatch = tabRtrmapN.string2rd(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2090,7 +2090,7 @@ public class userShow {
                 ntry.aspathMatch = a;
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2103,7 +2103,7 @@ public class userShow {
                 ntry.pathlenMatch.fromString(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2116,7 +2116,7 @@ public class userShow {
                 ntry.distanceMatch.fromString(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2129,7 +2129,7 @@ public class userShow {
                 ntry.locPrefMatch.fromString(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2142,7 +2142,7 @@ public class userShow {
                 ntry.validityMatch.fromString(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2155,7 +2155,7 @@ public class userShow {
                 ntry.accIgpMatch.fromString(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2168,7 +2168,7 @@ public class userShow {
                 ntry.bandwidthMatch.fromString(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2181,7 +2181,7 @@ public class userShow {
                 ntry.originMatch.fromString(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2194,7 +2194,7 @@ public class userShow {
                 ntry.metricMatch.fromString(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2207,7 +2207,7 @@ public class userShow {
                 ntry.tagMatch.fromString(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2220,7 +2220,7 @@ public class userShow {
                 ntry.networkMatch.fromString(a);
                 roumap.add(ntry);
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2232,7 +2232,7 @@ public class userShow {
                     return;
                 }
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, null, null, fnd.prflst);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, null, null, fnd.prflst);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2244,7 +2244,7 @@ public class userShow {
                     return;
                 }
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, fnd.roumap, null, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, fnd.roumap, null, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
@@ -2256,7 +2256,7 @@ public class userShow {
                     return;
                 }
                 tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(2, res, tab, null, fnd.rouplc, null);
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, null, fnd.rouplc, null);
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }

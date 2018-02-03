@@ -109,7 +109,7 @@ public class rtrBgpVrfRtr extends ipRtr {
     public void routerOthersChanged() {
     }
 
-    private void doExportRoute(tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, long rt) {
+    private void doExportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, long rt) {
         if (ntry == null) {
             return;
         }
@@ -123,7 +123,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         ntry.rouDst = vrf.rd;
         ntry.extComm.add(rt);
         ntry.rouSrc = rtrBgpUtil.peerOriginate;
-        tabRoute.addUpdatedEntry(2, trg, ntry, fwd.exportMap, fwd.exportPol, fwd.exportList);
+        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, fwd.exportMap, fwd.exportPol, fwd.exportList);
     }
 
     /**
@@ -137,13 +137,13 @@ public class rtrBgpVrfRtr extends ipRtr {
     public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn) {
         final long rt = tabRtrmapN.rt2comm(vrf.rtExp);
         for (int i = 0; i < routerRedistedU.size(); i++) {
-            doExportRoute(routerRedistedU.get(i), nUni, rt);
+            doExportRoute(rtrBgpUtil.safiUnicast, routerRedistedU.get(i), nUni, rt);
         }
         for (int i = 0; i < routerRedistedM.size(); i++) {
-            doExportRoute(routerRedistedM.get(i), nMlt, rt);
+            doExportRoute(rtrBgpUtil.safiMulticast, routerRedistedM.get(i), nMlt, rt);
         }
         for (int i = 0; i < routerRedistedF.size(); i++) {
-            doExportRoute(routerRedistedF.get(i), nFlw, rt);
+            doExportRoute(rtrBgpUtil.safiFlwSpc, routerRedistedF.get(i), nFlw, rt);
         }
         if (flowSpec != null) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -179,11 +179,11 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.rouDst = vrf.rd;
             ntry.extComm.add(rt);
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
-            tabRoute.addUpdatedEntry(2, nMvpn, ntry, fwd.exportMap, fwd.exportPol, fwd.exportList);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, other ? parent.afiVpoM : parent.afiVpnM, ntry, fwd.exportMap, fwd.exportPol, fwd.exportList);
         }
     }
 
-    private void doImportRoutes(tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, long rt) {
+    private void doImportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, long rt) {
         if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
             return;
         }
@@ -197,7 +197,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         ntry.rouDst = 0;
         ntry.rouTab = parent.fwdCore;
         ntry.distance = distance;
-        tabRoute.addUpdatedEntry(2, trg, ntry, fwd.importMap, fwd.importPol, fwd.importList);
+        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, fwd.importMap, fwd.importPol, fwd.importList);
         if (parent.routerAutoMesh == null) {
             return;
         }
@@ -218,16 +218,16 @@ public class rtrBgpVrfRtr extends ipRtr {
         tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
         peers = new tabGen<addrIP>();
         for (int i = 0; i < cmpU.size(); i++) {
-            doImportRoutes(cmpU.get(i), tabU, rt);
+            doImportRoute(rtrBgpUtil.safiUnicast, cmpU.get(i), tabU, rt);
         }
         for (int i = 0; i < cmpM.size(); i++) {
-            doImportRoutes(cmpM.get(i), tabM, rt);
+            doImportRoute(rtrBgpUtil.safiMulticast, cmpM.get(i), tabM, rt);
         }
         for (int i = 0; i < cmpF.size(); i++) {
-            doImportRoutes(cmpF.get(i), tabF, rt);
+            doImportRoute(rtrBgpUtil.safiFlwSpc, cmpF.get(i), tabF, rt);
         }
-        routerDoAggregates(tabU, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
-        routerDoAggregates(tabM, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
+        routerDoAggregates(parent.afiUni, tabU, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
+        routerDoAggregates(parent.afiMlt, tabM, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
         routerComputedU = tabU;
         routerComputedM = tabM;
         routerComputedF = tabF;
@@ -291,7 +291,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             addrIP adr = peers.get(i);
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(2, tab, ntry, null, null, parent.routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, parent.afiUni, ntry, null, null, parent.routerAutoMesh);
         }
     }
 

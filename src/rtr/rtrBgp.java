@@ -1170,7 +1170,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry.rouTyp = rouTyp;
             ntry.protoNum = rtrNum;
             ntry.distance = distantLoc;
-            nFlw.add(2, ntry, false, false);
+            nFlw.add(tabRoute.addType.better, ntry, false, false);
         }
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doAdvertise(nVpnU, nVpnM, nVpnF, nMvpn);
@@ -1203,7 +1203,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         computedRpki = new tabRoute<addrIP>("bgp");
         for (int i = 0; i < rpkis.size(); i++) {
-            computedRpki.mergeFrom(2, rpkis.get(i).table, null, true);
+            computedRpki.mergeFrom(tabRoute.addType.better, rpkis.get(i).table, null, true);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");
@@ -1439,7 +1439,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (wil.del(curr)) {
                     continue;
                 }
-                chg.add(3, curr, false, false);
+                chg.add(tabRoute.addType.always, curr, false, false);
             }
             return;
         }
@@ -1453,7 +1453,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if ((best.rouSrc == rtrBgpUtil.peerOriginate) && ((afi == afiUni) || (afi == afiMlt))) {
             cmp.del(best);
         } else {
-            cmp.add(3, best, false, false);
+            cmp.add(tabRoute.addType.always, best, false, false);
         }
         for (int i = 0; i < groups.size(); i++) {
             rtrBgpGroup grp = groups.get(i);
@@ -1470,24 +1470,24 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             } else if (grp.readvertPrefix(afi == afiUni, ntry)) {
                 ntry = null;
             }
-            if ((afi == afiUni) || (afi == afiMlt)) {
-                ntry = tabRoute.doUpdateEntry(ntry, grp.roumapOut, grp.roupolOut, grp.prflstOut);
+            if ((afi == afiUni) || (afi == afiMlt) || (afi == afiOtr)) {
+                ntry = tabRoute.doUpdateEntry(afi, ntry, grp.roumapOut, grp.roupolOut, grp.prflstOut);
             } else {
-                ntry = tabRoute.doUpdateEntry(ntry, grp.voumapOut, grp.voupolOut, null);
+                ntry = tabRoute.doUpdateEntry(afi, ntry, grp.voumapOut, grp.voupolOut, null);
             }
             if ((ntry == null) && (old == null)) {
                 continue;
             }
             if (ntry == null) {
                 wil.del(best);
-                chg.add(3, best, false, false);
+                chg.add(tabRoute.addType.always, best, false, false);
                 continue;
             }
             if (!ntry.differs(old)) {
                 continue;
             }
-            wil.add(3, ntry, false, false);
-            chg.add(3, ntry, false, false);
+            wil.add(tabRoute.addType.always, ntry, false, false);
+            chg.add(tabRoute.addType.always, ntry, false, false);
         }
     }
 
@@ -1651,7 +1651,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry == null) {
                 continue;
             }
-            cmp.add(3, ntry, false, false);
+            cmp.add(tabRoute.addType.always, ntry, false, false);
         }
     }
 
@@ -2686,7 +2686,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(2, tab, ntry, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, ntry, null, null, routerAutoMesh);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
             rtrBgpNeigh nei = lstnNei.get(i);
@@ -2695,7 +2695,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(2, tab, ntry, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, ntry, null, null, routerAutoMesh);
         }
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.getPeerList(tab);

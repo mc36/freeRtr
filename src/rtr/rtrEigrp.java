@@ -265,7 +265,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
             if (ifc.suppressAddr) {
                 continue;
             }
-            ntry = tab1.add(2, ifc.iface.network, null);
+            ntry = tab1.add(tabRoute.addType.better, ifc.iface.network, null);
             ntry.rouTyp = tabRouteEntry.routeType.conn;
             ntry.iface = ifc.iface;
             ntry.distance = tabRouteEntry.distanIfc;
@@ -280,14 +280,14 @@ public class rtrEigrp extends ipRtr implements Runnable {
                 if (nei == null) {
                     continue;
                 }
-                tab1.mergeFrom(2, nei.learned, null, true);
+                tab1.mergeFrom(tabRoute.addType.better, nei.learned, null, true);
             }
         }
-        routerDoAggregates(tab1, null, fwdCore.commonLabel, 0, null, 0);
+        routerDoAggregates(rtrBgpUtil.safiUnicast, tab1, null, fwdCore.commonLabel, 0, null, 0);
         tabRoute<addrIP> tab2 = tab1;
         tab1 = new tabRoute<addrIP>("ned2adv");
-        tab1.mergeFrom(2, tab2, null, true);
-        tab1.mergeFrom(2, routerRedistedU, null, true);
+        tab1.mergeFrom(tabRoute.addType.better, tab2, null, true);
+        tab1.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true);
         need2adv = tab1;
         for (int o = 0; o < ifaces.size(); o++) {
             rtrEigrpIface ifc = ifaces.get(o);
@@ -298,9 +298,9 @@ public class rtrEigrp extends ipRtr implements Runnable {
             if (ifc.defOrigin) {
                 ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
-                tab1.add(3, ntry, true, true);
+                tab1.add(tabRoute.addType.always, ntry, true, true);
             }
-            tabRoute.addUpdatedTable(3, tab1, need2adv, ifc.roumapOut, ifc.roupolOut, ifc.prflstOut);
+            tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.safiUnicast, tab1, need2adv, ifc.roumapOut, ifc.roupolOut, ifc.prflstOut);
             if (ifc.splitHorizon) {
                 tab1.delIface(ifc.iface);
             }
@@ -477,7 +477,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
                 }
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = new addrPrefix<addrIP>(nei.peer, addrIP.size * 8);
-                tabRoute.addUpdatedEntry(2, tab, ntry, null, null, routerAutoMesh);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, null, null, routerAutoMesh);
             }
         }
     }

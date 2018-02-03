@@ -109,7 +109,7 @@ public class rtrFlowspec extends ipRtr {
             ntry.prefix.wildcard.fromBuf(adr, 0);
             bits.byteCopy(buf, 47, adr, 0, 16);
             ntry.prefix.mask.fromBuf(adr, 0);
-            res.add(2, ntry, false, false);
+            res.add(tabRoute.addType.better, ntry, false, false);
         }
         routerComputedF = res;
         fwdCore.routerChg(this);

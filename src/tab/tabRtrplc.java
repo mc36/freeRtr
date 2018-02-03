@@ -61,12 +61,13 @@ public class tabRtrplc {
     /**
      * update one entry
      *
+     * @param afi address family
      * @param net network number
      * @param lst list to use
      * @param copy copy before update
      * @return null if denied, copy otherwise
      */
-    public static tabRouteEntry<addrIP> doRpl(tabRouteEntry<addrIP> net, tabListing<tabRtrplcN, addrIP> lst, boolean copy) {
+    public static tabRouteEntry<addrIP> doRpl(int afi, tabRouteEntry<addrIP> net, tabListing<tabRtrplcN, addrIP> lst, boolean copy) {
         if (copy) {
             net = net.copyBytes();
         }
@@ -85,7 +86,7 @@ public class tabRtrplc {
                 case description:
                     continue;
                 case iff:
-                    if (ntry.matches(net)) {
+                    if (ntry.matches(afi, net)) {
                         lvl++;
                         continue;
                     }
@@ -108,7 +109,7 @@ public class tabRtrplc {
                         boolean stop = false;
                         switch (ntry.doMode) {
                             case elsif:
-                                if (ntry.matches(net)) {
+                                if (ntry.matches(afi, net)) {
                                     lvl++;
                                     stop = true;
                                     break;
@@ -167,10 +168,10 @@ public class tabRtrplc {
                         scr.add(ntry.strVal);
                     }
                     pos--;
-                    tabRtrmapN.doTcl(net, scr);
+                    tabRtrmapN.doTcl(afi, net, scr);
                     continue;
                 default:
-                    ntry.update(net);
+                    ntry.update(afi, net);
                     continue;
             }
         }

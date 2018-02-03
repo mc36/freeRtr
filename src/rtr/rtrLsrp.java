@@ -423,7 +423,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
-            dat.network.add(3, ntry, true, true);
+            dat.network.add(tabRoute.addType.always, ntry, true, true);
         }
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);
@@ -436,7 +436,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ifc.suppressAddr) {
                 continue;
             }
-            tabRouteEntry<addrIP> ntry = dat.network.add(2, ifc.iface.network, null);
+            tabRouteEntry<addrIP> ntry = dat.network.add(tabRoute.addType.better, ifc.iface.network, null);
             ntry.rouTyp = tabRouteEntry.routeType.conn;
             ntry.iface = ifc.iface;
             ntry.distance = tabRouteEntry.distanIfc;
@@ -461,7 +461,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 dat.addNeigh(nei.rtrId, ifc.metric, (int) ifc.iface.bandwidth, adj);
             }
         }
-        dat.network.mergeFrom(2, routerRedistedU, null, true);
+        dat.network.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true);
         dat.rtrId = routerID.copyBytes();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
         dat.software = version.usrAgnt.replaceAll(" ", "_");
@@ -572,7 +572,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 rou.bierI = ntry.bierIdx;
                 rou.bierB = brb;
                 rou.bierS = tabLabelBier.num2bsl(ntry.bierLen);
-                tab1.add(2, rou, false, true);
+                tab1.add(tabRoute.addType.better, rou, false, true);
             }
         }
         if (segrouLab != null) {
@@ -584,8 +584,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("routes");
-        tabRoute.addUpdatedTable(2, tab2, tab1, roumapIn, roupolIn, prflstIn);
-        routerDoAggregates(tab2, null, fwdCore.commonLabel, 0, null, 0);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, tab2, tab1, roumapIn, roupolIn, prflstIn);
+        routerDoAggregates(rtrBgpUtil.safiUnicast, tab2, null, fwdCore.commonLabel, 0, null, 0);
         if (bierLab != null) {
             tabLabelBier res = spf.getBierI();
             res.base = bierLab[0].getValue();
@@ -847,7 +847,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 }
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = new addrPrefix<addrIP>(nei.peer, addrIP.size * 8);
-                tabRoute.addUpdatedEntry(2, tab, ntry, null, null, routerAutoMesh);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, null, null, routerAutoMesh);
             }
         }
     }

@@ -70,12 +70,13 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
     /**
      * filter by this redistribution
      *
+     * @param afi address family
      * @param trg target table to append
      * @param src source table to use
      */
-    public void filter(tabRoute<addrIP> trg, tabRoute<addrIP> src) {
+    public void filter(int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src) {
         tabRoute<addrIP> lst = src.justProto(typ, num);
-        tabRoute.addUpdatedTable(2, trg, lst, roumap, rouplc, prflst);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, afi, trg, lst, roumap, rouplc, prflst);
     }
 
 }

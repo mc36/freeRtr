@@ -134,6 +134,7 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     /**
      * do aggregates
      *
+     * @param afi address family
      * @param tab table to update
      * @param hop next hop
      * @param lab label to use
@@ -141,13 +142,13 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      * @param agrR aggregator router
      * @param agrA aggregator as
      */
-    public void routerDoAggregates(tabRoute<addrIP> tab, addrIP hop, tabLabelNtry lab, int src, addrIPv4 agrR, int agrA) {
+    public void routerDoAggregates(int afi, tabRoute<addrIP> tab, addrIP hop, tabLabelNtry lab, int src, addrIPv4 agrR, int agrA) {
         for (int i = 0; i < routerAggregating.size(); i++) {
             ipRtrAgr ntry = routerAggregating.get(i);
             if (ntry == null) {
                 continue;
             }
-            ntry.filter(tab, hop, lab, src, agrR, agrA);
+            ntry.filter(afi, tab, hop, lab, src, agrR, agrA);
         }
     }
 

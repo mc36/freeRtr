@@ -622,7 +622,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
                 break;
         }
         deadTimer = helloTimer * 4;
-        retransTimer = 5000;
+        retransTimer = 3000;
     }
 
     /**

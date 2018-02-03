@@ -80,6 +80,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
     /**
      * filter by this aggregation
      *
+     * @param afi address family
      * @param tab table to update
      * @param hop next hop
      * @param lab label to use
@@ -87,7 +88,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
      * @param agrR aggregator router
      * @param agrA aggregator as
      */
-    public void filter(tabRoute<addrIP> tab, addrIP hop, tabLabelNtry lab, int src, addrIPv4 agrR, int agrA) {
+    public void filter(int afi, tabRoute<addrIP> tab, addrIP hop, tabLabelNtry lab, int src, addrIPv4 agrR, int agrA) {
         int cnt = 0;
         List<Integer> pathSet = new ArrayList<Integer>();
         List<Integer> confSet = new ArrayList<Integer>();
@@ -97,7 +98,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
                 continue;
             }
             if (prflst != null) {
-                if (prflst.find(ntry) == null) {
+                if (prflst.find(afi, ntry) == null) {
                     continue;
                 }
             }
@@ -132,12 +133,12 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
         ntry.labelLoc = lab;
         ntry.rouSrc = src;
         if (roumap != null) {
-            ntry = roumap.update(ntry, false);
+            ntry = roumap.update(afi, ntry, false);
         }
         if (ntry == null) {
             return;
         }
-        tab.add(2, ntry, false, true);
+        tab.add(tabRoute.addType.better, ntry, false, true);
     }
 
 }

@@ -424,7 +424,7 @@ public class userPacket {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             ntry.prefix = prf.copyBytes();
-            rmp.roumap.update(ntry, false);
+            rmp.roumap.update(rtrBgpUtil.safiUnicast, ntry, false);
             ntry.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
             packHolder tmp = new packHolder(true, true);
             for (int o = 0; o < num; o++) {

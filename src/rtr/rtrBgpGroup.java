@@ -586,7 +586,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         return false;
     }
 
-    private void readvertTable(boolean nhs, tabRoute<addrIP> tab, tabRoute<addrIP> cmp) {
+    private void readvertTable(boolean nhs, int afi, tabRoute<addrIP> tab, tabRoute<addrIP> cmp) {
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
             ntry = ntry.copyBytes();
@@ -595,11 +595,11 @@ public class rtrBgpGroup extends rtrBgpParam {
             } else if (readvertPrefix(nhs, ntry)) {
                 continue;
             }
-            tabRoute.addUpdatedEntry(2, tab, ntry, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, roumapOut, roupolOut, prflstOut);
         }
     }
 
-    private void importTable(tabRoute<addrIP> tab, tabRoute<addrIP> imp) {
+    private void importTable(int afi, tabRoute<addrIP> tab, tabRoute<addrIP> imp) {
         for (int i = 0; i < imp.size(); i++) {
             tabRouteEntry<addrIP> ntry = imp.get(i);
             ntry = ntry.copyBytes();
@@ -608,7 +608,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             } else if (readvertPrefix(false, ntry)) {
                 continue;
             }
-            tabRoute.addUpdatedEntry(2, tab, ntry, voumapOut, voupolOut, null);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, voumapOut, voupolOut, null);
         }
     }
 
@@ -661,7 +661,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.aggrAs = localAs;
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(ntry);
-            tabRoute.addUpdatedEntry(2, nUni, ntry, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nUni, lower.afiUni, ntry, roumapOut, roupolOut, prflstOut);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = rtrBgpUtil.defaultRoute(lower.afiUni);
             ntry.aggrRtr = new addrIP();
@@ -669,7 +669,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.aggrAs = localAs;
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(ntry);
-            tabRoute.addUpdatedEntry(2, nMlt, ntry, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, ntry, roumapOut, roupolOut, prflstOut);
         }
         for (int i = 0; i < lower.routerRedistedU.size(); i++) {
             tabRouteEntry<addrIP> ntry = lower.routerRedistedU.get(i);
@@ -679,7 +679,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry = ntry.copyBytes();
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(ntry);
-            tabRoute.addUpdatedEntry(2, nUni, ntry, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nUni, lower.afiUni, ntry, roumapOut, roupolOut, prflstOut);
         }
         for (int i = 0; i < lower.routerRedistedM.size(); i++) {
             tabRouteEntry<addrIP> ntry = lower.routerRedistedM.get(i);
@@ -689,7 +689,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry = ntry.copyBytes();
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(ntry);
-            tabRoute.addUpdatedEntry(2, nMlt, ntry, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, ntry, roumapOut, roupolOut, prflstOut);
         }
         for (int i = 0; i < lower.routerRedistedF.size(); i++) {
             tabRouteEntry<addrIP> ntry = lower.routerRedistedF.get(i);
@@ -699,26 +699,26 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry = ntry.copyBytes();
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(ntry);
-            tabRoute.addUpdatedEntry(2, nFlw, ntry, voumapOut, voupolOut, null);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nFlw, lower.afiFlw, ntry, voumapOut, voupolOut, null);
         }
-        readvertTable(true, nUni, cUni);
-        readvertTable(false, nMlt, cMlt);
-        importTable(nOtr, cOtr);
-        importTable(nFlw, cFlw);
-        importTable(nVpnU, cVpnU);
-        importTable(nVpnM, cVpnM);
-        importTable(nVpnF, cVpnF);
-        importTable(nVpoU, cVpoU);
-        importTable(nVpoM, cVpoM);
-        importTable(nVpoF, cVpoF);
-        importTable(nVpls, cVpls);
-        importTable(nMspw, cMspw);
-        importTable(nEvpn, cEvpn);
-        importTable(nMdt, cMdt);
-        importTable(nMvpn, cMvpn);
-        importTable(nMvpo, cMvpo);
-        lower.routerDoAggregates(nUni, localAddr, lower.fwdCore.commonLabel, rtrBgpUtil.peerOriginate, lower.routerID, lower.localAs);
-        lower.routerDoAggregates(nMlt, localAddr, lower.fwdCore.commonLabel, rtrBgpUtil.peerOriginate, lower.routerID, lower.localAs);
+        readvertTable(true, lower.afiUni, nUni, cUni);
+        readvertTable(false, lower.afiMlt, nMlt, cMlt);
+        readvertTable(false, lower.afiOtr, nOtr, cOtr);
+        importTable(lower.afiFlw, nFlw, cFlw);
+        importTable(lower.afiVpnU, nVpnU, cVpnU);
+        importTable(lower.afiVpnM, nVpnM, cVpnM);
+        importTable(lower.afiVpnF, nVpnF, cVpnF);
+        importTable(lower.afiVpoU, nVpoU, cVpoU);
+        importTable(lower.afiVpoM, nVpoM, cVpoM);
+        importTable(lower.afiVpoF, nVpoF, cVpoF);
+        importTable(lower.afiVpls, nVpls, cVpls);
+        importTable(lower.afiMspw, nMspw, cMspw);
+        importTable(lower.afiEvpn, nEvpn, cEvpn);
+        importTable(lower.afiMdt, nMdt, cMdt);
+        importTable(lower.afiMvpn, nMvpn, cMvpn);
+        importTable(lower.afiMvpo, nMvpo, cMvpo);
+        lower.routerDoAggregates(lower.afiUni, nUni, localAddr, lower.fwdCore.commonLabel, rtrBgpUtil.peerOriginate, lower.routerID, lower.localAs);
+        lower.routerDoAggregates(lower.afiMlt, nMlt, localAddr, lower.fwdCore.commonLabel, rtrBgpUtil.peerOriginate, lower.routerID, lower.localAs);
         wilUni = nUni;
         wilMlt = nMlt;
         wilOtr = nOtr;

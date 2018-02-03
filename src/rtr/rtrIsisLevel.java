@@ -408,7 +408,7 @@ public class rtrIsisLevel implements Runnable {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = lower.getDefaultRoute();
             ntry.origin = 1;
-            rs.add(2, ntry, false, false);
+            rs.add(tabRoute.addType.better, ntry, false, false);
         }
         for (int i = 0; i < lower.ifaces.size(); i++) {
             rtrIsisIface ifc = lower.ifaces.get(i);
@@ -433,7 +433,7 @@ public class rtrIsisLevel implements Runnable {
                 ntry.rouSrc |= 8;
             }
             ntry.bierI = ifc.brIndex;
-            rs.add(2, ntry, false, false);
+            rs.add(tabRoute.addType.better, ntry, false, false);
         }
         for (int i = 0; i < lower.routerRedistedU.size(); i++) {
             tabRouteEntry<addrIP> ntry = lower.routerRedistedU.get(i);
@@ -445,7 +445,7 @@ public class rtrIsisLevel implements Runnable {
             ntry.rouSrc = 1;
             ntry.segRoutI = 0;
             ntry.bierI = 0;
-            rs.add(2, ntry, false, false);
+            rs.add(tabRoute.addType.better, ntry, false, false);
         }
         if (interLevels) {
             tabRoute<addrIP> other = lower.getLevel(3 - level).routes;
@@ -466,11 +466,11 @@ public class rtrIsisLevel implements Runnable {
                     ntry.rouSrc |= 2;
                 }
                 ntry.rouSrc &= -1 - 8;
-                rs.add(2, ntry, false, false);
+                rs.add(tabRoute.addType.better, ntry, false, false);
             }
         }
         tabRoute<addrIP> fl = new tabRoute<addrIP>("fl");
-        tabRoute.addUpdatedTable(2, fl, rs, roumapInto, roupolInto, prflstInto);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, fl, rs, roumapInto, roupolInto, prflstInto);
         for (int i = 0; i < fl.size(); i++) {
             tabRouteEntry<addrIP> ntry = fl.get(i);
             if (ntry == null) {
@@ -653,7 +653,7 @@ public class rtrIsisLevel implements Runnable {
                 pref.nextHop = hop.copyBytes();
                 pref.iface = iface;
                 if (needAttach && ((lsp.flags & rtrIsisLsp.flgOver) == 0)) {
-                    rs.add(2, pref, false, true);
+                    rs.add(tabRoute.addType.better, pref, false, true);
                 }
             }
             for (;;) {
@@ -690,13 +690,13 @@ public class rtrIsisLevel implements Runnable {
                         segrouUsd[pref.segRoutI] = true;
                         pref.labelRem = lab;
                     }
-                    rs.add(2, pref, false, true);
+                    rs.add(tabRoute.addType.better, pref, false, true);
                 }
             }
         }
         routes.clear();
-        tabRoute.addUpdatedTable(2, routes, rs, roumapFrom, roupolFrom, prflstFrom);
-        lower.routerDoAggregates(routes, null, lower.fwdCore.commonLabel, 0, null, 0);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, routes, rs, roumapFrom, roupolFrom, prflstFrom);
+        lower.routerDoAggregates(rtrBgpUtil.safiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);
         if (bierEna) {
             bierRes = spf.getBierI();
         } else {

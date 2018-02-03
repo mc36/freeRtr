@@ -35,11 +35,11 @@ public class tabEvntmgrN extends tabListingEntry<addrIP> {
         return false;
     }
 
-    public boolean matches(addrPrefix<addrIP> net) {
+    public boolean matches(int afi, addrPrefix<addrIP> net) {
         return false;
     }
 
-    public boolean matches(tabRouteEntry<addrIP> net) {
+    public boolean matches(int afi, tabRouteEntry<addrIP> net) {
         return false;
     }
 
@@ -47,7 +47,7 @@ public class tabEvntmgrN extends tabListingEntry<addrIP> {
         return false;
     }
 
-    public void update(tabRouteEntry<addrIP> net) {
+    public void update(int afi, tabRouteEntry<addrIP> net) {
     }
 
 }

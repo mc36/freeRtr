@@ -48,10 +48,11 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
     /**
      * filter by this redistribution
      *
+     * @param afi address family
      * @param trg target table to append
      * @param src source table to use
      */
-    public void filter(tabRoute<addrIP> trg, tabRoute<addrIP> src) {
+    public void filter(int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src) {
         tabRouteEntry<addrIP> ntry = src.find(prefix);
         if (ntry == null) {
             return;
@@ -67,7 +68,7 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
         if (prefix.compare(prefix, ntry.prefix) != 0) {
             return;
         }
-        tabRoute.addUpdatedEntry(2, trg, ntry, roumap, rouplc, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, roumap, rouplc, null);
     }
 
 }

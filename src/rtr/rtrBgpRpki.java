@@ -177,7 +177,7 @@ public class rtrBgpRpki implements Comparator<rtrBgpRpki>, Runnable {
                         if (pck.withdraw) {
                             table.del(ntry);
                         } else {
-                            table.add(3, ntry, true, true);
+                            table.add(tabRoute.addType.always, ntry, true, true);
                         }
                         dat++;
                         break;
@@ -191,7 +191,7 @@ public class rtrBgpRpki implements Comparator<rtrBgpRpki>, Runnable {
                         if (pck.withdraw) {
                             table.del(ntry);
                         } else {
-                            table.add(3, ntry, true, true);
+                            table.add(tabRoute.addType.always, ntry, true, true);
                         }
                         dat++;
                         break;

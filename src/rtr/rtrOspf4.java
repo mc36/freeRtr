@@ -147,7 +147,7 @@ public class rtrOspf4 extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            tab.mergeFrom(2, ntry.routes, null, true);
+            tab.mergeFrom(tabRoute.addType.better, ntry.routes, null, true);
         }
         if (segrouLab != null) {
             for (int o = 0; o < segrouLab.length; o++) {
@@ -806,7 +806,7 @@ public class rtrOspf4 extends ipRtr {
                 adr.fromIPv4addr(nei.peer);
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-                tabRoute.addUpdatedEntry(2, tab, ntry, null, null, routerAutoMesh);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, null, null, routerAutoMesh);
             }
         }
     }

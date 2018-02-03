@@ -115,13 +115,13 @@ public class ipxFwd implements Runnable {
             if (!ifc.ready) {
                 continue;
             }
-            tabRouteEntry<addrIpx> prf = tabC.add(3, ifc.network, null);
+            tabRouteEntry<addrIpx> prf = tabC.add(tabRoute.addType.always, ifc.network, null);
             prf.iface = ifc;
-            prf = tabA.add(3, new addrPrefix<addrIpx>(ifc.addr, ifc.addr.maxBits()), null);
+            prf = tabA.add(tabRoute.addType.always, new addrPrefix<addrIpx>(ifc.addr, ifc.addr.maxBits()), null);
             prf.iface = ifc;
             prf.rouTyp = tabRouteEntry.routeType.local;
         }
-        tabA.mergeFrom(2, tabC, null, true);
+        tabA.mergeFrom(tabRoute.addType.better, tabC, null, true);
         for (int i = 0; i < staticR.size(); i++) {
             tabRouteEntry<addrIpx> ntry = staticR.get(i);
             if (ntry == null) {
@@ -133,7 +133,7 @@ public class ipxFwd implements Runnable {
             }
             tabRouteEntry<addrIpx> imp = ntry.copyBytes();
             imp.iface = nh.iface;
-            tabA.add(2, imp, false, true);
+            tabA.add(tabRoute.addType.better, imp, false, true);
         }
         connedR = tabC;
         actualR = tabA;

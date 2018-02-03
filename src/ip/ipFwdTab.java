@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
 import pack.packRsvp;
+import rtr.rtrBgpUtil;
 import rtr.rtrLdpNeigh;
 import tab.tabHop;
 import tab.tabLabel;
@@ -378,18 +379,18 @@ public class ipFwdTab {
                 if (ntry == null) {
                     continue;
                 }
-                ntry.filter(tabU, lower.actualU);
-                ntry.filter(tabM, lower.actualM);
-                ntry.filter(tabF, lower.actualF);
+                ntry.filter(rtrBgpUtil.safiUnicast, tabU, lower.actualU);
+                ntry.filter(rtrBgpUtil.safiMulticast, tabM, lower.actualM);
+                ntry.filter(rtrBgpUtil.safiFlwSpc, tabF, lower.actualF);
             }
             for (int o = 0; o < rtr.routerAdverting.size(); o++) {
                 ipRtrAdv ntry = rtr.routerAdverting.get(o);
                 if (ntry == null) {
                     continue;
                 }
-                ntry.filter(tabU, lower.actualU);
-                ntry.filter(tabM, lower.actualM);
-                ntry.filter(tabF, lower.actualF);
+                ntry.filter(rtrBgpUtil.safiUnicast, tabU, lower.actualU);
+                ntry.filter(rtrBgpUtil.safiMulticast, tabM, lower.actualM);
+                ntry.filter(rtrBgpUtil.safiFlwSpc, tabF, lower.actualF);
             }
             boolean diff = tabU.differs(rtr.routerRedistedU) || tabM.differs(rtr.routerRedistedM) || tabF.differs(rtr.routerRedistedF);
             if (chg) {
@@ -436,7 +437,7 @@ public class ipFwdTab {
             }
             imp.iface = ifc;
         }
-        trg.add(2, imp, false, true);
+        trg.add(tabRoute.addType.better, imp, false, true);
     }
 
     /**
@@ -465,17 +466,17 @@ public class ipFwdTab {
             if (!ifc.ready) {
                 continue;
             }
-            tabRouteEntry<addrIP> prf = tabC.add(3, ifc.network, null);
+            tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, ifc.network, null);
             prf.iface = ifc;
             prf.rouTyp = tabRouteEntry.routeType.conn;
-            prf = tabA.add(3, new addrPrefix<addrIP>(ifc.addr, ifc.addr.maxBits()), null);
+            prf = tabA.add(tabRoute.addType.always, new addrPrefix<addrIP>(ifc.addr, ifc.addr.maxBits()), null);
             prf.iface = ifc;
             prf.rouTyp = tabRouteEntry.routeType.local;
             if (ifc.linkLocal) {
                 addrIPv6 adr6 = addrIPv6.genLinkLocal(new addrMac());
                 addrIP adr = new addrIP();
                 adr.fromIPv6addr(adr6);
-                prf = tabC.add(3, new addrPrefix<addrIP>(adr, 64), null);
+                prf = tabC.add(tabRoute.addType.always, new addrPrefix<addrIP>(adr, 64), null);
                 prf.iface = ifc;
                 prf.rouTyp = tabRouteEntry.routeType.conn;
             }
@@ -483,7 +484,7 @@ public class ipFwdTab {
             if (gtw == null) {
                 continue;
             }
-            prf = tabA.add(3, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
+            prf = tabA.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
             prf.iface = ifc;
             prf.rouTyp = tabRouteEntry.routeType.remote;
             tabListing<tabPrfxlstN, addrIP> pfl = ifc.gatePrfx;
@@ -498,13 +499,13 @@ public class ipFwdTab {
                 prf.nextHop = gtw.copyBytes();
                 prf.rouTyp = tabRouteEntry.routeType.defpref;
                 prf.iface = ifc;
-                tabRoute.addUpdatedEntry(2, tabA, prf, ifc.gateRtmp, null, null);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tabA, rtrBgpUtil.safiUnicast, prf, ifc.gateRtmp, null, null);
             }
         }
-        tabL.mergeFrom(2, tabC, null, true);
-        tabL.mergeFrom(2, tabA, null, true);
-        tabM.mergeFrom(2, tabC, null, true);
-        tabM.mergeFrom(2, tabA, null, true);
+        tabL.mergeFrom(tabRoute.addType.better, tabC, null, true);
+        tabL.mergeFrom(tabRoute.addType.better, tabA, null, true);
+        tabM.mergeFrom(tabRoute.addType.better, tabC, null, true);
+        tabM.mergeFrom(tabRoute.addType.better, tabA, null, true);
         for (int i = 0; i < lower.staticU.size(); i++) {
             static2table(lower.staticU.get(i), tabL, lower, tabC);
         }
@@ -521,19 +522,19 @@ public class ipFwdTab {
             }
             tabRoute<addrIP> tabT = rtr.routerComputedU;
             tabT.setProto(rtr.routerProtoTyp, rtr.routerProcNum);
-            tabL.mergeFrom(2, tabT, null, true);
+            tabL.mergeFrom(tabRoute.addType.better, tabT, null, true);
             tabT = rtr.routerComputedM;
             tabT.setProto(rtr.routerProtoTyp, rtr.routerProcNum);
-            tabM.mergeFrom(2, tabT, null, true);
+            tabM.mergeFrom(tabRoute.addType.better, tabT, null, true);
             tabT = rtr.routerComputedF;
             tabT.setProto(rtr.routerProtoTyp, rtr.routerProcNum);
-            tabF.mergeFrom(2, tabT, null, true);
+            tabF.mergeFrom(tabRoute.addType.better, tabT, null, true);
         }
         tabL.delDistance(tabRouteEntry.distanMax);
         tabM.delDistance(tabRouteEntry.distanMax);
         tabF.delDistance(tabRouteEntry.distanMax);
         tabA = new tabRoute<addrIP>("locals");
-        tabA.mergeFrom(2, tabL, null, true);
+        tabA.mergeFrom(tabRoute.addType.better, tabL, null, true);
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
             if (rtr == null) {
@@ -542,9 +543,9 @@ public class ipFwdTab {
             if (rtr.isBGP() != 1) {
                 continue;
             }
-            tabA.mergeFrom(2, rtr.routerComputedU, tabL, true);
-            tabM.mergeFrom(2, rtr.routerComputedM, tabL, true);
-            tabF.mergeFrom(2, rtr.routerComputedF, null, true);
+            tabA.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, tabL, true);
+            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, tabL, true);
+            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true);
         }
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
@@ -554,9 +555,9 @@ public class ipFwdTab {
             if (rtr.isBGP() != 2) {
                 continue;
             }
-            tabA.mergeFrom(2, rtr.routerComputedU, null, true);
-            tabM.mergeFrom(2, rtr.routerComputedM, null, true);
-            tabF.mergeFrom(2, rtr.routerComputedF, null, true);
+            tabA.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true);
+            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true);
+            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true);
         }
         tabA.delDistance(tabRouteEntry.distanMax);
         tabM.delDistance(tabRouteEntry.distanMax);
@@ -566,13 +567,13 @@ public class ipFwdTab {
                 break;
             case all:
                 tabL = new tabRoute<addrIP>("labeled");
-                tabL.mergeFrom(2, tabA, null, true);
+                tabL.mergeFrom(tabRoute.addType.better, tabA, null, true);
                 break;
             default:
                 tabL = new tabRoute<addrIP>("labeled");
                 break;
         }
-        tabRoute.filterTable(tabL, lower.labelFilter);
+        tabRoute.filterTable(rtrBgpUtil.safiUnicast, tabL, lower.labelFilter);
         for (int i = 0; i < lower.labeldR.size(); i++) {
             tabRouteEntry<addrIP> old = lower.labeldR.get(i);
             if (old == null) {
@@ -887,7 +888,7 @@ public class ipFwdTab {
                 rou.iface = old.iface;
                 rou.metric = 3;
                 rou.rouTyp = tabRouteEntry.routeType.automesh;
-                lower.actualU.add(2, rou, false, false);
+                lower.actualU.add(tabRoute.addType.better, rou, false, false);
             }
             clntMplsTeP2p clnt = new clntMplsTeP2p();
             clnt.target = ntry.prefix.network.copyBytes();

@@ -384,7 +384,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             adverted.del(ntry);
         } else {
             s = "reachable";
-            adverted.add(3, ntry, true, true);
+            adverted.add(tabRoute.addType.always, ntry, true, true);
         }
         String a = "";
         if (lower.labels) {
@@ -517,7 +517,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                int cnt = tabRoute.delUpdatedEntry(lower.learned, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
+                int cnt = tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.safiUnicast, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
                 addrIP adr = new addrIP();
                 adr.fromIPv4addr(lower.lower.routerID);
                 if (rtrBgpUtil.findAddrList(ntry.clustList, adr) >= 0) {
@@ -530,7 +530,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 ntry.nextHop = lower.peer.copyBytes();
                 ntry.distance = lower.iface.distance;
                 ntry.iface = lower.iface.iface;
-                cnt += tabRoute.addUpdatedEntry(3, lower.learned, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
+                cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, lower.learned, rtrBgpUtil.safiUnicast, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
                 if (cnt > 0) {
                     lower.lower.notif.wakeup();
                 }
@@ -541,7 +541,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                if (tabRoute.delUpdatedEntry(lower.learned, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn) > 0) {
+                if (tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.safiUnicast, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn) > 0) {
                     lower.lower.notif.wakeup();
                 }
                 continue;
