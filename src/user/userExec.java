@@ -355,6 +355,7 @@ public class userExec {
         hl.add("5 .            description       list of description");
         hl.add("5 .            hostname          list of hostname");
         hl.add("5 .            compression       list of compression");
+        hl.add("5 .            connection        list of connection");
         hl.add("5 .            rpkisum           list of servers");
         hl.add("5 .            rpkitab           list of prefixes");
         hl.add("5 .            summary           list of neighbors");
@@ -772,6 +773,8 @@ public class userExec {
         hl.add("4 3,.        <num>               timeout in milliseconds");
         hl.add("3 4        /tos                  specify tos value");
         hl.add("4 3,.        <num>               tos");
+        hl.add("3 4        /port                 specify port value");
+        hl.add("4 3,.        <num>               port");
         hl.add("3 4        /size                 specify payload size");
         hl.add("4 3,.        <num>               byte count");
         hl.add("3 3,.      /lookup               lookup intermediate hops");
@@ -1737,6 +1740,7 @@ public class userExec {
         int len = 64;
         int proto = 0;
         int delay = 0;
+        int port = 33440;
         boolean resolv = false;
         for (;;) {
             String a = cmd.word();
@@ -1754,6 +1758,10 @@ public class userExec {
             }
             if (a.equals("/timeout")) {
                 timeout = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("/port")) {
+                port = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("/delay")) {
@@ -1797,6 +1805,7 @@ public class userExec {
         trc.vrf = vrf;
         trc.ifc = ifc;
         trc.trg = trg;
+        trc.prt = port;
         if (trc.register2ip()) {
             cmd.error("bind error");
             return;
@@ -1805,7 +1814,7 @@ public class userExec {
         if (ifc != null) {
             src = ifc.getLocAddr(trg);
         }
-        pipe.linePut("traceing " + trg + ", src=" + src + ", tim=" + timeout + ", tos=" + tos + ", len=" + len);
+        pipe.linePut("traceing " + trg + ", src=" + src + ", prt=" + port + ", tim=" + timeout + ", tos=" + tos + ", len=" + len);
         int none = 0;
         for (int ttl = 1; ttl < 255; ttl++) {
             if (need2stop()) {

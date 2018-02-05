@@ -8,7 +8,6 @@ import pack.packHolder;
 import prt.prtGenConn;
 import prt.prtServP;
 import prt.prtUdp;
-import serv.servEchoS;
 import util.bits;
 
 /**
@@ -33,6 +32,11 @@ public class clntTrace implements prtServP {
      */
     public addrIP trg;
 
+    /**
+     * target port
+     */
+    public int prt;
+
     private prtGenConn con;
 
     /**
@@ -52,7 +56,7 @@ public class clntTrace implements prtServP {
             ifc2 = ifc.getFwdIfc(trg);
         }
         prtUdp udp = vrf.getUdp(trg);
-        con = udp.packetConnect(this, ifc2, 0, trg, new servEchoS().srvPort(), "traceroute", null, -1);
+        con = udp.packetConnect(this, ifc2, 0, trg, prt, "traceroute", null, -1);
         return con == null;
     }
 

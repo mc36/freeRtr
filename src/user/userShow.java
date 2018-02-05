@@ -1890,6 +1890,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.showSummary(10));
             return;
         }
+        if (a.equals("connection")) {
+            rdr.putStrTab(r.bgp.showSummary(11));
+            return;
+        }
         if (a.equals("summary")) {
             rdr.putStrTab(r.bgp.showSummary(1));
             return;

@@ -1289,13 +1289,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             case 6:
                 return bits.num2str(remoteAs) + "|" + conn.peerRouterID + "|" + conn.peer32bitAS + "|" + conn.peerRefresh + "|" + peerAddr;
             case 7:
-                return bits.num2str(remoteAs) + "|" + pipeSide.getStatus(conn.pipe) + "|" + conn.cntr.getShStat() + "|" + peerAddr;
+                return bits.num2str(remoteAs) + "|" + pipeSide.getStatus(conn.pipe) + "|" + conn.buffFull + "|" + conn.adversion + "|" + incrCount + "|" + fullCount + "|" + conn.needFull + "|" + peerAddr;
             case 8:
                 return bits.num2str(remoteAs) + "|" + peerAddr + "|" + description;
             case 9:
                 return bits.num2str(remoteAs) + "|" + peerAddr + "|" + conn.peerHostname;
             case 10:
                 return bits.num2str(remoteAs) + "|" + (conn.compressRx != null) + "|" + (conn.compressTx != null) + "|" + bits.percent(conn.cntr.byteRx, conn.compressCntr.byteRx) + "|" + bits.percent(conn.cntr.byteTx, conn.compressCntr.byteTx) + "|" + peerAddr;
+            case 11:
+                return bits.num2str(remoteAs) + "|" + conn.cntr.packRx + "|" + conn.cntr.packTx + "|" + conn.cntr.byteRx + "|" + conn.cntr.byteTx + "|" + conn.refreshRx + "|" + conn.refreshTx + "|" + peerAddr;
             default:
                 return null;
         }
