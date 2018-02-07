@@ -6,6 +6,7 @@ import addr.addrMac;
 import addr.addrPrefix;
 import cfg.cfgAceslst;
 import cfg.cfgAll;
+import cfg.cfgInit;
 import cfg.cfgPlymp;
 import cfg.cfgPrfxlst;
 import cfg.cfgProxy;
@@ -115,6 +116,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * scan time interval
      */
     public int scanTime;
+
+    /**
+     * initial delay
+     */
+    public int scanDelay;
 
     /**
      * restart time
@@ -738,6 +744,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         conquer = false;
         flaps = null;
         scanTime = 1000;
+        scanDelay = 1000;
         restartTime = 60 * 1000;
         distantExt = 20;
         distantInt = 200;
@@ -1056,6 +1063,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     public void run() {
+        for (;;) {
+            if (!cfgInit.booting) {
+                break;
+            }
+            bits.sleep(1000);
+        }
+        bits.sleep(scanDelay);
         for (;;) {
             if (compute.missedWakes() > 0) {
                 bits.sleep(scanTime);
@@ -1822,6 +1836,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("2 .     <addr>                    router id");
         l.add("1 2   scantime                    scan time interval");
         l.add("2 .     <num>                     ms between scans");
+        l.add("1 2   scandelay                   initial scan time delay");
+        l.add("2 .     <num>                     ms before scan");
         l.add("1 2   graceful-restart            graceful restart interval");
         l.add("2 .     <num>                     ms to recover");
         l.add("1 2   template                    specify template parameters");
@@ -1917,6 +1933,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(beg + "address-family" + rtrBgpParam.mask2string(addrFams));
         l.add(beg + "distance " + distantExt + " " + distantInt + " " + distantLoc);
         l.add(beg + "scantime " + scanTime);
+        l.add(beg + "scandelay " + scanDelay);
         l.add(beg + "incremental " + incrLimit);
         l.add(beg + "graceful-restart " + restartTime);
         cmds.cfgLine(l, !conquer, beg, "conquer", "");
@@ -1992,6 +2009,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("scantime")) {
             scanTime = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("scandelay")) {
+            scanDelay = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("incremental")) {

@@ -817,6 +817,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             conn.buffFull++;
             return;
         }
+        if (unidirection && (conn.rxReady() > (bufferSize / 8))) {
+            conn.needFull++;
+            return;
+        }
         boolean b;
         if (conn.needFull != 0) {
             b = advertFull();

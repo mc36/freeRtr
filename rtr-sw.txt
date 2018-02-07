@@ -374,6 +374,7 @@ router bgp4 1
  local-as 1
  router-id 10.10.10.227
  address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ scandelay 30000
  conquer
  flapstat
  nexthop route-policy nht4
@@ -393,6 +394,7 @@ router bgp4 1
  template a update-source loopback0
  template a dump a
  template a hostname
+ template a unidirection
  template a fall-over
  template a aigp
  template a traffeng
@@ -479,6 +481,7 @@ router bgp6 1
  local-as 1
  router-id 10.10.10.227
  address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ scandelay 30000
  conquer
  flapstat
  nexthop route-policy nht6
@@ -498,6 +501,7 @@ router bgp6 1
  template a update-source loopback0
  template a dump a
  template a hostname
+ template a unidirection
  template a fall-over
  template a aigp
  template a traffeng

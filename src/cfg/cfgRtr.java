@@ -214,6 +214,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router bgp
         "router bgp[4|6].*! distance 20 200 200",
         "router bgp[4|6].*! scantime 1000",
+        "router bgp[4|6].*! scandelay 1000",
         "router bgp[4|6].*! incremental 1000",
         "router bgp[4|6].*! no conquer",
         "router bgp[4|6].*! no flapstat",
@@ -240,6 +241,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! no neighbor .* bfd",
         "router bgp[4|6].*! no neighbor .* fall-over",
         "router bgp[4|6].*! no neighbor .* hostname",
+        "router bgp[4|6].*! no neighbor .* unidirection",
         "router bgp[4|6].*! neighbor .* graceful-restart",
         "router bgp[4|6].*! no neighbor .* aigp",
         "router bgp[4|6].*! no neighbor .* traffeng",
@@ -291,6 +293,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! no template .* bfd",
         "router bgp[4|6].*! no template .* fall-over",
         "router bgp[4|6].*! no template .* hostname",
+        "router bgp[4|6].*! no template .* unidirection",
         "router bgp[4|6].*! template .* graceful-restart",
         "router bgp[4|6].*! no template .* aigp",
         "router bgp[4|6].*! no template .* traffeng",

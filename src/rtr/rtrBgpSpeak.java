@@ -753,6 +753,24 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return pipe.ready2tx();
     }
 
+    /**
+     * check rx buffer size
+     *
+     * @return less than 0 means error, otherwise bytes ready
+     */
+    public int rxReady() {
+        if (pipe == null) {
+            return -1;
+        }
+        if (pipe.isClosed() != 0) {
+            return -1;
+        }
+        if (!ready2adv) {
+            return 0;
+        }
+        return pipe.ready2rx();
+    }
+
     public void run() {
         try {
             doWork();

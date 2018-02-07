@@ -158,6 +158,11 @@ public abstract class rtrBgpParam {
     public boolean hostname;
 
     /**
+     * not transmit during receive
+     */
+    public boolean unidirection;
+
+    /**
      * connection mode 1=active, 2=passive, 3=both, 4=dynamic
      */
     public int socketMode;
@@ -655,6 +660,7 @@ public abstract class rtrBgpParam {
         softReconfig = src.softReconfig;
         graceRestart = src.graceRestart;
         hostname = src.hostname;
+        unidirection = src.unidirection;
         compressMode = src.compressMode;
         socketMode = src.socketMode;
         bufferSize = src.bufferSize;
@@ -886,6 +892,7 @@ public abstract class rtrBgpParam {
         l.add("3 4       graceful-restart        advertise graceful restart capability");
         getAfiList(l, "4 4,.", "use", true);
         l.add("3 .       hostname                advertise hostname capability");
+        l.add("3 .       unidirection            not advertise when receiving");
         l.add("3 .       fall-over               track outgoing interface");
         l.add("3 .       soft-reconfiguration    enable soft reconfiguration");
         l.add("3 4       maximum-prefix          maximum number of accepted prefixes");
@@ -1004,6 +1011,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
         l.add(beg + nei + "graceful-restart" + mask2string(graceRestart));
         cmds.cfgLine(l, !hostname, beg, nei + "hostname", "");
+        cmds.cfgLine(l, !unidirection, beg, nei + "unidirection", "");
         cmds.cfgLine(l, !fallOver, beg, nei + "fall-over", "");
         cmds.cfgLine(l, !sendDefRou, beg, nei + "default-originate", "");
         cmds.cfgLine(l, !intVpnClnt, beg, nei + "internal-vpn-client", "");
@@ -1245,6 +1253,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("hostname")) {
             hostname = !negated;
+            return false;
+        }
+        if (s.equals("unidirection")) {
+            unidirection = !negated;
             return false;
         }
         if (s.equals("shutdown")) {
