@@ -1497,7 +1497,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         currMdt = null;
         currMvpn = null;
         currMvpo = null;
-        if (currChg > 0) {
+        if ((currChg > 0) && (rxReady() < (neigh.bufferSize / 4))) {
             parent.compute.wakeup();
         }
         if (neigh.maxPrefixCnt < 1) {
