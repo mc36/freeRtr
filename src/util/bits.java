@@ -1102,37 +1102,4 @@ public class bits {
         return ln;
     }
 
-    /**
-     * convert big unsigned integer to buffer
-     *
-     * @param b integer
-     * @return buffer
-     */
-    public static byte[] bigUint2buf(BigInteger b) {
-        byte[] dat = b.toByteArray();
-        if (dat[0] != 0) {
-            return dat;
-        }
-        byte[] buf = new byte[dat.length - 1];
-        for (int i = 0; i < buf.length; i++) {
-            buf[i] = dat[i + 1];
-        }
-        return buf;
-    }
-
-    /**
-     * convert buffer to big unsigned integer
-     *
-     * @param dat buffer
-     * @return big integer
-     */
-    public static BigInteger buf2bigUint(byte[] dat) {
-        byte[] buf = new byte[dat.length + 1];
-        buf[0] = 0;
-        for (int i = 0; i < dat.length; i++) {
-            buf[i + 1] = dat[i];
-        }
-        return new BigInteger(buf);
-    }
-
 }

@@ -413,7 +413,7 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     public boolean certVerify(byte[] hash, byte[] sign) {
-        BigInteger s = bits.buf2bigUint(sign);
+        BigInteger s = cryUtils.buf2bigUint(sign);
         s = s.modPow(pubExp, modulus);
         return PKCS1t0pad(hash).compareTo(s) != 0;
     }
@@ -425,7 +425,7 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     public boolean tlsVerify(int ver, byte[] hash, byte[] sign) {
-        BigInteger s = bits.buf2bigUint(sign);
+        BigInteger s = cryUtils.buf2bigUint(sign);
         s = s.modPow(pubExp, modulus);
         BigInteger h;
         if (ver >= 0x303) {

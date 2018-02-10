@@ -21,6 +21,7 @@ import cry.cryHashSslMac;
 import cry.cryKeyDH;
 import cry.cryKeyDSA;
 import cry.cryKeyRSA;
+import cry.cryUtils;
 
 /**
  * transport layer security (rfc5246) handshake packet
@@ -850,9 +851,9 @@ public class packTlsHndshk {
         packTls h = new packTls(datagram);
         h.putBytes(clntRand, 0);
         h.putBytes(servRand, 0);
-        h.putBytes(bits.bigUint2buf(diffHell.modulus), 2);
-        h.putBytes(bits.bigUint2buf(diffHell.group), 2);
-        h.putBytes(bits.bigUint2buf(diffHell.servPub), 2);
+        h.putBytes(cryUtils.bigUint2buf(diffHell.modulus), 2);
+        h.putBytes(cryUtils.bigUint2buf(diffHell.group), 2);
+        h.putBytes(cryUtils.bigUint2buf(diffHell.servPub), 2);
         h.pckDat.merge2beg();
         byte[] raw = h.pckDat.getCopy();
         byte[] hsh = null;
@@ -946,9 +947,9 @@ public class packTlsHndshk {
     public void servKexCreate() {
         pckTyp = typeKexServ;
         lower.pckDat.clear();
-        lower.putBytes(bits.bigUint2buf(diffHell.modulus), 2);
-        lower.putBytes(bits.bigUint2buf(diffHell.group), 2);
-        lower.putBytes(bits.bigUint2buf(diffHell.servPub), 2);
+        lower.putBytes(cryUtils.bigUint2buf(diffHell.modulus), 2);
+        lower.putBytes(cryUtils.bigUint2buf(diffHell.group), 2);
+        lower.putBytes(cryUtils.bigUint2buf(diffHell.servPub), 2);
         if (lower.verCurr >= 0x303) {
             lower.pckDat.putByte(0, signHsh);
             lower.pckDat.putByte(1, signAlg);
@@ -968,9 +969,9 @@ public class packTlsHndshk {
             return true;
         }
         diffHell = new cryKeyDH();
-        diffHell.modulus = bits.buf2bigUint(lower.getBytes(2));
-        diffHell.group = bits.buf2bigUint(lower.getBytes(2));
-        diffHell.servPub = bits.buf2bigUint(lower.getBytes(2));
+        diffHell.modulus = cryUtils.buf2bigUint(lower.getBytes(2));
+        diffHell.group = cryUtils.buf2bigUint(lower.getBytes(2));
+        diffHell.servPub = cryUtils.buf2bigUint(lower.getBytes(2));
         if (lower.verCurr >= 0x303) {
             signHsh = lower.pckDat.getByte(0);
             signAlg = lower.pckDat.getByte(1);
@@ -1062,7 +1063,7 @@ public class packTlsHndshk {
                 lower.putBytes(key.doEncrypt(key.PKCS1t15pad(preMaster)), 2);
                 break;
             case 0x2000:
-                lower.putBytes(bits.bigUint2buf(diffHell.clntPub), 2);
+                lower.putBytes(cryUtils.bigUint2buf(diffHell.clntPub), 2);
                 break;
         }
     }
@@ -1081,7 +1082,7 @@ public class packTlsHndshk {
                 preMaster = keyrsa.PKCS1t15unpad(keyrsa.doDecrypt(lower.getBytes(2)));
                 break;
             case 0x2000:
-                diffHell.clntPub = bits.buf2bigUint(lower.getBytes(2));
+                diffHell.clntPub = cryUtils.buf2bigUint(lower.getBytes(2));
                 diffHell.servKey();
                 break;
         }
@@ -1341,7 +1342,7 @@ public class packTlsHndshk {
             case 0x1000:
                 break;
             case 0x2000:
-                preMaster = bits.bigUint2buf(diffHell.common);
+                preMaster = cryUtils.bigUint2buf(diffHell.common);
                 break;
         }
         switch (lower.verCurr) {

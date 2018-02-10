@@ -7,6 +7,7 @@ import cry.cryEncrGeneric;
 import cry.cryHashGeneric;
 import cry.cryKeyDH;
 import cry.cryKeyGeneric;
+import cry.cryUtils;
 import java.util.ArrayList;
 import java.util.List;
 import sec.secTransform;
@@ -757,7 +758,7 @@ public class packIke {
         pckDat.msbPutW(0, transform.groupNum);
         pckDat.msbPutW(2, 0);
         pckDat.putSkip(4);
-        byte[] buf = bits.bigUint2buf(diffie.clntPub);
+        byte[] buf = cryUtils.bigUint2buf(diffie.clntPub);
         pckDat.putCopy(buf, 0, 0, buf.length);
         pckDat.putSkip(buf.length);
         headerWrite(payKeyEx);
@@ -841,7 +842,7 @@ public class packIke {
      */
     public void computeKeys() {
         diffie.clntKey();
-        dhcomm = bits.bigUint2buf(diffie.common);
+        dhcomm = cryUtils.bigUint2buf(diffie.common);
         cryHashGeneric h = transform.getHmac(bits.byteConcat(nonceI, nonceR));
         h.update(dhcomm);
         skeyidG = h.finish();

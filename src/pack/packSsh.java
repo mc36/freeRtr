@@ -2,6 +2,7 @@ package pack;
 
 import cry.cryEncrGeneric;
 import cry.cryHashHmac;
+import cry.cryUtils;
 import java.math.BigInteger;
 import pipe.pipeSide;
 import util.bits;
@@ -454,7 +455,7 @@ public class packSsh {
         if (dat == null) {
             return BigInteger.ZERO;
         }
-        return bits.buf2bigUint(dat);
+        return cryUtils.buf2bigUint(dat);
     }
 
     /**
@@ -464,7 +465,7 @@ public class packSsh {
      * @param b bigint to write
      */
     public static void bigUIntWrite(packHolder pck, BigInteger b) {
-        bytesWrite(pck, bits.bigUint2buf(b));
+        bytesWrite(pck, cryUtils.bigUint2buf(b));
     }
 
     /**

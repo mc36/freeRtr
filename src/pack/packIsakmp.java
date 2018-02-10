@@ -7,6 +7,7 @@ import cry.cryEncrGeneric;
 import cry.cryHashGeneric;
 import cry.cryKeyDH;
 import cry.cryKeyGeneric;
+import cry.cryUtils;
 import java.util.ArrayList;
 import java.util.List;
 import prt.prtUdp;
@@ -854,7 +855,7 @@ public class packIsakmp {
      * create key exchange header
      */
     public void keyXchgCreate() {
-        byte[] buf = bits.bigUint2buf(diffie.clntPub);
+        byte[] buf = cryUtils.bigUint2buf(diffie.clntPub);
         pckDat.putCopy(buf, 0, 0, buf.length);
         pckDat.putSkip(buf.length);
         headerWrite(payKeyEx);
@@ -950,18 +951,18 @@ public class packIsakmp {
      */
     public void computeKeys() {
         diffie.clntKey();
-        dhcomm = bits.bigUint2buf(diffie.common);
+        dhcomm = cryUtils.bigUint2buf(diffie.common);
         cryHashGeneric h = transform.getHmac(preshared.getBytes());
         h.update(nonceI);
         h.update(nonceR);
         skeyidG = h.finish();
         h = transform.getHash();
         if (initiator) {
-            h.update(bits.bigUint2buf(diffie.clntPub));
-            h.update(bits.bigUint2buf(diffie.servPub));
+            h.update(cryUtils.bigUint2buf(diffie.clntPub));
+            h.update(cryUtils.bigUint2buf(diffie.servPub));
         } else {
-            h.update(bits.bigUint2buf(diffie.servPub));
-            h.update(bits.bigUint2buf(diffie.clntPub));
+            h.update(cryUtils.bigUint2buf(diffie.servPub));
+            h.update(cryUtils.bigUint2buf(diffie.clntPub));
         }
         phase1iv1 = h.finish();
         skeyidD = makeSkeyX(new byte[0], 0);
@@ -1085,11 +1086,11 @@ public class packIsakmp {
     public byte[] hashGenMM(boolean initer) {
         cryHashGeneric h = transform.getHmac(skeyidG);
         if (initiator ^ initer) {
-            h.update(bits.bigUint2buf(diffie.servPub));
-            h.update(bits.bigUint2buf(diffie.clntPub));
+            h.update(cryUtils.bigUint2buf(diffie.servPub));
+            h.update(cryUtils.bigUint2buf(diffie.clntPub));
         } else {
-            h.update(bits.bigUint2buf(diffie.clntPub));
-            h.update(bits.bigUint2buf(diffie.servPub));
+            h.update(cryUtils.bigUint2buf(diffie.clntPub));
+            h.update(cryUtils.bigUint2buf(diffie.servPub));
         }
         if (initer) {
             byte[] buf = new byte[8];
