@@ -166,19 +166,6 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
     }
 
     /**
-     * delete one table entry
-     *
-     * @param idx sequence number 0..size-1
-     * @return entry if deleted, null if not found
-     */
-    public Te del(int idx) {
-        if (debugger.tabListingEvnt) {
-            logger.debug("del " + idx);
-        }
-        return entries.del(idx);
-    }
-
-    /**
      * count entries in table
      *
      * @return number of entries

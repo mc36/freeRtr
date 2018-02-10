@@ -1,7 +1,5 @@
 description interop: bgp aspath
 
-exit
-
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
@@ -20,7 +18,7 @@ int lo0
  exit
 route-map rm1
  sequence 10 act deny
-  match aspath 1234
+  match aspath .*1234.*
  sequence 20 act permit
  exit
 router bgp4 1
@@ -28,7 +26,7 @@ router bgp4 1
  address uni
  local-as 1
  router-id 4.4.4.1
- neigh 1.1.1.2 remote-as 1
+ neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 route-map-in rm1
  red conn
  exit
@@ -37,7 +35,7 @@ router bgp6 1
  address uni
  local-as 1
  router-id 6.6.6.1
- neigh 1234::2 remote-as 1
+ neigh 1234::2 remote-as 2
  neigh 1234::2 route-map-in rm1
  red conn
  exit
@@ -65,22 +63,33 @@ interface gigabit0/0
  ipv6 address 1234::2/64
  no shutdown
  exit
-route-map rm1 permit 10
- match interface Loopback1
+ip prefix-list pl4 seq 5 permit 2.2.2.3/32
+ipv6 prefix-list pl6 seq 5 permit 4321::3/128
+route-map rm4 permit 10
+ match ip address prefix-list pl4
  set as-path prepend 1234
  exit
-route-map rm1 permit 20
+route-map rm4 permit 20
  set as-path prepend 4321
  exit
-router bgp 1
+route-map rm6 permit 10
+ match ipv6 address prefix-list pl6
+ set as-path prepend 1234
+ exit
+route-map rm6 permit 20
+ set as-path prepend 4321
+ exit
+router bgp 2
  address-family ipv4 unicast
   bgp scan-time 5
   neighbor 1.1.1.1 remote-as 1
-  redistribute connected route-map rm1
+  neighbor 1.1.1.1 route-map rm4 out
+  redistribute connected
  address-family ipv6 unicast
   bgp scan-time 5
   neighbor 1234::1 remote-as 1
-  redistribute connected route-map rm1
+  neighbor 1234::1 route-map rm6 out
+  redistribute connected
  exit
 !
 

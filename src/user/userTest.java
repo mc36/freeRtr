@@ -1,7 +1,15 @@
 package user;
 
+import addr.addrClns;
+import addr.addrEui;
 import addr.addrIP;
+import addr.addrIPv4;
+import addr.addrIPv6;
+import addr.addrIpx;
+import addr.addrIsis;
+import addr.addrMac;
 import addr.addrPrefix;
+import addr.addrType;
 import auth.authConstant;
 import auth.authLocal;
 import cfg.cfgAlias;
@@ -267,26 +275,14 @@ public class userTest {
             return null;
         }
         if (a.equals("routing")) {
-            cmd.error("performing test");
-            tabRoute<addrIP> tab1 = new tabRoute<addrIP>("test1");
-            long rnd1 = 10000;
-            long rnd2 = 50000;
-            addrIP adr = new addrIP();
-            long beg = bits.getTime();
-            for (int i = (int) rnd1; i >= 0; i--) {
-                byte[] buf = new byte[addrIP.size];
-                bits.msbPutD(buf, 0, i);
-                adr.fromBuf(buf, 0);
-                tab1.add(tabRoute.addType.always, new addrPrefix<addrIP>(adr, 32), adr);
-            }
-            beg = (rnd1 * 1000) / (bits.getTime() - beg);
-            cmd.error(beg + " adds/sec");
-            beg = bits.getTime();
-            for (int i = 0; i < rnd2; i++) {
-                tab1.route(adr);
-            }
-            beg = (rnd2 * 1000) / (bits.getTime() - beg);
-            cmd.error(beg + " lookups/sec");
+            doTestRouting(new addrClns(), new tabRoute<addrClns>("test"));
+            doTestRouting(new addrIsis(), new tabRoute<addrIsis>("test"));
+            doTestRouting(new addrEui(), new tabRoute<addrEui>("test"));
+            doTestRouting(new addrMac(), new tabRoute<addrMac>("test"));
+            doTestRouting(new addrIpx(), new tabRoute<addrIpx>("test"));
+            doTestRouting(new addrIPv4(), new tabRoute<addrIPv4>("test"));
+            doTestRouting(new addrIPv6(), new tabRoute<addrIPv6>("test"));
+            doTestRouting(new addrIP(), new tabRoute<addrIP>("test"));
             return null;
         }
         if (a.equals("pipeline")) {
@@ -519,6 +515,136 @@ public class userTest {
         for (int i = 0; i < l.size(); i++) {
             cmd.error(l.get(i));
         }
+    }
+
+    private <T extends addrType> void doTestRouting(T adr, tabRoute<T> tab) {
+        int fill = adr.getSize() * 8;
+        cmd.pipe.strPut("performing " + adr.getClass().getName() + " (" + fill + " bits) test:");
+        byte[] buf = new byte[256];
+        tab.clear();
+        long beg = bits.getTime();
+        long rnd = 0;
+        for (;;) {
+            if ((bits.getTime() - beg) > 5000) {
+                break;
+            }
+            for (int i = 0; i < 1000; i++) {
+                bits.msbPutD(buf, 0, (int) rnd);
+                adr.fromBuf(buf, 0);
+                tab.add(tabRoute.addType.always, new addrPrefix<T>(adr, fill), adr);
+                rnd++;
+            }
+        }
+        beg = (rnd * 1000) / (bits.getTime() - beg);
+        cmd.pipe.strPut("   " + beg + " sadds/sec");
+        beg = bits.getTime();
+        rnd = 0;
+        for (int i = tab.size(); i > 0; i--) {
+            tab.del(tab.get(i - 1));
+            rnd++;
+        }
+        beg = (rnd * 1000) / (bits.getTime() - beg);
+        cmd.pipe.strPut("   " + beg + " sdels/sec");
+        tab.clear();
+        beg = bits.getTime();
+        rnd = 0;
+        for (;;) {
+            if ((bits.getTime() - beg) > 5000) {
+                break;
+            }
+            for (int i = 0; i < 1000; i++) {
+                bits.msbPutD(buf, 0, bits.randomD());
+                adr.fromBuf(buf, 0);
+                tab.add(tabRoute.addType.always, new addrPrefix<T>(adr, fill), adr);
+                rnd++;
+            }
+        }
+        beg = (rnd * 1000) / (bits.getTime() - beg);
+        cmd.pipe.strPut("   " + beg + " radds/sec");
+        beg = bits.getTime();
+        rnd = 0;
+        for (;;) {
+            if ((bits.getTime() - beg) > 5000) {
+                break;
+            }
+            int o = tab.size();
+            if (o < 1) {
+                break;
+            }
+            for (int i = 0; i < 1000; i++) {
+                o = tab.size();
+                if (o < 1) {
+                    break;
+                }
+                tab.del(tab.get(bits.random(0, o)));
+                rnd++;
+            }
+        }
+        beg = (rnd * 1000) / (bits.getTime() - beg);
+        cmd.pipe.strPut("   " + beg + " rdels/sec");
+        tab.clear();
+        fill = fill - 8;
+        for (int i = 0; i < 10000; i++) {
+            bits.msbPutW(buf, 0, i);
+            adr.fromBuf(buf, 0);
+            tab.add(tabRoute.addType.always, new addrPrefix<T>(adr, fill), adr);
+        }
+        addrPrefix<T> prf = tab.get(111).prefix;
+        adr = prf.network;
+        beg = bits.getTime();
+        rnd = 0;
+        for (;;) {
+            if ((bits.getTime() - beg) > 5000) {
+                break;
+            }
+            for (int i = 0; i < 1000; i++) {
+                tab.find(prf);
+                rnd++;
+            }
+        }
+        beg = (rnd * 1000) / (bits.getTime() - beg);
+        cmd.pipe.strPut("   " + beg + " rfinds/sec");
+        beg = bits.getTime();
+        rnd = 0;
+        for (;;) {
+            if ((bits.getTime() - beg) > 5000) {
+                break;
+            }
+            for (int i = 0; i < 1000; i++) {
+                tab.route(adr);
+                rnd++;
+            }
+        }
+        beg = (rnd * 1000) / (bits.getTime() - beg);
+        cmd.pipe.strPut("   " + beg + " rlookups/sec");
+        tab.optimize4lookup();
+        beg = bits.getTime();
+        rnd = 0;
+        for (;;) {
+            if ((bits.getTime() - beg) > 5000) {
+                break;
+            }
+            for (int i = 0; i < 1000; i++) {
+                tab.find(prf);
+                rnd++;
+            }
+        }
+        beg = (rnd * 1000) / (bits.getTime() - beg);
+        cmd.pipe.strPut("   " + beg + " ofinds/sec");
+        beg = bits.getTime();
+        rnd = 0;
+        for (;;) {
+            if ((bits.getTime() - beg) > 5000) {
+                break;
+            }
+            for (int i = 0; i < 1000; i++) {
+                tab.route(adr);
+                rnd++;
+            }
+        }
+        beg = (rnd * 1000) / (bits.getTime() - beg);
+        cmd.pipe.strPut("   " + beg + " olookups/sec");
+        cmd.pipe.linePut("");
     }
 
     private void doTestPipe(String tst, pipeSide p1, pipeSide p2, int bl) {

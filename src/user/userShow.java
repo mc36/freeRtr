@@ -2353,7 +2353,9 @@ public class userShow {
         String a = cmd.word();
         if (a.equals("translations")) {
             userFormat l = new userFormat("|", "proto|origSrc|origTrg|newSrc|newTrg");
-            fwd.natTrns.dump(l);
+            for (int i = 0; i < fwd.natTrns.size(); i++) {
+                l.add("" + fwd.natTrns.get(i));
+            }
             rdr.putStrTab(l);
             return;
         }

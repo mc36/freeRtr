@@ -95,7 +95,14 @@ public class tabRoute<T extends addrType> {
         defMetr = orig.defMetr;
         defProto = orig.defProto;
         defRouTyp = orig.defRouTyp;
-        prefixes = orig.prefixes.range(0, Integer.MAX_VALUE);
+        prefixes = new tabGen<tabRouteEntry<T>>(orig.prefixes);
+    }
+
+    /**
+     * optimize for lookup
+     */
+    public void optimize4lookup() {
+        prefixes.optimize4lookup();
     }
 
     /**
@@ -233,23 +240,6 @@ public class tabRoute<T extends addrType> {
         }
         version++;
         return false;
-    }
-
-    /**
-     * delete one table entry
-     *
-     * @param idx sequence number 0..size-1
-     * @return false if deleted, true if not found
-     */
-    public tabRouteEntry<T> del(int idx) {
-        if (debugger.tabRouteEvnt) {
-            logger.debug("del " + idx);
-        }
-        tabRouteEntry<T> res = prefixes.del(idx);
-        if (res != null) {
-            version++;
-        }
-        return res;
     }
 
     /**

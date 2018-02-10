@@ -640,7 +640,15 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
         // int circ = pck.getByte(8);
         pck.getSkip(9);
         tabGen<rtrIsisLsp> l1 = readLspList(pck);
-        tabGen<rtrIsisLsp> l2 = level.lsps.collect(l1);
+        tabGen<rtrIsisLsp> l2 = new tabGen<rtrIsisLsp>();
+        for (i = 0; i < l1.size(); i++) {
+            rtrIsisLsp ntry = l1.get(i);
+            ntry = level.lsps.find(ntry);
+            if (ntry == null) {
+                continue;
+            }
+            l2.add(ntry);
+        }
         doLspList(l1, l2);
         doRetrans();
     }
@@ -666,7 +674,20 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
         last.readId(pck, 17); // last lsp
         pck.getSkip(25);
         tabGen<rtrIsisLsp> l1 = readLspList(pck);
-        tabGen<rtrIsisLsp> l2 = level.lsps.range(frst, last);
+        tabGen<rtrIsisLsp> l2 = new tabGen<rtrIsisLsp>();
+        for (i = 0; i < level.lsps.size(); i++) {
+            rtrIsisLsp ntry = level.lsps.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.compare(ntry, frst) < 0) {
+                continue;
+            }
+            if (ntry.compare(ntry, last) > 0) {
+                continue;
+            }
+            l2.add(ntry);
+        }
         doLspList(l1, l2);
         doRetrans();
     }

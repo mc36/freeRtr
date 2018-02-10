@@ -155,14 +155,14 @@ public class lineScript {
                     return true;
                 case gotoo:
                     ntry.seq = ntry.tim;
-                    sq = actions.indexOf(ntry);
+                    sq = indexOf(ntry);
                     if (sq < 0) {
                         return true;
                     }
                     continue;
                 case onerror:
                     ntry.seq = ntry.tim;
-                    oe = actions.indexOf(ntry);
+                    oe = indexOf(ntry);
                     sq++;
                     continue;
                 default:
@@ -170,6 +170,15 @@ public class lineScript {
             }
             sq++;
         }
+    }
+
+    private int indexOf(lineScriptNtry ntry) {
+        for (int i = 0; i < actions.size(); i++) {
+            if (ntry.compare(ntry, actions.get(i)) == 0) {
+                return i;
+            }
+        }
+        return -1;
     }
 
 }

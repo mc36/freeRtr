@@ -1079,7 +1079,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (!need2run) {
                 break;
             }
-            routerCreateComputed();
+            try {
+                routerCreateComputed();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
         }
     }
 
@@ -1507,7 +1511,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
 
     private void computeIncrUpdate(int afi, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         for (int i = chg.size() - 1; i >= 0; i--) {
-            computeIncrEntry(afi, chg.del(i), cmp, org);
+            tabRouteEntry<addrIP> ntry = chg.get(i);
+            chg.del(ntry);
+            computeIncrEntry(afi, ntry, cmp, org);
         }
     }
 

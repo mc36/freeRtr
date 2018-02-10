@@ -667,6 +667,11 @@ public class ipFwdTab {
         if ((!tabA.differs(lower.actualU)) && (!tabM.differs(lower.actualM)) && (!tabF.differs(lower.actualF))) {
             return false;
         }
+        tabC.optimize4lookup();
+        tabL.optimize4lookup();
+        tabA.optimize4lookup();
+        tabM.optimize4lookup();
+        tabF.optimize4lookup();
         tabA.version = lower.actualU.version + 1;
         tabL.version = tabA.version;
         tabC.version = tabA.version;

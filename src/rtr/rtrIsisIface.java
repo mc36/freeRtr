@@ -1112,7 +1112,14 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             frstSeq = 0;
         }
         int lastSeq = 1 + frstSeq + (lev.maxLspSize / 24);
-        tabGen<rtrIsisLsp> l = lev.lsps.range(frstSeq, lastSeq);
+        tabGen<rtrIsisLsp> l = new tabGen<rtrIsisLsp>();
+        for (int i = frstSeq; i <= lastSeq; i++) {
+            rtrIsisLsp ntry = lev.lsps.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            l.add(ntry);
+        }
         rtrIsisLsp frstID = new rtrIsisLsp();
         rtrIsisLsp lastID = new rtrIsisLsp();
         if (frstSeq == 0) {
