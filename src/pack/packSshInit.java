@@ -150,9 +150,7 @@ public class packSshInit {
                 return null;
         }
         byte[] keyT = new byte[h.getHashSize()];
-        for (int i = 0; i < keyT.length; i++) {
-            keyT[i] = keyO[i];
-        }
+        bits.byteCopy(keyO, 0, keyT, 0, keyT.length);
         cryHashHmac x = new cryHashHmac(h, keyT);
         return x;
     }
@@ -203,13 +201,9 @@ public class packSshInit {
                 return null;
         }
         byte[] ivT = new byte[e.getBlockSize()];
-        for (int i = 0; i < ivT.length; i++) {
-            ivT[i] = ivO[i];
-        }
+        bits.byteCopy(ivO, 0, ivT, 0, ivT.length);
         byte[] keyT = new byte[e.getKeySize()];
-        for (int i = 0; i < keyT.length; i++) {
-            keyT[i] = keyO[i];
-        }
+        bits.byteCopy(keyO, 0, keyT, 0, keyT.length);
         e.init(keyT, ivT, encr);
         return e;
     }

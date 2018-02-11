@@ -60,9 +60,7 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
         for (int i = 0; i < b2.length; i++) {
             b2[i] = 0;
         }
-        for (int i = 0; i < b1.length; i++) {
-            b2[b2.length - b1.length + i] = b1[i];
-        }
+        bits.byteCopy(b1, 0, b2, b2.length - b1.length, b1.length);
         return b2;
     }
 

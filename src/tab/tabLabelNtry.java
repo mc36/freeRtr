@@ -416,9 +416,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
             pweAdd = null;
         } else {
             pweAdd = new byte[add.length];
-            for (int i = 0; i < add.length; i++) {
-                pweAdd[i] = add[i];
-            }
+            bits.byteCopy(add, 0, pweAdd, 0, add.length);
         }
     }
 

@@ -1033,6 +1033,8 @@ public class userExec {
         hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    addr                    decode address");
         hl.add("3 3,.      <str>                 parameter");
+        hl.add("2 3,.    prefix                  decode prefix");
+        hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    speed                   test speed clients");
         hl.add("3 3,.      <str>                 name of server");
         hl.add("2 3      vm                      run virtual machine");

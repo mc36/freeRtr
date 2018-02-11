@@ -402,8 +402,7 @@ public class bits {
      * @param trgO target offset
      * @param len bytes to copy
      */
-    public static void byteCopy(byte[] srcB, int srcO, byte[] trgB, int trgO,
-            int len) {
+    public static void byteCopy(byte[] srcB, int srcO, byte[] trgB, int trgO, int len) {
         if (srcO > trgO) {
             for (int i = 0; i < len; i++) {
                 trgB[trgO + i] = srcB[srcO + i];
@@ -479,12 +478,8 @@ public class bits {
      */
     public static byte[] byteConcat(byte[] b1, byte[] b2) {
         byte[] buf = new byte[b1.length + b2.length];
-        for (int i = 0; i < b1.length; i++) {
-            buf[i] = b1[i];
-        }
-        for (int i = 0; i < b2.length; i++) {
-            buf[b1.length + i] = b2[i];
-        }
+        byteCopy(b1, 0, buf, 0, b1.length);
+        byteCopy(b2, 0, buf, b1.length, b2.length);
         return buf;
     }
 
@@ -545,13 +540,16 @@ public class bits {
     /**
      * bit values in u32
      */
-    public final static int[] bitVals = {0x00000001, 0x00000002, 0x00000004,
-        0x00000008, 0x00000010, 0x00000020, 0x00000040, 0x00000080,
-        0x00000100, 0x00000200, 0x00000400, 0x00000800, 0x00001000,
-        0x00002000, 0x00004000, 0x00008000, 0x00010000, 0x00020000,
-        0x00040000, 0x00080000, 0x00100000, 0x00200000, 0x00400000,
-        0x00800000, 0x01000000, 0x02000000, 0x04000000, 0x08000000,
-        0x10000000, 0x20000000, 0x40000000, 0x80000000};
+    public final static int[] bitVals = {
+        0x00000001, 0x00000002, 0x00000004, 0x00000008,
+        0x00000010, 0x00000020, 0x00000040, 0x00000080,
+        0x00000100, 0x00000200, 0x00000400, 0x00000800,
+        0x00001000, 0x00002000, 0x00004000, 0x00008000,
+        0x00010000, 0x00020000, 0x00040000, 0x00080000,
+        0x00100000, 0x00200000, 0x00400000, 0x00800000,
+        0x01000000, 0x02000000, 0x04000000, 0x08000000,
+        0x10000000, 0x20000000, 0x40000000, 0x80000000
+    };
 
     /**
      * set bit value

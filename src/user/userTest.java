@@ -239,6 +239,21 @@ public class userTest {
             doShow(url.show());
             return null;
         }
+        if (a.equals("prefix")) {
+            a = cmd.word();
+            addrPrefix<addrIP> prf = addrPrefix.str2ip(a);
+            if (prf == null) {
+                cmd.error("bad prefix");
+                return null;
+            }
+            cmd.error("  network=" + prf.network);
+            cmd.error("broadcast=" + prf.broadcast);
+            cmd.error("  netmask=" + prf.mask);
+            cmd.error("  masklen=" + prf.maskLen);
+            cmd.error(" wildcard=" + prf.wildcard);
+            cmd.error("   string=" + addrPrefix.ip2str(prf));
+            return null;
+        }
         if (a.equals("addr")) {
             addrIP adr = new addrIP();
             a = cmd.word();

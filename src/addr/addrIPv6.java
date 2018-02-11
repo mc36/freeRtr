@@ -249,9 +249,7 @@ public class addrIPv6 extends addrType {
      */
     public static addrIPv6 genPublic(addrMac mac, addrIPv6 ip) {
         addrIPv6 adr = new addrIPv6();
-        for (int i = 0; i < size / 2; i++) {
-            adr.addr[i] = ip.addr[i];
-        }
+        bits.byteCopy(ip.addr, 0, adr.addr, 0, size / 2);
         adr.addr[8] = (byte) (mac.addr[0] ^ 0x02);
         adr.addr[9] = mac.addr[1];
         adr.addr[10] = mac.addr[2];

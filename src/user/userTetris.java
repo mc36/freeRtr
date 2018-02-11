@@ -229,7 +229,7 @@ public class userTetris implements Runnable {
 
 class userTetrisThing {
 
-    private int tab[][];
+    private byte tab[][];
 
     private int sizeX;
 
@@ -238,16 +238,16 @@ class userTetrisThing {
     public userTetrisThing(int sx, int sy) {
         sizeX = sx;
         sizeY = sy;
-        tab = new int[sizeY][];
+        tab = new byte[sizeY][];
         for (int o = 0; o < sizeY; o++) {
-            tab[o] = new int[sizeX];
+            tab[o] = new byte[sizeX];
             for (int i = 0; i < sizeX; i++) {
                 tab[o][i] = userScreen.colBlack;
             }
         }
     }
 
-    public static userTetrisThing fromString(String[] lst, int col) {
+    public static userTetrisThing fromString(String[] lst, byte col) {
         userTetrisThing t = new userTetrisThing(lst[0].length(), lst.length);
         for (int o = 0; o < t.sizeY; o++) {
             String a = lst[o];
@@ -261,9 +261,7 @@ class userTetrisThing {
     public userTetrisThing copyBytes() {
         userTetrisThing t = new userTetrisThing(sizeX, sizeY);
         for (int o = 0; o < sizeY; o++) {
-            for (int i = 0; i < sizeX; i++) {
-                t.tab[o][i] = tab[o][i];
-            }
+            bits.byteCopy(tab[o], 0, t.tab[o], 0, sizeX);
         }
         return t;
     }

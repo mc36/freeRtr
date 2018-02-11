@@ -13,6 +13,9 @@ import util.bits;
  */
 public class cryUtils {
 
+    private cryUtils() {
+    }
+
     /**
      * convert big unsigned integer to buffer
      *
@@ -40,13 +43,8 @@ public class cryUtils {
     public static BigInteger buf2bigUint(byte[] dat) {
         byte[] buf = new byte[dat.length + 1];
         buf[0] = 0;
-        for (int i = 0; i < dat.length; i++) {
-            buf[i + 1] = dat[i];
-        }
+        bits.byteCopy(dat, 0, buf, 1, dat.length);
         return new BigInteger(buf);
-    }
-
-    private cryUtils() {
     }
 
     /**

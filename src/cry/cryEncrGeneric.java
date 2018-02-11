@@ -1,5 +1,7 @@
 package cry;
 
+import util.bits;
+
 /**
  * generic cipher
  *
@@ -73,9 +75,7 @@ public abstract class cryEncrGeneric {
      */
     public void update(byte[] buf, int ofs, int siz) {
         byte[] part = compute(buf, ofs, siz);
-        for (int i = 0; i < siz; i++) {
-            buf[ofs + i] = part[i];
-        }
+        bits.byteCopy(part, 0, buf, ofs, siz);
     }
 
     /**

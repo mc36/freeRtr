@@ -73,9 +73,7 @@ public class addrEui extends addrType {
         addrIPv6 a = new addrIPv6();
         a.addr[0] = (byte) 0xfe;
         a.addr[1] = (byte) 0x80;
-        for (int i = 0; i < size; i++) {
-            a.addr[size + i] = addr[i];
-        }
+        bits.byteCopy(addr, 0, a.addr, size, size);
         return a;
     }
 

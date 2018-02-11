@@ -744,6 +744,11 @@ server telnet tel
  vrf v1
  exit
 !
+server rfb vnc
+ no login authentication
+ vrf v1
+ exit
+!
 server http web
  host * path /home/mc36/
  host * dirlist

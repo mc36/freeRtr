@@ -560,15 +560,11 @@ public class packHolder {
         if (max > buf2.length) {
             max = buf2.length;
         }
-        for (int i = 0; i < max; i++) {
-            buf1[i] = buf2[i];
-        }
+        bits.byteCopy(buf2, 0, buf1, 0, max);
         for (int i = max; i < buf1.length; i++) {
             buf1[i] = (byte) fill;
         }
-        for (int i = 0; i < buf1.length; i++) {
-            headD[headS + rofs + i] = buf1[i];
-        }
+        bits.byteCopy(buf1, 0, headD, headS + rofs, buf1.length);
     }
 
     /**

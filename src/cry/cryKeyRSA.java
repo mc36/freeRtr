@@ -309,12 +309,8 @@ public class cryKeyRSA extends cryKeyGeneric {
         }
         buf[0] = 0;
         buf[1] = 1;
-        for (int i = 0; i < src.length; i++) {
-            buf[buf.length - src.length + i] = src[i];
-        }
-        for (int i = 0; i < pad.length; i++) {
-            buf[buf.length - src.length - pad.length + i] = pad[i];
-        }
+        bits.byteCopy(src, 0, buf, buf.length - src.length, src.length);
+        bits.byteCopy(pad, 0, buf, buf.length - src.length - pad.length, pad.length);
         return new BigInteger(buf);
     }
 
@@ -331,9 +327,7 @@ public class cryKeyRSA extends cryKeyGeneric {
         }
         buf[0] = 0;
         buf[1] = 1;
-        for (int i = 0; i < src.length; i++) {
-            buf[buf.length - src.length + i] = src[i];
-        }
+        bits.byteCopy(src, 0, buf, buf.length - src.length, src.length);
         buf[buf.length - src.length - 1] = 0;
         return new BigInteger(buf);
     }
@@ -358,9 +352,7 @@ public class cryKeyRSA extends cryKeyGeneric {
             buf[i] = (byte) o;
         }
         buf[buf.length - src.length - 1] = 0;
-        for (int i = 0; i < src.length; i++) {
-            buf[buf.length - src.length + i] = src[i];
-        }
+        bits.byteCopy(src, 0, buf, buf.length - src.length, src.length);
         return buf;
     }
 

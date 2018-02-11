@@ -46,9 +46,7 @@ public class addrPool<T extends addrType> {
     private BigInteger addr2bn(T adr) {
         byte[] buf1 = adr.getBytes();
         byte[] buf2 = new byte[buf1.length + 1];
-        for (int i = 0; i < buf1.length; i++) {
-            buf2[i + 1] = buf1[i];
-        }
+        bits.byteCopy(buf1, 0, buf2, 1, buf1.length);
         buf2[0] = 0;
         return new BigInteger(buf2);
     }
@@ -66,9 +64,7 @@ public class addrPool<T extends addrType> {
         for (int i = 0; i < as; i++) {
             buf2[i] = 0;
         }
-        for (int i = 0; i < buf1.length; i++) {
-            buf2[as - buf1.length + i] = buf1[i];
-        }
+        bits.byteCopy(buf1, 0, buf2, as - buf1.length, buf1.length);
         a.fromBuf(buf2, 0);
         return a;
     }

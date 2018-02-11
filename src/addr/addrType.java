@@ -60,9 +60,7 @@ public abstract class addrType implements Comparator<addrType> {
      * @param src
      */
     public void setAddr(addrType src) {
-        for (int i = 0; i < addr.length; i++) {
-            addr[i] = src.addr[i];
-        }
+        bits.byteCopy(src.addr, 0, addr, 0, addr.length);
     }
 
     /**
@@ -90,17 +88,19 @@ public abstract class addrType implements Comparator<addrType> {
         }
         int ofs = len / 8;
         len &= 7;
-        bits.byteFill(addr, 0, addr.length, 0);
         bits.byteFill(addr, 0, ofs, 0xff);
+        bits.byteFill(addr, ofs, addr.length - ofs, 0);
         if (len < 1) {
             return;
         }
-        int val = 0;
-        for (int i = 8 - len; i < 8; i++) {
-            val |= bits.bitVals[i];
-        }
-        addr[ofs] = (byte) val;
+        addr[ofs] = maskVals[len];
     }
+
+    private final static byte[] maskVals = {
+        (byte) 0x00,
+        (byte) 0x80, (byte) 0xc0, (byte) 0xe0, (byte) 0xf0,
+        (byte) 0xf8, (byte) 0xfc, (byte) 0xfe, (byte) 0xff
+    };
 
     /**
      * convert address to prefix length
@@ -162,9 +162,7 @@ public abstract class addrType implements Comparator<addrType> {
      * @param ofs offset in buffer
      */
     public void toBuffer(byte[] buf, int ofs) {
-        for (int i = 0; i < addr.length; i++) {
-            buf[ofs + i] = addr[i];
-        }
+        bits.byteCopy(addr, 0, buf, ofs, addr.length);
     }
 
     /**

@@ -940,9 +940,7 @@ public class packIsakmp {
             orig = buf;
         }
         byte[] buf = new byte[min];
-        for (int i = 0; i < buf.length; i++) {
-            buf[i] = orig[i];
-        }
+        bits.byteCopy(orig, 0, buf, 0, buf.length);
         return buf;
     }
 

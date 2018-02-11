@@ -616,7 +616,7 @@ class userHelpingList {
         userHelpingList n = new userHelpingList();
         n.num = num;
         for (int i = 0; i < num; i++) {
-            n.val[i] = val[i];
+            n.val[i] = 0 + val[i];
         }
         return n;
     }
