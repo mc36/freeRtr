@@ -1300,18 +1300,19 @@ public class packIsakmp {
             logger.debug("spi=" + spi + " key=" + bits.byteDump(buf, 0, -1));
         }
         esp.spi = spi;
-        esp.cipher = transform.getEncr();
+        cryEncrGeneric ciph = transform.getEncr();
         esp.hasher = transform.getHash();
+        esp.encrSize = ciph.getBlockSize();
+        esp.hashSize = transform.getHashS();
         int i = transform.getKeyS();
         last = new byte[i];
         bits.byteCopy(buf, 0, last, 0, last.length);
-        esp.cipher.init(last, new byte[esp.cipher.getBlockSize()], encr);
+        ciph.init(last, new byte[ciph.getBlockSize()], encr);
         last = new byte[esp.hasher.getHashSize()];
         bits.byteCopy(buf, i, last, 0, last.length);
         esp.hasher = transform.getHmac(last);
         esp.sequ = 0;
-        esp.hashSize = transform.getHashS();
-        esp.encrSize = esp.cipher.getBlockSize();
+        esp.cipher = ciph;
     }
 
     /**

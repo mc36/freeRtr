@@ -29,6 +29,7 @@ import ip.ipFwdMcast;
 import ip.ipFwdMpmp;
 import ip.ipFwdTab;
 import ip.ipFwdTrfng;
+import ip.ipRtr;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packLdpMp;
@@ -41,6 +42,7 @@ import rtr.rtrBgpNeigh;
 import rtr.rtrBgpParam;
 import rtr.rtrEigrpNeigh;
 import rtr.rtrLdpNeigh;
+import rtr.rtrLogger;
 import rtr.rtrOlsrNeigh;
 import rtr.rtrPvrpNeigh;
 import rtr.rtrRip4neigh;
@@ -585,6 +587,60 @@ public class userShow {
             cmd.badCmd();
             return null;
         }
+        if (a.equals("router")) {
+            tabRouteEntry.routeType typ = cfgRtr.name2num(cmd.word());
+            if (typ == null) {
+                cmd.error("invalid process");
+                return null;
+            }
+            cfgRtr cfg = cfgAll.rtrFind(typ, bits.str2num(cmd.word()), false);
+            if (cfg == null) {
+                cmd.error("no such process");
+                return null;
+            }
+            ipRtr rtr = cfg.getRouter();
+            if (rtr == null) {
+                cmd.error("not running");
+                return null;
+            }
+            tabRoute<addrIP> tab = null;
+            int dsp = 1;
+            boolean redist = cmd.word().equals("redisted");
+            int tabtyp = rtrLogger.str2afi(cmd.word());
+            if (redist) {
+                switch (tabtyp) {
+                    case 1:
+                        tab = rtr.routerRedistedU;
+                        break;
+                    case 2:
+                        tab = rtr.routerRedistedM;
+                        break;
+                    case 3:
+                        tab = rtr.routerRedistedF;
+                        dsp = 5;
+                        break;
+                }
+            } else {
+                switch (tabtyp) {
+                    case 1:
+                        tab = rtr.routerComputedU;
+                        break;
+                    case 2:
+                        tab = rtr.routerComputedM;
+                        break;
+                    case 3:
+                        tab = rtr.routerComputedF;
+                        dsp = 5;
+                        break;
+                }
+            }
+            if (tab == null) {
+                cmd.error("invalid table");
+                return null;
+            }
+            doShowRoutes(null, tab, dsp);
+            return null;
+        }
         if (a.equals("ipx")) {
             a = cmd.word();
             if (a.equals("route")) {
@@ -667,12 +723,16 @@ public class userShow {
                     rdr.putStrTab(r.ospf4.showSpfLog(i));
                     return null;
                 }
+                if (a.equals("topology")) {
+                    rdr.putStrTab(r.ospf4.showSpfTopo(bits.str2num(cmd.word())));
+                    return null;
+                }
                 if (a.equals("tree")) {
-                    rdr.putStrArr(r.ospf4.showTree(bits.str2num(cmd.word())));
+                    rdr.putStrArr(r.ospf4.showSpfTree(bits.str2num(cmd.word())));
                     return null;
                 }
                 if (a.equals("graph")) {
-                    rdr.putStrArr(r.ospf4.showGraph(bits.str2num(cmd.word())));
+                    rdr.putStrArr(r.ospf4.showSpfGraph(bits.str2num(cmd.word())));
                     return null;
                 }
                 if (a.equals("route")) {
@@ -888,12 +948,16 @@ public class userShow {
                     rdr.putStrTab(r.ospf6.showSpfLog(i));
                     return null;
                 }
+                if (a.equals("topology")) {
+                    rdr.putStrTab(r.ospf6.showSpfTopo(bits.str2num(cmd.word())));
+                    return null;
+                }
                 if (a.equals("tree")) {
-                    rdr.putStrArr(r.ospf6.showTree(bits.str2num(cmd.word())));
+                    rdr.putStrArr(r.ospf6.showSpfTree(bits.str2num(cmd.word())));
                     return null;
                 }
                 if (a.equals("graph")) {
-                    rdr.putStrArr(r.ospf6.showGraph(bits.str2num(cmd.word())));
+                    rdr.putStrArr(r.ospf6.showSpfGraph(bits.str2num(cmd.word())));
                     return null;
                 }
                 if (a.equals("route")) {
@@ -1169,12 +1233,16 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showSpfLog());
             return;
         }
+        if (a.equals("topology")) {
+            rdr.putStrTab(r.lsrp.showSpfTopo());
+            return;
+        }
         if (a.equals("tree")) {
-            rdr.putStrArr(r.lsrp.showTree());
+            rdr.putStrArr(r.lsrp.showSpfTree());
             return;
         }
         if (a.equals("graph")) {
-            rdr.putStrArr(r.lsrp.showGraph());
+            rdr.putStrArr(r.lsrp.showSpfGraph());
             return;
         }
         if (a.equals("route")) {
@@ -1266,12 +1334,16 @@ public class userShow {
             rdr.putStrTab(r.isis.showSpfLog(i));
             return;
         }
+        if (a.equals("topology")) {
+            rdr.putStrTab(r.isis.showSpfTopo(bits.str2num(cmd.word())));
+            return;
+        }
         if (a.equals("tree")) {
-            rdr.putStrArr(r.isis.showTree(bits.str2num(cmd.word())));
+            rdr.putStrArr(r.isis.showSpfTree(bits.str2num(cmd.word())));
             return;
         }
         if (a.equals("graph")) {
-            rdr.putStrArr(r.isis.showGraph(bits.str2num(cmd.word())));
+            rdr.putStrArr(r.isis.showSpfGraph(bits.str2num(cmd.word())));
             return;
         }
         if (a.equals("route")) {

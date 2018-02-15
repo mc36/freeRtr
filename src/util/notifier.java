@@ -11,23 +11,14 @@ public class notifier {
 
     private int notified = 0; // number of notifications received
 
-    private final int valDat[]; // this will referenced
+    private final Object lck = new Object(); // locker
 
-    private final Object valRef; // reference wait on
-
-    private notifier peer; // peer to notify
-
-    private static int nextNumber;
+    private notifier peer = this; // peer to notify
 
     /**
      * create new notifier
      */
     public notifier() {
-        valDat = new int[2];
-        valRef = valDat;
-        peer = this;
-        valDat[0] = (nextNumber++);
-        valDat[1] = 0;
     }
 
     /**
@@ -50,11 +41,11 @@ public class notifier {
      */
     public void sleep(int msec) {
         try {
-            synchronized (valRef) {
+            synchronized (lck) {
                 if (msec < 1) {
-                    valRef.wait();
+                    lck.wait();
                 } else {
-                    valRef.wait(msec);
+                    lck.wait(msec);
                 }
                 waked = 0;
             }
@@ -69,7 +60,7 @@ public class notifier {
      * @return number of wakeups missed
      */
     public int missedWakes() {
-        synchronized (valRef) {
+        synchronized (lck) {
             int i = waked;
             waked = 0;
             return i;
@@ -90,10 +81,10 @@ public class notifier {
      */
     public void wakeup() {
         try {
-            synchronized (peer.valRef) {
+            synchronized (peer.lck) {
                 peer.waked++;
                 peer.notified++;
-                peer.valRef.notify();
+                peer.lck.notify();
             }
         } catch (Exception E) {
             logger.info("failed to notify");
@@ -101,7 +92,7 @@ public class notifier {
     }
 
     public String toString() {
-        return "notifier#" + valDat[0];
+        return "notifier";
     }
 
 }

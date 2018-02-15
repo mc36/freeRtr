@@ -7801,3 +7801,123 @@ qc pass: bgp routemap filtering with afi
 qc pass: bgp routepolicy filtering with afi
 qc pass: bgp routemap filtering with afi with soft-reconfig
 qc pass: bgp routepolicy filtering with afi with soft-reconfig
+---------------------------------- 2018-02-11 21:05:55
+no qc pass: rip auto mesh tunnel
+no qc pass: pvrp auto mesh tunnel
+no qc pass: ospf auto mesh tunnel
+no qc pass: olsr auto mesh tunnel
+no qc pass: lsrp auto mesh tunnel
+no qc pass: isis auto mesh tunnel
+no qc pass: eigrp auto mesh tunnel
+no qc pass: bgp auto mesh tunnel
+no qc pass: babel auto mesh tunnel
+no work: babel auto mesh tunnel
+no work: bgp auto mesh tunnel
+no work: eigrp auto mesh tunnel
+no work: isis auto mesh tunnel
+no work: lsrp auto mesh tunnel
+no work: olsr auto mesh tunnel
+no work: ospf auto mesh tunnel
+no work: pvrp auto mesh tunnel
+no work: rip auto mesh tunnel
+todo:
+todo: safe=1000:
+todo:
+todo: lenovo=9:
+todo:
+todo: player=99:
+todo:
+todo: automesh to the end of route table calculator
+todo: rename taba to tabu in route table calculator
+todo: optimize redistributed routes too at notifyrouters
+todo: ospf and isis missed notifications, schedwork/run use syncint
+todo: lsrp to use syncint as todo
+todo: statistics for redistribution
+todo: show commands for redistribution
+todo: route table calculation must not merge distance>255
+---------------------------------- 2018-02-12 18:20:36
+no todo: route table calculation must not merge distance>255
+no todo: show commands for redistribution
+no todo: statistics for redistribution
+no todo: lsrp to use syncint as todo
+no todo: ospf and isis missed notifications, schedwork/run use syncint
+no todo: optimize redistributed routes too at notifyrouters
+no todo: rename taba to tabu in route table calculator
+no todo: automesh to the end of route table calculator
+no todo: player=99:
+no todo: lenovo=9:
+no todo: safe=1000:
+no todo: reload vdc asdf looping as experimental
+qc pass: babel auto mesh tunnel
+qc pass: bgp auto mesh tunnel
+qc pass: eigrp auto mesh tunnel
+qc pass: isis auto mesh tunnel
+qc pass: lsrp auto mesh tunnel
+qc pass: olsr auto mesh tunnel
+qc pass: ospf auto mesh tunnel
+qc pass: pvrp auto mesh tunnel
+qc pass: rip auto mesh tunnel
+todo: reload vdc/process asdf stop/start
+todo:
+todo: done: player/99: rout-ospf37.tst: no work: ospf prefix movement
+todo: done: ospf and isis missed notifications, schedwork/run todo use syncint
+todo: done: lsrp to use syncint as todo
+todo: done: tester should collect tracebacks
+todo: done: show commands for redistributed, computed
+todo: done: statistics for redistribution
+todo: done: optimize redistributed routes too at notifyrouters
+todo: done: rename taba to tabu in route table calculator
+todo: done: isakmp bug
+todo: done: a lot of: tab.tabGenV2.doGet:tabGenV2.java:266/tab.tabGenV2.doFind:tabGenV2.java:215/tab.tabGenV2.find:tabGenV2.java:147
+todo: done: a lot of: tab.tabGenV2.doGet:tabGenV2.java:266/tab.tabGenV2.get:tabGenV2.java:135
+todo: done: automesh to the end of route table calculator
+todo: done: route table calculation must not merge distance>255
+todo:
+todo: try: boxing size, begin, data to a class
+todo: try: dofind: first find the block, then the entry within the block
+todo:
+todo: safe/1000:
+todo:
+todo: lenovo/9:
+todo:
+todo: player/99:
+---------------------------------- 2018-02-13 20:48:59
+no todo: player/99:
+no todo: lenovo/9:
+no todo: safe/1000:
+no todo: try: dofind: first find the block, then the entry within the block
+no todo: try: boxing size, begin, data to a class
+no todo: reload vdc/process asdf stop/start
+todo: done: reload vdc/process asdf stop/start
+todo: done: mcast bug
+todo: done: dofind: first find the block, then the entry within the block
+todo: done: pipeline unsync per byte actions
+todo:
+todo: sleep exec/tcl commands
+todo: buffer config to forwarder/loadbalancer
+todo: spf should give topology checksum by adding outputs and invoking String.hashCode()
+todo:
+todo: tests:
+todo: done=2,3,1000
+todo: lenovo=
+todo: player=
+todo: safe=
+---------------------------------- 2018-02-14 18:50:10
+no todo: safe=
+no todo: player=
+no todo: lenovo=
+no todo: done=2,3,1000
+no todo: spf should give topology checksum by adding outputs and invoking String.hashCode()
+no todo: buffer config to forwarder/loadbalancer
+no todo: sleep exec/tcl commands
+todo: done: spf should give topology checksum by adding outputs and invoking String.hashCode()
+todo: done: buffer config to forwarder/loadbalancer
+todo: done: sleep exec/tcl commands
+todo: done: tester parameter for jvm memory
+todo: done: move route table checker to tabroute
+todo: done: flood topology summary in lsrp
+todo:
+todo: done=2,3,9,13,17,50,99,500,1000
+todo: lenovo=4000
+todo: player=250
+todo: safe=2000

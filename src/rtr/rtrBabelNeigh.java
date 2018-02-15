@@ -117,7 +117,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
         typLenVal tlv = rtrBabel.getTlv();
         addrIP rtrid = new addrIP();
         tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true);
+        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteEntry.distanLim);
         long tim = bits.getTime();
         for (;;) {
             if (tlv.getBytes(pck)) {

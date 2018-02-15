@@ -26,12 +26,17 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     /**
      * compare dump
      */
-    public static final int dmpComp = dmpFull - 0x100 - 0x80 - 0x8 - 0x4;
+    public static final int dmpComp = dmpFull - 0x800 - 0x100 - 0x80 - 0x8 - 0x4;
 
     /**
      * router id
      */
     public addrIPv4 rtrId;
+
+    /**
+     * topology summary
+     */
+    public int topoSum;
 
     /**
      * router name
@@ -182,12 +187,16 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      *
      * @param typ type to use: 0x1=id, 0x2=nam, 0x4=seq, 0x8=time, 0x10=neighs,
      * 0x20=nets, 0x40=sr, 0x80=uptime 0x100=change 0x200=version, 0x400=bier
+     * 0x800=toposum
      * @return dumped data
      */
     public String dump(int typ) {
         String s = "";
         if ((typ & 0x1) != 0) {
             s += " rtrid=" + rtrId;
+        }
+        if ((typ & 0x800) != 0) {
+            s += " toposum=" + topoSum;
         }
         if ((typ & 0x2) != 0) {
             s += " hostname=" + hostname;
@@ -274,6 +283,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         hardware = "";
         middleware = "";
         kernel = "";
+        topoSum = 0;
         sequence = 0;
         segrouBeg = 0;
         segrouIdx = 0;
@@ -306,6 +316,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             a = a.toLowerCase().trim();
             if (a.equals("rtrid")) {
                 rtrId.fromString(s);
+                continue;
+            }
+            if (a.equals("toposum")) {
+                topoSum = bits.str2num(s);
                 continue;
             }
             if (a.equals("hostname")) {

@@ -7,7 +7,6 @@ import cfg.cfgIfc;
 import cfg.cfgInit;
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.concurrent.atomic.AtomicInteger;
 import pack.packHolder;
 import user.userFormat;
 import util.bits;
@@ -15,6 +14,7 @@ import util.counter;
 import util.debugger;
 import util.logger;
 import util.state;
+import util.syncInt;
 
 /**
  * one interface handler thread
@@ -60,11 +60,11 @@ public abstract class ifcThread implements ifcDn, Runnable {
 
     private int procRun = 0;
 
-    private AtomicInteger procNow = new AtomicInteger();
+    private syncInt procNow = new syncInt();
 
     private int procCnt = 0;
 
-    private int procLst = 1;
+    private int procLst = -1;
 
     private long procTim = 0;
 
@@ -114,13 +114,13 @@ public abstract class ifcThread implements ifcDn, Runnable {
      * @return show output
      */
     public static userFormat showStalls() {
-        userFormat res = new userFormat("|", "iface|stall|pack|last|cfg|run|busy|time");
+        userFormat res = new userFormat("|", "iface|pack|last|cfg|run|busy|time");
         for (int i = 0; i < cfgAll.ifaces.size(); i++) {
             cfgIfc ntry = cfgAll.ifaces.get(i);
             if (ntry.thread == null) {
                 continue;
             }
-            res.add(ntry.name + "|" + ntry.thread.checkStalled() + "|" + ntry.thread.procCnt + "|" + ntry.thread.procLst + "|" + ntry.thread.started.length + "|" + ntry.thread.procRun + "|" + ntry.thread.procNow.get() + "|" + bits.timePast(ntry.thread.procTim));
+            res.add(ntry.name + "|" + ntry.thread.procCnt + "|" + ntry.thread.procLst + "|" + ntry.thread.started.length + "|" + ntry.thread.procRun + "|" + ntry.thread.procNow.get() + "|" + bits.timePast(ntry.thread.procTim));
         }
         return res;
     }
@@ -152,12 +152,12 @@ public abstract class ifcThread implements ifcDn, Runnable {
             return true;
         }
         long t = bits.getTime();
-        if (procNow.get() == 0) {
+        if (procLst != procCnt) {
+            procLst = procCnt;
             procTim = t;
             return false;
         }
-        if (procLst != procCnt) {
-            procLst = procCnt;
+        if (procNow.get() == 0) {
             procTim = t;
             return false;
         }
@@ -355,14 +355,14 @@ public abstract class ifcThread implements ifcDn, Runnable {
             if (debugger.ifcThread) {
                 logger.debug(this + " rx" + pck.dump());
             }
-            procNow.addAndGet(+1);
+            procNow.add(+1);
             procCnt++;
             try {
                 upper.recvPack(pck);
             } catch (Exception e) {
                 logger.exception(e);
             }
-            procNow.addAndGet(-1);
+            procNow.add(-1);
         }
     }
 

@@ -148,7 +148,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             iface.neighs.del(this);
         }
         tabLabel.release(segrouLab, 14);
-        lower.todo = 0;
+        lower.todo.set(0);
         lower.notif.wakeup();
         iface.iface.bfdDel(peer, this);
         notif.wakeup();
@@ -338,7 +338,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             segrouLab.setFwdMpls(14, lower.fwdCore, iface.iface, peer, tabLabel.int2labels(ipMpls.labelImp));
         }
         isReady = true;
-        lower.todo = 0;
+        lower.todo.set(0);
         lower.notif.wakeup();
         if (iface.bfdTrigger) {
             iface.iface.bfdAdd(peer, this, "lsrp");
@@ -461,8 +461,9 @@ class rtrLsrpNeighRcvr implements Runnable {
                     lower.advert.put(ntry.copyHead());
                 }
                 if (ntry.better(lower.lower.database.find(ntry))) {
+                    lower.iface.gotAdvert(ntry);
                     lower.lower.database.put(ntry);
-                    lower.lower.todo = 0;
+                    lower.lower.todo.set(0);
                     lower.lower.notif.wakeup();
                 }
                 continue;

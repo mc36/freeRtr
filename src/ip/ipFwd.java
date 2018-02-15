@@ -1235,6 +1235,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (routers.find(rtr) == null) {
             return;
         }
+        rtr.routerComputeChg++;
+        rtr.routerComputeTim = bits.getTime();
         triggerUpdate.wakeup();
     }
 

@@ -350,7 +350,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
             if (nei == null) {
                 continue;
             }
-            tab.mergeFrom(tabRoute.addType.better, nei.learned, null, true);
+            tab.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteEntry.distanLim);
         }
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab, null, fwdCore.commonLabel, 0, null, 0);
         routerComputedU = tab;

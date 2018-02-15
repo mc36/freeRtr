@@ -54,11 +54,6 @@ public class servForwarder extends servGeneric implements prtServS {
     public int trgPort = 0;
 
     /**
-     * timeout on connection
-     */
-    public int trgTimeout = 60 * 1000;
-
-    /**
      * target protocol
      */
     public int trgProto = protoTcp;
@@ -79,6 +74,16 @@ public class servForwarder extends servGeneric implements prtServS {
     public String trgPass = null;
 
     /**
+     * timeout on connection
+     */
+    public int timeOut = 60 * 1000;
+
+    /**
+     * buffer size
+     */
+    public int bufSiz = 65536;
+
+    /**
      * logging
      */
     public boolean logging = false;
@@ -95,6 +100,7 @@ public class servForwarder extends servGeneric implements prtServS {
         "server forwarder .*! no target password",
         "server forwarder .*! target protocol tcp",
         "server forwarder .*! timeout 60000",
+        "server forwarder .*! buffer 65536",
         "server forwarder .*! no logging",};
 
     /**
@@ -124,7 +130,8 @@ public class servForwarder extends servGeneric implements prtServS {
         cmds.cfgLine(l, trgSecur == 0, beg, "target security", proto2string(trgSecur));
         cmds.cfgLine(l, trgUser == null, beg, "target username", trgUser);
         cmds.cfgLine(l, trgPass == null, beg, "target password", authLocal.passwdEncode(trgPass));
-        l.add(beg + "timeout " + trgTimeout);
+        l.add(beg + "timeout " + timeOut);
+        l.add(beg + "buffer " + bufSiz);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -134,7 +141,11 @@ public class servForwarder extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("timeout")) {
-            trgTimeout = bits.str2num(cmd.word());
+            timeOut = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("buffer")) {
+            bufSiz = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("target")) {
@@ -243,6 +254,8 @@ public class servForwarder extends servGeneric implements prtServS {
         l.add("1 .  logging                      set logging");
         l.add("1 2  timeout                      set timeout on connection");
         l.add("2 .    <num>                      timeout in ms");
+        l.add("1 2  buffer                       set buffer size on connection");
+        l.add("2 .    <num>                      buffer in bytes");
         l.add("1 2  target                       set session target");
         l.add("2 3    vrf                        set source vrf");
         l.add("3 .      <name>                   name of vrf");
@@ -283,7 +296,7 @@ public class servForwarder extends servGeneric implements prtServS {
 
     public boolean srvInit() {
         dynBlckMod = true;
-        return genStrmStart(this, new pipeLine(65536, false), 0);
+        return genStrmStart(this, new pipeLine(bufSiz, false), 0);
     }
 
     public boolean srvDeinit() {
@@ -294,7 +307,7 @@ public class servForwarder extends servGeneric implements prtServS {
         if (logging) {
             logger.info("connection from " + id.peerAddr);
         }
-        pipe.timeout = trgTimeout;
+        pipe.timeout = timeOut;
         new servForwarderDoer(this, pipe);
         return false;
     }
@@ -306,8 +319,8 @@ public class servForwarder extends servGeneric implements prtServS {
      * @return false on success, true on error
      */
     public boolean doConnStart(pipeSide con1) {
-        con1.timeout = trgTimeout;
-        if (con1.wait4ready(trgTimeout)) {
+        con1.timeout = timeOut;
+        if (con1.wait4ready(timeOut)) {
             return true;
         }
         if (trgVrf == null) {
@@ -324,12 +337,12 @@ public class servForwarder extends servGeneric implements prtServS {
         if (trgIface != null) {
             ifc = trgIface.getFwdIfc(trgAddr);
         }
-        pipeSide con2 = prt.streamConnect(new pipeLine(65536, con1.isBlockMode()), ifc, 0, trgAddr, trgPort, srvName(), null, -1);
+        pipeSide con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, trgAddr, trgPort, srvName(), null, -1);
         if (con2 == null) {
             return true;
         }
-        con2.timeout = trgTimeout;
-        if (con2.wait4ready(trgTimeout)) {
+        con2.timeout = timeOut;
+        if (con2.wait4ready(timeOut)) {
             return true;
         }
         pipeSide con3 = secClient.openSec(con2, trgSecur, trgUser, trgPass);
@@ -337,8 +350,8 @@ public class servForwarder extends servGeneric implements prtServS {
             con2.setClose();
             return true;
         }
-        con3.timeout = trgTimeout;
-        if (con3.wait4ready(trgTimeout)) {
+        con3.timeout = timeOut;
+        if (con3.wait4ready(timeOut)) {
             con2.setClose();
             con3.setClose();
             return true;

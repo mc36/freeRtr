@@ -240,14 +240,14 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 if (nei == null) {
                     continue;
                 }
-                tab1.mergeFrom(tabRoute.addType.better, nei.learned, null, true);
+                tab1.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteEntry.distanLim);
             }
         }
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab1, null, fwdCore.commonLabel, 0, null, 0);
         tabRoute<addrIP> tab2 = tab1;
         tab1 = new tabRoute<addrIP>("ned2adv");
-        tab1.mergeFrom(tabRoute.addType.better, tab2, null, true);
-        tab1.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true);
+        tab1.mergeFrom(tabRoute.addType.better, tab2, null, true, tabRouteEntry.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteEntry.distanLim);
         if (labels) {
             for (int i = 0; i < tab1.size(); i++) {
                 ntry = tab1.get(i);

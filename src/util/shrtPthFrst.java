@@ -51,6 +51,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         ntry.when = old.tim1;
         ntry.tim = (int) (old.tim3 - old.tim1);
         ntry.unreach = old.listUnreachables();
+        ntry.topo = old.listTopoSum().hashCode();
         log.add(ntry);
         for (; log.size() > 250;) {
             log.remove(0);
@@ -586,6 +587,48 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     }
 
     /**
+     * list topology
+     *
+     * @return list of topology
+     */
+    public String listTopoSum() {
+        String s = "";
+        for (int i = 0; i < nodes.size(); i++) {
+            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            s += " " + ntry.name + "," + (ntry.metric >= 0) + "," + ntry.conn.size() + "," + ntry.srIdx + "," + ntry.brIdx;
+        }
+        return s;
+    }
+
+    /**
+     * list topology
+     *
+     * @return list of topology
+     */
+    public userFormat listTopology() {
+        userFormat res = new userFormat("|", "node|reach|via|ifc|met|hop|conn|sr|br|peers");
+        for (int i = 0; i < nodes.size(); i++) {
+            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            String s = ntry.name + "|" + (ntry.metric >= 0) + "|" + ntry.nxtHop + "|" + ntry.iface + "|" + ntry.metric + "|" + ntry.hops + "|" + ntry.conn.size() + "|" + ntry.srIdx + "|" + ntry.brIdx + "|";
+            for (int o = 0; o < ntry.conn.size(); o++) {
+                shrtPthFrstConn<Ta> con = ntry.conn.get(o);
+                if (con == null) {
+                    continue;
+                }
+                s += con.target.name + "," + con.metric + " ";
+            }
+            res.add(s);
+        }
+        return res;
+    }
+
+    /**
      * list statistics
      *
      * @return list
@@ -599,6 +642,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         res.add("nosegrou|" + listNoSegRou());
         res.add("bier|" + listBier());
         res.add("nobier|" + listNoBier());
+        String a = listTopoSum();
+        res.add("topostr|" + a);
+        res.add("topoid|" + a.hashCode());
         res.add("last|" + bits.time2str(cfgAll.timeZoneName, tim1 + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(tim1) + " ago)");
         res.add("fill|" + (tim2 - tim1) + " ms");
         res.add("calc|" + (tim3 - tim2) + " ms");
@@ -612,7 +658,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @return list
      */
     public userFormat listUsages() {
-        userFormat res = new userFormat("|", "when|ago|time|unreach");
+        userFormat res = new userFormat("|", "when|ago|time|topoid|unreach");
         for (int i = log.size() - 1; i >= 0; i--) {
             res.add("" + log.get(i));
         }
@@ -688,10 +734,12 @@ class shrtPthFrstLog {
 
     protected int tim;
 
+    protected int topo;
+
     protected String unreach;
 
     public String toString() {
-        return bits.time2str(cfgAll.timeZoneName, when + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(when) + "|" + tim + "|" + unreach;
+        return bits.time2str(cfgAll.timeZoneName, when + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(when) + "|" + tim + "|" + topo + "|" + unreach;
     }
 
 }

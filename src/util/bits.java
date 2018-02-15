@@ -394,7 +394,7 @@ public class bits {
     }
 
     /**
-     * copy bytes from one buffer to another
+     * copy objects from one buffer to another
      *
      * @param srcB source buffer
      * @param srcO source offset
@@ -402,8 +402,12 @@ public class bits {
      * @param trgO target offset
      * @param len bytes to copy
      */
-    public static void byteCopy(byte[] srcB, int srcO, byte[] trgB, int trgO, int len) {
-        if (srcO > trgO) {
+    public static void objCopy(Object[] srcB, int srcO, Object[] trgB, int trgO, int len) {
+        if (len > 128) {
+            System.arraycopy(srcB, srcO, trgB, trgO, len);
+            return;
+        }
+        if (srcO >= trgO) {
             for (int i = 0; i < len; i++) {
                 trgB[trgO + i] = srcB[srcO + i];
             }
@@ -415,18 +419,28 @@ public class bits {
     }
 
     /**
-     * copy bytes within buffer
+     * copy bytes from one buffer to another
      *
-     * @param buf buffer to work in
+     * @param srcB source buffer
      * @param srcO source offset
+     * @param trgB target buffer
      * @param trgO target offset
      * @param len bytes to copy
      */
-    public static void byteCopy(byte[] buf, int srcO, int trgO, int len) {
-        if (srcO == trgO) {
+    public static void byteCopy(byte[] srcB, int srcO, byte[] trgB, int trgO, int len) {
+        if (len > 128) {
+            System.arraycopy(srcB, srcO, trgB, trgO, len);
             return;
         }
-        byteCopy(buf, srcO, buf, trgO, len);
+        if (srcO >= trgO) {
+            for (int i = 0; i < len; i++) {
+                trgB[trgO + i] = srcB[srcO + i];
+            }
+        } else {
+            for (int i = len - 1; i >= 0; i--) {
+                trgB[trgO + i] = srcB[srcO + i];
+            }
+        }
     }
 
     /**
@@ -454,8 +468,7 @@ public class bits {
      * @return -1 if buf1 less than buf2, 0 if buf1=buf2, +1 if buf1 greater
      * than buf2
      */
-    public static int byteComp(byte[] buf1, int ofs1, byte[] buf2, int ofs2,
-            int len) {
+    public static int byteComp(byte[] buf1, int ofs1, byte[] buf2, int ofs2, int len) {
         for (int i = 0; i < len; i++) {
             int v1 = buf1[ofs1 + i] & 0xff;
             int v2 = buf2[ofs2 + i] & 0xff;

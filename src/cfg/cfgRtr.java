@@ -1200,40 +1200,53 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      *
      * @param l list to update
      * @param p number start
+     * @param e ending
+     */
+    public static void getRouterList(userHelping l, int p, String e) {
+        l.add((p + 2) + " " + (p + 3) + "     bgp4                  border gateway protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     bgp6                  border gateway protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     ospf4                 open shortest path first" + e);
+        l.add((p + 2) + " " + (p + 3) + "     ospf6                 open shortest path first" + e);
+        l.add((p + 2) + " " + (p + 3) + "     isis4                 intermediate system intermediate system" + e);
+        l.add((p + 2) + " " + (p + 3) + "     isis6                 intermediate system intermediate system" + e);
+        l.add((p + 2) + " " + (p + 3) + "     pvrp4                 path vector routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     pvrp6                 path vector routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     lsrp4                 link state routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     lsrp6                 link state routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     eigrp4                enhanced interior gateway routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     eigrp6                enhanced interior gateway routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     rip4                  routing information protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     rip6                  routing information protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     babel4                babel routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     babel6                babel routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     olsr4                 optimized link state routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     olsr6                 optimized link state routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     msdp4                 multicast source discovery protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     msdp6                 multicast source discovery protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     flowspec4             flowspec to flowspec rewriter" + e);
+        l.add((p + 2) + " " + (p + 3) + "     flowspec6             flowspec to flowspec rewriter" + e);
+        l.add((p + 2) + " " + (p + 3) + "     uni2multi4            unicast to multicast converter" + e);
+        l.add((p + 2) + " " + (p + 3) + "     uni2multi6            unicast to multicast converter" + e);
+        l.add((p + 2) + " " + (p + 3) + "     uni2flow4             unicast to flowspec converter" + e);
+        l.add((p + 2) + " " + (p + 3) + "     uni2flow6             unicast to flowspec converter" + e);
+        l.add((p + 2) + " " + (p + 3) + "     logger4               route logger" + e);
+        l.add((p + 2) + " " + (p + 3) + "     logger6               route logger" + e);
+        l.add((p + 2) + " " + (p + 3) + "     download4             route download" + e);
+        l.add((p + 2) + " " + (p + 3) + "     download6             route download" + e);
+    }
+
+    /**
+     * get help string
+     *
+     * @param l list to update
+     * @param p number start
      */
     public static void getRedistHelp(userHelping l, int p) {
         l.add((p + 1) + " " + (p + 2) + "   redistribute            redistribute prefixes from other protocols");
         l.add((p + 2) + " " + (p + 4) + ",.   connected             connected routes");
         l.add((p + 2) + " " + (p + 4) + ",.   static                static routes");
-        l.add((p + 2) + " " + (p + 3) + "     bgp4                  bgp routes");
-        l.add((p + 2) + " " + (p + 3) + "     bgp6                  bgp routes");
-        l.add((p + 2) + " " + (p + 3) + "     ospf4                 ospf routes");
-        l.add((p + 2) + " " + (p + 3) + "     ospf6                 ospf routes");
-        l.add((p + 2) + " " + (p + 3) + "     isis4                 isis routes");
-        l.add((p + 2) + " " + (p + 3) + "     isis6                 isis routes");
-        l.add((p + 2) + " " + (p + 3) + "     pvrp4                 pvrp routes");
-        l.add((p + 2) + " " + (p + 3) + "     pvrp6                 pvrp routes");
-        l.add((p + 2) + " " + (p + 3) + "     lsrp4                 lsrp routes");
-        l.add((p + 2) + " " + (p + 3) + "     lsrp6                 lsrp routes");
-        l.add((p + 2) + " " + (p + 3) + "     eigrp4                eigrp routes");
-        l.add((p + 2) + " " + (p + 3) + "     eigrp6                eigrp routes");
-        l.add((p + 2) + " " + (p + 3) + "     rip4                  rip routes");
-        l.add((p + 2) + " " + (p + 3) + "     rip6                  rip routes");
-        l.add((p + 2) + " " + (p + 3) + "     babel4                babel routes");
-        l.add((p + 2) + " " + (p + 3) + "     babel6                babel routes");
-        l.add((p + 2) + " " + (p + 3) + "     olsr4                 olsr routes");
-        l.add((p + 2) + " " + (p + 3) + "     olsr6                 olsr routes");
-        l.add((p + 2) + " " + (p + 3) + "     flowspec4             flowspec routes");
-        l.add((p + 2) + " " + (p + 3) + "     flowspec6             flowspec routes");
-        l.add((p + 2) + " " + (p + 3) + "     uni2multi4            uni2multi routes");
-        l.add((p + 2) + " " + (p + 3) + "     uni2multi6            uni2multi routes");
-        l.add((p + 2) + " " + (p + 3) + "     uni2flow4             uni2flow routes");
-        l.add((p + 2) + " " + (p + 3) + "     uni2flow6             uni2flow routes");
-        l.add((p + 2) + " " + (p + 3) + "     logger4               logger routes");
-        l.add((p + 2) + " " + (p + 3) + "     logger6               logger routes");
-        l.add((p + 2) + " " + (p + 3) + "     download4             download routes");
-        l.add((p + 2) + " " + (p + 3) + "     download6             download routes");
-        l.add((p + 3) + " " + (p + 4) + ",.     <proc>              process number");
+        getRouterList(l, p, " routes");
+        l.add((p + 3) + " " + (p + 4) + ",.     <num>               process id");
         l.add((p + 4) + " " + (p + 5) + "         route-map         process prefixes on importing");
         l.add((p + 5) + " " + (p + 4) + ",.         <name>          name of route map");
         l.add((p + 4) + " " + (p + 5) + "         route-policy      process prefixes on importing");

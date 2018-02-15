@@ -121,10 +121,13 @@ public class ipxFwd implements Runnable {
             prf.iface = ifc;
             prf.rouTyp = tabRouteEntry.routeType.local;
         }
-        tabA.mergeFrom(tabRoute.addType.better, tabC, null, true);
+        tabA.mergeFrom(tabRoute.addType.better, tabC, null, true, tabRouteEntry.distanLim);
         for (int i = 0; i < staticR.size(); i++) {
             tabRouteEntry<addrIpx> ntry = staticR.get(i);
             if (ntry == null) {
+                continue;
+            }
+            if (ntry.distance >= tabRouteEntry.distanMax) {
                 continue;
             }
             tabRouteEntry<addrIpx> nh = tabC.route(ntry.nextHop);

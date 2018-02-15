@@ -96,7 +96,7 @@ public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
             return false;
         }
         tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true);
+        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteEntry.distanLim);
         for (; pck.dataSize() >= rtrRip6.sizeNtry; pck.getSkip(rtrRip6.sizeNtry)) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.rouTyp = tabRouteEntry.routeType.rip6;

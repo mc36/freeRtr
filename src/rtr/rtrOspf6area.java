@@ -24,6 +24,7 @@ import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
 import util.state;
+import util.syncInt;
 import util.typLenVal;
 
 /**
@@ -130,7 +131,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
 
     private final rtrOspf6 lower;
 
-    private int todo; // 1=need2run, 2=running, 0xffff0=works
+    private syncInt todo = new syncInt(0); // 1=need2run, 2=running, 0xffff0=works
 
     private tabGen<rtrOspf6lsa> need2adv;
 
@@ -1166,7 +1167,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
      * @param i what to do: 1=genLsa, 2=calcSpf, 4=genAll, 7=all
      */
     public void schedWork(int i) {
-        todo |= i << 4;
+        todo.or(i << 4);
         notif.wakeup();
     }
 
@@ -1174,29 +1175,33 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         if (debugger.rtrOspf6evnt) {
             logger.debug("started area " + area);
         }
-        todo |= 2;
+        todo.or(2);
         for (;;) {
             try {
-                notif.sleep(10000);
-                if ((todo & 1) == 0) {
+                if (notif.missedWakes() < 1) {
+                    notif.sleep(10000);
+                }
+                int ver = todo.ver();
+                int val = todo.get();
+                todo.andIf(0xf, ver);
+                if ((val & 1) == 0) {
                     break;
                 }
-                if ((todo & 0x10) != 0) {
+                if ((val & 0x10) != 0) {
                     generateLsas();
                 }
-                if ((todo & 0x20) != 0) {
+                if ((val & 0x20) != 0) {
                     calculateSpf();
                 }
-                if ((todo & 0x40) != 0) {
+                if ((val & 0x40) != 0) {
                     lower.genLsas(1);
                 }
                 purgeLsas();
-                todo &= 0xf;
             } catch (Exception e) {
                 logger.traceback(e);
             }
         }
-        todo &= 1;
+        todo.and(1);
         if (debugger.rtrOspf6evnt) {
             logger.debug("stopped area " + area);
         }
@@ -1206,10 +1211,10 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
      * start this area
      */
     public void startNow() {
-        if ((todo & 2) != 0) {
+        if ((todo.get() & 2) != 0) {
             return;
         }
-        todo |= 1;
+        todo.or(1);
         new Thread(this).start();
     }
 
@@ -1217,7 +1222,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
      * stop this area
      */
     public void stopNow() {
-        todo &= 2;
+        todo.and(2);
     }
 
 }

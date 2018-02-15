@@ -32,14 +32,19 @@ public class servLoadBalancer extends servGeneric implements prtServS {
     public static final int port = 1;
 
     /**
+     * source interface
+     */
+    public cfgIfc originate;
+
+    /**
      * timeout on connection
      */
     public int timeOut = 60 * 1000;
 
     /**
-     * source interface
+     * buffer size
      */
-    public cfgIfc originate;
+    public int bufSiz = 65536;
 
     /**
      * logging
@@ -64,6 +69,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         "server loadbalancer .*! protocol " + proto2string(protoAllStrm),
         "server loadbalancer .*! no source",
         "server loadbalancer .*! timeout 60000",
+        "server loadbalancer .*! buffer 65536",
         "server loadbalancer .*! no logging",};
 
     /**
@@ -86,6 +92,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
             l.add(beg + "server " + servLst.get(i));
         }
         l.add(beg + "timeout " + timeOut);
+        l.add(beg + "buffer " + bufSiz);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -96,6 +103,10 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         }
         if (a.equals("timeout")) {
             timeOut = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("buffer")) {
+            bufSiz = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("source")) {
@@ -142,6 +153,8 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         l.add("1 .  logging                      set logging");
         l.add("1 2  timeout                      set timeout on connection");
         l.add("2 .    <num>                      timeout in ms");
+        l.add("1 2  buffer                       set buffer size on connection");
+        l.add("2 .    <num>                      buffer in bytes");
         l.add("1 2  source                       set source interface");
         l.add("2 .    <name>                     name of interface");
         l.add("1 2  server                       name of server");
@@ -164,7 +177,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
 
     public boolean srvInit() {
         dynBlckMod = true;
-        return genStrmStart(this, new pipeLine(65536, false), 0);
+        return genStrmStart(this, new pipeLine(bufSiz, false), 0);
     }
 
     public boolean srvDeinit() {
@@ -219,7 +232,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         if (originate != null) {
             ifc = originate.getFwdIfc(ntry.addr);
         }
-        pipeSide con2 = prt.streamConnect(new pipeLine(65536, con1.isBlockMode()), ifc, 0, ntry.addr, ntry.port, srvName(), null, -1);
+        pipeSide con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, ntry.addr, ntry.port, srvName(), null, -1);
         if (con2 == null) {
             ntry.bad = bits.getTime();
             return true;

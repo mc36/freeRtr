@@ -885,8 +885,8 @@ public class rtrIsis extends ipRtr {
             logger.debug("create table");
         }
         tabRoute<addrIP> tab = new tabRoute<addrIP>("isis");
-        tab.mergeFrom(tabRoute.addType.better, level1.routes, null, true);
-        tab.mergeFrom(tabRoute.addType.better, level2.routes, null, true);
+        tab.mergeFrom(tabRoute.addType.better, level1.routes, null, true, tabRouteEntry.distanLim);
+        tab.mergeFrom(tabRoute.addType.better, level2.routes, null, true, tabRouteEntry.distanLim);
         if (segrouLab != null) {
             for (int i = 0; i < segrouLab.length; i++) {
                 boolean b = false;
@@ -1490,6 +1490,17 @@ public class rtrIsis extends ipRtr {
      * @param level level number
      * @return log of spf
      */
+    public userFormat showSpfTopo(int level) {
+        rtrIsisLevel lev = getLevel(level);
+        return lev.spf.listTopology();
+    }
+
+    /**
+     * show spf
+     *
+     * @param level level number
+     * @return log of spf
+     */
     public userFormat showSpfLog(int level) {
         rtrIsisLevel lev = getLevel(level);
         return lev.spf.listUsages();
@@ -1501,7 +1512,7 @@ public class rtrIsis extends ipRtr {
      * @param level level number
      * @return tree of spf
      */
-    public List<String> showTree(int level) {
+    public List<String> showSpfTree(int level) {
         rtrIsisLevel lev = getLevel(level);
         return lev.spf.listTree();
     }
@@ -1512,7 +1523,7 @@ public class rtrIsis extends ipRtr {
      * @param level level number
      * @return graph of spf
      */
-    public List<String> showGraph(int level) {
+    public List<String> showSpfGraph(int level) {
         rtrIsisLevel lev = getLevel(level);
         return lev.spf.listGraphviz();
     }

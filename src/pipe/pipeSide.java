@@ -164,6 +164,8 @@ public class pipeSide {
 
     private final int bufS; // size
 
+    private final Object lck = new Object(); // locker
+
     private int bufU; // used
 
     private int bufW; // next write pos
@@ -197,13 +199,13 @@ public class pipeSide {
         notif = new notifier();
     }
 
-    private synchronized void bytePut(int b) {
+    private void bytePut(int b) {
         bufD[bufW] = (byte) b;
         bufU = bufU + 1;
         bufW = (bufW + 1) % bufS;
     }
 
-    private synchronized int byteGet() {
+    private int byteGet() {
         bufU = bufU - 1;
         int i = bufD[bufR];
         bufR = (bufR + 1) % bufS;
@@ -216,24 +218,29 @@ public class pipeSide {
      * @param ch character to do
      * @return one if one byte done, or negative if error code
      */
-    public synchronized int byteUnGet(int ch) {
-        if (bufR >= bufS) {
-            return -1;
+    public int byteUnGet(int ch) {
+        synchronized (lck) {
+            if (headSize > 0) {
+                return -2;
+            }
+            if (bufR >= bufS) {
+                return -1;
+            }
+            bufR = bufR - 1;
+            if (bufR < 0) {
+                bufR = bufS - 1;
+            }
+            bufD[bufR] = (byte) ch;
         }
-        bufR = bufR - 1;
-        if (bufR < 0) {
-            bufR = bufS - 1;
-        }
-        bufD[bufR] = (byte) ch;
         return 1;
     }
 
-    private synchronized void sizePut(int i) {
+    private void sizePut(int i) {
         bytePut(i >>> 8);
         bytePut(i & 0xff);
     }
 
-    private synchronized int sizeGet() {
+    private int sizeGet() {
         if (bufU < 2) {
             return pipeLine.tryLater;
         }
@@ -246,7 +253,7 @@ public class pipeSide {
     }
 
     private int bufPut(byte[] buf, int ofs, int len) {
-        synchronized (bufD) {
+        synchronized (lck) {
             if (isClosed() != 0) {
                 return pipeLine.wontWork;
             }
@@ -273,7 +280,7 @@ public class pipeSide {
     }
 
     private int bufGet(byte[] buf, int ofs, int len, boolean restorePos) {
-        synchronized (bufD) {
+        synchronized (lck) {
             if (len < 0) {
                 return pipeLine.wontWork;
             }
@@ -315,7 +322,7 @@ public class pipeSide {
      * @param active set true if activity happened, false otherwise
      */
     protected void doInact(boolean active) {
-        synchronized (bufD) {
+        synchronized (lck) {
             long tim = bits.getTime();
             if (active) {
                 activity = tim;
@@ -339,7 +346,7 @@ public class pipeSide {
      */
     protected int flushRecvSide() {
         int i;
-        synchronized (bufD) {
+        synchronized (lck) {
             i = bufU;
             bufU = 0;
             bufR = bufW;

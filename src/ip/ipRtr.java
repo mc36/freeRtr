@@ -41,6 +41,26 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     public boolean routerVpn;
 
     /**
+     * number of times redist changed
+     */
+    public int routerRedistChg;
+
+    /**
+     * last time redist changed
+     */
+    public long routerRedistTim;
+    
+    /**
+     * number of times computed changed
+     */
+    public int routerComputeChg;
+    
+    /**
+     * last time computed changed
+     */
+    public long routerComputeTim;
+
+    /**
      * the unicast routes computed from protocol
      */
     public tabRoute<addrIP> routerComputedU = new tabRoute<addrIP>("computed");

@@ -106,6 +106,35 @@ public class tabRoute<T extends addrType> {
     }
 
     /**
+     * get table info
+     *
+     * @return info
+     */
+    public String getTableInfo() {
+        return prefixes.getTableInfo();
+    }
+
+    /**
+     * check consistency of table
+     *
+     * @return -1 on success, failing index otherwise
+     */
+    public int checkConsistency() {
+        if (size() < 2) {
+            return -1;
+        }
+        tabRouteEntry<T> lst = get(0);
+        for (int i = 1; i < size(); i++) {
+            tabRouteEntry<T> cur = get(i);
+            if (lst.compare(lst, cur) != -1) {
+                return i;
+            }
+            lst = cur;
+        }
+        return -1;
+    }
+
+    /**
      * clear all prefixes from table
      */
     public void clear() {
@@ -442,16 +471,20 @@ public class tabRoute<T extends addrType> {
      *
      * @param mod mode to use
      * @param other table to import
-     * @param nexthops table where look up nexthops
+     * @param nexthops table where look up nexthops, null means not check
      * @param copy copy entries
+     * @param distan highest allowed distance
      * @return number of entries imported
      */
     @SuppressWarnings("unchecked")
-    public int mergeFrom(addType mod, tabRoute<T> other, tabRoute<T> nexthops, boolean copy) {
+    public int mergeFrom(addType mod, tabRoute<T> other, tabRoute<T> nexthops, boolean copy, int distan) {
         int cnt = 0;
         for (int i = 0; i < other.prefixes.size(); i++) {
             tabRouteEntry<T> imp = other.prefixes.get(i);
             if (imp == null) {
+                continue;
+            }
+            if (imp.distance >= distan) {
                 continue;
             }
             if (copy) {
@@ -519,22 +552,6 @@ public class tabRoute<T extends addrType> {
                 return true;
             }
         }
-        return false;
-    }
-
-    /**
-     * copy data from other table
-     *
-     * @param mod mode to use
-     * @param other the other table
-     * @return false if copied, true if not needed because identicals
-     */
-    public boolean copyFromIfNeeded(addType mod, tabRoute<T> other) {
-        if (!differs(other)) {
-            return true;
-        }
-        clear();
-        mergeFrom(mod, other, null, true);
         return false;
     }
 

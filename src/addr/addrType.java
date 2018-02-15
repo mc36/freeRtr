@@ -150,9 +150,7 @@ public abstract class addrType implements Comparator<addrType> {
      * @param ofs offset in buffer
      */
     public void fromBuf(byte[] buf, int ofs) {
-        for (int i = 0; i < addr.length; i++) {
-            addr[i] = buf[ofs + i];
-        }
+        bits.byteCopy(buf, ofs, addr, 0, addr.length);
     }
 
     /**

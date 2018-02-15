@@ -1,5 +1,4 @@
 interface range command
-reload vdc asdf looping as experimental
 bdi infrastructure, service instances, etc
 reenable which elliptic courves? sure? why that?
 https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06

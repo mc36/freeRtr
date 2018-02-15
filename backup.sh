@@ -1,6 +1,6 @@
 #!/bin/sh
-chmod -x `find . -executable -name *.java`
-rm rtr.zip
+#chmod -x `find . -executable -name *.java`
+rm rtr.zip 2> /dev/null
 echo `cd misc/trackmap;./d.sh`
 echo `cd misc/player;./d.sh`
 echo `cd misc/temper;./d.sh`

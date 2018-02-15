@@ -56,9 +56,10 @@ public class userTester {
      */
     public void doer(cmds cmd) {
         rdr = new pipeProgress(cmd.pipe);
+        int mem = 256;
         String beg = cmd.word();
         String jvn = "java";
-        String jvp = " -Xmx256m -jar " + version.getFileName();
+        String jvp = " XmxZZZm -jar " + version.getFileName();
         for (;;) {
             String s = cmd.word();
             if (s.length() < 1) {
@@ -100,6 +101,9 @@ public class userTester {
             if (s.equals("noretry")) {
                 maxTry = 1;
             }
+            if (s.equals("mem")) {
+                mem = bits.str2num(cmd.word());
+            }
             if (s.equals("path")) {
                 path = cmd.word();
             }
@@ -137,15 +141,23 @@ public class userTester {
             }
             if (s.equals("ikvm")) {
                 jvn = "/usr/bin/ikvm";
+                mem = 0;
             }
             if (s.equals("gcj")) {
                 jvn = "/usr/lib/jvm/java-gcj/bin/java";
+                mem = 0;
             }
             if (s.equals("binary")) {
                 jvn = "./rtr.bin";
                 jvp = "";
+                mem = 0;
             }
         }
+        String s = "-Xmx" + mem + "m";
+        if (mem < 1) {
+            s = "";
+        }
+        jvp = jvp.replaceAll("XmxZZZm", s);
         userTesterPrc prc = new userTesterPrc(rdr, "rtr", jvn + jvp + " show version");
         release = prc.getLine();
         prc.stopNow();
@@ -163,7 +175,7 @@ public class userTester {
                 if (fl[i].isDirectory()) {
                     continue;
                 }
-                String s = fl[i].getName();
+                s = fl[i].getName();
                 if (!s.endsWith(".tst")) {
                     continue;
                 }
@@ -209,7 +221,7 @@ public class userTester {
         List<String> lq = new ArrayList<String>(); // feature result
         int err = 0;
         for (int i = 0; i < lf.size(); i++) {
-            String s = lf.get(i);
+            s = lf.get(i);
             final String sep = " ---------- ";
             rdr.debugRes(sep + i + "/" + lf.size() + sep + s + sep);
             userTesterOne lt = new userTesterOne(); // list of tests
@@ -504,7 +516,15 @@ class userTesterOne {
 
     public void stopAll() {
         for (int i = 0; i < procs.size(); i++) {
-            procs.get(i).stopNow();
+            userTesterPrc prc = procs.get(i);
+            prc.stopNow();
+            List<String> log = bits.txt2buf(getLogName(prc.name, 1));
+            bits.buf2txt(false, log, getLogName(prc.name, 2));
+            userFlash.delete(getLogName(prc.name, 1));
+            if (checkLogs(log)) {
+                continue;
+            }
+            bits.buf2txt(false, log, getLogName(prc.name, 3));
         }
     }
 
@@ -566,6 +586,41 @@ class userTesterOne {
             s = s + "127.0.0.1 " + i + b;
         }
         return s;
+    }
+
+    public boolean checkLogs(List<String> l) {
+        if (l == null) {
+            return true;
+        }
+        for (int i = 0; i < l.size(); i++) {
+            String a = l.get(i).toLowerCase();
+            if (a.indexOf("executeswcommand") >= 0) {
+                return false;
+            }
+            if (a.indexOf("exception") >= 0) {
+                return false;
+            }
+            if (a.indexOf("traceback") >= 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public String getLogName(String rn, int rtr) {
+        String s = "log";
+        switch (rtr) {
+            case 1:
+                s = "run";
+                break;
+            case 2:
+                s = "txt";
+                break;
+            case 3:
+                s = "err";
+                break;
+        }
+        return path + "log-" + rn + "." + s;
     }
 
     public void doLine() {
@@ -699,15 +754,14 @@ class userTesterOne {
                 cfg.add(s);
             }
             bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);
-            s = path + "log-" + rn + ".txt";
             cfg = new ArrayList<String>();
             cfg.add("");
             cfg.add("");
-            cfg.add(fileName + ":");
-            bits.buf2txt(false, cfg, s);
+            cfg.add(fileName + " - " + rn + " - " + testName + ":");
+            bits.buf2txt(true, cfg, getLogName(rn, 1));
             cfg = new ArrayList<String>();
             cfg.add("hostname " + rn);
-            cfg.add("logging file debug " + s);
+            cfg.add("logging file debug " + getLogName(rn, 1));
             for (;;) {
                 s = getLin();
                 if (s.equals("!")) {

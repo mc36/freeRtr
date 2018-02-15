@@ -1221,7 +1221,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         computedRpki = new tabRoute<addrIP>("bgp");
         for (int i = 0; i < rpkis.size(); i++) {
-            computedRpki.mergeFrom(tabRoute.addType.better, rpkis.get(i).table, null, true);
+            computedRpki.mergeFrom(tabRoute.addType.better, rpkis.get(i).table, null, true, tabRouteEntry.distanLim);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");
@@ -2638,7 +2638,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "as|rx|tx|rx|tx|neighbor");
                 break;
             case 11:
-                l = new userFormat("|", "as|rx|tx|rx|tx|rx|tx|neighbor");
+                l = new userFormat("|", "as|prx|ptx|brx|btx|rrx|rtx|neighbor");
                 break;
             default:
                 return null;

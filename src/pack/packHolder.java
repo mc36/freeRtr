@@ -916,7 +916,9 @@ public class packHolder {
                 newOfs = dataD.length - dataE - headS - marginMove;
             }
         }
-        bits.byteCopy(dataD, dataO, newOfs + headS, dataE);
+        if (dataO != (newOfs + headS)) {
+            bits.byteCopy(dataD, dataO, dataD, newOfs + headS, dataE);
+        }
         bits.byteCopy(headD, headKeep, dataD, newOfs, headS);
         dataE += headS;
         dataE += newOfs;

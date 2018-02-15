@@ -49,12 +49,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
     /**
      * bfd enabled
      */
-    public boolean bfdTrigger;
+    public boolean bfdTrigger = false;
 
     /**
      * passive interface
      */
-    public boolean passiveInt;
+    public boolean passiveInt = false;
 
     /**
      * suppress interface address
@@ -65,6 +65,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
      * authentication string
      */
     public String authentication = null;
+
+    /**
+     * split horizon
+     */
+    public boolean splitHorizon = true;
 
     /**
      * the interface this works on
@@ -182,6 +187,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
      */
     public void routerGetConfig(List<String> l, String beg) {
         l.add(cmds.tabulator + beg + "enable");
+        cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
@@ -199,6 +205,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
      */
     public static void routerGetHelp(userHelping l) {
         l.add("4 .         enable                  enable protocol processing");
+        l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 .         bfd                     enable bfd triggered down");
         l.add("4 .         passive                 do not form neighborship");
         l.add("4 .         suppress-prefix         do not advertise interface");
@@ -232,6 +239,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
             bfdTrigger = true;
             return;
         }
+        if (a.equals("split-horizon")) {
+            splitHorizon = true;
+            return;
+        }
         if (a.equals("password")) {
             authentication = authLocal.passwdDecode(cmd.word());
             return;
@@ -248,7 +259,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         }
         if (a.equals("suppress-prefix")) {
             suppressAddr = true;
-            lower.todo = 0;
+            lower.todo.set(0);
             lower.notif.wakeup();
             return;
         }
@@ -266,7 +277,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         }
         if (a.equals("metric")) {
             metric = bits.str2num(cmd.word());
-            lower.todo = 0;
+            lower.todo.set(0);
             lower.notif.wakeup();
             return;
         }
@@ -284,13 +295,17 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
             bfdTrigger = false;
             return;
         }
+        if (a.equals("split-horizon")) {
+            splitHorizon = false;
+            return;
+        }
         if (a.equals("password")) {
             authentication = null;
             return;
         }
         if (a.equals("suppress-prefix")) {
             suppressAddr = false;
-            lower.todo = 0;
+            lower.todo.set(0);
             lower.notif.wakeup();
             return;
         }
@@ -422,6 +437,24 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         for (int i = 0; i < neighs.size(); i++) {
             rtrLsrpNeigh nei = neighs.get(i);
             nei.stopWork();
+        }
+    }
+
+    /**
+     * got better advertisement
+     *
+     * @param dat advertisement
+     */
+    public void gotAdvert(rtrLsrpData dat) {
+        if (!splitHorizon) {
+            return;
+        }
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrLsrpNeigh ntry = neighs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry.advert.put(dat.copyHead());
         }
     }
 

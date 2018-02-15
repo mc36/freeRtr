@@ -742,6 +742,14 @@ public class userScript {
             prcs.set(a, b + " } " + c);
             return "";
         }
+        if (a.equals("sleep")) {
+            a = getWord(true);
+            int i = bits.str2num(a);
+            if (i > 0) {
+                bits.sleep(i * 1000);
+            }
+            return a;
+        }
         if (a.equals("puts")) {
             a = getWord(true);
             pipe.linePut(a);

@@ -63,6 +63,7 @@ import pipe.pipeWindow;
 import sec.secSsh;
 import sec.secTls;
 import tab.tabRoute;
+import tab.tabRouteEntry;
 import util.bits;
 import util.cmds;
 import util.extMrkLng;
@@ -290,14 +291,60 @@ public class userTest {
             return null;
         }
         if (a.equals("routing")) {
-            doTestRouting(new addrClns(), new tabRoute<addrClns>("test"));
-            doTestRouting(new addrIsis(), new tabRoute<addrIsis>("test"));
-            doTestRouting(new addrEui(), new tabRoute<addrEui>("test"));
-            doTestRouting(new addrMac(), new tabRoute<addrMac>("test"));
-            doTestRouting(new addrIpx(), new tabRoute<addrIpx>("test"));
-            doTestRouting(new addrIPv4(), new tabRoute<addrIPv4>("test"));
-            doTestRouting(new addrIPv6(), new tabRoute<addrIPv6>("test"));
-            doTestRouting(new addrIP(), new tabRoute<addrIP>("test"));
+            int fnd = 10000;
+            int idx = 111;
+            boolean dmp = false;
+            int msk = 0;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("dump")) {
+                    dmp = true;
+                    continue;
+                }
+                if (a.equals("fwd")) {
+                    msk |= 1;
+                    continue;
+                }
+                if (a.equals("bwd")) {
+                    msk |= 2;
+                    continue;
+                }
+                if (a.equals("rnd")) {
+                    msk |= 4;
+                    continue;
+                }
+                if (a.equals("raw")) {
+                    msk |= 8;
+                    continue;
+                }
+                if (a.equals("opt")) {
+                    msk |= 16;
+                    continue;
+                }
+                if (a.equals("all")) {
+                    msk |= 0xfff;
+                    continue;
+                }
+                if (a.equals("len")) {
+                    fnd = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("idx")) {
+                    idx = bits.str2num(cmd.word());
+                    continue;
+                }
+            }
+            doTestRouting(msk, new addrClns(), new tabRoute<addrClns>("test"), fnd, idx, dmp);
+            doTestRouting(msk, new addrIsis(), new tabRoute<addrIsis>("test"), fnd, idx, dmp);
+            doTestRouting(msk, new addrEui(), new tabRoute<addrEui>("test"), fnd, idx, dmp);
+            doTestRouting(msk, new addrMac(), new tabRoute<addrMac>("test"), fnd, idx, dmp);
+            doTestRouting(msk, new addrIpx(), new tabRoute<addrIpx>("test"), fnd, idx, dmp);
+            doTestRouting(msk, new addrIPv4(), new tabRoute<addrIPv4>("test"), fnd, idx, dmp);
+            doTestRouting(msk, new addrIPv6(), new tabRoute<addrIPv6>("test"), fnd, idx, dmp);
+            doTestRouting(msk, new addrIP(), new tabRoute<addrIP>("test"), fnd, idx, dmp);
             return null;
         }
         if (a.equals("pipeline")) {
@@ -531,134 +578,159 @@ public class userTest {
             cmd.error(l.get(i));
         }
     }
+    private final static int routingTim = 5000;
 
-    private <T extends addrType> void doTestRouting(T adr, tabRoute<T> tab) {
-        int fill = adr.getSize() * 8;
-        cmd.pipe.strPut("performing " + adr.getClass().getName() + " (" + fill + " bits) test:");
-        byte[] buf = new byte[256];
-        tab.clear();
+    private final static int routingRnd = 3000;
+
+    private <T extends addrType> void doTestRoutingChk(tabRoute<T> tab, boolean dmp) {
+        int i = tab.checkConsistency();
+        if (i >= 0) {
+            cmd.pipe.strPut(",err#" + i + " ");
+        }
+        if (!dmp) {
+            return;
+        }
+        cmd.pipe.strPut("," + tab.getTableInfo() + "  ");
+    }
+
+    private <T extends addrType> void doTestRoutingGet(tabRoute<T> tab, int idx, boolean dmp, String typ) {
+        for (int i = 0; i < tab.size(); i++) {
+            tab.get(i).time = i;
+        }
         long beg = bits.getTime();
         long rnd = 0;
         for (;;) {
-            if ((bits.getTime() - beg) > 5000) {
+            if ((bits.getTime() - beg) > routingTim) {
                 break;
             }
-            for (int i = 0; i < 1000; i++) {
-                bits.msbPutD(buf, 0, (int) rnd);
-                adr.fromBuf(buf, 0);
-                tab.add(tabRoute.addType.always, new addrPrefix<T>(adr, fill), adr);
+            for (int i = 0; i < tab.size(); i++) {
+                tab.get(i).time = rnd;
                 rnd++;
             }
         }
         beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("   " + beg + " sadds/sec");
+        cmd.pipe.strPut("  " + beg + " " + typ + "get/s");
+        int siz = tab.size();
+        tabRouteEntry<T> rou = tab.get(idx);
+        addrPrefix<T> prf = null;
+        T adr = null;
+        if (rou != null) {
+            prf = rou.prefix;
+            adr = prf.network;
+        }
+        if (dmp) {
+            cmd.pipe.strPut("  rou=" + rou + ",prf=" + prf + ",adr=" + adr);
+        }
         beg = bits.getTime();
         rnd = 0;
-        for (int i = tab.size(); i > 0; i--) {
-            tab.del(tab.get(i - 1));
-            rnd++;
+        for (;;) {
+            if ((bits.getTime() - beg) > routingTim) {
+                break;
+            }
+            for (int i = 0; i < routingRnd; i++) {
+                if (prf == null) {
+                    tab.find(tab.get(bits.random(0, siz))).time = rnd;
+                } else {
+                    tab.find(prf).time = rnd;
+                }
+                rnd++;
+            }
         }
         beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("   " + beg + " sdels/sec");
+        cmd.pipe.strPut("  " + beg + " " + typ + "fnd/s");
+        beg = bits.getTime();
+        rnd = 0;
+        for (;;) {
+            if ((bits.getTime() - beg) > routingTim) {
+                break;
+            }
+            for (int i = 0; i < routingRnd; i++) {
+                if (adr == null) {
+                    tab.route(tab.get(bits.random(0, siz)).prefix.network).time = rnd;
+                } else {
+                    tab.route(adr).time = rnd;
+                }
+                rnd++;
+            }
+        }
+        beg = (rnd * 1000) / (bits.getTime() - beg);
+        cmd.pipe.strPut("  " + beg + " " + typ + "lok/s");
+    }
+
+    private <T extends addrType> void doTestRoutingAdd(tabRoute<T> tab, T adr, int fill, userTestIfc mod, boolean dmp, String typ) {
         tab.clear();
-        beg = bits.getTime();
-        rnd = 0;
+        byte[] buf = new byte[256];
+        long beg = bits.getTime();
+        long rnd = 0;
         for (;;) {
-            if ((bits.getTime() - beg) > 5000) {
+            if ((bits.getTime() - beg) > routingTim) {
                 break;
             }
-            for (int i = 0; i < 1000; i++) {
-                bits.msbPutD(buf, 0, bits.randomD());
+            for (int i = 0; i < routingRnd; i++) {
+                bits.msbPutD(buf, 0, mod.forAdd(rnd));
                 adr.fromBuf(buf, 0);
                 tab.add(tabRoute.addType.always, new addrPrefix<T>(adr, fill), adr);
                 rnd++;
             }
         }
         beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("   " + beg + " radds/sec");
+        cmd.pipe.strPut("  " + beg + " " + typ + "add/s");
+        doTestRoutingChk(tab, dmp);
         beg = bits.getTime();
         rnd = 0;
         for (;;) {
-            if ((bits.getTime() - beg) > 5000) {
+            if ((bits.getTime() - beg) > routingTim) {
                 break;
             }
             int o = tab.size();
             if (o < 1) {
                 break;
             }
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < routingRnd; i++) {
                 o = tab.size();
                 if (o < 1) {
                     break;
                 }
-                tab.del(tab.get(bits.random(0, o)));
+                tab.del(tab.get(mod.forDel(o)));
                 rnd++;
             }
         }
         beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("   " + beg + " rdels/sec");
+        cmd.pipe.strPut("  " + beg + " " + typ + "del/s");
+        doTestRoutingChk(tab, dmp);
+    }
+
+    private <T extends addrType> void doTestRouting(int msk, T adr, tabRoute<T> tab, int fnd, int idx, boolean dmp) {
+        int fill = adr.getSize() * 8;
+        cmd.pipe.strPut("testing " + adr.getClass().getName() + "-" + fill + ":");
+        byte[] buf = new byte[256];
+        if ((msk & 1) != 0) {
+            doTestRoutingAdd(tab, adr, fill, new userTestFwd(), dmp, "f");
+        }
+        if ((msk & 2) != 0) {
+            doTestRoutingAdd(tab, adr, fill, new userTestBwd(), dmp, "b");
+        }
+        if ((msk & 4) != 0) {
+            doTestRoutingAdd(tab, adr, fill, new userTestRnd(), dmp, "r");
+        }
         tab.clear();
         fill = fill - 8;
-        for (int i = 0; i < 10000; i++) {
-            bits.msbPutW(buf, 0, i);
+        for (int i = 0; i < fnd; i++) {
+            bits.msbPutD(buf, 0, i << 8);
             adr.fromBuf(buf, 0);
             tab.add(tabRoute.addType.always, new addrPrefix<T>(adr, fill), adr);
         }
-        addrPrefix<T> prf = tab.get(111).prefix;
-        adr = prf.network;
-        beg = bits.getTime();
-        rnd = 0;
-        for (;;) {
-            if ((bits.getTime() - beg) > 5000) {
-                break;
-            }
-            for (int i = 0; i < 1000; i++) {
-                tab.find(prf);
-                rnd++;
-            }
+        if ((msk & 8) != 0) {
+            doTestRoutingChk(tab, dmp);
+            doTestRoutingGet(tab, idx, dmp, "r");
+            doTestRoutingChk(tab, dmp);
         }
-        beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("   " + beg + " rfinds/sec");
-        beg = bits.getTime();
-        rnd = 0;
-        for (;;) {
-            if ((bits.getTime() - beg) > 5000) {
-                break;
-            }
-            for (int i = 0; i < 1000; i++) {
-                tab.route(adr);
-                rnd++;
-            }
-        }
-        beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("   " + beg + " rlookups/sec");
         tab.optimize4lookup();
-        beg = bits.getTime();
-        rnd = 0;
-        for (;;) {
-            if ((bits.getTime() - beg) > 5000) {
-                break;
-            }
-            for (int i = 0; i < 1000; i++) {
-                tab.find(prf);
-                rnd++;
-            }
+        if ((msk & 16) != 0) {
+            doTestRoutingChk(tab, dmp);
+            doTestRoutingGet(tab, idx, dmp, "o");
+            doTestRoutingChk(tab, dmp);
         }
-        beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("   " + beg + " ofinds/sec");
-        beg = bits.getTime();
-        rnd = 0;
-        for (;;) {
-            if ((bits.getTime() - beg) > 5000) {
-                break;
-            }
-            for (int i = 0; i < 1000; i++) {
-                tab.route(adr);
-                rnd++;
-            }
-        }
-        beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("   " + beg + " olookups/sec");
         cmd.pipe.linePut("");
     }
 
@@ -679,18 +751,20 @@ public class userTest {
         long cur;
         for (;;) {
             cur = bits.getTime();
-            if ((cur - tim) > 5000) {
+            if ((cur - tim) > routingTim) {
                 break;
             }
-            tried++;
-            if (p1.blockingPut(b1, 0, b1.length) != b1.length) {
-                continue;
+            for (int i = 0; i < routingRnd; i++) {
+                tried++;
+                if (p1.blockingPut(b1, 0, b1.length) != b1.length) {
+                    continue;
+                }
+                goodT++;
+                if (p2.moreGet(b2, 0, b2.length) != b2.length) {
+                    continue;
+                }
+                goodR++;
             }
-            goodT++;
-            if (p2.moreGet(b2, 0, b2.length) != b2.length) {
-                continue;
-            }
-            goodR++;
         }
         tim = cur - tim;
         finSpeedTest(tried + "/" + (tried - goodT) + "/" + (tried - goodR),
@@ -762,6 +836,50 @@ public class userTest {
         }
         tim = cur - tim;
         finSpeedTest("" + goodR, b1.length, goodR, tim);
+    }
+
+}
+
+interface userTestIfc {
+
+    public int forAdd(long rnd);
+
+    public int forDel(int len);
+
+}
+
+class userTestFwd implements userTestIfc {
+
+    public int forAdd(long rnd) {
+        return (int) rnd;
+    }
+
+    public int forDel(int len) {
+        return len - 1;
+    }
+
+}
+
+class userTestBwd implements userTestIfc {
+
+    public int forAdd(long rnd) {
+        return (int) (-rnd);
+    }
+
+    public int forDel(int len) {
+        return 0;
+    }
+
+}
+
+class userTestRnd implements userTestIfc {
+
+    public int forAdd(long rnd) {
+        return bits.randomD();
+    }
+
+    public int forDel(int len) {
+        return bits.random(0, len);
     }
 
 }

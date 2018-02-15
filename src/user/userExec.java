@@ -13,6 +13,7 @@ import cfg.cfgVdc;
 import cfg.cfgPrcss;
 import cfg.cfgVrf;
 import cfg.cfgMenu;
+import cfg.cfgRtr;
 import clnt.clntDns;
 import clnt.clntPorts;
 import clnt.clntProxy;
@@ -279,6 +280,7 @@ public class userExec {
         hl.add("5 .            spf               information about last spf");
         hl.add("5 .            tree              tree about last spf");
         hl.add("5 .            graph             graph about last spf");
+        hl.add("5 .            topology          topology about last spf");
         hl.add("5 6,.          route             list of routes in database");
         hl.add("6 .              [addr]          prefix to view");
         hl.add("5 6,.          originate         list of routes originated locally");
@@ -311,6 +313,8 @@ public class userExec {
         hl.add("6 .              <num>           area number");
         hl.add("5 6            graph             graph about last spf");
         hl.add("6 .              <num>           area number");
+        hl.add("5 6            topology          topology about last spf");
+        hl.add("6 .              <num>           area number");
         hl.add("5 6            route             list of routes in area");
         hl.add("6 7,.            <num>           area number");
         hl.add("7 .                [addr]        prefix to view");
@@ -324,11 +328,13 @@ public class userExec {
         hl.add("6 7,.            <num>           level number");
         hl.add("7 .                [addr]        entry to view");
         hl.add("5 6            spf               information about last spf");
-        hl.add("6 .              <num>           area number");
+        hl.add("6 .              <num>           level number");
         hl.add("5 6            tree              tree about last spf");
-        hl.add("6 .              <num>           area number");
+        hl.add("6 .              <num>           level number");
         hl.add("5 6            graph             graph about last spf");
-        hl.add("6 .              <num>           area number");
+        hl.add("6 .              <num>           level number");
+        hl.add("5 6            topology          topology about last spf");
+        hl.add("6 .              <num>           level number");
         hl.add("5 6            route             list of routes in area");
         hl.add("6 7,.            <num>           level number");
         hl.add("7 .                [addr]        prefix to view");
@@ -591,6 +597,16 @@ public class userExec {
         hl.add("3 4        route                 routing table entries");
         hl.add("4 5,.        <vrf>               name of routing table");
         hl.add("5 .            [addr]            prefix to view");
+        hl.add("2 3      router                  routing protocol information");
+        cfgRtr.getRouterList(hl, 1, "");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 6            redisted          advertised routes");
+        hl.add("5 6            computed          computed routes");
+        hl.add("6 7,.            unicast         unicast routes");
+        hl.add("6 7,.            multicast       multicast routes");
+        hl.add("6 7,.            flowspec        flowspec routes");
+        hl.add("7 8,.              [addr]        prefix to view");
+        hl.add("8 .                  [rd]        route distinguisher");
         hl.add("2 3      ipv4                    ipv4 information");
         hl.add("3 4        arp                   interface arp cache");
         hl.add("4 .          <name>              name of (sub)interface");
@@ -801,6 +817,8 @@ public class userExec {
         hl.add("4 3,.        <num>               ttl");
         hl.add("3 4        /tos                  specify tos value");
         hl.add("4 3,.        <num>               tos");
+        hl.add("1 2    sleep                     do nothing for a while");
+        hl.add("2 .      <num>                   seconds for sleep");
         hl.add("1 2    whois                     perform whois query");
         hl.add("2 3      <host>                  name of host to query");
         hl.add("3 3,.      <text>                query string");
@@ -827,7 +845,9 @@ public class userExec {
         hl.add("3 4,.      <name>                name of vpdn");
         hl.add("4 .          [num]               downtime in seconds");
         hl.add("2 3      vdc                     restart vdc process");
-        hl.add("3 .        <name>                name of vdc");
+        hl.add("3 4,.      <name>                name of vdc");
+        hl.add("4 .          stop                stop");
+        hl.add("4 .          start               start");
         hl.add("2 3      process                 restart external process");
         hl.add("3 .        <name>                name of process");
         hl.add("2 .      logging                 logged messages");
@@ -1010,7 +1030,7 @@ public class userExec {
         hl.add("4 5          <addr>              server to query");
         hl.add("5 6            <txt>             community to use");
         hl.add("6 .              <oid>           oid to query");
-        hl.add("2 3      smtp                    send email message");
+        hl.add("2 3,.    smtp                    send email message");
         hl.add("3 4,.      <str>                 email address");
         hl.add("4 4,.        <str>               email text");
         hl.add("2 3      logging                 log one line");
@@ -1019,10 +1039,10 @@ public class userExec {
         hl.add("3 4,.      warning               warning message");
         hl.add("3 4,.      informational         informational message");
         hl.add("4 4,.        <str>               text to log");
-        hl.add("2 3      password                decode encoded password");
+        hl.add("2 3,.    password                decode encoded password");
         hl.add("3 3,.      <str>                 encoded string");
-        hl.add("2 3      otppass                 generate password");
-        hl.add("3 .        <str>                 encoded string");
+        hl.add("2 3,.    otppass                 generate password");
+        hl.add("3 3,.      <str>                 encoded string");
         hl.add("2 3,.    asn1parser              decode asn1 encoded bytes");
         hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    base64                  decode base64 encoded bytes");
@@ -1039,8 +1059,9 @@ public class userExec {
         hl.add("3 3,.      <str>                 name of server");
         hl.add("2 3      vm                      run virtual machine");
         hl.add("3 4,.      <name>                file name");
-        hl.add("4 4,.        <str>               parameter to give");
-        hl.add("2 .      routing                 test routing lookup performance");
+        hl.add("4 4,.        [str]               parameter to give");
+        hl.add("2 3,.    routing                 test routing lookup performance");
+        hl.add("3 3,.      [str]                 parameters");
         hl.add("2 .      pipeline                test pipeline throughput");
         hl.add("2 .      ssh                     test ssh throughput");
         hl.add("2 .      tls                     test tls throughput");
@@ -1048,9 +1069,7 @@ public class userExec {
         hl.add("2 .      gc                      run garbage collector");
         hl.add("2 .      crypto                  test encryption and hash");
         hl.add("2 3,.    digsig                  test digital signatures");
-        hl.add("3 3,.      keys                  print keys after tests");
-        hl.add("3 4        len                   specify key length");
-        hl.add("4 3,.        <num>               key length");
+        hl.add("3 3,.      [str]                 parameters");
         hl.add("2 .      window                  test window handler");
         hl.add("2 3      vercore                 test vercore updater");
         hl.add("3 4        <key>                 key file to use");
@@ -1083,9 +1102,11 @@ public class userExec {
         hl.add("2 .      force                   reboot the router process without saving");
         hl.add("2 .      peer                    reboot redundant router processes");
         hl.add("2 3      vdc                     reboot virtual device context");
-        hl.add("3 .        <name>                name of device");
+        hl.add("3 4,.      <name>                name of vdc");
+        hl.add("4 .          stop                stop");
+        hl.add("4 .          start               start");
         hl.add("2 3      process                 reboot external process");
-        hl.add("3 .        <name>                name of device");
+        hl.add("3 .        <name>                name of process");
         return hl;
     }
 
@@ -1176,6 +1197,13 @@ public class userExec {
         }
         if (a.equals("telnet")) {
             doTelnet(0);
+            return cmdRes.command;
+        }
+        if (a.equals("sleep")) {
+            int i = bits.str2num(cmd.word());
+            if (i > 0) {
+                bits.sleep(i * 1000);
+            }
             return cmdRes.command;
         }
         if (a.equals("whois")) {
@@ -1552,6 +1580,13 @@ public class userExec {
                 if (ntry == null) {
                     cmd.error("no such vdc");
                     return cmdRes.command;
+                }
+                a = cmd.word();
+                if (a.equals("start")) {
+                    ntry.setRespawn(true);
+                }
+                if (a.equals("stop")) {
+                    ntry.setRespawn(false);
                 }
                 ntry.restartNow();
                 return cmdRes.command;

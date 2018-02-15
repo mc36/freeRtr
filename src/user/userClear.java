@@ -57,6 +57,13 @@ public class userClear {
                 cmd.error("no such vdc");
                 return null;
             }
+            a = cmd.word();
+            if (a.equals("start")) {
+                ntry.setRespawn(true);
+            }
+            if (a.equals("stop")) {
+                ntry.setRespawn(false);
+            }
             ntry.restartNow();
             return null;
         }

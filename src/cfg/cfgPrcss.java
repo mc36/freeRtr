@@ -33,6 +33,11 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public String description = "";
 
     /**
+     * respawn on termination
+     */
+    public boolean respawn = true;
+
+    /**
      * execute this binary
      */
     public String execName = null;
@@ -78,6 +83,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
      */
     public final static String defaultL[] = {
         "process definition .*! no description",
+        "process definition .*! respawn",
         "process definition .*! exec null",
         "process definition .*! args null",
         "process definition .*! time 5000",
@@ -131,6 +137,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1 2,. description        description of this process");
         l.add("2 2,.   [text]           text describing this process");
+        l.add("1 .  respawn             restart on termination");
         l.add("1 2  rename              rename this process");
         l.add("2 .    <name>            set new name of process");
         l.add("1 2  exec                set external binary to use");
@@ -151,6 +158,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("process definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
+        cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
         l.add(cmds.tabulator + "exec " + execName);
         l.add(cmds.tabulator + "args " + execArgs);
         l.add(cmds.tabulator + "delay " + initial);
@@ -178,6 +186,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
                 return;
             }
             name = a;
+            return;
+        }
+        if (a.equals("respawn")) {
+            respawn = true;
             return;
         }
         if (a.equals("description")) {
@@ -225,6 +237,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
             stopNow();
             return;
         }
+        if (a.equals("respawn")) {
+            respawn = false;
+            return;
+        }
         if (a.equals("description")) {
             description = "";
             return;
@@ -248,10 +264,12 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         bits.sleep(initial);
         for (;;) {
             try {
-                logger.info("restarting process " + name);
-                restartT = bits.getTime();
-                doRound();
-                restartC++;
+                if (respawn) {
+                    logger.info("restarting process " + name);
+                    restartT = bits.getTime();
+                    doRound();
+                    restartC++;
+                }
                 if (!need2run) {
                     break;
                 }

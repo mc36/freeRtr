@@ -1,2 +1,2 @@
 #!/bin/sh
-rm *.class
+rm *.class 2> /dev/null

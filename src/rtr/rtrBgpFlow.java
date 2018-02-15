@@ -154,7 +154,7 @@ public class rtrBgpFlow {
         }
         int i = pck.headSize();
         byte[] buf = pck.getHeadArray();
-        bits.byteCopy(buf, 2, 3, i - 2);
+        bits.byteCopy(buf, 2, buf, 3, i - 2);
         buf[2] = 0;
         pck.putSkip(1);
         pck.merge2end();

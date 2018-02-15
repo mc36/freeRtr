@@ -35,6 +35,7 @@ import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
 import util.state;
+import util.syncInt;
 import util.version;
 
 /**
@@ -157,7 +158,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * need to work
      */
-    protected int todo = 0;
+    protected syncInt todo = new syncInt(0);
 
     /**
      * data changed
@@ -202,6 +203,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 break;
         }
         database = new tabGen<rtrLsrpData>();
+        spf = new shrtPthFrst<addrIPv4>(null);
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
         new Thread(this).start();
@@ -293,7 +295,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         userFormat l;
         switch (mod) {
             case 1:
-                l = new userFormat("|", "id|name|nei|net|seq|left");
+                l = new userFormat("|", "id|name|nei|net|seq|topo|left");
                 break;
             case 2:
                 l = new userFormat("|", "id|name|index|max|base");
@@ -317,7 +319,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             switch (mod) {
                 case 1:
-                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.neighbor.size() + "|" + ntry.network.size() + "|" + ntry.sequence + "|" + bits.timeLeft(ntry.time));
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.neighbor.size() + "|" + ntry.network.size() + "|" + ntry.sequence + "|" + ntry.topoSum + "|" + bits.timeLeft(ntry.time));
                     break;
                 case 2:
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.segrouIdx + "|" + ntry.segrouMax + "|" + ntry.segrouBeg);
@@ -383,6 +385,15 @@ public class rtrLsrp extends ipRtr implements Runnable {
      *
      * @return log of spf
      */
+    public userFormat showSpfTopo() {
+        return spf.listTopology();
+    }
+
+    /**
+     * show spf
+     *
+     * @return log of spf
+     */
     public userFormat showSpfLog() {
         return spf.listUsages();
     }
@@ -392,7 +403,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      *
      * @return tree of spf
      */
-    public List<String> showTree() {
+    public List<String> showSpfTree() {
         return spf.listTree();
     }
 
@@ -401,7 +412,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      *
      * @return graph of spf
      */
-    public List<String> showGraph() {
+    public List<String> showSpfGraph() {
         return spf.listGraphviz();
     }
 
@@ -461,8 +472,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 dat.addNeigh(nei.rtrId, ifc.metric, (int) ifc.iface.bandwidth, adj);
             }
         }
-        dat.network.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true);
+        dat.network.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteEntry.distanLim);
         dat.rtrId = routerID.copyBytes();
+        dat.topoSum = spf.listTopoSum().hashCode();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
         dat.software = version.usrAgnt.replaceAll(" ", "_");
         dat.hardware = (cfgInit.hwIdNum + " " + version.getCPUname()).replaceAll(" ", "_");
@@ -687,38 +699,38 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (negated) {
                 routerID = new addrIPv4();
             }
-            todo = 0;
+            todo.set(0);
             notif.wakeup();
             return false;
         }
         if (s.equals("default-originate")) {
             defOrigin = !negated;
-            todo = 0;
+            todo.set(0);
             notif.wakeup();
             return false;
         }
         if (s.equals("distance")) {
             distance = bits.str2num(cmd.word());
-            todo = 0;
+            todo.set(0);
             notif.wakeup();
             return false;
         }
         if (s.equals("refresh")) {
             refresh = bits.str2num(cmd.word());
-            todo = 0;
+            todo.set(0);
             notif.wakeup();
             return false;
         }
         if (s.equals("lifetime")) {
             lifetime = bits.str2num(cmd.word());
-            todo = 0;
+            todo.set(0);
             notif.wakeup();
             return false;
         }
         if (s.equals("prefix-list")) {
             if (negated) {
                 prflstIn = null;
-                todo = 0;
+                todo.set(0);
                 notif.wakeup();
                 return false;
             }
@@ -728,14 +740,14 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 return false;
             }
             prflstIn = ntry.prflst;
-            todo = 0;
+            todo.set(0);
             notif.wakeup();
             return false;
         }
         if (s.equals("route-map")) {
             if (negated) {
                 roumapIn = null;
-                todo = 0;
+                todo.set(0);
                 notif.wakeup();
                 return false;
             }
@@ -745,14 +757,14 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 return false;
             }
             roumapIn = ntry.roumap;
-            todo = 0;
+            todo.set(0);
             notif.wakeup();
             return false;
         }
         if (s.equals("route-policy")) {
             if (negated) {
                 roupolIn = null;
-                todo = 0;
+                todo.set(0);
                 notif.wakeup();
                 return false;
             }
@@ -762,7 +774,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 return false;
             }
             roupolIn = ntry.rouplc;
-            todo = 0;
+            todo.set(0);
             notif.wakeup();
             return false;
         }
@@ -772,14 +784,14 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (negated) {
                 segrouIdx = 0;
                 segrouMax = 0;
-                todo = 0;
+                todo.set(0);
                 notif.wakeup();
                 return false;
             }
             segrouMax = bits.str2num(cmd.word());
             segrouIdx = bits.str2num(cmd.word());
             segrouLab = tabLabel.allocate(6, segrouMax);
-            todo = 0;
+            todo.set(0);
             notif.wakeup();
             return false;
         }
@@ -790,7 +802,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 bierIdx = 0;
                 bierMax = 0;
                 bierLen = 0;
-                todo = 0;
+                todo.set(0);
                 notif.wakeup();
                 return false;
             }
@@ -798,7 +810,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             bierMax = bits.str2num(cmd.word());
             bierIdx = bits.str2num(cmd.word());
             bierLab = tabLabel.allocate(18, (bierMax + bierLen - 1) / bierLen);
-            todo = 0;
+            todo.set(0);
             notif.wakeup();
             return false;
         }
@@ -813,11 +825,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (!need2run) {
                 return;
             }
-            todo--;
-            if (todo > 0) {
+            if (todo.sub(1) > 0) {
                 continue;
             }
-            todo = 6;
+            todo.set(6);
             try {
                 routerCreateComputed();
             } catch (Exception e) {

@@ -38,6 +38,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public String description = "";
 
     /**
+     * respawn on termination
+     */
+    public boolean respawn = true;
+
+    /**
      * image to use
      */
     public String image1name = null;
@@ -145,6 +150,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      */
     public final static String defaultL[] = {
         "vdc definition .*! no description",
+        "vdc definition .*! respawn",
         "vdc definition .*! image null",
         "vdc definition .*! disk2 null",
         "vdc definition .*! disk3 null",
@@ -189,6 +195,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public cfgVdc copyBytes() {
         cfgVdc n = new cfgVdc(name);
         n.description = description;
+        n.respawn = respawn;
         n.uuidValue = uuidValue;
         n.initial = initial;
         n.interval = interval;
@@ -233,6 +240,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1 2,. description        description of this vdc");
         l.add("2 2,.   [text]           text describing this vdc");
+        l.add("1 .  respawn             restart on termination");
         l.add("1 2  rename              rename this vdc");
         l.add("2 .    <name>            set new name of vdc");
         l.add("1 2  interface           add interface to this vdc");
@@ -276,6 +284,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("vdc definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
+        cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
         for (int i = 0; i < ifaces.size(); i++) {
             l.add(cmds.tabulator + "interface " + ifaces.get(i));
         }
@@ -316,6 +325,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 return;
             }
             name = a;
+            return;
+        }
+        if (a.equals("respawn")) {
+            respawn = true;
             return;
         }
         if (a.equals("description")) {
@@ -458,6 +471,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         a = cmd.word();
+        if (a.equals("respawn")) {
+            respawn = false;
+            return;
+        }
         if (a.equals("description")) {
             description = "";
             return;
@@ -529,10 +546,12 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         bits.sleep(initial);
         for (;;) {
             try {
-                logger.info("restarting vdc " + name);
-                restartT = bits.getTime();
-                doRound();
-                restartC++;
+                if (respawn) {
+                    logger.info("restarting vdc " + name);
+                    restartT = bits.getTime();
+                    doRound();
+                    restartC++;
+                }
                 if (!need2run) {
                     break;
                 }
@@ -640,6 +659,15 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
     }
 
+    /**
+     * set respawn status
+     *
+     * @param res status
+     */
+    public synchronized void setRespawn(boolean res) {
+        respawn = res;
+    }
+
     private void addParam(List<String> l, String typ, String val) {
         if (val == null) {
             return;
@@ -655,8 +683,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      * @param beg vdc begin port
      * @param end vdc end port
      */
-    public synchronized void startNow(List<String> defs, List<String> mibs,
-            int beg, int end) {
+    public synchronized void startNow(List<String> defs, List<String> mibs, int beg, int end) {
         need2run = true;
         cfgBase = cfgInit.cfgFileSw;
         int i = cfgBase.lastIndexOf("/");

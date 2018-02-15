@@ -365,7 +365,7 @@ interface ethernet1
  router lsrp4 1 bfd
  router lsrp6 1 enable
  router lsrp6 1 bfd
- no shutdown
+ shutdown
  log-link-change
  exit
 !
@@ -766,7 +766,6 @@ client prefer-ipv6
 client name-server 8.8.8.8
 no client udp-checksum
 client upgrade-config
-client config-save
 client time-zone CET
 !
 end

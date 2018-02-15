@@ -200,7 +200,7 @@ public class userReader {
                 num = histD.length;
             }
             for (int i = 0; i < num; i++) {
-                d[i] = "" + histD[i];
+                d[i] = histD[i];
             }
         }
         histD = d;

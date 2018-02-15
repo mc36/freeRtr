@@ -102,7 +102,7 @@ public class sndDft {
      */
     public void sampAdd(int[] buf) {
         for (int i = 0; i < buf.length; i++) {
-            sampDat[sampSiz + i] = 0 + buf[i];
+            sampDat[sampSiz + i] = buf[i];
         }
         sampSiz += buf.length;
     }

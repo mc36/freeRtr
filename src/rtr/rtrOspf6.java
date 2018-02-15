@@ -148,7 +148,7 @@ public class rtrOspf6 extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            tab.mergeFrom(tabRoute.addType.better, ntry.routes, null, true);
+            tab.mergeFrom(tabRoute.addType.better, ntry.routes, null, true, tabRouteEntry.distanLim);
         }
         if (segrouLab != null) {
             for (int o = 0; o < segrouLab.length; o++) {
@@ -744,6 +744,21 @@ public class rtrOspf6 extends ipRtr {
      * @param area area number
      * @return log of spf
      */
+    public userFormat showSpfTopo(int area) {
+        rtrOspf6area ara = new rtrOspf6area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return null;
+        }
+        return ara.spf.listTopology();
+    }
+
+    /**
+     * show spf
+     *
+     * @param area area number
+     * @return log of spf
+     */
     public userFormat showSpfLog(int area) {
         rtrOspf6area ara = new rtrOspf6area(this, area);
         ara = areas.find(ara);
@@ -759,7 +774,7 @@ public class rtrOspf6 extends ipRtr {
      * @param area area number
      * @return tree of spf
      */
-    public List<String> showTree(int area) {
+    public List<String> showSpfTree(int area) {
         rtrOspf6area ara = new rtrOspf6area(this, area);
         ara = areas.find(ara);
         if (ara == null) {
@@ -774,7 +789,7 @@ public class rtrOspf6 extends ipRtr {
      * @param area area number
      * @return graph of spf
      */
-    public List<String> showGraph(int area) {
+    public List<String> showSpfGraph(int area) {
         rtrOspf6area ara = new rtrOspf6area(this, area);
         ara = areas.find(ara);
         if (ara == null) {

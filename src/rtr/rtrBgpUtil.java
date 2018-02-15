@@ -1080,7 +1080,7 @@ public class rtrBgpUtil {
         pck.getCopy(buf, 0, 0, o);
         pck.getSkip(o);
         if (sfi == safiMvpn) {
-            bits.byteCopy(buf, 0, 1, o);
+            bits.byteCopy(buf, 0, buf, 1, o);
             buf[0] = (byte) p;
             o++;
         }
@@ -1235,7 +1235,7 @@ public class rtrBgpUtil {
                 pck.putByte(0, buf2[0]);
                 pck.putByte(1, o + p);
                 pck.putSkip(2);
-                bits.byteCopy(buf2, 1, 0, o);
+                bits.byteCopy(buf2, 1, buf2, 0, o);
                 break;
             default:
                 pck.putByte(0, i);
