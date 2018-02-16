@@ -207,10 +207,6 @@ public class clntGeneve implements Runnable, prtServP, ifcDn {
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pckBin) {
-        if (id.compare(id, conn) != 0) {
-            id.setClosing();
-            return false;
-        }
         cntr.rx(pckBin);
         packGeneve pckGnv = new packGeneve();
         if (pckGnv.parseHeader(pckBin)) {

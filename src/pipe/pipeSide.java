@@ -257,19 +257,19 @@ public class pipeSide {
             if (isClosed() != 0) {
                 return pipeLine.wontWork;
             }
-            if (len > blockMaxSiz) {
-                return pipeLine.wontWork;
-            }
             if (len < 0) {
                 return pipeLine.wontWork;
             }
-            if (len > bufS - headSize) {
+            if (len > (bufS - headSize)) {
                 return pipeLine.wontWork;
             }
-            if (bufS - bufU - headSize < len) {
+            if ((bufS - bufU - headSize) < len) {
                 return pipeLine.tryLater;
             }
             if (headSize != 0) {
+                if (len > blockMaxSiz) {
+                    return pipeLine.wontWork;
+                }
                 sizePut(len);
             }
             for (int i = 0; i < len; i++) {
@@ -441,7 +441,7 @@ public class pipeSide {
         if (isClosed() != 0) {
             return pipeLine.wontWork;
         }
-        return bufS - peerSideOfPipeLine.bufU - headSize;
+        return bufS - peerSideOfPipeLine.ready2rx();
     }
 
     /**
@@ -450,7 +450,9 @@ public class pipeSide {
      * @return number of bytes used in rx buffer
      */
     public int ready2rx() {
-        return bufU;
+        synchronized (lck) {
+            return bufU - headSize;
+        }
     }
 
     /**

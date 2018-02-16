@@ -220,10 +220,6 @@ public class clntLisp implements Comparator<clntLisp>, Runnable, prtServP, ifcDn
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        if (id.compare(id, conn) != 0) {
-            id.setClosing();
-            return false;
-        }
         pck.getSkip(8);
         cntr.rx(pck);
         int i = ifcEther.guessEtherType(pck);

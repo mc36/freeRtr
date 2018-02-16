@@ -232,10 +232,6 @@ public class clntMplsUdp implements Comparator<clntMplsUdp>, Runnable, prtServP,
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        if (id.compare(id, conn) != 0) {
-            id.setClosing();
-            return false;
-        }
         if (ipMpls.parseMPLSheader(pck)) {
             return false;
         }

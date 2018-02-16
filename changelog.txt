@@ -7921,3 +7921,34 @@ todo: done=2,3,9,13,17,50,99,500,1000
 todo: lenovo=4000
 todo: player=250
 todo: safe=2000
+---------------------------------- 2018-02-15 07:02:16
+no todo: safe=2000
+no todo: player=250
+no todo: lenovo=4000
+no todo: done=2,3,9,13,17,50,99,500,1000
+no todo: tests:
+no todo:
+no todo: done: flood topology summary in lsrp
+no todo: done: move route table checker to tabroute
+no todo: done: tester parameter for jvm memory
+no todo: done: sleep exec/tcl commands
+no todo: done: buffer config to forwarder/loadbalancer
+no todo: done: spf should give topology checksum by adding outputs and invoking String.hashCode()
+no todo: done: pipeline unsync per byte actions
+no todo: done: dofind: first find the block, then the entry within the block
+no todo: done: route table calculation must not merge distance>255
+no todo: done: automesh to the end of route table calculator
+no todo: done: a lot of: tab.tabGenV2.doGet:tabGenV2.java:266/tab.tabGenV2.get:tabGenV2.java:135
+no todo: done: a lot of: tab.tabGenV2.doGet:tabGenV2.java:266/tab.tabGenV2.doFind:tabGenV2.java:215/tab.tabGenV2.find:tabGenV2.java:147
+no todo: done: mcast bug
+no todo: done: isakmp bug
+no todo: done: rename taba to tabu in route table calculator
+no todo: done: optimize redistributed routes too at notifyrouters
+no todo: done: statistics for redistribution
+no todo: done: show commands for redistributed, computed
+no todo: done: tester should collect tracebacks
+no todo: done: lsrp to use syncint as todo
+no todo: done: ospf and isis missed notifications, schedwork/run todo use syncint
+no todo: done: player/99: rout-ospf37.tst: no work: ospf prefix movement
+no todo: done: reload vdc/process asdf stop/start
+no todo:

@@ -60,7 +60,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
 
     private int procRun = 0;
 
-    private syncInt procNow = new syncInt();
+    private syncInt procNow = new syncInt(0);
 
     private int procCnt = 0;
 
@@ -120,7 +120,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
             if (ntry.thread == null) {
                 continue;
             }
-            res.add(ntry.name + "|" + ntry.thread.procCnt + "|" + ntry.thread.procLst + "|" + ntry.thread.started.length + "|" + ntry.thread.procRun + "|" + ntry.thread.procNow.get() + "|" + bits.timePast(ntry.thread.procTim));
+            res.add(ntry.name + "|" + ntry.thread.procCnt + "|" + ntry.thread.procLst + "|" + ntry.thread.started.length + "|" + ntry.thread.procRun + "|" + ntry.thread.procNow + "|" + bits.timePast(ntry.thread.procTim));
         }
         return res;
     }

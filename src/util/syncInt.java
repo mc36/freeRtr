@@ -15,17 +15,15 @@ public class syncInt {
 
     /**
      * create one instance
-     */
-    public syncInt() {
-    }
-
-    /**
-     * create one instance
      *
      * @param v value
      */
     public syncInt(int v) {
         val = v;
+    }
+
+    public String toString() {
+        return "" + get();
     }
 
     /**

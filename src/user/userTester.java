@@ -784,6 +784,7 @@ class userTesterOne {
             p.putLine("terminal table fancy");
             p.putLine("write");
             p.putLine("reload in 10");
+            p.putLine("y");
             for (int i = 0; i < reapply; i++) {
                 p.putLine("configure reapply");
             }

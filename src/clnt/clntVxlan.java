@@ -228,12 +228,6 @@ public class clntVxlan implements Runnable, prtServP, ifcDn {
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pckBin) {
-        if (!wildcard) {
-            if (id.compare(id, conn) != 0) {
-                id.setClosing();
-                return false;
-            }
-        }
         cntr.rx(pckBin);
         packVxlan pckVxl = new packVxlan();
         if (pckVxl.parseHeader(pckBin)) {

@@ -365,7 +365,7 @@ interface ethernet1
  router lsrp4 1 bfd
  router lsrp6 1 enable
  router lsrp6 1 bfd
- shutdown
+ no shutdown
  log-link-change
  exit
 !

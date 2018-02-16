@@ -2103,7 +2103,7 @@ public class rtrBgpUtil {
                 break;
             default:
                 if (debugger.rtrBgpTraf) {
-                    logger.debug("unknown type " + pck.dump());
+                    logger.debug("unknown (" + pck.ETHtype + ") attrib " + pck.dump());
                 }
         }
     }

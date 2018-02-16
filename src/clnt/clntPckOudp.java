@@ -210,10 +210,6 @@ public class clntPckOudp implements Runnable, prtServP, ifcDn {
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        if (id.compare(id, conn) != 0) {
-            id.setClosing();
-            return false;
-        }
         cntr.rx(pck);
         upper.recvPack(pck);
         return false;

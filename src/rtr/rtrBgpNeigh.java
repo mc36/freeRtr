@@ -575,7 +575,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if ((conn.peerAfis & mask) == 0) {
             return false;
         }
-        if (conn.needFull < 2) {
+        if (conn.needFull.get() < 2) {
             will = new tabRoute<addrIP>(will);
         }
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
@@ -695,10 +695,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertFullTable(lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, conn.advMvpo)) {
             return true;
         }
-        if (conn.needFull == 1) {
-            conn.needFull = 0;
+        int ver = conn.needFull.ver();
+        if (conn.needFull.get() == 1) {
+            conn.needFull.setIf(0, ver);
         } else {
-            conn.needFull = 1;
+            conn.needFull.setIf(1, ver);
         }
         fullLast = bits.getTime();
         fullTime = (int) (fullLast - tim);
@@ -808,33 +809,33 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             conn.closeNow();
             return;
         }
-        int doing = lower.compRound;
-        if (doing == conn.adversion) {
+        int doing = lower.compRound.get();
+        if (doing == conn.adversion.get()) {
             return;
         }
         if (conn.txFree() < (bufferSize / 2)) {
-            conn.needFull++;
+            conn.needFull.add(1);
             conn.buffFull++;
             return;
         }
         if (unidirection && (conn.rxReady() > (bufferSize / 8))) {
-            conn.needFull++;
+            conn.needFull.add(1);
             return;
         }
         boolean b;
-        if (conn.needFull != 0) {
+        if (conn.needFull.get() != 0) {
             b = advertFull();
         } else {
             b = advertIncr();
         }
         if (b) {
-            conn.needFull++;
+            conn.needFull.add(1);
             return;
         }
-        if (conn.needFull != 0) {
+        if (conn.needFull.get() != 0) {
             doing--;
         }
-        conn.adversion = doing;
+        conn.adversion.set(doing);
     }
 
     /**
@@ -1096,7 +1097,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             chgMvpn = grp.chgMvpn;
             chgMvpo = grp.chgMvpo;
         }
-        conn.needFull++;
+        conn.needFull.add(1);
     }
 
     private void setValidityTable(tabRoute<addrIP> tab) {
@@ -1123,11 +1124,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (groupMember < 0) {
             return;
         }
-        if (conn.needFull > 1) {
+        if (conn.needFull.get() > 1) {
             return;
         }
         rtrBgpGroup grp = lower.groups.get(groupMember);
-        int i = conn.adversion;
+        int i = conn.adversion.get();
         if (i < grp.minversion) {
             grp.minversion = i;
         }

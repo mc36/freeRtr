@@ -142,7 +142,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         if (encap == encapType.pbb) {
             return;
         }
-        parent.needFull = true;
+        parent.needFull.add(1);
         parent.compute.wakeup();
     }
 

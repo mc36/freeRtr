@@ -20,6 +20,7 @@ import util.bits;
 import util.counter;
 import util.debugger;
 import util.logger;
+import util.syncInt;
 import util.typLenVal;
 
 /**
@@ -71,12 +72,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * advertised version
      */
-    public int adversion = 0;
+    public final syncInt adversion = new syncInt(0);
 
     /**
      * need full advertisement
      */
-    public int needFull = 3;
+    public final syncInt needFull = new syncInt(3);
 
     /**
      * buffer full pauses
@@ -86,162 +87,162 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * learned unicast prefixes
      */
-    public tabRoute<addrIP> lrnUni = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnUni = new tabRoute<addrIP>("rx");
 
     /**
      * learned multicast prefixes
      */
-    public tabRoute<addrIP> lrnMlt = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnMlt = new tabRoute<addrIP>("rx");
 
     /**
      * learned other prefixes
      */
-    public tabRoute<addrIP> lrnOtr = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnOtr = new tabRoute<addrIP>("rx");
 
     /**
      * learned flowspec prefixes
      */
-    public tabRoute<addrIP> lrnFlw = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnFlw = new tabRoute<addrIP>("rx");
 
     /**
      * learned vpnuni prefixes
      */
-    public tabRoute<addrIP> lrnVpnU = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnVpnU = new tabRoute<addrIP>("rx");
 
     /**
      * learned vpnmulti prefixes
      */
-    public tabRoute<addrIP> lrnVpnM = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnVpnM = new tabRoute<addrIP>("rx");
 
     /**
      * learned vpnflow prefixes
      */
-    public tabRoute<addrIP> lrnVpnF = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnVpnF = new tabRoute<addrIP>("rx");
 
     /**
      * learned other vpnuni prefixes
      */
-    public tabRoute<addrIP> lrnVpoU = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnVpoU = new tabRoute<addrIP>("rx");
 
     /**
      * learned other vpnmulti prefixes
      */
-    public tabRoute<addrIP> lrnVpoM = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnVpoM = new tabRoute<addrIP>("rx");
 
     /**
      * learned other vpnflow prefixes
      */
-    public tabRoute<addrIP> lrnVpoF = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnVpoF = new tabRoute<addrIP>("rx");
 
     /**
      * learned vpls prefixes
      */
-    public tabRoute<addrIP> lrnVpls = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnVpls = new tabRoute<addrIP>("rx");
 
     /**
      * learned mspw prefixes
      */
-    public tabRoute<addrIP> lrnMspw = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnMspw = new tabRoute<addrIP>("rx");
 
     /**
      * learned evpn prefixes
      */
-    public tabRoute<addrIP> lrnEvpn = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnEvpn = new tabRoute<addrIP>("rx");
 
     /**
      * learned mdt prefixes
      */
-    public tabRoute<addrIP> lrnMdt = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnMdt = new tabRoute<addrIP>("rx");
 
     /**
      * learned mvpn prefixes
      */
-    public tabRoute<addrIP> lrnMvpn = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnMvpn = new tabRoute<addrIP>("rx");
 
     /**
      * learned other mvpn prefixes
      */
-    public tabRoute<addrIP> lrnMvpo = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> lrnMvpo = new tabRoute<addrIP>("rx");
 
     /**
      * advertised unicast prefixes
      */
-    public tabRoute<addrIP> advUni = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advUni = new tabRoute<addrIP>("tx");
 
     /**
      * advertised multicast prefixes
      */
-    public tabRoute<addrIP> advMlt = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advMlt = new tabRoute<addrIP>("tx");
 
     /**
      * advertised other prefixes
      */
-    public tabRoute<addrIP> advOtr = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advOtr = new tabRoute<addrIP>("tx");
 
     /**
      * advertised flowspec prefixes
      */
-    public tabRoute<addrIP> advFlw = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advFlw = new tabRoute<addrIP>("tx");
 
     /**
      * advertised vpnuni prefixes
      */
-    public tabRoute<addrIP> advVpnU = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advVpnU = new tabRoute<addrIP>("tx");
 
     /**
      * advertised vpnmulti prefixes
      */
-    public tabRoute<addrIP> advVpnM = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advVpnM = new tabRoute<addrIP>("tx");
 
     /**
      * advertised vpnflow prefixes
      */
-    public tabRoute<addrIP> advVpnF = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advVpnF = new tabRoute<addrIP>("tx");
 
     /**
      * advertised other vpnuni prefixes
      */
-    public tabRoute<addrIP> advVpoU = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advVpoU = new tabRoute<addrIP>("tx");
 
     /**
      * advertised other vpnmulti prefixes
      */
-    public tabRoute<addrIP> advVpoM = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advVpoM = new tabRoute<addrIP>("tx");
 
     /**
      * advertised other vpnflow prefixes
      */
-    public tabRoute<addrIP> advVpoF = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advVpoF = new tabRoute<addrIP>("tx");
 
     /**
      * advertised vpls prefixes
      */
-    public tabRoute<addrIP> advVpls = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advVpls = new tabRoute<addrIP>("tx");
 
     /**
      * advertised mspw prefixes
      */
-    public tabRoute<addrIP> advMspw = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advMspw = new tabRoute<addrIP>("tx");
 
     /**
      * advertised evpn prefixes
      */
-    public tabRoute<addrIP> advEvpn = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advEvpn = new tabRoute<addrIP>("tx");
 
     /**
      * advertised mdt prefixes
      */
-    public tabRoute<addrIP> advMdt = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advMdt = new tabRoute<addrIP>("tx");
 
     /**
      * advertised mvpn prefixes
      */
-    public tabRoute<addrIP> advMvpn = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advMvpn = new tabRoute<addrIP>("tx");
 
     /**
      * advertised other mvpn prefixes
      */
-    public tabRoute<addrIP> advMvpo = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP> advMvpo = new tabRoute<addrIP>("tx");
 
     /**
      * currently updating unicast prefixes
@@ -641,38 +642,38 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.localIfc != null) {
             neigh.localIfc.bfdDel(neigh.peerAddr, this);
         }
-        lrnUni = new tabRoute<addrIP>("rx");
-        lrnMlt = new tabRoute<addrIP>("rx");
-        lrnOtr = new tabRoute<addrIP>("rx");
-        lrnFlw = new tabRoute<addrIP>("rx");
-        lrnVpnU = new tabRoute<addrIP>("rx");
-        lrnVpnM = new tabRoute<addrIP>("rx");
-        lrnVpnF = new tabRoute<addrIP>("rx");
-        lrnVpoU = new tabRoute<addrIP>("rx");
-        lrnVpoM = new tabRoute<addrIP>("rx");
-        lrnVpoF = new tabRoute<addrIP>("rx");
-        lrnVpls = new tabRoute<addrIP>("rx");
-        lrnMspw = new tabRoute<addrIP>("rx");
-        lrnEvpn = new tabRoute<addrIP>("rx");
-        lrnMdt = new tabRoute<addrIP>("rx");
-        lrnMvpn = new tabRoute<addrIP>("rx");
-        lrnMvpo = new tabRoute<addrIP>("rx");
-        advUni = new tabRoute<addrIP>("tx");
-        advMlt = new tabRoute<addrIP>("tx");
-        advOtr = new tabRoute<addrIP>("tx");
-        advFlw = new tabRoute<addrIP>("tx");
-        advVpnU = new tabRoute<addrIP>("tx");
-        advVpnM = new tabRoute<addrIP>("tx");
-        advVpnF = new tabRoute<addrIP>("tx");
-        advVpoU = new tabRoute<addrIP>("tx");
-        advVpoM = new tabRoute<addrIP>("tx");
-        advVpoF = new tabRoute<addrIP>("tx");
-        advVpls = new tabRoute<addrIP>("tx");
-        advMspw = new tabRoute<addrIP>("tx");
-        advEvpn = new tabRoute<addrIP>("tx");
-        advMdt = new tabRoute<addrIP>("tx");
-        advMvpn = new tabRoute<addrIP>("tx");
-        advMvpo = new tabRoute<addrIP>("tx");
+        lrnUni.clear();
+        lrnMlt.clear();
+        lrnOtr.clear();
+        lrnFlw.clear();
+        lrnVpnU.clear();
+        lrnVpnM.clear();
+        lrnVpnF.clear();
+        lrnVpoU.clear();
+        lrnVpoM.clear();
+        lrnVpoF.clear();
+        lrnVpls.clear();
+        lrnMspw.clear();
+        lrnEvpn.clear();
+        lrnMdt.clear();
+        lrnMvpn.clear();
+        lrnMvpo.clear();
+        advUni.clear();
+        advMlt.clear();
+        advOtr.clear();
+        advFlw.clear();
+        advVpnU.clear();
+        advVpnM.clear();
+        advVpnF.clear();
+        advVpoU.clear();
+        advVpoM.clear();
+        advVpoF.clear();
+        advVpls.clear();
+        advMspw.clear();
+        advEvpn.clear();
+        advMdt.clear();
+        advMvpn.clear();
+        advMvpo.clear();
         neigh.accUni = new tabRoute<addrIP>("rx");
         neigh.accMlt = new tabRoute<addrIP>("rx");
         neigh.accOtr = new tabRoute<addrIP>("rx");
@@ -725,9 +726,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         ready2adv = false;
-        adversion = 0;
-        needFull = 3;
-        parent.needFull = true;
+        adversion.set(0);
+        needFull.set(3);
+        parent.needFull.add(1);
         parent.compute.wakeup();
     }
 
@@ -812,22 +813,38 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.bfdTrigger) {
             neigh.localIfc.bfdAdd(neigh.peerAddr, this, "bgp");
         }
-        lrnUni = new tabRoute<addrIP>("rx");
-        lrnMlt = new tabRoute<addrIP>("rx");
-        lrnOtr = new tabRoute<addrIP>("rx");
-        lrnFlw = new tabRoute<addrIP>("rx");
-        lrnVpnU = new tabRoute<addrIP>("rx");
-        lrnVpnM = new tabRoute<addrIP>("rx");
-        lrnVpnF = new tabRoute<addrIP>("rx");
-        lrnVpoU = new tabRoute<addrIP>("rx");
-        lrnVpoM = new tabRoute<addrIP>("rx");
-        lrnVpoF = new tabRoute<addrIP>("rx");
-        lrnVpls = new tabRoute<addrIP>("rx");
-        lrnMspw = new tabRoute<addrIP>("rx");
-        lrnEvpn = new tabRoute<addrIP>("rx");
-        lrnMdt = new tabRoute<addrIP>("rx");
-        lrnMvpn = new tabRoute<addrIP>("rx");
-        lrnMvpo = new tabRoute<addrIP>("rx");
+        lrnUni.clear();
+        lrnMlt.clear();
+        lrnOtr.clear();
+        lrnFlw.clear();
+        lrnVpnU.clear();
+        lrnVpnM.clear();
+        lrnVpnF.clear();
+        lrnVpoU.clear();
+        lrnVpoM.clear();
+        lrnVpoF.clear();
+        lrnVpls.clear();
+        lrnMspw.clear();
+        lrnEvpn.clear();
+        lrnMdt.clear();
+        lrnMvpn.clear();
+        lrnMvpo.clear();
+        advUni.clear();
+        advMlt.clear();
+        advOtr.clear();
+        advFlw.clear();
+        advVpnU.clear();
+        advVpnM.clear();
+        advVpnF.clear();
+        advVpoU.clear();
+        advVpoM.clear();
+        advVpoF.clear();
+        advVpls.clear();
+        advMspw.clear();
+        advEvpn.clear();
+        advMdt.clear();
+        advMvpn.clear();
+        advMvpo.clear();
         neigh.accUni = new tabRoute<addrIP>("rx");
         neigh.accMlt = new tabRoute<addrIP>("rx");
         neigh.accOtr = new tabRoute<addrIP>("rx");
@@ -845,7 +862,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.accMvpn = new tabRoute<addrIP>("rx");
         neigh.accMvpo = new tabRoute<addrIP>("rx");
         ready2adv = true;
-        parent.needFull = true;
+        parent.needFull.add(1);
         parent.compute.wakeup();
         for (;;) {
             typ = packRecv(pckRx);
@@ -1326,8 +1343,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         adverted.clear();
-        needFull = 3;
-        adversion--;
+        needFull.set(3);
+        adversion.sub(1);
         neigh.transmit.wakeup();
         if (debugger.rtrBgpTraf) {
             logger.debug("got refresh from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
@@ -1352,7 +1369,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         learned.clear();
-        parent.needFull = true;
+        parent.needFull.add(1);
         parent.compute.wakeup();
         packHolder pck = new packHolder(true, true);
         pck.msbPutD(0, safi);
@@ -1588,7 +1605,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         currChg++;
         tabRoute<addrIP> changed = parent.getChanged(safi);
         if (changed == null) {
-            parent.needFull = true;
+            parent.needFull.add(1);
             return;
         }
         changed.add(tabRoute.addType.always, ntry.copyBytes(), false, false);

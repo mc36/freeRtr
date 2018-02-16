@@ -331,41 +331,45 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
 
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         cntr.rx(pck);
-        if (id.compare(id, connD) == 0) {
-            packGtp gtp = new packGtp();
-            if (gtp.parseHeader(pck)) {
+        if (connD != null) {
+            if (id.compare(id, connD) == 0) {
+                packGtp gtp = new packGtp();
+                if (gtp.parseHeader(pck)) {
+                    return false;
+                }
+                pck.msbPutW(0, 0xff03); // address + control
+                pck.putSkip(2);
+                pck.merge2beg();
+                upper.recvPack(pck);
                 return false;
             }
-            pck.msbPutW(0, 0xff03); // address + control
-            pck.putSkip(2);
-            pck.merge2beg();
-            upper.recvPack(pck);
-            return false;
         }
-        if (id.compare(id, connC) == 0) {
-            packGtp gtp = new packGtp();
-            if (gtp.parseHeader(pck)) {
-                return false;
-            }
-            for (;;) {
-                if (gtp.parseExtHdr(pck)) {
-                    break;
+        if (connC != null) {
+            if (id.compare(id, connC) == 0) {
+                packGtp gtp = new packGtp();
+                if (gtp.parseHeader(pck)) {
+                    return false;
                 }
-            }
-            gtp.parsePacket(pck);
-            if (debugger.clntGtpTraf) {
-                logger.debug("rx " + gtp.dump());
-            }
-            if (gtp.msgTyp == packGtp.typEchoReq) {
-                gtp.msgTyp = packGtp.typEchoRep;
-                connC.send2net(gtp.createPacket());
+                for (;;) {
+                    if (gtp.parseExtHdr(pck)) {
+                        break;
+                    }
+                }
+                gtp.parsePacket(pck);
                 if (debugger.clntGtpTraf) {
-                    logger.debug("tx " + gtp.dump());
+                    logger.debug("rx " + gtp.dump());
                 }
+                if (gtp.msgTyp == packGtp.typEchoReq) {
+                    gtp.msgTyp = packGtp.typEchoRep;
+                    connC.send2net(gtp.createPacket());
+                    if (debugger.clntGtpTraf) {
+                        logger.debug("tx " + gtp.dump());
+                    }
+                    return false;
+                }
+                lastCtrl = gtp;
                 return false;
             }
-            lastCtrl = gtp;
-            return false;
         }
         id.setClosing();
         return true;
