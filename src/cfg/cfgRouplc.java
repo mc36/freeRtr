@@ -89,8 +89,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("2 3,.   [num]               initial number to start with");
         l.add("3 4,.     [num]             increment number");
         l.add("1 .   next                  no operation");
-        l.add("1 2,. description           description of this interface");
-        l.add("2 2,.   [text]              text describing this interface");
+        l.add("1 2,. description           description of this route policy");
+        l.add("2 2,.   [text]              text describing this route policy");
         l.add("1 2   if                    match values from source routing protocol");
         l.add("1 2   elsif                 match values from source routing protocol");
         l.add("2 .     always              match always");

@@ -1,5 +1,6 @@
 package line;
 
+import pipe.pipeLine;
 import pipe.pipeSide;
 import user.userLine;
 import util.bits;
@@ -38,14 +39,19 @@ public class lineRunner implements Runnable {
      */
     private boolean dedicated = false;
 
+    /**
+     * user action allowed
+     */
+    private boolean disabled = false;
+    
     private boolean needNewLine = true;
-
+    
     private lineThread thread;
-
+    
     private userLine line;
-
+    
     private String name;
-
+    
     private pipeSide pipe;
 
     /**
@@ -85,12 +91,34 @@ public class lineRunner implements Runnable {
     }
 
     /**
+     * set disabled state
+     *
+     * @param dis disabled state
+     */
+    public void setDisa(boolean dis) {
+        disabled = dis;
+        if (pipe == null) {
+            return;
+        }
+        pipe.setClose();
+    }
+
+    /**
      * get dedicated state
      *
      * @return dedicated state
      */
     public boolean getDedi() {
         return dedicated;
+    }
+
+    /**
+     * get disabled state
+     *
+     * @return disabled state
+     */
+    public boolean getDisa() {
+        return disabled;
     }
 
     /**
@@ -107,7 +135,7 @@ public class lineRunner implements Runnable {
         pipe = thread.getPipe();
         new Thread(this).start();
     }
-
+    
     public void run() {
         if (debugger.lineRunnerEvnt) {
             logger.debug("start watcher");
@@ -120,7 +148,7 @@ public class lineRunner implements Runnable {
             }
         }
     }
-
+    
     private void doWork() {
         bits.sleep(1000);
         if (pipe.isClosed() != 0) {
@@ -150,8 +178,12 @@ public class lineRunner implements Runnable {
                 return;
             }
             if (buf[0] != line.promptActivate) {
+                pipe.nonBlockSkip(1024);
                 return;
             }
+        }
+        if (disabled) {
+            return;
         }
         doScript(scrptActv);
         line.createHandler(pipe, name, true);
@@ -160,7 +192,7 @@ public class lineRunner implements Runnable {
         }
         needNewLine = false;
     }
-
+    
     private boolean doScript(lineScript scr) {
         if (scr == null) {
             return false;
@@ -190,9 +222,34 @@ public class lineRunner implements Runnable {
             logger.debug("terminal to line");
         }
         needNewLine = false;
-        pipe = thread.getPipe();
-        needNewLine = false;
+        pipeLine dummy = new pipeLine(1024, false);
+        pipe = dummy.getSide();
+        for (int rnd = 0; rnd < 10; rnd++) {
+            if (rnd > 0) {
+                bits.sleep(1000);
+            }
+            pipeSide res = thread.getPipe();
+            int cls = 0;
+            int rdy = 0;
+            for (int rou = 0; rou < 10; rou++) {
+                cls = res.isClosed();
+                rdy = res.isReady();
+                if ((cls + rdy) > 0) {
+                    break;
+                }
+                bits.sleep(1000);
+            }
+            if (cls != 0) {
+                continue;
+            }
+            if (rdy == 0) {
+                continue;
+            }
+            pipe = res;
+            break;
+        }
+        dummy.setClose();
         return pipe;
     }
-
+    
 }

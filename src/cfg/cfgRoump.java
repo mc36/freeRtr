@@ -142,8 +142,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("1 2   action                set action to do");
         l.add("2 .     deny                specify to forbid");
         l.add("2 .     permit              specify to allow");
-        l.add("1 2,. description           description of this interface");
-        l.add("2 2,.   [text]              text describing this interface");
+        l.add("1 2,. description           description of this route map");
+        l.add("2 2,.   [text]              text describing this route map");
         l.add("1 2   tcladd                add tcl line");
         l.add("2 2,.   <str>               script");
         l.add("1 .   tcldel                delete tcl script");

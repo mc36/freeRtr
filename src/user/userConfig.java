@@ -30,6 +30,7 @@ import cfg.cfgRoump;
 import cfg.cfgRouplc;
 import cfg.cfgRtr;
 import cfg.cfgSched;
+import cfg.cfgScrpt;
 import cfg.cfgTrack;
 import cfg.cfgVdc;
 import cfg.cfgPrcss;
@@ -421,6 +422,8 @@ public class userConfig {
         getHelpIpX(l);
         l.add("1  2  scheduler                      configure a scheduler");
         l.add("2  .    <name>                       name of scheduler");
+        l.add("1  2  script                         configure a script");
+        l.add("2  .    <name>                       name of scheduler");
         l.add("1  2  tracker                        configure a tracker");
         l.add("2  .    <name>                       name of tracker");
         l.add("1  2  mtracker                       configure a mtracker");
@@ -761,6 +764,14 @@ public class userConfig {
         }
         if (a.equals("scheduler")) {
             modeDconfig = cfgAll.schedFind(cmd.word(), true);
+            if (modeDconfig == null) {
+                return;
+            }
+            modeV = modes.config;
+            return;
+        }
+        if (a.equals("script")) {
+            modeDconfig = cfgAll.scrptFind(cmd.word(), true);
             if (modeDconfig == null) {
                 return;
             }
@@ -1392,6 +1403,15 @@ public class userConfig {
             cfgSched ntry = cfgAll.schedDel(cmd.word());
             if (ntry == null) {
                 cmd.error("no such scheduler");
+                return;
+            }
+            ntry.doCfgStr(new cmds("cfg", "stop"));
+            return;
+        }
+        if (a.equals("script")) {
+            cfgScrpt ntry = cfgAll.scrptDel(cmd.word());
+            if (ntry == null) {
+                cmd.error("no such script");
                 return;
             }
             ntry.doCfgStr(new cmds("cfg", "stop"));

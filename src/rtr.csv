@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.2.15-testing, done by matecsaba.;-;-
--;-;2018-02-16 05:22:13, took 10:09:47 on 1342 cases;-;-
+-;-;freeRouter v18.2.18-testing, done by cs@nop.;-;-
+-;-;2018-02-19 02:32:25, took 08:35:46 on 1358 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -577,6 +577,16 @@ mpls-bier13.tst;0;bier with 4k bsl;successfully;finished
 mpls-bier14.tst;0;bier over broadcast subnet;successfully;finished
 mpls-bier15.tst;0;mixed protocol over bier;successfully;finished
 mpls-bier16.tst;0;mpls over bier;successfully;finished
+mpls-evc01.tst;0;bridged evcs over ethernet;successfully;finished
+mpls-evc02.tst;0;bridged evcs over hdlc;successfully;finished
+mpls-evc03.tst;0;bridged evcs over gre;successfully;finished
+mpls-evc04.tst;0;bridged evcs and subif;successfully;finished
+mpls-evc05.tst;0;bridged evcs and main;successfully;finished
+mpls-evc06.tst;0;xconnect evcs terminated on xconnects;successfully;finished
+mpls-evc07.tst;0;xconnect evcs terminated on pwhes;successfully;finished
+mpls-evc08.tst;0;xconnect terminated on pwhe subifs;successfully;finished
+mpls-evc09.tst;0;xconnect terminated on pwhe bridged evcs;successfully;finished
+mpls-evc10.tst;0;xconnect terminated on pwhe xconnect evcs;successfully;finished
 mpls-ldp01.tst;0;ldp over ethernet;successfully;finished
 mpls-ldp02.tst;0;ldp over ethernet vlan;successfully;finished
 mpls-ldp03.tst;0;ldp over ethernet bridge;successfully;finished
@@ -1071,6 +1081,12 @@ rout-bgp318.tst;0;bgp routemap filtering with afi;successfully;finished
 rout-bgp319.tst;0;bgp routepolicy filtering with afi;successfully;finished
 rout-bgp320.tst;0;bgp routemap filtering with afi with soft-reconfig;successfully;finished
 rout-bgp321.tst;0;bgp routepolicy filtering with afi with soft-reconfig;successfully;finished
+rout-bgp322.tst;0;bgp hard reset;successfully;finished
+rout-bgp323.tst;0;bgp hard reset with soft-reconfig;successfully;finished
+rout-bgp324.tst;0;bgp soft in reset;successfully;finished
+rout-bgp325.tst;0;bgp soft in reset with soft-reconfig;successfully;finished
+rout-bgp326.tst;0;bgp soft out reset;successfully;finished
+rout-bgp327.tst;0;bgp soft out reset with soft-reconfig;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished

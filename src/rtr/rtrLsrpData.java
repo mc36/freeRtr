@@ -195,30 +195,8 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         if ((typ & 0x1) != 0) {
             s += " rtrid=" + rtrId;
         }
-        if ((typ & 0x800) != 0) {
-            s += " toposum=" + topoSum;
-        }
         if ((typ & 0x2) != 0) {
             s += " hostname=" + hostname;
-        }
-        if ((typ & 0x200) != 0) {
-            s += " software=" + software;
-            s += " hardware=" + hardware;
-            s += " middleware=" + middleware;
-            s += " kernel=" + kernel;
-        }
-        if ((typ & 0x4) != 0) {
-            s += " sequence=" + sequence;
-        }
-        if ((typ & 0x8) != 0) {
-            s += " time=" + (time - bits.getTime());
-        }
-        if ((typ & 0x80) != 0) {
-            s += " uptime=" + uptime;
-        }
-        if ((typ & 0x100) != 0) {
-            s += " changenum=" + changesNum;
-            s += " changetim=" + changesTim;
         }
         if ((typ & 0x40) != 0) {
             s += " segroubeg=" + segrouBeg;
@@ -267,6 +245,28 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 s += " network=" + addrPrefix.ip2str(ntry.prefix);
             }
         }
+        if ((typ & 0x200) != 0) {
+            s += " software=" + software;
+            s += " hardware=" + hardware;
+            s += " middleware=" + middleware;
+            s += " kernel=" + kernel;
+        }
+        if ((typ & 0x4) != 0) {
+            s += " sequence=" + sequence;
+        }
+        if ((typ & 0x100) != 0) {
+            s += " changenum=" + changesNum;
+            s += " changetim=" + changesTim;
+        }
+        if ((typ & 0x800) != 0) {
+            s += " toposum=" + topoSum;
+        }
+        if ((typ & 0x80) != 0) {
+            s += " uptime=" + uptime;
+        }
+        if ((typ & 0x8) != 0) {
+            s += " time=" + (time - bits.getTime());
+        }
         return s.trim();
     }
 
@@ -308,14 +308,15 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 break;
             }
             int i = a.indexOf("=");
-            String s = "";
-            if (i >= 0) {
-                s = a.substring(i + 1, a.length());
-                a = a.substring(0, i);
+            if (i < 0) {
+                return true;
             }
-            a = a.toLowerCase().trim();
+            String s = a.substring(i + 1, a.length()).trim();
+            a = a.substring(0, i).trim().toLowerCase();
             if (a.equals("rtrid")) {
-                rtrId.fromString(s);
+                if (rtrId.fromString(s)) {
+                    return true;
+                }
                 continue;
             }
             if (a.equals("toposum")) {
@@ -410,7 +411,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = addrPrefix.str2ip(s);
                 if (ntry.prefix == null) {
-                    continue;
+                    return true;
                 }
                 ntry.metric = metric;
                 ntry.tag = tag;
@@ -420,13 +421,13 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             if (a.equals("neighbor")) {
                 addrIPv4 adr = new addrIPv4();
                 if (adr.fromString(s)) {
-                    continue;
+                    return true;
                 }
                 addNeigh(adr, metric, bndwdt, segrouAdj);
                 continue;
             }
         }
-        return false;
+        return (time < 1);
     }
 
     /**

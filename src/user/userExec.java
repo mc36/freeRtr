@@ -14,6 +14,8 @@ import cfg.cfgPrcss;
 import cfg.cfgVrf;
 import cfg.cfgMenu;
 import cfg.cfgRtr;
+import cfg.cfgSched;
+import cfg.cfgScrpt;
 import clnt.clntDns;
 import clnt.clntPorts;
 import clnt.clntProxy;
@@ -469,6 +471,8 @@ public class userExec {
     }
 
     private void getHelpShow(userHelping hl) {
+        hl.add("2 .      scheduler               scheduler information");
+        hl.add("2 .      script                  script information");
         hl.add("2 3      vdc                     virtual device context");
         hl.add("3 .        interface             list of physical interfaces");
         hl.add("3 .        device                list of running devices");
@@ -841,6 +845,8 @@ public class userExec {
         hl.add("3 .        <name>                name of interface");
         hl.add("2 3      scheduler               run one scheduler round");
         hl.add("3 .        <name>                name of scheduler");
+        hl.add("2 3      script                  run one script round");
+        hl.add("3 .        <name>                name of script");
         hl.add("2 3      vpdn                    reconnect vpdn peer");
         hl.add("3 4,.      <name>                name of vpdn");
         hl.add("4 .          [num]               downtime in seconds");
@@ -851,6 +857,7 @@ public class userExec {
         hl.add("2 3      process                 restart external process");
         hl.add("3 .        <name>                name of process");
         hl.add("2 .      logging                 logged messages");
+        hl.add("2 .      auto-bandwidth          set auto bandwidth values");
         hl.add("2 .      tunnel-domain           resolve destination domain names");
         hl.add("2 .      name-cache              dns local cache");
         hl.add("2 3,.    watchdog                watchdog");
@@ -954,6 +961,10 @@ public class userExec {
         hl.add("2 3      vdc                     manage virtual device context");
         hl.add("3 .        <name>                name of vdc");
         hl.add("2 3      process                 manage external process");
+        hl.add("3 .        <name>                name of process");
+        hl.add("2 3      scheduler               manage scheduler");
+        hl.add("3 .        <name>                name of process");
+        hl.add("2 3      script                  manage script");
         hl.add("3 .        <name>                name of process");
         hl.add(".2 3     shell1                  run interactive shell process");
         hl.add("3 4,.      <cmd>                 name of process");
@@ -2300,6 +2311,36 @@ public class userExec {
             trm.doTerm();
             return;
         }
+        if (a.equals("script")) {
+            cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such script");
+                return;
+            }
+            if (ntry.con != null) {
+                ntry.con.setClose();
+            }
+            pipeLine pl = new pipeLine(65536, false);
+            ntry.con = pl.getSide();
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            trm.doTerm();
+            return;
+        }
+        if (a.equals("scheduler")) {
+            cfgSched ntry = cfgAll.schedFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such scheduler");
+                return;
+            }
+            if (ntry.con != null) {
+                ntry.con.setClose();
+            }
+            pipeLine pl = new pipeLine(65536, false);
+            ntry.con = pl.getSide();
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            trm.doTerm();
+            return;
+        }
         if (a.equals("shell1")) {
             pipeShell sh = pipeShell.exec(pipe, cmd.getRemaining(), null, false, true);
             if (sh == null) {
@@ -2481,6 +2522,9 @@ public class userExec {
         if (a.equals("editor")) {
             a = cmd.getRemaining();
             List<String> b = bits.txt2buf(a);
+            if (b == null) {
+                b = new ArrayList<String>();
+            }
             userEditor e = new userEditor(new userScreen(pipe, reader.width, reader.height), b, a);
             if (e.doEdit()) {
                 return;

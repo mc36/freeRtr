@@ -20,7 +20,7 @@ public abstract class ifcVlan implements ifcUp {
     /**
      * lower layer
      */
-    protected ifcDn lower = null;
+    protected ifcDn lower = new ifcNull();
 
     /**
      * promiscous mode set

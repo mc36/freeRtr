@@ -215,6 +215,9 @@ public class cfgEvntmgr implements Comparator<cfgEvntmgr>, cfgGeneric {
                 continue;
             }
             sup |= ntry.suppress;
+            if (ntry.script.size() < 1) {
+                continue;
+            }
             pipeLine pl = new pipeLine(32768, false);
             pipeSide pip = pl.getSide();
             pip.timeout = 10000;

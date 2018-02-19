@@ -1,6 +1,6 @@
 package cfg;
 
-import auth.authLocal;
+import addr.addrIP;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -11,28 +11,36 @@ import pipe.pipeDiscard;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import tab.tabGen;
-import user.userExec;
+import tab.tabListing;
+import tab.tabScrptN;
+import user.userEditor;
 import user.userFilter;
 import user.userHelping;
-import user.userReader;
+import user.userScreen;
+import user.userScript;
 import util.bits;
 import util.cmds;
 import util.logger;
 
 /**
- * scheduler configuration
+ * one script configuration
  *
  * @author matecsaba
  */
-public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
+public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
 
     /**
-     * name of scheduler
+     * name of this script
      */
     public String name;
 
     /**
-     * description of this scheduler
+     * text of this script
+     */
+    public tabListing<tabScrptN, addrIP> script = new tabListing<tabScrptN, addrIP>();
+
+    /**
+     * description of this script
      */
     public String description = "";
 
@@ -45,16 +53,6 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
      * initial delay
      */
     public int initial;
-
-    /**
-     * exec command
-     */
-    public String command = cmds.finish;
-
-    /**
-     * hide commands
-     */
-    public boolean hidden = false;
 
     /**
      * action logging
@@ -94,13 +92,11 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
      * defaults text
      */
     public final static String defaultL[] = {
-        "scheduler .*! no description",
-        "scheduler .*! time 0",
-        "scheduler .*! delay 0",
-        "scheduler .*! command exit",
-        "scheduler .*! no hidden",
-        "scheduler .*! no log",
-        "scheduler .*! no range"
+        "script .*! no description",
+        "script .*! time 0",
+        "script .*! delay 0",
+        "script .*! no log",
+        "script .*! no range"
     };
 
     /**
@@ -108,20 +104,18 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgSched o1, cfgSched o2) {
+    public int compare(cfgScrpt o1, cfgScrpt o2) {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
 
     public String toString() {
-        return "scheduler " + name;
+        return "script " + name;
     }
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
-        l.add("1  2,.    description                description of this scheduler");
-        l.add("2  2,.      [text]                   text describing this scheduler");
-        l.add("1  2      command                    specify command to run");
-        l.add("2  2,.      <cmd>                    exec command to run");
+        l.add("1  2,.    description                description of this script");
+        l.add("2  2,.      [text]                   text describing this script");
         l.add("1  2      time                       specify time between runs");
         l.add("2  .        <num>                    milliseconds between runs");
         l.add("1  2      delay                      specify initial delay");
@@ -129,27 +123,28 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         l.add("1  2      range                      specify time range");
         l.add("2  .        <name>                   name of time map");
         l.add("1  .      log                        log actions");
+        l.add("1  2      sequence                   sequence number of an entry");
+        l.add("2  3,.      <num>                    sequence number");
+        l.add("3  3,.        <str>                  tcl commands");
+        l.add("1  2,.    reindex                    reindex route map");
+        l.add("2  3,.      [num]                    initial number to start with");
+        l.add("3  4,.        [num]                  increment number");
         l.add("1  .      stop                       stop working");
         l.add("1  .      start                      start working");
         l.add("1  .      runnow                     run one round now");
-        l.add("1  .      hidden                     hide command");
+        l.add("1  .      editor                     edit this script");
         return l;
     }
 
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
-        l.add("scheduler " + name);
+        l.add("script " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
-        cmds.cfgLine(l, !hidden, cmds.tabulator, "hidden", "");
         l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + "delay " + initial);
-        if (hidden) {
-            l.add(cmds.tabulator + "command " + authLocal.passwdEncode(command));
-        } else {
-            l.add(cmds.tabulator + "command " + command);
-        }
         cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
         cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
+        l.addAll(script.dump(cmds.tabulator));
         if (working) {
             l.add(cmds.tabulator + "start");
         } else {
@@ -169,20 +164,12 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             description = cmd.getRemaining();
             return;
         }
-        if (a.equals("hidden")) {
-            hidden = true;
-            return;
-        }
         if (a.equals("time")) {
             interval = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("delay")) {
             initial = bits.str2num(cmd.word());
-            return;
-        }
-        if (a.equals("command")) {
-            command = authLocal.passwdDecode(cmd.getRemaining());
             return;
         }
         if (a.equals("log")) {
@@ -205,6 +192,34 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             doRound();
             return;
         }
+        if (a.equals("sequence")) {
+            tabScrptN ntry = new tabScrptN();
+            ntry.sequence = bits.str2num(cmd.word());
+            ntry.lin = cmd.getRemaining();
+            script.del(ntry);
+            script.add(ntry);
+            return;
+        }
+        if (a.equals("reindex")) {
+            int i = bits.str2num(cmd.word());
+            script.reindex(i, bits.str2num(cmd.word()));
+            return;
+        }
+        if (a.equals("editor")) {
+            List<String> txt = getText();
+            userEditor e = new userEditor(new userScreen(cmd.pipe, 80, 25), txt, "script");
+            if (e.doEdit()) {
+                return;
+            }
+            script.clear();
+            for (int i = 0; i < txt.size(); i++) {
+                tabScrptN ntry = new tabScrptN();
+                ntry.sequence = (i + 1) * 10;
+                ntry.lin = txt.get(i);
+                script.add(ntry);
+            }
+            return;
+        }
         if (!a.equals("no")) {
             cmd.badCmd();
             return;
@@ -212,10 +227,6 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         a = cmd.word();
         if (a.equals("description")) {
             description = "";
-            return;
-        }
-        if (a.equals("hidden")) {
-            hidden = false;
             return;
         }
         if (a.equals("log")) {
@@ -226,11 +237,25 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             time = null;
             return;
         }
+        if (a.equals("sequence")) {
+            tabScrptN ntry = new tabScrptN();
+            ntry.sequence = bits.str2num(cmd.word());
+            script.del(ntry);
+            return;
+        }
         cmd.badCmd();
     }
 
     public String getPrompt() {
-        return "sched";
+        return "scrpt";
+    }
+
+    private List<String> getText() {
+        List<String> l = new ArrayList<String>();
+        for (int i = 0; i < script.size(); i++) {
+            l.add(script.get(i).lin);
+        }
+        return l;
     }
 
     /**
@@ -257,7 +282,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         }
         working = true;
         keepTimer = new Timer();
-        cfgSchedTimer task = new cfgSchedTimer(this);
+        cfgScrptTimer task = new cfgScrptTimer(this);
         keepTimer.schedule(task, initial, interval);
     }
 
@@ -275,20 +300,19 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         }
         restartC++;
         restartT = bits.getTime();
-        pipeLine pipe = new pipeLine(32768, false);
-        loc = pipe.getSide();
+        pipeLine pl = new pipeLine(32768, false);
+        loc = pl.getSide();
         new Thread(this).start();
-        pipeSide pip = pipe.getSide();
-        userReader rdr = new userReader(pip, 1023);
-        rdr.height = 0;
-        userExec exe = new userExec(pip, rdr);
-        exe.privileged = true;
+        pipeSide pip = pl.getSide();
         pip.timeout = 120000;
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        String s = exe.repairCommand(command);
-        exe.executeCommand(s);
-        pipe.setClose();
+        userScript s = new userScript(pip, "");
+        s.allowExec = true;
+        s.allowConfig = true;
+        s.addLines(getText());
+        s.cmdAll();
+        pl.setClose();
         if (logging) {
             logger.info("stopped " + name);
         }
@@ -324,11 +348,11 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
 
 }
 
-class cfgSchedTimer extends TimerTask {
+class cfgScrptTimer extends TimerTask {
 
-    private cfgSched lower;
+    private cfgScrpt lower;
 
-    public cfgSchedTimer(cfgSched parent) {
+    public cfgScrptTimer(cfgScrpt parent) {
         lower = parent;
     }
 

@@ -746,6 +746,9 @@ public class ifcBundle implements Runnable, ifcDn {
             if (ifc == null) {
                 continue;
             }
+            if (ifc.lowerIf == null) {
+                continue;
+            }
             int o = ifc.lowerIf.getMTUsize();
             if (p > o) {
                 p = o;
@@ -759,6 +762,9 @@ public class ifcBundle implements Runnable, ifcDn {
         for (int i = 0; i < ifaces.size(); i++) {
             ifcBundleIfc ifc = ifaces.get(i);
             if (ifc == null) {
+                continue;
+            }
+            if (ifc.lowerIf == null) {
                 continue;
             }
             long o = ifc.lowerIf.getBandwidth();

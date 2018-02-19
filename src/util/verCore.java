@@ -18,7 +18,7 @@ public class verCore {
     /**
      * author
      */
-    public final static String author = "matecsaba";
+    public final static String author = "cs@nop";
 
     /**
      * current public key
@@ -43,7 +43,7 @@ public class verCore {
     /**
      * compile day
      */
-    public final static int day = 16;
+    public final static int day = 19;
 
     /**
      * statement of release

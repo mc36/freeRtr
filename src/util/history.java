@@ -267,22 +267,21 @@ public class history {
         return getShPSum(secs);
     }
 
-    private static String getShSum(List<counter> lst) {
+    private static counter getLast(List<counter> lst) {
         int i = lst.size() - 1;
         if (i < 0) {
-            return new counter().getShBsum();
+            return new counter();
+        } else {
+            return lst.get(i);
         }
-        counter ntry = lst.get(i);
-        return ntry.getShBsum();
+    }
+
+    private static String getShSum(List<counter> lst) {
+        return getLast(lst).getShBsum();
     }
 
     private static String getShPSum(List<counter> lst) {
-        int i = lst.size() - 1;
-        if (i < 0) {
-            return new counter().getShPSum();
-        }
-        counter ntry = lst.get(i);
-        return ntry.getShPSum();
+        return getLast(lst).getShPSum();
     }
 
     /**
@@ -296,6 +295,46 @@ public class history {
         lst.add("1min|" + getShSum(mina) + "|" + getShPSum(mina));
         lst.add("1hour|" + getShSum(hora) + "|" + getShPSum(hora));
         return lst;
+    }
+
+    /**
+     * get autobandwidth value
+     *
+     * @param mod mode: 0x01=rx, 0x02=tx, 0x03=both, 0x10=sec, 0x20=mina,
+     * 0x30=minm, 0x40=hora, 0x50=horm
+     * @return calculated bandwidth
+     */
+    public long getAutoBw(int mod) {
+        counter cnt;
+        switch (mod & 0xf0) {
+            case 0x10:
+                cnt = getLast(secs);
+                break;
+            case 0x20:
+                cnt = getLast(mina);
+                break;
+            case 0x30:
+                cnt = getLast(minm);
+                break;
+            case 0x40:
+                cnt = getLast(hora);
+                break;
+            case 0x50:
+                cnt = getLast(horm);
+                break;
+            default:
+                return 0;
+        }
+        switch (mod & 0xf) {
+            case 1:
+                return cnt.byteRx;
+            case 2:
+                return cnt.byteTx;
+            case 3:
+                return cnt.byteRx + cnt.byteTx;
+            default:
+                return 0;
+        }
     }
 
     /**

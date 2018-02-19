@@ -195,6 +195,11 @@ public class cfgAll {
     public static final tabGen<cfgSched> schedulers = new tabGen<cfgSched>();
 
     /**
+     * list of scripts
+     */
+    public static final tabGen<cfgScrpt> scripts = new tabGen<cfgScrpt>();
+
+    /**
      * list of trackers
      */
     public static final tabGen<cfgTrack> trackers = new tabGen<cfgTrack>();
@@ -857,6 +862,42 @@ public class cfgAll {
     }
 
     /**
+     * find one script
+     *
+     * @param nam name of entry
+     * @param create create new on this number if not found
+     * @return descriptor, null if not found
+     */
+    public static cfgScrpt scrptFind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgScrpt ntry = new cfgScrpt();
+        ntry.name = nam;
+        if (!create) {
+            return scripts.find(ntry);
+        }
+        cfgScrpt old = scripts.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        return ntry;
+    }
+
+    /**
+     * delete one script
+     *
+     * @param nam name of entry
+     * @return descriptor, null if not found
+     */
+    public static cfgScrpt scrptDel(String nam) {
+        cfgScrpt ntry = new cfgScrpt();
+        ntry.name = nam;
+        return scripts.del(ntry);
+    }
+
+    /**
      * find one tracker
      *
      * @param nam name of entry
@@ -1429,13 +1470,14 @@ public class cfgAll {
         ntry.clear2bridge();
         ntry.clear2bundle();
         ntry.clear2xconnect();
+        ntry.clear2evcs();
         ntry.clear2transproxy();
-        ntry.clear2pseudowire();
         ntry.setup2eapolClnt(null, null);
         ntry.setup2eapolServ(null);
         ntry.setup2pppoeClnt(null);
         ntry.setup2pppoeServ(null);
         ntry.setup2pppoeRely(null);
+        ntry.clear2pseudowire();
         return false;
     }
 
@@ -2431,7 +2473,7 @@ public class cfgAll {
     /**
      * do things with more interfaces
      *
-     * @param what what to do: 1=tunnelDest, 2=clearCntr
+     * @param what what to do: 1=tunnelDest, 2=clearCntr, 3=autoBw
      */
     public static void moreInterfaces(int what) {
         for (int i = 0; i < ifaces.size(); i++) {
@@ -2445,6 +2487,9 @@ public class cfgAll {
                     break;
                 case 2:
                     ifc.ethtyp.clearCounter();
+                    break;
+                case 3:
+                    ifc.autoBandwidth();
                     break;
             }
         }
@@ -2555,6 +2600,7 @@ public class cfgAll {
         servGenList.listGetRun(l, trackers, filter);
         servGenList.listGetRun(l, mtrackers, filter);
         servGenList.listGetRun(l, schedulers, filter);
+        servGenList.listGetRun(l, scripts, filter);
         for (int i = 0; i < vrfs.size(); i++) {
             l.addAll(vrfs.get(i).getShRun2());
         }

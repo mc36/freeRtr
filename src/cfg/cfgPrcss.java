@@ -28,7 +28,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public String name;
 
     /**
-     * description of this interface
+     * description of this process
      */
     public String description = "";
 

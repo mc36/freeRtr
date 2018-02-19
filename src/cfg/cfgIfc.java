@@ -12,10 +12,6 @@ import clnt.clntErspan;
 import clnt.clntEtherIp;
 import clnt.clntUti;
 import clnt.clntNvGre;
-import clnt.clntGrePpp;
-import clnt.clntAx25;
-import clnt.clntL2f;
-import clnt.clntL2tp2;
 import clnt.clntL2tp3;
 import prt.prtMplsIp;
 import clnt.clntMplsLdpP2mp;
@@ -35,7 +31,6 @@ import clnt.clntLisp;
 import clnt.clntMplsBier;
 import clnt.clntMplsTrg;
 import clnt.clntMplsUdp;
-import clnt.clntPptp;
 import clnt.clntSlaac;
 import clnt.clntUdpGre;
 import ifc.ifcAtmDxi;
@@ -280,129 +275,19 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public ifcNhrp nhrp;
 
     /**
-     * packet over udp xconnect
+     * xconnect handler
      */
-    public clntPckOudp xcnPckOudp;
+    public cfgXconnSide xconn;
 
     /**
-     * l2tp3 xconnect
+     * pseudowire handler
      */
-    public clntL2tp3 xcnL2tp3;
+    public cfgXconnSide pwhe;
 
     /**
-     * pseudowire xconnect
+     * evc handlers
      */
-    public clntMplsPwe xcnPweOmpls;
-
-    /**
-     * vxlan xconnect
-     */
-    public clntVxlan xcnVxlan;
-
-    /**
-     * geneve xconnect
-     */
-    public clntGeneve xcnGeneve;
-
-    /**
-     * erspan xconnect
-     */
-    public clntErspan xcnErspan;
-
-    /**
-     * dlsw xconnect
-     */
-    public clntDlsw xcnDlsw;
-
-    /**
-     * etherip xconnect
-     */
-    public clntEtherIp xcnEtherip;
-
-    /**
-     * uti xconnect
-     */
-    public clntUti xcnUti;
-
-    /**
-     * nvgre xconnect
-     */
-    public clntNvGre xcnNvgre;
-
-    /**
-     * packet over udp pseudowire
-     */
-    public clntPckOudp pwePckOudp;
-
-    /**
-     * l2tp3 pseudowire
-     */
-    public clntL2tp3 pweL2tp3;
-
-    /**
-     * mpls pseudowire
-     */
-    public clntMplsPwe pwePweOmpls;
-
-    /**
-     * vxlan pseudowire
-     */
-    public clntVxlan pweVxlan;
-
-    /**
-     * geneve pseudowire
-     */
-    public clntGeneve pweGeneve;
-
-    /**
-     * erspan pseudowire
-     */
-    public clntErspan pweErspan;
-
-    /**
-     * dlsw pseudowire
-     */
-    public clntDlsw pweDlsw;
-
-    /**
-     * etherip pseudowire
-     */
-    public clntEtherIp pweEtherip;
-
-    /**
-     * uti pseudowire
-     */
-    public clntUti pweUti;
-
-    /**
-     * nvgre pseudowire
-     */
-    public clntNvGre pweNvgre;
-
-    /**
-     * pppogre pseudowire
-     */
-    public clntGrePpp pweGrePpp;
-
-    /**
-     * ax25 pseudowire
-     */
-    public clntAx25 pweAx25;
-
-    /**
-     * l2f pseudowire
-     */
-    public clntL2f pweL2f;
-
-    /**
-     * pptp pseudowire
-     */
-    public clntPptp pwePptp;
-
-    /**
-     * l2tp2 pseudowire
-     */
-    public clntL2tp2 pweL2tp2;
+    public tabGen<cfgIfcEvc> evcs = new tabGen<cfgIfcEvc>();
 
     /**
      * bridge interface
@@ -433,6 +318,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * packet thread
      */
     public ifcThread thread;
+
+    /**
+     * auto bandwidth
+     */
+    public int autoBndWdt;
 
     /**
      * transparent proxy
@@ -2739,15 +2629,20 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public synchronized void initSubiface(cfgIfc prnt) {
         parent = prnt;
         type = parent.type;
-        if (parent.vlanHed == null) {
-            parent.vlanHed = new ifcDot1q();
-            parent.vlanHed.reg2ethTyp(parent.ethtyp);
-        }
+        parent.initVlan();
         parent.vlanHed.addVlan(vlanNum, ethtyp);
         lower = parent.vlanHed.updateVlan(vlanNum, ethtyp);
     }
 
-    private void initVlan(ifcVlan vlan) {
+    private synchronized void initVlan() {
+        if (vlanHed != null) {
+            return;
+        }
+        vlanHed = new ifcDot1q();
+        vlanHed.reg2ethTyp(ethtyp);
+    }
+
+    private synchronized void initVlan(ifcVlan vlan) {
         if (vlanHed != null) {
             vlanHed.unreg2ethTyp(ethtyp);
         }
@@ -2830,418 +2725,37 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     /**
-     * setup this interface for xconnect
-     *
-     * @param prt protocol to use
-     * @param vrf vrf to use
-     * @param src source interface
-     * @param trg target address
-     * @param vcid vcid vcid value
+     * clear evcs
      */
-    public synchronized void setup2xconnect(tunnelType prt, cfgVrf vrf, cfgIfc src, addrIP trg, int vcid) {
-        clear2xconnect();
-        ifcEther eth = new ifcEther(ifaceNeedMacs());
-        switch (prt) {
-            case pckOudp:
-                xcnPckOudp = new clntPckOudp();
-                xcnPckOudp.target = "" + trg;
-                xcnPckOudp.vrf = vrf;
-                xcnPckOudp.srcIfc = src;
-                xcnPckOudp.prtR = vcid;
-                xcnPckOudp.prtL = vcid;
-                xcnPckOudp.setUpper(eth.getSideEth());
-                xcnPckOudp.workStart();
-                break;
-            case vxlan:
-                xcnVxlan = new clntVxlan();
-                xcnVxlan.target = "" + trg;
-                xcnVxlan.vrf = vrf;
-                xcnVxlan.srcIfc = src;
-                xcnVxlan.inst = vcid;
-                xcnVxlan.setUpper(eth.getSideEth());
-                xcnVxlan.workStart();
-                break;
-            case geneve:
-                xcnGeneve = new clntGeneve();
-                xcnGeneve.target = "" + trg;
-                xcnGeneve.vrf = vrf;
-                xcnGeneve.srcIfc = src;
-                xcnGeneve.vni = vcid;
-                xcnGeneve.setUpper(eth.getSideEth());
-                xcnGeneve.workStart();
-                break;
-            case erspan:
-                xcnErspan = new clntErspan();
-                xcnErspan.target = "" + trg;
-                xcnErspan.vrf = vrf;
-                xcnErspan.srcIfc = src;
-                xcnErspan.spnid = vcid;
-                xcnErspan.vlnid = vcid;
-                xcnErspan.setUpper(eth.getSideEth());
-                xcnErspan.workStart();
-                break;
-            case dlsw:
-                xcnDlsw = new clntDlsw();
-                xcnDlsw.target = "" + trg;
-                xcnDlsw.vrf = vrf;
-                xcnDlsw.srcIfc = src;
-                xcnDlsw.setUpper(eth.getSideEth());
-                xcnDlsw.workStart();
-                break;
-            case etherip:
-                xcnEtherip = new clntEtherIp();
-                xcnEtherip.target = "" + trg;
-                xcnEtherip.vrf = vrf;
-                xcnEtherip.srcIfc = src;
-                xcnEtherip.setUpper(eth.getSideEth());
-                xcnEtherip.workStart();
-                break;
-            case uti:
-                xcnUti = new clntUti();
-                xcnUti.target = "" + trg;
-                xcnUti.vrf = vrf;
-                xcnUti.srcIfc = src;
-                xcnUti.tunKey = vcid;
-                xcnUti.setUpper(eth.getSideEth());
-                xcnUti.workStart();
-                break;
-            case nvgre:
-                xcnNvgre = new clntNvGre();
-                xcnNvgre.target = "" + trg;
-                xcnNvgre.vrf = vrf;
-                xcnNvgre.srcIfc = src;
-                xcnNvgre.vsid = vcid;
-                xcnNvgre.setUpper(eth.getSideEth());
-                xcnNvgre.workStart();
-                break;
-            case l2tp3:
-                xcnL2tp3 = new clntL2tp3();
-                xcnL2tp3.pwType = packLdpPwe.pwtEthPort;
-                xcnL2tp3.target = "" + trg;
-                xcnL2tp3.vrf = vrf;
-                xcnL2tp3.srcIfc = src;
-                xcnL2tp3.vcid = "" + vcid;
-                xcnL2tp3.direction = trg.compare(trg, src.getLocAddr(trg)) < 0;
-                xcnL2tp3.setUpper(eth.getSideEth());
-                xcnL2tp3.workStart();
-                break;
-            case pweOmpls:
-                xcnPweOmpls = new clntMplsPwe();
-                xcnPweOmpls.pwType = packLdpPwe.pwtEthPort;
-                xcnPweOmpls.pwMtu = ethtyp.getMTUsize();
-                xcnPweOmpls.target = "" + trg;
-                xcnPweOmpls.vrf = vrf;
-                xcnPweOmpls.srcIfc = src;
-                xcnPweOmpls.vcid = vcid;
-                xcnPweOmpls.ctrlWrd = false;
-                xcnPweOmpls.descr = description;
-                xcnPweOmpls.setUpper(eth.getSideEth());
-                xcnPweOmpls.workStart();
-                break;
-            default:
-                return;
+    public synchronized void clear2evcs() {
+        for (int i = 0; i < evcs.size(); i++) {
+            cfgIfcEvc ntry = evcs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry.stopWork();
         }
-        ethtyp.addET(-1, "xconnect", eth.getSideTyp());
-        ethtyp.updateET(-1, eth.getSideTyp());
-        eth.setFilter(true);
+        evcs.clear();
     }
 
     /**
      * clear xconnect
      */
     public synchronized void clear2xconnect() {
-        ethtyp.setFilter(false);
-        if (xcnPckOudp != null) {
-            ethtyp.delET(-1);
-            xcnPckOudp.workStop();
-            xcnPckOudp = null;
+        if (xconn == null) {
+            return;
         }
-        if (xcnVxlan != null) {
-            ethtyp.delET(-1);
-            xcnVxlan.workStop();
-            xcnVxlan = null;
-        }
-        if (xcnGeneve != null) {
-            ethtyp.delET(-1);
-            xcnGeneve.workStop();
-            xcnGeneve = null;
-        }
-        if (xcnErspan != null) {
-            ethtyp.delET(-1);
-            xcnErspan.workStop();
-            xcnErspan = null;
-        }
-        if (xcnDlsw != null) {
-            ethtyp.delET(-1);
-            xcnDlsw.workStop();
-            xcnDlsw = null;
-        }
-        if (xcnEtherip != null) {
-            ethtyp.delET(-1);
-            xcnEtherip.workStop();
-            xcnEtherip = null;
-        }
-        if (xcnUti != null) {
-            ethtyp.delET(-1);
-            xcnUti.workStop();
-            xcnUti = null;
-        }
-        if (xcnNvgre != null) {
-            ethtyp.delET(-1);
-            xcnNvgre.workStop();
-            xcnNvgre = null;
-        }
-        if (xcnL2tp3 != null) {
-            ethtyp.delET(-1);
-            xcnL2tp3.workStop();
-            xcnL2tp3 = null;
-        }
-        if (xcnPweOmpls != null) {
-            ethtyp.delET(-1);
-            xcnPweOmpls.workStop();
-            xcnPweOmpls = null;
-        }
-    }
-
-    /**
-     * setup this interface for pseudowire
-     *
-     * @param prt protocol to use
-     * @param vrf vrf to use
-     * @param src source interface
-     * @param trg target address
-     * @param vcid vcid vcid value
-     */
-    public synchronized void setup2pseudowire(cfgVpdn.protocolType prt, cfgVrf vrf, cfgIfc src, addrIP trg, int vcid) {
-        clear2pseudowire();
-        ifcUp upp = null;
-        switch (type) {
-            case virtppp:
-                upp = getEncapProto();
-                break;
-            case pweth:
-                upp = ethtyp;
-                break;
-            default:
-                return;
-        }
-        switch (prt) {
-            case prPou:
-                pwePckOudp = new clntPckOudp();
-                pwePckOudp.target = "" + trg;
-                pwePckOudp.vrf = vrf;
-                pwePckOudp.srcIfc = src;
-                pwePckOudp.prtR = vcid;
-                pwePckOudp.prtL = vcid;
-                if (type == ifaceType.virtppp) {
-                    pwePckOudp.setUpper(upp);
-                } else {
-                    pwePckOudp.setUpper(new ifcEther(false, upp));
-                }
-                pwePckOudp.workStart();
-                break;
-            case prVxlan:
-                pweVxlan = new clntVxlan();
-                pweVxlan.target = "" + trg;
-                pweVxlan.vrf = vrf;
-                pweVxlan.srcIfc = src;
-                pweVxlan.inst = vcid;
-                pweVxlan.setUpper(new ifcEther(false, upp));
-                pweVxlan.workStart();
-                break;
-            case prGeneve:
-                pweGeneve = new clntGeneve();
-                pweGeneve.target = "" + trg;
-                pweGeneve.vrf = vrf;
-                pweGeneve.srcIfc = src;
-                pweGeneve.vni = vcid;
-                pweGeneve.setUpper(new ifcEther(false, upp));
-                pweGeneve.workStart();
-                break;
-            case prErspan:
-                pweErspan = new clntErspan();
-                pweErspan.target = "" + trg;
-                pweErspan.vrf = vrf;
-                pweErspan.srcIfc = src;
-                pweErspan.spnid = vcid;
-                pweErspan.vlnid = vcid;
-                pweErspan.setUpper(new ifcEther(false, upp));
-                pweErspan.workStart();
-                break;
-            case prDlsw:
-                pweDlsw = new clntDlsw();
-                pweDlsw.target = "" + trg;
-                pweDlsw.vrf = vrf;
-                pweDlsw.srcIfc = src;
-                pweDlsw.setUpper(new ifcEther(false, upp));
-                pweDlsw.workStart();
-                break;
-            case prEtherip:
-                pweEtherip = new clntEtherIp();
-                pweEtherip.target = "" + trg;
-                pweEtherip.vrf = vrf;
-                pweEtherip.srcIfc = src;
-                pweEtherip.setUpper(new ifcEther(false, upp));
-                pweEtherip.workStart();
-                break;
-            case prUti:
-                pweUti = new clntUti();
-                pweUti.target = "" + trg;
-                pweUti.vrf = vrf;
-                pweUti.srcIfc = src;
-                pweUti.tunKey = vcid;
-                pweUti.setUpper(new ifcEther(false, upp));
-                pweUti.workStart();
-                break;
-            case prNvgre:
-                pweNvgre = new clntNvGre();
-                pweNvgre.target = "" + trg;
-                pweNvgre.vrf = vrf;
-                pweNvgre.srcIfc = src;
-                pweNvgre.vsid = vcid;
-                pweNvgre.setUpper(new ifcEther(false, upp));
-                pweNvgre.workStart();
-                break;
-            case prPog:
-                pweGrePpp = new clntGrePpp();
-                pweGrePpp.target = "" + trg;
-                pweGrePpp.vrf = vrf;
-                pweGrePpp.srcIfc = src;
-                pweGrePpp.vcid = vcid;
-                pweGrePpp.setUpper(upp);
-                pweGrePpp.workStart();
-                break;
-            case prAx25:
-                pweAx25 = new clntAx25();
-                pweAx25.target = "" + trg;
-                pweAx25.vrf = vrf;
-                pweAx25.srcIfc = src;
-                pweAx25.setUpper(upp);
-                pweAx25.workStart();
-                break;
-            case prL2f:
-                pweL2f = new clntL2f();
-                pweL2f.target = "" + trg;
-                pweL2f.vrf = vrf;
-                pweL2f.srcIfc = src;
-                pweL2f.setUpper(upp);
-                pweL2f.workStart();
-                break;
-            case prPptp:
-                pwePptp = new clntPptp();
-                pwePptp.target = "" + trg;
-                pwePptp.vrf = vrf;
-                pwePptp.srcIfc = src;
-                pwePptp.setUpper(upp);
-                pwePptp.workStart();
-                break;
-            case prL2tp2:
-                pweL2tp2 = new clntL2tp2();
-                pweL2tp2.target = "" + trg;
-                pweL2tp2.vrf = vrf;
-                pweL2tp2.srcIfc = src;
-                pweL2tp2.direction = false;
-                pweL2tp2.setUpper(upp);
-                pweL2tp2.workStart();
-                break;
-            case prL2tp3:
-                pweL2tp3 = new clntL2tp3();
-                pweL2tp3.pwType = type == ifaceType.virtppp ? packLdpPwe.pwtPpp : packLdpPwe.pwtEthPort;
-                pweL2tp3.target = "" + trg;
-                pweL2tp3.vrf = vrf;
-                pweL2tp3.srcIfc = src;
-                pweL2tp3.vcid = "" + vcid;
-                pweL2tp3.direction = trg.compare(trg, src.getLocAddr(trg)) < 0;
-                if (type == ifaceType.virtppp) {
-                    pweL2tp3.setUpper(upp);
-                } else {
-                    pweL2tp3.setUpper(new ifcEther(false, upp));
-                }
-                pweL2tp3.workStart();
-                break;
-            case prPwom:
-                pwePweOmpls = new clntMplsPwe();
-                pwePweOmpls.pwType = type == ifaceType.virtppp ? packLdpPwe.pwtPpp : packLdpPwe.pwtEthPort;
-                pwePweOmpls.pwMtu = ethtyp.getMTUsize();
-                pwePweOmpls.target = "" + trg;
-                pwePweOmpls.vrf = vrf;
-                pwePweOmpls.srcIfc = src;
-                pwePweOmpls.vcid = vcid;
-                pwePweOmpls.ctrlWrd = false;
-                pwePweOmpls.descr = description;
-                if (type == ifaceType.virtppp) {
-                    pwePweOmpls.setUpper(upp);
-                } else {
-                    pwePweOmpls.setUpper(new ifcEther(false, upp));
-                }
-                pwePweOmpls.workStart();
-                break;
-        }
+        ethtyp.delET(-1);
+        xconn.stop2run();
+        xconn = null;
     }
 
     /**
      * clear pseudowire
      */
     public synchronized void clear2pseudowire() {
-        if (pwePckOudp != null) {
-            pwePckOudp.workStop();
-            pwePckOudp = null;
-        }
-        if (pweVxlan != null) {
-            pweVxlan.workStop();
-            pweVxlan = null;
-        }
-        if (pweGeneve != null) {
-            pweGeneve.workStop();
-            pweGeneve = null;
-        }
-        if (pweErspan != null) {
-            pweErspan.workStop();
-            pweErspan = null;
-        }
-        if (pweDlsw != null) {
-            pweDlsw.workStop();
-            pweDlsw = null;
-        }
-        if (pweEtherip != null) {
-            pweEtherip.workStop();
-            pweEtherip = null;
-        }
-        if (pweUti != null) {
-            pweUti.workStop();
-            pweUti = null;
-        }
-        if (pweNvgre != null) {
-            pweNvgre.workStop();
-            pweNvgre = null;
-        }
-        if (pweGrePpp != null) {
-            pweGrePpp.workStop();
-            pweGrePpp = null;
-        }
-        if (pweAx25 != null) {
-            pweAx25.workStop();
-            pweAx25 = null;
-        }
-        if (pweL2f != null) {
-            pweL2f.workStop();
-            pweL2f = null;
-        }
-        if (pwePptp != null) {
-            pwePptp.workStop();
-            pwePptp = null;
-        }
-        if (pweL2tp2 != null) {
-            pweL2tp2.workStop();
-            pweL2tp2 = null;
-        }
-        if (pweL2tp3 != null) {
-            pweL2tp3.workStop();
-            pweL2tp3 = null;
-        }
-        if (pwePweOmpls != null) {
-            pwePweOmpls.workStop();
-            pwePweOmpls = null;
+        if (pwhe == null) {
+            return;
         }
         ifcUp upp = null;
         switch (type) {
@@ -3256,6 +2770,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         ifcNull nul = new ifcNull();
         nul.setUpper(upp);
+        pwhe.stop2run();
+        pwhe = null;
     }
 
     /**
@@ -3805,7 +3321,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPweOmpls.target = "" + tunTrg;
                 tunPweOmpls.vcid = tunKey;
                 tunPweOmpls.ctrlWrd = tunSeq;
-                tunPweOmpls.descr = description;
+                tunPweOmpls.descr = description.length() > 0 ? description : name;
                 tunPweOmpls.setUpper(ethtyp);
                 tunPweOmpls.workStart();
                 lower = tunPweOmpls;
@@ -4472,6 +3988,23 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * set bandwidth based on traffic
+     */
+    public synchronized void autoBandwidth() {
+        if (autoBndWdt == 0) {
+            return;
+        }
+        long i = ethtyp.getHistory().getAutoBw(autoBndWdt);
+        if (i < 1) {
+            i = 1;
+        }
+        ethtyp.forcedBW = i * 8;
+        if (bundleHed != null) {
+            bundleHed.bundleHed.propagateState();
+        }
+    }
+
+    /**
      * get interface statistics
      *
      * @param mode mode to use: 1=counters, 2..10=history
@@ -4611,7 +4144,40 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("interface " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, ethtyp.forcedMTU < 1, cmds.tabulator, "mtu", "" + ethtyp.forcedMTU);
-        cmds.cfgLine(l, ethtyp.forcedBW < 1, cmds.tabulator, "bandwidth", "" + (ethtyp.forcedBW / 1000));
+        if (autoBndWdt == 0) {
+            cmds.cfgLine(l, ethtyp.forcedBW < 1, cmds.tabulator, "bandwidth", "" + (ethtyp.forcedBW / 1000));
+        } else {
+            String s = "";
+            switch (autoBndWdt & 0xf) {
+                case 0x1:
+                    s += " rx";
+                    break;
+                case 0x2:
+                    s += " tx";
+                    break;
+                case 0x3:
+                    s += " both";
+                    break;
+            }
+            switch (autoBndWdt & 0xf0) {
+                case 0x10:
+                    s += " second";
+                    break;
+                case 0x20:
+                    s += " minute-average";
+                    break;
+                case 0x30:
+                    s += " minute-maximum";
+                    break;
+                case 0x40:
+                    s += " hour-average";
+                    break;
+                case 0x50:
+                    s += " hour-maximum";
+                    break;
+            }
+            l.add(cmds.tabulator + "bandwidth auto" + s);
+        }
         cmds.cfgLine(l, ethtyp.forcedMac == null, cmds.tabulator, "macaddr", "" + ethtyp.forcedMac);
         cmds.cfgLine(l, ethtyp.monSes == null, cmds.tabulator, "monitor-session", "" + ethtyp.monSes);
         cmds.cfgLine(l, ethtyp.monBufD == null, cmds.tabulator, "monitor-buffer", "" + ethtyp.getMonBufSize());
@@ -4916,80 +4482,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             s = "router eigrp6 " + rtrEigrp6hnd.number + " ";
             rtrEigrp6ifc.routerGetConfig(l, s);
         }
-        if (xcnPckOudp != null) {
-            l.add(cmds.tabulator + "xconnect " + xcnPckOudp.vrf.name + " " + xcnPckOudp.srcIfc.name + " pckoudp " + xcnPckOudp.target + " " + xcnPckOudp.prtR);
+        for (int i = 0; i < evcs.size(); i++) {
+            cfgIfcEvc ntry = evcs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            l.add(cmds.tabulator + "service-instance " + ntry.getCfg());
         }
-        if (xcnVxlan != null) {
-            l.add(cmds.tabulator + "xconnect " + xcnVxlan.vrf.name + " " + xcnVxlan.srcIfc.name + " vxlan " + xcnVxlan.target + " " + xcnVxlan.inst);
+        if (xconn != null) {
+            l.add(cmds.tabulator + "xconnect " + xconn.getCfg());
         }
-        if (xcnGeneve != null) {
-            l.add(cmds.tabulator + "xconnect " + xcnGeneve.vrf.name + " " + xcnGeneve.srcIfc.name + " geneve " + xcnGeneve.target + " " + xcnGeneve.vni);
-        }
-        if (xcnErspan != null) {
-            l.add(cmds.tabulator + "xconnect " + xcnErspan.vrf.name + " " + xcnErspan.srcIfc.name + " erspan " + xcnErspan.target + " " + xcnErspan.vlnid);
-        }
-        if (xcnDlsw != null) {
-            l.add(cmds.tabulator + "xconnect " + xcnDlsw.vrf.name + " " + xcnDlsw.srcIfc.name + " dlsw " + xcnDlsw.target + " 1");
-        }
-        if (xcnEtherip != null) {
-            l.add(cmds.tabulator + "xconnect " + xcnEtherip.vrf.name + " " + xcnEtherip.srcIfc.name + " etherip " + xcnEtherip.target + " 1");
-        }
-        if (xcnUti != null) {
-            l.add(cmds.tabulator + "xconnect " + xcnUti.vrf.name + " " + xcnUti.srcIfc.name + " uti " + xcnUti.target + " " + xcnUti.tunKey);
-        }
-        if (xcnNvgre != null) {
-            l.add(cmds.tabulator + "xconnect " + xcnNvgre.vrf.name + " " + xcnNvgre.srcIfc.name + " nvgre " + xcnNvgre.target + " " + xcnNvgre.vsid);
-        }
-        if (xcnL2tp3 != null) {
-            l.add(cmds.tabulator + "xconnect " + xcnL2tp3.vrf.name + " " + xcnL2tp3.srcIfc.name + " l2tp3 " + xcnL2tp3.target + " " + xcnL2tp3.vcid);
-        }
-        if (xcnPweOmpls != null) {
-            l.add(cmds.tabulator + "xconnect " + xcnPweOmpls.vrf.name + " " + xcnPweOmpls.srcIfc.name + " pweompls " + xcnPweOmpls.target + " " + xcnPweOmpls.vcid);
-        }
-        if (pwePckOudp != null) {
-            l.add(cmds.tabulator + "pseudowire " + pwePckOudp.vrf.name + " " + pwePckOudp.srcIfc.name + " pckoudp " + pwePckOudp.target + " " + pwePckOudp.prtR);
-        }
-        if (pweVxlan != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweVxlan.vrf.name + " " + pweVxlan.srcIfc.name + " vxlan " + pweVxlan.target + " " + pweVxlan.inst);
-        }
-        if (pweGeneve != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweGeneve.vrf.name + " " + pweGeneve.srcIfc.name + " geneve " + pweGeneve.target + " " + pweGeneve.vni);
-        }
-        if (pweErspan != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweErspan.vrf.name + " " + pweErspan.srcIfc.name + " erspan " + pweErspan.target + " " + pweErspan.vlnid);
-        }
-        if (pweDlsw != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweDlsw.vrf.name + " " + pweDlsw.srcIfc.name + " dlsw " + pweDlsw.target + " 1");
-        }
-        if (pweEtherip != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweEtherip.vrf.name + " " + pweEtherip.srcIfc.name + " etherip " + pweEtherip.target + " 1");
-        }
-        if (pweUti != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweUti.vrf.name + " " + pweUti.srcIfc.name + " uti " + pweUti.target + " " + pweUti.tunKey);
-        }
-        if (pweNvgre != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweNvgre.vrf.name + " " + pweNvgre.srcIfc.name + " nvgre " + pweNvgre.target + " " + pweNvgre.vsid);
-        }
-        if (pweGrePpp != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweGrePpp.vrf.name + " " + pweGrePpp.srcIfc.name + " greppp " + pweGrePpp.target + " " + pweGrePpp.vcid);
-        }
-        if (pweAx25 != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweAx25.vrf.name + " " + pweAx25.srcIfc.name + " ax25 " + pweAx25.target + " 1");
-        }
-        if (pweL2f != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweL2f.vrf.name + " " + pweL2f.srcIfc.name + " l2f " + pweL2f.target + " 1");
-        }
-        if (pwePptp != null) {
-            l.add(cmds.tabulator + "pseudowire " + pwePptp.vrf.name + " " + pwePptp.srcIfc.name + " pptp " + pwePptp.target + " 1");
-        }
-        if (pweL2tp2 != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweL2tp2.vrf.name + " " + pweL2tp2.srcIfc.name + " l2tp2 " + pweL2tp2.target + " 1");
-        }
-        if (pweL2tp3 != null) {
-            l.add(cmds.tabulator + "pseudowire " + pweL2tp3.vrf.name + " " + pweL2tp3.srcIfc.name + " l2tp3 " + pweL2tp3.target + " " + pweL2tp3.vcid);
-        }
-        if (pwePweOmpls != null) {
-            l.add(cmds.tabulator + "pseudowire " + pwePweOmpls.vrf.name + " " + pwePweOmpls.srcIfc.name + " pweompls " + pwePweOmpls.target + " " + pwePweOmpls.vcid);
+        if (pwhe != null) {
+            l.add(cmds.tabulator + "pseudowire " + pwhe.getCfg());
         }
         if (template == null) {
             l.add(cmds.tabulator + "no template");
@@ -5030,6 +4534,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 .     <addr>                      physical layer address");
         l.add("1 2   bandwidth                     change interface bandwidth");
         l.add("2 .     <num>                       kilobits per second");
+        l.add("2 3     auto                        calculate automatically");
+        l.add("3 4       rx                        received amount");
+        l.add("3 4       tx                        transmitted amount");
+        l.add("3 4       both                      total amount");
+        l.add("4 .         second                  last second");
+        l.add("4 .         minute-average          last minute average");
+        l.add("4 .         minute-maximum          last minute maximum");
+        l.add("4 .         hour-average            last hour average");
+        l.add("4 .         hour-maximum            last hour maximum");
         l.add("1 2   template                      get configuration from template");
         l.add("2 .     <name>                      name of source interface");
         l.add("1 2   monitor-session               set monitor session");
@@ -5290,40 +4803,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 2   macsec                        mac security protocol commands");
         l.add("2 .     <name>                      name of ipsec profile");
         l.add("1 2   xconnect                      cross connect interface");
-        l.add("2 3     <name>                      vrf to use");
-        l.add("3 4       <name>                    source interface to use");
-        l.add("4 5         pckoudp                 packet over udp encapsulation");
-        l.add("4 5         l2tp3                   l2tp v3 encapsulation");
-        l.add("4 5         pweompls                pwe over mpls encapsulation");
-        l.add("4 5         vxlan                   vxlan encapsulation");
-        l.add("4 5         geneve                  geneve encapsulation");
-        l.add("4 5         erspan                  erspan encapsulation");
-        l.add("4 5         dlsw                    dlsw encapsulation");
-        l.add("4 5         etherip                 etherip encapsulation");
-        l.add("4 5         uti                     uti encapsulation");
-        l.add("4 5         nvgre                   nvgre encapsulation");
-        l.add("5 6           <addr>                address of target");
-        l.add("6 .             <num>               vc id");
+        cfgXconnSide.getHelp(l, 2);
         l.add("1 2   pseudowire                    pseudowire of interface");
-        l.add("2 3     <name>                      vrf to use");
-        l.add("3 4       <name>                    source interface to use");
-        l.add("4 5         pckoudp                 packet over udp encapsulation");
-        l.add("4 5         greppp                  ppp over gre encapsulation");
-        l.add("4 5         ax25                    ax25 encapsulation");
-        l.add("4 5         l2f                     l2f encapsulation");
-        l.add("4 5         pptp                    pptp encapsulation");
-        l.add("4 5         l2tp2                   l2tp v2 encapsulation");
-        l.add("4 5         l2tp3                   l2tp v3 encapsulation");
-        l.add("4 5         pweompls                pwe over mpls encapsulation");
-        l.add("4 5         vxlan                   vxlan encapsulation");
-        l.add("4 5         geneve                  geneve encapsulation");
-        l.add("4 5         erspan                  erspan encapsulation");
-        l.add("4 5         dlsw                    dlsw encapsulation");
-        l.add("4 5         etherip                 etherip encapsulation");
-        l.add("4 5         uti                     uti encapsulation");
-        l.add("4 5         nvgre                   nvgre encapsulation");
-        l.add("5 6           <addr>                address of target");
-        l.add("6 .             <num>               vc id");
+        cfgXconnSide.getHelp(l, 2);
+        l.add("1 2   service-instance              configure ethernet services");
+        l.add("2 3     <num>                       vlan id");
+        l.add("3 .       shutdown                  drop frames unconditionally");
+        l.add("3 4       bridge-group              transparent bridging interface parameters");
+        l.add("4 .         <num>                   number of bridge group");
+        l.add("3 4       xconnect                  cross connect vlan");
+        cfgXconnSide.getHelp(l, 4);
         l.add("1 2   service-policy-in             policy map to apply to ingress packets");
         l.add("2 .     <name>                      name of policy map");
         l.add("1 2   service-policy-out            policy map to apply to egress packets");
@@ -5398,9 +4887,40 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("bandwidth")) {
-            ethtyp.forcedBW = ((long) bits.str2num(cmd.word())) * 1000;
-            if (bundleHed != null) {
-                bundleHed.bundleHed.propagateState();
+            autoBndWdt = 0;
+            a = cmd.word();
+            if (!a.equals("auto")) {
+                ethtyp.forcedBW = (long) (bits.str2num(a) * 1000);
+                if (bundleHed != null) {
+                    bundleHed.bundleHed.propagateState();
+                }
+                return;
+            }
+            a = cmd.word();
+            if (a.equals("rx")) {
+                autoBndWdt |= 0x1;
+            }
+            if (a.equals("tx")) {
+                autoBndWdt |= 0x2;
+            }
+            if (a.equals("both")) {
+                autoBndWdt |= 0x3;
+            }
+            a = cmd.word();
+            if (a.equals("second")) {
+                autoBndWdt |= 0x10;
+            }
+            if (a.equals("minute-average")) {
+                autoBndWdt |= 0x20;
+            }
+            if (a.equals("minute-maximum")) {
+                autoBndWdt |= 0x30;
+            }
+            if (a.equals("hour-average")) {
+                autoBndWdt |= 0x40;
+            }
+            if (a.equals("hour-maximum")) {
+                autoBndWdt |= 0x50;
             }
             return;
         }
@@ -5761,62 +5281,71 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             cmd.badCmd();
             return;
         }
+        if (a.equals("service-instance")) {
+            initVlan();
+            int i = bits.str2num(cmd.word());
+            if (i < 1) {
+                cmd.error("invalid evc id");
+                return;
+            }
+            cfgIfcEvc ntry = new cfgIfcEvc(i, this);
+            cfgIfcEvc old = evcs.find(ntry);
+            if (old != null) {
+                old.stopWork();
+            }
+            ntry.doCfg(cmd);
+            ntry.startWork();
+            evcs.put(ntry);
+            return;
+        }
         if (a.equals("xconnect")) {
-            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
-            if (vrf == null) {
-                cmd.error("no such vrf");
+            clear2xconnect();
+            ifcEther eth = new ifcEther(ifaceNeedMacs());
+            xconn = new cfgXconnSide();
+            xconn.upper = eth.getSideEth();
+            xconn.name = description.length() > 0 ? description : name;
+            xconn.pwtype = packLdpPwe.pwtEthPort;
+            xconn.pwmtu = ethtyp.getMTUsize();
+            xconn.doCfg(cmd);
+            if (!xconn.ready2run()) {
+                xconn = null;
                 return;
             }
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
-            if (ifc == null) {
-                cmd.error("no such interface");
-                return;
-            }
-            tunnelType prt = string2tunnelMode(cmd.word());
-            if (prt == null) {
-                cmd.error("no such encapsulation");
-                return;
-            }
-            addrIP adr = new addrIP();
-            if (adr.fromString(cmd.word())) {
-                cmd.error("invalid address");
-                return;
-            }
-            int vc = bits.str2num(cmd.word());
-            if (vc < 1) {
-                cmd.error("invalid vc");
-                return;
-            }
-            setup2xconnect(prt, vrf, ifc, adr, vc);
+            xconn.start2dir();
+            xconn.start2run();
+            ethtyp.addET(-1, "xconn", eth.getSideTyp());
+            ethtyp.updateET(-1, eth.getSideTyp());
+            eth.setPromiscous(true);
             return;
         }
         if (a.equals("pseudowire")) {
-            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
-            if (vrf == null) {
-                cmd.error("no such vrf");
+            clear2pseudowire();
+            ifcUp upp = null;
+            int pwt = 0;
+            switch (type) {
+                case virtppp:
+                    upp = getEncapProto();
+                    pwt = packLdpPwe.pwtPpp;
+                    break;
+                case pweth:
+                    upp = new ifcEther(false, ethtyp);
+                    pwt = packLdpPwe.pwtEthPort;
+                    break;
+                default:
+                    return;
+            }
+            pwhe = new cfgXconnSide();
+            pwhe.upper = upp;
+            pwhe.name = description.length() > 0 ? description : name;
+            pwhe.pwtype = pwt;
+            pwhe.pwmtu = ethtyp.getMTUsize();
+            pwhe.doCfg(cmd);
+            if (!pwhe.ready2run()) {
+                pwhe = null;
                 return;
             }
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
-            if (ifc == null) {
-                cmd.error("no such interface");
-                return;
-            }
-            cfgVpdn.protocolType prt = cfgVpdn.str2type(cmd.word());
-            if (prt == null) {
-                cmd.error("no such encapsulation");
-                return;
-            }
-            addrIP adr = new addrIP();
-            if (adr.fromString(cmd.word())) {
-                cmd.error("invalid address");
-                return;
-            }
-            int vc = bits.str2num(cmd.word());
-            if (vc < 1) {
-                cmd.error("invalid vc");
-                return;
-            }
-            setup2pseudowire(prt, vrf, ifc, adr, vc);
+            pwhe.start2dir();
+            pwhe.start2run();
             return;
         }
         if (a.equals("ipx")) {
@@ -5886,7 +5415,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("bandwidth")) {
+            autoBndWdt = 0;
             ethtyp.forcedBW = 0;
+            if (bundleHed != null) {
+                bundleHed.bundleHed.propagateState();
+            }
             return;
         }
         if (a.equals("eapol")) {
@@ -6103,6 +5636,17 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             cmd.badCmd();
+            return;
+        }
+        if (a.equals("service-instance")) {
+            initVlan();
+            cfgIfcEvc ntry = evcs.find(new cfgIfcEvc(bits.str2num(cmd.word()), this));
+            if (ntry == null) {
+                cmd.error("no such evc");
+                return;
+            }
+            evcs.del(ntry);
+            ntry.stopWork();
             return;
         }
         if (a.equals("xconnect")) {

@@ -8,6 +8,7 @@ import cfg.cfgInit;
 import cfg.cfgLin;
 import cfg.cfgRtr;
 import cfg.cfgSched;
+import cfg.cfgScrpt;
 import cfg.cfgVdc;
 import cfg.cfgPrcss;
 import cfg.cfgVpdn;
@@ -145,6 +146,10 @@ public class userClear {
             cfgAll.moreInterfaces(1);
             return null;
         }
+        if (a.equals("auto-bandwidth")) {
+            cfgAll.moreInterfaces(3);
+            return null;
+        }
         if (a.equals("vpdn")) {
             cfgVpdn vpdn = cfgAll.vpdnFind(cmd.word(), false);
             if (vpdn == null) {
@@ -162,6 +167,15 @@ public class userClear {
             cfgSched sch = cfgAll.schedFind(cmd.word(), false);
             if (sch == null) {
                 cmd.error("no such scheduler");
+                return null;
+            }
+            sch.doRound();
+            return null;
+        }
+        if (a.equals("script")) {
+            cfgScrpt sch = cfgAll.scrptFind(cmd.word(), false);
+            if (sch == null) {
+                cmd.error("no such script");
                 return null;
             }
             sch.doRound();

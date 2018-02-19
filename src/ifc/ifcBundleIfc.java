@@ -35,7 +35,7 @@ public class ifcBundleIfc implements ifcUp, Comparator<ifcBundleIfc> {
     public ifcBundle lowerBu;
 
     /**
-     * interface handler
+     * interface handler, null means uninitialized
      */
     public ifcDn lowerIf;
 
@@ -126,6 +126,10 @@ public class ifcBundleIfc implements ifcUp, Comparator<ifcBundleIfc> {
         }
         if (stated != state.states.up) {
             cntr.drop(pck, counter.reasons.notUp);
+            return;
+        }
+        if (lowerIf == null) {
+            cntr.drop(pck, counter.reasons.notInTab);
             return;
         }
         lowerIf.sendPack(pck);

@@ -223,7 +223,7 @@ public class userTester {
         for (int i = 0; i < lf.size(); i++) {
             s = lf.get(i);
             final String sep = " ---------- ";
-            rdr.debugRes(sep + i + "/" + lf.size() + sep + s + sep);
+            rdr.debugRes(sep + err + "/" + i + "/" + lf.size() + sep + s + sep);
             userTesterOne lt = new userTesterOne(); // list of tests
             for (int retry = 0; retry < maxTry; retry++) {
                 bits.sleep(1000);

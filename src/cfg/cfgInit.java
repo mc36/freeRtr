@@ -564,6 +564,7 @@ public class cfgInit implements Runnable {
         cfgIfc.defaultF = createFilter(cfgIfc.defaultL);
         cfgLin.defaultF = createFilter(cfgLin.defaultL, cfgLin.linedefF);
         cfgSched.defaultF = createFilter(cfgSched.defaultL);
+        cfgScrpt.defaultF = createFilter(cfgScrpt.defaultL);
         cfgEvntmgr.defaultF = createFilter(cfgEvntmgr.defaultL);
         cfgTrack.defaultF = createFilter(cfgTrack.defaultL);
         cfgMtrack.defaultF = createFilter(cfgMtrack.defaultL);

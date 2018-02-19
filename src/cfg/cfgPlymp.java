@@ -119,8 +119,8 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add("2 .     shape               shape to rate");
         l.add("2 .     bandwidth           bandwidth to rate");
         l.add("2 .     priority            priority to rate");
-        l.add("1 2,. description           description of this interface");
-        l.add("2 2,.   [text]              text describing this interface");
+        l.add("1 2,. description           description of this policy map");
+        l.add("2 2,.   [text]              text describing this policy map");
         l.add("1 2   match                 match values from packet");
         l.add("2 3     length              match length value");
         l.add("3 .       <num>             value to match");

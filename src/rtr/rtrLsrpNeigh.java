@@ -196,6 +196,26 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         conn.linePut(s);
     }
 
+    /**
+     * send error line
+     *
+     * @param s line to send
+     */
+    protected void sendErr(String s) {
+        logger.info("sent error (" + s + ") to " + peer);
+        sendLn("error " + s);
+    }
+
+    /**
+     * send warning line
+     *
+     * @param s line to send
+     */
+    protected void sendWrn(String s) {
+        logger.info("sent warning (" + s + ") to " + peer);
+        sendLn("warning " + s);
+    }
+
     private void doRun() {
         if (conn != null) {
             conn.setClose();
@@ -225,18 +245,18 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             return;
         }
         if (!need2run) {
-            sendLn("error notNeeded");
+            sendErr("notNeeded");
             return;
         }
         if (iface.encryptionMethod > 0) {
             sendLn("startEncrypt " + servGeneric.proto2string(iface.encryptionMethod));
             cmds cmd = recvLn();
             if (cmd == null) {
-                return;
+                cmd = new cmds("", "");
             }
             String a = cmd.word();
             if (!a.equals("startEncrypt")) {
-                sendLn("error startEncryptRequired");
+                sendErr("startEncryptRequired");
                 return;
             }
             if (peer.compare(peer, iface.iface.addr) > 0) {
@@ -259,17 +279,17 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             conn.wait4ready(0);
         }
         if (!need2run) {
-            sendLn("error notNeeded");
+            sendErr("notNeeded");
             return;
         }
         sendLn("open rtrid=" + lower.routerID + " name=" + cfgAll.hostName);
         cmds cmd = recvLn();
         if (cmd == null) {
-            return;
+            cmd = new cmds("", "");
         }
         String a = cmd.word();
         if (!a.equals("open")) {
-            sendLn("error openRequired");
+            sendErr("openRequired");
             return;
         }
         name = "?" + rtrId;
@@ -294,11 +314,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             sendLn("password-request " + cryBase64.encodeBytes(authenticate));
             cmd = recvLn();
             if (cmd == null) {
-                return;
+                cmd = new cmds("", "");
             }
             a = cmd.word();
             if (!a.equals("password-request")) {
-                sendLn("error passReqRequired");
+                sendErr("passReqRequired");
                 return;
             }
             a = cmd.word();
@@ -312,11 +332,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             sendLn("password-reply " + cryBase64.encodeBytes(chl));
             cmd = recvLn();
             if (cmd == null) {
-                return;
+                cmd = new cmds("", "");
             }
             a = cmd.word();
             if (!a.equals("password-reply")) {
-                sendLn("error passRepRequired");
+                sendErr("passRepRequired");
                 return;
             }
             hsh.init();
@@ -326,7 +346,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             chl = hsh.finish();
             a = cryBase64.encodeBytes(chl);
             if (!a.equals(cmd.word())) {
-                sendLn("error badPassword");
+                sendErr("badPassword");
                 return;
             }
         }
@@ -424,10 +444,12 @@ class rtrLsrpNeighRcvr implements Runnable {
             }
             lower.lastHeard = bits.getTime();
             if (a.equals("error")) {
+                logger.info("got error (" + cmd.getRemaining() + ") from " + lower.peer);
                 lower.stopWork();
                 continue;
             }
             if (a.equals("warning")) {
+                logger.info("got warning (" + cmd.getRemaining() + ") from " + lower.peer);
                 continue;
             }
             if (a.equals("discard")) {
@@ -455,6 +477,7 @@ class rtrLsrpNeighRcvr implements Runnable {
             if (a.equals("update")) {
                 rtrLsrpData ntry = new rtrLsrpData();
                 if (ntry.fromString(cmd)) {
+                    lower.sendWrn("badUpdate");
                     continue;
                 }
                 if (ntry.differs(lower.advert.find(ntry))) {
@@ -468,7 +491,7 @@ class rtrLsrpNeighRcvr implements Runnable {
                 }
                 continue;
             }
-            lower.sendLn("error badCommand " + a + " " + cmd.getRemaining());
+            lower.sendWrn("badCommand " + a);
         }
     }
 

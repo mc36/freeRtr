@@ -23,6 +23,6 @@ exec cp ../misc/image/boot.cfg %tmp%/isolinux.cfg
 exec genisoimage -o %img%.iso -r -J -l -b isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux.cat %img%.krn %img%.ird %tmp%/isolinux.cfg %tmp%/isolinux.bin %tmp%/ldlinux.c32
 exec isohybrid %img%.iso
 exec mktorrent -o %img%.torrent -w http://src.nop.hu/src/binImg/rtr.iso %img%.iso
-exec sha256sum -b %img%.* >%img%.sha256
+exec sha256sum -b %img%.* >%img%.sum
 del-alw %tmp%
 exec ls -l %img%.*

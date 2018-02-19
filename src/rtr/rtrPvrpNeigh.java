@@ -546,7 +546,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 }
                 continue;
             }
-            lower.sendLn("error badCommand " + a + " " + cmd.getRemaining());
+            lower.sendLn("warning badCommand " + a);
         }
     }
 

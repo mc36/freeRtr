@@ -34,7 +34,7 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
     public ifcBridge lowerBr;
 
     /**
-     * interface handler
+     * interface handler, null means bvi
      */
     public ifcDn lowerIf;
 
@@ -236,7 +236,7 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
     }
 
     public String toString() {
-        return lowerIf + "|" + (blocked ? "block" : "forward") + "|" + cntr.getShBsum();
+        return getIfcName() + "|" + (blocked ? "block" : "forward") + "|" + cntr.getShBsum();
     }
 
 }

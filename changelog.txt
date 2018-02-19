@@ -7952,3 +7952,27 @@ no todo: done: ospf and isis missed notifications, schedwork/run todo use syncin
 no todo: done: player/99: rout-ospf37.tst: no work: ospf prefix movement
 no todo: done: reload vdc/process asdf stop/start
 no todo:
+---------------------------------- 2018-02-16 09:31:21
+qc pass: bgp hard reset
+qc pass: bgp hard reset with soft-reconfig
+qc pass: bgp soft in reset
+qc pass: bgp soft in reset with soft-reconfig
+qc pass: bgp soft out reset
+qc pass: bgp soft out reset with soft-reconfig
+---------------------------------- 2018-02-17 06:17:24
+no todo: show upgrade
+no todo: more level of config sections
+no todo: attach line not working anymore, try with deactivation and attach
+no todo: tunnel autobandwidth
+no todo: bdi infrastructure, service instances, etc
+---------------------------------- 2018-02-18 17:56:39
+qc pass: bridged evcs over ethernet
+qc pass: bridged evcs over hdlc
+qc pass: bridged evcs over gre
+qc pass: bridged evcs and subif
+qc pass: bridged evcs and main
+qc pass: xconnect evcs terminated on xconnects
+qc pass: xconnect evcs terminated on pwhes
+qc pass: xconnect terminated on pwhe subifs
+qc pass: xconnect terminated on pwhe bridged evcs
+qc pass: xconnect terminated on pwhe xconnect evcs

@@ -1989,6 +1989,8 @@ public class rtrBgpUtil {
         pck.putCopy(ntry.attribVal, 0, 0, ntry.attribVal.length);
         pck.putSkip(ntry.attribVal.length);
         pck.merge2beg();
+        ntry.attribVal = null;
+        ntry.attribAs = 0;
         for (;;) {
             if (pck.dataSize() < 1) {
                 break;
@@ -1996,8 +1998,6 @@ public class rtrBgpUtil {
             parseAttrib(pck, cur);
             interpretAttribute(null, ntry, cur);
         }
-        ntry.attribVal = null;
-        ntry.attribAs = 0;
     }
 
     /**

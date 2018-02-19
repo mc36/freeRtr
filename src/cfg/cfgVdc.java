@@ -33,7 +33,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public String name;
 
     /**
-     * description of this interface
+     * description of this vdc
      */
     public String description = "";
 

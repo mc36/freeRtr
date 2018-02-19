@@ -77,6 +77,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         "line .*! no script activate",
         "line .*! no script hangup",
         "line .*! no dedicated",
+        "line .*! no disabled",
         "line .*! log-monitor"
     };
 
@@ -138,6 +139,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
             l.add(cmds.tabulator + "script hangup " + runner.scrptHangup.scrName);
         }
         cmds.cfgLine(l, !runner.getDedi(), cmds.tabulator, "dedicated", "");
+        cmds.cfgLine(l, !runner.getDisa(), cmds.tabulator, "disabled", "");
         cmds.cfgLine(l, !runner.getMon(), cmds.tabulator, "log-monitor", "");
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
@@ -152,6 +154,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         line.getHelp(l);
         l.add("1 .  log-monitor                    set as monitoring line");
         l.add("1 .  dedicated                      set as dedicated line");
+        l.add("1 .  disabled                       set as disabled line");
         l.add("1 2  script                         set scripts to use");
         l.add("2 3    init                         script to run on before activation");
         l.add("3 .      <name>                     name of script");
@@ -166,6 +169,10 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("dedicated")) {
             runner.setDedi(true);
+            return;
+        }
+        if (s.equals("disabled")) {
+            runner.setDisa(true);
             return;
         }
         if (s.equals("log-monitor")) {
@@ -206,6 +213,10 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
             s = cmd.word();
             if (s.equals("dedicated")) {
                 runner.setDedi(false);
+                return;
+            }
+            if (s.equals("disabled")) {
+                runner.setDisa(false);
                 return;
             }
             if (s.equals("log-monitor")) {

@@ -1,17 +1,12 @@
 interface range command
-bdi infrastructure, service instances, etc
 reenable which elliptic courves? sure? why that?
 https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 parse privilege levels from radius and tacacs
 ldap client, server
-tunnel autobandwidth
 bgp compare should write out that which attributes changed
 bfd need to send with ttl=255
-attach line not working anymore, try with deactivation and attach
 trustpoint for certificates
-more level of config sections
 interface name tabbing
-show upgrade
 int eth1/int eth2
 dhcp relay support
 tcp selective ack

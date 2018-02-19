@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v18.2.15-testing, done by matecsaba.<br/>
-tested: 2018-02-16 05:22:13, took 10:09:47 on 1342 cases<br/>
+release: freeRouter v18.2.18-testing, done by cs@nop.<br/>
+tested: 2018-02-19 02:32:25, took 08:35:46 on 1358 cases<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -581,6 +581,16 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier14.tst">mpls-bier14.tst</a></td><td>0</td><td>bier over broadcast subnet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier15.tst">mpls-bier15.tst</a></td><td>0</td><td>mixed protocol over bier</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier16.tst">mpls-bier16.tst</a></td><td>0</td><td>mpls over bier</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc01.tst">mpls-evc01.tst</a></td><td>0</td><td>bridged evcs over ethernet</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc02.tst">mpls-evc02.tst</a></td><td>0</td><td>bridged evcs over hdlc</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc03.tst">mpls-evc03.tst</a></td><td>0</td><td>bridged evcs over gre</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc04.tst">mpls-evc04.tst</a></td><td>0</td><td>bridged evcs and subif</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc05.tst">mpls-evc05.tst</a></td><td>0</td><td>bridged evcs and main</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc06.tst">mpls-evc06.tst</a></td><td>0</td><td>xconnect evcs terminated on xconnects</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc07.tst">mpls-evc07.tst</a></td><td>0</td><td>xconnect evcs terminated on pwhes</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc08.tst">mpls-evc08.tst</a></td><td>0</td><td>xconnect terminated on pwhe subifs</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc09.tst">mpls-evc09.tst</a></td><td>0</td><td>xconnect terminated on pwhe bridged evcs</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc10.tst">mpls-evc10.tst</a></td><td>0</td><td>xconnect terminated on pwhe xconnect evcs</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp01.tst">mpls-ldp01.tst</a></td><td>0</td><td>ldp over ethernet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp02.tst">mpls-ldp02.tst</a></td><td>0</td><td>ldp over ethernet vlan</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp03.tst">mpls-ldp03.tst</a></td><td>0</td><td>ldp over ethernet bridge</td><td>successfully</td><td>finished</td></tr>
@@ -1075,6 +1085,12 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp319.tst">rout-bgp319.tst</a></td><td>0</td><td>bgp routepolicy filtering with afi</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp320.tst">rout-bgp320.tst</a></td><td>0</td><td>bgp routemap filtering with afi with soft-reconfig</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp321.tst">rout-bgp321.tst</a></td><td>0</td><td>bgp routepolicy filtering with afi with soft-reconfig</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp322.tst">rout-bgp322.tst</a></td><td>0</td><td>bgp hard reset</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp323.tst">rout-bgp323.tst</a></td><td>0</td><td>bgp hard reset with soft-reconfig</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp324.tst">rout-bgp324.tst</a></td><td>0</td><td>bgp soft in reset</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp325.tst">rout-bgp325.tst</a></td><td>0</td><td>bgp soft in reset with soft-reconfig</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp326.tst">rout-bgp326.tst</a></td><td>0</td><td>bgp soft out reset</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp327.tst">rout-bgp327.tst</a></td><td>0</td><td>bgp soft out reset with soft-reconfig</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp01.tst">rout-eigrp01.tst</a></td><td>0</td><td>eigrp point2point connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp02.tst">rout-eigrp02.tst</a></td><td>0</td><td>eigrp point2multipoint connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp03.tst">rout-eigrp03.tst</a></td><td>0</td><td>eigrp point2point chain</td><td>successfully</td><td>finished</td></tr>

@@ -89,6 +89,9 @@ public abstract class ifcThread implements ifcDn, Runnable {
         String s = "";
         for (int i = cfgAll.ifaces.size() - 1; i >= 0; i--) {
             cfgIfc ntry = cfgAll.ifaces.get(i);
+            if (ntry == null) {
+                continue;
+            }
             ntry.ethtyp.getHistory().update(ntry.ethtyp.getCounter());
             if (ntry.thread == null) {
                 continue;

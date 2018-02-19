@@ -221,10 +221,10 @@ public class pipeSide {
     public int byteUnGet(int ch) {
         synchronized (lck) {
             if (headSize > 0) {
-                return -2;
+                return pipeLine.wontWork;
             }
             if (bufR >= bufS) {
-                return -1;
+                return pipeLine.tryLater;
             }
             bufR = bufR - 1;
             if (bufR < 0) {

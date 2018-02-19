@@ -574,6 +574,16 @@ qc pass: bier with 4k bsl
 qc pass: bier over broadcast subnet
 qc pass: mixed protocol over bier
 qc pass: mpls over bier
+qc pass: bridged evcs over ethernet
+qc pass: bridged evcs over hdlc
+qc pass: bridged evcs over gre
+qc pass: bridged evcs and subif
+qc pass: bridged evcs and main
+qc pass: xconnect evcs terminated on xconnects
+qc pass: xconnect evcs terminated on pwhes
+qc pass: xconnect terminated on pwhe subifs
+qc pass: xconnect terminated on pwhe bridged evcs
+qc pass: xconnect terminated on pwhe xconnect evcs
 qc pass: ldp over ethernet
 qc pass: ldp over ethernet vlan
 qc pass: ldp over ethernet bridge
@@ -1068,6 +1078,12 @@ qc pass: bgp routemap filtering with afi
 qc pass: bgp routepolicy filtering with afi
 qc pass: bgp routemap filtering with afi with soft-reconfig
 qc pass: bgp routepolicy filtering with afi with soft-reconfig
+qc pass: bgp hard reset
+qc pass: bgp hard reset with soft-reconfig
+qc pass: bgp soft in reset
+qc pass: bgp soft in reset with soft-reconfig
+qc pass: bgp soft out reset
+qc pass: bgp soft out reset with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -1341,19 +1357,14 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 todo: interface range command
-todo: bdi infrastructure, service instances, etc
 todo: reenable which elliptic courves? sure? why that?
 todo: https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 todo: parse privilege levels from radius and tacacs
 todo: ldap client, server
-todo: tunnel autobandwidth
 todo: bgp compare should write out that which attributes changed
 todo: bfd need to send with ttl=255
-todo: attach line not working anymore, try with deactivation and attach
 todo: trustpoint for certificates
-todo: more level of config sections
 todo: interface name tabbing
-todo: show upgrade
 todo: int eth1/int eth2
 todo: dhcp relay support
 todo: tcp selective ack

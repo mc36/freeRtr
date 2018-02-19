@@ -19,6 +19,8 @@ import cfg.cfgTrack;
 import cfg.cfgVdc;
 import cfg.cfgVdcIfc;
 import cfg.cfgPrcss;
+import cfg.cfgSched;
+import cfg.cfgScrpt;
 import cfg.cfgVrf;
 import clnt.clntDns;
 import clnt.clntNetflow;
@@ -157,6 +159,24 @@ public class userShow {
                 l.add("zone: " + cfgAll.timeZoneName + " diff: " + bits.timeDump(cfgAll.timeServerOffset / 1000));
             }
             rdr.putStrArr(l);
+            return null;
+        }
+        if (a.equals("scheduler")) {
+            userFormat l = new userFormat("|", "name|rerun|last|ago");
+            for (int i = 0; i < cfgAll.schedulers.size(); i++) {
+                cfgSched ntry = cfgAll.schedulers.get(i);
+                l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT, 3) + "|" + bits.timePast(ntry.restartT));
+            }
+            rdr.putStrTab(l);
+            return null;
+        }
+        if (a.equals("script")) {
+            userFormat l = new userFormat("|", "name|rerun|last|ago");
+            for (int i = 0; i < cfgAll.scripts.size(); i++) {
+                cfgScrpt ntry = cfgAll.scripts.get(i);
+                l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT, 3) + "|" + bits.timePast(ntry.restartT));
+            }
+            rdr.putStrTab(l);
             return null;
         }
         if (a.equals("vdc")) {

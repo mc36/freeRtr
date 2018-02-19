@@ -18,7 +18,7 @@ import util.cmds;
 import util.logger;
 
 /**
- * bgp monitoring (rfcXXXX) protocol to multi-threaded routing (rfc6396) toolkit
+ * bgp monitoring (rfc7854) protocol to multi-threaded routing (rfc6396) toolkit
  *
  * @author matecsaba
  */
