@@ -173,7 +173,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * last spf
      */
-    protected shrtPthFrst<addrIPv4> spf;
+    protected shrtPthFrst<addrIPv4> lastSpf;
 
     private boolean need2run = true;
 
@@ -203,7 +203,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 break;
         }
         database = new tabGen<rtrLsrpData>();
-        spf = new shrtPthFrst<addrIPv4>(null);
+        lastSpf = new shrtPthFrst<addrIPv4>(null);
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
         new Thread(this).start();
@@ -377,7 +377,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return log of spf
      */
     public userFormat showSpfStat() {
-        return spf.listStatistics();
+        return lastSpf.listStatistics();
     }
 
     /**
@@ -386,7 +386,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return log of spf
      */
     public userFormat showSpfTopo() {
-        return spf.listTopology();
+        return lastSpf.listTopology();
     }
 
     /**
@@ -395,7 +395,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return log of spf
      */
     public userFormat showSpfLog() {
-        return spf.listUsages();
+        return lastSpf.listUsages();
     }
 
     /**
@@ -404,7 +404,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return tree of spf
      */
     public List<String> showSpfTree() {
-        return spf.listTree();
+        return lastSpf.listTree();
     }
 
     /**
@@ -413,7 +413,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return graph of spf
      */
     public List<String> showSpfGraph() {
-        return spf.listGraphviz();
+        return lastSpf.listGraphviz();
     }
 
     /**
@@ -474,7 +474,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         dat.network.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteEntry.distanLim);
         dat.rtrId = routerID.copyBytes();
-        dat.topoSum = spf.listTopoSum().hashCode();
+        dat.topoSum = lastSpf.listTopoSum().hashCode();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
         dat.software = version.usrAgnt.replaceAll(" ", "_");
         dat.hardware = (cfgInit.hwIdNum + " " + version.getCPUname()).replaceAll(" ", "_");
@@ -522,7 +522,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             database.del(ntry);
         }
-        spf = new shrtPthFrst<addrIPv4>(spf);
+        shrtPthFrst<addrIPv4> spf = new shrtPthFrst<addrIPv4>(lastSpf);
         for (int i = 0; i < database.size(); i++) {
             rtrLsrpData ntry = database.get(i);
             ntry.putNeighs(spf);
@@ -625,6 +625,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             logger.debug("unreachable:" + spf.listUnreachables());
             logger.debug("reachable:" + spf.listReachables());
         }
+        lastSpf = spf;
         routerComputedU = tab2;
         fwdCore.routerChg(this);
     }

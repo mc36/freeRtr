@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.2.18-testing, done by cs@nop.;-;-
--;-;2018-02-19 02:32:25, took 08:35:46 on 1358 cases;-;-
+-;-;freeRouter v18.2.19-testing, done by cs@nop.;-;-
+-;-;2018-02-19 15:14:41, took 08:35:28 on 1360 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -23,6 +23,8 @@ conn-bridge08.tst;0;bridged ethernet over atmsar;successfully;finished
 conn-bridge09.tst;0;bridged ethernet over gre;successfully;finished
 conn-bridge10.tst;0;bridge with spantree;successfully;finished
 conn-bridge11.tst;0;bridged ethernet over bridge;successfully;finished
+conn-bridge12.tst;0;bridge split horizon;successfully;finished
+conn-bridge13.tst;0;bridge mac learning;successfully;finished
 conn-bstun.tst;0;ppp over bstun;successfully;finished
 conn-bundle01.tst;0;bundle of ethernet port;successfully;finished
 conn-bundle02.tst;0;bundle of serial port;successfully;finished

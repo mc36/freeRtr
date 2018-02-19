@@ -735,7 +735,7 @@ public class rtrOspf4 extends ipRtr {
         if (ara == null) {
             return null;
         }
-        return ara.spf.listStatistics();
+        return ara.lastSpf.listStatistics();
     }
 
     /**
@@ -750,7 +750,7 @@ public class rtrOspf4 extends ipRtr {
         if (ara == null) {
             return null;
         }
-        return ara.spf.listTopology();
+        return ara.lastSpf.listTopology();
     }
 
     /**
@@ -765,7 +765,7 @@ public class rtrOspf4 extends ipRtr {
         if (ara == null) {
             return null;
         }
-        return ara.spf.listUsages();
+        return ara.lastSpf.listUsages();
     }
 
     /**
@@ -780,7 +780,7 @@ public class rtrOspf4 extends ipRtr {
         if (ara == null) {
             return new ArrayList<String>();
         }
-        return ara.spf.listTree();
+        return ara.lastSpf.listTree();
     }
 
     /**
@@ -795,7 +795,7 @@ public class rtrOspf4 extends ipRtr {
         if (ara == null) {
             return new ArrayList<String>();
         }
-        return ara.spf.listGraphviz();
+        return ara.lastSpf.listGraphviz();
     }
 
     public int routerNeighCount() {

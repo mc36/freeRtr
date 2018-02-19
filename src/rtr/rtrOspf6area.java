@@ -127,7 +127,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     /**
      * last spf
      */
-    protected shrtPthFrst<rtrOspf6areaSpf> spf;
+    protected shrtPthFrst<rtrOspf6areaSpf> lastSpf;
 
     private final rtrOspf6 lower;
 
@@ -874,7 +874,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             logger.debug("calculate spf on area " + area);
         }
         long tim = bits.getTime() - rtrOspf6lsa.lsaMaxAge + 1;
-        spf = new shrtPthFrst<rtrOspf6areaSpf>(spf);
+        shrtPthFrst<rtrOspf6areaSpf> spf = new shrtPthFrst<rtrOspf6areaSpf>(lastSpf);
         for (int i = 0; i < lsas.size(); i++) {
             rtrOspf6lsa ntry = lsas.get(i);
             if (ntry == null) {
@@ -1158,6 +1158,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             logger.debug("unreachable:" + spf.listUnreachables());
             logger.debug("reachable:" + spf.listReachables());
         }
+        lastSpf = spf;
         lower.routerCreateComputed();
     }
 

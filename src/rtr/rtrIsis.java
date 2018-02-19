@@ -1481,7 +1481,7 @@ public class rtrIsis extends ipRtr {
      */
     public userFormat showSpfStat(int level) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.spf.listStatistics();
+        return lev.lastSpf.listStatistics();
     }
 
     /**
@@ -1492,7 +1492,7 @@ public class rtrIsis extends ipRtr {
      */
     public userFormat showSpfTopo(int level) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.spf.listTopology();
+        return lev.lastSpf.listTopology();
     }
 
     /**
@@ -1503,7 +1503,7 @@ public class rtrIsis extends ipRtr {
      */
     public userFormat showSpfLog(int level) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.spf.listUsages();
+        return lev.lastSpf.listUsages();
     }
 
     /**
@@ -1514,7 +1514,7 @@ public class rtrIsis extends ipRtr {
      */
     public List<String> showSpfTree(int level) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.spf.listTree();
+        return lev.lastSpf.listTree();
     }
 
     /**
@@ -1525,7 +1525,7 @@ public class rtrIsis extends ipRtr {
      */
     public List<String> showSpfGraph(int level) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.spf.listGraphviz();
+        return lev.lastSpf.listGraphviz();
     }
 
     public int routerNeighCount() {

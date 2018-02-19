@@ -20,6 +20,8 @@ qc pass: bridged ethernet over atmsar
 qc pass: bridged ethernet over gre
 qc pass: bridge with spantree
 qc pass: bridged ethernet over bridge
+qc pass: bridge split horizon
+qc pass: bridge mac learning
 qc pass: ppp over bstun
 qc pass: bundle of ethernet port
 qc pass: bundle of serial port

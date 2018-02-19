@@ -147,7 +147,7 @@ public class rtrIsisLevel implements Runnable {
     /**
      * last spf
      */
-    protected shrtPthFrst<rtrIsisLevelSpf> spf;
+    protected shrtPthFrst<rtrIsisLevelSpf> lastSpf;
 
     /**
      * segment routing usage
@@ -538,7 +538,7 @@ public class rtrIsisLevel implements Runnable {
         } else {
             segrouUsd = null;
         }
-        spf = new shrtPthFrst<rtrIsisLevelSpf>(spf);
+        shrtPthFrst<rtrIsisLevelSpf> spf = new shrtPthFrst<rtrIsisLevelSpf>(lastSpf);
         for (int i = 0; i < lsps.size(); i++) {
             rtrIsisLsp lsp = lsps.get(i);
             if (lsp == null) {
@@ -707,6 +707,7 @@ public class rtrIsisLevel implements Runnable {
             logger.debug("unreachable:" + spf.listUnreachables());
             logger.debug("reachable:" + spf.listReachables());
         }
+        lastSpf = spf;
         lower.routerCreateComputed();
     }
 
