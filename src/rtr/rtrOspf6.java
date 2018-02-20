@@ -742,19 +742,25 @@ public class rtrOspf6 extends ipRtr {
      * show spf
      *
      * @param area area number
+     * @param cmd entry to find
      * @return log of spf
      */
-    public userFormat showSpfTopo(int area) {
+    public userFormat showSpfTopo(int area, cmds cmd) {
         rtrOspf6area ara = new rtrOspf6area(this, area);
         ara = areas.find(ara);
         if (ara == null) {
             return null;
         }
-        return ara.lastSpf.listTopology();
+        if (cmd.size() < 1) {
+            return ara.lastSpf.listTopology();
+        }
+        rtrOspf6areaSpf ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
+        ned.fromString(cmd.word());
+        return ara.lastSpf.listTopology(ned);
     }
 
     /**
-     * show spf
+     * show log
      *
      * @param area area number
      * @return log of spf

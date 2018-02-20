@@ -70,6 +70,7 @@ import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
 import serv.servNetflow;
+import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -453,6 +454,11 @@ public class cfgAll {
      * rpki daemons
      */
     public static servGenList<servRpki> dmnRpki = new servGenList<servRpki>();
+
+    /**
+     * nrpe daemons
+     */
+    public static servGenList<servNrpe> dmnNrpe = new servGenList<servNrpe>();
 
     /**
      * bstun daemons
@@ -2644,6 +2650,7 @@ public class cfgAll {
         dmnSipModem.getShRun(l, filter);
         dmnSipProxy.getShRun(l, filter);
         dmnRpki.getShRun(l, filter);
+        dmnNrpe.getShRun(l, filter);
         dmnBStun.getShRun(l, filter);
         dmnStun.getShRun(l, filter);
         dmnPckOudp.getShRun(l, filter);

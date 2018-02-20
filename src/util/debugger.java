@@ -149,6 +149,11 @@ public class debugger {
     public static boolean servRpkiTraf = false;
 
     /**
+     * servNrpe traffic
+     */
+    public static boolean servNrpeTraf = false;
+
+    /**
      * servDcp traffic
      */
     public static boolean servDcpTraf = false;
@@ -834,6 +839,7 @@ public class debugger {
         h.add("3 .        ntp               network time protocol");
         h.add("3 .        irc               internet relay protocol");
         h.add("3 .        rpki              resource public key infrastructure");
+        h.add("3 .        nrpe              nagios remote plugin");
         h.add("3 .        dcp               direct connect protocol");
         h.add("3 .        openflow          openflow protocol");
         h.add("3 .        snmp              simple network management protocol");
@@ -1136,6 +1142,10 @@ public class debugger {
             }
             if (s.equals("rpki")) {
                 servRpkiTraf = v;
+                return false;
+            }
+            if (s.equals("nrpe")) {
+                servNrpeTraf = v;
                 return false;
             }
             if (s.equals("dcp")) {

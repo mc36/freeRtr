@@ -1488,15 +1488,21 @@ public class rtrIsis extends ipRtr {
      * show spf
      *
      * @param level level number
+     * @param cmd entry to find
      * @return log of spf
      */
-    public userFormat showSpfTopo(int level) {
+    public userFormat showSpfTopo(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.lastSpf.listTopology();
+        if (cmd.size() < 1) {
+            return lev.lastSpf.listTopology();
+        }
+        rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
+        ned.fromString(cmd.word());
+        return lev.lastSpf.listTopology(ned);
     }
 
     /**
-     * show spf
+     * show log
      *
      * @param level level number
      * @return log of spf

@@ -282,7 +282,8 @@ public class userExec {
         hl.add("5 .            spf               information about last spf");
         hl.add("5 .            tree              tree about last spf");
         hl.add("5 .            graph             graph about last spf");
-        hl.add("5 .            topology          topology about last spf");
+        hl.add("5 6,.          topology          topology about last spf");
+        hl.add("6 .              [addr]          node to view");
         hl.add("5 6,.          route             list of routes in database");
         hl.add("6 .              [addr]          prefix to view");
         hl.add("5 6,.          originate         list of routes originated locally");
@@ -316,7 +317,8 @@ public class userExec {
         hl.add("5 6            graph             graph about last spf");
         hl.add("6 .              <num>           area number");
         hl.add("5 6            topology          topology about last spf");
-        hl.add("6 .              <num>           area number");
+        hl.add("6 7,.            <num>           area number");
+        hl.add("7 .                [addr]        node to view");
         hl.add("5 6            route             list of routes in area");
         hl.add("6 7,.            <num>           area number");
         hl.add("7 .                [addr]        prefix to view");
@@ -336,7 +338,8 @@ public class userExec {
         hl.add("5 6            graph             graph about last spf");
         hl.add("6 .              <num>           level number");
         hl.add("5 6            topology          topology about last spf");
-        hl.add("6 .              <num>           level number");
+        hl.add("6 7,.            <num>           level number");
+        hl.add("7 .                [addr]        node to view");
         hl.add("5 6            route             list of routes in area");
         hl.add("6 7,.            <num>           level number");
         hl.add("7 .                [addr]        prefix to view");

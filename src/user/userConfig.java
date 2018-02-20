@@ -101,6 +101,7 @@ import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
 import serv.servNetflow;
+import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -594,6 +595,8 @@ public class userConfig {
         l.add("2  3    socks                        configure a socks server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    rpki                         configure a rpki server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    nrpe                         configure a nrpe server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    bstun                        configure a bstun server");
         l.add("3  .      <name>                     name of server");
@@ -1109,6 +1112,10 @@ public class userConfig {
             }
             if (a.equals("rpki")) {
                 daemonMake(new servRpki(), cfgAll.dmnRpki);
+                return;
+            }
+            if (a.equals("nrpe")) {
+                daemonMake(new servNrpe(), cfgAll.dmnNrpe);
                 return;
             }
             if (a.equals("bstun")) {
@@ -1729,6 +1736,10 @@ public class userConfig {
             }
             if (a.equals("rpki")) {
                 daemonErase(new servRpki(), cfgAll.dmnRpki);
+                return;
+            }
+            if (a.equals("nrpe")) {
+                daemonErase(new servNrpe(), cfgAll.dmnNrpe);
                 return;
             }
             if (a.equals("bstun")) {

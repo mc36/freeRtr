@@ -744,7 +744,8 @@ public class userShow {
                     return null;
                 }
                 if (a.equals("topology")) {
-                    rdr.putStrTab(r.ospf4.showSpfTopo(bits.str2num(cmd.word())));
+                    int i = bits.str2num(cmd.word());
+                    rdr.putStrTab(r.ospf4.showSpfTopo(i, cmd));
                     return null;
                 }
                 if (a.equals("tree")) {
@@ -969,7 +970,8 @@ public class userShow {
                     return null;
                 }
                 if (a.equals("topology")) {
-                    rdr.putStrTab(r.ospf6.showSpfTopo(bits.str2num(cmd.word())));
+                    int i = bits.str2num(cmd.word());
+                    rdr.putStrTab(r.ospf6.showSpfTopo(i, cmd));
                     return null;
                 }
                 if (a.equals("tree")) {
@@ -1254,7 +1256,7 @@ public class userShow {
             return;
         }
         if (a.equals("topology")) {
-            rdr.putStrTab(r.lsrp.showSpfTopo());
+            rdr.putStrTab(r.lsrp.showSpfTopo(cmd));
             return;
         }
         if (a.equals("tree")) {
@@ -1355,7 +1357,8 @@ public class userShow {
             return;
         }
         if (a.equals("topology")) {
-            rdr.putStrTab(r.isis.showSpfTopo(bits.str2num(cmd.word())));
+            int i = bits.str2num(cmd.word());
+            rdr.putStrTab(r.isis.showSpfTopo(i, cmd));
             return;
         }
         if (a.equals("tree")) {

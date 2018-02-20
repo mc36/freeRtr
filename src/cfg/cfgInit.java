@@ -72,6 +72,7 @@ import serv.servUdptn;
 import serv.servVxlan;
 import serv.servGeneve;
 import serv.servNetflow;
+import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -575,6 +576,7 @@ public class cfgInit implements Runnable {
         tabGen<userFilter> srvdefsF = createFilter(servGeneric.srvdefsL);
         servBstun.defaultF = createFilter(servBstun.defaultL, srvdefsF, cfgLin.linedefF);
         servRpki.defaultF = createFilter(servRpki.defaultL, srvdefsF);
+        servNrpe.defaultF = createFilter(servNrpe.defaultL, srvdefsF);
         servCharGen.defaultF = createFilter(servCharGen.defaultL, srvdefsF);
         servOpenflow.defaultF = createFilter(servOpenflow.defaultL, srvdefsF);
         servDaytime.defaultF = createFilter(servDaytime.defaultL, srvdefsF);

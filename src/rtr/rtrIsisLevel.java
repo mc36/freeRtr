@@ -776,30 +776,3 @@ public class rtrIsisLevel implements Runnable {
     }
 
 }
-
-class rtrIsisLevelSpf implements Comparator<rtrIsisLevelSpf> {
-
-    public addrIsis adr;
-
-    public int psn;
-
-    public rtrIsisLevelSpf(addrIsis a, int p) {
-        adr = a;
-        psn = p;
-    }
-
-    public int compare(rtrIsisLevelSpf o1, rtrIsisLevelSpf o2) {
-        if (o1.psn < o2.psn) {
-            return -1;
-        }
-        if (o1.psn > o2.psn) {
-            return +1;
-        }
-        return o1.adr.compare(o1.adr, o2.adr);
-    }
-
-    public String toString() {
-        return adr + "." + bits.toHexB(psn);
-    }
-
-}

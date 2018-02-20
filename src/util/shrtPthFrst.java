@@ -461,7 +461,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry.srIdx <= 0) {
                 continue;
             }
-            s += " " + ntry.name + "=" + ntry.srIdx;
+            s += " " + ntry + "=" + ntry.srIdx;
         }
         return s;
     }
@@ -481,7 +481,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry.srIdx > 0) {
                 continue;
             }
-            s += " " + ntry.name;
+            s += " " + ntry;
         }
         return s;
     }
@@ -501,7 +501,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry.brIdx <= 0) {
                 continue;
             }
-            s += " " + ntry.name + "=" + ntry.brIdx;
+            s += " " + ntry + "=" + ntry.brIdx;
         }
         return s;
     }
@@ -521,7 +521,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry.brIdx > 0) {
                 continue;
             }
-            s += " " + ntry.name;
+            s += " " + ntry;
         }
         return s;
     }
@@ -541,7 +541,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry.metric >= 0) {
                 continue;
             }
-            s += " " + ntry.name;
+            s += " " + ntry;
         }
         return s;
     }
@@ -561,7 +561,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry.metric < 0) {
                 continue;
             }
-            s += " " + ntry.name;
+            s += " " + ntry;
         }
         return s;
     }
@@ -581,7 +581,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry.conn.size() > 1) {
                 continue;
             }
-            s += " " + ntry.name;
+            s += " " + ntry;
         }
         return s;
     }
@@ -598,9 +598,43 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry == null) {
                 continue;
             }
-            s += " " + ntry.name + "," + (ntry.metric >= 0) + "," + ntry.conn.size() + "," + ntry.srIdx + "," + ntry.brIdx;
+            s += " " + ntry + "," + (ntry.metric >= 0) + "," + ntry.conn.size() + "," + ntry.srIdx + "," + ntry.brIdx;
         }
         return s;
+    }
+
+    /**
+     * list topology
+     *
+     * @param adr address of node
+     * @return list of topology
+     */
+    public userFormat listTopology(Ta adr) {
+        userFormat res = new userFormat("|", "category|value|value");
+        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(adr);
+        ntry = nodes.find(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        res.add("node|" + ntry);
+        res.add("reachable|" + (ntry.metric >= 0));
+        res.add("stub|" + (ntry.conn.size() <= 1));
+        res.add("uplink|" + ntry.uplink);
+        res.add("reachvia|" + ntry.nxtHop);
+        res.add("reachifc|" + ntry.iface);
+        res.add("reachhop|" + ntry.hops);
+        res.add("reachmet|" + ntry.metric);
+        res.add("connections|" + ntry.conn.size());
+        res.add("segrou|" + ntry.srIdx);
+        res.add("bier|" + ntry.brIdx);
+        for (int i = 0; i < ntry.conn.size(); i++) {
+            shrtPthFrstConn<Ta> con = ntry.conn.get(i);
+            if (con == null) {
+                continue;
+            }
+            res.add("neighbor|" + con.target + "=" + con.metric);
+        }
+        return res;
     }
 
     /**
@@ -609,19 +643,19 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @return list of topology
      */
     public userFormat listTopology() {
-        userFormat res = new userFormat("|", "node|reach|via|ifc|met|hop|conn|sr|br|peers");
+        userFormat res = new userFormat("|", "node|reach|via|ifc|met|hop|conn|sr|br|neighbors");
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
-            String s = ntry.name + "|" + (ntry.metric >= 0) + "|" + ntry.nxtHop + "|" + ntry.iface + "|" + ntry.metric + "|" + ntry.hops + "|" + ntry.conn.size() + "|" + ntry.srIdx + "|" + ntry.brIdx + "|";
+            String s = ntry + "|" + (ntry.metric >= 0) + "|" + ntry.nxtHop + "|" + ntry.iface + "|" + ntry.metric + "|" + ntry.hops + "|" + ntry.conn.size() + "|" + ntry.srIdx + "|" + ntry.brIdx + "|";
             for (int o = 0; o < ntry.conn.size(); o++) {
                 shrtPthFrstConn<Ta> con = ntry.conn.get(o);
                 if (con == null) {
                     continue;
                 }
-                s += con.target.name + "," + con.metric + " ";
+                s += con.target + "=" + con.metric + " ";
             }
             res.add(s);
         }
@@ -698,7 +732,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             }
             down.add(cur);
         }
-        res.add(pref + "`--" + ntry.name);
+        res.add(pref + "`--" + ntry);
         for (int i = 0; i < down.size(); i++) {
             shrtPthFrstConn<Ta> cur = down.get(i);
             String a = (i + 1) == down.size() ? "   " : "  |";
@@ -716,10 +750,10 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         res.add("echo \"graph net {");
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(o);
-            res.add("//" + ntry.name);
+            res.add("//" + ntry);
             for (int i = 0; i < ntry.conn.size(); i++) {
                 shrtPthFrstConn<Ta> cur = ntry.conn.get(i);
-                res.add("  \\\"" + ntry.name + "\\\" -- \\\"" + cur.target.name + "\\\" [weight=" + cur.metric + "]");
+                res.add("  \\\"" + ntry + "\\\" -- \\\"" + cur.target + "\\\" [weight=" + cur.metric + "]");
             }
         }
         res.add("}\" | dot -Tpng > net.png");
@@ -815,6 +849,10 @@ class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<s
 
     public int compare(shrtPthFrstNode<Ta> o1, shrtPthFrstNode<Ta> o2) {
         return o1.name.compare(o1.name, o2.name);
+    }
+
+    public String toString() {
+        return "" + name;
     }
 
 }

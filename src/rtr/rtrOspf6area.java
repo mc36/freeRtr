@@ -1228,33 +1228,6 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
 
 }
 
-class rtrOspf6areaSpf implements Comparator<rtrOspf6areaSpf> {
-
-    public addrIPv4 adr;
-
-    public int lnk;
-
-    public rtrOspf6areaSpf(addrIPv4 a, int l) {
-        adr = a;
-        lnk = l;
-    }
-
-    public int compare(rtrOspf6areaSpf o1, rtrOspf6areaSpf o2) {
-        if (o1.lnk < o2.lnk) {
-            return -1;
-        }
-        if (o1.lnk > o2.lnk) {
-            return +1;
-        }
-        return o1.adr.compare(o1.adr, o2.adr);
-    }
-
-    public String toString() {
-        return adr + "/" + bits.toHexD(lnk);
-    }
-
-}
-
 class rtrOspf6areaPref {
 
     protected int option;

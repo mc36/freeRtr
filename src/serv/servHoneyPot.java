@@ -164,7 +164,6 @@ class servHoneyPotConn implements Runnable {
         exe.executeCommand(a);
         pip = pl.getSide();
         pl.setClose();
-
     }
 
 }

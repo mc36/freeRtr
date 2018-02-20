@@ -381,16 +381,22 @@ public class rtrLsrp extends ipRtr implements Runnable {
     }
 
     /**
-     * show spf
+     * show topology
      *
+     * @param cmd entry to find
      * @return log of spf
      */
-    public userFormat showSpfTopo() {
-        return lastSpf.listTopology();
+    public userFormat showSpfTopo(cmds cmd) {
+        if (cmd.size() < 1) {
+            return lastSpf.listTopology();
+        }
+        addrIPv4 ned = new addrIPv4();
+        ned.fromString(cmd.word());
+        return lastSpf.listTopology(ned);
     }
 
     /**
-     * show spf
+     * show log
      *
      * @return log of spf
      */
