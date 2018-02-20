@@ -12,6 +12,7 @@ import prt.prtServS;
 import tab.tabGen;
 import user.userExec;
 import user.userFilter;
+import user.userFormat;
 import user.userHelping;
 import user.userReader;
 import util.cmds;
@@ -264,6 +265,7 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, 1023);
+        rdr.tabMod = userFormat.tableMode.raw;
         rdr.height = 0;
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;

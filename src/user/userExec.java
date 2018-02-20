@@ -728,6 +728,7 @@ public class userExec {
         hl.add("3 .        table                 select table mode");
         hl.add("3 .        fancy                 select fancy mode");
         hl.add("3 .        csv                   select csv mode");
+        hl.add("3 .        raw                   select raw mode");
         hl.add("3 .        html                  select html mode");
         hl.add("1 2    hostscan                  scan ports on remote");
         hl.add("2 3      <host>                  starting host");

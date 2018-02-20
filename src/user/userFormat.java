@@ -18,6 +18,10 @@ public class userFormat {
     public enum tableMode {
 
         /**
+         * raw mode
+         */
+        raw,
+        /**
          * normal mode
          */
         normal,
@@ -173,7 +177,11 @@ public class userFormat {
             if (sep == tableMode.html) {
                 s += "<td>";
             }
-            s += bits.padEnd(a, size.get(i), " ");
+            if (sep == tableMode.raw) {
+                s += a;
+            } else {
+                s += bits.padEnd(a, size.get(i), " ");
+            }
             if (sep == tableMode.html) {
                 s += "</td>";
             }
@@ -192,6 +200,9 @@ public class userFormat {
                     break;
                 case csv:
                     s += ";";
+                    break;
+                case raw:
+                    s += "|";
                     break;
                 default:
                     break;
