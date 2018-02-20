@@ -610,7 +610,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @return list of topology
      */
     public userFormat listTopology(Ta adr) {
-        userFormat res = new userFormat("|", "category|value|value");
+        userFormat res = new userFormat("|", "category|value");
         shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(adr);
         ntry = nodes.find(ntry);
         if (ntry == null) {
