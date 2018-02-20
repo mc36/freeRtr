@@ -197,31 +197,40 @@ class servNrpeConn implements Runnable {
                 if (debugger.servNrpeTraf) {
                     logger.debug("rx " + pck.dump());
                 }
+                pck.typ = packNrpe.msgRep;
                 servNrpeCheck ntry = new servNrpeCheck(pck.str);
                 ntry = lower.chks.find(ntry);
                 if (ntry == null) {
                     pck.cod = packNrpe.msgUnk;
-                    pck.str = "no such check " + pck.str;
-                } else {
-                    List<String> lst = ntry.doCheck();
-                    if (lst.size() < 1) {
-                        pck.cod = packNrpe.msgOk;
-                        pck.str = ntry.nam + " OK ";
-                        if (ntry.dsc != null) {
-                            pck.str += ntry.dsc;
-                        }
-                    } else {
-                        pck.cod = packNrpe.msgCri;
-                        pck.str = ntry.nam + " CRITICAL " + lst.size() + " ";
-                        if (ntry.err != null) {
-                            pck.str += ntry.err;
-                        }
+                    pck.str = pck.str + " UNKNOWN no such check";
+                    pck.sendPack(conn);
+                    if (debugger.servNrpeTraf) {
+                        logger.debug("tx " + pck.dump());
                     }
-                    for (int i = 0; i < lst.size(); i++) {
-                        pck.str += "\n" + lst.get(i);
-                    }
+                    continue;
                 }
-                pck.typ = packNrpe.msgRep;
+                List<String> lst = ntry.doCheck();
+                if (lst.size() < 1) {
+                    pck.cod = packNrpe.msgOk;
+                    pck.str = ntry.nam + " OK";
+                    if (ntry.dsc != null) {
+                        pck.str += " " + ntry.dsc;
+                    }
+                    pck.sendPack(conn);
+                    if (debugger.servNrpeTraf) {
+                        logger.debug("tx " + pck.dump());
+                    }
+                    continue;
+                }
+                pck.cod = packNrpe.msgCri;
+                pck.str = ntry.nam + " CRITICAL " + lst.size();
+                if (ntry.err != null) {
+                    pck.str += " " + ntry.err;
+                }
+                String a = new String(pipeSide.getEnding(pipeSide.modTyp.modeLF));
+                for (int i = 0; i < lst.size(); i++) {
+                    pck.str += a + lst.get(i);
+                }
                 pck.sendPack(conn);
                 if (debugger.servNrpeTraf) {
                     logger.debug("tx " + pck.dump());
