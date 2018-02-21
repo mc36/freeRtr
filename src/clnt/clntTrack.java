@@ -69,6 +69,10 @@ public class clntTrack implements rtrBfdClnt {
          * script
          */
         script,
+        /**
+         * nrpe
+         */
+        nrpe,
 
     }
 
@@ -264,6 +268,8 @@ public class clntTrack implements rtrBfdClnt {
         switch (m) {
             case icmp:
                 return "icmp";
+            case nrpe:
+                return "nrpe";
             case tcp:
                 return "tcp";
             case bfd:
@@ -456,6 +462,21 @@ public class clntTrack implements rtrBfdClnt {
                     logger.info("got " + a + " from script");
                 }
                 haveResult(a.equals("1"), false);
+                return;
+            case nrpe:
+                if (target == null) {
+                    haveResult(false, false);
+                    return;
+                }
+                int i = target.indexOf(" ");
+                if (i < 0) {
+                    haveResult(false, false);
+                    return;
+                }
+                clntNrpe nrpe = new clntNrpe(null);
+                nrpe.server = target.substring(0, i);
+                nrpe.check = target.substring(i + 1, target.length());
+                haveResult(!nrpe.doCheck(), false);
                 return;
         }
         if (timeout < 1) {

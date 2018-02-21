@@ -15,6 +15,7 @@ import auth.authLocal;
 import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgIfc;
+import clnt.clntNrpe;
 import clnt.clntSmtp;
 import clnt.clntSnmp;
 import clnt.clntSpeed;
@@ -161,6 +162,15 @@ public class userTest {
                 sn.doNext();
                 return null;
             }
+            return null;
+        }
+        if (a.equals("nrpe")) {
+            clntNrpe ch = new clntNrpe(cmd.pipe);
+            ch.server = cmd.word();
+            ch.check = cmd.getRemaining();
+            boolean b = ch.doCheck();
+            cmd.error("status=" + b + ", code=" + ch.code);
+            rdr.putStrArr(ch.text);
             return null;
         }
         if (a.equals("smtp")) {

@@ -544,6 +544,11 @@ public class debugger {
     public static boolean clntSmtpTraf = false;
 
     /**
+     * clntNrpe traffic
+     */
+    public static boolean clntNrpeTraf = false;
+
+    /**
      * clntSipModem traffic
      */
     public static boolean clntSipModemTraf = false;
@@ -949,6 +954,7 @@ public class debugger {
         h.add("3 .        ftp               file transfer protocol");
         h.add("3 .        http              hypertext transfer protocol");
         h.add("3 .        smtp              simple mail transfer protocol");
+        h.add("3 .        nrpe              nagios remote plugin");
         h.add("3 .        sipmodem          session initiation protocol modem");
         h.add("3 .        proxy             proxy protosols");
         h.add("3 .        tftp              trivival file transfer protocol");
@@ -1598,6 +1604,10 @@ public class debugger {
             }
             if (s.equals("smtp")) {
                 clntSmtpTraf = v;
+                return false;
+            }
+            if (s.equals("nrpe")) {
+                clntNrpeTraf = v;
                 return false;
             }
             if (s.equals("sipmodem")) {

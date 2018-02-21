@@ -61,6 +61,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1  2      mode                       specify mode of runs");
         l.add("2  .        icmp                     icmp echo request");
+        l.add("2  .        nrpe                     nrpe remote check");
         l.add("2  .        tcp                      tcp connection");
         l.add("2  .        bfd                      bidirectional forwarding detection");
         l.add("2  .        interface                interface state");
@@ -182,6 +183,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             }
             if (a.equals("script")) {
                 worker.mode = clntTrack.operMod.script;
+                return;
+            }
+            if (a.equals("nrpe")) {
+                worker.mode = clntTrack.operMod.nrpe;
                 return;
             }
             cmd.badCmd();

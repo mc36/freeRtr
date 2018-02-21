@@ -197,11 +197,21 @@ class servNrpeConn implements Runnable {
                 if (debugger.servNrpeTraf) {
                     logger.debug("rx " + pck.dump());
                 }
-                pck.typ = packNrpe.msgRep;
+                if (pck.typ != packNrpe.tyReq) {
+                    pck.typ = packNrpe.tyRep;
+                    pck.cod = packNrpe.coUnk;
+                    pck.str = pck.str + " UNKNOWN invalid packet type";
+                    pck.sendPack(conn);
+                    if (debugger.servNrpeTraf) {
+                        logger.debug("tx " + pck.dump());
+                    }
+                    continue;
+                }
+                pck.typ = packNrpe.tyRep;
                 servNrpeCheck ntry = new servNrpeCheck(pck.str);
                 ntry = lower.chks.find(ntry);
                 if (ntry == null) {
-                    pck.cod = packNrpe.msgUnk;
+                    pck.cod = packNrpe.coUnk;
                     pck.str = pck.str + " UNKNOWN no such check";
                     pck.sendPack(conn);
                     if (debugger.servNrpeTraf) {
@@ -211,7 +221,7 @@ class servNrpeConn implements Runnable {
                 }
                 List<String> lst = ntry.doCheck();
                 if (lst.size() < 1) {
-                    pck.cod = packNrpe.msgOk;
+                    pck.cod = packNrpe.coOk;
                     pck.str = ntry.nam + " OK";
                     if (ntry.dsc != null) {
                         pck.str += " " + ntry.dsc;
@@ -222,12 +232,12 @@ class servNrpeConn implements Runnable {
                     }
                     continue;
                 }
-                pck.cod = packNrpe.msgCri;
+                pck.cod = packNrpe.coCri;
                 pck.str = ntry.nam + " CRITICAL " + lst.size();
                 if (ntry.err != null) {
                     pck.str += " " + ntry.err;
                 }
-                String a = new String(pipeSide.getEnding(pipeSide.modTyp.modeLF));
+                String a = new String(pck.sep);
                 for (int i = 0; i < lst.size(); i++) {
                     pck.str += a + lst.get(i);
                 }

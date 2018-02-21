@@ -1048,6 +1048,9 @@ public class userExec {
         hl.add("2 3,.    smtp                    send email message");
         hl.add("3 4,.      <str>                 email address");
         hl.add("4 4,.        <str>               email text");
+        hl.add("2 3,.    nrpe                    check remote status");
+        hl.add("3 4,.      <str>                 server address");
+        hl.add("4 4,.        <str>               check name");
         hl.add("2 3      logging                 log one line");
         hl.add("3 4,.      debug                 debug message");
         hl.add("3 4,.      error                 error message");

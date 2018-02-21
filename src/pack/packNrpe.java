@@ -45,32 +45,32 @@ public class packNrpe {
     /**
      * query
      */
-    public static final int msgReq = 1;
+    public static final int tyReq = 1;
 
     /**
      * response
      */
-    public static final int msgRep = 2;
+    public static final int tyRep = 2;
 
     /**
      * unknown
      */
-    public static final int msgUnk = 3;
+    public static final int coUnk = 3;
 
     /**
      * critical
      */
-    public static final int msgCri = 2;
+    public static final int coCri = 2;
 
     /**
      * warning
      */
-    public static final int msgWar = 1;
+    public static final int coWar = 1;
 
     /**
      * ok
      */
-    public static final int msgOk = 0;
+    public static final int coOk = 0;
 
     /**
      * version
@@ -91,6 +91,18 @@ public class packNrpe {
      * buffer
      */
     public String str;
+
+    /**
+     * line separator
+     */
+    public final byte[] sep;
+
+    /**
+     * create one instance
+     */
+    public packNrpe() {
+        sep = pipeSide.getEnding(pipeSide.modTyp.modeLF);
+    }
 
     /**
      * dump packet
