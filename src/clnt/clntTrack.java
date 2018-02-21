@@ -468,7 +468,7 @@ public class clntTrack implements rtrBfdClnt {
                     haveResult(false, false);
                     return;
                 }
-                int i = target.indexOf(" ");
+                int i = target.indexOf("/");
                 if (i < 0) {
                     haveResult(false, false);
                     return;
