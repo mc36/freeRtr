@@ -381,7 +381,7 @@ public class clntTrack implements rtrBfdClnt {
      */
     public void doRound() {
         if (logging) {
-            logger.info("starting action");
+            logger.info("starting action " + name);
         }
         switch (mode) {
             case iface:
@@ -477,6 +477,13 @@ public class clntTrack implements rtrBfdClnt {
                 nrpe.server = target.substring(0, i);
                 nrpe.check = target.substring(i + 1, target.length());
                 haveResult(!nrpe.doCheck(), false);
+                if (logging) {
+                    a = "";
+                    for (i = 0; i < nrpe.text.size(); i++) {
+                        a += " " + nrpe.text.get(i);
+                    }
+                    logger.info("got " + a + " from remote");
+                }
                 return;
         }
         if (timeout < 1) {
@@ -545,7 +552,7 @@ public class clntTrack implements rtrBfdClnt {
                 break;
         }
         if (logging) {
-            logger.info("stopped action");
+            logger.info("stopped action " + name);
         }
     }
 

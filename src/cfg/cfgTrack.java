@@ -39,6 +39,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         "tracker .*! no exec-down",
         "tracker .*! no vrf",
         "tracker .*! no source",
+        "tracker .*! no log",
         "tracker .*! interval 0",
         "tracker .*! timeout 0",
         "tracker .*! tos 0",
@@ -101,6 +102,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add("1  .      start                      start working");
         l.add("1  .      runnow                     run one round now");
         l.add("1  .      hidden                     hide exec commands");
+        l.add("1  .      log                        log actions");
         return l;
     }
 
@@ -108,6 +110,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("tracker " + name);
         cmds.cfgLine(l, !worker.hidden, cmds.tabulator, "hidden", "");
+        cmds.cfgLine(l, !worker.logging, cmds.tabulator, "log", "");
         l.add(cmds.tabulator + "mode " + clntTrack.mode2string(worker.mode));
         l.add(cmds.tabulator + "force " + clntTrack.force2string(worker.force));
         cmds.cfgLine(l, worker.target == null, cmds.tabulator, "target", worker.target);
@@ -152,6 +155,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         String a = cmd.word();
         if (a.equals("hidden")) {
             worker.hidden = true;
+            return;
+        }
+        if (a.equals("log")) {
+            worker.logging = true;
             return;
         }
         if (a.equals("mode")) {
@@ -289,6 +296,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         a = cmd.word();
         if (a.equals("hidden")) {
             worker.hidden = false;
+            return;
+        }
+        if (a.equals("log")) {
+            worker.logging = false;
             return;
         }
         if (a.equals("start")) {
