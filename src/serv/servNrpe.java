@@ -208,7 +208,7 @@ class servNrpeConn implements Runnable {
                     continue;
                 }
                 pck.typ = packNrpe.tyRep;
-                servNrpeCheck ntry = new servNrpeCheck(pck.str);
+                servNrpeCheck ntry = new servNrpeCheck(pck.str.replaceAll("!", "-"));
                 ntry = lower.chks.find(ntry);
                 if (ntry == null) {
                     pck.cod = packNrpe.coUnk;

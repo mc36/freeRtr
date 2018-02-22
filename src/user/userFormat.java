@@ -202,7 +202,7 @@ public class userFormat {
                     s += ";";
                     break;
                 case raw:
-                    s += "|";
+                    s += ";";
                     break;
                 default:
                     break;
