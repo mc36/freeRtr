@@ -1,8 +1,14 @@
 package serv;
 
+import addr.addrIP;
+import cfg.cfgAll;
+import clnt.clntDns;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import pack.packDnsRec;
 import pack.packNrpe;
 import pipe.pipeLine;
 import pipe.pipeSide;
@@ -29,6 +35,11 @@ public class servNrpe extends servGeneric implements prtServS {
      * list of checks
      */
     public tabGen<servNrpeCheck> chks = new tabGen<servNrpeCheck>();
+
+    /**
+     * list of resolvers
+     */
+    public tabGen<servNrpeRes> ress = new tabGen<servNrpeRes>();
 
     /**
      * defaults text
@@ -70,6 +81,9 @@ public class servNrpe extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst) {
+        for (int i = 0; i < ress.size(); i++) {
+            lst.add(beg + "resolve " + ress.get(i));
+        }
         for (int o = 0; o < chks.size(); o++) {
             servNrpeCheck ntry = chks.get(o);
             if (ntry == null) {
@@ -100,10 +114,19 @@ public class servNrpe extends servGeneric implements prtServS {
         if (negated) {
             s = cmd.word();
         }
+        if (s.equals("resolve")) {
+            s = cmd.getRemaining();
+            if (negated) {
+                ress.del(new servNrpeRes(s));
+            } else {
+                ress.add(new servNrpeRes(s));
+            }
+            return false;
+        }
         if (!s.equals("check")) {
             return true;
         }
-        servNrpeCheck ntry = new servNrpeCheck(cmd.word());
+        servNrpeCheck ntry = new servNrpeCheck(this, cmd.word());
         servNrpeCheck old = chks.add(ntry);
         if (old != null) {
             ntry = old;
@@ -175,6 +198,8 @@ public class servNrpe extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add("1 2  resolve                      resolve the regexp group a to hostname");
+        l.add("2 2,.  <str>                      text");
         l.add("1 2  check                        configure one check");
         l.add("2 3    <name>                     name of check");
         l.add("3 .      train                    train command to current result");
@@ -235,7 +260,7 @@ class servNrpeConn implements Runnable {
                     continue;
                 }
                 pck.typ = packNrpe.tyRep;
-                servNrpeCheck ntry = new servNrpeCheck(pck.str.replaceAll("!", "-"));
+                servNrpeCheck ntry = new servNrpeCheck(lower, pck.str.replaceAll("!", "-"));
                 ntry = lower.chks.find(ntry);
                 if (ntry == null) {
                     pck.cod = packNrpe.coUnk;
@@ -281,7 +306,59 @@ class servNrpeConn implements Runnable {
 
 }
 
+class servNrpeRes implements Comparator<servNrpeRes> {
+
+    public final String nam;
+
+    private Pattern pat;
+
+    public servNrpeRes(String s) {
+        nam = s;
+    }
+
+    public String toString() {
+        return nam;
+    }
+
+    public int compare(servNrpeRes o1, servNrpeRes o2) {
+        return o1.nam.toLowerCase().compareTo(o2.nam.toLowerCase());
+    }
+
+    public String doWork(String l) {
+        String as;
+        try {
+            if (pat == null) {
+                pat = Pattern.compile(nam);
+            }
+            Matcher m = pat.matcher(l);
+            if (!m.find()) {
+                return l;
+            }
+            as = m.group("a");
+        } catch (Exception e) {
+            as = null;
+        }
+        if (as == null) {
+            return l;
+        }
+        addrIP ad = new addrIP();
+        if (ad.fromString(as)) {
+            return l;
+        }
+        clntDns clnt = new clntDns();
+        clnt.doResolvOne(cfgAll.nameServerAddr, packDnsRec.generateReverse(ad), packDnsRec.typePTR);
+        String dn = clnt.getPTR();
+        if (dn == null) {
+            return l;
+        }
+        return l.replaceAll(as, dn);
+    }
+
+}
+
 class servNrpeCheck implements Comparator<servNrpeCheck> {
+
+    private final servNrpe lower;
 
     public final String nam;
 
@@ -299,7 +376,8 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
 
     public final List<String> reqT;
 
-    public servNrpeCheck(String n) {
+    public servNrpeCheck(servNrpe p, String n) {
+        lower = p;
         nam = n;
         ignR = new ArrayList<String>();
         reqR = new ArrayList<String>();
@@ -374,6 +452,13 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
         }
     }
 
+    public String doResolv(String l) {
+        for (int i = 0; i < lower.ress.size(); i++) {
+            l = lower.ress.get(i).doWork(l);
+        }
+        return l;
+    }
+
     public List<String> doCheck() {
         List<String> lst = getResult();
         delIgn(lst);
@@ -392,7 +477,7 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
             if (ok) {
                 continue;
             }
-            res.add("- " + s);
+            res.add("- " + doResolv(s));
         }
         for (int o = 0; o < reqR.size(); o++) {
             String s = reqR.get(o);
@@ -411,7 +496,7 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
             res.add("- " + s);
         }
         for (int i = 0; i < lst.size(); i++) {
-            res.add("+ " + lst.get(i));
+            res.add("+ " + doResolv(lst.get(i)));
         }
         return res;
     }
