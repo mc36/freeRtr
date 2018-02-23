@@ -200,7 +200,7 @@ class servNrpeConn implements Runnable {
                 if (pck.typ != packNrpe.tyReq) {
                     pck.typ = packNrpe.tyRep;
                     pck.cod = packNrpe.coUnk;
-                    pck.str = pck.str + " UNKNOWN invalid packet type";
+                    pck.str = "UNKNOWN invalid packet type";
                     pck.sendPack(conn);
                     if (debugger.servNrpeTraf) {
                         logger.debug("tx " + pck.dump());
@@ -212,7 +212,7 @@ class servNrpeConn implements Runnable {
                 ntry = lower.chks.find(ntry);
                 if (ntry == null) {
                     pck.cod = packNrpe.coUnk;
-                    pck.str = pck.str + " UNKNOWN no such check";
+                    pck.str = "UNKNOWN no such check";
                     pck.sendPack(conn);
                     if (debugger.servNrpeTraf) {
                         logger.debug("tx " + pck.dump());
@@ -222,7 +222,7 @@ class servNrpeConn implements Runnable {
                 List<String> lst = ntry.doCheck();
                 if (lst.size() < 1) {
                     pck.cod = packNrpe.coOk;
-                    pck.str = ntry.nam + " OK";
+                    pck.str = "OK";
                     if (ntry.dsc != null) {
                         pck.str += " " + ntry.dsc;
                     }
@@ -233,7 +233,7 @@ class servNrpeConn implements Runnable {
                     continue;
                 }
                 pck.cod = packNrpe.coCri;
-                pck.str = ntry.nam + " CRITICAL " + lst.size();
+                pck.str = "CRITICAL " + lst.size();
                 if (ntry.err != null) {
                     pck.str += " " + ntry.err;
                 }
