@@ -3,7 +3,6 @@ package serv;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Pattern;
 import pack.packNrpe;
 import pipe.pipeLine;
 import pipe.pipeSide;
@@ -80,11 +79,17 @@ public class servNrpe extends servGeneric implements prtServS {
             lst.add(beg + cn + " command " + ntry.cmd);
             cmds.cfgLine(lst, ntry.dsc == null, beg, cn + " description", ntry.dsc);
             cmds.cfgLine(lst, ntry.err == null, beg, cn + " error", ntry.err);
-            for (int i = 0; i < ntry.ign.size(); i++) {
-                lst.add(beg + cn + " ignore " + ntry.ign.get(i));
+            for (int i = 0; i < ntry.ignT.size(); i++) {
+                lst.add(beg + cn + " ign-txt " + ntry.ignT.get(i));
             }
-            for (int i = 0; i < ntry.req.size(); i++) {
-                lst.add(beg + cn + " require " + ntry.req.get(i));
+            for (int i = 0; i < ntry.ignR.size(); i++) {
+                lst.add(beg + cn + " ign-reg " + ntry.ignR.get(i));
+            }
+            for (int i = 0; i < ntry.reqT.size(); i++) {
+                lst.add(beg + cn + " req-txt " + ntry.reqT.get(i));
+            }
+            for (int i = 0; i < ntry.reqR.size(); i++) {
+                lst.add(beg + cn + " req-reg " + ntry.reqR.get(i));
             }
         }
     }
@@ -126,21 +131,39 @@ public class servNrpe extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (s.equals("require")) {
+        if (s.equals("req-reg")) {
             s = cmd.getRemaining();
             if (negated) {
-                ntry.req.remove(s);
+                ntry.reqR.remove(s);
             } else {
-                ntry.req.add(s);
+                ntry.reqR.add(s);
             }
             return false;
         }
-        if (s.equals("ignore")) {
+        if (s.equals("ign-reg")) {
             s = cmd.getRemaining();
             if (negated) {
-                ntry.ign.remove(s);
+                ntry.ignR.remove(s);
             } else {
-                ntry.ign.add(s);
+                ntry.ignR.add(s);
+            }
+            return false;
+        }
+        if (s.equals("req-txt")) {
+            s = cmd.getRemaining();
+            if (negated) {
+                ntry.reqT.remove(s);
+            } else {
+                ntry.reqT.add(s);
+            }
+            return false;
+        }
+        if (s.equals("ign-txt")) {
+            s = cmd.getRemaining();
+            if (negated) {
+                ntry.ignT.remove(s);
+            } else {
+                ntry.ignT.add(s);
             }
             return false;
         }
@@ -161,10 +184,14 @@ public class servNrpe extends servGeneric implements prtServS {
         l.add("4 4,.      <str>                  description");
         l.add("3 4      error                    specify error text");
         l.add("4 4,.      <str>                  description");
-        l.add("3 4      require                  require one line");
-        l.add("4 4,.      <str>                  regular expression");
-        l.add("3 4      ignore                   ignore one line");
-        l.add("4 4,.      <str>                  regular expression");
+        l.add("3 4      req-reg                  require one regexp line");
+        l.add("4 4,.      <str>                  text");
+        l.add("3 4      ign-reg                  ignore one regexp line");
+        l.add("4 4,.      <str>                  text");
+        l.add("3 4      req-txt                  require one text line");
+        l.add("4 4,.      <str>                  text");
+        l.add("3 4      ign-txt                  ignore one text line");
+        l.add("4 4,.      <str>                  text");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -264,14 +291,20 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
 
     public String err;
 
-    public final List<String> ign;
+    public final List<String> ignR;
 
-    public final List<String> req;
+    public final List<String> reqR;
+
+    public final List<String> ignT;
+
+    public final List<String> reqT;
 
     public servNrpeCheck(String n) {
         nam = n;
-        ign = new ArrayList<String>();
-        req = new ArrayList<String>();
+        ignR = new ArrayList<String>();
+        reqR = new ArrayList<String>();
+        ignT = new ArrayList<String>();
+        reqT = new ArrayList<String>();
     }
 
     public int compare(servNrpeCheck o1, servNrpeCheck o2) {
@@ -310,8 +343,18 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
     }
 
     public void delIgn(List<String> lst) {
-        for (int o = 0; o < ign.size(); o++) {
-            String s = ign.get(o);
+        for (int o = 0; o < ignT.size(); o++) {
+            String s = ignT.get(o);
+            for (int i = 0; i < lst.size(); i++) {
+                if (!lst.get(i).equals(s)) {
+                    continue;
+                }
+                lst.remove(i);
+                break;
+            }
+        }
+        for (int o = 0; o < ignR.size(); o++) {
+            String s = ignR.get(o);
             for (int i = 0; i < lst.size(); i++) {
                 if (!lst.get(i).matches(s)) {
                     continue;
@@ -325,9 +368,9 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
     public void doTrain() {
         List<String> lst = getResult();
         delIgn(lst);
-        req.clear();
+        reqT.clear();
         for (int i = 0; i < lst.size(); i++) {
-            req.add(Pattern.quote(lst.get(i)));
+            reqT.add(lst.get(i));
         }
     }
 
@@ -335,8 +378,24 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
         List<String> lst = getResult();
         delIgn(lst);
         List<String> res = new ArrayList<String>();
-        for (int o = 0; o < req.size(); o++) {
-            String s = req.get(o);
+        for (int o = 0; o < reqT.size(); o++) {
+            String s = reqT.get(o);
+            boolean ok = false;
+            for (int i = 0; i < lst.size(); i++) {
+                if (!lst.get(i).equals(s)) {
+                    continue;
+                }
+                lst.remove(i);
+                ok = true;
+                break;
+            }
+            if (ok) {
+                continue;
+            }
+            res.add("- " + s);
+        }
+        for (int o = 0; o < reqR.size(); o++) {
+            String s = reqR.get(o);
             boolean ok = false;
             for (int i = 0; i < lst.size(); i++) {
                 if (!lst.get(i).matches(s)) {
