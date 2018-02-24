@@ -140,6 +140,11 @@ public class servNrpe extends servGeneric implements prtServS {
             ntry.cmd = cmd.getRemaining();
             return false;
         }
+        if (ntry.cmd == null) {
+            chks.del(ntry);
+            cmd.error("no such check");
+            return false;
+        }
         if (s.equals("description")) {
             ntry.dsc = cmd.getRemaining();
             if (negated) {
