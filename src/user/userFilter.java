@@ -267,6 +267,9 @@ public class userFilter implements Comparator<userFilter> {
     public static userFilter findText(userFilter txt, List<userFilter> lst) {
         for (int i = 0; i < lst.size(); i++) {
             userFilter ntry = lst.get(i);
+            if (ntry.used) {
+                continue;
+            }
             if (txt.compare(ntry, txt) == 0) {
                 return ntry;
             }
