@@ -211,6 +211,8 @@ public class userExec {
         hl.add("4 5          <vrf>               specify routing table");
         hl.add("5 6            neighbor          information about neighbor");
         hl.add("6 7              <addr>          neighbor address");
+        hl.add("7 8,.              nulled        null labels learned from neighbor");
+        hl.add("8 .                  [addr]      prefix to view");
         hl.add("7 8,.              learned       labels learned from neighbor");
         hl.add("8 .                  [addr]      prefix to view");
         hl.add("7 8,.              advertised    labels advertised to neighbor");
