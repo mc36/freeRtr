@@ -1,0 +1,29 @@
+manifest-version: 1.0
+
+info:
+  name: freeRouter
+  description: "freeRouter"
+  version: 1.1
+
+app:
+  apptype: vm
+
+  resources:
+   cpu: 30
+   memory: 1024000
+   vcpu: 1
+
+   disk:
+    - target-dev: hdc
+      file: rtr.qcow2
+
+   interfaces:
+    - target-dev: net1
+
+   serial:
+    - console
+    - aux
+
+  startup:
+    runtime: kvm
+    boot-dev: hd

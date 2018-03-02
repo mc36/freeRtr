@@ -263,7 +263,7 @@ public class playerUtil {
         }
     }
 
-    private final static Object sleeper = Integer.valueOf(123);
+    private final static Object sleeper = new Object();
 
     /**
      * html to text

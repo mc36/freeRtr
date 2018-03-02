@@ -1,5 +1,7 @@
 description interop: spantree nonroot
 
+exit
+
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 int eth2 eth 0000.0000.1112 $2a$ $2b$
@@ -25,19 +27,19 @@ int bvi1
 !
 
 addother r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
-int eth2 eth 0000.0000.2221 $2b$ $2a$
+int eth1 eth 0000.0000.2211 $1b$ $1a$
+int eth2 eth 0000.0000.2222 $2b$ $2a$
 !
 ip routing
 ipv6 unicast-routing
 bridge irb
 bridge 1 protocol ieee
 bridge 1 route ip
-interface gigabit0/0
+interface gigabit2
  bridge-group 1
  no shutdown
  exit
-interface gigabit0/1
+interface gigabit1
  bridge-group 1
  no shutdown
  exit

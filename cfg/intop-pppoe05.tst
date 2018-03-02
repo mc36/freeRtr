@@ -37,7 +37,7 @@ interface dialer1
  ppp authentication eap
  ppp eap local
  exit
-interface gigabit0/0
+interface gigabit1
  pppoe-client dial-pool-number 1
  no shutdown
  exit

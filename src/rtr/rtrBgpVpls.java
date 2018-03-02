@@ -120,6 +120,10 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.extComm = new ArrayList<Long>();
         if (veId == 0) {
+            if (veLab != null) {
+                tabLabel.release(veLab, 12);
+                veLab = null;
+            }
             ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiUni);
             if (ntry.prefix.network.isIPv4()) {
                 addrIPv4 adr = iface.addr4;

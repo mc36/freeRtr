@@ -102,7 +102,7 @@ interface loopback3
  ip address 9.9.3.2 255.255.255.255
  ipv6 address 9993::2/128
  exit
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  ipv6 address 1234::2/64
  mpls ip
@@ -115,6 +115,7 @@ router bgp 1
  neighbor 2.2.2.1 update-source loopback0
  neighbor 4321::1 remote-as 1
  neighbor 4321::1 update-source loopback0
+ neighbor 4321::1 shutdown
  address-family vpnv4 unicast
   bgp scan-time 5
   neighbor 2.2.2.1 activate

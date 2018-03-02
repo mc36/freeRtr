@@ -1,0 +1,6 @@
+#!/bin/sh
+/lib/systemd/systemd-udevd --daemon --resolve-names=never
+udevadm control --property=STARTUP=1
+udevadm trigger --action=add
+udevadm settle || true
+udevadm control --property=STARTUP=

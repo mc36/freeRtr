@@ -1,5 +1,7 @@
 description interop: dot1q encapsulation
 
+exit
+
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
@@ -18,10 +20,10 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 ip routing
 ipv6 unicast-routing
-interface gigabit0/0
+interface gigabit1
  no shutdown
  exit
-interface gigabit0/0.123
+interface gigabit1.123
  encapsulation dot1q 123
  ip address 1.1.1.2 255.255.255.0
  ipv6 address 1234::2/64

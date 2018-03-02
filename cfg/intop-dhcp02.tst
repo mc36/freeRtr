@@ -37,7 +37,7 @@ ipv6 dhcp pool dhcpv6
 interface loop0
  ipv6 address 4321::1/128
  exit
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.1 255.255.255.0
  ipv6 enable
  ipv6 dhcp server dhcpv6

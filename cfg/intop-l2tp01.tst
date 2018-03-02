@@ -42,7 +42,7 @@ ipv6 unicast-routing
 interface Loopback0
  ip address 2.2.2.1 255.255.255.255
  exit
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  no shutdown
  exit

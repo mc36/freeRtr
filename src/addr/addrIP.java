@@ -159,6 +159,19 @@ public class addrIP extends addrType {
         }
     }
 
+    /**
+     * test if this is an empty address
+     *
+     * @return tris if yes
+     */
+    public boolean isEmpty() {
+        if (isIPv4()) {
+            return toIPv4().isEmpty();
+        } else {
+            return toIPv6().isEmpty();
+        }
+    }
+
     public String toString() {
         if (isIPv4()) {
             return "" + toIPv4();

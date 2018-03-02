@@ -32,12 +32,15 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 ip routing
 ipv6 unicast-routing
 interface loop0
+ ipv6 address fe80::1 link-local
+ ipv6 enable
  ipv6 address prefix ::/128
  exit
-interface gigabit0/0
+interface gigabit1
  ip address dhcp
- ipv6 address autoconfig default
+ ipv6 address fe80::1 link-local
  ipv6 enable
+ ipv6 dhcp client pd hint 1234::2/128
  ipv6 dhcp client pd prefix
  no shutdown
  exit
@@ -45,4 +48,4 @@ interface gigabit0/0
 
 
 r1 tping 100 30 1.1.1.2 /vrf v1
-r1 tping 100 30 1234::2 /vrf v1
+!r1 tping 100 30 1234::2 /vrf v1

@@ -31,6 +31,8 @@ public class userTester {
 
     private String otherI = null;
 
+    private String otherN = null;
+
     private int otherM = 0;
 
     private List<userTesterCap> capture = new ArrayList<userTesterCap>();
@@ -112,10 +114,12 @@ public class userTester {
             }
             if (s.equals("other")) {
                 otherI = cmd.word();
+                otherN = cmd.word();
                 otherM = bits.str2num(cmd.word());
             }
             if (s.equals("noother")) {
                 otherI = null;
+                otherN = null;
                 otherM = 0;
             }
             if (s.equals("capture")) {
@@ -202,7 +206,7 @@ public class userTester {
         rdr.debugStat("config=" + config);
         rdr.debugStat("reapply=" + reapply);
         rdr.debugStat("retry=" + maxTry);
-        rdr.debugStat("other=" + otherI + " " + otherM);
+        rdr.debugStat("other=" + otherI + " " + otherN + " " + otherM);
         rdr.debugStat("capture=" + capture.size());
         rdr.debugStat("files=" + lf.size());
         long tim1 = bits.getTime();
@@ -233,6 +237,7 @@ public class userTester {
                 lt.reapply = reapply;
                 lt.jvm = jvn + jvp;
                 lt.otherI = otherI;
+                lt.otherN = otherN;
                 lt.otherM = otherM;
                 lt.capture = capture;
                 if (window) {
@@ -460,6 +465,8 @@ class userTesterOne {
 
     public String otherI;
 
+    public String otherN;
+
     public int otherM;
 
     public String window = "c";
@@ -673,7 +680,7 @@ class userTesterOne {
                 s = repairHwCfg(s);
                 cfg.add(s);
             }
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -hda " + otherI + " -m " + otherM;
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -smp cores=2,threads=1,sockets=1 -hda " + otherI + " -m " + otherM;
             for (int i = 0; i < cfg.size(); i++) {
                 String a = cfg.get(i);
                 cmd = new cmds("hw", a);
@@ -693,7 +700,7 @@ class userTesterOne {
                 cmd.word();
                 int rp = bits.str2num(cmd.word());
                 int vl = i + 1;
-                s += " -net nic,vlan=" + vl + ",macaddr=" + mac.toEmuStr() + " -net socket,vlan=" + vl + ",udp=:" + rp + ",localaddr=:" + lp;
+                s += " -net nic,model=" + otherN + ",vlan=" + vl + ",macaddr=" + mac.toEmuStr() + " -net socket,vlan=" + vl + ",udp=:" + rp + ",localaddr=:" + lp;
             }
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);

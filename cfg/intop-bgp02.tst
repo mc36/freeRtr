@@ -43,7 +43,7 @@ interface loopback0
  ip addr 2.2.2.2 255.255.255.255
  ipv6 addr 4321::2/128
  exit
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  ipv6 address 1234::2/64
  no shutdown

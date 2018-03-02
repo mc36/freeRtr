@@ -7979,3 +7979,12 @@ qc pass: xconnect terminated on pwhe xconnect evcs
 ---------------------------------- 2018-02-19 06:39:13
 qc pass: bridge split horizon
 qc pass: bridge mac learning
+---------------------------------- 2018-02-27 16:37:00
+qc pass: interop: vpls/ldp over bgp
+qc pass: interop: vpls/bgp over bgp
+qc pass: interop: isis p2mp te
+qc pass: interop: isis sr
+qc pass: interop: ldp p2mp lsp
+qc pass: interop: ldp mp2mp lsp
+qc pass: interop: ospf p2mp te
+qc pass: interop: ospf sr

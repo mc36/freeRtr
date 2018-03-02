@@ -18,7 +18,7 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 ip routing
 ipv6 unicast-routing
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  ipv6 address 1234::2/64
  no shutdown

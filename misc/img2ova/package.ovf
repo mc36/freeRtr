@@ -1,0 +1,239 @@
+<?xml version="1.0"?>
+<Envelope ovf:version="1.0" xml:lang="en-US" xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vbox="http://www.virtualbox.org/ovf/machine">
+  <References>
+    <File ovf:id="file1" ovf:href="rtr.vmdk"/>
+  </References>
+  <DiskSection>
+    <Info>List of the virtual disks used in the package</Info>
+    <Disk ovf:capacity="1073741824" ovf:diskId="vmdisk1" ovf:fileRef="file1" ovf:format="http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized" vbox:uuid="318feb5c-611a-4a0c-83a1-27201f9e480b"/>
+  </DiskSection>
+  <NetworkSection>
+    <Info>Logical networks used in the package</Info>
+    <Network ovf:name="NAT">
+      <Description>Logical network used by this appliance.</Description>
+    </Network>
+  </NetworkSection>
+  <VirtualSystem ovf:id="rtr-dsk">
+    <Info>A virtual machine</Info>
+    <AnnotationSection>
+      <Info>A human-readable annotation</Info>
+      <Annotation>rtros distribution
+more info at http://freerouter.nop.hu/
+</Annotation>
+    </AnnotationSection>
+    <OperatingSystemSection ovf:id="95">
+      <Info>The kind of installed guest operating system</Info>
+      <Description>Debian</Description>
+      <vbox:OSType ovf:required="false">Debian</vbox:OSType>
+    </OperatingSystemSection>
+    <VirtualHardwareSection>
+      <Info>Virtual hardware requirements for a virtual machine</Info>
+      <System>
+        <vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+        <vssd:InstanceID>0</vssd:InstanceID>
+        <vssd:VirtualSystemIdentifier>rtr-dsk</vssd:VirtualSystemIdentifier>
+        <vssd:VirtualSystemType>virtualbox-2.2</vssd:VirtualSystemType>
+      </System>
+      <Item>
+        <rasd:Caption>2 virtual CPU</rasd:Caption>
+        <rasd:Description>Number of virtual CPUs</rasd:Description>
+        <rasd:ElementName>2 virtual CPU</rasd:ElementName>
+        <rasd:InstanceID>1</rasd:InstanceID>
+        <rasd:ResourceType>3</rasd:ResourceType>
+        <rasd:VirtualQuantity>2</rasd:VirtualQuantity>
+      </Item>
+      <Item>
+        <rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+        <rasd:Caption>1024 MB of memory</rasd:Caption>
+        <rasd:Description>Memory Size</rasd:Description>
+        <rasd:ElementName>1024 MB of memory</rasd:ElementName>
+        <rasd:InstanceID>2</rasd:InstanceID>
+        <rasd:ResourceType>4</rasd:ResourceType>
+        <rasd:VirtualQuantity>1024</rasd:VirtualQuantity>
+      </Item>
+      <Item>
+        <rasd:Address>0</rasd:Address>
+        <rasd:Caption>ideController0</rasd:Caption>
+        <rasd:Description>IDE Controller</rasd:Description>
+        <rasd:ElementName>ideController0</rasd:ElementName>
+        <rasd:InstanceID>3</rasd:InstanceID>
+        <rasd:ResourceSubType>PIIX4</rasd:ResourceSubType>
+        <rasd:ResourceType>5</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:Address>1</rasd:Address>
+        <rasd:Caption>ideController1</rasd:Caption>
+        <rasd:Description>IDE Controller</rasd:Description>
+        <rasd:ElementName>ideController1</rasd:ElementName>
+        <rasd:InstanceID>4</rasd:InstanceID>
+        <rasd:ResourceSubType>PIIX4</rasd:ResourceSubType>
+        <rasd:ResourceType>5</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:Address>0</rasd:Address>
+        <rasd:Caption>usb</rasd:Caption>
+        <rasd:Description>USB Controller</rasd:Description>
+        <rasd:ElementName>usb</rasd:ElementName>
+        <rasd:InstanceID>5</rasd:InstanceID>
+        <rasd:ResourceType>23</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:AddressOnParent>0</rasd:AddressOnParent>
+        <rasd:Caption>disk1</rasd:Caption>
+        <rasd:Description>Disk Image</rasd:Description>
+        <rasd:ElementName>disk1</rasd:ElementName>
+        <rasd:HostResource>/disk/vmdisk1</rasd:HostResource>
+        <rasd:InstanceID>6</rasd:InstanceID>
+        <rasd:Parent>3</rasd:Parent>
+        <rasd:ResourceType>17</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+        <rasd:Caption>Ethernet adapter on 'NAT'</rasd:Caption>
+        <rasd:Connection>NAT</rasd:Connection>
+        <rasd:ElementName>Ethernet adapter on 'NAT'</rasd:ElementName>
+        <rasd:InstanceID>7</rasd:InstanceID>
+        <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
+        <rasd:ResourceType>10</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+        <rasd:Caption>Ethernet adapter on 'NAT'</rasd:Caption>
+        <rasd:Connection>NAT</rasd:Connection>
+        <rasd:ElementName>Ethernet adapter on 'NAT'</rasd:ElementName>
+        <rasd:InstanceID>8</rasd:InstanceID>
+        <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
+        <rasd:ResourceType>10</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+        <rasd:Caption>Ethernet adapter on 'NAT'</rasd:Caption>
+        <rasd:Connection>NAT</rasd:Connection>
+        <rasd:ElementName>Ethernet adapter on 'NAT'</rasd:ElementName>
+        <rasd:InstanceID>9</rasd:InstanceID>
+        <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
+        <rasd:ResourceType>10</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+        <rasd:Caption>Ethernet adapter on 'NAT'</rasd:Caption>
+        <rasd:Connection>NAT</rasd:Connection>
+        <rasd:ElementName>Ethernet adapter on 'NAT'</rasd:ElementName>
+        <rasd:InstanceID>10</rasd:InstanceID>
+        <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
+        <rasd:ResourceType>10</rasd:ResourceType>
+      </Item>
+    </VirtualHardwareSection>
+    <vbox:Machine ovf:required="false" version="1.15-linux" uuid="{def38c53-aac5-477c-9f7d-b2c22c298aac}" name="rtr-dsk" OSType="Debian" snapshotFolder="Snapshots" lastStateChange="2018-03-02T06:02:55Z">
+      <ovf:Info>Complete VirtualBox machine configuration in VirtualBox format</ovf:Info>
+      <Description>rtros distribution
+more info at http://freerouter.nop.hu/
+</Description>
+      <ExtraData>
+        <ExtraDataItem name="GUI/LastCloseAction" value="PowerOff"/>
+        <ExtraDataItem name="GUI/LastGuestSizeHint" value="720,400"/>
+        <ExtraDataItem name="GUI/LastNormalWindowPosition" value="0,238,720,450"/>
+        <ExtraDataItem name="GUI/RestrictedRuntimeDevicesMenuActions" value="HardDrives"/>
+        <ExtraDataItem name="GUI/RestrictedRuntimeMachineMenuActions" value="SaveState,PowerOff"/>
+        <ExtraDataItem name="GUI/SaveMountedAtRuntime" value="yes"/>
+        <ExtraDataItem name="GUI/ScaleFactor" value="1"/>
+        <ExtraDataItem name="GUI/StatusBar/IndicatorOrder" value="HardDisks,OpticalDisks,FloppyDisks,Network,USB,SharedFolders,Display,VideoCapture,Features,Mouse,Keyboard"/>
+      </ExtraData>
+      <Hardware>
+        <CPU count="2">
+          <PAE enabled="true"/>
+          <LongMode enabled="false"/>
+          <HardwareVirtExLargePages enabled="false"/>
+        </CPU>
+        <Memory RAMSize="1024"/>
+        <HID Pointing="USBTablet"/>
+        <Paravirt provider="Default"/>
+        <Boot>
+          <Order position="1" device="HardDisk"/>
+          <Order position="2" device="None"/>
+          <Order position="3" device="None"/>
+          <Order position="4" device="None"/>
+        </Boot>
+        <Display VRAMSize="5"/>
+        <VideoCapture fps="25" options="ac_enabled=false"/>
+        <RemoteDisplay enabled="false">
+          <VRDEProperties>
+            <Property name="TCP/Ports" value="3389"/>
+          </VRDEProperties>
+        </RemoteDisplay>
+        <BIOS>
+          <IOAPIC enabled="true"/>
+        </BIOS>
+        <USB>
+          <Controllers>
+            <Controller name="OHCI" type="OHCI"/>
+          </Controllers>
+        </USB>
+        <Network>
+          <Adapter slot="0" enabled="true" MACAddress="08002758633D" cable="true" type="82540EM">
+            <DisabledModes>
+              <InternalNetwork name="intnet"/>
+              <NATNetwork name="NatNetwork"/>
+            </DisabledModes>
+            <NAT/>
+          </Adapter>
+          <Adapter slot="1" enabled="true" MACAddress="0800276B1CF9" cable="true" type="82540EM">
+            <DisabledModes>
+              <InternalNetwork name="intnet"/>
+              <NATNetwork name="NatNetwork"/>
+            </DisabledModes>
+            <NAT/>
+          </Adapter>
+          <Adapter slot="2" enabled="true" MACAddress="080027228918" cable="true" type="82540EM">
+            <DisabledModes>
+              <InternalNetwork name="intnet"/>
+              <NATNetwork name="NatNetwork"/>
+            </DisabledModes>
+            <NAT/>
+          </Adapter>
+          <Adapter slot="3" enabled="true" MACAddress="08002795FC08" cable="true" type="82540EM">
+            <DisabledModes>
+              <InternalNetwork name="intnet"/>
+              <NATNetwork name="NatNetwork"/>
+            </DisabledModes>
+            <NAT/>
+          </Adapter>
+          <Adapter slot="4" MACAddress="080027914D1F" cable="true" type="82540EM"/>
+          <Adapter slot="5" MACAddress="0800272B681E" cable="true" type="82540EM"/>
+          <Adapter slot="6" MACAddress="0800272ABFFE" cable="true" type="82540EM"/>
+          <Adapter slot="7" MACAddress="0800270EC020" cable="true" type="82540EM"/>
+        </Network>
+        <UART>
+          <Port slot="0" enabled="true" IOBase="0x3f8" IRQ="4" server="true" path="/tmp/rtr-dsk" hostMode="HostPipe"/>
+        </UART>
+        <LPT>
+          <Port slot="1" enabled="false" IOBase="0x378" IRQ="7"/>
+        </LPT>
+        <AudioAdapter driver="Pulse" enabled="false"/>
+        <RTC localOrUTC="UTC"/>
+        <GuestProperties>
+          <GuestProperty name="/VirtualBox/GuestAdd/Revision" value="78361" timestamp="1395308999147819000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestAdd/Version" value="4.1.18" timestamp="1395308999146644000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestAdd/VersionExt" value="4.1.18_Debian" timestamp="1395308999147418000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestInfo/Net/0/MAC" value="08002758633D" timestamp="1395308999153077000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestInfo/Net/0/Status" value="Up" timestamp="1395308999153974000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestInfo/Net/0/V4/Broadcast" value="10.0.2.255" timestamp="1395308999152210000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestInfo/Net/0/V4/IP" value="10.0.2.15" timestamp="1395308999151283000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestInfo/Net/0/V4/Netmask" value="255.255.255.0" timestamp="1395308999152588000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestInfo/Net/Count" value="1" timestamp="1395311614456867000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestInfo/OS/Product" value="Linux" timestamp="1395308999144084000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestInfo/OS/Release" value="3.2.0-4-amd64" timestamp="1395308999144785000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestInfo/OS/Version" value="#1 SMP Debian 3.2.54-2" timestamp="1395308999145392000" flags=""/>
+          <GuestProperty name="/VirtualBox/HostInfo/GUI/LanguageID" value="en_US" timestamp="1519970436009989000" flags=""/>
+        </GuestProperties>
+      </Hardware>
+      <StorageControllers>
+        <StorageController name="IDE" type="PIIX4" PortCount="2" useHostIOCache="true" Bootable="true">
+          <AttachedDevice type="HardDisk" hotpluggable="false" port="0" device="0">
+            <Image uuid="{318feb5c-611a-4a0c-83a1-27201f9e480b}"/>
+          </AttachedDevice>
+        </StorageController>
+      </StorageControllers>
+    </vbox:Machine>
+  </VirtualSystem>
+</Envelope>

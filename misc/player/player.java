@@ -59,7 +59,7 @@ public class player implements Runnable {
      */
     protected boolean ready = false;
 
-    private final static Object sleeper = Integer.valueOf(123);
+    private final static Object sleeper = new Object();
 
     private String mixer = "Master";
 

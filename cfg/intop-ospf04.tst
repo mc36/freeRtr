@@ -47,7 +47,7 @@ router ospf 1
  exit
 ipv6 router ospf 1
  exit
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  ipv6 enable
  ip ospf network point-to-point

@@ -39,7 +39,7 @@ bba-group pppoe global
  virtual-template 1
  ac name inet
  exit
-interface gigabit0/0
+interface gigabit1
  pppoe enable group global
  no shutdown
  exit

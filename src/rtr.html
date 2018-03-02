@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v18.2.19-testing, done by cs@nop.<br/>
-tested: 2018-02-19 15:14:41, took 08:35:28 on 1360 cases<br/>
+release: freeRouter v18.3.1-testing, done by cs@nop.<br/>
+tested: 2018-03-02 05:18:31, took 07:33:57 on 1368 cases<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -490,6 +490,8 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-bgp11.tst">intop-bgp11.tst</a></td><td>0</td><td>interop: bgp vpnv4</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-bgp12.tst">intop-bgp12.tst</a></td><td>0</td><td>interop: bgp authentication</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-bgp13.tst">intop-bgp13.tst</a></td><td>0</td><td>interop: bgp vpnv6</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop-bgp14.tst">intop-bgp14.tst</a></td><td>0</td><td>interop: vpls/ldp over bgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop-bgp15.tst">intop-bgp15.tst</a></td><td>0</td><td>interop: vpls/bgp over bgp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-dhcp01.tst">intop-dhcp01.tst</a></td><td>0</td><td>interop: dhcp server</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-dhcp02.tst">intop-dhcp02.tst</a></td><td>0</td><td>interop: dhcp client</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-dns.tst">intop-dns.tst</a></td><td>0</td><td>interop: dns</td><td>successfully</td><td>finished</td></tr>
@@ -537,12 +539,16 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-isis06.tst">intop-isis06.tst</a></td><td>0</td><td>interop: isis multi-topology</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-isis07.tst">intop-isis07.tst</a></td><td>0</td><td>interop: isis prefix withdraw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-isis08.tst">intop-isis08.tst</a></td><td>0</td><td>interop: isis authentication</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop-isis09.tst">intop-isis09.tst</a></td><td>0</td><td>interop: isis p2mp te</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop-isis10.tst">intop-isis10.tst</a></td><td>0</td><td>interop: isis sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-l2tp01.tst">intop-l2tp01.tst</a></td><td>0</td><td>interop: l2tp2 client</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-l2tp02.tst">intop-l2tp02.tst</a></td><td>0</td><td>interop: l2tp2 server</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-l2tp03.tst">intop-l2tp03.tst</a></td><td>0</td><td>interop: l2tp3 server</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-l2tp04.tst">intop-l2tp04.tst</a></td><td>0</td><td>interop: ethernet tunneling with l2tp3</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-ldp01.tst">intop-ldp01.tst</a></td><td>0</td><td>interop: ldp lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-ldp02.tst">intop-ldp02.tst</a></td><td>0</td><td>interop: ethernet over mpls</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop-ldp03.tst">intop-ldp03.tst</a></td><td>0</td><td>interop: ldp p2mp lsp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop-ldp04.tst">intop-ldp04.tst</a></td><td>0</td><td>interop: ldp mp2mp lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-mcast01.tst">intop-mcast01.tst</a></td><td>0</td><td>interop: igmp3/mld2</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-mcast02.tst">intop-mcast02.tst</a></td><td>0</td><td>interop: pim</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-ospf01.tst">intop-ospf01.tst</a></td><td>0</td><td>interop: point2point ospf</td><td>successfully</td><td>finished</td></tr>
@@ -554,6 +560,8 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-ospf07.tst">intop-ospf07.tst</a></td><td>0</td><td>interop: ospf te</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-ospf08.tst">intop-ospf08.tst</a></td><td>0</td><td>interop: ospf prefix withdraw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-ospf09.tst">intop-ospf09.tst</a></td><td>0</td><td>interop: ospf authentication</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop-ospf10.tst">intop-ospf10.tst</a></td><td>0</td><td>interop: ospf p2mp te</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop-ospf11.tst">intop-ospf11.tst</a></td><td>0</td><td>interop: ospf sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-pppoe01.tst">intop-pppoe01.tst</a></td><td>0</td><td>interop: pppoe client</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-pppoe02.tst">intop-pppoe02.tst</a></td><td>0</td><td>interop: pppoe server</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-pppoe03.tst">intop-pppoe03.tst</a></td><td>0</td><td>interop: pppoe with pap</td><td>successfully</td><td>finished</td></tr>

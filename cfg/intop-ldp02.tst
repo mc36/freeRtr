@@ -46,8 +46,8 @@ vpdn eompls
 !
 
 addother r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
-int eth2 eth 0000.0000.3333 $2a$ $2b$
+int eth1 eth 0000.0000.2211 $1b$ $1a$
+int eth2 eth 0000.0000.2222 $2a$ $2b$
 !
 ip routing
 ipv6 unicast-routing
@@ -56,13 +56,13 @@ interface loopback0
  ip addr 2.2.2.2 255.255.255.255
  ipv6 addr 4321::2/128
  exit
-interface gigabit0/0
+interface gigabit2
  ip address 1.1.1.2 255.255.255.0
  ipv6 address 1234::2/64
  mpls ip
  no shutdown
  exit
-interface gigabit0/1
+interface gigabit1
  xconnect 2.2.2.1 1234 encapsulation mpls
  no shutdown
  exit

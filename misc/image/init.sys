@@ -1,0 +1,17 @@
+#!/bin/sh
+cd /
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+echo "starting"
+chown 0:0 /bin/*
+chown 0:0 /sbin/*
+depmod
+mount -t sysfs -o nodev,noexec,nosuid none /sys
+mount -t proc -o nodev,noexec,nosuid none /proc
+mount -t devtmpfs devtmpfs /dev
+mkdir /dev/net
+mkdir /dev/pts
+mount -t devpts -o nodev,noexec,nosuid none /dev/pts
+mknod /dev/net/tun c 10 200
+mknod /dev/pts/ptmx c 5 2
+mknod /dev/ptmx c 5 2
+sysctl -w kernel.printk="7 4 1 7"

@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.2.19-testing, done by cs@nop.;-;-
--;-;2018-02-19 15:14:41, took 08:35:28 on 1360 cases;-;-
+-;-;freeRouter v18.3.1-testing, done by cs@nop.;-;-
+-;-;2018-03-02 05:18:31, took 07:33:57 on 1368 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -486,6 +486,8 @@ intop-bgp10.tst;0;interop: bgp prefix withdraw;successfully;finished
 intop-bgp11.tst;0;interop: bgp vpnv4;successfully;finished
 intop-bgp12.tst;0;interop: bgp authentication;successfully;finished
 intop-bgp13.tst;0;interop: bgp vpnv6;successfully;finished
+intop-bgp14.tst;0;interop: vpls/ldp over bgp;successfully;finished
+intop-bgp15.tst;0;interop: vpls/bgp over bgp;successfully;finished
 intop-dhcp01.tst;0;interop: dhcp server;successfully;finished
 intop-dhcp02.tst;0;interop: dhcp client;successfully;finished
 intop-dns.tst;0;interop: dns;successfully;finished
@@ -533,12 +535,16 @@ intop-isis05.tst;0;interop: isis te;successfully;finished
 intop-isis06.tst;0;interop: isis multi-topology;successfully;finished
 intop-isis07.tst;0;interop: isis prefix withdraw;successfully;finished
 intop-isis08.tst;0;interop: isis authentication;successfully;finished
+intop-isis09.tst;0;interop: isis p2mp te;successfully;finished
+intop-isis10.tst;0;interop: isis sr;successfully;finished
 intop-l2tp01.tst;0;interop: l2tp2 client;successfully;finished
 intop-l2tp02.tst;0;interop: l2tp2 server;successfully;finished
 intop-l2tp03.tst;0;interop: l2tp3 server;successfully;finished
 intop-l2tp04.tst;0;interop: ethernet tunneling with l2tp3;successfully;finished
 intop-ldp01.tst;0;interop: ldp lsp;successfully;finished
 intop-ldp02.tst;0;interop: ethernet over mpls;successfully;finished
+intop-ldp03.tst;0;interop: ldp p2mp lsp;successfully;finished
+intop-ldp04.tst;0;interop: ldp mp2mp lsp;successfully;finished
 intop-mcast01.tst;0;interop: igmp3/mld2;successfully;finished
 intop-mcast02.tst;0;interop: pim;successfully;finished
 intop-ospf01.tst;0;interop: point2point ospf;successfully;finished
@@ -550,6 +556,8 @@ intop-ospf06.tst;0;interop: ospf nssa area;successfully;finished
 intop-ospf07.tst;0;interop: ospf te;successfully;finished
 intop-ospf08.tst;0;interop: ospf prefix withdraw;successfully;finished
 intop-ospf09.tst;0;interop: ospf authentication;successfully;finished
+intop-ospf10.tst;0;interop: ospf p2mp te;successfully;finished
+intop-ospf11.tst;0;interop: ospf sr;successfully;finished
 intop-pppoe01.tst;0;interop: pppoe client;successfully;finished
 intop-pppoe02.tst;0;interop: pppoe server;successfully;finished
 intop-pppoe03.tst;0;interop: pppoe with pap;successfully;finished

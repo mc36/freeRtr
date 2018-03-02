@@ -1,0 +1,30 @@
+qemu-kvm:
+tar xvf rtr.ova
+qemu-system-i386 -enable-kvm -m 1024 -no-reboot -monitor none -serial stdio -nographic -hda rtr.qcow2
+
+virtualbox:
+vboxmanage import rtr.ova
+vboxmanage startvm rtr-dsk --type headless
+socat - unix-connect:/tmp/rtr-dsk
+vboxmanage controlvm rtr-dsk poweroff
+
+cisco:
+copy http://dl.nop.hu/rtr.ova bootflash:
+conf t
+virtual-service
+signing level unsigned
+end
+virtual-service install name rtr package harddisk:rtr.ova media harddisk:
+show virtual-service list
+!!! wait until status changes
+conf t
+interface VirtualPortGroup1
+ description rtr eth1
+ ip address 10.11.12.13 255.255.255.252
+virtual-service rtr
+ vnic gateway VirtualPortGroup1
+ activate
+end
+show virtual-service list
+!!! wait until status changes
+virtual-service connect name rtr console

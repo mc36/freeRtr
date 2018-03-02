@@ -27,12 +27,12 @@ int eth2 eth 0000.0000.2222 $2a$ $2b$
 !
 ip routing
 ipv6 unicast-routing
-interface gigabit0/0
+interface gigabit2
  ip address 1.1.1.2 255.255.255.0
  ipv6 address 1234::2/64
  no shutdown
  exit
-interface gigabit0/1
+interface gigabit1
  ip address 2.2.2.1 255.255.255.0
  ipv6 address 4321::1/64
  no shutdown

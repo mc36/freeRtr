@@ -39,10 +39,10 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 ip routing
 ipv6 unicast-routing
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  ipv6 address 1234::2/64
- shutdown
+ no shutdown
  exit
 crypto ikev2 proposal pr1
  encryption des
@@ -75,13 +75,10 @@ crypto ipsec profile pr1
  exit
 interface tunnel1
  ipv6 address 4321::2/64
- tunnel source gigabit0/0
+ tunnel source gigabit1
  tunnel destination 1234::1
  tunnel mode ipsec ipv6
  tunnel protection ipsec profile pr1
- exit
-interface gigabit0/0
- no shutdown
  exit
 !
 

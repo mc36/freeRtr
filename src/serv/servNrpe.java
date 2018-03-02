@@ -48,8 +48,8 @@ public class servNrpe extends servGeneric implements prtServS {
         "server nrpe .*! port " + packNrpe.portNum,
         "server nrpe .*! protocol " + proto2string(protoAllStrm),
         "server nrpe .*! no check .* description",
-        "server nrpe .*! no check .* error"
-    };
+        "server nrpe .*! no check .* error",
+        "server nrpe .*! no check .* alternate",};
 
     /**
      * defaults filter
@@ -93,6 +93,7 @@ public class servNrpe extends servGeneric implements prtServS {
             lst.add(beg + cn + " command " + ntry.cmd);
             cmds.cfgLine(lst, ntry.dsc == null, beg, cn + " description", ntry.dsc);
             cmds.cfgLine(lst, ntry.err == null, beg, cn + " error", ntry.err);
+            cmds.cfgLine(lst, !ntry.alternate, beg, cn + " alternate", "");
             for (int i = 0; i < ntry.ignT.size(); i++) {
                 lst.add(beg + cn + " ign-txt " + ntry.ignT.get(i));
             }
@@ -159,6 +160,10 @@ public class servNrpe extends servGeneric implements prtServS {
             }
             return false;
         }
+        if (s.equals("alternate")) {
+            ntry.alternate = !negated;
+            return false;
+        }
         if (s.equals("req-reg")) {
             s = cmd.getRemaining();
             if (negated) {
@@ -208,6 +213,7 @@ public class servNrpe extends servGeneric implements prtServS {
         l.add("1 2  check                        configure one check");
         l.add("2 3    <name>                     name of check");
         l.add("3 .      train                    train command to current result");
+        l.add("3 .      alternate                alternate reported state on diff change");
         l.add("3 4      command                  specify command to execute");
         l.add("4 4,.      <str>                  command");
         l.add("3 4      description              specify description");
@@ -290,13 +296,28 @@ class servNrpeConn implements Runnable {
                     continue;
                 }
                 pck.cod = packNrpe.coCri;
-                pck.str = "CRITICAL " + lst.size();
+                pck.str = "ERROR " + lst.size();
                 if (ntry.err != null) {
                     pck.str += " " + ntry.err;
                 }
                 String a = new String(pck.sep);
                 for (int i = 0; i < lst.size(); i++) {
                     pck.str += a + lst.get(i);
+                }
+                if (ntry.alternate) {
+                    int i = pck.str.hashCode();
+                    if (i == ntry.lastHash) {
+                        pck.cod = ntry.lastStat;
+                    } else {
+                        ntry.lastHash = i;
+                        if (ntry.lastStat == packNrpe.coCri) {
+                            i = packNrpe.coWar;
+                        } else {
+                            i = packNrpe.coCri;
+                        }
+                        ntry.lastStat = i;
+                        pck.cod = i;
+                    }
                 }
                 pck.sendPack(conn);
                 if (debugger.servNrpeTraf) {
@@ -307,6 +328,7 @@ class servNrpeConn implements Runnable {
             logger.traceback(e);
         }
         conn.setClose();
+
     }
 
 }
@@ -380,6 +402,12 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
     public final List<String> ignT;
 
     public final List<String> reqT;
+
+    public boolean alternate;
+
+    public int lastHash = 1;
+
+    public int lastStat = packNrpe.coWar;
 
     public servNrpeCheck(servNrpe p, String n) {
         lower = p;

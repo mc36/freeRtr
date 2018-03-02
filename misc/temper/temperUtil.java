@@ -65,7 +65,7 @@ public class temperUtil {
         }
     }
 
-    private final static Object sleeper = Integer.valueOf(123);
+    private final static Object sleeper = new Object();
 
     /**
      * append one line

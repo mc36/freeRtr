@@ -513,6 +513,10 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
             cntr.drop(pck, reasons.notUp);
             return;
         }
+        if (pck.IPsrc.isEmpty()) {
+            cntr.drop(pck, reasons.badNet);
+            return;
+        }
         rtrEigrpNeigh nei = new rtrEigrpNeigh(lower, this, pck.IPsrc);
         rtrEigrpNeigh old = neighs.add(nei);
         boolean sndHll = false;

@@ -37,8 +37,8 @@ int lo0
 !
 
 addother r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
-int eth2 eth 0000.0000.4444 $2b$ $2a$
+int eth1 eth 0000.0000.2211 $1b$ $1a$
+int eth2 eth 0000.0000.2222 $2b$ $2a$
 !
 ip routing
 ipv6 unicast-routing
@@ -57,7 +57,7 @@ key chain kc
  key 0
   key-string tester
  exit
-interface gigabit0/0
+interface gigabit2
  ip address 1.1.1.2 255.255.255.0
  isis network point-to-point
  isis authentication key-chain kc
@@ -65,7 +65,7 @@ interface gigabit0/0
  ip router isis
  no shutdown
  exit
-interface gigabit0/1
+interface gigabit1
  ipv6 enable
  isis network point-to-point
  isis authentication key-chain kc

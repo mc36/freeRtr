@@ -152,6 +152,7 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
         side = con.getSide2();
         side2.addET(-1, "connect", side);
         side2.updateET(-1, side);
+        con.setPromiscous(true);
     }
 
 }

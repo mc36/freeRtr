@@ -1,3 +1,5 @@
+exec cp ../misc/image/init.dev %tmp%/init.dev
+exec cp ../misc/image/init.sys %tmp%/init.sys
 exec cp %tmp%/boot/vmlinuz* %img%.krn
 del-alw %tmp%/boot
 del-alw %tmp%/usr/src
@@ -7,7 +9,7 @@ del-alw %tmp%/usr/share/man
 del-alw %tmp%/usr/share/doc
 del-alw %tmp%/usr/share/bug
 
-exec chmod 777 %tmp%/init
+exec chmod 777 %tmp%/init*
 exec touch %tmp%/rtr/rtr-hw.txt
 exec cp ../misc/default.cfg %tmp%/rtr/rtr-sw.txt
 exec for a in `busybox --list`; do ln -s /bin/busybox %tmp%/bin/$a; done
@@ -23,6 +25,5 @@ exec cp ../misc/image/boot.cfg %tmp%/isolinux.cfg
 exec genisoimage -o %img%.iso -r -J -l -b isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux.cat %img%.krn %img%.ird %tmp%/isolinux.cfg %tmp%/isolinux.bin %tmp%/ldlinux.c32
 exec isohybrid %img%.iso
 exec mktorrent -o %img%.torrent -w http://src.nop.hu/src/binImg/rtr.iso %img%.iso
-exec sha256sum -b %img%.* >%img%.sum
 del-alw %tmp%
 exec ls -l %img%.*

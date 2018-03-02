@@ -43,6 +43,16 @@ public class ifcConnect {
         return s2;
     }
 
+    /**
+     * set filter
+     *
+     * @param prom pormiscous
+     */
+    public void setPromiscous(boolean prom) {
+        s1.lower.setFilter(prom);
+        s2.lower.setFilter(prom);
+    }
+
 }
 
 class ifcConnectWorker implements ifcUp {

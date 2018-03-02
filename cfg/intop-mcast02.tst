@@ -29,10 +29,10 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 ip routing
 ipv6 unicast-routing
-ip multicast-routing
+ip multicast-routing distributed
 ipv6 multicast-routing
 ip pim ssm default
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  ipv6 enable
  ipv6 address fe80::2 link-local
@@ -42,7 +42,7 @@ interface gigabit0/0
  no shutdown
  exit
 ip route 2.2.2.1 255.255.255.255 1.1.1.1
-ipv6 route 4321::1/128 gigabit0/0 fe80::1
+ipv6 route 4321::1/128 gigabit1 fe80::1
 interface loopback0
  ip addr 2.2.2.2 255.255.255.255
  ipv6 addr 4321::2/128

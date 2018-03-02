@@ -3,12 +3,7 @@ arch i386
 distro sid
 mirror http://ftp.at.debian.org/debian/
 
-del-alw %img%.ird
-del-alw %img%.krn
-del-alw %img%.wrp
-del-alw %img%.iso
-del-alw %img%.torrent
-del-alw %img%.sum
+del-alw %img%.*
 del-ifdn %dwn%
 exec mkdir %dwn%
 del-alw %tmp%

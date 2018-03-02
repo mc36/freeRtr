@@ -483,6 +483,8 @@ qc pass: interop: bgp prefix withdraw
 qc pass: interop: bgp vpnv4
 qc pass: interop: bgp authentication
 qc pass: interop: bgp vpnv6
+qc pass: interop: vpls/ldp over bgp
+qc pass: interop: vpls/bgp over bgp
 qc pass: interop: dhcp server
 qc pass: interop: dhcp client
 qc pass: interop: dns
@@ -530,12 +532,16 @@ qc pass: interop: isis te
 qc pass: interop: isis multi-topology
 qc pass: interop: isis prefix withdraw
 qc pass: interop: isis authentication
+qc pass: interop: isis p2mp te
+qc pass: interop: isis sr
 qc pass: interop: l2tp2 client
 qc pass: interop: l2tp2 server
 qc pass: interop: l2tp3 server
 qc pass: interop: ethernet tunneling with l2tp3
 qc pass: interop: ldp lsp
 qc pass: interop: ethernet over mpls
+qc pass: interop: ldp p2mp lsp
+qc pass: interop: ldp mp2mp lsp
 qc pass: interop: igmp3/mld2
 qc pass: interop: pim
 qc pass: interop: point2point ospf
@@ -547,6 +553,8 @@ qc pass: interop: ospf nssa area
 qc pass: interop: ospf te
 qc pass: interop: ospf prefix withdraw
 qc pass: interop: ospf authentication
+qc pass: interop: ospf p2mp te
+qc pass: interop: ospf sr
 qc pass: interop: pppoe client
 qc pass: interop: pppoe server
 qc pass: interop: pppoe with pap

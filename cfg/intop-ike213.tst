@@ -1,7 +1,5 @@
 description interop: ike2 with group15
 
-exit
-
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
@@ -41,10 +39,10 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 ip routing
 ipv6 unicast-routing
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  ipv6 address 1234::2/64
- shutdown
+ no shutdown
  exit
 crypto ikev2 proposal pr1
  encryption des
@@ -77,13 +75,10 @@ crypto ipsec profile pr1
  exit
 interface tunnel1
  ip address 2.2.2.2 255.255.255.0
- tunnel source gigabit0/0
+ tunnel source gigabit1
  tunnel destination 1.1.1.1
  tunnel mode ipsec ipv4
  tunnel protection ipsec profile pr1
- exit
-interface gigabit0/0
- no shutdown
  exit
 !
 

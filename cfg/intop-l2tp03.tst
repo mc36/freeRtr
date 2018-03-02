@@ -32,7 +32,7 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 ip routing
 ipv6 unicast-routing
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  no shutdown
  exit
@@ -42,7 +42,7 @@ l2tp-class l2tpc
 pseudowire-class l2tp
  encapsulation l2tpv3
  protocol l2tpv3ietf l2tpc
- ip local interface gigabit0/0
+ ip local interface gigabit1
  exit
 interface virtual-ppp1
  ip address 2.2.2.2 255.255.255.0

@@ -51,7 +51,7 @@ key chain kc
  key 0
   key-string tester
  exit
-interface gigabit0/0
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  ipv6 enable
  ip rip authentication key-chain kc

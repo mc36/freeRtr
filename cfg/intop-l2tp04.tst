@@ -25,12 +25,12 @@ server l2tp3 l2tp
 !
 
 addother r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
-int eth2 eth 0000.0000.3333 $2a$ $2b$
+int eth1 eth 0000.0000.2211 $1b$ $1a$
+int eth2 eth 0000.0000.2222 $2a$ $2b$
 !
 ip routing
 ipv6 unicast-routing
-interface gigabit0/0
+interface gigabit2
  ip address 1.1.1.2 255.255.255.0
  no shutdown
  exit
@@ -40,9 +40,9 @@ l2tp-class l2tpc
 pseudowire-class l2tp
  encapsulation l2tpv3
  protocol l2tpv3ietf l2tpc
- ip local interface gigabit0/0
+ ip local interface gigabit2
  exit
-interface gigabit0/1
+interface gigabit1
  xconnect 1.1.1.1 1234 pw-class l2tp
  no shutdown
  exit
