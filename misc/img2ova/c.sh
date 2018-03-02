@@ -38,7 +38,7 @@ rm /mnt/zzz
 extlinux -i /mnt
 umount /mnt
 dd bs=440 count=1 conv=notrunc if=/usr/lib/syslinux/mbr/mbr.bin of=../../binImg/rtr.dsk
-qemu-img convert -O qcow2 ../../binImg/rtr.dsk ../../binImg/rtr.qcow2
+qemu-img convert -O qcow2 -c ../../binImg/rtr.dsk ../../binImg/rtr.qcow2
 qemu-img convert -O vmdk -o subformat=streamOptimized ../../binImg/rtr.dsk ../../binImg/rtr.vmdk
 hashFile()
 {
