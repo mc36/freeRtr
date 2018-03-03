@@ -1,2 +1,2 @@
 #!/bin/sh
-java -Xfuture -Xmx2048m -XX:+UseG1GC -jar rtr.jar routerc ../rtr-
+java -Xfuture -Xmx2048m -jar rtr.jar routerc ../rtr-

@@ -19,6 +19,9 @@ app:
 
    interfaces:
     - target-dev: net1
+    - target-dev: net2
+    - target-dev: net3
+    - target-dev: net4
 
    serial:
     - console

@@ -9,22 +9,34 @@ socat - unix-connect:/tmp/rtr-dsk
 vboxmanage controlvm rtr-dsk poweroff
 
 cisco:
-copy http://dl.nop.hu/rtr.ova bootflash:
+copy http://dl.nop.hu/rtr.ova harddisk:rtr.ova
 conf t
 virtual-service
 signing level unsigned
 end
 virtual-service install name rtr package harddisk:rtr.ova media harddisk:
 show virtual-service list
-!!! wait until status changes
+!!! wait until status changes to installed
 conf t
 interface VirtualPortGroup1
  description rtr eth1
- ip address 10.11.12.13 255.255.255.252
+ cdp enable
+interface VirtualPortGroup2
+ description rtr eth2
+ cdp enable
+interface VirtualPortGroup3
+ description rtr eth3
+ cdp enable
+interface VirtualPortGroup4
+ description rtr eth4
+ cdp enable
 virtual-service rtr
  vnic gateway VirtualPortGroup1
+ vnic gateway VirtualPortGroup2
+ vnic gateway VirtualPortGroup3
+ vnic gateway VirtualPortGroup4
  activate
 end
 show virtual-service list
-!!! wait until status changes
+!!! wait until status changes to activated
 virtual-service connect name rtr console

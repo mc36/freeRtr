@@ -4,6 +4,7 @@ import addr.addrIP;
 import addr.addrPrefix;
 import cfg.cfgInit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import util.bits;
 import util.cmds;
@@ -153,6 +154,7 @@ public class userHwdet {
         if (res == null) {
             return;
         }
+        Collections.sort(res);
         for (int cnt = 0; cnt < res.size(); cnt++) {
             String s = res.get(cnt);
             int i = s.indexOf(":");
@@ -176,6 +178,7 @@ public class userHwdet {
         if (res == null) {
             return;
         }
+        Collections.sort(res);
         for (int cnt = 0; cnt < res.size(); cnt++) {
             String s = res.get(cnt);
             int i = s.indexOf(":");
@@ -183,7 +186,7 @@ public class userHwdet {
                 continue;
             }
             String a = s.substring(0, i).trim();
-            if (a.length() != 1) {
+            if (a.length() > 2) {
                 continue;
             }
             s = s.substring(i + 1, s.length()).trim();
@@ -238,6 +241,7 @@ public class userHwdet {
      */
     public void doer(cmds cmd) {
         cmd.error("detecting hardware");
+        String mem = "384m";
         String cross = "0";
         String tuntap = "";
         String tcpvrf = "";
@@ -248,6 +252,10 @@ public class userHwdet {
                 break;
             }
             s = s.toLowerCase();
+            if (s.equals("mem")) {
+                mem = cmd.word();
+                continue;
+            }
             if (s.equals("cross")) {
                 cross = cmd.word();
                 continue;
@@ -335,7 +343,7 @@ public class userHwdet {
         if (binMain) {
             s = "./rtr.bin";
         } else {
-            s = "java -jar " + version.getFileName();
+            s = "java -Xmx" + mem + " -jar " + version.getFileName();
         }
         List<String> lop = bits.str2lst(s + " router " + path + "rtr-");
         lop.add("if [[ $? = 4 ]] ; then");
@@ -352,7 +360,7 @@ public class userHwdet {
         starter.add("echo 0 > /proc/sys/net/ipv6/conf/tap20001/disable_ipv6");
         bits.buf2txt(true, config, path + "rtr-" + cfgInit.hwCfgEnd);
         bits.buf2txt(true, starter, path + prefix + "all.sh");
-        cmd.error("iface=" + ifcNum + " line=" + linNum + " cross=" + crsNum % 100 + " tuntap=" + tapNum % 100);
+        cmd.error("iface=" + ifcNum + " line=" + linNum + " cross=" + crsNum % 100 + " tuntap=" + tapNum % 100 + " mem=" + mem);
     }
 
 }
