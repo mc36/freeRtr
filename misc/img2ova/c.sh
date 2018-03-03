@@ -19,6 +19,7 @@ echo sh /init.sys >> /mnt/init2
 cat /mnt/xx01 >> /mnt/init2
 chmod +x /mnt/init*
 rm /mnt/xx0*
+mv /mnt/usr/lib/jvm /mnt/usr-lib-jvm
 echo `cd /mnt/;find init*>filist`
 echo `cd /mnt/;find dev/>>filist`
 echo `cd /mnt/;find sys/>>filist`
@@ -29,6 +30,7 @@ echo `cd /mnt/;find lib/>>filist`
 echo `cd /mnt/;find bin/>>filist`
 echo `cd /mnt/;find sbin/>>filist`
 echo `cd /mnt/;find usr/>>filist`
+mv /mnt/usr-lib-jvm /mnt/usr/lib/jvm
 echo `cd /mnt/;cpio --quiet -H newc -O cpio -o <filist`
 gzip /mnt/cpio
 mv /mnt/cpio.gz /mnt/rtr.ird
