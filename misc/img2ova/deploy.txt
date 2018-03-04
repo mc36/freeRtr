@@ -1,12 +1,16 @@
-qemu-kvm:
-tar xvf rtr.ova
-qemu-system-i386 -enable-kvm -m 1024 -no-reboot -monitor none -serial stdio -nographic -hda rtr.qcow2
-
 virtualbox:
 vboxmanage import rtr.ova
 vboxmanage startvm rtr-dsk --type headless
 socat - unix-connect:/tmp/rtr-dsk
 vboxmanage controlvm rtr-dsk poweroff
+
+qemu:
+tar xvf rtr.ova
+qemu-system-i386 -enable-kvm -m 1024 -no-reboot -monitor none -serial stdio -nographic -hda rtr.qcow2
+
+libvirt:
+tar xvf rtr.ova
+virsh create package.vsh
 
 cisco:
 copy http://dl.nop.hu/rtr.ova harddisk:rtr.ova
@@ -18,6 +22,7 @@ virtual-service install name rtr package harddisk:rtr.ova media harddisk:
 show virtual-service list
 !!! wait until status changes to installed
 conf t
+cdp run
 interface VirtualPortGroup1
  description rtr eth1
  cdp enable
@@ -40,3 +45,19 @@ end
 show virtual-service list
 !!! wait until status changes to activated
 virtual-service connect name rtr console
+!!! wait until the router boots up
+conf t
+hostname freertr
+interface ethernet1
+ cdp enable
+ exit
+interface ethernet2
+ cdp enable
+ exit
+interface ethernet3
+ cdp enable
+ exit
+interface ethernet4
+ cdp enable
+ exit
+end

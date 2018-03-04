@@ -3,7 +3,7 @@ qemu-img create ../../binImg/rtr.dsk 1G
 parted ../../binImg/rtr.dsk mklabel msdos
 parted ../../binImg/rtr.dsk mkpart primary ext4 1 1020
 parted ../../binImg/rtr.dsk set 1 boot on
-mkfs.ext4 -q -b 1024 -E offset=1048576 -F ../../binImg/rtr.dsk 950000
+mkfs.ext4 -q -U 999dff7c-0eed-48a5-b605-bb7d675a49ab -b 1024 -E offset=1048576 -F ../../binImg/rtr.dsk 950000
 mount -o loop,offset=1048576 ../../binImg/rtr.dsk /mnt
 mkdir /mnt/rtr
 cp ../../binImg/rtr.krn /mnt/rtr.krn
@@ -12,7 +12,7 @@ echo `cd /mnt/;cpio --quiet -H newc -i </mnt/rtr.tmp`
 rm /mnt/rtr.tmp
 echo `cd /mnt/;csplit -s init /^###rootfs###$/`
 mv /mnt/xx00 /mnt/init
-echo mount -t ext4 /dev/sda1 /mnt >> /mnt/init
+echo mount -t ext4 /dev/disk/by-uuid/999dff7c-0eed-48a5-b605-bb7d675a49ab /mnt >> /mnt/init
 echo exec switch_root /mnt /init2 >> /mnt/init
 echo "#!/bin/sh" > /mnt/init2
 echo sh /init.sys >> /mnt/init2
@@ -52,8 +52,9 @@ hashFile ../../binImg/rtr.qcow2 rtr.qcow2
 hashFile ../../binImg/rtr.vmdk rtr.vmdk
 hashFile package.ovf package.ovf
 hashFile package.ver package.ver
+hashFile package.vsh package.vsh
 hashFile package.yaml package.yaml
-tar cvf ../../binImg/rtr.ova package.ovf package.ver package.yaml
+tar cvf ../../binImg/rtr.ova package.ovf package.ver package.vsh package.yaml
 echo `cd ../../binImg/;tar rvf rtr.ova rtr.qcow2`
 echo `cd ../../binImg/;tar rvf rtr.ova rtr.vmdk`
 echo `cd ../../binImg/;tar rvf rtr.ova rtr.mf`
