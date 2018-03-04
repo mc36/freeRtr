@@ -333,6 +333,9 @@ public class userHwdet {
         starter.add("");
         starter.add("cd " + path);
         starter.add("ifconfig lo up 127.0.0.1");
+        starter.add("#modprobe -r kvm_intel");
+        starter.add("#modprobe kvm_intel nested=1");
+        starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
         detectIfaces(path + lstEth);
         detectCrosses(cross);
         detectTuntap(tuntap);
