@@ -139,7 +139,6 @@ class ifcHairpinWorker implements ifcDn {
         if (cfgInit.booting) {
             return;
         }
-        pck = pck.copyBytes(true, true);
         other.upper.recvPack(pck);
     }
 

@@ -78,7 +78,6 @@ class ifcConnectWorker implements ifcUp {
     }
 
     public void recvPack(packHolder pck) {
-        pck = pck.copyBytes(true, true);
         other.lower.sendPack(pck);
     }
 

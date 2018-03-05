@@ -268,7 +268,6 @@ class ifcEtherWorker implements ifcUp {
 
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        pck = pck.copyBytes(true, true);
         if (encDec) {
             if (notEther) {
                 pck.ETHsrc = addrMac.getBroadcast();

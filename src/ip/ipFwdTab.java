@@ -348,14 +348,24 @@ public class ipFwdTab {
                 continue;
             }
             addrIP adr = new addrIP();
+            ipFwdIface ifc;
             if (lower.ipVersion == ipCor4.protocolVersion) {
                 if (ntry.newSrcIface.addr4 != null) {
                     adr.fromIPv4addr(ntry.newSrcIface.addr4);
                 }
+                ifc = ntry.newSrcIface.fwdIf4;
             } else {
                 if (ntry.newSrcIface.addr6 != null) {
                     adr.fromIPv6addr(ntry.newSrcIface.addr6);
                 }
+                ifc = ntry.newSrcIface.fwdIf6;
+            }
+            if (ifc != null) {
+                if (!ifc.ready) {
+                    adr.fillBytes(0);
+                }
+            } else {
+                adr.fillBytes(0);
             }
             ntry.newSrcAddr = adr;
         }

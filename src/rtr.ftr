@@ -297,6 +297,8 @@ qc pass: cross connect atmdxi interfaces
 qc pass: cross connect isdn interfaces
 qc pass: cross connect sep interfaces
 qc pass: cross connect ethernet interfaces
+qc pass: cross connect vlan subinterfaces
+qc pass: cross connect vlan subinterfaces of same interface
 qc pass: ingress protocol matching access list
 qc pass: egress protocol matching access list
 qc pass: ingress destination matching access list

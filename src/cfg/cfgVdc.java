@@ -609,7 +609,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             }
             for (int i = 0; i < conns.size(); i++) {
                 cfgVdcConn ntry = conns.get(i);
-                cmd += " -net nic,vlan=" + vl + ",macaddr=" + mac.toEmuStr() + " -net socket,vlan=" + vl + ",udp=:" + ntry.conn.port + ",localaddr=:" + ntry.port;
+                cmd += " -net nic,vlan=" + vl + ",model=" + nicType + ",macaddr=" + mac.toEmuStr() + " -net socket,vlan=" + vl + ",udp=:" + ntry.conn.port + ",localaddr=:" + ntry.port;
                 vl++;
                 mac.setAdd(mac, one);
             }

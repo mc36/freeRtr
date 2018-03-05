@@ -7,6 +7,8 @@ import pack.packHolder;
 import util.bits;
 import util.cmds;
 import addr.addrIP;
+import addr.addrIPv4;
+import addr.addrIPv6;
 import addr.addrPrefix;
 import cfg.cfgAceslst;
 import cfg.cfgAll;
@@ -237,20 +239,6 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     }
 
     public boolean matches(packHolder pck) {
-        if (newSrcAddr != null) {
-            if (!newSrcAddr.isUnicast()) {
-                return false;
-            }
-            if (newSrcAddr.isIPv4()) {
-                if (newSrcAddr.toIPv4().isFilled(0)) {
-                    return false;
-                }
-            } else {
-                if (newSrcAddr.toIPv6().isLinkLocal()) {
-                    return false;
-                }
-            }
-        }
         if ((protocol >= 0) && (pck.IPprt != protocol)) {
             return false;
         }
@@ -273,6 +261,28 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (origTrgAddr != null) {
             if (origTrgAddr.compare(origTrgAddr, pck.IPtrg) != 0) {
                 return false;
+            }
+        }
+        if (newSrcAddr != null) {
+            if (newSrcAddr.isIPv4()) {
+                addrIPv4 adr = newSrcAddr.toIPv4();
+                if (adr.isFilled(0)) {
+                    return false;
+                }
+                if (!adr.isUnicast()) {
+                    return false;
+                }
+            } else {
+                addrIPv6 adr = newSrcAddr.toIPv6();
+                if (adr.isFilled(0)) {
+                    return false;
+                }
+                if (!adr.isUnicast()) {
+                    return false;
+                }
+                if (adr.isLinkLocal()) {
+                    return false;
+                }
             }
         }
         return true;
