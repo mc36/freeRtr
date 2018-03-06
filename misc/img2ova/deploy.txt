@@ -13,6 +13,8 @@ tar xvf rtr.ova
 virsh create package.vsh
 
 cisco:
+!!! set platform hardware rom-monitor virtualization rp active
+!!! set platform hardware rom-monitor virtualization rp standby
 copy http://dl.nop.hu/rtr.ova harddisk:rtr.ova
 conf t
 virtual-service
