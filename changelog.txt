@@ -7991,3 +7991,7 @@ qc pass: interop: ospf sr
 ---------------------------------- 2018-03-04 12:42:07
 qc pass: cross connect vlan subinterfaces
 qc pass: cross connect vlan subinterfaces of same interface
+---------------------------------- 2018-03-06 20:16:04
+qc pass: source prefix translation
+qc pass: target prefix translation
+todo: remote tester

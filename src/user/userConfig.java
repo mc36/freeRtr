@@ -2122,7 +2122,7 @@ public class userConfig {
         l.add("8  9                interface        translated interface");
         l.add("9  .                  <name>         translated interface");
         l.add("8  .                <new>            translated address");
-        l.add("6  7            target               source address translation");
+        l.add("6  7            target               target address translation");
         l.add("7  8              <orig>             original address");
         l.add("8  9                interface        translated interface");
         l.add("9  .                  <name>         translated interface");
@@ -2136,7 +2136,7 @@ public class userConfig {
         l.add("12 .                        <new>    translated port");
         l.add("10 11                   <new>        translated address");
         l.add("11 .                      <new>      translated port");
-        l.add("6  7            trgport              source address translation");
+        l.add("6  7            trgport              target address translation");
         l.add("7  8              <proto>            protocol number");
         l.add("8  9                <orig>           original address");
         l.add("9  10                 <orig>         original port");
@@ -2145,6 +2145,14 @@ public class userConfig {
         l.add("12 .                        <new>    translated port");
         l.add("10 11                   <new>        translated address");
         l.add("11 .                      <new>      translated port");
+        l.add("6  7            srcpref              source address translation");
+        l.add("7  8              <orig>             original address");
+        l.add("8  9                <new>            translated address");
+        l.add("9  .                  <mask>         address mask");
+        l.add("6  7            trgpref              target address translation");
+        l.add("7  8              <orig>             original address");
+        l.add("8  9                <new>            translated address");
+        l.add("9  .                  <mask>         address mask");
         l.add("2  3    route                        configure static unicast routes");
         l.add("3  4        <vrf>                    name of routing table");
         l.add("4  5          <network>              destination network");

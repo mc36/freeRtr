@@ -425,6 +425,8 @@ qc pass: source address translation to address
 qc pass: target address translation to address
 qc pass: more sources translation to interface
 qc pass: ipv4-ipv6 protocol translation
+qc pass: source prefix translation
+qc pass: target prefix translation
 qc pass: openvpn over ipv4
 qc pass: openvpn over ipv6
 qc pass: openvpn over openvpn
@@ -1368,6 +1370,7 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
+todo: remote tester
 todo: interface range command
 todo: reenable which elliptic courves? sure? why that?
 todo: https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06

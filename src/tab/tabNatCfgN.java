@@ -27,6 +27,16 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     public int protocol = -1;
 
     /**
+     * matching mask
+     */
+    public addrIP mask;
+
+    /**
+     * negated mask
+     */
+    public addrIP maskNot;
+
+    /**
      * original source address
      */
     public addrIP origSrcAddr;
@@ -107,6 +117,14 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (s.equals("srclist")) {
             what = 3;
         }
+        if (s.equals("srcpref")) {
+            what = 1;
+            mask = new addrIP();
+        }
+        if (s.equals("trgpref")) {
+            what = 2;
+            mask = new addrIP();
+        }
         if (what < 1) {
             return true;
         }
@@ -125,9 +143,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             if (orgA.fromString(cmd.word())) {
                 return true;
             }
-            if (protocol >= 0) {
-                orgP = bits.str2num(cmd.word());
-            }
+        }
+        if (protocol >= 0) {
+            orgP = bits.str2num(cmd.word());
         }
         s = cmd.word();
         if (s.equals("interface")) {
@@ -143,6 +161,15 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         }
         if (protocol >= 0) {
             newP = bits.str2num(cmd.word());
+        }
+        if (mask != null) {
+            if (mask.fromString(cmd.word())) {
+                return true;
+            }
+            orgA.setAnd(orgA, mask);
+            newA.setAnd(newA, mask);
+            maskNot = new addrIP();
+            maskNot.setNot(mask);
         }
         if (what == 2) {
             origTrgAddr = orgA;
@@ -185,6 +212,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (protocol >= 0) {
             what |= 4;
         }
+        if (mask != null) {
+            what |= 8;
+        }
         String s;
         switch (what) {
             case 1:
@@ -201,6 +231,12 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
                 break;
             case 6:
                 s = "trgport";
+                break;
+            case 9:
+                s = "srcpref";
+                break;
+            case 10:
+                s = "trgpref";
                 break;
             default:
                 s = "unknown";
@@ -225,6 +261,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         }
         if ((what & 4) != 0) {
             s = s + " " + newP;
+        }
+        if ((what & 8) != 0) {
+            s = s + " " + mask;
         }
         l.add(beg + s);
         return l;
@@ -252,6 +291,22 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             if (!origSrcList.matches(false, false, pck)) {
                 return false;
             }
+        }
+        if (mask != null) {
+            addrIP adr = new addrIP();
+            if (origSrcAddr != null) {
+                adr.setAnd(pck.IPsrc, mask);
+                if (origSrcAddr.compare(origSrcAddr, adr) != 0) {
+                    return false;
+                }
+            }
+            if (origTrgAddr != null) {
+                adr.setAnd(pck.IPtrg, mask);
+                if (origTrgAddr.compare(origTrgAddr, adr) != 0) {
+                    return false;
+                }
+            }
+            return true;
         }
         if (origSrcAddr != null) {
             if (origSrcAddr.compare(origSrcAddr, pck.IPsrc) != 0) {
@@ -309,11 +364,25 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         n.newTrgAddr = pck.IPtrg.copyBytes();
         n.newSrcPort = pck.UDPsrc;
         n.newTrgPort = pck.UDPtrg;
-        if (newSrcAddr != null) {
-            n.newSrcAddr = newSrcAddr.copyBytes();
-        }
-        if (newTrgAddr != null) {
-            n.newTrgAddr = newTrgAddr.copyBytes();
+        if (mask == null) {
+            if (newSrcAddr != null) {
+                n.newSrcAddr = newSrcAddr.copyBytes();
+            }
+            if (newTrgAddr != null) {
+                n.newTrgAddr = newTrgAddr.copyBytes();
+            }
+        } else {
+            addrIP adr = new addrIP();
+            if (newSrcAddr != null) {
+                adr.setAnd(pck.IPsrc, maskNot);
+                adr.setOr(adr, newSrcAddr);
+                n.newSrcAddr = adr.copyBytes();
+            }
+            if (newTrgAddr != null) {
+                adr.setAnd(pck.IPtrg, maskNot);
+                adr.setOr(adr, newTrgAddr);
+                n.newTrgAddr = adr.copyBytes();
+            }
         }
         if (newSrcPort >= 0) {
             n.newSrcPort = newSrcPort;

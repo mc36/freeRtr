@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.3.5-testing, done by cs@nop.;-;-
--;-;2018-03-05 12:42:54, took 07:28:49 on 1370 cases;-;-
+-;-;freeRouter v18.3.6-testing, done by cs@nop.;-;-
+-;-;2018-03-07 03:48:15, took 07:32:10 on 1372 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -428,6 +428,8 @@ crypt-nat04.tst;0;source address translation to address;successfully;finished
 crypt-nat05.tst;0;target address translation to address;successfully;finished
 crypt-nat06.tst;0;more sources translation to interface;successfully;finished
 crypt-nat07.tst;0;ipv4-ipv6 protocol translation;successfully;finished
+crypt-nat08.tst;0;source prefix translation;successfully;finished
+crypt-nat09.tst;0;target prefix translation;successfully;finished
 crypt-openvpn01.tst;0;openvpn over ipv4;successfully;finished
 crypt-openvpn02.tst;0;openvpn over ipv6;successfully;finished
 crypt-openvpn03.tst;0;openvpn over openvpn;successfully;finished
