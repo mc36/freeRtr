@@ -8,6 +8,7 @@ import util.cmds;
 import util.logger;
 import util.version;
 import addr.addrIP;
+import clnt.clntHttp;
 import util.uniResLoc;
 
 /**
@@ -22,7 +23,7 @@ public class packSip {
      */
     public final static int port = 5060;
 
-    private pipeSide pipe;
+    private final pipeSide pipe;
 
     /**
      * received command
@@ -52,18 +53,26 @@ public class packSip {
     /**
      * copy packet bytes
      *
-     * @param src source packet
+     * @param conn new pipe, null if copy
+     * @return copy of this packet
      */
-    public void byteCopy(packSip src) {
-        command = "" + src.command;
-        header = new ArrayList<String>();
-        for (int i = 0; i < src.header.size(); i++) {
-            header.add(src.header.get(i));
+    public packSip byteCopy(pipeSide conn) {
+        packSip trg;
+        if (conn != null) {
+            trg = new packSip(conn);
+        } else {
+            trg = new packSip(pipe);
         }
-        content = new ArrayList<String>();
-        for (int i = 0; i < src.content.size(); i++) {
-            content.add(src.content.get(i));
+        trg.command = "" + command;
+        trg.header = new ArrayList<String>();
+        for (int i = 0; i < header.size(); i++) {
+            trg.header.add(header.get(i));
         }
+        trg.content = new ArrayList<String>();
+        for (int i = 0; i < content.size(); i++) {
+            trg.content.add(content.get(i));
+        }
+        return trg;
     }
 
     /**
@@ -76,13 +85,30 @@ public class packSip {
     }
 
     /**
+     * bytes ready to receive
+     *
+     * @return bytes
+     */
+    public int ready2rx() {
+        return pipe.ready2rx();
+    }
+
+    /**
+     * check if closed
+     *
+     * @return status
+     */
+    public int isClosed() {
+        return pipe.isClosed();
+    }
+
+    /**
      * read up one packet
      *
      * @return false on success, true on error
      */
     public boolean readUp() {
         clear();
-        command = pipe.lineGet(1);
         for (;;) {
             if (pipe.isClosed() != 0) {
                 return true;
@@ -93,7 +119,10 @@ public class packSip {
             }
             header.add(a);
         }
-        int i = bits.str2num(headerGet("content-length", 1));
+        if (header.size() > 0) {
+            command = header.remove(0);
+        }
+        int i = bits.str2num(headerGet("Content-Length", 1));
         byte[] buf = new byte[i];
         pipe.moreGet(buf, 0, buf.length);
         String a = "";
@@ -150,6 +179,14 @@ public class packSip {
         for (; i != pipe.ready2tx();) {
             bits.sleep(100);
         }
+    }
+
+    /**
+     * write keepalive packet
+     */
+    public void writeKeep() {
+        byte[] buf = pipeSide.getEnding(pipeSide.modTyp.modeCRLF);
+        pipe.morePut(buf, 0, buf.length);
     }
 
     /**
@@ -224,6 +261,44 @@ public class packSip {
     }
 
     /**
+     * set header value
+     *
+     * @param ned header type
+     * @param num number of occurance
+     * @param val value to set
+     * @return true on error, false on success
+     */
+    public boolean headerSet(String ned, int num, String val) {
+        num = headerFind(ned, num);
+        if (num < 0) {
+            return true;
+        }
+        ned = header.get(num);
+        int idx = ned.indexOf(":");
+        if (idx < 0) {
+            return true;
+        }
+        header.set(num, ned.substring(0, idx) + ": " + val);
+        return false;
+    }
+
+    /**
+     * DEL header value
+     *
+     * @param ned header type
+     * @param num number of occurance
+     * @return true on error, false on success
+     */
+    public boolean headerDel(String ned, int num) {
+        num = headerFind(ned, num);
+        if (num < 0) {
+            return true;
+        }
+        header.remove(num);
+        return false;
+    }
+
+    /**
      * get content value
      *
      * @param ned header type
@@ -278,7 +353,7 @@ public class packSip {
      * @param alaw true=aLaw, false=uLaw
      */
     public void makeSdp(addrIP addr, int port, boolean alaw) {
-        header.add("content-type: application/sdp");
+        header.add("Content-Type: application/sdp");
         content.add("v=0");
         int i;
         if (addr.isIPv4()) {
@@ -338,17 +413,17 @@ public class packSip {
     public void makeNumeric(String cmd, packSip src, String cntc) {
         clear();
         command = "SIP/2.0 " + cmd;
-        copyHeader(src, "via");
-        copyHeader(src, "from");
-        copyHeader(src, "to");
-        copyHeader(src, "call-id");
-        copyHeader(src, "cseq");
+        copyHeader(src, "Via");
+        copyHeader(src, "From");
+        copyHeader(src, "To");
+        copyHeader(src, "Call-ID");
+        copyHeader(src, "CSeq");
         if (cntc != null) {
-            header.add("contact: " + cntc);
+            header.add("Contact: " + cntc);
         }
-        header.add("max-forwards: 70");
-        header.add("server: " + version.usrAgnt);
-        header.add("allow: invite, ack, bye, cancel");
+        header.add("Max-Forwards: 70");
+        header.add("Server: " + version.usrAgnt);
+        header.add("Allow: INVITE, MESSAGE, NOTIFY, ACK, BYE, CANCEL");
     }
 
     /**
@@ -361,66 +436,114 @@ public class packSip {
     public void makeOk(packSip src, String cntc, int expr) {
         clear();
         command = "SIP/2.0 200 ok";
-        copyHeader(src, "via");
-        copyHeader(src, "from");
-        header.add("to: " + src.headerGet("to", 1) + ";tag=" + bits.randomD());
-        copyHeader(src, "call-id");
-        copyHeader(src, "cseq");
+        copyHeader(src, "Via");
+        copyHeader(src, "From");
+        header.add("To: " + src.headerGet("to", 1) + ";tag=" + bits.randomD());
+        copyHeader(src, "Call-ID");
+        copyHeader(src, "CSeq");
         if (cntc != null) {
-            header.add("contact: " + cntc);
+            header.add("Contact: " + cntc);
         }
         if (expr > 0) {
-            header.add("expires: " + expr);
+            header.add("Expires: " + expr);
         }
-        header.add("max-forwards: 70");
-        header.add("server: " + version.usrAgnt);
-        header.add("allow: invite, ack, bye, cancel");
+        header.add("Max-Forwards: 70");
+        header.add("Server: " + version.usrAgnt);
+        header.add("Allow: INVITE, MESSAGE, NOTIFY, ACK, BYE, CANCEL");
     }
 
     /**
-     * make ringing packet
+     * make bad extension packet
      *
      * @param src source to reply to
      * @param cntc contact, null=nothing
+     * @param err error text
      */
-    public void makeNoExt(packSip src, String cntc) {
+    public void makeErr(packSip src, String cntc, String err) {
         clear();
-        command = "SIP/2.0 420 bad extension";
-        copyHeader(src, "via");
-        copyHeader(src, "from");
-        copyHeader(src, "to");
-        copyHeader(src, "call-id");
-        copyHeader(src, "cseq");
+        command = "SIP/2.0 420 " + err;
+        copyHeader(src, "Via");
+        copyHeader(src, "From");
+        copyHeader(src, "To");
+        copyHeader(src, "Call-ID");
+        copyHeader(src, "CSeq");
         if (cntc != null) {
-            header.add("contact: " + cntc);
+            header.add("Contact: " + cntc);
         }
-        header.add("max-forwards: 70");
-        header.add("server: " + version.usrAgnt);
-        header.add("allow: invite, ack, bye, cancel");
+        header.add("Max-Forwards: 70");
+        header.add("Server: " + version.usrAgnt);
+        header.add("Allow: INVITE, MESSAGE, NOTIFY, ACK, BYE, CANCEL");
     }
 
     /**
      * make request
      *
      * @param cmd command to do
+     * @param url url, null=derive from trg
      * @param src source
      * @param trg target
      * @param cntc contact, null=nothing
-     * @param cid call id
+     * @param via via, null=nothing
+     * @param cid call id, null=nothing
      * @param seq sequence
+     * @param expr expires, 0=nothing
      */
-    public void makeReq(String cmd, String src, String trg, String cntc, String cid, int seq) {
+    public void makeReq(String cmd, String url, String src, String trg, String cntc, String via, String cid, int seq, int expr) {
         clear();
-        command = cmd + " " + uniResLoc.fromEmail(trg) + " SIP/2.0";
-        header.add("max-forwards: 70");
-        header.add("user-agent: " + version.usrAgnt);
-        header.add("to: " + trg);
-        header.add("from: " + src);
-        header.add("call-id: " + cid);
-        header.add("cseq: " + seq + " " + cmd);
-        if (cntc != null) {
-            header.add("contact: " + cntc);
+        if (url == null) {
+            url = uniResLoc.fromEmail(trg);
         }
+        command = cmd + " " + url + " SIP/2.0";
+        header.add("Max-Forwards: 70");
+        header.add("User-Agent: " + version.usrAgnt);
+        header.add("To: " + trg);
+        header.add("From: " + src);
+        if (cid != null) {
+            header.add("Call-ID: " + cid);
+        }
+        header.add("CSeq: " + bits.num2str(seq) + " " + cmd);
+        header.add("Allow: INVITE, MESSAGE, NOTIFY, ACK, BYE, CANCEL");
+        if (cntc != null) {
+            header.add("Contact: " + cntc);
+        }
+        if (via != null) {
+            header.add("Via: " + via);
+        }
+        if (expr > 0) {
+            header.add("Expires: " + expr);
+        }
+    }
+
+    /**
+     * add author line
+     *
+     * @param got got callenge, null if nothing
+     * @param usr username
+     * @param pwd password
+     */
+    public void addAuthor(String got, String usr, String pwd) {
+        if (got == null) {
+            return;
+        }
+        got = got.trim();
+        int i = got.indexOf(" ");
+        if (i < 0) {
+            return;
+        }
+        got = got.substring(i + 1, got.length()).trim();
+        i = command.indexOf(" ");
+        int o = command.lastIndexOf(" ");
+        if (i < 0) {
+            return;
+        }
+        if (o <= i) {
+            return;
+        }
+        got = clntHttp.getAuthor(got, command.substring(0, i).trim(), command.substring(i + 1, o).trim(), usr, pwd);
+        if (got == null) {
+            return;
+        }
+        header.add(got);
     }
 
 }

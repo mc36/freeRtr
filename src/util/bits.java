@@ -306,6 +306,20 @@ public class bits {
     }
 
     /**
+     * convert bytes to hex string
+     *
+     * @param buf bytes
+     * @return hex representation of bytes
+     */
+    public static String toHex(byte[] buf) {
+        String s = "";
+        for (int i = 0; i < buf.length; i++) {
+            s += toHexB(buf[i]);
+        }
+        return s;
+    }
+
+    /**
      * convert u8 to hex string
      *
      * @param val value to convert

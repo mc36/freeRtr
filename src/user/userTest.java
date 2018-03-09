@@ -15,6 +15,7 @@ import auth.authLocal;
 import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgIfc;
+import cfg.cfgTrnsltn;
 import clnt.clntNrpe;
 import clnt.clntSmtp;
 import clnt.clntSnmp;
@@ -278,6 +279,17 @@ public class userTest {
         if (a.equals("vm")) {
             a = cmd.word();
             userVM.doWork(pip, true, "", a, cmd.getRemaining());
+            return null;
+        }
+        if (a.equals("translation")) {
+            cfgTrnsltn t = cfgAll.trnsltnFind(cmd.word(), false);
+            if (t == null) {
+                return null;
+            }
+            a = cmd.getRemaining();
+            cmd.error("  original=" + a);
+            String s = t.doTranslate(a);
+            cmd.error("translated=" + s);
             return null;
         }
         if (a.equals("logging")) {

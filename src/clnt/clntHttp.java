@@ -1,6 +1,9 @@
 package clnt;
 
 import cry.cryBase64;
+import cry.cryHashGeneric;
+import cry.cryHashMd5;
+import cry.cryHashSha1;
 import java.io.File;
 import java.io.RandomAccessFile;
 import pipe.pipeDiscard;
@@ -29,7 +32,7 @@ public class clntHttp {
     private RandomAccessFile fr;
 
     /**
-     * get authorization line
+     * get basic authorization line
      *
      * @param usr username
      * @param pwd password
@@ -47,6 +50,148 @@ public class clntHttp {
         }
         String s = cryBase64.encodeString(usr + ":" + pwd);
         return "Authorization: Basic " + s;
+    }
+
+    /**
+     * get digest authorization line
+     *
+     * @param req request
+     * @param met method
+     * @param url url
+     * @param usr username
+     * @param pwd password
+     * @return authorization header, null if not needed
+     */
+    public static String getAuthor(String req, String met, String url, String usr, String pwd) {
+        if (usr == null) {
+            return null;
+        }
+        if (pwd == null) {
+            return null;
+        }
+        if ((usr.length() + pwd.length()) < 1) {
+            return null;
+        }
+        String realm = null;
+        String nonce = null;
+        String opaque = null;
+        String algo = null;
+        String qop = null;
+        for (;;) {
+            if (req.length() < 1) {
+                break;
+            }
+            int i = req.indexOf("=");
+            if (i < 0) {
+                break;
+            }
+            String a = req.substring(0, i).trim();
+            req = req.substring(i + 1, req.length()).trim();
+            String s;
+            if (req.startsWith("\"")) {
+                req = req.substring(1, req.length());
+                i = req.indexOf("\"");
+                s = req.substring(0, i);
+                req = req.substring(i + 1, req.length()).trim();
+                if (req.startsWith(",")) {
+                    req = req.substring(1, req.length()).trim();
+                }
+            } else {
+                i = req.indexOf(",");
+                if (i < 0) {
+                    s = req;
+                    req = "";
+                } else {
+                    s = req.substring(0, i);
+                    req = req.substring(i + 1, req.length()).trim();
+                }
+            }
+            a = a.trim().toLowerCase();
+            if (a.equals("realm")) {
+                realm = s;
+                continue;
+            }
+            if (a.equals("nonce")) {
+                nonce = s;
+                continue;
+            }
+            if (a.equals("opaque")) {
+                opaque = s;
+                continue;
+            }
+            if (a.equals("algorithm")) {
+                algo = s;
+                continue;
+            }
+            if (a.equals("qop")) {
+                qop = s;
+                continue;
+            }
+            System.out.println(a + "|" + s);
+        }
+        if (realm == null) {
+            return null;
+        }
+        if (nonce == null) {
+            return null;
+        }
+        if (opaque == null) {
+            return null;
+        }
+        if (algo == null) {
+            return null;
+        }
+        algo = algo.trim().toLowerCase();
+        cryHashGeneric h = null;
+        if (algo.startsWith("md5")) {
+            h = new cryHashMd5();
+        }
+        if (algo.startsWith("sha1")) {
+            h = new cryHashSha1();
+        }
+        if (h == null) {
+            return null;
+        }
+        String cnonce = "" + bits.randomD();
+        String nc = "00000001";
+        h.init();
+        h.update(usr.getBytes());
+        h.update(":".getBytes());
+        h.update(realm.getBytes());
+        h.update(":".getBytes());
+        h.update(pwd.getBytes());
+        if (algo.endsWith("-sess")) {
+            h.update(":".getBytes());
+            h.update(nonce.getBytes());
+            h.update(":".getBytes());
+            h.update(cnonce.getBytes());
+        }
+        byte[] a1 = h.finish();
+        h.init();
+        h.update(met.getBytes());
+        h.update(":".getBytes());
+        h.update(url.getBytes());
+        byte[] a2 = h.finish();
+        h.init();
+        h.update(bits.toHex(a1).getBytes());
+        h.update(":".getBytes());
+        h.update(nonce.getBytes());
+        h.update(":".getBytes());
+        if (qop != null) {
+            h.update(nc.getBytes());
+            h.update(":".getBytes());
+            h.update(cnonce.getBytes());
+            h.update(":".getBytes());
+            h.update(qop.getBytes());
+            h.update(":".getBytes());
+        }
+        h.update(bits.toHex(a2).getBytes());
+        String s = bits.toHex(h.finish());
+        s = "Authorization: Digest username=\"" + usr + "\",realm=\"" + realm + "\",nonce=\"" + nonce + "\",uri=\"" + url + "\",algorithm=" + h.getName() + ",response=\"" + s + "\",opaque=\"" + opaque + "\"";
+        if (qop == null) {
+            return s;
+        }
+        return s + ",qop=" + qop + ",nc=" + nc + ",cnonce=\"" + cnonce + "\"";
     }
 
     /**

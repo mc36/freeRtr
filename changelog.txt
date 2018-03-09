@@ -7995,3 +7995,11 @@ qc pass: cross connect vlan subinterfaces of same interface
 qc pass: source prefix translation
 qc pass: target prefix translation
 todo: remote tester
+---------------------------------- 2018-03-09 08:26:10
+no qc pass: sipmodem server
+qc pass: modem with alaw
+qc pass: modem with ulaw
+qc pass: modem with alaw through proxy
+qc pass: modem with ulaw through proxy
+qc pass: modem with alaw through peer
+qc pass: modem with ulaw through peer

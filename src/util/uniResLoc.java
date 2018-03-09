@@ -1,5 +1,6 @@
 package util;
 
+import addr.addrIP;
 import addr.addrIPv6;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,27 @@ public class uniResLoc {
      * parameters
      */
     public List<uniResLocPar> param;
+
+    /**
+     * address to string
+     *
+     * @param adr address
+     * @param prt port
+     * @return string
+     */
+    public static String addr2str(addrIP adr, int prt) {
+        String a;
+        if (adr.isIPv4()) {
+            a = "" + adr;
+        } else {
+            a = "[" + adr + "]";
+        }
+        if (prt < 1) {
+            return a;
+        } else {
+            return a + ":" + prt;
+        }
+    }
 
     /**
      * clear all data

@@ -20,13 +20,14 @@ import util.bits;
 import util.cmds;
 import util.debugger;
 import util.logger;
+import util.uniResLoc;
 
 /**
- * session initiation protocol (rfc3261) server
+ * modulator demodulator server
  *
  * @author matecsaba
  */
-public class servSipModem extends servGeneric implements prtServS {
+public class servModem extends servGeneric implements prtServS {
 
     /**
      * codec, true=alaw, false=ulaw
@@ -42,9 +43,9 @@ public class servSipModem extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String defaultL[] = {
-        "server sipmodem .*! port " + packSip.port,
-        "server sipmodem .*! protocol " + proto2string(protoAllDgrm),
-        "server sipmodem .*! codec alaw"
+        "server modem .*! port " + packSip.port,
+        "server modem .*! protocol " + proto2string(protoAllDgrm),
+        "server modem .*! codec alaw"
     };
 
     /**
@@ -57,7 +58,7 @@ public class servSipModem extends servGeneric implements prtServS {
     }
 
     public String srvName() {
-        return "sipmodem";
+        return "modem";
     }
 
     public int srvPort() {
@@ -114,7 +115,7 @@ public class servSipModem extends servGeneric implements prtServS {
         pipe.timeout = 180000;
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        new servSipModemDoer(this, pipe, id);
+        new servModemDoer(this, pipe, id);
         return false;
     }
 
@@ -129,9 +130,9 @@ public class servSipModem extends servGeneric implements prtServS {
 
 }
 
-class servSipModemDoer implements Runnable {
+class servModemDoer implements Runnable {
 
-    private servSipModem lower;
+    private servModem lower;
 
     private pipeSide ctrl;
 
@@ -143,7 +144,7 @@ class servSipModemDoer implements Runnable {
 
     private pipeSide pipeS;
 
-    public servSipModemDoer(servSipModem parent, pipeSide stream, prtGenConn id) {
+    public servModemDoer(servModem parent, pipeSide stream, prtGenConn id) {
         lower = parent;
         ctrl = stream;
         conn = id;
@@ -156,7 +157,7 @@ class servSipModemDoer implements Runnable {
     }
 
     private String getContact() {
-        return "<sip:mdm@" + conn.iface.addr + ">";
+        return "<sip:modem@" + uniResLoc.addr2str(conn.iface.addr, conn.portLoc) + ">";
     }
 
     private sndCodec getCodec() {
@@ -175,63 +176,74 @@ class servSipModemDoer implements Runnable {
             return 0;
         }
         s = s.substring(0, i).trim().toLowerCase();
-        if (s.equals("register")) {
+        if (s.equals("ack")) {
+            return 0;
+        }
+        if (s.equals("register") || s.equals("subscribe")) {
             tx.makeOk(rx, getContact(), 120);
-            tx.writeDown();
-            if (debugger.servSipModemTraf) {
+            if (debugger.servModemTraf) {
                 tx.dump("tx");
             }
+            tx.writeDown();
             return 0;
         }
         if (s.equals("options")) {
             tx.makeOk(rx, getContact(), 0);
-            tx.writeDown();
-            if (debugger.servSipModemTraf) {
+            if (debugger.servModemTraf) {
                 tx.dump("tx");
             }
+            tx.writeDown();
             return 0;
         }
         if (s.equals("bye")) {
             tx.makeOk(rx, getContact(), 0);
-            tx.writeDown();
-            if (debugger.servSipModemTraf) {
+            if (debugger.servModemTraf) {
                 tx.dump("tx");
             }
+            tx.writeDown();
             return 1;
         }
         if (s.equals("cancel")) {
             tx.makeOk(rx, getContact(), 0);
-            tx.writeDown();
-            if (debugger.servSipModemTraf) {
+            if (debugger.servModemTraf) {
                 tx.dump("tx");
             }
+            tx.writeDown();
             return 1;
         }
         if (s.equals("message")) {
             tx.makeOk(rx, getContact(), 0);
-            tx.writeDown();
-            if (debugger.servSipModemTraf) {
+            if (debugger.servModemTraf) {
                 tx.dump("tx");
             }
+            tx.writeDown();
+            return 0;
+        }
+        if (s.equals("notify")) {
+            tx.makeOk(rx, getContact(), 0);
+            if (debugger.servModemTraf) {
+                tx.dump("tx");
+            }
+            tx.writeDown();
             return 0;
         }
         if (s.equals("invite")) {
             tx.makeNumeric("100 trying", rx, getContact());
-            tx.writeDown();
-            if (debugger.servSipModemTraf) {
+            if (debugger.servModemTraf) {
                 tx.dump("tx");
             }
+            tx.writeDown();
             tx.makeNumeric("180 ringing", rx, getContact());
-            tx.writeDown();
-            if (debugger.servSipModemTraf) {
+            if (debugger.servModemTraf) {
                 tx.dump("tx");
             }
+            tx.writeDown();
             tx.makeOk(rx, getContact(), 0);
             tx.makeSdp(conn.iface.addr, lower.getDataPort(), lower.aLaw);
-            tx.writeDown();
-            if (debugger.servSipModemTraf) {
+            if (debugger.servModemTraf) {
                 tx.dump("tx");
             }
+            tx.writeDown();
             return 2;
         }
         return 0;
@@ -242,12 +254,13 @@ class servSipModemDoer implements Runnable {
         if (rx.readUp()) {
             return;
         }
-        if (debugger.servSipModemTraf) {
+        if (debugger.servModemTraf) {
             rx.dump("rx");
         }
         if (replyMessage(rx) != 2) {
             return;
         }
+        packSip sip = rx.byteCopy(ctrl);
         addrIP adr = new addrIP();
         int prt = rx.sdpGetMediaEP(adr);
         if (prt < 1) {
@@ -261,22 +274,43 @@ class servSipModemDoer implements Runnable {
         lower.lin.createHandler(pipeS, "" + conn, false);
         for (;;) {
             if (data.isClosed() != 0) {
-                return;
+                break;
+            }
+            if (pipeC.isClosed() != 0) {
+                break;
+            }
+            if (pipeS.isClosed() != 0) {
+                break;
+            }
+            if (rx.ready2rx() < 1) {
+                bits.sleep(1000);
+                continue;
             }
             if (rx.readUp()) {
-                return;
+                break;
             }
-            if (debugger.servSipModemTraf) {
+            if (debugger.servModemTraf) {
                 rx.dump("rx");
             }
             if (replyMessage(rx) == 1) {
-                return;
+                break;
             }
         }
+        packSip tx = new packSip(ctrl);
+        String via = sip.headerGet("Via", 1);
+        String src = sip.headerGet("From", 1);
+        String trg = sip.headerGet("To", 1);
+        String cid = sip.headerGet("Call-Id", 1);
+        trg += ";tag=" + bits.randomD();
+        tx.makeReq("BYE", getContact(), trg, src, null, via, cid, bits.randomD(), 0);
+        if (debugger.servModemTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
     }
 
     public void run() {
-        if (debugger.servSipModemTraf) {
+        if (debugger.servModemTraf) {
             logger.debug("started");
         }
         try {
@@ -288,7 +322,7 @@ class servSipModemDoer implements Runnable {
         data.setClose();
         pipeC.setClose();
         pipeS.setClose();
-        if (debugger.servSipModemTraf) {
+        if (debugger.servModemTraf) {
             logger.debug("stopped");
         }
     }

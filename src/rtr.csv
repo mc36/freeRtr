@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.3.6-testing, done by cs@nop.;-;-
--;-;2018-03-07 03:48:15, took 07:32:10 on 1372 cases;-;-
+-;-;freeRouter v18.3.9-testing, done by cs@nop.;-;-
+-;-;2018-03-09 16:06:00, took 07:39:50 on 1377 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -177,6 +177,12 @@ conn-minenc01.tst;0;minenc over ipv4;successfully;finished
 conn-minenc02.tst;0;minenc over ipv6;successfully;finished
 conn-minenc03.tst;0;minenc over minenc;successfully;finished
 conn-minenc04.tst;0;minenc over loopback;successfully;finished
+conn-modem01.tst;0;modem with alaw;successfully;finished
+conn-modem02.tst;0;modem with ulaw;successfully;finished
+conn-modem03.tst;0;modem with alaw through proxy;successfully;finished
+conn-modem04.tst;0;modem with ulaw through proxy;successfully;finished
+conn-modem05.tst;0;modem with alaw through peer;successfully;finished
+conn-modem06.tst;0;modem with ulaw through peer;successfully;finished
 conn-mplsip01.tst;0;mplsip over ipv4;successfully;finished
 conn-mplsip02.tst;0;mplsip over ipv6;successfully;finished
 conn-mplsip03.tst;0;mplsip over mplsip;successfully;finished
@@ -245,7 +251,6 @@ conn-proxy02.tst;0;proxy local arp/nd;successfully;finished
 conn-raw.tst;0;raw encapsulation;successfully;finished
 conn-redun.tst;0;process redundancy;successfully;finished
 conn-sep.tst;0;sep;successfully;finished
-conn-sipmodem.tst;0;sipmodem server;successfully;finished
 conn-slaac.tst;0;slaac;successfully;finished
 conn-sstp.tst;0;ppp over sstp;successfully;finished
 conn-stp.tst;0;spantree over ethernet;successfully;finished

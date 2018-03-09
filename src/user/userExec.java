@@ -1035,12 +1035,15 @@ public class userExec {
         hl.add("7 8                <addr>        prefix to originate");
         hl.add("8 9                  <name>      route map to apply");
         hl.add("9 .                    <num>     number of prefixes");
-        hl.add("2 3      sipmodem                open sipmodem session");
-        hl.add("3 4        <addr>                sip server address");
-        hl.add("4 .          <addr>              address to call");
+        hl.add("2 3      modem                   open modem session");
+        hl.add("3 4,.      <addr>                address to call");
+        hl.add("4 .          <addr>              address who calling");
         hl.add("1 2    test                      test various things");
         hl.add("2 3      dns                     dns zone creator");
         hl.add("3 .        <name>                name of zone");
+        hl.add("2 3      translation             translation rule");
+        hl.add("3 4        <name>                name of rule");
+        hl.add("4 4,.        <str>               text");
         hl.add("2 3      snmp                    do snmp commands");
         hl.add("3 4        get                   do a get request");
         hl.add("3 4        next                  do a getnext request");

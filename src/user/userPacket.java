@@ -9,7 +9,7 @@ import cfg.cfgIfc;
 import cfg.cfgRoump;
 import cfg.cfgVrf;
 import clnt.clntProxy;
-import clnt.clntSipModem;
+import clnt.clntModem;
 import clnt.clntSpeed;
 import ifc.ifcEther;
 import ip.ipCor4;
@@ -530,13 +530,13 @@ public class userPacket {
             }
             return;
         }
-        if (a.equals("sipmodem")) {
-            clntSipModem sm = new clntSipModem();
-            sm.target = cmd.word();
+        if (a.equals("modem")) {
+            clntModem sm = new clntModem();
             sm.called = cmd.word();
-            sm.calling = "sip:sipmodem@" + cfgAll.hostName;
-            sm.vrf = cfgAll.getClntVrf();
-            sm.srcIfc = cfgAll.getClntIfc();
+            sm.calling = cmd.word();
+            if (sm.calling.length() < 1) {
+                sm.calling = "sip:modem@" + cfgAll.hostName;
+            }
             if (sm.callStart()) {
                 sm.callStop();
                 cmd.error("failed to place call");

@@ -73,6 +73,12 @@ class pipeModemTx extends TimerTask {
     public void doer() {
         if (rtp.isClosed() != 0) {
             keepTimer.cancel();
+            pipe.setClose();
+            return;
+        }
+        if (pipe.isClosed() != 0) {
+            keepTimer.cancel();
+            rtp.setClose();
             return;
         }
         for (; queue.dataSize() < paySiz;) {
@@ -133,6 +139,11 @@ class pipeModemRx implements Runnable {
     public void doer() {
         for (;;) {
             if (rtp.isClosed() != 0) {
+                pipe.setClose();
+                return;
+            }
+            if (pipe.isClosed() != 0) {
+                rtp.setClose();
                 return;
             }
             packHolder pck = new packHolder(true, true);

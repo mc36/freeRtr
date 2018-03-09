@@ -164,14 +164,14 @@ public class debugger {
     public static boolean servOpenflowTraf = false;
 
     /**
-     * servSipModem traffic
+     * servModem traffic
      */
-    public static boolean servSipModemTraf = false;
+    public static boolean servModemTraf = false;
 
     /**
-     * servSipProxy traffic
+     * servSip traffic
      */
-    public static boolean servSipProxyTraf = false;
+    public static boolean servSipTraf = false;
 
     /**
      * servL2f traffic
@@ -479,6 +479,11 @@ public class debugger {
     public static boolean clntNtpTraf = false;
 
     /**
+     * clntSip traffic
+     */
+    public static boolean clntSipTraf = false;
+
+    /**
      * clntSstp traffic
      */
     public static boolean clntSstpTraf = false;
@@ -547,11 +552,6 @@ public class debugger {
      * clntNrpe traffic
      */
     public static boolean clntNrpeTraf = false;
-
-    /**
-     * clntSipModem traffic
-     */
-    public static boolean clntSipModemTraf = false;
 
     /**
      * clntProxy traffic
@@ -855,8 +855,8 @@ public class debugger {
         h.add("3 .        lpd               line printer daemon protocol");
         h.add("3 .        pop3              post office protocol");
         h.add("3 .        smtp              simple mail transfer protocol");
-        h.add("3 .        sipmodem          session initiation protocol modem");
-        h.add("3 .        sipproxy          session initiation protocol proxy");
+        h.add("3 .        modem             modulator demodulator");
+        h.add("3 .        sip               session initiation protocol");
         h.add("3 .        l2f               layer 2 forwarding protocol");
         h.add("3 .        l2tp2             layer 2 tunneling protocol v2");
         h.add("3 .        l2tp3             layer 2 tunneling protocol v3");
@@ -944,6 +944,7 @@ public class debugger {
         h.add("3 .        list              generic listing");
         h.add("2 3      client              protocol clients");
         h.add("3 .        ntp               network time protocol");
+        h.add("3 .        sip               session initiation protocol");
         h.add("3 .        sstp              secure socket tunneling protocol");
         h.add("3 .        anyconn           anyconnect protocol");
         h.add("3 .        snmp              simple network management protocol");
@@ -955,7 +956,6 @@ public class debugger {
         h.add("3 .        http              hypertext transfer protocol");
         h.add("3 .        smtp              simple mail transfer protocol");
         h.add("3 .        nrpe              nagios remote plugin");
-        h.add("3 .        sipmodem          session initiation protocol modem");
         h.add("3 .        proxy             proxy protosols");
         h.add("3 .        tftp              trivival file transfer protocol");
         h.add("3 .        l2f               layer 2 forwarding protocol");
@@ -1162,12 +1162,12 @@ public class debugger {
                 servOpenflowTraf = v;
                 return false;
             }
-            if (s.equals("sipmodem")) {
-                servSipModemTraf = v;
+            if (s.equals("modem")) {
+                servModemTraf = v;
                 return false;
             }
-            if (s.equals("sipproxy")) {
-                servSipProxyTraf = v;
+            if (s.equals("sip")) {
+                servSipTraf = v;
                 return false;
             }
             if (s.equals("l2f")) {
@@ -1518,6 +1518,10 @@ public class debugger {
                 clntNtpTraf = v;
                 return false;
             }
+            if (s.equals("sip")) {
+                clntSipTraf = v;
+                return false;
+            }
             if (s.equals("sstp")) {
                 clntSstpTraf = v;
                 return false;
@@ -1608,10 +1612,6 @@ public class debugger {
             }
             if (s.equals("nrpe")) {
                 clntNrpeTraf = v;
-                return false;
-            }
-            if (s.equals("sipmodem")) {
-                clntSipModemTraf = v;
                 return false;
             }
             if (s.equals("proxy")) {

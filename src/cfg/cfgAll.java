@@ -53,8 +53,8 @@ import serv.servPptp;
 import serv.servQuote;
 import serv.servRadius;
 import serv.servRfb;
-import serv.servSipModem;
-import serv.servSipProxy;
+import serv.servModem;
+import serv.servSip;
 import serv.servSmtp;
 import serv.servSnmp;
 import serv.servSocks;
@@ -139,6 +139,16 @@ public class cfgAll {
      * list of hairpins
      */
     public static final tabGen<cfgHrpn> hairpins = new tabGen<cfgHrpn>();
+
+    /**
+     * list of translation rules
+     */
+    public static final tabGen<cfgTrnsltn> trnsltns = new tabGen<cfgTrnsltn>();
+
+    /**
+     * list of dial peers
+     */
+    public static final tabGen<cfgDial> dials = new tabGen<cfgDial>();
 
     /**
      * list of routers
@@ -383,12 +393,12 @@ public class cfgAll {
     /**
      * sip modem daemons
      */
-    public static servGenList<servSipModem> dmnSipModem = new servGenList<servSipModem>();
+    public static servGenList<servModem> dmnModem = new servGenList<servModem>();
 
     /**
      * sip proxy daemons
      */
-    public static servGenList<servSipProxy> dmnSipProxy = new servGenList<servSipProxy>();
+    public static servGenList<servSip> dmnSip = new servGenList<servSip>();
 
     /**
      * ftp daemons
@@ -2352,6 +2362,109 @@ public class cfgAll {
     }
 
     /**
+     * find one dial peer
+     *
+     * @param calling calling number
+     * @param called called number
+     * @param skip skip this peer
+     * @return descriptor, null if not found
+     */
+    public static cfgDial dialFind(String calling, String called, cfgDial skip) {
+        for (int i = 0; i < dials.size(); i++) {
+            cfgDial ntry = dials.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (skip != null) {
+                if (skip.compare(skip, ntry) == 0) {
+                    continue;
+                }
+            }
+            if (ntry.matches(calling, called)) {
+                return ntry;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * find one dial peer
+     *
+     * @param nam name of this
+     * @param create create new on this number if not found
+     * @return descriptor, null if not found
+     */
+    public static cfgDial dialFind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgDial ntry = new cfgDial(nam);
+        if (!create) {
+            return dials.find(ntry);
+        }
+        cfgDial old = dials.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        return ntry;
+    }
+
+    /**
+     * delete one dial peer
+     *
+     * @param nam name of this
+     * @return descriptor, null if not found
+     */
+    public static cfgDial dialDel(String nam) {
+        cfgDial ntry = new cfgDial(nam);
+        ntry = dials.del(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        ntry.doShutdown();
+        return ntry;
+    }
+
+    /**
+     * find one translation rule
+     *
+     * @param nam name of this
+     * @param create create new on this number if not found
+     * @return descriptor, null if not found
+     */
+    public static cfgTrnsltn trnsltnFind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgTrnsltn ntry = new cfgTrnsltn(nam);
+        if (!create) {
+            return trnsltns.find(ntry);
+        }
+        cfgTrnsltn old = trnsltns.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        return ntry;
+    }
+
+    /**
+     * delete one translation rule
+     *
+     * @param nam name of this
+     * @return descriptor, null if not found
+     */
+    public static cfgTrnsltn trnsltnDel(String nam) {
+        cfgTrnsltn ntry = new cfgTrnsltn(nam);
+        ntry = trnsltns.del(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        return ntry;
+    }
+
+    /**
      * get list of aliases
      *
      * @return list of aliases
@@ -2612,6 +2725,8 @@ public class cfgAll {
         }
         servGenList.listGetRun(l, xconnects, filter);
         servGenList.listGetRun(l, iconnects, filter);
+        servGenList.listGetRun(l, trnsltns, filter);
+        servGenList.listGetRun(l, dials, filter);
         servGenList.listGetRun(l, aliases, filter);
         dmnTelnet.getShRun(l, filter);
         dmnUdptn.getShRun(l, filter);
@@ -2647,8 +2762,8 @@ public class cfgAll {
         dmnHoney.getShRun(l, filter);
         dmnPop3.getShRun(l, filter);
         dmnSmtp.getShRun(l, filter);
-        dmnSipModem.getShRun(l, filter);
-        dmnSipProxy.getShRun(l, filter);
+        dmnModem.getShRun(l, filter);
+        dmnSip.getShRun(l, filter);
         dmnRpki.getShRun(l, filter);
         dmnNrpe.getShRun(l, filter);
         dmnBStun.getShRun(l, filter);

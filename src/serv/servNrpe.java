@@ -337,8 +337,6 @@ class servNrpeRes implements Comparator<servNrpeRes> {
 
     public final String nam;
 
-    private Pattern pat;
-
     public servNrpeRes(String s) {
         nam = s;
     }
@@ -354,14 +352,12 @@ class servNrpeRes implements Comparator<servNrpeRes> {
     public String doWork(String l) {
         String as;
         try {
-            if (pat == null) {
-                pat = Pattern.compile(nam);
-            }
-            Matcher m = pat.matcher(l);
-            if (!m.find()) {
+            Pattern pat = Pattern.compile(nam);
+            Matcher mat = pat.matcher(l);
+            if (!mat.find()) {
                 return l;
             }
-            as = m.group("a");
+            as = mat.group("a");
         } catch (Exception e) {
             as = null;
         }

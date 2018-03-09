@@ -14,6 +14,7 @@ import cfg.cfgBndl;
 import cfg.cfgBrdg;
 import cfg.cfgCert;
 import cfg.cfgChat;
+import cfg.cfgDial;
 import cfg.cfgEvntmgr;
 import cfg.cfgTime;
 import cfg.cfgXconn;
@@ -34,6 +35,7 @@ import cfg.cfgScrpt;
 import cfg.cfgTrack;
 import cfg.cfgVdc;
 import cfg.cfgPrcss;
+import cfg.cfgTrnsltn;
 import cfg.cfgVpdn;
 import cfg.cfgVrf;
 import clnt.clntIrc;
@@ -84,8 +86,8 @@ import serv.servPptp;
 import serv.servQuote;
 import serv.servRadius;
 import serv.servRfb;
-import serv.servSipModem;
-import serv.servSipProxy;
+import serv.servModem;
+import serv.servSip;
 import serv.servSmtp;
 import serv.servSnmp;
 import serv.servSocks;
@@ -371,6 +373,10 @@ public class userConfig {
         l.add("2  .    <num>                        number of bundle group");
         l.add("1  2  hairpin                        interface hairpin parameters");
         l.add("2  .    <num>                        number of hairpin group");
+        l.add("1  2  dial-peer                      dial peer parameters");
+        l.add("2  .    <num>                        number of peer");
+        l.add("1  2  translation-rule               translation rule parameters");
+        l.add("2  .    <num>                        number of peer");
         l.add("1  2  client                         specify address of name server");
         l.add("2  3    proxy                        specify proxy profile");
         l.add("3  .      <name>                     name of profile");
@@ -566,9 +572,9 @@ public class userConfig {
         l.add("3  .      <name>                     name of server");
         l.add("2  3    smtp                         configure a smtp server");
         l.add("3  .      <name>                     name of server");
-        l.add("2  3    sipmodem                     configure a sip server");
+        l.add("2  3    modem                        configure a modem server");
         l.add("3  .      <name>                     name of server");
-        l.add("2  3    sipproxy                     configure a sip server");
+        l.add("2  3    sip                          configure a sip server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    ftp                          configure a ftp server");
         l.add("3  .      <name>                     name of server");
@@ -746,6 +752,24 @@ public class userConfig {
             modeDconfig = cfgAll.hrpnFind(cmd.word(), true);
             if (modeDconfig == null) {
                 cmd.error("invalid hairpin number");
+                return;
+            }
+            modeV = modes.config;
+            return;
+        }
+        if (a.equals("dial-peer")) {
+            modeDconfig = cfgAll.dialFind(cmd.word(), true);
+            if (modeDconfig == null) {
+                cmd.error("invalid dial peer number");
+                return;
+            }
+            modeV = modes.config;
+            return;
+        }
+        if (a.equals("translation-rule")) {
+            modeDconfig = cfgAll.trnsltnFind(cmd.word(), true);
+            if (modeDconfig == null) {
+                cmd.error("invalid translation rule number");
                 return;
             }
             modeV = modes.config;
@@ -1054,12 +1078,12 @@ public class userConfig {
                 daemonMake(new servSmtp(), cfgAll.dmnSmtp);
                 return;
             }
-            if (a.equals("sipmodem")) {
-                daemonMake(new servSipModem(), cfgAll.dmnSipModem);
+            if (a.equals("modem")) {
+                daemonMake(new servModem(), cfgAll.dmnModem);
                 return;
             }
-            if (a.equals("sipproxy")) {
-                daemonMake(new servSipProxy(), cfgAll.dmnSipProxy);
+            if (a.equals("sip")) {
+                daemonMake(new servSip(), cfgAll.dmnSip);
                 return;
             }
             if (a.equals("socks")) {
@@ -1386,6 +1410,22 @@ public class userConfig {
             }
             return;
         }
+        if (a.equals("dial-peer")) {
+            cfgDial ntry = cfgAll.dialDel(cmd.word());
+            if (ntry == null) {
+                cmd.error("invalid dial peer number");
+                return;
+            }
+            return;
+        }
+        if (a.equals("translation-rule")) {
+            cfgTrnsltn ntry = cfgAll.trnsltnDel(cmd.word());
+            if (ntry == null) {
+                cmd.error("invalid translation rule number");
+                return;
+            }
+            return;
+        }
         if (a.equals("router")) {
             tabRouteEntry.routeType o = cfgRtr.name2num(cmd.word());
             if (o == null) {
@@ -1678,12 +1718,12 @@ public class userConfig {
                 daemonErase(new servSmtp(), cfgAll.dmnSmtp);
                 return;
             }
-            if (a.equals("sipmodem")) {
-                daemonErase(new servSipModem(), cfgAll.dmnSipModem);
+            if (a.equals("modem")) {
+                daemonErase(new servModem(), cfgAll.dmnModem);
                 return;
             }
-            if (a.equals("sipproxy")) {
-                daemonErase(new servSipProxy(), cfgAll.dmnSipProxy);
+            if (a.equals("sip")) {
+                daemonErase(new servSip(), cfgAll.dmnSip);
                 return;
             }
             if (a.equals("socks")) {
