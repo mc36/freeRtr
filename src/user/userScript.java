@@ -744,9 +744,12 @@ public class userScript {
         }
         if (a.equals("sleep")) {
             a = getWord(true);
-            int i = bits.str2num(a);
-            if (i > 0) {
-                bits.sleep(i * 1000);
+            int o = bits.str2num(a);
+            for (int i = 0; i < o; i++) {
+                if (pipe.isClosed() != 0) {
+                    break;
+                }
+                bits.sleep(1000);
             }
             return a;
         }
@@ -809,6 +812,9 @@ public class userScript {
             userScript e = new userScript(this, b, false);
             e.cmd = b;
             for (;;) {
+                if (pipe.isClosed() != 0) {
+                    break;
+                }
                 b = e.getWord(true);
                 if (b.length() < 1) {
                     break;
@@ -831,6 +837,9 @@ public class userScript {
             a = getWord(false);
             String b = getWord(false);
             for (;;) {
+                if (pipe.isClosed() != 0) {
+                    break;
+                }
                 userScript e = new userScript(this, a, false);
                 String c = e.calcOne();
                 if (!c.equals("1")) {
@@ -856,6 +865,9 @@ public class userScript {
             userScript e = new userScript(this, a, false);
             e.cmdAll();
             for (;;) {
+                if (pipe.isClosed() != 0) {
+                    break;
+                }
                 e = new userScript(this, b, false);
                 a = e.calcOne();
                 if (!a.equals("1")) {

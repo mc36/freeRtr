@@ -1228,9 +1228,12 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("sleep")) {
-            int i = bits.str2num(cmd.word());
-            if (i > 0) {
-                bits.sleep(i * 1000);
+            int o = bits.str2num(cmd.word());
+            for (int i = 0; i < o; i++) {
+                if (pipe.isClosed() != 0) {
+                    break;
+                }
+                bits.sleep(1000);
             }
             return cmdRes.command;
         }
