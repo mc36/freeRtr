@@ -169,6 +169,11 @@ public class debugger {
     public static boolean servModemTraf = false;
 
     /**
+     * servVoice traffic
+     */
+    public static boolean servVoiceTraf = false;
+
+    /**
      * servSip traffic
      */
     public static boolean servSipTraf = false;
@@ -856,6 +861,7 @@ public class debugger {
         h.add("3 .        pop3              post office protocol");
         h.add("3 .        smtp              simple mail transfer protocol");
         h.add("3 .        modem             modulator demodulator");
+        h.add("3 .        voice             voice script");
         h.add("3 .        sip               session initiation protocol");
         h.add("3 .        l2f               layer 2 forwarding protocol");
         h.add("3 .        l2tp2             layer 2 tunneling protocol v2");
@@ -1164,6 +1170,10 @@ public class debugger {
             }
             if (s.equals("modem")) {
                 servModemTraf = v;
+                return false;
+            }
+            if (s.equals("voice")) {
+                servVoiceTraf = v;
                 return false;
             }
             if (s.equals("sip")) {

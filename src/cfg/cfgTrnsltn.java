@@ -47,6 +47,16 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
     public boolean last;
 
     /**
+     * remove pattern
+     */
+    public List<String> remove = new ArrayList<String>();
+
+    /**
+     * replace pattern
+     */
+    public List<String> replace = new ArrayList<String>();
+
+    /**
      * match pattern
      */
     public List<String> match = new ArrayList<String>();
@@ -76,6 +86,12 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("translation-rule " + name);
+        for (int i = 0; i < remove.size(); i++) {
+            l.add(cmds.tabulator + "remove " + remove.get(i));
+        }
+        for (int i = 0; i < replace.size(); i++) {
+            l.add(cmds.tabulator + "replace " + replace.get(i));
+        }
         for (int i = 0; i < match.size(); i++) {
             l.add(cmds.tabulator + "match " + match.get(i));
         }
@@ -107,8 +123,13 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
+        l.add("1 2    remove              remove string");
+        l.add("2 2,.    <str>             regular expression");
         l.add("1 2    match               match string");
         l.add("2 2,.    <str>             regular expression");
+        l.add("1 2    replace             replace string");
+        l.add("2 3      <str>             regular expression");
+        l.add("3 .        <str>           new string");
         l.add("1 2    text                place text");
         l.add("2 2,.    <str>             text");
         l.add("1 2    variable            place variable from match");
@@ -140,6 +161,24 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
                 match.remove(a);
             } else {
                 match.add(a);
+            }
+            return;
+        }
+        if (a.equals("remove")) {
+            a = cmd.getRemaining();
+            if (negated) {
+                remove.remove(a);
+            } else {
+                remove.add(a);
+            }
+            return;
+        }
+        if (a.equals("replace")) {
+            a = cmd.getRemaining();
+            if (negated) {
+                replace.remove(a);
+            } else {
+                replace.add(a);
             }
             return;
         }
@@ -181,10 +220,22 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
     /**
      * do translation
      *
-     * @param src what to translate
+     * @param orig what to translate
      * @return translated text, null if not matched
      */
-    public String doTranslate(String src) {
+    public String doTranslate(String orig) {
+        String src = orig;
+        for (int i = 0; i < remove.size(); i++) {
+            src = src.replaceAll(remove.get(i), "");
+        }
+        for (int i = 0; i < replace.size(); i++) {
+            String a = replace.get(i);
+            int o = a.indexOf(" ");
+            if (o < 0) {
+                continue;
+            }
+            src = src.replaceAll(a.substring(0, o), a.substring(o + 1, a.length()));
+        }
         Pattern pat = null;
         Matcher mat = null;
         boolean ok = false;
@@ -230,7 +281,7 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
             res += c;
         }
         if (log) {
-            logger.info("translated " + src + " to " + res);
+            logger.info("translated " + orig + " to " + res);
         }
         return res;
     }

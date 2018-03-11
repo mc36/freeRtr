@@ -11,6 +11,7 @@ import cfg.cfgVrf;
 import clnt.clntProxy;
 import clnt.clntModem;
 import clnt.clntSpeed;
+import clnt.clntVoice;
 import ifc.ifcEther;
 import ip.ipCor4;
 import ip.ipCor6;
@@ -528,6 +529,37 @@ public class userPacket {
                 }
                 fwd.protoPack(ifc, pck.copyBytes(true, true));
             }
+            return;
+        }
+        if (a.equals("voice")) {
+            clntVoice sv = new clntVoice();
+            sv.called = cmd.word();
+            sv.calling = cmd.word();
+            if (sv.calling.length() < 1) {
+                sv.calling = "sip:voice@" + cfgAll.hostName;
+            }
+            if (sv.callStart()) {
+                sv.callStop();
+                cmd.error("failed to place call");
+                return;
+            }
+            pipeSide usr = sv.getPipe();
+            List<String> l = bits.txt2buf(cmd.word());
+            if (l == null) {
+                pipeTerm trm = new pipeTerm(pip, usr);
+                trm.doTerm();
+            } else {
+                usr.timeout = 120000;
+                usr.lineTx = pipeSide.modTyp.modeCRLF;
+                usr.lineRx = pipeSide.modTyp.modeCRorLF;
+                userScript t = new userScript(usr, "");
+                t.addLines(l);
+                t.allowConfig = true;
+                t.allowExec = true;
+                t.cmdAll();
+                usr.setClose();
+            }
+            sv.callStop();
             return;
         }
         if (a.equals("modem")) {

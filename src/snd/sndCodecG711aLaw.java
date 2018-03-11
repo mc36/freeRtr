@@ -11,6 +11,10 @@ public class sndCodecG711aLaw extends sndCodec {
         return 8;
     }
 
+    public int getWAVtype() {
+        return 6;
+    }
+
     protected int calcDecodeOneValue(int val) {
         val ^= 0x55;
         boolean signed = (val & 0x80) != 0;

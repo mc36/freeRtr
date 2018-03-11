@@ -361,6 +361,25 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                     continue;
                 }
                 a = a.substring(0, i).trim().toLowerCase();
+                if (a.equals("register") || a.equals("subscribe")) {
+                    url.fromString(uniResLoc.fromEmail(trg));
+                    user = url.username.toLowerCase();
+                    tx.makeOk(rx, null, 120);
+                    tx.copyHeader(rx, "Contact");
+                    if (debugger.servSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    continue;
+                }
+                if (a.equals("options")) {
+                    tx.makeOk(rx, null, 0);
+                    if (debugger.servSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    continue;
+                }
                 if (a.equals("bye") || a.equals("cancel")) {
                     tx.makeOk(rx, null, 0);
                     if (debugger.servSipTraf) {

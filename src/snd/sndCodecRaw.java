@@ -11,6 +11,10 @@ public class sndCodecRaw extends sndCodec {
         return 7;
     }
 
+    public int getWAVtype() {
+        return 1;
+    }
+
     protected int calcDecodeOneValue(int val) {
         if ((val & 0x80) == 0) {
             return val << 8;

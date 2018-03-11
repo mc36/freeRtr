@@ -74,6 +74,7 @@ import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
+import serv.servVoice;
 import tab.tabGen;
 import tab.tabRouteEntry;
 import user.userFilter;
@@ -394,6 +395,11 @@ public class cfgAll {
      * sip modem daemons
      */
     public static servGenList<servModem> dmnModem = new servGenList<servModem>();
+
+    /**
+     * sip voice daemons
+     */
+    public static servGenList<servVoice> dmnVoice = new servGenList<servVoice>();
 
     /**
      * sip proxy daemons
@@ -2763,6 +2769,7 @@ public class cfgAll {
         dmnPop3.getShRun(l, filter);
         dmnSmtp.getShRun(l, filter);
         dmnModem.getShRun(l, filter);
+        dmnVoice.getShRun(l, filter);
         dmnSip.getShRun(l, filter);
         dmnRpki.getShRun(l, filter);
         dmnNrpe.getShRun(l, filter);

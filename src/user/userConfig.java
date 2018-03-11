@@ -107,6 +107,7 @@ import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
+import serv.servVoice;
 import tab.tabGen;
 import tab.tabNatCfgN;
 import tab.tabPbrN;
@@ -573,6 +574,8 @@ public class userConfig {
         l.add("2  3    smtp                         configure a smtp server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    modem                        configure a modem server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    voice                        configure a voice server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    sip                          configure a sip server");
         l.add("3  .      <name>                     name of server");
@@ -1080,6 +1083,10 @@ public class userConfig {
             }
             if (a.equals("modem")) {
                 daemonMake(new servModem(), cfgAll.dmnModem);
+                return;
+            }
+            if (a.equals("voice")) {
+                daemonMake(new servVoice(), cfgAll.dmnVoice);
                 return;
             }
             if (a.equals("sip")) {
@@ -1720,6 +1727,10 @@ public class userConfig {
             }
             if (a.equals("modem")) {
                 daemonErase(new servModem(), cfgAll.dmnModem);
+                return;
+            }
+            if (a.equals("voice")) {
+                daemonErase(new servVoice(), cfgAll.dmnVoice);
                 return;
             }
             if (a.equals("sip")) {

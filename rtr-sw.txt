@@ -719,6 +719,46 @@ ipv6 flow v1 collect
 !
 !
 !
+translation-rule 1
+ remove %20
+ remove -
+ remove \(
+ remove \)
+ replace \+36 06
+ match ^sip:(?<n>[0-9]+)@(?<d>.*)$
+ match ^.*<sip:(?<n>[0-9]+)@(?<d>.*)>.*$
+ match ^(?<n>[0-9]+)$
+ text "
+ variable n
+ text "
+ character 32
+ text <sip:
+ variable n
+ text @10.10.10.10>
+ log
+ exit
+!
+translation-rule 2
+ match .*
+ text "97" <sip:97@10.10.10.10>
+ exit
+!
+dial-peer 1
+ match-calling .*
+ match-called .*
+ translate-out-calling 2
+ translate-out-calling 1
+ translate-out-called 1
+ port-local 5060
+ register 5000
+ log
+ vrf v1
+ source loopback0
+ myname 97
+ target 10.10.10.10
+ direction both
+ exit
+!
 alias test bash description 
 alias test bash parameter optional
 !

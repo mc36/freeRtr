@@ -11,6 +11,10 @@ public class sndPcm extends sndCodec {
         return -1;
     }
 
+    public int getWAVtype() {
+        return 1;
+    }
+
     protected int calcDecodeOneValue(int val) {
         if ((val & 0x80) != 0) {
             return -((0x80 - (val & 0x7f)) << 8);

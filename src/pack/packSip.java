@@ -174,9 +174,12 @@ public class packSip {
             buf1 = bits.byteConcat(buf1, pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
         }
         buf1 = bits.byteConcat(buf1, buf2);
-        int i = pipe.ready2tx();
+        int o = pipe.ready2tx();
         pipe.morePut(buf1, 0, buf1.length);
-        for (; i != pipe.ready2tx();) {
+        for (int i = 0; i < 10; i++) {
+            if (o == pipe.ready2tx()) {
+                break;
+            }
             bits.sleep(100);
         }
     }

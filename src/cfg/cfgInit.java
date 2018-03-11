@@ -76,6 +76,7 @@ import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
+import serv.servVoice;
 import tab.tabGen;
 import user.userConfig;
 import user.userExec;
@@ -619,6 +620,7 @@ public class cfgInit implements Runnable {
         servRadius.defaultF = createFilter(servRadius.defaultL, srvdefsF);
         servRfb.defaultF = createFilter(servRfb.defaultL, srvdefsF, cfgLin.linedefF);
         servModem.defaultF = createFilter(servModem.defaultL, srvdefsF, cfgLin.linedefF);
+        servVoice.defaultF = createFilter(servVoice.defaultL, srvdefsF, cfgLin.linedefF);
         servSip.defaultF = createFilter(servSip.defaultL, srvdefsF);
         servSmtp.defaultF = createFilter(servSmtp.defaultL, srvdefsF);
         servSnmp.defaultF = createFilter(servSnmp.defaultL, srvdefsF);

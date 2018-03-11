@@ -154,11 +154,17 @@ public class userShow {
             long tim = bits.getTime() + cfgAll.timeServerOffset;
             if (a.equals("big")) {
                 l = userScreen.fontText(bits.time2str(cfgAll.timeZoneName, tim, 2), " ", userFonts1.fontFiller, userFonts1.fontDefault());
-            } else {
-                l.add("clock: " + bits.time2str(cfgAll.timeZoneName, tim, 3));
-                l.add("clock: " + bits.time2str(cfgAll.timeZoneName, tim, 4));
-                l.add("zone: " + cfgAll.timeZoneName + " diff: " + bits.timeDump(cfgAll.timeServerOffset / 1000));
+                rdr.putStrArr(l);
+                return null;
             }
+            if (a.equals("raw")) {
+                l.add("" + tim);
+                rdr.putStrArr(l);
+                return null;
+            }
+            l.add("clock: " + bits.time2str(cfgAll.timeZoneName, tim, 3));
+            l.add("clock: " + bits.time2str(cfgAll.timeZoneName, tim, 4));
+            l.add("zone: " + cfgAll.timeZoneName + " diff: " + bits.timeDump(cfgAll.timeServerOffset / 1000));
             rdr.putStrArr(l);
             return null;
         }

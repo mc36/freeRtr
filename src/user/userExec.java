@@ -567,6 +567,7 @@ public class userExec {
         hl.add("3 .        <name>                name of list");
         hl.add("2 3,.    clock                   current date and time");
         hl.add("3 .        big                   a big clock");
+        hl.add("3 .        raw                   a raw clock");
         hl.add("2 3,.    logging                 logged messages");
         hl.add("3 4        last                  last messages");
         hl.add("4 .          <num>               message count");
@@ -1038,6 +1039,10 @@ public class userExec {
         hl.add("2 3      modem                   open modem session");
         hl.add("3 4,.      <addr>                address to call");
         hl.add("4 .          <addr>              address who calling");
+        hl.add("2 3      voice                   open voice session");
+        hl.add("3 4,.      <addr>                address to call");
+        hl.add("4 5,.        <addr>              address who calling");
+        hl.add("5 .            <name>            script to run");
         hl.add("1 2    test                      test various things");
         hl.add("2 3      dns                     dns zone creator");
         hl.add("3 .        <name>                name of zone");

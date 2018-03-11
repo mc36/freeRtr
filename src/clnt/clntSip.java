@@ -359,7 +359,7 @@ public class clntSip implements Runnable {
         }
         callTrg = callAck.headerGet("To", 1);
         callCnt = uniResLoc.fromEmail(callAck.headerGet("Contact", 1));
-        callAck.makeReq("ACK", callCnt, callSrc, callTrg, getCont(), getVia(), callId, callSeq, 0);
+        callAck.makeReq("ACK", null, callSrc, callTrg, getCont(), getVia(), callId, callSeq, 0);
         callAck.addAuthor(callAuth, usr, pwd);
         if (debugger.clntSipTraf) {
             callAck.dump("tx");
@@ -482,6 +482,25 @@ public class clntSip implements Runnable {
             cmds cmd = new cmds("sip", sip.command);
             String a = cmd.word().toLowerCase();
             if (a.length() < 1) {
+                continue;
+            }
+            if (a.equals("register") || a.equals("subscribe")) {
+                packSip tx = sip.byteCopy(null);
+                tx.makeOk(sip, null, 120);
+                tx.copyHeader(sip, "Contact");
+                if (debugger.clntSipTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
+            if (a.equals("options")) {
+                packSip tx = sip.byteCopy(null);
+                tx.makeOk(sip, null, 0);
+                if (debugger.clntSipTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
                 continue;
             }
             if (a.startsWith("sip/")) {
@@ -629,6 +648,23 @@ public class clntSip implements Runnable {
                     continue;
                 }
                 a = a.substring(0, i).trim().toLowerCase();
+                if (a.equals("register") || a.equals("subscribe")) {
+                    tx.makeOk(sip, null, 120);
+                    tx.copyHeader(sip, "Contact");
+                    if (debugger.clntSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    continue;
+                }
+                if (a.equals("options")) {
+                    tx.makeOk(sip, null, 0);
+                    if (debugger.clntSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    continue;
+                }
                 if (a.equals("bye") || a.equals("cancel")) {
                     tx.makeOk(sip, null, 0);
                     if (debugger.clntSipTraf) {

@@ -27,6 +27,13 @@ public abstract class sndCodec {
     public abstract int getRTPtype();
 
     /**
+     * get wav type
+     *
+     * @return type
+     */
+    public abstract int getWAVtype();
+
+    /**
      * construct tables
      */
     public sndCodec() {
@@ -131,6 +138,32 @@ public abstract class sndCodec {
      */
     public int[] decodeBuf(byte[] buf) {
         return decodeBuf(buf, 0, buf.length);
+    }
+
+    /**
+     * decode buffer
+     *
+     * @param buf buffer to use
+     * @param ofs offset where from
+     * @param siz number of samples
+     * @return result
+     */
+    public byte[] degradeBuf(byte[] buf, int ofs, int siz) {
+        byte[] res = new byte[siz];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = (byte) (decodeInt(buf[ofs + i]) >>> 8);
+        }
+        return res;
+    }
+
+    /**
+     * decode buffer
+     *
+     * @param buf buffer to use
+     * @return result
+     */
+    public byte[] degradeBuf(byte[] buf) {
+        return degradeBuf(buf, 0, buf.length);
     }
 
 }

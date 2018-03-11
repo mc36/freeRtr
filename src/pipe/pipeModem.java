@@ -58,7 +58,11 @@ class pipeModemTx extends TimerTask {
 
     private int syncSrc;
 
+    private packHolder pck = new packHolder(true, true);
+
     private final static int paySiz = 160;
+
+    private final static int payInt = 1000 / (8000 / paySiz);
 
     public pipeModemTx(pipeSide line, sndCodec sound, packRtp conn, int freq) {
         pipe = line;
@@ -67,7 +71,7 @@ class pipeModemTx extends TimerTask {
         syncSrc = bits.randomD();
         modem.carrier = freq;
         modem.sampDat = new int[1024];
-        keepTimer.scheduleAtFixedRate(this, 10, 20);
+        keepTimer.scheduleAtFixedRate(this, 10, payInt);
     }
 
     public void doer() {
@@ -98,7 +102,7 @@ class pipeModemTx extends TimerTask {
         byte[] buf = new byte[paySiz];
         queue.getCopy(buf, 0, 0, buf.length);
         queue.getSkip(buf.length);
-        packHolder pck = new packHolder(true, true);
+        pck.clear();
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.RTPtyp = codec.getRTPtype();
@@ -137,6 +141,7 @@ class pipeModemRx implements Runnable {
     }
 
     public void doer() {
+        packHolder pck = new packHolder(true, true);
         for (;;) {
             if (rtp.isClosed() != 0) {
                 pipe.setClose();
@@ -146,7 +151,6 @@ class pipeModemRx implements Runnable {
                 rtp.setClose();
                 return;
             }
-            packHolder pck = new packHolder(true, true);
             if (rtp.recvPack(pck, true) < 1) {
                 return;
             }
