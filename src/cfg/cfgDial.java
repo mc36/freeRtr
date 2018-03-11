@@ -151,6 +151,16 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      */
     public List<cfgTrnsltn> trnsOutDst = new ArrayList<cfgTrnsltn>();
 
+    /**
+     * prematch translate src
+     */
+    public List<cfgTrnsltn> prmtSrc = new ArrayList<cfgTrnsltn>();
+
+    /**
+     * prematch translate dst
+     */
+    public List<cfgTrnsltn> prmtDst = new ArrayList<cfgTrnsltn>();
+
     private clntSip sip;
 
     public int compare(cfgDial o1, cfgDial o2) {
@@ -196,6 +206,9 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
             return false;
         }
         calling = stripAddr(calling);
+        called = stripAddr(called);
+        calling = cfgTrnsltn.doTranslate(prmtSrc, calling);
+        called = cfgTrnsltn.doTranslate(prmtDst, called);
         boolean ok = false;
         for (int i = 0; i < matSrc.size(); i++) {
             if (!calling.matches(matSrc.get(i))) {
@@ -207,7 +220,6 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         if (!ok) {
             return false;
         }
-        called = stripAddr(called);
         ok = false;
         for (int i = 0; i < matDst.size(); i++) {
             if (!called.matches(matDst.get(i))) {
@@ -275,8 +287,12 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         if (sip == null) {
             return true;
         }
-        calling = cfgTrnsltn.doTranslate(trnsOutSrc, stripAddr(calling));
-        called = cfgTrnsltn.doTranslate(trnsOutDst, stripAddr(called));
+        calling = stripAddr(calling);
+        called = stripAddr(called);
+        calling = cfgTrnsltn.doTranslate(prmtSrc, calling);
+        called = cfgTrnsltn.doTranslate(prmtDst, called);
+        calling = cfgTrnsltn.doTranslate(trnsOutSrc, calling);
+        called = cfgTrnsltn.doTranslate(trnsOutDst, called);
         if (log) {
             logger.info("outgoing call " + called + " from " + calling);
         }
@@ -317,6 +333,12 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("dial-peer " + name);
+        for (int i = 0; i < prmtSrc.size(); i++) {
+            l.add(cmds.tabulator + "prematch-calling " + prmtSrc.get(i).name);
+        }
+        for (int i = 0; i < prmtDst.size(); i++) {
+            l.add(cmds.tabulator + "prematch-called " + prmtDst.get(i).name);
+        }
         for (int i = 0; i < matSrc.size(); i++) {
             l.add(cmds.tabulator + "match-calling " + matSrc.get(i));
         }
@@ -401,6 +423,10 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         l.add("1 2    translate-out-calling   translate outgoing calling string");
         l.add("2 .      <name>                rule name");
         l.add("1 2    translate-out-called    translate outgoing called string");
+        l.add("2 .      <name>                rule name");
+        l.add("1 2    prematch-calling        prematch translate outgoing calling string");
+        l.add("2 .      <name>                rule name");
+        l.add("1 2    prematch-called         prematch translate outgoing called string");
         l.add("2 .      <name>                rule name");
         l.add("1 2    vrf                     vrf to use");
         l.add("2 .      <name>                vrf name");
@@ -539,6 +565,32 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
                 trnsOutDst.remove(rule);
             } else {
                 trnsOutDst.add(rule);
+            }
+            return;
+        }
+        if (a.equals("prematch-calling")) {
+            cfgTrnsltn rule = cfgAll.trnsltnFind(cmd.word(), false);
+            if (rule == null) {
+                cmd.error("no such rule");
+                return;
+            }
+            if (negated) {
+                prmtSrc.remove(rule);
+            } else {
+                prmtSrc.add(rule);
+            }
+            return;
+        }
+        if (a.equals("prematch-called")) {
+            cfgTrnsltn rule = cfgAll.trnsltnFind(cmd.word(), false);
+            if (rule == null) {
+                cmd.error("no such rule");
+                return;
+            }
+            if (negated) {
+                prmtDst.remove(rule);
+            } else {
+                prmtDst.add(rule);
             }
             return;
         }
