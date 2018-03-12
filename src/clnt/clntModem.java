@@ -80,12 +80,7 @@ public class clntModem {
             return true;
         }
         pipeRtp = pipePer.getCall();
-        sndCodec codec;
-        if (pipePer.getCodec()) {
-            codec = new sndCodecG711aLaw();
-        } else {
-            codec = new sndCodecG711uLaw();
-        }
+        sndCodec codec = pipePer.getCodec();
         pipeLine pip = new pipeLine(32768, false);
         pipeUsr = pip.getSide();
         pipeMdm = pip.getSide();

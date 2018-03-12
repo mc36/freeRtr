@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.3.10-testing, done by cs@nop.;-;-
--;-;2018-03-11 04:49:17, took 07:39:53 on 1377 cases;-;-
+-;-;freeRouter v18.3.12-testing, done by cs@nop.;-;-
+-;-;2018-03-12 11:20:27, took 07:47:59 on 1378 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -183,6 +183,7 @@ conn-modem03.tst;0;modem with alaw through proxy;successfully;finished
 conn-modem04.tst;0;modem with ulaw through proxy;successfully;finished
 conn-modem05.tst;0;modem with alaw through peer;successfully;finished
 conn-modem06.tst;0;modem with ulaw through peer;successfully;finished
+conn-modem07.tst;0;modem with alaw and ulaw through peer;successfully;finished
 conn-mplsip01.tst;0;mplsip over ipv4;successfully;finished
 conn-mplsip02.tst;0;mplsip over ipv6;successfully;finished
 conn-mplsip03.tst;0;mplsip over mplsip;successfully;finished

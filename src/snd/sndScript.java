@@ -200,44 +200,6 @@ public class sndScript implements Runnable {
                 strm.setClose();
                 continue;
             }
-            if (a.equals("forward-start")) {
-                if (fwd != null) {
-                    user.linePut("error already-forwarding");
-                    continue;
-                }
-                if (rec != null) {
-                    user.linePut("error already-recording");
-                    continue;
-                }
-                if (dtmf != null) {
-                    user.linePut("error already-detecting");
-                    continue;
-                }
-                if (play != null) {
-                    user.linePut("error already-playing");
-                    continue;
-                }
-                i = s.indexOf(" ");
-                if (i < 0) {
-                    user.linePut("error bad-param");
-                    continue;
-                }
-                a = s.substring(0, i).trim();
-                s = s.substring(i, s.length()).trim();
-                cfgDial pipePer = cfgAll.dialFind(a, s, null);
-                if (pipePer == null) {
-                    user.linePut("error bad-number");
-                    continue;
-                }
-                if (pipePer.makeCall(a, s)) {
-                    user.linePut("error unable-call");
-                    continue;
-                }
-                fwd = pipePer.getCall();
-                new sndConnect(strm, fwd);
-                user.linePut("forwarded");
-                continue;
-            }
             if (a.equals("play-stop")) {
                 if (play == null) {
                     user.linePut("error not-playing");
@@ -317,6 +279,44 @@ public class sndScript implements Runnable {
             }
             if (a.equals("forward-running")) {
                 user.linePut("forward-running " + (fwd != null));
+                continue;
+            }
+            if (a.equals("forward-start")) {
+                if (fwd != null) {
+                    user.linePut("error already-forwarding");
+                    continue;
+                }
+                if (rec != null) {
+                    user.linePut("error already-recording");
+                    continue;
+                }
+                if (dtmf != null) {
+                    user.linePut("error already-detecting");
+                    continue;
+                }
+                if (play != null) {
+                    user.linePut("error already-playing");
+                    continue;
+                }
+                i = s.indexOf(" ");
+                if (i < 0) {
+                    user.linePut("error bad-param");
+                    continue;
+                }
+                a = s.substring(0, i).trim();
+                s = s.substring(i, s.length()).trim();
+                cfgDial pipePer = cfgAll.dialFind(a, s, null);
+                if (pipePer == null) {
+                    user.linePut("error bad-number");
+                    continue;
+                }
+                if (pipePer.makeCall(a, s)) {
+                    user.linePut("error unable-call");
+                    continue;
+                }
+                fwd = pipePer.getCall();
+                new sndConnect(strm, fwd, codr, pipePer.getCodec());
+                user.linePut("forwarded");
                 continue;
             }
             if (a.equals("play-start")) {

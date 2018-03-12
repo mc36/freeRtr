@@ -180,6 +180,7 @@ qc pass: modem with alaw through proxy
 qc pass: modem with ulaw through proxy
 qc pass: modem with alaw through peer
 qc pass: modem with ulaw through peer
+qc pass: modem with alaw and ulaw through peer
 qc pass: mplsip over ipv4
 qc pass: mplsip over ipv6
 qc pass: mplsip over mplsip

@@ -11,6 +11,10 @@ public class sndCodecG711aLaw extends sndCodec {
         return 8;
     }
 
+    public String getRTPname() {
+        return "PCMA";
+    }
+
     public int getWAVtype() {
         return 6;
     }

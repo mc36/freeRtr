@@ -8003,3 +8003,5 @@ qc pass: modem with alaw through proxy
 qc pass: modem with ulaw through proxy
 qc pass: modem with alaw through peer
 qc pass: modem with ulaw through peer
+---------------------------------- 2018-03-12 03:32:27
+qc pass: modem with alaw and ulaw through peer

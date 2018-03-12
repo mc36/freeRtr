@@ -1,4 +1,4 @@
-description modem with alaw through proxy
+description modem with alaw and ulaw through peer
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -47,9 +47,15 @@ dial-peer 1
  target 1.1.1.1
  direction out
  exit
-server sip sp
- codec alaw
+dial-peer 2
+ codec ulaw
+ match-calling .*
+ match-called .*
  vrf v1
+ myname 77
+ target 1.1.2.2
+ port-local 5060
+ direction in
  exit
 !
 
@@ -65,13 +71,13 @@ int eth1
  ipv6 addr 2345::2 ffff::
  exit
 dial-peer 1
- codec alaw
+ codec ulaw
  match-calling .*
  match-called .*
  vrf v1
  myname 99
- register 1000
  target 1.1.2.1
+ port-local 5060
  direction out
  exit
 !

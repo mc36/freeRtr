@@ -239,7 +239,7 @@ class servModemDoer implements Runnable {
             }
             tx.writeDown();
             tx.makeOk(rx, getContact(), 0);
-            tx.makeSdp(conn.iface.addr, lower.getDataPort(), lower.aLaw);
+            tx.makeSdp(conn.iface.addr, lower.getDataPort(), getCodec());
             if (debugger.servModemTraf) {
                 tx.dump("tx");
             }
@@ -297,12 +297,15 @@ class servModemDoer implements Runnable {
             }
         }
         packSip tx = new packSip(ctrl);
+        String a = rx.headerGet("CSeq", 1) + " ";
+        int csq = a.indexOf(" ");
+        csq = bits.str2num(a.substring(0, csq).trim());
         String via = sip.headerGet("Via", 1);
         String src = sip.headerGet("From", 1);
         String trg = sip.headerGet("To", 1);
         String cid = sip.headerGet("Call-Id", 1);
         trg += ";tag=" + bits.randomD();
-        tx.makeReq("BYE", getContact(), trg, src, null, via, cid, bits.randomD(), 0);
+        tx.makeReq("BYE", getContact(), trg, src, null, via, cid, csq + 1, 0);
         if (debugger.servModemTraf) {
             tx.dump("tx");
         }

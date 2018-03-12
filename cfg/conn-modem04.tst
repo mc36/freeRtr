@@ -70,7 +70,7 @@ dial-peer 1
  match-called .*
  vrf v1
  myname 99
- register 2000
+ register 1000
  target 1.1.2.1
  direction out
  exit

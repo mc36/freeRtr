@@ -11,6 +11,10 @@ public class sndCodecG711uLaw extends sndCodec {
         return 0;
     }
 
+    public String getRTPname() {
+        return "PCMU";
+    }
+
     public int getWAVtype() {
         return 7;
     }

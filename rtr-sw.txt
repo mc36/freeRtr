@@ -740,17 +740,17 @@ translation-rule 1
 !
 translation-rule 2
  match .*
- text "97" <sip:97@10.10.10.10>
+ text "96" <sip:97@10.10.10.10>
  exit
 !
 dial-peer 1
  match-calling .*
  match-called .*
  translate-out-calling 2
- translate-out-calling 1
  translate-out-called 1
  port-local 5060
- register 5000
+ keepalive 15000
+ register 45000
  log
  vrf v1
  source loopback0

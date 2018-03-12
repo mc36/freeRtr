@@ -7,6 +7,9 @@ import java.util.Comparator;
 import java.util.List;
 import pack.packRtp;
 import pack.packSip;
+import snd.sndCodec;
+import snd.sndCodecG711aLaw;
+import snd.sndCodecG711uLaw;
 import tab.tabGen;
 import user.userFilter;
 import user.userHelping;
@@ -251,7 +254,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         calling = stripAddr(calling);
         called = stripAddr(called);
         if (log) {
-            logger.info("incoming call " + called + " from " + calling);
+            logger.info("incoming call " + called + " from " + calling + " started");
         }
         return cfgAll.dialFind(calling, called, this);
     }
@@ -294,9 +297,22 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         calling = cfgTrnsltn.doTranslate(trnsOutSrc, calling);
         called = cfgTrnsltn.doTranslate(trnsOutDst, called);
         if (log) {
-            logger.info("outgoing call " + called + " from " + calling);
+            logger.info("outgoing call " + called + " from " + calling + " started");
         }
         return sip.makeCall(calling, called);
+    }
+
+    /**
+     * noticed call end
+     *
+     * @param dir direction, true=out, false=in
+     * @param calling calling number
+     * @param called called number
+     */
+    public void stoppedCall(boolean dir, String calling, String called) {
+        if (log) {
+            logger.info((dir ? "outgoing" : "incoming") + " call " + called + " from " + calling + " ended");
+        }
     }
 
     /**
@@ -326,8 +342,12 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      *
      * @return codec
      */
-    public boolean getCodec() {
-        return aLaw;
+    public sndCodec getCodec() {
+        if (aLaw) {
+            return new sndCodecG711aLaw();
+        } else {
+            return new sndCodecG711uLaw();
+        }
     }
 
     public List<String> getShRun(boolean filter) {
@@ -381,9 +401,9 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
             l.add(cmds.tabulator + "no source");
         }
         cmds.cfgLine(l, endpt == null, cmds.tabulator, "myname", endpt);
-        cmds.cfgLine(l, trg == null, cmds.tabulator, "target", trg);
         cmds.cfgLine(l, usr == null, cmds.tabulator, "username", usr);
         cmds.cfgLine(l, pwd == null, cmds.tabulator, "password", authLocal.passwdEncode(pwd));
+        cmds.cfgLine(l, trg == null, cmds.tabulator, "target", trg);
         switch (direction) {
             case 0:
                 a = "none";

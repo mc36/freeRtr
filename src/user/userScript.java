@@ -763,6 +763,11 @@ public class userScript {
             a = pipe.lineGet(user2str(a));
             return a;
         }
+        if (a.equals("flush")) {
+            a = getWord(true);
+            pipe.moreSkip(pipe.ready2rx());
+            return a;
+        }
         if (a.equals("return")) {
             returned = true;
             return getWord(true);

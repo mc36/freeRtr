@@ -9,6 +9,7 @@ import util.logger;
 import util.version;
 import addr.addrIP;
 import clnt.clntHttp;
+import snd.sndCodec;
 import util.uniResLoc;
 
 /**
@@ -355,7 +356,7 @@ public class packSip {
      * @param port local port
      * @param alaw true=aLaw, false=uLaw
      */
-    public void makeSdp(addrIP addr, int port, boolean alaw) {
+    public void makeSdp(addrIP addr, int port, sndCodec alaw) {
         header.add("Content-Type: application/sdp");
         content.add("v=0");
         int i;
@@ -368,16 +369,8 @@ public class packSip {
         content.add("s=call");
         content.add("c=IN IP" + i + " " + addr);
         content.add("t=0 0");
-        String a;
-        if (alaw) {
-            i = 8;
-            a = "A";
-        } else {
-            i = 0;
-            a = "U";
-        }
-        content.add("m=audio " + port + " RTP/AVP " + i);
-        content.add("a=rtpmap:" + i + " PCM" + a + "/8000");
+        content.add("m=audio " + port + " RTP/AVP " + alaw.getRTPtype());
+        content.add("a=rtpmap:" + alaw.getRTPtype() + " " + alaw.getRTPname() + "/8000");
     }
 
     /**

@@ -27,6 +27,13 @@ public abstract class sndCodec {
     public abstract int getRTPtype();
 
     /**
+     * get rtp name
+     *
+     * @return name
+     */
+    public abstract String getRTPname();
+
+    /**
      * get wav type
      *
      * @return type

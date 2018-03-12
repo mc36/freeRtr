@@ -8,7 +8,11 @@ package snd;
 public class sndPcm extends sndCodec {
 
     public int getRTPtype() {
-        return -1;
+        return 5;
+    }
+
+    public String getRTPname() {
+        return "PCM";
     }
 
     public int getWAVtype() {

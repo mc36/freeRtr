@@ -14,6 +14,9 @@ import pack.packSip;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtGen;
+import snd.sndCodec;
+import snd.sndCodecG711aLaw;
+import snd.sndCodecG711uLaw;
 import snd.sndConnect;
 import user.userTerminal;
 import util.bits;
@@ -214,6 +217,14 @@ public class clntSip implements Runnable {
         return (portLoc - 3) & 0xfffe;
     }
 
+    private sndCodec getCodec() {
+        if (aLaw) {
+            return new sndCodecG711aLaw();
+        } else {
+            return new sndCodecG711uLaw();
+        }
+    }
+
     /**
      * send subscribe
      *
@@ -295,6 +306,9 @@ public class clntSip implements Runnable {
         callRtp = null;
         callSeq = 0;
         packSip callAck = null;
+        seq++;
+        callSeq = seq;
+        seq++;
         boolean need2inv = true;
         for (int o = 0; o < 8; o++) {
             if (conn == null) {
@@ -302,11 +316,9 @@ public class clntSip implements Runnable {
             }
             if (need2inv) {
                 packSip sip = new packSip(conn);
-                seq++;
-                callSeq = seq;
                 sip.makeReq("INVITE", null, callSrc, callTrg, getCont(), getVia(), callId, callSeq, 0);
                 sip.addAuthor(callAuth, usr, pwd);
-                sip.makeSdp(srcFwd.addr, getDataPort(), aLaw);
+                sip.makeSdp(srcFwd.addr, getDataPort(), getCodec());
                 if (debugger.clntSipTraf) {
                     sip.dump("tx");
                 }
@@ -331,6 +343,9 @@ public class clntSip implements Runnable {
             if (a.equals("401")) {
                 callAuth = sip.headerGet("WWW-Authenticate", 1);
                 need2inv = true;
+                seq++;
+                callSeq = seq;
+                seq++;
                 o--;
                 continue;
             }
@@ -372,6 +387,9 @@ public class clntSip implements Runnable {
      * stop the call
      */
     public void stopCall() {
+        if ((callTrg == null) && (callSrc == null) && (callId == null)) {
+            return;
+        }
         String a;
         if (callRtp != null) {
             callRtp.setClose();
@@ -381,13 +399,15 @@ public class clntSip implements Runnable {
         }
         if (callId != null) {
             packSip sip = new packSip(conn);
-            seq++;
-            sip.makeReq(a, callCnt, callSrc, callTrg, getCont(), getVia(), callId, seq, 0);
+            sip.makeReq(a, callCnt, callSrc, callTrg, getCont(), getVia(), callId, callSeq + 1, 0);
             sip.addAuthor(callAuth, usr, pwd);
             if (debugger.clntSipTraf) {
                 sip.dump("tx");
             }
             sip.writeDown();
+        }
+        if (upper != null) {
+            upper.stoppedCall(true, callSrc, callTrg);
         }
         callSeq = 0;
         callCnt = null;
@@ -531,10 +551,18 @@ public class clntSip implements Runnable {
                 }
                 continue;
             }
-            if (a.equals("ack") || a.equals("bye") || a.equals("cancel")) {
+            if (a.equals("ack")) {
                 continue;
             }
             packSip tx = sip.byteCopy(null);
+            if (a.equals("bye") || a.equals("cancel")) {
+                tx.makeOk(sip, null, 0);
+                if (debugger.clntSipTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
             if (!a.equals("invite")) {
                 tx.makeErr(sip, null, "bad method");
                 if (debugger.clntSipTraf) {
@@ -569,6 +597,9 @@ public class clntSip implements Runnable {
                 tx.writeDown();
                 continue;
             }
+            a = sip.headerGet("CSeq", 1) + " ";
+            int csq = a.indexOf(" ");
+            csq = bits.str2num(a.substring(0, csq).trim());
             String via = sip.headerGet("Via", 1);
             String src = sip.headerGet("From", 1);
             String trg = sip.headerGet("To", 1);
@@ -595,6 +626,9 @@ public class clntSip implements Runnable {
                     tx.dump("tx");
                 }
                 tx.writeDown();
+                if (upper != null) {
+                    upper.stoppedCall(false, newSrc, newTrg);
+                }
                 continue;
             }
             callTrg = "incoming";
@@ -605,10 +639,13 @@ public class clntSip implements Runnable {
                     tx.dump("tx");
                 }
                 tx.writeDown();
+                if (upper != null) {
+                    upper.stoppedCall(false, newSrc, newTrg);
+                }
                 continue;
             }
             tx.makeOk(sip, getCont(), 0);
-            tx.makeSdp(srcFwd.addr, getDataPort(), peer.getCodec());
+            tx.makeSdp(srcFwd.addr, getDataPort(), getCodec());
             if (debugger.clntSipTraf) {
                 tx.dump("tx");
             }
@@ -616,15 +653,18 @@ public class clntSip implements Runnable {
             packRtp data = new packRtp();
             if (data.startConnect(udp, new pipeLine(65536, true), srcFwd, getDataPort(), adr, prt)) {
                 callTrg = null;
-                tx.makeReq("BYE", cnt, trg, src, null, via, cid, bits.randomD(), 0);
+                tx.makeReq("BYE", cnt, trg, src, null, via, cid, csq + 1, 0);
                 if (debugger.clntSipTraf) {
                     tx.dump("tx");
                 }
                 tx.writeDown();
                 peer.stopCall();
+                if (upper != null) {
+                    upper.stoppedCall(false, newSrc, newTrg);
+                }
                 continue;
             }
-            sndConnect conner = new sndConnect(data, peer.getCall());
+            sndConnect conner = new sndConnect(data, peer.getCall(), getCodec(), peer.getCodec());
             for (;;) {
                 if (conner.isClosed() != 0) {
                     break;
@@ -675,12 +715,15 @@ public class clntSip implements Runnable {
                 }
             }
             conner.setClose();
-            tx.makeReq("BYE", cnt, trg, src, null, via, cid, bits.randomD(), 0);
+            tx.makeReq("BYE", cnt, trg, src, null, via, cid, csq + 1, 0);
             if (debugger.clntSipTraf) {
                 tx.dump("tx");
             }
             tx.writeDown();
             peer.stopCall();
+            if (upper != null) {
+                upper.stoppedCall(false, newSrc, newTrg);
+            }
             callTrg = null;
         }
         if (conn != null) {

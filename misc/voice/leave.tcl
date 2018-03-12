@@ -1,5 +1,5 @@
 puts "calling"
-set f [gets]
+set f [gets -]
 set p [string first " " $f]
 set f [string range $f [expr $p + 1] 666]
 set a [exec "show clock raw"]

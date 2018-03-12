@@ -11,6 +11,10 @@ public class sndCodecRaw extends sndCodec {
         return 7;
     }
 
+    public String getRTPname() {
+        return "RAW";
+    }
+
     public int getWAVtype() {
         return 1;
     }

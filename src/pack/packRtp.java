@@ -75,7 +75,7 @@ public class packRtp {
         if ((connData == null) || (connCtrl == null)) {
             return 3;
         }
-        return connData.isClosed() | connCtrl.isClosed();
+        return connData.isClosed();
     }
 
     /**

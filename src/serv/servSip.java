@@ -238,6 +238,15 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
             url.fromString(uniResLoc.fromEmail(trg));
             servSipDoer clnt = lower.findClient(url.username);
             if (clnt != null) {
+                if (user.length() < 1) {
+                    packSip tx = new packSip(pipe);
+                    tx.makeErr(rx, null, "not registered");
+                    if (debugger.servSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    continue;
+                }
                 a = rx.headerGet("Contact", 1);
                 if (a.length() < 1) {
                     rx.header.add("Contact: <sip:peer@" + getPeerContact() + ">");
@@ -256,10 +265,18 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
             if (rply) {
                 continue;
             }
-            if (a.equals("bye") || a.equals("cancel") || a.equals("ack")) {
+            if (a.equals("ack")) {
                 continue;
             }
             packSip tx = new packSip(pipe);
+            if (a.equals("bye") || a.equals("cancel")) {
+                tx.makeOk(rx, null, 0);
+                if (debugger.servSipTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
             if (!a.equals("invite")) {
                 tx.makeErr(rx, null, "cant handle");
                 if (debugger.servSipTraf) {
@@ -278,6 +295,9 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 tx.writeDown();
                 continue;
             }
+            a = rx.headerGet("CSeq", 1) + " ";
+            int csq = a.indexOf(" ");
+            csq = bits.str2num(a.substring(0, csq).trim());
             String via = rx.headerGet("Via", 1);
             if (via.length() < 1) {
                 via = "SIP/2.0/UDP " + getPeerContact() + ";rport;branch=" + bits.randomD();
@@ -329,7 +349,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
             tx.writeDown();
             packRtp data = new packRtp();
             if (data.startConnect(lower.srvVrf.getUdp(adr), new pipeLine(32768, true), conn.iface, lower.getDataPort(), adr, prt)) {
-                tx.makeReq("BYE", cnt, trg, src, null, via, cid, bits.randomD(), 0);
+                tx.makeReq("BYE", cnt, trg, src, null, via, cid, csq + 1, 0);
                 if (debugger.servSipTraf) {
                     tx.dump("tx");
                 }
@@ -337,7 +357,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 peer.stopCall();
                 continue;
             }
-            sndConnect conner = new sndConnect(data, peer.getCall());
+            sndConnect conner = new sndConnect(data, peer.getCall(), peer.getCodec(), peer.getCodec());
             for (;;) {
                 if (conner.isClosed() != 0) {
                     break;
@@ -362,8 +382,6 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 }
                 a = a.substring(0, i).trim().toLowerCase();
                 if (a.equals("register") || a.equals("subscribe")) {
-                    url.fromString(uniResLoc.fromEmail(trg));
-                    user = url.username.toLowerCase();
                     tx.makeOk(rx, null, 120);
                     tx.copyHeader(rx, "Contact");
                     if (debugger.servSipTraf) {
@@ -390,7 +408,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 }
             }
             conner.setClose();
-            tx.makeReq("BYE", cnt, trg, src, null, via, cid, bits.randomD(), 0);
+            tx.makeReq("BYE", cnt, trg, src, null, via, cid, csq + 1, 0);
             if (debugger.servSipTraf) {
                 tx.dump("tx");
             }
