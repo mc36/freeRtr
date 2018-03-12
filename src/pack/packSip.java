@@ -434,7 +434,11 @@ public class packSip {
         command = "SIP/2.0 200 ok";
         copyHeader(src, "Via");
         copyHeader(src, "From");
-        header.add("To: " + src.headerGet("to", 1) + ";tag=" + bits.randomD());
+        String trg = src.headerGet("to", 1);
+        if (trg.indexOf(";tag=") < 0) {
+            trg += ";tag=" + bits.randomD();
+        }
+        header.add("To: " + trg);
         copyHeader(src, "Call-ID");
         copyHeader(src, "CSeq");
         if (cntc != null) {

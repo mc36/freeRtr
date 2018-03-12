@@ -610,7 +610,9 @@ public class clntSip implements Runnable {
                 tx.dump("tx");
             }
             tx.writeDown();
-            trg += ";tag=" + bits.randomD();
+            if (trg.indexOf(";tag=") < 0) {
+                trg += ";tag=" + bits.randomD();
+            }
             sip.headerSet("To", 1, trg);
             tx.makeNumeric("180 ringing", sip, getCont());
             if (debugger.clntSipTraf) {

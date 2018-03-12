@@ -306,18 +306,15 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
             if (cid.length() < 1) {
                 cid = "" + bits.randomD();
             }
-            String cnt = rx.headerGet("Contact", 1);
-            if (cnt.length() < 1) {
-                cnt = "sip:" + getPeerContact();
-            } else {
-                cnt = uniResLoc.fromEmail(cnt);
-            }
+            String cnt = uniResLoc.fromEmail(getMyContact());
             tx.makeNumeric("100 trying", rx, getMyContact());
             if (debugger.servSipTraf) {
                 tx.dump("tx");
             }
             tx.writeDown();
-            trg += ";tag=" + bits.randomD();
+            if (trg.indexOf(";tag=") < 0) {
+                trg += ";tag=" + bits.randomD();
+            }
             rx.headerSet("To", 1, trg);
             tx.makeNumeric("180 ringing", rx, getMyContact());
             if (debugger.servSipTraf) {
@@ -349,7 +346,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
             tx.writeDown();
             packRtp data = new packRtp();
             if (data.startConnect(lower.srvVrf.getUdp(adr), new pipeLine(32768, true), conn.iface, lower.getDataPort(), adr, prt)) {
-                tx.makeReq("BYE", cnt, trg, src, null, via, cid, csq + 1, 0);
+                tx.makeReq("BYE", cnt, trg, src, getMyContact(), via, cid, csq + 1, 0);
                 if (debugger.servSipTraf) {
                     tx.dump("tx");
                 }
@@ -408,7 +405,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 }
             }
             conner.setClose();
-            tx.makeReq("BYE", cnt, trg, src, null, via, cid, csq + 1, 0);
+            tx.makeReq("BYE", cnt, trg, src, getMyContact(), via, cid, csq + 1, 0);
             if (debugger.servSipTraf) {
                 tx.dump("tx");
             }

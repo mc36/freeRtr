@@ -247,6 +247,11 @@ class servVoiceDoer implements Runnable {
                 tx.dump("tx");
             }
             tx.writeDown();
+            String trg = rx.headerGet("To", 1);
+            if (trg.indexOf(";tag=") < 0) {
+                trg += ";tag=" + bits.randomD();
+            }
+            rx.headerSet("To", 1, trg);
             tx.makeNumeric("180 ringing", rx, getContact());
             if (debugger.servVoiceTraf) {
                 tx.dump("tx");
@@ -283,12 +288,7 @@ class servVoiceDoer implements Runnable {
         if (data.startConnect(lower.srvVrf.getUdp(adr), new pipeLine(32768, true), conn.iface, lower.getDataPort(), adr, prt)) {
             return;
         }
-        sndCodec codec;
-        if (lower.aLaw) {
-            codec = new sndCodecG711aLaw();
-        } else {
-            codec = new sndCodecG711uLaw();
-        }
+        sndCodec codec = getCodec();
         List<String> scr = bits.txt2buf(lower.script);
         if (scr == null) {
             data.setClose();
@@ -340,8 +340,8 @@ class servVoiceDoer implements Runnable {
         String src = sip.headerGet("From", 1);
         String trg = sip.headerGet("To", 1);
         String cid = sip.headerGet("Call-Id", 1);
-        trg += ";tag=" + bits.randomD();
-        tx.makeReq("BYE", getContact(), trg, src, null, via, cid, csq + 1, 0);
+        String cnt = uniResLoc.fromEmail(rx.headerGet("Contact", 1));
+        tx.makeReq("BYE", cnt, trg, src, getContact(), via, cid, csq + 1, 0);
         if (debugger.servVoiceTraf) {
             tx.dump("tx");
         }
