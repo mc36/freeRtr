@@ -467,6 +467,9 @@ class userLineHandler implements Runnable {
             exe.executeCommand(s);
         }
         if (parent.autoHangup) {
+            if (parent.loginLogging) {
+                logger.info(user.user + " logged out from " + remote);
+            }
             return;
         }
         s = user.autoCommand;
@@ -475,6 +478,9 @@ class userLineHandler implements Runnable {
             exe.executeCommand(s);
         }
         if (user.autoHangup) {
+            if (parent.loginLogging) {
+                logger.info(user.user + " logged out from " + remote);
+            }
             return;
         }
         for (;;) {

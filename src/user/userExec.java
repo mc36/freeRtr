@@ -1715,8 +1715,11 @@ public class userExec {
             if (cmd.pipe.ready2rx() < 0) {
                 return;
             }
-            String s = cmd.pipe.strGet(1);
-            s = ntry.findKey(s);
+            a = cmd.pipe.strGet(1);
+            if (a == null) {
+                return;
+            }
+            String s = ntry.findKey(a);
             if (s == null) {
                 continue;
             }
@@ -1726,8 +1729,12 @@ public class userExec {
             userExec exe = new userExec(cmd.pipe, reader);
             exe.privileged = privileged;
             s = exe.repairCommand(s);
+            cmd.pipe.strPut(a + " - " + s);
+            if (reader.logging) {
+                logger.info("command menu:" + s + " from " + reader.from);
+            }
             exe.executeCommand(s);
-            break;
+            return;
         }
     }
 

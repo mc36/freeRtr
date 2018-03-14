@@ -58,9 +58,9 @@ public class userReader {
 
     private pipeSide pipe; // pipe to use
 
-    private userHelping help; // help context
+    private String prompt; // current prompt
 
-    private String prompt; // prompt
+    private userHelping help; // help context
 
     private String histD[]; // history data
 

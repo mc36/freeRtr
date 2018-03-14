@@ -7,6 +7,7 @@ import pipe.pipeLine;
 import pipe.pipeSide;
 import tab.tabGen;
 import util.bits;
+import util.logger;
 
 /**
  * tool command language script
@@ -1056,7 +1057,11 @@ class userScriptExec implements Runnable {
     }
 
     public void run() {
-        exe.executeCommand(cmd);
+        try {
+            exe.executeCommand(cmd);
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
         pip.setClose();
     }
 
