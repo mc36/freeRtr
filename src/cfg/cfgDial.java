@@ -43,6 +43,8 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         "dial-peer .*! no myname",
         "dial-peer .*! no log",
         "dial-peer .*! keepalive 0",
+        "dial-peer .*! max-calls-in 1",
+        "dial-peer .*! max-calls-out 1",
         "dial-peer .*! register 0",
         "dial-peer .*! subscribe 0",
         "dial-peer .*! port-local 0",
@@ -164,6 +166,56 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      */
     public List<cfgTrnsltn> prmtDst = new ArrayList<cfgTrnsltn>();
 
+    /**
+     * maximum in calls
+     */
+    public int maxCallsIn = 1;
+
+    /**
+     * maximum out calls
+     */
+    public int maxCallsOut = 1;
+
+    /**
+     * seen in calls
+     */
+    public int seenIn;
+
+    /**
+     * failed in calls
+     */
+    public int failIn;
+
+    /**
+     * seen out calls
+     */
+    public int seenOut;
+
+    /**
+     * failed out calls
+     */
+    public int failOut;
+
+    /**
+     * seen in msgs
+     */
+    public int seenMsgIn;
+
+    /**
+     * failed in msgs
+     */
+    public int failMsgIn;
+
+    /**
+     * seen out msgs
+     */
+    public int seenMsgOut;
+
+    /**
+     * failed out msgs
+     */
+    public int failMsgOut;
+
     private clntSip sip;
 
     public int compare(cfgDial o1, cfgDial o2) {
@@ -181,6 +233,29 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      */
     public cfgDial(String nam) {
         name = "" + bits.str2num(nam);
+    }
+
+    /**
+     * get statistics
+     *
+     * @param call
+     * @return statistics
+     */
+    public String getStats(boolean call) {
+        String a = name + "|";
+        if (call) {
+            a += seenIn + "|" + seenOut + "|" + failIn + "|" + failOut + "|";
+        } else {
+            a += seenMsgIn + "|" + seenMsgOut + "|" + failMsgIn + "|" + failMsgOut + "|";
+        }
+        if (sip == null) {
+            return a + "n/a|n/a";
+        }
+        if (call) {
+            return a + sip.numCallsIn() + "|" + sip.numCallsOut();
+        } else {
+            return a + "n/a|" + sip.numMsgsOut();
+        }
     }
 
     private String stripAddr(String a) {
@@ -202,10 +277,10 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         if (sip == null) {
             return false;
         }
-        if (sip.isCalling()) {
+        if ((direction & 2) == 0) {
             return false;
         }
-        if ((direction & 2) == 0) {
+        if (sip.numCallsOut() >= maxCallsOut) {
             return false;
         }
         calling = stripAddr(calling);
@@ -235,6 +310,36 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
     }
 
     /**
+     * got the msg
+     *
+     * @param calling calling number
+     * @param called called number
+     * @return peer to use, null if none
+     */
+    public cfgDial incomeMsg(String calling, String called) {
+        seenMsgIn++;
+        if (sip == null) {
+            failMsgIn++;
+            return null;
+        }
+        if ((direction & 1) == 0) {
+            failMsgIn++;
+            return null;
+        }
+        calling = stripAddr(calling);
+        called = stripAddr(called);
+        if (log) {
+            logger.info("incoming msg " + called + " from " + calling + " started");
+        }
+        cfgDial res = cfgAll.dialFind(calling, called, this);
+        if (res == null) {
+            failMsgIn++;
+            return null;
+        }
+        return res;
+    }
+
+    /**
      * got the call
      *
      * @param calling calling number
@@ -242,13 +347,17 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      * @return peer to use, null if none
      */
     public cfgDial incomeCall(String calling, String called) {
+        seenIn++;
         if (sip == null) {
-            return null;
-        }
-        if (sip.isCalling()) {
+            failIn++;
             return null;
         }
         if ((direction & 1) == 0) {
+            failIn++;
+            return null;
+        }
+        if (sip.numCallsIn() > maxCallsIn) {
+            failIn++;
             return null;
         }
         calling = stripAddr(calling);
@@ -256,7 +365,12 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         if (log) {
             logger.info("incoming call " + called + " from " + calling + " started");
         }
-        return cfgAll.dialFind(calling, called, this);
+        cfgDial res = cfgAll.dialFind(calling, called, this);
+        if (res == null) {
+            failIn++;
+            return null;
+        }
+        return res;
     }
 
     /**
@@ -280,15 +394,48 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
     }
 
     /**
+     * send msg
+     *
+     * @param calling calling number
+     * @param called called number
+     * @param msg message
+     * @return false on success, true on error
+     */
+    public boolean sendMsg(String calling, String called, List<String> msg) {
+        seenMsgOut++;
+        if (sip == null) {
+            failMsgOut++;
+            return true;
+        }
+        calling = stripAddr(calling);
+        called = stripAddr(called);
+        calling = cfgTrnsltn.doTranslate(prmtSrc, calling);
+        called = cfgTrnsltn.doTranslate(prmtDst, called);
+        calling = cfgTrnsltn.doTranslate(trnsOutSrc, calling);
+        called = cfgTrnsltn.doTranslate(trnsOutDst, called);
+        if (log) {
+            logger.info("outgoing msg " + called + " from " + calling + " started");
+        }
+        boolean res = sip.sendMsg(calling, called, msg);
+        if (res) {
+            failMsgOut++;
+            return true;
+        }
+        return res;
+    }
+
+    /**
      * make the call
      *
      * @param calling calling number
      * @param called called number
-     * @return false if ok, true if error
+     * @return call id, null if error
      */
-    public boolean makeCall(String calling, String called) {
+    public String makeCall(String calling, String called) {
+        seenOut++;
         if (sip == null) {
-            return true;
+            failOut++;
+            return null;
         }
         calling = stripAddr(calling);
         called = stripAddr(called);
@@ -299,7 +446,12 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         if (log) {
             logger.info("outgoing call " + called + " from " + calling + " started");
         }
-        return sip.makeCall(calling, called);
+        String res = sip.makeCall(calling, called);
+        if (res == null) {
+            failOut++;
+            return null;
+        }
+        return res;
     }
 
     /**
@@ -317,24 +469,27 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
 
     /**
      * stop the call
+     *
+     * @param cid call id
      */
-    public void stopCall() {
+    public void stopCall(String cid) {
         if (sip == null) {
             return;
         }
-        sip.stopCall();
+        sip.stopCall(cid);
     }
 
     /**
      * get call
      *
+     * @param cid call id
      * @return rtp
      */
-    public packRtp getCall() {
+    public packRtp getCall(String cid) {
         if (sip == null) {
             return null;
         }
-        return sip.getCall();
+        return sip.getCall(cid);
     }
 
     /**
@@ -404,6 +559,8 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         cmds.cfgLine(l, usr == null, cmds.tabulator, "username", usr);
         cmds.cfgLine(l, pwd == null, cmds.tabulator, "password", authLocal.passwdEncode(pwd));
         cmds.cfgLine(l, trg == null, cmds.tabulator, "target", trg);
+        l.add(cmds.tabulator + "max-calls-in " + maxCallsIn);
+        l.add(cmds.tabulator + "max-calls-out " + maxCallsOut);
         switch (direction) {
             case 0:
                 a = "none";
@@ -468,6 +625,10 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         l.add("1 .    log                     log calls");
         l.add("1 2    keepalive               keepalive to peer");
         l.add("2 .      <num>                 time in ms");
+        l.add("1 2    max-calls-in            maximum in calls allowed");
+        l.add("2 .      <num>                 limit");
+        l.add("1 2    max-calls-out           maximum out calls allowed");
+        l.add("2 .      <num>                 limit");
         l.add("1 2    register                register to peer");
         l.add("2 .      <num>                 time in ms");
         l.add("1 2    subscribe               subscribe to peer");
@@ -630,6 +791,20 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
                 portRem = packSip.port;
             }
             doStartup();
+            return;
+        }
+        if (a.equals("max-calls-in")) {
+            maxCallsIn = bits.str2num(cmd.word());
+            if (negated) {
+                maxCallsIn = 1;
+            }
+            return;
+        }
+        if (a.equals("max-calls-out")) {
+            maxCallsOut = bits.str2num(cmd.word());
+            if (negated) {
+                maxCallsOut = 1;
+            }
             return;
         }
         if (a.equals("keepalive")) {

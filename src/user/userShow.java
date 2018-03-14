@@ -8,6 +8,7 @@ import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgBndl;
 import cfg.cfgBrdg;
+import cfg.cfgDial;
 import cfg.cfgIfc;
 import cfg.cfgInit;
 import cfg.cfgMtrack;
@@ -146,6 +147,19 @@ public class userShow {
                 a = "./";
             }
             rdr.putStrTab(userFlash.dir2txt(userFlash.dirList(a)));
+            return null;
+        }
+        if (a.equals("dial-peer")) {
+            boolean call = cmd.word().equals("voice");
+            userFormat l = new userFormat("|", "id|tot-in|tot-out|fail-in|fail-out|act-in|act-out");
+            for (int i = 0; i < cfgAll.dials.size(); i++) {
+                cfgDial ntry = cfgAll.dials.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                l.add(ntry.getStats(call));
+            }
+            rdr.putStrTab(l);
             return null;
         }
         if (a.equals("clock")) {

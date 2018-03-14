@@ -8,6 +8,7 @@ import util.cmds;
 import util.logger;
 import util.version;
 import addr.addrIP;
+import cfg.cfgAll;
 import clnt.clntHttp;
 import snd.sndCodec;
 import util.uniResLoc;
@@ -23,6 +24,20 @@ public class packSip {
      * port number
      */
     public final static int port = 5060;
+
+    /**
+     * update tag
+     *
+     * @param s (un)tagged
+     * @return tagged
+     */
+    public static String updateTag(String s) {
+        if (s.indexOf(";tag=") >= 0) {
+            return "" + s;
+        } else {
+            return s + ";tag=" + bits.randomD() + "-" + cfgAll.hostName;
+        }
+    }
 
     private final pipeSide pipe;
 
@@ -434,11 +449,7 @@ public class packSip {
         command = "SIP/2.0 200 ok";
         copyHeader(src, "Via");
         copyHeader(src, "From");
-        String trg = src.headerGet("to", 1);
-        if (trg.indexOf(";tag=") < 0) {
-            trg += ";tag=" + bits.randomD();
-        }
-        header.add("To: " + trg);
+        header.add("To: " + updateTag(src.headerGet("to", 1)));
         copyHeader(src, "Call-ID");
         copyHeader(src, "CSeq");
         if (cntc != null) {

@@ -189,6 +189,38 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
         }
     }
 
+    private void doMsg(packSip rx, packSip tx) {
+        String src = rx.headerGet("From", 1);
+        String trg = rx.headerGet("To", 1);
+        tx.makeNumeric("100 trying", rx, getMyContact());
+        if (debugger.servSipTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
+        cfgDial per = cfgAll.dialFind(src, trg, null);
+        if (per == null) {
+            tx.makeErr(rx, null, "no such number");
+            if (debugger.servSipTraf) {
+                tx.dump("tx");
+            }
+            tx.writeDown();
+            return;
+        }
+        if (per.sendMsg(src, trg, rx.content)) {
+            tx.makeErr(rx, null, "not went out");
+            if (debugger.servSipTraf) {
+                tx.dump("tx");
+            }
+            tx.writeDown();
+            return;
+        }
+        tx.makeOk(rx, null, 0);
+        if (debugger.servSipTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
+    }
+
     private void doer() {
         packSip rx = new packSip(pipe);
         for (;;) {
@@ -277,6 +309,18 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 tx.writeDown();
                 continue;
             }
+            if (a.equals("message")) {
+                doMsg(rx, tx);
+                continue;
+            }
+            if (a.equals("notify")) {
+                tx.makeOk(rx, null, 0);
+                if (debugger.servSipTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
             if (!a.equals("invite")) {
                 tx.makeErr(rx, null, "cant handle");
                 if (debugger.servSipTraf) {
@@ -312,9 +356,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 tx.dump("tx");
             }
             tx.writeDown();
-            if (trg.indexOf(";tag=") < 0) {
-                trg += ";tag=" + bits.randomD();
-            }
+            trg = packSip.updateTag(trg);
             rx.headerSet("To", 1, trg);
             tx.makeNumeric("180 ringing", rx, getMyContact());
             if (debugger.servSipTraf) {
@@ -330,7 +372,8 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 tx.writeDown();
                 continue;
             }
-            if (peer.makeCall(src, trg)) {
+            String rcd = peer.makeCall(src, trg);
+            if (rcd == null) {
                 tx.makeErr(rx, null, "failed to make call");
                 if (debugger.servSipTraf) {
                     tx.dump("tx");
@@ -351,10 +394,10 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                     tx.dump("tx");
                 }
                 tx.writeDown();
-                peer.stopCall();
+                peer.stopCall(rcd);
                 continue;
             }
-            sndConnect conner = new sndConnect(data, peer.getCall(), peer.getCodec(), peer.getCodec());
+            sndConnect conner = new sndConnect(data, peer.getCall(rcd), peer.getCodec(), peer.getCodec());
             for (;;) {
                 if (conner.isClosed() != 0) {
                     break;
@@ -378,6 +421,12 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                     continue;
                 }
                 a = a.substring(0, i).trim().toLowerCase();
+                if (a.startsWith("sip/")) {
+                    continue;
+                }
+                if (a.equals("ack")) {
+                    continue;
+                }
                 if (a.equals("register") || a.equals("subscribe")) {
                     tx.makeOk(rx, null, 120);
                     tx.copyHeader(rx, "Contact");
@@ -395,6 +444,47 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                     tx.writeDown();
                     continue;
                 }
+                if (a.equals("message")) {
+                    doMsg(rx, tx);
+                    continue;
+                }
+                if (a.equals("notify")) {
+                    tx.makeOk(rx, null, 0);
+                    if (debugger.servSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    continue;
+                }
+                if (a.equals("invite")) {
+                    a = rx.headerGet("Call-Id", 1);
+                    if (!a.equals(cid)) {
+                        tx.makeErr(rx, null, "only one call");
+                        if (debugger.servSipTraf) {
+                            tx.dump("tx");
+                        }
+                        tx.writeDown();
+                        continue;
+                    }
+                    tx.makeNumeric("100 trying", rx, getMyContact());
+                    if (debugger.servSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    rx.headerSet("To", 1, trg);
+                    tx.makeNumeric("180 ringing", rx, getMyContact());
+                    if (debugger.servSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    tx.makeOk(rx, getMyContact(), 0);
+                    tx.makeSdp(conn.iface.addr, lower.getDataPort(), peer.getCodec());
+                    if (debugger.servSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    continue;
+                }
                 if (a.equals("bye") || a.equals("cancel")) {
                     tx.makeOk(rx, null, 0);
                     if (debugger.servSipTraf) {
@@ -403,6 +493,11 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                     tx.writeDown();
                     break;
                 }
+                tx.makeErr(rx, null, "bad method");
+                if (debugger.servSipTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
             }
             conner.setClose();
             tx.makeReq("BYE", cnt, trg, src, getMyContact(), via, cid, csq + 1, 0);
@@ -410,7 +505,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 tx.dump("tx");
             }
             tx.writeDown();
-            peer.stopCall();
+            peer.stopCall(rcd);
         }
     }
 

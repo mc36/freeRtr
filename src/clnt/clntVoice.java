@@ -2,12 +2,11 @@ package clnt;
 
 import cfg.cfgAll;
 import cfg.cfgDial;
+import java.util.List;
 import pack.packRtp;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import snd.sndCodec;
-import snd.sndCodecG711aLaw;
-import snd.sndCodecG711uLaw;
 import snd.sndScript;
 
 /**
@@ -27,6 +26,8 @@ public class clntVoice {
     public String calling = null;
 
     private cfgDial pipePer;
+
+    private String pipeRcd;
 
     private packRtp pipeRtp;
 
@@ -48,7 +49,7 @@ public class clntVoice {
      */
     public void callStop() {
         try {
-            pipePer.stopCall();
+            pipePer.stopCall(pipeRcd);
         } catch (Exception e) {
         }
         try {
@@ -75,10 +76,11 @@ public class clntVoice {
         if (pipePer == null) {
             return true;
         }
-        if (pipePer.makeCall(calling, called)) {
+        pipeRcd = pipePer.makeCall(calling, called);
+        if (pipeRcd == null) {
             return true;
         }
-        pipeRtp = pipePer.getCall();
+        pipeRtp = pipePer.getCall(pipeRcd);
         sndCodec codec = pipePer.getCodec();
         pipeLine pip = new pipeLine(32768, false);
         pipeUsr = pip.getSide();
@@ -88,6 +90,20 @@ public class clntVoice {
         pipeScr.lineRx = pipeSide.modTyp.modeCRtryLF;
         new sndScript(pipeScr, codec, pipeRtp, calling, called);
         return false;
+    }
+
+    /**
+     * send message
+     *
+     * @param lst text
+     * @return false on success, true on error
+     */
+    public boolean sendMessage(List<String> lst) {
+        cfgDial per = cfgAll.dialFind(calling, called, null);
+        if (per == null) {
+            return true;
+        }
+        return per.sendMsg(calling, called, lst);
     }
 
 }

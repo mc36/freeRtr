@@ -2,6 +2,7 @@ package user;
 
 import java.util.Comparator;
 import java.util.List;
+import pipe.pipeDiscard;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import tab.tabGen;
@@ -540,6 +541,29 @@ public class userScript {
             vars.set(b, a);
             return a;
         }
+        if (a.equals("execbg")) {
+            if (!allowExec) {
+                return "%forbidden%";
+            }
+            if (!allowConfig) {
+                return "%forbidden%";
+            }
+            pipeSide pip = pipeDiscard.needAny(null);
+            pip.lineTx = pipeSide.modTyp.modeCRLF;
+            pip.lineRx = pipeSide.modTyp.modeCRorLF;
+            userReader rdr = new userReader(pip, 1023);
+            rdr.height = 0;
+            userExec exe = new userExec(pip, rdr);
+            exe.privileged = allowConfig;
+            pip.timeout = 60000;
+            a = getWord(true);
+            if (a.length() < 1) {
+                return a;
+            }
+            a = exe.repairCommand(a);
+            new userScriptExec(exe, pip, a);
+            return a;
+        }
         if (a.equals("exec")) {
             if (!allowExec) {
                 return "%forbidden%";
@@ -1012,6 +1036,28 @@ class userScriptEntry implements Comparator<userScriptEntry> {
 
     public int compare(userScriptEntry o1, userScriptEntry o2) {
         return o1.name.compareTo(o2.name);
+    }
+
+}
+
+class userScriptExec implements Runnable {
+
+    private final userExec exe;
+
+    private final pipeSide pip;
+
+    private final String cmd;
+
+    public userScriptExec(userExec e, pipeSide p, String c) {
+        exe = e;
+        pip = p;
+        cmd = c;
+        new Thread(this).start();
+    }
+
+    public void run() {
+        exe.executeCommand(cmd);
+        pip.setClose();
     }
 
 }

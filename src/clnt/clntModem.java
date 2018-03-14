@@ -7,8 +7,6 @@ import pipe.pipeLine;
 import pipe.pipeModem;
 import pipe.pipeSide;
 import snd.sndCodec;
-import snd.sndCodecG711aLaw;
-import snd.sndCodecG711uLaw;
 
 /**
  * modulator demodulator client
@@ -28,6 +26,8 @@ public class clntModem {
     public String calling = null;
 
     private cfgDial pipePer;
+
+    private String pipeRcd;
 
     private packRtp pipeRtp;
 
@@ -49,7 +49,7 @@ public class clntModem {
      */
     public void callStop() {
         try {
-            pipePer.stopCall();
+            pipePer.stopCall(pipeRcd);
         } catch (Exception e) {
         }
         try {
@@ -76,10 +76,11 @@ public class clntModem {
         if (pipePer == null) {
             return true;
         }
-        if (pipePer.makeCall(calling, called)) {
+        pipeRcd = pipePer.makeCall(calling, called);
+        if (pipeRcd == null) {
             return true;
         }
-        pipeRtp = pipePer.getCall();
+        pipeRtp = pipePer.getCall(pipeRcd);
         sndCodec codec = pipePer.getCodec();
         pipeLine pip = new pipeLine(32768, false);
         pipeUsr = pip.getSide();

@@ -1,12 +1,15 @@
 package clnt;
 
 import addr.addrIP;
+import cfg.cfgAll;
 import cfg.cfgDial;
 import cfg.cfgIfc;
 import cfg.cfgVrf;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import pack.packRtp;
@@ -18,6 +21,7 @@ import snd.sndCodec;
 import snd.sndCodecG711aLaw;
 import snd.sndCodecG711uLaw;
 import snd.sndConnect;
+import tab.tabGen;
 import user.userTerminal;
 import util.bits;
 import util.cmds;
@@ -73,6 +77,16 @@ public class clntSip implements Runnable {
     public int subscribe = 0;
 
     /**
+     * number of tries
+     */
+    public int retry = 8;
+
+    /**
+     * timeout in seconds
+     */
+    public int timeout = 5;
+
+    /**
      * vrf of target
      */
     public cfgVrf vrf = null;
@@ -97,33 +111,32 @@ public class clntSip implements Runnable {
      */
     public String pwd;
 
+    /**
+     * udp handler
+     */
+    protected prtGen udp;
+
+    /**
+     * forwarder interface
+     */
+    protected ipFwdIface srcFwd;
+
+    /**
+     * connection to peer
+     */
+    protected pipeSide conn;
+
+    private final tabGen<clntSipOut> outs = new tabGen<clntSipOut>();
+
+    private final tabGen<clntSipIn> ins = new tabGen<clntSipIn>();
+
+    private final tabGen<clntSipMsg> msgs = new tabGen<clntSipMsg>();
+
     private ipFwd fwd;
-
-    private prtGen udp;
-
-    private ipFwdIface srcFwd;
 
     private addrIP trgAdr;
 
-    private String callSrc;
-
-    private String callTrg;
-
-    private String callId;
-
-    private String callAuth;
-
-    private String callCnt;
-
-    private int callSeq;
-
-    private packSip callRep;
-
-    private packRtp callRtp;
-
     private boolean need2run;
-
-    private pipeSide conn;
 
     private int seq;
 
@@ -183,9 +196,17 @@ public class clntSip implements Runnable {
             conn.setClose();
         }
         conn = null;
-        try {
-            callRtp.setClose();
-        } catch (Exception e) {
+        for (int i = 0; i < outs.size(); i++) {
+            try {
+                outs.get(i).callRtp.setClose();
+            } catch (Exception e) {
+            }
+        }
+        for (int i = 0; i < ins.size(); i++) {
+            try {
+                ins.get(i).data.setClose();
+            } catch (Exception e) {
+            }
         }
         try {
             timKeep.cancel();
@@ -201,27 +222,74 @@ public class clntSip implements Runnable {
         }
     }
 
-    private String getEndpt() {
+    /**
+     * get endpoint id
+     *
+     * @return id
+     */
+    protected String getEndpt() {
         return "<sip:" + endpt + "@" + uniResLoc.addr2str(trgAdr, 0) + ">";
     }
 
-    private String getVia() {
+    /**
+     * get via id
+     *
+     * @return id
+     */
+    protected String getVia() {
         return "SIP/2.0/UDP " + uniResLoc.addr2str(srcFwd.addr, portLoc) + ";rport;branch=" + bits.randomD();
     }
 
-    private String getCont() {
+    /**
+     * get contact id
+     *
+     * @return id
+     */
+    protected String getCont() {
         return "<sip:" + endpt + "@" + uniResLoc.addr2str(srcFwd.addr, portLoc) + ">";
     }
 
-    private int getDataPort() {
-        return (portLoc - 3) & 0xfffe;
-    }
-
-    private sndCodec getCodec() {
+    /**
+     * get codec
+     *
+     * @return codec
+     */
+    protected sndCodec getCodec() {
         if (aLaw) {
             return new sndCodecG711aLaw();
         } else {
             return new sndCodecG711uLaw();
+        }
+    }
+
+    private int findOutPort(int o) {
+        for (int i = 0; i < outs.size(); i++) {
+            if (outs.get(i).callPort == o) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int findInPort(int o) {
+        for (int i = 0; i < ins.size(); i++) {
+            if (ins.get(i).callPort == o) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int getDataPort() {
+        for (;;) {
+            int o = (bits.randomW() & 0x7ffe) + 0x4000;
+            if (findOutPort(o) >= 0) {
+                continue;
+            }
+            if (findInPort(o) >= 0) {
+                continue;
+            }
+            return o;
         }
     }
 
@@ -236,7 +304,7 @@ public class clntSip implements Runnable {
         }
         packSip sip = new packSip(conn);
         seq++;
-        sip.makeReq("SUBSCRIBE", "sip:" + endpt + "@" + uniResLoc.addr2str(trgAdr, 0), getEndpt() + ";tag=" + bits.randomD(), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, subscribe / 250);
+        sip.makeReq("SUBSCRIBE", "sip:" + endpt + "@" + uniResLoc.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, subscribe / 250);
         sip.addAuthor(auth, usr, pwd);
         if (debugger.clntSipTraf) {
             sip.dump("tx");
@@ -255,7 +323,7 @@ public class clntSip implements Runnable {
         }
         packSip sip = new packSip(conn);
         seq++;
-        sip.makeReq("REGISTER", "sip:" + uniResLoc.addr2str(trgAdr, 0), getEndpt() + ";tag=" + bits.randomD(), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, register / 250);
+        sip.makeReq("REGISTER", "sip:" + uniResLoc.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, register / 250);
         sip.addAuthor(auth, usr, pwd);
         if (debugger.clntSipTraf) {
             sip.dump("tx");
@@ -278,12 +346,66 @@ public class clntSip implements Runnable {
     }
 
     /**
-     * check if calling
+     * get number of in calls
      *
-     * @return true if yes, false if not
+     * @return number of calls
      */
-    public boolean isCalling() {
-        return callTrg != null;
+    public int numCallsIn() {
+        return ins.size();
+    }
+
+    /**
+     * get number of out calls
+     *
+     * @return number of calls
+     */
+    public int numCallsOut() {
+        return outs.size();
+    }
+
+    /**
+     * get number of out messsages
+     *
+     * @return number of messsages
+     */
+    public int numMsgsOut() {
+        return msgs.size();
+    }
+
+    /**
+     * send msg
+     *
+     * @param calling calling number
+     * @param called called number
+     * @param msg message
+     * @return false on success, true on error
+     */
+    public boolean sendMsg(String calling, String called, List<String> msg) {
+        if (conn == null) {
+            return true;
+        }
+        clntSipMsg leg;
+        for (;;) {
+            leg = new clntSipMsg(this, null);
+            if (ins.find(new clntSipIn(this, leg.callId)) != null) {
+                continue;
+            }
+            if (outs.find(new clntSipOut(this, leg.callId)) != null) {
+                continue;
+            }
+            if (msgs.add(leg) == null) {
+                break;
+            }
+        }
+        leg.callTrg = called;
+        leg.callSrc = calling;
+        leg.callMsg = msg;
+        seq += 5;
+        leg.callSeq = seq;
+        seq += 5;
+        boolean res = leg.doSend();
+        msgs.del(leg);
+        return res;
     }
 
     /**
@@ -291,140 +413,96 @@ public class clntSip implements Runnable {
      *
      * @param calling calling number
      * @param called called number
-     * @return false if ok, true if error
+     * @return call id, null if error
      */
-    public boolean makeCall(String calling, String called) {
-        callTrg = called;
-        if (calling.indexOf(";tag=") < 0) {
-            calling += ";tag=" + bits.randomD();
-        }
-        callSrc = calling;
-        callId = "" + bits.randomD();
-        callAuth = null;
-        callCnt = null;
-        callRep = null;
-        callRtp = null;
-        callSeq = 0;
-        packSip callAck = null;
-        seq++;
-        callSeq = seq;
-        seq++;
-        boolean need2inv = true;
-        for (int o = 0; o < 8; o++) {
-            if (conn == null) {
+    public String makeCall(String calling, String called) {
+        clntSipOut leg;
+        for (;;) {
+            leg = new clntSipOut(this, null);
+            if (ins.find(new clntSipIn(this, leg.callId)) != null) {
                 continue;
             }
-            if (need2inv) {
-                packSip sip = new packSip(conn);
-                sip.makeReq("INVITE", null, callSrc, callTrg, getCont(), getVia(), callId, callSeq, 0);
-                sip.addAuthor(callAuth, usr, pwd);
-                sip.makeSdp(srcFwd.addr, getDataPort(), getCodec());
-                if (debugger.clntSipTraf) {
-                    sip.dump("tx");
-                }
-                sip.writeDown();
-            }
-            for (int i = 0; i < 5; i++) {
-                bits.sleep(1000);
-                if (callRep != null) {
-                    break;
-                }
-            }
-            if (callRep == null) {
+            if (msgs.find(new clntSipMsg(this, leg.callId)) != null) {
                 continue;
             }
-            packSip sip = callRep.byteCopy(null);
-            callRep = null;
-            cmds cmd = new cmds("sip", sip.command);
-            if (!cmd.word().toLowerCase().startsWith("sip/")) {
-                continue;
+            if (outs.add(leg) == null) {
+                break;
             }
-            String a = cmd.word();
-            if (a.equals("401")) {
-                callAuth = sip.headerGet("WWW-Authenticate", 1);
-                need2inv = true;
-                seq++;
-                callSeq = seq;
-                seq++;
-                o--;
-                continue;
+        }
+        leg.callTrg = called;
+        leg.callSrc = calling;
+        seq += 5;
+        leg.callSeq = seq;
+        seq += 5;
+        leg.callPort = getDataPort();
+        boolean res = leg.makeCall();
+        if (res) {
+            leg.stopCall(false);
+            if (upper != null) {
+                upper.stoppedCall(true, leg.callSrc, leg.callTrg);
             }
-            if (a.startsWith("1")) {
-                need2inv = false;
-                continue;
-            }
-            if (a.startsWith("2")) {
-                callAck = sip.byteCopy(null);
-            }
-            break;
+            return null;
         }
-        if (callAck == null) {
-            stopCall();
-            return true;
-        }
-        addrIP remA = new addrIP();
-        int remP = callAck.sdpGetMediaEP(remA);
-        if (remP < 0) {
-            stopCall();
-            return true;
-        }
-        callRtp = new packRtp();
-        if (callRtp.startConnect(udp, new pipeLine(65536, true), srcFwd, getDataPort(), remA, remP)) {
-            return true;
-        }
-        callTrg = callAck.headerGet("To", 1);
-        callCnt = uniResLoc.fromEmail(callAck.headerGet("Contact", 1));
-        callAck.makeReq("ACK", null, callSrc, callTrg, getCont(), getVia(), callId, callSeq, 0);
-        callAck.addAuthor(callAuth, usr, pwd);
-        if (debugger.clntSipTraf) {
-            callAck.dump("tx");
-        }
-        callAck.writeDown();
-        return false;
+        return leg.callId;
     }
 
     /**
      * stop the call
+     *
+     * @param id call id
      */
-    public void stopCall() {
-        if ((callTrg == null) && (callSrc == null) && (callId == null)) {
+    public void stopCall(String id) {
+        if (id == null) {
             return;
         }
-        String a;
-        if (callRtp != null) {
-            callRtp.setClose();
-            a = "BYE";
-        } else {
-            a = "CANCEL";
+        clntSipOut leg = new clntSipOut(this, id);
+        leg = outs.find(leg);
+        if (leg == null) {
+            return;
         }
-        if (callId != null) {
-            packSip sip = new packSip(conn);
-            sip.makeReq(a, callCnt, callSrc, callTrg, getCont(), getVia(), callId, callSeq + 1, 0);
-            sip.addAuthor(callAuth, usr, pwd);
-            if (debugger.clntSipTraf) {
-                sip.dump("tx");
-            }
-            sip.writeDown();
+        if (leg.stopping) {
+            return;
         }
+        leg.stopCall(true);
         if (upper != null) {
-            upper.stoppedCall(true, callSrc, callTrg);
+            upper.stoppedCall(true, leg.callSrc, leg.callTrg);
         }
-        callSeq = 0;
-        callCnt = null;
-        callAuth = null;
-        callRtp = null;
-        callId = null;
-        callSrc = null;
-        callTrg = null;
+    }
+
+    /**
+     * delete the call
+     *
+     * @param leg call id
+     */
+    protected void delCall(clntSipIn leg) {
+        ins.del(leg);
+    }
+
+    /**
+     * delete the call
+     *
+     * @param leg call id
+     */
+    protected void delCall(clntSipOut leg) {
+        outs.del(leg);
     }
 
     /**
      * get call
      *
+     * @param id call id
      * @return rtp
      */
-    public packRtp getCall() {
-        return callRtp;
+    public packRtp getCall(String id) {
+        if (id == null) {
+            return null;
+        }
+        clntSipOut leg = new clntSipOut(this, id);
+        leg = outs.find(leg);
+        if (leg == null) {
+            return null;
+        }
+        return leg.callRtp;
     }
 
     /**
@@ -474,38 +552,53 @@ public class clntSip implements Runnable {
             if (debugger.clntSipTraf) {
                 sip.dump("rx");
             }
-            if (callId != null) {
-                if (callId.equals(sip.headerGet("Call-Id", 1))) {
-                    callRep = sip.byteCopy(null);
-                    if (callCnt == null) {
-                        continue;
-                    }
-                    String a = sip.command.trim();
-                    int i = a.indexOf(" ");
-                    if (i < 0) {
-                        continue;
-                    }
-                    a = a.substring(0, i).trim().toLowerCase();
-                    if (!a.equals("bye")) {
-                        continue;
-                    }
-                    packSip tx = sip.byteCopy(null);
-                    tx.makeOk(sip, null, 0);
-                    if (debugger.clntSipTraf) {
-                        tx.dump("tx");
-                    }
-                    tx.writeDown();
-                    stopCall();
+            String a = sip.headerGet("Call-Id", 1);
+            clntSipOut legO = new clntSipOut(this, a);
+            legO = outs.find(legO);
+            if (legO != null) {
+                legO.callRep = sip.byteCopy(null);
+                if (legO.callCnt == null) {
                     continue;
                 }
+                cmds cmd = new cmds("sip", sip.command);
+                a = cmd.word().toLowerCase();
+                if (!a.equals("bye") && !a.equals("cancel")) {
+                    continue;
+                }
+                packSip tx = sip.byteCopy(null);
+                tx.makeOk(sip, null, 0);
+                if (debugger.clntSipTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                if (legO.stopping) {
+                    continue;
+                }
+                legO.stopCall(false);
+                if (upper != null) {
+                    upper.stoppedCall(true, legO.callSrc, legO.callTrg);
+                }
+                continue;
+            }
+            clntSipIn legI = new clntSipIn(this, a);
+            legI = ins.find(legI);
+            if (legI != null) {
+                legI.callRep = sip.byteCopy(null);
+                continue;
+            }
+            clntSipMsg legM = new clntSipMsg(this, a);
+            legM = msgs.find(legM);
+            if (legM != null) {
+                legM.callRep = sip.byteCopy(null);
+                continue;
             }
             cmds cmd = new cmds("sip", sip.command);
-            String a = cmd.word().toLowerCase();
+            a = cmd.word().toLowerCase();
             if (a.length() < 1) {
                 continue;
             }
+            packSip tx = sip.byteCopy(null);
             if (a.equals("register") || a.equals("subscribe")) {
-                packSip tx = sip.byteCopy(null);
                 tx.makeOk(sip, null, 120);
                 tx.copyHeader(sip, "Contact");
                 if (debugger.clntSipTraf) {
@@ -515,7 +608,30 @@ public class clntSip implements Runnable {
                 continue;
             }
             if (a.equals("options")) {
-                packSip tx = sip.byteCopy(null);
+                tx.makeOk(sip, null, 0);
+                if (debugger.clntSipTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
+            if (a.equals("message")) {
+                if (upper == null) {
+                    tx.makeErr(sip, null, "not allowed");
+                    if (debugger.clntSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    continue;
+                }
+                clntSipMsg msg = new clntSipMsg(this, null);
+                msg.callSrc = sip.headerGet("From", 1);
+                msg.callTrg = sip.headerGet("To", 1);
+                msg.callRep = sip.byteCopy(null);
+                msg.startWork();
+                continue;
+            }
+            if (a.equals("notify")) {
                 tx.makeOk(sip, null, 0);
                 if (debugger.clntSipTraf) {
                     tx.dump("tx");
@@ -554,7 +670,6 @@ public class clntSip implements Runnable {
             if (a.equals("ack")) {
                 continue;
             }
-            packSip tx = sip.byteCopy(null);
             if (a.equals("bye") || a.equals("cancel")) {
                 tx.makeOk(sip, null, 0);
                 if (debugger.clntSipTraf) {
@@ -565,14 +680,6 @@ public class clntSip implements Runnable {
             }
             if (!a.equals("invite")) {
                 tx.makeErr(sip, null, "bad method");
-                if (debugger.clntSipTraf) {
-                    tx.dump("tx");
-                }
-                tx.writeDown();
-                continue;
-            }
-            if (isCalling()) {
-                tx.makeErr(sip, null, "busy");
                 if (debugger.clntSipTraf) {
                     tx.dump("tx");
                 }
@@ -597,136 +704,14 @@ public class clntSip implements Runnable {
                 tx.writeDown();
                 continue;
             }
-            a = sip.headerGet("CSeq", 1) + " ";
-            int csq = a.indexOf(" ");
-            csq = bits.str2num(a.substring(0, csq).trim());
-            String via = sip.headerGet("Via", 1);
-            String src = sip.headerGet("From", 1);
-            String trg = sip.headerGet("To", 1);
-            String cid = sip.headerGet("Call-Id", 1);
-            String cnt = uniResLoc.fromEmail(sip.headerGet("Contact", 1));
-            tx.makeNumeric("100 trying", sip, getCont());
-            if (debugger.clntSipTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            if (trg.indexOf(";tag=") < 0) {
-                trg += ";tag=" + bits.randomD();
-            }
-            sip.headerSet("To", 1, trg);
-            tx.makeNumeric("180 ringing", sip, getCont());
-            if (debugger.clntSipTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            String newSrc = upper.incomeSrc(src);
-            String newTrg = upper.incomeTrg(trg);
-            cfgDial peer = upper.incomeCall(newSrc, newTrg);
-            if (peer == null) {
-                tx.makeErr(sip, null, "no such number");
-                if (debugger.clntSipTraf) {
-                    tx.dump("tx");
-                }
-                tx.writeDown();
-                if (upper != null) {
-                    upper.stoppedCall(false, newSrc, newTrg);
-                }
-                continue;
-            }
-            callTrg = "incoming";
-            if (peer.makeCall(newSrc, newTrg)) {
-                callTrg = null;
-                tx.makeErr(sip, null, "failed to make call");
-                if (debugger.clntSipTraf) {
-                    tx.dump("tx");
-                }
-                tx.writeDown();
-                if (upper != null) {
-                    upper.stoppedCall(false, newSrc, newTrg);
-                }
-                continue;
-            }
-            tx.makeOk(sip, getCont(), 0);
-            tx.makeSdp(srcFwd.addr, getDataPort(), getCodec());
-            if (debugger.clntSipTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            packRtp data = new packRtp();
-            if (data.startConnect(udp, new pipeLine(65536, true), srcFwd, getDataPort(), adr, prt)) {
-                callTrg = null;
-                tx.makeReq("BYE", cnt, trg, src, null, via, cid, csq + 1, 0);
-                if (debugger.clntSipTraf) {
-                    tx.dump("tx");
-                }
-                tx.writeDown();
-                peer.stopCall();
-                if (upper != null) {
-                    upper.stoppedCall(false, newSrc, newTrg);
-                }
-                continue;
-            }
-            sndConnect conner = new sndConnect(data, peer.getCall(), getCodec(), peer.getCodec());
-            for (;;) {
-                if (conner.isClosed() != 0) {
-                    break;
-                }
-                if (sip.isClosed() != 0) {
-                    break;
-                }
-                if (sip.ready2rx() < 1) {
-                    bits.sleep(1000);
-                    continue;
-                }
-                if (sip.readUp()) {
-                    return;
-                }
-                if (debugger.clntSipTraf) {
-                    sip.dump("rx");
-                }
-                a = sip.command.trim();
-                int i = a.indexOf(" ");
-                if (i < 0) {
-                    continue;
-                }
-                a = a.substring(0, i).trim().toLowerCase();
-                if (a.equals("register") || a.equals("subscribe")) {
-                    tx.makeOk(sip, null, 120);
-                    tx.copyHeader(sip, "Contact");
-                    if (debugger.clntSipTraf) {
-                        tx.dump("tx");
-                    }
-                    tx.writeDown();
-                    continue;
-                }
-                if (a.equals("options")) {
-                    tx.makeOk(sip, null, 0);
-                    if (debugger.clntSipTraf) {
-                        tx.dump("tx");
-                    }
-                    tx.writeDown();
-                    continue;
-                }
-                if (a.equals("bye") || a.equals("cancel")) {
-                    tx.makeOk(sip, null, 0);
-                    if (debugger.clntSipTraf) {
-                        tx.dump("tx");
-                    }
-                    tx.writeDown();
-                    break;
-                }
-            }
-            conner.setClose();
-            tx.makeReq("BYE", cnt, trg, src, null, via, cid, csq + 1, 0);
-            if (debugger.clntSipTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            peer.stopCall();
-            if (upper != null) {
-                upper.stoppedCall(false, newSrc, newTrg);
-            }
-            callTrg = null;
+            a = sip.headerGet("Call-Id", 1);
+            legI = new clntSipIn(this, a);
+            legI.adr = adr;
+            legI.prt = prt;
+            legI.callPort = getDataPort();
+            legI.callRep = sip.byteCopy(null);
+            new Thread(legI).start();
+            ins.add(legI);
         }
         if (conn != null) {
             conn.setClose();
@@ -789,6 +774,491 @@ class clntSipSub extends TimerTask {
         } catch (Exception e) {
             logger.traceback(e);
         }
+    }
+
+}
+
+class clntSipOut implements Comparator<clntSipOut> {
+
+    public final clntSip lower;
+
+    public final String callId;
+
+    public int callPort;
+
+    public String callSrc;
+
+    public String callTrg;
+
+    public String callAuth;
+
+    public String callCnt;
+
+    public int callSeq;
+
+    public packSip callRep;
+
+    public packRtp callRtp;
+
+    public boolean stopping;
+
+    public clntSipOut(clntSip prnt, String id) {
+        if (id == null) {
+            id = bits.randomD() + "-" + cfgAll.hostName;
+        }
+        callId = id;
+        lower = prnt;
+    }
+
+    public int compare(clntSipOut o1, clntSipOut o2) {
+        return o1.callId.compareTo(o2.callId);
+    }
+
+    public boolean makeCall() {
+        callSrc = packSip.updateTag(callSrc);
+        callAuth = null;
+        callCnt = null;
+        callRep = null;
+        callRtp = null;
+        packSip callAck = null;
+        boolean need2inv = true;
+        for (int o = 0; o < lower.retry; o++) {
+            if (lower.conn == null) {
+                continue;
+            }
+            if (need2inv) {
+                packSip sip = new packSip(lower.conn);
+                sip.makeReq("INVITE", null, callSrc, callTrg, lower.getCont(), lower.getVia(), callId, callSeq, 0);
+                sip.addAuthor(callAuth, lower.usr, lower.pwd);
+                sip.makeSdp(lower.srcFwd.addr, callPort, lower.getCodec());
+                if (debugger.clntSipTraf) {
+                    sip.dump("tx");
+                }
+                sip.writeDown();
+            }
+            for (int i = 0; i < lower.timeout; i++) {
+                bits.sleep(1000);
+                if (callRep != null) {
+                    break;
+                }
+            }
+            if (callRep == null) {
+                continue;
+            }
+            packSip sip = callRep.byteCopy(null);
+            callRep = null;
+            cmds cmd = new cmds("sip", sip.command);
+            if (!cmd.word().toLowerCase().startsWith("sip/")) {
+                continue;
+            }
+            String a = cmd.word();
+            if (a.equals("401")) {
+                callAuth = sip.headerGet("WWW-Authenticate", 1);
+                need2inv = true;
+                callSeq++;
+                continue;
+            }
+            if (a.startsWith("1")) {
+                need2inv = false;
+                continue;
+            }
+            if (a.startsWith("2")) {
+                callAck = sip.byteCopy(null);
+            }
+            break;
+        }
+        if (callAck == null) {
+            return true;
+        }
+        addrIP remA = new addrIP();
+        int remP = callAck.sdpGetMediaEP(remA);
+        if (remP < 0) {
+            return true;
+        }
+        callRtp = new packRtp();
+        if (callRtp.startConnect(lower.udp, new pipeLine(65536, true), lower.srcFwd, callPort, remA, remP)) {
+            return true;
+        }
+        callTrg = callAck.headerGet("To", 1);
+        callCnt = uniResLoc.fromEmail(callAck.headerGet("Contact", 1));
+        callAck.makeReq("ACK", null, callSrc, callTrg, lower.getCont(), lower.getVia(), callId, callSeq, 0);
+        callAck.addAuthor(callAuth, lower.usr, lower.pwd);
+        if (debugger.clntSipTraf) {
+            callAck.dump("tx");
+        }
+        callAck.writeDown();
+        return false;
+    }
+
+    public void stopCall(boolean bye) {
+        stopping = true;
+        if (callRtp != null) {
+            callRtp.setClose();
+        }
+        if (!bye) {
+            lower.delCall(this);
+            return;
+        }
+        callRep = null;
+        for (int o = 0; o < lower.retry; o++) {
+            if (lower.conn == null) {
+                continue;
+            }
+            packSip sip = new packSip(lower.conn);
+            String a;
+            if (callRtp != null) {
+                a = "BYE";
+            } else {
+                a = "CANCEL";
+            }
+            sip.makeReq(a, callCnt, callSrc, callTrg, lower.getCont(), lower.getVia(), callId, callSeq + 1, 0);
+            sip.addAuthor(callAuth, lower.usr, lower.pwd);
+            if (debugger.clntSipTraf) {
+                sip.dump("tx");
+            }
+            sip.writeDown();
+            for (int i = 0; i < lower.timeout; i++) {
+                bits.sleep(1000);
+                if (callRep != null) {
+                    lower.delCall(this);
+                    return;
+                }
+            }
+        }
+        lower.delCall(this);
+    }
+
+}
+
+class clntSipIn implements Runnable, Comparator<clntSipIn> {
+
+    public final clntSip lower;
+
+    public final String cid;
+
+    public addrIP adr;
+
+    public int prt;
+
+    public int csq;
+
+    public String via;
+
+    public String src;
+
+    public String trg;
+
+    public String cnt;
+
+    public int callPort;
+
+    public packSip callRep;
+
+    public String newSrc;
+
+    public String newTrg;
+
+    public cfgDial peer;
+
+    public String rcd;
+
+    public packRtp data;
+
+    public sndConnect conner;
+
+    public clntSipIn(clntSip prnt, String id) {
+        lower = prnt;
+        cid = id;
+    }
+
+    public int compare(clntSipIn o1, clntSipIn o2) {
+        return o1.cid.compareTo(o2.cid);
+    }
+
+    public void run() {
+        try {
+            doer();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+    }
+
+    public void sendTry(packSip sip) {
+        packSip tx = sip.byteCopy(null);
+        tx.makeNumeric("100 trying", sip, lower.getCont());
+        if (debugger.clntSipTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
+    }
+
+    public void sendRng(packSip sip) {
+        packSip tx = sip.byteCopy(null);
+        tx.makeNumeric("180 ringing", sip, lower.getCont());
+        if (debugger.clntSipTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
+    }
+
+    public void sendSdp(packSip sip) {
+        packSip tx = sip.byteCopy(null);
+        tx.makeOk(sip, lower.getCont(), 0);
+        tx.makeSdp(lower.srcFwd.addr, callPort, lower.getCodec());
+        if (debugger.clntSipTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
+    }
+
+    public void sendBye() {
+        callRep = null;
+        for (int o = 0; o < lower.retry; o++) {
+            if (lower.conn == null) {
+                continue;
+            }
+            packSip tx = new packSip(lower.conn);
+            tx.makeReq("BYE", cnt, trg, src, null, via, cid, csq + 1, 0);
+            if (debugger.clntSipTraf) {
+                tx.dump("tx");
+            }
+            tx.writeDown();
+            for (int i = 0; i < lower.timeout; i++) {
+                bits.sleep(1000);
+                if (callRep != null) {
+                    return;
+                }
+            }
+        }
+    }
+
+    public void doer() {
+        packSip sip = callRep.byteCopy(null);
+        callRep = null;
+        String a = sip.headerGet("CSeq", 1) + " ";
+        csq = a.indexOf(" ");
+        csq = bits.str2num(a.substring(0, csq).trim());
+        via = sip.headerGet("Via", 1);
+        src = sip.headerGet("From", 1);
+        trg = sip.headerGet("To", 1);
+        cnt = uniResLoc.fromEmail(sip.headerGet("Contact", 1));
+        sendTry(sip);
+        trg = packSip.updateTag(trg);
+        sip.headerSet("To", 1, trg);
+        sendRng(sip);
+        newSrc = lower.upper.incomeSrc(src);
+        newTrg = lower.upper.incomeTrg(trg);
+        peer = lower.upper.incomeCall(newSrc, newTrg);
+        if (peer == null) {
+            packSip tx = sip.byteCopy(null);
+            tx.makeErr(sip, null, "no such number");
+            if (debugger.clntSipTraf) {
+                tx.dump("tx");
+            }
+            tx.writeDown();
+            lower.upper.stoppedCall(false, newSrc, newTrg);
+            lower.delCall(this);
+            return;
+        }
+        rcd = peer.makeCall(newSrc, newTrg);
+        if (rcd == null) {
+            packSip tx = sip.byteCopy(null);
+            tx.makeErr(sip, null, "failed to make call");
+            if (debugger.clntSipTraf) {
+                tx.dump("tx");
+            }
+            tx.writeDown();
+            lower.upper.stoppedCall(false, newSrc, newTrg);
+            lower.delCall(this);
+            return;
+        }
+        sendSdp(sip);
+        data = new packRtp();
+        if (data.startConnect(lower.udp, new pipeLine(65536, true), lower.srcFwd, callPort, adr, prt)) {
+            sendBye();
+            peer.stopCall(rcd);
+            lower.upper.stoppedCall(false, newSrc, newTrg);
+            lower.delCall(this);
+            return;
+        }
+        conner = new sndConnect(data, peer.getCall(rcd), lower.getCodec(), peer.getCodec());
+        for (;;) {
+            if (conner.isClosed() != 0) {
+                break;
+            }
+            if (lower.conn == null) {
+                break;
+            }
+            if (callRep == null) {
+                bits.sleep(1000);
+                continue;
+            }
+            sip = callRep.byteCopy(null);
+            callRep = null;
+            a = sip.command.trim();
+            int i = a.indexOf(" ");
+            if (i < 0) {
+                continue;
+            }
+            a = a.substring(0, i).trim().toLowerCase();
+            if (a.equals("invite")) {
+                sendTry(sip);
+                sendRng(sip);
+                sendSdp(sip);
+                continue;
+            }
+            if (!a.equals("bye") && !a.equals("cancel")) {
+                continue;
+            }
+            packSip tx = sip.byteCopy(null);
+            tx.makeOk(sip, null, 0);
+            if (debugger.clntSipTraf) {
+                tx.dump("tx");
+            }
+            tx.writeDown();
+            conner.setClose();
+            peer.stopCall(rcd);
+            lower.upper.stoppedCall(false, newSrc, newTrg);
+            lower.delCall(this);
+            return;
+        }
+        conner.setClose();
+        peer.stopCall(rcd);
+        sendBye();
+        lower.upper.stoppedCall(false, newSrc, newTrg);
+        lower.delCall(this);
+    }
+
+}
+
+class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
+
+    public final clntSip lower;
+
+    public final String callId;
+
+    public packSip callRep;
+
+    public String callSrc;
+
+    public String callTrg;
+
+    public int callSeq;
+
+    public String callAuth;
+
+    public List<String> callMsg;
+
+    public clntSipMsg(clntSip prnt, String id) {
+        if (id == null) {
+            id = bits.randomD() + "-" + cfgAll.hostName;
+        }
+        lower = prnt;
+        callId = id;
+    }
+
+    public int compare(clntSipMsg o1, clntSipMsg o2) {
+        return o1.callId.compareTo(o2.callId);
+    }
+
+    public void startWork() {
+        new Thread(this).start();
+    }
+
+    public boolean doSend() {
+        callSrc = packSip.updateTag(callSrc);
+        callAuth = null;
+        callRep = null;
+        packSip callAck = null;
+        boolean need2inv = true;
+        for (int o = 0; o < lower.retry; o++) {
+            if (lower.conn == null) {
+                continue;
+            }
+            if (need2inv) {
+                packSip sip = new packSip(lower.conn);
+                sip.makeReq("MESSAGE", null, callSrc, callTrg, lower.getCont(), lower.getVia(), callId, callSeq, 0);
+                sip.header.add("Content-Type: text/plain");
+                sip.content.addAll(callMsg);
+                sip.addAuthor(callAuth, lower.usr, lower.pwd);
+                if (debugger.clntSipTraf) {
+                    sip.dump("tx");
+                }
+                sip.writeDown();
+            }
+            for (int i = 0; i < lower.timeout; i++) {
+                bits.sleep(1000);
+                if (callRep != null) {
+                    break;
+                }
+            }
+            if (callRep == null) {
+                continue;
+            }
+            packSip sip = callRep.byteCopy(null);
+            callRep = null;
+            cmds cmd = new cmds("sip", sip.command);
+            if (!cmd.word().toLowerCase().startsWith("sip/")) {
+                continue;
+            }
+            String a = cmd.word();
+            if (a.equals("401")) {
+                callAuth = sip.headerGet("WWW-Authenticate", 1);
+                need2inv = true;
+                callSeq++;
+                continue;
+            }
+            if (a.startsWith("1")) {
+                need2inv = false;
+                continue;
+            }
+            if (a.startsWith("2")) {
+                return false;
+            }
+            break;
+        }
+        return true;
+    }
+
+    public void run() {
+        try {
+            doRecv();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+    }
+
+    public void doRecv() {
+        packSip tx = callRep.byteCopy(null);
+        tx.makeNumeric("100 trying", callRep, lower.getCont());
+        if (debugger.clntSipTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
+        callSrc = lower.upper.incomeSrc(callSrc);
+        callTrg = lower.upper.incomeTrg(callTrg);
+        cfgDial per = lower.upper.incomeMsg(callSrc, callTrg);
+        if (per == null) {
+            tx.makeErr(callRep, null, "no such number");
+            if (debugger.clntSipTraf) {
+                tx.dump("tx");
+            }
+            tx.writeDown();
+            return;
+        }
+        if (per.sendMsg(callSrc, callTrg, callRep.content)) {
+            tx.makeErr(callRep, null, "not went out");
+            if (debugger.clntSipTraf) {
+                tx.dump("tx");
+            }
+            tx.writeDown();
+            return;
+        }
+        tx.makeOk(callRep, null, 0);
+        if (debugger.clntSipTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
     }
 
 }

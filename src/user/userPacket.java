@@ -531,6 +531,13 @@ public class userPacket {
             }
             return;
         }
+        if (a.equals("message")) {
+            clntVoice sv = new clntVoice();
+            sv.called = cmd.word();
+            sv.calling = cmd.word();
+            cmd.error("result = " + sv.sendMessage(bits.str2lst(cmd.getRemaining())));
+            return;
+        }
         if (a.equals("voice")) {
             clntVoice sv = new clntVoice();
             sv.called = cmd.word();

@@ -1,0 +1,44 @@
+puts "calling"
+puts "called"
+puts "echo echoed"
+set src ""
+set trg ""
+
+for {} {1<2} {} {
+ set ln [gets -]
+ if {[string equal $ln "echoed"]} break
+ if {[string first called $ln] >= 0} {set trg [string range $ln 6 666]}
+ if {[string first calling $ln] >= 0} {set src [string range $ln 7 666]}
+ }
+
+set url ""
+set cmd ""
+
+if {[string first sip:01 $trg] >= 0} {set cmd "prev"}
+if {[string first sip:02 $trg] >= 0} {set cmd "stop"}
+if {[string first sip:03 $trg] >= 0} {set cmd "next"}
+
+if {[string first sip:14 $src] >= 0} {set url "http://player.mchome.nop.hu/player.class"}
+if {[string first sip:15 $src] >= 0} {set url "http://speaker.mchome.nop.hu/player.class"}
+
+if {[string length $cmd] < 1} {
+  puts "play-start /nfs2/own/voice/player.wav"
+  puts "play-wait"
+  sleep 5
+  puts "hangup"
+  sleep 2
+  return
+  }
+
+if {[string length $url] < 1} {
+  puts "play-start /nfs2/own/voice/player.wav"
+  puts "play-wait"
+  sleep 5
+  puts "hangup"
+  sleep 2
+  return
+  }
+
+exec "flash receive /rtr/zzz5.html $url?cmd=$cmd"
+puts "hangup"
+sleep 2

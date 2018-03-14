@@ -573,18 +573,7 @@ public class player implements Runnable {
             buf.write("lockin successfully finished!<br/>".getBytes());
             return -1;
         }
-        if (cmd.equals("stop")) { // hidden command
-            putStart(buf, 15);
-            putMenu(buf);
-            buf.write("as requested,<br/>".getBytes());
-            buf.write("stopped the player so complicately.<br/>".getBytes());
-            buf.write("hopefully i'll enjoy this silence,<br/>".getBytes());
-            buf.write("my friend.<br/><br/>".getBytes());
-            buf.write("this is a beginning of a beautyful friendship!".getBytes());
-            startPlay(-1, "0");
-            return -1;
-        }
-        if (cmd.equals("reload")) { // hidden command
+        if (cmd.equals("reload")) {
             putStart(buf, 5);
             putMenu(buf);
             buf.write("as requested, rebooting for you".getBytes());
@@ -791,6 +780,27 @@ public class player implements Runnable {
         }
         if (cmd.equals("download")) {
             return playerUtil.str2int(song);
+        }
+        if (cmd.equals("stop")) {
+            startPlay(-1, "0");
+            putStart(buf, 1);
+            putMenu(buf);
+            buf.write("selected no song<br/>".getBytes());
+            return -1;
+        }
+        if (cmd.equals("next")) {
+            startPlay(nextSong.get(0), "0");
+            putStart(buf, 1);
+            putMenu(buf);
+            buf.write("selected next song<br/>".getBytes());
+            return -1;
+        }
+        if (cmd.equals("prev")) {
+            startPlay(prevSong, "0");
+            putStart(buf, 1);
+            putMenu(buf);
+            buf.write("selected next song<br/>".getBytes());
+            return -1;
         }
         if (cmd.equals("play")) {
             startPlay(playerUtil.str2int(song), "0");

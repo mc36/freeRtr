@@ -26,6 +26,10 @@ public class sndScript implements Runnable {
 
     private packRtp strm;
 
+    private cfgDial per;
+
+    private String rcd;
+
     private packRtp fwd;
 
     private sndWave play;
@@ -61,11 +65,19 @@ public class sndScript implements Runnable {
             logger.traceback(e);
         }
         try {
+            per.stopCall(rcd);
+        } catch (Exception e) {
+        }
+        try {
             user.setClose();
         } catch (Exception e) {
         }
         try {
             strm.setClose();
+        } catch (Exception e) {
+        }
+        try {
+            fwd.setClose();
         } catch (Exception e) {
         }
     }
@@ -105,7 +117,12 @@ public class sndScript implements Runnable {
             if (fwd != null) {
                 if (fwd.isClosed() != 0) {
                     user.linePut("forward-stopped");
-                    play = null;
+                    if (per != null) {
+                        per.stopCall(rcd);
+                    }
+                    fwd.setClose();
+                    fwd = null;
+                    per = null;
                 }
             }
             if (strm.isClosed() != 0) {
@@ -229,6 +246,9 @@ public class sndScript implements Runnable {
                     user.linePut("error not-forwarding");
                     continue;
                 }
+                if (per != null) {
+                    per.stopCall(rcd);
+                }
                 fwd.setClose();
                 continue;
             }
@@ -305,17 +325,18 @@ public class sndScript implements Runnable {
                 }
                 a = s.substring(0, i).trim();
                 s = s.substring(i, s.length()).trim();
-                cfgDial pipePer = cfgAll.dialFind(a, s, null);
-                if (pipePer == null) {
+                per = cfgAll.dialFind(a, s, null);
+                if (per == null) {
                     user.linePut("error bad-number");
                     continue;
                 }
-                if (pipePer.makeCall(a, s)) {
+                rcd = per.makeCall(a, s);
+                if (rcd == null) {
                     user.linePut("error unable-call");
                     continue;
                 }
-                fwd = pipePer.getCall();
-                new sndConnect(strm, fwd, codr, pipePer.getCodec());
+                fwd = per.getCall(rcd);
+                new sndConnect(strm, fwd, codr, per.getCodec());
                 user.linePut("forwarded");
                 continue;
             }
@@ -428,8 +449,20 @@ public class sndScript implements Runnable {
             rec.stopWork();;
             rec.wait4stop();
             bits.byteSave(true, rec.buf, recF);
-            rec = null;
-            recF = null;
+        }
+        if (play != null) {
+            play.stopWork();
+            play.wait4stop();
+        }
+        if (dtmf != null) {
+            dtmf.stopWork();
+            dtmf.wait4stop();
+        }
+        if (fwd != null) {
+            if (per != null) {
+                per.stopCall(rcd);
+            }
+            fwd.setClose();
         }
     }
 

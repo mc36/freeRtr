@@ -1,6 +1,7 @@
 package serv;
 
 import addr.addrIP;
+import java.util.Comparator;
 import java.util.List;
 import pack.packRtp;
 import pack.packSip;
@@ -132,35 +133,26 @@ public class servModem extends servGeneric implements prtServS {
 
 class servModemDoer implements Runnable {
 
-    private servModem lower;
+    public servModem lower;
 
-    private pipeSide ctrl;
+    public pipeSide ctrl;
 
-    private packRtp data;
+    public prtGenConn conn;
 
-    private prtGenConn conn;
-
-    private pipeSide pipeC;
-
-    private pipeSide pipeS;
+    public tabGen<servModemConn> conns = new tabGen<servModemConn>();
 
     public servModemDoer(servModem parent, pipeSide stream, prtGenConn id) {
         lower = parent;
         ctrl = stream;
         conn = id;
-        data = new packRtp();
-        pipeLine pip = new pipeLine(32768, false);
-        pipeS = pip.getSide();
-        pipeC = pip.getSide();
-        pipeC.setReady();
         new Thread(this).start();
     }
 
-    private String getContact() {
+    public String getContact() {
         return "<sip:modem@" + uniResLoc.addr2str(conn.iface.addr, conn.portLoc) + ">";
     }
 
-    private sndCodec getCodec() {
+    public sndCodec getCodec() {
         if (lower.aLaw) {
             return new sndCodecG711aLaw();
         } else {
@@ -168,153 +160,77 @@ class servModemDoer implements Runnable {
         }
     }
 
-    private int replyMessage(packSip rx) {
-        packSip tx = new packSip(ctrl);
-        String s = rx.command.trim();
-        int i = s.indexOf(" ");
-        if (i < 1) {
-            return 0;
-        }
-        s = s.substring(0, i).trim().toLowerCase();
-        if (s.equals("ack")) {
-            return 0;
-        }
-        if (s.equals("register") || s.equals("subscribe")) {
-            tx.makeOk(rx, getContact(), 120);
-            if (debugger.servModemTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            return 0;
-        }
-        if (s.equals("options")) {
-            tx.makeOk(rx, getContact(), 0);
-            if (debugger.servModemTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            return 0;
-        }
-        if (s.equals("bye")) {
-            tx.makeOk(rx, getContact(), 0);
-            if (debugger.servModemTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            return 1;
-        }
-        if (s.equals("cancel")) {
-            tx.makeOk(rx, getContact(), 0);
-            if (debugger.servModemTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            return 1;
-        }
-        if (s.equals("message")) {
-            tx.makeOk(rx, getContact(), 0);
-            if (debugger.servModemTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            return 0;
-        }
-        if (s.equals("notify")) {
-            tx.makeOk(rx, getContact(), 0);
-            if (debugger.servModemTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            return 0;
-        }
-        if (s.equals("invite")) {
-            tx.makeNumeric("100 trying", rx, getContact());
-            if (debugger.servModemTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            String trg = rx.headerGet("To", 1);
-            if (trg.indexOf(";tag=") < 0) {
-                trg += ";tag=" + bits.randomD();
-            }
-            rx.headerSet("To", 1, trg);
-            tx.makeNumeric("180 ringing", rx, getContact());
-            if (debugger.servModemTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            tx.makeOk(rx, getContact(), 0);
-            tx.makeSdp(conn.iface.addr, lower.getDataPort(), getCodec());
-            if (debugger.servModemTraf) {
-                tx.dump("tx");
-            }
-            tx.writeDown();
-            return 2;
-        }
-        return 0;
-    }
-
     private void doer() {
-        packSip rx = new packSip(ctrl);
-        if (rx.readUp()) {
-            return;
-        }
-        if (debugger.servModemTraf) {
-            rx.dump("rx");
-        }
-        if (replyMessage(rx) != 2) {
-            return;
-        }
-        packSip sip = rx.byteCopy(ctrl);
-        addrIP adr = new addrIP();
-        int prt = rx.sdpGetMediaEP(adr);
-        if (prt < 1) {
-            return;
-        }
-        if (data.startConnect(lower.srvVrf.getUdp(adr), new pipeLine(32768, true), conn.iface, lower.getDataPort(), adr, prt)) {
-            return;
-        }
-        pipeModem.answer(pipeC, getCodec(), data);
-        bits.sleep(2000);
-        lower.lin.createHandler(pipeS, "" + conn, false);
         for (;;) {
-            if (data.isClosed() != 0) {
-                break;
-            }
-            if (pipeC.isClosed() != 0) {
-                break;
-            }
-            if (pipeS.isClosed() != 0) {
-                break;
-            }
-            if (rx.ready2rx() < 1) {
-                bits.sleep(1000);
-                continue;
-            }
+            packSip rx = new packSip(ctrl);
             if (rx.readUp()) {
-                break;
+                return;
             }
             if (debugger.servModemTraf) {
                 rx.dump("rx");
             }
-            if (replyMessage(rx) == 1) {
-                break;
+            packSip tx = new packSip(ctrl);
+            cmds cmd = new cmds("sip", rx.command);
+            String a = cmd.word().toLowerCase();
+            if (a.length() < 1) {
+                continue;
             }
+            if (a.equals("register") || a.equals("subscribe")) {
+                tx.makeOk(rx, getContact(), 120);
+                if (debugger.servModemTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
+            if (a.equals("options")) {
+                tx.makeOk(rx, getContact(), 0);
+                if (debugger.servModemTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
+            if (a.equals("message")) {
+                tx.makeOk(rx, getContact(), 0);
+                if (debugger.servModemTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
+            if (a.equals("notify")) {
+                tx.makeOk(rx, getContact(), 0);
+                if (debugger.servModemTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
+            servModemConn cn = new servModemConn(this, rx.headerGet("Call-Id", 1));
+            servModemConn old = conns.find(cn);
+            if (old != null) {
+                old.callRep = rx.byteCopy(null);
+                continue;
+            }
+            if (a.equals("ack")) {
+                continue;
+            }
+            if (a.equals("bye") || a.equals("cancel")) {
+                tx.makeOk(rx, getContact(), 0);
+                if (debugger.servModemTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
+            if (!a.equals("invite")) {
+                continue;
+            }
+            cn.callInv = rx.byteCopy(null);
+            cn.startWork();
+            conns.put(cn);
         }
-        packSip tx = new packSip(ctrl);
-        String a = rx.headerGet("CSeq", 1) + " ";
-        int csq = a.indexOf(" ");
-        csq = bits.str2num(a.substring(0, csq).trim());
-        String via = sip.headerGet("Via", 1);
-        String src = sip.headerGet("From", 1);
-        String trg = sip.headerGet("To", 1);
-        String cid = sip.headerGet("Call-Id", 1);
-        String cnt = uniResLoc.fromEmail(rx.headerGet("Contact", 1));
-        tx.makeReq("BYE", cnt, trg, src, getContact(), via, cid, csq + 1, 0);
-        if (debugger.servModemTraf) {
-            tx.dump("tx");
-        }
-        tx.writeDown();
     }
 
     public void run() {
@@ -327,12 +243,149 @@ class servModemDoer implements Runnable {
             logger.traceback(e);
         }
         ctrl.setClose();
-        data.setClose();
-        pipeC.setClose();
-        pipeS.setClose();
         if (debugger.servModemTraf) {
             logger.debug("stopped");
         }
+    }
+
+}
+
+class servModemConn implements Runnable, Comparator<servModemConn> {
+
+    public final String callId;
+
+    public servModemDoer lower;
+
+    public packSip callRep;
+
+    public packSip callInv;
+
+    public packRtp data;
+
+    public pipeSide pipeC;
+
+    public pipeSide pipeS;
+
+    public servModemConn(servModemDoer parent, String cid) {
+        lower = parent;
+        callId = cid;
+    }
+
+    public void startWork() {
+        data = new packRtp();
+        pipeLine pip = new pipeLine(32768, false);
+        pipeS = pip.getSide();
+        pipeC = pip.getSide();
+        pipeC.setReady();
+        new Thread(this).start();
+    }
+
+    public int compare(servModemConn o1, servModemConn o2) {
+        return o1.callId.compareTo(o2.callId);
+    }
+
+    public void run() {
+        try {
+            doer();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        data.setClose();
+        pipeC.setClose();
+        pipeS.setClose();
+        lower.conns.del(this);
+    }
+
+    public void ans() {
+        packSip tx = new packSip(lower.ctrl);
+        tx.makeNumeric("100 trying", callInv, lower.getContact());
+        if (debugger.servModemTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
+        String trg = callInv.headerGet("To", 1);
+        trg = packSip.updateTag(trg);
+        callInv.headerSet("To", 1, trg);
+        tx.makeNumeric("180 ringing", callInv, lower.getContact());
+        if (debugger.servModemTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
+        tx.makeOk(callInv, lower.getContact(), 0);
+        tx.makeSdp(lower.conn.iface.addr, lower.lower.getDataPort(), lower.getCodec());
+        if (debugger.servModemTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
+    }
+
+    public void bye() {
+        packSip tx = new packSip(lower.ctrl);
+        String a = callInv.headerGet("CSeq", 1) + " ";
+        int csq = a.indexOf(" ");
+        csq = bits.str2num(a.substring(0, csq).trim());
+        String via = callInv.headerGet("Via", 1);
+        String src = callInv.headerGet("From", 1);
+        String trg = callInv.headerGet("To", 1);
+        String cid = callInv.headerGet("Call-Id", 1);
+        String cnt = uniResLoc.fromEmail(callInv.headerGet("Contact", 1));
+        tx.makeReq("BYE", cnt, trg, src, lower.getContact(), via, cid, csq + 1, 0);
+        if (debugger.servModemTraf) {
+            tx.dump("tx");
+        }
+        tx.writeDown();
+    }
+
+    public void doer() {
+        ans();
+        addrIP adr = new addrIP();
+        int prt = callInv.sdpGetMediaEP(adr);
+        if (prt < 1) {
+            bye();
+            return;
+        }
+        if (data.startConnect(lower.lower.srvVrf.getUdp(adr), new pipeLine(32768, true), lower.conn.iface, lower.lower.getDataPort(), adr, prt)) {
+            bye();
+            return;
+        }
+        pipeModem.answer(pipeC, lower.getCodec(), data);
+        bits.sleep(2000);
+        lower.lower.lin.createHandler(pipeS, "" + lower.conn, false);
+        for (;;) {
+            if (lower.ctrl.isClosed() != 0) {
+                break;
+            }
+            if (data.isClosed() != 0) {
+                break;
+            }
+            if (pipeC.isClosed() != 0) {
+                break;
+            }
+            if (pipeS.isClosed() != 0) {
+                break;
+            }
+            if (callRep == null) {
+                bits.sleep(1000);
+                continue;
+            }
+            packSip rx = callRep.byteCopy(null);
+            callRep = null;
+            cmds cmd = new cmds("sip", rx.command);
+            String a = cmd.word().toLowerCase();
+            if (a.equals("invite")) {
+                ans();
+                continue;
+            }
+            if (a.equals("bye") || a.equals("cancel")) {
+                packSip tx = new packSip(lower.ctrl);
+                tx.makeOk(rx, lower.getContact(), 0);
+                if (debugger.servModemTraf) {
+                    tx.dump("tx");
+                }
+                return;
+            }
+        }
+        bye();
     }
 
 }

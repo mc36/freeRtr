@@ -9,7 +9,7 @@ set a [string range $a 0 [expr $p - 1]]
 puts "dtmf-start"
 
 for {} {1<2} {} {
-  puts "play-start /nfs2/own/voice/play.wav"
+  puts "play-start /nfs2/own/voice/music.wav"
   for {} {1<2} {} {
     sleep 1
     puts "play-running"

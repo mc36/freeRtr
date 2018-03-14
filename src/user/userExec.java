@@ -565,6 +565,9 @@ public class userExec {
         hl.add("3 .        <name>                name of list");
         hl.add("2 3      prefix-list             prefix list statistics");
         hl.add("3 .        <name>                name of list");
+        hl.add("2 3      dial-peer               current dial peer status");
+        hl.add("3 .        voice                 for calls");
+        hl.add("3 .        message               for messages");
         hl.add("2 3,.    clock                   current date and time");
         hl.add("3 .        big                   a big clock");
         hl.add("3 .        raw                   a raw clock");
@@ -1043,6 +1046,10 @@ public class userExec {
         hl.add("3 4,.      <addr>                address to call");
         hl.add("4 5,.        <addr>              address who calling");
         hl.add("5 .            <name>            script to run");
+        hl.add("2 3      message                 send sip message");
+        hl.add("3 4        <addr>                address to call");
+        hl.add("4 5          <addr>              address who calling");
+        hl.add("5 5,.          <txt>             message text");
         hl.add("1 2    test                      test various things");
         hl.add("2 3      dns                     dns zone creator");
         hl.add("3 .        <name>                name of zone");
