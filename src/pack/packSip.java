@@ -480,7 +480,7 @@ public class packSip {
         command = "SIP/2.0 200 ok";
         copyHeader(src, "Via");
         copyHeader(src, "From");
-        header.add("To: " + updateTag(src.headerGet("to", 1)));
+        header.add("To: " + updateTag(src.headerGet("To", 1)));
         copyHeader(src, "Call-ID");
         copyHeader(src, "CSeq");
         if (cntc != null) {
