@@ -28,6 +28,8 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
      * defaults text
      */
     public final static String defaultL[] = {
+        "translation-rule .*! no track",
+        "translation-rule .*! no time",
         "translation-rule .*! no log",
         "translation-rule .*! no last",};
 
@@ -55,6 +57,16 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
      * replace pattern
      */
     public List<String> replace = new ArrayList<String>();
+
+    /**
+     * match tracker
+     */
+    public cfgTrack track;
+
+    /**
+     * match time
+     */
+    public cfgTime time;
 
     /**
      * match pattern
@@ -92,6 +104,8 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
         for (int i = 0; i < replace.size(); i++) {
             l.add(cmds.tabulator + "replace " + replace.get(i));
         }
+        cmds.cfgLine(l, track == null, cmds.tabulator, "track", "" + track);
+        cmds.cfgLine(l, time == null, cmds.tabulator, "time", "" + time);
         for (int i = 0; i < match.size(); i++) {
             l.add(cmds.tabulator + "match " + match.get(i));
         }
@@ -125,6 +139,10 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1 2    remove              remove string");
         l.add("2 2,.    <str>             regular expression");
+        l.add("1 2    track               consider tracker");
+        l.add("2 .      <name>            name of tracker");
+        l.add("1 2    time                consider time");
+        l.add("2 .      <name>            name of time map");
         l.add("1 2    match               match string");
         l.add("2 2,.    <str>             regular expression");
         l.add("1 2    replace             replace string");
@@ -153,6 +171,28 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
         }
         if (a.equals("last")) {
             last = !negated;
+            return;
+        }
+        if (a.equals("track")) {
+            if (negated) {
+                track = null;
+                return;
+            }
+            track = cfgAll.trackFind(cmd.word(), false);
+            if (track == null) {
+                cmd.error("no such tracker");
+            }
+            return;
+        }
+        if (a.equals("time")) {
+            if (negated) {
+                time = null;
+                return;
+            }
+            time = cfgAll.timeFind(cmd.word(), false);
+            if (time == null) {
+                cmd.error("no such time");
+            }
             return;
         }
         if (a.equals("match")) {
@@ -225,6 +265,16 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
      */
     public String doTranslate(String orig) {
         String src = orig;
+        if (time != null) {
+            if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
+                return null;
+            }
+        }
+        if (track != null) {
+            if (!track.worker.getStatus()) {
+                return null;
+            }
+        }
         for (int i = 0; i < remove.size(); i++) {
             src = src.replaceAll(remove.get(i), "");
         }

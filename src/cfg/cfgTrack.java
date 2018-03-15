@@ -58,11 +58,20 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
 
+    public String getPrompt() {
+        return "trck";
+    }
+
+    public String toString() {
+        return name;
+    }
+
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
         l.add("1  2      mode                       specify mode of runs");
         l.add("2  .        icmp                     icmp echo request");
         l.add("2  .        nrpe                     nrpe remote check");
+        l.add("2  .        other                    other tracker");
         l.add("2  .        tcp                      tcp connection");
         l.add("2  .        bfd                      bidirectional forwarding detection");
         l.add("2  .        interface                interface state");
@@ -194,6 +203,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             }
             if (a.equals("nrpe")) {
                 worker.mode = clntTrack.operMod.nrpe;
+                return;
+            }
+            if (a.equals("other")) {
+                worker.mode = clntTrack.operMod.other;
                 return;
             }
             cmd.badCmd();
@@ -352,9 +365,4 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         }
         cmd.badCmd();
     }
-
-    public String getPrompt() {
-        return "trck";
-    }
-
 }

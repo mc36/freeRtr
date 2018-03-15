@@ -259,11 +259,13 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
     }
 
     private String stripAddr(String a) {
+        a = uniResLoc.fromEmail(a);
         int i = a.indexOf(";");
         if (i >= 0) {
-            a = a.substring(0, i);
+            return a.substring(0, i).trim();
+        } else {
+            return a.trim();
         }
-        return uniResLoc.fromEmail(a);
     }
 
     /**

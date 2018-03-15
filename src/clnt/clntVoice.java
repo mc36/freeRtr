@@ -4,6 +4,7 @@ import cfg.cfgAll;
 import cfg.cfgDial;
 import java.util.List;
 import pack.packRtp;
+import pack.packSip;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import snd.sndCodec;
@@ -88,7 +89,7 @@ public class clntVoice {
         pipeScr.timeout = 120000;
         pipeScr.lineTx = pipeSide.modTyp.modeCRLF;
         pipeScr.lineRx = pipeSide.modTyp.modeCRtryLF;
-        new sndScript(pipeScr, codec, pipeRtp, calling, called);
+        new sndScript(pipeScr, codec, pipeRtp, packSip.removeTag(calling), packSip.removeTag(called));
         return false;
     }
 

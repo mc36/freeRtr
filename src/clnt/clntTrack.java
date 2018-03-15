@@ -73,6 +73,10 @@ public class clntTrack implements rtrBfdClnt {
          * nrpe
          */
         nrpe,
+        /**
+         * other
+         */
+        other,
 
     }
 
@@ -270,6 +274,8 @@ public class clntTrack implements rtrBfdClnt {
                 return "icmp";
             case nrpe:
                 return "nrpe";
+            case other:
+                return "other";
             case tcp:
                 return "tcp";
             case bfd:
@@ -462,6 +468,18 @@ public class clntTrack implements rtrBfdClnt {
                     logger.info("got " + a + " from script");
                 }
                 haveResult(a.equals("1"), false);
+                return;
+            case other:
+                if (target == null) {
+                    haveResult(false, false);
+                    return;
+                }
+                cfgTrack other = cfgAll.trackFind(target, false);
+                if (other == null) {
+                    haveResult(false, false);
+                    return;
+                }
+                haveResult(other.worker.getStatus(), false);
                 return;
             case nrpe:
                 if (target == null) {

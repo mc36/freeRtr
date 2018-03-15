@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import pack.packRtp;
 import pack.packSip;
+import pipe.pipeDiscard;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtGenConn;
@@ -36,9 +37,14 @@ public class servVoice extends servGeneric implements prtServS {
     protected boolean aLaw = true;
 
     /**
-     * script name
+     * voice script name
      */
-    protected String script;
+    protected String voiceScript;
+
+    /**
+     * message script name
+     */
+    protected String messageScript;
 
     /**
      * defaults text
@@ -47,8 +53,8 @@ public class servVoice extends servGeneric implements prtServS {
         "server voice .*! port " + packSip.port,
         "server voice .*! protocol " + proto2string(protoAllDgrm),
         "server voice .*! codec alaw",
-        "server voice .*! no script"
-    };
+        "server voice .*! no voice-script",
+        "server voice .*! no message-script",};
 
     /**
      * defaults filter
@@ -87,7 +93,8 @@ public class servVoice extends servGeneric implements prtServS {
             a = "ulaw";
         }
         lst.add(beg + "codec " + a);
-        cmds.cfgLine(lst, script == null, beg, "script", script);
+        cmds.cfgLine(lst, voiceScript == null, beg, "voice-script", voiceScript);
+        cmds.cfgLine(lst, messageScript == null, beg, "message-script", messageScript);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -102,16 +109,24 @@ public class servVoice extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (a.equals("script")) {
-            script = cmd.getRemaining();
+        if (a.equals("voice-script")) {
+            voiceScript = cmd.getRemaining();
+            return false;
+        }
+        if (a.equals("message-script")) {
+            messageScript = cmd.getRemaining();
             return false;
         }
         if (!a.equals("no")) {
             return true;
         }
         a = cmd.word();
-        if (a.equals("script")) {
-            script = null;
+        if (a.equals("voice-script")) {
+            voiceScript = null;
+            return false;
+        }
+        if (a.equals("message-script")) {
+            messageScript = null;
             return false;
         }
         return true;
@@ -121,7 +136,9 @@ public class servVoice extends servGeneric implements prtServS {
         l.add("1 2  codec                          set codec to use");
         l.add("2 .    alaw                         g711 a law");
         l.add("2 .    ulaw                         g711 u law");
-        l.add("1 2  script                         set tcl script to run");
+        l.add("1 2  voice-script                   set tcl script to run on incoming call");
+        l.add("2 .    <name>                       file name");
+        l.add("1 2  message-script                 set tcl script to run on incoming message");
         l.add("2 .    <name>                       file name");
     }
 
@@ -210,6 +227,36 @@ class servVoiceDoer implements Runnable {
                     tx.dump("tx");
                 }
                 tx.writeDown();
+                if (lower.messageScript == null) {
+                    continue;
+                }
+                List<String> scr = bits.txt2buf(lower.messageScript);
+                if (scr == null) {
+                    continue;
+                }
+                pipeLine pip = new pipeLine(32768, false);
+                pipeSide pipeS = pip.getSide();
+                pipeSide pipeC = pip.getSide();
+                pipeS.setReady();
+                pipeC.setReady();
+                pipeC.timeout = 120000;
+                pipeC.lineTx = pipeSide.modTyp.modeCRLF;
+                pipeC.lineRx = pipeSide.modTyp.modeCRtryLF;
+                pipeC.linePut("from=" + uniResLoc.fromEmail(packSip.removeTag(rx.headerGet("From", 1))));
+                pipeC.linePut("to=" + uniResLoc.fromEmail(packSip.removeTag(rx.headerGet("To", 1))));
+                for (int i = 0; i < rx.content.size(); i++) {
+                    pipeC.linePut("text=" + rx.content.get(i));
+                }
+                pipeC.linePut(".");
+                pipeDiscard.discard(pipeC);
+                pipeS.timeout = 120000;
+                pipeS.lineTx = pipeSide.modTyp.modeCRLF;
+                pipeS.lineRx = pipeSide.modTyp.modeCRorLF;
+                userScript t = new userScript(pipeS, "");
+                t.addLines(scr);
+                t.allowConfig = true;
+                t.allowExec = true;
+                new servVoiceScr(t, pipeS);
                 continue;
             }
             if (a.equals("notify")) {
@@ -385,7 +432,7 @@ class servVoiceConn implements Runnable, Comparator<servVoiceConn> {
             bye();
             return;
         }
-        List<String> scr = bits.txt2buf(lower.lower.script);
+        List<String> scr = bits.txt2buf(lower.lower.voiceScript);
         if (scr == null) {
             data.setClose();
             pipeS.setClose();
@@ -394,7 +441,7 @@ class servVoiceConn implements Runnable, Comparator<servVoiceConn> {
             pipeC.timeout = 120000;
             pipeC.lineTx = pipeSide.modTyp.modeCRLF;
             pipeC.lineRx = pipeSide.modTyp.modeCRtryLF;
-            new sndScript(pipeC, lower.getCodec(), data, uniResLoc.fromEmail(callInv.headerGet("From", 1)), uniResLoc.fromEmail(callInv.headerGet("To", 1)));
+            new sndScript(pipeC, lower.getCodec(), data, uniResLoc.fromEmail(packSip.removeTag(callInv.headerGet("From", 1))), uniResLoc.fromEmail(packSip.removeTag(callInv.headerGet("To", 1))));
             pipeS.timeout = 120000;
             pipeS.lineTx = pipeSide.modTyp.modeCRLF;
             pipeS.lineRx = pipeSide.modTyp.modeCRorLF;

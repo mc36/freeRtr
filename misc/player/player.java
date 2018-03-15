@@ -108,6 +108,9 @@ public class player implements Runnable {
             new Thread(staticPlayer).start();
         }
         int i = staticPlayer.doRequest(par, buf);
+        if (i == -2) {
+            return "txt";
+        }
         if (i < 0) {
             buf.write("</body></html>".getBytes());
             return "html";
@@ -780,6 +783,17 @@ public class player implements Runnable {
         }
         if (cmd.equals("download")) {
             return playerUtil.str2int(song);
+        }
+        if (cmd.equals("title")) {
+            String a;
+            if ((currSong >= playlist.size()) || (currSong < 0)) {
+                a = "stopped";
+            } else {
+                a = playlist.get(currSong).title;
+            }
+            buf.reset();
+            buf.write(a.getBytes());
+            return -2;
         }
         if (cmd.equals("stop")) {
             startPlay(-1, "0");

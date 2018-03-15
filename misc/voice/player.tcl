@@ -14,12 +14,23 @@ for {} {1<2} {} {
 set url ""
 set cmd ""
 
-if {[string first sip:01 $trg] >= 0} {set cmd "prev"}
-if {[string first sip:02 $trg] >= 0} {set cmd "stop"}
-if {[string first sip:03 $trg] >= 0} {set cmd "next"}
-
 if {[string first sip:14 $src] >= 0} {set url "http://player.mchome.nop.hu/player.class"}
 if {[string first sip:15 $src] >= 0} {set url "http://speaker.mchome.nop.hu/player.class"}
+
+if {[string first sip:01 $trg] >= 0} {set cmd "cmd=prev"}
+if {[string first sip:02 $trg] >= 0} {set cmd "cmd=stop"}
+if {[string first sip:03 $trg] >= 0} {set cmd "cmd=next"}
+if {[string first sip:04 $trg] >= 0} {set cmd "cmd=vol&song=0"}
+if {[string first sip:05 $trg] >= 0} {set cmd "cmd=vol&song=50"}
+if {[string first sip:06 $trg] >= 0} {set cmd "cmd=vol&song=100"}
+
+if {[string first sip:07 $trg] >= 0} {
+  set tit [exec "attach shell1 curl -s $url?cmd=title"]
+  puts "hangup"
+  exec "packet message $src $trg $tit"
+  sleep 2
+  return
+  }
 
 if {[string length $cmd] < 1} {
   puts "play-start /nfs2/own/voice/player.wav"
@@ -39,6 +50,6 @@ if {[string length $url] < 1} {
   return
   }
 
-exec "flash receive /rtr/zzz5.html $url?cmd=$cmd"
+exec "flash receive /rtr/zzz5.html $url?$cmd"
 puts "hangup"
 sleep 2

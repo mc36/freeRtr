@@ -102,6 +102,7 @@ public class version {
         "tex    application/x-tex",
         "tgz    application/x-gzip",
         "zip    application/zip",
+        "xml    application/xml",
         // wireless application
         "wml    text/vnd.wap.wml",
         "wbmp   image/vnd.wap.wbmp"

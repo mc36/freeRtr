@@ -36,13 +36,18 @@ public class servSip extends servGeneric implements prtServS {
      */
     public final static String defaultL[] = {
         "server sip .*! port " + packSip.port,
-        "server sip .*! protocol " + proto2string(protoAllDgrm)
-    };
+        "server sip .*! protocol " + proto2string(protoAllDgrm),
+        "server sip .*! no mypeer",};
 
     /**
      * defaults filter
      */
     public static tabGen<userFilter> defaultF;
+
+    /**
+     * my peer
+     */
+    public String myPeer;
 
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
@@ -69,13 +74,29 @@ public class servSip extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst) {
+        cmds.cfgLine(lst, myPeer == null, beg, "mypeer", myPeer);
     }
 
     public boolean srvCfgStr(cmds cmd) {
+        String a = cmd.word();
+        if (a.equals("mypeer")) {
+            myPeer = cmd.word();
+            return false;
+        }
+        if (!a.equals("no")) {
+            return true;
+        }
+        a = cmd.word();
+        if (a.equals("mypeer")) {
+            myPeer = null;
+            return false;
+        }
         return true;
     }
 
     public void srvHelp(userHelping l) {
+        l.add("1 2  mypeer                         discard this dial peer on outgoing calls");
+        l.add("2 .    <name>                       dial peer name");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -131,6 +152,7 @@ public class servSip extends servGeneric implements prtServS {
             }
         }
         return null;
+
     }
 
 }
@@ -172,6 +194,10 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
         return "<sip:pbx@" + uniResLoc.addr2str(conn.iface.addr, conn.portLoc) + ">";
     }
 
+    private String getMyVia() {
+        return "SIP/2.0/UDP " + uniResLoc.addr2str(conn.iface.addr, conn.portLoc);
+    }
+
     public void run() {
         if (debugger.servSipTraf) {
             logger.debug("started");
@@ -197,7 +223,11 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
             tx.dump("tx");
         }
         tx.writeDown();
-        cfgDial per = cfgAll.dialFind(src, trg, null);
+        cfgDial per = null;
+        if (lower.myPeer != null) {
+            per = cfgAll.dialFind(lower.myPeer, false);
+        }
+        per = cfgAll.dialFind(src, trg, per);
         if (per == null) {
             tx.makeErr(rx, null, "no such number");
             if (debugger.servSipTraf) {
@@ -281,13 +311,16 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 }
                 a = rx.headerGet("Contact", 1);
                 if (a.length() < 1) {
-                    rx.header.add("Contact: <sip:peer@" + getPeerContact() + ">");
+                    a = "<sip:peer@" + getPeerContact() + ">";
+                    rx.header.add("Contact: " + a);
                 }
                 rx.headerSet("Contact", 1, getMyContact());
                 a = rx.headerGet("Via", 1);
                 if (a.length() < 1) {
-                    rx.header.add("Via: SIP/2.0/UDP " + getPeerContact() + ";rport;branch=" + bits.randomD());
+                    a = "SIP/2.0/UDP " + getPeerContact() + ";rport;branch=" + bits.randomD();
+                    rx.header.add("Via: " + a);
                 }
+                rx.headerSet("Via", 1, packSip.updateVia(a, getMyVia()));
                 if (debugger.servSipTraf) {
                     rx.dump("fwd");
                 }
@@ -363,7 +396,11 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 tx.dump("tx");
             }
             tx.writeDown();
-            cfgDial peer = cfgAll.dialFind(src, trg, null);
+            cfgDial peer = null;
+            if (lower.myPeer != null) {
+                peer = cfgAll.dialFind(lower.myPeer, false);
+            }
+            peer = cfgAll.dialFind(src, trg, peer);
             if (peer == null) {
                 tx.makeErr(rx, null, "no such number");
                 if (debugger.servSipTraf) {

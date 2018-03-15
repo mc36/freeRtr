@@ -39,6 +39,37 @@ public class packSip {
         }
     }
 
+    /**
+     * remove tag
+     *
+     * @param s (un)tagged
+     * @return tagged
+     */
+    public static String removeTag(String s) {
+        int i = s.indexOf(";tag=");
+        if (i < 0) {
+            return s;
+        } else {
+            return s.substring(0, i).trim();
+        }
+    }
+
+    /**
+     * update via header
+     *
+     * @param s header
+     * @param n new address
+     * @return updated header
+     */
+    public static String updateVia(String s, String n) {
+        int i = s.indexOf(";");
+        if (i < 0) {
+            return s;
+        } else {
+            return n + ";" + s.substring(i + 1, s.length()).trim();
+        }
+    }
+
     private final pipeSide pipe;
 
     /**
