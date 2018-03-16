@@ -2,6 +2,7 @@ package snd;
 
 import pack.packHolder;
 import pack.packRtp;
+import util.bits;
 import util.logger;
 
 /**
@@ -27,8 +28,8 @@ public class sndConnect {
         side1 = s1;
         side2 = s2;
         if (c1.getRTPtype() == c2.getRTPtype()) {
-            new sndConnectSmpl(s1, s2);
-            new sndConnectSmpl(s2, s1);
+            new sndConnectSmpl(s1, s2, c1);
+            new sndConnectSmpl(s2, s1, c2);
         } else {
             new sndConnectTrns(s1, s2, c1, c2);
             new sndConnectTrns(s2, s1, c2, c1);
@@ -60,9 +61,12 @@ class sndConnectSmpl implements Runnable {
 
     private packRtp tx;
 
-    public sndConnectSmpl(packRtp s1, packRtp s2) {
+    private sndCodec codec;
+
+    public sndConnectSmpl(packRtp s1, packRtp s2, sndCodec c) {
         rx = s1;
         tx = s2;
+        codec = c;
         new Thread(this).start();
     }
 
@@ -78,6 +82,9 @@ class sndConnectSmpl implements Runnable {
             pck.clear();
             if (rx.recvPack(pck, true) < 1) {
                 break;
+            }
+            if (pck.RTPtyp != codec.getRTPtype()) {
+                continue;
             }
             tx.sendPack(pck);
         }
@@ -105,11 +112,14 @@ class sndConnectTrns implements Runnable {
 
     private sndCodec txC;
 
+    private int syncSrc;
+
     public sndConnectTrns(packRtp s1, packRtp s2, sndCodec c1, sndCodec c2) {
         rxS = s1;
         txS = s2;
         rxC = c1;
         txC = c2;
+        syncSrc = bits.randomD();
         new Thread(this).start();
     }
 
@@ -126,11 +136,16 @@ class sndConnectTrns implements Runnable {
             if (rxS.recvPack(pck, true) < 1) {
                 break;
             }
+            if (pck.RTPtyp != rxC.getRTPtype()) {
+                continue;
+            }
             byte[] buf = txC.encodeBuf(rxC.decodeBuf(pck.getCopy()));
             pck.clear();
             pck.putCopy(buf, 0, 0, buf.length);
             pck.putSkip(buf.length);
             pck.merge2end();
+            pck.RTPtyp = txC.getRTPtype();
+            pck.RTPsrc = syncSrc;
             txS.sendPack(pck);
         }
     }

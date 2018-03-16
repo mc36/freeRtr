@@ -7,6 +7,10 @@ package snd;
  */
 public class sndCodecG711aLaw extends sndCodec {
 
+    private static int[] decode;
+
+    private static int[] encode;
+
     public int getRTPtype() {
         return 8;
     }
@@ -17,6 +21,22 @@ public class sndCodecG711aLaw extends sndCodec {
 
     public int getWAVtype() {
         return 6;
+    }
+
+    protected int[] getBuffer(boolean dir) {
+        if (dir) {
+            return encode;
+        } else {
+            return decode;
+        }
+    }
+
+    protected void setBuffer(boolean dir, int[] buf) {
+        if (dir) {
+            encode = buf;
+        } else {
+            decode = buf;
+        }
     }
 
     protected int calcDecodeOneValue(int val) {

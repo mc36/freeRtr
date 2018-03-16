@@ -12,6 +12,7 @@ import snd.sndCodecG711aLaw;
 import snd.sndCodecG711uLaw;
 import tab.tabGen;
 import user.userFilter;
+import user.userFormat;
 import user.userHelping;
 import util.bits;
 import util.cmds;
@@ -49,6 +50,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         "dial-peer .*! subscribe 0",
         "dial-peer .*! port-local 0",
         "dial-peer .*! port-remote " + packSip.port,
+        "dial-peer .*! protocol sip-udp",
         "dial-peer .*! direction none",};
 
     /**
@@ -60,6 +62,11 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      * direction: 0=none, 1=in, 2=out, 3=both
      */
     public int direction;
+
+    /**
+     * protocol: 1=sip-udp, 2=sip-listen, 3=sip-connect
+     */
+    public int protocol = 1;
 
     /**
      * local port
@@ -258,6 +265,21 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         }
     }
 
+    /**
+     * get call list
+     *
+     * @param dir direction, true=in, false=out
+     * @return list
+     */
+    public userFormat getCalls(boolean dir) {
+        userFormat l = new userFormat("|", "calling|called|duration");
+        if (sip == null) {
+            return l;
+        }
+        l.add(sip.listCalls(dir));
+        return l;
+    }
+
     private String stripAddr(String a) {
         a = uniResLoc.fromEmail(a);
         int i = a.indexOf(";");
@@ -280,6 +302,9 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
             return false;
         }
         if ((direction & 2) == 0) {
+            return false;
+        }
+        if (!sip.isReady()) {
             return false;
         }
         if (sip.numCallsOut() >= maxCallsOut) {
@@ -563,6 +588,21 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         cmds.cfgLine(l, trg == null, cmds.tabulator, "target", trg);
         l.add(cmds.tabulator + "max-calls-in " + maxCallsIn);
         l.add(cmds.tabulator + "max-calls-out " + maxCallsOut);
+        switch (protocol) {
+            case 1:
+                a = "sip-udp";
+                break;
+            case 2:
+                a = "sip-listen";
+                break;
+            case 3:
+                a = "sip-connect";
+                break;
+            default:
+                a = "unknown=" + protocol;
+                break;
+        }
+        l.add(cmds.tabulator + "protocol " + a);
         switch (direction) {
             case 0:
                 a = "none";
@@ -619,6 +659,10 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         l.add("2 2,.    <name>                username");
         l.add("1 2    password                set password");
         l.add("2 2,.    <name>                password");
+        l.add("1 2    protocol                set peer protocol");
+        l.add("2 .      sip-udp               sip over udp");
+        l.add("2 .      sip-listen            sip over tcp as server");
+        l.add("2 .      sip-connect           sip over tcp as client");
         l.add("1 2    direction               set peer direction");
         l.add("2 .      in                    inbound");
         l.add("2 .      out                   outbound");
@@ -650,6 +694,31 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         boolean negated = a.equals("no");
         if (negated) {
             a = cmd.word();
+        }
+        if (a.equals("protocol")) {
+            a = cmd.word();
+            if (negated) {
+                protocol = 1;
+                doStartup();
+                return;
+            }
+            if (a.equals("sip-udp")) {
+                protocol = 1;
+                doStartup();
+                return;
+            }
+            if (a.equals("sip-listen")) {
+                protocol = 2;
+                doStartup();
+                return;
+            }
+            if (a.equals("sip-connect")) {
+                protocol = 3;
+                doStartup();
+                return;
+            }
+            cmd.badCmd();
+            return;
         }
         if (a.equals("direction")) {
             a = cmd.word();
@@ -946,6 +1015,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
             return;
         }
         sip = new clntSip();
+        sip.protocol = protocol;
         sip.upper = this;
         sip.endpt = endpt;
         sip.portLoc = portLoc;

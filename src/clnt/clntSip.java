@@ -8,6 +8,7 @@ import cfg.cfgVrf;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
@@ -16,6 +17,7 @@ import pack.packRtp;
 import pack.packSip;
 import pipe.pipeLine;
 import pipe.pipeSide;
+import prt.prtAccept;
 import prt.prtGen;
 import snd.sndCodec;
 import snd.sndCodecG711aLaw;
@@ -40,6 +42,11 @@ public class clntSip implements Runnable {
      * upper
      */
     public cfgDial upper;
+
+    /**
+     * protocol: 1=udp, 2=listen, 3=connect
+     */
+    public int protocol = 1;
 
     /**
      * local port
@@ -115,6 +122,11 @@ public class clntSip implements Runnable {
      * udp handler
      */
     protected prtGen udp;
+
+    /**
+     * tcp handler
+     */
+    protected prtGen tcp;
 
     /**
      * forwarder interface
@@ -237,7 +249,13 @@ public class clntSip implements Runnable {
      * @return id
      */
     protected String getVia() {
-        return "SIP/2.0/UDP " + uniResLoc.addr2str(srcFwd.addr, portLoc) + ";rport;branch=" + bits.randomD();
+        String a;
+        if (protocol == 1) {
+            a = "UDP";
+        } else {
+            a = "TCP";
+        }
+        return "SIP/2.0/" + a + " " + uniResLoc.addr2str(srcFwd.addr, portLoc) + ";rport;branch=" + bits.randomD();
     }
 
     /**
@@ -370,6 +388,49 @@ public class clntSip implements Runnable {
      */
     public int numMsgsOut() {
         return msgs.size();
+    }
+
+    /**
+     * check if ready
+     *
+     * @return true if yes, false if no
+     */
+    public boolean isReady() {
+        if (conn == null) {
+            return false;
+        }
+        if (conn.isClosed() != 0) {
+            return false;
+        }
+        return conn.isReady() == 3;
+    }
+
+    /**
+     * get call list
+     *
+     * @param dir direction, true=in, false=out
+     * @return list
+     */
+    public List<String> listCalls(boolean dir) {
+        List<String> res = new ArrayList<String>();
+        if (dir) {
+            for (int i = 0; i < ins.size(); i++) {
+                clntSipIn ntry = ins.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                res.add(ntry.src + "|" + ntry.trg + "|" + bits.timePast(ntry.started));
+            }
+        } else {
+            for (int i = 0; i < outs.size(); i++) {
+                clntSipOut ntry = outs.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                res.add(ntry.callSrc + "|" + ntry.callTrg + "|" + bits.timePast(ntry.started));
+            }
+        }
+        return res;
     }
 
     /**
@@ -519,6 +580,7 @@ public class clntSip implements Runnable {
         }
         fwd = vrf.getFwd(trgAdr);
         udp = vrf.getUdp(trgAdr);
+        tcp = vrf.getTcp(trgAdr);
         if (srcIfc != null) {
             srcFwd = srcIfc.getFwdIfc(trgAdr);
         } else {
@@ -530,13 +592,35 @@ public class clntSip implements Runnable {
         if (portLoc == 0) {
             portLoc = bits.randomW();
         }
-        conn = udp.streamConnect(new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", null, -1);
+        switch (protocol) {
+            case 1:
+                conn = udp.streamConnect(new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", null, -1);
+                break;
+            case 2:
+                prtAccept ac = new prtAccept(tcp, new pipeLine(32768, false), srcFwd, portLoc, trgAdr, 0, portRem, "sip", null, -1);
+                ac.wait4conn(30000);
+                conn = ac.getConn(true);
+                break;
+            case 3:
+                conn = tcp.streamConnect(new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", null, -1);
+                break;
+        }
         if (conn == null) {
             return;
         }
         conn.timeout = 180000;
         conn.lineRx = pipeSide.modTyp.modeCRtryLF;
         conn.lineTx = pipeSide.modTyp.modeCRLF;
+        conn.setReady();
+        conn.wait4ready(30000);
+        if (conn.isReady() != 3) {
+            conn.setClose();
+            conn = null;
+            return;
+        }
+        if (protocol > 1) {
+            logger.warn("neighbor " + trgDom + " up");
+        }
         packSip sip = new packSip(conn);
         long lastRetry = 0;
         for (;;) {
@@ -717,6 +801,9 @@ public class clntSip implements Runnable {
             conn.setClose();
         }
         conn = null;
+        if (protocol > 1) {
+            logger.error("neighbor " + trgDom + " down");
+        }
         if (debugger.clntSipTraf) {
             logger.debug("restarting");
         }
@@ -784,6 +871,8 @@ class clntSipOut implements Comparator<clntSipOut> {
 
     public final String callId;
 
+    public final long started;
+
     public int callPort;
 
     public String callSrc;
@@ -808,6 +897,7 @@ class clntSipOut implements Comparator<clntSipOut> {
         }
         callId = id;
         lower = prnt;
+        started = bits.getTime();
     }
 
     public int compare(clntSipOut o1, clntSipOut o2) {
@@ -936,6 +1026,8 @@ class clntSipIn implements Runnable, Comparator<clntSipIn> {
 
     public final String cid;
 
+    public final long started;
+
     public addrIP adr;
 
     public int prt;
@@ -969,6 +1061,7 @@ class clntSipIn implements Runnable, Comparator<clntSipIn> {
     public clntSipIn(clntSip prnt, String id) {
         lower = prnt;
         cid = id;
+        started = bits.getTime();
     }
 
     public int compare(clntSipIn o1, clntSipIn o2) {
@@ -1137,6 +1230,8 @@ class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
 
     public final String callId;
 
+    public final long started;
+
     public packSip callRep;
 
     public String callSrc;
@@ -1155,6 +1250,7 @@ class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
         }
         lower = prnt;
         callId = id;
+        started = bits.getTime();
     }
 
     public int compare(clntSipMsg o1, clntSipMsg o2) {
@@ -1169,13 +1265,12 @@ class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
         callSrc = packSip.updateTag(callSrc);
         callAuth = null;
         callRep = null;
-        packSip callAck = null;
-        boolean need2inv = true;
+        boolean need2msg = true;
         for (int o = 0; o < lower.retry; o++) {
             if (lower.conn == null) {
                 continue;
             }
-            if (need2inv) {
+            if (need2msg) {
                 packSip sip = new packSip(lower.conn);
                 sip.makeReq("MESSAGE", null, callSrc, callTrg, lower.getCont(), lower.getVia(), callId, callSeq, 0);
                 sip.header.add("Content-Type: text/plain");
@@ -1204,12 +1299,12 @@ class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
             String a = cmd.word();
             if (a.equals("401")) {
                 callAuth = sip.headerGet("WWW-Authenticate", 1);
-                need2inv = true;
+                need2msg = true;
                 callSeq++;
                 continue;
             }
             if (a.startsWith("1")) {
-                need2inv = false;
+                need2msg = false;
                 continue;
             }
             if (a.startsWith("2")) {

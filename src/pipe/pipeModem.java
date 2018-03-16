@@ -154,6 +154,9 @@ class pipeModemRx implements Runnable {
             if (rtp.recvPack(pck, true) < 1) {
                 return;
             }
+            if (pck.RTPtyp != codec.getRTPtype()) {
+                continue;
+            }
             modem.sampAdd(codec.decodeBuf(pck.getCopy()));
             for (;;) {
                 modem.findStart();

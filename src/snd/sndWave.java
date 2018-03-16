@@ -228,8 +228,6 @@ class sndWaveRec implements Runnable {
 
     private sndWave lower;
 
-    private int syncSrc;
-
     private packHolder pck;
 
     private sndCodec codec;
@@ -242,7 +240,6 @@ class sndWaveRec implements Runnable {
         lower = parent;
         rtp = strm;
         codec = codr;
-        syncSrc = bits.randomD();
         pck = new packHolder(true, true);
         got = new ArrayList<Byte>();
         for (int i = 0; i < sndWave.size; i++) {
@@ -275,6 +272,9 @@ class sndWaveRec implements Runnable {
             if (rtp.recvPack(pck, true) < 1) {
                 break;
             }
+            if (pck.RTPtyp != codec.getRTPtype()) {
+                continue;
+            }
             byte[] buf = pck.getCopy();
             lower.doDtmf(buf);
             for (int i = 0; i < buf.length; i++) {
@@ -295,8 +295,6 @@ class sndWaveDtmf implements Runnable {
 
     private sndWave lower;
 
-    private int syncSrc;
-
     private packHolder pck;
 
     private sndCodec codec;
@@ -307,7 +305,6 @@ class sndWaveDtmf implements Runnable {
         lower = parent;
         rtp = strm;
         codec = codr;
-        syncSrc = bits.randomD();
         pck = new packHolder(true, true);
         lower.state = 1;
         new Thread(this).start();
@@ -334,6 +331,9 @@ class sndWaveDtmf implements Runnable {
             pck.clear();
             if (rtp.recvPack(pck, true) < 1) {
                 break;
+            }
+            if (pck.RTPtyp != codec.getRTPtype()) {
+                continue;
             }
             byte[] buf = pck.getCopy();
             lower.doDtmf(buf);

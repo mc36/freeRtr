@@ -755,9 +755,10 @@ dial-peer 1
  vrf v1
  source loopback0
  myname 97
- target 10.10.10.10
+ target 2001:db8:1101::10
  max-calls-in 99
  max-calls-out 99
+ protocol sip-connect
  direction both
  exit
 !
@@ -803,7 +804,8 @@ server bmp2mrt bmp
  vrf v1
  exit
 !
-server sip a
+server sip lab
+ protocol ipv4 ipv6 tcp udp
  interface loopback0
  vrf v1
  exit

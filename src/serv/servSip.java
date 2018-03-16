@@ -3,6 +3,8 @@ package serv;
 import addr.addrIP;
 import cfg.cfgAll;
 import cfg.cfgDial;
+import cfg.cfgTrnsltn;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import pack.packRtp;
@@ -49,6 +51,16 @@ public class servSip extends servGeneric implements prtServS {
      */
     public String myPeer;
 
+    /**
+     * translate out src
+     */
+    public List<cfgTrnsltn> trnsOutSrc = new ArrayList<cfgTrnsltn>();
+
+    /**
+     * translate out dst
+     */
+    public List<cfgTrnsltn> trnsOutDst = new ArrayList<cfgTrnsltn>();
+
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
     }
@@ -75,20 +87,51 @@ public class servSip extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst) {
         cmds.cfgLine(lst, myPeer == null, beg, "mypeer", myPeer);
+        for (int i = 0; i < trnsOutSrc.size(); i++) {
+            lst.add(cmds.tabulator + "translate-out-calling " + trnsOutSrc.get(i).name);
+        }
+        for (int i = 0; i < trnsOutDst.size(); i++) {
+            lst.add(cmds.tabulator + "translate-out-called " + trnsOutDst.get(i).name);
+        }
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
+        boolean negated = a.equals("no");
+        if (negated) {
+            a = cmd.word();
+        }
         if (a.equals("mypeer")) {
             myPeer = cmd.word();
+            if (negated) {
+                myPeer = null;
+            }
             return false;
         }
-        if (!a.equals("no")) {
-            return true;
+        if (a.equals("translate-out-calling")) {
+            cfgTrnsltn rule = cfgAll.trnsltnFind(cmd.word(), false);
+            if (rule == null) {
+                cmd.error("no such rule");
+                return false;
+            }
+            if (negated) {
+                trnsOutSrc.remove(rule);
+            } else {
+                trnsOutSrc.add(rule);
+            }
+            return false;
         }
-        a = cmd.word();
-        if (a.equals("mypeer")) {
-            myPeer = null;
+        if (a.equals("translate-out-called")) {
+            cfgTrnsltn rule = cfgAll.trnsltnFind(cmd.word(), false);
+            if (rule == null) {
+                cmd.error("no such rule");
+                return false;
+            }
+            if (negated) {
+                trnsOutDst.remove(rule);
+            } else {
+                trnsOutDst.add(rule);
+            }
             return false;
         }
         return true;
@@ -97,6 +140,10 @@ public class servSip extends servGeneric implements prtServS {
     public void srvHelp(userHelping l) {
         l.add("1 2  mypeer                         discard this dial peer on outgoing calls");
         l.add("2 .    <name>                       dial peer name");
+        l.add("1 2    translate-out-calling   translate outgoing calling string");
+        l.add("2 .      <name>                rule name");
+        l.add("1 2    translate-out-called    translate outgoing called string");
+        l.add("2 .      <name>                rule name");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -218,6 +265,8 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
     private void doMsg(packSip rx, packSip tx) {
         String src = rx.headerGet("From", 1);
         String trg = rx.headerGet("To", 1);
+        src = cfgTrnsltn.doTranslate(lower.trnsOutSrc, src);
+        trg = cfgTrnsltn.doTranslate(lower.trnsOutDst, trg);
         tx.makeNumeric("100 trying", rx, getMyContact());
         if (debugger.servSipTraf) {
             tx.dump("tx");
@@ -396,11 +445,13 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 tx.dump("tx");
             }
             tx.writeDown();
+            String newSrc = cfgTrnsltn.doTranslate(lower.trnsOutSrc, src);
+            String newTrg = cfgTrnsltn.doTranslate(lower.trnsOutDst, trg);
             cfgDial peer = null;
             if (lower.myPeer != null) {
                 peer = cfgAll.dialFind(lower.myPeer, false);
             }
-            peer = cfgAll.dialFind(src, trg, peer);
+            peer = cfgAll.dialFind(newSrc, newTrg, peer);
             if (peer == null) {
                 tx.makeErr(rx, null, "no such number");
                 if (debugger.servSipTraf) {
@@ -409,7 +460,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 tx.writeDown();
                 continue;
             }
-            String rcd = peer.makeCall(src, trg);
+            String rcd = peer.makeCall(newSrc, newTrg);
             if (rcd == null) {
                 tx.makeErr(rx, null, "failed to make call");
                 if (debugger.servSipTraf) {

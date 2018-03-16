@@ -20,6 +20,22 @@ public abstract class sndCodec {
     protected abstract int calcDecodeOneValue(int val);
 
     /**
+     * get en/decode buffer
+     *
+     * @param dir true=encode, false=decode
+     * @return buffer
+     */
+    protected abstract int[] getBuffer(boolean dir);
+
+    /**
+     * set en/decode buffer
+     *
+     * @param dir true=encode, false=decode
+     * @param buf buffer
+     */
+    protected abstract void setBuffer(boolean dir, int[] buf);
+
+    /**
      * get rtp type
      *
      * @return type
@@ -44,26 +60,34 @@ public abstract class sndCodec {
      * construct tables
      */
     public sndCodec() {
-        decode = new int[128];
-        for (int i = 0; i < decode.length; i++) {
-            decode[i] = calcDecodeOneValue(i);
-        }
-        encode = new int[32768];
-        for (int i = 0; i < encode.length; i++) {
-            int o = -1;
-            int p = 0x100000;
-            for (int q = 0; q < decode.length; q++) {
-                int r = i - decode[q];
-                if (r < 0) {
-                    r = -r;
-                }
-                if (r > p) {
-                    continue;
-                }
-                o = q;
-                p = r;
+        decode = getBuffer(false);
+        if (decode == null) {
+            decode = new int[128];
+            for (int i = 0; i < decode.length; i++) {
+                decode[i] = calcDecodeOneValue(i);
             }
-            encode[i] = o;
+            setBuffer(false, decode);
+        }
+        encode = getBuffer(true);
+        if (encode == null) {
+            encode = new int[32768];
+            for (int i = 0; i < encode.length; i++) {
+                int o = -1;
+                int p = 0x100000;
+                for (int q = 0; q < decode.length; q++) {
+                    int r = i - decode[q];
+                    if (r < 0) {
+                        r = -r;
+                    }
+                    if (r > p) {
+                        continue;
+                    }
+                    o = q;
+                    p = r;
+                }
+                encode[i] = o;
+            }
+            setBuffer(true, encode);
         }
     }
 
