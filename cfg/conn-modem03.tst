@@ -48,7 +48,6 @@ dial-peer 1
  direction out
  exit
 server sip sp
- codec alaw
  vrf v1
  exit
 !

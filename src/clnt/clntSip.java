@@ -382,9 +382,9 @@ public class clntSip implements Runnable {
     }
 
     /**
-     * get number of out messsages
+     * get number of out messages
      *
-     * @return number of messsages
+     * @return number of messages
      */
     public int numMsgsOut() {
         return msgs.size();
