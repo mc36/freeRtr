@@ -144,11 +144,9 @@ class pipeModemRx implements Runnable {
         packHolder pck = new packHolder(true, true);
         for (;;) {
             if (rtp.isClosed() != 0) {
-                pipe.setClose();
                 return;
             }
             if (pipe.isClosed() != 0) {
-                rtp.setClose();
                 return;
             }
             if (rtp.recvPack(pck, true) < 1) {
@@ -178,6 +176,7 @@ class pipeModemRx implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
+        pipe.setClose();
         rtp.setClose();
     }
 

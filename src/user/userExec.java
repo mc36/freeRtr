@@ -855,6 +855,9 @@ public class userExec {
         hl.add("1 2    clear                     clear running conditions");
         hl.add("2 3,.    counters                counters on one or more interfaces");
         hl.add("3 .        <name>                name of interface");
+        hl.add("2 3      dial-peer               clear voip call");
+        hl.add("3 4        <num>                 number of dial peer");
+        hl.add("4 .          <str>               call id");
         hl.add("2 3      scheduler               run one scheduler round");
         hl.add("3 .        <name>                name of scheduler");
         hl.add("2 3      script                  run one script round");
@@ -1048,10 +1051,13 @@ public class userExec {
         hl.add("3 4,.      <addr>                address to call");
         hl.add("4 5,.        <addr>              address who calling");
         hl.add("5 .            <name>            script to run");
-        hl.add("2 3      message                 send sip message");
+        hl.add("2 3      message                 send voip message");
         hl.add("3 4        <addr>                address to call");
         hl.add("4 5          <addr>              address who calling");
         hl.add("5 5,.          <txt>             message text");
+        hl.add("2 3      conference              start voice conference");
+        hl.add("3 4,.      <addr>                address who calling");
+        hl.add("4 4,.        <addr>              address to call");
         hl.add("1 2    test                      test various things");
         hl.add("2 3      dns                     dns zone creator");
         hl.add("3 .        <name>                name of zone");

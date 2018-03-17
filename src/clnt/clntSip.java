@@ -312,11 +312,29 @@ public class clntSip implements Runnable {
     }
 
     /**
+     * delete the call
+     *
+     * @param leg call id
+     */
+    protected void delCall(clntSipIn leg) {
+        ins.del(leg);
+    }
+
+    /**
+     * delete the call
+     *
+     * @param leg call id
+     */
+    protected void delCall(clntSipOut leg) {
+        outs.del(leg);
+    }
+
+    /**
      * send subscribe
      *
      * @param auth authentication request
      */
-    public void sendSub(String auth) {
+    protected void sendSub(String auth) {
         if (conn == null) {
             return;
         }
@@ -335,7 +353,7 @@ public class clntSip implements Runnable {
      *
      * @param auth authentication request
      */
-    public void sendReg(String auth) {
+    protected void sendReg(String auth) {
         if (conn == null) {
             return;
         }
@@ -352,7 +370,7 @@ public class clntSip implements Runnable {
     /**
      * send keepalive
      */
-    public void sendKeep() {
+    protected void sendKeep() {
         if (conn == null) {
             return;
         }
@@ -419,7 +437,7 @@ public class clntSip implements Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                res.add(ntry.src + "|" + ntry.trg + "|" + bits.timePast(ntry.started));
+                res.add(ntry.cid + "|" + ntry.src + "|" + ntry.trg + "|" + bits.timePast(ntry.started));
             }
         } else {
             for (int i = 0; i < outs.size(); i++) {
@@ -427,14 +445,14 @@ public class clntSip implements Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                res.add(ntry.callSrc + "|" + ntry.callTrg + "|" + bits.timePast(ntry.started));
+                res.add(ntry.callId + "|" + ntry.callSrc + "|" + ntry.callTrg + "|" + bits.timePast(ntry.started));
             }
         }
         return res;
     }
 
     /**
-     * send msg
+     * send message
      *
      * @param calling calling number
      * @param called called number
@@ -516,36 +534,26 @@ public class clntSip implements Runnable {
         if (id == null) {
             return;
         }
-        clntSipOut leg = new clntSipOut(this, id);
-        leg = outs.find(leg);
-        if (leg == null) {
+        clntSipIn legI = new clntSipIn(this, id);
+        legI = ins.find(legI);
+        if (legI != null) {
+            if (legI.data != null) {
+                legI.data.setClose();
+            }
             return;
         }
-        if (leg.stopping) {
+        clntSipOut legO = new clntSipOut(this, id);
+        legO = outs.find(legO);
+        if (legO == null) {
             return;
         }
-        leg.stopCall(true);
+        if (legO.stopping) {
+            return;
+        }
+        legO.stopCall(true);
         if (upper != null) {
-            upper.stoppedCall(true, leg.callSrc, leg.callTrg);
+            upper.stoppedCall(true, legO.callSrc, legO.callTrg);
         }
-    }
-
-    /**
-     * delete the call
-     *
-     * @param leg call id
-     */
-    protected void delCall(clntSipIn leg) {
-        ins.del(leg);
-    }
-
-    /**
-     * delete the call
-     *
-     * @param leg call id
-     */
-    protected void delCall(clntSipOut leg) {
-        outs.del(leg);
     }
 
     /**
@@ -558,12 +566,17 @@ public class clntSip implements Runnable {
         if (id == null) {
             return null;
         }
-        clntSipOut leg = new clntSipOut(this, id);
-        leg = outs.find(leg);
-        if (leg == null) {
+        clntSipIn legI = new clntSipIn(this, id);
+        legI = ins.find(legI);
+        if (legI != null) {
+            return legI.data;
+        }
+        clntSipOut legO = new clntSipOut(this, id);
+        legO = outs.find(legO);
+        if (legO == null) {
             return null;
         }
-        return leg.callRtp;
+        return legO.callRtp;
     }
 
     /**

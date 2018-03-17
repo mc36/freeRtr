@@ -272,7 +272,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      * @return list
      */
     public userFormat getCalls(boolean dir) {
-        userFormat l = new userFormat("|", "calling|called|duration");
+        userFormat l = new userFormat("|", "id|calling|called|duration");
         if (sip == null) {
             return l;
         }

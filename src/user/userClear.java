@@ -3,6 +3,7 @@ package user;
 import addr.addrIP;
 import cfg.cfgAlias;
 import cfg.cfgAll;
+import cfg.cfgDial;
 import cfg.cfgIfc;
 import cfg.cfgInit;
 import cfg.cfgLin;
@@ -51,6 +52,15 @@ public class userClear {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.clear, false);
         if (alias != null) {
             return alias.getCommand(cmd);
+        }
+        if (a.equals("dial-peer")) {
+            cfgDial ntry = cfgAll.dialFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such dial peer");
+                return null;
+            }
+            ntry.stopCall(cmd.word());
+            return null;
         }
         if (a.equals("vdc")) {
             cfgVdc ntry = cfgInit.vdcLst.find(new cfgVdc(cmd.word()));

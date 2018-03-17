@@ -7,6 +7,7 @@ import pack.packRtp;
 import pipe.pipeModem;
 import pipe.pipeSide;
 import util.bits;
+import util.cmds;
 import util.logger;
 
 /**
@@ -15,6 +16,11 @@ import util.logger;
  * @author matecsaba
  */
 public class sndScript implements Runnable {
+
+    /**
+     * need prompt
+     */
+    public boolean prompt = false;
 
     private final sndCodec codr;
 
@@ -136,17 +142,15 @@ public class sndScript implements Runnable {
                 bits.sleep(100);
                 continue;
             }
-            String s = user.lineGet(1).trim();
             String a;
-            int i = s.indexOf(" ");
-            if (i < 0) {
-                a = s;
-                s = "";
+            if (prompt) {
+                user.strPut("voice>");
+                a = user.lineGet(0x32);
             } else {
-                a = s.substring(0, i).trim();
-                s = s.substring(i, s.length()).trim();
+                a = user.lineGet(1);
             }
-            a = a.toLowerCase();
+            cmds cmd = new cmds("voice", a);
+            a = cmd.word().toLowerCase();
             if (a.length() < 1) {
                 continue;
             }
@@ -194,11 +198,11 @@ public class sndScript implements Runnable {
                 continue;
             }
             if (a.equals("echo")) {
-                user.linePut(s);
+                user.linePut(cmd.getRemaining());
                 continue;
             }
             if (a.equals("sleep")) {
-                i = bits.str2num(s);
+                int i = bits.str2num(cmd.word());
                 if (i < 1) {
                     continue;
                 }
@@ -318,13 +322,8 @@ public class sndScript implements Runnable {
                     user.linePut("error already-playing");
                     continue;
                 }
-                i = s.indexOf(" ");
-                if (i < 0) {
-                    user.linePut("error bad-param");
-                    continue;
-                }
-                a = s.substring(0, i).trim();
-                s = s.substring(i, s.length()).trim();
+                a = cmd.word();
+                String s = cmd.getRemaining();
                 per = cfgAll.dialFind(a, s, null);
                 if (per == null) {
                     user.linePut("error bad-number");
@@ -351,7 +350,7 @@ public class sndScript implements Runnable {
                 }
                 byte[] buf = null;
                 try {
-                    RandomAccessFile fr = new RandomAccessFile(s, "r");
+                    RandomAccessFile fr = new RandomAccessFile(cmd.getRemaining(), "r");
                     buf = new byte[(int) fr.length()];
                     fr.read(buf, 0, buf.length);
                     fr.close();
@@ -377,7 +376,7 @@ public class sndScript implements Runnable {
                     user.linePut("error already-detecting");
                     continue;
                 }
-                recF = s;
+                recF = cmd.getRemaining();
                 rec = new sndWave(codr, strm);
                 rec.startRecord();
                 continue;

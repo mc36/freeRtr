@@ -11,6 +11,7 @@ import cfg.cfgVrf;
 import clnt.clntProxy;
 import clnt.clntModem;
 import clnt.clntSpeed;
+import clnt.clntVconf;
 import clnt.clntVoice;
 import ifc.ifcEther;
 import ip.ipCor4;
@@ -538,6 +539,33 @@ public class userPacket {
             cmd.error("result = " + sv.sendMessage(bits.str2lst(cmd.getRemaining())));
             return;
         }
+        if (a.equals("conference")) {
+            clntVconf sv = new clntVconf();
+            sv.calling = cmd.word();
+            boolean bg = false;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("-")) {
+                    bg = true;
+                    continue;
+                }
+                sv.addPeer(a);
+            }
+            sv.startWork();
+            pipeSide usr = sv.getPipe();
+            if (bg) {
+                usr.setClose();
+                return;
+            }
+            sv.prompt = true;
+            pipeTerm trm = new pipeTerm(pip, usr);
+            trm.doTerm();
+            usr.setClose();
+            return;
+        }
         if (a.equals("voice")) {
             clntVoice sv = new clntVoice();
             sv.called = cmd.word();
@@ -553,6 +581,7 @@ public class userPacket {
             pipeSide usr = sv.getPipe();
             List<String> l = bits.txt2buf(cmd.word());
             if (l == null) {
+                sv.setPrompt(true);
                 pipeTerm trm = new pipeTerm(pip, usr);
                 trm.doTerm();
             } else {

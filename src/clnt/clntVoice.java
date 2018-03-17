@@ -11,6 +11,7 @@ import snd.sndCodec;
 import snd.sndScript;
 
 /**
+ * voice script client
  *
  * @author matecsaba
  */
@@ -35,6 +36,8 @@ public class clntVoice {
     private pipeSide pipeUsr;
 
     private pipeSide pipeScr;
+
+    private sndScript scr;
 
     /**
      * get pipe side
@@ -89,8 +92,17 @@ public class clntVoice {
         pipeScr.timeout = 120000;
         pipeScr.lineTx = pipeSide.modTyp.modeCRLF;
         pipeScr.lineRx = pipeSide.modTyp.modeCRtryLF;
-        new sndScript(pipeScr, codec, pipeRtp, packSip.removeTag(calling), packSip.removeTag(called));
+        scr = new sndScript(pipeScr, codec, pipeRtp, packSip.removeTag(calling), packSip.removeTag(called));
         return false;
+    }
+
+    /**
+     * set prompt
+     *
+     * @param need needed
+     */
+    public void setPrompt(boolean need) {
+        scr.prompt = need;
     }
 
     /**

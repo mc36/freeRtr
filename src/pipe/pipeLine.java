@@ -74,7 +74,7 @@ public class pipeLine {
 
     private static int chkSiz(int i) {
         final int bufSizMax = 8 * 1024 * 1024;
-        final int bufSizMin = 1024;
+        final int bufSizMin = 64;
         if (i > bufSizMax) {
             i = bufSizMax;
         }

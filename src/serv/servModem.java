@@ -36,6 +36,11 @@ public class servModem extends servGeneric implements prtServS {
     protected boolean aLaw = true;
 
     /**
+     * mode, true=answer, false=originate
+     */
+    protected boolean answer = true;
+
+    /**
      * line configuration
      */
     protected userLine lin = new userLine();
@@ -46,8 +51,8 @@ public class servModem extends servGeneric implements prtServS {
     public final static String defaultL[] = {
         "server modem .*! port " + packSip.port,
         "server modem .*! protocol " + proto2string(protoAllDgrm),
-        "server modem .*! codec alaw"
-    };
+        "server modem .*! codec alaw",
+        "server modem .*! mode answer",};
 
     /**
      * defaults filter
@@ -86,12 +91,28 @@ public class servModem extends servGeneric implements prtServS {
             a = "ulaw";
         }
         lst.add(beg + "codec " + a);
+        if (answer) {
+            a = "answer";
+        } else {
+            a = "originate";
+        }
+        lst.add(beg + "mode " + a);
         lin.getShRun(beg, lst);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         cmds c = cmd.copyBytes(false);
         String a = c.word();
+        if (a.equals("mode")) {
+            a = c.word();
+            if (a.equals("answer")) {
+                answer = true;
+            }
+            if (a.equals("originate")) {
+                answer = false;
+            }
+            return false;
+        }
         if (a.equals("codec")) {
             a = c.word();
             if (a.equals("alaw")) {
@@ -109,6 +130,9 @@ public class servModem extends servGeneric implements prtServS {
         l.add("1 2  codec                          set codec to use");
         l.add("2 .    alaw                         g711 a law");
         l.add("2 .    ulaw                         g711 u law");
+        l.add("1 2  mode                           set mode to use");
+        l.add("2 .    answer                       answer");
+        l.add("2 .    originate                    originate");
         lin.getHelp(l);
     }
 
@@ -348,7 +372,11 @@ class servModemConn implements Runnable, Comparator<servModemConn> {
             bye();
             return;
         }
-        pipeModem.answer(pipeC, lower.getCodec(), data);
+        if (lower.lower.answer) {
+            pipeModem.answer(pipeC, lower.getCodec(), data);
+        } else {
+            pipeModem.originate(pipeC, lower.getCodec(), data);
+        }
         bits.sleep(2000);
         lower.lower.lin.createHandler(pipeS, "" + lower.conn, false);
         for (;;) {
