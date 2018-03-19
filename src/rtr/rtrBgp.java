@@ -1072,10 +1072,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         bits.sleep(scanDelay);
         for (;;) {
-            if (compute.missedWakes() > 0) {
+            if (compute.psleep(0) > 0) {
                 bits.sleep(scanTime);
-            } else {
-                compute.sleep(0);
             }
             if (!need2run) {
                 break;

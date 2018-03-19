@@ -28,6 +28,11 @@ import util.version;
  */
 public class userUpgrade {
 
+    /**
+     * ver extension
+     */
+    public static String verExt = ".ver";
+
     private static boolean inProgress = false;
 
     private final static int justSimu = 0x1000000;
@@ -85,7 +90,7 @@ public class userUpgrade {
      * @return version filename
      */
     protected static String myVerFile() {
-        return myPathName() + ".ver";
+        return myPathName() + verExt;
     }
 
     /**
@@ -298,7 +303,8 @@ public class userUpgrade {
         userFlash fl = new userFlash(cmd.pipe);
         fl.cons.debugStat("downloading version info");
         String tmp = myPathName() + ".tmp";
-        uniResLoc url = uniResLoc.parseOne(server + "rtr.ver");
+        uniResLoc url = uniResLoc.parseOne(server + myFileName());
+        url.filExt = verExt;
         userFlash.delete(tmp);
         userFlash.doReceive(cmd.pipe, url, new File(tmp));
         List<String> txt = bits.txt2buf(tmp);

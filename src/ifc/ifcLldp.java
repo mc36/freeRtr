@@ -189,6 +189,9 @@ public class ifcLldp implements ifcUp {
                     nei.chassis.fromBuf(tlv.valDat, 1);
                     break;
                 case ttypPrtId:
+                    if (tlv.valSiz < 1) {
+                        break;
+                    }
                     buf = new byte[tlv.valSiz - 1];
                     bits.byteCopy(tlv.valDat, 1, buf, 0, buf.length);
                     nei.portId = new String(buf);

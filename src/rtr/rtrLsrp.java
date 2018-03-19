@@ -826,9 +826,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
 
     public void run() {
         for (;;) {
-            if (notif.missedWakes() < 1) {
-                notif.sleep(10000);
-            }
+            notif.psleep(10000);
             if (!need2run) {
                 return;
             }

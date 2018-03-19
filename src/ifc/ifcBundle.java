@@ -911,9 +911,7 @@ public class ifcBundle implements Runnable, ifcDn {
             }
         }
         if (pck == null) {
-            if (notif.missedWakes() < 1) {
-                notif.sleep(5000);
-            }
+            notif.psleep(5000);
             return;
         }
         o = (int) (pck.INTtime - bits.getTime());

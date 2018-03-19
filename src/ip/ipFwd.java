@@ -1784,12 +1784,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 logger.debug("startup");
             }
             for (;;) {
-                if (triggerUpdate.missedWakes() > 0) {
+                if (triggerUpdate.psleep(untriggeredRecomputation) > 0) {
                     if (debugger.ipFwdEvnt) {
                         logger.debug("too fast table updates");
                     }
-                } else {
-                    triggerUpdate.sleep(untriggeredRecomputation);
                 }
                 if (untriggeredRecomputation <= 0) {
                     break;

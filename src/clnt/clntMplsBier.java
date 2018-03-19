@@ -244,17 +244,10 @@ public class clntMplsBier implements Runnable, ifcDn {
     /**
      * wait until setup complete
      *
-     * @param tim time to wait, -1 means just clear
+     * @param tim time to wait
      */
     public void wait4setup(int tim) {
-        int i = notif2.missedWakes();
-        if (tim < 1) {
-            return;
-        }
-        if (i > 0) {
-            return;
-        }
-        notif2.sleep(tim);
+        notif2.psleep(tim);
     }
 
     /**

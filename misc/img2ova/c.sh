@@ -8,9 +8,9 @@ mount -o loop,offset=1048576 ../../binImg/rtr.dsk /mnt
 mkdir /mnt/rtr
 cp ../../binImg/rtr.krn /mnt/rtr.krn
 gunzip -d -c -k ../../binImg/rtr.ird > /mnt/rtr.tmp
-echo `cd /mnt/;cpio --quiet -H newc -i </mnt/rtr.tmp`
+echo -n `cd /mnt/;cpio --quiet -H newc -i </mnt/rtr.tmp`
 rm /mnt/rtr.tmp
-echo `cd /mnt/;csplit -s init /^###rootfs###$/`
+echo -n `cd /mnt/;csplit -s init /^###rootfs###$/`
 mv /mnt/xx00 /mnt/init
 echo mount -t ext4 /dev/disk/by-uuid/999dff7c-0eed-48a5-b605-bb7d675a49ab /mnt >> /mnt/init
 echo exec switch_root /mnt /init2 >> /mnt/init
@@ -20,18 +20,18 @@ cat /mnt/xx01 >> /mnt/init2
 chmod +x /mnt/init*
 rm /mnt/xx0*
 mv /mnt/usr/lib/jvm /mnt/usr-lib-jvm
-echo `cd /mnt/;find init*>filist`
-echo `cd /mnt/;find dev/>>filist`
-echo `cd /mnt/;find sys/>>filist`
-echo `cd /mnt/;find proc/>>filist`
-echo `cd /mnt/;find mnt/>>filist`
-echo `cd /mnt/;find run/>>filist`
-echo `cd /mnt/;find lib/>>filist`
-echo `cd /mnt/;find bin/>>filist`
-echo `cd /mnt/;find sbin/>>filist`
-echo `cd /mnt/;find usr/>>filist`
+echo -n `cd /mnt/;find init*>filist`
+echo -n `cd /mnt/;find dev/>>filist`
+echo -n `cd /mnt/;find sys/>>filist`
+echo -n `cd /mnt/;find proc/>>filist`
+echo -n `cd /mnt/;find mnt/>>filist`
+echo -n `cd /mnt/;find run/>>filist`
+echo -n `cd /mnt/;find lib/>>filist`
+echo -n `cd /mnt/;find bin/>>filist`
+echo -n `cd /mnt/;find sbin/>>filist`
+echo -n `cd /mnt/;find usr/>>filist`
 mv /mnt/usr-lib-jvm /mnt/usr/lib/jvm
-echo `cd /mnt/;cpio --quiet -H newc -O cpio -o <filist`
+echo -n `cd /mnt/;cpio --quiet -H newc -O cpio -o <filist`
 gzip /mnt/cpio
 mv /mnt/cpio.gz /mnt/rtr.ird
 cp ../image/boot.cfg /mnt/syslinux.cfg

@@ -256,9 +256,7 @@ class servRfbConn implements Runnable {
         if (pipe.isClosed() != 0) {
             return true;
         }
-        if (notif.missedWakes() < 1) {
-            notif.sleep(1000);
-        }
+        notif.psleep(1000);
         for (;;) {
             if (img.doRound(false)) {
                 break;

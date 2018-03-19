@@ -85,10 +85,7 @@ public class prtAccept implements prtServS {
      * @param tim time in ms, 0 to forever
      */
     public void wait4conn(int tim) {
-        if (notif.missedWakes() > 0) {
-            return;
-        }
-        notif.sleep(tim);
+        notif.psleep(tim);
     }
 
     /**

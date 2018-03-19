@@ -281,16 +281,16 @@ public class userReader {
                 int wrd = 0;
                 int chr = 0;
                 for (int i = 0; i < lst.size(); i++) {
-                    String a = lst.get(i);
-                    chr += a.length();
-                    cmds c = new cmds("line", a);
-                    for (;;) {
-                        a = c.word();
-                        if (a.length() < 1) {
-                            break;
-                        }
+                    String a = lst.get(i).trim();
+                    a = a.replaceAll("  ", " ");
+                    int o = a.length();
+                    a = a.replaceAll(" ", "");
+                    int p = a.length();
+                    wrd += o - p;
+                    if (p > 0) {
                         wrd++;
                     }
+                    chr += o;
                 }
                 return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
             case headers:

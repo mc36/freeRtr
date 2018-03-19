@@ -367,8 +367,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             if (!need2run) {
                 break;
             }
-            if (notif.missedWakes() < 1) {
-                notif.sleep(iface.helloTimer);
+            if (notif.psleep(iface.helloTimer) < 1) {
                 sendLn("keepalive " + iface.deadTimer);
             }
             if (conn.isClosed() != 0) {

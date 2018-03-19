@@ -145,10 +145,8 @@ public class ipxFwd implements Runnable {
     public void run() {
         try {
             for (;;) {
-                if (triggerUpdate.missedWakes() > 0) {
-                    logger.info("too fast table updates");
-                } else {
-                    triggerUpdate.sleep(untriggeredRecomputation);
+                if (triggerUpdate.psleep(untriggeredRecomputation) > 0) {
+                    logger.debug("too fast table updates");
                 }
                 if (untriggeredRecomputation <= 0) {
                     break;

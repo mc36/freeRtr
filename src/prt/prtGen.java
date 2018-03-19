@@ -360,6 +360,7 @@ public abstract class prtGen implements ipPrt {
             logger.debug("connect " + cln);
         }
         if (!cln.register2lower()) {
+            cln.notif.wakeup();
             return cln;
         }
         cln.deleteImmediately();

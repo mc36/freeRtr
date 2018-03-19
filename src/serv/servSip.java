@@ -349,6 +349,15 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
             url.fromString(uniResLoc.fromEmail(trg));
             servSipDoer clnt = lower.findClient(url.username);
             if (clnt != null) {
+                if (compare(clnt, this) == 0) {
+                    packSip tx = new packSip(pipe);
+                    tx.makeErr(rx, null, "packet to yourself");
+                    if (debugger.servSipTraf) {
+                        tx.dump("tx");
+                    }
+                    tx.writeDown();
+                    continue;
+                }
                 if (user.length() < 1) {
                     packSip tx = new packSip(pipe);
                     tx.makeErr(rx, null, "not registered");

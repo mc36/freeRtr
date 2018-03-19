@@ -55,11 +55,29 @@ public class notifier {
     }
 
     /**
+     * wait for timeout or notification whichever comes first and considers past
+     * notifications
+     *
+     * @param msec time to wait, 0 means forever
+     * @return number of misses, 0 if slept
+     */
+    public int psleep(int msec) {
+        synchronized (lck) {
+            int i = missedWakes();
+            if (i > 0) {
+                return i;
+            }
+            sleep(msec);
+            return 0;
+        }
+    }
+
+    /**
      * read and clear number of wakeups missed
      *
      * @return number of wakeups missed
      */
-    public int missedWakes() {
+    protected int missedWakes() {
         synchronized (lck) {
             int i = waked;
             waked = 0;
@@ -84,7 +102,7 @@ public class notifier {
             synchronized (peer.lck) {
                 peer.waked++;
                 peer.notified++;
-                peer.lck.notify();
+                peer.lck.notifyAll();
             }
         } catch (Exception E) {
             logger.info("failed to notify");
