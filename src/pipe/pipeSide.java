@@ -479,7 +479,7 @@ public class pipeSide {
             if (peerSideOfPipeLine.ready) {
                 return false;
             }
-            notif.sleep(msec / 10);
+            notif.misleep(msec / 10);
         }
         return true;
     }
@@ -558,7 +558,7 @@ public class pipeSide {
         for (;;) {
             int i = nonBlockPut(buf, ofs, len);
             if (i == pipeLine.tryLater) {
-                notif.sleep(timeout);
+                notif.misleep(timeout);
                 continue;
             }
             return i;
@@ -577,7 +577,7 @@ public class pipeSide {
         for (;;) {
             int i = nonBlockGet(buf, ofs, len);
             if (i == pipeLine.tryLater) {
-                notif.sleep(timeout);
+                notif.misleep(timeout);
                 continue;
             }
             return i;
@@ -595,7 +595,7 @@ public class pipeSide {
         for (;;) {
             int i = nonBlockGet(buf, 0, len);
             if (i == pipeLine.tryLater) {
-                notif.sleep(timeout);
+                notif.misleep(timeout);
                 continue;
             }
             return i;

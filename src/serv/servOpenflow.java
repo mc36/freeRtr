@@ -1573,7 +1573,7 @@ class servOpenflowTx implements Runnable {
             sendTable(pckB, pckO, servOpenflow.tabMpls, tabMpls, createMpls(pckB, pckO, ifc4, ifc6));
             sendTable(pckB, pckO, servOpenflow.tabIpv4, tabIpv4, createIpvX(pckB, pckO, true, ifc4));
             sendTable(pckB, pckO, servOpenflow.tabIpv6, tabIpv6, createIpvX(pckB, pckO, false, ifc6));
-            lower.notif.psleep(0);
+            lower.notif.misleep(0);
         }
     }
 }

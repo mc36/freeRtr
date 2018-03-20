@@ -2,6 +2,7 @@ package ifc;
 
 import ipx.ipxIface;
 import pack.packHolder;
+import util.typLenVal;
 
 /**
  * ipx (rfc1552) for ppp
@@ -67,7 +68,7 @@ public class ifcPppIpx extends ifcPppNcp {
         return cfg;
     }
 
-    public boolean readOption(Object config) {
+    public boolean readOption(Object config, typLenVal tlv) {
         return true;
     }
 

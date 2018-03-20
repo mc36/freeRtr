@@ -276,10 +276,10 @@ class sndWaveRec implements Runnable {
                 continue;
             }
             byte[] buf = pck.getCopy();
-            lower.doDtmf(buf);
             for (int i = 0; i < buf.length; i++) {
                 got.add(buf[i]);
             }
+            lower.doDtmf(buf);
         }
         byte[] buf = new byte[got.size()];
         for (int i = 0; i < buf.length; i++) {

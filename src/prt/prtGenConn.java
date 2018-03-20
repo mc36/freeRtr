@@ -449,7 +449,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
             logger.debug("started " + this);
         }
         try {
-            notif.psleep(workInterval);
+            notif.misleep(workInterval);
             for (;;) {
                 if (deleted) {
                     break;
@@ -461,7 +461,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
                     }
                 }
                 lower.connectionWork(this);
-                notif.psleep(workInterval);
+                notif.misleep(workInterval);
             }
         } catch (Exception e) {
             logger.exception(e);

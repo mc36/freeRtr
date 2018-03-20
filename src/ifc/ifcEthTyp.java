@@ -304,7 +304,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             if ((lst < 1) || (lst > 10000)) {
                 lst = 10000;
             }
-            notif.psleep((int) lst);
+            notif.misleep((int) lst);
             if ((macSec != null) && ((tim - sec) > 5000)) {
                 packHolder pck = macSec.doSync();
                 if (pck != null) {

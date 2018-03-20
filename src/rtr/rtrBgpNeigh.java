@@ -493,7 +493,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     private void doWork() {
         long lastKeep = 0;
         for (;;) {
-            transmit.psleep(1000);
+            transmit.misleep(1000);
             long tim = bits.getTime();
             if ((lastKeep + conn.peerKeep) < tim) {
                 if (conn.ready2adv) {

@@ -45,8 +45,6 @@ public class ifcLldp implements ifcUp {
 
     private cfgIfc cfg;
 
-    private typLenVal tlv = new typLenVal(0, 7, 8, 8, 1, 0, 2, 1, 0, 512, true);
-
     private ifcDn lower = new ifcNull();
 
     private addrType hwadr;
@@ -164,6 +162,10 @@ public class ifcLldp implements ifcUp {
         return "lldp on " + lower;
     }
 
+    private typLenVal getTvl() {
+        return new typLenVal(0, 7, 8, 8, 1, 0, 2, 1, 0, 512, true);
+    }
+
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.msbGetW(0) != ethtyp) {
@@ -176,7 +178,7 @@ public class ifcLldp implements ifcUp {
         nei.sysName = "";
         addrIPv4 a4 = new addrIPv4();
         addrIPv6 a6 = new addrIPv6();
-        byte[] buf;
+        typLenVal tlv = getTvl();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -190,9 +192,9 @@ public class ifcLldp implements ifcUp {
                     break;
                 case ttypPrtId:
                     if (tlv.valSiz < 1) {
-                        break;
+                        continue;
                     }
-                    buf = new byte[tlv.valSiz - 1];
+                    byte[] buf = new byte[tlv.valSiz - 1];
                     bits.byteCopy(tlv.valDat, 1, buf, 0, buf.length);
                     nei.portId = new String(buf);
                     break;
@@ -273,7 +275,7 @@ public class ifcLldp implements ifcUp {
         keepTimer.schedule(task, 500, advertiseInterval * 1000);
     }
 
-    private void putAddr(packHolder pck, int typ, addrType adr) {
+    private void putAddr(packHolder pck, typLenVal tlv, int typ, addrType adr) {
         if (adr == null) {
             return;
         }
@@ -294,6 +296,7 @@ public class ifcLldp implements ifcUp {
      * send advertisement
      */
     protected void sendAdvert() {
+        typLenVal tlv = getTvl();
         long tim = bits.getTime();
         for (int i = neighs.size(); i >= 0; i--) {
             ifcLldpNeigh nei = neighs.get(i);
@@ -327,9 +330,9 @@ public class ifcLldp implements ifcUp {
         bits.msbPutW(tlv.valDat, 0, capaRouter | capaBridge); // capabilities
         bits.msbPutW(tlv.valDat, 2, capaRouter | capaBridge); // capabilities
         tlv.putBytes(pck, ttypSysCapa, 4, tlv.valDat);
-        putAddr(pck, 1, cfg.addr4);
-        putAddr(pck, 2, cfg.addr6);
-        putAddr(pck, 6, hwadr);
+        putAddr(pck, tlv, 1, cfg.addr4);
+        putAddr(pck, tlv, 2, cfg.addr6);
+        putAddr(pck, tlv, 6, hwadr);
         tlv.putBytes(pck, ttypEnd, 0, tlv.valDat);
         pck.merge2beg();
         cntr.tx(pck);

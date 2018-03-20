@@ -489,7 +489,7 @@ public class prtTcp extends prtGen {
     private int sendMyPacket(prtGenConn clnt, int flg, int datSiz) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
         packHolder pck = new packHolder(true, true);
-        synchronized (clnt.proto) {
+        synchronized (pr.lck) {
             pck.clear();
             if (datSiz > 0) {
                 byte buf[] = new byte[pr.netOut + datSiz];
@@ -625,7 +625,7 @@ public class prtTcp extends prtGen {
 
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
-        synchronized (clnt.proto) {
+        synchronized (pr.lck) {
             int nowAcked = pck.TCPack - pr.seqLoc; // bytes acked from tx buffer
             int oldBytes = pr.seqRem - pck.TCPseq; // old bytes arrived from past
             int packSize = pck.dataSize(); // bytes in packet
@@ -743,7 +743,14 @@ public class prtTcp extends prtGen {
                     }
                     logger.info("got data while not open " + clnt);
                     if (pr.state == prtTcpConn.stClrReq) {
-                        pr.seqRem += newBytes;
+                        if (newBytes > 0) {
+                            pr.seqRem += newBytes;
+                        }
+                        if (!pr.seenFin) {
+                            return;
+                        }
+                        clnt.setClosing();
+                        clnt.deleteImmediately();
                         return;
                     }
                     return;
@@ -776,6 +783,7 @@ public class prtTcp extends prtGen {
                 return;
             }
             if ((flg & flagFIN) != 0) {
+                pr.seenFin = true;
                 if (pr.state == prtTcpConn.stOpened) {
                     if (debugger.prtTcpTraf) {
                         logger.debug("closing");
@@ -995,49 +1003,59 @@ class prtTcpConn {
     public final static int tmNow = 100;
 
     /**
+     * locker
+     */
+    protected final Object lck = new Object();
+
+    /**
      * state of connection
      */
-    public int state;
+    protected int state;
 
     /**
      * state time
      */
-    public long staTim;
+    protected long staTim;
 
     /**
      * last tx time
      */
-    public long activLast;
+    protected long activLast;
 
     /**
      * timeout to wait
      */
-    public long activWait;
+    protected long activWait;
 
     /**
      * must send in any way
      */
-    boolean activFrcd;
+    protected boolean activFrcd;
 
     /**
      * local sequence number
      */
-    public int seqLoc;
+    protected int seqLoc;
 
     /**
      * remote sequence number
      */
-    public int seqRem;
+    protected int seqRem;
 
     /**
      * bytes sent to remote
      */
-    public int netOut;
+    protected int netOut;
 
     /**
      * packets could send to network
      */
-    public int netMax;
+    protected int netMax;
+
+    /**
+     * seen fin fro peer
+     */
+    protected boolean seenFin;
 
     /**
      * rx buffer

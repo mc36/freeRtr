@@ -35,8 +35,6 @@ public class ifcSyncE implements ifcUp, Runnable {
 
     private boolean need2run = true;
 
-    private typLenVal tlv = new typLenVal(0, 8, 8, 16, 1, 3, 3, 1, 0, 512, true);
-
     /**
      * create new instance
      */
@@ -53,6 +51,10 @@ public class ifcSyncE implements ifcUp, Runnable {
 
     public String toString() {
         return "synceth on " + lower;
+    }
+
+    private typLenVal getTlv() {
+        return new typLenVal(0, 8, 8, 16, 1, 3, 3, 1, 0, 512, true);
     }
 
     public void recvPack(packHolder pck) {
@@ -95,6 +97,7 @@ public class ifcSyncE implements ifcUp, Runnable {
                 logger.debug("sending packet");
             }
             packHolder pck = new packHolder(true, true);
+            typLenVal tlv = getTlv();
             pck.ETHtrg.fromString("0100:0ccd:cdd0");
             if (hwadr.getSize() == addrMac.size) {
                 pck.ETHsrc.fromBuf(hwadr.getBytes(), 0);

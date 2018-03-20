@@ -2,6 +2,7 @@ package ifc;
 
 import pack.packHolder;
 import rtr.rtrIsis;
+import util.typLenVal;
 
 /**
  * open systems interconnect (rfc1377) for ppp
@@ -67,7 +68,7 @@ public class ifcPppOsi extends ifcPppNcp {
         return cfg;
     }
 
-    public boolean readOption(Object config) {
+    public boolean readOption(Object config, typLenVal tlv) {
         return true;
     }
 

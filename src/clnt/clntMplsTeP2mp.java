@@ -264,7 +264,7 @@ public class clntMplsTeP2mp implements Runnable, ifcDn {
      * @param tim time to wait
      */
     public void wait4setup(int tim) {
-        notif2.psleep(tim);
+        notif2.misleep(tim);
     }
 
     /**

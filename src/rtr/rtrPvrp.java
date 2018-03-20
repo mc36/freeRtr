@@ -340,7 +340,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
 
     public void run() {
         for (;;) {
-            notif.psleep(10000);
+            notif.misleep(10000);
             if (!need2run) {
                 return;
             }

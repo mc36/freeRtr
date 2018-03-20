@@ -47,8 +47,6 @@ public class ifcUdld implements ifcUp {
 
     private cfgIfc cfg;
 
-    private typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 4, 4, 1, 0, 512, true);
-
     private ifcDn lower = new ifcNull();
 
     private addrType hwadr;
@@ -152,6 +150,10 @@ public class ifcUdld implements ifcUp {
         return "udld on " + lower;
     }
 
+    private typLenVal getTlv() {
+        return new typLenVal(0, 16, 16, 16, 1, 4, 4, 1, 0, 512, true);
+    }
+
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.msbGetW(0) != ethtyp) {
@@ -170,6 +172,7 @@ public class ifcUdld implements ifcUp {
         nei.serNum = "";
         nei.portId = "";
         pck.getSkip(4);
+        typLenVal tlv = getTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -182,7 +185,7 @@ public class ifcUdld implements ifcUp {
                     nei.portId = tlv.getStr();
                     break;
                 case ttypEcho:
-                    nei.bidir = findMyself();
+                    nei.bidir = findMyself(tlv);
                     break;
                 case ttypMsgInt:
                     nei.msgInt = (tlv.valDat[0] & 0xff) * 1000;
@@ -241,7 +244,7 @@ public class ifcUdld implements ifcUp {
         keepTimer.schedule(task, 500, advertiseInterval * 1000);
     }
 
-    private boolean findMyself() {
+    private boolean findMyself(typLenVal tlv) {
         int m = bits.msbGetD(tlv.valDat, 0);
         int p = 4;
         for (int i = 0; i < m; i++) {
@@ -311,6 +314,7 @@ public class ifcUdld implements ifcUp {
         }
         txSeq++;
         packHolder pck = new packHolder(true, true);
+        typLenVal tlv = getTlv();
         pck.ETHtrg.fromString("0100:0ccc:cccc");
         if (hwadr.getSize() == addrMac.size) {
             pck.ETHsrc.fromBuf(hwadr.getBytes(), 0);

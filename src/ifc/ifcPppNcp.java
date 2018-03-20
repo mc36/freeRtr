@@ -105,11 +105,6 @@ public abstract class ifcPppNcp {
     public final static int sawFrcClsd = 0x80;
 
     /**
-     * option reader
-     */
-    public typLenVal tlv = new typLenVal(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
-
-    /**
      * Configure-Request
      */
     public final static int codeConfReq = 1;
@@ -444,6 +439,15 @@ public abstract class ifcPppNcp {
     }
 
     /**
+     * get tlv handler
+     *
+     * @return tlv
+     */
+    protected typLenVal getTlv() {
+        return new typLenVal(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
+    }
+
+    /**
      * read up options
      *
      * @param pck packet to parse
@@ -453,11 +457,12 @@ public abstract class ifcPppNcp {
         packHolder rej = new packHolder(true, true);
         Object config = getOneConfig(false);
         int siz = pck.dataSize();
+        typLenVal tlv = getTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
             }
-            if (!readOption(config)) {
+            if (!readOption(config, tlv)) {
                 continue;
             }
             tlv.putThis(rej);
@@ -488,6 +493,7 @@ public abstract class ifcPppNcp {
         lst.merge2beg();
         packHolder res = new packHolder(true, true);
         int siz = src.dataSize();
+        typLenVal tlv = getTlv();
         for (;;) {
             if (tlv.getBytes(lst)) {
                 break;
@@ -555,9 +561,10 @@ public abstract class ifcPppNcp {
      * read up one option
      *
      * @param config where to store configuration
+     * @param tlv tlv to use
      * @return false if successful, true if reject needed
      */
-    public abstract boolean readOption(Object config);
+    public abstract boolean readOption(Object config, typLenVal tlv);
 
     /**
      * write options

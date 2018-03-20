@@ -2,6 +2,7 @@ package ifc;
 
 import ip.ipMpls;
 import pack.packHolder;
+import util.typLenVal;
 
 /**
  * multiprotocol label switching control protocol (rfc3032) for ppp
@@ -77,7 +78,7 @@ public class ifcPppMpls extends ifcPppNcp {
         return cfg;
     }
 
-    public boolean readOption(Object config) {
+    public boolean readOption(Object config, typLenVal tlv) {
         return true;
     }
 

@@ -63,8 +63,6 @@ public class ifcCdp implements ifcUp {
 
     private cfgIfc cfg;
 
-    private typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 4, 4, 1, 0, 512, true);
-
     private ifcDn lower = new ifcNull();
 
     private addrType hwadr;
@@ -197,6 +195,10 @@ public class ifcCdp implements ifcUp {
         return "cdp on " + lower;
     }
 
+    private typLenVal getTlv() {
+        return new typLenVal(0, 16, 16, 16, 1, 4, 4, 1, 0, 512, true);
+    }
+
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.msbGetW(0) != ethtyp) {
@@ -213,6 +215,7 @@ public class ifcCdp implements ifcUp {
         nei.hostName = "";
         nei.holdTime = pck.getByte(1) * 1000; // hold time
         pck.getSkip(4);
+        typLenVal tlv = getTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -310,7 +313,7 @@ public class ifcCdp implements ifcUp {
         keepTimer.schedule(task, 500, advertiseInterval * 1000);
     }
 
-    private void putAddr(int typ, addrType adr) {
+    private void putAddr(typLenVal tlv, int typ, addrType adr) {
         if (adr == null) {
             return;
         }
@@ -327,6 +330,7 @@ public class ifcCdp implements ifcUp {
      * send advertisement
      */
     protected void sendAdvert() {
+        typLenVal tlv = getTlv();
         long tim = bits.getTime();
         for (int i = neighs.size(); i >= 0; i--) {
             ifcCdpNeigh nei = neighs.get(i);
@@ -358,8 +362,8 @@ public class ifcCdp implements ifcUp {
         tlv.putBytes(pck, ttypCapa, 4, tlv.valDat);
         tlv.valSiz = 4;
         bits.msbPutD(tlv.valDat, 0, 0);
-        putAddr(ipCor4.protocolNLPID, cfg.addr4);
-        putAddr(ipCor6.protocolNLPID, cfg.addr6);
+        putAddr(tlv, ipCor4.protocolNLPID, cfg.addr4);
+        putAddr(tlv, ipCor6.protocolNLPID, cfg.addr6);
         tlv.putBytes(pck, ttypAddr, tlv.valSiz, tlv.valDat);
         if (odr4 != null) {
             odr4.toBuffer(tlv.valDat, 0);

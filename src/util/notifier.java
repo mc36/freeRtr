@@ -55,20 +55,31 @@ public class notifier {
     }
 
     /**
-     * wait for timeout or notification whichever comes first and considers past
-     * notifications
+     * return immediately on missed wakes, otherwise wait for timeout or
+     * notification whichever comes first
      *
      * @param msec time to wait, 0 means forever
      * @return number of misses, 0 if slept
      */
-    public int psleep(int msec) {
-        synchronized (lck) {
-            int i = missedWakes();
-            if (i > 0) {
-                return i;
+    public int misleep(int msec) {
+        try {
+            synchronized (lck) {
+                int i = waked;
+                waked = 0;
+                if (i > 0) {
+                    return i;
+                }
+                if (msec < 1) {
+                    lck.wait();
+                } else {
+                    lck.wait(msec);
+                }
+                waked = 0;
+                return 0;
             }
-            sleep(msec);
-            return 0;
+        } catch (Exception E) {
+            logger.info("failed to wait");
+            return -1;
         }
     }
 

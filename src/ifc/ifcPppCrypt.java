@@ -1,6 +1,7 @@
 package ifc;
 
 import pack.packHolder;
+import util.typLenVal;
 
 /**
  * encryption control protocol (rfc1968) for ppp
@@ -66,7 +67,7 @@ public class ifcPppCrypt extends ifcPppNcp {
         return cfg;
     }
 
-    public boolean readOption(Object config) {
+    public boolean readOption(Object config, typLenVal tlv) {
         return true;
     }
 

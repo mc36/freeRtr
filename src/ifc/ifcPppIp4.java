@@ -4,6 +4,7 @@ import addr.addrIPv4;
 import ip.ipIfc4;
 import pack.packHolder;
 import util.bits;
+import util.typLenVal;
 
 /**
  * ipv4 control protocol (rfc1332) for ppp
@@ -164,7 +165,7 @@ public class ifcPppIp4 extends ifcPppNcp {
         return cfg;
     }
 
-    public boolean readOption(Object config) {
+    public boolean readOption(Object config, typLenVal tlv) {
         ifcPppIp4conf cfg = (ifcPppIp4conf) config;
         switch (tlv.valTyp) {
             case optionAddres:
@@ -201,6 +202,7 @@ public class ifcPppIp4 extends ifcPppNcp {
 
     public void writeOptions(packHolder pck, Object data) {
         ifcPppIp4conf dat = (ifcPppIp4conf) data;
+        typLenVal tlv = getTlv();
         byte[] buf = new byte[128];
         if (dat.compress > 0) {
             bits.msbPutW(buf, 0, dat.compress);

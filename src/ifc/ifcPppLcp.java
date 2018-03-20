@@ -7,6 +7,7 @@ import auth.autherPap;
 import pack.packHolder;
 import util.bits;
 import util.state;
+import util.typLenVal;
 
 /**
  * line control protocol for ppp
@@ -195,7 +196,7 @@ public class ifcPppLcp extends ifcPppNcp {
         return -1;
     }
 
-    public boolean readOption(Object config) {
+    public boolean readOption(Object config, typLenVal tlv) {
         ifcPppLcpConf cfg = (ifcPppLcpConf) config;
         switch (tlv.valTyp) {
             case optionMRU:
@@ -229,6 +230,7 @@ public class ifcPppLcp extends ifcPppNcp {
 
     public void writeOptions(packHolder pck, Object data) {
         ifcPppLcpConf dat = (ifcPppLcpConf) data;
+        typLenVal tlv = getTlv();
         byte[] buf = new byte[128];
         if (dat.mru > 0) {
             bits.msbPutW(buf, 0, dat.mru);

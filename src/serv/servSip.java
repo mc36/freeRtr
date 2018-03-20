@@ -242,7 +242,13 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
     }
 
     private String getMyVia() {
-        return "SIP/2.0/UDP " + uniResLoc.addr2str(conn.iface.addr, conn.portLoc);
+        String a;
+        if (conn.proto == null) {
+            a = "UDP";
+        } else {
+            a = "TCP";
+        }
+        return "SIP/2.0/" + a + " " + uniResLoc.addr2str(conn.iface.addr, conn.portLoc);
     }
 
     public void run() {
@@ -433,10 +439,19 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
             a = rx.headerGet("CSeq", 1) + " ";
             int csq = a.indexOf(" ");
             csq = bits.str2num(a.substring(0, csq).trim());
+            a = rx.headerGet("Contact", 1);
+            if (a.length() < 1) {
+                a = "<sip:peer@" + getPeerContact() + ">";
+                rx.header.add("Contact: " + a);
+            }
+            rx.headerSet("Contact", 1, getMyContact());
             String via = rx.headerGet("Via", 1);
             if (via.length() < 1) {
                 via = "SIP/2.0/UDP " + getPeerContact() + ";rport;branch=" + bits.randomD();
+                rx.header.add("Via: " + via);
             }
+            via = packSip.updateVia(via, getMyVia());
+            rx.headerSet("Via", 1, via);
             String cid = rx.headerGet("Call-Id", 1);
             if (cid.length() < 1) {
                 cid = "" + bits.randomD();
@@ -563,6 +578,8 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                         tx.writeDown();
                         continue;
                     }
+                    rx.headerSet("Contact", 1, getMyContact());
+                    rx.headerSet("Via", 1, via);
                     tx.makeNumeric("100 trying", rx, getMyContact());
                     if (debugger.servSipTraf) {
                         tx.dump("tx");

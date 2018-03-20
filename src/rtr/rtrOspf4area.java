@@ -1114,7 +1114,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
         todo.or(2);
         for (;;) {
             try {
-                notif.psleep(10000);
+                notif.misleep(10000);
                 int ver = todo.ver();
                 int val = todo.get();
                 todo.andIf(0xf, ver);

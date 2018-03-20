@@ -1784,7 +1784,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 logger.debug("startup");
             }
             for (;;) {
-                if (triggerUpdate.psleep(untriggeredRecomputation) > 0) {
+                if (triggerUpdate.misleep(untriggeredRecomputation) > 0) {
                     if (debugger.ipFwdEvnt) {
                         logger.debug("too fast table updates");
                     }

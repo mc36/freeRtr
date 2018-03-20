@@ -1179,7 +1179,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         todo.or(2);
         for (;;) {
             try {
-                notif.psleep(10000);
+                notif.misleep(10000);
                 int ver = todo.ver();
                 int val = todo.get();
                 todo.andIf(0xf, ver);

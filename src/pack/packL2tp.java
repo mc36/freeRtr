@@ -665,7 +665,7 @@ public abstract class packL2tp {
     /**
      * type length value handler
      */
-    public typLenVal tlv = new typLenVal(18, 30, 6, 10, 1, 6, 6, 1, 0, 1024, true);
+    protected typLenVal tlv = new typLenVal(18, 30, 6, 10, 1, 6, 6, 1, 0, 1024, true);
 
     /**
      * message type

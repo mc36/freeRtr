@@ -282,7 +282,13 @@ public class userReader {
                 int chr = 0;
                 for (int i = 0; i < lst.size(); i++) {
                     String a = lst.get(i).trim();
-                    a = a.replaceAll("  ", " ");
+                    for (;;) {
+                        String s = a.replaceAll("  ", " ");
+                        if (s.equals(a)) {
+                            break;
+                        }
+                        a = s;
+                    }
                     int o = a.length();
                     a = a.replaceAll(" ", "");
                     int p = a.length();

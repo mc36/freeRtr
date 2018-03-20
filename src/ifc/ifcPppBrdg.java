@@ -3,6 +3,7 @@ package ifc;
 import addr.addrMac;
 import pack.packHolder;
 import util.bits;
+import util.typLenVal;
 
 /**
  * bridging control protocol (rfc3518) for ppp
@@ -141,7 +142,7 @@ public class ifcPppBrdg extends ifcPppNcp {
         return cfg;
     }
 
-    public boolean readOption(Object config) {
+    public boolean readOption(Object config, typLenVal tlv) {
         ifcPppBrdgConf cfg = (ifcPppBrdgConf) config;
         switch (tlv.valTyp) {
             case optionBriId:
@@ -181,6 +182,7 @@ public class ifcPppBrdg extends ifcPppNcp {
 
     public void writeOptions(packHolder pck, Object data) {
         ifcPppBrdgConf dat = (ifcPppBrdgConf) data;
+        typLenVal tlv = getTlv();
         byte[] buf = new byte[128];
         if (dat.bridgeId > 0) {
             bits.msbPutW(buf, 0, dat.bridgeId);
