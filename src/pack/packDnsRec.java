@@ -867,6 +867,9 @@ public class packDnsRec implements Comparator<packDnsRec> {
             case typeTXT:
                 s = target;
                 break;
+            case typeSRV:
+                s = sequence + " " + fresh + " " + retry + " " + target;
+                break;
             case typeAAAA:
             case typeA6:
             case typeA:
@@ -965,6 +968,14 @@ public class packDnsRec implements Comparator<packDnsRec> {
             typ = typeTXT;
             return false;
         }
+        if (s.equals("srv")) {
+            sequence = bits.str2num(cmd.word());
+            fresh = bits.str2num(cmd.word());
+            retry = bits.str2num(cmd.word());
+            target = cmd.getRemaining();
+            typ = typeSRV;
+            return false;
+        }
         if (s.equals("hinfo")) {
             target = cmd.word();
             email = cmd.word();
@@ -1048,6 +1059,13 @@ public class packDnsRec implements Comparator<packDnsRec> {
             case typeTXT:
                 target = getString(pck);
                 break;
+            case typeSRV:
+                sequence = pck.msbGetW(0);
+                fresh = pck.msbGetW(2);
+                retry = pck.msbGetW(4);
+                pck.getSkip(6);
+                target = getChain(pck, beg);
+                break;
             case typeA:
                 addrIPv4 adr4 = new addrIPv4();
                 pck.getAddr(adr4, 0);
@@ -1113,6 +1131,13 @@ public class packDnsRec implements Comparator<packDnsRec> {
             case typeNULL:
             case typeTXT:
                 putString(pck, target);
+                break;
+            case typeSRV:
+                pck.msbPutW(0, sequence);
+                pck.msbPutW(2, fresh);
+                pck.msbPutW(4, retry);
+                pck.putSkip(6);
+                putDomain(pck, target);
                 break;
             case typeNS:
             case typePTR:

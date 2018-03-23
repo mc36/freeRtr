@@ -1,5 +1,5 @@
 <CiscoIPPhoneDirectory>
-<Title>mchome phonebook</Title>
+<Title>infra phonebook</Title>
 <Prompt>these are the numbers</Prompt>
 <DirectoryEntry><Name>player previous</Name><Telephone>01</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>player stop</Name><Telephone>02</Telephone></DirectoryEntry>

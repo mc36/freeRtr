@@ -182,6 +182,11 @@ public class servDns extends servGeneric implements prtServS {
         l.add(" 4 5   rp                    specify a responsible person");
         l.add(" 5 6     <srv>               mail server");
         l.add(" 6 .       <email>           email of author");
+        l.add(" 4 5   srv                   specify a responsible person");
+        l.add(" 5 6     <pri>               priority");
+        l.add(" 6 7       <wei>             weight");
+        l.add(" 7 8         <prt>           port");
+        l.add(" 8 .           <srv>         server");
         l.add(" 4 5   mx                    specify a mailbox server");
         l.add(" 5 6     <prf>               preference");
         l.add(" 6 .       <srv>             mail server");
@@ -628,6 +633,7 @@ class servDnsDoer implements Runnable {
                 addAnswer(pckD, zon, req.name, packDnsRec.typeCNAME);
                 addAnswer(pckD, zon, req.name, packDnsRec.typeHINFO);
                 addAnswer(pckD, zon, req.name, packDnsRec.typeTXT);
+                addAnswer(pckD, zon, req.name, packDnsRec.typeSRV);
                 addAnswer(pckD, zon, req.name, packDnsRec.typeNS);
                 addAnswer(pckD, zon, req.name, packDnsRec.typeMX);
                 addAnswer(pckD, zon, req.name, packDnsRec.typeSOA);

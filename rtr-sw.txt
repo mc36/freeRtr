@@ -804,6 +804,11 @@ server bmp2mrt bmp
  vrf v1
  exit
 !
+server dns ns
+ recursion enable
+ vrf v1
+ exit
+!
 server sip lab
  protocol ipv4 ipv6 tcp udp
  interface loopback0

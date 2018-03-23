@@ -1,0 +1,14 @@
+<CiscoIPPhoneDirectory>
+<Title>endpoint phonebook</Title>
+<Prompt>these are the numbers</Prompt>
+<DirectoryEntry><Name>telefon</Name><Telephone>11</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>tablet</Name><Telephone>12</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>alvos</Name><Telephone>13</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>labor</Name><Telephone>14</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>nappali</Name><Telephone>15</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>acer</Name><Telephone>31</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>packard</Name><Telephone>32</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>emachine</Name><Telephone>33</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>lenovo</Name><Telephone>34</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>compaq</Name><Telephone>35</Telephone></DirectoryEntry>
+</CiscoIPPhoneDirectory>
