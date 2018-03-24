@@ -48,6 +48,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         "dial-peer .*! max-calls-out 1",
         "dial-peer .*! register 0",
         "dial-peer .*! subscribe 0",
+        "dial-peer .*! options 0",
         "dial-peer .*! port-local 0",
         "dial-peer .*! port-remote " + packSip.port,
         "dial-peer .*! protocol sip-udp",
@@ -97,6 +98,11 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      * subscribe interval
      */
     public int subscribe = 0;
+
+    /**
+     * options interval
+     */
+    public int options = 0;
 
     /**
      * log calls
@@ -571,6 +577,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         l.add(cmds.tabulator + "keepalive " + keepalive);
         l.add(cmds.tabulator + "register " + register);
         l.add(cmds.tabulator + "subscribe " + subscribe);
+        l.add(cmds.tabulator + "options " + options);
         cmds.cfgLine(l, !log, cmds.tabulator, "log", "");
         if (vrf != null) {
             l.add(cmds.tabulator + "vrf " + vrf.name);
@@ -669,15 +676,17 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         l.add("2 .      both                  in and out");
         l.add("2 .      none                  disabled");
         l.add("1 .    log                     log calls");
-        l.add("1 2    keepalive               keepalive to peer");
-        l.add("2 .      <num>                 time in ms");
         l.add("1 2    max-calls-in            maximum in calls allowed");
         l.add("2 .      <num>                 limit");
         l.add("1 2    max-calls-out           maximum out calls allowed");
         l.add("2 .      <num>                 limit");
+        l.add("1 2    keepalive               keepalive to peer");
+        l.add("2 .      <num>                 time in ms");
         l.add("1 2    register                register to peer");
         l.add("2 .      <num>                 time in ms");
         l.add("1 2    subscribe               subscribe to peer");
+        l.add("2 .      <num>                 time in ms");
+        l.add("1 2    options                 options to peer");
         l.add("2 .      <num>                 time in ms");
         l.add("1 2    port-local              local port");
         l.add("2 .      <num>                 port number");
@@ -905,6 +914,15 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
             doStartup();
             return;
         }
+        if (a.equals("options")) {
+            doShutdown();
+            options = bits.str2num(cmd.word());
+            if (negated) {
+                options = 0;
+            }
+            doStartup();
+            return;
+        }
         if (a.equals("vrf")) {
             doShutdown();
             vrf = cfgAll.vrfFind(cmd.word(), false);
@@ -1024,6 +1042,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         sip.keepalive = keepalive;
         sip.register = register;
         sip.subscribe = subscribe;
+        sip.options = options;
         sip.vrf = vrf;
         sip.srcIfc = ifc;
         sip.trgDom = trg;

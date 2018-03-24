@@ -84,6 +84,11 @@ public class clntSip implements Runnable {
     public int subscribe = 0;
 
     /**
+     * options interval
+     */
+    public int options = 0;
+
+    /**
      * number of tries
      */
     public int retry = 8;
@@ -158,6 +163,8 @@ public class clntSip implements Runnable {
 
     private Timer timSub;
 
+    private Timer timOpt;
+
     public void run() {
         if (debugger.clntSipTraf) {
             logger.debug("started");
@@ -197,6 +204,10 @@ public class clntSip implements Runnable {
             timSub = new Timer();
             timSub.schedule(new clntSipSub(this), 500, subscribe);
         }
+        if (options > 0) {
+            timOpt = new Timer();
+            timOpt.schedule(new clntSipOpt(this), 500, options);
+        }
     }
 
     /**
@@ -230,6 +241,10 @@ public class clntSip implements Runnable {
         }
         try {
             timSub.cancel();
+        } catch (Exception e) {
+        }
+        try {
+            timOpt.cancel();
         } catch (Exception e) {
         }
     }
@@ -341,6 +356,25 @@ public class clntSip implements Runnable {
         packSip sip = new packSip(conn);
         seq++;
         sip.makeReq("SUBSCRIBE", "sip:" + endpt + "@" + uniResLoc.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, subscribe / 250);
+        sip.addAuthor(auth, usr, pwd);
+        if (debugger.clntSipTraf) {
+            sip.dump("tx");
+        }
+        sip.writeDown();
+    }
+
+    /**
+     * send options
+     *
+     * @param auth authentication request
+     */
+    protected void sendOpt(String auth) {
+        if (conn == null) {
+            return;
+        }
+        packSip sip = new packSip(conn);
+        seq++;
+        sip.makeReq("OPTIONS", "sip:" + endpt + "@" + uniResLoc.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, 0);
         sip.addAuthor(auth, usr, pwd);
         if (debugger.clntSipTraf) {
             sip.dump("tx");
@@ -651,50 +685,11 @@ public class clntSip implements Runnable {
             }
             String a = sip.headerGet("Call-Id", 1);
             clntSipOut legO = new clntSipOut(this, a);
-            legO = outs.find(legO);
-            if (legO != null) {
-                legO.callRep = sip.byteCopy(null);
-                if (legO.callCnt == null) {
-                    continue;
-                }
-                cmds cmd = new cmds("sip", sip.command);
-                a = cmd.word().toLowerCase();
-                if (!a.equals("bye") && !a.equals("cancel")) {
-                    continue;
-                }
-                packSip tx = sip.byteCopy(null);
-                tx.makeOk(sip, null, 0);
-                if (debugger.clntSipTraf) {
-                    tx.dump("tx");
-                }
-                tx.writeDown();
-                if (legO.stopping) {
-                    continue;
-                }
-                legO.stopCall(false);
-                if (upper != null) {
-                    upper.stoppedCall(true, legO.callSrc, legO.callTrg);
-                }
-                continue;
-            }
             clntSipIn legI = new clntSipIn(this, a);
-            legI = ins.find(legI);
-            if (legI != null) {
-                legI.callRep = sip.byteCopy(null);
-                continue;
-            }
             clntSipMsg legM = new clntSipMsg(this, a);
-            legM = msgs.find(legM);
-            if (legM != null) {
-                legM.callRep = sip.byteCopy(null);
-                continue;
-            }
+            packSip tx = sip.byteCopy(null);
             cmds cmd = new cmds("sip", sip.command);
             a = cmd.word().toLowerCase();
-            if (a.length() < 1) {
-                continue;
-            }
-            packSip tx = sip.byteCopy(null);
             if (a.equals("register") || a.equals("subscribe")) {
                 tx.makeOk(sip, null, 120);
                 tx.copyHeader(sip, "Contact");
@@ -712,6 +707,50 @@ public class clntSip implements Runnable {
                 tx.writeDown();
                 continue;
             }
+            if (a.equals("notify")) {
+                tx.makeOk(sip, null, 0);
+                if (debugger.clntSipTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                continue;
+            }
+            legO = outs.find(legO);
+            if (legO != null) {
+                legO.callRep = sip.byteCopy(null);
+                if (legO.callCnt == null) {
+                    continue;
+                }
+                if (!a.equals("bye") && !a.equals("cancel")) {
+                    continue;
+                }
+                tx.makeOk(sip, null, 0);
+                if (debugger.clntSipTraf) {
+                    tx.dump("tx");
+                }
+                tx.writeDown();
+                if (legO.stopping) {
+                    continue;
+                }
+                legO.stopCall(false);
+                if (upper != null) {
+                    upper.stoppedCall(true, legO.callSrc, legO.callTrg);
+                }
+                continue;
+            }
+            legI = ins.find(legI);
+            if (legI != null) {
+                legI.callRep = sip.byteCopy(null);
+                continue;
+            }
+            legM = msgs.find(legM);
+            if (legM != null) {
+                legM.callRep = sip.byteCopy(null);
+                continue;
+            }
+            if (a.length() < 1) {
+                continue;
+            }
             if (a.equals("message")) {
                 if (upper == null) {
                     tx.makeErr(sip, null, "not allowed");
@@ -726,14 +765,6 @@ public class clntSip implements Runnable {
                 msg.callTrg = sip.headerGet("To", 1);
                 msg.callRep = sip.byteCopy(null);
                 msg.startWork();
-                continue;
-            }
-            if (a.equals("notify")) {
-                tx.makeOk(sip, null, 0);
-                if (debugger.clntSipTraf) {
-                    tx.dump("tx");
-                }
-                tx.writeDown();
                 continue;
             }
             if (a.startsWith("sip/")) {
@@ -759,6 +790,14 @@ public class clntSip implements Runnable {
                         continue;
                     }
                     sendSub(auth);
+                    lastRetry = tim;
+                    continue;
+                }
+                if (a.equals("options")) {
+                    if ((tim - lastRetry) < 500) {
+                        continue;
+                    }
+                    sendOpt(auth);
                     lastRetry = tim;
                     continue;
                 }
@@ -871,6 +910,24 @@ class clntSipSub extends TimerTask {
     public void run() {
         try {
             lower.sendSub(null);
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+    }
+
+}
+
+class clntSipOpt extends TimerTask {
+
+    private clntSip lower;
+
+    public clntSipOpt(clntSip parent) {
+        lower = parent;
+    }
+
+    public void run() {
+        try {
+            lower.sendOpt(null);
         } catch (Exception e) {
             logger.traceback(e);
         }
