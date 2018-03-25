@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Content-Type: text/html
+Cache-Control: no-cache
+Transfer-Encoding: chunked
+Server: call-manager-emulator/1.0
+
+A
+AUTHORIZED
+0
+
