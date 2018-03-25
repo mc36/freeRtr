@@ -49,7 +49,7 @@ for {} {[string length $b] > 0} {} {
   getline
   set a "$a&$c-$g"
   }
-puts "<a href=trackMap.map><img alt=map src=$a ismap></a><br>"
+puts "<a href=trackMap.imgmap><img alt=map src=$a ismap></a><br>"
 set a [exec "term tab html" "show tracker"]
 puts "<table border=1>$a</table>"
 puts "</body></html>"

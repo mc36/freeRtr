@@ -18,4 +18,4 @@ if {[string length $scnd] < 1} {
  }
 
 puts "executing $scnd at $frst"
-exec "attach shell1 java -cp /nfs/own/voice/ phoneExecute $frst $scnd"
+exec "attach shell1 java -cp /nfs2/own/web/home/ phoneExecute $frst $scnd"

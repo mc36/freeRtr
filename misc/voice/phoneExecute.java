@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Base64;
 
 /**
  * web temperature setter
@@ -38,6 +39,13 @@ public class phoneExecute {
     private void doer(String dev, String cmd) {
         try {
             String xml = "XML=<CiscoIPPhoneExecute><ExecuteItem Priority=\"0\" URL=\"" + cmd + "\"/></CiscoIPPhoneExecute>";
+            String aut = null;
+            int i = dev.indexOf("@");
+            if (i >= 0) {
+                aut = dev.substring(0, i);
+                dev = dev.substring(i + 1, dev.length());
+                aut = "Authorization: Basic " + new String(Base64.getEncoder().encode(aut.getBytes()));
+            }
             sck = new Socket(dev, 80);
             out = new DataOutputStream(sck.getOutputStream());
             in = new BufferedReader(new InputStreamReader(sck.getInputStream()));
@@ -45,6 +53,9 @@ public class phoneExecute {
             txLn("Host: " + dev);
             txLn("User-Agent: phone-agent/1.0");
             txLn("Accept: */*");
+            if (aut != null) {
+                txLn(aut);
+            }
             txLn("Content-Type: application/xml");
             txLn("Content-Length: " + (xml.length() + 2));
             txLn("");

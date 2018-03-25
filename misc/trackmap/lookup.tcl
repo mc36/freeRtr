@@ -30,6 +30,7 @@ putOpt ipv4
 putOpt ipv6
 putOpt mail
 putOpt dns
+putOpt srv
 putOpt soa
 putOpt txt
 putOpt reverse
@@ -38,6 +39,7 @@ putOpt recur-ipv6
 putOpt recur-mail
 putOpt recur-dns
 putOpt recur-soa
+putOpt recur-srv
 putOpt recur-txt
 putOpt zone
 puts "</select><br><input type=submit value=lookup><br>"

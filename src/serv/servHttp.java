@@ -947,6 +947,10 @@ class servHttpConn implements Runnable {
         pipe.strPut(s);
     }
 
+    private boolean checkNoHeaders(String s) {
+        return new File(s + ".noheaders").exists();
+    }
+
     private void updateVisitors(String s) {
         s = gotHost.path + s + ".visitors";
         if (!new File(s).exists()) {
@@ -1231,6 +1235,11 @@ class servHttpConn implements Runnable {
         long pos = 0;
         long ranB = -1;
         long ranE = -1;
+        if (checkNoHeaders(s)) {
+            gotKeep = false;
+            gotHead = false;
+            gotRange = null;
+        }
         if (gotRange != null) {
             gotRange = gotRange.replaceAll(" ", "");
             if (!gotRange.startsWith("bytes=")) {
@@ -1262,11 +1271,14 @@ class servHttpConn implements Runnable {
             }
         }
         if (gotRange == null) {
-            sendRespHeader("200 ok", siz, cfgInit.findMimeType(a));
+            if (!checkNoHeaders(s)) {
+                sendRespHeader("200 ok", siz, cfgInit.findMimeType(a));
+            }
         } else {
             headers.add("Content-Range: bytes " + ranB + "-" + ranE + "/" + siz);
-            sendRespHeader("206 partial", ranE - ranB + 1,
-                    cfgInit.findMimeType(a));
+            if (!checkNoHeaders(s)) {
+                sendRespHeader("206 partial", ranE - ranB + 1, cfgInit.findMimeType(a));
+            }
             pos = ranB;
             siz = ranE + 1;
         }
@@ -1308,7 +1320,7 @@ class servHttpConn implements Runnable {
         if ((gotHost.allowClass != null) && a.equals(".class")) {
             return sendOneClass(s);
         }
-        if ((gotHost.allowImgMap) && a.equals(".map")) {
+        if ((gotHost.allowImgMap) && a.equals(".imgmap")) {
             return sendOneImgMap(s);
         }
         if ((gotHost.allowMediaStrm) && a.startsWith(".stream-")) {

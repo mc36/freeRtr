@@ -3,13 +3,17 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * sample http applet
  *
  * @author matecsaba
  */
-public class phoneBook {
+public class phoneBook implements Comparator<String> {
 
     /**
      * this is needed for cli startup
@@ -29,6 +33,10 @@ public class phoneBook {
             a = "exception " + e.getMessage();
         }
         System.out.println(a);
+    }
+
+    public int compare(String o1, String o2) {
+        return o1.toLowerCase().compareTo(o2.toLowerCase());
     }
 
     /**
@@ -72,9 +80,7 @@ public class phoneBook {
         name = name.toLowerCase();
         int i = path.lastIndexOf(".");
         path = path.substring(0, i) + ".csv";
-        buf.write("<CiscoIPPhoneDirectory>".getBytes());
-        buf.write("<Title>phonebook search</Title>".getBytes());
-        buf.write("<Prompt>select person to call</Prompt>".getBytes());
+        List<String> res = new ArrayList<String>();
         try {
             FileInputStream in = new FileInputStream(path);
             BufferedReader rd = new BufferedReader(new InputStreamReader(in));
@@ -83,18 +89,24 @@ public class phoneBook {
                 if (a.indexOf(name) < 0) {
                     continue;
                 }
-                i = a.indexOf(",");
+                i = a.lastIndexOf(",");
                 if (i < 0) {
                     continue;
                 }
-                String s = a.substring(i + 1, a.length()).trim();
+                String s = a.substring(i + 1, a.length()).replaceAll(" ", "").replaceAll("\\(", "").replaceAll("\\)", "").trim();
                 a = a.substring(0, i).trim();
-                buf.write(("<DirectoryEntry><Name>" + a + "</Name><Telephone>" + s + "</Telephone></DirectoryEntry>").getBytes());
-                buf.write(a.getBytes());
+                res.add("<DirectoryEntry><Name>" + a + "</Name><Telephone>" + s + "</Telephone></DirectoryEntry>");
             }
             rd.close();
+            Collections.sort(res, new phoneBook());
         } catch (Exception e) {
             return null;
+        }
+        buf.write("<CiscoIPPhoneDirectory>".getBytes());
+        buf.write("<Title>phonebook search</Title>".getBytes());
+        buf.write("<Prompt>select person to call</Prompt>".getBytes());
+        for (i = 0; i < res.size(); i++) {
+            buf.write(res.get(i).getBytes());
         }
         buf.write("</CiscoIPPhoneDirectory>".getBytes());
         return "xml";
