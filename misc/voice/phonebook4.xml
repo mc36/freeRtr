@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <CiscoIPPhoneDirectory>
 <Title>infra phonebook</Title>
-<Prompt>these are the numbers</Prompt>
+<Prompt>select number</Prompt>
 <DirectoryEntry><Name>player previous</Name><Telephone>01</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>player stop</Name><Telephone>02</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>player next</Name><Telephone>03</Telephone></DirectoryEntry>
@@ -8,6 +9,7 @@
 <DirectoryEntry><Name>player volume 50</Name><Telephone>05</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>player volume 100</Name><Telephone>06</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>player title</Name><Telephone>07</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>player replay</Name><Telephone>08</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>temper 20 C</Name><Telephone>20</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>temper 21 C</Name><Telephone>21</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>temper 22 C</Name><Telephone>22</Telephone></DirectoryEntry>

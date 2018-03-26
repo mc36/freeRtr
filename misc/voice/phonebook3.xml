@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <CiscoIPPhoneDirectory>
 <Title>endpoint phonebook</Title>
-<Prompt>these are the numbers</Prompt>
+<Prompt>select number</Prompt>
 <DirectoryEntry><Name>telefon</Name><Telephone>11</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>tablet</Name><Telephone>12</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>alvos</Name><Telephone>13</Telephone></DirectoryEntry>

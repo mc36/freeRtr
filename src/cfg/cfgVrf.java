@@ -283,7 +283,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no export4policy",
         "vrf definition .*! no export6policy",
         "vrf definition .*! no packet4filter",
-        "vrf definition .*! no packet6filter"
+        "vrf definition .*! no packet6filter",
+        "!ipv[4|6] nat .* timeout 300000"
     };
 
     /**
@@ -457,6 +458,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     }
 
     private void addCfgNats(List<String> l, int p, ipFwd f) {
+        l.add("ipv" + p + " nat " + name + " timeout " + f.natTimeout);
         for (int i = 0; i < f.natCfg.size(); i++) {
             tabNatCfgN nat = f.natCfg.get(i);
             l.addAll(nat.usrString("ipv" + p + " nat " + name + " "));
@@ -540,9 +542,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     /**
      * get post all config
      *
+     * @param filter filter defaults
      * @return list of config lines
      */
-    public synchronized List<String> getShRun2() {
+    public synchronized List<String> getShRun2(boolean filter) {
         List<String> l = new ArrayList<String>();
         ipx.getShRun(l);
         l.add(cmds.comment);
@@ -570,7 +573,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(cmds.comment);
         addCfgFlow(l, 6, fwd6);
         l.add(cmds.comment);
-        return l;
+        if (!filter) {
+            return l;
+        }
+        return userFilter.filterText(l, defaultF);
     }
 
     public userHelping getHelp() {

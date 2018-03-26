@@ -2727,7 +2727,7 @@ public class cfgAll {
         servGenList.listGetRun(l, schedulers, filter);
         servGenList.listGetRun(l, scripts, filter);
         for (int i = 0; i < vrfs.size(); i++) {
-            l.addAll(vrfs.get(i).getShRun2());
+            l.addAll(vrfs.get(i).getShRun2(filter));
         }
         servGenList.listGetRun(l, xconnects, filter);
         servGenList.listGetRun(l, iconnects, filter);

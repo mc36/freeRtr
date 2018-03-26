@@ -2037,8 +2037,14 @@ public class userConfig {
         } else {
             fwd = vrf.fwd6;
         }
+        String s = cmd.getRemaining();
+        String a = cmd.word();
+        if (a.equals("timeout")) {
+            fwd.natTimeout = bits.str2num(cmd.word());
+            return null;
+        }
         ntry.sequence = fwd.natCfg.nextseq();
-        if (ntry.fromString(cmd.getRemaining())) {
+        if (ntry.fromString(s)) {
             return null;
         }
         if (ntry.origSrcList != null) {
@@ -2161,6 +2167,8 @@ public class userConfig {
         l.add("9  8,.                <addr>         target address");
         l.add("2  3    nat                          configure network address translation");
         l.add("3  4,6    <vrf>                      name of routing table");
+        l.add("4  5        timeout                  specify timeout");
+        l.add("5  .          <num>                  time in ms");
         l.add("4  5        sequence                 sequence number");
         l.add("5  6          <num>                  number");
         l.add("6  7            srclist              source address translation");

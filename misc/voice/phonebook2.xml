@@ -1,4 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <CiscoIPPhoneDirectory>
 <Title>my own phonebook</Title>
-<Prompt>these are the numbers</Prompt>
+<Prompt>select number</Prompt>
 </CiscoIPPhoneDirectory>

@@ -802,6 +802,13 @@ public class player implements Runnable {
             buf.write("selected no song<br/>".getBytes());
             return -1;
         }
+        if (cmd.equals("replay")) {
+            startPlay(currSong, "0");
+            putStart(buf, 1);
+            putMenu(buf);
+            buf.write("selected current song<br/>".getBytes());
+            return -1;
+        }
         if (cmd.equals("next")) {
             startPlay(nextSong.get(0), "0");
             putStart(buf, 1);
@@ -813,7 +820,7 @@ public class player implements Runnable {
             startPlay(prevSong, "0");
             putStart(buf, 1);
             putMenu(buf);
-            buf.write("selected next song<br/>".getBytes());
+            buf.write("selected previous song<br/>".getBytes());
             return -1;
         }
         if (cmd.equals("play")) {

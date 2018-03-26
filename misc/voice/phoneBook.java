@@ -69,9 +69,10 @@ public class phoneBook implements Comparator<String> {
             }
         }
         if (name == null) {
+            buf.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes());
             buf.write("<CiscoIPPhoneInput>".getBytes());
             buf.write("<Title>phonebook search</Title>".getBytes());
-            buf.write("<Prompt>enter name to search</Prompt>".getBytes());
+            buf.write("<Prompt>enter name</Prompt>".getBytes());
             buf.write(("<URL>" + url + "</URL>").getBytes());
             buf.write("<InputItem><DisplayName>name</DisplayName><QueryStringParam>name</QueryStringParam><InputFlags>A</InputFlags><DefaultValue/></InputItem>".getBytes());
             buf.write("</CiscoIPPhoneInput>".getBytes());
@@ -102,9 +103,10 @@ public class phoneBook implements Comparator<String> {
         } catch (Exception e) {
             return null;
         }
+        buf.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes());
         buf.write("<CiscoIPPhoneDirectory>".getBytes());
         buf.write("<Title>phonebook search</Title>".getBytes());
-        buf.write("<Prompt>select person to call</Prompt>".getBytes());
+        buf.write("<Prompt>select person</Prompt>".getBytes());
         for (i = 0; i < res.size(); i++) {
             buf.write(res.get(i).getBytes());
         }

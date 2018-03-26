@@ -30,6 +30,7 @@ if {[string first sip:03@ $trg] >= 0} {set cmd "cmd=next"}
 if {[string first sip:04@ $trg] >= 0} {set cmd "cmd=vol&song=0"}
 if {[string first sip:05@ $trg] >= 0} {set cmd "cmd=vol&song=50"}
 if {[string first sip:06@ $trg] >= 0} {set cmd "cmd=vol&song=100"}
+if {[string first sip:08@ $trg] >= 0} {set cmd "cmd=replay"}
 
 if {[string length $url] < 1} {
   puts "play-start /nfs2/own/voice/player.wav"
