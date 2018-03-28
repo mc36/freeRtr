@@ -151,6 +151,15 @@ public class userShow {
         }
         if (a.equals("dial-peer")) {
             a = cmd.word();
+            if (a.equals("history")) {
+                cfgDial ntry = cfgAll.dialFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such dial peer");
+                    return null;
+                }
+                rdr.putStrArr(ntry.getHist());
+                return null;
+            }
             if (a.equals("active")) {
                 cfgDial ntry = cfgAll.dialFind(cmd.word(), false);
                 if (ntry == null) {
@@ -164,7 +173,7 @@ public class userShow {
                 return null;
             }
             boolean call = a.equals("voice");
-            userFormat l = new userFormat("|", "id|tot-in|tot-out|fail-in|fail-out|act-in|act-out");
+            userFormat l = new userFormat("|", "id|totI|totO|totT|failI|failO|actI|actO");
             for (int i = 0; i < cfgAll.dials.size(); i++) {
                 cfgDial ntry = cfgAll.dials.get(i);
                 if (ntry == null) {

@@ -43,6 +43,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         "dial-peer .*! no password",
         "dial-peer .*! no myname",
         "dial-peer .*! no log",
+        "dial-peer .*! history 100",
         "dial-peer .*! keepalive 0",
         "dial-peer .*! max-calls-in 1",
         "dial-peer .*! max-calls-out 1",
@@ -229,6 +230,21 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      */
     public int failMsgOut;
 
+    /**
+     * history data
+     */
+    public List<String> histDat = new ArrayList<String>();
+
+    /**
+     * history size
+     */
+    public int histMax = 100;
+
+    /**
+     * total time
+     */
+    public long seenTime;
+
     private clntSip sip;
 
     public int compare(cfgDial o1, cfgDial o2) {
@@ -248,18 +264,28 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         name = "" + bits.str2num(nam);
     }
 
+    private void doLog(String s) {
+        if (log) {
+            logger.info(s);
+        }
+        histDat.add(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + " " + s);
+        for (; histDat.size() > histMax;) {
+            histDat.remove(0);
+        }
+    }
+
     /**
      * get statistics
      *
-     * @param call
+     * @param call true=calls, false=messages
      * @return statistics
      */
     public String getStats(boolean call) {
         String a = name + "|";
         if (call) {
-            a += seenIn + "|" + seenOut + "|" + failIn + "|" + failOut + "|";
+            a += seenIn + "|" + seenOut + "|" + bits.timeDump(seenTime / 1000) + "|" + failIn + "|" + failOut + "|";
         } else {
-            a += seenMsgIn + "|" + seenMsgOut + "|" + failMsgIn + "|" + failMsgOut + "|";
+            a += seenMsgIn + "|" + seenMsgOut + "|n/a|" + failMsgIn + "|" + failMsgOut + "|";
         }
         if (sip == null) {
             return a + "n/a|n/a";
@@ -278,12 +304,21 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      * @return list
      */
     public userFormat getCalls(boolean dir) {
-        userFormat l = new userFormat("|", "id|calling|called|duration");
+        userFormat l = new userFormat("|", "id|calling|called|time");
         if (sip == null) {
             return l;
         }
         l.add(sip.listCalls(dir));
         return l;
+    }
+
+    /**
+     * get call history
+     *
+     * @return list
+     */
+    public List<String> getHist() {
+        return histDat;
     }
 
     private String stripAddr(String a) {
@@ -361,9 +396,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         }
         calling = stripAddr(calling);
         called = stripAddr(called);
-        if (log) {
-            logger.info("incoming msg " + called + " from " + calling + " started");
-        }
+        doLog("incoming msg " + called + " from " + calling + " started");
         cfgDial res = cfgAll.dialFind(calling, called, this);
         if (res == null) {
             failMsgIn++;
@@ -395,9 +428,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         }
         calling = stripAddr(calling);
         called = stripAddr(called);
-        if (log) {
-            logger.info("incoming call " + called + " from " + calling + " started");
-        }
+        doLog("incoming call " + called + " from " + calling + " started");
         cfgDial res = cfgAll.dialFind(calling, called, this);
         if (res == null) {
             failIn++;
@@ -446,9 +477,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         called = cfgTrnsltn.doTranslate(prmtDst, called);
         calling = cfgTrnsltn.doTranslate(trnsOutSrc, calling);
         called = cfgTrnsltn.doTranslate(trnsOutDst, called);
-        if (log) {
-            logger.info("outgoing msg " + called + " from " + calling + " started");
-        }
+        doLog("outgoing msg " + called + " from " + calling + " started");
         boolean res = sip.sendMsg(calling, called, msg);
         if (res) {
             failMsgOut++;
@@ -476,9 +505,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         called = cfgTrnsltn.doTranslate(prmtDst, called);
         calling = cfgTrnsltn.doTranslate(trnsOutSrc, calling);
         called = cfgTrnsltn.doTranslate(trnsOutDst, called);
-        if (log) {
-            logger.info("outgoing call " + called + " from " + calling + " started");
-        }
+        doLog("outgoing call " + called + " from " + calling + " started");
         String res = sip.makeCall(calling, called);
         if (res == null) {
             failOut++;
@@ -493,11 +520,11 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
      * @param dir direction, true=out, false=in
      * @param calling calling number
      * @param called called number
+     * @param time start time
      */
-    public void stoppedCall(boolean dir, String calling, String called) {
-        if (log) {
-            logger.info((dir ? "outgoing" : "incoming") + " call " + called + " from " + calling + " ended");
-        }
+    public void stoppedCall(boolean dir, String calling, String called, long time) {
+        doLog((dir ? "outgoing" : "incoming") + " call " + called + " from " + calling + " ended after " + bits.timePast(time));
+        seenTime += bits.getTime() - time;
     }
 
     /**
@@ -579,6 +606,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         l.add(cmds.tabulator + "subscribe " + subscribe);
         l.add(cmds.tabulator + "options " + options);
         cmds.cfgLine(l, !log, cmds.tabulator, "log", "");
+        l.add(cmds.tabulator + "history " + histMax);
         if (vrf != null) {
             l.add(cmds.tabulator + "vrf " + vrf.name);
         } else {
@@ -679,6 +707,8 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         l.add("1 2    max-calls-in            maximum in calls allowed");
         l.add("2 .      <num>                 limit");
         l.add("1 2    max-calls-out           maximum out calls allowed");
+        l.add("2 .      <num>                 limit");
+        l.add("1 2    history                 history size");
         l.add("2 .      <num>                 limit");
         l.add("1 2    keepalive               keepalive to peer");
         l.add("2 .      <num>                 time in ms");
@@ -884,6 +914,13 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
             maxCallsOut = bits.str2num(cmd.word());
             if (negated) {
                 maxCallsOut = 1;
+            }
+            return;
+        }
+        if (a.equals("history")) {
+            histMax = bits.str2num(cmd.word());
+            if (negated) {
+                histMax = 100;
             }
             return;
         }

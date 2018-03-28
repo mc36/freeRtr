@@ -570,6 +570,8 @@ public class userExec {
         hl.add("3 .        message               for messages");
         hl.add("3 4        active                active calls");
         hl.add("4 .          <num>               dial peer");
+        hl.add("3 4        history               list of calls");
+        hl.add("4 .          <num>               dial peer");
         hl.add("2 3,.    clock                   current date and time");
         hl.add("3 .        big                   a big clock");
         hl.add("3 .        raw                   a raw clock");

@@ -552,7 +552,7 @@ public class clntSip implements Runnable {
         if (res) {
             leg.stopCall(false);
             if (upper != null) {
-                upper.stoppedCall(true, leg.callSrc, leg.callTrg);
+                upper.stoppedCall(true, leg.callSrc, leg.callTrg, leg.started);
             }
             return null;
         }
@@ -586,7 +586,7 @@ public class clntSip implements Runnable {
         }
         legO.stopCall(true);
         if (upper != null) {
-            upper.stoppedCall(true, legO.callSrc, legO.callTrg);
+            upper.stoppedCall(true, legO.callSrc, legO.callTrg, legO.started);
         }
     }
 
@@ -734,7 +734,7 @@ public class clntSip implements Runnable {
                 }
                 legO.stopCall(false);
                 if (upper != null) {
-                    upper.stoppedCall(true, legO.callSrc, legO.callTrg);
+                    upper.stoppedCall(true, legO.callSrc, legO.callTrg, legO.started);
                 }
                 continue;
             }
@@ -1219,7 +1219,7 @@ class clntSipIn implements Runnable, Comparator<clntSipIn> {
                 tx.dump("tx");
             }
             tx.writeDown();
-            lower.upper.stoppedCall(false, newSrc, newTrg);
+            lower.upper.stoppedCall(false, newSrc, newTrg, started);
             lower.delCall(this);
             return;
         }
@@ -1231,7 +1231,7 @@ class clntSipIn implements Runnable, Comparator<clntSipIn> {
                 tx.dump("tx");
             }
             tx.writeDown();
-            lower.upper.stoppedCall(false, newSrc, newTrg);
+            lower.upper.stoppedCall(false, newSrc, newTrg, started);
             lower.delCall(this);
             return;
         }
@@ -1240,7 +1240,7 @@ class clntSipIn implements Runnable, Comparator<clntSipIn> {
         if (data.startConnect(lower.udp, new pipeLine(65536, true), lower.srcFwd, callPort, adr, prt)) {
             sendBye();
             peer.stopCall(rcd);
-            lower.upper.stoppedCall(false, newSrc, newTrg);
+            lower.upper.stoppedCall(false, newSrc, newTrg, started);
             lower.delCall(this);
             return;
         }
@@ -1281,14 +1281,14 @@ class clntSipIn implements Runnable, Comparator<clntSipIn> {
             tx.writeDown();
             conner.setClose();
             peer.stopCall(rcd);
-            lower.upper.stoppedCall(false, newSrc, newTrg);
+            lower.upper.stoppedCall(false, newSrc, newTrg, started);
             lower.delCall(this);
             return;
         }
         conner.setClose();
         peer.stopCall(rcd);
         sendBye();
-        lower.upper.stoppedCall(false, newSrc, newTrg);
+        lower.upper.stoppedCall(false, newSrc, newTrg, started);
         lower.delCall(this);
     }
 
