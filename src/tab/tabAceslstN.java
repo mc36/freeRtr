@@ -1,5 +1,6 @@
 package tab;
 
+import addr.addrIP;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,26 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
      * target port
      */
     public tabIntMatcher trgPort;
+
+    /**
+     * source network
+     */
+    public tabListing<tabObjnetN<T>, T> srcOGnet;
+
+    /**
+     * source port
+     */
+    public tabListing<tabObjprtN<T>, T> srcOGprt;
+
+    /**
+     * target network
+     */
+    public tabListing<tabObjnetN<T>, T> trgOGnet;
+
+    /**
+     * target port
+     */
+    public tabListing<tabObjprtN<T>, T> trgOGprt;
 
     /**
      * tos
@@ -102,140 +123,23 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         trgPort = new tabIntMatcher();
     }
 
-    private String parsePart(String s, T addr, T mask, tabIntMatcher port) {
-        s = s.trim() + " ";
-        int i = s.indexOf(" ");
-        String a = s.substring(0, i).trim();
-        s = s.substring(i, s.length()).trim() + " ";
-        i = s.indexOf(" ");
-        String b = s.substring(0, i).trim();
-        s = s.substring(i, s.length()).trim() + " ";
-        String c = a.toLowerCase();
-        if (c.equals("any")) {
-            addr.fromNetmask(0);
-            mask.fromNetmask(0);
-            s = b + " " + s;
-        } else if (c.equals("host")) {
-            if (addr.fromString(b)) {
-                return null;
-            }
-            mask.fromNetmask(mask.maxBits());
-        } else {
-            if (addr.fromString(a)) {
-                return null;
-            }
-            if (mask.fromString(b)) {
-                return null;
-            }
-        }
-        addr.setAnd(addr, mask);
-        i = s.indexOf(" ");
-        a = s.substring(0, i).trim();
-        s = s.substring(i, s.length()).trim() + " ";
-        if (port.fromString(a)) {
-            return null;
-        }
-        return s;
-    }
-
-    /**
-     * convert string to address
-     *
-     * @param s string to convert
-     * @return true if error happened
-     */
-    public boolean fromString(String s) {
-        s = s.trim() + " ";
-        int i = s.indexOf(" ");
-        String a = s.substring(0, i).trim();
-        s = s.substring(i, s.length()).trim();
-        if (proto.fromString(a)) {
-            return true;
-        }
-        s = parsePart(s, srcAddr, srcMask, srcPort);
-        if (s == null) {
-            return true;
-        }
-        s = parsePart(s, trgAddr, trgMask, trgPort);
-        if (s == null) {
-            return true;
-        }
-        String b;
-        for (;;) {
-            s = s.trim();
-            if (s.length() < 1) {
-                return false;
-            }
-            i = s.indexOf(" ");
-            if (i < 0) {
-                a = s;
-                s = "";
-            } else {
-                a = s.substring(0, i).trim().toLowerCase();
-                s = s.substring(i, s.length()).trim();
-            }
-            if (a.equals("log")) {
-                logMatch = true;
-                continue;
-            }
-            i = s.indexOf(" ");
-            if (i < 0) {
-                b = s;
-                s = "";
-            } else {
-                b = s.substring(0, i).trim();
-                s = s.substring(i, s.length()).trim();
-            }
-            if (a.equals("tos")) {
-                if (tos.fromString(b)) {
-                    return true;
-                }
-                continue;
-            }
-            if (a.equals("dscp")) {
-                if (dscp.fromString(b)) {
-                    return true;
-                }
-                continue;
-            }
-            if (a.equals("prec")) {
-                if (prec.fromString(b)) {
-                    return true;
-                }
-                continue;
-            }
-            if (a.equals("ttl")) {
-                if (ttl.fromString(b)) {
-                    return true;
-                }
-                continue;
-            }
-            if (a.equals("len")) {
-                if (len.fromString(b)) {
-                    return true;
-                }
-                continue;
-            }
-            if (a.equals("flag")) {
-                if (flag.fromString(b)) {
-                    return true;
-                }
-                continue;
-            }
-            return true;
-        }
-    }
-
-    private String convPart(T addr, T mask, tabIntMatcher port) {
+    private String convPart(T addr, T mask, tabIntMatcher port, tabListing<tabObjnetN<T>, T> ogNet, tabListing<tabObjprtN<T>, T> ogPrt) {
         String a = addr + " " + mask;
         if (mask.isFilled(0) && addr.isFilled(0)) {
             a = "any";
         }
-        return a + " " + port;
+        if (ogNet != null) {
+            a = "obj " + ogNet.listName;
+        }
+        if (ogPrt == null) {
+            return a + " " + port;
+        } else {
+            return a + " obj " + ogPrt.listName;
+        }
     }
 
     public String toString() {
-        String a = proto + " " + convPart(srcAddr, srcMask, srcPort) + " " + convPart(trgAddr, trgMask, trgPort);
+        String a = proto + " " + convPart(srcAddr, srcMask, srcPort, srcOGnet, srcOGprt) + " " + convPart(trgAddr, trgMask, trgPort, trgOGnet, trgOGprt);
         if (tos.action != tabIntMatcher.actionType.always) {
             a += " tos " + tos;
         }
@@ -299,17 +203,49 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         if (!flag.matches(pck.TCPflg)) {
             return false;
         }
-        if (!srcPort.matches(pck.UDPsrc)) {
-            return false;
+        if (srcOGprt != null) {
+            if (!srcOGprt.matches(false, false, pck)) {
+                return false;
+            }
+        } else {
+            if (!srcPort.matches(pck.UDPsrc)) {
+                return false;
+            }
         }
-        if (!trgPort.matches(pck.UDPtrg)) {
-            return false;
+        if (trgOGprt != null) {
+            int old = pck.UDPsrc;
+            pck.UDPsrc = pck.UDPtrg;
+            boolean b = trgOGprt.matches(false, false, pck);
+            pck.UDPsrc = old;
+            if (!b) {
+                return false;
+            }
+        } else {
+            if (!trgPort.matches(pck.UDPtrg)) {
+                return false;
+            }
         }
-        if (!pck.IPsrc.isMatches(srcAddr, srcMask)) {
-            return false;
+        if (srcOGnet != null) {
+            if (!srcOGnet.matches(false, false, pck)) {
+                return false;
+            }
+        } else {
+            if (!pck.IPsrc.isMatches(srcAddr, srcMask)) {
+                return false;
+            }
         }
-        if (!pck.IPtrg.isMatches(trgAddr, trgMask)) {
-            return false;
+        if (trgOGnet != null) {
+            addrIP old = pck.IPsrc.copyBytes();
+            pck.IPsrc.setAddr(pck.IPtrg);
+            boolean b = trgOGnet.matches(false, false, pck);
+            pck.IPsrc.setAddr(old);
+            if (!b) {
+                return false;
+            }
+        } else {
+            if (!pck.IPtrg.isMatches(trgAddr, trgMask)) {
+                return false;
+            }
         }
         return true;
     }

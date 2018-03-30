@@ -157,6 +157,16 @@ public class cfgAll {
     public static final tabGen<cfgRtr> routers = new tabGen<cfgRtr>();
 
     /**
+     * list of network object groups
+     */
+    public static final tabGen<cfgObjnet> objgrpnets = new tabGen<cfgObjnet>();
+
+    /**
+     * list of port object groups
+     */
+    public static final tabGen<cfgObjprt> objgrpprts = new tabGen<cfgObjprt>();
+
+    /**
      * list of access lists
      */
     public static final tabGen<cfgAceslst> accesslsts = new tabGen<cfgAceslst>();
@@ -1744,6 +1754,80 @@ public class cfgAll {
     }
 
     /**
+     * find one object group
+     *
+     * @param nam name of entry
+     * @param create create new on this number if not found
+     * @return descriptor, null if not found
+     */
+    public static cfgObjnet objnetFind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgObjnet ntry = new cfgObjnet();
+        ntry.name = nam;
+        ntry.objgrp.listName = nam;
+        if (!create) {
+            return objgrpnets.find(ntry);
+        }
+        cfgObjnet old = objgrpnets.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        return ntry;
+    }
+
+    /**
+     * delete one object group
+     *
+     * @param nam name of entry
+     * @return descriptor, null if not found
+     */
+    public static cfgObjnet objnetDel(String nam) {
+        cfgObjnet ntry = new cfgObjnet();
+        ntry.name = nam;
+        return objgrpnets.del(ntry);
+    }
+
+    /**
+     * find one object group
+     *
+     * @param nam name of entry
+     * @param create create new on this number if not found
+     * @return descriptor, null if not found
+     */
+    public static cfgObjprt objprtFind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgObjprt ntry = new cfgObjprt();
+        ntry.name = nam;
+        ntry.objgrp.listName = nam;
+        if (!create) {
+            return objgrpprts.find(ntry);
+        }
+        cfgObjprt old = objgrpprts.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        return ntry;
+    }
+
+    /**
+     * delete one object group
+     *
+     * @param nam name of entry
+     * @return descriptor, null if not found
+     */
+    public static cfgObjprt objprtDel(String nam) {
+        cfgObjprt ntry = new cfgObjprt();
+        ntry.name = nam;
+        return objgrpprts.del(ntry);
+    }
+
+    /**
      * find one access list
      *
      * @param nam name of entry
@@ -2704,6 +2788,8 @@ public class cfgAll {
         servGenList.listGetRun(l, ip4pool, filter);
         servGenList.listGetRun(l, ip6pool, filter);
         servGenList.listGetRun(l, eventmgrs, filter);
+        servGenList.listGetRun(l, objgrpnets, filter);
+        servGenList.listGetRun(l, objgrpprts, filter);
         servGenList.listGetRun(l, accesslsts, filter);
         servGenList.listGetRun(l, prefixlsts, filter);
         servGenList.listGetRun(l, routemaps, filter);

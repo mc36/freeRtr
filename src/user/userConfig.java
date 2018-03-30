@@ -23,6 +23,8 @@ import cfg.cfgHrpn;
 import cfg.cfgIconn;
 import cfg.cfgKey;
 import cfg.cfgMtrack;
+import cfg.cfgObjnet;
+import cfg.cfgObjprt;
 import cfg.cfgPlymp;
 import cfg.cfgPool;
 import cfg.cfgPrfxlst;
@@ -455,6 +457,11 @@ public class userConfig {
         l.add("3  .      <num>                      process id");
         l.add("1  2  chat-script                    build a chat script");
         l.add("2  .    <name>                       name of script");
+        l.add("1  2  object-group                   build an object group");
+        l.add("2  3    network                      network entries");
+        l.add("3  .      <name>                     name of object group");
+        l.add("2  3    port                         port entries");
+        l.add("3  .      <name>                     name of object group");
         l.add("1  2  access-list                    build an access list");
         l.add("2  .    <name>                       name of access list");
         l.add("1  2  event-manager                  build an event manager");
@@ -858,6 +865,28 @@ public class userConfig {
                 return;
             }
             modeV = modes.config;
+            return;
+        }
+        if (a.equals("object-group")) {
+            a = cmd.word();
+            if (a.equals("network")) {
+                modeDconfig = cfgAll.objnetFind(cmd.word(), true);
+                if (modeDconfig == null) {
+                    cmd.error("bad object group name");
+                    return;
+                }
+                modeV = modes.config;
+                return;
+            }
+            if (a.equals("port")) {
+                modeDconfig = cfgAll.objprtFind(cmd.word(), true);
+                if (modeDconfig == null) {
+                    cmd.error("bad object group name");
+                    return;
+                }
+                modeV = modes.config;
+                return;
+            }
             return;
         }
         if (a.equals("access-list")) {
@@ -1518,6 +1547,26 @@ public class userConfig {
             cfgChat prf = cfgAll.chatDel(cmd.word());
             if (prf == null) {
                 cmd.error("no such script");
+                return;
+            }
+            return;
+        }
+        if (a.equals("object-group")) {
+            a = cmd.word();
+            if (a.equals("network")) {
+                cfgObjnet prf = cfgAll.objnetDel(cmd.word());
+                if (prf == null) {
+                    cmd.error("no such object group");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("port")) {
+                cfgObjprt prf = cfgAll.objprtDel(cmd.word());
+                if (prf == null) {
+                    cmd.error("no such object group");
+                    return;
+                }
                 return;
             }
             return;

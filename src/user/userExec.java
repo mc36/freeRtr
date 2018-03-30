@@ -557,6 +557,11 @@ public class userExec {
         hl.add("3 4        <name>                name of interface");
         hl.add("4 .          in                  ingress policy");
         hl.add("4 .          out                 egress policy");
+        hl.add("2 3      object-group            object group statistics");
+        hl.add("3 4        network               network list");
+        hl.add("4 .          <name>              name of list");
+        hl.add("3 4        port                  port list");
+        hl.add("4 .          <name>              name of list");
         hl.add("2 3      access-list             access list statistics");
         hl.add("3 .        <name>                name of list");
         hl.add("2 3      route-map               route map statistics");

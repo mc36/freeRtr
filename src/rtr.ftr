@@ -323,6 +323,10 @@ qc pass: ingress precedence matching access list
 qc pass: egress precedence matching access list
 qc pass: ingress length matching access list
 qc pass: egress length matching access list
+qc pass: ingress destination matching hibryd access list
+qc pass: egress destination matching hibryd access list
+qc pass: ingress source matching hibryd access list
+qc pass: egress source matching hibryd access list
 qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6

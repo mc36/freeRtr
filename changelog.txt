@@ -8005,3 +8005,8 @@ qc pass: modem with alaw through peer
 qc pass: modem with ulaw through peer
 ---------------------------------- 2018-03-12 03:32:27
 qc pass: modem with alaw and ulaw through peer
+---------------------------------- 2018-03-29 21:33:31
+qc pass: ingress destination matching hibryd access list
+qc pass: egress destination matching hibryd access list
+qc pass: ingress source matching hibryd access list
+qc pass: egress source matching hibryd access list

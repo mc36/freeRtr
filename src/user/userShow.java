@@ -12,6 +12,8 @@ import cfg.cfgDial;
 import cfg.cfgIfc;
 import cfg.cfgInit;
 import cfg.cfgMtrack;
+import cfg.cfgObjnet;
+import cfg.cfgObjprt;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
 import cfg.cfgRouplc;
@@ -490,6 +492,29 @@ public class userShow {
                 return null;
             }
             rdr.putStrArr(tab.getStats());
+            return null;
+        }
+        if (a.equals("object-group")) {
+            a = cmd.word();
+            if (a.equals("network")) {
+                cfgObjnet og = cfgAll.objnetFind(cmd.word(), false);
+                if (og == null) {
+                    cmd.error("no such object group");
+                    return null;
+                }
+                rdr.putStrArr(og.objgrp.getStats());
+                return null;
+            }
+            if (a.equals("port")) {
+                cfgObjprt og = cfgAll.objprtFind(cmd.word(), false);
+                if (og == null) {
+                    cmd.error("no such object group");
+                    return null;
+                }
+                rdr.putStrArr(og.objgrp.getStats());
+                return null;
+            }
+            cmd.badCmd();
             return null;
         }
         if (a.equals("access-list")) {
