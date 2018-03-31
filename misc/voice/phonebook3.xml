@@ -12,6 +12,7 @@
 <DirectoryEntry><Name>emachine</Name><Telephone>33</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>lenovo</Name><Telephone>34</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>compaq</Name><Telephone>35</Telephone></DirectoryEntry>
-<DirectoryEntry><Name>parents</Name><Telephone>41</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>parents nappali</Name><Telephone>41</Telephone></DirectoryEntry>
+<DirectoryEntry><Name>parents konyha</Name><Telephone>42</Telephone></DirectoryEntry>
 <DirectoryEntry><Name>parents autoanswer</Name><Telephone>40</Telephone></DirectoryEntry>
 </CiscoIPPhoneDirectory>
