@@ -201,7 +201,12 @@ public class servNrpe extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("train")) {
-            ntry.doTrain();
+            s = cmd.getRemaining();
+            if (s.length() < 1) {
+                ntry.doTrain();
+            } else {
+                ntry.doTrain(s);
+            }
             return false;
         }
         return true;
@@ -212,7 +217,8 @@ public class servNrpe extends servGeneric implements prtServS {
         l.add("2 2,.  <str>                      text");
         l.add("1 2  check                        configure one check");
         l.add("2 3    <name>                     name of check");
-        l.add("3 .      train                    train command to current result");
+        l.add("3 4,.    train                    train command to current result");
+        l.add("4 4,.      <str>                  text");
         l.add("3 .      alternate                alternate reported state on diff change");
         l.add("3 4      command                  specify command to execute");
         l.add("4 4,.      <str>                  command");
@@ -469,6 +475,23 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
                 lst.remove(i);
                 break;
             }
+        }
+    }
+
+    public void doTrain(String ned) {
+        List<String> lst = getResult();
+        delIgn(lst);
+        for (int i = reqT.size() - 1; i >= 0; i--) {
+            if (reqT.get(i).indexOf(ned) >= 0) {
+                reqT.remove(i);
+            }
+        }
+        for (int i = 0; i < lst.size(); i++) {
+            String a = lst.get(i);
+            if (a.indexOf(ned) < 0) {
+                continue;
+            }
+            reqT.add(a);
         }
     }
 
