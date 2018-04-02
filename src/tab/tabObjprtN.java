@@ -10,7 +10,7 @@ import pack.packHolder;
  * represents one port object group entry
  *
  * @param <T> type of address
- * @author mc36
+ * @author matecsaba
  */
 public class tabObjprtN<T extends addrType> extends tabListingEntry<T> {
 

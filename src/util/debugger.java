@@ -824,6 +824,11 @@ public class debugger {
     public static boolean secTelnetTraf = false;
 
     /**
+     * secWebsock packets
+     */
+    public static boolean secWebsockTraf = false;
+
+    /**
      * get help text for exec commands
      *
      * @param h helping to update
@@ -934,6 +939,7 @@ public class debugger {
         h.add("3 .        ssh               secure shell protocol");
         h.add("3 .        tls               transport layer security protocol");
         h.add("3 .        telnet            telnet protocol");
+        h.add("3 .        websock           websocket protocol");
         h.add("3 .        ike               internet key exchange protocol");
         h.add("3 .        gen               generic connections");
         h.add("3 .        tcp               transmission control protocol");
@@ -1498,6 +1504,10 @@ public class debugger {
             }
             if (s.equals("telnet")) {
                 secTelnetTraf = v;
+                return false;
+            }
+            if (s.equals("websock")) {
+                secWebsockTraf = v;
                 return false;
             }
             return true;

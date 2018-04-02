@@ -794,9 +794,12 @@ server rfb vnc
  exit
 !
 server http web
- host * path /home/mc36/
+ host * path /nfs2/own/web/home/
  host * dirlist
+ host * script
+ host * websock
  host * webdav
+ host * class
  vrf v1
  exit
 !

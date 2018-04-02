@@ -34,6 +34,7 @@ import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtGenConn;
 import prt.prtServS;
+import sec.secWebsock;
 import tab.tabGen;
 import user.userFilter;
 import user.userFlash;
@@ -98,6 +99,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! host .* noredir",
         "server http .*! host .* noreconn",
         "server http .*! host .* noimagemap",
+        "server http .*! host .* nowebsock",
         "server http .*! host .* nomediastream",
         "server http .*! host .* nostream",
         "server http .*! host .* nomultiacc",
@@ -204,6 +206,11 @@ public class servHttp extends servGeneric implements prtServS {
                 l.add(a + " imagemap");
             } else {
                 l.add(a + " noimagemap");
+            }
+            if (ntry.allowWebSck) {
+                l.add(a + " websock");
+            } else {
+                l.add(a + " nowebsock");
             }
             if (ntry.allowWebDav) {
                 l.add(a + " webdav");
@@ -403,12 +410,20 @@ public class servHttp extends servGeneric implements prtServS {
             ntry.allowImgMap = true;
             return false;
         }
+        if (a.equals("websock")) {
+            ntry.allowWebSck = true;
+            return false;
+        }
         if (a.equals("webdav")) {
             ntry.allowWebDav = true;
             return false;
         }
         if (a.equals("noimagemap")) {
             ntry.allowImgMap = false;
+            return false;
+        }
+        if (a.equals("nowebsock")) {
+            ntry.allowWebSck = false;
             return false;
         }
         if (a.equals("nowebdav")) {
@@ -540,6 +555,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("3 .      noscript                   forbid script running");
         l.add("3 .      imagemap                   allow image map processing");
         l.add("3 .      noimagemap                 forbid image map processing");
+        l.add("3 .      websock                    allow websocket processing");
+        l.add("3 .      nowebsock                  forbid websocket processing");
         l.add("3 .      webdav                     allow webdav processing");
         l.add("3 .      nowebdav                   forbid webdav processing");
         l.add("3 .      mediastream                allow media streaming");
@@ -680,6 +697,11 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      * image map decode allowed
      */
     public boolean allowImgMap;
+
+    /**
+     * web socket allowed
+     */
+    public boolean allowWebSck;
 
     /**
      * image streaming allowed
@@ -853,6 +875,8 @@ class servHttpConn implements Runnable {
 
     protected String gotReferer; // referer
 
+    protected String gotWebsock; // websocket key
+
     protected String gotRange; // range
 
     private List<String> headers; // tx headers
@@ -963,6 +987,48 @@ class servHttpConn implements Runnable {
                 + gotAgent.replaceAll(";", ",") + ";"
                 + gotReferer.replaceAll(";", ",") + "\n";
         bits.byteSave(false, a.getBytes(), s);
+    }
+
+    private boolean sendOneWebSck(String s) {
+        s = gotHost.path + s + ".websock";
+        if (!new File(s).exists()) {
+            return true;
+        }
+        List<String> l = bits.txt2buf(s);
+        if (l == null) {
+            return true;
+        }
+        if (l.size() < 5) {
+            return true;
+        }
+        cfgProxy prx = cfgAll.proxyFind(l.get(0), false);
+        if (prx == null) {
+            sendRespError(502, "bad proxy profile");
+            return false;
+        }
+        addrIP adr = userTerminal.justResolv(l.get(1), 0);
+        if (adr == null) {
+            sendRespError(502, "bad target hostname");
+            return false;
+        }
+        pipeSide pip = prx.doConnect(servGeneric.protoTcp, adr, bits.str2num(l.get(2)), "websock");
+        if (pip == null) {
+            sendRespError(502, "unable to connect");
+            return false;
+        }
+        sendLn("HTTP/" + (gotVer / 10) + "." + (gotVer % 10) + " 101 switching protocol");
+        sendLn("Upgrade: websocket");
+        sendLn("Connection: Upgrade");
+        sendLn("Sec-WebSocket-Accept: " + secWebsock.calcHash(gotWebsock));
+        sendLn("Sec-WebSocket-Protocol: " + l.get(3));
+        sendLn("");
+        secWebsock wsk = new secWebsock(pipe, new pipeLine(65536, false));
+        wsk.binary = l.get(4).equals("bin");
+        wsk.startServer();
+        pipeConnect.connect(pip, wsk.getPipe(), true);
+        gotKeep = false;
+        pipe = null;
+        return false;
     }
 
     private boolean sendOneScript(String s) {
@@ -1497,6 +1563,7 @@ class servHttpConn implements Runnable {
         gotAgent = "";
         gotRange = null;
         gotReferer = "";
+        gotWebsock = null;
         if (gotCmd.equals("")) {
             return true;
         }
@@ -1576,6 +1643,10 @@ class servHttpConn implements Runnable {
             }
             if (a.equals("upgrade")) {
                 gotUpgrade = s;
+                continue;
+            }
+            if (a.equals("sec-websocket-key")) {
+                gotWebsock = s;
                 continue;
             }
             if (a.equals("referer")) {
@@ -2046,7 +2117,7 @@ class servHttpConn implements Runnable {
             } else {
                 sendRespHeader("201 created", 0, null);
             }
-            pipe.setClose();
+            pip.setClose();
             return;
         }
         if (gotCmd.equals("move")) {
@@ -2108,6 +2179,11 @@ class servHttpConn implements Runnable {
         }
         updateVisitors(pn);
         boolean b = true;
+        if ((gotHost.allowWebSck) && (gotWebsock != null)) {
+            if (!sendOneWebSck(pn)) {
+                return;
+            }
+        }
         if (gotUrl.toFileName().length() > 0) {
             b = sendOneFile(pn, gotUrl.filExt);
         } else {
