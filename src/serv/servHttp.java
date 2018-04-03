@@ -1016,7 +1016,7 @@ class servHttpConn implements Runnable {
             sendRespError(502, "unable to connect");
             return false;
         }
-        sendLn("HTTP/" + (gotVer / 10) + "." + (gotVer % 10) + " 101 switching protocol");
+        sendLn("HTTP/1.1 101 switching protocol");
         sendLn("Upgrade: websocket");
         sendLn("Connection: Upgrade");
         sendLn("Sec-WebSocket-Accept: " + secWebsock.calcHash(gotWebsock));

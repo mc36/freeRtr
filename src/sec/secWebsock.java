@@ -1,13 +1,19 @@
 package sec;
 
+import addr.addrIP;
+import clnt.clntProxy;
 import cry.cryBase64;
 import cry.cryHashGeneric;
 import cry.cryHashSha1;
 import pipe.pipeLine;
 import pipe.pipeSide;
+import serv.servGeneric;
+import serv.servHttp;
+import user.userTerminal;
 import util.bits;
 import util.debugger;
 import util.logger;
+import util.uniResLoc;
 
 /**
  * websocket (rfc6455) protocol
@@ -134,6 +140,73 @@ public class secWebsock {
         userC = pipe.getSide();
         userC.timeout = 120 * 1000;
         userS.timeout = userC.timeout;
+    }
+
+    /**
+     * start connection
+     *
+     * @param prx proxy profile to use
+     * @param trg target url
+     * @param prt protocol
+     * @return pipe if success, null on error
+     */
+    public final static pipeSide doConnect(clntProxy prx, uniResLoc trg, String prt) {
+        addrIP adr = userTerminal.justResolv(trg.server, 0);
+        if (adr == null) {
+            return null;
+        }
+        pipeSide pipe;
+        if (!trg.proto.equals("wss")) {
+            pipe = prx.doConnect(servGeneric.protoTcp, adr, trg.getPort(new servHttp().srvPort()), "websock");
+        } else {
+            pipe = prx.doConnect(servGeneric.protoTcp, adr, trg.getPort(servHttp.securePort), "websocks");
+            if (pipe == null) {
+                return null;
+            }
+            pipe = secClient.openSec(pipe, servGeneric.protoTls, null, null);
+        }
+        if (pipe == null) {
+            return null;
+        }
+        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        pipe.linePut("GET /" + trg.toPathName() + " HTTP/1.1");
+        pipe.linePut("Host: " + trg.server);
+        pipe.linePut("Upgrade: websocket");
+        pipe.linePut("Connection: Upgrade");
+        byte[] buf = new byte[16];
+        for (int i = 0; i < buf.length; i++) {
+            buf[i] = (byte) bits.randomB();
+        }
+        pipe.linePut("Sec-WebSocket-Key: " + cryBase64.encodeBytes(buf));
+        pipe.linePut("Origin: http://" + trg.server + "/");
+        pipe.linePut("Sec-WebSocket-Protocol: " + prt);
+        pipe.linePut("Sec-WebSocket-Version: 13");
+        pipe.linePut("");
+        String s = null;
+        for (;;) {
+            if (pipe.isClosed() != 0) {
+                break;
+            }
+            String a = pipe.lineGet(1);
+            if (s == null) {
+                s = a;
+            }
+            if (a == null) {
+                break;
+            }
+            if (a.length() < 1) {
+                break;
+            }
+        }
+        if (s == null) {
+            s = "";
+        }
+        if (!s.startsWith("HTTP/1.1 101 ")) {
+            pipe.setClose();
+            return null;
+        }
+        return pipe;
     }
 
     /**

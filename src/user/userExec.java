@@ -1073,6 +1073,11 @@ public class userExec {
         hl.add("2 3      translation             translation rule");
         hl.add("3 4        <name>                name of rule");
         hl.add("4 4,.        <str>               text");
+        hl.add("2 3      speed                   test speed clients");
+        hl.add("3 3,.      <str>                 name of server");
+        hl.add("2 3      websock                 test websocket client");
+        hl.add("3 4        <str>                 url of server");
+        hl.add("4 4,.        <str>               protocols");
         hl.add("2 3      snmp                    do snmp commands");
         hl.add("3 4        get                   do a get request");
         hl.add("3 4        next                  do a getnext request");
@@ -1107,8 +1112,6 @@ public class userExec {
         hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    prefix                  decode prefix");
         hl.add("3 3,.      <str>                 parameter");
-        hl.add("2 3,.    speed                   test speed clients");
-        hl.add("3 3,.      <str>                 name of server");
         hl.add("2 3      vm                      run virtual machine");
         hl.add("3 4,.      <name>                file name");
         hl.add("4 4,.        [str]               parameter to give");

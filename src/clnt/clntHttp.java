@@ -254,7 +254,7 @@ public class clntHttp {
             return pipe == null;
         }
         userTerminal t = new userTerminal(cons);
-        pipe = t.resolvAndConn(servGeneric.protoTcp, url.server, servHttp.securePort, "https");
+        pipe = t.resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(servHttp.securePort), "https");
         if (pipe == null) {
             return true;
         }

@@ -61,9 +61,11 @@ import pack.packTls;
 import pipe.pipeLine;
 import pipe.pipeProgress;
 import pipe.pipeSide;
+import pipe.pipeTerm;
 import pipe.pipeWindow;
 import sec.secSsh;
 import sec.secTls;
+import sec.secWebsock;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import util.bits;
@@ -142,6 +144,23 @@ public class userTest {
             rdr.keyFlush();
             clntSpeed.smllClnt(cmd);
             rdr.keyFlush();
+            return null;
+        }
+        if (a.equals("websock")) {
+            uniResLoc url = new uniResLoc();
+            if (url.fromString(cmd.word())) {
+                cmd.error("bad url");
+                return null;
+            }
+            pipeSide strm = secWebsock.doConnect(cfgAll.getClntPrx(), url, cmd.getRemaining());
+            if (strm == null) {
+                cmd.error("unable to connect");
+                return null;
+            }
+            secWebsock ws = new secWebsock(strm, new pipeLine(65536, false));
+            ws.startClient();
+            pipeTerm trm = new pipeTerm(cmd.pipe, ws.getPipe());
+            trm.doTerm();
             return null;
         }
         if (a.equals("gc")) {
