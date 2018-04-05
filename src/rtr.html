@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v18.4.1-testing, done by cs@nop.<br/>
-tested: 2018-04-01 07:50:52, took 07:45:32 on 1382 cases<br/>
+release: freeRouter v18.4.5-testing, done by cs@nop.<br/>
+tested: 2018-04-05 16:35:42, took 08:06:41 on 1384 cases<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -76,6 +76,9 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth05.tst">conn-eth05.tst</a></td><td>0</td><td>ethernet dot1ad encapsulation</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth06.tst">conn-eth06.tst</a></td><td>0</td><td>ethernet dot1ah encapsulation</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth07.tst">conn-eth07.tst</a></td><td>0</td><td>ethernet isl encapsulation</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth08.tst">conn-eth08.tst</a></td><td>0</td><td>proxy remote arp/nd</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth09.tst">conn-eth09.tst</a></td><td>0</td><td>proxy local arp/nd</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth10.tst">conn-eth10.tst</a></td><td>0</td><td>static arp/nd entry</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip01.tst">conn-etherip01.tst</a></td><td>0</td><td>etherip over ipv4</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip02.tst">conn-etherip02.tst</a></td><td>0</td><td>etherip over ipv6</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip03.tst">conn-etherip03.tst</a></td><td>0</td><td>etherip over loopback</td><td>successfully</td><td>finished</td></tr>
@@ -251,8 +254,6 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-pppoe02.tst">conn-pppoe02.tst</a></td><td>0</td><td>pppoe over bridge encapsulation</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-pppoe03.tst">conn-pppoe03.tst</a></td><td>0</td><td>ppp relay over pppoe</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-pptp.tst">conn-pptp.tst</a></td><td>0</td><td>ppp over pptp</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-proxy01.tst">conn-proxy01.tst</a></td><td>0</td><td>proxy remote arp/nd</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-proxy02.tst">conn-proxy02.tst</a></td><td>0</td><td>proxy local arp/nd</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-raw.tst">conn-raw.tst</a></td><td>0</td><td>raw encapsulation</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-redun.tst">conn-redun.tst</a></td><td>0</td><td>process redundancy</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-sep.tst">conn-sep.tst</a></td><td>0</td><td>sep</td><td>successfully</td><td>finished</td></tr>
@@ -589,6 +590,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-tacacs.tst">intop-tacacs.tst</a></td><td>0</td><td>interop: tacacs</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-tun01.tst">intop-tun01.tst</a></td><td>0</td><td>interop: gre tunnel</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop-tun02.tst">intop-tun02.tst</a></td><td>0</td><td>interop: ipip tunnel</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop-tun03.tst">intop-tun03.tst</a></td><td>0</td><td>interop: vxlan tunnel</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier01.tst">mpls-bier01.tst</a></td><td>0</td><td>bier in chain</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier02.tst">mpls-bier02.tst</a></td><td>0</td><td>bier in star</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier03.tst">mpls-bier03.tst</a></td><td>0</td><td>bier in dense chain</td><td>successfully</td><td>finished</td></tr>

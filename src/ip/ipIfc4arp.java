@@ -9,6 +9,7 @@ import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import pack.packHolder;
@@ -292,6 +293,14 @@ public class ipIfc4arp implements ifcUp {
         upper.upper.tableChanger();
     }
 
+    private void delEntry(ipIfc4arpEntry ntry) {
+        if (debugger.ipIfc4arpEvnt) {
+            logger.debug("del " + ntry);
+        }
+        cache.del(ntry);
+        upper.upper.tableChanger();
+    }
+
     private void putHeader(packHolder pck, addrMac trg, addrMac src) {
         pck.putStart();
         pck.ETHtrg.setAddr(trg);
@@ -368,28 +377,41 @@ public class ipIfc4arp implements ifcUp {
             if (ntry == null) {
                 continue;
             }
+            if (ntry.stat) {
+                continue;
+            }
             if ((currTim - ntry.time) < arpCacheTimeout) {
                 continue;
             }
-            if (debugger.ipIfc4arpEvnt) {
-                logger.debug("purge " + ntry);
-            }
-            cache.del(ntry);
+            delEntry(ntry);
         }
     }
 
     /**
      * update mac header
      *
+     * @param mod mode
      * @param mac address to set
      * @param adr address to set
      */
-    public void updateMACheader(addrMac mac, addrIPv4 adr) {
+    public void updateMACheader(int mod, addrMac mac, addrIPv4 adr) {
         ipIfc4arpEntry ntry = new ipIfc4arpEntry();
         ntry.ip = adr.copyBytes();
         ntry.mac = mac.copyBytes();
         ntry.time = bits.getTime();
-        addEntry(ntry);
+        switch (mod) {
+            case 0:
+                addEntry(ntry);
+                break;
+            case 1:
+                ntry.stat = true;
+                addEntry(ntry);
+                break;
+            case 2:
+                ntry.stat = true;
+                delEntry(ntry);
+                break;
+        }
     }
 
     /**
@@ -427,15 +449,37 @@ public class ipIfc4arp implements ifcUp {
     }
 
     /**
+     * get static mac and ip addresses
+     *
+     * @param lst list to append
+     * @param beg beginning
+     */
+    public void getMACaddr(List<String> lst, String beg) {
+        for (int i = 0; i < cache.size(); i++) {
+            ipIfc4arpEntry ntry = cache.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (!ntry.stat) {
+                continue;
+            }
+            lst.add(beg + ntry.ip + " " + ntry.mac);
+        }
+    }
+
+    /**
      * get list of neighbors
      *
      * @return list of entries
      */
     public userFormat getShCache() {
-        userFormat lst = new userFormat("|", "mac|address|time");
+        userFormat lst = new userFormat("|", "mac|address|time|static");
         for (int i = 0; i < cache.size(); i++) {
             ipIfc4arpEntry ntry = cache.get(i);
-            lst.add(ntry.mac + "|" + ntry.ip + "|" + bits.timePast(ntry.time));
+            if (ntry == null) {
+                continue;
+            }
+            lst.add(ntry.mac + "|" + ntry.ip + "|" + bits.timePast(ntry.time) + "|" + ntry.stat);
         }
         return lst;
     }
@@ -467,6 +511,8 @@ class ipIfc4arpEntry implements Comparator<ipIfc4arpEntry> {
     public addrIPv4 ip;
 
     public long time;
+
+    public boolean stat;
 
     public String toString() {
         return mac + " " + ip + " " + bits.timePast(time);

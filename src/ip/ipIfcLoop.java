@@ -5,6 +5,7 @@ import addr.addrIPv4;
 import addr.addrIPv6;
 import addr.addrType;
 import ifc.ifcUp;
+import java.util.List;
 import pack.packHolder;
 import user.userFormat;
 import util.counter;
@@ -85,7 +86,7 @@ public class ipIfcLoop implements ipIfc {
         cntr.rx(pck);
     }
 
-    public void updateL2info(addrType mac, addrIP nexthop) {
+    public void updateL2info(int mod, addrType mac, addrIP nexthop) {
     }
 
     public addrType getL2info(addrIP nexthop) {
@@ -94,6 +95,9 @@ public class ipIfcLoop implements ipIfc {
 
     public boolean getL2info(int seq, addrIP nexthop, addrType mac) {
         return true;
+    }
+
+    public void getL2info(List<String> lst, String beg) {
     }
 
     public counter getCounter() {

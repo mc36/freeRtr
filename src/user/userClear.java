@@ -1,6 +1,7 @@
 package user;
 
 import addr.addrIP;
+import addr.addrMac;
 import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgDial;
@@ -228,6 +229,24 @@ public class userClear {
         }
         if (a.equals("ipv4")) {
             a = cmd.word();
+            if (a.equals("arp")) {
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                addrIP adr = new addrIP();
+                if (adr.fromString(cmd.word())) {
+                    cmd.error("bad address");
+                    return null;
+                }
+                if (ifc.ipIf4 == null) {
+                    cmd.error("protocol not enabled");
+                    return null;
+                }
+                ifc.ipIf4.updateL2info(2, new addrMac(), adr);
+                return null;
+            }
             if (a.equals("route")) {
                 cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
                 if (vrf == null) {
@@ -255,6 +274,24 @@ public class userClear {
         }
         if (a.equals("ipv6")) {
             a = cmd.word();
+            if (a.equals("neighbor")) {
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                addrIP adr = new addrIP();
+                if (adr.fromString(cmd.word())) {
+                    cmd.error("bad address");
+                    return null;
+                }
+                if (ifc.ipIf6 == null) {
+                    cmd.error("protocol not enabled");
+                    return null;
+                }
+                ifc.ipIf6.updateL2info(2, new addrMac(), adr);
+                return null;
+            }
             if (a.equals("route")) {
                 cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
                 if (vrf == null) {

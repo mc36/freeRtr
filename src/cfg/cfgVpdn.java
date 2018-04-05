@@ -584,8 +584,12 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add("2 .    vlan                         vlan mode");
         l.add("2 .    hdlc                         hdlc mode");
         l.add("2 .    ppp                          ppp mode");
+        l.add("2 .    ip                           ip mode");
         l.add("2 .    fr-dlci                      fr dlci mode");
         l.add("2 .    atm-aal5                     atm aal5 mode");
+        l.add("2 .    atm-vcc                      atm vcc mode");
+        l.add("2 .    atm-vpc                      atm vpc mode");
+        l.add("2 .    atm-port                     atm port mode");
         return l;
     }
 
@@ -1240,6 +1244,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 vxl.vrf = proxy.vrf;
                 vxl.srcIfc = proxy.srcIfc;
                 vxl.inst = vcid;
+                vxl.prot = pwtype;
                 brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
                 vxl.setUpper(brdgIfc);
                 vxl.workStart();

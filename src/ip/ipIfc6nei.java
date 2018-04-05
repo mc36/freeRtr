@@ -8,6 +8,7 @@ import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import pack.packHolder;
@@ -64,7 +65,7 @@ public class ipIfc6nei implements ifcUp {
     }
 
     /**
-     * create arp handler
+     * create nei handler
      *
      * @param parent parent of me
      */
@@ -115,7 +116,7 @@ public class ipIfc6nei implements ifcUp {
     }
 
     /**
-     * is proxy arp enabled
+     * is proxy nei enabled
      *
      * @return not enabled
      */
@@ -183,10 +184,18 @@ public class ipIfc6nei implements ifcUp {
     }
 
     private void addEntry(ipIfc6neiEntry ntry) {
-        if (debugger.ipIfc4arpEvnt) {
+        if (debugger.ipIfc6neiEvnt) {
             logger.debug("add " + ntry);
         }
         cache.put(ntry);
+        upper.upper.tableChanger();
+    }
+
+    private void delEntry(ipIfc6neiEntry ntry) {
+        if (debugger.ipIfc6neiEvnt) {
+            logger.debug("del " + ntry);
+        }
+        cache.del(ntry);
         upper.upper.tableChanger();
     }
 
@@ -282,13 +291,13 @@ public class ipIfc6nei implements ifcUp {
             if (ntry == null) {
                 continue;
             }
+            if (ntry.stat) {
+                continue;
+            }
             if ((currTim - ntry.time) < neiCacheTimeout) {
                 continue;
             }
-            if (debugger.ipIfc6neiEvnt) {
-                logger.debug("purge " + ntry);
-            }
-            cache.del(ntry);
+            delEntry(ntry);
         }
     }
 
@@ -327,17 +336,49 @@ public class ipIfc6nei implements ifcUp {
     }
 
     /**
+     * get static mac and ip addresses
+     *
+     * @param lst list to append
+     * @param beg beginning
+     */
+    public void getMACaddr(List<String> lst, String beg) {
+        for (int i = 0; i < cache.size(); i++) {
+            ipIfc6neiEntry ntry = cache.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (!ntry.stat) {
+                continue;
+            }
+            lst.add(beg + ntry.ip + " " + ntry.mac);
+        }
+    }
+
+    /**
      * update packet header
      *
+     * @param mod mode
      * @param mac address to set
      * @param adr address to set
      */
-    public void updateMACheader(addrMac mac, addrIPv6 adr) {
+    public void updateMACheader(int mod, addrMac mac, addrIPv6 adr) {
         ipIfc6neiEntry ntry = new ipIfc6neiEntry();
         ntry.ip = adr.copyBytes();
         ntry.mac = mac.copyBytes();
         ntry.time = bits.getTime();
-        addEntry(ntry);
+        switch (mod) {
+            case 0:
+                addEntry(ntry);
+                break;
+            case 1:
+                ntry.stat = true;
+                addEntry(ntry);
+                break;
+            case 2:
+                ntry.stat = true;
+                delEntry(ntry);
+                break;
+        }
     }
 
     /**
@@ -346,10 +387,13 @@ public class ipIfc6nei implements ifcUp {
      * @return list of entries
      */
     public userFormat getShCache() {
-        userFormat lst = new userFormat("|", "mac|address|time");
+        userFormat lst = new userFormat("|", "mac|address|time|static|router");
         for (int i = 0; i < cache.size(); i++) {
             ipIfc6neiEntry ntry = cache.get(i);
-            lst.add(ntry.mac + "|" + ntry.ip + "|" + bits.timePast(ntry.time));
+            if (ntry == null) {
+                continue;
+            }
+            lst.add(ntry.mac + "|" + ntry.ip + "|" + bits.timePast(ntry.time) + "|" + ntry.stat + "|" + ntry.router);
         }
         return lst;
     }
@@ -381,6 +425,8 @@ class ipIfc6neiEntry implements Comparator<ipIfc6neiEntry> {
     public addrIPv6 ip;
 
     public long time;
+
+    public boolean stat;
 
     public boolean router;
 

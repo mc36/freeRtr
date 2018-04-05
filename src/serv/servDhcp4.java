@@ -466,7 +466,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 bindings.add(ntry);
                 return ntry;
             }
-            logger.warn("unable to bind new address");
+            logger.warn("failed to bind new address");
             return null;
         }
     }
@@ -481,7 +481,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         if (debugger.servDhcp4traf) {
             logger.debug("tx " + adr + " " + pckd);
         }
-        srvIface.ipIf4.updateL2info(ntry.mac, adr);
+        srvIface.ipIf4.updateL2info(0, ntry.mac, adr);
         pipeSide pip = srvVrf.udp4.streamConnect(new pipeLine(32768, true), srvIface.fwdIf4, packDhcp4.portSnum, adr, packDhcp4.portCnum, srvName(), null, -1);
         if (pip == null) {
             return true;

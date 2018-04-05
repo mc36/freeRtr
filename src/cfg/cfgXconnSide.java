@@ -19,6 +19,7 @@ import clnt.clntL2f;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import pack.packLdpPwe;
+import pack.packVxlan;
 import user.userHelping;
 import util.bits;
 import util.cmds;
@@ -264,6 +265,7 @@ public class cfgXconnSide {
                 vxl.vrf = vrf;
                 vxl.srcIfc = ifc;
                 vxl.inst = vcid;
+                vxl.prot = packVxlan.prtEth;
                 vxl.setUpper(upper);
                 vxl.workStart();
                 break;

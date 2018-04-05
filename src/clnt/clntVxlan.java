@@ -43,6 +43,11 @@ public class clntVxlan implements Runnable, prtServP, ifcDn {
     public int inst;
 
     /**
+     * protocol
+     */
+    public int prot;
+
+    /**
      * vrf of target
      */
     public cfgVrf vrf = null;
@@ -130,6 +135,7 @@ public class clntVxlan implements Runnable, prtServP, ifcDn {
         cntr.tx(pckBin);
         packVxlan pckVxl = new packVxlan();
         pckVxl.instance = inst;
+        pckVxl.protocol = prot;
         pckVxl.createHeader(pckBin);
         pckBin.merge2beg();
         pckBin.putDefaults();

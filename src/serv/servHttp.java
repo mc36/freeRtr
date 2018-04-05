@@ -1013,7 +1013,7 @@ class servHttpConn implements Runnable {
         }
         pipeSide pip = prx.doConnect(servGeneric.protoTcp, adr, bits.str2num(l.get(2)), "websock");
         if (pip == null) {
-            sendRespError(502, "unable to connect");
+            sendRespError(502, "failed to connect");
             return false;
         }
         sendLn("HTTP/1.1 101 switching protocol");

@@ -108,7 +108,7 @@ public class addrPool<T extends addrType> {
             BigInteger b = new BigInteger("" + i).multiply(incr).add(frst);
             return bn2addr(b);
         }
-        logger.warn("unable to allocate new address");
+        logger.warn("failed to allocate new address");
         return null;
     }
 

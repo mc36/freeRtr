@@ -3,6 +3,7 @@ package ip;
 import addr.addrIP;
 import addr.addrType;
 import ifc.ifcUp;
+import java.util.List;
 import pack.packHolder;
 import user.userFormat;
 import util.counter;
@@ -51,10 +52,11 @@ public interface ipIfc {
      *
      * destionaton mac header will be read from packet offset 0.
      *
+     * @param mod mode: 0=add aging, 1=add static, 2=delete static
      * @param l2info layer 2 address
      * @param nexthop next hop ip address
      */
-    public abstract void updateL2info(addrType l2info, addrIP nexthop);
+    public abstract void updateL2info(int mod, addrType l2info, addrIP nexthop);
 
     /**
      * get layer2 rewrite info
@@ -73,6 +75,14 @@ public interface ipIfc {
      * @return false on success, true on error
      */
     public abstract boolean getL2info(int seq, addrIP nexthop, addrType mac);
+
+    /**
+     * get static layer2 rewrite info
+     *
+     * @param lst list to append
+     * @param beg beginning
+     */
+    public abstract void getL2info(List<String> lst, String beg);
 
     /**
      * get interface counter

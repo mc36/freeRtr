@@ -321,6 +321,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 .       <num>                     value");
         l.add("2 3     host-reach                  set next hop cache timeout");
         l.add("3 .       <num>                     time in ms");
+        l.add("2 3     host-static                 set static next hop cache entry");
+        l.add("3 4       <addr>                    ip address");
+        l.add("4 .         <addr>                  mac address");
         l.add("2 .     host-watch                  monitor next hop changes");
         l.add("2 3     multicast                   multicast configuration options");
         l.add("3 .       mldp-enable               enable mdlp processing");
@@ -427,6 +430,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, inspect == null, cmds.tabulator, beg + "inspect", "" + inspect);
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "");
         l.add(cmds.tabulator + beg + "host-reach " + lower.getCacheTimer());
+        lower.getL2info(l, cmds.tabulator + beg + "host-static ");
         for (int i = 0; i < pbrCfg.size(); i++) {
             tabPbrN pbr = pbrCfg.get(i);
             l.addAll(pbr.usrString(cmds.tabulator + beg + "pbr "));
@@ -535,6 +539,20 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("host-watch")) {
             hostWatch = new ipHostWatch(lower);
+            return false;
+        }
+        if (a.equals("host-static")) {
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad ip address");
+                return false;
+            }
+            addrMac mac = new addrMac();
+            if (mac.fromString(cmd.word())) {
+                cmd.error("bad mac address");
+                return false;
+            }
+            lower.updateL2info(1, mac, adr);
             return false;
         }
         if (a.equals("host-reach")) {
@@ -940,6 +958,20 @@ public class ipFwdIface extends tabRouteIface {
                 hostWatch.stopWork();
             }
             hostWatch = null;
+            return false;
+        }
+        if (a.equals("host-static")) {
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad ip address");
+                return false;
+            }
+            addrMac mac = new addrMac();
+            if (mac.fromString(cmd.word())) {
+                cmd.error("bad mac address");
+                return false;
+            }
+            lower.updateL2info(2, mac, adr);
             return false;
         }
         if (a.equals("host-reach")) {

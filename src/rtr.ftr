@@ -69,6 +69,9 @@ qc pass: ethernet qinq encapsulation
 qc pass: ethernet dot1ad encapsulation
 qc pass: ethernet dot1ah encapsulation
 qc pass: ethernet isl encapsulation
+qc pass: proxy remote arp/nd
+qc pass: proxy local arp/nd
+qc pass: static arp/nd entry
 qc pass: etherip over ipv4
 qc pass: etherip over ipv6
 qc pass: etherip over loopback
@@ -244,8 +247,6 @@ qc pass: pppoe over ethernet encapsulation
 qc pass: pppoe over bridge encapsulation
 qc pass: ppp relay over pppoe
 qc pass: ppp over pptp
-qc pass: proxy remote arp/nd
-qc pass: proxy local arp/nd
 qc pass: raw encapsulation
 qc pass: process redundancy
 qc pass: sep
@@ -582,6 +583,7 @@ qc pass: interop: ssh
 qc pass: interop: tacacs
 qc pass: interop: gre tunnel
 qc pass: interop: ipip tunnel
+qc pass: interop: vxlan tunnel
 qc pass: bier in chain
 qc pass: bier in star
 qc pass: bier in dense chain

@@ -154,7 +154,7 @@ public class userTest {
             }
             pipeSide strm = secWebsock.doConnect(cfgAll.getClntPrx(), url, cmd.getRemaining());
             if (strm == null) {
-                cmd.error("unable to connect");
+                cmd.error("failed to connect");
                 return null;
             }
             secWebsock ws = new secWebsock(strm, new pipeLine(65536, false));

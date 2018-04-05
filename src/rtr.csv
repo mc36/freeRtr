@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.4.1-testing, done by cs@nop.;-;-
--;-;2018-04-01 07:50:52, took 07:45:32 on 1382 cases;-;-
+-;-;freeRouter v18.4.5-testing, done by cs@nop.;-;-
+-;-;2018-04-05 16:35:42, took 08:06:41 on 1384 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -72,6 +72,9 @@ conn-eth04.tst;0;ethernet qinq encapsulation;successfully;finished
 conn-eth05.tst;0;ethernet dot1ad encapsulation;successfully;finished
 conn-eth06.tst;0;ethernet dot1ah encapsulation;successfully;finished
 conn-eth07.tst;0;ethernet isl encapsulation;successfully;finished
+conn-eth08.tst;0;proxy remote arp/nd;successfully;finished
+conn-eth09.tst;0;proxy local arp/nd;successfully;finished
+conn-eth10.tst;0;static arp/nd entry;successfully;finished
 conn-etherip01.tst;0;etherip over ipv4;successfully;finished
 conn-etherip02.tst;0;etherip over ipv6;successfully;finished
 conn-etherip03.tst;0;etherip over loopback;successfully;finished
@@ -247,8 +250,6 @@ conn-pppoe01.tst;0;pppoe over ethernet encapsulation;successfully;finished
 conn-pppoe02.tst;0;pppoe over bridge encapsulation;successfully;finished
 conn-pppoe03.tst;0;ppp relay over pppoe;successfully;finished
 conn-pptp.tst;0;ppp over pptp;successfully;finished
-conn-proxy01.tst;0;proxy remote arp/nd;successfully;finished
-conn-proxy02.tst;0;proxy local arp/nd;successfully;finished
 conn-raw.tst;0;raw encapsulation;successfully;finished
 conn-redun.tst;0;process redundancy;successfully;finished
 conn-sep.tst;0;sep;successfully;finished
@@ -585,6 +586,7 @@ intop-ssh.tst;0;interop: ssh;successfully;finished
 intop-tacacs.tst;0;interop: tacacs;successfully;finished
 intop-tun01.tst;0;interop: gre tunnel;successfully;finished
 intop-tun02.tst;0;interop: ipip tunnel;successfully;finished
+intop-tun03.tst;0;interop: vxlan tunnel;successfully;finished
 mpls-bier01.tst;0;bier in chain;successfully;finished
 mpls-bier02.tst;0;bier in star;successfully;finished
 mpls-bier03.tst;0;bier in dense chain;successfully;finished

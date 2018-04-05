@@ -59,7 +59,7 @@ public class clntNrpe {
         text = new ArrayList<String>();
         pipeSide pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, server, packNrpe.portNum, "nrpe");
         if (pipe == null) {
-            text.add(check + " CRITICAL unable to connect to " + server);
+            text.add(check + " CRITICAL failed to connect to " + server);
             return true;
         }
         packNrpe pck = new packNrpe();

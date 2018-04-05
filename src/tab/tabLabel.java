@@ -91,7 +91,7 @@ public class tabLabel {
             ntry.working = true;
             return ntry;
         }
-        logger.warn("unable to allocate new label");
+        logger.warn("failed to allocate new label");
         return null;
     }
 
@@ -127,7 +127,7 @@ public class tabLabel {
             }
             return res;
         }
-        logger.warn("unable to allocate new label block");
+        logger.warn("failed to allocate new label block");
         return null;
     }
 

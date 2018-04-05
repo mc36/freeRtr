@@ -8,6 +8,7 @@ import addr.addrType;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import pack.packHolder;
@@ -270,11 +271,11 @@ public class ipIfc6 implements ipIfc, ifcUp {
         mpls.send2eth(pck);
     }
 
-    public void updateL2info(addrType l2info, addrIP nexthop) {
+    public void updateL2info(int mod, addrType l2info, addrIP nexthop) {
         if (neiCache == null) {
             return;
         }
-        neiCache.updateMACheader((addrMac) l2info, nexthop.toIPv6());
+        neiCache.updateMACheader(mod, (addrMac) l2info, nexthop.toIPv6());
     }
 
     public addrType getL2info(addrIP nexthop) {
@@ -289,6 +290,13 @@ public class ipIfc6 implements ipIfc, ifcUp {
             return true;
         }
         return neiCache.getMACaddr(seq, nexthop, (addrMac) mac);
+    }
+
+    public void getL2info(List<String> lst, String beg) {
+        if (neiCache == null) {
+            return;
+        }
+        neiCache.getMACaddr(lst, beg);
     }
 
     public String toString() {

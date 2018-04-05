@@ -331,7 +331,7 @@ public class sndScript implements Runnable {
                 }
                 rcd = per.makeCall(a, s);
                 if (rcd == null) {
-                    user.linePut("error unable-call");
+                    user.linePut("error failed-call");
                     continue;
                 }
                 fwd = per.getCall(rcd);

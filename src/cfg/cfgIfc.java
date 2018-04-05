@@ -3422,6 +3422,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunVxlan.vrf = tunVrf;
                 tunVxlan.srcIfc = tunSrc;
                 tunVxlan.inst = tunKey;
+                tunVxlan.prot = tunPri;
                 tunVxlan.sendingTOS = tunTOS;
                 tunVxlan.sendingTTL = tunTTL;
                 tunVxlan.setUpper(ethtyp);

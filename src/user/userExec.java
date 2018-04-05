@@ -892,8 +892,14 @@ public class userExec {
         hl.add("3 4,.      <name>                name of interface");
         hl.add("4 .          [num]               downtime in seconds");
         hl.add("2 3      ipv4                    ipv4 parameters");
+        hl.add("3 4        arp                   arp table");
+        hl.add("4 5          <name>              interface name");
+        hl.add("5 .            <addr>            peer address");
         getHelpClearIpX(hl);
         hl.add("2 3      ipv6                    ipv6 parameters");
+        hl.add("3 4        neighbor              neighbor table");
+        hl.add("4 5          <name>              interface name");
+        hl.add("5 .            <addr>            peer address");
         getHelpClearIpX(hl);
         hl.add("2 3      socket                  clear one socket");
         hl.add("3 4        <name>                vrf name");
