@@ -1473,7 +1473,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             pck.NSHmdv = new byte[0];
             pck.NSHsp = pbr.setSp;
             pck.NSHsi = pbr.setSi;
-            ipMpls.gotNshPack(pck);
+            ipMpls.gotNshPack(null, pck);
             return true;
         }
         if (pbr.setIfc != null) {

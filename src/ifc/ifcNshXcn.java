@@ -58,7 +58,7 @@ public class ifcNshXcn implements ifcUp {
         pck.NSHsp = sp;
         pck.NSHsi = si;
         ifcEther.createETHheader(pck, false);
-        ipMpls.gotNshPack(pck);
+        ipMpls.gotNshPack(null, pck);
     }
 
     /**

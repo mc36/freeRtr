@@ -199,7 +199,7 @@ public class ifcNshFwd implements ifcUp {
         if (debugger.ifcNshEvnt) {
             logger.debug("rx sp=" + pck.NSHsp + " si=" + pck.NSHsi + " prt=" + pck.IPprt + " ttl=" + pck.NSHttl + " meta=" + pck.NSHmdt + "," + pck.NSHmdv.length);
         }
-        ipMpls.gotNshPack(pck);
+        ipMpls.gotNshPack(null, pck);
     }
 
     /**

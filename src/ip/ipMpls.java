@@ -417,16 +417,17 @@ public class ipMpls implements ifcUp {
     /**
      * do one nsh packet
      *
+     * @param fwdE ethernet forwarder
      * @param pck packet to read
      */
-    public static void gotNshPack(packHolder pck) {
+    public static void gotNshPack(ifcEthTyp fwdE, packHolder pck) {
         if (debugger.ifcNshEvnt) {
             logger.debug("fwd sp=" + pck.NSHsp + " si=" + pck.NSHsi + " prt=" + pck.IPprt + " ttl=" + pck.NSHttl + " meta=" + pck.NSHmdt + "," + pck.NSHmdv.length);
         }
         tabNshNtry ntry = new tabNshNtry(pck.NSHsp, pck.NSHsi);
         ntry = tabNshNtry.services.find(ntry);
         if (ntry == null) {
-            logger.info("received invalid service " + pck.NSHsp + " " + pck.NSHsi);
+            logger.info("received invalid service " + pck.NSHsp + " " + pck.NSHsi + " on " + fwdE);
             return;
         }
         ntry.cntr.rx(pck);
@@ -493,7 +494,7 @@ public class ipMpls implements ifcUp {
                     ntry.cntr.drop(pck, counter.reasons.notInTab);
                     return;
                 }
-                gotNshPack(pck);
+                gotNshPack(fwdE, pck);
                 return;
             default:
                 ntry.cntr.drop(pck, counter.reasons.badProto);
@@ -515,7 +516,7 @@ public class ipMpls implements ifcUp {
     public static void gotMplsPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, boolean secure, packHolder pck) {
         for (;;) {
             if (parseMPLSheader(pck)) {
-                logger.info("received invalid header");
+                logger.info("received invalid header on " + fwdE);
                 return;
             }
             switch (pck.MPLSlabel) {
@@ -558,7 +559,7 @@ public class ipMpls implements ifcUp {
             }
             tabLabelNtry ntry = tabLabel.find(pck.MPLSlabel);
             if (ntry == null) {
-                logger.info("received invalid label " + pck.MPLSlabel);
+                logger.info("received invalid label " + pck.MPLSlabel + " on " + fwdE);
                 return;
             }
             ntry.cntr.rx(pck);
@@ -568,7 +569,7 @@ public class ipMpls implements ifcUp {
             }
             if (secure) {
                 if ((ntry.forwarder != fwd4) && (ntry.forwarder != fwd6)) {
-                    logger.info("received violating label " + pck.MPLSlabel);
+                    logger.info("received violating label " + pck.MPLSlabel + " on " + fwdE);
                     ntry.cntr.drop(pck, counter.reasons.denied);
                     return;
                 }
