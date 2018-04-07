@@ -32,9 +32,15 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
     public final String name;
 
     /**
+     * description of this dialpeer
+     */
+    public String description = null;
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
+        "dial-peer .*! no description",
         "dial-peer .*! codec alaw",
         "dial-peer .*! no vrf",
         "dial-peer .*! no source",
@@ -271,6 +277,26 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         histDat.add(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + " " + s);
         for (; histDat.size() > histMax;) {
             histDat.remove(0);
+        }
+    }
+
+    /**
+     * get direction
+     *
+     * @return direction
+     */
+    public String getDir() {
+        switch (direction) {
+            case 0:
+                return "none";
+            case 1:
+                return "in";
+            case 2:
+                return "out";
+            case 3:
+                return "both";
+            default:
+                return "unknown=" + direction;
         }
     }
 
@@ -568,6 +594,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("dial-peer " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         for (int i = 0; i < prmtSrc.size(); i++) {
             l.add(cmds.tabulator + "prematch-calling " + prmtSrc.get(i).name);
         }
@@ -638,24 +665,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
                 break;
         }
         l.add(cmds.tabulator + "protocol " + a);
-        switch (direction) {
-            case 0:
-                a = "none";
-                break;
-            case 1:
-                a = "in";
-                break;
-            case 2:
-                a = "out";
-                break;
-            case 3:
-                a = "both";
-                break;
-            default:
-                a = "unknown=" + direction;
-                break;
-        }
-        l.add(cmds.tabulator + "direction " + a);
+        l.add(cmds.tabulator + "direction " + getDir());
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if (!filter) {
@@ -666,6 +676,8 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
+        l.add("1 2  description               specify description");
+        l.add("2 2,.  <str>                   description");
         l.add("1 2    match-calling           match calling string");
         l.add("2 2,.    <str>                 regular expression");
         l.add("1 2    match-called            match called string");
@@ -733,6 +745,13 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         boolean negated = a.equals("no");
         if (negated) {
             a = cmd.word();
+        }
+        if (a.equals("description")) {
+            description = cmd.getRemaining();
+            if (negated) {
+                description = null;
+            }
+            return;
         }
         if (a.equals("protocol")) {
             a = cmd.word();

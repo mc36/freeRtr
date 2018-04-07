@@ -347,16 +347,18 @@ public class clntSip implements Runnable {
     /**
      * send subscribe
      *
-     * @param auth authentication request
+     * @param wau authentication request
+     * @param pau authentication request
      */
-    protected void sendSub(String auth) {
+    protected void sendSub(String wau, String pau) {
         if (conn == null) {
             return;
         }
         packSip sip = new packSip(conn);
         seq++;
         sip.makeReq("SUBSCRIBE", "sip:" + endpt + "@" + uniResLoc.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, subscribe / 250);
-        sip.addAuthor(auth, usr, pwd);
+        sip.addAuthor("", wau, usr, pwd);
+        sip.addAuthor("Proxy-", pau, usr, pwd);
         if (debugger.clntSipTraf) {
             sip.dump("tx");
         }
@@ -366,16 +368,18 @@ public class clntSip implements Runnable {
     /**
      * send options
      *
-     * @param auth authentication request
+     * @param wau authentication request
+     * @param pau authentication request
      */
-    protected void sendOpt(String auth) {
+    protected void sendOpt(String wau, String pau) {
         if (conn == null) {
             return;
         }
         packSip sip = new packSip(conn);
         seq++;
         sip.makeReq("OPTIONS", "sip:" + endpt + "@" + uniResLoc.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, 0);
-        sip.addAuthor(auth, usr, pwd);
+        sip.addAuthor("", wau, usr, pwd);
+        sip.addAuthor("Proxy-", pau, usr, pwd);
         if (debugger.clntSipTraf) {
             sip.dump("tx");
         }
@@ -385,16 +389,18 @@ public class clntSip implements Runnable {
     /**
      * send register
      *
-     * @param auth authentication request
+     * @param wau authentication request
+     * @param pau authentication request
      */
-    protected void sendReg(String auth) {
+    protected void sendReg(String wau, String pau) {
         if (conn == null) {
             return;
         }
         packSip sip = new packSip(conn);
         seq++;
         sip.makeReq("REGISTER", "sip:" + uniResLoc.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, register / 250);
-        sip.addAuthor(auth, usr, pwd);
+        sip.addAuthor("", wau, usr, pwd);
+        sip.addAuthor("Proxy-", pau, usr, pwd);
         if (debugger.clntSipTraf) {
             sip.dump("tx");
         }
@@ -769,10 +775,11 @@ public class clntSip implements Runnable {
             }
             if (a.startsWith("sip/")) {
                 a = cmd.word();
-                if (!a.equals("401")) {
+                if (!a.equals("401") && !a.equals("407")) {
                     continue;
                 }
-                String auth = sip.headerGet("WWW-Authenticate", 1);
+                String wau = sip.headerGet("WWW-Authenticate", 1);
+                String pau = sip.headerGet("Proxy-Authenticate", 1);
                 cmd = new cmds("sip", sip.headerGet("CSeq", 1));
                 cmd.word();
                 a = cmd.word().toLowerCase();
@@ -781,7 +788,7 @@ public class clntSip implements Runnable {
                     if ((tim - lastRetry) < 500) {
                         continue;
                     }
-                    sendReg(auth);
+                    sendReg(wau, pau);
                     lastRetry = tim;
                     continue;
                 }
@@ -789,7 +796,7 @@ public class clntSip implements Runnable {
                     if ((tim - lastRetry) < 500) {
                         continue;
                     }
-                    sendSub(auth);
+                    sendSub(wau, pau);
                     lastRetry = tim;
                     continue;
                 }
@@ -797,7 +804,7 @@ public class clntSip implements Runnable {
                     if ((tim - lastRetry) < 500) {
                         continue;
                     }
-                    sendOpt(auth);
+                    sendOpt(wau, pau);
                     lastRetry = tim;
                     continue;
                 }
@@ -891,7 +898,7 @@ class clntSipReg extends TimerTask {
 
     public void run() {
         try {
-            lower.sendReg(null);
+            lower.sendReg(null, null);
         } catch (Exception e) {
             logger.traceback(e);
         }
@@ -909,7 +916,7 @@ class clntSipSub extends TimerTask {
 
     public void run() {
         try {
-            lower.sendSub(null);
+            lower.sendSub(null, null);
         } catch (Exception e) {
             logger.traceback(e);
         }
@@ -927,7 +934,7 @@ class clntSipOpt extends TimerTask {
 
     public void run() {
         try {
-            lower.sendOpt(null);
+            lower.sendOpt(null, null);
         } catch (Exception e) {
             logger.traceback(e);
         }
@@ -949,7 +956,9 @@ class clntSipOut implements Comparator<clntSipOut> {
 
     public String callTrg;
 
-    public String callAuth;
+    public String callWauth;
+
+    public String callPauth;
 
     public String callCnt;
 
@@ -976,7 +985,8 @@ class clntSipOut implements Comparator<clntSipOut> {
 
     public boolean makeCall() {
         callSrc = packSip.updateTag(callSrc);
-        callAuth = null;
+        callWauth = null;
+        callPauth = null;
         callCnt = null;
         callRep = null;
         callRtp = null;
@@ -989,7 +999,8 @@ class clntSipOut implements Comparator<clntSipOut> {
             if (need2inv) {
                 packSip sip = new packSip(lower.conn);
                 sip.makeReq("INVITE", null, callSrc, callTrg, lower.getCont(), lower.getVia(), callId, callSeq, 0);
-                sip.addAuthor(callAuth, lower.usr, lower.pwd);
+                sip.addAuthor("", callWauth, lower.usr, lower.pwd);
+                sip.addAuthor("Proxy-", callPauth, lower.usr, lower.pwd);
                 sip.makeSdp(lower.srcFwd.addr, callPort, lower.getCodec());
                 if (debugger.clntSipTraf) {
                     sip.dump("tx");
@@ -1013,7 +1024,13 @@ class clntSipOut implements Comparator<clntSipOut> {
             }
             String a = cmd.word();
             if (a.equals("401")) {
-                callAuth = sip.headerGet("WWW-Authenticate", 1);
+                callWauth = sip.headerGet("WWW-Authenticate", 1);
+                need2inv = true;
+                callSeq++;
+                continue;
+            }
+            if (a.equals("407")) {
+                callPauth = sip.headerGet("Proxy-Authenticate", 1);
                 need2inv = true;
                 callSeq++;
                 continue;
@@ -1042,7 +1059,8 @@ class clntSipOut implements Comparator<clntSipOut> {
         callTrg = callAck.headerGet("To", 1);
         callCnt = uniResLoc.fromEmail(callAck.headerGet("Contact", 1));
         callAck.makeReq("ACK", null, callSrc, callTrg, lower.getCont(), lower.getVia(), callId, callSeq, 0);
-        callAck.addAuthor(callAuth, lower.usr, lower.pwd);
+        callAck.addAuthor("", callWauth, lower.usr, lower.pwd);
+        callAck.addAuthor("Proxy-", callPauth, lower.usr, lower.pwd);
         if (debugger.clntSipTraf) {
             callAck.dump("tx");
         }
@@ -1072,7 +1090,8 @@ class clntSipOut implements Comparator<clntSipOut> {
                 a = "CANCEL";
             }
             sip.makeReq(a, callCnt, callSrc, callTrg, lower.getCont(), lower.getVia(), callId, callSeq + 1, 0);
-            sip.addAuthor(callAuth, lower.usr, lower.pwd);
+            sip.addAuthor("", callWauth, lower.usr, lower.pwd);
+            sip.addAuthor("Proxy-", callPauth, lower.usr, lower.pwd);
             if (debugger.clntSipTraf) {
                 sip.dump("tx");
             }
@@ -1310,7 +1329,9 @@ class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
 
     public int callSeq;
 
-    public String callAuth;
+    public String callWauth;
+
+    public String callPauth;
 
     public List<String> callMsg;
 
@@ -1333,7 +1354,8 @@ class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
 
     public boolean doSend() {
         callSrc = packSip.updateTag(callSrc);
-        callAuth = null;
+        callWauth = null;
+        callPauth = null;
         callRep = null;
         boolean need2msg = true;
         for (int o = 0; o < lower.retry; o++) {
@@ -1345,7 +1367,8 @@ class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
                 sip.makeReq("MESSAGE", null, callSrc, callTrg, lower.getCont(), lower.getVia(), callId, callSeq, 0);
                 sip.header.add("Content-Type: text/plain");
                 sip.content.addAll(callMsg);
-                sip.addAuthor(callAuth, lower.usr, lower.pwd);
+                sip.addAuthor("", callWauth, lower.usr, lower.pwd);
+                sip.addAuthor("Proxy-", callPauth, lower.usr, lower.pwd);
                 if (debugger.clntSipTraf) {
                     sip.dump("tx");
                 }
@@ -1368,7 +1391,13 @@ class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
             }
             String a = cmd.word();
             if (a.equals("401")) {
-                callAuth = sip.headerGet("WWW-Authenticate", 1);
+                callWauth = sip.headerGet("WWW-Authenticate", 1);
+                need2msg = true;
+                callSeq++;
+                continue;
+            }
+            if (a.equals("407")) {
+                callPauth = sip.headerGet("Proxy-Authenticate", 1);
                 need2msg = true;
                 callSeq++;
                 continue;

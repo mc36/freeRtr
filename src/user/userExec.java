@@ -571,6 +571,7 @@ public class userExec {
         hl.add("2 3      prefix-list             prefix list statistics");
         hl.add("3 .        <name>                name of list");
         hl.add("2 3      dial-peer               current dial peer status");
+        hl.add("3 .        description           descriptions");
         hl.add("3 .        voice                 for calls");
         hl.add("3 .        message               for messages");
         hl.add("3 4        active                active calls");

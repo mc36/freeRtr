@@ -154,6 +154,18 @@ public class userShow {
         }
         if (a.equals("dial-peer")) {
             a = cmd.word();
+            if (a.equals("description")) {
+                userFormat l = new userFormat("|", "id|dir|description");
+                for (int i = 0; i < cfgAll.dials.size(); i++) {
+                    cfgDial ntry = cfgAll.dials.get(i);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    l.add(ntry.name + "|" + ntry.getDir() + "|" + ntry.description);
+                }
+                rdr.putStrTab(l);
+                return null;
+            }
             if (a.equals("history")) {
                 cfgDial ntry = cfgAll.dialFind(cmd.word(), false);
                 if (ntry == null) {
@@ -662,7 +674,7 @@ public class userShow {
                     return null;
                 }
                 int i = bits.str2num(cmd.word());
-                tabNshNtry ntry = new tabNshNtry(p,i);
+                tabNshNtry ntry = new tabNshNtry(p, i);
                 ntry = tabNshNtry.services.find(ntry);
                 if (ntry == null) {
                     cmd.error("no such service");

@@ -169,6 +169,25 @@ public class packSip {
         if (header.size() > 0) {
             command = header.remove(0);
         }
+        headerUncompact("a", "Accept-Contact");
+        headerUncompact("u", "Allow-Events");
+        headerUncompact("i", "Call-ID");
+        headerUncompact("m", "Contact");
+        headerUncompact("e", "Content-Encoding");
+        headerUncompact("l", "Content-Length");
+        headerUncompact("c", "Content-Type");
+        headerUncompact("o", "Event");
+        headerUncompact("f", "From");
+        headerUncompact("y", "Identity");
+        headerUncompact("r", "Refer-To");
+        headerUncompact("b", "Referred-By");
+        headerUncompact("j", "Reject-Contact");
+        headerUncompact("d", "Request-Disposition");
+        headerUncompact("x", "Session-Expires");
+        headerUncompact("s", "Subject");
+        headerUncompact("k", "Supported");
+        headerUncompact("t", "To");
+        headerUncompact("v", "Via");
         int i = bits.str2num(headerGet("Content-Length", 1));
         byte[] buf = new byte[i];
         pipe.moreGet(buf, 0, buf.length);
@@ -237,6 +256,22 @@ public class packSip {
     public void writeKeep() {
         byte[] buf = pipeSide.getEnding(pipeSide.modTyp.modeCRLF);
         pipe.morePut(buf, 0, buf.length);
+    }
+
+    private void headerUncompact(String src, String trg) {
+        for (int i = 0; i < header.size(); i++) {
+            String a = header.get(i);
+            String s = "";
+            int o = a.indexOf(":");
+            if (o >= 0) {
+                s = a.substring(o + 1, a.length());
+                a = a.substring(0, o);
+            }
+            if (!a.trim().toLowerCase().equals(src)) {
+                continue;
+            }
+            header.set(i, trg + ": " + s.trim());
+        }
     }
 
     /**
@@ -559,11 +594,12 @@ public class packSip {
     /**
      * add author line
      *
+     * @param pre prefix of reply
      * @param got got callenge, null if nothing
      * @param usr username
      * @param pwd password
      */
-    public void addAuthor(String got, String usr, String pwd) {
+    public void addAuthor(String pre, String got, String usr, String pwd) {
         if (got == null) {
             return;
         }
@@ -585,7 +621,7 @@ public class packSip {
         if (got == null) {
             return;
         }
-        header.add(got);
+        header.add(pre + got);
     }
 
 }
