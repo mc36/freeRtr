@@ -78,6 +78,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public String uuidValue = null;
 
     /**
+     * cpu pinning
+     */
+    public String cpuPinning = null;
+
+    /**
      * memory to give
      */
     public int imageMem = 512;
@@ -157,6 +162,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! disk4 null",
         "vdc definition .*! cdrom null",
         "vdc definition .*! bios null",
+        "vdc definition .*! pinning null",
         "vdc definition .*! uuid null",
         "vdc definition .*! mac null",
         "vdc definition .*! memory 512",
@@ -197,6 +203,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         n.description = description;
         n.respawn = respawn;
         n.uuidValue = uuidValue;
+        n.cpuPinning = cpuPinning;
         n.initial = initial;
         n.interval = interval;
         n.image1name = image1name;
@@ -265,6 +272,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("2 2,.  <name>            name of image");
         l.add("1 2  uuid                set uuid to use");
         l.add("2 .    <name>            uuid value");
+        l.add("1 2  pinning             set cinning mask");
+        l.add("2 .    <name>            cpu mask in hex");
         l.add("1 2  memory              memory of vdc");
         l.add("2 .    <num>             megabytes");
         l.add("1 2  cores               cpu of vdc");
@@ -295,6 +304,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             l.add(cmds.tabulator + "connect " + conns.get(i));
         }
         l.add(cmds.tabulator + "uuid " + uuidValue);
+        l.add(cmds.tabulator + "pinning " + cpuPinning);
         l.add(cmds.tabulator + "bios " + biosName);
         l.add(cmds.tabulator + "image " + image1name);
         l.add(cmds.tabulator + "disk2 " + image2name);
@@ -357,6 +367,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("uuid")) {
             uuidValue = cmd.word();
+            return;
+        }
+        if (a.equals("pinning")) {
+            cpuPinning = cmd.word();
             return;
         }
         if (a.equals("cdrom")) {
@@ -503,6 +517,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             uuidValue = null;
             return;
         }
+        if (a.equals("pinning")) {
+            cpuPinning = null;
+            return;
+        }
         if (a.equals("cdrom")) {
             cdromName = null;
             return;
@@ -613,6 +631,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 vl++;
                 mac.setAdd(mac, one);
             }
+        }
+        if (cpuPinning != null) {
+            cmd = "taskset " + cpuPinning + " " + cmd;
         }
         proc = pipeShell.exec(pl.getSide(), cmd, null, true, true);
         if (proc == null) {
