@@ -75,7 +75,7 @@ public class clntHttp {
         String realm = null;
         String nonce = null;
         String opaque = null;
-        String algo = null;
+        String algo = "MD5";
         String qop = null;
         for (;;) {
             if (req.length() < 1) {
@@ -135,12 +135,6 @@ public class clntHttp {
         if (nonce == null) {
             return null;
         }
-        if (opaque == null) {
-            return null;
-        }
-        if (algo == null) {
-            return null;
-        }
         algo = algo.trim().toLowerCase();
         cryHashGeneric h = null;
         if (algo.startsWith("md5")) {
@@ -187,7 +181,10 @@ public class clntHttp {
         }
         h.update(bits.toHex(a2).getBytes());
         String s = bits.toHex(h.finish());
-        s = "Authorization: Digest username=\"" + usr + "\",realm=\"" + realm + "\",nonce=\"" + nonce + "\",uri=\"" + url + "\",algorithm=" + h.getName() + ",response=\"" + s + "\",opaque=\"" + opaque + "\"";
+        s = "Authorization: Digest username=\"" + usr + "\",realm=\"" + realm + "\",nonce=\"" + nonce + "\",uri=\"" + url + "\",algorithm=" + h.getName() + ",response=\"" + s + "\"";
+        if (opaque != null) {
+            s += ",opaque=\"" + opaque + "\"";
+        }
         if (qop == null) {
             return s;
         }
