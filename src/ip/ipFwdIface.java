@@ -397,6 +397,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add("8 7,.              <name>           interface name");
         l.add("7 8              nexthop            set target address");
         l.add("8 7,.              <addr>           target address");
+        l.add("7 8              nsh                set target service");
+        l.add("8 9                <num>            service path");
+        l.add("9 7,.                <num>          service index");
     }
 
     /**

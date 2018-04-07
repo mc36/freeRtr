@@ -881,7 +881,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
                 pck.ETHtrg.fromString("0900:2b00:0005");
                 break;
         }
-        pck.ETHsrc = hwaddr.copyBytes();
+        pck.ETHsrc.setAddr(hwaddr);
         pck.putByte(0, rtrIsis.protDist); // protocol discriminator
         pck.putByte(1, rtrIsisNeigh.msgTyp2headSiz(typ)); // header length
         pck.putByte(2, 1); // version

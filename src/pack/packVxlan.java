@@ -43,36 +43,6 @@ public class packVxlan {
     public static final int flgOAM = 0x01;
 
     /**
-     * ipv4 packet
-     */
-    public static final int prtIp4 = 0x01;
-
-    /**
-     * ipv6 packet
-     */
-    public static final int prtIp6 = 0x02;
-
-    /**
-     * ethernet packet
-     */
-    public static final int prtEth = 0x03;
-
-    /**
-     * nsh packet
-     */
-    public static final int prtNsh = 0x04;
-
-    /**
-     * mpls packet
-     */
-    public static final int prtMpls = 0x05;
-
-    /**
-     * gbp packet
-     */
-    public static final int prtGbp = 0x06;
-
-    /**
      * instance id
      */
     public int instance;

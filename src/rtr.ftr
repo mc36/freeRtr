@@ -610,6 +610,7 @@ qc pass: xconnect evcs terminated on pwhes
 qc pass: xconnect terminated on pwhe subifs
 qc pass: xconnect terminated on pwhe bridged evcs
 qc pass: xconnect terminated on pwhe xconnect evcs
+qc pass: xconnect evcs terminated on vpdns
 qc pass: ldp over ethernet
 qc pass: ldp over ethernet vlan
 qc pass: ldp over ethernet bridge
@@ -632,6 +633,19 @@ qc pass: targeted ldp password
 qc pass: ingress label filtering with ldp
 qc pass: egress label filtering with ldp
 qc pass: vrf label filtering with ldp
+qc pass: nsh over ethernet
+qc pass: nsh over ethernet vlan
+qc pass: nsh over ethernet bridge
+qc pass: nsh over hdlc
+qc pass: nsh over ppp
+qc pass: nsh over framerelay
+qc pass: nsh over atmdxi
+qc pass: nsh over gre
+qc pass: nsh chain
+qc pass: nsh loop
+qc pass: nsh switch
+qc pass: nsh ip
+qc pass: nsh mix of ip and ethernet
 qc pass: ppp over mpls
 qc pass: hdlc over mpls
 qc pass: lapb over mpls

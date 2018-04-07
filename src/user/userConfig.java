@@ -112,6 +112,7 @@ import serv.servUpnpHub;
 import serv.servVoice;
 import tab.tabGen;
 import tab.tabNatCfgN;
+import tab.tabNshNtry;
 import tab.tabPbrN;
 import tab.tabRouteEntry;
 import util.bits;
@@ -380,6 +381,20 @@ public class userConfig {
         l.add("2  .    <num>                        number of peer");
         l.add("1  2  translation-rule               translation rule parameters");
         l.add("2  .    <num>                        number of peer");
+        l.add("1  2  nsh                            specify service chaining");
+        l.add("2  3    <num>                        service path");
+        l.add("3  4      <num>                      service index");
+        l.add("4  4,.      drop                     drop packets");
+        l.add("4  4,.      rawpack                  output as raw packet, witout nsh header");
+        l.add("4  4,.      keephdr                  keep original layer2 addresses");
+        l.add("4  5        interface                forward as nsh");
+        l.add("5  6          <name>                 target interface");
+        l.add("6  4,.          <addr>               target mac address");
+        l.add("4  5        route                    route normally");
+        l.add("5  4,.        <name>                 target vrf");
+        l.add("4  5        switch                   switch service");
+        l.add("5  6          <num>                  new service path");
+        l.add("6  4,.          <num>                new service index");
         l.add("1  2  client                         specify address of name server");
         l.add("2  3    proxy                        specify proxy profile");
         l.add("3  .      <name>                     name of profile");
@@ -783,6 +798,14 @@ public class userConfig {
                 return;
             }
             modeV = modes.config;
+            return;
+        }
+        if (a.equals("nsh")) {
+            int p = bits.str2num(cmd.word());
+            int i = bits.str2num(cmd.word());
+            tabNshNtry ntry = new tabNshNtry(p, i);
+            ntry.doCfgStr(cmd);
+            tabNshNtry.services.put(ntry);
             return;
         }
         if (a.equals("router")) {
@@ -1458,6 +1481,16 @@ public class userConfig {
             cfgTrnsltn ntry = cfgAll.trnsltnDel(cmd.word());
             if (ntry == null) {
                 cmd.error("invalid translation rule number");
+                return;
+            }
+            return;
+        }
+        if (a.equals("nsh")) {
+            int p = bits.str2num(cmd.word());
+            int i = bits.str2num(cmd.word());
+            tabNshNtry ntry = new tabNshNtry(p, i);
+            if (tabNshNtry.services.del(ntry) == null) {
+                cmd.error("invalid nsh number");
                 return;
             }
             return;
@@ -2214,6 +2247,9 @@ public class userConfig {
         l.add("9  8,.                <name>         interface name");
         l.add("8  9                nexthop          set target address");
         l.add("9  8,.                <addr>         target address");
+        l.add("8  9                nsh              set target service");
+        l.add("9  10                 <num>          service path");
+        l.add("10 8,.                  <num>        service index");
         l.add("2  3    nat                          configure network address translation");
         l.add("3  4,6    <vrf>                      name of routing table");
         l.add("4  5        timeout                  specify timeout");

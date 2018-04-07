@@ -1014,8 +1014,8 @@ class ifcBundlePeer implements ifcUp, Runnable {
             pck.msbPutD(3, localId);
             pck.putSkip(7);
             pck.merge2beg();
-            pck.ETHsrc = addrMac.getBroadcast();
-            pck.ETHtrg = addrMac.getBroadcast();
+            pck.ETHsrc.setAddr(addrMac.getBroadcast());
+            pck.ETHtrg.setAddr(addrMac.getBroadcast());
             ifHnd.sendPack(pck);
             boolean old = remoteAlive;
             if ((bits.getTime() - lastRx) < 4000) {
@@ -1042,8 +1042,8 @@ class ifcBundlePeer implements ifcUp, Runnable {
         pck.putByte(2, packReplicator.typData);
         pck.putSkip(3);
         pck.merge2beg();
-        pck.ETHsrc = addrMac.getBroadcast();
-        pck.ETHtrg = addrMac.getBroadcast();
+        pck.ETHsrc.setAddr(addrMac.getBroadcast());
+        pck.ETHtrg.setAddr(addrMac.getBroadcast());
         ifHnd.sendPack(pck);
     }
 

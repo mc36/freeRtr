@@ -231,7 +231,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
         packHolder pck = new packHolder(true, true);
         pck.clear();
         pck.putStart();
-        pck.ETHtrg = addrMac.getBroadcast();
+        pck.ETHtrg.setAddr(addrMac.getBroadcast());
         pck.ETHsrc.setAddr(hwAddr);
         tlv.putStr(pck, packPppOE.typeSrvNam, serviceCur);
         packPppOE.updateHeader(pck, packPppOE.codePadI, 0);

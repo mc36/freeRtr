@@ -351,9 +351,9 @@ public class ipxFwd implements Runnable {
         }
         updateIPXheader(pck, pck.IPttl + 1);
         if (prf.rouTyp == tabRouteEntry.routeType.conn) {
-            pck.ETHtrg = dst.getMac();
+            pck.ETHtrg.setAddr(dst.getMac());
         } else {
-            pck.ETHtrg = prf.nextHop.getMac();
+            pck.ETHtrg.setAddr(prf.nextHop.getMac());
         }
         pck.ETHsrc.setAddr(txIfc.hwaddr);
         txIfc.sendPack(pck);

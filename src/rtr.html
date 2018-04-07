@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v18.4.5-testing, done by cs@nop.<br/>
-tested: 2018-04-05 16:35:42, took 08:06:41 on 1384 cases<br/>
+release: freeRouter v18.4.6-testing, done by cs@nop.<br/>
+tested: 2018-04-06 22:36:12, took 07:51:26 on 1398 cases<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -617,6 +617,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-evc08.tst">mpls-evc08.tst</a></td><td>0</td><td>xconnect terminated on pwhe subifs</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-evc09.tst">mpls-evc09.tst</a></td><td>0</td><td>xconnect terminated on pwhe bridged evcs</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-evc10.tst">mpls-evc10.tst</a></td><td>0</td><td>xconnect terminated on pwhe xconnect evcs</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-evc11.tst">mpls-evc11.tst</a></td><td>0</td><td>xconnect evcs terminated on vpdns</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp01.tst">mpls-ldp01.tst</a></td><td>0</td><td>ldp over ethernet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp02.tst">mpls-ldp02.tst</a></td><td>0</td><td>ldp over ethernet vlan</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp03.tst">mpls-ldp03.tst</a></td><td>0</td><td>ldp over ethernet bridge</td><td>successfully</td><td>finished</td></tr>
@@ -639,6 +640,19 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp20.tst">mpls-ldp20.tst</a></td><td>0</td><td>ingress label filtering with ldp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp21.tst">mpls-ldp21.tst</a></td><td>0</td><td>egress label filtering with ldp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp22.tst">mpls-ldp22.tst</a></td><td>0</td><td>vrf label filtering with ldp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh01.tst">mpls-nsh01.tst</a></td><td>0</td><td>nsh over ethernet</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh02.tst">mpls-nsh02.tst</a></td><td>0</td><td>nsh over ethernet vlan</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh03.tst">mpls-nsh03.tst</a></td><td>0</td><td>nsh over ethernet bridge</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh04.tst">mpls-nsh04.tst</a></td><td>0</td><td>nsh over hdlc</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh05.tst">mpls-nsh05.tst</a></td><td>0</td><td>nsh over ppp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh06.tst">mpls-nsh06.tst</a></td><td>0</td><td>nsh over framerelay</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh07.tst">mpls-nsh07.tst</a></td><td>0</td><td>nsh over atmdxi</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh08.tst">mpls-nsh08.tst</a></td><td>0</td><td>nsh over gre</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh09.tst">mpls-nsh09.tst</a></td><td>0</td><td>nsh chain</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh10.tst">mpls-nsh10.tst</a></td><td>0</td><td>nsh loop</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh11.tst">mpls-nsh11.tst</a></td><td>0</td><td>nsh switch</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh12.tst">mpls-nsh12.tst</a></td><td>0</td><td>nsh ip</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh13.tst">mpls-nsh13.tst</a></td><td>0</td><td>nsh mix of ip and ethernet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwe01.tst">mpls-pwe01.tst</a></td><td>0</td><td>ppp over mpls</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwe02.tst">mpls-pwe02.tst</a></td><td>0</td><td>hdlc over mpls</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwe03.tst">mpls-pwe03.tst</a></td><td>0</td><td>lapb over mpls</td><td>successfully</td><td>finished</td></tr>

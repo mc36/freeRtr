@@ -4,6 +4,8 @@ import addr.addrIP;
 import addr.addrPrefix;
 import clnt.clntMplsTeP2p;
 import clnt.clntNetflow;
+import ifc.ifcEthTyp;
+import ifc.ifcNshFwd;
 import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
@@ -1296,11 +1298,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     /**
      * mpls signals that it got a packet
      *
-     * @param mpls mpls handler
+     * @param fwd4 ipv4 forwarder
+     * @param fwd6 ipv6 forwarder
+     * @param fwdE ethernet forwarder
      * @param lab local label
      * @param pck packet to process
      */
-    protected void mplsRxPack(ipMpls mpls, tabLabelNtry lab, packHolder pck) {
+    protected void mplsRxPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, tabLabelNtry lab, packHolder pck) {
         if (debugger.ipFwdTraf) {
             logger.debug("rx label=" + lab.getValue());
         }
@@ -1367,7 +1371,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 doMpls(ntry.ifc, ntry.hop, null, p);
             }
             if (nedLoc) {
-                if (mpls.gotBierPck(pck)) {
+                if (ipMpls.gotBierPck(fwd4, fwd6, fwdE, pck)) {
                     logger.info("received invalid bier protocol on label " + lab.getValue());
                 }
             }
@@ -1457,6 +1461,20 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         tabPbrN pbr = cfg.find(pck);
         if (pbr == null) {
             return false;
+        }
+        if ((pbr.setSp > 0) && (pbr.setSi > 0)) {
+            if (ipVersion == ipCor4.protocolVersion) {
+                pck.IPprt = ifcNshFwd.protIp4;
+            } else {
+                pck.IPprt = ifcNshFwd.protIp6;
+            }
+            pck.NSHttl = 63;
+            pck.NSHmdt = 2;
+            pck.NSHmdv = new byte[0];
+            pck.NSHsp = pbr.setSp;
+            pck.NSHsi = pbr.setSi;
+            ipMpls.gotNshPack(pck);
+            return true;
         }
         if (pbr.setIfc != null) {
             pck.INTiface = -2;

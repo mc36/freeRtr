@@ -209,8 +209,8 @@ public class ifcMacSec {
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.merge2beg();
-        pck.ETHsrc = myaddr.copyBytes();
-        pck.ETHtrg = addrMac.getBroadcast();
+        pck.ETHsrc.setAddr(myaddr);
+        pck.ETHtrg.setAddr(addrMac.getBroadcast());
         reply = false;
         return pck;
     }

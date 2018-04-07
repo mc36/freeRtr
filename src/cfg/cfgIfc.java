@@ -64,6 +64,8 @@ import ifc.ifcRaw;
 import ifc.ifcSep;
 import ifc.ifcSyncE;
 import ifc.ifcLacp;
+import ifc.ifcNshFwd;
+import ifc.ifcNshXcn;
 import ifc.ifcPtp;
 import ifc.ifcThread;
 import ifc.ifcUdld;
@@ -850,6 +852,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntSlaac slaac;
 
     /**
+     * nsh packet processing
+     */
+    public ifcNshFwd nshPack;
+
+    /**
+     * nsh xconnect processing
+     */
+    public ifcNshXcn nshXcon;
+
+    /**
      * mpls packet processing
      */
     public ipMpls mplsPack;
@@ -1101,7 +1113,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no template",
         "interface .*! encapsulation dot1q",
         "interface .*! no bandwidth",
-        "interface .*! no transproxy",
         "interface .*! no lldp enable",
         "interface .*! no cdp enable",
         "interface .*! no cdp odr4",
@@ -1115,9 +1126,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no macsec",
         "interface .*! no monitor-session",
         "interface .*! no monitor-buffer",
-        "interface .*! no p2poe client",
-        "interface .*! no p2poe server",
-        "interface .*! no p2poe relay",
         "interface .*! no eapol client",
         "interface .*! no eapol server",
         "interface .*! no bridge-group",
@@ -1129,9 +1137,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! bundle-priority 0",
         "interface .*! no service-policy-in",
         "interface .*! no service-policy-out",
+        // forwarding
+        "interface .*! no transproxy",
+        "interface .*! no p2poe client",
+        "interface .*! no p2poe server",
+        "interface .*! no p2poe relay",
         "interface .*! no vrf forwarding",
         "interface .*! no nhrp ipv4",
         "interface .*! no nhrp ipv6",
+        "interface .*! no ipx network",
+        "interface .*! no nsh enable",
+        "interface .*! no nsh xconnect",
+        // mpls
         "interface .*! no mpls enable",
         "interface .*! no mpls label-security",
         "interface .*! no mpls ldp4",
@@ -1142,7 +1159,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no mpls label6out",
         "interface .*! no mpls rsvp4",
         "interface .*! no mpls rsvp6",
-        "interface .*! no ipx network",
         // ip
         "interface .*! no ipv[4|6] address",
         "interface .*! no ipv[4|6] enable",
@@ -3789,6 +3805,52 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * setup interface nsh packet
+     */
+    public synchronized void setup2nshFwd() {
+        clear2nshFwd();
+        nshPack = new ifcNshFwd();
+        ethtyp.addET(ifcNshFwd.type, "nsh", nshPack);
+        ethtyp.updateET(ifcNshFwd.type, nshPack);
+        ethtyp.nshFwd = nshPack;
+    }
+
+    /**
+     * clear interface nsh packet
+     */
+    public synchronized void clear2nshFwd() {
+        nshPack = null;
+        ethtyp.nshFwd = null;
+        ethtyp.delET(ifcNshFwd.type);
+    }
+
+    /**
+     * setup interface nsh packet
+     *
+     * @param p service path
+     * @param i service index
+     */
+    public synchronized void setup2nshXcn(int p, int i) {
+        nshXcon = new ifcNshXcn();
+        nshXcon.sp = p;
+        nshXcon.si = i;
+        ethtyp.addET(-1, "nshx", nshXcon);
+        ethtyp.updateET(-1, nshXcon);
+        nshXcon.setPromiscous(true);
+    }
+
+    /**
+     * clear interface nsh packet
+     */
+    public synchronized void clear2nshXcn() {
+        if (nshXcon == null) {
+            return;
+        }
+        ethtyp.delET(-1);
+        nshXcon = null;
+    }
+
+    /**
      * setup interface ldp processing
      *
      * @param ver ip version
@@ -4404,6 +4466,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(cmds.tabulator + "no ipx network");
             }
         }
+        cmds.cfgLine(l, nshPack == null, cmds.tabulator, "nsh enable", "");
+        cmds.cfgLine(l, nshXcon == null, cmds.tabulator, "nsh xconnect", ifcNshXcn.getCfg(nshXcon));
         cmds.cfgLine(l, mplsPack == null, cmds.tabulator, "mpls enable", "");
         if (mplsPack != null) {
             cmds.cfgLine(l, !mplsPack.security, cmds.tabulator, "mpls label-security", "");
@@ -4755,6 +4819,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 3     eigrp6                      enhanced interior gateway routing protocol for ipv6");
         l.add("3 4       <num>                     process id");
         rtrEigrpIface.routerGetHelp(l);
+        l.add("1 2   nsh                           network service header config commands");
+        l.add("2 .     enable                      enable/disable packet processing");
+        l.add("2 3     xconnect                    enable/disable packet forwarding");
+        l.add("3 4       <num>                     service path");
+        l.add("4 .         <num>                   service index");
         l.add("1 2   mpls                          multiprotocol label switching config commands");
         l.add("2 .     enable                      enable/disable packet processing");
         l.add("2 .     label-security              enable/disable security checks");
@@ -5373,6 +5442,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             doCfgMpls(cmd);
             return;
         }
+        if (a.equals("nsh")) {
+            doCfgNsh(cmd);
+            return;
+        }
         if (!a.equals("no")) {
             cmd.badCmd();
             return;
@@ -5680,6 +5753,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("mpls")) {
             doCfgNoMpls(cmd);
+            return;
+        }
+        if (a.equals("nsh")) {
+            doCfgNoNsh(cmd);
             return;
         }
         cmd.badCmd();
@@ -6675,6 +6752,34 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("rsvp6")) {
             clear2rsvp(6);
+            return;
+        }
+        cmd.badCmd();
+    }
+
+    private void doCfgNsh(cmds cmd) {
+        String s = cmd.word();
+        if (s.equals("enable")) {
+            setup2nshFwd();
+            return;
+        }
+        if (s.equals("xconnect")) {
+            int p = bits.str2num(cmd.word());
+            int i = bits.str2num(cmd.word());
+            setup2nshXcn(p, i);
+            return;
+        }
+        cmd.badCmd();
+    }
+
+    private void doCfgNoNsh(cmds cmd) {
+        String s = cmd.word();
+        if (s.equals("enable")) {
+            clear2nshFwd();
+            return;
+        }
+        if (s.equals("xconnect")) {
+            clear2nshXcn();
             return;
         }
         cmd.badCmd();

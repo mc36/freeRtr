@@ -42,6 +42,16 @@ public class tabPbrN extends tabListingEntry<addrIP> {
     public addrIP setHop;
 
     /**
+     * target service path
+     */
+    public int setSp;
+
+    /**
+     * target service index
+     */
+    public int setSi;
+
+    /**
      * convert string to address
      *
      * @param p protocol version
@@ -94,6 +104,11 @@ public class tabPbrN extends tabListingEntry<addrIP> {
                 setHop = adr;
                 continue;
             }
+            if (s.equals("nsh")) {
+                setSp = bits.str2num(cmd.word());
+                setSi = bits.str2num(cmd.word());
+                continue;
+            }
             return true;
         }
         return false;
@@ -107,6 +122,9 @@ public class tabPbrN extends tabListingEntry<addrIP> {
         }
         if (setHop != null) {
             s += " nexthop " + setHop;
+        }
+        if ((setSp > 0) && (setSi > 0)) {
+            s += " nsh " + setSp + " " + setSi;
         }
         l.add(beg + s);
         return l;

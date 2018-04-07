@@ -66,6 +66,11 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public ifcMacSec macSec;
 
     /**
+     * service chaining
+     */
+    public ifcNshFwd nshFwd;
+
+    /**
      * monitor session target
      */
     public ifcEthTyp monSes = null;
@@ -822,7 +827,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         try {
             RandomAccessFile f = new RandomAccessFile(new File(s), "rw");
             f.setLength(0);
-            f.write(packHolder.getPcapHeader(104));
+            f.write(packHolder.getPcapHeader(1));
             logFile = f;
         } catch (Exception e) {
         }

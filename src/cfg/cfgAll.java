@@ -76,6 +76,7 @@ import serv.servUpnpFwd;
 import serv.servUpnpHub;
 import serv.servVoice;
 import tab.tabGen;
+import tab.tabNshNtry;
 import tab.tabRouteEntry;
 import user.userFilter;
 import user.userFormat;
@@ -2817,6 +2818,7 @@ public class cfgAll {
         }
         servGenList.listGetRun(l, xconnects, filter);
         servGenList.listGetRun(l, iconnects, filter);
+        servGenList.listGetRun(l, tabNshNtry.services, filter);
         servGenList.listGetRun(l, trnsltns, filter);
         servGenList.listGetRun(l, dials, filter);
         servGenList.listGetRun(l, aliases, filter);

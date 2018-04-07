@@ -126,7 +126,7 @@ public class ifcP2pOEserv implements ifcUp {
         pck.clear();
         pck.putStart();
         pck.ETHsrc.setAddr(hwaddr);
-        pck.ETHtrg = ntry.mac.copyBytes();
+        pck.ETHtrg.setAddr(ntry.mac);
         if (host != null) {
             tlv.putBytes(pck, packPppOE.typeHstUnq, host);
         }

@@ -20,7 +20,7 @@ public class tabLabel {
     /**
      * label table
      */
-    public static tabGen<tabLabelNtry> labels = new tabGen<tabLabelNtry>();
+    public final static tabGen<tabLabelNtry> labels = new tabGen<tabLabelNtry>();
 
     private tabLabel() {
     }
@@ -51,6 +51,9 @@ public class tabLabel {
         userFormat lst = new userFormat("|", "interface|packet|secure|ldp4|ldp6|rsvp4|rsvp6");
         for (int i = 0; i < cfgAll.ifaces.size(); i++) {
             cfgIfc ntry = cfgAll.ifaces.get(i);
+            if (ntry == null) {
+                continue;
+            }
             boolean sec = false;
             if (ntry.mplsPack != null) {
                 sec = ntry.mplsPack.security;

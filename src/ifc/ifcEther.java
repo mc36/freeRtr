@@ -34,16 +34,24 @@ public class ifcEther implements ifcUp, ifcDn {
      *
      * @param pck packet to parse
      * @param typ set true to process ethertype
+     * @return false on success, true on error
      */
-    public static void parseETHheader(packHolder pck, boolean typ) {
+    public static boolean parseETHheader(packHolder pck, boolean typ) {
+        if (pck.dataSize() < addrMac.sizeX2) {
+            return true;
+        }
         pck.getAddr(pck.ETHtrg, 0);
         pck.getAddr(pck.ETHsrc, addrMac.size);
         pck.getSkip(addrMac.sizeX2);
         if (!typ) {
-            return;
+            return false;
+        }
+        if (pck.dataSize() < 2) {
+            return true;
         }
         pck.ETHtype = pck.msbGetW(0);
         pck.getSkip(2);
+        return false;
     }
 
     /**
@@ -270,8 +278,8 @@ class ifcEtherWorker implements ifcUp {
         cntr.rx(pck);
         if (encDec) {
             if (notEther) {
-                pck.ETHsrc = addrMac.getBroadcast();
-                pck.ETHtrg = addrMac.getBroadcast();
+                pck.ETHsrc.setAddr(addrMac.getBroadcast());
+                pck.ETHtrg.setAddr(addrMac.getBroadcast());
             }
             ifcEther.createETHheader(pck, false);
         } else {

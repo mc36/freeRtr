@@ -4,6 +4,7 @@ import addr.addrIP;
 import ifc.ifcDn;
 import ifc.ifcEthTyp;
 import ifc.ifcEther;
+import ifc.ifcNshFwd;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import java.math.BigInteger;
@@ -12,6 +13,7 @@ import pack.packHolder;
 import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelNtry;
+import tab.tabNshNtry;
 import util.counter;
 import util.debugger;
 import util.logger;
@@ -397,42 +399,6 @@ public class ipMpls implements ifcUp {
     public void closeUp() {
     }
 
-    /**
-     * do one bier packet
-     *
-     * @param pck packet to read
-     * @return false on success, true on error
-     */
-    protected boolean gotBierPck(packHolder pck) {
-        switch (pck.IPprt) {
-            case ipMpls.bierLabD:
-            case ipMpls.bierLabU:
-                recvPack(pck);
-                return false;
-            case ipMpls.bierIp4:
-                if (fwd4 == null) {
-                    return true;
-                }
-                fwd4.mplsRxPack(this, fwd4.commonLabel, pck);
-                return false;
-            case ipMpls.bierIp6:
-                if (fwd6 == null) {
-                    return true;
-                }
-                fwd6.mplsRxPack(this, fwd6.commonLabel, pck);
-                return false;
-            case ipMpls.bierEth:
-                if (fwdE == null) {
-                    return true;
-                }
-                ifcEther.parseETHheader(pck, false);
-                fwdE.recvPack(pck);
-                return false;
-            default:
-                return true;
-        }
-    }
-
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         int ethTyp = pck.msbGetW(0); // ethertype
@@ -445,10 +411,111 @@ public class ipMpls implements ifcUp {
                 return;
         }
         pck.getSkip(2);
+        gotMplsPack(fwd4, fwd6, fwdE, security, pck);
+    }
+
+    /**
+     * do one nsh packet
+     *
+     * @param pck packet to read
+     */
+    public static void gotNshPack(packHolder pck) {
+        if (debugger.ifcNshEvnt) {
+            logger.debug("fwd sp=" + pck.NSHsp + " si=" + pck.NSHsi + " prt=" + pck.IPprt + " ttl=" + pck.NSHttl + " meta=" + pck.NSHmdt + "," + pck.NSHmdv.length);
+        }
+        tabNshNtry ntry = new tabNshNtry(pck.NSHsp, pck.NSHsi);
+        ntry = tabNshNtry.services.find(ntry);
+        if (ntry == null) {
+            logger.info("received invalid service " + pck.NSHsp + " " + pck.NSHsi);
+            return;
+        }
+        ntry.cntr.rx(pck);
+        pck.NSHttl--;
+        if (pck.NSHttl < 1) {
+            ntry.cntr.drop(pck, counter.reasons.ttlExceed);
+            return;
+        }
+        pck.NSHsp = ntry.trgSp;
+        pck.NSHsi = ntry.trgSi;
+        if (ntry.iface != null) {
+            ifcNshFwd fwd = ntry.iface.nshFwd;
+            if (fwd == null) {
+                ntry.cntr.drop(pck, counter.reasons.notUp);
+                return;
+            }
+            if (!ntry.rawPack) {
+                fwd.doTxNsh(pck, ntry.target);
+                return;
+            }
+            if (ifcNshFwd.convert2ethtyp(pck) < 0) {
+                ntry.cntr.drop(pck, counter.reasons.badProto);
+                return;
+            }
+            if (ntry.keepHdr) {
+                fwd.doTxRaw(pck, null);
+            } else {
+                fwd.doTxRaw(pck, ntry.target);
+            }
+            return;
+        }
+        if ((ntry.route4 == null) || (ntry.route6 == null)) {
+            ntry.cntr.drop(pck, counter.reasons.denied);
+            return;
+        }
+        int i = ifcNshFwd.convert2ethtyp(pck);
+        if (i < 0) {
+            ntry.cntr.drop(pck, counter.reasons.badProto);
+            return;
+        }
+        pck.getSkip(2);
+        ipFwd fwd = null;
+        switch (i) {
+            case ipIfc4.type:
+                fwd = ntry.route4;
+                break;
+            case ipIfc6.type:
+                fwd = ntry.route6;
+                break;
+            case ipMpls.typeU:
+                gotMplsPack(ntry.route4, ntry.route6, null, false, pck);
+                return;
+            case ifcNshFwd.type:
+                if (ifcNshFwd.parseNSHheader(pck)) {
+                    ntry.cntr.drop(pck, counter.reasons.badHdr);
+                    return;
+                }
+                if (debugger.ifcNshEvnt) {
+                    logger.debug("rx sp=" + pck.NSHsp + " si=" + pck.NSHsi + " prt=" + pck.IPprt + " ttl=" + pck.NSHttl + " meta=" + pck.NSHmdt + "," + pck.NSHmdv.length);
+                }
+                ntry = new tabNshNtry(pck.NSHsp, pck.NSHsi);
+                ntry = tabNshNtry.services.find(ntry);
+                if (ntry == null) {
+                    ntry.cntr.drop(pck, counter.reasons.notInTab);
+                    return;
+                }
+                gotNshPack(pck);
+                return;
+            default:
+                ntry.cntr.drop(pck, counter.reasons.badProto);
+                return;
+        }
+        beginMPLSfields(pck, false);
+        fwd.mplsRxPack(ntry.route4, ntry.route6, null, fwd.commonLabel, pck);
+    }
+
+    /**
+     * do one mpls packet
+     *
+     * @param pck packet to read
+     * @param fwd4 ipv4 forwarder
+     * @param fwd6 ipv6 forwarder
+     * @param fwdE ethernet forwarder
+     * @param secure secure configuration
+     */
+    public static void gotMplsPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, boolean secure, packHolder pck) {
         for (;;) {
             if (parseMPLSheader(pck)) {
-                cntr.drop(pck, counter.reasons.badLen);
-                logger.info("received invalid header on " + lower);
+                logger.info("received invalid header");
                 return;
             }
             switch (pck.MPLSlabel) {
@@ -458,24 +525,21 @@ public class ipMpls implements ifcUp {
                         continue;
                     }
                     if (fwd4 == null) {
-                        cntr.drop(pck, counter.reasons.noIface);
                         return;
                     }
-                    fwd4.mplsRxPack(this, fwd4.commonLabel, pck);
+                    fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwd4.commonLabel, pck);
                     return;
                 case labelExp6:
                     if (!pck.MPLSbottom) {
                         continue;
                     }
                     if (fwd6 == null) {
-                        cntr.drop(pck, counter.reasons.noIface);
                         return;
                     }
-                    fwd6.mplsRxPack(this, fwd6.commonLabel, pck);
+                    fwd6.mplsRxPack(fwd4, fwd6, fwdE, fwd6.commonLabel, pck);
                     return;
                 case labelEntropy:
                     if (parseMPLSheader(pck)) {
-                        cntr.drop(pck, counter.reasons.badLen);
                         return;
                     }
                     pck.MPLSrnd = pck.MPLSlabel;
@@ -483,10 +547,9 @@ public class ipMpls implements ifcUp {
                         continue;
                     }
                     if (fwd4 == null) {
-                        cntr.drop(pck, counter.reasons.noIface);
                         return;
                     }
-                    fwd4.mplsRxPack(this, fwd4.commonLabel, pck);
+                    fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwd4.commonLabel, pck);
                     return;
                 case labelAlert:
                     continue;
@@ -495,30 +558,68 @@ public class ipMpls implements ifcUp {
             }
             tabLabelNtry ntry = tabLabel.find(pck.MPLSlabel);
             if (ntry == null) {
-                logger.info("received invalid label (" + pck.MPLSlabel + ") on " + lower);
-                cntr.drop(pck, counter.reasons.notInTab);
+                logger.info("received invalid label " + pck.MPLSlabel);
                 return;
             }
             ntry.cntr.rx(pck);
             if (ntry.forwarder == null) {
-                cntr.drop(pck, counter.reasons.noRoute);
+                ntry.cntr.drop(pck, counter.reasons.noRoute);
                 return;
             }
-            if (security) {
+            if (secure) {
                 if ((ntry.forwarder != fwd4) && (ntry.forwarder != fwd6)) {
-                    logger.info("received violating label (" + pck.MPLSlabel + ") on " + lower);
-                    cntr.drop(pck, counter.reasons.denied);
+                    logger.info("received violating label " + pck.MPLSlabel);
+                    ntry.cntr.drop(pck, counter.reasons.denied);
                     return;
                 }
             }
             if (ntry.nextHop != null) {
-                ntry.forwarder.mplsRxPack(this, ntry, pck);
+                ntry.forwarder.mplsRxPack(fwd4, fwd6, fwdE, ntry, pck);
                 return;
             }
             if (pck.MPLSbottom) {
-                ntry.forwarder.mplsRxPack(this, ntry, pck);
+                ntry.forwarder.mplsRxPack(fwd4, fwd6, fwdE, ntry, pck);
                 return;
             }
+        }
+    }
+
+    /**
+     * do one bier packet
+     *
+     * @param pck packet to read
+     * @param fwd4 ipv4 forwarder
+     * @param fwd6 ipv6 forwarder
+     * @param fwdE ethernet forwarder
+     * @return false on success, true on error
+     */
+    public static boolean gotBierPck(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, packHolder pck) {
+        switch (pck.IPprt) {
+            case bierLabD:
+            case bierLabU:
+                gotMplsPack(fwd4, fwd6, fwdE, false, pck);
+                return false;
+            case bierIp4:
+                if (fwd4 == null) {
+                    return true;
+                }
+                fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwd4.commonLabel, pck);
+                return false;
+            case bierIp6:
+                if (fwd6 == null) {
+                    return true;
+                }
+                fwd6.mplsRxPack(fwd4, fwd6, fwdE, fwd6.commonLabel, pck);
+                return false;
+            case bierEth:
+                if (fwdE == null) {
+                    return true;
+                }
+                ifcEther.parseETHheader(pck, false);
+                fwdE.recvPack(pck);
+                return false;
+            default:
+                return true;
         }
     }
 

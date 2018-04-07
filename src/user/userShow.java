@@ -58,6 +58,7 @@ import tab.tabIntMatcher;
 import tab.tabLabel;
 import tab.tabLabelNtry;
 import tab.tabListing;
+import tab.tabNshNtry;
 import tab.tabPrfxlstN;
 import tab.tabQos;
 import tab.tabRoute;
@@ -650,6 +651,31 @@ public class userShow {
                 return null;
             }
             doShowHistory(a, ifc.ethtyp.getHistory());
+            return null;
+        }
+        if (a.equals("nsh")) {
+            a = cmd.word();
+            if (a.equals("forwarding")) {
+                int p = bits.str2num(cmd.word());
+                if (p < 1) {
+                    rdr.putStrTab(tabNshNtry.getShFor());
+                    return null;
+                }
+                int i = bits.str2num(cmd.word());
+                tabNshNtry ntry = new tabNshNtry(p,i);
+                ntry = tabNshNtry.services.find(ntry);
+                if (ntry == null) {
+                    cmd.error("no such service");
+                    return null;
+                }
+                rdr.putStrTab(ntry.getShow());
+                return null;
+            }
+            if (a.equals("interfaces")) {
+                rdr.putStrTab(tabNshNtry.getShInt());
+                return null;
+            }
+            cmd.badCmd();
             return null;
         }
         if (a.equals("mpls")) {

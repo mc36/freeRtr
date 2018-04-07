@@ -804,6 +804,11 @@ public class debugger {
     public static boolean ifcEapOLserv = false;
 
     /**
+     * ifcNsh events
+     */
+    public static boolean ifcNshEvnt = false;
+
+    /**
      * secSsh packets
      */
     public static boolean secSshTraf = false;
@@ -1026,6 +1031,7 @@ public class debugger {
         h.add("3 .        p2poer            ppp over ethernet relay");
         h.add("3 .        eapolc            eap over lan client");
         h.add("3 .        eapols            eap over lan server");
+        h.add("3 .        nsh               nsh encapsulation");
     }
 
     /**
@@ -1816,6 +1822,10 @@ public class debugger {
             }
             if (s.equals("eapols")) {
                 ifcEapOLserv = v;
+                return false;
+            }
+            if (s.equals("nsh")) {
+                ifcNshEvnt = v;
                 return false;
             }
             return true;

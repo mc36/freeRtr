@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.4.5-testing, done by cs@nop.;-;-
--;-;2018-04-05 16:35:42, took 08:06:41 on 1384 cases;-;-
+-;-;freeRouter v18.4.6-testing, done by cs@nop.;-;-
+-;-;2018-04-06 22:36:12, took 07:51:26 on 1398 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -613,6 +613,7 @@ mpls-evc07.tst;0;xconnect evcs terminated on pwhes;successfully;finished
 mpls-evc08.tst;0;xconnect terminated on pwhe subifs;successfully;finished
 mpls-evc09.tst;0;xconnect terminated on pwhe bridged evcs;successfully;finished
 mpls-evc10.tst;0;xconnect terminated on pwhe xconnect evcs;successfully;finished
+mpls-evc11.tst;0;xconnect evcs terminated on vpdns;successfully;finished
 mpls-ldp01.tst;0;ldp over ethernet;successfully;finished
 mpls-ldp02.tst;0;ldp over ethernet vlan;successfully;finished
 mpls-ldp03.tst;0;ldp over ethernet bridge;successfully;finished
@@ -635,6 +636,19 @@ mpls-ldp19.tst;0;targeted ldp password;successfully;finished
 mpls-ldp20.tst;0;ingress label filtering with ldp;successfully;finished
 mpls-ldp21.tst;0;egress label filtering with ldp;successfully;finished
 mpls-ldp22.tst;0;vrf label filtering with ldp;successfully;finished
+mpls-nsh01.tst;0;nsh over ethernet;successfully;finished
+mpls-nsh02.tst;0;nsh over ethernet vlan;successfully;finished
+mpls-nsh03.tst;0;nsh over ethernet bridge;successfully;finished
+mpls-nsh04.tst;0;nsh over hdlc;successfully;finished
+mpls-nsh05.tst;0;nsh over ppp;successfully;finished
+mpls-nsh06.tst;0;nsh over framerelay;successfully;finished
+mpls-nsh07.tst;0;nsh over atmdxi;successfully;finished
+mpls-nsh08.tst;0;nsh over gre;successfully;finished
+mpls-nsh09.tst;0;nsh chain;successfully;finished
+mpls-nsh10.tst;0;nsh loop;successfully;finished
+mpls-nsh11.tst;0;nsh switch;successfully;finished
+mpls-nsh12.tst;0;nsh ip;successfully;finished
+mpls-nsh13.tst;0;nsh mix of ip and ethernet;successfully;finished
 mpls-pwe01.tst;0;ppp over mpls;successfully;finished
 mpls-pwe02.tst;0;hdlc over mpls;successfully;finished
 mpls-pwe03.tst;0;lapb over mpls;successfully;finished

@@ -177,7 +177,7 @@ public class userPacket {
                 cmd.error("opening target " + a);
                 ft = new RandomAccessFile(new File(a), "rw");
                 ft.setLength(0);
-                byte[] buf = packHolder.getPcapHeader(104);
+                byte[] buf = packHolder.getPcapHeader(1);
                 ft.write(buf, 0, buf.length);
             } catch (Exception e) {
                 return;
@@ -659,7 +659,7 @@ public class userPacket {
             try {
                 RandomAccessFile f = new RandomAccessFile(new File(a), "rw");
                 f.setLength(0);
-                f.write(packHolder.getPcapHeader(104));
+                f.write(packHolder.getPcapHeader(1));
                 f.write(buf, ifc.ethtyp.monBufP, buf.length - ifc.ethtyp.monBufP);
                 f.write(buf, 0, ifc.ethtyp.monBufP);
                 f.close();

@@ -70,12 +70,37 @@ public class packHolder {
     /**
      * source ethernet address
      */
-    public addrMac ETHsrc = new addrMac();
+    public final addrMac ETHsrc = new addrMac();
 
     /**
      * target ethernet address
      */
-    public addrMac ETHtrg = new addrMac();
+    public final addrMac ETHtrg = new addrMac();
+
+    /**
+     * nsh service path
+     */
+    public int NSHsp;
+
+    /**
+     * nsh service index
+     */
+    public int NSHsi;
+
+    /**
+     * nsh ttl
+     */
+    public int NSHttl;
+
+    /**
+     * nsh metadata type
+     */
+    public int NSHmdt;
+
+    /**
+     * nsh metadata value
+     */
+    public byte[] NSHmdv = new byte[0];
 
     /**
      * mpls label
@@ -304,6 +329,11 @@ public class packHolder {
         ETHtype = 0;
         ETHsrc.fillBytes(0);
         ETHtrg.fillBytes(0);
+        NSHttl = 0;
+        NSHmdt = 0;
+        NSHmdv = new byte[0];
+        NSHsp = 0;
+        NSHsi = 0;
         MPLSlabel = 0;
         MPLSexp = 0;
         MPLSttl = 0;
@@ -367,6 +397,11 @@ public class packHolder {
         ETHtype = src.ETHtype;
         ETHsrc.setAddr(src.ETHsrc);
         ETHtrg.setAddr(src.ETHtrg);
+        NSHttl = src.NSHttl;
+        NSHmdt = src.NSHmdt;
+        NSHmdv = bits.byteConcat(src.NSHmdv, new byte[0]);
+        NSHsp = src.NSHsp;
+        NSHsi = src.NSHsi;
         MPLSlabel = src.MPLSlabel;
         MPLSexp = src.MPLSexp;
         MPLSttl = src.MPLSttl;
@@ -991,11 +1026,14 @@ public class packHolder {
      * convert packet to pcap format
      *
      * @param tim time
-     * @param prepend prepend serial header
+     * @param prepend prepend ethernet header
      * @return byte representing packet in pcap
      */
     public byte[] convertToPcap(long tim, boolean prepend) {
-        int hdr = prepend ? 18 : 16;
+        int hdr = 16;
+        if (prepend) {
+            hdr += addrMac.sizeX2;
+        }
         final int siz = dataE - dataO;
         byte[] buf = new byte[hdr + headS + siz];
         bits.msbPutD(buf, 0, (int) (tim / 1000)); // seconds
@@ -1003,7 +1041,8 @@ public class packHolder {
         bits.msbPutD(buf, 8, buf.length - 16); // included len
         bits.msbPutD(buf, 12, buf.length - 16); // original len
         if (prepend) {
-            bits.msbPutW(buf, 16, 0x0f00); // address
+            ETHtrg.toBuffer(buf, 16);
+            ETHsrc.toBuffer(buf, 22);
         }
         bits.byteCopy(headD, 0, buf, hdr, headS);
         bits.byteCopy(dataD, dataO, buf, hdr + headS, siz);
