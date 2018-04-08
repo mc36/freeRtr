@@ -2452,6 +2452,14 @@ public class cfgAll {
         return ntry;
     }
 
+    private final static String dialFind(String str) {
+        if (str == null) {
+            return null;
+        } else {
+            return "," + str + ",";
+        }
+    }
+
     /**
      * find one dial peer
      *
@@ -2461,6 +2469,14 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgDial dialFind(String calling, String called, cfgDial skip) {
+        String myNam = ",";
+        String mySkp = "";
+        String myAlw = null;
+        if (skip != null) {
+            myNam = dialFind(skip.name);
+            mySkp = dialFind(skip.skipPeersOut);
+            myAlw = dialFind(skip.allowPeersOut);
+        }
         for (int i = 0; i < dials.size(); i++) {
             cfgDial ntry = dials.get(i);
             if (ntry == null) {
@@ -2468,6 +2484,27 @@ public class cfgAll {
             }
             if (skip != null) {
                 if (skip.compare(skip, ntry) == 0) {
+                    continue;
+                }
+            }
+            String nam = dialFind(ntry.name);
+            if (myAlw != null) {
+                if (myAlw.indexOf(nam) < 0) {
+                    continue;
+                }
+            }
+            if (ntry.allowPeersIn != null) {
+                if (dialFind(ntry.allowPeersIn).indexOf(myNam) < 0) {
+                    continue;
+                }
+            }
+            if (mySkp != null) {
+                if (mySkp.indexOf(nam) >= 0) {
+                    continue;
+                }
+            }
+            if (ntry.skipPeersIn != null) {
+                if (dialFind(ntry.skipPeersIn).indexOf(myNam) >= 0) {
                     continue;
                 }
             }

@@ -37,10 +37,34 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
     public String description = null;
 
     /**
+     * skip these dialpeers inbound
+     */
+    public String skipPeersIn = null;
+
+    /**
+     * skip these dialpeers inbound
+     */
+    public String skipPeersOut = null;
+
+    /**
+     * allow these dialpeers inbound
+     */
+    public String allowPeersIn = null;
+
+    /**
+     * allow these dialpeers inbound
+     */
+    public String allowPeersOut = null;
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
         "dial-peer .*! no description",
+        "dial-peer .*! no skip-peers-in",
+        "dial-peer .*! no skip-peers-out",
+        "dial-peer .*! no allow-peers-in",
+        "dial-peer .*! no allow-peers-out",
         "dial-peer .*! codec alaw",
         "dial-peer .*! no vrf",
         "dial-peer .*! no source",
@@ -595,6 +619,10 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("dial-peer " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
+        cmds.cfgLine(l, skipPeersIn == null, cmds.tabulator, "skip-peers-in", skipPeersIn);
+        cmds.cfgLine(l, skipPeersOut == null, cmds.tabulator, "skip-peers-out", skipPeersOut);
+        cmds.cfgLine(l, allowPeersIn == null, cmds.tabulator, "allow-peers-in", allowPeersIn);
+        cmds.cfgLine(l, allowPeersOut == null, cmds.tabulator, "allow-peers-out", allowPeersOut);
         for (int i = 0; i < prmtSrc.size(); i++) {
             l.add(cmds.tabulator + "prematch-calling " + prmtSrc.get(i).name);
         }
@@ -676,8 +704,16 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
-        l.add("1 2  description               specify description");
-        l.add("2 2,.  <str>                   description");
+        l.add("1 2    description             specify description");
+        l.add("2 2,.    <str>                 description");
+        l.add("1 2    skip-peers-in           skip dial peers incoming");
+        l.add("2 .      <str>                 comma separated peers");
+        l.add("1 2    skip-peers-out          skip dial peers outgoing");
+        l.add("2 .      <str>                 comma separated peers");
+        l.add("1 2    allow-peers-in          allow dial peers incoming");
+        l.add("2 .      <str>                 comma separated peers");
+        l.add("1 2    allow-peers-out         allow dial peers outgoing");
+        l.add("2 .      <str>                 comma separated peers");
         l.add("1 2    match-calling           match calling string");
         l.add("2 2,.    <str>                 regular expression");
         l.add("1 2    match-called            match called string");
@@ -750,6 +786,34 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
             description = cmd.getRemaining();
             if (negated) {
                 description = null;
+            }
+            return;
+        }
+        if (a.equals("skip-peers-in")) {
+            skipPeersIn = cmd.getRemaining();
+            if (negated) {
+                skipPeersIn = null;
+            }
+            return;
+        }
+        if (a.equals("skip-peers-out")) {
+            skipPeersOut = cmd.getRemaining();
+            if (negated) {
+                skipPeersOut = null;
+            }
+            return;
+        }
+        if (a.equals("allow-peers-in")) {
+            allowPeersIn = cmd.getRemaining();
+            if (negated) {
+                allowPeersIn = null;
+            }
+            return;
+        }
+        if (a.equals("allow-peers-out")) {
+            allowPeersOut = cmd.getRemaining();
+            if (negated) {
+                allowPeersOut = null;
             }
             return;
         }
