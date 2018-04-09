@@ -100,13 +100,13 @@ public class packRtp {
             return;
         }
         lastCtrl = tim;
+        int id = pck.RTPsrc;
         pck.clear();
         pck.putByte(0, 0x80);
         pck.putByte(1, 200);
         pck.msbPutW(2, 6); // (size/4)-1
-        pck.msbPutD(4, pck.RTPsrc);
-        pck.msbPutD(8, (int) (tim / 1000));
-        pck.msbPutD(12, 0);
+        pck.msbPutD(4, id);
+        pck.msbPutQ(8, packNtp.encode(tim));
         pck.msbPutD(16, byteTx);
         pck.msbPutD(20, packTx);
         pck.msbPutD(24, byteTx);

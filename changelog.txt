@@ -8028,3 +8028,8 @@ qc pass: nsh loop
 qc pass: nsh switch
 qc pass: nsh ip
 qc pass: nsh mix of ip and ethernet
+---------------------------------- 2018-04-08 19:21:59
+qc pass: modem through ipv4 peer
+qc pass: modem through ipv6 peer
+qc pass: modem through udp peer
+qc pass: modem through tcp peer
