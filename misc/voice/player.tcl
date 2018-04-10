@@ -19,6 +19,7 @@ if {[string first sip:13@ $src] >= 0} {set url "http://10.10.10.16/player.class"
 if {[string first sip:14@ $src] >= 0} {set url "http://player.mchome.nop.hu/player.class"}
 if {[string first sip:15@ $src] >= 0} {set url "http://speaker.mchome.nop.hu/player.class"}
 if {[string first sip:16@ $src] >= 0} {set url "http://speaker.mchome.nop.hu/player.class"}
+if {[string first sip:17@ $src] >= 0} {set url "http://pince.mchome.nop.hu/player.class"}
 if {[string first sip:31@ $src] >= 0} {set url "http://player.mchome.nop.hu/player.class"}
 if {[string first sip:32@ $src] >= 0} {set url "http://player.mchome.nop.hu/player.class"}
 if {[string first sip:33@ $src] >= 0} {set url "http://speaker.mchome.nop.hu/player.class"}
