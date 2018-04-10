@@ -83,6 +83,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public String cpuPinning = null;
 
     /**
+     * cpu type
+     */
+    public String cpuType = null;
+
+    /**
      * memory to give
      */
     public int imageMem = 512;
@@ -165,6 +170,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! pinning null",
         "vdc definition .*! uuid null",
         "vdc definition .*! mac null",
+        "vdc definition .*! cpu null",
         "vdc definition .*! memory 512",
         "vdc definition .*! cores 1",
         "vdc definition .*! nic e1000",
@@ -204,6 +210,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         n.respawn = respawn;
         n.uuidValue = uuidValue;
         n.cpuPinning = cpuPinning;
+        n.cpuType = cpuType;
         n.initial = initial;
         n.interval = interval;
         n.image1name = image1name;
@@ -272,8 +279,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("2 2,.  <name>            name of image");
         l.add("1 2  uuid                set uuid to use");
         l.add("2 .    <name>            uuid value");
-        l.add("1 2  pinning             set cinning mask");
+        l.add("1 2  pinning             set pinning mask");
         l.add("2 .    <name>            cpu mask in hex");
+        l.add("1 2  cpu                 set cpu type");
+        l.add("2 .    <name>            type parameters");
         l.add("1 2  memory              memory of vdc");
         l.add("2 .    <num>             megabytes");
         l.add("1 2  cores               cpu of vdc");
@@ -305,6 +314,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         l.add(cmds.tabulator + "uuid " + uuidValue);
         l.add(cmds.tabulator + "pinning " + cpuPinning);
+        l.add(cmds.tabulator + "cpu " + cpuType);
         l.add(cmds.tabulator + "bios " + biosName);
         l.add(cmds.tabulator + "image " + image1name);
         l.add(cmds.tabulator + "disk2 " + image2name);
@@ -371,6 +381,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("pinning")) {
             cpuPinning = cmd.word();
+            return;
+        }
+        if (a.equals("cpu")) {
+            cpuType = cmd.word();
             return;
         }
         if (a.equals("cdrom")) {
@@ -521,6 +535,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             cpuPinning = null;
             return;
         }
+        if (a.equals("cpu")) {
+            cpuType = null;
+            return;
+        }
         if (a.equals("cdrom")) {
             cdromName = null;
             return;
@@ -617,6 +635,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             }
             if (imageCpu > 1) {
                 cmd += " -smp cores=" + imageCpu + ",threads=1,sockets=1";
+            }
+            if (cpuType != null) {
+                cmd += " -cpu " + cpuType;
             }
             int vl = 1;
             for (int i = 0; i < locals.size(); i++) {
