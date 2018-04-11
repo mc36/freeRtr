@@ -206,7 +206,7 @@ class servSyslogDoer implements Runnable {
                 if (i < 1) {
                     continue;
                 }
-                lower.gotMsg("" + sck.peerAddr, pck.getAsciiZ(0, i, -1));
+                lower.gotMsg("" + sck.peerAddr, pck.getAsciiZ(0, i, -1).replaceAll("\r", " ").replaceAll("\n", " "));
             }
         } catch (Exception e) {
             logger.traceback(e);

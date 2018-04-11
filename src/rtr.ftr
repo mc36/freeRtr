@@ -213,6 +213,10 @@ qc pass: sep tunneling with nvgre
 qc pass: ethernet tunneling with nvgre
 qc pass: vlan tunneling with nvgre
 qc pass: tunnel interface with nvgre
+qc pass: pckoip over ipv4
+qc pass: pckoip over ipv6
+qc pass: pckoip over pckoip
+qc pass: pckoip over loopback
 qc pass: ppp with packet over udp
 qc pass: ethernet with packet over udp
 qc pass: hdlc tunneling with packet over udp
@@ -588,6 +592,7 @@ qc pass: interop: tacacs
 qc pass: interop: gre tunnel
 qc pass: interop: ipip tunnel
 qc pass: interop: vxlan tunnel
+qc pass: interop: teszt teszt
 qc pass: bier in chain
 qc pass: bier in star
 qc pass: bier in dense chain
@@ -1400,7 +1405,6 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-todo: remote tester
 todo: interface range command
 todo: reenable which elliptic courves? sure? why that?
 todo: https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06

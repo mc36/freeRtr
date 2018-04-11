@@ -1,5 +1,6 @@
 package user;
 
+import addr.addrIP;
 import addr.addrMac;
 import cfg.cfgAll;
 import cfg.cfgInit;
@@ -28,6 +29,16 @@ public class userTester {
     private String path = "../cfg/";
 
     private String url = path;
+
+    private String remoteF = null;
+
+    private List<String> remoteD = null;
+
+    private addrIP remoteA;
+
+    private addrIP remoteL;
+
+    private int remoteP;
 
     private String otherI = null;
 
@@ -111,6 +122,12 @@ public class userTester {
             }
             if (s.equals("url")) {
                 url = cmd.word();
+            }
+            if (s.equals("remote")) {
+                remoteF = cmd.word();
+            }
+            if (s.equals("noremote")) {
+                remoteF = null;
             }
             if (s.equals("other")) {
                 otherI = cmd.word();
@@ -199,6 +216,16 @@ public class userTester {
             maxTry = 1;
             window = false;
         }
+        if (remoteF != null) {
+            remoteD = bits.txt2buf(path + remoteF);
+            remoteA = new addrIP();
+            remoteA.fromString(remoteD.remove(0));
+            remoteP = bits.str2num(remoteD.remove(0));
+            remoteL = new addrIP();
+            remoteL.fromString(remoteD.remove(0));
+        } else {
+            remoteD = new ArrayList<String>();
+        }
         rdr.debugStat("jvm=" + jvn + jvp);
         rdr.debugStat("release=" + release);
         rdr.debugStat("url=" + url);
@@ -210,6 +237,7 @@ public class userTester {
         rdr.debugStat("reapply=" + reapply);
         rdr.debugStat("retry=" + maxTry);
         rdr.debugStat("other=" + otherI + " " + otherN + " " + otherM);
+        rdr.debugStat("remote=" + remoteL + " " + remoteP + " " + remoteA + " " + remoteD.size());
         rdr.debugStat("capture=" + capture.size());
         rdr.debugStat("files=" + lf.size());
         long tim1 = bits.getTime();
@@ -242,6 +270,10 @@ public class userTester {
                 lt.otherI = otherI;
                 lt.otherN = otherN;
                 lt.otherM = otherM;
+                lt.remoteD = remoteD;
+                lt.remoteA = remoteA;
+                lt.remoteL = remoteL;
+                lt.remoteP = remoteP;
                 lt.capture = capture;
                 if (window) {
                     lt.window += "w";
@@ -444,6 +476,20 @@ class userTesterPrc {
         }
     }
 
+    public void applyCfg(List<String> cfg) {
+        doSync(null);
+        rdr.setMax(cfg.size());
+        for (int i = 0; i < cfg.size(); i++) {
+            if ((i % 5) == 0) {
+                doSync(null);
+            }
+            putLine(cfg.get(i));
+            getLine();
+            rdr.setCurr(i);
+        }
+        doSync(null);
+    }
+
 }
 
 class userTesterOne {
@@ -465,6 +511,14 @@ class userTesterOne {
     public String jvm;
 
     public List<userTesterCap> capture;
+
+    public List<String> remoteD = null;
+
+    public addrIP remoteA;
+
+    public addrIP remoteL;
+
+    public int remoteP;
 
     public String otherI;
 
@@ -588,6 +642,11 @@ class userTesterOne {
             i = a.indexOf("$");
             String b = a.substring(i + 1, a.length());
             a = a.substring(0, i);
+            if (a.startsWith("rem")) {
+                i = bits.str2num(a.substring(3, a.length())) + remoteP;
+                s = s + remoteL + " " + i + " " + remoteA + " " + i + b;
+                continue;
+            }
             i = bits.str2num(a.substring(0, a.length() - 1)) * 4;
             i += 24000;
             if (a.substring(a.length() - 1, a.length()).equals("b")) {
@@ -668,6 +727,41 @@ class userTesterOne {
             bits.buf2txt(true, cfg, cmd.getRemaining());
             return;
         }
+        if (s.equals("addremote")) {
+            if (remoteA == null) {
+                success();
+                return;
+            }
+            String rn = cmd.word();
+            List<String> cfg = new ArrayList<String>();
+            for (;;) {
+                s = getLin();
+                if (s.equals("!")) {
+                    break;
+                }
+                s = repairHwCfg(s);
+                cfg.add(s);
+            }
+            s = "telnet " + remoteA + " " + remoteP;
+            cfg.add("!" + s);
+            bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);
+            userTesterPrc p = new userTesterPrc(rdr, rn, s);
+            p.debug = debug;
+            procs.add(p);
+            cfg = new ArrayList<String>();
+            cfg.add("hostname " + rn);
+            for (;;) {
+                s = getLin();
+                if (s.equals("!")) {
+                    break;
+                }
+                cfg.add(s);
+            }
+            bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.swCfgEnd);
+            p.applyCfg(remoteD);
+            p.applyCfg(cfg);
+            return;
+        }
         if (s.equals("addother")) {
             if (otherI == null) {
                 success();
@@ -739,17 +833,7 @@ class userTesterOne {
             p.putLine("enable");
             p.putLine("configure terminal");
             p.putLine("no logging console");
-            rdr.setMax(cfg.size());
-            for (int i = 0; i < cfg.size(); i++) {
-                if ((i % 5) == 0) {
-                    p.doSync(null);
-                }
-                p.putLine(cfg.get(i));
-                p.getLine();
-                rdr.setCurr(i);
-            }
-            p.putLine("end");
-            p.doSync(null);
+            p.applyCfg(cfg);
             return;
         }
         if (s.equals("addrouter")) {

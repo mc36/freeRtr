@@ -8033,3 +8033,10 @@ qc pass: modem through ipv4 peer
 qc pass: modem through ipv6 peer
 qc pass: modem through udp peer
 qc pass: modem through tcp peer
+---------------------------------- 2018-04-11 04:57:27
+no todo: remote tester
+qc pass: pckoip over ipv4
+qc pass: pckoip over ipv6
+qc pass: pckoip over pckoip
+qc pass: pckoip over loopback
+qc pass: interop: teszt teszt

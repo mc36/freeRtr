@@ -100,6 +100,7 @@ import prt.prtPipe;
 import prt.prtNos;
 import prt.prtIpcomp;
 import prt.prtIpenc;
+import prt.prtPckOip;
 import prt.prtTmux;
 import prt.prtUdp;
 import rtr.rtrBabelIface;
@@ -562,6 +563,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntPckOudp tunPckOudp;
 
     /**
+     * pckOip tunnel handler
+     */
+    public prtPckOip tunPckOip;
+
+    /**
      * l2tp3 tunnel handler
      */
     public clntL2tp3 tunL2tp3;
@@ -1016,6 +1022,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * pckOudp tunnel interface
          */
         pckOudp,
+        /**
+         * pckOip tunnel interface
+         */
+        pckOip,
         /**
          * l2tp3 tunnel interface
          */
@@ -1653,6 +1663,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "ipsec";
             case pckOudp:
                 return "pckoudp";
+            case pckOip:
+                return "pckoip";
             case l2tp3:
                 return "l2tp3";
             case pweOmpls:
@@ -1751,6 +1763,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("pckoudp")) {
             return tunnelType.pckOudp;
+        }
+        if (s.equals("pckoip")) {
+            return tunnelType.pckOip;
         }
         if (s.equals("l2tp3")) {
             return tunnelType.l2tp3;
@@ -2967,6 +2982,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunPckOudp.workStop();
             tunPckOudp = null;
         }
+        if (tunPckOip != null) {
+            tunPckOip.closeDn();
+            tunPckOip = null;
+        }
         if (tunL2tp3 != null) {
             tunL2tp3.workStop();
             tunL2tp3 = null;
@@ -3316,6 +3335,17 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPckOudp.setUpper(ethtyp);
                 tunPckOudp.workStart();
                 lower = tunPckOudp;
+                break;
+            case pckOip:
+                if (tunKey < 1) {
+                    return true;
+                }
+                tunPckOip = new prtPckOip(fwd);
+                tunPckOip.setEndpoints(ifc, tunTrg, tunKey);
+                tunPckOip.setUpper(ethtyp);
+                tunPckOip.sendingTOS = tunTOS;
+                tunPckOip.sendingTTL = tunTTL;
+                lower = tunPckOip;
                 break;
             case l2tp3:
                 tunL2tp3 = new clntL2tp3();
@@ -4732,6 +4762,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       ipip                      ip over ip encapsulation");
         l.add("3 .       ipsec                     ip security encapsulation");
         l.add("3 .       pckoudp                   packet over udp encapsulation");
+        l.add("3 .       pckoip                    packet over raw ip protocol");
         l.add("3 .       l2tp3                     l2tp v3 encapsulation");
         l.add("3 .       vxlan                     vxlan encapsulation");
         l.add("3 .       geneve                    geneve encapsulation");
