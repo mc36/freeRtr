@@ -1,4 +1,4 @@
-description interop: bgp with labels
+description interop1: bgp with labels
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

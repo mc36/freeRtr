@@ -1,4 +1,4 @@
-description interop: ethernet over mpls
+description interop1: ethernet over mpls
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

@@ -1,4 +1,4 @@
-description interop: isis prefix withdraw
+description interop1: isis prefix withdraw
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

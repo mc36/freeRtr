@@ -1,4 +1,4 @@
-description interop: isis p2mp te
+description interop1: isis p2mp te
 
 exit
 
@@ -47,6 +47,7 @@ int lo0
  mpls rsvp6
  exit
 interface tunnel1
+ bandwidth 11
  tunnel source loopback0
  tunnel destination 9.9.9.9
  tunnel domain-name 2.2.2.3
@@ -159,6 +160,7 @@ int lo0
  mpls rsvp6
  exit
 interface tunnel1
+ bandwidth 11
  tunnel source loopback0
  tunnel destination 9.9.9.9
  tunnel domain-name 2.2.2.1

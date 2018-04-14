@@ -1,4 +1,4 @@
-description interop: ospf te
+description interop1: ospf te
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

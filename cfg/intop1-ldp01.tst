@@ -1,4 +1,4 @@
-description interop: ldp lsp
+description interop1: ldp lsp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

@@ -1,4 +1,4 @@
-description interop: ethernet tunneling with l2tp3
+description interop1: ethernet tunneling with l2tp3
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

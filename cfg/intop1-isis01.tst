@@ -1,4 +1,4 @@
-description interop: point2point isis
+description interop1: point2point isis
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

@@ -1,4 +1,4 @@
-description interop: l2tp2 server
+description interop1: l2tp2 server
 
 exit
 

@@ -1,4 +1,4 @@
-description interop: bgp community
+description interop1: bgp community
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

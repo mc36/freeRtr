@@ -1,4 +1,4 @@
-description interop: ike1 with aes128
+description interop1: ike1 with aes128
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

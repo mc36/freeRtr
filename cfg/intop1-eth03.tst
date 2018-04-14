@@ -1,4 +1,4 @@
-description interop: spantree nonroot
+description interop1: spantree nonroot
 
 exit
 

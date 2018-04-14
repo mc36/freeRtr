@@ -1,4 +1,4 @@
-description interop: dot1q encapsulation
+description interop1: dot1q encapsulation
 
 exit
 

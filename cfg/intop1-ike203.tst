@@ -1,4 +1,4 @@
-description interop: ike2 with 3des
+description interop1: ike2 with 3des
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
