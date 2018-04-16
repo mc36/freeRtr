@@ -493,106 +493,164 @@ qc pass: swipe with sha512
 qc pass: tls test
 qc pass: empty demo network
 qc pass: addressed demo network
-qc pass: interop: ebgp
-qc pass: interop: ibgp
-qc pass: interop: bgp locpref
-qc pass: interop: bgp origin
-qc pass: interop: bgp metric
-qc pass: interop: bgp community
-qc pass: interop: bgp aspath
-qc pass: interop: bgp with labels
-qc pass: interop: bgp addpath
-qc pass: interop: bgp prefix withdraw
-qc pass: interop: bgp vpnv4
-qc pass: interop: bgp authentication
-qc pass: interop: bgp vpnv6
-qc pass: interop: vpls/ldp over bgp
-qc pass: interop: vpls/bgp over bgp
-qc pass: interop: dhcp server
-qc pass: interop: dhcp client
-qc pass: interop: dns
-qc pass: interop: eigrp
-qc pass: interop: eigrp prefix withdraw
-qc pass: interop: ethernet encapsulation
-qc pass: interop: dot1q encapsulation
-qc pass: interop: spantree nonroot
-qc pass: interop: spantree root
-qc pass: interop: ike1 with ipv4
-qc pass: interop: ike1 with ipv6
-qc pass: interop: ike1 with 3des
-qc pass: interop: ike1 with aes128
-qc pass: interop: ike1 with aes192
-qc pass: interop: ike1 with aes256
-qc pass: interop: ike1 with sha1
-qc pass: interop: ike1 with sha256
-qc pass: interop: ike1 with sha512
-qc pass: interop: ike1 with group2
-qc pass: interop: ike1 with group5
-qc pass: interop: ike1 with group14
-qc pass: interop: ike1 with group15
-qc pass: interop: ike1 with group16
-qc pass: interop: ike1 with group24
-qc pass: interop: ike2 with ipv4
-qc pass: interop: ike2 with ipv6
-qc pass: interop: ike2 with 3des
-qc pass: interop: ike2 with aes128
-qc pass: interop: ike2 with aes192
-qc pass: interop: ike2 with aes256
-qc pass: interop: ike2 with sha1
-qc pass: interop: ike2 with sha256
-qc pass: interop: ike2 with sha512
-qc pass: interop: ike2 with group2
-qc pass: interop: ike2 with group5
-qc pass: interop: ike2 with group14
-qc pass: interop: ike2 with group15
-qc pass: interop: ike2 with group16
-qc pass: interop: ike2 with group24
-qc pass: interop: point2point isis
-qc pass: interop: isis dis
-qc pass: interop: isis nondis
-qc pass: interop: isis narrow metric
-qc pass: interop: isis te
-qc pass: interop: isis multi-topology
-qc pass: interop: isis prefix withdraw
-qc pass: interop: isis authentication
-qc pass: interop: isis p2mp te
-qc pass: interop: isis sr
-qc pass: interop: l2tp2 client
-qc pass: interop: l2tp2 server
-qc pass: interop: l2tp3 server
-qc pass: interop: ethernet tunneling with l2tp3
-qc pass: interop: ldp lsp
-qc pass: interop: ethernet over mpls
-qc pass: interop: ldp p2mp lsp
-qc pass: interop: ldp mp2mp lsp
-qc pass: interop: igmp3/mld2
-qc pass: interop: pim
-qc pass: interop: point2point ospf
-qc pass: interop: ospf dr
-qc pass: interop: ospf nondr
-qc pass: interop: ospf transit area
-qc pass: interop: ospf stub area
-qc pass: interop: ospf nssa area
-qc pass: interop: ospf te
-qc pass: interop: ospf prefix withdraw
-qc pass: interop: ospf authentication
-qc pass: interop: ospf p2mp te
-qc pass: interop: ospf sr
-qc pass: interop: pppoe client
-qc pass: interop: pppoe server
-qc pass: interop: pppoe with pap
-qc pass: interop: pppoe with chap
-qc pass: interop: pppoe with eap
-qc pass: interop: radius
-qc pass: interop: rip
-qc pass: interop: rip prefix withdraw
-qc pass: interop: rip authentication
-qc pass: interop: ssh
-qc pass: interop: tacacs
-qc pass: interop: gre tunnel
-qc pass: interop: ipip tunnel
-qc pass: interop: vxlan tunnel
-qc pass: interop: teszt teszt
+qc pass: interop1: ebgp
+qc pass: interop1: ibgp
+qc pass: interop1: bgp locpref
+qc pass: interop1: bgp origin
+qc pass: interop1: bgp metric
+qc pass: interop1: bgp community
+qc pass: interop1: bgp aspath
+qc pass: interop1: bgp with labels
+qc pass: interop1: bgp addpath
+qc pass: interop1: bgp prefix withdraw
+qc pass: interop1: bgp vpnv4
+qc pass: interop1: bgp authentication
+qc pass: interop1: bgp vpnv6
+qc pass: interop1: vpls/ldp over bgp
+qc pass: interop1: vpls/bgp over bgp
+qc pass: interop1: bgp extended community
+qc pass: interop1: dhcp server
+qc pass: interop1: dhcp client
+qc pass: interop1: dns
+qc pass: interop1: eigrp
+qc pass: interop1: eigrp prefix withdraw
+qc pass: interop1: ethernet encapsulation
+qc pass: interop1: dot1q encapsulation
+qc pass: interop1: spantree nonroot
+qc pass: interop1: spantree root
+qc pass: interop1: ike1 with ipv4
+qc pass: interop1: ike1 with ipv6
+qc pass: interop1: ike1 with 3des
+qc pass: interop1: ike1 with aes128
+qc pass: interop1: ike1 with aes192
+qc pass: interop1: ike1 with aes256
+qc pass: interop1: ike1 with sha1
+qc pass: interop1: ike1 with sha256
+qc pass: interop1: ike1 with sha512
+qc pass: interop1: ike1 with group2
+qc pass: interop1: ike1 with group5
+qc pass: interop1: ike1 with group14
+qc pass: interop1: ike1 with group15
+qc pass: interop1: ike1 with group16
+qc pass: interop1: ike1 with group24
+qc pass: interop1: ike2 with ipv4
+qc pass: interop1: ike2 with ipv6
+qc pass: interop1: ike2 with 3des
+qc pass: interop1: ike2 with aes128
+qc pass: interop1: ike2 with aes192
+qc pass: interop1: ike2 with aes256
+qc pass: interop1: ike2 with sha1
+qc pass: interop1: ike2 with sha256
+qc pass: interop1: ike2 with sha512
+qc pass: interop1: ike2 with group2
+qc pass: interop1: ike2 with group5
+qc pass: interop1: ike2 with group14
+qc pass: interop1: ike2 with group15
+qc pass: interop1: ike2 with group16
+qc pass: interop1: ike2 with group24
+qc pass: interop1: point2point isis
+qc pass: interop1: isis dis
+qc pass: interop1: isis nondis
+qc pass: interop1: isis narrow metric
+qc pass: interop1: isis te
+qc pass: interop1: isis multi-topology
+qc pass: interop1: isis prefix withdraw
+qc pass: interop1: isis authentication
+qc pass: interop1: isis p2mp te
+qc pass: interop1: isis sr
+qc pass: interop1: l2tp2 client
+qc pass: interop1: l2tp2 server
+qc pass: interop1: l2tp3 server
+qc pass: interop1: ethernet tunneling with l2tp3
+qc pass: interop1: ldp lsp
+qc pass: interop1: ethernet over mpls
+qc pass: interop1: ldp p2mp lsp
+qc pass: interop1: ldp mp2mp lsp
+qc pass: interop1: igmp3/mld2
+qc pass: interop1: pim
+qc pass: interop1: modem with alaw
+qc pass: interop1: modem with ulaw
+qc pass: interop1: point2point ospf
+qc pass: interop1: ospf dr
+qc pass: interop1: ospf nondr
+qc pass: interop1: ospf transit area
+qc pass: interop1: ospf stub area
+qc pass: interop1: ospf nssa area
+qc pass: interop1: ospf te
+qc pass: interop1: ospf prefix withdraw
+qc pass: interop1: ospf authentication
+qc pass: interop1: ospf p2mp te
+qc pass: interop1: ospf sr
+qc pass: interop1: pppoe client
+qc pass: interop1: pppoe server
+qc pass: interop1: pppoe with pap
+qc pass: interop1: pppoe with chap
+qc pass: interop1: pppoe with eap
+qc pass: interop1: radius
+qc pass: interop1: rip
+qc pass: interop1: rip prefix withdraw
+qc pass: interop1: rip authentication
+qc pass: interop1: ssh
+qc pass: interop1: tacacs
+qc pass: interop1: gre tunnel
+qc pass: interop1: ipip tunnel
+qc pass: interop1: vxlan tunnel
+qc pass: interop2: ebgp
+qc pass: interop2: ibgp
+qc pass: interop2: bgp locpref
+qc pass: interop2: bgp origin
+qc pass: interop2: bgp metric
+qc pass: interop2: bgp community
+qc pass: interop2: bgp aspath
+qc pass: interop2: bgp with labels
+qc pass: interop2: bgp addpath
+qc pass: interop2: bgp prefix withdraw
+qc pass: interop2: bgp vpnv4
+qc pass: interop2: bgp authentication
+qc pass: interop2: bgp vpnv6
+qc pass: interop2: vpls/ldp over bgp
+qc pass: interop2: vpls/bgp over bgp
+qc pass: interop2: evpn/pbb over bgp
+qc pass: interop2: bgp extended community
+qc pass: interop2: bgp large community
+qc pass: interop2: eigrp
+qc pass: interop2: eigrp prefix withdraw
+qc pass: interop2: ethernet encapsulation
+qc pass: interop2: dot1q encapsulation
+qc pass: interop2: dot1ad encapsulation
+qc pass: interop2: point2point isis
+qc pass: interop2: isis dis
+qc pass: interop2: isis nondis
+qc pass: interop2: isis narrow metric
+qc pass: interop2: isis te
+qc pass: interop2: isis multi-topology
+qc pass: interop2: isis prefix withdraw
+qc pass: interop2: isis authentication
+qc pass: interop2: isis p2mp te
+qc pass: interop2: isis sr
+qc pass: interop2: ldp lsp
+qc pass: interop2: ethernet over mpls
+qc pass: interop2: ldp p2mp lsp
+qc pass: interop2: ldp mp2mp lsp
+qc pass: interop2: igmp3/mld2
+qc pass: interop2: pim
+qc pass: interop2: point2point ospf
+qc pass: interop2: ospf dr
+qc pass: interop2: ospf nondr
+qc pass: interop2: point2point ospf
+qc pass: interop2: ospf stub area
+qc pass: interop2: ospf nssa area
+qc pass: interop2: ospf te
+qc pass: interop2: point2point ospf
+qc pass: interop2: ospf authentication
+qc pass: interop2: ospf p2mp te
+qc pass: interop2: ospf sr
+qc pass: interop2: rip
+qc pass: interop2: rip prefix withdraw
+qc pass: interop2: rip authentication
+qc pass: interop2: gre tunnel
+qc pass: interop2: ipip tunnel
+qc pass: interop2: config wiper
 qc pass: bier in chain
 qc pass: bier in star
 qc pass: bier in dense chain

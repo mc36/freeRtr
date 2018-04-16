@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.4.11-testing, done by cs@nop.;-;-
--;-;2018-04-11 12:34:48, took 07:37:20 on 1407 cases;-;-
+-;-;freeRouter v18.4.15-testing, done by cs@nop.;-;-
+-;-;2018-04-15 12:16:06, took 08:03:50 on 1465 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -496,106 +496,164 @@ crypt-swipe14.tst;0;swipe with sha512;successfully;finished
 crypt-tls.tst;0;tls test;successfully;finished
 demo01.tst;0;empty demo network;successfully;finished
 demo02.tst;0;addressed demo network;successfully;finished
-intop1-bgp01.tst;0;interop: ebgp;successfully;finished
-intop1-bgp02.tst;0;interop: ibgp;successfully;finished
-intop1-bgp03.tst;0;interop: bgp locpref;successfully;finished
-intop1-bgp04.tst;0;interop: bgp origin;successfully;finished
-intop1-bgp05.tst;0;interop: bgp metric;successfully;finished
-intop1-bgp06.tst;0;interop: bgp community;successfully;finished
-intop1-bgp07.tst;0;interop: bgp aspath;successfully;finished
-intop1-bgp08.tst;0;interop: bgp with labels;successfully;finished
-intop1-bgp09.tst;0;interop: bgp addpath;successfully;finished
-intop1-bgp10.tst;0;interop: bgp prefix withdraw;successfully;finished
-intop1-bgp11.tst;0;interop: bgp vpnv4;successfully;finished
-intop1-bgp12.tst;0;interop: bgp authentication;successfully;finished
-intop1-bgp13.tst;0;interop: bgp vpnv6;successfully;finished
-intop1-bgp14.tst;0;interop: vpls/ldp over bgp;successfully;finished
-intop1-bgp15.tst;0;interop: vpls/bgp over bgp;successfully;finished
-intop1-dhcp01.tst;0;interop: dhcp server;successfully;finished
-intop1-dhcp02.tst;0;interop: dhcp client;successfully;finished
-intop1-dns.tst;0;interop: dns;successfully;finished
-intop1-eigrp01.tst;0;interop: eigrp;successfully;finished
-intop1-eigrp02.tst;0;interop: eigrp prefix withdraw;successfully;finished
-intop1-eth01.tst;0;interop: ethernet encapsulation;successfully;finished
-intop1-eth02.tst;0;interop: dot1q encapsulation;successfully;finished
-intop1-eth03.tst;0;interop: spantree nonroot;successfully;finished
-intop1-eth04.tst;0;interop: spantree root;successfully;finished
-intop1-ike101.tst;0;interop: ike1 with ipv4;successfully;finished
-intop1-ike102.tst;0;interop: ike1 with ipv6;successfully;finished
-intop1-ike103.tst;0;interop: ike1 with 3des;successfully;finished
-intop1-ike104.tst;0;interop: ike1 with aes128;successfully;finished
-intop1-ike105.tst;0;interop: ike1 with aes192;successfully;finished
-intop1-ike106.tst;0;interop: ike1 with aes256;successfully;finished
-intop1-ike107.tst;0;interop: ike1 with sha1;successfully;finished
-intop1-ike108.tst;0;interop: ike1 with sha256;successfully;finished
-intop1-ike109.tst;0;interop: ike1 with sha512;successfully;finished
-intop1-ike110.tst;0;interop: ike1 with group2;successfully;finished
-intop1-ike111.tst;0;interop: ike1 with group5;successfully;finished
-intop1-ike112.tst;0;interop: ike1 with group14;successfully;finished
-intop1-ike113.tst;0;interop: ike1 with group15;successfully;finished
-intop1-ike114.tst;0;interop: ike1 with group16;successfully;finished
-intop1-ike115.tst;0;interop: ike1 with group24;successfully;finished
-intop1-ike201.tst;0;interop: ike2 with ipv4;successfully;finished
-intop1-ike202.tst;0;interop: ike2 with ipv6;successfully;finished
-intop1-ike203.tst;0;interop: ike2 with 3des;successfully;finished
-intop1-ike204.tst;0;interop: ike2 with aes128;successfully;finished
-intop1-ike205.tst;0;interop: ike2 with aes192;successfully;finished
-intop1-ike206.tst;0;interop: ike2 with aes256;successfully;finished
-intop1-ike207.tst;0;interop: ike2 with sha1;successfully;finished
-intop1-ike208.tst;0;interop: ike2 with sha256;successfully;finished
-intop1-ike209.tst;0;interop: ike2 with sha512;successfully;finished
-intop1-ike210.tst;0;interop: ike2 with group2;successfully;finished
-intop1-ike211.tst;0;interop: ike2 with group5;successfully;finished
-intop1-ike212.tst;0;interop: ike2 with group14;successfully;finished
-intop1-ike213.tst;0;interop: ike2 with group15;successfully;finished
-intop1-ike214.tst;0;interop: ike2 with group16;successfully;finished
-intop1-ike215.tst;0;interop: ike2 with group24;successfully;finished
-intop1-isis01.tst;0;interop: point2point isis;successfully;finished
-intop1-isis02.tst;0;interop: isis dis;successfully;finished
-intop1-isis03.tst;0;interop: isis nondis;successfully;finished
-intop1-isis04.tst;0;interop: isis narrow metric;successfully;finished
-intop1-isis05.tst;0;interop: isis te;successfully;finished
-intop1-isis06.tst;0;interop: isis multi-topology;successfully;finished
-intop1-isis07.tst;0;interop: isis prefix withdraw;successfully;finished
-intop1-isis08.tst;0;interop: isis authentication;successfully;finished
-intop1-isis09.tst;0;interop: isis p2mp te;successfully;finished
-intop1-isis10.tst;0;interop: isis sr;successfully;finished
-intop1-l2tp01.tst;0;interop: l2tp2 client;successfully;finished
-intop1-l2tp02.tst;0;interop: l2tp2 server;successfully;finished
-intop1-l2tp03.tst;0;interop: l2tp3 server;successfully;finished
-intop1-l2tp04.tst;0;interop: ethernet tunneling with l2tp3;successfully;finished
-intop1-ldp01.tst;0;interop: ldp lsp;successfully;finished
-intop1-ldp02.tst;0;interop: ethernet over mpls;successfully;finished
-intop1-ldp03.tst;0;interop: ldp p2mp lsp;successfully;finished
-intop1-ldp04.tst;0;interop: ldp mp2mp lsp;successfully;finished
-intop1-mcast01.tst;0;interop: igmp3/mld2;successfully;finished
-intop1-mcast02.tst;0;interop: pim;successfully;finished
-intop1-ospf01.tst;0;interop: point2point ospf;successfully;finished
-intop1-ospf02.tst;0;interop: ospf dr;successfully;finished
-intop1-ospf03.tst;0;interop: ospf nondr;successfully;finished
-intop1-ospf04.tst;0;interop: ospf transit area;successfully;finished
-intop1-ospf05.tst;0;interop: ospf stub area;successfully;finished
-intop1-ospf06.tst;0;interop: ospf nssa area;successfully;finished
-intop1-ospf07.tst;0;interop: ospf te;successfully;finished
-intop1-ospf08.tst;0;interop: ospf prefix withdraw;successfully;finished
-intop1-ospf09.tst;0;interop: ospf authentication;successfully;finished
-intop1-ospf10.tst;0;interop: ospf p2mp te;successfully;finished
-intop1-ospf11.tst;0;interop: ospf sr;successfully;finished
-intop1-pppoe01.tst;0;interop: pppoe client;successfully;finished
-intop1-pppoe02.tst;0;interop: pppoe server;successfully;finished
-intop1-pppoe03.tst;0;interop: pppoe with pap;successfully;finished
-intop1-pppoe04.tst;0;interop: pppoe with chap;successfully;finished
-intop1-pppoe05.tst;0;interop: pppoe with eap;successfully;finished
-intop1-radius.tst;0;interop: radius;successfully;finished
-intop1-rip01.tst;0;interop: rip;successfully;finished
-intop1-rip02.tst;0;interop: rip prefix withdraw;successfully;finished
-intop1-rip03.tst;0;interop: rip authentication;successfully;finished
-intop1-ssh.tst;0;interop: ssh;successfully;finished
-intop1-tacacs.tst;0;interop: tacacs;successfully;finished
-intop1-tun01.tst;0;interop: gre tunnel;successfully;finished
-intop1-tun02.tst;0;interop: ipip tunnel;successfully;finished
-intop1-tun03.tst;0;interop: vxlan tunnel;successfully;finished
-intop2-test.tst;0;interop: teszt teszt;successfully;finished
+intop1-bgp01.tst;0;interop1: ebgp;successfully;finished
+intop1-bgp02.tst;0;interop1: ibgp;successfully;finished
+intop1-bgp03.tst;0;interop1: bgp locpref;successfully;finished
+intop1-bgp04.tst;0;interop1: bgp origin;successfully;finished
+intop1-bgp05.tst;0;interop1: bgp metric;successfully;finished
+intop1-bgp06.tst;0;interop1: bgp community;successfully;finished
+intop1-bgp07.tst;0;interop1: bgp aspath;successfully;finished
+intop1-bgp08.tst;0;interop1: bgp with labels;successfully;finished
+intop1-bgp09.tst;0;interop1: bgp addpath;successfully;finished
+intop1-bgp10.tst;0;interop1: bgp prefix withdraw;successfully;finished
+intop1-bgp11.tst;0;interop1: bgp vpnv4;successfully;finished
+intop1-bgp12.tst;0;interop1: bgp authentication;successfully;finished
+intop1-bgp13.tst;0;interop1: bgp vpnv6;successfully;finished
+intop1-bgp14.tst;0;interop1: vpls/ldp over bgp;successfully;finished
+intop1-bgp15.tst;0;interop1: vpls/bgp over bgp;successfully;finished
+intop1-bgp16.tst;0;interop1: bgp extended community;successfully;finished
+intop1-dhcp01.tst;0;interop1: dhcp server;successfully;finished
+intop1-dhcp02.tst;0;interop1: dhcp client;successfully;finished
+intop1-dns.tst;0;interop1: dns;successfully;finished
+intop1-eigrp01.tst;0;interop1: eigrp;successfully;finished
+intop1-eigrp02.tst;0;interop1: eigrp prefix withdraw;successfully;finished
+intop1-eth01.tst;0;interop1: ethernet encapsulation;successfully;finished
+intop1-eth02.tst;0;interop1: dot1q encapsulation;successfully;finished
+intop1-eth03.tst;0;interop1: spantree nonroot;successfully;finished
+intop1-eth04.tst;0;interop1: spantree root;successfully;finished
+intop1-ike101.tst;0;interop1: ike1 with ipv4;successfully;finished
+intop1-ike102.tst;0;interop1: ike1 with ipv6;successfully;finished
+intop1-ike103.tst;0;interop1: ike1 with 3des;successfully;finished
+intop1-ike104.tst;0;interop1: ike1 with aes128;successfully;finished
+intop1-ike105.tst;0;interop1: ike1 with aes192;successfully;finished
+intop1-ike106.tst;0;interop1: ike1 with aes256;successfully;finished
+intop1-ike107.tst;0;interop1: ike1 with sha1;successfully;finished
+intop1-ike108.tst;0;interop1: ike1 with sha256;successfully;finished
+intop1-ike109.tst;0;interop1: ike1 with sha512;successfully;finished
+intop1-ike110.tst;0;interop1: ike1 with group2;successfully;finished
+intop1-ike111.tst;0;interop1: ike1 with group5;successfully;finished
+intop1-ike112.tst;0;interop1: ike1 with group14;successfully;finished
+intop1-ike113.tst;0;interop1: ike1 with group15;successfully;finished
+intop1-ike114.tst;0;interop1: ike1 with group16;successfully;finished
+intop1-ike115.tst;0;interop1: ike1 with group24;successfully;finished
+intop1-ike201.tst;0;interop1: ike2 with ipv4;successfully;finished
+intop1-ike202.tst;0;interop1: ike2 with ipv6;successfully;finished
+intop1-ike203.tst;0;interop1: ike2 with 3des;successfully;finished
+intop1-ike204.tst;0;interop1: ike2 with aes128;successfully;finished
+intop1-ike205.tst;0;interop1: ike2 with aes192;successfully;finished
+intop1-ike206.tst;0;interop1: ike2 with aes256;successfully;finished
+intop1-ike207.tst;0;interop1: ike2 with sha1;successfully;finished
+intop1-ike208.tst;0;interop1: ike2 with sha256;successfully;finished
+intop1-ike209.tst;0;interop1: ike2 with sha512;successfully;finished
+intop1-ike210.tst;0;interop1: ike2 with group2;successfully;finished
+intop1-ike211.tst;0;interop1: ike2 with group5;successfully;finished
+intop1-ike212.tst;0;interop1: ike2 with group14;successfully;finished
+intop1-ike213.tst;0;interop1: ike2 with group15;successfully;finished
+intop1-ike214.tst;0;interop1: ike2 with group16;successfully;finished
+intop1-ike215.tst;0;interop1: ike2 with group24;successfully;finished
+intop1-isis01.tst;0;interop1: point2point isis;successfully;finished
+intop1-isis02.tst;0;interop1: isis dis;successfully;finished
+intop1-isis03.tst;0;interop1: isis nondis;successfully;finished
+intop1-isis04.tst;0;interop1: isis narrow metric;successfully;finished
+intop1-isis05.tst;0;interop1: isis te;successfully;finished
+intop1-isis06.tst;0;interop1: isis multi-topology;successfully;finished
+intop1-isis07.tst;0;interop1: isis prefix withdraw;successfully;finished
+intop1-isis08.tst;0;interop1: isis authentication;successfully;finished
+intop1-isis09.tst;0;interop1: isis p2mp te;successfully;finished
+intop1-isis10.tst;0;interop1: isis sr;successfully;finished
+intop1-l2tp01.tst;0;interop1: l2tp2 client;successfully;finished
+intop1-l2tp02.tst;0;interop1: l2tp2 server;successfully;finished
+intop1-l2tp03.tst;0;interop1: l2tp3 server;successfully;finished
+intop1-l2tp04.tst;0;interop1: ethernet tunneling with l2tp3;successfully;finished
+intop1-ldp01.tst;0;interop1: ldp lsp;successfully;finished
+intop1-ldp02.tst;0;interop1: ethernet over mpls;successfully;finished
+intop1-ldp03.tst;0;interop1: ldp p2mp lsp;successfully;finished
+intop1-ldp04.tst;0;interop1: ldp mp2mp lsp;successfully;finished
+intop1-mcast01.tst;0;interop1: igmp3/mld2;successfully;finished
+intop1-mcast02.tst;0;interop1: pim;successfully;finished
+intop1-modem01.tst;0;interop1: modem with alaw;successfully;finished
+intop1-modem02.tst;0;interop1: modem with ulaw;successfully;finished
+intop1-ospf01.tst;0;interop1: point2point ospf;successfully;finished
+intop1-ospf02.tst;0;interop1: ospf dr;successfully;finished
+intop1-ospf03.tst;0;interop1: ospf nondr;successfully;finished
+intop1-ospf04.tst;0;interop1: ospf transit area;successfully;finished
+intop1-ospf05.tst;0;interop1: ospf stub area;successfully;finished
+intop1-ospf06.tst;0;interop1: ospf nssa area;successfully;finished
+intop1-ospf07.tst;0;interop1: ospf te;successfully;finished
+intop1-ospf08.tst;0;interop1: ospf prefix withdraw;successfully;finished
+intop1-ospf09.tst;0;interop1: ospf authentication;successfully;finished
+intop1-ospf10.tst;0;interop1: ospf p2mp te;successfully;finished
+intop1-ospf11.tst;0;interop1: ospf sr;successfully;finished
+intop1-pppoe01.tst;0;interop1: pppoe client;successfully;finished
+intop1-pppoe02.tst;0;interop1: pppoe server;successfully;finished
+intop1-pppoe03.tst;0;interop1: pppoe with pap;successfully;finished
+intop1-pppoe04.tst;0;interop1: pppoe with chap;successfully;finished
+intop1-pppoe05.tst;0;interop1: pppoe with eap;successfully;finished
+intop1-radius.tst;0;interop1: radius;successfully;finished
+intop1-rip01.tst;0;interop1: rip;successfully;finished
+intop1-rip02.tst;0;interop1: rip prefix withdraw;successfully;finished
+intop1-rip03.tst;0;interop1: rip authentication;successfully;finished
+intop1-ssh.tst;0;interop1: ssh;successfully;finished
+intop1-tacacs.tst;0;interop1: tacacs;successfully;finished
+intop1-tun01.tst;0;interop1: gre tunnel;successfully;finished
+intop1-tun02.tst;0;interop1: ipip tunnel;successfully;finished
+intop1-tun03.tst;0;interop1: vxlan tunnel;successfully;finished
+intop2-bgp01.tst;0;interop2: ebgp;successfully;finished
+intop2-bgp02.tst;0;interop2: ibgp;successfully;finished
+intop2-bgp03.tst;0;interop2: bgp locpref;successfully;finished
+intop2-bgp04.tst;0;interop2: bgp origin;successfully;finished
+intop2-bgp05.tst;0;interop2: bgp metric;successfully;finished
+intop2-bgp06.tst;0;interop2: bgp community;successfully;finished
+intop2-bgp07.tst;0;interop2: bgp aspath;successfully;finished
+intop2-bgp08.tst;0;interop2: bgp with labels;successfully;finished
+intop2-bgp09.tst;0;interop2: bgp addpath;successfully;finished
+intop2-bgp10.tst;0;interop2: bgp prefix withdraw;successfully;finished
+intop2-bgp11.tst;0;interop2: bgp vpnv4;successfully;finished
+intop2-bgp12.tst;0;interop2: bgp authentication;successfully;finished
+intop2-bgp13.tst;0;interop2: bgp vpnv6;successfully;finished
+intop2-bgp14.tst;0;interop2: vpls/ldp over bgp;successfully;finished
+intop2-bgp15.tst;0;interop2: vpls/bgp over bgp;successfully;finished
+intop2-bgp16.tst;0;interop2: evpn/pbb over bgp;successfully;finished
+intop2-bgp17.tst;0;interop2: bgp extended community;successfully;finished
+intop2-bgp18.tst;0;interop2: bgp large community;successfully;finished
+intop2-eigrp01.tst;0;interop2: eigrp;successfully;finished
+intop2-eigrp02.tst;0;interop2: eigrp prefix withdraw;successfully;finished
+intop2-eth01.tst;0;interop2: ethernet encapsulation;successfully;finished
+intop2-eth02.tst;0;interop2: dot1q encapsulation;successfully;finished
+intop2-eth03.tst;0;interop2: dot1ad encapsulation;successfully;finished
+intop2-isis01.tst;0;interop2: point2point isis;successfully;finished
+intop2-isis02.tst;0;interop2: isis dis;successfully;finished
+intop2-isis03.tst;0;interop2: isis nondis;successfully;finished
+intop2-isis04.tst;0;interop2: isis narrow metric;successfully;finished
+intop2-isis05.tst;0;interop2: isis te;successfully;finished
+intop2-isis06.tst;0;interop2: isis multi-topology;successfully;finished
+intop2-isis07.tst;0;interop2: isis prefix withdraw;successfully;finished
+intop2-isis08.tst;0;interop2: isis authentication;successfully;finished
+intop2-isis09.tst;0;interop2: isis p2mp te;successfully;finished
+intop2-isis10.tst;0;interop2: isis sr;successfully;finished
+intop2-ldp01.tst;0;interop2: ldp lsp;successfully;finished
+intop2-ldp02.tst;0;interop2: ethernet over mpls;successfully;finished
+intop2-ldp03.tst;0;interop2: ldp p2mp lsp;successfully;finished
+intop2-ldp04.tst;0;interop2: ldp mp2mp lsp;successfully;finished
+intop2-mcast01.tst;0;interop2: igmp3/mld2;successfully;finished
+intop2-mcast02.tst;0;interop2: pim;successfully;finished
+intop2-ospf01.tst;0;interop2: point2point ospf;successfully;finished
+intop2-ospf02.tst;0;interop2: ospf dr;successfully;finished
+intop2-ospf03.tst;0;interop2: ospf nondr;successfully;finished
+intop2-ospf04.tst;0;interop2: point2point ospf;successfully;finished
+intop2-ospf05.tst;0;interop2: ospf stub area;successfully;finished
+intop2-ospf06.tst;0;interop2: ospf nssa area;successfully;finished
+intop2-ospf07.tst;0;interop2: ospf te;successfully;finished
+intop2-ospf08.tst;0;interop2: point2point ospf;successfully;finished
+intop2-ospf09.tst;0;interop2: ospf authentication;successfully;finished
+intop2-ospf10.tst;0;interop2: ospf p2mp te;successfully;finished
+intop2-ospf11.tst;0;interop2: ospf sr;successfully;finished
+intop2-rip01.tst;0;interop2: rip;successfully;finished
+intop2-rip02.tst;0;interop2: rip prefix withdraw;successfully;finished
+intop2-rip03.tst;0;interop2: rip authentication;successfully;finished
+intop2-tun01.tst;0;interop2: gre tunnel;successfully;finished
+intop2-tun02.tst;0;interop2: ipip tunnel;successfully;finished
+intop2-zzz.tst;0;interop2: config wiper;successfully;finished
 mpls-bier01.tst;0;bier in chain;successfully;finished
 mpls-bier02.tst;0;bier in star;successfully;finished
 mpls-bier03.tst;0;bier in dense chain;successfully;finished
