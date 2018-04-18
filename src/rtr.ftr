@@ -735,6 +735,7 @@ qc pass: sep tunneling with mpls
 qc pass: ethernet tunneling with mpls
 qc pass: vlan tunneling with mpls
 qc pass: tunnel interface with mpls
+qc pass: ethernet over mpls with cw
 qc pass: ppp over packet over udp pwhe
 qc pass: ethernet over packet over udp pwhe
 qc pass: ethernet over vxlan pwhe

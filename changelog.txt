@@ -8299,3 +8299,5 @@ qc pass: interop2: rip authentication
 qc pass: interop2: gre tunnel
 qc pass: interop2: ipip tunnel
 qc pass: interop2: config wiper
+---------------------------------- 2018-04-17 11:48:01
+qc pass: ethernet over mpls with cw

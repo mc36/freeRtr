@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.4.15-testing, done by cs@nop.;-;-
--;-;2018-04-15 12:16:06, took 08:03:50 on 1465 cases;-;-
+-;-;freeRouter v18.4.17-testing, done by cs@nop.;-;-
+-;-;2018-04-17 19:51:35, took 08:03:34 on 1466 cases;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -738,6 +738,7 @@ mpls-pwe19.tst;0;sep tunneling with mpls;successfully;finished
 mpls-pwe20.tst;0;ethernet tunneling with mpls;successfully;finished
 mpls-pwe21.tst;0;vlan tunneling with mpls;successfully;finished
 mpls-pwe22.tst;0;tunnel interface with mpls;successfully;finished
+mpls-pwe23.tst;0;ethernet over mpls with cw;successfully;finished
 mpls-pwhe01.tst;0;ppp over packet over udp pwhe;successfully;finished
 mpls-pwhe02.tst;0;ethernet over packet over udp pwhe;successfully;finished
 mpls-pwhe03.tst;0;ethernet over vxlan pwhe;successfully;finished
