@@ -52,9 +52,24 @@ public class cfgXconnSide {
     public int pwmtu = 1500;
 
     /**
-     * pw direction
+     * vlan pw type
      */
-    public boolean pwdir = true;
+    public boolean pwtVlan = false;
+
+    /**
+     * pw out direction
+     */
+    public boolean pwdirOut = false;
+
+    /**
+     * pw in direction
+     */
+    public boolean pwdirIn = false;
+
+    /**
+     * control word
+     */
+    public boolean ctrlWord = false;
 
     /**
      * upper layer handler
@@ -124,7 +139,11 @@ public class cfgXconnSide {
         l.add((p + 2) + " " + (p + 3) + "         vxlan                   vxlan encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         geneve                  geneve encapsulation");
         l.add((p + 3) + " " + (p + 4) + "           <addr>                address of target");
-        l.add((p + 4) + " .             <num>               vc id");
+        l.add((p + 4) + " " + (p + 5) + ",.           <num>               vc id");
+        l.add((p + 5) + " " + (p + 5) + ",.             control-word      use control word");
+        l.add((p + 5) + " " + (p + 5) + ",.             inbound           inbound direction");
+        l.add((p + 5) + " " + (p + 5) + ",.             outbound          outbound direction");
+        l.add((p + 5) + " " + (p + 5) + ",.             vlan              use vlan pw type");
     }
 
     /**
@@ -202,20 +221,22 @@ public class cfgXconnSide {
         }
     }
 
-    /**
-     * set direction automatically
-     */
-    public void start2dir() {
+    private boolean getDir() {
+        if (pwdirOut) {
+            return true;
+        }
+        if (pwdirIn) {
+            return false;
+        }
         switch (pwmod) {
             case prL2tp2:
-                pwdir = false;
-                break;
+                return false;
             case prPptp:
-                pwdir = true;
-                break;
+                return true;
             case prL2tp3:
-                pwdir = adr.compare(adr, ifc.getLocAddr(adr)) < 0;
-                break;
+                return adr.compare(adr, ifc.getLocAddr(adr)) < 0;
+            default:
+                return true;
         }
     }
 
@@ -223,6 +244,9 @@ public class cfgXconnSide {
      * start this pseudowire
      */
     public void start2run() {
+        if (pwtVlan) {
+            pwtype = packLdpPwe.pwtEthVlan;
+        }
         switch (pwmod) {
             case prPou:
                 pou = new clntPckOudp();
@@ -266,6 +290,7 @@ public class cfgXconnSide {
                 vxl.srcIfc = ifc;
                 vxl.inst = vcid;
                 vxl.prot = ifcNshFwd.protEth;
+                vxl.wildcard = ctrlWord;
                 vxl.setUpper(upper);
                 vxl.workStart();
                 break;
@@ -283,7 +308,7 @@ public class cfgXconnSide {
                 pptp.target = "" + adr;
                 pptp.vrf = vrf;
                 pptp.srcIfc = ifc;
-                pptp.direction = pwdir;
+                pptp.direction = getDir();
                 pptp.called = "" + vcid;
                 pptp.setUpper(upper);
                 pptp.workStart();
@@ -293,7 +318,7 @@ public class cfgXconnSide {
                 l2tp2.target = "" + adr;
                 l2tp2.vrf = vrf;
                 l2tp2.srcIfc = ifc;
-                l2tp2.direction = pwdir;
+                l2tp2.direction = getDir();
                 l2tp2.called = "" + vcid;
                 l2tp2.calling = "" + vcid;
                 l2tp2.setUpper(upper);
@@ -306,7 +331,7 @@ public class cfgXconnSide {
                 l2tp3.vrf = vrf;
                 l2tp3.srcIfc = ifc;
                 l2tp3.vcid = "" + vcid;
-                l2tp3.direction = pwdir;
+                l2tp3.direction = getDir();
                 l2tp3.setUpper(upper);
                 l2tp3.workStart();
                 break;
@@ -318,7 +343,7 @@ public class cfgXconnSide {
                 pwom.vrf = vrf;
                 pwom.srcIfc = ifc;
                 pwom.vcid = vcid;
-                pwom.ctrlWrd = false;
+                pwom.ctrlWrd = ctrlWord;
                 pwom.descr = name;
                 pwom.setUpper(upper);
                 pwom.workStart();
@@ -381,7 +406,20 @@ public class cfgXconnSide {
         if (!ready2run()) {
             return "";
         }
-        return vrf.name + " " + ifc.name + " " + cfgVpdn.type2str(pwmod) + " " + adr + " " + vcid;
+        String a = vrf.name + " " + ifc.name + " " + cfgVpdn.type2str(pwmod) + " " + adr + " " + vcid;
+        if (ctrlWord) {
+            a += " control-word";
+        }
+        if (pwtVlan) {
+            a += " vlan";
+        }
+        if (pwdirIn) {
+            a += " inbound";
+        }
+        if (pwdirOut) {
+            a += " outbound";
+        }
+        return a;
     }
 
     /**
@@ -415,6 +453,28 @@ public class cfgXconnSide {
         if (pwmod == null) {
             cmd.error("bad mode");
             return;
+        }
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("control-word")) {
+                ctrlWord = true;
+                continue;
+            }
+            if (a.equals("inbound")) {
+                pwdirIn = true;
+                continue;
+            }
+            if (a.equals("outbound")) {
+                pwdirOut = true;
+                continue;
+            }
+            if (a.equals("vlan")) {
+                pwtVlan = true;
+                continue;
+            }
         }
     }
 

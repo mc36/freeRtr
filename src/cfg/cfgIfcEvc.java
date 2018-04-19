@@ -116,7 +116,6 @@ public class cfgIfcEvc implements Comparator<cfgIfcEvc> {
             res = bridgeIfc;
         }
         if (xconn != null) {
-            xconn.start2dir();
             ether = new ifcEther(parent.ifaceNeedMacs());
             xconn.upper = ether.getSideEth();
             xconn.start2run();

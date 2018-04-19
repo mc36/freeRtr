@@ -172,8 +172,6 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
         side2.pwtype = pwtype;
         side1.pwmtu = pwmtu;
         side2.pwmtu = pwmtu;
-        side1.start2dir();
-        side2.start2dir();
         side1.start2run();
         side2.start2run();
     }

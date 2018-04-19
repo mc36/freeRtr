@@ -3473,6 +3473,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunVxlan.prot = tunPri;
                 tunVxlan.sendingTOS = tunTOS;
                 tunVxlan.sendingTTL = tunTTL;
+                tunVxlan.wildcard = tunSeq;
                 tunVxlan.setUpper(ethtyp);
                 tunVxlan.workStart();
                 lower = tunVxlan;
@@ -5414,7 +5415,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 xconn = null;
                 return;
             }
-            xconn.start2dir();
             xconn.start2run();
             ethtyp.addET(-1, "xconn", eth.getSideTyp());
             ethtyp.updateET(-1, eth.getSideTyp());
@@ -5447,7 +5447,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 pwhe = null;
                 return;
             }
-            pwhe.start2dir();
             pwhe.start2run();
             return;
         }
