@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v18.4.18-testing, done by cs@nop.<br/>
-tested: 2018-04-19 02:56:41, took 08:02:24 on 1466 cases<br/>
+release: freeRouter v18.4.20-testing, done by cs@nop.<br/>
+tested: 2018-04-20 12:17:27, took 08:02:29 on 1468 cases<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -761,6 +761,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwhe16.tst">mpls-pwhe16.tst</a></td><td>0</td><td>ethernet over l2tp3 pwhe</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwhe17.tst">mpls-pwhe17.tst</a></td><td>0</td><td>ppp over mpls pwhe</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwhe18.tst">mpls-pwhe18.tst</a></td><td>0</td><td>ethernet over mpls pwhe</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-pwhe19.tst">mpls-pwhe19.tst</a></td><td>0</td><td>ethernet over mpls pwhe with cw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr01.tst">mpls-sr01.tst</a></td><td>0</td><td>segment routing in chain</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr02.tst">mpls-sr02.tst</a></td><td>0</td><td>segment routing in star</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr03.tst">mpls-sr03.tst</a></td><td>0</td><td>te over segment routing</td><td>successfully</td><td>finished</td></tr>
@@ -792,15 +793,16 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn06.tst">mpls-xconn06.tst</a></td><td>0</td><td>cross connect with etherip</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn07.tst">mpls-xconn07.tst</a></td><td>0</td><td>cross connect with nvgre</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn08.tst">mpls-xconn08.tst</a></td><td>0</td><td>cross connect with uti</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn09.tst">mpls-xconn09.tst</a></td><td>0</td><td>cross connect interworking with packet over udp</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn10.tst">mpls-xconn10.tst</a></td><td>0</td><td>cross connect interworking with vxlan</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn11.tst">mpls-xconn11.tst</a></td><td>0</td><td>cross connect interworking with geneve</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn12.tst">mpls-xconn12.tst</a></td><td>0</td><td>cross connect interworking with erspan</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn13.tst">mpls-xconn13.tst</a></td><td>0</td><td>cross connect interworking with etherip</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn14.tst">mpls-xconn14.tst</a></td><td>0</td><td>cross connect interworking with nvgre</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn15.tst">mpls-xconn15.tst</a></td><td>0</td><td>cross connect interworking with uti</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn16.tst">mpls-xconn16.tst</a></td><td>0</td><td>cross connect interworking with dlsw</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn17.tst">mpls-xconn17.tst</a></td><td>0</td><td>cross connect with everything</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn09.tst">mpls-xconn09.tst</a></td><td>0</td><td>cross connect with pwe over mpls with cw</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn10.tst">mpls-xconn10.tst</a></td><td>0</td><td>cross connect interworking with packet over udp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn11.tst">mpls-xconn11.tst</a></td><td>0</td><td>cross connect interworking with vxlan</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn12.tst">mpls-xconn12.tst</a></td><td>0</td><td>cross connect interworking with geneve</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn13.tst">mpls-xconn13.tst</a></td><td>0</td><td>cross connect interworking with erspan</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn14.tst">mpls-xconn14.tst</a></td><td>0</td><td>cross connect interworking with etherip</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn15.tst">mpls-xconn15.tst</a></td><td>0</td><td>cross connect interworking with nvgre</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn16.tst">mpls-xconn16.tst</a></td><td>0</td><td>cross connect interworking with uti</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn17.tst">mpls-xconn17.tst</a></td><td>0</td><td>cross connect interworking with dlsw</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn18.tst">mpls-xconn18.tst</a></td><td>0</td><td>cross connect with everything</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/opnflw-rout01.tst">opnflw-rout01.tst</a></td><td>0</td><td>openflow: software routing</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/opnflw-rout02.tst">opnflw-rout02.tst</a></td><td>0</td><td>openflow: bridging and routing</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/opnflw-rout03.tst">opnflw-rout03.tst</a></td><td>0</td><td>openflow: ip routing</td><td>successfully</td><td>finished</td></tr>

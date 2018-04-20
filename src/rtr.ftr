@@ -754,6 +754,7 @@ qc pass: ppp over l2tp3 pwhe
 qc pass: ethernet over l2tp3 pwhe
 qc pass: ppp over mpls pwhe
 qc pass: ethernet over mpls pwhe
+qc pass: ethernet over mpls pwhe with cw
 qc pass: segment routing in chain
 qc pass: segment routing in star
 qc pass: te over segment routing
@@ -785,6 +786,7 @@ qc pass: cross connect with erspan
 qc pass: cross connect with etherip
 qc pass: cross connect with nvgre
 qc pass: cross connect with uti
+qc pass: cross connect with pwe over mpls with cw
 qc pass: cross connect interworking with packet over udp
 qc pass: cross connect interworking with vxlan
 qc pass: cross connect interworking with geneve

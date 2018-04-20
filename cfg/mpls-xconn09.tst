@@ -1,4 +1,4 @@
-description cross connect interworking with packet over udp
+description cross connect with pwe over mpls with cw
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -16,6 +16,7 @@ int tun1
  tunnel vrf v1
  tunnel mode pweompls
  tunnel key 1234
+ tunnel sequ
  tunnel source ethernet1
  tunnel destination 1.1.1.2
  vrf for v1
@@ -41,10 +42,11 @@ int eth2
  vrf for v1
  ipv4 addr 1.1.1.5 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
+ mpls enable
  exit
 xconnect con
- side1 v1 eth1 pweompls 1.1.1.1 1234
- side2 v1 eth2 pckoudp 1234:2::2 1234
+ side1 v1 eth1 pweompls 1.1.1.1 1234 control
+ side2 v1 eth2 pweompls 1234:2::2 1234 control
  exit
 !
 
@@ -58,11 +60,13 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
+ mpls enable
  exit
 int tun1
  tunnel vrf v1
- tunnel mode pckoudp
+ tunnel mode pweompls
  tunnel key 1234
+ tunnel sequ
  tunnel source ethernet1
  tunnel destination 1234:2::1
  vrf for v1
