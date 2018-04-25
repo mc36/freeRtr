@@ -95,6 +95,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("1 2   elsif                 match values from source routing protocol");
         l.add("2 .     always              match always");
         l.add("2 .     never               match never");
+        l.add("2 3     nexthop             match next hop");
+        l.add("3 .       <addr>            address");
         l.add("2 3     aspath              match as path");
         l.add("3 3,.     <str>             regexp against as path");
         l.add("2 3     stdcomm             match standard community");
@@ -174,7 +176,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("2 3     lrgcomm             add large community");
         l.add("3 3,.     <num>             community");
         l.add("2 3     nexthop             set next hop");
-        l.add("3 3,.     <addr>            address");
+        l.add("3 .       <addr>            address");
         l.add("2 3     distance            set administrative distance");
         l.add("3 .       leave             leave value unchanged");
         l.add("3 4       set               set value to a specific value");
@@ -409,6 +411,15 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         if (a.equals("safi")) {
             ntry.ifMode = tabRtrplcN.ifType.safi;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("nexthop")) {
+            ntry.ifMode = tabRtrplcN.ifType.nexthop;
+            ntry.nexthopSet = new addrIP();
+            if (ntry.nexthopSet.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;
             }

@@ -54,6 +54,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no match stdcomm",
         "route-map .*! sequence .* no match extcomm",
         "route-map .*! sequence .* no match lrgcomm",
+        "route-map .*! sequence .* no match nexthop",
         "route-map .*! sequence .* match distance all",
         "route-map .*! sequence .* match locpref all",
         "route-map .*! sequence .* match aigp all",
@@ -158,6 +159,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("3 3,.     <str>             community");
         l.add("2 3     lrgcomm             match large community");
         l.add("3 3,.     <str>             community");
+        l.add("2 3     nexthop             match next hop");
+        l.add("3 .       <addr>            address");
         l.add("2 3     distance            match administrative distance");
         l.add("3 .       <num>             administrative distance");
         l.add("3 .       all               any value");
@@ -222,7 +225,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("2 3     lrgcomm             add large community");
         l.add("3 3,.     <num>             community");
         l.add("2 3     nexthop             set next hop");
-        l.add("3 3,.     <addr>            address");
+        l.add("3 .       <addr>            address");
         l.add("2 3     distance            set administrative distance");
         l.add("3 .       leave             leave value unchanged");
         l.add("3 4       set               set value to a specific value");
@@ -339,6 +342,11 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         if (a.equals("match")) {
             a = cmd.word();
             tabRtrmapN ntry = getCurr();
+            if (a.equals("nexthop")) {
+                ntry.nexthopMatch = new addrIP();
+                ntry.nexthopMatch.fromString(cmd.getRemaining());
+                return;
+            }
             if (a.equals("aspath")) {
                 ntry.aspathMatch = cmd.getRemaining();
                 return;
@@ -623,6 +631,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         if (a.equals("match")) {
             a = cmd.word();
             tabRtrmapN ntry = getCurr();
+            if (a.equals("nexthop")) {
+                ntry.nexthopMatch = null;
+                return;
+            }
             if (a.equals("aspath")) {
                 ntry.aspathMatch = null;
                 return;

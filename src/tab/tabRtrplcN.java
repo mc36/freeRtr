@@ -232,7 +232,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
         /**
          * safi
          */
-        safi
+        safi,
+        /**
+         * nexthop
+         */
+        nexthop
     }
 
     /**
@@ -433,6 +437,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "afi " + intMatch;
             case safi:
                 return "safi " + intMatch;
+            case nexthop:
+                return "nexthop " + nexthopSet;
             default:
                 return "unknown=" + ifMode;
         }
@@ -527,6 +533,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return intMatch.matches(afi & rtrBgpUtil.afiMask);
             case safi:
                 return intMatch.matches(afi & rtrBgpUtil.safiMask);
+            case nexthop:
+                if (net.nextHop == null) {
+                    return false;
+                }
+                return nexthopSet.compare(nexthopSet, net.nextHop) == 0;
             default:
                 return true;
         }

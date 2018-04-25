@@ -135,6 +135,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public List<Integer> aspathSet;
 
     /**
+     * next hop matcher
+     */
+    public addrIP nexthopMatch;
+
+    /**
      * next hop updater
      */
     public addrIP nexthopSet;
@@ -590,6 +595,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         } else {
             l.add(beg + "match network " + networkMatch);
         }
+        if (nexthopMatch == null) {
+            l.add(beg + "no match nexthop");
+        } else {
+            l.add(beg + "match nexthop " + nexthopMatch);
+        }
         if (aspathMatch == null) {
             l.add(beg + "no match aspath");
         } else {
@@ -708,11 +718,6 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (!pathlenMatch.matches(net.asPathLen())) {
             return false;
         }
-        if (aspathMatch != null) {
-            if (!net.asPathStr().matches(aspathMatch)) {
-                return false;
-            }
-        }
         if (noStdComm) {
             if (net.stdComm != null) {
                 if (net.stdComm.size() > 0) {
@@ -734,6 +739,24 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 }
             }
         }
+        if (nexthopMatch != null) {
+            if (net.nextHop == null) {
+                return false;
+            }
+            if (nexthopMatch.compare(nexthopMatch, net.nextHop) != 0) {
+                return false;
+            }
+        }
+        if (networkMatch != null) {
+            if (!networkMatch.matches(afi, net.prefix)) {
+                return false;
+            }
+        }
+        if (aspathMatch != null) {
+            if (!net.asPathStr().matches(aspathMatch)) {
+                return false;
+            }
+        }
         if (stdCommMatch != null) {
             for (int i = 0; i < stdCommMatch.size(); i++) {
                 if (rtrBgpUtil.findIntList(net.stdComm, stdCommMatch.get(i)) < 0) {
@@ -753,11 +776,6 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 if (rtrBgpUtil.findLrgList(net.lrgComm, lrgCommMatch.get(i)) < 0) {
                     return false;
                 }
-            }
-        }
-        if (networkMatch != null) {
-            if (!networkMatch.matches(afi, net.prefix)) {
-                return false;
             }
         }
         if (prfxlstMatch != null) {

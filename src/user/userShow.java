@@ -2455,6 +2455,19 @@ public class userShow {
                 doShowRoutes(r.bgp.fwdCore, res, dsp);
                 return;
             }
+            if (a.equals("nexthop")) {
+                a = cmd.getRemaining();
+                cmd = new cmds("", "");
+                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+                tabRtrmapN ntry = new tabRtrmapN();
+                ntry.nexthopMatch = new addrIP();
+                ntry.nexthopMatch.fromString(a);
+                roumap.add(ntry);
+                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, roumap, null, null);
+                doShowRoutes(r.bgp.fwdCore, res, dsp);
+                return;
+            }
             if (a.equals("prefix-list")) {
                 a = cmd.word();
                 cfgPrfxlst fnd = cfgAll.prfxFind(a, false);
