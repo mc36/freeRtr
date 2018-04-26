@@ -103,6 +103,11 @@ public abstract class rtrBgpParam {
     public int egressEng;
 
     /**
+     * capability negotiation
+     */
+    public boolean capaNego;
+
+    /**
      * route reflector client
      */
     public boolean reflectClnt;
@@ -624,6 +629,7 @@ public abstract class rtrBgpParam {
         bufferSize = 65536;
         ttlSecurity = -1;
         passwd = null;
+        capaNego = true;
         keepAlive = 60 * 1000;
         holdTimer = keepAlive * 3;
     }
@@ -656,6 +662,7 @@ public abstract class rtrBgpParam {
         segRout = src.segRout;
         bier = src.bier;
         egressEng = src.egressEng;
+        capaNego = src.capaNego;
         bfdTrigger = src.bfdTrigger;
         softReconfig = src.softReconfig;
         graceRestart = src.graceRestart;
@@ -856,6 +863,7 @@ public abstract class rtrBgpParam {
         l.add("4 .         <num>                 ttl value");
         l.add("3 4       egress-engineering      set egress engineering");
         l.add("4 .         <num>                 index value");
+        l.add("3 .       capability-negotiation  perform capability negosiation");
         l.add("3 4       connection-mode         connection mode allowed");
         l.add("4 .         active                this router will initiate session");
         l.add("4 .         passive               remote router will initiate session");
@@ -1029,6 +1037,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, egressEng == 0, beg, nei + "egress-engineering", "" + egressEng);
+        cmds.cfgLine(l, !capaNego, beg, nei + "capability-negotiation", "" );
         cmds.cfgLine(l, !reflectClnt, beg, nei + "route-reflector-client", "");
         cmds.cfgLine(l, !remoteConfed, beg, nei + "confederation-peer", "");
         cmds.cfgLine(l, !nxtHopUnchgd, beg, nei + "next-hop-unchanged", "");
@@ -1373,6 +1382,10 @@ public abstract class rtrBgpParam {
                 return false;
             }
             egressEng = 0;
+            return false;
+        }
+        if (s.equals("capability-negotiation")) {
+            capaNego = !negated;
             return false;
         }
         if (s.equals("remove-private-as-out")) {

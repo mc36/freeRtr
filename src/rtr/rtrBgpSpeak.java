@@ -1296,6 +1296,17 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 peerAfis |= o;
             }
         }
+        if (!neigh.capaNego) {
+            peerAfis = neigh.addrFams;
+            peerGrace = neigh.addrFams;
+            addpathRx = neigh.addpathRmode;
+            addpathTx = neigh.addpathTmode;
+            peerRefresh = true;
+            peer32bitAS = true;
+            if ((neigh.compressMode & 2) != 0) {
+                compressTx = new Deflater();
+            }
+        }
         peerAfis &= neigh.addrFams;
         if (peerAfis == 0) {
             logger.info("neighbor " + neigh.peerAddr + " in wrong safi");
