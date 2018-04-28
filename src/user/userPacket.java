@@ -253,6 +253,16 @@ public class userPacket {
             sip.fromString(cmd.word());
             addrIP tip = new addrIP();
             tip.fromString(cmd.word());
+            int safi;
+            if (trg.isIPv4()) {
+                safi = rtrBgpUtil.safiIp4uni;
+            } else {
+                safi = rtrBgpUtil.safiIp6uni;
+            }
+            a = cmd.word();
+            if (a.length() > 0) {
+                safi = bits.str2num(a);
+            }
             pipeSide strm = null;
             for (;;) {
                 cmd.error("connecting " + trg);
@@ -270,15 +280,9 @@ public class userPacket {
                 cmd.error("failed");
                 return;
             }
-            cmd.error("sending open");
+            cmd.error("sending safi=" + rtrBgpUtil.safi2string(safi) + " as=" + las + " open");
             rtrBgpNeigh nei = new rtrBgpNeigh(null);
             nei.localAs = las;
-            int safi;
-            if (trg.isIPv4()) {
-                safi = rtrBgpUtil.safiIp4uni;
-            } else {
-                safi = rtrBgpUtil.safiIp6uni;
-            }
             nei.addrFams = safi;
             rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm);
             packHolder pck = new packHolder(true, true);

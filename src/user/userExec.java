@@ -1055,7 +1055,8 @@ public class userExec {
         hl.add("6 7              <num>           local as");
         hl.add("7 8                <file>        mrt file");
         hl.add("8 9                  <addr>      source peer");
-        hl.add("9 .                    <addr>    target peer");
+        hl.add("9 10,.                 <addr>    target peer");
+        hl.add("10 .                     [num]   safi number");
         hl.add(".2 3     random                  run random packet generator");
         hl.add("3 4        <name>                name of interface");
         hl.add("4 4,.        [byte]              byte in hex");
