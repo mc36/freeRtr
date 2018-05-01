@@ -7,7 +7,7 @@ cp resolv /etc/resolv.conf
 chmod 777 /etc/init.d/rtr
 rm /usr/lib/systemd/network/*
 systemctl set-default multi-user.target
-export SVC="network-manager NetworkManager ModemManager systemd-networkd"
+export SVC="network-manager NetworkManager ModemManager systemd-networkd systemd-networkd-wait-online"
 systemctl disable $SVC
 systemctl mask $SVC
 systemctl stop $SVC
