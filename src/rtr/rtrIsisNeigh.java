@@ -95,6 +95,8 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
      */
     protected final rtrIsisLevel level;
 
+    private int updPos;
+
     private final rtrIsis lower;
 
     private final rtrIsisIface iface;
@@ -770,7 +772,8 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
             advert.del(old);
         }
         for (i = 0; i < level.lsps.size(); i++) {
-            rtrIsisLsp lsp = level.lsps.get(i);
+            updPos = (updPos + 1) % level.lsps.size();
+            rtrIsisLsp lsp = level.lsps.get(updPos);
             if (lsp == null) {
                 continue;
             }

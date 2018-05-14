@@ -27,6 +27,8 @@ public class rtrOspf4neigh implements rtrBfdClnt, Comparator<rtrOspf4neigh> {
 
     private Timer keepTimer;
 
+    private int updPos;
+    
     private int ddSeq;
 
     private int ddPos;
@@ -806,7 +808,8 @@ public class rtrOspf4neigh implements rtrBfdClnt, Comparator<rtrOspf4neigh> {
             advert.del(old);
         }
         for (i = 0; i < area.lsas.size(); i++) {
-            rtrOspf4lsa lsa = area.lsas.get(i);
+            updPos = (updPos + 1) % area.lsas.size();
+            rtrOspf4lsa lsa = area.lsas.get(updPos);
             if (lsa == null) {
                 continue;
             }
