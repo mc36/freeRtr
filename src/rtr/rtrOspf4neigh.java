@@ -28,7 +28,7 @@ public class rtrOspf4neigh implements rtrBfdClnt, Comparator<rtrOspf4neigh> {
     private Timer keepTimer;
 
     private int updPos;
-    
+
     private int ddSeq;
 
     private int ddPos;
@@ -495,6 +495,7 @@ public class rtrOspf4neigh implements rtrBfdClnt, Comparator<rtrOspf4neigh> {
             rtrOspf4lsa old = area.lsas.add(lsa);
             if (old == null) {
                 advert.put(lsa.copyBytes(false));
+                seenOwn |= lower.routerID.compare(lower.routerID, lsa.rtrID) == 0;
                 continue;
             }
             if (!old.otherNewer(lsa)) {

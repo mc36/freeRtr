@@ -605,6 +605,9 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
         rtrIsisLsp old = level.lsps.add(lsp);
         if (old == null) {
             advert.put(lsp.copyBytes(false));
+            if (lower.routerID.compare(lower.routerID, lsp.srcID) == 0) {
+                level.schedWork(1);
+            }
             level.schedWork(6);
             return;
         }

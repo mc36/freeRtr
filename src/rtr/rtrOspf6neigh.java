@@ -499,6 +499,7 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
             rtrOspf6lsa old = area.lsas.add(lsa);
             if (old == null) {
                 advert.put(lsa.copyBytes(false));
+                seenOwn |= lower.routerID.compare(lower.routerID, lsa.rtrID) == 0;
                 continue;
             }
             if (!old.otherNewer(lsa)) {

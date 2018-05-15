@@ -431,10 +431,12 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
     }
 
     private void doTransmit() {
-        if (txBuf == null) {
+        packHolder pck;
+        try {
+            pck = txBuf.copyBytes(true, true);
+        } catch (Exception e) {
             return;
         }
-        packHolder pck = txBuf.copyBytes(true, true);
         iface.makeHead(pck, txOpc, txFlg, txSeq, rxSeq);
         packSend(pck);
     }
