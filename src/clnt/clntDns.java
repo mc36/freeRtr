@@ -88,16 +88,6 @@ public class clntDns {
      * @return false on success, true on error
      */
     public boolean doResolvOne(addrIP srv, String nam, int typ) {
-        query = new packDns();
-        packDnsRec rr = new packDnsRec();
-        packHolder pck = new packHolder(true, true);
-        rr.name = nam;
-        rr.typ = typ;
-        query.queries.add(rr);
-        query.id = bits.randomW();
-        query.opcode = packDns.opcodeQuery;
-        query.recDsrd = true;
-        query.result = packDns.resultSuccess;
         reply = new packDns();
         packDnsRec cac = loCache.findUser(nam, typ);
         for (int lop = 0; lop < 32; lop++) {
@@ -112,7 +102,9 @@ public class clntDns {
             if (cac == null) {
                 break;
             }
-            reply.answers.add(cac);
+            if (debugger.clntDnsTraf) {
+                logger.debug("cache redir " + cac);
+            }
             nam = cac.target;
             cac = loCache.findUser(nam, typ);
         }
@@ -122,6 +114,16 @@ public class clntDns {
         if (srv == null) {
             return true;
         }
+        query = new packDns();
+        packHolder pck = new packHolder(true, true);
+        packDnsRec rr = new packDnsRec();
+        rr.name = nam;
+        rr.typ = typ;
+        query.queries.add(rr);
+        query.id = bits.randomW();
+        query.opcode = packDns.opcodeQuery;
+        query.recDsrd = true;
+        query.result = packDns.resultSuccess;
         for (int retry = 0; retry < 3; retry++) {
             pipeSide conn = curPrx.doConnect(servGeneric.protoUdp, srv, packDns.portNum, "dns");
             if (conn == null) {

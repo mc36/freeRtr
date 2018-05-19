@@ -60,7 +60,7 @@ public class userTerminal {
         if (!addr.fromString(host)) {
             return addr;
         }
-        console.debugStat("resolving " + host);
+        console.debugStat("resolving " + host + " for proto " + prt);
         addrIP adr = justResolv(host, prt);
         if (adr == null) {
             console.debugStat("not found");
