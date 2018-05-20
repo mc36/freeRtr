@@ -771,6 +771,7 @@ public class userExec {
         hl.add("6 5,.            <num>           byte count");
         hl.add("5 6            /port             specify tcp port");
         hl.add("6 5,.            <num>           port number");
+        hl.add("5 .            /lookup           perform reverse lookup to");
         hl.add("1 2    portscan                  scan ports on remote");
         hl.add("2 3,.    <host>                  name of host");
         hl.add("3 3,.      /ipv4                 specify ipv4 to use");
@@ -1977,6 +1978,7 @@ public class userExec {
         int tos = 0;
         int len = 64;
         int prt = -1;
+        boolean lok = false;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -2010,6 +2012,10 @@ public class userExec {
                 prt = bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("/lookup")) {
+                lok = true;
+                continue;
+            }
         }
         pipe.linePut("scanning " + strt + ", inc=" + incr + ", num=" + numb + ", tim=" + tim + ", len=" + len);
         for (;;) {
@@ -2027,6 +2033,12 @@ public class userExec {
             addrIP adr = new addrIP();
             adr.fromString("0::1");
             numb.setSub(numb, adr);
+            String a = "";
+            if (lok) {
+                clntDns clnt = new clntDns();
+                clnt.doResolvOne(cfgAll.nameServerAddr, packDnsRec.generateReverse(strt), packDnsRec.typePTR);
+                a = " (" + clnt.getPTR() + ")";
+            }
             if (prt > 0) {
                 clntPorts trc = new clntPorts();
                 trc.vrf = vrf;
@@ -2034,7 +2046,7 @@ public class userExec {
                 trc.trg = strt;
                 trc.tim = tim;
                 if (!trc.testOne(prt)) {
-                    pipe.linePut(strt + " is open.");
+                    pipe.linePut(strt + a + " is open.");
                 }
                 continue;
             }
@@ -2051,7 +2063,7 @@ public class userExec {
             if (notif.totalNotifies() < 1) {
                 continue;
             }
-            pipe.linePut(strt + " is alive.");
+            pipe.linePut(strt + a + " is alive.");
         }
     }
 
