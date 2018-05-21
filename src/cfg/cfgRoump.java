@@ -64,6 +64,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* match origin all",
         "route-map .*! sequence .* match metric all",
         "route-map .*! sequence .* match tag all",
+        "route-map .*! sequence .* match segrout all",
+        "route-map .*! sequence .* match bier all",
         "route-map .*! sequence .* match afi all",
         "route-map .*! sequence .* match safi all",
         "route-map .*! sequence .* no match nostdcomm",
@@ -86,6 +88,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* set origin leave",
         "route-map .*! sequence .* set metric leave",
         "route-map .*! sequence .* set tag leave",
+        "route-map .*! sequence .* set segrout leave",
+        "route-map .*! sequence .* set bier leave",
         "route-map .*! sequence .* no log"
     };
 
@@ -188,6 +192,12 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("2 3     tag                 match tag");
         l.add("3 .       <num>             tag");
         l.add("3 .       all               any value");
+        l.add("2 3     segrout             match sr index");
+        l.add("3 .       <num>             index");
+        l.add("3 .       all               any value");
+        l.add("2 3     bier                match bier index");
+        l.add("3 .       <num>             index");
+        l.add("3 .       all               any value");
         l.add("2 3     afi                 match afi");
         l.add("3 .       <num>             afi");
         l.add("3 .       all               any value");
@@ -275,6 +285,22 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("3 4       sub               substract value to current value");
         l.add("4 .         <num>           value");
         l.add("2 3     tag                 set tag");
+        l.add("3 .       leave             leave value unchanged");
+        l.add("3 4       set               set value to a specific value");
+        l.add("4 .         <num>           value");
+        l.add("3 4       add               add value to current value");
+        l.add("4 .         <num>           value");
+        l.add("3 4       sub               substract value to current value");
+        l.add("4 .         <num>           value");
+        l.add("2 3     segrout             set sr index");
+        l.add("3 .       leave             leave value unchanged");
+        l.add("3 4       set               set value to a specific value");
+        l.add("4 .         <num>           value");
+        l.add("3 4       add               add value to current value");
+        l.add("4 .         <num>           value");
+        l.add("3 4       sub               substract value to current value");
+        l.add("4 .         <num>           value");
+        l.add("2 3     bier                set bier index");
         l.add("3 .       leave             leave value unchanged");
         l.add("3 4       set               set value to a specific value");
         l.add("4 .         <num>           value");
@@ -479,6 +505,20 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("segrout")) {
+                if (ntry.segrouMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("bier")) {
+                if (ntry.bierMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             if (a.equals("afi")) {
                 if (ntry.afiMatch.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -582,6 +622,20 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("tag")) {
                 if (ntry.tagSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("segrout")) {
+                if (ntry.segrouSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("bier")) {
+                if (ntry.bierSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
                     return;
                 }
@@ -719,6 +773,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.tagMatch.set2always();
                 return;
             }
+            if (a.equals("segrout")) {
+                ntry.segrouMatch.set2always();
+                return;
+            }
+            if (a.equals("bier")) {
+                ntry.bierMatch.set2always();
+                return;
+            }
             if (a.equals("afi")) {
                 ntry.afiMatch.set2always();
                 return;
@@ -797,6 +859,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("tag")) {
                 ntry.tagSet.set2unchange();
+                return;
+            }
+            if (a.equals("segrout")) {
+                ntry.segrouSet.set2unchange();
+                return;
+            }
+            if (a.equals("bier")) {
+                ntry.bierSet.set2unchange();
                 return;
             }
             if (a.equals("route-map")) {

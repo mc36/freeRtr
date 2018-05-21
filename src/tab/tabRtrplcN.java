@@ -120,6 +120,14 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         setTag,
         /**
+         * set segrou
+         */
+        setSegrou,
+        /**
+         * set bier
+         */
+        setBier,
+        /**
          * set routemap
          */
         setRoumap,
@@ -225,6 +233,14 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          * tag
          */
         tag,
+        /**
+         * segrou
+         */
+        segrou,
+        /**
+         * bier
+         */
+        bier,
         /**
          * afi
          */
@@ -370,6 +386,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return bits.str2lst(beg + "set bandwidth " + intSet);
             case setTag:
                 return bits.str2lst(beg + "set tag " + intSet);
+            case setSegrou:
+                return bits.str2lst(beg + "set segrout " + intSet);
+            case setBier:
+                return bits.str2lst(beg + "set bier " + intSet);
             case setRoumap:
                 return bits.str2lst(beg + "set route-map " + roumap);
             case setRouplc:
@@ -433,6 +453,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "bandwidth " + intMatch;
             case tag:
                 return "tag " + intMatch;
+            case segrou:
+                return "segrout " + intMatch;
+            case bier:
+                return "bier " + intMatch;
             case afi:
                 return "afi " + intMatch;
             case safi:
@@ -529,6 +553,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return intMatch.matches(net.bandwidth);
             case tag:
                 return intMatch.matches(net.tag);
+            case segrou:
+                return intMatch.matches(net.segRoutI);
+            case bier:
+                return intMatch.matches(net.bierI);
             case afi:
                 return intMatch.matches(afi & rtrBgpUtil.afiMask);
             case safi:
@@ -599,6 +627,12 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case setTag:
                 net.tag = intSet.update(net.tag);
+                return;
+            case setSegrou:
+                net.segRoutI = intSet.update(net.segRoutI);
+                return;
+            case setBier:
+                net.bierI = intSet.update(net.bierI);
                 return;
             case setRoumap:
                 roumap.update(afi, net, false);

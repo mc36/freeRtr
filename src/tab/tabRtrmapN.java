@@ -125,6 +125,26 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntUpdater tagSet = new tabIntUpdater();
 
     /**
+     * segrou matcher
+     */
+    public tabIntMatcher segrouMatch = new tabIntMatcher();
+
+    /**
+     * segrou updater
+     */
+    public tabIntUpdater segrouSet = new tabIntUpdater();
+
+    /**
+     * bier matcher
+     */
+    public tabIntMatcher bierMatch = new tabIntMatcher();
+
+    /**
+     * bier updater
+     */
+    public tabIntUpdater bierSet = new tabIntUpdater();
+
+    /**
      * as path matcher
      */
     public String aspathMatch = null;
@@ -629,6 +649,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match origin " + originMatch);
         l.add(beg + "match metric " + metricMatch);
         l.add(beg + "match tag " + tagMatch);
+        l.add(beg + "match segrout " + segrouMatch);
+        l.add(beg + "match bier " + bierMatch);
         cmds.cfgLine(l, !noStdComm, beg, "match nostdcomm", "");
         cmds.cfgLine(l, !noExtComm, beg, "match noextcomm", "");
         cmds.cfgLine(l, !noLrgComm, beg, "match nolrgcomm", "");
@@ -670,6 +692,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set origin " + originSet);
         l.add(beg + "set metric " + metricSet);
         l.add(beg + "set tag " + tagSet);
+        l.add(beg + "set segrout " + segrouSet);
+        l.add(beg + "set bier " + bierSet);
         return l;
     }
 
@@ -710,6 +734,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (!tagMatch.matches(net.tag)) {
+            return false;
+        }
+        if (!segrouMatch.matches(net.segRoutI)) {
+            return false;
+        }
+        if (!bierMatch.matches(net.bierI)) {
             return false;
         }
         if (!validityMatch.matches(net.validity)) {
@@ -812,6 +842,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         net.origin = originSet.update(net.origin);
         net.metric = metricSet.update(net.metric);
         net.tag = tagSet.update(net.tag);
+        net.segRoutI = segrouSet.update(net.segRoutI);
+        net.bierI = bierSet.update(net.bierI);
         net.pathSeq = tabLabel.prependLabels(net.pathSeq, aspathSet);
         if (stdCommClear) {
             net.stdComm = null;
@@ -882,6 +914,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         t.addLine("set origin " + net.origin);
         t.addLine("set metric " + net.metric);
         t.addLine("set tag " + net.tag);
+        t.addLine("set segrout " + net.segRoutI);
+        t.addLine("set bier " + net.bierI);
         t.addLine("set aspath \"" + net.asPathStr() + "\"");
         t.addLine("set pathlen \"" + net.asPathLen() + "\"");
         t.addLine("set stdcomm \"" + stdComms2string(net.stdComm) + "\"");
@@ -940,6 +974,14 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             if (a.equals("tag")) {
                 net.tag = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("segrout")) {
+                net.segRoutI = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("bier")) {
+                net.bierI = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("aspath")) {

@@ -132,6 +132,12 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("2 3     tag                 match tag");
         l.add("3 .       <num>             tag");
         l.add("3 .       all               any value");
+        l.add("2 3     segrout             match sr index");
+        l.add("3 .       <num>             index");
+        l.add("3 .       all               any value");
+        l.add("2 3     bier                match bier index");
+        l.add("3 .       <num>             index");
+        l.add("3 .       all               any value");
         l.add("2 3     afi                 match afi");
         l.add("3 .       <num>             afi");
         l.add("3 .       all               any value");
@@ -226,6 +232,22 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("3 4       sub               substract value to current value");
         l.add("4 .         <num>           value");
         l.add("2 3     tag                 set tag");
+        l.add("3 .       leave             leave value unchanged");
+        l.add("3 4       set               set value to a specific value");
+        l.add("4 .         <num>           value");
+        l.add("3 4       add               add value to current value");
+        l.add("4 .         <num>           value");
+        l.add("3 4       sub               substract value to current value");
+        l.add("4 .         <num>           value");
+        l.add("2 3     segrout             set sr index");
+        l.add("3 .       leave             leave value unchanged");
+        l.add("3 4       set               set value to a specific value");
+        l.add("4 .         <num>           value");
+        l.add("3 4       add               add value to current value");
+        l.add("4 .         <num>           value");
+        l.add("3 4       sub               substract value to current value");
+        l.add("4 .         <num>           value");
+        l.add("2 3     bier                set bier index");
         l.add("3 .       leave             leave value unchanged");
         l.add("3 4       set               set value to a specific value");
         l.add("4 .         <num>           value");
@@ -394,6 +416,22 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("tag")) {
             ntry.ifMode = tabRtrplcN.ifType.tag;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("segrout")) {
+            ntry.ifMode = tabRtrplcN.ifType.segrou;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("bier")) {
+            ntry.ifMode = tabRtrplcN.ifType.bier;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;
@@ -605,6 +643,22 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("tag")) {
                 ntry.doMode = tabRtrplcN.doType.setTag;
+                if (ntry.intSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("segrout")) {
+                ntry.doMode = tabRtrplcN.doType.setSegrou;
+                if (ntry.intSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("bier")) {
+                ntry.doMode = tabRtrplcN.doType.setBier;
                 if (ntry.intSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
                     return;
