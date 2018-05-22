@@ -1777,8 +1777,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.nxtHopPeer) {
             ntry.nextHop = neigh.peerAddr.copyBytes();
         }
-        if ((ntry.segRoutI > 0) && (ntry.segRoutB > 0)) {
-            ntry.labelRem = tabLabel.prependLabel(ntry.labelRem, ntry.segRoutB + ntry.segRoutI);
+        if ((ntry.labelRem == null) && (ntry.segRoutI > 0) && (ntry.segRoutB > 0)) {
+            ntry.labelRem = tabLabel.int2labels(ntry.segRoutB + ntry.segRoutI);
         }
         if (neigh.egressEng > 0) {
             ntry.segRoutI = neigh.egressEng;
