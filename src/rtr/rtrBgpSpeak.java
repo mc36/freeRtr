@@ -1412,7 +1412,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!reach) {
             rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, addpath, lst);
         } else {
-            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst);
+            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst, null);
         }
         packSend(pckTx, rtrBgpUtil.msgUpdate);
     }

@@ -340,6 +340,120 @@ public class userPacket {
             cmd.error("waiting");
             for (int o = 1000;; o++) {
                 if (o > 30) {
+                    cmd.pipe.strPut(".");
+                    spk.sendKeepAlive();
+                    o = 0;
+                }
+                int i = strm.ready2rx();
+                if (i > 0) {
+                    strm.moreSkip(i);
+                }
+                i = strm.ready2tx();
+                if (i < 0) {
+                    break;
+                }
+                bits.sleep(1000);
+                if (cmd.pipe.ready2rx() > 0) {
+                    break;
+                }
+            }
+            strm.setClose();
+            cmd.error("finished");
+            return;
+        }
+        if (a.equals("bgpattr")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                return;
+            }
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            if (ifc == null) {
+                return;
+            }
+            addrIP trg = new addrIP();
+            if (trg.fromString(cmd.word())) {
+                return;
+            }
+            int las = bits.str2num(cmd.word());
+            addrPrefix<addrIP> prf = addrPrefix.str2ip(cmd.word());
+            cfgRoump rmp = cfgAll.rtmpFind(cmd.word(), false);
+            if (rmp == null) {
+                return;
+            }
+            List<Integer> attr = new ArrayList<Integer>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                attr.add(bits.fromHex(a));
+            }
+            pipeSide strm = null;
+            for (;;) {
+                cmd.error("connecting " + trg);
+                clntProxy prx = clntProxy.makeTemp(vrf, ifc);
+                strm = prx.doConnect(servGeneric.protoTcp, trg, rtrBgp.port, "bgpgen");
+                if (strm != null) {
+                    break;
+                }
+                bits.sleep(1000);
+                if (cmd.pipe.ready2rx() > 0) {
+                    break;
+                }
+            }
+            if (strm == null) {
+                cmd.error("failed");
+                return;
+            }
+            cmd.error("sending open");
+            rtrBgpNeigh nei = new rtrBgpNeigh(null);
+            nei.localAs = las;
+            int safi;
+            if (prf.network.isIPv4()) {
+                safi = rtrBgpUtil.safiIp4uni;
+            } else {
+                safi = rtrBgpUtil.safiIp6uni;
+            }
+            nei.addrFams = safi;
+            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm);
+            packHolder pck = new packHolder(true, true);
+            byte[] buf = new byte[4];
+            bits.msbPutD(buf, 0, nei.localAs);
+            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capa32bitAsNum, buf);
+            buf = new byte[4];
+            bits.msbPutD(buf, 0, nei.addrFams);
+            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaMultiProto, buf);
+            pck.merge2beg();
+            pck.putByte(0, rtrBgpUtil.version);
+            pck.msbPutW(1, rtrBgpUtil.asNum16bit(nei.localAs));
+            pck.msbPutW(3, nei.holdTimer / 1000);
+            buf = trg.toIPv4().getBytes();
+            pck.putCopy(buf, 0, 5, buf.length);
+            pck.putByte(9, pck.dataSize());
+            pck.putSkip(10);
+            pck.merge2beg();
+            spk.packSend(pck, rtrBgpUtil.msgOpen);
+            spk.sendKeepAlive();
+            buf = new byte[attr.size()];
+            for (int i = 0; i < buf.length; i++) {
+                buf[i] = (byte) (attr.get(i) & 0xff);
+            }
+            cmd.error("sending " + prf + " network with attrib " + bits.byteDump(buf, 0, -1));
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = prf.copyBytes();
+            rmp.roumap.update(rtrBgpUtil.safiUnicast, ntry, false);
+            ntry.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
+            packHolder tmp = new packHolder(true, true);
+            cmd.error("sending update");
+            pck.clear();
+            List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
+            lst.add(ntry);
+            rtrBgpUtil.createReachable(pck, tmp, safi, false, true, lst, buf);
+            spk.packSend(pck, rtrBgpUtil.msgUpdate);
+            cmd.error("waiting");
+            for (int o = 1000;; o++) {
+                if (o > 30) {
+                    cmd.pipe.strPut(".");
                     spk.sendKeepAlive();
                     o = 0;
                 }
@@ -453,7 +567,7 @@ public class userPacket {
                 pck.clear();
                 lst.clear();
                 lst.add(ntry);
-                rtrBgpUtil.createReachable(pck, tmp, safi, false, true, lst);
+                rtrBgpUtil.createReachable(pck, tmp, safi, false, true, lst, null);
                 spk.packSend(pck, rtrBgpUtil.msgUpdate);
                 cmd.pipe.strPut(".");
                 if (cmd.pipe.ready2rx() > 0) {
@@ -464,6 +578,7 @@ public class userPacket {
             cmd.error("waiting");
             for (int o = 1000;; o++) {
                 if (o > 30) {
+                    cmd.pipe.strPut(".");
                     spk.sendKeepAlive();
                     o = 0;
                 }

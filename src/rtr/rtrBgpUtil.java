@@ -2010,7 +2010,7 @@ public class rtrBgpUtil {
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
         packHolder pck = new packHolder(true, true);
-        createReachable(pck, new packHolder(true, true), safiAttrib, false, true, lst);
+        createReachable(pck, new packHolder(true, true), safiAttrib, false, true, lst, null);
         ntry.attribAs = as;
         ntry.attribVal = pck.getCopy();
     }
@@ -2155,9 +2155,11 @@ public class rtrBgpUtil {
      * @param addpath additional path
      * @param longAS long as number supported
      * @param lst list of prefixes to advertise
+     * @param user user defined attribute
      */
-    public static void createReachable(packHolder pck, packHolder hlp, int safi, boolean addpath, boolean longAS, List<tabRouteEntry<addrIP>> lst) {
+    public static void createReachable(packHolder pck, packHolder hlp, int safi, boolean addpath, boolean longAS, List<tabRouteEntry<addrIP>> lst, byte[] user) {
         tabRouteEntry<addrIP> ntry = lst.get(0);
+        placeUser(pck, hlp, user);
         placeOrigin(pck, hlp, ntry);
         placeAsPath(longAS, pck, hlp, ntry);
         placeMetric(pck, hlp, ntry);
@@ -2204,6 +2206,26 @@ public class rtrBgpUtil {
         pck.msbPutW(2, pck.dataSize());
         pck.putSkip(4);
         pck.merge2beg();
+    }
+
+    /**
+     * place user defined attribute
+     *
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param user attribute value
+     */
+    public static void placeUser(packHolder trg, packHolder hlp, byte[] user) {
+        if (user == null) {
+            return;
+        }
+        if (user.length < 2) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(user, 1, 0, user.length - 1);
+        hlp.putSkip(user.length - 1);
+        placeAttrib(flagOptional | flagTransitive, user[0], trg, hlp);
     }
 
     /**

@@ -764,7 +764,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             } else {
                 o = 3; // inter
             }
-            createPrfLsa(seq++, ifc.iface.network, o, 0x80, buf);
+            createPrfLsa(seq++, ifc.iface.network, o, 0, buf);
         }
         if (stub || nssa) {
             return;

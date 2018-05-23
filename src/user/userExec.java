@@ -1061,6 +1061,14 @@ public class userExec {
         hl.add(".2 3     random                  run random packet generator");
         hl.add("3 4        <name>                name of interface");
         hl.add("4 4,.        [byte]              byte in hex");
+        hl.add(".2 3     bgpattr                 run attribute injector");
+        hl.add("3 4        <name>                vrf name");
+        hl.add("4 5          <name>              source interface name");
+        hl.add("5 6            <addr>            target address");
+        hl.add("6 7              <num>           local as");
+        hl.add("7 8                <addr>        prefix to originate");
+        hl.add("8 9                  <name>      route map to apply");
+        hl.add("9 9,.                  <num>     attribute byte");
         hl.add(".2 3     bgpgen                  run random prefix generator");
         hl.add("3 4        <name>                vrf name");
         hl.add("4 5          <name>              source interface name");
