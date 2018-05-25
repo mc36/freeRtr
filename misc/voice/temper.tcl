@@ -17,8 +17,6 @@ if {[string length $tmp] < 1} {
   return
   }
 
-exec "test logging debug here $tmp $trg"
-
 exec "flash receive /rtr/zzz6.html http://door.mchome.nop.hu/temper.class?temp=$tmp&cmd=heat"
 
 puts "play-start /nfs2/own/voice/temper.wav"

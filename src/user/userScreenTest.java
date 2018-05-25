@@ -539,6 +539,27 @@ public class userScreenTest {
      */
     public void doCommand(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("gomoku")) {
+            userGomoku t = new userGomoku(scr);
+            t.doStart();
+            t.doGame();
+            t.doFinish();
+            return;
+        }
+        if (a.equals("tetris")) {
+            userTetris t = new userTetris(scr);
+            t.doStart();
+            t.doGame();
+            t.doFinish();
+            return;
+        }
+        if (a.equals("minesweep")) {
+            userMinesweep t = new userMinesweep(scr);
+            t.doStart();
+            t.doGame();
+            t.doFinish();
+            return;
+        }
         if (a.equals("clear")) {
             return;
         }

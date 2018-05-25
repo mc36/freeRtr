@@ -16,10 +16,6 @@ import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgIfc;
 import cfg.cfgTrnsltn;
-import clnt.clntNrpe;
-import clnt.clntSmtp;
-import clnt.clntSnmp;
-import clnt.clntSpeed;
 import cry.cryAsn1;
 import cry.cryBase64;
 import cry.cryCertificate;
@@ -140,72 +136,8 @@ public class userTest {
             }
             return null;
         }
-        if (a.equals("speed")) {
-            rdr.keyFlush();
-            clntSpeed.smllClnt(cmd);
-            rdr.keyFlush();
-            return null;
-        }
-        if (a.equals("websock")) {
-            uniResLoc url = new uniResLoc();
-            if (url.fromString(cmd.word())) {
-                cmd.error("bad url");
-                return null;
-            }
-            pipeSide strm = secWebsock.doConnect(cfgAll.getClntPrx(), url, cmd.getRemaining());
-            if (strm == null) {
-                cmd.error("failed to connect");
-                return null;
-            }
-            secWebsock ws = new secWebsock(strm, new pipeLine(65536, false));
-            ws.startClient();
-            pipeTerm trm = new pipeTerm(cmd.pipe, ws.getPipe());
-            trm.doTerm();
-            return null;
-        }
         if (a.equals("gc")) {
             System.gc();
-            return null;
-        }
-        if (a.equals("snmp")) {
-            a = cmd.word();
-            clntSnmp sn = new clntSnmp();
-            sn.cons = new pipeProgress(cmd.pipe);
-            sn.host = cmd.word();
-            sn.community = cmd.word();
-            sn.oid = cmd.word();
-            if (a.equals("get")) {
-                sn.doGet();
-                return null;
-            }
-            if (a.equals("next")) {
-                sn.doNext();
-                return null;
-            }
-            return null;
-        }
-        if (a.equals("nrpe")) {
-            clntNrpe ch = new clntNrpe(cmd.pipe);
-            ch.server = cmd.word();
-            ch.check = cmd.getRemaining();
-            boolean b = ch.doCheck();
-            cmd.error("status=" + b + ", code=" + ch.code);
-            rdr.putStrArr(ch.text);
-            return null;
-        }
-        if (a.equals("smtp")) {
-            clntSmtp sm = new clntSmtp(cmd.pipe);
-            a = cmd.word();
-            sm.rcpt.add(a);
-            sm.putHead("test@" + cfgAll.hostName, a, "test message");
-            a = cmd.getRemaining().trim();
-            if (a.length() < 1) {
-                a = "right now it worked fine";
-            }
-            sm.putText(bits.str2lst(a));
-            sm.putFinish();
-            cmd.error("res=" + sm.doSend(1));
-            sm.cleanUp();
             return null;
         }
         if (a.equals("window")) {
@@ -549,33 +481,6 @@ public class userTest {
             userScreenTest t = new userScreenTest(new userScreen(pip, rdr.width, rdr.height));
             t.doStart();
             t.doCommand(cmd);
-            t.doFinish();
-            rdr.keyFlush();
-            return null;
-        }
-        if (a.equals("gomoku")) {
-            rdr.keyFlush();
-            userGomoku t = new userGomoku(new userScreen(pip, rdr.width, rdr.height));
-            t.doStart();
-            t.doGame();
-            t.doFinish();
-            rdr.keyFlush();
-            return null;
-        }
-        if (a.equals("tetris")) {
-            rdr.keyFlush();
-            userTetris t = new userTetris(new userScreen(pip, rdr.width, rdr.height));
-            t.doStart();
-            t.doGame();
-            t.doFinish();
-            rdr.keyFlush();
-            return null;
-        }
-        if (a.equals("minesweep")) {
-            rdr.keyFlush();
-            userMinesweep t = new userMinesweep(new userScreen(pip, rdr.width, rdr.height));
-            t.doStart();
-            t.doGame();
             t.doFinish();
             rdr.keyFlush();
             return null;

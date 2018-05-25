@@ -3,8 +3,6 @@ set t [gets -]
 set p [string first " " $t]
 set t [string range $t [expr $p + 1] 666]
 
-exec "test logging debug bridging to $t"
-
 puts "play-start /nfs2/own/voice/fwd.wav"
 puts "play-wait"
 

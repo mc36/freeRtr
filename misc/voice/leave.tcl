@@ -12,7 +12,7 @@ set a [string range $a 0 [expr $p - 1]]
 
 puts "record-start /nfs2/own/voice/got$a-$f.wav"
 
-exec "test smtp cs@nop.hu new message from $f"
+exec "packet smtp cs@nop.hu new message from $f"
 
 puts "play-start /nfs2/own/voice/leave.wav"
 puts "play-wait"
