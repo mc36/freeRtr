@@ -927,6 +927,10 @@ public class userExec {
         hl.add("1 2,.  undebug                   stop debugging one protocol");
         hl.add("2 .      all                     disable all debugging");
         debugger.getHelping(hl);
+        hl.add("1 2    set                       insert configuration command");
+        hl.add("2 2,.    [str]                   config line to set");
+        hl.add("1 2    delete                    remove configuration command");
+        hl.add("2 2,.    [str]                   config line to unset");
         hl.add("1 2,.  configure                 enter configuration mode");
         hl.add("2 3      file                    from disk file");
         hl.add("3 .        <file>                source file");
@@ -1438,6 +1442,14 @@ public class userExec {
             }
             return cmdRes.command;
         }
+        if (a.equals("set")) {
+            doSetUnset(false);
+            return cmdRes.command;
+        }
+        if (a.equals("delete")) {
+            doSetUnset(true);
+            return cmdRes.command;
+        }
         if (a.equals("configure")) {
             if (cfgAll.configExclusive > 1) {
                 cmd.error("operation forbidden by exclusive configuration mode");
@@ -1754,6 +1766,49 @@ public class userExec {
             brk |= buf[0] == 3;
         }
         return brk;
+    }
+
+    private void doSetUnset(boolean negated) {
+        userConfig cfg = new userConfig(pipe, reader);
+        userHelping hlp;
+        String s = "";
+        String a = "";
+        boolean last;
+        for (;;) {
+            a = cmd.word();
+            s = (s + " " + a).trim();
+            hlp = cfg.getHelping();
+            reader.setContext(hlp, "");
+            last = cmd.size() < 1;
+            a = hlp.repairLine(s);
+            if (!hlp.endOfCmd(a)) {
+                break;
+            }
+            if (!last) {
+                continue;
+            }
+            reader.putStrArr(hlp.getHelp(s, true));
+            return;
+        }
+        if (last && negated) {
+            a = cmds.negated + a;
+        }
+        cfg.executeCommand(a);
+        if (last) {
+            return;
+        }
+        s = cmd.getRemaining();
+        hlp = cfg.getHelping();
+        reader.setContext(hlp, "");
+        a = hlp.repairLine(s);
+        if (hlp.endOfCmd(a)) {
+            reader.putStrArr(hlp.getHelp(s, true));
+            return;
+        }
+        if (negated) {
+            a = cmds.negated + a;
+        }
+        cfg.executeCommand(a);
     }
 
     private void doMenu() {
