@@ -69,8 +69,8 @@ router bgp6 1
  neigh 1234:1::3 route-reflect
  neigh 1234:1::4 remote-as 1
  neigh 1234:1::4 route-reflect
- neigh 1234:1::5 remote-as 1
- neigh 1234:1::5 route-reflect
+ neigh 1234:1::6 remote-as 1
+ neigh 1234:1::6 route-reflect
  red conn
  exit
 !
@@ -204,6 +204,7 @@ route-map all
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.5 255.255.255.0
+ ipv6 addr 1234:1::5 ffff:ffff::
  exit
 !
 
@@ -218,7 +219,8 @@ route-map all
  exit
 int eth1
  vrf for v1
- ipv6 addr 1234:1::5 ffff:ffff::
+ ipv4 addr 1.1.1.6 255.255.255.0
+ ipv6 addr 1234:1::6 ffff:ffff::
  exit
 !
 

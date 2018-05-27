@@ -529,7 +529,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("1 2  error                          set error message");
         l.add("2 2,.  <name>                       error message");
         l.add("1 2  host                           define one virtual server");
-        l.add("2 3,.  <name>                       name of server, * for default");
+        l.add("2 3,.  <name>                       name of server, * for any");
         l.add("3 4      path                       set server root");
         l.add("4 .        <name>                   root directory of server");
         l.add("3 .      nopath                     clear server root");

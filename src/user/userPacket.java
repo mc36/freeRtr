@@ -303,7 +303,7 @@ public class userPacket {
             pck.putByte(0, rtrBgpUtil.version);
             pck.msbPutW(1, rtrBgpUtil.asNum16bit(nei.localAs));
             pck.msbPutW(3, nei.holdTimer / 1000);
-            buf = trg.toIPv4().getBytes();
+            buf = ifc.addr4.getBytes();
             pck.putCopy(buf, 0, 5, buf.length);
             pck.putByte(9, pck.dataSize());
             pck.putSkip(10);
@@ -434,7 +434,7 @@ public class userPacket {
             pck.putByte(0, rtrBgpUtil.version);
             pck.msbPutW(1, rtrBgpUtil.asNum16bit(nei.localAs));
             pck.msbPutW(3, nei.holdTimer / 1000);
-            buf = trg.toIPv4().getBytes();
+            buf = ifc.addr4.getBytes();
             pck.putCopy(buf, 0, 5, buf.length);
             pck.putByte(9, pck.dataSize());
             pck.putSkip(10);
@@ -540,7 +540,7 @@ public class userPacket {
             pck.putByte(0, rtrBgpUtil.version);
             pck.msbPutW(1, rtrBgpUtil.asNum16bit(nei.localAs));
             pck.msbPutW(3, nei.holdTimer / 1000);
-            buf = trg.toIPv4().getBytes();
+            buf = ifc.addr4.getBytes();
             pck.putCopy(buf, 0, 5, buf.length);
             pck.putByte(9, pck.dataSize());
             pck.putSkip(10);

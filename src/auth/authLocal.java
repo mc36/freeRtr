@@ -69,7 +69,7 @@ public class authLocal extends authGeneric {
      * @param s password to compress
      * @return compressed password
      */
-    public static byte[] hashPass(byte[] k, String s) {
+    private static byte[] hashPass(byte[] k, String s) {
         cryHashHmac h = new cryHashHmac(new cryHashSha2256(), k);
         h.init();
         h.update(s.getBytes());
@@ -140,7 +140,7 @@ public class authLocal extends authGeneric {
         l.add("1 2  deluser             delete one user");
         l.add("2 .    <name>            name of user");
         l.add("1 2  username            create or update user");
-        l.add("2 3,.  <name>            name of user");
+        l.add("2 3,.  <name>            name of user, * for any");
         l.add("3 4      password        set password of user");
         l.add("4 4,.      [text]        password of user");
         l.add("3 .      nopassword      clear password of user");
@@ -198,9 +198,8 @@ public class authLocal extends authGeneric {
         return l;
     }
 
-    private authResult createPassed(authLocalEntry ntry) {
-        authResult res = new authResult(this, authResult.authSuccessful,
-                ntry.username);
+    private authResult createPassed(authLocalEntry ntry, String user) {
+        authResult res = new authResult(this, authResult.authSuccessful, user);
         res.autoCommand = ntry.autoCommand;
         res.autoHangup = ntry.autoHangup;
         res.privilege = ntry.privilege;
@@ -212,6 +211,11 @@ public class authLocal extends authGeneric {
         ntry.username = user;
         ntry = users.find(ntry);
         if (ntry == null) {
+            ntry = new authLocalEntry();
+            ntry.username = "*";
+            ntry = users.find(ntry);
+        }
+        if (ntry == null) {
             return new authResult(this, authResult.authBadUserPass, user);
         }
         if (ntry.countdown == 0) {
@@ -221,13 +225,13 @@ public class authLocal extends authGeneric {
             ntry.countdown--;
         }
         if (ntry.anyPass) {
-            return createPassed(ntry);
+            return createPassed(ntry, user);
         }
         if (ntry.otpseed != null) {
             List<String> lst = ntry.getOtpPass();
             for (int i = 0; i < lst.size(); i++) {
                 if (lst.get(i).equals(pass)) {
-                    return createPassed(ntry);
+                    return createPassed(ntry, user);
                 }
             }
             return new authResult(this, authResult.authBadUserPass, user);
@@ -236,13 +240,13 @@ public class authLocal extends authGeneric {
             if (authLocal.secretTest(ntry.secret, pass)) {
                 return new authResult(this, authResult.authBadUserPass, user);
             }
-            return createPassed(ntry);
+            return createPassed(ntry, user);
         }
         if (ntry.password != null) {
             if (!ntry.password.equals(pass)) {
                 return new authResult(this, authResult.authBadUserPass, user);
             }
-            return createPassed(ntry);
+            return createPassed(ntry, user);
         }
         return new authResult(this, authResult.authBadUserPass, user);
     }
@@ -252,31 +256,10 @@ public class authLocal extends authGeneric {
         ntry.username = user;
         ntry = users.find(ntry);
         if (ntry == null) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            ntry = new authLocalEntry();
+            ntry.username = "*";
+            ntry = users.find(ntry);
         }
-        if (ntry.countdown == 0) {
-            return new authResult(this, authResult.authBadUserPass, user);
-        }
-        if (ntry.countdown >= 0) {
-            ntry.countdown--;
-        }
-        if (ntry.anyPass) {
-            return createPassed(ntry);
-        }
-        if (ntry.password == null) {
-            return new authResult(this, authResult.authBadUserPass, user);
-        }
-        byte[] buf = autherChap.calcAuthHash(id, ntry.password, chal);
-        if (bits.byteComp(buf, 0, resp, 0, buf.length) != 0) {
-            return new authResult(this, authResult.authBadUserPass, user);
-        }
-        return createPassed(ntry);
-    }
-
-    public authResult authUserApop(String cookie, String user, String resp) {
-        authLocalEntry ntry = new authLocalEntry();
-        ntry.username = user;
-        ntry = users.find(ntry);
         if (ntry == null) {
             return new authResult(this, authResult.authBadUserPass, user);
         }
@@ -287,7 +270,38 @@ public class authLocal extends authGeneric {
             ntry.countdown--;
         }
         if (ntry.anyPass) {
-            return createPassed(ntry);
+            return createPassed(ntry, user);
+        }
+        if (ntry.password == null) {
+            return new authResult(this, authResult.authBadUserPass, user);
+        }
+        byte[] buf = autherChap.calcAuthHash(id, ntry.password, chal);
+        if (bits.byteComp(buf, 0, resp, 0, buf.length) != 0) {
+            return new authResult(this, authResult.authBadUserPass, user);
+        }
+        return createPassed(ntry, user);
+    }
+
+    public authResult authUserApop(String cookie, String user, String resp) {
+        authLocalEntry ntry = new authLocalEntry();
+        ntry.username = user;
+        ntry = users.find(ntry);
+        if (ntry == null) {
+            ntry = new authLocalEntry();
+            ntry.username = "*";
+            ntry = users.find(ntry);
+        }
+        if (ntry == null) {
+            return new authResult(this, authResult.authBadUserPass, user);
+        }
+        if (ntry.countdown == 0) {
+            return new authResult(this, authResult.authBadUserPass, user);
+        }
+        if (ntry.countdown >= 0) {
+            ntry.countdown--;
+        }
+        if (ntry.anyPass) {
+            return createPassed(ntry, user);
         }
         if (ntry.password == null) {
             return new authResult(this, authResult.authBadUserPass, user);
@@ -296,7 +310,7 @@ public class authLocal extends authGeneric {
                 resp.toLowerCase()) != 0) {
             return new authResult(this, authResult.authBadUserPass, user);
         }
-        return createPassed(ntry);
+        return createPassed(ntry, user);
     }
 
 }
