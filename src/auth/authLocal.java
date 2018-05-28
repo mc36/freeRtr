@@ -2,8 +2,12 @@ package auth;
 
 import cfg.cfgAll;
 import cry.cryBase64;
+import cry.cryEncrCTRaes;
+import cry.cryEncrGeneric;
+import cry.cryHashGeneric;
 import cry.cryHashHmac;
 import cry.cryHashSha1;
+import cry.cryHashSha2224;
 import cry.cryHashSha2256;
 import cry.cryOtp;
 import java.util.ArrayList;
@@ -22,14 +26,26 @@ import util.cmds;
  */
 public class authLocal extends authGeneric {
 
-    /**
-     * list of prefixes
-     */
     private tabGen<authLocalEntry> users;
 
     private static final String passwdBeg = "$v10$";
 
+    private static final String cryptoBeg = "$w10$";
+
     private static final String secretBeg = "$V10$";
+
+    /**
+     * hide password
+     *
+     * @param str cleartext password to encode
+     * @return encoded password
+     */
+    public static String passwdHide(String str) {
+        if (str == null) {
+            return null;
+        }
+        return passwdBeg + cryBase64.encodeString(str);
+    }
 
     /**
      * encode password
@@ -41,7 +57,23 @@ public class authLocal extends authGeneric {
         if (str == null) {
             return null;
         }
-        return passwdBeg + cryBase64.encodeString(str);
+        if (cfgAll.passEnc == null) {
+            return passwdHide(str);
+        }
+        cryEncrGeneric c = new cryEncrCTRaes();
+        byte[] buf1 = cryHashGeneric.compute(new cryHashSha2256(), cfgAll.passEnc.getBytes());
+        byte[] buf2 = cryHashGeneric.compute(new cryHashSha2224(), cfgAll.passEnc.getBytes());
+        byte[] buf3 = new byte[c.getKeySize()];
+        bits.byteCopy(buf1, 0, buf3, 0, buf3.length);
+        int i = c.getBlockSize();
+        buf1 = new byte[i];
+        bits.byteCopy(buf2, 0, buf1, 0, i);
+        c.init(buf3, buf1, true);
+        buf1 = str.getBytes();
+        buf2 = new byte[i - (buf1.length % i)];
+        buf1 = bits.byteConcat(buf1, buf2);
+        c.update(buf1, 0, buf1.length);
+        return cryptoBeg + cryBase64.encodeBytes(buf1);
     }
 
     /**
@@ -54,12 +86,44 @@ public class authLocal extends authGeneric {
         if (str == null) {
             return null;
         }
-        if (!str.startsWith(passwdBeg)) {
+        if (str.startsWith(passwdBeg)) {
+            str = str.substring(passwdBeg.length(), str.length());
+            str = cryBase64.decodeString(str);
+            return str;
+        }
+        if (!str.startsWith(cryptoBeg)) {
             return str;
         }
         str = str.substring(passwdBeg.length(), str.length());
-        str = cryBase64.decodeString(str);
-        return str;
+        if (cfgAll.passEnc == null) {
+            return null;
+        }
+        cryEncrGeneric c = new cryEncrCTRaes();
+        byte[] buf1 = cryHashGeneric.compute(new cryHashSha2256(), cfgAll.passEnc.getBytes());
+        byte[] buf2 = cryHashGeneric.compute(new cryHashSha2224(), cfgAll.passEnc.getBytes());
+        byte[] buf3 = new byte[c.getKeySize()];
+        bits.byteCopy(buf1, 0, buf3, 0, buf3.length);
+        int i = c.getBlockSize();
+        buf1 = new byte[i];
+        bits.byteCopy(buf2, 0, buf1, 0, i);
+        c.init(buf3, buf1, false);
+        buf1 = cryBase64.decodeBytes(str);
+        if (buf1 == null) {
+            return null;
+        }
+        c.update(buf1, 0, buf1.length);
+        int o = -1;
+        for (i = buf1.length - 1; i >= 0; i--) {
+            if (buf1[i] == 0) {
+                o = i;
+            }
+        }
+        if (o < 0) {
+            return null;
+        }
+        buf2 = new byte[o];
+        bits.byteCopy(buf1, 0, buf2, 0, buf2.length);
+        return new String(buf2);
     }
 
     /**
@@ -70,7 +134,7 @@ public class authLocal extends authGeneric {
      * @return compressed password
      */
     private static byte[] hashPass(byte[] k, String s) {
-        cryHashHmac h = new cryHashHmac(new cryHashSha2256(), k);
+        cryHashGeneric h = new cryHashHmac(new cryHashSha2256(), k);
         h.init();
         h.update(s.getBytes());
         return bits.byteConcat(k, h.finish());

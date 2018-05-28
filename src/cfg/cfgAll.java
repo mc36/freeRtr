@@ -568,7 +568,12 @@ public class cfgAll {
     public static String hostName = "router";
 
     /**
-     * name of this host
+     * encryption of this host
+     */
+    public static String passEnc = null;
+
+    /**
+     * password of this host
      */
     public static byte[] enaPass = null;
 
@@ -720,6 +725,8 @@ public class cfgAll {
         "!no logging file debug",
         "!no logging irc debug",
         "!banner encoded ",
+        "!no password-encrypt",
+        "!no enable",
         // client
         "!no client proxy",
         "!no client name-proxy",
@@ -2746,6 +2753,7 @@ public class cfgAll {
         List<String> l = new ArrayList<String>();
         l.add("hostname " + hostName);
         cmds.cfgLine(l, verCore.release, "", "buggy", "");
+        cmds.cfgLine(l, passEnc == null, "", "password-encrypt", "" + authLocal.passwdHide(passEnc));
         cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass));
         l.add("banner encoded " + cryBase64.encodeBytes(banner));
         l.add(cmds.comment);

@@ -280,8 +280,10 @@ public class userConfig {
         userHelping l = userHelping.getGenCfg();
         l.add("1  2  hostname                       set name of system");
         l.add("2  .    <name>                       name of system");
-        l.add("1  .  buggy                          set enable password");
+        l.add("1  .  buggy                          enable dangerous things");
         l.add("1  2  enable                         set enable password");
+        l.add("2  .    <name>                       enable password");
+        l.add("1  2  password-encrypt               set password encryption key");
         l.add("2  .    <name>                       enable password");
         l.add("1  2  banner                         banner of system");
         l.add("2  3    set                          set banner");
@@ -675,6 +677,10 @@ public class userConfig {
         }
         if (a.equals("enable")) {
             cfgAll.enaPass = authLocal.secretDecode(cmd.word());
+            return;
+        }
+        if (a.equals("password-encrypt")) {
+            cfgAll.passEnc = authLocal.passwdDecode(cmd.word());
             return;
         }
         if (a.equals("buggy")) {
@@ -1392,6 +1398,10 @@ public class userConfig {
         a = cmd.word();
         if (a.equals("enable")) {
             cfgAll.enaPass = null;
+            return;
+        }
+        if (a.equals("password-encrypt")) {
+            cfgAll.passEnc = null;
             return;
         }
         if (a.equals("buggy")) {

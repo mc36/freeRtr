@@ -1,5 +1,6 @@
 hostname sid
 buggy
+password-encrypt $v10$czNjcjN0
 enable $V10$Bk45WwxyuisDgdTOjjYZq9sDdjT+BinHUXVmLBcIJUMW59DxVz0=
 banner encoded WFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFgNClhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYDQpYWFhYIFhYWFhYIFhYWCAgICBYWFggICAgIFhYWCBYWCBYWCBYWFhYIFhYWFhYWFhYWFhYWFhYWFhYWA0KWFhYWCAgWFhYWCBYWCBYWFhYIFhYIFhYWFggWFggWFggWFggWFhYWCBYWFhYWFhYL35+fn5cWFhYWFgNClhYWFggWCBYWFggWFggWFhYWCBYWCBYWFhYIFhYIFhYIFhYIFhYWFggWFhYWFhYfCBkZW1vIHxYWFhYDQpYWFhYIFhYIFhYIFhYIFhYWFggWFggICAgIFhYWCAgICBYWCBYWFhYIFhYWFhYWFhcX19fXy9YWFhYWA0KWFhYWCBYWFggWCBYWCBYWFhYIFhYIFhYWFhYWFggWFggWFggWFhYWCBYWFhYWFhYWFhYWFhYWFhYWFgNClhYWFggWFhYWCAgWFggWFhYWCBYWCBYWFhYWFhYIFhYIFhYIFhYWFggWFhYWFhYWFhYWFhYWFhYWFhYDQpYWFhYIFhYWFhYIFhYWCAgICBYWFggWFhYIFhYWCBYWCBYWFggICAgWFhYWFhYWFhYWFhYWFhYWFhYWA0KWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFgNClhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYDQo=
 !
@@ -21,7 +22,7 @@ crypto certificate rsa import rsa rsa MIIBjTCB+qADAgECAgQnONKiMAsGCSqGSIb3DQEBBT
 aaa userlist access
  no log-error
  username mc36
- username mc36 password $v10$ZmFzem9t
+ username mc36 password $w10$HFepawSJgqct0vAiKD2PVg==
  exit
 !
 access-list fs4
@@ -382,7 +383,7 @@ router bgp4 1
  dump a bgp4.log
  template a remote-as 1
  no template a description
- template a password $v10$dGVzdGluZw==
+ template a password $w10$DlOpZQKK5act0vAiKD2PVg==
  template a local-as 1
  template a address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
  template a distance 200
@@ -489,7 +490,7 @@ router bgp6 1
  dump a bgp6.log
  template a remote-as 1
  no template a description
- template a password $v10$dGVzdGluZw==
+ template a password $w10$DlOpZQKK5act0vAiKD2PVg==
  template a local-as 1
  template a address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
  template a distance 200
