@@ -12,8 +12,6 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
  mpls enable
- mpls ldp4
- mpls ldp6
  exit
 int lo0
  vrf for v1
@@ -25,7 +23,7 @@ router bgp4 1
  address lab
  local-as 1
  router-id 4.4.4.1
- neigh 1.1.1.2 remote-as 1
+ neigh 1.1.1.2 remote-as 2
  red conn
  exit
 router bgp6 1
@@ -33,7 +31,7 @@ router bgp6 1
  address lab
  local-as 1
  router-id 6.6.6.1
- neigh 1234::2 remote-as 1
+ neigh 1234::2 remote-as 2
  red conn
  exit
 !
@@ -53,7 +51,7 @@ interface gigabit1
  mpls bgp forwarding
  no shutdown
  exit
-router bgp 1
+router bgp 2
  address-family ipv4 unicast
   bgp scan-time 5
   neighbor 1.1.1.1 remote-as 1

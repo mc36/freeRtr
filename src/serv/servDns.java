@@ -348,6 +348,8 @@ class servDnsDoer implements Runnable {
 
     private prtGenConn conn;
 
+    private boolean recurse;
+
     public servDnsDoer(servDns lower, pipeSide stream, prtGenConn id) {
         parent = lower;
         pipe = stream;
@@ -439,13 +441,8 @@ class servDnsDoer implements Runnable {
             }
         }
         if (zon == null) {
-            if (!parent.recursEna) {
+            if (!recurse) {
                 return false;
-            }
-            if (parent.recursAcl != null) {
-                if (!parent.recursAcl.matches(conn)) {
-                    return false;
-                }
             }
             if ((parent.recurs6to4 != null) && (typ == packDnsRec.typeA)) {
                 return false;
@@ -555,17 +552,21 @@ class servDnsDoer implements Runnable {
         if (debugger.servDnsTraf) {
             logger.debug("rx " + pckD);
         }
+        recurse = parent.recursEna;
+        if (parent.recursAcl != null) {
+            recurse &= parent.recursAcl.matches(conn);
+        }
         int i = pckD.opcode;
         pckD.opcode = packDns.opcodeQuery;
         pckD.result = packDns.resultSupport;
         pckD.response = true;
-        pckD.recAvail = false;
+        pckD.recAvail = recurse;
         packDnsRec req = new packDnsRec();
         if (i != packDns.opcodeQuery) {
             sendReply(pckD);
             return false;
         }
-        if (pckD.queries.size() != 1) {
+        if (pckD.queries.size() < 1) {
             sendReply(pckD);
             return false;
         }

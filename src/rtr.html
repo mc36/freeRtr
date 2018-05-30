@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v18.5.27-testing, done by cs@nop.<br/>
-tested: 2018-05-28 05:17:46, took 07:47:34 on 1468 cases<br/>
+release: freeRouter v18.5.29-testing, done by cs@nop.<br/>
+tested: 2018-05-29 23:05:44, took 07:48:14 on 1509 cases<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -644,11 +644,11 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf01.tst">intop2-ospf01.tst</a></td><td>0</td><td>interop2: point2point ospf</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf02.tst">intop2-ospf02.tst</a></td><td>0</td><td>interop2: ospf dr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf03.tst">intop2-ospf03.tst</a></td><td>0</td><td>interop2: ospf nondr</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf04.tst">intop2-ospf04.tst</a></td><td>0</td><td>interop2: point2point ospf</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf04.tst">intop2-ospf04.tst</a></td><td>0</td><td>interop2: ospf transit area</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf05.tst">intop2-ospf05.tst</a></td><td>0</td><td>interop2: ospf stub area</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf06.tst">intop2-ospf06.tst</a></td><td>0</td><td>interop2: ospf nssa area</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf07.tst">intop2-ospf07.tst</a></td><td>0</td><td>interop2: ospf te</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf08.tst">intop2-ospf08.tst</a></td><td>0</td><td>interop2: point2point ospf</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf08.tst">intop2-ospf08.tst</a></td><td>0</td><td>interop2: ospf prefix withdraw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf09.tst">intop2-ospf09.tst</a></td><td>0</td><td>interop2: ospf authentication</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf10.tst">intop2-ospf10.tst</a></td><td>0</td><td>interop2: ospf p2mp te</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf11.tst">intop2-ospf11.tst</a></td><td>0</td><td>interop2: ospf sr</td><td>successfully</td><td>finished</td></tr>
@@ -658,6 +658,22 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-tun01.tst">intop2-tun01.tst</a></td><td>0</td><td>interop2: gre tunnel</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-tun02.tst">intop2-tun02.tst</a></td><td>0</td><td>interop2: ipip tunnel</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-zzz.tst">intop2-zzz.tst</a></td><td>0</td><td>interop2: config wiper</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-bgp01.tst">intop9-bgp01.tst</a></td><td>0</td><td>interop9: ebgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-bgp02.tst">intop9-bgp02.tst</a></td><td>0</td><td>interop9: ibgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-bgp03.tst">intop9-bgp03.tst</a></td><td>0</td><td>interop9: bgp locpref</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-bgp04.tst">intop9-bgp04.tst</a></td><td>0</td><td>interop9: bgp origin</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-bgp05.tst">intop9-bgp05.tst</a></td><td>0</td><td>interop9: bgp metric</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-bgp06.tst">intop9-bgp06.tst</a></td><td>0</td><td>interop9: bgp community</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-eth01.tst">intop9-eth01.tst</a></td><td>0</td><td>interop9: ethernet encapsulation</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-eth02.tst">intop9-eth02.tst</a></td><td>0</td><td>interop9: dot1q encapsulation</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-isis01.tst">intop9-isis01.tst</a></td><td>0</td><td>interop9: point2point isis</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-isis02.tst">intop9-isis02.tst</a></td><td>0</td><td>interop9: isis dis</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-isis03.tst">intop9-isis03.tst</a></td><td>0</td><td>interop9: isis nondis</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-ospf01.tst">intop9-ospf01.tst</a></td><td>0</td><td>interop9: point2point ospf</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-ospf02.tst">intop9-ospf02.tst</a></td><td>0</td><td>interop9: ospf dr</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-ospf03.tst">intop9-ospf03.tst</a></td><td>0</td><td>interop9: ospf nondr</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-rip01.tst">intop9-rip01.tst</a></td><td>0</td><td>interop9: rip</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-zzz.tst">intop9-zzz.tst</a></td><td>0</td><td>interop9: config wiper</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier01.tst">mpls-bier01.tst</a></td><td>0</td><td>bier in chain</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier02.tst">mpls-bier02.tst</a></td><td>0</td><td>bier in star</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier03.tst">mpls-bier03.tst</a></td><td>0</td><td>bier in dense chain</td><td>successfully</td><td>finished</td></tr>

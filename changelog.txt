@@ -8306,3 +8306,65 @@ qc pass: ethernet over mpls pwhe with cw
 qc pass: cross connect with pwe over mpls with cw
 ---------------------------------- 2018-05-26 06:14:41
 todo: yang over netconf, proto over grpc
+---------------------------------- 2018-05-29 08:41:46
+qc pass: dummy test
+todo: yang over netconf, proto over grpc
+todo: interface range command
+todo: reenable which elliptic courves? sure? why that?
+todo: https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
+todo: parse privilege levels from radius and tacacs
+todo: ldap client, server
+todo: bgp compare should write out that which attributes changed
+todo: bfd need to send with ttl=255
+todo: trustpoint for certificates
+todo: interface name tabbing
+todo: int eth1/int eth2
+todo: dhcp relay support
+todo: tcp selective ack
+todo: xot, x75 switching
+todo: preallocate qos buffers
+todo: lisp4, lisp6
+todo: l2vpn for isis
+todo: hip (rfc4423)
+todo: more show commands
+todo: more clear commands
+todo: more interactive tools
+todo: igmp4/6 snoop, pim4/6 snoop for bridging
+todo: multilink ppp, fr
+todo: x25
+todo: default vrf for show commands
+---------------------------------- 2018-05-29 08:44:44
+todo: testing123
+---------------------------------- 2018-05-29 08:45:00
+no todo: testing123
+---------------------------------- 2018-05-29 08:48:24
+no qc pass: dummy test
+no work: dummy test
+---------------------------------- 2018-05-29 08:49:57
+qc pass: dummy test
+---------------------------------- 2018-05-29 08:51:01
+no qc pass: dummy test
+no work: dummy test
+---------------------------------- 2018-05-29 08:53:46
+qc pass: dummy test
+---------------------------------- 2018-05-29 15:17:30
+no qc pass: interop2: point2point ospf
+no qc pass: interop2: point2point ospf
+qc pass: interop2: ospf transit area
+qc pass: interop2: ospf prefix withdraw
+qc pass: interop9: ebgp
+qc pass: interop9: ibgp
+qc pass: interop9: bgp locpref
+qc pass: interop9: bgp origin
+qc pass: interop9: bgp metric
+qc pass: interop9: bgp community
+qc pass: interop9: ethernet encapsulation
+qc pass: interop9: dot1q encapsulation
+qc pass: interop9: point2point isis
+qc pass: interop9: isis dis
+qc pass: interop9: isis nondis
+qc pass: interop9: point2point ospf
+qc pass: interop9: ospf dr
+qc pass: interop9: ospf nondr
+qc pass: interop9: rip
+qc pass: interop9: config wiper

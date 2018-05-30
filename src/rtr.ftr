@@ -637,11 +637,11 @@ qc pass: interop2: pim
 qc pass: interop2: point2point ospf
 qc pass: interop2: ospf dr
 qc pass: interop2: ospf nondr
-qc pass: interop2: point2point ospf
+qc pass: interop2: ospf transit area
 qc pass: interop2: ospf stub area
 qc pass: interop2: ospf nssa area
 qc pass: interop2: ospf te
-qc pass: interop2: point2point ospf
+qc pass: interop2: ospf prefix withdraw
 qc pass: interop2: ospf authentication
 qc pass: interop2: ospf p2mp te
 qc pass: interop2: ospf sr
@@ -651,6 +651,22 @@ qc pass: interop2: rip authentication
 qc pass: interop2: gre tunnel
 qc pass: interop2: ipip tunnel
 qc pass: interop2: config wiper
+qc pass: interop9: ebgp
+qc pass: interop9: ibgp
+qc pass: interop9: bgp locpref
+qc pass: interop9: bgp origin
+qc pass: interop9: bgp metric
+qc pass: interop9: bgp community
+qc pass: interop9: ethernet encapsulation
+qc pass: interop9: dot1q encapsulation
+qc pass: interop9: point2point isis
+qc pass: interop9: isis dis
+qc pass: interop9: isis nondis
+qc pass: interop9: point2point ospf
+qc pass: interop9: ospf dr
+qc pass: interop9: ospf nondr
+qc pass: interop9: rip
+qc pass: interop9: config wiper
 qc pass: bier in chain
 qc pass: bier in star
 qc pass: bier in dense chain

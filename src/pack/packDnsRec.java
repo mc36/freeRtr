@@ -1005,6 +1005,9 @@ public class packDnsRec implements Comparator<packDnsRec> {
      * @return false if successful, true if error happened
      */
     public boolean parseHeader(packHolder pck, int beg, boolean question) {
+        if (pck.dataSize() < 1) {
+            return true;
+        }
         name = getChain(pck, beg);
         typ = pck.msbGetW(0); // type
         clss = pck.msbGetW(2); // class

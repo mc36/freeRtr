@@ -1,6 +1,7 @@
 file;code;test;stage;command
--;-;freeRouter v18.5.27-testing, done by cs@nop.;-;-
--;-;2018-05-28 05:17:46, took 07:47:34 on 1468 cases;-;-
+-;-;freeRouter v18.5.29-testing, done by cs@nop.;-;-
+-;-;2018-05-29 23:05:44, took 07:48:14 on 1509 cases;-;-
+-;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
@@ -640,11 +641,11 @@ intop2-mcast02.tst;0;interop2: pim;successfully;finished
 intop2-ospf01.tst;0;interop2: point2point ospf;successfully;finished
 intop2-ospf02.tst;0;interop2: ospf dr;successfully;finished
 intop2-ospf03.tst;0;interop2: ospf nondr;successfully;finished
-intop2-ospf04.tst;0;interop2: point2point ospf;successfully;finished
+intop2-ospf04.tst;0;interop2: ospf transit area;successfully;finished
 intop2-ospf05.tst;0;interop2: ospf stub area;successfully;finished
 intop2-ospf06.tst;0;interop2: ospf nssa area;successfully;finished
 intop2-ospf07.tst;0;interop2: ospf te;successfully;finished
-intop2-ospf08.tst;0;interop2: point2point ospf;successfully;finished
+intop2-ospf08.tst;0;interop2: ospf prefix withdraw;successfully;finished
 intop2-ospf09.tst;0;interop2: ospf authentication;successfully;finished
 intop2-ospf10.tst;0;interop2: ospf p2mp te;successfully;finished
 intop2-ospf11.tst;0;interop2: ospf sr;successfully;finished
@@ -654,6 +655,22 @@ intop2-rip03.tst;0;interop2: rip authentication;successfully;finished
 intop2-tun01.tst;0;interop2: gre tunnel;successfully;finished
 intop2-tun02.tst;0;interop2: ipip tunnel;successfully;finished
 intop2-zzz.tst;0;interop2: config wiper;successfully;finished
+intop9-bgp01.tst;0;interop9: ebgp;successfully;finished
+intop9-bgp02.tst;0;interop9: ibgp;successfully;finished
+intop9-bgp03.tst;0;interop9: bgp locpref;successfully;finished
+intop9-bgp04.tst;0;interop9: bgp origin;successfully;finished
+intop9-bgp05.tst;0;interop9: bgp metric;successfully;finished
+intop9-bgp06.tst;0;interop9: bgp community;successfully;finished
+intop9-eth01.tst;0;interop9: ethernet encapsulation;successfully;finished
+intop9-eth02.tst;0;interop9: dot1q encapsulation;successfully;finished
+intop9-isis01.tst;0;interop9: point2point isis;successfully;finished
+intop9-isis02.tst;0;interop9: isis dis;successfully;finished
+intop9-isis03.tst;0;interop9: isis nondis;successfully;finished
+intop9-ospf01.tst;0;interop9: point2point ospf;successfully;finished
+intop9-ospf02.tst;0;interop9: ospf dr;successfully;finished
+intop9-ospf03.tst;0;interop9: ospf nondr;successfully;finished
+intop9-rip01.tst;0;interop9: rip;successfully;finished
+intop9-zzz.tst;0;interop9: config wiper;successfully;finished
 mpls-bier01.tst;0;bier in chain;successfully;finished
 mpls-bier02.tst;0;bier in star;successfully;finished
 mpls-bier03.tst;0;bier in dense chain;successfully;finished

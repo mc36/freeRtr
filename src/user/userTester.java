@@ -7,6 +7,7 @@ import cfg.cfgInit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import pipe.pipeLine;
 import pipe.pipeProgress;
@@ -40,6 +41,8 @@ public class userTester {
 
     private int remoteP;
 
+    private String remoteS;
+
     private String otherI = null;
 
     private String otherN = null;
@@ -55,6 +58,8 @@ public class userTester {
     private boolean window = false;
 
     private boolean config = false;
+
+    private boolean randord = false;
 
     private String release = "unknown";
 
@@ -107,6 +112,12 @@ public class userTester {
             }
             if (s.equals("noconfig")) {
                 config = false;
+            }
+            if (s.equals("randord")) {
+                randord = true;
+            }
+            if (s.equals("norandord")) {
+                randord = false;
             }
             if (s.equals("retry")) {
                 maxTry = 16;
@@ -188,30 +199,31 @@ public class userTester {
         if (beg.length() < 2) {
             beg = "";
         }
-        List<String> lf = new ArrayList<String>(); // list of files
+        List<userTesterFtr> ned = new ArrayList<userTesterFtr>();
         try {
-            File fl[];
-            fl = new File(path).listFiles();
-            if (fl == null) {
+            File fils[] = new File(path).listFiles();
+            if (fils == null) {
                 return;
             }
-            for (int i = 0; i < fl.length; i++) {
-                if (fl[i].isDirectory()) {
+            for (int i = 0; i < fils.length; i++) {
+                if (fils[i].isDirectory()) {
                     continue;
                 }
-                s = fl[i].getName();
+                s = fils[i].getName();
                 if (!s.endsWith(".tst")) {
                     continue;
                 }
                 if (!s.startsWith(beg)) {
                     continue;
                 }
-                lf.add(s);
+                userTesterFtr ftr = new userTesterFtr();
+                ftr.fil = s;
+                ned.add(ftr);
             }
         } catch (Exception e) {
             return;
         }
-        Collections.sort(lf);
+        Collections.sort(ned, new userTesterFtr());
         if (config) {
             maxTry = 1;
             window = false;
@@ -223,6 +235,7 @@ public class userTester {
             remoteP = bits.str2num(remoteD.remove(0));
             remoteL = new addrIP();
             remoteL.fromString(remoteD.remove(0));
+            remoteS = remoteD.remove(0);
         } else {
             remoteD = new ArrayList<String>();
         }
@@ -235,90 +248,176 @@ public class userTester {
         rdr.debugStat("window=" + window);
         rdr.debugStat("config=" + config);
         rdr.debugStat("reapply=" + reapply);
+        rdr.debugStat("randord=" + randord);
         rdr.debugStat("retry=" + maxTry);
         rdr.debugStat("other=" + otherI + " " + otherN + " " + otherM);
-        rdr.debugStat("remote=" + remoteL + " " + remoteP + " " + remoteA + " " + remoteD.size());
+        rdr.debugStat("remote=" + remoteL + " " + remoteP + " " + remoteA);
         rdr.debugStat("capture=" + capture.size());
-        rdr.debugStat("files=" + lf.size());
-        long tim1 = bits.getTime();
-        List<String> lh = new ArrayList<String>(); // html result
-        lh.add(servHttp.html401tr);
-        lh.add("<html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>");
-        lh.add("release: " + release + "<br/>");
-        lh.add("tested: bug");
-        lh.add("jvm: " + jvn + jvp + "<br/>");
-        lh.add("<br/>");
-        lh.add("<table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>");
-        List<String> lc = new ArrayList<String>(); // csv result
-        lc.add("file;code;test;stage;command");
-        lc.add("-;-;" + release + ";-;-");
-        lc.add("-;-;bug;-;-");
-        List<String> lq = new ArrayList<String>(); // feature result
+        rdr.debugStat("files=" + ned.size());
+        for (int i = 0; i < ned.size(); i++) {
+            userTesterFtr ftr = ned.get(i);
+            ftr.ret = maxTry;
+        }
+        List<userTesterFtr> don = new ArrayList<userTesterFtr>();
         int err = 0;
-        for (int i = 0; i < lf.size(); i++) {
-            s = lf.get(i);
-            final String sep = " ---------- ";
-            rdr.debugRes(sep + err + "/" + i + "/" + lf.size() + sep + s + sep);
-            userTesterOne lt = new userTesterOne(); // list of tests
-            for (int retry = 0; retry < maxTry; retry++) {
-                bits.sleep(1000);
-                lt = new userTesterOne();
-                lt.debug = debug;
-                lt.config = config;
-                lt.reapply = reapply;
-                lt.jvm = jvn + jvp;
-                lt.otherI = otherI;
-                lt.otherN = otherN;
-                lt.otherM = otherM;
-                lt.remoteD = remoteD;
-                lt.remoteA = remoteA;
-                lt.remoteL = remoteL;
-                lt.remoteP = remoteP;
-                lt.capture = capture;
-                if (window) {
-                    lt.window += "w";
-                }
-                lt.rdr = rdr;
-                lt.doTest(path, s);
-                lt.stopAll();
-                if (lt.getSucc()) {
-                    break;
-                }
-                rdr.debugRes(sep + "retry " + retry + "/" + maxTry + sep);
+        int ret = 0;
+        long tim1 = bits.getTime();
+        for (; ned.size() > 0;) {
+            int cur = 0;
+            if (randord) {
+                cur = bits.random(0, ned.size());
             }
+            userTesterFtr ftr = ned.get(cur);
+            s = ftr.fil;
+            final String sep = " ---------- ";
+            rdr.debugRes(sep + "err=" + err + " ret=" + ret + " don=" + don.size() + " ned=" + ned.size() + " tot=" + (don.size() + ned.size()) + sep + s + sep);
+            userTesterOne lt = new userTesterOne();
+            bits.sleep(1000);
+            lt = new userTesterOne();
+            lt.debug = debug;
+            lt.config = config;
+            lt.reapply = reapply;
+            lt.jvm = jvn + jvp;
+            lt.otherI = otherI;
+            lt.otherN = otherN;
+            lt.otherM = otherM;
+            lt.remoteD = remoteD;
+            lt.remoteA = remoteA;
+            lt.remoteL = remoteL;
+            lt.remoteP = remoteP;
+            lt.remoteS = remoteS;
+            lt.capture = capture;
+            if (window) {
+                lt.window += "w";
+            }
+            lt.rdr = rdr;
+            lt.doTest(path, s);
+            lt.stopAll();
+            rdr.debugRes(lt.getCsv());
+            boolean del = lt.getSucc();
+            if (!del) {
+                ftr.ret--;
+                del |= ftr.ret < 1;
+                ret++;
+            }
+            if (!del) {
+                continue;
+            }
+            ned.remove(cur);
             if (!lt.getSucc()) {
                 err++;
             }
-            rdr.debugRes(lt.getCsv());
-            lh.add(lt.getHtm(url));
-            lc.add(lt.getCsv());
-            lq.add(lt.getFet());
+            ftr.res = lt.getSucc();
+            ftr.htm = lt.getHtm(url);
+            ftr.csv = lt.getCsv();
+            ftr.ftr = lt.getFet();
+            don.add(ftr);
         }
+        Collections.sort(don, new userTesterFtr());
         long tim2 = bits.getTime();
-        rdr.debugStat("took " + bits.timePast(tim1) + ", " + err + " failed");
-        String a = bits.time2str(cfgAll.timeZoneName, tim2 + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(tim1) + " on " + lf.size() + " cases";
-        lh.set(3, "tested: " + a + "<br/>");
-        lc.set(2, "-;-;" + a + ";-;-");
+        rdr.debugStat("took " + bits.timePast(tim1) + ", " + err + " failed" + ", " + ret + " retries");
+        for (int i = 0; i < don.size(); i++) {
+            userTesterFtr ftr = don.get(i);
+            if (ftr.res) {
+                continue;
+            }
+            rdr.debugStat("failed: " + ftr.csv);
+        }
         if (!summary) {
             return;
         }
         rdr.debugStat("writing summary");
-        lh.add("</table></body></html>");
-        lq.addAll(bits.lst2pre(bits.txt2buf("../todo.txt"), "todo: ", false));
-        bits.buf2txt(true, lh, "rtr" + beg + ".html");
-        bits.buf2txt(true, lc, "rtr" + beg + ".csv");
-        a = "rtr" + beg + ".ftr";
-        lc = bits.txt2buf(a);
-        if (lc == null) {
-            lc = new ArrayList<String>();
+        List<String> txt = bits.txt2buf("../todo.txt");
+        if (txt == null) {
+            txt = new ArrayList<String>();
         }
-        bits.buf2txt(true, lq, a);
-        lc = userFilter.getDiffs(lc, lq);
-        if (lc.size() < 1) {
+        for (int i = 0; i < txt.size(); i++) {
+            userTesterFtr ftr = new userTesterFtr();
+            ftr.ftr = "todo: " + txt.get(i);
+            don.add(ftr);
+        }
+        String a = bits.time2str(cfgAll.timeZoneName, tim2 + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(tim1) + " on " + don.size() + " cases";
+        txt = new ArrayList<String>();
+        txt.add(servHttp.html401tr);
+        txt.add("<html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>");
+        txt.add("release: " + release + "<br/>");
+        txt.add("tested: " + a + "<br/>");
+        txt.add("jvm: " + jvn + jvp + "<br/>");
+        txt.add("<br/>");
+        txt.add("<table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>");
+        txt.addAll(features2list(don, 3));
+        txt.add("</table></body></html>");
+        bits.buf2txt(true, txt, "rtr" + beg + ".html");
+        txt = new ArrayList<String>();
+        txt.add("file;code;test;stage;command");
+        txt.add("-;-;" + release + ";-;-");
+        txt.add("-;-;" + a + ";-;-");
+        txt.add("-;-;" + jvn + jvp + ";-;-");
+        txt.addAll(features2list(don, 4));
+        bits.buf2txt(true, txt, "rtr" + beg + ".csv");
+        a = "rtr" + beg + ".ftr";
+        txt = bits.txt2buf(a);
+        if (txt == null) {
+            txt = new ArrayList<String>();
+        }
+        bits.buf2txt(true, features2list(don, 2), a);
+        txt = userFilter.getDiffs(txt, features2list(don, 2));
+        if (txt.size() < 1) {
             return;
         }
-        lc.add(0, "---------------------------------- " + bits.time2str(cfgAll.timeZoneName, tim1 + cfgAll.timeServerOffset, 3));
-        bits.buf2txt(false, lc, "../changelog.txt");
+        txt.add(0, "---------------------------------- " + bits.time2str(cfgAll.timeZoneName, tim1 + cfgAll.timeServerOffset, 3));
+        bits.buf2txt(false, txt, "../changelog.txt");
+    }
+
+    private static List<String> features2list(List<userTesterFtr> ftr, int mod) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < ftr.size(); i++) {
+            String a = ftr.get(i).getter(mod);
+            if (a == null) {
+                continue;
+            }
+            res.add(a);
+        }
+        return res;
+    }
+
+}
+
+class userTesterFtr implements Comparator<userTesterFtr> {
+
+    public String fil;
+
+    public int ret;
+
+    public boolean res;
+
+    public String ftr;
+
+    public String htm;
+
+    public String csv;
+
+    public int compare(userTesterFtr o1, userTesterFtr o2) {
+        return o1.fil.compareTo(o2.fil);
+    }
+
+    public String getter(int mod) {
+        switch (mod) {
+            case 1: // filename
+                return fil;
+            case 2: // feature
+                return ftr;
+            case 3: // html
+                return htm;
+            case 4: // csv
+                return csv;
+            case 5: // result
+                return "" + res;
+            case 6: // retries
+                return "" + ret;
+            default:
+                return null;
+        }
     }
 
 }
@@ -336,6 +435,8 @@ class userTesterPrc {
     public pipeProgress rdr;
 
     public boolean debug;
+
+    public String syncr = "!!!hello there!!!";
 
     public userTesterPrc(pipeProgress reader, String nam, String command) {
         name = nam;
@@ -459,35 +560,32 @@ class userTesterPrc {
         return res;
     }
 
-    public void doSync(String str) {
-        if (str == null) {
-            str = "!!!hello there!!!";
-        }
-        putLine(str);
+    public void doSync() {
+        putLine(syncr);
         for (;;) {
             String a = getLine();
             if (a == null) {
                 return;
             }
             a = bits.trimE(a);
-            if (a.indexOf(str) >= 0) {
+            if (a.indexOf(syncr) >= 0) {
                 break;
             }
         }
     }
 
     public void applyCfg(List<String> cfg) {
-        doSync(null);
+        doSync();
         rdr.setMax(cfg.size());
         for (int i = 0; i < cfg.size(); i++) {
             if ((i % 5) == 0) {
-                doSync(null);
+                doSync();
             }
             putLine(cfg.get(i));
             getLine();
             rdr.setCurr(i);
         }
-        doSync(null);
+        doSync();
     }
 
 }
@@ -519,6 +617,8 @@ class userTesterOne {
     public addrIP remoteL;
 
     public int remoteP;
+
+    public String remoteS;
 
     public String otherI;
 
@@ -747,6 +847,7 @@ class userTesterOne {
             bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, rn, s);
             p.debug = debug;
+            p.syncr = remoteS;
             procs.add(p);
             cfg = new ArrayList<String>();
             cfg.add("hostname " + rn);
@@ -905,7 +1006,7 @@ class userTesterOne {
         }
         s = cmd.word();
         if (s.equals("sync")) {
-            p.doSync(null);
+            p.doSync();
             return;
         }
         if (s.equals("send")) {

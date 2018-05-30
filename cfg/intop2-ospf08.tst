@@ -1,4 +1,4 @@
-description interop2: point2point ospf
+description interop2: ospf prefix withdraw
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $rem1$

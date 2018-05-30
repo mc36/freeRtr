@@ -106,7 +106,7 @@ public class pipeProgress {
      * @param s string
      */
     public void debugTx(String s) {
-        putLn(pipeSide.modTyp.modeCRLF, "<--" + s);
+        putLn(pipeSide.modTyp.modeCRLF, "tx:" + s);
     }
 
     /**
@@ -115,7 +115,7 @@ public class pipeProgress {
      * @param s string
      */
     public void debugRx(String s) {
-        putLn(pipeSide.modTyp.modeCRLF, "-->" + s);
+        putLn(pipeSide.modTyp.modeCRLF, "rx:" + s);
     }
 
     /**
