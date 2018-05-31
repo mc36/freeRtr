@@ -22,8 +22,8 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 1
- neigh 1.1.1.2 additional-path-tx all
- neigh 1.1.1.2 additional-path-rx all
+ neigh 1.1.1.2 additional-path-tx uni
+ neigh 1.1.1.2 additional-path-rx uni
  red conn
  exit
 router bgp6 1
@@ -32,8 +32,8 @@ router bgp6 1
  local-as 1
  router-id 6.6.6.1
  neigh 1234::2 remote-as 1
- neigh 1234::2 additional-path-tx all
- neigh 1234::2 additional-path-rx all
+ neigh 1234::2 additional-path-tx uni
+ neigh 1234::2 additional-path-rx uni
  red conn
  exit
 !

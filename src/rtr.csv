@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.5.29-testing, done by cs@nop.;-;-
--;-;2018-05-29 23:05:44, took 07:48:14 on 1509 cases;-;-
+-;-;freeRouter v18.5.31-testing, done by cs@nop.;-;-
+-;-;2018-05-31 13:36:09, took 08:06:13 on 1535 cases;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -661,14 +661,40 @@ intop9-bgp03.tst;0;interop9: bgp locpref;successfully;finished
 intop9-bgp04.tst;0;interop9: bgp origin;successfully;finished
 intop9-bgp05.tst;0;interop9: bgp metric;successfully;finished
 intop9-bgp06.tst;0;interop9: bgp community;successfully;finished
+intop9-bgp07.tst;0;interop9: bgp aspath;successfully;finished
+intop9-bgp08.tst;0;interop9: bgp with labels;successfully;finished
+intop9-bgp09.tst;0;interop9: bgp addpath;successfully;finished
+intop9-bgp10.tst;0;interop9: bgp prefix withdraw;successfully;finished
+intop9-bgp11.tst;0;interop9: bgp vpnv4;successfully;finished
+intop9-bgp12.tst;0;interop9: bgp authentication;successfully;finished
+intop9-bgp13.tst;0;interop9: bgp vpnv6;successfully;finished
+intop9-bgp14.tst;0;interop9: vpls/ldp over bgp;successfully;finished
+intop9-bgp15.tst;0;interop9: vpls/bgp over bgp;successfully;finished
+intop9-bgp16.tst;0;interop9: bgp extended community;successfully;finished
+intop9-bgp17.tst;0;interop9: bgp large community;successfully;finished
 intop9-eth01.tst;0;interop9: ethernet encapsulation;successfully;finished
 intop9-eth02.tst;0;interop9: dot1q encapsulation;successfully;finished
 intop9-isis01.tst;0;interop9: point2point isis;successfully;finished
 intop9-isis02.tst;0;interop9: isis dis;successfully;finished
 intop9-isis03.tst;0;interop9: isis nondis;successfully;finished
+intop9-isis04.tst;0;interop9: isis te;successfully;finished
+intop9-isis05.tst;0;interop9: isis prefix withdraw;successfully;finished
+intop9-isis06.tst;0;interop9: isis p2mp te;successfully;finished
+intop9-isis07.tst;0;interop9: isis sr;successfully;finished
+intop9-ldp01.tst;0;interop9: ldp lsp;successfully;finished
+intop9-ldp02.tst;0;interop9: ethernet over mpls;successfully;finished
+intop9-ldp03.tst;0;interop9: ldp p2mp lsp;successfully;finished
+intop9-ldp04.tst;0;interop9: ldp mp2mp lsp;successfully;finished
 intop9-ospf01.tst;0;interop9: point2point ospf;successfully;finished
 intop9-ospf02.tst;0;interop9: ospf dr;successfully;finished
 intop9-ospf03.tst;0;interop9: ospf nondr;successfully;finished
+intop9-ospf04.tst;0;interop9: ospf transit area;successfully;finished
+intop9-ospf05.tst;0;interop9: ospf stub area;successfully;finished
+intop9-ospf06.tst;0;interop9: ospf nssa area;successfully;finished
+intop9-ospf07.tst;0;interop9: ospf te;successfully;finished
+intop9-ospf08.tst;0;interop9: ospf prefix withdraw;successfully;finished
+intop9-ospf09.tst;0;interop9: ospf p2mp te;successfully;finished
+intop9-ospf10.tst;0;interop9: ospf sr;successfully;finished
 intop9-rip01.tst;0;interop9: rip;successfully;finished
 intop9-zzz.tst;0;interop9: config wiper;successfully;finished
 mpls-bier01.tst;0;bier in chain;successfully;finished

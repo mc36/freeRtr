@@ -33,10 +33,8 @@ int eth1 eth 0000.0000.2222 $rem1$
 !
 set interfaces ge-0/0/0.0 family inet address 1.1.1.2/24
 set interfaces ge-0/0/0.0 family inet6
-set security zones security-zone trust interfaces ge-0/0/0.0
 set interfaces lo0.0 family inet address 2.2.2.2/32
 set interfaces lo0.0 family inet6 address 4321::2/128
-set security zones security-zone trust interfaces lo0.0
 set policy-options policy-statement ps1 from protocol direct
 set policy-options policy-statement ps1 then accept
 set protocols rip group g1 neighbor ge-0/0/0.0

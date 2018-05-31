@@ -40,15 +40,11 @@ int eth2 eth 0000.0000.2223 $rem2$
 !
 set interfaces ge-0/0/0.0 family inet address 1.1.1.2/24
 set interfaces ge-0/0/0.0 family iso
-set security zones security-zone trust interfaces ge-0/0/0.0
 set interfaces ge-0/0/1.0 family inet6
 set interfaces ge-0/0/1.0 family iso
-set security zones security-zone trust interfaces ge-0/0/1.0
 set interfaces lo0.0 family inet address 2.2.2.2/32
 set interfaces lo0.0 family inet6 address 4321::2/128
 set interfaces lo0.0 family iso address 48.0000.0000.1234.00
-set security zones security-zone trust interfaces lo0.0
-set security forwarding-options family iso mode packet-based
 set protocols isis interface ge-0/0/0.0 point-to-point hello-padding disable
 set protocols isis interface ge-0/0/1.0 point-to-point hello-padding disable
 set protocols isis interface lo0.0

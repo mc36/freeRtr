@@ -46,14 +46,12 @@ int eth1 eth 0000.0000.2222 $rem1$
 !
 set interfaces ge-0/0/0.0 family inet address 1.1.1.2/24
 set interfaces ge-0/0/0.0 family inet6 address 1234::2/64
-set security zones security-zone trust interfaces ge-0/0/0.0
 set interfaces lo0.0 family inet address 2.2.2.2/32
 set interfaces lo0.0 family inet6 address 4321::2/128
 set interfaces lo0.0 family inet address 2.2.2.3/32
 set interfaces lo0.0 family inet6 address 4321::3/128
 set interfaces lo0.0 family inet address 2.2.2.4/32
 set interfaces lo0.0 family inet6 address 4321::4/128
-set security zones security-zone trust interfaces lo0.0
 set routing-options autonomous-system 1
 set policy-options policy-statement ps1 term 1 from interface [ 2.2.2.3 4321::3 ]
 set policy-options policy-statement ps1 term 1 then local-preference 1234

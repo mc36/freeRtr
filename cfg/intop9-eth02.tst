@@ -20,7 +20,6 @@ set interfaces ge-0/0/0 vlan-tagging
 set interfaces ge-0/0/0.123 vlan-id 123
 set interfaces ge-0/0/0.123 family inet address 1.1.1.2/24
 set interfaces ge-0/0/0.123 family inet6 address 1234::2/64
-set security zones security-zone trust interfaces ge-0/0/0.123
 commit
 !
 

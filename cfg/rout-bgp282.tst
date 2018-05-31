@@ -23,8 +23,8 @@ router bgp4 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 send-comm both
- neigh 1.1.1.2 additional-path-rx all
- neigh 1.1.1.2 additional-path-tx all
+ neigh 1.1.1.2 additional-path-rx uni other
+ neigh 1.1.1.2 additional-path-tx uni other
  red conn
  exit
 router bgp6 1
@@ -34,8 +34,8 @@ router bgp6 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
  neigh 1234:1::2 send-comm both
- neigh 1234:1::2 additional-path-rx all
- neigh 1234:1::2 additional-path-tx all
+ neigh 1234:1::2 additional-path-rx uni other
+ neigh 1234:1::2 additional-path-tx uni other
  red conn
  exit
 !
@@ -63,8 +63,8 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 send-comm both
- neigh 1.1.1.1 additional-path-rx all
- neigh 1.1.1.1 additional-path-tx all
+ neigh 1.1.1.1 additional-path-rx uni other
+ neigh 1.1.1.1 additional-path-tx uni other
  red conn
  exit
 router bgp6 1
@@ -74,8 +74,8 @@ router bgp6 1
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 send-comm both
- neigh 1234:1::1 additional-path-rx all
- neigh 1234:1::1 additional-path-tx all
+ neigh 1234:1::1 additional-path-rx uni other
+ neigh 1234:1::1 additional-path-tx uni other
  red conn
  exit
 !

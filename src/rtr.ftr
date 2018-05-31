@@ -657,14 +657,40 @@ qc pass: interop9: bgp locpref
 qc pass: interop9: bgp origin
 qc pass: interop9: bgp metric
 qc pass: interop9: bgp community
+qc pass: interop9: bgp aspath
+qc pass: interop9: bgp with labels
+qc pass: interop9: bgp addpath
+qc pass: interop9: bgp prefix withdraw
+qc pass: interop9: bgp vpnv4
+qc pass: interop9: bgp authentication
+qc pass: interop9: bgp vpnv6
+qc pass: interop9: vpls/ldp over bgp
+qc pass: interop9: vpls/bgp over bgp
+qc pass: interop9: bgp extended community
+qc pass: interop9: bgp large community
 qc pass: interop9: ethernet encapsulation
 qc pass: interop9: dot1q encapsulation
 qc pass: interop9: point2point isis
 qc pass: interop9: isis dis
 qc pass: interop9: isis nondis
+qc pass: interop9: isis te
+qc pass: interop9: isis prefix withdraw
+qc pass: interop9: isis p2mp te
+qc pass: interop9: isis sr
+qc pass: interop9: ldp lsp
+qc pass: interop9: ethernet over mpls
+qc pass: interop9: ldp p2mp lsp
+qc pass: interop9: ldp mp2mp lsp
 qc pass: interop9: point2point ospf
 qc pass: interop9: ospf dr
 qc pass: interop9: ospf nondr
+qc pass: interop9: ospf transit area
+qc pass: interop9: ospf stub area
+qc pass: interop9: ospf nssa area
+qc pass: interop9: ospf te
+qc pass: interop9: ospf prefix withdraw
+qc pass: interop9: ospf p2mp te
+qc pass: interop9: ospf sr
 qc pass: interop9: rip
 qc pass: interop9: config wiper
 qc pass: bier in chain
