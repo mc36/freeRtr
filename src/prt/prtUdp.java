@@ -58,7 +58,7 @@ public class prtUdp extends prtGen {
         pck.msbPutW(2, pck.UDPtrg); // target port
         pck.msbPutW(4, size + pck.dataSize()); // length (hdr incl)
         pck.lsbPutW(6, 0); // checksum
-        if (cfgAll.udpChecksum) {
+        if (cfgAll.udpChecksumTx) {
             int i = pck.pseudoIPsum(size + pck.dataSize());
             i = pck.putIPsum(0, size, i);
             i = pck.getIPsum(0, pck.dataSize(), i);
@@ -95,7 +95,7 @@ public class prtUdp extends prtGen {
             logger.info("got truncated from " + pck.IPsrc);
             return true;
         }
-        if (cfgAll.udpChecksum) {
+        if (cfgAll.udpChecksumRx) {
             int sum = pck.msbGetW(6); // checksum
             if (sum != 0) {
                 int i = pck.pseudoIPsum(totLen);
@@ -134,7 +134,7 @@ public class prtUdp extends prtGen {
             pck.UDPtrg = trg;
         }
         pck.lsbPutW(6, 0); // checksum
-        if (cfgAll.udpChecksum) {
+        if (cfgAll.udpChecksumTx) {
             int i = pck.pseudoIPsum(size + pck.dataSize());
             i = pck.putIPsum(0, size, i);
             i = pck.getIPsum(0, pck.dataSize(), i);

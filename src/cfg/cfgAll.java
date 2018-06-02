@@ -668,9 +668,84 @@ public class cfgAll {
     public static boolean ftpPassive = true;
 
     /**
-     * udp checksum
+     * ipv4 checksum tx
      */
-    public static boolean udpChecksum = true;
+    public static boolean ipv4ChecksumTx = true;
+
+    /**
+     * ipv4 checksum rx
+     */
+    public static boolean ipv4ChecksumRx = true;
+
+    /**
+     * icmp4 checksum tx
+     */
+    public static boolean icmp4ChecksumTx = true;
+
+    /**
+     * icmp4 checksum rx
+     */
+    public static boolean icmp4ChecksumRx = true;
+
+    /**
+     * icmp6 checksum tx
+     */
+    public static boolean icmp6ChecksumTx = true;
+
+    /**
+     * icmp6 checksum rx
+     */
+    public static boolean icmp6ChecksumRx = true;
+
+    /**
+     * udp checksum tx
+     */
+    public static boolean udpChecksumTx = true;
+
+    /**
+     * udp checksum rx
+     */
+    public static boolean udpChecksumRx = true;
+
+    /**
+     * ludp checksum tx
+     */
+    public static boolean ludpChecksumTx = true;
+
+    /**
+     * ludp checksum rx
+     */
+    public static boolean ludpChecksumRx = true;
+
+    /**
+     * tcp checksum tx
+     */
+    public static boolean tcpChecksumTx = true;
+
+    /**
+     * tcp checksum rx
+     */
+    public static boolean tcpChecksumRx = true;
+
+    /**
+     * dccp checksum tx
+     */
+    public static boolean dccpChecksumTx = true;
+
+    /**
+     * dccp checksum rx
+     */
+    public static boolean dccpChecksumRx = true;
+
+    /**
+     * sctp checksum tx
+     */
+    public static boolean sctpChecksumTx = true;
+
+    /**
+     * sctp checksum rx
+     */
+    public static boolean sctpChecksumRx = true;
 
     /**
      * name of config server
@@ -750,7 +825,14 @@ public class cfgAll {
         "!no client mail-password",
         "!no client prefer-ipv6",
         "!client ftp-passive",
-        "!client udp-checksum",};
+        "!client ipv4-checksum both",
+        "!client icmp4-checksum both",
+        "!client icmp6-checksum both",
+        "!client udp-checksum both",
+        "!client tcp-checksum both",
+        "!client ludp-checksum both",
+        "!client dccp-checksum both",
+        "!client sctp-checksum both",};
 
     /**
      * defaults filter
@@ -2773,6 +2855,19 @@ public class cfgAll {
         return userFilter.filterText(l, defaultF);
     }
 
+    private static String rxtx2string(boolean rx, boolean tx) {
+        if ((rx == true) && (tx == true)) {
+            return "both";
+        }
+        if (rx) {
+            return "receive";
+        }
+        if (tx) {
+            return "transmit";
+        }
+        return "none";
+    }
+
     private static List<String> getGlobalRunEnd(boolean filter) {
         List<String> l = new ArrayList<String>();
         if (clientProxy == null) {
@@ -2786,8 +2881,15 @@ public class cfgAll {
             l.add("client name-proxy " + nameServerProxy.name);
         }
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
+        l.add("client ipv4-checksum " + rxtx2string(ipv4ChecksumRx, ipv4ChecksumTx));
+        l.add("client icmp4-checksum " + rxtx2string(icmp4ChecksumRx, icmp4ChecksumTx));
+        l.add("client icmp6-checksum " + rxtx2string(icmp6ChecksumRx, icmp6ChecksumTx));
+        l.add("client udp-checksum " + rxtx2string(udpChecksumRx, udpChecksumTx));
+        l.add("client tcp-checksum " + rxtx2string(tcpChecksumRx, tcpChecksumTx));
+        l.add("client ludp-checksum " + rxtx2string(ludpChecksumRx, ludpChecksumTx));
+        l.add("client dccp-checksum " + rxtx2string(dccpChecksumRx, dccpChecksumTx));
+        l.add("client sctp-checksum " + rxtx2string(sctpChecksumRx, sctpChecksumTx));
         cmds.cfgLine(l, nameServerAddr == null, "", "client name-server", "" + nameServerAddr);
-        cmds.cfgLine(l, !udpChecksum, "", "client udp-checksum", "");
         cmds.cfgLine(l, !ftpPassive, "", "client ftp-passive", "");
         cmds.cfgLine(l, upgradePubKey == null, "", "client upgrade-pubkey", "" + upgradePubKey);
         cmds.cfgLine(l, upgradeServer == null, "", "client upgrade-server", "" + upgradeServer);

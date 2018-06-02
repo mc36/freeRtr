@@ -1,6 +1,7 @@
 package prt;
 
 import addr.addrIP;
+import cfg.cfgAll;
 import cry.cryHashCrc32c;
 import ip.ipFwd;
 import ip.ipFwdIface;
@@ -79,12 +80,14 @@ public class prtSctp extends prtGen {
         pck.msbPutW(2, pck.UDPtrg); // target port
         pck.msbPutD(4, pck.TCPflg); // verification tag
         pck.msbPutD(8, 0); // checksum
-        cryHashCrc32c sum = new cryHashCrc32c();
-        sum.init();
-        pck.hashHead(sum, 0, size);
-        pck.hashData(sum, 0, pck.dataSize());
-        byte[] calc = sum.finish();
-        pck.putCopy(calc, 0, 8, calc.length);
+        if (cfgAll.sctpChecksumTx) {
+            cryHashCrc32c sum = new cryHashCrc32c();
+            sum.init();
+            pck.hashHead(sum, 0, size);
+            pck.hashData(sum, 0, pck.dataSize());
+            byte[] calc = sum.finish();
+            pck.putCopy(calc, 0, 8, calc.length);
+        }
         pck.putSkip(size);
         pck.merge2beg();
     }
@@ -112,20 +115,22 @@ public class prtSctp extends prtGen {
             return true;
         }
         pck.TCPflg = pck.msbGetD(4); // verification tag
-        cryHashCrc32c sum = new cryHashCrc32c();
-        sum.init();
-        pck.hashData(sum, 0, 8);
-        sum.update(0);
-        sum.update(0);
-        sum.update(0);
-        sum.update(0);
-        pck.hashData(sum, size, pck.dataSize() - size);
-        byte[] calc = sum.finish();
-        byte[] got = new byte[calc.length];
-        pck.getCopy(got, 0, 8, got.length);
-        if (bits.byteComp(calc, 0, got, 0, got.length) != 0) {
-            logger.info("got bad crc from " + pck.IPsrc);
-            return true;
+        if (cfgAll.sctpChecksumRx) {
+            cryHashCrc32c sum = new cryHashCrc32c();
+            sum.init();
+            pck.hashData(sum, 0, 8);
+            sum.update(0);
+            sum.update(0);
+            sum.update(0);
+            sum.update(0);
+            pck.hashData(sum, size, pck.dataSize() - size);
+            byte[] calc = sum.finish();
+            byte[] got = new byte[calc.length];
+            pck.getCopy(got, 0, 8, got.length);
+            if (bits.byteComp(calc, 0, got, 0, got.length) != 0) {
+                logger.info("got bad checksum from " + pck.IPsrc);
+                return true;
+            }
         }
         pck.getSkip(size);
         pck.UDPsiz = size;
@@ -151,12 +156,14 @@ public class prtSctp extends prtGen {
             pck.UDPtrg = trg;
         }
         pck.msbPutD(8, 0); // checksum
-        cryHashCrc32c sum = new cryHashCrc32c();
-        sum.init();
-        pck.hashHead(sum, 0, size);
-        pck.hashData(sum, 0, pck.dataSize());
-        byte[] calc = sum.finish();
-        pck.putCopy(calc, 0, 8, calc.length);
+        if (cfgAll.sctpChecksumTx) {
+            cryHashCrc32c sum = new cryHashCrc32c();
+            sum.init();
+            pck.hashHead(sum, 0, size);
+            pck.hashData(sum, 0, pck.dataSize());
+            byte[] calc = sum.finish();
+            pck.putCopy(calc, 0, 8, calc.length);
+        }
         pck.putSkip(size);
         pck.merge2beg();
     }

@@ -92,13 +92,14 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
             conn.setClose();
         }
         rtrLdpNeigh ntry = ip.ldpNeighFind(null, peer, false);
-        if (ntry != null) {
-            ntry.helloTrg = false;
-            if (!ntry.helloIfc) {
-                ntry.stopPeer();
-                ip.ldpNeighDel(ntry);
-            }
+        if (ntry == null) {
+            return;
         }
+        ntry.helloTrg = false;
+        if (ntry.helloIfc) {
+            return;
+        }
+        ip.ldpNeighDel(ntry);
     }
 
     /**

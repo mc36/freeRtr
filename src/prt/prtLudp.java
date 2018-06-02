@@ -1,6 +1,7 @@
 package prt;
 
 import addr.addrIP;
+import cfg.cfgAll;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import pack.packHolder;
@@ -57,9 +58,11 @@ public class prtLudp extends prtGen {
         pck.msbPutW(2, pck.UDPtrg); // target port
         pck.msbPutW(4, size); // length (hdr incl)
         pck.lsbPutW(6, 0); // checksum
-        int i = pck.pseudoIPsum(size + pck.dataSize());
-        i = pck.putIPsum(0, size, i);
-        pck.lsbPutW(6, 0xffff - i); // checksum
+        if (cfgAll.ludpChecksumTx) {
+            int i = pck.pseudoIPsum(size + pck.dataSize());
+            i = pck.putIPsum(0, size, i);
+            pck.lsbPutW(6, 0xffff - i); // checksum
+        }
         pck.putSkip(size);
         pck.merge2beg();
     }
@@ -94,13 +97,15 @@ public class prtLudp extends prtGen {
             logger.info("got truncated from " + pck.IPsrc);
             return true;
         }
-        int sum = pck.msbGetW(6); // checksum
-        if (sum != 0) {
-            int i = pck.pseudoIPsum(pck.dataSize());
-            i = pck.getIPsum(0, sumLen, i);
-            if (i != 0xffff) {
-                logger.info("got bad checksum from " + pck.IPsrc);
-                return true;
+        if (cfgAll.ludpChecksumRx) {
+            int sum = pck.msbGetW(6); // checksum
+            if (sum != 0) {
+                int i = pck.pseudoIPsum(pck.dataSize());
+                i = pck.getIPsum(0, sumLen, i);
+                if (i != 0xffff) {
+                    logger.info("got bad checksum from " + pck.IPsrc);
+                    return true;
+                }
             }
         }
         if (debugger.prtLudpTraf) {
@@ -131,9 +136,11 @@ public class prtLudp extends prtGen {
         }
         pck.msbPutW(4, size); // length (hdr incl)
         pck.lsbPutW(6, 0); // checksum
-        int i = pck.pseudoIPsum(size + pck.dataSize());
-        i = pck.putIPsum(0, size, i);
-        pck.lsbPutW(6, 0xffff - i); // checksum
+        if (cfgAll.ludpChecksumTx) {
+            int i = pck.pseudoIPsum(size + pck.dataSize());
+            i = pck.putIPsum(0, size, i);
+            pck.lsbPutW(6, 0xffff - i); // checksum
+        }
         pck.putSkip(size);
         pck.merge2beg();
     }

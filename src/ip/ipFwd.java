@@ -507,6 +507,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void ldpNeighDel(rtrLdpNeigh ntry) {
         ldpNeighs.del(ntry);
+        ntry.stopPeer();
         triggerUpdate.wakeup();
     }
 

@@ -3,6 +3,7 @@ package prt;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
+import cfg.cfgAll;
 import cry.cryHashMd5;
 import ip.ipFwd;
 import ip.ipFwdIface;
@@ -280,10 +281,12 @@ public class prtTcp extends prtGen {
             logger.info("got truncated from " + pck.IPsrc);
             return true;
         }
-        int i = pck.pseudoIPsum(pck.dataSize());
-        if (pck.getIPsum(0, pck.dataSize(), i) != 0xffff) { // sum
-            logger.info("got bad checksum from " + pck.IPsrc);
-            return true;
+        if (cfgAll.tcpChecksumRx) {
+            int i = pck.pseudoIPsum(pck.dataSize());
+            if (pck.getIPsum(0, pck.dataSize(), i) != 0xffff) { // sum
+                logger.info("got bad checksum from " + pck.IPsrc);
+                return true;
+            }
         }
         pck.TCPseq = pck.msbGetD(4); // sequence number
         pck.TCPack = pck.msbGetD(8); // acknowledgment number
@@ -300,7 +303,7 @@ public class prtTcp extends prtGen {
         if (hdrSiz < 1) {
             return false;
         }
-        i = pck.dataSize();
+        int i = pck.dataSize();
         boolean b = parseTCPoptions(pck, i - hdrSiz);
         pck.setBytesLeft(i - hdrSiz);
         return b;
@@ -348,10 +351,12 @@ public class prtTcp extends prtGen {
             pck.TCPwin = win;
         }
         pck.msbPutW(16, 0); // checksum
-        int i = pck.pseudoIPsum(size + optSiz + pck.dataSize());
-        i = pck.putIPsum(0, size + optSiz, i);
-        i = pck.getIPsum(0, pck.dataSize(), i);
-        pck.lsbPutW(16, 0xffff - i); // checksum
+        if (cfgAll.tcpChecksumTx) {
+            int i = pck.pseudoIPsum(size + optSiz + pck.dataSize());
+            i = pck.putIPsum(0, size + optSiz, i);
+            i = pck.getIPsum(0, pck.dataSize(), i);
+            pck.lsbPutW(16, 0xffff - i); // checksum
+        }
         pck.UDPsiz = size + optSiz;
         pck.putSkip(size + optSiz);
         pck.merge2beg();
@@ -442,10 +447,12 @@ public class prtTcp extends prtGen {
         pck.msbPutW(14, pck.TCPwin); // window size
         pck.msbPutW(16, 0); // checksum
         pck.msbPutW(18, pck.TCPurg); // urgent pointer
-        int i = pck.pseudoIPsum(size + pck.dataSize());
-        i = pck.putIPsum(0, size, i);
-        i = pck.getIPsum(0, pck.dataSize(), i);
-        pck.lsbPutW(16, 0xffff - i); // checksum
+        if (cfgAll.tcpChecksumTx) {
+            int i = pck.pseudoIPsum(size + pck.dataSize());
+            i = pck.putIPsum(0, size, i);
+            i = pck.getIPsum(0, pck.dataSize(), i);
+            pck.lsbPutW(16, 0xffff - i); // checksum
+        }
         pck.putSkip(size);
         pck.merge2beg();
         pck.UDPsiz = size;

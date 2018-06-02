@@ -5,6 +5,7 @@ import util.debugger;
 import util.logger;
 import addr.addrIP;
 import addr.addrIPv4;
+import cfg.cfgAll;
 
 /**
  * does ipv4 (rfc791) packet handling
@@ -68,9 +69,11 @@ public class ipCor4 implements ipCor {
             logger.info("got too small from " + pck.IPsrc);
             return true;
         }
-        if (pck.getIPsum(0, hdrLen, 0) != 0xffff) {
-            logger.info("got bad checksum from " + pck.IPsrc);
-            return true;
+        if (cfgAll.ipv4ChecksumRx) {
+            if (pck.getIPsum(0, hdrLen, 0) != 0xffff) {
+                logger.info("got bad checksum from " + pck.IPsrc);
+                return true;
+            }
         }
         int totLen = pck.msbGetW(2); // total Length of this packet (hdr incl)
         if (hdrLen > totLen) {
@@ -153,7 +156,9 @@ public class ipCor4 implements ipCor {
         pck.putAddr(12, adr); // source address
         adr = pck.IPtrg.toIPv4();
         pck.putAddr(16, adr); // destination address
-        pck.lsbPutW(10, 0xffff - pck.putIPsum(0, pck.IPsiz, 0)); // header checksum
+        if (cfgAll.ipv4ChecksumTx) {
+            pck.lsbPutW(10, 0xffff - pck.putIPsum(0, pck.IPsiz, 0)); // header checksum
+        }
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPver = protocolVersion;
@@ -199,7 +204,9 @@ public class ipCor4 implements ipCor {
             pck.IPtrg.setAddr(trg);
         }
         pck.msbPutW(10, 0); // header checksum
-        pck.lsbPutW(10, 0xffff - pck.putIPsum(0, pck.IPsiz, 0)); // header checksum
+        if (cfgAll.ipv4ChecksumTx) {
+            pck.lsbPutW(10, 0xffff - pck.putIPsum(0, pck.IPsiz, 0)); // header checksum
+        }
         pck.putSkip(pck.IPsiz);
         pck.mergeHeader(-1, pck.headSize() - pck.IPsiz);
     }

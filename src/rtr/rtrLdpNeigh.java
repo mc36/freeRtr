@@ -186,10 +186,10 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         l.add("hold time = " + bits.timeDump(sessHelloHldtm / 1000));
         l.add("keepalive time = " + bits.timeDump(sessHelloIntrvl / 1000));
         l.add("prefix learned = " + prefLearn.size());
-        l.add("p2p learned = " + pweLearn.size());
+        l.add("pwe learned = " + pweLearn.size());
         l.add("p2mp learned = " + pmpLearn.size());
         l.add("prefix advertised = " + prefAdvert.size() + " of " + ip.labeldR.size());
-        l.add("p2p advertised = " + pweAdvert.size() + " of " + pweNeed2adv.size());
+        l.add("pwe advertised = " + pweAdvert.size() + " of " + pweNeed2adv.size());
         l.add("p2mp advertised = " + pmpAdvert.size());
         l.add("connection = " + cntr.getShStat());
     }
@@ -725,9 +725,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             logger.traceback(e);
         }
         logger.error("neighbor " + peer + " down");
-        if (conn != null) {
-            conn.setClose();
-        }
+        conn.setClose();
         ip.ldpNeighDel(this);
     }
 

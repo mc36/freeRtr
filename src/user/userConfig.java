@@ -424,7 +424,18 @@ public class userConfig {
         l.add("2  .    config-exclusive             allow only one user in configuration mode");
         l.add("2  .    prefer-ipv6                  prefer ipv6 for domains");
         l.add("2  .    prefer-ipv4                  prefer ipv4 for domains");
-        l.add("2  .    udp-checksum                 use udp checksum");
+        l.add("2  3    ipv4-checksum                set ipv4 checksum mode");
+        l.add("2  3    icmp4-checksum               set icmp4 checksum mode");
+        l.add("2  3    icmp6-checksum               set icmp6 checksum mode");
+        l.add("2  3    udp-checksum                 set udp checksum mode");
+        l.add("2  3    tcp-checksum                 set tcp checksum mode");
+        l.add("2  3    ludp-checksum                set ludp checksum mode");
+        l.add("2  3    dccp-checksum                set dccp checksum mode");
+        l.add("2  3    sctp-checksum                set sctp checksum mode");
+        l.add("3  .      receive                    only check, not generate");
+        l.add("3  .      transmit                   only generate, not check");
+        l.add("3  .      both                       both generate and check");
+        l.add("3  .      none                       not generate nor check");
         l.add("2  .    ftp-passive                  use passive mode ftp");
         l.add("2  .    ftp-active                   use active mode ftp");
         l.add("2  3    time-server                  specify name of time server");
@@ -1280,8 +1291,52 @@ public class userConfig {
                 cfgAll.preferIpv6 = false;
                 return;
             }
+            if (a.equals("ipv4-checksum")) {
+                int i = parseUpRxtx();
+                cfgAll.ipv4ChecksumRx = (i & 1) != 0;
+                cfgAll.ipv4ChecksumTx = (i & 2) != 0;
+                return;
+            }
+            if (a.equals("icmp4-checksum")) {
+                int i = parseUpRxtx();
+                cfgAll.icmp4ChecksumRx = (i & 1) != 0;
+                cfgAll.icmp4ChecksumTx = (i & 2) != 0;
+                return;
+            }
+            if (a.equals("icmp6-checksum")) {
+                int i = parseUpRxtx();
+                cfgAll.icmp6ChecksumRx = (i & 1) != 0;
+                cfgAll.icmp6ChecksumTx = (i & 2) != 0;
+                return;
+            }
             if (a.equals("udp-checksum")) {
-                cfgAll.udpChecksum = true;
+                int i = parseUpRxtx();
+                cfgAll.udpChecksumRx = (i & 1) != 0;
+                cfgAll.udpChecksumTx = (i & 2) != 0;
+                return;
+            }
+            if (a.equals("tcp-checksum")) {
+                int i = parseUpRxtx();
+                cfgAll.tcpChecksumRx = (i & 1) != 0;
+                cfgAll.tcpChecksumTx = (i & 2) != 0;
+                return;
+            }
+            if (a.equals("ludp-checksum")) {
+                int i = parseUpRxtx();
+                cfgAll.ludpChecksumRx = (i & 1) != 0;
+                cfgAll.ludpChecksumTx = (i & 2) != 0;
+                return;
+            }
+            if (a.equals("dccp-checksum")) {
+                int i = parseUpRxtx();
+                cfgAll.dccpChecksumRx = (i & 1) != 0;
+                cfgAll.dccpChecksumTx = (i & 2) != 0;
+                return;
+            }
+            if (a.equals("sctp-checksum")) {
+                int i = parseUpRxtx();
+                cfgAll.sctpChecksumRx = (i & 1) != 0;
+                cfgAll.sctpChecksumTx = (i & 2) != 0;
                 return;
             }
             if (a.equals("ftp-passive")) {
@@ -1958,10 +2013,6 @@ public class userConfig {
                 cfgAll.preferIpv6 = true;
                 return;
             }
-            if (a.equals("udp-checksum")) {
-                cfgAll.udpChecksum = false;
-                return;
-            }
             if (a.equals("ftp-passive")) {
                 cfgAll.ftpPassive = false;
                 return;
@@ -2057,6 +2108,23 @@ public class userConfig {
             return;
         }
         cmd.badCmd();
+    }
+
+    private int parseUpRxtx() {
+        String a = cmd.word();
+        if (a.equals("receive")) {
+            return 1;
+        }
+        if (a.equals("transmit")) {
+            return 2;
+        }
+        if (a.equals("both")) {
+            return 3;
+        }
+        if (a.equals("none")) {
+            return 0;
+        }
+        return 3;
     }
 
     private void parseUpMcast(int p, boolean b) {

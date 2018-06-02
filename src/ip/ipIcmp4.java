@@ -1,6 +1,7 @@
 package ip;
 
 import addr.addrIP;
+import cfg.cfgAll;
 import pack.packHolder;
 import util.counter;
 import util.debugger;
@@ -103,10 +104,12 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
             cntr.drop(pck, counter.reasons.badLen);
             return true;
         }
-        if (pck.getIPsum(0, pck.dataSize(), 0) != 0xffff) { // sum
-            logger.info("got bad checksum from " + pck.IPsrc);
-            cntr.drop(pck, counter.reasons.badSum);
-            return true;
+        if (cfgAll.icmp4ChecksumRx) {
+            if (pck.getIPsum(0, pck.dataSize(), 0) != 0xffff) { // sum
+                logger.info("got bad checksum from " + pck.IPsrc);
+                cntr.drop(pck, counter.reasons.badSum);
+                return true;
+            }
         }
         pck.ICMPtc = pck.msbGetW(0); // type:8 code:8
         pck.UDPsrc = pck.msbGetD(4); // id:16 seq:16
@@ -124,14 +127,26 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         }
         pck.msbPutW(0, pck.ICMPtc); // type:8 code:8
         pck.msbPutW(2, 0); // checksum
-        int i = pck.putIPsum(0, size, 0);
-        i = pck.getIPsum(0, pck.dataSize(), i);
-        pck.lsbPutW(2, 0xffff - i); // checksum
+        if (cfgAll.icmp4ChecksumTx) {
+            int i = pck.putIPsum(0, size, 0);
+            i = pck.getIPsum(0, pck.dataSize(), i);
+            pck.lsbPutW(2, 0xffff - i); // checksum
+        }
         pck.putSkip(size);
         pck.merge2beg();
     }
 
     public void updateICMPheader(packHolder pck) {
+        pck.unMergeBytes(size);
+        pck.putSkip(-size);
+        pck.msbPutW(2, 0); // checksum
+        if (cfgAll.icmp4ChecksumTx) {
+            int i = pck.putIPsum(0, size, 0);
+            i = pck.getIPsum(0, pck.dataSize(), i);
+            pck.lsbPutW(2, 0xffff - i); // checksum
+        }
+        pck.putSkip(size);
+        pck.merge2beg();
     }
 
     public String icmp2string(int i) {
