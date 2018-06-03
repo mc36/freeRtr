@@ -146,6 +146,8 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
 
     private long upTime;
 
+    private boolean need2run;
+
     /**
      * create ldp neighbor
      *
@@ -202,6 +204,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             logger.debug("starting peer " + peer + " (" + trans + ")");
         }
         upTime = bits.getTime();
+        need2run = true;
         new Thread(this).start();
     }
 
@@ -209,6 +212,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
      * stop this peer
      */
     public void stopPeer() {
+        need2run = false;
         if (conn != null) {
             conn.setClose();
         }
@@ -710,6 +714,9 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             int i = 0;
             for (;;) {
                 bits.sleep(1000);
+                if (!need2run) {
+                    break;
+                }
                 if (conn.isClosed() != 0) {
                     break;
                 }
@@ -735,6 +742,9 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
     public void doRxWork() {
         try {
             for (;;) {
+                if (!need2run) {
+                    break;
+                }
                 packLdp pck = new packLdp();
                 pck.conn = conn;
                 pck.cntr = cntr;
@@ -783,6 +793,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             logger.traceback(e);
         }
         conn.setClose();
+        ip.ldpNeighDel(this);
     }
 
     /**
