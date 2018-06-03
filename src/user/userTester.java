@@ -261,7 +261,7 @@ public class userTester {
         List<userTesterFtr> don = new ArrayList<userTesterFtr>();
         int err = 0;
         int ret = 0;
-        long tim1 = bits.getTime();
+        long tim = bits.getTime();
         for (; ned.size() > 0;) {
             int cur = 0;
             if (randord) {
@@ -270,7 +270,7 @@ public class userTester {
             userTesterFtr ftr = ned.get(cur);
             s = ftr.fil;
             final String sep = " ---------- ";
-            rdr.debugRes(sep + "err=" + err + " ret=" + ret + " don=" + don.size() + " ned=" + ned.size() + " tot=" + (don.size() + ned.size()) + sep + s + sep);
+            rdr.debugRes(sep + "err=" + err + " ret=" + ret + " don=" + don.size() + " ned=" + ned.size() + " tot=" + (don.size() + ned.size()) + " tim=" + bits.timePast(tim) + sep + s + sep);
             userTesterOne lt = new userTesterOne();
             bits.sleep(1000);
             lt = new userTesterOne();
@@ -314,8 +314,7 @@ public class userTester {
             don.add(ftr);
         }
         Collections.sort(don, new userTesterFtr());
-        long tim2 = bits.getTime();
-        rdr.debugStat("took " + bits.timePast(tim1) + ", " + err + " failed" + ", " + ret + " retries");
+        rdr.debugStat("took " + bits.timePast(tim) + ", " + err + " failed" + ", " + ret + " retries");
         for (int i = 0; i < don.size(); i++) {
             userTesterFtr ftr = don.get(i);
             if (ftr.res) {
@@ -336,7 +335,7 @@ public class userTester {
             ftr.ftr = "todo: " + txt.get(i);
             don.add(ftr);
         }
-        String a = bits.time2str(cfgAll.timeZoneName, tim2 + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(tim1) + " on " + don.size() + " cases";
+        String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(tim) + " on " + don.size() + " cases";
         txt = new ArrayList<String>();
         txt.add(servHttp.html401tr);
         txt.add("<html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>");
@@ -365,7 +364,7 @@ public class userTester {
         if (txt.size() < 1) {
             return;
         }
-        txt.add(0, "---------------------------------- " + bits.time2str(cfgAll.timeZoneName, tim1 + cfgAll.timeServerOffset, 3));
+        txt.add(0, "---------------------------------- " + bits.time2str(cfgAll.timeZoneName, tim + cfgAll.timeServerOffset, 3));
         bits.buf2txt(false, txt, "../changelog.txt");
     }
 

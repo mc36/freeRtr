@@ -669,6 +669,7 @@ public class ifcBridge implements ifcDn {
         }
         ifcBridgeMacAddr lrn = new ifcBridgeMacAddr(pck.ETHsrc.copyBytes());
         lrn.ifc = ifc;
+        lrn.cntr = new counter();
         ifcBridgeMacAddr old = learned.add(lrn);
         if (old != null) {
             if (macMove) {
@@ -678,7 +679,6 @@ public class ifcBridge implements ifcDn {
             }
             lrn = old;
         } else {
-            lrn.cntr = new counter();
             if ((ifc.lowerIf == null) && (macRouter != null)) {
                 macRouter.bridgeChanged();
             }

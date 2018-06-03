@@ -506,7 +506,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param ntry entry to delete
      */
     public void ldpNeighDel(rtrLdpNeigh ntry) {
-        ldpNeighs.del(ntry);
+        rtrLdpNeigh old = ldpNeighs.del(ntry);
+        if (old != null) {
+            old.stopPeer();
+        }
         ntry.stopPeer();
         triggerUpdate.wakeup();
     }
