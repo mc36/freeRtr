@@ -428,6 +428,19 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (!traffEng) {
             ntry.bandwidth = 0;
         }
+        if (!pmsiTun) {
+            ntry.pmsiLab = 0;
+            ntry.pmsiTyp = 0;
+            ntry.pmsiTun = null;
+        }
+        if (!tunEnc) {
+            ntry.tunelTyp = 0;
+            ntry.tunelVal = null;
+        }
+        if (!attribSet) {
+            ntry.attribAs = 0;
+            ntry.attribVal = null;
+        }
         if (!segRout) {
             ntry.segRoutI = 0;
             ntry.segRoutB = 0;

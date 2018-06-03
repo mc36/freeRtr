@@ -70,6 +70,7 @@ router bgp4 1
  neigh 2.2.2.2 remote-as 2
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
+ neigh 2.2.2.2 pmsi
  neigh 2.2.2.2 additional-path-rx evpn
  neigh 2.2.2.2 additional-path-tx evpn
  afi-evpn 101 bridge 1
@@ -85,6 +86,7 @@ router bgp6 1
  neigh 4321::2 remote-as 2
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
+ neigh 4321::2 pmsi
  neigh 4321::2 additional-path-rx evpn
  neigh 4321::2 additional-path-tx evpn
  afi-evpn 101 bridge 2
@@ -164,6 +166,7 @@ router bgp4 1
  neigh 2.2.2.1 remote-as 1
  neigh 2.2.2.1 update lo0
  neigh 2.2.2.1 send-comm both
+ neigh 2.2.2.1 pmsi
  neigh 2.2.2.1 additional-path-rx evpn
  neigh 2.2.2.1 additional-path-tx evpn
  afi-evpn 101 bridge 1
@@ -179,6 +182,7 @@ router bgp6 1
  neigh 4321::1 remote-as 1
  neigh 4321::1 update lo0
  neigh 4321::1 send-comm both
+ neigh 4321::1 pmsi
  neigh 4321::1 additional-path-rx evpn
  neigh 4321::1 additional-path-tx evpn
  afi-evpn 101 bridge 2

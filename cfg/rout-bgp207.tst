@@ -71,6 +71,7 @@ router bgp4 1
  neigh 2.2.2.2 confed
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
+ neigh 2.2.2.2 pmsi
  afi-evpn 101 bridge 1
  afi-evpn 101 update lo0
  afi-evpn 101 encap cmac
@@ -87,6 +88,7 @@ router bgp6 1
  neigh 4321::2 confed
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
+ neigh 4321::2 pmsi
  afi-evpn 101 bridge 2
  afi-evpn 101 update lo0
  afi-evpn 101 encap cmac
@@ -167,6 +169,7 @@ router bgp4 1
  neigh 2.2.2.1 confed
  neigh 2.2.2.1 update lo0
  neigh 2.2.2.1 send-comm both
+ neigh 2.2.2.1 pmsi
  afi-evpn 101 bridge 1
  afi-evpn 101 update lo0
  afi-evpn 101 encap cmac
@@ -183,6 +186,7 @@ router bgp6 1
  neigh 4321::1 confed
  neigh 4321::1 update lo0
  neigh 4321::1 send-comm both
+ neigh 4321::1 pmsi
  afi-evpn 101 bridge 2
  afi-evpn 101 update lo0
  afi-evpn 101 encap cmac

@@ -74,6 +74,7 @@ router bgp4 1
  neigh 1.1.1.1 soft-reconfig
  neigh 1.1.1.1 internal-vpn
  neigh 1.1.1.6 remote-as 3
+ neigh 1.1.1.6 attribset
  neigh 1.1.1.6 soft-reconfig
  red conn
  exit
@@ -86,6 +87,7 @@ router bgp6 1
  neigh 1234:1::1 soft-reconfig
  neigh 1234:1::1 internal-vpn
  neigh 1234:2::2 remote-as 3
+ neigh 1234:2::2 attribset
  neigh 1234:2::2 soft-reconfig
  red conn
  exit
@@ -119,8 +121,10 @@ router bgp4 1
  local-as 3
  router-id 4.4.4.3
  neigh 1.1.1.5 remote-as 2
+ neigh 1.1.1.5 attribset
  neigh 1.1.1.5 soft-reconfig
  neigh 1.1.1.10 remote-as 4
+ neigh 1.1.1.10 attribset
  neigh 1.1.1.10 soft-reconfig
  red conn
  exit
@@ -130,8 +134,10 @@ router bgp6 1
  local-as 3
  router-id 6.6.6.3
  neigh 1234:2::1 remote-as 2
+ neigh 1234:2::1 attribset
  neigh 1234:2::1 soft-reconfig
  neigh 1234:3::2 remote-as 4
+ neigh 1234:3::2 attribset
  neigh 1234:3::2 soft-reconfig
  red conn
  exit
@@ -165,6 +171,7 @@ router bgp4 1
  local-as 4
  router-id 4.4.4.4
  neigh 1.1.1.9 remote-as 3
+ neigh 1.1.1.9 attribset
  neigh 1.1.1.9 soft-reconfig
  neigh 1.1.1.14 remote-as 4
  neigh 1.1.1.14 soft-reconfig
@@ -177,6 +184,7 @@ router bgp6 1
  local-as 4
  router-id 6.6.6.4
  neigh 1234:3::1 remote-as 3
+ neigh 1234:3::1 attribset
  neigh 1234:3::1 soft-reconfig
  neigh 1234:4::2 remote-as 4
  neigh 1234:4::2 soft-reconfig

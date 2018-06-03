@@ -399,6 +399,9 @@ router bgp4 1
  template a fall-over
  template a aigp
  template a traffeng
+ template a pmsitun
+ template a tunenc
+ template a attribset
  template a segrout
  template a bier
  template a route-reflector-client
@@ -460,6 +463,9 @@ router bgp4 65535
  neighbor 10.5.1.10 hostname
  neighbor 10.5.1.10 aigp
  neighbor 10.5.1.10 traffeng
+ neighbor 10.5.1.10 pmsitun
+ neighbor 10.5.1.10 tunenc
+ neighbor 10.5.1.10 attribset
  neighbor 10.5.1.10 segrout
  neighbor 10.5.1.10 bier
  neighbor 10.5.1.10 send-community all
@@ -506,6 +512,9 @@ router bgp6 1
  template a fall-over
  template a aigp
  template a traffeng
+ template a pmsitun
+ template a tunenc
+ template a attribset
  template a segrout
  template a bier
  template a route-reflector-client
@@ -542,6 +551,9 @@ router bgp6 65535
  neighbor 2001:db8:36::2 hostname
  neighbor 2001:db8:36::2 aigp
  neighbor 2001:db8:36::2 traffeng
+ neighbor 2001:db8:36::2 pmsitun
+ neighbor 2001:db8:36::2 tunenc
+ neighbor 2001:db8:36::2 attribset
  neighbor 2001:db8:36::2 segrout
  neighbor 2001:db8:36::2 bier
  neighbor 2001:db8:36::2 send-community all

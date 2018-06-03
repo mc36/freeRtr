@@ -88,6 +88,21 @@ public abstract class rtrBgpParam {
     public boolean traffEng;
 
     /**
+     * send pmsi tunnel
+     */
+    public boolean pmsiTun;
+
+    /**
+     * send tunnel encapsulation
+     */
+    public boolean tunEnc;
+
+    /**
+     * send attribute set
+     */
+    public boolean attribSet;
+
+    /**
      * send segment routing
      */
     public boolean segRout;
@@ -659,6 +674,9 @@ public abstract class rtrBgpParam {
         passwd = src.passwd;
         accIgp = src.accIgp;
         traffEng = src.traffEng;
+        pmsiTun = src.pmsiTun;
+        tunEnc = src.tunEnc;
+        attribSet = src.attribSet;
         segRout = src.segRout;
         bier = src.bier;
         egressEng = src.egressEng;
@@ -741,6 +759,15 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (traffEng != src.traffEng) {
+            return true;
+        }
+        if (pmsiTun != src.pmsiTun) {
+            return true;
+        }
+        if (tunEnc != src.tunEnc) {
+            return true;
+        }
+        if (attribSet != src.attribSet) {
             return true;
         }
         if (segRout != src.segRout) {
@@ -882,6 +909,9 @@ public abstract class rtrBgpParam {
         l.add("3 .       default-originate       send default route to peer");
         l.add("3 .       aigp                    send accumulated igp attribute");
         l.add("3 .       traffeng                send traffic engineering attribute");
+        l.add("3 .       pmsitun                 send provider multicast service interface tunnel attribute");
+        l.add("3 .       tunenc                  send tunnel encapsulation attribute");
+        l.add("3 .       attribset               send attribute set attribute");
         l.add("3 .       segrout                 send segment routing attribute");
         l.add("3 .       bier                    send bier attribute");
         l.add("3 .       internal-vpn-client     preserve attributes from peer");
@@ -1034,10 +1064,13 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !overridePeerIn, beg, nei + "override-peer-as-in", "");
         cmds.cfgLine(l, !accIgp, beg, nei + "aigp", "");
         cmds.cfgLine(l, !traffEng, beg, nei + "traffeng", "");
+        cmds.cfgLine(l, !pmsiTun, beg, nei + "pmsitun", "");
+        cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
+        cmds.cfgLine(l, !attribSet, beg, nei + "attribset", "");
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, egressEng == 0, beg, nei + "egress-engineering", "" + egressEng);
-        cmds.cfgLine(l, !capaNego, beg, nei + "capability-negotiation", "" );
+        cmds.cfgLine(l, !capaNego, beg, nei + "capability-negotiation", "");
         cmds.cfgLine(l, !reflectClnt, beg, nei + "route-reflector-client", "");
         cmds.cfgLine(l, !remoteConfed, beg, nei + "confederation-peer", "");
         cmds.cfgLine(l, !nxtHopUnchgd, beg, nei + "next-hop-unchanged", "");
@@ -1366,6 +1399,18 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("traffeng")) {
             traffEng = !negated;
+            return false;
+        }
+        if (s.equals("pmsitun")) {
+            pmsiTun = !negated;
+            return false;
+        }
+        if (s.equals("tunenc")) {
+            tunEnc = !negated;
+            return false;
+        }
+        if (s.equals("attribset")) {
+            attribSet = !negated;
             return false;
         }
         if (s.equals("segrout")) {

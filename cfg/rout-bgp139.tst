@@ -72,6 +72,7 @@ router bgp4 1
  neigh 1.1.1.4 remote-as 1
  neigh 1.1.1.4 update lo0
  neigh 1.1.1.4 send-comm both
+ neigh 1.1.1.4 pmsi
  afi-evpn 101 bridge 1
  afi-evpn 101 update lo0
  afi-evpn 102 bridge 3
@@ -85,6 +86,7 @@ router bgp6 1
  neigh 1234:1::4 remote-as 1
  neigh 1234:1::4 update lo0
  neigh 1234:1::4 send-comm both
+ neigh 1234:1::4 pmsi
  afi-evpn 101 bridge 2
  afi-evpn 101 update lo0
  afi-evpn 102 bridge 4
@@ -164,6 +166,7 @@ router bgp4 1
  neigh 1.1.1.4 remote-as 1
  neigh 1.1.1.4 update lo0
  neigh 1.1.1.4 send-comm both
+ neigh 1.1.1.4 pmsi
  afi-evpn 101 bridge 1
  afi-evpn 101 update lo0
  afi-evpn 102 bridge 3
@@ -177,6 +180,7 @@ router bgp6 1
  neigh 1234:1::4 remote-as 1
  neigh 1234:1::4 update lo0
  neigh 1234:1::4 send-comm both
+ neigh 1234:1::4 pmsi
  afi-evpn 101 bridge 2
  afi-evpn 101 update lo0
  afi-evpn 102 bridge 4
@@ -256,6 +260,7 @@ router bgp4 1
  neigh 1.1.1.4 remote-as 1
  neigh 1.1.1.4 update lo0
  neigh 1.1.1.4 send-comm both
+ neigh 1.1.1.4 pmsi
  afi-evpn 101 bridge 1
  afi-evpn 101 update lo0
  afi-evpn 102 bridge 3
@@ -269,6 +274,7 @@ router bgp6 1
  neigh 1234:1::4 remote-as 1
  neigh 1234:1::4 update lo0
  neigh 1234:1::4 send-comm both
+ neigh 1234:1::4 pmsi
  afi-evpn 101 bridge 2
  afi-evpn 101 update lo0
  afi-evpn 102 bridge 4
@@ -317,12 +323,15 @@ router bgp4 1
  router-id 4.4.4.4
  neigh 2.2.2.1 remote-as 1
  neigh 2.2.2.1 send-comm both
+ neigh 2.2.2.1 pmsi
  neigh 2.2.2.1 route-reflect
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 send-comm both
+ neigh 2.2.2.2 pmsi
  neigh 2.2.2.2 route-reflect
  neigh 2.2.2.3 remote-as 1
  neigh 2.2.2.3 send-comm both
+ neigh 2.2.2.3 pmsi
  neigh 2.2.2.3 route-reflect
  exit
 router bgp6 1
@@ -332,12 +341,15 @@ router bgp6 1
  router-id 6.6.6.4
  neigh 4321::1 remote-as 1
  neigh 4321::1 send-comm both
+ neigh 4321::1 pmsi
  neigh 4321::1 route-reflect
  neigh 4321::2 remote-as 1
  neigh 4321::2 send-comm both
+ neigh 4321::2 pmsi
  neigh 4321::2 route-reflect
  neigh 4321::3 remote-as 1
  neigh 4321::3 send-comm both
+ neigh 4321::3 pmsi
  neigh 4321::3 route-reflect
  exit
 !

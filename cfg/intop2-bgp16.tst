@@ -43,6 +43,7 @@ router bgp4 1
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
+ neigh 2.2.2.2 pmsi
  afi-evpn 101 bridge 1
  afi-evpn 101 update lo0
  exit
@@ -54,6 +55,7 @@ router bgp6 1
  neigh 4321::2 remote-as 1
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
+ neigh 4321::2 pmsi
  exit
 !
 
@@ -92,15 +94,15 @@ router static
  address-family ipv6 unicast 4321::1/128 1234::1 gigabit0/0/0/0
  exit
 router bgp 1
- address-family l2vpn vpls-vpws
+ address-family l2vpn evpn
  neighbor 2.2.2.1
   remote-as 1
   update-source loopback0
-  address-family l2vpn vpls-vpws
+  address-family l2vpn evpn
 ! neighbor 4321::1
 !  remote-as 1
 !  update-source loopback0
-!  address-family l2vpn vpls-vpws
+!  address-family l2vpn evpn
 root
 commit
 !
