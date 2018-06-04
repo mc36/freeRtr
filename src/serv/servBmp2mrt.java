@@ -254,6 +254,9 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         int len = rtrBgpMrt.putMrtHeader(hdr, dir, as, 0, src, spk, dat.length);
         packs++;
         bytes += len + dat.length;
+        if (fileHandle == null) {
+            return;
+        }
         try {
             fileHandle.write(hdr, 0, len);
             fileHandle.write(dat, 0, dat.length);
