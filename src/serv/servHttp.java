@@ -98,6 +98,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! host .* nostyle",
         "server http .*! host .* noredir",
         "server http .*! host .* noreconn",
+        "server http .*! host .* nosubconn",
         "server http .*! host .* noimagemap",
         "server http .*! host .* nowebsock",
         "server http .*! host .* nomediastream",
@@ -179,6 +180,11 @@ public class servHttp extends servGeneric implements prtServS {
                 l.add(a + " reconn " + ntry.reconnP.name + " " + ntry.reconnT);
             } else {
                 l.add(a + " noreconn");
+            }
+            if (ntry.subconn) {
+                l.add(a + " subconn");
+            } else {
+                l.add(a + " nosubconn");
             }
             if (ntry.streamT == null) {
                 l.add(a + " nostream");
@@ -342,6 +348,14 @@ public class servHttp extends servGeneric implements prtServS {
         if (a.equals("noreconn")) {
             ntry.reconnP = null;
             ntry.reconnT = null;
+            return false;
+        }
+        if (a.equals("subconn")) {
+            ntry.subconn = true;
+            return false;
+        }
+        if (a.equals("nosubconn")) {
+            ntry.subconn = false;
             return false;
         }
         if (a.equals("stream")) {
@@ -540,6 +554,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("4 5        <name>                   proxy profile");
         l.add("5 .          <name>                 server to redirect to");
         l.add("3 .      noreconn                   disable reconnect");
+        l.add("3 .      subconn                    reconnect only to the url");
+        l.add("3 .      nosubconn                  allow any path");
         l.add("3 4      stream                     stream from server");
         l.add("4 5        <name>                   content type");
         l.add("5 6          <name>                 proxy profile");
@@ -642,6 +658,11 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      * url to reconnect to
      */
     public String reconnT;
+
+    /**
+     * restrict url
+     */
+    public boolean subconn;
 
     /**
      * proxy for stream
@@ -1945,10 +1966,12 @@ class servHttpConn implements Runnable {
                 sendRespError(504, "gateway timeout");
                 return;
             }
-            srvUrl.filPath = gotUrl.filPath;
-            srvUrl.filName = gotUrl.filName;
-            srvUrl.filExt = gotUrl.filExt;
-            srvUrl.param = gotUrl.param;
+            if (!gotHost.subconn) {
+                srvUrl.filPath = gotUrl.filPath;
+                srvUrl.filName = gotUrl.filName;
+                srvUrl.filExt = gotUrl.filExt;
+                srvUrl.param = gotUrl.param;
+            }
             pipeSide.modTyp old = cnn.lineTx;
             cnn.lineTx = pipeSide.modTyp.modeCRLF;
             cnn.linePut(gotCmd.toUpperCase() + " " + srvUrl.toURL(false, true) + " HTTP/1.1");
