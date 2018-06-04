@@ -13,7 +13,9 @@ import rtr.rtrBgpMon;
 import rtr.rtrBgpMrt;
 import tab.tabGen;
 import user.userFilter;
+import user.userFlash;
 import user.userHelping;
+import util.bits;
 import util.cmds;
 import util.logger;
 
@@ -36,7 +38,23 @@ public class servBmp2mrt extends servGeneric implements prtServS {
 
     private String fileName;
 
+    private String backupName;
+
+    private boolean local;
+
+    private int maxTime;
+
+    private int maxPack;
+
+    private int maxByte;
+
     private RandomAccessFile fileHandle;
+
+    private long started;
+
+    private int bytes;
+
+    private int packs;
 
     /**
      * defaults text
@@ -44,7 +62,12 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     public final static String defaultL[] = {
         "server bmp2mrt .*! port " + port,
         "server bmp2mrt .*! protocol " + proto2string(protoAllStrm),
-        "server bmp2mrt .*! no datafile"
+        "server bmp2mrt .*! no local",
+        "server bmp2mrt .*! max-time 0",
+        "server bmp2mrt .*! max-pack 0",
+        "server bmp2mrt .*! max-byte 0",
+        "server bmp2mrt .*! no file",
+        "server bmp2mrt .*! no backup"
     };
 
     /**
@@ -57,22 +80,54 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> l) {
-        cmds.cfgLine(l, fileName == null, beg, "datafile", fileName);
+        l.add(beg + "max-time " + maxTime);
+        l.add(beg + "max-pack " + maxPack);
+        l.add(beg + "max-byte " + maxByte);
+        cmds.cfgLine(l, !local, beg, "local", "");
+        cmds.cfgLine(l, backupName == null, beg, "backup", backupName);
+        cmds.cfgLine(l, fileName == null, beg, "file", fileName);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
-        if (s.equals("datafile")) {
+        if (s.equals("local")) {
+            local = true;
+            return false;
+        }
+        if (s.equals("max-time")) {
+            maxTime = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("max-pack")) {
+            maxPack = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("max-byte")) {
+            maxByte = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("backup")) {
+            backupName = cmd.getRemaining();
+            return false;
+        }
+        if (s.equals("file")) {
             fileName = cmd.getRemaining();
             try {
                 fileHandle.close();
             } catch (Exception e) {
             }
             fileHandle = null;
+            if (backupName != null) {
+                userFlash.rename(fileName, backupName, true, true);
+            }
+            started = bits.getTime();
+            bytes = 0;
+            packs = 0;
             try {
                 fileHandle = new RandomAccessFile(new File(fileName), "rw");
                 fileHandle.setLength(0);
             } catch (Exception e) {
+                logger.traceback(e);
             }
             return false;
         }
@@ -80,7 +135,27 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
-        if (s.equals("datafile")) {
+        if (s.equals("local")) {
+            local = false;
+            return false;
+        }
+        if (s.equals("max-time")) {
+            maxTime = 0;
+            return false;
+        }
+        if (s.equals("max-pack")) {
+            maxPack = 0;
+            return false;
+        }
+        if (s.equals("max-byte")) {
+            maxByte = 0;
+            return false;
+        }
+        if (s.equals("backup")) {
+            backupName = null;
+            return false;
+        }
+        if (s.equals("file")) {
             try {
                 fileHandle.close();
             } catch (Exception e) {
@@ -93,7 +168,16 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2    datafile                  log user to file");
+        l.add("1 2    file                      log to file");
+        l.add("2 2,.    <file>                  name of file");
+        l.add("1 .    local                     log to syslog");
+        l.add("1 2    max-time                  maximum time");
+        l.add("2 .      <num>                   ms between backups");
+        l.add("1 2    max-byte                  maximum bytes");
+        l.add("2 .      <num>                   bytes between backups");
+        l.add("1 2    max-pack                  maximum packets");
+        l.add("2 .      <num>                   packets between backups");
+        l.add("1 2    backup                    backup to file");
         l.add("2 2,.    <file>                  name of file");
     }
 
@@ -133,13 +217,56 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * @param dat bgp message
      */
     public synchronized void gotMessage(boolean dir, int as, addrIP src, addrIP spk, byte[] dat) {
+        if (local) {
+            logger.info((dir ? "tx" : "rx") + " " + as + " " + src + " " + spk + " " + bits.byteDump(dat, 0, -1));
+        }
+        if (backupName != null) {
+            boolean ned = false;
+            if (maxTime > 0) {
+                ned |= (bits.getTime() - started) > maxTime;
+            }
+            if (maxPack > 0) {
+                ned |= packs > maxPack;
+            }
+            if (maxByte > 0) {
+                ned |= bytes > maxByte;
+            }
+            if (ned) {
+                try {
+                    fileHandle.close();
+                } catch (Exception e) {
+                    logger.traceback(e);
+                }
+                fileHandle = null;
+                packs = 0;
+                bytes = 0;
+                userFlash.rename(fileName, backupName, true, true);
+                started = bits.getTime();
+                try {
+                    fileHandle = new RandomAccessFile(new File(fileName), "rw");
+                    fileHandle.setLength(0);
+                } catch (Exception e) {
+                    logger.traceback(e);
+                }
+            }
+        }
         byte[] hdr = new byte[128];
         int len = rtrBgpMrt.putMrtHeader(hdr, dir, as, 0, src, spk, dat.length);
+        packs++;
+        bytes += len + dat.length;
         try {
             fileHandle.write(hdr, 0, len);
             fileHandle.write(dat, 0, dat.length);
+            return;
         } catch (Exception e) {
+            logger.traceback(e);
         }
+        try {
+            fileHandle.close();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        fileHandle = null;
     }
 
 }

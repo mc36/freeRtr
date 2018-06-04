@@ -1882,7 +1882,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("3 .       <name>                  template name");
         l.add("1 2   dump                        setup bgp dump file");
         l.add("2 3     <name>                    name of mrt");
-        l.add("3 3,.     <file>                  name of file");
+        l.add("3 4,.     <file>                  name of file");
+        l.add("4 5         <num>                 ms between backup");
+        l.add("5 .           <file>              name of backup");
         l.add("1 2   monitor                     setup bgp monitor protocol server");
         l.add("2 3     <name>                    name of bmp");
         l.add("3 4       <name>                  proxy profile");
@@ -2409,9 +2411,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 dmp.stopNow();
                 return false;
             }
-            dmp.fileName = cmd.getRemaining();
+            rtrBgpMrt old = dmps.add(dmp);
+            if (old != null) {
+                old.stopNow();
+                dmp = old;
+            }
+            dmp.fileName = cmd.word();
+            dmp.backupTime = bits.str2num(cmd.word());
+            dmp.backupName = cmd.word();
             dmp.startNow();
-            dmps.add(dmp);
             return false;
         }
         if (s.equals("monitor")) {

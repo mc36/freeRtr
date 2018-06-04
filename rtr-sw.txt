@@ -380,7 +380,7 @@ router bgp4 1
  flapstat
  nexthop route-policy nht4
  flowspec fs4
- dump a bgp4.log
+ dump a bgp4cur.log 600000 bgp4old.log
  template a remote-as 1
  no template a description
  template a password $w10$DlOpZQKK5act0vAiKD2PVg==
@@ -493,7 +493,7 @@ router bgp6 1
  flapstat
  nexthop route-policy nht6
  flowspec fs6
- dump a bgp6.log
+ dump a bgp6cur.log 600000 bgp6old.log
  template a remote-as 1
  no template a description
  template a password $w10$DlOpZQKK5act0vAiKD2PVg==
@@ -817,7 +817,9 @@ server http web
  exit
 !
 server bmp2mrt bmp
- datafile bgp.log
+ max-time 600000
+ backup bmp-old.log
+ file bmp-cur.log
  vrf v1
  exit
 !
