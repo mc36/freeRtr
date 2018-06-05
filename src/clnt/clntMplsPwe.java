@@ -308,27 +308,31 @@ public class clntMplsPwe implements Runnable, ifcDn {
         } else {
             labelL.setFwdPwe(3, fwdCor, upper, 0, getL2append());
         }
+        bits.sleep(bits.random(1000, 9000));
         for (;;) {
             if (!working) {
-                return;
+                break;
             }
             neighT = fwdCor.ldpTargetFind(fwdIfc, fwdTrg, false);
             if (neighT == null) {
-                return;
+                break;
             }
             neighT.keepWorking();
             neighL = fwdCor.ldpNeighFind(null, fwdTrg, false);
             if (neighL == null) {
-                return;
+                break;
             }
             if (neighL.pweNeed2adv.find(pweL) == null) {
-                return;
+                break;
             }
             pweR = neighL.pweLearn.find(pweL);
             if (pweR == null) {
-                return;
+                break;
             }
             bits.sleep(1000);
+        }
+        if (debugger.clntPweTraf) {
+            logger.debug("session down");
         }
     }
 

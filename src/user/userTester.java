@@ -314,7 +314,6 @@ public class userTester {
             don.add(ftr);
         }
         Collections.sort(don, new userTesterFtr());
-        rdr.debugStat("took " + bits.timePast(tim) + ", " + err + " failed" + ", " + ret + " retries");
         for (int i = 0; i < don.size(); i++) {
             userTesterFtr ftr = don.get(i);
             if (ftr.res) {
@@ -322,6 +321,8 @@ public class userTester {
             }
             rdr.debugStat("failed: " + ftr.csv);
         }
+        String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(tim) + " on " + don.size() + " cases, " + err + " failed" + ", " + ret + " retries";
+        rdr.debugStat("summary: " + a);
         if (!summary) {
             return;
         }
@@ -335,7 +336,6 @@ public class userTester {
             ftr.ftr = "todo: " + txt.get(i);
             don.add(ftr);
         }
-        String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(tim) + " on " + don.size() + " cases";
         txt = new ArrayList<String>();
         txt.add(servHttp.html401tr);
         txt.add("<html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>");
