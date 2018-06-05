@@ -181,8 +181,8 @@ public class servHttp extends servGeneric implements prtServS {
             } else {
                 l.add(a + " noreconn");
             }
-            if (ntry.subconn) {
-                l.add(a + " subconn");
+            if (ntry.subconn != 0) {
+                l.add(a + " subconn " + ntry.subconn);
             } else {
                 l.add(a + " nosubconn");
             }
@@ -351,11 +351,11 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("subconn")) {
-            ntry.subconn = true;
+            ntry.subconn = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("nosubconn")) {
-            ntry.subconn = false;
+            ntry.subconn = 0;
             return false;
         }
         if (a.equals("stream")) {
@@ -554,8 +554,9 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("4 5        <name>                   proxy profile");
         l.add("5 .          <name>                 server to redirect to");
         l.add("3 .      noreconn                   disable reconnect");
-        l.add("3 .      subconn                    reconnect only to the url");
-        l.add("3 .      nosubconn                  allow any path");
+        l.add("3 4      subconn                    reconnect only to the url");
+        l.add("4 .        <num>                    bitmask what to revert");
+        l.add("3 .      nosubconn                  allow anything");
         l.add("3 4      stream                     stream from server");
         l.add("4 5        <name>                   content type");
         l.add("5 6          <name>                 proxy profile");
@@ -662,7 +663,7 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
     /**
      * restrict url
      */
-    public boolean subconn;
+    public int subconn;
 
     /**
      * proxy for stream
@@ -1966,11 +1967,26 @@ class servHttpConn implements Runnable {
                 sendRespError(504, "gateway timeout");
                 return;
             }
-            if (!gotHost.subconn) {
+            if ((gotHost.subconn & 0x1) == 0) {
                 srvUrl.filPath = gotUrl.filPath;
+            }
+            if ((gotHost.subconn & 0x2) == 0) {
                 srvUrl.filName = gotUrl.filName;
+            }
+            if ((gotHost.subconn & 0x4) == 0) {
                 srvUrl.filExt = gotUrl.filExt;
+            }
+            if ((gotHost.subconn & 0x8) == 0) {
                 srvUrl.param = gotUrl.param;
+            }
+            if ((gotHost.subconn & 0x10) != 0) {
+                srvUrl.server = gotUrl.server;
+            }
+            if ((gotHost.subconn & 0x20) != 0) {
+                srvUrl.filPath = (srvUrl.filPath + "/" + gotUrl.filPath).replaceAll("//", "/");
+            }
+            if (debugger.servHttpTraf) {
+                logger.debug("reconnect " + srvUrl.toURL(false, true));
             }
             pipeSide.modTyp old = cnn.lineTx;
             cnn.lineTx = pipeSide.modTyp.modeCRLF;
