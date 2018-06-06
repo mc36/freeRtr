@@ -193,18 +193,18 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         }
         adverted.clear();
         learned.clear();
+        bits.sleep(bits.random(1000, 5000));
         if (peer.compare(peer, iface.iface.addr) > 0) {
             if (debugger.rtrPvrpEvnt) {
                 logger.debug("accepting " + peer);
             }
             prtAccept ac = new prtAccept(lower.tcpCore, new pipeLine(65536, false), iface.iface, rtrPvrp.port, peer, 0, 0, "pvrp", null, -1);
-            ac.wait4conn(iface.deadTimer);
+            ac.wait4conn(30000);
             conn = ac.getConn(true);
         } else {
             if (debugger.rtrPvrpEvnt) {
                 logger.debug("connecting " + peer);
             }
-            bits.sleep(1000);
             conn = lower.tcpCore.streamConnect(new pipeLine(65536, false), iface.iface, 0, peer, rtrPvrp.port, "pvrp", null, -1);
         }
         if (conn == null) {

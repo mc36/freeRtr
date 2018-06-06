@@ -88,6 +88,9 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
      * stop connection
      */
     public void workStop() {
+        if (debugger.rtrLdpEvnt) {
+            logger.debug("stopping targeted hello with " + peer);
+        }
         if (conn != null) {
             conn.setClose();
         }
