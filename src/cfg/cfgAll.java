@@ -32,6 +32,7 @@ import serv.servDns;
 import serv.servEchoS;
 import serv.servForwarder;
 import serv.servFtp;
+import serv.servGeneric;
 import serv.servGenList;
 import serv.servGopher;
 import serv.servGtp;
@@ -2679,6 +2680,20 @@ public class cfgAll {
             return null;
         }
         return ntry;
+    }
+
+    /**
+     * find one server
+     *
+     * @param <T> type of list
+     * @param srv empty instance
+     * @param lst the list
+     * @param nam name to find
+     * @return instance, null if not found
+     */
+    public static <T extends servGeneric> T srvrFind(T srv, servGenList<T> lst, String nam) {
+        srv.rename(nam);
+        return lst.find(srv, false);
     }
 
     /**

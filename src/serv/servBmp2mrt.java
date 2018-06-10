@@ -1,8 +1,10 @@
 package serv;
 
 import addr.addrIP;
+import cfg.cfgAll;
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
 import pipe.pipeLine;
@@ -14,6 +16,7 @@ import rtr.rtrBgpMrt;
 import tab.tabGen;
 import user.userFilter;
 import user.userFlash;
+import user.userFormat;
 import user.userHelping;
 import util.bits;
 import util.cmds;
@@ -35,6 +38,8 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * header size
      */
     public static final int size = 6;
+
+    private final tabGen<servBmp2mrtStat> stats = new tabGen<servBmp2mrtStat>();
 
     private String fileName;
 
@@ -207,16 +212,54 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         return false;
     }
 
+    private servBmp2mrtStat getStat(addrIP from, addrIP peer) {
+        servBmp2mrtStat res = new servBmp2mrtStat();
+        res.from = from.copyBytes();
+        res.peer = peer.copyBytes();
+        servBmp2mrtStat old = stats.add(res);
+        if (old != null) {
+            return old;
+        } else {
+            return res;
+        }
+    }
+
     /**
-     * got update
+     * got state
      *
-     * @param dir direction: false=rx, true=tx
      * @param as as number
      * @param src source of packet
      * @param spk got from speaker
+     * @param st state
+     */
+    public void gotState(int as, addrIP src, addrIP spk, boolean st) {
+        servBmp2mrtStat stat = getStat(spk, src);
+        stat.as = as;
+        stat.state = st;
+        stat.since = bits.getTime();
+        stat.change++;
+    }
+
+    /**
+     * got update
+     *
+     * @param as as number
+     * @param src source of packet
+     * @param spk got from speaker
+     * @param dir direction: false=rx, true=tx
      * @param dat bgp message
      */
-    public synchronized void gotMessage(boolean dir, int as, addrIP src, addrIP spk, byte[] dat) {
+    public synchronized void gotMessage(int as, addrIP src, addrIP spk, boolean dir, byte[] dat) {
+        servBmp2mrtStat stat = getStat(spk, src);
+        stat.as = as;
+        if (dir) {
+            stat.packOut++;
+            stat.byteOut += dat.length;
+        } else {
+            stat.packIn++;
+            stat.byteIn += dat.length;
+        }
+        stat.packLast = bits.getTime();
         if (local) {
             logger.info((dir ? "tx" : "rx") + " " + as + " " + src + " " + spk + " " + bits.byteDump(dat, 0, -1));
         }
@@ -272,6 +315,87 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         fileHandle = null;
     }
 
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "from|peer|as|state|change|last");
+        for (int i = 0; i < stats.size(); i++) {
+            res.add("" + stats.get(i));
+        }
+        return res;
+    }
+
+    /**
+     * get show
+     *
+     * @param frm from
+     * @param per peer
+     * @return result
+     */
+    public userFormat getShow(addrIP frm, addrIP per) {
+        userFormat res = new userFormat("|", "category|value");
+        servBmp2mrtStat stat = new servBmp2mrtStat();
+        stat.from = frm;
+        stat.peer = per;
+        stat = stats.find(stat);
+        if (stat == null) {
+            return null;
+        }
+        res.add("from|" + stat.from);
+        res.add("peer|" + stat.peer);
+        res.add("as|" + stat.as);
+        res.add("state|" + stat.state);
+        res.add("since|" + bits.time2str(cfgAll.timeZoneName, stat.since + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(stat.since) + " ago)");
+        res.add("change|" + stat.change);
+        res.add("pack in|" + stat.packIn);
+        res.add("pack out|" + stat.packOut);
+        res.add("byte in|" + stat.byteIn);
+        res.add("byte out|" + stat.byteOut);
+        res.add("pack last|" + bits.time2str(cfgAll.timeZoneName, stat.packLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(stat.packLast) + " ago)");
+        return res;
+    }
+
+}
+
+class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
+
+    public addrIP from;
+
+    public addrIP peer;
+
+    public int as;
+
+    public int packIn;
+
+    public int packOut;
+
+    public long packLast;
+
+    public int byteIn;
+
+    public int byteOut;
+
+    public boolean state = true;
+
+    public long since;
+
+    public int change;
+
+    public int compare(servBmp2mrtStat o1, servBmp2mrtStat o2) {
+        int i = o1.from.compare(o1.from, o2.from);
+        if (i != 0) {
+            return i;
+        }
+        return o1.peer.compare(o1.peer, o2.peer);
+    }
+
+    public String toString() {
+        return from + "|" + peer + "|" + as + "|" + state + "|" + change + "|" + bits.timePast(since);
+    }
+
 }
 
 class servBmp2mrtConn implements Runnable {
@@ -319,9 +443,6 @@ class servBmp2mrtConn implements Runnable {
             if (pck.pipeRecv(pipe, 0, len, 144) != len) {
                 break;
             }
-            if (typ != rtrBgpMon.typMon) {
-                continue;
-            }
             // typ = pck.getByte(0); // type
             int flg = pck.getByte(1); // flags
             // int rd = pck.msbGetQ(2); // distinguisher
@@ -334,7 +455,21 @@ class servBmp2mrtConn implements Runnable {
             if ((flg & 0x80) == 0) {
                 adr.fromIPv4addr(adr.toIPv4());
             }
-            lower.gotMessage((flg & 0x40) != 0, as, adr, peer, pck.getCopy());
+            switch (typ) {
+                case rtrBgpMon.typMon:
+                    break;
+                case rtrBgpMon.typPerUp:
+                    pck.getSkip(20);
+                    lower.gotState(as, adr, peer, true);
+                    break;
+                case rtrBgpMon.typPerDn:
+                    pck.getSkip(1);
+                    lower.gotState(as, adr, peer, false);
+                    break;
+                default:
+                    continue;
+            }
+            lower.gotMessage(as, adr, peer, (flg & 0x40) != 0, pck.getCopy());
         }
         logger.error("neighbor " + peer + " down");
     }

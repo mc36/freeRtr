@@ -53,6 +53,7 @@ import rtr.rtrOlsrNeigh;
 import rtr.rtrPvrpNeigh;
 import rtr.rtrRip4neigh;
 import rtr.rtrRip6neigh;
+import serv.servBmp2mrt;
 import tab.tabGen;
 import tab.tabIntMatcher;
 import tab.tabLabel;
@@ -363,6 +364,29 @@ public class userShow {
         }
         if (a.equals("vrf")) {
             doShowVrf();
+            return null;
+        }
+        if (a.equals("bmp")) {
+            servBmp2mrt srv = cfgAll.srvrFind(new servBmp2mrt(), cfgAll.dmnBmp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            if (cmd.size() < 1) {
+                rdr.putStrTab(srv.getShow());
+                return null;
+            }
+            a = cmd.word();
+            addrIP frm = new addrIP();
+            frm.fromString(a);
+            addrIP per = new addrIP();
+            per.fromString(cmd.word());
+            userFormat res = srv.getShow(frm, per);
+            if (res == null) {
+                cmd.error("no such peer");
+                return null;
+            }
+            rdr.putStrTab(res);
             return null;
         }
         if (a.equals("bridge")) {

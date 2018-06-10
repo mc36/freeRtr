@@ -610,10 +610,14 @@ public class userExec {
         hl.add("4 .          drphistory          historic drop packet counters");
         hl.add("4 .          numhist             numeric historic byte counters");
         hl.add("4 .          numphist            numeric historic packet counters");
+        hl.add("2 3      bmp                     bgp monitoring protocol information");
+        hl.add("3 4,.      <name>                bmp name");
+        hl.add("4 5          <addr>              from");
+        hl.add("5 .            <addr>            peer");
         hl.add("2 3      bridge                  bridging information");
         hl.add("3 .        <num>                 bridge number");
         hl.add("2 3      bundle                  bundling information");
-        hl.add("3 .        <num>                 bridge number");
+        hl.add("3 .        <num>                 bundle number");
         hl.add("2 3      mpls                    multiprotocol label switching");
         hl.add("3 4,.      forwarding            mpls forwarding table");
         hl.add("4 .          [num]               label to view");
