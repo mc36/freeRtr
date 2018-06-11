@@ -116,11 +116,12 @@ public class servNrpe extends servGeneric implements prtServS {
             s = cmd.word();
         }
         if (s.equals("resolve")) {
+            String a = cmd.word();
             s = cmd.getRemaining();
             if (negated) {
-                ress.del(new servNrpeRes(s));
+                ress.del(new servNrpeRes(a, s));
             } else {
-                ress.add(new servNrpeRes(s));
+                ress.add(new servNrpeRes(a, s));
             }
             return false;
         }
@@ -214,7 +215,8 @@ public class servNrpe extends servGeneric implements prtServS {
 
     public void srvHelp(userHelping l) {
         l.add("1 2  resolve                      resolve the regexp group a to hostname");
-        l.add("2 2,.  <str>                      text");
+        l.add("2 3    <name>                     regexp of checks");
+        l.add("3 3,.    <str>                    text to resolve");
         l.add("1 2  check                        configure one check");
         l.add("2 3    <name>                     name of check");
         l.add("3 4,.    train                    train command to current result");
@@ -341,17 +343,24 @@ class servNrpeConn implements Runnable {
 
 class servNrpeRes implements Comparator<servNrpeRes> {
 
+    public final String chk;
+
     public final String nam;
 
-    public servNrpeRes(String s) {
+    public servNrpeRes(String c, String s) {
+        chk = c;
         nam = s;
     }
 
     public String toString() {
-        return nam;
+        return chk + " " + nam;
     }
 
     public int compare(servNrpeRes o1, servNrpeRes o2) {
+        int i = o1.chk.toLowerCase().compareTo(o2.chk.toLowerCase());
+        if (i != 0) {
+            return i;
+        }
         return o1.nam.toLowerCase().compareTo(o2.nam.toLowerCase());
     }
 
@@ -506,7 +515,14 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
 
     public String doResolv(String l) {
         for (int i = 0; i < lower.ress.size(); i++) {
-            l = lower.ress.get(i).doWork(l);
+            servNrpeRes r = lower.ress.get(i);
+            if (r == null) {
+                continue;
+            }
+            if (!nam.matches(r.chk)) {
+                continue;
+            }
+            l = r.doWork(l);
         }
         return l;
     }
