@@ -7,6 +7,7 @@ import addr.addrPrefix;
 import cfg.cfgAll;
 import cfg.cfgIfc;
 import cfg.cfgRoump;
+import cfg.cfgRtr;
 import cfg.cfgVrf;
 import clnt.clntProxy;
 import clnt.clntModem;
@@ -232,6 +233,85 @@ public class userPacket {
             } catch (Exception e) {
             }
             cmd.error(pk + " packets converted");
+            return;
+        }
+        if (a.equals("mrt2self")) {
+            tabRouteEntry.routeType rt = cfgRtr.name2num(cmd.word());
+            if (rt == null) {
+                cmd.error("invalid routing protocol");
+                return;
+            }
+            cfgRtr rp = cfgAll.rtrFind(rt, bits.str2num(cmd.word()), false);
+            if (rp == null) {
+                cmd.error("bad process number");
+                return;
+            }
+            if (rp.bgp == null) {
+                cmd.error("not a bgp process");
+                return;
+            }
+            addrIP adr = new addrIP();
+            adr.fromString(cmd.word());
+            rtrBgpNeigh nei = rp.bgp.findPeer(adr);
+            if (nei == null) {
+                cmd.error("no such peer");
+                return;
+            }
+            RandomAccessFile fs;
+            try {
+                a = cmd.word();
+                cmd.error("opening " + a);
+                fs = new RandomAccessFile(new File(a), "r");
+            } catch (Exception e) {
+                return;
+            }
+            addrIP sip = new addrIP();
+            sip.fromString(cmd.word());
+            addrIP tip = new addrIP();
+            tip.fromString(cmd.word());
+            cmd.error("sending updates as it was from " + sip + " to " + tip);
+            int snt = 0;
+            int tot = 0;
+            packHolder pck = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
+            for (;;) {
+                int i = readMrt(pck, fs);
+                if (i == 1) {
+                    break;
+                }
+                if (i == 2) {
+                    continue;
+                }
+                int typ = pck.getByte(rtrBgpSpeak.sizeU - 1);
+                pck.getSkip(rtrBgpSpeak.sizeU);
+                tot++;
+                if (sip.compare(sip, pck.IPsrc) != 0) {
+                    continue;
+                }
+                if (tip.compare(tip, pck.IPtrg) != 0) {
+                    continue;
+                }
+                if (cmd.pipe.ready2rx() > 0) {
+                    break;
+                }
+                switch (typ) {
+                    case rtrBgpUtil.msgUpdate:
+                        nei.conn.parseUpdate(pck, hlp);
+                        break;
+                    case rtrBgpUtil.msgOpen:
+                        nei.conn.parseOpen(pck);
+                        break;
+                    default:
+                        continue;
+                }
+                snt++;
+                cmd.pipe.strPut(".");
+            }
+            try {
+                fs.close();
+            } catch (Exception e) {
+            }
+            cmd.error("sent " + snt + " of " + tot + " updates");
             return;
         }
         if (a.equals("mrtplay")) {

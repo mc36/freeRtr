@@ -1054,6 +1054,13 @@ public class userExec {
         hl.add("2 3      wakeup                  wake up one host");
         hl.add("3 4        <name>                name of interface");
         hl.add("4 .          <addr>              address of host");
+        hl.add(".2 3     mrt2self                replay mrt as if got from a peer");
+        hl.add("3 4        <name>                process name");
+        hl.add("4 5          <num>               process number");
+        hl.add("5 6            <addr>            peer address");
+        hl.add("6 7              <file>          mrt file");
+        hl.add("7 8                <addr>        source peer");
+        hl.add("8 .                  <addr>      target peer");
         hl.add("2 3      mrt2pcap                convert mrt to pcap");
         hl.add("3 4        <file>                name of mrt file");
         hl.add("4 .          <file>              name of pcap file");
