@@ -5,6 +5,7 @@ import clnt.clntTrack;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import serv.servGeneric;
 import tab.tabGen;
 import user.userFilter;
 import user.userHelping;
@@ -37,6 +38,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         "tracker .*! no target",
         "tracker .*! no exec-up",
         "tracker .*! no exec-down",
+        "tracker .*! no chat-script",
+        "tracker .*! no security",
         "tracker .*! no vrf",
         "tracker .*! no source",
         "tracker .*! no log",
@@ -87,6 +90,13 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add("2  2,.      <addr>                   address of target");
         l.add("1  2      vrf                        specify vrf of test");
         l.add("2  .        <name>                   vrf to use");
+        l.add("1  2      security                   select security protocol");
+        l.add("2  .        ssh                      use secure shell");
+        l.add("2  .        tls                      use transport layer security");
+        l.add("2  .        dtls                     use datagram transport layer security");
+        l.add("2  .        telnet                   use telnet protocol");
+        l.add("1  2      chat-script                specify script to use");
+        l.add("2  .        <name>                   chatter to use");
         l.add("1  2      source                     specify source of test");
         l.add("2  .        <name>                   interface to use");
         l.add("1  2      interval                   specify time between runs");
@@ -129,6 +139,12 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         } else {
             cmds.cfgLine(l, worker.execUp == null, cmds.tabulator, "exec-up", worker.execUp);
             cmds.cfgLine(l, worker.execDn == null, cmds.tabulator, "exec-down", worker.execDn);
+        }
+        cmds.cfgLine(l, worker.secProto == 0, cmds.tabulator, "security", servGeneric.proto2string(worker.secProto));
+        if (worker.chats != null) {
+            l.add(cmds.tabulator + "chat-script " + worker.chats.scrName);
+        } else {
+            l.add(cmds.tabulator + "no chat-script");
         }
         if (worker.vrf != null) {
             l.add(cmds.tabulator + "vrf " + worker.vrf.name);
@@ -246,6 +262,19 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             worker.execDn = authLocal.passwdDecode(cmd.getRemaining());
             return;
         }
+        if (a.equals("security")) {
+            worker.secProto = servGeneric.string2proto(cmd.word());
+            return;
+        }
+        if (a.equals("chat-script")) {
+            cfgChat cht = cfgAll.chatFind(cmd.word(), false);
+            if (cht == null) {
+                cmd.error("no such script");
+                return;
+            }
+            worker.chats = cht.script;
+            return;
+        }
         if (a.equals("vrf")) {
             worker.vrf = cfgAll.vrfFind(cmd.word(), false);
             if (worker.vrf == null) {
@@ -333,6 +362,14 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         }
         if (a.equals("exec-down")) {
             worker.execDn = null;
+            return;
+        }
+        if (a.equals("security")) {
+            worker.secProto = 0;
+            return;
+        }
+        if (a.equals("chat-script")) {
+            worker.chats = null;
             return;
         }
         if (a.equals("vrf")) {

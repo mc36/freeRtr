@@ -13,12 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import line.lineScript;
 import pipe.pipeDiscard;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtGen;
 import rtr.rtrBfdClnt;
 import rtr.rtrBfdNeigh;
+import sec.secClient;
 import tab.tabGen;
 import user.userExec;
 import user.userReader;
@@ -138,6 +140,16 @@ public class clntTrack implements rtrBfdClnt {
      * exec down
      */
     public String execDn = null;
+
+    /**
+     * chat script
+     */
+    public lineScript chats = null;
+
+    /**
+     * security protocol to use
+     */
+    public int secProto = 0;
 
     /**
      * vrf of target
@@ -556,7 +568,23 @@ public class clntTrack implements rtrBfdClnt {
                     haveResult(false, false);
                     break;
                 }
-                haveResult(!pipe.wait4ready(timeout), false);
+                if (pipe.wait4ready(timeout)) {
+                    haveResult(false, false);
+                    pipe.setClose();
+                    break;
+                }
+                pipe.timeout = timeout;
+                pipe = secClient.openSec(pipe, secProto, null, null);
+                if (pipe == null) {
+                    haveResult(false, false);
+                    break;
+                }
+                pipe.timeout = timeout;
+                if (chats == null) {
+                    haveResult(true, false);
+                } else {
+                    haveResult(!chats.doScript(pipe), false);
+                }
                 pipe.setClose();
                 break;
             case bfd:

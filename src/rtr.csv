@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.6.10-testing, done by cs@nop.;-;-
--;-;2018-06-10 20:31:18, took 08:04:08 on 1510 cases, 0 failed, 11 retries;-;-
+-;-;freeRouter v18.6.11-testing, done by cs@nop.;-;-
+-;-;2018-06-12 00:37:49, took 08:02:21 on 1510 cases, 0 failed, 14 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished

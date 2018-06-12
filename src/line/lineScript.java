@@ -109,7 +109,7 @@ public class lineScript {
      * play this chat script
      *
      * @param pipe pipeline to use
-     * @return false on sucecss, true on error
+     * @return false on success, true on error
      */
     public boolean doScript(pipeSide pipe) {
         if (debugger.lineScript) {
@@ -344,11 +344,11 @@ class lineScriptNtry implements Comparator<lineScriptNtry> {
                     if ((bits.getTime() - beg) > tim) {
                         return "timeout, buffer=" + s;
                     }
-                    if (pipe.isClosed() != 0) {
-                        return "connection closed";
-                    }
                     buf = new byte[1];
                     if (pipe.nonBlockGet(buf, 0, buf.length) != buf.length) {
+                        if (pipe.isClosed() != 0) {
+                            return "connection closed";
+                        }
                         bits.sleep(500);
                         continue;
                     }
@@ -372,11 +372,11 @@ class lineScriptNtry implements Comparator<lineScriptNtry> {
                     if ((bits.getTime() - beg) > tim) {
                         return "timeout";
                     }
-                    if (pipe.isClosed() != 0) {
-                        return "connection closed";
-                    }
                     buf = new byte[1];
                     if (pipe.nonBlockGet(buf, 0, buf.length) != buf.length) {
+                        if (pipe.isClosed() != 0) {
+                            return "connection closed";
+                        }
                         bits.sleep(500);
                         continue;
                     }

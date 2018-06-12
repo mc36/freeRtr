@@ -71,7 +71,7 @@ public class cfgChat implements Comparator<cfgChat>, cfgGeneric {
     }
 
     public String getPrompt() {
-        return "char";
+        return "chat";
     }
 
 }
