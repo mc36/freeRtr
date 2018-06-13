@@ -172,33 +172,13 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         pipe = null;
     }
 
-    /**
-     * got update
-     *
-     * @param dir direction: false=rx, true=tx
-     * @param typ type
-     * @param spk speaker
-     * @param nei neighbor
-     * @param buf data bytes
-     */
-    public void gotMessage(boolean dir, int typ, rtrBgpSpeak spk, rtrBgpNeigh nei, byte[] buf) {
+    private void doSend(packHolder pck, boolean dir, int typ, rtrBgpSpeak spk, rtrBgpNeigh nei) {
         if (pipe == null) {
             return;
         }
-        packHolder pck = new packHolder(true, true);
-        pck.putCopy(buf, 0, 0, buf.length);
-        pck.putSkip(buf.length);
-        pck.merge2beg();
-        for (int i = 0; i < 16; i++) {
-            pck.putByte(i, 0xff);
-        }
-        pck.msbPutW(16, pck.dataSize() + rtrBgpSpeak.sizeU);
-        pck.putByte(18, typ);
-        pck.putSkip(rtrBgpSpeak.sizeU);
-        pck.merge2beg();
         pck.putByte(0, 3); // version
         pck.msbPutD(1, pck.dataSize() + size); // length
-        pck.putByte(5, typMon); // type
+        pck.putByte(5, typ); // type
         pck.putByte(6, 0); // peer type
         int i = 0;
         if (!nei.peerAddr.isIPv4()) {
@@ -218,6 +198,51 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         pck.putSkip(size);
         pck.merge2beg();
         pck.pipeSend(pipe, 0, pck.dataSize(), 1);
+    }
+
+    /**
+     * got event
+     *
+     * @param state state: false=down, true=up
+     * @param spk speaker
+     * @param nei neighbor
+     */
+    public void gotEvent(boolean state, rtrBgpSpeak spk, rtrBgpNeigh nei) {
+        packHolder pck = new packHolder(true, true);
+        int i;
+        if (state) {
+            i = typPerUp;
+            pck.putSkip(20);
+        } else {
+            i = typPerDn;
+            pck.putSkip(1);
+        }
+        pck.merge2beg();
+        doSend(pck, false, i, spk, nei);
+    }
+
+    /**
+     * got update
+     *
+     * @param dir direction: false=rx, true=tx
+     * @param typ type
+     * @param spk speaker
+     * @param nei neighbor
+     * @param buf data bytes
+     */
+    public void gotMessage(boolean dir, int typ, rtrBgpSpeak spk, rtrBgpNeigh nei, byte[] buf) {
+        packHolder pck = new packHolder(true, true);
+        pck.putCopy(buf, 0, 0, buf.length);
+        pck.putSkip(buf.length);
+        pck.merge2beg();
+        for (int i = 0; i < 16; i++) {
+            pck.putByte(i, 0xff);
+        }
+        pck.msbPutW(16, pck.dataSize() + rtrBgpSpeak.sizeU);
+        pck.putByte(18, typ);
+        pck.putSkip(rtrBgpSpeak.sizeU);
+        pck.merge2beg();
+        doSend(pck, dir, typMon, spk, nei);
     }
 
 }

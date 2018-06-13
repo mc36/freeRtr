@@ -810,6 +810,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         logger.warn("neighbor " + neigh.peerAddr + " up");
+        if (neigh.monitor != null) {
+            neigh.monitor.gotEvent(true, this, neigh);
+        }
         if (neigh.bfdTrigger) {
             neigh.localIfc.bfdAdd(neigh.peerAddr, this, "bgp");
         }
@@ -983,6 +986,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         closeNow();
+        if (neigh.monitor != null) {
+            neigh.monitor.gotEvent(false, this, neigh);
+        }
         logger.error("neighbor " + neigh.peerAddr + " down");
     }
 

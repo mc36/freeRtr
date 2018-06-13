@@ -380,6 +380,7 @@ router bgp4 1
  flapstat
  nexthop route-policy nht4
  flowspec fs4
+ monitor a p1 10.10.10.227 17971
  dump a bgp4cur.log 600000 bgp4old.log
  template a remote-as 1
  no template a description
@@ -393,6 +394,7 @@ router bgp4 1
  template a additional-path-rx unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
  template a additional-path-tx unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
  template a update-source loopback0
+ template a monitor a
  template a dump a
  template a hostname
  template a unidirection
@@ -493,6 +495,7 @@ router bgp6 1
  flapstat
  nexthop route-policy nht6
  flowspec fs6
+ monitor a p1 10.10.10.227 17971
  dump a bgp6cur.log 600000 bgp6old.log
  template a remote-as 1
  no template a description
@@ -506,6 +509,7 @@ router bgp6 1
  template a additional-path-rx unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
  template a additional-path-tx unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
  template a update-source loopback0
+ template a monitor a
  template a dump a
  template a hostname
  template a unidirection
