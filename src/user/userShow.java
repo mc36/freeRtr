@@ -2059,7 +2059,7 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            rdr.putStrArr(r.bgp.getFlappath(ntry));
+            rdr.putStrTab(r.bgp.getFlappath(ntry));
             return;
         }
         if (a.equals("group")) {
@@ -2159,6 +2159,14 @@ public class userShow {
             a = cmd.word();
             if (a.equals("summary")) {
                 rdr.putStrTab(r.bgp.showNeighs(sfi));
+                return;
+            }
+            if (a.equals("asgraph")) {
+                rdr.putStrArr(r.bgp.getAsGraph(sfi));
+                return;
+            }
+            if (a.equals("asinconsistent")) {
+                rdr.putStrTab(r.bgp.getAsIncons(sfi));
                 return;
             }
             if (a.equals("allroute")) {

@@ -1716,12 +1716,18 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         ntry.count++;
         ntry.last = bits.getTime();
-        for (int i = 0; i < ntry.paths.size(); i++) {
-            if (pth.equals(ntry.paths.get(i))) {
-                return;
-            }
+        pathFlapped(ntry, pth);
+    }
+
+    private void pathFlapped(rtrBgpFlap prf, String pth) {
+        rtrBgpFlapath ntry = new rtrBgpFlapath();
+        ntry.path = pth;
+        rtrBgpFlapath old = prf.paths.add(ntry);
+        if (old != null) {
+            ntry = old;
         }
-        ntry.paths.add(pth);
+        ntry.count++;
+        ntry.last = prf.last;
     }
 
     public synchronized void routerCreateComputed() {
@@ -2812,24 +2818,141 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param prf prefix
      * @return list of paths
      */
-    public List<String> getFlappath(addrPrefix<addrIP> prf) {
-        List<String> l = new ArrayList<String>();
+    public userFormat getFlappath(addrPrefix<addrIP> prf) {
         if (flaps == null) {
-            return l;
+            return null;
         }
         rtrBgpFlap ntry = new rtrBgpFlap();
         ntry.prefix = prf.copyBytes();
         ntry = flaps.find(ntry);
         if (ntry == null) {
-            return l;
+            return null;
         }
-        l.add("prefix=" + addrPrefix.ip2str(ntry.prefix));
-        l.add("count=" + ntry.count);
-        l.add("last=" + bits.time2str(cfgAll.timeZoneName, ntry.last + cfgAll.timeServerOffset, 3));
-        l.add("ago=" + bits.timePast(ntry.last));
-        l.add("paths");
-        l.addAll(ntry.paths);
+        userFormat l = new userFormat("|", "path|count|ago|last");
+        for (int i = 0; i < ntry.paths.size(); i++) {
+            l.add("" + ntry.paths.get(i));
+        }
         return l;
+    }
+
+    /**
+     * as path graph
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public List<String> getAsGraph(int safi) {
+        tabGen<rtrBgpFlapath> lst = new tabGen<rtrBgpFlapath>();
+        for (int i = 0; i < neighs.size(); i++) {
+            getAsGraph(lst, neighs.get(i), safi);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            getAsGraph(lst, lstnNei.get(i), safi);
+        }
+        int o = 0;
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlapath ntry = lst.get(i);
+            if (o < ntry.count) {
+                o = ntry.count;
+            }
+        }
+        o += 2;
+        List<String> res = new ArrayList<String>();
+        res.add("echo \"graph net {");
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlapath ntry = lst.get(i);
+            res.add(ntry.path + " [weight=" + (o - ntry.count) + "]");
+        }
+        res.add("}\" | dot -Tpng > net.png");
+        return res;
+    }
+
+    private void getAsGraph(tabGen<rtrBgpFlapath> lst, rtrBgpNeigh nei, int safi) {
+        if (nei == null) {
+            return;
+        }
+        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
+        if (tab == null) {
+            return;
+        }
+        cmds cmd;
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            cmd = new cmds("path", prf.asPathStr());
+            String prv = cmd.word();
+            for (;;) {
+                String a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                rtrBgpFlapath ntry = new rtrBgpFlapath();
+                ntry.path = prv + " -- " + a;
+                rtrBgpFlapath old = lst.add(ntry);
+                if (old != null) {
+                    ntry = old;
+                }
+                ntry.count++;
+                prv = a;
+            }
+        }
+    }
+
+    /**
+     * inconsistent as paths
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public userFormat getAsIncons(int safi) {
+        tabGen<rtrBgpFlap> lst = new tabGen<rtrBgpFlap>();
+        for (int i = 0; i < neighs.size(); i++) {
+            getAsIncons(lst, neighs.get(i), safi);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            getAsIncons(lst, lstnNei.get(i), safi);
+        }
+        userFormat res = new userFormat("|", "path|ases");
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlap ntry = lst.get(i);
+            if (ntry.paths.size() < 2) {
+                continue;
+            }
+            res.add(ntry.prefix + "|" + ntry.getPaths());
+        }
+        return res;
+    }
+
+    private void getAsIncons(tabGen<rtrBgpFlap> lst, rtrBgpNeigh nei, int safi) {
+        if (nei == null) {
+            return;
+        }
+        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
+        if (tab == null) {
+            return;
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            rtrBgpFlap ntry = new rtrBgpFlap();
+            ntry.prefix = prf.prefix.copyBytes();
+            rtrBgpFlap old = lst.add(ntry);
+            if (old != null) {
+                ntry = old;
+            }
+            String a = prf.asPathStr();
+            int o = a.lastIndexOf(" ");
+            if (o >= 0) {
+                a = a.substring(o + 1, a.length());
+            }
+            rtrBgpFlapath pth = new rtrBgpFlapath();
+            pth.path = a;
+            ntry.paths.add(pth);
+        }
     }
 
     /**

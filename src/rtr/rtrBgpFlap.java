@@ -3,9 +3,8 @@ package rtr;
 import addr.addrIP;
 import addr.addrPrefix;
 import cfg.cfgAll;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
+import tab.tabGen;
 import util.bits;
 
 /**
@@ -23,7 +22,7 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
     /**
      * counter
      */
-    public long count;
+    public int count;
 
     /**
      * last
@@ -33,7 +32,7 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
     /**
      * paths seen
      */
-    public List<String> paths = new ArrayList<String>();
+    public tabGen<rtrBgpFlapath> paths = new tabGen<rtrBgpFlapath>();
 
     public int compare(rtrBgpFlap o1, rtrBgpFlap o2) {
         return o1.prefix.compare(o1.prefix, o2.prefix);
@@ -41,6 +40,22 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
 
     public String toString() {
         return addrPrefix.ip2str(prefix) + "|" + count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+    }
+
+    /**
+     * get all the paths
+     *
+     * @return paths
+     */
+    public String getPaths() {
+        if (paths.size() < 1) {
+            return "";
+        }
+        String s = "";
+        for (int i = 0; i < paths.size(); i++) {
+            s += " " + paths.get(i).path;
+        }
+        return s.substring(1, s.length());
     }
 
 }
