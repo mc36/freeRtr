@@ -561,7 +561,7 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
             if (ok) {
                 continue;
             }
-            res.add("- " + s);
+            res.add("- " + doResolv(s));
         }
         for (int i = 0; i < lst.size(); i++) {
             res.add("+ " + doResolv(lst.get(i)));
