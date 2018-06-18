@@ -1523,6 +1523,7 @@ todo: dhcp relay support
 todo: tcp selective ack
 todo: xot, x75 switching
 todo: preallocate qos buffers
+todo: ilnp (rfc6740)
 todo: lisp4, lisp6
 todo: l2vpn for isis
 todo: hip (rfc4423)
