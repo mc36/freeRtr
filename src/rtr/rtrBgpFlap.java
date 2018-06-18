@@ -39,7 +39,7 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
     }
 
     public String toString() {
-        return addrPrefix.ip2str(prefix) + "|" + count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+        return addrPrefix.ip2str(prefix) + "|" + count + "|" + paths.size() + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 
     /**

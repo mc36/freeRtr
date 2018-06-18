@@ -31,7 +31,7 @@ public class rtrBgpFlapath implements Comparator<rtrBgpFlapath> {
     }
 
     public String toString() {
-        return path + "|" + count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+        return count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3) + "|" + path;
     }
 
 }

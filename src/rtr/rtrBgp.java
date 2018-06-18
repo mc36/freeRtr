@@ -1716,18 +1716,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         ntry.count++;
         ntry.last = bits.getTime();
-        pathFlapped(ntry, pth);
-    }
-
-    private void pathFlapped(rtrBgpFlap prf, String pth) {
-        rtrBgpFlapath ntry = new rtrBgpFlapath();
-        ntry.path = pth;
-        rtrBgpFlapath old = prf.paths.add(ntry);
-        if (old != null) {
-            ntry = old;
+        rtrBgpFlapath pe = new rtrBgpFlapath();
+        pe.path = pth;
+        rtrBgpFlapath op = ntry.paths.add(pe);
+        if (op != null) {
+            pe = op;
         }
-        ntry.count++;
-        ntry.last = prf.last;
+        pe.count++;
+        pe.last = ntry.last;
     }
 
     public synchronized void routerCreateComputed() {
@@ -2799,15 +2795,23 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * get flap stats
      *
+     * @param num minimum flap count
      * @return list of statistics
      */
-    public userFormat getFlapstat() {
-        userFormat l = new userFormat("|", "prefix|count|ago|last");
+    public userFormat getFlapstat(int num) {
+        userFormat l = new userFormat("|", "prefix|count|paths|ago|last");
         if (flaps == null) {
             return l;
         }
         for (int i = 0; i < flaps.size(); i++) {
-            l.add(flaps.get(i) + "");
+            rtrBgpFlap ntry = flaps.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.count < num) {
+                continue;
+            }
+            l.add(ntry + "");
         }
         return l;
     }
@@ -2828,7 +2832,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (ntry == null) {
             return null;
         }
-        userFormat l = new userFormat("|", "path|count|ago|last");
+        userFormat l = new userFormat("|", "count|ago|last|path");
         for (int i = 0; i < ntry.paths.size(); i++) {
             l.add("" + ntry.paths.get(i));
         }

@@ -358,7 +358,8 @@ public class userExec {
         hl.add("9 .                    [rd]      route distinguisher");
         hl.add("5 .            nexthop           list of nexthops");
         hl.add("5 .            bestpath          best path statistics");
-        hl.add("5 .            flapstat          prefix flap statistics");
+        hl.add("5 6,.          flapstat          prefix flap statistics");
+        hl.add("6 .              [num]           minimum flap count");
         hl.add("5 6            flappath          flap statistics for prefix");
         hl.add("6 .              <addr>          prefix to view");
         hl.add("5 .            graceful-restart  list of graceful restart");
