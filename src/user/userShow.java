@@ -2165,6 +2165,10 @@ public class userShow {
                 rdr.putStrArr(r.bgp.getAsGraph(sfi));
                 return;
             }
+            if (a.equals("asconn")) {
+                rdr.putStrTab(r.bgp.getAsConns(sfi));
+                return;
+            }
             if (a.equals("asinconsistent")) {
                 rdr.putStrTab(r.bgp.getAsIncons(sfi));
                 return;

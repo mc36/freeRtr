@@ -438,6 +438,7 @@ public class userExec {
         hl.add("6 7              network         list of routes from network");
         hl.add("7 7,.              <str>         prefix matcher");
         hl.add("6 .              asgraph         connectivity graph of ases");
+        hl.add("6 .              asconn          connectivity of ases");
         hl.add("6 .              asinconsistent  inconsistent advertisements of ases");
         hl.add("6 7              allroute        list of specific routes");
         hl.add("7 8,.              <addr>        prefix to view");

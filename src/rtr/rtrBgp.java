@@ -2905,6 +2905,52 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * as connections
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public userFormat getAsConns(int safi) {
+        tabGen<rtrBgpFlapath> lst = new tabGen<rtrBgpFlapath>();
+        for (int i = 0; i < neighs.size(); i++) {
+            getAsGraph(lst, neighs.get(i), safi);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            getAsGraph(lst, lstnNei.get(i), safi);
+        }
+        userFormat res = new userFormat("|", "as|conn|net|peers");
+        int conns = -1;
+        int prefs = -1;
+        String peers = "";
+        String curr = "none";
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlapath ntry = lst.get(i);
+            String a = ntry.path;
+            int o = a.indexOf(" ");
+            String b = a.substring(0, o);
+            o = a.lastIndexOf(" ");
+            a = a.substring(o + 1, a.length());
+            if (b.equals(curr)) {
+                peers += " " + a;
+                conns++;
+                prefs += ntry.count;
+                continue;
+            }
+            if (conns > 0) {
+                res.add(curr + "|" + conns + "|" + prefs + "|" + peers);
+            }
+            curr = b;
+            peers = a;
+            conns = 1;
+            prefs = ntry.count;
+        }
+        if (conns > 0) {
+            res.add(curr + "|" + conns + "|" + prefs + "|" + peers);
+        }
+        return res;
+    }
+
+    /**
      * inconsistent as paths
      *
      * @param safi safi to query
