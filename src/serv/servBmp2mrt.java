@@ -321,27 +321,6 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     /**
-     * got bulk state
-     *
-     * @param spk got from speaker
-     * @param st state
-     */
-    public void gotState(addrIP spk, boolean st) {
-        for (int i = 0; i < stats.size(); i++) {
-            servBmp2mrtStat stat = stats.get(i);
-            if (stat == null) {
-                continue;
-            }
-            if (spk.compare(spk, stat.from) != 0) {
-                continue;
-            }
-            stat.state = st;
-            stat.since = bits.getTime();
-            stat.change++;
-        }
-    }
-
-    /**
      * got update
      *
      * @param as as number
@@ -600,7 +579,6 @@ class servBmp2mrtConn implements Runnable {
             }
             lower.gotMessage(as, adr, peer, (flg & 0x40) != 0, pck.getCopy());
         }
-        lower.gotState(peer, false);
         logger.error("neighbor " + peer + " down");
     }
 
