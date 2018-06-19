@@ -1413,6 +1413,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! framerelay keepalive 5",
         "interface .*! framerelay lmi ansi",
         "interface .*! framerelay fragment 0",
+        "interface .*! framerelay frgap 0",
         // tunnel
         "interface .*! no tunnel sequence-datagrams",
         "interface .*! no tunnel checksum",

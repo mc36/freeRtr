@@ -358,10 +358,6 @@ public class userExec {
         hl.add("9 .                    [rd]      route distinguisher");
         hl.add("5 .            nexthop           list of nexthops");
         hl.add("5 .            bestpath          best path statistics");
-        hl.add("5 6,.          flapstat          prefix flap statistics");
-        hl.add("6 .              [num]           minimum flap count");
-        hl.add("5 6            flappath          flap statistics for prefix");
-        hl.add("6 .              <addr>          prefix to view");
         hl.add("5 .            graceful-restart  list of graceful restart");
         hl.add("5 .            additional-path   list of additional path");
         hl.add("5 .            router-id         list of router id");
@@ -437,6 +433,11 @@ public class userExec {
         hl.add("7 .                <str>         address matcher");
         hl.add("6 7              network         list of routes from network");
         hl.add("7 7,.              <str>         prefix matcher");
+        hl.add("6 7,.            flapstat        prefix flap statistics");
+        hl.add("7 .                [num]         minimum flap count");
+        hl.add("6 7              flappath        flap statistics for prefix");
+        hl.add("7 8,.              <addr>        prefix to view");
+        hl.add("8 .                  [rd]        route distinguisher");
         hl.add("6 .              asgraph         connectivity graph of ases");
         hl.add("6 .              asconn          connectivity of ases");
         hl.add("6 .              asinconsistent  inconsistent advertisements of ases");
@@ -1121,11 +1122,11 @@ public class userExec {
         hl.add("4 5          <addr>              server to query");
         hl.add("5 6            <txt>             community to use");
         hl.add("6 .              <oid>           oid to query");
-        hl.add("2 3,.    smtp                    send email message");
+        hl.add("2 3      smtp                    send email message");
         hl.add("3 4,.      <str>                 email address");
         hl.add("4 4,.        <str>               email text");
-        hl.add("2 3,.    nrpe                    check remote status");
-        hl.add("3 4,.      <str>                 server address");
+        hl.add("2 3      nrpe                    check remote status");
+        hl.add("3 4        <str>                 server address");
         hl.add("4 4,.        <str>               check name");
         hl.add("1 2    test                      test various things");
         hl.add("2 3      dns                     dns zone creator");

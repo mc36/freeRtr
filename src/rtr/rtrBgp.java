@@ -1704,11 +1704,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * update flap statistics
      *
+     * @param afi afi
+     * @param rd rd
      * @param prf prefix
      * @param pth path
      */
-    protected void prefixFlapped(addrPrefix<addrIP> prf, String pth) {
+    protected void prefixFlapped(int afi, long rd, addrPrefix<addrIP> prf, String pth) {
         rtrBgpFlap ntry = new rtrBgpFlap();
+        ntry.afi = afi;
+        ntry.rd = rd;
         ntry.prefix = prf.copyBytes();
         rtrBgpFlap old = flaps.add(ntry);
         if (old != null) {
@@ -2795,10 +2799,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * get flap stats
      *
+     * @param afi afi
      * @param num minimum flap count
      * @return list of statistics
      */
-    public userFormat getFlapstat(int num) {
+    public userFormat getFlapstat(int afi, int num) {
         userFormat l = new userFormat("|", "prefix|count|paths|ago|last");
         if (flaps == null) {
             return l;
@@ -2806,6 +2811,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < flaps.size(); i++) {
             rtrBgpFlap ntry = flaps.get(i);
             if (ntry == null) {
+                continue;
+            }
+            if (ntry.afi != afi) {
                 continue;
             }
             if (ntry.count < num) {
@@ -2819,14 +2827,18 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * get flap paths
      *
+     * @param afi afi
+     * @param rd rd
      * @param prf prefix
      * @return list of paths
      */
-    public userFormat getFlappath(addrPrefix<addrIP> prf) {
+    public userFormat getFlappath(int afi, long rd, addrPrefix<addrIP> prf) {
         if (flaps == null) {
             return null;
         }
         rtrBgpFlap ntry = new rtrBgpFlap();
+        ntry.afi = afi;
+        ntry.rd = rd;
         ntry.prefix = prf.copyBytes();
         ntry = flaps.find(ntry);
         if (ntry == null) {
@@ -2970,7 +2982,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry.paths.size() < 2) {
                 continue;
             }
-            res.add(ntry.prefix + "|" + ntry.getPaths());
+            res.add(ntry.prefix + " " + tabRtrmapN.rd2string(ntry.rd) + "|" + ntry.getPaths());
         }
         return res;
     }
@@ -2989,6 +3001,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 continue;
             }
             rtrBgpFlap ntry = new rtrBgpFlap();
+            ntry.rd = prf.rouDst;
             ntry.prefix = prf.prefix.copyBytes();
             rtrBgpFlap old = lst.add(ntry);
             if (old != null) {

@@ -5,6 +5,7 @@ import addr.addrPrefix;
 import cfg.cfgAll;
 import java.util.Comparator;
 import tab.tabGen;
+import tab.tabRtrmapN;
 import util.bits;
 
 /**
@@ -13,6 +14,16 @@ import util.bits;
  * @author matecsaba
  */
 public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
+
+    /**
+     * address family
+     */
+    public int afi;
+
+    /**
+     * route distinguisher
+     */
+    public long rd;
 
     /**
      * prefix
@@ -35,11 +46,23 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
     public tabGen<rtrBgpFlapath> paths = new tabGen<rtrBgpFlapath>();
 
     public int compare(rtrBgpFlap o1, rtrBgpFlap o2) {
+        if (o1.afi < o2.afi) {
+            return -1;
+        }
+        if (o1.afi > o2.afi) {
+            return +1;
+        }
+        if (o1.rd < o2.rd) {
+            return -1;
+        }
+        if (o1.rd > o2.rd) {
+            return +1;
+        }
         return o1.prefix.compare(o1.prefix, o2.prefix);
     }
 
     public String toString() {
-        return addrPrefix.ip2str(prefix) + "|" + count + "|" + paths.size() + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+        return addrPrefix.ip2str(prefix) + " " + tabRtrmapN.rd2string(rd) + "|" + count + "|" + paths.size() + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 
     /**

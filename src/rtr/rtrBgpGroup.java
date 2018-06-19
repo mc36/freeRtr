@@ -462,6 +462,20 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         ntry.srcRtr = null;
         ntry.iface = null;
+        switch (peerType) {
+            case rtrBgpUtil.peerServr:
+            case rtrBgpUtil.peerExtrn:
+                ntry.originator = null;
+                ntry.clustList = null;
+                ntry.confSeq = null;
+                ntry.confSet = null;
+                ntry.locPref = 0;
+                break;
+            case rtrBgpUtil.peerCnfed:
+                ntry.originator = null;
+                ntry.clustList = null;
+                break;
+        }
     }
 
     /**
@@ -524,11 +538,6 @@ public class rtrBgpGroup extends rtrBgpParam {
                 if (ntry.pathSeq.size() > 1) {
                     ntry.metric = 0;
                 }
-                ntry.locPref = 0;
-                ntry.originator = null;
-                ntry.clustList = null;
-                ntry.confSeq = null;
-                ntry.confSet = null;
                 if (!nxtHopUnchgd) {
                     nextHopSelf(ntry);
                 }
@@ -546,8 +555,6 @@ public class rtrBgpGroup extends rtrBgpParam {
                         break;
                 }
                 ntry.confSeq = tabLabel.prependLabel(ntry.confSeq, localAs);
-                ntry.originator = null;
-                ntry.clustList = null;
                 break;
             case rtrBgpUtil.peerIntrn:
                 switch (ntry.rouSrc) {
@@ -575,11 +582,6 @@ public class rtrBgpGroup extends rtrBgpParam {
                 if (rtrBgpUtil.findIntList(ntry.stdComm, rtrBgpUtil.commNoExport) >= 0) {
                     return true;
                 }
-                ntry.locPref = 0;
-                ntry.originator = null;
-                ntry.clustList = null;
-                ntry.confSeq = null;
-                ntry.confSet = null;
                 switch (ntry.rouSrc) {
                     case rtrBgpUtil.peerExtrn:
                         if (!nxtHopUnchgd) {

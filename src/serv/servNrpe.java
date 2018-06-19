@@ -42,6 +42,11 @@ public class servNrpe extends servGeneric implements prtServS {
     public tabGen<servNrpeRes> ress = new tabGen<servNrpeRes>();
 
     /**
+     * list of replacers
+     */
+    public tabGen<servNrpeRep> reps = new tabGen<servNrpeRep>();
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
@@ -84,6 +89,9 @@ public class servNrpe extends servGeneric implements prtServS {
         for (int i = 0; i < ress.size(); i++) {
             lst.add(beg + "resolve " + ress.get(i));
         }
+        for (int i = 0; i < reps.size(); i++) {
+            lst.add(beg + "replace " + reps.get(i));
+        }
         for (int o = 0; o < chks.size(); o++) {
             servNrpeCheck ntry = chks.get(o);
             if (ntry == null) {
@@ -122,6 +130,17 @@ public class servNrpe extends servGeneric implements prtServS {
                 ress.del(new servNrpeRes(a, s));
             } else {
                 ress.add(new servNrpeRes(a, s));
+            }
+            return false;
+        }
+        if (s.equals("replace")) {
+            String a = cmd.word();
+            String b = cmd.word();
+            s = cmd.getRemaining();
+            if (negated) {
+                reps.del(new servNrpeRep(a, b, s));
+            } else {
+                reps.add(new servNrpeRep(a, b, s));
             }
             return false;
         }
@@ -217,6 +236,10 @@ public class servNrpe extends servGeneric implements prtServS {
         l.add("1 2  resolve                      resolve the regexp group a to hostname");
         l.add("2 3    <name>                     regexp of checks");
         l.add("3 3,.    <str>                    text to resolve");
+        l.add("1 2  replace                      replace from one string to another");
+        l.add("2 3    <name>                     regexp of checks");
+        l.add("3 4      <str>                    source string");
+        l.add("4 4,.      <str>                  target string");
         l.add("1 2  check                        configure one check");
         l.add("2 3    <name>                     name of check");
         l.add("3 4,.    train                    train command to current result");
@@ -337,6 +360,34 @@ class servNrpeConn implements Runnable {
         }
         conn.setClose();
 
+    }
+
+}
+
+class servNrpeRep implements Comparator<servNrpeRep> {
+
+    public final String chk;
+
+    public final String src;
+
+    public final String trg;
+
+    public servNrpeRep(String c, String s, String t) {
+        chk = c;
+        src = s;
+        trg = t;
+    }
+
+    public String toString() {
+        return chk + " " + src + " " + trg;
+    }
+
+    public int compare(servNrpeRep o1, servNrpeRep o2) {
+        int i = o1.chk.toLowerCase().compareTo(o2.chk.toLowerCase());
+        if (i != 0) {
+            return i;
+        }
+        return o1.src.toLowerCase().compareTo(o2.src.toLowerCase());
     }
 
 }
@@ -513,7 +564,7 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
         }
     }
 
-    public String doResolv(String l) {
+    public String makeFancy(String l) {
         for (int i = 0; i < lower.ress.size(); i++) {
             servNrpeRes r = lower.ress.get(i);
             if (r == null) {
@@ -523,6 +574,16 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
                 continue;
             }
             l = r.doWork(l);
+        }
+        for (int i = 0; i < lower.reps.size(); i++) {
+            servNrpeRep r = lower.reps.get(i);
+            if (r == null) {
+                continue;
+            }
+            if (!nam.matches(r.chk)) {
+                continue;
+            }
+            l = l.replaceAll(r.src, r.trg);
         }
         return l;
     }
@@ -545,7 +606,7 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
             if (ok) {
                 continue;
             }
-            res.add("- " + doResolv(s));
+            res.add("- " + makeFancy(s));
         }
         for (int o = 0; o < reqR.size(); o++) {
             String s = reqR.get(o);
@@ -561,10 +622,10 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
             if (ok) {
                 continue;
             }
-            res.add("- " + doResolv(s));
+            res.add("- " + makeFancy(s));
         }
         for (int i = 0; i < lst.size(); i++) {
-            res.add("+ " + doResolv(lst.get(i)));
+            res.add("+ " + makeFancy(lst.get(i)));
         }
         return res;
     }

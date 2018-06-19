@@ -83,7 +83,7 @@ public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
      * @return string
      */
     public String getShNeigh() {
-        String s = peer + "|" + (getState() ? "up" : "down") + "|" + bits.timePast(upTime) + "|";
+        String s = peer + "|" + packBfd.state2string(currState) + "|" + bits.timePast(upTime) + "|";
         for (int i = 0; i < clients.size(); i++) {
             rtrBfdNeighClnt clnt = clients.get(i);
             if (clnt == null) {

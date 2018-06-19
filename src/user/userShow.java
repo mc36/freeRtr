@@ -2049,19 +2049,6 @@ public class userShow {
             rdr.putStrTab(r.bgp.getBestpath());
             return;
         }
-        if (a.equals("flapstat")) {
-            rdr.putStrTab(r.bgp.getFlapstat(bits.str2num(cmd.word())));
-            return;
-        }
-        if (a.equals("flappath")) {
-            addrPrefix<addrIP> ntry = addrPrefix.str2ip(cmd.word());
-            if (ntry == null) {
-                cmd.error("bad prefix");
-                return;
-            }
-            rdr.putStrTab(r.bgp.getFlappath(ntry));
-            return;
-        }
         if (a.equals("group")) {
             rtrBgpGroup grp = r.bgp.findGroup(bits.str2num(cmd.word()));
             if (grp == null) {
@@ -2171,6 +2158,19 @@ public class userShow {
             }
             if (a.equals("asinconsistent")) {
                 rdr.putStrTab(r.bgp.getAsIncons(sfi));
+                return;
+            }
+            if (a.equals("flapstat")) {
+                rdr.putStrTab(r.bgp.getFlapstat(sfi, bits.str2num(cmd.word())));
+                return;
+            }
+            if (a.equals("flappath")) {
+                addrPrefix<addrIP> ntry = addrPrefix.str2ip(cmd.word());
+                if (ntry == null) {
+                    cmd.error("bad prefix");
+                    return;
+                }
+                rdr.putStrTab(r.bgp.getFlappath(sfi, tabRtrmapN.string2rd(cmd.word()), ntry));
                 return;
             }
             if (a.equals("allroute")) {

@@ -1567,8 +1567,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             attr.labelRem = cur.labelRem;
             attr.evpnLab = cur.evpnLab;
             cur = attr.copyBytes();
-            if ((safi == parent.afiUni) && (parent.flaps != null)) {
-                parent.prefixFlapped(cur.prefix, cur.asPathStr());
+            if (parent.flaps != null) {
+                parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.asPathStr());
             }
             if (!neigh.softReconfig) {
                 tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, cur, roumap, roupol, prflst);
@@ -1609,8 +1609,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!afiMsk(peerAfis, safi)) {
             return;
         }
-        if ((safi == parent.afiUni) && (parent.flaps != null)) {
-            parent.prefixFlapped(ntry.prefix, "null");
+        if (parent.flaps != null) {
+            parent.prefixFlapped(safi, ntry.rouDst, ntry.prefix, "gone");
         }
         tabRoute<addrIP> learned = getLearned(safi);
         if (learned == null) {

@@ -157,6 +157,14 @@ vrf definition bvi
  label-mode per-prefix
  exit
 !
+vrf definition dn42
+ rd 65535:42
+ rt-import 65535:42
+ rt-export 65535:42
+ mdt4
+ mdt6
+ exit
+!
 vrf definition v1
  rd 1:1
  rt-import 1:1
@@ -253,6 +261,15 @@ interface loopback0
  ipv6 pim join-source loopback0
  mpls rsvp4
  mpls rsvp6
+ no shutdown
+ no log-link-change
+ exit
+!
+interface loopback42
+ description dn42.net
+ vrf forwarding dn42
+ ipv4 address 172.23.199.109 255.255.255.255
+ ipv6 address fd40:cc1e:c0de:ffff:ffff:ffff:ffff:fffd ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  no shutdown
  no log-link-change
  exit
@@ -377,7 +394,6 @@ router bgp4 1
  address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
  scandelay 30000
  conquer
- flapstat
  nexthop route-policy nht4
  flowspec fs4
  monitor a p1 10.10.10.227 17971
@@ -453,6 +469,7 @@ router bgp4 65535
  local-as 65535
  router-id 10.10.10.227
  address-family labeled multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ flapstat
  dump mrt bgp1.log
  neighbor 10.5.1.10 remote-as 65535
  no neighbor 10.5.1.10 description
@@ -471,10 +488,18 @@ router bgp4 65535
  neighbor 10.5.1.10 segrout
  neighbor 10.5.1.10 bier
  neighbor 10.5.1.10 send-community all
+ afi-vrf dn42 enable
+ afi-vrf dn42 mvpn loopback0
+ afi-vrf dn42 redistribute connected
+ afi-vrf dn42 redistribute static
  afi-vrf vpn enable
  afi-vrf vpn mvpn loopback0
  afi-vrf vpn redistribute connected
  afi-vrf vpn redistribute static
+ afi-ovrf dn42 enable
+ afi-ovrf dn42 mvpn loopback0
+ afi-ovrf dn42 redistribute connected
+ afi-ovrf dn42 redistribute static
  afi-vpls 65535:1 bridge-group 1
  afi-vpls 65535:1 update-source loopback0
  afi-evpn 2 bridge-group 2
@@ -492,7 +517,6 @@ router bgp6 1
  address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
  scandelay 30000
  conquer
- flapstat
  nexthop route-policy nht6
  flowspec fs6
  monitor a p1 10.10.10.227 17971
@@ -543,6 +567,7 @@ router bgp6 65535
  local-as 65535
  router-id 10.10.10.227
  address-family labeled multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ flapstat
  dump mrt bgp2.log
  neighbor 2001:db8:36::2 remote-as 65535
  no neighbor 2001:db8:36::2 description
@@ -629,6 +654,19 @@ mtracker v6m
  port 5488
  start
  exit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
 !
 !
 !

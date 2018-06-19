@@ -42,6 +42,11 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
     public int fragLen = 0;
 
     /**
+     * max payload delay
+     */
+    public int fragGap = 0;
+
+    /**
      * tx sequence
      */
     public int fragSeqTx = 0;
@@ -288,6 +293,7 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         l.add(beg + "lmi " + a);
         l.add(beg + "dlci " + dlciNum);
         l.add(beg + "fragment " + fragLen);
+        l.add(beg + "frgap " + fragGap);
     }
 
     /**
@@ -337,6 +343,10 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
             fragLen = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("frgap")) {
+            fragGap = bits.str2num(cmd.word());
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -349,6 +359,10 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         String a = cmd.word();
         if (a.equals("fragment")) {
             fragLen = 0;
+            return;
+        }
+        if (a.equals("frgap")) {
+            fragGap = 0;
             return;
         }
         cmd.badCmd();
@@ -487,7 +501,7 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         upper.recvPack(fragReasm);
     }
 
-    public void sendPack(packHolder pck) {
+    public synchronized void sendPack(packHolder pck) {
         cntr.tx(pck);
         if ((fragLen < 1) || (pck.dataSize() < fragLen)) {
             putDLCI(pck, dlciNum);
@@ -511,6 +525,10 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
             pck.merge2beg();
             lower.sendPack(pck);
             ofs += len;
+            if (fragGap < 1) {
+                continue;
+            }
+            bits.sleep(fragGap);
         }
     }
 
