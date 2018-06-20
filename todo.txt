@@ -1,3 +1,4 @@
+online insertion (and never removal)
 yang over netconf, proto over grpc
 interface range command
 reenable which elliptic courves? sure? why that?

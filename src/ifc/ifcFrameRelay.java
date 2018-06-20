@@ -253,6 +253,8 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         l.add("3 .       <num>                     dlci number");
         l.add("2 3     fragment                    set end2end payload size");
         l.add("3 .       <num>                     number of bytes");
+        l.add("2 3     frgap                       inter fragment gap");
+        l.add("3 .       <num>                     milliseconds");
     }
 
     /**

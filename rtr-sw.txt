@@ -862,6 +862,7 @@ server bmp2mrt bmp
  max-time 600000
  backup bmp-old.log
  file bmp-cur.log
+ bulk-down
  vrf v1
  exit
 !

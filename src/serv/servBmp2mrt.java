@@ -44,6 +44,8 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      */
     public static final int size = 6;
 
+    private boolean bulkdn;
+
     private final tabGen<servBmp2mrtStat> stats = new tabGen<servBmp2mrtStat>();
 
     private packHolder pckUpd = new packHolder(true, true);
@@ -77,6 +79,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         "server bmp2mrt .*! port " + port,
         "server bmp2mrt .*! protocol " + proto2string(protoAllStrm),
         "server bmp2mrt .*! no local",
+        "server bmp2mrt .*! no bulk-down",
         "server bmp2mrt .*! max-time 0",
         "server bmp2mrt .*! max-pack 0",
         "server bmp2mrt .*! max-byte 0",
@@ -100,6 +103,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         cmds.cfgLine(l, !local, beg, "local", "");
         cmds.cfgLine(l, backupName == null, beg, "backup", backupName);
         cmds.cfgLine(l, fileName == null, beg, "file", fileName);
+        cmds.cfgLine(l, !bulkdn, beg, "bulk-down", "");
         for (int i = 0; i < stats.size(); i++) {
             servBmp2mrtStat stat = stats.get(i);
             if (stat == null) {
@@ -114,6 +118,10 @@ public class servBmp2mrt extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("bulk-down")) {
+            bulkdn = true;
+            return false;
+        }
         if (s.equals("neighbor")) {
             addrIP a1 = new addrIP();
             addrIP a2 = new addrIP();
@@ -193,6 +201,10 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
+        if (s.equals("bulk-down")) {
+            bulkdn = false;
+            return false;
+        }
         if (s.equals("neighbor")) {
             addrIP a1 = new addrIP();
             addrIP a2 = new addrIP();
@@ -242,6 +254,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add("1 .    bulk-down                 down peers on speaker loss");
         l.add("1 2    file                      log to file");
         l.add("2 2,.    <file>                  name of file");
         l.add("1 .    local                     log to syslog");
@@ -318,6 +331,31 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         stat.state = st;
         stat.since = bits.getTime();
         stat.change++;
+    }
+
+    /**
+     * got bulk state
+     *
+     * @param spk got from speaker
+     * @param st state
+     */
+    public void gotState(addrIP spk, boolean st) {
+        if (!bulkdn) {
+            return;
+        }
+        long tim = bits.getTime();
+        for (int i = 0; i < stats.size(); i++) {
+            servBmp2mrtStat stat = stats.get(i);
+            if (stat == null) {
+                continue;
+            }
+            if (spk.compare(spk, stat.from) != 0) {
+                continue;
+            }
+            stat.state = st;
+            stat.since = tim;
+            stat.change++;
+        }
     }
 
     /**
@@ -452,9 +490,9 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         res.add("byte in|" + stat.byteIn);
         res.add("byte out|" + stat.byteOut);
         res.add("pack last|" + bits.time2str(cfgAll.timeZoneName, stat.packLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(stat.packLast) + " ago)");
-        res.add("direction|" + stat.rouD);
         res.add("process|" + stat.rouT + " " + stat.rouI);
         res.add("neighbor|" + stat.nei);
+        res.add("direction|" + stat.rouD);
         return res;
     }
 
@@ -579,6 +617,7 @@ class servBmp2mrtConn implements Runnable {
             }
             lower.gotMessage(as, adr, peer, (flg & 0x40) != 0, pck.getCopy());
         }
+        lower.gotState(peer, false);
         logger.error("neighbor " + peer + " down");
     }
 

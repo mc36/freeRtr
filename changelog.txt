@@ -8397,3 +8397,5 @@ qc pass: interop9: ospf p2mp te
 qc pass: interop9: ospf sr
 ---------------------------------- 2018-06-17 15:24:38
 todo: ilnp (rfc6740)
+---------------------------------- 2018-06-19 13:55:53
+todo: online insertion (and never removal)

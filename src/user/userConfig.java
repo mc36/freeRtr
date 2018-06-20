@@ -432,10 +432,10 @@ public class userConfig {
         l.add("2  3    ludp-checksum                set ludp checksum mode");
         l.add("2  3    dccp-checksum                set dccp checksum mode");
         l.add("2  3    sctp-checksum                set sctp checksum mode");
-        l.add("3  .      receive                    only check, not generate");
-        l.add("3  .      transmit                   only generate, not check");
         l.add("3  .      both                       both generate and check");
-        l.add("3  .      none                       not generate nor check");
+        l.add(".3 .      receive                    only check, not generate");
+        l.add(".3 .      transmit                   only generate, not check");
+        l.add(".3 .      none                       not generate nor check");
         l.add("2  .    ftp-passive                  use passive mode ftp");
         l.add("2  .    ftp-active                   use active mode ftp");
         l.add("2  3    time-server                  specify name of time server");
