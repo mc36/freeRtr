@@ -43,6 +43,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         "tracker .*! no vrf",
         "tracker .*! no source",
         "tracker .*! no log",
+        "tracker .*! random-interval 0",
+        "tracker .*! random-initial 0",
         "tracker .*! interval 0",
         "tracker .*! timeout 0",
         "tracker .*! tos 0",
@@ -99,6 +101,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add("2  .        <name>                   chatter to use");
         l.add("1  2      source                     specify source of test");
         l.add("2  .        <name>                   interface to use");
+        l.add("1  2      random-interval            specify random time between runs");
+        l.add("2  .        <num>                    milliseconds between runs");
+        l.add("1  2      random-initial             specify random time between runs");
+        l.add("2  .        <num>                    milliseconds between runs");
         l.add("1  2      interval                   specify time between runs");
         l.add("2  .        <num>                    milliseconds between runs");
         l.add("1  2      timeout                    specify timeout value");
@@ -156,6 +162,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         } else {
             l.add(cmds.tabulator + "no source");
         }
+        l.add(cmds.tabulator + "random-interval " + worker.randInt);
+        l.add(cmds.tabulator + "random-initial " + worker.randIni);
         l.add(cmds.tabulator + "interval " + worker.interval);
         l.add(cmds.tabulator + "timeout " + worker.timeout);
         l.add(cmds.tabulator + "tos " + worker.typOsrv);
@@ -291,6 +299,14 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             }
             return;
         }
+        if (a.equals("random-interval")) {
+            worker.randInt = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("random-initial")) {
+            worker.randIni = bits.str2num(cmd.word());
+            return;
+        }
         if (a.equals("interval")) {
             worker.interval = bits.str2num(cmd.word());
             return;
@@ -378,6 +394,14 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         }
         if (a.equals("source")) {
             worker.srcIfc = null;
+            return;
+        }
+        if (a.equals("random-interval")) {
+            worker.randInt = 0;
+            return;
+        }
+        if (a.equals("random-initial")) {
+            worker.randIni = 0;
             return;
         }
         if (a.equals("interval")) {

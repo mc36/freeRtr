@@ -167,6 +167,16 @@ public class clntTrack implements rtrBfdClnt {
     public int interval;
 
     /**
+     * random between runs
+     */
+    public int randInt;
+
+    /**
+     * random on startup
+     */
+    public int randIni;
+
+    /**
      * timeout value
      */
     public int timeout;
@@ -391,7 +401,11 @@ public class clntTrack implements rtrBfdClnt {
         working = true;
         keepTimer = new Timer();
         clntTrackTimer task = new clntTrackTimer(this);
-        keepTimer.schedule(task, 100, interval);
+        int del = 100;
+        if (randIni > 0) {
+            del = bits.random(1, randIni);
+        }
+        keepTimer.schedule(task, del, interval);
     }
 
     /**
@@ -400,6 +414,9 @@ public class clntTrack implements rtrBfdClnt {
     public void doRound() {
         if (logging) {
             logger.info("starting action " + name);
+        }
+        if (randInt > 0) {
+            bits.sleep(bits.random(1, randInt));
         }
         switch (mode) {
             case iface:
