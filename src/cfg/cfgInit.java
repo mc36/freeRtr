@@ -284,8 +284,14 @@ public class cfgInit implements Runnable {
         return new String(b).trim();
     }
 
-    private static void executeHWcommands(List<String> cmds, List<String> defs,
-            List<String> mibs) {
+    /**
+     * execute hw commands
+     *
+     * @param cmds commands
+     * @param defs defaults
+     * @param mibs mibs
+     */
+    public static void executeHWcommands(List<String> cmds, List<String> defs, List<String> mibs) {
         if (cmds == null) {
             return;
         }

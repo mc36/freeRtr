@@ -1165,7 +1165,7 @@ public class userExec {
         hl.add("2 .      ssh                     test ssh throughput");
         hl.add("2 .      tls                     test tls throughput");
         hl.add("2 .      dtls                    test dtls throughput");
-        hl.add("2 .      gc                      run garbage collector");
+        hl.add(".2 .     gc                      run garbage collector");
         hl.add("2 .      crypto                  test encryption and hash");
         hl.add("2 3,.    digsig                  test digital signatures");
         hl.add("3 3,.      [str]                 parameters");
@@ -1195,6 +1195,8 @@ public class userExec {
         hl.add("3 4        image                 view image");
         hl.add("4 4,.        [str]               file");
         hl.add("2 3,.    hwdet                   perform hw detection");
+        hl.add("3 3,.      <str>                 parameter");
+        hl.add(".2 3,.   hwcfg                   perform hw configuration");
         hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    image                   perform image creation");
         hl.add("3 3,.      <str>                 parameter");

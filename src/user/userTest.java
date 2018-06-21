@@ -15,6 +15,7 @@ import auth.authLocal;
 import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgIfc;
+import cfg.cfgInit;
 import cfg.cfgTrnsltn;
 import cry.cryAsn1;
 import cry.cryBase64;
@@ -49,6 +50,7 @@ import cry.cryKeyECDH;
 import cry.cryKeyECDSA;
 import cry.cryKeyRSA;
 import cry.cryOtp;
+import java.util.ArrayList;
 import java.util.List;
 import pack.packDnsZone;
 import pack.packDnsRec;
@@ -493,6 +495,10 @@ public class userTest {
         if (a.equals("vercore")) {
             userUpgrade u = new userUpgrade(cmd);
             u.doVerCore();
+            return null;
+        }
+        if (a.equals("hwcfg")) {
+            cfgInit.executeHWcommands(bits.str2lst(cmd.getRemaining()), new ArrayList<String>(), new ArrayList<String>());
             return null;
         }
         if (a.equals("hwdet")) {

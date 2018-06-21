@@ -218,6 +218,7 @@ public class userTester {
                 }
                 userTesterFtr ftr = new userTesterFtr();
                 ftr.fil = s;
+                ftr.ret = maxTry;
                 ned.add(ftr);
             }
         } catch (Exception e) {
@@ -254,10 +255,6 @@ public class userTester {
         rdr.debugStat("remote=" + remoteL + " " + remoteP + " " + remoteA);
         rdr.debugStat("capture=" + capture.size());
         rdr.debugStat("files=" + ned.size());
-        for (int i = 0; i < ned.size(); i++) {
-            userTesterFtr ftr = ned.get(i);
-            ftr.ret = maxTry;
-        }
         List<userTesterFtr> don = new ArrayList<userTesterFtr>();
         int err = 0;
         int ret = 0;
@@ -269,6 +266,7 @@ public class userTester {
             }
             userTesterFtr ftr = ned.get(cur);
             s = ftr.fil;
+            ftr.ran++;
             final String sep = " ---------- ";
             rdr.debugRes(sep + "err=" + err + " ret=" + ret + " don=" + don.size() + " ned=" + ned.size() + " tot=" + (don.size() + ned.size()) + " tim=" + bits.timePast(tim) + sep + s + sep);
             userTesterOne lt = new userTesterOne();
@@ -316,10 +314,14 @@ public class userTester {
         Collections.sort(don, new userTesterFtr());
         for (int i = 0; i < don.size(); i++) {
             userTesterFtr ftr = don.get(i);
-            if (ftr.res) {
+            if (!ftr.res) {
+                rdr.debugStat("failed: " + ftr.csv);
                 continue;
             }
-            rdr.debugStat("failed: " + ftr.csv);
+            if (ftr.ran > 1) {
+                rdr.debugStat("retried " + ftr.ran + "x: " + ftr.csv);
+                continue;
+            }
         }
         String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(tim) + " on " + don.size() + " cases, " + err + " failed" + ", " + ret + " retries";
         rdr.debugStat("summary: " + a);
@@ -387,6 +389,8 @@ class userTesterFtr implements Comparator<userTesterFtr> {
     public String fil;
 
     public int ret;
+
+    public int ran;
 
     public boolean res;
 
