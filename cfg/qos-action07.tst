@@ -32,8 +32,8 @@ int eth1
 !
 
 
-r2 tping 100 3 1.1.1.1 /vrf v1
-r2 tping 100 3 1234::1 /vrf v1
+r2 tping 100 5 1.1.1.1 /vrf v1
+r2 tping 100 5 1234::1 /vrf v1
 
 r2 tping 88 5 1.1.1.1 /vrf v1 /rep 100 /tim 500 /siz 100
 r2 tping 86 5 1234::1 /vrf v1 /rep 100 /tim 500 /siz 100

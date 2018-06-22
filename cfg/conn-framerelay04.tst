@@ -36,11 +36,11 @@ int ser1
 !
 
 r1 tping 100 5 1.1.1.2 /vrf v1 /siz 128
-r2 tping 100 3 1.1.1.1 /vrf v1 /siz 128
-r1 tping 100 3 1234::2 /vrf v1 /siz 128
-r2 tping 100 3 1234::1 /vrf v1 /siz 128
+r2 tping 100 5 1.1.1.1 /vrf v1 /siz 128
+r1 tping 100 5 1234::2 /vrf v1 /siz 128
+r2 tping 100 5 1234::1 /vrf v1 /siz 128
 
 r1 tping 100 5 1.1.1.2 /vrf v1 /siz 1024
-r2 tping 100 3 1.1.1.1 /vrf v1 /siz 1024
-r1 tping 100 3 1234::2 /vrf v1 /siz 1024
-r2 tping 100 3 1234::1 /vrf v1 /siz 1024
+r2 tping 100 5 1.1.1.1 /vrf v1 /siz 1024
+r1 tping 100 5 1234::2 /vrf v1 /siz 1024
+r2 tping 100 5 1234::1 /vrf v1 /siz 1024

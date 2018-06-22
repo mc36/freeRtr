@@ -31,9 +31,9 @@ int atm1
 !
 
 r1 tping 100 5 1.1.1.2 /vrf v1
-r2 tping 100 3 1.1.1.1 /vrf v1
-r1 tping 100 3 1234::2 /vrf v1
-r2 tping 100 3 1234::1 /vrf v1
+r2 tping 100 5 1.1.1.1 /vrf v1
+r1 tping 100 5 1234::2 /vrf v1
+r2 tping 100 5 1234::1 /vrf v1
 
 r1 output show interface atm1 full
 output ../binTmp/conn-atmsar.html

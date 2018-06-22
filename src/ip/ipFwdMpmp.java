@@ -522,6 +522,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         } else {
             nedLoc = local && (!selfRoot);
         }
+        boolean ned = false;
         for (int o = 0; o < neighs.size(); o++) {
             ipFwdMpmpNeigh curr = neighs.get(o);
             if (curr.labelL == null) {
@@ -533,8 +534,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
                 } else {
                     curr.labelL.setFwdCommon(5, vrfRx);
                 }
-            } else {
-                curr.labelL.setFwdDrop(5);
+                ned = true;
             }
             for (int i = 0; i < neighs.size(); i++) {
                 if (i == o) {
@@ -546,7 +546,12 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
                 }
                 List<Integer> labs = tabLabel.int2labels(ntry.labelR);
                 curr.labelL.setDupMpls(5, fwd, ntry.iface, ntry.addr, labs);
+                ned = true;
             }
+            if (ned) {
+                continue;
+            }
+            curr.labelL.setFwdDrop(5);
         }
     }
 

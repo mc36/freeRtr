@@ -1116,7 +1116,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
 
     private void protoSend(ipFwdIface lower, packHolder pck) {
         if ((pck.IPmf) || (pck.IPfrg != 0)) {
-            doDrop(pck, lower, counter.reasons.fragment);
+            lower.cntr.drop(pck, counter.reasons.fragment);
             return;
         }
         if (debugger.ipFwdTraf) {

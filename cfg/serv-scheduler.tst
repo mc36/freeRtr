@@ -63,6 +63,6 @@ scheduler tun
 !
 
 
-r2 tping 100 3 1.1.1.1 /vrf v1
-r2 tping 100 3 www.test.corp /vrf v1
+r2 tping 100 5 1.1.1.1 /vrf v1
+r2 tping 100 5 www.test.corp /vrf v1
 r2 tping 100 10 2.2.2.1

@@ -103,7 +103,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add("2  .        <name>                   interface to use");
         l.add("1  2      random-interval            specify random time between runs");
         l.add("2  .        <num>                    milliseconds between runs");
-        l.add("1  2      random-initial             specify random time between runs");
+        l.add("1  2      random-initial             specify random time before run");
         l.add("2  .        <num>                    milliseconds between runs");
         l.add("1  2      interval                   specify time between runs");
         l.add("2  .        <num>                    milliseconds between runs");

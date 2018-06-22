@@ -62,7 +62,7 @@ int eth1
 !
 
 
-r2 tping 100 3 1.1.1.1 /vrf v1
-r2 tping 100 3 2.2.2.1 /vrf v1
+r2 tping 100 5 1.1.1.1 /vrf v1
+r2 tping 100 5 2.2.2.1 /vrf v1
 r3 send telnet 2.2.2.2 666 /vrf v1
-r3 tping 100 3 2.2.2.2 /vrf v1
+r3 tping 100 5 2.2.2.2 /vrf v1

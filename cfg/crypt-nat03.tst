@@ -58,5 +58,5 @@ ipv6 route v1 :: :: 1234:2::1
 
 
 
-r3 tping 100 3 1.1.1.1 /vrf v1 /int lo1
-r3 tping 100 3 1234:1::1 /vrf v1 /int lo1
+r3 tping 100 5 1.1.1.1 /vrf v1 /int lo1
+r3 tping 100 5 1234:1::1 /vrf v1 /int lo1

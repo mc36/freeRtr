@@ -258,6 +258,7 @@ public class userTester {
         List<userTesterFtr> don = new ArrayList<userTesterFtr>();
         int err = 0;
         int ret = 0;
+        int trc = 0;
         long tim = bits.getTime();
         for (; ned.size() > 0;) {
             int cur = 0;
@@ -268,7 +269,7 @@ public class userTester {
             s = ftr.fil;
             ftr.ran++;
             final String sep = " ---------- ";
-            rdr.debugRes(sep + "err=" + err + " ret=" + ret + " don=" + don.size() + " ned=" + ned.size() + " tot=" + (don.size() + ned.size()) + " tim=" + bits.timePast(tim) + sep + s + sep);
+            rdr.debugRes(sep + "err=" + err + " trc=" + trc + " ret=" + ret + " don=" + don.size() + " ned=" + ned.size() + " tot=" + (don.size() + ned.size()) + " tim=" + bits.timePast(tim) + sep + s + sep);
             userTesterOne lt = new userTesterOne();
             bits.sleep(1000);
             lt = new userTesterOne();
@@ -291,6 +292,7 @@ public class userTester {
             lt.rdr = rdr;
             lt.doTest(path, s);
             lt.stopAll();
+            trc += lt.traces;
             rdr.debugRes(lt.getCsv());
             boolean del = lt.getSucc();
             if (!del) {
@@ -323,7 +325,7 @@ public class userTester {
                 continue;
             }
         }
-        String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(tim) + " on " + don.size() + " cases, " + err + " failed" + ", " + ret + " retries";
+        String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(tim) + " on " + don.size() + " cases, " + err + " failed, " + trc + " traces, " + ret + " retries";
         rdr.debugStat("summary: " + a);
         if (!summary) {
             return;
@@ -635,6 +637,8 @@ class userTesterOne {
 
     public List<List<String>> shows = new ArrayList<List<String>>();
 
+    public int traces;
+
     private cmds cmd = new cmds("", "");
 
     private String stage = "init";
@@ -692,6 +696,7 @@ class userTesterOne {
                 continue;
             }
             bits.buf2txt(false, log, getLogName(prc.name, 3));
+            traces++;
         }
     }
 
