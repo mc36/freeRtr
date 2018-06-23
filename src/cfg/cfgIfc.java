@@ -4400,11 +4400,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (lapb != null) {
             lapb.getConfig(l, cmds.tabulator + "lapb ");
         }
-        if (ethtyp.macSec == null) {
-            l.add(cmds.tabulator + "no macsec");
-        } else {
-            l.add(cmds.tabulator + "macsec " + ethtyp.macSec.profil.name);
-        }
+        cmds.cfgLine(l, ethtyp.macSec == null, cmds.tabulator, "macsec", "" + ethtyp.macSec);
         if (pppoeC == null) {
             l.add(cmds.tabulator + "no p2poe client");
         } else {
@@ -4906,7 +4902,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 3     ipv6                        enable for ipv6");
         l.add("3 .       <addr>                    target to register");
         l.add("1 2   macsec                        mac security protocol commands");
-        l.add("2 .     <name>                      name of ipsec profile");
+        l.add("2 3,.   <name>                      name of ipsec profile");
+        l.add("3 .       <num>                     ethertype to use");
         l.add("1 2   xconnect                      cross connect interface");
         cfgXconnSide.getHelp(l, 2);
         l.add("1 2   pseudowire                    pseudowire of interface");
@@ -5218,7 +5215,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             ifcMacSec sec = new ifcMacSec();
-            sec.doInit(prf, ethtyp);
+            sec.doInit(prf, ethtyp, bits.fromHex(cmd.word()));
             ethtyp.macSec = sec;
             ethtyp.timerUpdate();
             return;

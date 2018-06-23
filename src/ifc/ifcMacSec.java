@@ -51,13 +51,28 @@ public class ifcMacSec {
 
     private boolean reply;
 
+    private int myTyp;
+
+    public String toString() {
+        String a = "";
+        if (myTyp != ethtyp) {
+            a = " " + bits.toHexW(myTyp);
+        }
+        return profil.name + a;
+    }
+
     /**
      * initialize the crypter
      *
      * @param ips ipsec profile
      * @param eth ethertype to use
+     * @param typ value to use
      */
-    public void doInit(cfgIpsec ips, ifcEthTyp eth) {
+    public void doInit(cfgIpsec ips, ifcEthTyp eth, int typ) {
+        if (typ < 1) {
+            typ = ethtyp;
+        }
+        myTyp = typ;
         profil = ips;
         keygen = ips.trans.getGroup();
         keygen.servXchg();
@@ -99,7 +114,7 @@ public class ifcMacSec {
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.merge2end();
-        pck.msbPutW(0, ethtyp); // ethertype
+        pck.msbPutW(0, myTyp); // ethertype
         pck.putByte(2, 0x08); // tci=v,e
         pck.putByte(3, pad); // sl
         pck.msbPutD(4, seqTx); // seq
@@ -119,7 +134,7 @@ public class ifcMacSec {
         if (pck.dataSize() < size) {
             return true;
         }
-        if (pck.msbGetW(0) != ethtyp) { // ethertype
+        if (pck.msbGetW(0) != myTyp) { // ethertype
             return true;
         }
         int typ = pck.getByte(2); // tci
@@ -200,7 +215,7 @@ public class ifcMacSec {
             return null;
         }
         packHolder pck = new packHolder(true, true);
-        pck.msbPutW(0, ethtyp); // ethertype
+        pck.msbPutW(0, myTyp); // ethertype
         pck.putByte(2, hashRx == null ? 0x01 : 0x02); // tci=v,e
         pck.putByte(3, 0); // sl
         pck.msbPutD(4, 0); // seq
