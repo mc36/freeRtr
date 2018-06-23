@@ -3,7 +3,9 @@ package serv;
 import addr.addrEmpty;
 import addr.addrType;
 import cfg.cfgAll;
+import cfg.cfgBrdg;
 import cfg.cfgIfc;
+import ifc.ifcBridgeIfc;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
@@ -35,7 +37,12 @@ public class servPckOudp extends servGeneric implements prtServP {
     /**
      * interface to use
      */
-    public cfgIfc clnIfc;
+    public cfgIfc dialIfc;
+
+    /**
+     * interface to use
+     */
+    public cfgBrdg brdgIfc;
 
     /**
      * list of connections
@@ -75,8 +82,17 @@ public class servPckOudp extends servGeneric implements prtServP {
         if (old != null) {
             return old;
         }
-        ntry.ifc = clnIfc.cloneStart(ntry);
-        return ntry;
+        if (dialIfc != null) {
+            ntry.dialIfc = dialIfc.cloneStart(ntry);
+            return ntry;
+        }
+        if (brdgIfc != null) {
+            ntry.brdgIfc = brdgIfc.bridgeHed.newIface(true, false);
+            ntry.setUpper(ntry.brdgIfc);
+            return ntry;
+        }
+        conns.del(ntry);
+        return null;
     }
 
     /**
@@ -90,24 +106,37 @@ public class servPckOudp extends servGeneric implements prtServP {
     }
 
     public void srvShRun(String beg, List<String> l) {
-        if (clnIfc == null) {
+        if (dialIfc == null) {
             l.add(beg + "no clone");
         } else {
-            l.add(beg + "clone " + clnIfc.name);
+            l.add(beg + "clone " + dialIfc.name);
+        }
+        if (brdgIfc == null) {
+            l.add(beg + "no bridge");
+        } else {
+            l.add(beg + "bridge " + brdgIfc.name);
         }
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("clone")) {
-            clnIfc = cfgAll.ifcFind(cmd.word(), false);
-            if (clnIfc == null) {
+            dialIfc = cfgAll.ifcFind(cmd.word(), false);
+            if (dialIfc == null) {
                 cmd.error("no such interface");
                 return false;
             }
-            if (clnIfc.type != cfgIfc.ifaceType.dialer) {
+            if (dialIfc.type != cfgIfc.ifaceType.dialer) {
                 cmd.error("not dialer interface");
-                clnIfc = null;
+                dialIfc = null;
+                return false;
+            }
+            return false;
+        }
+        if (s.equals("bridge")) {
+            brdgIfc = cfgAll.brdgFind(cmd.word(), false);
+            if (brdgIfc == null) {
+                cmd.error("no such bridge group");
                 return false;
             }
             return false;
@@ -117,7 +146,11 @@ public class servPckOudp extends servGeneric implements prtServP {
         }
         s = cmd.word();
         if (s.equals("clone")) {
-            clnIfc = null;
+            dialIfc = null;
+            return false;
+        }
+        if (s.equals("bridge")) {
+            brdgIfc = null;
             return false;
         }
         return true;
@@ -125,6 +158,8 @@ public class servPckOudp extends servGeneric implements prtServP {
 
     public void srvHelp(userHelping l) {
         l.add("1 2  clone                        set interface to clone");
+        l.add("2 .    <name>                     name of interface");
+        l.add("1 2  bridge                       set interface to bridge");
         l.add("2 .    <name>                     name of interface");
     }
 
@@ -150,8 +185,7 @@ public class servPckOudp extends servGeneric implements prtServP {
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         id.timeout = 120000;
-        connFind(id, true);
-        return false;
+        return connFind(id, true) == null;
     }
 
     public void datagramReady(prtGenConn id) {
@@ -196,7 +230,13 @@ class servPckOudpConn implements ifcDn, Comparator<servPckOudpConn> {
 
     public ifcUp upper = new ifcNull();
 
-    public cfgIfc ifc;
+    public cfgIfc dialIfc;
+
+    public ifcBridgeIfc brdgIfc;
+
+    public String toString() {
+        return "pckoudp with " + conn.peerAddr;
+    }
 
     public servPckOudpConn(prtGenConn id, servPckOudp parent) {
         conn = id;
@@ -222,8 +262,11 @@ class servPckOudpConn implements ifcDn, Comparator<servPckOudpConn> {
         lower.connDel(conn);
         upper.closeUp();
         conn.setClosing();
-        if (ifc != null) {
-            ifc.cloneStop();
+        if (dialIfc != null) {
+            dialIfc.cloneStop();
+        }
+        if (brdgIfc != null) {
+            brdgIfc.closeUp();
         }
     }
 
