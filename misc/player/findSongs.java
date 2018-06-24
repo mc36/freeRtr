@@ -16,6 +16,26 @@ public class findSongs {
     protected List<playerSong> lst = new ArrayList<playerSong>();
 
     /**
+     * artist
+     */
+    protected String art;
+
+    /**
+     * album
+     */
+    protected String alb;
+
+    /**
+     * date
+     */
+    protected String dat;
+
+    /**
+     * title
+     */
+    protected String tit;
+
+    /**
      * the main
      *
      * @param args arguments
@@ -114,7 +134,26 @@ public class findSongs {
      */
     protected void doTitle() {
         for (int i = 0; i < lst.size(); i++) {
-            doTitle(lst.get(i));
+            doTitle(lst.get(i), true);
+        }
+    }
+
+    /**
+     * fetch titles
+     */
+    protected void doDir() {
+        for (int i = 0; i < lst.size(); i++) {
+            doTitle(lst.get(i), false);
+            if (art == null) {
+                continue;
+            }
+            if (alb == null) {
+                continue;
+            }
+            if (dat == null) {
+                continue;
+            }
+            break;
         }
     }
 
@@ -122,9 +161,10 @@ public class findSongs {
      * fetch title
      *
      * @param sng song to update
+     * @param cln clean findings
      * @return false on success, true on error;
      */
-    protected static boolean doTitle(playerSong sng) {
+    protected boolean doTitle(playerSong sng, boolean cln) {
         String cm[] = new String[2];
         cm[0] = "ffprobe";
         cm[1] = sng.file;
@@ -143,8 +183,12 @@ public class findSongs {
             playerUtil.put("failed to fetch!");
             return true;
         }
-        String art = null;
-        String tit = null;
+        if (cln) {
+            art = null;
+            alb = null;
+            dat = null;
+            tit = null;
+        }
         for (int i = 0; i < res.size(); i++) {
             String a = res.get(i).trim();
             int o = a.indexOf(":");
@@ -155,6 +199,14 @@ public class findSongs {
             a = a.substring(0, o).toLowerCase().trim();
             if (a.equals("artist")) {
                 art = b;
+                continue;
+            }
+            if (a.equals("album")) {
+                alb = b;
+                continue;
+            }
+            if (a.equals("date")) {
+                dat = b;
                 continue;
             }
             if (a.equals("title")) {
