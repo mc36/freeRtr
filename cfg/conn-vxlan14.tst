@@ -33,7 +33,7 @@ int bvi1
  ipv6 addr 4321::1 ffff:ffff::
  exit
 server vxlan vxl
- clone-bridge 1
+ bridge 1
  vrf v1
  inst 1234
  exit

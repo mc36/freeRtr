@@ -104,16 +104,16 @@ public class servGeneve extends servGeneric implements prtServP {
 
     public void srvShRun(String beg, List<String> l) {
         if (brdgIfc == null) {
-            l.add(beg + "no clone-bridge");
+            l.add(beg + "no bridge");
         } else {
-            l.add(beg + "clone-bridge " + brdgIfc.name);
+            l.add(beg + "bridge " + brdgIfc.name);
         }
         l.add(cmds.tabulator + "vni " + vni);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
-        if (s.equals("clone-bridge")) {
+        if (s.equals("bridge")) {
             brdgIfc = cfgAll.brdgFind(cmd.word(), false);
             if (brdgIfc == null) {
                 cmd.error("no such bridge group");
@@ -129,7 +129,7 @@ public class servGeneve extends servGeneric implements prtServP {
             return true;
         }
         s = cmd.word();
-        if (s.equals("clone-bridge")) {
+        if (s.equals("bridge")) {
             brdgIfc = null;
             return false;
         }
@@ -137,7 +137,7 @@ public class servGeneve extends servGeneric implements prtServP {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  clone-bridge                 set interface to clone");
+        l.add("1 2  bridge                       set interface to clone");
         l.add("2 .    <name>                     name of interface");
         l.add("1 2  vni                          set virtual network id");
         l.add("2 .    <num>                      net id");

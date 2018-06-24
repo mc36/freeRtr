@@ -295,7 +295,7 @@ int bvi1
  ipv6 addr 4321::5 ffff:ffff::
  exit
 server vxlan vxl
- clone-bridge 1
+ bridge 1
  vrf v1
  inst 1234
  exit
@@ -323,7 +323,7 @@ int bvi1
  ipv6 addr 4321::6 ffff:ffff::
  exit
 server geneve gnv
- clone-bridge 1
+ bridge 1
  vrf v1
  vni 1234
  exit

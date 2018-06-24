@@ -22,7 +22,7 @@ int di1
  ppp ip6cp open
  exit
 server l2tp3 l2tp
- clone-dial di1
+ clone di1
  vrf v1
  exit
 !

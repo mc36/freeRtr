@@ -25,7 +25,7 @@ int di1
  ppp ip4cp open
  exit
 server l2tp3 l2tp
- clone-dial di1
+ clone di1
  password tester
  vrf v1
  exit

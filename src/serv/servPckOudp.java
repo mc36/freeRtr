@@ -54,8 +54,7 @@ public class servPckOudp extends servGeneric implements prtServP {
      */
     public final static String defaultL[] = {
         "server pckoudp .*! port " + port,
-        "server pckoudp .*! protocol " + proto2string(protoAllDgrm)
-    };
+        "server pckoudp .*! protocol " + proto2string(protoAllDgrm),};
 
     /**
      * defaults filter

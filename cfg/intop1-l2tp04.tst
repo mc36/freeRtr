@@ -19,7 +19,7 @@ int bvi1
  ipv6 addr 4321::1 ffff:ffff::
  exit
 server l2tp3 l2tp
- clone-bridge 1
+ bridge 1
  vrf v1
  exit
 !

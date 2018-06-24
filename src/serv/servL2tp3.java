@@ -97,21 +97,21 @@ public class servL2tp3 extends servGeneric implements ipPrt {
 
     public void srvShRun(String beg, List<String> l) {
         if (dialIfc == null) {
-            l.add(beg + "no clone-dialer");
+            l.add(beg + "no clone");
         } else {
-            l.add(beg + "clone-dialer " + dialIfc.name);
+            l.add(beg + "clone " + dialIfc.name);
         }
         if (brdgIfc == null) {
-            l.add(beg + "no clone-bridge");
+            l.add(beg + "no bridge");
         } else {
-            l.add(beg + "clone-bridge " + brdgIfc.name);
+            l.add(beg + "bridge " + brdgIfc.name);
         }
         cmds.cfgLine(l, password == null, cmds.tabulator, "password", authLocal.passwdEncode(password));
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
-        if (s.equals("clone-dialer")) {
+        if (s.equals("clone")) {
             dialIfc = cfgAll.ifcFind(cmd.word(), false);
             if (dialIfc == null) {
                 cmd.error("no such interface");
@@ -124,7 +124,7 @@ public class servL2tp3 extends servGeneric implements ipPrt {
             }
             return false;
         }
-        if (s.equals("clone-bridge")) {
+        if (s.equals("bridge")) {
             brdgIfc = cfgAll.brdgFind(cmd.word(), false);
             if (brdgIfc == null) {
                 cmd.error("no such bridge group");
@@ -140,11 +140,11 @@ public class servL2tp3 extends servGeneric implements ipPrt {
             return true;
         }
         s = cmd.word();
-        if (s.equals("clone-dialer")) {
+        if (s.equals("clone")) {
             dialIfc = null;
             return false;
         }
-        if (s.equals("clone-bridge")) {
+        if (s.equals("bridge")) {
             brdgIfc = null;
             return false;
         }
@@ -156,9 +156,9 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  clone-dialer                 set interface to clone");
+        l.add("1 2  clone                        set interface to clone");
         l.add("2 .    <name>                     name of interface");
-        l.add("1 2  clone-bridge                 set interface to clone");
+        l.add("1 2  bridge                       set interface to clone");
         l.add("2 .    <name>                     name of interface");
         l.add("1 2  password                     set password");
         l.add("2 .    <name>                     password");
