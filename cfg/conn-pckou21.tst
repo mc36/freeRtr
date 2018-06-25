@@ -1,4 +1,4 @@
-description ppp with packet over dtls
+description ppp with packet over txtls
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -31,9 +31,9 @@ int di1
  ipv4 pool p4
  ppp ip4cp open
  exit
-server pckodtls pou
+server pckotxt pou
  clone di1
- security protocol dtls
+ security protocol tls
  security rsakey r
  security dsakey d
  security ecdsakey ed
@@ -52,7 +52,7 @@ vrf def v1
  exit
 proxy-profile p1
  vrf v1
- security dtls
+ security tls
  exit
 int ser1
  vrf for v1
@@ -76,7 +76,7 @@ vpdn pou
  proxy p1
  tar 1.1.1.1
  vcid 2554
- prot pckodtls
+ prot pckotxt
  exit
 !
 

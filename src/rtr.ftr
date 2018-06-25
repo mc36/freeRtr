@@ -230,6 +230,8 @@ qc pass: ethernet tunneling with packet over udp
 qc pass: vlan tunneling with packet over udp
 qc pass: tunnel interface with packet over udp
 qc pass: ppp over packet over udp
+qc pass: ethernet over packet over udp
+qc pass: interworking with ethernet over packet over udp
 qc pass: interworking with packet over dtls
 qc pass: ppp with packet over dtls
 qc pass: ppp with packet over tcp

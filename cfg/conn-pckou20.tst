@@ -1,13 +1,14 @@
-description interworking with packet over dtls
+description ppp with packet over txt
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $1a$ $1b$
+int ser1 ser - $1a$ $1b$
 !
 vrf def v1
  rd 1:1
  exit
-int eth1
+int ser1
  vrf for v1
+ enc hdlc
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
  exit
@@ -24,14 +25,14 @@ int di1
  ipv4 pool p4
  ppp ip4cp open
  exit
-server pckodtls pou
+server pckotxt pou
  clone di1
  vrf v1
  exit
 !
 
 addrouter r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
+int ser1 ser - $1b$ $1a$
 !
 vrf def v1
  rd 1:1
@@ -39,8 +40,9 @@ vrf def v1
 proxy-profile p1
  vrf v1
  exit
-int eth1
+int ser1
  vrf for v1
+ enc hdlc
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
  exit
@@ -59,7 +61,8 @@ vpdn pou
  int di1
  proxy p1
  tar 1.1.1.1
- prot pckoudp
+ vcid 2554
+ prot pckotxt
  exit
 !
 

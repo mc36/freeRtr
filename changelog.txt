@@ -8401,3 +8401,6 @@ todo: ilnp (rfc6740)
 todo: online insertion (and never removal)
 ---------------------------------- 2018-06-21 12:15:45
 no todo: online insertion (and never removal)
+---------------------------------- 2018-06-24 17:53:40
+qc pass: ethernet over packet over udp
+qc pass: interworking with ethernet over packet over udp

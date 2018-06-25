@@ -1,4 +1,4 @@
-description ppp with packet over txt
+description ppp with packet over tcp
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -25,7 +25,7 @@ int di1
  ipv4 pool p4
  ppp ip4cp open
  exit
-server pckotxt pou
+server pckotcp pou
  clone di1
  vrf v1
  exit
@@ -62,7 +62,7 @@ vpdn pou
  proxy p1
  tar 1.1.1.1
  vcid 2554
- prot pckotxt
+ prot pckotcp
  exit
 !
 

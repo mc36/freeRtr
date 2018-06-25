@@ -1,6 +1,6 @@
 file;code;test;stage;command
 -;-;freeRouter v18.6.24-testing, done by cs@nop.;-;-
--;-;2018-06-24 13:42:02, took 07:53:22 on 1510 cases, 0 failed, 0 traces, 14 retries;-;-
+-;-;2018-06-25 01:56:51, took 08:03:10 on 1512 cases, 0 failed, 0 traces, 16 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -234,12 +234,14 @@ conn-pckou10.tst;0;ethernet tunneling with packet over udp;successfully;finished
 conn-pckou11.tst;0;vlan tunneling with packet over udp;successfully;finished
 conn-pckou12.tst;0;tunnel interface with packet over udp;successfully;finished
 conn-pckou13.tst;0;ppp over packet over udp;successfully;finished
-conn-pckou14.tst;0;interworking with packet over dtls;successfully;finished
-conn-pckou15.tst;0;ppp with packet over dtls;successfully;finished
-conn-pckou16.tst;0;ppp with packet over tcp;successfully;finished
-conn-pckou17.tst;0;ppp with packet over tls;successfully;finished
-conn-pckou18.tst;0;ppp with packet over txt;successfully;finished
-conn-pckou19.tst;0;ppp with packet over txtls;successfully;finished
+conn-pckou14.tst;0;ethernet over packet over udp;successfully;finished
+conn-pckou15.tst;0;interworking with ethernet over packet over udp;successfully;finished
+conn-pckou16.tst;0;interworking with packet over dtls;successfully;finished
+conn-pckou17.tst;0;ppp with packet over dtls;successfully;finished
+conn-pckou18.tst;0;ppp with packet over tcp;successfully;finished
+conn-pckou19.tst;0;ppp with packet over tls;successfully;finished
+conn-pckou20.tst;0;ppp with packet over txt;successfully;finished
+conn-pckou21.tst;0;ppp with packet over txtls;successfully;finished
 conn-pim01.tst;0;pim over ipv4;successfully;finished
 conn-pim02.tst;0;pim over ipv6;successfully;finished
 conn-pim03.tst;0;pim over pim;successfully;finished
