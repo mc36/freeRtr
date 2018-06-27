@@ -327,14 +327,19 @@ public class userClear {
             cmd.error("no such process");
             return;
         }
+        String a = cmd.word();
+        if (a.equals("recompute")) {
+            r.bgp.routerRedistChanged();
+            return;
+        }
         addrIP adr = new addrIP();
-        adr.fromString(cmd.word());
+        adr.fromString(a);
         rtrBgpNeigh nei = r.bgp.findPeer(adr);
         if (nei == null) {
             cmd.error("no such neighbor");
             return;
         }
-        String a = cmd.word();
+        a = cmd.word();
         if (a.equals("hard")) {
             nei.flapBgpConn();
             return;

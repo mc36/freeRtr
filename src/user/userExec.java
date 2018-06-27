@@ -133,6 +133,7 @@ public class userExec {
         hl.add("6 7              in              send route refresh");
         hl.add("6 7              out             resend prefixes");
         rtrBgpParam.getAfiList(hl, "7 .", "clear", false);
+        hl.add("5 .            recompute         trigger full compute round");
     }
 
     private void getHelpShowIpX(userHelping hl) {
