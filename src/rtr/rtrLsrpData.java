@@ -211,6 +211,8 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         }
         int metric = 0;
         int bndwdt = 0;
+        int affinity = 0;
+        int srlg = 0;
         int segrou = 0;
         int tag = 0;
         if ((typ & 0x10) != 0) {
@@ -223,6 +225,14 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (ntry.bndwdt != bndwdt) {
                     s += " bandwidth=" + ntry.bndwdt;
                     bndwdt = ntry.bndwdt;
+                }
+                if (ntry.srlg != srlg) {
+                    s += " srlg=" + ntry.srlg;
+                    srlg = ntry.srlg;
+                }
+                if (ntry.affnty != affinity) {
+                    s += " affinity=" + ntry.affnty;
+                    affinity = ntry.affnty;
                 }
                 if (ntry.segrou != segrou) {
                     s += " segrouadj=" + ntry.segrou;
@@ -299,6 +309,8 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         int segrouAdj = 0;
         int metric = 0;
         int bndwdt = 0;
+        int affinity = 0;
+        int srlg = 0;
         int tag = 0;
         network = new tabRoute<addrIP>("net");
         neighbor = new tabGen<rtrLsrpDataNeigh>();
@@ -403,6 +415,14 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 bndwdt = bits.str2num(s);
                 continue;
             }
+            if (a.equals("affinity")) {
+                affinity = bits.str2num(s);
+                continue;
+            }
+            if (a.equals("srlg")) {
+                srlg = bits.str2num(s);
+                continue;
+            }
             if (a.equals("tag")) {
                 tag = bits.str2num(s);
                 continue;
@@ -423,7 +443,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (adr.fromString(s)) {
                     return true;
                 }
-                addNeigh(adr, metric, bndwdt, segrouAdj);
+                addNeigh(adr, metric, bndwdt, affinity, srlg, segrouAdj);
                 continue;
             }
         }
@@ -436,13 +456,17 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * @param nei router id
      * @param met metric
      * @param bw bandwidth
+     * @param aff affinity
+     * @param srl srlg
      * @param adj segrout adjacency
      */
-    protected void addNeigh(addrIPv4 nei, int met, int bw, int adj) {
+    protected void addNeigh(addrIPv4 nei, int met, int bw, int aff, int srl, int adj) {
         rtrLsrpDataNeigh ntry = new rtrLsrpDataNeigh();
         ntry.rtrid = nei.copyBytes();
         ntry.metric = met;
         ntry.bndwdt = bw;
+        ntry.affnty = aff;
+        ntry.srlg = srl;
         ntry.segrou = adj;
         rtrLsrpDataNeigh old = neighbor.find(ntry);
         if (old != null) {
@@ -478,6 +502,16 @@ class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
      * metric
      */
     public int metric;
+
+    /**
+     * affinity
+     */
+    public int affnty;
+
+    /**
+     * srlg
+     */
+    public int srlg;
 
     /**
      * bandwidth

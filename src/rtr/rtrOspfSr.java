@@ -65,16 +65,12 @@ public class rtrOspfSr {
      * generate sr prefix
      *
      * @param idx index
-     * @param nod node
      * @return bytes generated
      */
-    protected static byte[] putPref(int idx, boolean nod) {
+    protected static byte[] putPref(int idx) {
         packHolder pck = new packHolder(true, true);
         typLenVal tlv = rtrOspfTe.getTlvHandler();
         tlv.valDat[0] = 0x40; // no-php
-        if (nod) {
-            tlv.valDat[0] |= 0x80; // node
-        }
         tlv.valDat[1] = 0; // reserved
         tlv.valDat[2] = 0; // mtid
         tlv.valDat[3] = 0; // algorithm

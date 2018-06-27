@@ -47,6 +47,16 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
     public int metric = 10;
 
     /**
+     * affinity
+     */
+    public int affinity;
+
+    /**
+     * srlg
+     */
+    public int srlg;
+
+    /**
      * bfd enabled
      */
     public boolean bfdTrigger = false;
@@ -194,6 +204,8 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication));
         l.add(cmds.tabulator + beg + "metric " + metric);
+        l.add(cmds.tabulator + beg + "affinity " + affinity);
+        l.add(cmds.tabulator + beg + "srlg " + srlg);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
     }
@@ -222,6 +234,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         l.add("5 .           <text>                set password");
         l.add("4 5         metric                  interface metric");
         l.add("5 .           <num>                 metric");
+        l.add("4 5         affinity                set affinity");
+        l.add("5 .           <num>                 affinity");
+        l.add("4 5         srlg                    set srlg");
+        l.add("5 .           <num>                 srlg");
         l.add("4 5         hello-time              time between hellos");
         l.add("5 .           <num>                 time in ms");
         l.add("4 5         dead-time               time before neighbor down");
@@ -277,6 +293,18 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         }
         if (a.equals("metric")) {
             metric = bits.str2num(cmd.word());
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("affinity")) {
+            affinity = bits.str2num(cmd.word());
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("srlg")) {
+            srlg = bits.str2num(cmd.word());
             lower.todo.set(0);
             lower.notif.wakeup();
             return;

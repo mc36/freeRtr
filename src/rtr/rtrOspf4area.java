@@ -750,7 +750,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             }
             byte[] buf = new byte[0];
             if (ifc.srIndex > 0) {
-                buf = rtrOspfSr.putPref(ifc.srIndex, ifc.srNode);
+                buf = rtrOspfSr.putPref(ifc.srIndex);
             }
             if (ifc.brIndex > 0) {
                 buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ifc.brIndex));
@@ -764,7 +764,11 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             } else {
                 o = 3; // inter
             }
-            createPrfLsa(seq++, ifc.iface.network, o, 0, buf);
+            int p = 0;
+            if (ifc.srNode) {
+                p |= 0x40;
+            }
+            createPrfLsa(seq++, ifc.iface.network, o, p, buf);
         }
         if (stub || nssa) {
             return;
@@ -779,7 +783,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             }
             byte[] buf = new byte[0];
             if (ntry.segRoutI > 0) {
-                buf = rtrOspfSr.putPref(ntry.segRoutI, false);
+                buf = rtrOspfSr.putPref(ntry.segRoutI);
             }
             if (ntry.bierI > 0) {
                 buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ntry.bierI));

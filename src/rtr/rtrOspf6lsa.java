@@ -168,9 +168,11 @@ public class rtrOspf6lsa implements Comparator<rtrOspf6lsa> {
      */
     public static final int prefDown = 0x10;
 
-    
-    
-    
+    /**
+     * node
+     */
+    public static final int prefNode = 0x20;
+
     /**
      * router link tlv
      */
@@ -200,22 +202,17 @@ public class rtrOspf6lsa implements Comparator<rtrOspf6lsa> {
      * intra area prefix tlv
      */
     public static final int tlvPrefix = 0x0006;
-    
+
     /**
      * ipv6 link tlv
      */
     public static final int tlvLink6 = 0x0007;
-    
+
     /**
      * ipv4 link tlv
      */
     public static final int tlvLink4 = 0x0008;
-    
-    
-    
-    
-    
-    
+
     /**
      * time when lsa created
      */

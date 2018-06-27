@@ -577,7 +577,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         advertiseLsa(rtrOspf6lsa.lsaErouter, 0, pck);
     }
 
-    private void createEprfLsa(int seq, addrPrefix<addrIP> pref, int lsa, int tlv, int met, byte[] subs) {
+    private void createEprfLsa(int seq, addrPrefix<addrIP> pref, int lsa, int tlv, int met, int opt, byte[] subs) {
         if (met < 0) {
             met = 0;
         }
@@ -588,7 +588,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         packHolder pck = new packHolder(true, true);
         pck.msbPutD(0, met); // metric
         pck.putByte(4, prf.maskLen); // prefix length
-        pck.putByte(5, rtrOspf6lsa.prefProp); // prefix options
+        pck.putByte(5, opt); // prefix options
         pck.msbPutW(6, 0); // reserved
         pck.putAddr(8, prf.network); // address
         pck.putSkip(8 + prefixSize(prf));
@@ -807,7 +807,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             }
             byte[] buf = new byte[0];
             if (ifc.srIndex > 0) {
-                buf = rtrOspfSr.putPref(ifc.srIndex, ifc.srNode);
+                buf = rtrOspfSr.putPref(ifc.srIndex);
             }
             if (ifc.brIndex > 0) {
                 buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ifc.brIndex));
@@ -824,7 +824,11 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 o = rtrOspf6lsa.lsaEinterPrf;
                 p = rtrOspf6lsa.tlvInterPrf;
             }
-            createEprfLsa(seq++, ifc.iface.network, o, p, ifc.metric, buf);
+            int q = rtrOspf6lsa.prefProp;
+            if (ifc.srNode) {
+                q |= rtrOspf6lsa.prefNode;
+            }
+            createEprfLsa(seq++, ifc.iface.network, o, p, ifc.metric, q, buf);
         }
         if (stub || nssa) {
             return;
@@ -839,7 +843,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             }
             byte[] buf = new byte[0];
             if (ntry.segRoutI > 0) {
-                buf = rtrOspfSr.putPref(ntry.segRoutI, false);
+                buf = rtrOspfSr.putPref(ntry.segRoutI);
             }
             if (ntry.bierI > 0) {
                 buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ntry.bierI));
@@ -847,7 +851,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (buf.length < 1) {
                 continue;
             }
-            createEprfLsa(seq++, ntry.prefix, rtrOspf6lsa.lsaEinterPrf, rtrOspf6lsa.tlvInterPrf, ntry.metric, buf);
+            createEprfLsa(seq++, ntry.prefix, rtrOspf6lsa.lsaEinterPrf, rtrOspf6lsa.tlvInterPrf, ntry.metric, rtrOspf6lsa.prefProp, buf);
         }
     }
 

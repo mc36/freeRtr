@@ -1326,6 +1326,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no router lsrp[4|6] .* encryption",
         "interface .*! router lsrp[4|6] .* split-horizon",
         "interface .*! router lsrp[4|6] .* metric 10",
+        "interface .*! router lsrp[4|6] .* affinity 0",
+        "interface .*! router lsrp[4|6] .* srlg 0",
         "interface .*! router lsrp[4|6] .* hello-time 5000",
         "interface .*! router lsrp[4|6] .* dead-time 15000",
         // eigrp
