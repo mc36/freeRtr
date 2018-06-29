@@ -39,26 +39,26 @@ int bvi1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
-int open1
+int sdn1
  bridge-gr 1
  exit
-int open2
+int sdn2
  bridge-gr 1
  exit
-int open3
+int sdn3
  bridge-gr 1
  exit
-int open4
+int sdn4
  vrf for v1
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
  exit
 server openflow of
  export-vrf v1
- export-port open1 1
- export-port open2 2
- export-port open3 3
- export-port open4 4
+ export-port sdn1 1
+ export-port sdn2 2
+ export-port sdn3 3
+ export-port sdn4 4
  export-port bvi1 0
  vrf v9
  exit

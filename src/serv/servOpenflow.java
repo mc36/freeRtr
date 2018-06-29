@@ -181,7 +181,7 @@ public class servOpenflow extends servGeneric implements prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if ((ifc.type != cfgIfc.ifaceType.openflow) && (ifc.type != cfgIfc.ifaceType.bridge)) {
+            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bridge)) {
                 cmd.error("not openflow interface");
                 return false;
             }

@@ -1641,8 +1641,8 @@ public class cfgAll {
                 ntry.initPhysical();
                 return ntry;
             }
-            if (nam.startsWith("openflow")) {
-                ntry.type = cfgIfc.ifaceType.openflow;
+            if (nam.startsWith("sdn")) {
+                ntry.type = cfgIfc.ifaceType.sdn;
                 ifaces.add(ntry);
                 ntry.initPhysical();
                 return ntry;

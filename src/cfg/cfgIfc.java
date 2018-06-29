@@ -915,9 +915,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          */
         dialer,
         /**
-         * openflow interface
+         * sdn interface
          */
-        openflow,
+        sdn,
         /**
          * pw headend interface
          */
@@ -1863,8 +1863,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "template";
             case dialer:
                 return "dialer";
-            case openflow:
-                return "openflow";
+            case sdn:
+                return "sdn";
             case pweth:
                 return "pwether";
             case virtppp:
@@ -1902,7 +1902,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         hl.add("1 . loopback     ifc");
         hl.add("1 . template     ifc");
         hl.add("1 . dialer       ifc");
-        hl.add("1 . openflow     ifc");
+        hl.add("1 . sdn          ifc");
         hl.add("1 . pwether      ifc");
         hl.add("1 . virtualppp   ifc");
         hl.add("1 . access       ifc");
@@ -2100,7 +2100,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case ether:
             case bridge:
             case pweth:
-            case openflow:
+            case sdn:
             case template:
             case loopback:
                 return false;
@@ -2644,7 +2644,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 ethtyp.forcedMTU = 1500;
                 lower = new ifcNull();
                 break;
-            case openflow:
+            case sdn:
                 ethtyp.forcedMac = addrMac.getRandom();
                 ethtyp.forcedMTU = 1500;
                 lower = new ifcNull();
