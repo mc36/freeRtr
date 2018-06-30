@@ -67,6 +67,7 @@ import ifc.ifcLacp;
 import ifc.ifcNshFwd;
 import ifc.ifcNshXcn;
 import ifc.ifcPtp;
+import ifc.ifcRandom;
 import ifc.ifcThread;
 import ifc.ifcUdld;
 import ifc.ifcUp;
@@ -276,6 +277,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * nhrp handler
      */
     public ifcNhrp nhrp;
+
+    /**
+     * random handler
+     */
+    public ifcRandom random;
 
     /**
      * xconnect handler
@@ -1133,6 +1139,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no lacp",
         "interface .*! no carrier-delay",
         "interface .*! no udld enable",
+        "interface .*! no random",
         "interface .*! no macsec",
         "interface .*! no monitor-session",
         "interface .*! no monitor-buffer",
@@ -4402,6 +4409,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (lapb != null) {
             lapb.getConfig(l, cmds.tabulator + "lapb ");
         }
+        cmds.cfgLine(l, random == null, cmds.tabulator, "random", "" + ifcRandom.getCfg(random));
         cmds.cfgLine(l, ethtyp.macSec == null, cmds.tabulator, "macsec", "" + ethtyp.macSec);
         if (pppoeC == null) {
             l.add(cmds.tabulator + "no p2poe client");
@@ -4903,6 +4911,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       <addr>                    target to register");
         l.add("2 3     ipv6                        enable for ipv6");
         l.add("3 .       <addr>                    target to register");
+        l.add("1 2   random                        random packet injector");
+        l.add("2 3     <num>                       ethertype to use");
+        l.add("3 4       <num>                     minimum packet size");
+        l.add("4 5         <num>                   maximum packet size");
+        l.add("5 6           <num>                 minimum interval");
+        l.add("6 .             <num>               maximum interval");
         l.add("1 2   macsec                        mac security protocol commands");
         l.add("2 3,.   <name>                      name of ipsec profile");
         l.add("3 .       <num>                     ethertype to use");
@@ -5208,6 +5222,21 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             bundleIfc.priority = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("random")) {
+            if (random != null) {
+                random.stopWord();
+            }
+            random = new ifcRandom();
+            random.ethtyp = bits.fromHex(cmd.word());
+            random.sizMin = bits.str2num(cmd.word());
+            random.sizMax = bits.str2num(cmd.word());
+            random.intMin = bits.str2num(cmd.word());
+            random.intMax = bits.str2num(cmd.word());
+            ethtyp.addET(random.ethtyp, "random", random);
+            ethtyp.updateET(random.ethtyp, random);
+            random.startWord();
             return;
         }
         if (a.equals("macsec")) {
@@ -5599,6 +5628,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("bundle-group")) {
             clear2bundle();
+            return;
+        }
+        if (a.equals("random")) {
+            if (random == null) {
+                return;
+            }
+            ethtyp.delET(random.ethtyp);
+            random.stopWord();
+            random = null;
             return;
         }
         if (a.equals("macsec")) {
