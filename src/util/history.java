@@ -281,7 +281,7 @@ public class history {
     }
 
     private static String getShPSum(List<counter> lst) {
-        return getLast(lst).getShPSum();
+        return getLast(lst).getShPsum();
     }
 
     /**

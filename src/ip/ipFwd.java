@@ -1727,7 +1727,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @return notifier notified on reply
      */
     public notifier echoSendReq(addrIP src, addrIP trg, int size, int ttl, int tos) {
-        final int maxSize = 2048;
+        final int maxSize = 8192;
         final int minSize = 16;
         if (size < minSize) {
             size = minSize;

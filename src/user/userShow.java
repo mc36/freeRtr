@@ -669,11 +669,16 @@ public class userShow {
                 rdr.putStrArr(ifc.getShIntTxt(1));
                 rdr.putStrTab(doShowRates(ifc.ethtyp.getHistory()));
                 rdr.putStrTab(ifc.ethtyp.getShTypes());
+                rdr.putStrTab(ifc.ethtyp.getShSizes());
                 rdr.putStrArr(ifc.getShIntTxt(10));
                 return null;
             }
             if (a.equals("ethertypes")) {
                 rdr.putStrTab(ifc.ethtyp.getShTypes());
+                return null;
+            }
+            if (a.equals("packetsizes")) {
+                rdr.putStrTab(ifc.ethtyp.getShSizes());
                 return null;
             }
             if (a.equals("counters")) {
@@ -684,6 +689,7 @@ public class userShow {
                 rdr.putStrArr(ifc.getShIntTxt(1));
                 rdr.putStrTab(doShowRates(ifc.ethtyp.getHistory()));
                 rdr.putStrTab(ifc.ethtyp.getShTypes());
+                rdr.putStrTab(ifc.ethtyp.getShSizes());
                 return null;
             }
             doShowHistory(a, ifc.ethtyp.getHistory());

@@ -4145,7 +4145,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (ipxIfc != null) {
                     l.add(cmds.tabulator + "ipx address=" + ipxAddr + ", ifcid=" + ipxIfc.ifwNum);
                 }
-                l.addAll(ethtyp.getCounter().getShFull(ethtyp.getPromisc()));
+                l.addAll(ethtyp.getCounter().getShFull(ethtyp.getPromisc(), ethtyp.getMacsec()));
                 break;
             case 2:
             case 3:
@@ -4218,13 +4218,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCounter().getShBsum());
                 break;
             case 11:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().getShPSum());
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().getShPsum());
                 break;
             case 12:
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHistory().getShPSum());
                 break;
             case 13:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCounter().getShPSum());
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCounter().getShPsum());
                 break;
             case 14:
                 if (lacp == null) {
@@ -5226,7 +5226,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("random")) {
             if (random != null) {
-                random.stopWord();
+                random.stopWork();
             }
             random = new ifcRandom();
             random.ethtyp = bits.fromHex(cmd.word());
@@ -5236,7 +5236,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             random.intMax = bits.str2num(cmd.word());
             ethtyp.addET(random.ethtyp, "random", random);
             ethtyp.updateET(random.ethtyp, random);
-            random.startWord();
+            random.startWork();
             return;
         }
         if (a.equals("macsec")) {
@@ -5635,7 +5635,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             ethtyp.delET(random.ethtyp);
-            random.stopWord();
+            random.stopWork();
             random = null;
             return;
         }

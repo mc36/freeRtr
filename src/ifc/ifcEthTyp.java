@@ -90,29 +90,31 @@ public class ifcEthTyp implements Runnable, ifcUp {
      */
     public final static int snap = 0xaaaa;
 
-    private notifier notif = new notifier();
+    private final notifier notif;
 
     private int need2run;
 
     private state.states lastState;
 
-    private ifcDn lower = new ifcNull();
+    private ifcDn lower;
 
     private ifcEthTypET defUpper;
 
-    private tabGen<ifcEthTypET> etTyps;
+    private final tabGen<ifcEthTypET> etTyps;
 
-    private tabGen<ifcEthTypLLC> llcTyps;
+    private final tabGen<ifcEthTypLLC> llcTyps;
 
-    private tabGen<ifcEthTypSNAP> snapTyps;
+    private final tabGen<ifcEthTypSNAP> snapTyps;
 
     private boolean promiscous;
 
-    private counter totCntr = new counter();
+    private counter totCntr;
 
-    private counter cntr = new counter();
+    private final counter cntr;
 
-    private history hstry = new history();
+    private final counter[] sizes;
+
+    private final history hstry;
 
     private final String name;
 
@@ -143,6 +145,15 @@ public class ifcEthTyp implements Runnable, ifcUp {
      */
     public boolean getPromisc() {
         return promiscous;
+    }
+
+    /**
+     * get macsec state
+     *
+     * @return state
+     */
+    public boolean getMacsec() {
+        return macSec != null;
     }
 
     /**
@@ -288,6 +299,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
                         break;
                     }
                     cntr.tx(pck);
+                    sizes[pktsiz2bucket(pck.dataSize())].tx(pck);
                     lower.sendPack(pck);
                 }
                 if (lst < qosOut.lastLeft) {
@@ -314,6 +326,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 packHolder pck = macSec.doSync();
                 if (pck != null) {
                     cntr.tx(pck);
+                    sizes[pktsiz2bucket(pck.dataSize())].tx(pck);
                     lower.sendPack(pck);
                 }
                 sec = tim;
@@ -361,7 +374,15 @@ public class ifcEthTyp implements Runnable, ifcUp {
             logger.debug("started");
         }
         name = "" + nam;
-        lower = null;
+        notif = new notifier();
+        lower = new ifcNull();
+        totCntr = new counter();
+        cntr = new counter();
+        sizes = new counter[8];
+        for (int i = 0; i < sizes.length; i++) {
+            sizes[i] = new counter();
+        }
+        hstry = new history();
         defUpper = new ifcEthTypET(null, null);
         promiscous = false;
         lastState = state.states.up;
@@ -480,6 +501,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         if (qosOut == null) {
             cntr.tx(pck);
+            sizes[pktsiz2bucket(pck.dataSize())].tx(pck);
             lower.sendPack(pck);
             return;
         }
@@ -490,6 +512,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
 
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
+        sizes[pktsiz2bucket(pck.dataSize())].rx(pck);
         if (macSec != null) {
             if (macSec.doDecrypt(pck)) {
                 cntr.drop(pck, counter.reasons.badSum);
@@ -774,13 +797,36 @@ public class ifcEthTyp implements Runnable, ifcUp {
         return lower.getBandwidth();
     }
 
+    private int pktsiz2bucket(int siz) {
+        int i = siz >>> 8;
+        if (i > 7) {
+            return 7;
+        } else {
+            return i;
+        }
+    }
+
+    /**
+     * get show results
+     *
+     * @return table
+     */
+    public userFormat getShSizes() {
+        userFormat l = new userFormat("|", "size|tx|rx|drop|tx|rx|drop");
+        String[] heds = {"0-255", "256-511", "512-767", "768-1023", "1024-1279", "1280-1535", "1536-1791", "1792-65535",};
+        for (int i = 0; i < sizes.length; i++) {
+            l.add(heds[i] + "|" + sizes[i].getShPsum() + "|" + sizes[i].getShBsum());
+        }
+        return l;
+    }
+
     /**
      * get show results
      *
      * @return table
      */
     public userFormat getShTypes() {
-        userFormat l = new userFormat("|", "type|value|handler|tx|rx|drop");
+        userFormat l = new userFormat("|", "type|value|handler|tx|rx|drop|tx|rx|drop");
         if (defUpper.upper != null) {
             l.add(defUpper.dump());
         }
@@ -915,7 +961,7 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
     }
 
     public String dump() {
-        return "ethtyp|" + bits.toHexW(ethTyp) + "|" + name + "|" + cntr.getShBsum();
+        return "ethtyp|" + bits.toHexW(ethTyp) + "|" + name + "|" + cntr.getShPsum() + "|" + cntr.getShBsum();
     }
 
     public String toString() {
@@ -1009,7 +1055,7 @@ class ifcEthTypLLC implements ifcDn, Comparator<ifcEthTypLLC> {
     }
 
     public String dump() {
-        return "llc|" + bits.toHexW(llcTyp) + "|" + name + "|" + cntr.getShBsum();
+        return "llc|" + bits.toHexW(llcTyp) + "|" + name + "|" + cntr.getShPsum() + "|" + cntr.getShBsum();
     }
 
     public String toString() {
@@ -1117,7 +1163,7 @@ class ifcEthTypSNAP implements ifcDn, Comparator<ifcEthTypSNAP> {
     }
 
     public String dump() {
-        return "snap|" + bits.toHexD(snapTyp) + "|" + name + "|" + cntr.getShBsum();
+        return "snap|" + bits.toHexD(snapTyp) + "|" + name + "|" + cntr.getShPsum() + "|" + cntr.getShBsum();
     }
 
     public String toString() {

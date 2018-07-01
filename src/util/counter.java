@@ -475,12 +475,13 @@ public class counter implements Comparator<counter> {
      * convert counter to displayable text
      *
      * @param promisc promiscous state
+     * @param macsec macsec state
      * @return string list of user string
      */
-    public List<String> getShFull(boolean promisc) {
+    public List<String> getShFull(boolean promisc, boolean macsec) {
         List<String> l = new ArrayList<String>();
         l.add(cmds.tabulator + "received " + packRx + " packets (" + byteRx + " bytes) dropped " + packDr + " packets (" + byteDr + " bytes)");
-        l.add(cmds.tabulator + "transmitted " + packTx + " packets (" + byteTx + " bytes) promisc=" + promisc);
+        l.add(cmds.tabulator + "transmitted " + packTx + " packets (" + byteTx + " bytes) promisc=" + promisc + " macsec=" + macsec);
         return l;
     }
 
@@ -516,7 +517,7 @@ public class counter implements Comparator<counter> {
      *
      * @return summary for table
      */
-    public String getShPSum() {
+    public String getShPsum() {
         return packTx + "|" + packRx + "|" + packDr;
     }
 

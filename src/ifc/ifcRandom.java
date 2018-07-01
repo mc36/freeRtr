@@ -91,14 +91,14 @@ public class ifcRandom implements ifcUp, Runnable {
     /**
      * stop work
      */
-    public void stopWord() {
+    public void stopWork() {
         need2work = false;
     }
 
     /**
      * start work
      */
-    public void startWord() {
+    public void startWork() {
         need2work = true;
         new Thread(this).start();
     }
