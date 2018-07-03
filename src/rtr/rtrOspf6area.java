@@ -842,11 +842,11 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 continue;
             }
             byte[] buf = new byte[0];
-            if (ntry.segRoutI > 0) {
-                buf = rtrOspfSr.putPref(ntry.segRoutI);
+            if (ntry.segrouIdx > 0) {
+                buf = rtrOspfSr.putPref(ntry.segrouIdx);
             }
-            if (ntry.bierI > 0) {
-                buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ntry.bierI));
+            if (ntry.bierIdx > 0) {
+                buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ntry.bierIdx));
             }
             if (buf.length < 1) {
                 continue;
@@ -962,7 +962,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         if (pref == null) {
                             continue;
                         }
-                        spf.addBierB(new rtrOspf6areaSpf(ntry.rtrID, 0), pref.bierB);
+                        spf.addBierB(new rtrOspf6areaSpf(ntry.rtrID, 0), pref.bierBeg);
                     }
                     break;
                 default:
@@ -1025,8 +1025,10 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             int hops = spf.getHops(src);
             ipFwdIface iface = (ipFwdIface) spf.getNextIfc(src);
             int met = spf.getMetric(src);
-            int srb = spf.getSegRouB(src);
-            int brb = spf.getBierB(src);
+            int srb = spf.getSegRouB(src, false);
+            int sro = spf.getSegRouB(src, true);
+            int brb = spf.getBierB(src, false);
+            int bro = spf.getBierB(src, true);
             tabRouteEntry<addrIP> pref;
             rtrOspf6areaPref prf6;
             packHolder pck = ntry.getPayload();
@@ -1041,6 +1043,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     pref.metric = met;
                     pref.origin = 110;
                     pref.distance = lower.distantSum;
+                    pref.srcRtr = ntry.rtrID.copyBytes();
                     pref.iface = iface;
                     pref.rouSrc = area;
                     rs.add(tabRoute.addType.better, pref, false, true);
@@ -1057,6 +1060,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pref.metric = met;
                         pref.origin = 109;
                         pref.distance = lower.distantSum;
+                        pref.srcRtr = ntry.rtrID.copyBytes();
                         pref.iface = iface;
                         pref.rouSrc = area;
                         rs.add(tabRoute.addType.better, pref, false, true);
@@ -1074,6 +1078,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pref.metric = met;
                         pref.origin = 109;
                         pref.distance = lower.distantSum;
+                        pref.srcRtr = ntry.rtrID.copyBytes();
                         pref.iface = iface;
                         pref.rouSrc = area;
                         rs.add(tabRoute.addType.better, pref, false, true);
@@ -1099,6 +1104,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pref.origin = 111;
                     }
                     pref.distance = lower.distantExt;
+                    pref.srcRtr = ntry.rtrID.copyBytes();
                     pref.iface = iface;
                     pref.rouSrc = area;
                     if ((o & 0x01000000) != 0) {
@@ -1127,22 +1133,24 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         if (hop.compare(hop, old.nextHop) != 0) {
                             continue;
                         }
-                        spf.addSegRouI(src, pref.segRoutI);
-                        spf.addBierI(src, pref.bierI, old.origin == 109);
-                        old.segRoutI = pref.segRoutI;
-                        old.segRoutB = srb;
-                        old.bierI = pref.bierI;
-                        old.bierS = pref.bierS;
-                        old.bierB = brb;
-                        if ((pref.segRoutI < 1) || (pref.segRoutI >= lower.segrouMax) || (srb < 1)) {
+                        spf.addSegRouI(src, pref.segrouIdx);
+                        spf.addBierI(src, pref.bierIdx, old.origin == 109);
+                        old.segrouIdx = pref.segrouIdx;
+                        old.segrouBeg = srb;
+                        old.segrouOld = sro;
+                        old.bierIdx = pref.bierIdx;
+                        old.bierHdr = pref.bierHdr;
+                        old.bierBeg = brb;
+                        old.bierOld = bro;
+                        if ((pref.segrouIdx < 1) || (pref.segrouIdx >= lower.segrouMax) || (srb < 1)) {
                             continue;
                         }
-                        List<Integer> lab = tabLabel.int2labels(srb + pref.segRoutI);
+                        List<Integer> lab = tabLabel.int2labels(srb + pref.segrouIdx);
                         if (((pref.rouSrc & 16) != 0) && (hops <= 1)) {
                             lab = tabLabel.int2labels(ipMpls.labelImp);
                         }
-                        lower.segrouLab[pref.segRoutI].setFwdMpls(9, lower.fwdCore, iface, hop, lab);
-                        segrouUsd[pref.segRoutI] = true;
+                        lower.segrouLab[pref.segrouIdx].setFwdMpls(9, lower.fwdCore, iface, hop, lab);
+                        segrouUsd[pref.segrouIdx] = true;
                         old.labelRem = lab;
                     }
                     break;

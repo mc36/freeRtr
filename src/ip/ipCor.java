@@ -62,10 +62,11 @@ public interface ipCor {
      * @param pck packet to update
      * @param src new source address, null=don't set
      * @param trg new target address, null=don't set
+     * @param prt new protocol value, -1=dont set
      * @param ttl new ttl value, -1=dont set, -2=decrement
      * @param tos new tos value, -1=dont set
      * @param len new payload length, -1=dont set
      */
-    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int ttl, int tos, int len);
+    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int len);
 
 }

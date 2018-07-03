@@ -49,6 +49,7 @@ import util.cmds;
 import util.debugger;
 import util.logger;
 import util.notifier;
+import util.shrtPthFrst;
 import util.syncInt;
 
 /**
@@ -1316,19 +1317,19 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                if (ntry.segRoutB < 1) {
+                if (ntry.segrouBeg < 1) {
                     continue;
                 }
-                if ((ntry.segRoutI <= 0) || (ntry.segRoutI >= segrouMax)) {
+                if ((ntry.segrouIdx <= 0) || (ntry.segrouIdx >= segrouMax)) {
                     continue;
                 }
                 rtrBgpNeigh nei = findPeer(ntry.nextHop);
                 if (nei == null) {
                     continue;
                 }
-                List<Integer> lab = tabLabel.int2labels(ntry.segRoutB + ntry.segRoutI);
-                segrouLab[ntry.segRoutI].setFwdMpls(13, fwdCore, nei.localIfc, nei.peerAddr, lab);
-                segrouUsd[ntry.segRoutI] = true;
+                List<Integer> lab = tabLabel.int2labels(ntry.segrouBeg + ntry.segrouIdx);
+                segrouLab[ntry.segrouIdx].setFwdMpls(13, fwdCore, nei.localIfc, nei.peerAddr, lab);
+                segrouUsd[ntry.segrouIdx] = true;
             }
             segrouUsd[segrouIdx] = true;
             segrouLab[segrouIdx].setFwdCommon(13, fwdCore);
@@ -1353,23 +1354,23 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                if (ntry.bierB < 1) {
+                if (ntry.bierBeg < 1) {
                     continue;
                 }
-                if ((ntry.bierI <= 0) || (ntry.bierI >= bierMax)) {
+                if ((ntry.bierIdx <= 0) || (ntry.bierIdx >= bierMax)) {
                     continue;
                 }
                 rtrBgpNeigh nei = findPeer(ntry.nextHop);
                 if (nei == null) {
                     continue;
                 }
-                tabLabelBierN per = new tabLabelBierN(nei.localIfc, nei.peerAddr, ntry.bierB);
+                tabLabelBierN per = new tabLabelBierN(nei.localIfc, nei.peerAddr, ntry.bierBeg);
                 per.ned = BigInteger.ZERO;
                 tabLabelBierN old = res.peers.add(per);
                 if (old != null) {
                     per = old;
                 }
-                per.ned = per.ned.setBit(ntry.bierI);
+                per.ned = per.ned.setBit(ntry.bierIdx);
             }
             for (int i = 0; i < res.peers.size(); i++) {
                 tabLabelBierN ntry = res.peers.get(i);
@@ -2874,12 +2875,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         o += 2;
         List<String> res = new ArrayList<String>();
-        res.add("echo \"graph net {");
+        res.add(shrtPthFrst.graphBeg);
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapath ntry = lst.get(i);
             res.add(ntry.path + " [weight=" + (o - ntry.count) + "]");
         }
-        res.add("}\" | dot -Tpng > net.png");
+        res.add(shrtPthFrst.graphEnd);
         return res;
     }
 

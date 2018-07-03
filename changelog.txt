@@ -8404,3 +8404,34 @@ no todo: online insertion (and never removal)
 ---------------------------------- 2018-06-24 17:53:40
 qc pass: ethernet over packet over udp
 qc pass: interworking with ethernet over packet over udp
+---------------------------------- 2018-07-01 20:49:46
+todo: srv6 tunnel
+todo: test cases for srmpls, srip
+todo: tunnel states for bier, te, ldp, pwe, ipsec, l2tp
+todo: ethtyp autostate command
+todo: ethtyp prec/exp/cos accounting
+todo: sr, bier tunneling
+todo: bgp sr policy afi
+todo: bgp vpns over sr
+todo: autoroute
+todo: exp bundle
+todo: recursive static route
+todo: pipeline properties, terminal autoresize
+---------------------------------- 2018-07-02 13:46:54
+no todo: autoroute
+no todo: bgp sr policy afi
+no todo: sr, bier tunneling
+no todo: ethtyp prec/exp/cos accounting
+no todo: ethtyp autostate command
+no todo: tunnel states for bier, te, ldp, pwe, ipsec, l2tp
+no todo: test cases for srmpls, srip
+no todo: srv6 tunnel
+todo: test cases for srmpls, srext
+todo: tunnel states for bier, te, pwe, ipsec, l2tp
+todo: remove states where possible from cfgIfc's = "" + tunTrg;
+todo: tunnel templates, more srv6 like modes with ipip, gre
+todo: mpls rx/tx only, sending-interface
+todo: autoroute with sr, bier support
+todo: bgp sr-policy afi
+todo: interface autostate command
+todo: ethtyp prec/exp/cos and protocol accounting

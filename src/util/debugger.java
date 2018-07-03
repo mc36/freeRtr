@@ -594,6 +594,16 @@ public class debugger {
     public static boolean clntPweTraf = false;
 
     /**
+     * clntMplsSr traffic
+     */
+    public static boolean clntMplsSrTraf = false;
+
+    /**
+     * clntMplsBier traffic
+     */
+    public static boolean clntMplsBierTraf = false;
+
+    /**
      * clntMplsTe traffic
      */
     public static boolean clntMplsTeTraf = false;
@@ -617,6 +627,11 @@ public class debugger {
      * ipCor6 traffic
      */
     public static boolean ipCor6traf = false;
+
+    /**
+     * ipCorSrh traffic
+     */
+    public static boolean ipCorSrhTraf = false;
 
     /**
      * ipMpls label traffic
@@ -982,6 +997,8 @@ public class debugger {
         h.add("3 .        gtp               gprs tunneling protocol");
         h.add("3 .        pwe               pseudowire over mpls protocol");
         h.add("3 .        mplste            mpls traffeng tunnel");
+        h.add("3 .        mplsbier          mpls bier tunnel");
+        h.add("3 .        mplssr            mpls segrout tunnel");
         h.add("3 .        automesh          mpls automesh tunnel");
         h.add("3 .        mplsldp           mpls ldp tunnel");
         h.add("3 .        radius            radius protocol");
@@ -989,6 +1006,7 @@ public class debugger {
         h.add("2 3      fwd                 protocol forwarding");
         h.add("3 .        event             forwarding events");
         h.add("3 .        packet            forwarded packets");
+        h.add("3 .        srh               source routed packets");
         h.add("2 3      mpls                multiprotocol label switching");
         h.add("3 .        packet            mpls packet processing");
         h.add("3 .        bier              bier packet processing");
@@ -1612,6 +1630,14 @@ public class debugger {
                 clntMplsTeTraf = v;
                 return false;
             }
+            if (s.equals("mplsbier")) {
+                clntMplsBierTraf = v;
+                return false;
+            }
+            if (s.equals("mplssr")) {
+                clntMplsSrTraf = v;
+                return false;
+            }
             if (s.equals("automesh")) {
                 clntMplsAutMsh = v;
                 return false;
@@ -1714,6 +1740,10 @@ public class debugger {
             }
             if (s.equals("packet")) {
                 ipFwdTraf = v;
+                return false;
+            }
+            if (s.equals("srh")) {
+                ipCorSrhTraf = v;
                 return false;
             }
             return true;

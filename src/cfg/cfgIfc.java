@@ -32,6 +32,8 @@ import clnt.clntMplsBier;
 import clnt.clntMplsTrg;
 import clnt.clntMplsUdp;
 import clnt.clntSlaac;
+import clnt.clntMplsSr;
+import clnt.clntSrExt;
 import clnt.clntUdpGre;
 import ifc.ifcAtmDxi;
 import ifc.ifcAtmSar;
@@ -584,6 +586,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntMplsPwe tunPweOmpls;
 
     /**
+     * sr over mpls tunnel handler
+     */
+    public clntMplsSr tunSrMpls;
+
+    /**
+     * sr over srh tunnel handler
+     */
+    public clntSrExt tunSrExt;
+
+    /**
      * p2p mpls te tunnel handler
      */
     public clntMplsTeP2p tunTeP2p;
@@ -1040,6 +1052,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * pweOmpls tunnel interface
          */
         pweOmpls,
+        /**
+         * sr over mpls tunnel interface
+         */
+        srMpls,
+        /**
+         * sr over srh tunnel interface
+         */
+        srExt,
         /**
          * p2p mpls te tunnel interface
          */
@@ -1679,6 +1699,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "l2tp3";
             case pweOmpls:
                 return "pweompls";
+            case srMpls:
+                return "srmpls";
+            case srExt:
+                return "srext";
             case teP2p:
                 return "p2pte";
             case teP2mp:
@@ -1782,6 +1806,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("pweompls")) {
             return tunnelType.pweOmpls;
+        }
+        if (s.equals("srmpls")) {
+            return tunnelType.srMpls;
+        }
+        if (s.equals("srext")) {
+            return tunnelType.srExt;
         }
         if (s.equals("p2pte")) {
             return tunnelType.teP2p;
@@ -3004,6 +3034,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunPweOmpls.workStop();
             tunPweOmpls = null;
         }
+        if (tunSrMpls != null) {
+            tunSrMpls.workStop();
+            tunSrMpls = null;
+        }
+        if (tunSrExt != null) {
+            tunSrExt.workStop();
+            tunSrExt = null;
+        }
         if (tunTeP2p != null) {
             tunTeP2p.workStop();
             tunTeP2p = null;
@@ -3383,6 +3421,36 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPweOmpls.setUpper(ethtyp);
                 tunPweOmpls.workStart();
                 lower = tunPweOmpls;
+                break;
+            case srMpls:
+                if (tunFQDN == null) {
+                    return true;
+                }
+                tunSrMpls = new clntMplsSr();
+                tunSrMpls.fwdCor = tunVrf.getFwd(tunTrg);
+                tunSrMpls.target = tunTrg.copyBytes();
+                tunSrMpls.setTargets(tunFQDN);
+                tunFQDN = tunSrMpls.getTargets();
+                tunSrMpls.expr = tunTOS;
+                tunSrMpls.ttl = tunTTL;
+                tunSrMpls.setUpper(ethtyp);
+                tunSrMpls.workStart();
+                lower = tunSrMpls;
+                break;
+            case srExt:
+                if (tunFQDN == null) {
+                    return true;
+                }
+                tunSrExt = new clntSrExt();
+                tunSrExt.fwdCor = tunVrf.getFwd(tunTrg);
+                tunSrExt.target = tunTrg.copyBytes();
+                tunSrExt.setTargets(tunFQDN);
+                tunFQDN = tunSrExt.getTargets();
+                tunSrExt.tos = tunTOS;
+                tunSrExt.ttl = tunTTL;
+                tunSrExt.setUpper(ethtyp);
+                tunSrExt.workStart();
+                lower = tunSrExt;
                 break;
             case teP2p:
                 tunTeP2p = new clntMplsTeP2p();
@@ -4786,6 +4854,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       inlsp                     inlsp encapsulation");
         l.add("3 .       skip                      skip encapsulation");
         l.add("3 .       pweompls                  pseudowire over mpls encapsulation");
+        l.add("3 .       srmpls                    segment routing te over mpls tunnel");
+        l.add("3 .       srext                     segment routing te over exthdr tunnel");
         l.add("3 .       p2pte                     point to point mpls te tunnel");
         l.add("3 .       p2mpte                    point to multipoint mpls te tunnel");
         l.add("3 .       bier                      mpls bier tunnel");

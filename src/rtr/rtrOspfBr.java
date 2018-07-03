@@ -56,11 +56,11 @@ public class rtrOspfBr {
     protected static void getPref(typLenVal tlv, tabRouteEntry<addrIP> prf) {
         switch (tlv.valTyp) {
             case 9: // bier info
-                prf.bierI = bits.msbGetW(tlv.valDat, 2); // brf id
+                prf.bierIdx = bits.msbGetW(tlv.valDat, 2); // brf id
                 break;
             case 10: // bier mpls
-                prf.bierB = bits.msbGetD(tlv.valDat, 0) & 0xfffff; // label
-                prf.bierS = (tlv.valDat[4] >>> 4) & 0xf; // bsl
+                prf.bierBeg = bits.msbGetD(tlv.valDat, 0) & 0xfffff; // label
+                prf.bierHdr = (tlv.valDat[4] >>> 4) & 0xf; // bsl
                 break;
         }
     }

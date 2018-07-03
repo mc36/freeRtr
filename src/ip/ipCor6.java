@@ -43,6 +43,26 @@ public class ipCor6 implements ipCor {
      */
     public final static int protocolNumber = 41;
 
+    /**
+     * hop by hop
+     */
+    public final static int exthdrHopByHop = 0;
+
+    /**
+     * routing
+     */
+    public final static int exthdrRouting = 43;
+
+    /**
+     * fragment
+     */
+    public final static int exthdrFragment = 44;
+
+    /**
+     * destination options
+     */
+    public final static int exthdrDstOpt = 60;
+
     public int getVersion() {
         return protocolVersion;
     }
@@ -55,7 +75,12 @@ public class ipCor6 implements ipCor {
         return size;
     }
 
-    private void parseExtHeader(packHolder pck) {
+    /**
+     * skip extension header
+     *
+     * @param pck packet to use
+     */
+    public static void skipExtHeader(packHolder pck) {
         pck.IPprt = pck.getByte(pck.IPsiz + 0); // next header
         pck.IPsiz += (pck.getByte(pck.IPsiz + 1) + 1) << 3; // header length
     }
@@ -92,21 +117,20 @@ public class ipCor6 implements ipCor {
         pck.IPmf = false;
         pck.IPfrg = 0;
         switch (pck.IPprt) {
-            case 0: // hop by hop
+            case exthdrHopByHop:
                 if (pck.msbGetW(pck.IPsiz + 2) == 0x0502) {
                     pck.IPalrt = pck.msbGetW(pck.IPsiz + 4);
                 }
-                parseExtHeader(pck);
+                skipExtHeader(pck);
                 break;
-            case 43: // routing header
-                parseExtHeader(pck);
+            case exthdrFragment:
+                pck.IPfrg = pck.msbGetW(pck.IPsiz + 2);
+                pck.IPmf = (pck.IPfrg & 1) != 0;
+                pck.IPfrg = (pck.IPfrg >>> 3) * 8;
+                skipExtHeader(pck);
                 break;
-            case 44: // fragment header
-                pck.IPfrg = 1;
-                parseExtHeader(pck);
-                break;
-            case 60: // destination options
-                parseExtHeader(pck);
+            case exthdrDstOpt:
+                skipExtHeader(pck);
                 break;
             default:
                 break;
@@ -142,7 +166,7 @@ public class ipCor6 implements ipCor {
             pck.msbPutW(pck.IPsiz + 4, pck.IPalrt);
             pck.msbPutW(pck.IPsiz + 6, 0);
             pck.IPsiz += 8;
-            oldPrt = 0;
+            oldPrt = exthdrHopByHop;
         }
         pck.msbPutW(0, 0x6000 | ((pck.IPtos & 0xff) << 4)); // version:4 tos:8 reserved:4
         pck.msbPutW(2, 0); // flow label
@@ -163,13 +187,17 @@ public class ipCor6 implements ipCor {
         pck.merge2beg();
     }
 
-    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int ttl, int tos, int len) {
+    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int len) {
         if (debugger.ipCor6traf) {
-            logger.debug("upd src=" + src + " trg=" + trg + " ttl=" + ttl + " tos=" + tos + " len=" + len);
+            logger.debug("upd src=" + src + " trg=" + trg + " prt=" + prt + " ttl=" + ttl + " tos=" + tos + " len=" + len);
         }
         int verTos = pck.msbGetW(0); // version:4 tos:8 reserved:4
         pck.unMergeBytes(size);
         pck.putSkip(-size);
+        if (prt != -1) {
+            pck.putByte(6, prt); // next header
+            pck.IPprt = prt;
+        }
         if (ttl == -2) {
             int i = pck.IPttl - 1;
             if (i < 0) {

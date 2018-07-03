@@ -20,6 +20,16 @@ import user.userFormat;
  */
 public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
 
+    /**
+     * beginning of graph
+     */
+    public final static String graphBeg = "echo \"graph net {";
+
+    /**
+     * ending of graph
+     */
+    public final static String graphEnd = "}\" | dot -Tsvg > net.svg";
+
     private final tabGen<shrtPthFrstNode<Ta>> nodes;
 
     private final List<shrtPthFrstLog> log;
@@ -131,6 +141,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             ntry = old;
         }
         ntry.srBeg = beg;
+        ntry.srOrg = beg;
     }
 
     /**
@@ -167,6 +178,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             ntry = old;
         }
         ntry.brBeg = beg;
+        ntry.brOrg = beg;
     }
 
     /**
@@ -376,28 +388,38 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * get segment routing base
      *
      * @param which node to query
+     * @param orig true for original one
      * @return label, -1=not found
      */
-    public int getSegRouB(Ta which) {
+    public int getSegRouB(Ta which, boolean orig) {
         shrtPthFrstNode<Ta> hop = findNextHop(which);
         if (hop == null) {
             return -1;
         }
-        return hop.srBeg;
+        if (orig) {
+            return hop.srOrg;
+        } else {
+            return hop.srBeg;
+        }
     }
 
     /**
      * get bier base
      *
      * @param which node to query
+     * @param orig true for original one
      * @return label, -1=not found
      */
-    public int getBierB(Ta which) {
+    public int getBierB(Ta which, boolean orig) {
         shrtPthFrstNode<Ta> hop = findNextHop(which);
         if (hop == null) {
             return -1;
         }
-        return hop.brBeg;
+        if (orig) {
+            return hop.brOrg;
+        } else {
+            return hop.brBeg;
+        }
     }
 
     private void doBier(shrtPthFrstNode<Ta> ntry) {
@@ -747,7 +769,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      */
     public List<String> listGraphviz() {
         List<String> res = new ArrayList<String>();
-        res.add("echo \"graph net {");
+        res.add(graphBeg);
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(o);
             res.add("//" + ntry);
@@ -756,7 +778,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 res.add("  \\\"" + ntry + "\\\" -- \\\"" + cur.target + "\\\" [weight=" + cur.metric + "]");
             }
         }
-        res.add("}\" | dot -Tpng > net.png");
+        res.add(graphEnd);
         return res;
     }
 
@@ -834,9 +856,13 @@ class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<s
 
     protected int srBeg;
 
+    protected int srOrg;
+
     protected int srIdx;
 
     protected int brBeg;
+
+    protected int brOrg;
 
     protected int brIdx;
 

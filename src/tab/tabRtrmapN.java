@@ -736,10 +736,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (!tagMatch.matches(net.tag)) {
             return false;
         }
-        if (!segrouMatch.matches(net.segRoutI)) {
+        if (!segrouMatch.matches(net.segrouIdx)) {
             return false;
         }
-        if (!bierMatch.matches(net.bierI)) {
+        if (!bierMatch.matches(net.bierIdx)) {
             return false;
         }
         if (!validityMatch.matches(net.validity)) {
@@ -842,8 +842,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         net.origin = originSet.update(net.origin);
         net.metric = metricSet.update(net.metric);
         net.tag = tagSet.update(net.tag);
-        net.segRoutI = segrouSet.update(net.segRoutI);
-        net.bierI = bierSet.update(net.bierI);
+        net.segrouIdx = segrouSet.update(net.segrouIdx);
+        net.bierIdx = bierSet.update(net.bierIdx);
         net.pathSeq = tabLabel.prependLabels(net.pathSeq, aspathSet);
         if (stdCommClear) {
             net.stdComm = null;
@@ -914,8 +914,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         t.addLine("set origin " + net.origin);
         t.addLine("set metric " + net.metric);
         t.addLine("set tag " + net.tag);
-        t.addLine("set segrout " + net.segRoutI);
-        t.addLine("set bier " + net.bierI);
+        t.addLine("set segrout " + net.segrouIdx);
+        t.addLine("set bier " + net.bierIdx);
         t.addLine("set aspath \"" + net.asPathStr() + "\"");
         t.addLine("set pathlen \"" + net.asPathLen() + "\"");
         t.addLine("set stdcomm \"" + stdComms2string(net.stdComm) + "\"");
@@ -977,11 +977,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 continue;
             }
             if (a.equals("segrout")) {
-                net.segRoutI = bits.str2num(cmd.word());
+                net.segrouIdx = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("bier")) {
-                net.bierI = bits.str2num(cmd.word());
+                net.bierIdx = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("aspath")) {

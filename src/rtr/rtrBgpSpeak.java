@@ -1783,11 +1783,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.nxtHopPeer) {
             ntry.nextHop = neigh.peerAddr.copyBytes();
         }
-        if ((ntry.labelRem == null) && (ntry.segRoutI > 0) && (ntry.segRoutB > 0)) {
-            ntry.labelRem = tabLabel.int2labels(ntry.segRoutB + ntry.segRoutI);
+        if ((ntry.labelRem == null) && (ntry.segrouIdx > 0) && (ntry.segrouBeg > 0)) {
+            ntry.labelRem = tabLabel.int2labels(ntry.segrouBeg + ntry.segrouIdx);
         }
         if (neigh.egressEng > 0) {
-            ntry.segRoutI = neigh.egressEng;
+            ntry.segrouIdx = neigh.egressEng;
         }
         if (neigh.dmzLinkBw >= 0) {
             if (ntry.extComm == null) {

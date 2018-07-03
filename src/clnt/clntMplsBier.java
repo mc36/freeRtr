@@ -19,6 +19,7 @@ import tab.tabLabelBierN;
 import tab.tabRouteEntry;
 import util.cmds;
 import util.counter;
+import util.debugger;
 import util.logger;
 import util.notifier;
 import util.state;
@@ -237,6 +238,9 @@ public class clntMplsBier implements Runnable, ifcDn {
      * start connection
      */
     public void workStart() {
+        if (debugger.clntMplsBierTraf) {
+            logger.debug("starting work");
+        }
         working = true;
         new Thread(this).start();
     }
@@ -254,6 +258,9 @@ public class clntMplsBier implements Runnable, ifcDn {
      * stop connection
      */
     public void workStop() {
+        if (debugger.clntMplsBierTraf) {
+            logger.debug("stop work");
+        }
         working = false;
         notif1.wakeup();
     }
@@ -281,6 +288,9 @@ public class clntMplsBier implements Runnable, ifcDn {
             }
             tabRouteEntry<addrIP> rou = fwdCor.actualU.route(trg);
             if (rou == null) {
+                if (debugger.clntMplsBierTraf) {
+                    logger.debug("no route for " + trg);
+                }
                 continue;
             }
             if (rou.oldHop != null) {
@@ -289,21 +299,27 @@ public class clntMplsBier implements Runnable, ifcDn {
                     continue;
                 }
             }
-            if (rou.bierI < 1) {
+            if (rou.bierIdx < 1) {
+                if (debugger.clntMplsBierTraf) {
+                    logger.debug("no index for " + trg);
+                }
                 continue;
             }
-            if (rou.bierB < 1) {
+            if (rou.bierBeg < 1) {
+                if (debugger.clntMplsBierTraf) {
+                    logger.debug("no base for " + trg);
+                }
                 continue;
             }
-            tabLabelBierN ntry = new tabLabelBierN(rou.iface, rou.nextHop, rou.bierB);
+            tabLabelBierN ntry = new tabLabelBierN(rou.iface, rou.nextHop, rou.bierBeg);
             tabLabelBierN old = trgs.add(ntry);
             if (old != null) {
                 ntry = old;
             } else {
                 ntry.ned = BigInteger.ZERO;
             }
-            ntry.len = rou.bierS;
-            ntry.ned = ntry.ned.setBit(rou.bierI - 1);
+            ntry.len = rou.bierHdr;
+            ntry.ned = ntry.ned.setBit(rou.bierIdx - 1);
         }
         for (int i = 0; i < trgs.size(); i++) {
             tabLabelBierN ntry = trgs.get(i);

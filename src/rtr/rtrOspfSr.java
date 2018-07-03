@@ -104,7 +104,7 @@ public class rtrOspfSr {
         if ((tlv.valDat[0] & 0x10) != 0) { // expnull
             prf.rouSrc |= 16;
         }
-        prf.segRoutI = bits.msbGetD(tlv.valDat, 4);
+        prf.segrouIdx = bits.msbGetD(tlv.valDat, 4);
     }
 
     /**

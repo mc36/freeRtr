@@ -554,9 +554,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case tag:
                 return intMatch.matches(net.tag);
             case segrou:
-                return intMatch.matches(net.segRoutI);
+                return intMatch.matches(net.segrouIdx);
             case bier:
-                return intMatch.matches(net.bierI);
+                return intMatch.matches(net.bierIdx);
             case afi:
                 return intMatch.matches(afi & rtrBgpUtil.afiMask);
             case safi:
@@ -629,10 +629,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 net.tag = intSet.update(net.tag);
                 return;
             case setSegrou:
-                net.segRoutI = intSet.update(net.segRoutI);
+                net.segrouIdx = intSet.update(net.segrouIdx);
                 return;
             case setBier:
-                net.bierI = intSet.update(net.bierI);
+                net.bierIdx = intSet.update(net.bierIdx);
                 return;
             case setRoumap:
                 roumap.update(afi, net, false);

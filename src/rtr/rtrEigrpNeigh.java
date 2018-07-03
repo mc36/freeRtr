@@ -338,6 +338,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
             ntry.nextHop = peer.copyBytes();
             ntry.distance = iface.distance;
             ntry.iface = iface.iface;
+            ntry.srcRtr = peer.copyBytes();
             if (debugger.rtrEigrpTraf) {
                 logger.debug("prefix " + reach + " " + ntry);
             }

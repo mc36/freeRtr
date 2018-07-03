@@ -2004,12 +2004,14 @@ public class userShow {
                 prf2.pmsiTun = null;
             }
             if ((ign & 0x40000) != 0) {
-                prf1.segRoutI = 0;
-                prf2.segRoutI = 0;
-                prf1.segRoutB = 0;
-                prf2.segRoutB = 0;
-                prf1.segRoutS = 0;
-                prf2.segRoutS = 0;
+                prf1.segrouIdx = 0;
+                prf2.segrouIdx = 0;
+                prf1.segrouBeg = 0;
+                prf2.segrouBeg = 0;
+                prf1.segrouOld = 0;
+                prf2.segrouOld = 0;
+                prf1.segrouSiz = 0;
+                prf2.segrouSiz = 0;
             }
             if ((ign & 0x80000) != 0) {
                 prf1.lrgComm = null;
@@ -2028,14 +2030,16 @@ public class userShow {
                 prf2.attribVal = null;
             }
             if ((ign & 0x400000) != 0) {
-                prf1.bierI = 0;
-                prf2.bierI = 0;
-                prf1.bierB = 0;
-                prf2.bierB = 0;
-                prf1.bierR = 0;
-                prf2.bierR = 0;
-                prf1.bierS = 0;
-                prf2.bierS = 0;
+                prf1.bierIdx = 0;
+                prf2.bierIdx = 0;
+                prf1.bierBeg = 0;
+                prf2.bierBeg = 0;
+                prf1.bierOld = 0;
+                prf2.bierOld = 0;
+                prf1.bierSiz = 0;
+                prf2.bierSiz = 0;
+                prf1.bierHdr = 0;
+                prf2.bierHdr = 0;
             }
             if (!prf1.differs(prf2)) {
                 continue;

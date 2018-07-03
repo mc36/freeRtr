@@ -228,7 +228,7 @@ public class tabQos {
                     return;
                 }
                 pck.getSkip(2);
-                ip4cor.updateIPheader(pck, null, null, o, i, -1);
+                ip4cor.updateIPheader(pck, null, null, -1, o, i, -1);
                 pck.getSkip(-2);
                 return;
             case ipIfc6.type:
@@ -237,7 +237,7 @@ public class tabQos {
                     return;
                 }
                 pck.getSkip(2);
-                ip6cor.updateIPheader(pck, null, null, o, i, -1);
+                ip6cor.updateIPheader(pck, null, null, -1, o, i, -1);
                 pck.getSkip(-2);
                 return;
             case ipMpls.typeM:

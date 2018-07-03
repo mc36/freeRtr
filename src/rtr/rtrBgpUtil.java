@@ -1755,11 +1755,11 @@ public class rtrBgpUtil {
             }
             switch (tlv.valTyp) {
                 case 1: // label index
-                    ntry.segRoutI = bits.msbGetD(tlv.valDat, 3); // index
+                    ntry.segrouIdx = bits.msbGetD(tlv.valDat, 3); // index
                     break;
                 case 3: // srgb
-                    ntry.segRoutB = bits.msbGetD(tlv.valDat, 2) >>> 8; // base
-                    ntry.segRoutS = bits.msbGetD(tlv.valDat, 5) >>> 8; // range
+                    ntry.segrouBeg = bits.msbGetD(tlv.valDat, 2) >>> 8; // base
+                    ntry.segrouSiz = bits.msbGetD(tlv.valDat, 5) >>> 8; // range
                     break;
             }
         }
@@ -1779,12 +1779,12 @@ public class rtrBgpUtil {
             }
             switch (tlv.valTyp) {
                 case 1: // bier
-                    ntry.bierI = bits.msbGetW(tlv.valDat, 1); // bfr id
+                    ntry.bierIdx = bits.msbGetW(tlv.valDat, 1); // bfr id
                     break;
                 case 2: // mpls
-                    ntry.bierB = bits.msbGetD(tlv.valDat, 0) >>> 8; // base
-                    ntry.bierR = tlv.valDat[3] & 0xff; // range
-                    ntry.bierS = (tlv.valDat[4] >>> 4) & 0xf; // bsl
+                    ntry.bierBeg = bits.msbGetD(tlv.valDat, 0) >>> 8; // base
+                    ntry.bierSiz = tlv.valDat[3] & 0xff; // range
+                    ntry.bierHdr = (tlv.valDat[4] >>> 4) & 0xf; // bsl
                     break;
             }
         }
@@ -2567,20 +2567,20 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placePrefSid(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.segRoutI == 0) {
+        if (ntry.segrouIdx == 0) {
             return;
         }
         hlp.clear();
         typLenVal tlv = getPrefSidTlv();
         tlv.valDat[0] = 0; // reserved
         bits.msbPutW(tlv.valDat, 1, 0); // flags
-        bits.msbPutD(tlv.valDat, 3, ntry.segRoutI); // index
+        bits.msbPutD(tlv.valDat, 3, ntry.segrouIdx); // index
         tlv.putBytes(hlp, 1, 7, tlv.valDat);
-        if (ntry.segRoutS != 0) {
+        if (ntry.segrouSiz != 0) {
             tlv = getPrefSidTlv();
             bits.msbPutW(tlv.valDat, 0, 0); // flags
-            bits.msbPutD(tlv.valDat, 2, ntry.segRoutB << 8); // base
-            bits.msbPutD(tlv.valDat, 5, ntry.segRoutS << 8); // range
+            bits.msbPutD(tlv.valDat, 2, ntry.segrouBeg << 8); // base
+            bits.msbPutD(tlv.valDat, 5, ntry.segrouSiz << 8); // range
             tlv.putBytes(hlp, 3, 8, tlv.valDat);
         }
         placeAttrib(flagOptional | flagTransitive, attrPrefSid, trg, hlp);
@@ -2594,19 +2594,19 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeBier(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.bierI == 0) {
+        if (ntry.bierIdx == 0) {
             return;
         }
         hlp.clear();
         typLenVal tlv = getBierTlv();
         tlv.valDat[0] = 0; // subdomain
-        bits.msbPutW(tlv.valDat, 1, ntry.bierI); // bfr id
+        bits.msbPutW(tlv.valDat, 1, ntry.bierIdx); // bfr id
         tlv.putBytes(hlp, 1, 4, tlv.valDat);
-        if (ntry.bierR != 0) {
+        if (ntry.bierSiz != 0) {
             tlv = getBierTlv();
-            bits.msbPutD(tlv.valDat, 0, ntry.bierB << 8); // base
-            tlv.valDat[3] = (byte) ntry.bierR; // range
-            tlv.valDat[4] = (byte) (ntry.bierS << 4); // bsl
+            bits.msbPutD(tlv.valDat, 0, ntry.bierBeg << 8); // base
+            tlv.valDat[3] = (byte) ntry.bierSiz; // range
+            tlv.valDat[4] = (byte) (ntry.bierHdr << 4); // bsl
             tlv.putBytes(hlp, 2, 8, tlv.valDat);
         }
         placeAttrib(flagOptional | flagTransitive, attrBier, trg, hlp);

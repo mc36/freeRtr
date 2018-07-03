@@ -1510,6 +1510,19 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
+todo: test cases for srmpls, srext
+todo: tunnel states for bier, te, pwe, ipsec, l2tp
+todo: remove states where possible from cfgIfc's = "" + tunTrg;
+todo: tunnel templates, more srv6 like modes with ipip, gre
+todo: mpls rx/tx only, sending-interface
+todo: autoroute with sr, bier support
+todo: bgp sr-policy afi
+todo: bgp vpns over sr
+todo: interface autostate command
+todo: ethtyp prec/exp/cos and protocol accounting
+todo: exp bundle
+todo: recursive static route
+todo: pipeline properties, terminal autoresize
 todo: yang over netconf, proto over grpc
 todo: interface range command
 todo: reenable which elliptic courves? sure? why that?

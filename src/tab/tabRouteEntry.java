@@ -208,37 +208,47 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     /**
      * segment routing index
      */
-    public int segRoutI;
+    public int segrouIdx;
 
     /**
      * segment routing base
      */
-    public int segRoutB;
+    public int segrouBeg;
 
     /**
-     * segment routing size
+     * segment routing old base
      */
-    public int segRoutS;
+    public int segrouOld;
+
+    /**
+     * segment routing label block size
+     */
+    public int segrouSiz;
 
     /**
      * bier index
      */
-    public int bierI;
+    public int bierIdx;
 
     /**
      * bier base
      */
-    public int bierB;
+    public int bierBeg;
+
+    /**
+     * bier old base
+     */
+    public int bierOld;
 
     /**
      * bier bsl
      */
-    public int bierS;
+    public int bierHdr;
 
     /**
-     * bier range
+     * bier label block size
      */
-    public int bierR;
+    public int bierSiz;
 
     /**
      * origin type
@@ -303,7 +313,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     /**
      * source router
      */
-    public T srcRtr;
+    public addrType srcRtr;
 
     /**
      * atomic aggregator
@@ -521,13 +531,15 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         prf.tag = tag;
         prf.origin = origin;
         prf.validity = validity;
-        prf.segRoutI = segRoutI;
-        prf.segRoutS = segRoutS;
-        prf.segRoutB = segRoutB;
-        prf.bierI = bierI;
-        prf.bierS = bierS;
-        prf.bierB = bierB;
-        prf.bierR = bierR;
+        prf.segrouIdx = segrouIdx;
+        prf.segrouSiz = segrouSiz;
+        prf.segrouBeg = segrouBeg;
+        prf.segrouOld = segrouOld;
+        prf.bierIdx = bierIdx;
+        prf.bierHdr = bierHdr;
+        prf.bierBeg = bierBeg;
+        prf.bierOld = bierOld;
+        prf.bierSiz = bierSiz;
         prf.locPref = locPref;
         prf.accIgp = accIgp;
         prf.tunelTyp = tunelTyp;
@@ -554,7 +566,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
             prf.aggrRtr = (T) aggrRtr.copyBytes();
         }
         if (srcRtr != null) {
-            prf.srcRtr = (T) srcRtr.copyBytes();
+            prf.srcRtr = srcRtr.copyBytes();
         }
         prf.stdComm = tabLabel.copyLabels(stdComm);
         prf.extComm = copyLongList(extComm);
@@ -672,25 +684,31 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         if (tag != other.tag) {
             return true;
         }
-        if (segRoutI != other.segRoutI) {
+        if (segrouIdx != other.segrouIdx) {
             return true;
         }
-        if (segRoutB != other.segRoutB) {
+        if (segrouBeg != other.segrouBeg) {
             return true;
         }
-        if (segRoutS != other.segRoutS) {
+        if (segrouOld != other.segrouOld) {
             return true;
         }
-        if (bierI != other.bierI) {
+        if (segrouSiz != other.segrouSiz) {
             return true;
         }
-        if (bierB != other.bierB) {
+        if (bierIdx != other.bierIdx) {
             return true;
         }
-        if (bierR != other.bierR) {
+        if (bierBeg != other.bierBeg) {
             return true;
         }
-        if (bierS != other.bierS) {
+        if (bierOld != other.bierOld) {
+            return true;
+        }
+        if (bierSiz != other.bierSiz) {
+            return true;
+        }
+        if (bierHdr != other.bierHdr) {
             return true;
         }
         if (validity != other.validity) {
@@ -741,6 +759,9 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         }
         if (srcRtr != null) {
             if (other.srcRtr == null) {
+                return true;
+            }
+            if (srcRtr.getSize() != other.srcRtr.getSize()) {
                 return true;
             }
             if (srcRtr.compare(srcRtr, other.srcRtr) != 0) {
@@ -1123,13 +1144,15 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         l.add("type = " + rouTyp + " " + protoNum);
         l.add("source = " + srcRtr);
         l.add("validity = " + validity);
-        l.add("segment routing index = " + segRoutI);
-        l.add("segment routing base = " + segRoutB);
-        l.add("segment routing size = " + segRoutS);
-        l.add("bier index = " + bierI);
-        l.add("bier base = " + bierB);
-        l.add("bier range = " + bierR);
-        l.add("bier size = " + bierS + "-" + tabLabelBier.bsl2num(bierS));
+        l.add("segment routing index = " + segrouIdx);
+        l.add("segment routing old base = " + segrouOld);
+        l.add("segment routing base = " + segrouBeg);
+        l.add("segment routing size = " + segrouSiz);
+        l.add("bier index = " + bierIdx);
+        l.add("bier old base = " + bierOld);
+        l.add("bier base = " + bierBeg);
+        l.add("bier range = " + bierSiz);
+        l.add("bier size = " + bierHdr + "-" + tabLabelBier.bsl2num(bierHdr));
         l.add("updated = " + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(time) + " ago)");
         l.add("version = " + version);
         l.add("distance = " + distance);

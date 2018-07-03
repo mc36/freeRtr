@@ -36,6 +36,10 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         aceslst = new tabListing<tabAceslstN<addrIP>, addrIP>();
     }
 
+    public String toString() {
+        return name;
+    }
+
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("access-list " + name);

@@ -169,12 +169,16 @@ public class ipCor4 implements ipCor {
         pck.merge2beg();
     }
 
-    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int ttl, int tos, int len) {
+    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int len) {
         if (debugger.ipCor4traf) {
-            logger.debug("upd src=" + src + " trg=" + trg + " ttl=" + ttl + " tos=" + tos + " len=" + len);
+            logger.debug("upd src=" + src + " trg=" + trg + " prt=" + prt + " ttl=" + ttl + " tos=" + tos + " len=" + len);
         }
         pck.unMergeBytes(pck.IPsiz);
         pck.putSkip(-pck.IPsiz);
+        if (prt != -1) {
+            pck.putByte(9, prt); // protocol
+            pck.IPprt = prt;
+        }
         if (ttl == -2) {
             int i = pck.IPttl - 1;
             if (i < 0) {

@@ -257,6 +257,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public cfgAceslst packet6fltr = null;
 
     /**
+     * ipv4 source route
+     */
+    public cfgAceslst source4rtr = null;
+
+    /**
+     * ipv6 source route
+     */
+    public cfgAceslst source6rtr = null;
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
@@ -284,6 +294,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no export6policy",
         "vrf definition .*! no packet4filter",
         "vrf definition .*! no packet6filter",
+        "vrf definition .*! no source4route",
+        "vrf definition .*! no source6route",
         "!ipv[4|6] nat .* timeout 300000"
     };
 
@@ -529,6 +541,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, export6pol == null, cmds.tabulator, "export6policy", "" + export6pol);
         cmds.cfgLine(l, packet4fltr == null, cmds.tabulator, "packet4filter", "" + packet4fltr);
         cmds.cfgLine(l, packet6fltr == null, cmds.tabulator, "packet6filter", "" + packet6fltr);
+        cmds.cfgLine(l, source4rtr == null, cmds.tabulator, "source4route", "" + source4rtr);
+        cmds.cfgLine(l, source6rtr == null, cmds.tabulator, "source6route", "" + source6rtr);
         cmds.cfgLine(l, !mdt4, cmds.tabulator, "mdt4", "");
         cmds.cfgLine(l, !mdt6, cmds.tabulator, "mdt6", "");
         l.add(cmds.tabulator + cmds.finish);
@@ -624,6 +638,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("1 2  packet4filter       specify ipv4 packet filter");
         l.add("2 .    <name>            name of access list");
         l.add("1 2  packet6filter       specify ipv6 packet filter");
+        l.add("2 .    <name>            name of access list");
+        l.add("1 2  source4route        specify ipv4 source route");
+        l.add("2 .    <name>            name of access list");
+        l.add("1 2  source6route        specify ipv6 source route");
         l.add("2 .    <name>            name of access list");
         l.add("1 .  propagate-ttl       specify to copy ip ttl to mpls ttl");
         l.add("1 .  mdt4                enable multicast distribution tree for ipv4");
@@ -865,6 +883,28 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.packetFilter = packet6fltr.aceslst;
             return;
         }
+        if (a.equals("source4route")) {
+            source4rtr = cfgAll.aclsFind(cmd.word(), false);
+            if (source4rtr == null) {
+                cmd.error("no such access list");
+                return;
+            }
+            source4rtr.aceslst.myCor = core4;
+            source4rtr.aceslst.myIcmp = icmp4;
+            fwd4.sourceRoute = source4rtr.aceslst;
+            return;
+        }
+        if (a.equals("source6route")) {
+            source6rtr = cfgAll.aclsFind(cmd.word(), false);
+            if (source6rtr == null) {
+                cmd.error("no such access list");
+                return;
+            }
+            source6rtr.aceslst.myCor = core4;
+            source6rtr.aceslst.myIcmp = icmp4;
+            fwd6.sourceRoute = source6rtr.aceslst;
+            return;
+        }
         if (!a.equals("no")) {
             cmd.badCmd();
             return;
@@ -982,6 +1022,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("packet6filter")) {
             packet6fltr = null;
             fwd6.packetFilter = null;
+            return;
+        }
+        if (a.equals("source4route")) {
+            source4rtr = null;
+            fwd4.sourceRoute = null;
+            return;
+        }
+        if (a.equals("source6route")) {
+            source6rtr = null;
+            fwd6.sourceRoute = null;
             return;
         }
         cmd.badCmd();

@@ -396,13 +396,13 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         ntry.labelRem.add(loc.getValue());
         if (lower.segrouLab != null) {
-            ntry.segRoutS = lower.segrouMax;
-            ntry.segRoutB = lower.segrouLab[0].getValue();
+            ntry.segrouSiz = lower.segrouMax;
+            ntry.segrouBeg = lower.segrouLab[0].getValue();
         }
         if (lower.bierLab != null) {
-            ntry.bierS = tabLabelBier.num2bsl(lower.bierLen);
-            ntry.bierR = lower.bierLab.length;
-            ntry.bierB = lower.bierLab[0].getValue();
+            ntry.bierHdr = tabLabelBier.num2bsl(lower.bierLen);
+            ntry.bierSiz = lower.bierLab.length;
+            ntry.bierBeg = lower.bierLab[0].getValue();
         }
     }
 
@@ -442,15 +442,17 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.attribVal = null;
         }
         if (!segRout) {
-            ntry.segRoutI = 0;
-            ntry.segRoutB = 0;
-            ntry.segRoutS = 0;
+            ntry.segrouIdx = 0;
+            ntry.segrouBeg = 0;
+            ntry.segrouOld = 0;
+            ntry.segrouSiz = 0;
         }
         if (!bier) {
-            ntry.bierI = 0;
-            ntry.bierB = 0;
-            ntry.bierR = 0;
-            ntry.bierS = 0;
+            ntry.bierIdx = 0;
+            ntry.bierBeg = 0;
+            ntry.bierOld = 0;
+            ntry.bierSiz = 0;
+            ntry.bierHdr = 0;
         }
         if (removePrivAsOut) {
             rtrBgpUtil.removePrivateAs(ntry.pathSeq);
@@ -461,6 +463,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             rtrBgpUtil.replaceIntList(ntry.pathSet, remoteAs, localAs);
         }
         ntry.srcRtr = null;
+        ntry.oldHop = null;
         ntry.iface = null;
         switch (peerType) {
             case rtrBgpUtil.peerServr:
@@ -504,8 +507,8 @@ public class rtrBgpGroup extends rtrBgpParam {
                 }
                 break;
         }
-        ntry.segRoutI = lower.segrouIdx;
-        ntry.bierI = lower.bierIdx;
+        ntry.segrouIdx = lower.segrouIdx;
+        ntry.bierIdx = lower.bierIdx;
         clearAttribs(ntry);
     }
 

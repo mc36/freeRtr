@@ -145,6 +145,7 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
                 case rtrOlsr.typHna:
                     tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                     ntry.iface = iface.iface;
+                    ntry.srcRtr = conn.peerAddr.copyBytes();
                     ntry.distance = iface.distance;
                     ntry.nextHop = conn.peerAddr.copyBytes();
                     ntry.aggrRtr = orig.copyBytes();

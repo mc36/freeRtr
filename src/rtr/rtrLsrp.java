@@ -566,10 +566,12 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (hop == null) {
                 continue;
             }
-            int metric = spf.getMetric(ntry.rtrId);
             ipFwdIface iface = (ipFwdIface) spf.getNextIfc(ntry.rtrId);
-            int srb = spf.getSegRouB(ntry.rtrId);
-            int brb = spf.getBierB(ntry.rtrId);
+            int met = spf.getMetric(ntry.rtrId);
+            int srb = spf.getSegRouB(ntry.rtrId, false);
+            int sro = spf.getSegRouB(ntry.rtrId, true);
+            int brb = spf.getBierB(ntry.rtrId, false);
+            int bro = spf.getBierB(ntry.rtrId, true);
             List<Integer> label = null;
             if ((srb > 0) && (ntry.segrouIdx > 0)) {
                 label = tabLabel.int2labels(srb + ntry.segrouIdx);
@@ -580,16 +582,19 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             for (int i = 0; i < ntry.network.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.network.get(i).copyBytes();
+                rou.srcRtr = ntry.rtrId.copyBytes();
                 rou.nextHop = hop.copyBytes();
-                rou.metric += metric;
+                rou.metric += met;
                 rou.distance = distance;
                 rou.iface = iface;
                 rou.labelRem = label;
-                rou.segRoutI = ntry.segrouIdx;
-                rou.segRoutB = srb;
-                rou.bierI = ntry.bierIdx;
-                rou.bierB = brb;
-                rou.bierS = tabLabelBier.num2bsl(ntry.bierLen);
+                rou.segrouIdx = ntry.segrouIdx;
+                rou.segrouBeg = srb;
+                rou.segrouOld = sro;
+                rou.bierIdx = ntry.bierIdx;
+                rou.bierBeg = brb;
+                rou.bierOld = bro;
+                rou.bierHdr = tabLabelBier.num2bsl(ntry.bierLen);
                 tab1.add(tabRoute.addType.better, rou, false, true);
             }
         }
