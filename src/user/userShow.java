@@ -672,7 +672,7 @@ public class userShow {
                 rdr.putStrTab(ifc.ethtyp.getShProtos());
                 rdr.putStrTab(ifc.ethtyp.getShSizes());
                 rdr.putStrTab(ifc.ethtyp.getShClasses());
-                rdr.putStrArr(ifc.getShIntTxt(10));
+                rdr.putStrArr(ifc.getShIntTxt(2));
                 return null;
             }
             if (a.equals("ethertypes")) {
