@@ -1147,6 +1147,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no mtu",
         "interface .*! no macaddr",
         "interface .*! no template",
+        "interface .*! autostate",
         "interface .*! encapsulation dot1q",
         "interface .*! no bandwidth",
         "interface .*! no lldp enable",
@@ -1188,6 +1189,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         // mpls
         "interface .*! no mpls enable",
         "interface .*! no mpls label-security",
+        "interface .*! no mpls redirection",
         "interface .*! no mpls ldp4",
         "interface .*! no mpls ldp6",
         "interface .*! no mpls label4in",
@@ -1470,6 +1472,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no description.*",
         "interface .*! vrf forwarding.*",
         "interface .*! no vrf forwarding.*",
+        "interface .*! autostate.*",
+        "interface .*! no autostate.*",
         "interface .*! shutdown.*",
         "interface .*! no shutdown.*"
     };
@@ -3506,9 +3510,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 break;
             case ldpP2p:
                 tunLdpP2p = new clntMplsLdpP2p();
-                tunLdpP2p.vrf = tunVrf;
+                tunLdpP2p.fwdCor = tunVrf.getFwd(tunTrg);
                 tunLdpP2p.trgId = tunKey;
-                tunLdpP2p.target = "" + tunTrg;
+                tunLdpP2p.target = tunTrg.copyBytes();
                 tunLdpP2p.expr = tunTOS;
                 tunLdpP2p.ttl = tunTTL;
                 tunLdpP2p.setUpper(ethtyp);
@@ -4579,6 +4583,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         cmds.cfgLine(l, mplsPack == null, cmds.tabulator, "mpls enable", "");
         if (mplsPack != null) {
             cmds.cfgLine(l, !mplsPack.security, cmds.tabulator, "mpls label-security", "");
+            cmds.cfgLine(l, mplsPack.redirect == null, cmds.tabulator, "mpls redirection", "" + mplsPack.redirect);
         }
         cmds.cfgLine(l, mplsLdp4 == null, cmds.tabulator, "mpls ldp4", rtrLdpIface.getLdpCfg(mplsLdp4, this));
         cmds.cfgLine(l, mplsLdp6 == null, cmds.tabulator, "mpls ldp6", rtrLdpIface.getLdpCfg(mplsLdp6, this));
@@ -4673,6 +4678,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         } else {
             l.add(cmds.tabulator + "template " + template.name);
         }
+        cmds.cfgLine(l, ethtyp.forcedUP, cmds.tabulator, "autostate", "");
         cmds.cfgLine(l, !ethtyp.forcedDN, cmds.tabulator, "shutdown", "");
         cmds.cfgLine(l, !ethtyp.logStateChg, cmds.tabulator, "log-link-change", "");
         l.add(cmds.tabulator + cmds.finish);
@@ -4701,6 +4707,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 2   carrier-delay                 log link state changes");
         l.add("2 .     <num>                       time before bringing link up");
         l.add("1 .   shutdown                      administratively disable interface");
+        l.add("1 .   autostate                     administratively enable interface");
         l.add("1 2   mtu                           change interface maximum transmission unit");
         l.add("2 .     <num>                       physical layer bytes allowed");
         l.add("1 2   macaddr                       change interface mac address");
@@ -4938,6 +4945,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 2   mpls                          multiprotocol label switching config commands");
         l.add("2 .     enable                      enable/disable packet processing");
         l.add("2 .     label-security              enable/disable security checks");
+        l.add("2 3     redirection                 send packets out on different interface");
+        l.add("3 .       <name>                    name of interface");
         l.add("2 3,.   ldp4                        enable/disable ldp ipv4 discovery");
         l.add("3 .       [name]                    name of interface");
         l.add("2 3,.   ldp6                        enable/disable ldp ipv6 discovery");
@@ -5031,6 +5040,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("shutdown")) {
             ethtyp.forcedDN = true;
+            ethtyp.propagateState();
+            return;
+        }
+        if (a.equals("autostate")) {
+            ethtyp.forcedUP = false;
             ethtyp.propagateState();
             return;
         }
@@ -5596,6 +5610,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("shutdown")) {
             ethtyp.forcedDN = false;
+            ethtyp.propagateState();
+            return;
+        }
+        if (a.equals("autostate")) {
+            ethtyp.forcedUP = true;
             ethtyp.propagateState();
             return;
         }
@@ -6753,6 +6772,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             mplsPack.security = true;
             return;
         }
+        if (s.equals("redirection")) {
+            if (mplsPack == null) {
+                return;
+            }
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such interface");
+                return;
+            }
+            mplsPack.redirect = ntry.mplsPack;
+            return;
+        }
         if (s.equals("ldp4")) {
             setup2ldp(4, cmd);
             return;
@@ -6840,6 +6871,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             mplsPack.security = false;
+            return;
+        }
+        if (s.equals("redirection")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.redirect = null;
             return;
         }
         if (s.equals("ldp4")) {

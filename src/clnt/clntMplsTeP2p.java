@@ -90,6 +90,8 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
 
     private ipFwdTrfng trfEng;
 
+    private state.states lastStat = state.states.down;
+    
     public String toString() {
         return "p2pte to " + target;
     }
@@ -106,7 +108,7 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
     }
 
     public state.states getState() {
-        return state.states.up;
+        return lastStat;
     }
 
     public void closeDn() {
@@ -249,10 +251,8 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
             }
             bits.sleep(1000);
         }
-        if (debugger.clntMplsTeTraf) {
-            logger.debug("session up");
-        }
         fwdCor.routerStaticChg();
+        protStat(state.states.up);
         for (int cnt = 0;; cnt++) {
             if (!working) {
                 return;
@@ -273,11 +273,23 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         }
     }
 
+    private void protStat(state.states st) {
+        if (st == lastStat) {
+            return;
+        }
+        if (debugger.clntMplsTeTraf) {
+            logger.debug("session " + st);
+        }
+        lastStat = st;
+        upper.setState(st);
+    }
+
     private void clearState() {
         if (trfEng != null) {
             fwdCor.tetunDel(trfEng);
         }
         trfEng = null;
+        protStat(state.states.down);
     }
 
 }

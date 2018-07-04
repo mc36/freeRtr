@@ -669,7 +669,9 @@ public class userShow {
                 rdr.putStrArr(ifc.getShIntTxt(1));
                 rdr.putStrTab(doShowRates(ifc.ethtyp.getHistory()));
                 rdr.putStrTab(ifc.ethtyp.getShTypes());
+                rdr.putStrTab(ifc.ethtyp.getShProtos());
                 rdr.putStrTab(ifc.ethtyp.getShSizes());
+                rdr.putStrTab(ifc.ethtyp.getShClasses());
                 rdr.putStrArr(ifc.getShIntTxt(10));
                 return null;
             }
@@ -681,15 +683,20 @@ public class userShow {
                 rdr.putStrTab(ifc.ethtyp.getShSizes());
                 return null;
             }
+            if (a.equals("trafficclasses")) {
+                rdr.putStrTab(ifc.ethtyp.getShClasses());
+                return null;
+            }
+            if (a.equals("protocols")) {
+                rdr.putStrTab(ifc.ethtyp.getShProtos());
+                return null;
+            }
             if (a.equals("counters")) {
                 rdr.putStrArr(ifc.getShIntTxt(1));
                 return null;
             }
             if (a.length() < 1) {
                 rdr.putStrArr(ifc.getShIntTxt(1));
-                rdr.putStrTab(doShowRates(ifc.ethtyp.getHistory()));
-                rdr.putStrTab(ifc.ethtyp.getShTypes());
-                rdr.putStrTab(ifc.ethtyp.getShSizes());
                 return null;
             }
             doShowHistory(a, ifc.ethtyp.getHistory());

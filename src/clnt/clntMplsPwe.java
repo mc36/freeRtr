@@ -105,6 +105,8 @@ public class clntMplsPwe implements Runnable, ifcDn {
 
     private packLdpPwe pweR;
 
+    private state.states lastStat = state.states.down;
+
     public String toString() {
         return "pwe " + fwdTrg + " " + vcid;
     }
@@ -117,7 +119,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
     }
 
     public state.states getState() {
-        return state.states.up;
+        return lastStat;
     }
 
     public void closeDn() {
@@ -300,9 +302,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
             }
             bits.sleep(1000);
         }
-        if (debugger.clntPweTraf) {
-            logger.debug("session up");
-        }
+        protStat(state.states.up);
         if (ctrlWrd) {
             labelL.setFwdPwe(3, fwdCor, upper, 4, getL2append());
         } else {
@@ -331,9 +331,17 @@ public class clntMplsPwe implements Runnable, ifcDn {
             }
             bits.sleep(1000);
         }
-        if (debugger.clntPweTraf) {
-            logger.debug("session down");
+    }
+
+    private void protStat(state.states st) {
+        if (st == lastStat) {
+            return;
         }
+        if (debugger.clntPweTraf) {
+            logger.debug("session " + st);
+        }
+        lastStat = st;
+        upper.setState(st);
     }
 
     private void clearState() {
@@ -352,6 +360,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
         labelL = null;
         pweL = null;
         pweR = null;
+        protStat(state.states.down);
     }
 
 }

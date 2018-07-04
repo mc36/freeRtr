@@ -542,6 +542,8 @@ public class userExec {
         hl.add("4 .          counters            counters");
         hl.add("4 .          ethertypes          ethernet types");
         hl.add("4 .          packetsizes         packet sizes");
+        hl.add("4 .          protocols           protocol numbers");
+        hl.add("4 .          trafficclasses      traffic classes");
         hl.add("2 3,.    tracker                 tracker status");
         hl.add("3 .        [name]                name of tracker");
         hl.add("2 3,.    mtracker                mtracker status");

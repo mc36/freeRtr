@@ -5,7 +5,10 @@ import addr.addrType;
 import cfg.cfgAll;
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabQos;
@@ -36,9 +39,14 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public long forcedBW = 0;
 
     /**
-     * forced shutdown
+     * forced down
      */
     public boolean forcedDN = false;
+
+    /**
+     * forced up
+     */
+    public boolean forcedUP = false;
 
     /**
      * forced mac address
@@ -113,6 +121,14 @@ public class ifcEthTyp implements Runnable, ifcUp {
     private final counter cntr;
 
     private final counter[] sizes;
+
+    private final counter[] protos;
+
+    private final counter[] clsCos;
+
+    private final counter[] clsExp;
+
+    private final counter[] clsPrc;
 
     private final history hstry;
 
@@ -192,6 +208,9 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (forcedDN) {
             return state.states.admin;
         }
+        if (forcedUP) {
+            return state.states.up;
+        }
         return lastState;
     }
 
@@ -202,7 +221,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         cntr.stateChange(stat);
         lastState = stat;
-        if (forcedDN) {
+        if (forcedDN || forcedUP) {
             return;
         }
         propagateState();
@@ -213,6 +232,9 @@ public class ifcEthTyp implements Runnable, ifcUp {
      */
     public void propagateState() {
         state.states s = lastState;
+        if (forcedUP) {
+            s = state.states.up;
+        }
         if (forcedDN) {
             s = state.states.admin;
         }
@@ -298,8 +320,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
                     if (pck == null) {
                         break;
                     }
-                    cntr.tx(pck);
-                    sizes[pktsiz2bucket(pck.dataSize())].tx(pck);
+                    pktAccount(pck);
                     lower.sendPack(pck);
                 }
                 if (lst < qosOut.lastLeft) {
@@ -325,8 +346,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             if ((macSec != null) && ((tim - sec) > 5000)) {
                 packHolder pck = macSec.doSync();
                 if (pck != null) {
-                    cntr.tx(pck);
-                    sizes[pktsiz2bucket(pck.dataSize())].tx(pck);
+                    pktAccount(pck);
                     lower.sendPack(pck);
                 }
                 sec = tim;
@@ -379,8 +399,18 @@ public class ifcEthTyp implements Runnable, ifcUp {
         totCntr = new counter();
         cntr = new counter();
         sizes = new counter[8];
+        clsCos = new counter[8];
+        clsExp = new counter[8];
+        clsPrc = new counter[8];
         for (int i = 0; i < sizes.length; i++) {
             sizes[i] = new counter();
+            clsCos[i] = new counter();
+            clsExp[i] = new counter();
+            clsPrc[i] = new counter();
+        }
+        protos = new counter[256];
+        for (int i = 0; i < protos.length; i++) {
+            protos[i] = new counter();
         }
         hstry = new history();
         defUpper = new ifcEthTypET(null, null);
@@ -500,8 +530,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             }
         }
         if (qosOut == null) {
-            cntr.tx(pck);
-            sizes[pktsiz2bucket(pck.dataSize())].tx(pck);
+            pktAccount(pck);
             lower.sendPack(pck);
             return;
         }
@@ -798,12 +827,20 @@ public class ifcEthTyp implements Runnable, ifcUp {
     }
 
     private int pktsiz2bucket(int siz) {
-        int i = siz >>> 8;
+        int i = (siz & 0xffffff) >>> 8;
         if (i > 7) {
             return 7;
-        } else {
-            return i;
         }
+        return i;
+    }
+
+    private void pktAccount(packHolder pck) {
+        cntr.tx(pck);
+        sizes[pktsiz2bucket(pck.dataSize())].tx(pck);
+        clsCos[pck.ETHcos & 7].tx(pck);
+        clsExp[pck.MPLSexp & 7].tx(pck);
+        clsPrc[(pck.IPtos >>> 5) & 7].tx(pck);
+        protos[pck.IPprt & 0xff].tx(pck);
     }
 
     /**
@@ -816,6 +853,45 @@ public class ifcEthTyp implements Runnable, ifcUp {
         String[] heds = {"0-255", "256-511", "512-767", "768-1023", "1024-1279", "1280-1535", "1536-1791", "1792-65535",};
         for (int i = 0; i < sizes.length; i++) {
             l.add(heds[i] + "|" + sizes[i].getShPsum() + "|" + sizes[i].getShBsum());
+        }
+        return l;
+    }
+
+    /**
+     * get show results
+     *
+     * @return table
+     */
+    public userFormat getShClasses() {
+        userFormat l = new userFormat("|", "class|cos|exp|prec|cos|exp|prec");
+        for (int i = 0; i < clsPrc.length; i++) {
+            l.add(i + "|" + getShClasses(clsCos[i], clsExp[i], clsPrc[i]));
+        }
+        return l;
+    }
+
+    private String getShClasses(counter cos, counter exp, counter prc) {
+        return cos.packTx + "|" + exp.packTx + "|" + prc.packTx + "|" + cos.byteTx + "|" + exp.byteTx + "|" + prc.byteTx;
+    }
+
+    /**
+     * get show results
+     *
+     * @return table
+     */
+    public userFormat getShProtos() {
+        List<ifcEthTypSorter> r = new ArrayList<ifcEthTypSorter>();
+        for (int i = 0; i < protos.length; i++) {
+            r.add(new ifcEthTypSorter(i, protos[i]));
+        }
+        Collections.sort(r, r.get(0));
+        userFormat l = new userFormat("|", "proto|pack|byte");
+        for (int i = 0; i < protos.length; i++) {
+            String a = r.get(protos.length - i - 1).dump();
+            if (a == null) {
+                continue;
+            }
+            l.add(a);
         }
         return l;
     }
@@ -927,6 +1003,30 @@ public class ifcEthTyp implements Runnable, ifcUp {
      */
     public counter getTotalCounter() {
         return totCntr.plus(cntr);
+    }
+
+}
+
+class ifcEthTypSorter implements Comparator<ifcEthTypSorter> {
+
+    public final int key;
+
+    public final counter cnt;
+
+    public ifcEthTypSorter(int k, counter c) {
+        key = k;
+        cnt = c;
+    }
+
+    public String dump() {
+        if (cnt.packTx == 0) {
+            return null;
+        }
+        return key + "|" + cnt.packTx + "|" + cnt.byteTx;
+    }
+
+    public int compare(ifcEthTypSorter o1, ifcEthTypSorter o2) {
+        return o1.cnt.compare(o1.cnt, o2.cnt);
     }
 
 }

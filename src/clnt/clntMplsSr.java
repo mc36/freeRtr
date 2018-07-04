@@ -213,7 +213,7 @@ public class clntMplsSr implements Runnable, ifcDn {
             } catch (Exception e) {
                 logger.traceback(e);
             }
-            notif.sleep(10000);
+            notif.sleep(5000);
         }
     }
 

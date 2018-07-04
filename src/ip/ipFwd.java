@@ -960,8 +960,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
-        pck.ETHcos = (pck.IPtos >>> 5) & 7;
-        pck.MPLSexp = pck.ETHcos;
         lower.cntr.tx(pck);
         if (lower.filterOut != null) {
             if (!lower.filterOut.matches(false, true, pck)) {
@@ -1548,6 +1546,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (netflow != null) {
             netflow.session.doPack(pck, true);
         }
+        pck.ETHcos = (pck.IPtos >>> 5) & 7;
+        pck.MPLSexp = pck.ETHcos;
         if (natCfg.size() > 0) {
             natCfg.packParse(false, true, true, pck);
             tabNatTraN natT = tabNatTraN.fromPack(pck);

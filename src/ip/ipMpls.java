@@ -126,6 +126,11 @@ public class ipMpls implements ifcUp {
      */
     public boolean security;
 
+    /**
+     * redirect packets
+     */
+    public ipMpls redirect;
+
     private ifcDn lower = new ifcNull();
 
     private counter cntr = new counter();
@@ -158,6 +163,10 @@ public class ipMpls implements ifcUp {
         fwdE = ether;
     }
 
+    public String toString() {
+        return "" + lower;
+    }
+
     /**
      * register to ethtyp
      */
@@ -182,6 +191,11 @@ public class ipMpls implements ifcUp {
      * @param pck packet to send
      */
     public void send2eth(packHolder pck) {
+        if (redirect != null) {
+            redirect.cntr.tx(pck);
+            redirect.lower.sendPack(pck);
+            return;
+        }
         cntr.tx(pck);
         lower.sendPack(pck);
     }

@@ -8435,3 +8435,13 @@ todo: autoroute with sr, bier support
 todo: bgp sr-policy afi
 todo: interface autostate command
 todo: ethtyp prec/exp/cos and protocol accounting
+---------------------------------- 2018-07-03 19:36:23
+no todo: ethtyp prec/exp/cos and protocol accounting
+no todo: interface autostate command
+no todo: mpls rx/tx only, sending-interface
+no todo: tunnel templates, more srv6 like modes with ipip, gre
+no todo: remove states where possible from cfgIfc's = "" + tunTrg;
+no todo: tunnel states for bier, te, pwe, ipsec, l2tp
+no todo: test cases for srmpls, srext
+todo: test cases for srmpls, srext, mpls redir
+todo: servers for ipip, gre, mplsudp, mplsip

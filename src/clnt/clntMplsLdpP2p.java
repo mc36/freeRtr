@@ -3,13 +3,12 @@ package clnt;
 import addr.addrEmpty;
 import addr.addrIP;
 import addr.addrType;
-import cfg.cfgVrf;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import ip.ipFwd;
 import pack.packHolder;
-import user.userTerminal;
+import tab.tabRouteEntry;
 import util.bits;
 import util.counter;
 import util.debugger;
@@ -29,14 +28,14 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
     public ifcUp upper = new ifcNull();
 
     /**
-     * target of tunnel
+     * forwarder to use
      */
-    public String target = null;
+    public ipFwd fwdCor;
 
     /**
-     * vrf of target
+     * target of tunnel
      */
-    public cfgVrf vrf = null;
+    public addrIP target = null;
 
     /**
      * tunnel id
@@ -60,12 +59,10 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
 
     private boolean working = true;
 
-    private ipFwd fwdCor;
-
-    private addrIP fwdTrg;
+    private state.states lastStat = state.states.down;
 
     public String toString() {
-        return "p2pldp to " + fwdTrg;
+        return "p2pldp to " + target;
     }
 
     public addrType getHwAddr() {
@@ -76,7 +73,7 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
     }
 
     public state.states getState() {
-        return state.states.up;
+        return lastStat;
     }
 
     public void closeDn() {
@@ -105,12 +102,6 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
     }
 
     public void sendPack(packHolder pck) {
-        if (fwdCor == null) {
-            return;
-        }
-        if (fwdTrg == null) {
-            return;
-        }
         pck.getSkip(2);
         cntr.tx(pck);
         if (expr >= 0) {
@@ -119,7 +110,7 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
         if (ttl >= 0) {
             pck.MPLSttl = ttl;
         }
-        fwdCor.mplsTxPack(fwdTrg, pck, false);
+        fwdCor.mplsTxPack(target, pck, false);
     }
 
     /**
@@ -160,25 +151,41 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
     }
 
     private void workDoer() {
-        fwdTrg = userTerminal.justResolv(target, 0);
-        if (fwdTrg == null) {
-            return;
-        }
-        fwdCor = vrf.getFwd(fwdTrg);
-        if (debugger.clntMplsLdpTraf) {
-            logger.debug("session up");
-        }
         for (;;) {
             if (!working) {
                 return;
             }
             bits.sleep(1000);
+            tabRouteEntry<addrIP> ntry = fwdCor.actualU.route(target);
+            if (ntry == null) {
+                protStat(state.states.down);
+                continue;
+            }
+            if (ntry.labelRem == null) {
+                protStat(state.states.down);
+                continue;
+            }
+            if (ntry.labelRem.size() < 1) {
+                protStat(state.states.down);
+                continue;
+            }
+            protStat(state.states.up);
         }
     }
 
+    private void protStat(state.states st) {
+        if (st == lastStat) {
+            return;
+        }
+        if (debugger.clntMplsLdpTraf) {
+            logger.debug("session " + st);
+        }
+        lastStat = st;
+        upper.setState(st);
+    }
+
     private void clearState() {
-        fwdCor = null;
-        fwdTrg = null;
+        protStat(state.states.down);
     }
 
 }
