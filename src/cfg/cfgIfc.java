@@ -1161,6 +1161,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no carrier-delay",
         "interface .*! no udld enable",
         "interface .*! no random",
+        "interface .*! enforce-mtu none",
         "interface .*! no macsec",
         "interface .*! no monitor-session",
         "interface .*! no monitor-buffer",
@@ -4483,6 +4484,17 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         cmds.cfgLine(l, random == null, cmds.tabulator, "random", "" + ifcRandom.getCfg(random));
         cmds.cfgLine(l, ethtyp.macSec == null, cmds.tabulator, "macsec", "" + ethtyp.macSec);
+        s = "none";
+        if (ethtyp.mtuCheckRx) {
+            s = "in";
+        }
+        if (ethtyp.mtuCheckTx) {
+            s = "out";
+        }
+        if (ethtyp.mtuCheckRx && ethtyp.mtuCheckTx) {
+            s = "both";
+        }
+        l.add(cmds.tabulator + "enforce-mtu " + s);
         if (pppoeC == null) {
             l.add(cmds.tabulator + "no p2poe client");
         } else {
@@ -4996,6 +5008,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("4 5         <num>                   maximum packet size");
         l.add("5 6           <num>                 minimum interval");
         l.add("6 .             <num>               maximum interval");
+        l.add("1 2   enforce-mtu                   enfore mtu on packets");
+        l.add(".2 .    in                          only in ingress");
+        l.add(".2 .    out                         only in egress");
+        l.add(".2 .    both                        check in both directions");
+        l.add("2 .     none                        not check at all");
         l.add("1 2   macsec                        mac security protocol commands");
         l.add("2 3,.   <name>                      name of ipsec profile");
         l.add("3 .       <num>                     ethertype to use");
@@ -5321,6 +5338,25 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ethtyp.addET(random.ethtyp, "random", random);
             ethtyp.updateET(random.ethtyp, random);
             random.startWork();
+            return;
+        }
+        if (a.equals("enforce-mtu")) {
+            a = cmd.word();
+            ethtyp.mtuCheckRx = false;
+            ethtyp.mtuCheckTx = false;
+            if (a.equals("in")) {
+                ethtyp.mtuCheckRx = true;
+                return;
+            }
+            if (a.equals("out")) {
+                ethtyp.mtuCheckTx = true;
+                return;
+            }
+            if (a.equals("both")) {
+                ethtyp.mtuCheckRx = true;
+                ethtyp.mtuCheckTx = true;
+                return;
+            }
             return;
         }
         if (a.equals("macsec")) {
@@ -5726,6 +5762,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ethtyp.delET(random.ethtyp);
             random.stopWork();
             random = null;
+            return;
+        }
+        if (a.equals("enforce-mtu")) {
+            ethtyp.mtuCheckRx = false;
+            ethtyp.mtuCheckTx = false;
             return;
         }
         if (a.equals("macsec")) {

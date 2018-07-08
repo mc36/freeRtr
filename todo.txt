@@ -1,4 +1,4 @@
-test cases for srmpls, srext, mpls redir
+test cases for "srmpls", "srext", anycast prefix-sid, "mpls redir"
 servers for ipip, gre, mplsudp, mplsip
 autoroute with sr, bier support
 bgp sr-policy afi

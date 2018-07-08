@@ -29,6 +29,16 @@ import util.state;
 public class ifcEthTyp implements Runnable, ifcUp {
 
     /**
+     * strict mtu check ingress
+     */
+    public boolean mtuCheckRx = false;
+
+    /**
+     * strict mtu check egress
+     */
+    public boolean mtuCheckTx = false;
+
+    /**
      * forced mtu size
      */
     public int forcedMTU = 0;
@@ -47,7 +57,6 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * forced up
      */
     public boolean forcedUP = false;
-
     /**
      * forced mac address
      */
@@ -498,6 +507,12 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @param pck packet to send
      */
     public void doTxPack(packHolder pck) {
+        if (mtuCheckTx) {
+            if (pck.dataSize() > getMTUsize()) {
+                cntr.drop(pck, counter.reasons.fragment);
+                return;
+            }
+        }
         if (lastState != state.states.up) {
             cntr.drop(pck, counter.reasons.notUp);
             return;
@@ -541,6 +556,12 @@ public class ifcEthTyp implements Runnable, ifcUp {
 
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
+        if (mtuCheckRx) {
+            if (pck.dataSize() > getMTUsize()) {
+                cntr.drop(pck, counter.reasons.fragment);
+                return;
+            }
+        }
         sizes[pktsiz2bucket(pck.dataSize())].rx(pck);
         if (macSec != null) {
             if (macSec.doDecrypt(pck)) {

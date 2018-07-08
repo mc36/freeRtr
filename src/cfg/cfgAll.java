@@ -669,6 +669,21 @@ public class cfgAll {
     public static boolean ftpPassive = true;
 
     /**
+     * unreachable last
+     */
+    public static long unreachLst = 0;
+
+    /**
+     * unreachable interval
+     */
+    public static int unreachInt = 0;
+
+    /**
+     * ruin remote pmtud
+     */
+    public static boolean ruinPmtuD = false;
+
+    /**
      * ipv4 checksum tx
      */
     public static boolean ipv4ChecksumTx = true;
@@ -826,6 +841,8 @@ public class cfgAll {
         "!no client mail-password",
         "!no client prefer-ipv6",
         "!client ftp-passive",
+        "!client unreach-interval 0",
+        "!no client punish-pmtud",
         "!client ipv4-checksum both",
         "!client icmp4-checksum both",
         "!client icmp6-checksum both",
@@ -2896,6 +2913,8 @@ public class cfgAll {
             l.add("client name-proxy " + nameServerProxy.name);
         }
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
+        l.add("client unreach-interval " + unreachInt);
+        cmds.cfgLine(l, !ruinPmtuD, "", "client punish-pmtud", "");
         l.add("client ipv4-checksum " + rxtx2string(ipv4ChecksumRx, ipv4ChecksumTx));
         l.add("client icmp4-checksum " + rxtx2string(icmp4ChecksumRx, icmp4ChecksumTx));
         l.add("client icmp6-checksum " + rxtx2string(icmp6ChecksumRx, icmp6ChecksumTx));

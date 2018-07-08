@@ -8445,3 +8445,6 @@ no todo: tunnel states for bier, te, pwe, ipsec, l2tp
 no todo: test cases for srmpls, srext
 todo: test cases for srmpls, srext, mpls redir
 todo: servers for ipip, gre, mplsudp, mplsip
+---------------------------------- 2018-07-07 12:33:28
+no todo: test cases for srmpls, srext, mpls redir
+todo: test cases for "srmpls", "srext", anycast prefix-sid, "mpls redir"

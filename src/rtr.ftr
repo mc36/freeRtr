@@ -1510,7 +1510,7 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-todo: test cases for srmpls, srext, mpls redir
+todo: test cases for "srmpls", "srext", anycast prefix-sid, "mpls redir"
 todo: servers for ipip, gre, mplsudp, mplsip
 todo: autoroute with sr, bier support
 todo: bgp sr-policy afi

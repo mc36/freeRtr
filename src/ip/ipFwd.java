@@ -2,6 +2,7 @@ package ip;
 
 import addr.addrIP;
 import addr.addrPrefix;
+import cfg.cfgAll;
 import clnt.clntMplsTeP2p;
 import clnt.clntNetflow;
 import ifc.ifcEthTyp;
@@ -1119,7 +1120,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
 
     private void protoSend(ipFwdIface lower, packHolder pck) {
         if ((pck.IPmf) || (pck.IPfrg != 0)) {
-            lower.cntr.drop(pck, counter.reasons.fragment);
+            if (cfgAll.ruinPmtuD) {
+                doDrop(pck, lower, counter.reasons.fragment);
+            } else {
+                lower.cntr.drop(pck, counter.reasons.fragment);
+            }
             return;
         }
         if (debugger.ipFwdTraf) {
@@ -1283,6 +1288,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void doDrop(packHolder pck, ipFwdIface lower, counter.reasons reason) {
         cntr.drop(pck, reason);
+        if (cfgAll.unreachInt > 0) {
+            long tim = bits.getTime();
+            if ((tim - cfgAll.unreachLst) < cfgAll.unreachInt) {
+                return;
+            }
+            cfgAll.unreachLst = tim;
+        }
         if (debugger.ipFwdTraf) {
             logger.debug("drop " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " reason=" + counter.reason2string(reason));
         }
