@@ -165,6 +165,8 @@ vrf definition dn42
  rd 65535:42
  rt-import 65535:42
  rt-export 65535:42
+ source4route all
+ source6route all
  mdt4
  mdt6
  exit

@@ -29,6 +29,7 @@ import clnt.clntVxlan;
 import clnt.clntGeneve;
 import clnt.clntLisp;
 import clnt.clntMplsBier;
+import clnt.clntMplsExp;
 import clnt.clntMplsTrg;
 import clnt.clntMplsUdp;
 import clnt.clntSlaac;
@@ -586,6 +587,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntMplsPwe tunPweOmpls;
 
     /**
+     * exp bundle tunnel handler
+     */
+    public clntMplsExp tunExpBun;
+
+    /**
      * sr over mpls tunnel handler
      */
     public clntMplsSr tunSrMpls;
@@ -1053,7 +1059,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          */
         pweOmpls,
         /**
-         * sr over mpls tunnel interface
+         * exp bundle tunnel interface
+         */
+        expBun,
+        /**
+         * sr over srh tunnel interface
          */
         srMpls,
         /**
@@ -1704,6 +1714,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "l2tp3";
             case pweOmpls:
                 return "pweompls";
+            case expBun:
+                return "expbun";
             case srMpls:
                 return "srmpls";
             case srExt:
@@ -1811,6 +1823,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("pweompls")) {
             return tunnelType.pweOmpls;
+        }
+        if (s.equals("expbun")) {
+            return tunnelType.expBun;
         }
         if (s.equals("srmpls")) {
             return tunnelType.srMpls;
@@ -3039,6 +3054,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunPweOmpls.workStop();
             tunPweOmpls = null;
         }
+        if (tunExpBun != null) {
+            tunExpBun.workStop();
+            tunExpBun = null;
+        }
         if (tunSrMpls != null) {
             tunSrMpls.workStop();
             tunSrMpls = null;
@@ -3426,6 +3445,19 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPweOmpls.setUpper(ethtyp);
                 tunPweOmpls.workStart();
                 lower = tunPweOmpls;
+                break;
+            case expBun:
+                if (tunFQDN == null) {
+                    return true;
+                }
+                tunExpBun = new clntMplsExp();
+                tunExpBun.setTargets(tunFQDN);
+                tunFQDN = tunExpBun.getTargets();
+                tunExpBun.expr = tunTOS;
+                tunExpBun.ttl = tunTTL;
+                tunExpBun.setUpper(ethtyp);
+                tunExpBun.workStart();
+                lower = tunExpBun;
                 break;
             case srMpls:
                 if (tunFQDN == null) {
@@ -4873,6 +4905,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       inlsp                     inlsp encapsulation");
         l.add("3 .       skip                      skip encapsulation");
         l.add("3 .       pweompls                  pseudowire over mpls encapsulation");
+        l.add("3 .       expbun                    mpls exp bundle tunnel");
         l.add("3 .       srmpls                    segment routing te over mpls tunnel");
         l.add("3 .       srext                     segment routing te over exthdr tunnel");
         l.add("3 .       p2pte                     point to point mpls te tunnel");

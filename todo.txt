@@ -1,9 +1,8 @@
-test cases for "srmpls", "srext", anycast prefix-sid, "mpls redir"
+test cases for "srmpls", "srext", anycast prefix-sid, "mpls redir", "expbun"
 servers for ipip, gre, mplsudp, mplsip
 autoroute with sr, bier support
 bgp sr-policy afi
 bgp vpns over sr
-exp bundle
 recursive static route
 pipeline properties, terminal autoresize
 yang over netconf, proto over grpc
