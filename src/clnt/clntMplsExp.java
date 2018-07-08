@@ -111,6 +111,11 @@ public class clntMplsExp implements ifcDn {
     public void workStop() {
     }
 
+    /**
+     * set targets
+     *
+     * @param trgs targets
+     */
     public void setTargets(String trgs) {
         for (int i = 0; i < lowers.length; i++) {
             lowers[i] = null;
@@ -143,6 +148,11 @@ public class clntMplsExp implements ifcDn {
         }
     }
 
+    /**
+     * get targets
+     *
+     * @return targets
+     */
     public String getTargets() {
         String a = "";
         for (int i = 0; i < lowers.length; i++) {
