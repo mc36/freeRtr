@@ -744,6 +744,8 @@ qc pass: targeted ldp password
 qc pass: ingress label filtering with ldp
 qc pass: egress label filtering with ldp
 qc pass: vrf label filtering with ldp
+qc pass: mpls expbundle
+qc pass: mpls redirection
 qc pass: nsh over ethernet
 qc pass: nsh over ethernet vlan
 qc pass: nsh over ethernet bridge
@@ -799,15 +801,17 @@ qc pass: ethernet over l2tp3 pwhe
 qc pass: ppp over mpls pwhe
 qc pass: ethernet over mpls pwhe
 qc pass: ethernet over mpls pwhe with cw
-qc pass: segment routing in chain
-qc pass: segment routing in star
-qc pass: te over segment routing
-qc pass: pwe over segment routing
-qc pass: bgp over segment routing
-qc pass: bgp with labels over segment routing
-qc pass: vpns over bgp over segment routing
-qc pass: othervpns over bgp over segment routing
-qc pass: segment routing over broadcast subnet
+qc pass: sr in chain
+qc pass: sr in star
+qc pass: te over sr
+qc pass: pwe over sr
+qc pass: bgp over sr
+qc pass: bgp with labels over sr
+qc pass: vpns over bgp over sr
+qc pass: othervpns over bgp over sr
+qc pass: sr over broadcast subnet
+qc pass: sr te over mpls
+qc pass: sr te over exthdr
 qc pass: te over ethernet
 qc pass: te over ethernet vlan
 qc pass: te over ethernet bridge
@@ -1212,7 +1216,7 @@ qc pass: bgp csc othervpn with ldp
 qc pass: unicast+mspw over bgp
 qc pass: unicast+mspw over bgp with soft-reconfig
 qc pass: unicast+mspw over bgp with additional path
-qc pass: bgp with segment routing
+qc pass: bgp with sr
 qc pass: ebgp vpn client
 qc pass: ibgp vpn client
 qc pass: ebgp vpn client with soft-reconfig
@@ -1298,9 +1302,9 @@ qc pass: isis external multi-topology
 qc pass: isis multi-topology with te
 qc pass: isis chain of broadcast nets with multi-topology
 qc pass: isis broadcast subnet with multi-topology
-qc pass: isis with segment routing
-qc pass: isis inter-level with segment routing
-qc pass: isis multi-topology with segment routing
+qc pass: isis with sr
+qc pass: isis inter-level with sr
+qc pass: isis multi-topology with sr
 qc pass: isis prefix withdraw
 qc pass: isis change in metric
 qc pass: isis aggregate
@@ -1325,7 +1329,7 @@ qc pass: lsrp authentication
 qc pass: lsrp ssh encryption
 qc pass: lsrp tls encryption
 qc pass: lsrp peer template
-qc pass: lsrp with segment routing
+qc pass: lsrp with sr
 qc pass: lsrp prefix withdraw
 qc pass: lsrp change in metric
 qc pass: lsrp change in tag
@@ -1398,8 +1402,8 @@ qc pass: ospf default route
 qc pass: ospf with bfd
 qc pass: ospf with te
 qc pass: ospf peer template
-qc pass: ospf with segment routing
-qc pass: ospf transit area with segment routing
+qc pass: ospf with sr
+qc pass: ospf transit area with sr
 qc pass: ospf prefix withdraw
 qc pass: ospf change in metric
 qc pass: ospf change in tag
@@ -1510,12 +1514,10 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-todo: test cases for "srmpls", "srext", anycast prefix-sid, "mpls redir"
 todo: servers for ipip, gre, mplsudp, mplsip
 todo: autoroute with sr, bier support
 todo: bgp sr-policy afi
 todo: bgp vpns over sr
-todo: exp bundle
 todo: recursive static route
 todo: pipeline properties, terminal autoresize
 todo: yang over netconf, proto over grpc

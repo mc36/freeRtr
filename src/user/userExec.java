@@ -2030,7 +2030,7 @@ public class userExec {
         if (ifc != null) {
             src = ifc.getLocAddr(trg);
         }
-        pipe.linePut("traceing " + trg + ", src=" + src + ", prt=" + port + ", tim=" + timeout + ", tos=" + tos + ", len=" + len);
+        pipe.linePut("tracing " + trg + ", src=" + src + ", prt=" + port + ", tim=" + timeout + ", tos=" + tos + ", len=" + len);
         int none = 0;
         for (int ttl = 1; ttl < 255; ttl++) {
             if (need2stop()) {

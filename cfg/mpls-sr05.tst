@@ -1,4 +1,4 @@
-description bgp over segment routing
+description bgp over sr
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

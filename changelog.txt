@@ -8448,3 +8448,42 @@ todo: servers for ipip, gre, mplsudp, mplsip
 ---------------------------------- 2018-07-07 12:33:28
 no todo: test cases for srmpls, srext, mpls redir
 todo: test cases for "srmpls", "srext", anycast prefix-sid, "mpls redir"
+---------------------------------- 2018-07-08 20:30:56
+no todo: exp bundle
+no todo: test cases for "srmpls", "srext", anycast prefix-sid, "mpls redir"
+no qc pass: ospf transit area with segment routing
+no qc pass: ospf with segment routing
+no qc pass: lsrp with segment routing
+no qc pass: isis multi-topology with segment routing
+no qc pass: isis inter-level with segment routing
+no qc pass: isis with segment routing
+no qc pass: bgp with segment routing
+no qc pass: segment routing over broadcast subnet
+no qc pass: othervpns over bgp over segment routing
+no qc pass: vpns over bgp over segment routing
+no qc pass: bgp with labels over segment routing
+no qc pass: bgp over segment routing
+no qc pass: pwe over segment routing
+no qc pass: te over segment routing
+no qc pass: segment routing in star
+no qc pass: segment routing in chain
+qc pass: mpls expbundle
+qc pass: mpls redirection
+qc pass: sr in chain
+qc pass: sr in star
+qc pass: te over sr
+qc pass: pwe over sr
+qc pass: bgp over sr
+qc pass: bgp with labels over sr
+qc pass: vpns over bgp over sr
+qc pass: othervpns over bgp over sr
+qc pass: sr over broadcast subnet
+qc pass: sr te over mpls
+qc pass: sr te over exthdr
+qc pass: bgp with sr
+qc pass: isis with sr
+qc pass: isis inter-level with sr
+qc pass: isis multi-topology with sr
+qc pass: lsrp with sr
+qc pass: ospf with sr
+qc pass: ospf transit area with sr

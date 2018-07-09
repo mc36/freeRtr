@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.7.7-testing, done by cs@nop.;-;-
--;-;2018-07-07 20:49:10, took 08:15:42 on 1512 cases, 0 failed, 0 traces, 11 retries;-;-
+-;-;freeRouter v18.7.8-testing, done by cs@nop.;-;-
+-;-;2018-07-09 04:53:22, took 08:22:26 on 1516 cases, 0 failed, 0 traces, 18 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -748,6 +748,8 @@ mpls-ldp19.tst;0;targeted ldp password;successfully;finished
 mpls-ldp20.tst;0;ingress label filtering with ldp;successfully;finished
 mpls-ldp21.tst;0;egress label filtering with ldp;successfully;finished
 mpls-ldp22.tst;0;vrf label filtering with ldp;successfully;finished
+mpls-ldp23.tst;0;mpls expbundle;successfully;finished
+mpls-ldp24.tst;0;mpls redirection;successfully;finished
 mpls-nsh01.tst;0;nsh over ethernet;successfully;finished
 mpls-nsh02.tst;0;nsh over ethernet vlan;successfully;finished
 mpls-nsh03.tst;0;nsh over ethernet bridge;successfully;finished
@@ -803,15 +805,17 @@ mpls-pwhe16.tst;0;ethernet over l2tp3 pwhe;successfully;finished
 mpls-pwhe17.tst;0;ppp over mpls pwhe;successfully;finished
 mpls-pwhe18.tst;0;ethernet over mpls pwhe;successfully;finished
 mpls-pwhe19.tst;0;ethernet over mpls pwhe with cw;successfully;finished
-mpls-sr01.tst;0;segment routing in chain;successfully;finished
-mpls-sr02.tst;0;segment routing in star;successfully;finished
-mpls-sr03.tst;0;te over segment routing;successfully;finished
-mpls-sr04.tst;0;pwe over segment routing;successfully;finished
-mpls-sr05.tst;0;bgp over segment routing;successfully;finished
-mpls-sr06.tst;0;bgp with labels over segment routing;successfully;finished
-mpls-sr07.tst;0;vpns over bgp over segment routing;successfully;finished
-mpls-sr08.tst;0;othervpns over bgp over segment routing;successfully;finished
-mpls-sr09.tst;0;segment routing over broadcast subnet;successfully;finished
+mpls-sr01.tst;0;sr in chain;successfully;finished
+mpls-sr02.tst;0;sr in star;successfully;finished
+mpls-sr03.tst;0;te over sr;successfully;finished
+mpls-sr04.tst;0;pwe over sr;successfully;finished
+mpls-sr05.tst;0;bgp over sr;successfully;finished
+mpls-sr06.tst;0;bgp with labels over sr;successfully;finished
+mpls-sr07.tst;0;vpns over bgp over sr;successfully;finished
+mpls-sr08.tst;0;othervpns over bgp over sr;successfully;finished
+mpls-sr09.tst;0;sr over broadcast subnet;successfully;finished
+mpls-sr10.tst;0;sr te over mpls;successfully;finished
+mpls-sr11.tst;0;sr te over exthdr;successfully;finished
 mpls-te01.tst;0;te over ethernet;successfully;finished
 mpls-te02.tst;0;te over ethernet vlan;successfully;finished
 mpls-te03.tst;0;te over ethernet bridge;successfully;finished
@@ -1216,7 +1220,7 @@ rout-bgp298.tst;0;bgp csc othervpn with ldp;successfully;finished
 rout-bgp299.tst;0;unicast+mspw over bgp;successfully;finished
 rout-bgp300.tst;0;unicast+mspw over bgp with soft-reconfig;successfully;finished
 rout-bgp301.tst;0;unicast+mspw over bgp with additional path;successfully;finished
-rout-bgp302.tst;0;bgp with segment routing;successfully;finished
+rout-bgp302.tst;0;bgp with sr;successfully;finished
 rout-bgp303.tst;0;ebgp vpn client;successfully;finished
 rout-bgp304.tst;0;ibgp vpn client;successfully;finished
 rout-bgp305.tst;0;ebgp vpn client with soft-reconfig;successfully;finished
@@ -1302,9 +1306,9 @@ rout-isis37.tst;0;isis external multi-topology;successfully;finished
 rout-isis38.tst;0;isis multi-topology with te;successfully;finished
 rout-isis39.tst;0;isis chain of broadcast nets with multi-topology;successfully;finished
 rout-isis40.tst;0;isis broadcast subnet with multi-topology;successfully;finished
-rout-isis41.tst;0;isis with segment routing;successfully;finished
-rout-isis42.tst;0;isis inter-level with segment routing;successfully;finished
-rout-isis43.tst;0;isis multi-topology with segment routing;successfully;finished
+rout-isis41.tst;0;isis with sr;successfully;finished
+rout-isis42.tst;0;isis inter-level with sr;successfully;finished
+rout-isis43.tst;0;isis multi-topology with sr;successfully;finished
 rout-isis44.tst;0;isis prefix withdraw;successfully;finished
 rout-isis45.tst;0;isis change in metric;successfully;finished
 rout-isis46.tst;0;isis aggregate;successfully;finished
@@ -1329,7 +1333,7 @@ rout-lsrp12.tst;0;lsrp authentication;successfully;finished
 rout-lsrp13.tst;0;lsrp ssh encryption;successfully;finished
 rout-lsrp14.tst;0;lsrp tls encryption;successfully;finished
 rout-lsrp15.tst;0;lsrp peer template;successfully;finished
-rout-lsrp16.tst;0;lsrp with segment routing;successfully;finished
+rout-lsrp16.tst;0;lsrp with sr;successfully;finished
 rout-lsrp17.tst;0;lsrp prefix withdraw;successfully;finished
 rout-lsrp18.tst;0;lsrp change in metric;successfully;finished
 rout-lsrp19.tst;0;lsrp change in tag;successfully;finished
@@ -1402,8 +1406,8 @@ rout-ospf25.tst;0;ospf default route;successfully;finished
 rout-ospf26.tst;0;ospf with bfd;successfully;finished
 rout-ospf27.tst;0;ospf with te;successfully;finished
 rout-ospf28.tst;0;ospf peer template;successfully;finished
-rout-ospf29.tst;0;ospf with segment routing;successfully;finished
-rout-ospf30.tst;0;ospf transit area with segment routing;successfully;finished
+rout-ospf29.tst;0;ospf with sr;successfully;finished
+rout-ospf30.tst;0;ospf transit area with sr;successfully;finished
 rout-ospf31.tst;0;ospf prefix withdraw;successfully;finished
 rout-ospf32.tst;0;ospf change in metric;successfully;finished
 rout-ospf33.tst;0;ospf change in tag;successfully;finished
