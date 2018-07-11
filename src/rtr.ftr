@@ -1514,7 +1514,7 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-todo: servers for ipip, gre, mplsudp, mplsip
+todo: servers for etherip, ipip, gre, mplsudp, mplsip
 todo: autoroute with sr, bier support
 todo: bgp sr-policy afi
 todo: bgp vpns over sr

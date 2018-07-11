@@ -32,6 +32,7 @@ import user.userFilter;
 import user.userHelping;
 import util.bits;
 import util.cmds;
+import util.logger;
 
 /**
  * generic server implementation
@@ -69,6 +70,21 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * access list to use
      */
     protected tabListing<tabAceslstN<addrIP>, addrIP> srvAccess;
+
+    /**
+     * limit of all clients
+     */
+    protected int srvTotLim;
+
+    /**
+     * limit of one client
+     */
+    protected int srvPerLim;
+
+    /**
+     * log access drops
+     */
+    protected boolean srvLogDrop;
 
     /**
      * sample pipeline to use
@@ -219,6 +235,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         "server .*! no security dsacert",
         "server .*! no security ecdsacert",
         "server .*! no access-class",
+        "server .*! access-total 0",
+        "server .*! access-peer 0",
+        "server .*! no access-log",
         "server .*! no interface",
         "server .*! no vrf"
     };
@@ -790,6 +809,74 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         return false;
     }
 
+    private int srvCheckAccept(ipFwdIface ifc, int prt, boolean is4, addrIP adr) {
+        int res = 0;
+        if ((srvProto & protoTcp) != 0) {
+            if (is4) {
+                res += srvVrf.tcp4.countClients(ifc, prt, adr);
+            } else {
+                res += srvVrf.tcp6.countClients(ifc, prt, adr);
+            }
+        }
+        if ((srvProto & protoUdp) != 0) {
+            if (is4) {
+                res += srvVrf.udp4.countClients(ifc, prt, adr);
+            } else {
+                res += srvVrf.udp6.countClients(ifc, prt, adr);
+            }
+        }
+        if ((srvProto & protoLudp) != 0) {
+            if (is4) {
+                res += srvVrf.ludp4.countClients(ifc, prt, adr);
+            } else {
+                res += srvVrf.ludp6.countClients(ifc, prt, adr);
+            }
+        }
+        if ((srvProto & protoDccp) != 0) {
+            if (is4) {
+                res += srvVrf.dccp4.countClients(ifc, prt, adr);
+            } else {
+                res += srvVrf.dccp6.countClients(ifc, prt, adr);
+            }
+        }
+        if ((srvProto & protoSctp) != 0) {
+            if (is4) {
+                res += srvVrf.sctp4.countClients(ifc, prt, adr);
+            } else {
+                res += srvVrf.sctp6.countClients(ifc, prt, adr);
+            }
+        }
+        return res;
+    }
+
+    private boolean srvCheckAccept(prtGenConn conn) {
+        if (srvAccess != null) {
+            if (!srvAccess.matches(conn)) {
+                if (srvLogDrop) {
+                    logger.info("access class dropped " + conn);
+                }
+                return true;
+            }
+        }
+        if (srvTotLim > 0) {
+            if (srvCheckAccept(conn.iface, conn.portLoc, conn.peerAddr.isIPv4(), null) > srvTotLim) {
+                if (srvLogDrop) {
+                    logger.info("total limit dropped " + conn);
+                }
+                return true;
+            }
+        }
+        if (srvPerLim > 0) {
+            if (srvCheckAccept(conn.iface, conn.portLoc, conn.peerAddr.isIPv4(), conn.peerAddr) > srvPerLim) {
+                if (srvLogDrop) {
+                    logger.info("peer limit dropped " + conn);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * accept one connection
      *
@@ -798,10 +885,8 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * @return false if successful, true if error happened
      */
     public boolean streamAccept(pipeSide pipe, prtGenConn id) {
-        if (srvAccess != null) {
-            if (!srvAccess.matches(id)) {
-                return true;
-            }
+        if (srvCheckAccept(id)) {
+            return true;
         }
         pipe = secServer.openSec(pipe, secProto & protoSec, pipeSample, srvAuther, keyrsa, keydsa, keyecdsa, certrsa, certdsa, certecdsa);
         if (pipe == null) {
@@ -826,10 +911,8 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * @return false if successful, true if error happened
      */
     public boolean datagramAccept(prtGenConn id) {
-        if (srvAccess != null) {
-            if (!srvAccess.matches(id)) {
-                return true;
-            }
+        if (srvCheckAccept(id)) {
+            return true;
         }
         return srvAccept(null, id);
     }
@@ -855,6 +938,11 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         l.add("2 .    <num>                port number to use");
         l.add("1 2  access-class           set access list");
         l.add("2 .    <name>               access list name");
+        l.add("1 2  access-total           session limit for this server");
+        l.add("2 .    <num>                number of connections");
+        l.add("1 2  access-peer            per client session limit");
+        l.add("2 .    <num>                number of connections");
+        l.add("1 .  access-log             log dropped attemps");
         l.add("1 2  protocol               set lower protocols to use");
         l.add("2 2,.  ipv4                 use ip4 network");
         l.add("2 2,.  ipv6                 use ip6 network");
@@ -941,6 +1029,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         } else {
             l.add(beg + "no access-class");
         }
+        cmds.cfgLine(l, !srvLogDrop, beg, "access-log", "");
+        l.add(beg + "access-total " + srvTotLim);
+        l.add(beg + "access-peer " + srvPerLim);
         l.add(beg + "port " + srvPort);
         l.add(beg + "protocol " + proto2string(srvProto));
         srvShRun(beg, l);
@@ -1017,6 +1108,18 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             srvDeinit();
             srvIface = ifc;
             srvInit();
+            return false;
+        }
+        if (a.equals("access-log")) {
+            srvLogDrop = true;
+            return false;
+        }
+        if (a.equals("access-total")) {
+            srvTotLim = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("access-peer")) {
+            srvPerLim = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("access-class")) {
@@ -1123,6 +1226,18 @@ public abstract class servGeneric implements Comparator<servGeneric> {
                 srvDeinit();
                 srvIface = null;
                 srvInit();
+                return false;
+            }
+            if (a.equals("access-log")) {
+                srvLogDrop = false;
+                return false;
+            }
+            if (a.equals("access-total")) {
+                srvTotLim = 0;
+                return false;
+            }
+            if (a.equals("access-peer")) {
+                srvPerLim = 0;
                 return false;
             }
             if (a.equals("access-class")) {

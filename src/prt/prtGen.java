@@ -470,4 +470,16 @@ public abstract class prtGen implements ipPrt {
         ntry.errCod = err;
     }
 
+    /**
+     * count clients
+     *
+     * @param ifc interface
+     * @param prt local port
+     * @param adr remote address
+     * @return number of clients
+     */
+    public int countClients(ipFwdIface ifc, int prt, addrIP adr) {
+        return clnts.countClients(ifc.ifwNum, prt, adr);
+    }
+
 }

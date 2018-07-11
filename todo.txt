@@ -1,4 +1,4 @@
-servers for ipip, gre, mplsudp, mplsip
+servers for etherip, ipip, gre, mplsudp, mplsip
 autoroute with sr, bier support
 bgp sr-policy afi
 bgp vpns over sr

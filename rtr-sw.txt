@@ -865,6 +865,9 @@ server rfb vnc
  exit
 !
 server http web
+ access-log
+ access-total 128
+ access-peer 16
  host * path /nfs2/own/web/home/
  host * dirlist
  host * script

@@ -11,7 +11,7 @@ import util.debugger;
 import util.logger;
 
 /**
- * keeps track of connections or listeneres
+ * keeps track of connections or listeners
  *
  * @param <Ta> address it works with
  * @param <Td> this type will be kept in records
@@ -280,6 +280,38 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
                 l.add(b + "|" + conns.get(i).dump(f));
             }
         }
+    }
+
+    /**
+     * count clients
+     *
+     * @param ifc interface
+     * @param prt local port
+     * @param adr remote address
+     * @return number of clients
+     */
+    public int countClients(int ifc, int prt, Ta adr) {
+        int res = 0;
+        synchronized (conns) {
+            for (int i = 0; i < conns.size(); i++) {
+                tabConnectEntry<Ta, Td> ntry = conns.get(i);
+                if (ntry.iface != ifc) {
+                    continue;
+                }
+                if (ntry.local != prt) {
+                    continue;
+                }
+                if (adr == null) {
+                    res++;
+                    continue;
+                }
+                if (adr.compare(adr, ntry.peer.network) != 0) {
+                    continue;
+                }
+                res++;
+            }
+        }
+        return res;
     }
 
 }

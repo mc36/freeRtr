@@ -8487,3 +8487,6 @@ qc pass: isis multi-topology with sr
 qc pass: lsrp with sr
 qc pass: ospf with sr
 qc pass: ospf transit area with sr
+---------------------------------- 2018-07-11 06:24:12
+no todo: servers for ipip, gre, mplsudp, mplsip
+todo: servers for etherip, ipip, gre, mplsudp, mplsip
