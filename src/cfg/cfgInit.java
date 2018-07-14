@@ -71,6 +71,7 @@ import serv.servTime;
 import serv.servUdptn;
 import serv.servVxlan;
 import serv.servGeneve;
+import serv.servMplsIp;
 import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
@@ -555,6 +556,7 @@ public class cfgInit implements Runnable {
             types.add(new cfgInitMime(s, c));
         }
         cfgIfc.notemplF = createFilter(cfgIfc.notemplL);
+        cfgIfc.nocloneF = createFilter(cfgIfc.nocloneL);
         cfgLin.linedefF = createFilter(cfgLin.linedefL);
         cfgMenu.defaultF = createFilter(cfgMenu.defaultL);
         cfgAll.defaultF = createFilter(cfgAll.defaultL);
@@ -613,6 +615,7 @@ public class cfgInit implements Runnable {
         servL2f.defaultF = createFilter(servL2f.defaultL, srvdefsF);
         servL2tp2.defaultF = createFilter(servL2tp2.defaultL, srvdefsF);
         servL2tp3.defaultF = createFilter(servL2tp3.defaultL, srvdefsF);
+        servMplsIp.defaultF = createFilter(servMplsIp.defaultL, srvdefsF);
         servLoadBalancer.defaultF = createFilter(servLoadBalancer.defaultL, srvdefsF);
         servLpd.defaultF = createFilter(servLpd.defaultL, srvdefsF);
         servNtp.defaultF = createFilter(servNtp.defaultL, srvdefsF);

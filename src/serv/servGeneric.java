@@ -18,6 +18,7 @@ import ip.ipPrt;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import pack.packHolder;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtGen;
@@ -870,6 +871,39 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             if (srvCheckAccept(conn.iface, conn.portLoc, conn.peerAddr.isIPv4(), conn.peerAddr) > srvPerLim) {
                 if (srvLogDrop) {
                     logger.info("peer limit dropped " + conn);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * check if connection acceptable
+     *
+     * @param ifc interface packet arrived on
+     * @param pck packet to check
+     * @return false if acceptable, true if not
+     */
+    protected boolean srvCheckAccept(ipFwdIface ifc, packHolder pck) {
+        if (srvAccess != null) {
+            if (!srvAccess.matches(false, false, pck)) {
+                if (srvLogDrop) {
+                    logger.info("access class dropped " + pck.IPsrc + " " + pck.IPprt);
+                }
+                return true;
+            }
+        }
+        if (srvTotLim > 0) {
+            int res = 0;
+            if (pck.IPsrc.isIPv4()) {
+                res = srvVrf.fwd4.protos.countClients(ifc.ifwNum, pck.IPprt, pck.IPsrc);
+            } else {
+                res = srvVrf.fwd6.protos.countClients(ifc.ifwNum, pck.IPprt, pck.IPsrc);
+            }
+            if (res > srvTotLim) {
+                if (srvLogDrop) {
+                    logger.info("total limit dropped " + pck.IPsrc + " " + pck.IPprt);
                 }
                 return true;
             }

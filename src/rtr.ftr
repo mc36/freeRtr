@@ -137,6 +137,7 @@ qc pass: ipip over ipv4
 qc pass: ipip over ipv6
 qc pass: ipip over ipip
 qc pass: ipip over loopback
+qc pass: iponly
 qc pass: isdn
 qc pass: ppp over l2f
 qc pass: ppp over authenticated l2f
@@ -192,6 +193,7 @@ qc pass: mplsip over ipv4
 qc pass: mplsip over ipv6
 qc pass: mplsip over mplsip
 qc pass: mplsip over loopback
+qc pass: mplsip server
 qc pass: mplsudp over ipv4
 qc pass: mplsudp over ipv6
 qc pass: mplsudp over mplsudp
@@ -1514,10 +1516,10 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-todo: servers for etherip, ipip, gre, mplsudp, mplsip
+todo: servers for ipip, gre, etherip, mplsudp
 todo: autoroute with sr, bier support
 todo: bgp sr-policy afi
-todo: bgp vpns over sr
+todo: bgp vpns with sr-policy
 todo: recursive static route
 todo: pipeline properties, terminal autoresize
 todo: yang over netconf, proto over grpc

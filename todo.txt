@@ -1,7 +1,7 @@
-servers for etherip, ipip, gre, mplsudp, mplsip
+servers for ipip, gre, etherip, mplsudp
 autoroute with sr, bier support
 bgp sr-policy afi
-bgp vpns over sr
+bgp vpns with sr-policy
 recursive static route
 pipeline properties, terminal autoresize
 yang over netconf, proto over grpc

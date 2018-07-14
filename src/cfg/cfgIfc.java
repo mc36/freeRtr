@@ -52,6 +52,7 @@ import ifc.ifcEther;
 import ifc.ifcFramePpp;
 import ifc.ifcFrameRelay;
 import ifc.ifcHdlc;
+import ifc.ifcIpOnly;
 import ifc.ifcIsdn;
 import ifc.ifcIsl;
 import ifc.ifcLapb;
@@ -205,6 +206,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * isdn handler
      */
     public ifcIsdn isdn;
+
+    /**
+     * iponly handler
+     */
+    public ifcIpOnly ipOnly;
 
     /**
      * lapb handler
@@ -1495,6 +1501,21 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public static tabGen<userFilter> notemplF;
 
     /**
+     * clone text
+     */
+    public final static String nocloneL[] = {
+        "interface .*! autostate.*",
+        "interface .*! no autostate.*",
+        "interface .*! shutdown.*",
+        "interface .*! no shutdown.*"
+    };
+
+    /**
+     * clone filter
+     */
+    public static tabGen<userFilter> nocloneF;
+
+    /**
      * convert interface name to type
      *
      * @param s name of interface
@@ -1559,6 +1580,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
         }
         List<String> l = getShRun(false);
+        l = userFilter.filterText(l, nocloneF);
         cfgIfc res;
         for (;;) {
             res = cfgAll.ifcFind("access" + bits.randomD(), true);
@@ -2556,6 +2578,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("sep")) {
             enc = 9;
         }
+        if (a.equals("iponly")) {
+            enc = 10;
+        }
         if (a.equals("dot1q")) {
             initVlan(new ifcDot1q());
             return false;
@@ -2659,6 +2684,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 lower.setUpper(sep);
                 sep.cfger = this;
                 sep.setUpper(ethtyp);
+                break;
+            case 10:
+                ipOnly = new ifcIpOnly();
+                lower.setUpper(ipOnly);
+                ipOnly.setUpper(ethtyp);
                 break;
             default:
                 lower = new ifcNull();
@@ -3274,7 +3304,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 break;
             case mplsip:
                 tunMplsip = new prtMplsIp(fwd);
-                tunMplsip.setEndpoints(ifc, tunTrg);
+                tunMplsip.setEndpoints(ifc, tunTrg, true);
                 tunMplsip.setUpper(ethtyp);
                 tunMplsip.sendingTOS = tunTOS;
                 tunMplsip.sendingTTL = tunTTL;
@@ -3738,6 +3768,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (isdn != null) {
             return isdn;
+        }
+        if (ipOnly != null) {
+            return ipOnly;
         }
         if (raw != null) {
             return raw;
@@ -4436,6 +4469,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (isdn != null) {
                     s = "isdn";
                 }
+                if (ipOnly != null) {
+                    s = "iponly";
+                }
                 if (ppp != null) {
                     s = "ppp";
                 }
@@ -4776,6 +4812,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 2   encapsulation                 change encapsulation");
         l.add("2 .     hdlc                        set to hdlc encapsulation");
         l.add("2 .     isdn                        set to isdn encapsulation");
+        l.add("2 .     iponly                      set to iponly encapsulation");
         l.add("2 .     ppp                         set to ppp encapsulation");
         l.add("2 .     lapb                        set to lapb encapsulation");
         l.add("2 .     framerelay                  set to frame relay encapsulation");

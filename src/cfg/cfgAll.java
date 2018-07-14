@@ -70,6 +70,7 @@ import serv.servHoneyPot;
 import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
+import serv.servMplsIp;
 import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
@@ -542,6 +543,11 @@ public class cfgAll {
      * l2tp3 daemons
      */
     public static servGenList<servL2tp3> dmnL2tp3 = new servGenList<servL2tp3>();
+
+    /**
+     * mplsip daemons
+     */
+    public static servGenList<servMplsIp> dmnMplsIp = new servGenList<servMplsIp>();
 
     /**
      * gtp daemons
@@ -3053,6 +3059,7 @@ public class cfgAll {
         dmnL2f.getShRun(l, filter);
         dmnL2tp2.getShRun(l, filter);
         dmnL2tp3.getShRun(l, filter);
+        dmnMplsIp.getShRun(l, filter);
         dmnGtp.getShRun(l, filter);
         dmnPptp.getShRun(l, filter);
         dmnRadius.getShRun(l, filter);

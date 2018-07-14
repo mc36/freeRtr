@@ -68,9 +68,15 @@ public class prtMplsIp implements ipPrt, ifcDn {
      *
      * @param ifc interface to source from
      * @param trg ip address of remote
+     * @param reg register to lower layer
      * @return false if successful, true if error happened
      */
-    public boolean setEndpoints(ipFwdIface ifc, addrIP trg) {
+    public boolean setEndpoints(ipFwdIface ifc, addrIP trg, boolean reg) {
+        if (!reg) {
+            remote = trg;
+            sendingIfc = ifc;
+            return false;
+        }
         if (sendingIfc != null) {
             lower.protoDel(this, sendingIfc, remote);
         }

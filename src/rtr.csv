@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.7.11-testing, done by cs@nop.;-;-
--;-;2018-07-11 23:18:55, took 08:22:33 on 1516 cases, 0 failed, 0 traces, 12 retries;-;-
+-;-;freeRouter v18.7.13-testing, done by cs@nop.;-;-
+-;-;2018-07-14 07:02:51, took 08:25:14 on 1518 cases, 0 failed, 0 traces, 17 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -141,6 +141,7 @@ conn-ipip01.tst;0;ipip over ipv4;successfully;finished
 conn-ipip02.tst;0;ipip over ipv6;successfully;finished
 conn-ipip03.tst;0;ipip over ipip;successfully;finished
 conn-ipip04.tst;0;ipip over loopback;successfully;finished
+conn-iponly.tst;0;iponly;successfully;finished
 conn-isdn.tst;0;isdn;successfully;finished
 conn-l2f01.tst;0;ppp over l2f;successfully;finished
 conn-l2f02.tst;0;ppp over authenticated l2f;successfully;finished
@@ -196,6 +197,7 @@ conn-mplsip01.tst;0;mplsip over ipv4;successfully;finished
 conn-mplsip02.tst;0;mplsip over ipv6;successfully;finished
 conn-mplsip03.tst;0;mplsip over mplsip;successfully;finished
 conn-mplsip04.tst;0;mplsip over loopback;successfully;finished
+conn-mplsip05.tst;0;mplsip server;successfully;finished
 conn-mplsudp01.tst;0;mplsudp over ipv4;successfully;finished
 conn-mplsudp02.tst;0;mplsudp over ipv6;successfully;finished
 conn-mplsudp03.tst;0;mplsudp over mplsudp;successfully;finished

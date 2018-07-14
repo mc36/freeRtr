@@ -8490,3 +8490,10 @@ qc pass: ospf transit area with sr
 ---------------------------------- 2018-07-11 06:24:12
 no todo: servers for ipip, gre, mplsudp, mplsip
 todo: servers for etherip, ipip, gre, mplsudp, mplsip
+---------------------------------- 2018-07-13 22:37:36
+no todo: bgp vpns over sr
+no todo: servers for etherip, ipip, gre, mplsudp, mplsip
+qc pass: iponly
+qc pass: mplsip server
+todo: servers for ipip, gre, etherip, mplsudp
+todo: bgp vpns with sr-policy
