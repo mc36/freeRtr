@@ -198,6 +198,7 @@ qc pass: mplsudp over ipv4
 qc pass: mplsudp over ipv6
 qc pass: mplsudp over mplsudp
 qc pass: mplsudp over loopback
+qc pass: mplsudp server
 qc pass: nos over ipv4
 qc pass: nos over ipv6
 qc pass: nos over nos
@@ -1516,8 +1517,10 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-todo: servers for ipip, gre, etherip, mplsudp
+todo: servers for ipip, gre, etherip
 todo: autoroute with sr, bier support
+todo: clean up javadoc errors
+todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 todo: bgp sr-policy afi
 todo: bgp vpns with sr-policy
 todo: recursive static route

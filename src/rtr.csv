@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.7.13-testing, done by cs@nop.;-;-
--;-;2018-07-14 07:02:51, took 08:25:14 on 1518 cases, 0 failed, 0 traces, 17 retries;-;-
+-;-;freeRouter v18.7.14-testing, done by cs@nop.;-;-
+-;-;2018-07-15 05:31:36, took 08:09:10 on 1519 cases, 0 failed, 0 traces, 10 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -202,6 +202,7 @@ conn-mplsudp01.tst;0;mplsudp over ipv4;successfully;finished
 conn-mplsudp02.tst;0;mplsudp over ipv6;successfully;finished
 conn-mplsudp03.tst;0;mplsudp over mplsudp;successfully;finished
 conn-mplsudp04.tst;0;mplsudp over loopback;successfully;finished
+conn-mplsudp05.tst;0;mplsudp server;successfully;finished
 conn-nos01.tst;0;nos over ipv4;successfully;finished
 conn-nos02.tst;0;nos over ipv6;successfully;finished
 conn-nos03.tst;0;nos over nos;successfully;finished

@@ -8497,3 +8497,9 @@ qc pass: iponly
 qc pass: mplsip server
 todo: servers for ipip, gre, etherip, mplsudp
 todo: bgp vpns with sr-policy
+---------------------------------- 2018-07-14 21:22:26
+no todo: servers for ipip, gre, etherip, mplsudp
+qc pass: mplsudp server
+todo: servers for ipip, gre, etherip
+todo: clean up javadoc errors
+todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines

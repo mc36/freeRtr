@@ -4,9 +4,10 @@ select-dis openjdk-6-jre-headless        #old jvm
 select-dis openjdk-7-jre-headless        #old jvm
 select-dis openjdk-8-jre-headless        #old jvm
 select-dis openjdk-9-jre-headless        #old jvm
-select-one openjdk-10-jre-headless       #new jvm
+select-dis openjdk-10-jre-headless       #old jvm
+select-one openjdk-11-jre-headless       #new jvm
 
-exec ln -s /usr/lib/jvm/java-10-openjdk-%arch%/bin/java %tmp%/bin/java
+exec ln -s /usr/lib/jvm/java-11-openjdk-%arch%/bin/java %tmp%/bin/java
 
 exec cp ../misc/image/init.jvm %tmp%/init
 exec cp rtr.jar %tmp%/rtr/rtr.jar
@@ -17,12 +18,12 @@ select-sum
 package-down
 package-inst
 
-exec ln -s /usr/lib/jvm/java-10-openjdk-%arch%/lib/%arch%/jli/libjli.so %tmp%/lib/libjli.so
+exec ln -s /usr/lib/jvm/java-11-openjdk-%arch%/lib/%arch%/jli/libjli.so %tmp%/lib/libjli.so
 
-del-alw %tmp%/usr/lib/jvm/java-10-openjdk-%arch%/jmods
-del-alw %tmp%/usr/lib/jvm/java-10-openjdk-%arch%/docs
-del-alw %tmp%/usr/lib/jvm/java-10-openjdk-%arch%/demo
-del-alw %tmp%/usr/lib/jvm/java-10-openjdk-%arch%/man
-del-alw %tmp%/usr/lib/jvm/java-10-openjdk-%arch%/legal
+del-alw %tmp%/usr/lib/jvm/java-11-openjdk-%arch%/jmods
+del-alw %tmp%/usr/lib/jvm/java-11-openjdk-%arch%/docs
+del-alw %tmp%/usr/lib/jvm/java-11-openjdk-%arch%/demo
+del-alw %tmp%/usr/lib/jvm/java-11-openjdk-%arch%/man
+del-alw %tmp%/usr/lib/jvm/java-11-openjdk-%arch%/legal
 
 include ../misc/image/image.end

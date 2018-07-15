@@ -7,14 +7,13 @@ import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import ip.ipFwdIface;
-import ip.ipIfc4;
-import ip.ipIfc6;
-import ip.ipMpls;
 import java.util.Comparator;
 import pack.packHolder;
 import prt.prtGenConn;
+import prt.prtMplsIp;
 import prt.prtServP;
 import prt.prtUdp;
+import serv.servMplsUdp;
 import util.bits;
 import util.counter;
 import util.logger;
@@ -26,11 +25,6 @@ import util.state;
  * @author matecsaba
  */
 public class clntMplsUdp implements Comparator<clntMplsUdp>, Runnable, prtServP, ifcDn {
-
-    /**
-     * port number
-     */
-    public static final int portNum = 6635;
 
     /**
      * upper layer
@@ -129,24 +123,8 @@ public class clntMplsUdp implements Comparator<clntMplsUdp>, Runnable, prtServP,
         if (conn == null) {
             return;
         }
-        int i = pck.msbGetW(0); // ethertype
-        pck.getSkip(2);
-        switch (i) {
-            case ipMpls.typeU:
-            case ipMpls.typeM:
-                break;
-            case ipIfc4.type:
-                pck.MPLSlabel = ipMpls.labelExp4;
-                ipMpls.beginMPLSfields(pck, false);
-                ipMpls.createMPLSheader(pck);
-                break;
-            case ipIfc6.type:
-                pck.MPLSlabel = ipMpls.labelExp6;
-                ipMpls.beginMPLSfields(pck, false);
-                ipMpls.createMPLSheader(pck);
-                break;
-            default:
-                return;
+        if (prtMplsIp.ethtyp2mpls(pck)) {
+            return;
         }
         cntr.tx(pck);
         pck.putDefaults();
@@ -186,10 +164,10 @@ public class clntMplsUdp implements Comparator<clntMplsUdp>, Runnable, prtServP,
 
     private void workDoer() {
         if (prtR == 0) {
-            prtR = portNum;
+            prtR = servMplsUdp.portNum;
         }
         if (prtL == 0) {
-            prtL = portNum;
+            prtL = servMplsUdp.portNum;
         }
         conn = udp.packetConnect(this, fwdIfc, prtL, target, prtR, "mplsudp", null, -1);
         if (conn == null) {
@@ -232,25 +210,9 @@ public class clntMplsUdp implements Comparator<clntMplsUdp>, Runnable, prtServP,
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        if (ipMpls.parseMPLSheader(pck)) {
+        if (prtMplsIp.mpls2ethtyp(pck)) {
             return false;
         }
-        int i;
-        switch (pck.MPLSlabel) {
-            case ipMpls.labelExp4:
-                i = ipIfc4.type;
-                break;
-            case ipMpls.labelExp6:
-                i = ipIfc6.type;
-                break;
-            default:
-                pck.getSkip(-ipMpls.sizeL);
-                i = ipMpls.typeU;
-                break;
-        }
-        pck.msbPutW(0, i); // ethertype
-        pck.putSkip(2);
-        pck.merge2beg();
         cntr.rx(pck);
         upper.recvPack(pck);
         return false;

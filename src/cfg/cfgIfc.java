@@ -1682,6 +1682,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (l1 != l2) {
             return l1 ? -1 : +1;
         }
+        l1 = s1.startsWith("tunn");
+        l2 = s2.startsWith("tunn");
+        if (l1 != l2) {
+            return l1 ? +1 : -1;
+        }
         return s1.compareTo(s2);
     }
 

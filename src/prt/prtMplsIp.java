@@ -89,6 +89,63 @@ public class prtMplsIp implements ipPrt, ifcDn {
         return "mplsip to " + remote;
     }
 
+    /**
+     * guess label from ethertype
+     *
+     * @param pck packet to parse
+     * @return true on error, false on success
+     */
+    public static boolean ethtyp2mpls(packHolder pck) {
+        int i = pck.msbGetW(0); // ethertype
+        pck.getSkip(2);
+        switch (i) {
+            case ipMpls.typeU:
+            case ipMpls.typeM:
+                return false;
+            case ipIfc4.type:
+                pck.MPLSlabel = ipMpls.labelExp4;
+                ipMpls.beginMPLSfields(pck, false);
+                ipMpls.createMPLSheader(pck);
+                return false;
+            case ipIfc6.type:
+                pck.MPLSlabel = ipMpls.labelExp6;
+                ipMpls.beginMPLSfields(pck, false);
+                ipMpls.createMPLSheader(pck);
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * guess ethertype from label
+     *
+     * @param pck packet to parse
+     * @return true on error, false on success
+     */
+    public static boolean mpls2ethtyp(packHolder pck) {
+        if (ipMpls.parseMPLSheader(pck)) {
+            return true;
+        }
+        int i;
+        switch (pck.MPLSlabel) {
+            case ipMpls.labelExp4:
+                i = ipIfc4.type;
+                break;
+            case ipMpls.labelExp6:
+                i = ipIfc6.type;
+                break;
+            default:
+                pck.getSkip(-ipMpls.sizeL);
+                i = ipMpls.typeU;
+                break;
+        }
+        pck.msbPutW(0, i); // ethertype
+        pck.putSkip(2);
+        pck.merge2beg();
+        return false;
+    }
+
     public addrType getHwAddr() {
         return addrMac.getRandom();
     }
@@ -129,24 +186,8 @@ public class prtMplsIp implements ipPrt, ifcDn {
         if (sendingIfc == null) {
             return;
         }
-        int i = pck.msbGetW(0); // ethertype
-        pck.getSkip(2);
-        switch (i) {
-            case ipMpls.typeU:
-            case ipMpls.typeM:
-                break;
-            case ipIfc4.type:
-                pck.MPLSlabel = ipMpls.labelExp4;
-                ipMpls.beginMPLSfields(pck, false);
-                ipMpls.createMPLSheader(pck);
-                break;
-            case ipIfc6.type:
-                pck.MPLSlabel = ipMpls.labelExp6;
-                ipMpls.beginMPLSfields(pck, false);
-                ipMpls.createMPLSheader(pck);
-                break;
-            default:
-                return;
+        if (ethtyp2mpls(pck)) {
+            return;
         }
         cntr.tx(pck);
         pck.putDefaults();
@@ -178,25 +219,9 @@ public class prtMplsIp implements ipPrt, ifcDn {
     }
 
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
-        if (ipMpls.parseMPLSheader(pck)) {
+        if (mpls2ethtyp(pck)) {
             return;
         }
-        int i;
-        switch (pck.MPLSlabel) {
-            case ipMpls.labelExp4:
-                i = ipIfc4.type;
-                break;
-            case ipMpls.labelExp6:
-                i = ipIfc6.type;
-                break;
-            default:
-                pck.getSkip(-ipMpls.sizeL);
-                i = ipMpls.typeU;
-                break;
-        }
-        pck.msbPutW(0, i); // ethertype
-        pck.putSkip(2);
-        pck.merge2beg();
         cntr.rx(pck);
         upper.recvPack(pck);
     }

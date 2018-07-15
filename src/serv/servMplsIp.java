@@ -204,7 +204,7 @@ class servMplsIpConn implements Runnable, Comparator<servMplsIpConn> {
     }
 
     public String toString() {
-        return lower + " with " + peer;
+        return "mplsip with " + peer;
     }
 
     public int compare(servMplsIpConn o1, servMplsIpConn o2) {

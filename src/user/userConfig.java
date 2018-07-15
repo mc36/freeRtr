@@ -105,6 +105,7 @@ import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
 import serv.servMplsIp;
+import serv.servMplsUdp;
 import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
@@ -661,6 +662,8 @@ public class userConfig {
         l.add("2  3    l2tp3                        configure a l2tp v3 server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    mplsip                       configure a mplsip server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    mplsudp                      configure a mplsudp server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    pckoudp                      configure a pckoudp server");
         l.add("3  .      <name>                     name of server");
@@ -1270,6 +1273,10 @@ public class userConfig {
             }
             if (a.equals("mplsip")) {
                 daemonMake(new servMplsIp(), cfgAll.dmnMplsIp);
+                return;
+            }
+            if (a.equals("mplsudp")) {
+                daemonMake(new servMplsUdp(), cfgAll.dmnMplsUdp);
                 return;
             }
             if (a.equals("gtp")) {
@@ -2004,6 +2011,10 @@ public class userConfig {
             }
             if (a.equals("mplsip")) {
                 daemonErase(new servMplsIp(), cfgAll.dmnMplsIp);
+                return;
+            }
+            if (a.equals("mplsudp")) {
+                daemonErase(new servMplsUdp(), cfgAll.dmnMplsUdp);
                 return;
             }
             if (a.equals("gtp")) {

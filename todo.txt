@@ -1,5 +1,7 @@
-servers for ipip, gre, etherip, mplsudp
+servers for ipip, gre, etherip
 autoroute with sr, bier support
+clean up javadoc errors
+changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 bgp sr-policy afi
 bgp vpns with sr-policy
 recursive static route

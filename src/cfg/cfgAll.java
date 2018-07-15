@@ -71,6 +71,7 @@ import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
 import serv.servMplsIp;
+import serv.servMplsUdp;
 import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
@@ -548,6 +549,11 @@ public class cfgAll {
      * mplsip daemons
      */
     public static servGenList<servMplsIp> dmnMplsIp = new servGenList<servMplsIp>();
+
+    /**
+     * mplsudp daemons
+     */
+    public static servGenList<servMplsUdp> dmnMplsUdp = new servGenList<servMplsUdp>();
 
     /**
      * gtp daemons
@@ -3060,6 +3066,7 @@ public class cfgAll {
         dmnL2tp2.getShRun(l, filter);
         dmnL2tp3.getShRun(l, filter);
         dmnMplsIp.getShRun(l, filter);
+        dmnMplsUdp.getShRun(l, filter);
         dmnGtp.getShRun(l, filter);
         dmnPptp.getShRun(l, filter);
         dmnRadius.getShRun(l, filter);

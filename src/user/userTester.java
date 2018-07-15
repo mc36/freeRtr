@@ -174,6 +174,9 @@ public class userTester {
             if (s.equals("openjdk10")) {
                 jvn = "/usr/lib/jvm/java-10-openjdk-amd64/bin/java";
             }
+            if (s.equals("openjdk11")) {
+                jvn = "/usr/lib/jvm/java-11-openjdk-amd64/bin/java";
+            }
             if (s.equals("ikvm")) {
                 jvn = "/usr/bin/ikvm";
                 mem = 0;
