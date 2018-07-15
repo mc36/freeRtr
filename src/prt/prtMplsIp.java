@@ -158,7 +158,9 @@ public class prtMplsIp implements ipPrt, ifcDn {
     }
 
     public void closeDn() {
-        lower.protoDel(this, sendingIfc, remote);
+        if (sendingIfc != null) {
+            lower.protoDel(this, sendingIfc, remote);
+        }
     }
 
     public void flapped() {

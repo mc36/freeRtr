@@ -64,6 +64,7 @@ import serv.servDhcp6;
 import serv.servDiscard;
 import serv.servDns;
 import serv.servEchoS;
+import serv.servEtherIp;
 import serv.servForwarder;
 import serv.servFtp;
 import serv.servGenList;
@@ -660,6 +661,8 @@ public class userConfig {
         l.add("2  3    l2tp2                        configure a l2tp v2 server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    l2tp3                        configure a l2tp v3 server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    etherip                      configure a etherip server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    mplsip                       configure a mplsip server");
         l.add("3  .      <name>                     name of server");
@@ -1269,6 +1272,10 @@ public class userConfig {
             }
             if (a.equals("l2tp3")) {
                 daemonMake(new servL2tp3(), cfgAll.dmnL2tp3);
+                return;
+            }
+            if (a.equals("etherip")) {
+                daemonMake(new servEtherIp(), cfgAll.dmnEtherIp);
                 return;
             }
             if (a.equals("mplsip")) {
@@ -2007,6 +2014,10 @@ public class userConfig {
             }
             if (a.equals("l2tp3")) {
                 daemonErase(new servL2tp3(), cfgAll.dmnL2tp3);
+                return;
+            }
+            if (a.equals("etherip")) {
+                daemonErase(new servEtherIp(), cfgAll.dmnEtherIp);
                 return;
             }
             if (a.equals("mplsip")) {

@@ -41,6 +41,7 @@ import serv.servHttp;
 import serv.servIrc;
 import serv.servIscsi;
 import serv.servBmp2mrt;
+import serv.servEtherIp;
 import serv.servL2f;
 import serv.servL2tp2;
 import serv.servL2tp3;
@@ -331,7 +332,8 @@ public class cfgInit implements Runnable {
                 int loc = bits.str2num(cmd.word());
                 cfgVrf vrf = cfgAll.vrfFind(cmd.word(), true);
                 int rem = bits.str2num(cmd.word());
-                prtLocTcp.startServer(loc, vrf, rem);
+                String adr = cmd.word();
+                prtLocTcp.startServer(loc, vrf, rem, adr);
                 continue;
             }
             if (s.equals("def")) {
@@ -616,6 +618,7 @@ public class cfgInit implements Runnable {
         servL2f.defaultF = createFilter(servL2f.defaultL, srvdefsF);
         servL2tp2.defaultF = createFilter(servL2tp2.defaultL, srvdefsF);
         servL2tp3.defaultF = createFilter(servL2tp3.defaultL, srvdefsF);
+        servEtherIp.defaultF = createFilter(servEtherIp.defaultL, srvdefsF);
         servMplsIp.defaultF = createFilter(servMplsIp.defaultL, srvdefsF);
         servMplsUdp.defaultF = createFilter(servMplsUdp.defaultL, srvdefsF);
         servLoadBalancer.defaultF = createFilter(servLoadBalancer.defaultL, srvdefsF);

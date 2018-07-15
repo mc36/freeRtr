@@ -88,6 +88,19 @@ public class clntEtherIp implements Runnable, ipPrt, ifcDn {
         return "etherip to " + fwdTrg;
     }
 
+    /**
+     * sent endpoints
+     *
+     * @param fwd forwarder
+     * @param ifc interface
+     * @param adr address
+     */
+    public void setEndpoints(ipFwd fwd, ipFwdIface ifc, addrIP adr) {
+        fwdCor = fwd;
+        fwdIfc = ifc;
+        fwdTrg = adr.copyBytes();
+    }
+
     public addrType getHwAddr() {
         return addrMac.getRandom();
     }

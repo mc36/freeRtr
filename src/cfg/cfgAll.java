@@ -30,6 +30,7 @@ import serv.servDhcp6;
 import serv.servDiscard;
 import serv.servDns;
 import serv.servEchoS;
+import serv.servEtherIp;
 import serv.servForwarder;
 import serv.servFtp;
 import serv.servGeneric;
@@ -544,6 +545,11 @@ public class cfgAll {
      * l2tp3 daemons
      */
     public static servGenList<servL2tp3> dmnL2tp3 = new servGenList<servL2tp3>();
+
+    /**
+     * etherip daemons
+     */
+    public static servGenList<servEtherIp> dmnEtherIp = new servGenList<servEtherIp>();
 
     /**
      * mplsip daemons
@@ -3065,6 +3071,7 @@ public class cfgAll {
         dmnL2f.getShRun(l, filter);
         dmnL2tp2.getShRun(l, filter);
         dmnL2tp3.getShRun(l, filter);
+        dmnEtherIp.getShRun(l, filter);
         dmnMplsIp.getShRun(l, filter);
         dmnMplsUdp.getShRun(l, filter);
         dmnGtp.getShRun(l, filter);

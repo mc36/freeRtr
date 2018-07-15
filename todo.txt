@@ -1,4 +1,4 @@
-servers for ipip, gre, etherip
+servers for ipip, gre
 autoroute with sr, bier support
 clean up javadoc errors
 changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines

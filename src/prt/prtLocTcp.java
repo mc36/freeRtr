@@ -34,10 +34,19 @@ public class prtLocTcp implements Runnable {
      * @param local os port
      * @param prt protocol to search
      * @param remote vrf port
+     * @param bind binding address, empty string if not restricted
      * @throws Exception if something went wrong
      */
-    public prtLocTcp(int local, prtGen prt, int remote) throws Exception {
-        socket = new ServerSocket(local);
+    public prtLocTcp(int local, prtGen prt, int remote, String bind) throws Exception {
+        InetAddress addr = null;
+        if (bind.length() > 0) {
+            try {
+                addr = InetAddress.getByName(bind);
+            } catch (Exception e) {
+                addr = null;
+            }
+        }
+        socket = new ServerSocket(local, 32, addr);
         proto = prt;
         port = remote;
         new Thread(this).start();
@@ -49,11 +58,12 @@ public class prtLocTcp implements Runnable {
      * @param loc local port
      * @param vrf vrf to use
      * @param rem remote port
+     * @param adr address to bind to, null if nothing
      * @return false on success, true on error
      */
-    public static boolean startServer(int loc, cfgVrf vrf, int rem) {
+    public static boolean startServer(int loc, cfgVrf vrf, int rem, String adr) {
         try {
-            new prtLocTcp(loc, vrf.tcp4, rem);
+            new prtLocTcp(loc, vrf.tcp4, rem, adr);
             return false;
         } catch (Exception e) {
             logger.traceback(e);
