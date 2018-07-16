@@ -1,7 +1,8 @@
-servers for ipip, gre
+servers for ipip
 autoroute with sr, bier support
 clean up javadoc errors
 changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
+silently accept ipv4 addr 1.1.1.1 /24 ipv6 addr 1234::1 /96
 bgp sr-policy afi
 bgp vpns with sr-policy
 recursive static route

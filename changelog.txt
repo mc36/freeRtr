@@ -8503,3 +8503,8 @@ qc pass: mplsudp server
 todo: servers for ipip, gre, etherip
 todo: clean up javadoc errors
 todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
+---------------------------------- 2018-07-15 19:27:51
+no todo: servers for ipip, gre, etherip
+qc pass: etherip server
+todo: servers for ipip
+todo: silently accept ipv4 addr 1.1.1.1 /24 ipv6 addr 1234::1 /96

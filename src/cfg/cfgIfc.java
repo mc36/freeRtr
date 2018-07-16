@@ -5,6 +5,7 @@ import addr.addrIPv4;
 import addr.addrIPv6;
 import addr.addrIpx;
 import addr.addrMac;
+import addr.addrPrefix;
 import clnt.clntDhcp4;
 import clnt.clntDhcp6;
 import clnt.clntDlsw;
@@ -6078,7 +6079,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             a = cmd.word();
             adr.fromString(a);
             hide4 = a.equals("dynamic");
-            if (msk.fromString(cmd.word())) {
+            a = cmd.word();
+            boolean res = false;
+            if (a.startsWith("/")) {
+                addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(adr, bits.str2num(a.substring(1, a.length())));
+                msk = prf.mask;
+            } else {
+                res = msk.fromString(a);
+            }
+            if (res) {
                 cmd.error("invalid netmask");
                 return;
             }
@@ -6179,7 +6188,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             a = cmd.word();
             adr.fromString(a);
             hide6 = a.equals("dynamic");
-            if (msk.fromString(cmd.word())) {
+            a = cmd.word();
+            boolean res = false;
+            if (a.startsWith("/")) {
+                addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(adr, bits.str2num(a.substring(1, a.length())));
+                msk = prf.mask;
+            } else {
+                res = msk.fromString(a);
+            }
+            if (res) {
                 cmd.error("invalid netmask");
                 return;
             }
