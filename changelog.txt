@@ -8508,3 +8508,5 @@ no todo: servers for ipip, gre, etherip
 qc pass: etherip server
 todo: servers for ipip
 todo: silently accept ipv4 addr 1.1.1.1 /24 ipv6 addr 1234::1 /96
+---------------------------------- 2018-07-17 06:43:33
+no todo: silently accept ipv4 addr 1.1.1.1 /24 ipv6 addr 1234::1 /96

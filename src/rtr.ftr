@@ -1522,7 +1522,6 @@ todo: servers for ipip
 todo: autoroute with sr, bier support
 todo: clean up javadoc errors
 todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
-todo: silently accept ipv4 addr 1.1.1.1 /24 ipv6 addr 1234::1 /96
 todo: bgp sr-policy afi
 todo: bgp vpns with sr-policy
 todo: recursive static route
