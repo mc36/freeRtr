@@ -72,6 +72,7 @@ import serv.servTime;
 import serv.servUdptn;
 import serv.servVxlan;
 import serv.servGeneve;
+import serv.servGre;
 import serv.servMplsIp;
 import serv.servMplsUdp;
 import serv.servNetflow;
@@ -619,6 +620,7 @@ public class cfgInit implements Runnable {
         servL2tp2.defaultF = createFilter(servL2tp2.defaultL, srvdefsF);
         servL2tp3.defaultF = createFilter(servL2tp3.defaultL, srvdefsF);
         servEtherIp.defaultF = createFilter(servEtherIp.defaultL, srvdefsF);
+        servGre.defaultF = createFilter(servGre.defaultL, srvdefsF);
         servMplsIp.defaultF = createFilter(servMplsIp.defaultL, srvdefsF);
         servMplsUdp.defaultF = createFilter(servMplsUdp.defaultL, srvdefsF);
         servLoadBalancer.defaultF = createFilter(servLoadBalancer.defaultL, srvdefsF);

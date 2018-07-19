@@ -178,7 +178,7 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
             return;
         }
         gre = new prtGre(fwdCor);
-        gre.setEndpoints(fwdIfc, fwdTrg);
+        gre.setEndpoints(fwdIfc, fwdTrg, true);
         gre.tunnelKey = vcid;
         gre.sendingTOS = sendingTOS;
         gre.sendingTTL = sendingTTL;

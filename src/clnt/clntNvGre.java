@@ -177,7 +177,7 @@ public class clntNvGre implements ifcDn, ifcUp, Runnable {
             return;
         }
         gre = new prtGre(fwdCor);
-        gre.setEndpoints(fwdIfc, fwdTrg);
+        gre.setEndpoints(fwdIfc, fwdTrg, true);
         gre.tunnelKey = vsid << 8;
         gre.tunnelMsk = 0xffffff00;
         gre.sendingTOS = sendingTOS;

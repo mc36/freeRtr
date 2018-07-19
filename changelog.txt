@@ -8510,3 +8510,8 @@ todo: servers for ipip
 todo: silently accept ipv4 addr 1.1.1.1 /24 ipv6 addr 1234::1 /96
 ---------------------------------- 2018-07-17 06:43:33
 no todo: silently accept ipv4 addr 1.1.1.1 /24 ipv6 addr 1234::1 /96
+---------------------------------- 2018-07-19 03:48:38
+no todo: servers for ipip
+qc pass: gre server
+todo: configurable session close behavior on reload
+todo: sorted filter for any column

@@ -116,6 +116,7 @@ qc pass: framerelay with gre
 qc pass: atmdxi with gre
 qc pass: isdn with gre
 qc pass: sep with gre
+qc pass: gre server
 qc pass: ppp over gtp
 qc pass: ethernet hairpin
 qc pass: serial hairpin
@@ -1518,7 +1519,8 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-todo: servers for ipip
+todo: configurable session close behavior on reload
+todo: sorted filter for any column
 todo: autoroute with sr, bier support
 todo: clean up javadoc errors
 todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines

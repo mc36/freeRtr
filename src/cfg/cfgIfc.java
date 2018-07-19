@@ -3205,7 +3205,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         switch (tunMode) {
             case gre:
                 tunGRE = new prtGre(fwd);
-                tunGRE.setEndpoints(ifc, tunTrg);
+                tunGRE.setEndpoints(ifc, tunTrg, true);
                 tunGRE.setUpper(ethtyp);
                 tunGRE.sendingTOS = tunTOS;
                 tunGRE.sendingTTL = tunTTL;

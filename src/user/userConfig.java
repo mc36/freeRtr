@@ -105,6 +105,7 @@ import serv.servHoneyPot;
 import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
+import serv.servGre;
 import serv.servMplsIp;
 import serv.servMplsUdp;
 import serv.servNetflow;
@@ -663,6 +664,8 @@ public class userConfig {
         l.add("2  3    l2tp3                        configure a l2tp v3 server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    etherip                      configure a etherip server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    gre                          configure a gre server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    mplsip                       configure a mplsip server");
         l.add("3  .      <name>                     name of server");
@@ -1276,6 +1279,10 @@ public class userConfig {
             }
             if (a.equals("etherip")) {
                 daemonMake(new servEtherIp(), cfgAll.dmnEtherIp);
+                return;
+            }
+            if (a.equals("gre")) {
+                daemonMake(new servGre(), cfgAll.dmnGre);
                 return;
             }
             if (a.equals("mplsip")) {
@@ -2018,6 +2025,10 @@ public class userConfig {
             }
             if (a.equals("etherip")) {
                 daemonErase(new servEtherIp(), cfgAll.dmnEtherIp);
+                return;
+            }
+            if (a.equals("gre")) {
+                daemonErase(new servGre(), cfgAll.dmnGre);
                 return;
             }
             if (a.equals("mplsip")) {

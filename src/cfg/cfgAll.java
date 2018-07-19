@@ -71,6 +71,7 @@ import serv.servHoneyPot;
 import serv.servRpki;
 import serv.servVxlan;
 import serv.servGeneve;
+import serv.servGre;
 import serv.servMplsIp;
 import serv.servMplsUdp;
 import serv.servNetflow;
@@ -550,6 +551,11 @@ public class cfgAll {
      * etherip daemons
      */
     public static servGenList<servEtherIp> dmnEtherIp = new servGenList<servEtherIp>();
+
+    /**
+     * gre daemons
+     */
+    public static servGenList<servGre> dmnGre = new servGenList<servGre>();
 
     /**
      * mplsip daemons
@@ -3072,6 +3078,7 @@ public class cfgAll {
         dmnL2tp2.getShRun(l, filter);
         dmnL2tp3.getShRun(l, filter);
         dmnEtherIp.getShRun(l, filter);
+        dmnGre.getShRun(l, filter);
         dmnMplsIp.getShRun(l, filter);
         dmnMplsUdp.getShRun(l, filter);
         dmnGtp.getShRun(l, filter);

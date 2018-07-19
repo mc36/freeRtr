@@ -1,5 +1,8 @@
-servers for ipip
+configurable session close behavior on reload
+protocol traceroute
+sorted filter for any column
 autoroute with sr, bier support
+terminal mode colorized
 clean up javadoc errors
 changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 bgp sr-policy afi

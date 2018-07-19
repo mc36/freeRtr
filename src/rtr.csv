@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v18.7.17-testing, done by cs@nop.;-;-
--;-;2018-07-17 14:52:24, took 08:08:50 on 1520 cases, 0 failed, 0 traces, 15 retries;-;-
+-;-;freeRouter v18.7.19-testing, done by cs@nop.;-;-
+-;-;2018-07-19 11:49:48, took 08:01:10 on 1521 cases, 0 failed, 0 traces, 12 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -120,6 +120,7 @@ conn-gre08.tst;0;framerelay with gre;successfully;finished
 conn-gre09.tst;0;atmdxi with gre;successfully;finished
 conn-gre10.tst;0;isdn with gre;successfully;finished
 conn-gre11.tst;0;sep with gre;successfully;finished
+conn-gre12.tst;0;gre server;successfully;finished
 conn-gtp.tst;0;ppp over gtp;successfully;finished
 conn-hairpin01.tst;0;ethernet hairpin;successfully;finished
 conn-hairpin02.tst;0;serial hairpin;successfully;finished
