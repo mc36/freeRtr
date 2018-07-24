@@ -65,6 +65,10 @@ public class player implements Runnable {
 
     private String srate = "44100";
 
+    private int volMin;
+
+    private int volMax;
+
     private Random rndSeed = new Random();
 
     private playerLyric playlists = null;
@@ -230,13 +234,14 @@ public class player implements Runnable {
     }
 
     private synchronized void setVolume(int vol) {
+        int fvol = volMin + ((vol * (volMax - volMin)) / 100);
         try {
             Runtime rtm = Runtime.getRuntime();
             String[] cmd = new String[4];
             cmd[0] = "amixer";
             cmd[1] = "sset";
             cmd[2] = mixer;
-            cmd[3] = vol + "%";
+            cmd[3] = fvol + "%";
             Process prc = rtm.exec(cmd);
             prc.waitFor();
             currVlme = vol;
@@ -266,6 +271,7 @@ public class player implements Runnable {
 
     public void run() {
         playlists = playerUtil.readup("/etc/asound.conf");
+        int volDef = 50;
         if (playlists != null) {
             for (int i = 0; i < playlists.size(); i++) {
                 String a = playlists.get(i);
@@ -283,12 +289,24 @@ public class player implements Runnable {
                     srate = b;
                     continue;
                 }
+                if (a.equals("#player.class volmin")) {
+                    volMin = playerUtil.str2int(b);
+                    continue;
+                }
+                if (a.equals("#player.class volmax")) {
+                    volMax = playerUtil.str2int(b);
+                    continue;
+                }
+                if (a.equals("#player.class voldef")) {
+                    volDef = playerUtil.str2int(b);
+                    continue;
+                }
             }
         }
         playlists = playerUtil.readup(path + ".cfg");
         playlist = playerSong.txt2pls(null, playerUtil.readup(playlists.get(0)));
         prelock = playlist;
-        setVolume(50);
+        setVolume(volDef);
         startPlay(-1, "0");
         ready = true;
         for (;;) {

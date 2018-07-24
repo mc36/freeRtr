@@ -1,8 +1,11 @@
-configurable session close behavior on reload
-protocol traceroute
-sorted filter for any column
-autoroute with sr, bier support
+access-map and access-policy that checks for source within servers
+router trigger
+sorted, uniq | filter for any column
 terminal mode colorized
+protocol traceroute
+autoroute with sr, bier support
+temper: web access log
+http server: access log to syslog
 clean up javadoc errors
 changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 bgp sr-policy afi
@@ -28,6 +31,7 @@ ilnp (rfc6740)
 lisp4, lisp6
 l2vpn for isis
 hip (rfc4423)
+ttl handling follow the selected forwarder, reconfigurable if more
 more show commands
 more clear commands
 more interactive tools

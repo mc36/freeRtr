@@ -613,6 +613,11 @@ public class cfgAll {
     public static boolean preferIpv6 = false;
 
     /**
+     * graceful reload
+     */
+    public static boolean graceReload = true;
+
+    /**
      * chatter
      */
     public static final chatter chat = new chatter();
@@ -864,6 +869,7 @@ public class cfgAll {
         "!no client mail-username",
         "!no client mail-password",
         "!no client prefer-ipv6",
+        "!client graceful-reload",
         "!client ftp-passive",
         "!client unreach-interval 0",
         "!no client punish-pmtud",
@@ -2937,6 +2943,7 @@ public class cfgAll {
             l.add("client name-proxy " + nameServerProxy.name);
         }
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
+        cmds.cfgLine(l, !graceReload, "", "client graceful-reload", "");
         l.add("client unreach-interval " + unreachInt);
         cmds.cfgLine(l, !ruinPmtuD, "", "client punish-pmtud", "");
         l.add("client ipv4-checksum " + rxtx2string(ipv4ChecksumRx, ipv4ChecksumTx));

@@ -763,7 +763,7 @@ public class cfgInit implements Runnable {
             } catch (Exception e) {
             }
         }
-        if (clean) {
+        if (clean && cfgAll.graceReload) {
             for (int i = 0; i < cfgAll.vrfs.size(); i++) {
                 try {
                     cfgAll.vrfs.get(i).closeConns();

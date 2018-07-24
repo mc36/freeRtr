@@ -8515,3 +8515,15 @@ no todo: servers for ipip
 qc pass: gre server
 todo: configurable session close behavior on reload
 todo: sorted filter for any column
+---------------------------------- 2018-07-19 21:13:07
+no todo: sorted filter for any column
+no todo: configurable session close behavior on reload
+---------------------------------- 2018-07-22 23:32:50
+todo: access-map and access-policy that checks for source within servers
+todo: router trigger
+todo: sorted, uniq | filter for any column
+todo: terminal mode colorized
+todo: protocol traceroute
+todo: temper: web access log
+todo: http server: access log to syslog
+todo: ttl handling follow the selected forwarder, reconfigurable if more

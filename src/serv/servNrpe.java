@@ -20,6 +20,7 @@ import user.userFilter;
 import user.userFormat;
 import user.userHelping;
 import user.userReader;
+import util.bits;
 import util.cmds;
 import util.debugger;
 import util.logger;
@@ -47,11 +48,35 @@ public class servNrpe extends servGeneric implements prtServS {
     public tabGen<servNrpeRep> reps = new tabGen<servNrpeRep>();
 
     /**
+     * send out command after error text
+     */
+    public boolean sendCmds = false;
+
+    /**
+     * send out my name after error text
+     */
+    public boolean sendMyId = false;
+
+    /**
+     * don't send out error/ok
+     */
+    public boolean noState = false;
+
+    /**
+     * truncate first line
+     */
+    public int truncState = 0;
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
         "server nrpe .*! port " + packNrpe.portNum,
         "server nrpe .*! protocol " + proto2string(protoAllStrm),
+        "server nrpe .*! error-truncate 0",
+        "server nrpe .*! no error-states",
+        "server nrpe .*! no error-commands",
+        "server nrpe .*! no error-hostname",
         "server nrpe .*! no check .* description",
         "server nrpe .*! no check .* error",
         "server nrpe .*! no check .* alternate",};
@@ -86,6 +111,10 @@ public class servNrpe extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst) {
+        cmds.cfgLine(lst, !sendCmds, beg, "error-commands", "");
+        cmds.cfgLine(lst, !sendMyId, beg, "error-hostname", "");
+        cmds.cfgLine(lst, !noState, beg, "error-states", "");
+        lst.add(beg + "error-truncate " + truncState);
         for (int i = 0; i < ress.size(); i++) {
             lst.add(beg + "resolve " + ress.get(i));
         }
@@ -122,6 +151,25 @@ public class servNrpe extends servGeneric implements prtServS {
         boolean negated = s.equals("no");
         if (negated) {
             s = cmd.word();
+        }
+        if (s.equals("error-commands")) {
+            sendCmds = !negated;
+            return false;
+        }
+        if (s.equals("error-hostname")) {
+            sendMyId = !negated;
+            return false;
+        }
+        if (s.equals("error-states")) {
+            noState = !negated;
+            return false;
+        }
+        if (s.equals("error-truncate")) {
+            truncState = bits.str2num(cmd.word());
+            if (negated) {
+                truncState = 0;
+            }
+            return false;
         }
         if (s.equals("resolve")) {
             String a = cmd.word();
@@ -233,6 +281,11 @@ public class servNrpe extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add("1 2  error-truncate               truncate first line");
+        l.add("2 .    <num>                      upper limit in characters");
+        l.add("1 .  error-states                 remove state of messages");
+        l.add("1 .  error-commands               include commands in states");
+        l.add("1 .  error-hostname               include local hostname in states");
         l.add("1 2  resolve                      resolve the regexp group a to hostname");
         l.add("2 3    <name>                     regexp of checks");
         l.add("3 3,.    <str>                    text to resolve");
@@ -327,9 +380,27 @@ class servNrpeConn implements Runnable {
                     continue;
                 }
                 pck.cod = packNrpe.coCri;
-                pck.str = "ERROR " + lst.size();
+                pck.str = "";
+                if (!lower.noState) {
+                    pck.str += "ERROR ";
+                }
+                pck.str += lst.size() + " ";
                 if (ntry.err != null) {
-                    pck.str += " " + ntry.err;
+                    pck.str += ntry.err + " ";
+                }
+                if (lower.sendMyId) {
+                    pck.str += cfgAll.hostName + "#";
+                }
+                if (lower.sendCmds) {
+                    pck.str += ntry.cmd + " ";
+                }
+                pck.str = pck.str.trim();
+                if (lower.truncState > 0) {
+                    int i = pck.str.length();
+                    if (i > lower.truncState) {
+                        i = lower.truncState;
+                    }
+                    pck.str = pck.str.substring(0, i);
                 }
                 String a = new String(pck.sep);
                 for (int i = 0; i < lst.size(); i++) {

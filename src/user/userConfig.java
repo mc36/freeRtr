@@ -426,6 +426,7 @@ public class userConfig {
         l.add("2  .    config-save                  automatically save configuration");
         l.add("2  .    config-archive               automatically archive configuration");
         l.add("2  .    config-exclusive             allow only one user in configuration mode");
+        l.add("2  .    graceful-reload              close sessions before reload");
         l.add("2  .    prefer-ipv6                  prefer ipv6 for domains");
         l.add("2  .    prefer-ipv4                  prefer ipv4 for domains");
         l.add("2  3    ipv4-checksum                set ipv4 checksum mode");
@@ -1314,6 +1315,10 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("graceful-reload")) {
+                cfgAll.graceReload = true;
+                return;
+            }
             if (a.equals("prefer-ipv6")) {
                 cfgAll.preferIpv6 = true;
                 return;
@@ -2060,6 +2065,10 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("graceful-reload")) {
+                cfgAll.graceReload = false;
+                return;
+            }
             if (a.equals("prefer-ipv6")) {
                 cfgAll.preferIpv6 = false;
                 return;
