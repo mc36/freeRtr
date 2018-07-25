@@ -679,6 +679,9 @@ public class ifcBridge implements ifcDn {
             }
             lrn = old;
         } else {
+            if (macMove) {
+                logger.info(pck.ETHsrc + " learned from " + ifc.getIfcName());
+            }
             if ((ifc.lowerIf == null) && (macRouter != null)) {
                 macRouter.bridgeChanged();
             }

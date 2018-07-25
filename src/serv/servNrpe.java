@@ -391,7 +391,7 @@ class servNrpeConn implements Runnable {
                     pck.str += "lines(s) changed ";
                 }
                 if (lower.sendMyId) {
-                    pck.str += cfgAll.hostName + "#";
+                    pck.str += " - " + cfgAll.hostName + "#";
                 }
                 if (lower.sendCmds) {
                     pck.str += ntry.cmd + " ";

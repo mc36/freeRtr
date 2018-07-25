@@ -1,4 +1,5 @@
 router trigger
+counter to the tabroute, configurable per process
 sorted, uniq | filter for any column
 terminal mode colorized
 protocol traceroute
@@ -34,6 +35,7 @@ ttl handling follow the selected forwarder, reconfigurable if more
 more show commands
 more clear commands
 more interactive tools
+more features with clean implementation
 igmp4/6 snoop, pim4/6 snoop for bridging
 multilink ppp, fr
 x25

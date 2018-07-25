@@ -886,19 +886,20 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         if (ntry == null) {
             return true;
         }
+        ntry = ntry.copyBytes();
         if (srvPrfLst != null) {
             if (!srvPrfLst.matches(1, ntry.prefix)) {
                 return true;
             }
         }
         if (srvRouMap != null) {
-            ntry = srvRouMap.update(1, ntry, true);
+            ntry = srvRouMap.update(1, ntry, false);
             if (ntry == null) {
                 return true;
             }
         }
         if (srvRouPol != null) {
-            ntry = tabRtrplc.doRpl(1, ntry, srvRouPol, true);
+            ntry = tabRtrplc.doRpl(1, ntry, srvRouPol, false);
             if (ntry == null) {
                 return true;
             }

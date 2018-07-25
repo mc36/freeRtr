@@ -65,9 +65,9 @@ public class player implements Runnable {
 
     private String srate = "44100";
 
-    private int volMin;
+    private int volMin = 0;
 
-    private int volMax;
+    private int volMax = 100;
 
     private Random rndSeed = new Random();
 
@@ -759,7 +759,7 @@ public class player implements Runnable {
                 String a = "<a href=\"" + urlR + "?cmd=list&song=" + (i + 1) + "\">" + playlists.get(i) + "</a><br/>";
                 buf.write(a.getBytes());
             }
-            String a = "mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", lists=" + playlists.size() + "<br/>";
+            String a = "mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/>";
             buf.write(a.getBytes());
             a = "<br/><a href=\"" + urlR + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
             buf.write(a.getBytes());
