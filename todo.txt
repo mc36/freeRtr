@@ -1,4 +1,3 @@
-access-map and access-policy that checks for source within servers
 router trigger
 sorted, uniq | filter for any column
 terminal mode colorized

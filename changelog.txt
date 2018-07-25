@@ -8527,3 +8527,5 @@ todo: protocol traceroute
 todo: temper: web access log
 todo: http server: access log to syslog
 todo: ttl handling follow the selected forwarder, reconfigurable if more
+---------------------------------- 2018-07-24 20:58:43
+no todo: access-map and access-policy that checks for source within servers

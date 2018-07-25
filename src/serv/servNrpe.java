@@ -387,6 +387,8 @@ class servNrpeConn implements Runnable {
                 pck.str += lst.size() + " ";
                 if (ntry.err != null) {
                     pck.str += ntry.err + " ";
+                } else {
+                    pck.str += "lines(s) changed ";
                 }
                 if (lower.sendMyId) {
                     pck.str += cfgAll.hostName + "#";

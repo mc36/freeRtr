@@ -8,11 +8,15 @@ import cfg.cfgAuther;
 import cfg.cfgCert;
 import cfg.cfgIfc;
 import cfg.cfgKey;
+import cfg.cfgPrfxlst;
+import cfg.cfgRoump;
+import cfg.cfgRouplc;
 import cfg.cfgVrf;
 import cry.cryCertificate;
 import cry.cryKeyDSA;
 import cry.cryKeyECDSA;
 import cry.cryKeyRSA;
+import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipPrt;
 import java.util.ArrayList;
@@ -29,6 +33,11 @@ import sec.secServer;
 import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabListing;
+import tab.tabPrfxlstN;
+import tab.tabRouteEntry;
+import tab.tabRtrmapN;
+import tab.tabRtrplc;
+import tab.tabRtrplcN;
 import user.userFilter;
 import user.userHelping;
 import util.bits;
@@ -71,6 +80,21 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * access list to use
      */
     protected tabListing<tabAceslstN<addrIP>, addrIP> srvAccess;
+
+    /**
+     * access prefix list
+     */
+    public tabListing<tabPrfxlstN, addrIP> srvPrfLst;
+
+    /**
+     * access route map
+     */
+    public tabListing<tabRtrmapN, addrIP> srvRouMap;
+
+    /**
+     * access route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> srvRouPol;
 
     /**
      * limit of all clients
@@ -236,6 +260,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         "server .*! no security dsacert",
         "server .*! no security ecdsacert",
         "server .*! no access-class",
+        "server .*! no access-prefix",
+        "server .*! no access-map",
+        "server .*! no access-policy",
         "server .*! access-total 0",
         "server .*! access-peer 0",
         "server .*! no access-log",
@@ -850,7 +877,39 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         return res;
     }
 
+    private boolean srvCheckAccept(addrIP adr) {
+        if ((srvPrfLst == null) && (srvRouMap == null) && (srvRouPol == null)) {
+            return false;
+        }
+        ipFwd fwd = srvVrf.getFwd(adr);
+        tabRouteEntry<addrIP> ntry = fwd.actualU.route(adr);
+        if (ntry == null) {
+            return true;
+        }
+        if (srvPrfLst != null) {
+            if (!srvPrfLst.matches(1, ntry.prefix)) {
+                return true;
+            }
+        }
+        if (srvRouMap != null) {
+            ntry = srvRouMap.update(1, ntry, true);
+            if (ntry == null) {
+                return true;
+            }
+        }
+        if (srvRouPol != null) {
+            ntry = tabRtrplc.doRpl(1, ntry, srvRouPol, true);
+            if (ntry == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean srvCheckAccept(prtGenConn conn) {
+        if (srvCheckAccept(conn.peerAddr)) {
+            return true;
+        }
         if (srvAccess != null) {
             if (!srvAccess.matches(conn)) {
                 if (srvLogDrop) {
@@ -886,6 +945,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * @return false if acceptable, true if not
      */
     protected boolean srvCheckAccept(ipFwdIface ifc, packHolder pck) {
+        if (srvCheckAccept(pck.IPsrc)) {
+            return true;
+        }
         if (srvAccess != null) {
             if (!srvAccess.matches(false, false, pck)) {
                 if (srvLogDrop) {
@@ -972,6 +1034,12 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         l.add("2 .    <num>                port number to use");
         l.add("1 2  access-class           set access list");
         l.add("2 .    <name>               access list name");
+        l.add("1 2  access-prefix          set prefix list");
+        l.add("2 .    <name>               prefix list name");
+        l.add("1 2  access-map             set route map");
+        l.add("2 .    <name>               route map name");
+        l.add("1 2  access-policy          set route policy");
+        l.add("2 .    <name>               route policy name");
         l.add("1 2  access-total           session limit for this server");
         l.add("2 .    <num>                number of connections");
         l.add("1 2  access-peer            per client session limit");
@@ -1063,6 +1131,22 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         } else {
             l.add(beg + "no access-class");
         }
+        if (srvPrfLst != null) {
+            l.add(beg + "access-prefix " + srvPrfLst.listName);
+        } else {
+            l.add(beg + "no access-prefix");
+        }
+        if (srvRouMap != null) {
+            l.add(beg + "access-map " + srvRouMap.listName);
+        } else {
+            l.add(beg + "no access-map");
+        }
+        if (srvRouPol != null) {
+            l.add(beg + "access-policy " + srvRouPol.listName);
+        } else {
+            l.add(beg + "no access-policy");
+        }
+
         cmds.cfgLine(l, !srvLogDrop, beg, "access-log", "");
         l.add(beg + "access-total " + srvTotLim);
         l.add(beg + "access-peer " + srvPerLim);
@@ -1163,6 +1247,33 @@ public abstract class servGeneric implements Comparator<servGeneric> {
                 return false;
             }
             srvAccess = ntry.aceslst;
+            return false;
+        }
+        if (a.equals("access-prefix")) {
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return false;
+            }
+            srvPrfLst = ntry.prflst;
+            return false;
+        }
+        if (a.equals("access-map")) {
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            srvRouMap = ntry.roumap;
+            return false;
+        }
+        if (a.equals("access-policy")) {
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return false;
+            }
+            srvRouPol = ntry.rouplc;
             return false;
         }
         if (a.equals("security")) {
@@ -1276,6 +1387,18 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             }
             if (a.equals("access-class")) {
                 srvAccess = null;
+                return false;
+            }
+            if (a.equals("access-prefix")) {
+                srvPrfLst = null;
+                return false;
+            }
+            if (a.equals("access-map")) {
+                srvRouMap = null;
+                return false;
+            }
+            if (a.equals("access-policy")) {
+                srvRouPol = null;
                 return false;
             }
         }
