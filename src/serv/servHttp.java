@@ -98,6 +98,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! host .* nostyle",
         "server http .*! host .* noredir",
         "server http .*! host .* noreconn",
+        "server http .*! host .* nologging",
         "server http .*! host .* nosubconn",
         "server http .*! host .* noimagemap",
         "server http .*! host .* nowebsock",
@@ -175,6 +176,11 @@ public class servHttp extends servGeneric implements prtServS {
                 l.add(a + " redir " + ntry.redir);
             } else {
                 l.add(a + " noredir");
+            }
+            if (ntry.logging) {
+                l.add(a + " logging");
+            } else {
+                l.add(a + " nologging");
             }
             if (ntry.reconnT != null) {
                 l.add(a + " reconn " + ntry.reconnP.name + " " + ntry.reconnT);
@@ -333,6 +339,14 @@ public class servHttp extends servGeneric implements prtServS {
         }
         if (a.equals("noredir")) {
             ntry.redir = null;
+            return false;
+        }
+        if (a.equals("logging")) {
+            ntry.logging = true;
+            return false;
+        }
+        if (a.equals("nologging")) {
+            ntry.logging = false;
             return false;
         }
         if (a.equals("reconn")) {
@@ -550,6 +564,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("3 4      redir                      set redirect path");
         l.add("4 .        <url>                    url to redirect to");
         l.add("3 .      noredir                    disable redirect");
+        l.add("3 .      logging                    log to syslog");
+        l.add("3 .      nologging                  stop logging to syslog");
         l.add("3 4      reconn                     reconnect to server");
         l.add("4 5        <name>                   proxy profile");
         l.add("5 .          <name>                 server to redirect to");
@@ -649,6 +665,11 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      * url to redirect to
      */
     public String redir;
+
+    /**
+     * log to syslog
+     */
+    public boolean logging;
 
     /**
      * proxy for reconnection
@@ -1806,6 +1827,9 @@ class servHttpConn implements Runnable {
         if (gotHost == null) {
             sendRespError(404, "not found");
             return;
+        }
+        if (gotHost.logging) {
+            logger.info(conn.peerAddr + " accessed " + gotUrl.toURL(false, true));
         }
         if (gotHost.allowAnyconn != null) {
             gotUrl.port = lower.srvPort;

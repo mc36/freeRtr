@@ -71,6 +71,7 @@ import util.cmds;
 import util.counter;
 import util.history;
 import util.logger;
+import util.verCore;
 import util.version;
 
 /**
@@ -147,6 +148,9 @@ public class userShow {
         }
         if (a.equals("flash")) {
             a = cmd.getRemaining();
+            if (verCore.release) {
+                a = "";
+            }
             if (a.length() < 1) {
                 a = "./";
             }

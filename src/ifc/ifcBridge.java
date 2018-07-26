@@ -574,6 +574,9 @@ public class ifcBridge implements ifcDn {
             if (debugger.ifcBridgeTraf) {
                 logger.debug("purge " + ntry);
             }
+            if (macMove) {
+                logger.info(ntry.adr + " disappeared from " + ntry.ifc.getIfcName());
+            }
             learned.del(ntry);
             if ((macRouter != null) && (ntry.ifc.lowerIf == null)) {
                 macRouter.bridgeChanged();
@@ -740,6 +743,9 @@ public class ifcBridge implements ifcDn {
     protected void portFlap() {
         if (learned != null) {
             learned.clear();
+        }
+        if (macMove) {
+            logger.info("table flush");
         }
         if (macRouter != null) {
             macRouter.bridgeChanged();

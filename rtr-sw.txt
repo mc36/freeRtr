@@ -869,6 +869,7 @@ server http web
  access-total 128
  access-peer 16
  host * path /nfs2/own/web/home/
+ host * logging
  host * dirlist
  host * script
  host * websock
