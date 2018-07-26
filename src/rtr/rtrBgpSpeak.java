@@ -1201,7 +1201,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         peerHold = pck.msbGetW(3) * 1000;
         if (peerHold < neigh.holdTimer) {
             peerKeep = peerHold / 3;
-            pipe.timeout = peerHold;
+            if (pipe != null) {
+                pipe.timeout = peerHold;
+            }
         }
         pck.getAddr(peerRouterID, 5);
         i = pck.getByte(9);
