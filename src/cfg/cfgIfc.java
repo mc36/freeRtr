@@ -4277,7 +4277,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                     a += ", bundle=" + bundleHed.name;
                 }
                 if (carrierDelay != 0) {
-                    a += ", carrdel=" + carrierDelay; // the useless tool
+                    a += ", carrdel=" + carrierDelay;
                 }
                 l.add(cmds.tabulator + "type is " + type2string() + a);
                 if (fwdIf4 != null) {

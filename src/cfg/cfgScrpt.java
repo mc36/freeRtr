@@ -207,7 +207,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         }
         if (a.equals("editor")) {
             List<String> txt = getText();
-            userEditor e = new userEditor(new userScreen(cmd.pipe, 80, 25), txt, "script");
+            userEditor e = new userEditor(new userScreen(cmd.pipe, 80, 25), txt, "script", false);
             if (e.doEdit()) {
                 return;
             }

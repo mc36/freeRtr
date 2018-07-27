@@ -504,6 +504,19 @@ public class counter implements Comparator<counter> {
     }
 
     /**
+     * get statistics
+     *
+     * @param c counter to show
+     * @return statistics
+     */
+    public static String getShStat(counter c) {
+        if (c == null) {
+            return null;
+        }
+        return c.getShStat();
+    }
+
+    /**
      * get byte summary
      *
      * @return summary for table

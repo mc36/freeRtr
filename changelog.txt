@@ -8533,3 +8533,6 @@ no todo: access-map and access-policy that checks for source within servers
 no todo: http server: access log to syslog
 todo: counter to the tabroute, configurable per process
 todo: more features with clean implementation
+---------------------------------- 2018-07-26 19:05:39
+no todo: counter to the tabroute, configurable per process
+no todo: router trigger

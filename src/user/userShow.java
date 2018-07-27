@@ -1029,6 +1029,10 @@ public class userShow {
                 rdr.putStrTab(ifc.ipIf4.getShCache());
                 return null;
             }
+            if (a.equals("counter")) {
+                doShowCounter(4);
+                return null;
+            }
             if (a.equals("route")) {
                 doShowRouteU(4);
                 return null;
@@ -1253,6 +1257,10 @@ public class userShow {
                     return null;
                 }
                 rdr.putStrTab(ifc.ipIf6.getShCache());
+                return null;
+            }
+            if (a.equals("counter")) {
+                doShowCounter(6);
                 return null;
             }
             if (a.equals("route")) {
@@ -2735,6 +2743,14 @@ public class userShow {
         rdr.putStrTab(l);
     }
 
+    private void doShowCounter(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        doShowRoutes(fwd, fwd.actualU, 6);
+    }
+
     private void doShowRouteU(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -2797,6 +2813,9 @@ public class userShow {
             case 4:
                 l = new userFormat("|", "prefix|max|as");
                 break;
+            case 6:
+                l = new userFormat("|", "prefix|time|traffic");
+                break;
             default:
                 return;
         }
@@ -2820,6 +2839,13 @@ public class userShow {
                     break;
                 case 5:
                     l.add(tabRouteEntry.toShEvpn(prf));
+                    break;
+                case 6:
+                    String a = tabRouteEntry.toShCntr(prf);
+                    if (a == null) {
+                        continue;
+                    }
+                    l.add(a);
                     break;
             }
         }

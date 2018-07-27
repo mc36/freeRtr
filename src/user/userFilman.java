@@ -260,21 +260,21 @@ public class userFilman {
     private void doKeyF2() {
         String a = pan[act].getFn();
         List<String> b = userFlash.binRead(a);
-        userEditor v = new userEditor(console, b, a);
+        userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
 
     private void doKeyF3() {
         String a = pan[act].getFn();
         List<String> b = bits.txt2buf(a);
-        userEditor v = new userEditor(console, b, a);
+        userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
 
     private void doKeyF4() {
         String a = pan[act].getFn();
         List<String> b = bits.txt2buf(a);
-        userEditor e = new userEditor(console, b, a);
+        userEditor e = new userEditor(console, b, a, false);
         if (e.doEdit()) {
             return;
         }

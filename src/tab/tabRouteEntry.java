@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import util.bits;
+import util.counter;
 
 /**
  * represents one route table entry
@@ -441,6 +442,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     public addrPrefix<T> prefix;
 
     /**
+     * counter
+     */
+    public counter cntr;
+
+    /**
      * convert route type to string
      *
      * @param i route type
@@ -603,6 +609,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         prf.time = time;
         prf.version = version;
         prf.iface = iface;
+        prf.cntr = cntr;
         return prf;
     }
 
@@ -1015,6 +1022,19 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         return addrPrefix.ip2evpn(prf.prefix) + " " + tabRtrmapN.rd2string(prf.rouDst) + getBgpLast(prf);
     }
 
+    /**
+     * convert to counter format
+     *
+     * @param prf entry to dump
+     * @return converted
+     */
+    public static String toShCntr(tabRouteEntry<addrIP> prf) {
+        if (prf.cntr == null) {
+            return null;
+        }
+        return addrPrefix.ip2str(prf.prefix) + "|" + bits.timePast(prf.time) + "|" + prf.cntr.getShStat();
+    }
+
     private static String getBgpLast(tabRouteEntry<addrIP> prf) {
         return "|" + prf.nextHop + "|"
                 + prf.distance + "/" + prf.locPref + "/" + prf.origin + "/"
@@ -1186,6 +1206,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         l.add("internal source = " + rouSrc);
         l.add("local label = " + labelLoc);
         l.add("remote label = " + dumpIntList(labelRem, "", ""));
+        l.add("counter = " + counter.getShStat(cntr));
         return l;
     }
 

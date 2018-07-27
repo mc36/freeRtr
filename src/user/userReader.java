@@ -302,7 +302,7 @@ public class userReader {
             case headers:
                 return userFilter.getSecList(userFilter.text2section(lst), null, null);
             case viewer:
-                userEditor edtr = new userEditor(new userScreen(pipe, width, height), lst, "result");
+                userEditor edtr = new userEditor(new userScreen(pipe, width, height), lst, "result", false);
                 edtr.doView();
                 return new ArrayList<String>();
             case level:

@@ -33,6 +33,7 @@ import sec.secServer;
 import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabListing;
+import tab.tabPlcmapN;
 import tab.tabPrfxlstN;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
@@ -886,20 +887,22 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         if (ntry == null) {
             return true;
         }
-        ntry = ntry.copyBytes();
         if (srvPrfLst != null) {
             if (!srvPrfLst.matches(1, ntry.prefix)) {
                 return true;
             }
         }
         if (srvRouMap != null) {
-            ntry = srvRouMap.update(1, ntry, false);
-            if (ntry == null) {
+            tabRtrmapN rmn = srvRouMap.find(1, ntry);
+            if (rmn == null) {
+                return true;
+            }
+            if (rmn.action != tabPlcmapN.actionType.actPermit) {
                 return true;
             }
         }
         if (srvRouPol != null) {
-            ntry = tabRtrplc.doRpl(1, ntry, srvRouPol, false);
+            ntry = tabRtrplc.doRpl(1, ntry, srvRouPol, true);
             if (ntry == null) {
                 return true;
             }

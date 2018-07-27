@@ -21,11 +21,14 @@ import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabNatCfgN;
 import tab.tabNatTraN;
+import tab.tabPlcmapN;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
+import tab.tabRtrmapN;
 import user.userFormat;
 import util.bits;
+import util.counter;
 import util.debugger;
 import util.logger;
 
@@ -575,6 +578,25 @@ public class ipFwdTab {
             tabU.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true, tabRouteEntry.distanMax);
             tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true, tabRouteEntry.distanMax);
             tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteEntry.distanMax);
+        }
+        if (lower.counterMap != null) {
+            for (int i = 0; i < tabU.size(); i++) {
+                tabRouteEntry<addrIP> ntry = tabU.get(i);
+                tabRtrmapN rmn = lower.counterMap.find(1, ntry);
+                if (rmn == null) {
+                    continue;
+                }
+                if (rmn.action != tabPlcmapN.actionType.actPermit) {
+                    continue;
+                }
+                tabRouteEntry<addrIP> old = lower.actualU.find(ntry);
+                if (old != null) {
+                    ntry.cntr = old.cntr;
+                }
+                if (ntry.cntr == null) {
+                    ntry.cntr = new counter();
+                }
+            }
         }
         switch (lower.prefixMode) {
             case igp:

@@ -232,6 +232,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public tabListing<tabAceslstN<addrIP>, addrIP> sourceRoute;
 
     /**
+     * traffic counter filter
+     */
+    public tabListing<tabRtrmapN, addrIP> counterMap;
+
+    /**
      * import list
      */
     public tabListing<tabPrfxlstN, addrIP> importList;
@@ -1662,6 +1667,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (prf == null) {
             doDrop(pck, rxIfc, counter.reasons.noRoute);
             return;
+        }
+        if (prf.cntr != null) {
+            prf.cntr.tx(pck);
         }
         if (prf.rouTab != null) {
             if (prf.labelRem == null) {

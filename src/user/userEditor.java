@@ -1,5 +1,6 @@
 package user;
 
+import cfg.cfgAll;
 import java.util.ArrayList;
 import java.util.List;
 import util.bits;
@@ -17,6 +18,8 @@ public class userEditor {
     private final List<String> buffer;
 
     private final String title;
+
+    private final boolean clock;
 
     private boolean readOnly;
 
@@ -40,10 +43,12 @@ public class userEditor {
      * @param pip console
      * @param buf buffer
      * @param tit title
+     * @param clk clock
      */
-    public userEditor(userScreen pip, List<String> buf, String tit) {
+    public userEditor(userScreen pip, List<String> buf, String tit, boolean clk) {
         console = pip;
         title = tit;
+        clock = clk;
         if (buf == null) {
             buffer = new ArrayList<String>();
         } else {
@@ -490,6 +495,11 @@ public class userEditor {
     private void putHeader() {
         putFill(0, userScreen.colGreen, userScreen.colWhite, 32);
         console.putStr(0, 0, userScreen.colGreen, userScreen.colBrYellow, false, version.namVer);
+        if (!clock) {
+            return;
+        }
+        String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3);
+        console.putStr(console.sizX - a.length() - 1, 0, userScreen.colGreen, userScreen.colBrYellow, false, a);
     }
 
     private void putFooter() {

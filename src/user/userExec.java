@@ -153,6 +153,9 @@ public class userExec {
         hl.add("5 .            drphistory        historic drop packet counters");
         hl.add("5 .            numhist           numeric historic byte counters");
         hl.add("5 .            numphist          numeric historic packet counters");
+        hl.add("3 4        counter               unicast routing table traffic");
+        hl.add("4 5,.        <vrf>               name of routing table");
+        hl.add("5 .            [addr]            prefix to view");
         hl.add("3 4        route                 unicast routing table entries");
         hl.add("4 5,.        <vrf>               name of routing table");
         hl.add("5 .            [addr]            prefix to view");
@@ -1534,8 +1537,7 @@ public class userExec {
                     a = a + new String(buf);
                 }
                 txt.add(a);
-                userEditor e = new userEditor(new userScreen(cmd.pipe, 80, 25),
-                        txt, "banner");
+                userEditor e = new userEditor(new userScreen(cmd.pipe, reader.width, reader.height), txt, "banner", false);
                 if (e.doEdit()) {
                     return null;
                 }
@@ -1554,8 +1556,7 @@ public class userExec {
                 List<String> c1 = bits.txt2buf(cfgInit.cfgFileSw);
                 List<String> c2 = new ArrayList<String>();
                 c2.addAll(c1);
-                userEditor e = new userEditor(new userScreen(pipe,
-                        reader.width, reader.height), c2, "section '" + a + "'");
+                userEditor e = new userEditor(new userScreen(pipe, reader.width, reader.height), c2, "section '" + a + "'", false);
                 if (e.doEdit()) {
                     return cmdRes.command;
                 }
@@ -1575,8 +1576,7 @@ public class userExec {
                 }
                 List<String> c2 = new ArrayList<String>();
                 c2.addAll(c1);
-                userEditor e = new userEditor(new userScreen(pipe,
-                        reader.width, reader.height), c2, "section '" + a + "'");
+                userEditor e = new userEditor(new userScreen(pipe, reader.width, reader.height), c2, "section '" + a + "'", false);
                 if (e.doEdit()) {
                     return cmdRes.command;
                 }
@@ -1597,8 +1597,7 @@ public class userExec {
                             userReader.filter2reg(a + " "
                                     + cmd.getRemaining()));
                 }
-                userEditor v = new userEditor(new userScreen(pipe,
-                        reader.width, reader.height), c1, "section '" + a + "'");
+                userEditor v = new userEditor(new userScreen(pipe, reader.width, reader.height), c1, "section '" + a + "'", false);
                 v.doView();
                 return cmdRes.command;
             }
@@ -2707,7 +2706,7 @@ public class userExec {
             if (b == null) {
                 b = new ArrayList<String>();
             }
-            userEditor e = new userEditor(new userScreen(pipe, reader.width, reader.height), b, a);
+            userEditor e = new userEditor(new userScreen(pipe, reader.width, reader.height), b, a, false);
             if (e.doEdit()) {
                 return;
             }
@@ -2717,7 +2716,7 @@ public class userExec {
         if (a.equals("viewer")) {
             a = cmd.getRemaining();
             List<String> b = bits.txt2buf(a);
-            userEditor v = new userEditor(new userScreen(pipe, reader.width, reader.height), b, a);
+            userEditor v = new userEditor(new userScreen(pipe, reader.width, reader.height), b, a, false);
             v.doView();
             return;
         }
@@ -2734,7 +2733,7 @@ public class userExec {
         if (a.equals("binviewer")) {
             a = cmd.getRemaining();
             List<String> b = userFlash.binRead(a);
-            userEditor v = new userEditor(new userScreen(pipe, reader.width, reader.height), b, a);
+            userEditor v = new userEditor(new userScreen(pipe, reader.width, reader.height), b, a, false);
             v.doView();
             return;
         }
@@ -2902,7 +2901,7 @@ public class userExec {
             }
             lst.add(a);
         }
-        userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#show " + cmd.getRemaining());
+        userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#show " + cmd.getRemaining(), false);
         edtr.doView();
     }
 
@@ -2925,7 +2924,7 @@ public class userExec {
     private void doDisplay() {
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#watch " + cmd.getRemaining());
+        userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), reader.timeStamp);
         for (;;) {
             lst.clear();
             packText pt = new packText(getShPipe());
@@ -2942,7 +2941,7 @@ public class userExec {
         List<String> r1 = new packText(getShPipe()).recvAll();
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#watch " + cmd.getRemaining());
+        userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), reader.timeStamp);
         for (;;) {
             List<String> r2 = new packText(getShPipe()).recvAll();
             differ df = new differ();
