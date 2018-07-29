@@ -1519,17 +1519,19 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
+todo: show bgp privateas, labels
 todo: sorted, uniq | filter for any column
-todo: terminal mode colorized
+todo: terminal mode colorize, resolve
 todo: protocol traceroute
 todo: autoroute with sr, bier support
-todo: clean up javadoc errors
-todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
+todo: optimal route reflection
 todo: bgp sr-policy afi
 todo: bgp vpns with sr-policy
 todo: recursive static route
 todo: pipeline properties, terminal autoresize
 todo: temper: web access log
+todo: clean up javadoc errors
+todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 todo: yang over netconf, proto over grpc
 todo: interface range command
 todo: reenable which elliptic courves? sure? why that?

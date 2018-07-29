@@ -8536,3 +8536,8 @@ todo: more features with clean implementation
 ---------------------------------- 2018-07-26 19:05:39
 no todo: counter to the tabroute, configurable per process
 no todo: router trigger
+---------------------------------- 2018-07-28 14:55:26
+no todo: terminal mode colorized
+todo: show bgp privateas, labels
+todo: terminal mode colorize, resolve
+todo: optimal route reflection
