@@ -442,6 +442,7 @@ public class userExec {
         hl.add("6 7              flappath        flap statistics for prefix");
         hl.add("7 8,.              <addr>        prefix to view");
         hl.add("8 .                  [rd]        route distinguisher");
+        hl.add("6 .              labels          remote and local labels");
         hl.add("6 .              asgraph         connectivity graph of ases");
         hl.add("6 .              asconn          connectivity of ases");
         hl.add("6 .              asinconsistent  inconsistent advertisements of ases");

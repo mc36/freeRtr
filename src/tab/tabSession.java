@@ -91,7 +91,10 @@ public class tabSession implements Runnable {
     public boolean doPack(packHolder pck, boolean dir) {
         int i = pck.dataSize();
         pck.getSkip(pck.IPsiz);
-        boolean b;
+        boolean b = false;
+        pck.UDPsrc = 0;
+        pck.UDPtrg = 0;
+        pck.UDPsiz = 0;
         switch (pck.IPprt) {
             case prtTcp.protoNum:
                 b = prtTcp.parseTCPheader(pck);
@@ -107,9 +110,6 @@ public class tabSession implements Runnable {
                 break;
             case prtSctp.protoNum:
                 b = prtSctp.parseSCTPheader(pck);
-                break;
-            default:
-                b = false;
                 break;
         }
         int o = pck.dataSize();

@@ -2330,6 +2330,10 @@ public class userShow {
                 doShowRoutes(r.bgp.fwdCore, tab, dsp);
                 return;
             }
+            if (a.equals("labels")) {
+                doShowRoutes(r.bgp.fwdCore, tab, dsp + 1000);
+                return;
+            }
             if (a.equals("stdcomm")) {
                 a = cmd.getRemaining();
                 cmd = new cmds("", "");
@@ -2807,6 +2811,10 @@ public class userShow {
             case 5:
                 l = new userFormat("|", "prefix|hop|metric|aspath");
                 break;
+            case 1002:
+            case 1005:
+                l = new userFormat("|", "prefix|local|evpn*16|pmsi*16|remote|hop");
+                break;
             case 3:
                 l = new userFormat("|", "prefix|local|remote|hop");
                 break;
@@ -2833,6 +2841,26 @@ public class userShow {
                     break;
                 case 3:
                     l.add(tabRouteEntry.toShLdp(prf));
+                    break;
+                case 1002:
+                case 1005:
+                    int o = 0;
+                    if (prf.labelRem != null) {
+                        o |= 1;
+                    }
+                    if (prf.labelLoc != null) {
+                        o |= 2;
+                    }
+                    if (prf.pmsiLab != 0) {
+                        o |= 4;
+                    }
+                    if (prf.evpnLab != 0) {
+                        o |= 8;
+                    }
+                    if (o != 0) {
+                        continue;
+                    }
+                    l.add(tabRouteEntry.toShBgpLabels(prf, typ == 1005));
                     break;
                 case 4:
                     l.add(tabRouteEntry.toShRpki(prf));

@@ -1005,11 +1005,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @return converted
      */
     public static String toShBgp(tabRouteEntry<addrIP> prf) {
-        String s = "";
-        if (prf.rouDst != 0) {
-            s = " " + tabRtrmapN.rd2string(prf.rouDst);
-        }
-        return addrPrefix.ip2str(prf.prefix) + s + getBgpLast(prf);
+        return toShBgpFirst(prf) + toShBgpLast(prf);
     }
 
     /**
@@ -1019,7 +1015,24 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @return converted
      */
     public static String toShEvpn(tabRouteEntry<addrIP> prf) {
-        return addrPrefix.ip2evpn(prf.prefix) + " " + tabRtrmapN.rd2string(prf.rouDst) + getBgpLast(prf);
+        return addrPrefix.ip2evpn(prf.prefix) + " " + tabRtrmapN.rd2string(prf.rouDst) + toShBgpLast(prf);
+    }
+
+    /**
+     * convert to bgp format
+     *
+     * @param prf entry to dump
+     * @param evpn evpn
+     * @return converted
+     */
+    public static String toShBgpLabels(tabRouteEntry<addrIP> prf, boolean evpn) {
+        String a;
+        if (evpn) {
+            a = addrPrefix.ip2evpn(prf.prefix);
+        } else {
+            a = toShBgpFirst(prf);
+        }
+        return a + "|" + prf.labelLoc + "|" + prf.evpnLab + "|" + prf.pmsiLab + "|" + dumpIntList(prf.labelRem, "", "") + "|" + prf.nextHop;
     }
 
     /**
@@ -1035,7 +1048,27 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         return addrPrefix.ip2str(prf.prefix) + "|" + bits.timePast(prf.time) + "|" + prf.cntr.getShStat();
     }
 
-    private static String getBgpLast(tabRouteEntry<addrIP> prf) {
+    /**
+     * convert to bgp format
+     *
+     * @param prf entry to dump
+     * @return converted
+     */
+    public static String toShBgpFirst(tabRouteEntry<addrIP> prf) {
+        String s = "";
+        if (prf.rouDst != 0) {
+            s = " " + tabRtrmapN.rd2string(prf.rouDst);
+        }
+        return addrPrefix.ip2str(prf.prefix) + s;
+    }
+
+    /**
+     * convert to bgp format
+     *
+     * @param prf entry to dump
+     * @return converted
+     */
+    private static String toShBgpLast(tabRouteEntry<addrIP> prf) {
         return "|" + prf.nextHop + "|"
                 + prf.distance + "/" + prf.locPref + "/" + prf.origin + "/"
                 + prf.metric + "|" + prf.asPathStr();
@@ -1048,8 +1081,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @return converted
      */
     public static String toShLdp(tabRouteEntry<addrIP> prf) {
-        return addrPrefix.ip2str(prf.prefix) + "|" + prf.labelLoc + "|"
-                + dumpIntList(prf.labelRem, "", "") + "|" + prf.nextHop;
+        return addrPrefix.ip2str(prf.prefix) + "|" + prf.labelLoc + "|" + dumpIntList(prf.labelRem, "", "") + "|" + prf.nextHop;
     }
 
     /**

@@ -8541,3 +8541,11 @@ no todo: terminal mode colorized
 todo: show bgp privateas, labels
 todo: terminal mode colorize, resolve
 todo: optimal route reflection
+---------------------------------- 2018-07-30 18:39:49
+no todo: show bgp privateas, labels
+todo: client whois, show whois
+todo: more configurable defaults to lines: tablemode, timestamps, configure up them on main rtrs
+todo: route-map/policy to match private-as origination/transit, then show, ignore, etc
+todo: diff n | filter
+---------------------------------- 2018-07-31 19:55:39
+todo: hostwatch to execute script on acl match
