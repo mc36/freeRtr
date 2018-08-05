@@ -27,6 +27,7 @@ import cfg.cfgScrpt;
 import cfg.cfgVrf;
 import clnt.clntDns;
 import clnt.clntNetflow;
+import clnt.clntWhois;
 import ifc.ifcThread;
 import ip.ipFwd;
 import ip.ipFwdIface;
@@ -40,6 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 import pack.packLdpMp;
 import pack.packLdpPwe;
+import pipe.pipeLine;
+import pipe.pipeReader;
+import pipe.pipeSide;
 import prt.prtRedun;
 import prt.prtWatch;
 import rtr.rtrBabelNeigh;
@@ -289,6 +293,16 @@ public class userShow {
         }
         if (a.equals("name-cache")) {
             rdr.putStrTab(clntDns.showLocalCache());
+            return null;
+        }
+        if (a.equals("whois")) {
+            if (cfgAll.whoisServer == null) {
+                cmd.error("not enabled");
+                return null;
+            }
+            clntWhois w = new clntWhois(cfgAll.whoisServer);
+            w.quest = cmd.getRemaining();
+            rdr.putStrArr(w.doQuery(cmd));
             return null;
         }
         if (a.equals("watchdog")) {

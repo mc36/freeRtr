@@ -94,7 +94,11 @@ public class servHttp extends servGeneric implements prtServS {
     public final static String defaultL[] = {
         "server http .*! port " + clearPort,
         "server http .*! protocol " + proto2string(protoAllStrm),
-        "server http .*! no proxy", "server http .*! no error",
+        "server http .*! no proxy", 
+        "server http .*! no error",
+        "server http .*! host .* noaccess-list",
+        "server http .*! host .* noprefix-list",
+        "server http .*! host .* noroute-map",
         "server http .*! host .* nostyle",
         "server http .*! host .* noredir",
         "server http .*! host .* noreconn",
@@ -167,6 +171,9 @@ public class servHttp extends servGeneric implements prtServS {
             }
             String a = beg + "host " + ntry.host;
             l.add(a + " path " + ntry.path);
+        ///////////////////"server http .*! host .* noaccess-list",
+        ///////////////////"server http .*! host .* noprefix-list",
+        ///////////////////"server http .*! host .* noroute-map",
             if (ntry.style != null) {
                 l.add(a + " style " + ntry.style);
             } else {

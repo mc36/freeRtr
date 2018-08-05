@@ -499,6 +499,8 @@ public class userExec {
         hl.add(".3 3,.     [text]                text to print");
         hl.add("2 3,.    flash                   list of flash");
         hl.add("3 3,.      [text]                directory to print");
+        hl.add("2 3      whois                   query whois server");
+        hl.add("3 3,.      [text]                directory to print");
         hl.add("2 3      transproxy              transparent proxy connections");
         hl.add("3 .        <name>                name of interface");
         hl.add("2 3,.    version                 version information");
@@ -1332,9 +1334,10 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("whois")) {
-            a = cmd.word();
-            clntWhois w = new clntWhois(pipe);
-            w.doQuery(a, cmd.getRemaining());
+            clntWhois w = new clntWhois(cmd.word());
+            w.quest = cmd.getRemaining();
+            w.doQuery(cmd);
+            reader.putStrArr(w.doQuery(cmd));
             return cmdRes.command;
         }
         if (a.equals("ssh")) {

@@ -45,6 +45,15 @@ public class pipeReader implements Runnable {
         pipS.lineTx = mod;
     }
 
+    /**
+     * stop work
+     */
+    public void stopWork() {
+        pipC.setClose();
+        pipS.setClose();
+        pipP.setClose();
+    }
+
     public void run() {
         try {
             doWork();
@@ -52,9 +61,7 @@ public class pipeReader implements Runnable {
             logger.traceback(e);
         }
         working = false;
-        pipC.setClose();
-        pipS.setClose();
-        pipP.setClose();
+        stopWork();
     }
 
     /**

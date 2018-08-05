@@ -427,6 +427,8 @@ public class userConfig {
         l.add("2  .    config-archive               automatically archive configuration");
         l.add("2  .    config-exclusive             allow only one user in configuration mode");
         l.add("2  .    graceful-reload              close sessions before reload");
+        l.add("2  3    whois-server                 set whois server");
+        l.add("3  .      <nam>                      server name");
         l.add("2  .    prefer-ipv6                  prefer ipv6 for domains");
         l.add("2  .    prefer-ipv4                  prefer ipv4 for domains");
         l.add("2  3    ipv4-checksum                set ipv4 checksum mode");
@@ -1315,6 +1317,10 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("whois-server")) {
+                cfgAll.whoisServer = cmd.getRemaining();
+                return;
+            }
             if (a.equals("graceful-reload")) {
                 cfgAll.graceReload = true;
                 return;
@@ -2065,6 +2071,10 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("whois-server")) {
+                cfgAll.whoisServer = null;
+                return;
+            }
             if (a.equals("graceful-reload")) {
                 cfgAll.graceReload = false;
                 return;

@@ -1,10 +1,14 @@
 package clnt;
 
+import java.util.List;
+import pipe.pipeConnect;
 import pipe.pipeDiscard;
 import pipe.pipeProgress;
+import pipe.pipeReader;
 import pipe.pipeSide;
 import serv.servGeneric;
 import user.userTerminal;
+import util.cmds;
 
 /**
  * whois (rfc3912) client
@@ -18,40 +22,45 @@ public class clntWhois {
      */
     public static final int port = 43;
 
-    private pipeSide cons;
+    /**
+     * question
+     */
+    public String quest;
+
+    private final String server;
 
     /**
      * create new client
      *
-     * @param console console to use
+     * @param srv server to use
      */
-    public clntWhois(pipeSide console) {
-        cons = console;
+    public clntWhois(String srv) {
+        server = srv;
     }
 
     /**
      * do one query
      *
-     * @param h host
-     * @param q query
+     * @param cmd console to use, null if nothing
+     * @return response, null if error
      */
-    public void doQuery(String h, String q) {
-        pipeProgress con = new pipeProgress(pipeDiscard.needAny(cons));
-        pipeSide pipe = new userTerminal(con).resolvAndConn(servGeneric.protoTcp, h, port, "whois");
+    public List<String> doQuery(cmds cmd) {
+        if (cmd != null) {
+            cmd.error("querying " + quest + " at " + server + " " + port);
+        }
+        pipeProgress con = new pipeProgress(pipeDiscard.needAny(null));
+        pipeSide pipe = new userTerminal(con).resolvAndConn(servGeneric.protoTcp, server, port, "whois");
         if (pipe == null) {
-            return;
+            return null;
         }
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        pipe.linePut(q);
-        for (;;) {
-            String s = pipe.lineGet(0);
-            cons.linePut(s);
-            if (pipe.isClosed() != 0) {
-                break;
-            }
-        }
-        pipe.setClose();
+        pipe.linePut(quest);
+        pipeReader rd = new pipeReader();
+        pipeConnect.connect(pipe, rd.getPipe(), true);
+        rd.setLineMode(pipeSide.modTyp.modeCRorLF);
+        rd.waitFor();
+        return rd.getResult();
     }
 
 }

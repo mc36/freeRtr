@@ -913,6 +913,7 @@ server sip lab
 !
 client proxy p1
 client prefer-ipv6
+client whois-server whois.ripe.net
 client name-server 8.8.8.8
 client upgrade-config
 client time-zone CET

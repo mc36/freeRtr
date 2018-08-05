@@ -618,6 +618,11 @@ public class cfgAll {
     public static boolean graceReload = true;
 
     /**
+     * whois server
+     */
+    public static String whoisServer = null;
+
+    /**
      * chatter
      */
     public static final chatter chat = new chatter();
@@ -858,6 +863,7 @@ public class cfgAll {
         "!no client upgrade-config",
         "!no client upgrade-backup",
         "!no client upgrade-ownkey",
+        "!no client whois-server",
         "!no client config-server",
         "!no client config-username",
         "!no client config-password",
@@ -2943,6 +2949,7 @@ public class cfgAll {
             l.add("client name-proxy " + nameServerProxy.name);
         }
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
+        cmds.cfgLine(l, whoisServer == null, "", "client whois-server", whoisServer);
         cmds.cfgLine(l, !graceReload, "", "client graceful-reload", "");
         l.add("client unreach-interval " + unreachInt);
         cmds.cfgLine(l, !ruinPmtuD, "", "client punish-pmtud", "");
