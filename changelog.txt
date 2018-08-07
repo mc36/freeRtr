@@ -8549,3 +8549,8 @@ todo: route-map/policy to match private-as origination/transit, then show, ignor
 todo: diff n | filter
 ---------------------------------- 2018-07-31 19:55:39
 todo: hostwatch to execute script on acl match
+---------------------------------- 2018-08-07 05:17:39
+no todo: client whois, show whois
+todo: configurable * prompt
+todo: access-* under http host
+todo: lsrp passive interface
