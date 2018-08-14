@@ -1,5 +1,5 @@
 #!/bin/sh
-#chmod -x `find . -executable -name *.java`
+chmod -x `find . -executable -name *.java`
 rm rtr.zip 2> /dev/null
 echo -n `cd misc/android;./d.sh`
 echo -n `cd misc/applet;./d.sh`

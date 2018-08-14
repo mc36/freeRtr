@@ -1,6 +1,6 @@
 configurable * prompt
 access-* under http host
-lsrp passive interface
+tls1.3
 more configurable defaults to lines: tablemode, timestamps, configure up them on main rtrs
 route-map/policy to match private-as origination/transit, then show, ignore, etc
 sorted, uniq | filter for any column
