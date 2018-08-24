@@ -429,6 +429,7 @@ public class userConfig {
         l.add("2  .    graceful-reload              close sessions before reload");
         l.add("2  3    whois-server                 set whois server");
         l.add("3  .      <nam>                      server name");
+        l.add("2  .    password-stars               type stars in passwords");
         l.add("2  .    prefer-ipv6                  prefer ipv6 for domains");
         l.add("2  .    prefer-ipv4                  prefer ipv4 for domains");
         l.add("2  3    ipv4-checksum                set ipv4 checksum mode");
@@ -1325,6 +1326,10 @@ public class userConfig {
                 cfgAll.graceReload = true;
                 return;
             }
+            if (a.equals("password-stars")) {
+                cfgAll.passwdStars= true;
+                return;
+            }
             if (a.equals("prefer-ipv6")) {
                 cfgAll.preferIpv6 = true;
                 return;
@@ -2079,7 +2084,11 @@ public class userConfig {
                 cfgAll.graceReload = false;
                 return;
             }
-            if (a.equals("prefer-ipv6")) {
+             if (a.equals("password-stars")) {
+                cfgAll.passwdStars= false;
+                return;
+            }
+           if (a.equals("prefer-ipv6")) {
                 cfgAll.preferIpv6 = false;
                 return;
             }

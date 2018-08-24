@@ -608,6 +608,11 @@ public class cfgAll {
     public static byte[] banner = new byte[0];
 
     /**
+     * password stars
+     */
+    public static boolean passwdStars = false;
+
+    /**
      * prefer ipv6
      */
     public static boolean preferIpv6 = false;
@@ -875,6 +880,7 @@ public class cfgAll {
         "!no client mail-username",
         "!no client mail-password",
         "!no client prefer-ipv6",
+        "!no client password-stars",
         "!client graceful-reload",
         "!client ftp-passive",
         "!client unreach-interval 0",
@@ -2949,6 +2955,7 @@ public class cfgAll {
             l.add("client name-proxy " + nameServerProxy.name);
         }
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
+        cmds.cfgLine(l, !passwdStars, "", "client password-stars", "");
         cmds.cfgLine(l, whoisServer == null, "", "client whois-server", whoisServer);
         cmds.cfgLine(l, !graceReload, "", "client graceful-reload", "");
         l.add("client unreach-interval " + unreachInt);

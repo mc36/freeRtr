@@ -869,7 +869,7 @@ server telnet tel
  security protocol telnet
  exec width 80
  exec height 25
- no login authentication
+ login authentication access
  vrf v1
  exit
 !
@@ -913,6 +913,7 @@ server sip lab
 !
 client proxy p1
 client prefer-ipv6
+client password-stars
 client whois-server whois.ripe.net
 client name-server 8.8.8.8
 client upgrade-config

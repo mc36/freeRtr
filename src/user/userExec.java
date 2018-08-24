@@ -1386,7 +1386,13 @@ public class userExec {
                 return cmdRes.command;
             }
             cmd.pipe.strPut("password:");
-            a = cmd.pipe.lineGet(0x31);
+            int i;
+            if (cfgAll.passwdStars) {
+                i = 0x33;
+            } else {
+                i = 0x31;
+            }
+            a = cmd.pipe.lineGet(i);
             if (!authLocal.secretTest(cfgAll.enaPass, a)) {
                 privileged = true;
             }

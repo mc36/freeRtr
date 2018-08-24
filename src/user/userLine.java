@@ -423,7 +423,13 @@ class userLineHandler implements Runnable {
                 }
             }
             pipe.strPut(parent.promptPass);
-            String pwd = pipe.lineGet(0x31);
+            int i;
+            if (cfgAll.passwdStars) {
+                i = 0x33;
+            } else {
+                i = 0x31;
+            }
+            String pwd = pipe.lineGet(i);
             user = parent.authenticList.authUserPass(usr, pwd);
             if (user.result == authResult.authSuccessful) {
                 break;
