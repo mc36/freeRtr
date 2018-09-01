@@ -8554,3 +8554,7 @@ no todo: client whois, show whois
 todo: configurable * prompt
 todo: access-* under http host
 todo: lsrp passive interface
+---------------------------------- 2018-08-24 11:31:13
+no todo: lsrp passive interface
+no todo: configurable * prompt
+todo: tls1.3

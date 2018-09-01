@@ -1519,9 +1519,8 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-todo: configurable * prompt
 todo: access-* under http host
-todo: lsrp passive interface
+todo: tls1.3
 todo: more configurable defaults to lines: tablemode, timestamps, configure up them on main rtrs
 todo: route-map/policy to match private-as origination/transit, then show, ignore, etc
 todo: sorted, uniq | filter for any column
