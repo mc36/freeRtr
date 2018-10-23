@@ -22,6 +22,7 @@ import prt.prtWatch;
 import rtr.rtrBgpNeigh;
 import rtr.rtrBgpParam;
 import tab.tabRouteEntry;
+import serv.servBmp2mrt;
 import util.bits;
 import util.cmds;
 import util.logger;
@@ -61,6 +62,15 @@ public class userClear {
                 return null;
             }
             ntry.stopCall(cmd.word());
+            return null;
+        }
+        if (a.equals("bmp")) {
+            servBmp2mrt srv = cfgAll.srvrFind(new servBmp2mrt(), cfgAll.dmnBmp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            srv.doClear();
             return null;
         }
         if (a.equals("vdc")) {

@@ -929,6 +929,8 @@ public class userExec {
         hl.add("4 5          <name>              interface name");
         hl.add("5 .            <addr>            peer address");
         getHelpClearIpX(hl);
+        hl.add("2 3      bmp                     clear one bmp server");
+        hl.add("3 .        <name>                server name");
         hl.add("2 3      socket                  clear one socket");
         hl.add("3 4        <name>                vrf name");
         hl.add("4 5          tcp                 select tcp");

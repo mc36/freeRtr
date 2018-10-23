@@ -454,6 +454,15 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     /**
+     * do clear
+     */
+    public void doClear() {
+        for (int i = 0; i < stats.size(); i++) {
+            stats.get(i).change = 1;
+        }
+    }
+
+    /**
      * get show
      *
      * @return result
