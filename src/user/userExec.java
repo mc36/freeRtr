@@ -765,6 +765,7 @@ public class userExec {
         hl.add("3 .        <num>                 height in lines");
         hl.add("2 .      monitor                 log to this terminal");
         hl.add("2 .      timestamps              put time before each executed command");
+        hl.add("2 .      colorized               sending to ansi terminal");
         hl.add("2 3      tablemode               select table formatting mode");
         hl.add("3 .        normal                select normal mode");
         hl.add("3 .        table                 select table mode");
@@ -2686,6 +2687,10 @@ public class userExec {
             reader.timeStamp = true;
             return;
         }
+        if (a.equals("colorized")) {
+            reader.colorize = true;
+            return;
+        }
         if (a.equals("length")) {
             reader.height = bits.str2num(cmd.word());
             return;
@@ -2705,6 +2710,10 @@ public class userExec {
         }
         if (a.equals("timestamps")) {
             reader.timeStamp = false;
+            return;
+        }
+        if (a.equals("colorized")) {
+            reader.colorize = false;
             return;
         }
         cmd.badCmd();
@@ -2889,6 +2898,7 @@ public class userExec {
         exe.privileged = privileged;
         exe.reader.tabMod = reader.tabMod;
         exe.reader.timeStamp = reader.timeStamp;
+        exe.reader.colorize = reader.colorize;
         pip.timeout = 60000;
         String a = "show " + cmd.getRemaining();
         a = exe.repairCommand(a);

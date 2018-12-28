@@ -4,7 +4,7 @@ more configurable defaults to lines: tablemode, timestamps, configure up them on
 route-map/policy to match private-as origination/transit, then show, ignore, etc
 sorted, uniq | filter for any column
 diff n | filter
-terminal mode colorize, resolve
+terminal mode resolve
 hostwatch to execute script on acl match
 protocol traceroute
 autoroute with sr, bier support

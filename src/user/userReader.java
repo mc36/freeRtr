@@ -47,6 +47,11 @@ public class userReader {
     public boolean timeStamp;
 
     /**
+     * colorize
+     */
+    public boolean colorize;
+
+    /**
      * deactivation character
      */
     public int deactive = 65535;
@@ -333,12 +338,7 @@ public class userReader {
         return res;
     }
 
-    /**
-     * display one text to user
-     *
-     * @param lst string array to display
-     */
-    public void putStrArr(List<String> lst) {
+    private void doPutArr(List<String> lst, boolean need2color) {
         lst = doFilterList(lst);
         if (lst == null) {
             pipe.linePut("");
@@ -346,7 +346,13 @@ public class userReader {
         }
         int o = 0;
         for (int i = 0; i < lst.size(); i++) {
+            if ((i == 0) && colorize && need2color) {
+                userScreen.sendCol(pipe, userScreen.colBrYellow);
+            }
             pipe.linePut(lst.get(i));
+            if ((i == 0) && colorize && need2color) {
+                userScreen.sendCol(pipe, userScreen.colWhite);
+            }
             o++;
             if (o < height) {
                 continue;
@@ -369,6 +375,15 @@ public class userReader {
     }
 
     /**
+     * display one text to user
+     *
+     * @param lst string array to display
+     */
+    public void putStrArr(List<String> lst) {
+        doPutArr(lst, false);
+    }
+
+    /**
      * display one text to table
      *
      * @param lst string array to display
@@ -378,7 +393,7 @@ public class userReader {
             pipe.linePut("");
             return;
         }
-        putStrArr(lst.formatAll(tabMod));
+        doPutArr(lst.formatAll(tabMod), true);
     }
 
     /**
@@ -408,7 +423,13 @@ public class userReader {
             pipe.strPut(s);
         }
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
+        if (colorize) {
+            userScreen.sendCol(pipe, userScreen.colBrGreen);
+        }
         pipe.strPut(s.substring(0, crsr));
+        if (colorize) {
+            userScreen.sendCol(pipe, userScreen.colWhite);
+        }
     }
 
     private boolean rangeCheck() {
