@@ -8558,3 +8558,6 @@ todo: lsrp passive interface
 no todo: lsrp passive interface
 no todo: configurable * prompt
 todo: tls1.3
+---------------------------------- 2018-12-28 07:01:18
+no todo: terminal mode colorize, resolve
+todo: terminal mode resolve

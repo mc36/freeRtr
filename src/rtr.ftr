@@ -1525,7 +1525,7 @@ todo: more configurable defaults to lines: tablemode, timestamps, configure up t
 todo: route-map/policy to match private-as origination/transit, then show, ignore, etc
 todo: sorted, uniq | filter for any column
 todo: diff n | filter
-todo: terminal mode colorize, resolve
+todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
 todo: protocol traceroute
 todo: autoroute with sr, bier support
