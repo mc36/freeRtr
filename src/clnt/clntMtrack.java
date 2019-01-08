@@ -210,7 +210,7 @@ public class clntMtrack implements Runnable, prtServS {
         if (grp == null) {
             return;
         }
-        udp.streamListen(this, new pipeLine(32768, true), null, port, null, 0, 0, "mtrck", null, -1);
+        udp.streamListen(this, new pipeLine(32768, true), ifc, port, null, 0, 0, "mtrck", null, -1);
         if (!grp.isMulticast()) {
             return;
         }

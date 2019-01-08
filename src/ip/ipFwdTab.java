@@ -110,7 +110,7 @@ public class ipFwdTab {
      */
     public static ipFwdIface findStableIface(ipFwd lower) {
         ipFwdIface best = new ipFwdIface(0, null);
-        for (int i = 0; i < lower.ifaces.size(); i++) {
+        for (int i = lower.ifaces.size() - 1; i >= 0; i--) {
             ipFwdIface ifc = lower.ifaces.get(i);
             if (ifc.mask > best.mask) {
                 best = ifc;

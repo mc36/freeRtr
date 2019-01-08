@@ -1,3 +1,4 @@
+mpls inspect
 access-* under http host
 tls1.3
 more configurable defaults to lines: tablemode, timestamps, configure up them on main rtrs
