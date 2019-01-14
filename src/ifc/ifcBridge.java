@@ -288,7 +288,8 @@ public class ifcBridge implements ifcDn {
         l.add("1 2     rt-both                     specify route target");
         l.add("2 .       <rt>                      rt in ASnum:IDnum format");
         l.add("1 .     mac-learn                   enable mac address learning");
-        l.add("1 .     inspect                     enable session inspection");
+        l.add("1 2,.   inspect                     enable session inspection");
+        l.add("2 .       mac                       enable mac logging");
         l.add("1 .     mac-move                    enable mac move logging");
         l.add("1 .     private-bridge              disable peer communication");
         l.add("1 .     block-unicast               block unknown destination unicast");
@@ -321,7 +322,7 @@ public class ifcBridge implements ifcDn {
         l.add(cmds.tabulator + "rt-export " + tabRtrmapN.rd2string(rtExp));
         cmds.cfgLine(l, !staticAddr, beg, "mac-address", "" + hwaddr);
         cmds.cfgLine(l, learned == null, beg, "mac-learn", "");
-        cmds.cfgLine(l, inspect == null, beg, "inspect", "");
+        cmds.cfgLine(l, inspect == null, beg, "inspect", "" + inspect);
         cmds.cfgLine(l, !macMove, beg, "mac-move", "");
         cmds.cfgLine(l, !privateBridge, beg, "private-bridge", "");
         cmds.cfgLine(l, !blockUnicast, beg, "block-unicast", "");
@@ -365,7 +366,11 @@ public class ifcBridge implements ifcDn {
             return;
         }
         if (a.equals("inspect")) {
+            if (inspect != null) {
+                inspect.stopTimer();
+            }
             inspect = new tabSession();
+            inspect.logMacs = cmd.word().equals("mac");
             inspect.startTimer();
             return;
         }

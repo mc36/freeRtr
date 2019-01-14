@@ -25,7 +25,11 @@ aaa userlist access
  username mc36 password $w10$HFepawSJgqct0vAiKD2PVg==
  exit
 !
-access-list all
+access-list all4
+ sequence 10 permit all any all any all
+ exit
+!
+access-list all6
  sequence 10 permit all any all any all
  exit
 !
@@ -138,7 +142,7 @@ bridge 4
 !
 bridge 9
  mac-learn
- inspect
+ inspect mac
  mac-move
  exit
 !
@@ -151,8 +155,8 @@ vrf definition dn42
  rd 65535:42
  rt-import 65535:42
  rt-export 65535:42
- source4route all
- source6route all
+ source4route all4
+ source6route all6
  mdt4
  mdt6
  exit
@@ -162,8 +166,8 @@ vrf definition v1
  rt-import 1:1
  rt-export 1:1
  label-mode per-prefix
- source4route all
- source6route all
+ source4route all4
+ source6route all6
  counter4map count4
  counter6map count6
  exit
@@ -173,8 +177,8 @@ vrf definition v2
  rt-import 1:2
  rt-export 1:2
  label-mode per-prefix
- source4route all
- source6route all
+ source4route all4
+ source6route all6
  exit
 !
 vrf definition v3
@@ -182,8 +186,8 @@ vrf definition v3
  rt-import 1:3
  rt-export 1:3
  label-mode per-prefix
- source4route all
- source6route all
+ source4route all4
+ source6route all6
  exit
 !
 vrf definition v4
@@ -191,8 +195,8 @@ vrf definition v4
  rt-import 1:4
  rt-export 1:4
  label-mode per-prefix
- source4route all
- source6route all
+ source4route all4
+ source6route all6
  exit
 !
 vrf definition v5
@@ -200,8 +204,8 @@ vrf definition v5
  rt-import 1:2
  rt-export 1:2
  label-mode per-prefix
- source4route all
- source6route all
+ source4route all4
+ source6route all6
  exit
 !
 vrf definition vpn
@@ -370,72 +374,10 @@ interface bvi9
 interface ethernet1
  no description
  bridge-group 9
+ bridge-filter ipv4in all4
+ bridge-filter ipv6in all6
  no shutdown
  no log-link-change
- exit
-!
-router bgp4 1
- vrf v1
- local-as 1
- router-id 10.10.10.227
- address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
- scandelay 30000
- conquer
- nexthop route-policy nht4
- flowspec fs4
- monitor a p1 10.10.10.227 17971
- dump a bgp4cur.log 600000 bgp4old.log
- template a remote-as 1
- no template a description
- template a password $w10$DlOpZQKK5act0vAiKD2PVg==
- template a local-as 1
- template a address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
- template a distance 200
- template a compression both
- template a buffer-size 1024000
- template a ttl-security 123
- template a additional-path-rx unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
- template a additional-path-tx unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
- template a update-source loopback0
- template a monitor a
- template a dump a
- template a hostname
- template a unidirection
- template a fall-over
- template a aigp
- template a traffeng
- template a pmsitun
- template a tunenc
- template a attribset
- template a segrout
- template a bier
- template a route-reflector-client
- template a send-community all
- neighbor 10.10.10.32 template a
- neighbor 10.10.10.33 template a
- neighbor 10.10.10.34 template a
- neighbor 10.10.10.35 template a
- neighbor 10.10.10.36 template a
- neighbor 10.10.10.37 template a
- neighbor 10.10.10.91 template a
- neighbor 10.10.10.92 template a
- neighbor 10.10.10.93 template a
- neighbor 10.10.10.94 template a
- neighbor 10.10.10.95 template a
- neighbor 10.10.10.96 template a
- neighbor 10.10.10.225 template a
- neighbor 10.10.10.226 template a
- neighbor 10.10.10.228 template a
- neighbor 10.10.10.229 template a
- afi-vrf vv enable
- afi-vrf vv flowspec fs4
- afi-vrf vv mvpn loopback0
- afi-vrf vv redistribute connected
- afi-ovrf vv enable
- afi-ovrf vv flowspec fs6
- afi-ovrf vv mvpn loopback0
- afi-ovrf vv redistribute connected
- redistribute connected
  exit
 !
 router bgp4 65535
@@ -482,58 +424,6 @@ router bgp4 65535
  afi-evpn 2 update-source loopback0
  redistribute connected
  redistribute static
- exit
-!
-router bgp6 1
- vrf v1
- local-as 1
- router-id 10.10.10.227
- address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
- scandelay 30000
- conquer
- nexthop route-policy nht6
- flowspec fs6
- monitor a p1 10.10.10.227 17971
- dump a bgp6cur.log 600000 bgp6old.log
- template a remote-as 1
- no template a description
- template a password $w10$DlOpZQKK5act0vAiKD2PVg==
- template a local-as 1
- template a address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
- template a distance 200
- template a compression both
- template a buffer-size 1024000
- template a ttl-security 123
- template a additional-path-rx unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
- template a additional-path-tx unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
- template a update-source loopback0
- template a monitor a
- template a dump a
- template a hostname
- template a unidirection
- template a fall-over
- template a aigp
- template a traffeng
- template a pmsitun
- template a tunenc
- template a attribset
- template a segrout
- template a bier
- template a route-reflector-client
- template a send-community all
- neighbor 2001:db8:1101::32 template a
- neighbor 2001:db8:1101::33 template a
- neighbor 2001:db8:1101::34 template a
- neighbor 2001:db8:1101::35 template a
- neighbor 2001:db8:1101::36 template a
- neighbor 2001:db8:1101::37 template a
- neighbor 2001:db8:1101::91 template a
- neighbor 2001:db8:1101::92 template a
- neighbor 2001:db8:1101::93 template a
- neighbor 2001:db8:1101::94 template a
- neighbor 2001:db8:1101::95 template a
- neighbor 2001:db8:1101::96 template a
- redistribute connected
  exit
 !
 router bgp6 65535
