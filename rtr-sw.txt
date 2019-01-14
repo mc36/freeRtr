@@ -109,38 +109,6 @@ bridge 1
  private-bridge
  exit
 !
-bridge 11
- rd 1:1
- rt-import 1:1
- rt-export 1:1
- mac-learn
- private-bridge
- exit
-!
-bridge 12
- rd 1:2
- rt-import 1:2
- rt-export 1:2
- mac-learn
- private-bridge
- exit
-!
-bridge 13
- rd 1:4321
- rt-import 1:4321
- rt-export 1:4321
- mac-learn
- private-bridge
- exit
-!
-bridge 14
- rd 1:12345
- rt-import 1:12345
- rt-export 1:12345
- mac-learn
- private-bridge
- exit
-!
 bridge 2
  rd 65535:2
  rt-import 65535:2
@@ -166,6 +134,12 @@ bridge 4
  mac-learn
  mac-move
  private-bridge
+ exit
+!
+bridge 9
+ mac-learn
+ inspect
+ mac-move
  exit
 !
 vrf definition bvi
@@ -330,30 +304,6 @@ interface bvi1
  no log-link-change
  exit
 !
-interface bvi11
- no description
- no shutdown
- no log-link-change
- exit
-!
-interface bvi12
- no description
- no shutdown
- no log-link-change
- exit
-!
-interface bvi13
- no description
- no shutdown
- no log-link-change
- exit
-!
-interface bvi14
- no description
- no shutdown
- no log-link-change
- exit
-!
 interface bvi2
  no description
  lldp enable
@@ -380,7 +330,7 @@ interface bvi4
  no log-link-change
  exit
 !
-interface ethernet1
+interface bvi9
  no description
  monitor-buffer 10240000
  cdp enable
@@ -415,6 +365,13 @@ interface ethernet1
  router lsrp6 1 bfd
  no shutdown
  log-link-change
+ exit
+!
+interface ethernet1
+ no description
+ bridge-group 9
+ no shutdown
+ no log-link-change
  exit
 !
 router bgp4 1
@@ -478,19 +435,6 @@ router bgp4 1
  afi-ovrf vv flowspec fs6
  afi-ovrf vv mvpn loopback0
  afi-ovrf vv redistribute connected
- afi-vpls 1:1 bridge-group 11
- afi-vpls 1:1 update-source loopback0
- afi-vpls 1:2 bridge-group 12
- afi-vpls 1:2 ve-id 9 10
- afi-vpls 1:2 update-source loopback0
- afi-evpn 4321 bridge-group 13
- afi-evpn 4321 bmac 0068.432f.2759
- afi-evpn 4321 encapsulation vxlan
- afi-evpn 4321 update-source loopback0
- afi-evpn 100001 bridge-group 14
- afi-evpn 100001 bmac 0012.3456.9999
- afi-evpn 100001 encapsulation pbb
- afi-evpn 100001 update-source loopback0
  redistribute connected
  exit
 !

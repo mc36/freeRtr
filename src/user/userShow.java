@@ -415,6 +415,7 @@ public class userShow {
             }
             rdr.putStrTab(brdg.bridgeHed.getShowIfc());
             rdr.putStrTab(brdg.bridgeHed.getShowAdr());
+            rdr.putStrTab(brdg.bridgeHed.getShowInsp());
             return null;
         }
         if (a.equals("bundle")) {

@@ -3,6 +3,11 @@ package ifc;
 import addr.addrBridge;
 import addr.addrMac;
 import addr.addrType;
+import ip.ipCor;
+import ip.ipCor4;
+import ip.ipCor6;
+import ip.ipIfc4;
+import ip.ipIfc6;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -12,6 +17,7 @@ import pack.packHolder;
 import pack.packStp;
 import tab.tabGen;
 import tab.tabRtrmapN;
+import tab.tabSession;
 import user.userFormat;
 import user.userHelping;
 import util.bits;
@@ -123,6 +129,11 @@ public class ifcBridge implements ifcDn {
      */
     public ifcBridgeRtr macRouter = null;
 
+    /**
+     * inspection
+     */
+    public tabSession inspect;
+
     private tabGen<ifcBridgeIfc> ifaces;
 
     private tabGen<ifcBridgeMacAddr> learned;
@@ -140,6 +151,10 @@ public class ifcBridge implements ifcDn {
     private int stpPort;
 
     private boolean upProm;
+
+    private ipCor core4;
+
+    private ipCor core6;
 
     private ifcBridgeIfc upNtry;
 
@@ -225,6 +240,18 @@ public class ifcBridge implements ifcDn {
     }
 
     /**
+     * get show output
+     *
+     * @return list of interface
+     */
+    public userFormat getShowInsp() {
+        if (inspect == null) {
+            return null;
+        }
+        return inspect.doShowInsp();
+    }
+
+    /**
      * get upper mac list
      *
      * @return list of macs
@@ -261,6 +288,7 @@ public class ifcBridge implements ifcDn {
         l.add("1 2     rt-both                     specify route target");
         l.add("2 .       <rt>                      rt in ASnum:IDnum format");
         l.add("1 .     mac-learn                   enable mac address learning");
+        l.add("1 .     inspect                     enable session inspection");
         l.add("1 .     mac-move                    enable mac move logging");
         l.add("1 .     private-bridge              disable peer communication");
         l.add("1 .     block-unicast               block unknown destination unicast");
@@ -293,6 +321,7 @@ public class ifcBridge implements ifcDn {
         l.add(cmds.tabulator + "rt-export " + tabRtrmapN.rd2string(rtExp));
         cmds.cfgLine(l, !staticAddr, beg, "mac-address", "" + hwaddr);
         cmds.cfgLine(l, learned == null, beg, "mac-learn", "");
+        cmds.cfgLine(l, inspect == null, beg, "inspect", "");
         cmds.cfgLine(l, !macMove, beg, "mac-move", "");
         cmds.cfgLine(l, !privateBridge, beg, "private-bridge", "");
         cmds.cfgLine(l, !blockUnicast, beg, "block-unicast", "");
@@ -333,6 +362,11 @@ public class ifcBridge implements ifcDn {
         if (a.equals("rt-both")) {
             rtExp = tabRtrmapN.string2rd(cmd.word());
             rtImp = rtExp;
+            return;
+        }
+        if (a.equals("inspect")) {
+            inspect = new tabSession();
+            inspect.startTimer();
             return;
         }
         if (a.equals("mac-move")) {
@@ -405,6 +439,13 @@ public class ifcBridge implements ifcDn {
         }
         if (a.equals("mac-learn")) {
             learned = null;
+            return;
+        }
+        if (a.equals("inspect")) {
+            if (inspect != null) {
+                inspect.stopTimer();
+            }
+            inspect = null;
             return;
         }
         if (a.equals("mac-move")) {
@@ -657,6 +698,11 @@ public class ifcBridge implements ifcDn {
         }
         if (ifc.blocked) {
             return;
+        }
+        if ((inspect != null) && ((pck.ETHtype == ipIfc4.type) || (pck.ETHtype == ipIfc6.type))) {
+            pck.getSkip(2);
+            inspect.doPack(pck, false);
+            pck.getSkip(-2);
         }
         if (padupSmall) {
             int pad = 48 - pck.dataSize();

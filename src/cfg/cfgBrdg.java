@@ -42,6 +42,7 @@ public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
         "bridge .*! rt-export 0:0",
         "bridge .*! no mac-learn",
         "bridge .*! no mac-move",
+        "bridge .*! no inspect",
         "bridge .*! stp-mode none",
         "bridge .*! no mac-address",
         "bridge .*! no private-bridge",
