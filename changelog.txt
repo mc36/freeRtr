@@ -8563,3 +8563,5 @@ no todo: terminal mode colorize, resolve
 todo: terminal mode resolve
 ---------------------------------- 2019-01-08 01:05:56
 todo: mpls inspect
+---------------------------------- 2019-01-14 10:53:03
+no todo: mpls inspect

@@ -14,6 +14,7 @@ import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelNtry;
 import tab.tabNshNtry;
+import tab.tabSession;
 import util.counter;
 import util.debugger;
 import util.logger;
@@ -131,9 +132,10 @@ public class ipMpls implements ifcUp {
      */
     public ipMpls redirect;
 
-    private ifcDn lower = new ifcNull();
-
-    private counter cntr = new counter();
+    /**
+     * inspector
+     */
+    public tabSession inspect;
 
     /**
      * forwarder
@@ -149,6 +151,14 @@ public class ipMpls implements ifcUp {
      * forwarder
      */
     protected ifcEthTyp fwdE;
+
+    private ifcDn lower = new ifcNull();
+
+    private counter cntr = new counter();
+
+    private ipCor core4 = new ipCor4();
+
+    private ipCor core6 = new ipCor6();
 
     /**
      * create mpls handler
@@ -196,8 +206,43 @@ public class ipMpls implements ifcUp {
             redirect.lower.sendPack(pck);
             return;
         }
+        if (inspect != null) {
+            pck.getSkip(2);
+            inspectPacket(pck, true);
+            pck.getSkip(-2);
+        }
         cntr.tx(pck);
         lower.sendPack(pck);
+    }
+
+    private void inspectPacket(packHolder pck, boolean dir) {
+        int i = pck.dataSize();
+        for (;;) {
+            if (parseMPLSheader(pck)) {
+                break;
+            }
+            if (!pck.MPLSbottom) {
+                continue;
+            }
+            boolean b;
+            switch (ifcEther.guessEtherType(pck)) {
+                case ipIfc4.type:
+                    b = core4.parseIPheader(pck, false);
+                    break;
+                case ipIfc6.type:
+                    b = core6.parseIPheader(pck, false);
+                    break;
+                default:
+                    b = true;
+                    break;
+            }
+            if (!b) {
+                inspect.doPack(pck, dir);
+            }
+            break;
+        }
+        int o = pck.dataSize();
+        pck.getSkip(o - i);
     }
 
     /**
@@ -425,6 +470,9 @@ public class ipMpls implements ifcUp {
                 return;
         }
         pck.getSkip(2);
+        if (inspect != null) {
+            inspectPacket(pck, false);
+        }
         gotMplsPack(fwd4, fwd6, fwdE, security, pck);
     }
 

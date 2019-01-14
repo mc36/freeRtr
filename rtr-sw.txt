@@ -361,6 +361,7 @@ interface bvi9
  ipv6 pim bier-tunnel 299
  ipv6 pim join-source loopback0
  mpls enable
+ mpls inspect
  mpls rsvp4
  mpls rsvp6
  router lsrp4 1 enable

@@ -152,12 +152,12 @@ public class ifcBridge implements ifcDn {
 
     private boolean upProm;
 
-    private ipCor core4;
-
-    private ipCor core6;
-
     private ifcBridgeIfc upNtry;
 
+    private ipCor core4 = new ipCor4();
+
+    private ipCor core6 = new ipCor6();
+    
     /**
      * root id
      */
@@ -705,9 +705,25 @@ public class ifcBridge implements ifcDn {
             return;
         }
         if ((inspect != null) && ((pck.ETHtype == ipIfc4.type) || (pck.ETHtype == ipIfc6.type))) {
+            int i = pck.dataSize();
             pck.getSkip(2);
-            inspect.doPack(pck, false);
-            pck.getSkip(-2);
+            boolean b;
+            switch (pck.ETHtype) {
+                case ipIfc4.type:
+                    b = core4.parseIPheader(pck, false);
+                    break;
+                case ipIfc6.type:
+                    b = core6.parseIPheader(pck, false);
+                    break;
+                default:
+                    b = true;
+                    break;
+            }
+            if (!b) {
+                inspect.doPack(pck, false);
+            }
+            int o = pck.dataSize();
+            pck.getSkip(o - i);
         }
         if (padupSmall) {
             int pad = 48 - pck.dataSize();

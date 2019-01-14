@@ -762,6 +762,23 @@ public class userShow {
                 rdr.putStrTab(ntry.getShow());
                 return null;
             }
+            if (a.equals("inspect")) {
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                if (ifc.mplsPack == null) {
+                    cmd.error("not enabled");
+                    return null;
+                }
+                if (ifc.mplsPack.inspect == null) {
+                    cmd.error("not enabled");
+                    return null;
+                }
+                rdr.putStrTab(ifc.mplsPack.inspect.doShowInsp());
+                return null;
+            }
             if (a.equals("interfaces")) {
                 rdr.putStrTab(tabLabel.getShInt());
                 return null;
@@ -2859,22 +2876,6 @@ public class userShow {
                     break;
                 case 1002:
                 case 1005:
-                    int o = 0;
-                    if (prf.labelRem != null) {
-                        o |= 1;
-                    }
-                    if (prf.labelLoc != null) {
-                        o |= 2;
-                    }
-                    if (prf.pmsiLab != 0) {
-                        o |= 4;
-                    }
-                    if (prf.evpnLab != 0) {
-                        o |= 8;
-                    }
-                    if (o != 0) {
-                        continue;
-                    }
                     l.add(tabRouteEntry.toShBgpLabels(prf, typ == 1005));
                     break;
                 case 4:

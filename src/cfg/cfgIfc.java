@@ -126,6 +126,7 @@ import sec.secIsakmp;
 import tab.tabGen;
 import tab.tabQos;
 import tab.tabRouteEntry;
+import tab.tabSession;
 import user.userFilter;
 import user.userFormat;
 import user.userHelping;
@@ -1206,6 +1207,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no nsh xconnect",
         // mpls
         "interface .*! no mpls enable",
+        "interface .*! no mpls inspect",
         "interface .*! no mpls label-security",
         "interface .*! no mpls redirection",
         "interface .*! no mpls ldp4",
@@ -4670,6 +4672,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (mplsPack != null) {
             cmds.cfgLine(l, !mplsPack.security, cmds.tabulator, "mpls label-security", "");
             cmds.cfgLine(l, mplsPack.redirect == null, cmds.tabulator, "mpls redirection", "" + mplsPack.redirect);
+            cmds.cfgLine(l, mplsPack.inspect== null, cmds.tabulator, "mpls inspect", "" + mplsPack.inspect);
         }
         cmds.cfgLine(l, mplsLdp4 == null, cmds.tabulator, "mpls ldp4", rtrLdpIface.getLdpCfg(mplsLdp4, this));
         cmds.cfgLine(l, mplsLdp6 == null, cmds.tabulator, "mpls ldp6", rtrLdpIface.getLdpCfg(mplsLdp6, this));
@@ -5033,6 +5036,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 2   mpls                          multiprotocol label switching config commands");
         l.add("2 .     enable                      enable/disable packet processing");
         l.add("2 .     label-security              enable/disable security checks");
+        l.add("2 3,.   inspect                     enable/disable inspection");
+        l.add("3 .       mac                       log mac addresses");
         l.add("2 3     redirection                 send packets out on different interface");
         l.add("3 .       <name>                    name of interface");
         l.add("2 3,.   ldp4                        enable/disable ldp ipv4 discovery");
@@ -6898,6 +6903,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             setup2mpls();
             return;
         }
+        if (s.equals("inspect")) {
+            if (mplsPack == null) {
+                return;
+            }
+            if (mplsPack.inspect != null) {
+                mplsPack.inspect.stopTimer();
+            }
+            mplsPack.inspect = new tabSession();
+            mplsPack.inspect.logMacs = cmd.word().equals("mac");
+            mplsPack.inspect.startTimer();
+            return;
+        }
         if (s.equals("label-security")) {
             if (mplsPack == null) {
                 return;
@@ -6997,6 +7014,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("enable")) {
             clear2mpls();
+            return;
+        }
+        if (s.equals("inspect")) {
+            if (mplsPack == null) {
+                return;
+            }
+            if (mplsPack.inspect != null) {
+                mplsPack.inspect.stopTimer();
+            }
+            mplsPack.inspect = null;
             return;
         }
         if (s.equals("label-security")) {
