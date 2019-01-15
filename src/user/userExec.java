@@ -2890,7 +2890,7 @@ public class userExec {
     }
 
     private pipeSide getShPipe() {
-        pipeLine pl = new pipeLine(32768, false);
+        pipeLine pl = new pipeLine(1024 * 1024, false);
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -2915,16 +2915,8 @@ public class userExec {
     private void doView() {
         pipeSide pip = getShPipe();
         List<String> lst = new ArrayList<String>();
-        for (;;) {
-            if (pip.ready2rx() < 1) {
-                break;
-            }
-            String a = pip.lineGet(1);
-            if (a.length() < 1) {
-                continue;
-            }
-            lst.add(a);
-        }
+        packText pt = new packText(getShPipe());
+        pt.recvAll(lst);
         userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#show " + cmd.getRemaining(), false);
         edtr.doView();
     }
