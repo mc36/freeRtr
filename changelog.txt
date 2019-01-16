@@ -8565,3 +8565,8 @@ todo: terminal mode resolve
 todo: mpls inspect
 ---------------------------------- 2019-01-14 10:53:03
 no todo: mpls inspect
+---------------------------------- 2019-01-15 10:04:15
+no todo: bgp sr-policy afi
+qc pass: unicast+srte over bgp
+qc pass: unicast+srte over bgp with soft-reconfig
+qc pass: unicast+srte over bgp with additional path

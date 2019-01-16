@@ -438,9 +438,14 @@ public abstract class rtrBgpParam {
     public final static int mskMspw = 0x10000;
 
     /**
+     * srte
+     */
+    public final static int mskSrte = 0x20000;
+
+    /**
      * all
      */
-    public final static int mskAll = mskUni | mskLab | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtr | mskMspw;
+    public final static int mskAll = mskUni | mskLab | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtr | mskMspw;
 
     /**
      * string to afi mask
@@ -504,6 +509,9 @@ public abstract class rtrBgpParam {
             }
             if (a.equals("mdt")) {
                 i |= mskMdt;
+            }
+            if (a.equals("srte")) {
+                i |= mskSrte;
             }
             if (a.equals("mvpn")) {
                 i |= mskMvpn;
@@ -584,6 +592,9 @@ public abstract class rtrBgpParam {
         if ((i & mskMdt) != 0) {
             a += " mdt";
         }
+        if ((i & mskSrte) != 0) {
+            a += " srte";
+        }
         if ((i & mskMvpn) != 0) {
             a += " mvpn";
         }
@@ -621,6 +632,7 @@ public abstract class rtrBgpParam {
         hl.add(beg + "  mspw          address family to " + end);
         hl.add(beg + "  evpn          address family to " + end);
         hl.add(beg + "  mdt           address family to " + end);
+        hl.add(beg + "  srte          address family to " + end);
         hl.add(beg + "  mvpn          address family to " + end);
         hl.add(beg + "  omvpn         address family to " + end);
     }

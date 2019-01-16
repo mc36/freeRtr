@@ -1247,6 +1247,9 @@ qc pass: bgp soft in reset
 qc pass: bgp soft in reset with soft-reconfig
 qc pass: bgp soft out reset
 qc pass: bgp soft out reset with soft-reconfig
+qc pass: unicast+srte over bgp
+qc pass: unicast+srte over bgp with soft-reconfig
+qc pass: unicast+srte over bgp with additional path
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -1530,7 +1533,6 @@ todo: hostwatch to execute script on acl match
 todo: protocol traceroute
 todo: autoroute with sr, bier support
 todo: optimal route reflection
-todo: bgp sr-policy afi
 todo: bgp vpns with sr-policy
 todo: recursive static route
 todo: pipeline properties, terminal autoresize

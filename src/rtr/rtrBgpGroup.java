@@ -97,6 +97,11 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRoute<addrIP> wilMdt = new tabRoute<addrIP>("tx");
 
     /**
+     * willing srte prefixes
+     */
+    public tabRoute<addrIP> wilSrte = new tabRoute<addrIP>("tx");
+
+    /**
      * willing mvpn prefixes
      */
     public tabRoute<addrIP> wilMvpn = new tabRoute<addrIP>("tx");
@@ -175,6 +180,11 @@ public class rtrBgpGroup extends rtrBgpParam {
      * changed mdt prefixes
      */
     public tabRoute<addrIP> chgMdt = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed srte prefixes
+     */
+    public tabRoute<addrIP> chgSrte = new tabRoute<addrIP>("chg");
 
     /**
      * changed mvpn prefixes
@@ -256,6 +266,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("mspw advertise = " + wilMspw.size() + ", list=" + chgMspw.size());
         l.add("evpn advertise = " + wilEvpn.size() + ", list=" + chgEvpn.size());
         l.add("mdt advertise = " + wilMdt.size() + ", list=" + chgMdt.size());
+        l.add("srte advertise = " + wilSrte.size() + ", list=" + chgSrte.size());
         l.add("mvpn advertise = " + wilMvpn.size() + ", list=" + chgMvpn.size());
         l.add("omvpn advertise = " + wilMvpo.size() + ", list=" + chgMvpo.size());
         l.add("version = " + minversion + " of " + lower.compRound);
@@ -312,6 +323,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         if (safi == lower.afiMdt) {
             return wilMdt;
+        }
+        if (safi == lower.afiSrte) {
+            return wilSrte;
         }
         if (safi == lower.afiMvpn) {
             return wilMvpn;
@@ -373,6 +387,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         if (safi == lower.afiMdt) {
             return chgMdt;
+        }
+        if (safi == lower.afiSrte) {
+            return chgSrte;
         }
         if (safi == lower.afiMvpn) {
             return chgMvpn;
@@ -647,6 +664,7 @@ public class rtrBgpGroup extends rtrBgpParam {
      * @param cMspw mspw
      * @param cEvpn evpn
      * @param cMdt mdt
+     * @param cSrte srte
      * @param cMvpn mvpn
      * @param cMvpo omvpn
      */
@@ -654,7 +672,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             tabRoute<addrIP> cVpnU, tabRoute<addrIP> cVpnM, tabRoute<addrIP> cVpnF,
             tabRoute<addrIP> cVpoU, tabRoute<addrIP> cVpoM, tabRoute<addrIP> cVpoF,
             tabRoute<addrIP> cVpls, tabRoute<addrIP> cMspw, tabRoute<addrIP> cEvpn,
-            tabRoute<addrIP> cMdt, tabRoute<addrIP> cMvpn, tabRoute<addrIP> cMvpo) {
+            tabRoute<addrIP> cMdt, tabRoute<addrIP> cSrte, tabRoute<addrIP> cMvpn, tabRoute<addrIP> cMvpo) {
         tabRoute<addrIP> nUni = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMlt = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nOtr = new tabRoute<addrIP>("bgp");
@@ -669,6 +687,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         tabRoute<addrIP> nMspw = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nEvpn = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMdt = new tabRoute<addrIP>("bgp");
+        tabRoute<addrIP> nSrte = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMvpn = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMvpo = new tabRoute<addrIP>("bgp");
         if (sendDefRou) {
@@ -733,6 +752,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         importTable(lower.afiMspw, nMspw, cMspw);
         importTable(lower.afiEvpn, nEvpn, cEvpn);
         importTable(lower.afiMdt, nMdt, cMdt);
+        importTable(lower.afiSrte, nSrte, cSrte);
         importTable(lower.afiMvpn, nMvpn, cMvpn);
         importTable(lower.afiMvpo, nMvpo, cMvpo);
         lower.routerDoAggregates(lower.afiUni, nUni, localAddr, lower.fwdCore.commonLabel, rtrBgpUtil.peerOriginate, lower.routerID, lower.localAs);
@@ -751,6 +771,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         wilMspw = nMspw;
         wilEvpn = nEvpn;
         wilMdt = nMdt;
+        wilSrte = nSrte;
         wilMvpn = nMvpn;
         wilMvpo = nMvpo;
     }

@@ -9,7 +9,6 @@ hostwatch to execute script on acl match
 protocol traceroute
 autoroute with sr, bier support
 optimal route reflection
-bgp sr-policy afi
 bgp vpns with sr-policy
 recursive static route
 pipeline properties, terminal autoresize

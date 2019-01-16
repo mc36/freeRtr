@@ -285,6 +285,15 @@ public class rtrBgpUtil {
     /**
      * ipv4 mvpn address family
      */
+    public final static int safiIp4srte = afiIpv4 | safiSrTe;
+    /**
+     * ipv6 mvpn address family
+     */
+    public final static int safiIp6srte = afiIpv6 | safiSrTe;
+
+    /**
+     * ipv4 mvpn address family
+     */
     public final static int safiIp4mvpn = afiIpv4 | safiMvpn;
 
     /**
@@ -1069,7 +1078,7 @@ public class rtrBgpUtil {
                 }
             }
         }
-        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
+        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
             ntry.rouDst = pck.msbGetQ(0);
             pck.getSkip(8);
             i -= 64;
@@ -1197,7 +1206,7 @@ public class rtrBgpUtil {
             }
             buf1[p - 1] |= 1;
         }
-        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
+        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
             bits.msbPutQ(buf1, p, ntry.rouDst);
             p += 8;
             i += 64;
@@ -1449,6 +1458,10 @@ public class rtrBgpUtil {
                 return "mdt4";
             case safiIp6mdt:
                 return "mdt6";
+            case safiIp4srte:
+                return "srte4";
+            case safiIp6srte:
+                return "srte6";
             case safiIp4mvpn:
                 return "mvpn4";
             case safiIp6mvpn:
