@@ -487,6 +487,9 @@ class rtrLsrpNeighRcvr implements Runnable {
                     lower.lower.database.put(ntry);
                     lower.lower.todo.set(0);
                     lower.lower.notif.wakeup();
+                    if ((ntry.rtrId.compare(ntry.rtrId, lower.lower.routerID) == 0) && (!ntry.hostname.equals(cfgAll.hostName))) {
+                        logger.error("duplicate routerid with " + ntry.hostname);
+                    }
                 }
                 continue;
             }

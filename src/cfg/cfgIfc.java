@@ -5037,7 +5037,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 .     enable                      enable/disable packet processing");
         l.add("2 .     label-security              enable/disable security checks");
         l.add("2 3,.   inspect                     enable/disable inspection");
-        l.add("3 .       mac                       log mac addresses");
+        l.add("3 3,.     mac                       log mac addresses");
+        l.add("3 3,.     before                    log on session start");
+        l.add("3 3,.     after                     log on session stop");
         l.add("2 3     redirection                 send packets out on different interface");
         l.add("3 .       <name>                    name of interface");
         l.add("2 3,.   ldp4                        enable/disable ldp ipv4 discovery");
@@ -6911,7 +6913,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 mplsPack.inspect.stopTimer();
             }
             mplsPack.inspect = new tabSession();
-            mplsPack.inspect.logMacs = cmd.word().equals("mac");
+            mplsPack.inspect.fromString(cmd);
             mplsPack.inspect.startTimer();
             return;
         }

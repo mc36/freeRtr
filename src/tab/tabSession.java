@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import pack.packNetflow;
 import pipe.pipeSide;
+import util.cmds;
 
 /**
  * one session record
@@ -56,12 +57,12 @@ public class tabSession implements Runnable {
     /**
      * log before session
      */
-    public boolean logBefore = true;
+    public boolean logBefore = false;
 
     /**
      * log after session
      */
-    public boolean logAfter = true;
+    public boolean logAfter = false;
 
     /**
      * log mac addresses
@@ -76,9 +77,33 @@ public class tabSession implements Runnable {
     public String toString() {
         String a = "";
         if (logMacs) {
-            a = "mac";
+            a = " mac";
         }
-        return a;
+        if (logBefore) {
+            a = " before";
+        }
+        if (logAfter) {
+            a = " after";
+        }
+        return a.trim();
+    }
+
+    public void fromString(cmds cmd) {
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("mac")) {
+                logMacs = true;
+            }
+            if (a.equals("before")) {
+                logBefore = true;
+            }
+            if (a.equals("after")) {
+                logAfter = true;
+            }
+        }
     }
 
     /**

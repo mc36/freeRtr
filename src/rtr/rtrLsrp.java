@@ -536,6 +536,15 @@ public class rtrLsrp extends ipRtr implements Runnable {
             spf.addSegRouI(ntry.rtrId, ntry.segrouIdx);
             spf.addBierB(ntry.rtrId, ntry.bierBeg);
             spf.addBierI(ntry.rtrId, ntry.bierIdx, true);
+            if (routerID.compare(routerID, ntry.rtrId) == 0) {
+                continue;
+            }
+            if ((segrouIdx != 0) && (segrouIdx == ntry.segrouIdx)) {
+                logger.error("duplicate segrout index with " + ntry.rtrId);
+            }
+            if ((bierIdx != 0) && (bierIdx == ntry.bierIdx)) {
+                logger.error("duplicate bier index with " + ntry.rtrId);
+            }
         }
         spf.doCalc(routerID, null);
         for (int o = 0; o < ifaces.size(); o++) {

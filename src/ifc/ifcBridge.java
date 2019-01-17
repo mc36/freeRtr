@@ -289,7 +289,9 @@ public class ifcBridge implements ifcDn {
         l.add("2 .       <rt>                      rt in ASnum:IDnum format");
         l.add("1 .     mac-learn                   enable mac address learning");
         l.add("1 2,.   inspect                     enable session inspection");
-        l.add("2 .       mac                       enable mac logging");
+        l.add("2 2,.     mac                       enable mac logging");
+        l.add("2 2,.     before                    log on session start");
+        l.add("2 2,.     after                     log on session stop");
         l.add("1 .     mac-move                    enable mac move logging");
         l.add("1 .     private-bridge              disable peer communication");
         l.add("1 .     block-unicast               block unknown destination unicast");
@@ -370,7 +372,7 @@ public class ifcBridge implements ifcDn {
                 inspect.stopTimer();
             }
             inspect = new tabSession();
-            inspect.logMacs = cmd.word().equals("mac");
+            inspect.fromString(cmd);
             inspect.startTimer();
             return;
         }

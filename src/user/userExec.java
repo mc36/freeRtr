@@ -638,7 +638,9 @@ public class userExec {
         hl.add("4 .          [num]               label to view");
         hl.add("3 .        interfaces            mpls interface table");
         hl.add("3 4        inspect               mpls inspection table");
-        hl.add("4 .          <name>              interface to view");
+        hl.add("4 5          <name>              interface to see");
+        hl.add("5 .            session           list of sessions");
+        hl.add("5 .            toptalk           top talker list");
         hl.add("2 3      nsh                     network service header");
         hl.add("3 4,.      forwarding            nsh forwarding table");
         hl.add("4 5          [num]               path to view");

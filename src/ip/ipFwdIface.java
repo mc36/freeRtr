@@ -307,7 +307,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add("2 3     access-group-out            access list to apply to egress packets");
         l.add("3 .       <name>                    name of access list");
         l.add("2 3,.   inspect                     enable packet inspection");
-        l.add("3 .       mac                       with mac addresses");
+        l.add("3 3,.     mac                       with mac addresses");
+        l.add("3 3,.     before                    log on session start");
+        l.add("3 3,.     after                     log on session stop");
         l.add("2 3     bfd                         enable bidirectional forwarding detection");
         l.add("3 4       <num>                     tx interval in ms");
         l.add("4 5         <num>                   rx interval in ms");
@@ -773,11 +775,8 @@ public class ipFwdIface extends tabRouteIface {
                 inspect.stopTimer();
             }
             inspect = new tabSession();
+            inspect.fromString(cmd);
             inspect.startTimer();
-            a = cmd.word();
-            if (a.equals("mac")) {
-                inspect.logMacs = true;
-            }
             return false;
         }
         if (a.equals("bfd")) {

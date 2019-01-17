@@ -776,7 +776,15 @@ public class userShow {
                     cmd.error("not enabled");
                     return null;
                 }
-                rdr.putStrTab(ifc.mplsPack.inspect.doShowInsp());
+                a = cmd.word();
+                if (a.equals("session")) {
+                    rdr.putStrTab(ifc.mplsPack.inspect.doShowInsp());
+                    return null;
+                }
+                if (a.equals("toptalk")) {
+                    rdr.putStrTab(ifc.mplsPack.inspect.doShowTalk());
+                    return null;
+                }
                 return null;
             }
             if (a.equals("interfaces")) {
