@@ -381,6 +381,70 @@ interface ethernet1
  no log-link-change
  exit
 !
+router bgp4 1
+ vrf v1
+ local-as 1
+ router-id 10.10.10.227
+ address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ scandelay 30000
+ conquer
+ nexthop route-policy nht4
+ flowspec fs4
+ monitor a p1 10.10.10.227 17971
+ dump a bgp4cur.log 600000 bgp4old.log
+ template a remote-as 1
+ no template a description
+ template a password $w10$DlOpZQKK5act0vAiKD2PVg==
+ template a local-as 1
+ template a address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a distance 200
+ template a compression both
+ template a buffer-size 1024000
+ template a ttl-security 123
+ template a additional-path-rx unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a additional-path-tx unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a update-source loopback0
+ template a monitor a
+ template a dump a
+ template a hostname
+ template a unidirection
+ template a fall-over
+ template a aigp
+ template a traffeng
+ template a pmsitun
+ template a tunenc
+ template a attribset
+ template a segrout
+ template a bier
+ template a route-reflector-client
+ template a send-community all
+ neighbor 10.10.10.32 template a
+ neighbor 10.10.10.33 template a
+ neighbor 10.10.10.34 template a
+ neighbor 10.10.10.35 template a
+ neighbor 10.10.10.36 template a
+ neighbor 10.10.10.37 template a
+ neighbor 10.10.10.91 template a
+ neighbor 10.10.10.92 template a
+ neighbor 10.10.10.93 template a
+ neighbor 10.10.10.94 template a
+ neighbor 10.10.10.95 template a
+ neighbor 10.10.10.96 template a
+ neighbor 10.10.10.225 template a
+ neighbor 10.10.10.226 template a
+ neighbor 10.10.10.228 template a
+ neighbor 10.10.10.229 template a
+ afi-vrf vv enable
+ afi-vrf vv flowspec fs4
+ afi-vrf vv mvpn loopback0
+ afi-vrf vv redistribute connected
+ afi-ovrf vv enable
+ afi-ovrf vv flowspec fs6
+ afi-ovrf vv mvpn loopback0
+ afi-ovrf vv redistribute connected
+ redistribute connected
+ exit
+!
 router bgp4 65535
  vrf v1
  local-as 65535
@@ -425,6 +489,58 @@ router bgp4 65535
  afi-evpn 2 update-source loopback0
  redistribute connected
  redistribute static
+ exit
+!
+router bgp6 1
+ vrf v1
+ local-as 1
+ router-id 10.10.10.227
+ address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ scandelay 30000
+ conquer
+ nexthop route-policy nht6
+ flowspec fs6
+ monitor a p1 10.10.10.227 17971
+ dump a bgp6cur.log 600000 bgp6old.log
+ template a remote-as 1
+ no template a description
+ template a password $w10$DlOpZQKK5act0vAiKD2PVg==
+ template a local-as 1
+ template a address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a distance 200
+ template a compression both
+ template a buffer-size 1024000
+ template a ttl-security 123
+ template a additional-path-rx unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a additional-path-tx unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn
+ template a update-source loopback0
+ template a monitor a
+ template a dump a
+ template a hostname
+ template a unidirection
+ template a fall-over
+ template a aigp
+ template a traffeng
+ template a pmsitun
+ template a tunenc
+ template a attribset
+ template a segrout
+ template a bier
+ template a route-reflector-client
+ template a send-community all
+ neighbor 2001:db8:1101::32 template a
+ neighbor 2001:db8:1101::33 template a
+ neighbor 2001:db8:1101::34 template a
+ neighbor 2001:db8:1101::35 template a
+ neighbor 2001:db8:1101::36 template a
+ neighbor 2001:db8:1101::37 template a
+ neighbor 2001:db8:1101::91 template a
+ neighbor 2001:db8:1101::92 template a
+ neighbor 2001:db8:1101::93 template a
+ neighbor 2001:db8:1101::94 template a
+ neighbor 2001:db8:1101::95 template a
+ neighbor 2001:db8:1101::96 template a
+ redistribute connected
  exit
 !
 router bgp6 65535
