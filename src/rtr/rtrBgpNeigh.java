@@ -2,11 +2,13 @@ package rtr;
 
 import addr.addrIP;
 import cfg.cfgAll;
+import clnt.clntDns;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import pack.packDnsRec;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtAccept;
@@ -1338,6 +1340,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 return bits.num2str(remoteAs) + "|" + (conn.compressRx != null) + "|" + (conn.compressTx != null) + "|" + bits.percent(conn.cntr.byteRx, conn.compressCntr.byteRx) + "|" + bits.percent(conn.cntr.byteTx, conn.compressCntr.byteTx) + "|" + peerAddr;
             case 11:
                 return bits.num2str(remoteAs) + "|" + conn.cntr.packRx + "|" + conn.cntr.packTx + "|" + conn.cntr.byteRx + "|" + conn.cntr.byteTx + "|" + conn.refreshRx + "|" + conn.refreshTx + "|" + peerAddr;
+            case 12:
+                clntDns clnt = new clntDns();
+                clnt.doResolvOne(cfgAll.nameServerAddr, packDnsRec.generateReverse(peerAddr), packDnsRec.typePTR);
+                return bits.num2str(remoteAs) + "|" + peerAddr + "|" + clnt.getPTR() + "|" + bits.timePast(conn.upTime);
             default:
                 return null;
         }

@@ -363,6 +363,7 @@ public class userExec {
         hl.add("5 .            nexthop           list of nexthops");
         hl.add("5 .            bestpath          best path statistics");
         hl.add("5 .            graceful-restart  list of graceful restart");
+        hl.add("5 .            resolve           list of domain names");
         hl.add("5 .            additional-path   list of additional path");
         hl.add("5 .            router-id         list of router id");
         hl.add("5 .            buffer            list of buffer");
