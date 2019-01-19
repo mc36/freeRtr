@@ -1069,6 +1069,9 @@ public class bits {
     }
 
     private static List<String> lst2lin(List<String> lst) {
+        if (lst == null) {
+            return null;
+        }
         for (int i = 0; i < lst.size(); i++) {
             lst.set(i, padBeg("" + (i + 1), 6, " ") + ": " + lst.get(i));
         }
