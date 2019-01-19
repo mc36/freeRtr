@@ -210,6 +210,7 @@ public class version {
         sa.add("name: " + cfgAll.hostName);
         sa.add("hwid: " + cfgInit.hwIdNum);
         sa.add("uptime: since " + bits.time2str(cfgAll.timeZoneName, cfgInit.jvmStarted + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(cfgInit.jvmStarted));
+        sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
         sa.add("hwcfg: " + cfgInit.cfgFileHw);
         sa.add("swcfg: " + cfgInit.cfgFileSw);
         sa.add("cpu: " + getCPUname());
@@ -250,6 +251,26 @@ public class version {
      */
     public static String getFileName() {
         return getProp("java.class.path");
+    }
+
+    /**
+     * get archive path name
+     *
+     * @return filename without path
+     */
+    public static String myPathName() {
+        String s = version.getFileName();
+        int i = s.lastIndexOf(".");
+        return s.substring(0, i);
+    }
+
+    /**
+     * get reload file name
+     *
+     * @return filename without path
+     */
+    public static String myReloadFile() {
+        return myPathName() + ".rld";
     }
 
     /**

@@ -751,6 +751,7 @@ public class cfgInit implements Runnable {
      * @param reason reason string
      */
     public static void stopRouter(boolean clean, int code, String reason) {
+        bits.buf2txt(true, bits.str2lst("code#" + code + "=" + reason), version.myReloadFile());
         for (int i = 0; i < vdcLst.size(); i++) {
             try {
                 vdcLst.get(i).stopNow();

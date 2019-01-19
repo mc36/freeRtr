@@ -90,7 +90,7 @@ public class userUpgrade {
      * @return version filename
      */
     protected static String myVerFile() {
-        return myPathName() + verExt;
+        return version.myPathName() + verExt;
     }
 
     /**
@@ -98,15 +98,10 @@ public class userUpgrade {
      *
      * @return filename without path
      */
-    protected static String myFileName() {
+    public static String myFileName() {
         return new File(version.getFileName()).getName();
     }
 
-    private static String myPathName() {
-        String s = version.getFileName();
-        int i = s.lastIndexOf(".");
-        return s.substring(0, i);
-    }
 
     /**
      * generate release version file
@@ -302,7 +297,7 @@ public class userUpgrade {
         }
         userFlash fl = new userFlash(cmd.pipe);
         fl.cons.debugStat("downloading version info");
-        String tmp = myPathName() + ".tmp";
+        String tmp = version.myPathName() + ".tmp";
         uniResLoc url = uniResLoc.parseOne(server + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
