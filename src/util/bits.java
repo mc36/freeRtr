@@ -1010,6 +1010,9 @@ public class bits {
      */
     public static String lst2str(List<String> l, String e) {
         String s = "";
+        if (l == null) {
+            return s;
+        }
         for (int i = 0; i < l.size(); i++) {
             s += l.get(i) + e;
         }
