@@ -912,7 +912,7 @@ class userTesterOne {
                 cmd.word();
                 int rp = bits.str2num(cmd.word());
                 int vl = i + 1;
-                s += " -net nic,model=" + otherN + ",vlan=" + vl + ",macaddr=" + mac.toEmuStr() + " -net socket,vlan=" + vl + ",udp=:" + rp + ",localaddr=:" + lp;
+                s += " -netdev socket,id=n" + vl + ",udp=:" + rp + ",localaddr=:" + lp + " -device " + otherN + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
             }
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);

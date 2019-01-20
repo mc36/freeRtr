@@ -642,13 +642,13 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             int vl = 1;
             for (int i = 0; i < locals.size(); i++) {
                 cfgVdcIfc ntry = locals.get(i);
-                cmd += " -net nic,vlan=" + vl + ",model=" + nicType + ",macaddr=" + mac.toEmuStr() + " -net socket,vlan=" + vl + ",udp=:" + ntry.port + ",localaddr=:" + (ntry.port + 1);
+                cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.port + ",localaddr=:" + (ntry.port + 1) + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
                 vl++;
                 mac.setAdd(mac, one);
             }
             for (int i = 0; i < conns.size(); i++) {
                 cfgVdcConn ntry = conns.get(i);
-                cmd += " -net nic,vlan=" + vl + ",model=" + nicType + ",macaddr=" + mac.toEmuStr() + " -net socket,vlan=" + vl + ",udp=:" + ntry.conn.port + ",localaddr=:" + ntry.port;
+                cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.conn.port + ",localaddr=:" + ntry.port + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
                 vl++;
                 mac.setAdd(mac, one);
             }
