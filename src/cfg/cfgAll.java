@@ -851,7 +851,7 @@ public class cfgAll {
         "!logging monitor debug",
         "!logging format normal",
         "!no logging rotate 0",
-        "!no logging syslog debug",
+        "!no logging syslog debug kernel",
         "!no logging file debug",
         "!no logging irc debug",
         "!banner encoded ",
@@ -2918,8 +2918,12 @@ public class cfgAll {
         l.add("logging format " + logger.format2string(logger.logPosForm));
         cmds.cfgLine(l, logger.logFilNam.length() < 1, "", "logging file " + logger.level2string(logger.logFilLev), logger.logFilNam);
         cmds.cfgLine(l, logger.logRotNam.length() < 1, "", "logging rotate " + logger.logRotLim, logger.logRotNam);
-        String a = "" + logger.logSylHnd;
-        cmds.cfgLine(l, a.length() < 1, "", "logging syslog " + logger.level2string(logger.logSylLev), a);
+        String a = "";
+        for (int i = 0; i < logger.logSylHnd.size(); i++) {
+            a += " " + logger.logSylHnd.get(i);
+        }
+        a = a.trim();
+        cmds.cfgLine(l, a.length() < 1, "", "logging syslog " + logger.level2string(logger.logSylLev) + " " + servSyslog.num2facility(logger.logSylFac), a);
         a = "" + logger.logIrcHnd;
         cmds.cfgLine(l, a.length() < 1, "", "logging irc " + logger.level2string(logger.logIrcLev), a);
         l.add(cmds.comment);

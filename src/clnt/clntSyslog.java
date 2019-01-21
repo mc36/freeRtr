@@ -57,10 +57,7 @@ public class clntSyslog {
     }
 
     public String toString() {
-        if (addr == null) {
-            return "";
-        }
-        return "" + addr + " " + servSyslog.num2facility(fac);
+        return "" + addr;
     }
 
     /**

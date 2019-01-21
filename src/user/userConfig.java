@@ -53,6 +53,7 @@ import cry.cryKeyRSA;
 import ip.ipFwd;
 import ip.ipFwdRoute;
 import ipx.ipxFwd;
+import java.util.ArrayList;
 import pipe.pipeSide;
 import serv.servBmp2mrt;
 import serv.servBstun;
@@ -315,36 +316,36 @@ public class userConfig {
         l.add("3  4      <num>                      maximum file size");
         l.add("4  .        <name>                   name of second file");
         l.add("2  3    syslog                       syslog logging");
-        l.add("3  4,.    debug                      debugging messages");
-        l.add("3  4,.    informational              informational messages");
-        l.add("3  4,.    warning                    warning messages");
-        l.add("3  4,.    error                      error messages");
-        l.add("3  4,.    exception                  exception messages");
-        l.add("4  5        <addr>                   address of host");
-        l.add("5  .          kernel                 facility");
-        l.add("5  .          user                   facility");
-        l.add("5  .          mail                   facility");
-        l.add("5  .          system                 facility");
-        l.add("5  .          security1              facility");
-        l.add("5  .          syslogd                facility");
-        l.add("5  .          lpd                    facility");
-        l.add("5  .          news                   facility");
-        l.add("5  .          uucp                   facility");
-        l.add("5  .          clock1                 facility");
-        l.add("5  .          security2              facility");
-        l.add("5  .          ftp                    facility");
-        l.add("5  .          ntp                    facility");
-        l.add("5  .          logaudit               facility");
-        l.add("5  .          logalert               facility");
-        l.add("5  .          clock2                 facility");
-        l.add("5  .          local0                 facility");
-        l.add("5  .          local1                 facility");
-        l.add("5  .          local2                 facility");
-        l.add("5  .          local3                 facility");
-        l.add("5  .          local4                 facility");
-        l.add("5  .          local5                 facility");
-        l.add("5  .          local6                 facility");
-        l.add("5  .          local7                 facility");
+        l.add("3  4      debug                      debugging messages");
+        l.add("3  4      informational              informational messages");
+        l.add("3  4      warning                    warning messages");
+        l.add("3  4      error                      error messages");
+        l.add("3  4      exception                  exception messages");
+        l.add("4  5        kernel                   facility");
+        l.add("4  5        user                     facility");
+        l.add("4  5        mail                     facility");
+        l.add("4  5        system                   facility");
+        l.add("4  5        security1                facility");
+        l.add("4  5        syslogd                  facility");
+        l.add("4  5        lpd                      facility");
+        l.add("4  5        news                     facility");
+        l.add("4  5        uucp                     facility");
+        l.add("4  5        clock1                   facility");
+        l.add("4  5        security2                facility");
+        l.add("4  5        ftp                      facility");
+        l.add("4  5        ntp                      facility");
+        l.add("4  5        logaudit                 facility");
+        l.add("4  5        logalert                 facility");
+        l.add("4  5        clock2                   facility");
+        l.add("4  5        local0                   facility");
+        l.add("4  5        local1                   facility");
+        l.add("4  5        local2                   facility");
+        l.add("4  5        local3                   facility");
+        l.add("4  5        local4                   facility");
+        l.add("4  5        local5                   facility");
+        l.add("4  5        local6                   facility");
+        l.add("4  5        local7                   facility");
+        l.add("5  5,.        <addr>                 address of host");
         l.add("2  3    irc                          irc logging");
         l.add("3  4,.    debug                      debugging messages");
         l.add("3  4,.    informational              informational messages");
@@ -1327,7 +1328,7 @@ public class userConfig {
                 return;
             }
             if (a.equals("password-stars")) {
-                cfgAll.passwdStars= true;
+                cfgAll.passwdStars = true;
                 return;
             }
             if (a.equals("prefer-ipv6")) {
@@ -2084,11 +2085,11 @@ public class userConfig {
                 cfgAll.graceReload = false;
                 return;
             }
-             if (a.equals("password-stars")) {
-                cfgAll.passwdStars= false;
+            if (a.equals("password-stars")) {
+                cfgAll.passwdStars = false;
                 return;
             }
-           if (a.equals("prefer-ipv6")) {
+            if (a.equals("prefer-ipv6")) {
                 cfgAll.preferIpv6 = false;
                 return;
             }
@@ -2806,8 +2807,10 @@ public class userConfig {
             return;
         }
         if (s.equals("syslog")) {
-            logger.logSylHnd.logStop();
-            logger.logSylHnd = new clntSyslog(null, 0);
+            for (int i = 0; i < logger.logSylHnd.size(); i++) {
+                logger.logSylHnd.get(i).logStop();
+            }
+            logger.logSylHnd = new ArrayList<clntSyslog>();
             return;
         }
         if (s.equals("irc")) {
@@ -2844,14 +2847,23 @@ public class userConfig {
             return;
         }
         if (s.equals("syslog")) {
-            logger.logSylHnd.logStop();
-            logger.logSylLev = logger.string2level(cmd.word());
-            addrIP adr = new addrIP();
-            if (adr.fromString(cmd.word())) {
-                adr = null;
+            for (int i = 0; i < logger.logSylHnd.size(); i++) {
+                logger.logSylHnd.get(i).logStop();
             }
-            int i = servSyslog.facility2num(cmd.word());
-            logger.logSylHnd = new clntSyslog(adr, i);
+            logger.logSylHnd = new ArrayList<clntSyslog>();
+            logger.logSylLev = logger.string2level(cmd.word());
+            logger.logSylFac = servSyslog.facility2num(cmd.word());
+            for (;;) {
+                String a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                addrIP adr = new addrIP();
+                if (adr.fromString(a)) {
+                    continue;
+                }
+                logger.logSylHnd.add(new clntSyslog(adr, logger.logSylFac));
+            }
             return;
         }
         if (s.equals("irc")) {

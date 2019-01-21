@@ -82,7 +82,12 @@ public class logger {
     /**
      * syslog handler
      */
-    public static clntSyslog logSylHnd = new clntSyslog(null, 0);
+    public static List<clntSyslog> logSylHnd = new ArrayList<clntSyslog>();
+
+    /**
+     * facility of syslog
+     */
+    public static int logSylFac = 0;
 
     /**
      * level of syslog
@@ -224,7 +229,9 @@ public class logger {
             }
         }
         if (logSylLev.compareTo(level) <= 0) {
-            logSylHnd.logMsg(level, msg);
+            for (int i = 0; i < logSylHnd.size(); i++) {
+                logSylHnd.get(i).logMsg(level, msg);
+            }
         }
         if (logIrcLev.compareTo(level) <= 0) {
             logIrcHnd.logMsg(msg);
