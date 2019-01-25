@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v19.1.17-testing, done by cs@nop.;-;-
--;-;2019-01-17 16:04:26, took 08:25:10 on 1524 cases, 0 failed, 0 traces, 21 retries;-;-
+-;-;freeRouter v19.1.25-testing, done by cs@nop.;-;-
+-;-;2019-01-25 19:46:43, took 08:10:58 on 1528 cases, 0 failed, 0 traces, 17 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1254,6 +1254,10 @@ rout-bgp327.tst;0;bgp soft out reset with soft-reconfig;successfully;finished
 rout-bgp328.tst;0;unicast+srte over bgp;successfully;finished
 rout-bgp329.tst;0;unicast+srte over bgp with soft-reconfig;successfully;finished
 rout-bgp330.tst;0;unicast+srte over bgp with additional path;successfully;finished
+rout-bgp331.tst;0;bgp interas vpn with asbr peering;successfully;finished
+rout-bgp332.tst;0;bgp interas vpn with rr peering;successfully;finished
+rout-bgp333.tst;0;bgp interas othervpn with asbr peering;successfully;finished
+rout-bgp334.tst;0;bgp interas othervpn with rr peering;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished

@@ -61,6 +61,11 @@ public class rtrLogger extends ipRtr {
     protected tabGen<rtrLoggerFlap> flaps;
 
     /**
+     * logging
+     */
+    protected boolean logging;
+
+    /**
      * create logger process
      *
      * @param forwarder forwarder to update
@@ -200,7 +205,9 @@ public class rtrLogger extends ipRtr {
     }
 
     private void doChgd(int afi, tabRouteEntry<addrIP> ntry, String act) {
-        logger.info(act + " " + afi2str(afi) + " " + prf2str(afi, ntry.prefix));
+        if (logging) {
+            logger.info(act + " " + afi2str(afi) + " " + prf2str(afi, ntry.prefix));
+        }
         if (flaps == null) {
             return;
         }
@@ -259,10 +266,12 @@ public class rtrLogger extends ipRtr {
 
     public void routerGetHelp(userHelping l) {
         l.add("1 .   flapstat                    count flap statistics");
+        l.add("1 .   logging                     log events");
     }
 
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         cmds.cfgLine(l, flaps == null, beg, "flapstat", "");
+        cmds.cfgLine(l, !logging, beg, "logging", "");
     }
 
     public boolean routerConfigure(cmds cmd) {
@@ -271,6 +280,10 @@ public class rtrLogger extends ipRtr {
         if (s.equals("no")) {
             s = cmd.word();
             negated = true;
+        }
+        if (s.equals("logging")) {
+            logging = !negated;
+            return false;
         }
         if (s.equals("flapstat")) {
             if (negated) {

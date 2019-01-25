@@ -8570,3 +8570,8 @@ no todo: bgp sr-policy afi
 qc pass: unicast+srte over bgp
 qc pass: unicast+srte over bgp with soft-reconfig
 qc pass: unicast+srte over bgp with additional path
+---------------------------------- 2019-01-25 11:35:44
+qc pass: bgp interas vpn with asbr peering
+qc pass: bgp interas vpn with rr peering
+qc pass: bgp interas othervpn with asbr peering
+qc pass: bgp interas othervpn with rr peering

@@ -1446,10 +1446,21 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (pck.IPmlt || pck.IPbrd) {
             ifc = ipFwdTab.findStableIface(this);
         } else {
-            tabRouteEntry<addrIP> prf = actualU.route(pck.IPtrg);
+            if (lab.forwarder == null) {
+                cntr.drop(pck, counter.reasons.notInTab);
+                return;
+            }
+            tabRouteEntry<addrIP> prf = lab.forwarder.actualU.route(pck.IPtrg);
             if (prf == null) {
                 cntr.drop(pck, counter.reasons.noRoute);
                 return;
+            }
+            if (prf.rouTab != null) {
+                prf = prf.rouTab.actualU.route(prf.nextHop);
+                if (prf == null) {
+                    cntr.drop(pck, counter.reasons.noRoute);
+                    return;
+                }
             }
             ifc = (ipFwdIface) prf.iface;
         }
