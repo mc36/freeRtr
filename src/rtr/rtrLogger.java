@@ -100,6 +100,33 @@ public class rtrLogger extends ipRtr {
     }
 
     /**
+     * count prefix lengths
+     *
+     * @param tab routing table
+     * @return prefix length report
+     */
+    public static userFormat prefixLengths(tabRoute<addrIP> tab) {
+        int[] res = new int[(addrIP.size * 8) + 1];
+        for (int i = 0; i < tab.size(); i++) {
+            res[tab.get(i).prefix.maskLen]++;
+        }
+        userFormat lst = new userFormat("|", "len|count");
+        for (int i = 0; i < res.length; i++) {
+            lst.add(i + "|" + res[i]);
+        }
+        return lst;
+    }
+
+    /**
+     * count prefix lengths
+     *
+     * @return prefix length report
+     */
+    public userFormat prefixLengths() {
+        return prefixLengths(oldU);
+    }
+
+    /**
      * afi to string
      *
      * @param i afi

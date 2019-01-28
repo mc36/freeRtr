@@ -447,6 +447,7 @@ public class userExec {
         hl.add("6 .              asgraph         connectivity graph of ases");
         hl.add("6 .              asconn          connectivity of ases");
         hl.add("6 .              asinconsistent  inconsistent advertisements of ases");
+        hl.add("6 .              prefix-lengths  prefix length distribution");
         hl.add("6 7              allroute        list of specific routes");
         hl.add("7 8,.              <addr>        prefix to view");
         hl.add("8 .                  [rd]        route distinguisher");
@@ -478,6 +479,7 @@ public class userExec {
         hl.add("9 9,.                  tunnel    ignore tunnel");
         hl.add("3 4        logger                route logger");
         hl.add("4 5          <num>               process id");
+        hl.add("5 .            prefix-lengths    list of prefix lengths");
         hl.add("5 6,.          unicast           list of database");
         hl.add("6 .              [addr]          entry to view");
         hl.add("5 6,.          multicast         list of database");

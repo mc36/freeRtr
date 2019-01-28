@@ -1404,6 +1404,10 @@ public class userShow {
             doShowRoutes(r.logger.fwdCore, r.logger.getRoutes(3), 5);
             return;
         }
+        if (a.equals("prefix-lengths")) {
+            rdr.putStrTab(r.logger.prefixLengths());
+            return;
+        }
     }
 
     private void doShowIpXlsrp(tabRouteEntry.routeType afi) {
@@ -2227,6 +2231,10 @@ public class userShow {
             }
             if (a.equals("asconn")) {
                 rdr.putStrTab(r.bgp.getAsConns(sfi));
+                return;
+            }
+            if (a.equals("prefix-lengths")) {
+                rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(sfi)));
                 return;
             }
             if (a.equals("asinconsistent")) {
