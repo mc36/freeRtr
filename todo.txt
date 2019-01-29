@@ -7,7 +7,6 @@ diff n | filter
 terminal mode resolve
 hostwatch to execute script on acl match
 protocol traceroute
-autoroute with sr, bier support
 optimal route reflection
 bgp vpns with sr-policy
 recursive static route

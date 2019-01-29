@@ -553,6 +553,52 @@ public class ipFwdTab {
             tabT.setProto(rtr.routerProtoTyp, rtr.routerProcNum);
             tabF.mergeFrom(tabRoute.addType.better, tabT, null, true, tabRouteEntry.distanMax);
         }
+        for (int i = 0; i < lower.ifaces.size(); i++) {
+            ipFwdIface ifc = lower.ifaces.get(i);
+            if (!ifc.ready) {
+                continue;
+            }
+            if (ifc.autRouTyp == null) {
+                continue;
+            }
+            tabRouteEntry<addrIP> ntry = tabL.route(ifc.autRouRtr);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.rouTyp != ifc.autRouTyp) {
+                continue;
+            }
+            if (ntry.protoNum != ifc.autRouPrt) {
+                continue;
+            }
+            if (ntry.srcRtr == null) {
+                continue;
+            }
+            for (int o = 0; o < tabL.size(); o++) {
+                tabRouteEntry<addrIP> prf = tabL.get(o);
+                if (prf.rouTyp != ntry.rouTyp) {
+                    continue;
+                }
+                if (prf.protoNum != ntry.protoNum) {
+                    continue;
+                }
+                if (prf.srcRtr == null) {
+                    continue;
+                }
+                if (prf.srcRtr.getSize() != ntry.srcRtr.getSize()) {
+                    continue;
+                }
+                if (prf.srcRtr.compare(prf.srcRtr, ntry.srcRtr) != 0) {
+                    continue;
+                }
+                if (prf.prefix.compare(prf.prefix, ntry.prefix) == 0) {
+                    continue;
+                }
+                prf.iface = ifc;
+                prf.nextHop = ifc.autRouHop.copyBytes();
+                prf.labelRem = null;
+            }
+        }
         tabU = new tabRoute<addrIP>("locals");
         tabU.mergeFrom(tabRoute.addType.better, tabL, null, true, tabRouteEntry.distanLim);
         for (int i = 0; i < lower.routers.size(); i++) {
@@ -667,7 +713,11 @@ public class ipFwdTab {
                         lrs = tabLabel.prependLabels(lrs, nh.labelRem);
                     }
                 }
-                ntry.labelLoc.setFwdMpls(2, vrf, ifc, hop, lrs);
+                if (hop != null) {
+                    ntry.labelLoc.setFwdMpls(2, vrf, ifc, hop, lrs);
+                } else {
+                    ntry.labelLoc.setFwdDrop(2);
+                }
             }
             if (ntry.rouTab != null) {
                 continue;

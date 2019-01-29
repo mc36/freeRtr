@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v19.1.25-testing, done by cs@nop.;-;-
--;-;2019-01-25 19:46:43, took 08:10:58 on 1528 cases, 0 failed, 0 traces, 17 retries;-;-
+-;-;freeRouter v19.1.29-testing, done by cs@nop.;-;-
+-;-;2019-01-29 18:34:00, took 08:28:52 on 1540 cases, 0 failed, 1 traces, 14 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -924,6 +924,7 @@ rout-babel20.tst;0;babel prefix withdraw;successfully;finished
 rout-babel21.tst;0;babel aggregation;successfully;finished
 rout-babel22.tst;0;babel auto mesh tunnel;successfully;finished
 rout-babel23.tst;0;babel triangle connection;successfully;finished
+rout-babel24.tst;0;babel autoroute;successfully;finished
 rout-bgp001.tst;0;ebgp in chain;successfully;finished
 rout-bgp002.tst;0;confed bgp in chain;successfully;finished
 rout-bgp003.tst;0;ibgp in chain;successfully;finished
@@ -1258,6 +1259,10 @@ rout-bgp331.tst;0;bgp interas vpn with asbr peering;successfully;finished
 rout-bgp332.tst;0;bgp interas vpn with rr peering;successfully;finished
 rout-bgp333.tst;0;bgp interas othervpn with asbr peering;successfully;finished
 rout-bgp334.tst;0;bgp interas othervpn with rr peering;successfully;finished
+rout-bgp335.tst;0;bgp interas csc vpn with asbr peering;successfully;finished
+rout-bgp336.tst;0;bgp interas csc vpn with rr peering;successfully;finished
+rout-bgp337.tst;0;bgp dual core vpn;successfully;finished
+rout-bgp338.tst;0;bgp dual core csc vpn;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished
@@ -1278,6 +1283,7 @@ rout-eigrp17.tst;0;eigrp aggregation;successfully;finished
 rout-eigrp18.tst;0;eigrp auto mesh tunnel;successfully;finished
 rout-eigrp19.tst;0;eigrp stub;successfully;finished
 rout-eigrp20.tst;0;eigrp triangle connection;successfully;finished
+rout-eigrp21.tst;0;eigrp autoroute;successfully;finished
 rout-isis01.tst;0;isis over ethernet;successfully;finished
 rout-isis02.tst;0;isis over ethernet vlan;successfully;finished
 rout-isis03.tst;0;isis over ethernet bridge;successfully;finished
@@ -1330,6 +1336,7 @@ rout-isis49.tst;0;isis prefix movement;successfully;finished
 rout-isis50.tst;0;isis with bier;successfully;finished
 rout-isis51.tst;0;isis inter-level with bier;successfully;finished
 rout-isis52.tst;0;isis multi-topology with bier;successfully;finished
+rout-isis53.tst;0;isis autoroute;successfully;finished
 rout-lsrp01.tst;0;lsrp point2point connection;successfully;finished
 rout-lsrp02.tst;0;lsrp point2multipoint connection;successfully;finished
 rout-lsrp03.tst;0;lsrp point2point chain;successfully;finished
@@ -1353,6 +1360,7 @@ rout-lsrp20.tst;0;lsrp auto mesh tunnel;successfully;finished
 rout-lsrp21.tst;0;lsrp triangle connection;successfully;finished
 rout-lsrp22.tst;0;lsrp prefix movement;successfully;finished
 rout-lsrp23.tst;0;lsrp with bier;successfully;finished
+rout-lsrp24.tst;0;lsrp autoroute;successfully;finished
 rout-mcast01.tst;0;multicast routing with static flooding;successfully;finished
 rout-mcast02.tst;0;multicast routing with pim ssm;successfully;finished
 rout-mcast03.tst;0;multicast routing with igmp/mld;successfully;finished
@@ -1390,6 +1398,7 @@ rout-olsr20.tst;0;olsr prefix withdraw;successfully;finished
 rout-olsr21.tst;0;olsr aggregation;successfully;finished
 rout-olsr22.tst;0;olsr auto mesh tunnel;successfully;finished
 rout-olsr23.tst;0;olsr triangle connection;successfully;finished
+rout-olsr24.tst;0;olsr autoroute;successfully;finished
 rout-ospf01.tst;0;ospf point2point connection;successfully;finished
 rout-ospf02.tst;0;ospf point2multipoint connection;successfully;finished
 rout-ospf03.tst;0;ospf point2multipoint nonbroadcast connection;successfully;finished
@@ -1429,6 +1438,7 @@ rout-ospf36.tst;0;ospf triangle connection;successfully;finished
 rout-ospf37.tst;0;ospf prefix movement;successfully;finished
 rout-ospf38.tst;0;ospf with bier;successfully;finished
 rout-ospf39.tst;0;ospf transit area with bier;successfully;finished
+rout-ospf40.tst;0;ospf autoroute;successfully;finished
 rout-pbr01.tst;0;policy routing with nexthop;successfully;finished
 rout-pbr02.tst;0;policy routing with interface and nexthop between vrfs;successfully;finished
 rout-pbr03.tst;0;policy routing with interface and nexthop;successfully;finished
@@ -1464,6 +1474,7 @@ rout-pvrp26.tst;0;pvrp aggregation;successfully;finished
 rout-pvrp27.tst;0;pvrp auto mesh tunnel;successfully;finished
 rout-pvrp28.tst;0;pvrp triangle connection;successfully;finished
 rout-pvrp29.tst;0;pvrp prefix movement;successfully;finished
+rout-pvrp30.tst;0;pvrp autoroute;successfully;finished
 rout-redist01.tst;0;redistribution with isis;successfully;finished
 rout-redist02.tst;0;redistribution with ospf;successfully;finished
 rout-redist03.tst;0;redistribution with rip;successfully;finished
@@ -1510,6 +1521,7 @@ rout-rip22.tst;0;rip prefix withdraw;successfully;finished
 rout-rip23.tst;0;rip aggregation;successfully;finished
 rout-rip24.tst;0;rip auto mesh tunnel;successfully;finished
 rout-rip25.tst;0;rip triangle connection;successfully;finished
+rout-rip26.tst;0;rip autoroute;successfully;finished
 rout-static01.tst;0;static routing;successfully;finished
 rout-static02.tst;0;static routing with distance;successfully;finished
 rout-static03.tst;0;static routing with icmp tracker;successfully;finished

@@ -8575,3 +8575,18 @@ qc pass: bgp interas vpn with asbr peering
 qc pass: bgp interas vpn with rr peering
 qc pass: bgp interas othervpn with asbr peering
 qc pass: bgp interas othervpn with rr peering
+---------------------------------- 2019-01-28 16:02:01
+qc pass: bgp interas csc vpn with asbr peering
+qc pass: bgp interas csc vpn with rr peering
+qc pass: bgp dual core vpn
+qc pass: bgp dual core csc vpn
+---------------------------------- 2019-01-29 10:05:08
+no todo: autoroute with sr, bier support
+qc pass: babel autoroute
+qc pass: eigrp autoroute
+qc pass: isis autoroute
+qc pass: lsrp autoroute
+qc pass: olsr autoroute
+qc pass: ospf autoroute
+qc pass: pvrp autoroute
+qc pass: rip autoroute

@@ -920,6 +920,7 @@ qc pass: babel prefix withdraw
 qc pass: babel aggregation
 qc pass: babel auto mesh tunnel
 qc pass: babel triangle connection
+qc pass: babel autoroute
 qc pass: ebgp in chain
 qc pass: confed bgp in chain
 qc pass: ibgp in chain
@@ -1254,6 +1255,10 @@ qc pass: bgp interas vpn with asbr peering
 qc pass: bgp interas vpn with rr peering
 qc pass: bgp interas othervpn with asbr peering
 qc pass: bgp interas othervpn with rr peering
+qc pass: bgp interas csc vpn with asbr peering
+qc pass: bgp interas csc vpn with rr peering
+qc pass: bgp dual core vpn
+qc pass: bgp dual core csc vpn
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -1274,6 +1279,7 @@ qc pass: eigrp aggregation
 qc pass: eigrp auto mesh tunnel
 qc pass: eigrp stub
 qc pass: eigrp triangle connection
+qc pass: eigrp autoroute
 qc pass: isis over ethernet
 qc pass: isis over ethernet vlan
 qc pass: isis over ethernet bridge
@@ -1326,6 +1332,7 @@ qc pass: isis prefix movement
 qc pass: isis with bier
 qc pass: isis inter-level with bier
 qc pass: isis multi-topology with bier
+qc pass: isis autoroute
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -1349,6 +1356,7 @@ qc pass: lsrp auto mesh tunnel
 qc pass: lsrp triangle connection
 qc pass: lsrp prefix movement
 qc pass: lsrp with bier
+qc pass: lsrp autoroute
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -1386,6 +1394,7 @@ qc pass: olsr prefix withdraw
 qc pass: olsr aggregation
 qc pass: olsr auto mesh tunnel
 qc pass: olsr triangle connection
+qc pass: olsr autoroute
 qc pass: ospf point2point connection
 qc pass: ospf point2multipoint connection
 qc pass: ospf point2multipoint nonbroadcast connection
@@ -1425,6 +1434,7 @@ qc pass: ospf triangle connection
 qc pass: ospf prefix movement
 qc pass: ospf with bier
 qc pass: ospf transit area with bier
+qc pass: ospf autoroute
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
@@ -1460,6 +1470,7 @@ qc pass: pvrp aggregation
 qc pass: pvrp auto mesh tunnel
 qc pass: pvrp triangle connection
 qc pass: pvrp prefix movement
+qc pass: pvrp autoroute
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip
@@ -1506,6 +1517,7 @@ qc pass: rip prefix withdraw
 qc pass: rip aggregation
 qc pass: rip auto mesh tunnel
 qc pass: rip triangle connection
+qc pass: rip autoroute
 qc pass: static routing
 qc pass: static routing with distance
 qc pass: static routing with icmp tracker
@@ -1535,7 +1547,6 @@ todo: diff n | filter
 todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
 todo: protocol traceroute
-todo: autoroute with sr, bier support
 todo: optimal route reflection
 todo: bgp vpns with sr-policy
 todo: recursive static route

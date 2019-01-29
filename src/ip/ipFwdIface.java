@@ -11,6 +11,7 @@ import cfg.cfgAll;
 import cfg.cfgIfc;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
+import cfg.cfgRtr;
 import java.util.Comparator;
 import java.util.List;
 import prt.prtUdp;
@@ -27,6 +28,7 @@ import tab.tabListing;
 import tab.tabPbrN;
 import tab.tabPrfxlstN;
 import tab.tabRouteIface;
+import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabSession;
 import user.userHelping;
@@ -231,6 +233,26 @@ public class ipFwdIface extends tabRouteIface {
      */
     public ipHostWatch hostWatch;
 
+    /**
+     * autoroute type
+     */
+    public tabRouteEntry.routeType autRouTyp;
+
+    /**
+     * autoroute proto
+     */
+    public int autRouPrt;
+
+    /**
+     * autoroute router
+     */
+    public addrIP autRouRtr;
+
+    /**
+     * autoroute nexthop
+     */
+    public addrIP autRouHop;
+
     private final tabGen<ipFwdIfaceAddr> adrs = new tabGen<ipFwdIfaceAddr>();
 
     private final tabGen<ipFwdIfaceLdpas> ldpas = new tabGen<ipFwdIfaceLdpas>();
@@ -340,6 +362,11 @@ public class ipFwdIface extends tabRouteIface {
         l.add("5 .           <addr>                source address");
         l.add("2 .     proxy-remote                reply to remote networks");
         l.add("2 .     proxy-local                 reply to link address");
+        l.add("2 3     autoroute                   point routes from routing protocol");
+        cfgRtr.getRouterList(l, 1, "");
+        l.add("4  5        <num>                   process id");
+        l.add("5  6          <addr>                source router");
+        l.add("6  .            <addr>              nexthop");
         l.add("2 3     pim                         pim configuration options");
         l.add("3 .       enable                    enable pim processing");
         l.add("3 .       allow-rx                  suppress processing routing updates");
@@ -433,6 +460,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, filterIn == null, cmds.tabulator, beg + "access-group-in", "" + filterIn);
         cmds.cfgLine(l, filterOut == null, cmds.tabulator, beg + "access-group-out", "" + filterOut);
         cmds.cfgLine(l, inspect == null, cmds.tabulator, beg + "inspect", "" + inspect);
+        cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop);
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "");
         l.add(cmds.tabulator + beg + "host-reach " + lower.getCacheTimer());
         lower.getL2info(l, cmds.tabulator + beg + "host-static ");
@@ -558,6 +586,15 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             lower.updateL2info(1, mac, adr);
+            return false;
+        }
+        if (a.equals("autoroute")) {
+            autRouTyp = cfgRtr.name2num(cmd.word());
+            autRouPrt = bits.str2num(cmd.word());
+            autRouRtr = new addrIP();
+            autRouRtr.fromString(cmd.word());
+            autRouHop = new addrIP();
+            autRouHop.fromString(cmd.word());
             return false;
         }
         if (a.equals("host-reach")) {
@@ -974,6 +1011,13 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             lower.updateL2info(2, mac, adr);
+            return false;
+        }
+        if (a.equals("autoroute")) {
+            autRouTyp = null;
+            autRouPrt = 0;
+            autRouRtr = null;
+            autRouHop = null;
             return false;
         }
         if (a.equals("host-reach")) {

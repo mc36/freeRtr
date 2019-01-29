@@ -1232,6 +1232,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[4|6] access-group-in",
         "interface .*! no ipv[4|6] access-group-out",
         "interface .*! no ipv[4|6] bfd",
+        "interface .*! no ipv[4|6] autoroute",
         "interface .*! no ipv[4|6] host-watch",
         "interface .*! ipv[4|6] host-reach 480000",
         "interface .*! no ipv[4|6] proxy-remote",
