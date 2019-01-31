@@ -1,0 +1,2 @@
+binTmp/*.bin /usr/bin
+debian/interface.sh usr/share/freerouter

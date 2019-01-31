@@ -98,7 +98,8 @@ public class userHwdet {
                 stat = "stat ";
                 break;
         }
-        List<String> ifc = bits.str2lst("ifconfig " + nam + " multicast allmulti promisc mtu 1500 up");
+        List<String> ifc = bits.str2lst("sleep 5");
+        ifc.add("ifconfig " + nam + " multicast allmulti promisc mtu 1500 up");
         ifc.add("ethtool -K " + nam + " rx off");
         ifc.add("ethtool -K " + nam + " tx off");
         ifc.add("ethtool -K " + nam + " sg off");

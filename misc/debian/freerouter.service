@@ -1,0 +1,31 @@
+[Unit]
+Description=Main process of freerouter
+Wants=network.target
+After=network-pre.target
+Before=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/freerouter router /etc/freerouter/rtr-
+Restart=always
+WorkingDirectory=/var/lib/freerouter
+User=freerouter
+Group=freerouter
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/freerouter /etc/freerouter
+PrivateTmp=true
+PrivateDevices=true
+# PrivateNetwork is not possible because the hardware access processes have to be in the this and the main namespace at the same time.
+PrivateNetwork=false
+PrivateUsers=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+LockPersonality=true
+RemoveIPC=true
+
+[Install]
+WantedBy=multi-user.target

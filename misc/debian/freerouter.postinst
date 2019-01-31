@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#DEBHELPER#
+
+set -e
+
+adduser freerouter dialout
+chown freerouter:freerouter /etc/freerouter /etc/freerouter/rtr-hw.txt /etc/freerouter/rtr-sw.txt
+chmod 770 /etc/freerouter
+

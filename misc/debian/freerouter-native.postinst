@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#DEBHELPER#
+
+set -e
+
+adduser freerouter dialout
+mkdir -p /etc/freerouter/interfaces
+chown freerouter:freerouter /etc/freerouter
+chown root:root /etc/freerouter/interfaces
+chmod 770 /etc/freerouter
+
