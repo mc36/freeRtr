@@ -1724,6 +1724,12 @@ public class cfgAll {
                 ntry.initLoopback();
                 return ntry;
             }
+            if (nam.startsWith("null")) {
+                ntry.type = cfgIfc.ifaceType.nul;
+                ifaces.add(ntry);
+                ntry.initTemplate();
+                return ntry;
+            }
             if (nam.startsWith("template")) {
                 ntry.type = cfgIfc.ifaceType.template;
                 ifaces.add(ntry);

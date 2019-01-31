@@ -935,6 +935,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public enum ifaceType {
 
         /**
+         * null interface
+         */
+        nul,
+        /**
          * loopback interface
          */
         loopback,
@@ -1947,6 +1951,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return tunnelMode(false);
             case loopback:
                 return "loopback";
+            case nul:
+                return "null";
             case template:
                 return "template";
             case dialer:
@@ -1988,6 +1994,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         s = s.substring(p, s.length());
         userHelping hl = new userHelping();
         hl.add("1 . loopback     ifc");
+        hl.add("1 . null         ifc");
         hl.add("1 . template     ifc");
         hl.add("1 . dialer       ifc");
         hl.add("1 . sdn          ifc");
@@ -2142,6 +2149,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         switch (type) {
             case template:
             case loopback:
+            case nul:
                 return false;
             default:
                 return true;
@@ -2165,6 +2173,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case virtppp:
             case template:
             case loopback:
+            case nul:
                 return false;
             case bundle:
                 return !bundleHed.bundleHed.notEther;
@@ -2191,6 +2200,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case sdn:
             case template:
             case loopback:
+            case nul:
                 return false;
             case bundle:
                 return bundleHed.bundleHed.notEther;
@@ -2733,6 +2743,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case bridge:
             case template:
             case loopback:
+            case nul:
                 lower = new ifcNull();
                 break;
             case pweth:
@@ -4673,7 +4684,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (mplsPack != null) {
             cmds.cfgLine(l, !mplsPack.security, cmds.tabulator, "mpls label-security", "");
             cmds.cfgLine(l, mplsPack.redirect == null, cmds.tabulator, "mpls redirection", "" + mplsPack.redirect);
-            cmds.cfgLine(l, mplsPack.inspect== null, cmds.tabulator, "mpls inspect", "" + mplsPack.inspect);
+            cmds.cfgLine(l, mplsPack.inspect == null, cmds.tabulator, "mpls inspect", "" + mplsPack.inspect);
         }
         cmds.cfgLine(l, mplsLdp4 == null, cmds.tabulator, "mpls ldp4", rtrLdpIface.getLdpCfg(mplsLdp4, this));
         cmds.cfgLine(l, mplsLdp6 == null, cmds.tabulator, "mpls ldp6", rtrLdpIface.getLdpCfg(mplsLdp6, this));

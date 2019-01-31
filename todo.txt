@@ -1,5 +1,6 @@
 access-* under http host
 tls1.3
+http2.0
 more configurable defaults to lines: tablemode, timestamps, configure up them on main rtrs
 route-map/policy to match private-as origination/transit, then show, ignore, etc
 sorted, uniq | filter for any column
