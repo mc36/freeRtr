@@ -68,6 +68,8 @@ public class ifcMacSec {
 
     private counter keyUsage = new counter();
 
+    private ifcEthTyp etht;
+
     public String toString() {
         String a = "";
         if (myTyp != ethtyp) {
@@ -87,6 +89,7 @@ public class ifcMacSec {
         if (typ < 1) {
             typ = ethtyp;
         }
+        etht = eth;
         myTyp = typ;
         profil = ips;
         keygen = ips.trans.getGroup();
@@ -213,7 +216,7 @@ public class ifcMacSec {
                 hashRx = profil.trans.getHmac(buf2);
                 return true;
             default:
-                logger.info("bad type " + typ);
+                logger.info("bad type " + typ + " on " + etht);
                 return true;
         }
         if (hashRx == null) {
@@ -224,17 +227,17 @@ public class ifcMacSec {
         pck.getSkip(size);
         if (sequence != null) {
             if (sequence.gotDat(seqRx)) {
-                logger.info("replay check failed");
+                logger.info("replay check failed on " + etht);
                 return true;
             }
         }
         int siz = pck.dataSize();
         if (siz < (hashSiz + cphrSiz)) {
-            logger.info("too small");
+            logger.info("too small on " + etht);
             return true;
         }
         if (((siz - hashSiz) % cphrSiz) != 0) {
-            logger.info("bad padding");
+            logger.info("bad padding on " + etht);
             return true;
         }
         hashRx.init();
@@ -243,7 +246,7 @@ public class ifcMacSec {
         byte[] sum = new byte[hashSiz];
         pck.getCopy(sum, 0, siz, hashSiz);
         if (bits.byteComp(sum, 0, hashRx.finish(), 0, hashSiz) != 0) {
-            logger.info("bad hash");
+            logger.info("bad hash on " + etht);
             return true;
         }
         pck.encrData(cphrRx, 0, siz);

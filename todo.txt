@@ -1,5 +1,5 @@
+router mobile
 router deaggregate
-acl and objgrp must accept /24 notation
 access-* under http host
 tls1.3
 http2.0

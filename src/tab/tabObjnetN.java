@@ -2,9 +2,13 @@ package tab;
 
 import addr.addrPrefix;
 import addr.addrType;
+import addr.addrIP;
+import addr.addrIPv4;
+import addr.addrIPv6;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
+import util.bits;
 
 /**
  * represents one network object group entry
@@ -38,22 +42,31 @@ public class tabObjnetN<T extends addrType> extends tabListingEntry<T> {
     /**
      * convert string to address
      *
+     * @param ntry object to update
      * @param s string to convert
      * @return true if error happened
      */
-    public boolean fromString(String s) {
-        action = tabPlcmapN.actionType.actPermit;
+    public static boolean fromString(tabObjnetN<addrIP> ntry, String s) {
+        ntry.action = tabPlcmapN.actionType.actPermit;
         s = s.trim() + " ";
         int i = s.indexOf(" ");
         String a = s.substring(0, i).trim();
         s = s.substring(i, s.length()).trim();
-        if (addr.fromString(a)) {
+        if (ntry.addr.fromString(a)) {
             return true;
         }
-        if (mask.fromString(s)) {
+        if (s.startsWith("/")) {
+            if (ntry.addr.isIPv4()) {
+                addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(ntry.addr.toIPv4(), bits.str2num(s.substring(1, s.length())));
+                ntry.mask.fromIPv4addr(prf.mask);
+            } else {
+                addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(ntry.addr.toIPv6(), bits.str2num(s.substring(1, s.length())));
+                ntry.mask.fromIPv6addr(prf.mask);
+            }
+        } else if (ntry.mask.fromString(s)) {
             return true;
         }
-        addr.setAnd(addr, mask);
+        ntry.addr.setAnd(ntry.addr, ntry.mask);
         return false;
     }
 

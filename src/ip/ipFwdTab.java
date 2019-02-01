@@ -398,6 +398,15 @@ public class ipFwdTab {
                 ntry.filter(rtrBgpUtil.safiMulticast, tabM, lower.actualM);
                 ntry.filter(rtrBgpUtil.safiFlwSpc, tabF, lower.actualF);
             }
+            for (int o = 0; o < rtr.routerAdvInter.size(); o++) {
+                ipRtrInt ntry = rtr.routerAdvInter.get(o);
+                if (ntry == null) {
+                    continue;
+                }
+                ntry.filter(rtrBgpUtil.safiUnicast, tabU, lower.actualU, lower);
+                ntry.filter(rtrBgpUtil.safiMulticast, tabM, lower.actualM, lower);
+                ntry.filter(rtrBgpUtil.safiFlwSpc, tabF, lower.actualF, lower);
+            }
             for (int o = 0; o < rtr.routerAdverting.size(); o++) {
                 ipRtrAdv ntry = rtr.routerAdverting.get(o);
                 if (ntry == null) {

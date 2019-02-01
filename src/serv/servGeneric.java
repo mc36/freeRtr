@@ -98,6 +98,26 @@ public abstract class servGeneric implements Comparator<servGeneric> {
     public tabListing<tabRtrplcN, addrIP> srvRouPol;
 
     /**
+     * accesses per interval
+     */
+    public int srvAccRat;
+
+    /**
+     * the interval
+     */
+    public int srvAccInt;
+
+    /**
+     * last access
+     */
+    protected long srvAccLst;
+
+    /**
+     * accesses per interval
+     */
+    public int srvAccCnt;
+
+    /**
      * limit of all clients
      */
     protected int srvTotLim;
@@ -264,6 +284,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         "server .*! no access-prefix",
         "server .*! no access-map",
         "server .*! no access-policy",
+        "server .*! no access-rate",
         "server .*! access-total 0",
         "server .*! access-peer 0",
         "server .*! no access-log",
@@ -879,6 +900,16 @@ public abstract class servGeneric implements Comparator<servGeneric> {
     }
 
     private boolean srvCheckAccept(addrIP adr) {
+        if (srvAccRat > 0) {
+            if ((bits.getTime() - srvAccLst) > srvAccInt) {
+                srvAccCnt = 0;
+            }
+            if (srvAccCnt > srvAccRat) {
+                return true;
+            }
+            srvAccLst = bits.getTime();
+            srvAccCnt++;
+        }
         if ((srvPrfLst == null) && (srvRouMap == null) && (srvRouPol == null)) {
             return false;
         }
@@ -1040,6 +1071,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         l.add("2 .    <name>               access list name");
         l.add("1 2  access-prefix          set prefix list");
         l.add("2 .    <name>               prefix list name");
+        l.add("1 2  access-rate            set route map");
+        l.add("2 3    <num>                new sessions per interval");
+        l.add("3 .      <num>              interval");
         l.add("1 2  access-map             set route map");
         l.add("2 .    <name>               route map name");
         l.add("1 2  access-policy          set route policy");
@@ -1150,7 +1184,11 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         } else {
             l.add(beg + "no access-policy");
         }
-
+        if (srvAccRat > 0) {
+            l.add(beg + "access-rate " + srvAccRat + " " + srvAccInt);
+        } else {
+            l.add(beg + "no access-rate");
+        }
         cmds.cfgLine(l, !srvLogDrop, beg, "access-log", "");
         l.add(beg + "access-total " + srvTotLim);
         l.add(beg + "access-peer " + srvPerLim);
@@ -1260,6 +1298,11 @@ public abstract class servGeneric implements Comparator<servGeneric> {
                 return false;
             }
             srvPrfLst = ntry.prflst;
+            return false;
+        }
+        if (a.equals("access-rate")) {
+            srvAccRat = bits.str2num(cmd.word());
+            srvAccInt = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("access-map")) {
@@ -1395,6 +1438,11 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             }
             if (a.equals("access-prefix")) {
                 srvPrfLst = null;
+                return false;
+            }
+            if (a.equals("access-rate")) {
+                srvAccRat = -1;
+                srvAccInt = -1;
                 return false;
             }
             if (a.equals("access-map")) {

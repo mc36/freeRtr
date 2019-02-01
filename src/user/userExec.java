@@ -2103,6 +2103,7 @@ public class userExec {
             }
             if (a.equals("/vrf")) {
                 vrf = cfgAll.vrfFind(cmd.word(), false);
+                ifc = null;
                 continue;
             }
             if (a.equals("/interface")) {
@@ -2370,6 +2371,7 @@ public class userExec {
             }
             if (a.equals("/vrf")) {
                 vrf = cfgAll.vrfFind(cmd.word(), false);
+                ifc = null;
                 continue;
             }
             if (a.equals("/chat")) {

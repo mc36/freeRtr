@@ -1,12 +1,18 @@
 package tab;
 
 import addr.addrIP;
+import addr.addrIPv4;
+import addr.addrIPv6;
 import java.util.ArrayList;
 import java.util.List;
-
+import cfg.cfgAll;
+import cfg.cfgObjnet;
+import cfg.cfgObjprt;
 import pack.packHolder;
 import addr.addrPrefix;
 import addr.addrType;
+import util.bits;
+import util.cmds;
 
 /**
  * represents one access list entry (source/addr/port, target/addr/port)
@@ -162,6 +168,141 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
             a += " log";
         }
         return a;
+    }
+
+    private static boolean parsePart(tabAceslstN<addrIP> ntry, cmds cmd, boolean src) {
+        addrIP addr;
+        addrIP mask;
+        tabIntMatcher port;
+        if (src) {
+            addr = ntry.srcAddr;
+            mask = ntry.srcMask;
+            port = ntry.srcPort;
+        } else {
+            addr = ntry.trgAddr;
+            mask = ntry.trgMask;
+            port = ntry.trgPort;
+        }
+        String a = cmd.word();
+        if (a.equals("obj")) {
+            cfgObjnet og = cfgAll.objnetFind(cmd.word(), false);
+            if (og == null) {
+                return true;
+            }
+            if (src) {
+                ntry.srcOGnet = og.objgrp;
+            } else {
+                ntry.trgOGnet = og.objgrp;
+            }
+        } else if (a.equals("any")) {
+            addr.fromNetmask(0);
+            mask.fromNetmask(0);
+        } else if (a.equals("host")) {
+            if (addr.fromString(cmd.word())) {
+                return true;
+            }
+            mask.fromNetmask(mask.maxBits());
+        } else {
+            if (addr.fromString(a)) {
+                return true;
+            }
+            a = cmd.word();
+            if (a.startsWith("/")) {
+                if (addr.isIPv4()) {
+                    addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(addr.toIPv4(), bits.str2num(a.substring(1, a.length())));
+                    mask.fromIPv4addr(prf.mask);
+                } else {
+                    addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(addr.toIPv6(), bits.str2num(a.substring(1, a.length())));
+                    mask.fromIPv6addr(prf.mask);
+                }
+            } else if (mask.fromString(a)) {
+                return true;
+            }
+        }
+        addr.setAnd(addr, mask);
+        a = cmd.word();
+        if (a.equals("obj")) {
+            cfgObjprt og = cfgAll.objprtFind(cmd.word(), false);
+            if (og == null) {
+                return true;
+            }
+            if (src) {
+                ntry.srcOGprt = og.objgrp;
+            } else {
+                ntry.trgOGprt = og.objgrp;
+            }
+        } else {
+            if (port.fromString(a)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * convert string to ace
+     *
+     * @param ntry ace to update
+     * @param cmd string to convert
+     * @return true if error happened
+     */
+    public static boolean fromString(tabAceslstN<addrIP> ntry, cmds cmd) {
+        if (ntry.proto.fromString(cmd.word())) {
+            return true;
+        }
+        if (parsePart(ntry, cmd, true)) {
+            return true;
+        }
+        if (parsePart(ntry, cmd, false)) {
+            return true;
+        }
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                return false;
+            }
+            if (a.equals("log")) {
+                ntry.logMatch = true;
+                continue;
+            }
+            if (a.equals("tos")) {
+                if (ntry.tos.fromString(cmd.word())) {
+                    return true;
+                }
+                continue;
+            }
+            if (a.equals("dscp")) {
+                if (ntry.dscp.fromString(cmd.word())) {
+                    return true;
+                }
+                continue;
+            }
+            if (a.equals("prec")) {
+                if (ntry.prec.fromString(cmd.word())) {
+                    return true;
+                }
+                continue;
+            }
+            if (a.equals("ttl")) {
+                if (ntry.ttl.fromString(cmd.word())) {
+                    return true;
+                }
+                continue;
+            }
+            if (a.equals("len")) {
+                if (ntry.len.fromString(cmd.word())) {
+                    return true;
+                }
+                continue;
+            }
+            if (a.equals("flag")) {
+                if (ntry.flag.fromString(cmd.word())) {
+                    return true;
+                }
+                continue;
+            }
+            return true;
+        }
     }
 
     public List<String> usrString(String beg) {

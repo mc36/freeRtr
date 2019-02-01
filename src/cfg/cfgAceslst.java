@@ -126,7 +126,7 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         }
         tabAceslstN<addrIP> ntry = new tabAceslstN<addrIP>(new addrIP());
         ntry.action = tabListingEntry.string2action(a);
-        if (fromString(ntry, cmd)) {
+        if (tabAceslstN.fromString(ntry, cmd)) {
             cmd.error("invalid network");
             return;
         }
@@ -140,132 +140,6 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
 
     public String getPrompt() {
         return "acl";
-    }
-
-    private static boolean parsePart(tabAceslstN<addrIP> ntry, cmds cmd, boolean src) {
-        addrIP addr;
-        addrIP mask;
-        tabIntMatcher port;
-        if (src) {
-            addr = ntry.srcAddr;
-            mask = ntry.srcMask;
-            port = ntry.srcPort;
-        } else {
-            addr = ntry.trgAddr;
-            mask = ntry.trgMask;
-            port = ntry.trgPort;
-        }
-        String a = cmd.word();
-        if (a.equals("obj")) {
-            cfgObjnet og = cfgAll.objnetFind(cmd.word(), false);
-            if (og == null) {
-                return true;
-            }
-            if (src) {
-                ntry.srcOGnet = og.objgrp;
-            } else {
-                ntry.trgOGnet = og.objgrp;
-            }
-        } else if (a.equals("any")) {
-            addr.fromNetmask(0);
-            mask.fromNetmask(0);
-        } else if (a.equals("host")) {
-            if (addr.fromString(cmd.word())) {
-                return true;
-            }
-            mask.fromNetmask(mask.maxBits());
-        } else {
-            if (addr.fromString(a)) {
-                return true;
-            }
-            if (mask.fromString(cmd.word())) {
-                return true;
-            }
-        }
-        addr.setAnd(addr, mask);
-        a = cmd.word();
-        if (a.equals("obj")) {
-            cfgObjprt og = cfgAll.objprtFind(cmd.word(), false);
-            if (og == null) {
-                return true;
-            }
-            if (src) {
-                ntry.srcOGprt = og.objgrp;
-            } else {
-                ntry.trgOGprt = og.objgrp;
-            }
-        } else {
-            if (port.fromString(a)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * convert string to ace
-     *
-     * @param ntry ace to update
-     * @param cmd string to convert
-     * @return true if error happened
-     */
-    public static boolean fromString(tabAceslstN<addrIP> ntry, cmds cmd) {
-        if (ntry.proto.fromString(cmd.word())) {
-            return true;
-        }
-        if (parsePart(ntry, cmd, true)) {
-            return true;
-        }
-        if (parsePart(ntry, cmd, false)) {
-            return true;
-        }
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                return false;
-            }
-            if (a.equals("log")) {
-                ntry.logMatch = true;
-                continue;
-            }
-            if (a.equals("tos")) {
-                if (ntry.tos.fromString(cmd.word())) {
-                    return true;
-                }
-                continue;
-            }
-            if (a.equals("dscp")) {
-                if (ntry.dscp.fromString(cmd.word())) {
-                    return true;
-                }
-                continue;
-            }
-            if (a.equals("prec")) {
-                if (ntry.prec.fromString(cmd.word())) {
-                    return true;
-                }
-                continue;
-            }
-            if (a.equals("ttl")) {
-                if (ntry.ttl.fromString(cmd.word())) {
-                    return true;
-                }
-                continue;
-            }
-            if (a.equals("len")) {
-                if (ntry.len.fromString(cmd.word())) {
-                    return true;
-                }
-                continue;
-            }
-            if (a.equals("flag")) {
-                if (ntry.flag.fromString(cmd.word())) {
-                    return true;
-                }
-                continue;
-            }
-            return true;
-        }
     }
 
 }

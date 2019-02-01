@@ -6,6 +6,7 @@ import ip.ipRtrAdv;
 import ip.ipRtrRed;
 import ip.ipRtr;
 import ip.ipRtrAgr;
+import ip.ipRtrInt;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -597,6 +598,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             }
             lst.add(beg + "advertise " + advert2str(ntry));
         }
+        for (int i = 0; i < rtr.routerAdvInter.size(); i++) {
+            ipRtrInt ntry = rtr.routerAdvInter.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            lst.add(beg + "justadvert " + advint2str(ntry));
+        }
         for (int i = 0; i < rtr.routerAggregating.size(); i++) {
             ipRtrAgr ntry = rtr.routerAggregating.get(i);
             if (ntry == null) {
@@ -625,6 +633,19 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 rtr.routerRedisting.del(ntry);
             } else {
                 rtr.routerRedisting.put(ntry);
+            }
+            rtr.routerCreateComputed();
+            return false;
+        }
+        if (a.equals("justadvert")) {
+            ipRtrInt ntry = str2advint(cmd);
+            if (ntry == null) {
+                return true;
+            }
+            if (neg) {
+                rtr.routerAdvInter.del(ntry);
+            } else {
+                rtr.routerAdvInter.put(ntry);
             }
             rtr.routerCreateComputed();
             return false;
@@ -720,6 +741,23 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         }
         if (agr.summary) {
             a += " summary-only";
+        }
+        return a;
+    }
+
+    /**
+     * convert interface to string
+     *
+     * @param agr aggregating
+     * @return string
+     */
+    public static String advint2str(ipRtrInt ifc) {
+        String a = "" + ifc.iface.name;
+        if (ifc.roumap != null) {
+            a += " route-map " + ifc.roumap.listName;
+        }
+        if (ifc.rouplc != null) {
+            a += " route-policy " + ifc.rouplc.listName;
         }
         return a;
     }
@@ -864,6 +902,41 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             return null;
         }
         return agr;
+    }
+
+    /**
+     * parse up interface
+     *
+     * @param cmd command to read
+     * @return advertisement
+     */
+    public static ipRtrInt str2advint(cmds cmd) {
+        cfgIfc iface = cfgAll.ifcFind(cmd.word(), false);
+        ipRtrInt adv = new ipRtrInt(iface);
+        for (;;) {
+            String s = cmd.word();
+            if (s.length() < 1) {
+                break;
+            }
+            if (s.equals("route-map")) {
+                cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+                if (ntry == null) {
+                    return null;
+                }
+                adv.roumap = ntry.roumap;
+                continue;
+            }
+            if (s.equals("route-policy")) {
+                cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+                if (ntry == null) {
+                    return null;
+                }
+                adv.rouplc = ntry.rouplc;
+                continue;
+            }
+            return null;
+        }
+        return adv;
     }
 
     public int compare(cfgRtr o1, cfgRtr o2) {
@@ -1264,6 +1337,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 5) + " " + (p + 4) + ",.         <name>          name of prefix list");
         l.add((p + 1) + " " + (p + 2) + "   advertise               advertise one prefix");
         l.add((p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
+        l.add((p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
+        l.add((p + 4) + " .         <name>            name of route map");
+        l.add((p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
+        l.add((p + 4) + " .         <name>            name of route policy");
+        l.add((p + 1) + " " + (p + 2) + "   justadvert              advertise interface");
+        l.add((p + 2) + " " + (p + 3) + ",.   <name>                name of interface");
         l.add((p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
         l.add((p + 4) + " .         <name>            name of route map");
         l.add((p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");

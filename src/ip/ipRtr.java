@@ -49,12 +49,12 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      * last time redist changed
      */
     public long routerRedistTim;
-    
+
     /**
      * number of times computed changed
      */
     public int routerComputeChg;
-    
+
     /**
      * last time computed changed
      */
@@ -99,6 +99,11 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      * list of prefix imports
      */
     public tabGen<ipRtrAdv> routerAdverting = new tabGen<ipRtrAdv>();
+
+    /**
+     * list of interface imports
+     */
+    public tabGen<ipRtrInt> routerAdvInter = new tabGen<ipRtrInt>();
 
     /**
      * list of aggregates

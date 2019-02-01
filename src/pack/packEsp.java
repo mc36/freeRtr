@@ -209,7 +209,7 @@ public class packEsp implements ipPrt {
         int i = pck.msbGetD(0);
         if (i != spi) {
             badSpi = i;
-            logger.info("invalid spi; got=" + i + " need=" + spi);
+            logger.info("invalid spi; got=" + i + " need=" + spi + " from " + peerAddr);
             cntr.drop(pck, counter.reasons.badID);
             return;
         }
@@ -217,14 +217,14 @@ public class packEsp implements ipPrt {
         int seqRx = pck.msbGetD(4);
         if (sequence != null) {
             if (sequence.gotDat(seqRx)) {
-                logger.info("replay check failed");
+                logger.info("replay check failed from " + peerAddr);
                 cntr.drop(pck, counter.reasons.badRxSeq);
                 return;
             }
         }
         int siz = pck.dataSize() - hashSize;
         if (siz < 8) {
-            logger.info("too small");
+            logger.info("too small from " + peerAddr);
             cntr.drop(pck, counter.reasons.tooSmall);
             return;
         }
@@ -233,7 +233,7 @@ public class packEsp implements ipPrt {
         byte[] got = new byte[hashSize];
         pck.getCopy(got, 0, siz, hashSize);
         if (bits.byteComp(got, 0, hasher.finish(), 0, hashSize) != 0) {
-            logger.info("bad hash");
+            logger.info("bad hash from " + peerAddr);
             cntr.drop(pck, counter.reasons.badSum);
             return;
         }

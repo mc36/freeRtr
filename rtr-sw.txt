@@ -232,7 +232,7 @@ router lsrp4 1
  lifetime 2147483000
  segrout 300 299
  bier 256 300 299
- redistribute connected
+ justadvert loopback0
  exit
 !
 router lsrp6 1
@@ -242,7 +242,7 @@ router lsrp6 1
  lifetime 2147483000
  segrout 300 299
  bier 256 300 299
- redistribute connected
+ justadvert loopback0
  exit
 !
 router logger4 1

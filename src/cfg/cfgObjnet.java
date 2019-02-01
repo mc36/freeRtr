@@ -86,7 +86,7 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
             a = cmd.word();
         }
         tabObjnetN<addrIP> ntry = new tabObjnetN<addrIP>(new addrIP());
-        if (ntry.fromString(a + " " + cmd.getRemaining())) {
+        if (tabObjnetN.fromString(ntry, a + " " + cmd.getRemaining())) {
             cmd.error("invalid network");
             return;
         }
