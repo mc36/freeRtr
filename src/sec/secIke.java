@@ -181,8 +181,8 @@ public class secIke implements ifcDn, ifcUp {
             cn.nonceR = new byte[0];
             cn.updateEsp(espRx, 0, false, false);
             cn.updateEsp(espTx, 0, true, false);
-            espRx.replayCheck = false;
-            espTx.replayCheck = false;
+            espRx.replayCheck = 0;
+            espTx.replayCheck = 0;
             return false;
         }
         new secIkeRx(this);

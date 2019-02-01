@@ -1297,8 +1297,8 @@ public class packIke {
         last = new byte[esp.hasher.getHashSize()];
         bits.byteCopy(buf, p + i, last, 0, last.length);
         esp.hasher = transform.getHmac(last);
-        esp.sequ = 0;
         esp.cipher = ciph;
+        esp.doInit();
     }
 
 }

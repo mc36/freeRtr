@@ -38,12 +38,12 @@ public class verCore {
     /**
      * compile month
      */
-    public final static int month = 1;
+    public final static int month = 2;
 
     /**
      * compile day
      */
-    public final static int day = 31;
+    public final static int day = 1;
 
     /**
      * statement of release

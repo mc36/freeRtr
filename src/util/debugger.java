@@ -824,6 +824,11 @@ public class debugger {
     public static boolean ifcNshEvnt = false;
 
     /**
+     * ifcMacSec packets
+     */
+    public static boolean ifcMacSecTraf = false;
+
+    /**
      * secSsh packets
      */
     public static boolean secSshTraf = false;
@@ -961,6 +966,7 @@ public class debugger {
         h.add("3 .        telnet            telnet protocol");
         h.add("3 .        websock           websocket protocol");
         h.add("3 .        ike               internet key exchange protocol");
+        h.add("3 .        macsec            mac securicy protocol");
         h.add("3 .        gen               generic connections");
         h.add("3 .        tcp               transmission control protocol");
         h.add("3 .        udp               user datagram protocol");
@@ -1524,6 +1530,10 @@ public class debugger {
             }
             if (s.contains("ike")) {
                 secIkeTraf = v;
+                return false;
+            }
+            if (s.equals("macsec")) {
+                ifcMacSecTraf = v;
                 return false;
             }
             if (s.equals("telnet")) {

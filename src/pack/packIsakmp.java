@@ -1281,7 +1281,6 @@ public class packIsakmp {
      * @param encr true for encryption, false for decryption
      */
     public void updateEsp(packEsp esp, int spi, boolean encr) {
-        esp.replayCheck = true;
         byte[] buf = new byte[0];
         byte[] last = new byte[0];
         for (; buf.length < 256;) {
@@ -1311,8 +1310,8 @@ public class packIsakmp {
         last = new byte[esp.hasher.getHashSize()];
         bits.byteCopy(buf, i, last, 0, last.length);
         esp.hasher = transform.getHmac(last);
-        esp.sequ = 0;
         esp.cipher = ciph;
+        esp.doInit();
     }
 
     /**

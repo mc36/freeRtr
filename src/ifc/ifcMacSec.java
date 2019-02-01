@@ -8,6 +8,10 @@ import cry.cryKeyDH;
 import java.math.BigInteger;
 import pack.packHolder;
 import util.bits;
+import util.counter;
+import util.debugger;
+import util.logger;
+import tab.tabWindow;
 
 /**
  * mac security (ieee 802.1ae) protocol
@@ -31,6 +35,13 @@ public class ifcMacSec {
      */
     public cfgIpsec profil;
 
+    /**
+     * replay check window
+     */
+    public int replayCheck = 1024;
+
+    private tabWindow sequence;
+
     private addrMac myaddr;
 
     private cryEncrGeneric cphrTx;
@@ -52,6 +63,10 @@ public class ifcMacSec {
     private boolean reply;
 
     private int myTyp;
+
+    private long lastKex;
+
+    private counter keyUsage = new counter();
 
     public String toString() {
         String a = "";
@@ -76,10 +91,16 @@ public class ifcMacSec {
         profil = ips;
         keygen = ips.trans.getGroup();
         keygen.servXchg();
+        if (replayCheck > 0) {
+            sequence = new tabWindow(replayCheck);
+        }
         try {
             myaddr = (addrMac) eth.getHwAddr().copyBytes();
         } catch (Exception e) {
             myaddr = addrMac.getBroadcast();
+        }
+        if (debugger.ifcMacSecTraf) {
+            logger.debug("initialized");
         }
     }
 
@@ -93,6 +114,7 @@ public class ifcMacSec {
         if (hashTx == null) {
             return true;
         }
+        keyUsage.tx(pck);
         int pad = pck.dataSize() % cphrSiz;
         if (pad > 0) {
             pad = cphrSiz - pad;
@@ -144,9 +166,21 @@ public class ifcMacSec {
             case 0x01: // request
             case 0x02: // reply
                 reply = typ == 1;
+                lastKex = bits.getTime();
+                keyUsage = new counter();
+                if (replayCheck > 0) {
+                    sequence = new tabWindow(replayCheck);
+                }
+                seqTx = 0;
                 pck.getSkip(size);
                 keygen.clntPub = new BigInteger(pck.getCopy());
+                if (debugger.ifcMacSecTraf) {
+                    logger.debug("got kex, reply=" + reply + ", modulus=" + keygen.clntPub);
+                }
                 keygen.servKey();
+                if (debugger.ifcMacSecTraf) {
+                    logger.debug("common=" + keygen.common);
+                }
                 byte[] buf1 = new byte[0];
                 for (int i = 0; buf1.length < 1024; i++) {
                     cryHashGeneric hsh = profil.trans.getHash();
@@ -155,6 +189,9 @@ public class ifcMacSec {
                     hsh.update(profil.preshared.getBytes());
                     hsh.update(i);
                     buf1 = bits.byteConcat(buf1, hsh.finish());
+                }
+                if (debugger.ifcMacSecTraf) {
+                    logger.debug("master=" + bits.byteDump(buf1, 0, buf1.length));
                 }
                 cphrTx = profil.trans.getEncr();
                 cphrRx = profil.trans.getEncr();
@@ -176,19 +213,28 @@ public class ifcMacSec {
                 hashRx = profil.trans.getHmac(buf2);
                 return true;
             default:
+                logger.info("bad type " + typ);
                 return true;
         }
         if (hashRx == null) {
             return true;
         }
         int pad = pck.getByte(3); // sl
-//  int seqRx = pck.msbGetD(4); // seq
+        int seqRx = pck.msbGetD(4); // seq
         pck.getSkip(size);
+        if (sequence != null) {
+            if (sequence.gotDat(seqRx)) {
+                logger.info("replay check failed");
+                return true;
+            }
+        }
         int siz = pck.dataSize();
         if (siz < (hashSiz + cphrSiz)) {
+            logger.info("too small");
             return true;
         }
         if (((siz - hashSiz) % cphrSiz) != 0) {
+            logger.info("bad padding");
             return true;
         }
         hashRx.init();
@@ -197,11 +243,13 @@ public class ifcMacSec {
         byte[] sum = new byte[hashSiz];
         pck.getCopy(sum, 0, siz, hashSiz);
         if (bits.byteComp(sum, 0, hashRx.finish(), 0, hashSiz) != 0) {
+            logger.info("bad hash");
             return true;
         }
         pck.encrData(cphrRx, 0, siz);
         pck.setDataSize(siz - pad);
         pck.getSkip(cphrSiz);
+        keyUsage.rx(pck);
         return false;
     }
 
@@ -212,7 +260,23 @@ public class ifcMacSec {
      */
     public synchronized packHolder doSync() {
         if ((hashRx != null) && (!reply)) {
-            return null;
+            boolean fin = true;
+            if (((bits.getTime() - lastKex) > 28800000) || ((keyUsage.byteRx + keyUsage.byteTx) > 0xfff0000)) {
+                if (debugger.ifcMacSecTraf) {
+                    logger.debug("restarting kex");
+                }
+                keygen = profil.trans.getGroup();
+                keygen.servXchg();
+                reply = false;
+                hashRx = null;
+                fin = false;
+            }
+            if (fin) {
+                return null;
+            }
+        }
+        if (debugger.ifcMacSecTraf) {
+            logger.debug("sending kex, common=" + keygen.common);
         }
         packHolder pck = new packHolder(true, true);
         pck.msbPutW(0, myTyp); // ethertype

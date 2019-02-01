@@ -16,6 +16,7 @@ import util.bits;
 import util.counter;
 import util.logger;
 import util.state;
+import tab.tabWindow;
 
 /**
  * encapsulating security payload (rfc2407) packet
@@ -37,7 +38,7 @@ public class packEsp implements ipPrt {
     /**
      * do replay checking
      */
-    public boolean replayCheck = true;
+    public int replayCheck = 1024;
 
     /**
      * last bad spi
@@ -60,11 +61,6 @@ public class packEsp implements ipPrt {
     protected cryEncrGeneric cipher;
 
     /**
-     * sequence number
-     */
-    protected int sequ = 0;
-
-    /**
      * size of hash
      */
     protected int hashSize;
@@ -73,6 +69,10 @@ public class packEsp implements ipPrt {
      * size of cipher
      */
     protected int encrSize;
+
+    private int seqTx;
+
+    private tabWindow sequence;
 
     private ifcUp lower = new ifcNull();
 
@@ -99,6 +99,7 @@ public class packEsp implements ipPrt {
      */
     public packEsp(ifcUp parent) {
         lower = parent;
+        doInit();
     }
 
     /**
@@ -213,11 +214,13 @@ public class packEsp implements ipPrt {
             return;
         }
         badSpi = 0;
-        int seq = pck.msbGetD(4);
-        if ((replayCheck) && (seq <= sequ)) {
-            logger.info("replay check failed");
-            cntr.drop(pck, counter.reasons.badRxSeq);
-            return;
+        int seqRx = pck.msbGetD(4);
+        if (sequence != null) {
+            if (sequence.gotDat(seqRx)) {
+                logger.info("replay check failed");
+                cntr.drop(pck, counter.reasons.badRxSeq);
+                return;
+            }
         }
         int siz = pck.dataSize() - hashSize;
         if (siz < 8) {
@@ -240,7 +243,6 @@ public class packEsp implements ipPrt {
         siz -= pck.getByte(siz - 2) + encrSize + 2;
         pck.getSkip(encrSize);
         pck.setDataSize(siz);
-        sequ = seq;
         pck.msbPutW(0, getType());
         pck.putSkip(2);
         pck.merge2beg();
@@ -252,6 +254,9 @@ public class packEsp implements ipPrt {
     }
 
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
+    }
+
+    public void setState(ipFwdIface iface, state.states stat) {
     }
 
     /**
@@ -271,7 +276,7 @@ public class packEsp implements ipPrt {
             return;
         }
         pck.getSkip(2);
-        sequ++;
+        seqTx++;
         int o = pck.dataSize() + 2;
         o = encrSize - (o % encrSize);
         for (int i = 0; i < o; i++) {
@@ -289,7 +294,7 @@ public class packEsp implements ipPrt {
         pck.merge2beg();
         pck.encrData(cipher, 0, pck.dataSize());
         pck.msbPutD(0, spi);
-        pck.msbPutD(4, sequ);
+        pck.msbPutD(4, seqTx);
         pck.putSkip(8);
         pck.merge2beg();
         hasher.init();
@@ -311,7 +316,18 @@ public class packEsp implements ipPrt {
         forwarder.protoPack(fwdIface, pck);
     }
 
-    public void setState(ipFwdIface iface, state.states stat) {
+    /**
+     * send one packet
+     *
+     * @param pck packet to send
+     */
+    public synchronized void doInit() {
+        seqTx = 0;
+        if (replayCheck > 0) {
+            sequence = new tabWindow(replayCheck);
+        } else {
+            sequence = null;
+        }
     }
 
 }
