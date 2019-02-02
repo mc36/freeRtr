@@ -25,6 +25,13 @@ public class addrBridge implements Comparator<addrBridge> {
      */
     public addrMac adr = new addrMac();
 
+    /**
+     * compare two instances
+     *
+     * @param o1 first
+     * @param o2 second
+     * @return as usual
+     */
     public int compare(addrBridge o1, addrBridge o2) {
         if (o1.pri < o2.pri) {
             return -1;
@@ -35,6 +42,11 @@ public class addrBridge implements Comparator<addrBridge> {
         return o1.adr.compare(o1.adr, o2.adr);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return pri + "/" + adr;
     }

@@ -257,6 +257,26 @@ router logger6 1
  redistribute bgp6 1
  exit
 !
+router deaggr4 1
+ vrf v1
+ justadvert bvi9
+ exit
+!
+router deaggr6 1
+ vrf v1
+ justadvert bvi9
+ exit
+!
+router mobile4 1
+ vrf v1
+ justadvert bvi9
+ exit
+!
+router mobile6 1
+ vrf v1
+ justadvert bvi9
+ exit
+!
 interface loopback0
  no description
  vrf forwarding v1

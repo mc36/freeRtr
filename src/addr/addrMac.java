@@ -19,6 +19,11 @@ public class addrMac extends addrType {
      */
     public final static int sizeX2 = size * 2;
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return bits.toHexB(addr[0]) + bits.toHexB(addr[1]) + "." + bits.toHexB(addr[2]) + bits.toHexB(addr[3]) + "." + bits.toHexB(addr[4]) + bits.toHexB(addr[5]);
     }
@@ -32,12 +37,23 @@ public class addrMac extends addrType {
         return bits.toHexB(addr[0]) + ":" + bits.toHexB(addr[1]) + ":" + bits.toHexB(addr[2]) + ":" + bits.toHexB(addr[3]) + ":" + bits.toHexB(addr[4]) + ":" + bits.toHexB(addr[5]);
     }
 
+    /**
+     * copy bytes
+     *
+     * @return copy
+     */
     public addrMac copyBytes() {
         addrMac a = new addrMac();
         a.fromBuf(addr, 0);
         return a;
     }
 
+    /**
+     * convert from string
+     *
+     * @param s string
+     * @return false on success, true on error
+     */
     public boolean fromString(String s) {
         s = s.replaceAll("\\.", "");
         s = s.replaceAll("\\:", "");
@@ -55,6 +71,11 @@ public class addrMac extends addrType {
         return false;
     }
 
+    /**
+     * get size
+     *
+     * @return size
+     */
     public int getSize() {
         return size;
     }

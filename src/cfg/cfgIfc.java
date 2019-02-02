@@ -59,6 +59,7 @@ import ifc.ifcIsl;
 import ifc.ifcLapb;
 import ifc.ifcLldp;
 import ifc.ifcMacSec;
+import ifc.ifcLossDet;
 import ifc.ifcNhrp;
 import ifc.ifcNull;
 import ifc.ifcP2pOEclnt;
@@ -1185,6 +1186,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no random",
         "interface .*! enforce-mtu none",
         "interface .*! no macsec",
+        "interface .*! no loss-detection",
         "interface .*! no monitor-session",
         "interface .*! no monitor-buffer",
         "interface .*! no eapol client",
@@ -4572,6 +4574,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         cmds.cfgLine(l, random == null, cmds.tabulator, "random", "" + ifcRandom.getCfg(random));
         cmds.cfgLine(l, ethtyp.macSec == null, cmds.tabulator, "macsec", "" + ethtyp.macSec);
+        cmds.cfgLine(l, ethtyp.lossDet == null, cmds.tabulator, "loss-detection", "" + ethtyp.lossDet);
         s = "none";
         if (ethtyp.mtuCheckRx) {
             s = "in";
@@ -5108,6 +5111,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(".2 .    out                         only in egress");
         l.add(".2 .    both                        check in both directions");
         l.add("2 .     none                        not check at all");
+        l.add("1 2   loss-detection                loss detection commands");
+        l.add("2 .     <num>                       hello interval");
         l.add("1 2   macsec                        mac security protocol commands");
         l.add("2 3,.   <name>                      name of ipsec profile");
         l.add("3 .       <num>                     ethertype to use");
@@ -5452,6 +5457,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 ethtyp.mtuCheckTx = true;
                 return;
             }
+            return;
+        }
+        if (a.equals("loss-detection")) {
+            ifcLossDet sec = new ifcLossDet();
+            sec.doInit(ethtyp, bits.str2num(cmd.word()));
+            ethtyp.lossDet = sec;
+            ethtyp.timerUpdate();
             return;
         }
         if (a.equals("macsec")) {
@@ -5862,6 +5874,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("enforce-mtu")) {
             ethtyp.mtuCheckRx = false;
             ethtyp.mtuCheckTx = false;
+            return;
+        }
+        if (a.equals("loss-detection")) {
+            ethtyp.lossDet = null;
+            ethtyp.timerUpdate();
             return;
         }
         if (a.equals("macsec")) {

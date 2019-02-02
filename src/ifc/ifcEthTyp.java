@@ -83,6 +83,11 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public ifcMacSec macSec;
 
     /**
+     * loss detector
+     */
+    public ifcLossDet lossDet;
+
+    /**
      * service chaining
      */
     public ifcNshFwd nshFwd;
@@ -179,6 +184,15 @@ public class ifcEthTyp implements Runnable, ifcUp {
      */
     public boolean getMacsec() {
         return macSec != null;
+    }
+
+    /**
+     * get lossdet state
+     *
+     * @return state
+     */
+    public boolean getLossdet() {
+        return lossDet != null;
     }
 
     /**
@@ -300,7 +314,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * update timer thread
      */
     public synchronized void timerUpdate() {
-        if ((qosIn != null) || (qosOut != null) || (macSec != null)) {
+        if ((qosIn != null) || (qosOut != null) || (macSec != null) || (lossDet != null)) {
             need2run |= 1;
         } else {
             need2run &= 0xfe;
@@ -352,13 +366,23 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 lst = 10000;
             }
             notif.misleep((int) lst);
-            if ((macSec != null) && ((tim - sec) > 5000)) {
+            if ((tim - sec) < 5000) {
+                continue;
+            }
+            sec = tim;
+            if (lossDet != null) {
+                packHolder pck = lossDet.doSync();
+                if (pck != null) {
+                    pktAccount(pck);
+                    lower.sendPack(pck);
+                }
+            }
+            if (macSec != null) {
                 packHolder pck = macSec.doSync();
                 if (pck != null) {
                     pktAccount(pck);
                     lower.sendPack(pck);
                 }
-                sec = tim;
             }
         }
         need2run &= 0xfd;
@@ -539,6 +563,11 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (monSes != null) {
             monSes.doTxPack(pck.copyBytes(true, true));
         }
+        if (lossDet != null) {
+            if (lossDet.doEncode(pck)) {
+                return;
+            }
+        }
         if (macSec != null) {
             if (macSec.doEncrypt(pck)) {
                 return;
@@ -565,6 +594,12 @@ public class ifcEthTyp implements Runnable, ifcUp {
         sizes[pktsiz2bucket(pck.dataSize())].rx(pck);
         if (macSec != null) {
             if (macSec.doDecrypt(pck)) {
+                cntr.drop(pck, counter.reasons.badSum);
+                return;
+            }
+        }
+        if (lossDet != null) {
+            if (lossDet.doDecode(pck)) {
                 cntr.drop(pck, counter.reasons.badSum);
                 return;
             }

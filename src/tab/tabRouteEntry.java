@@ -168,6 +168,22 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
          * ipv6 download
          */
         download6,
+        /**
+         * ipv4 deaggregation
+         */
+        deaggr4,
+        /**
+         * ipv6 deaggregation
+         */
+        deaggr6,
+        /**
+         * ipv4 mobile
+         */
+        mobile4,
+        /**
+         * ipv6 mobile
+         */
+        mobile6,
 
     }
 
@@ -514,6 +530,12 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
             case download4:
             case download6:
                 return "DWN";
+            case deaggr4:
+            case deaggr6:
+                return "DEA";
+            case mobile4:
+            case mobile6:
+                return "MOB";
             default:
                 return "?";
         }

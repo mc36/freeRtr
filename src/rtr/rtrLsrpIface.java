@@ -185,7 +185,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
             if (nei == null) {
                 continue;
             }
-            res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.peer + "|" + nei.isReady + "|" + bits.timePast(nei.upTime));
+            res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.peer + "|" + nei.isReady() + "|" + bits.timePast(nei.upTime));
         }
     }
 

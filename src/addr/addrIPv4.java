@@ -9,6 +9,11 @@ import util.bits;
  */
 public class addrIPv4 extends addrType {
 
+    /**
+     * copy bytes
+     *
+     * @return copy
+     */
     public addrIPv4 copyBytes() {
         addrIPv4 a = new addrIPv4();
         a.fromBuf(addr, 0);
@@ -22,14 +27,30 @@ public class addrIPv4 extends addrType {
  */
 public final static int size = 4;
 
+    /**
+     * get size
+     *
+     * @return size
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return (addr[0] & 0xff) + "." + (addr[1] & 0xff) + "." + (addr[2] & 0xff) + "." + (addr[3] & 0xff);
     }
 
+    /**
+     * convert from string
+     *
+     * @param s string
+     * @return false on success, true on error
+     */
     public boolean fromString(String s) {
         s += ".";
         for (int i = 0; i < size; i++) {

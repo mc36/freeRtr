@@ -9,12 +9,22 @@ import util.bits;
  */
 public class addrClns extends addrType {
 
+    /**
+     * copy bytes
+     *
+     * @return copy
+     */
     public addrClns copyBytes() {
         addrClns a = new addrClns();
         a.fromBuf(addr, 0);
         return a;
     }
 
+    /**
+     * get size
+     *
+     * @return size
+     */
     public int getSize() {
         return 256;
     }
@@ -27,6 +37,11 @@ public class addrClns extends addrType {
         bits.byteFill(addr, i, addr.length - i, 0);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         String s = bits.toHexB(addr[1]);
         for (int i = 0; i < (addr[0] - 2); i += 2) {
@@ -38,6 +53,12 @@ public class addrClns extends addrType {
         return s;
     }
 
+    /**
+     * from string
+     *
+     * @param s string
+     * @return false on success, true on error
+     */
     public boolean fromString(String s) {
         bits.byteFill(addr, 0, addr.length, 0);
         s = s.replaceAll("\\.", "");

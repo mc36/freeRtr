@@ -21,10 +21,20 @@ public class addrIP extends addrType {
 
     private static int IPv4prefLen = addrIPv6.size - addrIPv4.size;
 
+    /**
+     * get size
+     *
+     * @return size
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     * copy bytes
+     *
+     * @return copy
+     */
     public addrIP copyBytes() {
         addrIP a = new addrIP();
         a.fromBuf(addr, 0);
@@ -172,6 +182,11 @@ public class addrIP extends addrType {
         }
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         if (isIPv4()) {
             return "" + toIPv4();
@@ -180,6 +195,12 @@ public class addrIP extends addrType {
         }
     }
 
+    /**
+     * convert from string
+     *
+     * @param s string
+     * @return false on success, true on error
+     */
     public boolean fromString(String s) {
         addrIPv4 a4 = new addrIPv4();
         addrIPv6 a6 = new addrIPv6();

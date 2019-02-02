@@ -14,16 +14,31 @@ public class addrIPv6 extends addrType {
      */
     public final static int size = 16;
 
+    /**
+     * get size
+     *
+     * @return size
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     * copy bytes
+     *
+     * @return copy
+     */
     public addrIPv6 copyBytes() {
         addrIPv6 a = new addrIPv6();
         a.fromBuf(addr, 0);
         return a;
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         int bstPos = 0;
         int bstLen = 0;
@@ -98,6 +113,12 @@ public class addrIPv6 extends addrType {
         }
     }
 
+    /**
+     * convert from string
+     *
+     * @param s string
+     * @return false on success, true on error
+     */
     public boolean fromString(String s) {
         int o = s.indexOf("::");
         if (o < 0) {

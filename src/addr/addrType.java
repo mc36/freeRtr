@@ -128,6 +128,41 @@ public abstract class addrType implements Comparator<addrType> {
     }
 
     /**
+     * bit values in u32
+     */
+    public final static int[] bitVals = {
+        0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1
+    };
+
+    /**
+     * set one bit
+     *
+     * @param num bit number
+     */
+    public void bitSet(int num) {
+        addr[num / 8] |= bitVals[num & 0x7];
+    }
+
+    /**
+     * set one bit
+     *
+     * @param num bit number
+     */
+    public void bitClear(int num) {
+        addr[num / 8] &= -bitVals[num & 0x7] - 1;
+    }
+
+    /**
+     * set one bit
+     *
+     * @param num bit number
+     * @return bit value
+     */
+    public boolean bitValue(int num) {
+        return (addr[num / 8] & bitVals[num & 0x7]) != 0;
+    }
+
+    /**
      * create empty address
      */
     public addrType() {
@@ -285,6 +320,13 @@ public abstract class addrType implements Comparator<addrType> {
         }
     }
 
+    /**
+     * compare two instances
+     *
+     * @param o1 first
+     * @param o2 second
+     * @return as usual
+     */
     public int compare(addrType o1, addrType o2) {
         return bits.byteComp(o1.addr, 0, o2.addr, 0, addr.length);
     }

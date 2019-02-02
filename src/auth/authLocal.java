@@ -196,10 +196,20 @@ public class authLocal extends authGeneric {
         users = new tabGen<authLocalEntry>();
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String getCfgName() {
         return "userlist";
     }
 
+    /**
+     * get help
+     *
+     * @param l help
+     */
     public void getHelp(userHelping l) {
         l.add("1 2  deluser             delete one user");
         l.add("2 .    <name>            name of user");
@@ -230,6 +240,12 @@ public class authLocal extends authGeneric {
         l.add("4 .        <priv>        privilege of user");
     }
 
+    /**
+     * convert from string
+     *
+     * @param cmd string
+     * @return false on success, true on error
+     */
     public boolean fromString(cmds cmd) {
         String a = cmd.word();
         if (a.equals("deluser")) {
@@ -253,6 +269,12 @@ public class authLocal extends authGeneric {
         return ntry.fromString(cmd);
     }
 
+    /**
+     * get config
+     *
+     * @param beg beginning
+     * @return confi
+     */
     public List<String> getShRun(String beg) {
         List<String> l = new ArrayList<String>();
         for (int i = 0; i < users.size(); i++) {
@@ -262,6 +284,13 @@ public class authLocal extends authGeneric {
         return l;
     }
 
+    /**
+     * create passed result
+     *
+     * @param ntry entry
+     * @param user username
+     * @return result
+     */
     private authResult createPassed(authLocalEntry ntry, String user) {
         authResult res = new authResult(this, authResult.authSuccessful, user);
         res.autoCommand = ntry.autoCommand;
@@ -270,6 +299,13 @@ public class authLocal extends authGeneric {
         return res;
     }
 
+    /**
+     * authenticate with password
+     *
+     * @param user username
+     * @param pass password
+     * @return result
+     */
     public authResult authUserPass(String user, String pass) {
         authLocalEntry ntry = new authLocalEntry();
         ntry.username = user;
@@ -315,6 +351,15 @@ public class authLocal extends authGeneric {
         return new authResult(this, authResult.authBadUserPass, user);
     }
 
+    /**
+     * authenticate with chap
+     *
+     * @param user username
+     * @param id id
+     * @param chal challenge
+     * @param resp response
+     * @return result
+     */
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {
         authLocalEntry ntry = new authLocalEntry();
         ntry.username = user;
@@ -346,6 +391,14 @@ public class authLocal extends authGeneric {
         return createPassed(ntry, user);
     }
 
+    /**
+     * authenticate with apop
+     *
+     * @param cookie cookie
+     * @param user username
+     * @param resp response
+     * @return result
+     */
     public authResult authUserApop(String cookie, String user, String resp) {
         authLocalEntry ntry = new authLocalEntry();
         ntry.username = user;

@@ -92,10 +92,22 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      */
     public abstract boolean fromString(cmds cmd);
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return autName;
     }
 
+    /**
+     * compare two instances
+     *
+     * @param o1 first
+     * @param o2 second
+     * @return as usual
+     */
     public int compare(authGeneric o1, authGeneric o2) {
         return o1.autName.toLowerCase().compareTo(o2.autName.toLowerCase());
     }

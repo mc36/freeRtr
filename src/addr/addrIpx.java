@@ -14,22 +14,43 @@ public class addrIpx extends addrType {
      */
     public final static int size = 10;
 
+    /**
+     * get size
+     *
+     * @return size
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     * get copy
+     *
+     * @return copy
+     */
     public addrIpx copyBytes() {
         addrIpx a = new addrIpx();
         a.fromBuf(addr, 0);
         return a;
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return bits.toHexB(addr[0]) + bits.toHexB(addr[1]) + bits.toHexB(addr[2]) + bits.toHexB(addr[3]) + "."
                 + bits.toHexB(addr[4]) + bits.toHexB(addr[5]) + "." + bits.toHexB(addr[6]) + bits.toHexB(addr[7]) + "."
                 + bits.toHexB(addr[8]) + bits.toHexB(addr[9]);
     }
 
+    /**
+     * from string
+     *
+     * @param s string
+     * @return false on success, true on error
+     */
     public boolean fromString(String s) {
         s = s.replaceAll("\\.", "");
         s = s.replaceAll("\\:", "");

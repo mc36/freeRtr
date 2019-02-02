@@ -27,6 +27,8 @@ import rtr.rtrRip4;
 import rtr.rtrRip6;
 import rtr.rtrUni2flow;
 import rtr.rtrUni2multi;
+import rtr.rtrDeaggr;
+import rtr.rtrMobile;
 import tab.tabGen;
 import tab.tabRouteEntry;
 import user.userFilter;
@@ -140,6 +142,16 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * downloader handler
      */
     public rtrDownload download;
+
+    /**
+     * deaggregate handler
+     */
+    public rtrDeaggr deaggr;
+
+    /**
+     * mobile handler
+     */
+    public rtrMobile mobile;
 
     /**
      * state of this process
@@ -368,6 +380,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router download[4|6] .*! no range",
         "router download[4|6] .*! delay 0",
         "router download[4|6] .*! time 0",
+        // router mobile
+        "router mobile[4|6] .*! distance 254",
         // router logger
         "router logger[4|6] .*! no flapstat",
         "router logger[4|6] .*! no logging",};
@@ -480,6 +494,18 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (a.equals("download6")) {
             return tabRouteEntry.routeType.download6;
         }
+        if (a.equals("deaggr4")) {
+            return tabRouteEntry.routeType.deaggr4;
+        }
+        if (a.equals("deaggr6")) {
+            return tabRouteEntry.routeType.deaggr6;
+        }
+        if (a.equals("mobile4")) {
+            return tabRouteEntry.routeType.mobile4;
+        }
+        if (a.equals("mobile6")) {
+            return tabRouteEntry.routeType.mobile6;
+        }
         return null;
     }
 
@@ -551,6 +577,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "download4";
             case download6:
                 return "download6";
+            case deaggr4:
+                return "deaggr4";
+            case deaggr6:
+                return "deaggr6";
+            case mobile4:
+                return "mobile4";
+            case mobile6:
+                return "mobile6";
             case staticRoute:
                 return "static";
             case conn:
@@ -1041,6 +1075,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             download.routerCloseNow();
             download = null;
         }
+        if (deaggr != null) {
+            deaggr.routerCloseNow();
+            deaggr = null;
+        }
+        if (mobile != null) {
+            mobile.routerCloseNow();
+            mobile = null;
+        }
     }
 
     /**
@@ -1097,6 +1139,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case download4:
             case download6:
                 return download;
+            case deaggr4:
+            case deaggr6:
+                return deaggr;
+            case mobile4:
+            case mobile6:
+                return mobile;
             default:
                 return null;
         }
@@ -1202,6 +1250,18 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 break;
             case download6:
                 download = new rtrDownload(vrf.fwd6, number);
+                break;
+            case deaggr4:
+                deaggr = new rtrDeaggr(vrf.fwd4, number);
+                break;
+            case deaggr6:
+                deaggr = new rtrDeaggr(vrf.fwd6, number);
+                break;
+            case mobile4:
+                mobile = new rtrMobile(vrf.fwd4, number);
+                break;
+            case mobile6:
+                mobile = new rtrMobile(vrf.fwd6, number);
                 break;
             default:
                 return true;
@@ -1315,6 +1375,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 2) + " " + (p + 3) + "     logger6               route logger" + e);
         l.add((p + 2) + " " + (p + 3) + "     download4             route download" + e);
         l.add((p + 2) + " " + (p + 3) + "     download6             route download" + e);
+        l.add((p + 2) + " " + (p + 3) + "     deaggr4               deaggregate creator" + e);
+        l.add((p + 2) + " " + (p + 3) + "     deaggr6               deaggregate creator" + e);
+        l.add((p + 2) + " " + (p + 3) + "     mobile4               mobile route creator" + e);
+        l.add((p + 2) + " " + (p + 3) + "     mobile6               mobile route creator" + e);
     }
 
     /**

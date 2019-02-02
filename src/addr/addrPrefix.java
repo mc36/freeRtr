@@ -70,6 +70,13 @@ public class addrPrefix<T extends addrType> implements Comparator<addrPrefix<T>>
         return n;
     }
 
+    /**
+     * compare two instances
+     *
+     * @param o1 first
+     * @param o2 second
+     * @return as usual
+     */
     public int compare(addrPrefix<T> o1, addrPrefix<T> o2) {
         int i = network.compare(o1.network, o2.network);
         if (i != 0) {
@@ -78,6 +85,11 @@ public class addrPrefix<T extends addrType> implements Comparator<addrPrefix<T>>
         return -broadcast.compare(o1.broadcast, o2.broadcast);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return network + "/" + maskLen;
     }

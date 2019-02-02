@@ -468,7 +468,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (nei == null) {
                     continue;
                 }
-                if (!nei.isReady) {
+                if (!nei.isReady()) {
                     continue;
                 }
                 int adj = 0;
@@ -557,7 +557,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (nei == null) {
                     continue;
                 }
-                if (!nei.isReady) {
+                if (!nei.isReady()) {
                     continue;
                 }
                 spf.addNextHop(ifc.metric, nei.rtrId, nei.peer.copyBytes(), ifc.iface);

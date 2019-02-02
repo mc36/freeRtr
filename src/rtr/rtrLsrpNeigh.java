@@ -71,9 +71,14 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     protected long upTime;
 
     /**
-     * ready state
+     * nomore seen
      */
-    protected boolean isReady;
+    protected boolean noMore;
+
+    /**
+     * nomore sent
+     */
+    protected boolean allSent;
 
     /**
      * segment routing label
@@ -110,6 +115,15 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         return o1.rtrId.compare(o1.rtrId, o2.rtrId);
     }
 
+    /**
+     * ready state
+     *
+     * @return false if no, true if yes
+     */
+    protected boolean isReady() {
+        return noMore && allSent;
+    }
+
     public String toString() {
         return "lsrp with " + peer;
     }
@@ -140,7 +154,8 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         }
         boolean oldrun = need2run;
         need2run = false;
-        isReady = false;
+        noMore = false;
+        allSent = false;
         if (conn != null) {
             conn.setClose();
         }
@@ -357,7 +372,6 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             segrouLab = tabLabel.allocate(14);
             segrouLab.setFwdMpls(14, lower.fwdCore, iface.iface, peer, tabLabel.int2labels(ipMpls.labelImp));
         }
-        isReady = true;
         lower.todo.set(0);
         lower.notif.wakeup();
         if (iface.bfdTrigger) {
@@ -392,6 +406,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                 continue;
             }
         }
+        int sent = 0;
         for (int i = 0; i < lower.database.size(); i++) {
             rtrLsrpData ntry = lower.database.get(i);
             if (ntry == null) {
@@ -405,7 +420,13 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             }
             sendLn("update " + ntry.dump(rtrLsrpData.dmpFull));
             advert.put(ntry.copyHead());
+            sent++;
         }
+        if (sent > 0) {
+            sendLn("nomore");
+        }
+        allSent = true;
+        lower.notif.wakeup();
     }
 
 }
@@ -473,27 +494,32 @@ class rtrLsrpNeighRcvr implements Runnable {
                 lower.lastHeard += bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("update")) {
-                rtrLsrpData ntry = new rtrLsrpData();
-                if (ntry.fromString(cmd)) {
-                    lower.sendWrn("badUpdate");
-                    continue;
-                }
-                if (ntry.differs(lower.advert.find(ntry))) {
-                    lower.advert.put(ntry.copyHead());
-                }
-                if (ntry.better(lower.lower.database.find(ntry))) {
-                    lower.iface.gotAdvert(ntry);
-                    lower.lower.database.put(ntry);
-                    lower.lower.todo.set(0);
-                    lower.lower.notif.wakeup();
-                    if ((ntry.rtrId.compare(ntry.rtrId, lower.lower.routerID) == 0) && (!ntry.hostname.equals(cfgAll.hostName))) {
-                        logger.error("duplicate routerid with " + ntry.hostname);
-                    }
-                }
+            if (a.equals("nomore")) {
+                lower.noMore = true;
+                lower.lower.notif.wakeup();
                 continue;
             }
-            lower.sendWrn("badCommand " + a);
+            if (!a.equals("update")) {
+                lower.sendWrn("badCommand " + a);
+                continue;
+            }
+            rtrLsrpData ntry = new rtrLsrpData();
+            if (ntry.fromString(cmd)) {
+                lower.sendWrn("badUpdate");
+                continue;
+            }
+            if (ntry.differs(lower.advert.find(ntry))) {
+                lower.advert.put(ntry.copyHead());
+            }
+            if (ntry.better(lower.lower.database.find(ntry))) {
+                lower.iface.gotAdvert(ntry);
+                lower.lower.database.put(ntry);
+                lower.lower.todo.set(0);
+                lower.lower.notif.wakeup();
+                if ((ntry.rtrId.compare(ntry.rtrId, lower.lower.routerID) == 0) && (!ntry.hostname.equals(cfgAll.hostName))) {
+                    logger.error("duplicate routerid with " + ntry.hostname);
+                }
+            }
         }
     }
 
