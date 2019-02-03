@@ -1,11 +1,3 @@
-parents-core(cfg-server)# recursion access-class recur                         
-parents-core(cfg-server)#no recursion access-class recur                       
-% unknown config command entered
-parents-core(cfg-server)#       
-parents-core(cfg-server)# resolver facebook.com 10.10.10.255                   
-parents-core(cfg-server)#no resolver facebook.com 10.10.10.255                 
-% unknown config command entered
-parents-core(cfg-server)#   
 lsrp, ospf, isis must list lsas/lsps as reachable or not
 padup ethertype config option
 http host upload optional different authentication
@@ -16,12 +8,11 @@ lossdet with class util.dampening
 reapplying the same vrf to interface as noop
 hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 hwdet detect mac addresses
-attach vdc name tabbing
-show interfaces --> show interface
-interactive switch for traceroute to mimic mtr with class util.dampening
+interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr
 client domain-name to resolve internally first
-call-home through irc with configurable proxyprofile, read-write access
+client name-server multiple nodes
 irc server should ping periodically the clients
+call-home through irc with configurable proxyprofile, read-write access
 access-* under http host
 tls1.3
 http2.0
@@ -48,6 +39,7 @@ ldap client, server
 bgp compare should write out that which attributes changed
 bfd need to send with ttl=255
 trustpoint for certificates
+vdc name tabbing
 interface name tabbing
 int eth1/int eth2
 dhcp relay support

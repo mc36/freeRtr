@@ -209,6 +209,10 @@ public class servDns extends servGeneric implements prtServS {
     public boolean srvCfgStr(cmds cmd) {
         cmds old = cmd.copyBytes(false);
         String s = cmd.word();
+        boolean negated = s.equals("no");
+        if (negated) {
+            s = cmd.word();
+        }
         if (s.length() < 1) {
             return false;
         }
@@ -227,20 +231,28 @@ public class servDns extends servGeneric implements prtServS {
             if (res.fromString(cmd)) {
                 return false;
             }
+            if (negated) {
+                resolvs.del(res);
+                return false;
+            }
             resolvs.put(res);
             return false;
         }
         if (s.equals("recursion")) {
             s = cmd.word();
             if (s.equals("enable")) {
-                recursEna = true;
+                recursEna = !negated;
                 return false;
             }
             if (s.equals("disable")) {
-                recursEna = false;
+                recursEna = negated;
                 return false;
             }
             if (s.equals("access-class")) {
+                if (negated) {
+                    recursAcl = null;
+                    return false;
+                }
                 cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
                 if (ntry == null) {
                     cmd.error("no such access list");
@@ -254,6 +266,10 @@ public class servDns extends servGeneric implements prtServS {
                 return false;
             }
             if (s.equals("6to4prefix")) {
+                if (negated) {
+                    recurs6to4 = null;
+                    return false;
+                }
                 recurs6to4 = new addrIP();
                 recurs6to4.fromString(cmd.word());
                 return false;
@@ -312,6 +328,13 @@ public class servDns extends servGeneric implements prtServS {
         if (s.equals("clear")) {
             zon.clear();
             return false;
+        }
+        if (negated) {
+            packDnsRec ntry = new packDnsRec();
+            if (ntry.fromUserStr(cmd)) {
+                return true;
+            }
+            return zon.delBin(ntry);
         }
         return zon.addUser(old.getRemaining());
     }

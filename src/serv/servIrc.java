@@ -187,6 +187,9 @@ class servIrcChan {
         }
         for (int i = peers.size() - 1; i >= 0; i--) {
             servIrcConn usr = peers.get(i);
+            if (usr == null) {
+                continue;
+            }
             if (f != null) {
                 if (f.nick.equals(usr.nick)) {
                     continue;
@@ -217,12 +220,16 @@ class servIrcConn implements Runnable {
 
     public final addrIP peer;
 
+    public boolean need2run;
+
     public servIrcConn(servIrc parent, pipeSide pipe, addrIP host) {
+        need2run = true;
         lower = parent;
         conn = pipe;
         peer = host.copyBytes();
         nick = "peer" + peer;
         new Thread(this).start();
+        new servIrcKeep(this);
     }
 
     public void run() {
@@ -236,6 +243,7 @@ class servIrcConn implements Runnable {
             logger.traceback(e);
         }
         conn.setClose();
+        need2run = false;
         lower.delUser(this);
     }
 
@@ -303,8 +311,11 @@ class servIrcConn implements Runnable {
         if (s.equals("quit")) {
             return true;
         }
+        if (s.equals("pong")) {
+            return false;
+        }
         if (s.equals("ping")) {
-            rawTx("PONG " + cfgAll.hostName);
+            rawTx("PONG " + cmd.getRemaining());
             return false;
         }
         if (s.equals("version")) {
@@ -386,7 +397,33 @@ class servIrcConn implements Runnable {
             }
             return false;
         }
+        rawTx("ERROR bad command " + s + " " + cmd.getRemaining());
         return false;
+    }
+
+}
+
+class servIrcKeep implements Runnable {
+
+    private final servIrcConn lower;
+
+    public servIrcKeep(servIrcConn conn) {
+        lower = conn;
+        new Thread(this).start();
+    }
+
+    public void run() {
+        try {
+            for (;;) {
+                if (!lower.need2run) {
+                    return;
+                }
+                lower.rawTx("PING " + bits.getTime());
+                bits.sleep(30000);
+            }
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
     }
 
 }
