@@ -157,12 +157,15 @@ public class ifcMacSec {
      */
     public synchronized boolean doDecrypt(packHolder pck) {
         if (pck.dataSize() < size) {
+            logger.info("too short on " + etht);
             return true;
         }
-        if (pck.msbGetW(0) != myTyp) { // ethertype
+        int typ = pck.msbGetW(0);
+        if (typ != myTyp) { // ethertype
+            logger.info("bad type (" + typ + ") on " + etht);
             return true;
         }
-        int typ = pck.getByte(2); // tci
+        typ = pck.getByte(2); // tci
         switch (typ) {
             case 0x08: // data
                 break;

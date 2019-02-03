@@ -19,6 +19,10 @@ public class ifcLossDet {
 
     private int hello;
 
+    public String toString() {
+        return "" + hello;
+    }
+
     /**
      * initialize the crypter
      *
