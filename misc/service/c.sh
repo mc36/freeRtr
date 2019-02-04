@@ -18,6 +18,7 @@ cp ../default.cfg /rtr/rtr-sw.txt
 cp ../../src/rtr.jar /rtr/
 cp /proc/net/dev /rtr/hwdet.eth
 cp /proc/tty/driver/serial /rtr/hwdet.ser
+ifconfig -a > /rtr/hwdet.mac
 java -jar /rtr/rtr.jar test hwdet tuntap 10.255.255.1/24 path /rtr/
 chmod 777 /rtr/*.sh
 ls -l /rtr/

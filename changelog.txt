@@ -8590,3 +8590,22 @@ qc pass: olsr autoroute
 qc pass: ospf autoroute
 qc pass: pvrp autoroute
 qc pass: rip autoroute
+---------------------------------- 2019-02-03 11:26:38
+todo: http server should honor no in the beginning for host commands
+todo: lsrp, ospf, isis must list lsas/lsps as reachable or not
+todo: padup ethertype config option
+todo: http host upload optional different authentication
+todo: display traceroute with the same parameters
+todo: configurable replay window under ipsec profile for macsec
+todo: macsec bad type in hex
+todo: lossdet with class util.dampening
+todo: reapplying the same vrf to interface as noop
+todo: hwdet default to binary in installation, rework rtr.bin support to binjar if needed
+todo: hwdet detect mac addresses
+todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr
+todo: client domain-name to resolve internally first
+todo: client name-server multiple nodes
+todo: irc server should ping periodically the clients
+todo: call-home through irc with configurable proxyprofile, read-write access
+todo: http2.0
+todo: vdc name tabbing

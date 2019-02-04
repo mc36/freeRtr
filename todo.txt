@@ -1,3 +1,5 @@
+test cases for router deaggr and router mobile
+http server should honor no in the beginning for host commands
 lsrp, ospf, isis must list lsas/lsps as reachable or not
 padup ethertype config option
 http host upload optional different authentication
