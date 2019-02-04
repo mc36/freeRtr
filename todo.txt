@@ -1,22 +1,24 @@
-test cases for router deaggr and router mobile
-p4lang
-bridge security from dhcp server
-http server should honor no in the beginning for host commands
-lsrp, ospf, isis must list lsas/lsps as reachable or not
-padup ethertype config option
-http host upload optional different authentication
-display traceroute with the same parameters
-configurable replay window under ipsec profile for macsec
 macsec bad type in hex
+test cases for router deaggr and router mobile
+http conditional redirect with route-map, prefix-list or route-policy
+bridge security from dhcp server
+padup ethertype config option
+p4lang
+lsrp, ospf, isis must list lsas/lsps as reachable or not
+configurable replay window under ipsec profile for macsec
 lossdet with class util.dampening
 reapplying the same vrf to interface as noop
 hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 hwdet detect mac addresses
-interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr
+interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
+traceroute to query bgp forasn
+traceroute to display mpls labels
 client domain-name to resolve internally first
 client name-server multiple nodes
 irc server should ping periodically the clients
 call-home through irc with configurable proxyprofile, read-write access
+http server should honor no in the beginning for host commands
+http host upload optional different authentication
 access-* under http host
 tls1.3
 http2.0
