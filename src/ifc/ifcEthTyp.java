@@ -957,6 +957,20 @@ public class ifcEthTyp implements Runnable, ifcUp {
      *
      * @return table
      */
+    public userFormat getShLoss() {
+        userFormat l = new userFormat("|", "who|tx|rx");
+        if (lossDet == null) {
+            return l;
+        }
+        lossDet.getShow(l);
+        return l;
+    }
+
+    /**
+     * get show results
+     *
+     * @return table
+     */
     public userFormat getShTypes() {
         userFormat l = new userFormat("|", "type|value|handler|tx|rx|drop|tx|rx|drop");
         if (defUpper.upper != null) {

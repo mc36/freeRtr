@@ -8609,3 +8609,24 @@ todo: irc server should ping periodically the clients
 todo: call-home through irc with configurable proxyprofile, read-write access
 todo: http2.0
 todo: vdc name tabbing
+---------------------------------- 2019-02-07 15:14:06
+no todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr
+no todo: display traceroute with the same parameters
+todo: mac rewrite on bridge interfaces
+todo: bgp safe-ebgp-policy to default to neighbor shutdown
+todo: command authorization with local
+todo: reapplying the same address to interface as noop
+todo: entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...
+todo: access-class should permit again with objectgroups
+todo: test cases for router deaggr and router mobile
+todo: http conditional redirect with route-map, prefix-list or route-policy
+todo: bridge security from dhcp, slaac, whatever server
+todo: p4lang
+todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
+todo: traceroute to query bgp forasn
+todo: traceroute to display mpls labels
+todo: command authorization with radius and tacacs
+---------------------------------- 2019-02-08 16:19:17
+no todo: macsec bad type in hex
+no todo: bgp safe-ebgp-policy to default to neighbor shutdown
+qc pass: loss detection

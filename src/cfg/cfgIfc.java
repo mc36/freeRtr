@@ -5111,8 +5111,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(".2 .    out                         only in egress");
         l.add(".2 .    both                        check in both directions");
         l.add("2 .     none                        not check at all");
-        l.add("1 2   loss-detection                loss detection commands");
-        l.add("2 .     <num>                       hello interval");
+        l.add("1 .   loss-detection                loss detection commands");
         l.add("1 2   macsec                        mac security protocol commands");
         l.add("2 3,.   <name>                      name of ipsec profile");
         l.add("3 .       <num>                     ethertype to use");
@@ -5461,7 +5460,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("loss-detection")) {
             ifcLossDet sec = new ifcLossDet();
-            sec.doInit(ethtyp, bits.str2num(cmd.word()));
+            sec.doInit(ethtyp);
             ethtyp.lossDet = sec;
             ethtyp.timerUpdate();
             return;

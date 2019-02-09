@@ -1,14 +1,17 @@
-access-class should permit again with objectgroups
-macsec bad type in hex
 test cases for router deaggr and router mobile
+mac rewrite on bridge interfaces
+command authorization with local
+reapplying the same address to interface as noop
+reapplying the same vrf to interface as noop
+entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...
+access-class should permit again with objectgroups
 http conditional redirect with route-map, prefix-list or route-policy
-bridge security from dhcp server
+bridge security from dhcp, slaac, whatever server
 padup ethertype config option
 p4lang
 lsrp, ospf, isis must list lsas/lsps as reachable or not
 configurable replay window under ipsec profile for macsec
 lossdet with class util.dampening
-reapplying the same vrf to interface as noop
 hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 hwdet detect mac addresses
 interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
@@ -42,6 +45,7 @@ interface range command
 reenable which elliptic courves? sure? why that?
 https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 parse privilege levels from radius and tacacs
+command authorization with radius and tacacs
 ldap client, server
 bgp compare should write out that which attributes changed
 bfd need to send with ttl=255

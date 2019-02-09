@@ -550,6 +550,7 @@ public class userExec {
         hl.add("4 .          numphist            numeric historic packet counters");
         hl.add("4 .          counters            counters");
         hl.add("4 .          ethertypes          ethernet types");
+        hl.add("4 .          lossdetect          loss detection");
         hl.add("4 .          packetsizes         packet sizes");
         hl.add("4 .          protocols           protocol numbers");
         hl.add("4 .          trafficclasses      traffic classes");

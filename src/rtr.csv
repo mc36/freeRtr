@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v19.2.3-testing, done by cs@nop.;-;-
--;-;2019-02-03 19:59:35, took 08:32:56 on 1540 cases, 0 failed, 1 traces, 14 retries;-;-
+-;-;freeRouter v19.2.8-testing, done by cs@nop.;-;-
+-;-;2019-02-09 01:12:24, took 08:53:06 on 1541 cases, 0 failed, 1 traces, 27 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -76,6 +76,7 @@ conn-eth07.tst;0;ethernet isl encapsulation;successfully;finished
 conn-eth08.tst;0;proxy remote arp/nd;successfully;finished
 conn-eth09.tst;0;proxy local arp/nd;successfully;finished
 conn-eth10.tst;0;static arp/nd entry;successfully;finished
+conn-eth11.tst;0;loss detection;successfully;finished
 conn-etherip01.tst;0;etherip over ipv4;successfully;finished
 conn-etherip02.tst;0;etherip over ipv6;successfully;finished
 conn-etherip03.tst;0;etherip over loopback;successfully;finished

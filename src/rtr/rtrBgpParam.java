@@ -882,7 +882,8 @@ public abstract class rtrBgpParam {
      */
     public static void getParamHelp(userHelping l) {
         l.add("3 4       remote-as               remote as number");
-        l.add("4 .         <num>                 autonomous system number");
+        l.add("4 5,.       <num>                 autonomous system number");
+        l.add("5 .           shutdown            connection disabled for this peer");
         l.add("3 4       password                set session password");
         l.add("4 .         <text>                password to use");
         l.add("3 .       shutdown                connection disabled for this peer");
@@ -1205,6 +1206,7 @@ public abstract class rtrBgpParam {
             } else {
                 distance = lower.distantExt;
             }
+            shutdown |= cmd.word().equals("shutdown");
             return false;
         }
         if (s.equals("local-as")) {

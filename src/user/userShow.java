@@ -688,6 +688,7 @@ public class userShow {
                 rdr.putStrArr(ifc.getShIntTxt(1));
                 rdr.putStrTab(doShowRates(ifc.ethtyp.getHistory()));
                 rdr.putStrTab(ifc.ethtyp.getShTypes());
+                rdr.putStrTab(ifc.ethtyp.getShLoss());
                 rdr.putStrTab(ifc.ethtyp.getShProtos());
                 rdr.putStrTab(ifc.ethtyp.getShSizes());
                 rdr.putStrTab(ifc.ethtyp.getShClasses());
@@ -696,6 +697,10 @@ public class userShow {
             }
             if (a.equals("ethertypes")) {
                 rdr.putStrTab(ifc.ethtyp.getShTypes());
+                return null;
+            }
+            if (a.equals("lossdetect")) {
+                rdr.putStrTab(ifc.ethtyp.getShLoss());
                 return null;
             }
             if (a.equals("packetsizes")) {

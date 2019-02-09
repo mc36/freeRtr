@@ -63,7 +63,11 @@ public class ipRtrInt implements Comparator<ipRtrInt> {
         } else {
             adr.fromIPv6addr(new addrIPv6());
         }
-        ipFwdIface ifc = iface.getFwdIfc(adr);
+        ipFwdIface ifc = null;
+        try {
+            ifc = iface.getFwdIfc(adr);
+        } catch (Exception e) {
+        }
         if (ifc == null) {
             return;
         }

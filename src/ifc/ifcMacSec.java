@@ -162,7 +162,7 @@ public class ifcMacSec {
         }
         int typ = pck.msbGetW(0);
         if (typ != myTyp) { // ethertype
-            logger.info("bad type (" + typ + ") on " + etht);
+            logger.info("bad type (" + bits.toHexW(typ) + ") on " + etht);
             return true;
         }
         typ = pck.getByte(2); // tci

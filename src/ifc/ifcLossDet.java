@@ -2,6 +2,7 @@ package ifc;
 
 import addr.addrMac;
 import pack.packHolder;
+import user.userFormat;
 
 /**
  * packet loss detector
@@ -17,20 +18,24 @@ public class ifcLossDet {
 
     private addrMac myaddr;
 
-    private int hello;
+    private int rxMine;
+
+    private int txMine;
+
+    private int rxRem;
+
+    private int txRem;
 
     public String toString() {
-        return "" + hello;
+        return "";
     }
 
     /**
-     * initialize the crypter
+     * initialize the engine
      *
      * @param eth ethertype to use
-     * @param tim value to use
      */
-    public void doInit(ifcEthTyp eth, int tim) {
-        hello = tim;
+    public void doInit(ifcEthTyp eth) {
         try {
             myaddr = (addrMac) eth.getHwAddr().copyBytes();
         } catch (Exception e) {
@@ -39,24 +44,41 @@ public class ifcLossDet {
     }
 
     /**
-     * encrypt one packet
+     * get show
+     *
+     * @param l list
+     */
+    public void getShow(userFormat l) {
+        l.add("local|" + txMine + "|" + rxMine);
+        l.add("remote|" + txRem + "|" + rxRem);
+    }
+
+    /**
+     * encode one packet
      *
      * @param pck packet to encrypt
      * @return false on success, true on error
      */
     public synchronized boolean doEncode(packHolder pck) {
-//////////////////////////////////
+        pck.msbPutD(0, rxMine);
+        pck.msbPutD(4, txMine);
+        pck.putSkip(size);
+        pck.merge2beg();
+        txMine++;
         return false;
     }
 
     /**
-     * decrypt one packet
+     * decode one packet
      *
      * @param pck packet to decrypt
      * @return false on success, true on error
      */
     public synchronized boolean doDecode(packHolder pck) {
-        //////////////////////////
+        rxMine++;
+        rxRem = pck.msbGetD(0);
+        txRem = pck.msbGetD(4);
+        pck.getSkip(size);
         return false;
     }
 
