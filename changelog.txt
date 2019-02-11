@@ -8630,3 +8630,9 @@ todo: command authorization with radius and tacacs
 no todo: macsec bad type in hex
 no todo: bgp safe-ebgp-policy to default to neighbor shutdown
 qc pass: loss detection
+---------------------------------- 2019-02-09 21:17:27
+todo: looking glass rfc8522
+---------------------------------- 2019-02-10 12:24:29
+no todo: mac rewrite on bridge interfaces
+no todo: test cases for router deaggr and router mobile
+todo: test cases for router deaggr and router mobile, bridge-macrewrite

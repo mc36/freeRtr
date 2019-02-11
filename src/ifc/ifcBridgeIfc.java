@@ -1,6 +1,7 @@
 package ifc;
 
 import addr.addrIP;
+import addr.addrMac;
 import ip.ipIfc4;
 import ip.ipIfc6;
 import java.util.Comparator;
@@ -57,6 +58,11 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
      * time of last stp event
      */
     public long stpTime;
+
+    /**
+     * mac rewriter
+     */
+    public addrMac macRewrite;
 
     /**
      * ipv4 ingress acl
@@ -160,6 +166,9 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
         if (stated != state.states.up) {
             cntr.drop(pck, counter.reasons.notUp);
             return;
+        }
+        if (macRewrite != null) {
+            pck.ETHsrc.setAddr(macRewrite);
         }
         if ((pck.ETHtype == ipIfc4.type) && (filter4out != null)) {
             pck.getSkip(2);

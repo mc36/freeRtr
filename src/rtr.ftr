@@ -1539,8 +1539,8 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-todo: test cases for router deaggr and router mobile
-todo: mac rewrite on bridge interfaces
+todo: test cases for router deaggr and router mobile, bridge-macrewrite
+todo: looking glass rfc8522
 todo: command authorization with local
 todo: reapplying the same address to interface as noop
 todo: reapplying the same vrf to interface as noop

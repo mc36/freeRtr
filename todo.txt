@@ -1,5 +1,5 @@
-test cases for router deaggr and router mobile
-mac rewrite on bridge interfaces
+test cases for router deaggr and router mobile, bridge-macrewrite
+looking glass rfc8522
 command authorization with local
 reapplying the same address to interface as noop
 reapplying the same vrf to interface as noop
