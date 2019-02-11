@@ -22,6 +22,7 @@ qc pass: bridge with spantree
 qc pass: bridged ethernet over bridge
 qc pass: bridge split horizon
 qc pass: bridge mac learning
+qc pass: bridged mac rewrite
 qc pass: ppp over bstun
 qc pass: bundle of ethernet port
 qc pass: bundle of serial port
@@ -1493,6 +1494,8 @@ qc pass: redistribution with everything
 qc pass: redistribution prefix withdraw
 qc pass: redistribution change in metric
 qc pass: redistribution prefix movement
+qc pass: redistribution with mobile
+qc pass: redistribution with deaggr
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist
@@ -1539,7 +1542,6 @@ qc pass: scheduler
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-todo: test cases for router deaggr and router mobile, bridge-macrewrite
 todo: looking glass rfc8522
 todo: command authorization with local
 todo: reapplying the same address to interface as noop

@@ -676,10 +676,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             if (ntry == null) {
                 return true;
             }
-            if (neg) {
-                rtr.routerAdvInter.del(ntry);
-            } else {
-                rtr.routerAdvInter.put(ntry);
+            try {
+                if (neg) {
+                    rtr.routerAdvInter.del(ntry);
+                } else {
+                    rtr.routerAdvInter.put(ntry);
+                }
+            } catch (Exception e) {
+                cmd.error("no such iface");
             }
             rtr.routerCreateComputed();
             return false;

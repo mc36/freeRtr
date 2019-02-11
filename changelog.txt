@@ -8636,3 +8636,8 @@ todo: looking glass rfc8522
 no todo: mac rewrite on bridge interfaces
 no todo: test cases for router deaggr and router mobile
 todo: test cases for router deaggr and router mobile, bridge-macrewrite
+---------------------------------- 2019-02-11 09:20:02
+no todo: test cases for router deaggr and router mobile, bridge-macrewrite
+qc pass: bridged mac rewrite
+qc pass: redistribution with mobile
+qc pass: redistribution with deaggr

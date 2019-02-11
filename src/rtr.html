@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v19.2.10-testing, done by cs@nop.<br/>
-tested: 2019-02-10 20:59:46, took 08:35:16 on 1541 cases, 0 failed, 1 traces, 20 retries<br/>
+release: freeRouter v19.2.11-testing, done by cs@nop.<br/>
+tested: 2019-02-11 18:03:33, took 08:43:30 on 1544 cases, 0 failed, 1 traces, 22 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -29,6 +29,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bridge11.tst">conn-bridge11.tst</a></td><td>0</td><td>bridged ethernet over bridge</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bridge12.tst">conn-bridge12.tst</a></td><td>0</td><td>bridge split horizon</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bridge13.tst">conn-bridge13.tst</a></td><td>0</td><td>bridge mac learning</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-bridge14.tst">conn-bridge14.tst</a></td><td>0</td><td>bridged mac rewrite</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bstun.tst">conn-bstun.tst</a></td><td>0</td><td>ppp over bstun</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bundle01.tst">conn-bundle01.tst</a></td><td>0</td><td>bundle of ethernet port</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bundle02.tst">conn-bundle02.tst</a></td><td>0</td><td>bundle of serial port</td><td>successfully</td><td>finished</td></tr>
@@ -1500,6 +1501,8 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist19.tst">rout-redist19.tst</a></td><td>0</td><td>redistribution prefix withdraw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist20.tst">rout-redist20.tst</a></td><td>0</td><td>redistribution change in metric</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist21.tst">rout-redist21.tst</a></td><td>0</td><td>redistribution prefix movement</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-redist22.tst">rout-redist22.tst</a></td><td>0</td><td>redistribution with mobile</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-redist23.tst">rout-redist23.tst</a></td><td>0</td><td>redistribution with deaggr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-rip01.tst">rout-rip01.tst</a></td><td>0</td><td>rip on one subnet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-rip02.tst">rout-rip02.tst</a></td><td>0</td><td>rip in chain</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-rip03.tst">rout-rip03.tst</a></td><td>0</td><td>rip ingress route filtering with prefixlist</td><td>successfully</td><td>finished</td></tr>

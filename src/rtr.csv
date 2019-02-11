@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v19.2.10-testing, done by cs@nop.;-;-
--;-;2019-02-10 20:59:46, took 08:35:16 on 1541 cases, 0 failed, 1 traces, 20 retries;-;-
+-;-;freeRouter v19.2.11-testing, done by cs@nop.;-;-
+-;-;2019-02-11 18:03:33, took 08:43:30 on 1544 cases, 0 failed, 1 traces, 22 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -26,6 +26,7 @@ conn-bridge10.tst;0;bridge with spantree;successfully;finished
 conn-bridge11.tst;0;bridged ethernet over bridge;successfully;finished
 conn-bridge12.tst;0;bridge split horizon;successfully;finished
 conn-bridge13.tst;0;bridge mac learning;successfully;finished
+conn-bridge14.tst;0;bridged mac rewrite;successfully;finished
 conn-bstun.tst;0;ppp over bstun;successfully;finished
 conn-bundle01.tst;0;bundle of ethernet port;successfully;finished
 conn-bundle02.tst;0;bundle of serial port;successfully;finished
@@ -1497,6 +1498,8 @@ rout-redist18.tst;0;redistribution with everything;successfully;finished
 rout-redist19.tst;0;redistribution prefix withdraw;successfully;finished
 rout-redist20.tst;0;redistribution change in metric;successfully;finished
 rout-redist21.tst;0;redistribution prefix movement;successfully;finished
+rout-redist22.tst;0;redistribution with mobile;successfully;finished
+rout-redist23.tst;0;redistribution with deaggr;successfully;finished
 rout-rip01.tst;0;rip on one subnet;successfully;finished
 rout-rip02.tst;0;rip in chain;successfully;finished
 rout-rip03.tst;0;rip ingress route filtering with prefixlist;successfully;finished
