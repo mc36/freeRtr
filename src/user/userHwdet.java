@@ -5,7 +5,9 @@ import addr.addrPrefix;
 import cfg.cfgInit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import tab.tabGen;
 import util.bits;
 import util.cmds;
 import util.version;
@@ -51,6 +53,10 @@ public class userHwdet {
     private String lstEth = "hwdet.eth";
 
     private String lstSer = "hwdet.ser";
+
+    private String lstMac = "hwdet.mac";
+
+    private tabGen<userHwdetIface> macLst = new tabGen<userHwdetIface>();
 
     private void addComment(String s) {
         starter.add("");
@@ -148,6 +154,53 @@ public class userHwdet {
         config.add("int eth" + crsNum + " eth - 127.0.0.1 " + p2 + " 127.0.0.1 " + p1);
     }
 
+    private void detectMacs(String fn) {
+        addComment("macs");
+        String iface = null;
+        String macadr = null;
+        List<String> res = bits.txt2buf(fn);
+        if (res == null) {
+            return;
+        }
+        for (int i = 0; i < res.size(); i++) {
+            String a = res.get(i).trim();
+            int o = a.indexOf(": flags=");
+            int p = a.indexOf("  Link encap:");
+            if (o >= 0) {
+                iface = a.substring(0, o);
+            }
+            if (p >= 0) {
+                iface = a.substring(0, p);
+            }
+            o = a.indexOf("HWaddr");
+            p = a.indexOf("ether");
+            if (o >= 0) {
+                macadr = a.substring(o + 6, a.length());
+            }
+            if (p >= 0) {
+                try {
+                    macadr = a.substring(p + 5, a.indexOf("txqueue"));
+                } catch (Exception e) {
+                }
+            }
+            if (iface == null) {
+                continue;
+            }
+            if (macadr == null) {
+                continue;
+            }
+            userHwdetIface ntry = new userHwdetIface();
+            ntry.name = iface.trim();
+            ntry.mac = macadr.trim();
+            macLst.add(ntry);
+            iface = null;
+            macadr = null;
+        }
+        for (int i = 0; i < macLst.size(); i++) {
+            starter.add("# " + macLst.get(i) + " #");
+        }
+    }
+
     private void detectIfaces(String fn) {
         addComment("interfaces");
         final String unneeded = "/lo/dummy0/";
@@ -169,7 +222,14 @@ public class userHwdet {
             if (unneeded.indexOf("/" + s.toLowerCase() + "/") >= 0) {
                 continue;
             }
-            createIface(s, "-");
+            userHwdetIface ntry = new userHwdetIface();
+            ntry.name = s.trim();
+            ntry = macLst.find(ntry);
+            if (ntry == null) {
+                createIface(s, "-");
+            } else {
+                createIface(s, ntry.mac);
+            }
         }
     }
 
@@ -273,6 +333,10 @@ public class userHwdet {
                 lstSer = cmd.word();
                 continue;
             }
+            if (s.equals("mac")) {
+                lstMac = cmd.word();
+                continue;
+            }
             if (s.equals("tuntap")) {
                 tuntap = cmd.word();
                 continue;
@@ -337,6 +401,7 @@ public class userHwdet {
         starter.add("#modprobe -r kvm_intel");
         starter.add("#modprobe kvm_intel nested=1");
         starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
+        detectMacs(path + lstMac);
         detectIfaces(path + lstEth);
         detectCrosses(cross);
         detectTuntap(tuntap);
@@ -364,7 +429,23 @@ public class userHwdet {
         starter.add("echo 0 > /proc/sys/net/ipv6/conf/tap20001/disable_ipv6");
         bits.buf2txt(true, config, path + "rtr-" + cfgInit.hwCfgEnd);
         bits.buf2txt(true, starter, path + prefix + "all.sh");
-        cmd.error("iface=" + ifcNum + " line=" + linNum + " cross=" + crsNum % 100 + " tuntap=" + tapNum % 100 + " mem=" + mem);
+        cmd.error("iface=" + ifcNum + " macs=" + macLst.size() + " line=" + linNum + " cross=" + crsNum % 100 + " tuntap=" + tapNum % 100 + " mem=" + mem);
+    }
+
+}
+
+class userHwdetIface implements Comparator<userHwdetIface> {
+
+    public String name = "";
+
+    public String mac = "";
+
+    public int compare(userHwdetIface t, userHwdetIface t1) {
+        return t.name.compareTo(t1.name);
+    }
+
+    public String toString() {
+        return name + " " + mac;
     }
 
 }
