@@ -57,18 +57,16 @@ import pack.packDnsRec;
 import pack.packHolder;
 import pack.packTls;
 import pipe.pipeLine;
-import pipe.pipeProgress;
 import pipe.pipeSide;
-import pipe.pipeTerm;
 import pipe.pipeWindow;
 import sec.secSsh;
 import sec.secTls;
-import sec.secWebsock;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import util.bits;
 import util.cmds;
 import util.extMrkLng;
+import util.jasOn;
 import util.logger;
 import util.uniResLoc;
 
@@ -197,6 +195,13 @@ public class userTest {
             cmd.error("orig: " + xml.orig);
             cmd.error("done: " + xml.toXMLstr());
             doShow(xml.show());
+            return null;
+        }
+        if (a.equals("json")) {
+            jasOn json = jasOn.parseOne(cmd.getRemaining());
+            cmd.error("orig: " + json.orig);
+            cmd.error("done: " + json.toJSONstr());
+            doShow(json.show());
             return null;
         }
         if (a.equals("url")) {

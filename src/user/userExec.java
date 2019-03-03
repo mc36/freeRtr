@@ -1173,6 +1173,8 @@ public class userExec {
         hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    xml                     decode xml");
         hl.add("3 3,.      <str>                 parameter");
+        hl.add("2 3,.    json                    decode json");
+        hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    addr                    decode address");
         hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    prefix                  decode prefix");
