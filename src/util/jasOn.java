@@ -145,9 +145,15 @@ public class jasOn {
     public String toJSONstr() {
         List<String> lst = toJSONlst();
         String res = "";
+        jasOnEntry old = new jasOnEntry();
         for (int i = 0; i < lst.size(); i++) {
-            res += "|" + bits.trimB(lst.get(i));
+            jasOnEntry ntry = data.get(i);
+            res += bits.padEnd("", ntry.level - old.level, "{");
+            res += bits.padEnd("", old.level - ntry.level, "}");
+            res += "\"" + ntry.value + "\"";
+            old = ntry;
         }
+        res += bits.padEnd("", old.level, "}");
         return res;
     }
 
