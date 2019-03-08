@@ -2,11 +2,16 @@ package clnt;
 
 import addr.addrIP;
 import cfg.cfgAll;
+import pipe.pipeLine;
 import pipe.pipeSide;
+import pipe.pipeConnect;
 import serv.servGeneric;
 import serv.servIrc;
+import user.userExec;
+import user.userReader;
 import user.userTerminal;
 import util.bits;
+import util.cmds;
 import util.logger;
 
 /**
@@ -115,6 +120,7 @@ public class clntIrc implements Runnable {
         pipe.linePut("CAP LS");
         pipe.linePut("NICK " + cfgAll.hostName);
         pipe.linePut("CAP END");
+        pipe.linePut("JOIN " + chanName);
         logger.warn("neighbor " + hostName + " up");
         int cnt = 0;
         for (;;) {
@@ -126,8 +132,12 @@ public class clntIrc implements Runnable {
                 break;
             }
             int i = pipe.ready2rx();
+            String cmd = "";
             if (i > 0) {
-                pipe.nonBlockSkip(i);
+                cmd = pipe.lineGet(0x11);
+            }
+            if (cmd.length() > 0) {
+                doCmd(cmd);
             }
             cnt = (cnt + 1) % 30;
             if (cnt == 0) {
@@ -135,6 +145,51 @@ public class clntIrc implements Runnable {
             }
         }
         logger.warn("neighbor " + hostName + " down");
+    }
+
+    private void doCmd(String cmd) {
+        cmds c = new cmds("irc", cmd);
+        c.word();
+        c.word();
+        c.word();
+        pipeLine pipE = new pipeLine(32768, false);
+        pipeSide pip = pipE.getSide();
+        userReader rdr = new userReader(pip, 1023);
+        rdr.height = 0;
+        userExec exe = new userExec(pip, rdr);
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        pip.lineRx = pipeSide.modTyp.modeCRtryLF;
+        pip.timeout = 120000;
+        cmd = c.getRemaining();
+        if (cmd.length() < 1) {
+            return;
+        }
+        cmd = cmd.substring(1, cmd.length());
+        String s = exe.repairCommand(cmd);
+        if (s.length() < 1) {
+            return;
+        }
+        try {
+            exe.executeCommand(s);
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        pip = pipE.getSide();
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        pip.lineRx = pipeSide.modTyp.modeCRtryLF;
+        pip.timeout = 1000;
+        pip.setClose();
+        for (;;) {
+            if (pip.ready2rx() < 1) {
+                break;
+            }
+            String a = pip.lineGet(1);
+            if (a.length() < 1) {
+                continue;
+            }
+            byte[] buf = str2lin("PRIVMSG " + chanName + " :\"" + a + "\"");
+            pipe.blockingPut(buf, 0, buf.length);
+        }
     }
 
 }
