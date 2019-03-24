@@ -277,7 +277,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         if ((typ & 0x8) != 0) {
             s += " time=" + (time - bits.getTime());
         }
-        return s.trim();
+        return s.trim() + " ending=true";
     }
 
     /**
@@ -325,6 +325,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             }
             String s = a.substring(i + 1, a.length()).trim();
             a = a.substring(0, i).trim().toLowerCase();
+            if (a.equals("ending")) {
+                return false;
+            }
             if (a.equals("rtrid")) {
                 if (rtrId.fromString(s)) {
                     return true;
