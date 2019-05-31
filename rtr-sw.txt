@@ -851,6 +851,11 @@ server rfb vnc
  vrf v1
  exit
 !
+server p4lang a
+ export-vrf v5
+ vrf v1
+ exit
+!
 server http web
  access-log
  access-total 128

@@ -78,6 +78,7 @@ import serv.servMplsUdp;
 import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
+import serv.servP4lang;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
 import serv.servVoice;
@@ -594,6 +595,7 @@ public class cfgInit implements Runnable {
         servNrpe.defaultF = createFilter(servNrpe.defaultL, srvdefsF);
         servCharGen.defaultF = createFilter(servCharGen.defaultL, srvdefsF);
         servOpenflow.defaultF = createFilter(servOpenflow.defaultL, srvdefsF);
+        servP4lang.defaultF = createFilter(servP4lang.defaultL, srvdefsF);
         servDaytime.defaultF = createFilter(servDaytime.defaultL, srvdefsF);
         servDcp.defaultF = createFilter(servDcp.defaultL, srvdefsF);
         servIrc.defaultF = createFilter(servIrc.defaultL, srvdefsF);

@@ -77,6 +77,7 @@ import serv.servMplsUdp;
 import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
+import serv.servP4lang;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
 import serv.servVoice;
@@ -336,6 +337,11 @@ public class cfgAll {
      * openflow daemons
      */
     public static servGenList<servOpenflow> dmnOpenflow = new servGenList<servOpenflow>();
+
+    /**
+     * p4lang daemons
+     */
+    public static servGenList<servP4lang> dmnP4lang = new servGenList<servP4lang>();
 
     /**
      * forwarder daemons
@@ -3069,6 +3075,7 @@ public class cfgAll {
         dmnUpnpFwd.getShRun(l, filter);
         dmnUpnpHub.getShRun(l, filter);
         dmnOpenflow.getShRun(l, filter);
+        dmnP4lang.getShRun(l, filter);
         dmnForwarder.getShRun(l, filter);
         dmnSyslog.getShRun(l, filter);
         dmnLoadBalancer.getShRun(l, filter);

@@ -112,6 +112,7 @@ import serv.servMplsUdp;
 import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
+import serv.servP4lang;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
 import serv.servVoice;
@@ -589,6 +590,8 @@ public class userConfig {
         l.add("2  3    upnphub                      configure an upnp hub server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    openflow                     configure an openflow server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    p4lang                       configure an p4lang server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    quote                        configure a quote server");
         l.add("3  .      <name>                     name of server");
@@ -1112,6 +1115,10 @@ public class userConfig {
             }
             if (a.equals("openflow")) {
                 daemonMake(new servOpenflow(), cfgAll.dmnOpenflow);
+                return;
+            }
+            if (a.equals("p4lang")) {
+                daemonMake(new servP4lang(), cfgAll.dmnP4lang);
                 return;
             }
             if (a.equals("forwarder")) {
@@ -1870,6 +1877,10 @@ public class userConfig {
             }
             if (a.equals("openflow")) {
                 daemonErase(new servOpenflow(), cfgAll.dmnOpenflow);
+                return;
+            }
+            if (a.equals("p4lang")) {
+                daemonErase(new servP4lang(), cfgAll.dmnP4lang);
                 return;
             }
             if (a.equals("forwarder")) {
