@@ -164,6 +164,11 @@ public class debugger {
     public static boolean servOpenflowTraf = false;
 
     /**
+     * servP4lang traffic
+     */
+    public static boolean servP4langTraf = false;
+
+    /**
      * servModem traffic
      */
     public static boolean servModemTraf = false;
@@ -882,6 +887,7 @@ public class debugger {
         h.add("3 .        nrpe              nagios remote plugin");
         h.add("3 .        dcp               direct connect protocol");
         h.add("3 .        openflow          openflow protocol");
+        h.add("3 .        p4lang            p4lang protocol");
         h.add("3 .        snmp              simple network management protocol");
         h.add("3 .        iscsi             iscsi protocol");
         h.add("3 .        rfb               remote frame buffer protocol");
@@ -1202,6 +1208,10 @@ public class debugger {
             }
             if (s.equals("openflow")) {
                 servOpenflowTraf = v;
+                return false;
+            }
+            if (s.equals("p4lang")) {
+                servP4langTraf = v;
                 return false;
             }
             if (s.equals("modem")) {

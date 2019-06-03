@@ -16,6 +16,7 @@ import tab.tabRouteEntry;
 import user.userFilter;
 import user.userHelping;
 import util.cmds;
+import util.debugger;
 import util.logger;
 import util.notifier;
 
@@ -164,7 +165,9 @@ public class servP4lang extends servGeneric implements prtServS, Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             a = "simple_switch_CLI --thrift-port 9090 table_add " + tab + " " + act + " " + a + " " + ntry.nextHop;
-            logger.debug(a);
+            if (debugger.servP4langTraf) {
+                logger.debug(a);
+            }
             pipeShell.exec(pipeDiscard.needAny(null), a, "", true, true);
         }
     }
