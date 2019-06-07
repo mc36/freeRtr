@@ -1,8 +1,10 @@
 package serv;
 
+import java.util.Comparator;
 import addr.addrIP;
 import addr.addrPrefix;
 import cfg.cfgAll;
+import cfg.cfgIfc;
 import cfg.cfgVrf;
 import java.util.List;
 import pipe.pipeDiscard;
@@ -19,6 +21,7 @@ import util.cmds;
 import util.debugger;
 import util.logger;
 import util.notifier;
+import util.bits;
 
 /**
  * p4lang
@@ -41,6 +44,11 @@ public class servP4lang extends servGeneric implements prtServS, Runnable {
      * exported vrf
      */
     public cfgVrf expVrf;
+
+    /**
+     * exported interfaces
+     */
+    public tabGen<servP4langIfc1> expIfc = new tabGen<servP4langIfc1>();
 
     private boolean need2run;
 
@@ -70,6 +78,10 @@ public class servP4lang extends servGeneric implements prtServS, Runnable {
         } else {
             l.add(beg + "export-vrf " + expVrf.name);
         }
+        for (int i = 0; i < expIfc.size(); i++) {
+            servP4langIfc1 ntry = expIfc.get(i);
+            l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id);
+        }
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -85,6 +97,19 @@ public class servP4lang extends servGeneric implements prtServS, Runnable {
             notif.wakeup();
             return false;
         }
+        if (s.equals("export-port")) {
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return false;
+            }
+            servP4langIfc1 ntry = new servP4langIfc1();
+            ntry.id = bits.str2num(cmd.word());
+            ntry.ifc = ifc;
+            expIfc.put(ntry);
+            notif.wakeup();
+            return false;
+        }
         if (!s.equals("no")) {
             return true;
         }
@@ -94,12 +119,28 @@ public class servP4lang extends servGeneric implements prtServS, Runnable {
             notif.wakeup();
             return false;
         }
+        if (s.equals("export-port")) {
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return false;
+            }
+            servP4langIfc1 ntry = new servP4langIfc1();
+            ntry.id = bits.str2num(cmd.word());
+            ntry.ifc = ifc;
+            ntry = expIfc.del(ntry);
+            notif.wakeup();
+            return false;
+        }
         return true;
     }
 
     public void srvHelp(userHelping l) {
         l.add("1 2  export-vrf                specify vrf to export");
         l.add("2 .    <name>                  vrf name");
+        l.add("1 2  export-port               specify port to export");
+        l.add("2 3    <name>                  interface name");
+        l.add("3 .      <num>                 openflow port number");
     }
 
     public String srvName() {
@@ -170,6 +211,24 @@ public class servP4lang extends servGeneric implements prtServS, Runnable {
             }
             pipeShell.exec(pipeDiscard.needAny(null), a, "", true, true);
         }
+    }
+
+}
+
+class servP4langIfc1 implements Comparator<servP4langIfc1> {
+
+    public int id;
+
+    public cfgIfc ifc;
+
+    public int compare(servP4langIfc1 o1, servP4langIfc1 o2) {
+        if (o1.id < o2.id) {
+            return -1;
+        }
+        if (o1.id > o2.id) {
+            return +1;
+        }
+        return 0;
     }
 
 }
