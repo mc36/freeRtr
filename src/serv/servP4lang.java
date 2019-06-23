@@ -205,7 +205,7 @@ public class servP4lang extends servGeneric implements prtServS, Runnable {
             } else {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
-            a = "simple_switch_CLI --thrift-port 9090 table_add " + tab + " " + act + " " + a + " " + ntry.nextHop;
+            a = "simple_switch_CLI --thrift-port 9090 table_add " + tab + " " + act + " " + a + " => " + ntry.nextHop;
             if (debugger.servP4langTraf) {
                 logger.debug(a);
             }

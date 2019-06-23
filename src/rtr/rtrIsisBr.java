@@ -31,13 +31,14 @@ public class rtrIsisBr {
         packHolder pck = new packHolder(true, true);
         typLenVal tlv = rtrIsis.getTlv();
         tlv.valDat[0] = 0; // algorithm
-        tlv.valDat[1] = 0; // subdomain
-        bits.msbPutW(tlv.valDat, 2, idx); // bfr id
-        tlv.valDat[4] = 1; // type: mpls encap
-        tlv.valDat[5] = 4; // length
-        bits.msbPutD(tlv.valDat, 6, lower.bierLab[0].getValue() | (tabLabelBier.num2bsl(lower.bierLen) << 20)); // bsl, label
-        tlv.valDat[6] = (byte) lower.bierLab.length; // label range
-        tlv.valSiz = 10;
+        tlv.valDat[1] = 0; // ipa
+        tlv.valDat[2] = 0; // subdomain
+        bits.msbPutW(tlv.valDat, 3, idx); // bfr id
+        tlv.valDat[5] = 1; // type: mpls encap
+        tlv.valDat[6] = 4; // length
+        bits.msbPutD(tlv.valDat, 7, lower.bierLab[0].getValue() | (tabLabelBier.num2bsl(lower.bierLen) << 20)); // bsl, label
+        tlv.valDat[7] = (byte) lower.bierLab.length; // label range
+        tlv.valSiz = 11;
         tlv.valTyp = 32;
         tlv.putThis(pck);
         pck.merge2beg();
@@ -54,14 +55,14 @@ public class rtrIsisBr {
         if (tlv.valTyp != 32) {
             return;
         }
-        prf.bierIdx = bits.msbGetW(tlv.valDat, 2); // bfr id
-        if (tlv.valDat[4] != 1) { // type
+        prf.bierIdx = bits.msbGetW(tlv.valDat, 3); // bfr id
+        if (tlv.valDat[5] != 1) { // type
             return;
         }
-        if (tlv.valDat[5] != 4) { // length
+        if (tlv.valDat[6] != 4) { // length
             return;
         }
-        int i = bits.msbGetD(tlv.valDat, 6);
+        int i = bits.msbGetD(tlv.valDat, 7);
         prf.bierBeg = i & 0xfffff; // label
         prf.bierHdr = (i >>> 20) & 0xf; // bsl
     }
