@@ -1009,6 +1009,32 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @param prf entry to dump
      * @return converted
      */
+    public static String toShSrRoute(tabRouteEntry<addrIP> prf) {
+        if (prf.segrouIdx < 1) {
+            return null;
+        }
+        return addrPrefix.ip2str(prf.prefix) + "|" + prf.segrouIdx + "|" + prf.segrouBeg + "|" + prf.segrouOld;
+    }
+
+    /**
+     * convert to route format
+     *
+     * @param prf entry to dump
+     * @return converted
+     */
+    public static String toShBrRoute(tabRouteEntry<addrIP> prf) {
+        if (prf.bierIdx < 1) {
+            return null;
+        }
+        return addrPrefix.ip2str(prf.prefix) + "|" + prf.bierIdx + "|" + prf.bierBeg + "|" + prf.bierOld + "|" + prf.bierHdr + "-" + tabLabelBier.bsl2num(prf.bierHdr);
+    }
+
+    /**
+     * convert to route format
+     *
+     * @param prf entry to dump
+     * @return converted
+     */
     public static String toShRoute(tabRouteEntry<addrIP> prf) {
         String s = "";
         if (prf.rouTab != null) {

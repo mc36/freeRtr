@@ -1082,6 +1082,14 @@ public class userShow {
                 doShowRouteU(4);
                 return null;
             }
+            if (a.equals("segrout")) {
+                doShowRouteSR(4);
+                return null;
+            }
+            if (a.equals("bier")) {
+                doShowRouteBR(4);
+                return null;
+            }
             if (a.equals("rpf")) {
                 doShowRouteM(4);
                 return null;
@@ -1310,6 +1318,14 @@ public class userShow {
             }
             if (a.equals("route")) {
                 doShowRouteU(6);
+                return null;
+            }
+            if (a.equals("segrout")) {
+                doShowRouteSR(6);
+                return null;
+            }
+            if (a.equals("bier")) {
+                doShowRouteBR(6);
                 return null;
             }
             if (a.equals("rpf")) {
@@ -2820,6 +2836,22 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualU, 1);
     }
 
+    private void doShowRouteSR(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        doShowRoutes(fwd, fwd.actualU, 7);
+    }
+
+    private void doShowRouteBR(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        doShowRoutes(fwd, fwd.actualU, 8);
+    }
+
     private void doShowRouteM(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -2881,6 +2913,12 @@ public class userShow {
             case 6:
                 l = new userFormat("|", "prefix|time|traffic");
                 break;
+            case 7:
+                l = new userFormat("|", "prefix|index|base|oldbase");
+                break;
+            case 8:
+                l = new userFormat("|", "prefix|index|base|oldbase|size");
+                break;
             default:
                 return;
         }
@@ -2911,6 +2949,20 @@ public class userShow {
                     break;
                 case 6:
                     String a = tabRouteEntry.toShCntr(prf);
+                    if (a == null) {
+                        continue;
+                    }
+                    l.add(a);
+                    break;
+                case 7:
+                    a = tabRouteEntry.toShSrRoute(prf);
+                    if (a == null) {
+                        continue;
+                    }
+                    l.add(a);
+                    break;
+                case 8:
+                    a = tabRouteEntry.toShBrRoute(prf);
                     if (a == null) {
                         continue;
                     }
