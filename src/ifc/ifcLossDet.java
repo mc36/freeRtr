@@ -16,7 +16,9 @@ public class ifcLossDet {
      */
     public final static int size = 8;
 
-    private addrMac myaddr;
+    private addrMac myaddr = addrMac.getRandom();
+
+    private addrMac bcast = addrMac.getBroadcast();
 
     private int rxMine;
 
@@ -75,6 +77,9 @@ public class ifcLossDet {
      * @return false on success, true on error
      */
     public synchronized boolean doDecode(packHolder pck) {
+        if (pck.dataSize() < size) {
+            return true;
+        }
         rxMine++;
         rxRem = pck.msbGetD(0);
         txRem = pck.msbGetD(4);
@@ -89,6 +94,11 @@ public class ifcLossDet {
      */
     public synchronized packHolder doSync() {
         packHolder pck = new packHolder(true, true);
+        pck.msbPutW(0, -1);
+        pck.putSkip(2);
+        pck.merge2beg();
+        pck.ETHsrc.setAddr(myaddr);
+        pck.ETHtrg.setAddr(bcast);
         doEncode(pck);
         return pck;
     }

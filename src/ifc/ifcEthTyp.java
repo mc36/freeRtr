@@ -374,6 +374,9 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 packHolder pck = lossDet.doSync();
                 if (pck != null) {
                     pktAccount(pck);
+                    if (macSec != null) {
+                        macSec.doEncrypt(pck);
+                    }
                     lower.sendPack(pck);
                 }
             }

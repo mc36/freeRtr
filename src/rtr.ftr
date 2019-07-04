@@ -1551,12 +1551,10 @@ todo: access-class should permit again with objectgroups
 todo: http conditional redirect with route-map, prefix-list or route-policy
 todo: bridge security from dhcp, slaac, whatever server
 todo: padup ethertype config option
-todo: p4lang
 todo: lsrp, ospf, isis must list lsas/lsps as reachable or not
 todo: configurable replay window under ipsec profile for macsec
 todo: lossdet with class util.dampening
 todo: hwdet default to binary in installation, rework rtr.bin support to binjar if needed
-todo: hwdet detect mac addresses
 todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
 todo: traceroute to query bgp forasn
 todo: traceroute to display mpls labels
@@ -1566,7 +1564,6 @@ todo: irc server should ping periodically the clients
 todo: call-home through irc with configurable proxyprofile, read-write access
 todo: http server should honor no in the beginning for host commands
 todo: http host upload optional different authentication
-todo: access-* under http host
 todo: tls1.3
 todo: http2.0
 todo: more configurable defaults to lines: tablemode, timestamps, configure up them on main rtrs

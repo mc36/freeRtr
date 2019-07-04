@@ -8641,3 +8641,7 @@ no todo: test cases for router deaggr and router mobile, bridge-macrewrite
 qc pass: bridged mac rewrite
 qc pass: redistribution with mobile
 qc pass: redistribution with deaggr
+---------------------------------- 2019-06-29 23:15:41
+no todo: access-* under http host
+no todo: hwdet detect mac addresses
+no todo: p4lang
