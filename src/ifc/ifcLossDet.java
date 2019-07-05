@@ -3,6 +3,8 @@ package ifc;
 import addr.addrMac;
 import pack.packHolder;
 import user.userFormat;
+import util.bits;
+import util.logger;
 
 /**
  * packet loss detector
@@ -16,6 +18,18 @@ public class ifcLossDet {
      */
     public final static int size = 8;
 
+    /**
+     * lost packets
+     */
+    public int packets;
+
+    /**
+     * time for block
+     */
+    public int blocking;
+
+    private long blocked;
+
     private addrMac myaddr = addrMac.getRandom();
 
     private addrMac bcast = addrMac.getBroadcast();
@@ -28,8 +42,21 @@ public class ifcLossDet {
 
     private int txRem;
 
+    private int rxMineO;
+
+    private int txMineO;
+
+    private int rxRemO;
+
+    private int txRemO;
+
+    private ifcEthTyp upper;
+
     public String toString() {
-        return "";
+        if (packets < 1) {
+            return "";
+        }
+        return packets + " " + blocking;
     }
 
     /**
@@ -38,6 +65,7 @@ public class ifcLossDet {
      * @param eth ethertype to use
      */
     public void doInit(ifcEthTyp eth) {
+        upper = eth;
         try {
             myaddr = (addrMac) eth.getHwAddr().copyBytes();
         } catch (Exception e) {
@@ -84,7 +112,7 @@ public class ifcLossDet {
         rxRem = pck.msbGetD(0);
         txRem = pck.msbGetD(4);
         pck.getSkip(size);
-        return false;
+        return blocked > 0;
     }
 
     /**
@@ -100,6 +128,31 @@ public class ifcLossDet {
         pck.ETHsrc.setAddr(myaddr);
         pck.ETHtrg.setAddr(bcast);
         doEncode(pck);
+        long tim = bits.getTime();
+        if (packets > 0) {
+            int i = rxMine - rxMineO;
+            int o = txRem - txRemO;
+            if ((o - i) > packets) {
+                logger.info("blocking " + upper + " because of rx loss");
+                blocked = tim;
+            }
+            i = rxRem - rxRemO;
+            o = txMine - txMineO;
+            if ((o - i) > packets) {
+                logger.info("blocking " + upper + " because of tx loss");
+                blocked = tim;
+            }
+        }
+        if (blocked > 0) {
+            if ((tim - blocked) > blocking) {
+                logger.info("unblocking " + upper);
+                blocked = 0;
+            }
+        }
+        rxMineO = rxMine;
+        txMineO = txMine;
+        rxRemO = rxRem;
+        txRemO = txRem;
         return pck;
     }
 
