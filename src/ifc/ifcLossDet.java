@@ -49,6 +49,10 @@ public class ifcLossDet {
     private int rxRemO;
 
     private int txRemO;
+    
+    private int rxBlock;
+    
+    private int txBlock;
 
     private ifcEthTyp upper;
 
@@ -81,6 +85,7 @@ public class ifcLossDet {
     public void getShow(userFormat l) {
         l.add("local|" + txMine + "|" + rxMine);
         l.add("remote|" + txRem + "|" + rxRem);
+        l.add("block|" + txBlock + "|" + rxBlock);
     }
 
     /**
@@ -134,12 +139,14 @@ public class ifcLossDet {
             int o = txRem - txRemO;
             if ((o - i) > packets) {
                 logger.info("blocking " + upper + " because of rx loss");
+                rxBlock++;
                 blocked = tim;
             }
             i = rxRem - rxRemO;
             o = txMine - txMineO;
             if ((o - i) > packets) {
                 logger.info("blocking " + upper + " because of tx loss");
+                txBlock++;
                 blocked = tim;
             }
         }
