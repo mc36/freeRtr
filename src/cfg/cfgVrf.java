@@ -64,12 +64,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     /**
      * route target import
      */
-    public long rtImp;
+    public List<Long> rtImp = new ArrayList<Long>();
 
     /**
      * route target export
      */
-    public long rtExp;
+    public List<Long> rtExp = new ArrayList<Long>();
 
     /**
      * ipx forwarder
@@ -282,8 +282,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public final static String defaultL[] = {
         "vrf definition .*! no description",
         "vrf definition .*! rd 0:0",
-        "vrf definition .*! rt-import 0:0",
-        "vrf definition .*! rt-export 0:0",
+        "vrf definition .*! rt-import",
+        "vrf definition .*! rt-export",
         "vrf definition .*! label-mode per-vrf",
         "vrf definition .*! propagate-ttl",
         "vrf definition .*! no mdt4",
@@ -521,9 +521,17 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("vrf definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         l.add(cmds.tabulator + "rd " + tabRtrmapN.rd2string(rd));
-        l.add(cmds.tabulator + "rt-import " + tabRtrmapN.rd2string(rtImp));
-        l.add(cmds.tabulator + "rt-export " + tabRtrmapN.rd2string(rtExp));
-        String s = "unknown";
+        String s = "";
+        for (int i = 0; i < rtImp.size(); i++) {
+            s += " " + tabRtrmapN.rd2string(rtImp.get(i));
+        }
+        l.add(cmds.tabulator + "rt-import" + s);
+        s = "";
+        for (int i = 0; i < rtExp.size(); i++) {
+            s += " " + tabRtrmapN.rd2string(rtExp.get(i));
+        }
+        l.add(cmds.tabulator + "rt-export" + s);
+        s = "unknown";
         switch (labelMode) {
             case all:
                 s = "per-prefix";
@@ -615,12 +623,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("2 .    <name>            set new name of vrf");
         l.add("1 2  rd                  specify route distinguisher");
         l.add("2 .    <rd>              rd in ASnum:IDnum format");
-        l.add("1 2  rt-import           specify route target import");
-        l.add("2 .    <rt>              rt in ASnum:IDnum format");
-        l.add("1 2  rt-export           specify route target export");
-        l.add("2 .    <rt>              rt in ASnum:IDnum format");
         l.add("1 2  rt-both             specify route target");
-        l.add("2 .    <rt>              rt in ASnum:IDnum format");
+        l.add("2 2,.  <rt>              rt in ASnum:IDnum format");
+        l.add("1 2  rt-import           specify route target import");
+        l.add("2 2,.  <rt>              rt in ASnum:IDnum format");
+        l.add("1 2  rt-export           specify route target export");
+        l.add("2 2,.  <rt>              rt in ASnum:IDnum format");
         l.add("1 2  label4filter        specify ipv4 label filter");
         l.add("2 .    <name>            name of prefix list");
         l.add("1 2  label6filter        specify ipv6 label filter");
@@ -694,16 +702,38 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("rt-import")) {
-            rtImp = tabRtrmapN.string2rd(cmd.word());
+            rtImp = new ArrayList<Long>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                rtImp.add(tabRtrmapN.string2rd(a));
+            }
             return;
         }
         if (a.equals("rt-export")) {
-            rtExp = tabRtrmapN.string2rd(cmd.word());
+            rtExp = new ArrayList<Long>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                rtExp.add(tabRtrmapN.string2rd(a));
+            }
             return;
         }
         if (a.equals("rt-both")) {
-            rtExp = tabRtrmapN.string2rd(cmd.word());
-            rtImp = rtExp;
+            rtImp = new ArrayList<Long>();
+            rtExp = new ArrayList<Long>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                rtImp.add(tabRtrmapN.string2rd(a));
+                rtExp.add(tabRtrmapN.string2rd(a));
+            }
             return;
         }
         if (a.equals("mdt4")) {
@@ -946,6 +976,19 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         a = cmd.word();
+        if (a.equals("rt-import")) {
+            rtImp = new ArrayList<Long>();
+            return;
+        }
+        if (a.equals("rt-export")) {
+            rtExp = new ArrayList<Long>();
+            return;
+        }
+        if (a.equals("rt-both")) {
+            rtImp = new ArrayList<Long>();
+            rtExp = new ArrayList<Long>();
+            return;
+        }
         if (a.equals("description")) {
             description = "";
             return;

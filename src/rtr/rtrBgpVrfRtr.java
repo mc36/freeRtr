@@ -109,7 +109,7 @@ public class rtrBgpVrfRtr extends ipRtr {
     public void routerOthersChanged() {
     }
 
-    private void doExportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, long rt) {
+    private void doExportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, List<Long> rt) {
         if (ntry == null) {
             return;
         }
@@ -121,7 +121,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.extComm = new ArrayList<Long>();
         }
         ntry.rouDst = vrf.rd;
-        ntry.extComm.add(rt);
+        ntry.extComm.addAll(rt);
         ntry.rouSrc = rtrBgpUtil.peerOriginate;
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, fwd.exportMap, fwd.exportPol, fwd.exportList);
     }
@@ -135,7 +135,10 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param nMvpn mvpn table to update
      */
     public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn) {
-        final long rt = tabRtrmapN.rt2comm(vrf.rtExp);
+        final List<Long> rt = new ArrayList<Long>();
+        for (int i = 0; i < vrf.rtExp.size(); i++) {
+            rt.add(tabRtrmapN.rt2comm(vrf.rtExp.get(i)));
+        }
         for (int i = 0; i < routerRedistedU.size(); i++) {
             doExportRoute(rtrBgpUtil.safiUnicast, routerRedistedU.get(i), nUni, rt);
         }
@@ -149,7 +152,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.extComm = new ArrayList<Long>();
             ntry.rouDst = vrf.rd;
-            ntry.extComm.add(rt);
+            ntry.extComm.addAll(rt);
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, ntry, other ^ (parent.afiUni == rtrBgpUtil.safiIp6uni), parent.localAs);
         }
         if (mvpn != null) {
@@ -177,20 +180,27 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.prefix.mask.fromBuf(buf, 48);
             ntry.extComm = new ArrayList<Long>();
             ntry.rouDst = vrf.rd;
-            ntry.extComm.add(rt);
+            ntry.extComm.addAll(rt);
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, other ? parent.afiVpoM : parent.afiVpnM, ntry, fwd.exportMap, fwd.exportPol, fwd.exportList);
         }
     }
 
-    private void doImportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, long rt) {
+    private void doImportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, List<Long> rt) {
         if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
             return;
         }
         if (ntry.extComm == null) {
             return;
         }
-        if (rtrBgpUtil.findLongList(ntry.extComm, rt) < 0) {
+        boolean needed = false;
+        for (int i = 0; i < rt.size(); i++) {
+            needed |= rtrBgpUtil.findLongList(ntry.extComm, rt.get(i)) >= 0;
+            if (needed) {
+                break;
+            }
+        }
+        if (!needed) {
             return;
         }
         ntry = ntry.copyBytes();
@@ -212,7 +222,10 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param cmpF flowspec table to read
      */
     public void doPeers(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
-        final long rt = tabRtrmapN.rt2comm(vrf.rtImp);
+        final List<Long> rt = new ArrayList<Long>();
+        for (int i = 0; i < vrf.rtImp.size(); i++) {
+            rt.add(tabRtrmapN.rt2comm(vrf.rtImp.get(i)));
+        }
         tabRoute<addrIP> tabU = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> tabM = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
