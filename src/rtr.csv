@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v19.7.11-testing, done by cs@nop.;-;-
--;-;2019-07-11 12:23:31, took 08:40:57 on 1544 cases, 0 failed, 0 traces, 15 retries;-;-
+-;-;freeRouter v19.7.12-testing, done by cs@nop.;-;-
+-;-;2019-07-12 09:51:20, took 08:55:13 on 1552 cases, 0 failed, 0 traces, 15 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1265,6 +1265,14 @@ rout-bgp335.tst;0;bgp interas csc vpn with asbr peering;successfully;finished
 rout-bgp336.tst;0;bgp interas csc vpn with rr peering;successfully;finished
 rout-bgp337.tst;0;bgp dual core vpn;successfully;finished
 rout-bgp338.tst;0;bgp dual core csc vpn;successfully;finished
+rout-bgp339.tst;0;bgp hub and spoke vpn multiple rt import;successfully;finished
+rout-bgp340.tst;0;bgp hub and spoke vpn multiple rt export;successfully;finished
+rout-bgp341.tst;0;bgp vpn with export list;successfully;finished
+rout-bgp342.tst;0;bgp vpn with import list;successfully;finished
+rout-bgp343.tst;0;bgp vpn with export map;successfully;finished
+rout-bgp344.tst;0;bgp vpn with import map;successfully;finished
+rout-bgp345.tst;0;bgp vpn with export policy;successfully;finished
+rout-bgp346.tst;0;bgp vpn with import policy;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished

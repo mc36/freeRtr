@@ -8645,3 +8645,12 @@ qc pass: redistribution with deaggr
 no todo: access-* under http host
 no todo: hwdet detect mac addresses
 no todo: p4lang
+---------------------------------- 2019-07-12 00:56:07
+qc pass: bgp hub and spoke vpn multiple rt import
+qc pass: bgp hub and spoke vpn multiple rt export
+qc pass: bgp vpn with export list
+qc pass: bgp vpn with import list
+qc pass: bgp vpn with export map
+qc pass: bgp vpn with import map
+qc pass: bgp vpn with export policy
+qc pass: bgp vpn with import policy

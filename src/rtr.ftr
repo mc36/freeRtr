@@ -1261,6 +1261,14 @@ qc pass: bgp interas csc vpn with asbr peering
 qc pass: bgp interas csc vpn with rr peering
 qc pass: bgp dual core vpn
 qc pass: bgp dual core csc vpn
+qc pass: bgp hub and spoke vpn multiple rt import
+qc pass: bgp hub and spoke vpn multiple rt export
+qc pass: bgp vpn with export list
+qc pass: bgp vpn with import list
+qc pass: bgp vpn with export map
+qc pass: bgp vpn with import map
+qc pass: bgp vpn with export policy
+qc pass: bgp vpn with import policy
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
