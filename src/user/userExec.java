@@ -286,6 +286,8 @@ public class userExec {
         hl.add("5 .            segrout           list of segment routing");
         hl.add("5 .            bier              list of bier");
         hl.add("5 .            software          list of software");
+        hl.add("5 6            zonefile          list of reverse zone");
+        hl.add("6 .              <name>          name of zone");
         hl.add("5 .            uptime            list of uptime");
         hl.add("5 6,.          database          list of database");
         hl.add("6 .              [addr]          entry to view");

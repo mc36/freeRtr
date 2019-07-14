@@ -129,6 +129,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public tabRoute<addrIP> network;
 
     /**
+     * advertised addresses
+     */
+    public tabGen<addrIP> address;
+
+    /**
      * advertised neighbors
      */
     public tabGen<rtrLsrpDataNeigh> neighbor;
@@ -271,6 +276,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         if ((typ & 0x800) != 0) {
             s += " toposum=" + topoSum;
         }
+        if ((typ & 0x1000) != 0) {
+            for (int i = 0; i < address.size(); i++) {
+                s += " address=" + address.get(i);
+            }
+        }
         if ((typ & 0x80) != 0) {
             s += " uptime=" + uptime;
         }
@@ -312,6 +322,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         int affinity = 0;
         int srlg = 0;
         int tag = 0;
+        address = new tabGen<addrIP>();
         network = new tabRoute<addrIP>("net");
         neighbor = new tabGen<rtrLsrpDataNeigh>();
         for (;;) {
@@ -428,6 +439,14 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             }
             if (a.equals("tag")) {
                 tag = bits.str2num(s);
+                continue;
+            }
+            if (a.equals("address")) {
+                addrIP adr = new addrIP();
+                if (adr.fromString(s)) {
+                    return true;
+                }
+                address.add(adr);
                 continue;
             }
             if (a.equals("network")) {

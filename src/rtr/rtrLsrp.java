@@ -16,6 +16,7 @@ import ip.ipRtr;
 import java.util.List;
 import prt.prtTcp;
 import prt.prtUdp;
+import pack.packDnsRec;
 import tab.tabGen;
 import tab.tabLabel;
 import tab.tabLabelBier;
@@ -372,6 +373,23 @@ public class rtrLsrp extends ipRtr implements Runnable {
     }
 
     /**
+     * show zonefile
+     *
+     * @param s domain
+     * @return zonefile
+     */
+    public userFormat showZoneFile(String s) {
+        userFormat l = new userFormat("|", "cmd|value|cmd|value");
+        for (int i = 0; i < database.size(); i++) {
+            rtrLsrpData ntry = database.get(i);
+            for (int o = 0; o < ntry.address.size(); o++) {
+                l.add("rr|" + packDnsRec.generateReverse(ntry.address.get(o)) + "|ptr|" + ntry.hostname + "." + s);
+            }
+        }
+        return l;
+    }
+
+    /**
      * show spf
      *
      * @return log of spf
@@ -450,6 +468,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
+            dat.address.add(ifc.iface.addr.copyBytes());
             if (ifc.suppressAddr) {
                 continue;
             }

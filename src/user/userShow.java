@@ -1454,6 +1454,10 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showDatabase(3));
             return;
         }
+        if (a.equals("zonefile")) {
+            rdr.putStrTab(r.lsrp.showZoneFile(cmd.word()));
+            return;
+        }
         if (a.equals("software")) {
             rdr.putStrTab(r.lsrp.showDatabase(4));
             return;
