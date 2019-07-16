@@ -511,9 +511,9 @@ class servDnsDoer implements Runnable {
             a += ".";
         }
         nam = a + zon.name;
-        packDnsRec rep = zon.findUser(nam, typ);
+        packDnsRec rep = zon.findUser(old, typ);
         if (rep == null) {
-            rep = zon.findUser(nam, packDnsRec.typeCNAME);
+            rep = zon.findUser(old, packDnsRec.typeCNAME);
         }
         if (rep == null) {
             rep = zon.findUser("*." + zon.name, typ);
