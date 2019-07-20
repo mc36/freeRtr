@@ -385,6 +385,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
             for (int o = 0; o < ntry.address.size(); o++) {
                 l.add("rr|" + packDnsRec.generateReverse(ntry.address.get(o)) + "|ptr|" + ntry.hostname + "." + s);
             }
+            for (int o = 0; o < ntry.network.size(); o++) {
+                l.add("rr|" + packDnsRec.generateReverse(ntry.network.get(o).prefix.network) + "|ptr|" + ntry.hostname + "." + s);
+            }
         }
         return l;
     }
