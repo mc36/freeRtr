@@ -115,6 +115,7 @@ public class rtrMobile extends ipRtr implements Runnable {
                 rou.rouTyp = rouTyp;
                 rou.protoNum = rtrNum;
                 rou.distance = distance;
+                rou.time = bits.getTime();
                 res.add(tabRoute.addType.better, rou, false, false);
             }
         }
