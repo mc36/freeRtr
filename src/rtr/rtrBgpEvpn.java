@@ -432,7 +432,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
             }
             switch (encap) {
                 case pbb:
-                    ntry.brdg = bridge.bridgeHed.newIface(false, false);
+                    ntry.brdg = bridge.bridgeHed.newIface(false, false, false);
                     ntry.setUpper(ntry.brdg);
                     break;
                 case vxlan:
@@ -442,12 +442,12 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                     ntry.vxlan.srcIfc = iface;
                     ntry.vxlan.inst = id;
                     ntry.vxlan.wildcard = true;
-                    ntry.brdg = bridge.bridgeHed.newIface(true, false);
+                    ntry.brdg = bridge.bridgeHed.newIface(false, true, false);
                     ntry.vxlan.setUpper(ntry.brdg);
                     ntry.vxlan.workStart();
                     break;
                 case cmac:
-                    ntry.brdg = bridge.bridgeHed.newIface(false, false);
+                    ntry.brdg = bridge.bridgeHed.newIface(false, false, false);
                     ntry.setUpper(ntry.brdg);
                     break;
             }

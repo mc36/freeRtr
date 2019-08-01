@@ -3,21 +3,17 @@ command authorization with local
 reapplying the same address to interface as noop
 reapplying the same vrf to interface as noop
 entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...
-access-class should permit again with objectgroups
 http conditional redirect with route-map, prefix-list or route-policy
 bridge security from dhcp, slaac, whatever server
 padup ethertype config option
 lsrp, ospf, isis must list lsas/lsps as reachable or not
 configurable replay window under ipsec profile for macsec
-lossdet with class util.dampening
 hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
-traceroute to query bgp forasn
+traceroute to query bgp for asn
 traceroute to display mpls labels
 client domain-name to resolve internally first
 client name-server multiple nodes
-irc server should ping periodically the clients
-call-home through irc with configurable proxyprofile, read-write access
 http server should honor no in the beginning for host commands
 http host upload optional different authentication
 tls1.3

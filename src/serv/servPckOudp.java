@@ -86,7 +86,7 @@ public class servPckOudp extends servGeneric implements prtServP {
             return ntry;
         }
         if (brdgIfc != null) {
-            ntry.brdgIfc = brdgIfc.bridgeHed.newIface(true, false);
+            ntry.brdgIfc = brdgIfc.bridgeHed.newIface(false, true, false);
             ntry.setUpper(ntry.brdgIfc);
             return ntry;
         }

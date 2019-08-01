@@ -209,7 +209,7 @@ class servEtherIpConn implements Runnable, Comparator<servEtherIpConn> {
 
     public void doStartup() {
         worker.setEndpoints(fwdCor, iface, peer);
-        brdgIfc = lower.brdgIfc.bridgeHed.newIface(true, false);
+        brdgIfc = lower.brdgIfc.bridgeHed.newIface(false, true, false);
         worker.setUpper(brdgIfc);
         new Thread(this).start();
     }

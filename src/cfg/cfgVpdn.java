@@ -957,7 +957,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer != null) {
                     l2tp3.setUpper(ifaceDialer.getEncapProto());
                 } else {
-                    brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
+                    brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                     l2tp3.setUpper(brdgIfc);
                 }
                 l2tp3.workStart();
@@ -1080,7 +1080,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer != null) {
                     pou.setUpper(ifaceDialer.getEncapProto());
                 } else {
-                    brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
+                    brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                     pou.setUpper(brdgIfc);
                 }
                 pou.workStart();
@@ -1166,7 +1166,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer != null) {
                     pwom.setUpper(ifaceDialer.getEncapProto());
                 } else {
-                    brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
+                    brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                     pwom.setUpper(brdgIfc);
                 }
                 pwom.workStart();
@@ -1181,7 +1181,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 erspan.srcIfc = proxy.srcIfc;
                 erspan.spnid = vcid;
                 erspan.vlnid = vcid;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 erspan.setUpper(brdgIfc);
                 erspan.workStart();
                 break;
@@ -1193,7 +1193,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 dlsw.target = target;
                 dlsw.vrf = proxy.vrf;
                 dlsw.srcIfc = proxy.srcIfc;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 dlsw.setUpper(brdgIfc);
                 dlsw.workStart();
                 break;
@@ -1205,7 +1205,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 etherip.target = target;
                 etherip.vrf = proxy.vrf;
                 etherip.srcIfc = proxy.srcIfc;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 etherip.setUpper(brdgIfc);
                 etherip.workStart();
                 break;
@@ -1218,7 +1218,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 uti.vrf = proxy.vrf;
                 uti.srcIfc = proxy.srcIfc;
                 uti.tunKey = vcid;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 uti.setUpper(brdgIfc);
                 uti.workStart();
                 break;
@@ -1231,7 +1231,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 nvgre.vrf = proxy.vrf;
                 nvgre.srcIfc = proxy.srcIfc;
                 nvgre.vsid = vcid;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 nvgre.setUpper(brdgIfc);
                 nvgre.workStart();
                 break;
@@ -1245,7 +1245,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 vxl.srcIfc = proxy.srcIfc;
                 vxl.inst = vcid;
                 vxl.prot = pwtype;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 vxl.setUpper(brdgIfc);
                 vxl.workStart();
                 break;
@@ -1258,7 +1258,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 gnv.vrf = proxy.vrf;
                 gnv.srcIfc = proxy.srcIfc;
                 gnv.vni = vcid;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 gnv.setUpper(brdgIfc);
                 gnv.workStart();
                 break;

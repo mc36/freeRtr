@@ -40,6 +40,11 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
     public ifcDn lowerIf;
 
     /**
+     * interface is physical
+     */
+    public boolean physical;
+
+    /**
      * interface is not ethernet
      */
     public boolean notEther;
@@ -102,11 +107,13 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
      * creates new interface
      *
      * @param parent interface handler
+     * @param phy physical interface
      * @param addrFix need address fixing
      * @param typeFix need type fixing
      */
-    public ifcBridgeIfc(ifcBridge parent, boolean addrFix, boolean typeFix) {
+    public ifcBridgeIfc(ifcBridge parent, boolean phy, boolean addrFix, boolean typeFix) {
         lowerBr = parent;
+        physical = phy;
         notEther = addrFix;
         needType = typeFix;
     }
@@ -245,7 +252,7 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
     }
 
     public String toString() {
-        return getIfcName() + "|" + (blocked ? "block" : "forward") + "|" + cntr.getShBsum();
+        return getIfcName() + "|" + (!blocked) + "|" + physical + "|" + cntr.getShBsum();
     }
 
 }

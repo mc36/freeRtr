@@ -502,7 +502,7 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
                 if (lower.brdgIfc == null) {
                     return null;
                 }
-                ntry.brdgIfc = lower.brdgIfc.bridgeHed.newIface(true, false);
+                ntry.brdgIfc = lower.brdgIfc.bridgeHed.newIface(false, true, false);
                 ntry.setUpper(ntry.brdgIfc);
                 break;
             case packLdpPwe.pwtHdlc:

@@ -157,7 +157,7 @@ public class ifcBridge implements ifcDn {
     private ipCor core4 = new ipCor4();
 
     private ipCor core6 = new ipCor6();
-    
+
     /**
      * root id
      */
@@ -206,7 +206,7 @@ public class ifcBridge implements ifcDn {
         }
         nextIfaceNum = 1;
         ifaces = new tabGen<ifcBridgeIfc>();
-        upNtry = new ifcBridgeIfc(null, false, false);
+        upNtry = new ifcBridgeIfc(null, true, false, false);
         upNtry.ifcNum = 0;
     }
 
@@ -216,7 +216,8 @@ public class ifcBridge implements ifcDn {
      * @return list of interface
      */
     public userFormat getShowIfc() {
-        userFormat lst = new userFormat("|", "interface|state|tx|rx|drop");
+        userFormat lst = new userFormat("|", "interface|forward|physical|tx|rx|drop");
+        lst.add("" + upNtry);
         for (int i = 0; i < ifaces.size(); i++) {
             lst.add("" + ifaces.get(i));
         }
@@ -481,15 +482,16 @@ public class ifcBridge implements ifcDn {
     /**
      * add new interface to this virtual bridge
      *
+     * @param physical true if physical interface
      * @param notEther true if dst,src mac is embedded in data
      * @param needType true if ethertype need appened
      * @return interface handler that will pass packets to this bridge
      */
-    public ifcBridgeIfc newIface(boolean notEther, boolean needType) {
+    public ifcBridgeIfc newIface(boolean physical, boolean notEther, boolean needType) {
         if (debugger.ifcBridgeTraf) {
             logger.debug("add iface");
         }
-        ifcBridgeIfc ntry = new ifcBridgeIfc(this, notEther, needType);
+        ifcBridgeIfc ntry = new ifcBridgeIfc(this, physical, notEther, needType);
         ntry.ifcNum = nextIfaceNum++;
         ntry.blocked = needStp;
         ifaces.add(ntry);
@@ -506,7 +508,7 @@ public class ifcBridge implements ifcDn {
         if (debugger.ifcBridgeTraf) {
             logger.debug("del iface");
         }
-        ifcBridgeIfc ntry = new ifcBridgeIfc(this, false, false);
+        ifcBridgeIfc ntry = new ifcBridgeIfc(this, false, false, false);
         ntry.ifcNum = num;
         ntry = ifaces.del(ntry);
         if (ntry == null) {
@@ -672,7 +674,7 @@ public class ifcBridge implements ifcDn {
         }
     }
 
-    private void floodPack(int ifn, packHolder pck) {
+    private void floodPack(int ifn, boolean phy, packHolder pck) {
         if (privateBridge && (ifn != 0)) {
             send2upper(ifn, pck);
             return;
@@ -686,6 +688,9 @@ public class ifcBridge implements ifcDn {
                 continue;
             }
             if (ntry.blocked) {
+                continue;
+            }
+            if (!(phy | ntry.physical)) {
                 continue;
             }
             ntry.doTxPack(pck.copyBytes(true, true));
@@ -736,7 +741,7 @@ public class ifcBridge implements ifcDn {
             }
         }
         if (learned == null) {
-            floodPack(ifc.ifcNum, pck);
+            floodPack(ifc.ifcNum, ifc.physical, pck);
             return;
         }
         ifcBridgeMacAddr lrn = new ifcBridgeMacAddr(pck.ETHsrc.copyBytes());
@@ -762,7 +767,7 @@ public class ifcBridge implements ifcDn {
         lrn.time = currTim;
         lrn.cntr.rx(pck);
         if (pck.ETHtrg.isFloodable()) {
-            floodPack(ifc.ifcNum, pck);
+            floodPack(ifc.ifcNum, ifc.physical, pck);
             return;
         }
         lrn = new ifcBridgeMacAddr(pck.ETHtrg.copyBytes());
@@ -774,7 +779,7 @@ public class ifcBridge implements ifcDn {
                 }
                 return;
             }
-            floodPack(ifc.ifcNum, pck);
+            floodPack(ifc.ifcNum, ifc.physical, pck);
             return;
         }
         if (lrn.ifc.ifcNum == ifc.ifcNum) {
@@ -789,6 +794,9 @@ public class ifcBridge implements ifcDn {
             send2upper(ifc.ifcNum, pck.copyBytes(true, true));
         }
         if (privateBridge && (ifc.ifcNum != 0)) {
+            return;
+        }
+        if (!(ifc.physical | lrn.ifc.physical)) {
             return;
         }
         lrn.ifc.doTxPack(pck);

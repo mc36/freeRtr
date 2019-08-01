@@ -2821,7 +2821,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public synchronized void setup2bridge(cfgBrdg brdg) {
         bridgeHed = brdg;
         if (bridgeIfc == null) {
-            bridgeIfc = bridgeHed.bridgeHed.newIface(ifaceNeedMacs(), ifaceNeedMacs());
+            bridgeIfc = bridgeHed.bridgeHed.newIface(true, ifaceNeedMacs(), ifaceNeedMacs());
         }
         ethtyp.addET(-1, "bridging", bridgeIfc);
         ethtyp.updateET(-1, bridgeIfc);

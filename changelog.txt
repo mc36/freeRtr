@@ -8654,3 +8654,10 @@ qc pass: bgp vpn with export map
 qc pass: bgp vpn with import map
 qc pass: bgp vpn with export policy
 qc pass: bgp vpn with import policy
+---------------------------------- 2019-08-01 03:36:17
+no todo: call-home through irc with configurable proxyprofile, read-write access
+no todo: irc server should ping periodically the clients
+no todo: traceroute to query bgp forasn
+no todo: lossdet with class util.dampening
+no todo: access-class should permit again with objectgroups
+todo: traceroute to query bgp for asn

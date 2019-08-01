@@ -112,7 +112,7 @@ public class cfgIfcEvc implements Comparator<cfgIfcEvc> {
     public synchronized void startWork() {
         ifcUp res = null;
         if (bridgeHed != null) {
-            bridgeIfc = bridgeHed.bridgeHed.newIface(parent.ifaceNeedMacs(), parent.ifaceNeedMacs());
+            bridgeIfc = bridgeHed.bridgeHed.newIface(true, parent.ifaceNeedMacs(), parent.ifaceNeedMacs());
             res = bridgeIfc;
         }
         if (xconn != null) {

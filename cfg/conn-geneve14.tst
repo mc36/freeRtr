@@ -130,10 +130,10 @@ r1 tping 100 60 4321::4 /vrf v1
 r1 tping 100 60 4321::3 /vrf v1
 r1 tping 100 60 4321::2 /vrf v1
 
-r2 tping 100 60 2.2.2.3 /vrf v1
-r2 tping 100 60 4321::3 /vrf v1
-r3 tping 100 60 2.2.2.2 /vrf v1
-r3 tping 100 60 4321::2 /vrf v1
+r2 tping 0 60 2.2.2.3 /vrf v1
+r2 tping 0 60 4321::3 /vrf v1
+r3 tping 0 60 2.2.2.2 /vrf v1
+r3 tping 0 60 4321::2 /vrf v1
 
 r4 tping 100 60 2.2.2.3 /vrf v1
 r4 tping 100 60 2.2.2.2 /vrf v1

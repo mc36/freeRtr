@@ -86,7 +86,7 @@ public class servGeneve extends servGeneric implements prtServP {
         if (old != null) {
             return old;
         }
-        ntry.brdgIfc = brdgIfc.bridgeHed.newIface(true, false);
+        ntry.brdgIfc = brdgIfc.bridgeHed.newIface(false, true, false);
         ntry.setUpper(ntry.brdgIfc);
         return ntry;
     }

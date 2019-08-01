@@ -1555,21 +1555,17 @@ todo: command authorization with local
 todo: reapplying the same address to interface as noop
 todo: reapplying the same vrf to interface as noop
 todo: entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...
-todo: access-class should permit again with objectgroups
 todo: http conditional redirect with route-map, prefix-list or route-policy
 todo: bridge security from dhcp, slaac, whatever server
 todo: padup ethertype config option
 todo: lsrp, ospf, isis must list lsas/lsps as reachable or not
 todo: configurable replay window under ipsec profile for macsec
-todo: lossdet with class util.dampening
 todo: hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
-todo: traceroute to query bgp forasn
+todo: traceroute to query bgp for asn
 todo: traceroute to display mpls labels
 todo: client domain-name to resolve internally first
 todo: client name-server multiple nodes
-todo: irc server should ping periodically the clients
-todo: call-home through irc with configurable proxyprofile, read-write access
 todo: http server should honor no in the beginning for host commands
 todo: http host upload optional different authentication
 todo: tls1.3

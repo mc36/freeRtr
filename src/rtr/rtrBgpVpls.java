@@ -206,7 +206,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
                 per.veId = bits.msbGetW(buf, 0);
                 ntry.prefix.wildcard.toBuffer(buf, 0);
                 per.veLab = (bits.msbGetD(buf, 2) & 0xffffff) >>> 4;
-                per.brdg = bridge.bridgeHed.newIface(true, false);
+                per.brdg = bridge.bridgeHed.newIface(false, true, false);
                 per.setUpper(per.brdg);
                 continue;
             }
@@ -220,7 +220,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             pwom.vcid = tabRtrmapN.agi2comm(id);
             pwom.general = true;
             pwom.descr = null;
-            per.brdg = bridge.bridgeHed.newIface(true, false);
+            per.brdg = bridge.bridgeHed.newIface(false, true, false);
             pwom.setUpper(per.brdg);
             pwom.workStart();
         }
