@@ -9,6 +9,7 @@ import pack.packHolder;
 import pack.packStp;
 import tab.tabAceslstN;
 import tab.tabListing;
+import tab.tabGen;
 import util.counter;
 import util.state;
 
@@ -68,6 +69,11 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
      * mac rewriter
      */
     public addrMac macRewrite;
+
+    /**
+     * mac security
+     */
+    public tabGen<addrMac> macSec;
 
     /**
      * ipv4 ingress acl
@@ -159,6 +165,19 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
                 return;
             }
             pck.getSkip(-2);
+        }
+        if (macSec != null) {
+            boolean needed = false;
+            for (int i = 0; i < macSec.size(); i++) {
+                needed |= (pck.ETHsrc.compare(pck.ETHsrc, macSec.get(i)) == 0);
+                if (needed) {
+                    break;
+                }
+            }
+            if (!needed) {
+                cntr.drop(pck, counter.reasons.denied);
+                return;
+            }
         }
         lowerBr.doRxPack(this, pck);
     }

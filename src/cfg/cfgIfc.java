@@ -1197,6 +1197,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no bridge-filter ipv6in",
         "interface .*! no bridge-filter ipv6out",
         "interface .*! no bridge-macrewrite",
+        "interface .*! no bridge-macsecurity",
         "interface .*! no bundle-group",
         "interface .*! bundle-priority 0",
         "interface .*! no service-policy-in",
@@ -4621,6 +4622,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             cmds.cfgLine(l, bridgeIfc.filter6in == null, cmds.tabulator, "bridge-filter ipv6in", "" + bridgeIfc.filter6in);
             cmds.cfgLine(l, bridgeIfc.filter6out == null, cmds.tabulator, "bridge-filter ipv6out", "" + bridgeIfc.filter6out);
             cmds.cfgLine(l, bridgeIfc.macRewrite == null, cmds.tabulator, "bridge-macrewrite", "" + bridgeIfc.macRewrite);
+            if (bridgeIfc.macSec == null) {
+                l.add(cmds.tabulator + "no bridge-macsecurity");
+            } else {
+                s = "";
+                for (int i = 0; i < bridgeIfc.macSec.size(); i++) {
+                    s += " " + bridgeIfc.macSec.get(i);
+                }
+                l.add(cmds.tabulator + "bridge-macsecurity" + s);
+            }
         }
         if (bundleIfc == null) {
             l.add(cmds.tabulator + "no bundle-group");
@@ -4885,6 +4895,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 .     <num>                       priroty of link");
         l.add("1 2   bridge-group                  transparent bridging interface parameters");
         l.add("2 .     <num>                       number of bridge group");
+        l.add("1 2   bridge-macsecurity            transparent bridging interface parameters");
+        l.add("2 2,.   <adr>                       address to allow");
         l.add("1 2   bridge-macrewrite             transparent bridging interface parameters");
         l.add("2 .     <adr>                       address to use");
         l.add("1 2   bridge-filter                 transparent bridging filtering parameters");
@@ -5376,6 +5388,23 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             setup2bridge(brdg);
             return;
         }
+        if (a.equals("bridge-macsecurity")) {
+            if (bridgeIfc == null) {
+                cmd.error("not bridged");
+                return;
+            }
+            bridgeIfc.macSec = new tabGen<addrMac>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                addrMac adr = new addrMac();
+                adr.fromString(a);
+                bridgeIfc.macSec.add(adr);
+            }
+            return;
+        }
         if (a.equals("bridge-macrewrite")) {
             a = cmd.word();
             if (bridgeIfc == null) {
@@ -5850,6 +5879,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("bridge-group")) {
             clear2bridge();
+            return;
+        }
+        if (a.equals("bridge-macsecurity")) {
+            if (bridgeIfc == null) {
+                cmd.error("not bridged");
+                return;
+            }
+            bridgeIfc.macSec = null;
             return;
         }
         if (a.equals("bridge-macrewrite")) {
