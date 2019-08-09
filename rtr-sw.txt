@@ -405,6 +405,18 @@ interface ethernet1
  no log-link-change
  exit
 !
+interface sdn1
+ no description
+ mtu 1500
+ macaddr 0072.1c66.4a41
+ lldp enable
+ cdp enable
+ vrf forwarding v5
+ ipv4 address 1.1.1.1 255.255.255.252
+ no shutdown
+ no log-link-change
+ exit
+!
 router bgp4 1
  vrf v1
  local-as 1
@@ -741,6 +753,7 @@ ipv6 flow v1 collect
 !
 !
 !
+ipv4 route v5 2.2.2.0 255.255.255.0 1.1.1.2
 !
 !
 !
@@ -855,6 +868,7 @@ server rfb vnc
 !
 server p4lang a
  export-vrf v5
+ export-port sdn1 1
  vrf v1
  exit
 !

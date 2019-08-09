@@ -1,5 +1,5 @@
 download 2
-arch i386
+arch amd64
 distro sid
 mirror http://ftp.at.debian.org/debian/
 
@@ -42,7 +42,7 @@ select-dis init-system-helpers
 select-dis initramfs-tools
 select-dis multiarch-support
 
-select-one linux-image-686-pae #kernel
+select-one linux-image-amd64   #kernel
 select-one socat               #devices
 select-one busybox             #small utils
 select-one udev                #bring up hw
