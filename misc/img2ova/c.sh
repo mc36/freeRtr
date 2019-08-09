@@ -1,9 +1,9 @@
 #!/bin/sh
-qemu-img create ../../binImg/rtr.dsk 1G
+qemu-img create ../../binImg/rtr.dsk 2G
 parted ../../binImg/rtr.dsk mklabel msdos
-parted ../../binImg/rtr.dsk mkpart primary ext4 1 1020
+parted ../../binImg/rtr.dsk mkpart primary ext4 1 2000
 parted ../../binImg/rtr.dsk set 1 boot on
-mkfs.ext4 -q -U 999dff7c-0eed-48a5-b605-bb7d675a49ab -b 1024 -E offset=1048576 -F ../../binImg/rtr.dsk 950000
+mkfs.ext4 -q -U 999dff7c-0eed-48a5-b605-bb7d675a49ab -b 1024 -E offset=1048576 -F ../../binImg/rtr.dsk 1900000
 mount -o loop,offset=1048576 ../../binImg/rtr.dsk /mnt
 mkdir /mnt/rtr
 cp ../../binImg/rtr.krn /mnt/rtr.krn
@@ -27,6 +27,7 @@ echo -n `cd /mnt/;find proc/>>filist`
 echo -n `cd /mnt/;find mnt/>>filist`
 echo -n `cd /mnt/;find run/>>filist`
 echo -n `cd /mnt/;find lib/>>filist`
+echo -n `cd /mnt/;find lib64/>>filist`
 echo -n `cd /mnt/;find bin/>>filist`
 echo -n `cd /mnt/;find sbin/>>filist`
 echo -n `cd /mnt/;find usr/>>filist`

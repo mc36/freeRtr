@@ -1,2 +1,2 @@
 #!/bin/sh
-qemu-system-i386 -m 2048 -no-reboot -kernel ../../binImg/rtr.wrp
+qemu-system-x86_64 -m 2048 -no-reboot -kernel ../../binImg/rtr.wrp
