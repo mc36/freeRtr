@@ -40,7 +40,7 @@ public class servP4lang extends servGeneric implements prtServS {
     /**
      * port
      */
-    public final static int port = 9090;
+    public final static int port = 9080;
 
     /**
      * exported vrf
@@ -102,7 +102,7 @@ public class servP4lang extends servGeneric implements prtServS {
                 return false;
             }
             if (ifc.type != cfgIfc.ifaceType.sdn) {
-                cmd.error("not openflow interface");
+                cmd.error("not p4lang interface");
                 return false;
             }
             servP4langIfc1 ntry = new servP4langIfc1();
@@ -143,7 +143,7 @@ public class servP4lang extends servGeneric implements prtServS {
         l.add("2 .    <name>                  vrf name");
         l.add("1 2  export-port               specify port to export");
         l.add("2 3    <name>                  interface name");
-        l.add("3 .      <num>                 openflow port number");
+        l.add("3 .      <num>                 p4lang port number");
     }
 
     public String srvName() {
@@ -215,6 +215,8 @@ class servP4langIfc1 implements ifcDn, Comparator<servP4langIfc1> {
 
     public counter cntr = new counter();
 
+    public state.states lastState = state.states.up;
+
     public int compare(servP4langIfc1 o1, servP4langIfc1 o2) {
         if (o1.id < o2.id) {
             return -1;
@@ -237,7 +239,7 @@ class servP4langIfc1 implements ifcDn, Comparator<servP4langIfc1> {
     }
 
     public state.states getState() {
-        return state.states.up;
+        return lastState;
     }
 
     public void closeDn() {
@@ -323,6 +325,21 @@ class servP4langConn implements Runnable {
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
+            if (s.equals("state")) {
+                servP4langIfc1 ntry = new servP4langIfc1();
+                ntry.id = bits.str2num(cmd.word());
+                ntry = lower.expIfc.find(ntry);
+                if (ntry == null) {
+                    return false;
+                }
+                if (cmd.word().equals("1")) {
+                    ntry.lastState = state.states.up;
+                } else {
+                    ntry.lastState = state.states.down;
+                }
+                ntry.upper.setState(ntry.lastState);
+                return false;
+            }
             if (!s.equals("packet")) {
                 return false;
             }
@@ -334,6 +351,7 @@ class servP4langConn implements Runnable {
             }
             packHolder pck = new packHolder(true, true);
             s = cmd.getRemaining();
+            s = s.replaceAll(" ", "");
             for (;;) {
                 if (s.length() < 2) {
                     break;

@@ -18,7 +18,6 @@ http server should honor no in the beginning for host commands
 http host upload optional different authentication
 tls1.3
 http2.0
-more configurable defaults to lines: tablemode, timestamps, configure up them on main rtrs
 route-map/policy to match private-as origination/transit, then show, ignore, etc
 sorted, uniq | filter for any column
 diff n | filter

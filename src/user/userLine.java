@@ -40,6 +40,21 @@ public class userLine {
     public int execHeight = 24;
 
     /**
+     * show timestamps
+     */
+    public boolean execTimes;
+
+    /**
+     * colorize
+     */
+    public boolean execColor;
+
+    /**
+     * table mode
+     */
+    public userFormat.tableMode execTables = userFormat.tableMode.normal;
+
+    /**
      * log exec events
      */
     public boolean execLogging = false;
@@ -139,6 +154,9 @@ public class userLine {
         lst.add(beg + "exec timeout " + execTimeOut);
         lst.add(beg + "exec width " + execWidth);
         lst.add(beg + "exec height " + execHeight);
+        cmds.cfgLine(lst, !execTimes, beg, "exec timestamp", "");
+        cmds.cfgLine(lst, !execColor, beg, "exec colorized", "");
+        lst.add(beg + "exec tablemode " + execTables);
         lst.add(beg + "exec welcome " + promptWelcome);
         lst.add(beg + "exec ready " + promptSuccess);
         lst.add(beg + "exec bye " + promptGoodbye);
@@ -197,6 +215,18 @@ public class userLine {
             }
             if (s.equals("height")) {
                 execHeight = bits.str2num(cmd.word());
+                return false;
+            }
+            if (s.equals("timestamp")) {
+                execTimes = true;
+                return false;
+            }
+            if (s.equals("colorized")) {
+                execColor = true;
+                return false;
+            }
+            if (s.equals("tablemode")) {
+                execTables = userFormat.tableMode.valueOf(cmd.word());
                 return false;
             }
             if (s.equals("ready")) {
@@ -280,6 +310,14 @@ public class userLine {
         s = cmd.word();
         if (s.equals("exec")) {
             s = cmd.word();
+            if (s.equals("timestamp")) {
+                execTimes = false;
+                return false;
+            }
+            if (s.equals("colorized")) {
+                execColor = false;
+                return false;
+            }
             if (s.equals("interface")) {
                 execIface = null;
                 return false;
@@ -323,6 +361,15 @@ public class userLine {
         l.add("2 3    interface                    set interface to use for framing");
         l.add("3 .      <name>                     name of interface");
         l.add("2 .    logging                      enable logging");
+        l.add("2 .    timestamp                    enable timestamps");
+        l.add("2 .    colorized                    enable colorization");
+        l.add("2 3    tablemode                    set table mode");
+        l.add("3 .      csv                        select csv mode");
+        l.add("3 .      fancy                      select fancy mode");
+        l.add("3 .      html                       select html mode");
+        l.add("3 .      normal                     select normal mode");
+        l.add("3 .      raw                        select raw mode");
+        l.add("3 .      table                      select table mode");
         l.add("2 3    timeout                      set timeout value");
         l.add("3 .      <num>                      timeout in milliseconds");
         l.add("2 3    width                        number of columns");
@@ -462,6 +509,9 @@ class userLineHandler implements Runnable {
         rdr.logging = parent.execLogging;
         rdr.width = parent.execWidth;
         rdr.height = parent.execHeight;
+        rdr.timeStamp = parent.execTimes;
+        rdr.colorize = parent.execColor;
+        rdr.tabMod = parent.execTables;
         userExec exe = new userExec(pipe, rdr);
         userConfig cfg = new userConfig(pipe, rdr);
         exe.privileged = user.privilege >= 15;
