@@ -4,6 +4,7 @@ import java.util.Comparator;
 import addr.addrEmpty;
 import addr.addrType;
 import addr.addrIP;
+import addr.addrMac;
 import addr.addrPrefix;
 import cfg.cfgAll;
 import cfg.cfgIfc;
@@ -12,6 +13,7 @@ import ifc.ifcUp;
 import ifc.ifcDn;
 import ifc.ifcEther;
 import ifc.ifcNull;
+import ip.ipIfc;
 import java.util.List;
 import pack.packHolder;
 import pipe.pipeLine;
@@ -50,7 +52,7 @@ public class servP4lang extends servGeneric implements prtServS {
     /**
      * exported interfaces
      */
-    public tabGen<servP4langIfc1> expIfc = new tabGen<servP4langIfc1>();
+    public tabGen<servP4langIfc> expIfc = new tabGen<servP4langIfc>();
 
     /**
      * last connection
@@ -80,7 +82,7 @@ public class servP4lang extends servGeneric implements prtServS {
             l.add(beg + "export-vrf " + expVrf.name);
         }
         for (int i = 0; i < expIfc.size(); i++) {
-            servP4langIfc1 ntry = expIfc.get(i);
+            servP4langIfc ntry = expIfc.get(i);
             l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id);
         }
     }
@@ -105,7 +107,7 @@ public class servP4lang extends servGeneric implements prtServS {
                 cmd.error("not p4lang interface");
                 return false;
             }
-            servP4langIfc1 ntry = new servP4langIfc1();
+            servP4langIfc ntry = new servP4langIfc();
             ntry.id = bits.str2num(cmd.word());
             ntry.ifc = ifc;
             ntry.lower = this;
@@ -127,7 +129,7 @@ public class servP4lang extends servGeneric implements prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            servP4langIfc1 ntry = new servP4langIfc1();
+            servP4langIfc ntry = new servP4langIfc();
             ntry.id = bits.str2num(cmd.word());
             ntry.ifc = ifc;
             ntry = expIfc.del(ntry);
@@ -203,7 +205,27 @@ public class servP4lang extends servGeneric implements prtServS {
 
 }
 
-class servP4langIfc1 implements ifcDn, Comparator<servP4langIfc1> {
+class servP4langNei implements Comparator<servP4langNei> {
+
+    public int ifc;
+
+    public addrIP adr = new addrIP();
+
+    public addrMac mac = new addrMac();
+
+    public int compare(servP4langNei o1, servP4langNei o2) {
+        if (o1.ifc < o2.ifc) {
+            return -1;
+        }
+        if (o1.ifc > o2.ifc) {
+            return +1;
+        }
+        return o1.adr.compare(o1.adr, o2.adr);
+    }
+
+}
+
+class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public servP4lang lower;
 
@@ -217,7 +239,11 @@ class servP4langIfc1 implements ifcDn, Comparator<servP4langIfc1> {
 
     public state.states lastState = state.states.up;
 
-    public int compare(servP4langIfc1 o1, servP4langIfc1 o2) {
+    public tabGen<servP4langNei> nei4 = new tabGen<servP4langNei>();
+
+    public tabGen<servP4langNei> nei6 = new tabGen<servP4langNei>();
+
+    public int compare(servP4langIfc o1, servP4langIfc o2) {
         if (o1.id < o2.id) {
             return -1;
         }
@@ -283,9 +309,9 @@ class servP4langConn implements Runnable {
 
     public int keepalive;
 
-    public tabRoute<addrIP> sent4 = new tabRoute<addrIP>("sent");
+    public tabRoute<addrIP> routes4 = new tabRoute<addrIP>("sent");
 
-    public tabRoute<addrIP> sent6 = new tabRoute<addrIP>("sent");
+    public tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
 
     public servP4langConn(pipeSide pip, servP4lang upper) {
         pipe = pip;
@@ -326,7 +352,7 @@ class servP4langConn implements Runnable {
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
             if (s.equals("state")) {
-                servP4langIfc1 ntry = new servP4langIfc1();
+                servP4langIfc ntry = new servP4langIfc();
                 ntry.id = bits.str2num(cmd.word());
                 ntry = lower.expIfc.find(ntry);
                 if (ntry == null) {
@@ -343,7 +369,7 @@ class servP4langConn implements Runnable {
             if (!s.equals("packet")) {
                 return false;
             }
-            servP4langIfc1 ntry = new servP4langIfc1();
+            servP4langIfc ntry = new servP4langIfc();
             ntry.id = bits.str2num(cmd.word());
             ntry = lower.expIfc.find(ntry);
             if (ntry == null) {
@@ -365,13 +391,49 @@ class servP4langConn implements Runnable {
             ntry.upper.recvPack(pck);
             return false;
         }
-        doTable(true, lower.expVrf.fwd4.actualU, sent4);
-        doTable(false, lower.expVrf.fwd6.actualU, sent6);
+        for (int i = 0; i < lower.expIfc.size(); i++) {
+            servP4langIfc ifc = lower.expIfc.get(i);
+            doNeighs(true, ifc, ifc.ifc.ipIf4, ifc.nei4);
+            doNeighs(false, ifc, ifc.ifc.ipIf6, ifc.nei6);
+        }
+        doRoutes(true, lower.expVrf.fwd4.actualU, routes4);
+        doRoutes(false, lower.expVrf.fwd6.actualU, routes6);
         bits.sleep(1000);
         return false;
     }
 
-    private void doTable(boolean ipv4, tabRoute<addrIP> need, tabRoute<addrIP> done) {
+    private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi, tabGen<servP4langNei> nei) {
+        if (ipi == null) {
+            return;
+        }
+        tabGen<servP4langNei> seen = new tabGen<servP4langNei>();
+        for (int i = 0;; i++) {
+            servP4langNei ntry = new servP4langNei();
+            if (ipi.getL2info(i, ntry.adr, ntry.mac)) {
+                break;
+            }
+            ntry.ifc = ifc.id;
+            seen.add(ntry);
+            servP4langNei old = nei.find(ntry);
+            if (old != null) {
+                if (ntry.mac.compare(ntry.mac, old.mac) == 0) {
+                    continue;
+                }
+            }
+            nei.add(ntry);
+            lower.sendLine("neigh_add " + ifc.id + " " + ntry.adr + " " + ntry.mac);
+        }
+        for (int i = 0; i < nei.size(); i++) {
+            servP4langNei ntry = nei.get(i);
+            if (seen.find(ntry) != null) {
+                continue;
+            }
+            nei.del(ntry);
+            lower.sendLine("neigh_del " + ifc.id + " " + ntry.adr + " " + ntry.mac);
+        }
+    }
+
+    private void doRoutes(boolean ipv4, tabRoute<addrIP> need, tabRoute<addrIP> done) {
         for (int i = 0; i < need.size(); i++) {
             tabRouteEntry<addrIP> ntry = need.get(i);
             if (ntry.nextHop == null) {

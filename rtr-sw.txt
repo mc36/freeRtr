@@ -413,6 +413,9 @@ interface sdn1
  cdp enable
  vrf forwarding v5
  ipv4 address 1.1.1.1 255.255.255.252
+ ipv4 host-static 1.1.1.2 0000.1111.2222
+ ipv6 address 1234::1 ffff:ffff:ffff:ffff::
+ ipv6 host-static 1234::2 0000.1111.2222
  no shutdown
  no log-link-change
  exit
@@ -755,6 +758,7 @@ ipv6 flow v1 collect
 !
 ipv4 route v5 2.2.2.0 255.255.255.0 1.1.1.2
 !
+ipv6 route v5 4321:: ffff:: 1234::2
 !
 !
 !
@@ -857,6 +861,9 @@ server telnet tel
  security protocol telnet
  exec width 80
  exec height 25
+ exec timestamp
+ exec colorized
+ exec tablemode fancy
  login authentication access
  vrf v1
  exit
