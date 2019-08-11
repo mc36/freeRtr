@@ -97,6 +97,75 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
         setFwdDrop(key);
     }
 
+    /**
+     * copy this entry
+     *
+     * @return copy
+     */
+    public tabLabelNtry copyBytes() {
+        tabLabelNtry n = new tabLabelNtry(label);
+        n.key = key;
+        n.working = working;
+        n.forwarder = forwarder;
+        n.iface = iface;
+        n.nextHop = nextHop;
+        n.remoteLab = remoteLab;
+        n.duplicate = duplicate;
+        n.bier = bier;
+        n.needLocal = needLocal;
+        n.cntr = cntr;
+        n.pweIfc = pweIfc;
+        n.pweDel = pweDel;
+        n.pweAdd = pweAdd;
+        return n;
+    }
+
+    /**
+     * compare this entry
+     *
+     * @param o other
+     * @return false if equals, true if differs
+     */
+    public boolean differs(tabLabelNtry o) {
+        if (label != o.label) {
+            return true;
+        }
+        if (key != o.key) {
+            return true;
+        }
+        if (forwarder != o.forwarder) {
+            return true;
+        }
+        if (iface != o.iface) {
+            return true;
+        }
+        if (nextHop != o.nextHop) {
+            return true;
+        }
+        if (remoteLab != o.remoteLab) {
+            return true;
+        }
+        if (duplicate != o.duplicate) {
+            return true;
+        }
+        if (bier != o.bier) {
+            return true;
+        }
+        if (needLocal != o.needLocal) {
+            return true;
+        }
+        if (pweIfc != o.pweIfc) {
+            return true;
+        }
+        if (pweDel != o.pweDel) {
+            return true;
+        }
+        if (pweAdd != o.pweAdd) {
+            return true;
+        }
+        return false;
+    }
+
     public String toString() {
         return "" + label;
     }

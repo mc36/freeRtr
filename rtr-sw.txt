@@ -916,7 +916,7 @@ client proxy p1
 client prefer-ipv6
 client password-stars
 client whois-server whois.ripe.net
-client name-server 8.8.8.8
+client name-server 10.10.10.10
 client upgrade-config
 client time-zone CET
 !

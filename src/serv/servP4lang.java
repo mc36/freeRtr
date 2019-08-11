@@ -21,6 +21,8 @@ import pipe.pipeSide;
 import prt.prtGenConn;
 import prt.prtServS;
 import tab.tabGen;
+import tab.tabLabel;
+import tab.tabLabelNtry;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import user.userFilter;
@@ -239,10 +241,6 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public state.states lastState = state.states.up;
 
-    public tabGen<servP4langNei> nei4 = new tabGen<servP4langNei>();
-
-    public tabGen<servP4langNei> nei6 = new tabGen<servP4langNei>();
-
     public int compare(servP4langIfc o1, servP4langIfc o2) {
         if (o1.id < o2.id) {
             return -1;
@@ -312,6 +310,12 @@ class servP4langConn implements Runnable {
     public tabRoute<addrIP> routes4 = new tabRoute<addrIP>("sent");
 
     public tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
+
+    public tabGen<servP4langNei> neighs4 = new tabGen<servP4langNei>();
+
+    public tabGen<servP4langNei> neighs6 = new tabGen<servP4langNei>();
+
+    public tabGen<tabLabelNtry> labels = new tabGen<tabLabelNtry>();
 
     public servP4langConn(pipeSide pip, servP4lang upper) {
         pipe = pip;
@@ -393,11 +397,37 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ifc = lower.expIfc.get(i);
-            doNeighs(true, ifc, ifc.ifc.ipIf4, ifc.nei4);
-            doNeighs(false, ifc, ifc.ifc.ipIf6, ifc.nei6);
+            doNeighs(true, ifc, ifc.ifc.ipIf4, neighs4);
+            doNeighs(false, ifc, ifc.ifc.ipIf6, neighs6);
         }
         doRoutes(true, lower.expVrf.fwd4.actualU, routes4);
         doRoutes(false, lower.expVrf.fwd6.actualU, routes6);
+        for (int i = 0; i < tabLabel.labels.size(); i++) {
+            tabLabelNtry ntry = tabLabel.labels.get(i);
+            if (ntry.nextHop == null) {
+                continue;
+            }
+            tabLabelNtry old = labels.find(ntry);
+            if (old != null) {
+                if (!old.differs(ntry)) {
+                    continue;
+                }
+            }
+            labels.put(ntry.copyBytes());
+            String a = "";
+            for (int o = 0; o < ntry.remoteLab.size(); o++) {
+                a += " " + ntry.remoteLab.get(o);
+            }
+            lower.sendLine("label_add " + ntry.getValue() + " " + ntry.nextHop + a);
+        }
+        for (int i = 0; i < labels.size(); i++) {
+            tabLabelNtry ntry = labels.get(i);
+            if (tabLabel.labels.find(ntry) != null) {
+                continue;
+            }
+            labels.del(ntry);
+            lower.sendLine("label_del " + ntry.getValue() + " " + ntry.nextHop);
+        }
         bits.sleep(1000);
         return false;
     }
@@ -425,6 +455,9 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < nei.size(); i++) {
             servP4langNei ntry = nei.get(i);
+            if (ntry.ifc != ifc.id) {
+                continue;
+            }
             if (seen.find(ntry) != null) {
                 continue;
             }

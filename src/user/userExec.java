@@ -31,6 +31,7 @@ import cry.cryHashMd5;
 import cry.cryHashSha1;
 import cry.cryHashSha2256;
 import cry.cryHashSha2512;
+import ip.ipRtr;
 import line.lineHdlc;
 import pack.packDnsRec;
 import pack.packDnsZone;
@@ -43,6 +44,7 @@ import pipe.pipeTerm;
 import prt.prtRedun;
 import rtr.rtrBgpParam;
 import serv.servGeneric;
+import tab.tabRouteEntry;
 import util.bits;
 import util.cmds;
 import util.debugger;
@@ -861,6 +863,9 @@ public class userExec {
         hl.add("4 3,.        <num>               port");
         hl.add("3 4        /size                 specify payload size");
         hl.add("4 3,.        <num>               byte count");
+        hl.add("3 4        /router               lookup intermediate hops");
+        cfgRtr.getRouterList(hl, 2, "");
+        hl.add("5 3,.          <num>             process id");
         hl.add("3 3,.      /lookup               lookup intermediate hops");
         hl.add("1 2    ping                      send echo request");
         hl.add("2 3,.    <host>                  name of host");
@@ -1986,6 +1991,7 @@ public class userExec {
         int delay = 0;
         int port = 33440;
         boolean resolv = false;
+        ipRtr rtr = null;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -2026,6 +2032,18 @@ public class userExec {
             }
             if (a.equals("/size")) {
                 len = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("/router")) {
+                tabRouteEntry.routeType typ = cfgRtr.name2num(cmd.word());
+                if (typ == null) {
+                    continue;
+                }
+                cfgRtr cfg = cfgAll.rtrFind(typ, bits.str2num(cmd.word()), false);
+                if (cfg == null) {
+                    continue;
+                }
+                rtr = cfg.getRouter();
                 continue;
             }
             if (a.equals("/lookup")) {
@@ -2072,7 +2090,13 @@ public class userExec {
             if (resolv && (adr != null)) {
                 clntDns clnt = new clntDns();
                 clnt.doResolvOne(cfgAll.nameServerAddr, packDnsRec.generateReverse(adr), packDnsRec.typePTR);
-                a = " (" + clnt.getPTR() + ")";
+                a += " (" + clnt.getPTR() + ")";
+            }
+            if ((rtr != null) && (adr != null)) {
+                tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(adr);
+                if (ntry != null) {
+                    a += " [" + ntry.asPathStr() + "]";
+                }
             }
             pipe.linePut(ttl + " " + adr + a);
             if (none >= 8) {
