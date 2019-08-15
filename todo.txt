@@ -10,8 +10,6 @@ lsrp, ospf, isis must list lsas/lsps as reachable or not
 configurable replay window under ipsec profile for macsec
 hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
-traceroute to query bgp for asn
-traceroute to display mpls labels
 client domain-name to resolve internally first
 client name-server multiple nodes
 http server should honor no in the beginning for host commands

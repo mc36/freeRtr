@@ -1319,6 +1319,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (icmpCore.createError(pck, reason, src.copyBytes())) {
             return;
         }
+        //ipFwdEcho.addMplsFields(pck);
         ipCore.createIPheader(pck);
         pck.INTupper = -1;
         ipMpls.beginMPLSfields(pck, mplsPropTtl);

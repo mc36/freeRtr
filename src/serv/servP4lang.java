@@ -25,6 +25,7 @@ import tab.tabLabel;
 import tab.tabLabelNtry;
 import tab.tabRoute;
 import tab.tabRouteEntry;
+import tab.tabRouteIface;
 import user.userFilter;
 import user.userHelping;
 import util.cmds;
@@ -185,7 +186,7 @@ public class servP4lang extends servGeneric implements prtServS {
      */
     protected synchronized void sendLine(String a) {
         if (debugger.servP4langTraf) {
-            logger.debug(a);
+            logger.debug("tx: " + a);
         }
         conn.pipe.linePut(a);
     }
@@ -351,7 +352,7 @@ class servP4langConn implements Runnable {
         if (pipe.ready2rx() > 0) {
             String s = pipe.lineGet(0x11);
             if (debugger.servP4langTraf) {
-                logger.debug(s);
+                logger.debug("rx: " + s);
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
@@ -407,6 +408,10 @@ class servP4langConn implements Runnable {
             if (ntry.nextHop == null) {
                 continue;
             }
+            int p = findIface(ntry.iface);
+            if (p < 0) {
+                continue;
+            }
             tabLabelNtry old = labels.find(ntry);
             if (old != null) {
                 if (!old.differs(ntry)) {
@@ -418,7 +423,7 @@ class servP4langConn implements Runnable {
             for (int o = 0; o < ntry.remoteLab.size(); o++) {
                 a += " " + ntry.remoteLab.get(o);
             }
-            lower.sendLine("label_add " + ntry.getValue() + " " + ntry.nextHop + a);
+            lower.sendLine("label_add " + ntry.getValue() + " " + p + " " + ntry.nextHop + a);
         }
         for (int i = 0; i < labels.size(); i++) {
             tabLabelNtry ntry = labels.get(i);
@@ -426,10 +431,26 @@ class servP4langConn implements Runnable {
                 continue;
             }
             labels.del(ntry);
-            lower.sendLine("label_del " + ntry.getValue() + " " + ntry.nextHop);
+            lower.sendLine("label_del " + ntry.getValue() + " " + findIface(ntry.iface) + " " + ntry.nextHop);
         }
         bits.sleep(1000);
         return false;
+    }
+
+    private int findIface(tabRouteIface ifc) {
+        if (ifc == null) {
+            return -2;
+        }
+        for (int i = 0; i < lower.expIfc.size(); i++) {
+            servP4langIfc ntry = lower.expIfc.get(i);
+            if (ifc == ntry.ifc.fwdIf4) {
+                return ntry.id;
+            }
+            if (ifc == ntry.ifc.fwdIf6) {
+                return ntry.id;
+            }
+        }
+        return -1;
     }
 
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi, tabGen<servP4langNei> nei) {
@@ -472,6 +493,10 @@ class servP4langConn implements Runnable {
             if (ntry.nextHop == null) {
                 continue;
             }
+            int p = findIface(ntry.iface);
+            if (p < 0) {
+                continue;
+            }
             tabRouteEntry<addrIP> old = done.find(ntry);
             if (old != null) {
                 if (!ntry.differs(old)) {
@@ -485,7 +510,7 @@ class servP4langConn implements Runnable {
             } else {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
-            lower.sendLine("route_add " + a + " " + ntry.nextHop);
+            lower.sendLine("route_add " + a + " " + p + " " + ntry.nextHop);
         }
         for (int i = 0; i < done.size(); i++) {
             tabRouteEntry<addrIP> ntry = done.get(i);
@@ -499,7 +524,7 @@ class servP4langConn implements Runnable {
             } else {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
-            lower.sendLine("route_del " + a + " " + ntry.nextHop);
+            lower.sendLine("route_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop);
         }
     }
 
