@@ -490,9 +490,6 @@ class servP4langConn implements Runnable {
     private void doRoutes(boolean ipv4, tabRoute<addrIP> need, tabRoute<addrIP> done) {
         for (int i = 0; i < need.size(); i++) {
             tabRouteEntry<addrIP> ntry = need.get(i);
-            if (ntry.nextHop == null) {
-                continue;
-            }
             int p = findIface(ntry.iface);
             if (p < 0) {
                 continue;
@@ -510,6 +507,10 @@ class servP4langConn implements Runnable {
             } else {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
+            if (ntry.nextHop == null) {
+                lower.sendLine("myaddr_add " + a + " " + p);
+                continue;
+            }
             lower.sendLine("route_add " + a + " " + p + " " + ntry.nextHop);
         }
         for (int i = 0; i < done.size(); i++) {
@@ -523,6 +524,10 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip4(ntry.prefix);
             } else {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
+            }
+            if (ntry.nextHop == null) {
+                lower.sendLine("myaddr_del " + a + " " + findIface(ntry.iface));
+                continue;
             }
             lower.sendLine("route_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop);
         }
