@@ -3,6 +3,7 @@ package clnt;
 import addr.addrIP;
 import cfg.cfgAll;
 import cfg.cfgProxy;
+import java.util.ArrayList;
 import java.util.List;
 import pack.packDns;
 import pack.packDnsRec;
@@ -171,7 +172,7 @@ public class clntDns {
      * @param typ type of record
      * @return false on success, true on error
      */
-    public packDnsZone doRecursive(addrIP srv, String nam, int typ) {
+    public packDnsZone doRecursive(List<addrIP> srv, String nam, int typ) {
         packDnsZone res = new packDnsZone("results");
         String dom = "";
         for (;;) {
@@ -192,7 +193,7 @@ public class clntDns {
             }
             dom = a + dom;
             int ned = (nam.length() > 0) ? packDnsRec.typeNS : typ;
-            if (doResolvOne(srv, dom, ned)) {
+            if (doResolvList(srv, dom, ned)) {
                 return null;
             }
             packDnsRec rec = findAnswer(ned);
@@ -203,10 +204,12 @@ public class clntDns {
             if (nam.length() < 1) {
                 break;
             }
-            srv = userTerminal.justResolv(rec.target, curPrx.proxy.prefer);
-            if (srv == null) {
+            addrIP adr = userTerminal.justResolv(rec.target, curPrx.proxy.prefer);
+            if (adr == null) {
                 return null;
             }
+            srv = new ArrayList<addrIP>();
+            srv.add(adr);
         }
         return res;
     }

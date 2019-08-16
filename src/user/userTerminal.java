@@ -39,10 +39,8 @@ public class userTerminal {
      * @return address of remove, null on error
      */
     public static addrIP justResolv(String host, int prt) {
-        List<addrIP> srv = new ArrayList<addrIP>();
-        srv.add(cfgAll.nameServerAddr);
         clntDns clnt = new clntDns();
-        if (clnt.doResolvAddr(srv, host, prt)) {
+        if (clnt.doResolvAddr(cfgAll.nameServerAddr, host, prt)) {
             return null;
         }
         return clnt.getAddr(prt);

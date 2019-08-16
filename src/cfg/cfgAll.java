@@ -651,7 +651,7 @@ public class cfgAll {
     /**
      * address of name server
      */
-    public static addrIP nameServerAddr;
+    public static List<addrIP> nameServerAddr = new ArrayList<addrIP>();
 
     /**
      * name of time server
@@ -866,7 +866,7 @@ public class cfgAll {
         // client
         "!no client proxy",
         "!no client name-proxy",
-        "!no client name-server",
+        "!client name-server",
         "!client time-zone Z",
         "!no client time-server",
         "!no client upgrade-pubkey",
@@ -2984,7 +2984,11 @@ public class cfgAll {
         l.add("client ludp-checksum " + rxtx2string(ludpChecksumRx, ludpChecksumTx));
         l.add("client dccp-checksum " + rxtx2string(dccpChecksumRx, dccpChecksumTx));
         l.add("client sctp-checksum " + rxtx2string(sctpChecksumRx, sctpChecksumTx));
-        cmds.cfgLine(l, nameServerAddr == null, "", "client name-server", "" + nameServerAddr);
+        String a = "";
+        for (int i = 0; i < nameServerAddr.size(); i++) {
+            a += " " + nameServerAddr.get(i);
+        }
+        l.add("client name-server" + a);
         cmds.cfgLine(l, !ftpPassive, "", "client ftp-passive", "");
         cmds.cfgLine(l, upgradePubKey == null, "", "client upgrade-pubkey", "" + upgradePubKey);
         cmds.cfgLine(l, upgradeServer == null, "", "client upgrade-server", "" + upgradeServer);

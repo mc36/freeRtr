@@ -355,7 +355,7 @@ class servSmtpRbler implements Runnable {
 
     private int doRound() {
         clntDns dns = new clntDns();
-        if (dns.doResolvOne(cfgAll.nameServerAddr, serv.server, packDnsRec.typeNS)) {
+        if (dns.doResolvList(cfgAll.nameServerAddr, serv.server, packDnsRec.typeNS)) {
             return 2;
         }
         String srvN = dns.getNS();

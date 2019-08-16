@@ -1342,7 +1342,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 return bits.num2str(remoteAs) + "|" + conn.cntr.packRx + "|" + conn.cntr.packTx + "|" + conn.cntr.byteRx + "|" + conn.cntr.byteTx + "|" + conn.refreshRx + "|" + conn.refreshTx + "|" + peerAddr;
             case 12:
                 clntDns clnt = new clntDns();
-                clnt.doResolvOne(cfgAll.nameServerAddr, packDnsRec.generateReverse(peerAddr), packDnsRec.typePTR);
+                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(peerAddr), packDnsRec.typePTR);
                 return bits.num2str(remoteAs) + "|" + peerAddr + "|" + clnt.getPTR() + "|" + bits.timePast(conn.upTime);
             default:
                 return null;

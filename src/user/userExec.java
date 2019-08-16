@@ -2089,7 +2089,7 @@ public class userExec {
             String a = "";
             if (resolv && (adr != null)) {
                 clntDns clnt = new clntDns();
-                clnt.doResolvOne(cfgAll.nameServerAddr, packDnsRec.generateReverse(adr), packDnsRec.typePTR);
+                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(adr), packDnsRec.typePTR);
                 a += " (" + clnt.getPTR() + ")";
             }
             if ((rtr != null) && (adr != null)) {
@@ -2187,7 +2187,7 @@ public class userExec {
             String a = "";
             if (lok) {
                 clntDns clnt = new clntDns();
-                clnt.doResolvOne(cfgAll.nameServerAddr, packDnsRec.generateReverse(strt), packDnsRec.typePTR);
+                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(strt), packDnsRec.typePTR);
                 a = " (" + clnt.getPTR() + ")";
             }
             if (prt > 0) {
@@ -2640,14 +2640,16 @@ public class userExec {
         }
         a = cmd.word();
         addrIP srv = new addrIP();
+        List<addrIP> srvs = new ArrayList<addrIP>();
+        srvs.add(srv);
         if (srv.fromString(cmd.word())) {
-            srv = cfgAll.nameServerAddr;
+            srvs = cfgAll.nameServerAddr;
         }
         addrIP adr = new addrIP();
         if (!adr.fromString(a)) {
             a = packDnsRec.generateReverse(adr);
         }
-        pipe.linePut("resolving " + packDnsRec.type2str(i) + " " + a + " at " + srv);
+        pipe.linePut("resolving " + packDnsRec.type2str(i) + " " + a);
         clntDns clnt = new clntDns();
         if (i == packDnsRec.typeAXFR) {
             packDnsZone res = clnt.doZoneXfer(srv, new packDnsZone(a), true);
@@ -2659,7 +2661,7 @@ public class userExec {
             return;
         }
         if (recur) {
-            packDnsZone res = clnt.doRecursive(srv, a, i);
+            packDnsZone res = clnt.doRecursive(srvs, a, i);
             if (res == null) {
                 cmd.error("no reply");
                 return;
@@ -2667,7 +2669,7 @@ public class userExec {
             reader.putStrTab(res.toUserStr());
             return;
         }
-        clnt.doResolvOne(srv, a, i);
+        clnt.doResolvList(srvs, a, i);
         packDnsRec res = clnt.findAnswer(i);
         if (res == null) {
             cmd.error("no reply");

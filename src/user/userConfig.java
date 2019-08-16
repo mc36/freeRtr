@@ -409,7 +409,7 @@ public class userConfig {
         l.add("2  3    name-proxy                   specify proxy profile");
         l.add("3  .      <name>                     name of profile");
         l.add("2  3    name-server                  specify address of name server");
-        l.add("3  .      <addr>                     address of server");
+        l.add("3  3,.    <addr>                     address of server");
         l.add("2  .    upgrade-config               automatically save configuration on upgrade");
         l.add("2  .    upgrade-backup               automatically backup image on upgrade");
         l.add("2  .    upgrade-ownkey               use just the configured key");
@@ -1427,10 +1427,17 @@ public class userConfig {
                 return;
             }
             if (a.equals("name-server")) {
-                cfgAll.nameServerAddr = new addrIP();
-                if (cfgAll.nameServerAddr.fromString(cmd.word())) {
-                    cmd.error("bad address");
-                    return;
+                cfgAll.nameServerAddr = new ArrayList<addrIP>();
+                for (;;) {
+                    a = cmd.word();
+                    if (a.length() < 1) {
+                        break;
+                    }
+                    addrIP adr = new addrIP();
+                    if (adr.fromString(a)) {
+                        continue;
+                    }
+                    cfgAll.nameServerAddr.add(adr);
                 }
                 return;
             }
@@ -2133,7 +2140,7 @@ public class userConfig {
                 return;
             }
             if (a.equals("name-server")) {
-                cfgAll.nameServerAddr = null;
+                cfgAll.nameServerAddr = new ArrayList<addrIP>();
                 return;
             }
             if (a.equals("upgrade-config")) {
