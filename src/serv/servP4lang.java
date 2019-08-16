@@ -413,17 +413,25 @@ class servP4langConn implements Runnable {
                 continue;
             }
             tabLabelNtry old = labels.find(ntry);
+            String act = "add";
             if (old != null) {
                 if (!old.differs(ntry)) {
                     continue;
                 }
+                act = "mod";
             }
             labels.put(ntry.copyBytes());
             String a = "";
             for (int o = 0; o < ntry.remoteLab.size(); o++) {
                 a += " " + ntry.remoteLab.get(o);
             }
-            lower.sendLine("label_add " + ntry.getValue() + " " + p + " " + ntry.nextHop + a);
+            String afi;
+            if (ntry.nextHop.isIPv4()) {
+                afi = "4";
+            } else {
+                afi = "6";
+            }
+            lower.sendLine("label" + afi + "_" + act + " " + ntry.getValue() + " " + p + " " + ntry.nextHop + a);
         }
         for (int i = 0; i < labels.size(); i++) {
             tabLabelNtry ntry = labels.get(i);
@@ -431,7 +439,13 @@ class servP4langConn implements Runnable {
                 continue;
             }
             labels.del(ntry);
-            lower.sendLine("label_del " + ntry.getValue() + " " + findIface(ntry.iface) + " " + ntry.nextHop);
+            String afi;
+            if (ntry.nextHop.isIPv4()) {
+                afi = "4";
+            } else {
+                afi = "6";
+            }
+            lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + findIface(ntry.iface) + " " + ntry.nextHop);
         }
         bits.sleep(1000);
         return false;
@@ -472,13 +486,15 @@ class servP4langConn implements Runnable {
             ntry.ifc = ifc.id;
             seen.add(ntry);
             servP4langNei old = nei.find(ntry);
+            String act = "add";
             if (old != null) {
                 if (ntry.mac.compare(ntry.mac, old.mac) == 0) {
                     continue;
                 }
+                act = "mod";
             }
             nei.add(ntry);
-            lower.sendLine("neigh" + afi + "_add " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr());
+            lower.sendLine("neigh" + afi + "_" + act + " " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr());
         }
         for (int i = 0; i < nei.size(); i++) {
             servP4langNei ntry = nei.get(i);
@@ -507,10 +523,12 @@ class servP4langConn implements Runnable {
                 continue;
             }
             tabRouteEntry<addrIP> old = done.find(ntry);
+            String act = "add";
             if (old != null) {
                 if (!ntry.differs(old)) {
                     continue;
                 }
+                act = "mod";
             }
             done.add(tabRoute.addType.notyet, ntry, true, true);
             String a;
@@ -520,10 +538,10 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             if (ntry.nextHop == null) {
-                lower.sendLine("myaddr" + afi + "_add " + a + " " + p);
+                lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + p);
                 continue;
             }
-            lower.sendLine("route" + afi + "_add " + a + " " + p + " " + ntry.nextHop);
+            lower.sendLine("route" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop);
         }
         for (int i = 0; i < done.size(); i++) {
             tabRouteEntry<addrIP> ntry = done.get(i);

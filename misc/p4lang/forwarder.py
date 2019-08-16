@@ -9,12 +9,11 @@ sys.path.append(
         './'))
 # And then we import
 import p4runtime_lib.bmv2
-from p4runtime_lib.switch import ShutdownAllSwitchConnections
 import p4runtime_lib.helper
 
 
 
-def writeForwardRules(p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port):
+def writeForwardRules(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_ipv4_fib_lpm",
         match_fields={
@@ -24,9 +23,12 @@ def writeForwardRules(p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port
         action_params={
             "nexthop_id": port
         })
-    ingress_sw.WriteTableEntry(table_entry, False)
+    if delete:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+    else:
+        ingress_sw.WriteTableEntry(table_entry, False)
 
-def writeNeighborRules(p4info_helper, ingress_sw, dst_ip_addr, port):
+def writeNeighborRules(delete, p4info_helper, ingress_sw, dst_ip_addr, port):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_ipv4_fib_host",
         match_fields={
@@ -36,9 +38,12 @@ def writeNeighborRules(p4info_helper, ingress_sw, dst_ip_addr, port):
         action_params={
             "nexthop_id": port
         })
-    ingress_sw.WriteTableEntry(table_entry, False)
+    if delete:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+    else:
+        ingress_sw.WriteTableEntry(table_entry, False)
 
-def writeMplsRules(p4info_helper, ingress_sw, dst_label, new_label, port):
+def writeMplsRules(delete, p4info_helper, ingress_sw, dst_label, new_label, port):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_mpls_fib",
         match_fields={
@@ -50,7 +55,10 @@ def writeMplsRules(p4info_helper, ingress_sw, dst_label, new_label, port):
             "nexthop_id": port
         }
     )
-    ingress_sw.WriteTableEntry(table_entry, False)
+    if delete:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+    else:
+        ingress_sw.WriteTableEntry(table_entry, False)
 
 def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address, freerouter_port):
     p4info_helper = p4runtime_lib.helper.P4InfoHelper(p4info_file_path)
@@ -72,15 +80,22 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         line = fil.readline(8192)
         splt = line.split(" ")
         print "rx: ", splt
-        if splt[0] == "route4_add":
+        if splt[0] == "route_add":
             addr = splt[1].split("/");
-            writeForwardRules(p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
+            writeForwardRules(False,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
             continue
-        if splt[0] == "label4_add":
-            writeMplsRules(p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
+        if splt[0] == "route_del":
+            addr = splt[1].split("/");
+            writeForwardRules(True,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
             continue
-        if splt[0] == "neigh4_add":
-#            writeNeighborRules(p4info_helper,sw1,splt[2],splt[3])
+        if splt[0] == "label_add":
+            writeMplsRules(False,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
+            continue
+        if splt[0] == "label_del":
+            writeMplsRules(True,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
+            continue
+        if splt[0] == "neigh_add":
+#            writeNeighborRules(p4info_helper,sw1,splt[2],int(splt[1]))
             continue
 
 
