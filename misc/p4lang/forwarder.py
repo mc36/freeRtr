@@ -72,14 +72,14 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         line = fil.readline(8192)
         splt = line.split(" ")
         print "rx: ", splt
-        if splt[0] == "route_add":
+        if splt[0] == "route4_add":
             addr = splt[1].split("/");
             writeForwardRules(p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
             continue
-        if splt[0] == "label_add":
+        if splt[0] == "label4_add":
             writeMplsRules(p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
-        if splt[0] == "neigh_add":
+        if splt[0] == "neigh4_add":
 #            writeNeighborRules(p4info_helper,sw1,splt[2],splt[3])
             continue
 

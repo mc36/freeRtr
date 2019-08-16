@@ -188,7 +188,7 @@ public class servP4lang extends servGeneric implements prtServS {
         if (debugger.servP4langTraf) {
             logger.debug("tx: " + a);
         }
-        conn.pipe.linePut(a);
+        conn.pipe.linePut(a + " ");
     }
 
     /**
@@ -457,6 +457,12 @@ class servP4langConn implements Runnable {
         if (ipi == null) {
             return;
         }
+        String afi;
+        if (ipv4) {
+            afi = "4";
+        } else {
+            afi = "6";
+        }
         tabGen<servP4langNei> seen = new tabGen<servP4langNei>();
         for (int i = 0;; i++) {
             servP4langNei ntry = new servP4langNei();
@@ -472,7 +478,7 @@ class servP4langConn implements Runnable {
                 }
             }
             nei.add(ntry);
-            lower.sendLine("neigh_add " + ifc.id + " " + ntry.adr + " " + ntry.mac);
+            lower.sendLine("neigh" + afi + "_add " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr());
         }
         for (int i = 0; i < nei.size(); i++) {
             servP4langNei ntry = nei.get(i);
@@ -483,11 +489,17 @@ class servP4langConn implements Runnable {
                 continue;
             }
             nei.del(ntry);
-            lower.sendLine("neigh_del " + ifc.id + " " + ntry.adr + " " + ntry.mac);
+            lower.sendLine("neigh" + afi + "_del " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr());
         }
     }
 
     private void doRoutes(boolean ipv4, tabRoute<addrIP> need, tabRoute<addrIP> done) {
+        String afi;
+        if (ipv4) {
+            afi = "4";
+        } else {
+            afi = "6";
+        }
         for (int i = 0; i < need.size(); i++) {
             tabRouteEntry<addrIP> ntry = need.get(i);
             int p = findIface(ntry.iface);
@@ -508,10 +520,10 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             if (ntry.nextHop == null) {
-                lower.sendLine("myaddr_add " + a + " " + p);
+                lower.sendLine("myaddr" + afi + "_add " + a + " " + p);
                 continue;
             }
-            lower.sendLine("route_add " + a + " " + p + " " + ntry.nextHop);
+            lower.sendLine("route" + afi + "_add " + a + " " + p + " " + ntry.nextHop);
         }
         for (int i = 0; i < done.size(); i++) {
             tabRouteEntry<addrIP> ntry = done.get(i);
@@ -526,10 +538,10 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             if (ntry.nextHop == null) {
-                lower.sendLine("myaddr_del " + a + " " + findIface(ntry.iface));
+                lower.sendLine("myaddr" + afi + "_del " + a + " " + findIface(ntry.iface));
                 continue;
             }
-            lower.sendLine("route_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop);
+            lower.sendLine("route" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop);
         }
     }
 
