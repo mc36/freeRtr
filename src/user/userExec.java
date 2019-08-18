@@ -82,7 +82,7 @@ public class userExec {
     /**
      * authenticated username
      */
-    public String username;
+    public String username = "<nobody>";
 
     /**
      * authorization list

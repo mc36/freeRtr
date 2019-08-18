@@ -13,7 +13,7 @@ import p4runtime_lib.helper
 
 
 
-def writeForwardRules(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port):
+def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_ipv4_fib_lpm",
         match_fields={
@@ -30,7 +30,7 @@ def writeForwardRules(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_ma
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
 
-def writeNeighborRules(delete, p4info_helper, ingress_sw, dst_ip_addr, port):
+def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_ipv4_fib_host",
         match_fields={
@@ -47,7 +47,7 @@ def writeNeighborRules(delete, p4info_helper, ingress_sw, dst_ip_addr, port):
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
 
-def writeMplsRules(delete, p4info_helper, ingress_sw, dst_label, new_label, port):
+def writeMplsRules4(delete, p4info_helper, ingress_sw, dst_label, new_label, port):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_mpls_fib",
         match_fields={
@@ -88,27 +88,27 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         print "rx: ", splt
         if splt[0] == "route_add":
             addr = splt[1].split("/");
-            writeForwardRules(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
+            writeForwardRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
             continue
         if splt[0] == "route_mod":
             addr = splt[1].split("/");
-            writeForwardRules(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
+            writeForwardRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
             continue
         if splt[0] == "route_del":
             addr = splt[1].split("/");
-            writeForwardRules(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
+            writeForwardRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
             continue
         if splt[0] == "label_add":
-            writeMplsRules(1,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
+            writeMplsRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
         if splt[0] == "label_mod":
-            writeMplsRules(2,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
+            writeMplsRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
         if splt[0] == "label_del":
-            writeMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
+            writeMplsRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
         if splt[0] == "neigh_add":
-#            writeNeighborRules(p4info_helper,sw1,splt[2],int(splt[1]))
+#            writeNeighborRules4(p4info_helper,sw1,splt[2],int(splt[1]))
             continue
 
 

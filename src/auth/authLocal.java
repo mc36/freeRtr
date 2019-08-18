@@ -377,7 +377,7 @@ public class authLocal extends authGeneric {
      * @return result
      */
     public authResult authUserCommand(String user, String cmd) {
-        cmd = cmd.toLowerCase();
+        cmd = cmd.trim().toLowerCase();
         for (int i = 0; i < commands.size(); i++) {
             if (cmd.matches(commands.get(i))) {
                 return new authResult(this, authResult.authSuccessful, user);

@@ -1,6 +1,8 @@
 package user;
 
 import cfg.cfgMenu;
+import auth.authGeneric;
+import auth.authResult;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
@@ -133,6 +135,16 @@ import util.verCore;
  * @author matecsaba
  */
 public class userConfig {
+
+    /**
+     * authenticated username
+     */
+    public String username = "<nobody>";
+
+    /**
+     * authorization list
+     */
+    public authGeneric authorization;
 
     private pipeSide pipe; // pipe to use
 
@@ -274,6 +286,13 @@ public class userConfig {
             String s = reader.readLine(reader.deactive);
             if (s == null) {
                 return "";
+            }
+            if (authorization != null) {
+                authResult ntry = authorization.authUserCommand(username, s);
+                if (ntry.result != authResult.authSuccessful) {
+                    pipe.linePut("% not authorized to do that");
+                    continue;
+                }
             }
             s = executeCommand(s);
             if (s != null) {

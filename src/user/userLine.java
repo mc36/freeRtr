@@ -543,8 +543,10 @@ class userLineHandler implements Runnable {
         exe.framedIface = parent.execIface;
         exe.physicalLin = physical;
         exe.authorization = parent.authorizeList;
+        cfg.authorization = parent.authorizeList;
         if (user != null) {
             exe.username = user.user;
+            cfg.username = user.user;
         }
         String s = parent.autoCommand;
         if (s.length() > 0) {
@@ -601,6 +603,13 @@ class userLineHandler implements Runnable {
                     break;
                 }
                 s = exe.repairCommand(s);
+                if (exe.authorization != null) {
+                    authResult ntry = exe.authorization.authUserCommand(exe.username, s);
+                    if (ntry.result != authResult.authSuccessful) {
+                        pipe.linePut("% not authorized to do that");
+                        continue;
+                    }
+                }
                 exe.executeCommand(s);
             }
             if (pipe.isClosed() == 0) {
