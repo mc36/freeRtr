@@ -184,6 +184,11 @@ public class rtrIsis extends ipRtr {
         level2.startNow();
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "isis on " + fwdCore;
     }
@@ -880,6 +885,9 @@ public class rtrIsis extends ipRtr {
         }
     }
 
+    /**
+     * create computed
+     */
     public synchronized void routerCreateComputed() {
         if (debugger.rtrIsisEvnt) {
             logger.debug("create table");
@@ -929,13 +937,24 @@ public class rtrIsis extends ipRtr {
         fwdCore.routerChg(this);
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         genLsps(3);
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1 2   net-id                      specify network entity title");
         l.add("2 .     <addr>                    router id");
@@ -990,6 +1009,13 @@ public class rtrIsis extends ipRtr {
         l.add("3 .       <name>                  name of prefix list");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "net-id " + netEntTit);
         l.add(beg + "traffeng-id " + traffEngID);
@@ -1004,6 +1030,12 @@ public class rtrIsis extends ipRtr {
         getConfig(level1, l, beg);
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         if (s.equals("net-id")) {
@@ -1311,6 +1343,9 @@ public class rtrIsis extends ipRtr {
         return true;
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
         level1.stopNow();
         level2.stopNow();
@@ -1534,6 +1569,11 @@ public class rtrIsis extends ipRtr {
         return lev.lastSpf.listGraphviz();
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         int o = 0;
         for (int i = 0; i < ifaces.size(); i++) {
@@ -1542,6 +1582,11 @@ public class rtrIsis extends ipRtr {
         return o;
     }
 
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
         for (int o = 0; o < ifaces.size(); o++) {
             rtrIsisIface ifc = ifaces.get(o);
@@ -1560,6 +1605,11 @@ public class rtrIsis extends ipRtr {
         }
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return ifaces.size();
     }

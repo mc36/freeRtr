@@ -49,6 +49,12 @@ public class packL2tp3 extends packL2tp {
      */
     public long cookVal = -1;
 
+    /**
+     * parse header
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean parseHeader(packHolder pck) {
         sesID = pck.msbGetD(0);
         pck.getSkip(4);
@@ -93,6 +99,11 @@ public class packL2tp3 extends packL2tp {
         return false;
     }
 
+    /**
+     * create header
+     *
+     * @param pck packet
+     */
     public void createHeader(packHolder pck) {
         pck.msbPutD(0, sesID);
         pck.putSkip(4);
@@ -139,6 +150,11 @@ public class packL2tp3 extends packL2tp {
         pck.merge2beg();
     }
 
+    /**
+     * dump header
+     *
+     * @return string
+     */
     public String dumpHeader() {
         return "con=" + conID + " ses=" + sesID + " rx=" + seqRx + " tx=" + seqTx;
     }

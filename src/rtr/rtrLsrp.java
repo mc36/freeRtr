@@ -210,6 +210,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
         new Thread(this).start();
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "lsrp on " + fwdCore;
     }
@@ -452,6 +457,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         return fwdCore.ipVersion;
     }
 
+    /**
+     * create computed
+     */
     public synchronized void routerCreateComputed() {
         if (debugger.rtrLsrpEvnt) {
             logger.debug("create table");
@@ -672,13 +680,22 @@ public class rtrLsrp extends ipRtr implements Runnable {
         fwdCore.routerChg(this);
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         routerCreateComputed();
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
         if (debugger.rtrLsrpEvnt) {
             logger.debug("shutdown");
@@ -692,6 +709,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
         tabLabel.release(bierLab, 18);
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1 2   router-id                   specify router id");
         l.add("2 .     <addr>                    router id");
@@ -717,6 +739,13 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add("4 .         <num>                 this node index");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "router-id " + routerID);
         l.add(beg + "distance " + distance);
@@ -730,6 +759,12 @@ public class rtrLsrp extends ipRtr implements Runnable {
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
@@ -878,6 +913,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         int o = 0;
         for (int i = 0; i < ifaces.size(); i++) {
@@ -886,6 +926,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
         return o;
     }
 
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
         for (int o = 0; o < ifaces.size(); o++) {
             rtrLsrpIface ifc = ifaces.get(o);
@@ -904,6 +949,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return ifaces.size();
     }

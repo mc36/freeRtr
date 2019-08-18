@@ -32,19 +32,42 @@ public class rtrBgpEvpnPbb implements ifcUp {
         parent = p;
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * received packet
+     *
+     * @param pck
+     */
     public void recvPack(packHolder pck) {
         pck.getSkip(4);
         ifcEther.parseETHheader(pck, false);

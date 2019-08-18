@@ -557,21 +557,47 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         id.send2net(pck);
     }
 
+    /**
+     * close interface
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * start connection
+     *
+     * @param id connection
+     * @return false if success, true if error
+     */
     public boolean datagramAccept(prtGenConn id) {
         id.timeout = deadTimer;
         id.workInterval = helloTimer;
         return false;
     }
 
+    /**
+     * stop connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
         if (conn == null) {
             return;
@@ -593,6 +619,13 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         }
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false if success, true if error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         id.setClosing();
         if (passiveInt) {

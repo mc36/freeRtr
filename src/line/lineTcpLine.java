@@ -32,6 +32,11 @@ public class lineTcpLine extends lineThread {
 
     private InetAddress ladr;
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "line on " + ladr + " " + lprt + " " + radr + " " + rprt;
     }
@@ -51,6 +56,9 @@ public class lineTcpLine extends lineThread {
         rnam = rname;
     }
 
+    /**
+     * open interface
+     */
     protected synchronized void rxtxOpen() {
         try {
             radr = InetAddress.getByName(rnam);
@@ -67,6 +75,9 @@ public class lineTcpLine extends lineThread {
         }
     }
 
+    /**
+     * close interface
+     */
     protected synchronized void rxtxClose() {
         try {
             ostr.flush();
@@ -93,9 +104,19 @@ public class lineTcpLine extends lineThread {
         ostr = null;
     }
 
+    /**
+     * send control
+     *
+     * @param ctrl control
+     */
     protected void txCtrlBit(int ctrl) {
     }
 
+    /**
+     * set flow control
+     *
+     * @param ctrl control
+     */
     protected void txFlowCtrl(int ctrl) {
     }
 

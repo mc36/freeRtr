@@ -135,6 +135,11 @@ public abstract class prtGen implements ipPrt {
      */
     protected abstract void connectionRefuse(ipFwdIface ifc, packHolder pck);
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }

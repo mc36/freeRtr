@@ -73,6 +73,11 @@ public class ipxIface extends tabRouteIface implements ifcUp {
         upper = prn;
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "" + ethtyp;
     }
@@ -90,6 +95,11 @@ public class ipxIface extends tabRouteIface implements ifcUp {
         lower.sendPack(pck);
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         int typ = pck.msbGetW(0); // ethertype
@@ -101,6 +111,11 @@ public class ipxIface extends tabRouteIface implements ifcUp {
         upper.ifacePack(this, pck);
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
         try {
@@ -109,15 +124,28 @@ public class ipxIface extends tabRouteIface implements ifcUp {
         }
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(states stat) {
         cntr.stateChange(stat);
         upper.ifaceState(this, stat);
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         upper.ifaceDel(this);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }

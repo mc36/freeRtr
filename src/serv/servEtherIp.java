@@ -131,6 +131,11 @@ public class servEtherIp extends servGeneric implements ipPrt {
         return true;
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return clntEtherIp.prot;
     }
@@ -139,12 +144,29 @@ public class servEtherIp extends servGeneric implements ipPrt {
         return "etherip";
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closeUp(ipFwdIface iface) {
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         servEtherIpConn ntry = new servEtherIpConn(rxIfc, pck.IPsrc, this);
         servEtherIpConn old = conns.add(ntry);
@@ -162,13 +184,33 @@ public class servEtherIp extends servGeneric implements ipPrt {
         ntry.doRecv(pck);
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }

@@ -167,9 +167,20 @@ public class rtrBfdIface implements prtServP {
         return neighs.find(new rtrBfdNeigh(this, adr));
     }
 
+    /**
+     * close interface
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * start connection
+     *
+     * @param id connection
+     * @return false if success, true if error
+     */
     public boolean datagramAccept(prtGenConn id) {
         rtrBfdNeigh nei = neighs.find(new rtrBfdNeigh(this, id.peerAddr));
         if (nei == null) {
@@ -182,6 +193,11 @@ public class rtrBfdIface implements prtServP {
         return false;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
         rtrBfdNeigh nei = neighs.find(new rtrBfdNeigh(this, id.peerAddr));
         if (nei == null) {
@@ -190,12 +206,29 @@ public class rtrBfdIface implements prtServP {
         }
     }
 
+    /**
+     * close connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false if success, true if error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         rtrBfdNeigh nei = neighs.find(new rtrBfdNeigh(this, id.peerAddr));
         if (nei == null) {

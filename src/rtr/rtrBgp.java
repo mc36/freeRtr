@@ -791,6 +791,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         fwdCore.routerAdd(this, rouTyp, id);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "bgp on " + fwdCore;
     }
@@ -1124,9 +1129,21 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
     }
 
+    /**
+     * close interface
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * start connection
+     *
+     * @param pipe pipeline
+     * @param id connection
+     * @return false if success, true if error
+     */
     public boolean streamAccept(pipeSide pipe, prtGenConn id) {
         if (lstnAcl == null) {
             return true;
@@ -1161,15 +1178,26 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         return false;
     }
 
+    /**
+     * get blocking mode
+     *
+     * @return mode
+     */
     public boolean streamForceBlock() {
         return true;
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         needFull.add(1);
         compute.wakeup();
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
         if ((nhtRoumap == null) && (nhtRouplc == null) && (nhtPfxlst == null)) {
             return;
@@ -1775,6 +1803,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         pe.last = ntry.last;
     }
 
+    /**
+     * create computed table
+     */
     public synchronized void routerCreateComputed() {
         if (debugger.rtrBgpEvnt) {
             logger.debug("create table");
@@ -1827,6 +1858,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         fwdCore.routerChg(this);
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
         if (debugger.rtrBgpEvnt) {
             logger.debug("shutdown");
@@ -1883,6 +1917,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         fwdCore.routerDel(this);
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1 2   address-family              specify address families");
         rtrBgpParam.getAfiList(l, "2 2,.", "to use", true);
@@ -1989,6 +2028,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("4 .         cmac                  cmac");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "local-as " + bits.num2str(localAs));
         l.add(beg + "router-id " + routerID);
@@ -2044,6 +2090,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
     }
 
+    /**
+     * configure router
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
@@ -2770,10 +2822,20 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         return temps.find(ntry);
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return
+     */
     public int routerNeighCount() {
         return neighs.size() + lstnNei.size();
     }
 
+    /**
+     * neighbor list
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -2807,6 +2869,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return 0;
     }

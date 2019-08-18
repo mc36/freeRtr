@@ -33,6 +33,13 @@ public class prtAccept implements prtServS {
         notif.wakeup();
     }
 
+    /**
+     * accept connection
+     *
+     * @param pipe pipeline
+     * @param id connection
+     * @return false on success, true on error
+     */
     public synchronized boolean streamAccept(pipeSide pipe, prtGenConn id) {
         if (ra != null) {
             if (ra.compare(ra, id.peerAddr) != 0) {

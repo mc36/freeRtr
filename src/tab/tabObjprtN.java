@@ -56,6 +56,13 @@ public class tabObjprtN<T extends addrType> extends tabListingEntry<T> {
         return false;
     }
 
+    /**
+     * test if matches
+     *
+     * @param afi address family
+     * @param net network
+     * @return false on success, true on error
+     */
     public boolean matches(int afi, tabRouteEntry<T> net) {
         return false;
     }
@@ -67,6 +74,12 @@ public class tabObjprtN<T extends addrType> extends tabListingEntry<T> {
         return true;
     }
 
+    /**
+     * update entry
+     *
+     * @param afi address family
+     * @param net network
+     */
     public void update(int afi, tabRouteEntry<T> net) {
     }
 

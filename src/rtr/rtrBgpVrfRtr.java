@@ -94,18 +94,32 @@ public class rtrBgpVrfRtr extends ipRtr {
         distance = 200;
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "bgp on " + parent.fwdCore;
     }
 
+    /**
+     * create computed table
+     */
     public synchronized void routerCreateComputed() {
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         parent.routerRedistChanged();
         fwd.routerChg(this);
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
@@ -247,16 +261,37 @@ public class rtrBgpVrfRtr extends ipRtr {
         fwd.routerChg(this);
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         return true;
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
     }
 
@@ -283,13 +318,28 @@ public class rtrBgpVrfRtr extends ipRtr {
         cfgRtr.getShRedist(l, beg1 + beg2, this);
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         return 0;
     }
 
+    /**
+     * get neighbor list
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return 0;
     }

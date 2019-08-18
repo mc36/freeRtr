@@ -172,6 +172,11 @@ public class prtSctp extends prtGen {
         return "sctp on " + fwdCore;
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return protoNum;
     }
@@ -190,6 +195,13 @@ public class prtSctp extends prtGen {
         return bits.random(0x8000, 0xf000);
     }
 
+    /**
+     * start connection
+     *
+     * @param clnt client
+     * @param pck packet
+     * @return false if success, true if error
+     */
     protected boolean connectionStart(prtGenConn clnt, packHolder pck) {
         if (debugger.prtSctpTraf) {
             logger.debug("start");
@@ -238,6 +250,11 @@ public class prtSctp extends prtGen {
         fwdCore.protoPack(ifc, pck);
     }
 
+    /**
+     * close connection
+     *
+     * @param clnt client
+     */
     protected void connectionClose(prtGenConn clnt) {
         if (debugger.prtSctpTraf) {
             logger.debug("close");
@@ -246,6 +263,11 @@ public class prtSctp extends prtGen {
         pr.state = 3;
     }
 
+    /**
+     * work connection
+     *
+     * @param clnt client
+     */
     protected void connectionWork(prtGenConn clnt) {
         prtSctpConn pr = (prtSctpConn) clnt.proto;
         if (debugger.prtSctpTraf) {
@@ -299,6 +321,12 @@ public class prtSctp extends prtGen {
         }
     }
 
+    /**
+     * bytes available
+     *
+     * @param ntry connection
+     * @return bytes
+     */
     protected int connectionBytes(prtGenConn ntry) {
         prtSctpConn pr = (prtSctpConn) ntry.proto;
         if (pr.state != 2) {
@@ -311,6 +339,13 @@ public class prtSctp extends prtGen {
         }
     }
 
+    /**
+     * send packet
+     *
+     * @param clnt client
+     * @param pck packet
+     * @return false if success, true if error
+     */
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {
         prtSctpConn pr = (prtSctpConn) clnt.proto;
         if (pr.state != 2) {
@@ -424,6 +459,12 @@ public class prtSctp extends prtGen {
         }
     }
 
+    /**
+     * received packet
+     *
+     * @param clnt client
+     * @param pck packet
+     */
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
         prtSctpConn pr = (prtSctpConn) clnt.proto;
         pr.lastRx = bits.getTime();
@@ -436,6 +477,12 @@ public class prtSctp extends prtGen {
         }
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (parseSCTPheader(pck)) {
@@ -448,10 +495,25 @@ public class prtSctp extends prtGen {
         connectionSimpleWork(rxIfc, pck);
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false if success, true if error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
         parseSCTPports(pck);
         if (debugger.prtSctpTraf) {
@@ -478,6 +540,12 @@ public class prtSctp extends prtGen {
         fwdCore.protoPack(clnt.iface, pck);
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, states stat) {
     }
 

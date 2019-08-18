@@ -71,23 +71,49 @@ public class prtIcmp implements ipPrt, ifcDn {
         doInternals();
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return protoNum;
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closeUp(ipFwdIface iface) {
         upper.closeUp();
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
         if (iface.ifwNum != sendingIfc.ifwNum) {
             return;
@@ -95,20 +121,41 @@ public class prtIcmp implements ipPrt, ifcDn {
         upper.setState(stat);
     }
 
+    /**
+     * get hw address
+     *
+     * @return address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         lower.protoDel(this, sendingIfc, remote);
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
@@ -146,10 +193,25 @@ public class prtIcmp implements ipPrt, ifcDn {
         }
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 
@@ -157,15 +219,30 @@ public class prtIcmp implements ipPrt, ifcDn {
         return "icmp to " + remote;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         int i = sendingIfc.mtu - icmpSiz;
         return i;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return sendingIfc.bandwidth;
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         pck.merge2beg();
@@ -194,6 +271,12 @@ public class prtIcmp implements ipPrt, ifcDn {
         lower.protoPack(sendingIfc, pck);
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (icmpCr.parseICMPheader(pck)) {

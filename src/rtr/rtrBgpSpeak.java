@@ -761,6 +761,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         parent.compute.wakeup();
     }
 
+    /**
+     * stop work
+     */
     public void bfdPeerDown() {
         closeNow();
     }

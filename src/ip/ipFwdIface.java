@@ -281,6 +281,11 @@ public class ipFwdIface extends tabRouteIface {
         return ifc.ifwNum;
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "" + lower;
     }

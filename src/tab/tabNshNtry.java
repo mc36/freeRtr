@@ -114,6 +114,11 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
         return 0;
     }
 
+    /**
+     * get help
+     *
+     * @return help
+     */
     public userHelping getHelp() {
         return new userHelping();
     }
@@ -129,6 +134,12 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
         return a;
     }
 
+    /**
+     * get configuration
+     *
+     * @param filter filter
+     * @return config
+     */
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         String a = getCmd();
@@ -146,6 +157,11 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
         return l;
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     */
     public void doCfgStr(cmds cmd) {
         trgSp = sp;
         trgSi = si - 1;
@@ -206,6 +222,11 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
         }
     }
 
+    /**
+     * get prompt
+     *
+     * @return prompt
+     */
     public String getPrompt() {
         return "nsh";
     }

@@ -39,15 +39,37 @@ public class servEchoP extends servGeneric implements prtServP {
         return defaultF;
     }
 
+    /**
+     * close connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         id.send2net(pck);
         return false;

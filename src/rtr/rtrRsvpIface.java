@@ -66,6 +66,11 @@ public class rtrRsvpIface implements ipPrt {
         fwdCore.protoDel(this, fwdIfc, null);
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return packRsvp.proto;
     }
@@ -74,18 +79,43 @@ public class rtrRsvpIface implements ipPrt {
         return "rsvp";
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closeUp(ipFwdIface iface) {
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pckBin packet
+     * @return false on success, true on error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pckBin) {
         recvPack(rxIfc, pckBin);
         return false;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 
@@ -155,6 +185,12 @@ public class rtrRsvpIface implements ipPrt {
         return false;
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pckBin packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pckBin) {
         packRsvp pckRvp = new packRsvp();
         if (pckRvp.parseHeader(pckBin)) {
@@ -418,6 +454,12 @@ public class rtrRsvpIface implements ipPrt {
         }
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
     }
 

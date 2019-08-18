@@ -471,6 +471,11 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         }
     }
 
+    /**
+     * dump
+     *
+     * @return string
+     */
     public String dumper() {
         return "" + proto;
     }

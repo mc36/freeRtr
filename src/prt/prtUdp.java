@@ -144,14 +144,30 @@ public class prtUdp extends prtGen {
         pck.merge2beg();
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "udp on " + fwdCore;
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return protoNum;
     }
 
+    /**
+     * test port
+     *
+     * @param i ort
+     * @return false if success, true if error
+     */
     protected boolean testPortNumber(int i) {
         if (i < 1) {
             return true;
@@ -162,36 +178,83 @@ public class prtUdp extends prtGen {
         return false;
     }
 
+    /**
+     * get random port
+     *
+     * @return port
+     */
     protected int getRandomPortNum() {
         return bits.random(0x8000, 0xf000);
     }
 
+    /**
+     * start connection
+     *
+     * @param clnt client
+     * @param pck packet
+     * @return false if success, true if error
+     */
     protected boolean connectionStart(prtGenConn clnt, packHolder pck) {
         clnt.sendPRT = protoNum;
         clnt.setReady();
         return false;
     }
 
+    /**
+     * refuse connection
+     *
+     * @param ifc interface
+     * @param pck packet
+     */
     protected void connectionRefuse(ipFwdIface ifc, packHolder pck) {
         pck.getSkip(-size - pck.IPsiz);
         fwdCore.doDrop(pck, ifc, counter.reasons.badPort);
     }
 
+    /**
+     * close connection
+     *
+     * @param clnt client
+     */
     protected void connectionClose(prtGenConn clnt) {
         clnt.deleteImmediately();
     }
 
+    /**
+     * work connection
+     *
+     * @param clnt client
+     */
     protected void connectionWork(prtGenConn clnt) {
     }
 
+    /**
+     * bytes available
+     *
+     * @param ntry client
+     * @return bytes
+     */
     protected int connectionBytes(prtGenConn ntry) {
         return 0xffffff;
     }
 
+    /**
+     * received packet
+     *
+     * @param clnt client
+     * @param pck packet
+     */
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
         clnt.send2server(pck);
     }
 
+    /**
+     * send packet
+     *
+     * @param clnt client
+     * @param pck packet
+     * @return false if success, true if error
+     */
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
@@ -200,6 +263,12 @@ public class prtUdp extends prtGen {
         return false;
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (parseUDPheader(pck)) {
@@ -212,10 +281,25 @@ public class prtUdp extends prtGen {
         connectionSimpleWork(rxIfc, pck);
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false if success, true if error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
         parseUDPports(pck);
         if (debugger.prtUdpTraf) {
@@ -224,6 +308,12 @@ public class prtUdp extends prtGen {
         connectionSimpleError(err, rtr, rxIfc, pck);
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
     }
 

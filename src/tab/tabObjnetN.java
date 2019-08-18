@@ -70,24 +70,55 @@ public class tabObjnetN<T extends addrType> extends tabListingEntry<T> {
         return false;
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return addr + " " + mask;
     }
 
+    /**
+     * convert to string
+     *
+     * @param beg beginning
+     * @return string
+     */
     public List<String> usrString(String beg) {
         List<String> l = new ArrayList<String>();
         l.add(beg + "sequence " + sequence + " " + this);
         return l;
     }
 
+    /**
+     * test if matches
+     *
+     * @param afi address family
+     * @param net network
+     * @return false on success, true on error
+     */
     public boolean matches(int afi, addrPrefix<T> net) {
         return false;
     }
 
+    /**
+     * test if matches
+     *
+     * @param afi address family
+     * @param net network
+     * @return false on success, true on error
+     */
     public boolean matches(int afi, tabRouteEntry<T> net) {
         return false;
     }
 
+    /**
+     * test if matches
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean matches(packHolder pck) {
         if (!pck.IPsrc.isMatches(addr, mask)) {
             return false;
@@ -95,6 +126,12 @@ public class tabObjnetN<T extends addrType> extends tabListingEntry<T> {
         return true;
     }
 
+    /**
+     * update entry
+     *
+     * @param afi address family
+     * @param net network
+     */
     public void update(int afi, tabRouteEntry<T> net) {
     }
 

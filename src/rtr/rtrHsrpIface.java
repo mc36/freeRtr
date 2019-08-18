@@ -226,21 +226,47 @@ public class rtrHsrpIface implements prtServP {
         }
     }
 
+    /**
+     * close interface
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * start connection
+     *
+     * @param id connection
+     * @return false if success, true if error
+     */
     public boolean datagramAccept(prtGenConn id) {
         id.timeout = hello;
         id.workInterval = hello;
         return false;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * stop connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
         if (conn == null) {
             return;
@@ -282,6 +308,13 @@ public class rtrHsrpIface implements prtServP {
         }
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false if success, true if error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         id.setClosing();
         packHsrp hsr = genPackHolder();

@@ -185,6 +185,12 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         return false;
     }
 
+    /**
+     * convert to string
+     *
+     * @param beg beginning
+     * @return string
+     */
     public List<String> usrString(String beg) {
         List<String> l = new ArrayList<String>();
         int what = 0;
@@ -269,14 +275,34 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         return l;
     }
 
+    /**
+     * test if matches
+     *
+     * @param afi address family
+     * @param net network
+     * @return false on success, true on error
+     */
     public boolean matches(int afi, addrPrefix<addrIP> net) {
         return false;
     }
 
+    /**
+     * test if matches
+     *
+     * @param afi address family
+     * @param net network
+     * @return false on success, true on error
+     */
     public boolean matches(int afi, tabRouteEntry<addrIP> net) {
         return false;
     }
 
+    /**
+     * test if matches
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean matches(packHolder pck) {
         if ((protocol >= 0) && (pck.IPprt != protocol)) {
             return false;
@@ -343,6 +369,12 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         return true;
     }
 
+    /**
+     * update entry
+     *
+     * @param afi address family
+     * @param net network
+     */
     public void update(int afi, tabRouteEntry<addrIP> net) {
     }
 

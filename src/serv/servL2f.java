@@ -179,9 +179,19 @@ public class servL2f extends servGeneric implements prtServP {
         return false;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * stop connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
         servL2fConn ntry = connDel(id);
         if (ntry == null) {
@@ -190,6 +200,11 @@ public class servL2f extends servGeneric implements prtServP {
         ntry.setClosed();
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
         servL2fConn ntry = connFind(id, false);
         if (ntry == null) {
@@ -199,6 +214,13 @@ public class servL2f extends servGeneric implements prtServP {
         ntry.doWork();
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         servL2fConn ntry = connFind(id, false);
         if (ntry == null) {

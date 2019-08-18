@@ -67,10 +67,18 @@ public class rtrUni2multi extends ipRtr {
         fwdCore.routerAdd(this, rouTyp, id);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "uni2multi on " + fwdCore;
     }
 
+    /**
+     * create computed
+     */
     public synchronized void routerCreateComputed() {
         tabRoute<addrIP> res = new tabRoute<addrIP>("computed");
         for (int i = 0; i < routerRedistedU.size(); i++) {
@@ -88,22 +96,46 @@ public class rtrUni2multi extends ipRtr {
         fwdCore.routerChg(this);
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         routerCreateComputed();
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1 2   distance                    specify default distance");
         l.add("2 .     <num>                     distance");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "distance " + distance);
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false on success, true on error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
@@ -118,16 +150,34 @@ public class rtrUni2multi extends ipRtr {
         return true;
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         return 0;
     }
 
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return 0;
     }

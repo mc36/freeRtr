@@ -138,6 +138,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         return (label.getValue() << 4) | 1;
     }
 
+    /**
+     * bridge changed
+     */
     public void bridgeChanged() {
         if (encap == encapType.pbb) {
             return;

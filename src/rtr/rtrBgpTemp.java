@@ -29,13 +29,29 @@ public class rtrBgpTemp extends rtrBgpParam implements Comparator<rtrBgpTemp> {
         return o1.tempName.compareTo(o2.tempName);
     }
 
+    /**
+     * flap connection
+     */
     public void flapBgpConn() {
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @param negated negated
+     */
     public void doTempCfg(String cmd, boolean negated) {
         lower.templateConfig(this, cmd, negated);
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void getConfig(List<String> l, String beg, boolean filter) {
         l.addAll(getParamCfg(beg, "template " + tempName + " ", false));
     }

@@ -83,23 +83,49 @@ public class prtGre implements ipPrt, ifcDn {
         lower = parent;
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return protoNum;
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closeUp(ipFwdIface iface) {
         upper.closeUp();
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
         if (iface.ifwNum != sendingIfc.ifwNum) {
             return;
@@ -107,20 +133,41 @@ public class prtGre implements ipPrt, ifcDn {
         upper.setState(stat);
     }
 
+    /**
+     * get hw address
+     *
+     * @return hw address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         lower.protoDel(this, sendingIfc, remote);
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
@@ -147,6 +194,12 @@ public class prtGre implements ipPrt, ifcDn {
         return lower.protoAdd(this, sendingIfc, remote);
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIface interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIface, packHolder pck) {
         cntr.rx(pck);
         if (debugger.prtGreTraf) {
@@ -216,13 +269,33 @@ public class prtGre implements ipPrt, ifcDn {
         upper.recvPack(pck);
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         int typ = pck.msbGetW(0);
@@ -280,6 +353,11 @@ public class prtGre implements ipPrt, ifcDn {
         return "gre to " + remote;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         int i = sendingIfc.mtu - size;
         if (tunnelKey != 0) {
@@ -294,6 +372,11 @@ public class prtGre implements ipPrt, ifcDn {
         return i;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return sendingIfc.bandwidth;
     }

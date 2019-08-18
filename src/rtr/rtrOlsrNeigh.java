@@ -205,6 +205,9 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
         return (done > 0);
     }
 
+    /**
+     * stop work
+     */
     public void bfdPeerDown() {
         iface.lower.datagramClosed(conn);
     }

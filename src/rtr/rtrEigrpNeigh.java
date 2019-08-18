@@ -189,6 +189,9 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         return "eigrp with " + peer;
     }
 
+    /**
+     * stop work
+     */
     public void bfdPeerDown() {
         stopWork();
     }

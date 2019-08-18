@@ -71,14 +71,29 @@ public class rtrMsdp extends ipRtr {
         rtrNum = id;
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "msdp on " + fwdCore;
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         return neighs.size();
     }
 
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
         for (int i = 0; i < neighs.size(); i++) {
             rtrMsdpNeigh nei = neighs.get(i);
@@ -91,6 +106,11 @@ public class rtrMsdp extends ipRtr {
         }
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return 0;
     }
@@ -103,6 +123,9 @@ public class rtrMsdp extends ipRtr {
         return ifc.ifwNum;
     }
 
+    /**
+     * create computed
+     */
     public synchronized void routerCreateComputed() {
         tabGen<ipFwdMcast> lst = new tabGen<ipFwdMcast>();
         for (int o = 0; o < neighs.size(); o++) {
@@ -125,12 +148,23 @@ public class rtrMsdp extends ipRtr {
         cache = lst;
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1 2   neighbor                    specify neighbor parameters");
         l.add("2 3     <addr>                    address of peer");
@@ -150,6 +184,13 @@ public class rtrMsdp extends ipRtr {
         l.add("3 .       bfd                     enable bfd triggered down");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         for (int i = 0; i < neighs.size(); i++) {
             rtrMsdpNeigh ntry = neighs.get(i);
@@ -160,6 +201,12 @@ public class rtrMsdp extends ipRtr {
         }
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
@@ -245,6 +292,9 @@ public class rtrMsdp extends ipRtr {
         return true;
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
         for (int i = 0; i < neighs.size(); i++) {
             rtrMsdpNeigh ntry = neighs.get(i);

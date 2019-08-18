@@ -330,6 +330,9 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
         iface.neighs.del(this);
     }
 
+    /**
+     * stop work
+     */
     public void bfdPeerDown() {
         stopNow();
     }

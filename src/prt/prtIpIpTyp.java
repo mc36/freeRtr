@@ -32,6 +32,11 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
 
     private state.states lastState = state.states.up;
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
@@ -62,43 +67,87 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
         return b;
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         ip4.closeDn();
         ip6.closeDn();
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         upper.closeUp();
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return lastState;
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         lastState = stat;
         cntr.stateChange(stat);
         upper.setState(stat);
     }
 
+    /**
+     * get hw address
+     *
+     * @return hw address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         int i = ip4.getMTUsize();
         int o = ip6.getMTUsize();
@@ -108,6 +157,11 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
         return i;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         long i = ip4.getBandwidth();
         long o = ip4.getBandwidth();
@@ -137,6 +191,11 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
         ip6.sendingTTL = i;
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         int i = pck.msbGetW(0);
@@ -154,6 +213,11 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
         }
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         int i = ifcEther.guessEtherType(pck);

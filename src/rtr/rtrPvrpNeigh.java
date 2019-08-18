@@ -106,6 +106,9 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         return "pvrp with " + peer;
     }
 
+    /**
+     * stop work
+     */
     public void bfdPeerDown() {
         stopWork();
     }

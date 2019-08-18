@@ -37,6 +37,12 @@ public class packL2tp2 extends packL2tp {
      */
     public int seqTx = -1;
 
+    /**
+     * parse header
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean parseHeader(packHolder pck) {
         int flags = pck.msbGetW(0);
         ctrl = (flags & 0x8000) != 0;
@@ -67,6 +73,11 @@ public class packL2tp2 extends packL2tp {
         return false;
     }
 
+    /**
+     * create header
+     *
+     * @param pck packet
+     */
     public void createHeader(packHolder pck) {
         int flags = 2;
         if (ctrl) {
@@ -96,6 +107,11 @@ public class packL2tp2 extends packL2tp {
         pck.merge2beg();
     }
 
+    /**
+     * dump header
+     *
+     * @return packet
+     */
     public String dumpHeader() {
         return "tun=" + tunID + " ses=" + sesID + " rx=" + seqRx + " tx=" + seqTx;
     }

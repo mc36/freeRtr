@@ -646,6 +646,9 @@ public class rtrOspf4neigh implements rtrBfdClnt, Comparator<rtrOspf4neigh> {
         lastHeard = bits.getTime();
     }
 
+    /**
+     * stop work
+     */
     public void bfdPeerDown() {
         stopNow();
     }

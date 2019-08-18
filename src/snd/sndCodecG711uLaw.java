@@ -11,18 +11,39 @@ public class sndCodecG711uLaw extends sndCodec {
 
     private static int[] encode;
 
+    /**
+     * get rtp type
+     *
+     * @return type
+     */
     public int getRTPtype() {
         return 0;
     }
 
+    /**
+     * get rtp name
+     *
+     * @return name
+     */
     public String getRTPname() {
         return "PCMU";
     }
 
+    /**
+     * get wav type
+     *
+     * @return type
+     */
     public int getWAVtype() {
         return 7;
     }
 
+    /**
+     * get buffer
+     *
+     * @param dir direction
+     * @return buffer
+     */
     protected int[] getBuffer(boolean dir) {
         if (dir) {
             return encode;
@@ -31,6 +52,12 @@ public class sndCodecG711uLaw extends sndCodec {
         }
     }
 
+    /**
+     * set buffer
+     *
+     * @param dir direction
+     * @param buf buffer
+     */
     protected void setBuffer(boolean dir, int[] buf) {
         if (dir) {
             encode = buf;
@@ -39,6 +66,12 @@ public class sndCodecG711uLaw extends sndCodec {
         }
     }
 
+    /**
+     * calculate value
+     *
+     * @param val value
+     * @return value
+     */
     protected int calcDecodeOneValue(int val) {
         val ^= 0x7f;
         boolean signed = (val & 0x80) != 0;

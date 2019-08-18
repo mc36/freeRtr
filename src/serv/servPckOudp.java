@@ -187,9 +187,19 @@ public class servPckOudp extends servGeneric implements prtServP {
         return connFind(id, true) == null;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * stop connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
         servPckOudpConn ntry = connDel(id);
         if (ntry == null) {
@@ -198,6 +208,11 @@ public class servPckOudp extends servGeneric implements prtServP {
         ntry.closeDn();
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
         servPckOudpConn ntry = connFind(id, false);
         if (ntry == null) {
@@ -206,6 +221,13 @@ public class servPckOudp extends servGeneric implements prtServP {
         }
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         servPckOudpConn ntry = connFind(id, false);
         if (ntry == null) {

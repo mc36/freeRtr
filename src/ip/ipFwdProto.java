@@ -28,6 +28,11 @@ public class ipFwdProto implements tabConnectLower {
         return "" + upper;
     }
 
+    /**
+     * dump out
+     *
+     * @return string
+     */
     public String dumper() {
         return "n/a";
     }

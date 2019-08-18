@@ -64,27 +64,57 @@ public class servNetflow extends servGeneric implements prtServS {
      */
     public static tabGen<userFilter> defaultF;
 
+    /**
+     * get defaults filter
+     *
+     * @return filter
+     */
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String srvName() {
         return "netflow";
     }
 
+    /**
+     * get port
+     *
+     * @return port
+     */
     public int srvPort() {
         return packNetflow.port;
     }
 
+    /**
+     * get protocol
+     *
+     * @return protocol
+     */
     public int srvProto() {
         return protoAllDgrm;
     }
 
+    /**
+     * initialize
+     *
+     * @return false on success, true on error
+     */
     public boolean srvInit() {
         restartTimer(false);
         return genStrmStart(this, new pipeLine(32768, true), 0);
     }
 
+    /**
+     * deinitialize
+     *
+     * @return false on success, true on error
+     */
     public boolean srvDeinit() {
         restartTimer(true);
         return genericStop(0);
@@ -104,12 +134,24 @@ public class servNetflow extends servGeneric implements prtServS {
         purgeTimer.schedule(task, 1000, timeout / 4);
     }
 
+    /**
+     * get configuration
+     *
+     * @param beg beginning
+     * @param lst list
+     */
     public void srvShRun(String beg, List<String> lst) {
         lst.add(beg + "timeout " + timeout);
         cmds.cfgLine(lst, !log2local, beg, "local", "");
         cmds.cfgLine(lst, log2file == null, beg, "file", log2file);
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false on success, true on error
+     */
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("file")) {
@@ -139,6 +181,11 @@ public class servNetflow extends servGeneric implements prtServS {
         return true;
     }
 
+    /**
+     * get help
+     *
+     * @param l help
+     */
     public void srvHelp(userHelping l) {
         l.add("1 2  file                         set log file");
         l.add("2 .    <file>                     log file");
@@ -147,6 +194,13 @@ public class servNetflow extends servGeneric implements prtServS {
         l.add("1 .  local                        set local logging");
     }
 
+    /**
+     * start connection
+     *
+     * @param pipe pipeline
+     * @param id connection
+     * @return false on success, true on error
+     */
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.timeout = 120000;
         pipe.lineRx = pipeSide.modTyp.modeCRLF;

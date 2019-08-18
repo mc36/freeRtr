@@ -87,11 +87,22 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
         return new addrPrefix<addrIP>(network, lenDef);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         int i = addrPrefix.dispSub(prefix);
         return network + "/" + (lenDef - i) + " ge " + (lenMin - i) + " le " + (lenMax - i);
     }
 
+    /**
+     * convert to string
+     *
+     * @param beg beginning
+     * @return string
+     */
     public List<String> usrString(String beg) {
         String a = "";
         if (logMatch) {
@@ -153,17 +164,43 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
         return false;
     }
 
+    /**
+     * test if matches
+     *
+     * @param afi address family
+     * @param net network
+     * @return false on success, true on error
+     */
     public boolean matches(int afi, tabRouteEntry<addrIP> net) {
         return matches(afi, net.prefix);
     }
 
+    /**
+     * test if matches
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean matches(packHolder pck) {
         return matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
+    /**
+     * update entry
+     *
+     * @param afi address family
+     * @param net network
+     */
     public void update(int afi, tabRouteEntry<addrIP> net) {
     }
 
+    /**
+     * test if matches
+     *
+     * @param afi address family
+     * @param net network
+     * @return false on success, true on error
+     */
     public boolean matches(int afi, addrPrefix<addrIP> net) {
         if (net.maskLen < lenMin) {
             return false;

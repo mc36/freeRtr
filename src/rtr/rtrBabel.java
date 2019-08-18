@@ -168,10 +168,20 @@ public class rtrBabel extends ipRtr implements prtServP {
         fwdCore.routerAdd(this, rouTyp, id);
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         return neighs.size();
     }
 
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
         for (int i = 0; i < neighs.size(); i++) {
             rtrBabelNeigh nei = neighs.get(i);
@@ -184,6 +194,11 @@ public class rtrBabel extends ipRtr implements prtServP {
         }
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return ifaces.size();
     }
@@ -204,6 +219,11 @@ public class rtrBabel extends ipRtr implements prtServP {
         return new typLenVal(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "babel on " + fwdCore;
     }
@@ -231,6 +251,11 @@ public class rtrBabel extends ipRtr implements prtServP {
         return ntry;
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closedInterface(ipFwdIface iface) {
         rtrBabelIface ifc = new rtrBabelIface(this, iface);
         ifc = ifaces.del(ifc);
@@ -249,6 +274,12 @@ public class rtrBabel extends ipRtr implements prtServP {
         routerCreateComputed();
     }
 
+    /**
+     * accept connection
+     *
+     * @param id connection
+     * @return false if success, true if error
+     */
     public boolean datagramAccept(prtGenConn id) {
         rtrBabelIface ifc = new rtrBabelIface(this, id.iface);
         ifc = ifaces.find(ifc);
@@ -270,9 +301,19 @@ public class rtrBabel extends ipRtr implements prtServP {
         return false;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * close connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
         rtrBabelNeigh ntry = new rtrBabelNeigh(id);
         ntry = neighs.del(ntry);
@@ -284,6 +325,11 @@ public class rtrBabel extends ipRtr implements prtServP {
         routerCreateComputed();
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
         rtrBabelNeigh nei = new rtrBabelNeigh(id);
         nei = neighs.find(nei);
@@ -302,6 +348,13 @@ public class rtrBabel extends ipRtr implements prtServP {
         id.setClosing();
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false if success, true if error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         rtrBabelNeigh ntry = new rtrBabelNeigh(id);
         ntry = neighs.find(ntry);
@@ -315,6 +368,9 @@ public class rtrBabel extends ipRtr implements prtServP {
         return false;
     }
 
+    /**
+     * create computed table
+     */
     public synchronized void routerCreateComputed() {
         if (debugger.rtrBabelEvnt) {
             logger.debug("create table");
@@ -349,13 +405,22 @@ public class rtrBabel extends ipRtr implements prtServP {
         fwdCore.routerChg(this);
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         routerCreateComputed();
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
         rtrBabelIface ntryi = new rtrBabelIface(null, null);
         for (int i = ifaces.size() - 1; i >= 0; i--) {
@@ -378,15 +443,33 @@ public class rtrBabel extends ipRtr implements prtServP {
         fwdCore.routerDel(this);
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1 2   router-id                   specify router id");
         l.add("2 .     <addr>                    router id");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "router-id " + routerID);
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;

@@ -746,14 +746,29 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         ethtyp.delET(rtrIsis.ethTyp);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         upper = parent;
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         if (stat == state.states.up) {
             return;
@@ -761,9 +776,17 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         closeNeighbors();
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (passiveInt) {

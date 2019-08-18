@@ -204,6 +204,9 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
         return (done > 0);
     }
 
+    /**
+     * stop work
+     */
     public void bfdPeerDown() {
         iface.lower.datagramClosed(conn);
     }

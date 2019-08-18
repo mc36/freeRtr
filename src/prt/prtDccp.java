@@ -246,6 +246,11 @@ public class prtDccp extends prtGen {
         return "dccp on " + fwdCore;
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return protoNum;
     }
@@ -414,6 +419,12 @@ public class prtDccp extends prtGen {
         return false;
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (parseDCCPheader(pck)) {
@@ -426,10 +437,25 @@ public class prtDccp extends prtGen {
         connectionSimpleWork(rxIfc, pck);
     }
 
+    /**
+     * received alert
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * received error
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
         parseDCCPports(pck);
         if (debugger.prtDccpTraf) {
@@ -457,6 +483,12 @@ public class prtDccp extends prtGen {
         fwdCore.protoPack(clnt.iface, pck);
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
     }
 

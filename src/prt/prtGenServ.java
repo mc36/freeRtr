@@ -60,6 +60,11 @@ public class prtGenServ implements tabConnectLower {
         return name + " " + iface + " " + locP;
     }
 
+    /**
+     * dump
+     *
+     * @return string
+     */
     public String dumper() {
         return "n/a";
     }

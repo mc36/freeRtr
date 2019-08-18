@@ -128,6 +128,9 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         return "lsrp with " + peer;
     }
 
+    /**
+     * stop work
+     */
     public void bfdPeerDown() {
         stopWork();
     }

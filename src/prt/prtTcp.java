@@ -545,6 +545,11 @@ public class prtTcp extends prtGen {
         return "tcp on " + fwdCore;
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return protoNum;
     }
@@ -563,6 +568,13 @@ public class prtTcp extends prtGen {
         return bits.random(0x8000, 0xf000);
     }
 
+    /**
+     * start connection
+     *
+     * @param clnt client
+     * @param pck packet
+     * @return false if success, true if error
+     */
     protected boolean connectionStart(prtGenConn clnt, packHolder pck) {
         if (debugger.prtTcpTraf) {
             logger.debug("start");
@@ -600,6 +612,11 @@ public class prtTcp extends prtGen {
         sendResetBack(pck, ifc);
     }
 
+    /**
+     * close connection
+     *
+     * @param clnt client
+     */
     protected void connectionClose(prtGenConn clnt) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
         if (debugger.prtTcpTraf) {
@@ -616,11 +633,24 @@ public class prtTcp extends prtGen {
         pr.activFrcd = true;
     }
 
+    /**
+     * bytes available
+     *
+     * @param ntry connection
+     * @return bytes
+     */
     protected int connectionBytes(prtGenConn ntry) {
         prtTcpConn pr = (prtTcpConn) ntry.proto;
         return pr.netBufTx.ready2tx();
     }
 
+    /**
+     * send packet
+     *
+     * @param clnt client
+     * @param pck packet
+     * @return false if success, true if error
+     */
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
         return pck.pipeSend(pr.netBufTx, 0, pck.dataSize(), 1) != pck.dataSize();
@@ -630,6 +660,12 @@ public class prtTcp extends prtGen {
         return (i < -winSizMax) || (i > winSizMax);
     }
 
+    /**
+     * received packet
+     *
+     * @param clnt client
+     * @param pck packet
+     */
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
         synchronized (pr.lck) {
@@ -875,6 +911,11 @@ public class prtTcp extends prtGen {
         return true;
     }
 
+    /**
+     * work connection
+     *
+     * @param clnt client
+     */
     protected void connectionWork(prtGenConn clnt) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
         long curTim = bits.getTime();
@@ -928,6 +969,12 @@ public class prtTcp extends prtGen {
         }
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (parseTCPheader(pck)) {
@@ -940,10 +987,25 @@ public class prtTcp extends prtGen {
         connectionSimpleWork(rxIfc, pck);
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false if success, true if error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
         parseTCPports(pck);
         if (debugger.prtTcpTraf) {
@@ -952,6 +1014,12 @@ public class prtTcp extends prtGen {
         connectionSimpleError(err, rtr, rxIfc, pck);
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
     }
 

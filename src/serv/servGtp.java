@@ -175,9 +175,19 @@ public class servGtp extends servGeneric implements prtServP {
         return false;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * stop connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
         servGtpConn ntry = connDel(id.peerAddr);
         if (ntry == null) {
@@ -186,6 +196,11 @@ public class servGtp extends servGeneric implements prtServP {
         ntry.setClosed();
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
         servGtpConn ntry = connFind(id.peerAddr, false);
         if (ntry == null) {
@@ -195,6 +210,13 @@ public class servGtp extends servGeneric implements prtServP {
         ntry.doWork(id);
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         servGtpConn ntry = connFind(id.peerAddr, false);
         if (ntry == null) {

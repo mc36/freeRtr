@@ -94,7 +94,7 @@ public class servHttp extends servGeneric implements prtServS {
     public final static String defaultL[] = {
         "server http .*! port " + clearPort,
         "server http .*! protocol " + proto2string(protoAllStrm),
-        "server http .*! no proxy", 
+        "server http .*! no proxy",
         "server http .*! no error",
         "server http .*! host .* nostyle",
         "server http .*! host .* noredir",
@@ -122,6 +122,11 @@ public class servHttp extends servGeneric implements prtServS {
      */
     public static tabGen<userFilter> defaultF;
 
+    /**
+     * get defaults filter
+     *
+     * @return filter
+     */
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
     }
@@ -144,12 +149,25 @@ public class servHttp extends servGeneric implements prtServS {
         return hosts.find(ntry);
     }
 
+    /**
+     * start connection
+     *
+     * @param pipe pipeline
+     * @param id connection
+     * @return false on success, true on error
+     */
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.timeout = 120000;
         new servHttpConn(this, pipe, id);
         return false;
     }
 
+    /**
+     * get config
+     *
+     * @param beg beginning
+     * @param l list
+     */
     public void srvShRun(String beg, List<String> l) {
         if (proxy == null) {
             l.add(beg + "no proxy");
@@ -268,6 +286,12 @@ public class servHttp extends servGeneric implements prtServS {
         }
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false on success, true on error
+     */
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
         if (a.equals("delhost")) {
@@ -550,6 +574,11 @@ public class servHttp extends servGeneric implements prtServS {
         return true;
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void srvHelp(userHelping l) {
         l.add("1 2  delhost                        delete one virtual server");
         l.add("2 .    <name>                       name of server");
@@ -618,22 +647,47 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("3 .      nostyle                    clear page style tags");
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String srvName() {
         return "http";
     }
 
+    /**
+     * get port
+     *
+     * @return port
+     */
     public int srvPort() {
         return clearPort;
     }
 
+    /**
+     * get protocol
+     *
+     * @return protocol
+     */
     public int srvProto() {
         return protoAllStrm;
     }
 
+    /**
+     * initialize
+     *
+     * @return false on success, true on error
+     */
     public boolean srvInit() {
         return genStrmStart(this, new pipeLine(65536, false), 0);
     }
 
+    /**
+     * deinitialize
+     *
+     * @return false on success, true on error
+     */
     public boolean srvDeinit() {
         return genericStop(0);
     }

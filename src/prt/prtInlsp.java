@@ -144,41 +144,87 @@ public class prtInlsp implements ipPrt, ifcDn {
         return "inlsp to " + remote;
     }
 
+    /**
+     * get hw address
+     *
+     * @return hw address
+     */
     public addrType getHwAddr() {
         return addrMac.getRandom();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         lower.protoDel(this, sendingIfc, remote);
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return sendingIfc.mtu - size;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return sendingIfc.bandwidth;
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public synchronized void sendPack(packHolder pck) {
         pck.merge2beg();
         if (sendingIfc == null) {
@@ -233,14 +279,30 @@ public class prtInlsp implements ipPrt, ifcDn {
         lower.protoPack(sendingIfc, pck);
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return prot;
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closeUp(ipFwdIface iface) {
         upper.closeUp();
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
         if (iface.ifwNum != sendingIfc.ifwNum) {
             return;
@@ -248,6 +310,12 @@ public class prtInlsp implements ipPrt, ifcDn {
         upper.setState(stat);
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public synchronized void recvPack(ipFwdIface rxIfc, packHolder pck) {
         int o = prtTmux.proto2ethtyp(pck.getByte(0)); // protocol
         if (o < 0) {
@@ -305,10 +373,25 @@ public class prtInlsp implements ipPrt, ifcDn {
         upper.recvPack(pck);
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 

@@ -106,6 +106,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
         new Thread(this).start();
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "pvrp on " + fwdCore;
     }
@@ -208,6 +213,9 @@ public class rtrPvrp extends ipRtr implements Runnable {
         return fwdCore.ipVersion;
     }
 
+    /**
+     * create computed
+     */
     public synchronized void routerCreateComputed() {
         if (debugger.rtrPvrpEvnt) {
             logger.debug("create table");
@@ -287,13 +295,22 @@ public class rtrPvrp extends ipRtr implements Runnable {
         fwdCore.routerChg(this);
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         routerCreateComputed();
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
         if (debugger.rtrPvrpEvnt) {
             logger.debug("shutdown");
@@ -305,17 +322,35 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1 2   router-id                   specify router id");
         l.add("2 .     <addr>                    router id");
         l.add("1 .   labels                      specify label mode");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "router-id " + routerID);
         cmds.cfgLine(l, !labels, beg, "labels", "");
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
@@ -352,6 +387,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         int o = 0;
         for (int i = 0; i < ifaces.size(); i++) {
@@ -360,6 +400,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
         return o;
     }
 
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
         for (int o = 0; o < ifaces.size(); o++) {
             rtrPvrpIface ifc = ifaces.get(o);
@@ -378,6 +423,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return ifaces.size();
     }

@@ -93,10 +93,18 @@ public class rtrUni2flow extends ipRtr {
         fwdCore.routerAdd(this, rouTyp, id);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "uni2flow on " + fwdCore;
     }
 
+    /**
+     * create computed
+     */
     public synchronized void routerCreateComputed() {
         tabRoute<addrIP> res = new tabRoute<addrIP>("computed");
         for (int i = 0; i < routerRedistedU.size(); i++) {
@@ -130,13 +138,24 @@ public class rtrUni2flow extends ipRtr {
         fwdCore.routerChg(this);
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         routerCreateComputed();
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1 2   distance                    specify default distance");
         l.add("2 .     <num>                     distance");
@@ -149,6 +168,13 @@ public class rtrUni2flow extends ipRtr {
         l.add("2 .     <num>                     bytes/sec");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "distance " + distance);
         l.add(beg + "direction " + ((direction == 1) ? "target" : "source"));
@@ -156,6 +182,12 @@ public class rtrUni2flow extends ipRtr {
         l.add(beg + "rate " + trgRate);
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false on success, true on error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
@@ -187,16 +219,34 @@ public class rtrUni2flow extends ipRtr {
         return true;
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         return 0;
     }
 
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return 0;
     }

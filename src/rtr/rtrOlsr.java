@@ -190,10 +190,20 @@ public class rtrOlsr extends ipRtr implements prtServP {
         }
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         return neighs.size();
     }
 
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
         for (int i = 0; i < neighs.size(); i++) {
             rtrOlsrNeigh nei = neighs.get(i);
@@ -206,10 +216,20 @@ public class rtrOlsr extends ipRtr implements prtServP {
         }
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return ifaces.size();
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "olsr on " + fwdCore;
     }
@@ -237,6 +257,11 @@ public class rtrOlsr extends ipRtr implements prtServP {
         return ntry;
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closedInterface(ipFwdIface iface) {
         rtrOlsrIface ifc = new rtrOlsrIface(this, iface);
         ifc = ifaces.del(ifc);
@@ -255,6 +280,12 @@ public class rtrOlsr extends ipRtr implements prtServP {
         routerCreateComputed();
     }
 
+    /**
+     * start connection
+     *
+     * @param id connection
+     * @return false if success, true if error
+     */
     public boolean datagramAccept(prtGenConn id) {
         rtrOlsrIface ifc = new rtrOlsrIface(this, id.iface);
         ifc = ifaces.find(ifc);
@@ -277,9 +308,19 @@ public class rtrOlsr extends ipRtr implements prtServP {
         return false;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * stop connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
         rtrOlsrNeigh ntry = new rtrOlsrNeigh(id);
         ntry = neighs.del(ntry);
@@ -292,6 +333,11 @@ public class rtrOlsr extends ipRtr implements prtServP {
         routerCreateComputed();
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
         rtrOlsrNeigh nei = new rtrOlsrNeigh(id);
         nei = neighs.find(nei);
@@ -310,6 +356,13 @@ public class rtrOlsr extends ipRtr implements prtServP {
         id.setClosing();
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false if success, true if error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         rtrOlsrNeigh ntry = new rtrOlsrNeigh(id);
         ntry = neighs.find(ntry);
@@ -323,6 +376,9 @@ public class rtrOlsr extends ipRtr implements prtServP {
         return false;
     }
 
+    /**
+     * create computed
+     */
     public synchronized void routerCreateComputed() {
         if (debugger.rtrOlsrEvnt) {
             logger.debug("create table");
@@ -357,13 +413,22 @@ public class rtrOlsr extends ipRtr implements prtServP {
         fwdCore.routerChg(this);
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         routerCreateComputed();
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
         rtrOlsrIface ntryi = new rtrOlsrIface(null, null);
         for (int i = ifaces.size() - 1; i >= 0; i--) {
@@ -386,12 +451,30 @@ public class rtrOlsr extends ipRtr implements prtServP {
         fwdCore.routerDel(this);
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         return true;
     }

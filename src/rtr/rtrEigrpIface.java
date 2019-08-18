@@ -486,20 +486,41 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         return 0;
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return rtrEigrp.protoNum;
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closeUp(ipFwdIface iface) {
         restartTimer(true);
         unregister2ip();
         closeNeighbors();
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, states stat) {
         if (stat == state.states.up) {
             return;
@@ -507,6 +528,12 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         closeNeighbors();
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (passiveInt) {
@@ -536,10 +563,25 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         }
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false if success, true if error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 

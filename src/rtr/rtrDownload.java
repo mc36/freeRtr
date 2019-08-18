@@ -124,6 +124,11 @@ public class rtrDownload extends ipRtr {
         fwdCore.routerAdd(this, rouTyp, id);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "download on " + fwdCore;
     }
@@ -191,6 +196,9 @@ public class rtrDownload extends ipRtr {
         }
     }
 
+    /**
+     * create computed
+     */
     public synchronized void routerCreateComputed() {
         tabRoute<addrIP> res = new tabRoute<addrIP>("computed");
         for (int i = 0; i < dled.size(); i++) {
@@ -215,13 +223,24 @@ public class rtrDownload extends ipRtr {
         fwdCore.routerChg(this);
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         routerCreateComputed();
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1  2      url                        specify url to download");
         l.add("2  2,.      <cmd>                    exec command to run");
@@ -236,6 +255,13 @@ public class rtrDownload extends ipRtr {
         l.add("1  .      hidden                     hide command");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         cmds.cfgLine(l, !hidden, cmds.tabulator, "hidden", "");
         cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
@@ -249,6 +275,12 @@ public class rtrDownload extends ipRtr {
         l.add(cmds.tabulator + "time " + interval);
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
@@ -301,17 +333,35 @@ public class rtrDownload extends ipRtr {
         return true;
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
         stopNow();
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         return 0;
     }
 
+    /**
+     * neighbor list
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return 0;
     }

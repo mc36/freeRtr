@@ -215,6 +215,9 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
         return (done > 0);
     }
 
+    /**
+     * stop work
+     */
     public void bfdPeerDown() {
         iface.lower.datagramClosed(conn);
     }

@@ -95,6 +95,11 @@ public class rtrLogger extends ipRtr {
         fwdCore.routerAdd(this, rouTyp, id);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "logger on " + fwdCore;
     }
@@ -275,6 +280,9 @@ public class rtrLogger extends ipRtr {
         }
     }
 
+    /**
+     * create computed
+     */
     public synchronized void routerCreateComputed() {
         doDiff(1, oldU, routerRedistedU);
         doDiff(2, oldM, routerRedistedM);
@@ -284,23 +292,47 @@ public class rtrLogger extends ipRtr {
         oldF = routerRedistedF;
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         routerCreateComputed();
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1 .   flapstat                    count flap statistics");
         l.add("1 .   logging                     log events");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         cmds.cfgLine(l, flaps == null, beg, "flapstat", "");
         cmds.cfgLine(l, !logging, beg, "logging", "");
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
@@ -323,16 +355,34 @@ public class rtrLogger extends ipRtr {
         return true;
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         return 0;
     }
 
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return 0;
     }

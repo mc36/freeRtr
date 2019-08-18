@@ -58,14 +58,31 @@ public class servIrc extends servGeneric implements prtServS {
      */
     public static tabGen<userFilter> defaultF;
 
+    /**
+     * get defaults filter
+     *
+     * @return filter
+     */
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
     }
 
+    /**
+     * get config
+     *
+     * @param beg beginning
+     * @param l list
+     */
     public void srvShRun(String beg, List<String> l) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false on success, true on error
+     */
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("logging")) {
@@ -83,30 +100,67 @@ public class servIrc extends servGeneric implements prtServS {
         return true;
     }
 
+    /**
+     * get help
+     *
+     * @param l help
+     */
     public void srvHelp(userHelping l) {
         l.add("1 .  logging                   log user communication");
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String srvName() {
         return "irc";
     }
 
+    /**
+     * get port
+     *
+     * @return port
+     */
     public int srvPort() {
         return port;
     }
 
+    /**
+     * get protocol
+     *
+     * @return protocol
+     */
     public int srvProto() {
         return protoAllStrm;
     }
 
+    /**
+     * initialize
+     *
+     * @return false on success, true on error
+     */
     public boolean srvInit() {
         return genStrmStart(this, new pipeLine(32768, false), 0);
     }
 
+    /**
+     * deinitialize
+     *
+     * @return false on success, true on error
+     */
     public boolean srvDeinit() {
         return genericStop(0);
     }
 
+    /**
+     * start connection
+     *
+     * @param pipe pipeline
+     * @param id connection
+     * @return false on success, true on error
+     */
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.timeout = 120000;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;

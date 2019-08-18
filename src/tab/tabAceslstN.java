@@ -144,6 +144,11 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         }
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         String a = proto + " " + convPart(srcAddr, srcMask, srcPort, srcOGnet, srcOGprt) + " " + convPart(trgAddr, trgMask, trgPort, trgOGnet, trgOGprt);
         if (tos.action != tabIntMatcher.actionType.always) {
@@ -305,23 +310,55 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         }
     }
 
+    /**
+     * convert to string
+     *
+     * @param beg beginning
+     * @return string
+     */
     public List<String> usrString(String beg) {
         List<String> l = new ArrayList<String>();
         l.add(beg + "sequence " + sequence + " " + tabListingEntry.action2string(action) + " " + this);
         return l;
     }
 
+    /**
+     * test if matches
+     *
+     * @param afi address family
+     * @param net network
+     * @return false on success, true on error
+     */
     public boolean matches(int afi, addrPrefix<T> net) {
         return false;
     }
 
+    /**
+     * test if matches
+     *
+     * @param afi address family
+     * @param net network
+     * @return false on success, true on error
+     */
     public boolean matches(int afi, tabRouteEntry<T> net) {
         return false;
     }
 
+    /**
+     * update entry
+     *
+     * @param afi address family
+     * @param net network
+     */
     public void update(int afi, tabRouteEntry<T> net) {
     }
 
+    /**
+     * test if matches
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean matches(packHolder pck) {
         if (!proto.matches(pck.IPprt)) {
             return false;

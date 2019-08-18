@@ -180,9 +180,19 @@ public class servL2tp2 extends servGeneric implements prtServP {
         return false;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * stop connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
         servL2tp2conn ntry = connDel(id);
         if (ntry == null) {
@@ -191,6 +201,11 @@ public class servL2tp2 extends servGeneric implements prtServP {
         ntry.setClosed();
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
         servL2tp2conn ntry = connFind(id, false);
         if (ntry == null) {
@@ -200,6 +215,13 @@ public class servL2tp2 extends servGeneric implements prtServP {
         ntry.doWork();
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         servL2tp2conn ntry = connFind(id, false);
         if (ntry == null) {

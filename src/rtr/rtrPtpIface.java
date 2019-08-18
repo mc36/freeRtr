@@ -90,9 +90,20 @@ public class rtrPtpIface implements Runnable, prtServP {
         new Thread(this).start();
     }
 
+    /**
+     * close interface
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * accept connection
+     *
+     * @param id connection
+     * @return false if success, true if error
+     */
     public boolean datagramAccept(prtGenConn id) {
         if (debugger.rtrPtpEvnt) {
             logger.debug("starting with " + id.peerAddr);
@@ -100,18 +111,40 @@ public class rtrPtpIface implements Runnable, prtServP {
         return false;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * stop connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
         if (debugger.rtrPtpEvnt) {
             logger.debug("stopping with " + id.peerAddr);
         }
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false if success, true if error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         if (debugger.rtrPtpTraf) {
             logger.debug("got from " + id.peerAddr);

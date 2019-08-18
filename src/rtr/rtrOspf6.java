@@ -134,10 +134,18 @@ public class rtrOspf6 extends ipRtr {
         fwdCore.routerAdd(this, tabRouteEntry.routeType.ospf6, id);
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "ospf on " + fwdCore;
     }
 
+    /**
+     * create computed
+     */
     public synchronized void routerCreateComputed() {
         if (debugger.rtrOspf6evnt) {
             logger.debug("create table");
@@ -201,13 +209,24 @@ public class rtrOspf6 extends ipRtr {
         fwdCore.routerChg(this);
     }
 
+    /**
+     * redistribution changed
+     */
     public void routerRedistChanged() {
         genLsas(3);
     }
 
+    /**
+     * others changed
+     */
     public void routerOthersChanged() {
     }
 
+    /**
+     * get help
+     *
+     * @param l list
+     */
     public void routerGetHelp(userHelping l) {
         l.add("1 2   router-id                   specify router id");
         l.add("2 .     <addr>                    router id");
@@ -246,6 +265,13 @@ public class rtrOspf6 extends ipRtr {
         l.add("4 .         <num>                 external distance");
     }
 
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "router-id " + routerID);
         l.add(beg + "traffeng-id " + traffEngID);
@@ -272,6 +298,12 @@ public class rtrOspf6 extends ipRtr {
         l.add(beg + "distance " + distantInt + " " + distantSum + " " + distantExt);
     }
 
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         if (s.equals("router-id")) {
@@ -525,6 +557,9 @@ public class rtrOspf6 extends ipRtr {
         return true;
     }
 
+    /**
+     * stop work
+     */
     public void routerCloseNow() {
         for (int i = 0; i < areas.size(); i++) {
             rtrOspf6area ntry = areas.get(i);
@@ -804,6 +839,11 @@ public class rtrOspf6 extends ipRtr {
         return ara.lastSpf.listGraphviz();
     }
 
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
     public int routerNeighCount() {
         int o = 0;
         for (int i = 0; i < ifaces.size(); i++) {
@@ -812,6 +852,11 @@ public class rtrOspf6 extends ipRtr {
         return o;
     }
 
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
     public void routerNeighList(tabRoute<addrIP> tab) {
         for (int o = 0; o < ifaces.size(); o++) {
             rtrOspf6iface ifc = ifaces.get(o);
@@ -832,6 +877,11 @@ public class rtrOspf6 extends ipRtr {
         }
     }
 
+    /**
+     * get interface count
+     *
+     * @return count
+     */
     public int routerIfaceCount() {
         return ifaces.size();
     }
