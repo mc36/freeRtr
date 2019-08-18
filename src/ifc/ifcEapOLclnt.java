@@ -86,6 +86,15 @@ public class ifcEapOLclnt implements ifcUp, authenDown {
     public void setState(state.states stat) {
     }
 
+    /**
+     * send authentication packet
+     *
+     * @param pck packet
+     * @param proto protocol
+     * @param code code
+     * @param id id
+     * @param msg message
+     */
     public void sendAuthPack(packHolder pck, int proto, int code, int id, String msg) {
         authenHead cis = new authenHead();
         cis.code = code;

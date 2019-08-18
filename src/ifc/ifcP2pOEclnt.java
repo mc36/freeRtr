@@ -88,11 +88,19 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
         return cntr;
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
         hwAddr = (addrMac) parent.getHwAddr();
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         setState(state.states.close);
         upper.closeUp();
@@ -132,6 +140,11 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
         restartTimer(false);
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         stat = state.toForceable(stat);
         if (checkPeerState(stat)) {
@@ -280,6 +293,11 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
         }
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         packPppOE poe = new packPppOE();
         if (poe.parseHeader(pck)) {

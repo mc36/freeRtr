@@ -28,16 +28,34 @@ public class ifcUdpInt extends ifcThread {
 
     private String lnam;
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return 1500;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         if (etherEnc) {
             return 100000000;

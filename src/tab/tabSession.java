@@ -88,6 +88,11 @@ public class tabSession implements Runnable {
         return a.trim();
     }
 
+    /**
+     * convert from string
+     *
+     * @param cmd string
+     */
     public void fromString(cmds cmd) {
         for (;;) {
             String a = cmd.word();

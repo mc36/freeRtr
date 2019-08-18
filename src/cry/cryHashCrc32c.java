@@ -45,6 +45,9 @@ public class cryHashCrc32c extends cryHashGeneric {
         }
     }
 
+    /**
+     * initialize
+     */
     public void init() {
         if (tab == null) {
             makeTab();
@@ -61,14 +64,29 @@ public class cryHashCrc32c extends cryHashGeneric {
         crc = i;
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String getName() {
         return "crc32c";
     }
 
+    /**
+     * get hash size
+     *
+     * @return size
+     */
     public int getHashSize() {
         return 4;
     }
 
+    /**
+     * get block size
+     *
+     * @return size
+     */
     public int getBlockSize() {
         return 1;
     }
@@ -77,12 +95,24 @@ public class cryHashCrc32c extends cryHashGeneric {
         crc = (crc >>> 8) ^ tab[(crc ^ i) & 0xFF];
     }
 
+    /**
+     * compute block
+     *
+     * @param buf buffer
+     * @param ofs offset
+     * @param siz size
+     */
     public void update(byte[] buf, int ofs, int siz) {
         for (int i = 0; i < siz; i++) {
             updateByte(buf[ofs + i]);
         }
     }
 
+    /**
+     * finish
+     *
+     * @return computed
+     */
     public byte[] finish() {
         byte[] buf = new byte[4];
         bits.lsbPutD(buf, 0, crc ^ 0xffffffff);

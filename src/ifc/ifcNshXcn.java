@@ -32,17 +32,35 @@ public class ifcNshXcn implements ifcUp {
      */
     public int si;
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
     }
 
@@ -50,6 +68,10 @@ public class ifcNshXcn implements ifcUp {
         return "nshx on " + lower;
     }
 
+    /**
+     *
+     * @param pck
+     */
     public void recvPack(packHolder pck) {
         pck.IPprt = ifcNshFwd.protEth;
         pck.NSHttl = 63;

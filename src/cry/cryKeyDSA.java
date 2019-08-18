@@ -56,14 +56,30 @@ public class cryKeyDSA extends cryKeyGeneric {
 
     private final static int hashBytes = hashBits / 8;
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "prime=" + prime + " subprime=" + subprime + " group=" + group + " pubkey=" + pub + " privkey=" + priv;
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String algName() {
         return "dsa";
     }
 
+    /**
+     * read certificate
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean certReader(packHolder pck) {
         cryAsn1 a = new cryAsn1();
         if (a.tagRead(pck)) {
@@ -108,6 +124,11 @@ public class cryKeyDSA extends cryKeyGeneric {
         return false;
     }
 
+    /**
+     * write certificate
+     *
+     * @param pck packet
+     */
     public void certWriter(packHolder pck) {
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
@@ -127,6 +148,12 @@ public class cryKeyDSA extends cryKeyGeneric {
         cryAsn1.writeSequence(pck, p3);
     }
 
+    /**
+     * read private key
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean privReader(packHolder pck) {
         cryAsn1 a = new cryAsn1();
         if (a.tagRead(pck)) {
@@ -166,6 +193,11 @@ public class cryKeyDSA extends cryKeyGeneric {
         return false;
     }
 
+    /**
+     * write private key
+     *
+     * @param pck packet
+     */
     public void privWriter(packHolder pck) {
         packHolder p = new packHolder(true, true);
         cryAsn1.writeBigInt(p, BigInteger.ZERO);
@@ -177,6 +209,11 @@ public class cryKeyDSA extends cryKeyGeneric {
         cryAsn1.writeSequence(pck, p);
     }
 
+    /**
+     * make key
+     *
+     * @param len length
+     */
     public void keyMake(int len) {
         priv = randomBigInt(hashBits);
         subprime = randomPrime(hashBits);
@@ -198,6 +235,11 @@ public class cryKeyDSA extends cryKeyGeneric {
         pub = group.modPow(priv, prime);
     }
 
+    /**
+     * verify key
+     *
+     * @return false on success, true on error
+     */
     public boolean keyVerify() {
         if (!testPrime(subprime)) {
             return true;
@@ -217,6 +259,11 @@ public class cryKeyDSA extends cryKeyGeneric {
         return false;
     }
 
+    /**
+     * get key size
+     *
+     * @return size
+     */
     public int keySize() {
         return prime.bitLength();
     }
@@ -282,6 +329,12 @@ public class cryKeyDSA extends cryKeyGeneric {
         return v.compareTo(sgnR) != 0;
     }
 
+    /**
+     * read ssh key
+     *
+     * @param key key
+     * @return false on success, true on error
+     */
     public boolean sshReader(byte[] key) {
         packHolder p = new packHolder(true, true);
         p.putCopy(key, 0, 0, key.length);
@@ -297,6 +350,11 @@ public class cryKeyDSA extends cryKeyGeneric {
         return false;
     }
 
+    /**
+     * write ssh key
+     *
+     * @return key
+     */
     public byte[] sshWriter() {
         packHolder p = new packHolder(true, true);
         packSsh.stringWrite(p, sshName);
@@ -308,6 +366,13 @@ public class cryKeyDSA extends cryKeyGeneric {
         return p.getCopy();
     }
 
+    /**
+     * verify ssh key
+     *
+     * @param hash hashed
+     * @param sign signed
+     * @return false on success, true on error
+     */
     public boolean sshVerify(byte[] hash, byte[] sign) {
         hash = cryHashGeneric.compute(new cryHashSha1(), hash);
         packHolder p = new packHolder(true, true);
@@ -322,6 +387,12 @@ public class cryKeyDSA extends cryKeyGeneric {
         return doVerify(hash);
     }
 
+    /**
+     * sign for ssh
+     *
+     * @param hash hashed
+     * @return signed
+     */
     public byte[] sshSigning(byte[] hash) {
         hash = cryHashGeneric.compute(new cryHashSha1(), hash);
         doSigning(hash);
@@ -333,6 +404,13 @@ public class cryKeyDSA extends cryKeyGeneric {
         return p.getCopy();
     }
 
+    /**
+     * verify ceriticate
+     *
+     * @param hash hash
+     * @param sign signature
+     * @return false on success, true on error
+     */
     public boolean certVerify(byte[] hash, byte[] sign) {
         packHolder p = new packHolder(true, true);
         p.putCopy(sign, 0, 0, sign.length);
@@ -352,6 +430,12 @@ public class cryKeyDSA extends cryKeyGeneric {
         return doVerify(hash);
     }
 
+    /**
+     * sign for certificate
+     *
+     * @param hash hash
+     * @return signed
+     */
     public byte[] certSigning(byte[] hash) {
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);
@@ -365,6 +449,14 @@ public class cryKeyDSA extends cryKeyGeneric {
         return p2.getCopy();
     }
 
+    /**
+     * tls verification
+     *
+     * @param ver version
+     * @param hash hash
+     * @param sign signature
+     * @return false on success, true on error
+     */
     public boolean tlsVerify(int ver, byte[] hash, byte[] sign) {
         packHolder p = new packHolder(true, true);
         p.putCopy(sign, 0, 0, sign.length);
@@ -383,6 +475,13 @@ public class cryKeyDSA extends cryKeyGeneric {
         return doVerify(hash);
     }
 
+    /**
+     * sign for tls
+     *
+     * @param ver version
+     * @param hash hash
+     * @return signature
+     */
     public byte[] tlsSigning(int ver, byte[] hash) {
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);

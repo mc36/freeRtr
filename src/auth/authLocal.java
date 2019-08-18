@@ -28,6 +28,8 @@ public class authLocal extends authGeneric {
 
     private tabGen<authLocalEntry> users;
 
+    private List<String> commands;
+
     private static final String passwdBeg = "$v10$";
 
     private static final String cryptoBeg = "$w10$";
@@ -194,6 +196,7 @@ public class authLocal extends authGeneric {
      */
     public authLocal() {
         users = new tabGen<authLocalEntry>();
+        commands = new ArrayList<String>();
     }
 
     /**
@@ -213,6 +216,10 @@ public class authLocal extends authGeneric {
     public void getHelp(userHelping l) {
         l.add("1 2  deluser             delete one user");
         l.add("2 .    <name>            name of user");
+        l.add("1 2  allowed             allow one command");
+        l.add("2 2,.  <text>            command");
+        l.add("1 2  disallowed          disallow one command");
+        l.add("2 2,.  <text>            command");
         l.add("1 2  username            create or update user");
         l.add("2 3,.  <name>            name of user, * for any");
         l.add("3 4      password        set password of user");
@@ -248,6 +255,14 @@ public class authLocal extends authGeneric {
      */
     public boolean fromString(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("allowed")) {
+            commands.add(cmd.getRemaining().trim());
+            return false;
+        }
+        if (a.equals("disallowed")) {
+            commands.remove(cmd.getRemaining().trim());
+            return false;
+        }
         if (a.equals("deluser")) {
             authLocalEntry ntry = new authLocalEntry();
             ntry.username = cmd.word();
@@ -280,6 +295,9 @@ public class authLocal extends authGeneric {
         for (int i = 0; i < users.size(); i++) {
             authLocalEntry ntry = users.get(i);
             ntry.getShRun(beg, l);
+        }
+        for (int i = 0; i < commands.size(); i++) {
+            l.add(beg + "allowed " + commands.get(i));
         }
         return l;
     }
@@ -347,6 +365,23 @@ public class authLocal extends authGeneric {
                 return new authResult(this, authResult.authBadUserPass, user);
             }
             return createPassed(ntry, user);
+        }
+        return new authResult(this, authResult.authBadUserPass, user);
+    }
+
+    /**
+     * authorize command
+     *
+     * @param user username
+     * @param cmd command
+     * @return result
+     */
+    public authResult authUserCommand(String user, String cmd) {
+        cmd = cmd.toLowerCase();
+        for (int i = 0; i < commands.size(); i++) {
+            if (cmd.matches(commands.get(i))) {
+                return new authResult(this, authResult.authSuccessful, user);
+            }
         }
         return new authResult(this, authResult.authBadUserPass, user);
     }

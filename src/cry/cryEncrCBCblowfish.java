@@ -15,6 +15,13 @@ public class cryEncrCBCblowfish extends cryEncrGeneric {
 
     private Cipher crypter;
 
+    /**
+     * initialize
+     *
+     * @param key key
+     * @param iv iv
+     * @param encrypt mode
+     */
     public void init(byte[] key, byte[] iv, boolean encrypt) {
         final String name = "BLOWFISH";
         int mode;
@@ -33,22 +40,50 @@ public class cryEncrCBCblowfish extends cryEncrGeneric {
         }
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String getName() {
         return "blowfish";
     }
 
+    /**
+     * get block size
+     *
+     * @return size
+     */
     public int getBlockSize() {
         return 8;
     }
 
+    /**
+     * get key size
+     *
+     * @return size
+     */
     public int getKeySize() {
         return 16;
     }
 
+    /**
+     * compute block
+     *
+     * @param buf buffer
+     * @param ofs offset
+     * @param siz size
+     * @return computed block
+     */
     public byte[] compute(byte[] buf, int ofs, int siz) {
         return crypter.update(buf, ofs, siz);
     }
 
+    /**
+     * get next iv
+     *
+     * @return iv
+     */
     public byte[] getNextIV() {
         return crypter.getIV();
     }

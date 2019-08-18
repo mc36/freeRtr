@@ -94,6 +94,7 @@ public class ifcMacSec {
         profil = ips;
         keygen = ips.trans.getGroup();
         keygen.servXchg();
+        replayCheck = profil.replay;
         if (replayCheck > 0) {
             sequence = new tabWindow(replayCheck);
         }

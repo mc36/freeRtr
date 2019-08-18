@@ -71,10 +71,20 @@ public class ifcBundleIfc implements ifcUp, Comparator<ifcBundleIfc> {
 
     private counter cntr = new counter();
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         stated = state.toUsable(stat);
         cntr.stateChange(stated);
@@ -90,16 +100,29 @@ public class ifcBundleIfc implements ifcUp, Comparator<ifcBundleIfc> {
         lowerBu = parent;
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         lowerBu.delIface(ifcNum);
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lowerIf = parent;
         parent.setFilter(lowerBu.promiscous);
         lowerBu.propagateState();
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (debugger.ifcBundleTraf) {

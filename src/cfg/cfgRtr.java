@@ -786,7 +786,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     /**
      * convert interface to string
      *
-     * @param agr aggregating
+     * @param ifc interface
      * @return string
      */
     public static String advint2str(ipRtrInt ifc) {

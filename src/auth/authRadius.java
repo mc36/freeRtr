@@ -93,6 +93,10 @@ public class authRadius extends authGeneric {
         return new authResult(this, authResult.authServerError, user);
     }
 
+    public authResult authUserCommand(String user, String cmd) {
+        return new authResult(this, authResult.authServerError, user);
+    }
+
     public authResult authUserPass(String user, String pass) {
         clntRadius rad = new clntRadius();
         rad.secret = secret;

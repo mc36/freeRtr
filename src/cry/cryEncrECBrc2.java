@@ -14,6 +14,13 @@ public class cryEncrECBrc2 extends cryEncrGeneric {
 
     private Cipher crypter;
 
+    /**
+     * initialize
+     *
+     * @param key key
+     * @param iv iv
+     * @param encrypt mode
+     */
     public void init(byte[] key, byte[] iv, boolean encrypt) {
         final String name = "RC2";
         int mode;
@@ -31,22 +38,50 @@ public class cryEncrECBrc2 extends cryEncrGeneric {
         }
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String getName() {
         return "rc2";
     }
 
+    /**
+     * get block size
+     *
+     * @return size
+     */
     public int getBlockSize() {
         return 8;
     }
 
+    /**
+     * get key size
+     *
+     * @return size
+     */
     public int getKeySize() {
         return 16;
     }
 
+    /**
+     * compute block
+     *
+     * @param buf buffer
+     * @param ofs offset
+     * @param siz size
+     * @return computed block
+     */
     public byte[] compute(byte[] buf, int ofs, int siz) {
         return crypter.update(buf, ofs, siz);
     }
 
+    /**
+     * get next iv
+     *
+     * @return iv
+     */
     public byte[] getNextIV() {
         return crypter.getIV();
     }

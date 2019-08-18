@@ -66,6 +66,11 @@ public class ifcRandom implements ifcUp, Runnable {
         return bits.toHexW(c.ethtyp) + " " + c.sizMin + " " + c.sizMax + " " + c.intMin + " " + c.intMax;
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
         try {
@@ -74,16 +79,34 @@ public class ifcRandom implements ifcUp, Runnable {
         }
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
     }

@@ -115,42 +115,88 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         return "l2tp2 to " + target;
     }
 
+    /**
+     * get hw address
+     *
+     * @return hw address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         clearState();
     }
 
+    /**
+     * flap connection
+     */
     public void flapped() {
         clearState();
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return 1400;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return 8000000;
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         if (sesRem == 0) {
             return;
@@ -331,19 +377,45 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         pckRx = new packL2tp2();
     }
 
+    /**
+     * close interface
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * accept connection
+     *
+     * @param id connection
+     * @return false on success, true on error
+     */
     public boolean datagramAccept(prtGenConn id) {
         return true;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * close connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
     }
 
+    /**
+     * connection work
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
         packL2tp2 pckTx;
         packHolder pckBin = new packHolder(true, true);
@@ -374,6 +446,13 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         conn.setClosing();
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pckBin packet
+     * @return false on success, true on error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pckBin) {
         pckRx = new packL2tp2();
         if (pckRx.parseHeader(pckBin)) {

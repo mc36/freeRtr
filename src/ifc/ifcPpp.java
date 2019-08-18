@@ -206,45 +206,89 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      */
     public ifcPppNsh ctrlNsh;
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         setState(state.states.close);
         upper.closeUp();
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         setState(state.states.close);
         lower.closeDn();
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
         clearState();
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
         setState(lastState);
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return lastState;
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get hw address
+     *
+     * @return hw address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         stat = state.toForceable(stat);
         if (checkPeerState(stat)) {
@@ -253,10 +297,20 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         restartTimer(false);
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return lower.getMTUsize() - size;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return lower.getBandwidth();
     }
@@ -913,6 +967,15 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         ctrlAuth.recvPck(pck, cis.code, cis.id);
     }
 
+    /**
+     * send authentication packet
+     *
+     * @param pck packet
+     * @param proto protocol
+     * @param code code
+     * @param id id
+     * @param msg message
+     */
     public void sendAuthPack(packHolder pck, int proto, int code, int id, String msg) {
         authenHead cis = new authenHead();
         cis.code = code;
@@ -1039,6 +1102,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         }
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         // int addr = pck.getByte(0); // address
@@ -1127,6 +1195,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         upper.recvPack(pck);
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         if (lastState != state.states.up) {

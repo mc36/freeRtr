@@ -1,5 +1,4 @@
 looking glass rfc8522
-command authorization with local
 reapplying the same address to interface as noop
 reapplying the same vrf to interface as noop
 entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...
@@ -7,7 +6,6 @@ http conditional redirect with route-map, prefix-list or route-policy
 bridge security from dhcp, slaac, whatever server
 padup ethertype config option
 lsrp, ospf, isis must list lsas/lsps as reachable or not
-configurable replay window under ipsec profile for macsec
 hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
 client domain-name to resolve internally first

@@ -8661,3 +8661,11 @@ no todo: traceroute to query bgp forasn
 no todo: lossdet with class util.dampening
 no todo: access-class should permit again with objectgroups
 todo: traceroute to query bgp for asn
+---------------------------------- 2019-08-17 02:12:57
+no todo: more configurable defaults to lines: tablemode, timestamps, configure up them on main rtrs
+no todo: client name-server multiple nodes
+no todo: traceroute to display mpls labels
+no todo: traceroute to query bgp for asn
+no todo: configurable replay window under ipsec profile for macsec
+---------------------------------- 2019-08-17 16:59:49
+no todo: command authorization with local

@@ -25,6 +25,7 @@ aaa userlist access
  no log-error
  username mc36
  username mc36 password $w10$HFepawSJgqct0vAiKD2PVg==
+ allowed show .*
  exit
 !
 access-list all4
@@ -850,6 +851,7 @@ server telnet ssh
  security dsacert dsa
  security ecdsacert ecdsa
  port 22
+ no exec authorization
  no login authentication
  vrf v1
  exit
@@ -861,11 +863,13 @@ server telnet tel
  exec timestamp
  exec colorized
  exec tablemode fancy
+ no exec authorization
  login authentication access
  vrf v1
  exit
 !
 server rfb vnc
+ no exec authorization
  no login authentication
  vrf v1
  exit

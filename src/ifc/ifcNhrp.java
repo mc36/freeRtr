@@ -131,6 +131,11 @@ public class ifcNhrp implements ifcUp {
         return "nhrp on " + lower;
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.msbGetW(0) != ethtyp) {
@@ -216,17 +221,35 @@ public class ifcNhrp implements ifcUp {
         lower.sendPack(pck);
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
         hwadr = lower.getHwAddr();
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }

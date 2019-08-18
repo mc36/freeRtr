@@ -79,42 +79,88 @@ public class clntAx25 implements Runnable, ipPrt, ifcDn {
         return "ax25 to " + fwdTrg;
     }
 
+    /**
+     * get hw address
+     *
+     * @return address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         clearState();
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
         clearState();
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return 1400;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return 10000000;
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         pck.merge2beg();
         if (fwdIfc == null) {
@@ -204,16 +250,38 @@ public class clntAx25 implements Runnable, ipPrt, ifcDn {
         }
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return prot;
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closeUp(ipFwdIface iface) {
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         int siz = pck.dataSize();
         if (siz < 3) {
@@ -235,10 +303,25 @@ public class clntAx25 implements Runnable, ipPrt, ifcDn {
         upper.recvPack(pck);
     }
 
+    /**
+     * received alert
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * received error
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 

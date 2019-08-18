@@ -70,6 +70,12 @@ public class ipIfcLoop implements ipIfc {
         upper.ifaceAddr(ifcHdr, ipaddr, ipm);
     }
 
+    /**
+     * set upper layer
+     *
+     * @param up upper
+     * @param hdr interface
+     */
     public void setUpper(ipFwd up, ipFwdIface hdr) {
         upper = up;
         ifcHdr = hdr;

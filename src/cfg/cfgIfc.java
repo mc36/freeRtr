@@ -3430,6 +3430,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                     tunIPsec1.sendingTOS = tunTOS;
                     tunIPsec1.transform = tunPrt.trans;
                     tunIPsec1.ipv6 = tunPrt.ipv6;
+                    tunIPsec1.replayCheck = tunPrt.replay;
                     tunIPsec1.workStart(fwd, udp, ifc, tunTrg);
                     tunIPsec1.setUpper(ethtyp);
                     lower = tunIPsec1;
@@ -3441,6 +3442,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                     tunIPsec2.sendingTOS = tunTOS;
                     tunIPsec2.transform = tunPrt.trans;
                     tunIPsec2.ipv6 = tunPrt.ipv6;
+                    tunIPsec2.replayCheck = tunPrt.replay;
                     tunIPsec2.workStart(fwd, udp, ifc, tunTrg);
                     tunIPsec2.setUpper(ethtyp);
                     lower = tunIPsec2;

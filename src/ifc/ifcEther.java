@@ -186,6 +186,11 @@ public class ifcEther implements ifcUp, ifcDn {
         upper.setParent(this);
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         parseETHheader(pck, notEthernet);
@@ -198,6 +203,11 @@ public class ifcEther implements ifcUp, ifcDn {
         lower.sendPack(pck);
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
     }
@@ -206,10 +216,18 @@ public class ifcEther implements ifcUp, ifcDn {
         upper = server;
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         upper.setState(stat);
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         upper.closeUp();
     }

@@ -91,7 +91,7 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
     private ipFwdTrfng trfEng;
 
     private state.states lastStat = state.states.down;
-    
+
     public String toString() {
         return "p2pte to " + target;
     }
@@ -100,38 +100,79 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         return o1.target.compare(o1.target, o2.target);
     }
 
+    /**
+     * get hw address
+     *
+     * @return hw address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return lastStat;
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         clearState();
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
         clearState();
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return 1500;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return bndwdt;
     }
@@ -154,6 +195,11 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         return trfEng;
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         if (trfEng == null) {
             return;

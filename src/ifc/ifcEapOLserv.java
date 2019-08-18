@@ -42,21 +42,44 @@ public class ifcEapOLserv implements ifcUp, authenDown {
 
     private autherDoer doer;
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
         hwaddr = (addrMac) lower.getHwAddr();
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
     }
 
+    /**
+     * received packet
+     *
+     * @param pckB packet
+     */
     public void recvPack(packHolder pckB) {
         packEapOL pckE = new packEapOL();
         if (pckE.parseHeader(pckB)) {
@@ -108,6 +131,15 @@ public class ifcEapOLserv implements ifcUp, authenDown {
         doer.authenRem = auther;
     }
 
+    /**
+     * send authentication packet
+     *
+     * @param pck packet
+     * @param proto protocol
+     * @param code code
+     * @param id id
+     * @param msg message
+     */
     public void sendAuthPack(packHolder pck, int proto, int code, int id, String msg) {
         authenHead cis = new authenHead();
         cis.code = code;

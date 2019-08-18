@@ -32,10 +32,20 @@ public abstract class ifcVlan implements ifcUp {
      */
     protected counter cntr = new counter();
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
     }

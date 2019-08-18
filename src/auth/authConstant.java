@@ -31,6 +31,10 @@ public class authConstant extends authGeneric {
         }
     }
 
+    public authResult authUserCommand(String user, String cmd) {
+        return authUserPass(user, "");
+    }
+
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {
         return authUserPass(user, "");
     }

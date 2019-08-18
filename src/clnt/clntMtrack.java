@@ -476,6 +476,13 @@ public class clntMtrack implements Runnable, prtServS {
         return l;
     }
 
+    /**
+     * accept connection
+     *
+     * @param pipe pipeline
+     * @param id connection
+     * @return false on success, true on error
+     */
     public boolean streamAccept(pipeSide pipe, prtGenConn id) {
         pipe.timeout = 10000;
         id.sendTOS = typOsrv;
@@ -484,9 +491,19 @@ public class clntMtrack implements Runnable, prtServS {
         return false;
     }
 
+    /**
+     * interface closed
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * get block mode
+     *
+     * @return mode
+     */
     public boolean streamForceBlock() {
         return true;
     }

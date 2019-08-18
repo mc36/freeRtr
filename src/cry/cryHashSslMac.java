@@ -49,6 +49,9 @@ public class cryHashSslMac extends cryHashGeneric {
         }
     }
 
+    /**
+     * initialize
+     */
     public void init() {
         alg.init();
         if (prePad) {
@@ -56,22 +59,49 @@ public class cryHashSslMac extends cryHashGeneric {
         }
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String getName() {
         return "sslmac-" + alg.getName();
     }
 
+    /**
+     * get hash size
+     *
+     * @return size
+     */
     public int getHashSize() {
         return alg.getHashSize();
     }
 
+    /**
+     * get block size
+     *
+     * @return size
+     */
     public int getBlockSize() {
         return alg.getBlockSize();
     }
 
+    /**
+     * compute block
+     *
+     * @param buf buffer
+     * @param ofs offset
+     * @param siz size
+     */
     public void update(byte[] buf, int ofs, int siz) {
         alg.update(buf, ofs, siz);
     }
 
+    /**
+     * finish
+     *
+     * @return computed
+     */
     public byte[] finish() {
         if (!prePad) {
             alg.update(ipad);

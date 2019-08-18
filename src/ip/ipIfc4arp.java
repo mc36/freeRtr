@@ -84,6 +84,11 @@ public class ipIfc4arp implements ifcUp {
         upper = parent;
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }

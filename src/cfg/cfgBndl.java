@@ -80,6 +80,12 @@ public class cfgBndl implements Comparator<cfgBndl>, cfgGeneric {
         return "bundle" + name;
     }
 
+    /**
+     * get config
+     *
+     * @param filter filter
+     * @return config
+     */
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("bundle " + name);
@@ -92,16 +98,31 @@ public class cfgBndl implements Comparator<cfgBndl>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
+    /**
+     * get help text
+     *
+     * @return help
+     */
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
         ifcBundle.getHelp(l);
         return l;
     }
 
+    /**
+     * do config string
+     *
+     * @param cmd config
+     */
     public void doCfgStr(cmds cmd) {
         bundleHed.doConfig(cmd);
     }
 
+    /**
+     * get prompt
+     *
+     * @return prompt
+     */
     public String getPrompt() {
         return "bndl";
     }

@@ -232,9 +232,20 @@ public class clntDhcp6 implements prtServP {
         sender = null;
     }
 
+    /**
+     * close interface
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * accept connection
+     *
+     * @param id connection
+     * @return false on success, true on error
+     */
     public boolean datagramAccept(prtGenConn id) {
         if (debugger.clntDhcp6traf) {
             logger.debug("accept " + id);
@@ -243,12 +254,22 @@ public class clntDhcp6 implements prtServP {
         return false;
     }
 
+    /**
+     * close connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
         if (debugger.clntDhcp6traf) {
             logger.debug("close " + id);
         }
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
         if (debugger.clntDhcp6traf) {
             logger.debug("ready " + id);
@@ -256,6 +277,11 @@ public class clntDhcp6 implements prtServP {
         id.workInterval = 5000;
     }
 
+    /**
+     * connection work
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
         if (debugger.clntDhcp6traf) {
             logger.debug("work " + id);
@@ -263,6 +289,13 @@ public class clntDhcp6 implements prtServP {
         sendKeepalive();
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         if (debugger.clntDhcp6traf) {
             logger.debug("rx " + id);

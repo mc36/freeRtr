@@ -91,18 +91,38 @@ public class ifcPppLcp extends ifcPppNcp {
      */
     private int lastEchoId;
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String getPPPname() {
         return pppName;
     }
 
+    /**
+     * get control code
+     *
+     * @return code
+     */
     public int getPPPctrl() {
         return pppCtrl;
     }
 
+    /**
+     * get data code
+     *
+     * @return code
+     */
     public int getPPPdata() {
         return pppData;
     }
 
+    /**
+     * get ethertype
+     *
+     * @return ethertype
+     */
     public int getPPPetyp() {
         return ethTyp;
     }
@@ -116,6 +136,9 @@ public class ifcPppLcp extends ifcPppNcp {
         parent = prnt;
     }
 
+    /**
+     * clear state
+     */
     public void clearState() {
         echoesSent = 0;
         lastEchoId = -1;
@@ -124,6 +147,12 @@ public class ifcPppLcp extends ifcPppNcp {
         clearUpperState();
     }
 
+    /**
+     * get one config
+     *
+     * @param txReq send request
+     * @return data
+     */
     public Object getOneConfig(boolean txReq) {
         ifcPppLcpConf cfg = new ifcPppLcpConf();
         if (!txReq) {
@@ -196,6 +225,13 @@ public class ifcPppLcp extends ifcPppNcp {
         return -1;
     }
 
+    /**
+     * read options
+     *
+     * @param config config
+     * @param tlv tlv
+     * @return false on success, true on error
+     */
     public boolean readOption(Object config, typLenVal tlv) {
         ifcPppLcpConf cfg = (ifcPppLcpConf) config;
         switch (tlv.valTyp) {
@@ -228,6 +264,12 @@ public class ifcPppLcp extends ifcPppNcp {
         }
     }
 
+    /**
+     * write options
+     *
+     * @param pck packet
+     * @param data data
+     */
     public void writeOptions(packHolder pck, Object data) {
         ifcPppLcpConf dat = (ifcPppLcpConf) data;
         typLenVal tlv = getTlv();
@@ -284,12 +326,25 @@ public class ifcPppLcp extends ifcPppNcp {
         parent.sendNcpCtrl(pck, pppCtrl, codeEchoReq, lastEchoId);
     }
 
+    /**
+     * get configure ack
+     *
+     * @param data data
+     * @return false on success, true on error
+     */
     public boolean gotConfAck(Object data) {
         ifcPppLcpConf dat = (ifcPppLcpConf) data;
         authRem = dat.auth;
         return false;
     }
 
+    /**
+     * get configure request
+     *
+     * @param data data
+     * @param rej rejected
+     * @return data
+     */
     public Object gotConfReq(Object data, boolean rej) {
         boolean val = false;
         ifcPppLcpConf dat = (ifcPppLcpConf) data;
@@ -336,6 +391,11 @@ public class ifcPppLcp extends ifcPppNcp {
         }
     }
 
+    /**
+     * get configure nak
+     *
+     * @param data data
+     */
     public void gotConfNak(Object data) {
         ifcPppLcpConf dat = (ifcPppLcpConf) data;
         ifcPppLcpConf cfg = (ifcPppLcpConf) txReq;
@@ -353,6 +413,11 @@ public class ifcPppLcp extends ifcPppNcp {
         }
     }
 
+    /**
+     * get configure reject
+     *
+     * @param data data
+     */
     public void gotConfRej(Object data) {
         ifcPppLcpConf dat = (ifcPppLcpConf) data;
         ifcPppLcpConf cfg = (ifcPppLcpConf) txReq;
@@ -379,6 +444,14 @@ public class ifcPppLcp extends ifcPppNcp {
         }
     }
 
+    /**
+     * get unknown code
+     *
+     * @param pck packet
+     * @param code code
+     * @param id id
+     * @return false on success, true on error
+     */
     public boolean gotUnknownCode(packHolder pck, int code, int id) {
         ifcPppLcpConf cfg = (ifcPppLcpConf) txReq;
         switch (code) {

@@ -45,10 +45,21 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return "ssh-ecdsa-sha2-" + curve;
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String algName() {
         return "ecdsa";
     }
 
+    /**
+     * read private key
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean privReader(packHolder pck) {
         cryAsn1 a = new cryAsn1();
         if (a.tagRead(pck)) {
@@ -106,6 +117,11 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return false;
     }
 
+    /**
+     * write private key
+     *
+     * @param pck packet
+     */
     public void privWriter(packHolder pck) {
         packHolder p1 = new packHolder(true, true);
         cryAsn1.writeBigInt(p1, BigInteger.ONE);
@@ -129,6 +145,12 @@ public class cryKeyECDSA extends cryKeyGeneric {
         cryAsn1.writeSequence(pck, p1);
     }
 
+    /**
+     * read certificate
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean certReader(packHolder pck) {
         cryAsn1 a = new cryAsn1();
         if (a.tagRead(pck)) {
@@ -174,6 +196,11 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return false;
     }
 
+    /**
+     * write certificate
+     *
+     * @param pck packet
+     */
     public void certWriter(packHolder pck) {
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
@@ -189,20 +216,41 @@ public class cryKeyECDSA extends cryKeyGeneric {
         cryAsn1.writeSequence(pck, p1);
     }
 
+    /**
+     * make key
+     *
+     * @param len length
+     */
     public void keyMake(int len) {
         curve = cryECcurve.getBySize(len);
         priv = randomBigInt(curve.n.bitLength() - 2);
         pub = curve.g.mul(priv);
     }
 
+    /**
+     * verify key
+     *
+     * @return false on success, true on error
+     */
     public boolean keyVerify() {
         return !curve.g.check();
     }
 
+    /**
+     * get key size
+     *
+     * @return size
+     */
     public int keySize() {
         return curve.p.bitLength();
     }
 
+    /**
+     * read ssh key
+     *
+     * @param key key
+     * @return false on success, true on error
+     */
     public boolean sshReader(byte[] key) {
         packHolder p = new packHolder(true, true);
         p.putCopy(key, 0, 0, key.length);
@@ -221,6 +269,11 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return false;
     }
 
+    /**
+     * write ssh key
+     *
+     * @return key
+     */
     public byte[] sshWriter() {
         packHolder p = new packHolder(true, true);
         packSsh.stringWrite(p, sshName());
@@ -300,6 +353,13 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return false;
     }
 
+    /**
+     * verify ssh signature
+     *
+     * @param hash hash
+     * @param sign signature
+     * @return false on success, true on error
+     */
     public boolean sshVerify(byte[] hash, byte[] sign) {
         hash = cryHashGeneric.compute(new cryHashSha1(), hash);
         packHolder p = new packHolder(true, true);
@@ -314,6 +374,12 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return doVerify(hash);
     }
 
+    /**
+     * sign for ssh
+     *
+     * @param hash hash
+     * @return signature
+     */
     public byte[] sshSigning(byte[] hash) {
         hash = cryHashGeneric.compute(new cryHashSha1(), hash);
         doSigning(hash);
@@ -325,6 +391,13 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return p.getCopy();
     }
 
+    /**
+     * verify certificate
+     *
+     * @param hash hash
+     * @param sign signature
+     * @return false on success, true on error
+     */
     public boolean certVerify(byte[] hash, byte[] sign) {
         packHolder p = new packHolder(true, true);
         p.putCopy(sign, 0, 0, sign.length);
@@ -344,6 +417,12 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return doVerify(hash);
     }
 
+    /**
+     * sign certificate
+     *
+     * @param hash hash
+     * @return signature
+     */
     public byte[] certSigning(byte[] hash) {
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);
@@ -357,6 +436,14 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return p2.getCopy();
     }
 
+    /**
+     * verify tls
+     *
+     * @param ver version
+     * @param hash hash
+     * @param sign signature
+     * @return false on success, true on error
+     */
     public boolean tlsVerify(int ver, byte[] hash, byte[] sign) {
         packHolder p = new packHolder(true, true);
         p.putCopy(sign, 0, 0, sign.length);
@@ -375,6 +462,13 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return doVerify(hash);
     }
 
+    /**
+     * sign for tls
+     *
+     * @param ver version
+     * @param hash hash
+     * @return signature
+     */
     public byte[] tlsSigning(int ver, byte[] hash) {
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);

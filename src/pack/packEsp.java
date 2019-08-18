@@ -319,7 +319,6 @@ public class packEsp implements ipPrt {
     /**
      * send one packet
      *
-     * @param pck packet to send
      */
     public synchronized void doInit() {
         seqTx = 0;

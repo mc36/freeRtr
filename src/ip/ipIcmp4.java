@@ -29,11 +29,25 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
 
     private ipFwd fwdCore;
 
+    /**
+     * set forwarder
+     *
+     * @param ifw forwarder
+     */
     public void setForwarder(ipFwd ifw) {
         fwdCore = ifw;
         ifw.protoAdd(this, null, null);
     }
 
+    /**
+     * create echo
+     *
+     * @param pck packet
+     * @param src source
+     * @param trg target
+     * @param id id
+     * @return false on success, true on error
+     */
     public boolean createEcho(packHolder pck, addrIP src, addrIP trg, int id) {
         pck.putDefaults();
         pck.IPsrc.setAddr(src);
@@ -45,6 +59,14 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         return false;
     }
 
+    /**
+     * create error
+     *
+     * @param pck packet
+     * @param reason reason
+     * @param ifip address
+     * @return false on success, true on error
+     */
     public boolean createError(packHolder pck, counter.reasons reason, addrIP ifip) {
         final int maxErrorSize = 512;
         if (pck.IPprt == protoNum) {
@@ -98,6 +120,12 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         return false;
     }
 
+    /**
+     * parse header
+     *
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean parseICMPheader(packHolder pck) {
         if (pck.dataSize() < size) {
             logger.info("got too small from " + pck.IPsrc);
@@ -119,6 +147,11 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         return false;
     }
 
+    /**
+     * create header
+     *
+     * @param pck packet
+     */
     public void createICMPheader(packHolder pck) {
         cntr.tx(pck);
         pck.IPprt = protoNum;
@@ -136,6 +169,11 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         pck.merge2beg();
     }
 
+    /**
+     * update header
+     *
+     * @param pck packet
+     */
     public void updateICMPheader(packHolder pck) {
         pck.unMergeBytes(size);
         pck.putSkip(-size);
@@ -149,6 +187,12 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         pck.merge2beg();
     }
 
+    /**
+     * code to string
+     *
+     * @param i code
+     * @return string
+     */
     public String icmp2string(int i) {
         switch (i) {
             case icmpEchoReq:
@@ -219,24 +263,56 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
      */
     public final static int icmpEchoRep = 0x0000;
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return protoNum;
     }
 
+    /**
+     * get header size
+     *
+     * @return size
+     */
     public int getHeadSize() {
         return size;
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closeUp(ipFwdIface iface) {
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (parseICMPheader(pck)) {
@@ -298,10 +374,25 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         }
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 

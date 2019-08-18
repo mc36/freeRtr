@@ -184,6 +184,11 @@ public class ifcBridge implements ifcDn {
         return hwaddr;
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);

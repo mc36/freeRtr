@@ -74,6 +74,11 @@ public abstract class ifcThread implements ifcDn, Runnable {
 
     private boolean need2run = true;
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
@@ -203,6 +208,11 @@ public abstract class ifcThread implements ifcDn, Runnable {
         return hwaddr;
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);

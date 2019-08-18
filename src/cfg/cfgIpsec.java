@@ -64,6 +64,11 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
     public int ikeVer = 1;
 
     /**
+     * replay window size
+     */
+    public int replay = 1024;
+
+    /**
      * work for ipv6
      */
     public boolean ipv6 = false;
@@ -80,7 +85,8 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         "crypto ipsec .*! no key",
         "crypto ipsec .*! role static",
         "crypto ipsec .*! protected ipv4",
-        "crypto ipsec .*! isakmp 1"
+        "crypto ipsec .*! isakmp 1",
+        "crypto ipsec .*! replay 1024"
     };
 
     /**
@@ -131,6 +137,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         }
         l.add(cmds.tabulator + "protected " + s);
         l.add(cmds.tabulator + "isakmp " + ikeVer);
+        l.add(cmds.tabulator + "replay " + replay);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if (!filter) {
@@ -153,6 +160,8 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         l.add("2 .    static            static tunnel");
         l.add("1 2  isakmp              set isakmp version to use");
         l.add("2 .    <num>             version");
+        l.add("1 2  replay              set replay window size");
+        l.add("2 .    <num>             size in packets");
         return l;
     }
 
@@ -185,6 +194,10 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         }
         if (s.equals("isakmp")) {
             ikeVer = ((bits.str2num(cmd.word()) - 1) & 1) + 1;
+            return;
+        }
+        if (s.equals("replay")) {
+            replay = bits.str2num(cmd.word());
             return;
         }
         if (!s.equals("no")) {

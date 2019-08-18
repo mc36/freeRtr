@@ -99,6 +99,12 @@ public class ipIfc6 implements ipIfc, ifcUp {
         return lladdr;
     }
 
+    /**
+     * set upper layer
+     *
+     * @param up upper
+     * @param hdr interface
+     */
     public void setUpper(ipFwd up, ipFwdIface hdr) {
         upper = up;
         ifcHdr = hdr;
@@ -110,6 +116,11 @@ public class ipIfc6 implements ipIfc, ifcUp {
         lower.setFilter(promisc);
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         addrMac hwaddr;
         lower = parent;
@@ -161,6 +172,11 @@ public class ipIfc6 implements ipIfc, ifcUp {
         return lladdr.copyBytes();
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         cntr.stateChange(stat);
         if (neiCache != null) {
@@ -169,6 +185,9 @@ public class ipIfc6 implements ipIfc, ifcUp {
         upper.ifaceState(ifcHdr, stat);
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         if (neiCache != null) {
             neiCache.closeUp();
@@ -238,6 +257,11 @@ public class ipIfc6 implements ipIfc, ifcUp {
         return neiCache.readMACheader(pck, nexthop.toIPv6());
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (!needType) {

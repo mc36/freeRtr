@@ -36,14 +36,31 @@ public class ipMhost4 extends ipMhost {
      */
     public final static int typLeave = 0x17;
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return "igmp on " + lower;
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return 2;
     }
 
+    /**
+     * parse header
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean parsePacket(ipFwdIface rxIfc, packHolder pck) {
         if (pck.getIPsum(0, pck.dataSize(), 0) != 0xffff) {
             return true;
@@ -123,6 +140,15 @@ public class ipMhost4 extends ipMhost {
         pck.IPtrg.fromString("224.0.0.1");
     }
 
+    /**
+     * create query
+     *
+     * @param rxIfc interface
+     * @param tim time
+     * @param pck packet
+     * @param grp group
+     * @param src source
+     */
     public void createQuery(ipFwdIface rxIfc, int tim, packHolder pck, addrIP grp, addrIP src) {
         if (grp == null) {
             grp = new addrIP();
@@ -144,6 +170,15 @@ public class ipMhost4 extends ipMhost {
         updateHeader(rxIfc, pck);
     }
 
+    /**
+     * create report
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @param grp group
+     * @param src source
+     * @param need needed
+     */
     public void createReport(ipFwdIface rxIfc, packHolder pck, addrIP grp, addrIP src, boolean need) {
         pck.putByte(0, typReport3); // type
         pck.putByte(1, 0); // reserved

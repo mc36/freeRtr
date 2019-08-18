@@ -86,42 +86,88 @@ public class clntErspan implements Runnable, ipPrt, ifcDn {
         return "erspan to " + fwdTrg;
     }
 
+    /**
+     * get hw address
+     *
+     * @return hw address
+     */
     public addrType getHwAddr() {
         return addrMac.getRandom();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         clearState();
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
         clearState();
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return 1400;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return 10000000;
     }
 
+    /**
+     * send packet
+     *
+     * @param pckBin packet
+     */
     public void sendPack(packHolder pckBin) {
         pckBin.merge2beg();
         if (fwdIfc == null) {
@@ -211,16 +257,38 @@ public class clntErspan implements Runnable, ipPrt, ifcDn {
         seqTx = 0;
     }
 
+    /**
+     * get protocol number
+     *
+     * @return number
+     */
     public int getProtoNum() {
         return packErspan.prot;
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closeUp(ipFwdIface iface) {
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, state.states stat) {
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pckBin packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pckBin) {
         packErspan pckRx = new packErspan();
         if (pckRx.parseHeader(pckBin)) {
@@ -235,10 +303,25 @@ public class clntErspan implements Runnable, ipPrt, ifcDn {
         upper.recvPack(pckBin);
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 

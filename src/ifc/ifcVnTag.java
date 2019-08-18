@@ -70,6 +70,11 @@ public class ifcVnTag implements ifcUp, ifcDn {
         lower = parent;
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
     }

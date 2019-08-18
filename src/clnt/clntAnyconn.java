@@ -84,42 +84,88 @@ public class clntAnyconn implements Runnable, ifcDn {
 
     private addrIP addr6;
 
+    /**
+     * get hw address
+     *
+     * @return address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set filter more
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         clearState();
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
         clearState();
     }
 
+    /**
+     * set upper level
+     *
+     * @param server upper
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu
+     */
     public int getMTUsize() {
         return 1504;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return 8000000;
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         if (!good) {
             return;

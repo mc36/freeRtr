@@ -49,50 +49,104 @@ public class ifcAtmDxi implements ifcUp, ifcDn {
      */
     public ifcDn lower = new ifcNull();
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         setState(state.states.close);
         upper.closeUp();
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         setState(state.states.close);
         lower.closeDn();
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get hw address
+     *
+     * @return hw address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return lower.getMTUsize() - size;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return lower.getBandwidth();
     }
@@ -157,6 +211,11 @@ public class ifcAtmDxi implements ifcUp, ifcDn {
         cmd.badCmd();
     }
 
+    /**
+     * receive packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.dataSize() < size) {
@@ -178,6 +237,11 @@ public class ifcAtmDxi implements ifcUp, ifcDn {
         upper.recvPack(pck);
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         pck.putByte(0, ((vciNum & 0x30) << 6) | ((vpiNum & 0xf) << 2));

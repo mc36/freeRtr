@@ -75,40 +75,86 @@ public class clntMplsBier implements Runnable, ifcDn {
         return "bier to " + getTargets();
     }
 
+    /**
+     * get hw address
+     *
+     * @return
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
     }
 
+    /**
+     * set upper
+     *
+     * @param server upper
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return 1500;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return 8000000;
     }
 
+    /**
+     * send packet
+     *
+     * @param orig packet
+     */
     public void sendPack(packHolder orig) {
         int prt = orig.msbGetW(0);
         orig.getSkip(2);

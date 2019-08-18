@@ -98,12 +98,29 @@ public abstract class ipMhost implements ipPrt {
         return ((wrd & 0xfff) | 0x1000) << (((wrd >>> 12) & 7) + 3);
     }
 
+    /**
+     * close interface
+     *
+     * @param iface interface
+     */
     public void closeUp(ipFwdIface iface) {
     }
 
+    /**
+     * set state
+     *
+     * @param iface interface
+     * @param stat state
+     */
     public void setState(ipFwdIface iface, states stat) {
     }
 
+    /**
+     * received packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (rxIfc.mhostCfg == null) {
@@ -116,10 +133,25 @@ public abstract class ipMhost implements ipPrt {
         }
     }
 
+    /**
+     * alert packet
+     *
+     * @param rxIfc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
+    /**
+     * error packet
+     *
+     * @param err error code
+     * @param rtr address
+     * @param rxIfc interface
+     * @param pck packet
+     */
     public void errorPack(reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
         return;
     }

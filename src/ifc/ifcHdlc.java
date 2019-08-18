@@ -101,6 +101,11 @@ public class ifcHdlc implements ifcUp, ifcDn {
     public void flapped() {
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);

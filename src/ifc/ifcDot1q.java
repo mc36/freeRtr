@@ -70,6 +70,11 @@ public class ifcDot1q extends ifcVlan {
         ethtyp.delET(type);
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         if (lastState == stat) {
             return;

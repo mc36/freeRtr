@@ -29,6 +29,9 @@ public class cryHashHec8 extends cryHashGeneric {
         }
     }
 
+    /**
+     * initialize
+     */
     public void init() {
         if (tab == null) {
             makeTab();
@@ -45,14 +48,29 @@ public class cryHashHec8 extends cryHashGeneric {
         sum = i;
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String getName() {
         return "hec8";
     }
 
+    /**
+     * get hash size
+     *
+     * @return size
+     */
     public int getHashSize() {
         return 1;
     }
 
+    /**
+     * get block size
+     *
+     * @return size
+     */
     public int getBlockSize() {
         return 1;
     }
@@ -61,12 +79,24 @@ public class cryHashHec8 extends cryHashGeneric {
         sum = tab[(sum ^ i) & 0xff];
     }
 
+    /**
+     * compute block
+     *
+     * @param buf buffer
+     * @param ofs offset
+     * @param siz size
+     */
     public void update(byte[] buf, int ofs, int siz) {
         for (int i = 0; i < siz; i++) {
             updateByte(buf[ofs + i]);
         }
     }
 
+    /**
+     * finish
+     *
+     * @return computed
+     */
     public byte[] finish() {
         byte[] buf = new byte[1];
         buf[0] = (byte) ((sum ^ 0x55) & 0xff);

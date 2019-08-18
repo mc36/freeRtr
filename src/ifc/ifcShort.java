@@ -15,6 +15,11 @@ public class ifcShort implements ifcUp {
 
     private counter cntr = new counter();
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }

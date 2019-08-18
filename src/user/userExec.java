@@ -1,7 +1,9 @@
 package user;
 
 import addr.addrIP;
+import auth.authGeneric;
 import auth.authLocal;
+import auth.authResult;
 import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgChat;
@@ -76,6 +78,16 @@ public class userExec {
      * privileged commands allowed
      */
     public boolean privileged;
+
+    /**
+     * authenticated username
+     */
+    public String username;
+
+    /**
+     * authorization list
+     */
+    public authGeneric authorization;
 
     /**
      * framed interface handler
@@ -1273,6 +1285,13 @@ public class userExec {
             }
             if (reader.timeStamp) {
                 pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+            }
+            if (authorization != null) {
+                authResult ntry = authorization.authUserCommand(username, s);
+                if (ntry.result != authResult.authSuccessful) {
+                    pipe.linePut("% not authorized to do that");
+                    continue;
+                }
             }
             cmdRes i = executeCommand(s);
             if (i != cmdRes.command) {

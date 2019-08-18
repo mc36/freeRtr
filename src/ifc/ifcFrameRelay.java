@@ -172,10 +172,18 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         return cntr;
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         setState(state.states.close);
         upper.closeUp();
@@ -207,6 +215,11 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         return new addrEmpty();
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         stat = state.toForceable(stat);
         if (checkPeerState(stat)) {
@@ -452,6 +465,11 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         pck.putSkip(size);
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.dataSize() < size) {

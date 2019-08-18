@@ -97,10 +97,20 @@ public class ipProxy implements ifcUp {
         timer.schedule(task, 500, 1000);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
         try {
@@ -109,11 +119,19 @@ public class ipProxy implements ifcUp {
         }
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         cntr.stateChange(stat);
         resetTimer(state.toUsable(stat) == state.states.up);
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         resetTimer(false);
     }
@@ -201,6 +219,11 @@ public class ipProxy implements ifcUp {
         sendPack(pck);
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         lastadr.setAddr(pck.ETHsrc);

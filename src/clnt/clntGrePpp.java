@@ -82,42 +82,88 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
         return "greppp " + fwdTrg;
     }
 
+    /**
+     * get hw address
+     *
+     * @return
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         clearState();
     }
 
+    /**
+     * flapped interface
+     */
     public void flapped() {
         clearState();
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return 1500;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return 8000000;
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         if (gre == null) {
@@ -199,6 +245,11 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
         gre = null;
     }
 
+    /**
+     * receive packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.msbGetW(0) != packPptp.ethtyp) {
@@ -208,12 +259,25 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
         upper.recvPack(pck);
     }
 
+    /**
+     * set upper layer
+     *
+     * @param parent upper layer
+     */
     public void setParent(ifcDn parent) {
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(states stat) {
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
     }
 

@@ -90,6 +90,24 @@ public class authList extends authGeneric {
         return new authResult(this, authResult.authServerError, user);
     }
 
+    public authResult authUserCommand(String user, String cmd) {
+        for (int i = 0; i < lst.size(); i++) {
+            authListEntry ntry = lst.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            authResult res = ntry.auth.authUserCommand(user, cmd);
+            if (res == null) {
+                continue;
+            }
+            if (res.result == authResult.authServerError) {
+                continue;
+            }
+            return res;
+        }
+        return new authResult(this, authResult.authServerError, user);
+    }
+
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {
         for (int i = 0; i < lst.size(); i++) {
             authListEntry ntry = lst.get(i);

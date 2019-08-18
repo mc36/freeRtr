@@ -59,6 +59,11 @@ public class secIsakmp implements ifcDn, ifcUp {
     public secTransform transform;
 
     /**
+     * do replay checking
+     */
+    public int replayCheck = 1024;
+
+    /**
      * ipv6 sa
      */
     public boolean ipv6 = false;
@@ -173,6 +178,7 @@ public class secIsakmp implements ifcDn, ifcUp {
         espTx.lowerSetup(fwd, ifc, trg, sendingTOS, sendingTTL);
         espRx.ipv6 = ipv6;
         espTx.ipv6 = ipv6;
+        espRx.replayCheck = replayCheck;
         if (espRx.lowerRegister()) {
             return true;
         }

@@ -60,6 +60,11 @@ public class ipIfc6nei implements ifcUp {
 
     private typLenVal tlv = ipIcmp6.getTLVreader();
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
@@ -100,17 +105,30 @@ public class ipIfc6nei implements ifcUp {
         timer.schedule(task, 500, 60000);
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
         hwaddr = (addrMac) lower.getHwAddr();
         lladdr = addrIPv6.genLinkLocal(hwaddr);
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         cntr.stateChange(stat);
         resetTimer(state.toUsable(stat) == state.states.up);
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
         resetTimer(false);
     }
@@ -199,6 +217,11 @@ public class ipIfc6nei implements ifcUp {
         upper.upper.tableChanger();
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.msbGetW(0) != ipIfc6.type) {// ethertype

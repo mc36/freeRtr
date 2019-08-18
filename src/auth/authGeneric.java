@@ -42,6 +42,15 @@ public abstract class authGeneric implements Comparator<authGeneric> {
     public abstract authResult authUserPass(String user, String pass);
 
     /**
+     * authorize user command
+     *
+     * @param user username
+     * @param cmd command
+     * @return authentication value
+     */
+    public abstract authResult authUserCommand(String user, String cmd);
+
+    /**
      * authenticate user by username/chap
      *
      * @param user username

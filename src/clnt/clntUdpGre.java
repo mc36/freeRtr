@@ -93,38 +93,79 @@ public class clntUdpGre implements Runnable, prtServP, ifcDn {
         return "udpgre to " + target;
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return 1400;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return 8000000;
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get hw address
+     *
+     * @return hw address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         clearState();
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
         clearState();
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
         return state.states.up;
     }
@@ -192,22 +233,53 @@ public class clntUdpGre implements Runnable, prtServP, ifcDn {
         seqTx = 0;
     }
 
+    /**
+     * closed interface
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * accept connection
+     *
+     * @param id connection
+     * @return false on success, true on error
+     */
     public boolean datagramAccept(prtGenConn id) {
         return true;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * closed connection
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
     }
 
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         int typ = pck.msbGetW(0);
@@ -249,6 +321,13 @@ public class clntUdpGre implements Runnable, prtServP, ifcDn {
         conn.send2net(pck);
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         cntr.rx(pck);
         int hdr = pck.msbGetW(0); // header

@@ -40,16 +40,31 @@ public class ifcIsl extends ifcVlan {
         return "isl on " + lower;
     }
 
+    /**
+     * register ethertype
+     *
+     * @param ethtyp handler
+     */
     public void reg2ethTyp(ifcEthTyp ethtyp) {
         ethtyp.addSNAP(type, "isl", this);
         ethtyp.updateSNAP(type, this);
     }
 
+    /**
+     * unregister ethertype
+     *
+     * @param ethtyp handler
+     */
     public void unreg2ethTyp(ifcEthTyp ethtyp) {
         vLans.clear();
         ethtyp.delSNAP(type);
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         if (lastState == stat) {
             return;
@@ -148,6 +163,13 @@ public class ifcIsl extends ifcVlan {
         ntry.upper.recvPack(pck);
     }
 
+    /**
+     * add vlan
+     *
+     * @param vl vlan id
+     * @param ifc interface
+     * @return handler
+     */
     public ifcIslEntry addVlan(int vl, ifcUp ifc) {
         if (debugger.ifcIslTraf) {
             logger.debug("add vlan=" + vl);
@@ -163,6 +185,13 @@ public class ifcIsl extends ifcVlan {
         return ntry;
     }
 
+    /**
+     * update vlan
+     *
+     * @param vl vlan id
+     * @param ifc interface
+     * @return handler
+     */
     public ifcIslEntry updateVlan(int vl, ifcUp ifc) {
         if (debugger.ifcIslTraf) {
             logger.debug("update vlan=" + vl);

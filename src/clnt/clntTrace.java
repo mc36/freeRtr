@@ -97,22 +97,55 @@ public class clntTrace implements prtServP {
         return con.errRtr;
     }
 
+    /**
+     * closed interface
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * accept connection
+     *
+     * @param id connection
+     * @return false on success, true on error
+     */
     public boolean datagramAccept(prtGenConn id) {
         return true;
     }
 
+    /**
+     * connection ready
+     *
+     * @param id connection
+     */
     public void datagramReady(prtGenConn id) {
     }
 
+    /**
+     * connection closed
+     *
+     * @param id connection
+     */
     public void datagramClosed(prtGenConn id) {
     }
 
+    /**
+     * work connection
+     *
+     * @param id connection
+     */
     public void datagramWork(prtGenConn id) {
     }
 
+    /**
+     * received packet
+     *
+     * @param id connection
+     * @param pck packet
+     * @return false on success, true on error
+     */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         con.errRtr = pck.IPsrc.copyBytes();
         return false;

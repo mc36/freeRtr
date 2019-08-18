@@ -154,6 +154,11 @@ public class ifcUdld implements ifcUp {
         return new typLenVal(0, 16, 16, 16, 1, 4, 4, 1, 0, 512, true);
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.msbGetW(0) != ethtyp) {
@@ -207,17 +212,35 @@ public class ifcUdld implements ifcUp {
         }
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
         hwadr = lower.getHwAddr();
     }
 
+    /**
+     * set state
+     *
+     * @param stat
+     */
     public void setState(state.states stat) {
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }

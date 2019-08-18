@@ -265,9 +265,21 @@ public class clntTftp implements prtServS {
         }
     }
 
+    /**
+     * closed interface
+     *
+     * @param ifc interface
+     */
     public void closedInterface(ipFwdIface ifc) {
     }
 
+    /**
+     * accept connection
+     *
+     * @param pip pipeline
+     * @param id connection
+     * @return false on success, true on error
+     */
     public boolean streamAccept(pipeSide pip, prtGenConn id) {
         if (pipe != null) {
             pipe.setClose();
@@ -276,6 +288,11 @@ public class clntTftp implements prtServS {
         return false;
     }
 
+    /**
+     * get block mode
+     *
+     * @return mode
+     */
     public boolean streamForceBlock() {
         return true;
     }

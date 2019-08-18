@@ -63,6 +63,11 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
 
+    /**
+     * get prompt
+     *
+     * @return prompt
+     */
     public String getPrompt() {
         return "trck";
     }
@@ -71,6 +76,11 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         return name;
     }
 
+    /**
+     * get help text
+     *
+     * @return help
+     */
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
         l.add("1  2      mode                       specify mode of runs");
@@ -131,6 +141,12 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         return l;
     }
 
+    /**
+     * get config
+     *
+     * @param filter filter
+     * @return config
+     */
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("tracker " + name);
@@ -184,6 +200,11 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
+    /**
+     * do config string
+     *
+     * @param cmd config
+     */
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
         if (a.equals("hidden")) {

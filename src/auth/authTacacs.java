@@ -93,6 +93,10 @@ public class authTacacs extends authGeneric {
         return new authResult(this, authResult.authServerError, user);
     }
 
+    public authResult authUserCommand(String user, String cmd) {
+        return new authResult(this, authResult.authServerError, user);
+    }
+
     public authResult authUserPass(String user, String pass) {
         clntTacacs tac = new clntTacacs();
         tac.secret = secret;

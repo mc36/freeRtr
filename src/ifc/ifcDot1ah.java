@@ -83,16 +83,31 @@ public class ifcDot1ah extends ifcVlan {
         return "dot1ah on " + lower;
     }
 
+    /**
+     * register ethertype
+     *
+     * @param ethtyp handler
+     */
     public void reg2ethTyp(ifcEthTyp ethtyp) {
         ethtyp.addET(type, "dot1ah", this);
         ethtyp.updateET(type, this);
     }
 
+    /**
+     * unregister ethertype
+     *
+     * @param ethtyp handler
+     */
     public void unreg2ethTyp(ifcEthTyp ethtyp) {
         vLans.clear();
         ethtyp.delET(type);
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
         if (lastState == stat) {
             return;
@@ -188,6 +203,13 @@ public class ifcDot1ah extends ifcVlan {
         ntry.upper.recvPack(pck);
     }
 
+    /**
+     * add vlan
+     *
+     * @param vl vlan id
+     * @param ifc interface
+     * @return handler
+     */
     public ifcDot1ahEntry addVlan(int vl, ifcUp ifc) {
         if (debugger.ifcDot1ahTraf) {
             logger.debug("add vlan=" + vl);
@@ -203,6 +225,13 @@ public class ifcDot1ah extends ifcVlan {
         return ntry;
     }
 
+    /**
+     * update vlan
+     *
+     * @param vl vlan id
+     * @param ifc interface
+     * @return handler
+     */
     public ifcDot1ahEntry updateVlan(int vl, ifcUp ifc) {
         if (debugger.ifcDot1ahTraf) {
             logger.debug("update vlan=" + vl);

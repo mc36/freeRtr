@@ -70,6 +70,11 @@ public class userLine {
     public authGeneric authenticList;
 
     /**
+     * authorization list
+     */
+    public authGeneric authorizeList;
+
+    /**
      * command to use on login
      */
     public String autoCommand = "";
@@ -164,6 +169,11 @@ public class userLine {
         lst.add(beg + "exec autocommand " + autoCommand);
         cmds.cfgLine(lst, !autoHangup, beg, "exec autohangup", "");
         lst.add(beg + "exec privilege " + promptPrivilege);
+        if (authorizeList == null) {
+            lst.add(beg + "no exec authorization");
+        } else {
+            lst.add(beg + "exec authorization " + authorizeList.autName);
+        }
         if (authenticList == null) {
             lst.add(beg + "no login authentication");
         } else {
@@ -253,6 +263,15 @@ public class userLine {
                 promptPrivilege = bits.str2num(cmd.word()) & 0xf;
                 return false;
             }
+            if (s.equals("authorization")) {
+                cfgAuther lst = cfgAll.autherFind(cmd.word(), null);
+                if (lst == null) {
+                    cmd.error("no such auth list");
+                    return false;
+                }
+                authorizeList = lst.getAuther();
+                return false;
+            }
             return true;
         }
         if (s.equals("login")) {
@@ -334,6 +353,10 @@ public class userLine {
                 autoCommand = "";
                 return false;
             }
+            if (s.equals("authorization")) {
+                authorizeList = null;
+                return false;
+            }
             return true;
         }
         if (s.equals("login")) {
@@ -387,6 +410,8 @@ public class userLine {
         l.add("2 .    autohangup                   disconnect user after autocommand");
         l.add("2 3    privilege                    set default privilege");
         l.add("3 .      <num>                      privilege of terminal");
+        l.add("2 3    authorization                set authorization");
+        l.add("3 .      <name>                     name of authentication list");
         l.add("1 2  login                          set login parameters");
         l.add("2 .    logging                      enable logging");
         l.add("2 3    authentication               set authentication");
@@ -517,6 +542,10 @@ class userLineHandler implements Runnable {
         exe.privileged = user.privilege >= 15;
         exe.framedIface = parent.execIface;
         exe.physicalLin = physical;
+        exe.authorization = parent.authorizeList;
+        if (user != null) {
+            exe.username = user.user;
+        }
         String s = parent.autoCommand;
         if (s.length() > 0) {
             s = exe.repairCommand(s);

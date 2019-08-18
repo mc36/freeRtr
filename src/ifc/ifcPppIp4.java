@@ -107,22 +107,45 @@ public class ifcPppIp4 extends ifcPppNcp {
         parent = prnt;
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String getPPPname() {
         return pppName;
     }
 
+    /**
+     * get control code
+     *
+     * @return code
+     */
     public int getPPPctrl() {
         return pppCtrl;
     }
 
+    /**
+     * get data code
+     *
+     * @return code
+     */
     public int getPPPdata() {
         return pppData;
     }
 
+    /**
+     * get ethertype
+     *
+     * @return ethertype
+     */
     public int getPPPetyp() {
         return ethTyp;
     }
 
+    /**
+     * clear state
+     */
     public void clearState() {
         if (parent.locAddrCfg == null) {
             locAddrCur = null;
@@ -148,6 +171,12 @@ public class ifcPppIp4 extends ifcPppNcp {
         clearUpperState();
     }
 
+    /**
+     * get one config
+     *
+     * @param txReq send reply
+     * @return data
+     */
     public Object getOneConfig(boolean txReq) {
         ifcPppIp4conf cfg = new ifcPppIp4conf();
         if (!txReq) {
@@ -165,6 +194,13 @@ public class ifcPppIp4 extends ifcPppNcp {
         return cfg;
     }
 
+    /**
+     * read options
+     *
+     * @param config config
+     * @param tlv tlv
+     * @return false on success, true on error
+     */
     public boolean readOption(Object config, typLenVal tlv) {
         ifcPppIp4conf cfg = (ifcPppIp4conf) config;
         switch (tlv.valTyp) {
@@ -200,6 +236,12 @@ public class ifcPppIp4 extends ifcPppNcp {
         }
     }
 
+    /**
+     * write options
+     *
+     * @param pck packet
+     * @param data data
+     */
     public void writeOptions(packHolder pck, Object data) {
         ifcPppIp4conf dat = (ifcPppIp4conf) data;
         typLenVal tlv = getTlv();
@@ -230,6 +272,12 @@ public class ifcPppIp4 extends ifcPppNcp {
         }
     }
 
+    /**
+     * got configure ack
+     *
+     * @param data data
+     * @return false on success, true on error
+     */
     public boolean gotConfAck(Object data) {
         ifcPppIp4conf dat = (ifcPppIp4conf) data;
         if (locAddrReq) {
@@ -243,6 +291,13 @@ public class ifcPppIp4 extends ifcPppNcp {
         return false;
     }
 
+    /**
+     * got configure request
+     *
+     * @param data data
+     * @param rej rejected
+     * @return config
+     */
     public Object gotConfReq(Object data, boolean rej) {
         boolean val = false;
         ifcPppIp4conf dat = (ifcPppIp4conf) data;
@@ -293,6 +348,11 @@ public class ifcPppIp4 extends ifcPppNcp {
         }
     }
 
+    /**
+     * got configure nak
+     *
+     * @param data data
+     */
     public void gotConfNak(Object data) {
         ifcPppIp4conf dat = (ifcPppIp4conf) data;
         ifcPppIp4conf cfg = (ifcPppIp4conf) txReq;
@@ -319,6 +379,11 @@ public class ifcPppIp4 extends ifcPppNcp {
         }
     }
 
+    /**
+     * got configure reject
+     *
+     * @param data data
+     */
     public void gotConfRej(Object data) {
         ifcPppIp4conf dat = (ifcPppIp4conf) data;
         ifcPppIp4conf cfg = (ifcPppIp4conf) txReq;
@@ -342,6 +407,14 @@ public class ifcPppIp4 extends ifcPppNcp {
         }
     }
 
+    /**
+     * got unknown code
+     *
+     * @param pck packet
+     * @param code code
+     * @param id id
+     * @return false on success, true on error
+     */
     public boolean gotUnknownCode(packHolder pck, int code, int id) {
         return true;
     }

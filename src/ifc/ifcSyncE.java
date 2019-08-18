@@ -57,6 +57,11 @@ public class ifcSyncE implements ifcUp, Runnable {
         return new typLenVal(0, 8, 8, 16, 1, 3, 3, 1, 0, 512, true);
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.msbGetW(0) != ethtyp) {
@@ -72,17 +77,35 @@ public class ifcSyncE implements ifcUp, Runnable {
         }
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         lower = parent;
         hwadr = lower.getHwAddr();
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }

@@ -31,6 +31,9 @@ public class cryHashFcs16 extends cryHashGeneric {
         }
     }
 
+    /**
+     * initialize
+     */
     public void init() {
         if (tab == null) {
             makeTab();
@@ -47,14 +50,29 @@ public class cryHashFcs16 extends cryHashGeneric {
         fcs = i;
     }
 
+    /**
+     * get name
+     *
+     * @return name
+     */
     public String getName() {
         return "fcs16";
     }
 
+    /**
+     * get hash size
+     *
+     * @return size
+     */
     public int getHashSize() {
         return 2;
     }
 
+    /**
+     * get block size
+     *
+     * @return size
+     */
     public int getBlockSize() {
         return 1;
     }
@@ -63,12 +81,24 @@ public class cryHashFcs16 extends cryHashGeneric {
         fcs = (fcs >>> 8) ^ tab[(fcs ^ i) & 0xff];
     }
 
+    /**
+     * compute block
+     *
+     * @param buf buffer
+     * @param ofs offset
+     * @param siz size
+     */
     public void update(byte[] buf, int ofs, int siz) {
         for (int i = 0; i < siz; i++) {
             updateByte(buf[ofs + i]);
         }
     }
 
+    /**
+     * finish
+     *
+     * @return computed
+     */
     public byte[] finish() {
         byte[] buf = new byte[2];
         bits.lsbPutW(buf, 0, fcs ^ 0xffff);
