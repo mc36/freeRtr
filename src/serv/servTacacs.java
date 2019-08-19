@@ -32,6 +32,11 @@ public class servTacacs extends servGeneric implements prtServS {
     public authGeneric authentic;
 
     /**
+     * authorization list
+     */
+    public authGeneric authorize;
+
+    /**
      * shared secret
      */
     public String secret;
@@ -92,6 +97,7 @@ public class servTacacs extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> l) {
         cmds.cfgLine(l, authentic == null, beg, "authentication", "" + authentic);
+        cmds.cfgLine(l, authorize == null, beg, "authorization", "" + authorize);
         cmds.cfgLine(l, secret == null, beg, "secret", "" + authLocal.passwdEncode(secret));
         cmds.cfgLine(l, !logRes, beg, "logging", "");
         l.add(beg + "username " + msgUser);
@@ -109,6 +115,15 @@ public class servTacacs extends servGeneric implements prtServS {
                 return false;
             }
             authentic = usr.getAuther();
+            return false;
+        }
+        if (s.equals("authorization")) {
+            cfgAuther usr = cfgAll.autherFind(cmd.word(), null);
+            if (usr == null) {
+                cmd.error("no such user list");
+                return false;
+            }
+            authorize = usr.getAuther();
             return false;
         }
         if (s.equals("secret")) {
@@ -143,6 +158,10 @@ public class servTacacs extends servGeneric implements prtServS {
             authentic = null;
             return false;
         }
+        if (s.equals("authorization")) {
+            authorize = null;
+            return false;
+        }
         if (s.equals("secret")) {
             secret = null;
             return false;
@@ -156,6 +175,8 @@ public class servTacacs extends servGeneric implements prtServS {
 
     public void srvHelp(userHelping l) {
         l.add("1 2  authentication               set user list to use");
+        l.add("2 .    <name>                     name of list");
+        l.add("1 2  authorization                set user list to use");
         l.add("2 .    <name>                     name of list");
         l.add("1 2  secret                       set shared secret");
         l.add("2 .    <name>                     secret");
@@ -220,7 +241,40 @@ class servTacacsConn implements Runnable {
         if (pck.packRecv()) {
             return;
         }
-        if (pck.parseAuthStrt()) {
+        if (pck.parseAuthenStrt()) {
+            if (pck.parseAuthorReq()) {
+                return;
+            }
+            if (debugger.servTacacsTraf) {
+                logger.debug("rx " + pck.dump());
+            }
+            String a = "";
+            for (int i = 1; i < (pck.arg.length - 1); i++) {
+                String b = pck.arg[i];
+                int o = b.indexOf("=");
+                if (o < 0) {
+                    continue;
+                }
+                a += b.substring(o + 1, b.length()) + " ";
+            }
+            a = a.trim();
+            if (lower.logRes) {
+                logger.info("usr=" + pck.usr + " cmd=" + a);
+            }
+            authResult res = lower.authorize.authUserCommand(pck.usr, a);
+            if (res.result == authResult.authSuccessful) {
+                pck.srv = packTacacs.staPassAdd;
+            } else {
+                pck.srv = packTacacs.staFail;
+            }
+            pck.usr = "";
+            pck.adr = "";
+            pck.arg = new String[0];
+            pck.createAuthorRep();
+            pck.packSend();
+            if (debugger.servTacacsTraf) {
+                logger.debug("tx " + pck.dump());
+            }
             return;
         }
         if (debugger.servTacacsTraf) {
@@ -237,7 +291,7 @@ class servTacacsConn implements Runnable {
                     pck.act = packTacacs.sttGetUsr;
                     pck.priv = 0;
                     pck.usr = lower.msgUser;
-                    pck.createAuthRply();
+                    pck.createAuthenRply();
                     pck.packSend();
                     if (debugger.servTacacsTraf) {
                         logger.debug("tx " + pck.dump());
@@ -245,7 +299,7 @@ class servTacacsConn implements Runnable {
                     if (pck.packRecv()) {
                         return;
                     }
-                    if (pck.parseAuthCont()) {
+                    if (pck.parseAuthenCont()) {
                         return;
                     }
                     if (debugger.servTacacsTraf) {
@@ -256,7 +310,7 @@ class servTacacsConn implements Runnable {
                 pck.act = packTacacs.sttGetPwd;
                 pck.priv = packTacacs.flgNech;
                 pck.usr = lower.msgPass;
-                pck.createAuthRply();
+                pck.createAuthenRply();
                 pck.packSend();
                 if (debugger.servTacacsTraf) {
                     logger.debug("tx " + pck.dump());
@@ -264,7 +318,7 @@ class servTacacsConn implements Runnable {
                 if (pck.packRecv()) {
                     return;
                 }
-                if (pck.parseAuthCont()) {
+                if (pck.parseAuthenCont()) {
                     return;
                 }
                 if (debugger.servTacacsTraf) {
@@ -302,7 +356,7 @@ class servTacacsConn implements Runnable {
         }
         pck.priv = 0;
         pck.dat = "";
-        pck.createAuthRply();
+        pck.createAuthenRply();
         pck.packSend();
         if (debugger.servTacacsTraf) {
             logger.debug("tx " + pck.dump());

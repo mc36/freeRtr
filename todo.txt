@@ -31,7 +31,6 @@ interface range command
 reenable which elliptic courves? sure? why that?
 https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 parse privilege levels from radius and tacacs
-command authorization with radius and tacacs
 ldap client, server
 bgp compare should write out that which attributes changed
 bfd need to send with ttl=255

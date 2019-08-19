@@ -15,7 +15,7 @@ aaa userlist usr
  username usr password pwd
  exit
 server radius rad
- auth usr
+ authen usr
  secret tester
  vrf v1
  exit

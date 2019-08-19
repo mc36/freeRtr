@@ -26,6 +26,21 @@ aaa userlist access
  username mc36
  username mc36 password $w10$HFepawSJgqct0vAiKD2PVg==
  allowed show .*
+ allowed configure terminal
+ allowed interface .*
+ allowed description .*
+ exit
+!
+aaa radius rad
+ no log-error
+ secret $w10$GV+pcgTkgqct0vAiKD2PVg==
+ server 10.10.10.227
+ exit
+!
+aaa tacacs tac
+ no log-error
+ secret $w10$GV+pcgTkgqct0vAiKD2PVg==
+ server 10.10.10.227
  exit
 !
 access-list all4
@@ -910,6 +925,21 @@ server dns ns
 server sip lab
  protocol ipv4 ipv6 tcp udp
  interface loopback0
+ vrf v1
+ exit
+!
+server radius rad
+ authentication access
+ secret $w10$GV+pcgTkgqct0vAiKD2PVg==
+ logging
+ vrf v1
+ exit
+!
+server tacacs tac
+ authentication access
+ authorization access
+ secret $w10$GV+pcgTkgqct0vAiKD2PVg==
+ logging
  vrf v1
  exit
 !

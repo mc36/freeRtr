@@ -64,7 +64,7 @@ aaa userlist usr
  username c password c
  exit
 server tacacs rad
- auth usr
+ authen usr
  secret c
  logg
  vrf v1

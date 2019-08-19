@@ -8669,3 +8669,5 @@ no todo: traceroute to query bgp for asn
 no todo: configurable replay window under ipsec profile for macsec
 ---------------------------------- 2019-08-17 16:59:49
 no todo: command authorization with local
+---------------------------------- 2019-08-19 07:47:27
+no todo: command authorization with radius and tacacs

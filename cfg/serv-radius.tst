@@ -46,7 +46,7 @@ aaa userlist usr
  username c privilege 14
  exit
 server radius rad
- auth usr
+ authen usr
  secret tester
  logg
  vrf v1

@@ -1583,7 +1583,6 @@ todo: interface range command
 todo: reenable which elliptic courves? sure? why that?
 todo: https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 todo: parse privilege levels from radius and tacacs
-todo: command authorization with radius and tacacs
 todo: ldap client, server
 todo: bgp compare should write out that which attributes changed
 todo: bfd need to send with ttl=255

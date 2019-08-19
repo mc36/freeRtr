@@ -11,7 +11,10 @@ import addr.addrIP;
 import auth.authGeneric;
 import auth.authResult;
 import cfg.cfgAll;
+import java.util.ArrayList;
+import java.util.List;
 import serv.servGeneric;
+import util.cmds;
 
 /**
  * terminal access controller access control system (rfc1492) client
@@ -46,7 +49,7 @@ public class clntTacacs {
         tacTx.auty = packTacacs.autyAscii;
         tacTx.usr = user;
         tacTx.dat = pass;
-        return doXchg();
+        return doAuthenXchg();
     }
 
     /**
@@ -67,13 +70,10 @@ public class clntTacacs {
         buf = bits.byteConcat(buf, chal);
         buf = bits.byteConcat(buf, resp);
         tacTx.dat = new String(buf);
-        return doXchg();
+        return doAuthenXchg();
     }
 
-    private boolean doXchg() {
-        if (secret == null) {
-            return true;
-        }
+    private boolean doAuthenXchg() {
         if (server == null) {
             return true;
         }
@@ -100,7 +100,7 @@ public class clntTacacs {
         tacTx.srv = packTacacs.srvLogin;
         tacTx.adr = "";
         tacTx.prt = "";
-        tacTx.createAuthStrt();
+        tacTx.createAuthenStrt();
         tacTx.packSend();
         if (debugger.clntTacacsTraf) {
             logger.debug("tx " + tacTx.dump());
@@ -113,14 +113,14 @@ public class clntTacacs {
             return true;
         }
         if (tacTx.auty == packTacacs.autyAscii) {
-            res.parseAuthCont();
+            res.parseAuthenCont();
             if (debugger.clntTacacsTraf) {
                 logger.debug("rx " + res.dump());
             }
             tacTx.act = 0;
             tacTx.usr = user;
             tacTx.seq = res.seq;
-            tacTx.createAuthCont();
+            tacTx.createAuthenCont();
             tacTx.packSend();
             if (debugger.clntTacacsTraf) {
                 logger.debug("tx " + tacTx.dump());
@@ -129,13 +129,13 @@ public class clntTacacs {
                 conn.setClose();
                 return true;
             }
-            res.parseAuthCont();
+            res.parseAuthenCont();
             if (debugger.clntTacacsTraf) {
                 logger.debug("rx " + res.dump());
             }
             tacTx.usr = pass;
             tacTx.seq = res.seq;
-            tacTx.createAuthCont();
+            tacTx.createAuthenCont();
             tacTx.packSend();
             if (debugger.clntTacacsTraf) {
                 logger.debug("tx " + tacTx.dump());
@@ -147,7 +147,7 @@ public class clntTacacs {
             tacTx.usr = user;
         }
         conn.setClose();
-        if (res.parseAuthRply()) {
+        if (res.parseAuthenRply()) {
             return true;
         }
         tacRx = res;
@@ -164,7 +164,7 @@ public class clntTacacs {
      * @param priv privilege on success
      * @return result
      */
-    public authResult checkResult(authGeneric par, int priv) {
+    public authResult checkAuthenResult(authGeneric par, int priv) {
         if (tacRx == null) {
             return new authResult(par, authResult.authServerError, tacTx.usr);
         }
@@ -174,6 +174,78 @@ public class clntTacacs {
         authResult res = new authResult(par, authResult.authSuccessful, tacTx.usr);
         res.privilege = priv;
         return res;
+    }
+
+    /**
+     * do command transaction
+     *
+     * @param par parent
+     * @param usr username
+     * @param cmd command
+     * @return result
+     */
+    public authResult doCmd(authGeneric par, String usr, String cmd) {
+        tacTx = new packTacacs();
+        tacTx.usr = usr;
+        tacTx.ses = bits.randomD();
+        tacTx.secret = secret;
+        if (server == null) {
+            return new authResult(par, authResult.authServerError, tacTx.usr);
+        }
+        addrIP trg = userTerminal.justResolv(server, 0);
+        if (trg == null) {
+            return new authResult(par, authResult.authServerError, tacTx.usr);
+        }
+        pipeSide conn = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servTacacs().srvPort(), "tacacs");
+        if (conn == null) {
+            return new authResult(par, authResult.authServerError, tacTx.usr);
+        }
+        tacTx.pipe = conn;
+        tacTx.act = packTacacs.metNotset;
+        tacTx.priv = 15;
+        tacTx.auty = packTacacs.autyNotset;
+        tacTx.prt = "";
+        tacTx.adr = "";
+        List<String> lst = new ArrayList<String>();
+        lst.add("service=shell");
+        cmds cm = new cmds("tac", cmd);
+        lst.add("cmd=" + cm.word());
+        for (;;) {
+            String a = cm.word();
+            if (a.length() < 1) {
+                break;
+            }
+            lst.add("cmd-arg=" + a);
+        }
+        lst.add("cmd-arg=<cr>");
+        tacTx.arg = new String[lst.size()];
+        for (int i = 0; i < tacTx.arg.length; i++) {
+            tacTx.arg[i] = lst.get(i);
+        }
+        if (debugger.clntTacacsTraf) {
+            logger.debug("tx " + tacTx.dump());
+        }
+        tacTx.createAuthorReq();
+        tacTx.packSend();
+        tacRx = new packTacacs();
+        tacRx.pipe = conn;
+        tacRx.secret = secret;
+        if (tacRx.packRecv()) {
+            conn.setClose();
+            return new authResult(par, authResult.authServerError, tacTx.usr);
+        }
+        conn.setClose();
+        if (tacRx.parseAuthorRep()) {
+            return new authResult(par, authResult.authServerError, tacTx.usr);
+        }
+        if (debugger.clntTacacsTraf) {
+            logger.debug("rx " + tacRx.dump());
+        }
+        if ((tacRx.srv == packTacacs.staPassAdd) || (tacRx.srv == packTacacs.staPassRep)) {
+            return new authResult(par, authResult.authSuccessful, tacTx.usr);
+        } else {
+            return new authResult(par, authResult.authBadUserPass, tacTx.usr);
+        }
     }
 
 }
