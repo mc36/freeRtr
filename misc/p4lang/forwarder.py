@@ -107,13 +107,13 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         if splt[0] == "label4_del":
             writeMplsRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
-        if splt[0] == "neigh_add":
+        if splt[0] == "neigh4_add":
             writeNeighborRules4(1,p4info_helper,sw1,splt[2],int(splt[1]))
             continue
-        if splt[0] == "neigh_mod":
+        if splt[0] == "neigh4_mod":
             writeNeighborRules4(2,p4info_helper,sw1,splt[2],int(splt[1]))
             continue
-        if splt[0] == "neigh_del":
+        if splt[0] == "neigh4_del":
             writeNeighborRules4(3,p4info_helper,sw1,splt[2],int(splt[1]))
             continue
 

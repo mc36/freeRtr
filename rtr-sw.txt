@@ -430,6 +430,8 @@ interface sdn1
  vrf forwarding v5
  ipv4 address 1.1.1.1 255.255.255.252
  ipv4 host-static 1.1.1.2 0000.1111.2222
+ ipv6 address 1111::1 ffff:ffff:ffff:ffff::
+ ipv6 host-static 1111::2 0000.1111.2222
  no shutdown
  no log-link-change
  exit
@@ -772,6 +774,7 @@ ipv6 flow v1 collect
 !
 ipv4 route v5 2.2.2.0 255.255.255.0 1.1.1.2 mplsexp
 !
+ipv6 route v5 2222::1 ffff:ffff:ffff:ffff:: 1111::1 mplsexp
 !
 !
 !
