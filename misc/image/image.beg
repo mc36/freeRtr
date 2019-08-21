@@ -1,7 +1,7 @@
 download 2
 arch amd64
 distro sid
-mirror http://ftp.at.debian.org/debian/
+mirror http://ftp.de.debian.org/debian/
 
 del-alw %img%.*
 del-ifdn %dwn%
