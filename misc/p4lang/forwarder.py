@@ -81,7 +81,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
     sw1.MasterArbitrationUpdate()
     sw1.SetForwardingPipelineConfig(p4info=p4info_helper.p4info,
                                     bmv2_json_file_path=bmv2_file_path)
-    writeNeighborRules4(1,p4info_helper,sw1,"1.1.1.1",1)
+
     while 1:
         line = fil.readline(8192)
         splt = line.split(" ")
