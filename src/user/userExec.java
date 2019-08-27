@@ -742,6 +742,10 @@ public class userExec {
         hl.add("112 112,.    <text>              filter text");
         hl.add("111 112    end                   only lines to match");
         hl.add("112 112,.    <text>              filter text");
+        hl.add("111 112    sort                  sort lines by");
+        hl.add("112 112,.    <text>              column name");
+        hl.add("111 112    uniq                  unique lines by");
+        hl.add("112 112,.    <text>              column name");
         hl.add("111 112    section               only sections that match");
         hl.add("112 112,.    <text>              filter text");
         hl.add("111 112    reginc                only lines that match regular expression");
@@ -915,7 +919,7 @@ public class userExec {
         getHelpTelnet(hl);
         hl.add("1 2    ssl                       start ssl session");
         getHelpTelnet(hl);
-        hl.add("1 2    ssh                       start tls session");
+        hl.add("1 2    ssh                       start ssh session");
         getHelpTelnet(hl);
         cfgAll.aliasHelps(cfgAlias.aliasType.exec, 1, hl);
         if (!privileged) {

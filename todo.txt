@@ -14,8 +14,6 @@ http host upload optional different authentication
 tls1.3
 http2.0
 route-map/policy to match private-as origination/transit, then show, ignore, etc
-sorted, uniq | filter for any column
-diff n | filter
 terminal mode resolve
 hostwatch to execute script on acl match
 protocol traceroute

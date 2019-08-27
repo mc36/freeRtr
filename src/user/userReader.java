@@ -2,6 +2,7 @@ package user;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import pipe.pipeSide;
 import util.bits;
@@ -14,7 +15,7 @@ import util.logger;
  *
  * @author matecsaba
  */
-public class userReader {
+public class userReader implements Comparator<String> {
 
     /**
      * user origin
@@ -87,6 +88,10 @@ public class userReader {
 
     private mode filterM; // filter mode
 
+    private int columnB; // beginning of column
+
+    private int columnE; // ending of column
+
     /**
      * operation modes
      */
@@ -129,6 +134,14 @@ public class userReader {
          */
         count,
         /**
+         * sort entities
+         */
+        sort,
+        /**
+         * unique entities
+         */
+        uniq,
+        /**
          * redirection
          */
         redirect,
@@ -141,11 +154,11 @@ public class userReader {
          */
         level,
         /**
-         * prepend line numbers
+         * csv list
          */
         csv,
         /**
-         * prepend line numbers
+         * htmlized
          */
         html,
         /**
@@ -233,6 +246,25 @@ public class userReader {
         }
     }
 
+    private void findColumn(String s) {
+        columnB = s.indexOf(filterS);
+        columnE = columnB + filterS.length();
+        if (columnB < 0) {
+            return;
+        }
+        for (; columnE < s.length(); columnE++) {
+            String a = s.substring(columnB, columnE).trim();
+            if (!a.equals(filterS)) {
+                break;
+            }
+        }
+        columnE--;
+    }
+
+    public int compare(String o1, String o2) {
+        return o1.substring(columnB, columnE).compareTo(o2.substring(columnB, columnE));
+    }
+
     /**
      * filter the list
      *
@@ -245,8 +277,50 @@ public class userReader {
         }
         switch (filterM) {
             case include:
+                List<String> res = new ArrayList<String>();
+                for (int i = 0; i < lst.size(); i++) {
+                    String s = lst.get(i);
+                    boolean b = s.matches(filterS);
+                    if (!b) {
+                        continue;
+                    }
+                    res.add(s);
+                }
+                return res;
             case exclude:
-                break;
+                res = new ArrayList<String>();
+                for (int i = 0; i < lst.size(); i++) {
+                    String s = lst.get(i);
+                    boolean b = s.matches(filterS);
+                    if (b) {
+                        continue;
+                    }
+                    res.add(s);
+                }
+                return res;
+            case sort:
+                findColumn(lst.get(0));
+                if (columnB < 0) {
+                    return bits.str2lst("no such column");
+                }
+                Collections.sort(lst, this);
+                return lst;
+            case uniq:
+                findColumn(lst.get(0));
+                if (columnB < 0) {
+                    return bits.str2lst("no such column");
+                }
+                res = new ArrayList<String>();
+                List<String> tab = new ArrayList<String>();
+                for (int i = 0; i < lst.size(); i++) {
+                    String a = lst.get(i);
+                    if (tab.contains(a.substring(columnB, columnE))) {
+                        continue;
+                    }
+                    tab.add(a.substring(columnB, columnE));
+                    res.add(a);
+                }
+                return res;
             case redirect:
                 bits.buf2txt(true, lst, filterS);
                 return lst;
@@ -323,19 +397,6 @@ public class userReader {
             default:
                 return lst;
         }
-        List<String> res = new ArrayList<String>();
-        for (int i = 0; i < lst.size(); i++) {
-            String s = lst.get(i);
-            boolean b = s.matches(filterS);
-            if (filterM == mode.exclude) {
-                b = !b;
-            }
-            if (!b) {
-                continue;
-            }
-            res.add(s);
-        }
-        return res;
     }
 
     private void doPutArr(List<String> lst, boolean need2color) {
@@ -1004,6 +1065,14 @@ public class userReader {
         }
         if (a.equals("redirect")) {
             filterM = mode.redirect;
+            return cmd;
+        }
+        if (a.equals("sort")) {
+            filterM = mode.sort;
+            return cmd;
+        }
+        if (a.equals("uniq")) {
+            filterM = mode.uniq;
             return cmd;
         }
         if (a.equals("section")) {
