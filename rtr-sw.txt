@@ -895,6 +895,7 @@ server rfb vnc
 server p4lang a
  export-vrf v5
  export-port sdn1 1
+ interconnect bvi9
  vrf v1
  exit
 !

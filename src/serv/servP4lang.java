@@ -12,6 +12,7 @@ import cfg.cfgVrf;
 import ifc.ifcUp;
 import ifc.ifcDn;
 import ifc.ifcEther;
+import ifc.ifcEthTyp;
 import ifc.ifcNull;
 import ip.ipIfc;
 import java.util.List;
@@ -40,7 +41,7 @@ import util.bits;
  *
  * @author matecsaba
  */
-public class servP4lang extends servGeneric implements prtServS {
+public class servP4lang extends servGeneric implements ifcUp, prtServS {
 
     /**
      * port
@@ -61,6 +62,15 @@ public class servP4lang extends servGeneric implements prtServS {
      * last connection
      */
     protected servP4langConn conn;
+
+    /**
+     * interconnection interface
+     */
+    protected ifcEthTyp interconn;
+
+    private ifcDn intercon;
+
+    private counter cntr = new counter();
 
     /**
      * defaults text
@@ -88,6 +98,7 @@ public class servP4lang extends servGeneric implements prtServS {
             servP4langIfc ntry = expIfc.get(i);
             l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id);
         }
+        cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -98,6 +109,17 @@ public class servP4lang extends servGeneric implements prtServS {
                 cmd.error("no such vrf");
                 return false;
             }
+            return false;
+        }
+        if (s.equals("interconnect")) {
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return false;
+            }
+            interconn = ifc.ethtyp;
+            interconn.addET(-1, "p4lang", this);
+            interconn.updateET(-1, this);
             return false;
         }
         if (s.equals("export-port")) {
@@ -126,6 +148,14 @@ public class servP4lang extends servGeneric implements prtServS {
             expVrf = null;
             return false;
         }
+        if (s.equals("interconnect")) {
+            if (interconn == null) {
+                return false;
+            }
+            interconn.delET(-1);
+            interconn = null;
+            return false;
+        }
         if (s.equals("export-port")) {
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
@@ -149,6 +179,8 @@ public class servP4lang extends servGeneric implements prtServS {
         l.add("1 2  export-port               specify port to export");
         l.add("2 3    <name>                  interface name");
         l.add("3 .      <num>                 p4lang port number");
+        l.add("1 2  interconnect              specify port to for packetin");
+        l.add("2 .    <name>                  interface name");
     }
 
     public String srvName() {
@@ -185,6 +217,9 @@ public class servP4lang extends servGeneric implements prtServS {
      * @param a line
      */
     protected synchronized void sendLine(String a) {
+        if (conn == null) {
+            return;
+        }
         if (debugger.servP4langTraf) {
             logger.debug("tx: " + a);
         }
@@ -198,12 +233,50 @@ public class servP4lang extends servGeneric implements prtServS {
      * @param pckB binary
      */
     protected void sendPack(int id, packHolder pckB) {
+        ifcEther.createETHheader(pckB, false);
+        if (intercon != null) {
+            pckB.msbPutW(0, id);
+            pckB.putSkip(2);
+            pckB.merge2beg();
+            ifcEther.parseETHheader(pckB, false);
+            intercon.sendPack(pckB);
+            return;
+        }
         String a = "packet " + id + " ";
         byte[] data = pckB.getCopy();
         for (int i = 0; i < data.length; i++) {
             a += bits.toHexB(data[i]);
         }
         sendLine(a);
+    }
+
+    public void recvPack(packHolder pck) {
+        cntr.rx(pck);
+        ifcEther.createETHheader(pck, false);
+        int id = pck.msbGetW(0);
+        pck.getSkip(2);
+        ifcEther.parseETHheader(pck, false);
+        servP4langIfc ntry = new servP4langIfc();
+        ntry.id = id;
+        ntry = expIfc.find(ntry);
+        if (ntry == null) {
+            return;
+        }
+        ntry.upper.recvPack(pck);
+    }
+
+    public void setParent(ifcDn parent) {
+        intercon = parent;
+    }
+
+    public void setState(state.states stat) {
+    }
+
+    public void closeUp() {
+    }
+
+    public counter getCounter() {
+        return cntr;
     }
 
 }
@@ -291,10 +364,6 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     }
 
     public void sendPack(packHolder pck) {
-        if (lower.conn == null) {
-            return;
-        }
-        ifcEther.createETHheader(pck, false);
         lower.sendPack(id, pck);
     }
 
