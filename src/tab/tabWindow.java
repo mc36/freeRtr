@@ -18,6 +18,8 @@ public class tabWindow {
 
     private int mapPos;
 
+    private int replay;
+
     /**
      * initialize windowing
      *
@@ -93,22 +95,37 @@ public class tabWindow {
         synchronized (mapDat) {
             if (seq > mapSeq) {
                 if (seq >= (mapSeq + mapDat.length)) {
+                    replay++;
+                    if (replay >= mapDat.length) {
+                        gotSet(seq);
+                        replay = 0;
+                        return false;
+                    }
                     return true;
                 }
                 gotSet(seq);
                 mapDat[mapPos] = 1;
                 mapPay[mapPos] = null;
+                replay = 0;
                 return false;
             }
             int i = seq2pos(seq);
             if (i < 0) {
+                replay++;
+                if (replay >= mapDat.length) {
+                    gotSet(seq);
+                    replay = 0;
+                    return false;
+                }
                 return true;
             }
             if (mapDat[i] != 0) {
+                replay = 0;
                 return true;
             }
             mapDat[i] = 1;
             mapPay[i] = null;
+            replay = 0;
             return false;
         }
     }

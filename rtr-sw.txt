@@ -425,6 +425,8 @@ interface pwether1
  no description
  mtu 1500
  macaddr 0005.4046.3b2e
+ lldp enable
+ cdp enable
  vrf forwarding v4
  ipv4 address 1.1.1.2 255.255.255.252
  ipv6 address 1111::2 ffff:ffff:ffff:ffff::
