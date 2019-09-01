@@ -250,6 +250,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         sendLine(a);
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         ifcEther.createETHheader(pck, false);
@@ -265,16 +270,34 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         ntry.upper.recvPack(pck);
     }
 
+    /**
+     * set parent
+     *
+     * @param parent parent
+     */
     public void setParent(ifcDn parent) {
         intercon = parent;
     }
 
+    /**
+     * set state
+     *
+     * @param stat state
+     */
     public void setState(state.states stat) {
     }
 
+    /**
+     * close interface
+     */
     public void closeUp() {
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }

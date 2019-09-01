@@ -511,6 +511,8 @@ public class userExec {
     }
 
     private void getHelpShow(userHelping hl) {
+        hl.add("2 3      macsec                  macsec information");
+        hl.add("3 .        <name>                name of interface");
         hl.add("2 .      scheduler               scheduler information");
         hl.add("2 .      script                  script information");
         hl.add("2 3      vdc                     virtual device context");

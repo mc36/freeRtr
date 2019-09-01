@@ -161,6 +161,21 @@ public class userShow {
             rdr.putStrTab(userFlash.dir2txt(userFlash.dirList(a)));
             return null;
         }
+        if (a.equals("macsec")) {
+            a = cmd.word();
+            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return null;
+            }
+            if (ifc.ethtyp.macSec == null) {
+                cmd.error("not enabled");
+                return null;
+            }
+            userFormat l = ifc.ethtyp.macSec.getShow();
+            rdr.putStrTab(l);
+            return null;
+        }
         if (a.equals("dial-peer")) {
             a = cmd.word();
             if (a.equals("description")) {

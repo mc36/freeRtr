@@ -37,7 +37,7 @@ public class tabWindow {
                 o++;
             }
         }
-        String s = seq1st() + "-" + seqLst() + ", " + o + " miss";
+        String s = seq1st() + "-" + seqLst() + ", " + o + " miss, " + replay + " replay";
         return s;
     }
 

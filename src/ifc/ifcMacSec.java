@@ -12,6 +12,7 @@ import util.counter;
 import util.debugger;
 import util.logger;
 import tab.tabWindow;
+import user.userFormat;
 
 /**
  * mac security (ieee 802.1ae) protocol
@@ -76,6 +77,18 @@ public class ifcMacSec {
             a = " " + bits.toHexW(myTyp);
         }
         return profil.name + a;
+    }
+
+    /**
+     * get show output
+     *
+     * @return text
+     */
+    public userFormat getShow() {
+        userFormat l = new userFormat("|", "category|value");
+        l.add("tx|" + seqTx);
+        l.add("rx|" + sequence);
+        return l;
     }
 
     /**
