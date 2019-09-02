@@ -17,7 +17,8 @@ def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_m
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask)
+            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
+            "std_md.ingress_port": port
         },
         action_name="ctl_ingress.act_ipv4_set_nexthop",
         action_params={
@@ -70,7 +71,7 @@ def writeMplsRules4(delete, p4info_helper, ingress_sw, dst_label, new_label, por
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_mpls_fib",
         match_fields={
-            "hdr.mpls[0].label": (dst_label)
+            "md.tunnel_metadata.mpls_label": (dst_label)
         },
         action_name="ctl_ingress.act_mpls_swap_set_nexthop",
         action_params={
@@ -146,10 +147,10 @@ if __name__ == '__main__':
 
     parser.add_argument('--p4info', help='p4info proto in text format from p4c',
             type=str, action="store", required=False,
-            default="./vpn-over-bgp-isis-sr-operation.txt")
+            default="./vpn-over-bgp-isis-sr-operation-core1-ler.txt")
     parser.add_argument('--bmv2-json', help='BMv2 JSON file from p4c',
             type=str, action="store", required=False,
-            default="./vpn-over-bgp-isis-sr-operation.json")
+            default="./vpn-over-bgp-isis-sr-operation-core1-ler.json")
     parser.add_argument('--p4runtime_address', help='p4 runtime address',
             type=str, action="store", required=False,
             default="127.0.0.1:50051")

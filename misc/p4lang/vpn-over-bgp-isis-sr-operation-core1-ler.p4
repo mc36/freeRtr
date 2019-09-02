@@ -80,7 +80,7 @@ header llc_header_t {
  * MPLS header: as a header type, order matters
  */
 header mpls_t {
-   bit<20> label;
+   label_t label;
    bit<3>  exp;
    bit<1>  bos;
    bit<8>  ttl;
@@ -178,7 +178,7 @@ struct l3_metadata_t {
     bit<16> lkp_l4_dport;
     bit<16> lkp_outer_l4_sport;
     bit<16> lkp_outer_l4_dport;
-    bit<16> vrf;
+    bit<20> vrf;
     bit<10> rmac_group;
     bit<1>  rmac_hit;
     bit<2>  urpf_mode;
@@ -220,6 +220,27 @@ struct ipv6_metadata_t {
     bit<2>   ipv6_urpf_mode;
 }
 
+struct tunnel_metadata_t {
+    bit<5>  ingress_tunnel_type;
+    bit<24> tunnel_vni;
+    bit<1>  mpls_enabled;
+    bit<20> mpls_label;
+    bit<3>  mpls_exp;
+    bit<8>  mpls_ttl;
+    bit<5>  egress_tunnel_type;
+    bit<14> tunnel_index;
+    bit<9>  tunnel_src_index;
+    bit<9>  tunnel_smac_index;
+    bit<14> tunnel_dst_index;
+    bit<14> tunnel_dmac_index;
+    bit<24> vnid;
+    bit<1>  tunnel_terminate;
+    bit<1>  tunnel_if_check;
+    bit<4>  egress_header_count;
+    bit<8>  inner_ip_proto;
+    bit<1>  skip_encap_inner;
+}
+
 /*
  * metadata type  
  */
@@ -229,6 +250,7 @@ struct metadata_t {
    l3_metadata_t                l3_metadata;
    ipv4_metadata_t              ipv4_metadata;
    ipv6_metadata_t              ipv6_metadata;
+   tunnel_metadata_t            tunnel_metadata;
 }
 
 /*
@@ -236,12 +258,12 @@ struct metadata_t {
  */
 struct headers {
    ethernet_t   ethernet;
+   mpls_t[3]    mpls;
    ipv4_t       ipv4;
    ipv6_t       ipv6;
    llc_header_t llc_header;
    tcp_t        tcp;
    udp_t        udp;
-   mpls_t[3]    mpls;
 }
 
 /*
@@ -274,11 +296,17 @@ parser prs_main(packet_in packet,
    }
 
    state prs_mpls_bos {
-      transition accept;
+      transition select((packet.lookahead<bit<4>>())[3:0]) {
+         //4w0x4: prs_ipv4;
+         //4w0x6: parse_ipv6;
+         default: accept;
+      }
    }
 
    state prs_ipv4 {
       packet.extract(hdr.ipv4);
+      md.ipv4_metadata.lkp_ipv4_da = hdr.ipv4.dst_addr;
+      md.l3_metadata.lkp_ip_ttl = hdr.ipv4.ttl ;
       transition select(hdr.ipv4.frag_offset, hdr.ipv4.ihl, hdr.ipv4.protocol) {
          (13w0x0, 4w0x5, 8w0x6): prs_tcp;
          (13w0x0, 4w0x5, 8w0x11): prs_udp;
@@ -286,17 +314,17 @@ parser prs_main(packet_in packet,
       } 
    }
 
-   state prs_tcp {
-      packet.extract(hdr.tcp);
+   state prs_tcp {                                         
+      packet.extract(hdr.tcp);                             
       md.l3_metadata.lkp_outer_l4_sport = hdr.tcp.src_port;
       md.l3_metadata.lkp_outer_l4_dport = hdr.tcp.dst_port;
-      transition select(hdr.tcp.dst_port) {
-          16w179: prs_set_prio_med;
-          16w639: prs_set_prio_med;
-          16w646: prs_set_prio_med;
-          default: accept;
-      }
-   }
+      transition select(hdr.tcp.dst_port) {                
+          16w179: prs_set_prio_med;                        
+          16w639: prs_set_prio_med;                        
+          16w646: prs_set_prio_med;                        
+          default: accept;                                 
+      }                                                    
+   }                                                       
 
   state prs_udp {
      packet.extract(hdr.udp);
@@ -395,7 +423,7 @@ control ctl_ingress(inout headers hdr,
       md.nexthop_id = nexthop_id;
    }
 
-   action act_ipv4_mpls_encap_set_nexthop(label_t egress_label, nexthop_id_t nexthop_id) {
+   action act_ipv4_mpls_encap_set_nexthop(label_t vpn_label, label_t egress_label, nexthop_id_t nexthop_id) {
       /*
        * Egress packet is now a MPLS packet
        * (LABEL imposition)
@@ -405,8 +433,19 @@ control ctl_ingress(inout headers hdr,
        * Encapsulate MPLS header
        * And set egress label
        */
+      hdr.mpls.push_front(2);
       hdr.mpls[0].setValid();
       hdr.mpls[0].label = egress_label;
+      hdr.mpls[0].ttl = md.l3_metadata.lkp_ip_ttl;
+      /*
+       * MPLS VPN
+       */
+
+      hdr.mpls[1].setValid();
+      hdr.mpls[1].label = vpn_label;
+      hdr.mpls[1].ttl = md.l3_metadata.lkp_ip_ttl;
+      hdr.mpls[1].bos = 1;
+        
       /*
        * Set nexthop_id for further forwarding process
        */
@@ -419,6 +458,7 @@ control ctl_ingress(inout headers hdr,
           * we match /32 host route
           */
          hdr.ipv4.dst_addr: exact;
+         std_md.ingress_port: exact;
       }
       actions = {
          act_ipv4_cpl_set_nexthop;
@@ -436,6 +476,7 @@ control ctl_ingress(inout headers hdr,
           * we match network route via Long Prefix Match kind operation
           */
          hdr.ipv4.dst_addr: lpm;
+         std_md.ingress_port: exact;
       }
       actions = {
          act_ipv4_set_nexthop;
@@ -457,7 +498,8 @@ control ctl_ingress(inout headers hdr,
       md.nexthop_id = nexthop_id;
    }
 
-   action act_mpls_decap_set_nexthop(nexthop_id_t nexthop_id) {
+   //action act_mpls_decap_set_nexthop(nexthop_id_t nexthop_id) {
+   action act_mpls_decap_ipv4_l3vpn() {
       /*
        * Egress packet is back now an IPv4 packet
        * (LABEL PHP )
@@ -467,15 +509,20 @@ control ctl_ingress(inout headers hdr,
        * Decapsulate MPLS header
        */
       hdr.mpls[0].setInvalid();
+      hdr.mpls[1].setInvalid();
+      hdr.ipv4.setValid();
       /*
        * Indicate nexthop_id
        */
-      md.nexthop_id = nexthop_id;
+      //md.nexthop_id = nexthop_id;
    }
 
    table tbl_mpls_fib {
       key = {
-         hdr.mpls[0].label: exact;
+         //hdr.mpls[0].label: exact;
+         //md.l3_metadata.vrf: exact;
+         md.tunnel_metadata.mpls_label: exact;
+      //   md.tunnel_metadata.ingress_tunnel_type: exact;
       }
       actions = {
          /*
@@ -486,7 +533,7 @@ control ctl_ingress(inout headers hdr,
          /*
           * mpls decapsulation if PHP  
           */
-         act_mpls_decap_set_nexthop;
+         act_mpls_decap_ipv4_l3vpn;
 
          /* 
           * Default action;
@@ -558,26 +605,32 @@ control ctl_ingress(inout headers hdr,
    }
 
    apply {
-      /* 
-       * if the packet is not valid we don't process it
-       * proposed improvement: TTL check <> 0 
-       */
-      if (hdr.ipv4.isValid()) {
-         /*
-          * we first consider host routes
-          */
-         if (!tbl_ipv4_fib_host.apply().hit) {
-            /* 
-             * if no match consider LPM table
-             */
-             tbl_ipv4_fib_lpm.apply();
+      if (hdr.llc_header.isValid()) { 
+         tbl_rmac_fib.apply(); 
+      } else if (hdr.mpls[0].isValid()) {     
+         if (!hdr.mpls[1].isValid()) {
+            md.tunnel_metadata.mpls_label = hdr.mpls[0].label;
+            //md.tunnel_metadata.ingress_tunnel_type = 0;       
+         } else { 
+            md.tunnel_metadata.mpls_label = hdr.mpls[1].label;
+            //md.tunnel_metadata.ingress_tunnel_type = 4; /* IPv4 for now */
          }
-      } 
-      else if (hdr.llc_header.isValid()) {
-         tbl_rmac_fib.apply();
-      } else if (hdr.mpls[0].isValid()) {
-           tbl_mpls_fib.apply();
+         tbl_mpls_fib.apply();
       }
+
+      if (hdr.ipv4.isValid() ) {               
+         /*                                    
+          * we first consider host routes      
+          */                                   
+         if (!tbl_ipv4_fib_host.apply().hit) { 
+            /*                                 
+             * if no match consider LPM table  
+             */                                
+             tbl_ipv4_fib_lpm.apply();         
+         }                                      
+      }                                            
+  
+         
       /*
        * nexthop value is now identified 
        * and stored in custom nexthop_id used for the lookup
