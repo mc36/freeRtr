@@ -924,7 +924,7 @@ server rfb vnc
  exit
 !
 server p4lang a
- export-vrf v5
+ export-vrf v5 1
  export-port sdn1 1
  export-port sdn2 2
  interconnect pwether2

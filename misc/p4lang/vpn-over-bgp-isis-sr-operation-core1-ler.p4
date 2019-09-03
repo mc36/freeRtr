@@ -15,22 +15,22 @@
 /*
  * include Ethertype mapping 
  */
-#include "ethertype.p4"
+#include "include/ethertype.p4"
 
 /* 
  * include IP protocol mapping 
  */
-#include "ip-protocol.p4"
+#include "include/ip-protocol.p4"
 
 /* 
  * include P4 table size declaration 
  */
-#include "p4-table.p4"
+#include "include/p4-table.p4"
 
 /* 
  * include P4 switch port information 
  */
-#include "p4-switch-port.p4"
+#include "include/p4-switch-port.p4"
 
 /*
  * egress_spec port encoded using 9 bits
@@ -57,6 +57,18 @@ typedef bit<9> nexthop_id_t;
  */
 typedef bit<20> label_t;
 
+typedef bit<9> port_t;
+const port_t CPU_PORT = 64;
+
+header packet_in_header_t {
+    port_t ingress_port;
+    bit<7> _padding;
+}
+
+header packet_out_header_t {
+    port_t egress_port;
+    bit<7> _padding;
+}
 
 /*
  * Ethernet header: as a header type, order matters
@@ -178,7 +190,7 @@ struct l3_metadata_t {
     bit<16> lkp_l4_dport;
     bit<16> lkp_outer_l4_sport;
     bit<16> lkp_outer_l4_dport;
-    bit<20> vrf;
+    bit<16> vrf;
     bit<10> rmac_group;
     bit<1>  rmac_hit;
     bit<2>  urpf_mode;
@@ -264,6 +276,8 @@ struct headers {
    llc_header_t llc_header;
    tcp_t        tcp;
    udp_t        udp;
+   packet_out_header_t packet_out;
+   packet_in_header_t packet_in;
 }
 
 /*
@@ -378,14 +392,21 @@ control ctl_ingress(inout headers hdr,
                   inout metadata_t md,
                   inout standard_metadata_t std_md) {
 
-   //action act_rmac_set_nexthop(nexthop_id_t nexthop_id) {
+   action send_to_cpu() {
+        md.nexthop_id = CPU_PORT;
+        // Packets sent to the controller needs to be prepended with the
+        // packet-in header. By setting it valid we make sure it will be
+        // deparsed on the wire (see c_deparser).
+        hdr.packet_in.setValid();
+        hdr.packet_in.ingress_port = std_md.ingress_port;
+   }
+
    action act_rmac_set_nexthop() {
       /*
-       * Store nexthop value in nexthop_id
-       * CPU1:255 => DP1:1
-       * CPU2:254 => DP2:2
+       *  send to CPU 
+       *  CPU_PORT => 64 
        */
-      md.nexthop_id = CPU_PORT_OFFSET - std_md.ingress_port;
+      send_to_cpu();
    } 
 
    /*
@@ -405,11 +426,10 @@ control ctl_ingress(inout headers hdr,
 
    action act_ipv4_cpl_set_nexthop() {
       /*
-       * Store nexthop value in nexthop_id
-       * CPU1:255 => DP1:1
-       * CPU2:254 => DP2:2
+       * Send to CPU 
+       * CPU => 64 
        */
-      md.nexthop_id = CPU_PORT_OFFSET - std_md.ingress_port;
+      send_to_cpu();
    } 
 
    /*
@@ -458,7 +478,7 @@ control ctl_ingress(inout headers hdr,
           * we match /32 host route
           */
          hdr.ipv4.dst_addr: exact;
-         std_md.ingress_port: exact;
+         md.l3_metadata.vrf: exact;
       }
       actions = {
          act_ipv4_cpl_set_nexthop;
@@ -476,7 +496,7 @@ control ctl_ingress(inout headers hdr,
           * we match network route via Long Prefix Match kind operation
           */
          hdr.ipv4.dst_addr: lpm;
-         std_md.ingress_port: exact;
+         md.l3_metadata.vrf: exact;
       }
       actions = {
          act_ipv4_set_nexthop;
@@ -519,10 +539,7 @@ control ctl_ingress(inout headers hdr,
 
    table tbl_mpls_fib {
       key = {
-         //hdr.mpls[0].label: exact;
-         //md.l3_metadata.vrf: exact;
          md.tunnel_metadata.mpls_label: exact;
-      //   md.tunnel_metadata.ingress_tunnel_type: exact;
       }
       actions = {
          /*
@@ -605,31 +622,41 @@ control ctl_ingress(inout headers hdr,
    }
 
    apply {
-      if (hdr.llc_header.isValid()) { 
-         tbl_rmac_fib.apply(); 
-      } else if (hdr.mpls[0].isValid()) {     
-         if (!hdr.mpls[1].isValid()) {
-            md.tunnel_metadata.mpls_label = hdr.mpls[0].label;
-            //md.tunnel_metadata.ingress_tunnel_type = 0;       
-         } else { 
-            md.tunnel_metadata.mpls_label = hdr.mpls[1].label;
-            //md.tunnel_metadata.ingress_tunnel_type = 4; /* IPv4 for now */
+      if (std_md.ingress_port == CPU_PORT) {
+            // Packet received from CPU_PORT, this is a packet-out sent by the
+            // controller. Skip table processing, set the egress port as
+            // requested by the controller (packet_out header) and remove the
+            // packet_out header.
+            //std_md.egress_spec = hdr.packet_out.egress_port;
+            md.nexthop_id = hdr.packet_out.egress_port;
+            hdr.packet_out.setInvalid();
+      } else {
+         // Packet received from data plane port.
+         if (hdr.llc_header.isValid()) { 
+            tbl_rmac_fib.apply(); 
+         } else if (hdr.mpls[0].isValid()) {     
+            if (!hdr.mpls[1].isValid()) {
+               md.tunnel_metadata.mpls_label = hdr.mpls[0].label;
+               //md.tunnel_metadata.ingress_tunnel_type = 0;       
+            } else { 
+               md.tunnel_metadata.mpls_label = hdr.mpls[1].label;
+               //md.tunnel_metadata.ingress_tunnel_type = 4; /* IPv4 for now */
+            }
+            tbl_mpls_fib.apply();
          }
-         tbl_mpls_fib.apply();
-      }
 
-      if (hdr.ipv4.isValid() ) {               
-         /*                                    
-          * we first consider host routes      
-          */                                   
-         if (!tbl_ipv4_fib_host.apply().hit) { 
-            /*                                 
-             * if no match consider LPM table  
-             */                                
-             tbl_ipv4_fib_lpm.apply();         
-         }                                      
-      }                                            
-  
+         if (hdr.ipv4.isValid() ) {               
+            /*                                    
+             * we first consider host routes      
+             */                                   
+            if (!tbl_ipv4_fib_host.apply().hit) { 
+               /*                                 
+                * if no match consider LPM table  
+                */                                
+                tbl_ipv4_fib_lpm.apply();         
+            }                                      
+         }                                            
+      }  
          
       /*
        * nexthop value is now identified 
@@ -683,26 +710,11 @@ control ctl_deprs(packet_out packet, in headers hdr) {
 	 * have to be added again into the packet.
          * for emission in the wire
          */
-        /*
-        packet.emit(hdr.ethernet);
-        packet.emit(hdr.llc_header);
-        packet.emit(hdr.ipv4);
-        packet.emit(hdr.tcp);
-        packet.emit(hdr.udp);
-        */
+
         /*
          * emit hdr
          */
         packet.emit(hdr);
-        /*
-        packet.emit(hdr.ethernet);
-        packet.emit(hdr.ipv4);
-        packet.emit(hdr.ipv6);
-        packet.emit(hdr.llc_header);
-        packet.emit(hdr.tcp);
-        packet.emit(hdr.udp);
-        packet.emit(hdr.mpls);
-        */
     }
 }
 

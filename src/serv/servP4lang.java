@@ -49,9 +49,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public final static int port = 9080;
 
     /**
-     * exported vrf
+     * exported vrfs
      */
-    public cfgVrf expVrf;
+    public tabGen<servP4langVrf> expVrf = new tabGen<servP4langVrf>();
 
     /**
      * exported interfaces
@@ -89,10 +89,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     }
 
     public void srvShRun(String beg, List<String> l) {
-        if (expVrf == null) {
-            l.add(beg + "no export-vrf");
-        } else {
-            l.add(beg + "export-vrf " + expVrf.name);
+        for (int i = 0; i < expVrf.size(); i++) {
+            servP4langVrf ntry = expVrf.get(i);
+            l.add(beg + "export-vrf " + ntry.vrf.name + " " + ntry.id);
         }
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
@@ -104,11 +103,16 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("export-vrf")) {
-            expVrf = cfgAll.vrfFind(cmd.word(), false);
-            if (expVrf == null) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
                 cmd.error("no such vrf");
                 return false;
             }
+            servP4langVrf ntry = new servP4langVrf();
+            ntry.vrf = vrf;
+            ntry.id = bits.str2num(cmd.word());
+            ntry.lower = this;
+            expVrf.put(ntry);
             return false;
         }
         if (s.equals("interconnect")) {
@@ -145,7 +149,16 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
         s = cmd.word();
         if (s.equals("export-vrf")) {
-            expVrf = null;
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf ntry = new servP4langVrf();
+            ntry.vrf = vrf;
+            ntry.id = bits.str2num(cmd.word());
+            ntry.lower = this;
+            expVrf.del(ntry);
             return false;
         }
         if (s.equals("interconnect")) {
@@ -175,7 +188,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
 
     public void srvHelp(userHelping l) {
         l.add("1 2  export-vrf                specify vrf to export");
-        l.add("2 .    <name>                  vrf name");
+        l.add("2 3    <name>                  vrf name");
+        l.add("3 .      <num>                 p4lang vrf number");
         l.add("1 2  export-port               specify port to export");
         l.add("2 3    <name>                  interface name");
         l.add("3 .      <num>                 p4lang port number");
@@ -324,6 +338,30 @@ class servP4langNei implements Comparator<servP4langNei> {
 
 }
 
+class servP4langVrf implements Comparator<servP4langVrf> {
+
+    public servP4lang lower;
+
+    public int id;
+
+    public cfgVrf vrf;
+
+    public tabRoute<addrIP> routes4 = new tabRoute<addrIP>("sent");
+
+    public tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
+
+    public int compare(servP4langVrf o1, servP4langVrf o2) {
+        if (o1.id < o2.id) {
+            return -1;
+        }
+        if (o1.id > o2.id) {
+            return +1;
+        }
+        return 0;
+    }
+
+}
+
 class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public servP4lang lower;
@@ -399,10 +437,6 @@ class servP4langConn implements Runnable {
     public servP4lang lower;
 
     public int keepalive;
-
-    public tabRoute<addrIP> routes4 = new tabRoute<addrIP>("sent");
-
-    public tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
 
     public tabGen<servP4langNei> neighs4 = new tabGen<servP4langNei>();
 
@@ -493,8 +527,11 @@ class servP4langConn implements Runnable {
             doNeighs(true, ifc, ifc.ifc.ipIf4, neighs4);
             doNeighs(false, ifc, ifc.ifc.ipIf6, neighs6);
         }
-        doRoutes(true, lower.expVrf.fwd4.actualU, routes4);
-        doRoutes(false, lower.expVrf.fwd6.actualU, routes6);
+        for (int i = 0; i < lower.expVrf.size(); i++) {
+            servP4langVrf vrf = lower.expVrf.get(i);
+            doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4);
+            doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6);
+        }
         for (int i = 0; i < tabLabel.labels.size(); i++) {
             tabLabelNtry ntry = tabLabel.labels.get(i);
             if (ntry.nextHop == null) {
@@ -601,7 +638,7 @@ class servP4langConn implements Runnable {
         }
     }
 
-    private void doRoutes(boolean ipv4, tabRoute<addrIP> need, tabRoute<addrIP> done) {
+    private void doRoutes(boolean ipv4, int id, tabRoute<addrIP> need, tabRoute<addrIP> done) {
         String afi;
         if (ipv4) {
             afi = "4";
@@ -633,7 +670,7 @@ class servP4langConn implements Runnable {
                 lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + p);
                 continue;
             }
-            lower.sendLine("route" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop);
+            lower.sendLine("route" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id);
         }
         for (int i = 0; i < done.size(); i++) {
             tabRouteEntry<addrIP> ntry = done.get(i);
@@ -651,7 +688,7 @@ class servP4langConn implements Runnable {
                 lower.sendLine("myaddr" + afi + "_del " + a + " " + findIface(ntry.iface));
                 continue;
             }
-            lower.sendLine("route" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop);
+            lower.sendLine("route" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id);
         }
     }
 
