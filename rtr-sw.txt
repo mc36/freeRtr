@@ -462,7 +462,9 @@ interface sdn2
  cdp enable
  vrf forwarding v5
  ipv4 address 1.1.1.1 255.255.255.252
+ ipv4 host-static 1.1.1.2 0000.1111.2222
  ipv6 address 1111::1 ffff:ffff:ffff:ffff::
+ ipv6 host-static 1111::2 0000.1111.2222
  no shutdown
  no log-link-change
  exit

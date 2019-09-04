@@ -596,8 +596,22 @@ class servP4langConn implements Runnable {
         return -1;
     }
 
+    private servP4langVrf findVrf(servP4langIfc ifc) {
+        for (int i = 0; i < lower.expVrf.size(); i++) {
+            servP4langVrf ntry = lower.expVrf.get(i);
+            if (ntry.vrf == ifc.ifc.vrfFor) {
+                return ntry;
+            }
+        }
+        return null;
+    }
+
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi, tabGen<servP4langNei> nei) {
         if (ipi == null) {
+            return;
+        }
+        servP4langVrf vrf = findVrf(ifc);
+        if (vrf == null) {
             return;
         }
         String afi;
@@ -623,7 +637,7 @@ class servP4langConn implements Runnable {
                 act = "mod";
             }
             nei.add(ntry);
-            lower.sendLine("neigh" + afi + "_" + act + " " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr());
+            lower.sendLine("neigh" + afi + "_" + act + " " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id);
         }
         for (int i = 0; i < nei.size(); i++) {
             servP4langNei ntry = nei.get(i);
@@ -634,7 +648,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             nei.del(ntry);
-            lower.sendLine("neigh" + afi + "_del " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr());
+            lower.sendLine("neigh" + afi + "_del " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id);
         }
     }
 
@@ -667,7 +681,7 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             if (ntry.nextHop == null) {
-                lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + p);
+                lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + p + " " + id);
                 continue;
             }
             lower.sendLine("route" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id);
@@ -685,7 +699,7 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             if (ntry.nextHop == null) {
-                lower.sendLine("myaddr" + afi + "_del " + a + " " + findIface(ntry.iface));
+                lower.sendLine("myaddr" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + id);
                 continue;
             }
             lower.sendLine("route" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id);

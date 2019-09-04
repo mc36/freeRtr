@@ -50,11 +50,12 @@ def writeNexthopRules(delete, p4info_helper, ingress_sw, port, mac_addr):
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
 
-def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port):
+def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_ipv4_fib_host",
         match_fields={
-            "hdr.ipv4.dst_addr": dst_ip_addr
+            "hdr.ipv4.dst_addr": dst_ip_addr,
+            "md.l3_metadata.vrf": vrf
         },
         action_name="ctl_ingress.act_ipv4_set_nexthop",
         action_params={
@@ -130,15 +131,15 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "neigh4_add":
             writeNexthopRules(1,p4info_helper,sw1,int(splt[1]),splt[3])
-            writeNeighborRules4(1,p4info_helper,sw1,splt[2],int(splt[1]))
+            writeNeighborRules4(1,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
         if splt[0] == "neigh4_mod":
             writeNexthopRules(2,p4info_helper,sw1,int(splt[1]),splt[3])
-            writeNeighborRules4(2,p4info_helper,sw1,splt[2],int(splt[1]))
+            writeNeighborRules4(2,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
         if splt[0] == "neigh4_del":
             writeNexthopRules(3,p4info_helper,sw1,int(splt[1]),splt[3])
-            writeNeighborRules4(3,p4info_helper,sw1,splt[2],int(splt[1]))
+            writeNeighborRules4(3,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
 
 
