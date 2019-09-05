@@ -463,6 +463,10 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (debugger.ifcEthTypTraf) {
             logger.debug("rx type=" + bits.toHexW(typ));
         }
+        if ((etTyps.size() + llcTyps.size() + snapTyps.size()) < 1) {
+            defUpper.doRxPack(pck);
+            return;
+        }
         ifcEthTypET et = new ifcEthTypET(null, null);
         et.ethTyp = typ;
         et = etTyps.find(et);
