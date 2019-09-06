@@ -14,6 +14,7 @@ import ifc.ifcDn;
 import ifc.ifcEther;
 import ifc.ifcEthTyp;
 import ifc.ifcNull;
+import ip.ipFwd;
 import ip.ipIfc;
 import java.util.List;
 import pack.packHolder;
@@ -368,6 +369,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public int id;
 
+    public int sentId;
+
     public cfgIfc ifc;
 
     public ifcUp upper;
@@ -524,6 +527,7 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ifc = lower.expIfc.get(i);
+            doIface(ifc);
             doNeighs(true, ifc, ifc.ifc.ipIf4, neighs4);
             doNeighs(false, ifc, ifc.ifc.ipIf6, neighs6);
         }
@@ -535,6 +539,20 @@ class servP4langConn implements Runnable {
         for (int i = 0; i < tabLabel.labels.size(); i++) {
             tabLabelNtry ntry = tabLabel.labels.get(i);
             if (ntry.nextHop == null) {
+                servP4langVrf vrf = findVrf(ntry.forwarder);
+                if (vrf == null) {
+                    continue;
+                }
+                tabLabelNtry old = labels.find(ntry);
+                String act = "add";
+                if (old != null) {
+                    if (!old.differs(ntry)) {
+                        continue;
+                    }
+                    act = "mod";
+                }
+                labels.put(ntry.copyBytes());
+                lower.sendLine("mylabel" + ntry.forwarder.ipVersion + "_" + act + " " + ntry.getValue() + " " + vrf.id);
                 continue;
             }
             int p = findIface(ntry.iface);
@@ -548,6 +566,9 @@ class servP4langConn implements Runnable {
                     continue;
                 }
                 act = "mod";
+            }
+            if (ntry.remoteLab == null) {
+                continue;
             }
             labels.put(ntry.copyBytes());
             String a = "";
@@ -568,13 +589,25 @@ class servP4langConn implements Runnable {
                 continue;
             }
             labels.del(ntry);
+            if (ntry.nextHop == null) {
+                servP4langVrf vrf = findVrf(ntry.forwarder);
+                if (vrf == null) {
+                    continue;
+                }
+                lower.sendLine("mylabel" + ntry.forwarder.ipVersion + "_del" + " " + ntry.getValue() + " " + vrf.id);
+                continue;
+            }
+            String a = "";
+            for (int o = 0; o < ntry.remoteLab.size(); o++) {
+                a += " " + ntry.remoteLab.get(o);
+            }
             String afi;
             if (ntry.nextHop.isIPv4()) {
                 afi = "4";
             } else {
                 afi = "6";
             }
-            lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + findIface(ntry.iface) + " " + ntry.nextHop);
+            lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + findIface(ntry.iface) + " " + ntry.nextHop + a);
         }
         bits.sleep(1000);
         return false;
@@ -596,7 +629,26 @@ class servP4langConn implements Runnable {
         return -1;
     }
 
+    private servP4langVrf findVrf(ipFwd fwd) {
+        if (fwd == null) {
+            return null;
+        }
+        for (int i = 0; i < lower.expVrf.size(); i++) {
+            servP4langVrf ntry = lower.expVrf.get(i);
+            if (fwd == ntry.vrf.fwd4) {
+                return ntry;
+            }
+            if (fwd == ntry.vrf.fwd6) {
+                return ntry;
+            }
+        }
+        return null;
+    }
+
     private servP4langVrf findVrf(servP4langIfc ifc) {
+        if (ifc == null) {
+            return null;
+        }
         for (int i = 0; i < lower.expVrf.size(); i++) {
             servP4langVrf ntry = lower.expVrf.get(i);
             if (ntry.vrf == ifc.ifc.vrfFor) {
@@ -604,6 +656,24 @@ class servP4langConn implements Runnable {
             }
         }
         return null;
+    }
+
+    private void doIface(servP4langIfc ifc) {
+        servP4langVrf vrf = findVrf(ifc);
+        if (vrf == null) {
+            return;
+        }
+        if (vrf.id == ifc.sentId) {
+            return;
+        }
+        String a;
+        if (ifc.sentId == 0) {
+            a = "add";
+        } else {
+            a = "mod";
+        }
+        lower.sendLine("portvrf_" + a + " " + ifc.id + " " + vrf.id);
+        ifc.sentId = vrf.id;
     }
 
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi, tabGen<servP4langNei> nei) {
@@ -661,6 +731,33 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < need.size(); i++) {
             tabRouteEntry<addrIP> ntry = need.get(i);
+            if ((ntry.iface == null) && (ntry.rouTab != null)) {
+                tabRouteEntry<addrIP> old = done.find(ntry);
+                String act = "add";
+                if (old != null) {
+                    if (!ntry.differs(old)) {
+                        continue;
+                    }
+                    act = "mod";
+                }
+                old = ntry.rouTab.actualU.route(ntry.nextHop);
+                if (old == null) {
+                    continue;
+                }
+                int p = findIface(old.iface);
+                if (p < 0) {
+                    continue;
+                }
+                done.add(tabRoute.addType.notyet, ntry, true, true);
+                String a;
+                if (ipv4) {
+                    a = "" + addrPrefix.ip2ip4(ntry.prefix);
+                } else {
+                    a = "" + addrPrefix.ip2ip6(ntry.prefix);
+                }
+                lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id + " " + old.labelRem.get(0) + " " + ntry.labelRem.get(0));
+                continue;
+            }
             int p = findIface(ntry.iface);
             if (p < 0) {
                 continue;
@@ -689,6 +786,25 @@ class servP4langConn implements Runnable {
         for (int i = 0; i < done.size(); i++) {
             tabRouteEntry<addrIP> ntry = done.get(i);
             if (need.find(ntry) != null) {
+                continue;
+            }
+            if ((ntry.iface == null) && (ntry.rouTab != null)) {
+                tabRouteEntry<addrIP> old = ntry.rouTab.actualU.route(ntry.nextHop);
+                if (old == null) {
+                    continue;
+                }
+                int p = findIface(old.iface);
+                if (p < 0) {
+                    continue;
+                }
+                done.del(ntry);
+                String a;
+                if (ipv4) {
+                    a = "" + addrPrefix.ip2ip4(ntry.prefix);
+                } else {
+                    a = "" + addrPrefix.ip2ip6(ntry.prefix);
+                }
+                lower.sendLine("vpnroute" + afi + "_del " + a + " " + p + " " + ntry.nextHop + " " + id + " " + old.labelRem.get(0) + " " + ntry.labelRem.get(0));
                 continue;
             }
             done.del(ntry);

@@ -12,6 +12,22 @@ import p4runtime_lib.bmv2
 import p4runtime_lib.helper
 
 
+def writeVrfRules(delete, p4info_helper, ingress_sw, port, vrf):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_vrf",
+        match_fields={
+            "std_md.ingress_port": port
+        },
+        action_name="ctl_ingress.act_set_vrf",
+        action_params={
+            "vrf": vrf
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
 
 def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
@@ -23,6 +39,43 @@ def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_m
         action_name="ctl_ingress.act_ipv4_set_nexthop",
         action_params={
             "nexthop_id": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+def writeVpnRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, egress_label, vpn_label):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
+            "md.l3_metadata.vrf": vrf
+        },
+        action_name="ctl_ingress.act_ipv4_mpls_encap_set_nexthop",
+        action_params={
+            "vpn_label": vpn_label,
+            "egress_label": egress_label,
+            "nexthop_id": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, vrf):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
+            "md.l3_metadata.vrf": vrf
+        },
+        action_name="ctl_ingress.act_ipv4_cpl_set_nexthop",
+        action_params={
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry, False)
@@ -87,6 +140,24 @@ def writeMplsRules4(delete, p4info_helper, ingress_sw, dst_label, new_label, por
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
 
+def writeMyMplsRules4(delete, p4info_helper, ingress_sw, dst_label):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_mpls_fib",
+        match_fields={
+            "md.tunnel_metadata.mpls_label": (dst_label)
+        },
+        action_name="ctl_ingress.act_mpls_swap_cpl_set_nexthop",
+        action_params={
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
 def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address, freerouter_port):
     p4info_helper = p4runtime_lib.helper.P4InfoHelper(p4info_file_path)
 
@@ -120,6 +191,30 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             addr = splt[1].split("/");
             writeForwardRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
             continue
+        if splt[0] == "vpnroute4_add":
+            addr = splt[1].split("/");
+            writeVpnRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+        if splt[0] == "vpnroute4_mod":
+            addr = splt[1].split("/");
+            writeVpnRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+        if splt[0] == "vpnroute4_del":
+            addr = splt[1].split("/");
+            writeVpnRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+        if splt[0] == "myaddr4_add":
+            addr = splt[1].split("/");
+            writeMyaddrRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
+            continue
+        if splt[0] == "myaddr4_mod":
+            addr = splt[1].split("/");
+            writeMyaddrRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
+            continue
+        if splt[0] == "myaddr4_del":
+            addr = splt[1].split("/");
+            writeMyaddrRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
+            continue
         if splt[0] == "label4_add":
             writeMplsRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
@@ -128,6 +223,15 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "label4_del":
             writeMplsRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
+            continue
+        if splt[0] == "mylabel4_add":
+            writeMyMplsRules4(1,p4info_helper,sw1,int(splt[1]))
+            continue
+        if splt[0] == "mylabel4_mod":
+            writeMyMplsRules4(2,p4info_helper,sw1,int(splt[1]))
+            continue
+        if splt[0] == "mylabel4_del":
+            writeMyMplsRules4(3,p4info_helper,sw1,int(splt[1]))
             continue
         if splt[0] == "neigh4_add":
             writeNexthopRules(1,p4info_helper,sw1,int(splt[1]),splt[3])
@@ -140,6 +244,15 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         if splt[0] == "neigh4_del":
             writeNexthopRules(3,p4info_helper,sw1,int(splt[1]),splt[3])
             writeNeighborRules4(3,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
+            continue
+        if splt[0] == "portvrf_add":
+            writeVrfRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "portvrf_mod":
+            writeVrfRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "portvrf_del":
+            writeVrfRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
 
 

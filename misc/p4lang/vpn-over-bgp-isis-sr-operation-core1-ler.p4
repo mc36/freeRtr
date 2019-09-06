@@ -15,22 +15,22 @@
 /*
  * include Ethertype mapping 
  */
-#include "include/ethertype.p4"
+#include <include/ethertype.p4>
 
 /* 
  * include IP protocol mapping 
  */
-#include "include/ip-protocol.p4"
+#include <include/ip-protocol.p4>
 
 /* 
  * include P4 table size declaration 
  */
-#include "include/p4-table.p4"
+#include <include/p4-table.p4>
 
 /* 
  * include P4 switch port information 
  */
-#include "include/p4-switch-port.p4"
+#include <include/p4-switch-port.p4>
 
 /*
  * egress_spec port encoded using 9 bits
@@ -56,6 +56,11 @@ typedef bit<9> nexthop_id_t;
  * MPLS label using 20 bits
  */
 typedef bit<20> label_t;
+
+/*
+ * VRF encoded in 16 bits
+ */
+typedef bit<16> vrf_t;
 
 typedef bit<9> port_t;
 const port_t CPU_PORT = 64;
@@ -190,7 +195,7 @@ struct l3_metadata_t {
     bit<16> lkp_l4_dport;
     bit<16> lkp_outer_l4_sport;
     bit<16> lkp_outer_l4_dport;
-    bit<16> vrf;
+    vrf_t vrf;
     bit<10> rmac_group;
     bit<1>  rmac_hit;
     bit<2>  urpf_mode;
@@ -269,6 +274,8 @@ struct metadata_t {
  * Our P4 program header structure 
  */
 struct headers {
+   packet_out_header_t packet_out;
+   packet_in_header_t packet_in;
    ethernet_t   ethernet;
    mpls_t[3]    mpls;
    ipv4_t       ipv4;
@@ -276,8 +283,6 @@ struct headers {
    llc_header_t llc_header;
    tcp_t        tcp;
    udp_t        udp;
-   packet_out_header_t packet_out;
-   packet_in_header_t packet_in;
 }
 
 /*
@@ -289,6 +294,18 @@ parser prs_main(packet_in packet,
                 inout standard_metadata_t std_md) {
 
    state start {
+       transition select(std_md.ingress_port) {
+           CPU_PORT: prs_packet_out;
+           default: prs_ethernet;
+       }
+   }
+
+   state prs_packet_out {
+      packet.extract(hdr.packet_out);
+      transition prs_ethernet;
+   }
+
+   state prs_ethernet {
       packet.extract(hdr.ethernet);
       md.intrinsic_metadata.priority = 0;
       transition select(hdr.ethernet.ethertype) {
@@ -499,6 +516,7 @@ control ctl_ingress(inout headers hdr,
          md.l3_metadata.vrf: exact;
       }
       actions = {
+         act_ipv4_cpl_set_nexthop;
          act_ipv4_set_nexthop;
          act_ipv4_mpls_encap_set_nexthop;
          NoAction;
@@ -518,7 +536,14 @@ control ctl_ingress(inout headers hdr,
       md.nexthop_id = nexthop_id;
    }
 
-   //action act_mpls_decap_set_nexthop(nexthop_id_t nexthop_id) {
+   action act_mpls_swap_cpl_set_nexthop() {
+       /*
+       *  send to CPU
+       *  CPU_PORT => 64
+       */
+      send_to_cpu();
+   }
+
    action act_mpls_decap_ipv4_l3vpn() {
       /*
        * Egress packet is back now an IPv4 packet
@@ -546,6 +571,11 @@ control ctl_ingress(inout headers hdr,
           * mpls core swap 
           */
          act_mpls_swap_set_nexthop;
+
+         /*
+          * mpls core swap to control plane 
+          */
+         act_mpls_swap_cpl_set_nexthop;
 
          /*
           * mpls decapsulation if PHP  
@@ -600,7 +630,7 @@ control ctl_ingress(inout headers hdr,
     * Discard via V1Model mark_to_drop(standard_metadata)
     */
    action act_ipv4_fib_discard() {
-      mark_to_drop();
+      mark_to_drop(std_md);
    }
 
 
@@ -621,7 +651,32 @@ control ctl_ingress(inout headers hdr,
       default_action = act_ipv4_fib_discard();
    }
 
+
+   action act_set_vrf (vrf_t vrf) {
+      md.l3_metadata.vrf = vrf; 
+   }
+
+   action act_set_default_vrf () {
+      md.l3_metadata.vrf = 0; 
+   }
+
+   table tbl_vrf {
+      key = {
+         std_md.ingress_port: exact;  
+      }
+      actions = {
+         act_set_vrf;
+         act_set_default_vrf;
+      }
+      default_action = act_set_default_vrf();
+   }
+
    apply {
+      /*
+       * set md.l3_metadata.vrf value based on incoming port
+       */ 
+      tbl_vrf.apply(); 
+
       if (std_md.ingress_port == CPU_PORT) {
             // Packet received from CPU_PORT, this is a packet-out sent by the
             // controller. Skip table processing, set the egress port as

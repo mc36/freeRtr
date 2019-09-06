@@ -927,6 +927,7 @@ server rfb vnc
 !
 server p4lang a
  export-vrf v5 1
+ export-vrf vpn 2
  export-port sdn1 1
  export-port sdn2 2
  interconnect pwether2
