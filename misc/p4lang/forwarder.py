@@ -122,7 +122,7 @@ def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vr
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 def writeMplsRules4(delete, p4info_helper, ingress_sw, dst_label, new_label, port):
-    table_entry = p4info_helper.buildTableEntry(
+    table_entry1 = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_mpls_fib",
         match_fields={
             "md.tunnel_metadata.mpls_label": (dst_label)
@@ -133,29 +133,57 @@ def writeMplsRules4(delete, p4info_helper, ingress_sw, dst_label, new_label, por
             "nexthop_id": port
         }
     )
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_mpls_fib_decap",
+        match_fields={
+            "md.tunnel_metadata.mpls_label": (dst_label)
+        },
+        action_name="ctl_ingress.act_mpls_swap_set_nexthop",
+        action_params={
+            "egress_label": new_label,
+            "nexthop_id": port
+        }
+    )
     if delete == 1:
-        ingress_sw.WriteTableEntry(table_entry, False)
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
     elif delete == 2:
-        ingress_sw.ModifyTableEntry(table_entry, False)
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
     else:
-        ingress_sw.DeleteTableEntry(table_entry, False)
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
 
-def writeMyMplsRules4(delete, p4info_helper, ingress_sw, dst_label):
-    table_entry = p4info_helper.buildTableEntry(
+def writeMyMplsRules4(delete, p4info_helper, ingress_sw, dst_label, vrf):
+    table_entry1 = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_mpls_fib",
         match_fields={
             "md.tunnel_metadata.mpls_label": (dst_label)
         },
-        action_name="ctl_ingress.act_mpls_swap_cpl_set_nexthop",
+        action_name="ctl_ingress.act_mpls_decap_ipv4_l3vpn",
         action_params={
+            "vrf": vrf
+        }
+    )
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_mpls_fib_decap",
+        match_fields={
+            "md.tunnel_metadata.mpls_label": (dst_label)
+        },
+        action_name="ctl_ingress.act_mpls_decap_ipv4_l3vpn",
+        action_params={
+            "vrf": vrf
         }
     )
     if delete == 1:
-        ingress_sw.WriteTableEntry(table_entry, False)
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
     elif delete == 2:
-        ingress_sw.ModifyTableEntry(table_entry, False)
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
     else:
-        ingress_sw.DeleteTableEntry(table_entry, False)
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
 def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address, freerouter_port):
@@ -225,13 +253,13 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeMplsRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
         if splt[0] == "mylabel4_add":
-            writeMyMplsRules4(1,p4info_helper,sw1,int(splt[1]))
+            writeMyMplsRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
         if splt[0] == "mylabel4_mod":
-            writeMyMplsRules4(2,p4info_helper,sw1,int(splt[1]))
+            writeMyMplsRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
         if splt[0] == "mylabel4_del":
-            writeMyMplsRules4(3,p4info_helper,sw1,int(splt[1]))
+            writeMyMplsRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
         if splt[0] == "neigh4_add":
             writeNexthopRules(1,p4info_helper,sw1,int(splt[1]),splt[3])

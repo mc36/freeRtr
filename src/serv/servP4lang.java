@@ -571,17 +571,13 @@ class servP4langConn implements Runnable {
                 continue;
             }
             labels.put(ntry.copyBytes());
-            String a = "";
-            for (int o = 0; o < ntry.remoteLab.size(); o++) {
-                a += " " + ntry.remoteLab.get(o);
-            }
             String afi;
             if (ntry.nextHop.isIPv4()) {
                 afi = "4";
             } else {
                 afi = "6";
             }
-            lower.sendLine("label" + afi + "_" + act + " " + ntry.getValue() + " " + p + " " + ntry.nextHop + a);
+            lower.sendLine("label" + afi + "_" + act + " " + ntry.getValue() + " " + p + " " + ntry.nextHop + " " + ntry.remoteLab.get(0));
         }
         for (int i = 0; i < labels.size(); i++) {
             tabLabelNtry ntry = labels.get(i);
@@ -597,17 +593,13 @@ class servP4langConn implements Runnable {
                 lower.sendLine("mylabel" + ntry.forwarder.ipVersion + "_del" + " " + ntry.getValue() + " " + vrf.id);
                 continue;
             }
-            String a = "";
-            for (int o = 0; o < ntry.remoteLab.size(); o++) {
-                a += " " + ntry.remoteLab.get(o);
-            }
             String afi;
             if (ntry.nextHop.isIPv4()) {
                 afi = "4";
             } else {
                 afi = "6";
             }
-            lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + findIface(ntry.iface) + " " + ntry.nextHop + a);
+            lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + ntry.remoteLab.get(0));
         }
         bits.sleep(1000);
         return false;

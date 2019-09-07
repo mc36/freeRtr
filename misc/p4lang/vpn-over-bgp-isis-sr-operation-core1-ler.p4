@@ -196,6 +196,7 @@ struct l3_metadata_t {
     bit<16> lkp_outer_l4_sport;
     bit<16> lkp_outer_l4_dport;
     vrf_t vrf;
+    bit<1>  mpls_op_type; 
     bit<10> rmac_group;
     bit<1>  rmac_hit;
     bit<2>  urpf_mode;
@@ -534,6 +535,7 @@ control ctl_ingress(inout headers hdr,
        * Indicate nexthop_id
        */
       md.nexthop_id = nexthop_id;
+      md.l3_metadata.mpls_op_type = 0;
    }
 
    action act_mpls_swap_cpl_set_nexthop() {
@@ -544,7 +546,7 @@ control ctl_ingress(inout headers hdr,
       send_to_cpu();
    }
 
-   action act_mpls_decap_ipv4_l3vpn() {
+   action act_mpls_decap_ipv4_l3vpn(vrf_t vrf) {
       /*
        * Egress packet is back now an IPv4 packet
        * (LABEL PHP )
@@ -557,12 +559,44 @@ control ctl_ingress(inout headers hdr,
       hdr.mpls[1].setInvalid();
       hdr.ipv4.setValid();
       /*
-       * Indicate nexthop_id
+       * Indicate effective VRF during 
+       * MPLS tunnel decap 
        */
-      //md.nexthop_id = nexthop_id;
+      md.l3_metadata.vrf = vrf;
+      md.l3_metadata.mpls_op_type = 1;
+
    }
 
    table tbl_mpls_fib {
+      key = {
+         md.tunnel_metadata.mpls_label: exact;
+      }
+      actions = {
+         /*
+          * mpls core swap 
+          */
+         act_mpls_swap_set_nexthop;
+
+         /*
+          * mpls core swap to control plane 
+          */
+         act_mpls_swap_cpl_set_nexthop;
+
+         /*
+          * mpls decapsulation if PHP  
+          */
+         act_mpls_decap_ipv4_l3vpn;
+
+         /* 
+          * Default action;
+          */
+         NoAction;
+      }
+        size = MPLS_TABLE_SIZE;
+        default_action = NoAction();
+    }
+
+   table tbl_mpls_fib_decap {
       key = {
          md.tunnel_metadata.mpls_label: exact;
       }
@@ -690,16 +724,12 @@ control ctl_ingress(inout headers hdr,
          if (hdr.llc_header.isValid()) { 
             tbl_rmac_fib.apply(); 
          } else if (hdr.mpls[0].isValid()) {     
-            if (!hdr.mpls[1].isValid()) {
-               md.tunnel_metadata.mpls_label = hdr.mpls[0].label;
-               //md.tunnel_metadata.ingress_tunnel_type = 0;       
-            } else { 
-               md.tunnel_metadata.mpls_label = hdr.mpls[1].label;
-               //md.tunnel_metadata.ingress_tunnel_type = 4; /* IPv4 for now */
-            }
             tbl_mpls_fib.apply();
+            if (md.l3_metadata.mpls_op_type == 1) {
+               tbl_mpls_fib_decap.apply();
+            }  
          }
-
+      
          if (hdr.ipv4.isValid() ) {               
             /*                                    
              * we first consider host routes      
