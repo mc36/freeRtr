@@ -160,7 +160,7 @@ def writeMyMplsRules4(delete, p4info_helper, ingress_sw, dst_label, vrf):
         match_fields={
             "md.tunnel_metadata.mpls_label": (dst_label)
         },
-        action_name="ctl_ingress.act_mpls_decap_ipv4_l3vpn",
+        action_name="ctl_ingress.act_mpls_decap_ipv4",
         action_params={
             "vrf": vrf
         }
@@ -170,7 +170,7 @@ def writeMyMplsRules4(delete, p4info_helper, ingress_sw, dst_label, vrf):
         match_fields={
             "md.tunnel_metadata.mpls_label": (dst_label)
         },
-        action_name="ctl_ingress.act_mpls_decap_ipv4_l3vpn",
+        action_name="ctl_ingress.act_mpls_decap_l3vpn",
         action_params={
             "vrf": vrf
         }
@@ -289,10 +289,10 @@ if __name__ == '__main__':
 
     parser.add_argument('--p4info', help='p4info proto in text format from p4c',
             type=str, action="store", required=False,
-            default="./vpn-over-bgp-isis-sr-operation-core1-ler.txt")
+            default="../build/vpn-over-bgp-isis-sr-operation-core1-ler.txt")
     parser.add_argument('--bmv2-json', help='BMv2 JSON file from p4c',
             type=str, action="store", required=False,
-            default="./vpn-over-bgp-isis-sr-operation-core1-ler.json")
+            default="../build/vpn-over-bgp-isis-sr-operation-core1-ler.json")
     parser.add_argument('--p4runtime_address', help='p4 runtime address',
             type=str, action="store", required=False,
             default="127.0.0.1:50051")

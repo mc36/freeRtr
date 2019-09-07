@@ -328,11 +328,7 @@ parser prs_main(packet_in packet,
    }
 
    state prs_mpls_bos {
-      transition select((packet.lookahead<bit<4>>())[3:0]) {
-         //4w0x4: prs_ipv4;
-         //4w0x6: parse_ipv6;
-         default: accept;
-      }
+      transition prs_ipv4;
    }
 
    state prs_ipv4 {
@@ -546,7 +542,7 @@ control ctl_ingress(inout headers hdr,
       send_to_cpu();
    }
 
-   action act_mpls_decap_ipv4_l3vpn(vrf_t vrf) {
+   action act_mpls_decap_ipv4(vrf_t vrf) {
       /*
        * Egress packet is back now an IPv4 packet
        * (LABEL PHP )
@@ -556,6 +552,26 @@ control ctl_ingress(inout headers hdr,
        * Decapsulate MPLS header
        */
       hdr.mpls[0].setInvalid();
+      hdr.ipv4.setValid();
+      /*
+       * Indicate effective VRF during 
+       * MPLS tunnel decap 
+       */
+      md.l3_metadata.vrf = vrf;
+      md.l3_metadata.mpls_op_type = 1;
+
+   }
+
+
+   action act_mpls_decap_l3vpn(vrf_t vrf) {
+      /*
+       * Egress packet is back now an IPv4 packet
+       * (LABEL PHP )
+       */
+      hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+      /*
+       * Decapsulate MPLS header
+       */
       hdr.mpls[1].setInvalid();
       hdr.ipv4.setValid();
       /*
@@ -585,7 +601,7 @@ control ctl_ingress(inout headers hdr,
          /*
           * mpls decapsulation if PHP  
           */
-         act_mpls_decap_ipv4_l3vpn;
+         act_mpls_decap_ipv4;
 
          /* 
           * Default action;
@@ -614,7 +630,7 @@ control ctl_ingress(inout headers hdr,
          /*
           * mpls decapsulation if PHP  
           */
-         act_mpls_decap_ipv4_l3vpn;
+         act_mpls_decap_l3vpn;
 
          /* 
           * Default action;
@@ -724,8 +740,10 @@ control ctl_ingress(inout headers hdr,
          if (hdr.llc_header.isValid()) { 
             tbl_rmac_fib.apply(); 
          } else if (hdr.mpls[0].isValid()) {     
+            md.tunnel_metadata.mpls_label = hdr.mpls[0].label;
             tbl_mpls_fib.apply();
-            if (md.l3_metadata.mpls_op_type == 1) {
+            if ((md.l3_metadata.mpls_op_type == 1) && (hdr.mpls[1].isValid())) {
+               md.tunnel_metadata.mpls_label = hdr.mpls[1].label;
                tbl_mpls_fib_decap.apply();
             }  
          }

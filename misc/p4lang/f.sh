@@ -1,0 +1,1 @@
+./forwarder.py --p4info ./vpn-over-bgp-isis-sr-operation-core1-ler.txt --bmv2-json ./vpn-over-bgp-isis-sr-operation-core1-ler.json --p4runtime_address 127.0.0.1:50051 --freerouter_address 10.10.10.227 --freerouter_port 9080

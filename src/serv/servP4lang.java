@@ -750,10 +750,6 @@ class servP4langConn implements Runnable {
                 lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id + " " + old.labelRem.get(0) + " " + ntry.labelRem.get(0));
                 continue;
             }
-            int p = findIface(ntry.iface);
-            if (p < 0) {
-                continue;
-            }
             tabRouteEntry<addrIP> old = done.find(ntry);
             String act = "add";
             if (old != null) {
@@ -770,10 +766,10 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             if (ntry.nextHop == null) {
-                lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + p + " " + id);
+                lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + id);
                 continue;
             }
-            lower.sendLine("route" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id);
+            lower.sendLine("route" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id);
         }
         for (int i = 0; i < done.size(); i++) {
             tabRouteEntry<addrIP> ntry = done.get(i);
