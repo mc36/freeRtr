@@ -106,6 +106,21 @@ header mpls_t {
 /*
  * ICMP header: as a header type, order matters
  */
+header arp_t {
+    bit<16> hrd;
+    bit<16> pro;
+    bit<8> hln;
+    bit<8> pln;
+    bit<16> op;
+    mac_addr_t sha;
+    ipv4_addr_t tpa;
+    mac_addr_t tha;
+    ipv4_addr_t spa;
+}
+
+/*
+ * ICMP header: as a header type, order matters
+ */
 header icmp_t {
     bit<16> type_code;
     bit<16> hdr_checksum;
@@ -197,6 +212,8 @@ struct l3_metadata_t {
     bit<16> lkp_outer_l4_dport;
     vrf_t vrf;
     bit<1>  mpls_op_type; 
+    bit<1>  mpls0_remove; 
+    bit<1>  mpls1_remove; 
     bit<10> rmac_group;
     bit<1>  rmac_hit;
     bit<2>  urpf_mode;
@@ -279,6 +296,7 @@ struct headers {
    packet_in_header_t packet_in;
    ethernet_t   ethernet;
    mpls_t[3]    mpls;
+   arp_t        arp;
    ipv4_t       ipv4;
    ipv6_t       ipv6;
    llc_header_t llc_header;
@@ -314,6 +332,7 @@ parser prs_main(packet_in packet,
          0 &&& 0xfa00: prs_llc_header; /* LLC SAP frame */
          ETHERTYPE_MPLS_UCAST : prs_mpls;
          ETHERTYPE_IPV4: prs_ipv4;
+         ETHERTYPE_ARP: prs_arp;
          default: accept;
       }
    }
@@ -330,6 +349,13 @@ parser prs_main(packet_in packet,
    state prs_mpls_bos {
       transition prs_ipv4;
    }
+
+
+   state prs_arp {
+      packet.extract(hdr.arp);
+      transition prs_set_prio_med;
+   }
+
 
    state prs_ipv4 {
       packet.extract(hdr.ipv4);
@@ -411,8 +437,6 @@ control ctl_ingress(inout headers hdr,
         // Packets sent to the controller needs to be prepended with the
         // packet-in header. By setting it valid we make sure it will be
         // deparsed on the wire (see c_deparser).
-        hdr.packet_in.setValid();
-        hdr.packet_in.ingress_port = std_md.ingress_port;
    }
 
    action act_rmac_set_nexthop() {
@@ -547,11 +571,10 @@ control ctl_ingress(inout headers hdr,
        * Egress packet is back now an IPv4 packet
        * (LABEL PHP )
        */
-      hdr.ethernet.ethertype = ETHERTYPE_IPV4;
       /*
        * Decapsulate MPLS header
        */
-      hdr.mpls[0].setInvalid();
+//      hdr.mpls[0].setInvalid();
       hdr.ipv4.setValid();
       /*
        * Indicate effective VRF during 
@@ -559,6 +582,7 @@ control ctl_ingress(inout headers hdr,
        */
       md.l3_metadata.vrf = vrf;
       md.l3_metadata.mpls_op_type = 1;
+      md.l3_metadata.mpls0_remove = 1;
 
    }
 
@@ -568,11 +592,10 @@ control ctl_ingress(inout headers hdr,
        * Egress packet is back now an IPv4 packet
        * (LABEL PHP )
        */
-      hdr.ethernet.ethertype = ETHERTYPE_IPV4;
       /*
        * Decapsulate MPLS header
        */
-      hdr.mpls[1].setInvalid();
+//      hdr.mpls[1].setInvalid();
       hdr.ipv4.setValid();
       /*
        * Indicate effective VRF during 
@@ -580,6 +603,7 @@ control ctl_ingress(inout headers hdr,
        */
       md.l3_metadata.vrf = vrf;
       md.l3_metadata.mpls_op_type = 1;
+      md.l3_metadata.mpls1_remove = 1;
 
    }
 
@@ -739,6 +763,8 @@ control ctl_ingress(inout headers hdr,
          // Packet received from data plane port.
          if (hdr.llc_header.isValid()) { 
             tbl_rmac_fib.apply(); 
+         } else if (hdr.arp.isValid()) {
+            send_to_cpu();
          } else if (hdr.mpls[0].isValid()) {     
             md.tunnel_metadata.mpls_label = hdr.mpls[0].label;
             tbl_mpls_fib.apply();
@@ -748,7 +774,7 @@ control ctl_ingress(inout headers hdr,
             }  
          }
       
-         if (hdr.ipv4.isValid() ) {               
+         if (hdr.ipv4.isValid() ) {
             /*                                    
              * we first consider host routes      
              */                                   
@@ -759,13 +785,30 @@ control ctl_ingress(inout headers hdr,
                 tbl_ipv4_fib_lpm.apply();         
             }                                      
          }                                            
+
+         if ( md.nexthop_id != CPU_PORT) {
+           if (md.l3_metadata.mpls0_remove == 1) {
+              hdr.mpls[0].setInvalid();
+              hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+           }
+           if (md.l3_metadata.mpls1_remove == 1) {
+              hdr.mpls[1].setInvalid();
+              hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+           }
+         } else {
+           hdr.packet_in.setValid();
+           hdr.packet_in.ingress_port = std_md.ingress_port;
+         }
+
       }  
-         
+    
       /*
        * nexthop value is now identified 
        * and stored in custom nexthop_id used for the lookup
        */
       tbl_nexthop.apply();
+
+     
    }
 }
 
