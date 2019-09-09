@@ -347,6 +347,8 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
     public cfgVrf vrf;
 
+    public boolean sentMcast;
+
     public tabRoute<addrIP> routes4 = new tabRoute<addrIP>("sent");
 
     public tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
@@ -369,7 +371,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public int id;
 
-    public int sentId;
+    public int sentVrf;
 
     public cfgIfc ifc;
 
@@ -533,6 +535,7 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < lower.expVrf.size(); i++) {
             servP4langVrf vrf = lower.expVrf.get(i);
+            doVrf(vrf);
             doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4);
             doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6);
         }
@@ -650,22 +653,31 @@ class servP4langConn implements Runnable {
         return null;
     }
 
+    private void doVrf(servP4langVrf vrf) {
+        if (vrf.sentMcast) {
+            return;
+        }
+        vrf.sentMcast = true;
+        lower.sendLine("myaddr4_add 224.0.0.0/4 0 " + vrf.id);
+        lower.sendLine("myaddr6_add ff00::/8 0 " + vrf.id);
+    }
+
     private void doIface(servP4langIfc ifc) {
         servP4langVrf vrf = findVrf(ifc);
         if (vrf == null) {
             return;
         }
-        if (vrf.id == ifc.sentId) {
+        if (vrf.id == ifc.sentVrf) {
             return;
         }
         String a;
-        if (ifc.sentId == 0) {
+        if (ifc.sentVrf == 0) {
             a = "add";
         } else {
             a = "mod";
         }
         lower.sendLine("portvrf_" + a + " " + ifc.id + " " + vrf.id);
-        ifc.sentId = vrf.id;
+        ifc.sentVrf = vrf.id;
     }
 
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi, tabGen<servP4langNei> nei) {
