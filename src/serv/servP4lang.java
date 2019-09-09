@@ -769,6 +769,10 @@ class servP4langConn implements Runnable {
                 lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + id);
                 continue;
             }
+            if (ntry.labelRem != null) {
+                lower.sendLine("labroute" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id + " " + ntry.labelRem.get(0));
+                continue;
+            }
             lower.sendLine("route" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id);
         }
         for (int i = 0; i < done.size(); i++) {
@@ -804,6 +808,10 @@ class servP4langConn implements Runnable {
             }
             if (ntry.nextHop == null) {
                 lower.sendLine("myaddr" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + id);
+                continue;
+            }
+            if (ntry.labelRem != null) {
+                lower.sendLine("labroute" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id + " " + ntry.labelRem.get(0));
                 continue;
             }
             lower.sendLine("route" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id);

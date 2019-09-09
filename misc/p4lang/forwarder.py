@@ -294,6 +294,20 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeForwardRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
             continue
 
+        if splt[0] == "labroute4_add":
+            addr = splt[1].split("/");
+            writeForwardRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            continue
+        if splt[0] == "labroute4_mod":
+            addr = splt[1].split("/");
+            writeForwardRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            continue
+        if splt[0] == "labroute4_del":
+            addr = splt[1].split("/");
+            writeForwardRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            continue
+
+
         if splt[0] == "vpnroute4_add":
             addr = splt[1].split("/");
             writeVpnRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
@@ -372,6 +386,19 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeForwardRules6(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
             continue
         if splt[0] == "route6_del":
+            addr = splt[1].split("/");
+            writeForwardRules6(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            continue
+
+        if splt[0] == "labroute6_add":
+            addr = splt[1].split("/");
+            writeForwardRules6(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            continue
+        if splt[0] == "labroute6_mod":
+            addr = splt[1].split("/");
+            writeForwardRules6(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            continue
+        if splt[0] == "labroute6_del":
             addr = splt[1].split("/");
             writeForwardRules6(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
             continue

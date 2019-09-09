@@ -358,7 +358,7 @@ parser prs_main(packet_in packet,
 
    state prs_arp {
       packet.extract(hdr.arp);
-      transition prs_set_prio_med;
+      transition accept;
    }
 
 
@@ -388,18 +388,23 @@ parser prs_main(packet_in packet,
       packet.extract(hdr.tcp);                             
       md.l3_metadata.lkp_outer_l4_sport = hdr.tcp.src_port;
       md.l3_metadata.lkp_outer_l4_dport = hdr.tcp.dst_port;
+      transition accept;
+/*
       transition select(hdr.tcp.dst_port) {                
           16w179: prs_set_prio_med;                        
           16w639: prs_set_prio_med;                        
           16w646: prs_set_prio_med;                        
           default: accept;                                 
       }                                                    
+*/
    }                                                       
 
   state prs_udp {
      packet.extract(hdr.udp);
      md.l3_metadata.lkp_outer_l4_sport = hdr.udp.src_port;
      md.l3_metadata.lkp_outer_l4_dport = hdr.udp.dst_port;
+     transition accept;
+/*
      transition select(hdr.udp.dst_port) {
            16w67: prs_set_prio_med;
            16w68: prs_set_prio_med;
@@ -411,6 +416,7 @@ parser prs_main(packet_in packet,
            16w1985: prs_set_prio_med;
            default: accept;
      }
+*/
    }
 
    state prs_llc_header {
