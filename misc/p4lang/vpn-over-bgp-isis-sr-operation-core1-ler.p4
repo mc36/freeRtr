@@ -326,7 +326,6 @@ parser prs_main(packet_in packet,
 
    state prs_ethernet {
       packet.extract(hdr.ethernet);
-      md.intrinsic_metadata.priority = 0;
       transition select(hdr.ethernet.ethertype) {
          0 &&& 0xfe00: prs_llc_header; /* LLC SAP frame */
          0 &&& 0xfa00: prs_llc_header; /* LLC SAP frame */
@@ -427,15 +426,11 @@ parser prs_main(packet_in packet,
           * From switch.p4 this case should be processed.
           * We are not there yet :-) 
           */
-         (0xfe, 0xfe): prs_set_prio_med;
+         (0xfe, 0xfe): accept;
          default: accept;
       }
    }
 
-   state prs_set_prio_med {
-      md.intrinsic_metadata.priority = 3;
-      transition accept;
-   }
 }
 
 /*
@@ -778,7 +773,6 @@ control ctl_ingress(inout headers hdr,
        */
       key = {
          md.nexthop_id: exact;
-         md.intrinsic_metadata.priority: exact;
       }
       actions = {
          act_cpl_opr_fib_hit;

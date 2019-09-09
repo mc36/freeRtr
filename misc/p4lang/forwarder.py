@@ -144,7 +144,6 @@ def writeNexthopRules(delete, p4info_helper, ingress_sw, port, mac_addr):
         table_name="ctl_ingress.tbl_nexthop",
         match_fields={
             "md.nexthop_id": port,
-            "md.intrinsic_metadata.priority": 0
         },
         action_name="ctl_ingress.act_ipv4_fib_hit",
         action_params={
