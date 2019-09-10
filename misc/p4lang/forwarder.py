@@ -16,7 +16,7 @@ def writeVrfRules(delete, p4info_helper, ingress_sw, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_vrf",
         match_fields={
-            "std_md.ingress_port": port
+            "md.source_id": port
         },
         action_name="ctl_ingress.act_set_vrf",
         action_params={
@@ -28,6 +28,41 @@ def writeVrfRules(delete, p4info_helper, ingress_sw, port, vrf):
         ingress_sw.ModifyTableEntry(table_entry, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
+
+def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_vlan_in",
+        match_fields={
+            "std_md.ingress_port": main,
+            "hdr.vlan.vlan": vlan
+        },
+        action_name="ctl_ingress.act_set_iface",
+        action_params={
+            "src": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_vlan_out",
+        match_fields={
+            "md.target_id": port,
+        },
+        action_name="ctl_ingress.act_set_vlan_port",
+        action_params={
+            "port": main,
+            "vlan": vlan
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
 
 def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
@@ -280,6 +315,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         splt = line.split(" ")
         print "rx: ", splt
 
+
         if splt[0] == "route4_add":
             addr = splt[1].split("/");
             writeForwardRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
@@ -305,7 +341,6 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             addr = splt[1].split("/");
             writeForwardRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
             continue
-
 
         if splt[0] == "vpnroute4_add":
             addr = splt[1].split("/");
@@ -366,6 +401,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeNeighborRules4(3,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
 
+
         if splt[0] == "portvrf_add":
             writeVrfRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
@@ -375,6 +411,17 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         if splt[0] == "portvrf_del":
             writeVrfRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
+
+        if splt[0] == "portvlan_add":
+            writeVlanRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+        if splt[0] == "portvrf_mod":
+            writeVlanRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+        if splt[0] == "portvrf_del":
+            writeVlanRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
 
         if splt[0] == "route6_add":
             addr = splt[1].split("/");
@@ -462,15 +509,19 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
 
 
+
+
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='P4Runtime Controller')
 
     parser.add_argument('--p4info', help='p4info proto in text format from p4c',
             type=str, action="store", required=False,
-            default="../build/vpn-over-bgp-isis-sr-operation-core1-ler.txt")
+            default="../build/router.txt")
     parser.add_argument('--bmv2-json', help='BMv2 JSON file from p4c',
             type=str, action="store", required=False,
-            default="../build/vpn-over-bgp-isis-sr-operation-core1-ler.json")
+            default="../build/router.json")
     parser.add_argument('--p4runtime_address', help='p4 runtime address',
             type=str, action="store", required=False,
             default="127.0.0.1:50051")

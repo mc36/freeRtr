@@ -62,7 +62,13 @@ typedef bit<20> label_t;
  */
 typedef bit<16> vrf_t;
 
+/*
+ * VLAN encoded in 12 bits
+ */
+typedef bit<12> vlan_id_t;
+
 typedef bit<9> port_t;
+
 const port_t CPU_PORT = 64;
 
 header packet_in_header_t {
@@ -85,9 +91,19 @@ header ethernet_t {
 }
 
 /*
+ * vlan header: as a header type, order matters
+ */
+header vlan_t {
+   bit<3> prio;
+   bit<1> cfi;
+   vlan_id_t vlan;
+   bit<16> ethertype;
+}
+
+/*
  * LLC header: as a header type, order matters
  */
-header llc_header_t {
+header llc_t {
    bit<8> dsap;
    bit<8> ssap;
    bit<8> control_;
@@ -281,6 +297,9 @@ struct tunnel_metadata_t {
  */
 struct metadata_t {
    nexthop_id_t                 nexthop_id;
+   nexthop_id_t                 source_id;
+   nexthop_id_t                 target_id;
+   bit<16>                      ethertype;
    ingress_intrinsic_metadata_t intrinsic_metadata;
    l3_metadata_t                l3_metadata;
    ipv4_metadata_t              ipv4_metadata;
@@ -295,11 +314,12 @@ struct headers {
    packet_out_header_t packet_out;
    packet_in_header_t packet_in;
    ethernet_t   ethernet;
+   vlan_t       vlan;
    mpls_t[3]    mpls;
    arp_t        arp;
    ipv4_t       ipv4;
    ipv6_t       ipv6;
-   llc_header_t llc_header;
+   llc_t        llc;
    tcp_t        tcp;
    udp_t        udp;
 }
@@ -327,8 +347,22 @@ parser prs_main(packet_in packet,
    state prs_ethernet {
       packet.extract(hdr.ethernet);
       transition select(hdr.ethernet.ethertype) {
-         0 &&& 0xfe00: prs_llc_header; /* LLC SAP frame */
-         0 &&& 0xfa00: prs_llc_header; /* LLC SAP frame */
+         0 &&& 0xfe00: prs_llc; /* LLC SAP frame */
+         0 &&& 0xfa00: prs_llc; /* LLC SAP frame */
+         ETHERTYPE_VLAN : prs_vlan;
+         ETHERTYPE_MPLS_UCAST : prs_mpls;
+         ETHERTYPE_IPV4: prs_ipv4;
+         ETHERTYPE_ARP: prs_arp;
+         ETHERTYPE_IPV6: prs_ipv6;
+         default: accept;
+      }
+   }
+
+   state prs_vlan {
+      packet.extract(hdr.vlan);
+      transition select(hdr.vlan.ethertype) {
+         0 &&& 0xfe00: prs_llc; /* LLC SAP frame */
+         0 &&& 0xfa00: prs_llc; /* LLC SAP frame */
          ETHERTYPE_MPLS_UCAST : prs_mpls;
          ETHERTYPE_IPV4: prs_ipv4;
          ETHERTYPE_ARP: prs_arp;
@@ -418,9 +452,9 @@ parser prs_main(packet_in packet,
 */
    }
 
-   state prs_llc_header {
-      packet.extract(hdr.llc_header);
-      transition select(hdr.llc_header.dsap, hdr.llc_header.ssap) {
+   state prs_llc {
+      packet.extract(hdr.llc);
+      transition select(hdr.llc.dsap, hdr.llc.ssap) {
          /* 
           * (0xaa, 0xaa): prs_snap_header; 
           * From switch.p4 this case should be processed.
@@ -456,29 +490,6 @@ control ctl_ingress(inout headers hdr,
         // deparsed on the wire (see c_deparser).
    }
 
-   action act_rmac_set_nexthop() {
-      /*
-       *  send to CPU 
-       *  CPU_PORT => 64 
-       */
-      send_to_cpu();
-   } 
-
-   /*
-    * rmac
-    */
-   table tbl_rmac_fib {
-      key = {
-         hdr.ethernet.dst_mac_addr: exact;
-      }
-      actions = {
-         act_rmac_set_nexthop;
-         NoAction;
-      }
-      size = ROUTER_MAC_TABLE_SIZE;
-      default_action = NoAction();
-   }
-
    action act_ipv4_cpl_set_nexthop() {
       /*
        * Send to CPU 
@@ -503,7 +514,7 @@ control ctl_ingress(inout headers hdr,
        * Egress packet is now a MPLS packet
        * (LABEL imposition)
        */
-      hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
+      md.ethertype = ETHERTYPE_MPLS_UCAST;
       /*
        * Encapsulate MPLS header
        * And set egress label
@@ -729,7 +740,7 @@ control ctl_ingress(inout headers hdr,
        * the egress_spec port is now the egress_port
        * set by the control plane entry
        */
-      std_md.egress_spec = egress_port;
+      md.target_id = egress_port;
    }
 
    /*
@@ -751,7 +762,7 @@ control ctl_ingress(inout headers hdr,
        * the egress_spec port is set now the egress_port 
        * set by the control plane entry
        */
-      std_md.egress_spec = egress_port;
+      md.target_id = egress_port;
 
       /*
        * We decrement the TTL
@@ -794,7 +805,7 @@ control ctl_ingress(inout headers hdr,
 
    table tbl_vrf {
       key = {
-         std_md.ingress_port: exact;  
+         md.source_id: exact;  
       }
       actions = {
          act_set_vrf;
@@ -803,27 +814,96 @@ control ctl_ingress(inout headers hdr,
       default_action = act_set_default_vrf();
    }
 
+
+
+   action act_set_iface(nexthop_id_t src) {
+      md.source_id = src;
+      md.ethertype = hdr.vlan.ethertype;
+   }
+
+   action act_set_def_iface() {
+      md.source_id = std_md.ingress_port;
+      md.ethertype = hdr.ethernet.ethertype;
+   }
+
+
+   table tbl_vlan_in {
+      key = {
+         std_md.ingress_port: exact;  
+         hdr.vlan.vlan: exact;  
+      }
+      actions = {
+         act_set_iface;
+         act_set_def_iface;
+      }
+      default_action = act_set_def_iface();
+   }
+
+
+
+
+   action act_set_vlan_port(nexthop_id_t port, vlan_id_t vlan) {
+      std_md.egress_spec = port;
+      hdr.vlan.setValid();
+      hdr.vlan.ethertype = md.ethertype;
+      hdr.ethernet.ethertype = ETHERTYPE_VLAN;
+      hdr.vlan.vlan = vlan;
+   }
+
+   action act_set_port() {
+      std_md.egress_spec = md.target_id;
+      hdr.ethernet.ethertype = md.ethertype;
+   }
+
+   table tbl_vlan_out {
+      key = {
+         md.target_id: exact;  
+      }
+      actions = {
+         act_set_port;
+         act_set_vlan_port;
+      }
+      default_action = act_set_port();
+   }
+
+
+
+
+
+
+
    apply {
-      /*
-       * set md.l3_metadata.vrf value based on incoming port
-       */ 
-      tbl_vrf.apply(); 
 
       if (std_md.ingress_port == CPU_PORT) {
             // Packet received from CPU_PORT, this is a packet-out sent by the
             // controller. Skip table processing, set the egress port as
             // requested by the controller (packet_out header) and remove the
             // packet_out header.
-            //std_md.egress_spec = hdr.packet_out.egress_port;
             md.nexthop_id = hdr.packet_out.egress_port;
             hdr.packet_out.setInvalid();
-      } else {
+            std_md.egress_spec = md.nexthop_id;
+            return;
+      }
+
+      /*
+       * set md.source_id value based on incoming port and vlan
+       */ 
+      tbl_vlan_in.apply(); 
+
+      /*
+       * set md.l3_metadata.vrf value based on incoming port
+       */ 
+      tbl_vrf.apply(); 
+
          // Packet received from data plane port.
-         if (hdr.llc_header.isValid()) { 
-            tbl_rmac_fib.apply(); 
-         } else if (hdr.arp.isValid()) {
+         if (hdr.llc.isValid()) {
             send_to_cpu();
-         } else if (hdr.mpls[0].isValid()) {     
+         } 
+         if (hdr.arp.isValid()) {
+            send_to_cpu();
+         } 
+
+         if (hdr.mpls[0].isValid()) {     
             md.tunnel_metadata.mpls_label = hdr.mpls[0].label;
             tbl_mpls_fib.apply();
             if ((md.l3_metadata.mpls_op_type == 1) && (hdr.mpls[1].isValid())) {
@@ -831,6 +911,8 @@ control ctl_ingress(inout headers hdr,
                tbl_mpls_fib_decap.apply();
             }  
          }
+
+
       
          if (hdr.ipv4.isValid() ) {
             /*                                    
@@ -856,38 +938,43 @@ control ctl_ingress(inout headers hdr,
             }                                      
          }                                            
 
-         if ( md.nexthop_id != CPU_PORT) {
+         if ( md.nexthop_id == CPU_PORT) {
+           hdr.packet_in.setValid();
+           hdr.packet_in.ingress_port = std_md.ingress_port;
+           std_md.egress_spec = md.nexthop_id;
+           return;
+         }
+
+           if (hdr.vlan.isValid()) {
+              hdr.vlan.setInvalid();
+           }
+
            if (md.l3_metadata.mpls0_remove == 1) {
               hdr.mpls[0].setInvalid();
               if (hdr.ipv4.isValid() ) {
-                hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+                md.ethertype = ETHERTYPE_IPV4;
               } else {
-                hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+                md.ethertype = ETHERTYPE_IPV6;
               }
            }
+
            if (md.l3_metadata.mpls1_remove == 1) {
               hdr.mpls[1].setInvalid();
               if (hdr.ipv4.isValid() ) {
-                hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+                md.ethertype = ETHERTYPE_IPV4;
               } else {
-                hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+                md.ethertype = ETHERTYPE_IPV6;
               }
            }
-         } else {
-           hdr.packet_in.setValid();
-           hdr.packet_in.ingress_port = std_md.ingress_port;
-         }
-
-      }  
     
       /*
        * nexthop value is now identified 
        * and stored in custom nexthop_id used for the lookup
        */
       tbl_nexthop.apply();
-
+      tbl_vlan_out.apply();
+    }
      
-   }
 }
 
 /*

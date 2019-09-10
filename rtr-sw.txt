@@ -454,6 +454,12 @@ interface sdn1
  no log-link-change
  exit
 !
+interface sdn1.111
+ no description
+ no shutdown
+ no log-link-change
+ exit
+!
 interface sdn2
  no description
  mtu 1500
@@ -465,6 +471,12 @@ interface sdn2
  ipv4 host-static 1.1.1.2 0000.1111.2222
  ipv6 address 1111::1 ffff:ffff:ffff:ffff::
  ipv6 host-static 1111::2 0000.1111.2222
+ no shutdown
+ no log-link-change
+ exit
+!
+interface sdn2.222
+ no description
  no shutdown
  no log-link-change
  exit
@@ -930,6 +942,8 @@ server p4lang a
  export-vrf vpn 2
  export-port sdn1 1
  export-port sdn2 2
+ export-port sdn1.111 111
+ export-port sdn2.222 222
  interconnect pwether2
  vrf v1
  exit

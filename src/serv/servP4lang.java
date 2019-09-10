@@ -141,8 +141,25 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ntry.id = bits.str2num(cmd.word());
             ntry.ifc = ifc;
             ntry.lower = this;
+            if (ifc.vlanNum > 0) {
+                for (int i = 0; i < expIfc.size(); i++) {
+                    servP4langIfc old = expIfc.get(i);
+                    if (old.master != null) {
+                        continue;
+                    }
+                    if (old.ifc == ifc.parent) {
+                        ntry.master = old;
+                        break;
+                    }
+                }
+                if (ntry.master == null) {
+                    cmd.error("parent not exported");
+                    return false;
+                }
+            } else {
+                ntry.setUpper(ifc.ethtyp);
+            }
             expIfc.put(ntry);
-            ntry.setUpper(ifc.ethtyp);
             return false;
         }
         if (!s.equals("no")) {
@@ -373,9 +390,13 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public int sentVrf;
 
+    public int sentVlan;
+
+    public servP4langIfc master;
+
     public cfgIfc ifc;
 
-    public ifcUp upper;
+    public ifcUp upper = new ifcNull();
 
     public counter cntr = new counter();
 
@@ -663,6 +684,10 @@ class servP4langConn implements Runnable {
     }
 
     private void doIface(servP4langIfc ifc) {
+        if ((ifc.master != null) && (ifc.sentVlan == 0)) {
+            lower.sendLine("portvlan_add " + ifc.id + " " + ifc.master.id + " " + ifc.ifc.vlanNum);
+            ifc.sentVlan = ifc.ifc.vlanNum;
+        }
         servP4langVrf vrf = findVrf(ifc);
         if (vrf == null) {
             return;
@@ -726,6 +751,16 @@ class servP4langConn implements Runnable {
         }
     }
 
+    private int getLabel(tabRouteEntry<addrIP> ntry) {
+        if (ntry.labelRem == null) {
+            return 0;
+        }
+        if (ntry.labelRem.size() < 1) {
+            return 0;
+        }
+        return ntry.labelRem.get(0);
+    }
+
     private void doRoutes(boolean ipv4, int id, tabRoute<addrIP> need, tabRoute<addrIP> done) {
         String afi;
         if (ipv4) {
@@ -752,14 +787,14 @@ class servP4langConn implements Runnable {
                 if (p < 0) {
                     continue;
                 }
-                done.add(tabRoute.addType.notyet, ntry, true, true);
+                done.add(tabRoute.addType.always, ntry, true, true);
                 String a;
                 if (ipv4) {
                     a = "" + addrPrefix.ip2ip4(ntry.prefix);
                 } else {
                     a = "" + addrPrefix.ip2ip6(ntry.prefix);
                 }
-                lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id + " " + old.labelRem.get(0) + " " + ntry.labelRem.get(0));
+                lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id + " " + getLabel(old) + " " + getLabel(ntry));
                 continue;
             }
             tabRouteEntry<addrIP> old = done.find(ntry);
@@ -770,7 +805,7 @@ class servP4langConn implements Runnable {
                 }
                 act = "mod";
             }
-            done.add(tabRoute.addType.notyet, ntry, true, true);
+            done.add(tabRoute.addType.always, ntry, true, true);
             String a;
             if (ipv4) {
                 a = "" + addrPrefix.ip2ip4(ntry.prefix);
@@ -782,7 +817,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             if (ntry.labelRem != null) {
-                lower.sendLine("labroute" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id + " " + ntry.labelRem.get(0));
+                lower.sendLine("labroute" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id + " " + getLabel(ntry));
                 continue;
             }
             lower.sendLine("route" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id);
@@ -808,7 +843,7 @@ class servP4langConn implements Runnable {
                 } else {
                     a = "" + addrPrefix.ip2ip6(ntry.prefix);
                 }
-                lower.sendLine("vpnroute" + afi + "_del " + a + " " + p + " " + ntry.nextHop + " " + id + " " + old.labelRem.get(0) + " " + ntry.labelRem.get(0));
+                lower.sendLine("vpnroute" + afi + "_del " + a + " " + p + " " + ntry.nextHop + " " + id + " " + getLabel(old) + " " + getLabel(ntry));
                 continue;
             }
             done.del(ntry);
@@ -823,7 +858,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             if (ntry.labelRem != null) {
-                lower.sendLine("labroute" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id + " " + ntry.labelRem.get(0));
+                lower.sendLine("labroute" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id + " " + getLabel(ntry));
                 continue;
             }
             lower.sendLine("route" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id);
