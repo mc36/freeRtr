@@ -233,6 +233,30 @@ public class clntMplsPwe implements Runnable, ifcDn {
         clearState();
     }
 
+    /**
+     * get local label
+     *
+     * @return label
+     */
+    public int getLabelLoc() {
+        if (labelL == null) {
+            return -1;
+        }
+        return labelL.getValue();
+    }
+
+    /**
+     * get remote label
+     *
+     * @return label
+     */
+    public int getLabelRem() {
+        if (pweR == null) {
+            return -1;
+        }
+        return pweR.label;
+    }
+
     public void run() {
         for (;;) {
             if (!working) {

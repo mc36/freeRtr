@@ -227,9 +227,14 @@ struct l3_metadata_t {
     bit<16> lkp_outer_l4_sport;
     bit<16> lkp_outer_l4_dport;
     vrf_t vrf;
-    bit<1>  mpls_op_type; 
+    bit<3>  mpls_op_type; 
     bit<1>  mpls0_remove; 
     bit<1>  mpls1_remove; 
+    bit<1>  mpls0_valid; 
+    bit<1>  mpls1_valid; 
+    bit<1>  arp_valid; 
+    bit<1>  ipv4_valid; 
+    bit<1>  ipv6_valid; 
     bit<10> rmac_group;
     bit<1>  rmac_hit;
     bit<2>  urpf_mode;
@@ -316,6 +321,7 @@ struct headers {
    ethernet_t   ethernet;
    vlan_t       vlan;
    mpls_t[3]    mpls;
+   ethernet_t   eth2;
    arp_t        arp;
    ipv4_t       ipv4;
    ipv6_t       ipv6;
@@ -384,8 +390,14 @@ parser prs_main(packet_in packet,
       transition select((packet.lookahead<bit<4>>())[3:0]) {
          4w0x4: prs_ipv4; /* IPv4 only for now */
          4w0x6: prs_ipv6; /* IPv6 is in next lab */
-         default: accept; /* EoMPLS is pausing problem if we don't resubmit() */
+         default: prs_eth2; /* EoMPLS is pausing problem if we don't resubmit() */
       }
+   }
+
+
+   state prs_eth2 {
+      packet.extract(hdr.eth2);
+      transition accept;
    }
 
 
@@ -397,6 +409,7 @@ parser prs_main(packet_in packet,
 
    state prs_ipv4 {
       packet.extract(hdr.ipv4);
+      md.l3_metadata.ipv4_valid = 1;
       md.ipv4_metadata.lkp_ipv4_da = hdr.ipv4.dst_addr;
       md.l3_metadata.lkp_ip_ttl = hdr.ipv4.ttl ;
       transition select(hdr.ipv4.frag_offset, hdr.ipv4.ihl, hdr.ipv4.protocol) {
@@ -408,6 +421,7 @@ parser prs_main(packet_in packet,
 
    state prs_ipv6 {
       packet.extract(hdr.ipv6);
+      md.l3_metadata.ipv6_valid = 1;
       md.ipv6_metadata.lkp_ipv6_da = hdr.ipv6.dst_addr;
       md.l3_metadata.lkp_ip_ttl = hdr.ipv6.hop_limit ;
       transition select(hdr.ipv6.next_hdr) {
@@ -677,6 +691,31 @@ control ctl_ingress(inout headers hdr,
 
    }
 
+   action act_mpls_decap_l2vpn(nexthop_id_t port) {
+      /*
+       * Egress packet is back now an IPv4 packet
+       * (LABEL PHP )
+       */
+      /*
+       * Decapsulate MPLS header
+       */
+      md.ethertype = hdr.eth2.ethertype;
+      hdr.ethernet.dst_mac_addr = hdr.eth2.dst_mac_addr;
+      hdr.ethernet.src_mac_addr = hdr.eth2.src_mac_addr;
+      hdr.eth2.setInvalid();
+      hdr.mpls[1].setInvalid();
+      hdr.mpls[0].setInvalid();
+      hdr.vlan.setInvalid();
+      md.target_id = port;
+      /*
+       * Indicate effective VRF during 
+       * MPLS tunnel decap 
+       */
+      md.l3_metadata.mpls0_remove = 0;
+      md.l3_metadata.mpls1_remove = 0;
+      md.l3_metadata.mpls_op_type = 2;
+   }
+
    table tbl_mpls_fib {
       key = {
          md.tunnel_metadata.mpls_label: exact;
@@ -696,6 +735,11 @@ control ctl_ingress(inout headers hdr,
           * mpls decapsulation if PHP  
           */
          act_mpls_decap_ipv4;
+
+         /*
+          * mpls decapsulation if PHP  
+          */
+         act_mpls_decap_l2vpn;
 
          /* 
           * Default action;
@@ -725,6 +769,11 @@ control ctl_ingress(inout headers hdr,
           * mpls decapsulation if PHP  
           */
          act_mpls_decap_l3vpn;
+
+         /*
+          * mpls decapsulation if PHP  
+          */
+         act_mpls_decap_l2vpn;
 
          /* 
           * Default action;
@@ -803,12 +852,36 @@ control ctl_ingress(inout headers hdr,
       md.l3_metadata.vrf = 0; 
    }
 
+   action act_set_mpls_xconn_encap(nexthop_id_t target, label_t tunlab, label_t svclab) {
+      md.l3_metadata.vrf = 0;
+      md.l3_metadata.mpls0_valid = 0;
+      md.l3_metadata.mpls1_valid = 0;
+      md.l3_metadata.arp_valid = 0;
+      md.l3_metadata.ipv4_valid = 0;
+      md.l3_metadata.ipv6_valid = 0;
+      hdr.eth2.setValid();
+      hdr.eth2.dst_mac_addr = hdr.ethernet.dst_mac_addr;
+      hdr.eth2.src_mac_addr = hdr.ethernet.src_mac_addr;
+      hdr.eth2.ethertype = md.ethertype;
+      md.target_id = target;
+      md.ethertype = ETHERTYPE_MPLS_UCAST;
+      hdr.mpls.push_front(2);
+      hdr.mpls[0].setValid();
+      hdr.mpls[0].label = tunlab;
+      hdr.mpls[0].ttl = 255;
+      hdr.mpls[1].setValid();
+      hdr.mpls[1].label = svclab;
+      hdr.mpls[1].ttl = 255;
+      hdr.mpls[1].bos = 1;
+   }
+
    table tbl_vrf {
       key = {
          md.source_id: exact;  
       }
       actions = {
          act_set_vrf;
+         act_set_mpls_xconn_encap;
          act_set_default_vrf;
       }
       default_action = act_set_default_vrf();
@@ -885,6 +958,16 @@ control ctl_ingress(inout headers hdr,
             return;
       }
 
+      if (hdr.mpls[0].isValid()) {
+        md.l3_metadata.mpls0_valid = 1;
+      }
+      if (hdr.mpls[1].isValid()) {
+        md.l3_metadata.mpls1_valid = 1;
+      }
+      if (hdr.arp.isValid()) {
+        md.l3_metadata.arp_valid = 1;
+      }
+
       /*
        * set md.source_id value based on incoming port and vlan
        */ 
@@ -895,26 +978,24 @@ control ctl_ingress(inout headers hdr,
        */ 
       tbl_vrf.apply(); 
 
-         // Packet received from data plane port.
          if (hdr.llc.isValid()) {
             send_to_cpu();
          } 
-         if (hdr.arp.isValid()) {
+         if (md.l3_metadata.arp_valid == 1) {
             send_to_cpu();
          } 
 
-         if (hdr.mpls[0].isValid()) {     
+         if (md.l3_metadata.mpls0_valid == 1) {     
             md.tunnel_metadata.mpls_label = hdr.mpls[0].label;
             tbl_mpls_fib.apply();
-            if ((md.l3_metadata.mpls_op_type == 1) && (hdr.mpls[1].isValid())) {
+            if ((md.l3_metadata.mpls_op_type == 1) && (md.l3_metadata.mpls1_valid == 1)) {
                md.tunnel_metadata.mpls_label = hdr.mpls[1].label;
                tbl_mpls_fib_decap.apply();
             }  
          }
 
-
       
-         if (hdr.ipv4.isValid() ) {
+        if (md.l3_metadata.ipv4_valid==1 ) {
             /*                                    
              * we first consider host routes      
              */                                   
@@ -926,7 +1007,7 @@ control ctl_ingress(inout headers hdr,
             }                                      
          }                                            
 
-         if (hdr.ipv6.isValid() ) {
+         if (md.l3_metadata.ipv6_valid == 1) {
             /*                                    
              * we first consider host routes      
              */                                   
@@ -951,7 +1032,7 @@ control ctl_ingress(inout headers hdr,
 
            if (md.l3_metadata.mpls0_remove == 1) {
               hdr.mpls[0].setInvalid();
-              if (hdr.ipv4.isValid() ) {
+              if (md.l3_metadata.ipv4_valid == 1) {
                 md.ethertype = ETHERTYPE_IPV4;
               } else {
                 md.ethertype = ETHERTYPE_IPV6;
@@ -960,7 +1041,7 @@ control ctl_ingress(inout headers hdr,
 
            if (md.l3_metadata.mpls1_remove == 1) {
               hdr.mpls[1].setInvalid();
-              if (hdr.ipv4.isValid() ) {
+              if (md.l3_metadata.ipv4_valid == 1) {
                 md.ethertype = ETHERTYPE_IPV4;
               } else {
                 md.ethertype = ETHERTYPE_IPV6;
@@ -996,7 +1077,7 @@ control ctl_compute_checksum(inout headers hdr, inout metadata_t md) {
       update_checksum(
          hdr.ipv4.isValid(),
             { hdr.ipv4.version,
-	      hdr.ipv4.ihl,
+              hdr.ipv4.ihl,
               hdr.ipv4.diffserv,
               hdr.ipv4.total_len,
               hdr.ipv4.identification,

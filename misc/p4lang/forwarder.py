@@ -64,6 +64,56 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
         ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
+def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, lab_loc, lab_rem):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_mpls_fib",
+        match_fields={
+            "md.tunnel_metadata.mpls_label": lab_loc
+        },
+        action_name="ctl_ingress.act_mpls_decap_l2vpn",
+        action_params={
+            "port": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_mpls_fib_decap",
+        match_fields={
+            "md.tunnel_metadata.mpls_label": lab_loc
+        },
+        action_name="ctl_ingress.act_mpls_decap_l2vpn",
+        action_params={
+            "port": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_vrf",
+        match_fields={
+            "md.source_id": port
+        },
+        action_name="ctl_ingress.act_set_mpls_xconn_encap",
+        action_params={
+            "target": target,
+            "tunlab": lab_tun,
+            "svclab": lab_rem
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry3, False)
+
+
 def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_ipv4_fib_lpm",
@@ -420,6 +470,16 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "portvrf_del":
             writeVlanRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if splt[0] == "xconnect_add":
+            writeXconnRules(1,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+        if splt[0] == "xconnect_mod":
+            writeXconnRules(2,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+        if splt[0] == "xconnect_del":
+            writeXconnRules(3,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
             continue
 
 

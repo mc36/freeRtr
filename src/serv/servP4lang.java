@@ -562,6 +562,9 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < tabLabel.labels.size(); i++) {
             tabLabelNtry ntry = tabLabel.labels.get(i);
+            if (ntry.pweIfc != null) {
+                continue;
+            }
             if (ntry.nextHop == null) {
                 servP4langVrf vrf = findVrf(ntry.forwarder);
                 if (vrf == null) {
@@ -688,21 +691,48 @@ class servP4langConn implements Runnable {
             lower.sendLine("portvlan_add " + ifc.id + " " + ifc.master.id + " " + ifc.ifc.vlanNum);
             ifc.sentVlan = ifc.ifc.vlanNum;
         }
-        servP4langVrf vrf = findVrf(ifc);
-        if (vrf == null) {
-            return;
-        }
-        if (vrf.id == ifc.sentVrf) {
-            return;
-        }
         String a;
         if (ifc.sentVrf == 0) {
             a = "add";
         } else {
             a = "mod";
         }
-        lower.sendLine("portvrf_" + a + " " + ifc.id + " " + vrf.id);
-        ifc.sentVrf = vrf.id;
+        if (ifc.ifc.xconn == null) {
+            servP4langVrf vrf = findVrf(ifc);
+            if (vrf == null) {
+                return;
+            }
+            if (vrf.id == ifc.sentVrf) {
+                return;
+            }
+            lower.sendLine("portvrf_" + a + " " + ifc.id + " " + vrf.id);
+            ifc.sentVrf = vrf.id;
+            return;
+        }
+        if (ifc.sentVrf == -1) {
+            return;
+        }
+        if (ifc.ifc.xconn.pwom == null) {
+            return;
+        }
+        int ll = ifc.ifc.xconn.pwom.getLabelLoc();
+        if (ll < 0) {
+            return;
+        }
+        int lr = ifc.ifc.xconn.pwom.getLabelRem();
+        if (lr < 0) {
+            return;
+        }
+        tabRouteEntry<addrIP> ntry = ifc.ifc.xconn.vrf.getFwd(ifc.ifc.xconn.adr).actualU.route(ifc.ifc.xconn.adr);
+        if (ntry == null) {
+            return;
+        }
+        int p = findIface(ntry.iface);
+        if (p < 0) {
+            return;
+        }
+        lower.sendLine("xconnect_" + a + " " + ifc.id + " " + ifc.ifc.xconn.adr + " " + p + " " + getLabel(ntry) + " " + ll + " " + lr);
+        ifc.sentVrf = -1;
     }
 
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi, tabGen<servP4langNei> nei) {

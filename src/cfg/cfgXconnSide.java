@@ -76,43 +76,100 @@ public class cfgXconnSide {
      */
     public ifcUp upper = new ifcNull();
 
-    private cfgVrf vrf;
+    /**
+     * vrf
+     */
+    public cfgVrf vrf;
 
-    private cfgIfc ifc;
+    /**
+     * source interface
+     */
+    public cfgIfc ifc;
 
-    private addrIP adr;
+    /**
+     * target
+     */
+    public addrIP adr;
 
-    private int vcid;
+    /**
+     * vc id
+     */
+    public int vcid;
 
-    private clntPckOudp pou;
+    /**
+     * pckoudp
+     */
+    public clntPckOudp pou;
 
-    private clntGrePpp pog;
+    /**
+     * gre ppp
+     */
+    public clntGrePpp pog;
 
-    private clntAx25 ax25;
+    /**
+     * ax25
+     */
+    public clntAx25 ax25;
 
-    private clntL2f l2f;
+    /**
+     * l2f
+     */
+    public clntL2f l2f;
 
-    private clntVxlan vxl;
+    /**
+     * vxlan
+     */
+    public clntVxlan vxl;
 
-    private clntGeneve gnv;
+    /**
+     * geneve
+     */
+    public clntGeneve gnv;
 
-    private clntPptp pptp;
+    /**
+     * pptp
+     */
+    public clntPptp pptp;
 
-    private clntL2tp2 l2tp2;
+    /**
+     * l2tp v2
+     */
+    public clntL2tp2 l2tp2;
 
-    private clntL2tp3 l2tp3;
+    /**
+     * l2tp v3
+     */
+    public clntL2tp3 l2tp3;
 
-    private clntMplsPwe pwom;
+    /**
+     * eompls
+     */
+    public clntMplsPwe pwom;
 
-    private clntErspan erspan;
+    /**
+     * erspan
+     */
+    public clntErspan erspan;
 
-    private clntDlsw dlsw;
+    /**
+     * dlsw
+     */
+    public clntDlsw dlsw;
 
-    private clntEtherIp etherip;
+    /**
+     * etherip
+     */
+    public clntEtherIp etherip;
 
-    private clntUti uti;
+    /**
+     * uti
+     */
+    public clntUti uti;
 
-    private clntNvGre nvgre;
+    /**
+     * nvgre
+     */
+    public clntNvGre nvgre;
 
     /**
      * get help text
