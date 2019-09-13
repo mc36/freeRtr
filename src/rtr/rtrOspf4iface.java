@@ -1001,6 +1001,10 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }
+        if (!iface.network.matches(pck.IPsrc)) {
+            logger.info("got from out of subnet peer " + pck.IPsrc);
+            return;
+        }
         rtrOspf4neigh nei = new rtrOspf4neigh(lower, this, pck.IPsrc.toIPv4());
         rtrOspf4neigh old = neighs.add(nei);
         boolean sndHll = false;

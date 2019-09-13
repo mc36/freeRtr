@@ -631,6 +631,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         if (passiveInt) {
             return true;
         }
+        if (!iface.network.matches(id.peerAddr)) {
+            logger.info("got from out of subnet peer " + id);
+            return true;
+        }
         for (int i = 0; i < 16; i++) {
             if (pck.getByte(i) != 255) {
                 return true;

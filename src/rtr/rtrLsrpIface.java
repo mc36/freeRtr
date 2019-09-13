@@ -450,6 +450,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         id.setClosing();
+        if (!iface.network.matches(id.peerAddr)) {
+            logger.info("got from out of subnet peer " + id);
+            return true;
+        }
         if (passiveInt) {
             return true;
         }

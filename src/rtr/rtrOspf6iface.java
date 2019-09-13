@@ -988,6 +988,10 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }
+        if (!iface.network.matches(pck.IPsrc)) {
+            logger.info("got from out of subnet peer " + pck.IPsrc);
+            return;
+        }
         rtrOspf6neigh nei = new rtrOspf6neigh(lower, this, pck.IPsrc.toIPv6());
         rtrOspf6neigh old = neighs.add(nei);
         boolean sndHll = false;

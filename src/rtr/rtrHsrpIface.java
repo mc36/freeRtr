@@ -317,6 +317,10 @@ public class rtrHsrpIface implements prtServP {
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         id.setClosing();
+        if (!ifc.network.matches(id.peerAddr)) {
+            logger.info("got from out of subnet peer " + id);
+            return true;
+        }
         packHsrp hsr = genPackHolder();
         if (hsr.parsePacket(pck)) {
             return false;

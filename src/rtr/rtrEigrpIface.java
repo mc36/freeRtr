@@ -544,6 +544,10 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
             cntr.drop(pck, reasons.badNet);
             return;
         }
+        if (!rxIfc.network.matches(pck.IPsrc)) {
+            logger.info("got from out of subnet peer " + pck.IPsrc);
+            return;
+        }
         rtrEigrpNeigh nei = new rtrEigrpNeigh(lower, this, pck.IPsrc);
         rtrEigrpNeigh old = neighs.add(nei);
         boolean sndHll = false;

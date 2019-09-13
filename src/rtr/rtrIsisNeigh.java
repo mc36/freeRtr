@@ -523,6 +523,10 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
             iface.cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
+        if (!iface.iface.network.matches(ifcAddr)) {
+            logger.info("got from out of subnet peer " + ifcAddr);
+            return;
+        }
         if ((level.level == 1) && (!areaAddr)) {
             peerAdjState = statDown;
             logger.info("got bad area from l" + level.level + " " + ethAddr);

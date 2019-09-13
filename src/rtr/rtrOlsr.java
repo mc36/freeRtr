@@ -293,6 +293,10 @@ public class rtrOlsr extends ipRtr implements prtServP {
             logger.warn("no interface " + id);
             return true;
         }
+        if (!ifc.iface.network.matches(id.peerAddr)) {
+            logger.info("got from out of subnet peer " + id);
+            return true;
+        }
         logger.warn("neighbor " + id.peerAddr + " up");
         rtrOlsrNeigh ntry = new rtrOlsrNeigh(id);
         rtrOlsrNeigh old = neighs.add(ntry);
