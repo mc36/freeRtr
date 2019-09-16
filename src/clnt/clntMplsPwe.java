@@ -257,6 +257,19 @@ public class clntMplsPwe implements Runnable, ifcDn {
         return pweR.label;
     }
 
+
+    /**
+     * get remote address
+     *
+     * @return address
+     */
+    public addrIP getRemote() {
+        if (fwdTrg == null) {
+            return null;
+        }
+        return fwdTrg.copyBytes();
+    }
+
     public void run() {
         for (;;) {
             if (!working) {

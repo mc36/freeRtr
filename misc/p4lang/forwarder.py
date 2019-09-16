@@ -114,6 +114,129 @@ def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, la
         ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
+def writeBrprtRules(delete, p4info_helper, ingress_sw, port, bridge):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_vrf",
+        match_fields={
+            "md.source_id": port
+        },
+        action_name="ctl_ingress.act_set_bridge",
+        action_params={
+            "bridge": bridge
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeBrlabRules(delete, p4info_helper, ingress_sw, bridge, label):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_mpls_fib",
+        match_fields={
+            "md.tunnel_metadata.mpls_label": label
+        },
+        action_name="ctl_ingress.act_mpls_decap_vpls",
+        action_params={
+            "bridge": bridge
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_mpls_fib_decap",
+        match_fields={
+            "md.tunnel_metadata.mpls_label": label
+        },
+        action_name="ctl_ingress.act_mpls_decap_vpls",
+        action_params={
+            "bridge": bridge
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
+def writeBrvplsRules(delete, p4info_helper, ingress_sw, bridge, addr, port, labtun, labsvc):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_bridge_learn",
+        match_fields={
+            "md.bridge_id": bridge,
+            "hdr.ethernet.src_mac_addr": addr
+        },
+        action_name="ctl_ingress.act_set_bridge_port",
+        action_params={
+            "port": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_bridge_target",
+        match_fields={
+            "md.bridge_id": bridge,
+            "hdr.ethernet.dst_mac_addr": addr
+        },
+        action_name="ctl_ingress.act_set_bridge_vpls",
+        action_params={
+            "port": port,
+            "lab_tun": labtun,
+            "lab_svc": labsvc
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
+def writeBrmacRules(delete, p4info_helper, ingress_sw, bridge, addr, port):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_bridge_learn",
+        match_fields={
+            "md.bridge_id": bridge,
+            "hdr.ethernet.src_mac_addr": addr
+        },
+        action_name="ctl_ingress.act_set_bridge_port",
+        action_params={
+            "port": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ctl_ingress.tbl_bridge_target",
+        match_fields={
+            "md.bridge_id": bridge,
+            "hdr.ethernet.dst_mac_addr": addr
+        },
+        action_name="ctl_ingress.act_set_bridge_out",
+        action_params={
+            "port": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
 def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ctl_ingress.tbl_ipv4_fib_lpm",
@@ -480,6 +603,46 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "xconnect_del":
             writeXconnRules(3,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+
+        if splt[0] == "portbridge_add":
+            writeBrprtRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "portbridge_mod":
+            writeBrprtRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "portbridge_del":
+            writeBrprtRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if splt[0] == "bridgemac_add":
+            writeBrmacRules(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
+            continue
+        if splt[0] == "bridgemac_mod":
+            writeBrmacRules(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
+            continue
+        if splt[0] == "bridgemac_del":
+            writeBrmacRules(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
+            continue
+
+        if splt[0] == "bridgelabel_add":
+            writeBrlabRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "bridgelabel_mod":
+            writeBrlabRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "bridgelabel_del":
+            writeBrlabRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if splt[0] == "bridgevpls_add":
+            writeBrvplsRules(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+        if splt[0] == "bridgevpls_mod":
+            writeBrvplsRules(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+        if splt[0] == "bridgevpls_del":
+            writeBrvplsRules(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),int(splt[5]),int(splt[6]))
             continue
 
 

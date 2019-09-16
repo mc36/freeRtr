@@ -7,8 +7,12 @@ import addr.addrIP;
 import addr.addrMac;
 import addr.addrPrefix;
 import cfg.cfgAll;
+import cfg.cfgBrdg;
 import cfg.cfgIfc;
 import cfg.cfgVrf;
+import clnt.clntMplsPwe;
+import ifc.ifcBridgeAdr;
+import ifc.ifcBridgeIfc;
 import ifc.ifcUp;
 import ifc.ifcDn;
 import ifc.ifcEther;
@@ -60,6 +64,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public tabGen<servP4langIfc> expIfc = new tabGen<servP4langIfc>();
 
     /**
+     * exported bridges
+     */
+    public tabGen<cfgBrdg> expBr = new tabGen<cfgBrdg>();
+
+    /**
      * last connection
      */
     protected servP4langConn conn;
@@ -98,6 +107,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             servP4langIfc ntry = expIfc.get(i);
             l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id);
         }
+        for (int i = 0; i < expBr.size(); i++) {
+            cfgBrdg ntry = expBr.get(i);
+            l.add(beg + "export-bridge " + ntry.num);
+        }
         cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
     }
 
@@ -114,6 +127,15 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ntry.id = bits.str2num(cmd.word());
             ntry.lower = this;
             expVrf.put(ntry);
+            return false;
+        }
+        if (s.equals("export-bridge")) {
+            cfgBrdg br = cfgAll.brdgFind(cmd.word(), false);
+            if (br == null) {
+                cmd.error("no such bridge");
+                return false;
+            }
+            expBr.put(br);
             return false;
         }
         if (s.equals("interconnect")) {
@@ -179,6 +201,15 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             expVrf.del(ntry);
             return false;
         }
+        if (s.equals("export-bridge")) {
+            cfgBrdg br = cfgAll.brdgFind(cmd.word(), false);
+            if (br == null) {
+                cmd.error("no such bridge");
+                return false;
+            }
+            expBr.del(br);
+            return false;
+        }
         if (s.equals("interconnect")) {
             if (interconn == null) {
                 return false;
@@ -208,6 +239,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("1 2  export-vrf                specify vrf to export");
         l.add("2 3    <name>                  vrf name");
         l.add("3 .      <num>                 p4lang vrf number");
+        l.add("1 2  export-bridge             specify bridge to export");
+        l.add("2 .    <num>                   bridge number");
         l.add("1 2  export-port               specify port to export");
         l.add("2 3    <name>                  interface name");
         l.add("3 .      <num>                 p4lang port number");
@@ -470,6 +503,10 @@ class servP4langConn implements Runnable {
 
     public tabGen<tabLabelNtry> labels = new tabGen<tabLabelNtry>();
 
+    public tabGen<ifcBridgeAdr> brmacs = new tabGen<ifcBridgeAdr>();
+
+    public tabGen<ifcBridgeIfc> brifcs = new tabGen<ifcBridgeIfc>();
+
     public servP4langConn(pipeSide pip, servP4lang upper) {
         pipe = pip;
         lower = upper;
@@ -553,6 +590,10 @@ class servP4langConn implements Runnable {
             doIface(ifc);
             doNeighs(true, ifc, ifc.ifc.ipIf4, neighs4);
             doNeighs(false, ifc, ifc.ifc.ipIf6, neighs6);
+        }
+        for (int i = 0; i < lower.expBr.size(); i++) {
+            cfgBrdg br = lower.expBr.get(i);
+            doBrdg(br);
         }
         for (int i = 0; i < lower.expVrf.size(); i++) {
             servP4langVrf vrf = lower.expVrf.get(i);
@@ -677,6 +718,97 @@ class servP4langConn implements Runnable {
         return null;
     }
 
+    private servP4langIfc findIfc(ifcBridgeIfc ifc) {
+        for (int i = 0; i < lower.expIfc.size(); i++) {
+            servP4langIfc ntry = lower.expIfc.get(i);
+            if (ifc == ntry.ifc.bridgeIfc) {
+                return ntry;
+            }
+        }
+        return null;
+    }
+
+    private int getLabel(tabRouteEntry<addrIP> ntry) {
+        if (ntry.labelRem == null) {
+            return 0;
+        }
+        if (ntry.labelRem.size() < 1) {
+            return 0;
+        }
+        return ntry.labelRem.get(0);
+    }
+
+    private void doBrdg(cfgBrdg br) {
+        for (int i = 0;; i++) {
+            ifcBridgeIfc ntry = br.bridgeHed.getIface(i);
+            if (ntry == null) {
+                break;
+            }
+            if (brifcs.find(ntry) != null) {
+                continue;
+            }
+            clntMplsPwe ifc = null;
+            try {
+                ifc = (clntMplsPwe) ntry.lowerIf;
+            } catch (Exception e) {
+                continue;
+            }
+            int l = ifc.getLabelRem();
+            if (l < 0) {
+                continue;
+            }
+            l = ifc.getLabelLoc();
+            if (l < 0) {
+                continue;
+            }
+            brifcs.put(ntry);
+            lower.sendLine("bridgelabel_add " + br.num + " " + l);
+        }
+        for (int i = 0;; i++) {
+            ifcBridgeAdr ntry = br.bridgeHed.getMacAddr(i);
+            if (ntry == null) {
+                break;
+            }
+            ifcBridgeAdr old = brmacs.find(ntry);
+            String a = "add";
+            if (old != null) {
+                if (old.ifc == ntry.ifc) {
+                    continue;
+                }
+                a = "mod";
+            }
+            brmacs.put(ntry);
+            servP4langIfc ifc = findIfc(ntry.ifc);
+            if (ifc != null) {
+                lower.sendLine("bridgemac_" + a + " " + br.num + " " + ntry.adr.toEmuStr() + " " + ifc.id);
+                continue;
+            }
+            clntMplsPwe iface = null;
+            try {
+                iface = (clntMplsPwe) ntry.ifc.lowerIf;
+            } catch (Exception e) {
+                continue;
+            }
+            int l = iface.getLabelRem();
+            if (l < 0) {
+                continue;
+            }
+            addrIP adr = iface.getRemote();
+            if (adr == null) {
+                continue;
+            }
+            tabRouteEntry<addrIP> rou = iface.vrf.getFwd(adr).actualU.route(adr);
+            if (rou == null) {
+                continue;
+            }
+            int p = findIface(rou.iface);
+            if (p < 0) {
+                continue;
+            }
+            lower.sendLine("bridgevpls_" + a + " " + br.num + " " + ntry.adr.toEmuStr() + " " + adr + " " + p + " " + getLabel(rou) + " " + l);
+        }
+    }
+
     private void doVrf(servP4langVrf vrf) {
         if (vrf.sentMcast) {
             return;
@@ -696,6 +828,14 @@ class servP4langConn implements Runnable {
             a = "add";
         } else {
             a = "mod";
+        }
+        if (ifc.ifc.bridgeHed != null) {
+            if (ifc.sentVrf == -2) {
+                return;
+            }
+            lower.sendLine("portbridge_" + a + " " + ifc.id + " " + ifc.ifc.bridgeHed.num);
+            ifc.sentVrf = -2;
+            return;
         }
         if (ifc.ifc.xconn == null) {
             servP4langVrf vrf = findVrf(ifc);
@@ -779,16 +919,6 @@ class servP4langConn implements Runnable {
             nei.del(ntry);
             lower.sendLine("neigh" + afi + "_del " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id);
         }
-    }
-
-    private int getLabel(tabRouteEntry<addrIP> ntry) {
-        if (ntry.labelRem == null) {
-            return 0;
-        }
-        if (ntry.labelRem.size() < 1) {
-            return 0;
-        }
-        return ntry.labelRem.get(0);
     }
 
     private void doRoutes(boolean ipv4, int id, tabRoute<addrIP> need, tabRoute<addrIP> done) {

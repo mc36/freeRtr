@@ -232,6 +232,7 @@ struct l3_metadata_t {
     bit<1>  mpls1_remove; 
     bit<1>  mpls0_valid; 
     bit<1>  mpls1_valid; 
+    bit<1>  llc_valid; 
     bit<1>  arp_valid; 
     bit<1>  ipv4_valid; 
     bit<1>  ipv6_valid; 
@@ -304,6 +305,9 @@ struct metadata_t {
    nexthop_id_t                 nexthop_id;
    nexthop_id_t                 source_id;
    nexthop_id_t                 target_id;
+   nexthop_id_t                 bridge_id;
+   nexthop_id_t                 bridge_src;
+   nexthop_id_t                 bridge_trg;
    bit<16>                      ethertype;
    ingress_intrinsic_metadata_t intrinsic_metadata;
    l3_metadata_t                l3_metadata;
@@ -716,6 +720,23 @@ control ctl_ingress(inout headers hdr,
       md.l3_metadata.mpls_op_type = 2;
    }
 
+   action act_mpls_decap_vpls(nexthop_id_t bridge) {
+      /*
+       * Egress packet is back now an IPv4 packet
+       * (LABEL PHP )
+       */
+      md.bridge_id = bridge;
+      md.bridge_src = bridge;
+      md.ethertype = hdr.eth2.ethertype;
+      hdr.ethernet.dst_mac_addr = hdr.eth2.dst_mac_addr;
+      hdr.ethernet.src_mac_addr = hdr.eth2.src_mac_addr;
+      /*
+       * Indicate effective VRF during 
+       * MPLS tunnel decap 
+       */
+      md.l3_metadata.mpls_op_type = 2;
+   }
+
    table tbl_mpls_fib {
       key = {
          md.tunnel_metadata.mpls_label: exact;
@@ -740,6 +761,11 @@ control ctl_ingress(inout headers hdr,
           * mpls decapsulation if PHP  
           */
          act_mpls_decap_l2vpn;
+
+         /*
+          * mpls decapsulation if PHP  
+          */
+         act_mpls_decap_vpls;
 
          /* 
           * Default action;
@@ -774,6 +800,11 @@ control ctl_ingress(inout headers hdr,
           * mpls decapsulation if PHP  
           */
          act_mpls_decap_l2vpn;
+
+         /*
+          * mpls decapsulation if PHP  
+          */
+         act_mpls_decap_vpls;
 
          /* 
           * Default action;
@@ -848,6 +879,10 @@ control ctl_ingress(inout headers hdr,
       md.l3_metadata.vrf = vrf; 
    }
 
+   action act_set_bridge (nexthop_id_t bridge) {
+      md.bridge_id = bridge;
+   }
+
    action act_set_default_vrf () {
       md.l3_metadata.vrf = 0; 
    }
@@ -857,6 +892,7 @@ control ctl_ingress(inout headers hdr,
       md.l3_metadata.mpls0_valid = 0;
       md.l3_metadata.mpls1_valid = 0;
       md.l3_metadata.arp_valid = 0;
+      md.l3_metadata.llc_valid = 0;
       md.l3_metadata.ipv4_valid = 0;
       md.l3_metadata.ipv6_valid = 0;
       hdr.eth2.setValid();
@@ -882,6 +918,7 @@ control ctl_ingress(inout headers hdr,
       actions = {
          act_set_vrf;
          act_set_mpls_xconn_encap;
+         act_set_bridge;
          act_set_default_vrf;
       }
       default_action = act_set_default_vrf();
@@ -943,6 +980,80 @@ control ctl_ingress(inout headers hdr,
 
 
 
+   action act_set_bridge_port(nexthop_id_t port) {
+      md.bridge_src = port;
+   }
+
+   action act_bridge_miss() {
+      md.bridge_src = 0;
+   }
+
+   table tbl_bridge_learn {
+      key = {
+         md.bridge_id: exact;  
+         hdr.ethernet.src_mac_addr: exact;
+      }
+      actions = {
+         act_set_bridge_port;
+         act_bridge_miss;
+      }
+      default_action = act_bridge_miss();
+   }
+
+
+
+
+   action act_set_bridge_out(nexthop_id_t port) {
+      md.bridge_trg = port;
+   }
+
+   action act_set_bridge_vpls(nexthop_id_t port, label_t lab_tun, label_t lab_svc) {
+      md.bridge_trg = port;
+      md.l3_metadata.vrf = 0;
+      md.l3_metadata.mpls0_valid = 0;
+      md.l3_metadata.mpls1_valid = 0;
+      md.l3_metadata.arp_valid = 0;
+      md.l3_metadata.llc_valid = 0;
+      md.l3_metadata.ipv4_valid = 0;
+      md.l3_metadata.ipv6_valid = 0;
+      hdr.eth2.setValid();
+      hdr.eth2.dst_mac_addr = hdr.ethernet.dst_mac_addr;
+      hdr.eth2.src_mac_addr = hdr.ethernet.src_mac_addr;
+      hdr.eth2.ethertype = md.ethertype;
+      md.target_id = port;
+      md.ethertype = ETHERTYPE_MPLS_UCAST;
+      hdr.mpls.push_front(2);
+      hdr.mpls[0].setValid();
+      hdr.mpls[0].label = lab_tun;
+      hdr.mpls[0].ttl = 255;
+      hdr.mpls[1].setValid();
+      hdr.mpls[1].label = lab_svc;
+      hdr.mpls[1].ttl = 255;
+      hdr.mpls[1].bos = 1;
+      md.l3_metadata.mpls_op_type = 3;
+   }
+
+   action act_bridge_punt() {
+      md.bridge_trg = 0;
+   }
+
+   table tbl_bridge_target {
+      key = {
+         md.bridge_id: exact;  
+         hdr.ethernet.dst_mac_addr: exact;
+      }
+      actions = {
+         act_set_bridge_out;
+         act_set_bridge_vpls;
+         act_bridge_punt;
+      }
+      default_action = act_bridge_punt();
+   }
+
+
+
+
+
 
 
    apply {
@@ -967,6 +1078,9 @@ control ctl_ingress(inout headers hdr,
       if (hdr.arp.isValid()) {
         md.l3_metadata.arp_valid = 1;
       }
+      if (hdr.llc.isValid()) {
+        md.l3_metadata.llc_valid = 1;
+      }
 
       /*
        * set md.source_id value based on incoming port and vlan
@@ -978,12 +1092,13 @@ control ctl_ingress(inout headers hdr,
        */ 
       tbl_vrf.apply(); 
 
-         if (hdr.llc.isValid()) {
+         if (md.l3_metadata.llc_valid == 1) {
             send_to_cpu();
          } 
          if (md.l3_metadata.arp_valid == 1) {
             send_to_cpu();
          } 
+
 
          if (md.l3_metadata.mpls0_valid == 1) {     
             md.tunnel_metadata.mpls_label = hdr.mpls[0].label;
@@ -992,6 +1107,29 @@ control ctl_ingress(inout headers hdr,
                md.tunnel_metadata.mpls_label = hdr.mpls[1].label;
                tbl_mpls_fib_decap.apply();
             }  
+         }
+
+         if (md.bridge_id != 0) {
+            md.l3_metadata.vrf = 0;
+            md.l3_metadata.mpls0_valid = 0;
+            md.l3_metadata.mpls1_valid = 0;
+            md.l3_metadata.arp_valid = 0;
+            md.l3_metadata.llc_valid = 0;
+            md.l3_metadata.ipv4_valid = 0;
+            md.l3_metadata.ipv6_valid = 0;
+            tbl_bridge_learn.apply();
+            tbl_bridge_target.apply();
+            md.target_id = md.bridge_trg;
+            if ((md.bridge_src == 0) || (md.bridge_trg == 0)) {
+               send_to_cpu();
+            } else if (hdr.mpls[1].isValid() && (md.l3_metadata.mpls_op_type != 3)) {
+              hdr.eth2.setInvalid();
+              hdr.mpls[1].setInvalid();
+              hdr.mpls[0].setInvalid();
+              hdr.vlan.setInvalid();
+              md.l3_metadata.mpls0_remove = 0;
+              md.l3_metadata.mpls1_remove = 0;
+            }
          }
 
       

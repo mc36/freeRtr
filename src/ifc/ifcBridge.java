@@ -9,7 +9,6 @@ import ip.ipCor6;
 import ip.ipIfc4;
 import ip.ipIfc6;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -136,7 +135,7 @@ public class ifcBridge implements ifcDn {
 
     private tabGen<ifcBridgeIfc> ifaces;
 
-    private tabGen<ifcBridgeMacAddr> learned;
+    private tabGen<ifcBridgeAdr> learned;
 
     private ifcUp upper = new ifcNull();
 
@@ -268,13 +267,36 @@ public class ifcBridge implements ifcDn {
             return lst;
         }
         for (int i = 0; i < learned.size(); i++) {
-            ifcBridgeMacAddr ntry = learned.get(i);
-            if (ntry.ifc.lowerIf != null) {
+            ifcBridgeAdr ntry = learned.get(i);
+            if (!ntry.ifc.physical) {
                 continue;
             }
             lst.add(ntry.adr);
         }
         return lst;
+    }
+
+    /**
+     * get mac address
+     *
+     * @param i sequence
+     * @return address, null if not found
+     */
+    public ifcBridgeAdr getMacAddr(int i) {
+        if (learned == null) {
+            return null;
+        }
+        return learned.get(i);
+    }
+
+    /**
+     * get interface
+     *
+     * @param i sequence
+     * @return interface, null if not found
+     */
+    public ifcBridgeIfc getIface(int i) {
+        return ifaces.get(i);
     }
 
     /**
@@ -387,7 +409,7 @@ public class ifcBridge implements ifcDn {
             return;
         }
         if (a.equals("mac-learn")) {
-            learned = new tabGen<ifcBridgeMacAddr>();
+            learned = new tabGen<ifcBridgeAdr>();
             return;
         }
         if (a.equals("private-bridge")) {
@@ -619,7 +641,7 @@ public class ifcBridge implements ifcDn {
             return;
         }
         for (int i = learned.size() - 1; i >= 0; i--) {
-            ifcBridgeMacAddr ntry = learned.get(i);
+            ifcBridgeAdr ntry = learned.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -749,10 +771,10 @@ public class ifcBridge implements ifcDn {
             floodPack(ifc.ifcNum, ifc.physical, pck);
             return;
         }
-        ifcBridgeMacAddr lrn = new ifcBridgeMacAddr(pck.ETHsrc.copyBytes());
+        ifcBridgeAdr lrn = new ifcBridgeAdr(pck.ETHsrc.copyBytes());
         lrn.ifc = ifc;
         lrn.cntr = new counter();
-        ifcBridgeMacAddr old = learned.add(lrn);
+        ifcBridgeAdr old = learned.add(lrn);
         if (old != null) {
             if (macMove) {
                 if (ifc.compare(ifc, old.ifc) != 0) {
@@ -775,7 +797,7 @@ public class ifcBridge implements ifcDn {
             floodPack(ifc.ifcNum, ifc.physical, pck);
             return;
         }
-        lrn = new ifcBridgeMacAddr(pck.ETHtrg.copyBytes());
+        lrn = new ifcBridgeAdr(pck.ETHtrg.copyBytes());
         lrn = learned.find(lrn);
         if (lrn == null) {
             if (blockUnicast) {
@@ -921,30 +943,6 @@ class ifcBridgeTimer extends TimerTask {
         } catch (Exception e) {
             logger.traceback(e);
         }
-    }
-
-}
-
-class ifcBridgeMacAddr implements Comparator<ifcBridgeMacAddr> {
-
-    public final addrMac adr;
-
-    public ifcBridgeIfc ifc;
-
-    public long time;
-
-    public counter cntr;
-
-    public ifcBridgeMacAddr(addrMac addr) {
-        adr = addr;
-    }
-
-    public int compare(ifcBridgeMacAddr o1, ifcBridgeMacAddr o2) {
-        return o1.adr.compare(o1.adr, o2.adr);
-    }
-
-    public String toString() {
-        return adr + "|" + ifc.getIfcName() + "|" + bits.timePast(time) + "|" + cntr.getShBsum();
     }
 
 }
