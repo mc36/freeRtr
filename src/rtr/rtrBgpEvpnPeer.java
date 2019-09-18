@@ -5,6 +5,7 @@ import addr.addrIP;
 import addr.addrMac;
 import addr.addrType;
 import clnt.clntVxlan;
+import ip.ipFwd;
 import ifc.ifcBridgeIfc;
 import ifc.ifcDn;
 import ifc.ifcNull;
@@ -66,7 +67,10 @@ public class rtrBgpEvpnPeer implements ifcDn, Comparator<rtrBgpEvpnPeer> {
      */
     public ifcUp upper = new ifcNull();
 
-    private rtrBgpEvpn parent;
+    /**
+     * upper layer
+     */
+    protected rtrBgpEvpn parent;
 
     /**
      * create new instance
@@ -179,6 +183,42 @@ public class rtrBgpEvpnPeer implements ifcDn, Comparator<rtrBgpEvpnPeer> {
         if (vxlan != null) {
             vxlan.workStop();
         }
+    }
+
+    /**
+     * get local label
+     *
+     * @return label
+     */
+    public int getLabelLoc() {
+        return parent.label.getValue();
+    }
+
+    /**
+     * get remote label
+     *
+     * @return label
+     */
+    public int getLabelRem() {
+        return labUni;
+    }
+
+    /**
+     * get remote address
+     *
+     * @return address
+     */
+    public addrIP getRemote() {
+        return peer.copyBytes();
+    }
+
+    /**
+     * get forwarder
+     *
+     * @return forwarder
+     */
+    public ipFwd getForwarder() {
+        return parent.parent.fwdCore;
     }
 
 }

@@ -102,7 +102,10 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
      */
     protected rtrBgpEvpnCmac cmacr;
 
-    private rtrBgp parent;
+    /**
+     * upper layer
+     */
+    protected rtrBgp parent;
 
     /**
      * create new instance

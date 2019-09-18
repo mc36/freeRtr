@@ -139,11 +139,34 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
         if (iface != o.iface) {
             return true;
         }
-        if (nextHop != o.nextHop) {
-            return true;
+        if (nextHop == null) {
+            if (o.nextHop != null) {
+                return true;
+            }
+        } else {
+            if (o.nextHop == null) {
+                return true;
+            }
+            if (nextHop.compare(nextHop, o.nextHop) != 0) {
+                return true;
+            }
         }
-        if (remoteLab != o.remoteLab) {
-            return true;
+        if (remoteLab == null) {
+            if (o.remoteLab != null) {
+                return true;
+            }
+        } else {
+            if (o.remoteLab == null) {
+                return true;
+            }
+            if (remoteLab.size() != o.remoteLab.size()) {
+                return true;
+            }
+            for (int i = 0; i < remoteLab.size(); i++) {
+                if (remoteLab.get(i) != o.remoteLab.get(i)) {
+                    return true;
+                }
+            }
         }
         if (duplicate != o.duplicate) {
             return true;

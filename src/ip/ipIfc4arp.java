@@ -362,6 +362,11 @@ public class ipIfc4arp implements ifcUp {
         return "arp on " + lower;
     }
 
+    public void sendARPheader(addrMac mac, addrIPv4 adr) {
+        sendArpPack(new packHolder(true, true), opcodeARPreq,
+                addrMac.getBroadcast(), adr, mac, adr);
+    }
+
     /**
      * do arp cache cleanup round
      */

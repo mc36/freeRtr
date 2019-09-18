@@ -295,6 +295,9 @@ public class ipIfc6 implements ipIfc, ifcUp {
         mpls.send2eth(pck);
     }
 
+    public void sendL2info(addrType l2info, addrIP nexthop) {
+    }
+    
     public void updateL2info(int mod, addrType l2info, addrIP nexthop) {
         if (neiCache == null) {
             return;

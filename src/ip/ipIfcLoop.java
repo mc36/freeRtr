@@ -92,6 +92,9 @@ public class ipIfcLoop implements ipIfc {
         cntr.rx(pck);
     }
 
+    public void sendL2info(addrType l2info, addrIP nexthop) {
+    }
+
     public void updateL2info(int mod, addrType mac, addrIP nexthop) {
     }
 

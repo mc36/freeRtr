@@ -104,9 +104,6 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
     public void setState(state.states stat) {
         stated = state.toUsable(stat);
         cntr.stateChange(stated);
-        if (stat != state.states.up) {
-            lowerBr.portFlap();
-        }
     }
 
     /**

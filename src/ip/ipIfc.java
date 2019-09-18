@@ -48,6 +48,14 @@ public interface ipIfc {
     public abstract void sendMpls(packHolder pck, addrIP nexthop);
 
     /**
+     * send layer2 packet
+     *
+     * @param l2info layer 2 address
+     * @param nexthop ip address
+     */
+    public abstract void sendL2info(addrType l2info, addrIP nexthop);
+
+    /**
      * update layer2 rewrite info
      *
      * destionaton mac header will be read from packet offset 0.

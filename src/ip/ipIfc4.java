@@ -225,6 +225,13 @@ public class ipIfc4 implements ipIfc, ifcUp {
         mpls.send2eth(pck);
     }
 
+    public void sendL2info(addrType l2info, addrIP nexthop) {
+        if (arpCache == null) {
+            return;
+        }
+        arpCache.sendARPheader((addrMac) l2info, nexthop.toIPv4());
+    }
+    
     public void updateL2info(int mod, addrType l2info, addrIP nexthop) {
         if (arpCache == null) {
             return;

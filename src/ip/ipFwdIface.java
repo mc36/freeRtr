@@ -1388,6 +1388,7 @@ public class ipFwdIface extends tabRouteIface {
         ntry.mac = mac;
         adrs.put(ntry);
         lower.setFilter(adrs.size() > 0);
+        lower.sendL2info(mac, ip);
     }
 
     /**

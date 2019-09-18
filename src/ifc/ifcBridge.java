@@ -541,7 +541,19 @@ public class ifcBridge implements ifcDn {
         if (ntry == null) {
             return null;
         }
-        portFlap();
+        if (learned == null) {
+            return ntry.lowerIf;
+        }
+        for (int i = learned.size() - 1; i >= 0; i--) {
+            ifcBridgeAdr mac = learned.get(i);
+            if (ntry.compare(ntry, mac.ifc) != 0) {
+                continue;
+            }
+            learned.del(mac);
+            if ((macRouter != null) && (ntry.physical)) {
+                macRouter.bridgeChanged();
+            }
+        }
         return ntry.lowerIf;
     }
 
@@ -655,7 +667,7 @@ public class ifcBridge implements ifcDn {
                 logger.info(ntry.adr + " disappeared from " + ntry.ifc.getIfcName());
             }
             learned.del(ntry);
-            if ((macRouter != null) && (ntry.ifc.lowerIf == null)) {
+            if ((macRouter != null) && (ntry.ifc.physical)) {
                 macRouter.bridgeChanged();
             }
         }
@@ -786,7 +798,7 @@ public class ifcBridge implements ifcDn {
             if (macMove) {
                 logger.info(pck.ETHsrc + " learned from " + ifc.getIfcName());
             }
-            if ((ifc.lowerIf == null) && (macRouter != null)) {
+            if ((ifc.physical) && (macRouter != null)) {
                 macRouter.bridgeChanged();
             }
         }
@@ -841,10 +853,13 @@ public class ifcBridge implements ifcDn {
         return b;
     }
 
-    /**
-     * clear mac table
-     */
-    protected void portFlap() {
+    private void setBlocking(boolean blk) {
+        if (debugger.ifcBridgeTraf) {
+            logger.debug("setting ports");
+        }
+        stpRoot = getStpId();
+        stpPort = 0;
+        stpCost = 0;
         if (learned != null) {
             learned.clear();
         }
@@ -854,16 +869,6 @@ public class ifcBridge implements ifcDn {
         if (macRouter != null) {
             macRouter.bridgeChanged();
         }
-    }
-
-    private void setBlocking(boolean blk) {
-        if (debugger.ifcBridgeTraf) {
-            logger.debug("setting ports");
-        }
-        stpRoot = getStpId();
-        stpPort = 0;
-        stpCost = 0;
-        portFlap();
         for (int i = 0; i < ifaces.size(); i++) {
             ifcBridgeIfc ifc = ifaces.get(i);
             if (ifc == null) {
