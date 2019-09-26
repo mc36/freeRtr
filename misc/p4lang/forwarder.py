@@ -14,11 +14,11 @@ import p4runtime_lib.helper
 
 def writeVrfRules(delete, p4info_helper, ingress_sw, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_vrf",
+        table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
         match_fields={
-            "md.source_id": port
+            "ig_md.source_id": port
         },
-        action_name="ctl_ingress.act_set_vrf",
+        action_name="ig_ctl.ig_ctl_vrf.act_set_vrf",
         action_params={
             "vrf": vrf
         })
@@ -31,12 +31,12 @@ def writeVrfRules(delete, p4info_helper, ingress_sw, port, vrf):
 
 def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
     table_entry1 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_vlan_in",
+        table_name="ig_ctl.ig_ctl_vlan_in.tbl_vlan_in",
         match_fields={
-            "std_md.ingress_port": main,
-            "hdr.vlan.vlan": vlan
+            "ig_intr_md.ingress_port": main,
+            "hdr.vlan.vid": vlan
         },
-        action_name="ctl_ingress.act_set_iface",
+        action_name="ig_ctl.ig_ctl_vlan_in.act_set_iface",
         action_params={
             "src": port
         })
@@ -47,11 +47,11 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
     table_entry2 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_vlan_out",
+        table_name="ig_ctl.ig_ctl_vlan_out.tbl_vlan_out",
         match_fields={
-            "md.target_id": port,
+            "ig_md.target_id": port,
         },
-        action_name="ctl_ingress.act_set_vlan_port",
+        action_name="ig_ctl.ig_ctl_vlan_out.act_set_vlan_port",
         action_params={
             "port": main,
             "vlan": vlan
@@ -66,11 +66,11 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
 
 def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, lab_loc, lab_rem):
     table_entry1 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_mpls_fib",
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
         match_fields={
-            "md.tunnel_metadata.mpls_label": lab_loc
+            "ig_md.mpls_label": lab_loc
         },
-        action_name="ctl_ingress.act_mpls_decap_l2vpn",
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_l2vpn",
         action_params={
             "port": port
         })
@@ -81,11 +81,11 @@ def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, la
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
     table_entry2 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_mpls_fib_decap",
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
         match_fields={
-            "md.tunnel_metadata.mpls_label": lab_loc
+            "ig_md.mpls_label": lab_loc
         },
-        action_name="ctl_ingress.act_mpls_decap_l2vpn",
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_l2vpn",
         action_params={
             "port": port
         })
@@ -96,11 +96,11 @@ def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, la
     else:
         ingress_sw.DeleteTableEntry(table_entry2, False)
     table_entry3 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_vrf",
+        table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
         match_fields={
-            "md.source_id": port
+            "ig_md.source_id": port
         },
-        action_name="ctl_ingress.act_set_mpls_xconn_encap",
+        action_name="ig_ctl.ig_ctl_vrf.act_set_mpls_xconn_encap",
         action_params={
             "target": target,
             "tunlab": lab_tun,
@@ -116,11 +116,11 @@ def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, la
 
 def writeBrprtRules(delete, p4info_helper, ingress_sw, port, bridge):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_vrf",
+        table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
         match_fields={
-            "md.source_id": port
+            "ig_md.source_id": port
         },
-        action_name="ctl_ingress.act_set_bridge",
+        action_name="ig_ctl.ig_ctl_vrf.act_set_bridge",
         action_params={
             "bridge": bridge
         })
@@ -134,11 +134,11 @@ def writeBrprtRules(delete, p4info_helper, ingress_sw, port, bridge):
 
 def writeBrlabRules(delete, p4info_helper, ingress_sw, bridge, label):
     table_entry1 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_mpls_fib",
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
         match_fields={
-            "md.tunnel_metadata.mpls_label": label
+            "ig_md.mpls_label": label
         },
-        action_name="ctl_ingress.act_mpls_decap_vpls",
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_vpls",
         action_params={
             "bridge": bridge
         })
@@ -149,11 +149,11 @@ def writeBrlabRules(delete, p4info_helper, ingress_sw, bridge, label):
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
     table_entry2 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_mpls_fib_decap",
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
         match_fields={
-            "md.tunnel_metadata.mpls_label": label
+            "ig_md.mpls_label": label
         },
-        action_name="ctl_ingress.act_mpls_decap_vpls",
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_vpls",
         action_params={
             "bridge": bridge
         })
@@ -167,12 +167,12 @@ def writeBrlabRules(delete, p4info_helper, ingress_sw, bridge, label):
 
 def writeBrvplsRules(delete, p4info_helper, ingress_sw, bridge, addr, port, labtun, labsvc):
     table_entry1 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_bridge_learn",
+        table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_learn",
         match_fields={
-            "md.bridge_id": bridge,
+            "ig_md.bridge_id": bridge,
             "hdr.ethernet.src_mac_addr": addr
         },
-        action_name="ctl_ingress.act_set_bridge_port",
+        action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_port",
         action_params={
             "port": port
         })
@@ -183,12 +183,12 @@ def writeBrvplsRules(delete, p4info_helper, ingress_sw, bridge, addr, port, labt
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
     table_entry2 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_bridge_target",
+        table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_target",
         match_fields={
-            "md.bridge_id": bridge,
+            "ig_md.bridge_id": bridge,
             "hdr.ethernet.dst_mac_addr": addr
         },
-        action_name="ctl_ingress.act_set_bridge_vpls",
+        action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_vpls",
         action_params={
             "port": port,
             "lab_tun": labtun,
@@ -204,12 +204,12 @@ def writeBrvplsRules(delete, p4info_helper, ingress_sw, bridge, addr, port, labt
 
 def writeBrmacRules(delete, p4info_helper, ingress_sw, bridge, addr, port):
     table_entry1 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_bridge_learn",
+        table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_learn",
         match_fields={
-            "md.bridge_id": bridge,
+            "ig_md.bridge_id": bridge,
             "hdr.ethernet.src_mac_addr": addr
         },
-        action_name="ctl_ingress.act_set_bridge_port",
+        action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_port",
         action_params={
             "port": port
         })
@@ -220,12 +220,12 @@ def writeBrmacRules(delete, p4info_helper, ingress_sw, bridge, addr, port):
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
     table_entry2 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_bridge_target",
+        table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_target",
         match_fields={
-            "md.bridge_id": bridge,
+            "ig_md.bridge_id": bridge,
             "hdr.ethernet.dst_mac_addr": addr
         },
-        action_name="ctl_ingress.act_set_bridge_out",
+        action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_out",
         action_params={
             "port": port
         })
@@ -239,12 +239,12 @@ def writeBrmacRules(delete, p4info_helper, ingress_sw, bridge, addr, port):
 
 def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_ipv4_fib_lpm",
+        table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
-            "md.l3_metadata.vrf": vrf
+            "hdr.ipv4.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
         },
-        action_name="ctl_ingress.act_ipv4_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_set_nexthop",
         action_params={
             "nexthop_id": port
         })
@@ -257,12 +257,12 @@ def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_m
 
 def writeForwardRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_ipv6_fib_lpm",
+        table_name="ig_ctl.ig_ctl_ipv6.tbl_ipv6_fib_lpm",
         match_fields={
             "hdr.ipv6.dst_addr": (dst_ip_addr,dst_net_mask),
-            "md.l3_metadata.vrf": vrf
+            "ig_md.vrf": vrf
         },
-        action_name="ctl_ingress.act_ipv4_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv6.act_ipv6_set_nexthop",
         action_params={
             "nexthop_id": port
         })
@@ -275,12 +275,12 @@ def writeForwardRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_m
 
 def writeVpnRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, egress_label, vpn_label):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_ipv4_fib_lpm",
+        table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
-            "md.l3_metadata.vrf": vrf
+            "hdr.ipv4.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
         },
-        action_name="ctl_ingress.act_ipv4_mpls_encap_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_mpls_encap_set_nexthop",
         action_params={
             "vpn_label": vpn_label,
             "egress_label": egress_label,
@@ -295,12 +295,12 @@ def writeVpnRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
 
 def writeVpnRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, egress_label, vpn_label):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_ipv6_fib_lpm",
+        table_name="ig_ctl.ig_ctl_ipv6.tbl_ipv6_fib_lpm",
         match_fields={
             "hdr.ipv6.dst_addr": (dst_ip_addr,dst_net_mask),
-            "md.l3_metadata.vrf": vrf
+            "ig_md.vrf": vrf
         },
-        action_name="ctl_ingress.act_ipv4_mpls_encap_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv6.act_ipv6_mpls_encap_set_nexthop",
         action_params={
             "vpn_label": vpn_label,
             "egress_label": egress_label,
@@ -315,12 +315,12 @@ def writeVpnRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
 
 def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, vrf):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_ipv4_fib_lpm",
+        table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
-            "md.l3_metadata.vrf": vrf
+            "hdr.ipv4.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
         },
-        action_name="ctl_ingress.act_ipv4_cpl_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_cpl_set_nexthop",
         action_params={
         })
     if delete == 1:
@@ -332,12 +332,12 @@ def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_ma
 
 def writeMyaddrRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, vrf):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_ipv6_fib_lpm",
+        table_name="ig_ctl.ig_ctl_ipv6.tbl_ipv6_fib_lpm",
         match_fields={
             "hdr.ipv6.dst_addr": (dst_ip_addr,dst_net_mask),
-            "md.l3_metadata.vrf": vrf
+            "ig_md.vrf": vrf
         },
-        action_name="ctl_ingress.act_ipv4_cpl_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv6.act_ipv6_cpl_set_nexthop",
         action_params={
         })
     if delete == 1:
@@ -349,11 +349,11 @@ def writeMyaddrRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_ma
 
 def writeNexthopRules(delete, p4info_helper, ingress_sw, port, mac_addr):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_nexthop",
+        table_name="ig_ctl.ig_ctl_nexthop.tbl_nexthop",
         match_fields={
-            "md.nexthop_id": port,
+            "ig_md.nexthop_id": port,
         },
-        action_name="ctl_ingress.act_ipv4_fib_hit",
+        action_name="ig_ctl.ig_ctl_nexthop.act_ipv4_fib_hit",
         action_params={
             "dst_mac_addr": mac_addr,
             "egress_port": port
@@ -367,12 +367,12 @@ def writeNexthopRules(delete, p4info_helper, ingress_sw, port, mac_addr):
 
 def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_ipv4_fib_host",
+        table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_host",
         match_fields={
-            "hdr.ipv4.dst_addr": dst_ip_addr,
-            "md.l3_metadata.vrf": vrf
+            "hdr.ipv4.dst_ipv4_addr": dst_ip_addr,
+            "ig_md.vrf": vrf
         },
-        action_name="ctl_ingress.act_ipv4_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_set_nexthop",
         action_params={
             "nexthop_id": port
         })
@@ -385,12 +385,12 @@ def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vr
 
 def writeNeighborRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_ipv6_fib_host",
+        table_name="ig_ctl.ig_ctl_ipv6.tbl_ipv6_fib_host",
         match_fields={
             "hdr.ipv6.dst_addr": dst_ip_addr,
-            "md.l3_metadata.vrf": vrf
+            "ig_md.vrf": vrf
         },
-        action_name="ctl_ingress.act_ipv4_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv6.act_ipv6_set_nexthop",
         action_params={
             "nexthop_id": port
         })
@@ -403,22 +403,22 @@ def writeNeighborRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vr
 
 def writeMplsRules(delete, p4info_helper, ingress_sw, dst_label, new_label, port):
     table_entry1 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_mpls_fib",
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
         match_fields={
-            "md.tunnel_metadata.mpls_label": (dst_label)
+            "ig_md.mpls_label": (dst_label)
         },
-        action_name="ctl_ingress.act_mpls_swap_set_nexthop",
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_swap0_set_nexthop",
         action_params={
             "egress_label": new_label,
             "nexthop_id": port
         }
     )
     table_entry2 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_mpls_fib_decap",
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
         match_fields={
-            "md.tunnel_metadata.mpls_label": (dst_label)
+            "ig_md.mpls_label": (dst_label)
         },
-        action_name="ctl_ingress.act_mpls_swap_set_nexthop",
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_swap1_set_nexthop",
         action_params={
             "egress_label": new_label,
             "nexthop_id": port
@@ -436,21 +436,21 @@ def writeMplsRules(delete, p4info_helper, ingress_sw, dst_label, new_label, port
 
 def writeMyMplsRules(delete, p4info_helper, ingress_sw, dst_label, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_mpls_fib",
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
         match_fields={
-            "md.tunnel_metadata.mpls_label": (dst_label)
+            "ig_md.mpls_label": (dst_label)
         },
-        action_name="ctl_ingress.act_mpls_decap_ipv4",
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_ipv4",
         action_params={
             "vrf": vrf
         }
     )
     table_entry2 = p4info_helper.buildTableEntry(
-        table_name="ctl_ingress.tbl_mpls_fib_decap",
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
         match_fields={
-            "md.tunnel_metadata.mpls_label": (dst_label)
+            "ig_md.mpls_label": (dst_label)
         },
-        action_name="ctl_ingress.act_mpls_decap_l3vpn",
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_l3vpn",
         action_params={
             "vrf": vrf
         }

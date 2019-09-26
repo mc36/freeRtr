@@ -29,6 +29,8 @@ public class userTester {
 
     private String path = "../cfg/";
 
+    private String discard = "^$";
+
     private String url = path;
 
     private String remoteF = null;
@@ -128,6 +130,9 @@ public class userTester {
             if (s.equals("mem")) {
                 mem = bits.str2num(cmd.word());
             }
+            if (s.equals("discard")) {
+                discard = cmd.word();
+            }
             if (s.equals("path")) {
                 path = cmd.word();
             }
@@ -225,6 +230,9 @@ public class userTester {
                 if (!s.startsWith(beg)) {
                     continue;
                 }
+                if (s.matches(discard)) {
+                    continue;
+                }
                 userTesterFtr ftr = new userTesterFtr();
                 ftr.fil = s;
                 ftr.ret = maxTry;
@@ -253,6 +261,7 @@ public class userTester {
         rdr.debugStat("release=" + release);
         rdr.debugStat("url=" + url);
         rdr.debugStat("path=" + path);
+        rdr.debugStat("discard=" + discard);
         rdr.debugStat("debug=" + debug);
         rdr.debugStat("summary=" + summary);
         rdr.debugStat("window=" + window);

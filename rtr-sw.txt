@@ -421,68 +421,6 @@ interface ethernet1
  no log-link-change
  exit
 !
-interface pwether1
- no description
- mtu 1500
- macaddr 0005.4046.3b2e
- lldp enable
- cdp enable
- vrf forwarding v4
- ipv4 address 1.1.1.2 255.255.255.252
- ipv6 address 1111::2 ffff:ffff:ffff:ffff::
- pseudowire v1 loopback0 pckoudp 10.5.255.1 10001
- no shutdown
- no log-link-change
- exit
-!
-interface pwether2
- no description
- mtu 1500
- macaddr 002d.3b24.0532
- pseudowire v1 loopback0 pckoudp 10.5.255.1 10002
- no shutdown
- no log-link-change
- exit
-!
-interface sdn1
- no description
- mtu 1500
- macaddr 0072.1c66.4a41
- lldp enable
- cdp enable
- no shutdown
- no log-link-change
- exit
-!
-interface sdn1.111
- no description
- bridge-group 1
- no shutdown
- no log-link-change
- exit
-!
-interface sdn2
- no description
- mtu 1500
- macaddr 001c.6d17.4160
- lldp enable
- cdp enable
- vrf forwarding v5
- ipv4 address 1.1.1.1 255.255.255.252
- ipv4 host-static 1.1.1.2 0000.1111.2222
- ipv6 address 1111::1 ffff:ffff:ffff:ffff::
- ipv6 host-static 1111::2 0000.1111.2222
- no shutdown
- no log-link-change
- exit
-!
-interface sdn2.222
- no description
- bridge-group 1
- no shutdown
- no log-link-change
- exit
-!
 router bgp4 1
  vrf v1
  local-as 1
@@ -936,18 +874,6 @@ server telnet tel
 server rfb vnc
  no exec authorization
  no login authentication
- vrf v1
- exit
-!
-server p4lang a
- export-vrf v5 1
- export-vrf vpn 2
- export-port sdn1 1
- export-port sdn2 2
- export-port sdn1.111 111
- export-port sdn2.222 222
- export-bridge 1
- interconnect pwether2
  vrf v1
  exit
 !
