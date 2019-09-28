@@ -67,6 +67,10 @@ public class ipCor6 implements ipCor {
         return protocolVersion;
     }
 
+    public int getProtocol() {
+        return protocolNumber;
+    }
+
     public int getNlpid() {
         return protocolNLPID;
     }

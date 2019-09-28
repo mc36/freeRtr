@@ -8,16 +8,19 @@ import cfg.cfgIfc;
 import cfg.cfgRtr;
 import cfg.cfgVrf;
 import ip.ipFwd;
+import ip.ipMpls;
 import ip.ipRtr;
 import java.util.ArrayList;
 import java.util.List;
 import tab.tabGen;
+import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabPlcmapN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import user.userHelping;
+import util.bits;
 import util.cmds;
 import util.debugger;
 import util.logger;
@@ -43,6 +46,11 @@ public class rtrBgpVrfRtr extends ipRtr {
      * mvpn advertisement source
      */
     public cfgIfc mvpn;
+
+    /**
+     * srv6 advertisement source
+     */
+    public cfgIfc srv6;
 
     private final rtrBgp parent;
 
@@ -137,6 +145,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         ntry.rouDst = vrf.rd;
         ntry.extComm.addAll(rt);
         ntry.rouSrc = rtrBgpUtil.peerOriginate;
+        ipMpls.putSrv6prefix(ntry, srv6, ntry.labelLoc);
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, fwd.exportMap, fwd.exportPol, fwd.exportList);
     }
 
@@ -314,6 +323,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         cmds.cfgLine(l, flowSpec == null, beg1, beg2 + "flowspec", "" + flowSpec);
         if (mvpn != null) {
             l.add(beg1 + beg2 + "mvpn " + mvpn.name);
+        }
+        if (srv6 != null) {
+            l.add(beg1 + beg2 + "srv6 " + srv6.name);
         }
         cfgRtr.getShRedist(l, beg1 + beg2, this);
     }

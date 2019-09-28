@@ -1,6 +1,7 @@
 package ip;
 
 import addr.addrIP;
+import cfg.cfgIfc;
 import ifc.ifcDn;
 import ifc.ifcEthTyp;
 import ifc.ifcEther;
@@ -14,7 +15,9 @@ import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelNtry;
 import tab.tabNshNtry;
+import tab.tabRouteEntry;
 import tab.tabSession;
+import util.bits;
 import util.counter;
 import util.debugger;
 import util.logger;
@@ -442,6 +445,28 @@ public class ipMpls implements ifcUp {
         } else {
             pck.MPLSttl = 255;
         }
+    }
+
+    /**
+     * put srv6 prefix
+     *
+     * @param ntry route entry
+     * @param ifc srv6 interface
+     * @param lab label entry
+     * @return false if success, true if error
+     */
+    public static boolean putSrv6prefix(tabRouteEntry<addrIP> ntry, cfgIfc ifc, tabLabelNtry lab) {
+        if (ifc == null) {
+            return true;
+        }
+        if (ifc.addr6 == null) {
+            return true;
+        }
+        ntry.segrouPrf = new addrIP();
+        ntry.segrouPrf.fromIPv6addr(ifc.addr6);
+        bits.msbPutD(ntry.segrouPrf.getBytes(), 12, lab.getValue());
+        ntry.labelLoc = new tabLabelNtry(labelImp);
+        return false;
     }
 
     /**

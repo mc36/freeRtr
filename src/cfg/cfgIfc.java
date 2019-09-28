@@ -98,6 +98,7 @@ import pack.packLdpPwe;
 import pack.packPppOE;
 import pack.packPtp;
 import prt.prt6to4;
+import prt.prtSrv6;
 import prt.prtGre;
 import prt.prtIcmp;
 import prt.prtIpIpTyp;
@@ -564,6 +565,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * 6to4 tunnel handler
      */
     public prt6to4 tun6to4;
+
+    /**
+     * srv6 tunnel handler
+     */
+    public prtSrv6 tunSrv6;
 
     /**
      * ipsec tunnel handler
@@ -1051,6 +1057,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * 6to4 tunnel interface
          */
         Sto4,
+        /**
+         * srv6 tunnel interface
+         */
+        srv6,
         /**
          * ipsec tunnel interface
          */
@@ -1743,6 +1753,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "ipip";
             case Sto4:
                 return "6to4";
+            case srv6:
+                return "srv6";
             case ipsec:
                 return "ipsec";
             case pckOudp:
@@ -1847,6 +1859,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("6to4")) {
             return tunnelType.Sto4;
+        }
+        if (s.equals("srv6")) {
+            return tunnelType.srv6;
         }
         if (s.equals("ipsec")) {
             return tunnelType.ipsec;
@@ -3084,6 +3099,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tun6to4.closeDn();
             tun6to4 = null;
         }
+        if (tunSrv6 != null) {
+            tunSrv6.closeDn();
+            tunSrv6 = null;
+        }
         if (tunIPsec1 != null) {
             tunIPsec1.workStop();
             tunIPsec1 = null;
@@ -3417,6 +3436,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tun6to4 = new prt6to4(tunTrg, tunKey);
                 tun6to4.setUpper(ethtyp);
                 lower = tun6to4;
+                break;
+            case srv6:
+                tunSrv6 = new prtSrv6(tunTrg, ethtyp, tunVrf.fwd4, tunVrf.fwd6);
+                tunSrv6.setUpper(ethtyp);
+                lower = tunSrv6;
                 break;
             case ipsec:
                 if (tunPrt == null) {
@@ -4965,6 +4989,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       ipenc                     ip encapsulation protocol");
         l.add("3 .       tmux                      transport multiplexing protocol");
         l.add("3 .       6to4                      ipv6 to ipv4 protocol translator");
+        l.add("3 .       srv6                      segment routing v6 protocol translator");
         l.add("3 .       ipip                      ip over ip encapsulation");
         l.add("3 .       ipsec                     ip security encapsulation");
         l.add("3 .       pckoudp                   packet over udp encapsulation");

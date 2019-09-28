@@ -18,6 +18,13 @@ public interface ipCor {
     public int getVersion();
 
     /**
+     * get protocol info
+     *
+     * @return return ip protocol
+     */
+    public int getProtocol();
+
+    /**
      * get net layer protocol id
      *
      * @return return ip version

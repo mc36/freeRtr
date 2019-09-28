@@ -50,6 +50,10 @@ public class ipCor4 implements ipCor {
         return protocolVersion;
     }
 
+    public int getProtocol() {
+        return protocolNumber;
+    }
+
     public int getNlpid() {
         return protocolNLPID;
     }

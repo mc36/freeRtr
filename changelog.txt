@@ -8674,3 +8674,8 @@ no todo: command authorization with radius and tacacs
 ---------------------------------- 2019-09-04 16:28:52
 no todo: diff n | filter
 no todo: sorted, uniq | filter for any column
+---------------------------------- 2019-09-28 05:38:37
+qc pass: interop1: evpn/cmac over bgp
+qc pass: vpns over srv6
+qc pass: evpn/pbb over srv6
+qc pass: evpn/cmac over srv6

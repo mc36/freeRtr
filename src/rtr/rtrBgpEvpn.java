@@ -7,6 +7,7 @@ import addr.addrMac;
 import addr.addrPrefix;
 import cfg.cfgBrdg;
 import cfg.cfgIfc;
+import clnt.clntEtherIp;
 import clnt.clntVxlan;
 import ifc.ifcBridgeRtr;
 import ifc.ifcDot1ah;
@@ -81,6 +82,11 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
      * source interface
      */
     public cfgIfc iface;
+
+    /**
+     * srv6 interface
+     */
+    public cfgIfc srv6;
 
     /**
      * set true if advertised
@@ -161,6 +167,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
     public void getConfig(List<String> l, String beg) {
         beg = beg + "afi-evpn " + id + " ";
         l.add(beg + "bridge-group " + bridge.name);
+        if (srv6 != null) {
+            l.add(beg + "srv6 " + srv6.name);
+        }
         l.add(beg + "bmac " + bbmac);
         String a = "";
         switch (encap) {
@@ -240,14 +249,22 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 buf[0] = 2; // mac advertisement
                 bbmac.toBuffer(buf, 10);
                 ntry.prefix.network.fromBuf(buf, 0);
-                ntry.evpnLab = convLab(parent.evpnUni);
+                if (!ipMpls.putSrv6prefix(ntry, srv6, parent.evpnUni)) {
+                    ntry.evpnLab = convLab(ntry.labelLoc);
+                } else {
+                    ntry.evpnLab = convLab(parent.evpnUni);
+                }
                 tab.add(tabRoute.addType.better, ntry, true, true);
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
                 bits.msbPutD(buf, 2, id);
                 ntry.prefix.network.fromBuf(buf, 0);
                 ntry.prefix.broadcast = ntry.nextHop.copyBytes();
-                putPmsi(ntry, convLab(parent.evpnMul));
+                if (!ipMpls.putSrv6prefix(ntry, srv6, parent.evpnMul)) {
+                    putPmsi(ntry, convLab(ntry.labelLoc));
+                } else {
+                    putPmsi(ntry, convLab(parent.evpnMul));
+                }
                 tab.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
@@ -279,7 +296,11 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                     label.setFwdPwe(11, parent.fwdCore, cmacr, 0, null);
                 }
                 buf[0] = 2; // mac advertisement
-                ntry.evpnLab = convLab(label);
+                if (!ipMpls.putSrv6prefix(ntry, srv6, label)) {
+                    ntry.evpnLab = convLab(ntry.labelLoc);
+                } else {
+                    ntry.evpnLab = convLab(label);
+                }
                 bits.msbPutD(buf, 2, id);
                 cmac = bridge.bridgeHed.getMacList();
                 for (int i = 0; i < cmac.size(); i++) {
@@ -292,7 +313,11 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 bits.msbPutD(buf, 2, id);
                 ntry.prefix.network.fromBuf(buf, 0);
                 ntry.prefix.broadcast = ntry.nextHop.copyBytes();
-                putPmsi(ntry, convLab(label));
+                if (!ipMpls.putSrv6prefix(ntry, srv6, label)) {
+                    putPmsi(ntry, convLab(ntry.labelLoc));
+                } else {
+                    putPmsi(ntry, convLab(label));
+                }
                 tab.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
@@ -366,6 +391,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                     per.needed |= 1;
                     per.peer = ntry.nextHop.copyBytes();
                     per.labUni = ntry.evpnLab >>> 4;
+                    if (ntry.segrouPrf != null) {
+                        per.srv6uni = ntry.segrouPrf.copyBytes();
+                    }
                     break;
                 case 3: // inclusive multicast
                     if (ntry.pmsiTun == null) {
@@ -402,6 +430,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                     }
                     per.needed |= 2;
                     per.labMul = ntry.pmsiLab >>> 4;
+                    if (ntry.segrouPrf != null) {
+                        per.srv6mul = ntry.segrouPrf.copyBytes();
+                    }
                     break;
             }
         }
@@ -489,8 +520,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 pck.ETHvlan = id;
                 ifcDot1ah.createHeader(pck);
                 pck.ETHsrc.setAddr(bbmac);
-                boolean flood = pck.ETHtrg.isFloodable();
-                if (flood) {
+                if (pck.ETHtrg.isFloodable()) {
                     pck.ETHtrg.setAddr(bcmac);
                 } else {
                     pck.ETHtrg.setAddr(per.bbmac);
@@ -499,33 +529,42 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 pck.msbPutD(0, 0);
                 pck.putSkip(4);
                 pck.merge2beg();
-                ipMpls.beginMPLSfields(pck, false);
-                if (flood) {
-                    pck.MPLSlabel = per.labMul;
-                } else {
-                    pck.MPLSlabel = per.labUni;
-                }
-                ipMpls.createMPLSheader(pck);
-                parent.fwdCore.mplsTxPack(per.peer, pck, false);
+                doSendPack(per, pck);
                 break;
             case vxlan:
                 break;
             case cmac:
-                flood = pck.ETHtrg.isFloodable();
                 ifcEther.createETHheader(pck, false);
-                ipMpls.beginMPLSfields(pck, false);
-                if (flood) {
-                    pck.MPLSlabel = per.labMul;
-                } else {
-                    pck.MPLSlabel = per.labUni;
-                }
-                if (pck.MPLSlabel == 0) {
-                    break;
-                }
-                ipMpls.createMPLSheader(pck);
-                parent.fwdCore.mplsTxPack(per.peer, pck, false);
+                doSendPack(per, pck);
                 break;
         }
+    }
+
+    private void doSendPack(rtrBgpEvpnPeer per, packHolder pck) {
+        boolean flood = pck.ETHtrg.isFloodable();
+        addrIP srv;
+        if (flood) {
+            pck.MPLSlabel = per.labMul;
+            srv = per.srv6mul;
+        } else {
+            pck.MPLSlabel = per.labUni;
+            srv = per.srv6uni;
+        }
+        if (pck.MPLSlabel == 0) {
+            return;
+        }
+        if (srv == null) {
+            ipMpls.beginMPLSfields(pck, false);
+            ipMpls.createMPLSheader(pck);
+            parent.fwdCore.mplsTxPack(per.peer, pck, false);
+            return;
+        }
+        pck.putDefaults();
+        pck.IPtrg.setAddr(srv);
+        pck.IPsrc.setAddr(srv);
+        pck.IPprt = clntEtherIp.prot;
+        ipMpls.beginMPLSfields(pck, false);
+        parent.fwdCore.protoPack(iface.getFwdIfc(srv), pck);
     }
 
     /**

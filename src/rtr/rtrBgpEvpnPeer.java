@@ -48,6 +48,16 @@ public class rtrBgpEvpnPeer implements ifcDn, Comparator<rtrBgpEvpnPeer> {
     protected int labMul;
 
     /**
+     * unicast srv6
+     */
+    protected addrIP srv6uni;
+
+    /**
+     * multicast srv6
+     */
+    protected addrIP srv6mul;
+
+    /**
      * bridge interface
      */
     protected ifcBridgeIfc brdg;

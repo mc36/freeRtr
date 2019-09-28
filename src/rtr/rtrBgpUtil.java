@@ -1774,6 +1774,10 @@ public class rtrBgpUtil {
                     ntry.segrouBeg = bits.msbGetD(tlv.valDat, 2) >>> 8; // base
                     ntry.segrouSiz = bits.msbGetD(tlv.valDat, 5) >>> 8; // range
                     break;
+                case 4: // prefix sid
+                    ntry.segrouPrf = new addrIP();
+                    ntry.segrouPrf.fromBuf(tlv.valDat, 3);
+                    break;
             }
         }
     }
@@ -2580,21 +2584,28 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placePrefSid(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.segrouIdx == 0) {
-            return;
-        }
         hlp.clear();
         typLenVal tlv = getPrefSidTlv();
-        tlv.valDat[0] = 0; // reserved
-        bits.msbPutW(tlv.valDat, 1, 0); // flags
-        bits.msbPutD(tlv.valDat, 3, ntry.segrouIdx); // index
-        tlv.putBytes(hlp, 1, 7, tlv.valDat);
+        if (ntry.segrouIdx != 0) {
+            tlv.valDat[0] = 0; // reserved
+            bits.msbPutW(tlv.valDat, 1, 0); // flags
+            bits.msbPutD(tlv.valDat, 3, ntry.segrouIdx); // index
+            tlv.putBytes(hlp, 1, 7, tlv.valDat);
+        }
         if (ntry.segrouSiz != 0) {
-            tlv = getPrefSidTlv();
             bits.msbPutW(tlv.valDat, 0, 0); // flags
             bits.msbPutD(tlv.valDat, 2, ntry.segrouBeg << 8); // base
             bits.msbPutD(tlv.valDat, 5, ntry.segrouSiz << 8); // range
             tlv.putBytes(hlp, 3, 8, tlv.valDat);
+        }
+        if (ntry.segrouPrf != null) {
+            tlv.valDat[0] = 0; // reserved
+            bits.msbPutW(tlv.valDat, 1, 0x100); // flags
+            ntry.segrouPrf.toBuffer(tlv.valDat, 3);
+            tlv.putBytes(hlp, 4, addrIP.size + 3, tlv.valDat);
+        }
+        if (hlp.headSize() < 1) {
+            return;
         }
         placeAttrib(flagOptional | flagTransitive, attrPrefSid, trg, hlp);
     }

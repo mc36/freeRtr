@@ -1990,6 +1990,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("3 .       enable                  enable processing");
         l.add("3 4       mvpn                    mvpn advertisement");
         l.add("4 .         <name>                select source to advertise");
+        l.add("3 4       srv6                    srv6 advertisement");
+        l.add("4 .         <name>                select source to advertise");
         l.add("3 4       distance                set import distance");
         l.add("4 .         <num>                 distance");
         l.add("3 4       flowspec                specify flowspec parameter");
@@ -1999,6 +2001,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("2 3     <vrf>                     name of routing table");
         l.add("3 .       enable                  enable processing");
         l.add("3 4       mvpn                    mvpn advertisement");
+        l.add("4 .         <name>                select source to advertise");
+        l.add("3 4       srv6                    srv6 advertisement");
         l.add("4 .         <name>                select source to advertise");
         l.add("3 4       distance                set import distance");
         l.add("4 .         <num>                 distance");
@@ -2018,6 +2022,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("2 3     <id>                      evpn id");
         l.add("3 4       bridge-group            enable processing");
         l.add("4 .         <name>                bridge group number");
+        l.add("3 4       srv6                    srv6 advertisement");
+        l.add("4 .         <name>                select source to advertise");
         l.add("3 4       bmac                    set backbone mac");
         l.add("4 .         <addr>                mac address");
         l.add("3 4       update-source           select source to advertise");
@@ -2296,6 +2302,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 compute.wakeup();
                 return false;
             }
+            if (s.equals("srv6")) {
+                if (negated) {
+                    cur.doer.srv6 = null;
+                } else {
+                    cur.doer.srv6 = cfgAll.ifcFind(cmd.word(), false);
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
             if (s.equals("flowspec")) {
                 if (negated) {
                     cur.doer.flowSpec = null;
@@ -2362,6 +2378,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     cur.doer.mvpn = null;
                 } else {
                     cur.doer.mvpn = cfgAll.ifcFind(cmd.word(), false);
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("srv6")) {
+                if (negated) {
+                    cur.doer.srv6 = null;
+                } else {
+                    cur.doer.srv6 = cfgAll.ifcFind(cmd.word(), false);
                 }
                 needFull.add(1);
                 compute.wakeup();
@@ -2474,6 +2500,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             if (s.equals("bmac")) {
                 cur.bbmac.fromString(cmd.word());
+                return false;
+            }
+            if (s.equals("srv6")) {
+                if (negated) {
+                    cur.srv6 = null;
+                } else {
+                    cur.srv6 = cfgAll.ifcFind(cmd.word(), false);
+                }
+                needFull.add(1);
+                compute.wakeup();
                 return false;
             }
             if (s.equals("update-source")) {

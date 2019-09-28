@@ -218,9 +218,9 @@ vrf definition v4
  exit
 !
 vrf definition v5
- rd 1:2
- rt-import 1:2
- rt-export 1:2
+ rd 1:5
+ rt-import 1:4
+ rt-export 1:4
  label-mode per-prefix
  source4route all4
  source6route all6
@@ -757,9 +757,7 @@ ipv6 flow v1 collect
 !
 !
 !
-ipv4 route v5 2.2.2.0 255.255.255.0 1.1.1.2 mplsexp
 !
-ipv6 route v5 2222::1 ffff:ffff:ffff:ffff:: 1111::1 mplsexp
 !
 !
 !

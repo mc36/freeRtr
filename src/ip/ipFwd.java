@@ -1684,6 +1684,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             prf.cntr.tx(pck);
         }
         if (prf.rouTab != null) {
+            if (prf.segrouPrf != null) {
+                pck.putDefaults();
+                pck.IPtrg.setAddr(prf.segrouPrf);
+                pck.IPsrc.setAddr(prf.segrouPrf);
+                pck.IPprt = ipCore.getProtocol();
+                prf.rouTab.createIPheader(pck);
+                ipMpls.beginMPLSfields(pck, false);
+                prf.rouTab.forwardPacket(fromIfc, fromMpls, rxIfc, pck);
+                return;
+            }
             if (prf.labelRem == null) {
                 doDrop(pck, rxIfc, counter.reasons.notInTab);
                 return;

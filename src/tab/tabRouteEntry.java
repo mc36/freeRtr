@@ -243,6 +243,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     public int segrouSiz;
 
     /**
+     * segment routing prefix sid
+     */
+    public addrIP segrouPrf;
+
+    /**
      * bier index
      */
     public int bierIdx;
@@ -578,6 +583,9 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         prf.bandwidth = bandwidth;
         prf.atomicAggr = atomicAggr;
         prf.aggrAs = aggrAs;
+        if (segrouPrf != null) {
+            prf.segrouPrf = segrouPrf.copyBytes();
+        }
         if (attribVal != null) {
             prf.attribVal = new byte[attribVal.length];
             bits.byteCopy(attribVal, 0, prf.attribVal, 0, attribVal.length);
@@ -774,6 +782,16 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
             return true;
         }
         if (aggrAs != other.aggrAs) {
+            return true;
+        }
+        if (segrouPrf != null) {
+            if (other.segrouPrf == null) {
+                return true;
+            }
+            if (segrouPrf.compare(segrouPrf, other.segrouPrf) != 0) {
+                return true;
+            }
+        } else if (other.segrouPrf != null) {
             return true;
         }
         if (labelLoc != null) {
@@ -1248,6 +1266,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         l.add("segment routing old base = " + segrouOld);
         l.add("segment routing base = " + segrouBeg);
         l.add("segment routing size = " + segrouSiz);
+        l.add("segment routing prefix = " + segrouPrf);
         l.add("bier index = " + bierIdx);
         l.add("bier old base = " + bierOld);
         l.add("bier base = " + bierBeg);
