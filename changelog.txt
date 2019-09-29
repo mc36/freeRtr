@@ -8679,3 +8679,11 @@ qc pass: interop1: evpn/cmac over bgp
 qc pass: vpns over srv6
 qc pass: evpn/pbb over srv6
 qc pass: evpn/cmac over srv6
+---------------------------------- 2019-09-29 02:49:20
+qc pass: interop1: bgp 6pe
+qc pass: interop2: bgp vpnv4 over srv6
+qc pass: interop2: bgp vpnv6 over srv6
+qc pass: interop2: bgp 6pe
+qc pass: vpns over srv6 over ipv4 bgp
+qc pass: evpn/pbb over srv6 over ipv4 bgp
+qc pass: evpn/cmac over srv6 over ipv4 bgp

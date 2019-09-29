@@ -565,6 +565,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected tabGen<rtrBgpTemp> temps;
 
     /**
+     * other afi router
+     */
+    protected rtrBgpOther other;
+
+    /**
      * list of vrfs
      */
     protected tabGen<rtrBgpVrf> vrfs;
@@ -721,6 +726,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiSrte = rtrBgpUtil.safiIp4srte;
                 afiMvpn = rtrBgpUtil.safiIp4mvpn;
                 afiMvpo = rtrBgpUtil.safiIp6mvpn;
+                other = new rtrBgpOther(this, vrfCore.fwd6);
                 break;
             case ipCor6.protocolVersion:
                 rouTyp = tabRouteEntry.routeType.bgp6;
@@ -742,6 +748,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiSrte = rtrBgpUtil.safiIp6srte;
                 afiMvpn = rtrBgpUtil.safiIp6mvpn;
                 afiMvpo = rtrBgpUtil.safiIp4mvpn;
+                other = new rtrBgpOther(this, vrfCore.fwd4);
                 break;
             default:
                 rouTyp = null;
@@ -763,6 +770,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiSrte = 0;
                 afiMvpn = 0;
                 afiMvpo = 0;
+                other = new rtrBgpOther(this, null);
                 break;
         }
         incrLimit = 1000;
@@ -789,6 +797,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         need2run = true;
         new Thread(this).start();
         fwdCore.routerAdd(this, rouTyp, id);
+        other.register2ip();
     }
 
     /**
@@ -1257,6 +1266,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry.distance = distantLoc;
             nFlw.add(tabRoute.addType.better, ntry, false, false);
         }
+        other.doAdvertise(nOtr);
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doAdvertise(nVpnU, nVpnM, nVpnF, nMvpn);
         }
@@ -1453,6 +1463,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " export");
         }
+        other.doPeers(nOtr);
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doPeers(nVpnU, nVpnM, nVpnF);
         }
@@ -1697,6 +1708,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " export");
         }
+        other.doPeers(computedOtr);
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doPeers(computedVpnU, computedVpnM, computedVpnF);
         }
@@ -1898,6 +1910,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             nei.stopNow();
             nei.conn.closeNow();
         }
+        other.unregister2ip();
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.unregister2ip();
         }
@@ -1985,6 +1998,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("3 4       <name>                  proxy profile");
         l.add("4 5         <name>                hostname");
         l.add("5 .           <num>               port number");
+        l.add("1 2   other                       select vrf to advertise");
+        cfgRtr.getRedistHelp(l, 1);
         l.add("1 2   afi-vrf                     select vrf to advertise");
         l.add("2 3     <vrf>                     name of routing table");
         l.add("3 .       enable                  enable processing");
@@ -2082,6 +2097,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.getConfig(l, beg, filter);
         }
+        cfgRtr.getShRedist(l, beg + "other ", other);
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.getConfig(l, beg);
         }
@@ -2251,6 +2267,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return false;
             }
             flowSpec = ntry.plcmap;
+            needFull.add(1);
+            compute.wakeup();
+            return false;
+        }
+        if (s.equals("other")) {
+            s = cmd.word();
+            if (cfgRtr.doCfgRedist(other, negated, s, cmd)) {
+                cmd.badCmd();
+            }
             needFull.add(1);
             compute.wakeup();
             return false;
@@ -2891,6 +2916,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, ntry, null, null, routerAutoMesh);
         }
+        other.getPeerList(tab);
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.getPeerList(tab);
         }

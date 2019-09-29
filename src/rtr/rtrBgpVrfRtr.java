@@ -229,6 +229,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         ntry = ntry.copyBytes();
         ntry.rouDst = 0;
         ntry.rouTab = parent.fwdCore;
+        if (ntry.segrouPrf != null) {
+            ntry.rouTab = parent.vrfCore.fwd6;
+        }
         ntry.distance = distance;
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, fwd.importMap, fwd.importPol, fwd.importList);
         if (parent.routerAutoMesh == null) {

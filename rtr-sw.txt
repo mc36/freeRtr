@@ -421,6 +421,13 @@ interface ethernet1
  no log-link-change
  exit
 !
+interface ethernet9
+ no description
+ mpls enable
+ no shutdown
+ no log-link-change
+ exit
+!
 router bgp4 1
  vrf v1
  local-as 1

@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v19.9.28-testing, done by cs@nop.;-;-
--;-;2019-09-28 14:48:16, took 09:09:38 on 1556 cases, 0 failed, 0 traces, 19 retries;-;-
+-;-;freeRouter v19.9.29-testing, done by cs@nop.;-;-
+-;-;2019-09-29 11:32:06, took 08:42:45 on 1563 cases, 0 failed, 0 traces, 21 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -523,6 +523,7 @@ intop1-bgp14.tst;0;interop1: vpls/ldp over bgp;successfully;finished
 intop1-bgp15.tst;0;interop1: vpls/bgp over bgp;successfully;finished
 intop1-bgp16.tst;0;interop1: bgp extended community;successfully;finished
 intop1-bgp17.tst;0;interop1: evpn/cmac over bgp;successfully;finished
+intop1-bgp18.tst;0;interop1: bgp 6pe;successfully;finished
 intop1-dhcp01.tst;0;interop1: dhcp server;successfully;finished
 intop1-dhcp02.tst;0;interop1: dhcp client;successfully;finished
 intop1-dns.tst;0;interop1: dns;successfully;finished
@@ -627,6 +628,9 @@ intop2-bgp15.tst;0;interop2: vpls/bgp over bgp;successfully;finished
 intop2-bgp16.tst;0;interop2: evpn/pbb over bgp;successfully;finished
 intop2-bgp17.tst;0;interop2: bgp extended community;successfully;finished
 intop2-bgp18.tst;0;interop2: bgp large community;successfully;finished
+intop2-bgp19.tst;0;interop2: bgp vpnv4 over srv6;successfully;finished
+intop2-bgp20.tst;0;interop2: bgp vpnv6 over srv6;successfully;finished
+intop2-bgp21.tst;0;interop2: bgp 6pe;successfully;finished
 intop2-eigrp01.tst;0;interop2: eigrp;successfully;finished
 intop2-eigrp02.tst;0;interop2: eigrp prefix withdraw;successfully;finished
 intop2-eth01.tst;0;interop2: ethernet encapsulation;successfully;finished
@@ -1277,6 +1281,9 @@ rout-bgp346.tst;0;bgp vpn with import policy;successfully;finished
 rout-bgp347.tst;0;vpns over srv6;successfully;finished
 rout-bgp348.tst;0;evpn/pbb over srv6;successfully;finished
 rout-bgp349.tst;0;evpn/cmac over srv6;successfully;finished
+rout-bgp350.tst;0;vpns over srv6 over ipv4 bgp;successfully;finished
+rout-bgp351.tst;0;evpn/pbb over srv6 over ipv4 bgp;successfully;finished
+rout-bgp352.tst;0;evpn/cmac over srv6 over ipv4 bgp;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished

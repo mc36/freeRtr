@@ -1,4 +1,4 @@
-description vpns over srv6
+description vpns over srv6 over ipv4 bgp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -35,6 +35,7 @@ int lo4
  exit
 int eth1
  vrf for v1
+ ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff:ffff::
  exit
 int tun1
@@ -46,14 +47,14 @@ int tun1
  tun mod srv6
  exit
 ipv6 route v1 4321:2:: ffff:ffff:: 1234::2
-router bgp6 1
+router bgp4 1
  vrf v1
  address vpnuni ovpnuni
  local-as 1
  router-id 6.6.6.1
- neigh 1234::2 remote-as 1
- neigh 1234::2 send-comm both
- neigh 1234::2 segrou
+ neigh 1.1.1.2 remote-as 1
+ neigh 1.1.1.2 send-comm both
+ neigh 1.1.1.2 segrou
  afi-vrf v2 ena
  afi-vrf v2 srv6 tun1
  afi-vrf v2 red conn
@@ -110,6 +111,7 @@ int lo4
  exit
 int eth1
  vrf for v1
+ ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff:ffff::
  exit
 int tun1
@@ -121,14 +123,14 @@ int tun1
  tun mod srv6
  exit
 ipv6 route v1 4321:1:: ffff:ffff:: 1234::1
-router bgp6 1
+router bgp4 1
  vrf v1
  address vpnuni ovpnuni
  local-as 1
  router-id 6.6.6.3
- neigh 1234::1 remote-as 1
- neigh 1234::1 send-comm both
- neigh 1234::1 segrou
+ neigh 1.1.1.1 remote-as 1
+ neigh 1.1.1.1 send-comm both
+ neigh 1.1.1.1 segrou
  afi-vrf v2 ena
  afi-vrf v2 srv6 tun1
  afi-vrf v2 red conn

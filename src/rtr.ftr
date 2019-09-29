@@ -519,6 +519,7 @@ qc pass: interop1: vpls/ldp over bgp
 qc pass: interop1: vpls/bgp over bgp
 qc pass: interop1: bgp extended community
 qc pass: interop1: evpn/cmac over bgp
+qc pass: interop1: bgp 6pe
 qc pass: interop1: dhcp server
 qc pass: interop1: dhcp client
 qc pass: interop1: dns
@@ -623,6 +624,9 @@ qc pass: interop2: vpls/bgp over bgp
 qc pass: interop2: evpn/pbb over bgp
 qc pass: interop2: bgp extended community
 qc pass: interop2: bgp large community
+qc pass: interop2: bgp vpnv4 over srv6
+qc pass: interop2: bgp vpnv6 over srv6
+qc pass: interop2: bgp 6pe
 qc pass: interop2: eigrp
 qc pass: interop2: eigrp prefix withdraw
 qc pass: interop2: ethernet encapsulation
@@ -1273,6 +1277,9 @@ qc pass: bgp vpn with import policy
 qc pass: vpns over srv6
 qc pass: evpn/pbb over srv6
 qc pass: evpn/cmac over srv6
+qc pass: vpns over srv6 over ipv4 bgp
+qc pass: evpn/pbb over srv6 over ipv4 bgp
+qc pass: evpn/cmac over srv6 over ipv4 bgp
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
