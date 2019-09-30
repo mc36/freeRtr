@@ -23,7 +23,6 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 send-comm both
  neigh 1.1.1.2 additional-path-rx uni other
  neigh 1.1.1.2 additional-path-tx uni other
  red conn
@@ -54,7 +53,6 @@ router bgp4 1
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 send-comm both
  neigh 1.1.1.1 additional-path-rx uni other
  neigh 1.1.1.1 additional-path-tx uni other
  red conn

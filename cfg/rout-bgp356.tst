@@ -1,4 +1,4 @@
-description unicast+other over bgp with soft-reconfig
+description unicast+other over bgp route server
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -13,7 +13,7 @@ int lo0
  exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.1 255.255.255.252
+ ipv4 addr 1.1.1.1 255.255.255.0
  mpls ena
  mpls ldp4
  exit
@@ -22,15 +22,14 @@ router bgp4 1
  address uni other
  local-as 1
  router-id 4.4.4.1
- neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 soft-reconfig
+ neigh 1.1.1.3 remote-as 3
  red conn
  other red conn
  exit
 !
 
 addrouter r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
+int eth1 eth 0000.0000.2222 $2a$ $2b$
 !
 vrf def v1
  rd 1:1
@@ -42,7 +41,7 @@ int lo0
  exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.2 255.255.255.252
+ ipv4 addr 1.1.1.2 255.255.255.0
  mpls ena
  mpls ldp4
  exit
@@ -51,8 +50,41 @@ router bgp4 1
  address uni other
  local-as 2
  router-id 4.4.4.2
+ neigh 1.1.1.3 remote-as 3
+ red conn
+ other red conn
+ exit
+!
+
+addrouter r3
+int eth1 eth 0000.0000.3333 $1b$ $1a$
+int eth2 eth 0000.0000.3333 $2b$ $2a$
+!
+vrf def v1
+ rd 1:1
+ exit
+bridge 1
+ mac-learn
+ exit
+int eth1
+ bridge-gr 1
+ exit
+int eth2
+ bridge-gr 1
+ exit
+int bvi1
+ vrf for v1
+ ipv4 addr 1.1.1.3 255.255.255.0
+ exit
+router bgp4 1
+ vrf v1
+ address uni other
+ local-as 3
+ router-id 4.4.4.3
  neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 soft-reconfig
+ neigh 1.1.1.1 route-server
+ neigh 1.1.1.2 remote-as 2
+ neigh 1.1.1.2 route-server
  red conn
  other red conn
  exit

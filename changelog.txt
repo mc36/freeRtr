@@ -8687,3 +8687,10 @@ qc pass: interop2: bgp 6pe
 qc pass: vpns over srv6 over ipv4 bgp
 qc pass: evpn/pbb over srv6 over ipv4 bgp
 qc pass: evpn/cmac over srv6 over ipv4 bgp
+---------------------------------- 2019-09-30 03:23:02
+no qc pass: unicast+other over bgp
+qc pass: unicast+other over ebgp
+qc pass: unicast+other over ibgp
+qc pass: unicast+other over ibgp rr
+qc pass: unicast+other over confed bgp
+qc pass: unicast+other over bgp route server

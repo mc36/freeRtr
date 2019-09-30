@@ -245,7 +245,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     /**
      * segment routing prefix sid
      */
-    public addrIP segrouPrf;
+    public T segrouPrf;
 
     /**
      * bier index
@@ -584,7 +584,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         prf.atomicAggr = atomicAggr;
         prf.aggrAs = aggrAs;
         if (segrouPrf != null) {
-            prf.segrouPrf = segrouPrf.copyBytes();
+            prf.segrouPrf = (T) segrouPrf.copyBytes();
         }
         if (attribVal != null) {
             prf.attribVal = new byte[attribVal.length];

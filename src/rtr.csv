@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v19.9.29-testing, done by cs@nop.;-;-
--;-;2019-09-29 11:32:06, took 08:42:45 on 1563 cases, 0 failed, 0 traces, 21 retries;-;-
+-;-;freeRouter v19.9.30-testing, done by cs@nop.;-;-
+-;-;2019-09-30 12:04:33, took 08:41:30 on 1567 cases, 0 failed, 0 traces, 9 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1211,7 +1211,7 @@ rout-bgp276.tst;0;unicast+multicast over bgp;successfully;finished
 rout-bgp277.tst;0;unicast+multicast over bgp with soft-reconfig;successfully;finished
 rout-bgp278.tst;0;unicast+multicast over bgp with additional path;successfully;finished
 rout-bgp279.tst;0;bgp csc vpn;successfully;finished
-rout-bgp280.tst;0;unicast+other over bgp;successfully;finished
+rout-bgp280.tst;0;unicast+other over ebgp;successfully;finished
 rout-bgp281.tst;0;unicast+other over bgp with soft-reconfig;successfully;finished
 rout-bgp282.tst;0;unicast+other over bgp with additional path;successfully;finished
 rout-bgp283.tst;0;ebgp prefix movement;successfully;finished
@@ -1284,6 +1284,10 @@ rout-bgp349.tst;0;evpn/cmac over srv6;successfully;finished
 rout-bgp350.tst;0;vpns over srv6 over ipv4 bgp;successfully;finished
 rout-bgp351.tst;0;evpn/pbb over srv6 over ipv4 bgp;successfully;finished
 rout-bgp352.tst;0;evpn/cmac over srv6 over ipv4 bgp;successfully;finished
+rout-bgp353.tst;0;unicast+other over ibgp;successfully;finished
+rout-bgp354.tst;0;unicast+other over ibgp rr;successfully;finished
+rout-bgp355.tst;0;unicast+other over confed bgp;successfully;finished
+rout-bgp356.tst;0;unicast+other over bgp route server;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished

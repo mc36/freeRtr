@@ -1775,8 +1775,10 @@ public class rtrBgpUtil {
                     ntry.segrouSiz = bits.msbGetD(tlv.valDat, 5) >>> 8; // range
                     break;
                 case 4: // prefix sid
+                    addrIPv6 adr6 = new addrIPv6();
                     ntry.segrouPrf = new addrIP();
-                    ntry.segrouPrf.fromBuf(tlv.valDat, 3);
+                    adr6.fromBuf(tlv.valDat, 3);
+                    ntry.segrouPrf.fromIPv6addr(adr6);
                     break;
             }
         }
@@ -2601,8 +2603,8 @@ public class rtrBgpUtil {
         if (ntry.segrouPrf != null) {
             tlv.valDat[0] = 0; // reserved
             bits.msbPutW(tlv.valDat, 1, 0x100); // flags
-            ntry.segrouPrf.toBuffer(tlv.valDat, 3);
-            tlv.putBytes(hlp, 4, addrIP.size + 3, tlv.valDat);
+            ntry.segrouPrf.toIPv6().toBuffer(tlv.valDat, 3);
+            tlv.putBytes(hlp, 4, addrIPv6.size + 3, tlv.valDat);
         }
         if (hlp.headSize() < 1) {
             return;
