@@ -13,14 +13,12 @@ import ip.ipRtr;
 import java.util.ArrayList;
 import java.util.List;
 import tab.tabGen;
-import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabPlcmapN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import user.userHelping;
-import util.bits;
 import util.cmds;
 import util.debugger;
 import util.logger;
@@ -99,7 +97,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         other = o;
         vrf = v;
         routerVpn = true;
-        distance = 200;
+        distance = -1;
     }
 
     /**
@@ -232,7 +230,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (ntry.segrouPrf != null) {
             ntry.rouTab = parent.vrfCore.fwd6;
         }
-        ntry.distance = distance;
+        if (distance > 0) {
+            ntry.distance = distance;
+        }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, fwd.importMap, fwd.importPol, fwd.importList);
         if (parent.routerAutoMesh == null) {
             return;

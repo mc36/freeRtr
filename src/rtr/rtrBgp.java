@@ -1999,6 +1999,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("4 5         <name>                hostname");
         l.add("5 .           <num>               port number");
         l.add("1 2   other                       select vrf to advertise");
+        l.add("2 3       srv6                    srv6 advertisement");
+        l.add("3 .         <name>                select source to advertise");
+        l.add("2 3       distance                set import distance");
+        l.add("3 .         <num>                 distance");
         cfgRtr.getRedistHelp(l, 1);
         l.add("1 2   afi-vrf                     select vrf to advertise");
         l.add("2 3     <vrf>                     name of routing table");
@@ -2097,7 +2101,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.getConfig(l, beg, filter);
         }
-        cfgRtr.getShRedist(l, beg + "other ", other);
+        other.getConfig(l, beg + "other ");
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.getConfig(l, beg);
         }
@@ -2273,6 +2277,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("other")) {
             s = cmd.word();
+            if (s.equals("distance")) {
+                other.distance = bits.str2num(cmd.word());
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("srv6")) {
+                if (negated) {
+                    other.srv6 = null;
+                } else {
+                    other.srv6 = cfgAll.ifcFind(cmd.word(), false);
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
             if (cfgRtr.doCfgRedist(other, negated, s, cmd)) {
                 cmd.badCmd();
             }

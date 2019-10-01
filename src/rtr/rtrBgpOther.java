@@ -2,7 +2,10 @@ package rtr;
 
 import addr.addrIP;
 import addr.addrPrefix;
+import cfg.cfgIfc;
+import cfg.cfgRtr;
 import ip.ipFwd;
+import ip.ipMpls;
 import ip.ipRtr;
 import java.util.List;
 import tab.tabGen;
@@ -17,6 +20,16 @@ import util.cmds;
  * @author matecsaba
  */
 public class rtrBgpOther extends ipRtr {
+
+    /**
+     * import distance
+     */
+    public int distance;
+
+    /**
+     * srv6 advertisement source
+     */
+    public cfgIfc srv6;
 
     private final rtrBgp parent;
 
@@ -48,6 +61,7 @@ public class rtrBgpOther extends ipRtr {
         fwd = f;
         parent = p;
         routerVpn = true;
+        distance = -1;
     }
 
     /**
@@ -88,6 +102,7 @@ public class rtrBgpOther extends ipRtr {
             ntry.labelLoc = fwd.commonLabel;
         }
         ntry.rouSrc = rtrBgpUtil.peerOriginate;
+        ipMpls.putSrv6prefix(ntry, srv6, ntry.labelLoc);
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, parent.afiOtr, ntry, fwd.exportMap, fwd.exportPol, fwd.exportList);
     }
 
@@ -108,6 +123,12 @@ public class rtrBgpOther extends ipRtr {
         }
         ntry = ntry.copyBytes();
         ntry.rouTab = parent.fwdCore;
+        if (ntry.segrouPrf != null) {
+            ntry.rouTab = parent.vrfCore.fwd6;
+        }
+        if (distance > 0) {
+            ntry.distance = distance;
+        }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, rtrBgpUtil.safiUnicast, ntry, null, null, null);
         if (parent.routerAutoMesh == null) {
             return;
@@ -163,6 +184,20 @@ public class rtrBgpOther extends ipRtr {
      * stop work
      */
     public void routerCloseNow() {
+    }
+
+    /**
+     * get config
+     *
+     * @param l list to append
+     * @param beg beginning
+     */
+    public void getConfig(List<String> l, String beg) {
+        l.add(beg + "distance " + distance);
+        if (srv6 != null) {
+            l.add(beg + "srv6 " + srv6.name);
+        }
+        cfgRtr.getShRedist(l, beg, this);
     }
 
     /**

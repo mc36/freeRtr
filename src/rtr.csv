@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v19.9.30-testing, done by cs@nop.;-;-
--;-;2019-09-30 12:04:33, took 08:41:30 on 1567 cases, 0 failed, 0 traces, 9 retries;-;-
+-;-;freeRouter v19.10.1-testing, done by cs@nop.;-;-
+-;-;2019-10-01 10:19:19, took 08:24:57 on 1568 cases, 0 failed, 0 traces, 7 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1288,6 +1288,7 @@ rout-bgp353.tst;0;unicast+other over ibgp;successfully;finished
 rout-bgp354.tst;0;unicast+other over ibgp rr;successfully;finished
 rout-bgp355.tst;0;unicast+other over confed bgp;successfully;finished
 rout-bgp356.tst;0;unicast+other over bgp route server;successfully;finished
+rout-bgp357.tst;0;other over srv6;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished

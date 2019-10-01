@@ -423,7 +423,6 @@ interface ethernet1
 !
 interface ethernet9
  no description
- mpls enable
  no shutdown
  no log-link-change
  exit

@@ -1284,6 +1284,7 @@ qc pass: unicast+other over ibgp
 qc pass: unicast+other over ibgp rr
 qc pass: unicast+other over confed bgp
 qc pass: unicast+other over bgp route server
+qc pass: other over srv6
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
