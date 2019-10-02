@@ -8696,3 +8696,6 @@ qc pass: unicast+other over confed bgp
 qc pass: unicast+other over bgp route server
 ---------------------------------- 2019-10-01 01:54:22
 qc pass: other over srv6
+---------------------------------- 2019-10-01 16:03:44
+qc pass: nat64 translation
+qc pass: dns64 server

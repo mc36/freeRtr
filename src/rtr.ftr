@@ -455,6 +455,7 @@ qc pass: more sources translation to interface
 qc pass: ipv4-ipv6 protocol translation
 qc pass: source prefix translation
 qc pass: target prefix translation
+qc pass: nat64 translation
 qc pass: openvpn over ipv4
 qc pass: openvpn over ipv6
 qc pass: openvpn over openvpn
@@ -1556,6 +1557,7 @@ qc pass: static routing with interface
 qc pass: authoritative dns server
 qc pass: recursive dns server
 qc pass: relaying dns server
+qc pass: dns64 server
 qc pass: dynamic tunnel destination
 qc pass: event manager
 qc pass: forwarder server

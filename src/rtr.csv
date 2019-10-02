@@ -1,6 +1,6 @@
 file;code;test;stage;command
 -;-;freeRouter v19.10.1-testing, done by cs@nop.;-;-
--;-;2019-10-01 10:19:19, took 08:24:57 on 1568 cases, 0 failed, 0 traces, 7 retries;-;-
+-;-;2019-10-02 00:50:59, took 08:47:14 on 1570 cases, 0 failed, 0 traces, 16 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -459,6 +459,7 @@ crypt-nat06.tst;0;more sources translation to interface;successfully;finished
 crypt-nat07.tst;0;ipv4-ipv6 protocol translation;successfully;finished
 crypt-nat08.tst;0;source prefix translation;successfully;finished
 crypt-nat09.tst;0;target prefix translation;successfully;finished
+crypt-nat10.tst;0;nat64 translation;successfully;finished
 crypt-openvpn01.tst;0;openvpn over ipv4;successfully;finished
 crypt-openvpn02.tst;0;openvpn over ipv6;successfully;finished
 crypt-openvpn03.tst;0;openvpn over openvpn;successfully;finished
@@ -1560,6 +1561,7 @@ rout-static07.tst;0;static routing with interface;successfully;finished
 serv-dns01.tst;0;authoritative dns server;successfully;finished
 serv-dns02.tst;0;recursive dns server;successfully;finished
 serv-dns03.tst;0;relaying dns server;successfully;finished
+serv-dns04.tst;0;dns64 server;successfully;finished
 serv-dyndest.tst;0;dynamic tunnel destination;successfully;finished
 serv-eventmgr.tst;0;event manager;successfully;finished
 serv-forward.tst;0;forwarder server;successfully;finished
