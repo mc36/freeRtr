@@ -1,4 +1,4 @@
-description vpns over srv6 over ibgp
+description vpns over srv6 over ibgp rr
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -52,9 +52,9 @@ router bgp4 1
  address vpnuni ovpnuni
  local-as 1
  router-id 4.4.4.1
- neigh 1.1.1.2 remote-as 1
- neigh 1.1.1.2 send-comm both
- neigh 1.1.1.2 segrou
+ neigh 1.1.1.3 remote-as 1
+ neigh 1.1.1.3 send-comm both
+ neigh 1.1.1.3 segrou
  afi-vrf v3 ena
  afi-vrf v3 srv6 tun1
  afi-vrf v3 red conn
@@ -67,9 +67,9 @@ router bgp6 1
  address vpnuni ovpnuni
  local-as 1
  router-id 6.6.6.1
- neigh 1234::2 remote-as 1
- neigh 1234::2 send-comm both
- neigh 1234::2 segrou
+ neigh 1234::3 remote-as 1
+ neigh 1234::3 send-comm both
+ neigh 1234::3 segrou
  afi-vrf v2 ena
  afi-vrf v2 srv6 tun1
  afi-vrf v2 red conn
@@ -86,7 +86,7 @@ router bgp6 1
 !
 
 addrouter r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
+int eth1 eth 0000.0000.2222 $2a$ $2b$
 !
 vrf def v1
  rd 1:1
@@ -137,9 +137,9 @@ router bgp4 1
  address vpnuni ovpnuni
  local-as 1
  router-id 4.4.4.2
- neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 send-comm both
- neigh 1.1.1.1 segrou
+ neigh 1.1.1.3 remote-as 1
+ neigh 1.1.1.3 send-comm both
+ neigh 1.1.1.3 segrou
  afi-vrf v3 ena
  afi-vrf v3 srv6 tun1
  afi-vrf v3 red conn
@@ -152,9 +152,9 @@ router bgp6 1
  address vpnuni ovpnuni
  local-as 1
  router-id 6.6.6.3
- neigh 1234::1 remote-as 1
- neigh 1234::1 send-comm both
- neigh 1234::1 segrou
+ neigh 1234::3 remote-as 1
+ neigh 1234::3 send-comm both
+ neigh 1234::3 segrou
  afi-vrf v2 ena
  afi-vrf v2 srv6 tun1
  afi-vrf v2 red conn
@@ -167,6 +167,57 @@ router bgp6 1
  afi-ovrf v4 ena
  afi-ovrf v4 srv6 tun1
  afi-ovrf v4 red conn
+ exit
+!
+
+addrouter r3
+int eth1 eth 0000.0000.3333 $1b$ $1a$
+int eth2 eth 0000.0000.3333 $2b$ $2a$
+!
+vrf def v1
+ rd 1:1
+ exit
+bridge 1
+ mac-learn
+ exit
+int eth1
+ bridge-gr 1
+ exit
+int eth2
+ bridge-gr 1
+ exit
+int bvi1
+ vrf for v1
+ ipv4 addr 1.1.1.3 255.255.255.0
+ ipv6 addr 1234::3 ffff:ffff::
+ exit
+router bgp4 1
+ vrf v1
+ address vpnuni ovpnuni
+ local-as 1
+ router-id 4.4.4.3
+ neigh 1.1.1.1 remote-as 1
+ neigh 1.1.1.1 send-comm both
+ neigh 1.1.1.1 segrou
+ neigh 1.1.1.1 route-reflect
+ neigh 1.1.1.2 remote-as 1
+ neigh 1.1.1.2 send-comm both
+ neigh 1.1.1.2 segrou
+ neigh 1.1.1.2 route-reflect
+ exit
+router bgp6 1
+ vrf v1
+ address vpnuni ovpnuni
+ local-as 1
+ router-id 4.4.4.3
+ neigh 1234::1 remote-as 1
+ neigh 1234::1 send-comm both
+ neigh 1234::1 segrou
+ neigh 1234::1 route-reflect
+ neigh 1234::2 remote-as 1
+ neigh 1234::2 send-comm both
+ neigh 1234::2 segrou
+ neigh 1234::2 route-reflect
  exit
 !
 

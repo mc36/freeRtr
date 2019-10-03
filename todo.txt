@@ -1,6 +1,4 @@
 looking glass rfc8522
-reapplying the same address to interface as noop
-reapplying the same vrf to interface as noop
 entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...
 http conditional redirect with route-map, prefix-list or route-policy
 bridge security from dhcp, slaac, whatever server

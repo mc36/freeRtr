@@ -1,4 +1,4 @@
-description evpn/cmac over srv6
+description evpn/cmac over srv6 over ibgp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -20,6 +20,7 @@ bridge 2
  exit
 int eth1
  vrf for v1
+ ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff:ffff::
  exit
 int tun1
@@ -41,6 +42,20 @@ int bvi2
  ipv4 addr 4.4.4.1 255.255.255.252
  ipv6 addr 4444::1 ffff::
  exit
+router bgp4 1
+ vrf v1
+ address evpn
+ local-as 1
+ router-id 4.4.4.1
+ neigh 1.1.1.2 remote-as 1
+ neigh 1.1.1.2 send-comm both
+ neigh 1.1.1.2 pmsi
+ neigh 1.1.1.2 segrou
+ afi-evpn 101 bridge 1
+ afi-evpn 101 srv6 tun1
+ afi-evpn 101 update eth1
+ afi-evpn 101 encap cmac
+ exit
 router bgp6 1
  vrf v1
  address evpn
@@ -50,10 +65,6 @@ router bgp6 1
  neigh 1234::2 send-comm both
  neigh 1234::2 pmsi
  neigh 1234::2 segrou
- afi-evpn 101 bridge 1
- afi-evpn 101 srv6 tun1
- afi-evpn 101 update eth1
- afi-evpn 101 encap cmac
  afi-evpn 102 bridge 2
  afi-evpn 102 srv6 tun1
  afi-evpn 102 update eth1
@@ -81,6 +92,7 @@ bridge 2
  exit
 int eth1
  vrf for v1
+ ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff:ffff::
  exit
 int tun1
@@ -102,6 +114,20 @@ int bvi2
  ipv4 addr 4.4.4.2 255.255.255.252
  ipv6 addr 4444::2 ffff::
  exit
+router bgp4 1
+ vrf v1
+ address evpn
+ local-as 1
+ router-id 4.4.4.2
+ neigh 1.1.1.1 remote-as 1
+ neigh 1.1.1.1 send-comm both
+ neigh 1.1.1.1 pmsi
+ neigh 1.1.1.1 segrou
+ afi-evpn 101 bridge 1
+ afi-evpn 101 srv6 tun1
+ afi-evpn 101 update eth1
+ afi-evpn 101 encap cmac
+ exit
 router bgp6 1
  vrf v1
  address evpn
@@ -111,10 +137,6 @@ router bgp6 1
  neigh 1234::1 send-comm both
  neigh 1234::1 pmsi
  neigh 1234::1 segrou
- afi-evpn 101 bridge 1
- afi-evpn 101 srv6 tun1
- afi-evpn 101 update eth1
- afi-evpn 101 encap cmac
  afi-evpn 102 bridge 2
  afi-evpn 102 srv6 tun1
  afi-evpn 102 update eth1

@@ -1275,17 +1275,38 @@ qc pass: bgp vpn with export map
 qc pass: bgp vpn with import map
 qc pass: bgp vpn with export policy
 qc pass: bgp vpn with import policy
-qc pass: vpns over srv6
-qc pass: evpn/pbb over srv6
-qc pass: evpn/cmac over srv6
-qc pass: vpns over srv6 over ipv4 bgp
-qc pass: evpn/pbb over srv6 over ipv4 bgp
-qc pass: evpn/cmac over srv6 over ipv4 bgp
+qc pass: vpns over srv6 over ibgp
+qc pass: evpn/pbb over srv6 over ibgp
+qc pass: evpn/cmac over srv6 over ibgp
 qc pass: unicast+other over ibgp
 qc pass: unicast+other over ibgp rr
 qc pass: unicast+other over confed bgp
 qc pass: unicast+other over bgp route server
-qc pass: other over srv6
+qc pass: other over srv6 over ibgp
+qc pass: vpns over srv6 over ebgp
+qc pass: evpn/pbb over srv6 over ebgp
+qc pass: evpn/cmac over srv6 over ebgp
+qc pass: other over srv6 over ebgp
+qc pass: vpns over srv6 over ibgp rr
+qc pass: evpn/pbb over srv6 over ibgp rr
+qc pass: evpn/cmac over srv6 over ibgp rr
+qc pass: other over srv6 over ibgp rr
+qc pass: vpns over srv6 over confed bgp
+qc pass: evpn/pbb over srv6 over confed bgp
+qc pass: evpn/cmac over srv6 over confed bgp
+qc pass: other over srv6 over confed bgp
+qc pass: vpns over srv6 over bgp route server
+qc pass: evpn/pbb over srv6 over bgp route server
+qc pass: evpn/cmac over srv6 over bgp route server
+qc pass: other over srv6 over bgp route server
+qc pass: vpns over srv6 over bgp with soft-reconfig
+qc pass: evpn/pbb over srv6 over bgp with soft-reconfig
+qc pass: evpn/cmac over srv6 over bgp with soft-reconfig
+qc pass: other over srv6 over bgp with soft-reconfig
+qc pass: vpns over srv6 over bgp additional path
+qc pass: evpn/pbb over srv6 over bgp additional path
+qc pass: evpn/cmac over srv6 over bgp additional path
+qc pass: other over srv6 over bgp additional path
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -1569,8 +1590,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 todo: looking glass rfc8522
-todo: reapplying the same address to interface as noop
-todo: reapplying the same vrf to interface as noop
 todo: entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...
 todo: http conditional redirect with route-map, prefix-list or route-policy
 todo: bridge security from dhcp, slaac, whatever server

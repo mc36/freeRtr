@@ -5590,6 +5590,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                     cmd.error("no such vrf exists");
                     return;
                 }
+                if (vrfFor == v) {
+                    return;
+                }
                 clear2vrf();
                 vrfFor = v;
                 setup2vrf(true, true, true);

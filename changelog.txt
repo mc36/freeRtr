@@ -8699,3 +8699,41 @@ qc pass: other over srv6
 ---------------------------------- 2019-10-01 16:03:44
 qc pass: nat64 translation
 qc pass: dns64 server
+---------------------------------- 2019-10-03 02:01:52
+no todo: reapplying the same vrf to interface as noop
+no todo: reapplying the same address to interface as noop
+no qc pass: other over srv6
+no qc pass: evpn/cmac over srv6 over ipv4 bgp
+no qc pass: evpn/pbb over srv6 over ipv4 bgp
+no qc pass: vpns over srv6 over ipv4 bgp
+no qc pass: evpn/cmac over srv6
+no qc pass: evpn/pbb over srv6
+no qc pass: vpns over srv6
+qc pass: vpns over srv6 over ibgp
+qc pass: evpn/pbb over srv6 over ibgp
+qc pass: evpn/cmac over srv6 over ibgp
+qc pass: other over srv6 over ibgp
+qc pass: vpns over srv6 over ebgp
+qc pass: evpn/pbb over srv6 over ebgp
+qc pass: evpn/cmac over srv6 over ebgp
+qc pass: other over srv6 over ebgp
+qc pass: vpns over srv6 over ibgp rr
+qc pass: evpn/pbb over srv6 over ibgp rr
+qc pass: evpn/cmac over srv6 over ibgp rr
+qc pass: other over srv6 over ibgp rr
+qc pass: vpns over srv6 over confed bgp
+qc pass: evpn/pbb over srv6 over confed bgp
+qc pass: evpn/cmac over srv6 over confed bgp
+qc pass: other over srv6 over confed bgp
+qc pass: vpns over srv6 over bgp route server
+qc pass: evpn/pbb over srv6 over bgp route server
+qc pass: evpn/cmac over srv6 over bgp route server
+qc pass: other over srv6 over bgp route server
+qc pass: vpns over srv6 over bgp with soft-reconfig
+qc pass: evpn/pbb over srv6 over bgp with soft-reconfig
+qc pass: evpn/cmac over srv6 over bgp with soft-reconfig
+qc pass: other over srv6 over bgp with soft-reconfig
+qc pass: vpns over srv6 over bgp additional path
+qc pass: evpn/pbb over srv6 over bgp additional path
+qc pass: evpn/cmac over srv6 over bgp additional path
+qc pass: other over srv6 over bgp additional path

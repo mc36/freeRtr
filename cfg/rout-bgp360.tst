@@ -1,4 +1,4 @@
-description evpn/pbb over srv6 over ebgp
+description evpn/pbb over srv6 over ibgp rr
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -47,10 +47,10 @@ router bgp4 1
  address evpn
  local-as 1
  router-id 4.4.4.1
- neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 send-comm both
- neigh 1.1.1.2 pmsi
- neigh 1.1.1.2 segrou
+ neigh 1.1.1.3 remote-as 1
+ neigh 1.1.1.3 send-comm both
+ neigh 1.1.1.3 pmsi
+ neigh 1.1.1.3 segrou
  afi-evpn 101 bridge 1
  afi-evpn 101 srv6 tun1
  afi-evpn 101 update eth1
@@ -60,10 +60,10 @@ router bgp6 1
  address evpn
  local-as 1
  router-id 6.6.6.1
- neigh 1234::2 remote-as 2
- neigh 1234::2 send-comm both
- neigh 1234::2 pmsi
- neigh 1234::2 segrou
+ neigh 1234::3 remote-as 1
+ neigh 1234::3 send-comm both
+ neigh 1234::3 pmsi
+ neigh 1234::3 segrou
  afi-evpn 102 bridge 2
  afi-evpn 102 srv6 tun1
  afi-evpn 102 update eth1
@@ -71,7 +71,7 @@ router bgp6 1
 !
 
 addrouter r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
+int eth1 eth 0000.0000.2222 $2a$ $2b$
 !
 vrf def v1
  rd 1:1
@@ -115,12 +115,12 @@ int bvi2
 router bgp4 1
  vrf v1
  address evpn
- local-as 2
+ local-as 1
  router-id 4.4.4.2
- neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 send-comm both
- neigh 1.1.1.1 pmsi
- neigh 1.1.1.1 segrou
+ neigh 1.1.1.3 remote-as 1
+ neigh 1.1.1.3 send-comm both
+ neigh 1.1.1.3 pmsi
+ neigh 1.1.1.3 segrou
  afi-evpn 101 bridge 1
  afi-evpn 101 srv6 tun1
  afi-evpn 101 update eth1
@@ -128,15 +128,70 @@ router bgp4 1
 router bgp6 1
  vrf v1
  address evpn
- local-as 2
+ local-as 1
  router-id 6.6.6.2
+ neigh 1234::3 remote-as 1
+ neigh 1234::3 send-comm both
+ neigh 1234::3 pmsi
+ neigh 1234::3 segrou
+ afi-evpn 102 bridge 2
+ afi-evpn 102 srv6 tun1
+ afi-evpn 102 update eth1
+ exit
+!
+
+addrouter r3
+int eth1 eth 0000.0000.3333 $1b$ $1a$
+int eth2 eth 0000.0000.3333 $2b$ $2a$
+!
+vrf def v1
+ rd 1:1
+ exit
+bridge 1
+ mac-learn
+ exit
+int eth1
+ bridge-gr 1
+ exit
+int eth2
+ bridge-gr 1
+ exit
+int bvi1
+ vrf for v1
+ ipv4 addr 1.1.1.3 255.255.255.0
+ ipv6 addr 1234::3 ffff:ffff::
+ exit
+router bgp4 1
+ vrf v1
+ address evpn
+ local-as 1
+ router-id 4.4.4.3
+ neigh 1.1.1.1 remote-as 1
+ neigh 1.1.1.1 send-comm both
+ neigh 1.1.1.1 pmsi
+ neigh 1.1.1.1 segrou
+ neigh 1.1.1.1 route-reflect
+ neigh 1.1.1.2 remote-as 1
+ neigh 1.1.1.2 send-comm both
+ neigh 1.1.1.2 pmsi
+ neigh 1.1.1.2 segrou
+ neigh 1.1.1.2 route-reflect
+ exit
+router bgp6 1
+ vrf v1
+ address evpn
+ local-as 1
+ router-id 4.4.4.3
  neigh 1234::1 remote-as 1
  neigh 1234::1 send-comm both
  neigh 1234::1 pmsi
  neigh 1234::1 segrou
- afi-evpn 102 bridge 2
- afi-evpn 102 srv6 tun1
- afi-evpn 102 update eth1
+ neigh 1234::1 route-reflect
+ neigh 1234::2 remote-as 1
+ neigh 1234::2 send-comm both
+ neigh 1234::2 pmsi
+ neigh 1234::2 segrou
+ neigh 1234::2 route-reflect
  exit
 !
 

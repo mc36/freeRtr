@@ -1,4 +1,4 @@
-description evpn/pbb over srv6 over ebgp
+description evpn/pbb over srv6 over bgp additional path
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -47,10 +47,12 @@ router bgp4 1
  address evpn
  local-as 1
  router-id 4.4.4.1
- neigh 1.1.1.2 remote-as 2
+ neigh 1.1.1.2 remote-as 1
  neigh 1.1.1.2 send-comm both
  neigh 1.1.1.2 pmsi
  neigh 1.1.1.2 segrou
+ neigh 1.1.1.2 additional-path-rx evpn
+ neigh 1.1.1.2 additional-path-tx evpn
  afi-evpn 101 bridge 1
  afi-evpn 101 srv6 tun1
  afi-evpn 101 update eth1
@@ -60,10 +62,12 @@ router bgp6 1
  address evpn
  local-as 1
  router-id 6.6.6.1
- neigh 1234::2 remote-as 2
+ neigh 1234::2 remote-as 1
  neigh 1234::2 send-comm both
  neigh 1234::2 pmsi
  neigh 1234::2 segrou
+ neigh 1234::2 additional-path-rx evpn
+ neigh 1234::2 additional-path-tx evpn
  afi-evpn 102 bridge 2
  afi-evpn 102 srv6 tun1
  afi-evpn 102 update eth1
@@ -115,12 +119,14 @@ int bvi2
 router bgp4 1
  vrf v1
  address evpn
- local-as 2
+ local-as 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 send-comm both
  neigh 1.1.1.1 pmsi
  neigh 1.1.1.1 segrou
+ neigh 1.1.1.1 additional-path-rx evpn
+ neigh 1.1.1.1 additional-path-tx evpn
  afi-evpn 101 bridge 1
  afi-evpn 101 srv6 tun1
  afi-evpn 101 update eth1
@@ -128,12 +134,14 @@ router bgp4 1
 router bgp6 1
  vrf v1
  address evpn
- local-as 2
+ local-as 1
  router-id 6.6.6.2
  neigh 1234::1 remote-as 1
  neigh 1234::1 send-comm both
  neigh 1234::1 pmsi
  neigh 1234::1 segrou
+ neigh 1234::1 additional-path-rx evpn
+ neigh 1234::1 additional-path-tx evpn
  afi-evpn 102 bridge 2
  afi-evpn 102 srv6 tun1
  afi-evpn 102 update eth1
