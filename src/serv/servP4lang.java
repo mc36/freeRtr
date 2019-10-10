@@ -278,6 +278,22 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         pipe.lineRx = pipeSide.modTyp.modeLF;
         pipe.lineTx = pipeSide.modTyp.modeLF;
         conn = new servP4langConn(pipe, this);
+        for (int i = 0; i < expIfc.size(); i++) {
+            servP4langIfc ifc = expIfc.get(i);
+            ifc.sentVlan = 0;
+            ifc.sentVrf = 0;
+        }
+        for (int i = 0; i < expVrf.size(); i++) {
+            servP4langVrf vrf = expVrf.get(i);
+            vrf.routes4.clear();
+            vrf.routes6.clear();
+            vrf.sentMcast = false;
+        }
+        for (int i = 0; i < expBr.size(); i++) {
+            servP4langBr br = expBr.get(i);
+            br.ifcs.clear();
+            br.macs.clear();
+        }
         return false;
     }
 

@@ -56,7 +56,7 @@ public class prtSrv6 implements ifcDn {
      * @param f6 forwarder
      */
     public prtSrv6(addrIP adr, ifcEthTyp et, ipFwd f4, ipFwd f6) {
-        prf = new addrPrefix<addrIP>(adr, addrIP.size / 2);
+        prf = new addrPrefix<addrIP>(adr, addrIP.size * 4);
         ethtyp = et;
         fwd4 = f4;
         fwd4 = f6;
