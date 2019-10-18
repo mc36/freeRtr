@@ -73,6 +73,7 @@ public class rtrBgpEvpnPbb implements ifcUp {
         ifcEther.parseETHheader(pck, false);
         addrMac src = pck.ETHsrc.copyBytes();
         if (ifcDot1ah.parseHeader(pck)) {
+            cntr.drop(pck, counter.reasons.badHdr);
             return;
         }
         pck.getSkip(ifcDot1ah.size);
@@ -80,15 +81,18 @@ public class rtrBgpEvpnPbb implements ifcUp {
         evpn.id = pck.ETHvlan;
         evpn = parent.evpn.find(evpn);
         if (evpn == null) {
+            cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
         if (src.compare(src, evpn.bbmac) == 0) {
+            cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
         rtrBgpEvpnPeer peer = new rtrBgpEvpnPeer(null);
         peer.bbmac = src;
         peer = evpn.peers.find(peer);
         if (peer == null) {
+            cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
         peer.brdg.recvPack(pck);

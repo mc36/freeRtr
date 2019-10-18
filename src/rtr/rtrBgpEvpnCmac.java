@@ -72,6 +72,7 @@ public class rtrBgpEvpnCmac implements ifcUp {
         peer.bbmac = pck.ETHsrc;
         peer = parent.peers.find(peer);
         if (peer == null) {
+            cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
         peer.brdg.recvPack(pck);
