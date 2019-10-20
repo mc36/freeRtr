@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v19.10.17-testing, done by cs@nop.;-;-
--;-;2019-10-18 03:14:51, took 09:04:16 on 1591 cases, 0 failed, 0 traces, 13 retries;-;-
+-;-;freeRouter v19.10.19-testing, done by cs@nop.;-;-
+-;-;2019-10-20 04:00:14, took 08:51:58 on 1611 cases, 0 failed, 0 traces, 4 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -632,6 +632,7 @@ intop2-bgp18.tst;0;interop2: bgp large community;successfully;finished
 intop2-bgp19.tst;0;interop2: bgp vpnv4 over srv6;successfully;finished
 intop2-bgp20.tst;0;interop2: bgp vpnv6 over srv6;successfully;finished
 intop2-bgp21.tst;0;interop2: bgp 6pe;successfully;finished
+intop2-bgp22.tst;0;interop2: evpn/vpws over bgp;successfully;finished
 intop2-eigrp01.tst;0;interop2: eigrp;successfully;finished
 intop2-eigrp02.tst;0;interop2: eigrp prefix withdraw;successfully;finished
 intop2-eth01.tst;0;interop2: ethernet encapsulation;successfully;finished
@@ -1311,6 +1312,25 @@ rout-bgp375.tst;0;vpns over srv6 over bgp additional path;successfully;finished
 rout-bgp376.tst;0;evpn/pbb over srv6 over bgp additional path;successfully;finished
 rout-bgp377.tst;0;evpn/cmac over srv6 over bgp additional path;successfully;finished
 rout-bgp378.tst;0;other over srv6 over bgp additional path;successfully;finished
+rout-bgp379.tst;0;evpn/vpws over ebgp;successfully;finished
+rout-bgp380.tst;0;evpn/vpws over ibgp;successfully;finished
+rout-bgp381.tst;0;evpn/vpws over bgp additional path;successfully;finished
+rout-bgp382.tst;0;evpn/vpws over ibgp rr;successfully;finished
+rout-bgp383.tst;0;evpn/vpws over confed bgp;successfully;finished
+rout-bgp384.tst;0;evpn/vpws over bgp route server;successfully;finished
+rout-bgp385.tst;0;ethersite evpn/vpws over ibgp;successfully;finished
+rout-bgp386.tst;0;evpn/vpws over bgp with soft-reconfig;successfully;finished
+rout-bgp387.tst;0;unicast+evpn/vpws over bgp;successfully;finished
+rout-bgp388.tst;0;unicast+evpn/vpws over bgp with soft-reconfig;successfully;finished
+rout-bgp389.tst;0;unicast+evpn/vpws over bgp additional path;successfully;finished
+rout-bgp390.tst;0;evpn/vpws over bgp auto mesh tunnel;successfully;finished
+rout-bgp391.tst;0;evpn/vpws over srv6 over ibgp;successfully;finished
+rout-bgp392.tst;0;evpn/vpws over srv6 over ebgp;successfully;finished
+rout-bgp393.tst;0;evpn/vpws over srv6 over ibgp rr;successfully;finished
+rout-bgp394.tst;0;evpn/vpws over srv6 over confed bgp;successfully;finished
+rout-bgp395.tst;0;evpn/vpws over srv6 over bgp route server;successfully;finished
+rout-bgp396.tst;0;evpn/vpws over srv6 over bgp with soft-reconfig;successfully;finished
+rout-bgp397.tst;0;evpn/vpws over srv6 over bgp additional path;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished

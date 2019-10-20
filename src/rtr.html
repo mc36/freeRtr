@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v19.10.17-testing, done by cs@nop.<br/>
-tested: 2019-10-18 03:14:51, took 09:04:16 on 1591 cases, 0 failed, 0 traces, 13 retries<br/>
+release: freeRouter v19.10.19-testing, done by cs@nop.<br/>
+tested: 2019-10-20 04:00:14, took 08:51:58 on 1611 cases, 0 failed, 0 traces, 4 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -635,6 +635,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-bgp19.tst">intop2-bgp19.tst</a></td><td>0</td><td>interop2: bgp vpnv4 over srv6</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-bgp20.tst">intop2-bgp20.tst</a></td><td>0</td><td>interop2: bgp vpnv6 over srv6</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-bgp21.tst">intop2-bgp21.tst</a></td><td>0</td><td>interop2: bgp 6pe</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop2-bgp22.tst">intop2-bgp22.tst</a></td><td>0</td><td>interop2: evpn/vpws over bgp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-eigrp01.tst">intop2-eigrp01.tst</a></td><td>0</td><td>interop2: eigrp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-eigrp02.tst">intop2-eigrp02.tst</a></td><td>0</td><td>interop2: eigrp prefix withdraw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-eth01.tst">intop2-eth01.tst</a></td><td>0</td><td>interop2: ethernet encapsulation</td><td>successfully</td><td>finished</td></tr>
@@ -1314,6 +1315,25 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp376.tst">rout-bgp376.tst</a></td><td>0</td><td>evpn/pbb over srv6 over bgp additional path</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp377.tst">rout-bgp377.tst</a></td><td>0</td><td>evpn/cmac over srv6 over bgp additional path</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp378.tst">rout-bgp378.tst</a></td><td>0</td><td>other over srv6 over bgp additional path</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp379.tst">rout-bgp379.tst</a></td><td>0</td><td>evpn/vpws over ebgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp380.tst">rout-bgp380.tst</a></td><td>0</td><td>evpn/vpws over ibgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp381.tst">rout-bgp381.tst</a></td><td>0</td><td>evpn/vpws over bgp additional path</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp382.tst">rout-bgp382.tst</a></td><td>0</td><td>evpn/vpws over ibgp rr</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp383.tst">rout-bgp383.tst</a></td><td>0</td><td>evpn/vpws over confed bgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp384.tst">rout-bgp384.tst</a></td><td>0</td><td>evpn/vpws over bgp route server</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp385.tst">rout-bgp385.tst</a></td><td>0</td><td>ethersite evpn/vpws over ibgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp386.tst">rout-bgp386.tst</a></td><td>0</td><td>evpn/vpws over bgp with soft-reconfig</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp387.tst">rout-bgp387.tst</a></td><td>0</td><td>unicast+evpn/vpws over bgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp388.tst">rout-bgp388.tst</a></td><td>0</td><td>unicast+evpn/vpws over bgp with soft-reconfig</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp389.tst">rout-bgp389.tst</a></td><td>0</td><td>unicast+evpn/vpws over bgp additional path</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp390.tst">rout-bgp390.tst</a></td><td>0</td><td>evpn/vpws over bgp auto mesh tunnel</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp391.tst">rout-bgp391.tst</a></td><td>0</td><td>evpn/vpws over srv6 over ibgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp392.tst">rout-bgp392.tst</a></td><td>0</td><td>evpn/vpws over srv6 over ebgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp393.tst">rout-bgp393.tst</a></td><td>0</td><td>evpn/vpws over srv6 over ibgp rr</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp394.tst">rout-bgp394.tst</a></td><td>0</td><td>evpn/vpws over srv6 over confed bgp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp395.tst">rout-bgp395.tst</a></td><td>0</td><td>evpn/vpws over srv6 over bgp route server</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp396.tst">rout-bgp396.tst</a></td><td>0</td><td>evpn/vpws over srv6 over bgp with soft-reconfig</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp397.tst">rout-bgp397.tst</a></td><td>0</td><td>evpn/vpws over srv6 over bgp additional path</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp01.tst">rout-eigrp01.tst</a></td><td>0</td><td>eigrp point2point connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp02.tst">rout-eigrp02.tst</a></td><td>0</td><td>eigrp point2multipoint connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp03.tst">rout-eigrp03.tst</a></td><td>0</td><td>eigrp point2point chain</td><td>successfully</td><td>finished</td></tr>

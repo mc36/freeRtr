@@ -2050,6 +2050,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("3 4       encapsulation           specify encapsulation to use");
         l.add("4 .         pbb                   pbb");
         l.add("4 .         vxlan                 vxlan");
+        l.add("4 .         vpws                  vpws");
         l.add("4 .         cmac                  cmac");
     }
 
@@ -2577,6 +2578,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 }
                 if (s.equals("cmac")) {
                     cur.encap = rtrBgpEvpn.encapType.cmac;
+                }
+                if (s.equals("vpws")) {
+                    cur.encap = rtrBgpEvpn.encapType.vpws;
                 }
                 needFull.add(1);
                 compute.wakeup();

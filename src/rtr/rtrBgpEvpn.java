@@ -50,7 +50,11 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         /**
          * cmac
          */
-        cmac
+        cmac,
+        /**
+         * vpws
+         */
+        vpws
     }
 
     /**
@@ -107,6 +111,11 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
      * cmac receiver
      */
     protected rtrBgpEvpnCmac cmacr;
+
+    /**
+     * vpws receiver
+     */
+    protected rtrBgpEvpnVpws vpwsr;
 
     /**
      * upper layer
@@ -181,6 +190,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 break;
             case cmac:
                 a = "cmac";
+                break;
+            case vpws:
+                a = "vpws";
                 break;
         }
         l.add(beg + "encapsulation " + a);
@@ -321,6 +333,26 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 tab.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
+            case vpws:
+                if (label == null) {
+                    label = tabLabel.allocate(11);
+                    if (label == null) {
+                        break;
+                    }
+                    vpwsr = new rtrBgpEvpnVpws(this);
+                    label.setFwdPwe(11, parent.fwdCore, vpwsr, 0, null);
+                }
+                buf[0] = 1; // eth advertisement
+                if (!ipMpls.putSrv6prefix(ntry, srv6, label)) {
+                    ntry.evpnLab = convLab(ntry.labelLoc);
+                } else {
+                    ntry.evpnLab = convLab(label);
+                }
+                bits.msbPutD(buf, 12, id);
+                ntry.prefix.network.fromBuf(buf, 0);
+                tab.add(tabRoute.addType.better, ntry, true, true);
+                adverted = true;
+                break;
         }
     }
 
@@ -347,9 +379,35 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 continue;
             }
             rtrBgpEvpnPeer per;
+            rtrBgpEvpnPeer old = null;
             ntry.prefix.network.toBuffer(buf, 0);
             int eti = bits.msbGetD(buf, 2);
             switch (buf[0]) {
+                case 1: // eth advertisement
+                    if (encap != encapType.vpws) {
+                        continue;
+                    }
+                    if (eti != 0) {
+                        continue;
+                    }
+                    if (bits.msbGetD(buf, 12) != id) {
+                        continue;
+                    }
+                    per = new rtrBgpEvpnPeer(this);
+                    per.bbmac = new addrMac();
+                    old = findPeer(ntry.nextHop);
+                    if (old == null) {
+                        peers.add(per);
+                    } else {
+                        per = old;
+                    }
+                    per.needed |= 1;
+                    per.peer = ntry.nextHop.copyBytes();
+                    per.labUni = ntry.evpnLab >>> 4;
+                    if (ntry.segrouPrf != null) {
+                        per.srv6uni = ntry.segrouPrf.copyBytes();
+                    }
+                    break;
                 case 2: // mac advertisement
                     switch (encap) {
                         case pbb:
@@ -367,11 +425,12 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                                 continue;
                             }
                             break;
+                        case vpws:
+                            continue;
                     }
                     per = new rtrBgpEvpnPeer(this);
                     per.bbmac = new addrMac();
                     per.bbmac.fromBuf(buf, 10);
-                    rtrBgpEvpnPeer old = null;
                     switch (encap) {
                         case pbb:
                             old = peers.find(per);
@@ -418,6 +477,8 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                                 continue;
                             }
                             break;
+                        case vpws:
+                            continue;
                     }
                     old = findPeer(ntry.nextHop);
                     if (old == null) {
@@ -447,6 +508,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                     ned = ntry.needed != 0;
                     break;
                 case cmac:
+                    ned = ntry.needed != 0;
+                    break;
+                case vpws:
                     ned = ntry.needed != 0;
                     break;
             }
@@ -484,6 +548,10 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                     ntry.vxlan.workStart();
                     break;
                 case cmac:
+                    ntry.brdg = bridge.bridgeHed.newIface(false, false, false);
+                    ntry.setUpper(ntry.brdg);
+                    break;
+                case vpws:
                     ntry.brdg = bridge.bridgeHed.newIface(false, false, false);
                     ntry.setUpper(ntry.brdg);
                     break;
@@ -537,11 +605,18 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 ifcEther.createETHheader(pck, false);
                 doSendPack(per, pck);
                 break;
+            case vpws:
+                ifcEther.createETHheader(pck, false);
+                doSendPack(per, pck);
+                break;
         }
     }
 
     private void doSendPack(rtrBgpEvpnPeer per, packHolder pck) {
         boolean flood = pck.ETHtrg.isFloodable();
+        if (encap == encapType.vpws) {
+            flood = false;
+        }
         addrIP srv;
         if (flood) {
             pck.MPLSlabel = per.labMul;

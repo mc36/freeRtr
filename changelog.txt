@@ -8737,3 +8737,24 @@ qc pass: vpns over srv6 over bgp additional path
 qc pass: evpn/pbb over srv6 over bgp additional path
 qc pass: evpn/cmac over srv6 over bgp additional path
 qc pass: other over srv6 over bgp additional path
+---------------------------------- 2019-10-19 19:08:16
+qc pass: interop2: evpn/vpws over bgp
+qc pass: evpn/vpws over ebgp
+qc pass: evpn/vpws over ibgp
+qc pass: evpn/vpws over bgp additional path
+qc pass: evpn/vpws over ibgp rr
+qc pass: evpn/vpws over confed bgp
+qc pass: evpn/vpws over bgp route server
+qc pass: ethersite evpn/vpws over ibgp
+qc pass: evpn/vpws over bgp with soft-reconfig
+qc pass: unicast+evpn/vpws over bgp
+qc pass: unicast+evpn/vpws over bgp with soft-reconfig
+qc pass: unicast+evpn/vpws over bgp additional path
+qc pass: evpn/vpws over bgp auto mesh tunnel
+qc pass: evpn/vpws over srv6 over ibgp
+qc pass: evpn/vpws over srv6 over ebgp
+qc pass: evpn/vpws over srv6 over ibgp rr
+qc pass: evpn/vpws over srv6 over confed bgp
+qc pass: evpn/vpws over srv6 over bgp route server
+qc pass: evpn/vpws over srv6 over bgp with soft-reconfig
+qc pass: evpn/vpws over srv6 over bgp additional path
