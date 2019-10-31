@@ -66,6 +66,29 @@ control IngressControlBridge(inout headers hdr,
       ig_md.mpls_op_type = 3;
    }
 
+   action act_set_bridge_srv(PortId_t port, ipv6_addr_t target) {
+      ig_md.bridge_trg = port;
+      ig_md.vrf = 0;
+      ig_md.mpls0_valid = 0;
+      ig_md.mpls1_valid = 0;
+      ig_md.arp_valid = 0;
+      ig_md.llc_valid = 0;
+      ig_md.ipv4_valid = 0;
+      ig_md.ipv6_valid = 0;
+      hdr.vlan.setInvalid();
+      hdr.eth2.setValid();
+      hdr.eth2 = hdr.ethernet;
+      hdr.eth2.ethertype = ig_md.ethertype;
+      ig_md.ethertype = ETHERTYPE_IPV6;
+      hdr.ipv6c.setValid();
+      hdr.ipv6c.version = 6;
+      hdr.ipv6c.payload_len = (bit<16>)ig_intr_md.packet_length - (bit<16>)ig_md.vlan_size;
+      hdr.ipv6c.next_hdr = IP_PROTOCOL_ETHERIP;
+      hdr.ipv6c.hop_limit = 255;
+      hdr.ipv6c.src_addr = target;
+      hdr.ipv6c.dst_addr = target;
+   }
+
    action act_bridge_punt() {
       ig_md.bridge_trg = 0;
    }
@@ -78,6 +101,7 @@ control IngressControlBridge(inout headers hdr,
       actions = {
          act_set_bridge_out;
          act_set_bridge_vpls;
+         act_set_bridge_srv;
          act_bridge_punt;
       }
       size = VRF_TABLE_SIZE;                                                                           
@@ -86,29 +110,31 @@ control IngressControlBridge(inout headers hdr,
 
 
    apply {
-         if (ig_md.bridge_id != 0) {
-            ig_md.vrf = 0;
-            ig_md.mpls0_valid = 0;
-            ig_md.mpls1_valid = 0;
-            ig_md.arp_valid = 0;
-            ig_md.llc_valid = 0;
-            ig_md.ipv4_valid = 0;
-            ig_md.ipv6_valid = 0;
-            tbl_bridge_learn.apply();
-            tbl_bridge_target.apply();
-            ig_md.target_id = ig_md.bridge_trg;
-            if ((ig_md.bridge_src == 0) || (ig_md.bridge_trg == 0)) {
-               send_to_cpu();
-            } else if (hdr.mpls[1].isValid() && (ig_md.mpls_op_type != 3)) {
-              hdr.eth2.setInvalid();
-              hdr.mpls[1].setInvalid();
-              hdr.mpls[0].setInvalid();
-              hdr.vlan.setInvalid();
-              ig_md.mpls0_remove = 0;
-              ig_md.mpls1_remove = 0;
-            }
+         if (ig_md.bridge_id == 0) {
+            return;
          }
-
+        ig_md.vrf = 0;
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+        ig_md.arp_valid = 0;
+        ig_md.llc_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        tbl_bridge_learn.apply();
+        tbl_bridge_target.apply();
+        ig_md.target_id = ig_md.bridge_trg;
+        if ((ig_md.bridge_src == 0) || (ig_md.bridge_trg == 0)) {
+           send_to_cpu();
+           return;
+        }
+        if (hdr.mpls[1].isValid() && (ig_md.mpls_op_type != 3)) {
+          hdr.eth2.setInvalid();
+          hdr.mpls[1].setInvalid();
+          hdr.mpls[0].setInvalid();
+          hdr.vlan.setInvalid();
+          ig_md.mpls0_remove = 0;
+          ig_md.mpls1_remove = 0;
+        }
    }                               
 }   
 

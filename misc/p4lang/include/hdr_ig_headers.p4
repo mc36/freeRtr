@@ -7,11 +7,16 @@ struct headers {
    ethernet_t		ethernet;
    vlan_t               vlan;  
    mpls_t[3]		mpls;
+   ipv4_t		ipv4c;
+   ipv6_t		ipv6c;
    ethernet_t		eth2;
    arp_t		arp; 
    llc_t                llc; 
    ipv4_t		ipv4;
    ipv6_t		ipv6;
+   ethernet_t		eth3;
+   ipv4_t		ipv4b;
+   ipv6_t		ipv6b;
 }
 
 #endif // _HEADERS_P4_

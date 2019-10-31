@@ -66,6 +66,38 @@ control IngressControlIPv6(inout headers hdr,
       ig_md.nexthop_id = nexthop_id;
    }
 
+   action act_srv_decap_ipv4(switch_vrf_t vrf) {
+      ig_md.vrf = vrf;
+      ig_md.srv_op_type = 4;
+   }
+
+   action act_srv_decap_ipv6(switch_vrf_t vrf) {
+      ig_md.vrf = vrf;
+      ig_md.srv_op_type = 6;
+   }
+
+   action act_srv_decap_evpn(PortId_t bridge) {
+      ig_md.vrf = 0;
+      ig_md.srv_op_type = 2;
+      ig_md.bridge_id = bridge;
+      ig_md.ethertype = hdr.eth3.ethertype;
+      hdr.ethernet.src_mac_addr = hdr.eth3.src_mac_addr;
+      hdr.ethernet.dst_mac_addr = hdr.eth3.dst_mac_addr;
+   }
+
+
+   action act_ipv6_srv_encap_set_nexthop(ipv6_addr_t target, PortId_t nexthop_id) {
+      ig_md.ethertype = ETHERTYPE_IPV6;
+      hdr.ipv6b.setValid();
+      hdr.ipv6b = hdr.ipv6;
+      hdr.ipv6.version = 6;
+      hdr.ipv6.payload_len = hdr.ipv6b.payload_len + 40;
+      hdr.ipv6.next_hdr = IP_PROTOCOL_IPV6;
+      hdr.ipv6.hop_limit = 255;
+      hdr.ipv6.src_addr = target;
+      hdr.ipv6.dst_addr = target;
+      ig_md.nexthop_id = nexthop_id;
+   }
 
 
 
@@ -82,6 +114,10 @@ control IngressControlIPv6(inout headers hdr,
          act_ipv6_cpl_set_nexthop;
          act_ipv6_set_nexthop;
          act_ipv6_mpls_encap_set_nexthop;
+         act_ipv6_srv_encap_set_nexthop;
+         act_srv_decap_ipv4;
+         act_srv_decap_ipv6;
+         act_srv_decap_evpn;
          @defaultonly NoAction;
       }
       size = IPV6_HOST_TABLE_SIZE;
@@ -100,10 +136,12 @@ control IngressControlIPv6(inout headers hdr,
          act_ipv6_cpl_set_nexthop;
          act_ipv6_set_nexthop;
          act_ipv6_mpls_encap_set_nexthop;
+         act_ipv6_srv_encap_set_nexthop;
          act_ipv6_fib_discard;
+         @defaultonly NoAction;
       }
       size = IPV6_LPM_TABLE_SIZE;
-      default_action = act_ipv6_fib_discard();
+      default_action = NoAction();
    }
 
    apply {

@@ -68,7 +68,11 @@ parser ig_prs_main(packet_in pkt,
 
    state prs_eth2 {
       pkt.extract(hdr.eth2);
-      transition accept;
+      transition select(hdr.eth2.ethertype) {
+         ETHERTYPE_IPV4: prs_ipv4;
+         ETHERTYPE_IPV6: prs_ipv6;
+         default: accept;
+      }
    }
 
 
@@ -76,12 +80,38 @@ parser ig_prs_main(packet_in pkt,
    state prs_ipv4 {                                                                 
       pkt.extract(hdr.ipv4);                                                     
       ig_md.ipv4_valid = 1;
-      transition accept;
+      transition select(hdr.ipv4.protocol) {
+         IP_PROTOCOL_IPV4: prs_ipv4b;
+         IP_PROTOCOL_IPV6: prs_ipv6b;
+         IP_PROTOCOL_ETHERIP: prs_eth3;
+         default: accept;
+      }
    }                                                                                
 
    state prs_ipv6 {                                                                 
       pkt.extract(hdr.ipv6);                                                     
       ig_md.ipv6_valid = 1;
+      transition select(hdr.ipv6.next_hdr) {
+         IP_PROTOCOL_IPV4: prs_ipv4b;
+         IP_PROTOCOL_IPV6: prs_ipv6b;
+         IP_PROTOCOL_ETHERIP: prs_eth3;
+         default: accept;
+      }
+   }                                                                                
+
+
+   state prs_eth3 {
+      pkt.extract(hdr.eth3);
+      transition accept;
+   }
+
+   state prs_ipv4b {                                                                 
+      pkt.extract(hdr.ipv4b);                                                     
+      transition accept;
+   }                                                                                
+
+   state prs_ipv6b {                                                                 
+      pkt.extract(hdr.ipv6b);                                                     
       transition accept;
    }                                                                                
 

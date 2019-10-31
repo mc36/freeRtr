@@ -14,6 +14,8 @@ control ig_ctl(inout headers hdr,
    IngressControlBridge() ig_ctl_bridge;
    IngressControlIPv4() ig_ctl_ipv4;
    IngressControlIPv6() ig_ctl_ipv6;
+   IngressControlIPv4b() ig_ctl_ipv4b;
+   IngressControlIPv6b() ig_ctl_ipv6b;
    IngressControlNexthop() ig_ctl_nexthop;
    IngressControlVlanIn() ig_ctl_vlan_in;  
    IngressControlVlanOut() ig_ctl_vlan_out;
@@ -41,14 +43,20 @@ control ig_ctl(inout headers hdr,
            if (hdr.mpls[1].isValid()) {
              ig_md.mpls1_valid = 1;
            }
+           if (ig_md.bridge_id != 0) {
+             ig_md.ipv4_valid=0;
+             ig_md.ipv6_valid=0;
+           }
          ig_ctl_vlan_in.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_vrf.apply(hdr,ig_md);
          ig_ctl_arp.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_llc.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_mpls.apply(hdr,ig_md,ig_intr_md); 
-         ig_ctl_bridge.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_ipv4.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_ipv6.apply(hdr,ig_md,ig_intr_md); 
+         ig_ctl_bridge.apply(hdr,ig_md,ig_intr_md); 
+         ig_ctl_ipv4b.apply(hdr,ig_md,ig_intr_md); 
+         ig_ctl_ipv6b.apply(hdr,ig_md,ig_intr_md); 
          if ( ig_md.nexthop_id == CPU_PORT) {
            hdr.pkt_in.setValid();
            hdr.pkt_in.ingress_port = ig_intr_md.ingress_port;
@@ -58,6 +66,13 @@ control ig_ctl(inout headers hdr,
 
            if (hdr.vlan.isValid()) {
               hdr.vlan.setInvalid();
+           }
+
+           if (ig_md.srv_op_type != 0) {
+              hdr.ipv6.setInvalid();
+           }
+           if (ig_md.srv_op_type == 2) {
+              hdr.eth3.setInvalid();
            }
 
          ig_ctl_mpls2.apply(hdr,ig_md,ig_intr_md); 

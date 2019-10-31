@@ -1,7 +1,7 @@
-#ifndef _IG_CTL_IPv4_P4_  
-#define _IG_CTL_IPv4_P4_  
+#ifndef _IG_CTL_IPv4b_P4_  
+#define _IG_CTL_IPv4b_P4_  
    
-control IngressControlIPv4(inout headers hdr,
+control IngressControlIPv4b(inout headers hdr,
                            inout ingress_metadata_t ig_md,
                            inout standard_metadata_t ig_intr_md) {
 
@@ -67,6 +67,7 @@ control IngressControlIPv4(inout headers hdr,
    }
 
 
+
    action act_ipv4_srv_encap_set_nexthop(ipv6_addr_t target, PortId_t nexthop_id) {
       ig_md.ethertype = ETHERTYPE_IPV6;
       hdr.ipv4b.setValid();
@@ -90,7 +91,7 @@ control IngressControlIPv4(inout headers hdr,
          /*
           * we match /32 host route
           */
-         hdr.ipv4.dst_ipv4_addr: exact;
+         hdr.ipv4b.dst_ipv4_addr: exact;
          ig_md.vrf: exact;
       }
       actions = {
@@ -109,7 +110,7 @@ control IngressControlIPv4(inout headers hdr,
          /*
           * we match network route via Long Prefix Match kind operation
           */
-         hdr.ipv4.dst_ipv4_addr: lpm;
+         hdr.ipv4b.dst_ipv4_addr: lpm;
          ig_md.vrf: exact;
       }
       actions = {
@@ -129,7 +130,8 @@ control IngressControlIPv4(inout headers hdr,
          * It is a dataplane packet                 
          */                                            
         //if (hdr.ipv4.isValid() && hdr.ipv4.ttl > 1) {  
-        if (ig_md.ipv4_valid==1)  {  
+        if (ig_md.srv_op_type==4)  {  
+            ig_md.ethertype = ETHERTYPE_IPV4;
            if (!tbl_ipv4_fib_host.apply().hit) {           
               tbl_ipv4_fib_lpm.apply();                    
            }                                           
@@ -137,5 +139,5 @@ control IngressControlIPv4(inout headers hdr,
    }                               
 }   
 
-#endif // _IG_CTL_IPv4_P4_
+#endif // _IG_CTL_IPv4b_P4_
    

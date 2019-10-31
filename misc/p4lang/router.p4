@@ -5,6 +5,7 @@
 #include <include/def_types.p4>
 #include <include/cst_cpu_port.p4>
 #include <include/cst_ethertype.p4>
+#include <include/cst_ip_protocol.p4>
 #include <include/cst_table_size.p4>
 #include <include/hdr_pkt_in.p4>
 #include <include/hdr_pkt_out.p4>
@@ -44,6 +45,8 @@
 #include <include/ig_ctl_mpls2.p4>
 #include <include/ig_ctl_ipv4.p4>
 #include <include/ig_ctl_ipv6.p4>
+#include <include/ig_ctl_ipv4b.p4>
+#include <include/ig_ctl_ipv6b.p4>
 #include <include/ig_ctl.p4>
 
 /*------------------ E G R E S S - M A T C H - A C T I O N ------------------ */
