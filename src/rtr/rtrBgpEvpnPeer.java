@@ -240,7 +240,11 @@ public class rtrBgpEvpnPeer implements ifcDn, Comparator<rtrBgpEvpnPeer> {
      * @return forwarder
      */
     public ipFwd getForwarder() {
-        return parent.parent.fwdCore;
+        if (srv6uni == null) {
+            return parent.parent.fwdCore;
+        } else {
+            return parent.parent.vrfCore.fwd6;
+        }
     }
 
 }
