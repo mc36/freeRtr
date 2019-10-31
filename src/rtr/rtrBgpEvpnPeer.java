@@ -223,6 +223,18 @@ public class rtrBgpEvpnPeer implements ifcDn, Comparator<rtrBgpEvpnPeer> {
     }
 
     /**
+     * get srv remote address
+     *
+     * @return address
+     */
+    public addrIP getSrvRem() {
+        if (srv6uni == null) {
+            return null;
+        }
+        return srv6uni.copyBytes();
+    }
+
+    /**
      * get forwarder
      *
      * @return forwarder

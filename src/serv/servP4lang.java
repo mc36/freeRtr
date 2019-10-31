@@ -4,6 +4,7 @@ import java.util.Comparator;
 import addr.addrEmpty;
 import addr.addrType;
 import addr.addrIP;
+import addr.addrIPv6;
 import addr.addrMac;
 import addr.addrPrefix;
 import cfg.cfgAll;
@@ -65,6 +66,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public tabGen<servP4langIfc> expIfc = new tabGen<servP4langIfc>();
 
     /**
+     * exported srv6
+     */
+    public cfgIfc expSrv6 = null;
+
+    /**
      * exported bridges
      */
     public tabGen<servP4langBr> expBr = new tabGen<servP4langBr>();
@@ -112,6 +118,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             servP4langBr ntry = expBr.get(i);
             l.add(beg + "export-bridge " + ntry.br.num);
         }
+        if (expSrv6 != null) {
+            l.add(beg + "export-srv6 " + expSrv6.name);
+        }
         cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
     }
 
@@ -150,6 +159,14 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             interconn = ifc.ethtyp;
             interconn.addET(-1, "p4lang", this);
             interconn.updateET(-1, this);
+            return false;
+        }
+        if (s.equals("export-srv6")) {
+            expSrv6 = cfgAll.ifcFind(cmd.word(), false);
+            if (expSrv6 == null) {
+                cmd.error("no such interface");
+                return false;
+            }
             return false;
         }
         if (s.equals("export-port")) {
@@ -223,6 +240,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             interconn = null;
             return false;
         }
+        if (s.equals("export-srv6")) {
+            expSrv6 = null;
+            return false;
+        }
         if (s.equals("export-port")) {
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
@@ -249,6 +270,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("1 2  export-port               specify port to export");
         l.add("2 3    <name>                  interface name");
         l.add("3 .      <num>                 p4lang port number");
+        l.add("1 2  export-srv6               specify srv6 to export");
+        l.add("2 .    <name>                  interface name");
         l.add("1 2  interconnect              specify port to for packetin");
         l.add("2 .    <name>                  interface name");
     }
@@ -664,6 +687,19 @@ class servP4langConn implements Runnable {
                 }
                 labels.put(ntry.copyBytes());
                 lower.sendLine("mylabel" + ntry.forwarder.ipVersion + "_" + act + " " + ntry.getValue() + " " + vrf.id);
+                if (lower.expSrv6 == null) {
+                    continue;
+                }
+                if (lower.expSrv6.addr6 == null) {
+                    continue;
+                }
+                servP4langVrf vr = findVrf(lower.expSrv6.vrfFor.fwd6);
+                if (vr == null) {
+                    continue;
+                }
+                addrIPv6 adr = lower.expSrv6.addr6.copyBytes();
+                bits.msbPutD(adr.getBytes(), 12, ntry.getValue());
+                lower.sendLine("mysrv" + ntry.forwarder.ipVersion + "_" + act + " " + vr.id + " " + adr + " " + vrf.id);
                 continue;
             }
             int p = findIface(ntry.iface);
@@ -702,6 +738,19 @@ class servP4langConn implements Runnable {
                     continue;
                 }
                 lower.sendLine("mylabel" + ntry.forwarder.ipVersion + "_del" + " " + ntry.getValue() + " " + vrf.id);
+                if (lower.expSrv6 == null) {
+                    continue;
+                }
+                if (lower.expSrv6.addr6 == null) {
+                    continue;
+                }
+                servP4langVrf vr = findVrf(lower.expSrv6.vrfFor.fwd6);
+                if (vr == null) {
+                    continue;
+                }
+                addrIPv6 adr = lower.expSrv6.addr6.copyBytes();
+                bits.msbPutD(adr.getBytes(), 12, ntry.getValue());
+                lower.sendLine("mysrv" + ntry.forwarder.ipVersion + "_del " + vr.id + " " + adr + " " + vrf.id);
                 continue;
             }
             String afi;
@@ -815,6 +864,20 @@ class servP4langConn implements Runnable {
             }
             br.ifcs.put(ntry);
             lower.sendLine("bridgelabel_add " + br.br.num + " " + l);
+            if (lower.expSrv6 == null) {
+                continue;
+            }
+            if (lower.expSrv6.addr6 == null) {
+                continue;
+            }
+            servP4langVrf vr = findVrf(lower.expSrv6.vrfFor.fwd6);
+            if (vr == null) {
+                continue;
+            }
+            addrIPv6 adr = lower.expSrv6.addr6.copyBytes();
+            bits.msbPutD(adr.getBytes(), 12, l);
+            lower.sendLine("bridgesrv_add " + br.br.num + " " + vr.id + " " + adr);
+            continue;
         }
         for (int i = 0;; i++) {
             ifcBridgeAdr ntry = br.br.bridgeHed.getMacAddr(i);
@@ -837,6 +900,7 @@ class servP4langConn implements Runnable {
             }
             int l = -1;
             addrIP adr = null;
+            addrIP srv = null;
             tabRouteEntry<addrIP> rou = null;
             try {
                 clntMplsPwe iface = (clntMplsPwe) ntry.ifc.lowerIf;
@@ -852,7 +916,12 @@ class servP4langConn implements Runnable {
                 rtrBgpEvpnPeer iface = (rtrBgpEvpnPeer) ntry.ifc.lowerIf;
                 l = iface.getLabelRem();
                 adr = iface.getRemote();
-                rou = iface.getForwarder().actualU.route(adr);
+                srv = iface.getSrvRem();
+                if (srv == null) {
+                    rou = iface.getForwarder().actualU.route(adr);
+                } else {
+                    rou = iface.getForwarder().actualU.route(srv);
+                }
             } catch (Exception e) {
             }
             if (l < 1) {
@@ -865,7 +934,11 @@ class servP4langConn implements Runnable {
             if (p < 0) {
                 continue;
             }
-            lower.sendLine("bridgevpls_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + adr + " " + p + " " + getLabel(rou) + " " + l);
+            if (srv == null) {
+                lower.sendLine("bridgevpls_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + adr + " " + p + " " + getLabel(rou) + " " + l);
+            } else {
+                lower.sendLine("bridgesrv6_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + adr + " " + p + " " + srv);
+            }
         }
     }
 
@@ -999,7 +1072,11 @@ class servP4langConn implements Runnable {
                     }
                     act = "mod";
                 }
-                old = ntry.rouTab.actualU.route(ntry.nextHop);
+                if (ntry.segrouPrf == null) {
+                    old = ntry.rouTab.actualU.route(ntry.nextHop);
+                } else {
+                    old = ntry.rouTab.actualU.route(ntry.segrouPrf);
+                }
                 if (old == null) {
                     continue;
                 }
@@ -1014,7 +1091,11 @@ class servP4langConn implements Runnable {
                 } else {
                     a = "" + addrPrefix.ip2ip6(ntry.prefix);
                 }
-                lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id + " " + getLabel(old) + " " + getLabel(ntry));
+                if (ntry.segrouPrf == null) {
+                    lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id + " " + getLabel(old) + " " + getLabel(ntry));
+                } else {
+                    lower.sendLine("srvroute" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id + " " + ntry.segrouPrf);
+                }
                 continue;
             }
             tabRouteEntry<addrIP> old = done.find(ntry);
@@ -1048,7 +1129,12 @@ class servP4langConn implements Runnable {
                 continue;
             }
             if ((ntry.iface == null) && (ntry.rouTab != null)) {
-                tabRouteEntry<addrIP> old = ntry.rouTab.actualU.route(ntry.nextHop);
+                tabRouteEntry<addrIP> old;
+                if (ntry.segrouPrf == null) {
+                    old = ntry.rouTab.actualU.route(ntry.nextHop);
+                } else {
+                    old = ntry.rouTab.actualU.route(ntry.segrouPrf);
+                }
                 if (old == null) {
                     continue;
                 }
@@ -1063,7 +1149,11 @@ class servP4langConn implements Runnable {
                 } else {
                     a = "" + addrPrefix.ip2ip6(ntry.prefix);
                 }
-                lower.sendLine("vpnroute" + afi + "_del " + a + " " + p + " " + ntry.nextHop + " " + id + " " + getLabel(old) + " " + getLabel(ntry));
+                if (ntry.segrouPrf == null) {
+                    lower.sendLine("vpnroute" + afi + "_del " + a + " " + p + " " + ntry.nextHop + " " + id + " " + getLabel(old) + " " + getLabel(ntry));
+                } else {
+                    lower.sendLine("srvroute" + afi + "_del " + a + " " + p + " " + ntry.nextHop + " " + id + " " + ntry.segrouPrf);
+                }
                 continue;
             }
             done.del(ntry);

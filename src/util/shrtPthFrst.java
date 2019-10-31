@@ -75,8 +75,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param to target node
      * @param metric metric
      * @param realHop true if hop, false if network
+     * @param ident link id
      */
-    public void addConn(Ta from, Ta to, int metric, boolean realHop) {
+    public void addConn(Ta from, Ta to, int metric, boolean realHop, Object ident) {
         if (metric < 0) {
             metric = 0;
         }
@@ -89,6 +90,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         c.metric = metric;
         c.target = ntry;
         c.realHop = realHop;
+        c.ident = ident;
         ntry = new shrtPthFrstNode<Ta>(from);
         old = nodes.add(ntry);
         if (old != null) {
@@ -654,7 +656,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (con == null) {
                 continue;
             }
-            res.add("neighbor|" + con.target + "=" + con.metric);
+            res.add("neighbor|" + con.target + "=" + con.metric + "=" + con.ident);
         }
         return res;
     }
@@ -677,7 +679,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 if (con == null) {
                     continue;
                 }
-                s += con.target + "=" + con.metric + " ";
+                s += con.target + "=" + con.metric + "=" + con.ident + " ";
             }
             res.add(s);
         }
@@ -805,6 +807,8 @@ class shrtPthFrstConn<Ta extends Comparator<? super Ta>> {
     protected int metric;
 
     protected boolean realHop;
+
+    protected Object ident;
 
     protected shrtPthFrstNode<Ta> target;
 

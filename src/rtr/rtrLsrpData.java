@@ -507,7 +507,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     protected void putNeighs(shrtPthFrst<addrIPv4> spf) {
         for (int i = 0; i < neighbor.size(); i++) {
             rtrLsrpDataNeigh ntry = neighbor.get(i);
-            spf.addConn(rtrId, ntry.rtrid, ntry.metric, true);
+            spf.addConn(rtrId, ntry.rtrid, ntry.metric, true, null);
         }
     }
 

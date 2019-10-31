@@ -906,10 +906,10 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pck.getSkip(16);
                         switch (typ) {
                             case rtrOspf6lsa.lnkP2p:
-                                spf.addConn(src, new rtrOspf6areaSpf(adr, 0), met, true);
+                                spf.addConn(src, new rtrOspf6areaSpf(adr, 0), met, true, lnk);
                                 break;
                             case rtrOspf6lsa.lnkTrns:
-                                spf.addConn(src, new rtrOspf6areaSpf(adr, lnk), met, false);
+                                spf.addConn(src, new rtrOspf6areaSpf(adr, lnk), met, false, null);
                                 break;
                             default:
                                 break;
@@ -925,7 +925,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         addrIPv4 adr = new addrIPv4();
                         pck.getAddr(adr, 0); // router id
                         pck.getSkip(addrIPv4.size);
-                        spf.addConn(src, new rtrOspf6areaSpf(adr, 0), 0, true);
+                        spf.addConn(src, new rtrOspf6areaSpf(adr, 0), 0, true, null);
                     }
                     break;
                 case rtrOspf6lsa.lsaInterRtr:
@@ -933,7 +933,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     addrIPv4 adr = new addrIPv4();
                     pck.getAddr(adr, 8); // router id
                     int met = pck.msbGetD(4) & 0xffffff; // metric
-                    spf.addConn(src, new rtrOspf6areaSpf(adr, 0), met, true);
+                    spf.addConn(src, new rtrOspf6areaSpf(adr, 0), met, true, null);
                     break;
                 case rtrOspf6lsa.lsaRtrInfo:
                     typLenVal tlv = rtrOspfTe.getTlvHandler();

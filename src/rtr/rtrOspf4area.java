@@ -839,10 +839,10 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                         }
                         switch (l.type) {
                             case rtrOspf4lsa.lnkP2p:
-                                spf.addConn(ntry.rtrID, l.linkID, l.metric, true);
+                                spf.addConn(ntry.rtrID, l.linkID, l.metric, true, l.linkDat);
                                 break;
                             case rtrOspf4lsa.lnkTrns:
-                                spf.addConn(ntry.rtrID, l.linkID, l.metric, false);
+                                spf.addConn(ntry.rtrID, l.linkID, l.metric, false, l.linkDat);
                                 break;
                             default:
                                 break;
@@ -858,11 +858,11 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                         }
                         pck.getAddr(adr, 0);
                         pck.getSkip(addrIPv4.size);
-                        spf.addConn(ntry.lsaID, adr, 0, true);
+                        spf.addConn(ntry.lsaID, adr, 0, true, null);
                     }
                     break;
                 case rtrOspf4lsa.lsaSumAsBr:
-                    spf.addConn(ntry.rtrID, ntry.lsaID, pck.msbGetD(4) & 0xffffff, true);
+                    spf.addConn(ntry.rtrID, ntry.lsaID, pck.msbGetD(4) & 0xffffff, true, null);
                     break;
                 case rtrOspf4lsa.lsaOpArea:
                     if (ntry.lsaID.compare(ntry.lsaID, rtrOspfRi.getOpaque()) == 0) {
