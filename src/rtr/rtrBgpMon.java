@@ -185,7 +185,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
             i |= 0x80;
         }
         if (dir) {
-            i |= 0x40;
+            i |= 0x10;
         }
         pck.putByte(7, i); // peer flags
         pck.msbPutQ(8, 0); // peer distinguisher

@@ -61,6 +61,8 @@ public class userTester {
 
     private boolean config = false;
 
+    private boolean mdfile = false;
+
     private boolean randord = false;
 
     private String release = "unknown";
@@ -114,6 +116,12 @@ public class userTester {
             }
             if (s.equals("noconfig")) {
                 config = false;
+            }
+            if (s.equals("mdfile")) {
+                mdfile = true;
+            }
+            if (s.equals("nomdfile")) {
+                mdfile = false;
             }
             if (s.equals("randord")) {
                 randord = true;
@@ -266,6 +274,7 @@ public class userTester {
         rdr.debugStat("path=" + path);
         rdr.debugStat("discard=" + discard);
         rdr.debugStat("debug=" + debug);
+        rdr.debugStat("mdfile=" + mdfile);
         rdr.debugStat("summary=" + summary);
         rdr.debugStat("window=" + window);
         rdr.debugStat("config=" + config);
@@ -295,6 +304,7 @@ public class userTester {
             bits.sleep(1000);
             lt = new userTesterOne();
             lt.debug = debug;
+            lt.mdfile = mdfile;
             lt.config = config;
             lt.reapply = reapply;
             lt.jvm = jvn + jvp;
@@ -333,6 +343,7 @@ public class userTester {
             ftr.csv = lt.getCsv();
             ftr.ftr = lt.getFet();
             don.add(ftr);
+            lt.saveMd();
         }
         Collections.sort(don, new userTesterFtr());
         for (int i = 0; i < don.size(); i++) {
@@ -630,6 +641,8 @@ class userTesterOne {
 
     public boolean config;
 
+    public boolean mdfile;
+
     public int reapply;
 
     public String jvm;
@@ -719,6 +732,37 @@ class userTesterOne {
             bits.buf2txt(false, log, getLogName(prc.name, 3));
             traces++;
         }
+    }
+
+    public void saveMd() {
+        if (!mdfile) {
+            return;
+        }
+        List<String> l = new ArrayList<String>();
+        l.add("# Example: " + testName);
+        l.add("");
+        l.add("## **Topology diagram**");
+        l.add("");
+        l.add("![topology](/img/" + fileName + ".png)");
+        l.add("");
+        l.add("## **Configuration**");
+        for (int i = 0; i < procs.size(); i++) {
+            userTesterPrc p = procs.get(i);
+            l.add("");
+            l.add("**" + p.name + ":**");
+            l.add("```");
+            l.addAll(bits.txt2buf(path + p.name + "-" + cfgInit.swCfgEnd));
+            l.add("```");
+        }
+        l.add("");
+        l.add("## **Verification**");
+        for (int i = 0; i < shows.size(); i++) {
+            l.add("");
+            l.add("```");
+            l.addAll(shows.get(i));
+            l.add("```");
+        }
+        bits.buf2txt(true, l, "../binTmp/" + fileName + ".md");
     }
 
     public userTesterPrc getPrc(String s) {
@@ -839,19 +883,25 @@ class userTesterOne {
             return;
         }
         if (s.equals("output")) {
-            String beg = "<!>show:";
+            String beg1 = "<!>show:";
+            String beg2 = "<!>config:";
             List<String> cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();
                 if (s.equals("!")) {
                     break;
                 }
-                if (!s.startsWith(beg)) {
-                    cfg.add(s);
+                if (s.startsWith(beg1)) {
+                    s = s.substring(beg1.length(), s.length());
+                    cfg.addAll(shows.get(bits.str2num(s)));
                     continue;
                 }
-                s = s.substring(beg.length(), s.length());
-                cfg.addAll(shows.get(bits.str2num(s)));
+                if (s.startsWith(beg2)) {
+                    s = s.substring(beg2.length(), s.length());
+                    cfg.addAll(bits.txt2buf(path + s + "-" + cfgInit.swCfgEnd));
+                    continue;
+                }
+                cfg.add(s);
             }
             bits.buf2txt(true, cfg, cmd.getRemaining());
             return;

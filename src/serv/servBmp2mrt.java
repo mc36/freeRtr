@@ -624,7 +624,7 @@ class servBmp2mrtConn implements Runnable {
                 default:
                     continue;
             }
-            lower.gotMessage(as, adr, peer, (flg & 0x40) != 0, pck.getCopy());
+            lower.gotMessage(as, adr, peer, (flg & 0x10) != 0, pck.getCopy());
         }
         lower.gotState(peer, false);
         logger.error("neighbor " + peer + " down");

@@ -317,7 +317,7 @@ public class clntSmtp implements Runnable {
                 return true;
             }
         }
-        lastS = "failed to start authentication";
+        lastS = "failed to set sender";
         sendLine("mail from:<" + from + ">");
         if (getRes(100) != 2) {
             return true;
