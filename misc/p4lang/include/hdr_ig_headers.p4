@@ -17,6 +17,8 @@ struct headers {
    ethernet_t		eth3;
    ipv4_t		ipv4b;
    ipv6_t		ipv6b;
+   udp_t		udp;
+   tcp_t		tcp;
 }
 
 #endif // _HEADERS_P4_

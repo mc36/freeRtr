@@ -81,6 +81,8 @@ parser ig_prs_main(packet_in pkt,
       pkt.extract(hdr.ipv4);                                                     
       ig_md.ipv4_valid = 1;
       transition select(hdr.ipv4.protocol) {
+         IP_PROTOCOL_UDP: prs_udp;
+         IP_PROTOCOL_TCP: prs_tcp;
          IP_PROTOCOL_IPV4: prs_ipv4b;
          IP_PROTOCOL_IPV6: prs_ipv6b;
          IP_PROTOCOL_ETHERIP: prs_eth3;
@@ -92,6 +94,8 @@ parser ig_prs_main(packet_in pkt,
       pkt.extract(hdr.ipv6);                                                     
       ig_md.ipv6_valid = 1;
       transition select(hdr.ipv6.next_hdr) {
+         IP_PROTOCOL_UDP: prs_udp;
+         IP_PROTOCOL_TCP: prs_tcp;
          IP_PROTOCOL_IPV4: prs_ipv4b;
          IP_PROTOCOL_IPV6: prs_ipv6b;
          IP_PROTOCOL_ETHERIP: prs_eth3;
@@ -99,6 +103,16 @@ parser ig_prs_main(packet_in pkt,
       }
    }                                                                                
 
+
+   state prs_udp {
+      pkt.extract(hdr.udp);
+      transition accept;
+   }
+
+   state prs_tcp {
+      pkt.extract(hdr.tcp);
+      transition accept;
+   }
 
    state prs_eth3 {
       pkt.extract(hdr.eth3);

@@ -21,6 +21,7 @@ control ig_ctl(inout headers hdr,
    IngressControlVlanOut() ig_ctl_vlan_out;
    IngressControlVRF() ig_ctl_vrf; 
    IngressControlLLC() ig_ctl_llc;
+   IngressControlCoPP() ig_ctl_copp;
    
                                                                                    
    apply {                                                                         
@@ -58,6 +59,7 @@ control ig_ctl(inout headers hdr,
          ig_ctl_ipv4b.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_ipv6b.apply(hdr,ig_md,ig_intr_md); 
          if ( ig_md.nexthop_id == CPU_PORT) {
+           ig_ctl_copp.apply(hdr,ig_md,ig_intr_md);
            hdr.pkt_in.setValid();
            hdr.pkt_in.ingress_port = ig_intr_md.ingress_port;
            ig_intr_md.egress_spec = ig_md.nexthop_id;

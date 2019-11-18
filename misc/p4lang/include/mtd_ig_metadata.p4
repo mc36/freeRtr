@@ -25,6 +25,8 @@ struct ingress_metadata_t {
     bit<1>  arp_valid;
     bit<1>  ipv4_valid;
     bit<1>  ipv6_valid;
+    bit<16>  layer4_srcprt;
+    bit<16>  layer4_dstprt;
 }                            
 
 #endif // _INGRESS_METADATA_P4_

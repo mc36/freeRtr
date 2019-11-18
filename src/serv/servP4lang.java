@@ -7,6 +7,7 @@ import addr.addrIP;
 import addr.addrIPv6;
 import addr.addrMac;
 import addr.addrPrefix;
+import cfg.cfgAceslst;
 import cfg.cfgAll;
 import cfg.cfgBrdg;
 import cfg.cfgIfc;
@@ -28,9 +29,13 @@ import pipe.pipeSide;
 import prt.prtGenConn;
 import prt.prtServS;
 import rtr.rtrBgpEvpnPeer;
+import tab.tabAceslstN;
 import tab.tabGen;
+import tab.tabIntMatcher;
 import tab.tabLabel;
 import tab.tabLabelNtry;
+import tab.tabListing;
+import tab.tabListingEntry;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRouteIface;
@@ -74,6 +79,16 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * exported bridges
      */
     public tabGen<servP4langBr> expBr = new tabGen<servP4langBr>();
+
+    /**
+     * exported copp
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> expCopp4;
+
+    /**
+     * exported copp
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> expCopp6;
 
     /**
      * last connection
@@ -121,6 +136,12 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         if (expSrv6 != null) {
             l.add(beg + "export-srv6 " + expSrv6.name);
         }
+        if (expCopp4 != null) {
+            l.add(beg + "export-copp4 " + expCopp4.listName);
+        }
+        if (expCopp6 != null) {
+            l.add(beg + "export-copp6 " + expCopp6.listName);
+        }
         cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
     }
 
@@ -159,6 +180,24 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             interconn = ifc.ethtyp;
             interconn.addET(-1, "p4lang", this);
             interconn.updateET(-1, this);
+            return false;
+        }
+        if (s.equals("export-copp4")) {
+            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+            if (acl == null) {
+                cmd.error("no such access list");
+                return false;
+            }
+            expCopp4 = acl.aceslst;
+            return false;
+        }
+        if (s.equals("export-copp6")) {
+            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+            if (acl == null) {
+                cmd.error("no such access list");
+                return false;
+            }
+            expCopp6 = acl.aceslst;
             return false;
         }
         if (s.equals("export-srv6")) {
@@ -221,6 +260,14 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             expVrf.del(ntry);
             return false;
         }
+        if (s.equals("export-copp4")) {
+            expCopp4 = null;
+            return false;
+        }
+        if (s.equals("export-copp6")) {
+            expCopp6 = null;
+            return false;
+        }
         if (s.equals("export-bridge")) {
             cfgBrdg br = cfgAll.brdgFind(cmd.word(), false);
             if (br == null) {
@@ -272,6 +319,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("3 .      <num>                 p4lang port number");
         l.add("1 2  export-srv6               specify srv6 to export");
         l.add("2 .    <name>                  interface name");
+        l.add("1 2  export-copp4              specify copp acl to export");
+        l.add("2 .    <name>                  acl name");
+        l.add("1 2  export-copp6              specify copp acl to export");
+        l.add("2 .    <name>                  acl name");
         l.add("1 2  interconnect              specify port to for packetin");
         l.add("2 .    <name>                  interface name");
     }
@@ -581,6 +632,8 @@ class servP4langConn implements Runnable {
 
     public void run() {
         try {
+            sendCopp(true, lower.expCopp4);
+            sendCopp(false, lower.expCopp6);
             for (;;) {
                 if (doRound()) {
                     break;
@@ -1172,6 +1225,30 @@ class servP4langConn implements Runnable {
                 continue;
             }
             lower.sendLine("route" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id);
+        }
+    }
+
+    public String numat2str(tabIntMatcher mat, int max) {
+        if (mat.action == tabIntMatcher.actionType.xact) {
+            return mat.rangeMin + " " + max;
+        } else {
+            return "0 0";
+        }
+    }
+
+    public void sendCopp(boolean ipv4, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
+        if (acl == null) {
+            return;
+        }
+        String afi;
+        if (ipv4) {
+            afi = "4";
+        } else {
+            afi = "6";
+        }
+        for (int i = 0; i < acl.size(); i++) {
+            tabAceslstN<addrIP> ace = acl.get(i);
+            lower.sendLine("copp" + afi + "_add " + ace.sequence + " " + (ace.action == tabListingEntry.actionType.actPermit ? "permit" : "deny") + " " + numat2str(ace.proto, 255) + " " + ace.srcAddr + " " + ace.srcMask + " " + ace.trgAddr + " " + ace.trgMask + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535));
         }
     }
 

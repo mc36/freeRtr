@@ -16,6 +16,8 @@
 #include <include/hdr_mpls.p4>
 #include <include/hdr_ipv4.p4>
 #include <include/hdr_ipv6.p4>
+#include <include/hdr_udp.p4>
+#include <include/hdr_tcp.p4>
 
 /*----------------------------------------------------------------------------* 
  *                   I N G R E S S   P R O C E S S I N G                      * 
@@ -47,6 +49,7 @@
 #include <include/ig_ctl_ipv6.p4>
 #include <include/ig_ctl_ipv4b.p4>
 #include <include/ig_ctl_ipv6b.p4>
+#include <include/ig_ctl_copp.p4>
 #include <include/ig_ctl.p4>
 
 /*------------------ E G R E S S - M A T C H - A C T I O N ------------------ */

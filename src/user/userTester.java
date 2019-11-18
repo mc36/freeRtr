@@ -754,8 +754,10 @@ class userTesterOne {
             l.addAll(bits.txt2buf(path + p.name + "-" + cfgInit.swCfgEnd));
             l.add("```");
         }
-        l.add("");
-        l.add("## **Verification**");
+        if (shows.size() > 0) {
+            l.add("");
+            l.add("## **Verification**");
+        }
         for (int i = 0; i < shows.size(); i++) {
             l.add("");
             l.add("```");

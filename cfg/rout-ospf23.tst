@@ -167,3 +167,12 @@ r3 tping 0 40 2.2.2.11 /vrf v1
 r3 tping 0 40 4321::11 /vrf v1
 r3 tping 100 40 2.2.2.12 /vrf v1
 r3 tping 100 40 4321::12 /vrf v1
+
+r2 output show ipv4 ospf 1 nei
+r2 output show ipv6 ospf 1 nei
+r2 output show ipv4 ospf 1 dat 0
+r2 output show ipv6 ospf 1 dat 0
+r2 output show ipv4 ospf 1 tre 0
+r2 output show ipv6 ospf 1 tre 0
+r2 output show ipv4 route v1
+r2 output show ipv6 route v1

@@ -169,3 +169,12 @@ r2 tping 100 40 2.2.2.222 /vrf v1
 r2 send exit
 r2 read closed
 r2 tping 0 40 2.2.2.222 /vrf v1
+
+r2 output show ipv4 ospf 1 nei
+r2 output show ipv6 ospf 1 nei
+r2 output show ipv4 ospf 1 dat 0
+r2 output show ipv6 ospf 1 dat 0
+r2 output show ipv4 ospf 1 tre 0
+r2 output show ipv6 ospf 1 tre 0
+r2 output show ipv4 route v1
+r2 output show ipv6 route v1

@@ -29,6 +29,7 @@ def writeVrfRules(delete, p4info_helper, ingress_sw, port, vrf):
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
 
+
 def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_vlan_in.tbl_vlan_in",
@@ -497,6 +498,28 @@ def writeSrvRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
         ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
+def writeCoppRules4(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_copp.tbl_ipv4_copp",
+        match_fields={
+            "hdr.ipv4.protocol": (pr , prm),
+            "hdr.ipv4.src_ipv4_addr": (sa,sam),
+            "hdr.ipv4.dst_ipv4_addr": (da,dam),
+            "ig_md.layer4_srcprt": (sp,spm),
+            "ig_md.layer4_dstprt": (dp,dpm)
+        },
+        action_name="ig_ctl.ig_ctl_copp.act_"+act,
+        priority=pri,
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
 def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
@@ -574,6 +597,7 @@ def writeNexthopRules(delete, p4info_helper, ingress_sw, port, mac_addr):
         ingress_sw.ModifyTableEntry(table_entry, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
+
 
 def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
@@ -831,6 +855,26 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         if splt[0] == "myaddr4_del":
             addr = splt[1].split("/");
             writeMyaddrRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
+            continue
+
+        if splt[0] == "copp4_add":
+            writeCoppRules4(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            continue
+        if splt[0] == "copp4_mod":
+            writeCoppRules4(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            continue
+        if splt[0] == "copp4_del":
+            writeCoppRules4(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            continue
+
+        if splt[0] == "copp6_add":
+            writeCoppRules6(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            continue
+        if splt[0] == "copp6_mod":
+            writeCoppRules6(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            continue
+        if splt[0] == "copp6_del":
+            writeCoppRules6(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
             continue
 
         if splt[0] == "label4_add":
