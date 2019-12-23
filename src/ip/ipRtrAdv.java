@@ -61,6 +61,7 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
             case conn:
             case staticRoute:
             case local:
+            case defpref:
                 break;
             default:
                 return;

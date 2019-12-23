@@ -456,6 +456,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (a.equals("static")) {
             return tabRouteEntry.routeType.staticRoute;
         }
+        if (a.equals("defgw")) {
+            return tabRouteEntry.routeType.defpref;
+        }
         if (a.equals("connected")) {
             return tabRouteEntry.routeType.conn;
         }
@@ -588,6 +591,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "mobile6";
             case staticRoute:
                 return "static";
+            case defpref:
+                return "defgw";
             case conn:
                 return "connected";
             default:
@@ -605,6 +610,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         switch (i) {
             case staticRoute:
             case conn:
+            case defpref:
                 return false;
             default:
                 return true;
@@ -1396,6 +1402,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 1) + " " + (p + 2) + "   redistribute            redistribute prefixes from other protocols");
         l.add((p + 2) + " " + (p + 4) + ",.   connected             connected routes");
         l.add((p + 2) + " " + (p + 4) + ",.   static                static routes");
+        l.add((p + 2) + " " + (p + 4) + ",.   defgw                 routes through default gateway");
         getRouterList(l, p, " routes");
         l.add((p + 3) + " " + (p + 4) + ",.     <num>               process id");
         l.add((p + 4) + " " + (p + 5) + "         route-map         process prefixes on importing");
