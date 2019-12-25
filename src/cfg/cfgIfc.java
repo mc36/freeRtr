@@ -1699,13 +1699,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public int compare(cfgIfc o1, cfgIfc o2) {
         String s1 = o1.name.toLowerCase();
         String s2 = o2.name.toLowerCase();
-        boolean l1 = s1.startsWith("loop");
-        boolean l2 = s2.startsWith("loop");
+        boolean l1 = s1.startsWith("loopback");
+        boolean l2 = s2.startsWith("loopback");
         if (l1 != l2) {
             return l1 ? -1 : +1;
         }
-        l1 = s1.startsWith("tunn");
-        l2 = s2.startsWith("tunn");
+        l1 = s1.startsWith("access");
+        l2 = s2.startsWith("access");
+        if (l1 != l2) {
+            return l1 ? +1 : -1;
+        }
+        l1 = s1.startsWith("tunnel");
+        l2 = s2.startsWith("tunnel");
         if (l1 != l2) {
             return l1 ? +1 : -1;
         }
