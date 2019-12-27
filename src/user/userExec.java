@@ -465,6 +465,8 @@ public class userExec {
         hl.add("8 .                  [rd]        route distinguisher");
         hl.add("6 .              labels          remote and local labels");
         hl.add("6 .              asgraph         connectivity graph of ases");
+        hl.add("6 .              asorigin        originating ases");
+        hl.add("6 .              astransit       transiting ases");
         hl.add("6 .              asconn          connectivity of ases");
         hl.add("6 .              asinconsistent  inconsistent advertisements of ases");
         hl.add("6 .              prefix-lengths  prefix length distribution");

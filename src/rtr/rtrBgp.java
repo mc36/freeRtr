@@ -3054,6 +3054,76 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * originating as
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public userFormat getAsOrigin(int safi) {
+        tabGen<rtrBgpFlapath> lst = new tabGen<rtrBgpFlapath>();
+        tabRoute<addrIP> rou = getDatabase(safi);
+        for (int i = 0; i < rou.size(); i++) {
+            tabRouteEntry<addrIP> ntry = rou.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.pathSeq == null) {
+                continue;
+            }
+            if (ntry.pathSeq.size() < 1) {
+                continue;
+            }
+            getAsOrigin(lst, ntry.pathSeq.get(ntry.pathSeq.size() - 1));
+        }
+        userFormat res = new userFormat("|", "as|nets");
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlapath ntry = lst.get(i);
+            res.add(ntry.path + "|" + ntry.count);
+        }
+        return res;
+    }
+
+    /**
+     * transiting as
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public userFormat getAsTransit(int safi) {
+        tabGen<rtrBgpFlapath> lst = new tabGen<rtrBgpFlapath>();
+        tabRoute<addrIP> rou = getDatabase(safi);
+        for (int i = 0; i < rou.size(); i++) {
+            tabRouteEntry<addrIP> ntry = rou.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.pathSeq == null) {
+                continue;
+            }
+            for (int o = 0; o < (ntry.pathSeq.size() - 1); o++) {
+                getAsOrigin(lst, ntry.pathSeq.get(o));
+            }
+        }
+        userFormat res = new userFormat("|", "as|nets");
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlapath ntry = lst.get(i);
+            res.add(ntry.path + "|" + ntry.count);
+        }
+        return res;
+    }
+
+    private void getAsOrigin(tabGen<rtrBgpFlapath> lst, int as) {
+        rtrBgpFlapath res = new rtrBgpFlapath();
+        res.path = bits.num2str(as);
+        res.count = 1;
+        rtrBgpFlapath old = lst.add(res);
+        if (old == null) {
+            return;
+        }
+        old.count++;
+    }
+
+    /**
      * as path graph
      *
      * @param safi safi to query
