@@ -63,7 +63,7 @@ public class authResult {
     /**
      * create new result
      *
-     * @param par parent
+     * @param par authenticator
      * @param res result
      * @param nam username
      */
