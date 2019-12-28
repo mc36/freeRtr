@@ -1362,8 +1362,6 @@ class servOpenflowTx implements Runnable {
         }
         addTable(n, tabMpls, createMplsPop(pckB, pckO, ipMpls.labelExp4, true, servOpenflow.tabIpv4, ipIfc4.type));
         addTable(n, tabMpls, createMplsPop(pckB, pckO, ipMpls.labelExp6, true, servOpenflow.tabIpv6, ipIfc6.type));
-        addTable(n, tabMpls, createMplsPop(pckB, pckO, lower.expVrf.fwd4.commonLabel.getValue(), true, servOpenflow.tabIpv4, ipIfc4.type));
-        addTable(n, tabMpls, createMplsPop(pckB, pckO, lower.expVrf.fwd6.commonLabel.getValue(), true, servOpenflow.tabIpv6, ipIfc6.type));
         for (int i = tabLabel.labels.size() - 1; i >= 0; i--) {
             tabLabelNtry lab = tabLabel.labels.get(i);
             if (lab == null) {
@@ -1376,21 +1374,23 @@ class servOpenflowTx implements Runnable {
             ntry.prio = 1;
             int proto = 0;
             int typ = 0;
+            int tab = 0;
             if (lab.forwarder == lower.expVrf.fwd4) {
-                if (lab.compare(lab, lower.expVrf.fwd4.commonLabel) == 0) {
-                    continue;
-                }
                 proto = 1;
                 typ = ipIfc4.type;
+                tab = servOpenflow.tabIpv4;
             }
             if (lab.forwarder == lower.expVrf.fwd6) {
-                if (lab.compare(lab, lower.expVrf.fwd6.commonLabel) == 0) {
-                    continue;
-                }
                 proto = 2;
                 typ = ipIfc6.type;
+                tab = servOpenflow.tabIpv6;
             }
             if (proto < 1) {
+                createMplsPunt(pckB, pckO, lab, ntry);
+                addTable(n, tabMpls, ntry);
+                continue;
+            }
+            if (lab.bier != null) {
                 createMplsPunt(pckB, pckO, lab, ntry);
                 addTable(n, tabMpls, ntry);
                 continue;
@@ -1422,6 +1422,10 @@ class servOpenflowTx implements Runnable {
                 continue;
             }
             if (lab.iface == null) {
+                if (lab.needLocal) {
+                    addTable(n, tabMpls, createMplsPop(pckB, pckO, lab.getValue(), true, tab, typ));
+                    continue;
+                }
                 createMplsPunt(pckB, pckO, lab, ntry);
                 addTable(n, tabMpls, ntry);
                 continue;
