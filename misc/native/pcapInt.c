@@ -190,7 +190,7 @@ int main(int argc, char **argv) {
     if (ifacePcap == NULL) err("unable to open interface");
     if (pcap_set_snaplen(ifacePcap, 65536) < 0) err("unable to set snaplen");
     if (pcap_set_promisc(ifacePcap, 1) < 0) err("unable to set promisc");
-    if (pcap_set_timeout(ifacePcap, 2) < 0) err("unable to set timeout");
+    if (pcap_set_immediate_mode(ifacePcap, 1) < 0) err("unable to set immediate");
     if (pcap_activate(ifacePcap) < 0) err("activation failed");
 #else
     printf(" with pcap0.x api\n");
