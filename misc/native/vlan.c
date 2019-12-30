@@ -221,6 +221,9 @@ int main(int argc, char **argv) {
         if ((vlanSck[i] = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
         if (bind(vlanSck[i], (struct sockaddr *) &vlanLoc[i], sizeof (addrLoc)) < 0) err("failed to bind socket");
         printf("binded to local port %s %i, will send to %s %i.\n", inet_ntoa(vlanLoc[i].sin_addr), portLoc, inet_ntoa(vlanRem[i].sin_addr), portRem);
+        int sockOpt = 524288;
+        if (setsockopt(vlanSck[i], SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt)) < 0) err("failed to set socket rxbuf");
+        if (setsockopt(vlanSck[i], SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt)) < 0) err("failed to set socket txbuf");
     }
     vlanVal[0] = -1;
     printf("vlans:");

@@ -161,6 +161,9 @@ int main(int argc, char **argv) {
     printf("binded to local port %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc);
     if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("will send to %s %i.\n", inet_ntoa(addrRem.sin_addr), portRem);
+    int opt = 524288;
+    if (setsockopt(s, SOL_SOCKET, SO_RCVBUF, &opt, sizeof(opt)) < 0) err("failed to set socket rxbuf");
+    if (setsockopt(s, SOL_SOCKET, SO_SNDBUF, &opt, sizeof(opt)) < 0) err("failed to set socket rxbuf");
 
     printf("libtuntap version: %i\n", tuntap_version());
 

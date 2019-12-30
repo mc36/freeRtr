@@ -183,6 +183,9 @@ int main(int argc, char **argv) {
         if ((bunSck[i] = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
         if (bind(bunSck[i], (struct sockaddr *) &bunLoc[i], sizeof (addrLoc)) < 0) err("failed to bind socket");
         printf("binded to local port %s %i, will send to %s %i.\n", inet_ntoa(bunLoc[i].sin_addr), portLoc, inet_ntoa(bunRem[i].sin_addr), portRem);
+        int sockOpt = 524288;
+        if (setsockopt(bunSck[i], SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt)) < 0) err("failed to set socket rxbuf");
+        if (setsockopt(bunSck[i], SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt)) < 0) err("failed to set socket txbuf");
     }
 
     printf("serving others\n");

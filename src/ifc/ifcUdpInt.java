@@ -13,19 +13,19 @@ import util.logger;
  * @author matecsaba
  */
 public class ifcUdpInt extends ifcThread {
-
+    
     private DatagramSocket sck;
-
+    
     private int lprt;
-
+    
     private int rprt;
-
+    
     private InetAddress radr;
-
+    
     private InetAddress ladr;
-
+    
     private String rnam;
-
+    
     private String lnam;
 
     /**
@@ -84,6 +84,8 @@ public class ifcUdpInt extends ifcThread {
             radr = InetAddress.getByName(rnam);
             ladr = InetAddress.getByName(lnam);
             sck = new DatagramSocket(lprt);
+            sck.setReceiveBufferSize(512 * 1024);
+            sck.setSendBufferSize(512 * 1024);
             sck.connect(radr, rprt);
         } catch (Exception e) {
             logger.exception(e);
@@ -99,25 +101,25 @@ public class ifcUdpInt extends ifcThread {
         }
         checkStalled();
     }
-
+    
     public void rxtxClose() throws Exception {
         sck.close();
         sck = null;
     }
-
+    
     public void txOnePack(byte[] buf, int ofs, int len) throws Exception {
         DatagramPacket d = new DatagramPacket(buf, ofs, len);
         sck.send(d);
     }
-
+    
     public int rxOnePack(byte[] buf, int ofs) throws Exception {
         DatagramPacket d = new DatagramPacket(buf, ofs, buf.length - ofs);
         sck.receive(d);
         return d.getLength();
     }
-
+    
     public String toString() {
         return "ifc on " + ladr + " " + lprt + " " + radr + " " + rprt;
     }
-
+    
 }

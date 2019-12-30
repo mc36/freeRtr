@@ -172,6 +172,9 @@ int main(int argc, char **argv) {
     printf("binded to local port %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc);
     if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("will send to %s %i.\n", inet_ntoa(addrRem.sin_addr), portRem);
+    int sockOpt = 524288;
+    if (setsockopt(commSock, SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt)) < 0) err("failed to set socket rxbuf");
+    if (setsockopt(commSock, SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt)) < 0) err("failed to set socket txbuf");
 
     ifaceName = malloc(1024);
     strcpy(ifaceName, argv[1]);
