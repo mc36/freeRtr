@@ -47,8 +47,6 @@ void doRawLoop() {
     int i;
     int bufS;
     char *bufD;
-    struct sockaddr_in addrTmp;
-    int addrLen;
     int blockNum = 0;
     struct tpacket_block_desc *pbd;
     struct tpacket3_hdr *ppd;
@@ -73,7 +71,7 @@ void doRawLoop() {
             }
             packRx++;
             byteRx += bufS;
-            sendto(commSock, bufD, bufS, 0, (struct sockaddr *) &addrRem, sizeof (addrRem));
+            send(commSock, bufD, bufS, 0);
             ppd = (struct tpacket3_hdr *) ((uint8_t *) ppd + ppd->tp_next_offset);
         }
         pbd->hdr.bh1.block_status = TP_STATUS_KERNEL;
@@ -85,12 +83,9 @@ void doRawLoop() {
 void doUdpLoop() {
     unsigned char bufD[16384];
     int bufS;
-    struct sockaddr_in addrTmp;
-    unsigned int addrLen;
     for (;;) {
-        addrLen = sizeof (addrTmp);
         bufS = sizeof (bufD);
-        bufS = recvfrom(commSock, bufD, bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
+        bufS = recv(commSock, bufD, bufS, 0);
         if (bufS < 0) break;
         packTx++;
         byteTx += bufS;
@@ -214,6 +209,7 @@ int main(int argc, char **argv) {
     if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
     if (bind(commSock, (struct sockaddr *) &addrLoc, sizeof (addrLoc)) < 0) err("failed to bind socket");
     printf("binded to local port %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc);
+    if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("will send to %s %i.\n", inet_ntoa(addrRem.sin_addr), portRem);
 
     ifaceName = malloc(1024);

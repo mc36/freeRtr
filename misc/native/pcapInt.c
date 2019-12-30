@@ -35,7 +35,7 @@ void gotRawPack(char*dummyparameter, const struct pcap_pkthdr *hdr, u_char *dat)
     int len = hdr->caplen;
     packRx++;
     byteRx += len;
-    sendto(commSock, dat, len, 0, (struct sockaddr *) &addrRem, sizeof (addrRem));
+    send(commSock, dat, len, 0);
 }
 
 void doRawLoop() {
@@ -46,12 +46,9 @@ void doRawLoop() {
 void doUdpLoop() {
     unsigned char bufD[16384];
     int bufS;
-    struct sockaddr_in addrTmp;
-    unsigned int addrLen;
     for (;;) {
-        addrLen = sizeof (addrTmp);
         bufS = sizeof (bufD);
-        bufS = recvfrom(commSock, bufD, bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
+        bufS = recv(commSock, bufD, bufS, 0);
         if (bufS < 0) break;
         packTx++;
         byteTx += bufS;
@@ -175,6 +172,7 @@ int main(int argc, char **argv) {
     if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
     if (bind(commSock, (struct sockaddr *) &addrLoc, sizeof (addrLoc)) < 0) err("failed to bind socket");
     printf("binded to local port %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc);
+    if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("will send to %s %i.\n", inet_ntoa(addrRem.sin_addr), portRem);
 
     printf("pcap version: %s\n", pcap_lib_version());

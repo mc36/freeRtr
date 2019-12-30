@@ -115,7 +115,7 @@ void doRawLoop() {
             }
             packRx++;
             byteRx += buf1s;
-            sendto(commSock, buf1d, buf1s, 0, (struct sockaddr *) &addrRem, sizeof (addrRem));
+            send(commSock, buf1d, buf1s, 0);
             buf1s = 0;
         }
     }
@@ -127,13 +127,11 @@ void doUdpLoop() {
     int buf1s;
     char buf2d[32768];
     int buf2s;
-    struct sockaddr_in addrTmp;
     unsigned int addrLen;
     int i, o;
     for (;;) {
-        addrLen = sizeof (addrTmp);
         buf1s = sizeof (buf1d);
-        buf1s = recvfrom(commSock, buf1d, buf1s, 0, (struct sockaddr *) &addrTmp, &addrLen);
+        buf1s = recv(commSock, buf1d, buf1s, 0);
         if (buf1s < 0) break;
         packTx++;
         byteTx += buf1s;
@@ -281,6 +279,7 @@ int main(int argc, char **argv) {
     if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
     if (bind(commSock, (struct sockaddr *) &addrLoc, sizeof (addrLoc)) < 0) err("failed to bind socket");
     printf("binded to local port %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc);
+    if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("will send to %s %i.\n", inet_ntoa(addrRem.sin_addr), portRem);
 
     memset(accmTty, 0, 256);

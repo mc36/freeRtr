@@ -84,6 +84,7 @@ public class ifcUdpInt extends ifcThread {
             radr = InetAddress.getByName(rnam);
             ladr = InetAddress.getByName(lnam);
             sck = new DatagramSocket(lprt);
+            sck.connect(radr, rprt);
         } catch (Exception e) {
             logger.exception(e);
         }
@@ -106,8 +107,6 @@ public class ifcUdpInt extends ifcThread {
 
     public void txOnePack(byte[] buf, int ofs, int len) throws Exception {
         DatagramPacket d = new DatagramPacket(buf, ofs, len);
-        d.setAddress(radr);
-        d.setPort(rprt);
         sck.send(d);
     }
 
