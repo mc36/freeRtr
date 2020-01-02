@@ -1133,6 +1133,10 @@ public class packHolder {
         IPmlt = false;
         IPbrd = false;
         IPlnk = false;
+        IPdf = false;
+        IPmf = false;
+        IPfrg = 0;
+        IPalrt = -1;
     }
 
     /**

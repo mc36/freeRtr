@@ -815,6 +815,7 @@ qc pass: ethernet over l2tp3 pwhe
 qc pass: ppp over mpls pwhe
 qc pass: ethernet over mpls pwhe
 qc pass: ethernet over mpls pwhe with cw
+qc pass: ethernet over gretap pwhe
 qc pass: sr in chain
 qc pass: sr in star
 qc pass: te over sr

@@ -8,6 +8,7 @@ import clnt.clntEtherIp;
 import clnt.clntUti;
 import clnt.clntNvGre;
 import clnt.clntGrePpp;
+import clnt.clntGreTap;
 import clnt.clntAx25;
 import clnt.clntDlsw;
 import clnt.clntGtp;
@@ -192,6 +193,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
          */
         prPog,
         /**
+         * tapogre
+         */
+        prTog,
+        /**
          * ax25
          */
         prAx25,
@@ -267,6 +272,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     private clntPckOtxt pox;
 
     private clntGrePpp pog;
+
+    private clntGreTap tog;
 
     private clntAx25 ax25;
 
@@ -358,6 +365,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 return "pckotxt";
             case prPog:
                 return "greppp";
+            case prTog:
+                return "gretap";
             case prAx25:
                 return "ax25";
             case prPwom:
@@ -435,6 +444,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("greppp")) {
             return protocolType.prPog;
+        }
+        if (s.equals("gretap")) {
+            return protocolType.prTog;
         }
         if (s.equals("ax25")) {
             return protocolType.prAx25;
@@ -537,6 +549,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add("2 .    tls                          select tls");
         l.add("2 .    gtp                          select gtp");
         l.add("2 .    greppp                       select ppp over gre");
+        l.add("2 .    gretap                       select tap over gre");
         l.add("2 .    ax25                         select ax25");
         l.add("2 .    pptp                         select pptp");
         l.add("2 .    pckoudp                      select packet over udp");
@@ -857,6 +870,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             pog.workStop();
             pog = null;
         }
+        if (tog != null) {
+            tog.workStop();
+            tog = null;
+        }
         if (ax25 != null) {
             ax25.workStop();
             ax25 = null;
@@ -1138,6 +1155,19 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pog.vcid = vcid;
                 pog.setUpper(ifaceDialer.getEncapProto());
                 pog.workStart();
+                break;
+            case prTog:
+                if (ifaceBridge == null) {
+                    return;
+                }
+                tog = new clntGreTap();
+                tog.target = target;
+                tog.vrf = proxy.vrf;
+                tog.srcIfc = proxy.srcIfc;
+                tog.vcid = vcid;
+                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                tog.setUpper(brdgIfc);
+                tog.workStart();
                 break;
             case prAx25:
                 if (ifaceDialer == null) {

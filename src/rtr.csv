@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v19.12.29-testing, done by cs@nop.;-;-
--;-;2019-12-30 06:36:06, took 08:38:43 on 1611 cases, 0 failed, 0 traces, 8 retries;-;-
+-;-;freeRouter v20.1.1-testing, done by cs@nop.;-;-
+-;-;2020-01-02 00:27:34, took 08:55:39 on 1612 cases, 0 failed, 0 traces, 15 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -819,6 +819,7 @@ mpls-pwhe16.tst;0;ethernet over l2tp3 pwhe;successfully;finished
 mpls-pwhe17.tst;0;ppp over mpls pwhe;successfully;finished
 mpls-pwhe18.tst;0;ethernet over mpls pwhe;successfully;finished
 mpls-pwhe19.tst;0;ethernet over mpls pwhe with cw;successfully;finished
+mpls-pwhe20.tst;0;ethernet over gretap pwhe;successfully;finished
 mpls-sr01.tst;0;sr in chain;successfully;finished
 mpls-sr02.tst;0;sr in star;successfully;finished
 mpls-sr03.tst;0;te over sr;successfully;finished

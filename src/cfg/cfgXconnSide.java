@@ -15,6 +15,7 @@ import clnt.clntPptp;
 import clnt.clntVxlan;
 import clnt.clntGeneve;
 import clnt.clntGrePpp;
+import clnt.clntGreTap;
 import clnt.clntL2f;
 import ifc.ifcNshFwd;
 import ifc.ifcNull;
@@ -162,6 +163,11 @@ public class cfgXconnSide {
     public clntEtherIp etherip;
 
     /**
+     * gretap
+     */
+    public clntGreTap tog;
+
+    /**
      * uti
      */
     public clntUti uti;
@@ -191,6 +197,7 @@ public class cfgXconnSide {
         l.add((p + 2) + " " + (p + 3) + "         erspan                  erspan encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         dlsw                    dlsw encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         etherip                 etherip encapsulation");
+        l.add((p + 2) + " " + (p + 3) + "         gretap                  gretap encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         uti                     uti encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         nvgre                   nvgre encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         vxlan                   vxlan encapsulation");
@@ -267,6 +274,10 @@ public class cfgXconnSide {
         if (etherip != null) {
             etherip.workStop();
             etherip = null;
+        }
+        if (tog != null) {
+            tog.workStop();
+            tog = null;
         }
         if (uti != null) {
             uti.workStop();
@@ -431,6 +442,15 @@ public class cfgXconnSide {
                 etherip.setUpper(upper);
                 etherip.workStart();
                 break;
+            case prTog:
+                tog = new clntGreTap();
+                tog.target = "" + adr;
+                tog.vrf = vrf;
+                tog.srcIfc = ifc;
+                tog.vcid = vcid;
+                tog.setUpper(upper);
+                tog.workStart();
+                break;
             case prUti:
                 uti = new clntUti();
                 uti.target = "" + adr;
@@ -502,10 +522,6 @@ public class cfgXconnSide {
             return;
         }
         vcid = bits.str2num(cmd.word());
-        if (vcid < 1) {
-            cmd.error("bad vcid");
-            return;
-        }
         pwmod = cfgVpdn.str2type(md);
         if (pwmod == null) {
             cmd.error("bad mode");

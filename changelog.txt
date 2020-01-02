@@ -8758,3 +8758,5 @@ qc pass: evpn/vpws over srv6 over confed bgp
 qc pass: evpn/vpws over srv6 over bgp route server
 qc pass: evpn/vpws over srv6 over bgp with soft-reconfig
 qc pass: evpn/vpws over srv6 over bgp additional path
+---------------------------------- 2020-01-01 15:31:55
+qc pass: ethernet over gretap pwhe
