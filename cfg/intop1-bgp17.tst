@@ -75,10 +75,10 @@ interface gigabit2
  no shutdown
  exit
 interface gigabit1
+ no shutdown
  service instance 10 ethernet
   encapsulation dot1q 10
   rewrite ingress tag pop 1 symmetric
- no shutdown
  exit
 ip route 2.2.2.1 255.255.255.255 1.1.1.1
 ipv6 route 4321::1/128 1234::1
@@ -127,5 +127,7 @@ r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 10 1234::2 /vrf v1
 r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
 r1 tping 100 60 4321::2 /vrf v1 /int lo0
+r3 tping 100 60 3.3.3.1 /vrf v1
+r3 tping 100 60 4444::1 /vrf v1
 r1 tping 100 60 3.3.3.2 /vrf v1
 r1 tping 100 60 4444::2 /vrf v1

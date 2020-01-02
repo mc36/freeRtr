@@ -98,6 +98,14 @@ route-policy nht6
  sequence 70 enif
  exit
 !
+route-policy unbgp
+ sequence 10 if tag 65535
+ sequence 20   set distance set 222
+ sequence 30   pass
+ sequence 40 enif
+ sequence 50 pass
+ exit
+!
 policy-map fs4
  sequence 10 action transit
  sequence 10 match access-group fs4
@@ -247,6 +255,7 @@ router lsrp4 1
  router-id 10.10.10.227
  refresh 60000
  lifetime 2147483000
+ route-policy unbgp
  segrout 300 299
  bier 256 300 299
  justadvert loopback0
@@ -257,6 +266,7 @@ router lsrp6 1
  router-id 10.10.10.227
  refresh 60000
  lifetime 2147483000
+ route-policy unbgp
  segrout 300 299
  bier 256 300 299
  justadvert loopback0
@@ -400,8 +410,6 @@ interface bvi9
  ipv6 pim join-source loopback0
  mpls enable
  mpls inspect
- mpls ldp4
- mpls ldp6
  mpls rsvp4
  mpls rsvp6
  router lsrp4 1 enable
@@ -495,13 +503,13 @@ router bgp4 65535
  vrf v1
  local-as 65535
  router-id 10.10.10.227
- address-family labeled multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
  flapstat
  dump mrt bgp1.log
  neighbor 10.5.1.10 remote-as 65535
  no neighbor 10.5.1.10 description
  neighbor 10.5.1.10 local-as 65535
- neighbor 10.5.1.10 address-family labeled multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ neighbor 10.5.1.10 address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
  neighbor 10.5.1.10 distance 200
  neighbor 10.5.1.10 compression both
  neighbor 10.5.1.10 update-source loopback0
@@ -593,13 +601,13 @@ router bgp6 65535
  vrf v1
  local-as 65535
  router-id 10.10.10.227
- address-family labeled multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
  flapstat
  dump mrt bgp2.log
  neighbor 2001:db8:36::2 remote-as 65535
  no neighbor 2001:db8:36::2 description
  neighbor 2001:db8:36::2 local-as 65535
- neighbor 2001:db8:36::2 address-family labeled multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ neighbor 2001:db8:36::2 address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
  neighbor 2001:db8:36::2 distance 200
  neighbor 2001:db8:36::2 compression both
  neighbor 2001:db8:36::2 update-source loopback0
