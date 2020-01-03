@@ -1,7 +1,5 @@
 description interop9: isis sr
 
-exit
-
 addrouter r1
 int eth1 eth 0000.0000.1111 $rem1$
 int eth2 eth 0000.0000.1112 $rem2$
@@ -40,7 +38,7 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  router isis4 1 ena
  mpls enable
-! ipv4 access-group-in test4
+ ipv4 access-group-in test4
 ! ipv4 access-group-out test4
  exit
 int eth2
@@ -48,7 +46,7 @@ int eth2
  ipv6 addr fe80::1 ffff::
  router isis6 1 ena
  mpls enable
-! ipv6 access-group-in test6
+ ipv6 access-group-in test6
 ! ipv6 access-group-out test6
  exit
 int lo1
@@ -150,7 +148,7 @@ int eth1
  ipv4 addr 1.1.2.1 255.255.255.0
  router isis4 1 ena
  mpls enable
-! ipv4 access-group-in test4
+ ipv4 access-group-in test4
 ! ipv4 access-group-out test4
  exit
 int eth2
@@ -158,7 +156,7 @@ int eth2
  ipv6 addr fe80::1 ffff::
  router isis6 1 ena
  mpls enable
-! ipv6 access-group-in test6
+ ipv6 access-group-in test6
 ! ipv6 access-group-out test6
  exit
 int lo1
@@ -188,15 +186,7 @@ int pweth2
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo1
-r1 tping 100 60 4321::2 /vrf v1 /int lo2
-
-r3 tping 100 10 1.1.2.2 /vrf v1
-r3 tping 100 60 2.2.2.2 /vrf v1 /int lo1
-r3 tping 100 60 4321::2 /vrf v1 /int lo2
-
-r1 tping 100 40 3.3.3.2 /vrf v1
-r3 tping 100 40 3.3.3.1 /vrf v1
-r1 tping 100 40 3.3.3.6 /vrf v1
-r3 tping 100 40 3.3.3.5 /vrf v1
+r1 tping 100 60 3.3.3.2 /vrf v1
+r3 tping 100 60 3.3.3.1 /vrf v1
+r1 tping 100 60 3.3.3.6 /vrf v1
+r3 tping 100 60 3.3.3.5 /vrf v1

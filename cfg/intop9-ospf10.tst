@@ -1,7 +1,5 @@
 description interop9: ospf sr
 
-exit
-
 addrouter r1
 int eth1 eth 0000.0000.1111 $rem1$
 !
@@ -41,7 +39,7 @@ int eth1
  router ospf4 1 ena
  router ospf6 1 ena
  mpls enable
-! ipv4 access-group-in test4
+ ipv4 access-group-in test4
 ! ipv6 access-group-in test6
 ! ipv4 access-group-out test4
 ! ipv6 access-group-out test6
@@ -128,7 +126,7 @@ int eth1
  router ospf4 1 ena
  router ospf6 1 ena
  mpls enable
-! ipv4 access-group-in test4
+ ipv4 access-group-in test4
 ! ipv6 access-group-in test6
 ! ipv4 access-group-out test4
 ! ipv6 access-group-out test6
@@ -153,13 +151,5 @@ int pweth1
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
-
-r3 tping 100 10 1.1.2.2 /vrf v1
-r3 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r3 tping 100 60 4321::2 /vrf v1 /int lo0
-
-r1 tping 100 40 3.3.3.2 /vrf v1
-r3 tping 100 40 3.3.3.1 /vrf v1
+r1 tping 100 60 3.3.3.2 /vrf v1
+r3 tping 100 60 3.3.3.1 /vrf v1

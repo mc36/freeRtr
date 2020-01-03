@@ -142,6 +142,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         if (old != null) {
             ntry = old;
         }
+        if (ntry.srBeg != 0) {
+            return;
+        }
         ntry.srBeg = beg;
         ntry.srOrg = beg;
     }
@@ -178,6 +181,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         shrtPthFrstNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
+        }
+        if (ntry.brBeg != 0) {
+            return;
         }
         ntry.brBeg = beg;
         ntry.brOrg = beg;
