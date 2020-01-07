@@ -856,6 +856,7 @@ public class cfgAll {
         "!logging buffered debug 512",
         "!logging monitor debug",
         "!logging format normal",
+        "!no logging milliseconds",
         "!no logging rotate 0",
         "!no logging syslog debug kernel",
         "!no logging file debug",
@@ -2925,6 +2926,7 @@ public class cfgAll {
         cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass));
         l.add("banner encoded " + cryBase64.encodeBytes(banner));
         l.add(cmds.comment);
+        cmds.cfgLine(l, !logger.logMillis, "", "logging milliseconds", "");
         l.add("logging buffered " + logger.level2string(logger.logBufLev) + " " + logger.getBufSize());
         l.add("logging monitor " + logger.level2string(logger.logPipLev));
         l.add("logging format " + logger.format2string(logger.logPosForm));

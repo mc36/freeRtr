@@ -318,6 +318,7 @@ public class userConfig {
         l.add("2  3    encoded                      set banner");
         l.add("3  3,.    <cmd>                      encoded banner");
         l.add("1  2  logging                        set logging parameters");
+        l.add("2  .    milliseconds                 millisecond logging");
         l.add("2  3    buffered                     buffered logging");
         l.add("3  4      debug                      debugging messages");
         l.add("3  4      informational              informational messages");
@@ -2825,6 +2826,10 @@ public class userConfig {
 
     private void doCmdNoLogging() {
         String s = cmd.word();
+        if (s.equals("milliseconds")) {
+            logger.logMillis = false;
+            return;
+        }
         if (s.equals("buffered")) {
             logger.logBufLev = logger.string2level("");
             logger.bufferStart(0);
@@ -2864,6 +2869,10 @@ public class userConfig {
 
     private void doCmdLogging() {
         String s = cmd.word();
+        if (s.equals("milliseconds")) {
+            logger.logMillis = true;
+            return;
+        }
         if (s.equals("buffered")) {
             logger.logBufLev = logger.string2level(cmd.word());
             logger.bufferStart(bits.str2num(cmd.word()));

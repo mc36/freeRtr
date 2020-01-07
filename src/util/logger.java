@@ -75,6 +75,11 @@ public class logger {
     public static String logRotNam = "";
 
     /**
+     * log milliseconds
+     */
+    public static boolean logMillis = false;
+
+    /**
      * level of terminal
      */
     public static logLev logPipLev = logLev.msgDebg;
@@ -236,7 +241,12 @@ public class logger {
         if (logIrcLev.compareTo(level) <= 0) {
             logIrcHnd.logMsg(msg);
         }
-        msg = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + " " + msg;
+        long tim = bits.getTime() + cfgAll.timeServerOffset;
+        a = "";
+        if (logMillis) {
+            a = "." + bits.padBeg("" + (tim % 1000), 3, "0");
+        }
+        msg = bits.time2str(cfgAll.timeZoneName, tim, 3) + a + " " + msg;
         if (logBufLev.compareTo(level) <= 0) {
             synchronized (logBufLst) {
                 logBufPos = (logBufPos + 1) % logBufLst.length;
