@@ -539,6 +539,9 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             case igp:
                 s = "all-igp";
                 break;
+            case host:
+                s = "host-route";
+                break;
             case common:
                 s = "per-vrf";
                 break;
@@ -675,6 +678,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("1 2  label-mode          specify label allocation mode");
         l.add("2 .    per-prefix        label for all prefixes");
         l.add("2 .    all-igp           label for all igp prefixes");
+        l.add("2 .    host-route        label for host routes");
         l.add("2 .    per-vrf           common label for the vrf");
         return l;
     }
@@ -753,6 +757,9 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             }
             if (a.equals("all-igp")) {
                 labelMode = ipFwd.labelMode.igp;
+            }
+            if (a.equals("host-route")) {
+                labelMode = ipFwd.labelMode.host;
             }
             if (a.equals("per-vrf")) {
                 labelMode = ipFwd.labelMode.common;

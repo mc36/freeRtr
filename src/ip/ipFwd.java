@@ -321,6 +321,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
          */
         common,
         /**
+         * label for host routes
+         */
+        host,
+        /**
          * label for igp prefixes
          */
         igp,

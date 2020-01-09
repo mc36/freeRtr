@@ -656,6 +656,18 @@ public class ipFwdTab {
         switch (lower.prefixMode) {
             case igp:
                 break;
+            case host:
+                for (int i = tabL.size() - 1; i >= 0; i--) {
+                    tabRouteEntry<addrIP> ntry = tabL.get(i);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    if (ntry.prefix.maskLen >= (addrIP.size * 8)) {
+                        continue;
+                    }
+                    tabL.del(ntry);
+                }
+                break;
             case all:
                 tabL = new tabRoute<addrIP>("labeled");
                 tabL.mergeFrom(tabRoute.addType.better, tabU, null, true, tabRouteEntry.distanLim);
@@ -743,20 +755,24 @@ public class ipFwdTab {
                 updateTableRouteLabels(ntry, loc, prf);
                 continue;
             }
-            tabRouteEntry<addrIP> rem = null;
-            if (ntry.oldHop == null) {
-                rem = nei.prefLearn.find(ntry);
-            } else {
-                tabRouteEntry<addrIP> prf = tabU.route(ntry.oldHop);
-                if (prf == null) {
-                    continue;
-                }
-                rem = nei.prefLearn.find(prf);
-            }
-            if (rem == null) {
+            tabRouteEntry<addrIP> rem = nei.prefLearn.find(ntry);
+            if (rem != null) {
+                updateTableRouteLabels(ntry, loc, rem);
                 continue;
             }
-            updateTableRouteLabels(ntry, loc, rem);
+            if (ntry.oldHop == null) {
+                continue;
+            }
+            tabRouteEntry<addrIP> prf = tabU.route(ntry.oldHop);
+            if (prf == null) {
+                continue;
+            }
+            rem = nei.prefLearn.find(prf);
+            if (rem == null) {
+                updateTableRouteLabels(ntry, loc, prf);
+            } else {
+                updateTableRouteLabels(ntry, loc, rem);
+            }
         }
         lower.commonLabel.setFwdCommon(1, lower);
         tabRoute<addrIP> tabT = new tabRoute<addrIP>("amt");
