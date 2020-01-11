@@ -411,6 +411,8 @@ interface bvi9
  ipv6 pim join-source loopback0
  mpls enable
  mpls inspect
+ mpls ldp4
+ mpls ldp6
  mpls rsvp4
  mpls rsvp6
  router lsrp4 1 enable

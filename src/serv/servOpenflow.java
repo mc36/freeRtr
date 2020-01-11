@@ -357,7 +357,7 @@ class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
     }
 
     public addrType getHwAddr() {
-        return new addrEmpty();
+        return ifc.ethtyp.getHwAddr();
     }
 
     public void setFilter(boolean promisc) {

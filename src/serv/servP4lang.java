@@ -348,10 +348,12 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
+        if (conn != null) {
+            conn.pipe.setClose();
+        }
         id.timeout = 120000;
         pipe.lineRx = pipeSide.modTyp.modeLF;
         pipe.lineTx = pipeSide.modTyp.modeLF;
-        conn = new servP4langConn(pipe, this);
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ifc = expIfc.get(i);
             ifc.sentVlan = 0;
@@ -368,6 +370,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             br.ifcs.clear();
             br.macs.clear();
         }
+        conn = new servP4langConn(pipe, this);
+        logger.warn("neighbor " + id.peerAddr + " up");
         return false;
     }
 
@@ -571,7 +575,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     }
 
     public addrType getHwAddr() {
-        return new addrEmpty();
+        return ifc.ethtyp.getHwAddr();
     }
 
     public void setFilter(boolean promisc) {
@@ -1092,7 +1096,7 @@ class servP4langConn implements Runnable {
                 act = "mod";
             }
             nei.add(ntry);
-            lower.sendLine("neigh" + afi + "_" + act + " " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id);
+            lower.sendLine("neigh" + afi + "_" + act + " " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.getHwAddr()).toEmuStr());
         }
         for (int i = 0; i < nei.size(); i++) {
             servP4langNei ntry = nei.get(i);
@@ -1103,7 +1107,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             nei.del(ntry);
-            lower.sendLine("neigh" + afi + "_del " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id);
+            lower.sendLine("neigh" + afi + "_del " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.getHwAddr()).toEmuStr());
         }
     }
 
