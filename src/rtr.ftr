@@ -865,6 +865,17 @@ qc pass: openflow: ip routing
 qc pass: openflow: mpls routing
 qc pass: openflow: multicast routing
 qc pass: openflow: mldp routing
+qc pass: p4lang: routing
+qc pass: p4lang: bridging
+qc pass: p4lang: mpls
+qc pass: p4lang: vlan routing
+qc pass: p4lang: vlan bridging
+qc pass: p4lang: vpn with bgp
+qc pass: p4lang: vpls/ldp with bgp
+qc pass: p4lang: evpn/cmac with bgp
+qc pass: p4lang: eompls
+qc pass: p4lang: vpn with bgp over srv6
+qc pass: p4lang: evpn/cmac with bgp over srv6
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

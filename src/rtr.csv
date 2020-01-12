@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.1.8-testing, done by cs@nop.;-;-
--;-;2020-01-08 16:04:15, took 09:05:49 on 1612 cases, 0 failed, 0 traces, 16 retries;-;-
+-;-;freeRouter v20.1.11-testing, done by cs@nop.;-;-
+-;-;2020-01-12 01:28:57, took 09:12:26 on 1623 cases, 0 failed, 0 traces, 15 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -869,6 +869,17 @@ opnflw-rout03.tst;0;openflow: ip routing;successfully;finished
 opnflw-rout04.tst;0;openflow: mpls routing;successfully;finished
 opnflw-rout05.tst;0;openflow: multicast routing;successfully;finished
 opnflw-rout06.tst;0;openflow: mldp routing;successfully;finished
+p4lang-rout01.tst;0;p4lang: routing;successfully;finished
+p4lang-rout02.tst;0;p4lang: bridging;successfully;finished
+p4lang-rout03.tst;0;p4lang: mpls;successfully;finished
+p4lang-rout04.tst;0;p4lang: vlan routing;successfully;finished
+p4lang-rout05.tst;0;p4lang: vlan bridging;successfully;finished
+p4lang-rout06.tst;0;p4lang: vpn with bgp;successfully;finished
+p4lang-rout07.tst;0;p4lang: vpls/ldp with bgp;successfully;finished
+p4lang-rout08.tst;0;p4lang: evpn/cmac with bgp;successfully;finished
+p4lang-rout09.tst;0;p4lang: eompls;successfully;finished
+p4lang-rout10.tst;0;p4lang: vpn with bgp over srv6;successfully;finished
+p4lang-rout11.tst;0;p4lang: evpn/cmac with bgp over srv6;successfully;finished
 qos-action01.tst;0;qos ingress transmit action;successfully;finished
 qos-action02.tst;0;qos egress transmit action;successfully;finished
 qos-action03.tst;0;qos ingress drop action;successfully;finished

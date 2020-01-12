@@ -8760,3 +8760,15 @@ qc pass: evpn/vpws over srv6 over bgp with soft-reconfig
 qc pass: evpn/vpws over srv6 over bgp additional path
 ---------------------------------- 2020-01-01 15:31:55
 qc pass: ethernet over gretap pwhe
+---------------------------------- 2020-01-11 16:16:31
+qc pass: p4lang: routing
+qc pass: p4lang: bridging
+qc pass: p4lang: mpls
+qc pass: p4lang: vlan routing
+qc pass: p4lang: vlan bridging
+qc pass: p4lang: vpn with bgp
+qc pass: p4lang: vpls/ldp with bgp
+qc pass: p4lang: evpn/cmac with bgp
+qc pass: p4lang: eompls
+qc pass: p4lang: vpn with bgp over srv6
+qc pass: p4lang: evpn/cmac with bgp over srv6
