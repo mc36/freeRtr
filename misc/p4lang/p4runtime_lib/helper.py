@@ -97,11 +97,7 @@ class P4InfoHelper(object):
         p4runtime_match = p4runtime_pb2.FieldMatch()
         p4runtime_match.field_id = p4info_match.id
         match_type = p4info_match.match_type
-        # change vaild => to unspecified
-        if match_type == p4info_pb2.MatchField.UNSPECIFIED:
-            valid = p4runtime_match.valid
-            valid.value = bool(value)
-        elif match_type == p4info_pb2.MatchField.EXACT:
+        if match_type == p4info_pb2.MatchField.EXACT:
             exact = p4runtime_match.exact
             exact.value = encode(value, bitwidth)
         elif match_type == p4info_pb2.MatchField.LPM:
@@ -161,54 +157,6 @@ class P4InfoHelper(object):
         p4runtime_param.value = encode(value, p4info_param.bitwidth)
         return p4runtime_param
 
-    # get replicas 
-    def get_replicas_pb(self, egress_port, instance):
-        p4runtime_replicas = p4runtime_pb2.Replica()
-        p4runtime_replicas.egress_port = egress_port
-        p4runtime_replicas.instance = instance
-        return p4runtime_replicas
-
-    # get metadata 
-    def get_metadata_pb(self, metadata_id, value):
-        p4runtime_metadata = p4runtime_pb2.PacketMetadata()
-        p4runtime_metadata.metadata_id = metadata_id
-        p4runtime_metadata.value = value
-        return p4runtime_metadata
-
-    # get mc_group_entry
-    def buildMCEntry(self, mc_group_id, replicas=None):
-        mc_group_entry = p4runtime_pb2.MulticastGroupEntry()
-        mc_group_entry.multicast_group_id = mc_group_id
-        if replicas:
-            mc_group_entry.replicas.extend([
-                self.get_replicas_pb(egress_port, instance)
-                for egress_port, instance in replicas.iteritems()
-            ])
-        return mc_group_entry
-
-    # get packetout
-    def buildPacketOut(self, payload, metadata=None):
-        packet_out = p4runtime_pb2.PacketOut()
-        packet_out.payload = payload
-        if metadata:
-            packet_out.metadata.extend([
-                self.get_metadata_pb(metadata_id, value)
-                for metadata_id, value in metadata.iteritems()
-            ])
-        return packet_out
-
-    def buildDigestEntry(self, digest_name=None):
-        digest_entry = p4runtime_pb2.DigestEntry()
-        # using name 
-        digest_entry.digest_id = self.get_digests_id(digest_name)
-        # using id directly
-        #digest_entry.digest_id = int(digest_id)
-        # FIXME: set config
-        digest_entry.config.max_timeout_ns = 0
-        digest_entry.config.max_list_size = 1
-        digest_entry.config.ack_timeout_ns = 0
-        return digest_entry
-
     def buildTableEntry(self,
                         table_name,
                         match_fields=None,
@@ -240,3 +188,13 @@ class P4InfoHelper(object):
                     for field_name, value in action_params.iteritems()
                 ])
         return table_entry
+
+    def buildMulticastGroupEntry(self, multicast_group_id, replicas):
+        mc_entry = p4runtime_pb2.PacketReplicationEngineEntry()
+        mc_entry.multicast_group_entry.multicast_group_id = multicast_group_id
+        for replica in replicas:
+            r = p4runtime_pb2.Replica()
+            r.egress_port = replica['egress_port']
+            r.instance = replica['instance']
+            mc_entry.multicast_group_entry.replicas.extend([r])
+        return mc_entry

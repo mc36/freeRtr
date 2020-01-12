@@ -870,6 +870,7 @@ qc pass: p4lang: bridging
 qc pass: p4lang: mpls
 qc pass: p4lang: vlan routing
 qc pass: p4lang: vlan bridging
+qc pass: p4lang: vlan mpls
 qc pass: p4lang: vpn with bgp
 qc pass: p4lang: vpls/ldp with bgp
 qc pass: p4lang: evpn/cmac with bgp

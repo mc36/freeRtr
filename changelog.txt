@@ -8772,3 +8772,5 @@ qc pass: p4lang: evpn/cmac with bgp
 qc pass: p4lang: eompls
 qc pass: p4lang: vpn with bgp over srv6
 qc pass: p4lang: evpn/cmac with bgp over srv6
+---------------------------------- 2020-01-12 07:23:43
+qc pass: p4lang: vlan mpls

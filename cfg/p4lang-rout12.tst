@@ -1,4 +1,4 @@
-description p4lang: evpn/cmac with bgp
+description p4lang: evpn/cmac with bgp over srv6
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -46,24 +46,26 @@ int sdn1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
- mpls enable
- mpls ldp4
- mpls ldp6
  exit
 int sdn2
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
  ipv6 ena
- mpls enable
- mpls ldp4
- mpls ldp6
  exit
 int sdn3
  bridge-gr 1
  exit
 int sdn4
  bridge-gr 1
+ exit
+int tun1
+ vrf for v1
+ ipv6 addr 4444:1:: ffff:ffff::
+ tun sour sdn1
+ tun dest 4444:1::
+ tun vrf v1
+ tun mod srv6
  exit
 router bgp4 1
  vrf v1
@@ -73,11 +75,13 @@ router bgp4 1
  temp a remote-as 1
  temp a update lo0
  temp a send-comm both
+ temp a segrou
  temp a pmsi
  temp a route-reflect
  neigh 2.2.2.103 temp a
  neigh 2.2.2.104 temp a
  afi-evpn 101 bridge 1
+ afi-evpn 101 srv6 tun1
  afi-evpn 101 update lo0
  afi-evpn 101 encap cmac
  exit
@@ -89,6 +93,7 @@ router bgp6 1
  temp a remote-as 1
  temp a update lo0
  temp a send-comm both
+ temp a segrou
  temp a pmsi
  temp a route-reflect
  neigh 4321::103 temp a
@@ -108,6 +113,8 @@ ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.2
 ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::2
+ipv6 route v1 4444:3:: ffff:ffff:: 1234:1::2
+ipv6 route v1 4444:4:: ffff:ffff:: 1234:2::2
 !
 
 addother r2
@@ -151,9 +158,14 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
+ exit
+int tun1
+ vrf for v1
+ ipv6 addr 4444:3:: ffff:ffff::
+ tun sour eth1
+ tun dest 4444:3::
+ tun vrf v1
+ tun mod srv6
  exit
 router bgp4 1
  vrf v1
@@ -163,8 +175,10 @@ router bgp4 1
  neigh 2.2.2.101 remote-as 1
  neigh 2.2.2.101 update lo0
  neigh 2.2.2.101 send-comm both
+ neigh 2.2.2.101 segrou
  neigh 2.2.2.101 pmsi
  afi-evpn 101 bridge 1
+ afi-evpn 101 srv6 tun1
  afi-evpn 101 update lo0
  afi-evpn 101 encap cmac
  exit
@@ -176,6 +190,7 @@ router bgp6 1
  neigh 4321::101 remote-as 1
  neigh 4321::101 update lo0
  neigh 4321::101 send-comm both
+ neigh 4321::101 segrou
  neigh 4321::101 pmsi
  exit
 ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
@@ -190,6 +205,8 @@ ipv4 route v1 3.3.3.106 255.255.255.255 1.1.3.6
 ipv6 route v1 3333::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::4
 ipv6 route v1 3333::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::5
 ipv6 route v1 3333::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::6
+ipv6 route v1 4444:1:: ffff:ffff:: 1234:1::1
+ipv6 route v1 4444:4:: ffff:ffff:: 1234:1::1
 !
 
 addrouter r4
@@ -223,9 +240,14 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
+ exit
+int tun1
+ vrf for v1
+ ipv6 addr 4444:4:: ffff:ffff::
+ tun sour eth1
+ tun dest 4444:4::
+ tun vrf v1
+ tun mod srv6
  exit
 router bgp4 1
  vrf v1
@@ -235,8 +257,10 @@ router bgp4 1
  neigh 2.2.2.101 remote-as 1
  neigh 2.2.2.101 update lo0
  neigh 2.2.2.101 send-comm both
+ neigh 2.2.2.101 segrou
  neigh 2.2.2.101 pmsi
  afi-evpn 101 bridge 1
+ afi-evpn 101 srv6 tun1
  afi-evpn 101 update lo0
  afi-evpn 101 encap cmac
  exit
@@ -248,6 +272,7 @@ router bgp6 1
  neigh 4321::101 remote-as 1
  neigh 4321::101 update lo0
  neigh 4321::101 send-comm both
+ neigh 4321::101 segrou
  neigh 4321::101 pmsi
  exit
 ipv4 route v1 1.1.1.0 255.255.255.0 1.1.2.1
@@ -262,6 +287,8 @@ ipv4 route v1 3.3.3.106 255.255.255.255 1.1.3.6
 ipv6 route v1 3333::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::3
 ipv6 route v1 3333::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::5
 ipv6 route v1 3333::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::6
+ipv6 route v1 4444:1:: ffff:ffff:: 1234:2::1
+ipv6 route v1 4444:3:: ffff:ffff:: 1234:2::1
 !
 
 addrouter r5

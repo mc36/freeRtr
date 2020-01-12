@@ -580,7 +580,7 @@ def writeMyaddrRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_ma
         ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
-def writeNexthopRules(delete, p4info_helper, ingress_sw, port, mac_addr):
+def writeNexthopRules(delete, p4info_helper, ingress_sw, port, dst_mac_addr, src_mac_addr):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_nexthop.tbl_nexthop",
         match_fields={
@@ -588,7 +588,8 @@ def writeNexthopRules(delete, p4info_helper, ingress_sw, port, mac_addr):
         },
         action_name="ig_ctl.ig_ctl_nexthop.act_ipv4_fib_hit",
         action_params={
-            "dst_mac_addr": mac_addr,
+            "dst_mac_addr": dst_mac_addr,
+            "src_mac_addr": src_mac_addr,
             "egress_port": port
         })
     if delete == 1:
@@ -898,15 +899,15 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
 
         if splt[0] == "neigh4_add":
-            writeNexthopRules(1,p4info_helper,sw1,int(splt[1]),splt[3])
+            writeNexthopRules(1,p4info_helper,sw1,int(splt[1]),splt[3],splt[5])
             writeNeighborRules4(1,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
         if splt[0] == "neigh4_mod":
-            writeNexthopRules(2,p4info_helper,sw1,int(splt[1]),splt[3])
+            writeNexthopRules(2,p4info_helper,sw1,int(splt[1]),splt[3],splt[5])
             writeNeighborRules4(2,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
         if splt[0] == "neigh4_del":
-            writeNexthopRules(3,p4info_helper,sw1,int(splt[1]),splt[3])
+            writeNexthopRules(3,p4info_helper,sw1,int(splt[1]),splt[3],splt[5])
             writeNeighborRules4(3,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
 
@@ -1107,15 +1108,15 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
 
         if splt[0] == "neigh6_add":
-#            writeNexthopRules(1,p4info_helper,sw1,int(splt[1]),splt[3])
+#            writeNexthopRules(1,p4info_helper,sw1,int(splt[1]),splt[3],splt[5])
             writeNeighborRules6(1,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
         if splt[0] == "neigh6_mod":
-#            writeNexthopRules(2,p4info_helper,sw1,int(splt[1]),splt[3])
+#            writeNexthopRules(2,p4info_helper,sw1,int(splt[1]),splt[3],splt[5])
             writeNeighborRules6(2,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
         if splt[0] == "neigh6_del":
-#            writeNexthopRules(3,p4info_helper,sw1,int(splt[1]),splt[3])
+#            writeNexthopRules(3,p4info_helper,sw1,int(splt[1]),splt[3],splt[5])
             writeNeighborRules6(3,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
 
