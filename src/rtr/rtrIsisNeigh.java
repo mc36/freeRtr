@@ -602,6 +602,30 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
             iface.cntr.drop(pck, counter.reasons.badSum);
             return;
         }
+        if (level.lspPassword != null) {
+            boolean authed = false;
+            byte[] pwd = level.getAuthen();
+            typLenVal tlv = rtrIsis.getTlv();
+            packHolder p = lsp.getPayload();
+            for (;;) {
+                if (tlv.getBytes(p)) {
+                    break;
+                }
+                if (tlv.valTyp != rtrIsisLsp.tlvAuthen) {
+                    continue;
+                }
+                if (tlv.valSiz != pwd.length) {
+                    continue;
+                }
+                if (bits.byteComp(tlv.valDat, 0, pwd, 0, pwd.length) == 0) {
+                    authed = true;
+                }
+            }
+            if (!authed) {
+                logger.info("got bad authentication from l" + level.level + " " + ethAddr + " on " + lsp);
+                return;
+            }
+        }
         if (debugger.rtrIsisTraf) {
             logger.debug("lsp " + lsp);
         }

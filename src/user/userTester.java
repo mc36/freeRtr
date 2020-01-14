@@ -401,7 +401,7 @@ public class userTester {
             return;
         }
         txt.add(0, "---------------------------------- " + bits.time2str(cfgAll.timeZoneName, tim + cfgAll.timeServerOffset, 3));
-        bits.buf2txt(false, txt, "../changelog.txt");
+        bits.buf2txt(false, txt, "../changelog" + beg + ".txt");
     }
 
     private static List<String> features2list(List<userTesterFtr> ftr, int mod) {
@@ -1009,6 +1009,9 @@ class userTesterOne {
                 }
                 a = a.toLowerCase().trim();
                 if (a.equals("router>")) {
+                    break;
+                }
+                if (a.equals("router#")) {
                     break;
                 }
             }

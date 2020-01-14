@@ -1,6 +1,5 @@
 package rtr;
 
-import java.util.Comparator;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabListing;
@@ -98,6 +97,11 @@ public class rtrIsisLevel implements Runnable {
      * bier enabled
      */
     public boolean bierEna;
+
+    /**
+     * lsp password
+     */
+    public String lspPassword;
 
     /**
      * max lsp size
@@ -335,11 +339,28 @@ public class rtrIsisLevel implements Runnable {
         need2adv.put(lsp);
     }
 
+    /**
+     * get authentication data
+     *
+     * @return binary data, null if disabled
+     */
+    protected byte[] getAuthen() {
+        if (lspPassword == null) {
+            return new byte[0];
+        }
+        byte[] buf = (" " + lspPassword).getBytes();
+        buf[0] = 1;
+        return buf;
+    }
+
     private void advertiseTlv(packHolder pck, typLenVal tlv) {
         if ((pck.headSize() + tlv.valSiz) > maxLspSize) {
             advertiseLsp(pck);
             pck.setDataSize(0);
             pck.RTPtyp++;
+            if (lspPassword != null) {
+                advertiseTlv(pck, rtrIsisLsp.tlvAuthen, getAuthen());
+            }
         }
         tlv.putThis(pck);
     }
@@ -398,6 +419,9 @@ public class rtrIsisLevel implements Runnable {
         }
         packHolder p = new packHolder(true, true);
         p.RTPsrc = ifc.circuitID;
+        if (lspPassword != null) {
+            advertiseTlv(p, rtrIsisLsp.tlvAuthen, getAuthen());
+        }
         advertiseTlv(p, lower.putISneigh(lower.routerID, 0, 0, new byte[0]));
         createNeighs(p, ifc, false);
         advertiseLsp(p);
@@ -494,6 +518,9 @@ public class rtrIsisLevel implements Runnable {
         }
         need2adv.clear();
         packHolder pck = new packHolder(true, true);
+        if (lspPassword != null) {
+            advertiseTlv(pck, rtrIsisLsp.tlvAuthen, getAuthen());
+        }
         advertiseTlv(pck, rtrIsisLsp.tlvProtSupp, lower.getNLPIDlst());
         if (lower.multiTopo) {
             int i = getFlagsVal();

@@ -8774,3 +8774,38 @@ qc pass: p4lang: vpn with bgp over srv6
 qc pass: p4lang: evpn/cmac with bgp over srv6
 ---------------------------------- 2020-01-12 07:23:43
 qc pass: p4lang: vlan mpls
+---------------------------------- 2020-01-13 13:37:48
+qc pass: interop1: bgp aigp
+qc pass: interop1: isis lsp authentication
+qc pass: interop2: bgp aigp
+qc pass: interop2: isis lsp authentication
+qc pass: interop8: ebgp
+qc pass: interop8: ibgp
+qc pass: interop8: bgp locpref
+qc pass: interop8: bgp origin
+qc pass: interop8: bgp metric
+qc pass: interop8: bgp community
+qc pass: interop8: bgp aspath
+qc pass: interop8: bgp with labels
+qc pass: interop8: bgp addpath
+qc pass: interop8: bgp prefix withdraw
+qc pass: interop8: bgp authentication
+qc pass: interop8: bgp extended community
+qc pass: interop8: bgp large community
+qc pass: interop8: point2point isis
+qc pass: interop8: isis dis
+qc pass: interop8: isis nondis
+qc pass: interop8: isis narrow metric
+qc pass: interop8: isis prefix withdraw
+qc pass: interop8: isis authentication
+qc pass: interop8: ldp lsp
+qc pass: interop8: point2point ospf
+qc pass: interop8: ospf dr
+qc pass: interop8: ospf nondr
+qc pass: interop8: ospf transit area
+qc pass: interop8: ospf stub area
+qc pass: interop8: ospf nssa area
+qc pass: interop8: ospf prefix withdraw
+qc pass: interop8: ospf authentication
+qc pass: interop9: isis lsp authentication
+qc pass: isis lsp authentication

@@ -216,6 +216,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router isis[4|6] .*! level[1|2] inter-level",
         "router isis[4|6] .*! no level[1|2] default-originate",
         "router isis[4|6] .*! level[1|2] lsp-mtu 1024",
+        "router isis[4|6] .*! no level[1|2] lsp-password",
         "router isis[4|6] .*! level[1|2] lsp-refresh 400000",
         "router isis[4|6] .*! level[1|2] lsp-lifetime 1200000",
         "router isis[4|6] .*! no level[1|2] prefix-list-from",

@@ -33,7 +33,7 @@ public class bits {
 
     private static void randomUpdate() {
         randomUsed++;
-        if (randomUsed < 1024) {
+        if (randomUsed < 10240000) {
             return;
         }
         randomUsed = 0;

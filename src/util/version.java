@@ -210,7 +210,10 @@ public class version {
         sa.add("name: " + cfgAll.hostName);
         sa.add("hwid: " + cfgInit.hwIdNum);
         sa.add("uptime: since " + bits.time2str(cfgAll.timeZoneName, cfgInit.jvmStarted + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(cfgInit.jvmStarted));
-        sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
+        try {
+          sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
+        } catch (Exception e) {
+        }
         sa.add("hwcfg: " + cfgInit.cfgFileHw);
         sa.add("swcfg: " + cfgInit.cfgFileSw);
         sa.add("cpu: " + getCPUname());

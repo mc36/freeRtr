@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.1.12-testing, done by cs@nop.;-;-
--;-;2020-01-12 16:15:19, took 08:51:36 on 1624 cases, 0 failed, 1 traces, 6 retries;-;-
+-;-;freeRouter v20.1.13-testing, done by cs@nop.;-;-
+-;-;2020-01-13 22:44:56, took 09:07:08 on 1658 cases, 0 failed, 0 traces, 12 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -525,6 +525,7 @@ intop1-bgp15.tst;0;interop1: vpls/bgp over bgp;successfully;finished
 intop1-bgp16.tst;0;interop1: bgp extended community;successfully;finished
 intop1-bgp17.tst;0;interop1: evpn/cmac over bgp;successfully;finished
 intop1-bgp18.tst;0;interop1: bgp 6pe;successfully;finished
+intop1-bgp19.tst;0;interop1: bgp aigp;successfully;finished
 intop1-dhcp01.tst;0;interop1: dhcp server;successfully;finished
 intop1-dhcp02.tst;0;interop1: dhcp client;successfully;finished
 intop1-dns.tst;0;interop1: dns;successfully;finished
@@ -574,6 +575,7 @@ intop1-isis07.tst;0;interop1: isis prefix withdraw;successfully;finished
 intop1-isis08.tst;0;interop1: isis authentication;successfully;finished
 intop1-isis09.tst;0;interop1: isis p2mp te;successfully;finished
 intop1-isis10.tst;0;interop1: isis sr;successfully;finished
+intop1-isis11.tst;0;interop1: isis lsp authentication;successfully;finished
 intop1-l2tp01.tst;0;interop1: l2tp2 client;successfully;finished
 intop1-l2tp02.tst;0;interop1: l2tp2 server;successfully;finished
 intop1-l2tp03.tst;0;interop1: l2tp3 server;successfully;finished
@@ -633,6 +635,7 @@ intop2-bgp19.tst;0;interop2: bgp vpnv4 over srv6;successfully;finished
 intop2-bgp20.tst;0;interop2: bgp vpnv6 over srv6;successfully;finished
 intop2-bgp21.tst;0;interop2: bgp 6pe;successfully;finished
 intop2-bgp22.tst;0;interop2: evpn/vpws over bgp;successfully;finished
+intop2-bgp23.tst;0;interop2: bgp aigp;successfully;finished
 intop2-eigrp01.tst;0;interop2: eigrp;successfully;finished
 intop2-eigrp02.tst;0;interop2: eigrp prefix withdraw;successfully;finished
 intop2-eth01.tst;0;interop2: ethernet encapsulation;successfully;finished
@@ -648,6 +651,7 @@ intop2-isis07.tst;0;interop2: isis prefix withdraw;successfully;finished
 intop2-isis08.tst;0;interop2: isis authentication;successfully;finished
 intop2-isis09.tst;0;interop2: isis p2mp te;successfully;finished
 intop2-isis10.tst;0;interop2: isis sr;successfully;finished
+intop2-isis11.tst;0;interop2: isis lsp authentication;successfully;finished
 intop2-ldp01.tst;0;interop2: ldp lsp;successfully;finished
 intop2-ldp02.tst;0;interop2: ethernet over mpls;successfully;finished
 intop2-ldp03.tst;0;interop2: ldp p2mp lsp;successfully;finished
@@ -671,6 +675,34 @@ intop2-rip03.tst;0;interop2: rip authentication;successfully;finished
 intop2-tun01.tst;0;interop2: gre tunnel;successfully;finished
 intop2-tun02.tst;0;interop2: ipip tunnel;successfully;finished
 intop2-zzz.tst;0;interop2: config wiper;successfully;finished
+intop8-bgp01.tst;0;interop8: ebgp;successfully;finished
+intop8-bgp02.tst;0;interop8: ibgp;successfully;finished
+intop8-bgp03.tst;0;interop8: bgp locpref;successfully;finished
+intop8-bgp04.tst;0;interop8: bgp origin;successfully;finished
+intop8-bgp05.tst;0;interop8: bgp metric;successfully;finished
+intop8-bgp06.tst;0;interop8: bgp community;successfully;finished
+intop8-bgp07.tst;0;interop8: bgp aspath;successfully;finished
+intop8-bgp08.tst;0;interop8: bgp with labels;successfully;finished
+intop8-bgp09.tst;0;interop8: bgp addpath;successfully;finished
+intop8-bgp10.tst;0;interop8: bgp prefix withdraw;successfully;finished
+intop8-bgp11.tst;0;interop8: bgp authentication;successfully;finished
+intop8-bgp12.tst;0;interop8: bgp extended community;successfully;finished
+intop8-bgp13.tst;0;interop8: bgp large community;successfully;finished
+intop8-isis01.tst;0;interop8: point2point isis;successfully;finished
+intop8-isis02.tst;0;interop8: isis dis;successfully;finished
+intop8-isis03.tst;0;interop8: isis nondis;successfully;finished
+intop8-isis04.tst;0;interop8: isis narrow metric;successfully;finished
+intop8-isis05.tst;0;interop8: isis prefix withdraw;successfully;finished
+intop8-isis06.tst;0;interop8: isis authentication;successfully;finished
+intop8-ldp01.tst;0;interop8: ldp lsp;successfully;finished
+intop8-ospf01.tst;0;interop8: point2point ospf;successfully;finished
+intop8-ospf02.tst;0;interop8: ospf dr;successfully;finished
+intop8-ospf03.tst;0;interop8: ospf nondr;successfully;finished
+intop8-ospf04.tst;0;interop8: ospf transit area;successfully;finished
+intop8-ospf05.tst;0;interop8: ospf stub area;successfully;finished
+intop8-ospf06.tst;0;interop8: ospf nssa area;successfully;finished
+intop8-ospf07.tst;0;interop8: ospf prefix withdraw;successfully;finished
+intop8-ospf08.tst;0;interop8: ospf authentication;successfully;finished
 intop9-bgp01.tst;0;interop9: ebgp;successfully;finished
 intop9-bgp02.tst;0;interop9: ibgp;successfully;finished
 intop9-bgp03.tst;0;interop9: bgp locpref;successfully;finished
@@ -697,6 +729,7 @@ intop9-isis04.tst;0;interop9: isis te;successfully;finished
 intop9-isis05.tst;0;interop9: isis prefix withdraw;successfully;finished
 intop9-isis06.tst;0;interop9: isis p2mp te;successfully;finished
 intop9-isis07.tst;0;interop9: isis sr;successfully;finished
+intop9-isis08.tst;0;interop9: isis lsp authentication;successfully;finished
 intop9-ldp01.tst;0;interop9: ldp lsp;successfully;finished
 intop9-ldp02.tst;0;interop9: ethernet over mpls;successfully;finished
 intop9-ldp03.tst;0;interop9: ldp p2mp lsp;successfully;finished
@@ -1418,6 +1451,7 @@ rout-isis50.tst;0;isis with bier;successfully;finished
 rout-isis51.tst;0;isis inter-level with bier;successfully;finished
 rout-isis52.tst;0;isis multi-topology with bier;successfully;finished
 rout-isis53.tst;0;isis autoroute;successfully;finished
+rout-isis54.tst;0;isis lsp authentication;successfully;finished
 rout-lsrp01.tst;0;lsrp point2point connection;successfully;finished
 rout-lsrp02.tst;0;lsrp point2multipoint connection;successfully;finished
 rout-lsrp03.tst;0;lsrp point2point chain;successfully;finished

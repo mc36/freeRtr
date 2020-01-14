@@ -384,8 +384,9 @@ interface bvi4
  exit
 !
 interface bvi9
- no description
+ description uplink
  monitor-buffer 10240000
+ lldp enable
  cdp enable
  cdp odr4 10.1.123.91
  cdp odr6 2001:db8:1123::91
@@ -424,16 +425,24 @@ interface bvi9
  exit
 !
 interface ethernet1
- no description
+ description uplink
  bridge-group 9
  bridge-filter ipv4in all4
+ bridge-filter ipv4out all4
  bridge-filter ipv6in all6
+ bridge-filter ipv6out all6
+ no shutdown
+ no log-link-change
+ exit
+!
+interface ethernet8
+ description vsrx
  no shutdown
  no log-link-change
  exit
 !
 interface ethernet9
- no description
+ description v9k
  no shutdown
  no log-link-change
  exit

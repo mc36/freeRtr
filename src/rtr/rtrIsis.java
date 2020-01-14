@@ -6,6 +6,7 @@ import addr.addrIPv4;
 import addr.addrIPv6;
 import addr.addrIsis;
 import addr.addrPrefix;
+import auth.authLocal;
 import cfg.cfgAll;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
@@ -981,6 +982,8 @@ public class rtrIsis extends ipRtr {
         l.add("1 2   both                        change l1 and l2 parameters");
         l.add("2 3     lsp-mtu                   maximum lsp size");
         l.add("3 .       <num>                   size of lsp in bytes");
+        l.add("2 3     lsp-password              lsp authentication");
+        l.add("3 .       <text>                  text to use");
         l.add("2 3     lsp-refresh               lsp refresh time");
         l.add("3 .       <num>                   age in ms");
         l.add("2 3     lsp-lifetime              lsp life time");
@@ -1165,6 +1168,7 @@ public class rtrIsis extends ipRtr {
         cmds.cfgLine(l, !lev.interLevels, beg, s + "inter-level", "");
         cmds.cfgLine(l, !lev.defOrigin, beg, s + "default-originate", "");
         l.add(beg + s + "lsp-mtu " + lev.maxLspSize);
+        cmds.cfgLine(l, lev.lspPassword == null, beg, s + "lsp-password", authLocal.passwdEncode("" + lev.lspPassword));
         l.add(beg + s + "lsp-refresh " + lev.lspRefresh);
         l.add(beg + s + "lsp-lifetime " + lev.lspLifetime);
         cmds.cfgLine(l, lev.prflstFrom == null, beg, s + "prefix-list-from", "" + lev.prflstFrom);
@@ -1207,6 +1211,15 @@ public class rtrIsis extends ipRtr {
         }
         if (s.equals("lsp-mtu")) {
             lev.maxLspSize = bits.str2num(cmd.word());
+            lev.schedWork(3);
+            return false;
+        }
+        if (s.equals("lsp-password")) {
+            if (negated) {
+                lev.lspPassword = null;
+            } else {
+                lev.lspPassword = authLocal.passwdDecode(cmd.word());
+            }
             lev.schedWork(3);
             return false;
         }
