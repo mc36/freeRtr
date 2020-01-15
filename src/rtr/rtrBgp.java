@@ -1998,7 +1998,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("3 4       <name>                  proxy profile");
         l.add("4 5         <name>                hostname");
         l.add("5 .           <num>               port number");
-        l.add("1 2   other                       select vrf to advertise");
+        l.add("1 2   afi-other                   select other to advertise");
         l.add("2 3       srv6                    srv6 advertisement");
         l.add("3 .         <name>                select source to advertise");
         l.add("2 3       distance                set import distance");
@@ -2102,7 +2102,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.getConfig(l, beg, filter);
         }
-        other.getConfig(l, beg + "other ");
+        other.getConfig(l, beg + "afi-other ");
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.getConfig(l, beg);
         }
@@ -2276,7 +2276,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             compute.wakeup();
             return false;
         }
-        if (s.equals("other")) {
+        if (s.equals("afi-other")) {
             s = cmd.word();
             if (s.equals("distance")) {
                 other.distance = bits.str2num(cmd.word());

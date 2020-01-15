@@ -27,7 +27,7 @@ router bgp4 1
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
- other red conn
+ afi-other red conn
  exit
 !
 

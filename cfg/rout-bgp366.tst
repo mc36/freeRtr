@@ -32,8 +32,8 @@ router bgp4 1
  router-id 4.4.4.1
  neigh 1.1.1.3 remote-as 3
  neigh 1.1.1.3 segrou
- other red conn
- other srv6 tun1
+ afi-other red conn
+ afi-other srv6 tun1
  exit
 router bgp6 1
  vrf v1
@@ -42,8 +42,8 @@ router bgp6 1
  router-id 6.6.6.1
  neigh 1234::3 remote-as 3
  neigh 1234::3 segrou
- other red conn
- other srv6 tun1
+ afi-other red conn
+ afi-other srv6 tun1
  exit
 !
 
@@ -79,8 +79,8 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.3 remote-as 3
  neigh 1.1.1.3 segrou
- other red conn
- other srv6 tun1
+ afi-other red conn
+ afi-other srv6 tun1
  exit
 router bgp6 1
  vrf v1
@@ -89,8 +89,8 @@ router bgp6 1
  router-id 6.6.6.2
  neigh 1234::3 remote-as 3
  neigh 1234::3 segrou
- other red conn
- other srv6 tun1
+ afi-other red conn
+ afi-other srv6 tun1
  exit
 !
 
