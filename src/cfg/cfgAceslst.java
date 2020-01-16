@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import tab.tabAceslstN;
-import tab.tabIntMatcher;
 import tab.tabListing;
 import tab.tabListingEntry;
 import user.userHelping;
@@ -23,6 +22,11 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
      * name of access list
      */
     public String name;
+
+    /**
+     * description of access list
+     */
+    public String description;
 
     /**
      * list of statements
@@ -43,6 +47,9 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("access-list " + name);
+        if (description != null) {
+            l.add(cmds.tabulator + "description " + description);
+        }
         l.addAll(aceslst.dump(cmds.tabulator));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
@@ -53,6 +60,8 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1  2   sequence                      sequence number of an entry");
         l.add("2  1     <num>                       sequence number");
+        l.add("1  3,. description                   specify description");
+        l.add("3  3,.   <str>                       text");
         l.add("1  3   permit                        specify networks to allow");
         l.add("1  3   deny                          specify networks to forbid");
         l.add("3  4     all                         no protocol matching");
@@ -102,6 +111,10 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         String a = cmd.word();
         if (a.equals("no")) {
             a = cmd.word();
+            if (a.equals("description")) {
+                description = null;
+                return;
+            }
             if (a.equals("sequence")) {
                 tabAceslstN<addrIP> ntry = new tabAceslstN<addrIP>(new addrIP());
                 ntry.sequence = bits.str2num(cmd.word());
@@ -112,6 +125,10 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
                 return;
             }
             cmd.badCmd();
+            return;
+        }
+        if (a.equals("description")) {
+            description = cmd.getRemaining();
             return;
         }
         if (a.equals("reindex")) {

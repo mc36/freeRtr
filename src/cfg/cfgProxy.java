@@ -27,6 +27,11 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
     public final String name;
 
     /**
+     * description of access list
+     */
+    public String description;
+
+    /**
      * proxy configuration
      */
     public final clntProxy proxy;
@@ -35,6 +40,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
      * defaults text
      */
     public final static String defaultL[] = {
+        "proxy-profile .*! no description",
         "proxy-profile .*! protocol local",
         "proxy-profile .*! no security",
         "proxy-profile .*! no username",
@@ -72,6 +78,8 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
+        l.add("1 3,. description                   specify description");
+        l.add("3 3,.   <str>                       text");
         l.add("1 2  protocol                       specify protocol to use");
         l.add("2 .    local                        select local vrf");
         l.add("2 .    socks4                       select socks v4");
@@ -111,6 +119,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("proxy-profile " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", "" + description);
         l.add(cmds.tabulator + "protocol " + clntProxy.type2string(proxy.prxProto));
         cmds.cfgLine(l, proxy.secProto == 0, cmds.tabulator, "security", servGeneric.proto2string(proxy.secProto));
         cmds.cfgLine(l, proxy.username == null, cmds.tabulator, "username", proxy.username);
@@ -149,6 +158,10 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
 
     public void doCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("description")) {
+            description = cmd.getRemaining();
+            return;
+        }
         if (s.equals("protocol")) {
             proxy.prxProto = clntProxy.string2type(cmd.word());
             return;
@@ -218,6 +231,10 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
             return;
         }
         s = cmd.word();
+        if (s.equals("description")) {
+            description = null;
+            return;
+        }
         if (s.equals("protocol")) {
             proxy.prxProto = clntProxy.proxyType.local;
             return;

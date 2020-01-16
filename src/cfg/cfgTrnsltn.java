@@ -25,9 +25,15 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
     public final String name;
 
     /**
+     * description
+     */
+    public String description;
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
+        "translation-rule .*! no description",
         "translation-rule .*! no track",
         "translation-rule .*! no time",
         "translation-rule .*! no log",
@@ -98,6 +104,7 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("translation-rule " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         for (int i = 0; i < remove.size(); i++) {
             l.add(cmds.tabulator + "remove " + remove.get(i));
         }
@@ -137,6 +144,8 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
+        l.add("1 3,. description          specify description");
+        l.add("3 3,.   <str>              text");
         l.add("1 2    remove              remove string");
         l.add("2 2,.    <str>             regular expression");
         l.add("1 2    track               consider tracker");
@@ -164,6 +173,14 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
         boolean negated = a.equals("no");
         if (negated) {
             a = cmd.word();
+        }
+        if (a.equals("description")) {
+            if (negated) {
+                description = null;
+            } else {
+                description = cmd.getRemaining();
+            }
+            return;
         }
         if (a.equals("log")) {
             log = !negated;

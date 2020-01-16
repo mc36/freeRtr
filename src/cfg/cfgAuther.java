@@ -80,9 +80,12 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         "aaa userlist .*! username .* autocommand ",
         "aaa userlist .*! username .* privilege 15",
         "aaa userlist .*! username .* noanypass",
-        "aaa radius .*! no secret", "aaa radius .*! privilege 15",
-        "aaa tacacs .*! no secret", "aaa tacacs .*! privilege 15",
-        "aaa .*! no log-failure", "aaa .*! no log-success"
+        "aaa radius .*! no secret",
+        "aaa radius .*! privilege 15",
+        "aaa tacacs .*! no secret",
+        "aaa tacacs .*! privilege 15",
+        "aaa .*! no log-failure",
+        "aaa .*! no log-success"
     };
 
     /**
@@ -208,7 +211,6 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
-        l.add("2 .      success           permit");
         l.add("1 .    log-failure         log failure");
         l.add("1 .    log-success         log success");
         l.add("1 .    log-error           log error");

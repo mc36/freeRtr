@@ -23,6 +23,11 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
     public String name;
 
     /**
+     * description of access list
+     */
+    public String description;
+
+    /**
      * list of statements
      */
     public tabListing<tabObjnetN<addrIP>, addrIP> objgrp;
@@ -42,6 +47,8 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1  2   sequence              sequence number of an entry");
         l.add("2  1     <num>               sequence number");
+        l.add("1  3,. description                   specify description");
+        l.add("3  3,.   <str>                       text");
         l.add("1  3       <addr>            address of network");
         l.add("3  .         <mask>          mask of network");
         l.add("1  2,. reindex               reindex access list");
@@ -53,6 +60,9 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("object-group network " + name);
+        if (description != null) {
+            l.add(cmds.tabulator + "description " + description);
+        }
         l.addAll(objgrp.dump(cmds.tabulator));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
@@ -63,6 +73,10 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
         String a = cmd.word();
         if (a.equals("no")) {
             a = cmd.word();
+            if (a.equals("description")) {
+                description = null;
+                return;
+            }
             if (a.equals("sequence")) {
                 tabObjnetN<addrIP> ntry = new tabObjnetN<addrIP>(new addrIP());
                 ntry.sequence = bits.str2num(cmd.word());
@@ -73,6 +87,10 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
                 return;
             }
             cmd.badCmd();
+            return;
+        }
+        if (a.equals("description")) {
+            description = cmd.getRemaining();
             return;
         }
         if (a.equals("reindex")) {

@@ -44,6 +44,12 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
     public final String name;
 
     /**
+     * description
+     */
+    public String description;
+
+
+    /**
      * transform to use
      */
     public final secTransform trans;
@@ -77,6 +83,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
      * defaults text
      */
     public final static String defaultL[] = {
+        "crypto ipsec .*! no description",
         "crypto ipsec .*! no group",
         "crypto ipsec .*! no cipher",
         "crypto ipsec .*! no hash",
@@ -115,6 +122,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("crypto ipsec " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         trans.getShRun(cmds.tabulator, l);
         cmds.cfgLine(l, preshared == null, cmds.tabulator, "key", authLocal.passwdEncode(preshared));
         String s = "unknown";
@@ -149,6 +157,8 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
         trans.getHelp(l);
+        l.add("1 3,. description        specify description");
+        l.add("3 3,.   <str>            text");
         l.add("1 2  key                 set preshared key");
         l.add("2 .    <text>            key");
         l.add("1 2  protected           set protected protocol");
@@ -170,6 +180,10 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
             return;
         }
         String s = cmd.word();
+        if (s.equals("description")) {
+            description = cmd.getRemaining();
+            return;
+        }
         if (s.equals("key")) {
             preshared = authLocal.passwdDecode(cmd.word());
             trans.authAlg = 1;
@@ -205,6 +219,10 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
             return;
         }
         s = cmd.word();
+        if (s.equals("description")) {
+            description = null;
+            return;
+        }
         if (s.equals("key")) {
             preshared = null;
             trans.authAlg = 0;

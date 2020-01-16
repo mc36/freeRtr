@@ -25,6 +25,11 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
     public String name;
 
     /**
+     * description
+     */
+    public String description;
+
+    /**
      * worker
      */
     public final clntMtrack worker = new clntMtrack();
@@ -33,6 +38,7 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
      * defaults text
      */
     public final static String defaultL[] = {
+        "mtracker .*! no description",
         "mtracker .*! no vrf",
         "mtracker .*! no source",
         "mtracker .*! no group",
@@ -56,6 +62,8 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
+        l.add("1  3,. description                   specify description");
+        l.add("3  3,.   <str>                       text");
         l.add("1  2      group                      specify group address");
         l.add("2  2,.      <addr>                   address of group");
         l.add("1  2      target                     specify target address");
@@ -85,6 +93,7 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("mtracker " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !worker.logging, cmds.tabulator, "logging", "");
         cmds.cfgLine(l, worker.cfgGrp == null, cmds.tabulator, "group", "" + worker.cfgGrp);
         for (int i = 0; i < worker.cfgTrg.size(); i++) {
@@ -123,6 +132,10 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
 
     private boolean doConfStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("description")) {
+            description = cmd.getRemaining();
+            return false;
+        }
         if (a.equals("logging")) {
             worker.logging = true;
             return false;
@@ -198,6 +211,10 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
             return false;
         }
         a = cmd.word();
+        if (a.equals("description")) {
+            description = null;
+            return false;
+        }
         if (a.equals("logging")) {
             worker.logging = false;
             return false;

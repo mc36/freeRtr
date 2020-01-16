@@ -25,6 +25,11 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
     public String name;
 
     /**
+     * description
+     */
+    public String description;
+
+    /**
      * worker
      */
     public final clntTrack worker = new clntTrack();
@@ -33,6 +38,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
      * defaults text
      */
     public final static String defaultL[] = {
+        "tracker .*! no description",
         "tracker .*! force normal",
         "tracker .*! no hidden",
         "tracker .*! no target",
@@ -83,6 +89,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
      */
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
+        l.add("1  3,. description                   specify description");
+        l.add("3  3,.   <str>                       text");
         l.add("1  2      mode                       specify mode of runs");
         l.add("2  .        icmp                     icmp echo request");
         l.add("2  .        nrpe                     nrpe remote check");
@@ -150,6 +158,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("tracker " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !worker.hidden, cmds.tabulator, "hidden", "");
         cmds.cfgLine(l, !worker.logging, cmds.tabulator, "log", "");
         l.add(cmds.tabulator + "mode " + clntTrack.mode2string(worker.mode));
@@ -207,6 +216,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
      */
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("description")) {
+            description = cmd.getRemaining();
+            return;
+        }
         if (a.equals("hidden")) {
             worker.hidden = true;
             return;
@@ -373,6 +386,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             return;
         }
         a = cmd.word();
+        if (a.equals("description")) {
+            description = null;
+            return;
+        }
         if (a.equals("hidden")) {
             worker.hidden = false;
             return;

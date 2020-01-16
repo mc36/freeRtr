@@ -24,6 +24,11 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
     public String name;
 
     /**
+     * description
+     */
+    public String description;
+
+    /**
      * side 1
      */
     public ifcEthTyp side1 = null;
@@ -37,6 +42,7 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
      * defaults text
      */
     public final static String defaultL[] = {
+        "connect .*! no description",
         "connect .*! no side1",
         "connect .*! no side2"
     };
@@ -60,6 +66,8 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
+        l.add("1 3,. description                   specify description");
+        l.add("3 3,.   <str>                       text");
         l.add("1 2  side1                          specify first side of connection");
         getSideHelp(l);
         l.add("1 2  side2                          specify seconds side of connection");
@@ -70,6 +78,7 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("connect " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, side1 == null, cmds.tabulator, "side1", "" + side1);
         cmds.cfgLine(l, side2 == null, cmds.tabulator, "side2", "" + side2);
         l.add(cmds.tabulator + cmds.finish);
@@ -83,6 +92,10 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
     public void doCfgStr(cmds cmd) {
         stop2run();
         String s = cmd.word();
+        if (s.equals("description")) {
+            description = cmd.getRemaining();
+            return;
+        }
         if (s.equals("side1")) {
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
@@ -108,6 +121,10 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
             return;
         }
         s = cmd.word();
+        if (s.equals("description")) {
+            description = null;
+            return;
+        }
         if (s.equals("side1")) {
             side1 = null;
             return;

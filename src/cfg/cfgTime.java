@@ -26,6 +26,11 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
     public String name;
 
     /**
+     * description of access list
+     */
+    public String description;
+
+    /**
      * current sequence number
      */
     public int seq;
@@ -34,6 +39,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
      * defaults text
      */
     public final static String defaultL[] = {
+        "time-map .*! no description",
         "time-map .*! sequence .* match year all",
         "time-map .*! sequence .* match month all",
         "time-map .*! sequence .* match day all",
@@ -94,6 +100,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("time-map " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", "" + description);
         for (int i = 0; i < timemap.size(); i++) {
             l.addAll(timemap.get(i).dump(cmds.tabulator));
         }
@@ -109,6 +116,8 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1 2   sequence              sequence number of an entry");
         l.add("2 1,.   <num>               sequence number");
+        l.add("1 3,. description           specify description");
+        l.add("3 3,.   <str>               text");
         l.add("1 2,. reindex               reindex route map");
         l.add("2 3,.   [num]               initial number to start with");
         l.add("3 4,.     [num]             increment number");
@@ -142,6 +151,10 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
 
     public synchronized void doCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("description")) {
+            description = cmd.getRemaining();
+            return;
+        }
         if (a.equals("sequence")) {
             seq = bits.str2num(cmd.word());
             a = cmd.word();
@@ -208,6 +221,10 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
             return;
         }
         a = cmd.word();
+        if (a.equals("description")) {
+            description = null;
+            return;
+        }
         if (a.equals("match")) {
             a = cmd.word();
             tabTime ntry = getCurr();

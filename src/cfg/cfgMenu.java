@@ -19,7 +19,9 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {};
+    public final static String defaultL[] = {
+        "menu .*! no description"
+    };
 
     /**
      * defaults filter
@@ -30,6 +32,11 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
      * name of menu
      */
     public String name;
+
+    /**
+     * description
+     */
+    public String description;
 
     /**
      * letters of menu
@@ -47,6 +54,8 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
+        l.add("1 3,. description                   specify description");
+        l.add("3 3,.   <str>                       text");
         l.add("1 2  letter                         set letter to configure");
         l.add("2 3,.  <name>                       menu item");
         l.add("3 4      command                    command to do");
@@ -59,10 +68,10 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("menu " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         for (int i = 0; i < letter.size(); i++) {
             cfgMenuEntry ntry = letter.get(i);
-            l.add(cmds.tabulator + "letter " + ntry.name + " command "
-                    + ntry.command);
+            l.add(cmds.tabulator + "letter " + ntry.name + " command " + ntry.command);
             l.add(cmds.tabulator + "letter " + ntry.name + " text " + ntry.text);
         }
         l.add(cmds.tabulator + cmds.finish);
@@ -79,6 +88,14 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
         boolean negated = a.equals("no");
         if (negated) {
             a = cmd.word();
+        }
+        if (a.equals("description")) {
+            if (negated) {
+                description = null;
+            } else {
+                description = cmd.getRemaining();
+            }
+            return;
         }
         if (!a.equals("letter")) {
             cmd.badCmd();

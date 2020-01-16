@@ -24,6 +24,11 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
     public String name;
 
     /**
+     * description
+     */
+    public String description;
+
+    /**
      * pw encapsulation
      */
     public int pwtype = packLdpPwe.pwtEthPort;
@@ -47,6 +52,7 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
      * defaults text
      */
     public final static String defaultL[] = {
+        "xconnect .*! no description",
         "xconnect .*! mtu 1500",
         "xconnect .*! type ethernet",
         "xconnect .*! no side1",
@@ -68,6 +74,8 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
+        l.add("1 3,. description                   specify description");
+        l.add("3 3,.   <str>                       text");
         l.add("1 2  mtu                            specify vc mtu");
         l.add("2 .    <num>                        mtu");
         l.add("1 2  type                           type of pseudowire");
@@ -88,6 +96,7 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("xconnect " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, pwmtu == 0, cmds.tabulator, "mtu", "" + pwmtu);
         cmds.cfgLine(l, pwtype < 1, cmds.tabulator, "type", packLdpPwe.type2string(pwtype));
         cmds.cfgLine(l, !side1.ready2run(), cmds.tabulator, "side1", side1.getCfg());
@@ -103,6 +112,10 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
     public void doCfgStr(cmds cmd) {
         stop2run();
         String s = cmd.word();
+        if (s.equals("description")) {
+            description = cmd.getRemaining();
+            return;
+        }
         if (s.equals("type")) {
             pwtype = packLdpPwe.string2type(cmd.word());
             start2run();
@@ -128,6 +141,10 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
             return;
         }
         s = cmd.word();
+        if (s.equals("description")) {
+            description = null;
+            return;
+        }
         if (s.equals("side1")) {
             side1 = new cfgXconnSide();
             return;
