@@ -108,8 +108,12 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
         n.working = working;
         n.forwarder = forwarder;
         n.iface = iface;
-        n.nextHop = nextHop;
-        n.remoteLab = remoteLab;
+        if (nextHop != null) {
+            n.nextHop = nextHop.copyBytes();
+        }
+        if (remoteLab != null) {
+            n.remoteLab = tabLabel.copyLabels(remoteLab);
+        }
         n.duplicate = duplicate;
         n.bier = bier;
         n.needLocal = needLocal;
@@ -163,7 +167,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
                 return true;
             }
             for (int i = 0; i < remoteLab.size(); i++) {
-                if (remoteLab.get(i) != o.remoteLab.get(i)) {
+                if (remoteLab.get(i).compareTo(o.remoteLab.get(i)) != 0) {
                     return true;
                 }
             }
