@@ -207,7 +207,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
                 s = "vrf common";
                 break;
             case 2:
-                s = "vrf uniicast";
+                s = "vrf unicast";
                 break;
             case 3:
                 s = "mpls pwe";
