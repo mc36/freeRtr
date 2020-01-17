@@ -16,8 +16,8 @@ control IngressControlCoPP(inout headers hdr,
    table tbl_ipv4_copp {
       key = {
          hdr.ipv4.protocol: ternary;
-         hdr.ipv4.src_ipv4_addr: ternary;
-         hdr.ipv4.dst_ipv4_addr: ternary;
+         hdr.ipv4.src_addr: ternary;
+         hdr.ipv4.dst_addr: ternary;
          ig_md.layer4_srcprt: ternary;
          ig_md.layer4_dstprt: ternary;
       }

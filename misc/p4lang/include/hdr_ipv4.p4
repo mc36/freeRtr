@@ -12,8 +12,8 @@ header ipv4_t {
    bit<8>    ttl;
    bit<8>    protocol;
    bit<16>   hdr_checksum;
-   ipv4_addr_t src_ipv4_addr;
-   ipv4_addr_t dst_ipv4_addr;
+   ipv4_addr_t src_addr;
+   ipv4_addr_t dst_addr;
 }
 
 #endif // _IPV4_P4_

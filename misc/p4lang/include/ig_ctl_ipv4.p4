@@ -90,7 +90,7 @@ control IngressControlIPv4(inout headers hdr,
          /*
           * we match /32 host route
           */
-         hdr.ipv4.dst_ipv4_addr: exact;
+         hdr.ipv4.dst_addr: exact;
          ig_md.vrf: exact;
       }
       actions = {
@@ -109,7 +109,7 @@ control IngressControlIPv4(inout headers hdr,
          /*
           * we match network route via Long Prefix Match kind operation
           */
-         hdr.ipv4.dst_ipv4_addr: lpm;
+         hdr.ipv4.dst_addr: lpm;
          ig_md.vrf: exact;
       }
       actions = {

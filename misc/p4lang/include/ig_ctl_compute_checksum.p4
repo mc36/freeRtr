@@ -14,8 +14,8 @@ control ig_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t ig_m
               hdr.ipv4.frag_offset,
               hdr.ipv4.ttl,
               hdr.ipv4.protocol,
-              hdr.ipv4.src_ipv4_addr,
-              hdr.ipv4.dst_ipv4_addr },
+              hdr.ipv4.src_addr,
+              hdr.ipv4.dst_addr },
               hdr.ipv4.hdr_checksum,
               HashAlgorithm.csum16);
    }
