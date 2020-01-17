@@ -298,7 +298,7 @@ def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_m
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
         action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_set_nexthop",
@@ -308,7 +308,7 @@ def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_m
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4b.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4b.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "hdr.ipv4b.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
         action_name="ig_ctl.ig_ctl_ipv4b.act_ipv4_set_nexthop",
@@ -362,7 +362,7 @@ def writeVpnRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
         action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_mpls_encap_set_nexthop",
@@ -374,7 +374,7 @@ def writeVpnRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4b.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4b.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "hdr.ipv4b.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
         action_name="ig_ctl.ig_ctl_ipv4b.act_ipv4_mpls_encap_set_nexthop",
@@ -434,7 +434,7 @@ def writeSrvRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
         action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_srv_encap_set_nexthop",
@@ -445,7 +445,7 @@ def writeSrvRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4b.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4b.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "hdr.ipv4b.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
         action_name="ig_ctl.ig_ctl_ipv4b.act_ipv4_srv_encap_set_nexthop",
@@ -503,8 +503,8 @@ def writeCoppRules4(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sa
         table_name="ig_ctl.ig_ctl_copp.tbl_ipv4_copp",
         match_fields={
             "hdr.ipv4.protocol": (pr , prm),
-            "hdr.ipv4.src_ipv4_addr": (sa,sam),
-            "hdr.ipv4.dst_ipv4_addr": (da,dam),
+            "hdr.ipv4.src_addr": (sa,sam),
+            "hdr.ipv4.dst_addr": (da,dam),
             "ig_md.layer4_srcprt": (sp,spm),
             "ig_md.layer4_dstprt": (dp,dpm)
         },
@@ -524,7 +524,7 @@ def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_ma
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
         action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_cpl_set_nexthop",
@@ -533,7 +533,7 @@ def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_ma
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4b.tbl_ipv4_fib_lpm",
         match_fields={
-            "hdr.ipv4b.dst_ipv4_addr": (dst_ip_addr,dst_net_mask),
+            "hdr.ipv4b.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
         action_name="ig_ctl.ig_ctl_ipv4b.act_ipv4_cpl_set_nexthop",
@@ -604,7 +604,7 @@ def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vr
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_host",
         match_fields={
-            "hdr.ipv4.dst_ipv4_addr": dst_ip_addr,
+            "hdr.ipv4.dst_addr": dst_ip_addr,
             "ig_md.vrf": vrf
         },
         action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_set_nexthop",
@@ -614,7 +614,7 @@ def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vr
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4b.tbl_ipv4_fib_host",
         match_fields={
-            "hdr.ipv4b.dst_ipv4_addr": dst_ip_addr,
+            "hdr.ipv4b.dst_addr": dst_ip_addr,
             "ig_md.vrf": vrf
         },
         action_name="ig_ctl.ig_ctl_ipv4b.act_ipv4_set_nexthop",
