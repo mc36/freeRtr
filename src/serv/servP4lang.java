@@ -1240,6 +1240,14 @@ class servP4langConn implements Runnable {
         }
     }
 
+    public String ip2str(boolean ipv4, addrIP adr) {
+        if (ipv4) {
+            return "" + adr.toIPv4();
+        } else {
+            return "" + adr.toIPv6();
+        }
+    }
+
     public void sendCopp(boolean ipv4, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
         if (acl == null) {
             return;
@@ -1252,7 +1260,7 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < acl.size(); i++) {
             tabAceslstN<addrIP> ace = acl.get(i);
-            lower.sendLine("copp" + afi + "_add " + ace.sequence + " " + (ace.action == tabListingEntry.actionType.actPermit ? "permit" : "deny") + " " + numat2str(ace.proto, 255) + " " + ace.srcAddr + " " + ace.srcMask + " " + ace.trgAddr + " " + ace.trgMask + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535));
+            lower.sendLine("copp" + afi + "_add " + ace.sequence + " " + (ace.action == tabListingEntry.actionType.actPermit ? "permit" : "deny") + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535));
         }
     }
 
