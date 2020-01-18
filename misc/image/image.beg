@@ -41,6 +41,15 @@ select-dis perl-base
 select-dis init-system-helpers
 select-dis initramfs-tools
 select-dis multiarch-support
+select-dis ucf
+select-dis fontconfig-config
+select-dis dmsetup
+select-dis mount
+select-dis lsb-base
+select-dis linux-base
+select-dis openssl
+select-dis systemd
+select-dis systemd-sysv
 
 select-one linux-image-amd64   #kernel
 select-one socat               #devices

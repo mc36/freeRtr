@@ -1,5 +1,7 @@
 include ../misc/image/image.beg
 
+select-dis java-common                   #commons
+select-dis default-jre-headless          #def jvm
 select-dis openjdk-6-jre-headless        #old jvm
 select-dis openjdk-7-jre-headless        #old jvm
 select-dis openjdk-8-jre-headless        #old jvm
