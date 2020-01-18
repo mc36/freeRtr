@@ -45,6 +45,7 @@ select-dis ucf
 select-dis fontconfig-config
 select-dis dmsetup
 select-dis mount
+select-dis x11-common
 select-dis lsb-base
 select-dis linux-base
 select-dis openssl
