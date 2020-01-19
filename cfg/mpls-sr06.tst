@@ -54,6 +54,16 @@ router bgp6 1
  neigh 4321::3 update lo1
  red conn
  exit
+int pweth1
+ vrf for v1
+ ipv4 addr 3.3.3.1 255.255.255.0
+ pseudo v1 lo2 pweompls 2.2.2.13 1234
+ exit
+int pweth2
+ vrf for v1
+ ipv4 addr 3.3.4.1 255.255.255.0
+ pseudo v1 lo2 pweompls 4321::13 1234
+ exit
 !
 
 addrouter r2
@@ -152,6 +162,16 @@ router bgp6 1
  neigh 4321::1 update lo1
  red conn
  exit
+int pweth1
+ vrf for v1
+ ipv4 addr 3.3.3.2 255.255.255.0
+ pseudo v1 lo2 pweompls 2.2.2.11 1234
+ exit
+int pweth2
+ vrf for v1
+ ipv4 addr 3.3.4.2 255.255.255.0
+ pseudo v1 lo2 pweompls 4321::11 1234
+ exit
 !
 
 
@@ -174,3 +194,8 @@ r1 tping 100 60 2.2.2.13 /vrf v1 /int lo2
 r1 tping 100 60 4321::13 /vrf v1 /int lo2
 r3 tping 100 60 2.2.2.11 /vrf v1 /int lo2
 r3 tping 100 60 4321::11 /vrf v1 /int lo2
+
+r1 tping 100 40 3.3.3.2 /vrf v1
+r3 tping 100 40 3.3.3.1 /vrf v1
+r1 tping 100 40 3.3.4.2 /vrf v1
+r3 tping 100 40 3.3.4.1 /vrf v1

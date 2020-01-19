@@ -1208,6 +1208,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * others changed
      */
     public void routerOthersChanged() {
+        if ((addrFams & rtrBgpParam.mskLab) != 0) {
+            needFull.add(1);
+            compute.wakeup();
+            return;
+        }
         if ((nhtRoumap == null) && (nhtRouplc == null) && (nhtPfxlst == null)) {
             return;
         }

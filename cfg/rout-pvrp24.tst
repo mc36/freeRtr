@@ -42,6 +42,16 @@ int eth1
  router pvrp4 1 ena
  router pvrp6 1 ena
  exit
+int pweth1
+ vrf for v1
+ ipv4 addr 3.3.3.1 255.255.255.0
+ pseudo v1 lo1 pweompls 2.2.2.3 1234
+ exit
+int pweth2
+ vrf for v1
+ ipv4 addr 3.3.4.1 255.255.255.0
+ pseudo v1 lo1 pweompls 4321::3 1234
+ exit
 !
 
 addrouter r2
@@ -141,6 +151,16 @@ int eth1
  router pvrp4 1 ena
  router pvrp6 1 ena
  exit
+int pweth1
+ vrf for v1
+ ipv4 addr 3.3.3.2 255.255.255.0
+ pseudo v1 lo1 pweompls 2.2.2.1 1234
+ exit
+int pweth2
+ vrf for v1
+ ipv4 addr 3.3.4.2 255.255.255.0
+ pseudo v1 lo1 pweompls 4321::1 1234
+ exit
 !
 
 
@@ -156,3 +176,8 @@ r2 tping 100 20 4321::1 /vrf v1 /int lo1
 r2 tping 100 20 4321::3 /vrf v1 /int lo1
 r3 tping 100 20 4321::1 /vrf v1 /int lo1
 r3 tping 100 20 4321::2 /vrf v1 /int lo1
+
+r1 tping 100 40 3.3.3.2 /vrf v1
+r3 tping 100 40 3.3.3.1 /vrf v1
+r1 tping 100 40 3.3.4.2 /vrf v1
+r3 tping 100 40 3.3.4.1 /vrf v1
