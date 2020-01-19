@@ -203,10 +203,6 @@ public class userTester {
                 jvn = "/usr/bin/ikvm";
                 mem = 0;
             }
-            if (s.equals("gcj")) {
-                jvn = "/usr/lib/jvm/java-gcj/bin/java";
-                mem = 0;
-            }
             if (s.equals("binary")) {
                 jvn = "./rtr.bin";
                 jvp = "";

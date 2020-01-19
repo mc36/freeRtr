@@ -486,10 +486,12 @@ class rtrPvrpNeighRcvr implements Runnable {
             }
             lower.lastHeard = bits.getTime();
             if (a.equals("error")) {
+                logger.info("got error (" + cmd.getRemaining() + ") from " + lower.peer);
                 lower.stopWork();
                 continue;
             }
             if (a.equals("warning")) {
+                logger.info("got warning (" + cmd.getRemaining() + ") from " + lower.peer);
                 continue;
             }
             if (a.equals("discard")) {

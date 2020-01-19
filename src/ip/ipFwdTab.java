@@ -307,6 +307,8 @@ public class ipFwdTab {
         res.add("update run|" + lower.updateCount + " times");
         res.add("update last|" + bits.time2str(cfgAll.timeZoneName, lower.updateLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(lower.updateLast) + " ago)");
         res.add("update time|" + lower.updateTime + " ms");
+        res.add("change run|" + lower.changeCount + " times");
+        res.add("change last|" + bits.time2str(cfgAll.timeZoneName, lower.changeLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(lower.changeLast) + " ago)");
         res.add("connected|" + lower.connedR.size() + " routes");
         res.add("labeled|" + lower.labeldR.size() + " routes");
         res.add("unicast|" + lower.actualU.size() + " routes");
@@ -870,7 +872,7 @@ public class ipFwdTab {
                 logger.debug("starting " + clnt);
             }
         }
-        if ((!tabU.differs(lower.actualU)) && (!tabM.differs(lower.actualM)) && (!tabF.differs(lower.actualF))) {
+        if ((!tabC.differs(lower.connedR)) && (!tabL.differs(lower.labeldR)) && (!tabU.differs(lower.actualU)) && (!tabM.differs(lower.actualM)) && (!tabF.differs(lower.actualF))) {
             return false;
         }
         tabC.optimize4lookup();
@@ -1256,6 +1258,10 @@ public class ipFwdTab {
         lower.updateLast = bits.getTime();
         lower.updateCount++;
         lower.updateTime = (int) (lower.updateLast - tim);
+        if (chg) {
+            lower.changeLast = lower.updateLast;
+            lower.changeCount++;
+        }
         return chg;
     }
 

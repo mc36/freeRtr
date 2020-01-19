@@ -471,6 +471,20 @@ qc pass: openvpn with sha1
 qc pass: openvpn with sha256
 qc pass: openvpn with sha512
 qc pass: transparent proxy
+qc pass: satp over ipv4
+qc pass: satp over ipv6
+qc pass: satp over satp
+qc pass: satp over loopback
+qc pass: satp with des
+qc pass: satp with blowfish
+qc pass: satp with 3des
+qc pass: satp with aes128
+qc pass: satp with aes192
+qc pass: satp with aes256
+qc pass: satp with md5
+qc pass: satp with sha1
+qc pass: satp with sha256
+qc pass: satp with sha512
 qc pass: skip over ipv4
 qc pass: skip over ipv6
 qc pass: skip over skip

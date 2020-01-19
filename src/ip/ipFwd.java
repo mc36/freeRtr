@@ -82,6 +82,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public long updateLast;
 
     /**
+     * number of changes
+     */
+    public int changeCount;
+
+    /**
+     * time of change
+     */
+    public long changeLast;
+
+    /**
      * route distinguisher
      */
     public long rd;

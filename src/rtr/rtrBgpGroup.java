@@ -1,6 +1,7 @@
 package rtr;
 
 import addr.addrIP;
+import ip.ipFwd;
 import java.util.ArrayList;
 import java.util.List;
 import tab.tabLabel;
@@ -405,10 +406,17 @@ public class rtrBgpGroup extends rtrBgpParam {
         ntry.labelRem = new ArrayList<Integer>();
         tabLabelNtry loc = ntry.labelLoc;
         if (loc == null) {
+            ipFwd tab;
             if (ntry.rouTab == null) {
-                loc = lower.fwdCore.commonLabel;
+                tab = lower.fwdCore;
             } else {
-                loc = ntry.rouTab.commonLabel;
+                tab = ntry.rouTab;
+            }
+            tabRouteEntry<addrIP> org = tab.labeldR.find(ntry);
+            if (org == null) {
+                loc = tab.commonLabel;
+            } else {
+                loc = org.labelLoc;
             }
         }
         ntry.labelRem.add(loc.getValue());

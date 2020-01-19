@@ -23,6 +23,7 @@ import clnt.clntMplsTeP2p;
 import clnt.clntPckOudp;
 import clnt.clntProxy;
 import clnt.clntOpenvpn;
+import clnt.clntSatp;
 import prt.prtSwipe;
 import prt.prtInlsp;
 import prt.prtSkip;
@@ -697,6 +698,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntOpenvpn tunOpenvpn;
 
     /**
+     * satp tunnel handler
+     */
+    public clntSatp tunSatp;
+
+    /**
      * inlsp tunnel handler
      */
     public prtInlsp tunInlsp;
@@ -1161,6 +1167,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * openvpn tunnel interface
          */
         openvpn,
+        /**
+         * satp tunnel interface
+         */
+        satp,
         /**
          * inlsp tunnel interface
          */
@@ -1810,6 +1820,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "swipe";
             case openvpn:
                 return "openvpn";
+            case satp:
+                return "satp";
             case inlsp:
                 return "inlsp";
             case skip:
@@ -1942,6 +1954,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("openvpn")) {
             return tunnelType.openvpn;
+        }
+        if (s.equals("satp")) {
+            return tunnelType.satp;
         }
         if (s.equals("inlsp")) {
             return tunnelType.inlsp;
@@ -3088,6 +3103,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunOpenvpn.workStop();
             tunOpenvpn = null;
         }
+        if (tunSatp != null) {
+            tunSatp.workStop();
+            tunSatp = null;
+        }
         if (tunInlsp != null) {
             tunInlsp.closeDn();
             tunInlsp = null;
@@ -3401,6 +3420,24 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunOpenvpn.workStart();
                 tunOpenvpn.setUpper(ethtyp);
                 lower = tunOpenvpn;
+                break;
+            case satp:
+                if (tunPrt == null) {
+                    return true;
+                }
+                tunSatp = new clntSatp();
+                tunSatp.preshared = tunPrt.preshared;
+                tunSatp.transform = tunPrt.trans;
+                tunSatp.sendingTOS = tunTOS;
+                tunSatp.sendingTTL = tunTTL;
+                tunSatp.vrf = tunVrf;
+                tunSatp.srcIfc = tunSrc;
+                tunSatp.target = "" + tunTrg;
+                tunSatp.srcPrt = tunKey;
+                tunSatp.trgPrt = tunKey;
+                tunSatp.workStart();
+                tunSatp.setUpper(ethtyp);
+                lower = tunSatp;
                 break;
             case inlsp:
                 if (tunPrt == null) {
@@ -5011,6 +5048,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       mplsudp                   mplsudp encapsulation");
         l.add("3 .       swipe                     swipe encapsulation");
         l.add("3 .       openvpn                   openvpn encapsulation");
+        l.add("3 .       satp                      satp encapsulation");
         l.add("3 .       inlsp                     inlsp encapsulation");
         l.add("3 .       skip                      skip encapsulation");
         l.add("3 .       pweompls                  pseudowire over mpls encapsulation");

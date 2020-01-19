@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.1.16-testing, done by cs@nop.;-;-
--;-;2020-01-16 13:13:04, took 08:43:47 on 1658 cases, 0 failed, 0 traces, 7 retries;-;-
+-;-;freeRouter v20.1.18-testing, done by cs@nop.;-;-
+-;-;2020-01-19 03:02:22, took 09:21:17 on 1672 cases, 0 failed, 1 traces, 18 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -475,6 +475,20 @@ crypt-openvpn12.tst;0;openvpn with sha1;successfully;finished
 crypt-openvpn13.tst;0;openvpn with sha256;successfully;finished
 crypt-openvpn14.tst;0;openvpn with sha512;successfully;finished
 crypt-proxy.tst;0;transparent proxy;successfully;finished
+crypt-satp01.tst;0;satp over ipv4;successfully;finished
+crypt-satp02.tst;0;satp over ipv6;successfully;finished
+crypt-satp03.tst;0;satp over satp;successfully;finished
+crypt-satp04.tst;0;satp over loopback;successfully;finished
+crypt-satp05.tst;0;satp with des;successfully;finished
+crypt-satp06.tst;0;satp with blowfish;successfully;finished
+crypt-satp07.tst;0;satp with 3des;successfully;finished
+crypt-satp08.tst;0;satp with aes128;successfully;finished
+crypt-satp09.tst;0;satp with aes192;successfully;finished
+crypt-satp10.tst;0;satp with aes256;successfully;finished
+crypt-satp11.tst;0;satp with md5;successfully;finished
+crypt-satp12.tst;0;satp with sha1;successfully;finished
+crypt-satp13.tst;0;satp with sha256;successfully;finished
+crypt-satp14.tst;0;satp with sha512;successfully;finished
 crypt-skip01.tst;0;skip over ipv4;successfully;finished
 crypt-skip02.tst;0;skip over ipv6;successfully;finished
 crypt-skip03.tst;0;skip over skip;successfully;finished
