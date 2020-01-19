@@ -283,6 +283,9 @@ public class rtrEigrp extends ipRtr implements Runnable {
             if (ifc == null) {
                 continue;
             }
+            if (ifc.iface.lower.getState() != state.states.up) {
+                continue;
+            }
             for (int i = 0; i < ifc.neighs.size(); i++) {
                 rtrEigrpNeigh nei = ifc.neighs.get(i);
                 if (nei == null) {
@@ -511,6 +514,9 @@ public class rtrEigrp extends ipRtr implements Runnable {
         for (int o = 0; o < ifaces.size(); o++) {
             rtrEigrpIface ifc = ifaces.get(o);
             if (ifc == null) {
+                continue;
+            }
+            if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
             for (int i = 0; i < ifc.neighs.size(); i++) {

@@ -27,6 +27,7 @@ import util.bits;
 import util.cmds;
 import util.debugger;
 import util.logger;
+import util.state;
 
 /**
  * open shortest path first (rfc5340) protocol v3
@@ -861,6 +862,9 @@ public class rtrOspf6 extends ipRtr {
         for (int o = 0; o < ifaces.size(); o++) {
             rtrOspf6iface ifc = ifaces.get(o);
             if (ifc == null) {
+                continue;
+            }
+            if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
             for (int i = 0; i < ifc.neighs.size(); i++) {

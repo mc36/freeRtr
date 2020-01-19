@@ -1213,10 +1213,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             compute.wakeup();
             return;
         }
-        if ((nhtRoumap == null) && (nhtRouplc == null) && (nhtPfxlst == null)) {
+        if ((nhtRoumap != null) || (nhtRouplc != null) || (nhtPfxlst != null)) {
+            compute.wakeup();
             return;
         }
-        compute.wakeup();
     }
 
     private void computeFull() {

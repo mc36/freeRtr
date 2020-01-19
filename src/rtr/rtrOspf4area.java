@@ -372,6 +372,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc.area.area != area) {
                 continue;
             }
+            if (ifc.iface.lower.getState() != state.states.up) {
+                continue;
+            }
             if (ifc.needDR()) {
                 if (ifc.drAddr.isEmpty()) {
                     continue;
@@ -583,6 +586,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc.area.area != area) {
                 continue;
             }
+            if (ifc.iface.lower.getState() != state.states.up) {
+                continue;
+            }
             if (!ifc.amIdr()) {
                 continue;
             }
@@ -675,6 +681,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc.area.area != area) {
                 continue;
             }
+            if (ifc.iface.lower.getState() != state.states.up) {
+                continue;
+            }
             if (ifc.needDR()) {
                 createTeLsa(seq++, ifc, null);
                 continue;
@@ -720,6 +729,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc.area.area != area) {
                 continue;
             }
+            if (ifc.iface.lower.getState() != state.states.up) {
+                continue;
+            }
             for (int o = 0; o < ifc.neighs.size(); o++) {
                 rtrOspf4neigh nei = ifc.neighs.get(o);
                 if (nei == null) {
@@ -746,6 +758,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
         for (int i = 0; i < lower.ifaces.size(); i++) {
             rtrOspf4iface ifc = lower.ifaces.get(i);
             if (ifc == null) {
+                continue;
+            }
+            if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
             byte[] buf = new byte[0];
@@ -913,6 +928,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 continue;
             }
             if (ifc.area.area != area) {
+                continue;
+            }
+            if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
             if ((segrouUsd != null) && (ifc.srIndex > 0)) {

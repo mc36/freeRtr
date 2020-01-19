@@ -549,6 +549,9 @@ public class rtrIsisLevel implements Runnable {
             if (ifc == null) {
                 continue;
             }
+            if (ifc.iface.lower.getState() != state.states.up) {
+                continue;
+            }
             createIface(pck, ifc);
         }
         createAddrs(pck);
@@ -630,6 +633,9 @@ public class rtrIsisLevel implements Runnable {
         for (int i = 0; i < lower.ifaces.size(); i++) {
             rtrIsisIface ifc = lower.ifaces.get(i);
             if (ifc == null) {
+                continue;
+            }
+            if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
             if ((segrouUsd != null) && (ifc.srIndex > 0)) {

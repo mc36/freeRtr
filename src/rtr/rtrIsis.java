@@ -33,6 +33,7 @@ import util.bits;
 import util.cmds;
 import util.debugger;
 import util.logger;
+import util.state;
 import util.typLenVal;
 
 /**
@@ -1604,6 +1605,9 @@ public class rtrIsis extends ipRtr {
         for (int o = 0; o < ifaces.size(); o++) {
             rtrIsisIface ifc = ifaces.get(o);
             if (ifc == null) {
+                continue;
+            }
+            if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
             for (int i = 0; i < ifc.neighs.size(); i++) {

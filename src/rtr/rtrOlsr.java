@@ -210,6 +210,9 @@ public class rtrOlsr extends ipRtr implements prtServP {
             if (nei == null) {
                 continue;
             }
+            if (nei.iface.iface.lower.getState() != state.states.up) {
+                continue;
+            }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.conn.peerAddr, addrIP.size * 8);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, null, null, routerAutoMesh);
@@ -408,6 +411,9 @@ public class rtrOlsr extends ipRtr implements prtServP {
         for (int i = 0; i < neighs.size(); i++) {
             rtrOlsrNeigh nei = neighs.get(i);
             if (nei == null) {
+                continue;
+            }
+            if (nei.iface.iface.lower.getState() != state.states.up) {
                 continue;
             }
             tab.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteEntry.distanLim);
