@@ -322,6 +322,8 @@ class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
 
     public counter cntr = new counter();
 
+    public state.states lastState = state.states.up;
+
     public int compare(servOpenflowIfc1 o1, servOpenflowIfc1 o2) {
         if (o1.id < o2.id) {
             return -1;
@@ -364,7 +366,7 @@ class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
     }
 
     public state.states getState() {
-        return state.states.up;
+        return lastState;
     }
 
     public void closeDn() {
@@ -514,10 +516,11 @@ class servOpenflowRx implements Runnable {
                         break;
                     }
                     if ((pckB.msbGetD(44) & 1) != 0) {
-                        ntry.upper.setState(state.states.down);
+                        ntry.lastState = state.states.down;
                     } else {
-                        ntry.upper.setState(state.states.up);
+                        ntry.lastState = state.states.up;
                     }
+                    ntry.upper.setState(ntry.lastState);
                     break;
                 case packOpenflow.typPackIn:
                     ntry = new servOpenflowIfc1();
