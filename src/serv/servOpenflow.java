@@ -507,9 +507,20 @@ class servOpenflowRx implements Runnable {
                 case packOpenflow.typEchoRep:
                     break;
                 case packOpenflow.typPortStat:
+                    servOpenflowIfc1 ntry = new servOpenflowIfc1();
+                    ntry.id = pckB.msbGetD(8);
+                    ntry = lower.expIfc.find(ntry);
+                    if (ntry == null) {
+                        break;
+                    }
+                    if ((pckB.msbGetD(44) & 1) != 0) {
+                        ntry.upper.setState(state.states.down);
+                    } else {
+                        ntry.upper.setState(state.states.up);
+                    }
                     break;
                 case packOpenflow.typPackIn:
-                    servOpenflowIfc1 ntry = new servOpenflowIfc1();
+                    ntry = new servOpenflowIfc1();
                     ntry.id = pckO.parsePckIn(pckB);
                     ntry = lower.expIfc.find(ntry);
                     if (ntry == null) {
@@ -542,7 +553,7 @@ class servOpenflowRx implements Runnable {
                     }
                     break;
                 default:
-                    logger.info("got invalid message");
+                    logger.info("got invalid message type=" + pckO.type);
                     break;
             }
         }
