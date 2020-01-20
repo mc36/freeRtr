@@ -652,9 +652,29 @@ public class rtrBgpUtil {
     public static final int commNoPeer = 0xffffff04;
 
     /**
+     * graceful shutdown community
+     */
+    public static final int commGraceShut = 0xffff0000;
+
+    /**
      * accept own community
      */
     public static final int commAcceptOwn = 0xffff0001;
+
+    /**
+     * long lived graceful restart community
+     */
+    public static final int commLlgrStale = 0xffff0006;
+
+    /**
+     * no llgr community
+     */
+    public static final int commNoLlgr = 0xffff0007;
+
+    /**
+     * accept own nexthop community
+     */
+    public static final int commAcceptHop = 0xffff0008;
 
     /**
      * blackhole community

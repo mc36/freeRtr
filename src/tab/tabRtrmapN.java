@@ -275,6 +275,18 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (s.equals("blackhole")) {
             return rtrBgpUtil.commBlackhole;
         }
+        if (s.equals("graceshut")) {
+            return rtrBgpUtil.commGraceShut;
+        }
+        if (s.equals("llgrstale")) {
+            return rtrBgpUtil.commLlgrStale;
+        }
+        if (s.equals("nollgr")) {
+            return rtrBgpUtil.commNoLlgr;
+        }
+        if (s.equals("accepthop")) {
+            return rtrBgpUtil.commAcceptHop;
+        }
         int i = s.indexOf(":");
         if (i < 0) {
             return bits.str2num(s);
@@ -303,6 +315,14 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 return "acceptown";
             case rtrBgpUtil.commBlackhole:
                 return "blackhole";
+            case rtrBgpUtil.commGraceShut:
+                return "graceshut";
+            case rtrBgpUtil.commLlgrStale:
+                return "llgrstale";
+            case rtrBgpUtil.commNoLlgr:
+                return "nollgr";
+            case rtrBgpUtil.commAcceptHop:
+                return "accepthop";
         }
         return (i >>> 16) + ":" + (i & 0xffff);
     }
