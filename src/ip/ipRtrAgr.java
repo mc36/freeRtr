@@ -132,13 +132,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
         ntry.atomicAggr = !aspath;
         ntry.labelLoc = lab;
         ntry.rouSrc = src;
-        if (roumap != null) {
-            ntry = roumap.update(afi, ntry, false);
-        }
-        if (ntry == null) {
-            return;
-        }
-        tab.add(tabRoute.addType.better, ntry, false, true);
+        tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, roumap, rouplc, null);
     }
 
 }
