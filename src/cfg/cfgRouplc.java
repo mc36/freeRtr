@@ -175,6 +175,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("1 2   set                   set values in destination routing protocol");
         l.add("2 3     aspath              prepend as path");
         l.add("3 3,.     <num>             as to prepend");
+        l.add("2 3     asconfed            prepend as path");
+        l.add("3 3,.     <num>             as to prepend");
         l.add("2 3     stdcomm             add standard community");
         l.add("3 3,.     <num>             community");
         l.add("2 3     extcomm             add extended community");
@@ -590,6 +592,11 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("aspath")) {
                 ntry.doMode = tabRtrplcN.doType.setAspath;
+                ntry.intLst = tabRtrmapN.string2intList(cmd.getRemaining());
+                return;
+            }
+            if (a.equals("asconfed")) {
+                ntry.doMode = tabRtrplcN.doType.setAsconf;
                 ntry.intLst = tabRtrmapN.string2intList(cmd.getRemaining());
                 return;
             }

@@ -92,6 +92,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         setAspath,
         /**
+         * set asconf
+         */
+        setAsconf,
+        /**
          * set distance
          */
         setDistance,
@@ -372,6 +376,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return bits.str2lst(beg + "set nexthop " + nexthopSet);
             case setAspath:
                 return bits.str2lst(beg + "set aspath " + tabRouteEntry.dumpIntList(intLst, "", ""));
+            case setAsconf:
+                return bits.str2lst(beg + "set asconfed " + tabRouteEntry.dumpIntList(intLst, "", ""));
             case setDistance:
                 return bits.str2lst(beg + "set distance " + intSet);
             case setMetric:
@@ -606,6 +612,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case setAspath:
                 net.pathSeq = tabLabel.prependLabels(net.pathSeq, intLst);
+                return;
+            case setAsconf:
+                net.confSeq = tabLabel.prependLabels(net.confSeq, intLst);
                 return;
             case setDistance:
                 net.distance = intSet.update(net.distance);

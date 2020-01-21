@@ -77,6 +77,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no set route-map",
         "route-map .*! sequence .* no set route-policy",
         "route-map .*! sequence .* no set aspath",
+        "route-map .*! sequence .* no set asconfed",
         "route-map .*! sequence .* no set stdcomm",
         "route-map .*! sequence .* no set extcomm",
         "route-map .*! sequence .* no set lrgcomm",
@@ -227,6 +228,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("2 .     lrgcomm             clear large community");
         l.add("1 2   set                   set values in destination routing protocol");
         l.add("2 3     aspath              prepend as path");
+        l.add("3 3,.     <num>             as to prepend");
+        l.add("2 3     asconfed            prepend as path");
         l.add("3 3,.     <num>             as to prepend");
         l.add("2 3     stdcomm             add standard community");
         l.add("3 3,.     <num>             community");
@@ -578,6 +581,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.aspathSet = tabRtrmapN.string2intList(cmd.getRemaining());
                 return;
             }
+            if (a.equals("asconfed")) {
+                ntry.aspathCnf = tabRtrmapN.string2intList(cmd.getRemaining());
+                return;
+            }
             if (a.equals("distance")) {
                 if (ntry.distanceSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -831,6 +838,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("aspath")) {
                 ntry.aspathSet = null;
+                return;
+            }
+            if (a.equals("asconfed")) {
+                ntry.aspathCnf = null;
                 return;
             }
             if (a.equals("distance")) {

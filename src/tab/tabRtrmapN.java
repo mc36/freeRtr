@@ -154,6 +154,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      */
     public List<Integer> aspathSet;
 
+
+    /**
+     * as path updater
+     */
+    public List<Integer> aspathCnf;
+
     /**
      * next hop matcher
      */
@@ -685,6 +691,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         } else {
             l.add(beg + "set aspath " + tabRouteEntry.dumpIntList(aspathSet, "", ""));
         }
+        if (aspathCnf == null) {
+            l.add(beg + "no set asconfed");
+        } else {
+            l.add(beg + "set asconfed " + tabRouteEntry.dumpIntList(aspathCnf, "", ""));
+        }
         if (stdCommSet == null) {
             l.add(beg + "no set stdcomm");
         } else {
@@ -865,6 +876,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         net.segrouIdx = segrouSet.update(net.segrouIdx);
         net.bierIdx = bierSet.update(net.bierIdx);
         net.pathSeq = tabLabel.prependLabels(net.pathSeq, aspathSet);
+        net.confSeq = tabLabel.prependLabels(net.confSeq, aspathCnf);
         if (stdCommClear) {
             net.stdComm = null;
         }
