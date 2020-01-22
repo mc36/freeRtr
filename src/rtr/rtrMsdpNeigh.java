@@ -183,6 +183,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
     public void closeNow() {
         learned = new tabGen<ipFwdMcast>();
         if (pipe != null) {
+            logger.error("neighbor " + peer + " down");
             pipe.setClose();
             pipe = null;
         }
@@ -425,9 +426,6 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         boolean b = pipe == null;
         if (!b) {
             b = pipe.isClosed() != 0;
-            if (b) {
-                logger.error("neighbor " + peer + " down");
-            }
         }
         if (b) {
             bits.sleep(1000);
@@ -452,6 +450,9 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
             return true;
         }
         bits.sleep(keepAlive);
+        if (pipe == null) {
+            return false;
+        }
         sendKeep();
         long tim = bits.getTime();
         if ((tim - lastAdv) < freshTimer) {

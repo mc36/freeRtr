@@ -338,4 +338,16 @@ public class rtrMsdp extends ipRtr {
         return l;
     }
 
+    /**
+     * find neighbor
+     *
+     * @param adr address
+     * @return neighbor, null if not found
+     */
+    public rtrMsdpNeigh findPeer(addrIP adr) {
+        rtrMsdpNeigh nei = new rtrMsdpNeigh(this);
+        nei.peer = adr.copyBytes();
+        return neighs.find(nei);
+    }
+
 }

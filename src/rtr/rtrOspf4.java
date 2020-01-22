@@ -841,6 +841,24 @@ public class rtrOspf4 extends ipRtr {
     }
 
     /**
+     * find neighbor
+     *
+     * @param adr address
+     * @return neighbor, null if not found
+     */
+    public rtrOspf4neigh findPeer(addrIP adr) {
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrOspf4iface ifc = ifaces.get(i);
+            rtrOspf4neigh nei = new rtrOspf4neigh(this, ifc, adr.toIPv4());
+            nei = ifc.neighs.find(nei);
+            if (nei != null) {
+                return nei;
+            }
+        }
+        return null;
+    }
+
+    /**
      * get neighbor count
      *
      * @return count

@@ -149,7 +149,7 @@ public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
     /**
      * stop this peer
      */
-    protected void stopNow() {
+    public void stopNow() {
         logger.error("neighbor " + peer + " down");
         need2run = false;
         iface.neighs.del(this);

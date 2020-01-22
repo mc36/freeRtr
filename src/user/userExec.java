@@ -140,6 +140,12 @@ public class userExec {
         hl.add("4 .          <name>              vrf name");
         hl.add("3 4        nat                   address translation table");
         hl.add("4 .          <name>              vrf name");
+        hl.add("3 4        babel                 babel routing protocol");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 .            <addr>            neighbor address");
+        hl.add("3 4        bfd                   bidirectional forwarding detection");
+        hl.add("4 5          <name>              vrf name");
+        hl.add("5 .            <addr>            neighbor address");
         hl.add("3 4        bgp                   border gateway protocol");
         hl.add("4 5          <num>               process id");
         hl.add("5 6            <addr>            neighbor address");
@@ -148,6 +154,34 @@ public class userExec {
         hl.add("6 7              out             resend prefixes");
         rtrBgpParam.getAfiList(hl, "7 .", "clear", false);
         hl.add("5 .            recompute         trigger full compute round");
+        hl.add("3 4        eigrp                 enhanced interior gateway routing protocol");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 .            <addr>            neighbor address");
+        hl.add("3 4        isis                  intermediate system to intermediate system");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 6            <addr>            neighbor address");
+        hl.add("6 .              <num>           level");
+        hl.add("3 4        ldp                   label distribution protocol");
+        hl.add("4 5          <name>              vrf name");
+        hl.add("5 .            <addr>            neighbor address");
+        hl.add("3 4        lsrp                  link state routing protocol");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 .            <addr>            neighbor address");
+        hl.add("3 4        msdp                  multicast source discovery protocol");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 .            <addr>            neighbor address");
+        hl.add("3 4        olsr                  optimized link state routing");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 .            <addr>            neighbor address");
+        hl.add("3 4        ospf                  open shortest path first");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 .            <addr>            neighbor address");
+        hl.add("3 4        pvrp                  path vector routing protocol");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 .            <addr>            neighbor address");
+        hl.add("3 4        rip                   routing information protocol");
+        hl.add("4 5          <num>               process id");
+        hl.add("5 .            <addr>            neighbor address");
     }
 
     private void getHelpShowIpX(userHelping hl) {
@@ -255,6 +289,12 @@ public class userExec {
         hl.add("6 7              <addr>          neighbor address");
         hl.add("7 8,.              learned       routes learned from neighbor");
         hl.add("8 .                  [addr]      prefix to view");
+        hl.add("5 .            summary           list of neighbors");
+        hl.add("5 .            interface         list of interfaces");
+        hl.add("5 6,.          database          list of routes in database");
+        hl.add("6 .              [addr]          prefix to view");
+        hl.add("5 6,.          originate         list of routes originated locally");
+        hl.add("6 .              [addr]          prefix to view");
         hl.add("3 4        olsr                  optimized link state routing protocol");
         hl.add("4 5          <num>               process id");
         hl.add("5 6            neighbor          information about neighbor");

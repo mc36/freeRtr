@@ -1450,6 +1450,35 @@ public class rtrIsis extends ipRtr {
     }
 
     /**
+     * find neighbor
+     *
+     * @param adr address
+     * @param lev level
+     * @return neighbor
+     */
+    public rtrIsisNeigh findNeigh(addrIP adr, int lev) {
+        for (int o = 0; o < ifaces.size(); o++) {
+            rtrIsisIface ifc = ifaces.get(o);
+            if (ifc == null) {
+                continue;
+            }
+            for (int i = 0; i < ifc.neighs.size(); i++) {
+                rtrIsisNeigh nei = ifc.neighs.get(i);
+                if (nei == null) {
+                    continue;
+                }
+                if (nei.level.level != lev) {
+                    continue;
+                }
+                if (adr.compare(adr, nei.ifcAddr) == 0) {
+                    return nei;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * list interfaces
      *
      * @return list of interfaces

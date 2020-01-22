@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
 import pack.packRsvp;
+import rtr.rtrBfdNeigh;
 import rtr.rtrBgpUtil;
 import rtr.rtrLdpNeigh;
 import tab.tabHop;
@@ -167,6 +168,30 @@ public class ipFwdTab {
             l.add("" + ntry);
         }
         return l;
+    }
+
+    /**
+     * find bfd neighbor
+     *
+     * @param lower forwarder
+     * @param adr address
+     * @return neighbor, null if not found
+     */
+    public static rtrBfdNeigh bfdFindNeigh(ipFwd lower, addrIP adr) {
+        for (int i = 0; i < lower.ifaces.size(); i++) {
+            ipFwdIface ntry = lower.ifaces.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.bfdCfg == null) {
+                continue;
+            }
+            rtrBfdNeigh res = ntry.bfdCfg.clientFind(adr);
+            if (res != null) {
+                return res;
+            }
+        }
+        return null;
     }
 
     /**

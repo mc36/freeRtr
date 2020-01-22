@@ -841,6 +841,24 @@ public class rtrOspf6 extends ipRtr {
     }
 
     /**
+     * find neighbor
+     *
+     * @param adr address
+     * @return neighbor, null if not found
+     */
+    public rtrOspf6neigh findPeer(addrIP adr) {
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrOspf6iface ifc = ifaces.get(i);
+            rtrOspf6neigh nei = new rtrOspf6neigh(this, ifc, adr.toIPv6());
+            nei = ifc.neighs.find(nei);
+            if (nei != null) {
+                return nei;
+            }
+        }
+        return null;
+    }
+
+    /**
      * get neighbor count
      *
      * @return count

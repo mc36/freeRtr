@@ -16,11 +16,26 @@ import cfg.cfgPrcss;
 import cfg.cfgVpdn;
 import cfg.cfgVrf;
 import clnt.clntDns;
+import ip.ipFwd;
 import ip.ipFwdIface;
+import ip.ipFwdTab;
 import prt.prtGen;
 import prt.prtWatch;
+import rtr.rtrBabelNeigh;
+import rtr.rtrBfdNeigh;
 import rtr.rtrBgpNeigh;
 import rtr.rtrBgpParam;
+import rtr.rtrEigrpNeigh;
+import rtr.rtrIsisNeigh;
+import rtr.rtrLdpNeigh;
+import rtr.rtrLsrpNeigh;
+import rtr.rtrMsdpNeigh;
+import rtr.rtrOlsrNeigh;
+import rtr.rtrOspf4neigh;
+import rtr.rtrOspf6neigh;
+import rtr.rtrPvrpNeigh;
+import rtr.rtrRip4neigh;
+import rtr.rtrRip6neigh;
 import tab.tabRouteEntry;
 import serv.servBmp2mrt;
 import util.bits;
@@ -279,6 +294,50 @@ public class userClear {
                 doClearIpXbgp(tabRouteEntry.routeType.bgp4);
                 return null;
             }
+            if (a.equals("bfd")) {
+                doClearIpXbfd(4);
+                return null;
+            }
+            if (a.equals("babel")) {
+                doClearIpXbabel(tabRouteEntry.routeType.babel4);
+                return null;
+            }
+            if (a.equals("eigrp")) {
+                doClearIpXeigrp(tabRouteEntry.routeType.eigrp4);
+                return null;
+            }
+            if (a.equals("isis")) {
+                doClearIpXisis(tabRouteEntry.routeType.isis4);
+                return null;
+            }
+            if (a.equals("ldp")) {
+                doClearIpXldp(4);
+                return null;
+            }
+            if (a.equals("lsrp")) {
+                doClearIpXlsrp(tabRouteEntry.routeType.lsrp4);
+                return null;
+            }
+            if (a.equals("msdp")) {
+                doClearIpXmsdp(tabRouteEntry.routeType.msdp4);
+                return null;
+            }
+            if (a.equals("olsr")) {
+                doClearIpXolsr(tabRouteEntry.routeType.olsr4);
+                return null;
+            }
+            if (a.equals("ospf")) {
+                doClearIpXospf4();
+                return null;
+            }
+            if (a.equals("pvrp")) {
+                doClearIpXpvrp(tabRouteEntry.routeType.pvrp4);
+                return null;
+            }
+            if (a.equals("rip")) {
+                doClearIpXrip4();
+                return null;
+            }
             cmd.badCmd();
             return null;
         }
@@ -324,6 +383,50 @@ public class userClear {
                 doClearIpXbgp(tabRouteEntry.routeType.bgp6);
                 return null;
             }
+            if (a.equals("bfd")) {
+                doClearIpXbfd(6);
+                return null;
+            }
+            if (a.equals("babel")) {
+                doClearIpXbabel(tabRouteEntry.routeType.babel6);
+                return null;
+            }
+            if (a.equals("eigrp")) {
+                doClearIpXeigrp(tabRouteEntry.routeType.eigrp6);
+                return null;
+            }
+            if (a.equals("isis")) {
+                doClearIpXisis(tabRouteEntry.routeType.isis6);
+                return null;
+            }
+            if (a.equals("ldp")) {
+                doClearIpXldp(6);
+                return null;
+            }
+            if (a.equals("lsrp")) {
+                doClearIpXlsrp(tabRouteEntry.routeType.lsrp6);
+                return null;
+            }
+            if (a.equals("msdp")) {
+                doClearIpXmsdp(tabRouteEntry.routeType.msdp6);
+                return null;
+            }
+            if (a.equals("olsr")) {
+                doClearIpXolsr(tabRouteEntry.routeType.olsr6);
+                return null;
+            }
+            if (a.equals("ospf")) {
+                doClearIpXospf6();
+                return null;
+            }
+            if (a.equals("pvrp")) {
+                doClearIpXpvrp(tabRouteEntry.routeType.pvrp6);
+                return null;
+            }
+            if (a.equals("rip")) {
+                doClearIpXrip6();
+                return null;
+            }
             cmd.badCmd();
             return null;
         }
@@ -343,7 +446,10 @@ public class userClear {
             return;
         }
         addrIP adr = new addrIP();
-        adr.fromString(a);
+        if (adr.fromString(a)) {
+            cmd.error("bad address");
+            return;
+        }
         rtrBgpNeigh nei = r.bgp.findPeer(adr);
         if (nei == null) {
             cmd.error("no such neighbor");
@@ -369,6 +475,265 @@ public class userClear {
             nei.conn.gotRefresh(sfi);
         }
         return;
+    }
+
+    private void doClearIpXbfd(int afi) {
+        cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+        if (vrf == null) {
+            cmd.error("no such vrf");
+            return;
+        }
+        ipFwd fwd;
+        if (afi == 4) {
+            fwd = vrf.fwd4;
+        } else {
+            fwd = vrf.fwd6;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrBfdNeigh nei = ipFwdTab.bfdFindNeigh(fwd, adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.stopNow();
+    }
+
+    private void doClearIpXbabel(tabRouteEntry.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrBabelNeigh nei = r.babel.findPeer(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
+    }
+
+    private void doClearIpXeigrp(tabRouteEntry.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrEigrpNeigh nei = r.eigrp.findNeigh(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
+    }
+
+    private void doClearIpXisis(tabRouteEntry.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrIsisNeigh nei = r.isis.findNeigh(adr, bits.str2num(cmd.word()));
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
+    }
+
+    private void doClearIpXldp(int afi) {
+        cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+        if (vrf == null) {
+            cmd.error("no such vrf");
+            return;
+        }
+        ipFwd fwd;
+        if (afi == 4) {
+            fwd = vrf.fwd4;
+        } else {
+            fwd = vrf.fwd6;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrLdpNeigh nei = fwd.ldpNeighFind(null, adr, false);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.stopPeer();
+    }
+
+    private void doClearIpXlsrp(tabRouteEntry.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrLsrpNeigh nei = r.lsrp.findNeigh(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
+    }
+
+    private void doClearIpXmsdp(tabRouteEntry.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrMsdpNeigh nei = r.msdp.findPeer(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
+    }
+
+    private void doClearIpXolsr(tabRouteEntry.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrOlsrNeigh nei = r.olsr.findPeer(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
+    }
+
+    private void doClearIpXospf4() {
+        cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.ospf4, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrOspf4neigh nei = r.ospf4.findPeer(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
+    }
+
+    private void doClearIpXospf6() {
+        cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.ospf6, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrOspf6neigh nei = r.ospf6.findPeer(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
+    }
+
+    private void doClearIpXpvrp(tabRouteEntry.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrPvrpNeigh nei = r.pvrp.findNeigh(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
+    }
+
+    private void doClearIpXrip4() {
+        cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.rip4, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrRip4neigh nei = r.rip4.findPeer(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
+    }
+
+    private void doClearIpXrip6() {
+        cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.rip6, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrRip6neigh nei = r.rip6.findPeer(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.bfdPeerDown();
     }
 
 }

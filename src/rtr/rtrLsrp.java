@@ -278,6 +278,25 @@ public class rtrLsrp extends ipRtr implements Runnable {
     }
 
     /**
+     * find neighbor
+     *
+     * @param adr address
+     * @return neighbor, null if not found
+     */
+    public rtrLsrpNeigh findNeigh(addrIP adr) {
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrLsrpIface ifc = ifaces.get(i);
+            for (int o = 0; o < ifc.neighs.size(); o++) {
+                rtrLsrpNeigh nei = ifc.neighs.get(o);
+                if (adr.compare(adr, nei.peer) == 0) {
+                    return nei;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * list interfaces
      *
      * @return list of interfaces
