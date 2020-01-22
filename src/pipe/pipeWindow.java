@@ -57,6 +57,7 @@ public class pipeWindow extends JPanel {
         win = new JFrame("console");
         win.setBackground(img.getBackground());
         win.addKeyListener(img.getKeyLstnr());
+        win.setFocusTraversalKeysEnabled(false);
         win.add(this);
         win.setSize(img.img3.getWidth() + 30, img.img3.getHeight() + 60);
         win.setVisible(true);
