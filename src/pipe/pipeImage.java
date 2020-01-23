@@ -256,7 +256,7 @@ class pipeImageKey implements KeyListener {
                 break;
             /*
             case KeyEvent.VK_BACK_SPACE:
-                a = "\008";
+                a = "\010";
                 break;
             case KeyEvent.VK_ENTER:
                 a = "\015";
