@@ -236,6 +236,37 @@ class pipeImageKey implements KeyListener {
     }
 
     public void keyPressed(KeyEvent e) {
+        char c = '\0';
+
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_HOME:
+                c = 1; // ctrl + a
+                break;
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_KP_LEFT:
+                c = 2; // ctrl + b
+                break;
+            case KeyEvent.VK_END:
+                c = 5; // ctrl + e
+                break;
+            case KeyEvent.VK_RIGHT:
+            case KeyEvent.VK_KP_RIGHT:
+                c = 6; // ctrl + f
+                break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_KP_DOWN:
+                c = 14; // ctrl + n
+                break;
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_KP_UP:
+                c = 16; // ctrl + p
+                break;
+            default:
+                break;
+        }
+
+        if (c != '\0')
+            pipe.strPut("" + c);
     }
 
     public void keyReleased(KeyEvent e) {
