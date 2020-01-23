@@ -1,7 +1,6 @@
 package pipe;
 
 import util.logger;
-import java.io.File;
 
 /**
  * convert console to pipeline
@@ -40,25 +39,7 @@ public class pipeConsole implements Runnable {
         return ps;
     }
 
-    private boolean setRaw(boolean enable) {
-        try {
-            File sh = new File("/bin/sh");
-            if (!sh.exists())
-                return false;
-
-            Runtime rtm = Runtime.getRuntime();
-            String setting = enable ? "raw" : "cooked";
-            String[] cmd = {sh.toString(), "-c", "stty " + setting + " </dev/tty"};
-            rtm.exec(cmd).waitFor();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     public void run() {
-        boolean isRaw = setRaw(true);
-
         try {
             for (;;) {
                 if (pipe.isClosed() != 0) {
@@ -73,9 +54,6 @@ public class pipeConsole implements Runnable {
             }
         } catch (Exception e) {
             logger.traceback(e);
-        } finally {
-            if (isRaw)
-                setRaw(false);
         }
         pipe.setClose();
     }

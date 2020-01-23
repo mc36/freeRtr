@@ -414,7 +414,9 @@ public class userHwdet {
         } else {
             s = "java -Xmx" + mem + " -jar " + version.getFileName();
         }
-        List<String> lop = bits.str2lst(s + " router " + path + "rtr-");
+        List<String> lop = new ArrayList<String>();
+        lop.add("stty raw < /dev/tty");
+        lop.add(s + " router " + path + "rtr-");
         lop.add("if [[ $? = 4 ]] ; then");
         lop.add("  sync");
         lop.add("  reboot -f");

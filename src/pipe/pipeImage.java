@@ -237,7 +237,6 @@ class pipeImageKey implements KeyListener {
 
     public void keyPressed(KeyEvent e) {
         char c = '\0';
-
         switch (e.getKeyCode()) {
             case KeyEvent.VK_HOME:
                 c = 1; // ctrl + a
@@ -264,9 +263,9 @@ class pipeImageKey implements KeyListener {
             default:
                 break;
         }
-
-        if (c != '\0')
+        if (c != '\0') {
             pipe.strPut("" + c);
+        }
     }
 
     public void keyReleased(KeyEvent e) {
