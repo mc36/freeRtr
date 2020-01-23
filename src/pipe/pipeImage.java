@@ -236,35 +236,95 @@ class pipeImageKey implements KeyListener {
     }
 
     public void keyPressed(KeyEvent e) {
-        char c = '\0';
+        String a = null;
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_HOME:
-                c = 1; // ctrl + a
-                break;
             case KeyEvent.VK_LEFT:
             case KeyEvent.VK_KP_LEFT:
-                c = 2; // ctrl + b
-                break;
-            case KeyEvent.VK_END:
-                c = 5; // ctrl + e
+                a = "\033[D";
                 break;
             case KeyEvent.VK_RIGHT:
             case KeyEvent.VK_KP_RIGHT:
-                c = 6; // ctrl + f
+                a = "\033[C";
                 break;
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_KP_DOWN:
-                c = 14; // ctrl + n
+                a = "\033[B";
                 break;
             case KeyEvent.VK_UP:
             case KeyEvent.VK_KP_UP:
-                c = 16; // ctrl + p
+                a = "\033[A";
                 break;
-            default:
+            /*
+            case KeyEvent.VK_BACK_SPACE:
+                a = "\008";
+                break;
+            case KeyEvent.VK_ENTER:
+                a = "\015";
+                break;
+            case KeyEvent.VK_ESCAPE:
+                a = "\033";
+                break;
+            case KeyEvent.VK_TAB:
+                a = "\011";
+                break;
+             */
+            case KeyEvent.VK_HOME:
+                a = "\033[H";
+                break;
+            case KeyEvent.VK_END:
+                a = "\033[F";
+                break;
+            case KeyEvent.VK_PAGE_UP:
+                a = "\033[5~";
+                break;
+            case KeyEvent.VK_PAGE_DOWN:
+                a = "\033[6~";
+                break;
+            case KeyEvent.VK_INSERT:
+                a = "\033[2~";
+                break;
+            case KeyEvent.VK_DELETE:
+                a = "\033[3~";
+                break;
+            case KeyEvent.VK_F1:
+                a = "\033[11~";
+                break;
+            case KeyEvent.VK_F2:
+                a = "\033[12~";
+                break;
+            case KeyEvent.VK_F3:
+                a = "\033[13~";
+                break;
+            case KeyEvent.VK_F4:
+                a = "\033[14~";
+                break;
+            case KeyEvent.VK_F5:
+                a = "\033[15~";
+                break;
+            case KeyEvent.VK_F6:
+                a = "\033[17~";
+                break;
+            case KeyEvent.VK_F7:
+                a = "\033[18~";
+                break;
+            case KeyEvent.VK_F8:
+                a = "\033[19~";
+                break;
+            case KeyEvent.VK_F9:
+                a = "\033[20~";
+                break;
+            case KeyEvent.VK_F10:
+                a = "\033[21~";
+                break;
+            case KeyEvent.VK_F11:
+                a = "\033[23~";
+                break;
+            case KeyEvent.VK_F12:
+                a = "\033[24~";
                 break;
         }
-        if (c != '\0') {
-            pipe.strPut("" + c);
+        if (a != null) {
+            pipe.strPut(a);
         }
     }
 
