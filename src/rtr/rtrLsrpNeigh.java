@@ -300,7 +300,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             sendErr("notNeeded");
             return;
         }
-        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.mtu + " name=" + cfgAll.hostName);
+        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.lower.getMTUsize() + " name=" + cfgAll.hostName);
         cmds cmd = recvLn();
         if (cmd == null) {
             cmd = new cmds("", "");
