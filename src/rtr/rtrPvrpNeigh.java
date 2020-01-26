@@ -351,6 +351,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     }
 
     private void doAdvert() {
+        int sent = 0;
         for (int i = 0; i < adverted.size(); i++) {
             tabRouteEntry<addrIP> ntry = adverted.get(i);
             if (ntry == null) {
@@ -363,6 +364,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
                 return;
             }
             sendUpdate(ntry, false);
+            sent++;
         }
         for (int i = 0; i < iface.need2adv.size(); i++) {
             tabRouteEntry<addrIP> ntry = iface.need2adv.get(i);
@@ -376,6 +378,10 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
                 return;
             }
             sendUpdate(ntry, true);
+            sent++;
+        }
+        if (sent > 0) {
+            sendLn("nomore");
         }
     }
 
@@ -510,6 +516,9 @@ class rtrPvrpNeighRcvr implements Runnable {
             }
             if (a.equals("resend")) {
                 lower.adverted.clear();
+                continue;
+            }
+            if (a.equals("nomore")) {
                 continue;
             }
             if (a.equals("keepalive")) {
