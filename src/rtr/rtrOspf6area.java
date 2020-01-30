@@ -362,7 +362,15 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         return ((prf.maskLen + 31) / 32) * 4;
     }
 
-    private static int prefixWrite(packHolder pck, int ofs, rtrOspf6areaPref pref) {
+    /**
+     * write prefix
+     *
+     * @param pck packet
+     * @param ofs offset
+     * @param pref prefix
+     * @return size
+     */
+    protected static int prefixWrite(packHolder pck, int ofs, rtrOspf6pref pref) {
         addrPrefix<addrIPv6> prf = addrPrefix.ip2ip6(pref.prefix);
         pck.putByte(ofs + 0, prf.maskLen); // prefix length
         pck.putByte(ofs + 1, pref.option); // prefix options
@@ -371,7 +379,15 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         return 4 + prefixSize(prf);
     }
 
-    private static int prefixRead(packHolder pck, int ofs, rtrOspf6areaPref pref) {
+    /**
+     * read prefix
+     *
+     * @param pck packet
+     * @param ofs offset
+     * @param pref prefix
+     * @return size
+     */
+    protected static int prefixRead(packHolder pck, int ofs, rtrOspf6pref pref) {
         int len = pck.getByte(ofs + 0); // prefix length
         pref.option = pck.getByte(ofs + 1); // prefix options
         pref.metric = pck.msbGetW(ofs + 2); // metric
@@ -449,7 +465,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     }
 
     private void createPrefLsa(rtrOspf6iface ifc) {
-        rtrOspf6areaPref prf = new rtrOspf6areaPref();
+        rtrOspf6pref prf = new rtrOspf6pref();
         prf.metric = ifc.metric;
         prf.option = rtrOspf6lsa.prefProp;
         prf.prefix = ifc.iface.network;
@@ -464,7 +480,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     }
 
     private void createExtLsa(int seq, addrPrefix<addrIP> pref, int org, int met, int tag) {
-        rtrOspf6areaPref prf = new rtrOspf6areaPref();
+        rtrOspf6pref prf = new rtrOspf6pref();
         prf.metric = 0;
         prf.option = rtrOspf6lsa.prefProp;
         prf.prefix = pref;
@@ -500,7 +516,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         if (met > 0xffffff) {
             met = 0xffffff;
         }
-        rtrOspf6areaPref prf = new rtrOspf6areaPref();
+        rtrOspf6pref prf = new rtrOspf6pref();
         prf.metric = 0;
         prf.option = 0;
         prf.prefix = pref;
@@ -583,7 +599,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         advertiseLsa(rtrOspf6lsa.lsaErouter, 0, pck);
     }
 
-    private void createEprfLsa(int seq, addrPrefix<addrIP> pref, int lsa, int tlv, int met, int opt, byte[] subs) {
+    private void createEprfLsa(int seq, addrPrefix<addrIP> pref, int lsa, int tlv, int met, int opt, byte[] beg, byte[] subs) {
         if (met < 0) {
             met = 0;
         }
@@ -601,6 +617,8 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         pck.putCopy(subs, 0, 0, subs.length); // subtlvs
         pck.putSkip(subs.length);
         pck.merge2beg();
+        pck.putCopy(beg, 0, 0, beg.length);
+        pck.putSkip(beg.length);
         pck.msbPutW(0, tlv); // type
         pck.msbPutW(2, pck.dataSize()); // length
         pck.putSkip(4);
@@ -835,18 +853,21 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             }
             int o;
             int p;
+            byte[] buf2;
             if (ifc.area.area == area) {
                 o = rtrOspf6lsa.lsaEprefix;
                 p = rtrOspf6lsa.tlvPrefix;
+                buf2 = new byte[12];
             } else {
                 o = rtrOspf6lsa.lsaEinterPrf;
                 p = rtrOspf6lsa.tlvInterPrf;
+                buf2 = new byte[0];
             }
             int q = rtrOspf6lsa.prefProp;
             if (ifc.srNode) {
                 q |= rtrOspf6lsa.prefNode;
             }
-            createEprfLsa(seq++, ifc.iface.network, o, p, ifc.metric, q, buf);
+            createEprfLsa(seq++, ifc.iface.network, o, p, ifc.metric, q, buf2, buf);
         }
         if (stub || nssa) {
             return;
@@ -869,7 +890,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (buf.length < 1) {
                 continue;
             }
-            createEprfLsa(seq++, ntry.prefix, rtrOspf6lsa.lsaEinterPrf, rtrOspf6lsa.tlvInterPrf, ntry.metric, rtrOspf6lsa.prefProp, buf);
+            createEprfLsa(seq++, ntry.prefix, rtrOspf6lsa.lsaEinterPrf, rtrOspf6lsa.tlvInterPrf, ntry.metric, rtrOspf6lsa.prefProp, new byte[0], buf);
         }
     }
 
@@ -972,6 +993,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         continue;
                     }
                     tlv = rtrOspfTe.getTlvHandler();
+                    if (ntry.lsaType == rtrOspf6lsa.lsaEprefix) {
+                        pck.getSkip(12);
+                    }
                     for (;;) {
                         if (tlv.getBytes(pck)) {
                             break;
@@ -1051,12 +1075,12 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             int brb = spf.getBierB(src, false);
             int bro = spf.getBierB(src, true);
             tabRouteEntry<addrIP> pref;
-            rtrOspf6areaPref prf6;
+            rtrOspf6pref prf6;
             packHolder pck = ntry.getPayload();
             switch (ntry.lsaType) {
                 case rtrOspf6lsa.lsaInterPrf:
                     met += pck.msbGetD(0) & 0xffffff;
-                    prf6 = new rtrOspf6areaPref();
+                    prf6 = new rtrOspf6pref();
                     prefixRead(pck, 4, prf6);
                     pref = new tabRouteEntry<addrIP>();
                     pref.prefix = prf6.prefix;
@@ -1073,7 +1097,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     int o = pck.msbGetD(20); // number of prefixes
                     pck.getSkip(24);
                     for (int p = 0; p < o; p++) {
-                        prf6 = new rtrOspf6areaPref();
+                        prf6 = new rtrOspf6pref();
                         pck.getSkip(prefixRead(pck, 0, prf6));
                         pref = new tabRouteEntry<addrIP>();
                         pref.prefix = prf6.prefix;
@@ -1091,7 +1115,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     o = pck.msbGetW(0); // number of prefixes
                     pck.getSkip(12);
                     for (int p = 0; p < o; p++) {
-                        prf6 = new rtrOspf6areaPref();
+                        prf6 = new rtrOspf6pref();
                         pck.getSkip(prefixRead(pck, 0, prf6));
                         pref = new tabRouteEntry<addrIP>();
                         pref.prefix = prf6.prefix;
@@ -1109,7 +1133,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 case rtrOspf6lsa.lsaNssaExt:
                     o = pck.msbGetD(0);
                     pck.getSkip(4);
-                    prf6 = new rtrOspf6areaPref();
+                    prf6 = new rtrOspf6pref();
                     pck.getSkip(prefixRead(pck, 0, prf6));
                     if ((o & 0x02000000) != 0) {
                         pck.getSkip(addrIPv6.size);
@@ -1137,6 +1161,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 case rtrOspf6lsa.lsaEprefix:
                     if ((segrouUsd == null) && !bierEna) {
                         continue;
+                    }
+                    if (ntry.lsaType == rtrOspf6lsa.lsaEprefix) {
+                        pck.getSkip(12);
                     }
                     typLenVal tlv = rtrOspfTe.getTlvHandler();
                     for (;;) {
@@ -1256,15 +1283,5 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     public void stopNow() {
         todo.and(2);
     }
-
-}
-
-class rtrOspf6areaPref {
-
-    protected int option;
-
-    protected int metric;
-
-    protected addrPrefix<addrIP> prefix;
 
 }

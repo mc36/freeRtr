@@ -17,9 +17,14 @@ public class rtrOspfRi {
     }
 
     /**
-     * router capabilities
+     * router informational capabilities
      */
-    public static final int typCapa = 1;
+    public static final int typInfCapa = 1;
+
+    /**
+     * router functional capabilities
+     */
+    public static final int typFncCapa = 2;
 
     /**
      * te mesh group ipv4
@@ -55,6 +60,36 @@ public class rtrOspfRi {
      * sr base
      */
     public static final int typSrBase = 9;
+
+    /**
+     * node admin tag
+     */
+    public static final int typNodAdm = 10;
+
+    /**
+     * s-bfd discriminator
+     */
+    public static final int typSbfd = 11;
+
+    /**
+     * node msd
+     */
+    public static final int typNodMsd = 12;
+
+    /**
+     * tunnel encapsulation
+     */
+    public static final int typTunEnc = 13;
+
+    /**
+     * sr local block
+     */
+    public static final int typSrLocBlk = 14;
+
+    /**
+     * sr ms preference
+     */
+    public static final int typSrMsPref = 15;
 
     /**
      * graceful restart capable
@@ -107,7 +142,7 @@ public class rtrOspfRi {
      */
     public static void putCapa(packHolder pck, boolean te) {
         typLenVal tlv = rtrOspfTe.getTlvHandler();
-        tlv.valTyp = typCapa;
+        tlv.valTyp = typInfCapa;
         tlv.valSiz = 4;
         int i = capStub | capPpLan;
         if (te) {

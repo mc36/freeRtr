@@ -15,6 +15,19 @@ import util.typLenVal;
  */
 public class rtrOspfBr {
 
+    private rtrOspfBr() {
+    }
+
+    /**
+     * bier info
+     */
+    public static final int typBierInfo = 9;
+
+    /**
+     * bier mpls
+     */
+    public static final int typBierMpls = 10;
+
     /**
      * generate br prefix
      *
@@ -34,14 +47,14 @@ public class rtrOspfBr {
         bits.msbPutW(tlv.valDat, 2, idx); // bfr id
         tlv.valDat[4] = 0; // algorithm
         tlv.valSiz = 8;
-        tlv.valTyp = 9;
+        tlv.valTyp = typBierInfo;
         tlv.putThis(pck);
         tlv = rtrOspfTe.getTlvHandler();
         bits.msbPutD(tlv.valDat, 0, lab[0].getValue()); // label
         tlv.valDat[0] = (byte) lab.length; // length
         tlv.valDat[4] = (byte) (tabLabelBier.num2bsl(bsl) << 4); // bsl
         tlv.valSiz = 8;
-        tlv.valTyp = 10;
+        tlv.valTyp = typBierMpls;
         tlv.putThis(pck);
         pck.merge2beg();
         return pck.getCopy();
@@ -55,10 +68,10 @@ public class rtrOspfBr {
      */
     protected static void getPref(typLenVal tlv, tabRouteEntry<addrIP> prf) {
         switch (tlv.valTyp) {
-            case 9: // bier info
+            case typBierInfo: // bier info
                 prf.bierIdx = bits.msbGetW(tlv.valDat, 2); // brf id
                 break;
-            case 10: // bier mpls
+            case typBierMpls: // bier mpls
                 prf.bierBeg = bits.msbGetD(tlv.valDat, 0) & 0xfffff; // label
                 prf.bierHdr = (tlv.valDat[4] >>> 4) & 0xf; // bsl
                 break;

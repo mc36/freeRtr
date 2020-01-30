@@ -18,6 +18,11 @@ public class rtrIsisBr {
     }
 
     /**
+     * bier info
+     */
+    public static final int typBier = 32;
+
+    /**
      * generate br prefix
      *
      * @param lower lower layer to use
@@ -39,7 +44,7 @@ public class rtrIsisBr {
         bits.msbPutD(tlv.valDat, 7, lower.bierLab[0].getValue() | (tabLabelBier.num2bsl(lower.bierLen) << 20)); // bsl, label
         tlv.valDat[7] = (byte) lower.bierLab.length; // label range
         tlv.valSiz = 11;
-        tlv.valTyp = 32;
+        tlv.valTyp = typBier;
         tlv.putThis(pck);
         pck.merge2beg();
         return pck.getCopy();
@@ -52,7 +57,7 @@ public class rtrIsisBr {
      * @param prf prefix
      */
     protected static void getPref(typLenVal tlv, tabRouteEntry<addrIP> prf) {
-        if (tlv.valTyp != 32) {
+        if (tlv.valTyp != typBier) {
             return;
         }
         prf.bierIdx = bits.msbGetW(tlv.valDat, 3); // bfr id

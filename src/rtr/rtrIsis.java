@@ -1517,6 +1517,7 @@ public class rtrIsis extends ipRtr {
             pck.putSkip(ntry.writeData(pck, 0));
             pck.merge2beg();
             userFlash.buf2hex(l, pck.getCopy(), 0);
+            rtrIsisDump.dumpLsp(l, pck);
         }
         return l;
     }

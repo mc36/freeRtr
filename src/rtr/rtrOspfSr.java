@@ -19,6 +19,36 @@ public class rtrOspfSr {
     }
 
     /**
+     * sid/label
+     */
+    public static final int prfSidLab = 1;
+
+    /**
+     * prefix sid
+     */
+    public static final int prfPrfSid = 2;
+
+    /**
+     * sid/label
+     */
+    public static final int lnkSidLab = 1;
+
+    /**
+     * adj sid
+     */
+    public static final int lnkAdjSid = 2;
+
+    /**
+     * lan adj sid
+     */
+    public static final int lnkLanAdjSid = 3;
+
+    /**
+     * remote
+     */
+    public static final int lnkRemote = 0x8000;
+
+    /**
      * put sr base
      *
      * @param pck packet to update
@@ -75,7 +105,7 @@ public class rtrOspfSr {
         tlv.valDat[2] = 0; // mtid
         tlv.valDat[3] = 0; // algorithm
         bits.msbPutD(tlv.valDat, 4, idx); // index
-        tlv.valTyp = 2;
+        tlv.valTyp = prfPrfSid;
         tlv.valSiz = 8;
         tlv.putThis(pck);
         pck.merge2beg();
@@ -89,7 +119,7 @@ public class rtrOspfSr {
      * @param prf prefix
      */
     protected static void getPref(typLenVal tlv, tabRouteEntry<addrIP> prf) {
-        if (tlv.valTyp != 2) {
+        if (tlv.valTyp != prfPrfSid) {
             return;
         }
         if ((tlv.valDat[0] & 0x04) != 0) { // local
@@ -121,7 +151,7 @@ public class rtrOspfSr {
         tlv.valDat[2] = 0; // mtid
         tlv.valDat[3] = 0; // weight
         bits.msbPutD(tlv.valDat, 4, lab << 8); // label
-        tlv.valTyp = 2;
+        tlv.valTyp = lnkAdjSid;
         tlv.valSiz = 7;
         tlv.putThis(pck);
         pck.merge2beg();
@@ -138,7 +168,7 @@ public class rtrOspfSr {
         packHolder pck = new packHolder(true, true);
         typLenVal tlv = rtrOspfTe.getTlvHandler();
         adr.toBuffer(tlv.valDat, 0);
-        tlv.valTyp = 0x8000;
+        tlv.valTyp = lnkRemote;
         tlv.valSiz = 4;
         tlv.putThis(pck);
         pck.merge2beg();

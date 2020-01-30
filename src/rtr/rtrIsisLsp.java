@@ -74,6 +74,11 @@ public class rtrIsisLsp implements Comparator<rtrIsisLsp> {
     public static final int tlvLanNeigh = 6;
 
     /**
+     * instance id
+     */
+    public static final int tlvInstanceId = 7;
+
+    /**
      * padding
      */
     public static final int tlvPadding = 8;
@@ -89,14 +94,34 @@ public class rtrIsisLsp implements Comparator<rtrIsisLsp> {
     public static final int tlvAuthen = 10;
 
     /**
+     * extended sequence number
+     */
+    public static final int tlvExtSeq = 11;
+
+    /**
      * optional checksum
      */
     public static final int tlvChecksum = 12;
 
     /**
+     * purge originator id
+     */
+    public static final int tlvPurgeOrig = 13;
+
+    /**
      * lsp buffer size
      */
     public static final int tlvLspBufSiz = 14;
+
+    /**
+     * router fingerprint
+     */
+    public static final int tlvRtrFingerprint = 15;
+
+    /**
+     * reverse metric
+     */
+    public static final int tlvReverseMetric = 16;
 
     /**
      * extended is reachability
@@ -112,6 +137,11 @@ public class rtrIsisLsp implements Comparator<rtrIsisLsp> {
      * is alias id
      */
     public static final int tlvIsAlias = 24;
+
+    /**
+     * bundle member
+     */
+    public static final int tlvBundleMember = 25;
 
     /**
      * ipv4 internal reachability
@@ -169,6 +199,26 @@ public class rtrIsisLsp implements Comparator<rtrIsisLsp> {
     public static final int tlvIpv6teId = 140;
 
     /**
+     * inter as reachability
+     */
+    public static final int tlvInterAsReach = 141;
+
+    /**
+     * bfd enabled
+     */
+    public static final int tlvBfdEnabled = 148;
+
+    /**
+     * sid/label binding
+     */
+    public static final int tlvSidBind = 149;
+
+    /**
+     * multitopology sid/label binding
+     */
+    public static final int tlvMtSidBind = 150;
+
+    /**
      * restart
      */
     public static final int tlvRestart = 211;
@@ -217,6 +267,16 @@ public class rtrIsisLsp implements Comparator<rtrIsisLsp> {
      * is-is router capability
      */
     public static final int tlvRouterCapa = 242;
+
+    /**
+     * scope flooding
+     */
+    public static final int tlvScopeFlood = 243;
+
+    /**
+     * generic information
+     */
+    public static final int tlvGenericInfo = 251;
 
     /**
      * experimental

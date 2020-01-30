@@ -18,6 +18,36 @@ public class rtrIsisSr {
     }
 
     /**
+     * adjacency sid
+     */
+    public static final int typAdjSid = 31;
+
+    /**
+     * lan adjacency sid
+     */
+    public static final int typLanAdjSid = 32;
+
+    /**
+     * bundle adjacency sid
+     */
+    public static final int typBunAdjSid = 41;
+
+    /**
+     * bundle lan adjacency sid
+     */
+    public static final int typBunLanAdjSid = 42;
+
+    /**
+     * prefix segment id
+     */
+    public static final int typPrfSeg = 3;
+
+    /**
+     * segment routing capability
+     */
+    public static final int typSrCapa = 2;
+
+    /**
      * create sr base
      *
      * @param lower lower layer to use
@@ -27,7 +57,7 @@ public class rtrIsisSr {
         typLenVal tlv = rtrIsis.getTlv();
         lower.traffEngID.toIPv4().toBuffer(tlv.valDat, 0); // addr
         tlv.valDat[4] = 0; // flags
-        tlv.valDat[5] = 2; // type
+        tlv.valDat[5] = typSrCapa; // type
         tlv.valDat[6] = 9; // length
         if (lower.fwdCore.ipVersion == ipCor4.protocolVersion) {
             tlv.valDat[7] = (byte) 0x80; // flags
@@ -53,7 +83,7 @@ public class rtrIsisSr {
         if (tlv.valTyp != rtrIsisLsp.tlvRouterCapa) {
             return -1;
         }
-        if (tlv.valDat[5] != 2) { // type
+        if (tlv.valDat[5] != typSrCapa) { // type
             return -1;
         }
         if (tlv.valDat[11] != 1) { // type
@@ -85,7 +115,7 @@ public class rtrIsisSr {
         }
         tlv.valDat[1] = 0; // algorithm
         bits.msbPutD(tlv.valDat, 2, idx); // index
-        tlv.valTyp = 3;
+        tlv.valTyp = typPrfSeg;
         tlv.valSiz = 6;
         tlv.putThis(pck);
         pck.merge2beg();
@@ -99,7 +129,7 @@ public class rtrIsisSr {
      * @param prf prefix
      */
     protected static void getPref(typLenVal tlv, tabRouteEntry<addrIP> prf) {
-        if (tlv.valTyp != 3) {
+        if (tlv.valTyp != typPrfSeg) {
             return;
         }
         if ((tlv.valDat[0] & 0x04) != 0) { // local
@@ -133,7 +163,7 @@ public class rtrIsisSr {
         }
         tlv.valDat[1] = 0; // weight
         bits.msbPutD(tlv.valDat, 2, lab << 8); // label
-        tlv.valTyp = 31;
+        tlv.valTyp = typAdjSid;
         tlv.valSiz = 5;
         tlv.putThis(pck);
         pck.merge2beg();

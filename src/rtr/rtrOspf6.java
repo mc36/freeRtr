@@ -717,6 +717,7 @@ public class rtrOspf6 extends ipRtr {
             pck.putSkip(ntry.writeData(pck, 0, true));
             pck.merge2beg();
             userFlash.buf2hex(l, pck.getCopy(), 0);
+            rtrOspfDump.dump6lsa(l, pck, ntry);
         }
         return l;
     }
@@ -907,5 +908,5 @@ public class rtrOspf6 extends ipRtr {
     public int routerIfaceCount() {
         return ifaces.size();
     }
-
+    
 }

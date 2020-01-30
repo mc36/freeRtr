@@ -30,6 +30,31 @@ public class rtrOspfTe {
     public static final int typRouter6 = 3;
 
     /**
+     * link local lsa
+     */
+    public static final int typLnkLoc = 4;
+
+    /**
+     * node attribute lsa
+     */
+    public static final int typNodAtr = 5;
+
+    /**
+     * optical node property lsa
+     */
+    public static final int typOptNod = 6;
+
+    /**
+     * link type
+     */
+    public static final int typLnkTyp = 1;
+
+    /**
+     * link id
+     */
+    public static final int typLnkId = 2;
+
+    /**
      * local ipv4 address
      */
     public static final int typLoc4adr = 3;
@@ -65,9 +90,24 @@ public class rtrOspfTe {
     public static final int typAdminGrp = 9;
 
     /**
+     * link local/remote te identifier
+     */
+    public static final int typBothTe = 10;
+
+    /**
      * link local/remote identifier
      */
     public static final int typBothId = 11;
+
+    /**
+     * inter-ra export upward
+     */
+    public static final int typIntRaUp = 12;
+
+    /**
+     * inter-ra export downward
+     */
+    public static final int typIntRaDn = 13;
 
     /**
      * link protection type
@@ -130,6 +170,56 @@ public class rtrOspfTe {
     public static final int typIntAdjCapa = 25;
 
     /**
+     * extended administrative group
+     */
+    public static final int typExtAdmin = 26;
+
+    /**
+     * unidirectional link delay
+     */
+    public static final int typUniLnkDly = 27;
+
+    /**
+     * min/max unidirectional link delay
+     */
+    public static final int typRngUniLnkDly = 28;
+
+    /**
+     * unidirectional link delay variation
+     */
+    public static final int typUniLnkDlyVar = 29;
+
+    /**
+     * unidirectional link loss
+     */
+    public static final int typUniLnkLos = 30;
+
+    /**
+     * unidirectional residual bandwidth
+     */
+    public static final int typUniResBwd = 31;
+
+    /**
+     * unidirectional available bandwidth
+     */
+    public static final int typUniAvaBwd = 32;
+
+    /**
+     * unidirectional utilized bandwidth
+     */
+    public static final int typUniUtlBwd = 33;
+
+    /**
+     * port label restrictions
+     */
+    public static final int typPrtLabRes = 34;
+
+    /**
+     * network to router te metric
+     */
+    public static final int typNetRtrMet = 35;
+
+    /**
      * point to point link
      */
     public static final int lnkP2p = 1;
@@ -138,16 +228,6 @@ public class rtrOspfTe {
      * broadcast link
      */
     public static final int lnkBrd = 2;
-
-    /**
-     * link type
-     */
-    public static final int typLnkTyp = 1;
-
-    /**
-     * link id
-     */
-    public static final int typLnkId = 2;
 
     /**
      * get tlv handler

@@ -65,6 +65,16 @@ public class rtrIsisTe {
     public static final int typRem6adr = 13;
 
     /**
+     * extended administrative group
+     */
+    public static final int typExtAdmin = 14;
+
+    /**
+     * link maximum sid depth
+     */
+    public static final int typLinkMsd = 15;
+
+    /**
      * te metric
      */
     public static final int typMetric = 18;

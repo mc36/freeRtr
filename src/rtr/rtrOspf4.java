@@ -717,6 +717,7 @@ public class rtrOspf4 extends ipRtr {
             pck.putSkip(ntry.writeData(pck, 0, true));
             pck.merge2beg();
             userFlash.buf2hex(l, pck.getCopy(), 0);
+            rtrOspfDump.dump4lsa(l, pck, ntry);
         }
         return l;
     }
