@@ -55,6 +55,7 @@ router bgp4 1
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
+ neigh 2.2.2.2 segrou
  afi-vrf v2 ena
  afi-vrf v2 srv6 tun1
  afi-vrf v2 red conn
@@ -70,6 +71,7 @@ router bgp6 1
  neigh 4321::2 remote-as 1
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
+ neigh 4321::2 segrou
  afi-vrf v2 ena
  afi-vrf v2 srv6 tun1
  afi-vrf v2 red conn
@@ -120,6 +122,7 @@ interface loopback3
  ipv4 address 9.9.3.2 255.255.255.255
  ipv6 address 9993::2/128
  exit
+segment-routing srv6 locators locator a prefix 1111:1111:1111:1111::/64
 router bgp 1
  segment-routing srv6 locator a
  address-family vpnv4 unicast
