@@ -701,6 +701,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
             logger.debug("reachable:" + spf.listReachables());
         }
         lastSpf = spf;
+        tab2.setProto(routerProtoTyp, routerProcNum);
+        tab2.preserveTime(routerComputedU);
         routerComputedU = tab2;
         fwdCore.routerChg(this);
     }

@@ -177,7 +177,7 @@ public abstract class ipRtr implements Comparator<ipRtr> {
             if (ntry == null) {
                 continue;
             }
-            ntry.filter(afi, tab, hop, lab, src, agrR, agrA);
+            ntry.filter(afi, tab, hop, lab, src, agrR, agrA, routerProtoTyp, routerProcNum);
         }
     }
 

@@ -579,15 +579,9 @@ public class ipFwdTab {
             if (rtr.isBGP() != 0) {
                 continue;
             }
-            tabRoute<addrIP> tabT = rtr.routerComputedU;
-            tabT.setProto(rtr.routerProtoTyp, rtr.routerProcNum);
-            tabL.mergeFrom(tabRoute.addType.better, tabT, null, true, tabRouteEntry.distanMax);
-            tabT = rtr.routerComputedM;
-            tabT.setProto(rtr.routerProtoTyp, rtr.routerProcNum);
-            tabM.mergeFrom(tabRoute.addType.better, tabT, null, true, tabRouteEntry.distanMax);
-            tabT = rtr.routerComputedF;
-            tabT.setProto(rtr.routerProtoTyp, rtr.routerProcNum);
-            tabF.mergeFrom(tabRoute.addType.better, tabT, null, true, tabRouteEntry.distanMax);
+            tabL.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true, tabRouteEntry.distanMax);
+            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true, tabRouteEntry.distanMax);
+            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteEntry.distanMax);
         }
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);

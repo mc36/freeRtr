@@ -321,6 +321,8 @@ public class rtrEigrp extends ipRtr implements Runnable {
                 nei.notif.wakeup();
             }
         }
+        tab2.setProto(routerProtoTyp, routerProcNum);
+        tab2.preserveTime(routerComputedU);
         routerComputedU = tab2;
         fwdCore.routerChg(this);
     }

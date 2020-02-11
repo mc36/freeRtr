@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.1.29-testing, done by cs@nop.;-;-
--;-;2020-01-30 06:06:27, took 09:01:55 on 1672 cases, 0 failed, 0 traces, 6 retries;-;-
+-;-;freeRouter v20.2.11-testing, done by cs@nop.;-;-
+-;-;2020-02-11 19:33:25, took 09:00:40 on 1674 cases, 0 failed, 0 traces, 16 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1466,6 +1466,8 @@ rout-isis51.tst;0;isis inter-level with bier;successfully;finished
 rout-isis52.tst;0;isis multi-topology with bier;successfully;finished
 rout-isis53.tst;0;isis autoroute;successfully;finished
 rout-isis54.tst;0;isis lsp authentication;successfully;finished
+rout-isis55.tst;0;isis change in tag;successfully;finished
+rout-isis56.tst;0;isis multi-topology change in tag;successfully;finished
 rout-lsrp01.tst;0;lsrp point2point connection;successfully;finished
 rout-lsrp02.tst;0;lsrp point2multipoint connection;successfully;finished
 rout-lsrp03.tst;0;lsrp point2point chain;successfully;finished

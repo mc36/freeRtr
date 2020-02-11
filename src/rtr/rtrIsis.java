@@ -471,7 +471,7 @@ public class rtrIsis extends ipRtr {
         }
         return tlv;
     }
-
+    
     private void getAddrReachS(typLenVal tlv, int pos, int len, tabRouteEntry<addrIP> prf) {
         packHolder pck = new packHolder(true, true);
         pck.putCopy(tlv.valDat, pos, 0, len);
@@ -482,11 +482,15 @@ public class rtrIsis extends ipRtr {
             if (tlv.getBytes(pck)) {
                 break;
             }
+            if (tlv.valTyp == 1) { // tag
+                prf.tag = bits.msbGetD(tlv.valDat, 0);
+                continue;
+            }
             rtrIsisSr.getPref(tlv, prf);
             rtrIsisBr.getPref(tlv, prf);
         }
     }
-
+    
     private int getAddrReach4(typLenVal tlv, int pos, tabRouteEntry<addrIP> prf) {
         prf.metric = bits.msbGetD(tlv.valDat, pos + 0); // metric
         int i = bits.getByte(tlv.valDat, pos + 4); // prefix length
@@ -506,7 +510,7 @@ public class rtrIsis extends ipRtr {
         pos += o + 1;
         return pos;
     }
-
+    
     private int getAddrReach6(typLenVal tlv, int pos, tabRouteEntry<addrIP> prf) {
         prf.metric = bits.msbGetD(tlv.valDat, pos + 0); // metric
         int i = bits.getByte(tlv.valDat, pos + 4); // flags
@@ -617,7 +621,7 @@ public class rtrIsis extends ipRtr {
         }
         return l;
     }
-
+    
     private void putAddrReach4(typLenVal tlv, int pos, addrPrefix<addrIPv4> prf, boolean down, int met, byte[] subs) {
         bits.msbPutD(tlv.valDat, pos + 0, met); // metric
         met = prf.maskLen;
@@ -637,7 +641,7 @@ public class rtrIsis extends ipRtr {
         bits.byteCopy(subs, 0, tlv.valDat, tlv.valSiz + 1, subs.length); // value
         tlv.valSiz += subs.length + 1;
     }
-
+    
     private void putAddrReach6(typLenVal tlv, int pos, addrPrefix<addrIPv6> prf, boolean ext, boolean down, int met, byte[] subs) {
         bits.msbPutD(tlv.valDat, pos + 0, met); // metric
         met = 0;
@@ -660,6 +664,23 @@ public class rtrIsis extends ipRtr {
         tlv.valDat[tlv.valSiz] = (byte) subs.length; // length
         bits.byteCopy(subs, 0, tlv.valDat, tlv.valSiz + 1, subs.length); // value
         tlv.valSiz += subs.length + 1;
+    }
+
+    /**
+     * write reachable address
+     *
+     * @param tag tag value
+     * @return generated tlv
+     */
+    protected byte[] putAddrTag(int tag) {
+        packHolder pck = new packHolder(true, true);
+        typLenVal tlv = rtrIsis.getTlv();
+        tlv.valTyp = 1;
+        tlv.valSiz = 4;
+        bits.msbPutD(tlv.valDat, 0, tag);
+        tlv.putThis(pck);
+        pck.merge2beg();
+        return pck.getCopy();
     }
 
     /**
@@ -716,7 +737,7 @@ public class rtrIsis extends ipRtr {
         }
         return tlv;
     }
-
+    
     private int getISneighE(typLenVal tlv, int pos, rtrIsisLsp nei) {
         nei.srcID.fromBuf(tlv.valDat, pos + 0); // neighbor id
         nei.nodID = bits.getByte(tlv.valDat, pos + 6); // pseudonode id
@@ -779,7 +800,7 @@ public class rtrIsis extends ipRtr {
         }
         return l;
     }
-
+    
     private void putISneighE(typLenVal tlv, int pos, addrIsis nei, int nod, int met, byte[] subs) {
         nei.toBuffer(tlv.valDat, pos + 0); // neighbor id
         bits.putByte(tlv.valDat, pos + 6, nod); // pseudonode id
@@ -935,6 +956,8 @@ public class rtrIsis extends ipRtr {
                 bierLab[i].setBierMpls(19, fwdCore, res);
             }
         }
+        tab.setProto(routerProtoTyp, routerProcNum);
+        tab.preserveTime(routerComputedU);
         routerComputedU = tab;
         fwdCore.routerChg(this);
     }
@@ -1660,5 +1683,5 @@ public class rtrIsis extends ipRtr {
     public int routerIfaceCount() {
         return ifaces.size();
     }
-
+    
 }

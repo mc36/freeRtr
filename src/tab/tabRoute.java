@@ -425,6 +425,28 @@ public class tabRoute<T extends addrType> {
     }
 
     /**
+     * preserve time info
+     *
+     * @param src source
+     */
+    public void preserveTime(tabRoute<T> src) {
+        for (int i = 0; i < prefixes.size(); i++) {
+            tabRouteEntry<T> prf = prefixes.get(i);
+            if (prf == null) {
+                continue;
+            }
+            tabRouteEntry<T> old = src.find(prf);
+            if (old == null) {
+                continue;
+            }
+            if (prf.differs(old)) {
+                continue;
+            }
+            prf.time = old.time;
+        }
+    }
+
+    /**
      * set protocol info
      *
      * @param typ protocol type

@@ -502,8 +502,11 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             byte[] subs = new byte[0];
+            if (ntry.tag != 0) {
+                subs = bits.byteConcat(subs, lower.putAddrTag(ntry.tag));
+            }
             if (segrouEna && (ntry.segrouIdx > 0)) {
-                subs = rtrIsisSr.putPref(ntry.segrouIdx, (ntry.rouSrc & 3) != 0, (ntry.rouSrc & 8) != 0);
+                subs = bits.byteConcat(subs, rtrIsisSr.putPref(ntry.segrouIdx, (ntry.rouSrc & 3) != 0, (ntry.rouSrc & 8) != 0));
             }
             if (bierEna && (ntry.bierIdx > 0)) {
                 subs = bits.byteConcat(subs, rtrIsisBr.putPref(lower, ntry.bierIdx));

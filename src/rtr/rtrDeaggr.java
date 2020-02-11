@@ -94,6 +94,7 @@ public class rtrDeaggr extends ipRtr {
             ntry.prefix = new addrPrefix<addrIP>(adr, ntry.prefix.maskLen);
             res.add(tabRoute.addType.better, ntry.copyBytes(), false, false);
         }
+        routerDoAggregates(rtrBgpUtil.safiUnicast, res, null, fwdCore.commonLabel, 0, null, 0);
         routerComputedU = res;
         fwdCore.routerChg(this);
     }

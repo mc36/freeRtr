@@ -1462,6 +1462,8 @@ qc pass: isis inter-level with bier
 qc pass: isis multi-topology with bier
 qc pass: isis autoroute
 qc pass: isis lsp authentication
+qc pass: isis change in tag
+qc pass: isis multi-topology change in tag
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain

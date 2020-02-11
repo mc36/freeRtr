@@ -205,6 +205,8 @@ public class rtrOspf4 extends ipRtr {
                 bierLab[i].setBierMpls(20, fwdCore, res);
             }
         }
+        tab.setProto(routerProtoTyp, routerProcNum);
+        tab.preserveTime(routerComputedU);
         routerComputedU = tab;
         fwdCore.routerChg(this);
     }

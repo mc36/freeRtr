@@ -100,18 +100,3 @@ r1 tping 0 5 2.2.2.201 /vrf v1
 r1 tping 0 5 4321::201 /vrf v1
 r3 tping 0 5 2.2.2.101 /vrf v1
 r3 tping 0 5 4321::101 /vrf v1
-
-r2 output show ipv4 pbr v1
-r2 output show ipv6 pbr v1
-output ../binTmp/rout-pbr.html
-<html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">
-here are the ipv4 forwarding:
-<pre>
-<!>show:0
-</pre>
-here are the ipv6 forwarding:
-<pre>
-<!>show:1
-</pre>
-</body></html>
-!

@@ -8824,3 +8824,6 @@ qc pass: satp with md5
 qc pass: satp with sha1
 qc pass: satp with sha256
 qc pass: satp with sha512
+---------------------------------- 2020-02-11 10:32:45
+qc pass: isis change in tag
+qc pass: isis multi-topology change in tag

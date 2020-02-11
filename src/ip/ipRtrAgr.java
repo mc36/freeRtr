@@ -87,8 +87,10 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
      * @param src route source
      * @param agrR aggregator router
      * @param agrA aggregator as
+     * @param rtrT router type
+     * @param rtrN router number
      */
-    public void filter(int afi, tabRoute<addrIP> tab, addrIP hop, tabLabelNtry lab, int src, addrIPv4 agrR, int agrA) {
+    public void filter(int afi, tabRoute<addrIP> tab, addrIP hop, tabLabelNtry lab, int src, addrIPv4 agrR, int agrA, tabRouteEntry.routeType rtrT, int rtrN) {
         int cnt = 0;
         List<Integer> pathSet = new ArrayList<Integer>();
         List<Integer> confSet = new ArrayList<Integer>();
@@ -132,6 +134,8 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
         ntry.atomicAggr = !aspath;
         ntry.labelLoc = lab;
         ntry.rouSrc = src;
+        ntry.rouTyp = rtrT;
+        ntry.protoNum = rtrN;
         tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, roumap, rouplc, null);
     }
 

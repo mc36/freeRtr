@@ -127,6 +127,8 @@ public class rtrMobile extends ipRtr implements Runnable {
                 res.add(tabRoute.addType.better, rou, false, false);
             }
         }
+        routerDoAggregates(rtrBgpUtil.safiUnicast, res, null, fwdCore.commonLabel, 0, null, 0);
+        res.preserveTime(routerComputedU);
         routerComputedU = res;
         fwdCore.routerChg(this);
     }

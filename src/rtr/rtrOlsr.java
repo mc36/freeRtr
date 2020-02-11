@@ -419,6 +419,8 @@ public class rtrOlsr extends ipRtr implements prtServP {
             tab.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteEntry.distanLim);
         }
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab, null, fwdCore.commonLabel, 0, null, 0);
+        tab.setProto(routerProtoTyp, routerProcNum);
+        tab.preserveTime(routerComputedU);
         routerComputedU = tab;
         fwdCore.routerChg(this);
     }
