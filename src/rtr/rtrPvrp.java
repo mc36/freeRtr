@@ -311,6 +311,9 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * others changed
      */
     public void routerOthersChanged() {
+        if (labels) {
+            routerCreateComputed();
+        }
     }
 
     /**
