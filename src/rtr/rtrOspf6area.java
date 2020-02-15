@@ -717,9 +717,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
             ntry.origin = 111;
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, roumapInto, roupolInto, prflstInto);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, true, roumapInto, roupolInto, prflstInto);
         }
-        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, rs, lower.routerRedistedU, roumapInto, roupolInto, prflstInto);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, rs, lower.routerRedistedU, true, roumapInto, roupolInto, prflstInto);
         for (int i = 0; i < rs.size(); i++) {
             tabRouteEntry<addrIP> ntry = rs.get(i);
             if (ntry == null) {
@@ -755,7 +755,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = ifc.iface.network.copyBytes();
             ntry.metric = ifc.metric;
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, roumapInto, roupolInto, prflstInto);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, true, roumapInto, roupolInto, prflstInto);
         }
         for (int i = 0; i < lower.routerComputedU.size(); i++) {
             tabRouteEntry<addrIP> ntry = lower.routerComputedU.get(i);
@@ -765,7 +765,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ntry.rouSrc == area) {
                 continue;
             }
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, roumapInto, roupolInto, prflstInto);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, true, roumapInto, roupolInto, prflstInto);
         }
         for (int i = 0; i < rs.size(); i++) {
             tabRouteEntry<addrIP> ntry = rs.get(i);
@@ -1207,7 +1207,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             }
         }
         routes.clear();
-        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, routes, rs, roumapFrom, roupolFrom, prflstFrom);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.safiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);
         if (bierEna) {
             bierRes = spf.getBierI();

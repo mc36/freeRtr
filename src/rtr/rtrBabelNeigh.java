@@ -156,7 +156,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
                     if (ntry.metric >= 0xffff) {
                         tabRoute.delUpdatedEntry(learned, rtrBgpUtil.safiUnicast, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     } else {
-                        tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+                        tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     }
                     break;
                 case rtrBabel.tlvRouReq:

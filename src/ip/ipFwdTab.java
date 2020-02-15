@@ -555,7 +555,7 @@ public class ipFwdTab {
                 prf.nextHop = gtw.copyBytes();
                 prf.rouTyp = tabRouteEntry.routeType.defpref;
                 prf.iface = ifc;
-                tabRoute.addUpdatedEntry(tabRoute.addType.better, tabU, rtrBgpUtil.safiUnicast, prf, ifc.gateRtmp, null, null);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tabU, rtrBgpUtil.safiUnicast, prf, true, ifc.gateRtmp, null, null);
             }
         }
         tabL.mergeFrom(tabRoute.addType.better, tabC, null, true, tabRouteEntry.distanLim);

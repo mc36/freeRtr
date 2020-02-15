@@ -311,7 +311,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
                 ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
                 tab1.add(tabRoute.addType.always, ntry, true, true);
             }
-            tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.safiUnicast, tab1, need2adv, ifc.roumapOut, ifc.roupolOut, ifc.prflstOut);
+            tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.safiUnicast, tab1, need2adv, true, ifc.roumapOut, ifc.roupolOut, ifc.prflstOut);
             if (ifc.splitHorizon) {
                 tab1.delIface(ifc.iface);
             }
@@ -528,7 +528,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
                 }
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = new addrPrefix<addrIP>(nei.peer, addrIP.size * 8);
-                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, null, null, routerAutoMesh);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, true, null, null, routerAutoMesh);
             }
         }
     }

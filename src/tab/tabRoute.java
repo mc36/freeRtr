@@ -634,17 +634,18 @@ public class tabRoute<T extends addrType> {
      * @param rouTab route table to add
      * @param afi address family
      * @param ntry entry to add
+     * @param newTime set true to set time, false to keep original time
      * @param rouMap route map to apply, null=permit
      * @param rouPlc route policy to apply, null=permit
      * @param prfLst prefix list to apply, null=permit
      * @return number of entries added
      */
-    public static int addUpdatedEntry(addType mod, tabRoute<addrIP> rouTab, int afi, tabRouteEntry<addrIP> ntry, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
+    public static int addUpdatedEntry(addType mod, tabRoute<addrIP> rouTab, int afi, tabRouteEntry<addrIP> ntry, boolean newTime, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
         ntry = doUpdateEntry(afi, ntry, rouMap, rouPlc, prfLst);
         if (ntry == null) {
             return 0;
         }
-        rouTab.add(mod, ntry, false, true);
+        rouTab.add(mod, ntry, false, newTime);
         return 1;
     }
 
@@ -675,19 +676,20 @@ public class tabRoute<T extends addrType> {
      * @param afi address family
      * @param trg route table to add to
      * @param src route table to add from
+     * @param newTime set true to set time, false to keep original time
      * @param rouMap route map to apply, null=permit
      * @param rouPlc route policy to apply, null=permit
      * @param prfLst prefix list to apply, null=permit
      * @return number of entries added
      */
-    public static int addUpdatedTable(addType mod, int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
+    public static int addUpdatedTable(addType mod, int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src, boolean newTime, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
         int added = 0;
         for (int i = 0; i < src.size(); i++) {
             tabRouteEntry<addrIP> ntry = src.get(i);
             if (ntry == null) {
                 continue;
             }
-            added += addUpdatedEntry(mod, trg, afi, ntry, rouMap, rouPlc, prfLst);
+            added += addUpdatedEntry(mod, trg, afi, ntry, newTime, rouMap, rouPlc, prfLst);
         }
         return added;
     }

@@ -136,7 +136,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
         ntry.rouSrc = src;
         ntry.rouTyp = rtrT;
         ntry.protoNum = rtrN;
-        tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, roumap, rouplc, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, true, roumap, rouplc, null);
     }
 
 }

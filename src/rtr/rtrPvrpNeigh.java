@@ -544,7 +544,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 ntry.distance = lower.iface.distance;
                 ntry.iface = lower.iface.iface;
                 ntry.srcRtr = lower.peer.copyBytes();
-                cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, lower.learned, rtrBgpUtil.safiUnicast, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
+                cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, lower.learned, rtrBgpUtil.safiUnicast, ntry, true, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
                 if (cnt > 0) {
                     lower.lower.notif.wakeup();
                 }

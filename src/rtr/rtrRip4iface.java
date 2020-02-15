@@ -572,7 +572,7 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
         }
         tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true, tabRouteEntry.distanLim);
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("copy");
-        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, tab2, tab1, roumapOut, roupolOut, prflstOut);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, tab2, tab1, true, roumapOut, roupolOut, prflstOut);
         if (debugger.rtrRip4traf) {
             logger.debug("tx " + conn);
         }

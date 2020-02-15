@@ -76,7 +76,7 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
      */
     public void filter(int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src) {
         tabRoute<addrIP> lst = src.justProto(typ, num);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, afi, trg, lst, roumap, rouplc, prflst);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, afi, trg, lst, true, roumap, rouplc, prflst);
     }
 
 }

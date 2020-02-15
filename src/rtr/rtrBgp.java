@@ -2934,7 +2934,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, ntry, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, ntry, true, null, null, routerAutoMesh);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
             rtrBgpNeigh nei = lstnNei.get(i);
@@ -2943,7 +2943,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, ntry, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, ntry, true, null, null, routerAutoMesh);
         }
         other.getPeerList(tab);
         for (int i = 0; i < vrfs.size(); i++) {

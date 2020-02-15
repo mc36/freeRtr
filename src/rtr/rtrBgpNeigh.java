@@ -948,23 +948,23 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             accMvpo = conn.lrnMvpo;
             return;
         }
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiUni, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMlt, accMlt, conn.lrnMlt, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiOtr, accOtr, conn.lrnOtr, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiFlw, accFlw, conn.lrnFlw, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpnU, accVpnU, conn.lrnVpnU, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpnM, accVpnM, conn.lrnVpnM, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpnF, accVpnF, conn.lrnVpnF, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpoU, accVpoU, conn.lrnVpoU, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpoM, accVpoM, conn.lrnVpoM, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpoF, accVpoF, conn.lrnVpoF, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpls, accVpls, conn.lrnVpls, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMspw, accMspw, conn.lrnMspw, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiEvpn, accEvpn, conn.lrnEvpn, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMdt, accMdt, conn.lrnMdt, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiSrte, accSrte, conn.lrnSrte, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMvpn, accMvpn, conn.lrnMvpn, voumapIn, voupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMvpo, accMvpo, conn.lrnMvpo, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiUni, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMlt, accMlt, conn.lrnMlt, true, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiOtr, accOtr, conn.lrnOtr, true, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiFlw, accFlw, conn.lrnFlw, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpnU, accVpnU, conn.lrnVpnU, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpnM, accVpnM, conn.lrnVpnM, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpnF, accVpnF, conn.lrnVpnF, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpoU, accVpoU, conn.lrnVpoU, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpoM, accVpoM, conn.lrnVpoM, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpoF, accVpoF, conn.lrnVpoF, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiVpls, accVpls, conn.lrnVpls, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMspw, accMspw, conn.lrnMspw, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiEvpn, accEvpn, conn.lrnEvpn, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMdt, accMdt, conn.lrnMdt, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiSrte, accSrte, conn.lrnSrte, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMvpn, accMvpn, conn.lrnMvpn, true, voumapIn, voupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, lower.afiMvpo, accMvpo, conn.lrnMvpo, true, voumapIn, voupolIn, null);
     }
 
     /**

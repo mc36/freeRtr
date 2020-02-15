@@ -81,6 +81,6 @@ public class ipRtrInt implements Comparator<ipRtrInt> {
         if (ntry == null) {
             return;
         }
-        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, roumap, rouplc, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, roumap, rouplc, null);
     }
 }

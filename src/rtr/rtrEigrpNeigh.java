@@ -350,7 +350,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
                 case opcReply:
                 case opcSiaReply:
                     if (reach) {
-                        cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+                        cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     } else {
                         cnt += tabRoute.delUpdatedEntry(learned, rtrBgpUtil.safiUnicast, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     }

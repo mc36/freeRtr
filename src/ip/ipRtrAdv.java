@@ -69,7 +69,7 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
         if (prefix.compare(prefix, ntry.prefix) != 0) {
             return;
         }
-        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, roumap, rouplc, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, roumap, rouplc, null);
     }
 
 }
