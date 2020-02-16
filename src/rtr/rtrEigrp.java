@@ -482,7 +482,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
 
     public void run() {
         for (;;) {
-            notif.misleep(10000);
+            notif.misleep(30000);
             if (!need2run) {
                 return;
             }
