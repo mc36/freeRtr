@@ -314,4 +314,31 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
         return res;
     }
 
+    /**
+     * count clients
+     *
+     * @param ifc interface
+     * @param prt local port
+     * @param prf remote prefix
+     * @return number of clients
+     */
+    public int countClients(int ifc, int prt, addrPrefix<Ta> prf) {
+        int res = 0;
+        synchronized (conns) {
+            for (int i = 0; i < conns.size(); i++) {
+                tabConnectEntry<Ta, Td> ntry = conns.get(i);
+                if (ntry.iface != ifc) {
+                    continue;
+                }
+                if (ntry.local != prt) {
+                    continue;
+                }
+                if (prf.matches(ntry.peer.network)) {
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
 }

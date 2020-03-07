@@ -1,6 +1,7 @@
 package prt;
 
 import addr.addrIP;
+import addr.addrPrefix;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
@@ -485,6 +486,18 @@ public abstract class prtGen implements ipPrt {
      */
     public int countClients(ipFwdIface ifc, int prt, addrIP adr) {
         return clnts.countClients(ifc.ifwNum, prt, adr);
+    }
+
+    /**
+     * count clients
+     *
+     * @param ifc interface
+     * @param prt local port
+     * @param prf remote prefix
+     * @return number of clients
+     */
+    public int countClients(ipFwdIface ifc, int prt, addrPrefix<addrIP> prf) {
+        return clnts.countClients(ifc.ifwNum, prt, prf);
     }
 
 }

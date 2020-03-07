@@ -1,6 +1,7 @@
 package serv;
 
 import addr.addrIP;
+import addr.addrPrefix;
 import auth.authGeneric;
 import cfg.cfgAceslst;
 import cfg.cfgAll;
@@ -126,6 +127,11 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * limit of one client
      */
     protected int srvPerLim;
+
+    /**
+     * limit of one subnet
+     */
+    protected int srvNetLim;
 
     /**
      * log access drops
@@ -287,6 +293,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         "server .*! no access-rate",
         "server .*! access-total 0",
         "server .*! access-peer 0",
+        "server .*! access-subnet 0",
         "server .*! no access-log",
         "server .*! no interface",
         "server .*! no vrf"
@@ -899,6 +906,53 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         return res;
     }
 
+    private int srvCheckAccept(ipFwdIface ifc, int prt, addrIP adr) {
+        boolean is4 = adr.isIPv4();
+        addrPrefix<addrIP> prf;
+        if (is4) {
+            prf = new addrPrefix<addrIP>(adr, 120);
+        } else {
+            prf = new addrPrefix<addrIP>(adr, 56);
+        }
+        int res = 0;
+        if ((srvProto & protoTcp) != 0) {
+            if (is4) {
+                res += srvVrf.tcp4.countClients(ifc, prt, prf);
+            } else {
+                res += srvVrf.tcp6.countClients(ifc, prt, prf);
+            }
+        }
+        if ((srvProto & protoUdp) != 0) {
+            if (is4) {
+                res += srvVrf.udp4.countClients(ifc, prt, prf);
+            } else {
+                res += srvVrf.udp6.countClients(ifc, prt, prf);
+            }
+        }
+        if ((srvProto & protoLudp) != 0) {
+            if (is4) {
+                res += srvVrf.ludp4.countClients(ifc, prt, prf);
+            } else {
+                res += srvVrf.ludp6.countClients(ifc, prt, prf);
+            }
+        }
+        if ((srvProto & protoDccp) != 0) {
+            if (is4) {
+                res += srvVrf.dccp4.countClients(ifc, prt, prf);
+            } else {
+                res += srvVrf.dccp6.countClients(ifc, prt, prf);
+            }
+        }
+        if ((srvProto & protoSctp) != 0) {
+            if (is4) {
+                res += srvVrf.sctp4.countClients(ifc, prt, prf);
+            } else {
+                res += srvVrf.sctp6.countClients(ifc, prt, prf);
+            }
+        }
+        return res;
+    }
+
     private boolean srvCheckAccept(addrIP adr) {
         if (srvAccRat > 0) {
             if ((bits.getTime() - srvAccLst) > srvAccInt) {
@@ -965,6 +1019,14 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             if (srvCheckAccept(conn.iface, conn.portLoc, conn.peerAddr.isIPv4(), conn.peerAddr) > srvPerLim) {
                 if (srvLogDrop) {
                     logger.info("peer limit dropped " + conn);
+                }
+                return true;
+            }
+        }
+        if (srvNetLim > 0) {
+            if (srvCheckAccept(conn.iface, conn.portLoc, conn.peerAddr) > srvNetLim) {
+                if (srvLogDrop) {
+                    logger.info("subnet limit dropped " + conn);
                 }
                 return true;
             }
@@ -1082,6 +1144,8 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         l.add("2 .    <num>                number of connections");
         l.add("1 2  access-peer            per client session limit");
         l.add("2 .    <num>                number of connections");
+        l.add("1 2  access-subnet          per subnet session limit");
+        l.add("2 .    <num>                number of connections");
         l.add("1 .  access-log             log dropped attemps");
         l.add("1 2  protocol               set lower protocols to use");
         l.add("2 2,.  ipv4                 use ip4 network");
@@ -1192,6 +1256,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         cmds.cfgLine(l, !srvLogDrop, beg, "access-log", "");
         l.add(beg + "access-total " + srvTotLim);
         l.add(beg + "access-peer " + srvPerLim);
+        l.add(beg + "access-subnet " + srvNetLim);
         l.add(beg + "port " + srvPort);
         l.add(beg + "protocol " + proto2string(srvProto));
         srvShRun(beg, l);
@@ -1280,6 +1345,10 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         }
         if (a.equals("access-peer")) {
             srvPerLim = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("access-subnet")) {
+            srvNetLim = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("access-class")) {
@@ -1430,6 +1499,10 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             }
             if (a.equals("access-peer")) {
                 srvPerLim = 0;
+                return false;
+            }
+            if (a.equals("access-subnet")) {
+                srvNetLim = 0;
                 return false;
             }
             if (a.equals("access-class")) {
