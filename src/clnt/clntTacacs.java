@@ -37,6 +37,10 @@ public class clntTacacs {
 
     private packTacacs tacRx;
 
+    private String tacUsr;
+
+    private String tacPwd;
+
     /**
      * do pap transaction
      *
@@ -45,6 +49,8 @@ public class clntTacacs {
      * @return false on completion, true on error
      */
     public boolean doPap(String user, String pass) {
+        tacUsr = user;
+        tacPwd = pass;
         tacTx = new packTacacs();
         tacTx.auty = packTacacs.autyAscii;
         tacTx.usr = user;
@@ -62,6 +68,8 @@ public class clntTacacs {
      * @return false on completion, true on error
      */
     public boolean doChap(String user, int id, byte[] chal, byte[] resp) {
+        tacUsr = user;
+        tacPwd = "";
         tacTx = new packTacacs();
         tacTx.auty = packTacacs.autyChap;
         tacTx.usr = user;
@@ -166,12 +174,12 @@ public class clntTacacs {
      */
     public authResult checkAuthenResult(authGeneric par, int priv) {
         if (tacRx == null) {
-            return new authResult(par, authResult.authServerError, tacTx.usr);
+            return new authResult(par, authResult.authServerError, tacUsr, tacPwd);
         }
         if (tacRx.act != packTacacs.sttPass) {
-            return new authResult(par, authResult.authBadUserPass, tacTx.usr);
+            return new authResult(par, authResult.authBadUserPass, tacUsr, tacPwd);
         }
-        authResult res = new authResult(par, authResult.authSuccessful, tacTx.usr);
+        authResult res = new authResult(par, authResult.authSuccessful, tacUsr, tacPwd);
         res.privilege = priv;
         return res;
     }
@@ -190,15 +198,15 @@ public class clntTacacs {
         tacTx.ses = bits.randomD();
         tacTx.secret = secret;
         if (server == null) {
-            return new authResult(par, authResult.authServerError, tacTx.usr);
+            return new authResult(par, authResult.authServerError, usr, cmd);
         }
         addrIP trg = userTerminal.justResolv(server, 0);
         if (trg == null) {
-            return new authResult(par, authResult.authServerError, tacTx.usr);
+            return new authResult(par, authResult.authServerError, usr, cmd);
         }
         pipeSide conn = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servTacacs().srvPort(), "tacacs");
         if (conn == null) {
-            return new authResult(par, authResult.authServerError, tacTx.usr);
+            return new authResult(par, authResult.authServerError, usr, cmd);
         }
         tacTx.pipe = conn;
         tacTx.act = packTacacs.metNotset;
@@ -232,19 +240,19 @@ public class clntTacacs {
         tacRx.secret = secret;
         if (tacRx.packRecv()) {
             conn.setClose();
-            return new authResult(par, authResult.authServerError, tacTx.usr);
+            return new authResult(par, authResult.authServerError, usr, cmd);
         }
         conn.setClose();
         if (tacRx.parseAuthorRep()) {
-            return new authResult(par, authResult.authServerError, tacTx.usr);
+            return new authResult(par, authResult.authServerError, usr, cmd);
         }
         if (debugger.clntTacacsTraf) {
             logger.debug("rx " + tacRx.dump());
         }
         if ((tacRx.srv == packTacacs.staPassAdd) || (tacRx.srv == packTacacs.staPassRep)) {
-            return new authResult(par, authResult.authSuccessful, tacTx.usr);
+            return new authResult(par, authResult.authSuccessful, usr, cmd);
         } else {
-            return new authResult(par, authResult.authBadUserPass, tacTx.usr);
+            return new authResult(par, authResult.authBadUserPass, usr, cmd);
         }
     }
 

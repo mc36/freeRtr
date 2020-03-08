@@ -28,11 +28,11 @@ public class authTacacs extends authGeneric {
      * default privilege
      */
     public int privilege = 15;
-    
+
     public String getCfgName() {
         return "tacacs";
     }
-    
+
     public List<String> getShRun(String beg) {
         List<String> l = new ArrayList<String>();
         cmds.cfgLine(l, secret == null, beg, "secret", authLocal.passwdEncode(secret));
@@ -40,7 +40,7 @@ public class authTacacs extends authGeneric {
         l.add(beg + "privilege " + privilege);
         return l;
     }
-    
+
     public void getHelp(userHelping l) {
         l.add("1 2  server              specify server");
         l.add("2 .    <name>            name of server");
@@ -49,7 +49,7 @@ public class authTacacs extends authGeneric {
         l.add("1 2  privilege           set default privilege");
         l.add("2 .    <num>             privilege of terminal");
     }
-    
+
     public boolean fromString(cmds cmd) {
         String s = cmd.word();
         if (s.equals("server")) {
@@ -78,36 +78,36 @@ public class authTacacs extends authGeneric {
         }
         return true;
     }
-    
+
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {
         clntTacacs tac = new clntTacacs();
         tac.secret = secret;
         tac.server = server;
         if (tac.doChap(user, id, chal, resp)) {
-            return new authResult(this, authResult.authServerError, user);
+            return new authResult(this, authResult.authServerError, user, "");
         }
         return tac.checkAuthenResult(this, privilege);
     }
-    
+
     public authResult authUserApop(String cookie, String user, String resp) {
-        return new authResult(this, authResult.authServerError, user);
+        return new authResult(this, authResult.authServerError, user, "");
     }
-    
+
     public authResult authUserCommand(String user, String cmd) {
         clntTacacs tac = new clntTacacs();
         tac.secret = secret;
         tac.server = server;
         return tac.doCmd(this, user, cmd);
     }
-    
+
     public authResult authUserPass(String user, String pass) {
         clntTacacs tac = new clntTacacs();
         tac.secret = secret;
         tac.server = server;
         if (tac.doPap(user, pass)) {
-            return new authResult(this, authResult.authServerError, user);
+            return new authResult(this, authResult.authServerError, user, pass);
         }
         return tac.checkAuthenResult(this, privilege);
     }
-    
+
 }

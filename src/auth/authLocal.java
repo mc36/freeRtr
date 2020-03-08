@@ -307,10 +307,11 @@ public class authLocal extends authGeneric {
      *
      * @param ntry entry
      * @param user username
+     * @param pass password
      * @return result
      */
-    private authResult createPassed(authLocalEntry ntry, String user) {
-        authResult res = new authResult(this, authResult.authSuccessful, user);
+    private authResult createPassed(authLocalEntry ntry, String user, String pass) {
+        authResult res = new authResult(this, authResult.authSuccessful, user, pass);
         res.autoCommand = ntry.autoCommand;
         res.autoHangup = ntry.autoHangup;
         res.privilege = ntry.privilege;
@@ -334,39 +335,39 @@ public class authLocal extends authGeneric {
             ntry = users.find(ntry);
         }
         if (ntry == null) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, pass);
         }
         if (ntry.countdown == 0) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, pass);
         }
         if (ntry.countdown >= 0) {
             ntry.countdown--;
         }
         if (ntry.anyPass) {
-            return createPassed(ntry, user);
+            return createPassed(ntry, user, pass);
         }
         if (ntry.otpseed != null) {
             List<String> lst = ntry.getOtpPass();
             for (int i = 0; i < lst.size(); i++) {
                 if (lst.get(i).equals(pass)) {
-                    return createPassed(ntry, user);
+                    return createPassed(ntry, user, pass);
                 }
             }
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, pass);
         }
         if (ntry.secret != null) {
             if (authLocal.secretTest(ntry.secret, pass)) {
-                return new authResult(this, authResult.authBadUserPass, user);
+                return new authResult(this, authResult.authBadUserPass, user, pass);
             }
-            return createPassed(ntry, user);
+            return createPassed(ntry, user, pass);
         }
         if (ntry.password != null) {
             if (!ntry.password.equals(pass)) {
-                return new authResult(this, authResult.authBadUserPass, user);
+                return new authResult(this, authResult.authBadUserPass, user, pass);
             }
-            return createPassed(ntry, user);
+            return createPassed(ntry, user, pass);
         }
-        return new authResult(this, authResult.authBadUserPass, user);
+        return new authResult(this, authResult.authBadUserPass, user, pass);
     }
 
     /**
@@ -380,10 +381,10 @@ public class authLocal extends authGeneric {
         cmd = cmd.trim().toLowerCase();
         for (int i = 0; i < commands.size(); i++) {
             if (cmd.matches(commands.get(i))) {
-                return new authResult(this, authResult.authSuccessful, user);
+                return new authResult(this, authResult.authSuccessful, user, cmd);
             }
         }
-        return new authResult(this, authResult.authBadUserPass, user);
+        return new authResult(this, authResult.authBadUserPass, user, cmd);
     }
 
     /**
@@ -405,25 +406,25 @@ public class authLocal extends authGeneric {
             ntry = users.find(ntry);
         }
         if (ntry == null) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, "");
         }
         if (ntry.countdown == 0) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, "");
         }
         if (ntry.countdown >= 0) {
             ntry.countdown--;
         }
         if (ntry.anyPass) {
-            return createPassed(ntry, user);
+            return createPassed(ntry, user, "");
         }
         if (ntry.password == null) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, "");
         }
         byte[] buf = autherChap.calcAuthHash(id, ntry.password, chal);
         if (bits.byteComp(buf, 0, resp, 0, buf.length) != 0) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, "");
         }
-        return createPassed(ntry, user);
+        return createPassed(ntry, user, "");
     }
 
     /**
@@ -444,25 +445,25 @@ public class authLocal extends authGeneric {
             ntry = users.find(ntry);
         }
         if (ntry == null) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, "");
         }
         if (ntry.countdown == 0) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, "");
         }
         if (ntry.countdown >= 0) {
             ntry.countdown--;
         }
         if (ntry.anyPass) {
-            return createPassed(ntry, user);
+            return createPassed(ntry, user, "");
         }
         if (ntry.password == null) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, "");
         }
         if (servPop3.calcApop(cookie, ntry.password).compareTo(
                 resp.toLowerCase()) != 0) {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, "");
         }
-        return createPassed(ntry, user);
+        return createPassed(ntry, user, "");
     }
 
 }

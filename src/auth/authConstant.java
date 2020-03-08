@@ -25,9 +25,9 @@ public class authConstant extends authGeneric {
 
     public authResult authUserPass(String user, String pass) {
         if (res) {
-            return new authResult(this, authResult.authSuccessful, user);
+            return new authResult(this, authResult.authSuccessful, user, pass);
         } else {
-            return new authResult(this, authResult.authBadUserPass, user);
+            return new authResult(this, authResult.authBadUserPass, user, pass);
         }
     }
 

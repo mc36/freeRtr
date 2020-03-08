@@ -87,7 +87,7 @@ public class authList extends authGeneric {
             }
             return res;
         }
-        return new authResult(this, authResult.authServerError, user);
+        return new authResult(this, authResult.authServerError, user, pass);
     }
 
     public authResult authUserCommand(String user, String cmd) {
@@ -105,7 +105,7 @@ public class authList extends authGeneric {
             }
             return res;
         }
-        return new authResult(this, authResult.authServerError, user);
+        return new authResult(this, authResult.authServerError, user, cmd);
     }
 
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {
@@ -123,7 +123,7 @@ public class authList extends authGeneric {
             }
             return res;
         }
-        return new authResult(this, authResult.authServerError, user);
+        return new authResult(this, authResult.authServerError, user, "");
     }
 
     public authResult authUserApop(String cookie, String user, String resp) {
@@ -141,7 +141,7 @@ public class authList extends authGeneric {
             }
             return res;
         }
-        return new authResult(this, authResult.authServerError, user);
+        return new authResult(this, authResult.authServerError, user, "");
     }
 
 }

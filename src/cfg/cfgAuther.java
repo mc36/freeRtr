@@ -85,7 +85,8 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         "aaa tacacs .*! no secret",
         "aaa tacacs .*! privilege 15",
         "aaa .*! no log-failure",
-        "aaa .*! no log-success"
+        "aaa .*! no log-success",
+        "aaa .*! no log-password"
     };
 
     /**
@@ -200,6 +201,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         cmds.cfgLine(l, !aut.logFail, cmds.tabulator, "log-failure", "");
         cmds.cfgLine(l, !aut.logErr, cmds.tabulator, "log-error", "");
         cmds.cfgLine(l, !aut.logOk, cmds.tabulator, "log-success", "");
+        cmds.cfgLine(l, !aut.logPass, cmds.tabulator, "log-password", "");
         l.addAll(aut.getShRun(cmds.tabulator));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
@@ -214,6 +216,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         l.add("1 .    log-failure         log failure");
         l.add("1 .    log-success         log success");
         l.add("1 .    log-error           log error");
+        l.add("1 .    log-password        log password");
         authGeneric aut = getAuther();
         if (aut != null) {
             aut.getHelp(l);
@@ -244,6 +247,10 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         }
         if (a.equals("log-success")) {
             aut.logOk = !neg;
+            return;
+        }
+        if (a.equals("log-password")) {
+            aut.logPass = !neg;
             return;
         }
         b = aut.fromString(cmd);

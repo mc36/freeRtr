@@ -84,17 +84,17 @@ public class authRadius extends authGeneric {
         rad.secret = secret;
         rad.server = server;
         if (rad.doChap(user, id, chal, resp)) {
-            return new authResult(this, authResult.authServerError, user);
+            return new authResult(this, authResult.authServerError, user, "");
         }
         return rad.checkResult(this, privilege);
     }
 
     public authResult authUserApop(String cookie, String user, String resp) {
-        return new authResult(this, authResult.authServerError, user);
+        return new authResult(this, authResult.authServerError, user, "");
     }
 
     public authResult authUserCommand(String user, String cmd) {
-        return new authResult(this, authResult.authServerError, user);
+        return new authResult(this, authResult.authServerError, user, cmd);
     }
 
     public authResult authUserPass(String user, String pass) {
@@ -102,7 +102,7 @@ public class authRadius extends authGeneric {
         rad.secret = secret;
         rad.server = server;
         if (rad.doPap(user, pass)) {
-            return new authResult(this, authResult.authServerError, user);
+            return new authResult(this, authResult.authServerError, user, pass);
         }
         return rad.checkResult(this, privilege);
     }

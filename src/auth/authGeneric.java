@@ -33,6 +33,11 @@ public abstract class authGeneric implements Comparator<authGeneric> {
     public boolean logOk = false;
 
     /**
+     * log password
+     */
+    public boolean logPass = false;
+
+    /**
      * authenticate user by username/password
      *
      * @param user username

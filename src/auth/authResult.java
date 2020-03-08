@@ -66,11 +66,15 @@ public class authResult {
      * @param par authenticator
      * @param res result
      * @param nam username
+     * @param pwd password
      */
-    public authResult(authGeneric par, int res, String nam) {
+    public authResult(authGeneric par, int res, String nam, String pwd) {
         result = res;
         user = nam;
         lower = par;
+        if (lower.logPass) {
+            nam = nam + "/" + pwd;
+        }
         if ((lower.logErr) && (res == authServerError)) {
             logger.info("error while authenticating " + nam);
         }

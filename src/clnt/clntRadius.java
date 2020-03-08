@@ -33,6 +33,8 @@ public class clntRadius {
 
     private String radUsr;
 
+    private String radPwd;
+
     private packRadius radTx;
 
     private packRadius radRx;
@@ -46,6 +48,7 @@ public class clntRadius {
      */
     public boolean doPap(String user, String pass) {
         radUsr = user;
+        radPwd = pass;
         radTx = new packRadius();
         radTx.valUsrPwd = pass;
         return doXchg();
@@ -62,6 +65,7 @@ public class clntRadius {
      */
     public boolean doChap(String user, int id, byte[] chal, byte[] resp) {
         radUsr = user;
+        radPwd = "";
         radTx = new packRadius();
         radTx.valChpIdn = id;
         radTx.valChpChl = chal;
@@ -137,15 +141,15 @@ public class clntRadius {
      */
     public authResult checkResult(authGeneric par, int priv) {
         if (radTx == null) {
-            return new authResult(par, authResult.authServerError, radUsr);
+            return new authResult(par, authResult.authServerError, radUsr, radPwd);
         }
         if (radRx == null) {
-            return new authResult(par, authResult.authServerError, radUsr);
+            return new authResult(par, authResult.authServerError, radUsr, radPwd);
         }
         if (radRx.code != packRadius.typeAccAcc) {
-            return new authResult(par, authResult.authBadUserPass, radUsr);
+            return new authResult(par, authResult.authBadUserPass, radUsr, radPwd);
         }
-        authResult res = new authResult(par, authResult.authSuccessful, radUsr);
+        authResult res = new authResult(par, authResult.authSuccessful, radUsr, radPwd);
         res.privilege = priv;
         return res;
     }
