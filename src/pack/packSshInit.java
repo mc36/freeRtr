@@ -100,7 +100,7 @@ public class packSshInit {
     /**
      * hash algorithms
      */
-    public final static String[] hasherAlgs = {"hmac-sha2-256", "hmac-sha1", "hmac-md5"};
+    public final static String[] hasherAlgs = {"hmac-sha2-512", "hmac-sha2-256", "hmac-sha1", "hmac-md5"};
 
     /**
      * compression algorithms
@@ -139,12 +139,15 @@ public class packSshInit {
         cryHashGeneric h;
         switch (lst[0]) {
             case 0:
-                h = new cryHashSha2256();
+                h = new cryHashSha2512();
                 break;
             case 1:
-                h = new cryHashSha1();
+                h = new cryHashSha2256();
                 break;
             case 2:
+                h = new cryHashSha1();
+                break;
+            case 3:
                 h = new cryHashMd5();
                 break;
             default:
