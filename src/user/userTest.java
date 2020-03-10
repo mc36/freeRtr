@@ -25,7 +25,9 @@ import cry.cryEncrCBCblowfish;
 import cry.cryEncrCBCdes;
 import cry.cryEncrCBCdes3;
 import cry.cryEncrCBCrc2;
+import cry.cryEncrChacha20;
 import cry.cryEncrGeneric;
+import cry.cryEncrRc4;
 import cry.cryHashHec8;
 import cry.cryHashFcs16;
 import cry.cryHashCrc16;
@@ -421,6 +423,8 @@ public class userTest {
             doTestEncr(new cryEncrCBCdes3());
             doTestEncr(new cryEncrCBCdes());
             doTestEncr(new cryEncrCBCrc2());
+            doTestEncr(new cryEncrRc4());
+            doTestEncr(new cryEncrChacha20());
             doTestHash(new cryHashHec8());
             doTestHash(new cryHashFcs16());
             doTestHash(new cryHashCrc16());
