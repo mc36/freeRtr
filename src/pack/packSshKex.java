@@ -7,7 +7,7 @@ import java.util.List;
 import util.bits;
 import util.debugger;
 import util.logger;
-import cry.cryHashSha1;
+import cry.cryHashGeneric;
 import cry.cryKeyDH;
 import cry.cryKeyGeneric;
 
@@ -37,6 +37,11 @@ public class packSshKex {
      * diffie hellman
      */
     public cryKeyDH difHel;
+    
+    /**
+     * hash to use
+     */
+    public cryHashGeneric hasher;
 
     /**
      * server key
@@ -107,18 +112,17 @@ public class packSshKex {
     }
 
     private byte[] hashKey(int letter) {
-        cryHashSha1 h = new cryHashSha1();
-        h.init();
+        hasher.init();
         for (int i = 0; i < hash1.size(); i++) {
-            h.update(hash1.get(i));
+            hasher.update(hash1.get(i));
         }
-        h.update(hashVal);
-        h.update(letter);
-        h.update(hashVal);
-        byte[] res = new byte[h.getHashSize() * 4];
+        hasher.update(hashVal);
+        hasher.update(letter);
+        hasher.update(hashVal);
+        byte[] res = new byte[hasher.getHashSize() * 4];
         int p = 0;
         for (;;) {
-            byte[] buf = h.finish();
+            byte[] buf = hasher.finish();
             for (int i = 0; i < buf.length; i++) {
                 res[p] = buf[i];
                 p++;
@@ -126,13 +130,13 @@ public class packSshKex {
             if (p >= res.length) {
                 break;
             }
-            h.init();
+            hasher.init();
             for (int i = 0; i < hash1.size(); i++) {
-                h.update(hash1.get(i));
+                hasher.update(hash1.get(i));
             }
-            h.update(hashVal);
+            hasher.update(hashVal);
             for (int i = 0; i < buf.length; i++) {
-                h.update(buf[i]);
+                hasher.update(buf[i]);
             }
         }
         return res;
@@ -145,12 +149,11 @@ public class packSshKex {
         hashBig(difHel.clntPub);
         hashBig(difHel.servPub);
         hashBig(difHel.common);
-        cryHashSha1 h = new cryHashSha1();
-        h.init();
+        hasher.init();
         for (int i = 0; i < hash1.size(); i++) {
-            h.update(hash1.get(i));
+            hasher.update(hash1.get(i));
         }
-        hashVal = h.finish();
+        hashVal = hasher.finish();
         hash1.clear();
         hash2.clear();
         hashBig(difHel.common);

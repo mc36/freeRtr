@@ -344,6 +344,7 @@ public class secSsh implements Runnable {
             return;
         }
         pg.difHel = pi.getDHgroup();
+        pg.hasher = pi.getDHhash();
         cryKeyGeneric key = pi.getKeySigner(keydsa, keyrsa);
         pg.cert = key.sshWriter();
         pg.hashInt(pg.cert.length);
@@ -475,6 +476,7 @@ public class secSsh implements Runnable {
             return;
         }
         pg.difHel = pi.getDHgroup();
+        pg.hasher = pi.getDHhash();
         if (pg.difHel == null) {
             pg.gexReqFill();
             pg.gexReqCreate();

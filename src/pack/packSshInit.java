@@ -16,6 +16,7 @@ import cry.cryHashHmac;
 import cry.cryHashMd5;
 import cry.cryHashSha1;
 import cry.cryHashSha2256;
+import cry.cryHashSha2512;
 import cry.cryKeyDH;
 import cry.cryKeyDSA;
 import cry.cryKeyGeneric;
@@ -109,7 +110,7 @@ public class packSshInit {
     /**
      * kex algorithms
      */
-    public final static String[] keyXchgAlgs = {"diffie-hellman-group-exchange-sha1", "diffie-hellman-group14-sha1", "diffie-hellman-group1-sha1"};
+    public final static String[] keyXchgAlgs = {"diffie-hellman-group-exchange-sha256", "diffie-hellman-group16-sha512", "diffie-hellman-group18-sha512", "diffie-hellman-group14-sha256", "diffie-hellman-group-exchange-sha1", "diffie-hellman-group14-sha1", "diffie-hellman-group1-sha1"};
 
     /**
      * key algorithms
@@ -443,9 +444,46 @@ public class packSshInit {
             case 0:
                 return null;
             case 1:
-                return cryKeyDH.getGroup(14);
+                return cryKeyDH.getGroup(16);
             case 2:
+                return cryKeyDH.getGroup(18);
+            case 3:
+                return cryKeyDH.getGroup(14);
+            case 4:
+                return null;
+            case 5:
+                return cryKeyDH.getGroup(14);
+            case 6:
                 return cryKeyDH.getGroup(1);
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * get chonsen dh hash
+     *
+     * @return dh hash
+     */
+    public cryHashGeneric getDHhash() {
+        if (kexAlgo.length < 1) {
+            return null;
+        }
+        switch (kexAlgo[0]) {
+            case 0:
+                return new cryHashSha2256();
+            case 1:
+                return new cryHashSha2512();
+            case 2:
+                return new cryHashSha2512();
+            case 3:
+                return new cryHashSha2256();
+            case 4:
+                return new cryHashSha1();
+            case 5:
+                return new cryHashSha1();
+            case 6:
+                return new cryHashSha1();
             default:
                 return null;
         }
