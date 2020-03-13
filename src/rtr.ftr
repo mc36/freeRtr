@@ -515,6 +515,10 @@ qc pass: swipe with sha1
 qc pass: swipe with sha256
 qc pass: swipe with sha512
 qc pass: tls test
+qc pass: wireguard over ipv4
+qc pass: wireguard over ipv6
+qc pass: wireguard over wireguard
+qc pass: wireguard over loopback
 qc pass: empty demo network
 qc pass: addressed demo network
 qc pass: interop1: ebgp

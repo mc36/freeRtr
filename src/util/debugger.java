@@ -589,6 +589,11 @@ public class debugger {
     public static boolean clntPptpTraf = false;
 
     /**
+     * clntWireguard traffic
+     */
+    public static boolean clntWireguardTraf = false;
+
+    /**
      * clntGtp traffic
      */
     public static boolean clntGtpTraf = false;
@@ -1006,6 +1011,7 @@ public class debugger {
         h.add("3 .        l2tp2             layer 2 tunneling protocol v2");
         h.add("3 .        l2tp3             layer 2 tunneling protocol v3");
         h.add("3 .        pptp              point to point tunneling protocol");
+        h.add("3 .        wireguard         wireguard protocol");
         h.add("3 .        gtp               gprs tunneling protocol");
         h.add("3 .        pwe               pseudowire over mpls protocol");
         h.add("3 .        mplste            mpls traffeng tunnel");
@@ -1636,6 +1642,10 @@ public class debugger {
             }
             if (s.equals("pptp")) {
                 clntPptpTraf = v;
+                return false;
+            }
+            if (s.equals("wireguard")) {
+                clntWireguardTraf = v;
                 return false;
             }
             if (s.equals("gtp")) {

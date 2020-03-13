@@ -38,6 +38,7 @@ import clnt.clntSlaac;
 import clnt.clntMplsSr;
 import clnt.clntSrExt;
 import clnt.clntUdpGre;
+import clnt.clntWireguard;
 import ifc.ifcAtmDxi;
 import ifc.ifcAtmSar;
 import ifc.ifcBridgeIfc;
@@ -698,6 +699,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntOpenvpn tunOpenvpn;
 
     /**
+     * wireguard tunnel handler
+     */
+    public clntWireguard tunWireguard;
+
+    /**
      * satp tunnel handler
      */
     public clntSatp tunSatp;
@@ -1167,6 +1173,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * openvpn tunnel interface
          */
         openvpn,
+        /**
+         * wireguard tunnel interface
+         */
+        wireguard,
         /**
          * satp tunnel interface
          */
@@ -1820,6 +1830,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "swipe";
             case openvpn:
                 return "openvpn";
+            case wireguard:
+                return "wireguard";
             case satp:
                 return "satp";
             case inlsp:
@@ -1954,6 +1966,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("openvpn")) {
             return tunnelType.openvpn;
+        }
+        if (s.equals("wireguard")) {
+            return tunnelType.wireguard;
         }
         if (s.equals("satp")) {
             return tunnelType.satp;
@@ -3103,6 +3118,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunOpenvpn.workStop();
             tunOpenvpn = null;
         }
+        if (tunWireguard != null) {
+            tunWireguard.workStop();
+            tunWireguard = null;
+        }
         if (tunSatp != null) {
             tunSatp.workStop();
             tunSatp = null;
@@ -3420,6 +3439,23 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunOpenvpn.workStart();
                 tunOpenvpn.setUpper(ethtyp);
                 lower = tunOpenvpn;
+                break;
+            case wireguard:
+                if (tunPrt == null) {
+                    return true;
+                }
+                tunWireguard = new clntWireguard();
+                tunWireguard.preshared = tunPrt.preshared;
+                tunWireguard.sendingTOS = tunTOS;
+                tunWireguard.sendingTTL = tunTTL;
+                tunWireguard.vrf = tunVrf;
+                tunWireguard.srcIfc = tunSrc;
+                tunWireguard.target = "" + tunTrg;
+                tunWireguard.srcPrt = tunKey;
+                tunWireguard.trgPrt = tunKey;
+                tunWireguard.workStart();
+                tunWireguard.setUpper(ethtyp);
+                lower = tunWireguard;
                 break;
             case satp:
                 if (tunPrt == null) {
@@ -5048,6 +5084,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       mplsudp                   mplsudp encapsulation");
         l.add("3 .       swipe                     swipe encapsulation");
         l.add("3 .       openvpn                   openvpn encapsulation");
+        l.add("3 .       wireguard                 wireguard encapsulation");
         l.add("3 .       satp                      satp encapsulation");
         l.add("3 .       inlsp                     inlsp encapsulation");
         l.add("3 .       skip                      skip encapsulation");

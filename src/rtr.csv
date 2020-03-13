@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.3.10-testing, done by cs@nop.;-;-
--;-;2020-03-10 20:59:01, took 09:10:07 on 1674 cases, 0 failed, 1 traces, 17 retries;-;-
+-;-;freeRouter v20.3.13-testing, done by cs@nop.;-;-
+-;-;2020-03-13 10:07:40, took 08:55:32 on 1678 cases, 0 failed, 0 traces, 11 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -519,6 +519,10 @@ crypt-swipe12.tst;0;swipe with sha1;successfully;finished
 crypt-swipe13.tst;0;swipe with sha256;successfully;finished
 crypt-swipe14.tst;0;swipe with sha512;successfully;finished
 crypt-tls.tst;0;tls test;successfully;finished
+crypt-wireguard01.tst;0;wireguard over ipv4;successfully;finished
+crypt-wireguard02.tst;0;wireguard over ipv6;successfully;finished
+crypt-wireguard03.tst;0;wireguard over wireguard;successfully;finished
+crypt-wireguard04.tst;0;wireguard over loopback;successfully;finished
 demo01.tst;0;empty demo network;successfully;finished
 demo02.tst;0;addressed demo network;successfully;finished
 intop1-bgp01.tst;0;interop1: ebgp;successfully;finished

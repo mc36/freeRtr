@@ -8827,3 +8827,8 @@ qc pass: satp with sha512
 ---------------------------------- 2020-02-11 10:32:45
 qc pass: isis change in tag
 qc pass: isis multi-topology change in tag
+---------------------------------- 2020-03-13 01:12:08
+qc pass: wireguard over ipv4
+qc pass: wireguard over ipv6
+qc pass: wireguard over wireguard
+qc pass: wireguard over loopback

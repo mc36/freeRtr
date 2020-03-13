@@ -28,6 +28,7 @@ import cry.cryEncrCBCrc2;
 import cry.cryEncrChacha20;
 import cry.cryEncrGeneric;
 import cry.cryEncrRc4;
+import cry.cryHashBlake2s;
 import cry.cryHashHec8;
 import cry.cryHashFcs16;
 import cry.cryHashCrc16;
@@ -433,6 +434,7 @@ public class userTest {
             doTestHash(new cryHashMd2());
             doTestHash(new cryHashMd5());
             doTestHash(new cryHashSha1());
+            doTestHash(new cryHashBlake2s(null, 32));
             doTestHash(new cryHashSha2224());
             doTestHash(new cryHashSha2256());
             doTestHash(new cryHashSha2384());
@@ -444,6 +446,7 @@ public class userTest {
             doTestHash(new cryHashHmac(new cryHashMd2(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashMd5(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha1(), new byte[16]));
+            doTestHash(new cryHashHmac(new cryHashBlake2s(null, 32), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha2224(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha2256(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha2384(), new byte[16]));

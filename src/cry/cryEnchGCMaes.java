@@ -7,11 +7,11 @@ import javax.crypto.spec.SecretKeySpec;
 import util.logger;
 
 /**
- * blowfish by counterpane
+ * advanced encryption standard (rijndael)
  *
  * @author matecsaba
  */
-public class cryEncrCCMblowfish extends cryEncrGeneric {
+public class cryEnchGCMaes extends cryEnchGeneric {
 
     private Cipher crypter;
 
@@ -23,7 +23,7 @@ public class cryEncrCCMblowfish extends cryEncrGeneric {
      * @param encrypt mode
      */
     public void init(byte[] key, byte[] iv, boolean encrypt) {
-        final String name = "BLOWFISH";
+        final String name = "AES";
         int mode;
         if (encrypt) {
             mode = Cipher.ENCRYPT_MODE;
@@ -33,7 +33,7 @@ public class cryEncrCCMblowfish extends cryEncrGeneric {
         try {
             SecretKeySpec keyspec = new SecretKeySpec(key, name);
             IvParameterSpec ivspec = new IvParameterSpec(iv, 0, iv.length);
-            crypter = Cipher.getInstance(name + "/CCM/NoPadding");
+            crypter = Cipher.getInstance(name + "/GCM/NoPadding");
             crypter.init(mode, keyspec, ivspec);
         } catch (Exception e) {
             logger.exception(e);
@@ -46,7 +46,7 @@ public class cryEncrCCMblowfish extends cryEncrGeneric {
      * @return name
      */
     public String getName() {
-        return "blowfish";
+        return "aes";
     }
 
     /**
@@ -55,7 +55,7 @@ public class cryEncrCCMblowfish extends cryEncrGeneric {
      * @return size
      */
     public int getBlockSize() {
-        return 8;
+        return 16;
     }
 
     /**
@@ -64,7 +64,27 @@ public class cryEncrCCMblowfish extends cryEncrGeneric {
      * @return size
      */
     public int getKeySize() {
-        return 16;
+        return 32;
+    }
+
+    /**
+     * read iv of key
+     *
+     * @return size in bytes
+     */
+    public int getIVsize() {
+        return 12;
+    }
+
+    /**
+     * authenticate buffer
+     *
+     * @param buf buffer to use
+     * @param ofs offset in buffer
+     * @param siz bytes to add
+     */
+    public void authAdd(byte[] buf, int ofs, int siz) {
+        crypter.updateAAD(buf, ofs, siz);
     }
 
     /**
@@ -76,7 +96,11 @@ public class cryEncrCCMblowfish extends cryEncrGeneric {
      * @return computed block
      */
     public byte[] compute(byte[] buf, int ofs, int siz) {
-        return crypter.update(buf, ofs, siz);
+        try {
+            return crypter.doFinal(buf, ofs, siz);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

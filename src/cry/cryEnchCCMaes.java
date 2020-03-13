@@ -11,7 +11,7 @@ import util.logger;
  *
  * @author matecsaba
  */
-public class cryEncrGCMaes extends cryEncrGeneric {
+public class cryEnchCCMaes extends cryEnchGeneric {
 
     private Cipher crypter;
 
@@ -33,7 +33,7 @@ public class cryEncrGCMaes extends cryEncrGeneric {
         try {
             SecretKeySpec keyspec = new SecretKeySpec(key, name);
             IvParameterSpec ivspec = new IvParameterSpec(iv, 0, iv.length);
-            crypter = Cipher.getInstance(name + "/GCM/NoPadding");
+            crypter = Cipher.getInstance(name + "/CCM/NoPadding");
             crypter.init(mode, keyspec, ivspec);
         } catch (Exception e) {
             logger.exception(e);
@@ -68,6 +68,26 @@ public class cryEncrGCMaes extends cryEncrGeneric {
     }
 
     /**
+     * read iv of key
+     *
+     * @return size in bytes
+     */
+    public int getIVsize() {
+        return 12;
+    }
+
+    /**
+     * authenticate buffer
+     *
+     * @param buf buffer to use
+     * @param ofs offset in buffer
+     * @param siz bytes to add
+     */
+    public void authAdd(byte[] buf, int ofs, int siz) {
+        crypter.updateAAD(buf, ofs, siz);
+    }
+
+    /**
      * compute block
      *
      * @param buf buffer
@@ -76,7 +96,11 @@ public class cryEncrGCMaes extends cryEncrGeneric {
      * @return computed block
      */
     public byte[] compute(byte[] buf, int ofs, int siz) {
-        return crypter.update(buf, ofs, siz);
+        try {
+            return crypter.doFinal(buf, ofs, siz);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
