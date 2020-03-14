@@ -720,7 +720,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         seqRx = 0;
         seqTx = 0;
         if (debugger.clntWireguardTraf) {
-            logger.debug("keys as " + r + " ri=" + idxRx + " ti=" + idxTx + " rk=" + bits.byteDump(keyRx, 0, -1) + " tk=" + bits.byteDump(keyTx, 0, -1));
+            logger.debug("keys r=" + r + " ri=" + idxRx + " ti=" + idxTx + " rk=" + bits.byteDump(keyRx, 0, -1) + " tk=" + bits.byteDump(keyTx, 0, -1));
         }
     }
 
