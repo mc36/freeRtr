@@ -79,6 +79,7 @@ import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servP4lang;
+import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
 import serv.servVoice;
@@ -604,6 +605,7 @@ public class cfgInit implements Runnable {
         servDiscard.defaultF = createFilter(servDiscard.defaultL, srvdefsF);
         servDns.defaultF = createFilter(servDns.defaultL, srvdefsF);
         servNetflow.defaultF = createFilter(servNetflow.defaultL, srvdefsF);
+        servUdpFwd.defaultF = createFilter(servUdpFwd.defaultL, srvdefsF);
         servUpnpFwd.defaultF = createFilter(servUpnpFwd.defaultL, srvdefsF);
         servUpnpHub.defaultF = createFilter(servUpnpHub.defaultL, srvdefsF);
         servEchoP.defaultF = createFilter(servEchoP.defaultL, srvdefsF);

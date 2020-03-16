@@ -895,6 +895,13 @@ server telnet tel
  vrf v1
  exit
 !
+server udptn ut
+ port 23
+ no exec authorization
+ no login authentication
+ vrf v1
+ exit
+!
 server rfb vnc
  no exec authorization
  no login authentication

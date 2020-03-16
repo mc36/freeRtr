@@ -115,6 +115,7 @@ import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servP4lang;
+import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
 import serv.servVoice;
@@ -604,6 +605,8 @@ public class userConfig {
         l.add("2  3    chargen                      configure a chargen server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    netflow                      configure an netflow server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    udpfwd                       configure an udp forwarder server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    upnpfwd                      configure an upnp forwarder server");
         l.add("3  .      <name>                     name of server");
@@ -1123,6 +1126,10 @@ public class userConfig {
             }
             if (a.equals("netflow")) {
                 daemonMake(new servNetflow(), cfgAll.dmnNetflow);
+                return;
+            }
+            if (a.equals("udpfwd")) {
+                daemonMake(new servUdpFwd(), cfgAll.dmnUdpFwd);
                 return;
             }
             if (a.equals("upnpfwd")) {
@@ -1892,6 +1899,10 @@ public class userConfig {
             }
             if (a.equals("netflow")) {
                 daemonErase(new servNetflow(), cfgAll.dmnNetflow);
+                return;
+            }
+            if (a.equals("udpfwd")) {
+                daemonErase(new servUdpFwd(), cfgAll.dmnUdpFwd);
                 return;
             }
             if (a.equals("upnpfwd")) {

@@ -78,6 +78,7 @@ import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servP4lang;
+import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
 import serv.servVoice;
@@ -322,6 +323,11 @@ public class cfgAll {
      * netflow daemons
      */
     public static servGenList<servNetflow> dmnNetflow = new servGenList<servNetflow>();
+
+    /**
+     * udpfwd daemons
+     */
+    public static servGenList<servUdpFwd> dmnUdpFwd = new servGenList<servUdpFwd>();
 
     /**
      * upnpfwd daemons
@@ -3078,6 +3084,7 @@ public class cfgAll {
         dmnQuote.getShRun(l, filter);
         dmnCharGen.getShRun(l, filter);
         dmnNetflow.getShRun(l, filter);
+        dmnUdpFwd.getShRun(l, filter);
         dmnUpnpFwd.getShRun(l, filter);
         dmnUpnpHub.getShRun(l, filter);
         dmnOpenflow.getShRun(l, filter);
