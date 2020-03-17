@@ -1,7 +1,6 @@
 package serv;
 
 import java.util.Comparator;
-import addr.addrEmpty;
 import addr.addrType;
 import addr.addrIP;
 import addr.addrIPv6;
@@ -22,6 +21,7 @@ import ifc.ifcEthTyp;
 import ifc.ifcNull;
 import ip.ipFwd;
 import ip.ipIfc;
+import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
 import pipe.pipeLine;
@@ -214,7 +214,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if (ifc.type != cfgIfc.ifaceType.sdn) {
+            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle)) {
                 cmd.error("not p4lang interface");
                 return false;
             }
@@ -357,6 +357,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ifc = expIfc.get(i);
             ifc.sentVlan = 0;
+            ifc.sentBundle = 0;
             ifc.sentVrf = 0;
         }
         for (int i = 0; i < expVrf.size(); i++) {
@@ -549,6 +550,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public int sentVrf;
 
     public int sentVlan;
+
+    public int sentBundle;
 
     public servP4langIfc master;
 
@@ -877,6 +880,19 @@ class servP4langConn implements Runnable {
         return null;
     }
 
+    private servP4langIfc findBundl(servP4langIfc ifc) {
+        for (int i = 0; i < lower.expIfc.size(); i++) {
+            servP4langIfc old = lower.expIfc.get(i);
+            if (old.ifc.bundleIfc != null) {
+                continue;
+            }
+            if (old.ifc.bundleHed == ifc.ifc.bundleHed) {
+                return old;
+            }
+        }
+        return null;
+    }
+
     private int getLabel(tabRouteEntry<addrIP> ntry) {
         if (ntry.labelRem == null) {
             return 0;
@@ -1014,6 +1030,30 @@ class servP4langConn implements Runnable {
             ifc.sentVlan = ifc.ifc.vlanNum;
         }
         String a;
+        if ((ifc.ifc.bundleHed != null) && (ifc.ifc.bundleIfc == null)) {
+            List<servP4langIfc> prt = new ArrayList<servP4langIfc>();
+            for (int i = 0; i < lower.expIfc.size(); i++) {
+                servP4langIfc ntry = lower.expIfc.get(i);
+                if (ntry == ifc) {
+                    continue;
+                }
+                if (ntry.ifc.bundleHed != ifc.ifc.bundleHed) {
+                    continue;
+                }
+                prt.add(ntry);
+            }
+            if ((prt.size() > 0) && (prt.size() != ifc.sentBundle)) {
+                if (ifc.sentBundle < 1) {
+                    a = "add";
+                } else {
+                    a = "mod";
+                }
+                for (int i = 0; i < 16; i++) {
+                    lower.sendLine("portbundle_" + a + " " + ifc.id + " " + i + " " + prt.get(i % prt.size()).id);
+                }
+                ifc.sentBundle = prt.size();
+            }
+        }
         if (ifc.sentVrf == 0) {
             a = "add";
         } else {
@@ -1028,7 +1068,12 @@ class servP4langConn implements Runnable {
             return;
         }
         if (ifc.ifc.xconn == null) {
-            servP4langVrf vrf = findVrf(ifc);
+            servP4langVrf vrf;
+            if (ifc.ifc.bundleIfc == null) {
+                vrf = findVrf(ifc);
+            } else {
+                vrf = findVrf(findBundl(ifc));
+            }
             if (vrf == null) {
                 return;
             }
