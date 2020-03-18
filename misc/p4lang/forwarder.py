@@ -65,6 +65,25 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
         ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
+def writeBundleRules(delete, p4info_helper, ingress_sw, port, hsh, trg):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_bundle.tbl_bundle",
+        match_fields={
+            "ig_md.outport_id": port,
+            "ig_md.hash_id": hsh
+        },
+        action_name="ig_ctl.ig_ctl_bundle.act_set_hash",
+        action_params={
+            "port": trg
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
 def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, lab_loc, lab_rem):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
@@ -925,11 +944,21 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         if splt[0] == "portvlan_add":
             writeVlanRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
             continue
-        if splt[0] == "portvrf_mod":
+        if splt[0] == "portvlan_mod":
             writeVlanRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
             continue
-        if splt[0] == "portvrf_del":
+        if splt[0] == "portvlan_del":
             writeVlanRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if splt[0] == "portbundle_add":
+            writeBundleRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+        if splt[0] == "portbundle_mod":
+            writeBundleRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+        if splt[0] == "portbundle_del":
+            writeBundleRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
             continue
 
         if splt[0] == "xconnect_add":

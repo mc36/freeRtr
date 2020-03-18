@@ -19,6 +19,7 @@ control ig_ctl(inout headers hdr,
    IngressControlNexthop() ig_ctl_nexthop;
    IngressControlVlanIn() ig_ctl_vlan_in;  
    IngressControlVlanOut() ig_ctl_vlan_out;
+   IngressControlBundle() ig_ctl_bundle;
    IngressControlVRF() ig_ctl_vrf; 
    IngressControlLLC() ig_ctl_llc;
    IngressControlCoPP() ig_ctl_copp;
@@ -80,6 +81,7 @@ control ig_ctl(inout headers hdr,
          ig_ctl_mpls2.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_nexthop.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_vlan_out.apply(hdr,ig_md,ig_intr_md);
+         ig_ctl_bundle.apply(hdr,ig_md,ig_intr_md);
       }                                                                               
    }
 }                                                                                  

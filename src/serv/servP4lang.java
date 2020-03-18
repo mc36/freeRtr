@@ -222,7 +222,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ntry.id = bits.str2num(cmd.word());
             ntry.ifc = ifc;
             ntry.lower = this;
+            boolean need = ifc.type == cfgIfc.ifaceType.sdn;
             if (ifc.vlanNum > 0) {
+                need = false;
                 for (int i = 0; i < expIfc.size(); i++) {
                     servP4langIfc old = expIfc.get(i);
                     if (old.master != null) {
@@ -237,7 +239,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                     cmd.error("parent not exported");
                     return false;
                 }
-            } else {
+            }
+            if (need) {
                 ntry.setUpper(ifc.ethtyp);
             }
             expIfc.put(ntry);

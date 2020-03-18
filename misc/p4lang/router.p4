@@ -38,6 +38,7 @@
 /*------------------ I N G R E S S - M A T C H - A C T I O N ---------------- */
 #include "include/ig_ctl_vlan_in.p4" 
 #include "include/ig_ctl_vlan_out.p4"
+#include "include/ig_ctl_bundle.p4"
 #include "include/ig_ctl_vrf.p4"
 #include "include/ig_ctl_arp.p4"
 #include "include/ig_ctl_llc.p4"
