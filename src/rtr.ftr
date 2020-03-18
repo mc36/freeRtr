@@ -928,6 +928,8 @@ qc pass: p4lang: evpn/cmac with bgp
 qc pass: p4lang: eompls
 qc pass: p4lang: vpn with bgp over srv6
 qc pass: p4lang: evpn/cmac with bgp over srv6
+qc pass: p4lang: bundle routing
+qc pass: p4lang: bundle mpls
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

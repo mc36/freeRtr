@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.3.13-testing, done by cs@nop.;-;-
--;-;2020-03-13 10:07:40, took 08:55:32 on 1678 cases, 0 failed, 0 traces, 11 retries;-;-
+-;-;freeRouter v20.3.18-testing, done by cs@nop.;-;-
+-;-;2020-03-18 19:24:43, took 09:06:29 on 1680 cases, 0 failed, 0 traces, 14 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -932,6 +932,8 @@ p4lang-rout09.tst;0;p4lang: evpn/cmac with bgp;successfully;finished
 p4lang-rout10.tst;0;p4lang: eompls;successfully;finished
 p4lang-rout11.tst;0;p4lang: vpn with bgp over srv6;successfully;finished
 p4lang-rout12.tst;0;p4lang: evpn/cmac with bgp over srv6;successfully;finished
+p4lang-rout13.tst;0;p4lang: bundle routing;successfully;finished
+p4lang-rout14.tst;0;p4lang: bundle mpls;successfully;finished
 qos-action01.tst;0;qos ingress transmit action;successfully;finished
 qos-action02.tst;0;qos egress transmit action;successfully;finished
 qos-action03.tst;0;qos ingress drop action;successfully;finished
