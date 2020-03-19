@@ -362,6 +362,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ifc.sentVlan = 0;
             ifc.sentBundle = 0;
             ifc.sentVrf = 0;
+            ifc.lastUpSt = state.states.close;
         }
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf vrf = expVrf.get(i);
@@ -565,6 +566,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public counter cntr = new counter();
 
     public state.states lastState = state.states.up;
+
+    public state.states lastUpSt = state.states.close;
 
     public int compare(servP4langIfc o1, servP4langIfc o2) {
         if (o1.id < o2.id) {
@@ -1028,11 +1031,26 @@ class servP4langConn implements Runnable {
     }
 
     private void doIface(servP4langIfc ifc) {
+        state.states sta;
+        String a;
+        if (ifc.ifc.ethtyp.forcedDN) {
+            sta = state.states.admin;
+        } else {
+            sta = state.states.up;
+        }
+        if (ifc.lastUpSt != sta) {
+            if (sta == state.states.up) {
+                a = "1";
+            } else {
+                a = "0";
+            }
+            lower.sendLine("state " + ifc.id + " " + a);
+            ifc.lastUpSt = sta;
+        }
         if ((ifc.master != null) && (ifc.sentVlan == 0)) {
             lower.sendLine("portvlan_add " + ifc.id + " " + ifc.master.id + " " + ifc.ifc.vlanNum);
             ifc.sentVlan = ifc.ifc.vlanNum;
         }
-        String a;
         if ((ifc.ifc.bundleHed != null) && (ifc.ifc.bundleIfc == null)) {
             List<servP4langIfc> prt = new ArrayList<servP4langIfc>();
             for (int i = 0; i < lower.expIfc.size(); i++) {
