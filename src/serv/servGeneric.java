@@ -910,7 +910,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         boolean is4 = adr.isIPv4();
         addrPrefix<addrIP> prf;
         if (is4) {
-            prf = new addrPrefix<addrIP>(adr, 120);
+            prf = new addrPrefix<addrIP>(adr, 118);
         } else {
             prf = new addrPrefix<addrIP>(adr, 56);
         }
