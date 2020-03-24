@@ -127,7 +127,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
-            l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id);
+            l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id + " " + ntry.speed);
         }
         for (int i = 0; i < expBr.size(); i++) {
             servP4langBr ntry = expBr.get(i);
@@ -221,6 +221,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             servP4langIfc ntry = new servP4langIfc();
             ntry.id = bits.str2num(cmd.word());
             ntry.ifc = ifc;
+            ntry.speed = bits.str2num(cmd.word());
             ntry.lower = this;
             boolean need = ifc.type == cfgIfc.ifaceType.sdn;
             if (ifc.vlanNum > 0) {
@@ -319,7 +320,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("2 .    <num>                   bridge number");
         l.add("1 2  export-port               specify port to export");
         l.add("2 3    <name>                  interface name");
-        l.add("3 .      <num>                 p4lang port number");
+        l.add("3 4,.    <num>                 p4lang port number");
+        l.add("4 .        <num>               p4lang port type");
         l.add("1 2  export-srv6               specify srv6 to export");
         l.add("2 .    <name>                  interface name");
         l.add("1 2  export-copp4              specify copp acl to export");
@@ -550,6 +552,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public servP4lang lower;
 
     public int id;
+
+    public int speed;
 
     public int sentVrf;
 
@@ -1044,7 +1048,7 @@ class servP4langConn implements Runnable {
             } else {
                 a = "0";
             }
-            lower.sendLine("state " + ifc.id + " " + a);
+            lower.sendLine("state " + ifc.id + " " + a + " " + ifc.speed);
             ifc.lastUpSt = sta;
         }
         if ((ifc.master != null) && (ifc.sentVlan == 0)) {

@@ -2448,6 +2448,27 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
 
     /**
      * clear from routing process
+     */
+    public void clear2routing() {
+        clear2router(rtrRip4hnd);
+        clear2router(rtrRip6hnd);
+        clear2router(rtrBabel4hnd);
+        clear2router(rtrBabel6hnd);
+        clear2router(rtrOlsr4hnd);
+        clear2router(rtrOlsr6hnd);
+        clear2router(rtrOspf4hnd);
+        clear2router(rtrOspf6hnd);
+        clear2router(rtrIsisHnd);
+        clear2router(rtrPvrp4hnd);
+        clear2router(rtrPvrp6hnd);
+        clear2router(rtrLsrp4hnd);
+        clear2router(rtrLsrp6hnd);
+        clear2router(rtrEigrp4hnd);
+        clear2router(rtrEigrp6hnd);
+    }
+
+    /**
+     * clear from routing process
      *
      * @param rtr router process to use
      */

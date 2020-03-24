@@ -1642,19 +1642,7 @@ public class cfgAll {
         if (ntry == null) {
             return true;
         }
-        ntry.clear2router(ntry.rtrRip4hnd);
-        ntry.clear2router(ntry.rtrRip6hnd);
-        ntry.clear2router(ntry.rtrBabel4hnd);
-        ntry.clear2router(ntry.rtrBabel6hnd);
-        ntry.clear2router(ntry.rtrOspf4hnd);
-        ntry.clear2router(ntry.rtrOspf6hnd);
-        ntry.clear2router(ntry.rtrIsisHnd);
-        ntry.clear2router(ntry.rtrPvrp4hnd);
-        ntry.clear2router(ntry.rtrPvrp6hnd);
-        ntry.clear2router(ntry.rtrLsrp4hnd);
-        ntry.clear2router(ntry.rtrLsrp6hnd);
-        ntry.clear2router(ntry.rtrEigrp4hnd);
-        ntry.clear2router(ntry.rtrEigrp6hnd);
+        ntry.clear2routing();
         ntry.clear2mpls();
         ntry.clear2ldp(4);
         ntry.clear2ldp(6);
