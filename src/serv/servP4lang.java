@@ -1042,6 +1042,9 @@ class servP4langConn implements Runnable {
         } else {
             sta = state.states.up;
         }
+        if ((ifc.master != null) || (ifc.ifc.bundleHed != null)) {
+            ifc.lastUpSt = sta;
+        }
         if (ifc.lastUpSt != sta) {
             if (sta == state.states.up) {
                 a = "1";
@@ -1076,6 +1079,11 @@ class servP4langConn implements Runnable {
                 for (int i = 0; i < 16; i++) {
                     lower.sendLine("portbundle_" + a + " " + ifc.id + " " + i + " " + prt.get(i % prt.size()).id);
                 }
+                String s = "";
+                for (int i = 0; i < prt.size(); i++) {
+                    s += " " + prt.get(i).id;
+                }
+                lower.sendLine("bundlelist_" + a + " " + ifc.id + s);
                 ifc.sentBundle = prt.size();
             }
         }
