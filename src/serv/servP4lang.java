@@ -1042,7 +1042,7 @@ class servP4langConn implements Runnable {
         } else {
             sta = state.states.up;
         }
-        if ((ifc.master != null) || (ifc.ifc.bundleHed != null)) {
+        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle)) {
             ifc.lastUpSt = sta;
         }
         if (ifc.lastUpSt != sta) {
@@ -1066,6 +1066,9 @@ class servP4langConn implements Runnable {
                     continue;
                 }
                 if (ntry.ifc.bundleHed != ifc.ifc.bundleHed) {
+                    continue;
+                }
+                if (ifc.ifc.ethtyp.forcedDN) {
                     continue;
                 }
                 prt.add(ntry);
