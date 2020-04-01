@@ -3910,14 +3910,21 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * propagate ethertype state
      */
     public void propagateEthtypState() {
+        if ((bundleIfc != null) || (bridgeIfc != null)) {
+            return;
+        }
+        if ((bundleHed == null) && (bridgeHed == null)) {
+            return;
+        }
         for (int i = 0; i < cfgAll.ifaces.size(); i++) {
             cfgIfc ntry = cfgAll.ifaces.get(i);
             if (ntry == null) {
                 continue;
             }
-            boolean b = (bundleHed != null) && (ntry.bundleHed == bundleHed);
-            b |= (bridgeHed != null) && (ntry.bridgeHed == bridgeHed);
-            if (!b) {
+            if ((ntry.bundleIfc == null) && (ntry.bridgeIfc == null)) {
+                continue;
+            }
+            if ((ntry.bundleHed != bundleHed) && (ntry.bridgeHed != bridgeHed)) {
                 continue;
             }
             ntry.ethtyp.forcedDN = ethtyp.forcedDN;
