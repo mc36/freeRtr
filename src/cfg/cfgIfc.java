@@ -3907,6 +3907,27 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * propagate ethertype state
+     */
+    public void propagateEthtypState() {
+        for (int i = 0; i < cfgAll.ifaces.size(); i++) {
+            cfgIfc ntry = cfgAll.ifaces.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            boolean b = (bundleHed != null) && (ntry.bundleHed == bundleHed);
+            b |= (bridgeHed != null) && (ntry.bridgeHed == bridgeHed);
+            if (!b) {
+                continue;
+            }
+            ntry.ethtyp.forcedDN = ethtyp.forcedDN;
+            ntry.ethtyp.forcedUP = ethtyp.forcedUP;
+            ntry.ethtyp.propagateState();
+
+        }
+    }
+
+    /**
      * get encapsulator protocol handler
      *
      * @return handler
@@ -5303,11 +5324,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("shutdown")) {
             ethtyp.forcedDN = true;
             ethtyp.propagateState();
+            propagateEthtypState();
             return;
         }
         if (a.equals("autostate")) {
             ethtyp.forcedUP = false;
             ethtyp.propagateState();
+            propagateEthtypState();
             return;
         }
         if (a.equals("template")) {
@@ -5931,11 +5954,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("shutdown")) {
             ethtyp.forcedDN = false;
             ethtyp.propagateState();
+            propagateEthtypState();
             return;
         }
         if (a.equals("autostate")) {
             ethtyp.forcedUP = true;
             ethtyp.propagateState();
+            propagateEthtypState();
             return;
         }
         if (a.equals("template")) {

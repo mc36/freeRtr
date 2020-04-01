@@ -1068,16 +1068,21 @@ class servP4langConn implements Runnable {
                 if (ntry.ifc.bundleHed != ifc.ifc.bundleHed) {
                     continue;
                 }
-                if (ifc.ifc.ethtyp.forcedDN) {
+                if (ntry.ifc.ethtyp.forcedDN) {
                     continue;
                 }
                 prt.add(ntry);
             }
-            if ((prt.size() > 0) && (prt.size() != ifc.sentBundle)) {
+            if (prt.size() != ifc.sentBundle) {
                 if (ifc.sentBundle < 1) {
                     a = "add";
                 } else {
                     a = "mod";
+                }
+                ifc.sentBundle = prt.size();
+                if (prt.size() < 1) {
+                    a = "del";
+                    prt.add(new servP4langIfc());
                 }
                 for (int i = 0; i < 16; i++) {
                     lower.sendLine("portbundle_" + a + " " + ifc.id + " " + i + " " + prt.get(i % prt.size()).id);
@@ -1087,7 +1092,6 @@ class servP4langConn implements Runnable {
                     s += " " + prt.get(i).id;
                 }
                 lower.sendLine("bundlelist_" + a + " " + ifc.id + s);
-                ifc.sentBundle = prt.size();
             }
         }
         if (ifc.sentVrf == 0) {
