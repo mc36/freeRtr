@@ -1176,7 +1176,7 @@ class servP4langConn implements Runnable {
                 }
                 act = "mod";
             }
-            nei.add(ntry);
+            nei.put(ntry);
             lower.sendLine("neigh" + afi + "_" + act + " " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.getHwAddr()).toEmuStr());
         }
         for (int i = 0; i < nei.size(); i++) {
