@@ -3924,7 +3924,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             if ((ntry.bundleIfc == null) && (ntry.bridgeIfc == null)) {
                 continue;
             }
-            if ((ntry.bundleHed != bundleHed) && (ntry.bridgeHed != bridgeHed)) {
+            if ((ntry.bundleHed != bundleHed) || (ntry.bridgeHed != bridgeHed)) {
                 continue;
             }
             ntry.ethtyp.forcedDN = ethtyp.forcedDN;
