@@ -199,32 +199,32 @@ public class packRsvp {
     public int labelVal;
 
     /**
-     * path request h->-m---t
+     * path request
      */
     public static final int typPathReq = 1;
 
     /**
-     * resv request h---m-<-t
+     * resv request
      */
     public static final int typResvReq = 2;
 
     /**
-     * path error h-<-m---t
+     * path error
      */
     public static final int typPathErr = 3;
 
     /**
-     * resv error h---m->-t
+     * resv error
      */
     public static final int typResvErr = 4;
 
     /**
-     * path tear h->-m---t
+     * path tear
      */
     public static final int typPathTear = 5;
 
     /**
-     * resv tear h---m-<-t
+     * resv tear
      */
     public static final int typResvTear = 6;
 

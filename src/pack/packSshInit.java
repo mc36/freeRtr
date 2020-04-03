@@ -58,32 +58,32 @@ public class packSshInit {
     public int[] kexKeys;
 
     /**
-     * encryption algorithm client->server
+     * encryption algorithm client2server
      */
     public int[] kexEncCS;
 
     /**
-     * encryption algorithm server->client
+     * encryption algorithm server2client
      */
     public int[] kexEncSC;
 
     /**
-     * hash algorithm client->server
+     * hash algorithm client2server
      */
     public int[] kexMacCS;
 
     /**
-     * hash algorithm server->client
+     * hash algorithm server2client
      */
     public int[] kexMacSC;
 
     /**
-     * compression algorithm client->server
+     * compression algorithm client2server
      */
     public int[] kexCompCS;
 
     /**
-     * compression algorithm server->client
+     * compression algorithm server2client
      */
     public int[] kexCompSC;
 

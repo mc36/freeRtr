@@ -56,7 +56,7 @@ public class userScreen {
     public final int[][] chrs;
 
     /**
-     * color codes (>>16 = background)
+     * color codes (shl 16 = background)
      */
     public final int[][] atrs;
 

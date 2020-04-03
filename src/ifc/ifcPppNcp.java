@@ -85,12 +85,12 @@ public abstract class ifcPppNcp {
     public final static int sawRxAck = 0x8;
 
     /**
-     * saw loc->rem data
+     * saw loc2rem data
      */
     public final static int sawLocNeed = 0x10;
 
     /**
-     * saw rem->loc data
+     * saw rem2loc data
      */
     public final static int sawRemNeed = 0x20;
 

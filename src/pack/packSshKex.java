@@ -69,32 +69,32 @@ public class packSshKex {
     public byte[] hashVal;
 
     /**
-     * init vector client->server
+     * init vector client2server
      */
     public byte[] ivCS;
 
     /**
-     * init vector server->client
+     * init vector server2client
      */
     public byte[] ivSC;
 
     /**
-     * encryption client->server
+     * encryption client2server
      */
     public byte[] encCS;
 
     /**
-     * encryption server->client
+     * encryption server2client
      */
     public byte[] encSC;
 
     /**
-     * integrity client->server
+     * integrity client2server
      */
     public byte[] macCS;
 
     /**
-     * integrity server->client
+     * integrity server2client
      */
     public byte[] macSC;
 

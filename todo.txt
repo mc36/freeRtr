@@ -20,7 +20,6 @@ bgp vpns with sr-policy
 recursive static route
 pipeline properties, terminal autoresize
 temper: web access log
-clean up javadoc errors
 changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 yang over netconf, proto over grpc
 interface range command

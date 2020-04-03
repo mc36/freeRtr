@@ -293,7 +293,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     public int evpnLab;
 
     /**
-     * pmsi flag & type
+     * pmsi flag and type
      */
     public int pmsiTyp;
 
