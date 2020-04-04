@@ -1700,7 +1700,6 @@ todo: bgp vpns with sr-policy
 todo: recursive static route
 todo: pipeline properties, terminal autoresize
 todo: temper: web access log
-todo: clean up javadoc errors
 todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 todo: yang over netconf, proto over grpc
 todo: interface range command
