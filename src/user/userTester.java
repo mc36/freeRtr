@@ -199,6 +199,9 @@ public class userTester {
             if (s.equals("openjdk14")) {
                 jvn = "/usr/lib/jvm/java-14-openjdk-amd64/bin/java";
             }
+            if (s.equals("openjdk15")) {
+                jvn = "/usr/lib/jvm/java-15-openjdk-amd64/bin/java";
+            }
             if (s.equals("ikvm")) {
                 jvn = "/usr/bin/ikvm";
                 mem = 0;
