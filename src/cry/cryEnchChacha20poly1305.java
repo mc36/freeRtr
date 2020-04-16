@@ -10,7 +10,7 @@ import util.logger;
  *
  * @author matecsaba
  */
-public class cryEnchChacha20 extends cryEnchGeneric {
+public class cryEnchChacha20poly1305 extends cryEnchGeneric {
 
     private Cipher crypter;
 

@@ -1,6 +1,7 @@
 package cry;
 
 import java.util.Arrays;
+import util.bits;
 
 /**
  * curve25519
@@ -71,6 +72,19 @@ public class cryECcurve25519 {
             x[index] ^= dummy;
             y[index] ^= dummy;
         }
+    }
+
+    /**
+     * make key
+     *
+     * @return key
+     */
+    public static byte[] make() {
+        byte[] buf = new byte[32];
+        for (int i = 0; i < buf.length; i++) {
+            buf[i] = (byte) bits.randomB();
+        }
+        return buf;
     }
 
     /**
