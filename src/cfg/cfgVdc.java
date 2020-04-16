@@ -133,6 +133,16 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public final tabGen<cfgVdcConn> conns = new tabGen<cfgVdcConn>();
 
     /**
+     * list of pci
+     */
+    public final tabGen<cfgVdcPci> pcis = new tabGen<cfgVdcPci>();
+
+    /**
+     * list of usb
+     */
+    public final tabGen<cfgVdcUsb> usbs = new tabGen<cfgVdcUsb>();
+
+    /**
      * console pipeline
      */
     public pipeSide con;
@@ -234,6 +244,12 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         for (int i = 0; i < locals.size(); i++) {
             n.locals.add(locals.get(i));
         }
+        for (int i = 0; i < pcis.size(); i++) {
+            n.pcis.add(pcis.get(i));
+        }
+        for (int i = 0; i < usbs.size(); i++) {
+            n.usbs.add(usbs.get(i));
+        }
         return n;
     }
 
@@ -291,6 +307,13 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("2 .    <addr>            address");
         l.add("1 2  nic                 type of nic");
         l.add("2 .    <name>            vendor");
+        l.add("1 2  pci                 pass through pci device");
+        l.add("2 3    <num>             bus");
+        l.add("3 4      <num>           device");
+        l.add("4 .        <num>         function");
+        l.add("1 2  usb                 pass through usb device");
+        l.add("2 3    <num>             bus");
+        l.add("3 .      <num>           port");
         l.add("1 2  time                specify time between runs");
         l.add("2 .    <num>             milliseconds between runs");
         l.add("1 2  delay               specify initial delay");
@@ -325,6 +348,12 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "cores " + imageCpu);
         l.add(cmds.tabulator + "nic " + nicType);
         l.add(cmds.tabulator + "mac " + macBase);
+        for (int i = 0; i < pcis.size(); i++) {
+            l.add(cmds.tabulator + "pci " + pcis.get(i));
+        }
+        for (int i = 0; i < usbs.size(); i++) {
+            l.add(cmds.tabulator + "usb " + usbs.get(i));
+        }
         l.add(cmds.tabulator + "delay " + initial);
         l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + cmds.finish);
@@ -486,6 +515,21 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             peer.conns.add(c2);
             return;
         }
+        if (a.equals("pci")) {
+            cfgVdcPci dev = new cfgVdcPci();
+            dev.bus = bits.str2num(cmd.word());
+            dev.sub = bits.str2num(cmd.word());
+            dev.fnc = bits.str2num(cmd.word());
+            pcis.add(dev);
+            return;
+        }
+        if (a.equals("usb")) {
+            cfgVdcUsb dev = new cfgVdcUsb();
+            dev.bus = bits.str2num(cmd.word());
+            dev.sub = bits.str2num(cmd.word());
+            usbs.add(dev);
+            return;
+        }
         if (a.equals("delay")) {
             initial = bits.str2num(cmd.word());
             return;
@@ -571,6 +615,21 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             delConn(cfgIfc.normName(cmd.word(), false));
             return;
         }
+        if (a.equals("pci")) {
+            cfgVdcPci dev = new cfgVdcPci();
+            dev.bus = bits.str2num(cmd.word());
+            dev.sub = bits.str2num(cmd.word());
+            dev.fnc = bits.str2num(cmd.word());
+            pcis.del(dev);
+            return;
+        }
+        if (a.equals("usb")) {
+            cfgVdcUsb dev = new cfgVdcUsb();
+            dev.bus = bits.str2num(cmd.word());
+            dev.sub = bits.str2num(cmd.word());
+            usbs.del(dev);
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -651,6 +710,14 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.conn.port + ",localaddr=:" + ntry.port + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
                 vl++;
                 mac.setAdd(mac, one);
+            }
+            for (int i = 0; i < pcis.size(); i++) {
+                cfgVdcPci dev = pcis.get(i);
+                cmd += " -device vfio-pci,host=" + dev.bus + ":" + dev.sub + "." + dev.fnc;
+            }
+            for (int i = 0; i < usbs.size(); i++) {
+                cfgVdcUsb dev = usbs.get(i);
+                cmd += " -usb -device usb-host,hostbus=" + dev.bus + ",hostport=" + dev.sub;
             }
         }
         if (cpuPinning != null) {
@@ -794,6 +861,70 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             bits.buf2txt(true, l, cfgBase + cfgInit.swCfgEnd);
         }
         new Thread(this).start();
+    }
+
+}
+
+class cfgVdcPci implements Comparator<cfgVdcPci> {
+
+    public int bus;
+
+    public int sub;
+
+    public int fnc;
+
+    public int compare(cfgVdcPci o1, cfgVdcPci o2) {
+        if (o1.bus < o2.bus) {
+            return -1;
+        }
+        if (o1.bus > o2.bus) {
+            return +1;
+        }
+        if (o1.sub < o2.sub) {
+            return -1;
+        }
+        if (o1.sub > o2.sub) {
+            return +1;
+        }
+        if (o1.fnc < o2.fnc) {
+            return -1;
+        }
+        if (o1.fnc > o2.fnc) {
+            return +1;
+        }
+        return 0;
+    }
+
+    public String toString() {
+        return bus + " " + sub + " " + fnc;
+    }
+
+}
+
+class cfgVdcUsb implements Comparator<cfgVdcUsb> {
+
+    public int bus;
+
+    public int sub;
+
+    public int compare(cfgVdcUsb o1, cfgVdcUsb o2) {
+        if (o1.bus < o2.bus) {
+            return -1;
+        }
+        if (o1.bus > o2.bus) {
+            return +1;
+        }
+        if (o1.sub < o2.sub) {
+            return -1;
+        }
+        if (o1.sub > o2.sub) {
+            return +1;
+        }
+        return 0;
+    }
+
+    public String toString() {
+        return bus + " " + sub;
     }
 
 }
