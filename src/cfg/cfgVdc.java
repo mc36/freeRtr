@@ -518,7 +518,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         if (a.equals("pci")) {
             cfgVdcPci dev = new cfgVdcPci();
             dev.bus = bits.str2num(cmd.word());
-            dev.sub = bits.str2num(cmd.word());
+            dev.dev = bits.str2num(cmd.word());
             dev.fnc = bits.str2num(cmd.word());
             pcis.add(dev);
             return;
@@ -526,7 +526,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         if (a.equals("usb")) {
             cfgVdcUsb dev = new cfgVdcUsb();
             dev.bus = bits.str2num(cmd.word());
-            dev.sub = bits.str2num(cmd.word());
+            dev.prt = bits.str2num(cmd.word());
             usbs.add(dev);
             return;
         }
@@ -618,7 +618,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         if (a.equals("pci")) {
             cfgVdcPci dev = new cfgVdcPci();
             dev.bus = bits.str2num(cmd.word());
-            dev.sub = bits.str2num(cmd.word());
+            dev.dev = bits.str2num(cmd.word());
             dev.fnc = bits.str2num(cmd.word());
             pcis.del(dev);
             return;
@@ -626,7 +626,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         if (a.equals("usb")) {
             cfgVdcUsb dev = new cfgVdcUsb();
             dev.bus = bits.str2num(cmd.word());
-            dev.sub = bits.str2num(cmd.word());
+            dev.prt = bits.str2num(cmd.word());
             usbs.del(dev);
             return;
         }
@@ -713,11 +713,14 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             }
             for (int i = 0; i < pcis.size(); i++) {
                 cfgVdcPci dev = pcis.get(i);
-                cmd += " -device vfio-pci,host=" + dev.bus + ":" + dev.sub + "." + dev.fnc;
+                cmd += " -device vfio-pci,host=" + bits.toHexB(dev.bus) + ":" + bits.toHexB(dev.dev) + "." + dev.fnc;
+            }
+            if (usbs.size() > 0) {
+                cmd += " -usb";
             }
             for (int i = 0; i < usbs.size(); i++) {
                 cfgVdcUsb dev = usbs.get(i);
-                cmd += " -usb -device usb-host,hostbus=" + dev.bus + ",hostport=" + dev.sub;
+                cmd += " -device usb-host,hostbus=" + dev.bus + ",hostport=" + dev.prt;
             }
         }
         if (cpuPinning != null) {
@@ -869,7 +872,7 @@ class cfgVdcPci implements Comparator<cfgVdcPci> {
 
     public int bus;
 
-    public int sub;
+    public int dev;
 
     public int fnc;
 
@@ -880,10 +883,10 @@ class cfgVdcPci implements Comparator<cfgVdcPci> {
         if (o1.bus > o2.bus) {
             return +1;
         }
-        if (o1.sub < o2.sub) {
+        if (o1.dev < o2.dev) {
             return -1;
         }
-        if (o1.sub > o2.sub) {
+        if (o1.dev > o2.dev) {
             return +1;
         }
         if (o1.fnc < o2.fnc) {
@@ -896,7 +899,7 @@ class cfgVdcPci implements Comparator<cfgVdcPci> {
     }
 
     public String toString() {
-        return bus + " " + sub + " " + fnc;
+        return bus + " " + dev + " " + fnc;
     }
 
 }
@@ -905,7 +908,7 @@ class cfgVdcUsb implements Comparator<cfgVdcUsb> {
 
     public int bus;
 
-    public int sub;
+    public int prt;
 
     public int compare(cfgVdcUsb o1, cfgVdcUsb o2) {
         if (o1.bus < o2.bus) {
@@ -914,17 +917,17 @@ class cfgVdcUsb implements Comparator<cfgVdcUsb> {
         if (o1.bus > o2.bus) {
             return +1;
         }
-        if (o1.sub < o2.sub) {
+        if (o1.prt < o2.prt) {
             return -1;
         }
-        if (o1.sub > o2.sub) {
+        if (o1.prt > o2.prt) {
             return +1;
         }
         return 0;
     }
 
     public String toString() {
-        return bus + " " + sub;
+        return bus + " " + prt;
     }
 
 }
