@@ -2884,6 +2884,45 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         return lstnNei.find(ntry);
     }
 
+    private String findPeers(int mod, rtrBgpNeigh ntry) {
+        switch (mod) {
+            case 1:
+                return "" + ntry.remoteAs;
+            case 2:
+                return "" + ntry.peerAddr;
+            case 3:
+                return "" + (ntry.localAs == ntry.remoteAs);
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * find peers
+     *
+     * @param mod mode: 1=asn, 2=addr, 3=ibgp
+     * @param reg regexp
+     * @return list of peers
+     */
+    public List<rtrBgpNeigh> findPeers(int mod, String reg) {
+        List<rtrBgpNeigh> res = new ArrayList<rtrBgpNeigh>();
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrBgpNeigh ntry = neighs.get(i);
+            String a = findPeers(mod, ntry);
+            if (a.matches(reg)) {
+                res.add(ntry);
+            }
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            rtrBgpNeigh ntry = lstnNei.get(i);
+            String a = findPeers(mod, ntry);
+            if (a.matches(reg)) {
+                res.add(ntry);
+            }
+        }
+        return res;
+    }
+
     /**
      * find group
      *

@@ -19,6 +19,8 @@ import clnt.clntDns;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
+import java.util.ArrayList;
+import java.util.List;
 import prt.prtGen;
 import prt.prtWatch;
 import rtr.rtrBabelNeigh;
@@ -445,19 +447,31 @@ public class userClear {
             r.bgp.routerRedistChanged();
             return;
         }
-        addrIP adr = new addrIP();
-        if (adr.fromString(a)) {
-            cmd.error("bad address");
-            return;
+        List<rtrBgpNeigh> neis = new ArrayList<rtrBgpNeigh>();
+        if (a.equals("asn")) {
+            neis = r.bgp.findPeers(1, cmd.word());
         }
-        rtrBgpNeigh nei = r.bgp.findPeer(adr);
-        if (nei == null) {
+        if (a.equals("peer")) {
+            neis = r.bgp.findPeers(2, cmd.word());
+        }
+        if (a.equals("ibgp")) {
+            neis = r.bgp.findPeers(3, "true");
+        }
+        if (a.equals("ebgp")) {
+            neis = r.bgp.findPeers(3, "false");
+        }
+        if (a.equals("all")) {
+            neis = r.bgp.findPeers(3, ".*");
+        }
+        if (neis.size() < 1) {
             cmd.error("no such neighbor");
             return;
         }
         a = cmd.word();
         if (a.equals("hard")) {
-            nei.flapBgpConn();
+            for (int i = 0; i < neis.size(); i++) {
+                neis.get(i).flapBgpConn();
+            }
             return;
         }
         boolean in = a.equals("in");
@@ -469,10 +483,13 @@ public class userClear {
         if (sfi < 1) {
             return;
         }
-        if (in) {
-            nei.conn.sendRefresh(sfi);
-        } else {
-            nei.conn.gotRefresh(sfi);
+        for (int i = 0; i < neis.size(); i++) {
+            rtrBgpNeigh nei = neis.get(i);
+            if (in) {
+                nei.conn.sendRefresh(sfi);
+            } else {
+                nei.conn.gotRefresh(sfi);
+            }
         }
         return;
     }

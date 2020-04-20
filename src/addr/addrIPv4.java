@@ -118,6 +118,15 @@ public final static int size = 4;
     }
 
     /**
+     * test if this is a link local address
+     *
+     * @return true if yes
+     */
+    public boolean isLinkLocal() {
+        return (((addr[0] & 0xff) == 169) && ((addr[1] & 0xff) == 254));
+    }
+
+    /**
      * get empty address
      *
      * @return bytes of address

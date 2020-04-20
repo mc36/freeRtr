@@ -185,7 +185,7 @@ public class addrIPv6 extends addrType {
      * @return true if yes
      */
     public boolean isLinkLocal() {
-        return (((addr[0] & 0xff) == 0xfe) && ((addr[1] & 0x80) == 0x80));
+        return (((addr[0] & 0xff) == 0xfe) && ((addr[1] & 0xc0) == 0x80));
     }
 
     /**

@@ -1868,8 +1868,17 @@ public class rtrBgpUtil {
             if (adr == null) {
                 continue;
             }
-            if ((safi & afiMask) == afiIpv6) {
-                if (adr.toIPv6().isLinkLocal()) {
+            if (adr.isIPv4()) {
+                addrIPv4 adr4 = adr.toIPv4();
+                if (adr4.isFilled(0)) {
+                    continue;
+                }
+            } else {
+                addrIPv6 adr6 = adr.toIPv6();
+                if (adr6.isFilled(0)) {
+                    continue;
+                }
+                if (adr6.isLinkLocal()) {
                     continue;
                 }
             }
