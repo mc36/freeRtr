@@ -588,7 +588,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     }
 
     public addrType getHwAddr() {
-        return ifc.ethtyp.getHwAddr();
+        return addrMac.getRandom();
     }
 
     public void setFilter(boolean promisc) {
@@ -1181,7 +1181,7 @@ class servP4langConn implements Runnable {
                 act = "mod";
             }
             nei.put(ntry);
-            lower.sendLine("neigh" + afi + "_" + act + " " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.getHwAddr()).toEmuStr());
+            lower.sendLine("neigh" + afi + "_" + act + " " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr());
         }
         for (int i = 0; i < nei.size(); i++) {
             servP4langNei ntry = nei.get(i);
@@ -1192,7 +1192,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             nei.del(ntry);
-            lower.sendLine("neigh" + afi + "_del " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.getHwAddr()).toEmuStr());
+            lower.sendLine("neigh" + afi + "_del " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr());
         }
     }
 

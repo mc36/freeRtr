@@ -1,6 +1,5 @@
 package serv;
 
-import addr.addrEmpty;
 import addr.addrIP;
 import addr.addrMac;
 import addr.addrPrefix;
@@ -359,7 +358,7 @@ class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
     }
 
     public addrType getHwAddr() {
-        return ifc.ethtyp.getHwAddr();
+        return addrMac.getRandom();
     }
 
     public void setFilter(boolean promisc) {
