@@ -1582,6 +1582,7 @@ public class cfgAll {
             if (ifc.vrfFor.fwd4.vrfNum != ntry.fwd4.vrfNum) {
                 continue;
             }
+            ifc.clear2routing(true, true);
             ifc.clear2vrf();
         }
         ntry.closeConns();
@@ -1642,7 +1643,7 @@ public class cfgAll {
         if (ntry == null) {
             return true;
         }
-        ntry.clear2routing();
+        ntry.clear2routing(true, true);
         ntry.clear2mpls();
         ntry.clear2ldp(4);
         ntry.clear2ldp(6);

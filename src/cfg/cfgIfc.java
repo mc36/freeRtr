@@ -2448,23 +2448,56 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
 
     /**
      * clear from routing process
+     *
+     * @param ip4 ipv4
+     * @param ip6 ipv6
      */
-    public void clear2routing() {
-        clear2router(rtrRip4hnd);
-        clear2router(rtrRip6hnd);
-        clear2router(rtrBabel4hnd);
-        clear2router(rtrBabel6hnd);
-        clear2router(rtrOlsr4hnd);
-        clear2router(rtrOlsr6hnd);
-        clear2router(rtrOspf4hnd);
-        clear2router(rtrOspf6hnd);
-        clear2router(rtrIsisHnd);
-        clear2router(rtrPvrp4hnd);
-        clear2router(rtrPvrp6hnd);
-        clear2router(rtrLsrp4hnd);
-        clear2router(rtrLsrp6hnd);
-        clear2router(rtrEigrp4hnd);
-        clear2router(rtrEigrp6hnd);
+    public void clear2routing(boolean ip4, boolean ip6) {
+        if (ip4) {
+            clear2router(rtrRip4hnd);
+        }
+        if (ip6) {
+            clear2router(rtrRip6hnd);
+        }
+        if (ip4) {
+            clear2router(rtrBabel4hnd);
+        }
+        if (ip6) {
+            clear2router(rtrBabel6hnd);
+        }
+        if (ip4) {
+            clear2router(rtrOlsr4hnd);
+        }
+        if (ip6) {
+            clear2router(rtrOlsr6hnd);
+        }
+        if (ip4) {
+            clear2router(rtrOspf4hnd);
+        }
+        if (ip6) {
+            clear2router(rtrOspf6hnd);
+        }
+        if (ip4 || ip6) {
+            clear2router(rtrIsisHnd);
+        }
+        if (ip4) {
+            clear2router(rtrPvrp4hnd);
+        }
+        if (ip6) {
+            clear2router(rtrPvrp6hnd);
+        }
+        if (ip4) {
+            clear2router(rtrLsrp4hnd);
+        }
+        if (ip6) {
+            clear2router(rtrLsrp6hnd);
+        }
+        if (ip4) {
+            clear2router(rtrEigrp4hnd);
+        }
+        if (ip6) {
+            clear2router(rtrEigrp6hnd);
+        }
     }
 
     /**
@@ -5724,6 +5757,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (vrfFor == v) {
                     return;
                 }
+                if (vrfFor == v) {
+                    return;
+                }
+                clear2routing(true, true);
                 clear2vrf();
                 vrfFor = v;
                 setup2vrf(true, true, true);
@@ -6125,6 +6162,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("vrf")) {
             a = cmd.word();
             if (a.equals("forwarding")) {
+                clear2routing(true, true);
                 clear2vrf();
                 return;
             }
@@ -6355,6 +6393,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             addr4 = adr;
             mask4 = msk;
+            clear2routing(true, false);
             setup2vrf(true, false, false);
             return;
         }
@@ -6401,6 +6440,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             addr4 = null;
             mask4 = null;
             hide4 = false;
+            clear2routing(true, false);
             setup2vrf(true, false, false);
             return;
         }
@@ -6464,6 +6504,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             addr6 = adr;
             mask6 = msk;
+            clear2routing(false, true);
             setup2vrf(false, true, false);
             return;
         }
@@ -6531,6 +6572,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             addr6 = null;
             mask6 = null;
             hide6 = false;
+            clear2routing(false, true);
             setup2vrf(false, true, false);
             return;
         }
