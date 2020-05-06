@@ -89,6 +89,9 @@ public class clntDns {
      * @return false on success, true on error
      */
     public boolean doResolvOne(addrIP srv, String nam, int typ) {
+        if ((cfgAll.domainName != null) && (nam.indexOf(".") < 0)) {
+            nam = nam + "." + cfgAll.domainName;
+        }
         reply = new packDns();
         packDnsRec cac = loCache.findUser(nam, typ);
         for (int lop = 0; lop < 32; lop++) {

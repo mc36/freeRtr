@@ -1200,6 +1200,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no mtu",
         "interface .*! no macaddr",
         "interface .*! no template",
+        "interface .*! padup 0 0",
         "interface .*! autostate",
         "interface .*! encapsulation dot1q",
         "interface .*! no bandwidth",
@@ -4633,6 +4634,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             l.add(cmds.tabulator + "bandwidth auto" + s);
         }
         cmds.cfgLine(l, ethtyp.forcedMac == null, cmds.tabulator, "macaddr", "" + ethtyp.forcedMac);
+        l.add(cmds.tabulator + "padup " + ethtyp.padupMin + " " + ethtyp.padupMod);
         cmds.cfgLine(l, ethtyp.monSes == null, cmds.tabulator, "monitor-session", "" + ethtyp.monSes);
         cmds.cfgLine(l, ethtyp.monBufD == null, cmds.tabulator, "monitor-buffer", "" + ethtyp.getMonBufSize());
         cmds.cfgLine(l, lldp == null, cmds.tabulator, "lldp enable", "");
@@ -5012,6 +5014,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 .   autostate                     administratively enable interface");
         l.add("1 2   mtu                           change interface maximum transmission unit");
         l.add("2 .     <num>                       physical layer bytes allowed");
+        l.add("1 2   padup                         change interface padding");
+        l.add("2 3     <num>                       minimum bytes");
+        l.add("3 .       <num>                     modulo bytes");
         l.add("1 2   macaddr                       change interface mac address");
         l.add("2 .     <addr>                      physical layer address");
         l.add("1 2   bandwidth                     change interface bandwidth");
@@ -5407,6 +5412,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             ethtyp.monSes = ifc.ethtyp;
+            return;
+        }
+        if (a.equals("padup")) {
+            ethtyp.padupMin = bits.str2num(cmd.word());
+            ethtyp.padupMod = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("mtu")) {
@@ -6021,6 +6031,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("monitor-session")) {
             ethtyp.monSes = null;
+            return;
+        }
+        if (a.equals("padup")) {
+            ethtyp.padupMin = 0;
+            ethtyp.padupMod = 0;
             return;
         }
         if (a.equals("mtu")) {

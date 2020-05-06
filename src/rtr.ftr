@@ -1679,14 +1679,11 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 todo: looking glass rfc8522
-todo: entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...
 todo: http conditional redirect with route-map, prefix-list or route-policy
 todo: bridge security from dhcp, slaac, whatever server
-todo: padup ethertype config option
 todo: lsrp, ospf, isis must list lsas/lsps as reachable or not
 todo: hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
-todo: client domain-name to resolve internally first
 todo: http server should honor no in the beginning for host commands
 todo: http host upload optional different authentication
 todo: tls1.3

@@ -8837,3 +8837,7 @@ qc pass: p4lang: bundle routing
 qc pass: p4lang: bundle mpls
 ---------------------------------- 2020-04-03 16:34:56
 no todo: clean up javadoc errors
+---------------------------------- 2020-05-06 05:26:53
+no todo: client domain-name to resolve internally first
+no todo: padup ethertype config option
+no todo: entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...

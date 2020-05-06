@@ -605,6 +605,11 @@ public class cfgAll {
     public static String hostName = "router";
 
     /**
+     * domain of this host
+     */
+    public static String domainName = null;
+
+    /**
      * encryption of this host
      */
     public static String passEnc = null;
@@ -872,6 +877,7 @@ public class cfgAll {
         "!no enable",
         // client
         "!no client proxy",
+        "!no client domain-name",
         "!no client name-proxy",
         "!client name-server",
         "!client time-zone Z",
@@ -2967,6 +2973,7 @@ public class cfgAll {
         } else {
             l.add("client name-proxy " + nameServerProxy.name);
         }
+        cmds.cfgLine(l, domainName == null, "", "client domain-name", domainName);
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
         cmds.cfgLine(l, !passwdStars, "", "client password-stars", "");
         cmds.cfgLine(l, whoisServer == null, "", "client whois-server", whoisServer);

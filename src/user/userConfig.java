@@ -427,6 +427,8 @@ public class userConfig {
         l.add("1  2  client                         specify address of name server");
         l.add("2  3    proxy                        specify proxy profile");
         l.add("3  .      <name>                     name of profile");
+        l.add("2  3    domain-name                  specify domain name");
+        l.add("3  .      <name>                     name of domain");
         l.add("2  3    name-proxy                   specify proxy profile");
         l.add("3  .      <name>                     name of profile");
         l.add("2  3    name-server                  specify address of name server");
@@ -1445,6 +1447,10 @@ public class userConfig {
                 }
                 return;
             }
+            if (a.equals("domain-name")) {
+                cfgAll.domainName = cmd.word();
+                return;
+            }
             if (a.equals("name-proxy")) {
                 cfgAll.nameServerProxy = cfgAll.proxyFind(cmd.word(), false);
                 if (cfgAll.nameServerProxy == null) {
@@ -2164,6 +2170,10 @@ public class userConfig {
             }
             if (a.equals("proxy")) {
                 cfgAll.clientProxy = null;
+                return;
+            }
+            if (a.equals("domain-name")) {
+                cfgAll.domainName = null;
                 return;
             }
             if (a.equals("name-proxy")) {

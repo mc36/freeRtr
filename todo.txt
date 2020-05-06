@@ -1,12 +1,9 @@
 looking glass rfc8522
-entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...
 http conditional redirect with route-map, prefix-list or route-policy
 bridge security from dhcp, slaac, whatever server
-padup ethertype config option
 lsrp, ospf, isis must list lsas/lsps as reachable or not
 hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
-client domain-name to resolve internally first
 http server should honor no in the beginning for host commands
 http host upload optional different authentication
 tls1.3

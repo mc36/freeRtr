@@ -68,6 +68,16 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public boolean logStateChg = false;
 
     /**
+     * padding minimum
+     */
+    public int padupMin = 0;
+
+    /**
+     * padding modulo
+     */
+    public int padupMod = 0;
+
+    /**
      * ingress qos
      */
     public tabQos qosIn;
@@ -538,6 +548,20 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @param pck packet to send
      */
     public void doTxPack(packHolder pck) {
+        if (padupMin > 0) {
+            int i = pck.dataSize() - padupMin;
+            if (i > 0) {
+                pck.putFill(0, i, 0);
+                pck.putSkip(i);
+                pck.merge2end();
+            }
+        }
+        if (padupMod > 1) {
+            int i = padupMod - (pck.dataSize() % padupMod);
+            pck.putFill(0, i, 0);
+            pck.putSkip(i);
+            pck.merge2end();
+        }
         if (mtuCheckTx) {
             if (pck.dataSize() > getMTUsize()) {
                 cntr.drop(pck, counter.reasons.fragment);
