@@ -85,7 +85,7 @@ parser ig_prs_main(packet_in pkt,
          IP_PROTOCOL_TCP: prs_tcp;
          IP_PROTOCOL_IPV4: prs_ipv4b;
          IP_PROTOCOL_IPV6: prs_ipv6b;
-         IP_PROTOCOL_ETHERIP: prs_eth3;
+         IP_PROTOCOL_SRL2: prs_eth3;
          default: accept;
       }
    }                                                                                
@@ -98,7 +98,7 @@ parser ig_prs_main(packet_in pkt,
          IP_PROTOCOL_TCP: prs_tcp;
          IP_PROTOCOL_IPV4: prs_ipv4b;
          IP_PROTOCOL_IPV6: prs_ipv6b;
-         IP_PROTOCOL_ETHERIP: prs_eth3;
+         IP_PROTOCOL_SRL2: prs_eth3;
          default: accept;
       }
    }                                                                                

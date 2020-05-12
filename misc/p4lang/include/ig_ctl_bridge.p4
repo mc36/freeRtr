@@ -83,7 +83,7 @@ control IngressControlBridge(inout headers hdr,
       hdr.ipv6c.setValid();
       hdr.ipv6c.version = 6;
       hdr.ipv6c.payload_len = (bit<16>)ig_intr_md.packet_length - (bit<16>)ig_md.vlan_size;
-      hdr.ipv6c.next_hdr = IP_PROTOCOL_ETHERIP;
+      hdr.ipv6c.next_hdr = IP_PROTOCOL_SRL2;
       hdr.ipv6c.hop_limit = 255;
       hdr.ipv6c.src_addr = target;
       hdr.ipv6c.dst_addr = target;

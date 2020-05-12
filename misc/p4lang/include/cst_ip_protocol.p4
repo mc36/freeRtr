@@ -159,6 +159,7 @@ const bit<8> IP_PROTOCOL_HIP  = 139;
 const bit<8> IP_PROTOCOL_SHIM6 = 140;
 const bit<8> IP_PROTOCOL_WESP = 141;
 const bit<8> IP_PROTOCOL_ROHC = 142;
+const bit<8> IP_PROTOCOL_SRL2 = 143;
 
 #endif // _IP_PROTOCOL_P4_
 
