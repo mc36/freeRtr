@@ -357,7 +357,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             conn.pipe.setClose();
         }
         id.timeout = 120000;
-        pipe.lineRx = pipeSide.modTyp.modeLF;
+        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeLF;
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ifc = expIfc.get(i);
