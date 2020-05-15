@@ -1,4 +1,4 @@
-description cross connect interworking with erspan
+description cross connect interworking with geneve
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -15,7 +15,7 @@ int eth1
 int tun1
  tunnel vrf v1
  tunnel mode pweompls
- tunnel key 123
+ tunnel key 1234
  tunnel source ethernet1
  tunnel destination 1.1.1.2
  vrf for v1
@@ -43,8 +43,8 @@ int eth2
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
 xconnect con
- side1 v1 eth1 pweompls 1.1.1.1 123
- side2 v1 eth2 erspan 1234:2::2 123
+ side1 v1 eth1 pweompls 1.1.1.1 1234
+ side2 v1 eth2 geneve 1234:2::2 1234
  exit
 !
 
@@ -61,8 +61,8 @@ int eth1
  exit
 int tun1
  tunnel vrf v1
- tunnel mode erspan
- tunnel key 123
+ tunnel mode geneve
+ tunnel key 1234
  tunnel source ethernet1
  tunnel destination 1234:2::1
  vrf for v1

@@ -1,4 +1,4 @@
-description cross connect interworking with vxlan
+description cross connect interworking with packet over udp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -44,7 +44,7 @@ int eth2
  exit
 xconnect con
  side1 v1 eth1 pweompls 1.1.1.1 1234
- side2 v1 eth2 vxlan 1234:2::2 1234
+ side2 v1 eth2 pckoudp 1234:2::2 1234
  exit
 !
 
@@ -61,7 +61,7 @@ int eth1
  exit
 int tun1
  tunnel vrf v1
- tunnel mode vxlan
+ tunnel mode pckoudp
  tunnel key 1234
  tunnel source ethernet1
  tunnel destination 1234:2::1

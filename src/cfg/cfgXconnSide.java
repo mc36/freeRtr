@@ -17,6 +17,7 @@ import clnt.clntGeneve;
 import clnt.clntGrePpp;
 import clnt.clntGreTap;
 import clnt.clntL2f;
+import clnt.clntSrEth;
 import ifc.ifcNshFwd;
 import ifc.ifcNull;
 import ifc.ifcUp;
@@ -163,6 +164,11 @@ public class cfgXconnSide {
     public clntEtherIp etherip;
 
     /**
+     * sreth
+     */
+    public clntSrEth sreth;
+
+    /**
      * gretap
      */
     public clntGreTap tog;
@@ -197,6 +203,7 @@ public class cfgXconnSide {
         l.add((p + 2) + " " + (p + 3) + "         erspan                  erspan encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         dlsw                    dlsw encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         etherip                 etherip encapsulation");
+        l.add((p + 2) + " " + (p + 3) + "         sreth                   sreth encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         gretap                  gretap encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         uti                     uti encapsulation");
         l.add((p + 2) + " " + (p + 3) + "         nvgre                   nvgre encapsulation");
@@ -274,6 +281,10 @@ public class cfgXconnSide {
         if (etherip != null) {
             etherip.workStop();
             etherip = null;
+        }
+        if (sreth != null) {
+            sreth.workStop();
+            sreth = null;
         }
         if (tog != null) {
             tog.workStop();
@@ -441,6 +452,14 @@ public class cfgXconnSide {
                 etherip.srcIfc = ifc;
                 etherip.setUpper(upper);
                 etherip.workStart();
+                break;
+            case prSreth:
+                sreth = new clntSrEth();
+                sreth.target = "" + adr;
+                sreth.vrf = vrf;
+                sreth.srcIfc = ifc;
+                sreth.setUpper(upper);
+                sreth.workStart();
                 break;
             case prTog:
                 tog = new clntGreTap();

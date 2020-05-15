@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.5.11-testing, done by cs@nop.;-;-
--;-;2020-05-11 22:31:20, took 09:27:10 on 1680 cases, 0 failed, 0 traces, 17 retries;-;-
+-;-;freeRouter v20.5.14-testing, done by cs@nop.;-;-
+-;-;2020-05-14 18:35:52, took 09:38:07 on 1696 cases, 0 failed, 0 traces, 21 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -272,6 +272,19 @@ conn-raw.tst;0;raw encapsulation;successfully;finished
 conn-redun.tst;0;process redundancy;successfully;finished
 conn-sep.tst;0;sep;successfully;finished
 conn-slaac.tst;0;slaac;successfully;finished
+conn-sreth01.tst;0;sreth over ipv4;successfully;finished
+conn-sreth02.tst;0;sreth over ipv6;successfully;finished
+conn-sreth03.tst;0;sreth over loopback;successfully;finished
+conn-sreth04.tst;0;hdlc tunneling with sreth;successfully;finished
+conn-sreth05.tst;0;ppp tunneling with sreth;successfully;finished
+conn-sreth06.tst;0;lapb tunneling with sreth;successfully;finished
+conn-sreth07.tst;0;framerelay tunneling with sreth;successfully;finished
+conn-sreth08.tst;0;atmdxi tunneling with sreth;successfully;finished
+conn-sreth09.tst;0;isdn tunneling with sreth;successfully;finished
+conn-sreth10.tst;0;sep tunneling with sreth;successfully;finished
+conn-sreth11.tst;0;ethernet tunneling with sreth;successfully;finished
+conn-sreth12.tst;0;vlan tunneling with sreth;successfully;finished
+conn-sreth13.tst;0;tunnel interface with sreth;successfully;finished
 conn-sstp.tst;0;ppp over sstp;successfully;finished
 conn-stp.tst;0;spantree over ethernet;successfully;finished
 conn-stun.tst;0;ppp over stun;successfully;finished
@@ -871,6 +884,7 @@ mpls-pwhe17.tst;0;ppp over mpls pwhe;successfully;finished
 mpls-pwhe18.tst;0;ethernet over mpls pwhe;successfully;finished
 mpls-pwhe19.tst;0;ethernet over mpls pwhe with cw;successfully;finished
 mpls-pwhe20.tst;0;ethernet over gretap pwhe;successfully;finished
+mpls-pwhe21.tst;0;ethernet over sreth pwhe;successfully;finished
 mpls-sr01.tst;0;sr in chain;successfully;finished
 mpls-sr02.tst;0;sr in star;successfully;finished
 mpls-sr03.tst;0;te over sr;successfully;finished
@@ -902,18 +916,20 @@ mpls-xconn03.tst;0;cross connect with vxlan;successfully;finished
 mpls-xconn04.tst;0;cross connect with geneve;successfully;finished
 mpls-xconn05.tst;0;cross connect with erspan;successfully;finished
 mpls-xconn06.tst;0;cross connect with etherip;successfully;finished
-mpls-xconn07.tst;0;cross connect with nvgre;successfully;finished
-mpls-xconn08.tst;0;cross connect with uti;successfully;finished
-mpls-xconn09.tst;0;cross connect with pwe over mpls with cw;successfully;finished
-mpls-xconn10.tst;0;cross connect interworking with packet over udp;successfully;finished
-mpls-xconn11.tst;0;cross connect interworking with vxlan;successfully;finished
-mpls-xconn12.tst;0;cross connect interworking with geneve;successfully;finished
-mpls-xconn13.tst;0;cross connect interworking with erspan;successfully;finished
-mpls-xconn14.tst;0;cross connect interworking with etherip;successfully;finished
-mpls-xconn15.tst;0;cross connect interworking with nvgre;successfully;finished
-mpls-xconn16.tst;0;cross connect interworking with uti;successfully;finished
-mpls-xconn17.tst;0;cross connect interworking with dlsw;successfully;finished
-mpls-xconn18.tst;0;cross connect with everything;successfully;finished
+mpls-xconn07.tst;0;cross connect with sreth;successfully;finished
+mpls-xconn08.tst;0;cross connect with nvgre;successfully;finished
+mpls-xconn09.tst;0;cross connect with uti;successfully;finished
+mpls-xconn10.tst;0;cross connect with pwe over mpls with cw;successfully;finished
+mpls-xconn11.tst;0;cross connect interworking with packet over udp;successfully;finished
+mpls-xconn12.tst;0;cross connect interworking with vxlan;successfully;finished
+mpls-xconn13.tst;0;cross connect interworking with geneve;successfully;finished
+mpls-xconn14.tst;0;cross connect interworking with erspan;successfully;finished
+mpls-xconn15.tst;0;cross connect interworking with etherip;successfully;finished
+mpls-xconn16.tst;0;cross connect interworking with sreth;successfully;finished
+mpls-xconn17.tst;0;cross connect interworking with nvgre;successfully;finished
+mpls-xconn18.tst;0;cross connect interworking with uti;successfully;finished
+mpls-xconn19.tst;0;cross connect interworking with dlsw;successfully;finished
+mpls-xconn20.tst;0;cross connect with everything;successfully;finished
 opnflw-rout01.tst;0;openflow: software routing;successfully;finished
 opnflw-rout02.tst;0;openflow: bridging and routing;successfully;finished
 opnflw-rout03.tst;0;openflow: ip routing;successfully;finished

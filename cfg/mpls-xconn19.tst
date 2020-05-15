@@ -1,4 +1,4 @@
-description cross connect with sreth
+description cross connect interworking with dlsw
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -10,10 +10,11 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
+ mpls enable
  exit
 int tun1
  tunnel vrf v1
- tunnel mode sreth
+ tunnel mode pweompls
  tunnel key 123
  tunnel source ethernet1
  tunnel destination 1.1.1.2
@@ -34,6 +35,7 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
  ipv6 addr 1234:1::2 ffff:ffff::
+ mpls enable
  exit
 int eth2
  vrf for v1
@@ -41,8 +43,8 @@ int eth2
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
 xconnect con
- side1 v1 eth1 sreth 1.1.1.1 123
- side2 v1 eth2 sreth 1234:2::2 123
+ side1 v1 eth1 pweompls 1.1.1.1 123
+ side2 v1 eth2 dlsw 1234:2::2 123
  exit
 !
 
@@ -59,7 +61,7 @@ int eth1
  exit
 int tun1
  tunnel vrf v1
- tunnel mode sreth
+ tunnel mode dlsw
  tunnel key 123
  tunnel source ethernet1
  tunnel destination 1234:2::1
@@ -72,5 +74,5 @@ int tun1
 
 r2 tping 100 5 1.1.1.1 /vrf v1
 r2 tping 100 5 1234:2::2 /vrf v1
-r1 tping 100 5 2.2.2.2 /vrf v1
-r3 tping 100 5 2.2.2.1 /vrf v1
+r1 tping 100 10 2.2.2.2 /vrf v1
+r3 tping 100 10 2.2.2.1 /vrf v1

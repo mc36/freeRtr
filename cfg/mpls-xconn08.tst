@@ -1,4 +1,4 @@
-description cross connect with uti
+description cross connect with nvgre
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -13,7 +13,7 @@ int eth1
  exit
 int tun1
  tunnel vrf v1
- tunnel mode uti
+ tunnel mode nvgre
  tunnel key 123
  tunnel source ethernet1
  tunnel destination 1.1.1.2
@@ -41,8 +41,8 @@ int eth2
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
 xconnect con
- side1 v1 eth1 uti 1.1.1.1 123
- side2 v1 eth2 uti 1234:2::2 123
+ side1 v1 eth1 nvgre 1.1.1.1 123
+ side2 v1 eth2 nvgre 1234:2::2 123
  exit
 !
 
@@ -59,7 +59,7 @@ int eth1
  exit
 int tun1
  tunnel vrf v1
- tunnel mode uti
+ tunnel mode nvgre
  tunnel key 123
  tunnel source ethernet1
  tunnel destination 1234:2::1

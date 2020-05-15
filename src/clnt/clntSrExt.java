@@ -23,11 +23,6 @@ import util.state;
 public class clntSrExt implements ifcDn {
 
     /**
-     * layer2 protocol number
-     */
-    public static final int layer2proto = 143;
-
-    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

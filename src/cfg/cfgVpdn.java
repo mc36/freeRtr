@@ -27,6 +27,7 @@ import clnt.clntStun;
 import clnt.clntTelnet;
 import clnt.clntVxlan;
 import clnt.clntGeneve;
+import clnt.clntSrEth;
 import ifc.ifcBridgeIfc;
 import ifc.ifcNull;
 import java.util.ArrayList;
@@ -217,6 +218,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
          */
         prEtherip,
         /**
+         * sreth
+         */
+        prSreth,
+        /**
          * uti
          */
         prUti,
@@ -288,6 +293,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     private clntDlsw dlsw;
 
     private clntEtherIp etherip;
+    
+    private clntSrEth sreth;
 
     private clntUti uti;
 
@@ -377,6 +384,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 return "dlsw";
             case prEtherip:
                 return "etherip";
+            case prSreth:
+                return "sreth";
             case prUti:
                 return "uti";
             case prNvgre:
@@ -462,6 +471,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("etherip")) {
             return protocolType.prEtherip;
+        }
+        if (s.equals("sreth")) {
+            return protocolType.prSreth;
         }
         if (s.equals("uti")) {
             return protocolType.prUti;
@@ -560,6 +572,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add("2 .    erspan                       select erspan");
         l.add("2 .    dlsw                         select dlsw");
         l.add("2 .    etherip                      select etherip");
+        l.add("2 .    sreth                        select sreth");
         l.add("2 .    uti                          select uti");
         l.add("2 .    nvgre                        select nvgre");
         l.add("2 .    vxlan                        select vxlan");
@@ -893,6 +906,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         if (etherip != null) {
             etherip.workStop();
             etherip = null;
+        }
+        if (sreth != null) {
+            sreth.workStop();
+            sreth = null;
         }
         if (uti != null) {
             uti.workStop();
@@ -1238,6 +1255,18 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 etherip.setUpper(brdgIfc);
                 etherip.workStart();
+                break;
+            case prSreth:
+                if (ifaceBridge == null) {
+                    return;
+                }
+                sreth = new clntSrEth();
+                sreth.target = target;
+                sreth.vrf = proxy.vrf;
+                sreth.srcIfc = proxy.srcIfc;
+                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                sreth.setUpper(brdgIfc);
+                sreth.workStart();
                 break;
             case prUti:
                 if (ifaceBridge == null) {

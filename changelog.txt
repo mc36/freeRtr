@@ -8841,3 +8841,20 @@ no todo: clean up javadoc errors
 no todo: client domain-name to resolve internally first
 no todo: padup ethertype config option
 no todo: entering ipvX address should remove dhcpX, slaac, gateway-*, and every related...
+---------------------------------- 2020-05-14 08:57:45
+qc pass: sreth over ipv4
+qc pass: sreth over ipv6
+qc pass: sreth over loopback
+qc pass: hdlc tunneling with sreth
+qc pass: ppp tunneling with sreth
+qc pass: lapb tunneling with sreth
+qc pass: framerelay tunneling with sreth
+qc pass: atmdxi tunneling with sreth
+qc pass: isdn tunneling with sreth
+qc pass: sep tunneling with sreth
+qc pass: ethernet tunneling with sreth
+qc pass: vlan tunneling with sreth
+qc pass: tunnel interface with sreth
+qc pass: ethernet over sreth pwhe
+qc pass: cross connect with sreth
+qc pass: cross connect interworking with sreth

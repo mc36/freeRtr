@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v20.5.11-testing, done by cs@nop.<br/>
-tested: 2020-05-11 22:31:20, took 09:27:10 on 1680 cases, 0 failed, 0 traces, 17 retries<br/>
+release: freeRouter v20.5.14-testing, done by cs@nop.<br/>
+tested: 2020-05-14 18:35:52, took 09:38:07 on 1696 cases, 0 failed, 0 traces, 21 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -275,6 +275,19 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-redun.tst">conn-redun.tst</a></td><td>0</td><td>process redundancy</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-sep.tst">conn-sep.tst</a></td><td>0</td><td>sep</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-slaac.tst">conn-slaac.tst</a></td><td>0</td><td>slaac</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth01.tst">conn-sreth01.tst</a></td><td>0</td><td>sreth over ipv4</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth02.tst">conn-sreth02.tst</a></td><td>0</td><td>sreth over ipv6</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth03.tst">conn-sreth03.tst</a></td><td>0</td><td>sreth over loopback</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth04.tst">conn-sreth04.tst</a></td><td>0</td><td>hdlc tunneling with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth05.tst">conn-sreth05.tst</a></td><td>0</td><td>ppp tunneling with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth06.tst">conn-sreth06.tst</a></td><td>0</td><td>lapb tunneling with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth07.tst">conn-sreth07.tst</a></td><td>0</td><td>framerelay tunneling with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth08.tst">conn-sreth08.tst</a></td><td>0</td><td>atmdxi tunneling with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth09.tst">conn-sreth09.tst</a></td><td>0</td><td>isdn tunneling with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth10.tst">conn-sreth10.tst</a></td><td>0</td><td>sep tunneling with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth11.tst">conn-sreth11.tst</a></td><td>0</td><td>ethernet tunneling with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth12.tst">conn-sreth12.tst</a></td><td>0</td><td>vlan tunneling with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-sreth13.tst">conn-sreth13.tst</a></td><td>0</td><td>tunnel interface with sreth</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-sstp.tst">conn-sstp.tst</a></td><td>0</td><td>ppp over sstp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-stp.tst">conn-stp.tst</a></td><td>0</td><td>spantree over ethernet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-stun.tst">conn-stun.tst</a></td><td>0</td><td>ppp over stun</td><td>successfully</td><td>finished</td></tr>
@@ -874,6 +887,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwhe18.tst">mpls-pwhe18.tst</a></td><td>0</td><td>ethernet over mpls pwhe</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwhe19.tst">mpls-pwhe19.tst</a></td><td>0</td><td>ethernet over mpls pwhe with cw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwhe20.tst">mpls-pwhe20.tst</a></td><td>0</td><td>ethernet over gretap pwhe</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-pwhe21.tst">mpls-pwhe21.tst</a></td><td>0</td><td>ethernet over sreth pwhe</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr01.tst">mpls-sr01.tst</a></td><td>0</td><td>sr in chain</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr02.tst">mpls-sr02.tst</a></td><td>0</td><td>sr in star</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr03.tst">mpls-sr03.tst</a></td><td>0</td><td>te over sr</td><td>successfully</td><td>finished</td></tr>
@@ -905,18 +919,20 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn04.tst">mpls-xconn04.tst</a></td><td>0</td><td>cross connect with geneve</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn05.tst">mpls-xconn05.tst</a></td><td>0</td><td>cross connect with erspan</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn06.tst">mpls-xconn06.tst</a></td><td>0</td><td>cross connect with etherip</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn07.tst">mpls-xconn07.tst</a></td><td>0</td><td>cross connect with nvgre</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn08.tst">mpls-xconn08.tst</a></td><td>0</td><td>cross connect with uti</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn09.tst">mpls-xconn09.tst</a></td><td>0</td><td>cross connect with pwe over mpls with cw</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn10.tst">mpls-xconn10.tst</a></td><td>0</td><td>cross connect interworking with packet over udp</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn11.tst">mpls-xconn11.tst</a></td><td>0</td><td>cross connect interworking with vxlan</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn12.tst">mpls-xconn12.tst</a></td><td>0</td><td>cross connect interworking with geneve</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn13.tst">mpls-xconn13.tst</a></td><td>0</td><td>cross connect interworking with erspan</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn14.tst">mpls-xconn14.tst</a></td><td>0</td><td>cross connect interworking with etherip</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn15.tst">mpls-xconn15.tst</a></td><td>0</td><td>cross connect interworking with nvgre</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn16.tst">mpls-xconn16.tst</a></td><td>0</td><td>cross connect interworking with uti</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn17.tst">mpls-xconn17.tst</a></td><td>0</td><td>cross connect interworking with dlsw</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn18.tst">mpls-xconn18.tst</a></td><td>0</td><td>cross connect with everything</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn07.tst">mpls-xconn07.tst</a></td><td>0</td><td>cross connect with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn08.tst">mpls-xconn08.tst</a></td><td>0</td><td>cross connect with nvgre</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn09.tst">mpls-xconn09.tst</a></td><td>0</td><td>cross connect with uti</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn10.tst">mpls-xconn10.tst</a></td><td>0</td><td>cross connect with pwe over mpls with cw</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn11.tst">mpls-xconn11.tst</a></td><td>0</td><td>cross connect interworking with packet over udp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn12.tst">mpls-xconn12.tst</a></td><td>0</td><td>cross connect interworking with vxlan</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn13.tst">mpls-xconn13.tst</a></td><td>0</td><td>cross connect interworking with geneve</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn14.tst">mpls-xconn14.tst</a></td><td>0</td><td>cross connect interworking with erspan</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn15.tst">mpls-xconn15.tst</a></td><td>0</td><td>cross connect interworking with etherip</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn16.tst">mpls-xconn16.tst</a></td><td>0</td><td>cross connect interworking with sreth</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn17.tst">mpls-xconn17.tst</a></td><td>0</td><td>cross connect interworking with nvgre</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn18.tst">mpls-xconn18.tst</a></td><td>0</td><td>cross connect interworking with uti</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn19.tst">mpls-xconn19.tst</a></td><td>0</td><td>cross connect interworking with dlsw</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-xconn20.tst">mpls-xconn20.tst</a></td><td>0</td><td>cross connect with everything</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/opnflw-rout01.tst">opnflw-rout01.tst</a></td><td>0</td><td>openflow: software routing</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/opnflw-rout02.tst">opnflw-rout02.tst</a></td><td>0</td><td>openflow: bridging and routing</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/opnflw-rout03.tst">opnflw-rout03.tst</a></td><td>0</td><td>openflow: ip routing</td><td>successfully</td><td>finished</td></tr>

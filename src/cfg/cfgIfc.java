@@ -36,6 +36,7 @@ import clnt.clntMplsTrg;
 import clnt.clntMplsUdp;
 import clnt.clntSlaac;
 import clnt.clntMplsSr;
+import clnt.clntSrEth;
 import clnt.clntSrExt;
 import clnt.clntUdpGre;
 import clnt.clntWireguard;
@@ -669,6 +670,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntEtherIp tunEtherip;
 
     /**
+     * sreth tunnel handler
+     */
+    public clntSrEth tunSreth;
+
+    /**
      * uti tunnel handler
      */
     public clntUti tunUti;
@@ -1149,6 +1155,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * etherip tunnel interface
          */
         etherip,
+        /**
+         * sreth tunnel interface
+         */
+        sreth,
         /**
          * uti tunnel interface
          */
@@ -1819,6 +1829,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "dlsw";
             case etherip:
                 return "etherip";
+            case sreth:
+                return "sreth";
             case uti:
                 return "uti";
             case nvgre:
@@ -1949,6 +1961,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("etherip")) {
             return tunnelType.etherip;
+        }
+        if (s.equals("sreth")) {
+            return tunnelType.sreth;
         }
         if (s.equals("uti")) {
             return tunnelType.uti;
@@ -3277,6 +3292,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunEtherip.workStop();
             tunEtherip = null;
         }
+        if (tunSreth != null) {
+            tunSreth.workStop();
+            tunSreth = null;
+        }
         if (tunUti != null) {
             tunUti.workStop();
             tunUti = null;
@@ -3858,6 +3877,17 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunEtherip.setUpper(ethtyp);
                 tunEtherip.workStart();
                 lower = tunEtherip;
+                break;
+            case sreth:
+                tunSreth = new clntSrEth();
+                tunSreth.target = "" + tunTrg;
+                tunSreth.vrf = tunVrf;
+                tunSreth.srcIfc = tunSrc;
+                tunSreth.sendingTOS = tunTOS;
+                tunSreth.sendingTTL = tunTTL;
+                tunSreth.setUpper(ethtyp);
+                tunSreth.workStart();
+                lower = tunSreth;
                 break;
             case uti:
                 tunUti = new clntUti();
@@ -5165,6 +5195,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       erspan                    erspan encapsulation");
         l.add("3 .       dlsw                      dlsw encapsulation");
         l.add("3 .       etherip                   etherip encapsulation");
+        l.add("3 .       sreth                     segment routing ethernet encapsulation");
         l.add("3 .       uti                       universal transport interface");
         l.add("3 .       nvgre                     nvgre encapsulation");
         l.add("3 .       mplsip                    mplsip encapsulation");

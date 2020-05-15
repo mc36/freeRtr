@@ -7,7 +7,7 @@ import addr.addrMac;
 import addr.addrPrefix;
 import cfg.cfgBrdg;
 import cfg.cfgIfc;
-import clnt.clntSrExt;
+import clnt.clntSrEth;
 import clnt.clntVxlan;
 import ifc.ifcBridgeRtr;
 import ifc.ifcDot1ah;
@@ -637,7 +637,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         pck.putDefaults();
         pck.IPtrg.setAddr(srv);
         pck.IPsrc.setAddr(srv);
-        pck.IPprt = clntSrExt.layer2proto;
+        pck.IPprt = clntSrEth.prot;
         ipMpls.beginMPLSfields(pck, false);
         parent.vrfCore.fwd6.protoPack(iface.getFwdIfc(srv), pck);
     }
