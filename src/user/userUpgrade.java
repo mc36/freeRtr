@@ -565,7 +565,7 @@ class userUpgradeBlob {
         }
         head = txt.get(0);
         jars = txt.get(1);
-        time = Long.parseLong(txt.get(2));
+        time = bits.str2long(txt.get(2));
         String sum = txt.get(len);
         txt.remove(len);
         if (!sum.equals(userUpgrade.calcTextHash(bits.lst2lin(txt, false)))) {

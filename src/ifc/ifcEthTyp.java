@@ -142,6 +142,8 @@ public class ifcEthTyp implements Runnable, ifcUp {
 
     private counter totCntr;
 
+    private final counter hwCntr;
+
     private final counter cntr;
 
     private final counter[] sizes;
@@ -172,6 +174,15 @@ public class ifcEthTyp implements Runnable, ifcUp {
      */
     public history getHistory() {
         return hstry;
+    }
+
+    /**
+     * get hw counter
+     *
+     * @return counter
+     */
+    public counter getHwCounter() {
+        return hwCntr;
     }
 
     public counter getCounter() {
@@ -443,6 +454,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         notif = new notifier();
         lower = new ifcNull();
         totCntr = new counter();
+        hwCntr = new counter();
         cntr = new counter();
         sizes = new counter[8];
         clsCos = new counter[8];

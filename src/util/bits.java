@@ -962,6 +962,22 @@ public class bits {
     }
 
     /**
+     * convert string to number
+     *
+     * @param s string to convert
+     * @return value of string, 0 if failed to convert
+     */
+    public static long str2long(String s) {
+        long i = 0;
+        s = s.trim();
+        try {
+            i = Long.parseLong(s, 10);
+        } catch (Exception e) {
+        }
+        return i;
+    }
+
+    /**
      * convert number to string
      *
      * @param i number to convert

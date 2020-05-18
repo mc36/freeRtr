@@ -532,21 +532,35 @@ class servOpenflowRx implements Runnable {
                     ntry.upper.recvPack(pckB);
                     break;
                 case packOpenflow.typMultiRep:
-                    if (pckB.msbGetW(0) != 13) {
-                        break;
-                    }
-                    pckB.getSkip(8);
-                    for (;;) {
-                        if (pckB.dataSize() < 64) {
+                    switch (pckB.msbGetW(0)) {
+                        case 4:
+                            pckB.getSkip(8);
+                            int i = pckB.msbGetD(0);
+                            if (debugger.servOpenflowTraf) {
+                                logger.debug("port #" + i + " stats");
+                            }
+                            ntry = new servOpenflowIfc1();
+                            ntry.id = i;
+                            ntry = lower.expIfc.find(ntry);
+                            if (ntry == null) {
+                                break;
+                            }
+                            counter cntr = ntry.ifc.ethtyp.getHwCounter();
+                            cntr.packRx = pckB.msbGetQ(8);
+                            cntr.packTx = pckB.msbGetQ(16);
+                            cntr.byteRx = pckB.msbGetQ(24);
+                            cntr.byteTx = pckB.msbGetQ(32);
+                            cntr.packDr = pckB.msbGetQ(40) + pckB.msbGetQ(48);
                             break;
-                        }
-                        int i = pckB.msbGetD(0);
-                        addrMac mac = new addrMac();
-                        pckB.getAddr(mac, 8);
-                        pckB.getSkip(64);
-                        if (debugger.servOpenflowTraf) {
-                            logger.debug("port #" + i + " - " + mac);
-                        }
+                        case 13:
+                            pckB.getSkip(8);
+                            i = pckB.msbGetD(0);
+                            addrMac mac = new addrMac();
+                            pckB.getAddr(mac, 8);
+                            if (debugger.servOpenflowTraf) {
+                                logger.debug("port #" + i + " mac=" + mac);
+                            }
+                            break;
                     }
                     break;
                 case packOpenflow.typFeatRep:
@@ -1590,7 +1604,17 @@ class servOpenflowTx implements Runnable {
             sendTable(pckB, pckO, servOpenflow.tabMpls, tabMpls, createMpls(pckB, pckO, ifc4, ifc6));
             sendTable(pckB, pckO, servOpenflow.tabIpv4, tabIpv4, createIpvX(pckB, pckO, true, ifc4));
             sendTable(pckB, pckO, servOpenflow.tabIpv6, tabIpv6, createIpvX(pckB, pckO, false, ifc6));
-            lower.notif.misleep(0);
+            for (int i = 0; i < lower.expIfc.size(); i++) {
+                servOpenflowIfc1 ifc = lower.expIfc.get(i);
+                pckB.clear();
+                pckB.msbPutD(0, ifc.id);
+                pckB.msbPutD(4, 0);
+                pckB.putSkip(8);
+                pckB.merge2beg();
+                pckO.createMultipart(pckB, 4, 0);
+                lower.sendPack(pckB, pckO);
+            }
+            lower.notif.misleep(5000);
         }
     }
 }

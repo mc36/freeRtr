@@ -4492,7 +4492,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * get interface statistics
      *
-     * @param mode mode to use: 1=counters, 2..10=history
+     * @param mode mode to use: 1=counters, 2..10=history, 11=hwcounters
      * @return string list
      */
     public List<String> getShIntTxt(int mode) {
@@ -4537,6 +4537,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case 10:
                 l.addAll(ethtyp.getHistory().show(mode - 1));
                 break;
+            case 11:
+                l.addAll(ethtyp.getHwCounter().getShFull(ethtyp.getPromisc(), ethtyp.getMacsec()));
+                break;
         }
         return l;
     }
@@ -4547,7 +4550,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @param l list to update
      * @param mode mode to use: 1=descr, 2=sumary, 3=vrf, 4=ip4, 5=ip6, 6=cdp,
      * 7=lldp, 8=udld, 9=trafic, 10=total, 11=psumary, 12=ptrafic, 13=ptotal,
-     * 14=lacp
+     * 14=lacp, 15=hwsum, 16=hwpsum
      */
     public void getShIntTab(userFormat l, int mode) {
         switch (mode) {
@@ -4610,6 +4613,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                     break;
                 }
                 l.add(lacp.getShNeigh(false));
+                break;
+            case 15:
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHwCounter().getShBsum());
+                break;
+            case 16:
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHwCounter().getShPsum());
                 break;
         }
     }

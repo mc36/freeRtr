@@ -669,6 +669,10 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(2));
                 return null;
             }
+            if (a.equals("hwsummary")) {
+                rdr.putStrTab(cfgAll.getShIntTab(15));
+                return null;
+            }
             if (a.equals("total")) {
                 rdr.putStrTab(cfgAll.getShIntTab(10));
                 return null;
@@ -679,6 +683,10 @@ public class userShow {
             }
             if (a.equals("psummary")) {
                 rdr.putStrTab(cfgAll.getShIntTab(11));
+                return null;
+            }
+            if (a.equals("hwpsummary")) {
+                rdr.putStrTab(cfgAll.getShIntTab(16));
                 return null;
             }
             if (a.equals("ptraffic")) {
@@ -732,6 +740,10 @@ public class userShow {
             }
             if (a.equals("counters")) {
                 rdr.putStrArr(ifc.getShIntTxt(1));
+                return null;
+            }
+            if (a.equals("hwcounters")) {
+                rdr.putStrArr(ifc.getShIntTxt(11));
                 return null;
             }
             if (a.length() < 1) {

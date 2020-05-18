@@ -614,9 +614,11 @@ public class userExec {
         hl.add("3 .        full                  full listing");
         hl.add("3 .        description           description listing");
         hl.add("3 .        summary               summary listing");
+        hl.add("3 .        hwsummary             hardware summary listing");
         hl.add("3 .        total                 total listing");
         hl.add("3 .        traffic               traffic listing");
         hl.add("3 .        psummary              packet summary listing");
+        hl.add("3 .        hwpsummary            hardware packet summary listing");
         hl.add("3 .        ptotal                packet total listing");
         hl.add("3 .        ptraffic              packet traffic listing");
         hl.add("3 .        vrf                   vrf listing");
@@ -635,6 +637,7 @@ public class userExec {
         hl.add("4 .          numhist             numeric historic byte counters");
         hl.add("4 .          numphist            numeric historic packet counters");
         hl.add("4 .          counters            counters");
+        hl.add("4 .          hwcounters          hardware counters");
         hl.add("4 .          ethertypes          ethernet types");
         hl.add("4 .          lossdetect          loss detection");
         hl.add("4 .          packetsizes         packet sizes");

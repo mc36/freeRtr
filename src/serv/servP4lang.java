@@ -681,6 +681,20 @@ class servP4langConn implements Runnable {
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
+            if (s.equals("counter")) {
+                servP4langIfc ntry = new servP4langIfc();
+                ntry.id = bits.str2num(cmd.word());
+                ntry = lower.expIfc.find(ntry);
+                if (ntry == null) {
+                    return false;
+                }
+                counter cntr = ntry.ifc.ethtyp.getHwCounter();
+                cntr.packRx = bits.str2long(cmd.word());
+                cntr.byteRx = bits.str2long(cmd.word());
+                cntr.packTx = bits.str2long(cmd.word());
+                cntr.byteTx = bits.str2long(cmd.word());
+                return false;
+            }
             if (s.equals("state")) {
                 servP4langIfc ntry = new servP4langIfc();
                 ntry.id = bits.str2num(cmd.word());
