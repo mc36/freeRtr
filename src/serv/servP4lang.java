@@ -406,7 +406,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     protected void sendPack(int id, packHolder pckB) {
         ifcEther.createETHheader(pckB, false);
         if (intercon != null) {
-            pckB.msbPutW(0, id << 7);
+            pckB.msbPutW(0, id);
             pckB.putSkip(2);
             pckB.merge2beg();
             ifcEther.parseETHheader(pckB, false);
@@ -429,7 +429,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         ifcEther.createETHheader(pck, false);
-        int id = pck.msbGetW(0) >>> 7;
+        int id = pck.msbGetW(0);
         pck.getSkip(2);
         ifcEther.parseETHheader(pck, false);
         servP4langIfc ntry = new servP4langIfc();
