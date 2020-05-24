@@ -169,6 +169,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router lsrp
         "router lsrp[4|6] .*! distance 70",
         "router lsrp[4|6] .*! no default-originate",
+        "router lsrp[4|6] .*! no stub",
         "router lsrp[4|6] .*! no prefix-list",
         "router lsrp[4|6] .*! no route-map",
         "router lsrp[4|6] .*! no route-policy",

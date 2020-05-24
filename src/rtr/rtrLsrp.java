@@ -72,6 +72,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     public addrIPv4 routerID;
 
     /**
+     * stub flag
+     */
+    public boolean stub;
+
+    /**
      * default distance
      */
     public int distance = 70;
@@ -532,6 +537,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         dat.network.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteEntry.distanLim);
         dat.rtrId = routerID.copyBytes();
+        dat.stub = stub;
         dat.topoSum = lastSpf.listTopoSum().hashCode();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
         dat.software = version.usrAgnt.replaceAll(" ", "_");
@@ -586,6 +592,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             ntry.putNeighs(spf);
             spf.addSegRouB(ntry.rtrId, ntry.segrouBeg);
             spf.addSegRouI(ntry.rtrId, ntry.segrouIdx);
+            spf.addStub(ntry.rtrId, ntry.stub);
             spf.addBierB(ntry.rtrId, ntry.bierBeg);
             spf.addBierI(ntry.rtrId, ntry.bierIdx, true);
             if (routerID.compare(routerID, ntry.rtrId) == 0) {
@@ -757,6 +764,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add("2 .     <num>                     age in ms");
         l.add("1 2   lifetime                    data life time");
         l.add("2 .     <num>                     age in ms");
+        l.add("1 .   stub                        stub router");
         l.add("1 2   segrout                     segment routing parameters");
         l.add("2 3     <num>                     maximum index");
         l.add("3 .       <num>                   this node index");
@@ -778,6 +786,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(beg + "distance " + distance);
         l.add(beg + "refresh " + refresh);
         l.add(beg + "lifetime " + lifetime);
+        cmds.cfgLine(l, !stub, beg, "stub", "");
         cmds.cfgLine(l, !defOrigin, beg, "default-originate", "");
         cmds.cfgLine(l, prflstIn == null, beg, "prefix-list", "" + prflstIn);
         cmds.cfgLine(l, roumapIn == null, beg, "route-map", "" + roumapIn);
@@ -810,6 +819,12 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         if (s.equals("default-originate")) {
             defOrigin = !negated;
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("stub")) {
+            stub = !negated;
             todo.set(0);
             notif.wakeup();
             return false;

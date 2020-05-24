@@ -34,6 +34,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public addrIPv4 rtrId;
 
     /**
+     * stub flag
+     */
+    public boolean stub;
+
+    /**
      * topology summary
      */
     public int topoSum;
@@ -192,13 +197,16 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      *
      * @param typ type to use: 0x1=id, 0x2=nam, 0x4=seq, 0x8=time, 0x10=neighs,
      * 0x20=nets, 0x40=sr, 0x80=uptime 0x100=change 0x200=version, 0x400=bier
-     * 0x800=toposum
+     * 0x800=toposum, 0x1000=addrs, 0x2000=stub
      * @return dumped data
      */
     public String dump(int typ) {
         String s = "";
         if ((typ & 0x1) != 0) {
             s += " rtrid=" + rtrId;
+        }
+        if ((typ & 0x2000) != 0) {
+            s += " stub=" + stub;
         }
         if ((typ & 0x2) != 0) {
             s += " hostname=" + hostname;
@@ -298,6 +306,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      */
     public boolean fromString(cmds cmd) {
         rtrId = new addrIPv4();
+        stub = false;
         hostname = "";
         software = "";
         hardware = "";
@@ -343,6 +352,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (rtrId.fromString(s)) {
                     return true;
                 }
+                continue;
+            }
+            if (a.equals("stub")) {
+                stub = s.toLowerCase().equals("true");
                 continue;
             }
             if (a.equals("toposum")) {

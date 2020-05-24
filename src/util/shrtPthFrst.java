@@ -128,6 +128,21 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     }
 
     /**
+     * add stub flag
+     *
+     * @param nod node to add
+     * @param stub stub flag
+     */
+    public void addStub(Ta nod, boolean stub) {
+        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
+        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        ntry.stub = stub;
+    }
+
+    /**
      * add segment routing base
      *
      * @param nod node to add
@@ -258,6 +273,11 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 }
             }
             lst.del(ntry);
+            if (ntry.stub) {
+                if (from.compare(from, ntry.name) != 0) {
+                    continue;
+                }
+            }
             for (int i = 0; i < ntry.conn.size(); i++) {
                 shrtPthFrstConn<Ta> c = ntry.conn.get(i);
                 if (c == null) {
@@ -847,6 +867,8 @@ class shrtPthFrstIdx implements Comparator<shrtPthFrstIdx> {
 class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<shrtPthFrstNode<Ta>> {
 
     protected Ta name;
+
+    protected boolean stub;
 
     protected addrIP nxtHop;
 
