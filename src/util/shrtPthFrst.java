@@ -75,9 +75,10 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param to target node
      * @param metric metric
      * @param realHop true if hop, false if network
+     * @param stub stub adjacency
      * @param ident link id
      */
-    public void addConn(Ta from, Ta to, int metric, boolean realHop, Object ident) {
+    public void addConn(Ta from, Ta to, int metric, boolean realHop, boolean stub, Object ident) {
         if (metric < 0) {
             metric = 0;
         }
@@ -90,6 +91,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         c.metric = metric;
         c.target = ntry;
         c.realHop = realHop;
+        c.stub = stub;
         c.ident = ident;
         ntry = new shrtPthFrstNode<Ta>(from);
         old = nodes.add(ntry);
@@ -125,21 +127,6 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         ntry.iface = ifc;
         ntry.nxtCon = true;
         return false;
-    }
-
-    /**
-     * add stub flag
-     *
-     * @param nod node to add
-     * @param stub stub flag
-     */
-    public void addStub(Ta nod, boolean stub) {
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
-        if (old != null) {
-            ntry = old;
-        }
-        ntry.stub = stub;
     }
 
     /**
@@ -254,6 +241,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         ntry.metric = 0;
         ntry.hops = 0;
         lst.add(ntry);
+        boolean frst = true;
         for (;;) {
             if (lst.size() < 1) {
                 tim3 = bits.getTime();
@@ -273,14 +261,12 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 }
             }
             lst.del(ntry);
-            if (ntry.stub) {
-                if (from.compare(from, ntry.name) != 0) {
-                    continue;
-                }
-            }
             for (int i = 0; i < ntry.conn.size(); i++) {
                 shrtPthFrstConn<Ta> c = ntry.conn.get(i);
                 if (c == null) {
+                    continue;
+                }
+                if ((!frst) && c.stub) {
                     continue;
                 }
                 int o = ntry.metric + c.metric;
@@ -294,6 +280,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                     lst.add(c.target);
                 }
             }
+            frst = false;
         }
     }
 
@@ -832,6 +819,8 @@ class shrtPthFrstConn<Ta extends Comparator<? super Ta>> {
 
     protected int metric;
 
+    protected boolean stub;
+
     protected boolean realHop;
 
     protected Object ident;
@@ -867,8 +856,6 @@ class shrtPthFrstIdx implements Comparator<shrtPthFrstIdx> {
 class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<shrtPthFrstNode<Ta>> {
 
     protected Ta name;
-
-    protected boolean stub;
 
     protected addrIP nxtHop;
 

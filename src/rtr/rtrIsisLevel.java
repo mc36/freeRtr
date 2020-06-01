@@ -598,8 +598,8 @@ public class rtrIsisLevel implements Runnable {
                 addrIsis adr = lower.getISalias(tlv);
                 if (adr != null) {
                     rtrIsisLevelSpf trg = new rtrIsisLevelSpf(adr, 0);
-                    spf.addConn(src, trg, 0, false, null);
-                    spf.addConn(trg, src, 0, false, null);
+                    spf.addConn(src, trg, 0, false, false, null);
+                    spf.addConn(trg, src, 0, false, false, null);
                     continue;
                 }
                 tabGen<rtrIsisLsp> nel = lower.getISneigh(tlv);
@@ -609,7 +609,7 @@ public class rtrIsisLevel implements Runnable {
                         if (nei == null) {
                             continue;
                         }
-                        spf.addConn(src, new rtrIsisLevelSpf(nei.srcID, nei.nodID), nei.lspNum, nei.nodID == 0, null);
+                        spf.addConn(src, new rtrIsisLevelSpf(nei.srcID, nei.nodID), nei.lspNum, nei.nodID == 0, false, null);
                     }
                     continue;
                 }

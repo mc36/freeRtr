@@ -1420,6 +1420,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         // lsrp
         "interface .*! no router lsrp[4|6] .* passive",
         "interface .*! no router lsrp[4|6] .* bfd",
+        "interface .*! no router lsrp[4|6] .* stub",
+        "interface .*! no router lsrp[4|6] .* unstub",
         "interface .*! no router lsrp[4|6] .* suppress-prefix",
         "interface .*! no router lsrp[4|6] .* password",
         "interface .*! no router lsrp[4|6] .* encryption",

@@ -532,12 +532,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (nei.segrouLab != null) {
                     adj = nei.segrouLab.getValue();
                 }
-                dat.addNeigh(nei.rtrId, ifc.metric, (int) (ifc.iface.bandwidth / 1000), ifc.affinity, ifc.srlg, adj);
+                dat.addNeigh(nei.rtrId, ifc.metric, (stub || ifc.stub) && (!ifc.unstub), (int) (ifc.iface.bandwidth / 1000), ifc.affinity, ifc.srlg, adj);
             }
         }
         dat.network.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteEntry.distanLim);
         dat.rtrId = routerID.copyBytes();
-        dat.stub = stub;
         dat.topoSum = lastSpf.listTopoSum().hashCode();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
         dat.software = version.usrAgnt.replaceAll(" ", "_");
@@ -589,10 +588,12 @@ public class rtrLsrp extends ipRtr implements Runnable {
         shrtPthFrst<addrIPv4> spf = new shrtPthFrst<addrIPv4>(lastSpf);
         for (int i = 0; i < database.size(); i++) {
             rtrLsrpData ntry = database.get(i);
+            if (ntry == null) {
+                continue;
+            }
             ntry.putNeighs(spf);
             spf.addSegRouB(ntry.rtrId, ntry.segrouBeg);
             spf.addSegRouI(ntry.rtrId, ntry.segrouIdx);
-            spf.addStub(ntry.rtrId, ntry.stub);
             spf.addBierB(ntry.rtrId, ntry.bierBeg);
             spf.addBierI(ntry.rtrId, ntry.bierIdx, true);
             if (routerID.compare(routerID, ntry.rtrId) == 0) {
@@ -633,6 +634,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         for (int o = 0; o < database.size(); o++) {
             rtrLsrpData ntry = database.get(o);
+            if (ntry == null) {
+                continue;
+            }
             addrIP hop = spf.getNextHop(ntry.rtrId);
             if (hop == null) {
                 continue;

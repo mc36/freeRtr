@@ -47,14 +47,24 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
     public int metric = 10;
 
     /**
+     * stub flag
+     */
+    public boolean stub = false;
+
+    /**
+     * unstub flag
+     */
+    public boolean unstub = false;
+
+    /**
      * affinity
      */
-    public int affinity;
+    public int affinity = 0;
 
     /**
      * srlg
      */
-    public int srlg;
+    public int srlg = 0;
 
     /**
      * bfd enabled
@@ -200,6 +210,8 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
+        cmds.cfgLine(l, !stub, cmds.tabulator, beg + "stub", "");
+        cmds.cfgLine(l, !unstub, cmds.tabulator, beg + "unstub", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
         cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication));
@@ -220,6 +232,8 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 .         bfd                     enable bfd triggered down");
         l.add("4 .         passive                 do not form neighborship");
+        l.add("4 .         stub                    do not route traffic");
+        l.add("4 .         unstub                  do route traffic");
         l.add("4 .         suppress-prefix         do not advertise interface");
         l.add("4 5         encryption              select encryption method");
         l.add("5 6           ssh                   select secure shell");
@@ -253,6 +267,18 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
     public void routerDoConfig(String a, cmds cmd) {
         if (a.equals("bfd")) {
             bfdTrigger = true;
+            return;
+        }
+        if (a.equals("stub")) {
+            stub = true;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("unstub")) {
+            unstub = true;
+            lower.todo.set(0);
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("split-horizon")) {
@@ -321,6 +347,18 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
     public void routerUnConfig(String a, cmds cmd) {
         if (a.equals("bfd")) {
             bfdTrigger = false;
+            return;
+        }
+        if (a.equals("stub")) {
+            stub = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("unstub")) {
+            unstub = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("split-horizon")) {

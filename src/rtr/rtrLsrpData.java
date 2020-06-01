@@ -34,11 +34,6 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public addrIPv4 rtrId;
 
     /**
-     * stub flag
-     */
-    public boolean stub;
-
-    /**
      * topology summary
      */
     public int topoSum;
@@ -197,16 +192,13 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      *
      * @param typ type to use: 0x1=id, 0x2=nam, 0x4=seq, 0x8=time, 0x10=neighs,
      * 0x20=nets, 0x40=sr, 0x80=uptime 0x100=change 0x200=version, 0x400=bier
-     * 0x800=toposum, 0x1000=addrs, 0x2000=stub
+     * 0x800=toposum, 0x1000=addrs
      * @return dumped data
      */
     public String dump(int typ) {
         String s = "";
         if ((typ & 0x1) != 0) {
             s += " rtrid=" + rtrId;
-        }
-        if ((typ & 0x2000) != 0) {
-            s += " stub=" + stub;
         }
         if ((typ & 0x2) != 0) {
             s += " hostname=" + hostname;
@@ -223,6 +215,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             s += " bierlen=" + bierLen;
         }
         int metric = 0;
+        boolean stub = false;
         int bndwdt = 0;
         int affinity = 0;
         int srlg = 0;
@@ -234,6 +227,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (ntry.metric != metric) {
                     s += " metric=" + ntry.metric;
                     metric = ntry.metric;
+                }
+                if (ntry.stub != stub) {
+                    s += " stub=" + ntry.stub;
+                    stub = ntry.stub;
                 }
                 if (ntry.bndwdt != bndwdt) {
                     s += " bandwidth=" + ntry.bndwdt;
@@ -306,7 +303,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      */
     public boolean fromString(cmds cmd) {
         rtrId = new addrIPv4();
-        stub = false;
+        boolean stub = false;
         hostname = "";
         software = "";
         hardware = "";
@@ -478,7 +475,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (adr.fromString(s)) {
                     return true;
                 }
-                addNeigh(adr, metric, bndwdt, affinity, srlg, segrouAdj);
+                addNeigh(adr, metric, stub, bndwdt, affinity, srlg, segrouAdj);
                 continue;
             }
         }
@@ -490,15 +487,17 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      *
      * @param nei router id
      * @param met metric
+     * @param stb stub flag
      * @param bw bandwidth
      * @param aff affinity
      * @param srl srlg
      * @param adj segrout adjacency
      */
-    protected void addNeigh(addrIPv4 nei, int met, int bw, int aff, int srl, int adj) {
+    protected void addNeigh(addrIPv4 nei, int met, boolean stb, int bw, int aff, int srl, int adj) {
         rtrLsrpDataNeigh ntry = new rtrLsrpDataNeigh();
         ntry.rtrid = nei.copyBytes();
         ntry.metric = met;
+        ntry.stub = stb;
         ntry.bndwdt = bw;
         ntry.affnty = aff;
         ntry.srlg = srl;
@@ -520,7 +519,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     protected void putNeighs(shrtPthFrst<addrIPv4> spf) {
         for (int i = 0; i < neighbor.size(); i++) {
             rtrLsrpDataNeigh ntry = neighbor.get(i);
-            spf.addConn(rtrId, ntry.rtrid, ntry.metric, true, null);
+            spf.addConn(rtrId, ntry.rtrid, ntry.metric, true, ntry.stub, null);
         }
     }
 
@@ -532,6 +531,11 @@ class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
      * router id
      */
     public addrIPv4 rtrid;
+
+    /**
+     * stub flag
+     */
+    public boolean stub;
 
     /**
      * metric
