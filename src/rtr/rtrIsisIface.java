@@ -387,7 +387,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
                 return;
             }
             if (a.equals("bandwidth")) {
-                teBandwidth = bits.str2num(cmd.word());
+                teBandwidth = bits.str2long(cmd.word());
                 return;
             }
             if (a.equals("affinity")) {

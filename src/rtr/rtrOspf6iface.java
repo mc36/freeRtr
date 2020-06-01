@@ -403,7 +403,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
                 return;
             }
             if (a.equals("bandwidth")) {
-                teBandwidth = bits.str2num(cmd.word());
+                teBandwidth = bits.str2long(cmd.word());
                 area.schedWork(1);
                 return;
             }

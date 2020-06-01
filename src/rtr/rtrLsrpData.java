@@ -216,7 +216,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         }
         int metric = 0;
         boolean stub = false;
-        int bndwdt = 0;
+        long bndwdt = 0;
         int affinity = 0;
         int srlg = 0;
         int segrou = 0;
@@ -324,7 +324,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         changesTim = 0;
         int segrouAdj = 0;
         int metric = 0;
-        int bndwdt = 0;
+        long bndwdt = 0;
         int affinity = 0;
         int srlg = 0;
         int tag = 0;
@@ -436,7 +436,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 continue;
             }
             if (a.equals("bandwidth")) {
-                bndwdt = bits.str2num(s);
+                bndwdt = bits.str2long(s);
                 continue;
             }
             if (a.equals("affinity")) {
@@ -493,7 +493,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * @param srl srlg
      * @param adj segrout adjacency
      */
-    protected void addNeigh(addrIPv4 nei, int met, boolean stb, int bw, int aff, int srl, int adj) {
+    protected void addNeigh(addrIPv4 nei, int met, boolean stb, long bw, int aff, int srl, int adj) {
         rtrLsrpDataNeigh ntry = new rtrLsrpDataNeigh();
         ntry.rtrid = nei.copyBytes();
         ntry.metric = met;
@@ -555,7 +555,7 @@ class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
     /**
      * bandwidth
      */
-    public int bndwdt;
+    public long bndwdt;
 
     /**
      * segment routing

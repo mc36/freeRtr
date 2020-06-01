@@ -5469,7 +5469,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             autoBndWdt = 0;
             a = cmd.word();
             if (!a.equals("auto")) {
-                ethtyp.forcedBW = (long) (bits.str2num(a) * 1000);
+                ethtyp.forcedBW = bits.str2long(a) * 1000;
                 if (bundleHed != null) {
                     bundleHed.bundleHed.propagateState();
                 }
