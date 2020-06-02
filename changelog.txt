@@ -8858,3 +8858,6 @@ qc pass: tunnel interface with sreth
 qc pass: ethernet over sreth pwhe
 qc pass: cross connect with sreth
 qc pass: cross connect interworking with sreth
+---------------------------------- 2020-06-02 05:01:33
+qc pass: lsrp stub
+qc pass: lsrp unstub

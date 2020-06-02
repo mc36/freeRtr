@@ -1510,6 +1510,8 @@ qc pass: lsrp triangle connection
 qc pass: lsrp prefix movement
 qc pass: lsrp with bier
 qc pass: lsrp autoroute
+qc pass: lsrp stub
+qc pass: lsrp unstub
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld

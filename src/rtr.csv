@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.6.1-testing, done by cs@nop.;-;-
--;-;2020-06-01 20:28:57, took 09:15:26 on 1696 cases, 0 failed, 0 traces, 15 retries;-;-
+-;-;freeRouter v20.6.2-testing, done by cs@nop.;-;-
+-;-;2020-06-02 14:15:40, took 09:14:06 on 1698 cases, 0 failed, 0 traces, 16 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1514,6 +1514,8 @@ rout-lsrp21.tst;0;lsrp triangle connection;successfully;finished
 rout-lsrp22.tst;0;lsrp prefix movement;successfully;finished
 rout-lsrp23.tst;0;lsrp with bier;successfully;finished
 rout-lsrp24.tst;0;lsrp autoroute;successfully;finished
+rout-lsrp25.tst;0;lsrp stub;successfully;finished
+rout-lsrp26.tst;0;lsrp unstub;successfully;finished
 rout-mcast01.tst;0;multicast routing with static flooding;successfully;finished
 rout-mcast02.tst;0;multicast routing with pim ssm;successfully;finished
 rout-mcast03.tst;0;multicast routing with igmp/mld;successfully;finished
