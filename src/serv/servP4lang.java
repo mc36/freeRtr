@@ -305,8 +305,13 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ntry.id = bits.str2num(cmd.word());
             ntry.ifc = ifc;
             ntry = expIfc.del(ntry);
-            ifcNull nul = new ifcNull();
-            nul.setUpper(ifc.ethtyp);
+            if (ntry == null) {
+                return false;
+            }
+            if ((ifc.type == cfgIfc.ifaceType.sdn) && (ifc.vlanNum == 0)) {
+                ifcNull nul = new ifcNull();
+                nul.setUpper(ifc.ethtyp);
+            }
             return false;
         }
         return true;
