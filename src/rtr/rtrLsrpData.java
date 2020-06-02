@@ -416,11 +416,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 continue;
             }
             if (a.equals("time")) {
-                time = bits.str2num(s) + bits.getTime();
+                time = bits.str2long(s) + bits.getTime();
                 continue;
             }
             if (a.equals("uptime")) {
-                uptime = bits.str2num(s);
+                uptime = bits.str2long(s);
                 continue;
             }
             if (a.equals("changenum")) {
@@ -428,7 +428,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 continue;
             }
             if (a.equals("changetim")) {
-                changesTim = bits.str2num(s);
+                changesTim = bits.str2long(s);
                 continue;
             }
             if (a.equals("metric")) {
