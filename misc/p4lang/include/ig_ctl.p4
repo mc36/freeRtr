@@ -26,19 +26,20 @@ control ig_ctl(inout headers hdr,
    
                                                                                    
    apply {                                                                         
-      if (ig_intr_md.ingress_port == CPU_PORT) {                                   
-         /*                                                                        
-          * pkt received from the controlled has a pkt_out header                  
-          * that containes egress port id. Once retrieve                           
-          * we remove the pkt_out header (setInvalid)                              
-          * So it will not be taken into accoiunt by deparser                      
-          */                                                                       
-         ig_intr_md.egress_spec = hdr.pkt_out.egress_port;                    
-         hdr.pkt_out.setInvalid();                                                
-      } else {                                                                     
-         /*                                                                        
-          * So it is a dataplane packet                                                     
-          */                                                                       
+           if (ig_intr_md.ingress_port == CPU_PORT) {                                   
+              /*                                                                        
+               * pkt received from the controlled has a pkt_out header                  
+               * that containes egress port id. Once retrieve                           
+               * we remove the pkt_out header (setInvalid)                              
+               * So it will not be taken into accoiunt by deparser                      
+               */                                                                       
+              ig_intr_md.egress_spec = hdr.pkt_out.egress_port;                    
+              hdr.pkt_out.setInvalid();                                                
+              return;
+           }
+           /*                                                                        
+            * So it is a dataplane packet                                                     
+            */                                                                       
            if (hdr.mpls[0].isValid()) {
              ig_md.mpls0_valid = 1;
            }
@@ -82,7 +83,6 @@ control ig_ctl(inout headers hdr,
          ig_ctl_nexthop.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_vlan_out.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_bundle.apply(hdr,ig_md,ig_intr_md);
-      }                                                                               
    }
 }                                                                                  
                                                                                    

@@ -26,7 +26,12 @@ control IngressControlNexthop(inout headers hdr,
       /*
        * We decrement the TTL
        */
-      hdr.ipv4.ttl = hdr.ipv4.ttl -1;
+      if (hdr.ipv4.isValid()) {
+          hdr.ipv4.ttl = hdr.ipv4.ttl -1;
+      }
+      if (hdr.ipv6.isValid()) {
+          hdr.ipv6.hop_limit = hdr.ipv6.hop_limit -1;
+      }
    }   
 
    action act_ipv4_fib_discard() {
@@ -49,6 +54,9 @@ control IngressControlNexthop(inout headers hdr,
    }
 
    apply {
+      if (ig_md.target_id != 0) {
+         return;
+      }
       tbl_nexthop.apply();
    }
 

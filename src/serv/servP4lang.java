@@ -486,7 +486,15 @@ class servP4langNei implements Comparator<servP4langNei> {
 
     public addrIP adr = new addrIP();
 
-    public addrMac mac = new addrMac();
+    public addrMac mac = null;
+
+    public servP4langIfc iface;
+
+    public servP4langVrf vrf;
+
+    public int id;
+
+    public int need;
 
     public int compare(servP4langNei o1, servP4langNei o2) {
         if (o1.ifc < o2.ifc) {
@@ -640,9 +648,7 @@ class servP4langConn implements Runnable {
 
     public int keepalive;
 
-    public tabGen<servP4langNei> neighs4 = new tabGen<servP4langNei>();
-
-    public tabGen<servP4langNei> neighs6 = new tabGen<servP4langNei>();
+    public tabGen<servP4langNei> neighs = new tabGen<servP4langNei>();
 
     public tabGen<tabLabelNtry> labels = new tabGen<tabLabelNtry>();
 
@@ -669,6 +675,9 @@ class servP4langConn implements Runnable {
     private boolean doRound() {
         if (pipe.isClosed() != 0) {
             return true;
+        }
+        for (int i = 0; i < neighs.size(); i++) {
+            neighs.get(i).need = 0;
         }
         keepalive++;
         if (keepalive > 30) {
@@ -740,12 +749,6 @@ class servP4langConn implements Runnable {
             ntry.upper.recvPack(pck);
             return false;
         }
-        for (int i = 0; i < lower.expIfc.size(); i++) {
-            servP4langIfc ifc = lower.expIfc.get(i);
-            doIface(ifc);
-            doNeighs(true, ifc, ifc.ifc.ipIf4, neighs4);
-            doNeighs(false, ifc, ifc.ifc.ipIf6, neighs6);
-        }
         for (int i = 0; i < lower.expBr.size(); i++) {
             servP4langBr br = lower.expBr.get(i);
             doBrdg(br);
@@ -791,8 +794,8 @@ class servP4langConn implements Runnable {
                 lower.sendLine("mysrv" + ntry.forwarder.ipVersion + "_" + act + " " + vr.id + " " + adr + " " + vrf.id);
                 continue;
             }
-            int p = findIface(ntry.iface);
-            if (p < 0) {
+            servP4langNei hop = findIface(ntry.iface, ntry.nextHop);
+            if (hop == null) {
                 continue;
             }
             tabLabelNtry old = labels.find(ntry);
@@ -813,7 +816,7 @@ class servP4langConn implements Runnable {
             } else {
                 afi = "6";
             }
-            lower.sendLine("label" + afi + "_" + act + " " + ntry.getValue() + " " + p + " " + ntry.nextHop + " " + ntry.remoteLab.get(0));
+            lower.sendLine("label" + afi + "_" + act + " " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop + " " + ntry.remoteLab.get(0));
         }
         for (int i = 0; i < labels.size(); i++) {
             tabLabelNtry ntry = labels.get(i);
@@ -848,26 +851,81 @@ class servP4langConn implements Runnable {
             } else {
                 afi = "6";
             }
-            lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + ntry.remoteLab.get(0));
+            servP4langNei hop = findIface(ntry.iface, ntry.nextHop);
+            if (hop == null) {
+                continue;
+            }
+            lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop + " " + ntry.remoteLab.get(0));
+        }
+        for (int i = 0; i < lower.expIfc.size(); i++) {
+            servP4langIfc ifc = lower.expIfc.get(i);
+            doIface(ifc);
+            doNeighs(true, ifc, ifc.ifc.ipIf4);
+            doNeighs(false, ifc, ifc.ifc.ipIf6);
+        }
+        for (int i = neighs.size() - 1; i >= 0; i--) {
+            servP4langNei ntry = neighs.get(i);
+            if (ntry.need > 0) {
+                continue;
+            }
+            neighs.del(ntry);
+            if (ntry.mac == null) {
+                continue;
+            }
+            lower.sendLine("neigh" + (ntry.adr.isIPv4() ? "4" : "6") + "_del " + ntry.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + ntry.vrf.id + " " + ((addrMac) ntry.iface.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + ntry.iface.id);
         }
         bits.sleep(1000);
         return false;
     }
 
-    private int findIface(tabRouteIface ifc) {
+    private servP4langNei findIface(tabRouteIface ifc, addrIP hop) {
         if (ifc == null) {
-            return -2;
+            return null;
         }
+        int id = -1;
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ntry = lower.expIfc.get(i);
             if (ifc == ntry.ifc.fwdIf4) {
-                return ntry.id;
+                id = ntry.id;
+                break;
             }
             if (ifc == ntry.ifc.fwdIf6) {
-                return ntry.id;
+                id = ntry.id;
+                break;
             }
         }
-        return -1;
+        if (id < 0) {
+            return null;
+        }
+        servP4langNei ntry = new servP4langNei();
+        ntry.ifc = id;
+        ntry.adr = hop;
+        ntry.need = 1;
+        servP4langNei old = neighs.find(ntry);
+        if (old != null) {
+            old.need++;
+            return old;
+        }
+        for (int rnd = 0; rnd < 16; rnd++) {
+            ntry.id = bits.randomW() & 0x1ff;
+            if (ntry.id < 1) {
+                continue;
+            }
+            boolean fnd = false;
+            for (int i = 0; i < neighs.size(); i++) {
+                if (neighs.get(i).id != ntry.id) {
+                    continue;
+                }
+                fnd = true;
+                break;
+            }
+            if (fnd) {
+                continue;
+            }
+            neighs.put(ntry);
+            return ntry;
+        }
+        return null;
     }
 
     private servP4langVrf findVrf(ipFwd fwd) {
@@ -1032,14 +1090,14 @@ class servP4langConn implements Runnable {
             if (rou == null) {
                 continue;
             }
-            int p = findIface(rou.iface);
-            if (p < 0) {
+            servP4langNei hop = findIface(rou.iface, rou.nextHop);
+            if (hop == null) {
                 continue;
             }
             if (srv == null) {
-                lower.sendLine("bridgevpls_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + adr + " " + p + " " + getLabel(rou) + " " + l);
+                lower.sendLine("bridgevpls_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + adr + " " + hop.id + " " + getLabel(rou) + " " + l);
             } else {
-                lower.sendLine("bridgesrv6_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + adr + " " + p + " " + srv);
+                lower.sendLine("bridgesrv6_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + adr + " " + hop.id + " " + srv);
             }
         }
     }
@@ -1161,15 +1219,15 @@ class servP4langConn implements Runnable {
         if (ntry == null) {
             return;
         }
-        int p = findIface(ntry.iface);
-        if (p < 0) {
+        servP4langNei hop = findIface(ntry.iface, ntry.nextHop);
+        if (hop == null) {
             return;
         }
-        lower.sendLine("xconnect_" + a + " " + ifc.id + " " + ifc.ifc.xconn.adr + " " + p + " " + getLabel(ntry) + " " + ll + " " + lr);
+        lower.sendLine("xconnect_" + a + " " + ifc.id + " " + ifc.ifc.xconn.adr + " " + hop.id + " " + getLabel(ntry) + " " + ll + " " + lr);
         ifc.sentVrf = -1;
     }
 
-    private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi, tabGen<servP4langNei> nei) {
+    private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi) {
         if (ipi == null) {
             return;
         }
@@ -1183,39 +1241,32 @@ class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        tabGen<servP4langNei> seen = new tabGen<servP4langNei>();
         for (int i = 0;; i++) {
             servP4langNei ntry = new servP4langNei();
+            ntry.mac = new addrMac();
             if (ipi.getL2info(i, ntry.adr, ntry.mac)) {
                 break;
             }
             ntry.ifc = ifc.id;
-            seen.add(ntry);
-            servP4langNei old = nei.find(ntry);
+            servP4langNei old = neighs.find(ntry);
+            if (old == null) {
+                continue;
+            }
+            old.vrf = vrf;
+            old.iface = ifc;
             String act = "add";
-            if (old != null) {
+            if (old.mac != null) {
                 if (ntry.mac.compare(ntry.mac, old.mac) == 0) {
                     continue;
                 }
                 act = "mod";
             }
-            nei.put(ntry);
-            lower.sendLine("neigh" + afi + "_" + act + " " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr());
-        }
-        for (int i = 0; i < nei.size(); i++) {
-            servP4langNei ntry = nei.get(i);
-            if (ntry.ifc != ifc.id) {
-                continue;
-            }
-            if (seen.find(ntry) != null) {
-                continue;
-            }
-            nei.del(ntry);
-            lower.sendLine("neigh" + afi + "_del " + ifc.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr());
+            old.mac = ntry.mac;
+            lower.sendLine("neigh" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + ifc.id);
         }
     }
 
-    private void doRoutes(boolean ipv4, int id, tabRoute<addrIP> need, tabRoute<addrIP> done) {
+    private void doRoutes(boolean ipv4, int vrf, tabRoute<addrIP> need, tabRoute<addrIP> done) {
         String afi;
         if (ipv4) {
             afi = "4";
@@ -1241,8 +1292,8 @@ class servP4langConn implements Runnable {
                 if (old == null) {
                     continue;
                 }
-                int p = findIface(old.iface);
-                if (p < 0) {
+                servP4langNei hop = findIface(old.iface, old.nextHop);
+                if (hop == null) {
                     continue;
                 }
                 done.add(tabRoute.addType.always, ntry, true, true);
@@ -1253,15 +1304,18 @@ class servP4langConn implements Runnable {
                     a = "" + addrPrefix.ip2ip6(ntry.prefix);
                 }
                 if (ntry.segrouPrf == null) {
-                    lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id + " " + getLabel(old) + " " + getLabel(ntry));
+                    lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + getLabel(old) + " " + getLabel(ntry));
                 } else {
-                    lower.sendLine("srvroute" + afi + "_" + act + " " + a + " " + p + " " + ntry.nextHop + " " + id + " " + ntry.segrouPrf);
+                    lower.sendLine("srvroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + ntry.segrouPrf);
                 }
                 continue;
             }
             tabRouteEntry<addrIP> old = done.find(ntry);
             String act = "add";
             if (old != null) {
+                if (ntry.nextHop != null) {
+                    findIface(ntry.iface, ntry.nextHop);
+                }
                 if (!ntry.differs(old)) {
                     continue;
                 }
@@ -1275,14 +1329,18 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             if (ntry.nextHop == null) {
-                lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + id);
+                lower.sendLine("myaddr" + afi + "_" + act + " " + a + " -1 " + vrf);
+                continue;
+            }
+            servP4langNei hop = findIface(ntry.iface, ntry.nextHop);
+            if (hop == null) {
                 continue;
             }
             if (ntry.labelRem != null) {
-                lower.sendLine("labroute" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id + " " + getLabel(ntry));
+                lower.sendLine("labroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + getLabel(ntry));
                 continue;
             }
-            lower.sendLine("route" + afi + "_" + act + " " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id);
+            lower.sendLine("route" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf);
         }
         for (int i = 0; i < done.size(); i++) {
             tabRouteEntry<addrIP> ntry = done.get(i);
@@ -1299,8 +1357,8 @@ class servP4langConn implements Runnable {
                 if (old == null) {
                     continue;
                 }
-                int p = findIface(old.iface);
-                if (p < 0) {
+                servP4langNei hop = findIface(old.iface, old.nextHop);
+                if (hop == null) {
                     continue;
                 }
                 done.del(ntry);
@@ -1311,9 +1369,9 @@ class servP4langConn implements Runnable {
                     a = "" + addrPrefix.ip2ip6(ntry.prefix);
                 }
                 if (ntry.segrouPrf == null) {
-                    lower.sendLine("vpnroute" + afi + "_del " + a + " " + p + " " + ntry.nextHop + " " + id + " " + getLabel(old) + " " + getLabel(ntry));
+                    lower.sendLine("vpnroute" + afi + "_del " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + getLabel(old) + " " + getLabel(ntry));
                 } else {
-                    lower.sendLine("srvroute" + afi + "_del " + a + " " + p + " " + ntry.nextHop + " " + id + " " + ntry.segrouPrf);
+                    lower.sendLine("srvroute" + afi + "_del " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + ntry.segrouPrf);
                 }
                 continue;
             }
@@ -1325,14 +1383,18 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             if (ntry.nextHop == null) {
-                lower.sendLine("myaddr" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + id);
+                lower.sendLine("myaddr" + afi + "_del " + a + " -1 " + vrf);
+                continue;
+            }
+            servP4langNei hop = findIface(ntry.iface, ntry.nextHop);
+            if (hop == null) {
                 continue;
             }
             if (ntry.labelRem != null) {
-                lower.sendLine("labroute" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id + " " + getLabel(ntry));
+                lower.sendLine("labroute" + afi + "_del " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + getLabel(ntry));
                 continue;
             }
-            lower.sendLine("route" + afi + "_del " + a + " " + findIface(ntry.iface) + " " + ntry.nextHop + " " + id);
+            lower.sendLine("route" + afi + "_del " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf);
         }
     }
 

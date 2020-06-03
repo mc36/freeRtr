@@ -24,7 +24,7 @@ control IngressControlVRF(inout headers hdr,
       hdr.eth2.dst_mac_addr = hdr.ethernet.dst_mac_addr;
       hdr.eth2.src_mac_addr = hdr.ethernet.src_mac_addr;
       hdr.eth2.ethertype = ig_md.ethertype;
-      ig_md.target_id = target;
+      ig_md.nexthop_id = target;
       ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
       hdr.mpls.push_front(2);
       hdr.mpls[0].setValid();

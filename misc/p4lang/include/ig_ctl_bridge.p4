@@ -38,6 +38,7 @@ control IngressControlBridge(inout headers hdr,
 
    action act_set_bridge_out(PortId_t port) {
       ig_md.bridge_trg = port;
+      ig_md.target_id = port;
    }  
    
    action act_set_bridge_vpls(PortId_t port, label_t lab_tun, label_t lab_svc) {
@@ -53,7 +54,7 @@ control IngressControlBridge(inout headers hdr,
       hdr.eth2.dst_mac_addr = hdr.ethernet.dst_mac_addr;
       hdr.eth2.src_mac_addr = hdr.ethernet.src_mac_addr;
       hdr.eth2.ethertype = ig_md.ethertype;
-      ig_md.target_id = port;
+      ig_md.nexthop_id = port;
       ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
       hdr.mpls.push_front(2);
       hdr.mpls[0].setValid();
@@ -79,6 +80,7 @@ control IngressControlBridge(inout headers hdr,
       hdr.eth2.setValid();
       hdr.eth2 = hdr.ethernet;
       hdr.eth2.ethertype = ig_md.ethertype;
+      ig_md.nexthop_id = port;
       ig_md.ethertype = ETHERTYPE_IPV6;
       hdr.ipv6c.setValid();
       hdr.ipv6c.version = 6;
@@ -122,7 +124,6 @@ control IngressControlBridge(inout headers hdr,
         ig_md.ipv6_valid = 0;
         tbl_bridge_learn.apply();
         tbl_bridge_target.apply();
-        ig_md.target_id = ig_md.bridge_trg;
         if ((ig_md.bridge_src == 0) || (ig_md.bridge_trg == 0)) {
            send_to_cpu();
            return;
