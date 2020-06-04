@@ -1409,6 +1409,8 @@ qc pass: evpn/vpws over srv6 over confed bgp
 qc pass: evpn/vpws over srv6 over bgp route server
 qc pass: evpn/vpws over srv6 over bgp with soft-reconfig
 qc pass: evpn/vpws over srv6 over bgp additional path
+qc pass: unified mpls with ldp
+qc pass: unified mpls with sr
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

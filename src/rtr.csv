@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.6.2-testing, done by cs@nop.;-;-
--;-;2020-06-02 14:15:40, took 09:14:06 on 1698 cases, 0 failed, 0 traces, 16 retries;-;-
+-;-;freeRouter v20.6.4-testing, done by cs@nop.;-;-
+-;-;2020-06-04 14:17:17, took 09:35:04 on 1700 cases, 0 failed, 0 traces, 17 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1413,6 +1413,8 @@ rout-bgp394.tst;0;evpn/vpws over srv6 over confed bgp;successfully;finished
 rout-bgp395.tst;0;evpn/vpws over srv6 over bgp route server;successfully;finished
 rout-bgp396.tst;0;evpn/vpws over srv6 over bgp with soft-reconfig;successfully;finished
 rout-bgp397.tst;0;evpn/vpws over srv6 over bgp additional path;successfully;finished
+rout-bgp398.tst;0;unified mpls with ldp;successfully;finished
+rout-bgp399.tst;0;unified mpls with sr;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished
