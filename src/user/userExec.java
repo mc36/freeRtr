@@ -33,6 +33,10 @@ import cry.cryHashMd5;
 import cry.cryHashSha1;
 import cry.cryHashSha2256;
 import cry.cryHashSha2512;
+import ip.ipCor4;
+import ip.ipCor6;
+import ip.ipIcmp4;
+import ip.ipIcmp6;
 import ip.ipRtr;
 import line.lineHdlc;
 import pack.packDnsRec;
@@ -2072,6 +2076,14 @@ public class userExec {
         }
     }
 
+    private static int adjustSize(addrIP adr) {
+        if (adr.isIPv4()) {
+            return ipCor4.size + ipIcmp4.size;
+        } else {
+            return ipCor6.size + ipIcmp6.size;
+        }
+    }
+
     private void doTraceroute() {
         String rem = cmd.word();
         cfgVrf vrf = cfgAll.getClntVrf();
@@ -2169,6 +2181,7 @@ public class userExec {
             src = ifc.getLocAddr(trg);
         }
         pipe.linePut("tracing " + trg + ", src=" + src + ", prt=" + port + ", tim=" + timeout + ", tos=" + tos + ", len=" + len);
+        len -= adjustSize(trg);
         int none = 0;
         for (int ttl = 1; ttl < 255; ttl++) {
             if (need2stop()) {
@@ -2261,6 +2274,7 @@ public class userExec {
             }
         }
         pipe.linePut("scanning " + strt + ", inc=" + incr + ", num=" + numb + ", tim=" + tim + ", len=" + len);
+        len -= adjustSize(strt);
         for (;;) {
             if (need2stop()) {
                 break;
@@ -2410,6 +2424,7 @@ public class userExec {
         long tiMax = 0;
         long tiSum = 0;
         pipe.linePut("pinging " + trg + ", src=" + src + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", ttl=" + ttl + ", tos=" + tos + ", sweep=" + sweep);
+        size -= adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
             if (sweep) {
                 size++;
