@@ -403,7 +403,7 @@ public class ipIfc4arp implements ifcUp {
                 continue;
             }
             if ((currTim - ntry.time) > arpCacheRetry) {
-                sendArpPack(pck, opcodeARPreq, addrMac.getBroadcast(), ntry.ip, hwaddr,
+                sendArpPack(pck, opcodeARPreq, ntry.mac, ntry.ip, hwaddr,
                         ipaddr);
             }
             if ((currTim - ntry.time) < arpCacheTimeout) {
