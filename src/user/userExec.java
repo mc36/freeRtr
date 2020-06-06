@@ -35,6 +35,7 @@ import cry.cryHashSha2256;
 import cry.cryHashSha2512;
 import ip.ipCor4;
 import ip.ipCor6;
+import ip.ipFwdIface;
 import ip.ipIcmp4;
 import ip.ipIcmp6;
 import ip.ipRtr;
@@ -47,6 +48,8 @@ import pipe.pipeProgress;
 import pipe.pipeShell;
 import pipe.pipeSide;
 import pipe.pipeTerm;
+import prt.prtAccept;
+import prt.prtGen;
 import prt.prtRedun;
 import rtr.rtrBgpParam;
 import serv.servGeneric;
@@ -984,6 +987,19 @@ public class userExec {
         hl.add("1 2    whois                     perform whois query");
         hl.add("2 3      <host>                  name of host to query");
         hl.add("3 3,.      <text>                query string");
+        hl.add("1 2    listen                    start listen session");
+        hl.add("2 3,.    <port>                  port number");
+        hl.add("3 3,.        /tcp                transmission control protocol");
+        hl.add("3 3,.        /udp                user datagram protocol");
+        hl.add("3 3,.        /ludp               lightweight user datagram protocol");
+        hl.add("3 3,.        /dccp               user datagram congestion control protocol");
+        hl.add("3 3,.        /sctp               stream control transmission protocol");
+        hl.add("3 3,.        /ipv4               specify ipv4 to use");
+        hl.add("3 3,.        /ipv6               specify ipv6 to use");
+        hl.add("3 4          /vrf                specify vrf to use");
+        hl.add("4 3,.          <vrf>             name of vrf");
+        hl.add("3 4          /interface          specify interface to use");
+        hl.add("4 3,.          <name>            name of interface");
         hl.add("1 2    telnet                    start telnet session");
         getHelpTelnet(hl);
         hl.add("1 2    tls                       start tls session");
@@ -1437,6 +1453,10 @@ public class userExec {
         }
         if (a.equals("lookup")) {
             doLookup();
+            return cmdRes.command;
+        }
+        if (a.equals("listen")) {
+            doListen();
             return cmdRes.command;
         }
         if (a.equals("telnet")) {
@@ -2486,6 +2506,135 @@ public class userExec {
         pipe.linePut("result=" + perc + "%, recv/sent/lost=" + recv + "/"
                 + sent + "/" + (sent - recv) + ", rtt min/avg/max/total=" + tiMin
                 + "/" + tiSum + "/" + tiMax + "/" + (bits.getTime() - beg));
+    }
+
+    private void doListen() {
+        int port = bits.str2num(cmd.word());
+        int trns = servGeneric.protoTcp;
+        int proto;
+        if (cfgAll.preferIpv6) {
+            proto = 6;
+        } else {
+            proto = 4;
+        }
+        cfgVrf vrf = cfgAll.getClntVrf();
+        cfgIfc ifc = cfgAll.getClntIfc();
+        addrIP rem = null;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("/vrf")) {
+                vrf = cfgAll.vrfFind(cmd.word(), false);
+                ifc = null;
+                continue;
+            }
+            if (a.equals("/interface")) {
+                ifc = cfgAll.ifcFind(cmd.word(), false);
+                continue;
+            }
+            if (a.equals("/tcp")) {
+                trns = servGeneric.protoTcp;
+                continue;
+            }
+            if (a.equals("/udp")) {
+                trns = servGeneric.protoUdp;
+                continue;
+            }
+            if (a.equals("/ludp")) {
+                trns = servGeneric.protoLudp;
+                continue;
+            }
+            if (a.equals("/dccp")) {
+                trns = servGeneric.protoDccp;
+                continue;
+            }
+            if (a.equals("/sctp")) {
+                trns = servGeneric.protoSctp;
+                continue;
+            }
+            if (a.equals("/ipv4")) {
+                proto = 4;
+                continue;
+            }
+            if (a.equals("/ipv6")) {
+                proto = 6;
+                continue;
+            }
+            if (a.equals("/remote")) {
+                rem = new addrIP();
+                rem.fromString(cmd.word());
+                continue;
+            }
+        }
+        if (vrf == null) {
+            cmd.error("no such vrf");
+            return;
+        }
+        prtGen prt = null;
+        ipFwdIface ipi = null;
+        if (proto == 4) {
+            if (ifc != null) {
+                ipi = ifc.fwdIf4;
+            }
+            switch (trns) {
+                case servGeneric.protoTcp:
+                    prt = vrf.tcp4;
+                    break;
+                case servGeneric.protoUdp:
+                    prt = vrf.udp4;
+                    break;
+                case servGeneric.protoLudp:
+                    prt = vrf.ludp4;
+                    break;
+                case servGeneric.protoDccp:
+                    prt = vrf.dccp4;
+                    break;
+                case servGeneric.protoSctp:
+                    prt = vrf.sctp4;
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            if (ifc != null) {
+                ipi = ifc.fwdIf6;
+            }
+            switch (trns) {
+                case servGeneric.protoTcp:
+                    prt = vrf.tcp6;
+                    break;
+                case servGeneric.protoUdp:
+                    prt = vrf.udp6;
+                    break;
+                case servGeneric.protoLudp:
+                    prt = vrf.ludp6;
+                    break;
+                case servGeneric.protoDccp:
+                    prt = vrf.dccp6;
+                    break;
+                case servGeneric.protoSctp:
+                    prt = vrf.sctp6;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (prt == null) {
+            cmd.error("no such transport");
+            return;
+        }
+        pipe.linePut("listening on " + port);
+        prtAccept acc = new prtAccept(prt, new pipeLine(65535, false), ipi, port, rem, 0, 0, "listen", null, 0);
+        acc.wait4conn(60000);
+        pipeSide conn = acc.getConn(true);
+        if (conn == null) {
+            cmd.error("timed out");
+            return;
+        }
+        pipeTerm trm = new pipeTerm(pipe, conn);
+        trm.doTerm();
     }
 
     private void doTelnet(int secur) {
