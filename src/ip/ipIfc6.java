@@ -154,6 +154,20 @@ public class ipIfc6 implements ipIfc, ifcUp {
         neiCache.neiCacheTimeout = tim;
     }
 
+    public int getCacheRetry() {
+        if (neiCache == null) {
+            return ipIfcLoop.defaultRetryTime;
+        }
+        return neiCache.neiCacheRetry;
+    }
+
+    public void setCacheRetry(int tim) {
+        if (neiCache == null) {
+            return;
+        }
+        neiCache.neiCacheRetry = tim;
+    }
+
     /**
      * get hardware address
      *
@@ -297,7 +311,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
 
     public void sendL2info(addrType l2info, addrIP nexthop) {
     }
-    
+
     public void updateL2info(int mod, addrType l2info, addrIP nexthop) {
         if (neiCache == null) {
             return;
@@ -385,7 +399,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
         if (rtrAdvDns != null) {
             dns = rtrAdvDns.toIPv6();
         }
-        icc.createRouterAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu, dns);
+        icc.createRouterAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu + ipCor6.size, dns);
         sendProto(pck, pck.IPtrg);
     }
 

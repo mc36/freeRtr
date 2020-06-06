@@ -350,6 +350,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 .       <num>                     value");
         l.add("2 3     host-reach                  set next hop cache timeout");
         l.add("3 .       <num>                     time in ms");
+        l.add("2 3     host-retry                  set next hop cache retry");
+        l.add("3 .       <num>                     time in ms");
         l.add("2 3     host-static                 set static next hop cache entry");
         l.add("3 4       <addr>                    ip address");
         l.add("4 .         <addr>                  mac address");
@@ -468,6 +470,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop);
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "");
         l.add(cmds.tabulator + beg + "host-reach " + lower.getCacheTimer());
+        l.add(cmds.tabulator + beg + "host-retry " + lower.getCacheRetry());
         lower.getL2info(l, cmds.tabulator + beg + "host-static ");
         for (int i = 0; i < pbrCfg.size(); i++) {
             tabPbrN pbr = pbrCfg.get(i);
@@ -604,6 +607,10 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("host-reach")) {
             lower.setCacheTimer(bits.str2num(cmd.word()));
+            return false;
+        }
+        if (a.equals("host-retry")) {
+            lower.setCacheRetry(bits.str2num(cmd.word()));
             return false;
         }
         if (a.equals("unreach-source")) {
@@ -1027,6 +1034,10 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("host-reach")) {
             lower.setCacheTimer(ipIfcLoop.defaultCacheTime);
+            return false;
+        }
+        if (a.equals("host-retry")) {
+            lower.setCacheRetry(ipIfcLoop.defaultRetryTime);
             return false;
         }
         if (a.equals("unreach-source")) {

@@ -21,7 +21,12 @@ public class ipIfcLoop implements ipIfc {
     /**
      * default arp/nd cache timeout
      */
-    public final static int defaultCacheTime = 8 * 60 * 1000;
+    public final static int defaultCacheTime = 6 * 60 * 1000;
+
+    /**
+     * default arp/nd retry timeout
+     */
+    public final static int defaultRetryTime = 3 * 60 * 1000;
 
     private counter cntr = new counter();
 
@@ -34,6 +39,8 @@ public class ipIfcLoop implements ipIfc {
     private int ipmask;
 
     private int cacheTime = defaultCacheTime;
+
+    private int cacheRetry = defaultRetryTime;
 
     /**
      * set ip network
@@ -154,6 +161,14 @@ public class ipIfcLoop implements ipIfc {
 
     public void setCacheTimer(int tim) {
         cacheTime = tim;
+    }
+
+    public int getCacheRetry() {
+        return cacheRetry;
+    }
+
+    public void setCacheRetry(int tim) {
+        cacheRetry = tim;
     }
 
     public ifcUp getPeerHdr() {

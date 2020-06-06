@@ -180,6 +180,20 @@ public interface ipIfc {
     public void setCacheTimer(int tim);
 
     /**
+     * get cache retry
+     *
+     * @return result
+     */
+    public int getCacheRetry();
+
+    /**
+     * set cache retry
+     *
+     * @param tim timeout
+     */
+    public void setCacheRetry(int tim);
+
+    /**
      * get peer handler
      *
      * @return peer handler

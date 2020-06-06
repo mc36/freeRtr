@@ -231,7 +231,7 @@ public class ipIfc4 implements ipIfc, ifcUp {
         }
         arpCache.sendARPheader((addrMac) l2info, nexthop.toIPv4());
     }
-    
+
     public void updateL2info(int mod, addrType l2info, addrIP nexthop) {
         if (arpCache == null) {
             return;
@@ -298,6 +298,20 @@ public class ipIfc4 implements ipIfc, ifcUp {
             return;
         }
         arpCache.arpCacheTimeout = tim;
+    }
+
+    public int getCacheRetry() {
+        if (arpCache == null) {
+            return ipIfcLoop.defaultRetryTime;
+        }
+        return arpCache.arpCacheRetry;
+    }
+
+    public void setCacheRetry(int tim) {
+        if (arpCache == null) {
+            return;
+        }
+        arpCache.arpCacheRetry = tim;
     }
 
     public ifcUp getPeerHdr() {

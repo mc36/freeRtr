@@ -33,6 +33,11 @@ public class ipIfc6nei implements ifcUp {
      */
     public int neiCacheTimeout = ipIfcLoop.defaultCacheTime;
 
+    /**
+     * arp cache retry
+     */
+    public int neiCacheRetry = ipIfcLoop.defaultRetryTime;
+
     private addrMac hwaddr;
 
     private addrIPv6 ipaddr = new addrIPv6();
@@ -150,7 +155,7 @@ public class ipIfc6nei implements ifcUp {
      */
     public boolean gotIcmpPack(packHolder pck) {
         if (debugger.ipIfc6neiTraf) {
-            logger.debug("rx op=" + icc.icmp2string(pck.ICMPtc));
+            logger.debug("rx op=" + icc.icmp2string(pck.ICMPtc) + " " + pck.IPsrc + " -> " + pck.IPtrg);
         }
         int siz;
         int ned = -1;
@@ -293,8 +298,7 @@ public class ipIfc6nei implements ifcUp {
         if (upper.ifcHdr.mcastAsBcast) {
             putHeader(pck, addrMac.getBroadcast());
         } else {
-            adr = pck.IPtrg.toIPv6();
-            putHeader(pck, adr.conv2solicited().conv2multiMac());
+            putHeader(pck, pck.IPtrg.toIPv6().conv2multiMac());
         }
         lower.sendPack(pck);
         return true;
@@ -309,6 +313,7 @@ public class ipIfc6nei implements ifcUp {
         }
         currTim = bits.getTime();
         ipIfc6neiEntry ntry = new ipIfc6neiEntry();
+        packHolder pck = new packHolder(true, true);
         for (int i = cache.size() - 1; i >= 0; i--) {
             ntry = cache.get(i);
             if (ntry == null) {
@@ -316,6 +321,14 @@ public class ipIfc6nei implements ifcUp {
             }
             if (ntry.stat) {
                 continue;
+            }
+            if ((currTim - ntry.time) > neiCacheRetry) {
+                icc.createNeighSol(hwaddr, pck, ntry.ip, lladdr);
+                pck.msbPutW(0, ipIfc6.type); // ethertype
+                pck.putSkip(2);
+                pck.merge2beg();
+                putHeader(pck, ntry.mac);
+                lower.sendPack(pck);
             }
             if ((currTim - ntry.time) < neiCacheTimeout) {
                 continue;
@@ -388,7 +401,7 @@ public class ipIfc6nei implements ifcUp {
         ipIfc6neiEntry ntry = new ipIfc6neiEntry();
         ntry.ip = adr.copyBytes();
         ntry.mac = mac.copyBytes();
-        ntry.time = bits.getTime();
+        ntry.time = currTim;
         switch (mod) {
             case 0:
                 addEntry(ntry);

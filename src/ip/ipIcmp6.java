@@ -421,7 +421,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 if (ifc.rtrAdvDns != null) {
                     adr6 = ifc.rtrAdvDns.toIPv6();
                 }
-                createRouterAdv(ifc.getHWaddr(), pck, pck.IPsrc.toIPv6(), ifc.getLLaddr().toIPv6(), rxIfc.addr.toIPv6(), rxIfc.mask, rxIfc.mtu, adr6);
+                createRouterAdv(ifc.getHWaddr(), pck, pck.IPsrc.toIPv6(), ifc.getLLaddr().toIPv6(), rxIfc.addr.toIPv6(), rxIfc.mask, rxIfc.mtu + ipCor6.size, adr6);
                 ifc.sendProto(pck, pck.IPtrg);
                 break;
             case icmpRtrAdv:
@@ -494,7 +494,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
     public void createNeighAdv(addrType hwa, packHolder pck, addrIPv6 trg, addrIPv6 src, boolean soli) {
         src = src.copyBytes();
         trg = trg.copyBytes();
-        if (debugger.ipIcmp6traf) {
+        if (debugger.ipIfc6neiTraf) {
             logger.debug("neiAdv " + src + " -> " + trg);
         }
         pck.clear();
@@ -529,7 +529,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
     public void createNeighSol(addrType hwa, packHolder pck, addrIPv6 trg, addrIPv6 src) {
         trg = trg.copyBytes();
         src = src.copyBytes();
-        if (debugger.ipIcmp6traf) {
+        if (debugger.ipIfc6neiTraf) {
             logger.debug("neiSol " + src + " -> " + trg);
         }
         pck.clear();
@@ -559,7 +559,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
      */
     public void createRouterSol(addrType hwa, packHolder pck, addrIPv6 src) {
         src = src.copyBytes();
-        if (debugger.ipIcmp6traf) {
+        if (debugger.ipIfc6neiTraf) {
             logger.debug("rtrSol " + src);
         }
         pck.clear();
@@ -600,7 +600,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
         addrIPv6 msk = new addrIPv6();
         msk.fromNetmask(mask);
         net.setAnd(net, msk);
-        if (debugger.ipIcmp6traf) {
+        if (debugger.ipIfc6neiTraf) {
             logger.debug("rtrAdv " + src + "/" + mask + " -> " + trg);
         }
         pck.clear();

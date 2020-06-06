@@ -38,6 +38,11 @@ public class ipIfc4arp implements ifcUp {
      */
     public int arpCacheTimeout = ipIfcLoop.defaultCacheTime;
 
+    /**
+     * arp cache retry
+     */
+    public int arpCacheRetry = ipIfcLoop.defaultRetryTime;
+
     private ifcDn lower = new ifcNull();
 
     private ipIfc4 upper;
@@ -195,7 +200,7 @@ public class ipIfc4arp implements ifcUp {
                     + " tp=" + trgP);
         }
         pck.msbPutW(0, 1); // hardware address space
-        pck.msbPutW(2, 0x800); // protocol address space
+        pck.msbPutW(2, ipIfc4.type); // protocol address space
         pck.putByte(4, addrMac.size); // byte length of each hardware address
         pck.putByte(5, addrIPv4.size); // byte length of each protocol address
         pck.msbPutW(6, opcode); // opcode
@@ -233,7 +238,7 @@ public class ipIfc4arp implements ifcUp {
             cntr.drop(pck, counter.reasons.badTyp);
             return;
         }
-        if (pck.msbGetW(2) != 0x800) { // protocol address space
+        if (pck.msbGetW(2) != ipIfc4.type) { // protocol address space
             cntr.drop(pck, counter.reasons.badCod);
             return;
         }
@@ -388,6 +393,7 @@ public class ipIfc4arp implements ifcUp {
         }
         currTim = bits.getTime();
         ipIfc4arpEntry ntry = new ipIfc4arpEntry();
+        packHolder pck = new packHolder(true, true);
         for (int i = cache.size() - 1; i >= 0; i--) {
             ntry = cache.get(i);
             if (ntry == null) {
@@ -395,6 +401,10 @@ public class ipIfc4arp implements ifcUp {
             }
             if (ntry.stat) {
                 continue;
+            }
+            if ((currTim - ntry.time) > arpCacheRetry) {
+                sendArpPack(pck, opcodeARPreq, addrMac.getBroadcast(), ntry.ip, hwaddr,
+                        ipaddr);
             }
             if ((currTim - ntry.time) < arpCacheTimeout) {
                 continue;
@@ -414,7 +424,7 @@ public class ipIfc4arp implements ifcUp {
         ipIfc4arpEntry ntry = new ipIfc4arpEntry();
         ntry.ip = adr.copyBytes();
         ntry.mac = mac.copyBytes();
-        ntry.time = bits.getTime();
+        ntry.time = currTim;
         switch (mod) {
             case 0:
                 addEntry(ntry);
