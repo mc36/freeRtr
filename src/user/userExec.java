@@ -645,6 +645,8 @@ public class userExec {
         hl.add("4 .          drphistory          historic drop packet counters");
         hl.add("4 .          numhist             numeric historic byte counters");
         hl.add("4 .          numphist            numeric historic packet counters");
+        hl.add("4 .          hwrates             hardware traffic rates");
+        hl.add("4 .          hwrealtime          hardware realtime counters");
         hl.add("4 .          hwhistory           hardware historic byte counters");
         hl.add("4 .          hwrxhistory         hardware historic rx byte counters");
         hl.add("4 .          hwtxhistory         hardware historic tx byte counters");
