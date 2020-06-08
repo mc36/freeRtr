@@ -39,6 +39,7 @@ import util.bits;
 import util.cmds;
 import util.counter;
 import util.debugger;
+import util.history;
 import util.logger;
 import util.notifier;
 import util.state;
@@ -199,6 +200,8 @@ public class servOpenflow extends servGeneric implements prtServS {
             if (ntry.id != tabGrp) {
                 ntry.setUpper(ifc.ethtyp);
             }
+            ntry.ifc.ethtyp.hwHstry = new history();
+            ntry.ifc.ethtyp.hwCntr = new counter();
             notif.wakeup();
             return false;
         }
@@ -545,12 +548,11 @@ class servOpenflowRx implements Runnable {
                             if (ntry == null) {
                                 break;
                             }
-                            counter cntr = ntry.ifc.ethtyp.getHwCounter();
-                            cntr.packRx = pckB.msbGetQ(8);
-                            cntr.packTx = pckB.msbGetQ(16);
-                            cntr.byteRx = pckB.msbGetQ(24);
-                            cntr.byteTx = pckB.msbGetQ(32);
-                            cntr.packDr = pckB.msbGetQ(40) + pckB.msbGetQ(48);
+                            ntry.ifc.ethtyp.hwCntr.packRx = pckB.msbGetQ(8);
+                            ntry.ifc.ethtyp.hwCntr.packTx = pckB.msbGetQ(16);
+                            ntry.ifc.ethtyp.hwCntr.byteRx = pckB.msbGetQ(24);
+                            ntry.ifc.ethtyp.hwCntr.byteTx = pckB.msbGetQ(32);
+                            ntry.ifc.ethtyp.hwCntr.packDr = pckB.msbGetQ(40) + pckB.msbGetQ(48);
                             break;
                         case 13:
                             pckB.getSkip(8);

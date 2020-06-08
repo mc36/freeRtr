@@ -142,8 +142,6 @@ public class ifcEthTyp implements Runnable, ifcUp {
 
     private counter totCntr;
 
-    private final counter hwCntr;
-
     private final counter cntr;
 
     private final counter[] sizes;
@@ -157,6 +155,16 @@ public class ifcEthTyp implements Runnable, ifcUp {
     private final counter[] clsPrc;
 
     private final history hstry;
+
+    /**
+     * hardware counters
+     */
+    public counter hwCntr;
+
+    /**
+     * hardware history
+     */
+    public history hwHstry;
 
     private final String name;
 
@@ -174,15 +182,6 @@ public class ifcEthTyp implements Runnable, ifcUp {
      */
     public history getHistory() {
         return hstry;
-    }
-
-    /**
-     * get hw counter
-     *
-     * @return counter
-     */
-    public counter getHwCounter() {
-        return hwCntr;
     }
 
     public counter getCounter() {
@@ -454,19 +453,24 @@ public class ifcEthTyp implements Runnable, ifcUp {
         notif = new notifier();
         lower = new ifcNull();
         totCntr = new counter();
-        hwCntr = new counter();
         cntr = new counter();
         sizes = new counter[8];
         clsCos = new counter[8];
         clsExp = new counter[8];
         clsPrc = new counter[8];
+        protos = new counter[256];
         for (int i = 0; i < sizes.length; i++) {
             sizes[i] = new counter();
+        }
+        for (int i = 0; i < clsCos.length; i++) {
             clsCos[i] = new counter();
+        }
+        for (int i = 0; i < clsExp.length; i++) {
             clsExp[i] = new counter();
+        }
+        for (int i = 0; i < clsPrc.length; i++) {
             clsPrc[i] = new counter();
         }
-        protos = new counter[256];
         for (int i = 0; i < protos.length; i++) {
             protos[i] = new counter();
         }
@@ -1105,6 +1109,21 @@ public class ifcEthTyp implements Runnable, ifcUp {
         for (int i = 0; i < snapTyps.size(); i++) {
             snapTyps.get(i).cntr.clear();
         }
+        for (int i = 0; i < sizes.length; i++) {
+            sizes[i].clear();
+        };
+        for (int i = 0; i < protos.length; i++) {
+            protos[i].clear();
+        };
+        for (int i = 0; i < clsCos.length; i++) {
+            clsCos[i].clear();
+        };
+        for (int i = 0; i < clsExp.length; i++) {
+            clsExp[i].clear();
+        };
+        for (int i = 0; i < clsPrc.length; i++) {
+            clsPrc[i].clear();
+        };
         totCntr = totCntr.plus(cntr);
         cntr.clear();
     }

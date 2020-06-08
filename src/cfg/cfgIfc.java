@@ -4495,7 +4495,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * get interface statistics
      *
-     * @param mode mode to use: 1=counters, 2..10=history, 11=hwcounters
+     * @param mode mode to use: 1=counters, 2..10=history, 11=hwcounters,
+     * 12..20=hwhistory,
      * @return string list
      */
     public List<String> getShIntTxt(int mode) {
@@ -4541,7 +4542,24 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.addAll(ethtyp.getHistory().show(mode - 1));
                 break;
             case 11:
-                l.addAll(ethtyp.getHwCounter().getShFull(ethtyp.getPromisc(), ethtyp.getMacsec()));
+                if (ethtyp.hwCntr == null) {
+                    return null;
+                }
+                l.addAll(ethtyp.hwCntr.getShFull(ethtyp.getPromisc(), ethtyp.getMacsec()));
+                break;
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+                if (ethtyp.hwHstry == null) {
+                    return null;
+                }
+                l.addAll(ethtyp.hwHstry.show(mode - 11));
                 break;
         }
         return l;
@@ -4553,7 +4571,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @param l list to update
      * @param mode mode to use: 1=descr, 2=sumary, 3=vrf, 4=ip4, 5=ip6, 6=cdp,
      * 7=lldp, 8=udld, 9=trafic, 10=total, 11=psumary, 12=ptrafic, 13=ptotal,
-     * 14=lacp, 15=hwsum, 16=hwpsum
+     * 14=lacp, 15=hwsum, 16=hwpsum, 17=hwtrafic, 18=hwptrafic
      */
     public void getShIntTab(userFormat l, int mode) {
         switch (mode) {
@@ -4618,10 +4636,28 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(lacp.getShNeigh(false));
                 break;
             case 15:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHwCounter().getShBsum());
+                if (ethtyp.hwCntr == null) {
+                    break;
+                }
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.hwCntr.getShBsum());
                 break;
             case 16:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHwCounter().getShPsum());
+                if (ethtyp.hwCntr == null) {
+                    break;
+                }
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.hwCntr.getShPsum());
+                break;
+            case 17:
+                if (ethtyp.hwHstry == null) {
+                    break;
+                }
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.hwHstry.getShSum());
+                break;
+            case 18:
+                if (ethtyp.hwHstry == null) {
+                    break;
+                }
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.hwHstry.getShPSum());
                 break;
         }
     }

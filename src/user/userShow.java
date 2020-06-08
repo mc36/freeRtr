@@ -681,16 +681,24 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(9));
                 return null;
             }
-            if (a.equals("psummary")) {
-                rdr.putStrTab(cfgAll.getShIntTab(11));
+            if (a.equals("hwtraffic")) {
+                rdr.putStrTab(cfgAll.getShIntTab(17));
                 return null;
             }
             if (a.equals("hwpsummary")) {
                 rdr.putStrTab(cfgAll.getShIntTab(16));
                 return null;
             }
+            if (a.equals("psummary")) {
+                rdr.putStrTab(cfgAll.getShIntTab(11));
+                return null;
+            }
             if (a.equals("ptraffic")) {
                 rdr.putStrTab(cfgAll.getShIntTab(12));
+                return null;
+            }
+            if (a.equals("hwptraffic")) {
+                rdr.putStrTab(cfgAll.getShIntTab(18));
                 return null;
             }
             if (a.equals("ptotal")) {
@@ -748,6 +756,11 @@ public class userShow {
             }
             if (a.length() < 1) {
                 rdr.putStrArr(ifc.getShIntTxt(1));
+                return null;
+            }
+            if (a.startsWith("hw")) {
+                a = a.substring(2, a.length());
+                doShowHistory(a, ifc.ethtyp.hwHstry);
                 return null;
             }
             doShowHistory(a, ifc.ethtyp.getHistory());

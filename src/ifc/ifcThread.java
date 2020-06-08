@@ -57,21 +57,21 @@ public abstract class ifcThread implements ifcDn, Runnable {
      * set true for redundancy links
      */
     public boolean booter = false;
-
+    
     private int procRun = 0;
-
+    
     private syncInt procNow = new syncInt(0);
-
+    
     private int procCnt = 0;
-
+    
     private int procLst = -1;
-
+    
     private long procTim = 0;
-
+    
     private RandomAccessFile logFile = null;
-
+    
     private Thread started[] = new Thread[0];
-
+    
     private boolean need2run = true;
 
     /**
@@ -98,6 +98,9 @@ public abstract class ifcThread implements ifcDn, Runnable {
                 continue;
             }
             ntry.ethtyp.getHistory().update(ntry.ethtyp.getCounter());
+            if (ntry.ethtyp.hwCntr != null) {
+                ntry.ethtyp.hwHstry.update(ntry.ethtyp.hwCntr);
+            }
             if (ntry.thread == null) {
                 continue;
             }
@@ -321,7 +324,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
             logger.debug("stopped, addr=" + hwaddr);
         }
     }
-
+    
     private void doRounds() {
         packHolder pck = new packHolder(true, true);
         for (;;) {
@@ -432,5 +435,5 @@ public abstract class ifcThread implements ifcDn, Runnable {
         }
         return logFile == null;
     }
-
+    
 }

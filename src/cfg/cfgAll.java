@@ -2831,6 +2831,7 @@ public class cfgAll {
                 l = new userFormat("|", "interface|hostname|serial|iface|state");
                 break;
             case 9:
+            case 17:
                 l = new userFormat("|", "interface|state|tx|rx|drop");
                 break;
             case 10:
@@ -2841,6 +2842,7 @@ public class cfgAll {
                 l = new userFormat("|", "interface|state|tx|rx|drop");
                 break;
             case 12:
+            case 18:
                 l = new userFormat("|", "interface|state|tx|rx|drop");
                 break;
             case 13:

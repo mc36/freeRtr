@@ -47,6 +47,7 @@ import util.debugger;
 import util.logger;
 import util.state;
 import util.bits;
+import util.history;
 
 /**
  * p4lang
@@ -244,6 +245,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             if (need) {
                 ntry.setUpper(ifc.ethtyp);
             }
+            ntry.ifc.ethtyp.hwHstry = new history();
+            ntry.ifc.ethtyp.hwCntr = new counter();
             expIfc.put(ntry);
             return false;
         }
@@ -705,11 +708,10 @@ class servP4langConn implements Runnable {
                 if (ntry == null) {
                     return false;
                 }
-                counter cntr = ntry.ifc.ethtyp.getHwCounter();
-                cntr.packRx = bits.str2long(cmd.word());
-                cntr.byteRx = bits.str2long(cmd.word());
-                cntr.packTx = bits.str2long(cmd.word());
-                cntr.byteTx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.hwCntr.packRx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.hwCntr.byteRx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.hwCntr.packTx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.hwCntr.byteTx = bits.str2long(cmd.word());
                 return false;
             }
             if (s.equals("state")) {
