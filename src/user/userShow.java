@@ -759,6 +759,9 @@ public class userShow {
                 return null;
             }
             if (a.startsWith("hw")) {
+                if (ifc.ethtyp.hwHstry == null) {
+                    return null;
+                }
                 a = a.substring(2, a.length());
                 doShowHistory(a, ifc.ethtyp.hwHstry);
                 return null;
