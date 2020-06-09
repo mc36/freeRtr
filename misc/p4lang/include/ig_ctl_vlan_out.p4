@@ -5,7 +5,7 @@ control IngressControlVlanOut(inout headers hdr,
                               inout ingress_metadata_t ig_md, 
                               inout standard_metadata_t ig_intr_md) { 
 
-   action act_set_vlan_port(PortId_t port, vlan_id_t vlan) {
+   action act_set_vlan_port(SubIntId_t port, vlan_id_t vlan) {
       ig_md.outport_id = port;
       hdr.vlan.setValid();
       hdr.vlan.ethertype = ig_md.ethertype;

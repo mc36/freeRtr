@@ -912,7 +912,7 @@ class servP4langConn implements Runnable {
             return old;
         }
         for (int rnd = 0; rnd < 16; rnd++) {
-            ntry.id = bits.randomW() & 0x1ff;
+            ntry.id = bits.randomW() | 0x1000;
             if (ntry.id < 1) {
                 continue;
             }

@@ -5,7 +5,7 @@ control IngressControlMPLS(inout headers hdr,
                            inout ingress_metadata_t ig_md,
                            inout standard_metadata_t ig_intr_md) {
 
-   action act_mpls_swap0_set_nexthop(label_t egress_label, PortId_t nexthop_id) {
+   action act_mpls_swap0_set_nexthop(label_t egress_label, NextHopId_t nexthop_id) {
       /*              
        * Encapsulate MPLS header
        */             
@@ -19,7 +19,7 @@ control IngressControlMPLS(inout headers hdr,
       ig_md.ipv6_valid = 0;
    }
 
-   action act_mpls_swap1_set_nexthop(label_t egress_label, PortId_t nexthop_id) {
+   action act_mpls_swap1_set_nexthop(label_t egress_label, NextHopId_t nexthop_id) {
       /*              
        * Encapsulate MPLS header
        */             
@@ -73,7 +73,7 @@ control IngressControlMPLS(inout headers hdr,
 
    }
 
-   action act_mpls_decap_l2vpn(PortId_t port) {
+   action act_mpls_decap_l2vpn(SubIntId_t port) {
       /*
        * Egress packet is back now an IPv4 packet
        * (LABEL PHP )
@@ -100,7 +100,7 @@ control IngressControlMPLS(inout headers hdr,
       ig_md.ipv6_valid = 0;
    }
 
-   action act_mpls_decap_vpls(PortId_t bridge) {
+   action act_mpls_decap_vpls(SubIntId_t bridge) {
       /*
        * Egress packet is back now an IPv4 packet
        * (LABEL PHP )

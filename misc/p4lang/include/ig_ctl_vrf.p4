@@ -12,7 +12,7 @@ control IngressControlVRF(inout headers hdr,
       ig_md.vrf = 0; 
    }
 
-   action act_set_mpls_xconn_encap(PortId_t target, label_t tunlab, label_t svclab) {
+   action act_set_mpls_xconn_encap(NextHopId_t target, label_t tunlab, label_t svclab) {
       ig_md.vrf = 0;
       ig_md.mpls0_valid = 0;
       ig_md.mpls1_valid = 0;
@@ -36,7 +36,7 @@ control IngressControlVRF(inout headers hdr,
       hdr.mpls[1].bos = 1;
    }
 
-   action act_set_bridge (PortId_t bridge) {
+   action act_set_bridge (SubIntId_t bridge) {
       ig_md.bridge_id = bridge;
    }
 

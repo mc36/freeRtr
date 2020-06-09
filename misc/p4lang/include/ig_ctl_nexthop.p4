@@ -5,7 +5,7 @@ control IngressControlNexthop(inout headers hdr,
                    inout ingress_metadata_t ig_md,                  
                    inout standard_metadata_t ig_intr_md) {    
 
-   action act_ipv4_fib_hit(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, PortId_t egress_port) {
+   action act_ipv4_fib_hit(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port) {
       /*
        * the packet header src_mac is now set to the previous header dst_mac
        */

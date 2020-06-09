@@ -14,8 +14,8 @@ control IngressControlBridge(inout headers hdr,
    }
 
 
-   action act_set_bridge_port(PortId_t port) {
-      ig_md.bridge_src = port;
+   action act_set_bridge_port() {
+      ig_md.bridge_src = 1;
    }
 
    action act_bridge_miss() {
@@ -36,13 +36,13 @@ control IngressControlBridge(inout headers hdr,
    }
 
 
-   action act_set_bridge_out(PortId_t port) {
+   action act_set_bridge_out(SubIntId_t port) {
       ig_md.bridge_trg = port;
       ig_md.target_id = port;
    }  
    
-   action act_set_bridge_vpls(PortId_t port, label_t lab_tun, label_t lab_svc) {
-      ig_md.bridge_trg = port;
+   action act_set_bridge_vpls(NextHopId_t port, label_t lab_tun, label_t lab_svc) {
+      ig_md.bridge_trg = MAX_PORT;
       ig_md.vrf = 0;
       ig_md.mpls0_valid = 0;
       ig_md.mpls1_valid = 0;
@@ -67,8 +67,8 @@ control IngressControlBridge(inout headers hdr,
       ig_md.mpls_op_type = 3;
    }
 
-   action act_set_bridge_srv(PortId_t port, ipv6_addr_t target) {
-      ig_md.bridge_trg = port;
+   action act_set_bridge_srv(NextHopId_t port, ipv6_addr_t target) {
+      ig_md.bridge_trg = MAX_PORT;
       ig_md.vrf = 0;
       ig_md.mpls0_valid = 0;
       ig_md.mpls1_valid = 0;

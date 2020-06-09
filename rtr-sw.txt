@@ -518,23 +518,24 @@ router bgp4 65535
  address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
  flapstat
  dump mrt bgp1.log
- neighbor 10.5.1.10 remote-as 65535
- no neighbor 10.5.1.10 description
- neighbor 10.5.1.10 local-as 65535
- neighbor 10.5.1.10 address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
- neighbor 10.5.1.10 distance 200
- neighbor 10.5.1.10 compression both
- neighbor 10.5.1.10 update-source loopback0
- neighbor 10.5.1.10 dump mrt
- neighbor 10.5.1.10 hostname
- neighbor 10.5.1.10 aigp
- neighbor 10.5.1.10 traffeng
- neighbor 10.5.1.10 pmsitun
- neighbor 10.5.1.10 tunenc
- neighbor 10.5.1.10 attribset
- neighbor 10.5.1.10 segrout
- neighbor 10.5.1.10 bier
- neighbor 10.5.1.10 send-community all
+ template r remote-as 65535
+ no template r description
+ template r local-as 65535
+ template r address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt srte mvpn omvpn
+ template r distance 200
+ template r compression both
+ template r update-source loopback0
+ template r hostname
+ template r aigp
+ template r traffeng
+ template r pmsitun
+ template r tunenc
+ template r attribset
+ template r segrout
+ template r bier
+ template r send-community all
+ neighbor 10.5.1.10 template r
+ neighbor 10.26.26.2 template r
  afi-vrf dn42 enable
  afi-vrf dn42 mvpn loopback0
  afi-vrf dn42 redistribute connected
@@ -616,23 +617,24 @@ router bgp6 65535
  address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
  flapstat
  dump mrt bgp2.log
- neighbor 2001:db8:36::2 remote-as 65535
- no neighbor 2001:db8:36::2 description
- neighbor 2001:db8:36::2 local-as 65535
- neighbor 2001:db8:36::2 address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
- neighbor 2001:db8:36::2 distance 200
- neighbor 2001:db8:36::2 compression both
- neighbor 2001:db8:36::2 update-source loopback0
- neighbor 2001:db8:36::2 dump mrt
- neighbor 2001:db8:36::2 hostname
- neighbor 2001:db8:36::2 aigp
- neighbor 2001:db8:36::2 traffeng
- neighbor 2001:db8:36::2 pmsitun
- neighbor 2001:db8:36::2 tunenc
- neighbor 2001:db8:36::2 attribset
- neighbor 2001:db8:36::2 segrout
- neighbor 2001:db8:36::2 bier
- neighbor 2001:db8:36::2 send-community all
+ template r remote-as 65535
+ no template r description
+ template r local-as 65535
+ template r address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt srte mvpn omvpn
+ template r distance 200
+ template r compression both
+ template r update-source loopback0
+ template r hostname
+ template r aigp
+ template r traffeng
+ template r pmsitun
+ template r tunenc
+ template r attribset
+ template r segrout
+ template r bier
+ template r send-community all
+ neighbor 2001:db8:36::2 template r
+ neighbor 2001:db8:1026:1001::2 template r
  afi-vrf vpn enable
  afi-vrf vpn mvpn loopback0
  afi-vrf vpn redistribute connected

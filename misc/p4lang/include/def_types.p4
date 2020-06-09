@@ -9,5 +9,7 @@ typedef bit<128> ipv6_addr_t;
 typedef bit<12> vlan_id_t;
 typedef bit<16> switch_vrf_t;
 typedef bit<9> PortId_t;
+typedef bit<16> NextHopId_t;
+typedef bit<10> SubIntId_t;
 
 #endif // _TYPES_P4_

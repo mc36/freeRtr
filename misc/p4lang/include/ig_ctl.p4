@@ -64,7 +64,7 @@ control ig_ctl(inout headers hdr,
            ig_ctl_copp.apply(hdr,ig_md,ig_intr_md);
            hdr.pkt_in.setValid();
            hdr.pkt_in.ingress_port = ig_intr_md.ingress_port;
-           ig_intr_md.egress_spec = ig_md.nexthop_id;
+           ig_intr_md.egress_spec = CPU_PORT;
            return;
          }
 

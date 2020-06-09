@@ -28,7 +28,7 @@ control IngressControlIPv6(inout headers hdr,
    /*
     * Perform L3 forwarding
     */
-   action act_ipv6_set_nexthop(PortId_t nexthop_id) {
+   action act_ipv6_set_nexthop(NextHopId_t nexthop_id) {
        /*
        * ig_md.nexthop_id is set now to the egress_port 
        * set by the control plane entry 
@@ -38,7 +38,7 @@ control IngressControlIPv6(inout headers hdr,
    }
 
 
-   action act_ipv6_mpls_encap_set_nexthop(label_t vpn_label, label_t egress_label, PortId_t nexthop_id) {
+   action act_ipv6_mpls_encap_set_nexthop(label_t vpn_label, label_t egress_label, NextHopId_t nexthop_id) {
       /*
        * Egress packet is now a MPLS packet
        * (LABEL imposition)
@@ -76,7 +76,7 @@ control IngressControlIPv6(inout headers hdr,
       ig_md.srv_op_type = 6;
    }
 
-   action act_srv_decap_evpn(PortId_t bridge) {
+   action act_srv_decap_evpn(SubIntId_t bridge) {
       ig_md.vrf = 0;
       ig_md.srv_op_type = 2;
       ig_md.bridge_id = bridge;
@@ -86,7 +86,7 @@ control IngressControlIPv6(inout headers hdr,
    }
 
 
-   action act_ipv6_srv_encap_set_nexthop(ipv6_addr_t target, PortId_t nexthop_id) {
+   action act_ipv6_srv_encap_set_nexthop(ipv6_addr_t target, NextHopId_t nexthop_id) {
       ig_md.ethertype = ETHERTYPE_IPV6;
       hdr.ipv6b.setValid();
       hdr.ipv6b = hdr.ipv6;

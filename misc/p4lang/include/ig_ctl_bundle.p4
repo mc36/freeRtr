@@ -10,7 +10,7 @@ control IngressControlBundle(inout headers hdr,
    }
 
    action act_set_port() {
-      ig_intr_md.egress_spec = ig_md.outport_id;
+      ig_intr_md.egress_spec = (PortId_t)ig_md.outport_id;
    }
 
    table tbl_bundle {
@@ -38,7 +38,7 @@ control IngressControlBundle(inout headers hdr,
         bit<16> tmp = ig_md.layer4_srcprt ^ ig_md.layer4_dstprt;
         tmp = (tmp >> 8) ^ (tmp & 0xff);
         tmp = (tmp >> 4) ^ (tmp & 0xf);
-        ig_md.hash_id = tmp[3:0];
+        ig_md.hash_id = (bit<4>)tmp;
         tbl_bundle.apply();
    }                               
 }   

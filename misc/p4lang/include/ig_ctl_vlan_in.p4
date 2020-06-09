@@ -5,14 +5,14 @@ control IngressControlVlanIn(inout headers hdr,
                              inout ingress_metadata_t ig_md, 
                              in standard_metadata_t  ig_intr_md) { 
 
-   action act_set_iface(PortId_t src) {
+   action act_set_iface(SubIntId_t src) {
       ig_md.source_id = src;
       ig_md.ethertype = hdr.vlan.ethertype;
       ig_md.vlan_size = 4;
    }
 
    action act_set_def_iface() {
-      ig_md.source_id = ig_intr_md.ingress_port;
+      ig_md.source_id = (SubIntId_t)ig_intr_md.ingress_port;
       ig_md.ethertype = hdr.ethernet.ethertype;
    }
 

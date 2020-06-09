@@ -214,7 +214,6 @@ def writeBrvplsRules(delete, p4info_helper, ingress_sw, bridge, addr, port, labt
         },
         action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_port",
         action_params={
-            "port": port
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
@@ -251,7 +250,6 @@ def writeBrsrv6rules(delete, p4info_helper, ingress_sw, bridge, addr, port, targ
         },
         action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_port",
         action_params={
-            "port": port
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
@@ -287,7 +285,6 @@ def writeBrmacRules(delete, p4info_helper, ingress_sw, bridge, addr, port):
         },
         action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_port",
         action_params={
-            "port": port
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
