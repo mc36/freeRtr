@@ -151,7 +151,7 @@ control IngressControlMPLS(inout headers hdr,
          /*
           * Default action;
           */
-         NoAction;
+         @defaultonly NoAction;
       }
         size = MPLS_TABLE_SIZE;
         default_action = NoAction();
@@ -186,7 +186,7 @@ control IngressControlMPLS(inout headers hdr,
          /*
           * Default action;
           */
-         NoAction;
+         @defaultonly NoAction;
       }
         size = MPLS_TABLE_SIZE;
         default_action = NoAction();

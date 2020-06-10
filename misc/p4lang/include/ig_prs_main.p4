@@ -32,6 +32,8 @@ parser ig_prs_main(packet_in pkt,
          ETHERTYPE_IPV4: prs_ipv4;                   
          ETHERTYPE_IPV6: prs_ipv6;                   
          ETHERTYPE_ARP: prs_arp;
+         ETHERTYPE_LACP:prs_control;
+         ETHERTYPE_LLDP:prs_control;
          default: accept;                            
       }                                              
    }                                                 
@@ -45,6 +47,8 @@ parser ig_prs_main(packet_in pkt,
          ETHERTYPE_IPV4: prs_ipv4;
          ETHERTYPE_IPV6: prs_ipv6;                   
          ETHERTYPE_ARP: prs_arp;
+         ETHERTYPE_LACP:prs_control;
+         ETHERTYPE_LLDP:prs_control;
          default: accept;
       }
    }
@@ -134,6 +138,11 @@ parser ig_prs_main(packet_in pkt,
        ig_md.arp_valid = 1;
        transition accept;    
     }                        
+
+  state prs_control {
+      ig_md.llc_valid = 1;
+    transition accept;
+  }                   
 
    state prs_llc {                                       
       pkt.extract(hdr.llc);                           

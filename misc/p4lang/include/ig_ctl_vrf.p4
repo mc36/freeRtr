@@ -2,7 +2,8 @@
 #define _IG_CTL_VRF_P4_                                                         
                                                                                  
 control IngressControlVRF(inout headers hdr,                                    
-                          inout ingress_metadata_t ig_md) {  
+                          inout ingress_metadata_t ig_md,
+                          inout standard_metadata_t ig_intr_md) {
 
    action act_set_vrf (switch_vrf_t vrf) {
       ig_md.vrf = vrf; 
@@ -37,6 +38,13 @@ control IngressControlVRF(inout headers hdr,
    }
 
    action act_set_bridge (SubIntId_t bridge) {
+      ig_md.vrf = 0;
+      ig_md.mpls0_valid = 0;
+      ig_md.mpls1_valid = 0;
+      ig_md.arp_valid = 0;
+      ig_md.llc_valid = 0;
+      ig_md.ipv4_valid = 0;
+      ig_md.ipv6_valid = 0;
       ig_md.bridge_id = bridge;
    }
 

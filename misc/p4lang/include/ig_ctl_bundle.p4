@@ -27,14 +27,6 @@ control IngressControlBundle(inout headers hdr,
    }
 
    apply {
-        if (hdr.tcp.isValid()) {
-          ig_md.layer4_srcprt = hdr.tcp.src_port;
-          ig_md.layer4_dstprt = hdr.tcp.dst_port;
-        }
-        if (hdr.udp.isValid()) {
-          ig_md.layer4_srcprt = hdr.udp.src_port;
-          ig_md.layer4_dstprt = hdr.udp.dst_port;
-        }
         bit<16> tmp = ig_md.layer4_srcprt ^ ig_md.layer4_dstprt;
         tmp = (tmp >> 8) ^ (tmp & 0xff);
         tmp = (tmp >> 4) ^ (tmp & 0xf);

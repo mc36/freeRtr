@@ -23,6 +23,8 @@ control ig_ctl(inout headers hdr,
    IngressControlVRF() ig_ctl_vrf; 
    IngressControlLLC() ig_ctl_llc;
    IngressControlCoPP() ig_ctl_copp;
+   IngressControlAclIn() ig_ctl_acl_in;
+   IngressControlAclOut() ig_ctl_acl_out;
    
                                                                                    
    apply {                                                                         
@@ -46,12 +48,20 @@ control ig_ctl(inout headers hdr,
            if (hdr.mpls[1].isValid()) {
              ig_md.mpls1_valid = 1;
            }
-           if (ig_md.bridge_id != 0) {
-             ig_md.ipv4_valid=0;
-             ig_md.ipv6_valid=0;
+           if (hdr.tcp.isValid()) {
+             ig_md.layer4_srcprt = hdr.tcp.src_port;
+             ig_md.layer4_dstprt = hdr.tcp.dst_port;
+           }
+           if (hdr.udp.isValid()) {
+             ig_md.layer4_srcprt = hdr.udp.src_port;
+             ig_md.layer4_dstprt = hdr.udp.dst_port;
            }
          ig_ctl_vlan_in.apply(hdr,ig_md,ig_intr_md);
-         ig_ctl_vrf.apply(hdr,ig_md);
+         ig_ctl_acl_in.apply(hdr,ig_md,ig_intr_md);
+         if (ig_md.dropping == 1) {
+           return;
+         }
+         ig_ctl_vrf.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_arp.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_llc.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_mpls.apply(hdr,ig_md,ig_intr_md); 
@@ -62,6 +72,9 @@ control ig_ctl(inout headers hdr,
          ig_ctl_ipv6b.apply(hdr,ig_md,ig_intr_md); 
          if ( ig_md.nexthop_id == CPU_PORT) {
            ig_ctl_copp.apply(hdr,ig_md,ig_intr_md);
+           if (ig_md.dropping == 1) {
+             return;
+           }
            hdr.pkt_in.setValid();
            hdr.pkt_in.ingress_port = ig_intr_md.ingress_port;
            ig_intr_md.egress_spec = CPU_PORT;
@@ -81,6 +94,10 @@ control ig_ctl(inout headers hdr,
 
          ig_ctl_mpls2.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_nexthop.apply(hdr,ig_md,ig_intr_md); 
+         ig_ctl_acl_out.apply(hdr,ig_md,ig_intr_md);
+         if (ig_md.dropping == 1) {
+           return;
+         }
          ig_ctl_vlan_out.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_bundle.apply(hdr,ig_md,ig_intr_md);
    }

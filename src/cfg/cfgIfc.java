@@ -1604,11 +1604,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @param tim length of flap
      */
     public synchronized void flapNow(int tim) {
-        boolean old = ethtyp.forcedDN;
+        if (ethtyp.forcedDN) {
+            return;
+        }
         ethtyp.forcedDN = true;
         ethtyp.propagateState();
         bits.sleep(tim);
-        ethtyp.forcedDN = old;
+        ethtyp.forcedDN = false;
         ethtyp.propagateState();
     }
 
@@ -3996,6 +3998,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             ntry.ethtyp.forcedDN = ethtyp.forcedDN;
             ntry.ethtyp.forcedUP = ethtyp.forcedUP;
+            ntry.ethtyp.forcedMTU = ethtyp.forcedMTU;
             ntry.ethtyp.propagateState();
 
         }
@@ -5500,6 +5503,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("mtu")) {
             ethtyp.forcedMTU = bits.str2num(cmd.word());
+            propagateEthtypState();
             return;
         }
         if (a.equals("bandwidth")) {
@@ -6119,6 +6123,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("mtu")) {
             ethtyp.forcedMTU = 0;
+            propagateEthtypState();
             return;
         }
         if (a.equals("bandwidth")) {

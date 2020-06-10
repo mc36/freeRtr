@@ -16,6 +16,7 @@ struct ingress_metadata_t {
    ethertype_t ethertype;
    switch_vrf_t vrf;
    label_t mpls_label;
+    bit<1>  dropping;
     bit<3>  mpls_op_type;
     bit<3>  srv_op_type;
     bit<3>  vlan_size;

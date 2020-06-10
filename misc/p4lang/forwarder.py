@@ -518,13 +518,127 @@ def writeCoppRules4(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sa
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_copp.tbl_ipv4_copp",
         match_fields={
-            "hdr.ipv4.protocol": (pr , prm),
+            "hdr.ipv4.protocol": (pr,prm),
             "hdr.ipv4.src_addr": (sa,sam),
             "hdr.ipv4.dst_addr": (da,dam),
             "ig_md.layer4_srcprt": (sp,spm),
             "ig_md.layer4_dstprt": (dp,dpm)
         },
         action_name="ig_ctl.ig_ctl_copp.act_"+act,
+        priority=pri,
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeCoppRules6(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_copp.tbl_ipv6_copp",
+        match_fields={
+            "hdr.ipv6.next_hdr": (pr,prm),
+            "hdr.ipv6.src_addr": (sa,sam),
+            "hdr.ipv6.dst_addr": (da,dam),
+            "ig_md.layer4_srcprt": (sp,spm),
+            "ig_md.layer4_dstprt": (dp,dpm)
+        },
+        action_name="ig_ctl.ig_ctl_copp.act_"+act,
+        priority=pri,
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeInAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_acl_in.tbl_ipv4_acl",
+        match_fields={
+            "ig_md.source_id": port,
+            "hdr.ipv4.protocol": (pr,prm),
+            "hdr.ipv4.src_addr": (sa,sam),
+            "hdr.ipv4.dst_addr": (da,dam),
+            "ig_md.layer4_srcprt": (sp,spm),
+            "ig_md.layer4_dstprt": (dp,dpm)
+        },
+        action_name="ig_ctl.ig_ctl_acl_in.act_"+act,
+        priority=pri,
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeInAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_acl_in.tbl_ipv6_acl",
+        match_fields={
+            "ig_md.source_id": port,
+            "hdr.ipv6.next_hdr": (pr,prm),
+            "hdr.ipv6.src_addr": (sa,sam),
+            "hdr.ipv6.dst_addr": (da,dam),
+            "ig_md.layer4_srcprt": (sp,spm),
+            "ig_md.layer4_dstprt": (dp,dpm)
+        },
+        action_name="ig_ctl.ig_ctl_acl_in.act_"+act,
+        priority=pri,
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_acl_out.tbl_ipv4_acl",
+        match_fields={
+            "ig_md.target_id": port,
+            "hdr.ipv4.protocol": (pr,prm),
+            "hdr.ipv4.src_addr": (sa,sam),
+            "hdr.ipv4.dst_addr": (da,dam),
+            "ig_md.layer4_srcprt": (sp,spm),
+            "ig_md.layer4_dstprt": (dp,dpm)
+        },
+        action_name="ig_ctl.ig_ctl_acl_out.act_"+act,
+        priority=pri,
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeOutAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_acl_out.tbl_ipv6_acl",
+        match_fields={
+            "ig_md.target_id": port,
+            "hdr.ipv6.next_hdr": (pr,prm),
+            "hdr.ipv6.src_addr": (sa,sam),
+            "hdr.ipv6.dst_addr": (da,dam),
+            "ig_md.layer4_srcprt": (sp,spm),
+            "ig_md.layer4_dstprt": (dp,dpm)
+        },
+        action_name="ig_ctl.ig_ctl_acl_out.act_"+act,
         priority=pri,
         action_params={
         })
@@ -892,6 +1006,46 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "copp6_del":
             writeCoppRules6(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            continue
+
+        if splt[0] == "inacl4_add":
+            writeInAclRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+        if splt[0] == "inacl4_mod":
+            writeInAclRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+        if splt[0] == "inacl4_del":
+            writeInAclRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+
+        if splt[0] == "inacl6_add":
+            writeInAclRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+        if splt[0] == "inacl6_mod":
+            writeInAclRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+        if splt[0] == "inacl6_del":
+            writeInAclRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+
+        if splt[0] == "outacl4_add":
+            writeOutAclRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+        if splt[0] == "outacl4_mod":
+            writeOutAclRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+        if splt[0] == "outacl4_del":
+            writeOutAclRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+
+        if splt[0] == "outacl6_add":
+            writeOutAclRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+        if splt[0] == "outacl6_mod":
+            writeOutAclRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            continue
+        if splt[0] == "outacl6_del":
+            writeOutAclRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
             continue
 
         if splt[0] == "label4_add":

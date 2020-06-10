@@ -1,7 +1,7 @@
-#ifndef _IG_CTL_CoPP_P4_  
-#define _IG_CTL_CoPP_P4_  
+#ifndef _IG_CTL_Acl_in_P4_  
+#define _IG_CTL_Acl_in_P4_  
    
-control IngressControlCoPP(inout headers hdr,
+control IngressControlAclIn(inout headers hdr,
                            inout ingress_metadata_t ig_md,
                            inout standard_metadata_t ig_intr_md) {
 
@@ -15,8 +15,9 @@ control IngressControlCoPP(inout headers hdr,
    }
    
    
-   table tbl_ipv4_copp {
+   table tbl_ipv4_acl {
       key = {
+         ig_md.source_id: exact;
          hdr.ipv4.protocol: ternary;
          hdr.ipv4.src_addr: ternary;
          hdr.ipv4.dst_addr: ternary;
@@ -32,8 +33,9 @@ control IngressControlCoPP(inout headers hdr,
       const default_action = NoAction();
    }
 
-   table tbl_ipv6_copp {
+   table tbl_ipv6_acl {
       key = {
+         ig_md.source_id: exact;
          hdr.ipv6.next_hdr: ternary;
          hdr.ipv6.src_addr: ternary;
          hdr.ipv6.dst_addr: ternary;
@@ -51,13 +53,13 @@ control IngressControlCoPP(inout headers hdr,
 
    apply {
         if (ig_md.ipv4_valid==1)  {  
-          tbl_ipv4_copp.apply();                    
+          tbl_ipv4_acl.apply();                    
         }               
         if (ig_md.ipv6_valid==1)  {  
-          tbl_ipv6_copp.apply();                    
+          tbl_ipv6_acl.apply();                    
         }               
    }                               
 }   
 
-#endif // _IG_CTL_CoPP_P4_
+#endif // _IG_CTL_Acl_in_P4_
    
