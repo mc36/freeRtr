@@ -56,14 +56,13 @@ control IngressControlBridge(inout headers hdr,
       hdr.eth2.ethertype = ig_md.ethertype;
       ig_md.nexthop_id = port;
       ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
-      hdr.mpls.push_front(2);
-      hdr.mpls[0].setValid();
-      hdr.mpls[0].label = lab_tun;
-      hdr.mpls[0].ttl = 255;
-      hdr.mpls[1].setValid();
-      hdr.mpls[1].label = lab_svc;
-      hdr.mpls[1].ttl = 255;
-      hdr.mpls[1].bos = 1;
+      hdr.mpls0.setValid();
+      hdr.mpls0.label = lab_tun;
+      hdr.mpls0.ttl = 255;
+      hdr.mpls1.setValid();
+      hdr.mpls1.label = lab_svc;
+      hdr.mpls1.ttl = 255;
+      hdr.mpls1.bos = 1;
       ig_md.mpls_op_type = 3;
    }
 
@@ -128,10 +127,10 @@ control IngressControlBridge(inout headers hdr,
            send_to_cpu();
            return;
         }
-        if (hdr.mpls[1].isValid() && (ig_md.mpls_op_type != 3)) {
+        if (hdr.mpls1.isValid() && (ig_md.mpls_op_type != 3)) {
           hdr.eth2.setInvalid();
-          hdr.mpls[1].setInvalid();
-          hdr.mpls[0].setInvalid();
+          hdr.mpls1.setInvalid();
+          hdr.mpls0.setInvalid();
           hdr.vlan.setInvalid();
           ig_md.mpls0_remove = 0;
           ig_md.mpls1_remove = 0;

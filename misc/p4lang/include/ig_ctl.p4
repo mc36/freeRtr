@@ -42,10 +42,10 @@ control ig_ctl(inout headers hdr,
            /*                                                                        
             * So it is a dataplane packet                                                     
             */                                                                       
-           if (hdr.mpls[0].isValid()) {
+           if (hdr.mpls0.isValid()) {
              ig_md.mpls0_valid = 1;
            }
-           if (hdr.mpls[1].isValid()) {
+           if (hdr.mpls1.isValid()) {
              ig_md.mpls1_valid = 1;
            }
            if (hdr.tcp.isValid()) {

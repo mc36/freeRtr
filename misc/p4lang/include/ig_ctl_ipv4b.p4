@@ -48,18 +48,17 @@ control IngressControlIPv4b(inout headers hdr,
        * Encapsulate MPLS header
        * And set egress label
        */
-      hdr.mpls.push_front(2);
-      hdr.mpls[0].setValid();
-      hdr.mpls[0].label = egress_label;
-      hdr.mpls[0].ttl = hdr.ipv4.ttl;
+      hdr.mpls0.setValid();
+      hdr.mpls0.label = egress_label;
+      hdr.mpls0.ttl = hdr.ipv4.ttl;
       /*
        * MPLS VPN     
        */
 
-      hdr.mpls[1].setValid();
-      hdr.mpls[1].label = vpn_label;
-      hdr.mpls[1].ttl = hdr.ipv4.ttl;
-      hdr.mpls[1].bos = 1;
+      hdr.mpls1.setValid();
+      hdr.mpls1.label = vpn_label;
+      hdr.mpls1.ttl = hdr.ipv4.ttl;
+      hdr.mpls1.bos = 1;
       /*
        * Set nexthop_id for further forwarding process
        */

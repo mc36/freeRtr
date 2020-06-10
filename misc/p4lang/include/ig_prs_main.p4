@@ -28,7 +28,7 @@ parser ig_prs_main(packet_in pkt,
          0 &&& 0xfe00: prs_llc; /* LLC SAP frame */ 
          0 &&& 0xfa00: prs_llc; /* LLC SAP frame */ 
          ETHERTYPE_VLAN : prs_vlan;
-         ETHERTYPE_MPLS_UCAST : prs_mpls;
+         ETHERTYPE_MPLS_UCAST : prs_mpls0;
          ETHERTYPE_IPV4: prs_ipv4;                   
          ETHERTYPE_IPV6: prs_ipv6;                   
          ETHERTYPE_ARP: prs_arp;
@@ -43,7 +43,7 @@ parser ig_prs_main(packet_in pkt,
       transition select(hdr.vlan.ethertype) {
          0 &&& 0xfe00: prs_llc; /* LLC SAP frame */ 
          0 &&& 0xfa00: prs_llc; /* LLC SAP frame */ 
-         ETHERTYPE_MPLS_UCAST : prs_mpls;
+         ETHERTYPE_MPLS_UCAST : prs_mpls0;
          ETHERTYPE_IPV4: prs_ipv4;
          ETHERTYPE_IPV6: prs_ipv6;                   
          ETHERTYPE_ARP: prs_arp;
@@ -53,15 +53,24 @@ parser ig_prs_main(packet_in pkt,
       }
    }
 
-   state prs_mpls {
-      pkt.extract(hdr.mpls.next);
-      transition select(hdr.mpls.last.bos) {
-          1w0: prs_mpls;
+   state prs_mpls0 {
+      pkt.extract(hdr.mpls0);
+      transition select(hdr.mpls0.bos) {
+          1w0: prs_mpls1;
           1w1: prs_mpls_bos;
           default: accept;
-      }               
-   }                  
-                      
+      }
+   }
+
+   state prs_mpls1 {
+      pkt.extract(hdr.mpls1);
+      transition select(hdr.mpls1.bos) {
+          1w0: accept;
+          1w1: prs_mpls_bos;
+          default: accept;
+      }
+   }
+
    state prs_mpls_bos {
       transition select((pkt.lookahead<bit<4>>())[3:0]) {
          4w0x4: prs_ipv4; /* IPv4 only for now */

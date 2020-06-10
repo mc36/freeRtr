@@ -8,7 +8,7 @@ control IngressControlMPLS2(inout headers hdr,
 
    apply {
            if (ig_md.mpls0_remove == 1) {
-              hdr.mpls[0].setInvalid();
+              hdr.mpls0.setInvalid();
               if (ig_md.ipv4_valid == 1) {
                 ig_md.ethertype = ETHERTYPE_IPV4;
               } else {
@@ -17,7 +17,7 @@ control IngressControlMPLS2(inout headers hdr,
            }
 
            if (ig_md.mpls1_remove == 1) {
-              hdr.mpls[1].setInvalid();
+              hdr.mpls1.setInvalid();
               if (ig_md.ipv4_valid == 1) {
                 ig_md.ethertype = ETHERTYPE_IPV4;
               } else {

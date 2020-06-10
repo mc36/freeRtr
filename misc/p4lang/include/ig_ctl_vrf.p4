@@ -27,14 +27,13 @@ control IngressControlVRF(inout headers hdr,
       hdr.eth2.ethertype = ig_md.ethertype;
       ig_md.nexthop_id = target;
       ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
-      hdr.mpls.push_front(2);
-      hdr.mpls[0].setValid();
-      hdr.mpls[0].label = tunlab;
-      hdr.mpls[0].ttl = 255;
-      hdr.mpls[1].setValid();
-      hdr.mpls[1].label = svclab;
-      hdr.mpls[1].ttl = 255;
-      hdr.mpls[1].bos = 1;
+      hdr.mpls0.setValid();
+      hdr.mpls0.label = tunlab;
+      hdr.mpls0.ttl = 255;
+      hdr.mpls1.setValid();
+      hdr.mpls1.label = svclab;
+      hdr.mpls1.ttl = 255;
+      hdr.mpls1.bos = 1;
    }
 
    action act_set_bridge (SubIntId_t bridge) {
