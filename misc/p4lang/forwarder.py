@@ -374,6 +374,74 @@ def writeForwardRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_m
         ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
+def writeGlobRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, egress_label):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_mpls1_encap_set_nexthop",
+        action_params={
+            "egress_label": egress_label,
+            "nexthop_id": port
+        })
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4b.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4b.dst_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4b.act_ipv4_mpls1_encap_set_nexthop",
+        action_params={
+            "egress_label": egress_label,
+            "nexthop_id": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
+def writeGlobRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, egress_label):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6b.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6b.dst_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6b.act_ipv6_mpls1_encap_set_nexthop",
+        action_params={
+            "egress_label": egress_label,
+            "nexthop_id": port
+        })
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6.dst_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6.act_ipv6_mpls1_encap_set_nexthop",
+        action_params={
+            "egress_label": egress_label,
+            "nexthop_id": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
 def writeVpnRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, egress_label, vpn_label):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
@@ -381,7 +449,7 @@ def writeVpnRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
             "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
-        action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_mpls_encap_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_mpls2_encap_set_nexthop",
         action_params={
             "vpn_label": vpn_label,
             "egress_label": egress_label,
@@ -393,7 +461,7 @@ def writeVpnRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
             "hdr.ipv4b.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
-        action_name="ig_ctl.ig_ctl_ipv4b.act_ipv4_mpls_encap_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv4b.act_ipv4_mpls2_encap_set_nexthop",
         action_params={
             "vpn_label": vpn_label,
             "egress_label": egress_label,
@@ -417,7 +485,7 @@ def writeVpnRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
             "hdr.ipv6b.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
-        action_name="ig_ctl.ig_ctl_ipv6b.act_ipv6_mpls_encap_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv6b.act_ipv6_mpls2_encap_set_nexthop",
         action_params={
             "vpn_label": vpn_label,
             "egress_label": egress_label,
@@ -429,7 +497,7 @@ def writeVpnRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
             "hdr.ipv6.dst_addr": (dst_ip_addr,dst_net_mask),
             "ig_md.vrf": vrf
         },
-        action_name="ig_ctl.ig_ctl_ipv6.act_ipv6_mpls_encap_set_nexthop",
+        action_name="ig_ctl.ig_ctl_ipv6.act_ipv6_mpls2_encap_set_nexthop",
         action_params={
             "vpn_label": vpn_label,
             "egress_label": egress_label,
@@ -938,15 +1006,15 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if splt[0] == "labroute4_add":
             addr = splt[1].split("/");
-            writeForwardRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            writeGlobRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
             continue
         if splt[0] == "labroute4_mod":
             addr = splt[1].split("/");
-            writeForwardRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            writeGlobRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
             continue
         if splt[0] == "labroute4_del":
             addr = splt[1].split("/");
-            writeForwardRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            writeGlobRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
             continue
 
         if splt[0] == "srvroute4_add":
@@ -1197,15 +1265,15 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if splt[0] == "labroute6_add":
             addr = splt[1].split("/");
-            writeForwardRules6(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            writeGlobRules6(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
             continue
         if splt[0] == "labroute6_mod":
             addr = splt[1].split("/");
-            writeForwardRules6(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            writeGlobRules6(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
             continue
         if splt[0] == "labroute6_del":
             addr = splt[1].split("/");
-            writeForwardRules6(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            writeGlobRules6(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
             continue
 
         if splt[0] == "srvroute6_add":

@@ -69,6 +69,7 @@ control IngressControlMPLS(inout headers hdr,
        */
       ig_md.vrf = vrf;
       ig_md.mpls_op_type = 1;
+      ig_md.mpls0_remove = 1;
       ig_md.mpls1_remove = 1;
 
    }

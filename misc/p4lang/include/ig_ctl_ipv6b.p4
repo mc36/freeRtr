@@ -38,7 +38,28 @@ control IngressControlIPv6b(inout headers hdr,
    }
 
 
-   action act_ipv6_mpls_encap_set_nexthop(label_t vpn_label, label_t egress_label, NextHopId_t nexthop_id) {
+   action act_ipv6_mpls1_encap_set_nexthop(label_t egress_label, NextHopId_t nexthop_id) {
+      /*        
+       * Egress packet is now a MPLS packet
+       * (LABEL imposition)
+       */       
+      ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
+      /*
+       * Encapsulate MPLS header
+       * And set egress label
+       */
+      hdr.mpls0.setValid();
+      hdr.mpls0.label = egress_label;
+      hdr.mpls0.ttl = hdr.ipv6.hop_limit;
+      hdr.mpls0.bos = 1;
+      /*
+       * Set nexthop_id for further forwarding process
+       */
+      ig_md.nexthop_id = nexthop_id;
+   }
+
+
+   action act_ipv6_mpls2_encap_set_nexthop(label_t vpn_label, label_t egress_label, NextHopId_t nexthop_id) {
       /*
        * Egress packet is now a MPLS packet
        * (LABEL imposition)
@@ -94,7 +115,8 @@ control IngressControlIPv6b(inout headers hdr,
       actions = {
          act_ipv6_cpl_set_nexthop;
          act_ipv6_set_nexthop;
-         act_ipv6_mpls_encap_set_nexthop;
+         act_ipv6_mpls1_encap_set_nexthop;
+         act_ipv6_mpls2_encap_set_nexthop;
          act_ipv6_srv_encap_set_nexthop;
          @defaultonly NoAction;
       }
@@ -113,7 +135,8 @@ control IngressControlIPv6b(inout headers hdr,
       actions = {
          act_ipv6_cpl_set_nexthop;
          act_ipv6_set_nexthop;
-         act_ipv6_mpls_encap_set_nexthop;
+         act_ipv6_mpls1_encap_set_nexthop;
+         act_ipv6_mpls2_encap_set_nexthop;
          act_ipv6_srv_encap_set_nexthop;
          act_ipv6_fib_discard;
          @defaultonly NoAction;
