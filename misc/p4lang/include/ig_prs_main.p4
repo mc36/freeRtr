@@ -94,6 +94,7 @@ parser ig_prs_main(packet_in pkt,
 
    state prs_ipv4 {                                                                 
       pkt.extract(hdr.ipv4);                                                     
+      ig_md.layer4_length = hdr.ipv4.total_len - 20;
       ig_md.ipv4_valid = 1;
       transition select(hdr.ipv4.protocol) {
          IP_PROTOCOL_UDP: prs_udp;
@@ -107,6 +108,7 @@ parser ig_prs_main(packet_in pkt,
 
    state prs_ipv6 {                                                                 
       pkt.extract(hdr.ipv6);                                                     
+      ig_md.layer4_length = hdr.ipv6.payload_len;
       ig_md.ipv6_valid = 1;
       transition select(hdr.ipv6.next_hdr) {
          IP_PROTOCOL_UDP: prs_udp;

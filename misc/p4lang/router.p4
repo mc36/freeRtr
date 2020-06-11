@@ -53,6 +53,7 @@
 #include "include/ig_ctl_copp.p4"
 #include "include/ig_ctl_acl_in.p4"
 #include "include/ig_ctl_acl_out.p4"
+#include "include/ig_ctl_nat.p4"
 #include "include/ig_ctl.p4"
 
 /*------------------ E G R E S S - M A T C H - A C T I O N ------------------ */

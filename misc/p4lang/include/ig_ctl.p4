@@ -25,6 +25,7 @@ control ig_ctl(inout headers hdr,
    IngressControlCoPP() ig_ctl_copp;
    IngressControlAclIn() ig_ctl_acl_in;
    IngressControlAclOut() ig_ctl_acl_out;
+   IngressControlNAT() ig_ctl_nat;
    
                                                                                    
    apply {                                                                         
@@ -50,7 +51,14 @@ control ig_ctl(inout headers hdr,
          ig_ctl_vrf.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_arp.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_llc.apply(hdr,ig_md,ig_intr_md); 
-         ig_ctl_mpls.apply(hdr,ig_md,ig_intr_md); 
+         ig_ctl_mpls.apply(hdr,ig_md,ig_intr_md);
+         ig_ctl_nat.apply(hdr,ig_md,ig_intr_md);
+         if ( ig_md.dropping == 1) {
+           hdr.pkt_in.setValid();
+           hdr.pkt_in.ingress_port = ig_intr_md.ingress_port;
+           ig_intr_md.egress_spec = CPU_PORT;
+           return;
+         }
          ig_ctl_ipv4.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_ipv6.apply(hdr,ig_md,ig_intr_md); 
          ig_ctl_bridge.apply(hdr,ig_md,ig_intr_md); 

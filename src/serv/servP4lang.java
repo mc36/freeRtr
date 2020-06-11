@@ -28,6 +28,8 @@ import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtGenConn;
 import prt.prtServS;
+import prt.prtTcp;
+import prt.prtUdp;
 import rtr.rtrBgpEvpnPeer;
 import tab.tabAceslstN;
 import tab.tabGen;
@@ -36,6 +38,8 @@ import tab.tabLabel;
 import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabListingEntry;
+import tab.tabNatCfgN;
+import tab.tabNatTraN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRouteIface;
@@ -384,6 +388,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             vrf.routes4.clear();
             vrf.routes6.clear();
             vrf.sentMcast = false;
+            vrf.natCfg4 = null;
+            vrf.natCfg6 = null;
+            vrf.natTrns4.clear();
+            vrf.natTrns6.clear();
         }
         for (int i = 0; i < expBr.size(); i++) {
             servP4langBr br = expBr.get(i);
@@ -555,6 +563,14 @@ class servP4langVrf implements Comparator<servP4langVrf> {
     public tabRoute<addrIP> routes4 = new tabRoute<addrIP>("sent");
 
     public tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> natCfg4;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> natCfg6;
+
+    public tabGen<tabNatTraN> natTrns4 = new tabGen<tabNatTraN>();
+
+    public tabGen<tabNatTraN> natTrns6 = new tabGen<tabNatTraN>();
 
     public int compare(servP4langVrf o1, servP4langVrf o2) {
         if (o1.id < o2.id) {
@@ -786,6 +802,10 @@ class servP4langConn implements Runnable {
             doVrf(vrf);
             doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4);
             doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6);
+            vrf.natCfg4 = doNatCfg(true, vrf.id, vrf.vrf.fwd4.natCfg, vrf.natCfg4);
+            vrf.natCfg6 = doNatCfg(false, vrf.id, vrf.vrf.fwd6.natCfg, vrf.natCfg6);
+            doNatTrns(true, vrf.id, vrf.vrf.fwd4.natTrns, vrf.natTrns4);
+            doNatTrns(false, vrf.id, vrf.vrf.fwd6.natTrns, vrf.natTrns6);
         }
         for (int i = 0; i < tabLabel.labels.size(); i++) {
             doLab1(tabLabel.labels.get(i));
@@ -1358,6 +1378,75 @@ class servP4langConn implements Runnable {
         }
     }
 
+    private void doNatTrns(boolean ipv4, int vrf, tabGen<tabNatTraN> need, tabGen<tabNatTraN> done) {
+        String afi;
+        if (ipv4) {
+            afi = "4";
+        } else {
+            afi = "6";
+        }
+        for (int i = 0; i < need.size(); i++) {
+            tabNatTraN ntry = need.get(i);
+            if (done.find(ntry) != null) {
+                continue;
+            }
+            String prtnam;
+            switch (ntry.protocol) {
+                case prtUdp.protoNum:
+                    prtnam = "udp";
+                    break;
+                case prtTcp.protoNum:
+                    prtnam = "tcp";
+                    break;
+                default:
+                    continue;
+            }
+            lower.sendLine("nattrns" + afi + "_add " + vrf + " " + ntry.protocol + " " + ntry.origSrcAddr + " " + ntry.origSrcPort + " " + ntry.origTrgAddr + " " + ntry.origTrgPort + " " + ntry.newSrcAddr + " " + ntry.newSrcPort + " " + ntry.newTrgAddr + " " + ntry.newTrgPort + " " + prtnam);
+            done.add(ntry);
+        }
+        for (int i = done.size() - 1; i >= 0; i--) {
+            tabNatTraN ntry = done.get(i);
+            if (need.find(ntry) != null) {
+                continue;
+            }
+            String prtnam;
+            switch (ntry.protocol) {
+                case prtUdp.protoNum:
+                    prtnam = "udp";
+                    break;
+                case prtTcp.protoNum:
+                    prtnam = "tcp";
+                    break;
+                default:
+                    continue;
+            }
+            lower.sendLine("nattrns" + afi + "_del " + vrf + " " + ntry.protocol + " " + ntry.origSrcAddr + " " + ntry.origSrcPort + " " + ntry.origTrgAddr + " " + ntry.origTrgPort + " " + ntry.newSrcAddr + " " + ntry.newSrcPort + " " + ntry.newTrgAddr + " " + ntry.newTrgPort + " " + prtnam);
+            done.del(ntry);
+        }
+    }
+
+    private tabListing<tabAceslstN<addrIP>, addrIP> doNatCfg(boolean ipv4, int vrf, tabListing<tabNatCfgN, addrIP> curr, tabListing<tabAceslstN<addrIP>, addrIP> old) {
+        tabListing<tabAceslstN<addrIP>, addrIP> need;
+        if (curr.size() < 1) {
+            need = null;
+        } else {
+            tabNatCfgN ntry = curr.get(0);
+            need = ntry.origSrcList;
+        }
+        if (old == need) {
+            return old;
+        }
+        String afi;
+        if (ipv4) {
+            afi = "4";
+        } else {
+            afi = "6";
+        }
+        sendAcl("natcfg" + afi + "_del " + vrf + " ", ipv4, old);
+        sendAcl("natcfg" + afi + "_add " + vrf + " ", ipv4, need);
+        return need;
+    }
+
     private void doRoutes(boolean ipv4, int vrf, tabRoute<addrIP> need, tabRoute<addrIP> done) {
         String afi;
         if (ipv4) {
@@ -1506,16 +1595,16 @@ class servP4langConn implements Runnable {
         }
     }
 
-    public String ace2str(boolean ipv4, tabAceslstN<addrIP> ace) {
-        return ace.sequence + " " + (ace.action == tabListingEntry.actionType.actPermit ? "permit" : "deny") + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535);
+    public String ace2str(int seq, boolean ipv4, tabAceslstN<addrIP> ace) {
+        return seq + " " + (ace.action == tabListingEntry.actionType.actPermit ? "permit" : "deny") + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535);
     }
 
     public void sendAcl(String pre, boolean ipv4, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
         if (acl == null) {
             return;
         }
-        for (int i = 0; i < (acl.size() - 1); i++) {
-            lower.sendLine(pre + ace2str(ipv4, acl.get(i)));
+        for (int i = 0; i < acl.size(); i++) {
+            lower.sendLine(pre + ace2str(acl.size() - i, ipv4, acl.get(i)));
         }
     }
 

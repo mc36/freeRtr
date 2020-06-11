@@ -6,6 +6,7 @@ typedef bit<48> mac_addr_t;
 typedef bit<20> label_t;
 typedef bit<32> ipv4_addr_t;
 typedef bit<128> ipv6_addr_t;
+typedef bit<16> layer4_port_t;
 typedef bit<12> vlan_id_t;
 typedef bit<16> switch_vrf_t;
 typedef bit<9> PortId_t;
