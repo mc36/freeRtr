@@ -42,6 +42,7 @@ control IngressControlMPLS(inout headers hdr,
       ig_md.mpls_op_type = 0;
       ig_md.vrf = 0;
       ig_md.mpls0_remove = 1;
+      ig_md.mpls1_remove = 1;
    }
 
    action act_mpls_decap_ipv4(switch_vrf_t vrf) {
@@ -61,6 +62,7 @@ control IngressControlMPLS(inout headers hdr,
       ig_md.vrf = vrf;
       ig_md.mpls_op_type = 1;
       ig_md.mpls0_remove = 1;
+      ig_md.mpls1_remove = 1;
 
    }
 
