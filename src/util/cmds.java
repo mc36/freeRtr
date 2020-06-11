@@ -115,7 +115,7 @@ public class cmds {
     /**
      * clone bytes from current reader
      *
-     * @param restart
+     * @param restart restart reading
      * @return new reader
      */
     public cmds copyBytes(boolean restart) {

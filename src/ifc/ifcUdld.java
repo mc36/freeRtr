@@ -225,7 +225,7 @@ public class ifcUdld implements ifcUp {
     /**
      * set state
      *
-     * @param stat
+     * @param stat state
      */
     public void setState(state.states stat) {
     }

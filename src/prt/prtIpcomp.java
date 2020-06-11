@@ -241,8 +241,9 @@ public class prtIpcomp implements ipPrt, ifcDn {
     }
 
     /**
+     * send packet
      *
-     * @param pck
+     * @param pck packet
      */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);

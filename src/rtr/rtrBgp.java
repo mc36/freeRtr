@@ -2954,7 +2954,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * get neighbor count
      *
-     * @return
+     * @return count
      */
     public int routerNeighCount() {
         return neighs.size() + lstnNei.size();

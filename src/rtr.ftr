@@ -932,9 +932,13 @@ qc pass: openflow: ip routing
 qc pass: openflow: mpls routing
 qc pass: openflow: multicast routing
 qc pass: openflow: mldp routing
+qc pass: p4lang: copp
+qc pass: p4lang: ingress access list
+qc pass: p4lang: egress access list
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
-qc pass: p4lang: mpls
+qc pass: p4lang: mpls core
+qc pass: p4lang: mpls edge
 qc pass: p4lang: vlan routing
 qc pass: p4lang: vlan bridging
 qc pass: p4lang: vlan mpls

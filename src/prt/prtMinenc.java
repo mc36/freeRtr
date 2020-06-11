@@ -115,8 +115,9 @@ public class prtMinenc implements ipPrt, ifcDn {
     }
 
     /**
+     * closed interface
      *
-     * @param iface
+     * @param iface interface
      */
     public void closeUp(ipFwdIface iface) {
         upper.closeUp();

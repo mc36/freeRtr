@@ -5,6 +5,7 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 int eth2 eth 0000.0000.1111 $2b$ $2a$
 !
 vrf def v1
+ label-mode per-prefix
  rd 1:1
  exit
 vrf def v9

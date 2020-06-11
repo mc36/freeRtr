@@ -138,7 +138,7 @@ public class lineSlip implements Runnable, ifcDn {
     /**
      * create new instance
      *
-     * @param pipe
+     * @param pipe pipeline
      */
     public lineSlip(pipeSide pipe) {
         lower = pipe;

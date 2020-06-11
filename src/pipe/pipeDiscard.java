@@ -38,7 +38,7 @@ public class pipeDiscard {
     /**
      * flush pipe side
      *
-     * @param pipe
+     * @param pipe pipeline
      */
     public static void flush(pipeSide pipe) {
         for (;;) {

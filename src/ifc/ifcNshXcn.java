@@ -69,8 +69,9 @@ public class ifcNshXcn implements ifcUp {
     }
 
     /**
+     * received packet
      *
-     * @param pck
+     * @param pck packet
      */
     public void recvPack(packHolder pck) {
         pck.IPprt = ifcNshFwd.protEth;

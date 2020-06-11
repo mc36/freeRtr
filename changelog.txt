@@ -8864,3 +8864,10 @@ qc pass: lsrp unstub
 ---------------------------------- 2020-06-04 04:42:12
 qc pass: unified mpls with ldp
 qc pass: unified mpls with sr
+---------------------------------- 2020-06-10 17:04:05
+no qc pass: p4lang: mpls
+qc pass: p4lang: copp
+qc pass: p4lang: ingress access list
+qc pass: p4lang: egress access list
+qc pass: p4lang: mpls core
+qc pass: p4lang: mpls edge

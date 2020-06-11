@@ -499,7 +499,7 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
     /**
      * close interface
      *
-     * @param iface
+     * @param iface interface
      */
     public void closeUp(ipFwdIface iface) {
     }

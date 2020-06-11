@@ -181,7 +181,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
      * @param buf buffer to write to
      * @param ofs offset in buffer
      * @return useful bytes in buffer
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception exception
      */
     public abstract int rxOnePack(byte[] buf, int ofs) throws Exception;
 
@@ -191,14 +191,14 @@ public abstract class ifcThread implements ifcDn, Runnable {
      * @param buf buffer to send
      * @param ofs offset in buffer
      * @param len useful bytes in buffer
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception exception
      */
     public abstract void txOnePack(byte[] buf, int ofs, int len) throws Exception;
 
     /**
      * close the connection
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception exception
      */
     public abstract void rxtxClose() throws Exception;
 

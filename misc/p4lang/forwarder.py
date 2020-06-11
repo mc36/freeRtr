@@ -896,6 +896,38 @@ def writeMplsRules(delete, p4info_helper, ingress_sw, dst_label, new_label, port
         ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
+def writeUnMplsRules(delete, p4info_helper, ingress_sw, dst_label, port):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
+        match_fields={
+            "ig_md.mpls_label": (dst_label)
+        },
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_set_nexthop",
+        action_params={
+            "nexthop_id": port
+        }
+    )
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
+        match_fields={
+            "ig_md.mpls_label": (dst_label)
+        },
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_set_nexthop",
+        action_params={
+            "nexthop_id": port
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
 def writeMyMplsRules(delete, p4info_helper, ingress_sw, dst_label, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
@@ -1126,6 +1158,16 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
 
+        if splt[0] == "unlabel4_add":
+            writeUnMplsRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "unlabel4_mod":
+            writeUnMplsRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "unlabel4_del":
+            writeUnMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
         if splt[0] == "mylabel4_add":
             writeMyMplsRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
@@ -1323,6 +1365,16 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "label6_del":
             writeMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
+            continue
+
+        if splt[0] == "unlabel6_add":
+            writeUnMplsRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "unlabel6_mod":
+            writeUnMplsRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "unlabel6_del":
+            writeUnMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
 
         if splt[0] == "mysrv4_add":

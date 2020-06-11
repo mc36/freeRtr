@@ -1522,6 +1522,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
 
     /**
      * forwards one parsed packet by policy routing
+     *
+     * @param cfg config
+     * @param fromIfc from interface
+     * @param fromMpls from mpls
+     * @param rxIfc receiving interface
+     * @param pck packet
+     * @return true if sent, false if not
      */
     private boolean doPbrFwd(tabListing<tabPbrN, addrIP> cfg, boolean fromIfc, boolean fromMpls, ipFwdIface rxIfc, packHolder pck) {
         if (cfg.size() < 1) {
@@ -1570,6 +1577,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
 
     /**
      * forwards one parsed packet
+     *
+     * @param fromIfc from interace
+     * @param fromMpls from mpls
+     * @param rxIfc receiving interface
+     * @param pck packet
      */
     private void forwardPacket(boolean fromIfc, boolean fromMpls, ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);

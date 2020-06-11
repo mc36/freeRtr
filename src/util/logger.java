@@ -605,7 +605,7 @@ public class logger {
     /**
      * start pipe logger
      *
-     * @param pip
+     * @param pip pipeline
      * @return false on sucecss, true if already added
      */
     public static boolean pipeStart(pipeSide pip) {
@@ -618,7 +618,7 @@ public class logger {
     /**
      * stop pipe logger
      *
-     * @param pip
+     * @param pip pipeline
      * @return false on sucecss, true if already removed
      */
     public static boolean pipeStop(pipeSide pip) {

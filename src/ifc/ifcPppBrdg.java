@@ -85,7 +85,7 @@ public class ifcPppBrdg extends ifcPppNcp {
     /**
      * update received packet
      *
-     * @param pck
+     * @param pck packet
      */
     public static void patchPackRx(packHolder pck) {
         pck.getSkip(2);
@@ -94,7 +94,7 @@ public class ifcPppBrdg extends ifcPppNcp {
     /**
      * update transmitted packet
      *
-     * @param pck
+     * @param pck packet
      */
     public static void patchPackTx(packHolder pck) {
         pck.msbPutW(0, 0x0001);

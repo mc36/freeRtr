@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.6.8-testing, done by cs@nop.;-;-
--;-;2020-06-09 04:11:23, took 09:15:48 on 1700 cases, 0 failed, 1 traces, 16 retries;-;-
+-;-;freeRouter v20.6.10-testing, done by cs@nop.;-;-
+-;-;2020-06-11 02:28:38, took 09:24:32 on 1704 cases, 0 failed, 0 traces, 20 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -936,20 +936,24 @@ opnflw-rout03.tst;0;openflow: ip routing;successfully;finished
 opnflw-rout04.tst;0;openflow: mpls routing;successfully;finished
 opnflw-rout05.tst;0;openflow: multicast routing;successfully;finished
 opnflw-rout06.tst;0;openflow: mldp routing;successfully;finished
+p4lang-acl01.tst;0;p4lang: copp;successfully;finished
+p4lang-acl02.tst;0;p4lang: ingress access list;successfully;finished
+p4lang-acl03.tst;0;p4lang: egress access list;successfully;finished
 p4lang-rout01.tst;0;p4lang: routing;successfully;finished
 p4lang-rout02.tst;0;p4lang: bridging;successfully;finished
-p4lang-rout03.tst;0;p4lang: mpls;successfully;finished
-p4lang-rout04.tst;0;p4lang: vlan routing;successfully;finished
-p4lang-rout05.tst;0;p4lang: vlan bridging;successfully;finished
-p4lang-rout06.tst;0;p4lang: vlan mpls;successfully;finished
-p4lang-rout07.tst;0;p4lang: vpn with bgp;successfully;finished
-p4lang-rout08.tst;0;p4lang: vpls/ldp with bgp;successfully;finished
-p4lang-rout09.tst;0;p4lang: evpn/cmac with bgp;successfully;finished
-p4lang-rout10.tst;0;p4lang: eompls;successfully;finished
-p4lang-rout11.tst;0;p4lang: vpn with bgp over srv6;successfully;finished
-p4lang-rout12.tst;0;p4lang: evpn/cmac with bgp over srv6;successfully;finished
-p4lang-rout13.tst;0;p4lang: bundle routing;successfully;finished
-p4lang-rout14.tst;0;p4lang: bundle mpls;successfully;finished
+p4lang-rout03.tst;0;p4lang: mpls core;successfully;finished
+p4lang-rout04.tst;0;p4lang: mpls edge;successfully;finished
+p4lang-rout05.tst;0;p4lang: vlan routing;successfully;finished
+p4lang-rout06.tst;0;p4lang: vlan bridging;successfully;finished
+p4lang-rout07.tst;0;p4lang: vlan mpls;successfully;finished
+p4lang-rout08.tst;0;p4lang: vpn with bgp;successfully;finished
+p4lang-rout09.tst;0;p4lang: vpls/ldp with bgp;successfully;finished
+p4lang-rout10.tst;0;p4lang: evpn/cmac with bgp;successfully;finished
+p4lang-rout11.tst;0;p4lang: eompls;successfully;finished
+p4lang-rout12.tst;0;p4lang: vpn with bgp over srv6;successfully;finished
+p4lang-rout13.tst;0;p4lang: evpn/cmac with bgp over srv6;successfully;finished
+p4lang-rout14.tst;0;p4lang: bundle routing;successfully;finished
+p4lang-rout15.tst;0;p4lang: bundle mpls;successfully;finished
 qos-action01.tst;0;qos ingress transmit action;successfully;finished
 qos-action02.tst;0;qos egress transmit action;successfully;finished
 qos-action03.tst;0;qos ingress drop action;successfully;finished

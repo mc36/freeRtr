@@ -80,7 +80,7 @@ public class cryEncrECBrc5 extends cryEncrGeneric {
     /**
      * get next iv
      *
-     * @return
+     * @return the iv
      */
     public byte[] getNextIV() {
         return crypter.getIV();

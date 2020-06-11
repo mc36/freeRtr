@@ -42,20 +42,6 @@ control ig_ctl(inout headers hdr,
            /*                                                                        
             * So it is a dataplane packet                                                     
             */                                                                       
-           if (hdr.mpls0.isValid()) {
-             ig_md.mpls0_valid = 1;
-           }
-           if (hdr.mpls1.isValid()) {
-             ig_md.mpls1_valid = 1;
-           }
-           if (hdr.tcp.isValid()) {
-             ig_md.layer4_srcprt = hdr.tcp.src_port;
-             ig_md.layer4_dstprt = hdr.tcp.dst_port;
-           }
-           if (hdr.udp.isValid()) {
-             ig_md.layer4_srcprt = hdr.udp.src_port;
-             ig_md.layer4_dstprt = hdr.udp.dst_port;
-           }
          ig_ctl_vlan_in.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_acl_in.apply(hdr,ig_md,ig_intr_md);
          if (ig_md.dropping == 1) {

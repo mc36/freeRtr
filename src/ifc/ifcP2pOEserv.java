@@ -69,7 +69,7 @@ public class ifcP2pOEserv implements ifcUp {
     /**
      * remove client from list
      *
-     * @param ntry
+     * @param ntry original entry
      */
     public void delClient(ifcP2pOEservNtry ntry) {
         clnts.del(ntry);

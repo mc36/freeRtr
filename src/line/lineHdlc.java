@@ -144,7 +144,7 @@ public class lineHdlc implements Runnable, ifcDn {
     /**
      * create new instance
      *
-     * @param pipe
+     * @param pipe pipeline
      */
     public lineHdlc(pipeSide pipe) {
         lower = pipe;

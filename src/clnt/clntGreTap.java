@@ -84,7 +84,7 @@ public class clntGreTap implements ifcDn, ifcUp, Runnable {
     /**
      * get hw address
      *
-     * @return
+     * @return address
      */
     public addrType getHwAddr() {
         return addrMac.getRandom();

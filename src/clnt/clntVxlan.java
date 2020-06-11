@@ -262,7 +262,7 @@ public class clntVxlan implements Runnable, prtServP, ifcDn {
     /**
      * closed interface
      *
-     * @param ifc
+     * @param ifc interface
      */
     public void closedInterface(ipFwdIface ifc) {
     }

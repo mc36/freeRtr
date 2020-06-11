@@ -85,7 +85,7 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
     /**
      * get hw address
      *
-     * @return
+     * @return address
      */
     public addrType getHwAddr() {
         return new addrEmpty();

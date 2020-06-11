@@ -133,7 +133,7 @@ public class clntSmtp implements Runnable {
     /**
      * write whole body
      *
-     * @param txt
+     * @param txt text
      */
     public void putBody(List<String> txt) {
         body.clear();

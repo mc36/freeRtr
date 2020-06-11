@@ -49,7 +49,7 @@ public class cryOtp {
     /**
      * generate android password
      *
-     * @param pwd
+     * @param pwd password
      * @return seed value
      */
     public static byte[] androidPass(String pwd) {

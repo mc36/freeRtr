@@ -121,7 +121,7 @@ public class prtPipe implements ipPrt, ifcDn {
     /**
      * close interface
      *
-     * @param iface
+     * @param iface interface
      */
     public void closeUp(ipFwdIface iface) {
         upper.closeUp();

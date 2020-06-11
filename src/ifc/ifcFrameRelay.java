@@ -660,7 +660,7 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
     /**
      * received keepalive packet
      *
-     * @param pck
+     * @param pck packet
      */
     protected void recvKeepalive(packHolder pck) {
         lastRxKeep = bits.getTime();

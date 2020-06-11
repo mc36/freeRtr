@@ -398,9 +398,8 @@ public class packTlsHndshk {
     /**
      * create packet handler
      *
+     * @param pack packet
      * @param dtls datagram mode
-     *
-     * @param pack
      */
     public packTlsHndshk(packTls pack, boolean dtls) {
         lower = pack;

@@ -55,6 +55,7 @@ parser ig_prs_main(packet_in pkt,
 
    state prs_mpls0 {
       pkt.extract(hdr.mpls0);
+      ig_md.mpls0_valid = 1;
       transition select(hdr.mpls0.bos) {
           1w0: prs_mpls1;
           1w1: prs_mpls_bos;
@@ -64,6 +65,7 @@ parser ig_prs_main(packet_in pkt,
 
    state prs_mpls1 {
       pkt.extract(hdr.mpls1);
+      ig_md.mpls1_valid = 1;
       transition select(hdr.mpls1.bos) {
           1w0: accept;
           1w1: prs_mpls_bos;
@@ -119,11 +121,15 @@ parser ig_prs_main(packet_in pkt,
 
    state prs_udp {
       pkt.extract(hdr.udp);
+      ig_md.layer4_srcprt = hdr.udp.src_port;
+      ig_md.layer4_dstprt = hdr.udp.dst_port;
       transition accept;
    }
 
    state prs_tcp {
       pkt.extract(hdr.tcp);
+      ig_md.layer4_srcprt = hdr.tcp.src_port;
+      ig_md.layer4_dstprt = hdr.tcp.dst_port;
       transition accept;
    }
 

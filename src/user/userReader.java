@@ -206,7 +206,7 @@ public class userReader implements Comparator<String> {
     /**
      * set size of history buffer
      *
-     * @param num
+     * @param num size
      */
     public void setHistory(int num) {
         String d[] = new String[num];

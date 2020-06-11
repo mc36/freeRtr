@@ -954,6 +954,10 @@ class servP4langConn implements Runnable {
         if (hop == null) {
             return;
         }
+        if (ntry.remoteLab == null) {
+            lower.sendLine("unlabel" + afi + "_del " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop);
+            return;
+        }
         lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop + " " + ntry.remoteLab.get(0));
     }
 
@@ -1003,15 +1007,16 @@ class servP4langConn implements Runnable {
             }
             act = "mod";
         }
-        if (ntry.remoteLab == null) {
-            return;
-        }
-        labels.put(ntry.copyBytes());
         String afi;
         if (ntry.nextHop.isIPv4()) {
             afi = "4";
         } else {
             afi = "6";
+        }
+        labels.put(ntry.copyBytes());
+        if (ntry.remoteLab == null) {
+            lower.sendLine("unlabel" + afi + "_" + act + " " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop);
+            return;
         }
         lower.sendLine("label" + afi + "_" + act + " " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop + " " + ntry.remoteLab.get(0));
     }

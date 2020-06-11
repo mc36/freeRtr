@@ -29,7 +29,7 @@ public class cryHashSha3224 extends cryHashGeneric {
     /**
      * get name
      *
-     * @return
+     * @return name
      */
     public String getName() {
         return "sha3-224";

@@ -516,7 +516,7 @@ public class pipeSide {
     /**
      * destructive skip delete bytes without read
      *
-     * @param len
+     * @param len length
      * @return bytes done, or negative error code
      */
     public int nonBlockSkip(int len) {

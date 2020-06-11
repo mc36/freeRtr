@@ -22,7 +22,7 @@ public class pipeProgress {
     /**
      * create new progress bar
      *
-     * @param pip
+     * @param pip pipeline
      */
     public pipeProgress(pipeSide pip) {
         pipe = pip;

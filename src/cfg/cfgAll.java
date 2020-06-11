@@ -1769,7 +1769,7 @@ public class cfgAll {
     /**
      * reregister subinterfaces
      *
-     * @param iface
+     * @param iface interface
      */
     public synchronized static void regSubifaces(cfgIfc iface) {
         for (int i = 0; i < ifaces.size(); i++) {

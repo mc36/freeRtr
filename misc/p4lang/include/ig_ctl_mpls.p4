@@ -19,6 +19,7 @@ control IngressControlMPLS(inout headers hdr,
       ig_md.ipv6_valid = 0;
    }
 
+
    action act_mpls_swap1_set_nexthop(label_t egress_label, NextHopId_t nexthop_id) {
       /*              
        * Encapsulate MPLS header
@@ -31,6 +32,16 @@ control IngressControlMPLS(inout headers hdr,
       ig_md.mpls_op_type = 0;
       ig_md.ipv4_valid = 0;
       ig_md.ipv6_valid = 0;
+   }
+
+   action act_mpls_decap_set_nexthop(NextHopId_t nexthop_id) {
+      /*              
+       * Indicate nexthop_id
+       */
+      ig_md.nexthop_id = nexthop_id;
+      ig_md.mpls_op_type = 0;
+      ig_md.vrf = 0;
+      ig_md.mpls0_remove = 1;
    }
 
    action act_mpls_decap_ipv4(switch_vrf_t vrf) {
@@ -136,6 +147,11 @@ control IngressControlMPLS(inout headers hdr,
          /*
           * mpls decapsulation if PHP
           */
+         act_mpls_decap_set_nexthop;
+
+         /*
+          * mpls decapsulation if PHP
+          */
          act_mpls_decap_ipv4;
 
          /*
@@ -169,6 +185,11 @@ control IngressControlMPLS(inout headers hdr,
           */
          act_mpls_swap1_set_nexthop;
           
+         /*
+          * mpls decapsulation if PHP
+          */
+         act_mpls_decap_set_nexthop;
+
          /*
           * mpls decapsulation if PHP
           */

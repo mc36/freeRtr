@@ -57,7 +57,7 @@ public abstract class addrType implements Comparator<addrType> {
     /**
      * set address from other address
      *
-     * @param src
+     * @param src source
      */
     public void setAddr(addrType src) {
         bits.byteCopy(src.addr, 0, addr, 0, addr.length);

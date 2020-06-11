@@ -78,7 +78,7 @@ public class clntMplsBier implements Runnable, ifcDn {
     /**
      * get hw address
      *
-     * @return
+     * @return address
      */
     public addrType getHwAddr() {
         return new addrEmpty();
