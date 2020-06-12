@@ -41,9 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import pack.packLdpMp;
 import pack.packLdpPwe;
-import pipe.pipeLine;
-import pipe.pipeReader;
-import pipe.pipeSide;
 import prt.prtRedun;
 import prt.prtWatch;
 import rtr.rtrBabelNeigh;
@@ -2789,7 +2786,7 @@ public class userShow {
         }
         String a = cmd.word();
         if (a.equals("translations")) {
-            userFormat l = new userFormat("|", "proto|origSrc|origTrg|newSrc|newTrg");
+            userFormat l = new userFormat("|", "proto|origSrc|origTrg|newSrc|newTrg|last|pack|byte");
             for (int i = 0; i < fwd.natTrns.size(); i++) {
                 l.add("" + fwd.natTrns.get(i));
             }

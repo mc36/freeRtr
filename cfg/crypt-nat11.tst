@@ -1,4 +1,4 @@
-description source address translation to address
+description source port randomization
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -10,6 +10,10 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
+ exit
+server telnet tel
+ vrf v1
+ port 666
  exit
 !
 
@@ -36,10 +40,8 @@ access-list test4
 access-list test6
  permit all 1234:2:: ffff:ffff:: all 1234:1:: ffff:ffff:: all
  exit
-ipv4 route v1 8.8.8.8 255.255.255.255 1.1.1.6
-ipv6 route v1 8888::8 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::2
-ipv4 nat v1 source 8.8.8.8 1.1.1.2
-ipv6 nat v1 source 8888::8 1234:1::2
+ipv4 nat v1 srclist test4 interface ethernet1 random
+ipv6 nat v1 srclist test6 interface ethernet1 random
 !
 
 addrouter r3
@@ -53,16 +55,24 @@ int eth1
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
-int lo1
- vrf for v1
- ipv4 addr 8.8.8.8 255.255.255.255
- ipv6 addr 8888::8 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.5
 ipv6 route v1 :: :: 1234:2::1
 !
 
+r2 tping 100 5 1.1.1.1 /vrf v1
+r2 tping 100 5 1234:1::1 /vrf v1
+r2 tping 100 5 1.1.1.6 /vrf v1
+r2 tping 100 5 1234:2::2 /vrf v1
 
+r3 send telnet 1.1.1.1 666 /vrf v1
+r3 tping 100 5 1.1.1.1 /vrf v1
+r3 send exit
+r3 read closed
 
-r3 tping 100 5 1.1.1.1 /vrf v1 /int lo1
-r3 tping 100 5 1234:1::1 /vrf v1 /int lo1
+r3 send telnet 1234:1::1 666 /vrf v1
+r3 tping 100 5 1234:1::1 /vrf v1
+r3 send exit
+r3 read closed
+
+r2 output show ipv4 nat v1 tran
+r2 output show ipv6 nat v1 tran

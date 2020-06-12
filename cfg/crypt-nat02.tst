@@ -31,7 +31,7 @@ int eth2
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
 access-list test4
- permit all any all any all
+ permit all 1.1.1.4 255.255.255.252 all 1.1.1.0 255.255.255.252 all
  exit
 access-list test6
  permit all 1234:2:: ffff:ffff:: all 1234:1:: ffff:ffff:: all

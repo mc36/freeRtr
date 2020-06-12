@@ -31,7 +31,7 @@ int eth2
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
 access-list test4
- permit all any all any all
+ permit all 1.1.1.128 255.255.255.128 all 1.1.1.0 255.255.255.128 all
  exit
 access-list test6
  permit all 1234:2:: ffff:ffff:: all 1234:1:: ffff:ffff:: all
@@ -105,3 +105,6 @@ r5 tping 100 5 1.1.1.1 /vrf v1
 r3 tping 100 5 1234:1::1 /vrf v1
 r4 tping 100 5 1234:1::1 /vrf v1
 r5 tping 100 5 1234:1::1 /vrf v1
+
+r2 output show ipv4 nat v1 tran
+r2 output show ipv6 nat v1 tran

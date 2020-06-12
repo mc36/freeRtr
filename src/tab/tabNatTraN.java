@@ -5,6 +5,7 @@ import java.util.Comparator;
 import pack.packHolder;
 import util.bits;
 import addr.addrIP;
+import util.counter;
 
 /**
  * represents one nat entry (source/target, orig/new)
@@ -69,6 +70,11 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
     public tabNatTraN reverse;
 
     /**
+     * counter
+     */
+    public counter cntr = new counter();
+
+    /**
      * reverse entry
      *
      * @return entry reversed
@@ -91,7 +97,7 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
     }
 
     public String toString() {
-        return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|" + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort;
+        return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|" + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort + "|" + bits.timePast(lastUsed) + "|" + cntr.packRx + "|" + cntr.byteRx;
     }
 
     public int compare(tabNatTraN o1, tabNatTraN o2) {
@@ -160,6 +166,7 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
      * @param pck packet to update
      */
     public void updatePack(packHolder pck) {
+        cntr.rx(pck);
         pck.IPsrc.fromBuf(newSrcAddr.getBytes(), 0);
         pck.IPtrg.fromBuf(newTrgAddr.getBytes(), 0);
         pck.UDPsrc = newSrcPort;
@@ -173,6 +180,7 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
      * @param pck packet to update
      */
     public void updateError(packHolder pck) {
+        cntr.rx(pck);
         pck.IPtrg.fromBuf(newSrcAddr.getBytes(), 0);
         pck.IPsrc.fromBuf(newTrgAddr.getBytes(), 0);
         pck.UDPtrg = newSrcPort;

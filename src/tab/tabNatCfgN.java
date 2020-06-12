@@ -87,6 +87,11 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     public int newTrgPort = -1;
 
     /**
+     * randomize port
+     */
+    public boolean randomize = false;
+
+    /**
      * convert string to address
      *
      * @param s string to convert
@@ -170,6 +175,15 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             newA.setAnd(newA, mask);
             maskNot = new addrIP();
             maskNot.setNot(mask);
+        }
+        for (;;) {
+            s = cmd.word();
+            if (s.length() < 1) {
+                break;
+            }
+            if (s.equals("randomize")) {
+                randomize = true;
+            }
         }
         if (what == 2) {
             origTrgAddr = orgA;
@@ -270,6 +284,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         }
         if ((what & 8) != 0) {
             s = s + " " + mask;
+        }
+        if (randomize) {
+            s += " randomize";
         }
         l.add(beg + s);
         return l;
@@ -421,6 +438,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         }
         if (newTrgPort >= 0) {
             n.newTrgPort = newTrgPort;
+        }
+        if (randomize) {
+            n.newSrcPort = bits.random(0x1000, 0x7fff);
         }
         return n;
     }
