@@ -218,7 +218,7 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
      */
     public String dump() {
         String s;
-        s = getDir() + "|" + ipPrt + "|" + ipTos + "|" + getSrc("|") + "|" + getTrg("|") + "|" + rxByte + "|" + txByte + "|" + getDur();
+        s = getDir() + "|" + ipPrt + "|" + ipTos + "|" + getSrc("|") + "|" + getTrg("|") + "|" + rxByte + "|" + txByte + "|" + rxPack + "|" + txPack + "|" + getDur();
         if (!logMacs) {
             return s;
         }

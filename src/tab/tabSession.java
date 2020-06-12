@@ -193,9 +193,9 @@ public class tabSession implements Runnable {
     public userFormat doShowInsp() {
         userFormat l;
         if (logMacs) {
-            l = new userFormat("|", "dir|prt|tos|src|src|trg|trg|rx|tx|time|src|trg");
+            l = new userFormat("|", "dir|prt|tos|src|src|trg|trg|rxb|txb|rxp|txp|time|src|trg");
         } else {
-            l = new userFormat("|", "dir|prt|tos|src|src|trg|trg|rx|tx|time");
+            l = new userFormat("|", "dir|prt|tos|src|src|trg|trg|rxb|txb|rxp|txp|time");
         }
         for (int i = 0; i < connects.size(); i++) {
             l.add(connects.get(i).dump());
@@ -210,7 +210,7 @@ public class tabSession implements Runnable {
      */
     public userFormat doShowTalk() {
         tabGen<tabSessionEndpoint> ept = getTopTalker();
-        userFormat l = new userFormat("|", "addr|rx|tx|time");
+        userFormat l = new userFormat("|", "addr|rxb|txb|rxp|txp|time");
         for (int i = 0; i < ept.size(); i++) {
             l.add(ept.get(i).dump());
         }
@@ -224,13 +224,13 @@ public class tabSession implements Runnable {
             if (cur == null) {
                 continue;
             }
-            updateTalker(ept, cur.srcAdr, cur.rxByte, cur.txByte, cur.startTime);
-            updateTalker(ept, cur.trgAdr, cur.rxByte, cur.txByte, cur.startTime);
+            updateTalker(ept, cur.srcAdr, cur.rxByte, cur.txByte, cur.rxPack, cur.txPack, cur.startTime);
+            updateTalker(ept, cur.trgAdr, cur.rxByte, cur.txByte, cur.rxPack, cur.txPack, cur.startTime);
         }
         return ept;
     }
 
-    private void updateTalker(tabGen<tabSessionEndpoint> ept, addrIP adr, long rx, long tx, long tim) {
+    private void updateTalker(tabGen<tabSessionEndpoint> ept, addrIP adr, long rxb, long txb, long rxp, long txp, long tim) {
         tabSessionEndpoint ntry = new tabSessionEndpoint();
         ntry.adr = adr.copyBytes();
         tabSessionEndpoint res = ept.find(ntry);
@@ -238,8 +238,10 @@ public class tabSession implements Runnable {
             res = ntry;
             ept.add(res);
         }
-        res.rx += rx;
-        res.tx += tx;
+        res.rxb += rxb;
+        res.txb += txb;
+        res.rxp += rxp;
+        res.txp += txp;
         if ((res.tim == 0) || (res.tim > tim)) {
             res.tim = tim;
         }
@@ -355,14 +357,18 @@ class tabSessionEndpoint implements Comparator<tabSessionEndpoint> {
 
     public addrIP adr;
 
-    public long rx;
+    public long rxb;
 
-    public long tx;
+    public long txb;
+
+    public long rxp;
+
+    public long txp;
 
     public long tim;
 
     public String dump() {
-        return adr + "|" + rx + "|" + tx + "|" + bits.timePast(tim);
+        return adr + "|" + rxb + "|" + txb + "|" + rxp + "|" + txp + "|" + bits.timePast(tim);
     }
 
     public int compare(tabSessionEndpoint o1, tabSessionEndpoint o2) {

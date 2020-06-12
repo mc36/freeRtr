@@ -5,10 +5,7 @@ import addr.addrType;
 import cfg.cfgAll;
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabQos;
@@ -983,18 +980,12 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @return table
      */
     public userFormat getShProtos() {
-        List<ifcEthTypSorter> r = new ArrayList<ifcEthTypSorter>();
-        for (int i = 0; i < protos.length; i++) {
-            r.add(new ifcEthTypSorter(i, protos[i]));
-        }
-        Collections.sort(r, r.get(0));
         userFormat l = new userFormat("|", "proto|pack|byte");
         for (int i = 0; i < protos.length; i++) {
-            String a = r.get(protos.length - i - 1).dump();
-            if (a == null) {
+            if (protos[i].packTx == 0) {
                 continue;
             }
-            l.add(a);
+            l.add(i + "|" + protos[i].packTx + "|" + protos[i].byteTx);
         }
         return l;
     }
@@ -1135,30 +1126,6 @@ public class ifcEthTyp implements Runnable, ifcUp {
      */
     public counter getTotalCounter() {
         return totCntr.plus(cntr);
-    }
-
-}
-
-class ifcEthTypSorter implements Comparator<ifcEthTypSorter> {
-
-    public final int key;
-
-    public final counter cnt;
-
-    public ifcEthTypSorter(int k, counter c) {
-        key = k;
-        cnt = c;
-    }
-
-    public String dump() {
-        if (cnt.packTx == 0) {
-            return null;
-        }
-        return key + "|" + cnt.packTx + "|" + cnt.byteTx;
-    }
-
-    public int compare(ifcEthTypSorter o1, ifcEthTypSorter o2) {
-        return o1.cnt.compare(o1.cnt, o2.cnt);
     }
 
 }

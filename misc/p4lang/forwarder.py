@@ -764,7 +764,7 @@ def writeNatCfgRules6(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm,
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeNatTrnsRules4(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, ota, otp, nsa, nsp, nta, ntp, pn):
+def writeNatTrnsRules4(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, ota, otp, nsa, nsp, nta, ntp):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_nat.tbl_ipv4_nat_trns",
         match_fields={
@@ -775,7 +775,7 @@ def writeNatTrnsRules4(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
             "ig_md.layer4_srcprt": osp,
             "ig_md.layer4_dstprt": otp
         },
-        action_name="ig_ctl.ig_ctl_nat.act_rewrite_ipv4"+pn,
+        action_name="ig_ctl.ig_ctl_nat.act_rewrite_ipv4prt"+str(proto),
         action_params={
             "srcadr": nsa,
             "trgadr": nta,
@@ -790,7 +790,7 @@ def writeNatTrnsRules4(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeNatTrnsRules6(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, ota, otp, nsa, nsp, nta, ntp, pn):
+def writeNatTrnsRules6(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, ota, otp, nsa, nsp, nta, ntp):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_nat.tbl_ipv6_nat_trns",
         match_fields={
@@ -801,7 +801,7 @@ def writeNatTrnsRules6(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
             "ig_md.layer4_srcprt": osp,
             "ig_md.layer4_dstprt": otp
         },
-        action_name="ig_ctl.ig_ctl_nat.act_rewrite_ipv6"+pn,
+        action_name="ig_ctl.ig_ctl_nat.act_rewrite_ipv6prt"+str(proto),
         action_params={
             "srcadr": nsa,
             "trgadr": nta,
@@ -1267,23 +1267,23 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
 
         if splt[0] == "nattrns4_add":
-            writeNatTrnsRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11])
+            writeNatTrnsRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
             continue
         if splt[0] == "nattrns4_mod":
-            writeNatTrnsRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11])
+            writeNatTrnsRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
             continue
         if splt[0] == "nattrns4_del":
-            writeNatTrnsRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11])
+            writeNatTrnsRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
             continue
 
         if splt[0] == "nattrns6_add":
-            writeNatTrnsRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11])
+            writeNatTrnsRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
             continue
         if splt[0] == "nattrns6_mod":
-            writeNatTrnsRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11])
+            writeNatTrnsRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
             continue
         if splt[0] == "nattrns6_del":
-            writeNatTrnsRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11])
+            writeNatTrnsRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
             continue
 
         if splt[0] == "nattrns6_add":

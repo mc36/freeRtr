@@ -1390,18 +1390,14 @@ class servP4langConn implements Runnable {
             if (done.find(ntry) != null) {
                 continue;
             }
-            String prtnam;
             switch (ntry.protocol) {
                 case prtUdp.protoNum:
-                    prtnam = "udp";
-                    break;
                 case prtTcp.protoNum:
-                    prtnam = "tcp";
                     break;
                 default:
                     continue;
             }
-            lower.sendLine("nattrns" + afi + "_add " + vrf + " " + ntry.protocol + " " + ntry.origSrcAddr + " " + ntry.origSrcPort + " " + ntry.origTrgAddr + " " + ntry.origTrgPort + " " + ntry.newSrcAddr + " " + ntry.newSrcPort + " " + ntry.newTrgAddr + " " + ntry.newTrgPort + " " + prtnam);
+            lower.sendLine("nattrns" + afi + "_add " + vrf + " " + ntry.protocol + " " + ntry.origSrcAddr + " " + ntry.origSrcPort + " " + ntry.origTrgAddr + " " + ntry.origTrgPort + " " + ntry.newSrcAddr + " " + ntry.newSrcPort + " " + ntry.newTrgAddr + " " + ntry.newTrgPort);
             done.add(ntry);
         }
         for (int i = done.size() - 1; i >= 0; i--) {
@@ -1409,18 +1405,14 @@ class servP4langConn implements Runnable {
             if (need.find(ntry) != null) {
                 continue;
             }
-            String prtnam;
             switch (ntry.protocol) {
                 case prtUdp.protoNum:
-                    prtnam = "udp";
-                    break;
                 case prtTcp.protoNum:
-                    prtnam = "tcp";
                     break;
                 default:
                     continue;
             }
-            lower.sendLine("nattrns" + afi + "_del " + vrf + " " + ntry.protocol + " " + ntry.origSrcAddr + " " + ntry.origSrcPort + " " + ntry.origTrgAddr + " " + ntry.origTrgPort + " " + ntry.newSrcAddr + " " + ntry.newSrcPort + " " + ntry.newTrgAddr + " " + ntry.newTrgPort + " " + prtnam);
+            lower.sendLine("nattrns" + afi + "_del " + vrf + " " + ntry.protocol + " " + ntry.origSrcAddr + " " + ntry.origSrcPort + " " + ntry.origTrgAddr + " " + ntry.origTrgPort + " " + ntry.newSrcAddr + " " + ntry.newSrcPort + " " + ntry.newTrgAddr + " " + ntry.newTrgPort);
             done.del(ntry);
         }
     }

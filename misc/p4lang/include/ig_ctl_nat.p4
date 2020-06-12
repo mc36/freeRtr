@@ -14,7 +14,7 @@ control IngressControlNAT(inout headers hdr,
    }
 
 
-   action act_rewrite_ipv4udp(ipv4_addr_t srcadr, ipv4_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
+   action act_rewrite_ipv4prt17(ipv4_addr_t srcadr, ipv4_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
          hdr.ipv4.src_addr = srcadr;
          hdr.ipv4.dst_addr = trgadr;
          hdr.udp.src_port = srcprt;
@@ -24,7 +24,7 @@ control IngressControlNAT(inout headers hdr,
          ig_md.layer4_dstprt = trgprt;
    }
 
-   action act_rewrite_ipv4tcp(ipv4_addr_t srcadr, ipv4_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
+   action act_rewrite_ipv4prt6(ipv4_addr_t srcadr, ipv4_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
          hdr.ipv4.src_addr = srcadr;
          hdr.ipv4.dst_addr = trgadr;
          hdr.tcp.src_port = srcprt;
@@ -34,7 +34,7 @@ control IngressControlNAT(inout headers hdr,
          ig_md.layer4_dstprt = trgprt;
    }
    
-   action act_rewrite_ipv6udp(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
+   action act_rewrite_ipv6prt17(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
          hdr.ipv6.src_addr = srcadr;
          hdr.ipv6.dst_addr = trgadr;
          hdr.udp.src_port = srcprt;
@@ -44,7 +44,7 @@ control IngressControlNAT(inout headers hdr,
          ig_md.layer4_dstprt = trgprt;
    }
 
-   action act_rewrite_ipv6tcp(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
+   action act_rewrite_ipv6prt6(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
          hdr.ipv6.src_addr = srcadr;
          hdr.ipv6.dst_addr = trgadr;
          hdr.tcp.src_port = srcprt;
@@ -64,8 +64,8 @@ control IngressControlNAT(inout headers hdr,
          ig_md.layer4_dstprt: exact;
       }
       actions = {
-         act_rewrite_ipv4udp;
-         act_rewrite_ipv4tcp;
+         act_rewrite_ipv4prt17;
+         act_rewrite_ipv4prt6;
          @defaultonly NoAction;
       }
       size = IPV4_HOST_TABLE_SIZE;
@@ -82,8 +82,8 @@ control IngressControlNAT(inout headers hdr,
          ig_md.layer4_dstprt: exact;
       }
       actions = {
-         act_rewrite_ipv6udp;
-         act_rewrite_ipv6tcp;
+         act_rewrite_ipv6prt17;
+         act_rewrite_ipv6prt6;
          @defaultonly NoAction;
       }
       size = IPV4_HOST_TABLE_SIZE;
