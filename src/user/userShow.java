@@ -3042,7 +3042,7 @@ public class userShow {
     }
 
     private userFormat doShowRates(history h) {
-        userFormat l = new userFormat("|", "time|tx|rx|drop|tx|rx|drop", "1|3byte|3packet");
+        userFormat l = new userFormat("|", "time|tx|rx|drop|tx|rx|drop", "1|3packet|3byte");
         l.add(h.getShRate());
         return l;
     }

@@ -291,9 +291,9 @@ public class history {
      */
     public List<String> getShRate() {
         List<String> lst = new ArrayList<String>();
-        lst.add("1sec|" + getShSum(secs) + "|" + getShPSum(secs));
-        lst.add("1min|" + getShSum(mina) + "|" + getShPSum(mina));
-        lst.add("1hour|" + getShSum(hora) + "|" + getShPSum(hora));
+        lst.add("1sec|" + getShPSum(secs) + "|" + getShSum(secs));
+        lst.add("1min|" + getShPSum(mina) + "|" + getShSum(mina));
+        lst.add("1hour|" + getShPSum(hora) + "|" + getShSum(hora));
         return lst;
     }
 
