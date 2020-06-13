@@ -141,7 +141,7 @@ public class ipFwdTab {
      * @return list of neighbors
      */
     public static userFormat ldpNeighShow(ipFwd lower) {
-        userFormat l = new userFormat("|", "learn|advert|l2learn|l2advert|mplearn|mpadvert|neighbor|uptime");
+        userFormat l = new userFormat("|", "learn|advert|learn|advert|learn|advert|neighbor|uptime", "2prefix|2layer2|2p2mp|2");
         for (int i = 0; i < lower.ldpNeighs.size(); i++) {
             rtrLdpNeigh ntry = lower.ldpNeighs.get(i);
             if (ntry == null) {
