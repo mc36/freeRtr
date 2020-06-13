@@ -2967,7 +2967,7 @@ public class userShow {
                 l = new userFormat("|", "prefix|max|as");
                 break;
             case 6:
-                l = new userFormat("|", "prefix|time|traffic");
+                l = new userFormat("|", "prefix|pack|byte|time");
                 break;
             case 7:
                 l = new userFormat("|", "prefix|index|base|oldbase");

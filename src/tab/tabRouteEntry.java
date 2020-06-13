@@ -1111,7 +1111,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         if (prf.cntr == null) {
             return null;
         }
-        return addrPrefix.ip2str(prf.prefix) + "|" + bits.timePast(prf.time) + "|" + prf.cntr.getShStat();
+        return addrPrefix.ip2str(prf.prefix) + "|" + prf.cntr.packTx + "|" + prf.cntr.byteTx + "|" + bits.timePast(prf.time);
     }
 
     /**
