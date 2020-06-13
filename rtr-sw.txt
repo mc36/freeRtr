@@ -395,6 +395,7 @@ interface bvi9
  carrier-delay 123
  vrf forwarding v1
  ipv4 address 10.1.123.91 255.255.255.0
+ ipv4 inspect mac
  ipv4 host-watch
  ipv4 ptp enable
  ipv4 ptp receive
@@ -403,6 +404,7 @@ interface bvi9
  ipv4 pim bier-tunnel 299
  ipv4 pim join-source loopback0
  ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
+ ipv6 inspect mac
  ipv6 host-watch
  ipv6 ptp enable
  ipv6 ptp receive
