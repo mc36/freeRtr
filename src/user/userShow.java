@@ -1719,6 +1719,10 @@ public class userShow {
 
     private void doShowIpXnetflow(int ver) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+        if (vrf == null) {
+            cmd.error("no such vrf");
+            return;
+        }
         ipFwd fwd;
         if (ver == 4) {
             fwd = vrf.fwd4;
