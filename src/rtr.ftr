@@ -469,6 +469,7 @@ qc pass: ipv4-ipv6 protocol translation
 qc pass: source prefix translation
 qc pass: target prefix translation
 qc pass: nat64 translation
+qc pass: source port randomization
 qc pass: openvpn over ipv4
 qc pass: openvpn over ipv6
 qc pass: openvpn over openvpn
@@ -935,6 +936,7 @@ qc pass: openflow: mldp routing
 qc pass: p4lang: copp
 qc pass: p4lang: ingress access list
 qc pass: p4lang: egress access list
+qc pass: p4lang: nat
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core

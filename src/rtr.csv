@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.6.10-testing, done by cs@nop.;-;-
--;-;2020-06-11 02:28:38, took 09:24:32 on 1704 cases, 0 failed, 0 traces, 20 retries;-;-
+-;-;freeRouter v20.6.12-testing, done by cs@nop.;-;-
+-;-;2020-06-12 19:18:01, took 09:18:36 on 1706 cases, 0 failed, 0 traces, 16 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -473,6 +473,7 @@ crypt-nat07.tst;0;ipv4-ipv6 protocol translation;successfully;finished
 crypt-nat08.tst;0;source prefix translation;successfully;finished
 crypt-nat09.tst;0;target prefix translation;successfully;finished
 crypt-nat10.tst;0;nat64 translation;successfully;finished
+crypt-nat11.tst;0;source port randomization;successfully;finished
 crypt-openvpn01.tst;0;openvpn over ipv4;successfully;finished
 crypt-openvpn02.tst;0;openvpn over ipv6;successfully;finished
 crypt-openvpn03.tst;0;openvpn over openvpn;successfully;finished
@@ -939,6 +940,7 @@ opnflw-rout06.tst;0;openflow: mldp routing;successfully;finished
 p4lang-acl01.tst;0;p4lang: copp;successfully;finished
 p4lang-acl02.tst;0;p4lang: ingress access list;successfully;finished
 p4lang-acl03.tst;0;p4lang: egress access list;successfully;finished
+p4lang-acl04.tst;0;p4lang: nat;successfully;finished
 p4lang-rout01.tst;0;p4lang: routing;successfully;finished
 p4lang-rout02.tst;0;p4lang: bridging;successfully;finished
 p4lang-rout03.tst;0;p4lang: mpls core;successfully;finished
