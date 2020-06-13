@@ -1616,7 +1616,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             } else {
                 tabNatCfgN natC = natCfg.find(pck);
                 if (natC != null) {
-                    natT = natC.createEntry(pck);
+                    natT = natC.createEntry(pck, icmpCore);
                     natTrns.add(natT);
                     natTrns.add(natT.reverseEntry());
                     natT.updatePack(pck);

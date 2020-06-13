@@ -13,6 +13,7 @@ import addr.addrPrefix;
 import cfg.cfgAceslst;
 import cfg.cfgAll;
 import cfg.cfgIfc;
+import ip.ipIcmp;
 
 /**
  * represents one nat config (source/target, orig/new)
@@ -399,9 +400,10 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
      * create entry
      *
      * @param pck packet to use
+     * @param icc icmp core
      * @return newly created entry
      */
-    public tabNatTraN createEntry(packHolder pck) {
+    public tabNatTraN createEntry(packHolder pck, ipIcmp icc) {
         tabNatTraN n = new tabNatTraN();
         n.lastUsed = bits.getTime();
         n.protocol = pck.IPprt;
@@ -439,9 +441,13 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (newTrgPort >= 0) {
             n.newTrgPort = newTrgPort;
         }
-        if (randomize) {
-            n.newSrcPort = bits.random(0x1000, 0x7fff);
+        if (!randomize) {
+            return n;
         }
+        if (n.protocol == icc.getProtoNum()) {
+            return n;
+        }
+        n.newSrcPort = bits.random(0x1000, 0xfff0);
         return n;
     }
 
