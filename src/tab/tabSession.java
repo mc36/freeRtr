@@ -193,9 +193,9 @@ public class tabSession implements Runnable {
     public userFormat doShowInsp() {
         userFormat l;
         if (logMacs) {
-            l = new userFormat("|", "dir|prt|tos|src|src|trg|trg|rxb|txb|rxp|txp|time|src|trg");
+            l = new userFormat("|", "dir|prt|tos|addr|port|addr|port|rx|tx|rx|tx|time|src|trg", "3|2source|2target|2byte|2packet|1|2mac");
         } else {
-            l = new userFormat("|", "dir|prt|tos|src|src|trg|trg|rxb|txb|rxp|txp|time");
+            l = new userFormat("|", "dir|prt|tos|addr|port|addr|port|rx|tx|rx|tx|time", "3|2source|2target|2byte|2packet|1");
         }
         for (int i = 0; i < connects.size(); i++) {
             l.add(connects.get(i).dump());
@@ -210,7 +210,7 @@ public class tabSession implements Runnable {
      */
     public userFormat doShowTalk() {
         tabGen<tabSessionEndpoint> ept = getTopTalker();
-        userFormat l = new userFormat("|", "addr|rxb|txb|rxp|txp|time");
+        userFormat l = new userFormat("|", "addr|rx|tx|rx|tx|time", "1|2byte|2packet|1");
         for (int i = 0; i < ept.size(); i++) {
             l.add(ept.get(i).dump());
         }

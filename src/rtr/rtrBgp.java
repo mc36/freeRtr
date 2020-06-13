@@ -2840,10 +2840,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "as|neighbor|hostname");
                 break;
             case 10:
-                l = new userFormat("|", "as|rx|tx|rx|tx|neighbor");
+                l = new userFormat("|", "as|rx|tx|rx|tx|neighbor", "1|2operate|2ratio|1");
                 break;
             case 11:
-                l = new userFormat("|", "as|prx|ptx|brx|btx|rrx|rtx|neighbor");
+                l = new userFormat("|", "as|rx|tx|rx|tx|rx|tx|neighbor", "1|2update|2byte|2refresh|1");
                 break;
             case 12:
                 l = new userFormat("|", "as|neighbor|domain|uptime");

@@ -48,7 +48,26 @@ public class userFormat {
 
     private List<userFormatLine> lines;
 
+    private userFormatLine header;
+
+    private userFormatLine summary;
+
     private List<Integer> size;
+
+    /**
+     * set separator
+     *
+     * @param sep source separator
+     * @param head header line
+     * @param summ summary line
+     */
+    public userFormat(String sep, String head, String summ) {
+        separator = "" + sep;
+        lines = new ArrayList<userFormatLine>();
+        size = new ArrayList<Integer>();
+        header = string2line(head, true);
+        summary = string2line(summ, false);
+    }
 
     /**
      * set separator
@@ -60,7 +79,8 @@ public class userFormat {
         separator = "" + sep;
         lines = new ArrayList<userFormatLine>();
         size = new ArrayList<Integer>();
-        lines.add(string2line(head));
+        header = string2line(head, true);
+        summary = null;
     }
 
     /**
@@ -81,7 +101,7 @@ public class userFormat {
      * @param s string to add
      */
     public void add(String s) {
-        lines.add(string2line(s));
+        lines.add(string2line(s, true));
     }
 
     /**
@@ -105,7 +125,7 @@ public class userFormat {
         }
     }
 
-    private userFormatLine string2line(String s) {
+    private userFormatLine string2line(String s, boolean upd) {
         userFormatLine res = new userFormatLine();
         cmds cmd = new cmds("tab", s);
         for (;;) {
@@ -114,6 +134,9 @@ public class userFormat {
             }
             s = cmd.word(separator);
             res.cells.add(s.trim());
+        }
+        if (!upd) {
+            return res;
         }
         for (int i = size.size(); i < res.cells.size(); i++) {
             size.add(0);
@@ -153,6 +176,86 @@ public class userFormat {
             res += fil + "|";
         }
         return res;
+    }
+
+    private String formatSumm(userFormatLine dat, tableMode sep) {
+        String s = "";
+        switch (sep) {
+            case fancy:
+                s += " | ";
+                break;
+            case html:
+                s += "<tr>";
+                break;
+            default:
+                break;
+        }
+        int p = 0;
+        for (int i = 0; i < dat.cells.size(); i++) {
+            String a = dat.cells.get(i);
+            int o = bits.str2num(a.substring(0, 1));
+            a = a.substring(1, a.length());
+            int q = 0;
+            for (int z = 0; z < o; z++) {
+                q += size.get(p);
+                p++;
+            }
+            if (sep == tableMode.html) {
+                s += "<td colspan=" + o + ">";
+            }
+            if (sep == tableMode.raw) {
+                s += a;
+            } else {
+                switch (sep) {
+                    case normal:
+                        q += (o - 1) * 2;
+                        break;
+                    case fancy:
+                        q += (o - 1) * 3;
+                        break;
+                    case table:
+                        q += (o - 1) * 3;
+                        break;
+                }
+                s += bits.padEnd(a, q, " ");
+            }
+            if (sep == tableMode.html) {
+                s += "</td>";
+            }
+            if (p >= size.size()) {
+                continue;
+            }
+            switch (sep) {
+                case normal:
+                    s += "  ";
+                    break;
+                case fancy:
+                    s += " | ";
+                    break;
+                case table:
+                    s += " | ";
+                    break;
+                case csv:
+                    s += ";";
+                    break;
+                case raw:
+                    s += ";";
+                    break;
+                default:
+                    break;
+            }
+        }
+        switch (sep) {
+            case fancy:
+                s += " |";
+                break;
+            case html:
+                s += "</tr>";
+                break;
+            default:
+                break;
+        }
+        return bits.trimE(s);
     }
 
     private String formatLine(userFormatLine dat, tableMode sep) {
@@ -222,17 +325,17 @@ public class userFormat {
     }
 
     private void formatLines(List<String> trg, tableMode sep) {
-        if (lines.size() < 1) {
-            return;
-        }
         if (sep == tableMode.fancy) {
             trg.add(formatSep(sep, "~"));
         }
-        trg.add(formatLine(lines.get(0), sep));
+        if (summary != null) {
+            trg.add(formatSumm(summary, sep));
+        }
+        trg.add(formatLine(header, sep));
         if (sep == tableMode.fancy) {
             trg.add(formatSep(sep, "-"));
         }
-        for (int i = 1; i < lines.size(); i++) {
+        for (int i = 0; i < lines.size(); i++) {
             trg.add(formatLine(lines.get(i), sep));
         }
         if (sep == tableMode.fancy) {

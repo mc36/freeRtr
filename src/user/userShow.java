@@ -2790,7 +2790,7 @@ public class userShow {
         }
         String a = cmd.word();
         if (a.equals("translations")) {
-            userFormat l = new userFormat("|", "proto|origSrc|origTrg|newSrc|newTrg|last|pack|byte");
+            userFormat l = new userFormat("|", "proto|source|target|source|target|last|pack|byte", "1|2original|2translated|3");
             for (int i = 0; i < fwd.natTrns.size(); i++) {
                 l.add("" + fwd.natTrns.get(i));
             }
@@ -3042,7 +3042,7 @@ public class userShow {
     }
 
     private userFormat doShowRates(history h) {
-        userFormat l = new userFormat("|", "time|send|receive|drop|send|receive|drop");
+        userFormat l = new userFormat("|", "time|tx|rx|drop|tx|rx|drop", "1|3byte|3packet");
         l.add(h.getShRate());
         return l;
     }

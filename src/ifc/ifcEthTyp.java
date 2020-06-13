@@ -949,7 +949,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @return table
      */
     public userFormat getShSizes() {
-        userFormat l = new userFormat("|", "size|tx|rx|drop|tx|rx|drop");
+        userFormat l = new userFormat("|", "size|tx|rx|drop|tx|rx|drop", "1|3packet|3byte");
         String[] heds = {"0-255", "256-511", "512-767", "768-1023", "1024-1279", "1280-1535", "1536-1791", "1792-65535",};
         for (int i = 0; i < sizes.length; i++) {
             l.add(heds[i] + "|" + sizes[i].getShPsum() + "|" + sizes[i].getShBsum());
@@ -963,7 +963,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @return table
      */
     public userFormat getShClasses() {
-        userFormat l = new userFormat("|", "class|cos|exp|prec|cos|exp|prec");
+        userFormat l = new userFormat("|", "class|cos|exp|prec|cos|exp|prec", "1|3packet|3byte");
         for (int i = 0; i < clsPrc.length; i++) {
             l.add(i + "|" + getShClasses(clsCos[i], clsExp[i], clsPrc[i]));
         }
@@ -1010,7 +1010,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @return table
      */
     public userFormat getShTypes() {
-        userFormat l = new userFormat("|", "type|value|handler|tx|rx|drop|tx|rx|drop");
+        userFormat l = new userFormat("|", "type|value|handler|tx|rx|drop|tx|rx|drop", "3|3packet|3byte");
         if (defUpper.upper != null) {
             l.add(defUpper.dump());
         }
