@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.6.13-testing, done by cs@nop.;-;-
--;-;2020-06-14 01:25:11, took 09:34:11 on 1710 cases, 0 failed, 0 traces, 19 retries;-;-
+-;-;freeRouter v20.6.14-testing, done by cs@nop.;-;-
+-;-;2020-06-14 14:31:22, took 09:07:10 on 1715 cases, 0 failed, 0 traces, 8 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1526,8 +1526,11 @@ rout-lsrp21.tst;0;lsrp triangle connection;successfully;finished
 rout-lsrp22.tst;0;lsrp prefix movement;successfully;finished
 rout-lsrp23.tst;0;lsrp with bier;successfully;finished
 rout-lsrp24.tst;0;lsrp autoroute;successfully;finished
-rout-lsrp25.tst;0;lsrp stub;successfully;finished
-rout-lsrp26.tst;0;lsrp unstub;successfully;finished
+rout-lsrp25.tst;0;lsrp stub node;successfully;finished
+rout-lsrp26.tst;0;lsrp stub interface;successfully;finished
+rout-lsrp27.tst;0;lsrp unstub interface;successfully;finished
+rout-lsrp28.tst;0;lsrp default address suppression;successfully;finished
+rout-lsrp29.tst;0;lsrp address unsuppression;successfully;finished
 rout-mcast01.tst;0;multicast routing with static flooding;successfully;finished
 rout-mcast02.tst;0;multicast routing with pim ssm;successfully;finished
 rout-mcast03.tst;0;multicast routing with igmp/mld;successfully;finished
@@ -1642,6 +1645,8 @@ rout-pvrp27.tst;0;pvrp auto mesh tunnel;successfully;finished
 rout-pvrp28.tst;0;pvrp triangle connection;successfully;finished
 rout-pvrp29.tst;0;pvrp prefix movement;successfully;finished
 rout-pvrp30.tst;0;pvrp autoroute;successfully;finished
+rout-pvrp31.tst;0;pvrp default address suppression;successfully;finished
+rout-pvrp32.tst;0;pvrp address unsuppression;successfully;finished
 rout-redist01.tst;0;redistribution with isis;successfully;finished
 rout-redist02.tst;0;redistribution with ospf;successfully;finished
 rout-redist03.tst;0;redistribution with rip;successfully;finished

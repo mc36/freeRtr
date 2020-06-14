@@ -1319,7 +1319,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public String showSummary(int mod) {
         switch (mod) {
             case 1:
-                return bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerAfis) + "|" + conn.ready2adv + "|" + peerAddr + "|" + bits.timePast(conn.upTime);
+                return bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerAfis) + "|" + peerAddr + "|" + bits.timePast(conn.upTime);
             case 2:
                 return bits.num2str(remoteAs) + "|" + groupMember + "|" + peerAddr + "|" + bits.timePast(conn.upTime);
             case 3:
@@ -1344,6 +1344,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 clntDns clnt = new clntDns();
                 clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(peerAddr), packDnsRec.typePTR);
                 return bits.num2str(remoteAs) + "|" + peerAddr + "|" + clnt.getPTR() + "|" + bits.timePast(conn.upTime);
+            case 13:
+                return bits.num2str(remoteAs) + "|" + conn.getPrefixGot() + "|" + conn.getPrefixSent() + "|" + conn.ready2adv + "|" + peerAddr + "|" + bits.timePast(conn.upTime);
             default:
                 return null;
         }

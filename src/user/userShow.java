@@ -2250,6 +2250,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.showSummary(12));
             return;
         }
+        if (a.equals("afi")) {
+            rdr.putStrTab(r.bgp.showSummary(1));
+            return;
+        }
         if (a.equals("additional-path")) {
             rdr.putStrTab(r.bgp.showSummary(5));
             return;
@@ -2279,7 +2283,7 @@ public class userShow {
             return;
         }
         if (a.equals("summary")) {
-            rdr.putStrTab(r.bgp.showSummary(1));
+            rdr.putStrTab(r.bgp.showSummary(13));
             return;
         }
         int sfi = rtrBgpParam.string2mask(a);

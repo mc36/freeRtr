@@ -1435,6 +1435,24 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     /**
+     * get prefix count
+     *
+     * @return number
+     */
+    public int getPrefixGot() {
+        return lrnUni.size() + lrnMlt.size() + lrnOtr.size() + lrnFlw.size() + lrnVpnU.size() + lrnVpnM.size() + lrnVpnF.size() + lrnVpoU.size() + lrnVpoM.size() + lrnVpoF.size() + lrnVpls.size() + lrnMspw.size() + lrnEvpn.size() + lrnMdt.size() + lrnSrte.size() + lrnMvpn.size() + lrnMvpo.size();
+    }
+
+    /**
+     * get prefix count
+     *
+     * @return number
+     */
+    public int getPrefixSent() {
+        return advUni.size() + advMlt.size() + advOtr.size() + advFlw.size() + advVpnU.size() + advVpnM.size() + advVpnF.size() + advVpoU.size() + advVpoM.size() + advVpoF.size() + advVpls.size() + advMspw.size() + advEvpn.size() + advMdt.size() + advSrte.size() + advMvpn.size() + advMvpo.size();
+    }
+
+    /**
      * send update packet
      *
      * @param safi safi to update
@@ -1577,7 +1595,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.maxPrefixCnt < 1) {
             return false;
         }
-        int i = lrnUni.size() + lrnMlt.size();
+        int i = getPrefixGot();
         if (i > ((neigh.maxPrefixCnt * neigh.maxPrefixPrc) / 100)) {
             logger.info("neighbor " + neigh.peerAddr + " sent " + i + " prefixes");
         }

@@ -8881,3 +8881,13 @@ qc pass: flow inspection
 qc pass: interface inspection
 qc pass: bridge inspection
 qc pass: mpls inspection
+---------------------------------- 2020-06-14 05:24:12
+no qc pass: lsrp unstub
+no qc pass: lsrp stub
+qc pass: lsrp stub node
+qc pass: lsrp stub interface
+qc pass: lsrp unstub interface
+qc pass: lsrp default address suppression
+qc pass: lsrp address unsuppression
+qc pass: pvrp default address suppression
+qc pass: pvrp address unsuppression
