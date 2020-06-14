@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import rtr.rtrBabel;
 import rtr.rtrBgp;
+import rtr.rtrBlackhole;
 import rtr.rtrDownload;
 import rtr.rtrEigrp;
 import rtr.rtrFlowspec;
@@ -72,6 +73,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * babel handler
      */
     public rtrBabel babel;
+
+    /**
+     * blackhole handler
+     */
+    public rtrBlackhole blackhole;
 
     /**
      * olsr handler
@@ -385,6 +391,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router download[4|6] .*! no range",
         "router download[4|6] .*! delay 0",
         "router download[4|6] .*! time 0",
+        // router blackhole
+        "router blackhole[4|6] .*! penalty 60000",
+        "router blackhole[4|6] .*! distance 254",
         // router mobile
         "router mobile[4|6] .*! distance 254",
         // router logger
@@ -414,6 +423,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         }
         if (a.equals("babel6")) {
             return tabRouteEntry.routeType.babel6;
+        }
+        if (a.equals("blackhole4")) {
+            return tabRouteEntry.routeType.blackhole4;
+        }
+        if (a.equals("blackhole6")) {
+            return tabRouteEntry.routeType.blackhole6;
         }
         if (a.equals("olsr4")) {
             return tabRouteEntry.routeType.olsr4;
@@ -533,6 +548,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "babel4";
             case babel6:
                 return "babel6";
+            case blackhole4:
+                return "blackhole4";
+            case blackhole6:
+                return "blackhole6";
             case olsr4:
                 return "olsr4";
             case olsr6:
@@ -1037,6 +1056,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             babel.routerCloseNow();
             babel = null;
         }
+        if (blackhole != null) {
+            blackhole.routerCloseNow();
+            blackhole = null;
+        }
         if (olsr != null) {
             olsr.routerCloseNow();
             olsr = null;
@@ -1117,6 +1140,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case babel4:
             case babel6:
                 return babel;
+            case blackhole4:
+            case blackhole6:
+                return blackhole;
             case olsr4:
             case olsr6:
                 return olsr;
@@ -1190,6 +1216,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 break;
             case babel6:
                 babel = new rtrBabel(vrf.fwd6, vrf.udp6, number);
+                break;
+            case blackhole4:
+                blackhole = new rtrBlackhole(vrf.fwd4, number);
+                break;
+            case blackhole6:
+                blackhole = new rtrBlackhole(vrf.fwd6, number);
                 break;
             case olsr4:
                 olsr = new rtrOlsr(vrf.fwd4, vrf.udp4, number);
@@ -1379,6 +1411,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 2) + " " + (p + 3) + "     rip6                  routing information protocol" + e);
         l.add((p + 2) + " " + (p + 3) + "     babel4                babel routing protocol" + e);
         l.add((p + 2) + " " + (p + 3) + "     babel6                babel routing protocol" + e);
+        l.add((p + 2) + " " + (p + 3) + "     blackhole4            blackhole collector" + e);
+        l.add((p + 2) + " " + (p + 3) + "     blackhole6            blackhole collector" + e);
         l.add((p + 2) + " " + (p + 3) + "     olsr4                 optimized link state routing protocol" + e);
         l.add((p + 2) + " " + (p + 3) + "     olsr6                 optimized link state routing protocol" + e);
         l.add((p + 2) + " " + (p + 3) + "     msdp4                 multicast source discovery protocol" + e);

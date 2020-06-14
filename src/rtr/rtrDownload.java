@@ -265,16 +265,16 @@ public class rtrDownload extends ipRtr {
      * @param filter filter
      */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
-        cmds.cfgLine(l, !hidden, cmds.tabulator, "hidden", "");
-        cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
+        cmds.cfgLine(l, !hidden, beg, "hidden", "");
+        cmds.cfgLine(l, !logging, beg, "log", "");
         if (hidden) {
             l.add(beg + "url " + authLocal.passwdEncode(url));
         } else {
             l.add(beg + "url " + url);
         }
-        cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
-        l.add(cmds.tabulator + "delay " + initial);
-        l.add(cmds.tabulator + "time " + interval);
+        cmds.cfgLine(l, time == null, beg, "range", "" + time);
+        l.add(beg + "delay " + initial);
+        l.add(beg + "time " + interval);
     }
 
     /**

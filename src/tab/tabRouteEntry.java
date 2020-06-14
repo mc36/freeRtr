@@ -67,6 +67,14 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         /**
          * ipv4 babel
          */
+        blackhole4,
+        /**
+         * ipv6 blackhole
+         */
+        blackhole6,
+        /**
+         * ipv4 blackhole
+         */
         olsr4,
         /**
          * ipv6 olsr
@@ -488,6 +496,9 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
             case babel4:
             case babel6:
                 return "A";
+            case blackhole4:
+            case blackhole6:
+                return "BLK";
             case olsr4:
             case olsr6:
                 return "N";

@@ -12,6 +12,7 @@ import cfg.cfgKey;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
 import cfg.cfgRouplc;
+import cfg.cfgRtr;
 import cfg.cfgVrf;
 import cry.cryCertificate;
 import cry.cryKeyDSA;
@@ -30,6 +31,7 @@ import prt.prtGen;
 import prt.prtGenConn;
 import prt.prtServP;
 import prt.prtServS;
+import rtr.rtrBlackhole;
 import sec.secServer;
 import tab.tabAceslstN;
 import tab.tabGen;
@@ -132,6 +134,16 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * limit of one subnet
      */
     protected int srvNetLim;
+
+    /**
+     * blackhole process
+     */
+    protected rtrBlackhole srvBlckhl4;
+
+    /**
+     * blackhole process
+     */
+    protected rtrBlackhole srvBlckhl6;
 
     /**
      * log access drops
@@ -294,6 +306,8 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         "server .*! access-total 0",
         "server .*! access-peer 0",
         "server .*! access-subnet 0",
+        "server .*! no access-blackhole4",
+        "server .*! no access-blackhole6",
         "server .*! no access-log",
         "server .*! no interface",
         "server .*! no vrf"
@@ -910,9 +924,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         boolean is4 = adr.isIPv4();
         addrPrefix<addrIP> prf;
         if (is4) {
-            prf = new addrPrefix<addrIP>(adr, 118);
+            prf = new addrPrefix<addrIP>(adr, rtrBlackhole.ipv4len);
         } else {
-            prf = new addrPrefix<addrIP>(adr, 56);
+            prf = new addrPrefix<addrIP>(adr, rtrBlackhole.ipv6len);
         }
         int res = 0;
         if ((srvProto & protoTcp) != 0) {
@@ -1007,8 +1021,28 @@ public abstract class servGeneric implements Comparator<servGeneric> {
                 return true;
             }
         }
+        boolean ipv4 = conn.peerAddr.isIPv4();
+        if (ipv4) {
+            if (srvBlckhl4 != null) {
+                if (srvBlckhl4.checkAddr(conn.peerAddr)) {
+                    if (srvLogDrop) {
+                        logger.info("blackhole dropped " + conn);
+                    }
+                    return true;
+                }
+            }
+        } else {
+            if (srvBlckhl6 != null) {
+                if (srvBlckhl6.checkAddr(conn.peerAddr)) {
+                    if (srvLogDrop) {
+                        logger.info("blackhole dropped " + conn);
+                    }
+                    return true;
+                }
+            }
+        }
         if (srvTotLim > 0) {
-            if (srvCheckAccept(conn.iface, conn.portLoc, conn.peerAddr.isIPv4(), null) > srvTotLim) {
+            if (srvCheckAccept(conn.iface, conn.portLoc, ipv4, null) > srvTotLim) {
                 if (srvLogDrop) {
                     logger.info("total limit dropped " + conn);
                 }
@@ -1016,9 +1050,18 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             }
         }
         if (srvPerLim > 0) {
-            if (srvCheckAccept(conn.iface, conn.portLoc, conn.peerAddr.isIPv4(), conn.peerAddr) > srvPerLim) {
+            if (srvCheckAccept(conn.iface, conn.portLoc, ipv4, conn.peerAddr) > srvPerLim) {
                 if (srvLogDrop) {
                     logger.info("peer limit dropped " + conn);
+                }
+                if (ipv4) {
+                    if (srvBlckhl4 != null) {
+                        srvBlckhl4.blockAddr(conn.peerAddr);
+                    }
+                } else {
+                    if (srvBlckhl6 != null) {
+                        srvBlckhl6.blockAddr(conn.peerAddr);
+                    }
                 }
                 return true;
             }
@@ -1027,6 +1070,15 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             if (srvCheckAccept(conn.iface, conn.portLoc, conn.peerAddr) > srvNetLim) {
                 if (srvLogDrop) {
                     logger.info("subnet limit dropped " + conn);
+                }
+                if (ipv4) {
+                    if (srvBlckhl4 != null) {
+                        srvBlckhl4.blockAddr(conn.peerAddr);
+                    }
+                } else {
+                    if (srvBlckhl6 != null) {
+                        srvBlckhl6.blockAddr(conn.peerAddr);
+                    }
                 }
                 return true;
             }
@@ -1146,6 +1198,10 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         l.add("2 .    <num>                number of connections");
         l.add("1 2  access-subnet          per subnet session limit");
         l.add("2 .    <num>                number of connections");
+        l.add("1 2  access-blackhole4      propagate and check violating prefixes");
+        l.add("2 .    <num>                number of process");
+        l.add("1 2  access-blackhole6      propagate and check violating prefixes");
+        l.add("2 .    <num>                number of process");
         l.add("1 .  access-log             log dropped attemps");
         l.add("1 2  protocol               set lower protocols to use");
         l.add("2 2,.  ipv4                 use ip4 network");
@@ -1257,6 +1313,16 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         l.add(beg + "access-total " + srvTotLim);
         l.add(beg + "access-peer " + srvPerLim);
         l.add(beg + "access-subnet " + srvNetLim);
+        if (srvBlckhl4 != null) {
+            l.add(beg + "access-blackhole4 " + srvBlckhl4.rtrNum);
+        } else {
+            l.add(beg + "no access-blackhole4");
+        }
+        if (srvBlckhl6 != null) {
+            l.add(beg + "access-blackhole6 " + srvBlckhl6.rtrNum);
+        } else {
+            l.add(beg + "no access-blackhole6");
+        }
         l.add(beg + "port " + srvPort);
         l.add(beg + "protocol " + proto2string(srvProto));
         srvShRun(beg, l);
@@ -1349,6 +1415,24 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         }
         if (a.equals("access-subnet")) {
             srvNetLim = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("access-blackhole4")) {
+            cfgRtr ntry = cfgAll.rtrFind(tabRouteEntry.routeType.blackhole4, bits.str2num(cmd.word()), false);
+            if (ntry == null) {
+                cmd.error("no such process");
+                return false;
+            }
+            srvBlckhl4 = ntry.blackhole;
+            return false;
+        }
+        if (a.equals("access-blackhole6")) {
+            cfgRtr ntry = cfgAll.rtrFind(tabRouteEntry.routeType.blackhole6, bits.str2num(cmd.word()), false);
+            if (ntry == null) {
+                cmd.error("no such process");
+                return false;
+            }
+            srvBlckhl6 = ntry.blackhole;
             return false;
         }
         if (a.equals("access-class")) {
@@ -1503,6 +1587,14 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             }
             if (a.equals("access-subnet")) {
                 srvNetLim = 0;
+                return false;
+            }
+            if (a.equals("access-blackhole4")) {
+                srvBlckhl4 = null;
+                return false;
+            }
+            if (a.equals("access-blackhole6")) {
+                srvBlckhl6 = null;
                 return false;
             }
             if (a.equals("access-class")) {
