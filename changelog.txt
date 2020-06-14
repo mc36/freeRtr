@@ -8874,3 +8874,10 @@ qc pass: p4lang: mpls edge
 ---------------------------------- 2020-06-12 09:59:25
 qc pass: source port randomization
 qc pass: p4lang: nat
+---------------------------------- 2020-06-13 15:51:00
+no qc pass: telnet inspection
+qc pass: route inspection
+qc pass: flow inspection
+qc pass: interface inspection
+qc pass: bridge inspection
+qc pass: mpls inspection

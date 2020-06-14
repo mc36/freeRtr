@@ -70,6 +70,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
     public boolean labels;
 
     /**
+     * suppress interface addresses
+     */
+    public boolean suppressAddr = false;
+
+    /**
      * notified on route change
      */
     protected notifier notif = new notifier();
@@ -230,7 +235,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
-            if (ifc.suppressAddr) {
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
             ntry = tab1.add(tabRoute.addType.better, ifc.iface.network, null);
@@ -279,6 +284,9 @@ public class rtrPvrp extends ipRtr implements Runnable {
             if (ifc.defOrigin) {
                 ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
+                if (labels) {
+                    ntry.labelLoc = fwdCore.commonLabel;
+                }
                 tab1.add(tabRoute.addType.always, ntry, true, true);
             }
             tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.safiUnicast, tab1, need2adv, true, ifc.roumapOut, ifc.roupolOut, ifc.prflstOut);
@@ -340,6 +348,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         l.add("1 2   router-id                   specify router id");
         l.add("2 .     <addr>                    router id");
         l.add("1 .   labels                      specify label mode");
+        l.add("1 .   suppress-prefix             do not advertise interfaces");
     }
 
     /**
@@ -352,6 +361,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "router-id " + routerID);
         cmds.cfgLine(l, !labels, beg, "labels", "");
+        cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
     }
 
     /**
@@ -376,6 +386,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
         if (s.equals("labels")) {
             labels = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("suppress-prefix")) {
+            suppressAddr = !negated;
             notif.wakeup();
             return false;
         }

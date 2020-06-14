@@ -285,7 +285,6 @@ qc pass: ppp over sstp
 qc pass: spantree over ethernet
 qc pass: ppp over stun
 qc pass: ppp over telnet
-qc pass: telnet inspection
 qc pass: ppp over tls
 qc pass: tmux over ipv4
 qc pass: tmux over ipv6
@@ -429,6 +428,11 @@ qc pass: inlsp with md5
 qc pass: inlsp with sha1
 qc pass: inlsp with sha256
 qc pass: inlsp with sha512
+qc pass: route inspection
+qc pass: flow inspection
+qc pass: interface inspection
+qc pass: bridge inspection
+qc pass: mpls inspection
 qc pass: macsec over ethernet
 qc pass: macsec over ethernet vlan
 qc pass: macsec over ethernet bridge

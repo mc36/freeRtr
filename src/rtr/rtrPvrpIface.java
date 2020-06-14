@@ -90,6 +90,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
     public boolean suppressAddr = false;
 
     /**
+     * unsuppress interface address
+     */
+    public boolean unsuppressAddr = false;
+
+    /**
      * authentication string
      */
     public String authentication = null;
@@ -263,6 +268,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
+        cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication));
         l.add(cmds.tabulator + beg + "distance " + distance);
@@ -290,6 +296,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 .         passive                 do not form neighborship");
         l.add("4 .         suppress-prefix         do not advertise interface");
+        l.add("4 .         unsuppress-prefix       do advertise interface");
         l.add("4 5         encryption              select encryption method");
         l.add("5 6           ssh                   select secure shell");
         l.add("5 6           tls                   select transport layer security");
@@ -362,6 +369,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         }
         if (a.equals("suppress-prefix")) {
             suppressAddr = true;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("unsuppress-prefix")) {
+            unsuppressAddr = true;
             lower.notif.wakeup();
             return;
         }
@@ -482,6 +494,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         }
         if (a.equals("suppress-prefix")) {
             suppressAddr = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("unsuppress-prefix")) {
+            unsuppressAddr = false;
             lower.notif.wakeup();
             return;
         }

@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.6.12-testing, done by cs@nop.;-;-
--;-;2020-06-12 19:18:01, took 09:18:36 on 1706 cases, 0 failed, 0 traces, 16 retries;-;-
+-;-;freeRouter v20.6.13-testing, done by cs@nop.;-;-
+-;-;2020-06-14 01:25:11, took 09:34:11 on 1710 cases, 0 failed, 0 traces, 19 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -288,8 +288,7 @@ conn-sreth13.tst;0;tunnel interface with sreth;successfully;finished
 conn-sstp.tst;0;ppp over sstp;successfully;finished
 conn-stp.tst;0;spantree over ethernet;successfully;finished
 conn-stun.tst;0;ppp over stun;successfully;finished
-conn-telnet01.tst;0;ppp over telnet;successfully;finished
-conn-telnet02.tst;0;telnet inspection;successfully;finished
+conn-telnet.tst;0;ppp over telnet;successfully;finished
 conn-tls.tst;0;ppp over tls;successfully;finished
 conn-tmux01.tst;0;tmux over ipv4;successfully;finished
 conn-tmux02.tst;0;tmux over ipv6;successfully;finished
@@ -433,6 +432,11 @@ crypt-inlsp11.tst;0;inlsp with md5;successfully;finished
 crypt-inlsp12.tst;0;inlsp with sha1;successfully;finished
 crypt-inlsp13.tst;0;inlsp with sha256;successfully;finished
 crypt-inlsp14.tst;0;inlsp with sha512;successfully;finished
+crypt-insp01.tst;0;route inspection;successfully;finished
+crypt-insp02.tst;0;flow inspection;successfully;finished
+crypt-insp03.tst;0;interface inspection;successfully;finished
+crypt-insp04.tst;0;bridge inspection;successfully;finished
+crypt-insp05.tst;0;mpls inspection;successfully;finished
 crypt-macsec01.tst;0;macsec over ethernet;successfully;finished
 crypt-macsec02.tst;0;macsec over ethernet vlan;successfully;finished
 crypt-macsec03.tst;0;macsec over ethernet bridge;successfully;finished

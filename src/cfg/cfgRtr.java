@@ -165,11 +165,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router *
         "router .*! no automesh",
         // router pvrp
+        "router pvrp[4|6] .*! no suppress-prefix",
         "router pvrp[4|6] .*! no labels",
         // router lsrp
         "router lsrp[4|6] .*! distance 70",
         "router lsrp[4|6] .*! no default-originate",
         "router lsrp[4|6] .*! no stub",
+        "router lsrp[4|6] .*! no suppress-prefix",
         "router lsrp[4|6] .*! no prefix-list",
         "router lsrp[4|6] .*! no route-map",
         "router lsrp[4|6] .*! no route-policy",
@@ -959,6 +961,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      */
     public static ipRtrInt str2advint(cmds cmd) {
         cfgIfc iface = cfgAll.ifcFind(cmd.word(), false);
+        if (iface == null) {
+            return null;
+        }
         ipRtrInt adv = new ipRtrInt(iface);
         for (;;) {
             String s = cmd.word();

@@ -77,6 +77,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     public boolean stub;
 
     /**
+     * suppress interface addresses
+     */
+    public boolean suppressAddr = false;
+
+    /**
      * default distance
      */
     public int distance = 70;
@@ -504,7 +509,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 continue;
             }
             dat.address.add(ifc.iface.addr.copyBytes());
-            if (ifc.suppressAddr) {
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
             tabRouteEntry<addrIP> ntry = dat.network.add(tabRoute.addType.better, ifc.iface.network, null);
@@ -769,6 +774,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add("1 2   lifetime                    data life time");
         l.add("2 .     <num>                     age in ms");
         l.add("1 .   stub                        stub router");
+        l.add("1 .   suppress-prefix             do not advertise interfaces");
         l.add("1 2   segrout                     segment routing parameters");
         l.add("2 3     <num>                     maximum index");
         l.add("3 .       <num>                   this node index");
@@ -791,6 +797,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(beg + "refresh " + refresh);
         l.add(beg + "lifetime " + lifetime);
         cmds.cfgLine(l, !stub, beg, "stub", "");
+        cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
         cmds.cfgLine(l, !defOrigin, beg, "default-originate", "");
         cmds.cfgLine(l, prflstIn == null, beg, "prefix-list", "" + prflstIn);
         cmds.cfgLine(l, roumapIn == null, beg, "route-map", "" + roumapIn);
@@ -829,6 +836,12 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         if (s.equals("stub")) {
             stub = !negated;
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("suppress-prefix")) {
+            suppressAddr = !negated;
             todo.set(0);
             notif.wakeup();
             return false;
