@@ -924,9 +924,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         boolean is4 = adr.isIPv4();
         addrPrefix<addrIP> prf;
         if (is4) {
-            prf = new addrPrefix<addrIP>(adr, rtrBlackhole.ipv4len);
+            prf = new addrPrefix<addrIP>(adr, cfgAll.accessSubnet4);
         } else {
-            prf = new addrPrefix<addrIP>(adr, rtrBlackhole.ipv6len);
+            prf = new addrPrefix<addrIP>(adr, cfgAll.accessSubnet6);
         }
         int res = 0;
         if ((srvProto & protoTcp) != 0) {

@@ -2,11 +2,16 @@ package rtr;
 
 import addr.addrIP;
 import addr.addrPrefix;
+import cfg.cfgAll;
+import cfg.cfgPrfxlst;
 import ip.ipCor4;
 import ip.ipCor6;
 import ip.ipFwd;
 import ip.ipRtr;
 import java.util.List;
+import tab.tabListing;
+import tab.tabListingEntry;
+import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import user.userHelping;
@@ -19,16 +24,6 @@ import util.cmds;
  * @author matecsaba
  */
 public class rtrBlackhole extends ipRtr implements Runnable {
-
-    /**
-     * prefix length
-     */
-    public static final int ipv4len = 120;
-
-    /**
-     * prefix length
-     */
-    public static final int ipv6len = 64;
 
     /**
      * the forwarder protocol
@@ -54,6 +49,8 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      * distance to give
      */
     protected int distance;
+
+    private tabListing<tabPrfxlstN, addrIP> whitelist;
 
     private int penalty = 60 * 1000;
 
@@ -137,6 +134,8 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         l.add("2  .        <num>                    distance");
         l.add("1  2      penalty                    specify time between runs");
         l.add("2  .        <num>                    milliseconds before aging");
+        l.add("1  2      whitelist                  specify whitelist");
+        l.add("2  .        <name>                   name of prefix list");
     }
 
     /**
@@ -149,6 +148,11 @@ public class rtrBlackhole extends ipRtr implements Runnable {
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "distance " + distance);
         l.add(beg + "penalty " + penalty);
+        if (whitelist == null) {
+            l.add(beg + "no whitelist");
+        } else {
+            l.add(beg + "whitelist " + whitelist.listName);
+        }
     }
 
     /**
@@ -163,6 +167,19 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         if (s.equals("no")) {
             s = cmd.word();
             negated = true;
+        }
+        if (s.equals("whitelist")) {
+            if (negated) {
+                whitelist = null;
+                return false;
+            }
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such list");
+                return false;
+            }
+            whitelist = ntry.prflst;
+            return false;
         }
         if (s.equals("penalty")) {
             penalty = bits.str2num(cmd.word());
@@ -239,12 +256,20 @@ public class rtrBlackhole extends ipRtr implements Runnable {
     }
 
     /**
-     * check address
+     * check one address
      *
      * @param adr address
      * @return true if blocked, false if allowed
      */
     public boolean checkAddr(addrIP adr) {
+        if (whitelist != null) {
+            tabPrfxlstN ntry = whitelist.find(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(adr, adr.maxBits()));
+            if (ntry != null) {
+                if (ntry.action == tabListingEntry.actionType.actPermit) {
+                    return false;
+                }
+            }
+        }
         tabRouteEntry<addrIP> ntry = entries.route(adr);
         if (ntry != null) {
             ntry.time = bits.getTime();
@@ -262,9 +287,9 @@ public class rtrBlackhole extends ipRtr implements Runnable {
     public void blockAddr(addrIP adr) {
         addrPrefix<addrIP> prf;
         if (proto == 4) {
-            prf = new addrPrefix<addrIP>(adr, ipv4len);
+            prf = new addrPrefix<addrIP>(adr, cfgAll.accessSubnet4);
         } else {
-            prf = new addrPrefix<addrIP>(adr, ipv6len);
+            prf = new addrPrefix<addrIP>(adr, cfgAll.accessSubnet6);
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = prf;

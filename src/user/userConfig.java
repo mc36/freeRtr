@@ -472,6 +472,10 @@ public class userConfig {
         l.add(".2 .    punish-pmtud                 send back mtu exceeded if needed");
         l.add("2  3    unreach-interval             rate limit icmp generation");
         l.add("3  .      <num>                      millisecs between them");
+        l.add("2  3    access-subnet-ipv4           access subnet length");
+        l.add("3  .      <num>                      bits");
+        l.add("2  3    access-subnet-ipv6           access subnet length");
+        l.add("3  .      <num>                      bits");
         l.add("2  .    ftp-passive                  use passive mode ftp");
         l.add("2  .    ftp-active                   use active mode ftp");
         l.add("2  3    time-server                  specify name of time server");
@@ -1520,6 +1524,14 @@ public class userConfig {
             }
             if (a.equals("config-exclusive")) {
                 cfgAll.configExclusive = 1;
+                return;
+            }
+            if (a.equals("access-subnet-ipv4")) {
+                cfgAll.accessSubnet4 = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("access-subnet-ipv6")) {
+                cfgAll.accessSubnet6 = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("time-server")) {

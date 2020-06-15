@@ -394,6 +394,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router blackhole
         "router blackhole[4|6] .*! penalty 60000",
         "router blackhole[4|6] .*! distance 254",
+        "router blackhole[4|6] .*! no whitelist",
         // router mobile
         "router mobile[4|6] .*! distance 254",
         // router logger

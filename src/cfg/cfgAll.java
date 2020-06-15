@@ -680,6 +680,16 @@ public class cfgAll {
     public static long timeServerOffset;
 
     /**
+     * access subnet prefix length
+     */
+    public static int accessSubnet4 = 120;
+
+    /**
+     * access subnet prefix length
+     */
+    public static int accessSubnet6 = 64;
+
+    /**
      * name of mail server
      */
     public static String mailServerName;
@@ -881,6 +891,8 @@ public class cfgAll {
         "!no client name-proxy",
         "!client name-server",
         "!client time-zone Z",
+        "!client access-subnet-ipv4 120",
+        "!client access-subnet-ipv6 64",
         "!no client time-server",
         "!no client upgrade-pubkey",
         "!client upgrade-server " + verCore.homeUrl,
@@ -3010,6 +3022,8 @@ public class cfgAll {
         cmds.cfgLine(l, !configAsave, "", "client config-save", "");
         cmds.cfgLine(l, !configAbackup, "", "client config-archive", "");
         cmds.cfgLine(l, configExclusive < 1, "", "client config-exclusive", "");
+        l.add("client access-subnet-ipv4 " + accessSubnet4);
+        l.add("client access-subnet-ipv6 " + accessSubnet6);
         cmds.cfgLine(l, timeServerName == null, "", "client time-server", "" + timeServerName);
         l.add("client time-zone " + timeZoneName);
         cmds.cfgLine(l, mailServerName == null, "", "client mail-server", "" + mailServerName);
