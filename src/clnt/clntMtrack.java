@@ -134,7 +134,7 @@ public class clntMtrack implements Runnable, prtServS {
         working &= 0xfe;
         notif.wakeup();
         for (;;) {
-            bits.sleep(1000);
+            bits.sleep(100);
             if (working == 0) {
                 break;
             }
