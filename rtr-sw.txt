@@ -546,10 +546,6 @@ router bgp4 65535
  afi-vrf vpn mvpn loopback0
  afi-vrf vpn redistribute connected
  afi-vrf vpn redistribute static
- afi-ovrf dn42 enable
- afi-ovrf dn42 mvpn loopback0
- afi-ovrf dn42 redistribute connected
- afi-ovrf dn42 redistribute static
  afi-vpls 65535:1 bridge-group 1
  afi-vpls 65535:1 update-source loopback0
  afi-evpn 2 bridge-group 2
@@ -637,6 +633,10 @@ router bgp6 65535
  template r send-community all
  neighbor 2001:db8:36::2 template r
  neighbor 2001:db8:1026:1001::2 template r
+ afi-vrf dn42 enable
+ afi-vrf dn42 mvpn loopback0
+ afi-vrf dn42 redistribute connected
+ afi-vrf dn42 redistribute static
  afi-vrf vpn enable
  afi-vrf vpn mvpn loopback0
  afi-vrf vpn redistribute connected
