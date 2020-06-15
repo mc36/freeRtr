@@ -23,12 +23,12 @@ public class rtrBlackhole extends ipRtr implements Runnable {
     /**
      * prefix length
      */
-    public static final int ipv4len = 118;
+    public static final int ipv4len = 120;
 
     /**
      * prefix length
      */
-    public static final int ipv6len = 56;
+    public static final int ipv6len = 64;
 
     /**
      * the forwarder protocol
