@@ -1,6 +1,6 @@
 file;code;test;stage;command
 -;-;freeRouter v20.6.14-testing, done by cs@nop.;-;-
--;-;2020-06-14 14:31:22, took 09:07:10 on 1715 cases, 0 failed, 0 traces, 8 retries;-;-
+-;-;2020-06-15 02:39:09, took 09:14:43 on 1716 cases, 0 failed, 0 traces, 16 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1717,3 +1717,4 @@ serv-scheduler.tst;0;scheduler;successfully;finished
 serv-socks4.tst;0;socks4 server;successfully;finished
 serv-socks5.tst;0;socks5 server;successfully;finished
 serv-tacacs.tst;0;tacacs server;successfully;finished
+serv-udpforward.tst;0;udp forwarder server;successfully;finished
