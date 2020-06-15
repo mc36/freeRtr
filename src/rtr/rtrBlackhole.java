@@ -17,6 +17,7 @@ import tab.tabRouteEntry;
 import user.userHelping;
 import util.bits;
 import util.cmds;
+import util.logger;
 
 /**
  * blackhole generator
@@ -49,13 +50,13 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      * distance to give
      */
     protected int distance;
-
+    
     private tabListing<tabPrfxlstN, addrIP> whitelist;
-
+    
     private int penalty = 60 * 1000;
-
+    
     private final tabRoute<addrIP> entries = new tabRoute<addrIP>("ntry");
-
+    
     private boolean working = true;
 
     /**
@@ -224,7 +225,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
     public int routerIfaceCount() {
         return 0;
     }
-
+    
     private void doRound() {
         long tim = bits.getTime() - penalty;
         int del = 0;
@@ -244,15 +245,30 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         }
         routerCreateComputed();
     }
-
+    
     public void run() {
         for (;;) {
             if (!working) {
                 return;
             }
             bits.sleep(penalty / 2);
-            doRound();
+            try {
+                doRound();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
         }
+    }
+    
+    private boolean isWhitelisted(addrIP adr) {
+        if (whitelist == null) {
+            return false;
+        }
+        tabPrfxlstN ntry = whitelist.find(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(adr, adr.maxBits()));
+        if (ntry == null) {
+            return false;
+        }
+        return ntry.action == tabListingEntry.actionType.actPermit;
     }
 
     /**
@@ -262,13 +278,8 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      * @return true if blocked, false if allowed
      */
     public boolean checkAddr(addrIP adr) {
-        if (whitelist != null) {
-            tabPrfxlstN ntry = whitelist.find(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(adr, adr.maxBits()));
-            if (ntry != null) {
-                if (ntry.action == tabListingEntry.actionType.actPermit) {
-                    return false;
-                }
-            }
+        if (isWhitelisted(adr)) {
+            return false;
         }
         tabRouteEntry<addrIP> ntry = entries.route(adr);
         if (ntry != null) {
@@ -285,6 +296,9 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      * @param adr address
      */
     public void blockAddr(addrIP adr) {
+        if (isWhitelisted(adr)) {
+            return;
+        }
         addrPrefix<addrIP> prf;
         if (proto == 4) {
             prf = new addrPrefix<addrIP>(adr, cfgAll.accessSubnet4);
@@ -300,5 +314,5 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         entries.add(tabRoute.addType.always, ntry, false, false);
         routerCreateComputed();
     }
-
+    
 }
