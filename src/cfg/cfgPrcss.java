@@ -33,6 +33,11 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public String description = "";
 
     /**
+     * hidden process
+     */
+    public boolean hiddenProcess = false;
+
+    /**
      * respawn on termination
      */
     public boolean respawn = true;
@@ -133,6 +138,17 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         restartNow();
     }
 
+    /**
+     * start this process
+     */
+    public synchronized void startNow() {
+        if (need2run) {
+            return;
+        }
+        need2run = true;
+        new Thread(this).start();
+    }
+
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
         l.add("1 2,. description        description of this process");
@@ -156,6 +172,9 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
 
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
+        if (hiddenProcess) {
+            return l;
+        }
         l.add("process definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
@@ -217,11 +236,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("start")) {
-            if (need2run) {
-                return;
-            }
-            need2run = true;
-            new Thread(this).start();
+            startNow();
             return;
         }
         if (a.equals("runnow")) {

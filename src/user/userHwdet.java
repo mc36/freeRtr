@@ -44,6 +44,8 @@ public class userHwdet {
 
     private boolean binMain;
 
+    private boolean inlineLoop;
+
     private ifcTyp ifaceType = ifcTyp.socat;
 
     private ifcTyp lineType = ifcTyp.socat;
@@ -77,8 +79,17 @@ public class userHwdet {
         }
         txt.add("  sleep 1");
         txt.add("  done");
-        bits.buf2txt(true, txt, fn);
+        bits.buf2txt(true, txt, path + prefix + fn);
         starter.add("/bin/busybox start-stop-daemon -S -b -x " + fn);
+    }
+
+    private void makeLoop(String fn, List<String> pre, String cmd) {
+        if (!inlineLoop) {
+            makeLoop(fn, pre, bits.str2lst(cmd));
+            return;
+        }
+        starter.addAll(pre);
+        config.add("proc " + fn + " " + cmd);
     }
 
     private void createIface(String nam, String adr) {
@@ -104,8 +115,7 @@ public class userHwdet {
                 stat = "stat ";
                 break;
         }
-        List<String> ifc = bits.str2lst("sleep 5");
-        ifc.add("ifconfig " + nam + " multicast allmulti promisc mtu 1500 up");
+        List<String> ifc = bits.str2lst("ifconfig " + nam + " multicast allmulti promisc mtu 1500 up");
         ifc.add("ethtool -K " + nam + " rx off");
         ifc.add("ethtool -K " + nam + " tx off");
         ifc.add("ethtool -K " + nam + " sg off");
@@ -119,7 +129,7 @@ public class userHwdet {
         ifc.add("ethtool -K " + nam + " ntuple off");
         ifc.add("ethtool -K " + nam + " rxhash off");
         ifc.add("ethtool --set-eee " + nam + " eee off");
-        makeLoop(path + prefix + "ifc" + ifcNum + ".sh", ifc, bits.str2lst(cmd));
+        makeLoop("ifc" + ifcNum + ".sh", ifc, cmd);
         config.add("int " + "eth" + ifcNum + " " + stat + "eth " + adr + " 127.0.0.1 " + p1 + " 127.0.0.1 " + p2);
     }
 
@@ -140,7 +150,7 @@ public class userHwdet {
             default:
                 break;
         }
-        makeLoop(path + prefix + "lin" + linNum + ".sh", bits.str2lst("./modem.bin " + nam + " \"speedset 9600\""), bits.str2lst(cmd));
+        makeLoop("lin" + linNum + ".sh", bits.str2lst("./modem.bin " + nam + " \"speedset 9600\""), cmd);
         config.add("line tty" + linNum + " 127.0.0.1 " + p2 + " 127.0.0.1 " + p1);
     }
 
@@ -277,14 +287,15 @@ public class userHwdet {
         int p1 = nextPort + 1;
         int p2 = nextPort + 2;
         nextPort += 10;
-        String fn = path + prefix + "tap" + tapNum + ".sh";
+        String cmd;
         if (ifaceType == ifcTyp.socat) {
-            makeLoop(fn, bits.str2lst(""), bits.str2lst("socat TUN:" + tap + ",tun-name=tap" + tapNum + ",tun-type=tap,iff-no-pi,iff-broadcast,iff-up" + " UDP4-DATAGRAM:127.0.0.1:" + p1 + ",bind=127.0.0.1:" + p2 + ",reuseaddr"));
+            cmd = "socat TUN:" + tap + ",tun-name=tap" + tapNum + ",tun-type=tap,iff-no-pi,iff-broadcast,iff-up" + " UDP4-DATAGRAM:127.0.0.1:" + p1 + ",bind=127.0.0.1:" + p2 + ",reuseaddr";
         } else {
             addrPrefix<addrIP> prf = addrPrefix.str2ip(tap);
             prf.network.fromString(tap.substring(0, tap.indexOf("/")));
-            makeLoop(fn, bits.str2lst(""), bits.str2lst("./tapInt.bin tap" + tapNum + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1 " + prf.network.toIPv4() + " " + prf.mask.toIPv4()));
+            cmd = "./tapInt.bin tap" + tapNum + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1 " + prf.network.toIPv4() + " " + prf.mask.toIPv4();
         }
+        makeLoop("tap" + tapNum + ".sh", bits.str2lst(""), cmd);
         config.add("int eth" + tapNum + " eth - 127.0.0.1 " + p1 + " 127.0.0.1 " + p2);
     }
 
@@ -373,6 +384,14 @@ public class userHwdet {
                 }
                 continue;
             }
+            if (s.equals("inline")) {
+                inlineLoop = true;
+                continue;
+            }
+            if (s.equals("external")) {
+                inlineLoop = false;
+                continue;
+            }
             if (s.equals("binary")) {
                 binMain = true;
                 continue;
@@ -423,7 +442,7 @@ public class userHwdet {
         lop.add("else");
         lop.add("  sleep 1");
         lop.add("fi");
-        makeLoop(path + prefix + "main.sh", bits.str2lst("cd " + path), lop);
+        makeLoop("main.sh", bits.str2lst("cd " + path), lop);
         starter.add("");
         starter.add("sleep 5");
         starter.add("route add default gw 10.255.255.254");

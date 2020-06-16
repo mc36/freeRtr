@@ -354,6 +354,15 @@ public class cfgInit implements Runnable {
                 noStallCheck = true;
                 continue;
             }
+            if (s.equals("proc")) {
+                cfgPrcss prc = new cfgPrcss(cmd.word());
+                prc.hiddenProcess = true;
+                prc.execName = cmd.word();
+                prc.execArgs = cmd.getRemaining();
+                cfgAll.prcs.add(prc);
+                prc.startNow();
+                continue;
+            }
             if (s.equals("int")) {
                 String old = cmd.getRemaining();
                 String nam = cmd.word();
