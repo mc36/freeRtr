@@ -21,12 +21,12 @@ public class cryKeyRSA extends cryKeyGeneric {
     /**
      * ssh name
      */
-    public final static String sshName2 = "rsa-sha2-256x";
+    public final static String sshName2 = "rsa-sha2-256";
 
     /**
      * ssh name
      */
-    public final static String sshName3 = "rsa-sha2-512x";
+    public final static String sshName3 = "rsa-sha2-512";
 
     /**
      * n modulus
