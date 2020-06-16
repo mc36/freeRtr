@@ -36,6 +36,15 @@ public class cryHashSha3512 extends cryHashGeneric {
     }
 
     /**
+     * read oid of hash
+     *
+     * @return name of hash
+     */
+    public byte[] getOid() {
+        return null;
+    }
+
+    /**
      * get hash size
      *
      * @return size

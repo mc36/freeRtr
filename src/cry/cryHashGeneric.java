@@ -20,6 +20,13 @@ public abstract class cryHashGeneric {
     public abstract String getName();
 
     /**
+     * read oid of hash
+     *
+     * @return name of hash
+     */
+    public abstract byte[] getOid();
+
+    /**
      * read size of hash
      *
      * @return size in bytes

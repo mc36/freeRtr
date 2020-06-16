@@ -36,6 +36,15 @@ public class cryHashSha1 extends cryHashGeneric {
     }
 
     /**
+     * read oid of hash
+     *
+     * @return name of hash
+     */
+    public byte[] getOid() {
+        return new byte[]{0x00, 0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2b, 0x0e, 0x03, 0x02, 0x1a, 0x05, 0x00, 0x04, 0x14};
+    }
+
+    /**
      * get hash size
      *
      * @return size

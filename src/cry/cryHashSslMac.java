@@ -69,6 +69,15 @@ public class cryHashSslMac extends cryHashGeneric {
     }
 
     /**
+     * read oid of hash
+     *
+     * @return name of hash
+     */
+    public byte[] getOid() {
+        return alg.getOid();
+    }
+
+    /**
      * get hash size
      *
      * @return size

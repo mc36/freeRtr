@@ -462,7 +462,7 @@ public class userTest {
             cryKeyRSA rsa = new cryKeyRSA();
             cryKeyDSA dss = new cryKeyDSA();
             cryKeyECDSA ecdss = new cryKeyECDSA();
-            final int keysiz = 256;
+            final int keysiz = 512;
             rsa.keyMake(keysiz);
             dss.keyMake(keysiz);
             ecdss.keyMake(keysiz);

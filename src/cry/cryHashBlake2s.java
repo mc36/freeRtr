@@ -212,6 +212,15 @@ public class cryHashBlake2s extends cryHashGeneric {
         return "blake2s";
     }
 
+    /**
+     * read oid of hash
+     *
+     * @return name of hash
+     */
+    public byte[] getOid() {
+        return null;
+    }
+
     public int getHashSize() {
         return digestLength;
     }

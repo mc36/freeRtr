@@ -21,12 +21,12 @@ public class cryKeyRSA extends cryKeyGeneric {
     /**
      * ssh name
      */
-    public final static String sshName2 = "x-rsa-sha2-256";
+    public final static String sshName2 = "rsa-sha2-256x";
 
     /**
      * ssh name
      */
-    public final static String sshName3 = "x-rsa-sha2-512";
+    public final static String sshName3 = "rsa-sha2-512x";
 
     /**
      * n modulus
@@ -308,11 +308,11 @@ public class cryKeyRSA extends cryKeyGeneric {
     /**
      * pad for ssh
      *
+     * @param oid oid bytes
      * @param src buffer to pad
      * @return padded integer
      */
-    public BigInteger PKCS1t0pad(byte[] src) {
-        final byte[] pad = {0x00, 0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2b, 0x0e, 0x03, 0x02, 0x1a, 0x05, 0x00, 0x04, 0x14};
+    public BigInteger PKCS1t0pad(byte[] oid, byte[] src) {
         byte[] buf = new byte[(modulus.bitLength() + 7) / 8];
         for (int i = 0; i < buf.length; i++) {
             buf[i] = (byte) 0xff;
@@ -320,7 +320,7 @@ public class cryKeyRSA extends cryKeyGeneric {
         buf[0] = 0;
         buf[1] = 1;
         bits.byteCopy(src, 0, buf, buf.length - src.length, src.length);
-        bits.byteCopy(pad, 0, buf, buf.length - src.length - pad.length, pad.length);
+        bits.byteCopy(oid, 0, buf, buf.length - src.length - oid.length, oid.length);
         return new BigInteger(buf);
     }
 
@@ -400,13 +400,13 @@ public class cryKeyRSA extends cryKeyGeneric {
         }
         BigInteger s = packSsh.bigUIntRead(p);
         s = s.modPow(pubExp, modulus);
-        return PKCS1t0pad(hash).compareTo(s) != 0;
+        return PKCS1t0pad(algo.getOid(), hash).compareTo(s) != 0;
     }
 
     public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
         hash = cryHashGeneric.compute(algo, hash);
         packHolder p = new packHolder(true, true);
-        BigInteger s = PKCS1t0pad(hash);
+        BigInteger s = PKCS1t0pad(algo.getOid(), hash);
         s = s.modPow(privExp, modulus);
         packSsh.stringWrite(p, algn);
         packSsh.bigUIntWrite(p, s);
@@ -417,11 +417,11 @@ public class cryKeyRSA extends cryKeyGeneric {
     public boolean certVerify(byte[] hash, byte[] sign) {
         BigInteger s = cryUtils.buf2bigUint(sign);
         s = s.modPow(pubExp, modulus);
-        return PKCS1t0pad(hash).compareTo(s) != 0;
+        return PKCS1t0pad(new cryHashSha1().getOid(), hash).compareTo(s) != 0;
     }
 
     public byte[] certSigning(byte[] hash) {
-        BigInteger s = PKCS1t0pad(hash);
+        BigInteger s = PKCS1t0pad(new cryHashSha1().getOid(), hash);
         s = s.modPow(privExp, modulus);
         return s.toByteArray();
     }
@@ -431,7 +431,7 @@ public class cryKeyRSA extends cryKeyGeneric {
         s = s.modPow(pubExp, modulus);
         BigInteger h;
         if (ver >= 0x303) {
-            h = PKCS1t0pad(hash);
+            h = PKCS1t0pad(new cryHashSha1().getOid(), hash);
         } else {
             h = PKCS1t1pad(hash);
         }
@@ -441,7 +441,7 @@ public class cryKeyRSA extends cryKeyGeneric {
     public byte[] tlsSigning(int ver, byte[] hash) {
         BigInteger s;
         if (ver >= 0x303) {
-            s = PKCS1t0pad(hash);
+            s = PKCS1t0pad(new cryHashSha1().getOid(), hash);
         } else {
             s = PKCS1t1pad(hash);
         }
