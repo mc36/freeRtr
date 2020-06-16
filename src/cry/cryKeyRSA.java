@@ -400,13 +400,13 @@ public class cryKeyRSA extends cryKeyGeneric {
         }
         BigInteger s = packSsh.bigUIntRead(p);
         s = s.modPow(pubExp, modulus);
-        return PKCS1t0pad(algo.getOid(), hash).compareTo(s) != 0;
+        return PKCS1t0pad(algo.getPkcs(), hash).compareTo(s) != 0;
     }
 
     public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
         hash = cryHashGeneric.compute(algo, hash);
         packHolder p = new packHolder(true, true);
-        BigInteger s = PKCS1t0pad(algo.getOid(), hash);
+        BigInteger s = PKCS1t0pad(algo.getPkcs(), hash);
         s = s.modPow(privExp, modulus);
         packSsh.stringWrite(p, algn);
         packSsh.bigUIntWrite(p, s);
@@ -417,11 +417,11 @@ public class cryKeyRSA extends cryKeyGeneric {
     public boolean certVerify(byte[] hash, byte[] sign) {
         BigInteger s = cryUtils.buf2bigUint(sign);
         s = s.modPow(pubExp, modulus);
-        return PKCS1t0pad(new cryHashSha1().getOid(), hash).compareTo(s) != 0;
+        return PKCS1t0pad(new cryHashSha1().getPkcs(), hash).compareTo(s) != 0;
     }
 
     public byte[] certSigning(byte[] hash) {
-        BigInteger s = PKCS1t0pad(new cryHashSha1().getOid(), hash);
+        BigInteger s = PKCS1t0pad(new cryHashSha1().getPkcs(), hash);
         s = s.modPow(privExp, modulus);
         return s.toByteArray();
     }
@@ -431,7 +431,7 @@ public class cryKeyRSA extends cryKeyGeneric {
         s = s.modPow(pubExp, modulus);
         BigInteger h;
         if (ver >= 0x303) {
-            h = PKCS1t0pad(new cryHashSha1().getOid(), hash);
+            h = PKCS1t0pad(new cryHashSha1().getPkcs(), hash);
         } else {
             h = PKCS1t1pad(hash);
         }
@@ -441,7 +441,7 @@ public class cryKeyRSA extends cryKeyGeneric {
     public byte[] tlsSigning(int ver, byte[] hash) {
         BigInteger s;
         if (ver >= 0x303) {
-            s = PKCS1t0pad(new cryHashSha1().getOid(), hash);
+            s = PKCS1t0pad(new cryHashSha1().getPkcs(), hash);
         } else {
             s = PKCS1t1pad(hash);
         }

@@ -24,7 +24,7 @@ public abstract class cryHashGeneric {
      *
      * @return name of hash
      */
-    public abstract byte[] getOid();
+    public abstract byte[] getPkcs();
 
     /**
      * read size of hash

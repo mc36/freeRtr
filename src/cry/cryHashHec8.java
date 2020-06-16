@@ -62,7 +62,7 @@ public class cryHashHec8 extends cryHashGeneric {
      *
      * @return name of hash
      */
-    public byte[] getOid() {
+    public byte[] getPkcs() {
         return null;
     }
 

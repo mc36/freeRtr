@@ -73,8 +73,8 @@ public class cryHashSslMac extends cryHashGeneric {
      *
      * @return name of hash
      */
-    public byte[] getOid() {
-        return alg.getOid();
+    public byte[] getPkcs() {
+        return alg.getPkcs();
     }
 
     /**

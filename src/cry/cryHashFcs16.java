@@ -64,7 +64,7 @@ public class cryHashFcs16 extends cryHashGeneric {
      *
      * @return name of hash
      */
-    public byte[] getOid() {
+    public byte[] getPkcs() {
         return null;
     }
 

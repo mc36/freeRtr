@@ -217,7 +217,7 @@ public class cryHashBlake2s extends cryHashGeneric {
      *
      * @return name of hash
      */
-    public byte[] getOid() {
+    public byte[] getPkcs() {
         return null;
     }
 
