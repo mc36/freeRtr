@@ -220,19 +220,23 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
     /**
      * verify signature
      *
+     * @param algo hash algorithm
+     * @param algn hash name
      * @param hash generated hash
      * @param sign received
      * @return false on success, true on error
      */
-    public abstract boolean sshVerify(byte[] hash, byte[] sign);
+    public abstract boolean sshVerify(cryHashGeneric algo, String algn, byte[] hash, byte[] sign);
 
     /**
      * generate sign
      *
+     * @param algo hash algorithm
+     * @param algn hash name
      * @param hash generated hash
      * @return generated signature
      */
-    public abstract byte[] sshSigning(byte[] hash);
+    public abstract byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash);
 
     /**
      * read asn1 formatted key

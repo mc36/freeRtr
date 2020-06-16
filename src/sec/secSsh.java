@@ -367,7 +367,7 @@ public class secSsh implements Runnable {
             pg.difHel.servXchg();
             pg.difHel.servKey();
             pg.hashCalc();
-            pg.gexReplyFill(key);
+            pg.gexReplyFill(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), key);
             pg.gexReplyCreate();
             p.packSend();
         } else {
@@ -378,7 +378,7 @@ public class secSsh implements Runnable {
             pg.difHel.servXchg();
             pg.difHel.servKey();
             pg.hashCalc();
-            pg.gexReplyFill(key);
+            pg.gexReplyFill(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), key);
             pg.kexReplyCreate();
             p.packSend();
         }
@@ -514,7 +514,7 @@ public class secSsh implements Runnable {
         if (key.sshReader(pg.cert)) {
             return;
         }
-        if (key.sshVerify(pg.hashVal, pg.sign)) {
+        if (key.sshVerify(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), pg.hashVal, pg.sign)) {
             return;
         }
         if (pi.newKeysExchange()) {

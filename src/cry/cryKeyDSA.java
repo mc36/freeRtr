@@ -373,13 +373,13 @@ public class cryKeyDSA extends cryKeyGeneric {
      * @param sign signed
      * @return false on success, true on error
      */
-    public boolean sshVerify(byte[] hash, byte[] sign) {
-        hash = cryHashGeneric.compute(new cryHashSha1(), hash);
+    public boolean sshVerify(cryHashGeneric algo, String algn, byte[] hash, byte[] sign) {
+        hash = cryHashGeneric.compute(algo, hash);
         packHolder p = new packHolder(true, true);
         p.putCopy(sign, 0, 0, sign.length);
         p.putSkip(sign.length);
         p.merge2beg();
-        if (!packSsh.stringRead(p).equals(sshName)) {
+        if (!packSsh.stringRead(p).equals(algn)) {
             return true;
         }
         sign = packSsh.bytesRead(p);
@@ -393,12 +393,12 @@ public class cryKeyDSA extends cryKeyGeneric {
      * @param hash hashed
      * @return signed
      */
-    public byte[] sshSigning(byte[] hash) {
-        hash = cryHashGeneric.compute(new cryHashSha1(), hash);
+    public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
+        hash = cryHashGeneric.compute(algo, hash);
         doSigning(hash);
         hash = sign2ssh();
         packHolder p = new packHolder(true, true);
-        packSsh.stringWrite(p, sshName);
+        packSsh.stringWrite(p, algn);
         packSsh.bytesWrite(p, hash);
         p.merge2beg();
         return p.getCopy();

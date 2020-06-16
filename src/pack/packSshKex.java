@@ -37,7 +37,7 @@ public class packSshKex {
      * diffie hellman
      */
     public cryKeyDH difHel;
-    
+
     /**
      * hash to use
      */
@@ -429,11 +429,13 @@ public class packSshKex {
     /**
      * fill reply message
      *
+     * @param algo hash algorithm
+     * @param algn hash name
      * @param signer signer alrorithm
      */
-    public void gexReplyFill(cryKeyGeneric signer) {
+    public void gexReplyFill(cryHashGeneric algo, String algn, cryKeyGeneric signer) {
         cert = signer.sshWriter();
-        sign = signer.sshSigning(hashVal);
+        sign = signer.sshSigning(algo, algn, hashVal);
     }
 
     /**

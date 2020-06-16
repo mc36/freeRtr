@@ -19,6 +19,16 @@ public class cryKeyRSA extends cryKeyGeneric {
     public final static String sshName = "ssh-rsa";
 
     /**
+     * ssh name
+     */
+    public final static String sshName2 = "x-rsa-sha2-256";
+
+    /**
+     * ssh name
+     */
+    public final static String sshName3 = "x-rsa-sha2-512";
+
+    /**
      * n modulus
      */
     public BigInteger modulus;
@@ -379,13 +389,13 @@ public class cryKeyRSA extends cryKeyGeneric {
         return buf;
     }
 
-    public boolean sshVerify(byte[] hash, byte[] sign) {
-        hash = cryHashGeneric.compute(new cryHashSha1(), hash);
+    public boolean sshVerify(cryHashGeneric algo, String algn, byte[] hash, byte[] sign) {
+        hash = cryHashGeneric.compute(algo, hash);
         packHolder p = new packHolder(true, true);
         p.putCopy(sign, 0, 0, sign.length);
         p.putSkip(sign.length);
         p.merge2beg();
-        if (!packSsh.stringRead(p).equals(sshName)) {
+        if (!packSsh.stringRead(p).equals(algn)) {
             return true;
         }
         BigInteger s = packSsh.bigUIntRead(p);
@@ -393,12 +403,12 @@ public class cryKeyRSA extends cryKeyGeneric {
         return PKCS1t0pad(hash).compareTo(s) != 0;
     }
 
-    public byte[] sshSigning(byte[] hash) {
-        hash = cryHashGeneric.compute(new cryHashSha1(), hash);
+    public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
+        hash = cryHashGeneric.compute(algo, hash);
         packHolder p = new packHolder(true, true);
         BigInteger s = PKCS1t0pad(hash);
         s = s.modPow(privExp, modulus);
-        packSsh.stringWrite(p, sshName);
+        packSsh.stringWrite(p, algn);
         packSsh.bigUIntWrite(p, s);
         p.merge2beg();
         return p.getCopy();

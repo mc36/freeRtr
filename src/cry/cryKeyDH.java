@@ -237,11 +237,11 @@ public class cryKeyDH extends cryKeyGeneric {
         return null;
     }
 
-    public boolean sshVerify(byte[] hash, byte[] sign) {
+    public boolean sshVerify(cryHashGeneric algo, String algn, byte[] hash, byte[] sign) {
         return true;
     }
 
-    public byte[] sshSigning(byte[] hash) {
+    public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
         return null;
     }
 

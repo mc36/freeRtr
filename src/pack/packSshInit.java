@@ -115,7 +115,7 @@ public class packSshInit {
     /**
      * key algorithms
      */
-    public final static String[] keySignAlgs = {cryKeyDSA.sshName, cryKeyRSA.sshName};
+    public final static String[] keySignAlgs = {cryKeyRSA.sshName2, cryKeyRSA.sshName3, cryKeyRSA.sshName, cryKeyDSA.sshName};
 
     private final packSsh lower;
 
@@ -503,9 +503,53 @@ public class packSshInit {
         }
         switch (kexKeys[0]) {
             case 0:
-                return new cryKeyDSA();
+                return new cryKeyRSA();
             case 1:
                 return new cryKeyRSA();
+            case 2:
+                return new cryKeyRSA();
+            case 3:
+                return new cryKeyDSA();
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * get key hash algorithm
+     *
+     * @return hash
+     */
+    public cryHashGeneric getKeyHashAlgo() {
+        switch (kexKeys[0]) {
+            case 0:
+                return new cryHashSha2256();
+            case 1:
+                return new cryHashSha2512();
+            case 2:
+                return new cryHashSha1();
+            case 3:
+                return new cryHashSha1();
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * get key algorithm name
+     *
+     * @return name
+     */
+    public String getKeyHashAlgn() {
+        switch (kexKeys[0]) {
+            case 0:
+                return cryKeyRSA.sshName2;
+            case 1:
+                return cryKeyRSA.sshName3;
+            case 2:
+                return cryKeyRSA.sshName;
+            case 3:
+                return cryKeyDSA.sshName;
             default:
                 return null;
         }
@@ -524,9 +568,13 @@ public class packSshInit {
         }
         switch (kexKeys[0]) {
             case 0:
-                return dss;
+                return rsa;
             case 1:
                 return rsa;
+            case 2:
+                return rsa;
+            case 3:
+                return dss;
             default:
                 return null;
         }
