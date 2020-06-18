@@ -80,7 +80,7 @@ public class userHwdet {
         txt.add("  sleep 1");
         txt.add("  done");
         bits.buf2txt(true, txt, path + prefix + fn);
-        starter.add("/bin/busybox start-stop-daemon -S -b -x " + fn);
+        starter.add("/bin/busybox start-stop-daemon -S -b -x " + path + prefix + fn);
     }
 
     private void makeLoop(String fn, List<String> pre, String cmd) {
