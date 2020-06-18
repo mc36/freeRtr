@@ -1163,6 +1163,7 @@ class servP4langConn implements Runnable {
         }
         vrf.sentMcast = true;
         lower.sendLine("myaddr4_add 224.0.0.0/4 0 " + vrf.id);
+        lower.sendLine("myaddr4_add 255.255.255.255/32 0 " + vrf.id);
         lower.sendLine("myaddr6_add ff00::/8 0 " + vrf.id);
     }
 
