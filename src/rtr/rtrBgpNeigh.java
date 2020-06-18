@@ -891,40 +891,42 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 return;
             }
         }
-        if (lower.nhtRoumap != null) {
-            tabRouteEntry<addrIP> rou = lower.fwdCore.actualU.route(peerAddr);
-            if (rou == null) {
-                return;
+        if (trackNxthop) {
+            if (lower.nhtRoumap != null) {
+                tabRouteEntry<addrIP> rou = lower.fwdCore.actualU.route(peerAddr);
+                if (rou == null) {
+                    return;
+                }
+                tabRtrmapN rme = lower.nhtRoumap.find(lower.afiUni, rou);
+                if (rme == null) {
+                    return;
+                }
+                if (rme.action != tabPlcmapN.actionType.actPermit) {
+                    return;
+                }
             }
-            tabRtrmapN rme = lower.nhtRoumap.find(lower.afiUni, rou);
-            if (rme == null) {
-                return;
+            if (lower.nhtRouplc != null) {
+                tabRouteEntry<addrIP> rou = lower.fwdCore.actualU.route(peerAddr);
+                if (rou == null) {
+                    return;
+                }
+                rou = tabRtrplc.doRpl(lower.afiUni, rou, lower.nhtRouplc, true);
+                if (rou == null) {
+                    return;
+                }
             }
-            if (rme.action != tabPlcmapN.actionType.actPermit) {
-                return;
-            }
-        }
-        if (lower.nhtRouplc != null) {
-            tabRouteEntry<addrIP> rou = lower.fwdCore.actualU.route(peerAddr);
-            if (rou == null) {
-                return;
-            }
-            rou = tabRtrplc.doRpl(lower.afiUni, rou, lower.nhtRouplc, true);
-            if (rou == null) {
-                return;
-            }
-        }
-        if (lower.nhtPfxlst != null) {
-            tabRouteEntry<addrIP> rou = lower.fwdCore.actualU.route(peerAddr);
-            if (rou == null) {
-                return;
-            }
-            tabPrfxlstN ple = lower.nhtPfxlst.find(lower.afiUni, rou);
-            if (ple == null) {
-                return;
-            }
-            if (ple.action != tabPlcmapN.actionType.actPermit) {
-                return;
+            if (lower.nhtPfxlst != null) {
+                tabRouteEntry<addrIP> rou = lower.fwdCore.actualU.route(peerAddr);
+                if (rou == null) {
+                    return;
+                }
+                tabPrfxlstN ple = lower.nhtPfxlst.find(lower.afiUni, rou);
+                if (ple == null) {
+                    return;
+                }
+                if (ple.action != tabPlcmapN.actionType.actPermit) {
+                    return;
+                }
             }
         }
         reachable = true;

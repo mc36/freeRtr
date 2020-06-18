@@ -123,6 +123,11 @@ public abstract class rtrBgpParam {
     public boolean capaNego;
 
     /**
+     * track nexthops
+     */
+    public boolean trackNxthop;
+
+    /**
      * route reflector client
      */
     public boolean reflectClnt;
@@ -657,6 +662,7 @@ public abstract class rtrBgpParam {
         ttlSecurity = -1;
         passwd = null;
         capaNego = true;
+        trackNxthop = true;
         keepAlive = 60 * 1000;
         holdTimer = keepAlive * 3;
     }
@@ -693,6 +699,7 @@ public abstract class rtrBgpParam {
         bier = src.bier;
         egressEng = src.egressEng;
         capaNego = src.capaNego;
+        trackNxthop = src.trackNxthop;
         bfdTrigger = src.bfdTrigger;
         softReconfig = src.softReconfig;
         graceRestart = src.graceRestart;
@@ -904,6 +911,7 @@ public abstract class rtrBgpParam {
         l.add("3 4       egress-engineering      set egress engineering");
         l.add("4 .         <num>                 index value");
         l.add("3 .       capability-negotiation  perform capability negosiation");
+        l.add("3 .       track-next-hop          perform next hop tracking");
         l.add("3 4       connection-mode         connection mode allowed");
         l.add("4 .         active                this router will initiate session");
         l.add("4 .         passive               remote router will initiate session");
@@ -1084,6 +1092,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, egressEng == 0, beg, nei + "egress-engineering", "" + egressEng);
         cmds.cfgLine(l, !capaNego, beg, nei + "capability-negotiation", "");
+        cmds.cfgLine(l, !trackNxthop, beg, nei + "track-next-hop", "");
         cmds.cfgLine(l, !reflectClnt, beg, nei + "route-reflector-client", "");
         cmds.cfgLine(l, !remoteConfed, beg, nei + "confederation-peer", "");
         cmds.cfgLine(l, !nxtHopUnchgd, beg, nei + "next-hop-unchanged", "");
@@ -1445,6 +1454,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("capability-negotiation")) {
             capaNego = !negated;
+            return false;
+        }
+        if (s.equals("track-next-hop")) {
+            trackNxthop = !negated;
             return false;
         }
         if (s.equals("remove-private-as-out")) {
