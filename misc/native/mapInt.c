@@ -46,7 +46,7 @@ void err(char*buf) {
 void doRawLoop() {
     int i;
     int bufS;
-    char *bufD;
+    unsigned char *bufD;
     int blockNum = 0;
     struct tpacket_block_desc *pbd;
     struct tpacket3_hdr *ppd;
@@ -96,7 +96,7 @@ void doUdpLoop() {
 
 void doStatLoop() {
     struct ifreq ifr;
-    char buf[1];
+    unsigned char buf[1];
     int needed = IFF_RUNNING | IFF_UP;
     for (;;) {
         sleep(1);
@@ -111,7 +111,7 @@ void doStatLoop() {
 }
 
 void doMainLoop() {
-    char buf[1024];
+    unsigned char buf[1024];
 
 doer:
     printf("> ");
@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
 
     if (argc < 5) {
         if (argc <= 1) goto help;
-        char*curr = argv[1];
+        unsigned char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
             case 'V':

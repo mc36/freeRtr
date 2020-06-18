@@ -59,10 +59,10 @@ int doFcsCalc(char* buf, int siz) {
 }
 
 void doRawLoop() {
-    char buf1d[16384];
+    unsigned char buf1d[16384];
     int buf1s = 0;
     int buf2p;
-    char buf2d[1024];
+    unsigned char buf2d[1024];
     int buf2s;
     int sawEsc = 0;
     int i;
@@ -123,9 +123,9 @@ void doRawLoop() {
 }
 
 void doUdpLoop() {
-    char buf1d[16384];
+    unsigned char buf1d[16384];
     int buf1s;
-    char buf2d[32768];
+    unsigned char buf2d[32768];
     int buf2s;
     unsigned int addrLen;
     int i, o;
@@ -178,7 +178,7 @@ void doStatLoop() {
 }
 
 void doMainLoop() {
-    char buf[1024];
+    unsigned char buf[1024];
 
 doer:
     printf("> ");
@@ -236,7 +236,7 @@ int main(int argc, char **argv) {
 
     if (argc < 5) {
         if (argc <= 1) goto help;
-        char*curr = argv[1];
+        unsigned char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
             case 'V':

@@ -826,6 +826,30 @@ class servP4langConn implements Runnable {
         return false;
     }
 
+    private servP4langNei genNeighId(servP4langNei ntry) {
+        ntry.need = 1;
+        for (int rnd = 0; rnd < 16; rnd++) {
+            ntry.id = bits.random(0x1000, 0xfff0);
+            if (ntry.id < 1) {
+                continue;
+            }
+            boolean fnd = false;
+            for (int i = 0; i < neighs.size(); i++) {
+                if (neighs.get(i).id != ntry.id) {
+                    continue;
+                }
+                fnd = true;
+                break;
+            }
+            if (fnd) {
+                continue;
+            }
+            neighs.put(ntry);
+            return ntry;
+        }
+        return null;
+    }
+
     private servP4langNei findIface(tabRouteIface ifc, addrIP hop) {
         if (ifc == null) {
             return null;
@@ -848,32 +872,12 @@ class servP4langConn implements Runnable {
         servP4langNei ntry = new servP4langNei();
         ntry.ifc = id;
         ntry.adr = hop;
-        ntry.need = 1;
         servP4langNei old = neighs.find(ntry);
         if (old != null) {
             old.need++;
             return old;
         }
-        for (int rnd = 0; rnd < 16; rnd++) {
-            ntry.id = bits.randomW() | 0x1000;
-            if (ntry.id < 1) {
-                continue;
-            }
-            boolean fnd = false;
-            for (int i = 0; i < neighs.size(); i++) {
-                if (neighs.get(i).id != ntry.id) {
-                    continue;
-                }
-                fnd = true;
-                break;
-            }
-            if (fnd) {
-                continue;
-            }
-            neighs.put(ntry);
-            return ntry;
-        }
-        return null;
+        return genNeighId(ntry);
     }
 
     private servP4langVrf findVrf(ipFwd fwd) {
@@ -1359,15 +1363,24 @@ class servP4langConn implements Runnable {
             if (ipi.getL2info(i, ntry.adr, ntry.mac)) {
                 break;
             }
-            ntry.ifc = ifc.id;
-            servP4langNei old = neighs.find(ntry);
-            if (old == null) {
+            if (!ipi.checkConnected(ntry.adr)) {
                 continue;
             }
+            ntry.ifc = ifc.id;
+            servP4langNei old = neighs.find(ntry);
+            boolean added = false;
+            if (old == null) {
+                old = genNeighId(ntry);
+                if (old == null) {
+                    continue;
+                }
+                added = true;
+            }
+            old.need++;
             old.vrf = vrf;
             old.iface = ifc;
             String act = "add";
-            if (old.mac != null) {
+            if ((!added) && (old.mac != null)) {
                 if (ntry.mac.compare(ntry.mac, old.mac) == 0) {
                     continue;
                 }

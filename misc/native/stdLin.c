@@ -98,7 +98,7 @@ void doRxLoop() {
 
 int main(int argc, char **argv) {
     if (argc <= 1) goto help;
-    char*curr = argv[1];
+    unsigned char*curr = argv[1];
 
     portLoc = atoi(curr);
     if (portLoc < 1) {

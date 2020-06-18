@@ -23,7 +23,7 @@ void err(char*buf) {
 }
 
 void doReadLoop() {
-    char buf[1];
+    unsigned char buf[1];
     int i;
     for (;;) {
         if (readStat != 0) {
@@ -60,8 +60,8 @@ int wait4line() {
 int doOneCmd(char *cmdFul) {
     if (debug) printf("cmd: %s\n", cmdFul);
     int cmdNum = 0;
-    char* cmdPar[32];
-    char cmdEmp[1];
+    unsigned char* cmdPar[32];
+    unsigned char cmdEmp[1];
     int i, o;
     cmdEmp[0] = 0;
     for (i = 0; i < 32; i++) cmdPar[i] = (char*) &cmdEmp;
@@ -100,7 +100,7 @@ int doOneCmd(char *cmdFul) {
         FILE *fr;
         fr = fopen(cmdPar[0], "r");
         if (fr == NULL) return 1;
-        char ln[512];
+        unsigned char ln[512];
         o = 0;
         for (;;) {
             if (fgets((char*) &ln, 512, fr) == NULL) break;
@@ -155,7 +155,7 @@ int doOneCmd(char *cmdFul) {
         return 0;
     }
     if (strcmp(cmdFul, "sendline") == 0) {
-        char buf[1];
+        unsigned char buf[1];
         buf[0] = 32;
         for (i = 0; i < cmdNum; i++) {
             if (i > 0) write(addrTty, buf, 1);
@@ -237,7 +237,7 @@ int main(int argc, char **argv) {
 
     int i, o;
     for (i = 2; i < argc; i++) {
-        char buf[1024];
+        unsigned char buf[1024];
         strcpy(buf, argv[i]);
         o = doOneCmd(buf);
         if (o == 0) continue;

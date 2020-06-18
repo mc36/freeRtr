@@ -23,7 +23,7 @@ void gotRawPack(char*dummyparameter, const struct pcap_pkthdr *hdr, u_char *dat)
 }
 
 int main(int argc, char **argv) {
-    char errbuf[PCAP_ERRBUF_SIZE + 1];
+    unsigned char errbuf[PCAP_ERRBUF_SIZE + 1];
 
     if (argc < 2) err("using: <iface> <packet>");
 

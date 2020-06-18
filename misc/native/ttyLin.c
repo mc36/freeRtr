@@ -86,7 +86,7 @@ void doRxLoop() {
 }
 
 void doMainLoop() {
-    char buf[1024];
+    unsigned char buf[1024];
 
 doer:
     printf("> ");
@@ -141,7 +141,7 @@ int main(int argc, char **argv) {
 
     if (argc < 3) {
         if (argc <= 1) goto help;
-        char*curr = argv[1];
+        unsigned char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
             case 'V':

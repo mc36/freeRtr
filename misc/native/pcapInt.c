@@ -58,7 +58,7 @@ void doUdpLoop() {
 }
 
 void doMainLoop() {
-    char buf[1024];
+    unsigned char buf[1024];
 
 doer:
     printf("> ");
@@ -110,11 +110,11 @@ doer:
 }
 
 int main(int argc, char **argv) {
-    char errbuf[PCAP_ERRBUF_SIZE + 1];
+    unsigned char errbuf[PCAP_ERRBUF_SIZE + 1];
 
     if (argc < 5) {
         if (argc <= 1) goto help;
-        char*curr = argv[1];
+        unsigned char*curr = argv[1];
         pcap_if_t *pcifcs;
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
