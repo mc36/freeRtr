@@ -53,6 +53,8 @@ public class ifcVnTag implements ifcUp, ifcDn {
         if (pck.msbGetW(0) != type) {
             return;
         }
+        target = pck.msbGetW(2);
+        source = pck.msbGetW(4);
         pck.getSkip(size);
         upper.recvPack(pck);
     }
@@ -60,7 +62,8 @@ public class ifcVnTag implements ifcUp, ifcDn {
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         pck.msbPutW(0, type);
-        pck.msbPutD(2, source | (target << 16));
+        pck.msbPutW(2, target);
+        pck.msbPutW(4, source);
         pck.putSkip(size);
         pck.merge2beg();
         lower.sendPack(pck);
