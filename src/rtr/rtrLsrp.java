@@ -537,7 +537,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (nei.segrouLab != null) {
                     adj = nei.segrouLab.getValue();
                 }
-                dat.addNeigh(nei.rtrId, ifc.metric, (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj);
+                dat.addNeigh(nei.rtrId, ifc.metric, (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj, nei.peer);
             }
         }
         dat.network.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteEntry.distanLim);

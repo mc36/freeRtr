@@ -248,6 +248,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                     s += " segrouadj=" + ntry.segrou;
                     segrou = ntry.segrou;
                 }
+                s += " neighaddr=" + ntry.peer;
                 s += " neighbor=" + ntry.rtrid;
             }
         }
@@ -322,6 +323,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         uptime = 0;
         changesNum = 0;
         changesTim = 0;
+        addrIP peerAddr = new addrIP();
         int segrouAdj = 0;
         int metric = 0;
         long bndwdt = 0;
@@ -459,6 +461,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 address.add(adr);
                 continue;
             }
+            if (a.equals("neighaddr")) {
+                peerAddr.fromString(s);
+                continue;
+            }
             if (a.equals("network")) {
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = addrPrefix.str2ip(s);
@@ -475,7 +481,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (adr.fromString(s)) {
                     return true;
                 }
-                addNeigh(adr, metric, stub, bndwdt, affinity, srlg, segrouAdj);
+                addNeigh(adr, metric, stub, bndwdt, affinity, srlg, segrouAdj, peerAddr);
                 continue;
             }
         }
@@ -492,8 +498,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * @param aff affinity
      * @param srl srlg
      * @param adj segrout adjacency
+     * @param adr adjacency address
      */
-    protected void addNeigh(addrIPv4 nei, int met, boolean stb, long bw, int aff, int srl, int adj) {
+    protected void addNeigh(addrIPv4 nei, int met, boolean stb, long bw, int aff, int srl, int adj, addrIP adr) {
         rtrLsrpDataNeigh ntry = new rtrLsrpDataNeigh();
         ntry.rtrid = nei.copyBytes();
         ntry.metric = met;
@@ -502,6 +509,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         ntry.affnty = aff;
         ntry.srlg = srl;
         ntry.segrou = adj;
+        ntry.peer = adr.copyBytes();
         rtrLsrpDataNeigh old = neighbor.find(ntry);
         if (old != null) {
             if (old.metric < met) {
@@ -561,6 +569,11 @@ class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
      * segment routing
      */
     public int segrou;
+
+    /**
+     * adjacency
+     */
+    public addrIP peer;
 
     public int compare(rtrLsrpDataNeigh o1, rtrLsrpDataNeigh o2) {
         return o1.rtrid.compare(o1.rtrid, o2.rtrid);
