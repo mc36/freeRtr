@@ -212,6 +212,9 @@ void doBasicLoop(int * param) {
     int bufS;
     struct sockaddr_in addrTmp;
     unsigned int addrLen;
+    struct vlan_entry vlan_ntry;
+    struct vlan_entry *vlan_res;
+    int index;
     for (;;) {
         bufS = sizeof (bufD) - preBuff;
         bufS = recvfrom(ifaceSock[port], &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
@@ -219,6 +222,14 @@ void doBasicLoop(int * param) {
         packRx[port]++;
         byteRx[port] += bufS;
         send2cpu(bufD, bufS, port);
+        if (get16bits(bufD, preBuff + 12) != 0x9100) continue;
+        vlan_ntry.port = port;
+        vlan_ntry.vlan = get16bits(bufD, preBuff + 14) & 0xfff;
+        index = table_find(&vlanin_table, &vlan_ntry);
+        if (index < 0) continue;
+        vlan_res = table_get(&vlanin_table, index);
+        vlan_res->pack++;
+        vlan_res->byte += bufS;
     }
     err("port thread exited");
 }
@@ -474,6 +485,9 @@ void doHostLoop() {
     int bufS;
     struct sockaddr_in addrTmp;
     unsigned int addrLen;
+    struct vlan_entry vlan_ntry;
+    struct vlan_entry *vlan_res;
+    int index;
     int prt;
     for (;;) {
         bufS = sizeof (bufD) - preBuff;
@@ -486,6 +500,14 @@ void doHostLoop() {
         sendto(ifaceSock[prt], &bufD[preBuff + 2], bufS - 2, 0, (struct sockaddr *) &addrIfc[prt], sizeof (addrIfc[prt]));
         packTx[prt]++;
         byteTx[prt] += bufS - 2;
+        if (get16bits(bufD, preBuff + 14) != 0x9100) continue;
+        vlan_ntry.port = prt;
+        vlan_ntry.vlan = get16bits(bufD, preBuff + 16) & 0xfff;
+        index = table_find(&vlanin_table, &vlan_ntry);
+        if (index < 0) continue;
+        vlan_res = table_get(&vlanout_table, index);
+        vlan_res->pack++;
+        vlan_res->byte += bufS;
     }
     err("host thread exited");
 }
