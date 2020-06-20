@@ -157,6 +157,8 @@ struct vlan_entry {
     int id;
     int vlan;
     int port;
+    long pack;
+    long byte;
 };
 
 struct table_head vlanin_table;
@@ -321,6 +323,8 @@ nexthop_tx:
                             bufP -= 2;
                             put16bits(bufD, bufP, 0x9100);
                             prt = vlan_res->port;
+                            vlan_res->pack++;
+                            vlan_res->byte += bufS;
                         }
                         if (prt >= ports) break;
                         bufP -= 6;
@@ -343,6 +347,8 @@ nexthop_tx:
                 if (index < 0) break;
                 vlan_res = table_get(&vlanin_table, index);
                 prt = vlan_res->id;
+                vlan_res->pack++;
+                vlan_res->byte += bufS;
                 goto ethtyp_rx;
                 break;
             case 0x800:
@@ -500,6 +506,11 @@ void doStatLoop() {
             if (ioctl(ifaceSock[i], SIOCGIFFLAGS, &ifr) < 0) continue;
             if ((ifr.ifr_flags & needed) == needed) res = 1; else res = 0;
             fprintf(commands, "state %i %i\r\n", i, res);
+        }
+        for (int i=0; i<vlanin_table.size; i++) {
+            struct vlan_entry *intry = table_get(&vlanin_table, i);
+            struct vlan_entry *ontry = table_get(&vlanout_table, i);
+            fprintf(commands, "counter %i %li %li %li %li\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
         }
         fflush(commands);
     }
