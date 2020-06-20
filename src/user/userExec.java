@@ -538,7 +538,10 @@ public class userExec {
         hl.add("6 .              asorigin        originating ases");
         hl.add("6 .              astransit       transiting ases");
         hl.add("6 .              asconn          connectivity of ases");
-        hl.add("6 .              asinconsistent  inconsistent advertisements of ases");
+        hl.add("6 7,.            asinconsistent  inconsistent advertisements of ases");
+        hl.add("7 .                <str>         int matcher");
+        hl.add("6 7,.            nhinconsistent  inconsistent advertisements of next hops");
+        hl.add("7 .                <str>         int matcher");
         hl.add("6 .              prefix-lengths  prefix length distribution");
         hl.add("6 7              allroute        list of specific routes");
         hl.add("7 8,.              <addr>        prefix to view");

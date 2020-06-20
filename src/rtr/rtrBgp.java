@@ -32,6 +32,7 @@ import prt.prtTcp;
 import tab.tabListing;
 import tab.tabAceslstN;
 import tab.tabGen;
+import tab.tabIntMatcher;
 import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelBierN;
@@ -3282,12 +3283,66 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * inconsistent next hops
+     *
+     * @param safi safi to query
+     * @param mtch matcher
+     * @return text
+     */
+    public userFormat getNhIncons(int safi, tabIntMatcher mtch) {
+        tabGen<rtrBgpFlap> lst = new tabGen<rtrBgpFlap>();
+        for (int i = 0; i < neighs.size(); i++) {
+            getNhIncons(lst, neighs.get(i), safi);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            getNhIncons(lst, lstnNei.get(i), safi);
+        }
+        userFormat res = new userFormat("|", "path|ases");
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlap ntry = lst.get(i);
+            if (!mtch.matches(ntry.paths.size())) {
+                continue;
+            }
+            res.add(ntry.prefix + " " + tabRtrmapN.rd2string(ntry.rd) + "|" + ntry.getPaths());
+        }
+        return res;
+    }
+
+    private void getNhIncons(tabGen<rtrBgpFlap> lst, rtrBgpNeigh nei, int safi) {
+        if (nei == null) {
+            return;
+        }
+        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
+        if (tab == null) {
+            return;
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            rtrBgpFlap ntry = new rtrBgpFlap();
+            ntry.rd = prf.rouDst;
+            ntry.prefix = prf.prefix.copyBytes();
+            rtrBgpFlap old = lst.add(ntry);
+            if (old != null) {
+                ntry = old;
+            }
+            String a = "" + prf.nextHop;
+            rtrBgpFlapath pth = new rtrBgpFlapath();
+            pth.path = a;
+            ntry.paths.add(pth);
+        }
+    }
+
+    /**
      * inconsistent as paths
      *
      * @param safi safi to query
+     * @param mtch matcher
      * @return text
      */
-    public userFormat getAsIncons(int safi) {
+    public userFormat getAsIncons(int safi, tabIntMatcher mtch) {
         tabGen<rtrBgpFlap> lst = new tabGen<rtrBgpFlap>();
         for (int i = 0; i < neighs.size(); i++) {
             getAsIncons(lst, neighs.get(i), safi);
@@ -3298,7 +3353,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         userFormat res = new userFormat("|", "path|ases");
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlap ntry = lst.get(i);
-            if (ntry.paths.size() < 2) {
+            if (!mtch.matches(ntry.paths.size())) {
                 continue;
             }
             res.add(ntry.prefix + " " + tabRtrmapN.rd2string(ntry.rd) + "|" + ntry.getPaths());

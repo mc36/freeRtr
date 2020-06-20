@@ -2319,7 +2319,23 @@ public class userShow {
                 return;
             }
             if (a.equals("asinconsistent")) {
-                rdr.putStrTab(r.bgp.getAsIncons(sfi));
+                a = cmd.word();
+                if (a.length() < 1) {
+                    a = "2-" + Integer.MAX_VALUE;
+                }
+                tabIntMatcher m = new tabIntMatcher();
+                m.fromString(a);
+                rdr.putStrTab(r.bgp.getAsIncons(sfi, m));
+                return;
+            }
+            if (a.equals("nhinconsistent")) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    a = "2-" + Integer.MAX_VALUE;
+                }
+                tabIntMatcher m = new tabIntMatcher();
+                m.fromString(a);
+                rdr.putStrTab(r.bgp.getNhIncons(sfi, m));
                 return;
             }
             if (a.equals("flapstat")) {
