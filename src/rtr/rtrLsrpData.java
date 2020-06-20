@@ -541,6 +541,11 @@ class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
     public addrIPv4 rtrid;
 
     /**
+     * adjacency address
+     */
+    public addrIP peer;
+
+    /**
      * stub flag
      */
     public boolean stub;
@@ -570,13 +575,12 @@ class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
      */
     public int segrou;
 
-    /**
-     * adjacency
-     */
-    public addrIP peer;
-
     public int compare(rtrLsrpDataNeigh o1, rtrLsrpDataNeigh o2) {
-        return o1.rtrid.compare(o1.rtrid, o2.rtrid);
+        int i = o1.rtrid.compare(o1.rtrid, o2.rtrid);
+        if (i != 0) {
+            return i;
+        }
+        return o1.peer.compare(o1.peer, o2.peer);
     }
 
 }

@@ -729,6 +729,21 @@ public class debugger {
     public static boolean ifcDot1ahTraf = false;
 
     /**
+     * ifcQinq1 packets
+     */
+    public static boolean ifcQinq1Traf = false;
+
+    /**
+     * ifcQinq2 packets
+     */
+    public static boolean ifcQinq2Traf = false;
+
+    /**
+     * ifcQinq3 packets
+     */
+    public static boolean ifcQinq3Traf = false;
+
+    /**
      * ifcIsl packets
      */
     public static boolean ifcIslTraf = false;
@@ -1047,6 +1062,9 @@ public class debugger {
         h.add("3 .        dot1q             802.1q vlan");
         h.add("3 .        dot1ad            802.1ad vlan");
         h.add("3 .        dot1ah            802.1ah vlan");
+        h.add("3 .        qinq1             qinq1 vlan");
+        h.add("3 .        qinq2             qinq2 vlan");
+        h.add("3 .        qinq3             qinq3 vlan");
         h.add("3 .        isl               isl vlan");
         h.add("3 .        ethtyp            ethertypes");
         h.add("3 .        isdn              isdn encapsulation");
@@ -1802,6 +1820,18 @@ public class debugger {
             }
             if (s.equals("dot1ah")) {
                 ifcDot1ahTraf = v;
+                return false;
+            }
+            if (s.equals("qinq1")) {
+                ifcQinq1Traf = v;
+                return false;
+            }
+            if (s.equals("qinq2")) {
+                ifcQinq2Traf = v;
+                return false;
+            }
+            if (s.equals("qinq3")) {
+                ifcQinq3Traf = v;
                 return false;
             }
             if (s.equals("isl")) {

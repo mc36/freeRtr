@@ -16,7 +16,12 @@ public class ifcLossDet {
     /**
      * size of header
      */
-    public final static int size = 8;
+    public final static int size = 10;
+
+    /**
+     * type of header
+     */
+    public final static int type = 0x80c0;
 
     /**
      * lost packets
@@ -49,9 +54,9 @@ public class ifcLossDet {
     private int rxRemO;
 
     private int txRemO;
-    
+
     private int rxBlock;
-    
+
     private int txBlock;
 
     private ifcEthTyp upper;
@@ -95,8 +100,9 @@ public class ifcLossDet {
      * @return false on success, true on error
      */
     public synchronized boolean doEncode(packHolder pck) {
-        pck.msbPutD(0, rxMine);
-        pck.msbPutD(4, txMine);
+        pck.msbPutW(0, type);
+        pck.msbPutD(2, rxMine);
+        pck.msbPutD(6, txMine);
         pck.putSkip(size);
         pck.merge2beg();
         txMine++;
@@ -110,12 +116,15 @@ public class ifcLossDet {
      * @return false on success, true on error
      */
     public synchronized boolean doDecode(packHolder pck) {
+        if (pck.msbGetW(0) != type) {
+            return true;
+        }
         if (pck.dataSize() < size) {
             return true;
         }
         rxMine++;
-        rxRem = pck.msbGetD(0);
-        txRem = pck.msbGetD(4);
+        rxRem = pck.msbGetD(2);
+        txRem = pck.msbGetD(6);
         pck.getSkip(size);
         return blocked > 0;
     }
@@ -127,7 +136,7 @@ public class ifcLossDet {
      */
     public synchronized packHolder doSync() {
         packHolder pck = new packHolder(true, true);
-        pck.msbPutW(0, -1);
+        pck.msbPutW(0, type);
         pck.putSkip(2);
         pck.merge2beg();
         pck.ETHsrc.setAddr(myaddr);

@@ -4,6 +4,9 @@ import addr.addrIP;
 import ifc.ifcDot1ad;
 import ifc.ifcDot1ah;
 import ifc.ifcDot1q;
+import ifc.ifcQinq1;
+import ifc.ifcQinq2;
+import ifc.ifcQinq3;
 import ip.ipCor;
 import ip.ipCor4;
 import ip.ipCor6;
@@ -165,6 +168,24 @@ public class tabQos {
                 pck.getSkip(2);
                 b = true;
                 break;
+            case ifcQinq1.type:
+                pck.getSkip(-2);
+                ifcQinq1.parseHeader(pck);
+                pck.getSkip(2);
+                b = true;
+                break;
+            case ifcQinq2.type:
+                pck.getSkip(-2);
+                ifcQinq2.parseHeader(pck);
+                pck.getSkip(2);
+                b = true;
+                break;
+            case ifcQinq3.type:
+                pck.getSkip(-2);
+                ifcQinq3.parseHeader(pck);
+                pck.getSkip(2);
+                b = true;
+                break;
             default:
                 b = true;
                 break;
@@ -277,6 +298,33 @@ public class tabQos {
                 }
                 pck.getSkip(ifcDot1ad.size);
                 ifcDot1ad.createHeader(pck);
+                return;
+            case ifcQinq1.type:
+                i = pck.ETHcos;
+                pck.ETHcos = cls.entry.cosSet.update(i);
+                if (i == pck.ETHcos) {
+                    return;
+                }
+                pck.getSkip(ifcQinq1.size);
+                ifcQinq1.createHeader(pck);
+                return;
+            case ifcQinq2.type:
+                i = pck.ETHcos;
+                pck.ETHcos = cls.entry.cosSet.update(i);
+                if (i == pck.ETHcos) {
+                    return;
+                }
+                pck.getSkip(ifcQinq2.size);
+                ifcQinq2.createHeader(pck);
+                return;
+            case ifcQinq3.type:
+                i = pck.ETHcos;
+                pck.ETHcos = cls.entry.cosSet.update(i);
+                if (i == pck.ETHcos) {
+                    return;
+                }
+                pck.getSkip(ifcQinq3.size);
+                ifcQinq3.createHeader(pck);
                 return;
             default:
                 return;

@@ -10,23 +10,23 @@ import util.logger;
 import util.state;
 
 /**
- * ieee 802.1q protocol
+ * qinq3 protocol
  *
  * @author matecsaba
  */
-public class ifcDot1q extends ifcVlan {
+public class ifcQinq3 extends ifcVlan {
 
     /**
      * ethertype of these packets
      */
-    public final static int type = 0x8100;
+    public final static int type = 0x9300;
 
     /**
      * size of header
      */
     public final static int size = 4;
 
-    private tabGen<ifcDot1qEntry> vLans;
+    private tabGen<ifcQinq3Entry> vLans;
 
     /**
      * parse header
@@ -56,15 +56,30 @@ public class ifcDot1q extends ifcVlan {
         pck.merge2beg();
     }
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
-        return "dot1q on " + lower;
+        return "qinq3 on " + lower;
     }
 
+    /**
+     * register ethertype
+     *
+     * @param ethtyp handler
+     */
     public void reg2ethTyp(ifcEthTyp ethtyp) {
-        ethtyp.addET(type, "dot1q", this);
+        ethtyp.addET(type, "qinq3", this);
         ethtyp.updateET(type, this);
     }
 
+    /**
+     * unregister ethertype
+     *
+     * @param ethtyp handler
+     */
     public void unreg2ethTyp(ifcEthTyp ethtyp) {
         vLans.clear();
         ethtyp.delET(type);
@@ -81,7 +96,7 @@ public class ifcDot1q extends ifcVlan {
         }
         lastState = stat;
         for (int i = 0; i < vLans.size(); i++) {
-            ifcDot1qEntry ntry = vLans.get(i);
+            ifcQinq3Entry ntry = vLans.get(i);
             ntry.upper.setState(stat);
         }
         cntr.stateChange(stat);
@@ -93,7 +108,7 @@ public class ifcDot1q extends ifcVlan {
     public void closeUp() {
         lastState = state.states.close;
         for (int i = 0; i < vLans.size(); i++) {
-            ifcDot1qEntry ntry = vLans.get(i);
+            ifcQinq3Entry ntry = vLans.get(i);
             try {
                 ntry.upper.closeUp();
             } catch (Exception e) {
@@ -116,7 +131,7 @@ public class ifcDot1q extends ifcVlan {
         }
         promiscous = promisc;
         lower.setFilter(promisc);
-        if (debugger.ifcDot1qTraf) {
+        if (debugger.ifcQinq3Traf) {
             logger.debug("set filter to " + promisc);
         }
     }
@@ -124,11 +139,11 @@ public class ifcDot1q extends ifcVlan {
     /**
      * create new multiplexer
      */
-    public ifcDot1q() {
-        if (debugger.ifcDot1qTraf) {
+    public ifcQinq3() {
+        if (debugger.ifcQinq3Traf) {
             logger.debug("started");
         }
-        vLans = new tabGen<ifcDot1qEntry>();
+        vLans = new tabGen<ifcQinq3Entry>();
     }
 
     /**
@@ -156,10 +171,10 @@ public class ifcDot1q extends ifcVlan {
             return;
         }
         pck.getSkip(size);
-        if (debugger.ifcDot1qTraf) {
+        if (debugger.ifcQinq3Traf) {
             logger.debug("rx vlan=" + pck.ETHvlan);
         }
-        ifcDot1qEntry ntry = new ifcDot1qEntry(null, null);
+        ifcQinq3Entry ntry = new ifcQinq3Entry(null, null);
         ntry.vLan = pck.ETHvlan;
         ntry = vLans.find(ntry);
         if (ntry == null) {
@@ -177,13 +192,13 @@ public class ifcDot1q extends ifcVlan {
      * @param ifc interface
      * @return handler
      */
-    public ifcDot1qEntry addVlan(int vl, ifcUp ifc) {
-        if (debugger.ifcDot1qTraf) {
+    public ifcQinq3Entry addVlan(int vl, ifcUp ifc) {
+        if (debugger.ifcQinq3Traf) {
             logger.debug("add vlan=" + vl);
         }
-        ifcDot1qEntry ntry = new ifcDot1qEntry(this, ifc);
+        ifcQinq3Entry ntry = new ifcQinq3Entry(this, ifc);
         ntry.vLan = vl;
-        ifcDot1qEntry old = vLans.add(ntry);
+        ifcQinq3Entry old = vLans.add(ntry);
         if (old != null) {
             return old;
         }
@@ -199,11 +214,11 @@ public class ifcDot1q extends ifcVlan {
      * @param ifc interface
      * @return handler
      */
-    public ifcDot1qEntry updateVlan(int vl, ifcUp ifc) {
-        if (debugger.ifcDot1qTraf) {
+    public ifcQinq3Entry updateVlan(int vl, ifcUp ifc) {
+        if (debugger.ifcQinq3Traf) {
             logger.debug("update vlan=" + vl);
         }
-        ifcDot1qEntry ntry = new ifcDot1qEntry(this, ifc);
+        ifcQinq3Entry ntry = new ifcQinq3Entry(this, ifc);
         ntry.vLan = vl;
         ntry = vLans.find(ntry);
         if (ntry == null) {
@@ -221,10 +236,10 @@ public class ifcDot1q extends ifcVlan {
      * @return interface
      */
     public ifcUp delVlan(int vl) {
-        if (debugger.ifcDot1qTraf) {
+        if (debugger.ifcQinq3Traf) {
             logger.debug("del vlan=" + vl);
         }
-        ifcDot1qEntry ntry = new ifcDot1qEntry(null, null);
+        ifcQinq3Entry ntry = new ifcQinq3Entry(null, null);
         ntry.vLan = vl;
         ntry = vLans.del(ntry);
         if (ntry == null) {
@@ -240,7 +255,7 @@ public class ifcDot1q extends ifcVlan {
 
 }
 
-class ifcDot1qEntry implements ifcDn, Comparator<ifcDot1qEntry> {
+class ifcQinq3Entry implements ifcDn, Comparator<ifcQinq3Entry> {
 
     public int vLan;
 
@@ -248,7 +263,7 @@ class ifcDot1qEntry implements ifcDn, Comparator<ifcDot1qEntry> {
 
     public boolean promiscous;
 
-    private ifcDot1q lower;
+    private ifcQinq3 lower;
 
     public counter cntr = new counter();
 
@@ -268,7 +283,7 @@ class ifcDot1qEntry implements ifcDn, Comparator<ifcDot1qEntry> {
         return lower.vlnState();
     }
 
-    public ifcDot1qEntry(ifcDot1q parent, ifcUp server) {
+    public ifcQinq3Entry(ifcQinq3 parent, ifcUp server) {
         lower = parent;
         upper = server;
     }
@@ -290,7 +305,7 @@ class ifcDot1qEntry implements ifcDn, Comparator<ifcDot1qEntry> {
         lower.setFilter(promisc);
     }
 
-    public int compare(ifcDot1qEntry v1, ifcDot1qEntry v2) {
+    public int compare(ifcQinq3Entry v1, ifcQinq3Entry v2) {
         if (v1.vLan < v2.vLan) {
             return -1;
         }
@@ -303,8 +318,8 @@ class ifcDot1qEntry implements ifcDn, Comparator<ifcDot1qEntry> {
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         pck.ETHvlan = vLan;
-        ifcDot1q.createHeader(pck);
-        if (debugger.ifcDot1qTraf) {
+        ifcQinq3.createHeader(pck);
+        if (debugger.ifcQinq3Traf) {
             logger.debug("tx vlan=" + vLan);
         }
         lower.vlnTxPack(pck);

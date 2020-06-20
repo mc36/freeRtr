@@ -1,4 +1,4 @@
-description ethernet isl encapsulation
+description ethernet qinq1 encapsulation
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -7,7 +7,7 @@ vrf def v1
  rd 1:1
  exit
 int eth1
- enc isl
+ enc qinq1
  exit
 int eth1.11
  vrf for v1
@@ -23,7 +23,7 @@ vrf def v1
  rd 1:1
  exit
 int eth1
- enc isl
+ enc qinq1
  exit
 int eth1.11
  vrf for v1

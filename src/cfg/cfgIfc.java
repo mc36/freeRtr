@@ -76,6 +76,9 @@ import ifc.ifcLacp;
 import ifc.ifcNshFwd;
 import ifc.ifcNshXcn;
 import ifc.ifcPtp;
+import ifc.ifcQinq1;
+import ifc.ifcQinq2;
+import ifc.ifcQinq3;
 import ifc.ifcRandom;
 import ifc.ifcThread;
 import ifc.ifcUdld;
@@ -2743,6 +2746,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             initVlan(new ifcDot1ah());
             return false;
         }
+        if (a.equals("qinq1")) {
+            initVlan(new ifcQinq1());
+            return false;
+        }
+        if (a.equals("qinq2")) {
+            initVlan(new ifcQinq2());
+            return false;
+        }
+        if (a.equals("qinq3")) {
+            initVlan(new ifcQinq3());
+            return false;
+        }
         if (a.equals("isl")) {
             initVlan(new ifcIsl());
             return false;
@@ -5134,6 +5149,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 .     dot1q                       set to 802.1q encapsulation");
         l.add("2 .     dot1ad                      set to 802.1ad encapsulation");
         l.add("2 .     dot1ah                      set to 802.1ah encapsulation");
+        l.add("2 .     qinq1                       set to qinq1 encapsulation");
+        l.add("2 .     qinq2                       set to qinq2 encapsulation");
+        l.add("2 .     qinq3                       set to qinq3 encapsulation");
         l.add("1 2   hdlc                          hdlc parameters on the interface");
         ifcHdlc.getHelp(l);
         l.add("1 2   isdn                          isdn parameters on the interface");

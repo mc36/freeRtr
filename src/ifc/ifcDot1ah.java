@@ -247,6 +247,12 @@ public class ifcDot1ah extends ifcVlan {
         return ntry;
     }
 
+    /**
+     * delete vlan
+     *
+     * @param vl vlan id
+     * @return interface
+     */
     public ifcUp delVlan(int vl) {
         if (debugger.ifcDot1ahTraf) {
             logger.debug("del vlan=" + vl);

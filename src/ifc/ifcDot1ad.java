@@ -19,7 +19,7 @@ public class ifcDot1ad extends ifcVlan {
     /**
      * ethertype of these packets
      */
-    public final static int type = 0x88a8; // old: 0x9100;
+    public final static int type = 0x88a8;
 
     /**
      * size of header

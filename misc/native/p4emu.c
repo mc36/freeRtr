@@ -152,6 +152,37 @@ int neigh_compare(void *ptr1, void *ptr2) {
     return 0;
 }
 
+
+struct vlan_entry {
+    int id;
+    int vlan;
+    int port;
+};
+
+struct table_head vlanin_table;
+
+struct table_head vlanout_table;
+
+int vlanin_compare(void *ptr1, void *ptr2) {
+    struct vlan_entry *ntry1 = ptr1;
+    struct vlan_entry *ntry2 = ptr2;
+    if (ntry1->port < ntry2->port) return -1;
+    if (ntry1->port > ntry2->port) return +1;
+    if (ntry1->vlan < ntry2->vlan) return -1;
+    if (ntry1->vlan > ntry2->vlan) return +1;
+    return 0;
+}
+
+int vlanout_compare(void *ptr1, void *ptr2) {
+    struct vlan_entry *ntry1 = ptr1;
+    struct vlan_entry *ntry2 = ptr2;
+    if (ntry1->id < ntry2->id) return -1;
+    if (ntry1->id > ntry2->id) return +1;
+    return 0;
+}
+
+
+
 void send2cpu(unsigned char *bufD, int bufS, int port) {
     put16bits(bufD, preBuff - 2, port);
     sendto(ifaceSock[0], &bufD[preBuff - 2], bufS + 2, 0, (struct sockaddr *) &addrIfc[0], sizeof (addrIfc[0]));
@@ -205,13 +236,16 @@ void doPortLoop(int * param) {
     struct route4_entry route4_ntry;
     struct route6_entry route6_ntry;
     struct neigh_entry neigh_ntry;
+    struct vlan_entry vlan_ntry;
     struct mpls_entry *mpls_res;
     struct portvrf_entry *portvrf_res;
     struct route4_entry *route4_res;
     struct route6_entry *route6_res;
     struct neigh_entry *neigh_res;
+    struct vlan_entry *vlan_res;
     int index;
     int label;
+    int prt;
     for (;;) {
         bufS = sizeof (bufD) - preBuff;
         bufS = recvfrom(ifaceSock[port], &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
@@ -220,6 +254,8 @@ void doPortLoop(int * param) {
         packRx[port]++;
         byteRx[port] += bufS;
         bufP += 6 * 2; // dmac, smac
+        prt = port;
+ethtyp_rx:
         ethtyp = get16bits(bufD, bufP);
         bufP += 2;
         switch (ethtyp) {
@@ -275,21 +311,42 @@ nexthop_tx:
                         index = table_find(&neigh_table, &neigh_ntry);
                         if (index < 0) break;
                         neigh_res = table_get(&neigh_table, index);
-                        if (neigh_res->port >= ports) break;
+                        prt = neigh_res->port;
+                        vlan_ntry.id = prt;
+                        index = table_find(&vlanout_table, &vlan_ntry);
+                        if (index >= 0) {
+                            vlan_res = table_get(&vlanout_table, index);
+                            bufP -= 2;
+                            put16bits(bufD, bufP, vlan_res->vlan);
+                            bufP -= 2;
+                            put16bits(bufD, bufP, 0x9100);
+                            prt = vlan_res->port;
+                        }
+                        if (prt >= ports) break;
                         bufP -= 6;
                         memmove(&bufD[bufP], &neigh_res->smac, 6);
                         bufP -= 6;
                         memmove(&bufD[bufP], &neigh_res->dmac, 6);
-                        sendto(ifaceSock[neigh_res->port], &bufD[bufP], bufS - bufP + preBuff, 0, (struct sockaddr *) &addrIfc[neigh_res->port], sizeof (addrIfc[neigh_res->port]));
-                        packTx[neigh_res->port]++;
-                        byteTx[neigh_res->port] += bufS;
+                        sendto(ifaceSock[prt], &bufD[bufP], bufS - bufP + preBuff, 0, (struct sockaddr *) &addrIfc[prt], sizeof (addrIfc[prt]));
+                        packTx[prt]++;
+                        byteTx[prt] += bufS;
                         break;
                      default:
                         break;
                 }
                 break;
+            case 0x9100:
+                vlan_ntry.port = prt;
+                vlan_ntry.vlan = get16bits(bufD, bufP) & 0xfff;
+                bufP += 2;
+                index = table_find(&vlanin_table, &vlan_ntry);
+                if (index < 0) break;
+                vlan_res = table_get(&vlanin_table, index);
+                prt = vlan_res->id;
+                goto ethtyp_rx;
+                break;
             case 0x800:
-                portvrf_ntry.port = port;
+                portvrf_ntry.port = prt;
                 index = table_find(&portvrf_table, &portvrf_ntry);
                 if (index < 0) break;
                 portvrf_res = table_get(&portvrf_table, index);
@@ -330,7 +387,7 @@ ipv4_rx:
                 }
                 break;
             case 0x86dd:
-                portvrf_ntry.port = port;
+                portvrf_ntry.port = prt;
                 index = table_find(&portvrf_table, &portvrf_ntry);
                 if (index < 0) break;
                 portvrf_res = table_get(&portvrf_table, index);
@@ -504,7 +561,11 @@ void doSockLoop() {
         memset(&route6_ntry, 0, sizeof(route6_ntry));
         struct neigh_entry neigh_ntry;
         memset(&neigh_ntry, 0, sizeof(neigh_ntry));
-        if (strcmp(arg[0], "quit") == 0) break;
+        struct vlan_entry vlan_ntry;
+        memset(&vlan_ntry, 0, sizeof(vlan_ntry));
+        if (strcmp(arg[0], "quit") == 0) {
+            break;
+        }
         if (strcmp(arg[0], "mylabel4") == 0) {
             mpls_ntry.label = atoi(arg[2]);
             mpls_ntry.vrf = atoi(arg[3]);
@@ -559,6 +620,14 @@ void doSockLoop() {
             portvrf_ntry.port = atoi(arg[2]);
             portvrf_ntry.vrf = atoi(arg[3]);
             if (del == 0) table_del(&portvrf_table, &portvrf_ntry); else table_add(&portvrf_table, &portvrf_ntry);
+            continue;
+        }
+        if (strcmp(arg[0], "portvlan") == 0) {
+            vlan_ntry.id= atoi(arg[2]);
+            vlan_ntry.port = atoi(arg[3]);
+            vlan_ntry.vlan = atoi(arg[4]);
+            if (del == 0) table_del(&vlanin_table, &vlan_ntry); else table_add(&vlanin_table, &vlan_ntry);
+            if (del == 0) table_del(&vlanout_table, &vlan_ntry); else table_add(&vlanout_table, &vlan_ntry);
             continue;
         }
         if (strcmp(arg[0], "myaddr4") == 0) {
@@ -725,6 +794,7 @@ doer:
             printf("4 - display ipv4 table\n");
             printf("6 - display ipv6 table\n");
             printf("n - display nexthop table\n");
+            printf("v - display vlan table\n");
             break;
         case 'Q':
         case 'q':
@@ -761,6 +831,14 @@ doer:
                 mac2str(ntry->smac, buf);
                 mac2str(ntry->dmac, buf2);
                 printf("%10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, &buf, &buf2);
+            }
+            break;
+        case 'v':
+        case 'V':
+            printf("        id       vlan       port\n");
+            for (int i=0; i<vlanin_table.size; i++) {
+                struct vlan_entry *ntry = table_get(&vlanin_table, i);
+                printf("%10i %10i %10i\n", ntry->id, ntry->vlan, ntry->port);
             }
             break;
         case '4':
@@ -812,6 +890,8 @@ int main(int argc, char **argv) {
     table_init(&route4_table, sizeof(struct route4_entry), &route4_compare);
     table_init(&route6_table, sizeof(struct route6_entry), &route6_compare);
     table_init(&neigh_table, sizeof(struct neigh_entry), &neigh_compare);
+    table_init(&vlanin_table, sizeof(struct vlan_entry), &vlanin_compare);
+    table_init(&vlanout_table, sizeof(struct vlan_entry), &vlanout_compare);
 
     int port = atoi(argv[2]);
     struct sockaddr_in addr;

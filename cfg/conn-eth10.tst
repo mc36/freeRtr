@@ -1,4 +1,4 @@
-description static arp/nd entry
+description ethernet isl encapsulation
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -7,12 +7,12 @@ vrf def v1
  rd 1:1
  exit
 int eth1
- macaddr 0000.0000.1111
+ enc isl
+ exit
+int eth1.11
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
- ipv4 host-static 1.1.1.2 0000.0000.2222
- ipv6 host-static 1234::2 0000.0000.2222
  exit
 !
 
@@ -23,12 +23,12 @@ vrf def v1
  rd 1:1
  exit
 int eth1
- macaddr 0000.0000.2222
+ enc isl
+ exit
+int eth1.11
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
- ipv4 host-static 1.1.1.1 0000.0000.1111
- ipv6 host-static 1234::1 0000.0000.1111
  exit
 !
 
