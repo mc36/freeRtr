@@ -4,8 +4,6 @@ import addr.addrIP;
 import cfg.cfgAll;
 import clnt.clntDns;
 import clnt.clntProxy;
-import java.util.ArrayList;
-import java.util.List;
 import pipe.pipeProgress;
 import pipe.pipeSide;
 import sec.secClient;

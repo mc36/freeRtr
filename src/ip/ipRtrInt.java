@@ -5,7 +5,6 @@ import java.util.Comparator;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
-import addr.addrPrefix;
 import cfg.cfgIfc;
 import tab.tabRouteEntry;
 import tab.tabListing;

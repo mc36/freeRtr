@@ -598,9 +598,9 @@ public class ipMpls implements ifcUp {
                 if (debugger.ifcNshEvnt) {
                     logger.debug("rx sp=" + pck.NSHsp + " si=" + pck.NSHsi + " prt=" + pck.IPprt + " ttl=" + pck.NSHttl + " meta=" + pck.NSHmdt + "," + pck.NSHmdv.length);
                 }
-                ntry = new tabNshNtry(pck.NSHsp, pck.NSHsi);
-                ntry = tabNshNtry.services.find(ntry);
-                if (ntry == null) {
+                tabNshNtry trg = new tabNshNtry(pck.NSHsp, pck.NSHsi);
+                trg = tabNshNtry.services.find(trg);
+                if (trg == null) {
                     ntry.cntr.drop(pck, counter.reasons.notInTab);
                     return;
                 }
