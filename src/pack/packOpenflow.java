@@ -782,7 +782,6 @@ public class packOpenflow {
      * @return matcher
      */
     public byte[] getMatchBuf(packHolder pck) {
-        packHolder res = new packHolder(true, true);
         int typ = pck.msbGetW(0);
         int len = pck.msbGetW(2);
         pck.getSkip(4);

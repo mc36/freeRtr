@@ -4,7 +4,6 @@ import addr.addrIP;
 import cfg.cfgAll;
 import pipe.pipeLine;
 import pipe.pipeSide;
-import pipe.pipeConnect;
 import serv.servGeneric;
 import serv.servIrc;
 import user.userExec;

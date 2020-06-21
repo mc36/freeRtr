@@ -3229,7 +3229,6 @@ public class userExec {
     }
 
     private void doView() {
-        pipeSide pip = getShPipe();
         List<String> lst = new ArrayList<String>();
         packText pt = new packText(getShPipe());
         pt.recvAll(lst);
