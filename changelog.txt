@@ -8893,3 +8893,7 @@ qc pass: pvrp default address suppression
 qc pass: pvrp address unsuppression
 ---------------------------------- 2020-06-14 17:24:25
 qc pass: udp forwarder server
+---------------------------------- 2020-06-20 17:54:33
+qc pass: ethernet qinq1 encapsulation
+qc pass: ethernet qinq2 encapsulation
+qc pass: ethernet qinq3 encapsulation

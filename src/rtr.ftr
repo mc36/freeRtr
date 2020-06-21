@@ -69,6 +69,9 @@ qc pass: ethernet dot1q encapsulation
 qc pass: ethernet qinq encapsulation
 qc pass: ethernet dot1ad encapsulation
 qc pass: ethernet dot1ah encapsulation
+qc pass: ethernet qinq1 encapsulation
+qc pass: ethernet qinq2 encapsulation
+qc pass: ethernet qinq3 encapsulation
 qc pass: ethernet isl encapsulation
 qc pass: proxy remote arp/nd
 qc pass: proxy local arp/nd

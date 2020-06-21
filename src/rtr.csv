@@ -1,6 +1,6 @@
 file;code;test;stage;command
 -;-;freeRouter v20.6.20-testing, done by cs@nop.;-;-
--;-;2020-06-20 14:32:42, took 09:51:34 on 1716 cases, 0 failed, 4 traces, 17 retries;-;-
+-;-;2020-06-21 03:20:06, took 09:25:32 on 1719 cases, 0 failed, 0 traces, 18 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -73,11 +73,14 @@ conn-eth03.tst;0;ethernet dot1q encapsulation;successfully;finished
 conn-eth04.tst;0;ethernet qinq encapsulation;successfully;finished
 conn-eth05.tst;0;ethernet dot1ad encapsulation;successfully;finished
 conn-eth06.tst;0;ethernet dot1ah encapsulation;successfully;finished
-conn-eth07.tst;0;ethernet isl encapsulation;successfully;finished
-conn-eth08.tst;0;proxy remote arp/nd;successfully;finished
-conn-eth09.tst;0;proxy local arp/nd;successfully;finished
-conn-eth10.tst;0;static arp/nd entry;successfully;finished
-conn-eth11.tst;0;loss detection;successfully;finished
+conn-eth07.tst;0;ethernet qinq1 encapsulation;successfully;finished
+conn-eth08.tst;0;ethernet qinq2 encapsulation;successfully;finished
+conn-eth09.tst;0;ethernet qinq3 encapsulation;successfully;finished
+conn-eth10.tst;0;ethernet isl encapsulation;successfully;finished
+conn-eth11.tst;0;proxy remote arp/nd;successfully;finished
+conn-eth12.tst;0;proxy local arp/nd;successfully;finished
+conn-eth13.tst;0;static arp/nd entry;successfully;finished
+conn-eth14.tst;0;loss detection;successfully;finished
 conn-etherip01.tst;0;etherip over ipv4;successfully;finished
 conn-etherip02.tst;0;etherip over ipv6;successfully;finished
 conn-etherip03.tst;0;etherip over loopback;successfully;finished
