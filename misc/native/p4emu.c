@@ -55,7 +55,9 @@ int mpls_compare(void *ptr1, void *ptr2) {
 
 struct portvrf_entry {
     int port;
+    int command;    // 1=vrf, 2=bridge
     int vrf;
+    int bridge;
 };
 
 struct table_head portvrf_table;
@@ -144,6 +146,35 @@ int neigh_compare(void *ptr1, void *ptr2) {
     struct neigh_entry *ntry2 = ptr2;
     if (ntry1->id < ntry2->id) return -1;
     if (ntry1->id > ntry2->id) return +1;
+    return 0;
+}
+
+
+struct bridge_entry {
+    int id;
+    int port;
+    unsigned char mac[6];
+};
+
+struct table_head bridge_table;
+
+int bridge_compare(void *ptr1, void *ptr2) {
+    struct bridge_entry *ntry1 = ptr1;
+    struct bridge_entry *ntry2 = ptr2;
+    if (ntry1->id < ntry2->id) return -1;
+    if (ntry1->id > ntry2->id) return +1;
+    if (ntry1->mac[0] < ntry2->mac[0]) return -1;
+    if (ntry1->mac[0] > ntry2->mac[0]) return +1;
+    if (ntry1->mac[1] < ntry2->mac[1]) return -1;
+    if (ntry1->mac[1] > ntry2->mac[1]) return +1;
+    if (ntry1->mac[2] < ntry2->mac[2]) return -1;
+    if (ntry1->mac[2] > ntry2->mac[2]) return +1;
+    if (ntry1->mac[3] < ntry2->mac[3]) return -1;
+    if (ntry1->mac[3] > ntry2->mac[3]) return +1;
+    if (ntry1->mac[4] < ntry2->mac[4]) return -1;
+    if (ntry1->mac[4] > ntry2->mac[4]) return +1;
+    if (ntry1->mac[5] < ntry2->mac[5]) return -1;
+    if (ntry1->mac[5] > ntry2->mac[5]) return +1;
     return 0;
 }
 
@@ -248,12 +279,14 @@ void doPortLoop(int * param) {
     struct route6_entry route6_ntry;
     struct neigh_entry neigh_ntry;
     struct vlan_entry vlan_ntry;
+    struct bridge_entry bridge_ntry;
     struct mpls_entry *mpls_res;
     struct portvrf_entry *portvrf_res;
     struct route4_entry *route4_res;
     struct route6_entry *route6_res;
     struct neigh_entry *neigh_res;
     struct vlan_entry *vlan_res;
+    struct bridge_entry *bridge_res;
     int index;
     int label;
     int prt;
@@ -366,6 +399,7 @@ nexthop_tx:
                 index = table_find(&portvrf_table, &portvrf_ntry);
                 if (index < 0) break;
                 portvrf_res = table_get(&portvrf_table, index);
+                if (portvrf_res->command == 2) goto bridge;
                 route4_ntry.vrf = portvrf_res->vrf;
 ipv4_rx:
                 route4_ntry.addr = get32bits(bufD, bufP + 16);
@@ -407,6 +441,7 @@ ipv4_rx:
                 index = table_find(&portvrf_table, &portvrf_ntry);
                 if (index < 0) break;
                 portvrf_res = table_get(&portvrf_table, index);
+                if (portvrf_res->command == 2) goto bridge;
                 route6_ntry.vrf = portvrf_res->vrf;
 ipv6_rx:
                 route6_ntry.addr1 = get32bits(bufD, bufP + 24);
@@ -467,6 +502,34 @@ ipv6_hit:
                     }
                     break;
                 }
+                break;
+            case 0x65580000:
+bridge:
+                bridge_ntry.id = portvrf_res->bridge;
+                memmove(&bridge_ntry.mac, &bufD[preBuff], 6);
+                index = table_find(&bridge_table, &bridge_ntry);
+                if (index < 0) goto cpu;
+                bridge_res = table_get(&bridge_table, index);
+                bufP -= 2;
+                prt = bridge_res->port;
+                vlan_ntry.id = prt;
+                index = table_find(&vlanout_table, &vlan_ntry);
+                if (index >= 0) {
+                    vlan_res = table_get(&vlanout_table, index);
+                    bufP -= 2;
+                    put16bits(bufD, bufP, vlan_res->vlan);
+                    bufP -= 2;
+                    put16bits(bufD, bufP, 0x8100);
+                    prt = vlan_res->port;
+                    vlan_res->pack++;
+                    vlan_res->byte += bufS;
+                }
+                if (prt >= ports) break;
+                bufP -= 12;
+                memmove(&bufD[bufP], &bufD[preBuff], 12);
+                pcap_sendpacket(ifacePcap[prt], &bufD[bufP], bufS - bufP + preBuff);
+                packTx[prt]++;
+                byteTx[prt] += bufS;
                 break;
             default:
 cpu:
@@ -589,6 +652,8 @@ void doSockLoop() {
         memset(&neigh_ntry, 0, sizeof(neigh_ntry));
         struct vlan_entry vlan_ntry;
         memset(&vlan_ntry, 0, sizeof(vlan_ntry));
+        struct bridge_entry bridge_ntry;
+        memset(&bridge_ntry, 0, sizeof(bridge_ntry));
         if (strcmp(arg[0], "quit") == 0) {
             break;
         }
@@ -643,9 +708,24 @@ void doSockLoop() {
             continue;
         }
         if (strcmp(arg[0], "portvrf") == 0) {
+            portvrf_ntry.command = 1;
             portvrf_ntry.port = atoi(arg[2]);
             portvrf_ntry.vrf = atoi(arg[3]);
             if (del == 0) table_del(&portvrf_table, &portvrf_ntry); else table_add(&portvrf_table, &portvrf_ntry);
+            continue;
+        }
+        if (strcmp(arg[0], "portbridge") == 0) {
+            portvrf_ntry.command = 2;
+            portvrf_ntry.port = atoi(arg[2]);
+            portvrf_ntry.bridge = atoi(arg[3]);
+            if (del == 0) table_del(&portvrf_table, &portvrf_ntry); else table_add(&portvrf_table, &portvrf_ntry);
+            continue;
+        }
+        if (strcmp(arg[0], "bridgemac") == 0) {
+            bridge_ntry.id = atoi(arg[2]);
+            str2mac(bridge_ntry.mac, arg[3]);
+            bridge_ntry.port = atoi(arg[4]);
+            if (del == 0) table_del(&bridge_table, &bridge_ntry); else table_add(&bridge_table, &bridge_ntry);
             continue;
         }
         if (strcmp(arg[0], "portvlan") == 0) {
@@ -816,6 +896,7 @@ doer:
             printf("q - exit process\n");
             printf("i - interface counters\n");
             printf("p - display portvrf table\n");
+            printf("b - display bridge table\n");
             printf("m - display mpls table\n");
             printf("4 - display ipv4 table\n");
             printf("6 - display ipv6 table\n");
@@ -843,10 +924,10 @@ doer:
             break;
         case 'p':
         case 'P':
-            printf("      port        vrf\n");
+            printf("      port cmd        vrf     bridge\n");
             for (int i=0; i<portvrf_table.size; i++) {
                 struct portvrf_entry *ntry = table_get(&portvrf_table, i);
-                printf("%10i %10i\n", ntry->port, ntry->vrf);
+                printf("%10i %3i %10i %10i\n", ntry->port, ntry->command, ntry->vrf, ntry->bridge);
             }
             break;
         case 'n':
@@ -857,6 +938,15 @@ doer:
                 mac2str(ntry->smac, buf);
                 mac2str(ntry->dmac, buf2);
                 printf("%10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, &buf, &buf2);
+            }
+            break;
+        case 'b':
+        case 'B':
+            printf("    bridge               mac       port\n");
+            for (int i=0; i<bridge_table.size; i++) {
+                struct bridge_entry *ntry = table_get(&bridge_table, i);
+                mac2str(ntry->mac, buf);
+                printf("%10i %s %10i\n", ntry->id, buf, ntry->port);
             }
             break;
         case 'v':
@@ -919,6 +1009,7 @@ int main(int argc, char **argv) {
     table_init(&neigh_table, sizeof(struct neigh_entry), &neigh_compare);
     table_init(&vlanin_table, sizeof(struct vlan_entry), &vlanin_compare);
     table_init(&vlanout_table, sizeof(struct vlan_entry), &vlanout_compare);
+    table_init(&bridge_table, sizeof(struct bridge_entry), &bridge_compare);
 
     int port = atoi(argv[2]);
     struct sockaddr_in addr;
