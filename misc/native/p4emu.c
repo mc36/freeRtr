@@ -4,11 +4,8 @@
 #include <string.h>
 #include <netinet/in.h>
 #include <pthread.h>
+#include <pcap.h>
 #include <unistd.h>
-#include <linux/if_ether.h>
-#include <linux/if.h>
-#include <linux/if_packet.h>
-#include <sys/ioctl.h>
 #include "utils.h"
 #include "table.h"
 
@@ -20,9 +17,7 @@ int commandSock;
 pthread_t threadRaw[maxPorts];
 char *ifaceName[maxPorts];
 int ifaceId[maxPorts];
-int ifaceIndex[maxPorts];
-int ifaceSock[maxPorts];
-struct sockaddr_ll addrIfc[maxPorts];
+pcap_t *ifacePcap[maxPorts];
 long int byteRx[maxPorts];
 long int packRx[maxPorts];
 long int byteTx[maxPorts];
@@ -187,7 +182,7 @@ int vlanout_compare(void *ptr1, void *ptr2) {
 
 void send2cpu(unsigned char *bufD, int bufS, int port) {
     put16bits(bufD, preBuff - 2, port);
-    sendto(ifaceSock[0], &bufD[preBuff - 2], bufS + 2, 0, (struct sockaddr *) &addrIfc[0], sizeof (addrIfc[0]));
+    pcap_sendpacket(ifacePcap[0], &bufD[preBuff - 2], bufS + 2);
     packTx[0]++;
     byteTx[0] += bufS + 2;
 }
@@ -205,9 +200,10 @@ int masks[] = {
 };
 
 
-#ifdef basicLoop
 void doBasicLoop(int * param) {
     int port = *param;
+    struct pcap_pkthdr head;
+    const unsigned char *pack;
     unsigned char bufD[16384];
     int bufS;
     struct sockaddr_in addrTmp;
@@ -216,13 +212,14 @@ void doBasicLoop(int * param) {
     struct vlan_entry *vlan_res;
     int index;
     for (;;) {
-        bufS = sizeof (bufD) - preBuff;
-        bufS = recvfrom(ifaceSock[port], &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
+        pack = pcap_next(ifacePcap[port], &head);        
+        bufS = head.caplen;
         if (bufS < 0) break;
+        memmove(&bufD[preBuff], pack, bufS);
         packRx[port]++;
         byteRx[port] += bufS;
         send2cpu(bufD, bufS, port);
-        if (get16bits(bufD, preBuff + 12) != 0x9100) continue;
+        if (get16bits(bufD, preBuff + 12) != 0x8100) continue;
         vlan_ntry.port = port;
         vlan_ntry.vlan = get16bits(bufD, preBuff + 14) & 0xfff;
         index = table_find(&vlanin_table, &vlan_ntry);
@@ -234,10 +231,11 @@ void doBasicLoop(int * param) {
     err("port thread exited");
 }
 
-#else
 
 void doPortLoop(int * param) {
     int port = *param;
+    struct pcap_pkthdr head;
+    const unsigned char *pack;
     unsigned char bufD[16384];
     int bufS;
     int bufP;
@@ -260,10 +258,11 @@ void doPortLoop(int * param) {
     int label;
     int prt;
     for (;;) {
-        bufS = sizeof (bufD) - preBuff;
-        bufS = recvfrom(ifaceSock[port], &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
-        bufP = preBuff;
+        pack = pcap_next(ifacePcap[port], &head);        
+        bufS = head.caplen;
         if (bufS < 0) break;
+        memmove(&bufD[preBuff], pack, bufS);
+        bufP = preBuff;
         packRx[port]++;
         byteRx[port] += bufS;
         bufP += 6 * 2; // dmac, smac
@@ -332,7 +331,7 @@ nexthop_tx:
                             bufP -= 2;
                             put16bits(bufD, bufP, vlan_res->vlan);
                             bufP -= 2;
-                            put16bits(bufD, bufP, 0x9100);
+                            put16bits(bufD, bufP, 0x8100);
                             prt = vlan_res->port;
                             vlan_res->pack++;
                             vlan_res->byte += bufS;
@@ -342,7 +341,7 @@ nexthop_tx:
                         memmove(&bufD[bufP], &neigh_res->smac, 6);
                         bufP -= 6;
                         memmove(&bufD[bufP], &neigh_res->dmac, 6);
-                        sendto(ifaceSock[prt], &bufD[bufP], bufS - bufP + preBuff, 0, (struct sockaddr *) &addrIfc[prt], sizeof (addrIfc[prt]));
+                        pcap_sendpacket(ifacePcap[prt], &bufD[bufP], bufS - bufP + preBuff);
                         packTx[prt]++;
                         byteTx[prt] += bufS;
                         break;
@@ -350,7 +349,7 @@ nexthop_tx:
                         break;
                 }
                 break;
-            case 0x9100:
+            case 0x8100:
                 vlan_ntry.port = prt;
                 vlan_ntry.vlan = get16bits(bufD, bufP) & 0xfff;
                 bufP += 2;
@@ -478,9 +477,10 @@ cpu:
     err("port thread exited");
 }
 
-#endif
 
 void doHostLoop() {
+    struct pcap_pkthdr head;
+    const unsigned char *pack;
     unsigned char bufD[16384];
     int bufS;
     struct sockaddr_in addrTmp;
@@ -490,17 +490,18 @@ void doHostLoop() {
     int index;
     int prt;
     for (;;) {
-        bufS = sizeof (bufD) - preBuff;
-        bufS = recvfrom(ifaceSock[0], &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
+        pack = pcap_next(ifacePcap[0], &head);        
+        bufS = head.caplen;
         if (bufS < 0) break;
+        memmove(&bufD[preBuff], pack, bufS);
         packRx[0]++;
         byteRx[0] += bufS;
         prt = get16bits(bufD, preBuff);
         if (prt >= ports) continue;
-        sendto(ifaceSock[prt], &bufD[preBuff + 2], bufS - 2, 0, (struct sockaddr *) &addrIfc[prt], sizeof (addrIfc[prt]));
+        pcap_sendpacket(ifacePcap[prt], &bufD[preBuff + 2], bufS - 2);
         packTx[prt]++;
         byteTx[prt] += bufS - 2;
-        if (get16bits(bufD, preBuff + 14) != 0x9100) continue;
+        if (get16bits(bufD, preBuff + 14) != 0x8100) continue;
         vlan_ntry.port = prt;
         vlan_ntry.vlan = get16bits(bufD, preBuff + 16) & 0xfff;
         index = table_find(&vlanin_table, &vlan_ntry);
@@ -516,18 +517,10 @@ void doHostLoop() {
 void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
-    struct ifreq ifr;
-    int needed = IFF_RUNNING | IFF_UP;
-    int res;
     for (;;) {
         sleep(1);
         for (int i = 0; i < ports; i++) {
             fprintf(commands, "counter %i %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i]);
-            memset(&ifr, 0, sizeof (ifr));
-            strcpy(ifr.ifr_name, ifaceName[i]);
-            if (ioctl(ifaceSock[i], SIOCGIFFLAGS, &ifr) < 0) continue;
-            if ((ifr.ifr_flags & needed) == needed) res = 1; else res = 0;
-            fprintf(commands, "state %i %i\r\n", i, res);
         }
         for (int i=0; i<vlanin_table.size; i++) {
             struct vlan_entry *intry = table_get(&vlanin_table, i);
@@ -906,6 +899,7 @@ doer:
 
 
 int main(int argc, char **argv) {
+    unsigned char errbuf[PCAP_ERRBUF_SIZE + 1];
 
     ports = 0;
     for (int i=3; i < argc; i++) {
@@ -939,23 +933,13 @@ int main(int argc, char **argv) {
 
     for (int i=0; i < ports; i++) {
         printf("opening interface %s.\n", ifaceName[i]);
-        if ((ifaceSock[i] = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL))) < 0) err("unable to open socket");
-        struct ifreq ifr;
-        memset(&ifr, 0, sizeof (ifr));
-        strcpy(ifr.ifr_name, ifaceName[i]);
-        if (ioctl(ifaceSock[i], SIOCGIFINDEX, &ifr) < 0) err("unable to get ifcidx");
-        ifaceIndex[i] = ifr.ifr_ifindex;
-        memset(&addrIfc[i], 0, sizeof (addrIfc[i]));
-        addrIfc[i].sll_family = AF_PACKET;
-        addrIfc[i].sll_ifindex = ifaceIndex[i];
-        addrIfc[i].sll_protocol = htons(ETH_P_ALL);
-        if (bind(ifaceSock[i], (struct sockaddr *) &addrIfc[i], sizeof (addrIfc[i])) < 0) err("failed to bind socket");
-        addrIfc[i].sll_pkttype = PACKET_OUTGOING;
-        struct packet_mreq pmr;
-        memset(&pmr, 0, sizeof (pmr));
-        pmr.mr_ifindex = ifaceIndex[i];
-        pmr.mr_type = PACKET_MR_PROMISC;
-        if (setsockopt(ifaceSock[i], SOL_PACKET, PACKET_ADD_MEMBERSHIP, &pmr, sizeof (pmr)) < 0) err("failed to set promisc");
+        ifacePcap[i] = pcap_create(ifaceName[i], errbuf);
+        if (ifacePcap[i] == NULL) err("unable to open interface");
+        if (pcap_set_snaplen(ifacePcap[i], 65536) < 0) err("unable to set snaplen");
+        if (pcap_set_promisc(ifacePcap[i], 1) < 0) err("unable to set promisc");
+        if (pcap_set_immediate_mode(ifacePcap[i], 1) < 0) err("unable to set immediate");
+        if (pcap_activate(ifacePcap[i]) < 0) err("activation failed");
+        if (pcap_setdirection(ifacePcap[i], PCAP_D_IN) < 0) err("unable to set direction");
         byteRx[i] = 0;
         packRx[i] = 0;
         byteTx[i] = 0;
