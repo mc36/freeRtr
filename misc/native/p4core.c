@@ -119,14 +119,14 @@ int route6_compare(void *ptr1, void *ptr2) {
     if (ntry1->vrf > ntry2->vrf) return +1;
     if (ntry1->mask < ntry2->mask) return -1;
     if (ntry1->mask > ntry2->mask) return +1;
-    if (ntry1->addr1 < ntry2->addr1) return -1;
-    if (ntry1->addr1 > ntry2->addr1) return +1;
-    if (ntry1->addr2 < ntry2->addr2) return -1;
-    if (ntry1->addr2 > ntry2->addr2) return +1;
-    if (ntry1->addr3 < ntry2->addr3) return -1;
-    if (ntry1->addr3 > ntry2->addr3) return +1;
     if (ntry1->addr4 < ntry2->addr4) return -1;
     if (ntry1->addr4 > ntry2->addr4) return +1;
+    if (ntry1->addr3 < ntry2->addr3) return -1;
+    if (ntry1->addr3 > ntry2->addr3) return +1;
+    if (ntry1->addr2 < ntry2->addr2) return -1;
+    if (ntry1->addr2 > ntry2->addr2) return +1;
+    if (ntry1->addr1 < ntry2->addr1) return -1;
+    if (ntry1->addr1 > ntry2->addr1) return +1;
     return 0;
 }
 
@@ -163,18 +163,18 @@ int bridge_compare(void *ptr1, void *ptr2) {
     struct bridge_entry *ntry2 = ptr2;
     if (ntry1->id < ntry2->id) return -1;
     if (ntry1->id > ntry2->id) return +1;
-    if (ntry1->mac[0] < ntry2->mac[0]) return -1;
-    if (ntry1->mac[0] > ntry2->mac[0]) return +1;
-    if (ntry1->mac[1] < ntry2->mac[1]) return -1;
-    if (ntry1->mac[1] > ntry2->mac[1]) return +1;
-    if (ntry1->mac[2] < ntry2->mac[2]) return -1;
-    if (ntry1->mac[2] > ntry2->mac[2]) return +1;
-    if (ntry1->mac[3] < ntry2->mac[3]) return -1;
-    if (ntry1->mac[3] > ntry2->mac[3]) return +1;
-    if (ntry1->mac[4] < ntry2->mac[4]) return -1;
-    if (ntry1->mac[4] > ntry2->mac[4]) return +1;
     if (ntry1->mac[5] < ntry2->mac[5]) return -1;
     if (ntry1->mac[5] > ntry2->mac[5]) return +1;
+    if (ntry1->mac[4] < ntry2->mac[4]) return -1;
+    if (ntry1->mac[4] > ntry2->mac[4]) return +1;
+    if (ntry1->mac[3] < ntry2->mac[3]) return -1;
+    if (ntry1->mac[3] > ntry2->mac[3]) return +1;
+    if (ntry1->mac[2] < ntry2->mac[2]) return -1;
+    if (ntry1->mac[2] > ntry2->mac[2]) return +1;
+    if (ntry1->mac[1] < ntry2->mac[1]) return -1;
+    if (ntry1->mac[1] > ntry2->mac[1]) return +1;
+    if (ntry1->mac[0] < ntry2->mac[0]) return -1;
+    if (ntry1->mac[0] > ntry2->mac[0]) return +1;
     return 0;
 }
 
@@ -226,7 +226,6 @@ void doBasicLoop(int * param) {
     const unsigned char *pack;
     unsigned char bufD[16384];
     int bufS;
-    struct sockaddr_in addrTmp;
     unsigned int addrLen;
     struct vlan_entry vlan_ntry;
     struct vlan_entry *vlan_res;
@@ -274,7 +273,6 @@ void doPortLoop(int * param) {
     int bufS;
     int bufP;
     int ethtyp;
-    struct sockaddr_in addrTmp;
     unsigned int addrLen;
     struct mpls_entry mpls_ntry;
     struct portvrf_entry portvrf_ntry;
@@ -551,7 +549,6 @@ void doHostLoop() {
     const unsigned char *pack;
     unsigned char bufD[16384];
     int bufS;
-    struct sockaddr_in addrTmp;
     unsigned int addrLen;
     struct vlan_entry vlan_ntry;
     struct vlan_entry *vlan_res;
