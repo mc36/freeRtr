@@ -1212,6 +1212,17 @@ class servP4langConn implements Runnable {
                 }
                 prt.add(ntry);
             }
+            List<servP4langIfc> vln = new ArrayList<servP4langIfc>();
+            for (i = 0; i < lower.expIfc.size(); i++) {
+                servP4langIfc ntry = lower.expIfc.get(i);
+                if (ntry == ifc) {
+                    continue;
+                }
+                if ((ntry.master != ifc)) {
+                    continue;
+                }
+                vln.add(ntry);
+            }
             if (prt.size() != ifc.sentBundle) {
                 if (ifc.sentBundle < 1) {
                     a = "add";
@@ -1231,6 +1242,16 @@ class servP4langConn implements Runnable {
                     s += " " + prt.get(i).id;
                 }
                 lower.sendLine("bundlelist_" + a + " " + ifc.id + s);
+            }
+            if (ifc.sentVlan != vln.size()) {
+                for (int o = 0; o < prt.size(); o++) {
+                    servP4langIfc ntry = prt.get(o);
+                    for (i = 0; i < vln.size(); i++) {
+                        servP4langIfc sub = vln.get(i);
+                        lower.sendLine("bundlevlan_add " + ntry.id + " " + sub.ifc.vlanNum + " " + sub.id);
+                    }
+                }
+                ifc.sentVlan = vln.size();
             }
         }
         if (ifc.sentVrf == 0) {
