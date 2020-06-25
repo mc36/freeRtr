@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v20.6.21-testing, done by cs@nop.<br/>
-tested: 2020-06-21 13:49:14, took 09:49:43 on 1719 cases, 0 failed, 0 traces, 25 retries<br/>
+release: freeRouter v20.6.24-testing, done by cs@nop.<br/>
+tested: 2020-06-24 20:54:27, took 09:07:27 on 1726 cases, 0 failed, 0 traces, 7 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -951,6 +951,10 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl02.tst">p4lang-acl02.tst</a></td><td>0</td><td>p4lang: ingress access list</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl03.tst">p4lang-acl03.tst</a></td><td>0</td><td>p4lang: egress access list</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl04.tst">p4lang-acl04.tst</a></td><td>0</td><td>p4lang: nat</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl05.tst">p4lang-acl05.tst</a></td><td>0</td><td>p4lang: bundle ingress access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl06.tst">p4lang-acl06.tst</a></td><td>0</td><td>p4lang: bundle egress access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl07.tst">p4lang-acl07.tst</a></td><td>0</td><td>p4lang: bundle vlan ingress access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl08.tst">p4lang-acl08.tst</a></td><td>0</td><td>p4lang: bundle vlan egress access list</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout01.tst">p4lang-rout01.tst</a></td><td>0</td><td>p4lang: routing</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout02.tst">p4lang-rout02.tst</a></td><td>0</td><td>p4lang: bridging</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout03.tst">p4lang-rout03.tst</a></td><td>0</td><td>p4lang: mpls core</td><td>successfully</td><td>finished</td></tr>
@@ -966,6 +970,9 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout13.tst">p4lang-rout13.tst</a></td><td>0</td><td>p4lang: evpn/cmac with bgp over srv6</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout14.tst">p4lang-rout14.tst</a></td><td>0</td><td>p4lang: bundle routing</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout15.tst">p4lang-rout15.tst</a></td><td>0</td><td>p4lang: bundle mpls</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout16.tst">p4lang-rout16.tst</a></td><td>0</td><td>p4lang: bundle vlan routing</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout17.tst">p4lang-rout17.tst</a></td><td>0</td><td>p4lang: bundle vlan mpls</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout18.tst">p4lang-rout18.tst</a></td><td>0</td><td>p4lang: bundle vlan bridging</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/qos-action01.tst">qos-action01.tst</a></td><td>0</td><td>qos ingress transmit action</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/qos-action02.tst">qos-action02.tst</a></td><td>0</td><td>qos egress transmit action</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/qos-action03.tst">qos-action03.tst</a></td><td>0</td><td>qos ingress drop action</td><td>successfully</td><td>finished</td></tr>

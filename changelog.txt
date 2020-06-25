@@ -8897,3 +8897,11 @@ qc pass: udp forwarder server
 qc pass: ethernet qinq1 encapsulation
 qc pass: ethernet qinq2 encapsulation
 qc pass: ethernet qinq3 encapsulation
+---------------------------------- 2020-06-24 11:47:00
+qc pass: p4lang: bundle ingress access list
+qc pass: p4lang: bundle egress access list
+qc pass: p4lang: bundle vlan ingress access list
+qc pass: p4lang: bundle vlan egress access list
+qc pass: p4lang: bundle vlan routing
+qc pass: p4lang: bundle vlan mpls
+qc pass: p4lang: bundle vlan bridging

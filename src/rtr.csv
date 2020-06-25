@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.6.21-testing, done by cs@nop.;-;-
--;-;2020-06-21 13:49:14, took 09:49:43 on 1719 cases, 0 failed, 0 traces, 25 retries;-;-
+-;-;freeRouter v20.6.24-testing, done by cs@nop.;-;-
+-;-;2020-06-24 20:54:27, took 09:07:27 on 1726 cases, 0 failed, 0 traces, 7 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -948,6 +948,10 @@ p4lang-acl01.tst;0;p4lang: copp;successfully;finished
 p4lang-acl02.tst;0;p4lang: ingress access list;successfully;finished
 p4lang-acl03.tst;0;p4lang: egress access list;successfully;finished
 p4lang-acl04.tst;0;p4lang: nat;successfully;finished
+p4lang-acl05.tst;0;p4lang: bundle ingress access list;successfully;finished
+p4lang-acl06.tst;0;p4lang: bundle egress access list;successfully;finished
+p4lang-acl07.tst;0;p4lang: bundle vlan ingress access list;successfully;finished
+p4lang-acl08.tst;0;p4lang: bundle vlan egress access list;successfully;finished
 p4lang-rout01.tst;0;p4lang: routing;successfully;finished
 p4lang-rout02.tst;0;p4lang: bridging;successfully;finished
 p4lang-rout03.tst;0;p4lang: mpls core;successfully;finished
@@ -963,6 +967,9 @@ p4lang-rout12.tst;0;p4lang: vpn with bgp over srv6;successfully;finished
 p4lang-rout13.tst;0;p4lang: evpn/cmac with bgp over srv6;successfully;finished
 p4lang-rout14.tst;0;p4lang: bundle routing;successfully;finished
 p4lang-rout15.tst;0;p4lang: bundle mpls;successfully;finished
+p4lang-rout16.tst;0;p4lang: bundle vlan routing;successfully;finished
+p4lang-rout17.tst;0;p4lang: bundle vlan mpls;successfully;finished
+p4lang-rout18.tst;0;p4lang: bundle vlan bridging;successfully;finished
 qos-action01.tst;0;qos ingress transmit action;successfully;finished
 qos-action02.tst;0;qos egress transmit action;successfully;finished
 qos-action03.tst;0;qos ingress drop action;successfully;finished

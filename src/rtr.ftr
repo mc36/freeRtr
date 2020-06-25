@@ -944,6 +944,10 @@ qc pass: p4lang: copp
 qc pass: p4lang: ingress access list
 qc pass: p4lang: egress access list
 qc pass: p4lang: nat
+qc pass: p4lang: bundle ingress access list
+qc pass: p4lang: bundle egress access list
+qc pass: p4lang: bundle vlan ingress access list
+qc pass: p4lang: bundle vlan egress access list
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -959,6 +963,9 @@ qc pass: p4lang: vpn with bgp over srv6
 qc pass: p4lang: evpn/cmac with bgp over srv6
 qc pass: p4lang: bundle routing
 qc pass: p4lang: bundle mpls
+qc pass: p4lang: bundle vlan routing
+qc pass: p4lang: bundle vlan mpls
+qc pass: p4lang: bundle vlan bridging
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
