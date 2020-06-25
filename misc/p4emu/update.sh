@@ -10,7 +10,7 @@ unzip a/rtr.zip -d  a/
 cd ~/a/misc/native
 mkdir ../../binTmp/
 ./c.sh
-mv ../../binTmp/p4emu.bin ~/
+mv ../../binTmp/p4*.bin ~/
 cd ~
 rm -Rf a/
 sudo dd if=/dev/zero of=/zzz.bin bs=1M

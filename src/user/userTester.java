@@ -958,7 +958,7 @@ class userTesterOne {
                 s = repairHwCfg(s);
                 cfg.add(s);
             }
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -smp cores=2,threads=1,sockets=1 -hda " + otherI + " -m " + otherM;
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=2,threads=1,sockets=1 -hda " + otherI + " -m " + otherM;
             for (int i = 0; i < cfg.size(); i++) {
                 String a = cfg.get(i);
                 cmd = new cmds("hw", a);
