@@ -12,6 +12,8 @@ long int byteRx[maxPorts];
 long int packRx[maxPorts];
 long int byteTx[maxPorts];
 long int packTx[maxPorts];
+long int byteDr[maxPorts];
+long int packDr[maxPorts];
 
 
 
@@ -322,6 +324,8 @@ mpls_rx:
                             ethtyp = 0;
                             break;
                     }
+                    packDr[port]++;
+                    byteDr[port] += bufS;
                     break;
                 case 2: // pop
                     switch (mpls_res->ver) {
@@ -363,7 +367,11 @@ nexthop_tx:
                         vlan_res->pack++;
                         vlan_res->byte += bufS;
                     }
-                    if (prt >= ports) break;
+                    if (prt >= ports) {
+                        packDr[port]++;
+                        byteDr[port] += bufS;
+                        break;
+                    }
                     bufP -= 6;
                     memmove(&bufD[bufP], &neigh_res->smac, 6);
                     bufP -= 6;
@@ -379,7 +387,11 @@ nexthop_tx:
             vlan_ntry.vlan = get16bits(bufD, bufP) & 0xfff;
             bufP += 2;
             index = table_find(&vlanin_table, &vlan_ntry);
-            if (index < 0) break;
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                break;
+            }
             vlan_res = table_get(&vlanin_table, index);
             prt = vlan_res->id;
             vlan_res->pack++;
@@ -427,6 +439,8 @@ ipv4_rx:
                 }
                 break;
             }
+            packDr[port]++;
+            byteDr[port] += bufS;
             break;
         case 0x86dd:
             portvrf_ntry.port = prt;
@@ -494,6 +508,8 @@ ipv6_hit:
                 }
                 break;
             }
+            packDr[port]++;
+            byteDr[port] += bufS;
             break;
         case 0x65580000:
 bridge:
@@ -517,7 +533,11 @@ bridge:
                 vlan_res->pack++;
                 vlan_res->byte += bufS;
             }
-            if (prt >= ports) break;
+            if (prt >= ports) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                break;
+            }
             bufP -= 12;
             memmove(&bufD[bufP], &buf2[0], 12);
             send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
@@ -541,6 +561,8 @@ void initIface(int port, unsigned char *name) {
     packRx[port] = 0;
     byteTx[port] = 0;
     packTx[port] = 0;
+    byteDr[port] = 0;
+    packDr[port] = 0;
 }
 
 
@@ -560,12 +582,12 @@ void initTables() {
 
 void doStatRount(FILE *commands) {
     for (int i = 0; i < ports; i++) {
-        fprintf(commands, "counter %i %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i]);
+        fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
     }
     for (int i=0; i<vlanin_table.size; i++) {
         struct vlan_entry *intry = table_get(&vlanin_table, i);
         struct vlan_entry *ontry = table_get(&vlanout_table, i);
-        fprintf(commands, "counter %i %li %li %li %li\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
+        fprintf(commands, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
     }
     fflush(commands);
 }
