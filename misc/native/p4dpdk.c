@@ -23,7 +23,6 @@ void sendpack(unsigned char *bufD, int bufS, int port) {
     unsigned char * pack = rte_pktmbuf_append(buf, bufS);
     memmove(pack, bufD, bufS);
     rte_eth_tx_burst(port, 0, &buf, 1);
-    rte_pktmbuf_free(buf);
 }
 
 
@@ -44,6 +43,8 @@ int commandSock;
 static const struct rte_eth_conf port_conf_default = {
         .rxmode = {
                 .max_rx_pkt_len = RTE_ETHER_MAX_LEN,
+        },
+        .txmode = {
         },
 };
 
@@ -120,7 +121,7 @@ void doPacketLoop() {
                 if (portid == cpuport) processCpuPack(&bufD[0], bufS); else processDataPacket(&bufD[0], bufS, portid);
             }
         }
-        if (pkts < 1) usleep(1000);
+        if (pkts < 1) usleep(100);
     }
     rte_exit(EXIT_FAILURE, "packet thread exited");
 }
@@ -138,7 +139,7 @@ int main(int argc, char **argv) {
 
         argc -= ret;
         argv += ret;
-        
+
         ports = rte_eth_dev_count_avail();
         if (ports < 2) rte_exit(EXIT_FAILURE, "at least 2 ports needed\n");
 
@@ -183,7 +184,14 @@ int main(int argc, char **argv) {
             retval = rte_eth_dev_info_get(port, &dev_info);
             if (retval != 0) rte_exit(EXIT_FAILURE, "error getting device info\n");
 
-            if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MBUF_FAST_FREE) port_conf.txmode.offloads |= DEV_TX_OFFLOAD_MBUF_FAST_FREE;
+            if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MBUF_FAST_FREE) {
+                port_conf.txmode.offloads |= DEV_TX_OFFLOAD_MBUF_FAST_FREE;
+            }
+
+            if (dev_info.rx_offload_capa & DEV_RX_OFFLOAD_JUMBO_FRAME) {
+                port_conf.rxmode.offloads |= DEV_RX_OFFLOAD_JUMBO_FRAME;
+                port_conf.rxmode.max_rx_pkt_len = RTE_MBUF_DEFAULT_DATAROOM;
+            }
 
             retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
             if (retval != 0) rte_exit(EXIT_FAILURE, "error configuring port\n");
@@ -213,7 +221,6 @@ int main(int argc, char **argv) {
             retval = rte_eth_promiscuous_enable(port);
             if (retval != 0) rte_exit(EXIT_FAILURE, "error setting promiscuous mode\n");
         }
-                                        
 
     pthread_t threadSock;
     if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) rte_exit(EXIT_FAILURE, "error creating socket thread");
