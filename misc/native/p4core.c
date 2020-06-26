@@ -890,9 +890,9 @@ int doConsoleCommand(unsigned char*buf) {
             break;
         case 'i':
         case 'I':
-            printf("                           iface         rx         tx         rx         tx\n");
+            printf("                           iface         rx         tx       drop         rx         tx       drop\n");
             for (int i=0; i<ports; i++) {
-                printf("%32s %10li %10li %10li %10li\n", ifaceName[i], packRx[i], packTx[i], byteRx[i], byteTx[i]);
+                printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], packRx[i], packTx[i], packDr[i], byteRx[i], byteTx[i], byteDr[i]);
             }
             break;
         case 'm':
