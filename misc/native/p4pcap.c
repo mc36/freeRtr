@@ -122,13 +122,15 @@ int main(int argc, char **argv) {
     unsigned char errbuf[PCAP_ERRBUF_SIZE + 1];
 
     ports = 0;
-    for (int i=3; i < argc; i++) {
+    for (int i = 4; i < argc; i++) {
         initIface(ports, argv[i]);
         ports++;
     }
+    cpuport = atoi(argv[3]);
+    printf("cpu port is #%i of %i...\n", cpuport, ports);
 
     if (ports < 2) {
-        err("using: dp <addr> <port> <ifc0> <ifc1> [ifcN] ...");
+        err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
     }
 
     initTables();
@@ -144,7 +146,7 @@ int main(int argc, char **argv) {
     if (commandSock < 0) err("unable to open socket");
     if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
 
-    for (int i=0; i < ports; i++) {
+    for (int i = 0; i < ports; i++) {
         printf("opening interface %s.\n", ifaceName[i]);
         ifacePcap[i] = pcap_create(ifaceName[i], errbuf);
         if (ifacePcap[i] == NULL) err("unable to open interface");
