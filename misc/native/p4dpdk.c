@@ -7,8 +7,7 @@
 #include <inttypes.h>
 #include <rte_config.h>
 #include <rte_common.h>
-#include <rte_malloc.h>
-#include <rte_memory.h>
+#include <rte_version.h>
 #include <rte_eal.h>
 #include <rte_ethdev.h>
 #include <rte_mbuf.h>
@@ -46,6 +45,7 @@ int commandSock;
 #define NUM_MBUFS 8191
 #define MBUF_CACHE_SIZE 250
 #define BURST_SIZE 32
+#define BURST_PAUSE 100
 #define RING_SIZE 512
 
 
@@ -60,8 +60,10 @@ static const struct rte_eth_conf port_conf_default = {
 
 
 struct lcore_conf {
-        int num_port;
-        int port_list[RTE_MAX_ETHPORTS];
+        int rx_num;
+        int rx_list[RTE_MAX_ETHPORTS];
+        int tx_num;
+        int tx_list[RTE_MAX_ETHPORTS];
 } __rte_cache_aligned;
 struct lcore_conf lcore_conf[RTE_MAX_LCORE];
 
@@ -131,18 +133,21 @@ static int doPacketLoop(__rte_unused void *arg) {
     int lcore = rte_lcore_id();
     struct lcore_conf *myconf = &lcore_conf[lcore];
 
-    printf("lcore %i started with %i ports!\n", lcore, myconf->num_port);
-    if (myconf->num_port < 1) return 0;
+    printf("lcore %i started with %i rx and %i tx ports!\n", lcore, myconf->rx_num, myconf->tx_num);
+    if ((myconf->rx_num + myconf->tx_num) < 1) return 0;
 
     for (;;) {
         pkts = 0;
-        for (seq = 0; seq < myconf->num_port; seq++) {
-            port = myconf->port_list[seq];
+        for (seq = 0; seq < myconf->tx_num; seq++) {
+            port = myconf->tx_list[seq];
             num = rte_ring_count(tx_ring[port]);
             if (num > BURST_SIZE) num = BURST_SIZE;
             num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)bufs, num, NULL);
             rte_eth_tx_burst(port, 0, bufs, num);
             pkts += num;
+        }
+        for (seq = 0; seq < myconf->rx_num; seq++) {
+            port = myconf->rx_list[seq];
             num = rte_eth_rx_burst(port, 0, bufs, BURST_SIZE);
             for (i = 0; i < num; i++) {
                 bufS = rte_pktmbuf_pkt_len(bufs[i]);
@@ -152,7 +157,7 @@ static int doPacketLoop(__rte_unused void *arg) {
             }
             pkts += num;
         }
-        if (pkts < 1) usleep(100);
+        if (pkts < 1) usleep(BURST_PAUSE);
     }
     rte_exit(EXIT_FAILURE, "packet thread exited\n");
     return 0;
@@ -175,7 +180,7 @@ int main(int argc, char **argv) {
     ports = rte_eth_dev_count_avail();
     if (ports < 2) rte_exit(EXIT_FAILURE, "at least 2 ports needed\n");
 
-    if (argc < 4) rte_exit(EXIT_FAILURE, "using: dp <host> <rport> <cpuport> [port lcore] ...\n");
+    if (argc < 4) rte_exit(EXIT_FAILURE, "using: dp <host> <rport> <cpuport> [port rxlcore txlcore] ...\n");
     initTables();
     int port = atoi(argv[2]);
     struct sockaddr_in addr;
@@ -190,18 +195,27 @@ int main(int argc, char **argv) {
     cpuport = atoi(argv[3]);
     printf("cpu port is #%i of %i...\n", cpuport, ports);
 
-    int port2lcore[maxPorts];
-    memset(&port2lcore, 0, sizeof(port2lcore));
-    for (int i = 4; i< argc; i += 2) {
+    printf("dpdk version: %s\n", rte_version());
+
+    int port2rx[RTE_MAX_ETHPORTS];
+    int port2tx[RTE_MAX_ETHPORTS];
+    memset(&port2rx, 0, sizeof(port2rx));
+    memset(&port2tx, 0, sizeof(port2tx));
+    for (int i = 4; i< argc; i += 3) {
         int p = atoi(argv[i + 0]);
-        int c = atoi(argv[i + 1]);
-        port2lcore[p] = c;
+        int r = atoi(argv[i + 1]);
+        int t = atoi(argv[i + 2]);
+        port2rx[p] = r;
+        port2tx[p] = t;
     }
     memset(&lcore_conf, 0, sizeof(lcore_conf));
     for (int i = 0; i < ports; i++) {
-        int c = port2lcore[i];
-        lcore_conf[c].port_list[lcore_conf[c].num_port] = i;
-        lcore_conf[c].num_port++;
+        int r = port2rx[i];
+        int t = port2tx[i];
+        lcore_conf[r].rx_list[lcore_conf[r].rx_num] = i;
+        lcore_conf[r].rx_num++;
+        lcore_conf[t].tx_list[lcore_conf[t].tx_num] = i;
+        lcore_conf[t].tx_num++;
     }
 
     mbuf_pool = rte_pktmbuf_pool_create("mbufs", NUM_MBUFS * ports, MBUF_CACHE_SIZE, 0, RTE_MBUF_DEFAULT_BUF_SIZE, rte_socket_id());
@@ -211,7 +225,7 @@ int main(int argc, char **argv) {
         unsigned char buf[128];
         sprintf(buf, "dpdk-port%i", port);
         int sock = rte_eth_dev_socket_id(port);
-        printf("opening port %i on lcore %i on socket %i...\n", port, port2lcore[port], sock);
+        printf("opening port %i on lcore (rx %i tx %i) on socket %i...\n", port, port2rx[port], port2tx[port], sock);
         initIface(port, buf);
 
         struct rte_eth_conf port_conf = port_conf_default;

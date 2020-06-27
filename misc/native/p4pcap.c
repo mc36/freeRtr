@@ -133,6 +133,8 @@ int main(int argc, char **argv) {
         err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
     }
 
+    printf("pcap version: %s\n", pcap_lib_version());
+
     initTables();
 
     int port = atoi(argv[2]);
