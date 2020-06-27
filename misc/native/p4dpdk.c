@@ -139,10 +139,12 @@ static int doPacketLoop(__rte_unused void *arg) {
         for (seq = 0; seq < myconf->num_port; seq++) {
             port = myconf->port_list[seq];
             num = rte_ring_count(tx_ring[port]);
-            if (num > BURST_SIZE) num = BURST_SIZE;
-            num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)bufs, num, NULL);
-            rte_eth_tx_burst(port, 0, bufs, num);
-            pkts += num;
+            if (num > 0) {
+                if (num > BURST_SIZE) num = BURST_SIZE;
+                num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)bufs, num, NULL);
+                rte_eth_tx_burst(port, 0, bufs, num);
+                pkts += num;
+            }
             num = rte_eth_rx_burst(port, 0, bufs, BURST_SIZE);
             pkts += num;
             for (i = 0; i < num; i++) {
