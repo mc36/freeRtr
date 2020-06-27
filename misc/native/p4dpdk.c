@@ -12,6 +12,7 @@
 #include <rte_eal.h>
 #include <rte_ethdev.h>
 #include <rte_mbuf.h>
+#include <rte_ring.h>
 
 
 #undef basicLoop
@@ -22,14 +23,14 @@
 
 struct rte_mempool *mbuf_pool;
 
-static struct rte_eth_dev_tx_buffer *tx_buffer[RTE_MAX_ETHPORTS];
+struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 
 void sendpack(unsigned char *bufD, int bufS, int port) {
     struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool);
     if (mbuf == NULL) rte_exit(EXIT_FAILURE, "error allocating bmuf\n");
     unsigned char * pack = rte_pktmbuf_append(mbuf, bufS);
     memmove(pack, bufD, bufS);
-    rte_eth_tx_buffer(port, 0, tx_buffer[port], mbuf);
+    rte_ring_mp_enqueue(tx_ring[port], mbuf);
 }
 
 
@@ -39,13 +40,14 @@ void sendpack(unsigned char *bufD, int bufS, int port) {
 int commandSock;
 
 
-
 #define RX_RING_SIZE 1024
 #define TX_RING_SIZE 1024
 
 #define NUM_MBUFS 8191
 #define MBUF_CACHE_SIZE 250
 #define BURST_SIZE 32
+#define RING_SIZE 512
+
 
 static const struct rte_eth_conf port_conf_default = {
         .rxmode = {
@@ -122,7 +124,7 @@ static int doPacketLoop(__rte_unused void *arg) {
     struct rte_mbuf *bufs[BURST_SIZE];
     int port;
     int seq;
-    int nb_rx;
+    int num;
     int pkts;
     int i;
 
@@ -136,10 +138,14 @@ static int doPacketLoop(__rte_unused void *arg) {
         pkts = 0;
         for (seq = 0; seq < myconf->num_port; seq++) {
             port = myconf->port_list[seq];
-            pkts += rte_eth_tx_buffer_flush(port, 0, tx_buffer[port]);
-            nb_rx = rte_eth_rx_burst(port, 0, bufs, BURST_SIZE);
-            pkts += nb_rx;
-            for (i = 0; i < nb_rx; i++) {
+            num = rte_ring_count(tx_ring[port]);
+            if (num > BURST_SIZE) num = BURST_SIZE;
+            num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)bufs, num, NULL);
+            rte_eth_tx_burst(port, 0, bufs, num);
+            pkts += num;
+            num = rte_eth_rx_burst(port, 0, bufs, BURST_SIZE);
+            pkts += num;
+            for (i = 0; i < num; i++) {
                 bufS = rte_pktmbuf_pkt_len(bufs[i]);
                 memmove(&bufD[preBuff], rte_pktmbuf_mtod(bufs[i], void *), bufS);
                 rte_pktmbuf_free(bufs[i]);
@@ -198,13 +204,14 @@ int main(int argc, char **argv) {
         lcore_conf[c].num_port++;
     }
 
-    mbuf_pool = rte_pktmbuf_pool_create("MBUF_POOL", NUM_MBUFS * ports, MBUF_CACHE_SIZE, 0, RTE_MBUF_DEFAULT_BUF_SIZE, rte_socket_id());
+    mbuf_pool = rte_pktmbuf_pool_create("mbufs", NUM_MBUFS * ports, MBUF_CACHE_SIZE, 0, RTE_MBUF_DEFAULT_BUF_SIZE, rte_socket_id());
     if (mbuf_pool == NULL) rte_exit(EXIT_FAILURE, "cannot create mbuf pool\n");
 
     RTE_ETH_FOREACH_DEV(port) {
         unsigned char buf[128];
         sprintf(buf, "dpdk-port%i", port);
-        printf("opening port %i on lcore %i...\n", port, port2lcore[port]);
+        int sock = rte_eth_dev_socket_id(port);
+        printf("opening port %i on lcore %i on socket %i...\n", port, port2lcore[port], sock);
         initIface(port, buf);
 
         struct rte_eth_conf port_conf = port_conf_default;
@@ -234,22 +241,16 @@ int main(int argc, char **argv) {
         retval = rte_eth_dev_adjust_nb_rx_tx_desc(port, &nb_rxd, &nb_txd);
         if (retval != 0) rte_exit(EXIT_FAILURE, "error adjusting descriptors\n");
 
-        retval = rte_eth_rx_queue_setup(port, 0, nb_rxd, rte_eth_dev_socket_id(port), NULL, mbuf_pool);
+        retval = rte_eth_rx_queue_setup(port, 0, nb_rxd, sock, NULL, mbuf_pool);
         if (retval < 0) rte_exit(EXIT_FAILURE, "error setting up rx queue\n");
 
         txconf = dev_info.default_txconf;
         txconf.offloads = port_conf.txmode.offloads;
-        retval = rte_eth_tx_queue_setup(port, 0, nb_txd, rte_eth_dev_socket_id(port), &txconf);
+        retval = rte_eth_tx_queue_setup(port, 0, nb_txd, sock, &txconf);
         if (retval < 0) rte_exit(EXIT_FAILURE, "error setting up tx queue\n");
 
-        tx_buffer[port] = rte_zmalloc_socket("tx_buffer", RTE_ETH_TX_BUFFER_SIZE(BURST_SIZE), 0, rte_eth_dev_socket_id(port));
-        if (tx_buffer[port] == NULL) rte_exit(EXIT_FAILURE, "cannot allocate buffer for tx\n");
-
-        retval = rte_eth_tx_buffer_init(tx_buffer[port], BURST_SIZE);
-        if (retval < 0) rte_exit(EXIT_FAILURE, "error initializing tx buffer\n");
-
-        retval = rte_eth_tx_buffer_set_err_callback(tx_buffer[port], rte_eth_tx_buffer_drop_callback, NULL);
-        if (retval < 0) rte_exit(EXIT_FAILURE, "cannot set error callback for tx buffer\n");
+        tx_ring[port] = rte_ring_create(buf, RING_SIZE, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
+        if (tx_ring[port] == NULL) rte_exit(EXIT_FAILURE, "error allocating tx ring\n");
 
         retval = rte_eth_dev_start(port);
         if (retval < 0) rte_exit(EXIT_FAILURE, "error starting port\n");
