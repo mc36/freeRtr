@@ -19,11 +19,18 @@ exec cd %tmp%;find . >filist
 exec cd %tmp%;cpio --quiet -H newc -O cpio -o <filist
 exec gzip -n <%tmp%/cpio >%img%.ird
 exec wraplinux -M -l -i %img%.ird -o %img%.wrp %img%.krn
+
+exec grub-mkimage -o %tmp%/grub.efi -c ../misc/image/boot.efi -O x86_64-efi -p grub normal search boot linux part_msdos part_gpt fat ext2 iso9660 syslinuxcfg test
+exec dd if=/dev/zero of=%img%.efi bs=1K count=1024
+exec /sbin/mkfs.vfat %img%.efi
+exec mmd -i %img%.efi efi efi/boot
+exec mcopy -i %img%.efi %tmp%/grub.efi ::efi/boot/bootx64.efi
+
 exec cp /usr/lib/ISOLINUX/isolinux.bin %tmp%/isolinux.bin
 exec cp /usr/lib/syslinux/modules/bios/ldlinux.c32 %tmp%/ldlinux.c32
-exec cp ../misc/image/boot.cfg %tmp%/isolinux.cfg
-exec genisoimage -o %img%.iso -r -J -l -b isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux.cat %img%.krn %img%.ird %tmp%/isolinux.cfg %tmp%/isolinux.bin %tmp%/ldlinux.c32
-exec isohybrid %img%.iso
+exec cp ../misc/image/boot.cfg %tmp%/syslinux.cfg
+exec xorriso -as mkisofs -o %img%.iso -r -J -l -b isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux.cat -eltorito-alt-boot -e rtr.efi -no-emul-boot %img%.krn %img%.ird %tmp%/syslinux.cfg %tmp%/isolinux.bin %tmp%/ldlinux.c32 %img%.efi
+exec isohybrid -u %img%.iso
 exec mktorrent -o %img%.torrent -w http://dl.nop.hu/rtr.iso %img%.iso
 del-alw %tmp%
 exec ls -l %img%.*

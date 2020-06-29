@@ -6,4 +6,4 @@ cd src
 cd ../misc/image/
 ./c.sh
 cd ../img2ova/
-sudo ./c.sh
+./c.sh

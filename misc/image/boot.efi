@@ -1,0 +1,2 @@
+search --file --set=root --no-floppy /syslinux.cfg
+syslinux_configfile /syslinux.cfg
