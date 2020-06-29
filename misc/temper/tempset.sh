@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 while (true); do
   echo setting to $1 at `find /dev/ttyUSB*`
   echo -n P > `find /dev/ttyUSB*`

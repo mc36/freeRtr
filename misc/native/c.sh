@@ -13,3 +13,5 @@ compileFile p4dpdk "-I /usr/include/dpdk/ -I /usr/include/x86_64-linux-gnu/dpdk"
 for fn in p4pkt p4emu mapInt rawInt pcapInt tapInt bundle vlan hdlcInt stdLin ttyLin modem; do
   compileFile $fn "" "-lpthread -lpcap" ""
   done
+
+echo `cd ../../binTmp/;tar cf ../binImg/rtr.tar *.bin`

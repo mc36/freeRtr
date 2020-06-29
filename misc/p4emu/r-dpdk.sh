@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 echo 64 > /proc/sys/vm/nr_hugepages
 modprobe uio_pci_generic

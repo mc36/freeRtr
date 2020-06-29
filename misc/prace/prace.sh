@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Prace routing aktualizalo a login node-okra.
 # Naponta egyszer-ketszer a cronbol futtatjuk.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 ip link set ens4 up promisc on
 ip link set ens5 up promisc on

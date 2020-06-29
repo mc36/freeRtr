@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 doer()
 {
 echo doing $1...

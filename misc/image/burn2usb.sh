@@ -1,6 +1,6 @@
 #!/bin/sh
 sudo umount /mnt
-sudo mkdosfs /dev/sdb1
+sudo mkfs.vfat /dev/sdb1
 sudo lilo  -S /dev/null -M /dev/sdb
 sudo syslinux /dev/sdb1
 sudo mount -t vfat -o rw /dev/sdb1 /mnt
