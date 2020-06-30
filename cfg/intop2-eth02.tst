@@ -1,7 +1,7 @@
 description interop2: dot1q encapsulation
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $rem1$
+int eth1 eth 0000.0000.1111 $per1$
 !
 vrf def v1
  rd 1:1
@@ -13,8 +13,8 @@ int eth1.123
  exit
 !
 
-addremote r2
-int eth1 eth 0000.0000.2222 $rem1$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
 !
 interface gigabit0/0/0/0
  no shutdown

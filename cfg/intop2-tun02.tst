@@ -1,7 +1,7 @@
 description interop2: ipip tunnel
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $rem1$
+int eth1 eth 0000.0000.1111 $per1$
 !
 vrf def v1
  rd 1:1
@@ -31,8 +31,8 @@ int tun2
  exit
 !
 
-addremote r2
-int eth1 eth 0000.0000.2222 $rem1$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
 !
 interface gigabit0/0/0/0
  ipv4 address 1.1.1.2 255.255.255.0

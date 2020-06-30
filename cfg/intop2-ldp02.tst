@@ -1,7 +1,7 @@
 description interop2: ethernet over mpls
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $rem1$
+int eth1 eth 0000.0000.1111 $per1$
 !
 vrf def v1
  rd 1:1
@@ -45,9 +45,9 @@ vpdn eompls
  exit
 !
 
-addremote r2
-int eth1 eth 0000.0000.2222 $rem1$
-int eth2 eth 0000.0000.2222 $rem2$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2222 $per2$
 !
 interface loopback0
  ipv4 addr 2.2.2.2 255.255.255.255
@@ -81,7 +81,7 @@ commit
 !
 
 addrouter r3
-int eth1 eth 0000.0000.4444 $rem2$
+int eth1 eth 0000.0000.4444 $per2$
 !
 vrf def v1
  rd 1:1

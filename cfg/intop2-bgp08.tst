@@ -1,7 +1,7 @@
 description interop2: bgp with labels
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $rem1$
+int eth1 eth 0000.0000.1111 $per1$
 !
 vrf def v1
  rd 1:1
@@ -41,9 +41,9 @@ int pweth1
  exit
 !
 
-addremote r2
-int eth1 eth 0000.0000.2222 $rem1$
-int eth2 eth 0000.0000.2221 $rem2$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2221 $per2$
 !
 interface loopback0
  ipv4 addr 2.2.2.2 255.255.255.255
@@ -106,7 +106,7 @@ commit
 !
 
 addrouter r3
-int eth1 eth 0000.0000.3333 $rem2$
+int eth1 eth 0000.0000.3333 $per2$
 !
 vrf def v1
  rd 1:1

@@ -1,7 +1,7 @@
 description interop9: ebgp
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $rem1$
+int eth1 eth 0000.0000.1111 $per1$
 !
 vrf def v1
  rd 1:1
@@ -34,8 +34,8 @@ router bgp6 1
  exit
 !
 
-addremote r2
-int eth1 eth 0000.0000.2222 $rem1$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
 !
 set interfaces ge-0/0/0.0 family inet address 1.1.1.2/24
 set interfaces ge-0/0/0.0 family inet6 address 1234::2/64

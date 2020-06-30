@@ -33,17 +33,25 @@ public class userTester {
 
     private String url = path;
 
+    private String persistF = null;
+
+    private int persistP = 0;
+
+    private List<String> persistD = null;
+
+    private userTesterPrc persistC = null;
+
     private String remoteF = null;
 
     private List<String> remoteD = null;
 
-    private addrIP remoteA;
+    private addrIP remoteA = null;
 
-    private addrIP remoteL;
+    private addrIP remoteL = null;
 
-    private int remoteP;
+    private int remoteP = 0;
 
-    private String remoteS;
+    private String remoteS = null;
 
     private String otherI = null;
 
@@ -146,6 +154,12 @@ public class userTester {
             }
             if (s.equals("url")) {
                 url = cmd.word();
+            }
+            if (s.equals("persist")) {
+                persistF = cmd.word();
+            }
+            if (s.equals("nopersist")) {
+                persistF = null;
             }
             if (s.equals("remote")) {
                 remoteF = cmd.word();
@@ -264,8 +278,10 @@ public class userTester {
             remoteL = new addrIP();
             remoteL.fromString(remoteD.remove(0));
             remoteS = remoteD.remove(0);
-        } else {
-            remoteD = new ArrayList<String>();
+        }
+        if (persistF != null) {
+            persistD = bits.txt2buf(path + persistF);
+            persistP = bits.str2num(persistD.remove(0));
         }
         rdr.debugStat("jvm=" + jvn + jvp);
         rdr.debugStat("release=" + release);
@@ -282,8 +298,51 @@ public class userTester {
         rdr.debugStat("retry=" + maxTry);
         rdr.debugStat("other=" + otherI + " " + otherN + " " + otherM);
         rdr.debugStat("remote=" + remoteL + " " + remoteP + " " + remoteA);
+        rdr.debugStat("persist=" + persistP);
         rdr.debugStat("capture=" + capture.size());
         rdr.debugStat("files=" + ned.size());
+        if (persistD != null) {
+            String a = persistD.remove(0);
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=4,threads=1,sockets=1 -hda " + a + " -m " + persistD.remove(0);
+            a = persistD.remove(0);
+            for (int i = 0; i < 8; i++) {
+                int rp = persistP + 2 + (i * 2);
+                int lp = rp + 1;
+                s += " -netdev socket,id=n" + i + ",udp=127.0.0.1:" + rp + ",localaddr=:" + lp + " -device " + a + ",netdev=n" + i + ",mac=00:00:00:00:11:" + bits.toHexB(i);
+            }
+            persistP += 2 * bits.str2num(persistD.remove(0));
+            persistC = new userTesterPrc(rdr, "persist", s);
+            persistC.debug = debug;
+            persistC.persistent = true;
+            s = persistD.remove(0);
+            int round = 5000;
+            rdr.setMax(round);
+            for (int rnd = 0; rnd < round; rnd++) {
+                if ((rnd % 50) == 0) {
+                    persistC.putChar(13);
+                }
+                a = persistC.getLine();
+                rdr.setCurr(rnd);
+                if (a == null) {
+                    return;
+                }
+                a = a.trim();
+                if (a.equals(s)) {
+                    break;
+                }
+            }
+            bits.sleep(1000);
+            persistC.putChar(13);
+            bits.sleep(1000);
+            persistC.putLine(persistD.remove(0));
+            bits.sleep(1000);
+            persistC.putLine(persistD.remove(0));
+            bits.sleep(1000);
+            persistC.putLine(persistD.remove(0));
+            persistC.syncr = persistD.remove(0);
+            persistC.doSync();
+            persistC.applyCfg(persistD);
+        }
         List<userTesterFtr> don = new ArrayList<userTesterFtr>();
         int err = 0;
         int ret = 0;
@@ -315,6 +374,9 @@ public class userTester {
             lt.remoteL = remoteL;
             lt.remoteP = remoteP;
             lt.remoteS = remoteS;
+            lt.persistP = persistP;
+            lt.persistD = persistD;
+            lt.persistC = persistC;
             lt.capture = capture;
             if (window) {
                 lt.window += "w";
@@ -343,6 +405,12 @@ public class userTester {
             ftr.ftr = lt.getFet();
             don.add(ftr);
             lt.saveMd();
+        }
+        if (persistC != null) {
+            persistC.applyCfg(persistD);
+            persistC.doSync();
+            persistC.persistent = false;
+            persistC.stopNow();
         }
         Collections.sort(don, new userTesterFtr());
         for (int i = 0; i < don.size(); i++) {
@@ -472,6 +540,8 @@ class userTesterPrc {
 
     public boolean debug;
 
+    public boolean persistent;
+
     public String syncr = "!!!hello there!!!";
 
     public userTesterPrc(pipeProgress reader, String nam, String command) {
@@ -490,6 +560,9 @@ class userTesterPrc {
     }
 
     public void stopNow() {
+        if (persistent) {
+            return;
+        }
         rdr.debugStat(name + ": stopping process");
         shell.kill(0);
         shell.waitFor();
@@ -648,7 +721,13 @@ class userTesterOne {
 
     public List<userTesterCap> capture;
 
-    public List<String> remoteD = null;
+    public int persistP;
+
+    public List<String> persistD;
+
+    public userTesterPrc persistC;
+
+    public List<String> remoteD;
 
     public addrIP remoteA;
 
@@ -821,6 +900,11 @@ class userTesterOne {
                 s = s + remoteL + " " + i + " " + remoteA + " " + i + b;
                 continue;
             }
+            if (a.startsWith("per")) {
+                i = (bits.str2num(a.substring(3, a.length())) * 2) + persistP;
+                s = s + "127.0.0.1 " + i + " 127.0.0.1 " + (i + 1);
+                continue;
+            }
             i = bits.str2num(a.substring(0, a.length() - 1)) * 4;
             i += 24000;
             if (a.substring(a.length() - 1, a.length()).equals("b")) {
@@ -907,8 +991,40 @@ class userTesterOne {
             bits.buf2txt(true, cfg, cmd.getRemaining());
             return;
         }
+        if (s.equals("addpersist")) {
+            if (persistD == null) {
+                success();
+                return;
+            }
+            String rn = cmd.word();
+            List<String> cfg = new ArrayList<String>();
+            for (;;) {
+                s = getLin();
+                if (s.equals("!")) {
+                    break;
+                }
+                s = repairHwCfg(s);
+                cfg.add(s);
+            }
+            bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);
+            persistC.name = rn;
+            procs.add(persistC);
+            cfg = new ArrayList<String>();
+            cfg.add("hostname " + rn);
+            for (;;) {
+                s = getLin();
+                if (s.equals("!")) {
+                    break;
+                }
+                cfg.add(s);
+            }
+            bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.swCfgEnd);
+            persistC.applyCfg(persistD);
+            persistC.applyCfg(cfg);
+            return;
+        }
         if (s.equals("addremote")) {
-            if (remoteA == null) {
+            if (remoteD == null) {
                 success();
                 return;
             }

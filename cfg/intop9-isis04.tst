@@ -1,8 +1,8 @@
 description interop9: isis te
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $rem1$
-int eth2 eth 0000.0000.1112 $rem2$
+int eth1 eth 0000.0000.1111 $per1$
+int eth2 eth 0000.0000.1112 $per2$
 !
 vrf def v1
  rd 1:1
@@ -65,11 +65,11 @@ int tun2
 !
 
 
-addremote r2
-int eth1 eth 0000.0000.2222 $rem1$
-int eth2 eth 0000.0000.2223 $rem2$
-int eth3 eth 0000.0000.2224 $rem3$
-int eth4 eth 0000.0000.2225 $rem4$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2223 $per2$
+int eth3 eth 0000.0000.2224 $per3$
+int eth4 eth 0000.0000.2225 $per4$
 !
 set interfaces ge-0/0/0.0 family inet address 1.1.1.2/24
 set interfaces ge-0/0/0.0 family iso
@@ -97,10 +97,10 @@ set protocols mpls interface ge-0/0/0.0
 set protocols mpls interface ge-0/0/1.0
 set protocols mpls interface ge-0/0/2.0
 set protocols mpls interface ge-0/0/3.0
-set protocols isis interface ge-0/0/0.0 point-to-point hello-padding disable
-set protocols isis interface ge-0/0/1.0 point-to-point hello-padding disable
-set protocols isis interface ge-0/0/2.0 point-to-point hello-padding disable
-set protocols isis interface ge-0/0/3.0 point-to-point hello-padding disable
+set protocols isis interface ge-0/0/0.0 point-to-point
+set protocols isis interface ge-0/0/1.0 point-to-point
+set protocols isis interface ge-0/0/2.0 point-to-point
+set protocols isis interface ge-0/0/3.0 point-to-point
 set protocols isis interface lo0.0
 set protocols isis traffic-engineering family inet shortcuts
 set protocols isis traffic-engineering family inet6 shortcuts
@@ -108,8 +108,8 @@ commit
 !
 
 addrouter r3
-int eth1 eth 0000.0000.1131 $rem3$
-int eth2 eth 0000.0000.1132 $rem4$
+int eth1 eth 0000.0000.1131 $per3$
+int eth2 eth 0000.0000.1132 $per4$
 !
 vrf def v1
  rd 1:1

@@ -1,7 +1,7 @@
 description interop9: ospf te
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $rem1$
+int eth1 eth 0000.0000.1111 $per1$
 !
 vrf def v1
  rd 1:1
@@ -60,9 +60,9 @@ int tun2
  exit
 !
 
-addremote r2
-int eth1 eth 0000.0000.2222 $rem1$
-int eth2 eth 0000.0000.2223 $rem2$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2223 $per2$
 !
 set interfaces ge-0/0/0.0 family inet address 1.1.1.2/24
 set interfaces ge-0/0/0.0 family inet6
@@ -91,7 +91,7 @@ commit
 !
 
 addrouter r3
-int eth1 eth 0000.0000.1131 $rem2$
+int eth1 eth 0000.0000.1131 $per2$
 !
 vrf def v1
  rd 1:1

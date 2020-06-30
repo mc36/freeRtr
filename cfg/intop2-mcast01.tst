@@ -1,7 +1,7 @@
 description interop2: igmp3/mld2
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $rem1$
+int eth1 eth 0000.0000.1111 $per1$
 !
 vrf def v1
  rd 1:1
@@ -28,8 +28,8 @@ ipv4 route v1 2.2.2.2 255.255.255.255 1.1.1.2
 ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::2
 !
 
-addremote r2
-int eth1 eth 0000.0000.2222 $rem1$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
 !
 interface gigabit0/0/0/0
  ipv4 address 1.1.1.2 255.255.255.0

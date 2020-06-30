@@ -1,8 +1,6 @@
 hwid emu
 port 60000 61000
 int eth1 eth 0000.1111.2222 127.0.0.1 22706 127.0.0.1 22705
-int eth8 eth 0000.0000.2222 10.5.255.1 10001 10.9.8.1 10001
-int eth9 eth 0000.1111.2222 10.5.255.1 9001 10.9.8.1 9001
 !line tty1 127.0.0.1 21001 127.0.0.1 21002
 tcp2vrf 8080 v1 80
 def alias test bash command attach shell1 socat - exec:bash,ctty,pty,stderr

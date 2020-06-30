@@ -3,8 +3,8 @@ description interop9: isis lsp authentication
 exit
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $rem1$
-int eth2 eth 0000.0000.1112 $rem2$
+int eth1 eth 0000.0000.1111 $per1$
+int eth2 eth 0000.0000.1112 $per2$
 !
 vrf def v1
  rd 1:1
@@ -40,9 +40,9 @@ int lo0
  exit
 !
 
-addremote r2
-int eth1 eth 0000.0000.2222 $rem1$
-int eth2 eth 0000.0000.2223 $rem2$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2223 $per2$
 !
 set interfaces ge-0/0/0.0 family inet address 1.1.1.2/24
 set interfaces ge-0/0/0.0 family iso
@@ -55,8 +55,8 @@ set protocols isis level 1 authentication-key tester
 set protocols isis level 1 authentication-type simple
 set protocols isis level 2 authentication-key tester
 set protocols isis level 2 authentication-type simple
-set protocols isis interface ge-0/0/0.0 point-to-point hello-padding disable
-set protocols isis interface ge-0/0/1.0 point-to-point hello-padding disable
+set protocols isis interface ge-0/0/0.0 point-to-point
+set protocols isis interface ge-0/0/1.0 point-to-point
 set protocols isis interface lo0.0
 commit
 !
