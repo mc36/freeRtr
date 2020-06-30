@@ -119,12 +119,12 @@ public class userImage {
         return false;
     }
 
-    private void selectOnePackage(int level, String nam) {
+    private void selectOnePackage(int level, String nam, String by) {
         nam = nam.trim();
         if (nam.length() < 1) {
             return;
         }
-        if (forbidden.find(nam) != null) {
+        if (forbidden.startsWith(nam) != null) {
             return;
         }
         userImageNtry pkt = allPkgs.find(nam);
@@ -132,11 +132,12 @@ public class userImage {
             missing.add(nam);
             return;
         }
+        pkt.added = by;
         if (selected.update(pkt)) {
             return;
         }
         for (int i = 0; i < pkt.depend.size(); i++) {
-            selectOnePackage(level + 1, pkt.depend.get(i));
+            selectOnePackage(level + 1, pkt.depend.get(i), nam);
         }
         return;
     }
@@ -239,7 +240,7 @@ public class userImage {
                 continue;
             }
             if (a.equals("select-one")) {
-                selectOnePackage(0, s);
+                selectOnePackage(0, s, s);
                 continue;
             }
             if (a.equals("select-dis")) {
@@ -248,6 +249,12 @@ public class userImage {
             }
             if (a.equals("select-del")) {
                 selected.del(s);
+                continue;
+            }
+            if (a.equals("select-lst")) {
+                for (i = 0; i < selected.size(); i++) {
+                    cmd.error("" + selected.get(i));
+                }
                 continue;
             }
             if (a.equals("select-sum")) {
@@ -298,6 +305,19 @@ class userImageList {
         synchronized (lst) {
             userImageNtry pkg = new userImageNtry();
             Collections.sort(lst, pkg);
+        }
+    }
+
+    public userImageNtry startsWith(String a) {
+        synchronized (lst) {
+            userImageNtry pkg;
+            for (int i = 0; i < lst.size(); i++) {
+                pkg = lst.get(i);
+                if (a.startsWith(pkg.name)) {
+                    return pkg;
+                }
+            }
+            return null;
         }
     }
 
@@ -380,7 +400,7 @@ class userImageList {
                 o += pkg.size;
                 s += " " + pkg.name;
             }
-            s += " (" + o / 1024 + " kb)";
+            s += " - " + o / 1024 + " kb";
             return s.substring(1, s.length());
         }
     }
@@ -390,6 +410,8 @@ class userImageList {
 class userImageNtry implements Comparator<userImageNtry> {
 
     public String name = "";
+
+    public String added = "";
 
     public String file = "";
 
@@ -406,9 +428,9 @@ class userImageNtry implements Comparator<userImageNtry> {
     }
 
     public String toString() {
-        String s = "'" + name + "' '" + file + "'";
+        String s = name + " " + vers + " " + added + " " + file + " " + size;
         for (int i = 0; i < depend.size(); i++) {
-            s += ", " + depend.get(i);
+            s += " " + depend.get(i);
         }
         return s;
     }

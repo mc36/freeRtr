@@ -8,6 +8,7 @@ exec cp rtr.bin %tmp%/rtr/rtr.bin
 exec cp rtr.ver %tmp%/rtr/rtr.ver
 exec cp ../rtr.zip %tmp%/rtr/rtr.zip
 
+select-lst
 select-sum
 package-down
 package-inst

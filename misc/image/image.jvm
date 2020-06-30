@@ -13,17 +13,17 @@ select-dis openjdk-13-jre-headless       #old jvm
 select-dis openjdk-14-jre-headless       #old jvm
 select-one openjdk-15-jre-headless       #new jvm
 
-exec ln -s /usr/lib/jvm/java-15-openjdk-%arch%/bin/java %tmp%/bin/java
-
 exec cp ../misc/image/init.jvm %tmp%/init
 exec cp rtr.jar %tmp%/rtr/rtr.jar
 exec cp rtr.ver %tmp%/rtr/rtr.ver
 exec cp ../rtr.zip %tmp%/rtr/rtr.zip
 
+select-lst
 select-sum
 package-down
 package-inst
 
+exec ln -s /usr/lib/jvm/java-15-openjdk-%arch%/bin/java %tmp%/bin/java
 exec ln -s /usr/lib/jvm/java-15-openjdk-%arch%/lib/%arch%/jli/libjli.so %tmp%/lib/libjli.so
 
 del-alw %tmp%/usr/lib/jvm/java-15-openjdk-%arch%/jmods
