@@ -26,7 +26,7 @@ int ifaceId[maxPorts];
 
 
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }

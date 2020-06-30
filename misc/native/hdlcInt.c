@@ -13,7 +13,7 @@
 #define PPP_ESCP 0x7d
 #define PPP_TRNS 0x20
 
-char *ttyName;
+unsigned char *ttyName;
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
 int addrTty;
@@ -22,7 +22,7 @@ int portRem;
 int commSock;
 int fcstab[256];
 int hackTty;
-char accmTty[256];
+unsigned char accmTty[256];
 pthread_t threadUdp;
 pthread_t threadRaw;
 pthread_t threadStat;
@@ -33,7 +33,7 @@ long int packTx;
 long int byteBd;
 long int packBd;
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -49,7 +49,7 @@ void makeFcsTab() {
     }
 }
 
-int doFcsCalc(char* buf, int siz) {
+int doFcsCalc(unsigned char* buf, int siz) {
     int fcs = 0xffff;
     int i;
     for (i = 0; i < siz; i++) {

@@ -17,7 +17,7 @@ struct sockaddr_in addrLoc;
 long int byteRx;
 long int byteTx;
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     fflush(stdout);
     exit(1);

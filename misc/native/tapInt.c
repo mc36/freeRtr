@@ -13,7 +13,7 @@
 #include <sys/fcntl.h>
 #include "utils.h"
 
-char *ifaceName;
+unsigned char *ifaceName;
 int ifaceSock;
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
@@ -31,7 +31,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }

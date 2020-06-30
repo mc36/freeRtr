@@ -17,7 +17,7 @@
 #define blocksMax 64
 
 
-char *ifaceName;
+unsigned char *ifaceName;
 int ifaceIndex;
 int ifaceSock;
 uint8_t *ifaceMem;
@@ -38,7 +38,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -60,7 +60,7 @@ void doRawLoop() {
         ppd = (struct tpacket3_hdr *) ((uint8_t *) pbd + pbd->hdr.bh1.offset_to_first_pkt);
         for (i = 0; i < pkts; i++) {
             bufS = ppd->tp_snaplen;
-            bufD = (char *) ppd + ppd->tp_mac;
+            bufD = (unsigned char *) ppd + ppd->tp_mac;
             if ((ppd->tp_status & TP_STATUS_VLAN_VALID) != 0) {
                 if ((ppd->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) ppd->hv1.tp_vlan_tpid = ETH_P_8021Q;
                 bufD -= 4;

@@ -10,9 +10,9 @@
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
 struct device*ifaceHnd;
-char ifaceAddr[64];
+unsigned char ifaceAddr[64];
 int ifaceMask;
-char ifaceMac[32];
+unsigned char ifaceMac[32];
 int portLoc;
 int portRem;
 int commSock;
@@ -24,7 +24,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }

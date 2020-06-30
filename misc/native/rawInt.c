@@ -12,7 +12,7 @@
 
 
 
-char *ifaceName;
+unsigned char *ifaceName;
 int ifaceIndex;
 int ifaceSock;
 struct sockaddr_in addrLoc;
@@ -30,7 +30,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }

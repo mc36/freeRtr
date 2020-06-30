@@ -10,7 +10,7 @@
 #include <pthread.h>
 
 
-char *ttyName;
+unsigned char *ttyName;
 int addrTty;
 int portLoc;
 int lstnSock;
@@ -24,7 +24,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }

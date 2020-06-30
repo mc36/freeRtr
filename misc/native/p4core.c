@@ -7,7 +7,7 @@
 int ports = 0;
 int cpuport = 0;
 
-char *ifaceName[maxPorts];
+unsigned char *ifaceName[maxPorts];
 long int byteRx[maxPorts];
 long int packRx[maxPorts];
 long int byteTx[maxPorts];

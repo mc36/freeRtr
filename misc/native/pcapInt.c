@@ -11,7 +11,7 @@
 #define use_pcap_v1 1
 
 
-char *ifaceName;
+unsigned char *ifaceName;
 pcap_t *ifacePcap;
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
@@ -26,12 +26,12 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
 
-void gotRawPack(char*dummyparameter, const struct pcap_pkthdr *hdr, u_char *dat) {
+void gotRawPack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
     int len = hdr->caplen;
     packRx++;
     byteRx += len;

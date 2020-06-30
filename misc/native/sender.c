@@ -8,18 +8,18 @@
 
 #define use_pcap_v1 1
 
-char *ifaceName;
+unsigned char *ifaceName;
 pcap_t *ifacePcap;
 FILE *fil;
 int packLen;
-char packBuf[16 * 1024];
+unsigned char packBuf[16 * 1024];
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
 
-void gotRawPack(char*dummyparameter, const struct pcap_pkthdr *hdr, u_char *dat) {
+void gotRawPack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
 }
 
 int main(int argc, char **argv) {
