@@ -241,10 +241,12 @@ public class clntSmtp implements Runnable {
         l.add("delivered to the recipients. sorry for it!");
         l.add("");
         l.add("this is the protocol state:");
-        l.add("peer tried: " + serv);
-        l.add("last stage: " + lastS);
-        l.add("last transmitted: " + lastT);
-        l.add("last received: " + lastR);
+        l.add("source: " + from);
+        l.add("target: " + rcpt);
+        l.add("server: " + serv);
+        l.add("stage: " + lastS);
+        l.add("transmitted: " + lastT);
+        l.add("received: " + lastR);
         l.add("");
         l.add("this is the original header:");
         for (int i = 0; i < ob.size(); i++) {
@@ -268,6 +270,7 @@ public class clntSmtp implements Runnable {
      * @return false on success, true on error
      */
     public boolean doSend() {
+        serv = "";
         lastS = "no recipients configured";
         if (rcpt.length() < 1) {
             return false;
