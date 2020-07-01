@@ -150,7 +150,7 @@ public class userHwdet {
             default:
                 break;
         }
-        makeLoop("lin" + linNum + ".sh", bits.str2lst("./modem.bin " + nam + " \"speedset 9600\""), cmd);
+        makeLoop("lin" + linNum + ".sh", bits.str2lst("./modem.bin " + nam + " \"speedset 9600\" \"ctrlset 3\""), cmd);
         config.add("line tty" + linNum + " 127.0.0.1 " + p2 + " 127.0.0.1 " + p1);
     }
 
@@ -439,7 +439,7 @@ public class userHwdet {
         List<String> lop = new ArrayList<String>();
         lop.add("stty raw < /dev/tty");
         lop.add(s + " router " + path + "rtr-");
-        lop.add("if [[ $? = 4 ]] ; then");
+        lop.add("if [ $? -eq 4 ] ; then");
         lop.add("  sync");
         lop.add("  reboot -f");
         lop.add("else");

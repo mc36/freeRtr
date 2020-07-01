@@ -14,9 +14,7 @@ select-dis openjdk-14-jre-headless       #old jvm
 select-one openjdk-15-jre-headless       #new jvm
 
 exec cp ../misc/image/init.jvm %tmp%/init
-exec cp rtr.jar %tmp%/rtr/rtr.jar
-exec cp rtr.ver %tmp%/rtr/rtr.ver
-exec cp ../rtr.zip %tmp%/rtr/rtr.zip
+exec cp rtr.jar %tmp%/rtr/
 
 select-lst
 select-sum

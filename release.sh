@@ -3,9 +3,11 @@ cd /rtr/src/
 ./backup.sh
 cd src
 ./c.sh
-cd ../misc/image/
+cd ../misc/native/
+./c.sh
+cd ../image/
 ./c.sh
 cd ../native/
-./c.sh
+./d.sh
 cd ../img2ova/
 ./c.sh

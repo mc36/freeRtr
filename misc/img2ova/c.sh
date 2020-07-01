@@ -1,7 +1,7 @@
 #!/bin/sh
 IMG=`cd ../../binImg/;pwd`
 qemu-img create $IMG/rtr.dsk 2G
-sudo ./c2.sh
+sudo ./d.sh
 qemu-img convert -O qcow2 -c $IMG/rtr.dsk $IMG/rtr.qcow2
 qemu-img convert -O vmdk -o subformat=streamOptimized $IMG/rtr.dsk $IMG/rtr.vmdk
 
