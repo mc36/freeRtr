@@ -38,18 +38,20 @@ public class clntSmtp implements Runnable {
      */
     public String from = "";
 
+    /**
+     * target
+     */
+    public String rcpt = "";
+
+    private String serv;
+
     private String lastS;
 
     private String lastR;
 
     private String lastT;
 
-    /**
-     * target
-     */
-    public final List<String> rcpt = new ArrayList<String>();
-
-    private final List<String> body = new ArrayList<String>();
+    private List<String> body = new ArrayList<String>();
 
     /**
      * create new client
@@ -137,7 +139,7 @@ public class clntSmtp implements Runnable {
      */
     public void putBody(List<String> txt) {
         body.clear();
-        body.addAll(txt);
+        body = txt;
     }
 
     /**
@@ -227,11 +229,9 @@ public class clntSmtp implements Runnable {
     public boolean conv2err() {
         String of = from;
         from = "";
-        rcpt.clear();
-        rcpt.add(of);
-        List<String> ob = new ArrayList<String>();
-        ob.addAll(body);
-        body.clear();
+        rcpt = of;
+        List<String> ob = body;
+        body = new ArrayList<String>();
         putHead("error@" + cfgAll.hostName, of, "failure notice");
         List<String> l = new ArrayList<String>();
         l.add("hi " + of + "!");
@@ -241,6 +241,7 @@ public class clntSmtp implements Runnable {
         l.add("delivered to the recipients. sorry for it!");
         l.add("");
         l.add("this is the protocol state:");
+        l.add("peer tried: " + serv);
         l.add("last stage: " + lastS);
         l.add("last transmitted: " + lastT);
         l.add("last received: " + lastR);
@@ -268,14 +269,14 @@ public class clntSmtp implements Runnable {
      */
     public boolean doSend() {
         lastS = "no recipients configured";
-        if (rcpt.size() < 1) {
+        if (rcpt.length() < 1) {
             return false;
         }
         lastS = "no suitable server found";
-        String serv = cfgAll.mailServerName;
+        serv = cfgAll.mailServerName;
         if (serv == null) {
             uniResLoc url = new uniResLoc();
-            url.fromString("smtp://" + rcpt.get(0));
+            url.fromString("smtp://" + rcpt);
             clntDns clnt = new clntDns();
             clnt.doResolvList(cfgAll.nameServerAddr, url.server, packDnsRec.typeMX);
             serv = clnt.getMX();
@@ -320,21 +321,19 @@ public class clntSmtp implements Runnable {
         lastS = "failed to set sender";
         sendLine("mail from:<" + from + ">");
         if (getRes(100) != 2) {
+            cons.debugRes("no source accepted");
             return true;
         }
         lastS = "failed to set recipients";
         cons.debugStat("sending recipients");
-        boolean any = false;
-        for (int i = 0; i < rcpt.size(); i++) {
-            sendLine("rcpt to:<" + rcpt.get(i) + ">");
-            any |= getRes(100) == 2;
-        }
-        if (!any) {
-            cons.debugRes("no recipients accepted");
+        sendLine("rcpt to:<" + rcpt + ">");
+        if (getRes(100) != 2) {
+            cons.debugRes("no recipient accepted");
             return true;
         }
         sendLine("data");
         if (getRes(100) != 3) {
+            cons.debugRes("no body accepted");
             return true;
         }
         lastS = "failed to start lines";
@@ -418,7 +417,7 @@ public class clntSmtp implements Runnable {
      */
     public boolean upload(uniResLoc trg, File src) {
         cons.debugStat("encoding " + src + " to body");
-        rcpt.add(trg.toEmail());
+        rcpt = trg.toEmail();
         putHead(cfgAll.hostName, trg.toEmail(), "" + src);
         putText(bits.str2lst("this is your file!"));
         putFile("" + src);

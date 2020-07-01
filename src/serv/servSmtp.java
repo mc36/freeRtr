@@ -615,18 +615,17 @@ class servSmtpDoer implements Runnable {
                     o++;
                 }
             }
-            int i = trgR.size();
-            if (i > 0) {
+            for (int i = 0; i < trgR.size(); i++) {
                 clntSmtp sm = new clntSmtp(null);
-                sm.rcpt.addAll(trgR);
+                sm.rcpt = trgR.get(i);
                 sm.from = src;
                 sm.putBody(txt);
                 sm.startSend();
             }
+            doLine("250 mail saved in " + o + " local and " + trgR.size() + " remote mailbox(es)");
             src = "";
             trgL.clear();
             trgR.clear();
-            doLine("250 mail saved in " + o + " (local) + " + i + " (remote) mailbox(es)");
             return false;
         }
         if (a.equals("vrfy")) {

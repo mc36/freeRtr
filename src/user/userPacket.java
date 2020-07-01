@@ -1024,7 +1024,7 @@ public class userPacket {
         if (a.equals("smtp")) {
             clntSmtp sm = new clntSmtp(cmd.pipe);
             a = cmd.word();
-            sm.rcpt.add(a);
+            sm.rcpt = a;
             sm.putHead("test@" + cfgAll.hostName, a, "test message");
             a = cmd.getRemaining().trim();
             if (a.length() < 1) {
