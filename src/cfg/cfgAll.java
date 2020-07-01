@@ -692,17 +692,17 @@ public class cfgAll {
     /**
      * name of mail server
      */
-    public static String mailServerName;
+    public static String mailServerName = null;
 
     /**
      * username for mail server
      */
-    public static String mailServerUser;
+    public static String mailServerUser = null;
 
     /**
      * password for mail server
      */
-    public static String mailServerPass;
+    public static String mailServerPass = null;
 
     /**
      * upgrade public key
@@ -713,6 +713,11 @@ public class cfgAll {
      * upgrade server url
      */
     public static String upgradeServer = verCore.homeUrl;
+
+    /**
+     * upgrade script
+     */
+    public static cfgScrpt upgradeScript = null;
 
     /**
      * upgrade backup files
@@ -898,6 +903,7 @@ public class cfgAll {
         "!client upgrade-server " + verCore.homeUrl,
         "!no client upgrade-config",
         "!no client upgrade-backup",
+        "!no client upgrade-script",
         "!no client upgrade-ownkey",
         "!no client whois-server",
         "!no client config-server",
@@ -3015,6 +3021,11 @@ public class cfgAll {
         cmds.cfgLine(l, !upgradeConfig, "", "client upgrade-config", "");
         cmds.cfgLine(l, !upgradeBackup, "", "client upgrade-backup", "");
         cmds.cfgLine(l, !upgradeOwnKey, "", "client upgrade-ownkey", "");
+        if (upgradeScript == null) {
+            l.add("no client upgrade-script");
+        } else {
+            l.add("client upgrade-script " + upgradeScript.name);
+        }
         cmds.cfgLine(l, configServer == null, "", "client config-server", "" + configServer);
         cmds.cfgLine(l, configUser == null, "", "client config-username", "" + configUser);
         cmds.cfgLine(l, configPass == null, "", "client config-password", "" + authLocal.passwdEncode(configPass));

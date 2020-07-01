@@ -228,6 +228,7 @@ public class clntSmtp implements Runnable {
      */
     public boolean conv2err() {
         String of = from;
+        String ot = rcpt;
         from = "";
         rcpt = of;
         List<String> ob = body;
@@ -241,8 +242,8 @@ public class clntSmtp implements Runnable {
         l.add("delivered to the recipients. sorry for it!");
         l.add("");
         l.add("this is the protocol state:");
-        l.add("source: " + from);
-        l.add("target: " + rcpt);
+        l.add("source: " + of);
+        l.add("target: " + ot);
         l.add("server: " + serv);
         l.add("stage: " + lastS);
         l.add("transmitted: " + lastT);

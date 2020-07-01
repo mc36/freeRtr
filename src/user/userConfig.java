@@ -438,6 +438,8 @@ public class userConfig {
         l.add("2  .    upgrade-ownkey               use just the configured key");
         l.add("2  3    upgrade-server               specify url of upgrade server");
         l.add("3  .      <name>                     url of server");
+        l.add("2  3    upgrade-script               specify script to run on upgrade");
+        l.add("3  .      <name>                     name of script");
         l.add("2  3    upgrade-pubkey               specify key of upgrade");
         l.add("3  .      <text>                     public key");
         l.add("2  3    config-server                specify url of config server");
@@ -501,7 +503,7 @@ public class userConfig {
         l.add("1  2  scheduler                      configure a scheduler");
         l.add("2  .    <name>                       name of scheduler");
         l.add("1  2  script                         configure a script");
-        l.add("2  .    <name>                       name of scheduler");
+        l.add("2  .    <name>                       name of script");
         l.add("1  2  tracker                        configure a tracker");
         l.add("2  .    <name>                       name of tracker");
         l.add("1  2  mtracker                       configure a mtracker");
@@ -1490,6 +1492,15 @@ public class userConfig {
                 cfgAll.upgradeOwnKey = true;
                 return;
             }
+            if (a.equals("upgrade-script")) {
+                cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such script");
+                    return;
+                }
+                cfgAll.upgradeScript = ntry;
+                return;
+            }
             if (a.equals("upgrade-server")) {
                 cfgAll.upgradeServer = cmd.word();
                 return;
@@ -2210,6 +2221,10 @@ public class userConfig {
             }
             if (a.equals("upgrade-server")) {
                 cfgAll.upgradeServer = verCore.homeUrl;
+                return;
+            }
+            if (a.equals("upgrade-script")) {
+                cfgAll.upgradeScript = null;
                 return;
             }
             if (a.equals("upgrade-pubkey")) {
