@@ -53,9 +53,17 @@ public class userTester {
 
     private String remoteS = null;
 
+    private String otherF = null;
+
     private String otherI = null;
 
     private String otherN = null;
+
+    private String otherW = null;
+
+    private String otherS = null;
+
+    private List<String> otherD = null;
 
     private int otherM = 0;
 
@@ -168,14 +176,10 @@ public class userTester {
                 remoteF = null;
             }
             if (s.equals("other")) {
-                otherI = cmd.word();
-                otherN = cmd.word();
-                otherM = bits.str2num(cmd.word());
+                otherF = cmd.word();
             }
             if (s.equals("noother")) {
-                otherI = null;
-                otherN = null;
-                otherM = 0;
+                otherF = null;
             }
             if (s.equals("capture")) {
                 userTesterCap cap = new userTesterCap();
@@ -270,19 +274,6 @@ public class userTester {
             maxTry = 1;
             window = false;
         }
-        if (remoteF != null) {
-            remoteD = bits.txt2buf(path + remoteF);
-            remoteA = new addrIP();
-            remoteA.fromString(remoteD.remove(0));
-            remoteP = bits.str2num(remoteD.remove(0));
-            remoteL = new addrIP();
-            remoteL.fromString(remoteD.remove(0));
-            remoteS = remoteD.remove(0);
-        }
-        if (persistF != null) {
-            persistD = bits.txt2buf(path + persistF);
-            persistP = bits.str2num(persistD.remove(0));
-        }
         rdr.debugStat("jvm=" + jvn + jvp);
         rdr.debugStat("release=" + release);
         rdr.debugStat("url=" + url);
@@ -296,12 +287,31 @@ public class userTester {
         rdr.debugStat("reapply=" + reapply);
         rdr.debugStat("randord=" + randord);
         rdr.debugStat("retry=" + maxTry);
-        rdr.debugStat("other=" + otherI + " " + otherN + " " + otherM);
-        rdr.debugStat("remote=" + remoteL + " " + remoteP + " " + remoteA);
-        rdr.debugStat("persist=" + persistP);
+        rdr.debugStat("other=" + otherF);
+        rdr.debugStat("remote=" + remoteF);
+        rdr.debugStat("persist=" + persistF);
         rdr.debugStat("capture=" + capture.size());
         rdr.debugStat("files=" + ned.size());
-        if (persistD != null) {
+        if (otherF != null) {
+            otherD = bits.txt2buf(path + otherF);
+            otherI = otherD.remove(0);
+            otherM = bits.str2num(otherD.remove(0));
+            otherN = otherD.remove(0);
+            otherW = otherD.remove(0);
+            otherS = otherD.remove(0);
+        }
+        if (remoteF != null) {
+            remoteD = bits.txt2buf(path + remoteF);
+            remoteA = new addrIP();
+            remoteA.fromString(remoteD.remove(0));
+            remoteP = bits.str2num(remoteD.remove(0));
+            remoteL = new addrIP();
+            remoteL.fromString(remoteD.remove(0));
+            remoteS = remoteD.remove(0);
+        }
+        if (persistF != null) {
+            persistD = bits.txt2buf(path + persistF);
+            persistP = 22000;
             String a = persistD.remove(0);
             s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=4,threads=1,sockets=1 -hda " + a + " -m " + persistD.remove(0);
             a = persistD.remove(0);
@@ -310,7 +320,7 @@ public class userTester {
                 int lp = rp + 1;
                 s += " -netdev socket,id=n" + i + ",udp=127.0.0.1:" + rp + ",localaddr=:" + lp + " -device " + a + ",netdev=n" + i + ",mac=00:00:00:00:11:" + bits.toHexB(i);
             }
-            persistP += 2 * bits.str2num(persistD.remove(0));
+            persistP += (2 * bits.str2num(persistD.remove(0)));
             persistC = new userTesterPrc(rdr, "persist", s);
             persistC.debug = debug;
             persistC.persistent = true;
@@ -366,9 +376,12 @@ public class userTester {
             lt.config = config;
             lt.reapply = reapply;
             lt.jvm = jvn + jvp;
+            lt.otherD = otherD;
             lt.otherI = otherI;
             lt.otherN = otherN;
             lt.otherM = otherM;
+            lt.otherW = otherW;
+            lt.otherS = otherS;
             lt.remoteD = remoteD;
             lt.remoteA = remoteA;
             lt.remoteL = remoteL;
@@ -741,6 +754,12 @@ class userTesterOne {
 
     public String otherN;
 
+    public String otherW;
+
+    public String otherS;
+
+    public List<String> otherD;
+
     public int otherM;
 
     public String window = "c";
@@ -902,7 +921,7 @@ class userTesterOne {
             }
             if (a.startsWith("per")) {
                 i = (bits.str2num(a.substring(3, a.length())) * 2) + persistP;
-                s = s + "127.0.0.1 " + i + " 127.0.0.1 " + (i + 1);
+                s = s + "127.0.0.1 " + i + " 127.0.0.1 " + (i + 1) + b;
                 continue;
             }
             i = bits.str2num(a.substring(0, a.length() - 1)) * 4;
@@ -1060,7 +1079,7 @@ class userTesterOne {
             return;
         }
         if (s.equals("addother")) {
-            if (otherI == null) {
+            if (otherD == null) {
                 success();
                 return;
             }
@@ -1100,6 +1119,7 @@ class userTesterOne {
             bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, rn, s);
             p.debug = debug;
+            p.syncr = otherS;
             procs.add(p);
             cfg = new ArrayList<String>();
             cfg.add("hostname " + rn);
@@ -1122,17 +1142,12 @@ class userTesterOne {
                 if (a == null) {
                     return;
                 }
-                a = a.toLowerCase().trim();
-                if (a.equals("router>")) {
-                    break;
-                }
-                if (a.equals("router#")) {
+                a = a.trim();
+                if (a.equals(otherW)) {
                     break;
                 }
             }
-            p.putLine("enable");
-            p.putLine("configure terminal");
-            p.putLine("no logging console");
+            p.applyCfg(otherD);
             p.applyCfg(cfg);
             return;
         }
