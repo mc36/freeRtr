@@ -496,7 +496,7 @@ class servSmtpDoer implements Runnable {
         }
         if (a.equals("helo")) {
             helo = cmd.word();
-            doLine("250 " + cfgAll.hostName + " hello [" + conn.peerAddr + " " + conn.portRem + "]");
+            doLine("250 " + cfgAll.getFqdn() + " hello [" + conn.peerAddr + " " + conn.portRem + "]");
             return false;
         }
         if (a.equals("starttls")) {
@@ -516,7 +516,7 @@ class servSmtpDoer implements Runnable {
         }
         if (a.equals("ehlo")) {
             helo = cmd.word();
-            doLine("250-" + cfgAll.hostName + " hello [" + conn.peerAddr + " " + conn.portRem + "]");
+            doLine("250-" + cfgAll.getFqdn() + " hello [" + conn.peerAddr + " " + conn.portRem + "]");
             doLine("250-SIZE 10240000");
             doLine("250-PIPELINING");
             if (!lower.noneSecKeys()) {
@@ -607,7 +607,7 @@ class servSmtpDoer implements Runnable {
             doLine("354 start mail input");
             packText pt = new packText(pipe);
             List<String> txt = pt.dottedRecvAll();
-            txt.add(0, "Received: from " + conn.peerAddr + " (helo " + helo + ") by " + conn.iface.addr + " (helo " + cfgAll.hostName + ") (envelope-from " + src + ") with smtp at " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+            txt.add(0, "Received: from " + conn.peerAddr + " (helo " + helo + ") by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ") (envelope-from " + src + ") with smtp at " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             int o = 0;
             for (int i = 0; i < trgL.size(); i++) {
                 a = lower.mailFolders + trgL.get(i).user + "/" + bits.getTime() + ".msg";

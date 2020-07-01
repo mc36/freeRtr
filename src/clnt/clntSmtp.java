@@ -126,7 +126,7 @@ public class clntSmtp implements Runnable {
         body.add("MIME-Version: 1.0");
         body.add("Content-Type: multipart/mixed; boundary=" + boundary);
         body.add("X-Mailer: " + version.usrAgnt);
-        body.add("Message-ID: <" + tim + "@" + cfgAll.hostName + ">");
+        body.add("Message-ID: <" + tim + "@" + cfgAll.getFqdn() + ">");
         body.add("");
         body.add("this is a message in mime format!");
         body.add("");
@@ -233,12 +233,12 @@ public class clntSmtp implements Runnable {
         rcpt = of;
         List<String> ob = body;
         body = new ArrayList<String>();
-        putHead("error@" + cfgAll.hostName, of, "failure notice");
+        putHead("error@" + cfgAll.getFqdn(), of, "failure notice");
         List<String> l = new ArrayList<String>();
         l.add("hi " + of + "!");
         l.add("");
         l.add("this message was automatically generated at");
-        l.add(cfgAll.hostName + " because the attached mail was not");
+        l.add(cfgAll.getFqdn() + " because the attached mail was not");
         l.add("delivered to the recipients. sorry for it!");
         l.add("");
         l.add("this is the protocol state:");
@@ -301,7 +301,7 @@ public class clntSmtp implements Runnable {
             return true;
         }
         lastS = "failed to exchange hostname";
-        sendLine("helo " + cfgAll.hostName);
+        sendLine("helo " + cfgAll.getFqdn());
         if (getRes(100) != 2) {
             return true;
         }
@@ -422,7 +422,7 @@ public class clntSmtp implements Runnable {
     public boolean upload(uniResLoc trg, File src) {
         cons.debugStat("encoding " + src + " to body");
         rcpt = trg.toEmail();
-        putHead(cfgAll.hostName, trg.toEmail(), "" + src);
+        putHead("file@" + cfgAll.getFqdn(), trg.toEmail(), "" + src);
         putText(bits.str2lst("this is your file!"));
         putFile("" + src);
         putFinish();

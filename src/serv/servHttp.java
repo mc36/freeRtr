@@ -1516,7 +1516,7 @@ class servHttpConn implements Runnable {
                 + "\n<html><head><title>dirlist</title></head><body"
                 + getStyle() + ">\n";
         rsp += "directory listing of " + gotHost.host + "/" + s + " at "
-                + cfgAll.hostName + ":<br/><br/>\n";
+                + cfgAll.getFqdn() + ":<br/><br/>\n";
         rsp += "<table border=1><tr><td><b>date</b></td><td><b>size</b></td><td><b>name</b></td></tr>\n";
         rsp += "<tr><td>-</td><td>dir</td><td><a href=\"/\">root</a></td></tr>\n";
         rsp += "<tr><td>-</td><td>dir</td><td><a href=\"../\">parent</a></td></tr>\n";

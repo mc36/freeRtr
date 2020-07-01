@@ -777,7 +777,7 @@ public class userPacket {
             sv.called = cmd.word();
             sv.calling = cmd.word();
             if (sv.calling.length() < 1) {
-                sv.calling = "sip:voice@" + cfgAll.hostName;
+                sv.calling = "sip:voice@" + cfgAll.getFqdn();
             }
             if (sv.callStart()) {
                 sv.callStop();
@@ -809,7 +809,7 @@ public class userPacket {
             sm.called = cmd.word();
             sm.calling = cmd.word();
             if (sm.calling.length() < 1) {
-                sm.calling = "sip:modem@" + cfgAll.hostName;
+                sm.calling = "sip:modem@" + cfgAll.getFqdn();
             }
             if (sm.callStart()) {
                 sm.callStop();
@@ -1025,7 +1025,7 @@ public class userPacket {
             clntSmtp sm = new clntSmtp(cmd.pipe);
             a = cmd.word();
             sm.rcpt = a;
-            sm.putHead("test@" + cfgAll.hostName, a, "test message");
+            sm.putHead("test@" + cfgAll.getFqdn(), a, "test message");
             a = cmd.getRemaining().trim();
             if (a.length() < 1) {
                 a = "right now it worked fine";

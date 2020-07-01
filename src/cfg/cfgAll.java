@@ -976,6 +976,19 @@ public class cfgAll {
     }
 
     /**
+     * get my fqdn
+     *
+     * @return name
+     */
+    public static String getFqdn() {
+        if (domainName == null) {
+            return hostName;
+        } else {
+            return hostName + "." + domainName;
+        }
+    }
+
+    /**
      * open one connection
      *
      * @param proto protocol to use from servGeneric
