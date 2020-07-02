@@ -1,8 +1,8 @@
 description interop1: isis authentication
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $1a$ $1b$
-int eth2 eth 0000.0000.3333 $2a$ $2b$
+int eth1 eth 0000.0000.1111 $per1$
+int eth2 eth 0000.0000.3333 $per2$
 !
 vrf def v1
  rd 1:1
@@ -36,9 +36,9 @@ int lo0
  exit
 !
 
-addother r2
-int eth1 eth 0000.0000.2211 $1b$ $1a$
-int eth2 eth 0000.0000.2222 $2b$ $2a$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2211 $per2$
 !
 ip routing
 ipv6 unicast-routing
@@ -57,7 +57,7 @@ key chain kc
  key 0
   key-string tester
  exit
-interface gigabit2
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  isis network point-to-point
  isis authentication key-chain kc
@@ -65,7 +65,7 @@ interface gigabit2
  ip router isis
  no shutdown
  exit
-interface gigabit1
+interface gigabit2
  ipv6 enable
  isis network point-to-point
  isis authentication key-chain kc

@@ -23,7 +23,7 @@ server modem sm
 
 addrouter r2
 int eth1 eth 0000.1234.2222 $1b$ $1a$
-int eth2 eth 0000.1234.2222 $2a$ $2b$
+int eth2 eth 0000.1234.2222 $per1$
 !
 vrf def v1
  rd 1:1
@@ -60,18 +60,18 @@ dial-peer 2
  exit
 !
 
-addother r3
-int eth1 eth 0000.0000.2211 $3a$ $3b$
-int eth2 eth 0000.0000.2222 $2b$ $2a$
+addpersist r3
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2211 $per2$
 !
 ip routing
 ipv6 unicast-routing
-interface gigabit2
- ip address 1.1.3.1 255.255.255.0
- no shutdown
- exit
 interface gigabit1
  ip address 1.1.2.1 255.255.255.0
+ no shutdown
+ exit
+interface gigabit2
+ ip address 1.1.3.1 255.255.255.0
  no shutdown
  exit
 voice service voip
@@ -102,7 +102,7 @@ dial-peer voice 2 voip
 !
 
 addrouter r4
-int eth1 eth 0000.0000.4444 $3b$ $3a$
+int eth1 eth 0000.0000.4444 $per2$
 !
 vrf def v1
  rd 1:1

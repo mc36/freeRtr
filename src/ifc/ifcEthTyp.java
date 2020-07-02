@@ -562,7 +562,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
      */
     public void doTxPack(packHolder pck) {
         if (padupMin > 0) {
-            int i = pck.dataSize() - padupMin;
+            int i = padupMin - pck.dataSize();
             if (i > 0) {
                 pck.putFill(0, i, 0);
                 pck.putSkip(i);

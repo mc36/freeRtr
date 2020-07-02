@@ -1,7 +1,7 @@
 description interop1: ospf te
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $1a$ $1b$
+int eth1 eth 0000.0000.1111 $per1$
 !
 vrf def v1
  rd 1:1
@@ -60,9 +60,9 @@ int tun2
  exit
 !
 
-addother r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
-int eth2 eth 0000.0000.2211 $2b$ $2a$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2211 $per2$
 !
 ip routing
 ipv6 unicast-routing
@@ -116,7 +116,7 @@ interface Tunnel2
  exit
 !
 addrouter r3
-int eth1 eth 0000.0000.1131 $2a$ $2b$
+int eth1 eth 0000.0000.1131 $per2$
 !
 vrf def v1
  rd 1:1

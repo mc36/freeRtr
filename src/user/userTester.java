@@ -69,8 +69,6 @@ public class userTester {
 
     private List<userTesterCap> capture = new ArrayList<userTesterCap>();
 
-    private boolean debug = false;
-
     private boolean summary = false;
 
     private boolean window = false;
@@ -102,12 +100,6 @@ public class userTester {
             String s = cmd.word();
             if (s.length() < 1) {
                 break;
-            }
-            if (s.equals("debug")) {
-                debug = true;
-            }
-            if (s.equals("nodebug")) {
-                debug = false;
             }
             if (s.equals("summary")) {
                 summary = true;
@@ -156,6 +148,9 @@ public class userTester {
             }
             if (s.equals("discard")) {
                 discard = cmd.word();
+            }
+            if (s.equals("nodiscard")) {
+                discard = "^$";
             }
             if (s.equals("path")) {
                 path = cmd.word();
@@ -279,7 +274,6 @@ public class userTester {
         rdr.debugStat("url=" + url);
         rdr.debugStat("path=" + path);
         rdr.debugStat("discard=" + discard);
-        rdr.debugStat("debug=" + debug);
         rdr.debugStat("mdfile=" + mdfile);
         rdr.debugStat("summary=" + summary);
         rdr.debugStat("window=" + window);
@@ -322,22 +316,19 @@ public class userTester {
             }
             persistP += (2 * bits.str2num(persistD.remove(0)));
             persistC = new userTesterPrc(rdr, "persist", s);
-            persistC.debug = debug;
             persistC.persistent = true;
+            bits.buf2txt(true, bits.str2lst(""), persistC.getLogName(4));
             s = persistD.remove(0);
             int round = 5000;
             rdr.setMax(round);
             for (int rnd = 0; rnd < round; rnd++) {
-                if ((rnd % 50) == 0) {
-                    persistC.putChar(13);
-                }
                 a = persistC.getLine();
                 rdr.setCurr(rnd);
                 if (a == null) {
                     return;
                 }
                 a = a.trim();
-                if (a.equals(s)) {
+                if (a.matches(s)) {
                     break;
                 }
             }
@@ -371,7 +362,6 @@ public class userTester {
             userTesterOne lt = new userTesterOne();
             bits.sleep(1000);
             lt = new userTesterOne();
-            lt.debug = debug;
             lt.mdfile = mdfile;
             lt.config = config;
             lt.reapply = reapply;
@@ -551,8 +541,6 @@ class userTesterPrc {
 
     public pipeProgress rdr;
 
-    public boolean debug;
-
     public boolean persistent;
 
     public String syncr = "!!!hello there!!!";
@@ -582,6 +570,32 @@ class userTesterPrc {
         pipe.setClose();
     }
 
+    public static String getLogName(String nam, int mod) {
+        String s;
+        switch (mod) {
+            case 1:
+                s = "run";
+                break;
+            case 2:
+                s = "txt";
+                break;
+            case 3:
+                s = "err";
+                break;
+            case 4:
+                s = "res";
+                break;
+            default:
+                s = "log";
+                break;
+        }
+        return userTesterOne.path + "log-" + nam + "." + s;
+    }
+
+    public String getLogName(int mod) {
+        return getLogName(name, mod);
+    }
+
     public void putChar(int i) {
         byte[] buf = new byte[1];
         buf[0] = (byte) i;
@@ -599,16 +613,12 @@ class userTesterPrc {
             }
             return "";
         }
-        if (debug) {
-            rdr.debugRx(name + ": " + s);
-        }
+        bits.buf2txt(false, bits.str2lst("rx:" + s), getLogName(4));
         return s;
     }
 
     public void putLine(String s) {
-        if (debug) {
-            rdr.debugTx(name + ": " + s);
-        }
+        bits.buf2txt(false, bits.str2lst("tx:" + s), getLogName(4));
         pipe.linePut(s);
     }
 
@@ -683,14 +693,15 @@ class userTesterPrc {
     }
 
     public void doSync() {
-        putLine(syncr);
+        String s = syncr + bits.randomD();
+        putLine(s);
         for (;;) {
             String a = getLine();
             if (a == null) {
                 return;
             }
             a = bits.trimE(a);
-            if (a.indexOf(syncr) >= 0) {
+            if (a.indexOf(s) >= 0) {
                 break;
             }
         }
@@ -700,11 +711,11 @@ class userTesterPrc {
         doSync();
         rdr.setMax(cfg.size());
         for (int i = 0; i < cfg.size(); i++) {
-            if ((i % 5) == 0) {
+            if ((i % 5) == 4) {
                 doSync();
             }
             putLine(cfg.get(i));
-            getLine();
+            bits.sleep(100);
             rdr.setCurr(i);
         }
         doSync();
@@ -721,8 +732,6 @@ class userTesterOne {
     public String testName = "unnamed";
 
     public int testRes = 1;
-
-    public boolean debug;
 
     public boolean config;
 
@@ -820,13 +829,13 @@ class userTesterOne {
         for (int i = 0; i < procs.size(); i++) {
             userTesterPrc prc = procs.get(i);
             prc.stopNow();
-            List<String> log = bits.txt2buf(getLogName(prc.name, 1));
-            bits.buf2txt(false, log, getLogName(prc.name, 2));
-            userFlash.delete(getLogName(prc.name, 1));
+            List<String> log = bits.txt2buf(prc.getLogName(1));
+            bits.buf2txt(false, log, prc.getLogName(2));
+            userFlash.delete(prc.getLogName(1));
             if (checkLogs(log)) {
                 continue;
             }
-            bits.buf2txt(false, log, getLogName(prc.name, 3));
+            bits.buf2txt(false, log, prc.getLogName(3));
             traces++;
         }
     }
@@ -896,9 +905,6 @@ class userTesterOne {
                 break;
             }
             cmd = new cmds("", fn);
-            if (debug) {
-                rdr.debugStat("cmd> " + fn);
-            }
             doLine();
         }
     }
@@ -953,22 +959,6 @@ class userTesterOne {
         return true;
     }
 
-    public String getLogName(String rn, int rtr) {
-        String s = "log";
-        switch (rtr) {
-            case 1:
-                s = "run";
-                break;
-            case 2:
-                s = "txt";
-                break;
-            case 3:
-                s = "err";
-                break;
-        }
-        return path + "log-" + rn + "." + s;
-    }
-
     public void doLine() {
         String s = cmd.word();
         if (s.length() < 1) {
@@ -1017,6 +1007,7 @@ class userTesterOne {
             }
             String rn = cmd.word();
             List<String> cfg = new ArrayList<String>();
+            rdr.debugStat(rn + ": configuring process");
             for (;;) {
                 s = getLin();
                 if (s.equals("!")) {
@@ -1028,8 +1019,8 @@ class userTesterOne {
             bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);
             persistC.name = rn;
             procs.add(persistC);
+            bits.buf2txt(true, bits.str2lst(""), persistC.getLogName(4));
             cfg = new ArrayList<String>();
-            cfg.add("hostname " + rn);
             for (;;) {
                 s = getLin();
                 if (s.equals("!")) {
@@ -1061,11 +1052,10 @@ class userTesterOne {
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, rn, s);
-            p.debug = debug;
             p.syncr = remoteS;
             procs.add(p);
+            bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             cfg = new ArrayList<String>();
-            cfg.add("hostname " + rn);
             for (;;) {
                 s = getLin();
                 if (s.equals("!")) {
@@ -1118,11 +1108,10 @@ class userTesterOne {
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, rn, s);
-            p.debug = debug;
             p.syncr = otherS;
             procs.add(p);
+            bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             cfg = new ArrayList<String>();
-            cfg.add("hostname " + rn);
             for (;;) {
                 s = getLin();
                 if (s.equals("!")) {
@@ -1134,19 +1123,17 @@ class userTesterOne {
             int round = 500;
             rdr.setMax(round);
             for (int rnd = 0; rnd < round; rnd++) {
-                if ((rnd % 10) == 0) {
-                    p.putChar(13);
-                }
                 String a = p.getLine();
                 rdr.setCurr(rnd);
                 if (a == null) {
                     return;
                 }
                 a = a.trim();
-                if (a.equals(otherW)) {
+                if (a.matches(otherW)) {
                     break;
                 }
             }
+            p.putChar(13);
             p.applyCfg(otherD);
             p.applyCfg(cfg);
             return;
@@ -1167,10 +1154,10 @@ class userTesterOne {
             cfg.add("");
             cfg.add("");
             cfg.add(fileName + " - " + rn + " - " + testName + ":");
-            bits.buf2txt(true, cfg, getLogName(rn, 1));
+            bits.buf2txt(true, cfg, userTesterPrc.getLogName(rn, 1));
             cfg = new ArrayList<String>();
             cfg.add("hostname " + rn);
-            cfg.add("logging file debug " + getLogName(rn, 1));
+            cfg.add("logging file debug " + userTesterPrc.getLogName(rn, 1));
             for (;;) {
                 s = getLin();
                 if (s.equals("!")) {
@@ -1180,8 +1167,8 @@ class userTesterOne {
             }
             bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.swCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, rn, jvm + " router" + window + " " + path + rn + "-");
-            p.debug = debug;
             procs.add(p);
+            bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             for (int i = 0; i < capture.size(); i++) {
                 userTesterCap cap = capture.get(i);
                 if (!rn.equals(cap.rtr)) {
@@ -1189,6 +1176,7 @@ class userTesterOne {
                 }
                 p.putLine("packet capture " + cap.ifc + " " + path + "log-" + rn + "-" + cap.ifc + ".pcap");
             }
+            p.putLine("terminal no monitor");
             p.putLine("terminal length 0");
             p.putLine("terminal table fancy");
             p.putLine("write");

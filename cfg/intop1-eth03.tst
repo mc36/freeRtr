@@ -3,8 +3,8 @@ description interop1: spantree nonroot
 exit
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $1a$ $1b$
-int eth2 eth 0000.0000.1112 $2a$ $2b$
+int eth1 eth 0000.0000.1111 $per1$
+int eth2 eth 0000.0000.1112 $per2$
 !
 vrf def v1
  rd 1:1
@@ -26,20 +26,20 @@ int bvi1
  exit
 !
 
-addother r2
-int eth1 eth 0000.0000.2211 $1b$ $1a$
-int eth2 eth 0000.0000.2222 $2b$ $2a$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2211 $per2$
 !
 ip routing
 ipv6 unicast-routing
 bridge irb
 bridge 1 protocol ieee
 bridge 1 route ip
-interface gigabit2
+interface gigabit1
  bridge-group 1
  no shutdown
  exit
-interface gigabit1
+interface gigabit2
  bridge-group 1
  no shutdown
  exit

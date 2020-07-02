@@ -1,8 +1,8 @@
 description interop1: isis sr
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $1a$ $1b$
-int eth2 eth 0000.0000.3333 $2a$ $2b$
+int eth1 eth 0000.0000.1111 $per1$
+int eth2 eth 0000.0000.3333 $per2$
 !
 vrf def v1
  rd 1:1
@@ -68,11 +68,11 @@ int pweth1
  exit
 !
 
-addother r2
-int eth1 eth 0000.0000.2211 $1b$ $1a$
-int eth2 eth 0000.0000.2222 $2b$ $2a$
-int eth3 eth 0000.0000.2233 $3b$ $3a$
-int eth4 eth 0000.0000.2244 $4b$ $4a$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2211 $per2$
+int eth3 eth 0000.0000.2233 $per3$
+int eth4 eth 0000.0000.2244 $per4$
 !
 ip routing
 ipv6 unicast-routing
@@ -100,7 +100,7 @@ router isis
  address-family ipv6
   redistribute connected
  exit
-interface gigabit2
+interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  isis network point-to-point
  ip router isis
@@ -108,7 +108,7 @@ interface gigabit2
  mpls traffic-eng tunnels
  no shutdown
  exit
-interface gigabit1
+interface gigabit2
  ipv6 enable
  isis network point-to-point
  ipv6 router isis
@@ -135,8 +135,8 @@ interface gigabit4
 !
 
 addrouter r3
-int eth1 eth 0000.0000.1121 $3a$ $3b$
-int eth2 eth 0000.0000.3343 $4a$ $4b$
+int eth1 eth 0000.0000.1121 $per3$
+int eth2 eth 0000.0000.3343 $per4$
 !
 vrf def v1
  rd 1:1

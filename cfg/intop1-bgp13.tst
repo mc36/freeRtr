@@ -1,7 +1,7 @@
 description interop1: bgp vpnv6
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $1a$ $1b$
+int eth1 eth 0000.0000.1111 $per1$
 !
 vrf def v1
  rd 1:1
@@ -68,8 +68,8 @@ router bgp6 1
  exit
 !
 
-addother r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
 !
 ip routing
 ipv6 unicast-routing
