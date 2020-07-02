@@ -2,7 +2,7 @@ virtualbox:
 vboxmanage import rtr.ova
 vboxmanage startvm rtr-dsk --type headless
 socat - unix-connect:/tmp/rtr-dsk
-vboxmanage controlvm rtr-dsk poweroff
+vboxmanage controlvm rtr poweroff
 
 qemu:
 tar xvf rtr.ova
