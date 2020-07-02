@@ -35,7 +35,7 @@ ip domain name lab
 aaa new-model
 aaa authentication login default local
 username usr password pwd
-crypto key generate rsa modulus 1024
+crypto key generate rsa modulus 2048
 line vty 0 4
  transport input all
  transport output all
@@ -78,7 +78,7 @@ r1 send usr
 r1 send pwd
 sleep 5
 r1 char 13
-r1 read r2>
+r1 read csr1k>
 r1 send telnet 2.2.2.2
 sleep 5
 r1 tping 100 10 3.3.3.3 /vrf v1
