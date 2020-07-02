@@ -16,11 +16,11 @@ server dhcp4 dh
  gateway 1.1.1.1
  netmask 255.255.255.0
  interface ethernet1
- static 0000.0000.2222 1.1.1.2
+ static 0000.0000.1100 1.1.1.2
  vrf v1
  exit
 server dhcp6 dh
- static 0000.0000.2222 1234::2
+ static 0000.0000.1100 1234::2
  interface ethernet1
  vrf v1
  exit

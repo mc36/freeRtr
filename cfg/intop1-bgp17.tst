@@ -104,7 +104,7 @@ l2vpn evpn instance 10 vlan-aware
  route-target import 1:1
  exit
 bridge-domain 10
- member GigabitEthernet1 service-instance 10
+ member gigabit2 service-instance 10
  member evpn-instance 10 ethernet-tag 10
  exit
 !
