@@ -230,7 +230,7 @@ public class userTester {
             s = "";
         }
         jvp = jvp.replaceAll("XmxZZZm", s);
-        userTesterPrc prc = new userTesterPrc(rdr, "rtr", jvn + jvp + " show version");
+        userTesterPrc prc = new userTesterPrc(rdr, "version", jvn + jvp + " show version");
         release = prc.getLine();
         prc.stopNow();
         if (beg.length() < 2) {
