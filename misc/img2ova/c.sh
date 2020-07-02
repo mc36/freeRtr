@@ -5,6 +5,54 @@ sudo ./d.sh
 qemu-img convert -O qcow2 -c $IMG/rtr.dsk $IMG/rtr.qcow2
 qemu-img convert -O vmdk -o subformat=streamOptimized $IMG/rtr.dsk $IMG/rtr.vmdk
 
+SIZ=`stat --printf="%s" $IMG/rtr.qcow2`
+VER=`java -jar ../../src/rtr.jar show version number | dos2unix | head -n 1`
+SUM=`md5sum $IMG/rtr.qcow2 | awk '{ print $1 }'`
+cat > $IMG/rtr.gns3a << EOF
+{
+    "name": "freeRouter",
+    "category": "router",
+    "description": "networking swiss army knife - it speaks routing protocols, and (re)encapsulates packets on interfaces",
+    "vendor_name": "freeRouter",
+    "vendor_url": "http://freerouter.nop.hu/",
+    "documentation_url": "http://freerouter.nop.hu/",
+    "product_name": "freeRouter",
+    "product_url": "http://freerouter.nop.hu/",
+    "registry_version": 3,
+    "status": "stable",
+    "maintainer": "GNS3 Team",
+    "maintainer_email": "developers@gns3.net",
+    "usage": "there is no default password. a default configuration is present.",
+    "port_name_format": "ethernet{port1}",
+    "qemu": {
+        "adapter_type": "e1000",
+        "adapters": 8,
+        "ram": 2048,
+        "arch": "x86_64",
+        "console_type": "telnet",
+        "kvm": "require"
+    },
+    "images": [
+        {
+            "filename": "rtr.qcow2",
+            "version": "$VER",
+            "md5sum": "$SUM",
+            "filesize": $SIZ,
+            "download_url": "http://freerouter.nop.hu/",
+            "direct_download_url": "http://dl.nop.hu/rtr.qcow2"
+        }
+    ],
+    "versions": [
+        {
+            "name": "$VER",
+            "images": {
+                "hda_disk_image": "rtr.qcow2"
+            }
+        }
+    ]
+}
+EOF
+
 hashFile()
 {
 sum=`sha1sum $1 | awk '{ print $1 }'`

@@ -1,7 +1,5 @@
 description interop1: dot1q encapsulation
 
-exit
-
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
 !
