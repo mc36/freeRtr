@@ -27,7 +27,7 @@ int tun1
  tunnel prot ips
  tunnel mode ipsec
  tunnel source ethernet1
- tunnel destination 1234::2
+ tunnel destination 1.1.1.2
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  ipv6 addr 4321::1 ffff::
@@ -54,11 +54,11 @@ crypto ikev2 policy pl1
  exit
 crypto ikev2 keyring kr1
  peer p1
-  address 1234::1/128
+  address 1.1.1.1
   pre-shared-key tester
  exit
 crypto ikev2 profile pr1
- match identity remote address 1234::1/128
+ match identity remote address 1.1.1.1 255.255.255.255
  authentication local pre-share
  authentication remote pre-share
  lifetime 3600
@@ -76,12 +76,12 @@ crypto ipsec profile pr1
 interface tunnel1
  ipv6 address 4321::2/64
  tunnel source gigabit1
- tunnel destination 1234::1
- tunnel mode ipsec ipv6
+ tunnel destination 1.1.1.1
+ tunnel mode ipsec ipv4 v6
  tunnel protection ipsec profile pr1
  exit
 !
 
 
-r1 tping 100 10 1234::2 /vrf v1
+r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 120 4321::2 /vrf v1

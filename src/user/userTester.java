@@ -1149,6 +1149,7 @@ class userTesterOne {
                 s = repairHwCfg(s);
                 cfg.add(s);
             }
+            cfg.add("tcp2vrf " + (2001 + procs.size()) + " tester 23");
             bits.buf2txt(true, cfg, path + rn + "-" + cfgInit.hwCfgEnd);
             cfg = new ArrayList<String>();
             cfg.add("");
@@ -1158,6 +1159,12 @@ class userTesterOne {
             cfg = new ArrayList<String>();
             cfg.add("hostname " + rn);
             cfg.add("logging file debug " + userTesterPrc.getLogName(rn, 1));
+            cfg.add("vrf def tester");
+            cfg.add(" exit");
+            cfg.add("serv tel tester");
+            cfg.add(" sec pro tel");
+            cfg.add(" vrf tester");
+            cfg.add(" exit");
             for (;;) {
                 s = getLin();
                 if (s.equals("!")) {

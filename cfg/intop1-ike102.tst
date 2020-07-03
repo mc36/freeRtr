@@ -27,7 +27,7 @@ int tun1
  tunnel prot ips
  tunnel mode ipsec
  tunnel source ethernet1
- tunnel destination 1234::2
+ tunnel destination 1.1.1.2
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  ipv6 addr 4321::1 ffff::
@@ -51,7 +51,7 @@ crypto isakmp policy 10
  group 1
  lifetime 3600
  exit
-crypto isakmp key tester address ipv6 1234::1/128
+crypto isakmp key tester address 1.1.1.1
 crypto ipsec transform-set ts1 esp-des esp-md5-hmac
  mode tunnel
  exit
@@ -63,12 +63,12 @@ crypto ipsec profile pr1
 interface tunnel1
  ipv6 address 4321::2/64
  tunnel source gigabit1
- tunnel destination 1234::1
- tunnel mode ipsec ipv6
+ tunnel destination 1.1.1.1
+ tunnel mode ipsec ipv4 v6
  tunnel protection ipsec profile pr1
  exit
 !
 
 
-r1 tping 100 10 1234::2 /vrf v1
+r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 120 4321::2 /vrf v1

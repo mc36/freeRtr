@@ -19,7 +19,7 @@ public class userImage {
 
     private pipeSide pip;
 
-    private String tempDir = "/tmp/rtr.tmp";
+    private String tempDir = "../binTmp/imageCreator";
 
     private String downDir = "../binDown";
 
