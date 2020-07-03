@@ -7,6 +7,6 @@ cp manifest.txt $TRG/META-INF/MANIFEST.MF
 PWD=`pwd`
 cd $TRG
 LST=`find . | sort`
-touch -d 2010-01-01 $LST
+touch -d "2010-01-01 00:00:00" $LST
 zip -0  ../src/rtr.jar $LST > /dev/null
 cd $PWD
