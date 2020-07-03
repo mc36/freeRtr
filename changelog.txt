@@ -8905,3 +8905,6 @@ qc pass: p4lang: bundle vlan egress access list
 qc pass: p4lang: bundle vlan routing
 qc pass: p4lang: bundle vlan mpls
 qc pass: p4lang: bundle vlan bridging
+---------------------------------- 2020-07-03 07:38:23
+qc pass: interop8: eigrp
+qc pass: interop8: rip

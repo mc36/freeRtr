@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.7.2-testing, done by cs@nop.;-;-
--;-;2020-07-02 20:12:51, took 09:40:40 on 1724 cases, 0 failed, 0 traces, 34 retries;-;-
+-;-;freeRouter v20.7.3-testing, done by cs@nop.;-;-
+-;-;2020-07-03 16:36:57, took 08:58:34 on 1726 cases, 0 failed, 0 traces, 10 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -726,6 +726,7 @@ intop8-bgp10.tst;0;interop8: bgp prefix withdraw;successfully;finished
 intop8-bgp11.tst;0;interop8: bgp authentication;successfully;finished
 intop8-bgp12.tst;0;interop8: bgp extended community;successfully;finished
 intop8-bgp13.tst;0;interop8: bgp large community;successfully;finished
+intop8-eigrp01.tst;0;interop8: eigrp;successfully;finished
 intop8-isis01.tst;0;interop8: point2point isis;successfully;finished
 intop8-isis02.tst;0;interop8: isis dis;successfully;finished
 intop8-isis03.tst;0;interop8: isis nondis;successfully;finished
@@ -741,6 +742,7 @@ intop8-ospf05.tst;0;interop8: ospf stub area;successfully;finished
 intop8-ospf06.tst;0;interop8: ospf nssa area;successfully;finished
 intop8-ospf07.tst;0;interop8: ospf prefix withdraw;successfully;finished
 intop8-ospf08.tst;0;interop8: ospf authentication;successfully;finished
+intop8-rip01.tst;0;interop8: rip;successfully;finished
 intop9-bgp01.tst;0;interop9: ebgp;successfully;finished
 intop9-bgp02.tst;0;interop9: ibgp;successfully;finished
 intop9-bgp03.tst;0;interop9: bgp locpref;successfully;finished

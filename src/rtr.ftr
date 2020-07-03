@@ -722,6 +722,7 @@ qc pass: interop8: bgp prefix withdraw
 qc pass: interop8: bgp authentication
 qc pass: interop8: bgp extended community
 qc pass: interop8: bgp large community
+qc pass: interop8: eigrp
 qc pass: interop8: point2point isis
 qc pass: interop8: isis dis
 qc pass: interop8: isis nondis
@@ -737,6 +738,7 @@ qc pass: interop8: ospf stub area
 qc pass: interop8: ospf nssa area
 qc pass: interop8: ospf prefix withdraw
 qc pass: interop8: ospf authentication
+qc pass: interop8: rip
 qc pass: interop9: ebgp
 qc pass: interop9: ibgp
 qc pass: interop9: bgp locpref
