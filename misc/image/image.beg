@@ -39,13 +39,14 @@ select-dis util-linux
 select-dis dpkg
 select-dis perl
 select-dis gcc
-select-dis init-system-helpers
-select-dis initramfs-tools
+select-dis init-system-helper
+select-dis initramfs-tool
+select-dis linux-initramfs-tool
 select-dis multiarch-support
 select-dis ucf
 select-dis fontconfig-config
 select-dis dmsetup
-select-dis ca-certificates
+select-dis ca-certificate
 select-dis mount
 select-dis x11
 select-dis lsb-base
@@ -68,7 +69,7 @@ select-dis libxrender
 select-dis libxtst
 
 
-select-one linux-image-amd64   #kernel
+select-one linux-image-%arch%  #kernel
 select-one busybox             #small utils
 select-one udev                #bring up hw
 select-one ethtool             #disable hw chksum
