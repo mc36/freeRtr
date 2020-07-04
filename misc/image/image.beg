@@ -18,6 +18,13 @@ exec mkdir -m 0755 %tmp%/var/lock
 exec mkdir -m 0755 %tmp%/dev
 exec mkdir -m 0755 %tmp%/run
 exec mkdir -m 0755 %tmp%/etc
+exec mkdir -m 0755 %tmp%/lib
+exec mkdir -m 0755 %tmp%/lib64
+exec mkdir -m 0755 %tmp%/bin
+exec mkdir -m 0755 %tmp%/sbin
+exec mkdir -m 0755 %tmp%/usr
+exec mkdir -m 0755 %tmp%/usr/bin
+exec mkdir -m 0755 %tmp%/usr/sbin
 
 exec cp rtr.ver %tmp%/rtr/
 exec cp ../rtr.zip %tmp%/rtr/

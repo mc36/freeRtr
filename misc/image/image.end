@@ -1,6 +1,6 @@
 exec cp ../misc/image/init.dev %tmp%/init.dev
 exec cp ../misc/image/init.sys %tmp%/init.sys
-exec cp %tmp%/boot/vmlinuz* %img%.krn
+exec mv %tmp%/boot/vmlinuz* %img%.krn
 del-alw %tmp%/boot
 del-alw %tmp%/usr/src
 del-alw %tmp%/usr/include
@@ -8,6 +8,10 @@ del-alw %tmp%/usr/share/info
 del-alw %tmp%/usr/share/man
 del-alw %tmp%/usr/share/doc
 del-alw %tmp%/usr/share/bug
+del-alw %tmp%/lib/modules/*/kernel/drivers/gpu
+del-alw %tmp%/lib/modules/*/kernel/drivers/media
+del-alw %tmp%/lib/modules/*/kernel/net
+del-alw %tmp%/lib/modules/*/kernel/sound
 
 exec chmod 777 %tmp%/init*
 exec touch %tmp%/rtr/rtr-hw.txt
