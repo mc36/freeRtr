@@ -24,11 +24,11 @@ public class userHwdet {
         socat, pcap, raw, map
     }
 
-    private int nextPort;
+    private int nextPort = 0;
 
-    private int ifcNum;
+    private int ifcNum = 0;
 
-    private int linNum;
+    private int linNum = 0;
 
     private int crsNum = 10000;
 
@@ -42,9 +42,9 @@ public class userHwdet {
 
     private String prefix = "hwdet-";
 
-    private boolean binMain;
+    private boolean binMain = false;
 
-    private boolean inlineLoop;
+    private boolean inlineLoop = false;
 
     private ifcTyp ifaceType = ifcTyp.socat;
 
@@ -428,6 +428,7 @@ public class userHwdet {
         detectCrosses(cross);
         detectTuntap(tuntap);
         detectTcpvrf(tcpvrf);
+        inlineLoop = false;
         detectLines(path + lstSer);
         addComment("main");
         String s;

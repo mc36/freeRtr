@@ -20,6 +20,6 @@ cp ../../binTmp/*.bin /rtr/
 cp /proc/net/dev /rtr/hwdet.eth
 cp /proc/tty/driver/serial /rtr/hwdet.ser
 ifconfig -a > /rtr/hwdet.mac
-java -jar /rtr/rtr.jar test hwdet tuntap 10.255.255.1/24 path /rtr/ iface raw line raw
+java -jar /rtr/rtr.jar test hwdet tuntap 10.255.255.1/24 path /rtr/ iface raw line raw inline
 chmod 777 /rtr/*.sh
 ls -l /rtr/
