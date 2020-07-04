@@ -315,7 +315,7 @@ public class userUpgrade {
         String a = blb.fromText(txt, false);
         if (a != null) {
             fl.cons.debugRes("version info parser: " + a);
-            if (needStop(1)) {
+            if (needStop(0x1)) {
                 return;
             }
         }
@@ -326,7 +326,7 @@ public class userUpgrade {
         fl.cons.debugRes("new files:" + blb.getFilelist());
         if (old.time >= blb.time) {
             fl.cons.debugRes("no upgrade needed!");
-            if (needStop(2)) {
+            if (needStop(0x2)) {
                 return;
             }
         }
@@ -356,7 +356,7 @@ public class userUpgrade {
             return;
         }
         if (i != 0) {
-            if (needStop(4)) {
+            if (needStop(0x4)) {
                 return;
             }
         }
@@ -369,7 +369,7 @@ public class userUpgrade {
                 continue;
             }
             if (i != 0) {
-                if (needStop(8)) {
+                if (needStop(0x8)) {
                     return;
                 }
             }
@@ -381,7 +381,7 @@ public class userUpgrade {
             fl.cons.debugRes("failed to write version info!");
         }
         if (doVerify() > 0) {
-            if (needStop(16)) {
+            if (needStop(0x10)) {
                 return;
             }
         }
