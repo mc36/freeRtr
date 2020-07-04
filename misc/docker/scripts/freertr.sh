@@ -48,7 +48,7 @@ start_freertr () {
   FREERTR_BASE_DIR=$1
   FREERTR_HOSTNAME=$2
   cd "${FREERTR_BASE_DIR}/run"
-  java -jar "${FREERTR_BASE_DIR}/bin/rtr.jar" routers "${FREERTR_BASE_DIR}/run/${FREERTR_HOSTNAME}-hw.txt" "${FREERTR_BASE_DIR}/run/${FREERTR_HOSTNAME}-sw.txt" </dev/null 
+  java -jar "${FREERTR_BASE_DIR}/bin/rtr.jar" routercs "${FREERTR_BASE_DIR}/run/${FREERTR_HOSTNAME}-hw.txt" "${FREERTR_BASE_DIR}/run/${FREERTR_HOSTNAME}-sw.txt"
 }
 
 
