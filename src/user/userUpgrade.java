@@ -12,6 +12,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import pipe.pipeLine;
+import pipe.pipeSide;
 import prt.prtRedun;
 import tab.tabGen;
 import util.bits;
@@ -32,14 +34,14 @@ public class userUpgrade {
      * ver extension
      */
     public static String verExt = ".ver";
-    
+
     private static boolean inProgress = false;
-    
+
     private final static int justSimu = 0x1000000;
-    
+
     private final cmds cmd;
-    
-    private int forces;
+
+    private int forces = 0;
 
     /**
      * create new instance
@@ -237,7 +239,7 @@ public class userUpgrade {
         }
         return err;
     }
-    
+
     private int verifyFile(String fn, String sum) {
         cmd.pipe.strPut(fn);
         String calc = calcFileHash(null, fn);
@@ -275,9 +277,9 @@ public class userUpgrade {
         }
         inProgress = true;
         int oldf = forces;
+        String s = cmd.word();
+        forces = (oldf | bits.str2num(cmd.word())) ^ justSimu;
         try {
-            String s = cmd.word();
-            forces = (oldf | bits.str2num(cmd.word())) ^ justSimu;
             upgraderDoer(s);
         } catch (Exception e) {
             logger.traceback(e);
@@ -285,11 +287,11 @@ public class userUpgrade {
         forces = oldf;
         inProgress = false;
     }
-    
+
     private boolean needStop(int i) {
         return (forces & i) == 0;
     }
-    
+
     private void upgraderDoer(String server) {
         if (server.length() < 1) {
             server = cfgAll.upgradeServer;
@@ -358,10 +360,12 @@ public class userUpgrade {
                 return;
             }
         }
+        boolean some = false;
         for (int o = 0; o < blb.files.size(); o++) {
             userUpgradeNtry ntry = blb.files.get(o);
             i = upgradeFile(ntry.chk, ntry.getName(), server + ntry.getName(), tmp);
             if (i == 2) {
+                some = true;
                 continue;
             }
             if (i != 0) {
@@ -377,12 +381,38 @@ public class userUpgrade {
             fl.cons.debugRes("failed to write version info!");
         }
         if (doVerify() > 0) {
-            return;
+            if (needStop(16)) {
+                return;
+            }
         }
         fl.cons.debugRes("successfully finished!");
         logger.info("upgrade finished!");
+        if (!some) {
+            return;
+        }
+        List<String> scr = bits.txt2buf(version.myPathName() + ".scr");
+        if (scr == null) {
+            return;
+        }
+        fl.cons.debugRes("running upgrade script");
+        pipeLine pl = new pipeLine(32768, false);
+        pipeSide loc = pl.getSide();
+        pipeSide pip = pl.getSide();
+        pip.timeout = 120000;
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        userScript s = new userScript(pip, "");
+        s.allowExec = true;
+        s.allowConfig = true;
+        s.addLines(scr);
+        try {
+            s.cmdAll();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        pl.setClose();
     }
-    
+
     private cryKeyRSA readUpKey(String s) {
         List<String> l = cfgInit.httpGet(s);
         if (l == null) {
@@ -452,24 +482,24 @@ public class userUpgrade {
         }
         return 2;
     }
-    
+
 }
 
 class userUpgradeNtry implements Comparator<userUpgradeNtry> {
-    
+
     private final String name;
-    
+
     public final String chk;
-    
+
     public userUpgradeNtry(String sum, String nam) {
         name = nam;
         chk = sum;
     }
-    
+
     public int compare(userUpgradeNtry o1, userUpgradeNtry o2) {
         return o1.name.compareTo(o2.name);
     }
-    
+
     public String getName() {
         String s = name;
         if (s.length() < 2) {
@@ -477,11 +507,11 @@ class userUpgradeNtry implements Comparator<userUpgradeNtry> {
         }
         return s;
     }
-    
+
     public String toString() {
         return chk + " " + getName();
     }
-    
+
     public static userUpgradeNtry fromString(String s) {
         int i = s.indexOf(" ");
         if (i < 0) {
@@ -489,27 +519,27 @@ class userUpgradeNtry implements Comparator<userUpgradeNtry> {
         }
         return new userUpgradeNtry(s.substring(0, i), s.substring(i + 1, s.length()));
     }
-    
+
 }
 
 class userUpgradeBlob {
-    
+
     public String head;
-    
+
     public String jars;
-    
+
     public long time;
-    
+
     public String sign;
-    
+
     public final tabGen<userUpgradeNtry> files = new tabGen<userUpgradeNtry>();
-    
+
     public void putSelf() {
         head = version.headLine;
         jars = userUpgrade.calcFileHash(null, version.getFileName());
         time = 0;
     }
-    
+
     public String getFilelist() {
         String s = version.getFileName();
         for (int i = 0; i < files.size(); i++) {
@@ -517,11 +547,11 @@ class userUpgradeBlob {
         }
         return s;
     }
-    
+
     public String getTime() {
         return bits.time2str(cfgAll.timeZoneName, time, 3);
     }
-    
+
     public List<String> getText(int level) {
         List<String> l = new ArrayList<String>();
         l.add(head);
@@ -540,11 +570,11 @@ class userUpgradeBlob {
         l.add(getSum(1));
         return l;
     }
-    
+
     public String getSum(int level) {
         return userUpgrade.calcTextHash(bits.lst2lin(getText(level), true));
     }
-    
+
     public byte[] getBinSum(int level) {
         String s = getSum(level);
         byte[] buf = new byte[s.length() / 2];
@@ -553,7 +583,7 @@ class userUpgradeBlob {
         }
         return buf;
     }
-    
+
     public String fromText(List<String> txt, boolean defs) {
         head = "<bad release>";
         jars = "<bad sum>";
@@ -606,7 +636,7 @@ class userUpgradeBlob {
         }
         return res;
     }
-    
+
     public String doVrfy(String ks, byte[] buf) {
         try {
             if (ks == null) {
@@ -625,10 +655,10 @@ class userUpgradeBlob {
         }
         return "error during verify!";
     }
-    
+
     public void doSign(cryKeyRSA k) {
         time = bits.getTime();
         sign = cryBase64.encodeBytes(k.certSigning(getBinSum(0)));
     }
-    
+
 }
