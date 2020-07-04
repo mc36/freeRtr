@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --with=javahelper --with=systemd --with=sysuser
+
+override_dh_auto_build:
+	dh_auto_build
+	mkdir binTmp
+	cd misc/native && ./c.sh
+
+override_dh_clean:
+	dh_clean
+	rm -rf binTmp misc/native/*.bin
+

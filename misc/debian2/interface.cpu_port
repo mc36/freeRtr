@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+# /usr/bin/mapInt.bin "$DEVICE" "$LPORT" "$RADDR" "$RPORT" "$LADDR""
+
+MODE=pcap
+
+DEVICE="veth251"
+
+LPORT="22709"
+RADDR="127.0.0.1"
+RPORT="22710"
+LADDR="127.0.0.1"
+
+# tap
+# ADDR4=
+# PEER4=
+# ADDR6=
+# PEER6=

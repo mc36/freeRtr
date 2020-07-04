@@ -1,0 +1,146 @@
+hostname core1
+buggy
+!
+logging buffered debug 10240
+logging file debug core1.log
+!
+crypto rsakey rsa import MIIEogIBAAKCAQEAnHKscrllLWBjwDgyGLj/3BOS3rK66O1GpOHiuuX9idprs8dZisdprsV+tKT0CKTxtac1tAV/9ESxk1X3KF5Jcz0r9GAwBXPHNXlnKZbiYXtcWm5MmpQ2MwqQwjoNJDzveW47k/3/2y9VBsIV5ObvkXQ6fd6UzKkKjYuw07XyUlgsExgtagxTVR9ggOsGL3HXFD+ccqAmbJTcZUCdAnUrJUpnNoLpbt+Ogu3MhKYwuf/0FvIcdVho4lEfBI4VzryjG8Rda4f46Wp0O1jmIp2ZFOaM6riEIMibpZKl2VFzyPrW5vCiD+eO+CxbSKAT+f+SLU3J86xfRhCaXbTTXpRbjwIDAQABAoIBAGMNn+3LQCoouz961Q0eJLEcm4LwurK7eFzwv/MBpzNe3Y4oC6N4eoszc/O/9Np8RKV0xuXCDa+ExsG4ThJ7EBosguXo+L6a/Wf4A78rTw3VYzXGXC4K5P4QFHNE+gkVo7HIf2RGD3ahUz5CKEaTiN8ZLed/w8qIxKu15DFHI7PKLkIaBh5woV6zefNLKFvbYgvpTFw1wwUR9m4si3H7rfoqYZ5ExIx/pVQx8i7wcgvfhQjXjB92vGNZA5dI+6F539OBh/XTUbuqi445hut5yFto3YQEyyVs5BQBM1mJSDLuieiX24qjUTpWi1Y4tb1k/SqofSBkwF9sgcZmv3ph3tECgYEAyJICSP3NlHipLF7YeyEBfGllV8jFB8JiOqIopJLhqIDhfrk5NfCRqb8+Et0+KUPM0IQLzHFekeEouFyc7iQJvq4JHDDEZHm6MFEGPULC/6f/Oge3xDQ5zrFUKO/Oqm/6xL5IxLOhd/4zcnHPHaeb4jR0Cf4o5b+exc8QlPitTC0CgYEAx68VhU9XnC4UcvJmR1hmt8horCej61QzRs86tRw7E3SLSUxZN/7aJ1KaTVkPsxWytSk5RmKAMHNMacN947M0GYPyJH7kjX7gVL28I82TR7h8UCeCBQWX++Yh8G0z2s5j5tRB6v38NC9wbapItraEWHo6gJeWvmOIJPc5j3Jk0CsCgYAaLo0j0BXE+tdCloL118Ik5nE3O1sU/zfpZX+etBnG8EP/Udh5BRVOrktBFSZnJpWW5pXPs0DgFB9HqbdGkue+v2MrDealIwq+AeWpm4xu6RQ1FArWDuc45wcQbPVyZDm88wX2v2gljMZUeyzJNzbvGV/IaigWjaQBOF12xNuCZQKBgEAafe8o9Hgn9tqb5Ke8wmT3ilrR8vaGNlviBPfFU1XAkUJ7pxypzQDYrL5t+/NC4Pb1f/SPhJWJPhup7Y0ep3gVerOqpNajx4KM0owv37sjh4z30e6oyAzO6VBUzlPM9BdTRsIYvVFHdXFPPD6jw0LgIk3L3FHMhBVR5IGfeKu3AoGAOA7macw//CezW2wvDyLHuYBTrY5Z2pSFMTu9bEVniYQVjTuZVhB0pPS/uA3KA+sOvsdUhRZM8QWLHwqVHOnS2pTqLBSFMoWK4+x5qxr6ob0irum5t22rlo7k3LgFTpWzsav92pRQgpMoltbiIRNX1LUxzj1K7qjgzWb5WlyJ7q8=
+!
+crypto dsakey dsa import MIH2AgEAAkBdHH+NJ78OHDDYJMwqqEA7/Fmyn0SPNCe3+doCqKSbwYPS7FpgIqP8R7cIv0GDzxmCPFYJIZ/pWmu0VleClF4LAhUAlTGwTPM+Vla+iYnYroywSCsBQ+MCQBmx+2JlMnQWpPj65oNafjpAXmYFVw0AqPAguzRmbS0A6XsDAygDkIFC0IX806b2lCwIvm4/nyNtY6lyxq0mi00CQDQfodwCipoFayCfWXjC7z7jTN26MXmk4oP+pgSG9aF8dG34Wrx7A/GHoTkaAwMbTbXgzlOQ5O5UtIKy04xai1UCFDK+gTIq1c/alJ2EOsvC5tvW1siW
+!
+crypto ecdsakey ecdsa import MIHbAgEBBEAA392naCtU5jkwV+4yD1PBoFODWiOqRdA3Mej7Buh+NOrlsgq/6R0p1CND6Rf+EyYARnsYvMBLD/msqdFczUZvoAwGCgEDJAMDAggBAQ2hgYUDgYIABCZQjKVjdcoDTm5Mwvf+IOeYAZ7+ptlG7cGxPZGXj5saqQDMNB+Jnj0sck0s+rsTDwP3wt/0BFv14Fm35kU8W+gUrlYtFQ/ZKy88cuAGy3z1UeSWVErszXYDaBLmFyb+H7/LfO9bIfDtHxJ30XyXpAlmLCKRywfxnXrrqLuxLEez
+!
+aaa userlist usr
+ no log-error
+ username rare
+ username rare password $v10$cmFyZQ==
+ exit
+!
+bundle 1
+ exit
+!
+vrf definition v1
+ rd 1:1
+ rt-import 1:1
+ rt-export 1:1
+ label-mode per-prefix
+ exit
+!
+router isis4 1
+ vrf v1
+ net-id 49.0001.0000.0a01.0101.00
+ traffeng-id ::
+ is-type level1
+ segrout 10
+ level1 segrout
+ exit
+!
+interface loopback0
+ no description
+ vrf forwarding v1
+ ipv4 address 10.1.1.1 255.255.255.255
+ router isis4 1 enable
+ router isis4 1 passive
+ router isis4 1 circuit level1
+ router isis4 1 segrout index 1
+ no shutdown
+ no log-link-change
+ exit
+!
+interface bundle1
+ no description
+ vrf forwarding v1
+ ipv4 address 10.1.2.1 255.255.255.0
+ mpls enable
+ router isis4 1 enable
+ router isis4 1 circuit level1
+ no shutdown
+ no log-link-change
+ exit
+!
+interface ethernet0
+ no description
+ macaddr 0000.0a00.0040
+ no shutdown
+ no log-link-change
+ exit
+!
+interface sdn1
+ no description
+ mtu 1500
+ macaddr 0006.0b5a.2340
+ bundle-group 1
+ no shutdown
+ no log-link-change
+ exit
+!
+interface sdn2
+ no description
+ mtu 1500
+ macaddr 006a.6b69.2a4f
+ bundle-group 1
+ no shutdown
+ no log-link-change
+ exit
+!
+interface sdn3
+ no description
+ mtu 1500
+ macaddr 0067.1922.2a19
+ no shutdown
+ no log-link-change
+ exit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+alias test bash description 
+alias test bash parameter optional
+!
+server telnet ssh
+ security protocol ssh
+ security authentication usr
+ security rsakey rsa
+ security dsakey dsa
+ security ecdsakey ecdsa
+ port 22
+ exec logging
+ no exec authorization
+ no login authentication
+ vrf v1
+ exit
+!
+server telnet tel
+ security protocol telnet
+ exec width 130
+ exec height 25
+ no exec authorization
+ no login authentication
+ vrf v1
+ exit
+!
+server p4lang p4
+ export-vrf v1 1
+ export-port sdn1 128 10
+ export-port sdn2 136 10
+ export-port sdn3 144 10
+ export-port bundle1 500 10
+ interconnect ethernet0
+ vrf v1
+ exit
+!
+client name-server 8.8.8.8
+client config-save
+client time-zone CET
+!
+end

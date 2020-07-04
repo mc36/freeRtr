@@ -1,0 +1,10 @@
+hwid emu
+port 63000 64000
+int eth0 eth 0000.0A00.0040 127.0.0.1 22710 127.0.0.1 22709
+!int eth1 eth 0000.0A00.02FE 127.0.0.1 22712 127.0.0.1 22711
+!line tty1 127.0.0.1 21003 127.0.0.1 21003
+tcp2vrf 2323 v1 23
+tcp2vrf 2001 v1 22
+tcp2vrf 9080 v1 9080
+!tcp2vrf 8080 v1 80
+def alias test bash command attach shell1 socat - exec:sh,ctty,pty,stderr
