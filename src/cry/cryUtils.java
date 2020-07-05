@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.util.List;
+import pipe.pipeSide;
 import util.bits;
 
 /**
@@ -52,18 +53,17 @@ public class cryUtils {
      *
      * @param hsh hash to update
      * @param src lines to add
+     * @param trm line terminator
      * @return false on success, true on error
      */
-    public static boolean hashText(cryHashGeneric hsh, List<String> src) {
+    public static boolean hashText(cryHashGeneric hsh, List<String> src, pipeSide.modTyp trm) {
         if (src == null) {
             return true;
         }
+        byte[] buf = pipeSide.getEnding(trm);
         for (int i = 0; i < src.size(); i++) {
-            String s = src.get(i);
-            byte[] buf = new byte[4];
-            bits.msbPutD(buf, 0, s.length());
+            hsh.update(src.get(i).getBytes());
             hsh.update(buf);
-            hsh.update(s.getBytes());
         }
         return false;
     }

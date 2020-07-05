@@ -4,8 +4,8 @@ import cfg.cfgAll;
 import cfg.cfgInit;
 import cry.cryBase64;
 import cry.cryHashGeneric;
-import cry.cryHashSha2256;
 import cry.cryHashSha2512;
+import cry.cryHashSha3512;
 import cry.cryKeyRSA;
 import cry.cryUtils;
 import java.io.File;
@@ -55,35 +55,44 @@ public class userUpgrade {
     /**
      * calculate hash on file
      *
-     * @param h hasher
      * @param n filename
      * @return calculated hash
      */
-    public static String calcFileHash(cryHashGeneric h, String n) {
+    public static String calcFileHash(String n) {
         File f = new File(n);
-        if (h == null) {
-            h = new cryHashSha2512();
-        }
+        cryHashGeneric h = new cryHashSha2512();
         h.init();
         if (cryUtils.hashFile(h, f)) {
             return null;
         }
-        return cryUtils.hash2hex(h);
+        String a = cryUtils.hash2hex(h);
+        h = new cryHashSha3512();
+        h.init();
+        if (cryUtils.hashFile(h, f)) {
+            return null;
+        }
+        return a + "-" + cryUtils.hash2hex(h);
     }
 
     /**
-     * calculate hash on file
+     * calculate hash on text
      *
      * @param l lines
      * @return calculated hash
      */
     public static String calcTextHash(List<String> l) {
-        cryHashGeneric h = new cryHashSha2256();
+        cryHashGeneric h = new cryHashSha2512();
         h.init();
-        if (cryUtils.hashText(h, l)) {
+        if (cryUtils.hashText(h, l, pipeSide.modTyp.modeLF)) {
             return null;
         }
-        return cryUtils.hash2hex(h);
+        String a = cryUtils.hash2hex(h);
+        h = new cryHashSha3512();
+        h.init();
+        if (cryUtils.hashText(h, l, pipeSide.modTyp.modeLF)) {
+            return null;
+        }
+        return a + "-" + cryUtils.hash2hex(h);
     }
 
     /**
@@ -126,7 +135,7 @@ public class userUpgrade {
                 a = s.substring(0, i);
                 s = s.substring(i + 1, s.length());
             }
-            s = calcFileHash(null, s);
+            s = calcFileHash(s);
             if (s == null) {
                 cmd.error(a + " not found");
             }
@@ -242,7 +251,7 @@ public class userUpgrade {
 
     private int verifyFile(String fn, String sum) {
         cmd.pipe.strPut(fn);
-        String calc = calcFileHash(null, fn);
+        String calc = calcFileHash(fn);
         if (calc == null) {
             cmd.pipe.linePut(" is missing!");
             return 1;
@@ -444,7 +453,7 @@ public class userUpgrade {
      * @return status; 0=not needed, 1=failed, 2=done
      */
     protected int upgradeFile(String sumN, String loc, String rem, String tmp) {
-        String sumO = calcFileHash(null, loc);
+        String sumO = calcFileHash(loc);
         if (sumO == null) {
             sumO = "doit";
         }
@@ -468,17 +477,21 @@ public class userUpgrade {
         userFlash.delete(tmp);
         userFlash.doReceive(cmd.pipe, url, new File(tmp));
         fl.cons.debugStat("upgrading software");
-        if (!sumN.equals(calcFileHash(null, tmp))) {
+        if (!sumN.equals(calcFileHash(tmp))) {
             fl.cons.debugRes("checksum mismatch, aborting!");
-            return 1;
+            if (needStop(0x20)) {
+                return 1;
+            }
         }
         if (userFlash.rename(tmp, loc, true, false)) {
             fl.cons.debugRes("failed to rename!");
             return 1;
         }
-        if (!sumN.equals(calcFileHash(null, loc))) {
+        if (!sumN.equals(calcFileHash(loc))) {
             fl.cons.debugRes("checksum mismatch, aborting!");
-            return 1;
+            if (needStop(0x20)) {
+                return 1;
+            }
         }
         return 2;
     }
@@ -536,7 +549,7 @@ class userUpgradeBlob {
 
     public void putSelf() {
         head = version.headLine;
-        jars = userUpgrade.calcFileHash(null, version.getFileName());
+        jars = userUpgrade.calcFileHash(version.getFileName());
         time = 0;
     }
 
@@ -572,16 +585,7 @@ class userUpgradeBlob {
     }
 
     public String getSum(int level) {
-        return userUpgrade.calcTextHash(bits.lst2lin(getText(level), true));
-    }
-
-    public byte[] getBinSum(int level) {
-        String s = getSum(level);
-        byte[] buf = new byte[s.length() / 2];
-        for (int i = 0; i < buf.length; i++) {
-            buf[i] = (byte) bits.fromHex(s.substring(i * 2, (i * 2) + 1));
-        }
-        return buf;
+        return userUpgrade.calcTextHash(getText(level));
     }
 
     public String fromText(List<String> txt, boolean defs) {
@@ -605,7 +609,7 @@ class userUpgradeBlob {
         time = bits.str2long(txt.get(2));
         String sum = txt.get(len);
         txt.remove(len);
-        if (!sum.equals(userUpgrade.calcTextHash(bits.lst2lin(txt, false)))) {
+        if (!sum.equals(userUpgrade.calcTextHash(txt))) {
             return "checksum mismatch!";
         }
         len--;
@@ -614,9 +618,12 @@ class userUpgradeBlob {
         for (int i = 3; i < len; i++) {
             files.put(userUpgradeNtry.fromString(txt.get(i)));
         }
+        if (!sum.equals(getSum(1))) {
+            return "checksum invalid!";
+        }
         byte[] buf = cryBase64.decodeBytes(sign);
         if (buf == null) {
-            return "error reading signature!";
+            return "error decoding signature!";
         }
         if (cfgAll.upgradeOwnKey) {
             return doVrfy(cfgAll.upgradePubKey, buf);
@@ -646,7 +653,7 @@ class userUpgradeBlob {
             if (ky.pemReadStr(ks, true)) {
                 return "error reading public key!";
             }
-            if (ky.certVerify(getBinSum(0), buf)) {
+            if (ky.tlsVerify(0, getSum(0).getBytes(), buf)) {
                 return "signature mismatch!";
             }
             return null;
@@ -658,7 +665,7 @@ class userUpgradeBlob {
 
     public void doSign(cryKeyRSA k) {
         time = bits.getTime();
-        sign = cryBase64.encodeBytes(k.certSigning(getBinSum(0)));
+        sign = cryBase64.encodeBytes(k.tlsSigning(0, getSum(0).getBytes()));
     }
 
 }

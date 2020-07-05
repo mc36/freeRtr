@@ -29,10 +29,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import cry.cryBase64;
+import cry.cryHashGeneric;
 import cry.cryHashMd5;
 import cry.cryHashSha1;
 import cry.cryHashSha2256;
 import cry.cryHashSha2512;
+import cry.cryHashSha3256;
+import cry.cryHashSha3512;
+import cry.cryUtils;
 import ip.ipCor4;
 import ip.ipCor6;
 import ip.ipFwdIface;
@@ -3037,6 +3041,15 @@ public class userExec {
         cmd.badCmd();
     }
 
+    private String calcFileHash(cryHashGeneric h, String n) {
+        File f = new File(n);
+        h.init();
+        if (cryUtils.hashFile(h, f)) {
+            return null;
+        }
+        return cryUtils.hash2hex(h);
+    }
+
     private void doFlash() {
         String a = cmd.word();
         if (a.equals("editor")) {
@@ -3089,10 +3102,12 @@ public class userExec {
         if (a.equals("hash")) {
             a = cmd.getRemaining();
             cmd.error("file=" + a);
-            cmd.error("md5=" + userUpgrade.calcFileHash(new cryHashMd5(), a));
-            cmd.error("sha1=" + userUpgrade.calcFileHash(new cryHashSha1(), a));
-            cmd.error("sha256=" + userUpgrade.calcFileHash(new cryHashSha2256(), a));
-            cmd.error("sha512=" + userUpgrade.calcFileHash(new cryHashSha2512(), a));
+            cmd.error("md5=" + calcFileHash(new cryHashMd5(), a));
+            cmd.error("sha1=" + calcFileHash(new cryHashSha1(), a));
+            cmd.error("sha2256=" + calcFileHash(new cryHashSha2256(), a));
+            cmd.error("sha2512=" + calcFileHash(new cryHashSha2512(), a));
+            cmd.error("sha3256=" + calcFileHash(new cryHashSha3256(), a));
+            cmd.error("sha3512=" + calcFileHash(new cryHashSha3512(), a));
             return;
         }
         if (a.equals("disk")) {
