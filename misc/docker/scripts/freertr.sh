@@ -25,7 +25,7 @@ bindintf () {
         echo "INTF=$1";
         echo "PORT_1=$2";
         echo "PORT_2=$3";
-        ip link set $1 up multicast on allmulticast on promisc on mtu 1500
+        ip link set $1 up multicast on promisc on mtu 1500
         ethtool -K $1 rx off
         ethtool -K $1 tx off
         ethtool -K $1 sg off

@@ -115,7 +115,7 @@ public class userHwdet {
                 stat = "stat ";
                 break;
         }
-        List<String> ifc = bits.str2lst("ip link set " + nam + " up multicast on multicast on promisc on mtu 1500");
+        List<String> ifc = bits.str2lst("ip link set " + nam + " up multicast on promisc on mtu 1500");
         ifc.add("ethtool -K " + nam + " rx off");
         ifc.add("ethtool -K " + nam + " tx off");
         ifc.add("ethtool -K " + nam + " sg off");
