@@ -17,9 +17,6 @@ unsigned char *ifaceName;
 int ifaceSock;
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
-struct sockaddr_in ifaceAddr;
-struct sockaddr_in ifaceMask;
-struct sockaddr ifaceMac;
 int portLoc;
 int portRem;
 int commSock;
@@ -117,9 +114,15 @@ doer:
     goto doer;
 }
 
+void doCmd(unsigned char *cmd) {
+    printf("running %s...\n", cmd);
+    system(cmd);
+}
+
+
 int main(int argc, char **argv) {
 
-    if (argc < 8) {
+    if (argc < 6) {
         if (argc <= 1) goto help;
         unsigned char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
@@ -133,7 +136,7 @@ int main(int argc, char **argv) {
             case 'H':
                 help :
                         curr = argv[0];
-                printf("using: %s <iface> <lport> <raddr> <rport> <laddr> <addr> <mask>\n", curr);
+                printf("using: %s <iface> <lport> <raddr> <rport> <laddr> [addr/mask] [gw]\n", curr);
                 printf("   or: %s <command>\n", curr);
                 printf("commands: v=version\n");
                 printf("          h=this help\n");
@@ -156,16 +159,6 @@ int main(int argc, char **argv) {
     addrLoc.sin_port = htons(portLoc);
     addrRem.sin_family = AF_INET;
     addrRem.sin_port = htons(portRem);
-    memset(&ifaceAddr, 0, sizeof (ifaceAddr));
-    memset(&ifaceMask, 0, sizeof (ifaceMask));
-    if (inet_aton(argv[6], &ifaceAddr.sin_addr) == 0) err("bad network address");
-    if (inet_aton(argv[7], &ifaceMask.sin_addr) == 0) err("bad netmask address");
-    ifaceAddr.sin_family = AF_INET;
-    ifaceMask.sin_family = AF_INET;
-    memset(&ifaceMac, 0, sizeof (ifaceMac));
-    put16bits(ifaceMac.sa_data, 2, portLoc);
-    put16bits(ifaceMac.sa_data, 4, portRem);
-    ifaceMac.sa_family = 1;
 
     if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
     if (bind(commSock, (struct sockaddr *) &addrLoc, sizeof (addrLoc)) < 0) err("failed to bind socket");
@@ -179,8 +172,6 @@ int main(int argc, char **argv) {
     ifaceName = malloc(1024);
     strcpy(ifaceName, argv[1]);
     printf("creating interface %s.\n", ifaceName);
-    printf("address will be %s", inet_ntoa(ifaceAddr.sin_addr));
-    printf("/%s.\n", inet_ntoa(ifaceMask.sin_addr));
 
     if ((ifaceSock = open("/dev/net/tun", O_RDWR)) < 0) err("unable to open interface");
     struct ifreq ifr;
@@ -188,24 +179,20 @@ int main(int argc, char **argv) {
     strcpy(ifr.ifr_name, ifaceName);
     ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
     if (ioctl(ifaceSock, TUNSETIFF, &ifr) < 0) err("unable to create interface");
-    int configSock;
-    if ((configSock = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL))) < 0) err("unable to open socket");
-    memset(&ifr, 0, sizeof (ifr));
-    strcpy(ifr.ifr_name, ifaceName);
-    memcpy(&ifr.ifr_hwaddr, &ifaceMac, sizeof (ifr.ifr_hwaddr));
-    if (ioctl(configSock, SIOCSIFHWADDR, &ifr) < 0) err("unable to set mac");
-    memset(&ifr, 0, sizeof (ifr));
-    strcpy(ifr.ifr_name, ifaceName);
-    memcpy(&ifr.ifr_addr, &ifaceAddr, sizeof (ifr.ifr_addr));
-    if (ioctl(configSock, SIOCSIFADDR, &ifr) < 0) err("unable to set network");
-    memset(&ifr, 0, sizeof (ifr));
-    strcpy(ifr.ifr_name, ifaceName);
-    memcpy(&ifr.ifr_netmask, &ifaceMask, sizeof (ifr.ifr_netmask));
-    if (ioctl(configSock, SIOCSIFNETMASK, &ifr) < 0) err("unable to set netmask");
-    memset(&ifr, 0, sizeof (ifr));
-    strcpy(ifr.ifr_name, ifaceName);
-    ifr.ifr_flags = IFF_RUNNING | IFF_UP | IFF_BROADCAST | IFF_MULTICAST;
-    if (ioctl(configSock, SIOCSIFFLAGS, &ifr) < 0) err("unable to set flags");
+
+    unsigned char buf[1024];
+    sprintf(buf, "ip link set %s up address 00:00:%02x:%02x:%02x:%02x mtu 1500", ifaceName, portLoc >> 8, portLoc & 0xff, portRem >> 8, portRem & 0xff);
+    doCmd(buf);
+    if (argc > 6) {
+        sprintf(buf, "ip addr add %s dev %s", argv[6], ifaceName);
+        doCmd(buf);
+        sprintf(buf, "echo 0 > /proc/sys/net/ipv6/conf/%s/disable_ipv6", ifaceName);
+        doCmd(buf);
+    }
+    if (argc > 7) {
+        sprintf(buf, "ip route add 0.0.0.0/0 via %s dev %s", argv[7], ifaceName);
+        doCmd(buf);
+    }
 
     printf("serving others\n");
 

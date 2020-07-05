@@ -18,54 +18,54 @@ import util.version;
  * @author matecsaba
  */
 public class userHwdet {
-
+    
     private enum ifcTyp {
-
+        
         socat, pcap, raw, map
     }
-
+    
     private int nextPort = 0;
-
+    
     private int ifcNum = 0;
-
+    
     private int linNum = 0;
-
+    
     private int crsNum = 10000;
-
+    
     private int tapNum = 20000;
-
+    
     private List<String> starter;
-
+    
     private List<String> config;
-
+    
     private String scrBeg = "#!/bin/sh";
-
+    
     private String prefix = "hwdet-";
-
+    
     private boolean binMain = false;
-
+    
     private boolean inlineLoop = false;
-
+    
     private ifcTyp ifaceType = ifcTyp.socat;
-
+    
     private ifcTyp lineType = ifcTyp.socat;
-
+    
     private String path = "./";
-
+    
     private String lstEth = "hwdet.eth";
-
+    
     private String lstSer = "hwdet.ser";
-
+    
     private String lstMac = "hwdet.mac";
-
+    
     private tabGen<userHwdetIface> macLst = new tabGen<userHwdetIface>();
-
+    
     private void addComment(String s) {
         starter.add("");
         starter.add("### " + s + " ###");
         starter.add("echo starting " + s + ".");
     }
-
+    
     private void makeLoop(String fn, List<String> pre, List<String> lop) {
         List<String> txt = new ArrayList<String>();
         txt.add(scrBeg);
@@ -82,7 +82,7 @@ public class userHwdet {
         bits.buf2txt(true, txt, path + prefix + fn);
         starter.add("/bin/busybox start-stop-daemon -S -b -x " + path + prefix + fn);
     }
-
+    
     private void makeLoop(String fn, List<String> pre, String cmd) {
         if (!inlineLoop) {
             makeLoop(fn, pre, bits.str2lst(cmd));
@@ -91,7 +91,7 @@ public class userHwdet {
         starter.addAll(pre);
         config.add("proc " + fn + " " + cmd);
     }
-
+    
     private void createIface(String nam, String adr) {
         ifcNum += 1;
         int p1 = nextPort + 1;
@@ -115,7 +115,7 @@ public class userHwdet {
                 stat = "stat ";
                 break;
         }
-        List<String> ifc = bits.str2lst("ifconfig " + nam + " multicast allmulti promisc mtu 1500 up");
+        List<String> ifc = bits.str2lst("ip link set " + nam + " up multicast on multicast on promisc on mtu 1500");
         ifc.add("ethtool -K " + nam + " rx off");
         ifc.add("ethtool -K " + nam + " tx off");
         ifc.add("ethtool -K " + nam + " sg off");
@@ -132,7 +132,7 @@ public class userHwdet {
         makeLoop("ifc" + ifcNum + ".sh", ifc, cmd);
         config.add("int " + "eth" + ifcNum + " " + stat + "eth " + adr + " 127.0.0.1 " + p1 + " 127.0.0.1 " + p2);
     }
-
+    
     private void createLine(String nam) {
         linNum += 1;
         int p1 = nextPort + 1;
@@ -153,7 +153,7 @@ public class userHwdet {
         makeLoop("lin" + linNum + ".sh", bits.str2lst("./modem.bin " + nam + " \"speedset 9600\" \"ctrlset 3\""), cmd);
         config.add("line tty" + linNum + " 127.0.0.1 " + p2 + " 127.0.0.1 " + p1);
     }
-
+    
     private void createCross() {
         crsNum += 1;
         int p1 = nextPort + 1;
@@ -163,54 +163,45 @@ public class userHwdet {
         crsNum += 1;
         config.add("int eth" + crsNum + " eth - 127.0.0.1 " + p2 + " 127.0.0.1 " + p1);
     }
-
+    
     private void detectMacs(String fn) {
         addComment("macs");
-        String iface = null;
-        String macadr = null;
         List<String> res = bits.txt2buf(fn);
         if (res == null) {
             return;
         }
-        for (int i = 0; i < res.size(); i++) {
-            String a = res.get(i).trim();
-            int o = a.indexOf(": flags=");
-            int p = a.indexOf("  Link encap:");
-            if (o >= 0) {
-                iface = a.substring(0, o);
-            }
-            if (p >= 0) {
-                iface = a.substring(0, p);
-            }
-            o = a.indexOf("HWaddr");
-            p = a.indexOf("ether");
-            if (o >= 0) {
-                macadr = a.substring(o + 6, a.length());
-            }
-            if (p >= 0) {
-                try {
-                    macadr = a.substring(p + 5, a.indexOf("txqueue"));
-                } catch (Exception e) {
-                }
-            }
-            if (iface == null) {
+        for (int ln = 0; ln < res.size(); ln++) {
+            String a = res.get(ln).trim();
+            int i = a.indexOf(" mtu ");
+            if (i < 0) {
                 continue;
             }
-            if (macadr == null) {
+            i = a.indexOf(": ");
+            if (i < 0) {
+                continue;
+            }
+            if (i > 4) {
+                continue;
+            }
+            a = a.substring(i + 2, a.length());
+            i = a.indexOf(": ");
+            if (i < 0) {
                 continue;
             }
             userHwdetIface ntry = new userHwdetIface();
-            ntry.name = iface.trim();
-            ntry.mac = macadr.trim();
+            ntry.name = a.substring(0, i).trim();
+            a = res.get(ln + 1).trim();
+            if (!a.startsWith("link/ether")) {
+                continue;
+            }
+            ntry.mac = a.substring(11, 28);
             macLst.add(ntry);
-            iface = null;
-            macadr = null;
         }
         for (int i = 0; i < macLst.size(); i++) {
             starter.add("# " + macLst.get(i) + " #");
         }
     }
-
+    
     private void detectIfaces(String fn) {
         addComment("interfaces");
         final String unneeded = "/lo/dummy0/";
@@ -242,7 +233,7 @@ public class userHwdet {
             }
         }
     }
-
+    
     private void detectLines(String fn) {
         addComment("lines");
         List<String> res = bits.txt2buf(fn);
@@ -272,13 +263,13 @@ public class userHwdet {
             createLine(a);
         }
     }
-
+    
     private void detectCrosses(String num) {
         for (int i = 0; i < bits.str2num(num); i++) {
             createCross();
         }
     }
-
+    
     private void detectTuntap(String tap) {
         if (tap.length() < 1) {
             return;
@@ -289,16 +280,15 @@ public class userHwdet {
         nextPort += 10;
         String cmd;
         if (ifaceType == ifcTyp.socat) {
-            cmd = "socat TUN:" + tap + ",tun-name=tap" + tapNum + ",tun-type=tap,iff-no-pi,iff-broadcast,iff-up" + " UDP4-DATAGRAM:127.0.0.1:" + p1 + ",bind=127.0.0.1:" + p2 + ",reuseaddr";
+            int i = tap.indexOf(" ");
+            cmd = "socat TUN:" + tap.substring(0, i) + ",tun-name=tap" + tapNum + ",tun-type=tap,iff-no-pi,iff-broadcast,iff-up" + " UDP4-DATAGRAM:127.0.0.1:" + p1 + ",bind=127.0.0.1:" + p2 + ",reuseaddr";
         } else {
-            addrPrefix<addrIP> prf = addrPrefix.str2ip(tap);
-            prf.network.fromString(tap.substring(0, tap.indexOf("/")));
-            cmd = "./tapInt.bin tap" + tapNum + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1 " + prf.network.toIPv4() + " " + prf.mask.toIPv4();
+            cmd = "./tapInt.bin tap" + tapNum + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1 " + tap;
         }
         makeLoop("tap" + tapNum + ".sh", bits.str2lst(""), cmd);
         config.add("int eth" + tapNum + " eth - 127.0.0.1 " + p1 + " 127.0.0.1 " + p2);
     }
-
+    
     private void detectTcpvrf(String tcp) {
         if (tcp.length() < 1) {
             return;
@@ -350,6 +340,7 @@ public class userHwdet {
             }
             if (s.equals("tuntap")) {
                 tuntap = cmd.word();
+                tuntap += " " + cmd.word();
                 continue;
             }
             if (s.equals("tcpvrf")) {
@@ -416,7 +407,10 @@ public class userHwdet {
         starter.add(scrBeg);
         starter.add("");
         starter.add("cd " + path);
-        starter.add("ifconfig lo up 127.0.0.1");
+        starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
+        starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
+        starter.add("ip link set lo up mtu 65535");
+        starter.add("ip addr add 127.0.0.1/8 dev lo");
         starter.add("#modprobe -r kvm_intel");
         starter.add("#modprobe kvm_intel nested=1");
         starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
@@ -447,32 +441,26 @@ public class userHwdet {
         lop.add("  sleep 1");
         lop.add("fi");
         makeLoop("main.sh", bits.str2lst("cd " + path), lop);
-        starter.add("");
-        starter.add("sleep 5");
-        starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
-        starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
-        starter.add("echo 0 > /proc/sys/net/ipv6/conf/tap20001/disable_ipv6");
-        starter.add("route add default gw 10.255.255.254");
         starter.add("exit 0");
         bits.buf2txt(true, config, path + "rtr-" + cfgInit.hwCfgEnd);
         bits.buf2txt(true, starter, path + prefix + "all.sh");
         cmd.error("iface=" + ifcNum + " macs=" + macLst.size() + " line=" + linNum + " cross=" + crsNum % 100 + " tuntap=" + tapNum % 100 + " mem=" + mem);
     }
-
+    
 }
 
 class userHwdetIface implements Comparator<userHwdetIface> {
-
+    
     public String name = "";
-
+    
     public String mac = "";
-
+    
     public int compare(userHwdetIface t, userHwdetIface t1) {
         return t.name.compareTo(t1.name);
     }
-
+    
     public String toString() {
         return name + " " + mac;
     }
-
+    
 }

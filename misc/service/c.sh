@@ -20,7 +20,7 @@ cp ../../src/rtr.jar /rtr/
 cp ../../binTmp/*.bin /rtr/
 cp /proc/net/dev /rtr/hwdet.eth
 cp /proc/tty/driver/serial /rtr/hwdet.ser
-ifconfig -a > /rtr/hwdet.mac
-java -jar /rtr/rtr.jar test hwdet tuntap 10.255.255.1/24 path /rtr/ iface raw line raw
+ip link show > /rtr/hwdet.mac
+java -jar /rtr/rtr.jar test hwdet tuntap 10.255.255.1/24 10.255.255.254 path /rtr/ iface raw line raw
 chmod 777 /rtr/*.sh
 ls -l /rtr/
