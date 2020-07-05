@@ -405,7 +405,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * hide ipv4 address
      */
-    public boolean hide4;
+    public boolean hide4adr;
+
+    /**
+     * hide ipv4 netmask
+     */
+    public boolean hide4msk;
 
     /**
      * ipc4 packet handler
@@ -430,7 +435,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * hide ipv6 address
      */
-    public boolean hide6;
+    public boolean hide6adr;
+
+    /**
+     * hide ipv6 netmask
+     */
+    public boolean hide6msk;
 
     /**
      * ipv6 packet handler
@@ -4943,11 +4953,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             l.add(cmds.tabulator + "no vrf forwarding");
         } else {
             l.add(cmds.tabulator + "vrf forwarding " + vrfFor.name);
-            String a = "" + addr4;
-            if (hide4) {
-                a = "dynamic";
+            String a = "";
+            if (hide4adr) {
+                a += "dynamic";
+            } else {
+                a += "" + addr4;
             }
-            cmds.cfgLine(l, addr4 == null, cmds.tabulator, "ipv4 address", a + " " + mask4);
+            if (hide4msk) {
+                a += " dynamic";
+            } else {
+                a += " " + mask4;
+            }
+            cmds.cfgLine(l, addr4 == null, cmds.tabulator, "ipv4 address", a);
             if (fwdIf4 != null) {
                 fwdIf4.getConfig(l, vrfFor.fwd4, "ipv4 ");
                 cmds.cfgLine(l, dhcp4c == null, cmds.tabulator, "ipv4 dhcp-client enable", "");
@@ -4956,11 +4973,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 cmds.cfgLine(l, ip4polC == null, cmds.tabulator, "ipv4 pool", "" + ip4polC);
             }
-            a = "" + addr6;
-            if (hide6) {
-                a = "dynamic";
+            a = "";
+            if (hide6adr) {
+                a += "dynamic";
+            } else {
+                a += "" + addr6;
             }
-            cmds.cfgLine(l, addr6 == null, cmds.tabulator, "ipv6 address", a + " " + mask6);
+            if (hide6msk) {
+                a += " dynamic";
+            } else {
+                a += " " + mask6;
+            }
+            cmds.cfgLine(l, addr6 == null, cmds.tabulator, "ipv6 address", a);
             if (fwdIf6 != null) {
                 fwdIf6.getConfig(l, vrfFor.fwd6, "ipv6 ");
                 cmds.cfgLine(l, slaac == null, cmds.tabulator, "ipv6 slaac", "");
@@ -6496,19 +6520,27 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             addrIPv4 adr = new addrIPv4();
             addrIPv4 msk = new addrIPv4();
             a = cmd.word();
-            adr.fromString(a);
-            hide4 = a.equals("dynamic");
+            hide4adr = a.equals("dynamic");
+            if (hide4adr) {
+                a = "" + addrIPv4.getEmpty();
+            }
+            if (adr.fromString(a)) {
+                cmd.error("invalid address");
+                return;
+            }
             a = cmd.word();
-            boolean res = false;
+            hide4msk = a.equals("dynamic");
+            if (hide4msk) {
+                a = "/" + new addrIPv4().maxBits();
+            }
             if (a.startsWith("/")) {
                 addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(adr, bits.str2num(a.substring(1, a.length())));
                 msk = prf.mask;
             } else {
-                res = msk.fromString(a);
-            }
-            if (res) {
-                cmd.error("invalid netmask");
-                return;
+                if (msk.fromString(a)) {
+                    cmd.error("invalid netmask");
+                    return;
+                }
             }
             addr4 = adr;
             mask4 = msk;
@@ -6558,7 +6590,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("address")) {
             addr4 = null;
             mask4 = null;
-            hide4 = false;
+            hide4adr = false;
+            hide4msk = false;
             clear2routing(true, false);
             setup2vrf(true, false, false);
             return;
@@ -6607,19 +6640,27 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             addrIPv6 adr = new addrIPv6();
             addrIPv6 msk = new addrIPv6();
             a = cmd.word();
-            adr.fromString(a);
-            hide6 = a.equals("dynamic");
+            hide6adr = a.equals("dynamic");
+            if (hide6adr) {
+                a = "" + addrIPv6.getEmpty();
+            }
+            if (adr.fromString(a)) {
+                cmd.error("invalid address");
+                return;
+            }
             a = cmd.word();
-            boolean res = false;
+            hide6msk = a.equals("dynamic");
+            if (hide6msk) {
+                a = "/" + new addrIPv6().maxBits();
+            }
             if (a.startsWith("/")) {
                 addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(adr, bits.str2num(a.substring(1, a.length())));
                 msk = prf.mask;
             } else {
-                res = msk.fromString(a);
-            }
-            if (res) {
-                cmd.error("invalid netmask");
-                return;
+                if (msk.fromString(a)) {
+                    cmd.error("invalid netmask");
+                    return;
+                }
             }
             addr6 = adr;
             mask6 = msk;
@@ -6690,7 +6731,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("address")) {
             addr6 = null;
             mask6 = null;
-            hide6 = false;
+            hide6adr = false;
+            hide6msk = false;
             clear2routing(false, true);
             setup2vrf(false, true, false);
             return;

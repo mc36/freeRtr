@@ -114,10 +114,31 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
             cmd.error("bad network");
             return true;
         }
-        mask = getAddr(ver, cmd.word());
-        if (mask == null) {
-            cmd.error("bad mask");
-            return true;
+        int msk;
+        String a = cmd.word();
+        if (a.startsWith("/")) {
+            msk = bits.str2num(a.substring(1, a.length()));
+            mask = new addrIP();
+            if (ver == 4) {
+                addrIPv4 m4 = new addrIPv4();
+                m4.fromNetmask(msk);
+                mask.fromIPv4addr(m4);
+            } else {
+                addrIPv6 m6 = new addrIPv6();
+                m6.fromNetmask(msk);
+                mask.fromIPv6addr(m6);
+            }
+        } else {
+            mask = getAddr(ver, a);
+            if (mask == null) {
+                cmd.error("bad mask");
+                return true;
+            }
+            if (ver == 4) {
+                msk = mask.toIPv4().toNetmask();
+            } else {
+                msk = mask.toIPv6().toNetmask();
+            }
         }
         hop = getAddr(ver, cmd.word());
         if (hop == null) {
@@ -125,14 +146,14 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
             return true;
         }
         if (ver == 4) {
-            pref = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(addr.toIPv4(), mask.toIPv4().toNetmask()));
+            pref = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(addr.toIPv4(), msk));
         } else {
-            pref = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(addr.toIPv6(), mask.toIPv6().toNetmask()));
+            pref = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(addr.toIPv6(), msk));
         }
         dist = 1;
         tag = 0;
         for (;;) {
-            String a = cmd.word();
+            a = cmd.word();
             if (a.length() < 1) {
                 break;
             }

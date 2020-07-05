@@ -314,6 +314,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add("2 3     address                     set the ip address of an interface");
         l.add("3 4       dynamic                   dynamic address");
         l.add("3 4       <addr>                    address of interface");
+        l.add("4 .         dynamic                 dynamic netmask");
         l.add("4 .         <mask>                  subnet mask of address");
         l.add("2 .     unreachables                enable sending icmp unreachable messages");
         l.add("2 3     unreach-source              set unreachable source");
