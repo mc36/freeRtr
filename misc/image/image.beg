@@ -27,7 +27,6 @@ exec mkdir -m 0755 %tmp%/usr/bin
 exec mkdir -m 0755 %tmp%/usr/sbin
 
 exec cp rtr.ver %tmp%/rtr/
-exec cp ../rtr.zip %tmp%/rtr/
 exec cp ../binTmp/modem.bin %tmp%/rtr/
 exec cp ../binTmp/ttyLin.bin %tmp%/rtr/
 exec cp ../binTmp/rawInt.bin %tmp%/rtr/
