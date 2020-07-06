@@ -1,4 +1,4 @@
-apt-get install openvswitch-switch socat busybox gcc telnet
+apt-get install openvswitch-switch socat gcc telnet
 gcc -O3 -o cons.bin cons.c
 cp initd /etc/init.d/rtr
 chmod 777 /etc/init.d/rtr

@@ -16,5 +16,4 @@ ovs-vsctl add-port sw ens6
 ovs-vsctl add-port sw ens7
 ovs-vsctl add-port sw ens8
 sleep 1
-/bin/busybox start-stop-daemon -S -b -x /home/mc36/dumpd.sh
 /home/mc36/dump.sh

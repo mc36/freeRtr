@@ -80,7 +80,7 @@ public class userHwdet {
         txt.add("  sleep 1");
         txt.add("  done");
         bits.buf2txt(true, txt, path + prefix + fn);
-        starter.add("/bin/busybox start-stop-daemon -S -b -x " + path + prefix + fn);
+        starter.add("start-stop-daemon -S -b -x " + path + prefix + fn);
     }
     
     private void makeLoop(String fn, List<String> pre, String cmd) {
@@ -104,14 +104,14 @@ public class userHwdet {
                 cmd = "socat INTERFACE:" + nam + " UDP4-DATAGRAM:127.0.0.1:" + p1 + ",bind=127.0.0.1:" + p2 + ",reuseaddr";
                 break;
             case pcap:
-                cmd = "./pcapInt.bin " + nam + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1";
+                cmd = path + "pcapInt.bin " + nam + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1";
                 break;
             case raw:
-                cmd = "./rawInt.bin " + nam + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1";
+                cmd = path + "rawInt.bin " + nam + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1";
                 stat = "stat ";
                 break;
             case map:
-                cmd = "./mapInt.bin " + nam + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1";
+                cmd = path + "mapInt.bin " + nam + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1";
                 stat = "stat ";
                 break;
         }
@@ -145,12 +145,12 @@ public class userHwdet {
                 cmd = "socat TCP4-LISTEN:" + p1 + ",reuseaddr FILE:" + nam + ",sane,b9600,cs8,raw,echo=0,crtscts=0";
                 break;
             case raw:
-                cmd = "./ttyLin.bin " + nam + " " + p1;
+                cmd = path + "ttyLin.bin " + nam + " " + p1;
                 break;
             default:
                 break;
         }
-        makeLoop("lin" + linNum + ".sh", bits.str2lst("./modem.bin " + nam + " \"speedset 9600\" \"ctrlset 3\""), cmd);
+        makeLoop("lin" + linNum + ".sh", bits.str2lst(path + "modem.bin " + nam + " \"speedset 9600\" \"ctrlset 3\""), cmd);
         config.add("line tty" + linNum + " 127.0.0.1 " + p2 + " 127.0.0.1 " + p1);
     }
     
@@ -283,7 +283,7 @@ public class userHwdet {
             int i = tap.indexOf(" ");
             cmd = "socat TUN:" + tap.substring(0, i) + ",tun-name=tap" + tapNum + ",tun-type=tap,iff-no-pi,iff-broadcast,iff-up" + " UDP4-DATAGRAM:127.0.0.1:" + p1 + ",bind=127.0.0.1:" + p2 + ",reuseaddr";
         } else {
-            cmd = "./tapInt.bin tap" + tapNum + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1 " + tap;
+            cmd = path + "tapInt.bin tap" + tapNum + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1 " + tap;
         }
         makeLoop("tap" + tapNum + ".sh", bits.str2lst(""), cmd);
         config.add("int eth" + tapNum + " eth - 127.0.0.1 " + p1 + " 127.0.0.1 " + p2);
@@ -427,7 +427,7 @@ public class userHwdet {
         addComment("main");
         String s;
         if (binMain) {
-            s = "./rtr.bin";
+            s = path + "rtr.bin";
         } else {
             s = "java -Xmx" + mem + " -jar " + version.getFileName();
         }
@@ -437,9 +437,9 @@ public class userHwdet {
         lop.add("if [ $? -eq 4 ] ; then");
         lop.add("  sync");
         lop.add("  reboot -f");
-        lop.add("else");
-        lop.add("  sleep 1");
         lop.add("fi");
+        lop.add("stty cooked < /dev/tty");
+        lop.add("sleep 1");
         makeLoop("main.sh", bits.str2lst("cd " + path), lop);
         starter.add("exit 0");
         bits.buf2txt(true, config, path + "rtr-" + cfgInit.hwCfgEnd);

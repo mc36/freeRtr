@@ -5,6 +5,7 @@ ip link set ens5 up promisc on
 ip link set ens6 up promisc on
 ip link set ens7 up promisc on
 ip link set ens8 up promisc on
+cd /home/mc36
 while (true); do
   simple_switch_grpc -i 64@ens4 -i 1@ens5 -i 2@ens6 -i 3@ens7 -i 4@ens8 --thrift-port 9090 router.json
   done

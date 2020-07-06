@@ -6,9 +6,9 @@ cd /rtr
 cp /proc/net/dev hwdet.eth
 cp /proc/tty/driver/serial hwdet.ser
 ip link show > hwdet.mac
-./rtr.bin test hwdet binary tuntap 10.255.255.1/24 10.255.255.254 tcpvrf 23 host 23 iface raw line raw
+/rtr/rtr.bin test hwdet binary tuntap 10.255.255.1/24 10.255.255.254 tcpvrf 23 host 23 path /rtr/ iface raw line raw
 chmod 777 *.sh
-./hwdet-all.sh
+/rtr/hwdet-all.sh
 while (true); do
   sleep 1
   done

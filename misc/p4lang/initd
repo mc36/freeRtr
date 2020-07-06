@@ -13,9 +13,9 @@
 case "$1" in
   start)
         cd /home/mc36
-        /bin/busybox start-stop-daemon -S -b -x ./cons.bin
-        /bin/busybox start-stop-daemon -S -b -x ./r.sh
-        /bin/busybox start-stop-daemon -S -b -x ./f.sh
+        start-stop-daemon -S -b -x /home/mc36/cons.bin
+        start-stop-daemon -S -b -x /home/mc36/r.sh
+        start-stop-daemon -S -b -x /home/mc36/f.sh
         ;;
   stop)
         ;;

@@ -13,7 +13,7 @@
 case "$1" in
   start)
         cd /home/mc36
-        /bin/busybox start-stop-daemon -S -b -x ./cons.sh
+        start-stop-daemon -S -b -x /home/mc36/cons.sh
         ;;
   stop)
         ;;
