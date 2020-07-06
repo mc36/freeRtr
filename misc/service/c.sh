@@ -19,10 +19,6 @@ iface lo inet loopback
 #iface eth0 inet6 auto
 EOF
 
-cat > /etc/resolv.conf << EOF
-nameserver 10.255.255.254
-EOF
-
 cat > /etc/init.d/rtr << EOF
 #!/bin/sh
 
@@ -69,6 +65,12 @@ EOF
 chmod 777 /etc/init.d/rtr
 update-rc.d rtr defaults
 
+systemctl set-default multi-user.target
+rm /usr/lib/systemd/network/*
+SVC="network-manager NetworkManager ModemManager systemd-networkd systemd-resolved systemd-networkd-wait-online wpa_supplicant"
+systemctl disable $SVC
+systemctl mask $SVC
+
 cat > /lib/systemd/system/rtr.service << EOF
 [Unit]
 Description=router processes
@@ -84,13 +86,13 @@ ExecStart=$TRG/hwdet-all.sh
 WantedBy=multi-user.target
 EOF
 
-systemctl set-default multi-user.target
-rm /usr/lib/systemd/network/*
-SVC="network-manager NetworkManager ModemManager systemd-networkd systemd-resolved systemd-networkd-wait-online wpa_supplicant"
-systemctl disable $SVC
-systemctl mask $SVC
+systemctl daemon-reload
 systemctl unmask rtr
 systemctl enable rtr
+
+cat > /etc/resolv.conf << EOF
+nameserver 10.255.255.254
+EOF
 
 mkdir -p $TRG
 cp ../default.cfg $TRG/rtr-sw.txt
