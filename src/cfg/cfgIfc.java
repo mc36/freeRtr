@@ -498,6 +498,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public int tunKey = 0;
 
     /**
+     * tunnel key to use, 0 means disabled
+     */
+    public int tunKey2 = 0;
+
+    /**
      * send checksum in packets
      */
     public boolean tunSum = false;
@@ -3342,6 +3347,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         tunTOS = -1;
         tunTTL = 255;
         tunKey = 0;
+        tunKey2 = 0;
         tunSum = false;
         tunSeq = false;
         tunPri = 7;
@@ -3437,7 +3443,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunLisp.fwdIfc = tunSrc.getFwdIfc(tunTrg);
                 tunLisp.target = tunTrg.copyBytes();
                 tunLisp.prtR = tunKey;
-                tunLisp.prtL = tunKey;
+                tunLisp.prtL = tunKey2;
                 tunLisp.sendingTOS = tunTOS;
                 tunLisp.sendingTTL = tunTTL;
                 tunLisp.setUpper(ethtyp);
@@ -3508,7 +3514,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunMplsudp.fwdIfc = tunSrc.getFwdIfc(tunTrg);
                 tunMplsudp.target = tunTrg.copyBytes();
                 tunMplsudp.prtR = tunKey;
-                tunMplsudp.prtL = tunKey;
+                tunMplsudp.prtL = tunKey2;
                 tunMplsudp.sendingTOS = tunTOS;
                 tunMplsudp.sendingTTL = tunTTL;
                 tunMplsudp.setUpper(ethtyp);
@@ -3540,8 +3546,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunOpenvpn.vrf = tunVrf;
                 tunOpenvpn.srcIfc = tunSrc;
                 tunOpenvpn.target = "" + tunTrg;
-                tunOpenvpn.srcPrt = tunKey;
-                tunOpenvpn.trgPrt = tunKey;
+                tunOpenvpn.prtR = tunKey;
+                tunOpenvpn.prtL = tunKey2;
                 tunOpenvpn.workStart();
                 tunOpenvpn.setUpper(ethtyp);
                 lower = tunOpenvpn;
@@ -3557,8 +3563,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunWireguard.vrf = tunVrf;
                 tunWireguard.srcIfc = tunSrc;
                 tunWireguard.target = "" + tunTrg;
-                tunWireguard.srcPrt = tunKey;
-                tunWireguard.trgPrt = tunKey;
+                tunWireguard.prtR = tunKey;
+                tunWireguard.prtL = tunKey2;
                 tunWireguard.workStart();
                 tunWireguard.setUpper(ethtyp);
                 lower = tunWireguard;
@@ -3575,8 +3581,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSatp.vrf = tunVrf;
                 tunSatp.srcIfc = tunSrc;
                 tunSatp.target = "" + tunTrg;
-                tunSatp.srcPrt = tunKey;
-                tunSatp.trgPrt = tunKey;
+                tunSatp.prtR = tunKey;
+                tunSatp.prtL = tunKey2;
                 tunSatp.workStart();
                 tunSatp.setUpper(ethtyp);
                 lower = tunSatp;
@@ -3665,7 +3671,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPckOudp.srcIfc = tunSrc;
                 tunPckOudp.target = "" + tunTrg;
                 tunPckOudp.prtR = tunKey;
-                tunPckOudp.prtL = tunKey;
+                tunPckOudp.prtL = tunKey2;
                 tunPckOudp.sendingTTL = tunTTL;
                 tunPckOudp.sendingTOS = tunTOS;
                 tunPckOudp.setUpper(ethtyp);
@@ -4819,7 +4825,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 cmds.cfgLine(l, !tunSeq, cmds.tabulator, "tunnel sequence-datagrams", "");
                 cmds.cfgLine(l, !tunSum, cmds.tabulator, "tunnel checksum", "");
                 cmds.cfgLine(l, !tunShut, cmds.tabulator, "tunnel shutdown", "");
-                l.add(cmds.tabulator + "tunnel key " + tunKey);
+                s = "";
+                if (tunKey2 != 0) {
+                    s = " " + tunKey2;
+                }
+                l.add(cmds.tabulator + "tunnel key " + tunKey + s);
                 l.add(cmds.tabulator + "tunnel tos " + tunTOS);
                 l.add(cmds.tabulator + "tunnel ttl " + tunTTL);
                 l.add(cmds.tabulator + "tunnel priority " + tunPri);
@@ -5324,7 +5334,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 3     priority                    set tunnel priority");
         l.add("3 .       <num>                     value of ttl field");
         l.add("2 3     key                         set security key, 0 to disable");
-        l.add("3 .       <num>                     value of key field");
+        l.add("3 4,.     <num>                     value of key field");
+        l.add("4 .         <num>                   value of local key field");
         l.add("2 .     checksum                    enable checksumming of packets");
         l.add("2 .     shutdown                    shutdown tunnel protocol");
         l.add("2 .     sequence-datagrams          drop datagrams arriving out of order");
@@ -6820,6 +6831,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("key")) {
             tunKey = bits.str2num(cmd.word());
+            tunKey2 = bits.str2num(cmd.word());
             setup2tunnel();
             return;
         }
@@ -6918,6 +6930,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("key")) {
             tunKey = 0;
+            tunKey2 = 0;
             setup2tunnel();
             return;
         }

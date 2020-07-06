@@ -293,7 +293,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     private clntDlsw dlsw;
 
     private clntEtherIp etherip;
-    
+
     private clntSrEth sreth;
 
     private clntUti uti;
@@ -1108,7 +1108,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pou.vrf = proxy.vrf;
                 pou.srcIfc = proxy.srcIfc;
                 pou.prtR = vcid;
-                if (!ctrlWrd) {
+                if (ctrlWrd) {
+                    pou.prtL = -1;
+                } else {
                     pou.prtL = vcid;
                 }
                 if (ifaceDialer != null) {
@@ -1127,7 +1129,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pod.target = target;
                 pod.proxy = proxy;
                 pod.prtR = vcid;
-                if (!ctrlWrd) {
+                if (ctrlWrd) {
+                    pod.prtL = -1;
+                } else {
                     pod.prtL = vcid;
                 }
                 pod.setUpper(ifaceDialer.getEncapProto());
@@ -1141,9 +1145,6 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pot.target = target;
                 pot.proxy = proxy;
                 pot.prtR = vcid;
-                if (!ctrlWrd) {
-                    pot.prtL = vcid;
-                }
                 pot.setUpper(ifaceDialer.getEncapProto());
                 pot.workStart();
                 break;
@@ -1155,9 +1156,6 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pox.target = target;
                 pox.proxy = proxy;
                 pox.prtR = vcid;
-                if (!ctrlWrd) {
-                    pox.prtL = vcid;
-                }
                 pox.setUpper(ifaceDialer.getEncapProto());
                 pox.workStart();
                 break;

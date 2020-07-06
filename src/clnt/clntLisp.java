@@ -223,7 +223,10 @@ public class clntLisp implements Comparator<clntLisp>, Runnable, prtServP, ifcDn
             prtR = portNum;
         }
         if (prtL == 0) {
-            prtL = portNum;
+            prtL = prtR;
+        }
+        if (prtL == -1) {
+            prtL = 0;
         }
         conn = udp.packetConnect(this, fwdIfc, prtL, target, prtR, "lisp", null, -1);
         if (conn == null) {

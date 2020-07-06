@@ -74,12 +74,12 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     /**
      * source port
      */
-    public int srcPrt;
+    public int prtL;
 
     /**
      * target port
      */
-    public int trgPrt;
+    public int prtR;
 
     /**
      * sending ttl value, -1 means maps out
@@ -273,13 +273,16 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        if (srcPrt == 0) {
-            srcPrt = port;
+        if (prtR == 0) {
+            prtR = port;
         }
-        if (trgPrt == 0) {
-            trgPrt = port;
+        if (prtL == 0) {
+            prtL = prtR;
         }
-        conn = udp.packetConnect(this, fwdIfc, srcPrt, trg, trgPrt, "wireguard", null, -1);
+        if (prtL == -1) {
+            prtL = 0;
+        }
+        conn = udp.packetConnect(this, fwdIfc, prtL, trg, prtR, "wireguard", null, -1);
         if (conn == null) {
             return;
         }

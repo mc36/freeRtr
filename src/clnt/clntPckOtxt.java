@@ -39,11 +39,6 @@ public class clntPckOtxt implements Runnable, ifcDn {
     public int prtR;
 
     /**
-     * local port number
-     */
-    public int prtL;
-
-    /**
      * proxy profile
      */
     public clntProxy proxy;

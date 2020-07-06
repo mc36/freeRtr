@@ -213,7 +213,10 @@ public class clntMplsUdp implements Comparator<clntMplsUdp>, Runnable, prtServP,
             prtR = servMplsUdp.portNum;
         }
         if (prtL == 0) {
-            prtL = servMplsUdp.portNum;
+            prtL = prtR;
+        }
+        if (prtL == -1) {
+            prtL = 0;
         }
         conn = udp.packetConnect(this, fwdIfc, prtL, target, prtR, "mplsudp", null, -1);
         if (conn == null) {
