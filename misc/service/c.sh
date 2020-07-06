@@ -20,7 +20,7 @@ iface lo inet loopback
 EOF
 
 cat > /etc/resolv.conf << EOF
-nameserver 8.8.8.8
+nameserver 10.255.255.254
 EOF
 
 cat > /etc/init.d/rtr << EOF
@@ -86,7 +86,7 @@ EOF
 
 systemctl set-default multi-user.target
 rm /usr/lib/systemd/network/*
-SVC="network-manager NetworkManager ModemManager systemd-networkd systemd-networkd-wait-online wpa_supplicant"
+SVC="network-manager NetworkManager ModemManager systemd-networkd systemd-resolved systemd-networkd-wait-online wpa_supplicant"
 systemctl disable $SVC
 systemctl mask $SVC
 systemctl unmask rtr
