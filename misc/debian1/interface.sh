@@ -34,7 +34,7 @@ tap)
 				ip addr add "$ADDR6" dev "$DEVICE"
 			fi
 		fi
-	' | envsubst | bash &
+	' | envsubst | sh &
 	exec /usr/bin/tapInt.bin "$DEVICE" "$LPORT" "$RADDR" "$RPORT" "$LADDR" 0.0.0.1 255.255.255.255
 	;;
 std)

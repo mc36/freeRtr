@@ -1,3 +1,4 @@
+#!/bin/sh
 cp ../../binTmp/r1-?w.txt ./
 cp ../../binTmp/r2-?w.txt ./
 cp ../../binTmp/r3-?w.txt ./
