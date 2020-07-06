@@ -67,7 +67,7 @@ update-rc.d rtr defaults
 
 systemctl set-default multi-user.target
 rm /usr/lib/systemd/network/*
-SVC="network-manager NetworkManager ModemManager systemd-networkd systemd-resolved systemd-networkd-wait-online wpa_supplicant"
+SVC="network-manager NetworkManager ModemManager systemd-network-generator systemd-networkd systemd-networkd-wait-online systemd-resolved wpa_supplicant"
 systemctl disable $SVC
 systemctl mask $SVC
 
