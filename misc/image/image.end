@@ -13,7 +13,7 @@ del-alw %tmp%/lib/modules/*/kernel/drivers/media
 del-alw %tmp%/lib/modules/*/kernel/net
 del-alw %tmp%/lib/modules/*/kernel/sound
 
-exec chmod 777 %tmp%/init*
+exec chmod 755 %tmp%/init*
 exec touch %tmp%/rtr/rtr-hw.txt
 exec cp ../misc/default.cfg %tmp%/rtr/rtr-sw.txt
 exec for a in `busybox --list`; do ln -s /bin/busybox %tmp%/bin/$a; done

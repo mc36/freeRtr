@@ -62,7 +62,7 @@ esac
 exit 0
 EOF
 
-chmod 777 /etc/init.d/rtr
+chmod 755 /etc/init.d/rtr
 update-rc.d rtr defaults
 
 systemctl set-default multi-user.target
@@ -103,5 +103,5 @@ cp /proc/net/dev $TRG/hwdet.eth
 cp /proc/tty/driver/serial $TRG/hwdet.ser
 ip link show > $TRG/hwdet.mac
 java -jar $TRG/rtr.jar test hwdet tuntap 10.255.255.1/24 10.255.255.254 path $TRG/ iface raw line raw
-chmod 777 $TRG/*.sh
+chmod 755 $TRG/*.sh
 ls -l $TRG/

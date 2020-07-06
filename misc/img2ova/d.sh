@@ -20,7 +20,7 @@ echo exec switch_root $MNT /init2 >> $MNT/init
 echo "#!/bin/sh" > $MNT/init2
 echo sh /init.sys >> $MNT/init2
 cat $MNT/xx01 >> $MNT/init2
-chmod +x $MNT/init*
+chmod 755 $MNT/init*
 rm $MNT/xx0*
 mv $MNT/usr/lib/jvm $MNT/usr-lib-jvm
 echo -n `cd $MNT/;find init*>filist`
