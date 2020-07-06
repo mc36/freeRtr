@@ -90,6 +90,7 @@ systemctl daemon-reload
 systemctl unmask rtr
 systemctl enable rtr
 
+rm -f /etc/resolv.conf
 cat > /etc/resolv.conf << EOF
 nameserver 10.255.255.254
 EOF
