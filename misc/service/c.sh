@@ -1,6 +1,13 @@
 #!/bin/sh
 
-TRG=/rtr
+TRG=$1
+
+if [ -z "$TRG" ] ; then
+  echo "usage: c.sh <target directory>"
+  exit
+  fi
+
+echo installing to $TRG directory
 
 echo net.ipv6.conf.all.disable_ipv6=1 > /etc/sysctl.d/disableipv6.conf
 echo net.ipv6.conf.default.disable_ipv6=1 > /etc/sysctl.d/disableipv6.conf
@@ -85,7 +92,7 @@ systemctl mask $SVC
 systemctl unmask rtr
 systemctl enable rtr
 
-mkdir $TRG
+mkdir -p $TRG
 cp ../default.cfg $TRG/rtr-sw.txt
 cp ../../src/rtr.jar $TRG/
 cp ../../binTmp/*.bin $TRG/

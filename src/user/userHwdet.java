@@ -432,6 +432,7 @@ public class userHwdet {
             s = "java -Xmx" + mem + " -jar " + version.getFileName();
         }
         List<String> lop = new ArrayList<String>();
+        lop.add("cd " + path);
         lop.add("stty raw < /dev/tty");
         lop.add(s + " router " + path + "rtr-");
         lop.add("if [ $? -eq 4 ] ; then");
@@ -440,7 +441,7 @@ public class userHwdet {
         lop.add("fi");
         lop.add("stty cooked < /dev/tty");
         lop.add("sleep 1");
-        makeLoop("main.sh", bits.str2lst("cd " + path), lop);
+        makeLoop("main.sh", bits.str2lst(""), lop);
         starter.add("exit 0");
         bits.buf2txt(true, config, path + "rtr-" + cfgInit.hwCfgEnd);
         bits.buf2txt(true, starter, path + prefix + "all.sh");
