@@ -1129,11 +1129,6 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pod.target = target;
                 pod.proxy = proxy;
                 pod.prtR = vcid;
-                if (ctrlWrd) {
-                    pod.prtL = -1;
-                } else {
-                    pod.prtL = vcid;
-                }
                 pod.setUpper(ifaceDialer.getEncapProto());
                 pod.workStart();
                 break;

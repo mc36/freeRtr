@@ -91,14 +91,6 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
 
     private prtGenConn conn;
 
-    private addrIP localAddr;
-
-    private addrIP remoteAddr;
-
-    private ipFwdIface fwdIfc;
-
-    private prtUdp fwdUdp;
-
     private boolean working = true;
 
     private int cphrSiz;
