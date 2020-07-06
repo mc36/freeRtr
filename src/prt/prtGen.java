@@ -347,7 +347,7 @@ public abstract class prtGen implements ipPrt {
         if (locI == null) {
             return null;
         }
-        if (locP == 0) {
+        if (locP < 1) {
             for (;;) {
                 locP = getRandomPortNum();
                 if (clnts.get(locI.ifwNum, remA, 0, locP, remP, false) == null) {

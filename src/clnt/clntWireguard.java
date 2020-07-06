@@ -279,9 +279,6 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         if (prtL == 0) {
             prtL = prtR;
         }
-        if (prtL == -1) {
-            prtL = 0;
-        }
         conn = udp.packetConnect(this, fwdIfc, prtL, trg, prtR, "wireguard", null, -1);
         if (conn == null) {
             return;

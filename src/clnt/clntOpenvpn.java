@@ -313,9 +313,6 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
         if (prtL == 0) {
             prtL = prtR;
         }
-        if (prtL == -1) {
-            prtL = 0;
-        }
         conn = udp.packetConnect(this, fwdIfc, prtL, trg, prtR, "openvpn", null, -1);
         if (conn == null) {
             return;
