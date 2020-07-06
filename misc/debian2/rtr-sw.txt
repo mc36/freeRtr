@@ -104,8 +104,6 @@ interface sdn3
 !
 !
 !
-alias test bash description 
-alias test bash parameter optional
 !
 server telnet ssh
  security protocol ssh

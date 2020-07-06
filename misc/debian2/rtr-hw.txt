@@ -7,4 +7,3 @@ tcp2vrf 2323 v1 23
 tcp2vrf 2001 v1 22
 tcp2vrf 9080 v1 9080
 !tcp2vrf 8080 v1 80
-def alias test bash command attach shell1 socat - exec:sh,ctty,pty,stderr

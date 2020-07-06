@@ -59,9 +59,6 @@ scheduler temper
 !
 !
 !
-alias test bash command attach shell1 socat - exec:bash,ctty,pty,stderr
-alias test bash description 
-alias test bash parameter forbidden
 !
 server telnet ssh
  security protocol ssh
