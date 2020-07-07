@@ -8908,3 +8908,10 @@ qc pass: p4lang: bundle vlan bridging
 ---------------------------------- 2020-07-03 07:38:23
 qc pass: interop8: eigrp
 qc pass: interop8: rip
+---------------------------------- 2020-07-06 13:48:46
+qc pass: lisp over asymmetric ports
+qc pass: mplsudp over asymmetric ports
+qc pass: packet over udp over asymmetric ports
+qc pass: openvpn over asymmetric ports
+qc pass: satp over asymmetric ports
+qc pass: wireguard over asymmetric ports

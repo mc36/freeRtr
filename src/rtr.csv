@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.7.5-rel, done by cs@nop.;-;-
--;-;2020-07-06 00:20:05, took 09:16:04 on 1726 cases, 0 failed, 0 traces, 15 retries;-;-
+-;-;freeRouter v20.7.6-rel, done by cs@nop.;-;-
+-;-;2020-07-06 23:14:24, took 09:25:38 on 1732 cases, 0 failed, 0 traces, 22 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -185,6 +185,7 @@ conn-lisp01.tst;0;lisp over ipv4;successfully;finished
 conn-lisp02.tst;0;lisp over ipv6;successfully;finished
 conn-lisp03.tst;0;lisp over lisp;successfully;finished
 conn-lisp04.tst;0;lisp over loopback;successfully;finished
+conn-lisp05.tst;0;lisp over asymmetric ports;successfully;finished
 conn-minenc01.tst;0;minenc over ipv4;successfully;finished
 conn-minenc02.tst;0;minenc over ipv6;successfully;finished
 conn-minenc03.tst;0;minenc over minenc;successfully;finished
@@ -210,6 +211,7 @@ conn-mplsudp02.tst;0;mplsudp over ipv6;successfully;finished
 conn-mplsudp03.tst;0;mplsudp over mplsudp;successfully;finished
 conn-mplsudp04.tst;0;mplsudp over loopback;successfully;finished
 conn-mplsudp05.tst;0;mplsudp server;successfully;finished
+conn-mplsudp06.tst;0;mplsudp over asymmetric ports;successfully;finished
 conn-nos01.tst;0;nos over ipv4;successfully;finished
 conn-nos02.tst;0;nos over ipv6;successfully;finished
 conn-nos03.tst;0;nos over nos;successfully;finished
@@ -252,6 +254,7 @@ conn-pckou18.tst;0;ppp with packet over tcp;successfully;finished
 conn-pckou19.tst;0;ppp with packet over tls;successfully;finished
 conn-pckou20.tst;0;ppp with packet over txt;successfully;finished
 conn-pckou21.tst;0;ppp with packet over txtls;successfully;finished
+conn-pckou22.tst;0;packet over udp over asymmetric ports;successfully;finished
 conn-pim01.tst;0;pim over ipv4;successfully;finished
 conn-pim02.tst;0;pim over ipv6;successfully;finished
 conn-pim03.tst;0;pim over pim;successfully;finished
@@ -495,6 +498,7 @@ crypt-openvpn11.tst;0;openvpn with md5;successfully;finished
 crypt-openvpn12.tst;0;openvpn with sha1;successfully;finished
 crypt-openvpn13.tst;0;openvpn with sha256;successfully;finished
 crypt-openvpn14.tst;0;openvpn with sha512;successfully;finished
+crypt-openvpn15.tst;0;openvpn over asymmetric ports;successfully;finished
 crypt-proxy.tst;0;transparent proxy;successfully;finished
 crypt-satp01.tst;0;satp over ipv4;successfully;finished
 crypt-satp02.tst;0;satp over ipv6;successfully;finished
@@ -510,6 +514,7 @@ crypt-satp11.tst;0;satp with md5;successfully;finished
 crypt-satp12.tst;0;satp with sha1;successfully;finished
 crypt-satp13.tst;0;satp with sha256;successfully;finished
 crypt-satp14.tst;0;satp with sha512;successfully;finished
+crypt-satp15.tst;0;satp over asymmetric ports;successfully;finished
 crypt-skip01.tst;0;skip over ipv4;successfully;finished
 crypt-skip02.tst;0;skip over ipv6;successfully;finished
 crypt-skip03.tst;0;skip over skip;successfully;finished
@@ -544,6 +549,7 @@ crypt-wireguard01.tst;0;wireguard over ipv4;successfully;finished
 crypt-wireguard02.tst;0;wireguard over ipv6;successfully;finished
 crypt-wireguard03.tst;0;wireguard over wireguard;successfully;finished
 crypt-wireguard04.tst;0;wireguard over loopback;successfully;finished
+crypt-wireguard05.tst;0;wireguard over asymmetric ports;successfully;finished
 demo01.tst;0;empty demo network;successfully;finished
 demo02.tst;0;addressed demo network;successfully;finished
 intop1-bgp01.tst;0;interop1: ebgp;successfully;finished

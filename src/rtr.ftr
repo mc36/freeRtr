@@ -181,6 +181,7 @@ qc pass: lisp over ipv4
 qc pass: lisp over ipv6
 qc pass: lisp over lisp
 qc pass: lisp over loopback
+qc pass: lisp over asymmetric ports
 qc pass: minenc over ipv4
 qc pass: minenc over ipv6
 qc pass: minenc over minenc
@@ -206,6 +207,7 @@ qc pass: mplsudp over ipv6
 qc pass: mplsudp over mplsudp
 qc pass: mplsudp over loopback
 qc pass: mplsudp server
+qc pass: mplsudp over asymmetric ports
 qc pass: nos over ipv4
 qc pass: nos over ipv6
 qc pass: nos over nos
@@ -248,6 +250,7 @@ qc pass: ppp with packet over tcp
 qc pass: ppp with packet over tls
 qc pass: ppp with packet over txt
 qc pass: ppp with packet over txtls
+qc pass: packet over udp over asymmetric ports
 qc pass: pim over ipv4
 qc pass: pim over ipv6
 qc pass: pim over pim
@@ -491,6 +494,7 @@ qc pass: openvpn with md5
 qc pass: openvpn with sha1
 qc pass: openvpn with sha256
 qc pass: openvpn with sha512
+qc pass: openvpn over asymmetric ports
 qc pass: transparent proxy
 qc pass: satp over ipv4
 qc pass: satp over ipv6
@@ -506,6 +510,7 @@ qc pass: satp with md5
 qc pass: satp with sha1
 qc pass: satp with sha256
 qc pass: satp with sha512
+qc pass: satp over asymmetric ports
 qc pass: skip over ipv4
 qc pass: skip over ipv6
 qc pass: skip over skip
@@ -540,6 +545,7 @@ qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6
 qc pass: wireguard over wireguard
 qc pass: wireguard over loopback
+qc pass: wireguard over asymmetric ports
 qc pass: empty demo network
 qc pass: addressed demo network
 qc pass: interop1: ebgp
