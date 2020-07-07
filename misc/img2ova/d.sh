@@ -43,5 +43,6 @@ mv $MNT/cpio.gz $MNT/rtr.ird
 
 cp ../image/boot.cfg $MNT/syslinux.cfg
 extlinux -i $MNT
+sync
 fstrim -v $MNT
 umount $MNT
