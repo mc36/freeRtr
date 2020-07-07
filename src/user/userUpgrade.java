@@ -359,7 +359,6 @@ public class userUpgrade {
                     logger.traceback(e);
                 }
             }
-            prtRedun.doNotify();
             fl.cons.debugRes("successfully finished, rebooting!");
             cfgInit.stopRouter(true, 2, "upgrade finished");
             return;
