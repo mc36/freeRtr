@@ -2,6 +2,7 @@
 import cfg.cfgInit;
 import java.awt.Graphics;
 import pipe.pipeImage;
+import pipe.pipeWindow;
 
 /**
  * main class for the applet
@@ -21,8 +22,8 @@ public class applet extends java.applet.Applet {
     public void init() {
         img = cfgInit.doApplet(getParameter("config"));
         new appletDoer(this);
-        setBackground(img.getBackground());
-        addKeyListener(img.getKeyLstnr());
+        setBackground(pipeWindow.getBckgrd());
+        addKeyListener(pipeWindow.getKeyLstnr(img.pipe));
     }
 
     public void stop() {
@@ -33,7 +34,7 @@ public class applet extends java.applet.Applet {
         if (img == null) {
             return;
         }
-        g.drawImage(img.img3, 0, 0, null);
+        g.drawImage(pipeWindow.convertImage(img), 0, 0, null);
     }
 
 }

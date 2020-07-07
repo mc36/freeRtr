@@ -302,302 +302,302 @@ public class cfgAll {
     /**
      * echo daemons
      */
-    public static servGenList<servEchoS> dmnEcho = new servGenList<servEchoS>();
+    public static final servGenList<servEchoS> dmnEcho = new servGenList<servEchoS>();
 
     /**
      * discard daemons
      */
-    public static servGenList<servDiscard> dmnDiscard = new servGenList<servDiscard>();
+    public static final servGenList<servDiscard> dmnDiscard = new servGenList<servDiscard>();
 
     /**
      * quote daemons
      */
-    public static servGenList<servQuote> dmnQuote = new servGenList<servQuote>();
+    public static final servGenList<servQuote> dmnQuote = new servGenList<servQuote>();
 
     /**
      * chargen daemons
      */
-    public static servGenList<servCharGen> dmnCharGen = new servGenList<servCharGen>();
+    public static final servGenList<servCharGen> dmnCharGen = new servGenList<servCharGen>();
 
     /**
      * netflow daemons
      */
-    public static servGenList<servNetflow> dmnNetflow = new servGenList<servNetflow>();
+    public static final servGenList<servNetflow> dmnNetflow = new servGenList<servNetflow>();
 
     /**
      * udpfwd daemons
      */
-    public static servGenList<servUdpFwd> dmnUdpFwd = new servGenList<servUdpFwd>();
+    public static final servGenList<servUdpFwd> dmnUdpFwd = new servGenList<servUdpFwd>();
 
     /**
      * upnpfwd daemons
      */
-    public static servGenList<servUpnpFwd> dmnUpnpFwd = new servGenList<servUpnpFwd>();
+    public static final servGenList<servUpnpFwd> dmnUpnpFwd = new servGenList<servUpnpFwd>();
 
     /**
      * upnphub daemons
      */
-    public static servGenList<servUpnpHub> dmnUpnpHub = new servGenList<servUpnpHub>();
+    public static final servGenList<servUpnpHub> dmnUpnpHub = new servGenList<servUpnpHub>();
 
     /**
      * openflow daemons
      */
-    public static servGenList<servOpenflow> dmnOpenflow = new servGenList<servOpenflow>();
+    public static final servGenList<servOpenflow> dmnOpenflow = new servGenList<servOpenflow>();
 
     /**
      * p4lang daemons
      */
-    public static servGenList<servP4lang> dmnP4lang = new servGenList<servP4lang>();
+    public static final servGenList<servP4lang> dmnP4lang = new servGenList<servP4lang>();
 
     /**
      * forwarder daemons
      */
-    public static servGenList<servForwarder> dmnForwarder = new servGenList<servForwarder>();
+    public static final servGenList<servForwarder> dmnForwarder = new servGenList<servForwarder>();
 
     /**
      * syslog daemons
      */
-    public static servGenList<servSyslog> dmnSyslog = new servGenList<servSyslog>();
+    public static final servGenList<servSyslog> dmnSyslog = new servGenList<servSyslog>();
 
     /**
      * loadbalancer daemons
      */
-    public static servGenList<servLoadBalancer> dmnLoadBalancer = new servGenList<servLoadBalancer>();
+    public static final servGenList<servLoadBalancer> dmnLoadBalancer = new servGenList<servLoadBalancer>();
 
     /**
      * telnet daemons
      */
-    public static servGenList<servTelnet> dmnTelnet = new servGenList<servTelnet>();
+    public static final servGenList<servTelnet> dmnTelnet = new servGenList<servTelnet>();
 
     /**
      * rfb daemons
      */
-    public static servGenList<servRfb> dmnRfb = new servGenList<servRfb>();
+    public static final servGenList<servRfb> dmnRfb = new servGenList<servRfb>();
 
     /**
      * udptn daemons
      */
-    public static servGenList<servUdptn> dmnUdptn = new servGenList<servUdptn>();
+    public static final servGenList<servUdptn> dmnUdptn = new servGenList<servUdptn>();
 
     /**
      * http daemons
      */
-    public static servGenList<servHttp> dmnHttp = new servGenList<servHttp>();
+    public static final servGenList<servHttp> dmnHttp = new servGenList<servHttp>();
 
     /**
      * lpd daemons
      */
-    public static servGenList<servLpd> dmnLpd = new servGenList<servLpd>();
+    public static final servGenList<servLpd> dmnLpd = new servGenList<servLpd>();
 
     /**
      * honeypot daemons
      */
-    public static servGenList<servHoneyPot> dmnHoney = new servGenList<servHoneyPot>();
+    public static final servGenList<servHoneyPot> dmnHoney = new servGenList<servHoneyPot>();
 
     /**
      * dhcp4 daemons
      */
-    public static servGenList<servDhcp4> dmnDhcp4 = new servGenList<servDhcp4>();
+    public static final servGenList<servDhcp4> dmnDhcp4 = new servGenList<servDhcp4>();
 
     /**
      * dhcp6 daemons
      */
-    public static servGenList<servDhcp6> dmnDhcp6 = new servGenList<servDhcp6>();
+    public static final servGenList<servDhcp6> dmnDhcp6 = new servGenList<servDhcp6>();
 
     /**
      * dns daemons
      */
-    public static servGenList<servDns> dmnDns = new servGenList<servDns>();
+    public static final servGenList<servDns> dmnDns = new servGenList<servDns>();
 
     /**
      * pop3 daemons
      */
-    public static servGenList<servPop3> dmnPop3 = new servGenList<servPop3>();
+    public static final servGenList<servPop3> dmnPop3 = new servGenList<servPop3>();
 
     /**
      * smtp daemons
      */
-    public static servGenList<servSmtp> dmnSmtp = new servGenList<servSmtp>();
+    public static final servGenList<servSmtp> dmnSmtp = new servGenList<servSmtp>();
 
     /**
      * sip modem daemons
      */
-    public static servGenList<servModem> dmnModem = new servGenList<servModem>();
+    public static final servGenList<servModem> dmnModem = new servGenList<servModem>();
 
     /**
      * sip voice daemons
      */
-    public static servGenList<servVoice> dmnVoice = new servGenList<servVoice>();
+    public static final servGenList<servVoice> dmnVoice = new servGenList<servVoice>();
 
     /**
      * sip proxy daemons
      */
-    public static servGenList<servSip> dmnSip = new servGenList<servSip>();
+    public static final servGenList<servSip> dmnSip = new servGenList<servSip>();
 
     /**
      * ftp daemons
      */
-    public static servGenList<servFtp> dmnFtp = new servGenList<servFtp>();
+    public static final servGenList<servFtp> dmnFtp = new servGenList<servFtp>();
 
     /**
      * tftp daemons
      */
-    public static servGenList<servTftp> dmnTftp = new servGenList<servTftp>();
+    public static final servGenList<servTftp> dmnTftp = new servGenList<servTftp>();
 
     /**
      * gopher daemons
      */
-    public static servGenList<servGopher> dmnGopher = new servGenList<servGopher>();
+    public static final servGenList<servGopher> dmnGopher = new servGenList<servGopher>();
 
     /**
      * ntp daemons
      */
-    public static servGenList<servNtp> dmnNtp = new servGenList<servNtp>();
+    public static final servGenList<servNtp> dmnNtp = new servGenList<servNtp>();
 
     /**
      * daytime daemons
      */
-    public static servGenList<servDaytime> dmnDaytime = new servGenList<servDaytime>();
+    public static final servGenList<servDaytime> dmnDaytime = new servGenList<servDaytime>();
 
     /**
      * time daemons
      */
-    public static servGenList<servTime> dmnTime = new servGenList<servTime>();
+    public static final servGenList<servTime> dmnTime = new servGenList<servTime>();
 
     /**
      * snmp daemons
      */
-    public static servGenList<servSnmp> dmnSnmp = new servGenList<servSnmp>();
+    public static final servGenList<servSnmp> dmnSnmp = new servGenList<servSnmp>();
 
     /**
      * iscsi daemons
      */
-    public static servGenList<servIscsi> dmnIscsi = new servGenList<servIscsi>();
+    public static final servGenList<servIscsi> dmnIscsi = new servGenList<servIscsi>();
 
     /**
      * bmp2mrt daemons
      */
-    public static servGenList<servBmp2mrt> dmnBmp = new servGenList<servBmp2mrt>();
+    public static final servGenList<servBmp2mrt> dmnBmp = new servGenList<servBmp2mrt>();
 
     /**
      * irc daemons
      */
-    public static servGenList<servIrc> dmnIrc = new servGenList<servIrc>();
+    public static final servGenList<servIrc> dmnIrc = new servGenList<servIrc>();
 
     /**
      * dcp daemons
      */
-    public static servGenList<servDcp> dmnDcp = new servGenList<servDcp>();
+    public static final servGenList<servDcp> dmnDcp = new servGenList<servDcp>();
 
     /**
      * socks daemons
      */
-    public static servGenList<servSocks> dmnSocks = new servGenList<servSocks>();
+    public static final servGenList<servSocks> dmnSocks = new servGenList<servSocks>();
 
     /**
      * rpki daemons
      */
-    public static servGenList<servRpki> dmnRpki = new servGenList<servRpki>();
+    public static final servGenList<servRpki> dmnRpki = new servGenList<servRpki>();
 
     /**
      * nrpe daemons
      */
-    public static servGenList<servNrpe> dmnNrpe = new servGenList<servNrpe>();
+    public static final servGenList<servNrpe> dmnNrpe = new servGenList<servNrpe>();
 
     /**
      * bstun daemons
      */
-    public static servGenList<servBstun> dmnBStun = new servGenList<servBstun>();
+    public static final servGenList<servBstun> dmnBStun = new servGenList<servBstun>();
 
     /**
      * stun daemons
      */
-    public static servGenList<servStun> dmnStun = new servGenList<servStun>();
+    public static final servGenList<servStun> dmnStun = new servGenList<servStun>();
 
     /**
      * pckoudp daemons
      */
-    public static servGenList<servPckOudp> dmnPckOudp = new servGenList<servPckOudp>();
+    public static final servGenList<servPckOudp> dmnPckOudp = new servGenList<servPckOudp>();
 
     /**
      * pckodtls daemons
      */
-    public static servGenList<servPckOdtls> dmnPckOdtls = new servGenList<servPckOdtls>();
+    public static final servGenList<servPckOdtls> dmnPckOdtls = new servGenList<servPckOdtls>();
 
     /**
      * pckotcp daemons
      */
-    public static servGenList<servPckOtcp> dmnPckOtcp = new servGenList<servPckOtcp>();
+    public static final servGenList<servPckOtcp> dmnPckOtcp = new servGenList<servPckOtcp>();
 
     /**
      * pckotxt daemons
      */
-    public static servGenList<servPckOtxt> dmnPckOtxt = new servGenList<servPckOtxt>();
+    public static final servGenList<servPckOtxt> dmnPckOtxt = new servGenList<servPckOtxt>();
 
     /**
      * vxlan daemons
      */
-    public static servGenList<servVxlan> dmnVxlan = new servGenList<servVxlan>();
+    public static final servGenList<servVxlan> dmnVxlan = new servGenList<servVxlan>();
 
     /**
      * geneve daemons
      */
-    public static servGenList<servGeneve> dmnGeneve = new servGenList<servGeneve>();
+    public static final servGenList<servGeneve> dmnGeneve = new servGenList<servGeneve>();
 
     /**
      * l2f daemons
      */
-    public static servGenList<servL2f> dmnL2f = new servGenList<servL2f>();
+    public static final servGenList<servL2f> dmnL2f = new servGenList<servL2f>();
 
     /**
      * l2tp2 daemons
      */
-    public static servGenList<servL2tp2> dmnL2tp2 = new servGenList<servL2tp2>();
+    public static final servGenList<servL2tp2> dmnL2tp2 = new servGenList<servL2tp2>();
 
     /**
      * l2tp3 daemons
      */
-    public static servGenList<servL2tp3> dmnL2tp3 = new servGenList<servL2tp3>();
+    public static final servGenList<servL2tp3> dmnL2tp3 = new servGenList<servL2tp3>();
 
     /**
      * etherip daemons
      */
-    public static servGenList<servEtherIp> dmnEtherIp = new servGenList<servEtherIp>();
+    public static final servGenList<servEtherIp> dmnEtherIp = new servGenList<servEtherIp>();
 
     /**
      * gre daemons
      */
-    public static servGenList<servGre> dmnGre = new servGenList<servGre>();
+    public static final servGenList<servGre> dmnGre = new servGenList<servGre>();
 
     /**
      * mplsip daemons
      */
-    public static servGenList<servMplsIp> dmnMplsIp = new servGenList<servMplsIp>();
+    public static final servGenList<servMplsIp> dmnMplsIp = new servGenList<servMplsIp>();
 
     /**
      * mplsudp daemons
      */
-    public static servGenList<servMplsUdp> dmnMplsUdp = new servGenList<servMplsUdp>();
+    public static final servGenList<servMplsUdp> dmnMplsUdp = new servGenList<servMplsUdp>();
 
     /**
      * gtp daemons
      */
-    public static servGenList<servGtp> dmnGtp = new servGenList<servGtp>();
+    public static final servGenList<servGtp> dmnGtp = new servGenList<servGtp>();
 
     /**
      * pptp daemons
      */
-    public static servGenList<servPptp> dmnPptp = new servGenList<servPptp>();
+    public static final servGenList<servPptp> dmnPptp = new servGenList<servPptp>();
 
     /**
      * radius daemons
      */
-    public static servGenList<servRadius> dmnRadius = new servGenList<servRadius>();
+    public static final servGenList<servRadius> dmnRadius = new servGenList<servRadius>();
 
     /**
      * tacacs daemons
      */
-    public static servGenList<servTacacs> dmnTacacs = new servGenList<servTacacs>();
+    public static final servGenList<servTacacs> dmnTacacs = new servGenList<servTacacs>();
 
     /**
      * name of this host

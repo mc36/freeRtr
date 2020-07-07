@@ -98,6 +98,7 @@ import util.debugger;
 import util.history;
 import util.logger;
 import util.uniResLoc;
+import util.verCore;
 import util.version;
 
 /**
@@ -856,9 +857,10 @@ public class cfgInit implements Runnable {
                 logger.pipeStart(pipCon);
             }
             if (win) {
-                pipWin = pipeWindow.create(80, 25, userFonts1.font8x16data,
-                        userFonts1.colorData);
-                logger.pipeStart(pipWin);
+                if (!verCore.headless) {
+                    pipWin = pipeWindow.create(80, 25, userFonts1.font8x16data, userFonts1.colorData);
+                    logger.pipeStart(pipWin);
+                }
             }
             if (swN == null) {
                 swN = hwN + swCfgEnd;
@@ -869,12 +871,12 @@ public class cfgInit implements Runnable {
             List<String> hwT = httpGet(cfgFileHw);
             List<String> swT = httpGet(cfgFileSw);
             doInit(hwT, swT);
-            if (con) {
+            if (pipCon != null) {
                 userLine lin = new userLine();
                 lin.execTimeOut = 0;
                 lin.createHandler(pipCon, "console", true);
             }
-            if (win) {
+            if (pipWin != null) {
                 userLine lin = new userLine();
                 lin.execTimeOut = 0;
                 lin.createHandler(pipWin, "window", true);
@@ -915,7 +917,7 @@ public class cfgInit implements Runnable {
         hlp.add("1 2 routers        start router from separate configs");
         hlp.add("2 3   <hwcfg>      config url");
         hlp.add("3 .     <swcfg>    config url");
-        hlp.add("1 2 routera        start router with sw config");
+        hlp.add("1 2 routera        start router with sw config only");
         hlp.add("2 .   <swcfg>      config url");
         hlp.add("1 2 test           execute test command");
         hlp.add("2 .   <cmd>        command to execute");

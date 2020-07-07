@@ -1,9 +1,5 @@
 package user;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import pipe.pipeSide;
@@ -550,54 +546,6 @@ public class userScreen {
             curY = sizY - 1;
             scrollUp(cl);
         }
-    }
-
-    /**
-     * convert image to string
-     *
-     * @param img1 image to convert
-     * @param maxX max x value
-     * @param maxY max y value
-     * @param chrs chars to use
-     * @return converted text
-     */
-    public static List<String> imageText(BufferedImage img1, int maxX, int maxY, final String[] chrs) {
-        maxX = (img1.getWidth() / maxX) + 1;
-        maxY = (img1.getHeight() / maxY) + 1;
-        int tmp = maxX < maxY ? maxY : maxX;
-        BufferedImage img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, BufferedImage.TYPE_USHORT_GRAY);
-        Graphics2D g = img2.createGraphics();
-        g.drawImage(img1, 0, 0, img2.getWidth(), img2.getHeight(), null);
-        g.dispose();
-        g.setComposite(AlphaComposite.Src);
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        int[][] img3 = new int[img2.getHeight()][img2.getWidth()];
-        tmp = 0;
-        for (int y = 0; y < img3.length; y++) {
-            for (int x = 0; x < img3[0].length; x++) {
-                int v = img2.getRGB(x, y);
-                if (v < 0) {
-                    v = -v;
-                }
-                img3[y][x] = v;
-                if (tmp < v) {
-                    tmp = v;
-                }
-            }
-        }
-        img2 = null;
-        List<String> txt = new ArrayList<String>();
-        for (int y = 0; y < img3.length; y++) {
-            String a = "";
-            for (int x = 0; x < img3[0].length; x++) {
-                int v = (img3[y][x] * (chrs.length - 1)) / tmp;
-                a += chrs[v];
-            }
-            txt.add(a);
-        }
-        return txt;
     }
 
     /**

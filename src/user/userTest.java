@@ -72,6 +72,7 @@ import util.extMrkLng;
 import util.jasOn;
 import util.logger;
 import util.uniResLoc;
+import util.verCore;
 
 /**
  * process test commands
@@ -144,12 +145,13 @@ public class userTest {
             return null;
         }
         if (a.equals("window")) {
-            pipeSide pipWin = pipeWindow.create(80, 25,
-                    userFonts1.font8x16data, userFonts1.colorData);
-            logger.pipeStart(pipWin);
-            userLine lin = new userLine();
-            lin.execTimeOut = 0;
-            lin.createHandler(pipWin, "window", true);
+            if (!verCore.headless) {
+                pipeSide pipWin = pipeWindow.create(80, 25, userFonts1.font8x16data, userFonts1.colorData);
+                logger.pipeStart(pipWin);
+                userLine lin = new userLine();
+                lin.execTimeOut = 0;
+                lin.createHandler(pipWin, "window", true);
+            }
             return null;
         }
         if (a.equals("otppass")) {

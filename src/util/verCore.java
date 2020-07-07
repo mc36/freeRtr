@@ -94,4 +94,9 @@ public class verCore {
      */
     public final static String ifaces[] = {"atm", "ethernet", "serial", "cellular", "wireless"};
 
+    /**
+     * headless mode
+     */
+    public static final boolean headless = false;
+
 }

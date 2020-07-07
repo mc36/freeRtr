@@ -1,12 +1,12 @@
 package user;
 
 import cfg.cfgAll;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
-import javax.imageio.ImageIO;
+import pipe.pipeWindow;
 import util.bits;
 import util.cmds;
+import util.verCore;
 import util.version;
 
 /**
@@ -591,13 +591,9 @@ public class userScreenTest {
             return;
         }
         if (a.equals("image")) {
-            BufferedImage img1;
-            try {
-                img1 = ImageIO.read(new File(cmd.getRemaining()));
-            } catch (Exception e) {
-                return;
+            if (!verCore.headless) {
+                doText(pipeWindow.imageText(new File(cmd.getRemaining()), scr.sizX, scr.sizY, userFonts1.imageData));
             }
-            doText(userScreen.imageText(img1, scr.sizX, scr.sizY, userFonts1.imageData));
             return;
         }
         if (a.equals("clock")) {
