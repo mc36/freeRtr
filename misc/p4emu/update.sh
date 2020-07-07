@@ -13,6 +13,6 @@ mkdir ../../binTmp/
 ./c.sh
 mv ../../binTmp/p4*.bin ~/
 cd ~
-rm -Rf a/
+rm -rf a/
 sudo dd if=/dev/zero of=/zzz.bin bs=1M
 sudo rm /zzz.bin

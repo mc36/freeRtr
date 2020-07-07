@@ -15,8 +15,8 @@ mv router.txt ~/
 cp r.sh ~/
 cp f.sh ~/
 cp forwarder.py ~/
-cp -R p4runtime_lib ~/
+cp -r p4runtime_lib ~/
 cd ~
-rm -Rf a/
+rm -rf a/
 sudo dd if=/dev/zero of=/zzz.bin bs=1M
 sudo rm /zzz.bin

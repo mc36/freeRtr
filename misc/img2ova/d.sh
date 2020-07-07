@@ -22,7 +22,6 @@ echo sh /init.sys >> $MNT/init2
 cat $MNT/xx01 >> $MNT/init2
 chmod 755 $MNT/init*
 rm $MNT/xx0*
-mv $MNT/usr/lib/jvm $MNT/usr-lib-jvm
 echo -n `cd $MNT/;find init*>filist`
 echo -n `cd $MNT/;find dev/>>filist`
 echo -n `cd $MNT/;find sys/>>filist`
@@ -34,7 +33,6 @@ echo -n `cd $MNT/;find lib64/>>filist`
 echo -n `cd $MNT/;find bin/>>filist`
 echo -n `cd $MNT/;find sbin/>>filist`
 echo -n `cd $MNT/;find usr/>>filist`
-mv $MNT/usr-lib-jvm $MNT/usr/lib/jvm
 echo -n `cd $MNT/;cpio --quiet -H newc -O cpio -o <filist`
 gzip $MNT/cpio
 mv $MNT/cpio.gz $MNT/rtr.ird

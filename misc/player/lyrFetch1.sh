@@ -1,6 +1,6 @@
 #!/bin/sh
 # wget https://github.com/trizen/clyrics/archive/master.zip
-# rm -Rf clyrics-master/*
+# rm -rf clyrics-master/*
 # unzip master.zip
 # rm master.zip
 # cpan

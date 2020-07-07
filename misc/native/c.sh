@@ -18,4 +18,4 @@ for fn in mapInt rawInt tapInt bundle vlan hdlcInt stdLin ttyLin modem; do
   compileFile $fn "" "-lpthread" "-O3"
   done
 
-echo `cd ../../binTmp/;tar cf ../binImg/rtr.tar *.bin`
+echo `cd ../../binTmp/;touch -d "2010-01-01 00:00:00" *.bin`
