@@ -1,7 +1,6 @@
 include ../misc/image/image.beg
 
-select-one libgcj-common       #gcc java lib
-select-one libgcj17-dev        #gcc java lib
+select-one zlib1g
 
 exec cp ../misc/image/init.nat %tmp%/init
 exec cp rtr.bin %tmp%/rtr/

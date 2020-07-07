@@ -857,10 +857,8 @@ public class cfgInit implements Runnable {
                 logger.pipeStart(pipCon);
             }
             if (win) {
-                if (!verCore.headless) {
-                    pipWin = pipeWindow.create(80, 25, userFonts1.font8x16data, userFonts1.colorData);
-                    logger.pipeStart(pipWin);
-                }
+                pipWin = pipeWindow.create(80, 25, userFonts1.font8x16data, userFonts1.colorData);
+                logger.pipeStart(pipWin);
             }
             if (swN == null) {
                 swN = hwN + swCfgEnd;

@@ -591,9 +591,7 @@ public class userScreenTest {
             return;
         }
         if (a.equals("image")) {
-            if (!verCore.headless) {
-                doText(pipeWindow.imageText(new File(cmd.getRemaining()), scr.sizX, scr.sizY, userFonts1.imageData));
-            }
+            doText(pipeWindow.imageText(new File(cmd.getRemaining()), scr.sizX, scr.sizY, userFonts1.imageData));
             return;
         }
         if (a.equals("clock")) {
