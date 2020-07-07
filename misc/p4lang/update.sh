@@ -18,5 +18,5 @@ cp forwarder.py ~/
 cp -r p4runtime_lib ~/
 cd ~
 rm -rf a/
-sudo dd if=/dev/zero of=/zzz.bin bs=1M
-sudo rm /zzz.bin
+sudo sync
+sudo fstrim -v /
