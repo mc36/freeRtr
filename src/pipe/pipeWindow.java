@@ -22,12 +22,17 @@ import javax.swing.JPanel;
  */
 public class pipeWindow extends JPanel {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 10251979;
 
     /**
      * pipe image
      */
     protected pipeImage img;
+
+    /**
+     * buffered image
+     */
+    protected BufferedImage img3;
 
     /**
      * window handler
@@ -43,7 +48,7 @@ public class pipeWindow extends JPanel {
      * @param plt palette to use
      * @return pipeline to use
      */
-    public static pipeSide create(int x, int y, short[] fnt, int[] plt) {
+    public static pipeSide createOne(int x, int y, short[] fnt, int[] plt) {
         pipeLine pip = new pipeLine(65536, false);
         pipeWindow win = new pipeWindow(pip.getSide(), x, y, fnt, plt);
         win.startWindow();
@@ -128,23 +133,39 @@ public class pipeWindow extends JPanel {
     }
 
     /**
+     * create image
+     *
+     * @param img image
+     * @return created
+     */
+    public static BufferedImage createImage(pipeImage img) {
+        return new BufferedImage(img.img2[0].length, img.img2.length, BufferedImage.TYPE_3BYTE_BGR);
+    }
+
+    /**
+     * update image
+     *
+     * @param img3 target image
+     * @param img source image
+     */
+    public static void updateImage(BufferedImage img3, pipeImage img) {
+        for (int y = 0; y < img.img2.length; y++) {
+            for (int x = 0; x < img.img2[0].length; x++) {
+                img3.setRGB(x, y, img.img2[y][x]);
+            }
+        }
+    }
+
+    /**
      * convert image
      *
      * @param img image
      * @return converted
      */
     public static BufferedImage convertImage(pipeImage img) {
-        BufferedImage img3 = new BufferedImage(img.img2[0].length, img.img2.length, BufferedImage.TYPE_3BYTE_BGR);
-        for (int y = 0; y < img.img2.length; y++) {
-            for (int x = 0; x < img.img2[0].length; x++) {
-                img3.setRGB(x, y, img.img2[y][x]);
-            }
-        }
+        BufferedImage img3 = createImage(img);
+        updateImage(img3, img);
         return img3;
-    }
-
-    public void paint(Graphics g) {
-        g.drawImage(convertImage(img), 0, 0, null);
     }
 
     /**
@@ -154,6 +175,11 @@ public class pipeWindow extends JPanel {
      */
     public static Color getBckgrd() {
         return Color.BLACK;
+    }
+
+    public void paint(Graphics g) {
+        updateImage(img3, img);
+        g.drawImage(img3, 0, 0, null);
     }
 
     /**
@@ -167,6 +193,7 @@ public class pipeWindow extends JPanel {
      */
     public pipeWindow(pipeSide pip, int x, int y, short[] fnt, int[] plt) {
         img = new pipeImage(pip, x, y, fnt, plt);
+        img3 = createImage(img);
         win = new JFrame("console");
         win.setBackground(getBckgrd());
         win.addKeyListener(getKeyLstnr(pip));

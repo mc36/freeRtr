@@ -145,7 +145,7 @@ public class userTest {
             return null;
         }
         if (a.equals("window")) {
-            pipeSide pipWin = pipeWindow.create(80, 25, userFonts1.font8x16data, userFonts1.colorData);
+            pipeSide pipWin = pipeWindow.createOne(80, 25, userFonts1.font8x16data, userFonts1.colorData);
             logger.pipeStart(pipWin);
             userLine lin = new userLine();
             lin.execTimeOut = 0;

@@ -1,6 +1,7 @@
 
 import cfg.cfgInit;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import pipe.pipeImage;
 import pipe.pipeWindow;
 
@@ -9,7 +10,7 @@ import pipe.pipeWindow;
  *
  * @author matecsaba
  */
-@SuppressWarnings( "deprecation" )
+@SuppressWarnings("deprecation")
 public class applet extends java.applet.Applet {
 
     private static final long serialVersionUID = 19791025;
@@ -19,8 +20,14 @@ public class applet extends java.applet.Applet {
      */
     protected pipeImage img;
 
+    /**
+     * buffered image
+     */
+    protected BufferedImage img3;
+
     public void init() {
         img = cfgInit.doApplet(getParameter("config"));
+        BufferedImage img3 = pipeWindow.createImage(img);
         new appletDoer(this);
         setBackground(pipeWindow.getBckgrd());
         addKeyListener(pipeWindow.getKeyLstnr(img.pipe));
@@ -34,7 +41,8 @@ public class applet extends java.applet.Applet {
         if (img == null) {
             return;
         }
-        g.drawImage(pipeWindow.convertImage(img), 0, 0, null);
+        pipeWindow.updateImage(img3, img);
+        g.drawImage(img3, 0, 0, null);
     }
 
 }
