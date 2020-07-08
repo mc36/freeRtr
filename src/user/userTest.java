@@ -145,10 +145,23 @@ public class userTest {
             return null;
         }
         if (a.equals("window")) {
-            pipeSide pipWin = pipeWindow.createOne(80, 25, userFonts1.font8x16data, userFonts1.colorData);
-            logger.pipeStart(pipWin);
+            int x = bits.str2num(cmd.word());
+            int y = bits.str2num(cmd.word());
+            if (x < 1) {
+                x = 80;
+            }
+            if (y < 1) {
+                y = 25;
+            }
+            pipeSide pipWin = pipeWindow.createOne(x, y, userFonts1.font8x16data, userFonts1.colorData);
+            if (pipWin == null) {
+                cmd.error("failed");
+                return null;
+            }
             userLine lin = new userLine();
             lin.execTimeOut = 0;
+            lin.execWidth = x - 1;
+            lin.execHeight = y - 1;
             lin.createHandler(pipWin, "window", true);
             return null;
         }

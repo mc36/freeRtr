@@ -14,6 +14,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import util.logger;
 
 /**
  * one terminal window
@@ -46,11 +47,17 @@ public class pipeWindow extends JPanel {
      * @param y y size
      * @param fnt font to use
      * @param plt palette to use
-     * @return pipeline to use
+     * @return pipeline to use, null if failed
      */
     public static pipeSide createOne(int x, int y, short[] fnt, int[] plt) {
         pipeLine pip = new pipeLine(65536, false);
-        pipeWindow win = new pipeWindow(pip.getSide(), x, y, fnt, plt);
+        pipeWindow win;
+        try {
+            win = new pipeWindow(pip.getSide(), x, y, fnt, plt);
+        } catch (Exception e) {
+            logger.traceback(e);
+            return null;
+        }
         win.startWindow();
         pipeSide ps = pip.getSide();
         ps.lineTx = pipeSide.modTyp.modeCRLF;

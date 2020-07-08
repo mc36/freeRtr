@@ -1330,7 +1330,9 @@ public class userExec {
         hl.add("2 .      crypto                  test encryption and hash");
         hl.add("2 3,.    digsig                  test digital signatures");
         hl.add("3 3,.      [str]                 parameters");
-        hl.add("2 .      window                  test window handler");
+        hl.add("2 3,.    window                  test window handler");
+        hl.add("3 4        <num>                 x size");
+        hl.add("4 .          <num>               y size");
         hl.add("2 3      vercore                 test vercore updater");
         hl.add("3 4        <key>                 key file to use");
         hl.add("4 .          <key>               key file to include");
