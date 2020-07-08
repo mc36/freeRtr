@@ -98,7 +98,6 @@ import util.debugger;
 import util.history;
 import util.logger;
 import util.uniResLoc;
-import util.verCore;
 import util.version;
 
 /**
@@ -192,17 +191,23 @@ public class cfgInit implements Runnable {
 
     private static boolean jvmSetup = false;
 
-    private final static String needInit[] = {"interface .*",
+    private final static String needInit[] = {
+        "interface .*",
         "policy-map .*",
         "route-map .*",
         "route-policy .*",
         "proxy-profile .*",
         "vdc definition .*",
         "vrf definition .*",
-        "aaa .*"};
+        "aaa .*"
+    };
 
-    private final static String jvmMagic[] = {"java.net.preferIPv4Stack=true",
-        "java.net.preferIPv6Addresses=false"};
+    private final static String jvmMagic[] = {
+        "java.net.preferIPv4Stack=true",
+        "java.net.preferIPv6Addresses=false"
+    };
+
+    private final static int bootLogo = 0x1fd;
 
     /**
      * get mime type of an extesion
@@ -431,9 +436,9 @@ public class cfgInit implements Runnable {
                 if (nomon) {
                     continue;
                 }
-                List<String> buf = version.shLogo(0x1fd);
-                for (int i = 0; i < buf.size(); i++) {
-                    lin.sendLine(buf.get(i));
+                List<String> logo = version.shLogo(bootLogo);
+                for (int i = 0; i < logo.size(); i++) {
+                    lin.sendLine(logo.get(i));
                 }
                 lin.runner.setMon(true);
                 continue;
@@ -807,12 +812,19 @@ public class cfgInit implements Runnable {
         pipeLine pl = new pipeLine(65536, false);
         pipeImage img = new pipeImage(pl.getSide(), 80, 25,
                 userFonts1.font8x16data, userFonts1.colorData);
-        pipeSide pip = pl.getSide();
-        logger.pipeStart(pip);
+        pipeSide ps = pl.getSide();
+        ps.lineTx = pipeSide.modTyp.modeCRLF;
+        ps.lineRx = pipeSide.modTyp.modeCRorLF;
+        ps.timeout = 0;
+        logger.pipeStart(ps);
+        List<String> logo = version.shLogo(bootLogo);
+        for (int i = 0; i < logo.size(); i++) {
+            ps.linePut(logo.get(i));
+        }
         doInit(null, httpGet(url));
         userLine lin = new userLine();
         lin.execTimeOut = 0;
-        lin.createHandler(pip, "applet", true);
+        lin.createHandler(ps, "applet", true);
         img.doRound(true);
         img.doImage();
         return img;
@@ -863,6 +875,15 @@ public class cfgInit implements Runnable {
             if (swN == null) {
                 swN = hwN + swCfgEnd;
                 hwN += hwCfgEnd;
+            }
+            List<String> logo = version.shLogo(bootLogo);
+            for (int i = 0; i < logo.size(); i++) {
+                if (pipCon != null) {
+                    pipCon.linePut(logo.get(i));
+                }
+                if (pipWin != null) {
+                    pipWin.linePut(logo.get(i));
+                }
             }
             cfgFileHw = hwN;
             cfgFileSw = swN;

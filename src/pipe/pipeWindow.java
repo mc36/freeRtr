@@ -52,7 +52,11 @@ public class pipeWindow extends JPanel {
         pipeLine pip = new pipeLine(65536, false);
         pipeWindow win = new pipeWindow(pip.getSide(), x, y, fnt, plt);
         win.startWindow();
-        return pip.getSide();
+        pipeSide ps = pip.getSide();
+        ps.lineTx = pipeSide.modTyp.modeCRLF;
+        ps.lineRx = pipeSide.modTyp.modeCRorLF;
+        ps.timeout = 0;
+        return ps;
     }
 
     /**
