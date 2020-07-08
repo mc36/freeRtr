@@ -65,6 +65,7 @@ import util.differ;
 import util.logger;
 import util.notifier;
 import util.uniResLoc;
+import util.version;
 
 /**
  * process exec commands
@@ -1686,7 +1687,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("network")) {
-                a = cfgInit.cfgFileSw + ".tmp";
+                a = version.myWorkDir() + "cfg" + bits.randomD() + ".tmp";
                 userFlash.doReceive(pipe,
                         uniResLoc.parseOne(cmd.getRemaining()), new File(a));
                 List<String> cfg = bits.txt2buf(a);
@@ -1843,7 +1844,7 @@ public class userExec {
                     url.filName = "" + cfgAll.hostName;
                     url.filExt = ".txt";
                 }
-                a = cfgInit.cfgFileSw + ".tmp";
+                a = version.myWorkDir() + "wrt" + bits.randomD() + ".tmp";
                 if (bits.buf2txt(true, cfgAll.getShRun(true), a)) {
                     cmd.error("failed to write temporary file!");
                     return cmdRes.command;

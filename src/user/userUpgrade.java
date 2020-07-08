@@ -307,7 +307,7 @@ public class userUpgrade {
         }
         userFlash fl = new userFlash(cmd.pipe);
         fl.cons.debugStat("downloading version info");
-        String tmp = version.myPathName() + ".tmp";
+        String tmp = version.myWorkDir() + "upg" + bits.randomD() + ".tmp";
         uniResLoc url = uniResLoc.parseOne(server + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);

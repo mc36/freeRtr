@@ -8,6 +8,7 @@ import util.extMrkLng;
 import util.extMrkLngEntry;
 import util.uniResLoc;
 import util.verCore;
+import util.version;
 
 /**
  * web browser
@@ -44,7 +45,7 @@ public class userBrowser {
      */
     public userBrowser(userScreen pip, String u) {
         console = pip;
-        tempFile = "web" + bits.randomD() + ".tmp";
+        tempFile = version.myWorkDir() + "web" + bits.randomD() + ".tmp";
         if (u.length() < 1) {
             url = verCore.homeUrl;
         } else {

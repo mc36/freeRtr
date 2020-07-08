@@ -210,10 +210,7 @@ public class version {
         sa.add("name: " + cfgAll.hostName);
         sa.add("hwid: " + cfgInit.hwIdNum);
         sa.add("uptime: since " + bits.time2str(cfgAll.timeZoneName, cfgInit.jvmStarted + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(cfgInit.jvmStarted));
-        try {
-          sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
-        } catch (Exception e) {
-        }
+        sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
         sa.add("hwcfg: " + cfgInit.cfgFileHw);
         sa.add("swcfg: " + cfgInit.cfgFileSw);
         sa.add("cpu: " + getCPUname());
@@ -259,12 +256,29 @@ public class version {
     /**
      * get archive path name
      *
-     * @return filename without path
+     * @return filename without extension
      */
     public static String myPathName() {
-        String s = version.getFileName();
+        String s = getFileName();
         int i = s.lastIndexOf(".");
+        if (i < 0) {
+            return "unknown";
+        }
         return s.substring(0, i);
+    }
+
+    /**
+     * get archive path dir
+     *
+     * @return only path
+     */
+    public static String myWorkDir() {
+        String s = getFileName();
+        int i = s.lastIndexOf("/");
+        if (i < 0) {
+            return "./";
+        }
+        return s.substring(0, i + 1);
     }
 
     /**

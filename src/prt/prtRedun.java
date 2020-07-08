@@ -149,7 +149,7 @@ public class prtRedun implements Runnable {
     public static void doNotify() {
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
-            ifc.doFile(cfgInit.cfgFileSw);
+            ifc.doFile(cfgInit.cfgFileSw, packRedun.fnStart);
             ifc.doPack(packRedun.typReload, new packHolder(true, true));
         }
     }
@@ -165,6 +165,8 @@ class prtRedunIfc implements ifcUp {
     private addrMac hwaddr;
 
     private RandomAccessFile filRx;
+
+    private String filNm;
 
     public String name;
 
@@ -190,6 +192,7 @@ class prtRedunIfc implements ifcUp {
         lower.setUpper(this);
         lower.startLoop(1);
         hwaddr = (addrMac) lower.getHwAddr();
+        filNm = version.myWorkDir() + "red" + bits.randomD() + ".tmp";
     }
 
     public String doShow() {
@@ -246,10 +249,11 @@ class prtRedunIfc implements ifcUp {
                 } catch (Exception e) {
                 }
                 try {
-                    filRx = new RandomAccessFile(version.getFileName() + ".tmp", "rw");
+                    filRx = new RandomAccessFile(filNm, "rw");
                     filRx.seek(0);
                     filRx.setLength(0);
                 } catch (Exception e) {
+                    break;
                 }
                 doAck(-2);
                 break;
@@ -263,6 +267,7 @@ class prtRedunIfc implements ifcUp {
                     filRx.seek(i);
                     filRx.write(buf);
                 } catch (Exception e) {
+                    break;
                 }
                 doAck(i);
                 break;
@@ -270,6 +275,7 @@ class prtRedunIfc implements ifcUp {
                 try {
                     filRx.close();
                 } catch (Exception e) {
+                    break;
                 }
                 filRx = null;
                 String a = pck.getAsciiZ(0, packRedun.dataMax, 0);
@@ -280,8 +286,7 @@ class prtRedunIfc implements ifcUp {
                 if (a.equals(packRedun.fnStart)) {
                     b = cfgInit.cfgFileSw;
                 }
-                a = version.getFileName() + ".tmp";
-                userFlash.rename(a, b, true, true);
+                userFlash.rename(filNm, b, true, true);
                 doAck(-3);
                 break;
         }
@@ -322,7 +327,7 @@ class prtRedunIfc implements ifcUp {
         return true;
     }
 
-    public boolean doFile(String fn) {
+    public boolean doFile(String fn, String rfn) {
         RandomAccessFile fr;
         long siz;
         try {
@@ -372,7 +377,7 @@ class prtRedunIfc implements ifcUp {
             return true;
         }
         packHolder pck = new packHolder(true, true);
-        pck.putAsciiZ(0, packRedun.dataMax, packRedun.fnStart, 0);
+        pck.putAsciiZ(0, packRedun.dataMax, rfn, 0);
         pck.putSkip(packRedun.dataMax);
         if (doRetry(packRedun.typFilEnd, pck)) {
             return true;

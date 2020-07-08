@@ -25,6 +25,7 @@ import util.bits;
 import util.cmds;
 import util.logger;
 import util.uniResLoc;
+import util.version;
 
 /**
  * downloader
@@ -177,7 +178,7 @@ public class rtrDownload extends ipRtr {
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
         pip.timeout = 120000;
-        String tmp = "dnld" + bits.randomD() + ".tmp";
+        String tmp = version.myWorkDir() + "rou" + bits.randomD() + ".tmp";
         userFlash.delete(tmp);
         if (userFlash.doReceive(pip, uniResLoc.parseOne(url), new File(tmp))) {
             logger.warn("error downloading " + url);
