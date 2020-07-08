@@ -1199,6 +1199,7 @@ public abstract class rtrBgpParam {
             }
             copyFrom(t);
             template = t;
+            shutdown |= cmd.word().equals("shutdown");
             return false;
         }
         if (isTemplate) {

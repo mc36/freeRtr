@@ -1980,7 +1980,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("1 2   neighbor                    specify neighbor parameters");
         l.add("2 3     <addr>                    address of peer");
         l.add("3 4       template                get configuration from template");
-        l.add("4 .         <name>                name of source template");
+        l.add("4 5,.       <name>                name of source template");
+        l.add("5 .           shutdown            connection disabled for this peer");
         rtrBgpParam.getParamHelp(l);
         l.add("1 2   distance                    specify default distance");
         l.add("2 3     <num>                     external peer distance");
