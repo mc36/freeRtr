@@ -44,7 +44,7 @@ public class userBrowser {
      */
     public userBrowser(userScreen pip, String u) {
         console = pip;
-        tempFile = "web" + this.hashCode() + ".tmp";
+        tempFile = "web" + bits.randomD() + ".tmp";
         if (u.length() < 1) {
             url = verCore.homeUrl;
         } else {

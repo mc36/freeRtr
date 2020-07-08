@@ -177,7 +177,7 @@ public class rtrDownload extends ipRtr {
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
         pip.timeout = 120000;
-        String tmp = "dnld" + this.hashCode() + ".tmp";
+        String tmp = "dnld" + bits.randomD() + ".tmp";
         userFlash.delete(tmp);
         if (userFlash.doReceive(pip, uniResLoc.parseOne(url), new File(tmp))) {
             logger.warn("error downloading " + url);
