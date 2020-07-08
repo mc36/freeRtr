@@ -443,7 +443,7 @@ router bgp4 65535
  router-id 10.10.10.227
  address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
  flapstat
- dump mrt bgp1.log
+ dump mrt bgp4.log
  template r remote-as 65535
  no template r description
  template r local-as 65535
@@ -486,7 +486,7 @@ router bgp6 65535
  router-id 10.10.10.227
  address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
  flapstat
- dump mrt bgp2.log
+ dump mrt bgp6.log
  template r remote-as 65535
  no template r description
  template r local-as 65535
