@@ -1279,6 +1279,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no mpls redirection",
         "interface .*! no mpls ldp4",
         "interface .*! no mpls ldp6",
+        "interface .*! no mpls label4pop",
+        "interface .*! no mpls label6pop",
         "interface .*! no mpls label4in",
         "interface .*! no mpls label4out",
         "interface .*! no mpls label6in",
@@ -1416,6 +1418,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router ospf[4|6] .* traffeng srlg 0",
         "interface .*! no router ospf[4|6] .* segrout index",
         "interface .*! no router ospf[4|6] .* segrout node",
+        "interface .*! no router ospf[4|6] .* segrout pop",
         "interface .*! no router ospf[4|6] .* bier index",
         // pvrp
         "interface .*! router pvrp[4|6] .* split-horizon",
@@ -1489,6 +1492,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router isis[4|6] .* traffeng srlg 0",
         "interface .*! no router isis[4|6] .* segrout index",
         "interface .*! no router isis[4|6] .* segrout node",
+        "interface .*! no router isis[4|6] .* segrout pop",
         "interface .*! no router isis[4|6] .* bier index",
         // sep
         "interface .*! sep mode peer",
@@ -5410,6 +5414,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       [name]                    name of interface");
         l.add("2 3     ldptarget                   set targeted ldp peer");
         l.add("3 .       <addr>                    address of peer");
+        l.add("2 .     label4pop                   advertise php");
+        l.add("2 .     label6pop                   advertise php");
         l.add("2 3     label4in                    set label filter");
         l.add("3 .       <addr>                    name of prefix list");
         l.add("2 3     label4out                   set label filter");
@@ -7415,6 +7421,20 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             setup2ldp(6, cmd);
             return;
         }
+        if (s.equals("label4pop")) {
+            if (mplsLdp4 == null) {
+                return;
+            }
+            mplsLdp4.labelPop = true;
+            return;
+        }
+        if (s.equals("label6pop")) {
+            if (mplsLdp6 == null) {
+                return;
+            }
+            mplsLdp6.labelPop = true;
+            return;
+        }
         if (s.equals("label4in")) {
             if (mplsLdp4 == null) {
                 return;
@@ -7519,6 +7539,20 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("ldp6")) {
             clear2ldp(6);
+            return;
+        }
+        if (s.equals("label4pop")) {
+            if (mplsLdp4 == null) {
+                return;
+            }
+            mplsLdp4.labelPop = false;
+            return;
+        }
+        if (s.equals("label6pop")) {
+            if (mplsLdp6 == null) {
+                return;
+            }
+            mplsLdp6.labelPop = false;
             return;
         }
         if (s.equals("label4in")) {

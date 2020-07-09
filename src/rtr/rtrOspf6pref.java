@@ -25,4 +25,8 @@ public class rtrOspf6pref {
      */
     public addrPrefix<addrIP> prefix;
 
+    public String toString() {
+        return "" + prefix;
+    }
+
 }

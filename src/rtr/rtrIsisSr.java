@@ -98,15 +98,19 @@ public class rtrIsisSr {
     /**
      * generate sr prefix
      *
+     * @param pop php
      * @param idx index
      * @param red redistribute
      * @param nod node
      * @return bytes generated
      */
-    protected static byte[] putPref(int idx, boolean red, boolean nod) {
+    protected static byte[] putPref(int idx, boolean pop, boolean red, boolean nod) {
         packHolder pck = new packHolder(true, true);
         typLenVal tlv = rtrIsis.getTlv();
-        tlv.valDat[0] = 0x20; // no-php
+        tlv.valDat[0] = 0;
+        if (!pop) {
+            tlv.valDat[0] |= 0x20; // no-php
+        }
         if (red) {
             tlv.valDat[0] |= 0x80; // redistributed
         }

@@ -1571,8 +1571,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             tabRouteEntry<addrIP> ntry = best.copyBytes();
             tabRouteEntry<addrIP> old = wil.find(ntry);
             if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
-                grp.originatePrefix(ntry);
-            } else if (grp.readvertPrefix(afi == afiUni, ntry)) {
+                grp.originatePrefix(afi, ntry);
+            } else if (grp.readvertPrefix(afi, ntry)) {
                 ntry = null;
             }
             if ((afi == afiUni) || (afi == afiMlt) || (afi == afiOtr)) {

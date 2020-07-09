@@ -126,6 +126,11 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
     public boolean srNode;
 
     /**
+     * segment rou pop
+     */
+    public boolean srPop;
+
+    /**
      * dr address
      */
     public addrIPv4 drAddr = new addrIPv4();
@@ -279,6 +284,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             a = beg + "segrout ";
             cmds.cfgLine(l, srIndex < 1, cmds.tabulator, a + "index", "" + srIndex);
             cmds.cfgLine(l, !srNode, cmds.tabulator, a + "node", "");
+            cmds.cfgLine(l, !srPop, cmds.tabulator, a + "pop", "");
         }
         if (area.bierEna) {
             a = beg + "bier ";
@@ -432,6 +438,11 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
                 area.schedWork(3);
                 return;
             }
+            if (a.equals("pop")) {
+                srPop = true;
+                area.schedWork(3);
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -503,6 +514,11 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
                 area.schedWork(3);
                 return;
             }
+            if (a.equals("pop")) {
+                srPop = false;
+                area.schedWork(3);
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -565,6 +581,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         l.add("5 6           index                 set index");
         l.add("6 .             <num>               index");
         l.add("5 .           node                  set node flag");
+        l.add("5 .           pop                   request php");
         l.add("4 5         bier                    bier parameters");
         l.add("5 6           index                 set index");
         l.add("6 .             <num>               index");

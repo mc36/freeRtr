@@ -64,6 +64,11 @@ public class rtrLdpIface implements prtServP {
      */
     public tabListing<tabPrfxlstN, addrIP> filterOut;
 
+    /**
+     * advertise label pop
+     */
+    public boolean labelPop;
+
     private ipFwd ip;
 
     private prtUdp udp;
@@ -127,6 +132,7 @@ public class rtrLdpIface implements prtServP {
         }
         cmds.cfgLine(l, ldp.filterIn == null, cmds.tabulator, "mpls label" + ver + "in", "" + ldp.filterIn);
         cmds.cfgLine(l, ldp.filterOut == null, cmds.tabulator, "mpls label" + ver + "out", "" + ldp.filterOut);
+        cmds.cfgLine(l, !ldp.labelPop, cmds.tabulator, "mpls label" + ver + "pop", "");
     }
 
     /**
@@ -259,6 +265,7 @@ public class rtrLdpIface implements prtServP {
         ntry.sessHelloIntrvl = sessHelloIntrvl;
         ntry.filterIn = filterIn;
         ntry.filterOut = filterOut;
+        ntry.labelPop = labelPop;
         ntry.startPeer();
         return false;
     }

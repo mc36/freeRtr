@@ -2,6 +2,7 @@ package rtr;
 
 import addr.addrIP;
 import ip.ipFwd;
+import ip.ipMpls;
 import java.util.ArrayList;
 import java.util.List;
 import tab.tabLabel;
@@ -401,7 +402,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         return null;
     }
 
-    private void nextHopSelf(tabRouteEntry<addrIP> ntry) {
+    private void nextHopSelf(boolean nhs, tabRouteEntry<addrIP> ntry) {
         ntry.nextHop = localAddr.copyBytes();
         ntry.labelRem = new ArrayList<Integer>();
         tabLabelNtry loc = ntry.labelLoc;
@@ -419,7 +420,11 @@ public class rtrBgpGroup extends rtrBgpParam {
                 loc = org.labelLoc;
             }
         }
-        ntry.labelRem.add(loc.getValue());
+        int val = loc.getValue();
+        if (labelPop && nhs && (val == lower.fwdCore.commonLabel.getValue())) {
+            val = ipMpls.labelImp;
+        }
+        ntry.labelRem.add(val);
         if (lower.segrouLab != null) {
             ntry.segrouSiz = lower.segrouMax;
             ntry.segrouBeg = lower.segrouLab[0].getValue();
@@ -510,11 +515,13 @@ public class rtrBgpGroup extends rtrBgpParam {
     /**
      * originate prefix
      *
+     * @param afi afi
      * @param ntry prefix
      */
-    public void originatePrefix(tabRouteEntry<addrIP> ntry) {
+    public void originatePrefix(int afi, tabRouteEntry<addrIP> ntry) {
+        boolean nhs = (afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0);
         updateAttribs(ntry);
-        nextHopSelf(ntry);
+        nextHopSelf(nhs, ntry);
         switch (peerType) {
             case rtrBgpUtil.peerExtrn:
             case rtrBgpUtil.peerServr:
@@ -541,11 +548,12 @@ public class rtrBgpGroup extends rtrBgpParam {
     /**
      * readvertise prefix
      *
-     * @param nhs set next hop self
+     * @param afi afi
      * @param ntry prefix
      * @return false on success, true on failure
      */
-    public boolean readvertPrefix(boolean nhs, tabRouteEntry<addrIP> ntry) {
+    public boolean readvertPrefix(int afi, tabRouteEntry<addrIP> ntry) {
+        boolean nhs = (afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0);
         updateAttribs(ntry);
         if (!allowAsOut) {
             if (rtrBgpUtil.findIntList(ntry.pathSeq, remoteAs) >= 0) {
@@ -568,7 +576,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                     ntry.metric = 0;
                 }
                 if (!nxtHopUnchgd) {
-                    nextHopSelf(ntry);
+                    nextHopSelf(nhs, ntry);
                 }
                 break;
             case rtrBgpUtil.peerCnfed:
@@ -579,7 +587,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
                         if (!nxtHopUnchgd) {
-                            nextHopSelf(ntry);
+                            nextHopSelf(nhs, ntry);
                         }
                         break;
                 }
@@ -592,7 +600,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
                         if (!nxtHopUnchgd) {
-                            nextHopSelf(ntry);
+                            nextHopSelf(nhs, ntry);
                         }
                         break;
                 }
@@ -602,7 +610,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
                         if (!nxtHopUnchgd) {
-                            nextHopSelf(ntry);
+                            nextHopSelf(nhs, ntry);
                         }
                         break;
                 }
@@ -614,7 +622,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 switch (ntry.rouSrc) {
                     case rtrBgpUtil.peerExtrn:
                         if (!nxtHopUnchgd) {
-                            nextHopSelf(ntry);
+                            nextHopSelf(nhs, ntry);
                         }
                         break;
                 }
@@ -622,21 +630,21 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         clearAttribs(ntry);
         if (nxtHopSelf) {
-            nextHopSelf(ntry);
+            nextHopSelf(nhs, ntry);
         }
-        if (nhs && ((addrFams & rtrBgpParam.mskLab) != 0) && (ntry.labelRem == null)) {
-            nextHopSelf(ntry);
+        if (nhs && (ntry.labelRem == null)) {
+            nextHopSelf(nhs, ntry);
         }
         return false;
     }
 
-    private void readvertTable(boolean nhs, int afi, tabRoute<addrIP> tab, tabRoute<addrIP> cmp) {
+    private void readvertTable(int afi, tabRoute<addrIP> tab, tabRoute<addrIP> cmp) {
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
             ntry = ntry.copyBytes();
             if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
-                originatePrefix(ntry);
-            } else if (readvertPrefix(nhs, ntry)) {
+                originatePrefix(afi, ntry);
+            } else if (readvertPrefix(afi, ntry)) {
                 continue;
             }
             tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, true, roumapOut, roupolOut, prflstOut);
@@ -648,8 +656,8 @@ public class rtrBgpGroup extends rtrBgpParam {
             tabRouteEntry<addrIP> ntry = imp.get(i);
             ntry = ntry.copyBytes();
             if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
-                originatePrefix(ntry);
-            } else if (readvertPrefix(false, ntry)) {
+                originatePrefix(afi, ntry);
+            } else if (readvertPrefix(afi, ntry)) {
                 continue;
             }
             tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, true, voumapOut, voupolOut, null);
@@ -706,7 +714,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.aggrRtr.fromIPv4addr(lower.routerID);
             ntry.aggrAs = localAs;
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
-            originatePrefix(ntry);
+            originatePrefix(lower.afiUni, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nUni, lower.afiUni, ntry, true, roumapOut, roupolOut, prflstOut);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = rtrBgpUtil.defaultRoute(lower.afiUni);
@@ -714,7 +722,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.aggrRtr.fromIPv4addr(lower.routerID);
             ntry.aggrAs = localAs;
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
-            originatePrefix(ntry);
+            originatePrefix(lower.afiMlt, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, ntry, true, roumapOut, roupolOut, prflstOut);
         }
         for (int i = 0; i < lower.routerRedistedU.size(); i++) {
@@ -724,7 +732,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             }
             ntry = ntry.copyBytes();
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
-            originatePrefix(ntry);
+            originatePrefix(lower.afiUni, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nUni, lower.afiUni, ntry, true, roumapOut, roupolOut, prflstOut);
         }
         for (int i = 0; i < lower.routerRedistedM.size(); i++) {
@@ -734,7 +742,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             }
             ntry = ntry.copyBytes();
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
-            originatePrefix(ntry);
+            originatePrefix(lower.afiMlt, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, ntry, true, roumapOut, roupolOut, prflstOut);
         }
         for (int i = 0; i < lower.routerRedistedF.size(); i++) {
@@ -744,12 +752,12 @@ public class rtrBgpGroup extends rtrBgpParam {
             }
             ntry = ntry.copyBytes();
             ntry.rouSrc = rtrBgpUtil.peerOriginate;
-            originatePrefix(ntry);
+            originatePrefix(lower.afiFlw, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nFlw, lower.afiFlw, ntry, true, voumapOut, voupolOut, null);
         }
-        readvertTable(true, lower.afiUni, nUni, cUni);
-        readvertTable(false, lower.afiMlt, nMlt, cMlt);
-        readvertTable(false, lower.afiOtr, nOtr, cOtr);
+        readvertTable(lower.afiUni, nUni, cUni);
+        readvertTable(lower.afiMlt, nMlt, cMlt);
+        readvertTable(lower.afiOtr, nOtr, cOtr);
         importTable(lower.afiFlw, nFlw, cFlw);
         importTable(lower.afiVpnU, nVpnU, cVpnU);
         importTable(lower.afiVpnM, nVpnM, cVpnM);

@@ -457,6 +457,9 @@ public class rtrIsisLevel implements Runnable {
             if (ifc.srNode) {
                 ntry.rouSrc |= 8;
             }
+            if (ifc.srPop) {
+                ntry.rouSrc |= 16;
+            }
             ntry.bierIdx = ifc.brIndex;
             rs.add(tabRoute.addType.better, ntry, false, false);
         }
@@ -506,7 +509,7 @@ public class rtrIsisLevel implements Runnable {
                 subs = bits.byteConcat(subs, lower.putAddrTag(ntry.tag));
             }
             if (segrouEna && (ntry.segrouIdx > 0)) {
-                subs = bits.byteConcat(subs, rtrIsisSr.putPref(ntry.segrouIdx, (ntry.rouSrc & 3) != 0, (ntry.rouSrc & 8) != 0));
+                subs = bits.byteConcat(subs, rtrIsisSr.putPref(ntry.segrouIdx, ((ntry.rouSrc & 16) != 0), (ntry.rouSrc & 3) != 0, (ntry.rouSrc & 8) != 0));
             }
             if (bierEna && (ntry.bierIdx > 0)) {
                 subs = bits.byteConcat(subs, rtrIsisBr.putPref(lower, ntry.bierIdx));

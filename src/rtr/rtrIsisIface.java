@@ -165,6 +165,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     public boolean srNode;
 
     /**
+     * segment rou pop
+     */
+    public boolean srPop;
+
+    /**
      * bier index
      */
     public int brIndex;
@@ -283,6 +288,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             s = beg + "segrout ";
             cmds.cfgLine(l, srIndex < 1, cmds.tabulator, s + "index", "" + srIndex);
             cmds.cfgLine(l, !srNode, cmds.tabulator, s + "node", "");
+            cmds.cfgLine(l, !srPop, cmds.tabulator, s + "pop", "");
         }
         b = false;
         if ((circuitLevel & 1) != 0) {
@@ -413,6 +419,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
                 lower.genLsps(3);
                 return;
             }
+            if (a.equals("pop")) {
+                srPop = true;
+                lower.genLsps(3);
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -486,6 +497,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
                 lower.genLsps(3);
                 return;
             }
+            if (a.equals("pop")) {
+                srPop = false;
+                lower.genLsps(3);
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -547,6 +563,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add("5 6           index                 set index");
         l.add("6 .             <num>               index");
         l.add("5 .           node                  set node flag");
+        l.add("5 .           pop                   request php");
         l.add("4 5         bier                    bier parameters");
         l.add("5 6           index                 set index");
         l.add("6 .             <num>               index");

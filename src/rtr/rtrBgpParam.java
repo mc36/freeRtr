@@ -118,6 +118,11 @@ public abstract class rtrBgpParam {
     public int egressEng;
 
     /**
+     * advertise pop label
+     */
+    public boolean labelPop;
+
+    /**
      * capability negotiation
      */
     public boolean capaNego;
@@ -698,6 +703,7 @@ public abstract class rtrBgpParam {
         segRout = src.segRout;
         bier = src.bier;
         egressEng = src.egressEng;
+        labelPop = src.labelPop;
         capaNego = src.capaNego;
         trackNxthop = src.trackNxthop;
         bfdTrigger = src.bfdTrigger;
@@ -787,6 +793,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (attribSet != src.attribSet) {
+            return true;
+        }
+        if (labelPop != src.labelPop) {
             return true;
         }
         if (segRout != src.segRout) {
@@ -933,6 +942,7 @@ public abstract class rtrBgpParam {
         l.add("3 .       pmsitun                 send provider multicast service interface tunnel attribute");
         l.add("3 .       tunenc                  send tunnel encapsulation attribute");
         l.add("3 .       attribset               send attribute set attribute");
+        l.add("3 .       label-pop               advertise pop label");
         l.add("3 .       segrout                 send segment routing attribute");
         l.add("3 .       bier                    send bier attribute");
         l.add("3 .       internal-vpn-client     preserve attributes from peer");
@@ -1091,6 +1101,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, egressEng == 0, beg, nei + "egress-engineering", "" + egressEng);
+        cmds.cfgLine(l, !labelPop, beg, nei + "label-pop", "");
         cmds.cfgLine(l, !capaNego, beg, nei + "capability-negotiation", "");
         cmds.cfgLine(l, !trackNxthop, beg, nei + "track-next-hop", "");
         cmds.cfgLine(l, !reflectClnt, beg, nei + "route-reflector-client", "");
@@ -1451,6 +1462,10 @@ public abstract class rtrBgpParam {
                 return false;
             }
             egressEng = 0;
+            return false;
+        }
+        if (s.equals("label-pop")) {
+            labelPop = !negated;
             return false;
         }
         if (s.equals("capability-negotiation")) {

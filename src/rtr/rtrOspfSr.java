@@ -94,13 +94,17 @@ public class rtrOspfSr {
     /**
      * generate sr prefix
      *
+     * @param pop php
      * @param idx index
      * @return bytes generated
      */
-    protected static byte[] putPref(int idx) {
+    protected static byte[] putPref(int idx, boolean pop) {
         packHolder pck = new packHolder(true, true);
         typLenVal tlv = rtrOspfTe.getTlvHandler();
-        tlv.valDat[0] = 0x40; // no-php
+        tlv.valDat[0] = 0;
+        if (!pop) {
+            tlv.valDat[0] |= 0x40; // no-php
+        }
         tlv.valDat[1] = 0; // reserved
         tlv.valDat[2] = 0; // mtid
         tlv.valDat[3] = 0; // algorithm

@@ -9,6 +9,7 @@ import cry.cryHashSha2512;
 import java.util.ArrayList;
 import java.util.Comparator;
 import cfg.cfgAll;
+import ip.ipMpls;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtAccept;
@@ -397,7 +398,11 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         String a = "";
         if (lower.labels) {
             if (ntry.labelLoc != null) {
-                a = " label=" + ntry.labelLoc.getValue();
+                int i = ntry.labelLoc.getValue();
+                if (lower.labelPop && (lower.fwdCore.commonLabel.getValue() == i)) {
+                    i = ipMpls.labelImp;
+                }
+                a = " label=" + i;
             }
         }
         sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.metric + iface.metricOut) + " tag=" + ntry.tag + " path= " + lower.routerID + " " + tabRouteEntry.dumpAddrList(ntry.clustList));

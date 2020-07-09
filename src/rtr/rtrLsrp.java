@@ -113,6 +113,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     public int segrouMax = 0;
 
     /**
+     * segment routing pop
+     */
+    public boolean segrouPop = false;
+
+    /**
      * bier index
      */
     public int bierIdx = 0;
@@ -553,6 +558,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             dat.segrouIdx = segrouIdx;
             dat.segrouMax = segrouMax;
             dat.segrouBeg = segrouLab[0].getValue();
+            dat.segrouPop = segrouPop;
         }
         if (bierLab != null) {
             dat.bierIdx = bierIdx;
@@ -780,7 +786,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add("1 .   suppress-prefix             do not advertise interfaces");
         l.add("1 2   segrout                     segment routing parameters");
         l.add("2 3     <num>                     maximum index");
-        l.add("3 .       <num>                   this node index");
+        l.add("3 4,.     <num>                   this node index");
+        l.add("4 .         pop                   advertise php");
         l.add("1 2   bier                        bier parameters");
         l.add("2 3     <num>                     bitstring length");
         l.add("3 4       <num>                   maximum index");
@@ -805,7 +812,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
         cmds.cfgLine(l, prflstIn == null, beg, "prefix-list", "" + prflstIn);
         cmds.cfgLine(l, roumapIn == null, beg, "route-map", "" + roumapIn);
         cmds.cfgLine(l, roupolIn == null, beg, "route-policy", "" + roupolIn);
-        cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx);
+        String a = "";
+        if (segrouPop) {
+            a = " pop";
+        }
+        cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
     }
 
@@ -924,12 +935,14 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (negated) {
                 segrouIdx = 0;
                 segrouMax = 0;
+                segrouPop = false;
                 todo.set(0);
                 notif.wakeup();
                 return false;
             }
             segrouMax = bits.str2num(cmd.word());
             segrouIdx = bits.str2num(cmd.word());
+            segrouPop = cmd.word().equals("pop");
             segrouLab = tabLabel.allocate(6, segrouMax);
             todo.set(0);
             notif.wakeup();

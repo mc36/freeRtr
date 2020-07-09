@@ -6,6 +6,7 @@ import addr.addrPrefix;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdMpmp;
+import ip.ipMpls;
 import java.util.Comparator;
 import java.util.List;
 import pack.packLdp;
@@ -48,7 +49,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
      * heard targeted hello
      */
     public boolean helloTrg;
-
+    
     /**
      * input label filter
      */
@@ -58,6 +59,11 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
      * output label filter
      */
     public tabListing<tabPrfxlstN, addrIP> filterOut;
+
+    /**
+     * advertise label pop
+     */
+    public boolean labelPop;
 
     /**
      * advertised prefixes
@@ -274,8 +280,12 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
      * @param prf prefix to advertise
      */
     public void sendLabelMap(tabRouteEntry<addrIP> prf) {
+        int val = prf.labelLoc.getValue();
+        if (labelPop && (val == ip.commonLabel.getValue())) {
+            val = ipMpls.labelImp;
+        }
         if (debugger.rtrLdpTraf) {
-            logger.debug("tx reachable prefix=" + prf.prefix + " label=" + prf.labelLoc.getValue());
+            logger.debug("tx reachable prefix=" + prf.prefix + " label=" + val);
         }
         packLdp pck = new packLdp();
         pck.conn = conn;
@@ -283,7 +293,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         pck.lsrID = ifc.addr.toIPv4();
         pck.msgTyp = packLdp.msgTlabMap;
         pck.msgID = bits.randomD();
-        pck.label = prf.labelLoc.getValue();
+        pck.label = val;
         pck.putFECaddr(prf.prefix);
         pck.putGenLabel();
         pck.createLDPheader();

@@ -765,7 +765,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             }
             byte[] buf = new byte[0];
             if (ifc.srIndex > 0) {
-                buf = rtrOspfSr.putPref(ifc.srIndex);
+                buf = rtrOspfSr.putPref(ifc.srIndex, ifc.srPop);
             }
             if (ifc.brIndex > 0) {
                 buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ifc.brIndex));
@@ -798,7 +798,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             }
             byte[] buf = new byte[0];
             if (ntry.segrouIdx > 0) {
-                buf = rtrOspfSr.putPref(ntry.segrouIdx);
+                buf = rtrOspfSr.putPref(ntry.segrouIdx, false);
             }
             if (ntry.bierIdx > 0) {
                 buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ntry.bierIdx));
