@@ -121,32 +121,28 @@ public class tabSession implements Runnable {
     public boolean doPack(packHolder pck, boolean dir) {
         int i = pck.dataSize();
         pck.getSkip(pck.IPsiz);
-        boolean b = false;
         pck.UDPsrc = 0;
         pck.UDPtrg = 0;
         pck.UDPsiz = 0;
         switch (pck.IPprt) {
             case prtTcp.protoNum:
-                b = prtTcp.parseTCPheader(pck);
+                prtTcp.parseTCPports(pck);
                 break;
             case prtUdp.protoNum:
-                b = prtUdp.parseUDPheader(pck);
+                prtUdp.parseUDPports(pck);
                 break;
             case prtLudp.protoNum:
-                b = prtLudp.parseLUDPheader(pck);
+                prtLudp.parseLUDPports(pck);
                 break;
             case prtDccp.protoNum:
-                b = prtDccp.parseDCCPheader(pck);
+                prtDccp.parseDCCPports(pck);
                 break;
             case prtSctp.protoNum:
-                b = prtSctp.parseSCTPheader(pck);
+                prtSctp.parseSCTPports(pck);
                 break;
         }
         int o = pck.dataSize();
         pck.getSkip(o - i);
-        if (b) {
-            return true;
-        }
         tabSessionEntry ses = new tabSessionEntry(logMacs);
         ses.ipPrt = pck.IPprt;
         ses.dir = dir;

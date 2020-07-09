@@ -381,8 +381,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router flowspec[4|6] .*! distance 254",
         // router uni2multi
         "router uni2multi[4|6] .*! distance 254",
+        // router deaggr
+        "router deaggr[4|6] .*! distance 254 254",
         // router uni2flow
-        "router uni2flow[4|6] .*! distance 15",
+        "router uni2flow[4|6] .*! distance 254",
         "router uni2flow[4|6] .*! direction target",
         "router uni2flow[4|6] .*! as 0",
         "router uni2flow[4|6] .*! rate 0",

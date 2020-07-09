@@ -10,6 +10,7 @@ import java.util.List;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import user.userHelping;
+import util.bits;
 import util.cmds;
 
 /**
@@ -18,6 +19,16 @@ import util.cmds;
  * @author matecsaba
  */
 public class rtrDeaggr extends ipRtr {
+
+    /**
+     * lower half distance
+     */
+    public int distance1;
+
+    /**
+     * upper half distance
+     */
+    public int distance2;
 
     /**
      * the forwarder protocol
@@ -57,6 +68,8 @@ public class rtrDeaggr extends ipRtr {
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
+        distance1 = 254;
+        distance2 = 254;
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
     }
@@ -70,32 +83,47 @@ public class rtrDeaggr extends ipRtr {
         return "deaggr on " + fwdCore;
     }
 
+    private void doPrefix(tabRouteEntry<addrIP> ntry, tabRoute<addrIP> tab) {
+        if (ntry == null) {
+            return;
+        }
+        if (ntry.prefix.maskLen >= ntry.prefix.network.maxBits()) {
+            return;
+        }
+        ntry = ntry.copyBytes();
+        ntry.rouTyp = rouTyp;
+        ntry.protoNum = rtrNum;
+        ntry.prefix.setMask(ntry.prefix.maskLen + 1);
+        if (distance1 > 0) {
+            ntry.distance = distance1;
+        }
+        tab.add(tabRoute.addType.better, ntry.copyBytes(), false, false);
+        addrIP adr = new addrIP();
+        adr.bitSet(ntry.prefix.maskLen - 1);
+        adr.setOr(adr, ntry.prefix.network);
+        ntry.prefix = new addrPrefix<addrIP>(adr, ntry.prefix.maskLen);
+        if (distance2 > 0) {
+            ntry.distance = distance2;
+        }
+        tab.add(tabRoute.addType.better, ntry.copyBytes(), false, false);
+    }
+
     /**
      * create computed
      */
     public synchronized void routerCreateComputed() {
-        tabRoute<addrIP> res = new tabRoute<addrIP>("computed");
+        tabRoute<addrIP> resU = new tabRoute<addrIP>("computed");
+        tabRoute<addrIP> resM = new tabRoute<addrIP>("computed");
         for (int i = 0; i < routerRedistedU.size(); i++) {
-            tabRouteEntry<addrIP> ntry = routerRedistedU.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (ntry.prefix.maskLen >= ntry.prefix.network.maxBits()) {
-                continue;
-            }
-            ntry = ntry.copyBytes();
-            ntry.rouTyp = rouTyp;
-            ntry.protoNum = rtrNum;
-            ntry.prefix.setMask(ntry.prefix.maskLen + 1);
-            res.add(tabRoute.addType.better, ntry.copyBytes(), false, false);
-            addrIP adr = new addrIP();
-            adr.bitSet(ntry.prefix.maskLen - 1);
-            adr.setOr(adr, ntry.prefix.network);
-            ntry.prefix = new addrPrefix<addrIP>(adr, ntry.prefix.maskLen);
-            res.add(tabRoute.addType.better, ntry.copyBytes(), false, false);
+            doPrefix(routerRedistedU.get(i), resU);
         }
-        routerDoAggregates(rtrBgpUtil.safiUnicast, res, null, fwdCore.commonLabel, 0, null, 0);
-        routerComputedU = res;
+        for (int i = 0; i < routerRedistedM.size(); i++) {
+            doPrefix(routerRedistedM.get(i), resM);
+        }
+        routerDoAggregates(rtrBgpUtil.safiUnicast, resU, null, fwdCore.commonLabel, 0, null, 0);
+        routerDoAggregates(rtrBgpUtil.safiMulticast, resM, null, fwdCore.commonLabel, 0, null, 0);
+        routerComputedU = resU;
+        routerComputedM = resM;
         fwdCore.routerChg(this);
     }
 
@@ -118,6 +146,9 @@ public class rtrDeaggr extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
+        l.add("1 2   distance                    specify default distance");
+        l.add("2 3     <num>                     lower half distance");
+        l.add("3 .       <num>                   upper half distance");
     }
 
     /**
@@ -128,6 +159,7 @@ public class rtrDeaggr extends ipRtr {
      * @param filter filter
      */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
+        l.add(beg + "distance " + distance1 + " " + distance2);
     }
 
     /**
@@ -137,6 +169,17 @@ public class rtrDeaggr extends ipRtr {
      * @return false if success, true if error
      */
     public boolean routerConfigure(cmds cmd) {
+        String s = cmd.word();
+        boolean negated = false;
+        if (s.equals("no")) {
+            s = cmd.word();
+            negated = true;
+        }
+        if (s.equals("distance")) {
+            distance1 = bits.str2num(cmd.word());
+            distance2 = bits.str2num(cmd.word());
+            return false;
+        }
         return true;
     }
 

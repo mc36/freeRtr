@@ -136,12 +136,23 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
     }
 
     /**
+     * parse icmp ids
+     *
+     * @param pck packet to parse
+     */
+    public static void parseICMPports(packHolder pck) {
+        pck.ICMPtc = pck.msbGetW(0); // type:8 code:8
+        pck.UDPsrc = pck.msbGetD(4); // id:16 seq:16
+    }
+
+    /**
      * parse header
      *
      * @param pck packet
      * @return false on success, true on error
      */
     public boolean parseICMPheader(packHolder pck) {
+        parseICMPports(pck);
         if (pck.dataSize() < size) {
             logger.info("got too small from " + pck.IPsrc);
             cntr.drop(pck, counter.reasons.badLen);
@@ -155,8 +166,6 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 return true;
             }
         }
-        pck.ICMPtc = pck.msbGetW(0); // type:8 code:8
-        pck.UDPsrc = pck.msbGetD(4); // id:16 seq:16
         if (debugger.ipIcmp6traf) {
             logger.debug("rx " + pck.IPsrc + " -> " + pck.IPtrg + " typ=" + icmp2string(pck.ICMPtc) + " id=" + pck.UDPsrc);
         }

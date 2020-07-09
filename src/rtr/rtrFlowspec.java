@@ -99,7 +99,9 @@ public class rtrFlowspec extends ipRtr {
             ntry = ntry.copyBytes();
             ntry.rouTyp = rouTyp;
             ntry.protoNum = rtrNum;
-            ntry.distance = distance;
+            if (distance > 0) {
+                ntry.distance = distance;
+            }
             bits.byteCopy(ntry.prefix.network.getBytes(), 1, buf, 0, 15);
             bits.byteCopy(ntry.prefix.broadcast.getBytes(), 0, buf, 15, 16);
             bits.byteCopy(ntry.prefix.wildcard.getBytes(), 0, buf, 31, 16);

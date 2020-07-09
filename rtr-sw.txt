@@ -192,7 +192,6 @@ vrf definition v1
  rd 1:1
  rt-import 1:1
  rt-export 1:1
- label-mode per-prefix
  source4route all4
  source6route all6
  counter4map count4

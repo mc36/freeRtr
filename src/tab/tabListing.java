@@ -4,6 +4,8 @@ import addr.addrPrefix;
 import addr.addrType;
 import ip.ipCor;
 import ip.ipIcmp;
+import ip.ipIcmp4;
+import ip.ipIcmp6;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
@@ -321,12 +323,11 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
                 case prtSctp.protoNum:
                     prtSctp.parseSCTPports(pck);
                     break;
-                default:
-                    if (pck.IPprt != myIcmp.getProtoNum()) {
-                        break;
-                    }
-                    myIcmp.parseICMPheader(pck);
-                    pck.UDPtrg = pck.UDPsrc;
+                case ipIcmp4.protoNum:
+                    ipIcmp4.parseICMPports(pck);
+                    break;
+                case ipIcmp6.protoNum:
+                    ipIcmp6.parseICMPports(pck);
                     break;
             }
             pck.getSkip(-pck.IPsiz);

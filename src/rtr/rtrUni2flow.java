@@ -84,7 +84,7 @@ public class rtrUni2flow extends ipRtr {
                 rouTyp = null;
                 break;
         }
-        distance = 15;
+        distance = 254;
         direction = 1;
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
@@ -116,7 +116,9 @@ public class rtrUni2flow extends ipRtr {
             tabRouteEntry<addrIP> attr = new tabRouteEntry<addrIP>();
             attr.rouTyp = rouTyp;
             attr.protoNum = rtrNum;
-            attr.distance = distance;
+            if (distance > 0) {
+                attr.distance = distance;
+            }
             attr.nextHop = ntry.nextHop;
             if (attr.nextHop == null) {
                 attr.nextHop = new addrIP();

@@ -89,9 +89,12 @@ public class rtrUni2multi extends ipRtr {
             ntry = ntry.copyBytes();
             ntry.rouTyp = rouTyp;
             ntry.protoNum = rtrNum;
-            ntry.distance = distance;
+            if (distance > 0) {
+                ntry.distance = distance;
+            }
             res.add(tabRoute.addType.better, ntry, false, false);
         }
+        routerDoAggregates(rtrBgpUtil.safiMulticast, res, null, fwdCore.commonLabel, 0, null, 0);
         routerComputedM = res;
         fwdCore.routerChg(this);
     }

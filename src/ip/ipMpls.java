@@ -224,25 +224,24 @@ public class ipMpls implements ifcUp {
             if (parseMPLSheader(pck)) {
                 break;
             }
-            if (!pck.MPLSbottom) {
-                continue;
+            if (pck.MPLSbottom) {
+                break;
             }
-            boolean b;
-            switch (ifcEther.guessEtherType(pck)) {
-                case ipIfc4.type:
-                    b = core4.parseIPheader(pck, false);
-                    break;
-                case ipIfc6.type:
-                    b = core6.parseIPheader(pck, false);
-                    break;
-                default:
-                    b = true;
-                    break;
-            }
-            if (!b) {
-                inspect.doPack(pck, dir);
-            }
-            break;
+        }
+        boolean b;
+        switch (ifcEther.guessEtherType(pck)) {
+            case ipIfc4.type:
+                b = core4.parseIPheader(pck, false);
+                break;
+            case ipIfc6.type:
+                b = core6.parseIPheader(pck, false);
+                break;
+            default:
+                b = true;
+                break;
+        }
+        if (!b) {
+            inspect.doPack(pck, dir);
         }
         int o = pck.dataSize();
         pck.getSkip(o - i);

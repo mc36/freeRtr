@@ -653,10 +653,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
             int brb = spf.getBierB(ntry.rtrId, false);
             int bro = spf.getBierB(ntry.rtrId, true);
             List<Integer> label = null;
-            if ((srb > 0) && (ntry.segrouIdx > 0)) {
+            if ((segrouLab != null) && (ntry.segrouIdx > 0) && (ntry.segrouIdx < segrouMax) && (srb > 0)) {
                 label = tabLabel.int2labels(srb + ntry.segrouIdx);
-            }
-            if ((segrouLab != null) && (ntry.segrouIdx > 0) && (ntry.segrouIdx < segrouMax)) {
                 segrouLab[ntry.segrouIdx].setFwdMpls(6, fwdCore, iface, hop, label);
                 segrouUsd[ntry.segrouIdx] = true;
             }
