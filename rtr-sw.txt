@@ -553,7 +553,7 @@ proxy-profile p5
 !
 mtracker v4
  logging
- target 10.5.1.10
+ target 10.1.11.254
  vrf v1
  source loopback0
  start
@@ -561,16 +561,24 @@ mtracker v4
 !
 mtracker v4m
  logging
- target 10.5.1.10
+ target 10.1.11.254
  vrf v1
  source loopback0
  port 5488
  start
  exit
 !
+mtracker v4v
+ logging
+ target 172.16.27.11
+ vrf vpn
+ source loopback65535
+ start
+ exit
+!
 mtracker v6
  logging
- target 2001:db8:36::2
+ target 2001:db8:1101::252:254
  vrf v1
  source loopback0
  start
@@ -578,10 +586,18 @@ mtracker v6
 !
 mtracker v6m
  logging
- target 2001:db8:36::2
+ target 2001:db8:1101::252:254
  vrf v1
  source loopback0
  port 5488
+ start
+ exit
+!
+mtracker v6v
+ logging
+ target fd42:1234::11
+ vrf vpn
+ source loopback65535
  start
  exit
 !
