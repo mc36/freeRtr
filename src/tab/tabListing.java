@@ -325,9 +325,11 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
                     break;
                 case ipIcmp4.protoNum:
                     ipIcmp4.parseICMPports(pck);
+                    pck.UDPtrg = pck.UDPsrc;
                     break;
                 case ipIcmp6.protoNum:
                     ipIcmp6.parseICMPports(pck);
+                    pck.UDPtrg = pck.UDPsrc;
                     break;
             }
             pck.getSkip(-pck.IPsiz);
