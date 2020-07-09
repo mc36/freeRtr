@@ -79,6 +79,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public int segrouBeg;
 
     /**
+     * segment routing pop
+     */
+    public boolean segrouPop;
+
+    /**
      * bier index
      */
     public int bierIdx;
@@ -207,6 +212,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             s += " segroubeg=" + segrouBeg;
             s += " segroumax=" + segrouMax;
             s += " segrouidx=" + segrouIdx;
+            s += " segroupop=" + segrouPop;
         }
         if ((typ & 0x400) != 0) {
             s += " bierbeg=" + bierBeg;
@@ -304,7 +310,6 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      */
     public boolean fromString(cmds cmd) {
         rtrId = new addrIPv4();
-        boolean stub = false;
         hostname = "";
         software = "";
         hardware = "";
@@ -315,6 +320,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         segrouBeg = 0;
         segrouIdx = 0;
         segrouMax = 0;
+        segrouPop = false;
         bierBeg = 0;
         bierMax = 0;
         bierIdx = 0;
@@ -324,6 +330,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         changesNum = 0;
         changesTim = 0;
         addrIP peerAddr = new addrIP();
+        boolean stub = false;
         int segrouAdj = 0;
         int metric = 0;
         long bndwdt = 0;
@@ -391,6 +398,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             }
             if (a.equals("segrouidx")) {
                 segrouIdx = bits.str2num(s);
+                continue;
+            }
+            if (a.equals("segroupop")) {
+                segrouPop = s.toLowerCase().equals("true");
                 continue;
             }
             if (a.equals("segrouadj")) {

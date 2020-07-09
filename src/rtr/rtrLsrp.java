@@ -12,6 +12,7 @@ import ip.ipCor4;
 import ip.ipCor6;
 import ip.ipFwd;
 import ip.ipFwdIface;
+import ip.ipMpls;
 import ip.ipRtr;
 import java.util.List;
 import prt.prtTcp;
@@ -333,7 +334,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 l = new userFormat("|", "id|name|nei|net|seq|topo|left");
                 break;
             case 2:
-                l = new userFormat("|", "id|name|index|max|base");
+                l = new userFormat("|", "id|name|pop|index|max|base");
                 break;
             case 3:
                 l = new userFormat("|", "id|name|uptime|changes|changed");
@@ -357,7 +358,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.neighbor.size() + "|" + ntry.network.size() + "|" + ntry.sequence + "|" + bits.toHexD(ntry.topoSum) + "|" + bits.timeLeft(ntry.time));
                     break;
                 case 2:
-                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.segrouIdx + "|" + ntry.segrouMax + "|" + ntry.segrouBeg);
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.segrouPop + "|" + ntry.segrouIdx + "|" + ntry.segrouMax + "|" + ntry.segrouBeg);
                     break;
                 case 3:
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + bits.timeDump(ntry.uptime / 1000) + "|" + ntry.changesNum + "|" + bits.timeDump(ntry.changesTim / 1000));
@@ -646,6 +647,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (hop == null) {
                 continue;
             }
+            int hops = spf.getHops(ntry.rtrId);
             ipFwdIface iface = (ipFwdIface) spf.getNextIfc(ntry.rtrId);
             int met = spf.getMetric(ntry.rtrId);
             int srb = spf.getSegRouB(ntry.rtrId, false);
@@ -655,6 +657,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
             List<Integer> label = null;
             if ((segrouLab != null) && (ntry.segrouIdx > 0) && (ntry.segrouIdx < segrouMax) && (srb > 0)) {
                 label = tabLabel.int2labels(srb + ntry.segrouIdx);
+                if (ntry.segrouPop && (hops <= 1)) {
+                    label = tabLabel.int2labels(ipMpls.labelImp);
+                }
                 segrouLab[ntry.segrouIdx].setFwdMpls(6, fwdCore, iface, hop, label);
                 segrouUsd[ntry.segrouIdx] = true;
             }
