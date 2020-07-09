@@ -80,6 +80,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
     public boolean defOrigin = false;
 
     /**
+     * advertise pop labels
+     */
+    public boolean labelPop = false;
+
+    /**
      * not advertise routes learned from interface back
      */
     public boolean splitHorizon = true;
@@ -267,6 +272,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
+        cmds.cfgLine(l, !labelPop, cmds.tabulator, beg + "label-pop", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
         cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
@@ -293,6 +299,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         l.add("4 .         enable                  enable protocol processing");
         l.add("4 .         bfd                     enable bfd triggered down");
         l.add("4 .         default-originate       send default route to peer");
+        l.add("4 .         label-pop               advertise php");
         l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 .         passive                 do not form neighborship");
         l.add("4 .         suppress-prefix         do not advertise interface");
@@ -341,6 +348,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
     public void routerDoConfig(String a, cmds cmd) {
         if (a.equals("bfd")) {
             bfdTrigger = true;
+            return;
+        }
+        if (a.equals("label-pop")) {
+            labelPop = true;
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("default-originate")) {
@@ -476,6 +488,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
     public void routerUnConfig(String a, cmds cmd) {
         if (a.equals("bfd")) {
             bfdTrigger = false;
+            return;
+        }
+        if (a.equals("label-pop")) {
+            labelPop = false;
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("default-originate")) {

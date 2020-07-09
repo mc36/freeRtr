@@ -67,12 +67,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
     /**
      * advertise labels
      */
-    public boolean labels;
-
-    /**
-     * advertise pop labels
-     */
-    public boolean labelPop;
+    public boolean labels = false;
 
     /**
      * suppress interface addresses
@@ -352,8 +347,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
     public void routerGetHelp(userHelping l) {
         l.add("1 2   router-id                   specify router id");
         l.add("2 .     <addr>                    router id");
-        l.add("1 2,. labels                      specify label mode");
-        l.add("2 .     pop                       advertise php");
+        l.add("1 .   labels                      specify label mode");
         l.add("1 .   suppress-prefix             do not advertise interfaces");
     }
 
@@ -366,11 +360,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
      */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "router-id " + routerID);
-        String a = "";
-        if (labelPop) {
-            a = "pop";
-        }
-        cmds.cfgLine(l, !labels, beg, "labels", a);
+        cmds.cfgLine(l, !labels, beg, "labels", "");
         cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
     }
 
@@ -396,7 +386,6 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
         if (s.equals("labels")) {
             labels = !negated;
-            labelPop = cmd.word().equals("pop") & labels;
             notif.wakeup();
             return false;
         }

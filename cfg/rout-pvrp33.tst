@@ -18,13 +18,13 @@ access-list test6
 router pvrp4 1
  vrf v1
  router 4.4.4.1
- label pop
+ label
  red conn
  exit
 router pvrp6 1
  vrf v1
  router 6.6.6.1
- label pop
+ label
  red conn
  exit
 int lo1
@@ -40,7 +40,9 @@ int eth1
  ipv6 access-group-in test6
  mpls enable
  router pvrp4 1 ena
+ router pvrp4 1 label-pop
  router pvrp6 1 ena
+ router pvrp6 1 label-pop
  exit
 int pweth1
  vrf for v1
@@ -73,13 +75,13 @@ access-list test6
 router pvrp4 1
  vrf v1
  router 4.4.4.2
- label pop
+ label
  red conn
  exit
 router pvrp6 1
  vrf v1
  router 6.6.6.2
- label pop
+ label
  red conn
  exit
 int lo1
@@ -95,7 +97,9 @@ int eth1
  ipv6 access-group-in test6
  mpls enable
  router pvrp4 1 ena
+ router pvrp4 1 label-pop
  router pvrp6 1 ena
+ router pvrp6 1 label-pop
  exit
 int eth2
  vrf for v1
@@ -105,7 +109,9 @@ int eth2
  ipv6 access-group-in test6
  mpls enable
  router pvrp4 1 ena
+ router pvrp4 1 label-pop
  router pvrp6 1 ena
+ router pvrp6 1 label-pop
  exit
 !
 
@@ -127,13 +133,13 @@ access-list test6
 router pvrp4 1
  vrf v1
  router 4.4.4.3
- label pop
+ label
  red conn
  exit
 router pvrp6 1
  vrf v1
  router 6.6.6.3
- label pop
+ label
  red conn
  exit
 int lo1
@@ -149,7 +155,9 @@ int eth1
  ipv6 access-group-in test6
  mpls enable
  router pvrp4 1 ena
+ router pvrp4 1 label-pop
  router pvrp6 1 ena
+ router pvrp6 1 label-pop
  exit
 int pweth1
  vrf for v1

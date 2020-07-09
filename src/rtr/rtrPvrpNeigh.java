@@ -398,11 +398,11 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         String a = "";
         if (lower.labels) {
             if (ntry.labelLoc != null) {
-                int i = ntry.labelLoc.getValue();
-                if (lower.labelPop && (lower.fwdCore.commonLabel.getValue() == i)) {
-                    i = ipMpls.labelImp;
+                int val = ntry.labelLoc.getValue();
+                if (iface.labelPop && (lower.fwdCore.commonLabel.getValue() == val)) {
+                    val = ipMpls.labelImp;
                 }
-                a = " label=" + i;
+                a = " label=" + val;
             }
         }
         sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.metric + iface.metricOut) + " tag=" + ntry.tag + " path= " + lower.routerID + " " + tabRouteEntry.dumpAddrList(ntry.clustList));
