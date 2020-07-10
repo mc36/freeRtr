@@ -20,7 +20,8 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
      * defaults text
      */
     public final static String defaultL[] = {
-        "menu .*! no description"
+        "menu .*! no description",
+        "menu .*! no ignore-case"
     };
 
     /**
@@ -37,6 +38,11 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
      * description
      */
     public String description;
+
+    /**
+     * ignore case
+     */
+    public boolean ignoreCase;
 
     /**
      * letters of menu
@@ -56,6 +62,7 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1 3,. description                   specify description");
         l.add("3 3,.   <str>                       text");
+        l.add("1 .  ignore-case                    ignore case on matching");
         l.add("1 2  letter                         set letter to configure");
         l.add("2 3,.  <name>                       menu item");
         l.add("3 4      command                    command to do");
@@ -69,6 +76,7 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("menu " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
+        cmds.cfgLine(l, !ignoreCase, cmds.tabulator, "ignore-case", "");
         for (int i = 0; i < letter.size(); i++) {
             cfgMenuEntry ntry = letter.get(i);
             l.add(cmds.tabulator + "letter " + ntry.name + " command " + ntry.command);
@@ -88,6 +96,10 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
         boolean negated = a.equals("no");
         if (negated) {
             a = cmd.word();
+        }
+        if (a.equals("ignore-case")) {
+            ignoreCase = !negated;
+            return;
         }
         if (a.equals("description")) {
             if (negated) {
@@ -136,9 +148,16 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
      * @return menu entry, null if not found
      */
     public String findKey(String s) {
+        if (ignoreCase) {
+            s = s.toLowerCase();
+        }
         for (int i = 0; i < letter.size(); i++) {
             cfgMenuEntry ntry = letter.get(i);
-            if (ntry.name.compareTo(s) == 0) {
+            String a = ntry.name;
+            if (ignoreCase) {
+                a = a.toLowerCase();
+            }
+            if (a.compareTo(s) == 0) {
                 return ntry.command;
             }
         }

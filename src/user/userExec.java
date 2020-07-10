@@ -2018,8 +2018,8 @@ public class userExec {
         for (int i = 0; i < ntry.letter.size(); i++) {
             cmd.pipe.linePut(ntry.letter.get(i) + "");
         }
-        cmd.pipe.strPut("choose:");
         for (;;) {
+            cmd.pipe.strPut("choose:");
             if (cmd.pipe.ready2rx() < 0) {
                 return;
             }
@@ -2027,17 +2027,19 @@ public class userExec {
             if (a == null) {
                 return;
             }
+            cmd.pipe.strPut(" " + a);
             String s = ntry.findKey(a);
             if (s == null) {
-                continue;
+                s = "";
             }
             if (s.length() < 1) {
+                cmd.pipe.linePut(" is invaild");
                 continue;
             }
             userExec exe = new userExec(cmd.pipe, reader);
             exe.privileged = privileged;
             s = exe.repairCommand(s);
-            cmd.pipe.strPut(a + " - " + s);
+            cmd.pipe.linePut(" - " + s);
             if (reader.logging) {
                 logger.info("command menu:" + s + " from " + reader.from);
             }
