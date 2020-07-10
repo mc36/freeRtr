@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
 import prt.prtTcp;
+import rtr.rtrLdpIface;
 import rtr.rtrLdpNeigh;
 import rtr.rtrLdpTrgtd;
 import tab.tabAceslstN;
@@ -543,11 +544,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * find one ldp targeted
      *
      * @param iface receiving interface
+     * @param ldpi ldp interface
      * @param addr peer address
      * @param create create if not yet
      * @return found neighbor, null if nothing
      */
-    public rtrLdpTrgtd ldpTargetFind(ipFwdIface iface, addrIP addr, boolean create) {
+    public rtrLdpTrgtd ldpTargetFind(ipFwdIface iface, rtrLdpIface ldpi, addrIP addr, boolean create) {
         iface = ifaces.find(iface);
         if (iface == null) {
             return null;
@@ -558,6 +560,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ntry.ifc = iface;
         ntry.ip = this;
+        ntry.ldp = ldpi;
         rtrLdpTrgtd old = ldpTarget.add(ntry);
         if (old != null) {
             return old;

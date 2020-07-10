@@ -12,7 +12,7 @@ access-list test4
  sequence 20 permit all any all any all
  exit
 access-list test6
- sequence 10 deny all 4321:: ffff:: all 4321:: ffff:: all
+ sequence 10 deny 58 4321:: ffff:: all 4321:: ffff:: all
  sequence 20 permit all any all any all
  exit
 router isis4 1
@@ -124,7 +124,7 @@ access-list test4
  sequence 20 permit all any all any all
  exit
 access-list test6
- sequence 10 deny all 4321:: ffff:: all 4321:: ffff:: all
+ sequence 10 deny 58 4321:: ffff:: all 4321:: ffff:: all
  sequence 20 permit all any all any all
  exit
 router isis4 1

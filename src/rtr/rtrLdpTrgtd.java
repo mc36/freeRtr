@@ -35,6 +35,11 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
     public ipFwdIface ifc;
 
     /**
+     * ldp interface
+     */
+    public rtrLdpIface ldp;
+
+    /**
      * ip layer
      */
     public ipFwd ip;
@@ -184,6 +189,11 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
                 ntry.lsrID = pk.lsrID;
                 ntry.sessHelloHldtm = rtrLdpIface.sessHelloHldtm;
                 ntry.sessHelloIntrvl = rtrLdpIface.sessHelloIntrvl;
+                if (ldp != null) {
+                    ntry.filterIn = ldp.filterIn;
+                    ntry.filterOut = ldp.filterOut;
+                    ntry.labelPop = ldp.labelPop;
+                }
                 ntry.startPeer();
             }
         } catch (Exception e) {

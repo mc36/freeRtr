@@ -12,7 +12,7 @@ access-list test4
  permit all any all any all
  exit
 access-list test6
- deny all 4321:: ffff:: all 4321:: ffff:: all
+ deny 58 4321:: ffff:: all 4321:: ffff:: all
  permit all any all any all
  exit
 int lo0
@@ -108,7 +108,7 @@ access-list test4
  permit all any all any all
  exit
 access-list test6
- deny all 4321:: ffff:: all 4321:: ffff:: all
+ deny 58 4321:: ffff:: all 4321:: ffff:: all
  permit all any all any all
  exit
 int lo0

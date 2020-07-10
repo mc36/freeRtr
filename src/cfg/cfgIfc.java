@@ -4385,6 +4385,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         clnt.vrf = vrfFor;
         clnt.srcIfc = this;
+        if (clnt.target.isIPv4()) {
+            clnt.ldpIfc = mplsLdp4;
+        } else {
+            clnt.ldpIfc = mplsLdp6;
+        }
         if (mplsTarget.add(clnt) != null) {
             return;
         }

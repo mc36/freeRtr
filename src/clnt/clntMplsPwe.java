@@ -257,7 +257,6 @@ public class clntMplsPwe implements Runnable, ifcDn {
         return pweR.label;
     }
 
-
     /**
      * get remote address
      *
@@ -314,7 +313,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
         if (debugger.clntPweTraf) {
             logger.debug("starting targeted session");
         }
-        neighT = fwdCor.ldpTargetFind(fwdIfc, fwdTrg, true);
+        neighT = fwdCor.ldpTargetFind(fwdIfc, null, fwdTrg, true);
         if (neighT == null) {
             return;
         }
@@ -327,7 +326,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
             if (!working) {
                 return;
             }
-            neighT = fwdCor.ldpTargetFind(fwdIfc, fwdTrg, false);
+            neighT = fwdCor.ldpTargetFind(fwdIfc, null, fwdTrg, false);
             if (neighT == null) {
                 return;
             }
@@ -367,7 +366,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
             if (!working) {
                 return;
             }
-            neighT = fwdCor.ldpTargetFind(fwdIfc, fwdTrg, false);
+            neighT = fwdCor.ldpTargetFind(fwdIfc, null, fwdTrg, false);
             if (neighT == null) {
                 return;
             }
@@ -396,7 +395,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
             if (!working) {
                 break;
             }
-            neighT = fwdCor.ldpTargetFind(fwdIfc, fwdTrg, false);
+            neighT = fwdCor.ldpTargetFind(fwdIfc, null, fwdTrg, false);
             if (neighT == null) {
                 break;
             }

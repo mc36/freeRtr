@@ -254,6 +254,7 @@ public class rtrLdpIface implements prtServP {
             return false;
         }
         ntry.helloIfc = true;
+        ntry.helloTrg = false;
         if (ntry.udp != null) {
             return false;
         }

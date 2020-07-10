@@ -6,6 +6,7 @@ import cfg.cfgVrf;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import java.util.Comparator;
+import rtr.rtrLdpIface;
 import rtr.rtrLdpNeigh;
 import rtr.rtrLdpTrgtd;
 import util.bits;
@@ -32,6 +33,11 @@ public class clntMplsTrg implements Runnable, Comparator<clntMplsTrg> {
      * source interface
      */
     public cfgIfc srcIfc = null;
+
+    /**
+     * ldp interface
+     */
+    public rtrLdpIface ldpIfc = null;
 
     private boolean working = true;
 
@@ -73,7 +79,7 @@ public class clntMplsTrg implements Runnable, Comparator<clntMplsTrg> {
         if (fwdIfc == null) {
             return;
         }
-        rtrLdpTrgtd neighT = fwdCor.ldpTargetFind(fwdIfc, target, true);
+        rtrLdpTrgtd neighT = fwdCor.ldpTargetFind(fwdIfc, ldpIfc, target, true);
         if (neighT == null) {
             return;
         }
@@ -87,7 +93,7 @@ public class clntMplsTrg implements Runnable, Comparator<clntMplsTrg> {
             if (!working) {
                 return;
             }
-            neighT = fwdCor.ldpTargetFind(fwdIfc, target, false);
+            neighT = fwdCor.ldpTargetFind(fwdIfc, ldpIfc, target, false);
             if (neighT == null) {
                 return;
             }
@@ -102,7 +108,7 @@ public class clntMplsTrg implements Runnable, Comparator<clntMplsTrg> {
             if (!working) {
                 return;
             }
-            neighT = fwdCor.ldpTargetFind(fwdIfc, target, false);
+            neighT = fwdCor.ldpTargetFind(fwdIfc, ldpIfc, target, false);
             if (neighT == null) {
                 return;
             }

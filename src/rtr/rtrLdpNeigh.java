@@ -196,6 +196,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         l.add("prefix learned = " + prefLearn.size());
         l.add("pwe learned = " + pweLearn.size());
         l.add("p2mp learned = " + pmpLearn.size());
+        l.add("advertise php = " + labelPop);
         l.add("prefix advertised = " + prefAdvert.size() + " of " + ip.labeldR.size());
         l.add("pwe advertised = " + pweAdvert.size() + " of " + pweNeed2adv.size());
         l.add("p2mp advertised = " + pmpAdvert.size());
