@@ -535,10 +535,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 if (ntry == null) {
                     return false;
                 }
-                if (ntry.action == tabPlcmapN.actionType.actDeny) {
-                    return false;
-                }
-                return true;
+                return ntry.action == tabListingEntry.actionType.actPermit;
             case rouplc:
                 return tabRtrplc.doRpl(afi, net, rouplc, true) != null;
             case distance:

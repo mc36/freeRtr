@@ -59,7 +59,7 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
     /**
      * type of action to take true to allow on match, false to deny it
      */
-    public tabPlcmapN.actionType action;
+    public actionType action;
 
     /**
      * packet counter
@@ -82,7 +82,7 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
      * @param i action
      * @return string
      */
-    public static String action2string(tabPlcmapN.actionType i) {
+    public static String action2string(actionType i) {
         switch (i) {
             case actPermit:
                 return "permit";
@@ -99,12 +99,12 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
      * @param s string to convert
      * @return action
      */
-    public static tabPlcmapN.actionType string2action(String s) {
+    public static actionType string2action(String s) {
         if (s.equals("permit")) {
-            return tabPlcmapN.actionType.actPermit;
+            return actionType.actPermit;
         }
         if (s.equals("deny")) {
-            return tabPlcmapN.actionType.actDeny;
+            return actionType.actDeny;
         }
         return null;
     }

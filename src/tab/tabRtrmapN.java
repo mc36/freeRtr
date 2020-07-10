@@ -849,7 +849,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             if (ntry == null) {
                 return false;
             }
-            if (ntry.action == tabPlcmapN.actionType.actDeny) {
+            if (ntry.action != tabListingEntry.actionType.actPermit) {
                 return false;
             }
         }

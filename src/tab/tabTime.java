@@ -22,7 +22,7 @@ public class tabTime implements Comparator<tabTime> {
     /**
      * action
      */
-    public tabPlcmapN.actionType act;
+    public tabListingEntry.actionType act;
 
     /**
      * year to match

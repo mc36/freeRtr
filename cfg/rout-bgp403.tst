@@ -5,7 +5,6 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
 vrf def v1
  rd 1:1
- label-mode per-prefix
  exit
 int lo0
  vrf for v1
@@ -56,7 +55,6 @@ int eth1 eth 0000.0000.2222 $2a$ $2b$
 !
 vrf def v1
  rd 1:1
- label-mode per-prefix
  exit
 int lo0
  vrf for v1
@@ -108,7 +106,6 @@ int eth2 eth 0000.0000.3333 $2b$ $2a$
 !
 vrf def v1
  rd 1:1
- label-mode per-prefix
  exit
 bridge 1
  mac-learn

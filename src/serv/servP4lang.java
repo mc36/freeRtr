@@ -1625,7 +1625,7 @@ class servP4langConn implements Runnable {
     }
 
     public String ace2str(int seq, boolean ipv4, tabAceslstN<addrIP> ace) {
-        return seq + " " + (ace.action == tabListingEntry.actionType.actPermit ? "permit" : "deny") + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535);
+        return seq + " " + tabListingEntry.action2string(ace.action) + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535);
     }
 
     public void sendAcl(String pre, boolean ipv4, tabListing<tabAceslstN<addrIP>, addrIP> acl) {

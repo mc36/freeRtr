@@ -382,7 +382,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
         if (ntry == null) {
             return false;
         }
-        return ntry.action == tabPlcmapN.actionType.actPermit;
+        return ntry.action == tabListingEntry.actionType.actPermit;
     }
 
     /**
@@ -398,7 +398,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
         if (ntry == null) {
             return null;
         }
-        if (ntry.action == tabPlcmapN.actionType.actDeny) {
+        if (ntry.action != tabListingEntry.actionType.actPermit) {
             return null;
         }
         if (copy) {
@@ -422,7 +422,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
         if (ntry == null) {
             return false;
         }
-        return ntry.action == tabPlcmapN.actionType.actPermit;
+        return ntry.action == tabListingEntry.actionType.actPermit;
     }
 
     /**
@@ -441,7 +441,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
         if (ntry == null) {
             return false;
         }
-        return ntry.action == tabPlcmapN.actionType.actPermit;
+        return ntry.action == tabListingEntry.actionType.actPermit;
     }
 
 }

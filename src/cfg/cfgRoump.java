@@ -7,7 +7,6 @@ import java.util.List;
 import tab.tabGen;
 import tab.tabListing;
 import tab.tabListingEntry;
-import tab.tabPlcmapN;
 import tab.tabPrfxlstN;
 import tab.tabRtrmapN;
 import user.userEditor;
@@ -121,7 +120,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         }
         ntry = new tabRtrmapN();
         ntry.sequence = seq;
-        ntry.action = tabPlcmapN.actionType.actPermit;
+        ntry.action = tabListingEntry.actionType.actPermit;
         roumap.add(ntry);
         return ntry;
     }
@@ -398,7 +397,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("network")) {
                 ntry.networkMatch = new tabPrfxlstN();
-                ntry.networkMatch.action = tabPlcmapN.actionType.actPermit;
+                ntry.networkMatch.action = tabListingEntry.actionType.actPermit;
                 if (ntry.networkMatch.fromString(cmd.getRemaining())) {
                     ntry.networkMatch = null;
                     cmd.error("invalid prefix");

@@ -22,7 +22,7 @@ import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabNatCfgN;
 import tab.tabNatTraN;
-import tab.tabPlcmapN;
+import tab.tabListingEntry;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
@@ -662,7 +662,7 @@ public class ipFwdTab {
                 if (rmn == null) {
                     continue;
                 }
-                if (rmn.action != tabPlcmapN.actionType.actPermit) {
+                if (rmn.action != tabListingEntry.actionType.actPermit) {
                     continue;
                 }
                 tabRouteEntry<addrIP> old = lower.actualU.find(ntry);

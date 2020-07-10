@@ -16,6 +16,9 @@ import prt.prtAccept;
 import sec.secClient;
 import sec.secServer;
 import serv.servGeneric;
+import tab.tabListing;
+import tab.tabListingEntry;
+import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import util.bits;
@@ -189,6 +192,24 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             logger.debug(peer + " tx " + s);
         }
         conn.linePut(s);
+    }
+
+    /**
+     * check prefix
+     *
+     * @param lst list
+     * @param prf prefix
+     * @return true if denied, false if allowed
+     */
+    protected boolean checkPrefix(tabListing<tabPrfxlstN, addrIP> lst, addrPrefix<addrIP> prf) {
+        if (lst == null) {
+            return false;
+        }
+        tabPrfxlstN ntry = lst.find(rtrBgpUtil.safiUnicast, prf);
+        if (ntry == null) {
+            return true;
+        }
+        return ntry.action != tabListingEntry.actionType.actPermit;
     }
 
     private void doRun() {
@@ -396,13 +417,14 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             adverted.add(tabRoute.addType.always, ntry, true, true);
         }
         String a = "";
-        if (lower.labels) {
-            if (ntry.labelLoc != null) {
-                int val = ntry.labelLoc.getValue();
-                if (iface.labelPop && (lower.fwdCore.commonLabel.getValue() == val)) {
-                    val = ipMpls.labelImp;
-                }
-                a = " label=" + val;
+        if (lower.labels && (ntry.labelLoc != null)) {
+            int val = ntry.labelLoc.getValue();
+            if (iface.labelPop && (lower.fwdCore.commonLabel.getValue() == val)) {
+                val = ipMpls.labelImp;
+            }
+            a = " label=" + val;
+            if (checkPrefix(iface.labelOut, ntry.prefix)) {
+                a = "";
             }
         }
         sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.metric + iface.metricOut) + " tag=" + ntry.tag + " path= " + lower.routerID + " " + tabRouteEntry.dumpAddrList(ntry.clustList));
@@ -458,6 +480,9 @@ class rtrPvrpNeighRcvr implements Runnable {
         }
         if (ntry.prefix == null) {
             return null;
+        }
+        if (lower.checkPrefix(lower.iface.labelIn, ntry.prefix)) {
+            ntry.labelRem = null;
         }
         ntry.clustList = new ArrayList<addrIP>();
         for (;;) {
@@ -517,6 +542,12 @@ class rtrPvrpNeighRcvr implements Runnable {
             }
             if (a.equals("close")) {
                 lower.stopWork();
+                continue;
+            }
+            if (a.equals("request")) {
+                tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+                ntry.prefix = addrPrefix.str2ip(cmd.word());
+                lower.adverted.del(ntry);
                 continue;
             }
             if (a.equals("resend")) {

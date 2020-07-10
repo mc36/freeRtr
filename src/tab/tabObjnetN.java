@@ -47,7 +47,7 @@ public class tabObjnetN<T extends addrType> extends tabListingEntry<T> {
      * @return true if error happened
      */
     public static boolean fromString(tabObjnetN<addrIP> ntry, String s) {
-        ntry.action = tabPlcmapN.actionType.actPermit;
+        ntry.action = tabListingEntry.actionType.actPermit;
         s = s.trim() + " ";
         int i = s.indexOf(" ");
         String a = s.substring(0, i).trim();

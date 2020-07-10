@@ -36,7 +36,7 @@ import sec.secServer;
 import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabListing;
-import tab.tabPlcmapN;
+import tab.tabListingEntry;
 import tab.tabPrfxlstN;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
@@ -996,7 +996,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             if (rmn == null) {
                 return true;
             }
-            if (rmn.action != tabPlcmapN.actionType.actPermit) {
+            if (rmn.action != tabListingEntry.actionType.actPermit) {
                 return true;
             }
         }

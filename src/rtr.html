@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v20.7.7-rel, done by cs@nop.<br/>
-tested: 2020-07-07 16:30:56, took 09:14:59 on 1732 cases, 0 failed, 0 traces, 11 retries<br/>
+release: freeRouter v20.7.9-rel, done by cs@nop.<br/>
+tested: 2020-07-10 02:36:56, took 09:40:19 on 1744 cases, 0 failed, 0 traces, 17 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -845,6 +845,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp22.tst">mpls-ldp22.tst</a></td><td>0</td><td>vrf label filtering with ldp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp23.tst">mpls-ldp23.tst</a></td><td>0</td><td>mpls expbundle</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp24.tst">mpls-ldp24.tst</a></td><td>0</td><td>mpls redirection</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp25.tst">mpls-ldp25.tst</a></td><td>0</td><td>ldp php</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh01.tst">mpls-nsh01.tst</a></td><td>0</td><td>nsh over ethernet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh02.tst">mpls-nsh02.tst</a></td><td>0</td><td>nsh over ethernet vlan</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-nsh03.tst">mpls-nsh03.tst</a></td><td>0</td><td>nsh over ethernet bridge</td><td>successfully</td><td>finished</td></tr>
@@ -1444,6 +1445,13 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp397.tst">rout-bgp397.tst</a></td><td>0</td><td>evpn/vpws over srv6 over bgp additional path</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp398.tst">rout-bgp398.tst</a></td><td>0</td><td>unified mpls with ldp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp399.tst">rout-bgp399.tst</a></td><td>0</td><td>unified mpls with sr</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp400.tst">rout-bgp400.tst</a></td><td>0</td><td>ebgp with php labels</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp401.tst">rout-bgp401.tst</a></td><td>0</td><td>ibgp with php labels</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp402.tst">rout-bgp402.tst</a></td><td>0</td><td>bgp additional path with php labels</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp403.tst">rout-bgp403.tst</a></td><td>0</td><td>ibgp rr with labels</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp404.tst">rout-bgp404.tst</a></td><td>0</td><td>confed bgp with labels</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp405.tst">rout-bgp405.tst</a></td><td>0</td><td>bgp route server with labels</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp406.tst">rout-bgp406.tst</a></td><td>0</td><td>bgp soft-reconfig with labels</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp01.tst">rout-eigrp01.tst</a></td><td>0</td><td>eigrp point2point connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp02.tst">rout-eigrp02.tst</a></td><td>0</td><td>eigrp point2multipoint connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp03.tst">rout-eigrp03.tst</a></td><td>0</td><td>eigrp point2point chain</td><td>successfully</td><td>finished</td></tr>
@@ -1521,6 +1529,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis54.tst">rout-isis54.tst</a></td><td>0</td><td>isis lsp authentication</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis55.tst">rout-isis55.tst</a></td><td>0</td><td>isis change in tag</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis56.tst">rout-isis56.tst</a></td><td>0</td><td>isis multi-topology change in tag</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-isis57.tst">rout-isis57.tst</a></td><td>0</td><td>isis with php sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp01.tst">rout-lsrp01.tst</a></td><td>0</td><td>lsrp point2point connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp02.tst">rout-lsrp02.tst</a></td><td>0</td><td>lsrp point2multipoint connection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp03.tst">rout-lsrp03.tst</a></td><td>0</td><td>lsrp point2point chain</td><td>successfully</td><td>finished</td></tr>
@@ -1550,6 +1559,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp27.tst">rout-lsrp27.tst</a></td><td>0</td><td>lsrp unstub interface</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp28.tst">rout-lsrp28.tst</a></td><td>0</td><td>lsrp default address suppression</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp29.tst">rout-lsrp29.tst</a></td><td>0</td><td>lsrp address unsuppression</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp30.tst">rout-lsrp30.tst</a></td><td>0</td><td>lsrp with php sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast01.tst">rout-mcast01.tst</a></td><td>0</td><td>multicast routing with static flooding</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast02.tst">rout-mcast02.tst</a></td><td>0</td><td>multicast routing with pim ssm</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast03.tst">rout-mcast03.tst</a></td><td>0</td><td>multicast routing with igmp/mld</td><td>successfully</td><td>finished</td></tr>
@@ -1628,6 +1638,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf38.tst">rout-ospf38.tst</a></td><td>0</td><td>ospf with bier</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf39.tst">rout-ospf39.tst</a></td><td>0</td><td>ospf transit area with bier</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf40.tst">rout-ospf40.tst</a></td><td>0</td><td>ospf autoroute</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-ospf41.tst">rout-ospf41.tst</a></td><td>0</td><td>ospf with php sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pbr01.tst">rout-pbr01.tst</a></td><td>0</td><td>policy routing with nexthop</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pbr02.tst">rout-pbr02.tst</a></td><td>0</td><td>policy routing with interface and nexthop between vrfs</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pbr03.tst">rout-pbr03.tst</a></td><td>0</td><td>policy routing with interface and nexthop</td><td>successfully</td><td>finished</td></tr>
@@ -1666,6 +1677,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp30.tst">rout-pvrp30.tst</a></td><td>0</td><td>pvrp autoroute</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp31.tst">rout-pvrp31.tst</a></td><td>0</td><td>pvrp default address suppression</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp32.tst">rout-pvrp32.tst</a></td><td>0</td><td>pvrp address unsuppression</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp33.tst">rout-pvrp33.tst</a></td><td>0</td><td>pvrp with php labels</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist01.tst">rout-redist01.tst</a></td><td>0</td><td>redistribution with isis</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist02.tst">rout-redist02.tst</a></td><td>0</td><td>redistribution with ospf</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist03.tst">rout-redist03.tst</a></td><td>0</td><td>redistribution with rip</td><td>successfully</td><td>finished</td></tr>

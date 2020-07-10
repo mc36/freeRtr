@@ -7,11 +7,23 @@ vrf def v1
  rd 1:1
  label-mode per-prefix
  exit
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny 58 4321:: ffff:: all 4321:: ffff:: all
+ permit all any all any all
+ exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff::
  mpls enable
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+! ipv4 access-group-out test4
+! ipv6 access-group-out test6
  exit
 int lo0
  vrf for v1
@@ -88,11 +100,23 @@ vrf def v1
  rd 1:1
  label-mode per-prefix
  exit
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny 58 4321:: ffff:: all 4321:: ffff:: all
+ permit all any all any all
+ exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff::
  mpls enable
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+! ipv4 access-group-out test4
+! ipv6 access-group-out test6
  exit
 int lo0
  vrf for v1
@@ -123,10 +147,10 @@ int pweth1
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 10 1234:1::2 /vrf v1
-r3 tping 100 10 1.1.2.2 /vrf v1
-r3 tping 100 10 1234:2::2 /vrf v1
+r1 tping 0 10 1.1.1.2 /vrf v1
+r1 tping 0 10 1234:1::2 /vrf v1
+r3 tping 0 10 1.1.2.2 /vrf v1
+r3 tping 0 10 1234:2::2 /vrf v1
 
 r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
 !r1 tping 100 60 4321::2 /vrf v1 /int lo0

@@ -838,6 +838,7 @@ qc pass: egress label filtering with ldp
 qc pass: vrf label filtering with ldp
 qc pass: mpls expbundle
 qc pass: mpls redirection
+qc pass: ldp php
 qc pass: nsh over ethernet
 qc pass: nsh over ethernet vlan
 qc pass: nsh over ethernet bridge
@@ -1437,6 +1438,13 @@ qc pass: evpn/vpws over srv6 over bgp with soft-reconfig
 qc pass: evpn/vpws over srv6 over bgp additional path
 qc pass: unified mpls with ldp
 qc pass: unified mpls with sr
+qc pass: ebgp with php labels
+qc pass: ibgp with php labels
+qc pass: bgp additional path with php labels
+qc pass: ibgp rr with labels
+qc pass: confed bgp with labels
+qc pass: bgp route server with labels
+qc pass: bgp soft-reconfig with labels
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -1514,6 +1522,7 @@ qc pass: isis autoroute
 qc pass: isis lsp authentication
 qc pass: isis change in tag
 qc pass: isis multi-topology change in tag
+qc pass: isis with php sr
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -1543,6 +1552,7 @@ qc pass: lsrp stub interface
 qc pass: lsrp unstub interface
 qc pass: lsrp default address suppression
 qc pass: lsrp address unsuppression
+qc pass: lsrp with php sr
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -1621,6 +1631,7 @@ qc pass: ospf prefix movement
 qc pass: ospf with bier
 qc pass: ospf transit area with bier
 qc pass: ospf autoroute
+qc pass: ospf with php sr
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
@@ -1659,6 +1670,7 @@ qc pass: pvrp prefix movement
 qc pass: pvrp autoroute
 qc pass: pvrp default address suppression
 qc pass: pvrp address unsuppression
+qc pass: pvrp with php labels
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip

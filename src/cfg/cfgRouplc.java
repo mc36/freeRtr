@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import tab.tabListing;
-import tab.tabPlcmapN;
+import tab.tabListingEntry;
 import tab.tabPrfxlstN;
 import tab.tabRtrmapN;
 import tab.tabRtrplcN;
@@ -59,7 +59,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         ntry = new tabRtrplcN();
         ntry.sequence = seq;
-        ntry.action = tabPlcmapN.actionType.actPermit;
+        ntry.action = tabListingEntry.actionType.actPermit;
         rouplc.add(ntry);
         seq = rouplc.nextseq();
         return ntry;
@@ -302,7 +302,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         if (a.equals("network")) {
             ntry.ifMode = tabRtrplcN.ifType.network;
             ntry.networkMatch = new tabPrfxlstN();
-            ntry.networkMatch.action = tabPlcmapN.actionType.actPermit;
+            ntry.networkMatch.action = tabListingEntry.actionType.actPermit;
             if (ntry.networkMatch.fromString(cmd.getRemaining())) {
                 ntry.networkMatch = null;
                 cmd.error("invalid prefix");

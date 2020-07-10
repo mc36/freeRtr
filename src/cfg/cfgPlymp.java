@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import tab.tabGen;
 import tab.tabListing;
+import tab.tabListingEntry;
 import tab.tabPlcmapN;
 import user.userFilter;
 import user.userHelping;
@@ -92,7 +93,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         }
         ntry = new tabPlcmapN();
         ntry.sequence = seq;
-        ntry.action = tabPlcmapN.actionType.actPermit;
+        ntry.action = tabListingEntry.actionType.actPermit;
         plcmap.add(ntry);
         return ntry;
     }
@@ -245,7 +246,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
             }
         }
         if (a.equals("action")) {
-            tabPlcmapN.actionType i = tabPlcmapN.string2type(cmd.word());
+            tabListingEntry.actionType i = tabPlcmapN.string2type(cmd.word());
             if (i == null) {
                 cmd.error("invalid action");
                 return;

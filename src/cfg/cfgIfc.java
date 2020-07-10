@@ -1435,6 +1435,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router pvrp[4|6] .* metric-out 0",
         "interface .*! router pvrp[4|6] .* hello-time 5000",
         "interface .*! router pvrp[4|6] .* dead-time 15000",
+        "interface .*! no router pvrp[4|6] .* label-in",
+        "interface .*! no router pvrp[4|6] .* label-out",
         "interface .*! no router pvrp[4|6] .* prefix-list-in",
         "interface .*! no router pvrp[4|6] .* prefix-list-out",
         "interface .*! no router pvrp[4|6] .* route-map-in",

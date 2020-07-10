@@ -85,7 +85,7 @@ public class tabQos {
                 continue;
             }
             no.parent = prnt;
-            if (no.entry.action == tabPlcmapN.actionType.actPriorty) {
+            if (no.entry.action == tabListingEntry.actionType.actPriorty) {
                 res.classesD.add(frst, no);
                 frst++;
             } else {

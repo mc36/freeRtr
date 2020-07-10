@@ -105,6 +105,16 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
     public String authentication = null;
 
     /**
+     * ingress label filter
+     */
+    public tabListing<tabPrfxlstN, addrIP> labelIn;
+
+    /**
+     * egress label filter
+     */
+    public tabListing<tabPrfxlstN, addrIP> labelOut;
+
+    /**
      * ingress prefix list
      */
     public tabListing<tabPrfxlstN, addrIP> prflstIn;
@@ -282,6 +292,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         l.add(cmds.tabulator + beg + "metric-out " + metricOut);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
+        cmds.cfgLine(l, labelIn == null, cmds.tabulator, beg + "label-in", "" + labelIn);
+        cmds.cfgLine(l, labelOut == null, cmds.tabulator, beg + "label-out", "" + labelOut);
         cmds.cfgLine(l, prflstIn == null, cmds.tabulator, beg + "prefix-list-in", "" + prflstIn);
         cmds.cfgLine(l, prflstOut == null, cmds.tabulator, beg + "prefix-list-out", "" + prflstOut);
         cmds.cfgLine(l, roumapIn == null, cmds.tabulator, beg + "route-map-in", "" + roumapIn);
@@ -336,6 +348,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         l.add("4 5         prefix-list-in          filter prefixes in ingress updates");
         l.add("5 .           <name>                name of prefix list");
         l.add("4 5         prefix-list-out         filter prefixes in egress updates");
+        l.add("5 .           <name>                name of prefix list");
+        l.add("4 5         label-in                filter label in ingress updates");
+        l.add("5 .           <name>                name of prefix list");
+        l.add("4 5         label-out               filter label in egress updates");
         l.add("5 .           <name>                name of prefix list");
     }
 
@@ -413,6 +429,26 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         }
         if (a.equals("distance")) {
             distance = bits.str2num(cmd.word());
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("label-in")) {
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            labelIn = ntry.prflst;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("label-out")) {
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            labelOut = ntry.prflst;
             lower.notif.wakeup();
             return;
         }
@@ -525,6 +561,16 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         }
         if (a.equals("encryption")) {
             encryptionMethod = 0;
+            return;
+        }
+        if (a.equals("label-in")) {
+            labelIn = null;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("label-out")) {
+            labelOut = null;
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("prefix-list-in")) {

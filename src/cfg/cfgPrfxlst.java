@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import tab.tabListing;
 import tab.tabListingEntry;
-import tab.tabPlcmapN;
 import tab.tabPrfxlstN;
 import user.userHelping;
 import util.bits;
@@ -49,7 +48,7 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
      * @param s string represeting network/mask ge X le Y
      * @return true if error happened, false if not
      */
-    public synchronized boolean add(int seq, tabPlcmapN.actionType act, String s) {
+    public synchronized boolean add(int seq, tabListingEntry.actionType act, String s) {
         tabPrfxlstN ntry = new tabPrfxlstN();
         if (ntry.fromString(s)) {
             return true;

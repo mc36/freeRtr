@@ -6,7 +6,6 @@ import java.util.List;
 import tab.tabGen;
 import tab.tabIntMatcher;
 import tab.tabListingEntry;
-import tab.tabPlcmapN;
 import tab.tabTime;
 import user.userFilter;
 import user.userHelping;
@@ -92,7 +91,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         }
         ntry = new tabTime();
         ntry.seq = seq;
-        ntry.act = tabPlcmapN.actionType.actPermit;
+        ntry.act = tabListingEntry.actionType.actPermit;
         timemap.add(ntry);
         return ntry;
     }
@@ -295,7 +294,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
             if (!ntry.matches(cfgAll.timeZoneName, tim)) {
                 continue;
             }
-            return ntry.act != tabPlcmapN.actionType.actPermit;
+            return ntry.act != tabListingEntry.actionType.actPermit;
         }
         return true;
     }

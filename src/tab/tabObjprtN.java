@@ -35,7 +35,7 @@ public class tabObjprtN<T extends addrType> extends tabListingEntry<T> {
      * @return true if error happened
      */
     public boolean fromString(String s) {
-        action = tabPlcmapN.actionType.actPermit;
+        action = tabListingEntry.actionType.actPermit;
         if (port.fromString(s)) {
             return true;
         }

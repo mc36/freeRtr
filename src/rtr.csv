@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.7.7-rel, done by cs@nop.;-;-
--;-;2020-07-07 16:30:56, took 09:14:59 on 1732 cases, 0 failed, 0 traces, 11 retries;-;-
+-;-;freeRouter v20.7.9-rel, done by cs@nop.;-;-
+-;-;2020-07-10 02:36:56, took 09:40:19 on 1744 cases, 0 failed, 0 traces, 17 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -842,6 +842,7 @@ mpls-ldp21.tst;0;egress label filtering with ldp;successfully;finished
 mpls-ldp22.tst;0;vrf label filtering with ldp;successfully;finished
 mpls-ldp23.tst;0;mpls expbundle;successfully;finished
 mpls-ldp24.tst;0;mpls redirection;successfully;finished
+mpls-ldp25.tst;0;ldp php;successfully;finished
 mpls-nsh01.tst;0;nsh over ethernet;successfully;finished
 mpls-nsh02.tst;0;nsh over ethernet vlan;successfully;finished
 mpls-nsh03.tst;0;nsh over ethernet bridge;successfully;finished
@@ -1441,6 +1442,13 @@ rout-bgp396.tst;0;evpn/vpws over srv6 over bgp with soft-reconfig;successfully;f
 rout-bgp397.tst;0;evpn/vpws over srv6 over bgp additional path;successfully;finished
 rout-bgp398.tst;0;unified mpls with ldp;successfully;finished
 rout-bgp399.tst;0;unified mpls with sr;successfully;finished
+rout-bgp400.tst;0;ebgp with php labels;successfully;finished
+rout-bgp401.tst;0;ibgp with php labels;successfully;finished
+rout-bgp402.tst;0;bgp additional path with php labels;successfully;finished
+rout-bgp403.tst;0;ibgp rr with labels;successfully;finished
+rout-bgp404.tst;0;confed bgp with labels;successfully;finished
+rout-bgp405.tst;0;bgp route server with labels;successfully;finished
+rout-bgp406.tst;0;bgp soft-reconfig with labels;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished
@@ -1518,6 +1526,7 @@ rout-isis53.tst;0;isis autoroute;successfully;finished
 rout-isis54.tst;0;isis lsp authentication;successfully;finished
 rout-isis55.tst;0;isis change in tag;successfully;finished
 rout-isis56.tst;0;isis multi-topology change in tag;successfully;finished
+rout-isis57.tst;0;isis with php sr;successfully;finished
 rout-lsrp01.tst;0;lsrp point2point connection;successfully;finished
 rout-lsrp02.tst;0;lsrp point2multipoint connection;successfully;finished
 rout-lsrp03.tst;0;lsrp point2point chain;successfully;finished
@@ -1547,6 +1556,7 @@ rout-lsrp26.tst;0;lsrp stub interface;successfully;finished
 rout-lsrp27.tst;0;lsrp unstub interface;successfully;finished
 rout-lsrp28.tst;0;lsrp default address suppression;successfully;finished
 rout-lsrp29.tst;0;lsrp address unsuppression;successfully;finished
+rout-lsrp30.tst;0;lsrp with php sr;successfully;finished
 rout-mcast01.tst;0;multicast routing with static flooding;successfully;finished
 rout-mcast02.tst;0;multicast routing with pim ssm;successfully;finished
 rout-mcast03.tst;0;multicast routing with igmp/mld;successfully;finished
@@ -1625,6 +1635,7 @@ rout-ospf37.tst;0;ospf prefix movement;successfully;finished
 rout-ospf38.tst;0;ospf with bier;successfully;finished
 rout-ospf39.tst;0;ospf transit area with bier;successfully;finished
 rout-ospf40.tst;0;ospf autoroute;successfully;finished
+rout-ospf41.tst;0;ospf with php sr;successfully;finished
 rout-pbr01.tst;0;policy routing with nexthop;successfully;finished
 rout-pbr02.tst;0;policy routing with interface and nexthop between vrfs;successfully;finished
 rout-pbr03.tst;0;policy routing with interface and nexthop;successfully;finished
@@ -1663,6 +1674,7 @@ rout-pvrp29.tst;0;pvrp prefix movement;successfully;finished
 rout-pvrp30.tst;0;pvrp autoroute;successfully;finished
 rout-pvrp31.tst;0;pvrp default address suppression;successfully;finished
 rout-pvrp32.tst;0;pvrp address unsuppression;successfully;finished
+rout-pvrp33.tst;0;pvrp with php labels;successfully;finished
 rout-redist01.tst;0;redistribution with isis;successfully;finished
 rout-redist02.tst;0;redistribution with ospf;successfully;finished
 rout-redist03.tst;0;redistribution with rip;successfully;finished

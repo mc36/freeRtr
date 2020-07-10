@@ -489,6 +489,13 @@ class rtrLsrpNeighRcvr implements Runnable {
                 lower.stopWork();
                 continue;
             }
+            if (a.equals("request")) {
+                rtrLsrpData ntry = new rtrLsrpData();
+                ntry.rtrId = new addrIPv4();
+                ntry.rtrId.fromString(cmd.word());
+                lower.advert.del(ntry);
+                continue;
+            }
             if (a.equals("resend")) {
                 lower.advert.clear();
                 continue;

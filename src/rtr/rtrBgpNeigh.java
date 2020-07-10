@@ -12,12 +12,12 @@ import pack.packDnsRec;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtAccept;
-import tab.tabPlcmapN;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabRtrplc;
+import tab.tabListingEntry;
 import util.bits;
 import util.debugger;
 import util.logger;
@@ -901,7 +901,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 if (rme == null) {
                     return;
                 }
-                if (rme.action != tabPlcmapN.actionType.actPermit) {
+                if (rme.action != tabListingEntry.actionType.actPermit) {
                     return;
                 }
             }
@@ -924,7 +924,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 if (ple == null) {
                     return;
                 }
-                if (ple.action != tabPlcmapN.actionType.actPermit) {
+                if (ple.action != tabListingEntry.actionType.actPermit) {
                     return;
                 }
             }
