@@ -96,7 +96,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
         List<Integer> confSet = new ArrayList<Integer>();
         for (int i = tab.size() - 1; i >= 0; i--) {
             tabRouteEntry<addrIP> ntry = tab.get(i);
-            if (!prefix.matches(ntry.prefix.broadcast)) {
+            if (!prefix.supernet(ntry.prefix, true)) {
                 continue;
             }
             if (prflst != null) {
