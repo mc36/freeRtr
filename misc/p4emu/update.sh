@@ -14,5 +14,5 @@ mkdir ../../binTmp/
 mv ../../binTmp/p4*.bin ~/
 cd ~
 rm -rf a/
-sudo sync
-sudo fstrim -v /
+sudo dd if=/dev/zero of=/zzz bs=1M
+sudo rm /zzz

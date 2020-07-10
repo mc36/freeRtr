@@ -8928,3 +8928,20 @@ qc pass: isis with php sr
 qc pass: lsrp with php sr
 qc pass: ospf with php sr
 qc pass: pvrp with php labels
+---------------------------------- 2020-07-10 07:54:04
+qc pass: interop1: bgp with php labels
+qc pass: interop1: isis php sr
+qc pass: interop1: ldp php lsp
+qc pass: interop1: ospf php sr
+qc pass: interop2: bgp with php labels
+qc pass: interop2: isis php sr
+qc pass: interop2: ldp php lsp
+qc pass: interop2: ospf php sr
+qc pass: interop8: bgp with php labels
+qc pass: interop8: ldp php lsp
+qc pass: interop9: bgp with php labels
+qc pass: interop9: isis php sr
+qc pass: interop9: ldp php lsp
+qc pass: interop9: ospf php sr
+qc pass: ingress label filtering with pvrp
+qc pass: egress label filtering with pvrp

@@ -567,6 +567,7 @@ qc pass: interop1: bgp extended community
 qc pass: interop1: evpn/cmac over bgp
 qc pass: interop1: bgp 6pe
 qc pass: interop1: bgp aigp
+qc pass: interop1: bgp with php labels
 qc pass: interop1: dhcp server
 qc pass: interop1: dhcp client
 qc pass: interop1: dns
@@ -617,6 +618,7 @@ qc pass: interop1: isis authentication
 qc pass: interop1: isis p2mp te
 qc pass: interop1: isis sr
 qc pass: interop1: isis lsp authentication
+qc pass: interop1: isis php sr
 qc pass: interop1: l2tp2 client
 qc pass: interop1: l2tp2 server
 qc pass: interop1: l2tp3 server
@@ -625,6 +627,7 @@ qc pass: interop1: ldp lsp
 qc pass: interop1: ethernet over mpls
 qc pass: interop1: ldp p2mp lsp
 qc pass: interop1: ldp mp2mp lsp
+qc pass: interop1: ldp php lsp
 qc pass: interop1: igmp3/mld2
 qc pass: interop1: pim
 qc pass: interop1: modem with alaw
@@ -640,6 +643,7 @@ qc pass: interop1: ospf prefix withdraw
 qc pass: interop1: ospf authentication
 qc pass: interop1: ospf p2mp te
 qc pass: interop1: ospf sr
+qc pass: interop1: ospf php sr
 qc pass: interop1: pppoe client
 qc pass: interop1: pppoe server
 qc pass: interop1: pppoe with pap
@@ -677,6 +681,7 @@ qc pass: interop2: bgp vpnv6 over srv6
 qc pass: interop2: bgp 6pe
 qc pass: interop2: evpn/vpws over bgp
 qc pass: interop2: bgp aigp
+qc pass: interop2: bgp with php labels
 qc pass: interop2: eigrp
 qc pass: interop2: eigrp prefix withdraw
 qc pass: interop2: ethernet encapsulation
@@ -693,10 +698,12 @@ qc pass: interop2: isis authentication
 qc pass: interop2: isis p2mp te
 qc pass: interop2: isis sr
 qc pass: interop2: isis lsp authentication
+qc pass: interop2: isis php sr
 qc pass: interop2: ldp lsp
 qc pass: interop2: ethernet over mpls
 qc pass: interop2: ldp p2mp lsp
 qc pass: interop2: ldp mp2mp lsp
+qc pass: interop2: ldp php lsp
 qc pass: interop2: igmp3/mld2
 qc pass: interop2: pim
 qc pass: interop2: point2point ospf
@@ -710,6 +717,7 @@ qc pass: interop2: ospf prefix withdraw
 qc pass: interop2: ospf authentication
 qc pass: interop2: ospf p2mp te
 qc pass: interop2: ospf sr
+qc pass: interop2: ospf php sr
 qc pass: interop2: rip
 qc pass: interop2: rip prefix withdraw
 qc pass: interop2: rip authentication
@@ -728,6 +736,7 @@ qc pass: interop8: bgp prefix withdraw
 qc pass: interop8: bgp authentication
 qc pass: interop8: bgp extended community
 qc pass: interop8: bgp large community
+qc pass: interop8: bgp with php labels
 qc pass: interop8: eigrp
 qc pass: interop8: point2point isis
 qc pass: interop8: isis dis
@@ -736,6 +745,7 @@ qc pass: interop8: isis narrow metric
 qc pass: interop8: isis prefix withdraw
 qc pass: interop8: isis authentication
 qc pass: interop8: ldp lsp
+qc pass: interop8: ldp php lsp
 qc pass: interop8: point2point ospf
 qc pass: interop8: ospf dr
 qc pass: interop8: ospf nondr
@@ -762,6 +772,7 @@ qc pass: interop9: vpls/ldp over bgp
 qc pass: interop9: vpls/bgp over bgp
 qc pass: interop9: bgp extended community
 qc pass: interop9: bgp large community
+qc pass: interop9: bgp with php labels
 qc pass: interop9: ethernet encapsulation
 qc pass: interop9: dot1q encapsulation
 qc pass: interop9: point2point isis
@@ -772,10 +783,12 @@ qc pass: interop9: isis prefix withdraw
 qc pass: interop9: isis p2mp te
 qc pass: interop9: isis sr
 qc pass: interop9: isis lsp authentication
+qc pass: interop9: isis php sr
 qc pass: interop9: ldp lsp
 qc pass: interop9: ethernet over mpls
 qc pass: interop9: ldp p2mp lsp
 qc pass: interop9: ldp mp2mp lsp
+qc pass: interop9: ldp php lsp
 qc pass: interop9: point2point ospf
 qc pass: interop9: ospf dr
 qc pass: interop9: ospf nondr
@@ -786,6 +799,7 @@ qc pass: interop9: ospf te
 qc pass: interop9: ospf prefix withdraw
 qc pass: interop9: ospf p2mp te
 qc pass: interop9: ospf sr
+qc pass: interop9: ospf php sr
 qc pass: interop9: rip
 qc pass: bier in chain
 qc pass: bier in star
@@ -1671,6 +1685,8 @@ qc pass: pvrp autoroute
 qc pass: pvrp default address suppression
 qc pass: pvrp address unsuppression
 qc pass: pvrp with php labels
+qc pass: ingress label filtering with pvrp
+qc pass: egress label filtering with pvrp
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip

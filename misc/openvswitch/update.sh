@@ -4,5 +4,5 @@ sudo apt-get dist-upgrade
 sudo apt-get remove apparmor
 sudo apt-get autoremove
 sudo apt-get clean
-sudo sync
-sudo fstrim -v /
+sudo dd if=/dev/zero of=/zzz bs=1M
+sudo rm /zzz

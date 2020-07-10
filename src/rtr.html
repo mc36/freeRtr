@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v20.7.9-rel, done by cs@nop.<br/>
-tested: 2020-07-10 02:36:56, took 09:40:19 on 1744 cases, 0 failed, 0 traces, 17 retries<br/>
+release: freeRouter v20.7.10-rel, done by cs@nop.<br/>
+tested: 2020-07-10 17:30:44, took 09:36:40 on 1760 cases, 0 failed, 0 traces, 26 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -574,6 +574,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-bgp17.tst">intop1-bgp17.tst</a></td><td>0</td><td>interop1: evpn/cmac over bgp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-bgp18.tst">intop1-bgp18.tst</a></td><td>0</td><td>interop1: bgp 6pe</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-bgp19.tst">intop1-bgp19.tst</a></td><td>0</td><td>interop1: bgp aigp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop1-bgp20.tst">intop1-bgp20.tst</a></td><td>0</td><td>interop1: bgp with php labels</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-dhcp01.tst">intop1-dhcp01.tst</a></td><td>0</td><td>interop1: dhcp server</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-dhcp02.tst">intop1-dhcp02.tst</a></td><td>0</td><td>interop1: dhcp client</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-dns.tst">intop1-dns.tst</a></td><td>0</td><td>interop1: dns</td><td>successfully</td><td>finished</td></tr>
@@ -624,6 +625,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-isis09.tst">intop1-isis09.tst</a></td><td>0</td><td>interop1: isis p2mp te</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-isis10.tst">intop1-isis10.tst</a></td><td>0</td><td>interop1: isis sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-isis11.tst">intop1-isis11.tst</a></td><td>0</td><td>interop1: isis lsp authentication</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop1-isis12.tst">intop1-isis12.tst</a></td><td>0</td><td>interop1: isis php sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-l2tp01.tst">intop1-l2tp01.tst</a></td><td>0</td><td>interop1: l2tp2 client</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-l2tp02.tst">intop1-l2tp02.tst</a></td><td>0</td><td>interop1: l2tp2 server</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-l2tp03.tst">intop1-l2tp03.tst</a></td><td>0</td><td>interop1: l2tp3 server</td><td>successfully</td><td>finished</td></tr>
@@ -632,6 +634,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-ldp02.tst">intop1-ldp02.tst</a></td><td>0</td><td>interop1: ethernet over mpls</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-ldp03.tst">intop1-ldp03.tst</a></td><td>0</td><td>interop1: ldp p2mp lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-ldp04.tst">intop1-ldp04.tst</a></td><td>0</td><td>interop1: ldp mp2mp lsp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop1-ldp05.tst">intop1-ldp05.tst</a></td><td>0</td><td>interop1: ldp php lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-mcast01.tst">intop1-mcast01.tst</a></td><td>0</td><td>interop1: igmp3/mld2</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-mcast02.tst">intop1-mcast02.tst</a></td><td>0</td><td>interop1: pim</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-modem01.tst">intop1-modem01.tst</a></td><td>0</td><td>interop1: modem with alaw</td><td>successfully</td><td>finished</td></tr>
@@ -647,6 +650,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-ospf09.tst">intop1-ospf09.tst</a></td><td>0</td><td>interop1: ospf authentication</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-ospf10.tst">intop1-ospf10.tst</a></td><td>0</td><td>interop1: ospf p2mp te</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-ospf11.tst">intop1-ospf11.tst</a></td><td>0</td><td>interop1: ospf sr</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop1-ospf12.tst">intop1-ospf12.tst</a></td><td>0</td><td>interop1: ospf php sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-pppoe01.tst">intop1-pppoe01.tst</a></td><td>0</td><td>interop1: pppoe client</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-pppoe02.tst">intop1-pppoe02.tst</a></td><td>0</td><td>interop1: pppoe server</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-pppoe03.tst">intop1-pppoe03.tst</a></td><td>0</td><td>interop1: pppoe with pap</td><td>successfully</td><td>finished</td></tr>
@@ -684,6 +688,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-bgp21.tst">intop2-bgp21.tst</a></td><td>0</td><td>interop2: bgp 6pe</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-bgp22.tst">intop2-bgp22.tst</a></td><td>0</td><td>interop2: evpn/vpws over bgp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-bgp23.tst">intop2-bgp23.tst</a></td><td>0</td><td>interop2: bgp aigp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop2-bgp24.tst">intop2-bgp24.tst</a></td><td>0</td><td>interop2: bgp with php labels</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-eigrp01.tst">intop2-eigrp01.tst</a></td><td>0</td><td>interop2: eigrp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-eigrp02.tst">intop2-eigrp02.tst</a></td><td>0</td><td>interop2: eigrp prefix withdraw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-eth01.tst">intop2-eth01.tst</a></td><td>0</td><td>interop2: ethernet encapsulation</td><td>successfully</td><td>finished</td></tr>
@@ -700,10 +705,12 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-isis09.tst">intop2-isis09.tst</a></td><td>0</td><td>interop2: isis p2mp te</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-isis10.tst">intop2-isis10.tst</a></td><td>0</td><td>interop2: isis sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-isis11.tst">intop2-isis11.tst</a></td><td>0</td><td>interop2: isis lsp authentication</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop2-isis12.tst">intop2-isis12.tst</a></td><td>0</td><td>interop2: isis php sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ldp01.tst">intop2-ldp01.tst</a></td><td>0</td><td>interop2: ldp lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ldp02.tst">intop2-ldp02.tst</a></td><td>0</td><td>interop2: ethernet over mpls</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ldp03.tst">intop2-ldp03.tst</a></td><td>0</td><td>interop2: ldp p2mp lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ldp04.tst">intop2-ldp04.tst</a></td><td>0</td><td>interop2: ldp mp2mp lsp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop2-ldp05.tst">intop2-ldp05.tst</a></td><td>0</td><td>interop2: ldp php lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-mcast01.tst">intop2-mcast01.tst</a></td><td>0</td><td>interop2: igmp3/mld2</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-mcast02.tst">intop2-mcast02.tst</a></td><td>0</td><td>interop2: pim</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf01.tst">intop2-ospf01.tst</a></td><td>0</td><td>interop2: point2point ospf</td><td>successfully</td><td>finished</td></tr>
@@ -717,6 +724,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf09.tst">intop2-ospf09.tst</a></td><td>0</td><td>interop2: ospf authentication</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf10.tst">intop2-ospf10.tst</a></td><td>0</td><td>interop2: ospf p2mp te</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf11.tst">intop2-ospf11.tst</a></td><td>0</td><td>interop2: ospf sr</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop2-ospf12.tst">intop2-ospf12.tst</a></td><td>0</td><td>interop2: ospf php sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-rip01.tst">intop2-rip01.tst</a></td><td>0</td><td>interop2: rip</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-rip02.tst">intop2-rip02.tst</a></td><td>0</td><td>interop2: rip prefix withdraw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-rip03.tst">intop2-rip03.tst</a></td><td>0</td><td>interop2: rip authentication</td><td>successfully</td><td>finished</td></tr>
@@ -735,6 +743,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-bgp11.tst">intop8-bgp11.tst</a></td><td>0</td><td>interop8: bgp authentication</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-bgp12.tst">intop8-bgp12.tst</a></td><td>0</td><td>interop8: bgp extended community</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-bgp13.tst">intop8-bgp13.tst</a></td><td>0</td><td>interop8: bgp large community</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop8-bgp14.tst">intop8-bgp14.tst</a></td><td>0</td><td>interop8: bgp with php labels</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-eigrp01.tst">intop8-eigrp01.tst</a></td><td>0</td><td>interop8: eigrp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-isis01.tst">intop8-isis01.tst</a></td><td>0</td><td>interop8: point2point isis</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-isis02.tst">intop8-isis02.tst</a></td><td>0</td><td>interop8: isis dis</td><td>successfully</td><td>finished</td></tr>
@@ -743,6 +752,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-isis05.tst">intop8-isis05.tst</a></td><td>0</td><td>interop8: isis prefix withdraw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-isis06.tst">intop8-isis06.tst</a></td><td>0</td><td>interop8: isis authentication</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-ldp01.tst">intop8-ldp01.tst</a></td><td>0</td><td>interop8: ldp lsp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop8-ldp02.tst">intop8-ldp02.tst</a></td><td>0</td><td>interop8: ldp php lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-ospf01.tst">intop8-ospf01.tst</a></td><td>0</td><td>interop8: point2point ospf</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-ospf02.tst">intop8-ospf02.tst</a></td><td>0</td><td>interop8: ospf dr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-ospf03.tst">intop8-ospf03.tst</a></td><td>0</td><td>interop8: ospf nondr</td><td>successfully</td><td>finished</td></tr>
@@ -769,6 +779,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-bgp15.tst">intop9-bgp15.tst</a></td><td>0</td><td>interop9: vpls/bgp over bgp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-bgp16.tst">intop9-bgp16.tst</a></td><td>0</td><td>interop9: bgp extended community</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-bgp17.tst">intop9-bgp17.tst</a></td><td>0</td><td>interop9: bgp large community</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-bgp18.tst">intop9-bgp18.tst</a></td><td>0</td><td>interop9: bgp with php labels</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-eth01.tst">intop9-eth01.tst</a></td><td>0</td><td>interop9: ethernet encapsulation</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-eth02.tst">intop9-eth02.tst</a></td><td>0</td><td>interop9: dot1q encapsulation</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-isis01.tst">intop9-isis01.tst</a></td><td>0</td><td>interop9: point2point isis</td><td>successfully</td><td>finished</td></tr>
@@ -779,10 +790,12 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-isis06.tst">intop9-isis06.tst</a></td><td>0</td><td>interop9: isis p2mp te</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-isis07.tst">intop9-isis07.tst</a></td><td>0</td><td>interop9: isis sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-isis08.tst">intop9-isis08.tst</a></td><td>0</td><td>interop9: isis lsp authentication</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-isis09.tst">intop9-isis09.tst</a></td><td>0</td><td>interop9: isis php sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-ldp01.tst">intop9-ldp01.tst</a></td><td>0</td><td>interop9: ldp lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-ldp02.tst">intop9-ldp02.tst</a></td><td>0</td><td>interop9: ethernet over mpls</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-ldp03.tst">intop9-ldp03.tst</a></td><td>0</td><td>interop9: ldp p2mp lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-ldp04.tst">intop9-ldp04.tst</a></td><td>0</td><td>interop9: ldp mp2mp lsp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-ldp05.tst">intop9-ldp05.tst</a></td><td>0</td><td>interop9: ldp php lsp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-ospf01.tst">intop9-ospf01.tst</a></td><td>0</td><td>interop9: point2point ospf</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-ospf02.tst">intop9-ospf02.tst</a></td><td>0</td><td>interop9: ospf dr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-ospf03.tst">intop9-ospf03.tst</a></td><td>0</td><td>interop9: ospf nondr</td><td>successfully</td><td>finished</td></tr>
@@ -793,6 +806,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-ospf08.tst">intop9-ospf08.tst</a></td><td>0</td><td>interop9: ospf prefix withdraw</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-ospf09.tst">intop9-ospf09.tst</a></td><td>0</td><td>interop9: ospf p2mp te</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-ospf10.tst">intop9-ospf10.tst</a></td><td>0</td><td>interop9: ospf sr</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-ospf11.tst">intop9-ospf11.tst</a></td><td>0</td><td>interop9: ospf php sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-rip01.tst">intop9-rip01.tst</a></td><td>0</td><td>interop9: rip</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier01.tst">mpls-bier01.tst</a></td><td>0</td><td>bier in chain</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-bier02.tst">mpls-bier02.tst</a></td><td>0</td><td>bier in star</td><td>successfully</td><td>finished</td></tr>
@@ -1678,6 +1692,8 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp31.tst">rout-pvrp31.tst</a></td><td>0</td><td>pvrp default address suppression</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp32.tst">rout-pvrp32.tst</a></td><td>0</td><td>pvrp address unsuppression</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp33.tst">rout-pvrp33.tst</a></td><td>0</td><td>pvrp with php labels</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp34.tst">rout-pvrp34.tst</a></td><td>0</td><td>ingress label filtering with pvrp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp35.tst">rout-pvrp35.tst</a></td><td>0</td><td>egress label filtering with pvrp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist01.tst">rout-redist01.tst</a></td><td>0</td><td>redistribution with isis</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist02.tst">rout-redist02.tst</a></td><td>0</td><td>redistribution with ospf</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist03.tst">rout-redist03.tst</a></td><td>0</td><td>redistribution with rip</td><td>successfully</td><td>finished</td></tr>
