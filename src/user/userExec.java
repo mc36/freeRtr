@@ -1547,7 +1547,7 @@ public class userExec {
         }
         if (a.equals("enable")) {
             if (cfgAll.enaPass == null) {
-                cmd.error("no way!");
+                cmd.error("no enable configured");
                 return cmdRes.command;
             }
             cmd.pipe.strPut("password:");

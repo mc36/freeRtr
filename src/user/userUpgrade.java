@@ -478,6 +478,7 @@ public class userUpgrade {
         if (!sumN.equals(calcFileHash(tmp))) {
             fl.cons.debugRes("checksum mismatch, aborting!");
             if (needStop(0x20)) {
+                userFlash.delete(tmp);
                 return 1;
             }
         }

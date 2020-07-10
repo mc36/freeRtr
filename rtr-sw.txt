@@ -99,14 +99,6 @@ route-policy nht6
  sequence 70 enif
  exit
 !
-route-policy unbgp
- sequence 10 if tag 65535
- sequence 20   set distance set 222
- sequence 30   pass
- sequence 40 enif
- sequence 50 pass
- exit
-!
 policy-map fs4
  sequence 10 action transit
  sequence 10 match access-group fs4
@@ -255,7 +247,6 @@ router lsrp4 1
  router-id 10.10.10.227
  refresh 60000
  lifetime 2147483000
- route-policy unbgp
  segrout 300 299
  bier 256 300 299
  justadvert loopback0
@@ -266,7 +257,6 @@ router lsrp6 1
  router-id 10.10.10.227
  refresh 60000
  lifetime 2147483000
- route-policy unbgp
  segrout 300 299
  bier 256 300 299
  justadvert loopback0
