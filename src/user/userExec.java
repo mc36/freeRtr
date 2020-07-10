@@ -2014,32 +2014,20 @@ public class userExec {
             cmd.error("no such menu");
             return;
         }
-        cmd.pipe.linePut("menu " + a + ":");
-        for (int i = 0; i < ntry.letter.size(); i++) {
-            cmd.pipe.linePut(ntry.letter.get(i) + "");
-        }
+        ntry.putMenu(cmd.pipe);
         for (;;) {
-            cmd.pipe.strPut("choose:");
-            if (cmd.pipe.ready2rx() < 0) {
-                return;
-            }
-            a = cmd.pipe.strGet(1);
-            if (a == null) {
-                return;
-            }
-            cmd.pipe.strPut(" " + a);
+            a = cmd.pipe.strChr("choose:", ntry.getKeys());
             String s = ntry.findKey(a);
             if (s == null) {
-                s = "";
+                continue;
             }
             if (s.length() < 1) {
-                cmd.pipe.linePut(" is invaild");
                 continue;
             }
             userExec exe = new userExec(cmd.pipe, reader);
             exe.privileged = privileged;
             s = exe.repairCommand(s);
-            cmd.pipe.linePut(" - " + s);
+            cmd.pipe.linePut(a + " - " + s);
             if (reader.logging) {
                 logger.info("command menu:" + s + " from " + reader.from);
             }

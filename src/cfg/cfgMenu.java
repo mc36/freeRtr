@@ -3,6 +3,7 @@ package cfg;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import pipe.pipeSide;
 
 import user.userFilter;
 import user.userHelping;
@@ -139,6 +140,37 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
 
     public String getPrompt() {
         return "menu";
+    }
+
+    /**
+     * put menu
+     *
+     * @param p pipe to use
+     */
+    public void putMenu(pipeSide p) {
+        p.linePut("menu " + name + ":");
+        for (int i = 0; i < letter.size(); i++) {
+            p.linePut(letter.get(i) + "");
+        }
+    }
+
+    /**
+     * get keys
+     *
+     * @return keys
+     */
+    public String getKeys() {
+        String s = "";
+        for (int i = 0; i < letter.size(); i++) {
+            cfgMenuEntry ntry = letter.get(i);
+            String a = ntry.name;
+            if (ignoreCase) {
+                s += a.toLowerCase() + a.toUpperCase();
+            } else {
+                s += a;
+            }
+        }
+        return s;
     }
 
     /**
