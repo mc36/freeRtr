@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.List;
 import pipe.pipeLine;
 import pipe.pipeSide;
-import prt.prtRedun;
 import tab.tabGen;
 import util.bits;
 import util.cmds;

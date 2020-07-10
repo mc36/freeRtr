@@ -386,6 +386,21 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
     }
 
     /**
+     * test one network against this prefix list
+     *
+     * @param afi address family
+     * @param net network to test
+     * @return true if permitted, false if denied
+     */
+    public boolean matches(int afi, tabRouteEntry<Ta> net) {
+        Te ntry = find(afi, net);
+        if (ntry == null) {
+            return false;
+        }
+        return ntry.action == tabListingEntry.actionType.actPermit;
+    }
+
+    /**
      * update one entry
      *
      * @param afi address family

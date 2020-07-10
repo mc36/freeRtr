@@ -31,12 +31,12 @@ import prt.prtGen;
 import prt.prtGenConn;
 import prt.prtServP;
 import prt.prtServS;
+import rtr.rtrBgpUtil;
 import rtr.rtrBlackhole;
 import sec.secServer;
 import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabListing;
-import tab.tabListingEntry;
 import tab.tabPrfxlstN;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
@@ -987,21 +987,17 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             return true;
         }
         if (srvPrfLst != null) {
-            if (!srvPrfLst.matches(1, ntry.prefix)) {
+            if (!srvPrfLst.matches(rtrBgpUtil.safiUnicast, ntry.prefix)) {
                 return true;
             }
         }
         if (srvRouMap != null) {
-            tabRtrmapN rmn = srvRouMap.find(1, ntry);
-            if (rmn == null) {
-                return true;
-            }
-            if (rmn.action != tabListingEntry.actionType.actPermit) {
+            if (!srvRouMap.matches(rtrBgpUtil.safiUnicast, ntry)) {
                 return true;
             }
         }
         if (srvRouPol != null) {
-            ntry = tabRtrplc.doRpl(1, ntry, srvRouPol, true);
+            ntry = tabRtrplc.doRpl(rtrBgpUtil.safiUnicast, ntry, srvRouPol, true);
             if (ntry == null) {
                 return true;
             }

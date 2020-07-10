@@ -17,7 +17,6 @@ import sec.secClient;
 import sec.secServer;
 import serv.servGeneric;
 import tab.tabListing;
-import tab.tabListingEntry;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
@@ -205,11 +204,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         if (lst == null) {
             return false;
         }
-        tabPrfxlstN ntry = lst.find(rtrBgpUtil.safiUnicast, prf);
-        if (ntry == null) {
-            return true;
-        }
-        return ntry.action != tabListingEntry.actionType.actPermit;
+        return !lst.matches(rtrBgpUtil.safiUnicast, prf);
     }
 
     private void doRun() {

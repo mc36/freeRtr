@@ -100,7 +100,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
                 continue;
             }
             if (prflst != null) {
-                if (prflst.find(afi, ntry) == null) {
+                if (!prflst.matches(afi, ntry)) {
                     continue;
                 }
             }

@@ -22,11 +22,9 @@ import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabNatCfgN;
 import tab.tabNatTraN;
-import tab.tabListingEntry;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
-import tab.tabRtrmapN;
 import user.userFormat;
 import util.bits;
 import util.counter;
@@ -658,11 +656,7 @@ public class ipFwdTab {
         if (lower.counterMap != null) {
             for (int i = 0; i < tabU.size(); i++) {
                 tabRouteEntry<addrIP> ntry = tabU.get(i);
-                tabRtrmapN rmn = lower.counterMap.find(1, ntry);
-                if (rmn == null) {
-                    continue;
-                }
-                if (rmn.action != tabListingEntry.actionType.actPermit) {
+                if (!lower.counterMap.matches(rtrBgpUtil.safiUnicast, ntry)) {
                     continue;
                 }
                 tabRouteEntry<addrIP> old = lower.actualU.find(ntry);

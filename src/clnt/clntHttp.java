@@ -286,7 +286,7 @@ public class clntHttp {
         sendLine("Connection: Close");
         sendAuth(src);
         sendLine("");
-        int ctl = -1;
+        long ctl = -1;
         for (;;) {
             String s = getLine();
             if (s.length() < 1) {
@@ -300,7 +300,7 @@ public class clntHttp {
                 s = s.substring(i + 1, s.length()).trim();
             }
             if (a.equals("content-length")) {
-                ctl = bits.str2num(s);
+                ctl = bits.str2long(s);
                 cons.setMax(ctl);
             }
         }

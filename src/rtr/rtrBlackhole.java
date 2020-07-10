@@ -10,7 +10,6 @@ import ip.ipFwd;
 import ip.ipRtr;
 import java.util.List;
 import tab.tabListing;
-import tab.tabListingEntry;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
@@ -50,13 +49,13 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      * distance to give
      */
     protected int distance;
-    
+
     private tabListing<tabPrfxlstN, addrIP> whitelist;
-    
+
     private int penalty = 60 * 1000;
-    
+
     private final tabRoute<addrIP> entries = new tabRoute<addrIP>("ntry");
-    
+
     private boolean working = true;
 
     /**
@@ -225,7 +224,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
     public int routerIfaceCount() {
         return 0;
     }
-    
+
     private void doRound() {
         long tim = bits.getTime() - penalty;
         int del = 0;
@@ -245,7 +244,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         }
         routerCreateComputed();
     }
-    
+
     public void run() {
         for (;;) {
             if (!working) {
@@ -259,16 +258,12 @@ public class rtrBlackhole extends ipRtr implements Runnable {
             }
         }
     }
-    
+
     private boolean isWhitelisted(addrIP adr) {
         if (whitelist == null) {
             return false;
         }
-        tabPrfxlstN ntry = whitelist.find(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(adr, adr.maxBits()));
-        if (ntry == null) {
-            return false;
-        }
-        return ntry.action == tabListingEntry.actionType.actPermit;
+        return whitelist.matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(adr, adr.maxBits()));
     }
 
     /**
@@ -314,5 +309,5 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         entries.add(tabRoute.addType.always, ntry, false, false);
         routerCreateComputed();
     }
-    
+
 }

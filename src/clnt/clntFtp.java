@@ -183,7 +183,7 @@ public class clntFtp implements prtServS {
         sendLine("SIZE " + src.toPathName());
         cmds cmd = new cmds("ftp", getLine());
         cmd.word();
-        cons.setMax(bits.str2num(cmd.word()));
+        cons.setMax(bits.str2long(cmd.word()));
         if (begDatCon(src.server)) {
             pipe.setClose();
             return true;

@@ -72,7 +72,6 @@ import util.extMrkLng;
 import util.jasOn;
 import util.logger;
 import util.uniResLoc;
-import util.verCore;
 
 /**
  * process test commands

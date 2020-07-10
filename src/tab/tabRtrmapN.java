@@ -154,7 +154,6 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      */
     public List<Integer> aspathSet;
 
-
     /**
      * as path updater
      */
@@ -845,11 +844,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
         }
         if (roumapMatch != null) {
-            tabRtrmapN ntry = roumapMatch.find(afi, net);
-            if (ntry == null) {
-                return false;
-            }
-            if (ntry.action != tabListingEntry.actionType.actPermit) {
+            if (!roumapMatch.matches(afi, net)) {
                 return false;
             }
         }

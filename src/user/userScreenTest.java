@@ -6,7 +6,6 @@ import java.util.List;
 import pipe.pipeWindow;
 import util.bits;
 import util.cmds;
-import util.verCore;
 import util.version;
 
 /**

@@ -531,11 +531,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case prfxlst:
                 return prfxlst.matches(afi, net.prefix);
             case roumap:
-                tabRtrmapN ntry = roumap.find(afi, net);
-                if (ntry == null) {
-                    return false;
-                }
-                return ntry.action == tabListingEntry.actionType.actPermit;
+                return roumap.matches(afi, net);
             case rouplc:
                 return tabRtrplc.doRpl(afi, net, rouplc, true) != null;
             case distance:
