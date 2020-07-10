@@ -2015,25 +2015,22 @@ public class userExec {
             return;
         }
         ntry.putMenu(cmd.pipe);
-        for (;;) {
-            a = cmd.pipe.strChr("choose:", ntry.getKeys());
-            String s = ntry.findKey(a);
-            if (s == null) {
-                continue;
-            }
-            if (s.length() < 1) {
-                continue;
-            }
-            userExec exe = new userExec(cmd.pipe, reader);
-            exe.privileged = privileged;
-            s = exe.repairCommand(s);
-            cmd.pipe.linePut(a + " - " + s);
-            if (reader.logging) {
-                logger.info("command menu:" + s + " from " + reader.from);
-            }
-            exe.executeCommand(s);
+        a = cmd.pipe.strChr("choose:", ntry.getKeys());
+        String s = ntry.findKey(a);
+        if (s == null) {
             return;
         }
+        if (s.length() < 1) {
+            return;
+        }
+        userExec exe = new userExec(cmd.pipe, reader);
+        exe.privileged = privileged;
+        s = exe.repairCommand(s);
+        cmd.pipe.linePut(a + " - " + s);
+        if (reader.logging) {
+            logger.info("command menu:" + s + " from " + reader.from);
+        }
+        exe.executeCommand(s);
     }
 
     private void doPortscan() {
