@@ -591,13 +591,6 @@ mtracker v6v
  start
  exit
 !
-script asdf
- sequence 10 puts helloka
- sequence 20 exec "test logging error rebooting soon"
- sequence 30 exec "sleep 3"
- stop
- exit
-!
 !
 !
 !
@@ -857,8 +850,6 @@ client prefer-ipv6
 client password-stars
 client whois-server whois.ripe.net
 client name-server 10.10.10.10
-client upgrade-config
-client upgrade-script asdf
 client time-zone CET
 !
 end

@@ -403,7 +403,7 @@ public class clntTrack implements rtrBfdClnt {
         clntTrackTimer task = new clntTrackTimer(this);
         int del = 100;
         if (randIni > 0) {
-            del = bits.random(1, randIni);
+            del += bits.random(1, randIni);
         }
         keepTimer.schedule(task, del, interval);
     }

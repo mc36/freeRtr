@@ -47,6 +47,16 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
     public int initial;
 
     /**
+     * random time between runs
+     */
+    public int randInt;
+
+    /**
+     * random initial delay
+     */
+    public int randIni;
+
+    /**
      * exec command
      */
     public String command = cmds.finish;
@@ -97,6 +107,8 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         "scheduler .*! no description",
         "scheduler .*! time 0",
         "scheduler .*! delay 0",
+        "scheduler .*! random-time 0",
+        "scheduler .*! random-delay 0",
         "scheduler .*! command exit",
         "scheduler .*! no hidden",
         "scheduler .*! no log",
@@ -126,6 +138,10 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         l.add("2  .        <num>                    milliseconds between runs");
         l.add("1  2      delay                      specify initial delay");
         l.add("2  .        <num>                    milliseconds between start");
+        l.add("1  2      random-time                specify random time between runs");
+        l.add("2  .        <num>                    milliseconds between runs");
+        l.add("1  2      random-delay               specify random initial delay");
+        l.add("2  .        <num>                    milliseconds between start");
         l.add("1  2      range                      specify time range");
         l.add("2  .        <name>                   name of time map");
         l.add("1  .      log                        log actions");
@@ -143,6 +159,8 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         cmds.cfgLine(l, !hidden, cmds.tabulator, "hidden", "");
         l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + "delay " + initial);
+        l.add(cmds.tabulator + "random-time " + randInt);
+        l.add(cmds.tabulator + "random-delay " + randIni);
         if (hidden) {
             l.add(cmds.tabulator + "command " + authLocal.passwdEncode(command));
         } else {
@@ -181,6 +199,14 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             initial = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("random-time")) {
+            randInt = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("random-delay")) {
+            randIni = bits.str2num(cmd.word());
+            return;
+        }
         if (a.equals("command")) {
             command = authLocal.passwdDecode(cmd.getRemaining());
             return;
@@ -212,6 +238,22 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         a = cmd.word();
         if (a.equals("description")) {
             description = "";
+            return;
+        }
+        if (a.equals("time")) {
+            interval = 0;
+            return;
+        }
+        if (a.equals("delay")) {
+            initial = 0;
+            return;
+        }
+        if (a.equals("random-time")) {
+            randInt = 0;
+            return;
+        }
+        if (a.equals("random-delay")) {
+            randIni = 0;
             return;
         }
         if (a.equals("hidden")) {
@@ -258,7 +300,11 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         working = true;
         keepTimer = new Timer();
         cfgSchedTimer task = new cfgSchedTimer(this);
-        keepTimer.schedule(task, initial, interval);
+        int del = initial;
+        if (randIni > 0) {
+            del += bits.random(1, randIni);
+        }
+        keepTimer.schedule(task, del, interval);
     }
 
     /**
@@ -272,6 +318,9 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         }
         if (logging) {
             logger.info("starting " + name);
+        }
+        if (randInt > 0) {
+            bits.sleep(bits.random(1, randInt));
         }
         restartC++;
         restartT = bits.getTime();
