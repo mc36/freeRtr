@@ -1410,8 +1410,11 @@ class servHttpConn implements Runnable {
         RandomAccessFile fr;
         long siz;
         try {
-            File f;
-            f = new File(s);
+            File f = new File(s);
+            if (f.isDirectory()) {
+                sendFoundAt(gotUrl.toURL(true, true) + "/");
+                return false;
+            }
             fr = new RandomAccessFile(f, "r");
             siz = f.length();
         } catch (Exception e) {
@@ -1518,10 +1521,6 @@ class servHttpConn implements Runnable {
     }
 
     private boolean sendOneDir(String s) {
-        if ((s.lastIndexOf("/") + 1) < s.length()) {
-            sendFoundAt(s + "/");
-            return false;
-        }
         if (gotHost.autoIndex) {
             if (!sendOneFile(s + "index.html", ".html")) {
                 return false;
