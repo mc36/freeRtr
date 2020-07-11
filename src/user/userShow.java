@@ -60,6 +60,7 @@ import tab.tabIntMatcher;
 import tab.tabLabel;
 import tab.tabLabelNtry;
 import tab.tabListing;
+import tab.tabListingEntry;
 import tab.tabNshNtry;
 import tab.tabPrfxlstN;
 import tab.tabQos;
@@ -2286,471 +2287,59 @@ public class userShow {
             rdr.putStrTab(r.bgp.showSummary(13));
             return;
         }
-        int sfi = rtrBgpParam.string2mask(a);
-        if (sfi > 0) {
+        if (a.equals("neighbor")) {
+            addrIP adr = new addrIP();
+            adr.fromString(cmd.word());
+            rtrBgpNeigh nei = r.bgp.findPeer(adr);
+            if (nei == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            a = cmd.word();
+            if (a.equals("config")) {
+                List<String> l = new ArrayList<String>();
+                nei.getConfig(l, "", false);
+                rdr.putStrArr(l);
+                return;
+            }
+            if (a.equals("status")) {
+                List<String> l = new ArrayList<String>();
+                nei.getStatus(l);
+                rdr.putStrArr(l);
+                return;
+            }
+            int sfi = rtrBgpParam.string2mask(a);
+            if (sfi < 1) {
+                return;
+            }
             int dsp = bgpMask2filter(sfi);
             sfi = r.bgp.mask2safi(sfi);
             if (sfi < 1) {
                 return;
             }
             a = cmd.word();
-            if (a.equals("summary")) {
-                rdr.putStrTab(r.bgp.showNeighs(sfi));
+            if (a.equals("learned")) {
+                doShowRoutes(r.bgp.fwdCore, nei.conn.getLearned(sfi), dsp);
                 return;
             }
-            if (a.equals("asgraph")) {
-                rdr.putStrArr(r.bgp.getAsGraph(sfi));
+            if (a.equals("accepted")) {
+                doShowRoutes(r.bgp.fwdCore, nei.getAccepted(sfi), dsp);
                 return;
             }
-            if (a.equals("asorigin")) {
-                rdr.putStrTab(r.bgp.getAsOrigin(sfi));
+            if (a.equals("willing")) {
+                doShowRoutes(r.bgp.fwdCore, nei.getWilling(sfi), dsp);
                 return;
             }
-            if (a.equals("astransit")) {
-                rdr.putStrTab(r.bgp.getAsTransit(sfi));
-                return;
-            }
-            if (a.equals("asconn")) {
-                rdr.putStrTab(r.bgp.getAsConns(sfi));
-                return;
-            }
-            if (a.equals("prefix-lengths")) {
-                rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(sfi)));
-                return;
-            }
-            if (a.equals("asinconsistent")) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    a = "2-" + Integer.MAX_VALUE;
-                }
-                tabIntMatcher m = new tabIntMatcher();
-                m.fromString(a);
-                rdr.putStrTab(r.bgp.getAsIncons(sfi, m));
-                return;
-            }
-            if (a.equals("nhinconsistent")) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    a = "2-" + Integer.MAX_VALUE;
-                }
-                tabIntMatcher m = new tabIntMatcher();
-                m.fromString(a);
-                rdr.putStrTab(r.bgp.getNhIncons(sfi, m));
-                return;
-            }
-            if (a.equals("flapstat")) {
-                rdr.putStrTab(r.bgp.getFlapstat(sfi, bits.str2num(cmd.word())));
-                return;
-            }
-            if (a.equals("flappath")) {
-                addrPrefix<addrIP> ntry = addrPrefix.str2ip(cmd.word());
-                if (ntry == null) {
-                    cmd.error("bad prefix");
-                    return;
-                }
-                rdr.putStrTab(r.bgp.getFlappath(sfi, tabRtrmapN.string2rd(cmd.word()), ntry));
-                return;
-            }
-            if (a.equals("allroute")) {
-                tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-                ntry.prefix = addrPrefix.str2ip(cmd.word());
-                if (ntry.prefix == null) {
-                    cmd.error("bad prefix");
-                    return;
-                }
-                ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
-                rdr.putStrArr(r.bgp.getAllRoutes(sfi, ntry));
-                return;
-            }
-            if (a.equals("compare")) {
-                addrIP adr = new addrIP();
-                adr.fromString(cmd.word());
-                rtrBgpNeigh nei1 = r.bgp.findPeer(adr);
-                if (nei1 == null) {
-                    cmd.error("no such neighbor");
-                    return;
-                }
-                adr = new addrIP();
-                adr.fromString(cmd.word());
-                rtrBgpNeigh nei2 = r.bgp.findPeer(adr);
-                if (nei2 == null) {
-                    cmd.error("no such neighbor");
-                    return;
-                }
-                int ign = 0;
-                for (;;) {
-                    a = cmd.word();
-                    if (a.length() < 1) {
-                        break;
-                    }
-                    if (a.equals("cluster")) {
-                        ign |= 0x1;
-                    }
-                    if (a.equals("nexthop")) {
-                        ign |= 0x2;
-                    }
-                    if (a.equals("origin")) {
-                        ign |= 0x4;
-                    }
-                    if (a.equals("metric")) {
-                        ign |= 0x8;
-                    }
-                    if (a.equals("locpref")) {
-                        ign |= 0x10;
-                    }
-                    if (a.equals("distance")) {
-                        ign |= 0x20;
-                    }
-                    if (a.equals("tag")) {
-                        ign |= 0x40;
-                    }
-                    if (a.equals("validity")) {
-                        ign |= 0x80;
-                    }
-                    if (a.equals("aspath")) {
-                        ign |= 0x100;
-                    }
-                    if (a.equals("asconf")) {
-                        ign |= 0x200;
-                    }
-                    if (a.equals("stdcomm")) {
-                        ign |= 0x400;
-                    }
-                    if (a.equals("extcomm")) {
-                        ign |= 0x800;
-                    }
-                    if (a.equals("aigp")) {
-                        ign |= 0x1000;
-                    }
-                    if (a.equals("bandwidth")) {
-                        ign |= 0x2000;
-                    }
-                    if (a.equals("label")) {
-                        ign |= 0x4000;
-                    }
-                    if (a.equals("aggregate")) {
-                        ign |= 0x8000;
-                    }
-                    if (a.equals("orignted")) {
-                        ign |= 0x10000;
-                    }
-                    if (a.equals("pmsi")) {
-                        ign |= 0x20000;
-                    }
-                    if (a.equals("segrout")) {
-                        ign |= 0x40000;
-                    }
-                    if (a.equals("lrgcomm")) {
-                        ign |= 0x80000;
-                    }
-                    if (a.equals("tunnel")) {
-                        ign |= 0x100000;
-                    }
-                    if (a.equals("attrset")) {
-                        ign |= 0x200000;
-                    }
-                    if (a.equals("bier")) {
-                        ign |= 0x400000;
-                    }
-                }
-                tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
-                tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
-                if ((acc1 == null) || (acc2 == null)) {
-                    return;
-                }
-                tabRoute<addrIP> uni1 = new tabRoute<addrIP>("tab");
-                tabRoute<addrIP> uni2 = new tabRoute<addrIP>("tab");
-                tabRoute<addrIP> diff = new tabRoute<addrIP>("tab");
-                compareTables(uni1, diff, acc1, acc2, ign);
-                compareTables(uni2, diff, acc2, acc1, ign);
-                cmd.error("unique to " + nei1);
-                doShowRoutes(r.bgp.fwdCore, uni1, dsp);
-                cmd.error("unique to " + nei2);
-                doShowRoutes(r.bgp.fwdCore, uni2, dsp);
-                cmd.error("attribute differs");
-                doShowRoutes(r.bgp.fwdCore, diff, dsp);
-                return;
-            }
-            tabRoute<addrIP> tab = r.bgp.getDatabase(sfi);
-            if (tab == null) {
-                return;
-            }
-            if (a.equals("database")) {
-                doShowRoutes(r.bgp.fwdCore, tab, dsp);
-                return;
-            }
-            if (a.equals("labels")) {
-                doShowRoutes(r.bgp.fwdCore, tab, dsp + 1000);
-                return;
-            }
-            if (a.equals("stdcomm")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.stdCommMatch = tabRtrmapN.string2stdComms(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("extcomm")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.extCommMatch = tabRtrmapN.string2extComms(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("lrgcomm")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.lrgCommMatch = tabRtrmapN.string2lrgComms(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("rd")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.rouDstMatch = tabRtrmapN.string2rd(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("regexp")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.aspathMatch = a;
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("pathlen")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.pathlenMatch = new tabIntMatcher();
-                ntry.pathlenMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("distance")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.distanceMatch = new tabIntMatcher();
-                ntry.distanceMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("locpref")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.locPrefMatch = new tabIntMatcher();
-                ntry.locPrefMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("validity")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.validityMatch = new tabIntMatcher();
-                ntry.validityMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("aigp")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.accIgpMatch = new tabIntMatcher();
-                ntry.accIgpMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("bandwidth")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.bandwidthMatch = new tabIntMatcher();
-                ntry.bandwidthMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("origin")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.originMatch = new tabIntMatcher();
-                ntry.originMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("metric")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.metricMatch = new tabIntMatcher();
-                ntry.metricMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("tag")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.tagMatch = new tabIntMatcher();
-                ntry.tagMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("network")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.networkMatch = new tabPrfxlstN();
-                ntry.networkMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("nexthop")) {
-                a = cmd.getRemaining();
-                cmd = new cmds("", "");
-                tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
-                tabRtrmapN ntry = new tabRtrmapN();
-                ntry.nexthopMatch = new addrIP();
-                ntry.nexthopMatch.fromString(a);
-                roumap.add(ntry);
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("prefix-list")) {
-                a = cmd.word();
-                cfgPrfxlst fnd = cfgAll.prfxFind(a, false);
-                if (fnd == null) {
-                    cmd.error("no such prefix list");
-                    return;
-                }
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, null, null, fnd.prflst);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("route-map")) {
-                a = cmd.word();
-                cfgRoump fnd = cfgAll.rtmpFind(a, false);
-                if (fnd == null) {
-                    cmd.error("no such route map");
-                    return;
-                }
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, fnd.roumap, null, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
-                return;
-            }
-            if (a.equals("route-policy")) {
-                a = cmd.word();
-                cfgRouplc fnd = cfgAll.rtplFind(a, false);
-                if (fnd == null) {
-                    cmd.error("no such route policy");
-                    return;
-                }
-                tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
-                tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, null, fnd.rouplc, null);
-                doShowRoutes(r.bgp.fwdCore, res, dsp);
+            if (a.equals("advertised")) {
+                doShowRoutes(r.bgp.fwdCore, nei.conn.getAdverted(sfi), dsp);
                 return;
             }
             cmd.badCmd();
             return;
         }
-        if (!a.equals("neighbor")) {
-            cmd.badCmd();
-            return;
-        }
-        addrIP adr = new addrIP();
-        adr.fromString(cmd.word());
-        rtrBgpNeigh nei = r.bgp.findPeer(adr);
-        if (nei == null) {
-            cmd.error("no such neighbor");
-            return;
-        }
-        a = cmd.word();
-        if (a.equals("config")) {
-            List<String> l = new ArrayList<String>();
-            nei.getConfig(l, "", false);
-            rdr.putStrArr(l);
-            return;
-        }
-        if (a.equals("status")) {
-            List<String> l = new ArrayList<String>();
-            nei.getStatus(l);
-            rdr.putStrArr(l);
-            return;
-        }
-        sfi = rtrBgpParam.string2mask(a);
+        int sfi = rtrBgpParam.string2mask(a);
         if (sfi < 1) {
+            cmd.badCmd();
             return;
         }
         int dsp = bgpMask2filter(sfi);
@@ -2759,20 +2348,448 @@ public class userShow {
             return;
         }
         a = cmd.word();
-        if (a.equals("learned")) {
-            doShowRoutes(r.bgp.fwdCore, nei.conn.getLearned(sfi), dsp);
+        if (a.equals("summary")) {
+            rdr.putStrTab(r.bgp.showNeighs(sfi));
             return;
         }
-        if (a.equals("accepted")) {
-            doShowRoutes(r.bgp.fwdCore, nei.getAccepted(sfi), dsp);
+        if (a.equals("asgraph")) {
+            rdr.putStrArr(r.bgp.getAsGraph(sfi));
             return;
         }
-        if (a.equals("willing")) {
-            doShowRoutes(r.bgp.fwdCore, nei.getWilling(sfi), dsp);
+        if (a.equals("asorigin")) {
+            rdr.putStrTab(r.bgp.getAsOrigin(sfi));
             return;
         }
-        if (a.equals("advertised")) {
-            doShowRoutes(r.bgp.fwdCore, nei.conn.getAdverted(sfi), dsp);
+        if (a.equals("astransit")) {
+            rdr.putStrTab(r.bgp.getAsTransit(sfi));
+            return;
+        }
+        if (a.equals("asconn")) {
+            rdr.putStrTab(r.bgp.getAsConns(sfi));
+            return;
+        }
+        if (a.equals("prefix-lengths")) {
+            rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(sfi)));
+            return;
+        }
+        if (a.equals("asinconsistent")) {
+            a = cmd.word();
+            if (a.length() < 1) {
+                a = "2-" + Integer.MAX_VALUE;
+            }
+            tabIntMatcher m = new tabIntMatcher();
+            m.fromString(a);
+            rdr.putStrTab(r.bgp.getAsIncons(sfi, m));
+            return;
+        }
+        if (a.equals("nhinconsistent")) {
+            a = cmd.word();
+            if (a.length() < 1) {
+                a = "2-" + Integer.MAX_VALUE;
+            }
+            tabIntMatcher m = new tabIntMatcher();
+            m.fromString(a);
+            rdr.putStrTab(r.bgp.getNhIncons(sfi, m));
+            return;
+        }
+        if (a.equals("flapstat")) {
+            rdr.putStrTab(r.bgp.getFlapstat(sfi, bits.str2num(cmd.word())));
+            return;
+        }
+        if (a.equals("flappath")) {
+            addrPrefix<addrIP> ntry = addrPrefix.str2ip(cmd.word());
+            if (ntry == null) {
+                cmd.error("bad prefix");
+                return;
+            }
+            rdr.putStrTab(r.bgp.getFlappath(sfi, tabRtrmapN.string2rd(cmd.word()), ntry));
+            return;
+        }
+        if (a.equals("allroute")) {
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = addrPrefix.str2ip(cmd.word());
+            if (ntry.prefix == null) {
+                cmd.error("bad prefix");
+                return;
+            }
+            ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
+            rdr.putStrArr(r.bgp.getAllRoutes(sfi, ntry));
+            return;
+        }
+        if (a.equals("compare")) {
+            addrIP adr = new addrIP();
+            adr.fromString(cmd.word());
+            rtrBgpNeigh nei1 = r.bgp.findPeer(adr);
+            if (nei1 == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            adr = new addrIP();
+            adr.fromString(cmd.word());
+            rtrBgpNeigh nei2 = r.bgp.findPeer(adr);
+            if (nei2 == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            int ign = 0;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("cluster")) {
+                    ign |= 0x1;
+                }
+                if (a.equals("nexthop")) {
+                    ign |= 0x2;
+                }
+                if (a.equals("origin")) {
+                    ign |= 0x4;
+                }
+                if (a.equals("metric")) {
+                    ign |= 0x8;
+                }
+                if (a.equals("locpref")) {
+                    ign |= 0x10;
+                }
+                if (a.equals("distance")) {
+                    ign |= 0x20;
+                }
+                if (a.equals("tag")) {
+                    ign |= 0x40;
+                }
+                if (a.equals("validity")) {
+                    ign |= 0x80;
+                }
+                if (a.equals("aspath")) {
+                    ign |= 0x100;
+                }
+                if (a.equals("asconf")) {
+                    ign |= 0x200;
+                }
+                if (a.equals("stdcomm")) {
+                    ign |= 0x400;
+                }
+                if (a.equals("extcomm")) {
+                    ign |= 0x800;
+                }
+                if (a.equals("aigp")) {
+                    ign |= 0x1000;
+                }
+                if (a.equals("bandwidth")) {
+                    ign |= 0x2000;
+                }
+                if (a.equals("label")) {
+                    ign |= 0x4000;
+                }
+                if (a.equals("aggregate")) {
+                    ign |= 0x8000;
+                }
+                if (a.equals("orignted")) {
+                    ign |= 0x10000;
+                }
+                if (a.equals("pmsi")) {
+                    ign |= 0x20000;
+                }
+                if (a.equals("segrout")) {
+                    ign |= 0x40000;
+                }
+                if (a.equals("lrgcomm")) {
+                    ign |= 0x80000;
+                }
+                if (a.equals("tunnel")) {
+                    ign |= 0x100000;
+                }
+                if (a.equals("attrset")) {
+                    ign |= 0x200000;
+                }
+                if (a.equals("bier")) {
+                    ign |= 0x400000;
+                }
+            }
+            tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
+            tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
+            if ((acc1 == null) || (acc2 == null)) {
+                return;
+            }
+            tabRoute<addrIP> uni1 = new tabRoute<addrIP>("tab");
+            tabRoute<addrIP> uni2 = new tabRoute<addrIP>("tab");
+            tabRoute<addrIP> diff = new tabRoute<addrIP>("tab");
+            compareTables(uni1, diff, acc1, acc2, ign);
+            compareTables(uni2, diff, acc2, acc1, ign);
+            cmd.error("unique to " + nei1);
+            doShowRoutes(r.bgp.fwdCore, uni1, dsp);
+            cmd.error("unique to " + nei2);
+            doShowRoutes(r.bgp.fwdCore, uni2, dsp);
+            cmd.error("attribute differs");
+            doShowRoutes(r.bgp.fwdCore, diff, dsp);
+            return;
+        }
+        tabRoute<addrIP> tab = r.bgp.getDatabase(sfi);
+        if (tab == null) {
+            return;
+        }
+        if (a.equals("database")) {
+            doShowRoutes(r.bgp.fwdCore, tab, dsp);
+            return;
+        }
+        if (a.equals("labels")) {
+            doShowRoutes(r.bgp.fwdCore, tab, dsp + 1000);
+            return;
+        }
+        if (a.equals("stdcomm")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.stdCommMatch = tabRtrmapN.string2stdComms(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("extcomm")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.extCommMatch = tabRtrmapN.string2extComms(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("lrgcomm")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.lrgCommMatch = tabRtrmapN.string2lrgComms(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("rd")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.rouDstMatch = tabRtrmapN.string2rd(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("regexp")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.aspathMatch = a;
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("pathlen")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.pathlenMatch = new tabIntMatcher();
+            ntry.pathlenMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("distance")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.distanceMatch = new tabIntMatcher();
+            ntry.distanceMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("locpref")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.locPrefMatch = new tabIntMatcher();
+            ntry.locPrefMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("validity")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.validityMatch = new tabIntMatcher();
+            ntry.validityMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("aigp")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.accIgpMatch = new tabIntMatcher();
+            ntry.accIgpMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("bandwidth")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.bandwidthMatch = new tabIntMatcher();
+            ntry.bandwidthMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("origin")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.originMatch = new tabIntMatcher();
+            ntry.originMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("metric")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.metricMatch = new tabIntMatcher();
+            ntry.metricMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("tag")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.tagMatch = new tabIntMatcher();
+            ntry.tagMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("network")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.networkMatch = new tabPrfxlstN();
+            ntry.networkMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("nexthop")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.nexthopMatch = new addrIP();
+            ntry.nexthopMatch.fromString(a);
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("prefix-list")) {
+            a = cmd.word();
+            cfgPrfxlst fnd = cfgAll.prfxFind(a, false);
+            if (fnd == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, null, null, fnd.prflst);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("route-map")) {
+            a = cmd.word();
+            cfgRoump fnd = cfgAll.rtmpFind(a, false);
+            if (fnd == null) {
+                cmd.error("no such route map");
+                return;
+            }
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, fnd.roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("route-policy")) {
+            a = cmd.word();
+            cfgRouplc fnd = cfgAll.rtplFind(a, false);
+            if (fnd == null) {
+                cmd.error("no such route policy");
+                return;
+            }
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, null, fnd.rouplc, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
             return;
         }
         cmd.badCmd();
