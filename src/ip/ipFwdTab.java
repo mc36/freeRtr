@@ -569,6 +569,9 @@ public class ipFwdTab {
         tabL.delDistance(tabRouteEntry.distanMax);
         tabM.delDistance(tabRouteEntry.distanMax);
         tabF.delDistance(tabRouteEntry.distanMax);
+        tabL.preserveTime(lower.actualU);
+        tabM.preserveTime(lower.actualM);
+        tabF.preserveTime(lower.actualF);
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
             if (rtr == null) {
