@@ -1,7 +1,7 @@
 #!/bin/sh
 
 IMG=`cd ../../binImg/;pwd`
-MNT=/mnt
+MNT=`cd ../../binMnt/;pwd`
 
 parted -s $IMG/rtr.dsk mklabel msdos
 parted -s $IMG/rtr.dsk mkpart primary ext4 1MB 2002MB

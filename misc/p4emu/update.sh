@@ -7,7 +7,7 @@ sudo apt-get clean
 cd ~
 mkdir a
 wget -O a/rtr.zip http://src.nop.hu/rtr.zip
-unzip a/rtr.zip -d  a/
+unzip a/rtr.zip -d a/
 cd ~/a/misc/native
 mkdir ../../binTmp/
 ./c.sh

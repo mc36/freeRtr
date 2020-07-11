@@ -49,7 +49,7 @@ public class pipeWindow extends JPanel {
      * @param plt palette to use
      * @return pipeline to use, null if failed
      */
-    public static pipeSide createOne(int x, int y, short[] fnt, int[] plt) {
+    public static pipeSide createOne(int x, int y, byte[][][] fnt, int[] plt) {
         pipeLine pip = new pipeLine(65536, false);
         pipeWindow win;
         try {
@@ -202,7 +202,7 @@ public class pipeWindow extends JPanel {
      * @param fnt font to use
      * @param plt palette to use
      */
-    public pipeWindow(pipeSide pip, int x, int y, short[] fnt, int[] plt) {
+    public pipeWindow(pipeSide pip, int x, int y, byte[][][] fnt, int[] plt) {
         img = new pipeImage(pip, x, y, fnt, plt);
         img3 = createImage(img);
         win = new JFrame("console");

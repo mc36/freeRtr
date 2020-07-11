@@ -152,7 +152,7 @@ public class userTest {
             if (y < 1) {
                 y = 25;
             }
-            pipeSide pipWin = pipeWindow.createOne(x, y, userFonts1.font8x16data, userFonts1.colorData);
+            pipeSide pipWin = pipeWindow.createOne(x, y, userFonts1.fontDefault(), userFonts1.colorData);
             if (pipWin == null) {
                 cmd.error("failed");
                 return null;

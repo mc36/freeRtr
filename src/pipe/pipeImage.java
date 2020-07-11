@@ -49,9 +49,9 @@ public class pipeImage {
      * @param fnt font to use
      * @param plt palette to use
      */
-    public pipeImage(pipeSide pip, int x, int y, short[] fnt, int[] plt) {
+    public pipeImage(pipeSide pip, int x, int y, byte[][][] fnt, int[] plt) {
         pipe = pip;
-        font = userScreen.fontConvert(fnt);
+        font = fnt;
         pal = plt;
         fntY = font[0].length;
         fntX = font[0][0].length;

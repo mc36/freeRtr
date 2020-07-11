@@ -15,5 +15,6 @@ rm -rf ../binTmp/* 2> /dev/null
 rm -rf ../binOut/* 2> /dev/null
 mkdir -p ../binTmp
 mkdir -p ../binOut
+mkdir -p ../binMnt
 mkdir -p ../binDown
 mkdir -p ../binImg

@@ -8,6 +8,6 @@ cd ../misc/native/
 cd ../image/
 ./c.sh
 cd ../native/
-./d.sh
+./p.sh
 cd ../img2ova/
 ./c.sh

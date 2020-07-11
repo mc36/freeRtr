@@ -37,4 +37,3 @@ exec xorriso -as mkisofs -o %img%.iso -r -J -l -b isolinux.bin -no-emul-boot -bo
 exec isohybrid -u %img%.iso
 exec mktorrent -o %img%.torrent -w http://dl.nop.hu/rtr.iso %img%.iso
 del-alw %tmp%
-exec ls -l %img%.*

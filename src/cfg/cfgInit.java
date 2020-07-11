@@ -810,8 +810,7 @@ public class cfgInit implements Runnable {
      */
     public static pipeImage doApplet(String url) {
         pipeLine pl = new pipeLine(65536, false);
-        pipeImage img = new pipeImage(pl.getSide(), 80, 25,
-                userFonts1.font8x16data, userFonts1.colorData);
+        pipeImage img = new pipeImage(pl.getSide(), 80, 25, userFonts1.fontDefault(), userFonts1.colorData);
         pipeSide ps = pl.getSide();
         ps.lineTx = pipeSide.modTyp.modeCRLF;
         ps.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -869,7 +868,7 @@ public class cfgInit implements Runnable {
                 logger.pipeStart(pipCon);
             }
             if (win) {
-                pipWin = pipeWindow.createOne(80, 25, userFonts1.font8x16data, userFonts1.colorData);
+                pipWin = pipeWindow.createOne(80, 25, userFonts1.fontDefault(), userFonts1.colorData);
                 logger.pipeStart(pipWin);
             }
             if (swN == null) {
