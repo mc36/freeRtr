@@ -1412,7 +1412,7 @@ class servHttpConn implements Runnable {
         try {
             File f = new File(s);
             if (f.isDirectory()) {
-                sendFoundAt(gotUrl.toURL(true, true) + "/");
+                sendFoundAt(gotUrl.toURL(false, false) + "/");
                 return false;
             }
             fr = new RandomAccessFile(f, "r");
