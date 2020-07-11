@@ -14,7 +14,7 @@ vrf def v1
  exit
 int ser1
  vrf for v1
- enc hdlc
+ enc raw
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
  exit
@@ -56,7 +56,7 @@ proxy-profile p1
  exit
 int ser1
  vrf for v1
- enc hdlc
+ enc raw
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
  exit
