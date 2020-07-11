@@ -414,6 +414,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("reachable state = " + reachable);
         l.add("reachable changed = " + bits.timePast(reachTim));
         l.add("reachable changes = " + reachNum);
+        l.add("fallover = " + sendingIfc);
         l.add("update group = " + groupMember);
         l.add("type = " + rtrBgpUtil.peerType2string(peerType));
         l.add("safi = " + rtrBgpParam.mask2string(conn.peerAfis));
@@ -884,7 +885,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             if (ifc == null) {
                 return;
             }
-            if (ifc != sendingIfc) {
+            if (ifc.ifwNum != sendingIfc.ifwNum) {
                 return;
             }
         }
