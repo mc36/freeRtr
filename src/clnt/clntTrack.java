@@ -411,7 +411,7 @@ public class clntTrack implements rtrBfdClnt {
     /**
      * do one timer round
      */
-    public void doRound() {
+    public synchronized void doRound() {
         if (logging) {
             logger.info("starting action " + name);
         }
