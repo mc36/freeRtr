@@ -438,7 +438,6 @@ public class userHwdet {
         lop.add("  reboot -f");
         lop.add("fi");
         lop.add("stty cooked < /dev/tty");
-        lop.add("sleep 1");
         makeLoop("main.sh", bits.str2lst(""), lop);
         starter.add("exit 0");
         bits.buf2txt(true, config, path + "rtr-" + cfgInit.hwCfgEnd);
