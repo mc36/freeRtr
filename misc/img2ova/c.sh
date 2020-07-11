@@ -27,7 +27,7 @@ cat > $IMG/rtr.gns3a << EOF
     "qemu": {
         "adapter_type": "e1000",
         "adapters": 8,
-        "ram": 2048,
+        "ram": 1024,
         "arch": "x86_64",
         "console_type": "telnet",
         "kvm": "require"

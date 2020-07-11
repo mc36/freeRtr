@@ -6,7 +6,7 @@ vboxmanage controlvm rtr poweroff
 
 qemu:
 tar xvf rtr.ova
-qemu-system-x86_64 -enable-kvm -m 2048 -no-reboot -monitor none -serial stdio -nographic -hda rtr.qcow2
+qemu-system-x86_64 -enable-kvm -m 1024 -no-reboot -monitor none -serial stdio -nographic -hda rtr.qcow2
 
 libvirt:
 tar xvf rtr.ova

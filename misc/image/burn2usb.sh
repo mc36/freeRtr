@@ -1,7 +1,7 @@
 #!/bin/sh
 sudo umount /mnt
 sudo mkfs.vfat /dev/sdb1
-sudo lilo  -S /dev/null -M /dev/sdb
+sudo lilo -S /dev/null -M /dev/sdb
 sudo syslinux /dev/sdb1
 sudo mount -t vfat -o rw /dev/sdb1 /mnt
 sudo cp boot.cfg /mnt/syslinux.cfg
