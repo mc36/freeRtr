@@ -3136,6 +3136,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (ip4 && (addr4 != null)) {
             ipIf4 = new ipIfc4(ifaceNeedArp(), ifaceNeedType());
+            fwdIf4 = vrfFor.fwd4.ifaceAdd(ipIf4);
+            ipIf4.setIPv4addr(addr4, mask4.toNetmask());
             ethtyp.addET(ipIfc4.type, "ip4", ipIf4);
             ethtyp.updateET(ipIfc4.type, ipIf4);
             ifcUp arp = ipIf4.getPeerHdr();
@@ -3143,24 +3145,22 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 ethtyp.addET(ipIfc4arp.type, "arp4", arp);
                 ethtyp.updateET(ipIfc4arp.type, arp);
             }
-            fwdIf4 = vrfFor.fwd4.ifaceAdd(ipIf4);
-            ipIf4.setIPv4addr(addr4, mask4.toNetmask());
             vrfFor.fwd4.routerStaticChg();
         }
         if (ip6 && (addr6 != null)) {
             ipIf6 = new ipIfc6(ifaceNeedArp(), ifaceNeedType());
-            ethtyp.addET(ipIfc6.type, "ip6", ipIf6);
-            ethtyp.updateET(ipIfc6.type, ipIf6);
             fwdIf6 = vrfFor.fwd6.ifaceAdd(ipIf6);
             ipIf6.setIPv6addr(addr6, mask6.toNetmask());
+            ethtyp.addET(ipIfc6.type, "ip6", ipIf6);
+            ethtyp.updateET(ipIfc6.type, ipIf6);
             vrfFor.fwd6.routerStaticChg();
         }
         if (ipx && (ipxAddr != null)) {
             ipxIfc = vrfFor.ipx.ifaceAdd(ethtyp);
+            vrfFor.ipx.ifaceAddr(ipxIfc, ipxAddr);
             ethtyp.addET(ipxIface.type, "ipx", ipxIfc);
             ethtyp.updateET(ipxIface.type, ipxIfc);
             ipxAddr.putMac(ipxIfc.hwaddr);
-            vrfFor.ipx.ifaceAddr(ipxIfc, ipxAddr);
         }
         update2mpls();
     }
@@ -4280,9 +4280,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public synchronized void setup2nshFwd() {
         clear2nshFwd();
         nshPack = new ifcNshFwd();
+        ethtyp.nshFwd = nshPack;
         ethtyp.addET(ifcNshFwd.type, "nsh", nshPack);
         ethtyp.updateET(ifcNshFwd.type, nshPack);
-        ethtyp.nshFwd = nshPack;
     }
 
     /**
