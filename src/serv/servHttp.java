@@ -1526,10 +1526,10 @@ class servHttpConn implements Runnable {
             if (!sendOneFile(s + "index.html", ".html")) {
                 return false;
             }
-            if (!sendOneFile(s + "index.tcl", ".tcl")) {
+            if (!sendOneFile(s + "index.class", ".class")) {
                 return false;
             }
-            if (!sendOneFile(s + "index.class", ".class")) {
+            if (!sendOneFile(s + "index.tcl", ".tcl")) {
                 return false;
             }
         }
