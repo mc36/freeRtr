@@ -216,6 +216,8 @@ public class userFormat {
                     case table:
                         q += (o - 1) * 3;
                         break;
+                    default:
+                        break;
                 }
                 s += bits.padEnd(a, q, " ");
             }

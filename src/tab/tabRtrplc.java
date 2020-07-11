@@ -37,6 +37,8 @@ public class tabRtrplc {
                     ntry.indent--;
                     o--;
                     break;
+                default:
+                    break;
             }
         }
     }

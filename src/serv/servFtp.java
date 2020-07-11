@@ -294,7 +294,7 @@ class servFtpDoer implements Runnable {
 
     private String renameFrom = "";
 
-    private int restartFrom = 0;
+    private long restartFrom = 0;
 
     public servFtpDoer(servFtp parent, pipeSide stream, servFtpConn id) {
         lower = parent;
@@ -881,7 +881,7 @@ class servFtpDoer implements Runnable {
             return false;
         }
         if (a.equals("rest")) {
-            restartFrom = bits.str2num(cmd.word());
+            restartFrom = bits.str2long(cmd.word());
             doLine("350 restarting at " + restartFrom);
             return false;
         }

@@ -2480,6 +2480,8 @@ public class cfgAll {
                         }
                     }
                     break;
+                default:
+                    break;
             }
         }
         ntry.closeUp();

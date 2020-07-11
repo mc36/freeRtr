@@ -532,6 +532,8 @@ public class clntTrack implements rtrBfdClnt {
                     logger.info("got " + a + " from remote");
                 }
                 return;
+            default:
+                break;
         }
         if (timeout < 1) {
             haveResult(false, false);
@@ -612,6 +614,8 @@ public class clntTrack implements rtrBfdClnt {
                     break;
                 }
                 haveResult(bfd.getState(), false);
+                break;
+            default:
                 break;
         }
         if (logging) {

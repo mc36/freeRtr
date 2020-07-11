@@ -441,6 +441,8 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                         case cmac:
                             old = peers.find(per);
                             break;
+                        case vpws:
+                            continue;
                     }
                     if (old == null) {
                         peers.add(per);

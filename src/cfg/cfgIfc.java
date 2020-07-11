@@ -1687,6 +1687,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             if (res.sep != null) {
                 res.sep.loc4addr = addr4.copyBytes();
+                res.sep.msk4addr = mask4.copyBytes();
                 res.sep.rem4addr = peer4.copyBytes();
             }
         }
@@ -1694,6 +1695,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             res.ip6polA = peer6;
             if (res.sep != null) {
                 res.sep.loc6addr = addr6.copyBytes();
+                res.sep.msk6addr = mask6.copyBytes();
                 res.sep.rem6addr = peer6.copyBytes();
             }
         }

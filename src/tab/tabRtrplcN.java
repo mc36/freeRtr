@@ -642,6 +642,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case setRouplc:
                 tabRtrplc.doRpl(afi, net, rouplc, false);
                 return;
+            default:
+                break;
         }
     }
 

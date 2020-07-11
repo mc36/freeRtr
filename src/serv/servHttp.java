@@ -1415,11 +1415,11 @@ class servHttpConn implements Runnable {
             if (i < 0) {
                 gotRange = null;
             } else if (i == 0) {
-                ranB = bits.str2num(gotRange.substring(1, gotRange.length()));
+                ranB = bits.str2long(gotRange.substring(1, gotRange.length()));
                 ranE = siz - 1;
             } else {
-                ranB = bits.str2num(gotRange.substring(0, i));
-                ranE = bits.str2num(gotRange.substring(i + 1, gotRange.length()));
+                ranB = bits.str2long(gotRange.substring(0, i));
+                ranE = bits.str2long(gotRange.substring(i + 1, gotRange.length()));
             }
             if (ranB < 0) {
                 ranB = 0;

@@ -95,6 +95,16 @@ public class ifcSep implements ifcUp, ifcDn {
     public addrIPv6 loc6addr;
 
     /**
+     * netmask ipv4 address
+     */
+    public addrIPv4 msk4addr;
+
+    /**
+     * netmask ipv6 address
+     */
+    public addrIPv6 msk6addr;
+
+    /**
      * config class
      */
     public cfgIfc cfger;
@@ -389,12 +399,12 @@ public class ifcSep implements ifcUp, ifcDn {
         }
         if (loc4addr != null) {
             if (!loc4addr.isEmpty()) {
-                cfger.addr4changed(loc4addr, cfger.mask4, rem4addr);
+                cfger.addr4changed(loc4addr, msk4addr, rem4addr);
             }
         }
         if (loc6addr != null) {
             if (!loc6addr.isEmpty()) {
-                cfger.addr6changed(loc6addr, cfger.mask6, rem6addr);
+                cfger.addr6changed(loc6addr, msk6addr, rem6addr);
             }
         }
     }
@@ -414,8 +424,11 @@ public class ifcSep implements ifcUp, ifcDn {
             }
             switch (i) {
                 case typReq:
+                    if (oprMode != 1) {
+                        break;
+                    }
                     if (debugger.ifcSepEvnt) {
-                        logger.debug("sending reply " + loc4addr + " " + rem4addr + " " + loc6addr + " " + rem6addr);
+                        logger.debug("sending reply " + loc4addr + " " + rem4addr + " " + msk4addr + " " + loc6addr + " " + rem6addr + " " + msk6addr);
                     }
                     pck.clear();
                     pck.msbPutW(0, ethTyp);
@@ -425,27 +438,39 @@ public class ifcSep implements ifcUp, ifcDn {
                     if (rem4addr != null) {
                         pck.putAddr(0, loc4addr);
                         pck.putAddr(addrIPv4.size, rem4addr);
+                        pck.putAddr(2 * addrIPv4.size, msk4addr);
                     }
-                    pck.putSkip(2 * addrIPv4.size);
+                    pck.putSkip(3 * addrIPv4.size);
                     if (rem6addr != null) {
                         pck.putAddr(0, loc6addr);
                         pck.putAddr(addrIPv6.size, rem6addr);
+                        pck.putAddr(2 * addrIPv6.size, msk6addr);
                     }
-                    pck.putSkip(2 * addrIPv6.size);
+                    pck.putSkip(3 * addrIPv6.size);
                     pck.merge2beg();
                     lower.sendPack(pck);
                     updateAddr();
                     curMode = 2;
                     break;
                 case typRep:
+                    if (oprMode != 2) {
+                        break;
+                    }
                     loc4addr = new addrIPv4();
                     rem4addr = new addrIPv4();
+                    msk4addr = new addrIPv4();
                     loc6addr = new addrIPv6();
                     rem6addr = new addrIPv6();
+                    msk6addr = new addrIPv6();
                     getAddr(pck, rem4addr);
                     getAddr(pck, loc4addr);
+                    getAddr(pck, msk4addr);
                     getAddr(pck, rem6addr);
                     getAddr(pck, loc6addr);
+                    getAddr(pck, msk6addr);
+                    if (debugger.ifcSepEvnt) {
+                        logger.debug("got reply " + loc4addr + " " + rem4addr + " " + msk4addr + " " + loc6addr + " " + rem6addr + " " + msk6addr);
+                    }
                     updateAddr();
                     curMode = 2;
                     break;
