@@ -106,6 +106,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! host .* nomediastream",
         "server http .*! host .* nostream",
         "server http .*! host .* nomultiacc",
+        "server http .*! host .* index",
         "server http .*! host .* nodirlist",
         "server http .*! host .* noscript",
         "server http .*! host .* noclass",
@@ -227,6 +228,11 @@ public class servHttp extends servGeneric implements prtServS {
                 l.add(a + " dirlist");
             } else {
                 l.add(a + " nodirlist");
+            }
+            if (ntry.autoIndex) {
+                l.add(a + " index");
+            } else {
+                l.add(a + " noindex");
             }
             if (ntry.allowScript) {
                 l.add(a + " script");
@@ -443,6 +449,14 @@ public class servHttp extends servGeneric implements prtServS {
             ntry.multiAccT = null;
             return false;
         }
+        if (a.equals("index")) {
+            ntry.autoIndex = true;
+            return false;
+        }
+        if (a.equals("noindex")) {
+            ntry.autoIndex = false;
+            return false;
+        }
         if (a.equals("dirlist")) {
             ntry.allowList = true;
             return false;
@@ -612,6 +626,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("4 5        <name>                   proxy profile");
         l.add("5 5,.        <name>                 server to access");
         l.add("3 .      nomultiacc                 disable multiple access");
+        l.add("3 .      index                      allow index for directory");
+        l.add("3 .      noindex                    forbit index for directory");
         l.add("3 .      dirlist                    allow directory listing");
         l.add("3 .      nodirlist                  forbid directory listing");
         l.add("3 .      script                     allow script running");
@@ -780,6 +796,11 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      * page style
      */
     public String style;
+
+    /**
+     * serve index for dirs
+     */
+    public boolean autoIndex = true;
 
     /**
      * directory listing allowed
@@ -1501,8 +1522,16 @@ class servHttpConn implements Runnable {
             sendFoundAt(s + "/");
             return false;
         }
-        if (!sendOneFile(s + "index.html", ".html")) {
-            return false;
+        if (gotHost.autoIndex) {
+            if (!sendOneFile(s + "index.html", ".html")) {
+                return false;
+            }
+            if (!sendOneFile(s + "index.tcl", ".tcl")) {
+                return false;
+            }
+            if (!sendOneFile(s + "index.class", ".class")) {
+                return false;
+            }
         }
         if (!gotHost.allowList) {
             sendRespError(404, "not found");
