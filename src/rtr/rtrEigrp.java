@@ -306,12 +306,12 @@ public class rtrEigrp extends ipRtr implements Runnable {
                 continue;
             }
             tab1 = new tabRoute<addrIP>("ned2adv");
+            tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.safiUnicast, tab1, need2adv, true, ifc.roumapOut, ifc.roupolOut, ifc.prflstOut);
             if (ifc.defOrigin) {
                 ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
                 tab1.add(tabRoute.addType.always, ntry, true, true);
             }
-            tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.safiUnicast, tab1, need2adv, true, ifc.roumapOut, ifc.roupolOut, ifc.prflstOut);
             if (ifc.splitHorizon) {
                 tab1.delIface(ifc.iface);
             }
