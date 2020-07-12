@@ -94,3 +94,10 @@ r2 tping 100 130 2.2.2.11 /vrf v1
 r2 tping 100 130 4321::11 /vrf v1
 r2 tping 100 130 2.2.2.21 /vrf v1
 r2 tping 100 130 4321::21 /vrf v1
+
+r2 output show ipv4 babel 1 sum
+r2 output show ipv6 babel 1 sum
+r2 output show ipv4 babel 1 dat
+r2 output show ipv6 babel 1 dat
+r2 output show ipv4 route v1
+r2 output show ipv6 route v1

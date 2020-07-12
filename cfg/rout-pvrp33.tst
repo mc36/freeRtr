@@ -189,3 +189,10 @@ r1 tping 100 40 3.3.3.2 /vrf v1
 r3 tping 100 40 3.3.3.1 /vrf v1
 r1 tping 100 40 3.3.4.2 /vrf v1
 r3 tping 100 40 3.3.4.1 /vrf v1
+
+r2 output show ipv4 pvrp 1 sum
+r2 output show ipv6 pvrp 1 sum
+r2 output show ipv4 pvrp 1 rou
+r2 output show ipv6 pvrp 1 rou
+r2 output show ipv4 route v1
+r2 output show ipv6 route v1

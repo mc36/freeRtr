@@ -104,3 +104,12 @@ r2 tping 100 40 2.2.2.11 /vrf v1
 r2 tping 100 40 4321::11 /vrf v1
 r2 tping 100 40 2.2.2.21 /vrf v1
 r2 tping 100 40 4321::21 /vrf v1
+
+r2 output show ipv4 lsrp 1 nei
+r2 output show ipv6 lsrp 1 nei
+r2 output show ipv4 lsrp 1 dat
+r2 output show ipv6 lsrp 1 dat
+r2 output show ipv4 lsrp 1 tre
+r2 output show ipv6 lsrp 1 tre
+r2 output show ipv4 route v1
+r2 output show ipv6 route v1

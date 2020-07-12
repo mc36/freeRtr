@@ -153,3 +153,10 @@ r2 tping 100 130 2.2.2.222 /vrf v1
 r2 send exit
 r2 read closed
 r2 tping 0 130 2.2.2.222 /vrf v1
+
+r2 output show ipv4 rip 1 sum
+r2 output show ipv6 rip 1 sum
+r2 output show ipv4 rip 1 dat
+r2 output show ipv6 rip 1 dat
+r2 output show ipv4 route v1
+r2 output show ipv6 route v1

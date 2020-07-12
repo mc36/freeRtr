@@ -245,3 +245,12 @@ r1 tping 100 40 3.3.3.2 /vrf v1
 r3 tping 100 40 3.3.3.1 /vrf v1
 r1 tping 100 40 3.3.4.2 /vrf v1
 r3 tping 100 40 3.3.4.1 /vrf v1
+
+r2 output show ipv4 isis 1 nei
+r2 output show ipv6 isis 1 nei
+r2 output show ipv4 isis 1 dat 2
+r2 output show ipv6 isis 1 dat 2
+r2 output show ipv4 isis 1 tre 2
+r2 output show ipv6 isis 1 tre 2
+r2 output show ipv4 route v1
+r2 output show ipv6 route v1

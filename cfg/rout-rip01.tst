@@ -159,3 +159,10 @@ r4 tping 100 130 2.2.2.3 /vrf v1
 r4 tping 100 130 4321::1 /vrf v1
 r4 tping 100 130 4321::2 /vrf v1
 r4 tping 100 130 4321::3 /vrf v1
+
+r2 output show ipv4 rip 1 sum
+r2 output show ipv6 rip 1 sum
+r2 output show ipv4 rip 1 dat
+r2 output show ipv6 rip 1 dat
+r2 output show ipv4 route v1
+r2 output show ipv6 route v1

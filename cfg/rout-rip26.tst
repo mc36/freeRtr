@@ -122,3 +122,10 @@ r1 tping 0 40 4321::2 /vrf v1
 
 r2 tping 0 40 2.2.2.1 /vrf v1
 r2 tping 0 40 4321::1 /vrf v1
+
+r2 output show ipv4 rip 1 sum
+r2 output show ipv6 rip 1 sum
+r2 output show ipv4 rip 1 dat
+r2 output show ipv6 rip 1 dat
+r2 output show ipv4 route v1
+r2 output show ipv6 route v1
