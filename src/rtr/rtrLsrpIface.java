@@ -97,6 +97,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
     public boolean splitHorizon = true;
 
     /**
+     * database filter
+     */
+    public boolean databaseFilter = false;
+
+    /**
      * the interface this works on
      */
     protected final ipFwdIface iface;
@@ -213,6 +218,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
     public void routerGetConfig(List<String> l, String beg) {
         l.add(cmds.tabulator + beg + "enable");
         cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
+        cmds.cfgLine(l, !databaseFilter, cmds.tabulator, beg + "database-filter", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !stub, cmds.tabulator, beg + "stub", "");
@@ -236,6 +242,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
     public static void routerGetHelp(userHelping l) {
         l.add("4 .         enable                  enable protocol processing");
         l.add("4 .         split-horizon           dont advertise back on rx interface");
+        l.add("4 .         database-filter         advertise only own data");
         l.add("4 .         bfd                     enable bfd triggered down");
         l.add("4 .         passive                 do not form neighborship");
         l.add("4 .         stub                    do not route traffic");
@@ -290,6 +297,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         }
         if (a.equals("split-horizon")) {
             splitHorizon = true;
+            return;
+        }
+        if (a.equals("database-filter")) {
+            databaseFilter = true;
             return;
         }
         if (a.equals("password")) {
@@ -376,6 +387,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         }
         if (a.equals("split-horizon")) {
             splitHorizon = false;
+            return;
+        }
+        if (a.equals("database-filter")) {
+            databaseFilter = false;
             return;
         }
         if (a.equals("password")) {
