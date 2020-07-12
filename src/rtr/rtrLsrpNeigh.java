@@ -415,16 +415,16 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             if (ntry == null) {
                 continue;
             }
+            if (iface.databaseFilter) {
+                if (ntry.rtrId.compare(ntry.rtrId, lower.routerID) != 0) {
+                    continue;
+                }
+            }
             if (!ntry.differs(advert.find(ntry))) {
                 continue;
             }
             if (conn.ready2tx() < 1024) {
                 return;
-            }
-            if (iface.databaseFilter) {
-                if (ntry.rtrId.compare(ntry.rtrId, lower.routerID) != 0) {
-                    continue;
-                }
             }
             sendLn("update " + ntry.dump(rtrLsrpData.dmpFull));
             advert.put(ntry.copyHead());
