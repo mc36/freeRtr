@@ -238,7 +238,7 @@ public class userUpgrade {
         err += verifyFile(version.getFileName(), blb.jars);
         for (int i = 0; i < blb.files.size(); i++) {
             userUpgradeNtry ntry = blb.files.get(i);
-            err += verifyFile(ntry.getName(), ntry.chk);
+            err += verifyFile(ntry.name, ntry.chk);
         }
         if (err > 0) {
             cmd.error("some tests failed!");
@@ -371,7 +371,7 @@ public class userUpgrade {
         boolean some = false;
         for (int o = 0; o < blb.files.size(); o++) {
             userUpgradeNtry ntry = blb.files.get(o);
-            i = upgradeFile(ntry.chk, ntry.getName(), server + ntry.getName(), tmp);
+            i = upgradeFile(ntry.chk, version.myWorkDir() + ntry.name, server + ntry.name, tmp);
             if (i == 2) {
                 some = true;
                 continue;
@@ -500,7 +500,7 @@ public class userUpgrade {
 
 class userUpgradeNtry implements Comparator<userUpgradeNtry> {
 
-    private final String name;
+    public final String name;
 
     public final String chk;
 
@@ -513,16 +513,8 @@ class userUpgradeNtry implements Comparator<userUpgradeNtry> {
         return o1.name.compareTo(o2.name);
     }
 
-    public String getName() {
-        String s = name;
-        if (s.length() < 2) {
-            s = version.getFileName();
-        }
-        return s;
-    }
-
     public String toString() {
-        return chk + " " + getName();
+        return chk + " " + name;
     }
 
     public static userUpgradeNtry fromString(String s) {
@@ -556,7 +548,7 @@ class userUpgradeBlob {
     public String getFilelist() {
         String s = version.getFileName();
         for (int i = 0; i < files.size(); i++) {
-            s += " " + files.get(i).getName();
+            s += " " + files.get(i).name;
         }
         return s;
     }
