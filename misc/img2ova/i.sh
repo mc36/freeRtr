@@ -40,6 +40,7 @@ echo -n `cd $MNT/;find usr/>>filist`
 echo -n `cd $MNT/;cpio --quiet -H newc -O cpio -o <filist`
 gzip $MNT/cpio
 mv $MNT/cpio.gz $MNT/rtr.ird
+rm -rf $MNT/lib/modules
 
 cp ../image/boot.cfg $MNT/syslinux.cfg
 extlinux -i $MNT
