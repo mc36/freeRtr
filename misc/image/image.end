@@ -12,6 +12,7 @@ del-alw %tmp%/lib/modules/*/kernel/drivers/gpu
 del-alw %tmp%/lib/modules/*/kernel/drivers/media
 del-alw %tmp%/lib/modules/*/kernel/net
 del-alw %tmp%/lib/modules/*/kernel/sound
+del-alw %tmp%/usr/lib/x86_64-linux-gnu/gconv
 
 exec chmod 755 %tmp%/init*
 exec touch %tmp%/rtr/rtr-hw.txt
