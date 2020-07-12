@@ -2088,13 +2088,16 @@ public class userExec {
         if (timeout < 1) {
             timeout = 1;
         }
+        addrIP src = null;
+        if (ifc != null) {
+            src = ifc.getLocAddr(trg);
+        }
         clntPorts trc = new clntPorts();
         trc.vrf = vrf;
         trc.ifc = ifc;
         trc.trg = trg;
         trc.tim = timeout;
-        pipe.linePut("scanning " + trg + ", ran=" + min + ".." + max + ", tim="
-                + timeout);
+        pipe.linePut("scanning " + trg + ", src=" + src + ", vrf=" + vrf.name + ", ran=" + min + ".." + max + ", tim=" + timeout);
         for (int i = min; i < max; i++) {
             if (need2stop()) {
                 break;
@@ -2212,7 +2215,7 @@ public class userExec {
         if (ifc != null) {
             src = ifc.getLocAddr(trg);
         }
-        pipe.linePut("tracing " + trg + ", src=" + src + ", prt=" + port + ", tim=" + timeout + ", tos=" + tos + ", len=" + len);
+        pipe.linePut("tracing " + trg + ", src=" + src + ", vrf=" + vrf.name + ", prt=" + port + ", tim=" + timeout + ", tos=" + tos + ", len=" + len);
         len -= adjustSize(trg);
         int none = 0;
         for (int ttl = 1; ttl < 255; ttl++) {
@@ -2305,7 +2308,15 @@ public class userExec {
                 continue;
             }
         }
-        pipe.linePut("scanning " + strt + ", inc=" + incr + ", num=" + numb + ", tim=" + tim + ", len=" + len);
+        if (vrf == null) {
+            cmd.error("vrf not specified");
+            return;
+        }
+        addrIP src = null;
+        if (ifc != null) {
+            src = ifc.getLocAddr(strt);
+        }
+        pipe.linePut("scanning " + strt + ", src=" + src + ", vrf=" + vrf.name + ", inc=" + incr + ", num=" + numb + ", tim=" + tim + ", len=" + len);
         len -= adjustSize(strt);
         for (;;) {
             if (need2stop()) {
@@ -2340,10 +2351,6 @@ public class userExec {
                 continue;
             }
             ipFwd fwd = vrf.getFwd(strt);
-            addrIP src = null;
-            if (ifc != null) {
-                src = ifc.getLocAddr(strt);
-            }
             notifier notif = fwd.echoSendReq(src, strt, len, ttl, tos);
             if (notif == null) {
                 continue;
@@ -2455,7 +2462,7 @@ public class userExec {
         long tiMin = timeout * 10;
         long tiMax = 0;
         long tiSum = 0;
-        pipe.linePut("pinging " + trg + ", src=" + src + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", ttl=" + ttl + ", tos=" + tos + ", sweep=" + sweep);
+        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", ttl=" + ttl + ", tos=" + tos + ", sweep=" + sweep);
         size -= adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
             if (sweep) {

@@ -81,6 +81,10 @@ public class userTerminal {
             return null;
         }
         stream = prx.doConnect(proto, addr, port, name);
+        if (stream == null) {
+            console.debugStat("failed");
+            return null;
+        }
         return stream;
     }
 
@@ -110,6 +114,10 @@ public class userTerminal {
         }
         console.debugStat("securing connection");
         stream = secClient.openSec(stream, proto, user, pass);
+        if (stream == null) {
+            console.debugStat("failed");
+            return null;
+        }
         return stream;
     }
 
