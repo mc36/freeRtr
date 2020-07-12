@@ -238,7 +238,7 @@ public class userUpgrade {
         err += verifyFile(version.getFileName(), blb.jars);
         for (int i = 0; i < blb.files.size(); i++) {
             userUpgradeNtry ntry = blb.files.get(i);
-            err += verifyFile(ntry.name, ntry.chk);
+            err += verifyFile(version.myWorkDir() + ntry.name, ntry.chk);
         }
         if (err > 0) {
             cmd.error("some tests failed!");
