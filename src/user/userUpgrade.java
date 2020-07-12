@@ -218,6 +218,7 @@ public class userUpgrade {
      */
     public int doVerify() {
         int err = 0;
+        cmd.error("server: " + cfgAll.upgradeServer);
         cmd.error("archive: " + version.getFileName());
         cmd.error("version: " + myVerFile());
         List<String> txt = bits.txt2buf(myVerFile());

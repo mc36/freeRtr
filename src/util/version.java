@@ -261,7 +261,11 @@ public class version {
     public static String myPathName() {
         String s = getFileName();
         int i = s.lastIndexOf(".");
-        if (i < 0) {
+        int o = s.lastIndexOf("/");
+        if (o < 0) {
+            o = 0;
+        }
+        if (i < o) {
             return "unknown";
         }
         return s.substring(0, i);
