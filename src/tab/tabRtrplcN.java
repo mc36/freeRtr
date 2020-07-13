@@ -2,6 +2,8 @@ package tab;
 
 import addr.addrIP;
 import addr.addrPrefix;
+import cfg.cfgAll;
+import cfg.cfgTrack;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
@@ -71,6 +73,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          * clear lrgcomm
          */
         clrLrgcomm,
+        /**
+         * clear privas
+         */
+        clrPrivas,
         /**
          * set stdcomm
          */
@@ -189,6 +195,14 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          * nolrgcomm
          */
         nolrgcomm,
+        /**
+         * tracker
+         */
+        track,
+        /**
+         * privas
+         */
+        privas,
         /**
          * prefix list
          */
@@ -366,6 +380,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return bits.str2lst(beg + "clear extcomm");
             case clrLrgcomm:
                 return bits.str2lst(beg + "clear lrgcomm");
+            case clrPrivas:
+                return bits.str2lst(beg + "clear privateas");
             case setStdcomm:
                 return bits.str2lst(beg + "set stdcomm " + tabRtrmapN.stdComms2string(intLst));
             case setExtcomm:
@@ -435,6 +451,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "noextcomm";
             case nolrgcomm:
                 return "nolrgcomm";
+            case track:
+                return "tracker " + strVal;
+            case privas:
+                return "privateas";
             case prfxlst:
                 return "prefix-list " + prfxlst;
             case roumap:
@@ -528,6 +548,16 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                     }
                 }
                 return true;
+            case track:
+                cfgTrack res = cfgAll.trackFind(strVal, false);
+                if (res == null) {
+                    return false;
+                }
+                return res.worker.getStatus();
+            case privas:
+                int i = rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.pathSeq));
+                i += rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.pathSet));
+                return i > 0;
             case prfxlst:
                 return prfxlst.matches(afi, net.prefix);
             case roumap:
@@ -584,6 +614,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case clrLrgcomm:
                 net.lrgComm = null;
+                return;
+            case clrPrivas:
+                rtrBgpUtil.removePrivateAs(net.pathSeq);
+                rtrBgpUtil.removePrivateAs(net.pathSet);
                 return;
             case setStdcomm:
                 net.stdComm = tabLabel.prependLabels(net.stdComm, intLst);

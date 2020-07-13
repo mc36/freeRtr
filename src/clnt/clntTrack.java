@@ -263,6 +263,10 @@ public class clntTrack implements rtrBfdClnt {
      */
     protected long lastTime;
 
+    public String toString() {
+        return "" + name;
+    }
+
     /**
      * force to string
      *

@@ -2,6 +2,8 @@ package tab;
 
 import addr.addrIP;
 import addr.addrPrefix;
+import cfg.cfgAll;
+import cfg.cfgTrack;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
@@ -168,6 +170,21 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * next hop updater
      */
     public addrIP nexthopSet;
+
+    /**
+     * tracker matcher
+     */
+    public String trackMatch;
+
+    /**
+     * private as matcher
+     */
+    public boolean privasMatch;
+
+    /**
+     * private as updates
+     */
+    public boolean privasClear;
 
     /**
      * community matcher
@@ -679,10 +696,13 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         cmds.cfgLine(l, !noStdComm, beg, "match nostdcomm", "");
         cmds.cfgLine(l, !noExtComm, beg, "match noextcomm", "");
         cmds.cfgLine(l, !noLrgComm, beg, "match nolrgcomm", "");
+        cmds.cfgLine(l, trackMatch == null, beg, "match tracker", "" + trackMatch);
+        cmds.cfgLine(l, !privasMatch, beg, "match privateas", "");
         cmds.cfgLine(l, !logMatch, beg, "log", "");
         cmds.cfgLine(l, !stdCommClear, beg, "clear stdcomm", "");
         cmds.cfgLine(l, !extCommClear, beg, "clear extcomm", "");
         cmds.cfgLine(l, !extCommClear, beg, "clear lrgcomm", "");
+        cmds.cfgLine(l, !privasClear, beg, "clear privateas", "");
         cmds.cfgLine(l, roumapSet == null, beg, "set route-map", "" + roumapSet);
         cmds.cfgLine(l, rouplcSet == null, beg, "set route-policy", "" + rouplcSet);
         if (aspathSet == null) {
@@ -799,6 +819,22 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 }
             }
         }
+        if (trackMatch != null) {
+            cfgTrack res = cfgAll.trackFind(trackMatch, false);
+            if (res == null) {
+                return false;
+            }
+            if (!res.worker.getStatus()) {
+                return false;
+            }
+        }
+        if (privasMatch) {
+            int i = rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.pathSeq));
+            i += rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.pathSet));
+            if (i < 1) {
+                return false;
+            }
+        }
         if (nexthopMatch != null) {
             if (net.nextHop == null) {
                 return false;
@@ -880,6 +916,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (lrgCommClear) {
             net.lrgComm = null;
+        }
+        if (privasClear) {
+            rtrBgpUtil.removePrivateAs(net.pathSeq);
+            rtrBgpUtil.removePrivateAs(net.pathSet);
         }
         net.stdComm = tabLabel.prependLabels(net.stdComm, stdCommSet);
         if (nexthopSet != null) {

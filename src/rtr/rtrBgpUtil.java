@@ -2863,16 +2863,20 @@ public class rtrBgpUtil {
      * remove private as numbers
      *
      * @param lst list to use
+     * @return number of occurences removed
      */
-    public static void removePrivateAs(List<Integer> lst) {
+    public static int removePrivateAs(List<Integer> lst) {
         if (lst == null) {
-            return;
+            return 0;
         }
+        int o = 0;
         for (int i = lst.size() - 1; i >= 0; i--) {
             if (asNumPrivate(lst.get(i))) {
                 lst.remove(i);
+                o++;
             }
         }
+        return o;
     }
 
 }

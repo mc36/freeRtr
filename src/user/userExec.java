@@ -497,12 +497,16 @@ public class userExec {
         hl.add("6 7,.            database        list of routes in database");
         hl.add("7 8,.              [addr]        prefix to view");
         hl.add("8 .                  [rd]        route distinguisher");
+        hl.add("6 .              privateas       list of routes with private asn");
+        hl.add("6 .              nostdcomm       list of routes without community");
         hl.add("6 7              stdcomm         list of routes with community");
         hl.add("7 8,.              <str>         community");
         hl.add("8 8,.                [str]       community");
+        hl.add("6 .              noextcomm       list of routes without community");
         hl.add("6 7              extcomm         list of routes with community");
         hl.add("7 8,.              <str>         community");
         hl.add("8 8,.                [str]       community");
+        hl.add("6 .              nolrgcomm       list of routes without community");
         hl.add("6 7              lrgcomm         list of routes with community");
         hl.add("7 8,.              <str>         community");
         hl.add("8 8,.                [str]       community");

@@ -1206,8 +1206,10 @@ class servHttpConn implements Runnable {
     private boolean sendOneClass(String s) {
         byte[] res = null;
         try {
-            Class<?> cls = gotHost.allowClass.loadClass(gotUrl.filPath
-                    + gotUrl.filName);
+            if (!new File(gotHost.path + s).exists()) {
+                return true;
+            }
+            Class<?> cls = gotHost.allowClass.loadClass(gotUrl.filPath + gotUrl.filName);
             Object obj = cls.getDeclaredConstructor().newInstance();
             Method[] mth = cls.getDeclaredMethods();
             int o = -1;

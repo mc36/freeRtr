@@ -53,6 +53,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no match stdcomm",
         "route-map .*! sequence .* no match extcomm",
         "route-map .*! sequence .* no match lrgcomm",
+        "route-map .*! sequence .* no match privateas",
+        "route-map .*! sequence .* no match tracker",
         "route-map .*! sequence .* no match nexthop",
         "route-map .*! sequence .* match distance all",
         "route-map .*! sequence .* match locpref all",
@@ -73,6 +75,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no clear stdcomm",
         "route-map .*! sequence .* no clear extcomm",
         "route-map .*! sequence .* no clear lrgcomm",
+        "route-map .*! sequence .* no clear privateas",
         "route-map .*! sequence .* no set route-map",
         "route-map .*! sequence .* no set route-policy",
         "route-map .*! sequence .* no set aspath",
@@ -215,6 +218,9 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("2 .     nostdcomm           match empty standard community");
         l.add("2 .     noextcomm           match empty extended community");
         l.add("2 .     nolrgcomm           match empty large community");
+        l.add("2 .     privateas           match private asn");
+        l.add("2 3     tracker             match tracker state");
+        l.add("3 .       <name>            name of tracker");
         l.add("2 3     prefix-list         match prefix list");
         l.add("3 .       <name>            name of prefix list");
         l.add("2 3     route-map           match route map");
@@ -225,6 +231,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("2 .     stdcomm             clear standard community");
         l.add("2 .     extcomm             clear extended community");
         l.add("2 .     lrgcomm             clear large community");
+        l.add("2 .     privateas           clear private asn");
         l.add("1 2   set                   set values in destination routing protocol");
         l.add("2 3     aspath              prepend as path");
         l.add("3 3,.     <num>             as to prepend");
@@ -417,6 +424,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.noLrgComm = true;
                 return;
             }
+            if (a.equals("privateas")) {
+                ntry.privasMatch = true;
+                return;
+            }
+            if (a.equals("tracker")) {
+                ntry.trackMatch = cmd.word();
+                return;
+            }
             if (a.equals("prefix-list")) {
                 cfgPrfxlst prfxlst = cfgAll.prfxFind(cmd.word(), false);
                 if (prfxlst == null) {
@@ -551,6 +566,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("lrgcomm")) {
                 ntry.lrgCommClear = true;
+                return;
+            }
+            if (a.equals("privateas")) {
+                ntry.privasClear = true;
                 return;
             }
             cmd.badCmd();
@@ -743,6 +762,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.noLrgComm = false;
                 return;
             }
+            if (a.equals("privateas")) {
+                ntry.privasMatch = false;
+                return;
+            }
+            if (a.equals("tracker")) {
+                ntry.trackMatch = null;
+                return;
+            }
             if (a.equals("distance")) {
                 ntry.distanceMatch.set2always();
                 return;
@@ -811,6 +838,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("lrgcomm")) {
                 ntry.lrgCommClear = false;
+                return;
+            }
+            if (a.equals("privateas")) {
+                ntry.privasClear = false;
                 return;
             }
             cmd.badCmd();

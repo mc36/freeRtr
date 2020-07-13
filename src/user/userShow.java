@@ -2537,6 +2537,58 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 1000);
             return;
         }
+        if (a.equals("nostdcomm")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.noStdComm = true;
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("noextcomm")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.noExtComm = true;
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("nolrgcomm")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.noLrgComm = true;
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
+        if (a.equals("privateas")) {
+            a = cmd.getRemaining();
+            cmd = new cmds("", "");
+            tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+            tabRtrmapN ntry = new tabRtrmapN();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            ntry.privasMatch = true;
+            roumap.add(ntry);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, roumap, null, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
+            return;
+        }
         if (a.equals("stdcomm")) {
             a = cmd.getRemaining();
             cmd = new cmds("", "");

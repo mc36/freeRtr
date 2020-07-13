@@ -67,7 +67,7 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
     /**
      * match tracker
      */
-    public cfgTrack track;
+    public String track;
 
     /**
      * match time
@@ -195,10 +195,7 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
                 track = null;
                 return;
             }
-            track = cfgAll.trackFind(cmd.word(), false);
-            if (track == null) {
-                cmd.error("no such tracker");
-            }
+            track = cmd.word();
             return;
         }
         if (a.equals("time")) {
@@ -288,7 +285,11 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
             }
         }
         if (track != null) {
-            if (!track.worker.getStatus()) {
+            cfgTrack res = cfgAll.trackFind(track, false);
+            if (res == null) {
+                return null;
+            }
+            if (!res.worker.getStatus()) {
                 return null;
             }
         }

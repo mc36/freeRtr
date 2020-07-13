@@ -155,6 +155,9 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("2 .     nostdcomm           match empty standard community");
         l.add("2 .     noextcomm           match empty extended community");
         l.add("2 .     nolrgcomm           match empty large community");
+        l.add("2 .     privateas           match private asn");
+        l.add("2 3     tracker             match tracker state");
+        l.add("3 .       <name>            name of tracker");
         l.add("2 3     prefix-list         match prefix list");
         l.add("3 .       <name>            name of prefix list");
         l.add("2 3     route-map           match route map");
@@ -172,6 +175,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("2 .     stdcomm             clear standard community");
         l.add("2 .     extcomm             clear extended community");
         l.add("2 .     lrgcomm             clear large community");
+        l.add("2 .     privateas           clear private asn");
         l.add("1 2   set                   set values in destination routing protocol");
         l.add("2 3     aspath              prepend as path");
         l.add("3 3,.     <num>             as to prepend");
@@ -320,6 +324,15 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("nolrgcomm")) {
             ntry.ifMode = tabRtrplcN.ifType.nolrgcomm;
+            return;
+        }
+        if (a.equals("privateas")) {
+            ntry.ifMode = tabRtrplcN.ifType.privas;
+            return;
+        }
+        if (a.equals("tracker")) {
+            ntry.ifMode = tabRtrplcN.ifType.track;
+            ntry.strVal = cmd.word();
             return;
         }
         if (a.equals("prefix-list")) {
@@ -560,6 +573,10 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("lrgcomm")) {
                 ntry.doMode = tabRtrplcN.doType.clrLrgcomm;
+                return;
+            }
+            if (a.equals("privateas")) {
+                ntry.doMode = tabRtrplcN.doType.clrPrivas;
                 return;
             }
             cmd.badCmd();
