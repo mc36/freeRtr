@@ -109,6 +109,7 @@ public class player implements Runnable {
             staticPlayer.path = path.substring(0, path.lastIndexOf("."));
             staticPlayer.urlF = url;
             staticPlayer.urlR = new URL(url).getPath();
+            staticPlayer.doInit();
             new Thread(staticPlayer).start();
         }
         int i = staticPlayer.doRequest(par, buf);
@@ -269,7 +270,7 @@ public class player implements Runnable {
         stopPlay("amixer");
     }
 
-    public void run() {
+    public void doInit() {
         playlists = playerUtil.readup("/etc/asound.conf");
         int volDef = 50;
         if (playlists != null) {
@@ -309,6 +310,9 @@ public class player implements Runnable {
         setVolume(volDef);
         startPlay(-1, "0");
         ready = true;
+    }
+    
+    public void run() {
         for (;;) {
             try {
                 synchronized (sleeper) {

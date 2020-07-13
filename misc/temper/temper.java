@@ -67,6 +67,7 @@ public class temper implements Runnable {
             staticTemper = new temper();
             staticTemper.path = path.substring(0, path.lastIndexOf("."));
             staticTemper.url = new URL(url).getPath();
+            staticTemper.doiit();
             new Thread(staticTemper).start();
         }
         if (staticTemper.doRequest(par, buf, peer) == 2) {
@@ -241,7 +242,7 @@ public class temper implements Runnable {
         temperUtil.append(logFile, temperUtil.getTime() + ";" + who + ";" + currValue + ";" + lastNeeded + ";" + measUse + a);
     }
 
-    public void run() {
+    public void doiit() {
         readConfig();
         measDat[0].getValue();
         lastNeeded = measDat[0].lastMeasure;
@@ -249,13 +250,15 @@ public class temper implements Runnable {
         timeHeating = timeNeeded;
         lastSetter = "boot";
         rangeCheck();
-        setValue(doCalc());
         writeLog("<boot>");
+    }
+
+    public void run() {
         for (;;) {
-            temperUtil.sleep(60 * 1000);
             rangeCheck();
             setValue(doCalc());
             writeLog(null);
+            temperUtil.sleep(60 * 1000);
         }
     }
 
