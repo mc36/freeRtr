@@ -89,6 +89,7 @@ public class userClear {
             boolean res = sm.doSend(1);
             sm.cleanUp();
             if (res) {
+                cmd.error("error sending mail");
                 return null;
             }
             userFlash.delete(version.myErrorFile());
