@@ -984,7 +984,10 @@ public class userReader implements Comparator<String> {
      * @return regular expression
      */
     public static String filter2reg(String flt) {
-        return (" " + flt + " ").replaceAll(" ", ".*");
+        flt = ".*" + flt + ".*";
+        flt = flt.replaceAll(" ", ".*");
+        flt = flt.replaceAll("\\|", ".*|.*");
+        return flt;
     }
 
     /**

@@ -515,7 +515,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 if (conn.ready2adv) {
                     conn.sendKeepAlive();
                 }
-                lastKeep = tim;
+                lastKeep = tim - 1;
             }
             if (!need2run) {
                 return;

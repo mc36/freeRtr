@@ -598,12 +598,13 @@ public class ipFwdIface extends tabRouteIface {
             return false;
         }
         if (a.equals("autoroute")) {
-            autRouTyp = cfgRtr.name2num(cmd.word());
+            a = cmd.word();
             autRouPrt = bits.str2num(cmd.word());
             autRouRtr = new addrIP();
             autRouRtr.fromString(cmd.word());
             autRouHop = new addrIP();
             autRouHop.fromString(cmd.word());
+            autRouTyp = cfgRtr.name2num(a);
             return false;
         }
         if (a.equals("host-reach")) {

@@ -245,7 +245,7 @@ vrf definition vv
 router lsrp4 1
  vrf v1
  router-id 10.10.10.227
- refresh 60000
+ refresh 600000
  lifetime 2147483000
  segrout 300 299
  bier 256 300 299
@@ -255,7 +255,7 @@ router lsrp4 1
 router lsrp6 1
  vrf v1
  router-id 10.10.10.227
- refresh 60000
+ refresh 600000
  lifetime 2147483000
  segrout 300 299
  bier 256 300 299
@@ -315,7 +315,7 @@ interface loopback42
  description dn42.net
  vrf forwarding dn42
  ipv4 address 172.23.199.109 255.255.255.255
- ipv6 address fd40:cc1e:c0de:ffff:ffff:ffff:ffff:fffd ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ ipv6 address fd40:cc1e:c0de::fffd ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  no shutdown
  no log-link-change
  exit

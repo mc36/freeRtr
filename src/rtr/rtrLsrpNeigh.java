@@ -380,12 +380,16 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         if (iface.bfdTrigger) {
             iface.iface.bfdAdd(peer, this, "lsrp");
         }
+        long lastKeep = 0;
         for (;;) {
             if (!need2run) {
                 break;
             }
-            if (notif.misleep(iface.helloTimer) < 1) {
+            notif.misleep(iface.helloTimer);
+            long tim = bits.getTime();
+            if ((lastKeep + iface.helloTimer) < tim) {
                 sendLn("keepalive " + iface.deadTimer);
+                lastKeep = tim - 1;
             }
             if (conn.isClosed() != 0) {
                 break;
@@ -433,8 +437,12 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         if (sent > 0) {
             sendLn("nomore");
         }
+        boolean old = allSent;
         allSent = true;
-        lower.notif.wakeup();
+        if (!old) {
+            lower.todo.set(0);
+            lower.notif.wakeup();
+        }
     }
 
 }
@@ -511,6 +519,7 @@ class rtrLsrpNeighRcvr implements Runnable {
             }
             if (a.equals("nomore")) {
                 lower.noMore = true;
+                lower.lower.todo.set(0);
                 lower.lower.notif.wakeup();
                 continue;
             }

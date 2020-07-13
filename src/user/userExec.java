@@ -1745,9 +1745,8 @@ public class userExec {
             }
             if (a.equals("editor")) {
                 List<String> c1 = cfgAll.getShRun(true);
-                a = cmd.word();
-                if (a.length() > 0) {
-                    c1 = userFilter.getSection(c1, userReader.filter2reg(a + " " + cmd.getRemaining()));
+                if (cmd.size() > 0) {
+                    c1 = userFilter.getSection(c1, userReader.filter2reg(cmd.getRemaining()));
                 }
                 List<String> c2 = new ArrayList<String>();
                 c2.addAll(c1);
@@ -1765,12 +1764,8 @@ public class userExec {
             }
             if (a.equals("viewer")) {
                 List<String> c1 = cfgAll.getShRun(true);
-                a = cmd.word();
-                if (a.length() > 0) {
-                    c1 = userFilter.getSection(
-                            c1,
-                            userReader.filter2reg(a + " "
-                                    + cmd.getRemaining()));
+                if (cmd.size() > 0) {
+                    c1 = userFilter.getSection(c1, userReader.filter2reg(cmd.getRemaining()));
                 }
                 userEditor v = new userEditor(new userScreen(pipe, reader.width, reader.height), c1, "section '" + a + "'", false);
                 v.doView();

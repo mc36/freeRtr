@@ -346,15 +346,20 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         adverted.clear();
         logger.warn("neighbor " + name + " (" + peer + ") up");
         new rtrPvrpNeighRcvr(this).startWork();
+        lower.notif.wakeup();
         if (iface.bfdTrigger) {
             iface.iface.bfdAdd(peer, this, "pvrp");
         }
+        long lastKeep = 0;
         for (;;) {
             if (!need2run) {
                 break;
             }
-            if (notif.misleep(iface.helloTimer) < 1) {
+            notif.misleep(iface.helloTimer);
+            long tim = bits.getTime();
+            if ((lastKeep + iface.helloTimer) < tim) {
                 sendLn("keepalive " + iface.deadTimer);
+                lastKeep = tim - 1;
             }
             if (conn.isClosed() != 0) {
                 break;

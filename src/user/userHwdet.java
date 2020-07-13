@@ -407,8 +407,10 @@ public class userHwdet {
         starter.add("cd " + path);
         starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
         starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
+        starter.add("echo 0 > /proc/sys/net/ipv6/conf/lo/disable_ipv6");
         starter.add("ip link set lo up mtu 65535");
         starter.add("ip addr add 127.0.0.1/8 dev lo");
+        starter.add("ip addr add ::1/128 dev lo");
         starter.add("#modprobe -r kvm_intel");
         starter.add("#modprobe kvm_intel nested=1");
         starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
