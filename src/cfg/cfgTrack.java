@@ -42,6 +42,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         "tracker .*! force normal",
         "tracker .*! no hidden",
         "tracker .*! no target",
+        "tracker .*! no wake-vrf",
         "tracker .*! no exec-up",
         "tracker .*! no exec-down",
         "tracker .*! no chat-script",
@@ -137,6 +138,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add("2  .        <num>                    value");
         l.add("1  2      delay-down                 number of failures before down");
         l.add("2  .        <num>                    value");
+        l.add("1  2      wake-vrf                   wake vrf on state change");
+        l.add("2  .        <str>                    name of vrf");
         l.add("1  2      exec-up                    exec command to execute on up");
         l.add("2  2,.      <cmd>                    value");
         l.add("1  2      exec-down                  exec command to execute on down");
@@ -170,6 +173,11 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         } else {
             cmds.cfgLine(l, worker.execUp == null, cmds.tabulator, "exec-up", worker.execUp);
             cmds.cfgLine(l, worker.execDn == null, cmds.tabulator, "exec-down", worker.execDn);
+        }
+        if (worker.wakeVrf != null) {
+            l.add(cmds.tabulator + "wake-vrf " + worker.wakeVrf.name);
+        } else {
+            l.add(cmds.tabulator + "no wake-vrf");
         }
         cmds.cfgLine(l, worker.secProto == 0, cmds.tabulator, "security", servGeneric.proto2string(worker.secProto));
         if (worker.chats != null) {
@@ -325,6 +333,14 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             }
             return;
         }
+        if (a.equals("wake-vrf")) {
+            worker.wakeVrf = cfgAll.vrfFind(cmd.word(), false);
+            if (worker.wakeVrf == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            return;
+        }
         if (a.equals("source")) {
             worker.srcIfc = cfgAll.ifcFind(cmd.word(), false);
             if (worker.srcIfc == null) {
@@ -428,6 +444,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         }
         if (a.equals("vrf")) {
             worker.vrf = null;
+            return;
+        }
+        if (a.equals("wake-vrf")) {
+            worker.wakeVrf = null;
             return;
         }
         if (a.equals("source")) {

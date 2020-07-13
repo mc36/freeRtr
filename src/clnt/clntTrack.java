@@ -142,6 +142,11 @@ public class clntTrack implements rtrBfdClnt {
     public String execDn = null;
 
     /**
+     * notify vrf
+     */
+    public cfgVrf wakeVrf = null;
+
+    /**
      * chat script
      */
     public lineScript chats = null;
@@ -670,6 +675,10 @@ public class clntTrack implements rtrBfdClnt {
                 continue;
             }
             ntry.routerStaticChg();
+        }
+        if (wakeVrf != null) {
+            wakeVrf.fwd4.routerStaticChg();
+            wakeVrf.fwd6.routerStaticChg();
         }
         String cmd = null;
         if (succ) {
