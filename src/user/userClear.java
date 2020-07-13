@@ -16,6 +16,7 @@ import cfg.cfgPrcss;
 import cfg.cfgVpdn;
 import cfg.cfgVrf;
 import clnt.clntDns;
+import clnt.clntSmtp;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
@@ -43,6 +44,7 @@ import serv.servBmp2mrt;
 import util.bits;
 import util.cmds;
 import util.logger;
+import util.version;
 
 /**
  * process clear commands
@@ -71,6 +73,27 @@ public class userClear {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.clear, false);
         if (alias != null) {
             return alias.getCommand(cmd);
+        }
+        if (a.equals("errors")) {
+            List<String> err = bits.txt2buf(version.myErrorFile());
+            if (err == null) {
+                cmd.error("nothing to report");
+                return null;
+            }
+            clntSmtp sm = new clntSmtp(cmd.pipe);
+            a = cmd.word();
+            sm.rcpt = a;
+            sm.putHead("errors@" + cfgAll.getFqdn(), a, "errors happened");
+            sm.putText(err);
+            sm.putFinish();
+            boolean res = sm.doSend(1);
+            sm.cleanUp();
+            if (res) {
+                return null;
+            }
+            userFlash.delete(version.myErrorFile());
+            cmd.error("errors mailed");
+            return null;
         }
         if (a.equals("dial-peer")) {
             cfgDial ntry = cfgAll.dialFind(cmd.word(), false);

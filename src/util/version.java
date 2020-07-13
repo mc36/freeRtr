@@ -295,6 +295,15 @@ public class version {
     }
 
     /**
+     * get errors file name
+     *
+     * @return filename without path
+     */
+    public static String myErrorFile() {
+        return myPathName() + ".err";
+    }
+
+    /**
      * get kernel name
      *
      * @return name of kernel

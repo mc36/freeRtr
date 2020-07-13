@@ -1040,6 +1040,8 @@ public class userExec {
         hl.add("1 2    clear                     clear running conditions");
         hl.add("2 3,.    counters                counters on one or more interfaces");
         hl.add("3 .        <name>                name of interface");
+        hl.add("2 3      errors                  error reporter");
+        hl.add("3 .        <str>                 email address");
         hl.add("2 3      dial-peer               clear voip call");
         hl.add("3 4        <num>                 number of dial peer");
         hl.add("4 .          <str>               call id");

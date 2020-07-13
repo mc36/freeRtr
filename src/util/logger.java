@@ -421,8 +421,13 @@ public class logger {
      * @param e exception
      */
     public static void exception(Throwable e) {
-        logOneLine(logLev.msgExcp, "exception", dumpException(e));
-        cfgInit.stopRouter(false, 8, "exception");
+        String a = dumpException(e);
+        try {
+            bits.buf2txt(false, bits.str2lst(a), version.myErrorFile());
+        } catch (Exception ee) {
+        }
+        logOneLine(logLev.msgExcp, "exception", a);
+        cfgInit.stopRouter(false, 8, "exception " + a);
     }
 
     /**
@@ -431,7 +436,12 @@ public class logger {
      * @param e exception
      */
     public static void traceback(Throwable e) {
-        logOneLine(logLev.msgExcp, "traceback", dumpException(e));
+        String a = dumpException(e);
+        try {
+            bits.buf2txt(false, bits.str2lst(a), version.myErrorFile());
+        } catch (Exception ee) {
+        }
+        logOneLine(logLev.msgExcp, "traceback", a);
     }
 
     /**
