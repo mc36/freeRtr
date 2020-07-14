@@ -1459,6 +1459,10 @@ qc pass: ibgp rr with labels
 qc pass: confed bgp with labels
 qc pass: bgp route server with labels
 qc pass: bgp soft-reconfig with labels
+qc pass: bgp remove private as in with routemap
+qc pass: bgp remove private as out with routemap
+qc pass: bgp remove private as in with routepolicy
+qc pass: bgp remove private as out with routepolicy
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -1710,6 +1714,8 @@ qc pass: redistribution change in metric
 qc pass: redistribution prefix movement
 qc pass: redistribution with mobile
 qc pass: redistribution with deaggr
+qc pass: conditional redistribution with routemap
+qc pass: conditional redistribution with routepolicy
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist

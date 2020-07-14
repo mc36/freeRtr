@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.7.12-rel, done by cs@nop.;-;-
--;-;2020-07-13 06:29:14, took 09:34:59 on 1760 cases, 0 failed, 1 traces, 19 retries;-;-
+-;-;freeRouter v20.7.13-rel, done by cs@nop.;-;-
+-;-;2020-07-14 00:47:11, took 09:35:26 on 1766 cases, 0 failed, 0 traces, 14 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1463,6 +1463,10 @@ rout-bgp403.tst;0;ibgp rr with labels;successfully;finished
 rout-bgp404.tst;0;confed bgp with labels;successfully;finished
 rout-bgp405.tst;0;bgp route server with labels;successfully;finished
 rout-bgp406.tst;0;bgp soft-reconfig with labels;successfully;finished
+rout-bgp407.tst;0;bgp remove private as in with routemap;successfully;finished
+rout-bgp408.tst;0;bgp remove private as out with routemap;successfully;finished
+rout-bgp409.tst;0;bgp remove private as in with routepolicy;successfully;finished
+rout-bgp410.tst;0;bgp remove private as out with routepolicy;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished
@@ -1714,6 +1718,8 @@ rout-redist20.tst;0;redistribution change in metric;successfully;finished
 rout-redist21.tst;0;redistribution prefix movement;successfully;finished
 rout-redist22.tst;0;redistribution with mobile;successfully;finished
 rout-redist23.tst;0;redistribution with deaggr;successfully;finished
+rout-redist24.tst;0;conditional redistribution with routemap;successfully;finished
+rout-redist25.tst;0;conditional redistribution with routepolicy;successfully;finished
 rout-rip01.tst;0;rip on one subnet;successfully;finished
 rout-rip02.tst;0;rip in chain;successfully;finished
 rout-rip03.tst;0;rip ingress route filtering with prefixlist;successfully;finished
