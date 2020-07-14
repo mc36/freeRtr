@@ -173,6 +173,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router pvrp
         "router pvrp[4|6] .*! no suppress-prefix",
         "router pvrp[4|6] .*! no labels",
+        "router pvrp[4|6] .*! no stub",
         // router lsrp
         "router lsrp[4|6] .*! distance 70",
         "router lsrp[4|6] .*! no default-originate",

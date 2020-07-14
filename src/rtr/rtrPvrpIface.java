@@ -65,6 +65,17 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
     public int metricOut = 0;
 
     /**
+     * stub flag
+     */
+    public boolean stub = false;
+
+    
+    /**
+     * unstub flag
+     */
+    public boolean unstub = false;
+
+    /**
      * bfd enabled
      */
     public boolean bfdTrigger;
@@ -283,6 +294,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
         cmds.cfgLine(l, !labelPop, cmds.tabulator, beg + "label-pop", "");
+        cmds.cfgLine(l, !stub, cmds.tabulator, beg + "stub", "");
+        cmds.cfgLine(l, !unstub, cmds.tabulator, beg + "unstub", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
         cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
@@ -314,6 +327,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         l.add("4 .         label-pop               advertise php");
         l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 .         passive                 do not form neighborship");
+        l.add("4 .         stub                    do not route traffic");
+        l.add("4 .         unstub                  do route traffic");
         l.add("4 .         suppress-prefix         do not advertise interface");
         l.add("4 .         unsuppress-prefix       do advertise interface");
         l.add("4 5         encryption              select encryption method");
@@ -393,6 +408,16 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
             certRsa = cfgAll.certFind(cmd.word(), false);
             certDsa = cfgAll.certFind(cmd.word(), false);
             certEcDsa = cfgAll.certFind(cmd.word(), false);
+            return;
+        }
+        if (a.equals("stub")) {
+            stub = true;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("unstub")) {
+            unstub = true;
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("suppress-prefix")) {
@@ -543,6 +568,16 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         }
         if (a.equals("password")) {
             authentication = null;
+            return;
+        }
+        if (a.equals("stub")) {
+            stub = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("unstub")) {
+            unstub = false;
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("suppress-prefix")) {

@@ -55,6 +55,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
     public addrIPv4 routerID;
 
     /**
+     * stub flag
+     */
+    public boolean stub;
+
+    /**
      * routes needed to advertise
      */
     public tabRoute<addrIP> need2adv;
@@ -293,6 +298,21 @@ public class rtrPvrp extends ipRtr implements Runnable {
             if (ifc.splitHorizon) {
                 tab1.delIface(ifc.iface);
             }
+            if ((stub || ifc.stub) && (!ifc.unstub)) {
+                for (int i = tab1.size() - 1; i >= 0; i--) {
+                    ntry = tab1.get(i);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    if (ntry.clustList == null) {
+                        continue;
+                    }
+                    if (ntry.clustList.size() < 1) {
+                        continue;
+                    }
+                    tab1.del(ntry);
+                }
+            }
             ifc.need2adv = tab1;
             for (int i = 0; i < ifc.neighs.size(); i++) {
                 rtrPvrpNeigh nei = ifc.neighs.get(i);
@@ -348,6 +368,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         l.add("1 2   router-id                   specify router id");
         l.add("2 .     <addr>                    router id");
         l.add("1 .   labels                      specify label mode");
+        l.add("1 .   stub                        stub router");
         l.add("1 .   suppress-prefix             do not advertise interfaces");
     }
 
@@ -360,6 +381,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
      */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "router-id " + routerID);
+        cmds.cfgLine(l, !stub, beg, "stub", "");
         cmds.cfgLine(l, !labels, beg, "labels", "");
         cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
     }
@@ -386,6 +408,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
         if (s.equals("labels")) {
             labels = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("stub")) {
+            stub = !negated;
             notif.wakeup();
             return false;
         }
