@@ -744,6 +744,11 @@ public class debugger {
     public static boolean ifcQinq3Traf = false;
 
     /**
+     * ifcQinqX packets
+     */
+    public static boolean ifcQinqXTraf = false;
+
+    /**
      * ifcIsl packets
      */
     public static boolean ifcIslTraf = false;
@@ -1065,6 +1070,7 @@ public class debugger {
         h.add("3 .        qinq1             qinq1 vlan");
         h.add("3 .        qinq2             qinq2 vlan");
         h.add("3 .        qinq3             qinq3 vlan");
+        h.add("3 .        qinqx             qinqx vlan");
         h.add("3 .        isl               isl vlan");
         h.add("3 .        ethtyp            ethertypes");
         h.add("3 .        isdn              isdn encapsulation");
@@ -1832,6 +1838,10 @@ public class debugger {
             }
             if (s.equals("qinq3")) {
                 ifcQinq3Traf = v;
+                return false;
+            }
+            if (s.equals("qinqx")) {
+                ifcQinqXTraf = v;
                 return false;
             }
             if (s.equals("isl")) {

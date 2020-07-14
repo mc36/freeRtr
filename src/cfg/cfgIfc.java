@@ -79,6 +79,7 @@ import ifc.ifcPtp;
 import ifc.ifcQinq1;
 import ifc.ifcQinq2;
 import ifc.ifcQinq3;
+import ifc.ifcQinqX;
 import ifc.ifcRandom;
 import ifc.ifcThread;
 import ifc.ifcUdld;
@@ -236,6 +237,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * sep handler
      */
     public ifcSep sep;
+
+    /**
+     * qinqx handler
+     */
+    public ifcQinqX qinqx;
 
     /**
      * frame relay handler
@@ -1500,6 +1506,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no router isis[4|6] .* segrout node",
         "interface .*! no router isis[4|6] .* segrout pop",
         "interface .*! no router isis[4|6] .* bier index",
+        // qinqx
+        "interface .*! qinqx ethertype fa52",
         // sep
         "interface .*! sep mode peer",
         "interface .*! sep keepalive 5",
@@ -2783,6 +2791,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("qinq3")) {
             initVlan(new ifcQinq3());
+            return false;
+        }
+        if (a.equals("qinqx")) {
+            qinqx = new ifcQinqX();
+            initVlan(qinqx);
             return false;
         }
         if (a.equals("isl")) {
@@ -4885,6 +4898,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (sep != null) {
             sep.getConfig(l, cmds.tabulator + "sep ");
         }
+        if (qinqx != null) {
+            qinqx.getConfig(l, cmds.tabulator + "qinqx ");
+        }
         if (atmdxi != null) {
             atmdxi.getConfig(l, cmds.tabulator + "atmdxi ");
         }
@@ -5203,12 +5219,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 .     qinq1                       set to qinq1 encapsulation");
         l.add("2 .     qinq2                       set to qinq2 encapsulation");
         l.add("2 .     qinq3                       set to qinq3 encapsulation");
+        l.add("2 .     qinqx                       set to qinqx encapsulation");
         l.add("1 2   hdlc                          hdlc parameters on the interface");
         ifcHdlc.getHelp(l);
         l.add("1 2   isdn                          isdn parameters on the interface");
         ifcIsdn.getHelp(l);
         l.add("1 2   sep                           sep parameters on the interface");
         ifcSep.getHelp(l);
+        l.add("1 2   qinqx                         qinqx parameters on the interface");
+        ifcQinqX.getHelp(l);
         l.add("1 2   p2poe                         pppoe parameters on the interface");
         l.add("2 3     client                      start pppoe client");
         l.add("3 .       <name>                    name of dialer interface");
@@ -5694,6 +5713,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             sep.doConfig(cmd);
+            return;
+        }
+        if (a.equals("qinqx")) {
+            if (qinqx == null) {
+                cmd.error("encapsulation not in effect");
+                return;
+            }
+            qinqx = new ifcQinqX();
+            qinqx.doConfig(cmd);
+            initVlan(qinqx);
             return;
         }
         if (a.equals("lapb")) {
