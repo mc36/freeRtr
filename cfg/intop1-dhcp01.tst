@@ -20,6 +20,8 @@ server dhcp4 dh
  vrf v1
  exit
 server dhcp6 dh
+ netmask ffff:ffff:ffff:ffff::
+ gateway 1234::1
  static 0000.0000.1100 1234::2
  interface ethernet1
  vrf v1
@@ -40,7 +42,7 @@ interface gigabit1
  ip address dhcp
  ipv6 address fe80::1 link-local
  ipv6 enable
- ipv6 dhcp client pd hint 1234::2/128
+ ipv6 dhcp client pd hint 1234::2/64
  ipv6 dhcp client pd prefix
  no shutdown
  exit

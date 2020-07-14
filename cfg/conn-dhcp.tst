@@ -24,6 +24,8 @@ server dhcp4 dh4
  vrf v1
  exit
 server dhcp6 dh6
+ netmask ffff:ffff:ffff:ffff::
+ gateway 1234::1
  interface ethernet1
  vrf v1
  exit

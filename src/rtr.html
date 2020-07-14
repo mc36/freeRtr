@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v20.7.13-rel, done by cs@nop.<br/>
-tested: 2020-07-14 00:47:11, took 09:35:26 on 1766 cases, 0 failed, 0 traces, 14 retries<br/>
+release: freeRouter v20.7.14-rel, done by cs@nop.<br/>
+tested: 2020-07-14 13:49:19, took 09:40:20 on 1772 cases, 0 failed, 0 traces, 14 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -79,11 +79,13 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth07.tst">conn-eth07.tst</a></td><td>0</td><td>ethernet qinq1 encapsulation</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth08.tst">conn-eth08.tst</a></td><td>0</td><td>ethernet qinq2 encapsulation</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth09.tst">conn-eth09.tst</a></td><td>0</td><td>ethernet qinq3 encapsulation</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-eth10.tst">conn-eth10.tst</a></td><td>0</td><td>ethernet isl encapsulation</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-eth11.tst">conn-eth11.tst</a></td><td>0</td><td>proxy remote arp/nd</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-eth12.tst">conn-eth12.tst</a></td><td>0</td><td>proxy local arp/nd</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-eth13.tst">conn-eth13.tst</a></td><td>0</td><td>static arp/nd entry</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-eth14.tst">conn-eth14.tst</a></td><td>0</td><td>loss detection</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth10.tst">conn-eth10.tst</a></td><td>0</td><td>ethernet qinqX encapsulation</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth11.tst">conn-eth11.tst</a></td><td>0</td><td>ethernet qinqX custom encapsulation</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth12.tst">conn-eth12.tst</a></td><td>0</td><td>ethernet isl encapsulation</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth13.tst">conn-eth13.tst</a></td><td>0</td><td>proxy remote arp/nd</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth14.tst">conn-eth14.tst</a></td><td>0</td><td>proxy local arp/nd</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth15.tst">conn-eth15.tst</a></td><td>0</td><td>static arp/nd entry</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth16.tst">conn-eth16.tst</a></td><td>0</td><td>loss detection</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip01.tst">conn-etherip01.tst</a></td><td>0</td><td>etherip over ipv4</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip02.tst">conn-etherip02.tst</a></td><td>0</td><td>etherip over ipv6</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip03.tst">conn-etherip03.tst</a></td><td>0</td><td>etherip over loopback</td><td>successfully</td><td>finished</td></tr>
@@ -928,6 +930,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr09.tst">mpls-sr09.tst</a></td><td>0</td><td>sr over broadcast subnet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr10.tst">mpls-sr10.tst</a></td><td>0</td><td>sr te over mpls</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-sr11.tst">mpls-sr11.tst</a></td><td>0</td><td>sr te over exthdr</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-sr12.tst">mpls-sr12.tst</a></td><td>0</td><td>bgp with php labels over sr</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-te01.tst">mpls-te01.tst</a></td><td>0</td><td>te over ethernet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-te02.tst">mpls-te02.tst</a></td><td>0</td><td>te over ethernet vlan</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-te03.tst">mpls-te03.tst</a></td><td>0</td><td>te over ethernet bridge</td><td>successfully</td><td>finished</td></tr>
@@ -1698,6 +1701,9 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp33.tst">rout-pvrp33.tst</a></td><td>0</td><td>pvrp with php labels</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp34.tst">rout-pvrp34.tst</a></td><td>0</td><td>ingress label filtering with pvrp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp35.tst">rout-pvrp35.tst</a></td><td>0</td><td>egress label filtering with pvrp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp36.tst">rout-pvrp36.tst</a></td><td>0</td><td>pvrp stub node</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp37.tst">rout-pvrp37.tst</a></td><td>0</td><td>pvrp stub interface</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-pvrp38.tst">rout-pvrp38.tst</a></td><td>0</td><td>pvrp unstub interface</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist01.tst">rout-redist01.tst</a></td><td>0</td><td>redistribution with isis</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist02.tst">rout-redist02.tst</a></td><td>0</td><td>redistribution with ospf</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist03.tst">rout-redist03.tst</a></td><td>0</td><td>redistribution with rip</td><td>successfully</td><td>finished</td></tr>

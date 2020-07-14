@@ -42,6 +42,16 @@ public class servDhcp6 extends servGeneric implements prtServS {
     public addrIPv6 dns2;
 
     /**
+     * gateway
+     */
+    public addrIPv6 gateway;
+
+    /**
+     * network mask
+     */
+    public addrIPv6 netmask;
+
+    /**
      * boot url
      */
     public String bootUrl = "";
@@ -103,6 +113,16 @@ public class servDhcp6 extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> l) {
+        if (gateway == null) {
+            l.add(beg + "no gateway");
+        } else {
+            l.add(beg + "gateway " + gateway);
+        }
+        if (netmask == null) {
+            l.add(beg + "no netmask");
+        } else {
+            l.add(beg + "netmask " + netmask);
+        }
         String s = "";
         if (dns1 != null) {
             s += " " + dns1;
@@ -136,6 +156,24 @@ public class servDhcp6 extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("gateway")) {
+            gateway = new addrIPv6();
+            if (gateway.fromString(cmd.word())) {
+                gateway = null;
+                cmd.error("bad address");
+                return false;
+            }
+            return false;
+        }
+        if (a.equals("netmask")) {
+            netmask = new addrIPv6();
+            if (netmask.fromString(cmd.word())) {
+                netmask = null;
+                cmd.error("bad address");
+                return false;
+            }
+            return false;
+        }
         if (a.equals("dns-server")) {
             a = cmd.word();
             dns1 = new addrIPv6();
@@ -205,6 +243,14 @@ public class servDhcp6 extends servGeneric implements prtServS {
             return true;
         }
         a = cmd.word();
+        if (a.equals("gateway")) {
+            gateway = null;
+            return false;
+        }
+        if (a.equals("netmask")) {
+            netmask = null;
+            return false;
+        }
         if (a.equals("dns-server")) {
             dns1 = null;
             dns2 = null;
@@ -244,6 +290,8 @@ public class servDhcp6 extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add("1 2  gateway                gateway address to delegate");
+        l.add("2 .    <addr>               address of gateway");
         l.add("1 2  dns-server             address(es) of name server(s) to delegate");
         l.add("2 3,.  <addr>               dns#1 server address");
         l.add("3 .      <addr>             dns#2 server address");
@@ -255,6 +303,8 @@ public class servDhcp6 extends servGeneric implements prtServS {
         l.add("2 .    <sec>                lease time in seconds");
         l.add("1 2  renew                  renew time to delegate");
         l.add("2 .    <sec>                renew time in seconds");
+        l.add("1 2  netmask                network to delegate");
+        l.add("2 .    <mask>               netmask to delegate");
         l.add("1 2  preference             server preference value");
         l.add("2 .    <num>                preference value");
         l.add("1 2  static                 address pool to use");
@@ -375,7 +425,9 @@ public class servDhcp6 extends servGeneric implements prtServS {
         rep.lifetimP = lease;
         rep.lifetimV = lease;
         rep.servPref = prefer;
-        rep.servAddr = srvIface.addr6.copyBytes();
+        rep.servAddr = gateway.copyBytes();
+        rep.ipsize = netmask.toNetmask();
+        rep.status = 0;
         int crt = 1;
         switch (req.msgTyp) {
             case packDhcp6.typSolicit:
@@ -398,9 +450,9 @@ public class servDhcp6 extends servGeneric implements prtServS {
             default:
                 return null;
         }
-        rep.status = 1;
         addrMac mac = packDhcp6.decodeDUID(req.clntId);
         if (mac == null) {
+            rep.status = 1;
             return rep;
         }
         servDhcp6binding ntry = findBinding(mac, crt);
@@ -418,11 +470,9 @@ public class servDhcp6 extends servGeneric implements prtServS {
             return rep;
         }
         if (ntry.ip == null) {
-            ntry.ip = addrIPv6.genPublic(mac, srvIface.addr6);
+            ntry.ip = addrIPv6.genPublic(mac, gateway);
         }
         rep.ipaddr = ntry.ip.copyBytes();
-        rep.ipsize = rep.ipaddr.maxBits();
-        rep.status = 0;
         sendPack(rep, ntry);
         return rep;
     }

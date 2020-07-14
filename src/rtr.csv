@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.7.13-rel, done by cs@nop.;-;-
--;-;2020-07-14 00:47:11, took 09:35:26 on 1766 cases, 0 failed, 0 traces, 14 retries;-;-
+-;-;freeRouter v20.7.14-rel, done by cs@nop.;-;-
+-;-;2020-07-14 13:49:19, took 09:40:20 on 1772 cases, 0 failed, 0 traces, 14 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -76,11 +76,13 @@ conn-eth06.tst;0;ethernet dot1ah encapsulation;successfully;finished
 conn-eth07.tst;0;ethernet qinq1 encapsulation;successfully;finished
 conn-eth08.tst;0;ethernet qinq2 encapsulation;successfully;finished
 conn-eth09.tst;0;ethernet qinq3 encapsulation;successfully;finished
-conn-eth10.tst;0;ethernet isl encapsulation;successfully;finished
-conn-eth11.tst;0;proxy remote arp/nd;successfully;finished
-conn-eth12.tst;0;proxy local arp/nd;successfully;finished
-conn-eth13.tst;0;static arp/nd entry;successfully;finished
-conn-eth14.tst;0;loss detection;successfully;finished
+conn-eth10.tst;0;ethernet qinqX encapsulation;successfully;finished
+conn-eth11.tst;0;ethernet qinqX custom encapsulation;successfully;finished
+conn-eth12.tst;0;ethernet isl encapsulation;successfully;finished
+conn-eth13.tst;0;proxy remote arp/nd;successfully;finished
+conn-eth14.tst;0;proxy local arp/nd;successfully;finished
+conn-eth15.tst;0;static arp/nd entry;successfully;finished
+conn-eth16.tst;0;loss detection;successfully;finished
 conn-etherip01.tst;0;etherip over ipv4;successfully;finished
 conn-etherip02.tst;0;etherip over ipv6;successfully;finished
 conn-etherip03.tst;0;etherip over loopback;successfully;finished
@@ -925,6 +927,7 @@ mpls-sr08.tst;0;othervpns over bgp over sr;successfully;finished
 mpls-sr09.tst;0;sr over broadcast subnet;successfully;finished
 mpls-sr10.tst;0;sr te over mpls;successfully;finished
 mpls-sr11.tst;0;sr te over exthdr;successfully;finished
+mpls-sr12.tst;0;bgp with php labels over sr;successfully;finished
 mpls-te01.tst;0;te over ethernet;successfully;finished
 mpls-te02.tst;0;te over ethernet vlan;successfully;finished
 mpls-te03.tst;0;te over ethernet bridge;successfully;finished
@@ -1695,6 +1698,9 @@ rout-pvrp32.tst;0;pvrp address unsuppression;successfully;finished
 rout-pvrp33.tst;0;pvrp with php labels;successfully;finished
 rout-pvrp34.tst;0;ingress label filtering with pvrp;successfully;finished
 rout-pvrp35.tst;0;egress label filtering with pvrp;successfully;finished
+rout-pvrp36.tst;0;pvrp stub node;successfully;finished
+rout-pvrp37.tst;0;pvrp stub interface;successfully;finished
+rout-pvrp38.tst;0;pvrp unstub interface;successfully;finished
 rout-redist01.tst;0;redistribution with isis;successfully;finished
 rout-redist02.tst;0;redistribution with ospf;successfully;finished
 rout-redist03.tst;0;redistribution with rip;successfully;finished

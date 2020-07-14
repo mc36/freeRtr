@@ -72,6 +72,8 @@ qc pass: ethernet dot1ah encapsulation
 qc pass: ethernet qinq1 encapsulation
 qc pass: ethernet qinq2 encapsulation
 qc pass: ethernet qinq3 encapsulation
+qc pass: ethernet qinqX encapsulation
+qc pass: ethernet qinqX custom encapsulation
 qc pass: ethernet isl encapsulation
 qc pass: proxy remote arp/nd
 qc pass: proxy local arp/nd
@@ -921,6 +923,7 @@ qc pass: othervpns over bgp over sr
 qc pass: sr over broadcast subnet
 qc pass: sr te over mpls
 qc pass: sr te over exthdr
+qc pass: bgp with php labels over sr
 qc pass: te over ethernet
 qc pass: te over ethernet vlan
 qc pass: te over ethernet bridge
@@ -1691,6 +1694,9 @@ qc pass: pvrp address unsuppression
 qc pass: pvrp with php labels
 qc pass: ingress label filtering with pvrp
 qc pass: egress label filtering with pvrp
+qc pass: pvrp stub node
+qc pass: pvrp stub interface
+qc pass: pvrp unstub interface
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip
