@@ -178,12 +178,18 @@ public class ifcQinqX extends ifcVlan {
 
     /**
      * create new multiplexer
+     *
+     * @param old old instance
      */
-    public ifcQinqX() {
+    public ifcQinqX(ifcQinqX old) {
         if (debugger.ifcQinqXTraf) {
             logger.debug("started");
         }
         vLans = new tabGen<ifcQinqXEntry>();
+        if (old == null) {
+            return;
+        }
+        type = old.type;
     }
 
     /**

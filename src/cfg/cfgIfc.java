@@ -2794,7 +2794,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return false;
         }
         if (a.equals("qinqx")) {
-            qinqx = new ifcQinqX();
+            qinqx = new ifcQinqX(null);
             initVlan(qinqx);
             return false;
         }
@@ -5720,7 +5720,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 cmd.error("encapsulation not in effect");
                 return;
             }
-            qinqx = new ifcQinqX();
+            qinqx = new ifcQinqX(qinqx);
             qinqx.doConfig(cmd);
             initVlan(qinqx);
             return;
