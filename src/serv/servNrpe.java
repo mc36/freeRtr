@@ -397,16 +397,15 @@ class servNrpeConn implements Runnable {
                     pck.str += ntry.cmd + " ";
                 }
                 pck.str = pck.str.trim();
+                for (int i = 0; i < lst.size(); i++) {
+                    pck.str += new String(pck.sep) + lst.get(i).trim();
+                }
                 if (lower.truncState > 0) {
                     int i = pck.str.length();
                     if (i > lower.truncState) {
                         i = lower.truncState;
                     }
                     pck.str = pck.str.substring(0, i);
-                }
-                String a = new String(pck.sep);
-                for (int i = 0; i < lst.size(); i++) {
-                    pck.str += a + lst.get(i);
                 }
                 if (ntry.alternate) {
                     int i = pck.str.hashCode();
