@@ -104,7 +104,7 @@ public class clntSlaac implements Runnable, ipPrt {
         notif.wakeup();
     }
 
-    public void run() {
+    private void doWork() {
         addrMac mac;
         try {
             mac = (addrMac) ethtyp.getHwAddr();
@@ -141,6 +141,14 @@ public class clntSlaac implements Runnable, ipPrt {
         locAddr.setAnd(locAddr, locMask);
         locAddr.setOr(locAddr, ll);
         cfger.addr6changed(locAddr, locMask, gwAddr);
+    }
+
+    public void run() {
+        try {
+            doWork();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
     }
 
     /**
