@@ -62,8 +62,8 @@ public class rtrPtpIface implements Runnable, prtServP {
         if (debugger.rtrPtpEvnt) {
             logger.debug("stopping on " + ifc);
         }
-        udp.listenStop(ifc, packPtp.portS, null, 0, 0);
-        udp.listenStop(ifc, packPtp.portF, null, 0, 0);
+        udp.listenStop(ifc, packPtp.portS, null, 0);
+        udp.listenStop(ifc, packPtp.portF, null, 0);
         if (connS != null) {
             connS.setClosing();
         }
@@ -80,8 +80,8 @@ public class rtrPtpIface implements Runnable, prtServP {
         if (debugger.rtrPtpEvnt) {
             logger.debug("starting on " + ifc);
         }
-        udp.packetListen(this, ifc, packPtp.portS, null, 0, 0, "ptp", null, -1);
-        udp.packetListen(this, ifc, packPtp.portF, null, 0, 0, "ptp", null, -1);
+        udp.packetListen(this, ifc, packPtp.portS, null, 0, "ptp", null, -1);
+        udp.packetListen(this, ifc, packPtp.portF, null, 0, "ptp", null, -1);
         addrIP peer = new addrIP();
         packPtp.setIP(ifc.addr.isIPv4(), peer);
         connS = udp.packetConnect(this, ifc, packPtp.portS, peer, packPtp.portS, "ptp", null, -1);

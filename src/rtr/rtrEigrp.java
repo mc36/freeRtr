@@ -350,6 +350,9 @@ public class rtrEigrp extends ipRtr implements Runnable {
         need2run = false;
         for (int i = 0; i < ifaces.size(); i++) {
             rtrEigrpIface ifc = ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             ifc.restartTimer(true);
             ifc.unregister2ip();
             ifc.closeNeighbors();

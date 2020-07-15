@@ -163,7 +163,7 @@ public abstract class prtGen implements ipPrt {
      */
     public void closeUp(ipFwdIface ifc) {
         for (;;) {
-            prtGenConn cln = clnts.delChild(ifc.ifwNum, null, 0, 0, 0);
+            prtGenConn cln = clnts.delNext(ifc.ifwNum, null, 0, 0);
             if (cln == null) {
                 break;
             }
@@ -171,7 +171,7 @@ public abstract class prtGen implements ipPrt {
             cln.deleteImmediately();
         }
         for (;;) {
-            prtGenServ prt = srvrs.delChild(ifc.ifwNum, null, 0, 0, 0);
+            prtGenServ prt = srvrs.delNext(ifc.ifwNum, null, 0, 0);
             if (prt == null) {
                 break;
             }
@@ -190,18 +190,17 @@ public abstract class prtGen implements ipPrt {
      * @param locI local interface, 0 means all
      * @param locP local port, 0 means all
      * @param remA remote address, null means all
-     * @param remM remote mask, 0 means host route
      * @param remP remote port, 0 means all
      * @param name name of server
      * @param pwd password
      * @param ttl time to live
      * @return false if successful, true if error
      */
-    public boolean packetListen(prtServP srv, ipFwdIface locI, int locP, addrIP remA, int remM, int remP, String name, String pwd, int ttl) {
+    public boolean packetListen(prtServP srv, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl) {
         if (srv == null) {
             return true;
         }
-        return anybodyListen(srv, null, null, locI, locP, remA, remM, remP, name, pwd, ttl);
+        return anybodyListen(srv, null, null, locI, locP, remA, remP, name, pwd, ttl);
     }
 
     /**
@@ -212,21 +211,20 @@ public abstract class prtGen implements ipPrt {
      * @param locI local interface, 0 means all
      * @param locP local port, 0 means all
      * @param remA remote address, null means all
-     * @param remM remote mask, 0 means host route
      * @param remP remote port, 0 means all
      * @param name name of server
      * @param pwd session password
      * @param ttl time to live
      * @return false if successful, true if error
      */
-    public boolean streamListen(prtServS srv, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remM, int remP, String name, String pwd, int ttl) {
+    public boolean streamListen(prtServS srv, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl) {
         if (srv == null) {
             return true;
         }
         if (pip == null) {
             return true;
         }
-        return anybodyListen(null, srv, pip, locI, locP, remA, remM, remP, name, pwd, ttl);
+        return anybodyListen(null, srv, pip, locI, locP, remA, remP, name, pwd, ttl);
     }
 
     /**
@@ -235,15 +233,14 @@ public abstract class prtGen implements ipPrt {
      * @param locI local interface, 0 means all
      * @param locP local port, 0 means all
      * @param remA remote address, null means all
-     * @param remM remote mask, 0 means host route
      * @param remP remote port, 0 means all
      * @return false if successful, true if already found
      */
-    public boolean listenStop(ipFwdIface locI, int locP, addrIP remA, int remM, int remP) {
+    public boolean listenStop(ipFwdIface locI, int locP, addrIP remA, int remP) {
         if (debugger.prtGenTraf) {
             logger.debug("del ifc=" + locI + " prt=" + locP);
         }
-        prtGenServ ntry = srvrs.del(ipFwdIface.getNum(locI), remA, remM, locP, remP, false);
+        prtGenServ ntry = srvrs.del(ipFwdIface.getNum(locI), remA, locP, remP);
         if (ntry == null) {
             return true;
         }
@@ -298,7 +295,7 @@ public abstract class prtGen implements ipPrt {
      * @return false on success, true on error
      */
     public boolean connectStop(ipFwdIface locI, int locP, addrIP remA, int remP) {
-        prtGenConn cln = clnts.get(locI.ifwNum, remA, 0, locP, remP, false);
+        prtGenConn cln = clnts.get(locI.ifwNum, remA, locP, remP);
         if (cln == null) {
             return true;
         }
@@ -306,7 +303,7 @@ public abstract class prtGen implements ipPrt {
         return false;
     }
 
-    private boolean anybodyListen(prtServP upP, prtServS upS, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remM, int remP, String name, String pwd, int ttl) {
+    private boolean anybodyListen(prtServP upP, prtServS upS, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl) {
         if (locP != 0) {
             if (testPortNumber(locP)) {
                 return true;
@@ -334,7 +331,7 @@ public abstract class prtGen implements ipPrt {
         if (debugger.prtGenTraf) {
             logger.debug("add " + ntry);
         }
-        return srvrs.add(ipFwdIface.getNum(locI), remA, remM, locP, remP, ntry, ntry.name, true);
+        return srvrs.add(ipFwdIface.getNum(locI), remA, locP, remP, ntry, ntry.name);
     }
 
     private prtGenConn anybodyConnect(prtServP upP, prtServS upS, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String nam, String pwd, int ttl) {
@@ -350,7 +347,7 @@ public abstract class prtGen implements ipPrt {
         if (locP < 1) {
             for (;;) {
                 locP = getRandomPortNum();
-                if (clnts.get(locI.ifwNum, remA, 0, locP, remP, false) == null) {
+                if (clnts.get(locI.ifwNum, remA, locP, remP) == null) {
                     break;
                 }
             }
@@ -381,7 +378,7 @@ public abstract class prtGen implements ipPrt {
      * @return connection handle
      */
     protected prtGenConn findOneConn(ipFwdIface rxIfc, packHolder pck) {
-        return clnts.get(rxIfc.ifwNum, pck.IPsrc, 0, pck.UDPtrg, pck.UDPsrc, false);
+        return clnts.get(rxIfc.ifwNum, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
     }
 
     /**
@@ -392,7 +389,31 @@ public abstract class prtGen implements ipPrt {
      * @return new connection entry
      */
     protected prtGenConn connectionAccept(ipFwdIface rxIfc, packHolder pck) {
-        prtGenServ srv = srvrs.get(rxIfc.ifwNum, pck.IPsrc, 0, pck.UDPtrg, pck.UDPsrc, true);
+        prtGenServ srv = null;
+        if (srv == null) {
+            srv = srvrs.get(rxIfc.ifwNum, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
+        }
+        if (srv == null) {
+            srv = srvrs.get(0, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
+        }
+        if (srv == null) {
+            srv = srvrs.get(rxIfc.ifwNum, pck.IPsrc, pck.UDPtrg, 0);
+        }
+        if (srv == null) {
+            srv = srvrs.get(0, pck.IPsrc, pck.UDPtrg, 0);
+        }
+        if (srv == null) {
+            srv = srvrs.get(rxIfc.ifwNum, null, pck.UDPtrg, pck.UDPsrc);
+        }
+        if (srv == null) {
+            srv = srvrs.get(0, null, pck.UDPtrg, pck.UDPsrc);
+        }
+        if (srv == null) {
+            srv = srvrs.get(rxIfc.ifwNum, null, pck.UDPtrg, 0);
+        }
+        if (srv == null) {
+            srv = srvrs.get(0, null, pck.UDPtrg, 0);
+        }
         if (srv == null) {
             cntr.drop(pck, counter.reasons.badTrgPort);
             connectionRefuse(rxIfc, pck);

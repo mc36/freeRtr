@@ -194,7 +194,7 @@ public class rtrHsrpIface implements prtServP {
         }
         conn.timeout = 0;
         conn.workInterval = hello;
-        udp.packetListen(this, ifc, genPackHolder().getPortNum(), null, 0, 0, "hsrp", null, -1);
+        udp.packetListen(this, ifc, genPackHolder().getPortNum(), null, 0, "hsrp", null, -1);
         resetState();
     }
 
@@ -206,7 +206,7 @@ public class rtrHsrpIface implements prtServP {
             logger.debug("stopping on " + ifc);
         }
         ifc.adrDel(ip);
-        udp.listenStop(ifc, genPackHolder().getPortNum(), null, 0, 0);
+        udp.listenStop(ifc, genPackHolder().getPortNum(), null, 0);
         conn.setClosing();
     }
 

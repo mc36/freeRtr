@@ -191,7 +191,7 @@ public class rtrOlsrIface implements Comparator<rtrOlsrIface> {
      * unregister from udp
      */
     public void unregister2udp() {
-        lower.udpCore.listenStop(iface, rtrOlsr.port, null, 0, 0);
+        lower.udpCore.listenStop(iface, rtrOlsr.port, null, 0);
         conn.setClosing();
     }
 
@@ -205,7 +205,7 @@ public class rtrOlsrIface implements Comparator<rtrOlsrIface> {
         } else {
             adr.fromString("ff02::6d");
         }
-        lower.udpCore.packetListen(lower, iface, rtrOlsr.port, null, 0, 0, "olsr", null, -1);
+        lower.udpCore.packetListen(lower, iface, rtrOlsr.port, null, 0, "olsr", null, -1);
         conn = lower.udpCore.packetConnect(lower, iface, rtrOlsr.port, adr, rtrOlsr.port, "olsr", null, -1);
         if (conn == null) {
             return;

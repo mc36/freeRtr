@@ -117,7 +117,7 @@ public class clntFtp implements prtServS {
             if (ifc == null) {
                 return true;
             }
-            prx.vrf.tcp4.streamListen(this, new pipeLine(65536, false), ifc, locprt, new addrIP(), 0, 0, "ftpc", null, -1);
+            prx.vrf.tcp4.streamListen(this, new pipeLine(65536, false), ifc, locprt, null, 0, "ftpc", null, -1);
             byte buf[] = new byte[6];
             addrIPv4 adr4 = ifc.addr.toIPv4();
             adr4.toBuffer(buf, 0);
@@ -149,7 +149,7 @@ public class clntFtp implements prtServS {
         if (cfgAll.ftpPassive) {
             return false;
         }
-        prx.vrf.tcp4.listenStop(ifc, locprt, new addrIP(), 0, 0);
+        prx.vrf.tcp4.listenStop(ifc, locprt, null, 0);
         return data == null;
     }
 

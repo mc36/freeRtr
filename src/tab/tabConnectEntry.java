@@ -1,6 +1,5 @@
 package tab;
 
-import addr.addrPrefix;
 import addr.addrType;
 import ip.ipFwd;
 import ip.ipFwdTab;
@@ -28,7 +27,7 @@ public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> im
     /**
      * peer address
      */
-    public addrPrefix<Ta> peer;
+    public Ta peer;
 
     /**
      * local port
@@ -50,105 +49,45 @@ public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> im
      */
     public String passwd;
 
-    private static int cmpNum(int a, int b) {
-        if (a < b) {
-            return -1;
-        }
-        if (a > b) {
-            return +1;
-        }
-        return 0;
-    }
-
-    private static int cmpWild(int a, int b) { // 0=continue, 1=greater, 2=less
-        if (b == 0) {
-            if (a == 0) {
-                return 0;
-            }
-            return 2;
-        }
-        if (a == 0) {
-            return 1;
-        }
-        if (a != b) {
-            return 2;
-        }
-        return 0;
-    }
-
-    /**
-     * check if other greater
-     *
-     * @param other other to compare
-     * @return true if greater
-     */
-    public boolean greaterLIR(tabConnectEntry<Ta, Td> other) {
-        int i;
-        i = cmpWild(local, other.local);
-        if (i != 0) {
-            return i == 1;
-        }
-        i = cmpWild(iface, other.iface);
-        if (i != 0) {
-            return i == 1;
-        }
-        i = cmpWild(remote, other.remote);
-        if (i != 0) {
-            return i == 1;
-        }
-        if (!peer.supernet(other.peer, false)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * check if other greater
-     *
-     * @param other other to compare
-     * @return true if greater
-     */
-    public boolean greaterILR(tabConnectEntry<Ta, Td> other) {
-        int i;
-        i = cmpWild(iface, other.iface);
-        if (i != 0) {
-            return i == 1;
-        }
-        i = cmpWild(local, other.local);
-        if (i != 0) {
-            return i == 1;
-        }
-        i = cmpWild(remote, other.remote);
-        if (i != 0) {
-            return i == 1;
-        }
-        if (!peer.supernet(other.peer, false)) {
-            return false;
-        }
-        return true;
-    }
-
     public int compare(tabConnectEntry<Ta, Td> o1, tabConnectEntry<Ta, Td> o2) {
-        if (o1.greaterLIR(o2)) {
-            return +1;
-        }
-        if (o2.greaterLIR(o1)) {
+        if (o1.local < o2.local) {
             return -1;
         }
-        int i;
-        i = cmpNum(o1.local, o2.local);
-        if (i != 0) {
-            return i;
+        if (o1.local > o2.local) {
+            return +1;
         }
-        i = cmpNum(o1.iface, o2.iface);
-        if (i != 0) {
-            return i;
+        if (o1.iface < o2.iface) {
+            return -1;
         }
-        i = cmpNum(o1.remote, o2.remote);
-        if (i != 0) {
-            return i;
+        if (o1.iface > o2.iface) {
+            return +1;
+        }
+        if (o1.remote < o2.remote) {
+            return -1;
+        }
+        if (o1.remote > o2.remote) {
+            return +1;
+        }
+        if (o1.peer == null) {
+            if (o2.peer != null) {
+                return +1;
+            }
+            return 0;
+        }
+        if (o2.peer == null) {
+            return -1;
         }
         return o1.peer.compare(o1.peer, o2.peer);
+    }
+
+    public String toString() {
+        String a;
+        if (data == null) {
+            a = "null";
+        } else {
+            a = data.dumper();
+        }
+        return name + " #" + iface + " " + local + " " + remote + " " + peer + " " + a;
     }
 
     /**

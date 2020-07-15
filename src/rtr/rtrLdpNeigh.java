@@ -701,7 +701,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 if (debugger.rtrLdpEvnt) {
                     logger.debug("accepting " + trans);
                 }
-                prtAccept ac = new prtAccept(tcp, new pipeLine(65536, false), ifc, packLdp.port, trans, 0, 0, "ldp", ifc.ldpasFind(trans), -1);
+                prtAccept ac = new prtAccept(tcp, new pipeLine(65536, false), ifc, packLdp.port, trans, 0, "ldp", ifc.ldpasFind(trans), -1);
                 ac.wait4conn(30000);
                 conn = ac.getConn(true);
             } else {

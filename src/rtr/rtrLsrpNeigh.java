@@ -244,7 +244,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             if (debugger.rtrLsrpEvnt) {
                 logger.debug("accepting " + peer);
             }
-            prtAccept ac = new prtAccept(lower.tcpCore, new pipeLine(65536, false), iface.iface, rtrLsrp.port, peer, 0, 0, "lsrp", null, -1);
+            prtAccept ac = new prtAccept(lower.tcpCore, new pipeLine(65536, false), iface.iface, rtrLsrp.port, peer, 0, "lsrp", null, -1);
             ac.wait4conn(30000);
             conn = ac.getConn(true);
         } else {

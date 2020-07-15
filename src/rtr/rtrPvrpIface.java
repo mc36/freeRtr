@@ -69,7 +69,6 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
      */
     public boolean stub = false;
 
-    
     /**
      * unstub flag
      */
@@ -231,7 +230,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
      * unregister from udp
      */
     public void unregister2udp() {
-        lower.udpCore.listenStop(iface, rtrPvrp.port, null, 0, 0);
+        lower.udpCore.listenStop(iface, rtrPvrp.port, null, 0);
         conn.setClosing();
     }
 
@@ -245,7 +244,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         } else {
             adr.fromString("ff02::227");
         }
-        lower.udpCore.packetListen(this, iface, rtrPvrp.port, null, 0, 0, "pvrp", null, -1);
+        lower.udpCore.packetListen(this, iface, rtrPvrp.port, null, 0, "pvrp", null, -1);
         conn = lower.udpCore.packetConnect(this, iface, rtrPvrp.port, adr, rtrPvrp.port, "pvrp", null, -1);
         if (conn == null) {
             return;
@@ -793,8 +792,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
      */
     public void routerCloseNow() {
         unregister2udp();
-        for (int i = 0; i < neighs.size(); i++) {
+        for (int i = neighs.size(); i >= 0; i--) {
             rtrPvrpNeigh nei = neighs.get(i);
+            if (nei == null) {
+                continue;
+            }
             nei.stopWork();
         }
     }

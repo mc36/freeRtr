@@ -755,6 +755,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         need2run = false;
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             ifc.routerCloseNow();
         }
         tabLabel.release(segrouLab, 6);

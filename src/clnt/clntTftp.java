@@ -219,7 +219,7 @@ public class clntTftp implements prtServS {
         if (ifc == null) {
             return true;
         }
-        udp.streamListen(this, new pipeLine(65536, true), ifc, locprt, adr, addrIP.size * 8, 0, "tftpc", null, -1);
+        udp.streamListen(this, new pipeLine(65536, true), ifc, locprt, adr, 0, "tftpc", null, -1);
         pipe = udp.streamConnect(new pipeLine(65536, true), ifc, locprt, adr, packTftp.port, "tftpc", null, -1);
         return pipe == null;
     }
@@ -229,7 +229,7 @@ public class clntTftp implements prtServS {
             pipe.setClose();
         }
         if (ifc != null) {
-            udp.listenStop(ifc, locprt, adr, addrIP.size * 8, 0);
+            udp.listenStop(ifc, locprt, adr, 0);
         }
     }
 

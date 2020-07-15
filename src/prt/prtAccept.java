@@ -19,8 +19,6 @@ public class prtAccept implements prtServS {
 
     private final int lp;
 
-    private final int rm;
-
     private final int rp;
 
     private final addrIP ra;
@@ -66,13 +64,12 @@ public class prtAccept implements prtServS {
      * @param locI local interface, 0 means all
      * @param locP local port, 0 means all
      * @param remA remote address, null means all
-     * @param remM remote mask, 0 means host route
      * @param remP remote port, 0 means all
      * @param name name of server
      * @param pwd password
      * @param ttl time to live
      */
-    public prtAccept(prtGen prot, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remM, int remP, String name, String pwd, int ttl) {
+    public prtAccept(prtGen prot, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl) {
         pr = prot;
         li = locI;
         lp = locP;
@@ -81,9 +78,8 @@ public class prtAccept implements prtServS {
         } else {
             ra = remA.copyBytes();
         }
-        rm = remM;
         rp = remP;
-        pr.streamListen(this, pip, li, lp, ra, rm, rp, name, pwd, ttl);
+        pr.streamListen(this, pip, li, lp, ra, rp, name, pwd, ttl);
     }
 
     /**
@@ -103,7 +99,7 @@ public class prtAccept implements prtServS {
      */
     public pipeSide getConn(boolean shut) {
         if (shut) {
-            pr.listenStop(li, lp, ra, rm, rp);
+            pr.listenStop(li, lp, ra, rp);
             notif.wakeup();
         }
         pipeSide r = pip;

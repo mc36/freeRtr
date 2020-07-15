@@ -642,16 +642,13 @@ public class clntSip implements Runnable {
         if (srcFwd == null) {
             return;
         }
-        if (portLoc == 0) {
-            portLoc = bits.randomW();
-        }
         switch (protocol) {
             case 1:
                 conn = udp.streamConnect(new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", null, -1);
                 break;
             case 2:
                 bits.sleep(bits.random(1000, 5000));
-                prtAccept ac = new prtAccept(tcp, new pipeLine(32768, false), srcFwd, portLoc, trgAdr, 0, portRem, "sip", null, -1);
+                prtAccept ac = new prtAccept(tcp, new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", null, -1);
                 ac.wait4conn(30000);
                 conn = ac.getConn(true);
                 break;

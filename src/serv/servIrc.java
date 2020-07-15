@@ -2,7 +2,7 @@ package serv;
 
 import addr.addrIP;
 import cfg.cfgAll;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import pipe.pipeLine;
 import pipe.pipeSide;
@@ -32,7 +32,7 @@ public class servIrc extends servGeneric implements prtServS {
     /**
      * channels
      */
-    public List<servIrcChan> chans = new ArrayList<servIrcChan>();
+    public tabGen<servIrcChan> chans = new tabGen<servIrcChan>();
 
     /**
      * logging
@@ -42,7 +42,7 @@ public class servIrc extends servGeneric implements prtServS {
     /**
      * peers
      */
-    public List<servIrcConn> peers = new ArrayList<servIrcConn>();
+    public tabGen<servIrcConn> peers = new tabGen<servIrcConn>();
 
     /**
      * defaults text
@@ -165,7 +165,7 @@ public class servIrc extends servGeneric implements prtServS {
         pipe.timeout = 120000;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        peers.add(new servIrcConn(this, pipe, id.peerAddr.copyBytes()));
+        peers.add(new servIrcConn(this, pipe, id.peerAddr.copyBytes(), id.portRem));
         return false;
     }
 
@@ -175,14 +175,17 @@ public class servIrc extends servGeneric implements prtServS {
      * @param peer peer to delete
      */
     public synchronized void delUser(servIrcConn peer) {
-        peers.remove(peer);
+        peers.del(peer);
         for (int i = chans.size() - 1; i >= 0; i--) {
             servIrcChan chn = chans.get(i);
-            chn.peers.remove(peer);
+            if (chn == null) {
+                continue;
+            }
+            chn.peers.del(peer);
             if (chn.peers.size() > 0) {
                 continue;
             }
-            chans.remove(i);
+            chans.del(chn);
         }
     }
 
@@ -196,6 +199,9 @@ public class servIrc extends servGeneric implements prtServS {
         s = s.trim().toLowerCase();
         for (int i = peers.size() - 1; i >= 0; i--) {
             servIrcConn usr = peers.get(i);
+            if (usr == null) {
+                continue;
+            }
             if (s.equals(usr.nick.toLowerCase())) {
                 return usr;
             }
@@ -214,6 +220,9 @@ public class servIrc extends servGeneric implements prtServS {
         String a = s.trim().toLowerCase();
         for (int i = chans.size() - 1; i >= 0; i--) {
             servIrcChan chn = chans.get(i);
+            if (chn == null) {
+                continue;
+            }
             if (a.equals(chn.name.toLowerCase())) {
                 return chn;
             }
@@ -221,19 +230,26 @@ public class servIrc extends servGeneric implements prtServS {
         if (!create) {
             return null;
         }
-        servIrcChan chn = new servIrcChan();
-        chn.name = a;
+        servIrcChan chn = new servIrcChan(a);
         chans.add(chn);
         return chn;
     }
 
 }
 
-class servIrcChan {
+class servIrcChan implements Comparator<servIrcChan> {
 
-    public String name;
+    public final String name;
 
-    public List<servIrcConn> peers = new ArrayList<servIrcConn>();
+    public tabGen<servIrcConn> peers = new tabGen<servIrcConn>();
+
+    public servIrcChan(String nam) {
+        name = nam;
+    }
+
+    public int compare(servIrcChan o1, servIrcChan o2) {
+        return o1.name.compareTo(o2.name);
+    }
 
     public void rawTx(String s, servIrcConn f) {
         if (debugger.servIrcTraf) {
@@ -257,6 +273,9 @@ class servIrcChan {
         String s = "";
         for (int i = peers.size() - 1; i >= 0; i--) {
             servIrcConn usr = peers.get(i);
+            if (usr == null) {
+                continue;
+            }
             s += " " + usr.nick;
         }
         return s.trim();
@@ -264,7 +283,7 @@ class servIrcChan {
 
 }
 
-class servIrcConn implements Runnable {
+class servIrcConn implements Comparator<servIrcConn>, Runnable {
 
     public final pipeSide conn;
 
@@ -274,16 +293,29 @@ class servIrcConn implements Runnable {
 
     public final addrIP peer;
 
+    public final int port;
+
     public boolean need2run;
 
-    public servIrcConn(servIrc parent, pipeSide pipe, addrIP host) {
+    public servIrcConn(servIrc parent, pipeSide pipe, addrIP host, int prt) {
         need2run = true;
         lower = parent;
         conn = pipe;
         peer = host.copyBytes();
+        port = prt;
         nick = "peer" + peer;
         new Thread(this).start();
         new servIrcKeep(this);
+    }
+
+    public int compare(servIrcConn o1, servIrcConn o2) {
+        if (o1.port < o2.port) {
+            return -1;
+        }
+        if (o1.port > o2.port) {
+            return +1;
+        }
+        return o1.peer.compare(o1.peer, o2.peer);
     }
 
     public void run() {
@@ -392,6 +424,9 @@ class servIrcConn implements Runnable {
         if (s.equals("list")) {
             for (int i = lower.chans.size() - 1; i >= 0; i--) {
                 servIrcChan chn = lower.chans.get(i);
+                if (chn == null) {
+                    continue;
+                }
                 numTx("322", chn.name + " " + chn.peers.size() + " :");
             }
             numTx("323", ":end of list");
@@ -423,11 +458,11 @@ class servIrcConn implements Runnable {
                 return false;
             }
             chn.rawTx(":" + nick + "!" + nick + " PART " + chn.name, null);
-            chn.peers.remove(this);
+            chn.peers.del(this);
             if (chn.peers.size() > 0) {
                 return false;
             }
-            lower.chans.remove(chn);
+            lower.chans.del(chn);
             return false;
         }
         if (s.equals("privmsg")) {

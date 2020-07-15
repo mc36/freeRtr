@@ -241,7 +241,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         if (!registered) {
             return false;
         }
-        if (lower.clnts.del(iface.ifwNum, peerAddr, 0, portLoc, portRem, false) != null) {
+        if (lower.clnts.del(iface.ifwNum, peerAddr, portLoc, portRem) != null) {
             registered = false;
             return false;
         }
@@ -264,7 +264,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         if (debugger.prtGenTraf) {
             logger.debug("register " + this);
         }
-        if (!lower.clnts.add(iface.ifwNum, peerAddr, 0, portLoc, portRem, this, name, true)) {
+        if (!lower.clnts.add(iface.ifwNum, peerAddr, portLoc, portRem, this, name)) {
             registered = true;
             new Thread(this).start();
             return false;

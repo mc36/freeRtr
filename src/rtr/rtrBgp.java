@@ -1898,7 +1898,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry.stopNow();
         }
         if (lstnTmp != null) {
-            tcpCore.listenStop(lstnIfc, port, null, 0, 0);
+            tcpCore.listenStop(lstnIfc, port, null, 0);
         }
         for (int i = lstnNei.size() - 1; i >= 0; i--) {
             rtrBgpNeigh nei = lstnNei.get(i);
@@ -2664,7 +2664,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("listen")) {
-            tcpCore.listenStop(lstnIfc, port, null, 0, 0);
+            tcpCore.listenStop(lstnIfc, port, null, 0);
             if (negated) {
                 lstnAcl = null;
                 lstnTmp = null;
@@ -2690,7 +2690,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 }
             }
             lstnAcl = acl.aceslst;
-            tcpCore.streamListen(this, new pipeLine(lstnTmp.bufferSize, false), lstnIfc, port, null, 0, 0, "bgp", lstnTmp.passwd, lstnTmp.ttlSecurity);
+            tcpCore.streamListen(this, new pipeLine(lstnTmp.bufferSize, false), lstnIfc, port, null, 0, "bgp", lstnTmp.passwd, lstnTmp.ttlSecurity);
             return false;
         }
         if (s.equals("template")) {

@@ -201,7 +201,7 @@ public class clntDhcp4 implements prtServP {
     }
 
     private void socketBind() {
-        if (lower.packetListen(this, iface, packDhcp4.portCnum, null, 0, packDhcp4.portSnum, "dhcp4c", null, -1)) {
+        if (lower.packetListen(this, iface, packDhcp4.portCnum, null, packDhcp4.portSnum, "dhcp4c", null, -1)) {
             logger.info("failed to bind");
         }
         addrIP adr = new addrIP();
@@ -215,7 +215,7 @@ public class clntDhcp4 implements prtServP {
     }
 
     private void socketUnbind() {
-        lower.listenStop(iface, packDhcp4.portCnum, null, 0, packDhcp4.portSnum);
+        lower.listenStop(iface, packDhcp4.portCnum, null, packDhcp4.portSnum);
         if (sender != null) {
             sender.setClosing();
         }

@@ -93,6 +93,9 @@ public class temperData {
             testConn.setReadTimeout(5000);
             BufferedReader testReader = new BufferedReader(new InputStreamReader(testConn.getInputStream()));
             String testLine = testReader.readLine();
+            if (!testReader.readLine().equals("done")) {
+                return;
+            }
             lastMeasure = Float.parseFloat(testLine);
             timeMeasure = temperUtil.getTime();
         } catch (Exception e) {

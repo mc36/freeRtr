@@ -111,11 +111,25 @@ public class prtLocTcp implements Runnable {
     private boolean doAccept(Socket clnt) throws Exception {
         addrIP srcA = java2addr(clnt.getInetAddress());
         int srcP = clnt.getPort();
-        prtGenServ srv = proto.srvrs.get(0, srcA, 0, port, srcP, true);
+        prtGenServ srv = null;
         if (srv == null) {
+            srv = proto.srvrs.get(0, srcA, port, srcP);
+        }
+        if (srv == null) {
+            srv = proto.srvrs.get(0, srcA, port, 0);
+        }
+        if (srv == null) {
+            srv = proto.srvrs.get(0, null, port, srcP);
+        }
+        if (srv == null) {
+            srv = proto.srvrs.get(0, null, port, 0);
+        }
+        if (srv == null) {
+            logger.warn("server not found on port " + port + " from " + srcA + " " + srcP);
             return true;
         }
         if (!srv.stream) {
+            logger.warn("not stream server on port " + port);
             return true;
         }
         prtGenConn conn = new prtGenConn(new prtTcp(), srv.serverP, srv.serverS, srv.sample, true, new ipFwdIface(-1, new ipIfcLoop()), port, srcA, srcP, "local:" + srv.name, null, -1);

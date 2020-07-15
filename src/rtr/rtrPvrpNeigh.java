@@ -218,7 +218,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             if (debugger.rtrPvrpEvnt) {
                 logger.debug("accepting " + peer);
             }
-            prtAccept ac = new prtAccept(lower.tcpCore, new pipeLine(65536, false), iface.iface, rtrPvrp.port, peer, 0, 0, "pvrp", null, -1);
+            prtAccept ac = new prtAccept(lower.tcpCore, new pipeLine(65536, false), iface.iface, rtrPvrp.port, peer, 0, "pvrp", null, -1);
             ac.wait4conn(30000);
             conn = ac.getConn(true);
         } else {

@@ -172,7 +172,7 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
      * unregister from udp
      */
     public void unregister2udp() {
-        lower.udpCore.listenStop(iface, rtrRip4.port, null, 0, 0);
+        lower.udpCore.listenStop(iface, rtrRip4.port, null, 0);
         conn.setClosing();
     }
 
@@ -182,7 +182,7 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
     public void register2udp() {
         addrIP adr = new addrIP();
         adr.fromString("224.0.0.9");
-        lower.udpCore.packetListen(lower, iface, rtrRip4.port, null, 0, 0, "rip", null, -1);
+        lower.udpCore.packetListen(lower, iface, rtrRip4.port, null, 0, "rip", null, -1);
         conn = lower.udpCore.packetConnect(lower, iface, rtrRip4.port, adr, rtrRip4.port, "rip", null, -1);
         if (conn == null) {
             return;

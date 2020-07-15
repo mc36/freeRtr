@@ -72,7 +72,7 @@ public class rtrBfdIface implements prtServP {
         if (debugger.rtrBfdEvnt) {
             logger.debug("stopping on " + ifc);
         }
-        udp.listenStop(ifc, packBfd.portLoc, null, 0, 0);
+        udp.listenStop(ifc, packBfd.portLoc, null, 0);
         for (int i = 0; i < neighs.size(); i++) {
             neighs.get(i).stopNow();
         }
@@ -85,7 +85,7 @@ public class rtrBfdIface implements prtServP {
         if (debugger.rtrBfdEvnt) {
             logger.debug("starting on " + ifc);
         }
-        udp.packetListen(this, ifc, packBfd.portLoc, null, 0, 0, "bfd", null, -1);
+        udp.packetListen(this, ifc, packBfd.portLoc, null, 0, "bfd", null, -1);
     }
 
     /**

@@ -890,7 +890,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ifc.ready = false;
         for (;;) {
-            ipFwdProto prt = protos.delChild(ifc.ifwNum, null, 0, 0, 0);
+            ipFwdProto prt = protos.delNext(ifc.ifwNum, null, 0, 0);
             if (prt == null) {
                 break;
             }
@@ -1116,7 +1116,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ntry.proto = upper.getProtoNum();
         ntry.iface = iface;
         ntry.upper = upper;
-        return protos.add(iface, trg, 0, ntry.proto, ntry.proto, ntry, "" + upper, false);
+        return protos.add(iface, trg, ntry.proto, ntry.proto, ntry, "" + upper);
     }
 
     /**
@@ -1133,7 +1133,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         int i = upper.getProtoNum();
         for (;;) {
-            ipFwdProto prt = protos.delChild(iface, trg, 0, i, i);
+            ipFwdProto prt = protos.delNext(iface, trg, i, i);
             if (prt == null) {
                 break;
             }
@@ -1152,7 +1152,19 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (debugger.ipFwdTraf) {
             logger.debug("rcv " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
-        ipFwdProto prt = protos.get(lower.ifwNum, pck.IPsrc, 0, pck.IPprt, pck.IPprt, true);
+        ipFwdProto prt = null;
+        if (prt == null) {
+            prt = protos.get(lower.ifwNum, pck.IPsrc, pck.IPprt, pck.IPprt);
+        }
+        if (prt == null) {
+            prt = protos.get(0, pck.IPsrc, pck.IPprt, pck.IPprt);
+        }
+        if (prt == null) {
+            prt = protos.get(lower.ifwNum, null, pck.IPprt, pck.IPprt);
+        }
+        if (prt == null) {
+            prt = protos.get(0, null, pck.IPprt, pck.IPprt);
+        }
         if (prt == null) {
             doDrop(pck, lower, counter.reasons.badProto);
             return;
@@ -1168,7 +1180,19 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (debugger.ipFwdTraf) {
             logger.debug("alrt " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
-        ipFwdProto prt = protos.get(lower.ifwNum, pck.IPsrc, 0, pck.IPprt, pck.IPprt, true);
+        ipFwdProto prt = null;
+        if (prt == null) {
+            prt = protos.get(lower.ifwNum, pck.IPsrc, pck.IPprt, pck.IPprt);
+        }
+        if (prt == null) {
+            prt = protos.get(0, pck.IPsrc, pck.IPprt, pck.IPprt);
+        }
+        if (prt == null) {
+            prt = protos.get(lower.ifwNum, null, pck.IPprt, pck.IPprt);
+        }
+        if (prt == null) {
+            prt = protos.get(0, null, pck.IPprt, pck.IPprt);
+        }
         if (prt == null) {
             return true;
         }
@@ -1838,7 +1862,19 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (debugger.ipFwdTraf) {
             logger.debug("err " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " rtr=" + rtr + " reason=" + counter.reason2string(err));
         }
-        ipFwdProto prt = protos.get(iface.ifwNum, pck.IPtrg, 0, pck.IPprt, pck.IPprt, true);
+        ipFwdProto prt = null;
+        if (prt == null) {
+            prt = protos.get(iface.ifwNum, pck.IPtrg, pck.IPprt, pck.IPprt);
+        }
+        if (prt == null) {
+            prt = protos.get(0, pck.IPtrg, pck.IPprt, pck.IPprt);
+        }
+        if (prt == null) {
+            prt = protos.get(iface.ifwNum, null, pck.IPprt, pck.IPprt);
+        }
+        if (prt == null) {
+            prt = protos.get(0, null, pck.IPprt, pck.IPprt);
+        }
         if (prt == null) {
             return;
         }

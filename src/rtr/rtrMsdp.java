@@ -298,6 +298,9 @@ public class rtrMsdp extends ipRtr {
     public void routerCloseNow() {
         for (int i = 0; i < neighs.size(); i++) {
             rtrMsdpNeigh ntry = neighs.get(i);
+            if (ntry == null) {
+                continue;
+            }
             ntry.stopNow();
             ntry.closeNow();
         }

@@ -568,7 +568,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (tim < 1) {
             pipe = lower.tcpCore.streamConnect(new pipeLine(bufferSize, false), ifc, 0, peerAddr, rtrBgp.port, "bgp", passwd, ttlSecurity);
         } else {
-            prtAccept ac = new prtAccept(lower.tcpCore, new pipeLine(bufferSize, false), ifc, rtrBgp.port, peerAddr, 0, 0, "bgp", passwd, ttlSecurity);
+            prtAccept ac = new prtAccept(lower.tcpCore, new pipeLine(bufferSize, false), ifc, rtrBgp.port, peerAddr, 0, "bgp", passwd, ttlSecurity);
             ac.wait4conn(tim * 1000);
             pipe = ac.getConn(true);
         }
