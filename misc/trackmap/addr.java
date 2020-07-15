@@ -1,3 +1,4 @@
+
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -5,7 +6,7 @@ import java.io.ByteArrayOutputStream;
  *
  * @author matecsaba
  */
-public class sample {
+public class addr {
 
     /**
      * this is needed for cli startup
@@ -13,7 +14,7 @@ public class sample {
      * @param args command line parameters
      */
     public static void main(String[] args) {
-        sample app = new sample();
+        addr app = new addr();
         String a;
         try {
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
@@ -26,16 +27,6 @@ public class sample {
         }
         System.out.println(a);
     }
-
-    /**
-     * static variable
-     */
-    public static int stat;
-
-    /**
-     * global variable
-     */
-    public int glob;
 
     /**
      * do one request
@@ -53,15 +44,7 @@ public class sample {
     public String httpRequest(String url, String path, String peer,
             String agent, String user, String[] par, ByteArrayOutputStream buf)
             throws Exception {
-        stat++;
-        glob++;
-        String pars = "";
-        for (int i = 0; i < par.length; i++) {
-            pars += "<br/>" + par[i];
-        }
-        String s = "stat=" + stat + "<br/>glob=" + glob + "<br/>url=" + url
-                + "<br/>path=" + path + "<br/>peer=" + peer + "<br/>agent="
-                + agent + "<br/>user=" + user + pars + "<br/>";
+        String s = "<html><head><title>address</title></head><body bgcolor=black text=white>" + peer + "</body></html>";
         buf.write(s.getBytes());
         return "html";
     }

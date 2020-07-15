@@ -25,7 +25,7 @@ public static void main(String[] args) {
   try {
     ByteArrayOutputStream buf = new ByteArrayOutputStream();
     a = "" + app.getClass().getName();
-    a = app.httpRequest("http://localhost/" + a, "./" + a, "cli", "clibrowser", args, buf);
+    a = app.httpRequest("http://localhost/" + a, "./" + a, "cli", "clibrowser", "user", args, buf);
     a = "type=" + a + "\r\ndata:\r\n" + buf.toString();
   } catch (Exception e) {
     a = "exception " + e.getMessage();
@@ -40,12 +40,13 @@ public static void main(String[] args) {
  * @param path path of app
  * @param peer client address
  * @param agent user agent
+ * @param user auth data
  * @param par parameters
  * @param buf result buffer, if empty, pathname must present
  * @return [pathname"][file name.]extension
  * @throws Exception if something went wrong
  */
-public String httpRequest(String url, String path, String peer, String agent, String[] par, ByteArrayOutputStream buf) throws Exception {
+public String httpRequest(String url, String path, String peer, String agent, String user, String[] par, ByteArrayOutputStream buf) throws Exception {
   try {
     int i = path.lastIndexOf("/");
     path = path.substring(0, i + 1);

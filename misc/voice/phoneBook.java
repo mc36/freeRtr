@@ -27,7 +27,7 @@ public class phoneBook implements Comparator<String> {
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
             a = "" + app.getClass().getName();
             a = app.httpRequest("http://localhost/" + a, "./" + a, "cli",
-                    "clibrowser", args, buf);
+                    "clibrowser", "user", args, buf);
             a = "type=" + a + "\r\ndata:\r\n" + buf;
         } catch (Exception e) {
             a = "exception " + e.getMessage();
@@ -46,13 +46,14 @@ public class phoneBook implements Comparator<String> {
      * @param path path of app
      * @param peer client address
      * @param agent user agent
+     * @param user auth data
      * @param par parameters
      * @param buf result buffer, if empty, pathname must present
      * @return [pathname"][file name.]extension
      * @throws Exception if something went wrong
      */
     public String httpRequest(String url, String path, String peer,
-            String agent, String[] par, ByteArrayOutputStream buf)
+            String agent, String user, String[] par, ByteArrayOutputStream buf)
             throws Exception {
         String name = null;
         for (int o = 0; o < par.length; o++) {

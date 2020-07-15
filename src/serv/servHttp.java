@@ -1229,7 +1229,7 @@ class servHttpConn implements Runnable {
             }
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
             obj = mth[o].invoke(obj, gotUrl.toURL(true, false), gotHost.path
-                    + s, "" + conn.peerAddr, gotAgent, par, buf);
+                    + s, "" + conn.peerAddr, gotAgent, gotAuth, par, buf);
             s = (String) obj;
             res = buf.toByteArray();
         } catch (Exception e) {
@@ -1999,6 +1999,8 @@ class servHttpConn implements Runnable {
                 return;
             }
             gotAuth = decodeAuth(gotAuth, true);
+        } else {
+            gotAuth = null;
         }
         if (gotHost.streamT != null) {
             gotKeep = false;

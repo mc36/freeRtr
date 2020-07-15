@@ -26,7 +26,7 @@ public class player implements Runnable {
         try {
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
             a = "" + app.getClass().getName();
-            a = player.httpRequest("http://localhost/" + a, "./" + a, "cli", "clibrowser", args, buf);
+            a = player.httpRequest("http://localhost/" + a, "./" + a, "cli", "clibrowser", "user", args, buf);
             a = "type=" + a + "\r\ndata:\r\n" + buf.toString();
         } catch (Exception e) {
             a = "exception " + e.getMessage();
@@ -98,12 +98,13 @@ public class player implements Runnable {
      * @param path path of app
      * @param peer client address
      * @param agent user agent
+     * @param user auth data
      * @param par parameters
      * @param buf result buffer, if empty, pathname must present
      * @return [pathname"][file name.]extension
      * @throws Exception if something went wrong
      */
-    public static String httpRequest(String url, String path, String peer, String agent, String[] par, ByteArrayOutputStream buf) throws Exception {
+    public static String httpRequest(String url, String path, String peer, String agent, String user, String[] par, ByteArrayOutputStream buf) throws Exception {
         if (staticPlayer == null) {
             staticPlayer = new player();
             staticPlayer.path = path.substring(0, path.lastIndexOf("."));
