@@ -34,6 +34,11 @@ public class ipIfc4arp implements ifcUp {
     public final static int type = 0x806;
 
     /**
+     * size of my packets
+     */
+    public final static int size = 28;
+
+    /**
      * arp cache timeout
      */
     public int arpCacheTimeout = ipIfcLoop.defaultCacheTime;
@@ -208,7 +213,7 @@ public class ipIfc4arp implements ifcUp {
         pck.putAddr(14, srcP); // protocol address of sender
         pck.putAddr(18, trgH); // hardware address of target
         pck.putAddr(24, trgP); // protocol address of target
-        pck.putSkip(28); // size of arp packet
+        pck.putSkip(size); // size of arp packet
         pck.merge2beg();
         lower.sendPack(pck);
     }
@@ -234,6 +239,10 @@ public class ipIfc4arp implements ifcUp {
             return;
         }
         pck.getSkip(2);
+        if (pck.dataSize() < size) {
+            cntr.drop(pck, counter.reasons.tooSmall);
+            return;
+        }
         if (pck.msbGetW(0) != 1) { // hardware address space
             cntr.drop(pck, counter.reasons.badTyp);
             return;
