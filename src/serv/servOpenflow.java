@@ -72,6 +72,11 @@ public class servOpenflow extends servGeneric implements prtServS {
     protected int xid = 1;
 
     /**
+     * counter
+     */
+    protected counter cntr = new counter();
+
+    /**
      * version number
      */
     public int version = 4;
@@ -301,6 +306,7 @@ public class servOpenflow extends servGeneric implements prtServS {
         if (debugger.servOpenflowTraf) {
             logger.debug("tx " + pckO.dump(pckB));
         }
+        cntr.tx(pckB);
         pckO.xid = xid++;
         pckO.version = version;
         pckO.sendPack(pckB);
@@ -525,10 +531,12 @@ class servOpenflowRx implements Runnable {
                     ntry.upper.setState(ntry.lastState);
                     break;
                 case packOpenflow.typPackIn:
+                    lower.cntr.rx(pckB);
                     ntry = new servOpenflowIfc1();
                     ntry.id = pckO.parsePckIn(pckB);
                     ntry = lower.expIfc.find(ntry);
                     if (ntry == null) {
+                        lower.cntr.drop(pckB, counter.reasons.noIface);
                         break;
                     }
                     ifcEther.parseETHheader(pckB, false);

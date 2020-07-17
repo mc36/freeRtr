@@ -105,9 +105,13 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      */
     protected ifcEthTyp interconn;
 
+    /**
+     * counter
+     */
+    protected counter cntr = new counter();
+
     private ifcDn intercon;
 
-    private counter cntr = new counter();
 
     /**
      * defaults text
@@ -425,6 +429,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param pckB binary
      */
     protected void sendPack(int id, packHolder pckB) {
+        cntr.tx(pckB);
         ifcEther.createETHheader(pckB, false);
         if (intercon != null) {
             pckB.msbPutW(0, id);
@@ -457,6 +462,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         ntry.id = id;
         ntry = expIfc.find(ntry);
         if (ntry == null) {
+            cntr.drop(pck, counter.reasons.noIface);
             return;
         }
         ntry.upper.recvPack(pck);
@@ -766,10 +772,6 @@ class servP4langConn implements Runnable {
             }
             servP4langIfc ntry = new servP4langIfc();
             ntry.id = bits.str2num(cmd.word());
-            ntry = lower.expIfc.find(ntry);
-            if (ntry == null) {
-                return false;
-            }
             packHolder pck = new packHolder(true, true);
             s = cmd.getRemaining();
             s = s.replaceAll(" ", "");
@@ -783,6 +785,12 @@ class servP4langConn implements Runnable {
                 pck.merge2end();
             }
             ifcEther.parseETHheader(pck, false);
+            lower.cntr.rx(pck);
+            ntry = lower.expIfc.find(ntry);
+            if (ntry == null) {
+                lower.cntr.drop(pck, counter.reasons.noIface);
+                return false;
+            }
             ntry.upper.recvPack(pck);
             return false;
         }
