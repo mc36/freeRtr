@@ -125,7 +125,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         } catch (Exception e) {
         }
         try {
-            proc.kill(0);
+            proc.kill();
         } catch (Exception e) {
         }
     }

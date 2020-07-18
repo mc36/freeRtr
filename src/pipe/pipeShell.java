@@ -124,19 +124,23 @@ public class pipeShell {
 
     /**
      * kill the whole process
+     */
+    public synchronized void kill() {
+        kill(0);
+    }
+
+    /**
+     * kill the whole process
      *
      * @param stat status code, 0 if external
      */
-    public synchronized void kill(int stat) {
+    protected synchronized void kill(int stat) {
         running &= 0x7f - stat;
-        if ((running & 0x40) != 0) {
-            running &= 0x3f;
-            console.setClose();
-        }
         try {
             process.destroy();
         } catch (Exception e) {
         }
+        bits.sleep(100);
         try {
             stdIn.close();
         } catch (Exception e) {
@@ -148,6 +152,10 @@ public class pipeShell {
         try {
             stdErr.close();
         } catch (Exception e) {
+        }
+        if ((running & 0x40) != 0) {
+            running &= 0x3f;
+            console.setClose();
         }
     }
 
@@ -214,13 +222,13 @@ class pipeShellInput implements Runnable {
 
     public void run() {
         for (;;) {
-            if (!prnt.isRunning()) {
-                break;
-            }
             byte buf[] = null;
             try {
                 int siz = strm.available();
                 if (siz < 1) {
+                    if (!prnt.isRunning()) {
+                        break;
+                    }
                     siz = 1;
                 }
                 if (siz > maxBuf) {
@@ -265,7 +273,7 @@ class pipeShellOutput implements Runnable {
                 if (!prnt.isRunning()) {
                     break;
                 }
-                bits.sleep(200);
+                bits.sleep(100);
                 continue;
             }
             try {

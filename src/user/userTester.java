@@ -565,7 +565,7 @@ class userTesterPrc {
             return;
         }
         rdr.debugStat(name + ": stopping process");
-        shell.kill(0);
+        shell.kill();
         shell.waitFor();
         pipe.setClose();
     }

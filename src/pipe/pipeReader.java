@@ -81,7 +81,7 @@ public class pipeReader implements Runnable {
             if (!working) {
                 return;
             }
-            bits.sleep(500);
+            bits.sleep(100);
         }
     }
 
