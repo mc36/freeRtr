@@ -11,6 +11,7 @@ echo installing to $TRG directory
 
 echo net.ipv6.conf.all.disable_ipv6=1 > /etc/sysctl.d/disableipv6.conf
 echo net.ipv6.conf.default.disable_ipv6=1 > /etc/sysctl.d/disableipv6.conf
+echo kernel.panic=10 > /etc/sysctl.d/panic.conf
 
 cat > /etc/network/interfaces << EOF
 iface lo inet loopback
