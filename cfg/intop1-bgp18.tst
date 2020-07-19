@@ -51,7 +51,6 @@ router bgp 1
  neighbor 2.2.2.1 remote-as 1
  neighbor 2.2.2.1 update-source loopback0
  address-family ipv6 unicast
-  bgp scan-time 5
   neighbor 2.2.2.1 activate
   neighbor 2.2.2.1 send-community both
   neighbor 2.2.2.1 send-label
@@ -61,4 +60,4 @@ router bgp 1
 
 
 r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 60 4321::2 /vrf v1
+r1 tping 100 120 4321::2 /vrf v1

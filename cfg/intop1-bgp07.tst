@@ -81,12 +81,10 @@ route-map rm6 permit 20
  exit
 router bgp 2
  address-family ipv4 unicast
-  bgp scan-time 5
   neighbor 1.1.1.1 remote-as 1
   neighbor 1.1.1.1 route-map rm4 out
   redistribute connected
  address-family ipv6 unicast
-  bgp scan-time 5
   neighbor 1234::1 remote-as 1
   neighbor 1234::1 route-map rm6 out
   redistribute connected
@@ -96,9 +94,9 @@ router bgp 2
 
 r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 10 1234::2 /vrf v1
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
-r1 tping 0 60 2.2.2.3 /vrf v1 /int lo0
-r1 tping 0 60 4321::3 /vrf v1 /int lo0
-r1 tping 100 60 2.2.2.4 /vrf v1 /int lo0
-r1 tping 100 60 4321::4 /vrf v1 /int lo0
+r1 tping 100 120 2.2.2.2 /vrf v1 /int lo0
+r1 tping 100 120 4321::2 /vrf v1 /int lo0
+r1 tping 0 120 2.2.2.3 /vrf v1 /int lo0
+r1 tping 0 120 4321::3 /vrf v1 /int lo0
+r1 tping 100 120 2.2.2.4 /vrf v1 /int lo0
+r1 tping 100 120 4321::4 /vrf v1 /int lo0

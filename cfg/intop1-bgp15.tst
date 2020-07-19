@@ -81,7 +81,6 @@ router bgp 1
  neighbor 4321::1 update-source loopback0
  neighbor 4321::1 shutdown
  address-family l2vpn vpls
-  bgp scan-time 5
   neighbor 2.2.2.1 activate
   neighbor 2.2.2.1 send-community both
   neighbor 2.2.2.1 prefix-length-size 2
@@ -112,7 +111,7 @@ interface bdi1
 
 r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 10 1234::2 /vrf v1
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
-r1 tping 100 60 3.3.3.2 /vrf v1
-r1 tping 100 60 4444::2 /vrf v1
+r1 tping 100 120 2.2.2.2 /vrf v1 /int lo0
+r1 tping 100 120 4321::2 /vrf v1 /int lo0
+r1 tping 100 120 3.3.3.2 /vrf v1
+r1 tping 100 120 4444::2 /vrf v1

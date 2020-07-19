@@ -77,14 +77,12 @@ interface gigabit2
  exit
 router bgp 2
  address-family ipv4 unicast
-  bgp scan-time 5
   neighbor 1.1.1.1 remote-as 1
   neighbor 1.1.1.1 send-label explicit-null
   neighbor 1.1.2.1 remote-as 3
   neighbor 1.1.2.1 send-label explicit-null
   redistribute connected
  address-family ipv6 unicast
-  bgp scan-time 5
   neighbor 1234:1::1 remote-as 1
   neighbor 1234:1::1 send-label
   neighbor 1234:2::1 remote-as 3
@@ -152,15 +150,15 @@ r1 tping 100 10 1234:1::2 /vrf v1
 r3 tping 0 10 1.1.2.2 /vrf v1
 r3 tping 100 10 1234:2::2 /vrf v1
 
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-!r1 tping 100 60 4321::2 /vrf v1 /int lo0
-r3 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-!r3 tping 100 60 4321::2 /vrf v1 /int lo0
+r1 tping 100 120 2.2.2.2 /vrf v1 /int lo0
+!r1 tping 100 120 4321::2 /vrf v1 /int lo0
+r3 tping 100 120 2.2.2.2 /vrf v1 /int lo0
+!r3 tping 100 120 4321::2 /vrf v1 /int lo0
 
-r1 tping 100 60 2.2.2.3 /vrf v1 /int lo0
-!r1 tping 100 60 4321::3 /vrf v1 /int lo0
-r3 tping 100 60 2.2.2.1 /vrf v1 /int lo0
-!r3 tping 100 60 4321::1 /vrf v1 /int lo0
+r1 tping 100 120 2.2.2.3 /vrf v1 /int lo0
+!r1 tping 100 120 4321::3 /vrf v1 /int lo0
+r3 tping 100 120 2.2.2.1 /vrf v1 /int lo0
+!r3 tping 100 120 4321::1 /vrf v1 /int lo0
 
-r1 tping 100 40 3.3.3.2 /vrf v1
-r3 tping 100 40 3.3.3.1 /vrf v1
+r1 tping 100 120 3.3.3.2 /vrf v1
+r3 tping 100 120 3.3.3.1 /vrf v1

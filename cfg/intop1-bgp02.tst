@@ -50,11 +50,9 @@ interface gigabit1
  exit
 router bgp 1
  address-family ipv4 unicast
-  bgp scan-time 5
   neighbor 1.1.1.1 remote-as 1
   redistribute connected
  address-family ipv6 unicast
-  bgp scan-time 5
   neighbor 1234::1 remote-as 1
   redistribute connected
  exit
@@ -63,5 +61,5 @@ router bgp 1
 
 r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 10 1234::2 /vrf v1
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
+r1 tping 100 120 2.2.2.2 /vrf v1 /int lo0
+r1 tping 100 120 4321::2 /vrf v1 /int lo0

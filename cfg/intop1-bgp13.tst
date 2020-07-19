@@ -117,11 +117,9 @@ router bgp 1
  neighbor 4321::1 update-source loopback0
  neighbor 4321::1 shutdown
  address-family vpnv4 unicast
-  bgp scan-time 5
   neighbor 4321::1 activate
   neighbor 4321::1 send-community both
  address-family vpnv6 unicast
-  bgp scan-time 5
   neighbor 2.2.2.1 activate
   neighbor 2.2.2.1 send-community both
  address-family ipv4 vrf v2
@@ -138,9 +136,9 @@ router bgp 1
 
 r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 10 1234::2 /vrf v1
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
-!r1 tping 100 60 9.9.2.2 /vrf v2
-r1 tping 100 60 9992::2 /vrf v2
-!r1 tping 100 60 9.9.3.2 /vrf v3
-r1 tping 100 60 9993::2 /vrf v3
+r1 tping 100 120 2.2.2.2 /vrf v1 /int lo0
+r1 tping 100 120 4321::2 /vrf v1 /int lo0
+!r1 tping 100 120 9.9.2.2 /vrf v2
+r1 tping 100 120 9992::2 /vrf v2
+!r1 tping 100 120 9.9.3.2 /vrf v3
+r1 tping 100 120 9993::2 /vrf v3
