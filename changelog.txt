@@ -8959,3 +8959,5 @@ qc pass: bgp with php labels over sr
 qc pass: pvrp stub node
 qc pass: pvrp stub interface
 qc pass: pvrp unstub interface
+---------------------------------- 2020-07-19 04:12:38
+no todo: route-map/policy to match private-as origination/transit, then show, ignore, etc

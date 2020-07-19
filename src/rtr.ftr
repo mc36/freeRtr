@@ -1780,7 +1780,6 @@ todo: http server should honor no in the beginning for host commands
 todo: http host upload optional different authentication
 todo: tls1.3
 todo: http2.0
-todo: route-map/policy to match private-as origination/transit, then show, ignore, etc
 todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
 todo: protocol traceroute
