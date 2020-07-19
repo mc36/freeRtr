@@ -6,8 +6,6 @@ import addr.addrIsis;
 import addr.addrMac;
 import ip.ipMpls;
 import java.util.Comparator;
-import java.util.Timer;
-import java.util.TimerTask;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabLabel;
@@ -16,6 +14,7 @@ import util.bits;
 import util.counter;
 import util.debugger;
 import util.logger;
+import util.notifier;
 import util.typLenVal;
 
 /**
@@ -23,7 +22,7 @@ import util.typLenVal;
  *
  * @author matecsaba
  */
-public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
+public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNeigh> {
 
     /**
      * peer mac address
@@ -86,6 +85,11 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
     protected long upTime;
 
     /**
+     * notifier
+     */
+    protected notifier notif = new notifier();
+
+    /**
      * segment routing label
      */
     protected tabLabelNtry segrouLab;
@@ -103,7 +107,7 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
 
     private long lastHeard;
 
-    private Timer keepTimer;
+    private boolean need2run = true;
 
     private final tabGen<rtrIsisLsp> advert;
 
@@ -288,32 +292,13 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
     }
 
     /**
-     * setup timer thread
-     *
-     * @param shutdown set true to shut down
-     */
-    protected void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
-        keepTimer = null;
-        if (shutdown) {
-            return;
-        }
-        keepTimer = new Timer();
-        rtrIsisNeighRetrans task = new rtrIsisNeighRetrans(this);
-        keepTimer.schedule(task, 500, iface.retransTimer);
-    }
-
-    /**
      * start this neighbor
      */
     protected void startNow() {
         if (debugger.rtrIsisEvnt) {
             logger.debug("starting neighbor l" + level.level + " " + ethAddr);
         }
-        restartTimer(false);
+        new Thread(this).start();
         upTime = bits.getTime();
     }
 
@@ -326,8 +311,9 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
         peerAdjState = statDown;
         tabLabel.release(segrouLab, 15);
         level.schedWork(7);
-        restartTimer(true);
+        need2run = false;
         iface.neighs.del(this);
+        notif.wakeup();
     }
 
     /**
@@ -640,6 +626,8 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
                 level.schedWork(1);
             }
             level.schedWork(6);
+            doRetrans();
+            level.wakeNeighs();
             return;
         }
         if (!old.otherNewer(lsp)) {
@@ -657,6 +645,7 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
         }
         level.schedWork(6);
         doRetrans();
+        level.wakeNeighs();
     }
 
     private void recvPsnp(packHolder pck) {
@@ -825,21 +814,17 @@ public class rtrIsisNeigh implements rtrBfdClnt, Comparator<rtrIsisNeigh> {
         }
     }
 
-}
-
-class rtrIsisNeighRetrans extends TimerTask {
-
-    private rtrIsisNeigh lower;
-
-    public rtrIsisNeighRetrans(rtrIsisNeigh parent) {
-        lower = parent;
-    }
-
     public void run() {
-        try {
-            lower.doRetrans();
-        } catch (Exception e) {
-            logger.traceback(e);
+        for (;;) {
+            if (!need2run) {
+                break;
+            }
+            notif.sleep(iface.retransTimer);
+            try {
+                doRetrans();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
         }
     }
 

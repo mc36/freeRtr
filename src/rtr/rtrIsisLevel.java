@@ -258,6 +258,7 @@ public class rtrIsisLevel implements Runnable {
         if (debugger.rtrIsisEvnt) {
             logger.debug("advertise lsps in level" + level);
         }
+        int done = 0;
         for (int i = 0; i < lsps.size(); i++) {
             rtrIsisLsp ntry = lsps.get(i);
             if (ntry == null) {
@@ -273,6 +274,7 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             generateLsp(ntry, true);
+            done++;
         }
         for (int i = 0; i < need2adv.size(); i++) {
             rtrIsisLsp ntry = need2adv.get(i);
@@ -283,6 +285,32 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             generateLsp(ntry, false);
+            done++;
+        }
+        if (done > 0) {
+            wakeNeighs();
+        }
+    }
+
+    /**
+     * wake up neighbors
+     */
+    protected void wakeNeighs() {
+        for (int o = 0; o < lower.ifaces.size(); o++) {
+            rtrIsisIface iface = lower.ifaces.get(o);
+            if (iface == null) {
+                continue;
+            }
+            for (int i = 0; i < iface.neighs.size(); i++) {
+                rtrIsisNeigh neigh = iface.neighs.get(i);
+                if (neigh == null) {
+                    continue;
+                }
+                if (neigh.level.level != level) {
+                    continue;
+                }
+                neigh.notif.wakeup();
+            }
         }
     }
 
@@ -293,6 +321,7 @@ public class rtrIsisLevel implements Runnable {
         if (debugger.rtrIsisEvnt) {
             logger.debug("purge lsps in level" + level);
         }
+        int done = 0;
         for (int i = lsps.size(); i >= 0; i--) {
             rtrIsisLsp ntry = lsps.get(i);
             if (ntry == null) {
@@ -316,7 +345,10 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             generateLsp(ntry, false);
-            continue;
+            done++;
+        }
+        if (done > 0) {
+            wakeNeighs();
         }
     }
 

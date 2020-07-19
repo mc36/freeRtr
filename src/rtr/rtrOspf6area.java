@@ -240,6 +240,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         if (debugger.rtrOspf6evnt) {
             logger.debug("advertise lsas in area " + area);
         }
+        int done = 0;
         for (int i = 0; i < lsas.size(); i++) {
             rtrOspf6lsa ntry = lsas.get(i);
             if (ntry == null) {
@@ -252,6 +253,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 continue;
             }
             generateLsa(ntry, true);
+            done++;
         }
         for (int i = 0; i < need2adv.size(); i++) {
             rtrOspf6lsa ntry = need2adv.get(i);
@@ -262,6 +264,32 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 continue;
             }
             generateLsa(ntry, false);
+            done++;
+        }
+        if (done > 0) {
+            wakeNeighs();
+        }
+    }
+
+    /**
+     * wake up neighbors
+     */
+    protected void wakeNeighs() {
+        for (int o = 0; o < lower.ifaces.size(); o++) {
+            rtrOspf6iface iface = lower.ifaces.get(o);
+            if (iface == null) {
+                continue;
+            }
+            for (int i = 0; i < iface.neighs.size(); i++) {
+                rtrOspf6neigh neigh = iface.neighs.get(i);
+                if (neigh == null) {
+                    continue;
+                }
+                if (neigh.area.area != area) {
+                    continue;
+                }
+                neigh.notif.wakeup();
+            }
         }
     }
 
@@ -274,6 +302,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         }
         long tim1 = bits.getTime() - rtrOspf6lsa.lsaMaxAge - (rtrOspf6lsa.lsaMaxAge / 100);
         long tim2 = tim1 + (rtrOspf6lsa.lsaMaxAge / 2);
+        int done = 0;
         for (int i = lsas.size(); i >= 0; i--) {
             rtrOspf6lsa ntry = lsas.get(i);
             if (ntry == null) {
@@ -299,6 +328,10 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 continue;
             }
             generateLsa(ntry, false);
+            done++;
+        }
+        if (done > 0) {
+            wakeNeighs();
         }
     }
 

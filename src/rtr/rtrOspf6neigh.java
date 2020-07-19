@@ -2,9 +2,6 @@ package rtr;
 
 import addr.addrIP;
 import java.util.Comparator;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import pack.packHolder;
 import tab.tabGen;
 import util.bits;
@@ -16,17 +13,16 @@ import addr.addrIPv6;
 import ip.ipMpls;
 import tab.tabLabel;
 import tab.tabLabelNtry;
+import util.notifier;
 
 /**
  * ospfv3 neighbor
  *
  * @author matecsaba
  */
-public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
+public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6neigh> {
 
     private final rtrOspf6 lower;
-
-    private Timer keepTimer;
 
     private int updPos;
 
@@ -47,6 +43,8 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
     private long lastHeard;
 
     private int state;
+
+    private boolean need2run = true;
 
     private final static int stDown = 1;
 
@@ -115,6 +113,11 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
      * uptime
      */
     protected long upTime;
+
+    /**
+     * notifier
+     */
+    protected notifier notif = new notifier();
 
     /**
      * segment routing label
@@ -483,6 +486,7 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
         pck.getSkip(4);
         tabGen<rtrOspf6lsa> lst = new tabGen<rtrOspf6lsa>();
         boolean seenOwn = false;
+        int done = 0;
         for (int o = 0; o < m; o++) {
             rtrOspf6lsa lsa = new rtrOspf6lsa();
             int i = lsa.readData(pck, 0, true);
@@ -500,6 +504,7 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
             if (old == null) {
                 advert.put(lsa.copyBytes(false));
                 seenOwn |= lower.routerID.compare(lower.routerID, lsa.rtrID) == 0;
+                done++;
                 continue;
             }
             if (!old.otherNewer(lsa)) {
@@ -513,6 +518,7 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
             area.lsas.put(lsa);
             advert.put(lsa.copyBytes(false));
             seenOwn |= lower.routerID.compare(lower.routerID, lsa.rtrID) == 0;
+            done++;
         }
         if (lst.size() < 1) {
             doRetrans();
@@ -523,6 +529,9 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
         }
         if (request.size() < 1) {
             area.schedWork(6);
+        }
+        if (done > 0) {
+            area.wakeNeighs();
         }
         pck.clear();
         for (int o = 0; o < lst.size(); o++) {
@@ -597,25 +606,6 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
     }
 
     /**
-     * setup timer thread
-     *
-     * @param shutdown set true to shut down
-     */
-    protected void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
-        keepTimer = null;
-        if (shutdown) {
-            return;
-        }
-        keepTimer = new Timer();
-        rtrOspf6neighRetrans task = new rtrOspf6neighRetrans(this);
-        keepTimer.schedule(task, 500, iface.retransTimer);
-    }
-
-    /**
      * start this neighbor
      */
     protected void startNow() {
@@ -623,7 +613,7 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
             logger.debug("starting neighbor " + peer);
         }
         upTime = bits.getTime();
-        restartTimer(false);
+        new Thread(this).start();
     }
 
     /**
@@ -637,8 +627,9 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
         seenMyself = false;
         area.schedWork(7);
         if (!statNeigh) {
-            restartTimer(true);
+            need2run = false;
             iface.neighs.del(this);
+            notif.wakeup();
             return;
         }
         state = stDown;
@@ -826,25 +817,21 @@ public class rtrOspf6neigh implements rtrBfdClnt, Comparator<rtrOspf6neigh> {
         }
     }
 
-}
-
-class rtrOspf6neighRetrans extends TimerTask {
-
-    private rtrOspf6neigh lower;
-
-    public rtrOspf6neighRetrans(rtrOspf6neigh parent) {
-        lower = parent;
-    }
-
     public void run() {
-        try {
-            lower.checkTimeout();
-            if (lower.noTimerNeeded()) {
-                return;
+        for (;;) {
+            if (!need2run) {
+                break;
             }
-            lower.doRetrans();
-        } catch (Exception e) {
-            logger.traceback(e);
+            notif.sleep(iface.retransTimer);
+            try {
+                checkTimeout();
+                if (noTimerNeeded()) {
+                    continue;
+                }
+                doRetrans();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
         }
     }
 

@@ -8,7 +8,6 @@ http server should honor no in the beginning for host commands
 http host upload optional different authentication
 tls1.3
 http2.0
-route-map/policy to match private-as origination/transit, then show, ignore, etc
 terminal mode resolve
 hostwatch to execute script on acl match
 protocol traceroute
