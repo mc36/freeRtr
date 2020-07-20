@@ -3298,7 +3298,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < lstnNei.size(); i++) {
             getNhIncons(lst, lstnNei.get(i), safi);
         }
-        userFormat res = new userFormat("|", "path|ases");
+        userFormat res = new userFormat("|", "path|nexthops");
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlap ntry = lst.get(i);
             if (!mtch.matches(ntry.paths.size())) {
