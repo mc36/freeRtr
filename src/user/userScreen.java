@@ -159,6 +159,12 @@ public class userScreen {
      * @param y screen y size
      */
     public userScreen(pipeSide p, int x, int y) {
+        if (x < 10) {
+            x = 80;
+        }
+        if (y < 5) {
+            y = 25;
+        }
         pipe = p;
         sizX = x;
         sizY = y;

@@ -172,6 +172,26 @@ class servRfbConn implements Runnable {
 
     private notifier notif;
 
+    private int mode = 0; // 0=pal, 1=byte, 2=word, 4=dword, 0x100=msb
+
+    private int redSh1 = 0;
+
+    private int redSh2 = 0;
+
+    private int redSh3 = 0;
+
+    private int grnSh1 = 0;
+
+    private int grnSh2 = 0;
+
+    private int grnSh3 = 0;
+
+    private int bluSh1 = 0;
+
+    private int bluSh2 = 0;
+
+    private int bluSh3 = 0;
+
     public servRfbConn(pipeSide conn, pipeImage image) {
         pipe = conn;
         img = image;
@@ -188,7 +208,6 @@ class servRfbConn implements Runnable {
             if (doStart()) {
                 pipe.setClose();
             }
-            sendPalette();
             doWork();
         } catch (Exception e) {
             logger.traceback(e);
@@ -283,6 +302,15 @@ class servRfbConn implements Runnable {
         }
     }
 
+    private int getShift(int v) {
+        for (int i = 31; i >= 0; i--) {
+            if ((v & (1 << i)) != 0) {
+                return i + 1;
+            }
+        }
+        return 0;
+    }
+
     private boolean doRound() {
         byte[] buf = new byte[1];
         if (pipe.moreGet(buf, 0, buf.length) != buf.length) {
@@ -301,10 +329,38 @@ class servRfbConn implements Runnable {
                 if (pipe.moreGet(buf, 0, buf.length) != buf.length) {
                     return true;
                 }
-                if (debugger.servRfbTraf) {
-                    logger.debug("bits=" + buf[0] + " deep=" + buf[1]);
+                mode = 0;
+                if (buf[3] != 0) {
+                    switch (buf[0]) {
+                        case 8:
+                            mode = 1;
+                            break;
+                        case 16:
+                            mode = 2;
+                            break;
+                        case 32:
+                            mode = 4;
+                            break;
+                    }
+                    redSh3 = bits.msbGetW(buf, 4);
+                    grnSh3 = bits.msbGetW(buf, 6);
+                    bluSh3 = bits.msbGetW(buf, 8);
+                    redSh1 = 24 - getShift(redSh3);
+                    grnSh1 = 16 - getShift(grnSh3);
+                    bluSh1 = 8 - getShift(bluSh3);
+                    redSh2 = buf[10];
+                    grnSh2 = buf[11];
+                    bluSh2 = buf[12];
                 }
-                sendPalette();
+                if ((buf[2] != 0) && (mode > 1)) {
+                    mode |= 0x100;
+                }
+                if (mode == 0) {
+                    sendPalette();
+                }
+                if (debugger.servRfbTraf) {
+                    logger.debug("mode=" + mode + " red=" + redSh1 + "," + redSh2 + "," + redSh3 + " green=" + grnSh1 + "," + grnSh2 + "," + grnSh3 + " blue=" + bluSh1 + "," + bluSh2 + "," + bluSh3);
+                }
                 break;
             case typSetPal:
                 buf = new byte[5];
@@ -369,6 +425,9 @@ class servRfbConn implements Runnable {
     }
 
     private void sendPalette() {
+        if (debugger.servRfbTraf) {
+            logger.debug("tx palette");
+        }
         byte[] buf = new byte[6];
         buf[0] = 1; // setColorMap
         buf[1] = 0; // pad
@@ -403,12 +462,39 @@ class servRfbConn implements Runnable {
         bits.msbPutW(buf, 8, sizX); // size x
         bits.msbPutW(buf, 10, sizY); // size y
         bits.msbPutD(buf, 12, 0); // raw encoding
-        bits.msbPutD(buf, 16, sizX * sizY); // byte size
+        int sizP = mode & 0xff;
+        if (sizP < 1) {
+            sizP = 1;
+        }
+        bits.msbPutD(buf, 16, sizX * sizY * sizP); // byte size
         pipe.morePut(buf, 0, buf.length);
         for (int y = 0; y < sizY; y++) {
-            buf = new byte[sizX];
+            buf = new byte[sizX * sizP];
             for (int x = 0; x < sizX; x++) {
-                buf[x] = (byte) img.img1[y][x];
+                int i = img.img2[y][x];
+                i = (((i >>> redSh1) & redSh3) << redSh2) | (((i >>> grnSh1) & grnSh3) << grnSh2) | (((i >>> bluSh1) & bluSh3) << bluSh2);
+                switch (mode) {
+                    case 0x000:
+                    case 0x100:
+                        buf[x] = (byte) img.img1[y][x];
+                        break;
+                    case 0x001:
+                    case 0x101:
+                        buf[x] = (byte) i;
+                        break;
+                    case 0x002:
+                        bits.lsbPutW(buf, x * 2, i);
+                        break;
+                    case 0x102:
+                        bits.msbPutW(buf, x * 2, i);
+                        break;
+                    case 0x004:
+                        bits.lsbPutD(buf, x * 4, i);
+                        break;
+                    case 0x104:
+                        bits.msbPutD(buf, x * 4, i);
+                        break;
+                }
             }
             pipe.morePut(buf, 0, buf.length);
         }
