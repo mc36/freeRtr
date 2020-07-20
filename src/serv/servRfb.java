@@ -55,7 +55,7 @@ public class servRfb extends servGeneric implements prtServS {
         pipe.lineTx = pipeSide.modTyp.modeLF;
         pipeLine pl = new pipeLine(65536, false);
         lin.createHandler(pl.getSide(), "" + id, false);
-        new servRfbConn(pipe, new pipeImage(pl.getSide(), 80, 25, userFonts1.fontDefault(), userFonts1.colorData));
+        new servRfbConn(pipe, new pipeImage(pl.getSide(), lin.execWidth, lin.execHeight, userFonts1.fontDefault(), userFonts1.colorData));
         return false;
     }
 
@@ -222,7 +222,11 @@ class servRfbConn implements Runnable {
     private boolean doStart() {
         pipe.linePut(locVer);
         String s = pipe.lineGet(1);
-        int ver = bits.str2num(s.substring(s.indexOf(" "), s.length()).replaceAll("\\.", ""));
+        int ver = s.indexOf(" ");
+        if (ver < 0) {
+            ver = 0;
+        }
+        ver = bits.str2num(s.substring(ver, s.length()).replaceAll("\\.", ""));
         if (debugger.servRfbTraf) {
             logger.debug("version=" + ver + " rem=" + s + " loc=" + locVer);
         }
@@ -450,8 +454,12 @@ class servRfbConn implements Runnable {
     private void sendUpdate() {
         final int sizX = img.img1[0].length;
         final int sizY = img.img1.length;
+        int sizP = mode & 0xff;
+        if (sizP < 1) {
+            sizP = 1;
+        }
         if (debugger.servRfbTraf) {
-            logger.debug("tx update " + sizX + "x" + sizY);
+            logger.debug("tx update " + sizX + "x" + sizY + "x" + sizP);
         }
         byte[] buf = new byte[20];
         buf[0] = 0; // FBupdate
@@ -462,10 +470,6 @@ class servRfbConn implements Runnable {
         bits.msbPutW(buf, 8, sizX); // size x
         bits.msbPutW(buf, 10, sizY); // size y
         bits.msbPutD(buf, 12, 0); // raw encoding
-        int sizP = mode & 0xff;
-        if (sizP < 1) {
-            sizP = 1;
-        }
         bits.msbPutD(buf, 16, sizX * sizY * sizP); // byte size
         pipe.morePut(buf, 0, buf.length);
         for (int y = 0; y < sizY; y++) {

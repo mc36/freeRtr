@@ -275,7 +275,7 @@ public class userScreenTest {
             scr.putStr(40, i + 1, 0, i, false, b);
             scr.putStr(60, i + 1, o, 0, false, a);
         }
-        scr.putCur(scr.sizX, scr.sizY);
+        scr.putCur(0, 0);
         scr.refresh();
         for (;;) {
             if (scr.keyPress()) {
@@ -297,7 +297,7 @@ public class userScreenTest {
                 scr.putInt(10 + (i * 3), 2 + o, userScreen.colBlack, userScreen.colWhite, true, (o * 16) + i);
             }
         }
-        scr.putCur(scr.sizX, scr.sizY);
+        scr.putCur(0, 0);
         scr.refresh();
         for (;;) {
             if (scr.keyPress()) {
