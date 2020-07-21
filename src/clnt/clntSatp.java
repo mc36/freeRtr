@@ -40,6 +40,11 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
     public ifcUp upper = new ifcNull();
 
     /**
+     * preferred ip protocol version
+     */
+    public int prefer = 0;
+
+    /**
      * target of tunnel
      */
     public String target = null;
@@ -297,7 +302,7 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
         hashTx = transform.getHmac(buf1);
         hashRx = transform.getHmac(buf2);
         endptTx = bits.randomB();
-        addrIP trg = userTerminal.justResolv(target, 0);
+        addrIP trg = userTerminal.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

@@ -63,6 +63,11 @@ public class clntUdpGre implements Runnable, prtServP, ifcDn {
     public boolean tunnelSeq = false;
 
     /**
+     * preferred ip protocol version
+     */
+    public int prefer = 0;
+
+    /**
      * target of tunnel
      */
     public String target = null;
@@ -202,7 +207,7 @@ public class clntUdpGre implements Runnable, prtServP, ifcDn {
     }
 
     private void workDoer() {
-        addrIP trg = userTerminal.justResolv(target, 0);
+        addrIP trg = userTerminal.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

@@ -57,6 +57,11 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     public ifcUp upper = new ifcNull();
 
     /**
+     * preferred ip protocol version
+     */
+    public int prefer = 0;
+
+    /**
      * target of tunnel
      */
     public String target = null;
@@ -256,7 +261,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         locPriv = cryBase64.decodeBytes(preshared.substring(0, i));
         remPub = cryBase64.decodeBytes(preshared.substring(i, preshared.length()));
         locPub = cryECcurve25519.calc(locPriv, null);
-        addrIP trg = userTerminal.justResolv(target, 0);
+        addrIP trg = userTerminal.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

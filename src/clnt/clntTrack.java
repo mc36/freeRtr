@@ -127,6 +127,11 @@ public class clntTrack implements rtrBfdClnt {
     public boolean hidden = false;
 
     /**
+     * preferred ip protocol version
+     */
+    public int prefer = 0;
+
+    /**
      * target of test
      */
     public String target = null;
@@ -556,7 +561,7 @@ public class clntTrack implements rtrBfdClnt {
             haveResult(false, false);
             return;
         }
-        addrIP fwdTrg = userTerminal.justResolv(target, 0);
+        addrIP fwdTrg = userTerminal.justResolv(target, prefer);
         if (fwdTrg == null) {
             haveResult(false, false);
             return;

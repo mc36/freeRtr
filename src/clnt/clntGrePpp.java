@@ -34,6 +34,11 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
     public ifcUp upper = new ifcNull();
 
     /**
+     * preferred ip protocol version
+     */
+    public int prefer = 0;
+
+    /**
      * target of tunnel
      */
     public String target = null;
@@ -208,7 +213,7 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
     }
 
     private void workDoer() {
-        fwdTrg = userTerminal.justResolv(target, 0);
+        fwdTrg = userTerminal.justResolv(target, prefer);
         if (fwdTrg == null) {
             return;
         }

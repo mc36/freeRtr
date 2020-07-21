@@ -41,6 +41,11 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
     public ifcUp upper = new ifcNull();
 
     /**
+     * preferred ip protocol version
+     */
+    public int prefer = 0;
+
+    /**
      * target of tunnel
      */
     public String target = null;
@@ -243,7 +248,7 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
     }
 
     private void workDoer() {
-        addrIP trg = userTerminal.justResolv(target, 0);
+        addrIP trg = userTerminal.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

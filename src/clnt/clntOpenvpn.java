@@ -41,6 +41,11 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
     public ifcUp upper = new ifcNull();
 
     /**
+     * preferred ip protocol version
+     */
+    public int prefer = 0;
+
+    /**
      * target of tunnel
      */
     public String target = null;
@@ -290,7 +295,7 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
         cphrTx.init(buf2, buf3, true);
         cphrRx.init(buf2, buf3, false);
         cphrSiz = buf3.length;
-        addrIP trg = userTerminal.justResolv(target, 0);
+        addrIP trg = userTerminal.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

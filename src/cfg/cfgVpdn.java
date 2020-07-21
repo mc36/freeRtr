@@ -73,6 +73,11 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     public clntProxy proxy;
 
     /**
+     * preferred ip protocol version
+     */
+    public int prefer = 0;
+
+    /**
      * target of tunnel
      */
     public String target = null;
@@ -321,6 +326,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         "vpdn .*! direction outgoing",
         "vpdn .*! no control-word",
         "vpdn .*! no pwtype",
+        "vpdn .*! prefer none",
         "vpdn .*! no protocol"
     };
 
@@ -536,6 +542,12 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             s = "incoming";
         }
         l.add(cmds.tabulator + "direction " + s);
+        if (prefer == 0) {
+            s = "none";
+        } else {
+            s = "ipv" + prefer;
+        }
+        l.add(cmds.tabulator + "prefer " + s);
         cmds.cfgLine(l, !ctrlWrd, cmds.tabulator, "control-word", "");
         cmds.cfgLine(l, pwtype < 1, cmds.tabulator, "pwtype", packLdpPwe.type2string(pwtype));
         cmds.cfgLine(l, proto == null, cmds.tabulator, "protocol", type2str(proto));
@@ -577,6 +589,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add("2 .    nvgre                        select nvgre");
         l.add("2 .    vxlan                        select vxlan");
         l.add("2 .    geneve                       select geneve");
+        l.add("1 2  prefer                         prefer ip protocol");
+        l.add("2 .    none                         default");
+        l.add("2 .    ipv4                         ipv4");
+        l.add("2 .    ipv6                         ipv6");
         l.add("1 2  direction                      specify direction of connection");
         l.add("2 .    incoming                     act as incoming call");
         l.add("2 .    outgoing                     act as outgoing call");
@@ -675,6 +691,19 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             if (script == null) {
                 cmd.error("no such script");
                 return;
+            }
+            return;
+        }
+        if (s.equals("prefer")) {
+            s = cmd.word();
+            if (s.equals("ipv4")) {
+                prefer = 4;
+            }
+            if (s.equals("ipv6")) {
+                prefer = 6;
+            }
+            if (s.equals("none")) {
+                prefer = 0;
             }
             return;
         }
@@ -952,6 +981,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 l2f = new clntL2f();
                 l2f.target = target;
+                l2f.prefer = prefer;
                 l2f.vrf = proxy.vrf;
                 l2f.srcIfc = proxy.srcIfc;
                 l2f.hostname = username;
@@ -965,6 +995,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 l2tp2 = new clntL2tp2();
                 l2tp2.target = target;
+                l2tp2.prefer = prefer;
                 l2tp2.vrf = proxy.vrf;
                 l2tp2.srcIfc = proxy.srcIfc;
                 l2tp2.direction = direction;
@@ -982,6 +1013,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 l2tp3 = new clntL2tp3();
                 l2tp3.pwType = pwtype;
                 l2tp3.target = target;
+                l2tp3.prefer = prefer;
                 l2tp3.vrf = proxy.vrf;
                 l2tp3.srcIfc = proxy.srcIfc;
                 l2tp3.vcid = "" + vcid;
@@ -1077,6 +1109,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 gtp = new clntGtp();
                 gtp.target = target;
+                gtp.prefer = prefer;
                 gtp.vrf = proxy.vrf;
                 gtp.srcIfc = proxy.srcIfc;
                 gtp.apn = called;
@@ -1092,6 +1125,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 pptp = new clntPptp();
                 pptp.target = target;
+                pptp.prefer = prefer;
                 pptp.vrf = proxy.vrf;
                 pptp.srcIfc = proxy.srcIfc;
                 pptp.direction = direction;
@@ -1105,6 +1139,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 pou = new clntPckOudp();
                 pou.target = target;
+                pou.prefer = prefer;
                 pou.vrf = proxy.vrf;
                 pou.srcIfc = proxy.srcIfc;
                 pou.prtR = vcid;
@@ -1160,6 +1195,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 pog = new clntGrePpp();
                 pog.target = target;
+                pog.prefer = prefer;
                 pog.vrf = proxy.vrf;
                 pog.srcIfc = proxy.srcIfc;
                 pog.vcid = vcid;
@@ -1172,6 +1208,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 tog = new clntGreTap();
                 tog.target = target;
+                tog.prefer = prefer;
                 tog.vrf = proxy.vrf;
                 tog.srcIfc = proxy.srcIfc;
                 tog.vcid = vcid;
@@ -1185,6 +1222,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 ax25 = new clntAx25();
                 ax25.target = target;
+                ax25.prefer = prefer;
                 ax25.vrf = proxy.vrf;
                 ax25.srcIfc = proxy.srcIfc;
                 ax25.setUpper(ifaceDialer.getEncapProto());
@@ -1198,6 +1236,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pwom.pwType = pwtype;
                 pwom.pwMtu = pwmtu;
                 pwom.target = target;
+                pwom.prefer = prefer;
                 pwom.vrf = proxy.vrf;
                 pwom.srcIfc = proxy.srcIfc;
                 pwom.vcid = vcid;
@@ -1217,6 +1256,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 erspan = new clntErspan();
                 erspan.target = target;
+                erspan.prefer = prefer;
                 erspan.vrf = proxy.vrf;
                 erspan.srcIfc = proxy.srcIfc;
                 erspan.spnid = vcid;
@@ -1231,6 +1271,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 dlsw = new clntDlsw();
                 dlsw.target = target;
+                dlsw.prefer = prefer;
                 dlsw.vrf = proxy.vrf;
                 dlsw.srcIfc = proxy.srcIfc;
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
@@ -1243,6 +1284,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 etherip = new clntEtherIp();
                 etherip.target = target;
+                etherip.prefer = prefer;
                 etherip.vrf = proxy.vrf;
                 etherip.srcIfc = proxy.srcIfc;
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
@@ -1255,6 +1297,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 sreth = new clntSrEth();
                 sreth.target = target;
+                sreth.prefer = prefer;
                 sreth.vrf = proxy.vrf;
                 sreth.srcIfc = proxy.srcIfc;
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
@@ -1267,6 +1310,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 uti = new clntUti();
                 uti.target = target;
+                uti.prefer = prefer;
                 uti.vrf = proxy.vrf;
                 uti.srcIfc = proxy.srcIfc;
                 uti.tunKey = vcid;
@@ -1280,6 +1324,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 nvgre = new clntNvGre();
                 nvgre.target = target;
+                nvgre.prefer = prefer;
                 nvgre.vrf = proxy.vrf;
                 nvgre.srcIfc = proxy.srcIfc;
                 nvgre.vsid = vcid;
@@ -1293,6 +1338,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 vxl = new clntVxlan();
                 vxl.target = target;
+                vxl.prefer = prefer;
                 vxl.vrf = proxy.vrf;
                 vxl.srcIfc = proxy.srcIfc;
                 vxl.inst = vcid;
@@ -1307,6 +1353,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 }
                 gnv = new clntGeneve();
                 gnv.target = target;
+                gnv.prefer = prefer;
                 gnv.vrf = proxy.vrf;
                 gnv.srcIfc = proxy.srcIfc;
                 gnv.vni = vcid;
