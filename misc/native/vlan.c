@@ -50,8 +50,8 @@ void doLowerLoop() {
         if (bufS < 0) break;
         bufP = bufD;
         vln = 0;
-        if (get16bits(bufD, 12) == vlanType) {
-            vln = vlanHsh[get16bits(bufD, 14) & 0xfff];
+        if (get16msb(bufD, 12) == vlanType) {
+            vln = vlanHsh[get16msb(bufD, 14) & 0xfff];
             if (vln > 0) {
                 bufP += 4;
                 bufS -= 4;
@@ -95,8 +95,8 @@ void doUpperLoop(void *arg) {
         if (bufS < 0) break;
         bufS += 4;
         memmove(bufD, bufD + 4, 12);
-        put16bits(bufD, 12, vlanType);
-        put16bits(bufD, 14, vlanVal[myVlan]);
+        put16msb(bufD, 12, vlanType);
+        put16msb(bufD, 14, vlanVal[myVlan]);
         packRx++;
         byteRx += bufS;
         sendto(commSock, bufD, bufS, 0, (struct sockaddr *) &addrRem, sizeof (addrRem));

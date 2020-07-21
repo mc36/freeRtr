@@ -152,8 +152,8 @@ int main(int argc, char **argv) {
     strcpy(ifaceAddr, argv[5]);
     ifaceMask = atoi(argv[6]);
     memset(&ifaceMac, 0, sizeof (ifaceMac));
-    put16bits(ifaceMac, 2, portLoc);
-    put16bits(ifaceMac, 4, portRem);
+    put16msb(ifaceMac, 2, portLoc);
+    put16msb(ifaceMac, 4, portRem);
     snprintf(ifaceMac, sizeof (ifaceMac), "%02x:%02x:%02x:%02x:%02x:%02x", ifaceMac[0], ifaceMac[1], ifaceMac[2], ifaceMac[3], ifaceMac[4], ifaceMac[5]);
 
     if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");

@@ -688,7 +688,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         if (segrouLab != null) {
-            for (int i = 0; i < segrouLab.length; i++) {
+            for (int i = 0; i < segrouUsd.length; i++) {
                 if (segrouUsd[i]) {
                     continue;
                 }

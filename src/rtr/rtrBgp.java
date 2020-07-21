@@ -1419,7 +1419,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             segrouUsd[segrouIdx] = true;
             segrouLab[segrouIdx].setFwdCommon(13, fwdCore);
-            for (int i = 0; i < segrouLab.length; i++) {
+            for (int i = 0; i < segrouUsd.length; i++) {
                 if (segrouUsd[i]) {
                     continue;
                 }

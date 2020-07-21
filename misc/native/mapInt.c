@@ -66,8 +66,8 @@ void doRawLoop() {
                 bufD -= 4;
                 bufS += 4;
                 memmove(bufD, bufD + 4, 12);
-                put16bits(bufD, 12, ppd->hv1.tp_vlan_tpid);
-                put16bits(bufD, 14, ppd->hv1.tp_vlan_tci);
+                put16msb(bufD, 12, ppd->hv1.tp_vlan_tpid);
+                put16msb(bufD, 14, ppd->hv1.tp_vlan_tci);
             }
             packRx++;
             byteRx += bufS;
