@@ -220,6 +220,9 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
         int res = 0;
         for (int i = 0; i < conns.size(); i++) {
             tabConnectEntry<Ta, Td> ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
             if (ntry.iface != ifc) {
                 continue;
             }
@@ -250,6 +253,9 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
         int res = 0;
         for (int i = 0; i < conns.size(); i++) {
             tabConnectEntry<Ta, Td> ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
             if (ntry.iface != ifc) {
                 continue;
             }
