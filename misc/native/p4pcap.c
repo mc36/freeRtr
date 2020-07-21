@@ -165,8 +165,9 @@ int main(int argc, char **argv) {
     pthread_t threadStat;
     if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
 
-    if (pthread_create(&threadRaw[0], NULL, (void*) & doHostLoop, NULL)) err("error creating host thread");
-    for (int i=1; i < ports; i++) {
+    if (pthread_create(&threadRaw[cpuport], NULL, (void*) & doHostLoop, NULL)) err("error creating host thread");
+    for (int i=0; i < ports; i++) {
+        if (i == cpuport) continue;
         if (pthread_create(&threadRaw[i], NULL, (void*) & doDataLoop, &ifaceId[i])) err("error creating port thread");
     }
 

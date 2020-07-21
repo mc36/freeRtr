@@ -200,7 +200,7 @@ int vlanout_compare(void *ptr1, void *ptr2) {
 void send2port(unsigned char *bufD, int bufS, int port) {
     sendpack(bufD, bufS, port);
     packTx[port]++;
-    byteTx[port] += bufS + 2;
+    byteTx[port] += bufS;
 }
 
 
@@ -306,7 +306,11 @@ mpls_rx:
             bufP += 4;
             mpls_ntry.label = (label >> 12) & 0xfffff;
             index = table_find(&mpls_table, &mpls_ntry);
-            if (index < 0) break;
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                break;
+            }
             mpls_res = table_get(&mpls_table, index);
             switch (mpls_res->command) {
                 case 1: // route
@@ -350,9 +354,12 @@ mpls_rx:
 ethtyp_tx:
                     bufP -= 2;
                     put16bits(bufD, bufP, ethtyp);
-nexthop_tx:
                     index = table_find(&neigh_table, &neigh_ntry);
-                    if (index < 0) break;
+                    if (index < 0) {
+                        packDr[port]++;
+                        byteDr[port] += bufS;
+                        break;
+                    }
                     neigh_res = table_get(&neigh_table, index);
                     prt = neigh_res->port;
                     vlan_ntry.id = prt;
@@ -401,7 +408,11 @@ nexthop_tx:
         case 0x800:
             portvrf_ntry.port = prt;
             index = table_find(&portvrf_table, &portvrf_ntry);
-            if (index < 0) break;
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                break;
+            }
             portvrf_res = table_get(&portvrf_table, index);
             if (portvrf_res->command == 2) goto bridge;
             route4_ntry.vrf = portvrf_res->vrf;
@@ -445,7 +456,11 @@ ipv4_rx:
         case 0x86dd:
             portvrf_ntry.port = prt;
             index = table_find(&portvrf_table, &portvrf_ntry);
-            if (index < 0) break;
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                break;
+            }
             portvrf_res = table_get(&portvrf_table, index);
             if (portvrf_res->command == 2) goto bridge;
             route6_ntry.vrf = portvrf_res->vrf;
