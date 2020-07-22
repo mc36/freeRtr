@@ -74,11 +74,11 @@ struct lcore_conf lcore_conf[RTE_MAX_LCORE];
 
 
 void doSockLoop() {
-    FILE *commands = fdopen(commandSock, "rw");
+    FILE *commands = fdopen(commandSock, "r");
     if (commands == NULL) rte_exit(EXIT_FAILURE, "failed to open file\n");
     unsigned char buf[1024];
     for (;;) {
-        strcpy(buf, "quit\r\n");
+        memset(&buf, 0, sizeof(buf));
         fgets(buf, sizeof(buf), commands);
         if (doOneCommand(&buf[0]) != 0) break;
     }

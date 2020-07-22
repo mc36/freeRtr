@@ -13,7 +13,7 @@ void table_init(struct table_head *tab, int reclen, int comparer(void *, void *)
     tab->reclen = reclen;
     tab->comparer = comparer;
     tab->size = 0;
-    tab->buffer = malloc(reclen);
+    tab->buffer = malloc(reclen * 16);
 }
 
 
@@ -45,7 +45,7 @@ void table_add(struct table_head *tab, void *ntry) {
         memmove(table_get(tab, idx), ntry, tab->reclen);
         return;
     }
-    tab->buffer = realloc(tab->buffer, tab->reclen * (tab->size+1));
+    tab->buffer = realloc(tab->buffer, tab->reclen * (tab->size+16));
     idx = -idx - 1;
     memmove(table_get(tab, idx + 1), table_get(tab, idx), (tab->size - idx) * tab->reclen);
     tab->size++;
@@ -58,5 +58,5 @@ void table_del(struct table_head *tab, void *ntry) {
     if (idx < 0) return;
     if (idx < (tab->size - 1)) memmove(table_get(tab, idx), table_get(tab, idx + 1), (tab->size - idx - 1) * tab->reclen);
     tab->size--;
-    tab->buffer = realloc(tab->buffer, tab->reclen * (tab->size+1));
+    tab->buffer = realloc(tab->buffer, tab->reclen * (tab->size+16));
 }

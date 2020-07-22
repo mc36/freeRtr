@@ -72,11 +72,11 @@ void doDataLoop(int * param) {
 
 
 void doSockLoop() {
-    FILE *commands = fdopen(commandSock, "rw");
+    FILE *commands = fdopen(commandSock, "r");
     if (commands == NULL) err("failed to open file");
     unsigned char buf[1024];
     for (;;) {
-        strcpy(buf, "quit\r\n");
+        memset(&buf, 0, sizeof(buf));
         fgets(buf, sizeof(buf), commands);
         if (doOneCommand(&buf[0]) != 0) break;
     }

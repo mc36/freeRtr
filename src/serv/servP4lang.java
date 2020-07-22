@@ -744,21 +744,6 @@ class servP4langConn implements Runnable {
     }
 
     private boolean doRound() {
-        if (pipe.isClosed() != 0) {
-            return true;
-        }
-        for (int i = 0; i < neighs.size(); i++) {
-            neighs.get(i).need = 0;
-        }
-        keepalive++;
-        if (keepalive > 30) {
-            String a = "keepalive";
-            lower.sendLine(a);
-            keepalive = 0;
-        }
-        if (lower.expVrf == null) {
-            return false;
-        }
         if (pipe.ready2rx() > 0) {
             String s = pipe.lineGet(0x11);
             if (debugger.servP4langTraf) {
@@ -891,6 +876,18 @@ class servP4langConn implements Runnable {
             }
             ntry.upper.recvPack(pck);
             return false;
+        }
+        if (pipe.isClosed() != 0) {
+            return true;
+        }
+        for (int i = 0; i < neighs.size(); i++) {
+            neighs.get(i).need = 0;
+        }
+        keepalive++;
+        if (keepalive > 30) {
+            String a = "keepalive";
+            lower.sendLine(a);
+            keepalive = 0;
         }
         if (copp4 != lower.expCopp4) {
             sendAcl("copp4_del ", true, copp4);
