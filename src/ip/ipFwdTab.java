@@ -665,6 +665,7 @@ public class ipFwdTab {
                 tabRouteEntry<addrIP> old = lower.actualU.find(ntry);
                 if (old != null) {
                     ntry.cntr = old.cntr;
+                    ntry.hwCntr = old.hwCntr;
                 }
                 if (ntry.cntr == null) {
                     ntry.cntr = new counter();

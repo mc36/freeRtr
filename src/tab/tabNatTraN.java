@@ -75,6 +75,11 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
     public counter cntr = new counter();
 
     /**
+     * hardware counter
+     */
+    public counter hwCntr;
+
+    /**
      * reverse entry
      *
      * @return entry reversed
@@ -97,7 +102,13 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
     }
 
     public String toString() {
-        return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|" + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort + "|" + bits.timePast(lastUsed) + "|" + cntr.packRx + "|" + cntr.byteRx;
+        String a = "";
+        String s = "";
+        if (hwCntr != null) {
+            a = "+" + hwCntr.packRx;
+            s = "+" + hwCntr.byteRx;
+        }
+        return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|" + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort + "|" + bits.timePast(lastUsed) + "|" + cntr.packRx + a + "|" + cntr.byteRx + s;
     }
 
     public int compare(tabNatTraN o1, tabNatTraN o2) {

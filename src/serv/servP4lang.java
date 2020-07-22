@@ -3,6 +3,7 @@ package serv;
 import java.util.Comparator;
 import addr.addrType;
 import addr.addrIP;
+import addr.addrIPv4;
 import addr.addrIPv6;
 import addr.addrMac;
 import addr.addrPrefix;
@@ -111,7 +112,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     protected counter cntr = new counter();
 
     private ifcDn intercon;
-
 
     /**
      * defaults text
@@ -714,6 +714,35 @@ class servP4langConn implements Runnable {
         }
     }
 
+    private void updateTrans(cmds cmd, ipFwd fwd) {
+        tabNatTraN ntry = new tabNatTraN();
+        ntry.protocol = bits.str2num(cmd.word());
+        addrIP adr = new addrIP();
+        adr.fromString(cmd.word());
+        ntry.origSrcAddr = adr;
+        adr = new addrIP();
+        adr.fromString(cmd.word());
+        ntry.origTrgAddr = adr;
+        ntry.origSrcPort = bits.str2num(cmd.word());
+        ntry.origTrgPort = bits.str2num(cmd.word());
+        ntry = fwd.natTrns.find(ntry);
+        if (ntry == null) {
+            return;
+        }
+        counter old = ntry.hwCntr;
+        ntry.hwCntr = new counter();
+        ntry.hwCntr.packRx = bits.str2long(cmd.word());
+        ntry.hwCntr.byteRx = bits.str2long(cmd.word());
+        if (old == null) {
+            return;
+        }
+        if (old.compare(old, ntry.hwCntr) == 0) {
+            return;
+        }
+        ntry.lastUsed = bits.getTime();
+        ntry.reverse.lastUsed = ntry.lastUsed;
+    }
+
     private boolean doRound() {
         if (pipe.isClosed() != 0) {
             return true;
@@ -737,6 +766,75 @@ class servP4langConn implements Runnable {
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
+            if (s.equals("nattrns4_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    return false;
+                }
+                updateTrans(cmd, vrf.vrf.fwd4);
+                return false;
+            }
+            if (s.equals("nattrns6_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    return false;
+                }
+                updateTrans(cmd, vrf.vrf.fwd6);
+                return false;
+            }
+            if (s.equals("route4_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    return false;
+                }
+                addrIPv4 adr = new addrIPv4();
+                adr.fromString(cmd.word());
+                addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(adr, bits.str2num(cmd.word()));
+                tabRouteEntry<addrIP> ntry = vrf.vrf.fwd4.actualU.find(addrPrefix.ip4toIP(prf));
+                if (ntry == null) {
+                    return false;
+                }
+                ntry.hwCntr = new counter();
+                ntry.hwCntr.packTx = bits.str2long(cmd.word());
+                ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+                return false;
+            }
+            if (s.equals("route6_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    return false;
+                }
+                addrIPv6 adr = new addrIPv6();
+                adr.fromString(cmd.word());
+                addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(adr, bits.str2num(cmd.word()));
+                tabRouteEntry<addrIP> ntry = vrf.vrf.fwd6.actualU.find(addrPrefix.ip6toIP(prf));
+                if (ntry == null) {
+                    return false;
+                }
+                ntry.hwCntr = new counter();
+                ntry.hwCntr.packTx = bits.str2long(cmd.word());
+                ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+                return false;
+            }
+            if (s.equals("mpls_cnt")) {
+                tabLabelNtry ntry = new tabLabelNtry(bits.str2num(cmd.word()));
+                ntry = tabLabel.labels.find(ntry);
+                if (ntry == null) {
+                    return false;
+                }
+                ntry.hwCntr = new counter();
+                ntry.hwCntr.packRx = bits.str2long(cmd.word());
+                ntry.hwCntr.byteRx = bits.str2long(cmd.word());
+                return false;
+            }
             if (s.equals("counter")) {
                 servP4langIfc ntry = new servP4langIfc();
                 ntry.id = bits.str2num(cmd.word());

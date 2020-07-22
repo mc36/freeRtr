@@ -25,6 +25,8 @@ struct mpls_entry {
     int vrf;
     int ver;
     int swap;
+    long pack;
+    long byte;
 };
 
 struct table_head mpls_table;
@@ -64,6 +66,8 @@ struct route4_entry {
     int nexthop;
     int label1;
     int label2;
+    long pack;
+    long byte;
 };
 
 struct table_head route4_table;
@@ -93,6 +97,8 @@ struct route6_entry {
     int nexthop;
     int label1;
     int label2;
+    long pack;
+    long byte;
 };
 
 struct table_head route6_table;
@@ -122,6 +128,8 @@ struct neigh_entry {
     int port;
     unsigned char smac[6];
     unsigned char dmac[6];
+    long pack;
+    long byte;
 };
 
 struct table_head neigh_table;
@@ -139,6 +147,8 @@ struct bridge_entry {
     int id;
     int port;
     unsigned char mac[6];
+    long pack;
+    long byte;
 };
 
 struct table_head bridge_table;
@@ -333,6 +343,8 @@ struct nat4_entry {
     int nTrgPort;
     int sum3;
     int sum4;
+    long pack;
+    long byte;
 };
 
 struct table_head nat4_table;
@@ -381,6 +393,8 @@ struct nat6_entry {
     int nTrgPort;
     int sum3;
     int sum4;
+    long pack;
+    long byte;
 };
 
 struct table_head nat6_table;
@@ -588,6 +602,8 @@ mpls_rx:
                 return;
             }
             mpls_res = table_get(&mpls_table, index);
+            mpls_res->pack++;
+            mpls_res->byte += bufS;
             switch (mpls_res->command) {
                 case 1: // route
                     route4_ntry.vrf = mpls_res->vrf;
@@ -637,6 +653,8 @@ ethtyp_tx:
                         return;
                     }
                     neigh_res = table_get(&neigh_table, index);
+                    neigh_res->pack++;
+                    neigh_res->byte += bufS;
                     prt = neigh_res->port;
 vlan_tx:
                     vlan_ntry.id = prt;
@@ -728,6 +746,8 @@ ipv4_rx:
                     goto ipv4_rou;
                 }
                 nat4_res = table_get(&nat4_table, index);
+                nat4_res->pack++;
+                nat4_res->byte += bufS;
                 acl4_ntry.srcAddr = nat4_res->nSrcAddr;
                 acl4_ntry.trgAddr = route4_ntry.addr = nat4_res->nTrgAddr;
                 acl4_ntry.srcPortV = nat4_res->nSrcPort;
@@ -744,6 +764,8 @@ ipv4_rou:
                 index = table_find(&route4_table, &route4_ntry);
                 if (index < 0) continue;
                 route4_res = table_get(&route4_table, index);
+                route4_res->pack++;
+                route4_res->byte += bufS;
                 switch (route4_res->command) {
                     case 1: // route
                         neigh_ntry.id = route4_res->nexthop;
@@ -756,6 +778,8 @@ ipv4_rou:
                             return;
                         }
                         neigh_res = table_get(&neigh_table, index);
+                        neigh_res->pack++;
+                        neigh_res->byte += bufS;
                         prt = neigh_res->port;
                         acls_ntry.dir = 2;
                         acls_ntry.port = prt;
@@ -851,6 +875,8 @@ ipv6_rx:
                     goto ipv6_rou;
                 }
                 nat6_res = table_get(&nat6_table, index);
+                nat6_res->pack++;
+                nat6_res->byte += bufS;
                 acl6_ntry.srcAddr1 = nat6_res->nSrcAddr1;
                 acl6_ntry.srcAddr2 = nat6_res->nSrcAddr2;
                 acl6_ntry.srcAddr3 = nat6_res->nSrcAddr3;
@@ -900,6 +926,8 @@ ipv6_rou:
                 if (index < 0) continue;
 ipv6_hit:
                 route6_res = table_get(&route6_table, index);
+                route6_res->pack++;
+                route6_res->byte += bufS;
                 switch (route6_res->command) {
                     case 1: // route
                         neigh_ntry.id = route6_res->nexthop;
@@ -912,6 +940,8 @@ ipv6_hit:
                             return;
                         }
                         neigh_res = table_get(&neigh_table, index);
+                        neigh_res->pack++;
+                        neigh_res->byte += bufS;
                         prt = neigh_res->port;
                         acls_ntry.dir = 2;
                         acls_ntry.port = prt;
@@ -957,6 +987,8 @@ bridge:
             index = table_find(&bridge_table, &bridge_ntry);
             if (index < 0) goto cpu;
             bridge_res = table_get(&bridge_table, index);
+            bridge_res->pack++;
+            bridge_res->byte += bufS;
             bufP -= 2;
             prt = bridge_res->port;
             vlan_ntry.id = prt;
@@ -1018,20 +1050,6 @@ void initTables() {
     table_init(&nat6_table, sizeof(struct nat6_entry), &nat6_compare);
 }
 
-
-
-
-void doStatRount(FILE *commands) {
-    for (int i = 0; i < ports; i++) {
-        fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
-    }
-    for (int i=0; i<vlanin_table.size; i++) {
-        struct vlan_entry *intry = table_get(&vlanin_table, i);
-        struct vlan_entry *ontry = table_get(&vlanout_table, i);
-        fprintf(commands, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
-    }
-    fflush(commands);
-}
 
 
 
@@ -1541,6 +1559,84 @@ int doOneCommand(unsigned char* buf) {
     }
     return 0;
 }
+
+
+
+
+
+
+void doReportRount(FILE *commands) {
+    unsigned char buf[1024];
+    unsigned char buf2[1024];
+    unsigned char buf3[1024];
+    for (int i=0; i<mpls_table.size; i++) {
+        struct mpls_entry *ntry = table_get(&mpls_table, i);
+        fprintf(commands, "mpls_cnt %i %li %li\n", ntry->label, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<neigh_table.size; i++) {
+        struct neigh_entry *ntry = table_get(&neigh_table, i);
+        fprintf(commands, "neigh_cnt %i %li %li\n", ntry->id, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<bridge_table.size; i++) {
+        struct bridge_entry *ntry = table_get(&bridge_table, i);
+        mac2str(ntry->mac, buf);
+        fprintf(commands, "bridge_cnt %i %s %li %li\n", ntry->id, &buf, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<route4_table.size; i++) {
+        struct route4_entry *ntry = table_get(&route4_table, i);
+        put32msb(buf2, 0, ntry->addr);
+        inet_ntop(AF_INET, &buf2[0], &buf[0], sizeof(buf));
+        fprintf(commands, "route4_cnt %i %s %i %li %li\n", ntry->vrf, &buf, ntry->mask, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<route6_table.size; i++) {
+        struct route6_entry *ntry = table_get(&route6_table, i);
+        put32msb(buf2, 0, ntry->addr1);
+        put32msb(buf2, 4, ntry->addr2);
+        put32msb(buf2, 8, ntry->addr3);
+        put32msb(buf2, 12, ntry->addr4);
+        inet_ntop(AF_INET6, &buf2[0], &buf[0], sizeof(buf));
+        fprintf(commands, "route6_cnt %i %s %i %li %li\n", ntry->vrf, &buf, ntry->mask, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<nat4_table.size; i++) {
+        struct nat4_entry *ntry = table_get(&nat4_table, i);
+        put32msb(buf, 0, ntry->oSrcAddr);
+        inet_ntop(AF_INET, &buf[0], &buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry->oTrgAddr);
+        inet_ntop(AF_INET, &buf[0], &buf3[0], sizeof(buf3));
+        fprintf(commands, "nattrns4_cnt %i %i %s %s %i %i %li %li\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<nat6_table.size; i++) {
+        struct nat6_entry *ntry = table_get(&nat6_table, i);
+        put32msb(buf, 0, ntry->oSrcAddr1);
+        put32msb(buf, 4, ntry->oSrcAddr2);
+        put32msb(buf, 8, ntry->oSrcAddr3);
+        put32msb(buf, 12, ntry->oSrcAddr4);
+        inet_ntop(AF_INET6, &buf[0], &buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry->oTrgAddr1);
+        put32msb(buf, 4, ntry->oTrgAddr2);
+        put32msb(buf, 8, ntry->oTrgAddr3);
+        put32msb(buf, 12, ntry->oTrgAddr4);
+        inet_ntop(AF_INET6, &buf[0], &buf3[0], sizeof(buf3));
+        fprintf(commands, "nattrns6_cnt %i %i %s %s %i %i %li %li\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
+    }
+    fflush(commands);
+}
+
+
+
+void doStatRount(FILE *commands) {
+    for (int i = 0; i < ports; i++) {
+        fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
+    }
+    for (int i=0; i<vlanin_table.size; i++) {
+        struct vlan_entry *intry = table_get(&vlanin_table, i);
+        struct vlan_entry *ontry = table_get(&vlanout_table, i);
+        fprintf(commands, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
+    }
+    fflush(commands);
+}
+
+
 
 
 

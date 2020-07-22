@@ -88,8 +88,11 @@ void doSockLoop() {
 void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
+    int rnd = 0;
     for (;;) {
         doStatRount(commands);
+        rnd++;
+        if ((rnd % 30) == 0) doReportRount(commands);
         sleep(1);
     }
     err("stat thread exited");

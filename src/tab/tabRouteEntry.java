@@ -476,6 +476,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     public counter cntr;
 
     /**
+     * hardware counter
+     */
+    public counter hwCntr;
+
+    /**
      * convert route type to string
      *
      * @param i route type
@@ -651,6 +656,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         prf.version = version;
         prf.iface = iface;
         prf.cntr = cntr;
+        prf.hwCntr = hwCntr;
         return prf;
     }
 
@@ -1126,6 +1132,19 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     }
 
     /**
+     * convert to hardware counter format
+     *
+     * @param prf entry to dump
+     * @return converted
+     */
+    public static String toShHwCntr(tabRouteEntry<addrIP> prf) {
+        if (prf.hwCntr == null) {
+            return null;
+        }
+        return addrPrefix.ip2str(prf.prefix) + "|" + prf.hwCntr.packTx + "|" + prf.hwCntr.byteTx + "|" + bits.timePast(prf.time);
+    }
+
+    /**
      * convert to bgp format
      *
      * @param prf entry to dump
@@ -1317,6 +1336,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         l.add("local label = " + labelLoc);
         l.add("remote label = " + dumpIntList(labelRem, "", ""));
         l.add("counter = " + counter.getShStat(cntr));
+        l.add("hardware counter = " + counter.getShStat(hwCntr));
         return l;
     }
 

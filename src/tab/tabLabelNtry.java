@@ -73,6 +73,11 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
     public counter cntr = new counter();
 
     /**
+     * hardware counter
+     */
+    public counter hwCntr;
+
+    /**
      * pseudowire interface
      */
     public ifcUp pweIfc = null;
@@ -307,7 +312,8 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
         lst.add("pwe iface|" + pweIfc);
         lst.add("pwe del|" + pweDel);
         lst.add("pwe add|" + bits.byteDump(pweAdd, 0, -1));
-        lst.add("counter|" + cntr.getShStat());
+        lst.add("counter|" + counter.getShStat(cntr));
+        lst.add("hardware counter|" + counter.getShStat(hwCntr));
         return lst;
     }
 
@@ -339,7 +345,11 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
         if (pweIfc != null) {
             s += " pwe";
         }
-        return label + "|" + forwarder + "|" + iface + "|" + nextHop + "|" + s + "|" + cntr.byteRx;
+        String a = "";
+        if (hwCntr != null) {
+            a = "+" + hwCntr.byteRx;
+        }
+        return label + "|" + forwarder + "|" + iface + "|" + nextHop + "|" + s + "|" + cntr.byteRx + a;
     }
 
     public int compare(tabLabelNtry o1, tabLabelNtry o2) {
