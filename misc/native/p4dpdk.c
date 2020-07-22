@@ -79,7 +79,7 @@ void doSockLoop() {
     unsigned char buf[1024];
     for (;;) {
         memset(&buf, 0, sizeof(buf));
-        fgets(buf, sizeof(buf), commands);
+        if (fgets(buf, sizeof(buf), commands) == NULL) break;
         if (doOneCommand(&buf[0]) != 0) break;
     }
     rte_exit(EXIT_FAILURE, "command thread exited\n");

@@ -180,6 +180,9 @@ class prtLocTcpRx implements Runnable {
                 if (i < 1) {
                     i = 1;
                 }
+                if (i > 1024) {
+                    i = 1024;
+                }
                 byte[] buf = new byte[i];
                 if (strm.read(buf) != buf.length) {
                     break;
@@ -218,6 +221,9 @@ class prtLocTcpTx implements Runnable {
                 int i = pipe.ready2rx();
                 if (i < 1) {
                     i = 1;
+                }
+                if (i > 1024) {
+                    i = 1024;
                 }
                 byte[] buf = new byte[i];
                 if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
