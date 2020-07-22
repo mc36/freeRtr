@@ -406,6 +406,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     public tabNatTraN createEntry(packHolder pck, ipIcmp icc) {
         tabNatTraN n = new tabNatTraN();
         n.lastUsed = bits.getTime();
+        n.created = n.lastUsed;
         n.protocol = pck.IPprt;
         n.origSrcAddr = pck.IPsrc.copyBytes();
         n.origTrgAddr = pck.IPtrg.copyBytes();

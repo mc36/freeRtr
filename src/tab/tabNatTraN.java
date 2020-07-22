@@ -65,6 +65,11 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
     public long lastUsed;
 
     /**
+     * time when created
+     */
+    public long created;
+
+    /**
      * reverse translation
      */
     public tabNatTraN reverse;
@@ -87,6 +92,7 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
     public tabNatTraN reverseEntry() {
         tabNatTraN n = new tabNatTraN();
         n.lastUsed = lastUsed;
+        n.created = created;
         n.protocol = protocol;
         n.origTrgAddr = newSrcAddr.copyBytes();
         n.origSrcAddr = newTrgAddr.copyBytes();
@@ -108,7 +114,7 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
             a = "+" + hwCntr.packRx;
             s = "+" + hwCntr.byteRx;
         }
-        return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|" + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort + "|" + bits.timePast(lastUsed) + "|" + cntr.packRx + a + "|" + cntr.byteRx + s;
+        return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|" + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort + "|" + bits.timePast(created) + "|" + bits.timePast(lastUsed) + "|" + cntr.packRx + a + "|" + cntr.byteRx + s;
     }
 
     public int compare(tabNatTraN o1, tabNatTraN o2) {
@@ -146,6 +152,7 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
     public static tabNatTraN fromPack(packHolder pck) {
         tabNatTraN n = new tabNatTraN();
         n.lastUsed = bits.getTime();
+        n.created = n.lastUsed;
         n.protocol = pck.IPprt;
         n.origSrcPort = pck.UDPsrc;
         n.origTrgPort = pck.UDPtrg;
@@ -163,6 +170,7 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
     public static tabNatTraN fromError(packHolder pck) {
         tabNatTraN n = new tabNatTraN();
         n.lastUsed = bits.getTime();
+        n.created = n.lastUsed;
         n.protocol = pck.IPprt;
         n.origSrcPort = pck.UDPtrg;
         n.origTrgPort = pck.UDPsrc;
