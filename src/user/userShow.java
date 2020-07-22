@@ -1119,10 +1119,6 @@ public class userShow {
                 doShowCounter(4);
                 return null;
             }
-            if (a.equals("hwcounter")) {
-                doShowHwCounter(4);
-                return null;
-            }
             if (a.equals("route")) {
                 doShowRouteU(4);
                 return null;
@@ -1359,10 +1355,6 @@ public class userShow {
             }
             if (a.equals("counter")) {
                 doShowCounter(6);
-                return null;
-            }
-            if (a.equals("hwcounter")) {
-                doShowHwCounter(6);
                 return null;
             }
             if (a.equals("route")) {
@@ -2981,14 +2973,6 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualU, 6);
     }
 
-    private void doShowHwCounter(int ver) {
-        ipFwd fwd = findVrf(ver);
-        if (fwd == null) {
-            return;
-        }
-        doShowRoutes(fwd, fwd.actualU, 9);
-    }
-
     private void doShowRouteU(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -3072,7 +3056,6 @@ public class userShow {
                 l = new userFormat("|", "prefix|max|as");
                 break;
             case 6:
-            case 9:
                 l = new userFormat("|", "prefix|pack|byte|time");
                 break;
             case 7:
@@ -3125,13 +3108,6 @@ public class userShow {
                     break;
                 case 8:
                     a = tabRouteEntry.toShBrRoute(prf);
-                    if (a == null) {
-                        continue;
-                    }
-                    l.add(a);
-                    break;
-                case 9:
-                    a = tabRouteEntry.toShHwCntr(prf);
                     if (a == null) {
                         continue;
                     }

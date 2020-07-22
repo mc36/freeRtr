@@ -1128,20 +1128,13 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         if (prf.cntr == null) {
             return null;
         }
-        return addrPrefix.ip2str(prf.prefix) + "|" + prf.cntr.packTx + "|" + prf.cntr.byteTx + "|" + bits.timePast(prf.time);
-    }
-
-    /**
-     * convert to hardware counter format
-     *
-     * @param prf entry to dump
-     * @return converted
-     */
-    public static String toShHwCntr(tabRouteEntry<addrIP> prf) {
-        if (prf.hwCntr == null) {
-            return null;
+        String a = "";
+        String s = "";
+        if (prf.hwCntr != null) {
+            a = "+" + prf.hwCntr.packTx;
+            s = "+" + prf.hwCntr.byteTx;
         }
-        return addrPrefix.ip2str(prf.prefix) + "|" + prf.hwCntr.packTx + "|" + prf.hwCntr.byteTx + "|" + bits.timePast(prf.time);
+        return addrPrefix.ip2str(prf.prefix) + "|" + prf.cntr.packTx + a + "|" + prf.cntr.byteTx + s + "|" + bits.timePast(prf.time);
     }
 
     /**

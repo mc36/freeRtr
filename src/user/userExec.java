@@ -238,9 +238,6 @@ public class userExec {
         hl.add("3 4        counter               unicast routing table traffic");
         hl.add("4 5,.        <vrf>               name of routing table");
         hl.add("5 .            [addr]            prefix to view");
-        hl.add("3 4        hwcounter             unicast routing table hardware traffic");
-        hl.add("4 5,.        <vrf>               name of routing table");
-        hl.add("5 .            [addr]            prefix to view");
         hl.add("3 4        route                 unicast routing table entries");
         hl.add("4 5,.        <vrf>               name of routing table");
         hl.add("5 .            [addr]            prefix to view");
