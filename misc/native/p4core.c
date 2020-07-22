@@ -581,6 +581,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     int label;
     int prt;
     int sum;
+    int ttl;
     bufP = preBuff;
     packRx[port]++;
     byteRx[port] += bufS;
@@ -593,6 +594,12 @@ ethtyp_rx:
         case 0x8847:
 mpls_rx:
             label = get32msb(bufD, bufP);
+            ttl = (label & 0xff) - 1;
+            if (ttl <= 1) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
             bufP += 4;
             mpls_ntry.label = (label >> 12) & 0xfffff;
             index = table_find(&mpls_table, &mpls_ntry);
@@ -640,7 +647,7 @@ mpls_rx:
                     return;
                 case 3: // swap
                     bufP -= 4;
-                    label = (label & 0xfff) | (mpls_res->swap << 12);
+                    label = (label & 0xf00) | ttl | (mpls_res->swap << 12);
                     put32msb(bufD, bufP, label);
                     neigh_ntry.id = mpls_res->nexthop;
 ethtyp_tx:
@@ -715,6 +722,14 @@ ipv4_rx:
             acl4_ntry.protV = bufD[bufP + 9];
             acl4_ntry.srcAddr = get32msb(bufD, bufP + 12);
             acl4_ntry.trgAddr = route4_ntry.addr = get32msb(bufD, bufP + 16);
+            ttl = bufD[bufP + 8] - 1;
+            if (ttl <= 1) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            bufD[bufP + 8] = ttl;
+            update_chksum(bufP + 10, -1);
             bufT = bufP + 20;
             extract_layer4(acl4_ntry);
             acls_ntry.ver = 4;
@@ -798,17 +813,17 @@ ipv4_rou:
                     case 3: // mpls1
                         ethtyp = 0x8847;
                         bufP -= 4;
-                        label = 0x1ff | (route4_res->label1 << 12);
+                        label = 0x100 | ttl | (route4_res->label1 << 12);
                         put32msb(bufD, bufP, label);
                         neigh_ntry.id = route4_res->nexthop;
                         goto ethtyp_tx;
                     case 4: // mpls2
                         ethtyp = 0x8847;
                         bufP -= 4;
-                        label = 0x1ff | (route4_res->label2 << 12);
+                        label = 0x100 | ttl | (route4_res->label2 << 12);
                         put32msb(bufD, bufP, label);
                         bufP -= 4;
-                        label = 0xff | (route4_res->label1 << 12);
+                        label = ttl | (route4_res->label1 << 12);
                         put32msb(bufD, bufP, label);
                         neigh_ntry.id = route4_res->nexthop;
                         goto ethtyp_tx;
@@ -838,6 +853,13 @@ ipv6_rx:
             acl6_ntry.trgAddr2 = route6_ntry.addr2 = get32msb(bufD, bufP + 28);
             acl6_ntry.trgAddr3 = route6_ntry.addr3 = get32msb(bufD, bufP + 32);
             acl6_ntry.trgAddr4 = route6_ntry.addr4 = get32msb(bufD, bufP + 36);
+            ttl = bufD[bufP + 7] - 1;
+            if (ttl <= 1) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            bufD[bufP + 7] = ttl;
             bufT = bufP + 40;
             extract_layer4(acl6_ntry);
             acls_ntry.ver = 6;
@@ -960,17 +982,17 @@ ipv6_hit:
                     case 3: // mpls1
                         ethtyp = 0x8847;
                         bufP -= 4;
-                        label = 0x1ff | (route6_res->label1 << 12);
+                        label = 0x100 | ttl | (route6_res->label1 << 12);
                         put32msb(bufD, bufP, label);
                         neigh_ntry.id = route6_res->nexthop;
                         goto ethtyp_tx;
                     case 4: // mpls2
                         ethtyp = 0x8847;
                         bufP -= 4;
-                        label = 0x1ff | (route6_res->label2 << 12);
+                        label = 0x100 | ttl | (route6_res->label2 << 12);
                         put32msb(bufD, bufP, label);
                         bufP -= 4;
-                        label = 0xff | (route6_res->label1 << 12);
+                        label = ttl | (route6_res->label1 << 12);
                         put32msb(bufD, bufP, label);
                         neigh_ntry.id = route6_res->nexthop;
                         goto ethtyp_tx;
