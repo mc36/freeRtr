@@ -13,6 +13,7 @@ hostwatch to execute script on acl match
 protocol traceroute
 optimal route reflection
 bgp vpns with sr-policy
+tunnels with pcep
 recursive static route
 pipeline properties, terminal autoresize
 temper: web access log
