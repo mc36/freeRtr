@@ -98,6 +98,24 @@ public class tabLabel {
         return null;
     }
 
+    private static tabLabelNtry[] allocBlock(int key, int beg, int num) {
+        tabLabelNtry[] res = new tabLabelNtry[num];
+        for (int i = 0; i < num; i++) {
+            tabLabelNtry ntry = new tabLabelNtry(beg + i);
+            if (labels.add(ntry) != null) {
+                release(res, key);
+                return null;
+            }
+            if (debugger.tabLabelEvnt) {
+                logger.debug("allocate " + ntry.getValue());
+            }
+            ntry.key = key;
+            ntry.working = true;
+            res[i] = ntry;
+        }
+        return res;
+    }
+
     /**
      * allocate label block
      *
@@ -111,27 +129,36 @@ public class tabLabel {
         }
         for (int retry = 0; retry < 32; retry++) {
             int beg = bits.random(0x20, 0xffff0 - num);
-            tabLabelNtry[] res = new tabLabelNtry[num];
-            for (int i = 0; i < num; i++) {
-                tabLabelNtry ntry = new tabLabelNtry(beg + i);
-                if (labels.add(ntry) != null) {
-                    break;
-                }
-                if (debugger.tabLabelEvnt) {
-                    logger.debug("allocate " + ntry.getValue());
-                }
-                ntry.key = key;
-                ntry.working = true;
-                res[i] = ntry;
+            tabLabelNtry[] res = allocBlock(key, beg, num);
+            if (res != null) {
+                return res;
             }
-            if (res[num - 1] == null) {
-                release(res, key);
-                continue;
-            }
-            return res;
         }
         logger.warn("failed to allocate new label block");
         return null;
+    }
+
+    /**
+     * allocate label block
+     *
+     * @param key key to use for deallocation
+     * @param beg beginning of block
+     * @param num number of labels
+     * @return label list, null if nothing
+     */
+    public static tabLabelNtry[] allocate(int key, int beg, int num) {
+        if (num < 1) {
+            return null;
+        }
+        if (beg < 1) {
+            return allocate(key, num);
+        }
+        tabLabelNtry[] res = allocBlock(key, beg, num);
+        if (res != null) {
+            return res;
+        }
+        logger.warn("failed to allocate specific label block");
+        return allocate(key, num);
     }
 
     /**

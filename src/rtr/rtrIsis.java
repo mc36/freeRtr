@@ -114,6 +114,11 @@ public class rtrIsis extends ipRtr {
     public int segrouMax = 0;
 
     /**
+     * segment routing base
+     */
+    public int segrouBase = 0;
+
+    /**
      * bier length
      */
     public int bierLen = 0;
@@ -471,7 +476,7 @@ public class rtrIsis extends ipRtr {
         }
         return tlv;
     }
-    
+
     private void getAddrReachS(typLenVal tlv, int pos, int len, tabRouteEntry<addrIP> prf) {
         packHolder pck = new packHolder(true, true);
         pck.putCopy(tlv.valDat, pos, 0, len);
@@ -490,7 +495,7 @@ public class rtrIsis extends ipRtr {
             rtrIsisBr.getPref(tlv, prf);
         }
     }
-    
+
     private int getAddrReach4(typLenVal tlv, int pos, tabRouteEntry<addrIP> prf) {
         prf.metric = bits.msbGetD(tlv.valDat, pos + 0); // metric
         int i = bits.getByte(tlv.valDat, pos + 4); // prefix length
@@ -510,7 +515,7 @@ public class rtrIsis extends ipRtr {
         pos += o + 1;
         return pos;
     }
-    
+
     private int getAddrReach6(typLenVal tlv, int pos, tabRouteEntry<addrIP> prf) {
         prf.metric = bits.msbGetD(tlv.valDat, pos + 0); // metric
         int i = bits.getByte(tlv.valDat, pos + 4); // flags
@@ -621,7 +626,7 @@ public class rtrIsis extends ipRtr {
         }
         return l;
     }
-    
+
     private void putAddrReach4(typLenVal tlv, int pos, addrPrefix<addrIPv4> prf, boolean down, int met, byte[] subs) {
         bits.msbPutD(tlv.valDat, pos + 0, met); // metric
         met = prf.maskLen;
@@ -641,7 +646,7 @@ public class rtrIsis extends ipRtr {
         bits.byteCopy(subs, 0, tlv.valDat, tlv.valSiz + 1, subs.length); // value
         tlv.valSiz += subs.length + 1;
     }
-    
+
     private void putAddrReach6(typLenVal tlv, int pos, addrPrefix<addrIPv6> prf, boolean ext, boolean down, int met, byte[] subs) {
         bits.msbPutD(tlv.valDat, pos + 0, met); // metric
         met = 0;
@@ -737,7 +742,7 @@ public class rtrIsis extends ipRtr {
         }
         return tlv;
     }
-    
+
     private int getISneighE(typLenVal tlv, int pos, rtrIsisLsp nei) {
         nei.srcID.fromBuf(tlv.valDat, pos + 0); // neighbor id
         nei.nodID = bits.getByte(tlv.valDat, pos + 6); // pseudonode id
@@ -800,7 +805,7 @@ public class rtrIsis extends ipRtr {
         }
         return l;
     }
-    
+
     private void putISneighE(typLenVal tlv, int pos, addrIsis nei, int nod, int met, byte[] subs) {
         nei.toBuffer(tlv.valDat, pos + 0); // neighbor id
         bits.putByte(tlv.valDat, pos + 6, nod); // pseudonode id
@@ -997,7 +1002,9 @@ public class rtrIsis extends ipRtr {
         l.add("1 .   metric-wide                 advertise wide metrics");
         l.add("1 .   multi-topology              advertise multi topology");
         l.add("1 2   segrout                     segment routing parameters");
-        l.add("2 .     <num>                     maximum index");
+        l.add("2 3,.   <num>                     maximum index");
+        l.add("3 4       base                    specify base");
+        l.add("4 3,.       <num>                 label base");
         l.add("1 2   bier                        bier parameters");
         l.add("2 3     <num>                     bitstring length");
         l.add("3 .       <num>                   maximum index");
@@ -1050,7 +1057,11 @@ public class rtrIsis extends ipRtr {
         l.add(beg + "max-area-addrs " + maxAreaAddr);
         cmds.cfgLine(l, !metricWide, beg, "metric-wide", "");
         cmds.cfgLine(l, !multiTopo, beg, "multi-topology", "");
-        cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax);
+        String a = "";
+        if (segrouBase != 0) {
+            a += " base " + segrouBase;
+        }
+        cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax);
         l.add(beg + "distance " + distantInt + " " + distantExt);
         getConfig(level2, l, beg);
@@ -1105,7 +1116,18 @@ public class rtrIsis extends ipRtr {
         if (s.equals("segrout")) {
             tabLabel.release(segrouLab, 7);
             segrouMax = bits.str2num(cmd.word());
-            segrouLab = tabLabel.allocate(7, segrouMax);
+            segrouBase = 0;
+            for (;;) {
+                s = cmd.word();
+                if (s.length() < 1) {
+                    break;
+                }
+                if (s.equals("base")) {
+                    segrouBase = bits.str2num(cmd.word());
+                    continue;
+                }
+            }
+            segrouLab = tabLabel.allocate(7, segrouBase, segrouMax);
             genLsps(3);
             return false;
         }
@@ -1147,6 +1169,7 @@ public class rtrIsis extends ipRtr {
             tabLabel.release(segrouLab, 7);
             segrouLab = null;
             segrouMax = 0;
+            segrouBase = 0;
             genLsps(3);
             return false;
         }
@@ -1683,5 +1706,5 @@ public class rtrIsis extends ipRtr {
     public int routerIfaceCount() {
         return ifaces.size();
     }
-    
+
 }

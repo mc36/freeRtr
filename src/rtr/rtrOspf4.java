@@ -66,6 +66,11 @@ public class rtrOspf4 extends ipRtr {
     public int segrouMax = 0;
 
     /**
+     * segment routing base
+     */
+    public int segrouBase = 0;
+
+    /**
      * bier length
      */
     public int bierLen = 0;
@@ -235,7 +240,9 @@ public class rtrOspf4 extends ipRtr {
         l.add("1 2   traffeng-id                 specify traffic engineering id");
         l.add("2 .     <addr>                    te id");
         l.add("1 2   segrout                     segment routing parameters");
-        l.add("2 .     <num>                     maximum index");
+        l.add("2 3,.   <num>                     maximum index");
+        l.add("3 4       base                    specify base");
+        l.add("4 3,.       <num>                 label base");
         l.add("1 2   bier                        bier parameters");
         l.add("2 3     <num>                     bitstring length");
         l.add("3 .       <num>                   maximum index");
@@ -277,7 +284,11 @@ public class rtrOspf4 extends ipRtr {
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
         l.add(beg + "router-id " + routerID);
         l.add(beg + "traffeng-id " + traffEngID);
-        cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax);
+        String a = "";
+        if (segrouBase != 0) {
+            a += " base " + segrouBase;
+        }
+        cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax);
         for (int i = 0; i < areas.size(); i++) {
             rtrOspf4area ntry = areas.get(i);
@@ -321,7 +332,18 @@ public class rtrOspf4 extends ipRtr {
         if (s.equals("segrout")) {
             tabLabel.release(segrouLab, 8);
             segrouMax = bits.str2num(cmd.word());
-            segrouLab = tabLabel.allocate(8, segrouMax);
+            segrouBase = 0;
+            for (;;) {
+                s = cmd.word();
+                if (s.length() < 1) {
+                    break;
+                }
+                if (s.equals("base")) {
+                    segrouBase = bits.str2num(cmd.word());
+                    continue;
+                }
+            }
+            segrouLab = tabLabel.allocate(8, segrouBase, segrouMax);
             genLsas(3);
             return false;
         }
@@ -464,6 +486,7 @@ public class rtrOspf4 extends ipRtr {
             tabLabel.release(segrouLab, 8);
             segrouLab = null;
             segrouMax = 0;
+            segrouBase = 0;
             genLsas(3);
             return false;
         }

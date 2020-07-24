@@ -286,6 +286,9 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
             if (res == null) {
                 return;
             }
+            if (res.size() < 1) {
+                return;
+            }
         }
         if (debugger.clntMplsTeTraf) {
             logger.debug("starting session");

@@ -113,6 +113,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     public int segrouMax = 0;
 
     /**
+     * segment routing base
+     */
+    public int segrouBase = 0;
+
+    /**
      * segment routing pop
      */
     public boolean segrouPop = false;
@@ -790,7 +795,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add("1 2   segrout                     segment routing parameters");
         l.add("2 3     <num>                     maximum index");
         l.add("3 4,.     <num>                   this node index");
-        l.add("4 .         pop                   advertise php");
+        l.add("4 4,.       pop                   advertise php");
+        l.add("4 5         base                  specify base");
+        l.add("5 4,.         <num>               label base");
         l.add("1 2   bier                        bier parameters");
         l.add("2 3     <num>                     bitstring length");
         l.add("3 4       <num>                   maximum index");
@@ -817,7 +824,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
         cmds.cfgLine(l, roupolIn == null, beg, "route-policy", "" + roupolIn);
         String a = "";
         if (segrouPop) {
-            a = " pop";
+            a += " pop";
+        }
+        if (segrouBase != 0) {
+            a += " base " + segrouBase;
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
@@ -938,6 +948,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (negated) {
                 segrouIdx = 0;
                 segrouMax = 0;
+                segrouBase = 0;
                 segrouPop = false;
                 todo.set(0);
                 notif.wakeup();
@@ -945,8 +956,23 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             segrouMax = bits.str2num(cmd.word());
             segrouIdx = bits.str2num(cmd.word());
-            segrouPop = cmd.word().equals("pop");
-            segrouLab = tabLabel.allocate(6, segrouMax);
+            segrouPop = false;
+            segrouBase = 0;
+            for (;;) {
+                s = cmd.word();
+                if (s.length() < 1) {
+                    break;
+                }
+                if (s.equals("pop")) {
+                    segrouPop = true;
+                    continue;
+                }
+                if (s.equals("base")) {
+                    segrouBase = bits.str2num(cmd.word());
+                    continue;
+                }
+            }
+            segrouLab = tabLabel.allocate(6, segrouBase, segrouMax);
             todo.set(0);
             notif.wakeup();
             return false;

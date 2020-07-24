@@ -91,6 +91,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public int segrouMax = 0;
 
     /**
+     * segment routing base
+     */
+    public int segrouBase = 0;
+
+    /**
      * segment routing labels
      */
     protected tabLabelNtry[] segrouLab;
@@ -1970,7 +1975,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("3 .       <name>                  name of prefix list");
         l.add("1 2   segrout                     segment routing parameters");
         l.add("2 3     <num>                     maximum index");
-        l.add("3 .       <num>                   this node index");
+        l.add("3 4,.     <num>                   this node index");
+        l.add("4 5         base                  specify base");
+        l.add("5 4,.         <num>               label base");
         l.add("1 2   bier                        bier parameters");
         l.add("2 3     <num>                     bitstring length");
         l.add("3 4       <num>                   maximum index");
@@ -2082,7 +2089,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         cmds.cfgLine(l, nhtRoumap == null, beg, "nexthop route-map", "" + nhtRoumap);
         cmds.cfgLine(l, nhtRouplc == null, beg, "nexthop route-policy", "" + nhtRouplc);
         cmds.cfgLine(l, nhtPfxlst == null, beg, "nexthop prefix-list", "" + nhtPfxlst);
-        cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + " " + segrouIdx);
+        String a = "";
+        if (segrouBase != 0) {
+            a += " base " + segrouBase;
+        }
+        cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
         cmds.cfgLine(l, flowSpec == null, beg, "flowspec", "" + flowSpec);
         for (int i = 0; i < mons.size(); i++) {
@@ -2189,13 +2200,25 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (negated) {
                 segrouIdx = 0;
                 segrouMax = 0;
+                segrouBase = 0;
                 needFull.add(1);
                 compute.wakeup();
                 return false;
             }
             segrouMax = bits.str2num(cmd.word());
             segrouIdx = bits.str2num(cmd.word());
-            segrouLab = tabLabel.allocate(13, segrouMax);
+            segrouBase = 0;
+            for (;;) {
+                s = cmd.word();
+                if (s.length() < 1) {
+                    break;
+                }
+                if (s.equals("base")) {
+                    segrouBase = bits.str2num(cmd.word());
+                    continue;
+                }
+            }
+            segrouLab = tabLabel.allocate(13, segrouBase, segrouMax);
             needFull.add(1);
             compute.wakeup();
             return false;
