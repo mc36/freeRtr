@@ -254,3 +254,5 @@ r2 output show ipv4 isis 1 tre 2
 r2 output show ipv6 isis 1 tre 2
 r2 output show ipv4 route v1
 r2 output show ipv6 route v1
+r2 output show ipv4 segrou v1
+r2 output show ipv6 segrou v1

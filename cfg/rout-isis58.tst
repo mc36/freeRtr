@@ -1,4 +1,4 @@
-description isis inter-level with sr
+description isis with srgb sr
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -16,19 +16,19 @@ access-list test6
  exit
 router isis4 1
  vrf v1
- net 11.4444.0000.1111.00
+ net 48.4444.0000.1111.00
  is-type level2
  traffeng 4.4.4.1
- segrout 10
+ segrout 10 base 100
  both segrout
  red conn
  exit
 router isis6 1
  vrf v1
- net 11.6666.0000.1111.00
+ net 48.6666.0000.1111.00
  is-type level2
  traffeng 6.6.6.1
- segrout 10
+ segrout 10 base 200
  both segrout
  red conn
  exit
@@ -79,17 +79,19 @@ access-list test6
  exit
 router isis4 1
  vrf v1
- net 22.4444.0000.2222.00
+ net 48.4444.0000.2222.00
+ is-type level2
  traffeng 4.4.4.2
- segrout 10
+ segrout 10 base 100
  both segrout
  red conn
  exit
 router isis6 1
  vrf v1
- net 22.6666.0000.2222.00
+ net 48.6666.0000.2222.00
+ is-type level2
  traffeng 6.6.6.2
- segrout 10
+ segrout 10 base 200
  both segrout
  red conn
  exit
@@ -153,19 +155,19 @@ access-list test6
  exit
 router isis4 1
  vrf v1
- net 22.4444.0000.3333.00
- is-type level1
+ net 48.4444.0000.3333.00
+ is-type level2
  traffeng 4.4.4.3
- segrout 10
+ segrout 10 base 100
  both segrout
  red conn
  exit
 router isis6 1
  vrf v1
- net 22.6666.0000.3333.00
- is-type level1
+ net 48.6666.0000.3333.00
+ is-type level2
  traffeng 6.6.6.3
- segrout 10
+ segrout 10 base 200
  both segrout
  red conn
  exit

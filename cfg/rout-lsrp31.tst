@@ -1,4 +1,4 @@
-description lsrp with sr
+description lsrp with srgb sr
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -17,13 +17,13 @@ access-list test6
 router lsrp4 1
  vrf v1
  router 4.4.4.1
- segrout 10 1
+ segrout 10 1 base 100
  red conn
  exit
 router lsrp6 1
  vrf v1
  router 6.6.6.1
- segrout 10 1
+ segrout 10 1 base 200
  red conn
  exit
 int lo1
@@ -61,13 +61,13 @@ access-list test6
 router lsrp4 1
  vrf v1
  router 4.4.4.2
- segrout 10 2
+ segrout 10 2 base 100
  red conn
  exit
 router lsrp6 1
  vrf v1
  router 6.6.6.2
- segrout 10 2
+ segrout 10 2 base 200
  red conn
  exit
 int lo1
@@ -114,13 +114,13 @@ access-list test6
 router lsrp4 1
  vrf v1
  router 4.4.4.3
- segrout 10 3
+ segrout 10 3 base 100
  red conn
  exit
 router lsrp6 1
  vrf v1
  router 6.6.6.3
- segrout 10 3
+ segrout 10 3 base 200
  red conn
  exit
 int lo1

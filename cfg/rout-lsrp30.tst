@@ -187,3 +187,5 @@ r2 output show ipv4 lsrp 1 tre
 r2 output show ipv6 lsrp 1 tre
 r2 output show ipv4 route v1
 r2 output show ipv6 route v1
+r2 output show ipv4 segrou v1
+r2 output show ipv6 segrou v1
