@@ -12,7 +12,9 @@ import ip.ipFwdTab;
 import ip.ipFwdTrfng;
 import ip.ipMpls;
 import java.util.Comparator;
+import java.util.List;
 import pack.packHolder;
+import tab.tabHop;
 import util.bits;
 import util.counter;
 import util.debugger;
@@ -45,6 +47,11 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
      * source interface
      */
     public ipFwdIface fwdIfc = null;
+
+    /**
+     * pcep config to use
+     */
+    public String pcep = null;
 
     /**
      * description
@@ -267,6 +274,18 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         }
         if (ifc == null) {
             return;
+        }
+        if (pcep != null) {
+            clntPcep pc = new clntPcep();
+            pc.setTarget(pcep);
+            if (pc.doConnect()) {
+                return;
+            }
+            List<tabHop> res = pc.doCompute(0, ifc.addr.copyBytes(), target.copyBytes(), 0, 0, 0, prioS, prioH, ((float) bndwdt) / 8, 2, 0);
+            pc.doClose();
+            if (res == null) {
+                return;
+            }
         }
         if (debugger.clntMplsTeTraf) {
             logger.debug("starting session");

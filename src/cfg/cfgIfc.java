@@ -1136,6 +1136,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          */
         srExt,
         /**
+         * sr from pcep tunnel interface
+         */
+        pceSr,
+        /**
+         * te from pcep tunnel interface
+         */
+        pceTe,
+        /**
          * p2p mpls te tunnel interface
          */
         teP2p,
@@ -1852,6 +1860,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "srmpls";
             case srExt:
                 return "srext";
+            case pceSr:
+                return "pcesr";
+            case pceTe:
+                return "pcete";
             case teP2p:
                 return "p2pte";
             case teP2mp:
@@ -1973,6 +1985,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("srext")) {
             return tunnelType.srExt;
+        }
+        if (s.equals("pcesr")) {
+            return tunnelType.pceSr;
+        }
+        if (s.equals("pcete")) {
+            return tunnelType.pceTe;
         }
         if (s.equals("p2pte")) {
             return tunnelType.teP2p;
@@ -3760,11 +3778,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 tunSrMpls = new clntMplsSr();
                 tunSrMpls.fwdCor = tunVrf.getFwd(tunTrg);
+                tunSrMpls.fwdIfc = tunSrc.getFwdIfc(tunTrg);
                 tunSrMpls.target = tunTrg.copyBytes();
                 tunSrMpls.setTargets(tunFQDN);
                 tunFQDN = tunSrMpls.getTargets();
                 tunSrMpls.expr = tunTOS;
                 tunSrMpls.ttl = tunTTL;
+                tunSrMpls.prioS = tunPri;
+                tunSrMpls.prioH = tunPri;
+                tunSrMpls.bndwdt = ethtyp.getBandwidth();
                 tunSrMpls.setUpper(ethtyp);
                 tunSrMpls.workStart();
                 lower = tunSrMpls;
@@ -3783,6 +3805,45 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSrExt.setUpper(ethtyp);
                 tunSrExt.workStart();
                 lower = tunSrExt;
+                break;
+            case pceSr:
+                if (tunFQDN == null) {
+                    return true;
+                }
+                tunSrMpls = new clntMplsSr();
+                tunSrMpls.fwdCor = tunVrf.getFwd(tunTrg);
+                tunSrMpls.fwdIfc = tunSrc.getFwdIfc(tunTrg);
+                tunSrMpls.target = tunTrg.copyBytes();
+                tunSrMpls.setTargets("" + tunTrg);
+                tunSrMpls.pcep = tunFQDN;
+                tunSrMpls.expr = tunTOS;
+                tunSrMpls.ttl = tunTTL;
+                tunSrMpls.prioS = tunPri;
+                tunSrMpls.prioH = tunPri;
+                tunSrMpls.bndwdt = ethtyp.getBandwidth();
+                tunSrMpls.setUpper(ethtyp);
+                tunSrMpls.workStart();
+                lower = tunSrMpls;
+                break;
+            case pceTe:
+                if (tunFQDN == null) {
+                    return true;
+                }
+                tunTeP2p = new clntMplsTeP2p();
+                tunTeP2p.fwdCor = tunVrf.getFwd(tunTrg);
+                tunTeP2p.fwdIfc = tunSrc.getFwdIfc(tunTrg);
+                tunTeP2p.target = tunTrg.copyBytes();
+                tunTeP2p.descr = cfgAll.hostName + ":" + name;
+                tunTeP2p.pcep = tunFQDN;
+                tunTeP2p.expr = tunTOS;
+                tunTeP2p.ttl = tunTTL;
+                tunTeP2p.prioS = tunPri;
+                tunTeP2p.prioH = tunPri;
+                tunTeP2p.bndwdt = ethtyp.getBandwidth();
+                tunTeP2p.recRou = tunSeq;
+                tunTeP2p.setUpper(ethtyp);
+                tunTeP2p.workStart();
+                lower = tunTeP2p;
                 break;
             case teP2p:
                 tunTeP2p = new clntMplsTeP2p();
@@ -5351,6 +5412,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       expbun                    mpls exp bundle tunnel");
         l.add("3 .       srmpls                    segment routing te over mpls tunnel");
         l.add("3 .       srext                     segment routing te over exthdr tunnel");
+        l.add("3 .       pcesr                     mpls sr tunnel from pcep");
+        l.add("3 .       pcete                     mpls te tunnel from pcep");
         l.add("3 .       p2pte                     point to point mpls te tunnel");
         l.add("3 .       p2mpte                    point to multipoint mpls te tunnel");
         l.add("3 .       bier                      mpls bier tunnel");

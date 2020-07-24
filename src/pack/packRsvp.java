@@ -7,7 +7,6 @@ import addr.addrIPv6;
 import ip.ipIfc4;
 import ip.ipIfc6;
 import java.util.List;
-import java.util.ArrayList;
 import util.bits;
 import util.typLenVal;
 
@@ -233,12 +232,10 @@ public class packRsvp {
      */
     public static final int typResvConf = 7;
 
-    private typLenVal tlv1 = new typLenVal(16, 16, 0, 16, 1, 4, 4, 1, 0, 512, true);
-
-    private typLenVal tlv2 = new typLenVal(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
+    private typLenVal tlv = new typLenVal(16, 16, 0, 16, 1, 4, 4, 1, 0, 512, true);
 
     public String toString() {
-        return "ip4=" + isIP4 + " p2mp=" + isP2MP + " typ=" + type2string(typ) + " ttl=" + ttl + " hop=" + hopAdr + "/" + hopId + " sess=" + sessAdr + "/" + sessId + " time=" + timeVal + " send=" + sndrAdr + "/" + sndrId + " subgrp=" + sbgrpOrg + "/" + sbgrpId + " subdst=" + subAddr + " req=" + labReq + " flow=" + flwSpcRate + "/" + flwSpcSize + "/" + flwSpcPeak + "/" + flwSpcPlcd + "/" + flwSpcPcks + " prio=" + sessStp + "/" + sessHld + " flg=" + sessFlg + " nam=" + sessNam + " hops=" + adsHops + " bndwdth=" + adsBndwdt + " latency=" + adsLtncy + " mtu=" + adsCmtu + " expRou=" + dumpHopList(expRout) + " recRou=" + dumpHopList(recRout) + " err=" + errAdr + "/" + errCod + " style=" + styleVal + " label=" + labelVal;
+        return "ip4=" + isIP4 + " p2mp=" + isP2MP + " typ=" + type2string(typ) + " ttl=" + ttl + " hop=" + hopAdr + "/" + hopId + " sess=" + sessAdr + "/" + sessId + " time=" + timeVal + " send=" + sndrAdr + "/" + sndrId + " subgrp=" + sbgrpOrg + "/" + sbgrpId + " subdst=" + subAddr + " req=" + labReq + " flow=" + flwSpcRate + "/" + flwSpcSize + "/" + flwSpcPeak + "/" + flwSpcPlcd + "/" + flwSpcPcks + " prio=" + sessStp + "/" + sessHld + " flg=" + sessFlg + " nam=" + sessNam + " hops=" + adsHops + " bndwdth=" + adsBndwdt + " latency=" + adsLtncy + " mtu=" + adsCmtu + " expRou=" + tabHop.dumpList(expRout) + " recRou=" + tabHop.dumpList(recRout) + " err=" + errAdr + "/" + errCod + " style=" + styleVal + " label=" + labelVal;
     }
 
     /**
@@ -252,18 +249,6 @@ public class packRsvp {
         } else {
             return sessAdr;
         }
-    }
-
-    private static String dumpHopList(List<tabHop> lst) {
-        if (lst == null) {
-            return "null";
-        }
-        String s = "";
-        for (int i = 0; i < lst.size(); i++) {
-            tabHop ntry = lst.get(i);
-            s += " " + ntry;
-        }
-        return s;
     }
 
     /**
@@ -363,14 +348,14 @@ public class packRsvp {
         isP2MP = (sbgrpId != 0) || (!sbgrpOrg.isFilled(0));
     }
 
-    private boolean findTlv1(packHolder pck, int typ) {
+    private boolean findTlv(packHolder pck, int typ) {
         int len = pck.dataSize();
         for (;;) {
-            if (tlv1.getBytes(pck)) {
+            if (tlv.getBytes(pck)) {
                 pck.setBytesLeft(len);
                 return true;
             }
-            if (tlv1.valTyp != typ) {
+            if (tlv.valTyp != typ) {
                 continue;
             }
             pck.setBytesLeft(len);
@@ -378,10 +363,10 @@ public class packRsvp {
         }
     }
 
-    private void padUpTlv1() {
-        for (; (tlv1.valSiz & 3) != 0;) {
-            tlv1.valDat[tlv1.valSiz] = 0;
-            tlv1.valSiz++;
+    private void padUpTlv() {
+        for (; (tlv.valSiz & 3) != 0;) {
+            tlv.valDat[tlv.valSiz] = 0;
+            tlv.valSiz++;
         }
     }
 
@@ -400,20 +385,20 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseHop(packHolder pck) {
-        if (findTlv1(pck, getTypHop())) {
+        if (findTlv(pck, getTypHop())) {
             return true;
         }
         hopAdr = new addrIP();
         if (isIP4) {
             addrIPv4 adr = new addrIPv4();
-            adr.fromBuf(tlv1.valDat, 0);
+            adr.fromBuf(tlv.valDat, 0);
             hopAdr.fromIPv4addr(adr);
-            hopId = bits.msbGetD(tlv1.valDat, addrIPv4.size);
+            hopId = bits.msbGetD(tlv.valDat, addrIPv4.size);
         } else {
             addrIPv6 adr = new addrIPv6();
-            adr.fromBuf(tlv1.valDat, 0);
+            adr.fromBuf(tlv.valDat, 0);
             hopAdr.fromIPv6addr(adr);
-            hopId = bits.msbGetD(tlv1.valDat, addrIPv6.size);
+            hopId = bits.msbGetD(tlv.valDat, addrIPv6.size);
         }
         return false;
     }
@@ -425,16 +410,16 @@ public class packRsvp {
      */
     public void createHop(packHolder pck) {
         if (isIP4) {
-            hopAdr.toIPv4().toBuffer(tlv1.valDat, 0);
-            tlv1.valSiz = addrIPv4.size;
+            hopAdr.toIPv4().toBuffer(tlv.valDat, 0);
+            tlv.valSiz = addrIPv4.size;
         } else {
-            hopAdr.toIPv6().toBuffer(tlv1.valDat, 0);
-            tlv1.valSiz = addrIPv6.size;
+            hopAdr.toIPv6().toBuffer(tlv.valDat, 0);
+            tlv.valSiz = addrIPv6.size;
         }
-        bits.msbPutD(tlv1.valDat, tlv1.valSiz, hopId);
-        tlv1.valSiz += 4;
-        tlv1.valTyp = getTypHop();
-        tlv1.putThis(pck);
+        bits.msbPutD(tlv.valDat, tlv.valSiz, hopId);
+        tlv.valSiz += 4;
+        tlv.valTyp = getTypHop();
+        tlv.putThis(pck);
     }
 
     private int getTypSess() {
@@ -458,23 +443,23 @@ public class packRsvp {
      */
     public boolean parseSess(packHolder pck) {
         isP2MP = false;
-        if (findTlv1(pck, getTypSess())) {
+        if (findTlv(pck, getTypSess())) {
             isP2MP = true;
-            if (findTlv1(pck, getTypSess())) {
+            if (findTlv(pck, getTypSess())) {
                 return true;
             }
         }
         sessAdr = new addrIP();
         if (isIP4 || isP2MP) {
             addrIPv4 adr = new addrIPv4();
-            adr.fromBuf(tlv1.valDat, 0);
+            adr.fromBuf(tlv.valDat, 0);
             sessAdr.fromIPv4addr(adr);
-            sessId = bits.msbGetQ(tlv1.valDat, addrIPv4.size);
+            sessId = bits.msbGetQ(tlv.valDat, addrIPv4.size);
         } else {
             addrIPv6 adr = new addrIPv6();
-            adr.fromBuf(tlv1.valDat, 0);
+            adr.fromBuf(tlv.valDat, 0);
             sessAdr.fromIPv6addr(adr);
-            sessId = bits.msbGetQ(tlv1.valDat, addrIPv6.size);
+            sessId = bits.msbGetQ(tlv.valDat, addrIPv6.size);
         }
         return false;
     }
@@ -486,16 +471,16 @@ public class packRsvp {
      */
     public void createSess(packHolder pck) {
         if (isIP4 || isP2MP) {
-            sessAdr.toIPv4().toBuffer(tlv1.valDat, 0);
-            tlv1.valSiz = addrIPv4.size;
+            sessAdr.toIPv4().toBuffer(tlv.valDat, 0);
+            tlv.valSiz = addrIPv4.size;
         } else {
-            sessAdr.toIPv6().toBuffer(tlv1.valDat, 0);
-            tlv1.valSiz = addrIPv6.size;
+            sessAdr.toIPv6().toBuffer(tlv.valDat, 0);
+            tlv.valSiz = addrIPv6.size;
         }
-        bits.msbPutQ(tlv1.valDat, tlv1.valSiz, sessId);
-        tlv1.valSiz += 8;
-        tlv1.valTyp = getTypSess();
-        tlv1.putThis(pck);
+        bits.msbPutQ(tlv.valDat, tlv.valSiz, sessId);
+        tlv.valSiz += 8;
+        tlv.valTyp = getTypSess();
+        tlv.putThis(pck);
     }
 
     /**
@@ -505,10 +490,10 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseTime(packHolder pck) {
-        if (findTlv1(pck, 0x0501)) {
+        if (findTlv(pck, 0x0501)) {
             return true;
         }
-        timeVal = bits.msbGetD(tlv1.valDat, 0);
+        timeVal = bits.msbGetD(tlv.valDat, 0);
         return false;
     }
 
@@ -518,10 +503,10 @@ public class packRsvp {
      * @param pck packet to use
      */
     public void createTime(packHolder pck) {
-        bits.msbPutD(tlv1.valDat, 0, timeVal);
-        tlv1.valSiz = 4;
-        tlv1.valTyp = 0x0501;
-        tlv1.putThis(pck);
+        bits.msbPutD(tlv.valDat, 0, timeVal);
+        tlv.valSiz = 4;
+        tlv.valTyp = 0x0501;
+        tlv.putThis(pck);
     }
 
     private int getTypSndrTmp(boolean filtrSpec) {
@@ -550,30 +535,30 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseSndrTmp(packHolder pck, boolean filtrSpec) {
-        if (findTlv1(pck, getTypSndrTmp(filtrSpec))) {
+        if (findTlv(pck, getTypSndrTmp(filtrSpec))) {
             return true;
         }
         sndrAdr = new addrIP();
         sbgrpOrg = new addrIP();
         if (isIP4) {
             addrIPv4 adr = new addrIPv4();
-            adr.fromBuf(tlv1.valDat, 0);
+            adr.fromBuf(tlv.valDat, 0);
             sndrAdr.fromIPv4addr(adr);
-            sndrId = bits.msbGetD(tlv1.valDat, addrIPv4.size);
+            sndrId = bits.msbGetD(tlv.valDat, addrIPv4.size);
             if (isP2MP) {
-                adr.fromBuf(tlv1.valDat, addrIPv4.size + 4);
+                adr.fromBuf(tlv.valDat, addrIPv4.size + 4);
                 sbgrpOrg.fromIPv4addr(adr);
-                sbgrpId = bits.msbGetD(tlv1.valDat, addrIPv4.size + addrIPv4.size + 4);
+                sbgrpId = bits.msbGetD(tlv.valDat, addrIPv4.size + addrIPv4.size + 4);
             }
         } else {
             addrIPv6 adr = new addrIPv6();
-            adr.fromBuf(tlv1.valDat, 0);
+            adr.fromBuf(tlv.valDat, 0);
             sndrAdr.fromIPv6addr(adr);
-            sndrId = bits.msbGetD(tlv1.valDat, addrIPv6.size);
+            sndrId = bits.msbGetD(tlv.valDat, addrIPv6.size);
             if (isP2MP) {
-                adr.fromBuf(tlv1.valDat, addrIPv6.size + 4);
+                adr.fromBuf(tlv.valDat, addrIPv6.size + 4);
                 sbgrpOrg.fromIPv6addr(adr);
-                sbgrpId = bits.msbGetD(tlv1.valDat, addrIPv6.size + addrIPv6.size + 4);
+                sbgrpId = bits.msbGetD(tlv.valDat, addrIPv6.size + addrIPv6.size + 4);
             }
         }
         return false;
@@ -587,27 +572,27 @@ public class packRsvp {
      */
     public void createSndrTmp(packHolder pck, boolean filtrSpec) {
         if (isIP4) {
-            sndrAdr.toIPv4().toBuffer(tlv1.valDat, 0);
-            tlv1.valSiz = addrIPv4.size;
+            sndrAdr.toIPv4().toBuffer(tlv.valDat, 0);
+            tlv.valSiz = addrIPv4.size;
         } else {
-            sndrAdr.toIPv6().toBuffer(tlv1.valDat, 0);
-            tlv1.valSiz = addrIPv6.size;
+            sndrAdr.toIPv6().toBuffer(tlv.valDat, 0);
+            tlv.valSiz = addrIPv6.size;
         }
-        bits.msbPutD(tlv1.valDat, tlv1.valSiz, sndrId);
-        tlv1.valSiz += 4;
+        bits.msbPutD(tlv.valDat, tlv.valSiz, sndrId);
+        tlv.valSiz += 4;
         if (isP2MP) {
             if (isIP4) {
-                sbgrpOrg.toIPv4().toBuffer(tlv1.valDat, tlv1.valSiz);
-                tlv1.valSiz += addrIPv4.size;
+                sbgrpOrg.toIPv4().toBuffer(tlv.valDat, tlv.valSiz);
+                tlv.valSiz += addrIPv4.size;
             } else {
-                sbgrpOrg.toIPv6().toBuffer(tlv1.valDat, tlv1.valSiz);
-                tlv1.valSiz += addrIPv6.size;
+                sbgrpOrg.toIPv6().toBuffer(tlv.valDat, tlv.valSiz);
+                tlv.valSiz += addrIPv6.size;
             }
-            bits.msbPutD(tlv1.valDat, tlv1.valSiz, sbgrpId);
-            tlv1.valSiz += 4;
+            bits.msbPutD(tlv.valDat, tlv.valSiz, sbgrpId);
+            tlv.valSiz += 4;
         }
-        tlv1.valTyp = getTypSndrTmp(filtrSpec);
-        tlv1.putThis(pck);
+        tlv.valTyp = getTypSndrTmp(filtrSpec);
+        tlv.putThis(pck);
     }
 
     /**
@@ -617,10 +602,10 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseLabReq(packHolder pck) {
-        if (findTlv1(pck, 0x1301)) {
+        if (findTlv(pck, 0x1301)) {
             return true;
         }
-        labReq = bits.msbGetD(tlv1.valDat, 0);
+        labReq = bits.msbGetD(tlv.valDat, 0);
         return false;
     }
 
@@ -630,10 +615,10 @@ public class packRsvp {
      * @param pck packet to use
      */
     public void createLabReq(packHolder pck) {
-        bits.msbPutD(tlv1.valDat, 0, labReq);
-        tlv1.valSiz = 4;
-        tlv1.valTyp = 0x1301;
-        tlv1.putThis(pck);
+        bits.msbPutD(tlv.valDat, 0, labReq);
+        tlv.valSiz = 4;
+        tlv.valTyp = 0x1301;
+        tlv.putThis(pck);
     }
 
     /**
@@ -657,39 +642,39 @@ public class packRsvp {
     public boolean parseFlwSpc(packHolder pck, boolean flowSpec) {
         int i;
         if (flowSpec) {
-            if (findTlv1(pck, 0x0902)) {
+            if (findTlv(pck, 0x0902)) {
                 return true;
             }
             i = 0x0500;
         } else {
-            if (findTlv1(pck, 0x0c02)) {
+            if (findTlv(pck, 0x0c02)) {
                 return true;
             }
             i = 0x0100;
         }
-        if (bits.msbGetW(tlv1.valDat, 0) != 0) { // version
+        if (bits.msbGetW(tlv.valDat, 0) != 0) { // version
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 2) < 7) { // size
+        if (bits.msbGetW(tlv.valDat, 2) < 7) { // size
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 4) != i) { // header type
+        if (bits.msbGetW(tlv.valDat, 4) != i) { // header type
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 6) < 6) { // size
+        if (bits.msbGetW(tlv.valDat, 6) < 6) { // size
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 8) != 0x7f00) { // parameter id
+        if (bits.msbGetW(tlv.valDat, 8) != 0x7f00) { // parameter id
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 10) < 5) { // size
+        if (bits.msbGetW(tlv.valDat, 10) < 5) { // size
             return true;
         }
-        flwSpcRate = Float.intBitsToFloat(bits.msbGetD(tlv1.valDat, 12));
-        flwSpcSize = Float.intBitsToFloat(bits.msbGetD(tlv1.valDat, 16));
-        flwSpcPeak = Float.intBitsToFloat(bits.msbGetD(tlv1.valDat, 20));
-        flwSpcPlcd = bits.msbGetD(tlv1.valDat, 24);
-        flwSpcPcks = bits.msbGetD(tlv1.valDat, 28);
+        flwSpcRate = Float.intBitsToFloat(bits.msbGetD(tlv.valDat, 12));
+        flwSpcSize = Float.intBitsToFloat(bits.msbGetD(tlv.valDat, 16));
+        flwSpcPeak = Float.intBitsToFloat(bits.msbGetD(tlv.valDat, 20));
+        flwSpcPlcd = bits.msbGetD(tlv.valDat, 24);
+        flwSpcPcks = bits.msbGetD(tlv.valDat, 28);
         return false;
     }
 
@@ -702,25 +687,25 @@ public class packRsvp {
     public void createFlwSpc(packHolder pck, boolean flowSpec) {
         int i;
         if (flowSpec) {
-            tlv1.valTyp = 0x0902;
+            tlv.valTyp = 0x0902;
             i = 0x0500;
         } else {
-            tlv1.valTyp = 0x0c02;
+            tlv.valTyp = 0x0c02;
             i = 0x0100;
         }
-        bits.msbPutW(tlv1.valDat, 0, 0); // version
-        bits.msbPutW(tlv1.valDat, 2, 7); // size
-        bits.msbPutW(tlv1.valDat, 4, i); // header type
-        bits.msbPutW(tlv1.valDat, 6, 6); // size
-        bits.msbPutW(tlv1.valDat, 8, 0x7f00); // parameter id
-        bits.msbPutW(tlv1.valDat, 10, 5); // size
-        bits.msbPutD(tlv1.valDat, 12, Float.floatToIntBits(flwSpcRate));
-        bits.msbPutD(tlv1.valDat, 16, Float.floatToIntBits(flwSpcSize));
-        bits.msbPutD(tlv1.valDat, 20, Float.floatToIntBits(flwSpcPeak));
-        bits.msbPutD(tlv1.valDat, 24, flwSpcPlcd);
-        bits.msbPutD(tlv1.valDat, 28, flwSpcPcks);
-        tlv1.valSiz = 32;
-        tlv1.putThis(pck);
+        bits.msbPutW(tlv.valDat, 0, 0); // version
+        bits.msbPutW(tlv.valDat, 2, 7); // size
+        bits.msbPutW(tlv.valDat, 4, i); // header type
+        bits.msbPutW(tlv.valDat, 6, 6); // size
+        bits.msbPutW(tlv.valDat, 8, 0x7f00); // parameter id
+        bits.msbPutW(tlv.valDat, 10, 5); // size
+        bits.msbPutD(tlv.valDat, 12, Float.floatToIntBits(flwSpcRate));
+        bits.msbPutD(tlv.valDat, 16, Float.floatToIntBits(flwSpcSize));
+        bits.msbPutD(tlv.valDat, 20, Float.floatToIntBits(flwSpcPeak));
+        bits.msbPutD(tlv.valDat, 24, flwSpcPlcd);
+        bits.msbPutD(tlv.valDat, 28, flwSpcPcks);
+        tlv.valSiz = 32;
+        tlv.putThis(pck);
     }
 
     /**
@@ -730,14 +715,14 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseSesAtr(packHolder pck) {
-        if (findTlv1(pck, 0xcf07)) {
+        if (findTlv(pck, 0xcf07)) {
             return true;
         }
-        sessStp = bits.getByte(tlv1.valDat, 0); // setup priority
-        sessHld = bits.getByte(tlv1.valDat, 1); // hold priority
-        sessFlg = bits.getByte(tlv1.valDat, 2); // flags
-        int len = bits.getByte(tlv1.valDat, 3); // name length
-        sessNam = new String(tlv1.valDat, 4, len);
+        sessStp = bits.getByte(tlv.valDat, 0); // setup priority
+        sessHld = bits.getByte(tlv.valDat, 1); // hold priority
+        sessFlg = bits.getByte(tlv.valDat, 2); // flags
+        int len = bits.getByte(tlv.valDat, 3); // name length
+        sessNam = new String(tlv.valDat, 4, len);
         return false;
     }
 
@@ -748,17 +733,17 @@ public class packRsvp {
      */
     public void createSesAtr(packHolder pck) {
         int len = sessNam.length();
-        bits.putByte(tlv1.valDat, 0, sessStp); // setup priority
-        bits.putByte(tlv1.valDat, 1, sessHld); // hold priority
-        bits.putByte(tlv1.valDat, 2, sessFlg); // hold priority
-        bits.putByte(tlv1.valDat, 3, len); // name length
-        bits.byteFill(tlv1.valDat, len, 16, 0); // padding
-        bits.byteCopy(sessNam.getBytes(), 0, tlv1.valDat, 4, len); // name
+        bits.putByte(tlv.valDat, 0, sessStp); // setup priority
+        bits.putByte(tlv.valDat, 1, sessHld); // hold priority
+        bits.putByte(tlv.valDat, 2, sessFlg); // hold priority
+        bits.putByte(tlv.valDat, 3, len); // name length
+        bits.byteFill(tlv.valDat, len, 16, 0); // padding
+        bits.byteCopy(sessNam.getBytes(), 0, tlv.valDat, 4, len); // name
         len += 4 - (len % 3);
-        tlv1.valSiz = 4 + len;
-        tlv1.valTyp = 0xcf07;
-        padUpTlv1();
-        tlv1.putThis(pck);
+        tlv.valSiz = 4 + len;
+        tlv.valTyp = 0xcf07;
+        padUpTlv();
+        tlv.putThis(pck);
     }
 
     /**
@@ -768,49 +753,49 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseAdSpec(packHolder pck) {
-        if (findTlv1(pck, 0x0d02)) {
+        if (findTlv(pck, 0x0d02)) {
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 0) != 0) { // version
+        if (bits.msbGetW(tlv.valDat, 0) != 0) { // version
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 2) < 9) { // size
+        if (bits.msbGetW(tlv.valDat, 2) < 9) { // size
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 4) != 0x0100) { // header type
+        if (bits.msbGetW(tlv.valDat, 4) != 0x0100) { // header type
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 6) < 8) { // size
+        if (bits.msbGetW(tlv.valDat, 6) < 8) { // size
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 8) != 0x0400) { // header type
+        if (bits.msbGetW(tlv.valDat, 8) != 0x0400) { // header type
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 10) < 1) { // size
+        if (bits.msbGetW(tlv.valDat, 10) < 1) { // size
             return true;
         }
-        adsHops = bits.msbGetD(tlv1.valDat, 12); // hop count
-        if (bits.msbGetW(tlv1.valDat, 16) != 0x0600) { // header type
+        adsHops = bits.msbGetD(tlv.valDat, 12); // hop count
+        if (bits.msbGetW(tlv.valDat, 16) != 0x0600) { // header type
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 18) < 1) { // size
+        if (bits.msbGetW(tlv.valDat, 18) < 1) { // size
             return true;
         }
-        adsBndwdt = Float.intBitsToFloat(bits.msbGetD(tlv1.valDat, 20));
-        if (bits.msbGetW(tlv1.valDat, 24) != 0x0800) { // header type
+        adsBndwdt = Float.intBitsToFloat(bits.msbGetD(tlv.valDat, 20));
+        if (bits.msbGetW(tlv.valDat, 24) != 0x0800) { // header type
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 26) < 1) { // size
+        if (bits.msbGetW(tlv.valDat, 26) < 1) { // size
             return true;
         }
-        adsLtncy = bits.msbGetD(tlv1.valDat, 28); // minimum path latency
-        if (bits.msbGetW(tlv1.valDat, 32) != 0x0a00) { // header type
+        adsLtncy = bits.msbGetD(tlv.valDat, 28); // minimum path latency
+        if (bits.msbGetW(tlv.valDat, 32) != 0x0a00) { // header type
             return true;
         }
-        if (bits.msbGetW(tlv1.valDat, 34) < 1) { // size
+        if (bits.msbGetW(tlv.valDat, 34) < 1) { // size
             return true;
         }
-        adsCmtu = bits.msbGetD(tlv1.valDat, 36); // composed mtu
+        adsCmtu = bits.msbGetD(tlv.valDat, 36); // composed mtu
         return false;
     }
 
@@ -820,97 +805,40 @@ public class packRsvp {
      * @param pck packet to use
      */
     public void createAdSpec(packHolder pck) {
-        bits.msbPutW(tlv1.valDat, 0, 0); // version
-        bits.msbPutW(tlv1.valDat, 2, 10); // size
-        bits.msbPutW(tlv1.valDat, 4, 0x100); // header type
-        bits.msbPutW(tlv1.valDat, 6, 8); // size
-        bits.msbPutW(tlv1.valDat, 8, 0x400); // header type
-        bits.msbPutW(tlv1.valDat, 10, 1); // size
-        bits.msbPutD(tlv1.valDat, 12, adsHops); // hop count
-        bits.msbPutW(tlv1.valDat, 16, 0x600); // header type
-        bits.msbPutW(tlv1.valDat, 18, 1); // size
-        bits.msbPutD(tlv1.valDat, 20, Float.floatToIntBits(adsBndwdt)); // bandwidth
-        bits.msbPutW(tlv1.valDat, 24, 0x800); // header type
-        bits.msbPutW(tlv1.valDat, 26, 1); // size
-        bits.msbPutD(tlv1.valDat, 28, adsLtncy); // minimum path latency
-        bits.msbPutW(tlv1.valDat, 32, 0xa00); // header type
-        bits.msbPutW(tlv1.valDat, 34, 1); // size
-        bits.msbPutD(tlv1.valDat, 36, adsCmtu); // composed mtu
-        bits.msbPutW(tlv1.valDat, 40, 0x500); // header type
-        bits.msbPutW(tlv1.valDat, 42, 0); // size
-        tlv1.valSiz = 44;
-        tlv1.valTyp = 0x0d02;
-        tlv1.putThis(pck);
-    }
-
-    private tabHop parseHop() {
-        tabHop hop = new tabHop();
-        hop.strict = (tlv2.valTyp & 0x80) == 0;
-        switch (tlv2.valTyp & 0x7f) {
-            case 1: // ipv4
-                addrIPv4 adr4 = new addrIPv4();
-                adr4.fromBuf(tlv2.valDat, 0);
-                hop.adr.fromIPv4addr(adr4);
-                break;
-            case 2: // ipv6
-                addrIPv6 adr6 = new addrIPv6();
-                adr6.fromBuf(tlv2.valDat, 0);
-                hop.adr.fromIPv6addr(adr6);
-                break;
-            default:
-                return null;
-        }
-        return hop;
-    }
-
-    private void createHop(tabHop hop) {
-        if (hop.adr.isIPv4()) {
-            hop.adr.toIPv4().toBuffer(tlv2.valDat, 0);
-            tlv2.valSiz = addrIPv4.size;
-            tlv2.valTyp = 1;
-        } else {
-            hop.adr.toIPv6().toBuffer(tlv2.valDat, 0);
-            tlv2.valSiz = addrIPv6.size;
-            tlv2.valTyp = 2;
-        }
-        bits.putByte(tlv2.valDat, tlv2.valSiz + 0, tlv2.valSiz * 8); // prefix length
-        bits.putByte(tlv2.valDat, tlv2.valSiz + 1, 0); // reserved
-        tlv2.valSiz += 2;
-        if (!hop.strict) {
-            tlv2.valTyp |= 0x80;
-        }
+        bits.msbPutW(tlv.valDat, 0, 0); // version
+        bits.msbPutW(tlv.valDat, 2, 10); // size
+        bits.msbPutW(tlv.valDat, 4, 0x100); // header type
+        bits.msbPutW(tlv.valDat, 6, 8); // size
+        bits.msbPutW(tlv.valDat, 8, 0x400); // header type
+        bits.msbPutW(tlv.valDat, 10, 1); // size
+        bits.msbPutD(tlv.valDat, 12, adsHops); // hop count
+        bits.msbPutW(tlv.valDat, 16, 0x600); // header type
+        bits.msbPutW(tlv.valDat, 18, 1); // size
+        bits.msbPutD(tlv.valDat, 20, Float.floatToIntBits(adsBndwdt)); // bandwidth
+        bits.msbPutW(tlv.valDat, 24, 0x800); // header type
+        bits.msbPutW(tlv.valDat, 26, 1); // size
+        bits.msbPutD(tlv.valDat, 28, adsLtncy); // minimum path latency
+        bits.msbPutW(tlv.valDat, 32, 0xa00); // header type
+        bits.msbPutW(tlv.valDat, 34, 1); // size
+        bits.msbPutD(tlv.valDat, 36, adsCmtu); // composed mtu
+        bits.msbPutW(tlv.valDat, 40, 0x500); // header type
+        bits.msbPutW(tlv.valDat, 42, 0); // size
+        tlv.valSiz = 44;
+        tlv.valTyp = 0x0d02;
+        tlv.putThis(pck);
     }
 
     private List<tabHop> parseHops() {
-        List<tabHop> lst = new ArrayList<tabHop>();
         packHolder pck = new packHolder(true, true);
-        pck.putCopy(tlv1.valDat, 0, 0, tlv1.valSiz);
-        pck.putSkip(tlv1.valSiz);
+        pck.putCopy(tlv.valDat, 0, 0, tlv.valSiz);
+        pck.putSkip(tlv.valSiz);
         pck.merge2beg();
-        for (;;) {
-            if (tlv2.getBytes(pck)) {
-                break;
-            }
-            tabHop hop = parseHop();
-            if (hop == null) {
-                return null;
-            }
-            lst.add(hop);
-        }
-        return lst;
+        return tabHop.parseHops(pck);
     }
 
     private byte[] createHops(List<tabHop> lst) {
         packHolder pck = new packHolder(true, true);
-        for (int i = 0; i < lst.size(); i++) {
-            tabHop ntry = lst.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            createHop(ntry);
-            tlv2.putThis(pck);
-            pck.merge2end();
-        }
+        tabHop.createHops(pck, lst);
         return pck.getCopy();
     }
 
@@ -921,7 +849,7 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseExpRout(packHolder pck) {
-        if (findTlv1(pck, 0x1401)) {
+        if (findTlv(pck, 0x1401)) {
             return true;
         }
         expRout = parseHops();
@@ -938,7 +866,7 @@ public class packRsvp {
      */
     public void createExpRout(packHolder pck) {
         byte[] buf = createHops(expRout);
-        tlv1.putBytes(pck, 0x1401, buf.length, buf);
+        tlv.putBytes(pck, 0x1401, buf.length, buf);
     }
 
     /**
@@ -948,7 +876,7 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseRecRout(packHolder pck) {
-        if (findTlv1(pck, 0x1501)) {
+        if (findTlv(pck, 0x1501)) {
             return true;
         }
         recRout = parseHops();
@@ -968,7 +896,7 @@ public class packRsvp {
             return;
         }
         byte[] buf = createHops(recRout);
-        tlv1.putBytes(pck, 0x1501, buf.length, buf);
+        tlv.putBytes(pck, 0x1501, buf.length, buf);
     }
 
     /**
@@ -1002,20 +930,20 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseErr(packHolder pck) {
-        if (findTlv1(pck, getTypErr())) {
+        if (findTlv(pck, getTypErr())) {
             return true;
         }
         errAdr = new addrIP();
         if (isIP4) {
             addrIPv4 adr = new addrIPv4();
-            adr.fromBuf(tlv1.valDat, 0);
+            adr.fromBuf(tlv.valDat, 0);
             errAdr.fromIPv4addr(adr);
-            errCod = bits.msbGetD(tlv1.valDat, addrIPv4.size);
+            errCod = bits.msbGetD(tlv.valDat, addrIPv4.size);
         } else {
             addrIPv6 adr = new addrIPv6();
-            adr.fromBuf(tlv1.valDat, 0);
+            adr.fromBuf(tlv.valDat, 0);
             errAdr.fromIPv6addr(adr);
-            errCod = bits.msbGetD(tlv1.valDat, addrIPv6.size);
+            errCod = bits.msbGetD(tlv.valDat, addrIPv6.size);
         }
         return false;
     }
@@ -1027,16 +955,16 @@ public class packRsvp {
      */
     public void createErr(packHolder pck) {
         if (isIP4) {
-            errAdr.toIPv4().toBuffer(tlv1.valDat, 0);
-            tlv1.valSiz = addrIPv4.size;
+            errAdr.toIPv4().toBuffer(tlv.valDat, 0);
+            tlv.valSiz = addrIPv4.size;
         } else {
-            errAdr.toIPv6().toBuffer(tlv1.valDat, 0);
-            tlv1.valSiz = addrIPv6.size;
+            errAdr.toIPv6().toBuffer(tlv.valDat, 0);
+            tlv.valSiz = addrIPv6.size;
         }
-        bits.msbPutD(tlv1.valDat, tlv1.valSiz, errCod);
-        tlv1.valSiz += 4;
-        tlv1.valTyp = getTypErr();
-        tlv1.putThis(pck);
+        bits.msbPutD(tlv.valDat, tlv.valSiz, errCod);
+        tlv.valSiz += 4;
+        tlv.valTyp = getTypErr();
+        tlv.putThis(pck);
     }
 
     /**
@@ -1046,10 +974,10 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseStyle(packHolder pck) {
-        if (findTlv1(pck, 0x0801)) {
+        if (findTlv(pck, 0x0801)) {
             return true;
         }
-        styleVal = bits.msbGetD(tlv1.valDat, 0);
+        styleVal = bits.msbGetD(tlv.valDat, 0);
         return false;
     }
 
@@ -1059,10 +987,10 @@ public class packRsvp {
      * @param pck packet to use
      */
     public void createStyle(packHolder pck) {
-        bits.msbPutD(tlv1.valDat, 0, styleVal);
-        tlv1.valSiz = 4;
-        tlv1.valTyp = 0x0801;
-        tlv1.putThis(pck);
+        bits.msbPutD(tlv.valDat, 0, styleVal);
+        tlv.valSiz = 4;
+        tlv.valTyp = 0x0801;
+        tlv.putThis(pck);
     }
 
     /**
@@ -1072,10 +1000,10 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseLabel(packHolder pck) {
-        if (findTlv1(pck, 0x1001)) {
+        if (findTlv(pck, 0x1001)) {
             return true;
         }
-        labelVal = bits.msbGetD(tlv1.valDat, 0);
+        labelVal = bits.msbGetD(tlv.valDat, 0);
         return false;
     }
 
@@ -1085,10 +1013,10 @@ public class packRsvp {
      * @param pck packet to use
      */
     public void createLabel(packHolder pck) {
-        bits.msbPutD(tlv1.valDat, 0, labelVal);
-        tlv1.valSiz = 4;
-        tlv1.valTyp = 0x1001;
-        tlv1.putThis(pck);
+        bits.msbPutD(tlv.valDat, 0, labelVal);
+        tlv.valSiz = 4;
+        tlv.valTyp = 0x1001;
+        tlv.putThis(pck);
     }
 
     private int getTypS2LsubLsp() {
@@ -1110,16 +1038,16 @@ public class packRsvp {
         if (!isP2MP) {
             return false;
         }
-        if (findTlv1(pck, getTypS2LsubLsp())) {
+        if (findTlv(pck, getTypS2LsubLsp())) {
             return true;
         }
         if (isIP4) {
             addrIPv4 adr = new addrIPv4();
-            adr.fromBuf(tlv1.valDat, 0);
+            adr.fromBuf(tlv.valDat, 0);
             subAddr.fromIPv4addr(adr);
         } else {
             addrIPv6 adr = new addrIPv6();
-            adr.fromBuf(tlv1.valDat, 0);
+            adr.fromBuf(tlv.valDat, 0);
             subAddr.fromIPv6addr(adr);
         }
         return false;
@@ -1135,14 +1063,14 @@ public class packRsvp {
             return;
         }
         if (isIP4) {
-            subAddr.toIPv4().toBuffer(tlv1.valDat, 0);
-            tlv1.valSiz = addrIPv4.size;
+            subAddr.toIPv4().toBuffer(tlv.valDat, 0);
+            tlv.valSiz = addrIPv4.size;
         } else {
-            subAddr.toIPv6().toBuffer(tlv1.valDat, 0);
-            tlv1.valSiz = addrIPv6.size;
+            subAddr.toIPv6().toBuffer(tlv.valDat, 0);
+            tlv.valSiz = addrIPv6.size;
         }
-        tlv1.valTyp = getTypS2LsubLsp();
-        tlv1.putThis(pck);
+        tlv.valTyp = getTypS2LsubLsp();
+        tlv.putThis(pck);
     }
 
     /**

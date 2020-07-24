@@ -79,6 +79,7 @@ import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servP4lang;
+import serv.servPcep;
 import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -614,6 +615,7 @@ public class cfgInit implements Runnable {
         servP4lang.defaultF = createFilter(servP4lang.defaultL, srvdefsF);
         servDaytime.defaultF = createFilter(servDaytime.defaultL, srvdefsF);
         servDcp.defaultF = createFilter(servDcp.defaultL, srvdefsF);
+        servPcep.defaultF = createFilter(servPcep.defaultL, srvdefsF);
         servIrc.defaultF = createFilter(servIrc.defaultL, srvdefsF);
         servDhcp4.defaultF = createFilter(servDhcp4.defaultL, srvdefsF);
         servDhcp6.defaultF = createFilter(servDhcp6.defaultL, srvdefsF);

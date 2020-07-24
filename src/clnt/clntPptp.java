@@ -269,6 +269,7 @@ public class clntPptp implements Runnable, ipPrt, ifcDn {
         if (conn == null) {
             return;
         }
+        conn.timeout = 120000;
         packHolder pckBin = new packHolder(true, true);
         packPptp pckPtp = new packPptp();
         pckPtp.fillStart(true);

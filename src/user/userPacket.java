@@ -12,6 +12,7 @@ import cfg.cfgVrf;
 import clnt.clntProxy;
 import clnt.clntModem;
 import clnt.clntNrpe;
+import clnt.clntPcep;
 import clnt.clntSmtp;
 import clnt.clntSnmp;
 import clnt.clntSpeed;
@@ -47,6 +48,7 @@ import rtr.rtrBgpSpeak;
 import rtr.rtrBgpUtil;
 import sec.secWebsock;
 import serv.servGeneric;
+import tab.tabHop;
 import tab.tabRouteEntry;
 import util.bits;
 import util.cmds;
@@ -1010,6 +1012,37 @@ public class userPacket {
                 sn.doNext();
                 return;
             }
+            return;
+        }
+        if (a.equals("pcep")) {
+            clntPcep pc = new clntPcep();
+            a = cmd.word();
+            a += " " + cmd.word();
+            a += " " + cmd.word();
+            pc.setTarget(a);
+            a = cmd.word();
+            int st = -1;
+            if (a.equals("te")) {
+                st = 0;
+            }
+            if (a.equals("sr")) {
+                st = 1;
+            }
+            addrIP src = new addrIP();
+            addrIP trg = new addrIP();
+            src.fromString(cmd.word());
+            trg.fromString(cmd.word());
+            if (pc.doConnect()) {
+                cmd.error("failed to connect");
+                return;
+            }
+            List<tabHop> res = pc.doCompute(st, src, trg, 0, 0, 0, 0, 0, 0, 2, 0);
+            pc.doClose();
+            if (res == null) {
+                cmd.error("failed to get path");
+                return;
+            }
+            cmd.error("path = " + tabHop.dumpList(res));
             return;
         }
         if (a.equals("nrpe")) {

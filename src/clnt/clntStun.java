@@ -190,6 +190,7 @@ public class clntStun implements Runnable, ifcDn {
         if (conn == null) {
             return;
         }
+        conn.timeout = 120000;
         lower = new packStun(conn, group);
         for (;;) {
             packHolder pck = lower.recvPack();

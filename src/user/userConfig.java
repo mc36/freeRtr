@@ -115,6 +115,7 @@ import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servP4lang;
+import serv.servPcep;
 import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -673,6 +674,8 @@ public class userConfig {
         l.add("2  3    irc                          configure an irc server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    dcp                          configure a dcp server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    pcep                         configure a pcep server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    ntp                          configure a ntp server");
         l.add("3  .      <name>                     name of server");
@@ -1254,6 +1257,10 @@ public class userConfig {
             }
             if (a.equals("dcp")) {
                 daemonMake(new servDcp(), cfgAll.dmnDcp);
+                return;
+            }
+            if (a.equals("pcep")) {
+                daemonMake(new servPcep(), cfgAll.dmnPcep);
                 return;
             }
             if (a.equals("ntp")) {
@@ -2048,6 +2055,10 @@ public class userConfig {
             }
             if (a.equals("dcp")) {
                 daemonErase(new servDcp(), cfgAll.dmnDcp);
+                return;
+            }
+            if (a.equals("pcep")) {
+                daemonErase(new servPcep(), cfgAll.dmnPcep);
                 return;
             }
             if (a.equals("ntp")) {

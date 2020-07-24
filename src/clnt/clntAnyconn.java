@@ -237,6 +237,7 @@ public class clntAnyconn implements Runnable, ifcDn {
         if (pipe == null) {
             return true;
         }
+        pipe.timeout = 120000;
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         return false;

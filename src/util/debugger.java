@@ -159,6 +159,11 @@ public class debugger {
     public static boolean servDcpTraf = false;
 
     /**
+     * servPcep traffic
+     */
+    public static boolean servPcepTraf = false;
+
+    /**
      * servOpenflow traffic
      */
     public static boolean servOpenflowTraf = false;
@@ -492,6 +497,11 @@ public class debugger {
      * clntSip traffic
      */
     public static boolean clntSipTraf = false;
+
+    /**
+     * clntPcep traffic
+     */
+    public static boolean clntPcepTraf = false;
 
     /**
      * clntSstp traffic
@@ -911,6 +921,7 @@ public class debugger {
         h.add("3 .        rpki              resource public key infrastructure");
         h.add("3 .        nrpe              nagios remote plugin");
         h.add("3 .        dcp               direct connect protocol");
+        h.add("3 .        pcep              path computation element protocol");
         h.add("3 .        openflow          openflow protocol");
         h.add("3 .        p4lang            p4lang protocol");
         h.add("3 .        snmp              simple network management protocol");
@@ -1014,6 +1025,7 @@ public class debugger {
         h.add("2 3      client              protocol clients");
         h.add("3 .        ntp               network time protocol");
         h.add("3 .        sip               session initiation protocol");
+        h.add("3 .        pcep              path computation element protocol");
         h.add("3 .        sstp              secure socket tunneling protocol");
         h.add("3 .        anyconn           anyconnect protocol");
         h.add("3 .        snmp              simple network management protocol");
@@ -1234,6 +1246,10 @@ public class debugger {
             }
             if (s.equals("dcp")) {
                 servDcpTraf = v;
+                return false;
+            }
+            if (s.equals("pcep")) {
+                servPcepTraf = v;
                 return false;
             }
             if (s.equals("openflow")) {
@@ -1614,6 +1630,10 @@ public class debugger {
             }
             if (s.equals("sip")) {
                 clntSipTraf = v;
+                return false;
+            }
+            if (s.equals("pcep")) {
+                clntPcepTraf = v;
                 return false;
             }
             if (s.equals("sstp")) {

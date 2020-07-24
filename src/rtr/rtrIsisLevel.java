@@ -411,6 +411,9 @@ public class rtrIsisLevel implements Runnable {
             if (nei == null) {
                 continue;
             }
+            if (nei.peerAdjState != rtrIsisNeigh.statUp) {
+                continue;
+            }
             if (nei.level.level != level) {
                 continue;
             }

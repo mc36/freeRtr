@@ -202,12 +202,17 @@ public class clntTelnet implements Runnable, ifcDn {
             return;
         }
         pipeSide conn = proxy.doConnect(servGeneric.protoTcp, trg, port, "telnet");
+        if (conn == null) {
+            return;
+        }
+        conn.timeout = 120000;
         if (tls) {
             conn = secClient.openSec(conn, servGeneric.protoTls, null, null);
         }
         if (conn == null) {
             return;
         }
+        conn.timeout = 120000;
         if (script.doScript(conn)) {
             conn.setClose();
             return;

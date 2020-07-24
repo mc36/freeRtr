@@ -206,6 +206,7 @@ public class clntBstun implements Runnable, ifcDn {
         if (conn == null) {
             return;
         }
+        conn.timeout = 120000;
         lower = new lineBstun(conn, group);
         if (script.doScript(lower.getPipe())) {
             conn.setClose();

@@ -186,6 +186,7 @@ public class clntPckOtcp implements Runnable, ifcDn {
         if (pipe == null) {
             return;
         }
+        pipe.timeout = 120000;
         pips = new packSize(pipe, 2, true, 1, 0);
         packHolder pck = new packHolder(true, true);
         for (;;) {

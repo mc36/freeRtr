@@ -7,10 +7,13 @@ import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import ip.ipFwd;
+import ip.ipFwdIface;
+import ip.ipFwdTab;
 import ip.ipMpls;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
+import tab.tabHop;
 import tab.tabRouteEntry;
 import util.cmds;
 import util.counter;
@@ -37,9 +40,29 @@ public class clntMplsSr implements Runnable, ifcDn {
     public ipFwd fwdCor;
 
     /**
+     * source interface
+     */
+    public ipFwdIface fwdIfc = null;
+
+    /**
+     * pcep config to use
+     */
+    public String pcep = null;
+
+    /**
      * target
      */
     public addrIP target;
+
+    /**
+     * setup priority
+     */
+    public int prioS = 7;
+
+    /**
+     * holding priority
+     */
+    public int prioH = 7;
 
     /**
      * experimental value, -1 means maps out
@@ -50,6 +73,11 @@ public class clntMplsSr implements Runnable, ifcDn {
      * ttl value
      */
     public int ttl = 255;
+
+    /**
+     * bandwidth
+     */
+    public long bndwdt;
 
     /**
      * counter
@@ -269,6 +297,73 @@ public class clntMplsSr implements Runnable, ifcDn {
     }
 
     private void workDoer() {
+        ipFwdIface ifc = fwdIfc;
+        if (ifc == null) {
+            ifc = ipFwdTab.findSendingIface(fwdCor, target);
+        }
+        if (ifc == null) {
+            return;
+        }
+        if (pcep != null) {
+            clntPcep pc = new clntPcep();
+            pc.setTarget(pcep);
+            if (pc.doConnect()) {
+                if (debugger.clntMplsSrTraf) {
+                    logger.debug("unable to connect pce for " + target);
+                }
+                clearState();
+                return;
+            }
+            List<tabHop> res = pc.doCompute(1, ifc.addr.copyBytes(), target.copyBytes(), 0, 0, 0, prioS, prioH, ((float) bndwdt) / 8, 2, 0);
+            pc.doClose();
+            if (res == null) {
+                if (debugger.clntMplsSrTraf) {
+                    logger.debug("no info got for " + target);
+                }
+                clearState();
+                return;
+            }
+            if (res.size() < 1) {
+                if (debugger.clntMplsSrTraf) {
+                    logger.debug("empty info got for " + target);
+                }
+                clearState();
+                return;
+            }
+            tabHop hop = res.get(0);
+            if (hop.label == 0) {
+                if (debugger.clntMplsSrTraf) {
+                    logger.debug("no label got for " + target);
+                }
+                clearState();
+                return;
+            }
+            int[] labs = new int[1];
+            tabRouteEntry<addrIP> ntry = fwdCor.actualU.route(target);
+            if (ntry == null) {
+                if (debugger.clntMplsSrTraf) {
+                    logger.debug("no route for " + target);
+                }
+                clearState();
+                return;
+            }
+            if (hop.index) {
+                if (ntry.segrouBeg < 1) {
+                    if (debugger.clntMplsSrTraf) {
+                        logger.debug("no base for " + ntry);
+                    }
+                    clearState();
+                    return;
+                }
+                labs[0] = ntry.segrouBeg + hop.label;
+            } else {
+                labs[0] = hop.label >>> 12;
+            }
+            nextHop = ntry.nextHop.copyBytes();
+            labels = labs;
+            upper.setState(state.states.up);
+            return;
+        }
         int[] labs = new int[targets.length + 1];
         tabRouteEntry<addrIP> prev = fwdCor.actualU.route(target);
         if (prev == null) {

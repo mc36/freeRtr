@@ -1294,6 +1294,14 @@ public class userExec {
         hl.add("2 3      nrpe                    check remote status");
         hl.add("3 4        <str>                 server address");
         hl.add("4 4,.        <str>               check name");
+        hl.add("2 3      pcep                    get a path from pcep");
+        hl.add("3 4        <str>                 server address");
+        hl.add("4 5          <str>               vrf to use");
+        hl.add("5 6            <str>             interface to use");
+        hl.add("6 7              te              traffic engineering");
+        hl.add("6 7              sr              segment routing");
+        hl.add("7 8                <str>         source address");
+        hl.add("8 .                  <str>       target address");
         hl.add("1 2    test                      test various things");
         hl.add("2 3      dns                     dns zone creator");
         hl.add("3 .        <name>                name of zone");

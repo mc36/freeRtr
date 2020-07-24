@@ -78,6 +78,7 @@ import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servP4lang;
+import serv.servPcep;
 import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -488,6 +489,11 @@ public class cfgAll {
      * dcp daemons
      */
     public static final servGenList<servDcp> dmnDcp = new servGenList<servDcp>();
+
+    /**
+     * pcep daemons
+     */
+    public static final servGenList<servPcep> dmnPcep = new servGenList<servPcep>();
 
     /**
      * socks daemons
@@ -3145,6 +3151,7 @@ public class cfgAll {
         dmnBmp.getShRun(l, filter);
         dmnIrc.getShRun(l, filter);
         dmnDcp.getShRun(l, filter);
+        dmnPcep.getShRun(l, filter);
         dmnDhcp4.getShRun(l, filter);
         dmnDhcp6.getShRun(l, filter);
         dmnDns.getShRun(l, filter);
