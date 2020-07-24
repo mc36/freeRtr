@@ -5555,9 +5555,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("5 6           <num>                 minimum interval");
         l.add("6 .             <num>               maximum interval");
         l.add("1 2   enforce-mtu                   enfore mtu on packets");
-        l.add(".2 .    in                          only in ingress");
-        l.add(".2 .    out                         only in egress");
-        l.add(".2 .    both                        check in both directions");
+        l.add("2 .     in                          only in ingress");
+        l.add("2 .     out                         only in egress");
+        l.add("2 .     both                        check in both directions");
         l.add("2 .     none                        not check at all");
         l.add("1 2,. loss-detection                loss detection commands");
         l.add("2 3     <num>                       packet loss to block");

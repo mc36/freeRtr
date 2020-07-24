@@ -605,7 +605,7 @@ public class userExec {
         hl.add("2 .      reload                  scheduled reload");
         hl.add("2 .      banner                  logo of device");
         hl.add("2 3,.    logo                    logo of product");
-        hl.add(".3 3,.     [text]                text to print");
+        hl.add("3 3,.      [text]                text to print");
         hl.add("2 3,.    flash                   list of flash");
         hl.add("3 3,.      [text]                directory to print");
         hl.add("2 3      whois                   query whois server");
