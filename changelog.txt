@@ -8963,3 +8963,15 @@ qc pass: pvrp unstub interface
 no todo: route-map/policy to match private-as origination/transit, then show, ignore, etc
 ---------------------------------- 2020-07-22 14:26:16
 todo: tunnels with pcep
+---------------------------------- 2020-07-24 07:04:23
+no todo: tunnels with pcep
+qc pass: interop1: isis te with pcep
+qc pass: interop1: ospf te with pcep
+qc pass: interop2: isis te with pcep
+qc pass: interop2: ospf te with pcep
+qc pass: sr te with pcep
+qc pass: te with pcep
+qc pass: bgp with srgb sr
+qc pass: isis with srgb sr
+qc pass: lsrp with srgb sr
+qc pass: ospf with srgb sr

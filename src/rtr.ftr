@@ -621,6 +621,7 @@ qc pass: interop1: isis p2mp te
 qc pass: interop1: isis sr
 qc pass: interop1: isis lsp authentication
 qc pass: interop1: isis php sr
+qc pass: interop1: isis te with pcep
 qc pass: interop1: l2tp2 client
 qc pass: interop1: l2tp2 server
 qc pass: interop1: l2tp3 server
@@ -646,6 +647,7 @@ qc pass: interop1: ospf authentication
 qc pass: interop1: ospf p2mp te
 qc pass: interop1: ospf sr
 qc pass: interop1: ospf php sr
+qc pass: interop1: ospf te with pcep
 qc pass: interop1: pppoe client
 qc pass: interop1: pppoe server
 qc pass: interop1: pppoe with pap
@@ -701,6 +703,7 @@ qc pass: interop2: isis p2mp te
 qc pass: interop2: isis sr
 qc pass: interop2: isis lsp authentication
 qc pass: interop2: isis php sr
+qc pass: interop2: isis te with pcep
 qc pass: interop2: ldp lsp
 qc pass: interop2: ethernet over mpls
 qc pass: interop2: ldp p2mp lsp
@@ -720,6 +723,7 @@ qc pass: interop2: ospf authentication
 qc pass: interop2: ospf p2mp te
 qc pass: interop2: ospf sr
 qc pass: interop2: ospf php sr
+qc pass: interop2: ospf te with pcep
 qc pass: interop2: rip
 qc pass: interop2: rip prefix withdraw
 qc pass: interop2: rip authentication
@@ -924,6 +928,7 @@ qc pass: sr over broadcast subnet
 qc pass: sr te over mpls
 qc pass: sr te over exthdr
 qc pass: bgp with php labels over sr
+qc pass: sr te with pcep
 qc pass: te over ethernet
 qc pass: te over ethernet vlan
 qc pass: te over ethernet bridge
@@ -938,6 +943,7 @@ qc pass: pwe over te
 qc pass: ldp and te
 qc pass: p2mp te
 qc pass: p2mp te tail+mid
+qc pass: te with pcep
 qc pass: cross connect with pwe over mpls
 qc pass: cross connect with packet over udp
 qc pass: cross connect with vxlan
@@ -1466,6 +1472,7 @@ qc pass: bgp remove private as in with routemap
 qc pass: bgp remove private as out with routemap
 qc pass: bgp remove private as in with routepolicy
 qc pass: bgp remove private as out with routepolicy
+qc pass: bgp with srgb sr
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -1544,6 +1551,7 @@ qc pass: isis lsp authentication
 qc pass: isis change in tag
 qc pass: isis multi-topology change in tag
 qc pass: isis with php sr
+qc pass: isis with srgb sr
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -1574,6 +1582,7 @@ qc pass: lsrp unstub interface
 qc pass: lsrp default address suppression
 qc pass: lsrp address unsuppression
 qc pass: lsrp with php sr
+qc pass: lsrp with srgb sr
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -1653,6 +1662,7 @@ qc pass: ospf with bier
 qc pass: ospf transit area with bier
 qc pass: ospf autoroute
 qc pass: ospf with php sr
+qc pass: ospf with srgb sr
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
@@ -1785,7 +1795,6 @@ todo: hostwatch to execute script on acl match
 todo: protocol traceroute
 todo: optimal route reflection
 todo: bgp vpns with sr-policy
-todo: tunnels with pcep
 todo: recursive static route
 todo: pipeline properties, terminal autoresize
 todo: temper: web access log

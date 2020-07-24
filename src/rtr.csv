@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.7.22-rel, done by cs@nop.;-;-
--;-;2020-07-22 23:27:19, took 09:01:03 on 1772 cases, 0 failed, 0 traces, 10 retries;-;-
+-;-;freeRouter v20.7.24-rel, done by cs@nop.;-;-
+-;-;2020-07-24 15:58:17, took 08:53:53 on 1782 cases, 0 failed, 0 traces, 8 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -625,6 +625,7 @@ intop1-isis09.tst;0;interop1: isis p2mp te;successfully;finished
 intop1-isis10.tst;0;interop1: isis sr;successfully;finished
 intop1-isis11.tst;0;interop1: isis lsp authentication;successfully;finished
 intop1-isis12.tst;0;interop1: isis php sr;successfully;finished
+intop1-isis13.tst;0;interop1: isis te with pcep;successfully;finished
 intop1-l2tp01.tst;0;interop1: l2tp2 client;successfully;finished
 intop1-l2tp02.tst;0;interop1: l2tp2 server;successfully;finished
 intop1-l2tp03.tst;0;interop1: l2tp3 server;successfully;finished
@@ -650,6 +651,7 @@ intop1-ospf09.tst;0;interop1: ospf authentication;successfully;finished
 intop1-ospf10.tst;0;interop1: ospf p2mp te;successfully;finished
 intop1-ospf11.tst;0;interop1: ospf sr;successfully;finished
 intop1-ospf12.tst;0;interop1: ospf php sr;successfully;finished
+intop1-ospf13.tst;0;interop1: ospf te with pcep;successfully;finished
 intop1-pppoe01.tst;0;interop1: pppoe client;successfully;finished
 intop1-pppoe02.tst;0;interop1: pppoe server;successfully;finished
 intop1-pppoe03.tst;0;interop1: pppoe with pap;successfully;finished
@@ -705,6 +707,7 @@ intop2-isis09.tst;0;interop2: isis p2mp te;successfully;finished
 intop2-isis10.tst;0;interop2: isis sr;successfully;finished
 intop2-isis11.tst;0;interop2: isis lsp authentication;successfully;finished
 intop2-isis12.tst;0;interop2: isis php sr;successfully;finished
+intop2-isis13.tst;0;interop2: isis te with pcep;successfully;finished
 intop2-ldp01.tst;0;interop2: ldp lsp;successfully;finished
 intop2-ldp02.tst;0;interop2: ethernet over mpls;successfully;finished
 intop2-ldp03.tst;0;interop2: ldp p2mp lsp;successfully;finished
@@ -724,6 +727,7 @@ intop2-ospf09.tst;0;interop2: ospf authentication;successfully;finished
 intop2-ospf10.tst;0;interop2: ospf p2mp te;successfully;finished
 intop2-ospf11.tst;0;interop2: ospf sr;successfully;finished
 intop2-ospf12.tst;0;interop2: ospf php sr;successfully;finished
+intop2-ospf13.tst;0;interop2: ospf te with pcep;successfully;finished
 intop2-rip01.tst;0;interop2: rip;successfully;finished
 intop2-rip02.tst;0;interop2: rip prefix withdraw;successfully;finished
 intop2-rip03.tst;0;interop2: rip authentication;successfully;finished
@@ -928,6 +932,7 @@ mpls-sr09.tst;0;sr over broadcast subnet;successfully;finished
 mpls-sr10.tst;0;sr te over mpls;successfully;finished
 mpls-sr11.tst;0;sr te over exthdr;successfully;finished
 mpls-sr12.tst;0;bgp with php labels over sr;successfully;finished
+mpls-sr13.tst;0;sr te with pcep;successfully;finished
 mpls-te01.tst;0;te over ethernet;successfully;finished
 mpls-te02.tst;0;te over ethernet vlan;successfully;finished
 mpls-te03.tst;0;te over ethernet bridge;successfully;finished
@@ -942,6 +947,7 @@ mpls-te11.tst;0;pwe over te;successfully;finished
 mpls-te12.tst;0;ldp and te;successfully;finished
 mpls-te13.tst;0;p2mp te;successfully;finished
 mpls-te14.tst;0;p2mp te tail+mid;successfully;finished
+mpls-te15.tst;0;te with pcep;successfully;finished
 mpls-xconn01.tst;0;cross connect with pwe over mpls;successfully;finished
 mpls-xconn02.tst;0;cross connect with packet over udp;successfully;finished
 mpls-xconn03.tst;0;cross connect with vxlan;successfully;finished
@@ -1470,6 +1476,7 @@ rout-bgp407.tst;0;bgp remove private as in with routemap;successfully;finished
 rout-bgp408.tst;0;bgp remove private as out with routemap;successfully;finished
 rout-bgp409.tst;0;bgp remove private as in with routepolicy;successfully;finished
 rout-bgp410.tst;0;bgp remove private as out with routepolicy;successfully;finished
+rout-bgp411.tst;0;bgp with srgb sr;successfully;finished
 rout-eigrp01.tst;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;eigrp point2point chain;successfully;finished
@@ -1548,6 +1555,7 @@ rout-isis54.tst;0;isis lsp authentication;successfully;finished
 rout-isis55.tst;0;isis change in tag;successfully;finished
 rout-isis56.tst;0;isis multi-topology change in tag;successfully;finished
 rout-isis57.tst;0;isis with php sr;successfully;finished
+rout-isis58.tst;0;isis with srgb sr;successfully;finished
 rout-lsrp01.tst;0;lsrp point2point connection;successfully;finished
 rout-lsrp02.tst;0;lsrp point2multipoint connection;successfully;finished
 rout-lsrp03.tst;0;lsrp point2point chain;successfully;finished
@@ -1578,6 +1586,7 @@ rout-lsrp27.tst;0;lsrp unstub interface;successfully;finished
 rout-lsrp28.tst;0;lsrp default address suppression;successfully;finished
 rout-lsrp29.tst;0;lsrp address unsuppression;successfully;finished
 rout-lsrp30.tst;0;lsrp with php sr;successfully;finished
+rout-lsrp31.tst;0;lsrp with srgb sr;successfully;finished
 rout-mcast01.tst;0;multicast routing with static flooding;successfully;finished
 rout-mcast02.tst;0;multicast routing with pim ssm;successfully;finished
 rout-mcast03.tst;0;multicast routing with igmp/mld;successfully;finished
@@ -1657,6 +1666,7 @@ rout-ospf38.tst;0;ospf with bier;successfully;finished
 rout-ospf39.tst;0;ospf transit area with bier;successfully;finished
 rout-ospf40.tst;0;ospf autoroute;successfully;finished
 rout-ospf41.tst;0;ospf with php sr;successfully;finished
+rout-ospf42.tst;0;ospf with srgb sr;successfully;finished
 rout-pbr01.tst;0;policy routing with nexthop;successfully;finished
 rout-pbr02.tst;0;policy routing with interface and nexthop between vrfs;successfully;finished
 rout-pbr03.tst;0;policy routing with interface and nexthop;successfully;finished
