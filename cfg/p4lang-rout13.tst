@@ -396,3 +396,6 @@ r4 tping 100 10 3.3.3.105 /vrf v1 /int lo1
 r4 tping 100 10 3333::105 /vrf v1 /int lo1
 r4 tping 100 10 3.3.3.106 /vrf v1 /int lo1
 r4 tping 100 10 3333::106 /vrf v1 /int lo1
+
+r1 output sho inter summ
+r1 output sho inter hwsumm

@@ -1,0 +1,643 @@
+void send2port(unsigned char *bufD, int bufS, int port) {
+    sendpack(bufD, bufS, port);
+    packTx[port]++;
+    byteTx[port] += bufS;
+}
+
+
+
+void send2cpu(unsigned char *bufD, int bufS, int port) {
+    put16msb(bufD, preBuff - 2, port);
+    send2port(&bufD[preBuff - 2], bufS + 2, cpuport);
+}
+
+
+
+
+void processCpuPack(unsigned char* bufD, int bufS) {
+    struct vlan_entry vlan_ntry;
+    struct vlan_entry *vlan_res;
+    int index;
+    int prt;
+    packRx[cpuport]++;
+    byteRx[cpuport] += bufS;
+    prt = get16msb(bufD, preBuff);
+    if (prt >= ports) return;
+    send2port(&bufD[preBuff + 2], bufS - 2, prt);
+    if (get16msb(bufD, preBuff + 14) != 0x8100) return;
+    vlan_ntry.port = prt;
+    vlan_ntry.vlan = get16msb(bufD, preBuff + 16) & 0xfff;
+    index = table_find(&vlanin_table, &vlan_ntry);
+    if (index < 0) return;
+    vlan_res = table_get(&vlanin_table, index);
+    index = table_find(&vlanout_table, vlan_res);
+    if (index < 0) return;
+    vlan_res = table_get(&vlanout_table, index);
+    vlan_res->pack++;
+    vlan_res->byte += bufS;
+}
+
+
+#ifdef basicLoop
+
+
+void processDataPacket(unsigned char *bufD, int bufS, int port) {
+    struct vlan_entry vlan_ntry;
+    struct vlan_entry *vlan_res;
+    int index;
+    packRx[port]++;
+    byteRx[port] += bufS;
+    send2cpu(bufD, bufS, port);
+    if (get16msb(bufD, preBuff + 12) != 0x8100) return;
+    vlan_ntry.port = port;
+    vlan_ntry.vlan = get16msb(bufD, preBuff + 14) & 0xfff;
+    index = table_find(&vlanin_table, &vlan_ntry);
+    if (index < 0) return;
+    vlan_res = table_get(&vlanin_table, index);
+    vlan_res->pack++;
+    vlan_res->byte += bufS;
+}
+
+
+
+#else
+
+
+
+#define extract_layer4(ntry)                                    \
+    switch (ntry.protV) {                                       \
+        case 6:                                                 \
+            ntry.srcPortV = get16msb(bufD, bufT + 0);           \
+            ntry.trgPortV = get16msb(bufD, bufT + 2);           \
+            break;                                              \
+        case 17:                                                \
+            ntry.srcPortV = get16msb(bufD, bufT + 0);           \
+            ntry.trgPortV = get16msb(bufD, bufT + 2);           \
+            break;                                              \
+        default:                                                \
+            ntry.srcPortV = 0;                                  \
+            ntry.trgPortV = 0;                                  \
+            break;                                              \
+    }                                                           \
+    hash = hash ^ ntry.srcPortV ^ ntry.trgPortV;
+
+
+#define update_chksum(ofs, val)                                 \
+    sum = get16lsb(bufD, ofs);                                  \
+    sum -= val;                                                 \
+    sum = (sum & 0xffff) + (sum >> 16);                         \
+    put16lsb(bufD, ofs, sum);
+
+
+
+#define update_layer4(ntry)                                     \
+    switch (ntry->prot) {                                       \
+        case 6:                                                 \
+            put16msb(bufD, bufT + 0, ntry->nSrcPort);           \
+            put16msb(bufD, bufT + 2, ntry->nTrgPort);           \
+            update_chksum(bufT + 16, ntry->sum4);               \
+            break;                                              \
+        case 17:                                                \
+            put16msb(bufD, bufT + 0, ntry->nSrcPort);           \
+            put16msb(bufD, bufT + 2, ntry->nTrgPort);           \
+            update_chksum(bufT + 6, ntry->sum4);                \
+            break;                                              \
+    }
+
+
+#define reduce_hash                                             \
+    hash = ((hash >> 16) ^ hash) & 0xffff;                      \
+    hash = ((hash >> 8) ^ hash) & 0xff;                         \
+    hash = ((hash >> 4) ^ hash) & 0xf;
+
+
+int masks[] = {
+    0x00000000,
+    0x80000000, 0xc0000000, 0xe0000000, 0xf0000000,
+    0xf8000000, 0xfc000000, 0xfe000000, 0xff000000,
+    0xff800000, 0xffc00000, 0xffe00000, 0xfff00000,
+    0xfff80000, 0xfffc0000, 0xfffe0000, 0xffff0000,
+    0xffff8000, 0xffffc000, 0xffffe000, 0xfffff000,
+    0xfffff800, 0xfffffc00, 0xfffffe00, 0xffffff00,
+    0xffffff80, 0xffffffc0, 0xffffffe0, 0xfffffff0,
+    0xfffffff8, 0xfffffffc, 0xfffffffe, 0xffffffff
+};
+
+
+void processDataPacket(unsigned char *bufD, int bufS, int port) {
+    unsigned char buf2[preBuff];
+    int bufP;
+    int bufT;
+    int ethtyp;
+    struct mpls_entry mpls_ntry;
+    struct portvrf_entry portvrf_ntry;
+    struct route4_entry route4_ntry;
+    struct route6_entry route6_ntry;
+    struct neigh_entry neigh_ntry;
+    struct vlan_entry vlan_ntry;
+    struct bridge_entry bridge_ntry;
+    struct acls_entry acls_ntry;
+    struct acl4_entry acl4_ntry;
+    struct acl6_entry acl6_ntry;
+    struct nat4_entry nat4_ntry;
+    struct nat6_entry nat6_ntry;
+    struct bundle_entry bundle_ntry;
+    struct mpls_entry *mpls_res;
+    struct portvrf_entry *portvrf_res;
+    struct route4_entry *route4_res;
+    struct route6_entry *route6_res;
+    struct neigh_entry *neigh_res;
+    struct vlan_entry *vlan_res;
+    struct bridge_entry *bridge_res;
+    struct acls_entry *acls_res;
+    struct nat4_entry *nat4_res;
+    struct nat6_entry *nat6_res;
+    struct bundle_entry *bundle_res;
+    int index;
+    int label;
+    int prt;
+    int sum;
+    int ttl;
+    int hash = 0;
+    bufP = preBuff;
+    packRx[port]++;
+    byteRx[port] += bufS;
+    bufP += 6 * 2; // dmac, smac
+    prt = port;
+ethtyp_rx:
+    ethtyp = get16msb(bufD, bufP);
+    bufP += 2;
+    switch (ethtyp) {
+        case 0x8847:
+mpls_rx:
+            label = get32msb(bufD, bufP);
+            ttl = (label & 0xff) - 1;
+            if (ttl <= 1) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            bufP += 4;
+            hash = mpls_ntry.label = (label >> 12) & 0xfffff;
+            index = table_find(&mpls_table, &mpls_ntry);
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            mpls_res = table_get(&mpls_table, index);
+            mpls_res->pack++;
+            mpls_res->byte += bufS;
+            switch (mpls_res->command) {
+                case 1: // route
+                    route4_ntry.vrf = mpls_res->vrf;
+                    route6_ntry.vrf = mpls_res->vrf;
+                    if ((label & 0x100) == 0) goto mpls_rx;
+                    switch (mpls_res->ver) {
+                        case 4:
+                            ethtyp = 0x800;
+                            goto ipv4_rx;
+                        case 6:
+                            ethtyp = 0x86dd;
+                            goto ipv6_rx;
+                        default:
+                            ethtyp = 0;
+                            break;
+                    }
+                    packDr[port]++;
+                    byteDr[port] += bufS;
+                    return;
+                case 2: // pop
+                    switch (mpls_res->ver) {
+                        case 4:
+                            ethtyp = 0x800;
+                            break;
+                        case 6:
+                            ethtyp = 0x86dd;
+                            break;
+                        default:
+                            ethtyp = 0;
+                            break;
+                    }
+                    neigh_ntry.id = mpls_res->nexthop;
+                    goto ethtyp_tx;
+                    return;
+                case 3: // swap
+                    bufP -= 4;
+                    label = (label & 0xf00) | ttl | (mpls_res->swap << 12);
+                    put32msb(bufD, bufP, label);
+                    neigh_ntry.id = mpls_res->nexthop;
+ethtyp_tx:
+                    bufP -= 2;
+                    put16msb(bufD, bufP, ethtyp);
+                    index = table_find(&neigh_table, &neigh_ntry);
+                    if (index < 0) {
+                        packDr[port]++;
+                        byteDr[port] += bufS;
+                        return;
+                    }
+                    neigh_res = table_get(&neigh_table, index);
+                    neigh_res->pack++;
+                    neigh_res->byte += bufS;
+                    prt = neigh_res->port;
+vlan_tx:
+                    vlan_ntry.id = prt;
+                    index = table_find(&vlanout_table, &vlan_ntry);
+                    if (index >= 0) {
+                        vlan_res = table_get(&vlanout_table, index);
+                        bufP -= 2;
+                        put16msb(bufD, bufP, vlan_res->vlan);
+                        bufP -= 2;
+                        put16msb(bufD, bufP, 0x8100);
+                        prt = vlan_res->port;
+                        vlan_res->pack++;
+                        vlan_res->byte += bufS;
+                    }
+                    bundle_ntry.id = prt;
+                    index = table_find(&bundle_table, &bundle_ntry);
+                    if (index >= 0) {
+                        bundle_res = table_get(&bundle_table, index);
+                        reduce_hash;
+                        prt = bundle_res->out[hash];
+                        bundle_res->pack++;
+                        bundle_res->byte += bufS;
+                    }
+                    if (prt >= ports) {
+                        packDr[port]++;
+                        byteDr[port] += bufS;
+                        return;
+                    }
+                    bufP -= 6;
+                    memmove(&bufD[bufP], &neigh_res->smac, 6);
+                    bufP -= 6;
+                    memmove(&bufD[bufP], &neigh_res->dmac, 6);
+                    send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
+                    return;
+                 default:
+                    return;
+            }
+            return;
+        case 0x8100:
+            vlan_ntry.port = prt;
+            vlan_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
+            bufP += 2;
+            index = table_find(&vlanin_table, &vlan_ntry);
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            vlan_res = table_get(&vlanin_table, index);
+            prt = vlan_res->id;
+            vlan_res->pack++;
+            vlan_res->byte += bufS;
+            goto ethtyp_rx;
+            return;
+        case 0x800:
+            portvrf_ntry.port = prt;
+            index = table_find(&portvrf_table, &portvrf_ntry);
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            portvrf_res = table_get(&portvrf_table, index);
+            if (portvrf_res->command == 2) goto bridge;
+            route4_ntry.vrf = portvrf_res->vrf;
+ipv4_rx:
+            acl4_ntry.protV = bufD[bufP + 9];
+            acl4_ntry.srcAddr = get32msb(bufD, bufP + 12);
+            acl4_ntry.trgAddr = route4_ntry.addr = get32msb(bufD, bufP + 16);
+            hash = acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
+            ttl = bufD[bufP + 8] - 1;
+            if (ttl <= 1) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            bufD[bufP + 8] = ttl;
+            update_chksum(bufP + 10, -1);
+            bufT = bufP + 20;
+            extract_layer4(acl4_ntry);
+            acls_ntry.ver = 4;
+            acls_ntry.dir = 1;
+            acls_ntry.port = prt;
+            index = table_find(&acls_table, &acls_ntry);
+            if (index >= 0) {
+                acls_res = table_get(&acls_table, index);
+                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) {
+                    packDr[port]++;
+                    byteDr[port] += bufS;
+                    return;
+                }
+            }            
+            acls_ntry.dir = 3;
+            acls_ntry.port = route4_ntry.vrf;
+            index = table_find(&acls_table, &acls_ntry);
+            if (index >= 0) {
+                acls_res = table_get(&acls_table, index);
+                nat4_ntry.vrf = route4_ntry.vrf;
+                nat4_ntry.prot = acl4_ntry.protV;
+                nat4_ntry.oSrcAddr = acl4_ntry.srcAddr;
+                nat4_ntry.oTrgAddr = acl4_ntry.trgAddr;
+                nat4_ntry.oSrcPort = acl4_ntry.srcPortV;
+                nat4_ntry.oTrgPort = acl4_ntry.trgPortV;
+                index = table_find(&nat4_table, &nat4_ntry);
+                if (index < 0) {
+                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) == 0) goto cpu;
+                    goto ipv4_rou;
+                }
+                nat4_res = table_get(&nat4_table, index);
+                nat4_res->pack++;
+                nat4_res->byte += bufS;
+                acl4_ntry.srcAddr = nat4_res->nSrcAddr;
+                acl4_ntry.trgAddr = route4_ntry.addr = nat4_res->nTrgAddr;
+                acl4_ntry.srcPortV = nat4_res->nSrcPort;
+                acl4_ntry.trgPortV = nat4_res->nTrgPort;
+                put32msb(bufD, bufP + 12, acl4_ntry.srcAddr);
+                put32msb(bufD, bufP + 16, acl4_ntry.trgAddr);
+                update_chksum(bufP + 10, nat4_res->sum3);
+                update_layer4(nat4_res);
+            }            
+ipv4_rou:
+            for (int i = 32; i >= 0; i--) {
+                route4_ntry.mask = i;
+                route4_ntry.addr &= masks[i];
+                index = table_find(&route4_table, &route4_ntry);
+                if (index < 0) continue;
+                route4_res = table_get(&route4_table, index);
+                route4_res->pack++;
+                route4_res->byte += bufS;
+                switch (route4_res->command) {
+                    case 1: // route
+                        neigh_ntry.id = route4_res->nexthop;
+                        bufP -= 2;
+                        put16msb(bufD, bufP, ethtyp);
+                        index = table_find(&neigh_table, &neigh_ntry);
+                        if (index < 0) {
+                            packDr[port]++;
+                            byteDr[port] += bufS;
+                            return;
+                        }
+                        neigh_res = table_get(&neigh_table, index);
+                        neigh_res->pack++;
+                        neigh_res->byte += bufS;
+                        prt = neigh_res->port;
+                        acls_ntry.dir = 2;
+                        acls_ntry.port = prt;
+                        index = table_find(&acls_table, &acls_ntry);
+                        if (index >= 0) {
+                            acls_res = table_get(&acls_table, index);
+                            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) {
+                                packDr[port]++;
+                                byteDr[port] += bufS;
+                                return;
+                            }
+                        }            
+                        goto vlan_tx;
+                    case 2: // punt
+                        goto cpu;
+                    case 3: // mpls1
+                        ethtyp = 0x8847;
+                        bufP -= 4;
+                        label = 0x100 | ttl | (route4_res->label1 << 12);
+                        put32msb(bufD, bufP, label);
+                        neigh_ntry.id = route4_res->nexthop;
+                        goto ethtyp_tx;
+                    case 4: // mpls2
+                        ethtyp = 0x8847;
+                        bufP -= 4;
+                        label = 0x100 | ttl | (route4_res->label2 << 12);
+                        put32msb(bufD, bufP, label);
+                        bufP -= 4;
+                        label = ttl | (route4_res->label1 << 12);
+                        put32msb(bufD, bufP, label);
+                        neigh_ntry.id = route4_res->nexthop;
+                        goto ethtyp_tx;
+                }
+            }
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        case 0x86dd:
+            portvrf_ntry.port = prt;
+            index = table_find(&portvrf_table, &portvrf_ntry);
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            portvrf_res = table_get(&portvrf_table, index);
+            if (portvrf_res->command == 2) goto bridge;
+            route6_ntry.vrf = portvrf_res->vrf;
+ipv6_rx:
+            acl6_ntry.protV = bufD[bufP + 6];
+            acl6_ntry.srcAddr1 = get32msb(bufD, bufP + 8);
+            acl6_ntry.srcAddr2 = get32msb(bufD, bufP + 12);
+            acl6_ntry.srcAddr3 = get32msb(bufD, bufP + 16);
+            acl6_ntry.srcAddr4 = get32msb(bufD, bufP + 20);
+            acl6_ntry.trgAddr1 = route6_ntry.addr1 = get32msb(bufD, bufP + 24);
+            acl6_ntry.trgAddr2 = route6_ntry.addr2 = get32msb(bufD, bufP + 28);
+            acl6_ntry.trgAddr3 = route6_ntry.addr3 = get32msb(bufD, bufP + 32);
+            acl6_ntry.trgAddr4 = route6_ntry.addr4 = get32msb(bufD, bufP + 36);
+            hash = acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
+            ttl = bufD[bufP + 7] - 1;
+            if (ttl <= 1) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            bufD[bufP + 7] = ttl;
+            bufT = bufP + 40;
+            extract_layer4(acl6_ntry);
+            acls_ntry.ver = 6;
+            acls_ntry.dir = 1;
+            acls_ntry.port = prt;
+            index = table_find(&acls_table, &acls_ntry);
+            if (index >= 0) {
+                acls_res = table_get(&acls_table, index);
+                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) {
+                    packDr[port]++;
+                    byteDr[port] += bufS;
+                    return;
+                }
+            }            
+            acls_ntry.dir = 3;
+            acls_ntry.port = route6_ntry.vrf;
+            index = table_find(&acls_table, &acls_ntry);
+            if (index >= 0) {
+                acls_res = table_get(&acls_table, index);
+                nat6_ntry.vrf = route6_ntry.vrf;
+                nat6_ntry.prot = acl6_ntry.protV;
+                nat6_ntry.oSrcAddr1 = acl6_ntry.srcAddr1;
+                nat6_ntry.oSrcAddr2 = acl6_ntry.srcAddr2;
+                nat6_ntry.oSrcAddr3 = acl6_ntry.srcAddr3;
+                nat6_ntry.oSrcAddr4 = acl6_ntry.srcAddr4;
+                nat6_ntry.oTrgAddr1 = acl6_ntry.trgAddr1;
+                nat6_ntry.oTrgAddr2 = acl6_ntry.trgAddr2;
+                nat6_ntry.oTrgAddr3 = acl6_ntry.trgAddr3;
+                nat6_ntry.oTrgAddr4 = acl6_ntry.trgAddr4;
+                nat6_ntry.oSrcPort = acl6_ntry.srcPortV;
+                nat6_ntry.oTrgPort = acl6_ntry.trgPortV;
+                index = table_find(&nat6_table, &nat6_ntry);
+                if (index < 0) {
+                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) == 0) goto cpu;
+                    goto ipv6_rou;
+                }
+                nat6_res = table_get(&nat6_table, index);
+                nat6_res->pack++;
+                nat6_res->byte += bufS;
+                acl6_ntry.srcAddr1 = nat6_res->nSrcAddr1;
+                acl6_ntry.srcAddr2 = nat6_res->nSrcAddr2;
+                acl6_ntry.srcAddr3 = nat6_res->nSrcAddr3;
+                acl6_ntry.srcAddr4 = nat6_res->nSrcAddr4;
+                acl6_ntry.trgAddr1 = route6_ntry.addr1 = nat6_res->nTrgAddr1;
+                acl6_ntry.trgAddr2 = route6_ntry.addr2 = nat6_res->nTrgAddr2;
+                acl6_ntry.trgAddr3 = route6_ntry.addr3 = nat6_res->nTrgAddr3;
+                acl6_ntry.trgAddr4 = route6_ntry.addr4 = nat6_res->nTrgAddr4;
+                acl6_ntry.srcPortV = nat6_res->nSrcPort;
+                acl6_ntry.trgPortV = nat6_res->nTrgPort;
+                put32msb(bufD, bufP + 8, acl6_ntry.srcAddr1);
+                put32msb(bufD, bufP + 12, acl6_ntry.srcAddr2);
+                put32msb(bufD, bufP + 16, acl6_ntry.srcAddr3);
+                put32msb(bufD, bufP + 20, acl6_ntry.srcAddr4);
+                put32msb(bufD, bufP + 24, acl6_ntry.trgAddr1);
+                put32msb(bufD, bufP + 28, acl6_ntry.trgAddr2);
+                put32msb(bufD, bufP + 32, acl6_ntry.trgAddr3);
+                put32msb(bufD, bufP + 36, acl6_ntry.trgAddr4);
+                update_layer4(nat6_res);
+            }            
+ipv6_rou:
+            for (int i = 32; i >= 0; i--) {
+                route6_ntry.mask = 96 + i;
+                route6_ntry.addr4 &= masks[i];
+                index = table_find(&route6_table, &route6_ntry);
+                if (index < 0) continue;
+                goto ipv6_hit;
+            }
+            for (int i = 32; i >= 0; i--) {
+                route6_ntry.mask = 64 + i;
+                route6_ntry.addr3 &= masks[i];
+                index = table_find(&route6_table, &route6_ntry);
+                if (index < 0) continue;
+                goto ipv6_hit;
+            }
+            for (int i = 32; i >= 0; i--) {
+                route6_ntry.mask = 32 + i;
+                route6_ntry.addr2 &= masks[i];
+                index = table_find(&route6_table, &route6_ntry);
+                if (index < 0) continue;
+                goto ipv6_hit;
+            }
+            for (int i = 32; i >= 0; i--) {
+                route6_ntry.mask = i;
+                route6_ntry.addr1 &= masks[i];
+                index = table_find(&route6_table, &route6_ntry);
+                if (index < 0) continue;
+ipv6_hit:
+                route6_res = table_get(&route6_table, index);
+                route6_res->pack++;
+                route6_res->byte += bufS;
+                switch (route6_res->command) {
+                    case 1: // route
+                        neigh_ntry.id = route6_res->nexthop;
+                        bufP -= 2;
+                        put16msb(bufD, bufP, ethtyp);
+                        index = table_find(&neigh_table, &neigh_ntry);
+                        if (index < 0) {
+                            packDr[port]++;
+                            byteDr[port] += bufS;
+                            return;
+                        }
+                        neigh_res = table_get(&neigh_table, index);
+                        neigh_res->pack++;
+                        neigh_res->byte += bufS;
+                        prt = neigh_res->port;
+                        acls_ntry.dir = 2;
+                        acls_ntry.port = prt;
+                        index = table_find(&acls_table, &acls_ntry);
+                        if (index >= 0) {
+                            acls_res = table_get(&acls_table, index);
+                            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) {
+                                packDr[port]++;
+                                byteDr[port] += bufS;
+                                return;
+                            }
+                        }            
+                        goto vlan_tx;
+                    case 2: // punt
+                        goto cpu;
+                    case 3: // mpls1
+                        ethtyp = 0x8847;
+                        bufP -= 4;
+                        label = 0x100 | ttl | (route6_res->label1 << 12);
+                        put32msb(bufD, bufP, label);
+                        neigh_ntry.id = route6_res->nexthop;
+                        goto ethtyp_tx;
+                    case 4: // mpls2
+                        ethtyp = 0x8847;
+                        bufP -= 4;
+                        label = 0x100 | ttl | (route6_res->label2 << 12);
+                        put32msb(bufD, bufP, label);
+                        bufP -= 4;
+                        label = ttl | (route6_res->label1 << 12);
+                        put32msb(bufD, bufP, label);
+                        neigh_ntry.id = route6_res->nexthop;
+                        goto ethtyp_tx;
+                }
+            }
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        case 0x65580000:
+bridge:
+            bridge_ntry.id = portvrf_res->bridge;
+            memmove(&bridge_ntry.mac, &bufD[preBuff], 6);
+            memmove(&buf2[0], &bufD[preBuff], 12);
+            index = table_find(&bridge_table, &bridge_ntry);
+            if (index < 0) goto cpu;
+            hash = get32msb(bridge_ntry.mac, 2);
+            bridge_res = table_get(&bridge_table, index);
+            bridge_res->pack++;
+            bridge_res->byte += bufS;
+            bufP -= 2;
+            prt = bridge_res->port;
+            vlan_ntry.id = prt;
+            index = table_find(&vlanout_table, &vlan_ntry);
+            if (index >= 0) {
+                vlan_res = table_get(&vlanout_table, index);
+                bufP -= 2;
+                put16msb(bufD, bufP, vlan_res->vlan);
+                bufP -= 2;
+                put16msb(bufD, bufP, 0x8100);
+                prt = vlan_res->port;
+                vlan_res->pack++;
+                vlan_res->byte += bufS;
+            }
+            bundle_ntry.id = prt;
+            index = table_find(&bundle_table, &bundle_ntry);
+            if (index >= 0) {
+                bundle_res = table_get(&bundle_table, index);
+                reduce_hash;
+                prt = bundle_res->out[hash];
+                bundle_res->pack++;
+                bundle_res->byte += bufS;
+            }
+            if (prt >= ports) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            bufP -= 12;
+            memmove(&bufD[bufP], &buf2[0], 12);
+            send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
+            return;
+        default:
+cpu:
+            send2cpu(bufD, bufS, port);
+            return;
+    }
+}
+
+
+#endif

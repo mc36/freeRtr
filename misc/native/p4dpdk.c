@@ -33,7 +33,9 @@ void sendpack(unsigned char *bufD, int bufS, int port) {
 }
 
 
-#include "p4core.c"
+#include "p4core1.c"
+#include "p4core2.c"
+#include "p4core3.c"
 
 
 int commandSock;

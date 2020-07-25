@@ -409,5 +409,7 @@ r6 tping 100 10 3.3.3.0 /vrf v3
 r6 tping 100 10 3.3.3.0 /vrf v4
 r6 tping 100 10 3.3.3.0 /vrf v5
 
+r1 output sho inter summ
+r1 output sho inter hwsumm
 r1 output show ipv4 nat v1 tra
 r1 output show ipv6 nat v1 tra
