@@ -303,7 +303,7 @@ public class servOpenflow extends servGeneric implements prtServS {
      * @param pckO header
      */
     protected synchronized void sendPack(packHolder pckB, packOpenflow pckO) {
-        if (debugger.servOpenflowTraf) {
+        if (debugger.servOpenflowTx) {
             logger.debug("tx " + pckO.dump(pckB));
         }
         cntr.tx(pckB);
@@ -504,7 +504,7 @@ class servOpenflowRx implements Runnable {
             if (pckO.recvPack(pckB)) {
                 return;
             }
-            if (debugger.servOpenflowTraf) {
+            if (debugger.servOpenflowRx) {
                 logger.debug("rx " + pckO.dump(pckB));
             }
             switch (pckO.type) {
@@ -547,7 +547,7 @@ class servOpenflowRx implements Runnable {
                         case 4:
                             pckB.getSkip(8);
                             int i = pckB.msbGetD(0);
-                            if (debugger.servOpenflowTraf) {
+                            if (debugger.servOpenflowRx) {
                                 logger.debug("port #" + i + " stats");
                             }
                             ntry = new servOpenflowIfc1();
@@ -567,14 +567,14 @@ class servOpenflowRx implements Runnable {
                             i = pckB.msbGetD(0);
                             addrMac mac = new addrMac();
                             pckB.getAddr(mac, 8);
-                            if (debugger.servOpenflowTraf) {
+                            if (debugger.servOpenflowRx) {
                                 logger.debug("port #" + i + " mac=" + mac);
                             }
                             break;
                     }
                     break;
                 case packOpenflow.typFeatRep:
-                    if (debugger.servOpenflowTraf) {
+                    if (debugger.servOpenflowRx) {
                         logger.debug("datapath=" + pckB.msbGetQ(0) + " buffers=" + pckB.msbGetD(8) + " tables=" + pckB.getByte(12));
                     }
                     break;

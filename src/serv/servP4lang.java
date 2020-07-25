@@ -9,6 +9,7 @@ import addr.addrMac;
 import addr.addrPrefix;
 import cfg.cfgAceslst;
 import cfg.cfgAll;
+import cfg.cfgBndl;
 import cfg.cfgBrdg;
 import cfg.cfgIfc;
 import cfg.cfgVrf;
@@ -134,13 +135,13 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             servP4langVrf ntry = expVrf.get(i);
             l.add(beg + "export-vrf " + ntry.vrf.name + " " + ntry.id);
         }
-        for (int i = 0; i < expIfc.size(); i++) {
-            servP4langIfc ntry = expIfc.get(i);
-            l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id + " " + ntry.speed);
-        }
         for (int i = 0; i < expBr.size(); i++) {
             servP4langBr ntry = expBr.get(i);
             l.add(beg + "export-bridge " + ntry.br.num);
+        }
+        for (int i = 0; i < expIfc.size(); i++) {
+            servP4langIfc ntry = expIfc.get(i);
+            l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id + " " + ntry.speed);
         }
         if (expSrv6 != null) {
             l.add(beg + "export-srv6 " + expSrv6.name);
@@ -165,7 +166,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             servP4langVrf ntry = new servP4langVrf();
             ntry.vrf = vrf;
             ntry.id = bits.str2num(cmd.word());
-            ntry.lower = this;
             expVrf.put(ntry);
             return false;
         }
@@ -176,6 +176,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 return false;
             }
             servP4langBr ntry = new servP4langBr();
+            ntry.id = br.num;
             ntry.br = br;
             expBr.put(ntry);
             return false;
@@ -223,7 +224,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle)) {
+            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge)) {
                 cmd.error("not p4lang interface");
                 return false;
             }
@@ -271,7 +272,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             servP4langVrf ntry = new servP4langVrf();
             ntry.vrf = vrf;
             ntry.id = bits.str2num(cmd.word());
-            ntry.lower = this;
             expVrf.del(ntry);
             return false;
         }
@@ -290,6 +290,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 return false;
             }
             servP4langBr ntry = new servP4langBr();
+            ntry.id = br.num;
             ntry.br = br;
             expBr.del(ntry);
             return false;
@@ -416,7 +417,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         if (conn == null) {
             return;
         }
-        if (debugger.servP4langTraf) {
+        if (debugger.servP4langTx) {
             logger.debug("tx: " + a);
         }
         conn.pipe.linePut(a + " ");
@@ -504,8 +505,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
 
 class servP4langNei implements Comparator<servP4langNei> {
 
-    public int ifc;
-
     public addrIP adr = new addrIP();
 
     public addrMac mac = null;
@@ -514,16 +513,16 @@ class servP4langNei implements Comparator<servP4langNei> {
 
     public servP4langVrf vrf;
 
+    public int sentIfc;
+
     public int id;
 
     public int need;
 
     public int compare(servP4langNei o1, servP4langNei o2) {
-        if (o1.ifc < o2.ifc) {
-            return -1;
-        }
-        if (o1.ifc > o2.ifc) {
-            return +1;
+        int i = o1.iface.compare(o1.iface, o2.iface);
+        if (i != 0) {
+            return i;
         }
         return o1.adr.compare(o1.adr, o2.adr);
     }
@@ -532,14 +531,24 @@ class servP4langNei implements Comparator<servP4langNei> {
 
 class servP4langBr implements Comparator<servP4langBr> {
 
+    public int id;
+
     public cfgBrdg br;
+
+    public boolean routed;
 
     public tabGen<ifcBridgeAdr> macs = new tabGen<ifcBridgeAdr>();
 
     public tabGen<ifcBridgeIfc> ifcs = new tabGen<ifcBridgeIfc>();
 
     public int compare(servP4langBr o1, servP4langBr o2) {
-        return o1.br.compare(o1.br, o2.br);
+        if (o1.id < o2.id) {
+            return -1;
+        }
+        if (o1.id > o2.id) {
+            return +1;
+        }
+        return 0;
     }
 
     public boolean findIfc(int lab) {
@@ -557,8 +566,6 @@ class servP4langBr implements Comparator<servP4langBr> {
 }
 
 class servP4langVrf implements Comparator<servP4langVrf> {
-
-    public servP4lang lower;
 
     public int id;
 
@@ -746,7 +753,7 @@ class servP4langConn implements Runnable {
     private boolean doRound() {
         if (pipe.ready2rx() > 0) {
             String s = pipe.lineGet(0x11);
-            if (debugger.servP4langTraf) {
+            if (debugger.servP4langRx) {
                 logger.debug("rx: " + s);
             }
             cmds cmd = new cmds("p4lang", s);
@@ -959,23 +966,23 @@ class servP4langConn implements Runnable {
         if (ifc == null) {
             return null;
         }
-        int id = -1;
+        servP4langIfc id = null;
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ntry = lower.expIfc.get(i);
             if (ifc == ntry.ifc.fwdIf4) {
-                id = ntry.id;
+                id = ntry;
                 break;
             }
             if (ifc == ntry.ifc.fwdIf6) {
-                id = ntry.id;
+                id = ntry;
                 break;
             }
         }
-        if (id < 0) {
+        if (id == null) {
             return null;
         }
         servP4langNei ntry = new servP4langNei();
-        ntry.ifc = id;
+        ntry.iface = id;
         ntry.adr = hop;
         servP4langNei old = neighs.find(ntry);
         if (old != null) {
@@ -1024,13 +1031,26 @@ class servP4langConn implements Runnable {
         return null;
     }
 
-    private servP4langIfc findBundl(servP4langIfc ifc) {
+    private servP4langIfc findBridg(cfgBrdg ifc) {
+        for (int i = 0; i < lower.expIfc.size(); i++) {
+            servP4langIfc old = lower.expIfc.get(i);
+            if (old.ifc.bridgeIfc != null) {
+                continue;
+            }
+            if (old.ifc.bridgeHed == ifc) {
+                return old;
+            }
+        }
+        return null;
+    }
+
+    private servP4langIfc findBundl(cfgBndl ifc) {
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc old = lower.expIfc.get(i);
             if (old.ifc.bundleIfc != null) {
                 continue;
             }
-            if (old.ifc.bundleHed == ifc.ifc.bundleHed) {
+            if (old.ifc.bundleHed == ifc) {
                 return old;
             }
         }
@@ -1159,6 +1179,10 @@ class servP4langConn implements Runnable {
     }
 
     private void doBrdg(servP4langBr br) {
+        br.routed = findBridg(br.br) != null;
+        if (br.routed) {
+            return;
+        }
         for (int i = 0;; i++) {
             ifcBridgeIfc ntry = br.br.bridgeHed.getIface(i);
             if (ntry == null) {
@@ -1288,7 +1312,7 @@ class servP4langConn implements Runnable {
             sta = state.states.up;
         }
         int i = ifc.ifc.ethtyp.getMTUsize();
-        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle)) {
+        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge)) {
             ifc.sentState = sta;
             ifc.sentMtu = i;
         }
@@ -1372,33 +1396,41 @@ class servP4langConn implements Runnable {
         } else {
             a = "mod";
         }
-        if (ifc.ifc.bridgeHed != null) {
-            if (ifc.sentAcl4in != ifc.ifc.bridgeIfc.filter4in) {
-                sendAcl("inacl4_del " + ifc.id + " ", true, ifc.sentAcl4in);
-                ifc.sentAcl4in = ifc.ifc.bridgeIfc.filter4in;
-                sendAcl("inacl4_add " + ifc.id + " ", true, ifc.sentAcl4in);
+        if ((ifc.ifc.bridgeHed != null) && (ifc.ifc.bridgeIfc != null)) {
+            servP4langBr br = new servP4langBr();
+            br.id = ifc.ifc.bridgeHed.num;
+            br = lower.expBr.find(br);
+            if (br == null) {
+                br = new servP4langBr();
             }
-            if (ifc.sentAcl4out != ifc.ifc.bridgeIfc.filter4out) {
-                sendAcl("outacl4_del " + ifc.id + " ", true, ifc.sentAcl4out);
-                ifc.sentAcl4out = ifc.ifc.bridgeIfc.filter4out;
-                sendAcl("outacl4_add " + ifc.id + " ", true, ifc.sentAcl4out);
-            }
-            if (ifc.sentAcl6in != ifc.ifc.bridgeIfc.filter6in) {
-                sendAcl("inacl6_del " + ifc.id + " ", false, ifc.sentAcl6in);
-                ifc.sentAcl6in = ifc.ifc.bridgeIfc.filter6in;
-                sendAcl("inacl6_add " + ifc.id + " ", false, ifc.sentAcl6in);
-            }
-            if (ifc.sentAcl6out != ifc.ifc.bridgeIfc.filter6out) {
-                sendAcl("outacl6_del " + ifc.id + " ", false, ifc.sentAcl6out);
-                ifc.sentAcl6out = ifc.ifc.bridgeIfc.filter6out;
-                sendAcl("outacl6_add " + ifc.id + " ", false, ifc.sentAcl6out);
-            }
-            if (ifc.sentVrf == -2) {
+            if (!br.routed) {
+                if (ifc.sentAcl4in != ifc.ifc.bridgeIfc.filter4in) {
+                    sendAcl("inacl4_del " + ifc.id + " ", true, ifc.sentAcl4in);
+                    ifc.sentAcl4in = ifc.ifc.bridgeIfc.filter4in;
+                    sendAcl("inacl4_add " + ifc.id + " ", true, ifc.sentAcl4in);
+                }
+                if (ifc.sentAcl4out != ifc.ifc.bridgeIfc.filter4out) {
+                    sendAcl("outacl4_del " + ifc.id + " ", true, ifc.sentAcl4out);
+                    ifc.sentAcl4out = ifc.ifc.bridgeIfc.filter4out;
+                    sendAcl("outacl4_add " + ifc.id + " ", true, ifc.sentAcl4out);
+                }
+                if (ifc.sentAcl6in != ifc.ifc.bridgeIfc.filter6in) {
+                    sendAcl("inacl6_del " + ifc.id + " ", false, ifc.sentAcl6in);
+                    ifc.sentAcl6in = ifc.ifc.bridgeIfc.filter6in;
+                    sendAcl("inacl6_add " + ifc.id + " ", false, ifc.sentAcl6in);
+                }
+                if (ifc.sentAcl6out != ifc.ifc.bridgeIfc.filter6out) {
+                    sendAcl("outacl6_del " + ifc.id + " ", false, ifc.sentAcl6out);
+                    ifc.sentAcl6out = ifc.ifc.bridgeIfc.filter6out;
+                    sendAcl("outacl6_add " + ifc.id + " ", false, ifc.sentAcl6out);
+                }
+                if (ifc.sentVrf == -2) {
+                    return;
+                }
+                lower.sendLine("portbridge_" + a + " " + ifc.id + " " + ifc.ifc.bridgeHed.num);
+                ifc.sentVrf = -2;
                 return;
             }
-            lower.sendLine("portbridge_" + a + " " + ifc.id + " " + ifc.ifc.bridgeHed.num);
-            ifc.sentVrf = -2;
-            return;
         }
         if (ifc.ifc.xconn != null) {
             if (ifc.sentVrf == -1) {
@@ -1430,7 +1462,10 @@ class servP4langConn implements Runnable {
         servP4langVrf vrf;
         servP4langIfc mstr = ifc;
         if (ifc.ifc.bundleIfc != null) {
-            mstr = findBundl(ifc);
+            mstr = findBundl(ifc.ifc.bundleHed);
+        }
+        if (ifc.ifc.bridgeIfc != null) {
+            mstr = findBridg(ifc.ifc.bridgeHed);
         }
         vrf = findVrf(mstr);
         if (vrf == null) {
@@ -1475,7 +1510,7 @@ class servP4langConn implements Runnable {
         if (ntry.mac == null) {
             return;
         }
-        lower.sendLine("neigh" + (ntry.adr.isIPv4() ? "4" : "6") + "_del " + ntry.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + ntry.vrf.id + " " + ((addrMac) ntry.iface.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + ntry.iface.id);
+        lower.sendLine("neigh" + (ntry.adr.isIPv4() ? "4" : "6") + "_del " + ntry.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + ntry.vrf.id + " " + ((addrMac) ntry.iface.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + ntry.sentIfc);
     }
 
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi) {
@@ -1501,28 +1536,41 @@ class servP4langConn implements Runnable {
             if (!ipi.checkConnected(ntry.adr)) {
                 continue;
             }
-            ntry.ifc = ifc.id;
+            ntry.iface = ifc;
             servP4langNei old = neighs.find(ntry);
-            boolean added = false;
-            if (old == null) {
+            boolean added = old == null;
+            if (added) {
                 old = genNeighId(ntry);
                 if (old == null) {
                     continue;
                 }
-                added = true;
             }
             old.need++;
             old.vrf = vrf;
-            old.iface = ifc;
-            String act = "add";
-            if ((!added) && (old.mac != null)) {
-                if (ntry.mac.compare(ntry.mac, old.mac) == 0) {
+            int outIfc = ifc.id;
+            if (ifc.ifc.bridgeHed != null) {
+                ifcBridgeAdr bra = ifc.ifc.bridgeHed.bridgeHed.findMacAddr(ntry.mac);
+                if (bra == null) {
                     continue;
                 }
+                servP4langIfc oif = findIfc(bra.ifc);
+                if (oif == null) {
+                    continue;
+                }
+                outIfc = oif.id;
+            }
+            String act;
+            if (added || (old.mac == null)) {
+                act = "add";
+            } else {
                 act = "mod";
+                if ((ntry.mac.compare(ntry.mac, old.mac) == 0) && (old.sentIfc == outIfc)) {
+                    continue;
+                }
             }
             old.mac = ntry.mac;
-            lower.sendLine("neigh" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + ifc.id);
+            old.sentIfc = outIfc;
+            lower.sendLine("neigh" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + old.sentIfc);
         }
     }
 

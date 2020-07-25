@@ -166,12 +166,22 @@ public class debugger {
     /**
      * servOpenflow traffic
      */
-    public static boolean servOpenflowTraf = false;
+    public static boolean servOpenflowRx = false;
+
+    /**
+     * servOpenflow traffic
+     */
+    public static boolean servOpenflowTx = false;
 
     /**
      * servP4lang traffic
      */
-    public static boolean servP4langTraf = false;
+    public static boolean servP4langRx = false;
+
+    /**
+     * servP4lang traffic
+     */
+    public static boolean servP4langTx = false;
 
     /**
      * servModem traffic
@@ -922,8 +932,12 @@ public class debugger {
         h.add("3 .        nrpe              nagios remote plugin");
         h.add("3 .        dcp               direct connect protocol");
         h.add("3 .        pcep              path computation element protocol");
-        h.add("3 .        openflow          openflow protocol");
-        h.add("3 .        p4lang            p4lang protocol");
+        h.add("3 4        openflow          openflow protocol");
+        h.add("4 .          rx              received packets");
+        h.add("4 .          tx              transmitted packets");
+        h.add("3 4        p4lang            p4lang protocol");
+        h.add("4 .          rx              received packets");
+        h.add("4 .          tx              transmitted packets");
         h.add("3 .        snmp              simple network management protocol");
         h.add("3 .        iscsi             iscsi protocol");
         h.add("3 .        rfb               remote frame buffer protocol");
@@ -1253,12 +1267,28 @@ public class debugger {
                 return false;
             }
             if (s.equals("openflow")) {
-                servOpenflowTraf = v;
-                return false;
+                s = cmd.word();
+                if (s.equals("rx")) {
+                    servOpenflowRx = v;
+                    return false;
+                }
+                if (s.equals("tx")) {
+                    servOpenflowTx = v;
+                    return false;
+                }
+                return true;
             }
             if (s.equals("p4lang")) {
-                servP4langTraf = v;
-                return false;
+                s = cmd.word();
+                if (s.equals("rx")) {
+                    servP4langRx = v;
+                    return false;
+                }
+                if (s.equals("tx")) {
+                    servP4langTx = v;
+                    return false;
+                }
+                return true;
             }
             if (s.equals("modem")) {
                 servModemTraf = v;

@@ -290,6 +290,20 @@ public class ifcBridge implements ifcDn {
     }
 
     /**
+     * find mac address
+     *
+     * @param mac address to find
+     * @return address, null if not found
+     */
+    public ifcBridgeAdr findMacAddr(addrMac mac) {
+        if (learned == null) {
+            return null;
+        }
+        ifcBridgeAdr ntry = new ifcBridgeAdr(mac);
+        return learned.find(ntry);
+    }
+
+    /**
      * get interface
      *
      * @param i sequence
