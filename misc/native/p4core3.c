@@ -592,8 +592,11 @@ ipv6_hit:
         case 0x65580000:
 bridge:
             bridge_ntry.id = portvrf_res->bridge;
-            memmove(&bridge_ntry.mac, &bufD[preBuff], 6);
             memmove(&buf2[0], &bufD[preBuff], 12);
+            memmove(&bridge_ntry.mac, &buf2[6], 6);
+            index = table_find(&bridge_table, &bridge_ntry);
+            if (index < 0) goto cpu;
+            memmove(&bridge_ntry.mac, &buf2[0], 6);
             index = table_find(&bridge_table, &bridge_ntry);
             if (index < 0) goto cpu;
             hash = get32msb(bridge_ntry.mac, 2);
