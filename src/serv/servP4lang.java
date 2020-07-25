@@ -1115,6 +1115,12 @@ class servP4langConn implements Runnable {
     }
 
     private void doLab1(tabLabelNtry ntry) {
+        if (ntry.duplicate != null) {
+            return;
+        }
+        if (ntry.bier != null) {
+            return;
+        }
         if (ntry.pweIfc != null) {
             return;
         }
