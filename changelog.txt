@@ -8975,3 +8975,12 @@ qc pass: bgp with srgb sr
 qc pass: isis with srgb sr
 qc pass: lsrp with srgb sr
 qc pass: ospf with srgb sr
+---------------------------------- 2020-07-25 13:36:49
+qc pass: p4lang: bridge ingress access list
+qc pass: p4lang: bridge egress access list
+qc pass: p4lang: vlan bridge ingress access list
+qc pass: p4lang: vlan bridge egress access list
+qc pass: p4lang: bridge routing
+qc pass: p4lang: bridge mpls
+qc pass: p4lang: vlan bridge routing
+qc pass: p4lang: vlan bridge mpls

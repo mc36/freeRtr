@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.7.24-rel, done by cs@nop.;-;-
--;-;2020-07-24 15:58:17, took 08:53:53 on 1782 cases, 0 failed, 0 traces, 8 retries;-;-
+-;-;freeRouter v20.7.25-rel, done by cs@nop.;-;-
+-;-;2020-07-25 22:26:47, took 08:49:57 on 1790 cases, 0 failed, 0 traces, 4 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -982,6 +982,10 @@ p4lang-acl05.tst;0;p4lang: bundle ingress access list;successfully;finished
 p4lang-acl06.tst;0;p4lang: bundle egress access list;successfully;finished
 p4lang-acl07.tst;0;p4lang: bundle vlan ingress access list;successfully;finished
 p4lang-acl08.tst;0;p4lang: bundle vlan egress access list;successfully;finished
+p4lang-acl09.tst;0;p4lang: bridge ingress access list;successfully;finished
+p4lang-acl10.tst;0;p4lang: bridge egress access list;successfully;finished
+p4lang-acl11.tst;0;p4lang: vlan bridge ingress access list;successfully;finished
+p4lang-acl12.tst;0;p4lang: vlan bridge egress access list;successfully;finished
 p4lang-rout01.tst;0;p4lang: routing;successfully;finished
 p4lang-rout02.tst;0;p4lang: bridging;successfully;finished
 p4lang-rout03.tst;0;p4lang: mpls core;successfully;finished
@@ -1000,6 +1004,10 @@ p4lang-rout15.tst;0;p4lang: bundle mpls;successfully;finished
 p4lang-rout16.tst;0;p4lang: bundle vlan routing;successfully;finished
 p4lang-rout17.tst;0;p4lang: bundle vlan mpls;successfully;finished
 p4lang-rout18.tst;0;p4lang: bundle vlan bridging;successfully;finished
+p4lang-rout19.tst;0;p4lang: bridge routing;successfully;finished
+p4lang-rout20.tst;0;p4lang: bridge mpls;successfully;finished
+p4lang-rout21.tst;0;p4lang: vlan bridge routing;successfully;finished
+p4lang-rout22.tst;0;p4lang: vlan bridge mpls;successfully;finished
 qos-action01.tst;0;qos ingress transmit action;successfully;finished
 qos-action02.tst;0;qos egress transmit action;successfully;finished
 qos-action03.tst;0;qos ingress drop action;successfully;finished

@@ -1294,6 +1294,8 @@ public class userExec {
         hl.add("2 3      nrpe                    check remote status");
         hl.add("3 4        <str>                 server address");
         hl.add("4 4,.        <str>               check name");
+        hl.add("2 3      aaa                     test aaa config");
+        hl.add("3 .        <str>                 aaa list");
         hl.add("2 3      pcep                    get a path from pcep");
         hl.add("3 4        <str>                 server address");
         hl.add("4 5          <str>               vrf to use");

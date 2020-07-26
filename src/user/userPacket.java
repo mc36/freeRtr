@@ -4,7 +4,10 @@ import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
 import addr.addrPrefix;
+import auth.authGeneric;
+import auth.authResult;
 import cfg.cfgAll;
+import cfg.cfgAuther;
 import cfg.cfgIfc;
 import cfg.cfgRoump;
 import cfg.cfgRtr;
@@ -1042,7 +1045,32 @@ public class userPacket {
                 cmd.error("failed to get path");
                 return;
             }
-            cmd.error("path = " + tabHop.dumpList(res));
+            cmd.error("path=" + tabHop.dumpList(res));
+            return;
+        }
+        if (a.equals("aaa")) {
+            cfgAuther aa = cfgAll.autherFind(cmd.word(), null);
+            if (aa == null) {
+                cmd.error("no such aaa");
+                return;
+            }
+            authGeneric aaa = aa.getAuther();
+            if (aaa == null) {
+                cmd.error("no such aaa");
+                return;
+            }
+            cmd.pipe.strPut("user:");
+            String usr = cmd.pipe.lineGet(0x32);
+            cmd.pipe.strPut("pass:");
+            int i;
+            if (cfgAll.passwdStars) {
+                i = 0x33;
+            } else {
+                i = 0x31;
+            }
+            String pwd = cmd.pipe.lineGet(i);
+            authResult res = aaa.authUserPass(usr, pwd);
+            cmd.error("result=" + res);
             return;
         }
         if (a.equals("nrpe")) {
@@ -1065,7 +1093,7 @@ public class userPacket {
             }
             sm.putText(bits.str2lst(a));
             sm.putFinish();
-            cmd.error("res=" + sm.doSend(1));
+            cmd.error("result=" + sm.doSend(1));
             sm.cleanUp();
             return;
         }
