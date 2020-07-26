@@ -475,7 +475,7 @@ public class userUpgrade {
         uniResLoc url = uniResLoc.parseOne(rem);
         userFlash.delete(tmp);
         userFlash.doReceive(cmd.pipe, url, new File(tmp));
-        fl.cons.debugStat("upgrading software");
+        fl.cons.debugStat("upgrading " + loc);
         if (!sumN.equals(calcFileHash(tmp))) {
             fl.cons.debugRes("checksum mismatch, aborting!");
             if (needStop(0x20)) {
@@ -488,7 +488,7 @@ public class userUpgrade {
             return 1;
         }
         if (!sumN.equals(calcFileHash(loc))) {
-            fl.cons.debugRes("checksum mismatch, aborting!");
+            fl.cons.debugRes("checksum mismatch after rename!");
             if (needStop(0x20)) {
                 return 1;
             }
