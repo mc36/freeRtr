@@ -8,7 +8,6 @@ import ifc.ifcEthTyp;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipIcmp6;
-import ip.ipIfc6;
 import ip.ipPrt;
 import pack.packHolder;
 import util.counter;
@@ -125,7 +124,7 @@ public class clntSlaac implements Runnable, ipPrt {
             }
             pck.clear();
             ((ipIcmp6) lower.icmpCore).createRouterSol(mac, pck, cfger.addr6);
-            ((ipIfc6) iface.lower).sendProto(pck, pck.IPtrg);
+            iface.lower.sendProto(pck, pck.IPtrg);
             notif.sleep(10000);
         }
         lower.protoDel(this, iface, null);
@@ -219,6 +218,9 @@ public class clntSlaac implements Runnable, ipPrt {
         gwAddr = pck.IPsrc.toIPv6();
         if (debugger.clntSlaacTraf) {
             logger.debug("addr=" + locAddr + "/" + locMask + " gw=" + gwAddr + " dns1=" + dns1addr + " dns2=" + dns2addr);
+        }
+        if (locAddr.isLinkLocal()) {
+            return;
         }
         working = false;
         gotAddr = true;

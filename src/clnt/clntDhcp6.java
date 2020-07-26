@@ -321,6 +321,9 @@ public class clntDhcp6 implements prtServP {
                 if (pckd.ipaddr == null) {
                     return false;
                 }
+                if (pckd.ipaddr.isLinkLocal()) {
+                    return false;
+                }
                 locAddr = pckd.ipaddr;
                 locMask.fromNetmask(pckd.ipsize);
                 gwAddr = pck.IPsrc.toIPv6();
