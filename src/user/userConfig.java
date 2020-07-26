@@ -285,7 +285,7 @@ public class userConfig {
     public String doCommands() {
         for (;;) {
             reader.setContext(getHelping(), cfgAll.hostName + getPrompt() + "#");
-            String s = reader.readLine(reader.deactive);
+            String s = reader.readLine(reader.deactive, "exit");
             if (s == null) {
                 return "";
             }

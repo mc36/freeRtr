@@ -1413,7 +1413,7 @@ public class userExec {
         rollback = false;
         for (;;) {
             reader.setContext(getHelping(), cfgAll.hostName + (privileged ? "#" : ">"));
-            String s = reader.readLine(reader.deactive);
+            String s = reader.readLine(reader.deactive, null);
             if (s == null) {
                 return cmdRes.logout;
             }

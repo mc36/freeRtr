@@ -734,7 +734,7 @@ public class userReader implements Comparator<String> {
 
     private void cmdShowHelp() {
         putCurrLine(true);
-        pipe.linePut("");
+        pipe.linePut("?");
         List<String> l = help.getHelp(curr, false);
         Collections.sort(l);
         putStrArr(l);
@@ -841,7 +841,7 @@ public class userReader implements Comparator<String> {
         }
     }
 
-    private String cmdOneChar(int ch) {
+    private String cmdOneChar(int ch, String exit) {
         len = curr.length();
         switch (ch) {
             case 1: // ctrl + a
@@ -908,6 +908,9 @@ public class userReader implements Comparator<String> {
             case 25: // ctrl + y
                 cmdInsStr(clip);
                 break;
+            case 26: // ctrl + z
+                cmdRefreshLine();
+                return exit;
             case 27:
                 cmdEscape();
                 break;
@@ -918,7 +921,6 @@ public class userReader implements Comparator<String> {
             case 15: // ctrl + o
             case 17: // ctrl + q
             case 19: // ctrl + s
-            case 26: // ctrl + z
                 break;
             case 127: // delete character
                 cmdBackspace();
@@ -934,9 +936,10 @@ public class userReader implements Comparator<String> {
      * read up one line
      *
      * @param deactivate deactivation character
+     * @param exit exit command to return
      * @return string readed, null if error happened
      */
-    public String readLine(int deactivate) {
+    public String readLine(int deactivate, String exit) {
         setFilter(null);
         if (debugger.userReaderEvnt) {
             logger.debug("reading");
@@ -958,7 +961,7 @@ public class userReader implements Comparator<String> {
                     }
                     return null;
                 }
-                String s = cmdOneChar(ch);
+                String s = cmdOneChar(ch, exit);
                 if (s != null) {
                     return s;
                 }
