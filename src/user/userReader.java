@@ -88,6 +88,8 @@ public class userReader implements Comparator<String> {
 
     private mode filterM; // filter mode
 
+    private mode filterF; // filter final mode
+
     private int columnB; // beginning of column
 
     private int columnE; // ending of column
@@ -265,6 +267,30 @@ public class userReader implements Comparator<String> {
         return o1.substring(columnB, columnE).compareTo(o2.substring(columnB, columnE));
     }
 
+    private List<String> doCount(List<String> lst) {
+        int wrd = 0;
+        int chr = 0;
+        for (int i = 0; i < lst.size(); i++) {
+            String a = lst.get(i).trim();
+            for (;;) {
+                String s = a.replaceAll("  ", " ");
+                if (s.equals(a)) {
+                    break;
+                }
+                a = s;
+            }
+            int o = a.length();
+            a = a.replaceAll(" ", "");
+            int p = a.length();
+            wrd += o - p;
+            if (p > 0) {
+                wrd++;
+            }
+            chr += o;
+        }
+        return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
+    }
+
     /**
      * filter the list
      *
@@ -286,6 +312,9 @@ public class userReader implements Comparator<String> {
                     }
                     res.add(s);
                 }
+                if (filterF == mode.count) {
+                    res = doCount(res);
+                }
                 return res;
             case exclude:
                 res = new ArrayList<String>();
@@ -297,6 +326,9 @@ public class userReader implements Comparator<String> {
                     }
                     res.add(s);
                 }
+                if (filterF == mode.count) {
+                    res = doCount(res);
+                }
                 return res;
             case sort:
                 findColumn(lst.get(0));
@@ -304,6 +336,9 @@ public class userReader implements Comparator<String> {
                     return bits.str2lst("no such column");
                 }
                 Collections.sort(lst, this);
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
                 return lst;
             case uniq:
                 findColumn(lst.get(0));
@@ -320,6 +355,9 @@ public class userReader implements Comparator<String> {
                     tab.add(a.substring(columnB, columnE));
                     res.add(a);
                 }
+                if (filterF == mode.count) {
+                    res = doCount(res);
+                }
                 return res;
             case redirect:
                 bits.buf2txt(true, lst, filterS);
@@ -329,11 +367,17 @@ public class userReader implements Comparator<String> {
                 for (int i = lst.size() - 1; i >= num; i--) {
                     lst.remove(i);
                 }
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
                 return lst;
             case last:
                 num = bits.str2num(filterS);
                 for (int i = lst.size() - num; i >= 0; i--) {
                     lst.remove(i);
+                }
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
                 }
                 return lst;
             case begin:
@@ -345,6 +389,9 @@ public class userReader implements Comparator<String> {
                 for (int i = num; i >= 0; i--) {
                     lst.remove(i);
                 }
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
                 return lst;
             case end:
                 num = bits.lstFnd(lst, filterS);
@@ -355,45 +402,56 @@ public class userReader implements Comparator<String> {
                 for (int i = lst.size() - 1; i >= num; i--) {
                     lst.remove(i);
                 }
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
                 return lst;
             case count:
-                int wrd = 0;
-                int chr = 0;
-                for (int i = 0; i < lst.size(); i++) {
-                    String a = lst.get(i).trim();
-                    for (;;) {
-                        String s = a.replaceAll("  ", " ");
-                        if (s.equals(a)) {
-                            break;
-                        }
-                        a = s;
-                    }
-                    int o = a.length();
-                    a = a.replaceAll(" ", "");
-                    int p = a.length();
-                    wrd += o - p;
-                    if (p > 0) {
-                        wrd++;
-                    }
-                    chr += o;
+                lst = doCount(lst);
+                if (filterF == mode.count) {
+                    res = doCount(lst);
                 }
-                return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
+                return lst;
             case headers:
-                return userFilter.getSecList(userFilter.text2section(lst), null, null);
+                lst = userFilter.getSecList(userFilter.text2section(lst), null, null);
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
+                return lst;
             case viewer:
                 userEditor edtr = new userEditor(new userScreen(pipe, width, height), lst, "result", false);
                 edtr.doView();
                 return new ArrayList<String>();
             case level:
-                return userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.normal);
+                lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.normal);
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
+                return lst;
             case csv:
-                return userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.csv);
+                lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.csv);
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
+                return lst;
             case html:
-                return userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.html);
+                lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.html);
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
+                return lst;
             case linenum:
-                return bits.lst2lin(lst, true);
+                lst = bits.lst2lin(lst, true);
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
+                return lst;
             case section:
-                return userFilter.getSection(lst, filterS);
+                lst = userFilter.getSection(lst, filterS);
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
+                return lst;
             default:
                 return lst;
         }
@@ -1006,6 +1064,7 @@ public class userReader implements Comparator<String> {
         }
         filterS = "";
         filterM = mode.raw;
+        filterF = mode.raw;
         if (cmd == null) {
             return null;
         }
@@ -1050,6 +1109,10 @@ public class userReader implements Comparator<String> {
         }
         filterS = a.substring(i, a.length()).trim();
         a = a.substring(0, i).trim();
+        if (filterS.endsWith(" | count")) {
+            filterS = filterS.substring(0, filterS.length() - 8);
+            filterF = mode.count;
+        }
         if (a.equals("include")) {
             filterS = filter2reg(filterS);
             filterM = mode.include;
