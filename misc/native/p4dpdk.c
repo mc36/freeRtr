@@ -34,7 +34,7 @@ void sendpack(unsigned char *bufD, int bufS, int port) {
 
 
 void setState(int port, int sta) {
-    if (sta == 1) rte_eth_dev_set_link_up(port); else rte_eth_dev_set_link_down(port);
+//    if (sta == 1) rte_eth_dev_set_link_up(port); else rte_eth_dev_set_link_down(port);
 }
 
 
