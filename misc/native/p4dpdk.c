@@ -34,13 +34,13 @@ void sendpack(unsigned char *bufD, int bufS, int port) {
 
 
 void setState(int port, int sta) {
-//    if (sta == 1) rte_eth_dev_set_link_up(port); else rte_eth_dev_set_link_down(port);
+    if (sta == 1) rte_eth_dev_set_link_up(port); else rte_eth_dev_set_link_down(port);
 }
 
 
 int getState(int port) {
     struct rte_eth_link link;
-    if (rte_eth_link_get(port, &link) != 0) return 1;
+    if (rte_eth_link_get_nowait(port, &link) != 0) return 1;
     if (link.link_status == ETH_LINK_UP) return 1;
     return 0;
 }
