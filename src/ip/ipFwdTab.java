@@ -5,6 +5,7 @@ import addr.addrIPv6;
 import addr.addrMac;
 import addr.addrPrefix;
 import cfg.cfgAll;
+import cfg.cfgIfc;
 import cfg.cfgRtr;
 import cfg.cfgVrf;
 import clnt.clntMplsTeP2p;
@@ -372,31 +373,40 @@ public class ipFwdTab {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.newSrcIface == null) {
-                continue;
+            if (ntry.newSrcIface != null) {
+                addrIP adr = new addrIP();
+                updateTableNat(lower, ntry.newSrcIface, adr);
+                ntry.newSrcAddr = adr;
             }
-            addrIP adr = new addrIP();
-            ipFwdIface ifc;
-            if (lower.ipVersion == ipCor4.protocolVersion) {
-                if (ntry.newSrcIface.addr4 != null) {
-                    adr.fromIPv4addr(ntry.newSrcIface.addr4);
-                }
-                ifc = ntry.newSrcIface.fwdIf4;
-            } else {
-                if (ntry.newSrcIface.addr6 != null) {
-                    adr.fromIPv6addr(ntry.newSrcIface.addr6);
-                }
-                ifc = ntry.newSrcIface.fwdIf6;
+            if (ntry.origTrgIface != null) {
+                addrIP adr = new addrIP();
+                updateTableNat(lower, ntry.origTrgIface, adr);
+                ntry.origTrgAddr = adr;
             }
-            if (ifc != null) {
-                if (!ifc.ready) {
-                    adr.fillBytes(0);
-                }
-            } else {
-                adr.fillBytes(0);
-            }
-            ntry.newSrcAddr = adr;
         }
+    }
+
+    private static void updateTableNat(ipFwd lower, cfgIfc iface, addrIP adr) {
+        ipFwdIface ifc;
+        if (lower.ipVersion == ipCor4.protocolVersion) {
+            if (iface.addr4 != null) {
+                adr.fromIPv4addr(iface.addr4);
+            }
+            ifc = iface.fwdIf4;
+        } else {
+            if (iface.addr6 != null) {
+                adr.fromIPv6addr(iface.addr6);
+            }
+            ifc = iface.fwdIf6;
+        }
+        if (ifc == null) {
+            adr.fillBytes(0);
+            return;
+        }
+        if (ifc.ready) {
+            return;
+        }
+        adr.fillBytes(0);
     }
 
     /**

@@ -48,6 +48,11 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     public tabListing<tabAceslstN<addrIP>, addrIP> origSrcList;
 
     /**
+     * original source interface
+     */
+    public cfgIfc origTrgIface;
+
+    /**
      * original target address
      */
     public addrIP origTrgAddr;
@@ -146,7 +151,14 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             origSrcList = acl.aceslst;
             orgA = null;
         } else {
-            if (orgA.fromString(cmd.word())) {
+            s = cmd.word();
+            if (s.equals("interface")) {
+                origTrgIface = cfgAll.ifcFind(cmd.word(), false);
+                if (origTrgIface == null) {
+                    cmd.error("no such interface");
+                    return true;
+                }
+            } else if (orgA.fromString(s)) {
                 return true;
             }
         }
@@ -270,7 +282,11 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (what == 3) {
             s = s + " " + origSrcList.listName;
         } else {
-            s = s + " " + orgA;
+            if (origTrgIface == null) {
+                s = s + " " + orgA;
+            } else {
+                s = s + " interface " + origTrgIface.name;
+            }
         }
         if ((what & 4) != 0) {
             s = s + " " + orgP;
@@ -353,35 +369,48 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             return true;
         }
         if (origSrcAddr != null) {
+            if (!usableAddr(origSrcAddr)) {
+                return false;
+            }
             if (origSrcAddr.compare(origSrcAddr, pck.IPsrc) != 0) {
                 return false;
             }
         }
         if (origTrgAddr != null) {
+            if (!usableAddr(origTrgAddr)) {
+                return false;
+            }
             if (origTrgAddr.compare(origTrgAddr, pck.IPtrg) != 0) {
                 return false;
             }
         }
         if (newSrcAddr != null) {
-            if (newSrcAddr.isIPv4()) {
-                addrIPv4 adr = newSrcAddr.toIPv4();
-                if (adr.isFilled(0)) {
-                    return false;
-                }
-                if (!adr.isUnicast()) {
-                    return false;
-                }
-            } else {
-                addrIPv6 adr = newSrcAddr.toIPv6();
-                if (adr.isFilled(0)) {
-                    return false;
-                }
-                if (!adr.isUnicast()) {
-                    return false;
-                }
-                if (adr.isLinkLocal()) {
-                    return false;
-                }
+            if (!usableAddr(newSrcAddr)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean usableAddr(addrIP addr) {
+        if (addr.isIPv4()) {
+            addrIPv4 adr = addr.toIPv4();
+            if (adr.isFilled(0)) {
+                return false;
+            }
+            if (!adr.isUnicast()) {
+                return false;
+            }
+        } else {
+            addrIPv6 adr = addr.toIPv6();
+            if (adr.isFilled(0)) {
+                return false;
+            }
+            if (!adr.isUnicast()) {
+                return false;
+            }
+            if (adr.isLinkLocal()) {
+                return false;
             }
         }
         return true;
