@@ -1,5 +1,4 @@
 #!/bin/sh
-cd /rtr/src/
 chmod -x `find . -executable -name *.java`
 chmod -x `find . -executable -name *.tcl`
 chmod -x `find . -executable -name *.tst`

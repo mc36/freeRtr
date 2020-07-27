@@ -1,5 +1,4 @@
 #!/bin/sh
-cd /rtr/src/
 ./backup.sh
 cd src
 ./c.sh
