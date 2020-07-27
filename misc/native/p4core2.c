@@ -125,6 +125,13 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "quit") == 0) {
         return 1;
     }
+    if (strcmp(arg[0], "state") == 0) {
+        i = atoi(arg[1]);
+        o = atoi(arg[2]);
+        if (i >= ports) return 0;
+        setState(i, o);
+        return 0;
+    }
     if (strcmp(arg[0], "mylabel4") == 0) {
         mpls_ntry.label = atoi(arg[2]);
         mpls_ntry.vrf = atoi(arg[3]);
@@ -549,22 +556,22 @@ void doReportRount(FILE *commands) {
     unsigned char buf3[1024];
     for (int i=0; i<mpls_table.size; i++) {
         struct mpls_entry *ntry = table_get(&mpls_table, i);
-        fprintf(commands, "mpls_cnt %i %li %li\n", ntry->label, ntry->pack, ntry->byte);
+        fprintf(commands, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);
     }
     for (int i=0; i<neigh_table.size; i++) {
         struct neigh_entry *ntry = table_get(&neigh_table, i);
-        fprintf(commands, "neigh_cnt %i %li %li\n", ntry->id, ntry->pack, ntry->byte);
+        fprintf(commands, "neigh_cnt %i %li %li\r\n", ntry->id, ntry->pack, ntry->byte);
     }
     for (int i=0; i<bridge_table.size; i++) {
         struct bridge_entry *ntry = table_get(&bridge_table, i);
         mac2str(ntry->mac, buf);
-        fprintf(commands, "bridge_cnt %i %s %li %li\n", ntry->id, &buf, ntry->pack, ntry->byte);
+        fprintf(commands, "bridge_cnt %i %s %li %li\r\n", ntry->id, &buf, ntry->pack, ntry->byte);
     }
     for (int i=0; i<route4_table.size; i++) {
         struct route4_entry *ntry = table_get(&route4_table, i);
         put32msb(buf2, 0, ntry->addr);
         inet_ntop(AF_INET, &buf2[0], &buf[0], sizeof(buf));
-        fprintf(commands, "route4_cnt %i %s %i %li %li\n", ntry->vrf, &buf, ntry->mask, ntry->pack, ntry->byte);
+        fprintf(commands, "route4_cnt %i %s %i %li %li\r\n", ntry->vrf, &buf, ntry->mask, ntry->pack, ntry->byte);
     }
     for (int i=0; i<route6_table.size; i++) {
         struct route6_entry *ntry = table_get(&route6_table, i);
@@ -573,7 +580,7 @@ void doReportRount(FILE *commands) {
         put32msb(buf2, 8, ntry->addr3);
         put32msb(buf2, 12, ntry->addr4);
         inet_ntop(AF_INET6, &buf2[0], &buf[0], sizeof(buf));
-        fprintf(commands, "route6_cnt %i %s %i %li %li\n", ntry->vrf, &buf, ntry->mask, ntry->pack, ntry->byte);
+        fprintf(commands, "route6_cnt %i %s %i %li %li\r\n", ntry->vrf, &buf, ntry->mask, ntry->pack, ntry->byte);
     }
     for (int i=0; i<nat4_table.size; i++) {
         struct nat4_entry *ntry = table_get(&nat4_table, i);
@@ -581,7 +588,7 @@ void doReportRount(FILE *commands) {
         inet_ntop(AF_INET, &buf[0], &buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->oTrgAddr);
         inet_ntop(AF_INET, &buf[0], &buf3[0], sizeof(buf3));
-        fprintf(commands, "nattrns4_cnt %i %i %s %s %i %i %li %li\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
+        fprintf(commands, "nattrns4_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
     }
     for (int i=0; i<nat6_table.size; i++) {
         struct nat6_entry *ntry = table_get(&nat6_table, i);
@@ -595,7 +602,7 @@ void doReportRount(FILE *commands) {
         put32msb(buf, 8, ntry->oTrgAddr3);
         put32msb(buf, 12, ntry->oTrgAddr4);
         inet_ntop(AF_INET6, &buf[0], &buf3[0], sizeof(buf3));
-        fprintf(commands, "nattrns6_cnt %i %i %s %s %i %i %li %li\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
+        fprintf(commands, "nattrns6_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
     }
     fflush(commands);
 }
@@ -605,6 +612,8 @@ void doReportRount(FILE *commands) {
 void doStatRount(FILE *commands) {
     for (int i = 0; i < ports; i++) {
         fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
+        int o = getState(i);
+        fprintf(commands, "state %i %i\r\n", i, o);
     }
     for (int i=0; i<bundle_table.size; i++) {
         struct bundle_entry *ntry = table_get(&bundle_table, i);

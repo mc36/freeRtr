@@ -16,6 +16,14 @@ void sendpack(unsigned char *bufD, int bufS, int port) {
     pcap_sendpacket(ifacePcap[port], bufD, bufS);
 }
 
+void setState(int port, int sta) {
+}
+
+int getState(int port) {
+    return 1;
+}
+
+
 
 #include "p4core1.c"
 #include "p4core2.c"

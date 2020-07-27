@@ -910,6 +910,7 @@ public class userReader implements Comparator<String> {
                 break;
             case 26: // ctrl + z
                 cmdRefreshLine();
+                cmdClear();
                 return exit;
             case 27:
                 cmdEscape();

@@ -33,6 +33,21 @@ void sendpack(unsigned char *bufD, int bufS, int port) {
 }
 
 
+void setState(int port, int sta) {
+    if (sta == 1) rte_eth_dev_set_link_up(port); else rte_eth_dev_set_link_down(port);
+}
+
+
+int getState(int port) {
+    struct rte_eth_link link;
+    if (rte_eth_link_get(port, &link) != 0) return 1;
+    if (link.link_status == ETH_LINK_UP) return 1;
+    return 0;
+}
+
+
+
+
 #include "p4core1.c"
 #include "p4core2.c"
 #include "p4core3.c"
@@ -177,7 +192,7 @@ static int doPacketLoop(__rte_unused void *arg) {
 int main(int argc, char **argv) {
 
     int ret = rte_eal_init(argc, argv);
-    if (ret < 0) rte_exit(EXIT_FAILURE, "error with eal initialization\n");
+    if (ret != 0) rte_exit(EXIT_FAILURE, "error with eal initialization\n");
 
     argc -= ret;
     argv += ret;
@@ -236,14 +251,13 @@ int main(int argc, char **argv) {
         struct rte_eth_conf port_conf = port_conf_default;
         uint16_t nb_rxd = RX_RING_SIZE;
         uint16_t nb_txd = TX_RING_SIZE;
-        int retval;
         struct rte_eth_dev_info dev_info;
         struct rte_eth_txconf txconf;
 
         if (!rte_eth_dev_is_valid_port(port)) rte_exit(EXIT_FAILURE, "not valid port\n");
 
-        retval = rte_eth_dev_info_get(port, &dev_info);
-        if (retval != 0) rte_exit(EXIT_FAILURE, "error getting device info\n");
+        ret = rte_eth_dev_info_get(port, &dev_info);
+        if (ret != 0) rte_exit(EXIT_FAILURE, "error getting device info\n");
 
         if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MBUF_FAST_FREE) {
             port_conf.txmode.offloads |= DEV_TX_OFFLOAD_MBUF_FAST_FREE;
@@ -254,32 +268,32 @@ int main(int argc, char **argv) {
             port_conf.rxmode.max_rx_pkt_len = RTE_MBUF_DEFAULT_DATAROOM;
         }
 
-        retval = rte_eth_dev_configure(port, 1, 1, &port_conf);
-        if (retval != 0) rte_exit(EXIT_FAILURE, "error configuring port\n");
+        ret = rte_eth_dev_configure(port, 1, 1, &port_conf);
+        if (ret != 0) rte_exit(EXIT_FAILURE, "error configuring port\n");
 
-        retval = rte_eth_dev_adjust_nb_rx_tx_desc(port, &nb_rxd, &nb_txd);
-        if (retval != 0) rte_exit(EXIT_FAILURE, "error adjusting descriptors\n");
+        ret = rte_eth_dev_adjust_nb_rx_tx_desc(port, &nb_rxd, &nb_txd);
+        if (ret != 0) rte_exit(EXIT_FAILURE, "error adjusting descriptors\n");
 
-        retval = rte_eth_rx_queue_setup(port, 0, nb_rxd, sock, NULL, mbuf_pool);
-        if (retval < 0) rte_exit(EXIT_FAILURE, "error setting up rx queue\n");
+        ret = rte_eth_rx_queue_setup(port, 0, nb_rxd, sock, NULL, mbuf_pool);
+        if (ret != 0) rte_exit(EXIT_FAILURE, "error setting up rx queue\n");
 
         txconf = dev_info.default_txconf;
         txconf.offloads = port_conf.txmode.offloads;
-        retval = rte_eth_tx_queue_setup(port, 0, nb_txd, sock, &txconf);
-        if (retval < 0) rte_exit(EXIT_FAILURE, "error setting up tx queue\n");
+        ret = rte_eth_tx_queue_setup(port, 0, nb_txd, sock, &txconf);
+        if (ret != 0) rte_exit(EXIT_FAILURE, "error setting up tx queue\n");
 
         tx_ring[port] = rte_ring_create(buf, RING_SIZE, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
         if (tx_ring[port] == NULL) rte_exit(EXIT_FAILURE, "error allocating tx ring\n");
 
-        retval = rte_eth_dev_start(port);
-        if (retval < 0) rte_exit(EXIT_FAILURE, "error starting port\n");
+        ret = rte_eth_dev_start(port);
+        if (ret != 0) rte_exit(EXIT_FAILURE, "error starting port\n");
 
         struct rte_ether_addr addr;
-        retval = rte_eth_macaddr_get(port, &addr);
-        if (retval != 0) rte_exit(EXIT_FAILURE, "error getting mac\n");
+        ret = rte_eth_macaddr_get(port, &addr);
+        if (ret != 0) rte_exit(EXIT_FAILURE, "error getting mac\n");
 
-        retval = rte_eth_promiscuous_enable(port);
-        if (retval != 0) rte_exit(EXIT_FAILURE, "error setting promiscuous mode\n");
+        ret = rte_eth_promiscuous_enable(port);
+        if (ret != 0) rte_exit(EXIT_FAILURE, "error setting promiscuous mode\n");
     }
 
     pthread_t threadSock;
