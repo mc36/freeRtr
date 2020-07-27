@@ -194,7 +194,7 @@ static int doPacketLoop(__rte_unused void *arg) {
 int main(int argc, char **argv) {
 
     int ret = rte_eal_init(argc, argv);
-    if (ret != 0) rte_exit(EXIT_FAILURE, "error with eal initialization\n");
+    if (ret < 0) rte_exit(EXIT_FAILURE, "error with eal initialization\n");
 
     argc -= ret;
     argv += ret;
