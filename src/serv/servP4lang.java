@@ -948,7 +948,7 @@ class servP4langConn implements Runnable {
         for (int i = 0; i < tabLabel.labels.size(); i++) {
             doLab1(tabLabel.labels.get(i));
         }
-        for (int i = 0; i < labels.size(); i++) {
+        for (int i = labels.size() - 1; i >= 0; i--) {
             doLab2(labels.get(i));
         }
         for (int i = 0; i < lower.expIfc.size(); i++) {
@@ -1743,7 +1743,7 @@ class servP4langConn implements Runnable {
             }
             lower.sendLine("route" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf);
         }
-        for (int i = 0; i < done.size(); i++) {
+        for (int i = done.size() - 1; i >= 0; i--) {
             tabRouteEntry<addrIP> ntry = done.get(i);
             if (need.find(ntry) != null) {
                 continue;
