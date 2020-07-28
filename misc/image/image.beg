@@ -19,6 +19,7 @@ exec mkdir -m 0755 %tmp%/dev
 exec mkdir -m 0755 %tmp%/run
 exec mkdir -m 0755 %tmp%/etc
 exec mkdir -m 0755 %tmp%/lib
+exec mkdir -m 0755 %tmp%/lib32
 exec mkdir -m 0755 %tmp%/lib64
 exec mkdir -m 0755 %tmp%/bin
 exec mkdir -m 0755 %tmp%/sbin

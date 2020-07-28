@@ -73,7 +73,7 @@ public class rtrBgpEvpnVpws implements ifcUp {
             cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
-        peer.brdg.recvPack(pck);
+        peer.recvPack(pck);
     }
 
 }

@@ -75,7 +75,7 @@ public class rtrBgpEvpnCmac implements ifcUp {
             cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
-        peer.brdg.recvPack(pck);
+        peer.recvPack(pck);
     }
 
 }

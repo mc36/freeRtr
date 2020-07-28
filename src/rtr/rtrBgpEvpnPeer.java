@@ -247,4 +247,17 @@ public class rtrBgpEvpnPeer implements ifcDn, Comparator<rtrBgpEvpnPeer> {
         }
     }
 
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
+    public void recvPack(packHolder pck) {
+        if (brdg == null) {
+            cntr.drop(pck, counter.reasons.badAddr);
+            return;
+        }
+        brdg.recvPack(pck);
+    }
+
 }

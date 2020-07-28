@@ -482,6 +482,8 @@ qc pass: source prefix translation
 qc pass: target prefix translation
 qc pass: nat64 translation
 qc pass: source port randomization
+qc pass: source interface translation to address
+qc pass: target interface translation to address
 qc pass: openvpn over ipv4
 qc pass: openvpn over ipv6
 qc pass: openvpn over openvpn

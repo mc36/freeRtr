@@ -33,6 +33,7 @@ echo -n `cd $MNT/;find proc/>>filist`
 echo -n `cd $MNT/;find mnt/>>filist`
 echo -n `cd $MNT/;find run/>>filist`
 echo -n `cd $MNT/;find lib/>>filist`
+echo -n `cd $MNT/;find lib32/>>filist`
 echo -n `cd $MNT/;find lib64/>>filist`
 echo -n `cd $MNT/;find bin/>>filist`
 echo -n `cd $MNT/;find sbin/>>filist`
