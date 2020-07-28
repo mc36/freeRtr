@@ -197,7 +197,7 @@ public class pipeShell {
             if (running == 0) {
                 return;
             }
-            bits.sleep(500);
+            bits.sleep(100);
         }
     }
 
