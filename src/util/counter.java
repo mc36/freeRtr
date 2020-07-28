@@ -526,12 +526,48 @@ public class counter implements Comparator<counter> {
     }
 
     /**
+     * get byte summary
+     *
+     * @param hw hw counter
+     * @return summary for table
+     */
+    public String getShHwBsum(counter hw) {
+        String t = "";
+        String r = "";
+        String d = "";
+        if (hw != null) {
+            t = "+" + hw.byteTx;
+            r = "+" + hw.byteRx;
+            d = "+" + hw.byteDr;
+        }
+        return byteTx + t + "|" + byteRx + r + "|" + byteDr + d;
+    }
+
+    /**
      * get packet summary
      *
      * @return summary for table
      */
     public String getShPsum() {
         return packTx + "|" + packRx + "|" + packDr;
+    }
+
+    /**
+     * get packet summary
+     *
+     * @param hw hw counter
+     * @return summary for table
+     */
+    public String getShHwPsum(counter hw) {
+        String t = "";
+        String r = "";
+        String d = "";
+        if (hw != null) {
+            t = "+" + hw.packTx;
+            r = "+" + hw.packRx;
+            d = "+" + hw.packDr;
+        }
+        return packTx + t + "|" + packRx + r + "|" + packDr + d;
     }
 
     /**

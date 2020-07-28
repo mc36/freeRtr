@@ -33,6 +33,11 @@ public class ifcBridgeAdr implements Comparator<ifcBridgeAdr> {
     public counter cntr;
 
     /**
+     * hardware counter
+     */
+    public counter hwCntr;
+
+    /**
      * create address
      *
      * @param addr address
@@ -53,7 +58,7 @@ public class ifcBridgeAdr implements Comparator<ifcBridgeAdr> {
     }
 
     public String toString() {
-        return adr + "|" + ifc.getIfcName() + "|" + bits.timePast(time) + "|" + cntr.getShBsum();
+        return adr + "|" + ifc.getIfcName() + "|" + bits.timePast(time) + "|" + cntr.getShHwBsum(hwCntr);
     }
 
 }

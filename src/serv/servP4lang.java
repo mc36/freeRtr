@@ -778,6 +778,32 @@ class servP4langConn implements Runnable {
                 updateTrans(cmd, vrf.vrf.fwd6);
                 return false;
             }
+            if (s.equals("bridge_cnt")) {
+                servP4langBr br = new servP4langBr();
+                br.id = bits.str2num(cmd.word());
+                br = lower.expBr.find(br);
+                if (br == null) {
+                    return false;
+                }
+                addrMac mac = new addrMac();
+                mac.fromString(cmd.word());
+                ifcBridgeAdr ntry = br.br.bridgeHed.findMacAddr(mac);
+                if (ntry == null) {
+                    return false;
+                }
+                counter old = ntry.hwCntr;
+                ntry.hwCntr = new counter();
+                ntry.hwCntr.packTx = bits.str2long(cmd.word());
+                ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+                if (old == null) {
+                    return false;
+                }
+                if (old.compare(old, ntry.hwCntr) == 0) {
+                    return false;
+                }
+                ntry.time = bits.getTime();
+                return false;
+            }
             if (s.equals("route4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf();
                 vrf.id = bits.str2num(cmd.word());

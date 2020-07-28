@@ -20,8 +20,10 @@ long int packDr[maxPorts];
 
 struct mpls_entry {
     int label;
-    int command;    // 1=vrf, 2=pop, 3=swap
+    int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls
     int nexthop;
+    int port;
+    int bridge;
     int vrf;
     int ver;
     int swap;
@@ -42,9 +44,12 @@ int mpls_compare(void *ptr1, void *ptr2) {
 
 struct portvrf_entry {
     int port;
-    int command;    // 1=vrf, 2=bridge
+    int command;    // 1=vrf, 2=bridge, 3=xconn
     int vrf;
     int bridge;
+    int nexthop;
+    int label1;
+    int label2;
 };
 
 struct table_head portvrf_table;
@@ -62,7 +67,7 @@ struct route4_entry {
     int vrf;
     int mask;
     int addr;
-    int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls3
+    int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls2
     int nexthop;
     int label1;
     int label2;
@@ -93,7 +98,7 @@ struct route6_entry {
     int addr2;
     int addr3;
     int addr4;
-    int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls3
+    int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls2
     int nexthop;
     int label1;
     int label2;
@@ -145,8 +150,13 @@ int neigh_compare(void *ptr1, void *ptr2) {
 
 struct bridge_entry {
     int id;
+    int mac1;
+    int mac2;
+    int command;    // 1=port, 2=vpls
     int port;
-    unsigned char mac[6];
+    int nexthop;
+    int label1;
+    int label2;
     long pack;
     long byte;
 };
@@ -158,18 +168,10 @@ int bridge_compare(void *ptr1, void *ptr2) {
     struct bridge_entry *ntry2 = ptr2;
     if (ntry1->id < ntry2->id) return -1;
     if (ntry1->id > ntry2->id) return +1;
-    if (ntry1->mac[5] < ntry2->mac[5]) return -1;
-    if (ntry1->mac[5] > ntry2->mac[5]) return +1;
-    if (ntry1->mac[4] < ntry2->mac[4]) return -1;
-    if (ntry1->mac[4] > ntry2->mac[4]) return +1;
-    if (ntry1->mac[3] < ntry2->mac[3]) return -1;
-    if (ntry1->mac[3] > ntry2->mac[3]) return +1;
-    if (ntry1->mac[2] < ntry2->mac[2]) return -1;
-    if (ntry1->mac[2] > ntry2->mac[2]) return +1;
-    if (ntry1->mac[1] < ntry2->mac[1]) return -1;
-    if (ntry1->mac[1] > ntry2->mac[1]) return +1;
-    if (ntry1->mac[0] < ntry2->mac[0]) return -1;
-    if (ntry1->mac[0] > ntry2->mac[0]) return +1;
+    if (ntry1->mac2 < ntry2->mac2) return -1;
+    if (ntry1->mac2 > ntry2->mac2) return +1;
+    if (ntry1->mac1 < ntry2->mac1) return -1;
+    if (ntry1->mac1 > ntry2->mac1) return +1;
     return 0;
 }
 

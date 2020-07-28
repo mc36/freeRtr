@@ -189,6 +189,38 @@ int doOneCommand(unsigned char* buf) {
         if (del == 0) table_del(&portvrf_table, &portvrf_ntry); else table_add(&portvrf_table, &portvrf_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "xconnect") == 0) {
+        portvrf_ntry.command = 3;
+        portvrf_ntry.port = atoi(arg[2]);
+        portvrf_ntry.nexthop = atoi(arg[4]);
+        portvrf_ntry.label1 = atoi(arg[5]);
+        portvrf_ntry.label2 = atoi(arg[7]);
+        mpls_ntry.label = atoi(arg[6]);
+        mpls_ntry.port = portvrf_ntry.port;
+        mpls_ntry.command = 4;
+        if (del == 0) table_del(&portvrf_table, &portvrf_ntry); else table_add(&portvrf_table, &portvrf_ntry);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgevpls") == 0) {
+        bridge_ntry.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        bridge_ntry.nexthop = atoi(arg[5]);
+        bridge_ntry.label1 = atoi(arg[6]);
+        bridge_ntry.label2 = atoi(arg[7]);
+        bridge_ntry.command = 2;
+        if (del == 0) table_del(&bridge_table, &bridge_ntry); else table_add(&bridge_table, &bridge_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgelabel") == 0) {
+        mpls_ntry.label = atoi(arg[3]);
+        mpls_ntry.bridge = atoi(arg[2]);
+        mpls_ntry.command = 5;
+        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "portbridge") == 0) {
         portvrf_ntry.command = 2;
         portvrf_ntry.port = atoi(arg[2]);
@@ -198,8 +230,11 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "bridgemac") == 0) {
         bridge_ntry.id = atoi(arg[2]);
-        str2mac(bridge_ntry.mac, arg[3]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
         bridge_ntry.port = atoi(arg[4]);
+        bridge_ntry.command = 1;
         if (del == 0) table_del(&bridge_table, &bridge_ntry); else table_add(&bridge_table, &bridge_ntry);
         return 0;
     }
@@ -564,7 +599,9 @@ void doReportRount(FILE *commands) {
     }
     for (int i=0; i<bridge_table.size; i++) {
         struct bridge_entry *ntry = table_get(&bridge_table, i);
-        mac2str(ntry->mac, buf);
+        put16msb(buf2, 0, ntry->mac1);
+        put32msb(buf2, 2, ntry->mac2);
+        mac2str(buf2, buf);
         fprintf(commands, "bridge_cnt %i %s %li %li\r\n", ntry->id, &buf, ntry->pack, ntry->byte);
     }
     for (int i=0; i<route4_table.size; i++) {
@@ -704,7 +741,9 @@ int doConsoleCommand(unsigned char*buf) {
             printf("    bridge               mac       port\n");
             for (int i=0; i<bridge_table.size; i++) {
                 struct bridge_entry *ntry = table_get(&bridge_table, i);
-                mac2str(ntry->mac, buf);
+                put16msb(buf2, 0, ntry->mac1);
+                put32msb(buf2, 2, ntry->mac2);
+                mac2str(buf2, buf);
                 printf("%10i %s %10i\n", ntry->id, buf, ntry->port);
             }
             break;

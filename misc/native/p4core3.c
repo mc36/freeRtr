@@ -273,7 +273,17 @@ vlan_tx:
                     memmove(&bufD[bufP], &neigh_res->dmac, 6);
                     send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
                     return;
-                 default:
+                case 4: // xconn
+                    memmove(&buf2[0], &bufD[bufP], 12);
+                    bufP += 12;
+                    prt = mpls_res->port;
+                    goto layer2_tx;
+                case 5: // vpls
+                    memmove(&buf2[0], &bufD[bufP], 12);
+                    bufP += 12;
+                    bufP += 2;
+                    goto bridgevpls_rx;
+                default:
                     return;
             }
             return;
@@ -302,7 +312,16 @@ vlan_tx:
                 return;
             }
             portvrf_res = table_get(&portvrf_table, index);
-            if (portvrf_res->command == 2) goto bridge;
+            switch (portvrf_res->command) {
+                case 1:
+                    break;
+                case 2:
+                    goto bridge_rx;
+                case 3:
+                    goto xconn_rx;
+                 default:
+                    return;
+            }
             route4_ntry.vrf = portvrf_res->vrf;
 ipv4_rx:
             acl4_ntry.protV = bufD[bufP + 9];
@@ -428,7 +447,16 @@ ipv4_rou:
                 return;
             }
             portvrf_res = table_get(&portvrf_table, index);
-            if (portvrf_res->command == 2) goto bridge;
+            switch (portvrf_res->command) {
+                case 1:
+                    break;
+                case 2:
+                    goto bridge_rx;
+                case 3:
+                    goto xconn_rx;
+                 default:
+                    return;
+            }
             route6_ntry.vrf = portvrf_res->vrf;
 ipv6_rx:
             acl6_ntry.protV = bufD[bufP + 6];
@@ -589,22 +617,58 @@ ipv6_hit:
             packDr[port]++;
             byteDr[port] += bufS;
             return;
+        case 0x65580001:
+xconn_rx:
+            memmove(&buf2[0], &bufD[preBuff], 12);
+            bufP -= 2;
+            bufP -= 12;
+            memmove(&bufD[bufP], &buf2[0], 12);
+            ethtyp = 0x8847;
+            bufP -= 4;
+            label = 0x1ff | (portvrf_res->label2 << 12);
+            put32msb(bufD, bufP, label);
+            bufP -= 4;
+            label = 0xff | (portvrf_res->label1 << 12);
+            put32msb(bufD, bufP, label);
+            neigh_ntry.id = portvrf_res->nexthop;
+            goto ethtyp_tx;
         case 0x65580000:
-bridge:
+bridge_rx:
             bridge_ntry.id = portvrf_res->bridge;
             memmove(&buf2[0], &bufD[preBuff], 12);
-            memmove(&bridge_ntry.mac, &buf2[6], 6);
+bridgevpls_rx:
+            bridge_ntry.mac1 = get16msb(buf2, 6);
+            bridge_ntry.mac2 = get32msb(buf2, 8);
             index = table_find(&bridge_table, &bridge_ntry);
             if (index < 0) goto cpu;
-            memmove(&bridge_ntry.mac, &buf2[0], 6);
+            bridge_ntry.mac1 = get16msb(buf2, 0);
+            hash = bridge_ntry.mac2 = get32msb(buf2, 2);
             index = table_find(&bridge_table, &bridge_ntry);
             if (index < 0) goto cpu;
-            hash = get32msb(bridge_ntry.mac, 2);
             bridge_res = table_get(&bridge_table, index);
             bridge_res->pack++;
             bridge_res->byte += bufS;
             bufP -= 2;
+            switch (bridge_res->command) {
+                case 1:
+                    break;
+                case 2:
+                    bufP -= 12;
+                    memmove(&bufD[bufP], &buf2[0], 12);
+                    ethtyp = 0x8847;
+                    bufP -= 4;
+                    label = 0x1ff | (bridge_res->label2 << 12);
+                    put32msb(bufD, bufP, label);
+                    bufP -= 4;
+                    label = 0xff | (bridge_res->label1 << 12);
+                    put32msb(bufD, bufP, label);
+                    neigh_ntry.id = bridge_res->nexthop;
+                    goto ethtyp_tx;
+                default:
+                    return;
+            }
             prt = bridge_res->port;
+layer2_tx:
             vlan_ntry.id = prt;
             index = table_find(&vlanout_table, &vlan_ntry);
             if (index >= 0) {
