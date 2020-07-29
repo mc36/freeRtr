@@ -8987,3 +8987,8 @@ qc pass: p4lang: vlan bridge mpls
 ---------------------------------- 2020-07-27 18:29:22
 qc pass: source interface translation to address
 qc pass: target interface translation to address
+---------------------------------- 2020-07-28 18:46:26
+qc pass: p4lang: vlan vpls/ldp with bgp
+qc pass: p4lang: vlan eompls
+qc pass: p4lang: bundle vlan vpls/ldp with bgp
+qc pass: p4lang: bundle vlan eompls

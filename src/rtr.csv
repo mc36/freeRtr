@@ -1,6 +1,6 @@
 file;code;test;stage;command
--;-;freeRouter v20.7.27-rel, done by cs@nop.;-;-
--;-;2020-07-28 03:17:55, took 08:48:33 on 1792 cases, 0 failed, 1 traces, 7 retries;-;-
+-;-;freeRouter v20.7.28-rel, done by cs@nop.;-;-
+-;-;2020-07-29 03:39:13, took 08:52:46 on 1796 cases, 0 failed, 0 traces, 6 retries;-;-
 -;-;java -Xmx256m -jar rtr.jar;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -1010,6 +1010,10 @@ p4lang-rout19.tst;0;p4lang: bridge routing;successfully;finished
 p4lang-rout20.tst;0;p4lang: bridge mpls;successfully;finished
 p4lang-rout21.tst;0;p4lang: vlan bridge routing;successfully;finished
 p4lang-rout22.tst;0;p4lang: vlan bridge mpls;successfully;finished
+p4lang-rout23.tst;0;p4lang: vlan vpls/ldp with bgp;successfully;finished
+p4lang-rout24.tst;0;p4lang: vlan eompls;successfully;finished
+p4lang-rout25.tst;0;p4lang: bundle vlan vpls/ldp with bgp;successfully;finished
+p4lang-rout26.tst;0;p4lang: bundle vlan eompls;successfully;finished
 qos-action01.tst;0;qos ingress transmit action;successfully;finished
 qos-action02.tst;0;qos egress transmit action;successfully;finished
 qos-action03.tst;0;qos ingress drop action;successfully;finished

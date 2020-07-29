@@ -1006,6 +1006,10 @@ qc pass: p4lang: bridge routing
 qc pass: p4lang: bridge mpls
 qc pass: p4lang: vlan bridge routing
 qc pass: p4lang: vlan bridge mpls
+qc pass: p4lang: vlan vpls/ldp with bgp
+qc pass: p4lang: vlan eompls
+qc pass: p4lang: bundle vlan vpls/ldp with bgp
+qc pass: p4lang: bundle vlan eompls
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

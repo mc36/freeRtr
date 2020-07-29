@@ -51,7 +51,7 @@ void doHostLoop() {
     int bufS;
     unsigned int addrLen;
     for (;;) {
-        pack = pcap_next(ifacePcap[0], &head);
+        pack = pcap_next(ifacePcap[cpuport], &head);
         bufS = head.caplen;
         if (bufS < 0) break;
         memmove(&bufD[preBuff], pack, bufS);
