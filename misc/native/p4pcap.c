@@ -44,37 +44,29 @@ void err(unsigned char*buf) {
 
 
 
-void doHostLoop() {
-    struct pcap_pkthdr head;
-    const unsigned char *pack;
-    unsigned char bufD[16384];
-    int bufS;
-    unsigned int addrLen;
-    for (;;) {
-        pack = pcap_next(ifacePcap[cpuport], &head);
-        bufS = head.caplen;
-        if (bufS < 0) break;
-        memmove(&bufD[preBuff], pack, bufS);
-        processCpuPack(&bufD[0], bufS);
-    }
-    err("host thread exited");
-}
-
-
-
-void doDataLoop(int * param) {
+void doIfaceLoop(int * param) {
     int port = *param;
     unsigned char bufD[16384];
     struct pcap_pkthdr head;
     const unsigned char *pack;
     int bufS;
     unsigned int addrLen;
-    for (;;) {
-        pack = pcap_next(ifacePcap[port], &head);
-        bufS = head.caplen;
-        if (bufS < 0) break;
-        memmove(&bufD[preBuff], pack, bufS);
-        processDataPacket(&bufD[0], bufS, port);
+    if (port == cpuport) {
+        for (;;) {
+            pack = pcap_next(ifacePcap[port], &head);
+            bufS = head.caplen;
+            if (bufS < 0) break;
+            memmove(&bufD[preBuff], pack, bufS);
+            processCpuPack(&bufD[0], bufS);
+        }
+    } else {
+        for (;;) {
+            pack = pcap_next(ifacePcap[port], &head);
+            bufS = head.caplen;
+            if (bufS < 0) break;
+            memmove(&bufD[preBuff], pack, bufS);
+            processDataPacket(&bufD[0], bufS, port);
+        }
     }
     err("port thread exited");
 }
@@ -178,10 +170,8 @@ int main(int argc, char **argv) {
     pthread_t threadStat;
     if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
 
-    if (pthread_create(&threadRaw[cpuport], NULL, (void*) & doHostLoop, NULL)) err("error creating host thread");
     for (int i=0; i < ports; i++) {
-        if (i == cpuport) continue;
-        if (pthread_create(&threadRaw[i], NULL, (void*) & doDataLoop, &ifaceId[i])) err("error creating port thread");
+        if (pthread_create(&threadRaw[i], NULL, (void*) & doIfaceLoop, &ifaceId[i])) err("error creating port thread");
     }
 
     doMainLoop();
