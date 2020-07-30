@@ -1141,6 +1141,7 @@ class servP4langConn implements Runnable {
     }
 
     private void doLab1(tabLabelNtry ntry) {
+        ntry = ntry.copyBytes();
         if (ntry.duplicate != null) {
             return;
         }
@@ -1163,7 +1164,7 @@ class servP4langConn implements Runnable {
                 }
                 act = "mod";
             }
-            labels.put(ntry.copyBytes());
+            labels.put(ntry);
             lower.sendLine("mylabel" + ntry.forwarder.ipVersion + "_" + act + " " + ntry.getValue() + " " + vrf.id);
             if (lower.expSrv6 == null) {
                 return;
@@ -1198,7 +1199,7 @@ class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        labels.put(ntry.copyBytes());
+        labels.put(ntry);
         if (ntry.remoteLab == null) {
             lower.sendLine("unlabel" + afi + "_" + act + " " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop);
             return;
@@ -1676,6 +1677,7 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < need.size(); i++) {
             tabRouteEntry<addrIP> ntry = need.get(i);
+            ntry = ntry.copyBytes();
             if ((ntry.iface == null) && (ntry.rouTab != null)) {
                 tabRouteEntry<addrIP> old = done.find(ntry);
                 String act = "add";
