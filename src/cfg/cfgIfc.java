@@ -2845,6 +2845,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             sep.restartTimer(true);
             sep = null;
         }
+        if (isdn != null) {
+            isdn.restartTimer(true);
+            isdn = null;
+        }
         if (frmrly != null) {
             frmrly.restartTimer(true);
             frmrly = null;

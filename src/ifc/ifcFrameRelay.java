@@ -187,11 +187,13 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
     public void closeUp() {
         setState(state.states.close);
         upper.closeUp();
+        restartTimer(true);
     }
 
     public void closeDn() {
         setState(state.states.close);
         lower.closeDn();
+        restartTimer(true);
     }
 
     public void flapped() {
@@ -732,10 +734,6 @@ class ifcFrameRelayTxKeep extends TimerTask {
 
     public void run() {
         try {
-            if (state.toForceable(lower.lastState) != state.states.up) {
-                cancel();
-                return;
-            }
             lower.sendKeepalive();
         } catch (Exception e) {
             logger.traceback(e);

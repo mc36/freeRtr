@@ -230,6 +230,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public void closeUp() {
         setState(state.states.close);
         upper.closeUp();
+        restartTimer(true);
     }
 
     /**
@@ -238,6 +239,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public void closeDn() {
         setState(state.states.close);
         lower.closeDn();
+        restartTimer(true);
     }
 
     /**

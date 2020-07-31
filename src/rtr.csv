@@ -1,7 +1,7 @@
 file;code;test;stage;command
--;-;freeRouter v20.7.29-rel, done by cs@nop.;-;-
--;-;2020-07-29 21:07:46, took 08:56:27 on 1796 cases, 0 failed, 0 traces, 9 retries;-;-
--;-;java -Xmx2048m -jar rtr.jar;-;-
+-;-;freeRouter v20.7.30-rel, done by cs@nop.;-;-
+-;-;2020-07-31 02:46:54, took 08:43:16 on 1796 cases, 0 failed, 0 traces, 14 retries;-;-
+-;-;./rtr.bin;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished

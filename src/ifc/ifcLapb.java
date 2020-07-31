@@ -175,11 +175,13 @@ public class ifcLapb implements ifcUp, ifcDn {
     public void closeUp() {
         setState(state.states.close);
         upper.closeUp();
+        restartTimer(true);
     }
 
     public void closeDn() {
         setState(state.states.close);
         lower.closeDn();
+        restartTimer(true);
     }
 
     public void flapped() {
@@ -505,7 +507,7 @@ public class ifcLapb implements ifcUp, ifcDn {
      *
      * @param nr nr value
      */
-    public void ackPacks(int nr) {
+    protected void ackPacks(int nr) {
         int trnc = getModMax();
         nr = (nr - sequenceTx) & trnc;
         if (nr < 1) {
@@ -527,7 +529,7 @@ public class ifcLapb implements ifcUp, ifcDn {
      * @param i number in buffer
      * @return false if successful, true if error happened
      */
-    public boolean sendBufferedPack(int i) {
+    protected boolean sendBufferedPack(int i) {
         if (i < 0) {
             return true;
         }
@@ -550,13 +552,11 @@ public class ifcLapb implements ifcUp, ifcDn {
      * @param rp set 1 for response
      * @param pf poll/final bit
      */
-    public void putPacketHeader(packHolder pck, int cmd, int ns, int nr,
-            int rp, int pf) {
+    protected void putPacketHeader(packHolder pck, int cmd, int ns, int nr, int rp, int pf) {
         pf &= 1;
         cmd &= 0xef;
         if (debugger.ifcLapbEvnt) {
-            logger.debug("tx " + decodeCommand(cmd) + " rp=" + rp + " pf=" + pf
-                    + " ns=" + ns + " nr=" + nr);
+            logger.debug("tx " + decodeCommand(cmd) + " rp=" + rp + " pf=" + pf + " ns=" + ns + " nr=" + nr);
         }
         if (rp != 0) {
             rp = dataMoDCE ^ dataMoDTE;
@@ -606,7 +606,7 @@ public class ifcLapb implements ifcUp, ifcDn {
         pck.merge2beg();
     }
 
-    public void recvPack(packHolder pck) {
+    public synchronized void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.dataSize() < 2) {
             cntr.drop(pck, counter.reasons.tooSmall);
@@ -738,7 +738,7 @@ public class ifcLapb implements ifcUp, ifcDn {
         }
     }
 
-    public void sendPack(packHolder orig) {
+    public synchronized void sendPack(packHolder orig) {
         cntr.tx(orig);
         if (lastState != state.states.up) {
             cntr.drop(orig, counter.reasons.notUp);
@@ -789,10 +789,6 @@ class ifcLapbTxKeep extends TimerTask {
 
     public void run() {
         try {
-            if (state.toForceable(lower.lastState) != state.states.up) {
-                cancel();
-                return;
-            }
             lower.sendKeepalive();
         } catch (Exception e) {
             logger.traceback(e);

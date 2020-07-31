@@ -719,6 +719,7 @@ class servP4langConn implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
+        pipe.setClose();
     }
 
     private void updateTrans(cmds cmd, ipFwd fwd) {

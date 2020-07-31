@@ -152,11 +152,13 @@ public class ifcSep implements ifcUp, ifcDn {
     public void closeUp() {
         setState(state.states.close);
         upper.closeUp();
+        restartTimer(true);
     }
 
     public void closeDn() {
         setState(state.states.close);
         lower.closeDn();
+        restartTimer(true);
     }
 
     public void flapped() {
