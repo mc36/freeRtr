@@ -25,6 +25,11 @@ import util.version;
  */
 public class userTester {
 
+    /**
+     * port base
+     */
+    protected final static int portBase = 24000;
+
     private pipeProgress rdr;
 
     private String path = "../cfg/";
@@ -341,11 +346,12 @@ public class userTester {
         if (persistF != null) {
             paralell = 0;
             persistD = bits.txt2buf(path + persistF);
-            persistP = 24500 + (slot * 1000);
+            persistP = portBase + 900 + (slot * 1000);
             String a = persistD.remove(0);
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=4,threads=1,sockets=1 -hda " + a + " -m " + persistD.remove(0);
+            int i =bits.str2num(persistD.remove(0));
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=4,threads=1,sockets=1 -hda " + a + " -m " + i;
             a = persistD.remove(0);
-            for (int i = 0; i < 8; i++) {
+            for (i = 0; i < 8; i++) {
                 int rp = persistP + 2 + (i * 2);
                 int lp = rp + 1;
                 s += " -netdev socket,id=n" + i + ",udp=127.0.0.1:" + rp + ",localaddr=:" + lp + " -device " + a + ",netdev=n" + i + ",mac=00:00:00:00:11:" + bits.toHexB(i);
@@ -1017,7 +1023,7 @@ class userTesterOne {
                 continue;
             }
             i = bits.str2num(a.substring(0, a.length() - 1)) * 4;
-            i += 24000 + (slot * 1000);
+            i += userTester.portBase + (slot * 1000);
             if (a.substring(a.length() - 1, a.length()).equals("b")) {
                 i += 1;
             }

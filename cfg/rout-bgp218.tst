@@ -24,7 +24,7 @@ access-list test6
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
- ipv6 addr 1234:1::1 ffff:ffff::
+ ipv6 addr 1234::1 ffff:ffff::
  ipv4 access-group-in test4
  ipv6 access-group-in test6
  ipv4 access-group-out test4
@@ -37,6 +37,7 @@ router bgp4 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 ttl-sec 115
+ neigh 1.1.1.2 connect pass
  red conn
  exit
 router bgp6 1
@@ -44,8 +45,9 @@ router bgp6 1
  address uni
  local-as 1
  router-id 6.6.6.1
- neigh 1234:1::2 remote-as 2
- neigh 1234:1::2 ttl-sec 115
+ neigh 1234::2 remote-as 2
+ neigh 1234::2 ttl-sec 115
+ neigh 1234::2 connect pass
  red conn
  exit
 !
@@ -64,7 +66,7 @@ int lo0
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
- ipv6 addr 1234:1::2 ffff:ffff::
+ ipv6 addr 1234::2 ffff:ffff::
  exit
 router bgp4 1
  vrf v1
@@ -73,6 +75,7 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 ttl-sec 115
+ neigh 1.1.1.1 connect act
  red conn
  exit
 router bgp6 1
@@ -80,8 +83,9 @@ router bgp6 1
  address uni
  local-as 2
  router-id 6.6.6.2
- neigh 1234:1::1 remote-as 1
- neigh 1234:1::1 ttl-sec 115
+ neigh 1234::1 remote-as 1
+ neigh 1234::1 ttl-sec 115
+ neigh 1234::1 connect act
  red conn
  exit
 !
