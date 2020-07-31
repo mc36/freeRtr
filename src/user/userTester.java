@@ -121,6 +121,10 @@ public class userTester {
 
     private int traces;
 
+    private userTesterOne workers[];
+
+    private boolean need2work = true;
+
     /**
      * do the work
      *
@@ -400,18 +404,24 @@ public class userTester {
         } else {
             paralell = 1;
         }
+        workers = new userTesterOne[paralell];
         for (int i = 0; i < paralell; i++) {
+            workers[i] = getTester(i);
             new userTesterWrk(this, i);
             bits.sleep(100);
         }
         for (; needed.size() > 0;) {
             bits.sleep(1000);
         }
+        need2work = false;
         if (persistC != null) {
             persistC.applyCfg(persistD);
             persistC.doSync();
             persistC.persistent = false;
             persistC.stopNow();
+        }
+        for (int i = 0; i < paralell; i++) {
+            workers[i].stopAll();
         }
         for (int i = 0; i < finished.size(); i++) {
             userTesterFtr ftr = finished.get(i);
@@ -446,12 +456,12 @@ public class userTester {
         txt.add("tested: " + a + "<br/>");
         txt.add("jvm: " + jvn + jvp + "<br/>");
         txt.add("<br/>");
-        txt.add("<table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>");
+        txt.add("<table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>try</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>");
         txt.addAll(features2list(finished, 3));
         txt.add("</table></body></html>");
         bits.buf2txt(true, txt, "rtr" + beg + ".html");
         txt = new ArrayList<String>();
-        txt.add("file;code;test;stage;command");
+        txt.add("file;code;try;test;stage;command");
         txt.add("-;-;" + release + ";-;-");
         txt.add("-;-;" + a + ";-;-");
         txt.add("-;-;" + jvn + jvp + ";-;-");
@@ -478,6 +488,9 @@ public class userTester {
      */
     protected void doWorker(int slt) {
         for (; needed.size() > 0;) {
+            if (!need2work) {
+                return;
+            }
             doOneTest(slt);
         }
     }
@@ -490,10 +503,13 @@ public class userTester {
         userTesterFtr ftr = needed.get(cur);
         rdr.debugRes(sep + "err=" + errored + " trc=" + traces + " ret=" + retries + " don=" + finished.size() + " ned=" + needed.size() + " tot=" + (finished.size() + needed.size()) + " tim=" + bits.timePast(started) + sep + ftr.fil + sep);
         userTesterOne lt = getTester(slt);
+        workers[slt] = lt;
         lt.doTest(path, ftr.fil);
         lt.stopAll();
+        if (!need2work) {
+            return;
+        }
         traces += lt.traces;
-        rdr.debugRes(lt.getCsv());
         boolean del = lt.getSucc();
         if (!del) {
             ftr.fld++;
@@ -501,6 +517,7 @@ public class userTester {
             del |= ftr.ret < 1;
             retries++;
         }
+        rdr.debugRes(lt.getCsv(ftr.fld));
         if (!del) {
             return;
         }
@@ -509,8 +526,8 @@ public class userTester {
             errored++;
         }
         ftr.res = lt.getSucc();
-        ftr.htm = lt.getHtm(url);
-        ftr.csv = lt.getCsv();
+        ftr.htm = lt.getHtm(url, ftr.fld);
+        ftr.csv = lt.getCsv(ftr.fld);
         ftr.ftr = lt.getFet();
         finished.add(ftr);
         lt.saveMd();
@@ -904,12 +921,12 @@ class userTesterOne {
         return qc + testName;
     }
 
-    public String getCsv() {
-        return fileName + ";" + testRes + ";" + testName + ";" + stage + ";" + cmd.getOriginal();
+    public String getCsv(int ret) {
+        return fileName + ";" + testRes + ";" + ret + ";" + testName + ";" + stage + ";" + cmd.getOriginal();
     }
 
-    public String getHtm(String url) {
-        return "<tr><td><a href=\"" + url + fileName + "\">" + fileName + "</a></td><td>" + testRes + "</td><td>" + testName + "</td><td>" + stage + "</td><td>" + cmd.getOriginal() + "</td></tr>";
+    public String getHtm(String url, int ret) {
+        return "<tr><td><a href=\"" + url + fileName + "\">" + fileName + "</a></td><td>" + testRes + "</td><td>" + ret + "</td><td>" + testName + "</td><td>" + stage + "</td><td>" + cmd.getOriginal() + "</td></tr>";
     }
 
     public String getLin() {
