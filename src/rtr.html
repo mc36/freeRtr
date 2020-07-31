@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
 release: freeRouter v20.7.31-rel, done by cs@nop.<br/>
-tested: 2020-07-31 18:59:48, took 00:11:25, with 50 workers, on 1796 cases, 0 failed, 0 traces, 3 retries<br/>
+tested: 2020-07-31 19:14:49, took 00:13:19, with 40 workers, on 1796 cases, 0 failed, 0 traces, 1 retries<br/>
 jvm: java -Xmx4096m -jar rtr.jar<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>try</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -27,7 +27,7 @@ jvm: java -Xmx4096m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bridge09.tst">conn-bridge09.tst</a></td><td>0</td><td>0</td><td>bridged ethernet over gre</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bridge10.tst">conn-bridge10.tst</a></td><td>0</td><td>0</td><td>bridge with spantree</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bridge11.tst">conn-bridge11.tst</a></td><td>0</td><td>0</td><td>bridged ethernet over bridge</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-bridge12.tst">conn-bridge12.tst</a></td><td>0</td><td>1</td><td>bridge split horizon</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-bridge12.tst">conn-bridge12.tst</a></td><td>0</td><td>0</td><td>bridge split horizon</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bridge13.tst">conn-bridge13.tst</a></td><td>0</td><td>0</td><td>bridge mac learning</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bridge14.tst">conn-bridge14.tst</a></td><td>0</td><td>0</td><td>bridged mac rewrite</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bstun.tst">conn-bstun.tst</a></td><td>0</td><td>0</td><td>ppp over bstun</td><td>successfully</td><td>finished</td></tr>
@@ -493,7 +493,7 @@ jvm: java -Xmx4096m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-nat13.tst">crypt-nat13.tst</a></td><td>0</td><td>0</td><td>target interface translation to address</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-openvpn01.tst">crypt-openvpn01.tst</a></td><td>0</td><td>0</td><td>openvpn over ipv4</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-openvpn02.tst">crypt-openvpn02.tst</a></td><td>0</td><td>0</td><td>openvpn over ipv6</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/crypt-openvpn03.tst">crypt-openvpn03.tst</a></td><td>0</td><td>0</td><td>openvpn over openvpn</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-openvpn03.tst">crypt-openvpn03.tst</a></td><td>0</td><td>1</td><td>openvpn over openvpn</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-openvpn04.tst">crypt-openvpn04.tst</a></td><td>0</td><td>0</td><td>openvpn over loopback</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-openvpn05.tst">crypt-openvpn05.tst</a></td><td>0</td><td>0</td><td>openvpn with des</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-openvpn06.tst">crypt-openvpn06.tst</a></td><td>0</td><td>0</td><td>openvpn with blowfish</td><td>successfully</td><td>finished</td></tr>
@@ -552,7 +552,7 @@ jvm: java -Xmx4096m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-swipe13.tst">crypt-swipe13.tst</a></td><td>0</td><td>0</td><td>swipe with sha256</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-swipe14.tst">crypt-swipe14.tst</a></td><td>0</td><td>0</td><td>swipe with sha512</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-tls.tst">crypt-tls.tst</a></td><td>0</td><td>0</td><td>tls test</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/crypt-wireguard01.tst">crypt-wireguard01.tst</a></td><td>0</td><td>1</td><td>wireguard over ipv4</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-wireguard01.tst">crypt-wireguard01.tst</a></td><td>0</td><td>0</td><td>wireguard over ipv4</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-wireguard02.tst">crypt-wireguard02.tst</a></td><td>0</td><td>0</td><td>wireguard over ipv6</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-wireguard03.tst">crypt-wireguard03.tst</a></td><td>0</td><td>0</td><td>wireguard over wireguard</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-wireguard04.tst">crypt-wireguard04.tst</a></td><td>0</td><td>0</td><td>wireguard over loopback</td><td>successfully</td><td>finished</td></tr>

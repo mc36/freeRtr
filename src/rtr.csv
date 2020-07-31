@@ -1,6 +1,6 @@
 file;code;try;test;stage;command
 -;-;freeRouter v20.7.31-rel, done by cs@nop.;-;-
--;-;2020-07-31 18:59:48, took 00:11:25, with 50 workers, on 1796 cases, 0 failed, 0 traces, 3 retries;-;-
+-;-;2020-07-31 19:14:49, took 00:13:19, with 40 workers, on 1796 cases, 0 failed, 0 traces, 1 retries;-;-
 -;-;java -Xmx4096m -jar rtr.jar;-;-
 basic.tst;0;0;dummy test;successfully;finished
 conn-anyconn.tst;0;0;ip over anyconnect;successfully;finished
@@ -24,7 +24,7 @@ conn-bridge08.tst;0;0;bridged ethernet over atmsar;successfully;finished
 conn-bridge09.tst;0;0;bridged ethernet over gre;successfully;finished
 conn-bridge10.tst;0;0;bridge with spantree;successfully;finished
 conn-bridge11.tst;0;0;bridged ethernet over bridge;successfully;finished
-conn-bridge12.tst;0;1;bridge split horizon;successfully;finished
+conn-bridge12.tst;0;0;bridge split horizon;successfully;finished
 conn-bridge13.tst;0;0;bridge mac learning;successfully;finished
 conn-bridge14.tst;0;0;bridged mac rewrite;successfully;finished
 conn-bstun.tst;0;0;ppp over bstun;successfully;finished
@@ -490,7 +490,7 @@ crypt-nat12.tst;0;0;source interface translation to address;successfully;finishe
 crypt-nat13.tst;0;0;target interface translation to address;successfully;finished
 crypt-openvpn01.tst;0;0;openvpn over ipv4;successfully;finished
 crypt-openvpn02.tst;0;0;openvpn over ipv6;successfully;finished
-crypt-openvpn03.tst;0;0;openvpn over openvpn;successfully;finished
+crypt-openvpn03.tst;0;1;openvpn over openvpn;successfully;finished
 crypt-openvpn04.tst;0;0;openvpn over loopback;successfully;finished
 crypt-openvpn05.tst;0;0;openvpn with des;successfully;finished
 crypt-openvpn06.tst;0;0;openvpn with blowfish;successfully;finished
@@ -549,7 +549,7 @@ crypt-swipe12.tst;0;0;swipe with sha1;successfully;finished
 crypt-swipe13.tst;0;0;swipe with sha256;successfully;finished
 crypt-swipe14.tst;0;0;swipe with sha512;successfully;finished
 crypt-tls.tst;0;0;tls test;successfully;finished
-crypt-wireguard01.tst;0;1;wireguard over ipv4;successfully;finished
+crypt-wireguard01.tst;0;0;wireguard over ipv4;successfully;finished
 crypt-wireguard02.tst;0;0;wireguard over ipv6;successfully;finished
 crypt-wireguard03.tst;0;0;wireguard over wireguard;successfully;finished
 crypt-wireguard04.tst;0;0;wireguard over loopback;successfully;finished
