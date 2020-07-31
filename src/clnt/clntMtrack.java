@@ -542,7 +542,7 @@ class clntMtrackConn implements Runnable {
 
     public void run() {
         try {
-            pipe.wait4ready(0);
+            pipe.wait4ready(pipe.timeout);
             for (;;) {
                 packHolder pck = pipe.readPacket(true);
                 if (pck == null) {

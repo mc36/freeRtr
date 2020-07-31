@@ -714,10 +714,10 @@ public class userTest {
         cmd.pipe.strPut(tst);
         p1.setReady();
         p2.setReady();
-        p1.wait4ready(0);
-        p2.wait4ready(0);
         p1.timeout = 5000;
         p2.timeout = 5000;
+        p1.wait4ready(p1.timeout);
+        p2.wait4ready(p2.timeout);
         byte[] b1 = new byte[bl];
         byte[] b2 = new byte[b1.length];
         int goodT = 0;

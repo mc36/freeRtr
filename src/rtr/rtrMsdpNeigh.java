@@ -226,7 +226,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         }
         pipe.timeout = holdTimer;
         pipe.setReady();
-        pipe.wait4ready(keepAlive);
+        pipe.wait4ready(holdTimer);
         if (pipe.isReady() != 3) {
             closeNow();
             return true;

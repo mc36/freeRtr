@@ -298,7 +298,7 @@ class servNetflowConn implements Runnable {
         packHolder pckB = new packHolder(true, true);
         packNetflow pckF = new packNetflow();
         try {
-            pipe.wait4ready(0);
+            pipe.wait4ready(pipe.timeout);
             for (;;) {
                 pckB.clear();
                 pckB = pipe.readPacket(pckB, 0, true);

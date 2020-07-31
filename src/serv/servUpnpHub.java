@@ -127,7 +127,7 @@ class servUpnpHubConn implements Runnable, Comparator<servUpnpHubConn> {
     public void run() {
         logger.info("forwarder " + conn.peerAddr + " up");
         try {
-            pipe.wait4ready(0);
+            pipe.wait4ready(pipe.timeout);
             for (;;) {
                 packHolder pck = pipe.readPacket(true);
                 if (pck == null) {

@@ -341,7 +341,7 @@ class servFtpDoer implements Runnable {
                 bits.sleep(1000);
                 continue;
             }
-            if (data.wait4ready(0)) {
+            if (data.wait4ready(pipe.timeout)) {
                 data.setClose();
                 continue;
             }

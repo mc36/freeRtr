@@ -28,6 +28,7 @@ public class secClient {
         if (proto == 0) {
             return pipe;
         }
+        int tim = pipe.timeout;
         switch (proto & servGeneric.protoSec) {
             case servGeneric.protoSsh:
                 secSsh ssh = new secSsh(pipe, new pipeLine(65536, false));
@@ -47,7 +48,8 @@ public class secClient {
                 pipe = telnet.getPipe();
                 break;
         }
-        if (pipe.wait4ready(0)) {
+        pipe.timeout = tim;
+        if (pipe.wait4ready(tim)) {
             pipe.setClose();
             return null;
         }

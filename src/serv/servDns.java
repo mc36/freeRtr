@@ -690,7 +690,7 @@ class servDnsDoer implements Runnable {
 
     public void run() {
         try {
-            pipe.wait4ready(0);
+            pipe.wait4ready(pipe.timeout);
             for (;;) {
                 if (doer()) {
                     break;

@@ -820,7 +820,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         pipe.timeout = neigh.holdTimer;
         peerKeep = neigh.keepAlive;
         pipe.setReady();
-        pipe.wait4ready(neigh.keepAlive);
+        pipe.wait4ready(neigh.holdTimer);
         if (pipe.isReady() != 3) {
             closeNow();
             return;

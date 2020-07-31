@@ -536,10 +536,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                     openConn(60);
                     break;
                 case 3: // both
-                    if (!openConn(bits.random(10, 30))) {
+                    if (!openConn(0)) {
                         break;
                     }
-                    openConn(0);
+                    openConn(bits.random(2, 15));
                     break;
                 case 4: // dynamic
                     lower.lstnNei.del(this);
@@ -573,6 +573,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             pipe = ac.getConn(true);
         }
         if (pipe == null) {
+            return true;
+        }
+        if (pipe.wait4ready(holdTimer)) {
             return true;
         }
         localIfc = ifc;

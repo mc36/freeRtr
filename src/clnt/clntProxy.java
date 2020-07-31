@@ -287,11 +287,10 @@ public class clntProxy {
                 return null;
             }
             pip.timeout = 120000;
-            if (pip.wait4ready(0)) {
+            if (pip.wait4ready(pip.timeout)) {
                 pip.setClose();
                 return null;
             }
-            pip.timeout = 120000;
             pip = secClient.openSec(pip, secProto, username, password);
             if (pip == null) {
                 return null;
