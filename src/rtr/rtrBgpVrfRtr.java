@@ -127,6 +127,11 @@ public class rtrBgpVrfRtr extends ipRtr {
      * others changed
      */
     public void routerOthersChanged() {
+        if (fwd.prefixMode == ipFwd.labelMode.common) {
+            return;
+        }
+        parent.routerRedistChanged();
+        fwd.routerChg(this);
     }
 
     private void doExportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, List<Long> rt) {
@@ -246,8 +251,9 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
      * @param cmpF flowspec table to read
+     * @return other changes trigger full recomputation
      */
-    public void doPeers(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
+    public boolean doPeers(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
         final List<Long> rt = new ArrayList<Long>();
         for (int i = 0; i < vrf.rtImp.size(); i++) {
             rt.add(tabRtrmapN.rt2comm(vrf.rtImp.get(i)));
@@ -271,6 +277,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         routerComputedM = tabM;
         routerComputedF = tabF;
         fwd.routerChg(this);
+        return fwd.prefixMode != ipFwd.labelMode.common;
     }
 
     /**

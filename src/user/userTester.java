@@ -30,7 +30,14 @@ public class userTester {
      */
     protected final static int portBase = 24000;
 
+    /**
+     * slot increment
+     */
+    protected final static int portSlot = 100;
+
     private pipeProgress rdr;
+
+    private cmds cmd;
 
     private String path = "../cfg/";
 
@@ -117,9 +124,10 @@ public class userTester {
     /**
      * do the work
      *
-     * @param cmd command to do
+     * @param c command to do
      */
-    public void doer(cmds cmd) {
+    public void doer(cmds c) {
+        cmd = c;
         rdr = new pipeProgress(cmd.pipe);
         int mem = 256;
         beg = cmd.word();
@@ -346,9 +354,9 @@ public class userTester {
         if (persistF != null) {
             paralell = 0;
             persistD = bits.txt2buf(path + persistF);
-            persistP = portBase + 900 + (slot * 1000);
+            persistP = portBase + 90 + (slot * portSlot);
             String a = persistD.remove(0);
-            int i =bits.str2num(persistD.remove(0));
+            int i = bits.str2num(persistD.remove(0));
             s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=4,threads=1,sockets=1 -hda " + a + " -m " + i;
             a = persistD.remove(0);
             for (i = 0; i < 8; i++) {
@@ -386,9 +394,6 @@ public class userTester {
             persistC.doSync();
             persistC.applyCfg(persistD);
         }
-        int err = 0;
-        int ret = 0;
-        int trc = 0;
         started = bits.getTime();
         if (paralell > 1) {
             randord = true;
@@ -397,6 +402,7 @@ public class userTester {
         }
         for (int i = 0; i < paralell; i++) {
             new userTesterWrk(this, i);
+            bits.sleep(100);
         }
         for (; needed.size() > 0;) {
             bits.sleep(1000);
@@ -413,12 +419,12 @@ public class userTester {
                 rdr.debugStat("failed: " + ftr.csv);
                 continue;
             }
-            if (ftr.ran > 1) {
-                rdr.debugStat("retried " + ftr.ran + "x: " + ftr.csv);
+            if (ftr.fld > 0) {
+                rdr.debugStat("retried " + ftr.fld + "x: " + ftr.csv);
                 continue;
             }
         }
-        String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(started) + " on " + finished.size() + " cases, " + err + " failed, " + trc + " traces, " + ret + " retries";
+        String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(started) + ", with " + paralell + " workers, on " + finished.size() + " cases, " + errored + " failed, " + traces + " traces, " + retries + " retries";
         rdr.debugStat("summary: " + a);
         if (!summary) {
             return;
@@ -482,7 +488,6 @@ public class userTester {
             cur = bits.random(0, needed.size());
         }
         userTesterFtr ftr = needed.get(cur);
-        ftr.ran++;
         rdr.debugRes(sep + "err=" + errored + " trc=" + traces + " ret=" + retries + " don=" + finished.size() + " ned=" + needed.size() + " tot=" + (finished.size() + needed.size()) + " tim=" + bits.timePast(started) + sep + ftr.fil + sep);
         userTesterOne lt = getTester(slt);
         lt.doTest(path, ftr.fil);
@@ -491,6 +496,7 @@ public class userTester {
         rdr.debugRes(lt.getCsv());
         boolean del = lt.getSucc();
         if (!del) {
+            ftr.fld++;
             ftr.ret--;
             del |= ftr.ret < 1;
             retries++;
@@ -535,7 +541,7 @@ public class userTester {
         if (window) {
             lt.window += "w";
         }
-        lt.rdr = rdr;
+        lt.rdr = new pipeProgress(cmd.pipe);
         return lt;
     }
 
@@ -577,7 +583,7 @@ class userTesterFtr implements Comparator<userTesterFtr> {
 
     public int ret;
 
-    public int ran;
+    public int fld;
 
     public boolean res;
 
@@ -1023,7 +1029,7 @@ class userTesterOne {
                 continue;
             }
             i = bits.str2num(a.substring(0, a.length() - 1)) * 4;
-            i += userTester.portBase + (slot * 1000);
+            i += userTester.portBase + (slot * userTester.portSlot);
             if (a.substring(a.length() - 1, a.length()).equals("b")) {
                 i += 1;
             }
@@ -1242,7 +1248,7 @@ class userTesterOne {
                 cfg.add(s);
             }
             cfg.add("hwid tester");
-            cfg.add("tcp2vrf " + (2001 + (slot * 100) + procs.size()) + " tester 23");
+            cfg.add("tcp2vrf " + (2001 + (slot * userTester.portSlot) + procs.size()) + " tester 23");
             bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.hwCfgEnd);
             cfg = new ArrayList<String>();
             cfg.add("");

@@ -8992,3 +8992,8 @@ qc pass: p4lang: vlan vpls/ldp with bgp
 qc pass: p4lang: vlan eompls
 qc pass: p4lang: bundle vlan vpls/ldp with bgp
 qc pass: p4lang: bundle vlan eompls
+---------------------------------- 2020-07-31 14:57:45
+no qc pass: bgp interas csc vpn with asbr peering
+no work: bgp interas csc vpn with asbr peering
+---------------------------------- 2020-07-31 16:57:35
+qc pass: bgp interas csc vpn with asbr peering

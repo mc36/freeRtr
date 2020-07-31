@@ -276,6 +276,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected final int rtrNum;
 
     /**
+     * other changes trigger full computation
+     */
+    protected boolean otherTrigger;
+
+    /**
      * next hop tracking route map
      */
     protected tabListing<tabRtrmapN, addrIP> nhtRoumap;
@@ -1214,7 +1219,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * others changed
      */
     public void routerOthersChanged() {
-        if ((addrFams & rtrBgpParam.mskLab) != 0) {
+        if (otherTrigger) {
             needFull.add(1);
             compute.wakeup();
             return;
@@ -1474,12 +1479,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " export");
         }
-        other.doPeers(nOtr);
+        otherTrigger = (addrFams & rtrBgpParam.mskLab) != 0;
+        otherTrigger |= other.doPeers(nOtr);
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doPeers(nVpnU, nVpnM, nVpnF);
+            otherTrigger |= vrfs.get(i).doer.doPeers(nVpnU, nVpnM, nVpnF);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doPeers(nVpoU, nVpoM, nVpoF);
+            otherTrigger |= ovrfs.get(i).doer.doPeers(nVpoU, nVpoM, nVpoF);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doPeers(nVpls);

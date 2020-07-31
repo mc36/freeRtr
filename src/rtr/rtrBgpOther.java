@@ -91,6 +91,11 @@ public class rtrBgpOther extends ipRtr {
      * others changed
      */
     public void routerOthersChanged() {
+        if (fwd.prefixMode == ipFwd.labelMode.common) {
+            return;
+        }
+        parent.routerRedistChanged();
+        fwd.routerChg(this);
     }
 
     private void doExportRoute(tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg) {
@@ -140,8 +145,9 @@ public class rtrBgpOther extends ipRtr {
      * import routes from table
      *
      * @param cmpU unicast table to read
+     * @return other changes trigger full recomputation
      */
-    public void doPeers(tabRoute<addrIP> cmpU) {
+    public boolean doPeers(tabRoute<addrIP> cmpU) {
         tabRoute<addrIP> tabU = new tabRoute<addrIP>("bgp");
         peers = new tabGen<addrIP>();
         for (int i = 0; i < cmpU.size(); i++) {
@@ -150,6 +156,7 @@ public class rtrBgpOther extends ipRtr {
         routerDoAggregates(parent.afiUni, tabU, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
         routerComputedU = tabU;
         fwd.routerChg(this);
+        return fwd.prefixMode != ipFwd.labelMode.common;
     }
 
     /**
