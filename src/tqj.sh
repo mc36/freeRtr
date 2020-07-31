@@ -1,3 +1,3 @@
 #!/bin/sh
 ./c.sh
-./t.sh paralell 50 mem 4096
+./t.sh paralell 40 mem 4096
