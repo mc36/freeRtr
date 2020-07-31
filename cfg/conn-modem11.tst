@@ -51,7 +51,7 @@ dial-peer 2
  vrf v1
  myname 77
  target 1.1.2.2
- port-local 5060
+ port-local 0
  protocol sip-conn
  direction in
  exit
@@ -75,6 +75,7 @@ dial-peer 1
  myname 99
  target 1.1.2.1
  port-local 5060
+ port-remote 0
  protocol sip-list
  direction out
  exit
@@ -83,8 +84,7 @@ dial-peer 1
 
 r2 tping 100 5 1.1.2.2 /vrf v1
 r2 tping 100 5 1.1.1.1 /vrf v1
-
-sleep 3
-
+r3 tping 100 5 1.1.2.1 /vrf v1
+r1 tping 100 5 1.1.1.2 /vrf v1
 r3 send pack modem 11 22
 r3 tping 100 5 2.2.2.2 /vrf v1

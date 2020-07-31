@@ -14,7 +14,6 @@ vrf def v1
  exit
 int ser1
  vrf for v1
- enc raw
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
  exit
@@ -42,6 +41,11 @@ server pckodtls pou
  security ecdsacert ed
  vrf v1
  exit
+server dns dns
+ zone test.corp defttl 43200
+ rr www.test.corp ip4a 1.1.1.1
+ vrf v1
+ exit
 !
 
 addrouter r2
@@ -56,7 +60,6 @@ proxy-profile p1
  exit
 int ser1
  vrf for v1
- enc raw
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
  exit
@@ -74,10 +77,15 @@ int di1
 vpdn pou
  int di1
  proxy p1
- tar 1.1.1.1
+ tar www.test.corp
  vcid 2554
  prot pckodtls
  exit
+proxy-profile p2
+ vrf v1
+ exit
+client proxy p2
+client name-server 1.1.1.1
 !
 
 

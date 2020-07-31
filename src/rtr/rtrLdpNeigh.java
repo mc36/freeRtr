@@ -49,7 +49,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
      * heard targeted hello
      */
     public boolean helloTrg;
-    
+
     /**
      * input label filter
      */
@@ -721,6 +721,12 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             }
             sendInitialization();
             sendKeepAlive();
+            if (doRxInit()) {
+                logger.warn("got no init from " + peer);
+                conn.setClose();
+                ip.ldpNeighDel(this);
+                return;
+            }
             sendAddressList();
             sendKeepAlive();
             new rtrLdpNeighRx(this);
@@ -749,6 +755,34 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         logger.error("neighbor " + peer + " down");
         conn.setClose();
         ip.ldpNeighDel(this);
+    }
+
+    /**
+     * do receive work
+     *
+     * @return true on error, false on success
+     */
+    public boolean doRxInit() {
+        packLdp pck = new packLdp();
+        pck.conn = conn;
+        pck.cntr = cntr;
+        if (pck.recvPack()) {
+            return true;
+        }
+        if (pck.parseLDPheader()) {
+            return true;
+        }
+        boolean seen = false;
+        for (;;) {
+            if (pck.parseMSGheader()) {
+                break;
+            }
+            if (pck.msgTyp == packLdp.msgTinit) {
+                gotInitialization(pck);
+                seen = true;
+            }
+        }
+        return !seen;
     }
 
     /**
