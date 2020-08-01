@@ -358,13 +358,13 @@ public class userTester {
         if (persistF != null) {
             paralell = 0;
             persistD = bits.txt2buf(path + persistF);
-            persistP = portBase + 90 + (slot * portSlot);
+            persistP = portBase + (portSlot / 2) + (slot * portSlot);
             String a = persistD.remove(0);
             int i = bits.str2num(persistD.remove(0));
             s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=4,threads=1,sockets=1 -hda " + a + " -m " + i;
             a = persistD.remove(0);
             for (i = 0; i < 8; i++) {
-                int rp = persistP + 2 + (i * 2);
+                int rp = persistP + ((i + 1) * 4);
                 int lp = rp + 1;
                 s += " -netdev socket,id=n" + i + ",udp=127.0.0.1:" + rp + ",localaddr=:" + lp + " -device " + a + ",netdev=n" + i + ",mac=00:00:00:00:11:" + bits.toHexB(i);
             }
@@ -506,6 +506,7 @@ public class userTester {
         workers[slt] = lt;
         lt.doTest(path, ftr.fil);
         lt.stopAll();
+        workers[slt] = getTester(slt);
         traces.add(lt.traces);
         boolean del = lt.getSucc();
         if (!del) {
@@ -1040,12 +1041,24 @@ class userTesterOne {
             String b = a.substring(i + 1, a.length());
             a = a.substring(0, i);
             if (a.startsWith("rem")) {
-                i = bits.str2num(a.substring(3, a.length())) + remoteP;
+                i = bits.str2num(a.substring(3, a.length()));
+                if (remoteD == null) {
+                    i = userTester.portBase + (slot * userTester.portSlot) + (i * 4);
+                    s += " 127.0.0.1 " + (i + 3) + " 127.0.0.1 " + (i + 2);
+                    continue;
+                }
+                i = i + remoteP;
                 s = s + remoteL + " " + i + " " + remoteA + " " + i + b;
                 continue;
             }
             if (a.startsWith("per")) {
-                i = (bits.str2num(a.substring(3, a.length())) * 2) + persistP;
+                i = bits.str2num(a.substring(3, a.length()));
+                if (persistD == null) {
+                    i = userTester.portBase + (slot * userTester.portSlot) + (i * 4);
+                    s += " 127.0.0.1 " + (i + 3) + " 127.0.0.1 " + (i + 2);
+                    continue;
+                }
+                i = (i * 4) + persistP;
                 s = s + "127.0.0.1 " + i + " 127.0.0.1 " + (i + 1) + b;
                 continue;
             }
@@ -1207,14 +1220,8 @@ class userTesterOne {
                 String a = cfg.get(i);
                 cmd = new cmds("hw", a);
                 a = cmd.word();
-                if (!a.equals("int")) {
-                    continue;
-                }
-                cmd.word();
                 a = cmd.word();
-                if (!a.equals("eth")) {
-                    continue;
-                }
+                a = cmd.word();
                 addrMac mac = new addrMac();
                 mac.fromString(cmd.word());
                 cmd.word();
@@ -1268,7 +1275,7 @@ class userTesterOne {
                 s = repairHwCfg(s);
                 cfg.add(s);
             }
-            cfg.add("hwid tester");
+            cfg.add("hwid tester-slot" + slot);
             cfg.add("tcp2vrf " + (2001 + (slot * userTester.portSlot) + procs.size()) + " tester 23");
             bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.hwCfgEnd);
             cfg = new ArrayList<String>();

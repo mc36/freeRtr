@@ -271,6 +271,7 @@ public class cfgInit implements Runnable {
         try {
             Thread.setDefaultUncaughtExceptionHandler(new cfgInitHandler());
         } catch (Exception e) {
+            logger.error("error catching jvm");
         }
         for (int o = 0; o < jvmMagic.length; o++) {
             String s = jvmMagic[o];
