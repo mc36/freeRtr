@@ -368,7 +368,7 @@ public class userTester {
                 int lp = rp + 1;
                 s += " -netdev socket,id=n" + i + ",udp=127.0.0.1:" + rp + ",localaddr=:" + lp + " -device " + a + ",netdev=n" + i + ",mac=00:00:00:00:11:" + bits.toHexB(i);
             }
-            persistP += (2 * bits.str2num(persistD.remove(0)));
+            persistP += (4 * bits.str2num(persistD.remove(0)));
             persistC = new userTesterPrc(rdr, slot, "persist", s);
             persistC.persistent = true;
             bits.buf2txt(true, bits.str2lst(""), persistC.getLogName(4));
