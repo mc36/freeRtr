@@ -329,9 +329,9 @@ public class temper implements Runnable {
         }
     }
 
-    private static void drawRightAlighed(Graphics2D g2d, int y, String s) {
+    private static void drawRightAlighed(Graphics2D g2d, int mx10, int y, String s) {
         FontMetrics fm = g2d.getFontMetrics();
-        g2d.drawString(s, 790 - fm.stringWidth(s), y);
+        g2d.drawString(s, mx10 - fm.stringWidth(s), y);
     }
 
     /**
@@ -413,7 +413,17 @@ public class temper implements Runnable {
             }
             f.close();
             tmpMax -= tmpMin;
-            BufferedImage img = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
+            final int mx = 1280;
+            final int my = 720;
+            final int mx10 = mx - 10;
+            final int mx20 = mx - 20;
+            final int my1 = my - 1;
+            final int my10 = my - 10;
+            final int my20 = my - 20;
+            final int my30 = my - 30;
+            final int my40 = my - 40;
+            final int my50 = my - 50;
+            BufferedImage img = new BufferedImage(mx, my, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = img.createGraphics();
             g2d.setBackground(Color.gray);
             g2d.setFont(new Font("Serif", Font.BOLD, 20));
@@ -432,23 +442,23 @@ public class temper implements Runnable {
                 Color.yellow,};
             for (int i = 0; i < history.size(); i++) {
                 temperHist l = history.get(i);
-                int x = ((i * 780) / history.size()) + 10;
+                int x = ((i * mx20) / history.size()) + 10;
                 g2d.setPaint(Color.black);
-                g2d.drawRect(x, 590 - (int) (((l.need - tmpMin) * 580) / tmpMax), 1, 1);
+                g2d.drawRect(x, my10 - (int) (((l.need - tmpMin) * my20) / tmpMax), 1, 1);
                 for (int o = 0; o < l.meas.length; o++) {
                     g2d.setPaint(colors[o]);
-                    g2d.drawRect(x, 590 - (int) (((l.meas[o] - tmpMin) * 580) / tmpMax), 1, 1);
+                    g2d.drawRect(x, my10 - (int) (((l.meas[o] - tmpMin) * my20) / tmpMax), 1, 1);
                 }
             }
             for (int i = 0; i < measDat.length; i++) {
                 g2d.setPaint(colors[i]);
-                drawRightAlighed(g2d, 550 - (i * 20), measDat[i].myNam);
+                drawRightAlighed(g2d, mx10, my50 - (i * 20), measDat[i].myNam);
             }
             g2d.setPaint(Color.black);
-            drawRightAlighed(g2d, 570, "needed");
-            for (int i = 20; i < 580; i += 50) {
-                String a = (tmpMin + ((i * tmpMax) / 580)) + "       ";
-                g2d.drawString(a.substring(0, 6), 1, 590 - i);
+            drawRightAlighed(g2d, mx10, my30, "needed");
+            for (int i = 20; i < my20; i += 50) {
+                String a = (tmpMin + ((i * tmpMax) / my20)) + "       ";
+                g2d.drawString(a.substring(0, 6), 1, my10 - i);
             }
             String a;
             if ((history.get(history.size() - 1).time - history.get(0).time) < (86400 * 3000)) {
@@ -456,10 +466,10 @@ public class temper implements Runnable {
             } else {
                 a = "MMMdd";
             }
-            for (int i = 0; i < 780; i += 100) {
-                temperHist l = history.get((i * history.size()) / 780);
+            for (int i = 0; i < mx20; i += 100) {
+                temperHist l = history.get((i * history.size()) / mx20);
                 DateFormat dat = new SimpleDateFormat(a, Locale.US);
-                g2d.drawString(dat.format(new Date((long) l.time)), i + 10, 599);
+                g2d.drawString(dat.format(new Date((long) l.time)), i + 10, my1);
             }
             ImageIO.write(img, "png", buf);
             return 2;
