@@ -81,9 +81,11 @@ public class userTester {
 
     private String otherS = null;
 
-    private List<String> otherD = null;
-
     private int otherM = 0;
+
+    private int otherC = 0;
+
+    private List<String> otherD = null;
 
     private List<userTesterCap> capture = new ArrayList<userTesterCap>();
 
@@ -336,15 +338,6 @@ public class userTester {
         rdr.debugStat("persist=" + persistF);
         rdr.debugStat("capture=" + capture.size());
         rdr.debugStat("files=" + needed.size());
-        if (otherF != null) {
-            paralell = 0;
-            otherD = bits.txt2buf(path + otherF);
-            otherI = otherD.remove(0);
-            otherM = bits.str2num(otherD.remove(0));
-            otherN = otherD.remove(0);
-            otherW = otherD.remove(0);
-            otherS = otherD.remove(0);
-        }
         if (remoteF != null) {
             paralell = 0;
             remoteD = bits.txt2buf(path + remoteF);
@@ -355,13 +348,24 @@ public class userTester {
             remoteL.fromString(remoteD.remove(0));
             remoteS = remoteD.remove(0);
         }
+        if (otherF != null) {
+            paralell = 0;
+            otherD = bits.txt2buf(path + otherF);
+            otherI = otherD.remove(0);
+            otherM = bits.str2num(otherD.remove(0));
+            otherC = bits.str2num(otherD.remove(0));
+            otherN = otherD.remove(0);
+            otherW = otherD.remove(0);
+            otherS = otherD.remove(0);
+        }
         if (persistF != null) {
             paralell = 0;
             persistD = bits.txt2buf(path + persistF);
             persistP = portBase + (portSlot / 2) + (slot * portSlot);
             String a = persistD.remove(0);
             int i = bits.str2num(persistD.remove(0));
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=4,threads=1,sockets=1 -hda " + a + " -m " + i;
+            int o = bits.str2num(persistD.remove(0));
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + o + ",threads=1,sockets=1 -hda " + a + " -m " + i;
             a = persistD.remove(0);
             for (i = 0; i < 8; i++) {
                 int rp = persistP + ((i + 1) * 4);
@@ -543,6 +547,7 @@ public class userTester {
         lt.otherI = otherI;
         lt.otherN = otherN;
         lt.otherM = otherM;
+        lt.otherC = otherC;
         lt.otherW = otherW;
         lt.otherS = otherS;
         lt.remoteD = remoteD;
@@ -887,9 +892,11 @@ class userTesterOne {
 
     public String otherS;
 
-    public List<String> otherD;
-
     public int otherM;
+
+    public int otherC;
+
+    public List<String> otherD;
 
     public String window = "c";
 
@@ -1215,7 +1222,7 @@ class userTesterOne {
                 s = repairHwCfg(s);
                 cfg.add(s);
             }
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=2,threads=1,sockets=1 -hda " + otherI + " -m " + otherM;
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + otherC + ",threads=1,sockets=1 -hda " + otherI + " -m " + otherM;
             for (int i = 0; i < cfg.size(); i++) {
                 String a = cfg.get(i);
                 cmd = new cmds("hw", a);
