@@ -1044,7 +1044,7 @@ class userTesterOne {
                 i = bits.str2num(a.substring(3, a.length()));
                 if (remoteD == null) {
                     i = userTester.portBase + (slot * userTester.portSlot) + (i * 4);
-                    s += s + "127.0.0.1 " + (i + 3) + " 127.0.0.1 " + (i + 2) + b;
+                    s = s + "127.0.0.1 " + (i + 3) + " 127.0.0.1 " + (i + 2) + b;
                     continue;
                 }
                 i = i + remoteP;

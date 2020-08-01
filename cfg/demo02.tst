@@ -1,8 +1,8 @@
 description addressed demo network
 
 addrouter r1
-int eth1 eth 0000.1111.0001 127.0.0.1 26011 127.0.0.1 26021
-int eth2 eth 0000.1111.0002 127.0.0.1 26012 127.0.0.1 26022
+int eth1 eth 0000.1111.0001 $1a$ $1b$
+int eth2 eth 0000.1111.0002 $2a$ $2b$
 !
 vrf def v1
  rd 1:1
@@ -36,8 +36,8 @@ int eth2
 !
 
 addrouter r2
-int eth1 eth 0000.2222.0001 127.0.0.1 26021 127.0.0.1 26011
-int eth2 eth 0000.2222.0002 127.0.0.1 26013 127.0.0.1 26023
+int eth1 eth 0000.2222.0001 $1b$ $1a$
+int eth2 eth 0000.2222.0002 $3a$ $3b$
 !
 vrf def v1
  rd 1:1
@@ -71,8 +71,8 @@ int eth2
 !
 
 addrouter r3
-int eth1 eth 0000.3333.0001 127.0.0.1 26014 127.0.0.1 26024
-int eth2 eth 0000.3333.0002 127.0.0.1 26022 127.0.0.1 26012
+int eth1 eth 0000.3333.0001 $4a$ $4b$
+int eth2 eth 0000.3333.0002 $2b$ $2a$
 !
 vrf def v1
  rd 1:1
@@ -106,8 +106,8 @@ int eth2
 !
 
 addrouter r4
-int eth1 eth 0000.4444.0001 127.0.0.1 26024 127.0.0.1 26014
-int eth2 eth 0000.4444.0002 127.0.0.1 26023 127.0.0.1 26013
+int eth1 eth 0000.4444.0001 $4b$ $4a$
+int eth2 eth 0000.4444.0002 $3b$ $3a$
 !
 vrf def v1
  rd 1:1

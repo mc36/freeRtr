@@ -1,6 +1,6 @@
 file;code;try;test;stage;command
 -;-;freeRouter v20.8.1-rel, done by cs@nop.;-;-
--;-;2020-08-01 07:28:12, took 00:06:13, with 80 workers, on 1796 cases, 0 failed, 0 traces, 0 retries;-;-
+-;-;2020-08-01 08:25:01, took 00:06:27, with 80 workers, on 1796 cases, 0 failed, 0 traces, 2 retries;-;-
 -;-;./rtr.bin;-;-
 basic.tst;0;0;dummy test;successfully;finished
 conn-anyconn.tst;0;0;ip over anyconnect;successfully;finished
@@ -969,7 +969,7 @@ mpls-xconn16.tst;0;0;cross connect interworking with sreth;successfully;finished
 mpls-xconn17.tst;0;0;cross connect interworking with nvgre;successfully;finished
 mpls-xconn18.tst;0;0;cross connect interworking with uti;successfully;finished
 mpls-xconn19.tst;0;0;cross connect interworking with dlsw;successfully;finished
-mpls-xconn20.tst;0;0;cross connect with everything;successfully;finished
+mpls-xconn20.tst;0;1;cross connect with everything;successfully;finished
 opnflw-rout01.tst;0;0;openflow: software routing;successfully;finished
 opnflw-rout02.tst;0;0;openflow: bridging and routing;successfully;finished
 opnflw-rout03.tst;0;0;openflow: ip routing;successfully;finished
@@ -1558,7 +1558,7 @@ rout-isis43.tst;0;0;isis multi-topology with sr;successfully;finished
 rout-isis44.tst;0;0;isis prefix withdraw;successfully;finished
 rout-isis45.tst;0;0;isis change in metric;successfully;finished
 rout-isis46.tst;0;0;isis aggregate;successfully;finished
-rout-isis47.tst;0;0;isis auto mesh tunnel;successfully;finished
+rout-isis47.tst;0;1;isis auto mesh tunnel;successfully;finished
 rout-isis48.tst;0;0;isis triangle connection;successfully;finished
 rout-isis49.tst;0;0;isis prefix movement;successfully;finished
 rout-isis50.tst;0;0;isis with bier;successfully;finished

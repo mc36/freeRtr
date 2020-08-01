@@ -1,5 +1,11 @@
 hostname r2
-logging file debug ../binTmp/zzz-log-r2.txt
+logging file debug ../binTmp/zzz0r2-log.run
+vrf definition tester
+ exit
+server telnet tester
+ security protocol telnet
+ vrf tester
+ exit
 vrf def v1
  rd 1:1
  exit
@@ -28,7 +34,4 @@ int eth2
  vrf for v1
  ipv4 addr 1.1.1.9 255.255.255.252
  ipv6 addr 1234:3::1 ffff:ffff::
- exit
-serv tel tel
- vrf v1
  exit

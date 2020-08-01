@@ -1,4 +1,0 @@
-serv tel tel
- sec prot tel
- vrf v1
- exit

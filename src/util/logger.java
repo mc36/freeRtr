@@ -275,13 +275,13 @@ public class logger {
         try {
             logFilHnd.close();
         } catch (Exception e) {
-            logger.traceback(e);
+            traceback(e);
         }
         userFlash.rename(logFilNam, logRotNam, true, true);
         try {
             logFilHnd = new PrintStream(new FileOutputStream(logFilNam, true));
         } catch (Exception e) {
-            logger.traceback(e);
+            traceback(e);
         }
         logFilSiz = 0;
     }
