@@ -1,6 +1,6 @@
 file;code;try;test;stage;command
 -;-;freeRouter v20.8.1-rel, done by cs@nop.;-;-
--;-;2020-08-01 08:25:01, took 00:06:27, with 80 workers, on 1796 cases, 0 failed, 0 traces, 2 retries;-;-
+-;-;2020-08-01 10:29:53, took 00:07:09, with 80 workers, on 1812 cases, 0 failed, 0 traces, 0 retries;-;-
 -;-;./rtr.bin;-;-
 basic.tst;0;0;dummy test;successfully;finished
 conn-anyconn.tst;0;0;ip over anyconnect;successfully;finished
@@ -585,6 +585,7 @@ intop1-eth01.tst;0;0;interop1: ethernet encapsulation;successfully;finished
 intop1-eth02.tst;0;0;interop1: dot1q encapsulation;successfully;finished
 intop1-eth03.tst;0;0;interop1: spantree nonroot;successfully;finished
 intop1-eth04.tst;0;0;interop1: spantree root;successfully;finished
+intop1-eth05.tst;0;0;interop1: point2point ethernet encapsulation;successfully;finished
 intop1-ike101.tst;0;0;interop1: ike1 with ipv4;successfully;finished
 intop1-ike102.tst;0;0;interop1: ike1 with ipv6;successfully;finished
 intop1-ike103.tst;0;0;interop1: ike1 with 3des;successfully;finished
@@ -637,6 +638,7 @@ intop1-ldp02.tst;0;0;interop1: ethernet over mpls;successfully;finished
 intop1-ldp03.tst;0;0;interop1: ldp p2mp lsp;successfully;finished
 intop1-ldp04.tst;0;0;interop1: ldp mp2mp lsp;successfully;finished
 intop1-ldp05.tst;0;0;interop1: ldp php lsp;successfully;finished
+intop1-ldp06.tst;0;0;interop1: ldp over point2point ethernet;successfully;finished
 intop1-mcast01.tst;0;0;interop1: igmp3/mld2;successfully;finished
 intop1-mcast02.tst;0;0;interop1: pim;successfully;finished
 intop1-modem01.tst;0;0;interop1: modem with alaw;successfully;finished
@@ -697,6 +699,7 @@ intop2-eigrp02.tst;0;0;interop2: eigrp prefix withdraw;successfully;finished
 intop2-eth01.tst;0;0;interop2: ethernet encapsulation;successfully;finished
 intop2-eth02.tst;0;0;interop2: dot1q encapsulation;successfully;finished
 intop2-eth03.tst;0;0;interop2: dot1ad encapsulation;successfully;finished
+intop2-eth04.tst;0;0;interop2: point2point ethernet encapsulation;successfully;finished
 intop2-isis01.tst;0;0;interop2: point2point isis;successfully;finished
 intop2-isis02.tst;0;0;interop2: isis dis;successfully;finished
 intop2-isis03.tst;0;0;interop2: isis nondis;successfully;finished
@@ -715,6 +718,7 @@ intop2-ldp02.tst;0;0;interop2: ethernet over mpls;successfully;finished
 intop2-ldp03.tst;0;0;interop2: ldp p2mp lsp;successfully;finished
 intop2-ldp04.tst;0;0;interop2: ldp mp2mp lsp;successfully;finished
 intop2-ldp05.tst;0;0;interop2: ldp php lsp;successfully;finished
+intop2-ldp06.tst;0;0;interop2: ldp over point2point ethernet;successfully;finished
 intop2-mcast01.tst;0;0;interop2: igmp3/mld2;successfully;finished
 intop2-mcast02.tst;0;0;interop2: pim;successfully;finished
 intop2-ospf01.tst;0;0;interop2: point2point ospf;successfully;finished
@@ -865,6 +869,7 @@ mpls-ldp22.tst;0;0;vrf label filtering with ldp;successfully;finished
 mpls-ldp23.tst;0;0;mpls expbundle;successfully;finished
 mpls-ldp24.tst;0;0;mpls redirection;successfully;finished
 mpls-ldp25.tst;0;0;ldp php;successfully;finished
+mpls-ldp26.tst;0;0;ldp over point2point ethernet;successfully;finished
 mpls-nsh01.tst;0;0;nsh over ethernet;successfully;finished
 mpls-nsh02.tst;0;0;nsh over ethernet vlan;successfully;finished
 mpls-nsh03.tst;0;0;nsh over ethernet bridge;successfully;finished
@@ -950,6 +955,7 @@ mpls-te12.tst;0;0;ldp and te;successfully;finished
 mpls-te13.tst;0;0;p2mp te;successfully;finished
 mpls-te14.tst;0;0;p2mp te tail+mid;successfully;finished
 mpls-te15.tst;0;0;te with pcep;successfully;finished
+mpls-te16.tst;0;0;te over point2point ethernet;successfully;finished
 mpls-xconn01.tst;0;0;cross connect with pwe over mpls;successfully;finished
 mpls-xconn02.tst;0;0;cross connect with packet over udp;successfully;finished
 mpls-xconn03.tst;0;0;cross connect with vxlan;successfully;finished
@@ -969,7 +975,7 @@ mpls-xconn16.tst;0;0;cross connect interworking with sreth;successfully;finished
 mpls-xconn17.tst;0;0;cross connect interworking with nvgre;successfully;finished
 mpls-xconn18.tst;0;0;cross connect interworking with uti;successfully;finished
 mpls-xconn19.tst;0;0;cross connect interworking with dlsw;successfully;finished
-mpls-xconn20.tst;0;1;cross connect with everything;successfully;finished
+mpls-xconn20.tst;0;0;cross connect with everything;successfully;finished
 opnflw-rout01.tst;0;0;openflow: software routing;successfully;finished
 opnflw-rout02.tst;0;0;openflow: bridging and routing;successfully;finished
 opnflw-rout03.tst;0;0;openflow: ip routing;successfully;finished
@@ -1080,6 +1086,7 @@ rout-babel21.tst;0;0;babel aggregation;successfully;finished
 rout-babel22.tst;0;0;babel auto mesh tunnel;successfully;finished
 rout-babel23.tst;0;0;babel triangle connection;successfully;finished
 rout-babel24.tst;0;0;babel autoroute;successfully;finished
+rout-babel25.tst;0;0;babel over point2point ethernet;successfully;finished
 rout-bgp001.tst;0;0;ebgp in chain;successfully;finished
 rout-bgp002.tst;0;0;confed bgp in chain;successfully;finished
 rout-bgp003.tst;0;0;ibgp in chain;successfully;finished
@@ -1491,6 +1498,7 @@ rout-bgp408.tst;0;0;bgp remove private as out with routemap;successfully;finishe
 rout-bgp409.tst;0;0;bgp remove private as in with routepolicy;successfully;finished
 rout-bgp410.tst;0;0;bgp remove private as out with routepolicy;successfully;finished
 rout-bgp411.tst;0;0;bgp with srgb sr;successfully;finished
+rout-bgp412.tst;0;0;bgp over point2point ethernet;successfully;finished
 rout-eigrp01.tst;0;0;eigrp point2point connection;successfully;finished
 rout-eigrp02.tst;0;0;eigrp point2multipoint connection;successfully;finished
 rout-eigrp03.tst;0;0;eigrp point2point chain;successfully;finished
@@ -1512,6 +1520,7 @@ rout-eigrp18.tst;0;0;eigrp auto mesh tunnel;successfully;finished
 rout-eigrp19.tst;0;0;eigrp stub;successfully;finished
 rout-eigrp20.tst;0;0;eigrp triangle connection;successfully;finished
 rout-eigrp21.tst;0;0;eigrp autoroute;successfully;finished
+rout-eigrp22.tst;0;0;eigrp over point2point ethernet;successfully;finished
 rout-isis01.tst;0;0;isis over ethernet;successfully;finished
 rout-isis02.tst;0;0;isis over ethernet vlan;successfully;finished
 rout-isis03.tst;0;0;isis over ethernet bridge;successfully;finished
@@ -1558,7 +1567,7 @@ rout-isis43.tst;0;0;isis multi-topology with sr;successfully;finished
 rout-isis44.tst;0;0;isis prefix withdraw;successfully;finished
 rout-isis45.tst;0;0;isis change in metric;successfully;finished
 rout-isis46.tst;0;0;isis aggregate;successfully;finished
-rout-isis47.tst;0;1;isis auto mesh tunnel;successfully;finished
+rout-isis47.tst;0;0;isis auto mesh tunnel;successfully;finished
 rout-isis48.tst;0;0;isis triangle connection;successfully;finished
 rout-isis49.tst;0;0;isis prefix movement;successfully;finished
 rout-isis50.tst;0;0;isis with bier;successfully;finished
@@ -1570,6 +1579,7 @@ rout-isis55.tst;0;0;isis change in tag;successfully;finished
 rout-isis56.tst;0;0;isis multi-topology change in tag;successfully;finished
 rout-isis57.tst;0;0;isis with php sr;successfully;finished
 rout-isis58.tst;0;0;isis with srgb sr;successfully;finished
+rout-isis59.tst;0;0;isis over point2point ethernet;successfully;finished
 rout-lsrp01.tst;0;0;lsrp point2point connection;successfully;finished
 rout-lsrp02.tst;0;0;lsrp point2multipoint connection;successfully;finished
 rout-lsrp03.tst;0;0;lsrp point2point chain;successfully;finished
@@ -1601,6 +1611,7 @@ rout-lsrp28.tst;0;0;lsrp default address suppression;successfully;finished
 rout-lsrp29.tst;0;0;lsrp address unsuppression;successfully;finished
 rout-lsrp30.tst;0;0;lsrp with php sr;successfully;finished
 rout-lsrp31.tst;0;0;lsrp with srgb sr;successfully;finished
+rout-lsrp32.tst;0;0;lsrp over point2point ethernet;successfully;finished
 rout-mcast01.tst;0;0;multicast routing with static flooding;successfully;finished
 rout-mcast02.tst;0;0;multicast routing with pim ssm;successfully;finished
 rout-mcast03.tst;0;0;multicast routing with igmp/mld;successfully;finished
@@ -1639,6 +1650,7 @@ rout-olsr21.tst;0;0;olsr aggregation;successfully;finished
 rout-olsr22.tst;0;0;olsr auto mesh tunnel;successfully;finished
 rout-olsr23.tst;0;0;olsr triangle connection;successfully;finished
 rout-olsr24.tst;0;0;olsr autoroute;successfully;finished
+rout-olsr25.tst;0;0;olsr over point2point ethernet;successfully;finished
 rout-ospf01.tst;0;0;ospf point2point connection;successfully;finished
 rout-ospf02.tst;0;0;ospf point2multipoint connection;successfully;finished
 rout-ospf03.tst;0;0;ospf point2multipoint nonbroadcast connection;successfully;finished
@@ -1681,6 +1693,7 @@ rout-ospf39.tst;0;0;ospf transit area with bier;successfully;finished
 rout-ospf40.tst;0;0;ospf autoroute;successfully;finished
 rout-ospf41.tst;0;0;ospf with php sr;successfully;finished
 rout-ospf42.tst;0;0;ospf with srgb sr;successfully;finished
+rout-ospf43.tst;0;0;ospf over point2point ethernet;successfully;finished
 rout-pbr01.tst;0;0;policy routing with nexthop;successfully;finished
 rout-pbr02.tst;0;0;policy routing with interface and nexthop between vrfs;successfully;finished
 rout-pbr03.tst;0;0;policy routing with interface and nexthop;successfully;finished
@@ -1725,6 +1738,7 @@ rout-pvrp35.tst;0;0;egress label filtering with pvrp;successfully;finished
 rout-pvrp36.tst;0;0;pvrp stub node;successfully;finished
 rout-pvrp37.tst;0;0;pvrp stub interface;successfully;finished
 rout-pvrp38.tst;0;0;pvrp unstub interface;successfully;finished
+rout-pvrp39.tst;0;0;pvrp over point2point ethernet;successfully;finished
 rout-redist01.tst;0;0;redistribution with isis;successfully;finished
 rout-redist02.tst;0;0;redistribution with ospf;successfully;finished
 rout-redist03.tst;0;0;redistribution with rip;successfully;finished
@@ -1776,6 +1790,7 @@ rout-rip23.tst;0;0;rip aggregation;successfully;finished
 rout-rip24.tst;0;0;rip auto mesh tunnel;successfully;finished
 rout-rip25.tst;0;0;rip triangle connection;successfully;finished
 rout-rip26.tst;0;0;rip autoroute;successfully;finished
+rout-rip27.tst;0;0;rip over point2point ethernet;successfully;finished
 rout-static01.tst;0;0;static routing;successfully;finished
 rout-static02.tst;0;0;static routing with distance;successfully;finished
 rout-static03.tst;0;0;static routing with icmp tracker;successfully;finished
@@ -1783,6 +1798,7 @@ rout-static04.tst;0;0;static routing with tcp tracker;successfully;finished
 rout-static05.tst;0;0;static routing with bfd tracker;successfully;finished
 rout-static06.tst;0;0;static routing with labels;successfully;finished
 rout-static07.tst;0;0;static routing with interface;successfully;finished
+rout-static08.tst;0;0;static routing over point2point ethernet;successfully;finished
 serv-dns01.tst;0;0;authoritative dns server;successfully;finished
 serv-dns02.tst;0;0;recursive dns server;successfully;finished
 serv-dns03.tst;0;0;relaying dns server;successfully;finished

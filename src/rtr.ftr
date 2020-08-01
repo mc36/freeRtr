@@ -581,6 +581,7 @@ qc pass: interop1: ethernet encapsulation
 qc pass: interop1: dot1q encapsulation
 qc pass: interop1: spantree nonroot
 qc pass: interop1: spantree root
+qc pass: interop1: point2point ethernet encapsulation
 qc pass: interop1: ike1 with ipv4
 qc pass: interop1: ike1 with ipv6
 qc pass: interop1: ike1 with 3des
@@ -633,6 +634,7 @@ qc pass: interop1: ethernet over mpls
 qc pass: interop1: ldp p2mp lsp
 qc pass: interop1: ldp mp2mp lsp
 qc pass: interop1: ldp php lsp
+qc pass: interop1: ldp over point2point ethernet
 qc pass: interop1: igmp3/mld2
 qc pass: interop1: pim
 qc pass: interop1: modem with alaw
@@ -693,6 +695,7 @@ qc pass: interop2: eigrp prefix withdraw
 qc pass: interop2: ethernet encapsulation
 qc pass: interop2: dot1q encapsulation
 qc pass: interop2: dot1ad encapsulation
+qc pass: interop2: point2point ethernet encapsulation
 qc pass: interop2: point2point isis
 qc pass: interop2: isis dis
 qc pass: interop2: isis nondis
@@ -711,6 +714,7 @@ qc pass: interop2: ethernet over mpls
 qc pass: interop2: ldp p2mp lsp
 qc pass: interop2: ldp mp2mp lsp
 qc pass: interop2: ldp php lsp
+qc pass: interop2: ldp over point2point ethernet
 qc pass: interop2: igmp3/mld2
 qc pass: interop2: pim
 qc pass: interop2: point2point ospf
@@ -861,6 +865,7 @@ qc pass: vrf label filtering with ldp
 qc pass: mpls expbundle
 qc pass: mpls redirection
 qc pass: ldp php
+qc pass: ldp over point2point ethernet
 qc pass: nsh over ethernet
 qc pass: nsh over ethernet vlan
 qc pass: nsh over ethernet bridge
@@ -946,6 +951,7 @@ qc pass: ldp and te
 qc pass: p2mp te
 qc pass: p2mp te tail+mid
 qc pass: te with pcep
+qc pass: te over point2point ethernet
 qc pass: cross connect with pwe over mpls
 qc pass: cross connect with packet over udp
 qc pass: cross connect with vxlan
@@ -1076,6 +1082,7 @@ qc pass: babel aggregation
 qc pass: babel auto mesh tunnel
 qc pass: babel triangle connection
 qc pass: babel autoroute
+qc pass: babel over point2point ethernet
 qc pass: ebgp in chain
 qc pass: confed bgp in chain
 qc pass: ibgp in chain
@@ -1487,6 +1494,7 @@ qc pass: bgp remove private as out with routemap
 qc pass: bgp remove private as in with routepolicy
 qc pass: bgp remove private as out with routepolicy
 qc pass: bgp with srgb sr
+qc pass: bgp over point2point ethernet
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -1508,6 +1516,7 @@ qc pass: eigrp auto mesh tunnel
 qc pass: eigrp stub
 qc pass: eigrp triangle connection
 qc pass: eigrp autoroute
+qc pass: eigrp over point2point ethernet
 qc pass: isis over ethernet
 qc pass: isis over ethernet vlan
 qc pass: isis over ethernet bridge
@@ -1566,6 +1575,7 @@ qc pass: isis change in tag
 qc pass: isis multi-topology change in tag
 qc pass: isis with php sr
 qc pass: isis with srgb sr
+qc pass: isis over point2point ethernet
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -1597,6 +1607,7 @@ qc pass: lsrp default address suppression
 qc pass: lsrp address unsuppression
 qc pass: lsrp with php sr
 qc pass: lsrp with srgb sr
+qc pass: lsrp over point2point ethernet
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -1635,6 +1646,7 @@ qc pass: olsr aggregation
 qc pass: olsr auto mesh tunnel
 qc pass: olsr triangle connection
 qc pass: olsr autoroute
+qc pass: olsr over point2point ethernet
 qc pass: ospf point2point connection
 qc pass: ospf point2multipoint connection
 qc pass: ospf point2multipoint nonbroadcast connection
@@ -1677,6 +1689,7 @@ qc pass: ospf transit area with bier
 qc pass: ospf autoroute
 qc pass: ospf with php sr
 qc pass: ospf with srgb sr
+qc pass: ospf over point2point ethernet
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
@@ -1721,6 +1734,7 @@ qc pass: egress label filtering with pvrp
 qc pass: pvrp stub node
 qc pass: pvrp stub interface
 qc pass: pvrp unstub interface
+qc pass: pvrp over point2point ethernet
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip
@@ -1772,6 +1786,7 @@ qc pass: rip aggregation
 qc pass: rip auto mesh tunnel
 qc pass: rip triangle connection
 qc pass: rip autoroute
+qc pass: rip over point2point ethernet
 qc pass: static routing
 qc pass: static routing with distance
 qc pass: static routing with icmp tracker
@@ -1779,6 +1794,7 @@ qc pass: static routing with tcp tracker
 qc pass: static routing with bfd tracker
 qc pass: static routing with labels
 qc pass: static routing with interface
+qc pass: static routing over point2point ethernet
 qc pass: authoritative dns server
 qc pass: recursive dns server
 qc pass: relaying dns server
