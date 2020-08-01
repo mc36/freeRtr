@@ -1,7 +1,7 @@
 file;code;try;test;stage;command
 -;-;freeRouter v20.7.31-rel, done by cs@nop.;-;-
--;-;2020-07-31 19:14:49, took 00:13:19, with 40 workers, on 1796 cases, 0 failed, 0 traces, 1 retries;-;-
--;-;java -Xmx4096m -jar rtr.jar;-;-
+-;-;2020-07-31 19:35:20, took 00:10:20, with 50 workers, on 1796 cases, 0 failed, 0 traces, 0 retries;-;-
+-;-;./rtr.bin;-;-
 basic.tst;0;0;dummy test;successfully;finished
 conn-anyconn.tst;0;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;0;atmdxi encapsulation;successfully;finished
@@ -490,7 +490,7 @@ crypt-nat12.tst;0;0;source interface translation to address;successfully;finishe
 crypt-nat13.tst;0;0;target interface translation to address;successfully;finished
 crypt-openvpn01.tst;0;0;openvpn over ipv4;successfully;finished
 crypt-openvpn02.tst;0;0;openvpn over ipv6;successfully;finished
-crypt-openvpn03.tst;0;1;openvpn over openvpn;successfully;finished
+crypt-openvpn03.tst;0;0;openvpn over openvpn;successfully;finished
 crypt-openvpn04.tst;0;0;openvpn over loopback;successfully;finished
 crypt-openvpn05.tst;0;0;openvpn with des;successfully;finished
 crypt-openvpn06.tst;0;0;openvpn with blowfish;successfully;finished
