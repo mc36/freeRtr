@@ -16,6 +16,8 @@ import serv.servHttp;
 import tab.tabGen;
 import util.bits;
 import util.cmds;
+import util.logger;
+import util.syncInt;
 import util.version;
 
 /**
@@ -28,12 +30,12 @@ public class userTester {
     /**
      * port base
      */
-    protected final static int portBase = 24000;
+    protected final static int portBase = 34000;
 
     /**
      * slot increment
      */
-    protected final static int portSlot = 100;
+    protected final static int portSlot = 200;
 
     private pipeProgress rdr;
 
@@ -115,15 +117,13 @@ public class userTester {
 
     private long started;
 
-    private int errored;
+    private syncInt errored = new syncInt(0);
 
-    private int retries;
+    private syncInt retries = new syncInt(0);
 
-    private int traces;
+    private syncInt traces = new syncInt(0);
 
     private userTesterOne workers[];
-
-    private boolean need2work = true;
 
     /**
      * do the work
@@ -413,7 +413,6 @@ public class userTester {
         for (; needed.size() > 0;) {
             bits.sleep(1000);
         }
-        need2work = false;
         if (persistC != null) {
             persistC.applyCfg(persistD);
             persistC.doSync();
@@ -488,9 +487,6 @@ public class userTester {
      */
     protected void doWorker(int slt) {
         for (; needed.size() > 0;) {
-            if (!need2work) {
-                return;
-            }
             doOneTest(slt);
         }
     }
@@ -501,29 +497,31 @@ public class userTester {
             cur = bits.random(0, needed.size());
         }
         userTesterFtr ftr = needed.get(cur);
+        if (ftr.lck.add(1) > 1) {
+            bits.sleep(100);
+            return;
+        }
         rdr.debugRes(sep + "err=" + errored + " trc=" + traces + " ret=" + retries + " don=" + finished.size() + " ned=" + needed.size() + " tot=" + (finished.size() + needed.size()) + " tim=" + bits.timePast(started) + sep + ftr.fil + sep);
         userTesterOne lt = getTester(slt);
         workers[slt] = lt;
         lt.doTest(path, ftr.fil);
         lt.stopAll();
-        if (!need2work) {
-            return;
-        }
-        traces += lt.traces;
+        traces.add(lt.traces);
         boolean del = lt.getSucc();
         if (!del) {
             ftr.fld++;
             ftr.ret--;
             del |= ftr.ret < 1;
-            retries++;
+            retries.add(1);
         }
         rdr.debugRes(lt.getCsv(ftr.fld));
         if (!del) {
+            ftr.lck.set(0);
             return;
         }
         needed.del(ftr);
         if (!lt.getSucc()) {
-            errored++;
+            errored.add(1);
         }
         ftr.res = lt.getSucc();
         ftr.htm = lt.getHtm(url, ftr.fld);
@@ -589,7 +587,11 @@ class userTesterWrk implements Runnable {
     }
 
     public void run() {
-        lower.doWorker(slot);
+        try {
+            lower.doWorker(slot);
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
     }
 
 }
@@ -597,6 +599,8 @@ class userTesterWrk implements Runnable {
 class userTesterFtr implements Comparator<userTesterFtr> {
 
     public final String fil;
+
+    public syncInt lck = new syncInt(0);
 
     public int ret;
 
@@ -690,19 +694,19 @@ class userTesterPrc {
                 s = "run";
                 break;
             case 2:
-                s = "txt";
+                s = "all";
                 break;
             case 3:
                 s = "err";
                 break;
             case 4:
-                s = "res";
+                s = "con";
                 break;
             default:
                 s = "log";
                 break;
         }
-        return userTesterOne.path + slt + "log-" + nam + "." + s;
+        return userTesterOne.path + slt + nam + "-log." + s;
     }
 
     public String getLogName(int mod) {
