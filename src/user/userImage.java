@@ -19,15 +19,15 @@ public class userImage {
 
     private pipeSide pip;
 
-    private String tempDir = "../binTmp/imageCreator";
+    private String tempDir = "../binDsk";
 
-    private String downDir = "../binDown";
+    private String downDir = "../binDwn";
 
     private String imgName = "../binImg/rtr";
 
     private int downMode = 1;
 
-    private String arch = "i386";
+    private String arch = "amd64";
 
     private String dist = "stable";
 
