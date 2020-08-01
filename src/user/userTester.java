@@ -408,7 +408,7 @@ public class userTester {
         for (int i = 0; i < paralell; i++) {
             workers[i] = getTester(i);
             new userTesterWrk(this, i);
-            bits.sleep(100);
+            bits.sleep(200);
         }
         for (; needed.size() > 0;) {
             bits.sleep(1000);
@@ -498,7 +498,7 @@ public class userTester {
         }
         userTesterFtr ftr = needed.get(cur);
         if (ftr.lck.add(1) > 1) {
-            bits.sleep(100);
+            bits.sleep(200);
             return;
         }
         rdr.debugRes(sep + "err=" + errored + " trc=" + traces + " ret=" + retries + " don=" + finished.size() + " ned=" + needed.size() + " tot=" + (finished.size() + needed.size()) + " tim=" + bits.timePast(started) + sep + ftr.fil + sep);
