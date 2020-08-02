@@ -144,6 +144,7 @@ static int doPacketLoop(__rte_unused void *arg) {
     unsigned char bufD[16384];
     int bufS;
     struct rte_mbuf *bufs[BURST_SIZE];
+    unsigned char * bufP;
     int port;
     int seq;
     int num;
@@ -171,7 +172,15 @@ static int doPacketLoop(__rte_unused void *arg) {
             num = rte_eth_rx_burst(port, 0, bufs, BURST_SIZE);
             for (i = 0; i < num; i++) {
                 bufS = rte_pktmbuf_pkt_len(bufs[i]);
-                memmove(&bufD[preBuff], rte_pktmbuf_mtod(bufs[i], void *), bufS);
+                bufP = rte_pktmbuf_mtod(bufs[i], void *);
+                if ((bufs[i]->ol_flags & PKT_RX_VLAN_STRIPPED) != 0) {
+                    memmove(&bufD[preBuff], bufP, 12);
+                    put16msb(bufD, preBuff+12, 0x8100);
+                    put16msb(bufD, preBuff+14, bufs[i]->vlan_tci);                    
+                    memmove(&bufD[preBuff+16], bufP+12, bufS-12);
+                } else {
+                    memmove(&bufD[preBuff], bufP, bufS);
+                }
                 rte_pktmbuf_free(bufs[i]);
                 if (port == cpuport) processCpuPack(&bufD[0], bufS); else processDataPacket(&bufD[0], bufS, port);
             }
