@@ -31,7 +31,7 @@ public class userImage {
 
     private String dist = "stable";
 
-    private String mirror = "";
+    private String mirror = "http://deb.debian.org/debian/";
 
     private userImageList allPkgs = new userImageList();
 

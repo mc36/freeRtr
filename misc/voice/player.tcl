@@ -29,7 +29,7 @@ if {[string first sip:35@ $src] >= 0} {set url "http://10.10.10.16/player.class"
 if {[string first sip:01@ $trg] >= 0} {set cmd "cmd=prev"}
 if {[string first sip:02@ $trg] >= 0} {set cmd "cmd=stop"}
 if {[string first sip:03@ $trg] >= 0} {set cmd "cmd=next"}
-if {[string first sip:04@ $trg] >= 0} {set cmd "cmd=vol&song=0"}
+if {[string first sip:04@ $trg] >= 0} {set cmd "cmd=vol&song=10"}
 if {[string first sip:05@ $trg] >= 0} {set cmd "cmd=vol&song=50"}
 if {[string first sip:06@ $trg] >= 0} {set cmd "cmd=vol&song=100"}
 if {[string first sip:08@ $trg] >= 0} {set cmd "cmd=replay"}
