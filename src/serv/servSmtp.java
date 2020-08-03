@@ -64,6 +64,11 @@ public class servSmtp extends servGeneric implements prtServS {
     protected authGeneric recursAut;
 
     /**
+     * bcc user
+     */
+    protected String bccUser = null;
+
+    /**
      * list of email addresses
      */
     public tabGen<servSmtpAddr> emails = new tabGen<servSmtpAddr>();
@@ -92,6 +97,7 @@ public class servSmtp extends servGeneric implements prtServS {
         "server smtp .*! no recursion access-class",
         "server smtp .*! no recursion authentication",
         "server smtp .*! no recursion enable",
+        "server smtp .*! no bcc",
         "server smtp .*! rbl-threshold 0",
         "server smtp .*! rbl-timeout 5000"
     };
@@ -130,6 +136,7 @@ public class servSmtp extends servGeneric implements prtServS {
             lst.add(beg + "recursion authentication " + recursAut.autName);
         }
         cmds.cfgLine(lst, !recursEna, beg, "recursion enable", "");
+        cmds.cfgLine(lst, bccUser == null, beg, "bcc", "" + bccUser);
         lst.add(beg + "path " + mailFolders);
         for (int i = 0; i < emails.size(); i++) {
             lst.add(beg + "email " + emails.get(i));
@@ -163,6 +170,10 @@ public class servSmtp extends servGeneric implements prtServS {
                 return false;
             }
             cmd.badCmd();
+            return false;
+        }
+        if (s.equals("bcc")) {
+            bccUser = cmd.word();
             return false;
         }
         if (s.equals("email")) {
@@ -214,6 +225,10 @@ public class servSmtp extends servGeneric implements prtServS {
             cmd.badCmd();
             return false;
         }
+        if (s.equals("bcc")) {
+            bccUser = null;
+            return false;
+        }
         if (s.equals("email")) {
             servSmtpAddr ntry = new servSmtpAddr();
             if (ntry.fromString(cmd)) {
@@ -246,9 +261,12 @@ public class servSmtp extends servGeneric implements prtServS {
         l.add("3 .      <name>                   port number to use");
         l.add("2 3    authentication             set authentication");
         l.add("3 .      <name>                   name of authentication list");
+        l.add("1 2  bcc                          set bcc user");
+        l.add("2 .    <user>                     name of user");
         l.add("1 2  email                        set email address");
         l.add("2 3    <user>                     name of user");
-        l.add("3 .      <addr>                   email address");
+        l.add("3 4,.    <addr>                   email address");
+        l.add("4 .        <user>                 name of bcc user");
         l.add("1 2  path                         set root folder");
         l.add("2 .    <path>                     name of root folder");
         l.add("1 2  rbl-server                   set rbl server");
@@ -288,13 +306,16 @@ class servSmtpAddr implements Comparator<servSmtpAddr> {
 
     public String user;
 
+    public String bcc;
+
     public String toString() {
-        return user + " " + email;
+        return (user + " " + email + " " + bcc).trim();
     }
 
     public boolean fromString(cmds cmd) {
         user = cmd.word();
         email = cmd.word();
+        bcc = cmd.word();
         if (user.length() < 1) {
             return true;
         }
@@ -609,11 +630,19 @@ class servSmtpDoer implements Runnable {
             List<String> txt = pt.dottedRecvAll();
             txt.add(0, "Received: from " + conn.peerAddr + " (helo " + helo + ") by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ") (envelope-from " + src + ") with smtp at " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             int o = 0;
+            long tim = bits.getTime();
             for (int i = 0; i < trgL.size(); i++) {
-                a = lower.mailFolders + trgL.get(i).user + "/" + bits.getTime() + ".msg";
-                if (!bits.buf2txt(true, txt, a)) {
+                servSmtpAddr usr = trgL.get(i);
+                if (!bits.buf2txt(true, txt, lower.mailFolders + usr.user + "/" + tim + ".msg")) {
                     o++;
                 }
+                if (usr.bcc.length() < 1) {
+                    continue;
+                }
+                bits.buf2txt(true, txt, lower.mailFolders + usr.bcc + "/" + tim + ".msg");
+            }
+            if (lower.bccUser != null) {
+                bits.buf2txt(true, txt, lower.mailFolders + lower.bccUser + "/" + tim + ".msg");
             }
             for (int i = 0; i < trgR.size(); i++) {
                 clntSmtp sm = new clntSmtp(null);
