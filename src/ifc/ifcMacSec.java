@@ -41,6 +41,11 @@ public class ifcMacSec {
      */
     public int replayCheck = 1024;
 
+    /**
+     * need to check layer2 info
+     */
+    public boolean needLayer2 = true;
+
     private tabWindow sequence;
 
     private addrMac myaddr;
@@ -148,6 +153,10 @@ public class ifcMacSec {
         pck.merge2beg();
         pck.encrData(cphrTx, 0, pck.dataSize());
         hashTx.init();
+        if (needLayer2) {
+            hashTx.update(pck.ETHsrc.getBytes());
+            hashTx.update(pck.ETHtrg.getBytes());
+        }
         pck.hashData(hashTx, 0, pck.dataSize());
         buf = hashTx.finish();
         pck.putCopy(buf, 0, 0, buf.length);
@@ -258,6 +267,10 @@ public class ifcMacSec {
             return true;
         }
         hashRx.init();
+        if (needLayer2) {
+            hashRx.update(pck.ETHsrc.getBytes());
+            hashRx.update(pck.ETHtrg.getBytes());
+        }
         siz -= hashSiz;
         pck.hashData(hashRx, 0, siz);
         byte[] sum = new byte[hashSiz];

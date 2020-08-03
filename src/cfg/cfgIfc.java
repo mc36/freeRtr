@@ -5974,6 +5974,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             ifcMacSec sec = new ifcMacSec();
             sec.doInit(prf, ethtyp, bits.fromHex(cmd.word()));
+            sec.needLayer2 = ifaceNeedArp();
             ethtyp.macSec = sec;
             ethtyp.timerUpdate();
             return;
