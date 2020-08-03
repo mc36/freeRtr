@@ -37,6 +37,11 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
     public String description = "";
 
     /**
+     * respawn on termination
+     */
+    public boolean respawn = true;
+
+    /**
      * time between runs
      */
     public int interval;
@@ -105,6 +110,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
      */
     public final static String defaultL[] = {
         "scheduler .*! no description",
+        "scheduler .*! respawn",
         "scheduler .*! time 0",
         "scheduler .*! delay 0",
         "scheduler .*! random-time 0",
@@ -132,6 +138,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1  2,.    description                description of this scheduler");
         l.add("2  2,.      [text]                   text describing this scheduler");
+        l.add("1  .      respawn                    restart on termination");
         l.add("1  2      command                    specify command to run");
         l.add("2  2,.      <cmd>                    exec command to run");
         l.add("1  2      time                       specify time between runs");
@@ -157,6 +164,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         l.add("scheduler " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !hidden, cmds.tabulator, "hidden", "");
+        cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
         l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + "delay " + initial);
         l.add(cmds.tabulator + "random-time " + randInt);
@@ -185,6 +193,10 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         String a = cmd.word();
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("respawn")) {
+            respawn = true;
             return;
         }
         if (a.equals("hidden")) {
@@ -256,6 +268,10 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             randIni = 0;
             return;
         }
+        if (a.equals("respawn")) {
+            respawn = false;
+            return;
+        }
         if (a.equals("hidden")) {
             hidden = false;
             return;
@@ -278,7 +294,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
     /**
      * stop running
      */
-    public synchronized void stopNow() {
+    public void stopNow() {
         try {
             keepTimer.cancel();
         } catch (Exception e) {
@@ -290,7 +306,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
     /**
      * start running
      */
-    public synchronized void startNow() {
+    public void startNow() {
         if (working) {
             return;
         }
@@ -304,7 +320,11 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         if (randIni > 0) {
             del += bits.random(1, randIni);
         }
-        keepTimer.schedule(task, del, interval);
+        if (respawn) {
+            keepTimer.schedule(task, del, interval);
+        } else {
+            keepTimer.schedule(task, del);
+        }
     }
 
     /**

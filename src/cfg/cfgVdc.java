@@ -752,7 +752,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     /**
      * destroy this vdc
      */
-    public synchronized void stopNow() {
+    public void stopNow() {
         need2run = false;
         restartNow();
     }
@@ -760,7 +760,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     /**
      * restart this vdc
      */
-    public synchronized void restartNow() {
+    public void restartNow() {
         try {
             pipe.setClose();
         } catch (Exception e) {
@@ -776,7 +776,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      *
      * @param res status
      */
-    public synchronized void setRespawn(boolean res) {
+    public void setRespawn(boolean res) {
         respawn = res;
     }
 
@@ -795,7 +795,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      * @param beg vdc begin port
      * @param end vdc end port
      */
-    public synchronized void startNow(List<String> defs, List<String> mibs, int beg, int end) {
+    public void startNow(List<String> defs, List<String> mibs, int beg, int end) {
         need2run = true;
         cfgBase = cfgInit.cfgFileSw;
         int i = cfgBase.lastIndexOf("/");

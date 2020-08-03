@@ -45,6 +45,11 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
     public String description = "";
 
     /**
+     * respawn on termination
+     */
+    public boolean respawn = true;
+
+    /**
      * time between runs
      */
     public int interval;
@@ -53,6 +58,16 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
      * initial delay
      */
     public int initial;
+
+    /**
+     * random time between runs
+     */
+    public int randInt;
+
+    /**
+     * random initial delay
+     */
+    public int randIni;
 
     /**
      * action logging
@@ -93,8 +108,11 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
      */
     public final static String defaultL[] = {
         "script .*! no description",
+        "script .*! respawn",
         "script .*! time 0",
         "script .*! delay 0",
+        "script .*! random-time 0",
+        "script .*! random-delay 0",
         "script .*! no log",
         "script .*! no range"
     };
@@ -116,9 +134,14 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1  2,.    description                description of this script");
         l.add("2  2,.      [text]                   text describing this script");
+        l.add("1  .      respawn                    restart on termination");
         l.add("1  2      time                       specify time between runs");
         l.add("2  .        <num>                    milliseconds between runs");
         l.add("1  2      delay                      specify initial delay");
+        l.add("2  .        <num>                    milliseconds between start");
+        l.add("1  2      random-time                specify random time between runs");
+        l.add("2  .        <num>                    milliseconds between runs");
+        l.add("1  2      random-delay               specify random initial delay");
         l.add("2  .        <num>                    milliseconds between start");
         l.add("1  2      range                      specify time range");
         l.add("2  .        <name>                   name of time map");
@@ -140,8 +163,11 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("script " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
+        cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
         l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + "delay " + initial);
+        l.add(cmds.tabulator + "random-time " + randInt);
+        l.add(cmds.tabulator + "random-delay " + randIni);
         cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
         cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
         l.addAll(script.dump(cmds.tabulator));
@@ -164,12 +190,24 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
             description = cmd.getRemaining();
             return;
         }
+        if (a.equals("random-time")) {
+            randInt = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("random-delay")) {
+            randIni = bits.str2num(cmd.word());
+            return;
+        }
         if (a.equals("time")) {
             interval = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("delay")) {
             initial = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("respawn")) {
+            respawn = true;
             return;
         }
         if (a.equals("log")) {
@@ -229,6 +267,18 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
             description = "";
             return;
         }
+        if (a.equals("random-time")) {
+            randInt = 0;
+            return;
+        }
+        if (a.equals("random-delay")) {
+            randIni = 0;
+            return;
+        }
+        if (a.equals("respawn")) {
+            respawn = false;
+            return;
+        }
         if (a.equals("log")) {
             logging = false;
             return;
@@ -261,7 +311,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
     /**
      * stop running
      */
-    public synchronized void stopNow() {
+    public void stopNow() {
         try {
             keepTimer.cancel();
         } catch (Exception e) {
@@ -273,7 +323,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
     /**
      * start running
      */
-    public synchronized void startNow() {
+    public void startNow() {
         if (working) {
             return;
         }
@@ -283,7 +333,15 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         working = true;
         keepTimer = new Timer();
         cfgScrptTimer task = new cfgScrptTimer(this);
-        keepTimer.schedule(task, initial, interval);
+        int del = initial;
+        if (randIni > 0) {
+            del += bits.random(1, randIni);
+        }
+        if (respawn) {
+            keepTimer.schedule(task, del, interval);
+        } else {
+            keepTimer.schedule(task, del);
+        }
     }
 
     /**
@@ -297,6 +355,9 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         }
         if (logging) {
             logger.info("starting " + name);
+        }
+        if (randInt > 0) {
+            bits.sleep(bits.random(1, randInt));
         }
         restartC++;
         restartT = bits.getTime();
