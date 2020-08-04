@@ -788,7 +788,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
     /**
      * do receive work
      */
-    public void doRxWork() {
+    protected void doRxWork() {
         try {
             for (;;) {
                 if (!need2run) {
@@ -845,7 +845,6 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             logger.debug("stopped peer " + peer + " (" + trans + ")");
         }
         conn.setClose();
-        ip.ldpNeighDel(this);
     }
 
     /**
