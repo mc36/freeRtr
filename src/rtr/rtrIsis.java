@@ -1478,7 +1478,7 @@ public class rtrIsis extends ipRtr {
      * @return list of neighbors
      */
     public userFormat showNeighs() {
-        userFormat l = new userFormat("|", "interface|mac address|level|routerid|ip address|uptime");
+        userFormat l = new userFormat("|", "interface|mac address|level|routerid|ip address|state|uptime");
         for (int o = 0; o < ifaces.size(); o++) {
             rtrIsisIface ifc = ifaces.get(o);
             if (ifc == null) {
@@ -1489,7 +1489,7 @@ public class rtrIsis extends ipRtr {
                 if (nei == null) {
                     continue;
                 }
-                l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + bits.timePast(nei.upTime));
+                l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + nei.peerAdjState + "|" + bits.timePast(nei.upTime));
             }
         }
         return l;

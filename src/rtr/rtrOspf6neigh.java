@@ -42,17 +42,32 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
 
     private long lastHeard;
 
-    private int state;
+    /**
+     * adjacency state
+     */
+    protected int state;
 
     private boolean need2run = true;
 
-    private final static int stDown = 1;
+    /**
+     * down
+     */
+    public final static int stDown = 1;
 
-    private final static int stInit = 2;
+    /**
+     * initing
+     */
+    public final static int stInit = 2;
 
-    private final static int stXchg = 3;
+    /**
+     * exchange
+     */
+    public  final static int stXchg = 3;
 
-    private final static int stFull = 4;
+    /**
+     * up
+     */
+    public  final static int stFull = 4;
 
     /**
      * set true for static neighbors
@@ -416,8 +431,14 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
                     if (seq != ddSeq) {
                         return;
                     }
-                } else if (seq != (ddSeq + 1)) {
-                    return;
+                } else {
+                    if (seq == ddSeq) {
+                        doRetrans();
+                        return;
+                    }
+                    if (seq != (ddSeq + 1)) {
+                        return;
+                    }
                 }
                 ddSeq++;
                 ddPos += lsaPerDescr;
@@ -757,10 +778,11 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
             }
             return;
         }
-        ddMorL = false;
         if (ddPos < advert.size()) {
             i |= rtrOspf6iface.dscrMore;
             ddMorL = true;
+        } else {
+            ddMorL = false;
         }
         iface.mkDescrPack(pck, i, ddSeq);
         packSend(pck, rtrOspf6neigh.msgTypDBdsc);

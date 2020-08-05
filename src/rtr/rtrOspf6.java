@@ -678,7 +678,7 @@ public class rtrOspf6 extends ipRtr {
      * @return list of neighbors
      */
     public userFormat showNeighs() {
-        userFormat l = new userFormat("|", "interface|address|routerid|uptime");
+        userFormat l = new userFormat("|", "interface|address|routerid|state|uptime");
         for (int o = 0; o < ifaces.size(); o++) {
             rtrOspf6iface ifc = ifaces.get(o);
             if (ifc == null) {
@@ -689,7 +689,7 @@ public class rtrOspf6 extends ipRtr {
                 if (nei == null) {
                     continue;
                 }
-                l.add(ifc + "|" + nei.peer + "|" + nei.rtrID + "|" + bits.timePast(nei.upTime));
+                l.add(ifc + "|" + nei.peer + "|" + nei.rtrID + "|" + nei.state + "|" + bits.timePast(nei.upTime));
             }
         }
         return l;
