@@ -656,10 +656,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * elect dis for this interface
      *
      * @param lev level
-     * @param adr my address
+     * @param adr dis address
+     * @param cir dis circuit id
      * @return elected circuit id
      */
-    protected int electDIS(int lev, addrIsis adr) {
+    protected int electDIS(int lev, addrIsis adr, int cir) {
         addrIsis old = adr.copyBytes();
         rtrIsisNeigh nei = findDIS(lev);
         int circ;
@@ -670,7 +671,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             adr.fromBuf(nei.peerDisA.getBytes(), 0);
             circ = nei.peerDisI;
         }
-        if (adr.compare(adr, old) == 0) {
+        if ((adr.compare(adr, old) == 0) && (cir == circ)) {
             return circ;
         }
         if (debugger.rtrIsisEvnt) {
@@ -1188,12 +1189,12 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             return;
         }
         if ((circuitLevel & 1) != 0) {
-            lev1disI = electDIS(1, lev1disA);
+            lev1disI = electDIS(1, lev1disA, lev1disI);
             sendHelloLan(1);
             lev1csnp = sendLevCsnp(lower.level1, lev1csnp);
         }
         if ((circuitLevel & 2) != 0) {
-            lev2disI = electDIS(2, lev2disA);
+            lev2disI = electDIS(2, lev2disA, lev2disI);
             sendHelloLan(2);
             lev2csnp = sendLevCsnp(lower.level2, lev2csnp);
         }
