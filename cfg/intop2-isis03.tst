@@ -1,7 +1,5 @@
 description interop2: isis nondis
 
-exit
-
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
 int eth2 eth 0000.0000.1112 $per2$
@@ -76,4 +74,4 @@ commit
 
 r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
+!r1 tping 100 60 4321::2 /vrf v1 /int lo0
