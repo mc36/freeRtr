@@ -323,12 +323,12 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         }
         for (;;) {
             try {
+                if (respawn) {
+                    doRound();
+                }
                 bits.sleep(interval);
                 if (!need2run) {
                     break;
-                }
-                if (respawn) {
-                    doRound();
                 }
             } catch (Exception e) {
                 logger.traceback(e);

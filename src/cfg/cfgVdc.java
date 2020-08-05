@@ -118,6 +118,16 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     protected int initial = 1000;
 
     /**
+     * random time between runs
+     */
+    public int randInt;
+
+    /**
+     * random initial delay
+     */
+    public int randIni;
+
+    /**
      * list of interfaces
      */
     public final tabGen<cfgVdcIfc> ifaces = new tabGen<cfgVdcIfc>();
@@ -185,7 +195,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! cores 1",
         "vdc definition .*! nic e1000",
         "vdc definition .*! time 5000",
-        "vdc definition .*! delay 1000",};
+        "vdc definition .*! delay 1000",
+        "vdc definition .*! random-time 0",
+        "vdc definition .*! random-delay 0",};
 
     /**
      * defaults filter
@@ -268,56 +280,60 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
 
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
-        l.add("1 2,. description        description of this vdc");
-        l.add("2 2,.   [text]           text describing this vdc");
-        l.add("1 .  respawn             restart on termination");
-        l.add("1 2  rename              rename this vdc");
-        l.add("2 .    <name>            set new name of vdc");
-        l.add("1 2  interface           add interface to this vdc");
-        l.add("2 .    <name>            name of interface");
-        l.add("1 2  connect             add connection to other vdc");
-        l.add("2 3    <name>            name of interface");
-        l.add("3 .      <name>          name of peer vdc");
-        l.add("1 2  local               add connection to this vdc");
-        l.add("2 3,.  <name>            name of interface");
-        l.add("3 .      redundancy      flagged for redundancy");
-        l.add("1 2  bios                set bios image to use");
-        l.add("2 2,.  <name>            name of image");
-        l.add("1 2  image               set external image to use");
-        l.add("2 2,.  <name>            name of image");
-        l.add("1 2  disk2               set external image to use");
-        l.add("2 2,.  <name>            name of image");
-        l.add("1 2  disk3               set external image to use");
-        l.add("2 2,.  <name>            name of image");
-        l.add("1 2  disk4               set external image to use");
-        l.add("2 2,.  <name>            name of image");
-        l.add("1 2  cdrom               set cdrom image to use");
-        l.add("2 2,.  <name>            name of image");
-        l.add("1 2  uuid                set uuid to use");
-        l.add("2 .    <name>            uuid value");
-        l.add("1 2  pinning             set pinning mask");
-        l.add("2 .    <name>            cpu mask in hex");
-        l.add("1 2  cpu                 set cpu type");
-        l.add("2 .    <name>            type parameters");
-        l.add("1 2  memory              memory of vdc");
-        l.add("2 .    <num>             megabytes");
-        l.add("1 2  cores               cpu of vdc");
-        l.add("2 .    <num>             cores");
-        l.add("1 2  mac                 mac address base");
-        l.add("2 .    <addr>            address");
-        l.add("1 2  nic                 type of nic");
-        l.add("2 .    <name>            vendor");
-        l.add("1 2  pci                 pass through pci device");
-        l.add("2 3    <num>             bus");
-        l.add("3 4      <num>           device");
-        l.add("4 .        <num>         function");
-        l.add("1 2  usb                 pass through usb device");
-        l.add("2 3    <num>             bus");
-        l.add("3 .      <num>           port");
-        l.add("1 2  time                specify time between runs");
-        l.add("2 .    <num>             milliseconds between runs");
-        l.add("1 2  delay               specify initial delay");
-        l.add("2 .    <num>             milliseconds between start");
+        l.add("1  2,. description                   description of this vdc");
+        l.add("2  2,.   [text]                      text describing this vdc");
+        l.add("1  .  respawn                        restart on termination");
+        l.add("1  2  rename                         rename this vdc");
+        l.add("2  .    <name>                       set new name of vdc");
+        l.add("1  2  interface                      add interface to this vdc");
+        l.add("2  .    <name>                       name of interface");
+        l.add("1  2  connect                        add connection to other vdc");
+        l.add("2  3    <name>                       name of interface");
+        l.add("3  .      <name>                     name of peer vdc");
+        l.add("1  2  local                          add connection to this vdc");
+        l.add("2  3,.  <name>                       name of interface");
+        l.add("3  .      redundancy                 flagged for redundancy");
+        l.add("1  2  bios                           set bios image to use");
+        l.add("2  2,.  <name>                       name of image");
+        l.add("1  2  image                          set external image to use");
+        l.add("2  2,.  <name>                       name of image");
+        l.add("1  2  disk2                          set external image to use");
+        l.add("2  2,.  <name>                       name of image");
+        l.add("1  2  disk3                          set external image to use");
+        l.add("2  2,.  <name>                       name of image");
+        l.add("1  2  disk4                          set external image to use");
+        l.add("2  2,.  <name>                       name of image");
+        l.add("1  2  cdrom                          set cdrom image to use");
+        l.add("2  2,.  <name>                       name of image");
+        l.add("1  2  uuid                           set uuid to use");
+        l.add("2  .    <name>                       uuid value");
+        l.add("1  2  pinning                        set pinning mask");
+        l.add("2  .    <name>                       cpu mask in hex");
+        l.add("1  2  cpu                            set cpu type");
+        l.add("2  .    <name>                       type parameters");
+        l.add("1  2  memory                         memory of vdc");
+        l.add("2  .    <num>                        megabytes");
+        l.add("1  2  cores                          cpu of vdc");
+        l.add("2  .    <num>                        cores");
+        l.add("1  2  mac                            mac address base");
+        l.add("2  .    <addr>                       address");
+        l.add("1  2  nic                            type of nic");
+        l.add("2  .    <name>                       vendor");
+        l.add("1  2  pci                            pass through pci device");
+        l.add("2  3    <num>                        bus");
+        l.add("3  4      <num>                      device");
+        l.add("4  .        <num>                    function");
+        l.add("1  2  usb                            pass through usb device");
+        l.add("2  3    <num>                        bus");
+        l.add("3  .      <num>                      port");
+        l.add("1  2  time                           specify time between runs");
+        l.add("2  .    <num>                        milliseconds between runs");
+        l.add("1  2  delay                          specify initial delay");
+        l.add("2  .    <num>                        milliseconds between start");
+        l.add("1  2      random-time                specify random time between runs");
+        l.add("2  .        <num>                    milliseconds between runs");
+        l.add("1  2      random-delay               specify random initial delay");
+        l.add("2  .        <num>                    milliseconds between start");
         return l;
     }
 
@@ -356,6 +372,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         l.add(cmds.tabulator + "delay " + initial);
         l.add(cmds.tabulator + "time " + interval);
+        l.add(cmds.tabulator + "random-time " + randInt);
+        l.add(cmds.tabulator + "random-delay " + randIni);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if (!filter) {
@@ -538,6 +556,14 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             interval = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("random-time")) {
+            randInt = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("random-delay")) {
+            randIni = bits.str2num(cmd.word());
+            return;
+        }
         if (!a.equals("no")) {
             cmd.badCmd();
             return;
@@ -630,6 +656,14 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             usbs.del(dev);
             return;
         }
+        if (a.equals("random-time")) {
+            randInt = 0;
+            return;
+        }
+        if (a.equals("random-delay")) {
+            randIni = 0;
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -638,19 +672,20 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     }
 
     public void run() {
-        bits.sleep(initial);
+        int del = initial;
+        if (randIni > 0) {
+            del += bits.random(1, randIni);
+        }
+        bits.sleep(del);
         for (;;) {
             try {
                 if (respawn) {
-                    logger.info("restarting vdc " + name);
-                    restartT = bits.getTime();
                     doRound();
-                    restartC++;
                 }
+                bits.sleep(interval);
                 if (!need2run) {
                     break;
                 }
-                bits.sleep(interval);
             } catch (Exception e) {
                 logger.traceback(e);
             }
@@ -658,7 +693,13 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         logger.info("stopped vdc " + name);
     }
 
-    private void doRound() {
+    private synchronized void doRound() {
+        logger.info("restarting vdc " + name);
+        if (randInt > 0) {
+            bits.sleep(bits.random(1, randInt));
+        }
+        restartT = bits.getTime();
+        restartC++;
         pipeLine pl = new pipeLine(65536, false);
         pipe = pl.getSide();
         String cmd = null;
