@@ -23,6 +23,7 @@ import ifc.ifcEthTyp;
 import ifc.ifcNull;
 import ip.ipFwd;
 import ip.ipIfc;
+import ip.ipMpls;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
@@ -1084,14 +1085,26 @@ class servP4langConn implements Runnable {
         return null;
     }
 
+    private int getNullLabel(tabRouteEntry<addrIP> ntry) {
+        if (ntry.prefix.network.isIPv4()) {
+            return ipMpls.labelExp4;
+        } else {
+            return ipMpls.labelExp6;
+        }
+    }
+
     private int getLabel(tabRouteEntry<addrIP> ntry) {
         if (ntry.labelRem == null) {
-            return 0;
+            return getNullLabel(ntry);
         }
         if (ntry.labelRem.size() < 1) {
-            return 0;
+            return getNullLabel(ntry);
         }
-        return ntry.labelRem.get(0);
+        int i = ntry.labelRem.get(0);
+        if (i == ipMpls.labelImp) {
+            return getNullLabel(ntry);
+        }
+        return i;
     }
 
     private void doLab2(tabLabelNtry ntry) {
