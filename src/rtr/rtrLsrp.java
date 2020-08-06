@@ -645,10 +645,6 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
         boolean[] segrouUsd = new boolean[segrouMax];
-        if (segrouLab != null) {
-            segrouLab[segrouIdx].setFwdCommon(6, fwdCore);
-            segrouUsd[segrouIdx] = true;
-        }
         for (int o = 0; o < database.size(); o++) {
             rtrLsrpData ntry = database.get(o);
             if (ntry == null) {
@@ -693,6 +689,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         if (segrouLab != null) {
+            segrouLab[segrouIdx].setFwdCommon(6, fwdCore);
+            segrouUsd[segrouIdx] = true;
             for (int i = 0; i < segrouUsd.length; i++) {
                 if (segrouUsd[i]) {
                     continue;

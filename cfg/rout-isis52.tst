@@ -18,7 +18,6 @@ router isis4 1
  vrf v1
  net 48.4444.0000.1111.00
  multi-topology
- is-type level2
  bier 256 10
  both bier
  red conn
@@ -27,7 +26,6 @@ router isis6 1
  vrf v1
  net 48.6666.0000.1111.00
  multi-topology
- is-type level2
  bier 256 10
  both bier
  red conn
@@ -99,7 +97,6 @@ router isis4 1
  vrf v1
  net 48.4444.0000.2222.00
  multi-topology
- is-type level2
  bier 256 10
  both bier
  red conn
@@ -108,7 +105,6 @@ router isis6 1
  vrf v1
  net 48.6666.0000.2222.00
  multi-topology
- is-type level2
  bier 256 10
  both bier
  red conn
@@ -173,7 +169,6 @@ router isis4 1
  vrf v1
  net 48.4444.0000.3333.00
  multi-topology
- is-type level2
  bier 256 10
  both bier
  red conn
@@ -182,7 +177,6 @@ router isis6 1
  vrf v1
  net 48.6666.0000.3333.00
  multi-topology
- is-type level2
  bier 256 10
  both bier
  red conn

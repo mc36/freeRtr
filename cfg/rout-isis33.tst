@@ -9,14 +9,12 @@ vrf def v1
 router isis4 1
  vrf v1
  net 48.4444.0000.1111.00
- is-type level1
  no metric-wide
  red conn
  exit
 router isis6 1
  vrf v1
  net 48.6666.0000.1111.00
- is-type level1
  no metric-wide
  red conn
  exit
@@ -49,14 +47,12 @@ vrf def v1
 router isis4 1
  vrf v1
  net 48.4444.0000.2222.00
- is-type level1
  no metric-wide
  red conn
  exit
 router isis6 1
  vrf v1
  net 48.6666.0000.2222.00
- is-type level1
  no metric-wide
  red conn
  exit
@@ -100,14 +96,12 @@ vrf def v1
 router isis4 1
  vrf v1
  net 48.4444.0000.3333.00
- is-type level1
  no metric-wide
  red conn
  exit
 router isis6 1
  vrf v1
  net 48.6666.0000.3333.00
- is-type level1
  no metric-wide
  red conn
  exit
