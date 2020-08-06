@@ -441,7 +441,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -457,6 +457,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             for (int o = 0; o < ifc.neighs.size(); o++) {
                 rtrOspf6neigh nei = ifc.neighs.get(o);
                 if (nei == null) {
+                    continue;
+                }
+                if (nei.area.area != area) {
                     continue;
                 }
                 if (!nei.isFull()) {
@@ -486,6 +489,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         for (int i = 0; i < ifc.neighs.size(); i++) {
             rtrOspf6neigh nei = ifc.neighs.get(i);
             if (nei == null) {
+                continue;
+            }
+            if (nei.area.area != area) {
                 continue;
             }
             if (!nei.isFull()) {
@@ -601,7 +607,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -617,6 +623,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             for (int o = 0; o < ifc.neighs.size(); o++) {
                 rtrOspf6neigh nei = ifc.neighs.get(o);
                 if (nei == null) {
+                    continue;
+                }
+                if (nei.area.area != area) {
                     continue;
                 }
                 if (!nei.isFull()) {
@@ -693,7 +702,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -709,7 +718,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -728,10 +737,10 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.suppressAddr) {
                 continue;
             }
-            if (ifc.suppressAddr) {
+            if (ifc.areas.get(0).area != area) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -771,12 +780,10 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             return;
         }
         tabRoute<addrIP> rs = new tabRoute<addrIP>("rs");
+        tabRoute<addrIP> oa = new tabRoute<addrIP>("rs");
         for (int i = 0; i < lower.ifaces.size(); i++) {
             rtrOspf6iface ifc = lower.ifaces.get(i);
             if (ifc == null) {
-                continue;
-            }
-            if (ifc.area.area == area) {
                 continue;
             }
             if (ifc.suppressAddr) {
@@ -788,6 +795,10 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = ifc.iface.network.copyBytes();
             ntry.metric = ifc.metric;
+            oa.add(tabRoute.addType.better, ntry, true, true);
+            if (ifc.areas.get(0).area == area) {
+                continue;
+            }
             tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, true, roumapInto, roupolInto, prflstInto);
         }
         for (int i = 0; i < lower.routerComputedU.size(); i++) {
@@ -796,6 +807,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 continue;
             }
             if (ntry.rouSrc == area) {
+                continue;
+            }
+            if (oa.find(ntry.prefix) != null) {
                 continue;
             }
             tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, true, roumapInto, roupolInto, prflstInto);
@@ -823,7 +837,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ifc.teSuppress) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -836,6 +850,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             for (int i = 0; i < ifc.neighs.size(); i++) {
                 rtrOspf6neigh nei = ifc.neighs.get(i);
                 if (nei == null) {
+                    continue;
+                }
+                if (nei.area.area != area) {
                     continue;
                 }
                 if (!nei.isFull()) {
@@ -887,7 +904,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             int o;
             int p;
             byte[] buf2;
-            if (ifc.area.area == area) {
+            if (ifc.areas.find(this) != null) {
                 o = rtrOspf6lsa.lsaEprefix;
                 p = rtrOspf6lsa.tlvPrefix;
                 buf2 = new byte[12];
@@ -1055,7 +1072,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -1074,6 +1091,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             for (int o = 0; o < ifc.neighs.size(); o++) {
                 rtrOspf6neigh nei = ifc.neighs.get(o);
                 if (nei == null) {
+                    continue;
+                }
+                if (nei.area.area != area) {
                     continue;
                 }
                 if (!nei.seenMyself) {

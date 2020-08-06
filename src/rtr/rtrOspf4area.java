@@ -402,7 +402,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -420,6 +420,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 if (nei == null) {
                     continue;
                 }
+                if (nei.area.area != area) {
+                    continue;
+                }
                 if (!nei.isFull()) {
                     continue;
                 }
@@ -428,7 +431,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc.suppressAddr) {
                 continue;
             }
-            if (ifc.iface.lower.getState() != state.states.up) {
+            if (ifc.areas.get(0).area != area) {
                 continue;
             }
             if (ifc.needAdr()) {
@@ -451,6 +454,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
         for (int i = 0; i < ifc.neighs.size(); i++) {
             rtrOspf4neigh nei = ifc.neighs.get(i);
             if (nei == null) {
+                continue;
+            }
+            if (nei.area.area != area) {
                 continue;
             }
             if (!nei.isFull()) {
@@ -616,7 +622,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -659,12 +665,10 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             return;
         }
         tabRoute<addrIP> rs = new tabRoute<addrIP>("rs");
+        tabRoute<addrIP> oa = new tabRoute<addrIP>("rs");
         for (int i = 0; i < lower.ifaces.size(); i++) {
             rtrOspf4iface ifc = lower.ifaces.get(i);
             if (ifc == null) {
-                continue;
-            }
-            if (ifc.area.area == area) {
                 continue;
             }
             if (ifc.suppressAddr) {
@@ -676,6 +680,10 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = ifc.iface.network.copyBytes();
             ntry.metric = ifc.metric;
+            oa.add(tabRoute.addType.better, ntry, true, true);
+            if (ifc.areas.get(0).area == area) {
+                continue;
+            }
             tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, true, roumapInto, roupolInto, prflstInto);
         }
         for (int i = 0; i < lower.routerComputedU.size(); i++) {
@@ -684,6 +692,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 continue;
             }
             if (ntry.rouSrc == area) {
+                continue;
+            }
+            if (oa.find(ntry.prefix) != null) {
                 continue;
             }
             tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, true, roumapInto, roupolInto, prflstInto);
@@ -711,7 +722,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc.teSuppress) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -724,6 +735,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             for (int i = 0; i < ifc.neighs.size(); i++) {
                 rtrOspf4neigh nei = ifc.neighs.get(i);
                 if (nei == null) {
+                    continue;
+                }
+                if (nei.area.area != area) {
                     continue;
                 }
                 if (!nei.isFull()) {
@@ -759,7 +773,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -768,6 +782,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             for (int o = 0; o < ifc.neighs.size(); o++) {
                 rtrOspf4neigh nei = ifc.neighs.get(o);
                 if (nei == null) {
+                    continue;
+                }
+                if (nei.area.area != area) {
                     continue;
                 }
                 if (!nei.isFull()) {
@@ -807,7 +824,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 continue;
             }
             int o;
-            if (ifc.area.area == area) {
+            if (ifc.areas.find(this) != null) {
                 o = 1; // intra
             } else {
                 o = 3; // inter
@@ -960,7 +977,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.area.area != area) {
+            if (ifc.areas.find(this) == null) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {
@@ -981,6 +998,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             for (int o = 0; o < ifc.neighs.size(); o++) {
                 rtrOspf4neigh nei = ifc.neighs.get(o);
                 if (nei == null) {
+                    continue;
+                }
+                if (nei.area.area != area) {
                     continue;
                 }
                 if (!nei.seenMyself) {

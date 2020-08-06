@@ -1,6 +1,6 @@
 file;code;try;test;stage;command
--;-;freeRouter v20.8.5-rel, done by cs@nop.;-;-
--;-;2020-08-05 15:51:42, took 00:05:54, with 80 workers, on 1812 cases, 0 failed, 0 traces, 0 retries;-;-
+-;-;freeRouter v20.8.6-rel, done by cs@nop.;-;-
+-;-;2020-08-06 09:13:00, took 00:05:44, with 100 workers, on 1814 cases, 0 failed, 0 traces, 0 retries;-;-
 -;-;./rtr.bin;-;-
 basic.tst;0;0;dummy test;successfully;finished
 conn-anyconn.tst;0;0;ip over anyconnect;successfully;finished
@@ -1694,6 +1694,8 @@ rout-ospf40.tst;0;0;ospf autoroute;successfully;finished
 rout-ospf41.tst;0;0;ospf with php sr;successfully;finished
 rout-ospf42.tst;0;0;ospf with srgb sr;successfully;finished
 rout-ospf43.tst;0;0;ospf over point2point ethernet;successfully;finished
+rout-ospf44.tst;0;0;ospf multi area;successfully;finished
+rout-ospf45.tst;0;0;ospf asymmetric multi area;successfully;finished
 rout-pbr01.tst;0;0;policy routing with nexthop;successfully;finished
 rout-pbr02.tst;0;0;policy routing with interface and nexthop between vrfs;successfully;finished
 rout-pbr03.tst;0;0;policy routing with interface and nexthop;successfully;finished

@@ -37,9 +37,9 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
     protected final ipFwdIface iface;
 
     /**
-     * area this interface belongs
+     * areas this interface belongs
      */
-    protected rtrOspf6area area;
+    protected tabGen<rtrOspf6area> areas = new tabGen<rtrOspf6area>();
 
     /**
      * counter
@@ -205,7 +205,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
     public rtrOspf6iface(rtrOspf6 parent, rtrOspf6area ara, ipFwdIface ifc) {
         lower = parent;
         iface = ifc;
-        area = ara;
+        areas.add(ara);
         networkType = netypP2p;
         setDefaultTimers();
         neighs = new tabGen<rtrOspf6neigh>();
@@ -240,9 +240,12 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
      */
     public void routerGetConfig(List<String> l, String beg) {
         l.add(cmds.tabulator + beg + "enable");
-        l.add(cmds.tabulator + beg + "area " + area.area);
+        String a = "";
+        for (int i = 0; i < areas.size(); i++) {
+            a = a + " " + areas.get(i).area;
+        }
+        l.add(cmds.tabulator + beg + "area" + a);
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
-        String a;
         switch (networkType) {
             case netypP2p:
                 a = "point2point";
@@ -272,7 +275,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
         l.add(cmds.tabulator + beg + "retransmit-time " + retransTimer);
-        if (area.traffEng) {
+        if (areas.get(0).traffEng) {
             a = beg + "traffeng ";
             cmds.cfgLine(l, !teSuppress, cmds.tabulator, a + "suppress", "");
             l.add(cmds.tabulator + a + "metric " + teMetric);
@@ -280,13 +283,13 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             l.add(cmds.tabulator + a + "affinity " + teAffinity);
             l.add(cmds.tabulator + a + "srlg " + teSrlg);
         }
-        if (area.segrouEna) {
+        if (areas.get(0).segrouEna) {
             a = beg + "segrout ";
             cmds.cfgLine(l, srIndex < 1, cmds.tabulator, a + "index", "" + srIndex);
             cmds.cfgLine(l, !srNode, cmds.tabulator, a + "node", "");
             cmds.cfgLine(l, !srPop, cmds.tabulator, a + "pop", "");
         }
-        if (area.bierEna) {
+        if (areas.get(0).bierEna) {
             a = beg + "bier ";
             cmds.cfgLine(l, brIndex < 1, cmds.tabulator, a + "index", "" + brIndex);
         }
@@ -296,6 +299,21 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
                 continue;
             }
             l.add(cmds.tabulator + beg + "neighbor " + ntry.peer);
+        }
+    }
+
+    /**
+     * schedule work
+     *
+     * @param wrk work
+     */
+    protected void schedWork(int wrk) {
+        for (int i = 0; i < areas.size(); i++) {
+            rtrOspf6area ara = areas.get(i);
+            if (ara == null) {
+                continue;
+            }
+            ara.schedWork(wrk);
         }
     }
 
@@ -329,17 +347,29 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             }
             networkType = i;
             setDefaultTimers();
-            area.schedWork(3);
+            schedWork(3);
             return;
         }
         if (a.equals("area")) {
-            rtrOspf6area ar = new rtrOspf6area(null, bits.str2num(cmd.word()));
-            ar = lower.areas.find(ar);
-            if (ar == null) {
+            tabGen<rtrOspf6area> lst = new tabGen<rtrOspf6area>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                rtrOspf6area ar = new rtrOspf6area(lower, bits.str2num(a));
+                ar = lower.areas.find(ar);
+                if (ar == null) {
+                    continue;
+                }
+                lst.add(ar);
+            }
+            if (lst.size() < 1) {
                 return;
             }
-            area = ar;
-            area.schedWork(7);
+            schedWork(7);
+            areas = lst;
+            schedWork(7);
             return;
         }
         if (a.equals("neighbor")) {
@@ -347,7 +377,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             if (adr.fromString(cmd.word())) {
                 return;
             }
-            rtrOspf6neigh nei = new rtrOspf6neigh(lower, this, adr);
+            rtrOspf6neigh nei = new rtrOspf6neigh(lower, areas.get(0), this, adr);
             rtrOspf6neigh old = neighs.add(nei);
             if (old != null) {
                 nei = old;
@@ -367,7 +397,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         }
         if (a.equals("suppress-prefix")) {
             suppressAddr = true;
-            area.schedWork(1);
+            schedWork(1);
             return;
         }
         if (a.equals("hello-time")) {
@@ -389,7 +419,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         }
         if (a.equals("cost")) {
             metric = bits.str2num(cmd.word());
-            area.schedWork(3);
+            schedWork(3);
             return;
         }
         if (a.equals("instance")) {
@@ -400,27 +430,27 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             a = cmd.word();
             if (a.equals("suppress")) {
                 teSuppress = true;
-                area.schedWork(1);
+                schedWork(1);
                 return;
             }
             if (a.equals("metric")) {
                 teMetric = bits.str2num(cmd.word());
-                area.schedWork(1);
+                schedWork(1);
                 return;
             }
             if (a.equals("bandwidth")) {
                 teBandwidth = bits.str2long(cmd.word());
-                area.schedWork(1);
+                schedWork(1);
                 return;
             }
             if (a.equals("affinity")) {
                 teAffinity = bits.str2num(cmd.word());
-                area.schedWork(1);
+                schedWork(1);
                 return;
             }
             if (a.equals("srlg")) {
                 teSrlg = bits.str2num(cmd.word());
-                area.schedWork(1);
+                schedWork(1);
                 return;
             }
             cmd.badCmd();
@@ -430,17 +460,17 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             a = cmd.word();
             if (a.equals("index")) {
                 srIndex = bits.str2num(cmd.word());
-                area.schedWork(3);
+                schedWork(3);
                 return;
             }
             if (a.equals("node")) {
                 srNode = true;
-                area.schedWork(3);
+                schedWork(3);
                 return;
             }
             if (a.equals("pop")) {
                 srPop = true;
-                area.schedWork(3);
+                schedWork(3);
                 return;
             }
             cmd.badCmd();
@@ -450,7 +480,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             a = cmd.word();
             if (a.equals("index")) {
                 brIndex = bits.str2num(cmd.word());
-                area.schedWork(3);
+                schedWork(3);
                 return;
             }
             cmd.badCmd();
@@ -471,7 +501,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             if (adr.fromString(cmd.word())) {
                 return;
             }
-            rtrOspf6neigh nei = new rtrOspf6neigh(lower, this, adr);
+            rtrOspf6neigh nei = new rtrOspf6neigh(lower, areas.get(0), this, adr);
             nei = neighs.find(nei);
             if (nei == null) {
                 return;
@@ -489,14 +519,14 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         }
         if (a.equals("suppress-prefix")) {
             suppressAddr = false;
-            area.schedWork(1);
+            schedWork(1);
             return;
         }
         if (a.equals("traffeng")) {
             a = cmd.word();
             if (a.equals("suppress")) {
                 teSuppress = false;
-                area.schedWork(1);
+                schedWork(1);
                 return;
             }
             cmd.badCmd();
@@ -506,17 +536,17 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             a = cmd.word();
             if (a.equals("index")) {
                 srIndex = 0;
-                area.schedWork(3);
+                schedWork(3);
                 return;
             }
             if (a.equals("node")) {
                 srNode = false;
-                area.schedWork(3);
+                schedWork(3);
                 return;
             }
             if (a.equals("pop")) {
                 srPop = false;
-                area.schedWork(3);
+                schedWork(3);
                 return;
             }
             cmd.badCmd();
@@ -526,7 +556,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             a = cmd.word();
             if (a.equals("index")) {
                 brIndex = 0;
-                area.schedWork(3);
+                schedWork(3);
                 return;
             }
             cmd.badCmd();
@@ -543,7 +573,8 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
     public static void routerGetHelp(userHelping l) {
         l.add("4 .         enable                  enable protocol processing");
         l.add("4 5         area                    specify area number");
-        l.add("5 .           <num>                 area number");
+        l.add("5 6,.         <num>                 area number");
+        l.add("6 6,.           <num>               secondary area number");
         l.add("4 5         network                 specify network type");
         l.add("5 .           point2point           point to point");
         l.add("5 .           point2multipoint      point to multipoint");
@@ -601,7 +632,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             ntry.statNeigh &= !shutdown;
             ntry.stopNow();
         }
-        area.schedWork(7);
+        schedWork(7);
     }
 
     /**
@@ -673,7 +704,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
     }
 
     private addrIPv4 findDR(boolean drNeeded) {
-        rtrOspf6neigh dr = new rtrOspf6neigh(lower, this, iface.addr.toIPv6());
+        rtrOspf6neigh dr = new rtrOspf6neigh(lower, areas.get(0), this, iface.addr.toIPv6());
         dr.rtrPri = drPriority;
         dr.rtrID = lower.routerID.copyBytes();
         for (int i = 0; i < neighs.size(); i++) {
@@ -734,7 +765,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         if (debugger.rtrOspf6evnt) {
             logger.debug("dr change, dr=" + drAddr + " bdr=" + bdrAddr);
         }
-        area.schedWork(7);
+        schedWork(7);
     }
 
     /**
@@ -819,9 +850,10 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
      * make packet header
      *
      * @param pck packet to update
+     * @param area area
      * @param typ type of packet
      */
-    protected void mkPackHead(packHolder pck, int typ) {
+    protected void mkPackHead(packHolder pck, rtrOspf6area area, int typ) {
         pck.merge2beg();
         if (debugger.rtrOspf6traf) {
             logger.debug("sending " + rtrOspf6neigh.msgTyp2string(typ) + " on " + iface);
@@ -846,8 +878,9 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
      * make hello packet
      *
      * @param pck packet to update
+     * @param area area
      */
-    protected void mkHelloPack(packHolder pck) {
+    protected void mkHelloPack(packHolder pck, rtrOspf6area area) {
         pck.merge2beg();
         pck.msbPutD(0, iface.ifwNum); // interface id
         pck.msbPutD(4, area.getCapabilities()); // optional capabilities
@@ -862,6 +895,9 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             if (ntry == null) {
                 continue;
             }
+            if (ntry.area.area != area.area) {
+                continue;
+            }
             if (ntry.rtrID.isEmpty()) {
                 continue;
             }
@@ -874,10 +910,11 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
      * make database descriptor packet
      *
      * @param pck packet to update
+     * @param area area
      * @param flags descriptor flags
      * @param seq sequence number
      */
-    protected void mkDescrPack(packHolder pck, int flags, int seq) {
+    protected void mkDescrPack(packHolder pck, rtrOspf6area area, int flags, int seq) {
         pck.merge2beg();
         pck.msbPutD(0, area.getCapabilities()); // optional capabilities
         pck.msbPutW(4, iface.lower.getMTUsize()); // interface mtu
@@ -903,10 +940,11 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
      * send one packet on this interface
      *
      * @param pck packet to send
+     * @param area area
      * @param justDR send just to dr
      * @param typ type of packet
      */
-    protected void packSend(packHolder pck, boolean justDR, int typ) {
+    protected void packSend(packHolder pck, rtrOspf6area area, boolean justDR, int typ) {
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
@@ -917,24 +955,26 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         } else {
             pck.IPtrg.fromString("ff02::5");
         }
-        mkPackHead(pck, typ);
+        mkPackHead(pck, area, typ);
         lower.fwdCore.protoPack(iface, pck);
     }
 
     /**
      * send hello packet
+     *
+     * @param area area
      */
-    protected void sendHello() {
+    protected void sendHello(rtrOspf6area area) {
         if (passiveInt) {
             return;
         }
         packHolder pck = new packHolder(true, true);
-        mkHelloPack(pck);
+        mkHelloPack(pck, area);
         switch (networkType) {
             case netypP2mp:
             case netypP2p:
             case netypBrdct:
-                packSend(pck, false, rtrOspf6neigh.msgTypHello);
+                packSend(pck, area, false, rtrOspf6neigh.msgTypHello);
                 return;
             case netypNbma:
             case netypP2nb:
@@ -945,6 +985,9 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         for (int i = 0; i < neighs.size(); i++) {
             rtrOspf6neigh ntry = neighs.get(i);
             if (ntry == null) {
+                continue;
+            }
+            if (ntry.area.area != area.area) {
                 continue;
             }
             ntry.packSend(pck.copyBytes(true, true), rtrOspf6neigh.msgTypHello);
@@ -1007,9 +1050,17 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         }
         if (!iface.network.matches(pck.IPsrc)) {
             logger.info("got from out of subnet peer " + pck.IPsrc);
+            cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
-        rtrOspf6neigh nei = new rtrOspf6neigh(lower, this, pck.IPsrc.toIPv6());
+        rtrOspf6area ara = new rtrOspf6area(lower, pck.msbGetD(8));
+        ara = areas.find(ara);
+        if (ara == null) {
+            logger.info("got invalid area from " + pck.IPsrc);
+            iface.cntr.drop(pck, counter.reasons.badID);
+            return;
+        }
+        rtrOspf6neigh nei = new rtrOspf6neigh(lower, ara, this, pck.IPsrc.toIPv6());
         rtrOspf6neigh old = neighs.add(nei);
         boolean sndHll = false;
         if (old != null) {
@@ -1021,7 +1072,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         try {
             nei.recvPack(pck);
             if (sndHll) {
-                sendHello();
+                sendHello(ara);
             }
         } catch (Exception e) {
             logger.traceback(e);
@@ -1063,7 +1114,13 @@ class rtrOspf6ifaceHello extends TimerTask {
     public void run() {
         try {
             lower.electDRs();
-            lower.sendHello();
+            for (int i = 0; i < lower.areas.size(); i++) {
+                rtrOspf6area area = lower.areas.get(i);
+                if (area == null) {
+                    continue;
+                }
+                lower.sendHello(area);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

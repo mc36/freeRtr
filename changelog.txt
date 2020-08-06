@@ -9014,3 +9014,6 @@ qc pass: ospf over point2point ethernet
 qc pass: pvrp over point2point ethernet
 qc pass: rip over point2point ethernet
 qc pass: static routing over point2point ethernet
+---------------------------------- 2020-08-06 08:32:41
+qc pass: ospf multi area
+qc pass: ospf asymmetric multi area

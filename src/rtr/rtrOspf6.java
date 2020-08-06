@@ -660,7 +660,7 @@ public class rtrOspf6 extends ipRtr {
             return;
         }
         ifc.closeUp(ifc.iface);
-        ifc.area.schedWork(7);
+        ifc.schedWork(7);
     }
 
     /**
@@ -678,7 +678,7 @@ public class rtrOspf6 extends ipRtr {
      * @return list of neighbors
      */
     public userFormat showNeighs() {
-        userFormat l = new userFormat("|", "interface|address|routerid|state|uptime");
+        userFormat l = new userFormat("|", "interface|area|address|routerid|state|uptime");
         for (int o = 0; o < ifaces.size(); o++) {
             rtrOspf6iface ifc = ifaces.get(o);
             if (ifc == null) {
@@ -689,7 +689,7 @@ public class rtrOspf6 extends ipRtr {
                 if (nei == null) {
                     continue;
                 }
-                l.add(ifc + "|" + nei.peer + "|" + nei.rtrID + "|" + nei.state + "|" + bits.timePast(nei.upTime));
+                l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + nei.state + "|" + bits.timePast(nei.upTime));
             }
         }
         return l;
@@ -869,13 +869,19 @@ public class rtrOspf6 extends ipRtr {
     /**
      * find neighbor
      *
+     * @param area area
      * @param adr address
      * @return neighbor, null if not found
      */
-    public rtrOspf6neigh findPeer(addrIP adr) {
+    public rtrOspf6neigh findPeer(int area, addrIP adr) {
+        rtrOspf6area ara = new rtrOspf6area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return null;
+        }
         for (int i = 0; i < ifaces.size(); i++) {
             rtrOspf6iface ifc = ifaces.get(i);
-            rtrOspf6neigh nei = new rtrOspf6neigh(this, ifc, adr.toIPv6());
+            rtrOspf6neigh nei = new rtrOspf6neigh(this, ara, ifc, adr.toIPv6());
             nei = ifc.neighs.find(nei);
             if (nei != null) {
                 return nei;

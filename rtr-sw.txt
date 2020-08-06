@@ -426,6 +426,22 @@ interface ethernet1
  no log-link-change
  exit
 !
+interface ethernet11
+ description hairpin
+ lldp enable
+ cdp enable
+ no shutdown
+ no log-link-change
+ exit
+!
+interface ethernet12
+ description hairpin
+ lldp enable
+ cdp enable
+ no shutdown
+ no log-link-change
+ exit
+!
 router bgp4 65535
  vrf v1
  local-as 65535

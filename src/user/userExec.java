@@ -209,7 +209,8 @@ public class userExec {
         hl.add("5 .            <addr>            neighbor address");
         hl.add("3 4        ospf                  open shortest path first");
         hl.add("4 5          <num>               process id");
-        hl.add("5 .            <addr>            neighbor address");
+        hl.add("5 6            <num>             area id");
+        hl.add("6 .              <addr>          neighbor address");
         hl.add("3 4        pvrp                  path vector routing protocol");
         hl.add("4 5          <num>               process id");
         hl.add("5 .            <addr>            neighbor address");

@@ -62,12 +62,12 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
     /**
      * exchange
      */
-    public  final static int stXchg = 3;
+    public final static int stXchg = 3;
 
     /**
      * up
      */
-    public  final static int stFull = 4;
+    public final static int stFull = 4;
 
     /**
      * set true for static neighbors
@@ -193,14 +193,15 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
      * create one instance
      *
      * @param parent the ospf protocol
+     * @param ara area
      * @param ifc the interface to work on
      * @param adr interface address of peer
      */
-    public rtrOspf6neigh(rtrOspf6 parent, rtrOspf6iface ifc, addrIPv6 adr) {
+    public rtrOspf6neigh(rtrOspf6 parent, rtrOspf6area ara, rtrOspf6iface ifc, addrIPv6 adr) {
         lower = parent;
         iface = ifc;
         peer = adr.copyBytes();
-        area = iface.area;
+        area = ara;
         rtrID = new addrIPv4();
         peerDR = new addrIPv4();
         peerBDR = new addrIPv4();
@@ -216,6 +217,12 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
     }
 
     public int compare(rtrOspf6neigh o1, rtrOspf6neigh o2) {
+        if (o1.area.area < o2.area.area) {
+            return -1;
+        }
+        if (o1.area.area > o2.area.area) {
+            return +1;
+        }
         return o1.peer.compare(o1.peer, o2.peer);
     }
 
@@ -257,7 +264,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
         pck.IPprt = rtrOspf6.protoNum;
         pck.IPsrc.setAddr(iface.iface.addr);
         pck.IPtrg.fromIPv6addr(peer);
-        iface.mkPackHead(pck, typ);
+        iface.mkPackHead(pck, area, typ);
         lower.fwdCore.protoPack(iface.iface, pck);
     }
 
@@ -368,10 +375,10 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
         }
         if (!seenMyself) {
             if (state == stDown) {
-                iface.sendHello();
+                iface.sendHello(area);
                 return;
             }
-            logger.error("neighbor " + peer + " forgot us");
+            logger.error("neighbor a" + area.area + " " + peer + " forgot us");
             iface.iface.bfdDel(peer, this);
             tabLabel.release(segrouLab, 17);
             state = stDown;
@@ -461,7 +468,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
                 } else {
                     i = 0;
                 }
-                iface.mkDescrPack(pck, i, ddSeq);
+                iface.mkDescrPack(pck, area, i, ddSeq);
                 packSend(pck, rtrOspf6neigh.msgTypDBdsc);
                 return;
             default:
@@ -641,7 +648,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
      * stow this neighbor
      */
     protected void stopNow() {
-        logger.error("neighbor " + peer + " down");
+        logger.error("neighbor a" + area.area + " " + peer + " down");
         iface.iface.bfdDel(peer, this);
         tabLabel.release(segrouLab, 17);
         state = stDown;
@@ -651,6 +658,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
             need2run = false;
             iface.neighs.del(this);
             notif.wakeup();
+            iface.sendHello(area);
             return;
         }
         state = stDown;
@@ -658,8 +666,12 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
         peerBDR = new addrIPv4();
         peerDR = new addrIPv4();
         lastHeard = bits.getTime();
+        iface.sendHello(area);
     }
 
+    /**
+     * stop work
+     */
     public void bfdPeerDown() {
         stopNow();
     }
@@ -736,7 +748,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
 
     private void doRetInit() {
         packHolder pck = new packHolder(true, true);
-        iface.mkDescrPack(pck, rtrOspf6iface.dscrInit | rtrOspf6iface.dscrMore | rtrOspf6iface.dscrMstr, ddSeq);
+        iface.mkDescrPack(pck, area, rtrOspf6iface.dscrInit | rtrOspf6iface.dscrMore | rtrOspf6iface.dscrMstr, ddSeq);
         packSend(pck, rtrOspf6neigh.msgTypDBdsc);
     }
 
@@ -764,7 +776,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
             i = 0;
         }
         if (!(ddMorL | ddMorR)) {
-            logger.warn("neighbor " + peer + " up");
+            logger.warn("neighbor a" + area.area + " " + peer + " up");
             if (lower.segrouLab != null) {
                 addrIP per = new addrIP();
                 per.fromIPv6addr(peer);
@@ -784,7 +796,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
         } else {
             ddMorL = false;
         }
-        iface.mkDescrPack(pck, i, ddSeq);
+        iface.mkDescrPack(pck, area, i, ddSeq);
         packSend(pck, rtrOspf6neigh.msgTypDBdsc);
     }
 
@@ -797,6 +809,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
             if (lsa == null) {
                 return;
             }
+            pck.clear();
             i = lsa.writeReq(pck, 0);
             pck.putSkip(i);
             packSend(pck, rtrOspf6neigh.msgTypLSreq);

@@ -187,14 +187,15 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
      * create one instance
      *
      * @param parent the ospf protocol
+     * @param ara area
      * @param ifc the interface to work on
      * @param adr interface address of peer
      */
-    public rtrOspf4neigh(rtrOspf4 parent, rtrOspf4iface ifc, addrIPv4 adr) {
+    public rtrOspf4neigh(rtrOspf4 parent, rtrOspf4area ara, rtrOspf4iface ifc, addrIPv4 adr) {
         lower = parent;
         iface = ifc;
         peer = adr.copyBytes();
-        area = iface.area;
+        area = ara;
         rtrID = new addrIPv4();
         peerDR = new addrIPv4();
         peerBDR = new addrIPv4();
@@ -210,6 +211,12 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
     }
 
     public int compare(rtrOspf4neigh o1, rtrOspf4neigh o2) {
+        if (o1.area.area < o2.area.area) {
+            return -1;
+        }
+        if (o1.area.area > o2.area.area) {
+            return +1;
+        }
         return o1.peer.compare(o1.peer, o2.peer);
     }
 
@@ -242,15 +249,16 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
      * send one packet on this neighbor
      *
      * @param pck packet to send
+     * @param typ type of packet
      */
-    protected void packSend(packHolder pck) {
-        pck.merge2beg();
+    protected void packSend(packHolder pck, int typ) {
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
         pck.IPprt = rtrOspf4.protoNum;
         pck.IPsrc.setAddr(iface.iface.addr);
         pck.IPtrg.fromIPv4addr(peer);
+        iface.mkPackHead(pck, area, typ);
         lower.fwdCore.protoPack(iface.iface, pck);
     }
 
@@ -363,10 +371,10 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         }
         if (!seenMyself) {
             if (state == stDown) {
-                iface.sendHello();
+                iface.sendHello(area);
                 return;
             }
-            logger.error("neighbor " + peer + " forgot us");
+            logger.error("neighbor a" + area.area + " " + peer + " forgot us");
             iface.iface.bfdDel(peer, this);
             tabLabel.release(segrouLab, 16);
             state = stDown;
@@ -456,9 +464,8 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
                 } else {
                     i = 0;
                 }
-                iface.mkDescrPack(pck, i, ddSeq);
-                iface.mkPackHead(pck, rtrOspf4neigh.msgTypDBdsc);
-                packSend(pck);
+                iface.mkDescrPack(pck, area, i, ddSeq);
+                packSend(pck, rtrOspf4neigh.msgTypDBdsc);
                 return;
             default:
                 return;
@@ -559,8 +566,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             int i = lsa.writeData(pck, 0, false);
             pck.putSkip(i);
         }
-        iface.mkPackHead(pck, rtrOspf4neigh.msgTypLSack);
-        packSend(pck);
+        packSend(pck, rtrOspf4neigh.msgTypLSack);
         doRetrans();
     }
 
@@ -596,8 +602,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             }
             pck.clear();
             iface.mkLSupdate(pck, lsa);
-            iface.mkPackHead(pck, rtrOspf4neigh.msgTypLSupd);
-            packSend(pck);
+            packSend(pck, rtrOspf4neigh.msgTypLSupd);
         }
     }
 
@@ -639,7 +644,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
      * stow this neighbor
      */
     protected void stopNow() {
-        logger.error("neighbor " + peer + " down");
+        logger.error("neighbor a" + area.area + " " + peer + " down");
         iface.iface.bfdDel(peer, this);
         tabLabel.release(segrouLab, 16);
         state = stDown;
@@ -649,6 +654,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             need2run = false;
             iface.neighs.del(this);
             notif.wakeup();
+            iface.sendHello(area);
             return;
         }
         state = stDown;
@@ -656,6 +662,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         peerBDR = new addrIPv4();
         peerDR = new addrIPv4();
         lastHeard = bits.getTime();
+        iface.sendHello(area);
     }
 
     /**
@@ -737,9 +744,8 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
 
     private void doRetInit() {
         packHolder pck = new packHolder(true, true);
-        iface.mkDescrPack(pck, rtrOspf4iface.dscrInit | rtrOspf4iface.dscrMore | rtrOspf4iface.dscrMstr, ddSeq);
-        iface.mkPackHead(pck, rtrOspf4neigh.msgTypDBdsc);
-        packSend(pck);
+        iface.mkDescrPack(pck, area, rtrOspf4iface.dscrInit | rtrOspf4iface.dscrMore | rtrOspf4iface.dscrMstr, ddSeq);
+        packSend(pck, rtrOspf4neigh.msgTypDBdsc);
     }
 
     private void doRetXchg() {
@@ -766,7 +772,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             i = 0;
         }
         if (!(ddMorL | ddMorR)) {
-            logger.warn("neighbor " + peer + " up");
+            logger.warn("neighbor a" + area.area + " " + peer + " up");
             if (lower.segrouLab != null) {
                 addrIP per = new addrIP();
                 per.fromIPv4addr(peer);
@@ -786,9 +792,8 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         } else {
             ddMorL = false;
         }
-        iface.mkDescrPack(pck, i, ddSeq);
-        iface.mkPackHead(pck, rtrOspf4neigh.msgTypDBdsc);
-        packSend(pck);
+        iface.mkDescrPack(pck, area, i, ddSeq);
+        packSend(pck, rtrOspf4neigh.msgTypDBdsc);
     }
 
     private void doRetFull() {
@@ -800,10 +805,10 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             if (lsa == null) {
                 return;
             }
+            pck.clear();
             i = lsa.writeReq(pck, 0);
             pck.putSkip(i);
-            iface.mkPackHead(pck, rtrOspf4neigh.msgTypLSreq);
-            packSend(pck);
+            packSend(pck, rtrOspf4neigh.msgTypLSreq);
             if (debugger.rtrOspf4traf) {
                 logger.debug("lsa " + lsa);
             }
@@ -835,8 +840,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             }
             pck.clear();
             iface.mkLSupdate(pck, lsa);
-            iface.mkPackHead(pck, rtrOspf4neigh.msgTypLSupd);
-            packSend(pck);
+            packSend(pck, rtrOspf4neigh.msgTypLSupd);
             if (debugger.rtrOspf4traf) {
                 logger.debug("lsa " + lsa);
             }

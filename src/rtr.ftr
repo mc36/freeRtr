@@ -1690,6 +1690,8 @@ qc pass: ospf autoroute
 qc pass: ospf with php sr
 qc pass: ospf with srgb sr
 qc pass: ospf over point2point ethernet
+qc pass: ospf multi area
+qc pass: ospf asymmetric multi area
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop

@@ -688,12 +688,13 @@ public class userClear {
             cmd.error("no such process");
             return;
         }
+        int ara = bits.str2num(cmd.word());
         addrIP adr = new addrIP();
         if (adr.fromString(cmd.word())) {
             cmd.error("bad address");
             return;
         }
-        rtrOspf4neigh nei = r.ospf4.findPeer(adr);
+        rtrOspf4neigh nei = r.ospf4.findPeer(ara, adr);
         if (nei == null) {
             cmd.error("no such neighbor");
             return;
@@ -707,12 +708,13 @@ public class userClear {
             cmd.error("no such process");
             return;
         }
+        int ara = bits.str2num(cmd.word());
         addrIP adr = new addrIP();
         if (adr.fromString(cmd.word())) {
             cmd.error("bad address");
             return;
         }
-        rtrOspf6neigh nei = r.ospf6.findPeer(adr);
+        rtrOspf6neigh nei = r.ospf6.findPeer(ara, adr);
         if (nei == null) {
             cmd.error("no such neighbor");
             return;
