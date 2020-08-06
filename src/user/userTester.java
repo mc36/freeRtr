@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import pipe.pipeDiscard;
 import pipe.pipeLine;
 import pipe.pipeProgress;
 import pipe.pipeShell;
@@ -412,12 +413,16 @@ public class userTester {
             persistC.applyCfg(persistD);
         }
         started = bits.getTime();
+        if (paralell > needed.size()) {
+            paralell = needed.size();
+        }
         if (paralell > 1) {
             randord = true;
         } else {
             paralell = 1;
         }
         workers = new userTesterOne[paralell];
+        rdr.debugRes(sep + "starting " + paralell + " workers" + sep);
         for (int i = 0; i < paralell; i++) {
             workers[i] = getTester(i);
             new userTesterWrk(this, i);
@@ -425,6 +430,9 @@ public class userTester {
         }
         for (; needed.size() > 0;) {
             bits.sleep(1000);
+            if (paralell > 1) {
+                rdr.debugRes(sep + "err=" + errored + " trc=" + traces + " ret=" + retries + " don=" + finished.size() + " ned=" + needed.size() + " tot=" + (finished.size() + needed.size()) + " tim=" + bits.timePast(started) + sep);
+            }
         }
         if (persistC != null) {
             persistC.applyCfg(persistD);
@@ -514,9 +522,10 @@ public class userTester {
             bits.sleep(200);
             return;
         }
-        rdr.debugRes(sep + "err=" + errored + " trc=" + traces + " ret=" + retries + " don=" + finished.size() + " ned=" + needed.size() + " tot=" + (finished.size() + needed.size()) + " tim=" + bits.timePast(started) + sep + ftr.fil + sep);
+        workers[slt].stopAll();
         userTesterOne lt = getTester(slt);
         workers[slt] = lt;
+        lt.rdr.debugRes(sep + "err=" + errored + " trc=" + traces + " ret=" + retries + " don=" + finished.size() + " ned=" + needed.size() + " tot=" + (finished.size() + needed.size()) + " tim=" + bits.timePast(started) + sep + ftr.fil + sep);
         lt.doTest(path, ftr.fil);
         if (wait) {
             cmd.pipe.strChr("press q to quit test", "qQ");
@@ -531,7 +540,7 @@ public class userTester {
             del |= ftr.ret < 1;
             retries.add(1);
         }
-        rdr.debugRes(lt.getCsv(ftr.fld));
+        lt.rdr.debugRes(lt.getCsv(ftr.fld));
         if (!del) {
             ftr.lck.set(0);
             return;
@@ -574,7 +583,12 @@ public class userTester {
         if (window) {
             lt.window += "w";
         }
-        lt.rdr = new pipeProgress(cmd.pipe);
+        pipeSide pip = cmd.pipe;
+        if (paralell > 1) {
+            pip = pipeDiscard.needAny(null);
+            lt.pipe = pip;
+        }
+        lt.rdr = new pipeProgress(pip);
         return lt;
     }
 
@@ -914,6 +928,8 @@ class userTesterOne {
 
     public pipeProgress rdr;
 
+    public pipeSide pipe;
+
     public List<List<String>> shows = new ArrayList<List<String>>();
 
     public int traces;
@@ -965,6 +981,9 @@ class userTesterOne {
     }
 
     public void stopAll() {
+        if (pipe != null) {
+            pipe.setClose();
+        }
         for (int i = 0; i < procs.size(); i++) {
             userTesterPrc prc = procs.get(i);
             prc.stopNow();
