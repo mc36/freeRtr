@@ -93,6 +93,8 @@ public class userTester {
 
     private boolean window = false;
 
+    private boolean wait = false;
+
     private boolean config = false;
 
     private boolean mdfile = false;
@@ -153,6 +155,12 @@ public class userTester {
             }
             if (s.equals("nowindow")) {
                 window = false;
+            }
+            if (s.equals("wait")) {
+                wait = true;
+            }
+            if (s.equals("nowait")) {
+                wait = false;
             }
             if (s.equals("reapply")) {
                 reapply = bits.str2num(cmd.word());
@@ -329,6 +337,7 @@ public class userTester {
         rdr.debugStat("mdfile=" + mdfile);
         rdr.debugStat("summary=" + summary);
         rdr.debugStat("window=" + window);
+        rdr.debugStat("wait=" + wait);
         rdr.debugStat("config=" + config);
         rdr.debugStat("reapply=" + reapply);
         rdr.debugStat("randord=" + randord);
@@ -509,6 +518,9 @@ public class userTester {
         userTesterOne lt = getTester(slt);
         workers[slt] = lt;
         lt.doTest(path, ftr.fil);
+        if (wait) {
+            cmd.pipe.strChr("press q to quit test", "qQ");
+        }
         lt.stopAll();
         workers[slt] = getTester(slt);
         traces.add(lt.traces);
