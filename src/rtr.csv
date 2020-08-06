@@ -1,6 +1,6 @@
 file;code;try;test;stage;command
 -;-;freeRouter v20.8.6-rel, done by cs@nop.;-;-
--;-;2020-08-06 12:49:04, took 00:06:00, with 100 workers, on 1814 cases, 0 failed, 1 traces, 1 retries;-;-
+-;-;2020-08-06 13:32:39, took 00:04:50, with 100 workers, on 1814 cases, 0 failed, 0 traces, 0 retries;-;-
 -;-;./rtr.bin;-;-
 basic.tst;0;0;dummy test;successfully;finished
 conn-anyconn.tst;0;0;ip over anyconnect;successfully;finished
@@ -506,7 +506,7 @@ crypt-openvpn15.tst;0;0;openvpn over asymmetric ports;successfully;finished
 crypt-proxy.tst;0;0;transparent proxy;successfully;finished
 crypt-satp01.tst;0;0;satp over ipv4;successfully;finished
 crypt-satp02.tst;0;0;satp over ipv6;successfully;finished
-crypt-satp03.tst;0;1;satp over satp;successfully;finished
+crypt-satp03.tst;0;0;satp over satp;successfully;finished
 crypt-satp04.tst;0;0;satp over loopback;successfully;finished
 crypt-satp05.tst;0;0;satp with des;successfully;finished
 crypt-satp06.tst;0;0;satp with blowfish;successfully;finished
