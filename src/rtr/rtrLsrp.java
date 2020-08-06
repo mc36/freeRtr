@@ -644,7 +644,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
-        boolean[] segrouUsd = new boolean[segrouMax];
+        boolean[] segrouUsd = null;
+        if (segrouLab != null) {
+            segrouUsd = new boolean[segrouMax];
+        }
         for (int o = 0; o < database.size(); o++) {
             rtrLsrpData ntry = database.get(o);
             if (ntry == null) {
@@ -662,7 +665,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             int brb = spf.getBierB(ntry.rtrId, false);
             int bro = spf.getBierB(ntry.rtrId, true);
             List<Integer> label = null;
-            if ((segrouLab != null) && (ntry.segrouIdx > 0) && (ntry.segrouIdx < segrouMax) && (srb > 0)) {
+            if ((segrouUsd != null) && (ntry.segrouIdx > 0) && (ntry.segrouIdx < segrouMax) && (srb > 0)) {
                 label = tabLabel.int2labels(srb + ntry.segrouIdx);
                 if (ntry.segrouPop && (hops <= 1)) {
                     label = tabLabel.int2labels(ipMpls.labelImp);
@@ -688,7 +691,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 tab1.add(tabRoute.addType.better, rou, false, true);
             }
         }
-        if (segrouLab != null) {
+        if (segrouUsd != null) {
             segrouLab[segrouIdx].setFwdCommon(6, fwdCore);
             segrouUsd[segrouIdx] = true;
             for (int i = 0; i < segrouUsd.length; i++) {

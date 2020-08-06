@@ -1,6 +1,6 @@
 file;code;try;test;stage;command
 -;-;freeRouter v20.8.6-rel, done by cs@nop.;-;-
--;-;2020-08-06 11:28:38, took 00:04:51, with 100 workers, on 1814 cases, 0 failed, 0 traces, 1 retries;-;-
+-;-;2020-08-06 12:49:04, took 00:06:00, with 100 workers, on 1814 cases, 0 failed, 1 traces, 1 retries;-;-
 -;-;./rtr.bin;-;-
 basic.tst;0;0;dummy test;successfully;finished
 conn-anyconn.tst;0;0;ip over anyconnect;successfully;finished
@@ -506,7 +506,7 @@ crypt-openvpn15.tst;0;0;openvpn over asymmetric ports;successfully;finished
 crypt-proxy.tst;0;0;transparent proxy;successfully;finished
 crypt-satp01.tst;0;0;satp over ipv4;successfully;finished
 crypt-satp02.tst;0;0;satp over ipv6;successfully;finished
-crypt-satp03.tst;0;0;satp over satp;successfully;finished
+crypt-satp03.tst;0;1;satp over satp;successfully;finished
 crypt-satp04.tst;0;0;satp over loopback;successfully;finished
 crypt-satp05.tst;0;0;satp with des;successfully;finished
 crypt-satp06.tst;0;0;satp with blowfish;successfully;finished
@@ -551,7 +551,7 @@ crypt-swipe14.tst;0;0;swipe with sha512;successfully;finished
 crypt-tls.tst;0;0;tls test;successfully;finished
 crypt-wireguard01.tst;0;0;wireguard over ipv4;successfully;finished
 crypt-wireguard02.tst;0;0;wireguard over ipv6;successfully;finished
-crypt-wireguard03.tst;0;1;wireguard over wireguard;successfully;finished
+crypt-wireguard03.tst;0;0;wireguard over wireguard;successfully;finished
 crypt-wireguard04.tst;0;0;wireguard over loopback;successfully;finished
 crypt-wireguard05.tst;0;0;wireguard over asymmetric ports;successfully;finished
 demo01.tst;0;0;empty demo network;successfully;finished
