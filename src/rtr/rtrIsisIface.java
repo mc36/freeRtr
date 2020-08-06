@@ -312,6 +312,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     public void routerDoConfig(String a, cmds cmd) {
         if (a.equals("circuit")) {
             circuitLevel = rtrIsis.string2level(cmd.word()) & lower.operateLevel;
+            lower.genLsps(3);
             return;
         }
         if (a.equals("network")) {
@@ -390,18 +391,22 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             }
             if (a.equals("metric")) {
                 teMetric = bits.str2num(cmd.word());
+                lower.genLsps(1);
                 return;
             }
             if (a.equals("bandwidth")) {
                 teBandwidth = bits.str2long(cmd.word());
+                lower.genLsps(1);
                 return;
             }
             if (a.equals("affinity")) {
                 teAffinity = bits.str2num(cmd.word());
+                lower.genLsps(1);
                 return;
             }
             if (a.equals("srlg")) {
                 teSrlg = bits.str2num(cmd.word());
+                lower.genLsps(1);
                 return;
             }
             cmd.badCmd();

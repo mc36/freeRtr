@@ -464,6 +464,7 @@ public class rtrIsisLevel implements Runnable {
 
     private void createAddrs(packHolder pck) {
         tabRoute<addrIP> rs = new tabRoute<addrIP>("rs");
+        tabRoute<addrIP> oa = new tabRoute<addrIP>("rs");
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = lower.getDefaultRoute();
@@ -496,6 +497,10 @@ public class rtrIsisLevel implements Runnable {
                 ntry.rouSrc |= 16;
             }
             ntry.bierIdx = ifc.brIndex;
+            oa.add(tabRoute.addType.better, ntry, false, false);
+            if ((ifc.circuitLevel & level) == 0) {
+                continue;
+            }
             rs.add(tabRoute.addType.better, ntry, false, false);
         }
         for (int i = 0; i < lower.routerRedistedU.size(); i++) {
@@ -527,6 +532,9 @@ public class rtrIsisLevel implements Runnable {
                     }
                 } else {
                     ntry.rouSrc |= 2;
+                }
+                if (oa.find(ntry.prefix) != null) {
+                    continue;
                 }
                 ntry.rouSrc &= -1 - 8;
                 rs.add(tabRoute.addType.better, ntry, false, false);

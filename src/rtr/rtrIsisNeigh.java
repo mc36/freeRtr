@@ -314,6 +314,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         need2run = false;
         iface.neighs.del(this);
         notif.wakeup();
+        iface.doRetrans();
     }
 
     /**
