@@ -278,7 +278,7 @@ public class ifcBundle implements Runnable, ifcDn {
         userFormat lst = new userFormat("|", "parameter|state");
         lst.add("backup|" + backup);
         lst.add("selected|" + ifaces.get(selected));
-        lst.add("replication|" + replicate);
+        lst.add("replicate|" + replicate);
         lst.add("sequence|" + sequence);
         lst.add("dejitter|" + dejitter);
         lst.add("reporter|" + reporter);
