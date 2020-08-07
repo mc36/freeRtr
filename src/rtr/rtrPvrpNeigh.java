@@ -92,7 +92,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
      *
      * @param parent protocol handler
      * @param ifc interface handler
-     * @param peerId transport address
+     * @param peerId router id
      * @param peerAd transport address
      */
     public rtrPvrpNeigh(rtrPvrp parent, rtrPvrpIface ifc, addrIPv4 peerId, addrIP peerAd) {
