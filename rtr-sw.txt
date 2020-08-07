@@ -123,6 +123,10 @@ policy-map fs6
  !
  exit
 !
+bundle 9
+ loadbalance all
+ exit
+!
 bridge 1
  rd 65535:1
  rt-import 65535:1
@@ -338,6 +342,17 @@ interface loopback65535
  no log-link-change
  exit
 !
+interface bundle9
+ description uplink
+ bridge-group 9
+ bridge-filter ipv4in all4
+ bridge-filter ipv4out all4
+ bridge-filter ipv6in all6
+ bridge-filter ipv6out all6
+ no shutdown
+ no log-link-change
+ exit
+!
 interface bvi1
  no description
  lldp enable
@@ -374,6 +389,45 @@ interface bvi4
 !
 interface bvi9
  description uplink
+ vrf forwarding v1
+ ipv4 address 10.1.123.91 255.255.255.0
+ ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
+ template template1
+ no shutdown
+ exit
+!
+interface ethernet1
+ description uplink
+ bundle-group 9
+ no shutdown
+ no log-link-change
+ exit
+!
+interface ethernet2
+ description uplink
+ bundle-group 9
+ no shutdown
+ no log-link-change
+ exit
+!
+interface ethernet8
+ description hairpin
+ lldp enable
+ cdp enable
+ no shutdown
+ no log-link-change
+ exit
+!
+interface ethernet9
+ description hairpin
+ lldp enable
+ cdp enable
+ no shutdown
+ no log-link-change
+ exit
+!
+interface template1
+ description core links
  monitor-buffer 10240000
  lldp enable
  cdp enable
@@ -383,7 +437,7 @@ interface bvi9
  ptp receive
  carrier-delay 123
  vrf forwarding v1
- ipv4 address 10.1.123.91 255.255.255.0
+ ipv4 address dynamic 255.255.255.252
  ipv4 inspect mac
  ipv4 host-watch
  ipv4 ptp enable
@@ -392,7 +446,7 @@ interface bvi9
  ipv4 pim enable
  ipv4 pim bier-tunnel 299
  ipv4 pim join-source loopback0
- ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
+ ipv6 address dynamic ffff:ffff:ffff:ffff::
  ipv6 inspect mac
  ipv6 host-watch
  ipv6 ptp enable
@@ -408,38 +462,13 @@ interface bvi9
  mpls rsvp4
  mpls rsvp6
  router lsrp4 1 enable
+ router lsrp4 1 accept-metric
  router lsrp4 1 bfd
  router lsrp6 1 enable
+ router lsrp6 1 accept-metric
  router lsrp6 1 bfd
- no shutdown
+ shutdown
  log-link-change
- exit
-!
-interface ethernet1
- description uplink
- bridge-group 9
- bridge-filter ipv4in all4
- bridge-filter ipv4out all4
- bridge-filter ipv6in all6
- bridge-filter ipv6out all6
- no shutdown
- no log-link-change
- exit
-!
-interface ethernet11
- description hairpin
- lldp enable
- cdp enable
- no shutdown
- no log-link-change
- exit
-!
-interface ethernet12
- description hairpin
- lldp enable
- cdp enable
- no shutdown
- no log-link-change
  exit
 !
 router bgp4 65535

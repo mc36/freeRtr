@@ -1586,12 +1586,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * template text
      */
     public final static String notemplL[] = {
-        "interface .*! ipv[4|6] address.*",
-        "interface .*! no ipv[4|6] address.*",
         "interface .*! description.*",
         "interface .*! no description.*",
         "interface .*! vrf forwarding.*",
         "interface .*! no vrf forwarding.*",
+        "interface .*! ipv[4|6] address.*",
+        "interface .*! no ipv[4|6] address.*",
+        "interface .*! ipx network.*",
+        "interface .*! no ipx network.*",
         "interface .*! autostate.*",
         "interface .*! no autostate.*",
         "interface .*! shutdown.*",
@@ -5112,6 +5114,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(cmds.tabulator + "no ipx network");
             }
         }
+        if (template == null) {
+            l.add(cmds.tabulator + "no template");
+        } else {
+            l.add(cmds.tabulator + "template " + template.name);
+        }
         cmds.cfgLine(l, nshPack == null, cmds.tabulator, "nsh enable", "");
         cmds.cfgLine(l, nshXcon == null, cmds.tabulator, "nsh xconnect", ifcNshXcn.getCfg(nshXcon));
         cmds.cfgLine(l, mplsPack == null, cmds.tabulator, "mpls enable", "");
@@ -5207,11 +5214,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (pwhe != null) {
             l.add(cmds.tabulator + "pseudowire " + pwhe.getCfg());
-        }
-        if (template == null) {
-            l.add(cmds.tabulator + "no template");
-        } else {
-            l.add(cmds.tabulator + "template " + template.name);
         }
         cmds.cfgLine(l, ethtyp.forcedUP, cmds.tabulator, "autostate", "");
         cmds.cfgLine(l, !ethtyp.forcedDN, cmds.tabulator, "shutdown", "");
