@@ -587,6 +587,19 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
         return lst;
     }
 
+    public void delReg(List<String> lst) {
+        for (int o = 0; o < reqR.size(); o++) {
+            String s = reqR.get(o);
+            for (int i = 0; i < lst.size(); i++) {
+                if (!lst.get(i).matches(s)) {
+                    continue;
+                }
+                lst.remove(i);
+                break;
+            }
+        }
+    }
+
     public void delIgn(List<String> lst) {
         for (int o = 0; o < ignT.size(); o++) {
             String s = ignT.get(o);
@@ -613,6 +626,7 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
     public void doTrain(String ned) {
         List<String> lst = getResult();
         delIgn(lst);
+        delReg(lst);
         for (int i = reqT.size() - 1; i >= 0; i--) {
             if (reqT.get(i).indexOf(ned) >= 0) {
                 reqT.remove(i);
@@ -630,6 +644,7 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
     public void doTrain() {
         List<String> lst = getResult();
         delIgn(lst);
+        delReg(lst);
         reqT.clear();
         for (int i = 0; i < lst.size(); i++) {
             reqT.add(lst.get(i));
