@@ -528,7 +528,7 @@ public class userTester {
         lt.rdr.debugRes(sep + "err=" + errored + " trc=" + traces + " ret=" + retries + " don=" + finished.size() + " ned=" + needed.size() + " tot=" + (finished.size() + needed.size()) + " tim=" + bits.timePast(started) + sep + ftr.fil + sep);
         lt.doTest(path, ftr.fil);
         if (wait) {
-            cmd.pipe.strChr("press q to quit test", "qQ");
+            cmd.pipe.strChr("press q to quit test:", "qQ");
         }
         lt.stopAll();
         workers[slt] = getTester(slt);
