@@ -837,11 +837,7 @@ public class userPacket {
             if (cmd.size() > 0) {
                 a = cmd.word();
             }
-            if (ifc.thread == null) {
-                cmd.error("capturing=" + !ifc.ethtyp.initLog(a));
-            } else {
-                cmd.error("capturing=" + !ifc.thread.initLog(a));
-            }
+            cmd.error("capturing=" + !ifc.ethtyp.initLog(a));
             return;
         }
         if (a.equals("monitor")) {

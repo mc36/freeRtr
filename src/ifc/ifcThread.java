@@ -5,8 +5,6 @@ import addr.addrType;
 import cfg.cfgAll;
 import cfg.cfgIfc;
 import cfg.cfgInit;
-import java.io.File;
-import java.io.RandomAccessFile;
 import pack.packHolder;
 import user.userFormat;
 import util.bits;
@@ -57,21 +55,19 @@ public abstract class ifcThread implements ifcDn, Runnable {
      * set true for redundancy links
      */
     public boolean booter = false;
-    
+
     private int procRun = 0;
-    
+
     private syncInt procNow = new syncInt(0);
-    
+
     private int procCnt = 0;
-    
+
     private int procLst = -1;
-    
+
     private long procTim = 0;
-    
-    private RandomAccessFile logFile = null;
-    
+
     private Thread started[] = new Thread[0];
-    
+
     private boolean need2run = true;
 
     /**
@@ -300,12 +296,6 @@ public abstract class ifcThread implements ifcDn, Runnable {
         if (debugger.ifcThread) {
             logger.debug(this + " tx" + pck.dump());
         }
-        if (logFile != null) {
-            try {
-                logFile.write(pck.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, false));
-            } catch (Exception e) {
-            }
-        }
         try {
             txOnePack(pck.getDataArray(), pck.dataOffset(), pck.dataSize());
         } catch (Exception e) {
@@ -324,7 +314,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
             logger.debug("stopped, addr=" + hwaddr);
         }
     }
-    
+
     private void doRounds() {
         packHolder pck = new packHolder(true, true);
         for (;;) {
@@ -354,12 +344,6 @@ public abstract class ifcThread implements ifcDn, Runnable {
             if (lastState != state.states.up) {
                 cntr.drop(pck, counter.reasons.notUp);
                 continue;
-            }
-            if (logFile != null) {
-                try {
-                    logFile.write(pck.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, false));
-                } catch (Exception e) {
-                }
             }
             if (etherEnc) {
                 try {
@@ -411,29 +395,4 @@ public abstract class ifcThread implements ifcDn, Runnable {
         }
     }
 
-    /**
-     * reinit file logger
-     *
-     * @param s name of capture file
-     * @return false if successful, true if error happened
-     */
-    public boolean initLog(String s) {
-        try {
-            logFile.close();
-        } catch (Exception e) {
-        }
-        if (logFile != null) {
-            logFile = null;
-            return true;
-        }
-        try {
-            RandomAccessFile f = new RandomAccessFile(new File(s), "rw");
-            f.setLength(0);
-            f.write(packHolder.getPcapHeader(etherEnc ? 1 : 9));
-            logFile = f;
-        } catch (Exception e) {
-        }
-        return logFile == null;
-    }
-    
 }

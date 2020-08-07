@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
 release: freeRouter v20.8.7-rel, done by cs@nop.<br/>
-tested: 2020-08-07 04:31:18, took 00:04:55, with 100 workers, on 1814 cases, 0 failed, 0 traces, 0 retries<br/>
+tested: 2020-08-07 14:22:03, took 00:06:03, with 100 workers, on 1814 cases, 0 failed, 0 traces, 3 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>try</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -524,7 +524,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-satp15.tst">crypt-satp15.tst</a></td><td>0</td><td>0</td><td>satp over asymmetric ports</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip01.tst">crypt-skip01.tst</a></td><td>0</td><td>0</td><td>skip over ipv4</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip02.tst">crypt-skip02.tst</a></td><td>0</td><td>0</td><td>skip over ipv6</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/crypt-skip03.tst">crypt-skip03.tst</a></td><td>0</td><td>0</td><td>skip over skip</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-skip03.tst">crypt-skip03.tst</a></td><td>0</td><td>1</td><td>skip over skip</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip04.tst">crypt-skip04.tst</a></td><td>0</td><td>0</td><td>skip over loopback</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip05.tst">crypt-skip05.tst</a></td><td>0</td><td>0</td><td>skip with des</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip06.tst">crypt-skip06.tst</a></td><td>0</td><td>0</td><td>skip with blowfish</td><td>successfully</td><td>finished</td></tr>
@@ -556,7 +556,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-wireguard02.tst">crypt-wireguard02.tst</a></td><td>0</td><td>0</td><td>wireguard over ipv6</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-wireguard03.tst">crypt-wireguard03.tst</a></td><td>0</td><td>0</td><td>wireguard over wireguard</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-wireguard04.tst">crypt-wireguard04.tst</a></td><td>0</td><td>0</td><td>wireguard over loopback</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/crypt-wireguard05.tst">crypt-wireguard05.tst</a></td><td>0</td><td>0</td><td>wireguard over asymmetric ports</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-wireguard05.tst">crypt-wireguard05.tst</a></td><td>0</td><td>1</td><td>wireguard over asymmetric ports</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/demo01.tst">demo01.tst</a></td><td>0</td><td>0</td><td>empty demo network</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/demo02.tst">demo02.tst</a></td><td>0</td><td>0</td><td>addressed demo network</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-bgp01.tst">intop1-bgp01.tst</a></td><td>0</td><td>0</td><td>interop1: ebgp</td><td>successfully</td><td>finished</td></tr>
@@ -1623,7 +1623,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast06.tst">rout-mcast06.tst</a></td><td>0</td><td>0</td><td>multicast vpn routing with mldp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast07.tst">rout-mcast07.tst</a></td><td>0</td><td>0</td><td>multicast vpn between pim and mldp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast08.tst">rout-mcast08.tst</a></td><td>0</td><td>0</td><td>multicast othervpn routing with mldp</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/rout-mcast09.tst">rout-mcast09.tst</a></td><td>0</td><td>0</td><td>multicast othervpn between pim and mldp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-mcast09.tst">rout-mcast09.tst</a></td><td>0</td><td>1</td><td>multicast othervpn between pim and mldp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast10.tst">rout-mcast10.tst</a></td><td>0</td><td>0</td><td>multicast routing ttl treshold</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast11.tst">rout-mcast11.tst</a></td><td>0</td><td>0</td><td>multicast routing decoupled from unicast</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast12.tst">rout-mcast12.tst</a></td><td>0</td><td>0</td><td>multicast routing with pim join source</td><td>successfully</td><td>finished</td></tr>

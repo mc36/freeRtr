@@ -96,7 +96,6 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
         try {
             fileHandle.close();
         } catch (Exception e) {
-            logger.traceback(e);
         }
     }
 
@@ -112,7 +111,7 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
             fileHandle = new RandomAccessFile(new File(fileName), "rw");
             fileHandle.setLength(0);
         } catch (Exception e) {
-            logger.traceback(e);
+            logger.error("unable to open file");
         }
     }
 
@@ -166,12 +165,15 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
      * @param dat data bytes
      */
     public synchronized void gotMessage(boolean dir, int typ, rtrBgpNeigh nei, byte[] dat) {
+        if (fileHandle == null) {
+            return;
+        }
         if (backupTime > 0) {
             if ((bits.getTime() - started) > backupTime) {
                 try {
                     fileHandle.close();
                 } catch (Exception e) {
-                    logger.traceback(e);
+                    logger.error("unable to close file");
                 }
                 fileHandle = null;
                 userFlash.rename(fileName, backupName, true, true);
@@ -180,12 +182,9 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
                     fileHandle = new RandomAccessFile(new File(fileName), "rw");
                     fileHandle.setLength(0);
                 } catch (Exception e) {
-                    logger.traceback(e);
+                    logger.error("unable to open file");
                 }
             }
-        }
-        if (fileHandle == null) {
-            return;
         }
         byte[] hdr = new byte[128];
         int len = putMrtHeader(hdr, dir, nei.remoteAs, nei.localAs, nei.peerAddr, nei.localAddr, dat.length + rtrBgpSpeak.sizeU);
@@ -201,12 +200,11 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
             fileHandle.write(dat, 0, dat.length);
             return;
         } catch (Exception e) {
-            logger.traceback(e);
+            logger.error("unable to write file");
         }
         try {
             fileHandle.close();
         } catch (Exception e) {
-            logger.traceback(e);
         }
         fileHandle = null;
     }

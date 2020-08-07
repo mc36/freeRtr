@@ -154,6 +154,8 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
 
     private boolean need2run;
 
+    private boolean seenInit;
+
     /**
      * create ldp neighbor
      *
@@ -478,6 +480,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         if (pck.getSessParam()) {
             return;
         }
+        seenInit = true;
         if ((sessHelloHldtm / 1000) <= pck.holdTime) {
             return;
         }
@@ -716,6 +719,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             }
             conn.timeout = sessHelloHldtm;
             if (conn.wait4ready(sessHelloHldtm)) {
+                conn.setClose();
                 ip.ldpNeighDel(this);
                 return;
             }
@@ -762,7 +766,20 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
      *
      * @return true on error, false on success
      */
-    public boolean doRxInit() {
+    protected boolean doRxInit() {
+        seenInit = false;
+        if (doRxPack()) {
+            return true;
+        }
+        return !seenInit;
+    }
+
+    /**
+     * process one packet
+     *
+     * @return true on error, false on success
+     */
+    protected boolean doRxPack() {
         packLdp pck = new packLdp();
         pck.conn = conn;
         pck.cntr = cntr;
@@ -772,17 +789,41 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         if (pck.parseLDPheader()) {
             return true;
         }
-        boolean seen = false;
         for (;;) {
             if (pck.parseMSGheader()) {
                 break;
             }
-            if (pck.msgTyp == packLdp.msgTinit) {
-                gotInitialization(pck);
-                seen = true;
+            switch (pck.msgTyp) {
+                case packLdp.msgTlabMap:
+                    gotLabelMap(pck);
+                    ip.routerStaticChg();
+                    break;
+                case packLdp.msgTlabWdr:
+                    gotLabelWdrw(pck);
+                    ip.routerStaticChg();
+                    break;
+                case packLdp.msgTlabRel:
+                    gotLabelRlse(pck);
+                    break;
+                case packLdp.msgTlabReq:
+                    gotLabelRqst(pck);
+                    break;
+                case packLdp.msgTinit:
+                    gotInitialization(pck);
+                    break;
+                case packLdp.msgTnotify:
+                    gotNotification(pck);
+                    break;
+                case packLdp.msgTkepAlv:
+                    break;
+                default:
+                    if (debugger.rtrLdpTraf) {
+                        logger.debug("rx " + pck.type2string(pck.msgTyp));
+                    }
+                    break;
             }
         }
-        return !seen;
+        return false;
     }
 
     /**
@@ -794,48 +835,8 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 if (!need2run) {
                     break;
                 }
-                packLdp pck = new packLdp();
-                pck.conn = conn;
-                pck.cntr = cntr;
-                if (pck.recvPack()) {
+                if (doRxPack()) {
                     break;
-                }
-                if (pck.parseLDPheader()) {
-                    break;
-                }
-                for (;;) {
-                    if (pck.parseMSGheader()) {
-                        break;
-                    }
-                    switch (pck.msgTyp) {
-                        case packLdp.msgTlabMap:
-                            gotLabelMap(pck);
-                            ip.routerStaticChg();
-                            break;
-                        case packLdp.msgTlabWdr:
-                            gotLabelWdrw(pck);
-                            ip.routerStaticChg();
-                            break;
-                        case packLdp.msgTlabRel:
-                            gotLabelRlse(pck);
-                            break;
-                        case packLdp.msgTlabReq:
-                            gotLabelRqst(pck);
-                            break;
-                        case packLdp.msgTinit:
-                            gotInitialization(pck);
-                            break;
-                        case packLdp.msgTnotify:
-                            gotNotification(pck);
-                            break;
-                        case packLdp.msgTkepAlv:
-                            break;
-                        default:
-                            if (debugger.rtrLdpTraf) {
-                                logger.debug("rx " + pck.type2string(pck.msgTyp));
-                            }
-                            break;
-                    }
                 }
             }
         } catch (Exception e) {

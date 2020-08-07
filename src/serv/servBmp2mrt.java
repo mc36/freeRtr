@@ -193,7 +193,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
                 fileHandle = new RandomAccessFile(new File(fileName), "rw");
                 fileHandle.setLength(0);
             } catch (Exception e) {
-                logger.traceback(e);
+                logger.error("unable to open file");
             }
             return false;
         }
@@ -401,6 +401,9 @@ public class servBmp2mrt extends servGeneric implements prtServS {
                 logger.traceback(e);
             }
         }
+        if (fileHandle == null) {
+            return;
+        }
         if (backupName != null) {
             boolean ned = false;
             if (maxTime > 0) {
@@ -416,7 +419,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
                 try {
                     fileHandle.close();
                 } catch (Exception e) {
-                    logger.traceback(e);
+                    logger.error("unable to close file");
                 }
                 fileHandle = null;
                 packs = 0;
@@ -427,7 +430,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
                     fileHandle = new RandomAccessFile(new File(fileName), "rw");
                     fileHandle.setLength(0);
                 } catch (Exception e) {
-                    logger.traceback(e);
+                    logger.error("unable to open file");
                 }
             }
         }
@@ -435,20 +438,16 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         int len = rtrBgpMrt.putMrtHeader(hdr, dir, as, 0, src, spk, dat.length);
         packs++;
         bytes += len + dat.length;
-        if (fileHandle == null) {
-            return;
-        }
         try {
             fileHandle.write(hdr, 0, len);
             fileHandle.write(dat, 0, dat.length);
             return;
         } catch (Exception e) {
-            logger.traceback(e);
+            logger.error("unable to write file");
         }
         try {
             fileHandle.close();
         } catch (Exception e) {
-            logger.traceback(e);
         }
         fileHandle = null;
     }

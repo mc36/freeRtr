@@ -1839,7 +1839,8 @@ public class userExec {
             if (a.equals("erase")) {
                 boolean b = bits.buf2txt(true, new ArrayList<String>(),
                         cfgInit.cfgFileSw);
-                prtRedun.doNotify();
+                prtRedun.doConfig();
+                prtRedun.doReload();
                 cmd.error(doneFail(b));
                 return cmdRes.command;
             }
@@ -1864,7 +1865,8 @@ public class userExec {
                 if ((cfgAll.configBackup != null) && (old != null)) {
                     bits.buf2txt(true, old, cfgAll.configBackup);
                 }
-                prtRedun.doNotify();
+                prtRedun.doConfig();
+                prtRedun.doReload();
                 cmd.error(doneFail(b));
                 if (!cfgAll.configAbackup) {
                     return cmdRes.command;
@@ -1944,7 +1946,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("peer")) {
-                prtRedun.doNotify();
+                prtRedun.doReload();
                 return cmdRes.command;
             }
             if (a.equals("cancel")) {

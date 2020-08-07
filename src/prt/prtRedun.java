@@ -147,13 +147,20 @@ public class prtRedun implements Runnable {
     }
 
     /**
-     * notify peers to reload
+     * sync config to peers
      */
-    public static void doNotify() {
+    public static void doConfig() {
         for (int i = 0; i < ifaces.size(); i++) {
-            prtRedunIfc ifc = ifaces.get(i);
-            ifc.doFile(cfgInit.cfgFileSw, packRedun.fnStart);
-            ifc.doPack(packRedun.typReload, new packHolder(true, true));
+            ifaces.get(i).doFile(cfgInit.cfgFileSw, packRedun.fnStart);
+        }
+    }
+
+    /**
+     * reload peers
+     */
+    public static void doReload() {
+        for (int i = 0; i < ifaces.size(); i++) {
+            ifaces.get(i).doRetry(packRedun.typReload, new packHolder(true, true));
         }
     }
 
@@ -240,6 +247,7 @@ class prtRedunIfc implements ifcUp {
                 if (prtRedun.state == packRedun.statActive) {
                     break;
                 }
+                doAck(-4);
                 cfgInit.stopRouter(true, 6, "peer request");
                 break;
             case packRedun.typAck:
@@ -256,6 +264,7 @@ class prtRedunIfc implements ifcUp {
                 filRx.seek(0);
                 filRx.setLength(0);
             } catch (Exception e) {
+                logger.error("unable to open file");
                 break;
             }
             doAck(-2);
@@ -270,6 +279,7 @@ class prtRedunIfc implements ifcUp {
                     filRx.seek(i);
                     filRx.write(buf);
                 } catch (Exception e) {
+                    logger.error("unable to write file");
                     break;
                 }
                 doAck(i);
@@ -278,6 +288,7 @@ class prtRedunIfc implements ifcUp {
                 try {
                 filRx.close();
             } catch (Exception e) {
+                logger.error("unable to close file");
                 break;
             }
             filRx = null;
@@ -327,6 +338,7 @@ class prtRedunIfc implements ifcUp {
                 return false;
             }
         }
+        logger.error("peer does not respond");
         return true;
     }
 
@@ -337,6 +349,7 @@ class prtRedunIfc implements ifcUp {
             fr = new RandomAccessFile(fn, "r");
             siz = fr.length();
         } catch (Exception e) {
+            logger.error("unable to open file");
             return true;
         }
         if (doRetry(packRedun.typFilBeg, new packHolder(true, true))) {
@@ -357,6 +370,7 @@ class prtRedunIfc implements ifcUp {
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {
+                logger.error("unable to read file");
                 return true;
             }
             packHolder pck = new packHolder(true, true);
@@ -377,6 +391,7 @@ class prtRedunIfc implements ifcUp {
         try {
             fr.close();
         } catch (Exception e) {
+            logger.error("unable to close file");
             return true;
         }
         packHolder pck = new packHolder(true, true);
