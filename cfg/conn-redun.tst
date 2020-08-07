@@ -39,7 +39,7 @@ int bvi1
  exit
 !
 
-addrouter r3
+addrouter r3 nowrite
 int eth1 eth 0000.0000.3333 $2b$ $2a$
 int red1 red eth 0000.0000.3333 $4a$ $4b$
 !
@@ -53,7 +53,7 @@ int eth1
  exit
 !
 
-addrouter r4
+addrouter r4 nowrite
 int eth1 eth 0000.0000.4444 $3b$ $3a$
 int red1 red eth 0000.0000.4444 $4b$ $4a$
 !
@@ -62,33 +62,30 @@ vrf def v1
  exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.4 255.255.255.0
- ipv6 addr 1234::4 ffff::
+ ipv4 addr 1.1.1.3 255.255.255.0
+ ipv6 addr 1234::3 ffff::
  exit
 !
 
 
-exit
-
 r2 tping 100 5 1.1.1.1 /vrf v1
 r2 tping 100 5 1.1.1.3 /vrf v1
-r2 tping 0 5 1.1.1.4 /vrf v1
 r2 tping 100 5 1234::1 /vrf v1
 r2 tping 100 5 1234::3 /vrf v1
-r2 tping 0 5 1234::4 /vrf v1
 
 r1 tping 100 5 1.1.1.2 /vrf v1
 r1 tping 100 5 1.1.1.3 /vrf v1
-r1 tping 0 5 1.1.1.4 /vrf v1
 r1 tping 100 5 1234::2 /vrf v1
 r1 tping 100 5 1234::3 /vrf v1
-r1 tping 0 5 1234::4 /vrf v1
 
 r3 send relo forc
 
+r2 tping 100 5 1.1.1.1 /vrf v1
+r2 tping 100 5 1.1.1.3 /vrf v1
+r2 tping 100 5 1234::1 /vrf v1
+r2 tping 100 5 1234::3 /vrf v1
+
 r1 tping 100 5 1.1.1.2 /vrf v1
-r1 tping 0 5 1.1.1.3 /vrf v1
-r1 tping 100 5 1.1.1.4 /vrf v1
+r1 tping 100 5 1.1.1.3 /vrf v1
 r1 tping 100 5 1234::2 /vrf v1
-r1 tping 0 5 1234::3 /vrf v1
-r1 tping 100 5 1234::4 /vrf v1
+r1 tping 100 5 1234::3 /vrf v1

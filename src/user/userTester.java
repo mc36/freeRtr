@@ -1304,6 +1304,33 @@ class userTesterOne {
         }
         if (s.equals("addrouter")) {
             String rn = cmd.word();
+            boolean write = true;
+            boolean telnet = true;
+            boolean fancy = true;
+            for (;;) {
+                s = cmd.word();
+                if (s.length() < 1) {
+                    break;
+                }
+                if (s.equals("write")) {
+                    write = true;
+                }
+                if (s.equals("nowrite")) {
+                    write = false;
+                }
+                if (s.equals("fancy")) {
+                    fancy = true;
+                }
+                if (s.equals("nofancy")) {
+                    fancy = false;
+                }
+                if (s.equals("telnet")) {
+                    telnet = true;
+                }
+                if (s.equals("notelnet")) {
+                    telnet = false;
+                }
+            }
             List<String> cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();
@@ -1325,12 +1352,14 @@ class userTesterOne {
             cfg = new ArrayList<String>();
             cfg.add("hostname " + rn);
             cfg.add("logging file debug " + userTesterPrc.getLogName(slot, rn, 1));
-            cfg.add("vrf definition tester");
-            cfg.add(" exit");
-            cfg.add("server telnet tester");
-            cfg.add(" security protocol telnet");
-            cfg.add(" vrf tester");
-            cfg.add(" exit");
+            if (telnet) {
+                cfg.add("vrf definition tester");
+                cfg.add(" exit");
+                cfg.add("server telnet tester");
+                cfg.add(" security protocol telnet");
+                cfg.add(" vrf tester");
+                cfg.add(" exit");
+            }
             for (;;) {
                 s = getLin();
                 if (s.equals("!")) {
@@ -1344,8 +1373,12 @@ class userTesterOne {
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             p.putLine("terminal no monitor");
             p.putLine("terminal length 0");
-            p.putLine("terminal table fancy");
-            p.putLine("write");
+            if (fancy) {
+                p.putLine("terminal table fancy");
+            }
+            if (write) {
+                p.putLine("write");
+            }
             p.putLine("reload in 10");
             p.putLine("y");
             for (int i = 0; i < capture.size(); i++) {

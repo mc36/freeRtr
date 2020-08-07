@@ -35,20 +35,19 @@ public class prtRedun implements Runnable {
     /**
      * current state
      */
-    protected static int state = 0;
+    protected static int state = packRedun.statInit;
 
     private final static List<prtRedunIfc> ifaces = new ArrayList<prtRedunIfc>();
 
     public void run() {
         try {
+            packHolder pck = new packHolder(true, true);
             for (;;) {
-                bits.sleep(packRedun.timeKeep);
-                if (!cfgInit.booting) {
-                    state = packRedun.statActive;
-                }
                 for (int i = 0; i < ifaces.size(); i++) {
-                    ifaces.get(i).doPack(packRedun.typHello, new packHolder(true, true));
+                    pck.clear();
+                    ifaces.get(i).doPack(packRedun.typHello, pck);
                 }
+                bits.sleep(packRedun.timeKeep);
             }
         } catch (Exception e) {
             logger.exception(e);
@@ -126,14 +125,17 @@ public class prtRedun implements Runnable {
             state = packRedun.statActive;
             return;
         }
+        logger.info("initializing redundancy");
         state = packRedun.statSpeak;
         new Thread(new prtRedun()).start();
-        bits.sleep(packRedun.timeHold);
+        bits.sleep(packRedun.timeInit);
         if (findActive() < 0) {
+            state = packRedun.statActive;
+            logger.info("became active");
             return;
         }
         state = packRedun.statStandby;
-        logger.info("initialized as standby");
+        logger.info("became standy");
         for (;;) {
             bits.sleep(packRedun.timeKeep);
             if (findActive() < 0) {
@@ -141,6 +143,7 @@ public class prtRedun implements Runnable {
             }
         }
         state = packRedun.statActive;
+        logger.info("active lost");
     }
 
     /**
@@ -245,18 +248,18 @@ class prtRedunIfc implements ifcUp {
                 break;
             case packRedun.typFilBeg:
                 try {
-                    filRx.close();
-                } catch (Exception e) {
-                }
-                try {
-                    filRx = new RandomAccessFile(filNm, "rw");
-                    filRx.seek(0);
-                    filRx.setLength(0);
-                } catch (Exception e) {
-                    break;
-                }
-                doAck(-2);
+                filRx.close();
+            } catch (Exception e) {
+            }
+            try {
+                filRx = new RandomAccessFile(filNm, "rw");
+                filRx.seek(0);
+                filRx.setLength(0);
+            } catch (Exception e) {
                 break;
+            }
+            doAck(-2);
+            break;
             case packRedun.typFilDat:
                 int i = pck.msbGetD(0);
                 int o = pck.msbGetW(4);
@@ -273,22 +276,22 @@ class prtRedunIfc implements ifcUp {
                 break;
             case packRedun.typFilEnd:
                 try {
-                    filRx.close();
-                } catch (Exception e) {
-                    break;
-                }
-                filRx = null;
-                String a = pck.getAsciiZ(0, packRedun.dataMax, 0);
-                String b = null;
-                if (a.equals(packRedun.fnCore)) {
-                    b = version.getFileName();
-                }
-                if (a.equals(packRedun.fnStart)) {
-                    b = cfgInit.cfgFileSw;
-                }
-                userFlash.rename(filNm, b, true, true);
-                doAck(-3);
+                filRx.close();
+            } catch (Exception e) {
                 break;
+            }
+            filRx = null;
+            String a = pck.getAsciiZ(0, packRedun.dataMax, 0);
+            String b = null;
+            if (a.equals(packRedun.fnCore)) {
+                b = version.getFileName();
+            }
+            if (a.equals(packRedun.fnStart)) {
+                b = cfgInit.cfgFileSw;
+            }
+            userFlash.rename(filNm, b, true, true);
+            doAck(-3);
+            break;
         }
     }
 

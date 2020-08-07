@@ -63,6 +63,11 @@ public class packRedun {
     public static final String fnCore = fnBegin + "rtr+jar";
 
     /**
+     * init
+     */
+    public final static int statInit = 0;
+
+    /**
      * speaking
      */
     public final static int statSpeak = 1;
@@ -91,6 +96,11 @@ public class packRedun {
      * hold time
      */
     public final static int timeHold = timeKeep * timeMult;
+
+    /**
+     * init time
+     */
+    public final static int timeInit = timeHold * 2;
 
     /**
      * max size

@@ -687,7 +687,6 @@ public class cfgInit implements Runnable {
         try {
             logger.info("initializing hardware");
             executeHWcommands(hw, defs, mibs);
-            prtRedun.doInit();
         } catch (Exception e) {
             logger.exception(e);
         }
@@ -723,6 +722,11 @@ public class cfgInit implements Runnable {
             vdcLst.add(ntry);
             int o = (i * step) + vdcPortBeg;
             ntry.startNow(defs, mibs, o, o + step);
+        }
+        try {
+            prtRedun.doInit();
+        } catch (Exception e) {
+            logger.exception(e);
         }
         booting = false;
         new Thread(new cfgInit()).start();
