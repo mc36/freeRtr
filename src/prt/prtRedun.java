@@ -60,8 +60,8 @@ public class prtRedun implements Runnable {
      * @return output
      */
     public static userFormat doShow() {
-        userFormat l = new userFormat("|", "iface|state|magic");
-        l.add("self|" + state + "|" + magic);
+        userFormat l = new userFormat("|", "iface|state|bidir|magic|heard");
+        l.add("self|" + state + "|-|" + magic + "|-");
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
             l.add(ifc.doShow());
@@ -193,9 +193,10 @@ class prtRedunIfc implements ifcUp {
     public int ackRx;
 
     public void doInit(String nam, ifcThread thrd) {
+        bidir = false;
         name = nam;
         lower = thrd;
-        state = 0;
+        state = packRedun.statInit;
         magic = 0;
         time = 0;
         lower.setFilter(false);
@@ -206,7 +207,7 @@ class prtRedunIfc implements ifcUp {
     }
 
     public String doShow() {
-        return name + "|" + state + "|" + magic;
+        return name + "|" + state + "|" + bidir + "|" + magic + "|" + bits.timePast(time);
     }
 
     public void setParent(ifcDn parent) {
