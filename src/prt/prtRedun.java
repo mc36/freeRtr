@@ -143,7 +143,7 @@ public class prtRedun implements Runnable {
             }
         }
         state = packRedun.statActive;
-        logger.info("active lost");
+        logger.info("lost active");
     }
 
     /**

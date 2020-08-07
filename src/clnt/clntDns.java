@@ -148,6 +148,9 @@ public class clntDns {
             if (debugger.clntDnsTraf) {
                 logger.debug("rx " + srv + " " + reply);
             }
+            if (reply.result != packDns.resultSuccess) {
+                return true;
+            }
             loCache.addList(reply.answers);
             loCache.addList(reply.addition);
             loCache.addList(reply.servers);
@@ -161,18 +164,21 @@ public class clntDns {
      *
      * @param srv server to use
      * @param nam name to query
+     * @param dom try appending domain
      * @param typ type of record
      * @return false on success, true on error
      */
-    public boolean doResolvOne(addrIP srv, String nam, int typ) {
-        if (cfgAll.domainName != null) {
-            if (!doResolv(srv, nam + "." + cfgAll.domainName, typ)) {
-                if (findAnswer(typ) != null) {
-                    return false;
-                }
-            }
+    public boolean doResolvOne(addrIP srv, String nam, boolean dom, int typ) {
+        if (!doResolv(srv, nam, typ)) {
+            return false;
         }
-        return doResolv(srv, nam, typ);
+        if (!dom) {
+            return true;
+        }
+        if (cfgAll.domainName == null) {
+            return true;
+        }
+        return doResolv(srv, nam + "." + cfgAll.domainName, typ);
     }
 
     /**
@@ -204,7 +210,7 @@ public class clntDns {
             }
             dom = a + dom;
             int ned = (nam.length() > 0) ? packDnsRec.typeNS : typ;
-            if (doResolvList(srv, dom, ned)) {
+            if (doResolvList(srv, dom, false, ned)) {
                 return null;
             }
             packDnsRec rec = findAnswer(ned);
@@ -318,15 +324,16 @@ public class clntDns {
      *
      * @param srv list of servers to use
      * @param nam name to query
+     * @param dom try appending domain
      * @param typ type of query
      * @return false on success, true on error
      */
-    public boolean doResolvList(List<addrIP> srv, String nam, int typ) {
+    public boolean doResolvList(List<addrIP> srv, String nam, boolean dom, int typ) {
         if (srv == null) {
             return true;
         }
         for (int i = 0; i < srv.size(); i++) {
-            if (doResolvOne(srv.get(i), nam, typ) == true) {
+            if (doResolvOne(srv.get(i), nam, dom, typ) == true) {
                 continue;
             }
             return false;
@@ -375,11 +382,11 @@ public class clntDns {
             reply.answers.add(rr);
             return false;
         }
-        if (doResolvList(srv, nam, getTypPri(prefer))) {
-            return doResolvList(srv, nam, getTypBck(prefer));
+        if (doResolvList(srv, nam, true, getTypPri(prefer))) {
+            return doResolvList(srv, nam, true, getTypBck(prefer));
         }
         if (reply.answers.size() < 1) {
-            return doResolvList(srv, nam, getTypBck(prefer));
+            return doResolvList(srv, nam, true, getTypBck(prefer));
         }
         return false;
     }

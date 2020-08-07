@@ -507,7 +507,7 @@ class servNrpeRes implements Comparator<servNrpeRes> {
             return l;
         }
         clntDns clnt = new clntDns();
-        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(ad), packDnsRec.typePTR);
+        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(ad), false, packDnsRec.typePTR);
         String dn = clnt.getPTR();
         if (dn == null) {
             return l;

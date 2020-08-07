@@ -282,7 +282,7 @@ public class clntSmtp implements Runnable {
             uniResLoc url = new uniResLoc();
             url.fromString("smtp://" + rcpt);
             clntDns clnt = new clntDns();
-            clnt.doResolvList(cfgAll.nameServerAddr, url.server, packDnsRec.typeMX);
+            clnt.doResolvList(cfgAll.nameServerAddr, url.server, true, packDnsRec.typeMX);
             serv = clnt.getMX();
         }
         if (serv == null) {

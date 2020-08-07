@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
 release: freeRouter v20.8.7-rel, done by cs@nop.<br/>
-tested: 2020-08-07 14:22:03, took 00:06:03, with 100 workers, on 1814 cases, 0 failed, 0 traces, 3 retries<br/>
+tested: 2020-08-07 14:56:24, took 00:05:48, with 100 workers, on 1814 cases, 0 failed, 0 traces, 5 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>try</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -524,12 +524,12 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-satp15.tst">crypt-satp15.tst</a></td><td>0</td><td>0</td><td>satp over asymmetric ports</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip01.tst">crypt-skip01.tst</a></td><td>0</td><td>0</td><td>skip over ipv4</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip02.tst">crypt-skip02.tst</a></td><td>0</td><td>0</td><td>skip over ipv6</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/crypt-skip03.tst">crypt-skip03.tst</a></td><td>0</td><td>1</td><td>skip over skip</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-skip03.tst">crypt-skip03.tst</a></td><td>0</td><td>0</td><td>skip over skip</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip04.tst">crypt-skip04.tst</a></td><td>0</td><td>0</td><td>skip over loopback</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip05.tst">crypt-skip05.tst</a></td><td>0</td><td>0</td><td>skip with des</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip06.tst">crypt-skip06.tst</a></td><td>0</td><td>0</td><td>skip with blowfish</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip07.tst">crypt-skip07.tst</a></td><td>0</td><td>0</td><td>skip with 3des</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/crypt-skip08.tst">crypt-skip08.tst</a></td><td>0</td><td>0</td><td>skip with aes128</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-skip08.tst">crypt-skip08.tst</a></td><td>0</td><td>1</td><td>skip with aes128</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip09.tst">crypt-skip09.tst</a></td><td>0</td><td>0</td><td>skip with aes192</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip10.tst">crypt-skip10.tst</a></td><td>0</td><td>0</td><td>skip with aes256</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip11.tst">crypt-skip11.tst</a></td><td>0</td><td>0</td><td>skip with md5</td><td>successfully</td><td>finished</td></tr>
@@ -850,7 +850,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp01.tst">mpls-ldp01.tst</a></td><td>0</td><td>0</td><td>ldp over ethernet</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp02.tst">mpls-ldp02.tst</a></td><td>0</td><td>0</td><td>ldp over ethernet vlan</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp03.tst">mpls-ldp03.tst</a></td><td>0</td><td>0</td><td>ldp over ethernet bridge</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp04.tst">mpls-ldp04.tst</a></td><td>0</td><td>0</td><td>ldp over hdlc</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp04.tst">mpls-ldp04.tst</a></td><td>0</td><td>2</td><td>ldp over hdlc</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp05.tst">mpls-ldp05.tst</a></td><td>0</td><td>0</td><td>ldp over ppp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp06.tst">mpls-ldp06.tst</a></td><td>0</td><td>0</td><td>ldp over framerelay</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-ldp07.tst">mpls-ldp07.tst</a></td><td>0</td><td>0</td><td>ldp over atmdxi</td><td>successfully</td><td>finished</td></tr>
@@ -1553,7 +1553,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis27.tst">rout-isis27.tst</a></td><td>0</td><td>0</td><td>isis inter level ingress filtering with routepolicy</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis28.tst">rout-isis28.tst</a></td><td>0</td><td>0</td><td>isis inter level egress filtering with routepolicy</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis29.tst">rout-isis29.tst</a></td><td>0</td><td>0</td><td>isis default route</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/rout-isis30.tst">rout-isis30.tst</a></td><td>0</td><td>0</td><td>isis with bfd</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-isis30.tst">rout-isis30.tst</a></td><td>0</td><td>1</td><td>isis with bfd</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis31.tst">rout-isis31.tst</a></td><td>0</td><td>0</td><td>isis with te</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis32.tst">rout-isis32.tst</a></td><td>0</td><td>0</td><td>isis peer template</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis33.tst">rout-isis33.tst</a></td><td>0</td><td>0</td><td>isis chain of broadcast nets with narrow metric</td><td>successfully</td><td>finished</td></tr>
@@ -1623,7 +1623,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast06.tst">rout-mcast06.tst</a></td><td>0</td><td>0</td><td>multicast vpn routing with mldp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast07.tst">rout-mcast07.tst</a></td><td>0</td><td>0</td><td>multicast vpn between pim and mldp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast08.tst">rout-mcast08.tst</a></td><td>0</td><td>0</td><td>multicast othervpn routing with mldp</td><td>successfully</td><td>finished</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/rout-mcast09.tst">rout-mcast09.tst</a></td><td>0</td><td>1</td><td>multicast othervpn between pim and mldp</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-mcast09.tst">rout-mcast09.tst</a></td><td>0</td><td>0</td><td>multicast othervpn between pim and mldp</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast10.tst">rout-mcast10.tst</a></td><td>0</td><td>0</td><td>multicast routing ttl treshold</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast11.tst">rout-mcast11.tst</a></td><td>0</td><td>0</td><td>multicast routing decoupled from unicast</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast12.tst">rout-mcast12.tst</a></td><td>0</td><td>0</td><td>multicast routing with pim join source</td><td>successfully</td><td>finished</td></tr>

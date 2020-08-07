@@ -374,6 +374,9 @@ public class rtrBgpVrfRtr extends ipRtr {
     public void getPeerList(tabRoute<addrIP> tab) {
         for (int i = 0; i < peers.size(); i++) {
             addrIP adr = peers.get(i);
+            if (adr == null) {
+                continue;
+            }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, parent.afiUni, ntry, true, null, null, parent.routerAutoMesh);

@@ -142,7 +142,7 @@ class servHoneyPotConn implements Runnable {
         String s = "" + addr;
         if (lower.resolve) {
             clntDns clnt = new clntDns();
-            clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(addr), packDnsRec.typePTR);
+            clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(addr), false, packDnsRec.typePTR);
             s = s + " - " + clnt.getPTR();
         }
         pipe.linePut("you (" + s + ") have been logged!");

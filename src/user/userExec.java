@@ -2271,7 +2271,7 @@ public class userExec {
             String a = "";
             if (resolv && (adr != null)) {
                 clntDns clnt = new clntDns();
-                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(adr), packDnsRec.typePTR);
+                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(adr), false, packDnsRec.typePTR);
                 a += " (" + clnt.getPTR() + ")";
             }
             if ((rtr != null) && (adr != null)) {
@@ -2378,7 +2378,7 @@ public class userExec {
             String a = "";
             if (lok) {
                 clntDns clnt = new clntDns();
-                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(strt), packDnsRec.typePTR);
+                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(strt), false, packDnsRec.typePTR);
                 a = " (" + clnt.getPTR() + ")";
             }
             if (prt > 0) {
@@ -2986,7 +2986,7 @@ public class userExec {
             reader.putStrTab(res.toUserStr());
             return;
         }
-        clnt.doResolvList(srvs, a, i);
+        clnt.doResolvList(srvs, a, true, i);
         packDnsRec res = clnt.findAnswer(i);
         if (res == null) {
             cmd.error("no reply");

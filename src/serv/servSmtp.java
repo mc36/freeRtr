@@ -376,7 +376,7 @@ class servSmtpRbler implements Runnable {
 
     private int doRound() {
         clntDns dns = new clntDns();
-        if (dns.doResolvList(cfgAll.nameServerAddr, serv.server, packDnsRec.typeNS)) {
+        if (dns.doResolvList(cfgAll.nameServerAddr, serv.server, true, packDnsRec.typeNS)) {
             return 2;
         }
         String srvN = dns.getNS();
@@ -388,7 +388,7 @@ class servSmtpRbler implements Runnable {
             return 2;
         }
         dns = new clntDns();
-        if (dns.doResolvOne(srvA, packDnsRec.generateReverse(addr, serv.server), packDnsRec.typeA)) {
+        if (dns.doResolvOne(srvA, packDnsRec.generateReverse(addr, serv.server), true, packDnsRec.typeA)) {
             return 2;
         }
         if (dns.getAddr(4) != null) {
