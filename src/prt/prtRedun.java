@@ -135,7 +135,7 @@ public class prtRedun implements Runnable {
             return;
         }
         state = packRedun.statStandby;
-        logger.info("became standy");
+        logger.info("became standby");
         for (;;) {
             bits.sleep(packRedun.timeKeep);
             if (findActive() < 0) {

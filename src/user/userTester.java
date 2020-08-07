@@ -476,12 +476,12 @@ public class userTester {
         txt.add("tested: " + a + "<br/>");
         txt.add("jvm: " + jvn + jvp + "<br/>");
         txt.add("<br/>");
-        txt.add("<table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>try</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>");
+        txt.add("<table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>");
         txt.addAll(features2list(finished, 3));
         txt.add("</table></body></html>");
         bits.buf2txt(true, txt, "rtr" + beg + ".html");
         txt = new ArrayList<String>();
-        txt.add("file;code;try;test;stage;command");
+        txt.add("file;code;test;stage;command");
         txt.add("-;-;" + release + ";-;-");
         txt.add("-;-;" + a + ";-;-");
         txt.add("-;-;" + jvn + jvp + ";-;-");
@@ -540,7 +540,7 @@ public class userTester {
             del |= ftr.ret < 1;
             retries.add(1);
         }
-        lt.rdr.debugRes(lt.getCsv(ftr.fld));
+        lt.rdr.debugRes(lt.getCsv());
         if (!del) {
             ftr.lck.set(0);
             return;
@@ -550,8 +550,8 @@ public class userTester {
             errored.add(1);
         }
         ftr.res = lt.getSucc();
-        ftr.htm = lt.getHtm(url, ftr.fld);
-        ftr.csv = lt.getCsv(ftr.fld);
+        ftr.htm = lt.getHtm(url);
+        ftr.csv = lt.getCsv();
         ftr.ftr = lt.getFet();
         finished.add(ftr);
         lt.saveMd();
@@ -961,12 +961,12 @@ class userTesterOne {
         return qc + testName;
     }
 
-    public String getCsv(int ret) {
-        return fileName + ";" + testRes + ";" + ret + ";" + testName + ";" + stage + ";" + cmd.getOriginal();
+    public String getCsv() {
+        return fileName + ";" + testRes + ";" + testName + ";" + stage + ";" + cmd.getOriginal();
     }
 
-    public String getHtm(String url, int ret) {
-        return "<tr><td><a href=\"" + url + fileName + "\">" + fileName + "</a></td><td>" + testRes + "</td><td>" + ret + "</td><td>" + testName + "</td><td>" + stage + "</td><td>" + cmd.getOriginal() + "</td></tr>";
+    public String getHtm(String url) {
+        return "<tr><td><a href=\"" + url + fileName + "\">" + fileName + "</a></td><td>" + testRes + "</td><td>" + testName + "</td><td>" + stage + "</td><td>" + cmd.getOriginal() + "</td></tr>";
     }
 
     public String getLin() {
