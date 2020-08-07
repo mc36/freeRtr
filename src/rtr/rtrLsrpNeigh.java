@@ -46,6 +46,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     public final addrIPv4 rtrId;
 
     /**
+     * metric of peer
+     */
+    public int gotMet;
+
+    /**
      * time last heard
      */
     public long lastHeard;
@@ -90,6 +95,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
      */
     protected tabGen<rtrLsrpData> advert;
 
+    /**
+     * advertised metric
+     */
+    protected int sentMet;
+
     private pipeSide conn;
 
     private boolean need2run;
@@ -109,6 +119,8 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         peer = peerAd.copyBytes();
         lastHeard = bits.getTime();
         advert = new tabGen<rtrLsrpData>();
+        sentMet = -1;
+        gotMet = 10;
     }
 
     public int compare(rtrLsrpNeigh o1, rtrLsrpNeigh o2) {
@@ -403,6 +415,10 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     }
 
     private void doAdvert() {
+        if (sentMet != iface.metric) {
+            sentMet = iface.metric;
+            sendLn("metric " + sentMet);
+        }
         for (int i = 0; i < advert.size(); i++) {
             rtrLsrpData ntry = advert.get(i);
             if (ntry == null) {
@@ -515,6 +531,12 @@ class rtrLsrpNeighRcvr implements Runnable {
             }
             if (a.equals("keepalive")) {
                 lower.lastHeard += bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("metric")) {
+                lower.gotMet = bits.str2num(cmd.word());
+                lower.lower.todo.set(0);
+                lower.lower.notif.wakeup();
                 continue;
             }
             if (a.equals("nomore")) {

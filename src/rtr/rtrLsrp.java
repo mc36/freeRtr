@@ -548,7 +548,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (nei.segrouLab != null) {
                     adj = nei.segrouLab.getValue();
                 }
-                dat.addNeigh(nei.rtrId, ifc.metric, (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj, nei.peer);
+                int met = ifc.metric;
+                if (ifc.acceptMetric) {
+                    met = nei.gotMet;
+                }
+                dat.addNeigh(nei.rtrId, met, (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj, nei.peer);
             }
         }
         dat.network.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteEntry.distanLim);
@@ -640,7 +644,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (!nei.isReady()) {
                     continue;
                 }
-                spf.addNextHop(ifc.metric, nei.rtrId, nei.peer.copyBytes(), ifc.iface);
+                int met = ifc.metric;
+                if (ifc.acceptMetric) {
+                    met = nei.gotMet;
+                }
+                spf.addNextHop(met, nei.rtrId, nei.peer.copyBytes(), ifc.iface);
             }
         }
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");

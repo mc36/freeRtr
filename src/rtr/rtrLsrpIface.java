@@ -77,6 +77,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
     public boolean passiveInt = false;
 
     /**
+     * accept metric
+     */
+    public boolean acceptMetric = false;
+
+    /**
      * suppress interface address
      */
     public boolean suppressAddr = false;
@@ -220,6 +225,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
         cmds.cfgLine(l, !databaseFilter, cmds.tabulator, beg + "database-filter", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
+        cmds.cfgLine(l, !acceptMetric, cmds.tabulator, beg + "accept-metric", "");
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !stub, cmds.tabulator, beg + "stub", "");
         cmds.cfgLine(l, !unstub, cmds.tabulator, beg + "unstub", "");
@@ -245,6 +251,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         l.add("4 .         database-filter         advertise only own data");
         l.add("4 .         bfd                     enable bfd triggered down");
         l.add("4 .         passive                 do not form neighborship");
+        l.add("4 .         accept-metric           accept peer metric");
         l.add("4 .         stub                    do not route traffic");
         l.add("4 .         unstub                  do route traffic");
         l.add("4 .         suppress-prefix         do not advertise interface");
@@ -329,6 +336,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
             lower.notif.wakeup();
             return;
         }
+        if (a.equals("accept-metric")) {
+            acceptMetric = true;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
         if (a.equals("passive")) {
             passiveInt = true;
             return;
@@ -405,6 +418,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         }
         if (a.equals("unsuppress-prefix")) {
             unsuppressAddr = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("accept-metric")) {
+            acceptMetric = false;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;
@@ -555,8 +574,8 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, prtServP {
         rtrLsrpNeigh nei = new rtrLsrpNeigh(lower, this, peer, id.peerAddr);
         rtrLsrpNeigh old = neighs.add(nei);
         if (old == null) {
-            nei.startWork();
             sendHello(conn);
+            nei.startWork();
         } else {
             nei = old;
         }

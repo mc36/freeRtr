@@ -772,12 +772,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
         if (debugger.rtrPvrpEvnt) {
             logger.debug("rx hello " + id);
         }
-        rtrPvrpNeigh nei = new rtrPvrpNeigh(lower, this, peer);
+        rtrPvrpNeigh nei = new rtrPvrpNeigh(lower, this, peer, id.peerAddr);
         rtrPvrpNeigh old = neighs.add(nei);
         if (old == null) {
-            nei.peer = id.peerAddr.copyBytes();
-            nei.startWork();
             sendHello(conn);
+            nei.startWork();
         } else {
             nei = old;
         }

@@ -36,7 +36,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     /**
      * transport address of peer
      */
-    public addrIP peer;
+    public final addrIP peer;
 
     /**
      * hostname of peer
@@ -46,7 +46,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     /**
      * router id of peer
      */
-    public addrIPv4 rtrId;
+    public final addrIPv4 rtrId;
 
     /**
      * learned routes
@@ -92,12 +92,14 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
      *
      * @param parent protocol handler
      * @param ifc interface handler
-     * @param peer transport address
+     * @param peerId transport address
+     * @param peerAd transport address
      */
-    public rtrPvrpNeigh(rtrPvrp parent, rtrPvrpIface ifc, addrIPv4 peer) {
+    public rtrPvrpNeigh(rtrPvrp parent, rtrPvrpIface ifc, addrIPv4 peerId, addrIP peerAd) {
         lower = parent;
         iface = ifc;
-        rtrId = peer.copyBytes();
+        rtrId = peerId.copyBytes();
+        peer = peerAd.copyBytes();
         lastHeard = bits.getTime();
     }
 
