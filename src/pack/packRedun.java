@@ -48,19 +48,14 @@ public class packRedun {
     public static final int typFilEnd = 6;
 
     /**
-     * filename begin
-     */
-    public static final String fnBegin = "//";
-
-    /**
      * config file
      */
-    public static final String fnStart = fnBegin + "startup";
+    public static final String fnStart = "config";
 
     /**
      * image file
      */
-    public static final String fnCore = fnBegin + "rtr+jar";
+    public static final String fnCore = "code";
 
     /**
      * init

@@ -294,11 +294,16 @@ class prtRedunIfc implements ifcUp {
             filRx = null;
             String a = pck.getAsciiZ(0, packRedun.dataMax, 0);
             String b = null;
+            logger.info("received file " + a);
             if (a.equals(packRedun.fnCore)) {
                 b = version.getFileName();
             }
             if (a.equals(packRedun.fnStart)) {
                 b = cfgInit.cfgFileSw;
+            }
+            if (b == null) {
+                logger.error("got invalid filename");
+                break;
             }
             userFlash.rename(filNm, b, true, true);
             doAck(-3);

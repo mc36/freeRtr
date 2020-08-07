@@ -471,9 +471,7 @@ class servDnsDoer implements Runnable {
                 return false;
             }
             clntDns clnt = new clntDns();
-            if (clnt.doResolvList(cfgAll.nameServerAddr, old, false, typ)) {
-                return false;
-            }
+            clnt.doResolvList(cfgAll.nameServerAddr, old, false, typ);
             if (typ == packDnsRec.typeANY) {
                 clnt.getAnswers(res);
                 return false;
