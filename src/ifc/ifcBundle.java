@@ -1004,7 +1004,7 @@ class ifcBundlePeer implements ifcUp, Runnable {
 
     public void run() {
         for (;;) {
-            bits.sleep(1000);
+            bits.sleep(packReplicator.timeKeep);
             if (!need2work) {
                 break;
             }
@@ -1018,7 +1018,7 @@ class ifcBundlePeer implements ifcUp, Runnable {
             pck.ETHtrg.setAddr(addrMac.getBroadcast());
             ifHnd.sendPack(pck);
             boolean old = remoteAlive;
-            if ((bits.getTime() - lastRx) < 4000) {
+            if ((bits.getTime() - lastRx) < packReplicator.timeHold) {
                 remoteAlive = true;
             } else {
                 remoteAlive = false;

@@ -891,6 +891,7 @@ server tacacs tac
  exit
 !
 client proxy p1
+client domain-name mchome.nop.hu
 client prefer-ipv6
 client password-stars
 client whois-server whois.ripe.net

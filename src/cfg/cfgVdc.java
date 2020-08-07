@@ -110,7 +110,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     /**
      * time between runs
      */
-    protected int interval = 5000;
+    protected int interval = 1000;
 
     /**
      * initial delay
@@ -194,7 +194,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! memory 512",
         "vdc definition .*! cores 1",
         "vdc definition .*! nic e1000",
-        "vdc definition .*! time 5000",
+        "vdc definition .*! time 1000",
         "vdc definition .*! delay 1000",
         "vdc definition .*! random-time 0",
         "vdc definition .*! random-delay 0",};

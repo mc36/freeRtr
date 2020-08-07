@@ -85,17 +85,12 @@ public class packRedun {
     /**
      * keepalive time
      */
-    public final static int timeKeep = 200;
-
-    /**
-     * time multiplier
-     */
-    public final static int timeMult = 5;
+    public final static int timeKeep = 1000;
 
     /**
      * hold time
      */
-    public final static int timeHold = timeKeep * timeMult;
+    public final static int timeHold = timeKeep * 5;
 
     /**
      * init time

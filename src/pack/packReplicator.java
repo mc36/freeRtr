@@ -28,6 +28,16 @@ public class packReplicator {
     public final static int typCntr = 3;
 
     /**
+     * keepalive time
+     */
+    public final static int timeKeep = 1000;
+
+    /**
+     * hold time
+     */
+    public final static int timeHold = timeKeep * 5;
+
+    /**
      * type of packet
      */
     public int typ;

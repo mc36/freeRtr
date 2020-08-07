@@ -55,7 +55,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     /**
      * time between runs
      */
-    protected int interval = 5000;
+    protected int interval = 1000;
 
     /**
      * initial delay
@@ -100,7 +100,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         "process definition .*! no description",
         "process definition .*! respawn",
         "process definition .*! exec null",
-        "process definition .*! time 5000",
+        "process definition .*! time 1000",
         "process definition .*! delay 1000",
         "process definition .*! random-time 0",
         "process definition .*! random-delay 0",

@@ -320,7 +320,7 @@ class prtRedunIfc implements ifcUp {
 
     public boolean doRetry(int typ, packHolder pck) {
         ackRx = -1;
-        for (int i = 0; i < packRedun.timeMult; i++) {
+        for (int i = 0; i < 8; i++) {
             doPack(typ, pck.copyBytes(true, true));
             notif.sleep(packRedun.timeKeep);
             if (ackRx != -1) {

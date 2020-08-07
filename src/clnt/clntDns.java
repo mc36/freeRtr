@@ -80,18 +80,7 @@ public class clntDns {
         return loCache.toUserStr();
     }
 
-    /**
-     * resolve a query
-     *
-     * @param srv server to use
-     * @param nam name to query
-     * @param typ type of record
-     * @return false on success, true on error
-     */
-    public boolean doResolvOne(addrIP srv, String nam, int typ) {
-        if ((cfgAll.domainName != null) && (nam.indexOf(".") < 0)) {
-            nam = nam + "." + cfgAll.domainName;
-        }
+    private boolean doResolv(addrIP srv, String nam, int typ) {
         reply = new packDns();
         packDnsRec cac = loCache.findUser(nam, typ);
         for (int lop = 0; lop < 32; lop++) {
@@ -165,6 +154,25 @@ public class clntDns {
             return false;
         }
         return true;
+    }
+
+    /**
+     * resolve a query
+     *
+     * @param srv server to use
+     * @param nam name to query
+     * @param typ type of record
+     * @return false on success, true on error
+     */
+    public boolean doResolvOne(addrIP srv, String nam, int typ) {
+        if (cfgAll.domainName != null) {
+            if (!doResolv(srv, nam + "." + cfgAll.domainName, typ)) {
+                if (findAnswer(typ) != null) {
+                    return false;
+                }
+            }
+        }
+        return doResolv(srv, nam, typ);
     }
 
     /**

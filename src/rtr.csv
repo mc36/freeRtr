@@ -1,6 +1,6 @@
 file;code;try;test;stage;command
 -;-;freeRouter v20.8.7-rel, done by cs@nop.;-;-
--;-;2020-08-07 04:31:18, took 00:04:55, with 100 workers, on 1814 cases, 0 failed, 0 traces, 0 retries;-;-
+-;-;2020-08-07 13:03:21, took 00:05:09, with 100 workers, on 1814 cases, 0 failed, 0 traces, 2 retries;-;-
 -;-;./rtr.bin;-;-
 basic.tst;0;0;dummy test;successfully;finished
 conn-anyconn.tst;0;0;ip over anyconnect;successfully;finished
@@ -433,7 +433,7 @@ crypt-inlsp04.tst;0;0;inlsp over loopback;successfully;finished
 crypt-inlsp05.tst;0;0;inlsp with des;successfully;finished
 crypt-inlsp06.tst;0;0;inlsp with blowfish;successfully;finished
 crypt-inlsp07.tst;0;0;inlsp with 3des;successfully;finished
-crypt-inlsp08.tst;0;0;inlsp with aes128;successfully;finished
+crypt-inlsp08.tst;0;1;inlsp with aes128;successfully;finished
 crypt-inlsp09.tst;0;0;inlsp with aes192;successfully;finished
 crypt-inlsp10.tst;0;0;inlsp with aes256;successfully;finished
 crypt-inlsp11.tst;0;0;inlsp with md5;successfully;finished
@@ -953,7 +953,7 @@ mpls-te10.tst;0;0;ldp over te;successfully;finished
 mpls-te11.tst;0;0;pwe over te;successfully;finished
 mpls-te12.tst;0;0;ldp and te;successfully;finished
 mpls-te13.tst;0;0;p2mp te;successfully;finished
-mpls-te14.tst;0;0;p2mp te tail+mid;successfully;finished
+mpls-te14.tst;0;1;p2mp te tail+mid;successfully;finished
 mpls-te15.tst;0;0;te with pcep;successfully;finished
 mpls-te16.tst;0;0;te over point2point ethernet;successfully;finished
 mpls-xconn01.tst;0;0;cross connect with pwe over mpls;successfully;finished
