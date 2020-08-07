@@ -149,12 +149,12 @@ public class pipeSide {
     /**
      * line termination at receive all are applicable
      */
-    public modTyp lineRx;
+    public modTyp lineRx = modTyp.modeNone;
 
     /**
      * line termination at transmit only 1..4 are applicable
      */
-    public modTyp lineTx;
+    public modTyp lineTx = modTyp.modeNone;
 
     private long activity; // time ot last activity
 

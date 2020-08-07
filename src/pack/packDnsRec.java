@@ -743,12 +743,12 @@ public class packDnsRec implements Comparator<packDnsRec> {
         }
     }
 
-    private static String getPointer(packHolder pck, int beg) {
+    private static String getPointer(packHolder pck, int len) {
         int i = pck.msbGetW(0) & 0x3fff;
         pck.getSkip(2);
         int o = pck.dataSize();
-        pck.setBytesLeft(beg - i);
-        String s = getChain(pck, beg);
+        pck.setBytesLeft(len - i);
+        String s = getChain(pck, len);
         pck.setBytesLeft(o);
         return s;
     }
@@ -765,15 +765,18 @@ public class packDnsRec implements Comparator<packDnsRec> {
      * decode chain
      *
      * @param pck packet to read
-     * @param beg where to start
+     * @param len where to stop
      * @return readed domain name
      */
-    public static String getChain(packHolder pck, int beg) {
+    public static String getChain(packHolder pck, int len) {
         String s = "";
         for (;;) {
+            if (pck.dataSize() < 1) {
+                break;
+            }
             int i = pck.getByte(0);
             if ((i & 0xc0) == 0xc0) {
-                s += "." + getPointer(pck, beg);
+                s += "." + getPointer(pck, len);
                 break;
             }
             String a = getString(pck);
@@ -1000,15 +1003,15 @@ public class packDnsRec implements Comparator<packDnsRec> {
      * parse header
      *
      * @param pck packet to use
-     * @param beg message beginning
+     * @param len message ending
      * @param question parse just header part
      * @return false if successful, true if error happened
      */
-    public boolean parseHeader(packHolder pck, int beg, boolean question) {
+    public boolean parseHeader(packHolder pck, int len, boolean question) {
         if (pck.dataSize() < 1) {
             return true;
         }
-        name = getChain(pck, beg);
+        name = getChain(pck, len);
         typ = pck.msbGetW(0); // type
         clss = pck.msbGetW(2); // class
         pck.getSkip(4);
@@ -1021,7 +1024,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
         siz = pck.dataSize() - siz;
         switch (typ) {
             case typeCNAME:
-                target = getChain(pck, beg);
+                target = getChain(pck, len);
                 break;
             case typeHINFO:
                 target = getString(pck);
@@ -1032,25 +1035,25 @@ public class packDnsRec implements Comparator<packDnsRec> {
             case typeMF:
             case typeMG:
             case typeMR:
-                target = getChain(pck, beg);
+                target = getChain(pck, len);
                 break;
             case typeMINFO:
             case typeRP:
-                target = getChain(pck, beg);
-                email = getChain(pck, beg);
+                target = getChain(pck, len);
+                email = getChain(pck, len);
                 break;
             case typeMX:
                 sequence = pck.msbGetW(0);
                 pck.getSkip(2);
-                target = getChain(pck, beg);
+                target = getChain(pck, len);
                 break;
             case typeNS:
             case typePTR:
-                target = getChain(pck, beg);
+                target = getChain(pck, len);
                 break;
             case typeSOA:
-                target = getChain(pck, beg);
-                email = getChain(pck, beg);
+                target = getChain(pck, len);
+                email = getChain(pck, len);
                 sequence = pck.msbGetD(0);
                 fresh = pck.msbGetD(4);
                 retry = pck.msbGetD(8);
@@ -1067,7 +1070,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
                 fresh = pck.msbGetW(2);
                 retry = pck.msbGetW(4);
                 pck.getSkip(6);
-                target = getChain(pck, beg);
+                target = getChain(pck, len);
                 break;
             case typeA:
                 addrIPv4 adr4 = new addrIPv4();

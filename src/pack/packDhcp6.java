@@ -420,7 +420,7 @@ public class packDhcp6 {
                     pck2.putCopy(tlv.valDat, 0, 0, tlv.valSiz);
                     pck2.putSkip(tlv.valSiz);
                     pck2.merge2beg();
-                    domainName = packDnsRec.getChain(pck2, 0);
+                    domainName = packDnsRec.getChain(pck2, pck2.dataSize());
                     break;
                 case 25: // identity association - prefix delegation
                     iamod = 3;
