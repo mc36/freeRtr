@@ -314,30 +314,6 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             sendErr("notNeeded");
             return;
         }
-        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.lower.getMTUsize() + " name=" + cfgAll.hostName);
-        cmds cmd = recvLn();
-        if (cmd == null) {
-            cmd = new cmds("", "");
-        }
-        String a = cmd.word();
-        if (!a.equals("open")) {
-            sendErr("openRequired");
-            return;
-        }
-        name = "?" + rtrId;
-        for (;;) {
-            a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            if (a.startsWith("rtrid")) {
-                continue;
-            }
-            if (a.startsWith("name")) {
-                name = a.substring(5, a.length());
-                continue;
-            }
-        }
         if (iface.authentication != null) {
             byte[] buf = new byte[128];
             for (int i = 0; i < buf.length; i++) {
@@ -345,11 +321,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             }
             String b = cryBase64.encodeBytes(buf);
             sendLn("password-request " + b);
-            cmd = recvLn();
+            cmds cmd = recvLn();
             if (cmd == null) {
                 cmd = new cmds("", "");
             }
-            a = cmd.word();
+            String a = cmd.word();
             if (!a.equals("password-request")) {
                 sendErr("passReqRequired");
                 return;
@@ -378,6 +354,37 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                 sendErr("badPassword");
                 return;
             }
+        }
+        if (!need2run) {
+            sendErr("notNeeded");
+            return;
+        }
+        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.lower.getMTUsize() + " bfd=" + iface.bfdTrigger + " name=" + cfgAll.hostName);
+        cmds cmd = recvLn();
+        if (cmd == null) {
+            cmd = new cmds("", "");
+        }
+        if (!cmd.word().equals("open")) {
+            sendErr("openRequired");
+            return;
+        }
+        name = "?" + rtrId;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.startsWith("rtrid")) {
+                continue;
+            }
+            if (a.startsWith("name")) {
+                name = a.substring(5, a.length());
+                continue;
+            }
+        }
+        if (!need2run) {
+            sendErr("notNeeded");
+            return;
         }
         advert.clear();
         logger.warn("neighbor " + name + " (" + peer + ") up");
