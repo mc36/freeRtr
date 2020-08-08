@@ -37,7 +37,7 @@ import util.logger;
  *
  * @author matecsaba
  */
-public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
+public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServP {
 
     /**
      * hello interval
@@ -214,6 +214,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
      */
     protected int encryptionMethod = 0;
 
+    private boolean need2run;
+
     /**
      * create one instance
      *
@@ -232,6 +234,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
     public void unregister2udp() {
         lower.udpCore.listenStop(iface, rtrPvrp.port, null, 0);
         conn.setClosing();
+        need2run = false;
     }
 
     /**
@@ -250,6 +253,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
             return;
         }
         conn.timeout = 0;
+        need2run = true;
+        new Thread(this).start();
     }
 
     /**
@@ -655,6 +660,9 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
     }
 
     private void sendHello(prtGenConn id) {
+        if (debugger.rtrPvrpEvnt) {
+            logger.debug("tx hello " + id);
+        }
         packHolder pck = new packHolder(true, true);
         pck.putFill(0, 16, 255);
         pck.putSkip(16);
@@ -695,7 +703,6 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
      */
     public boolean datagramAccept(prtGenConn id) {
         id.timeout = deadTimer;
-        id.workInterval = helloTimer;
         return false;
     }
 
@@ -713,24 +720,6 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
      * @param id connection
      */
     public void datagramWork(prtGenConn id) {
-        if (conn == null) {
-            return;
-        }
-        if (id.compare(id, conn) != 0) {
-            return;
-        }
-        if (debugger.rtrPvrpEvnt) {
-            logger.debug("tx hello " + id);
-        }
-        sendHello(conn);
-        long tim = bits.getTime();
-        for (int i = neighs.size() - 1; i >= 0; i--) {
-            rtrPvrpNeigh nei = neighs.get(i);
-            if ((tim - nei.lastHeard) < deadTimer) {
-                continue;
-            }
-            nei.stopWork();
-        }
     }
 
     /**
@@ -797,6 +786,28 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, prtServP {
                 continue;
             }
             nei.stopWork();
+        }
+    }
+
+    public void run() {
+        for (;;) {
+            if (!need2run) {
+                return;
+            }
+            try {
+                sendHello(conn);
+                long tim = bits.getTime();
+                for (int i = neighs.size() - 1; i >= 0; i--) {
+                    rtrPvrpNeigh nei = neighs.get(i);
+                    if ((tim - nei.lastHeard) < deadTimer) {
+                        continue;
+                    }
+                    nei.stopWork();
+                }
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
+            bits.sleep(helloTimer);
         }
     }
 
