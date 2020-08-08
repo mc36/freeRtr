@@ -4254,7 +4254,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      */
     public synchronized boolean setup2pppoeRely(cfgIfc serial) {
         if (pppoeR != null) {
-            pppoeR.clnIfc.ethtyp.delET(-1);
+            if (pppoeR.clnIfc.type == ifaceType.serial) {
+                pppoeR.clnIfc.ethtyp.delET(-1);
+            }
             pppoeR.closeUp();
             pppoeR = null;
             ethtyp.delET(packPppOE.typeCtr);
@@ -4263,13 +4265,25 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (serial == null) {
             return true;
         }
-        if (serial.type != ifaceType.serial) {
-            return true;
+        switch (serial.type) {
+            case serial:
+            case virtppp:
+                pppoeR = new ifcP2pOErely(true);
+                serial.ethtyp.addET(-1, "pppoeR", pppoeR.ser);
+                serial.ethtyp.updateET(-1, pppoeR.ser);
+                break;
+            case dialer:
+                ifcUp enc = serial.getEncapProto();
+                if (enc == null) {
+                    return true;
+                }
+                pppoeR = new ifcP2pOErely(false);
+                pppoeR.diaI.setUpper(enc);
+                break;
+            default:
+                return true;
         }
-        pppoeR = new ifcP2pOErely();
         pppoeR.clnIfc = serial;
-        serial.ethtyp.addET(-1, "pppoeR", pppoeR.peer);
-        serial.ethtyp.updateET(-1, pppoeR.peer);
         ethtyp.addET(packPppOE.typeCtr, "pppoeRctrl", pppoeR);
         ethtyp.updateET(packPppOE.typeCtr, pppoeR);
         ethtyp.addET(packPppOE.typeDat, "pppoeRdata", pppoeR);

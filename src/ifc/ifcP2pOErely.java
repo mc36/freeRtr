@@ -1,6 +1,8 @@
 package ifc;
 
+import addr.addrEmpty;
 import addr.addrMac;
+import addr.addrType;
 import cfg.cfgIfc;
 import pack.packHolder;
 import pack.packPppOE;
@@ -56,7 +58,34 @@ public class ifcP2pOErely implements ifcUp {
     /**
      * serial handler
      */
-    public final ifcP2pOErelySer peer = new ifcP2pOErelySer(this);
+    public final ifcP2pOErelySer ser;
+
+    /**
+     * dialer handler
+     */
+    public final ifcP2pOErelyDial dia;
+
+    /**
+     * dialer interface handler
+     */
+    public final ifcDn diaI;
+
+    /**
+     * create new instance
+     *
+     * @param mod true for serial, false for dialer
+     */
+    public ifcP2pOErely(boolean mod) {
+        if (mod) {
+            ser = new ifcP2pOErelySer(this);
+            dia = null;
+            diaI = null;
+        } else {
+            dia = new ifcP2pOErelyDial(this);
+            ser = null;
+            diaI = dia;
+        }
+    }
 
     public counter getCounter() {
         return cntr;
@@ -89,10 +118,15 @@ public class ifcP2pOErely implements ifcUp {
                 return;
             }
             pck.putStart();
-            pck.msbPutW(0, 0xff03);
+            pck.putByte(0, 0xff);
+            pck.putByte(1, 0x03);
             pck.putSkip(2);
             pck.merge2beg();
-            peer.lower.sendPack(pck);
+            if (ser != null) {
+                ser.lower.sendPack(pck);
+            } else {
+                dia.upper.recvPack(pck);
+            }
             return;
         }
         if (debugger.ifcP2pOErely) {
@@ -166,6 +200,24 @@ public class ifcP2pOErely implements ifcUp {
         }
     }
 
+    /**
+     * send one packet
+     *
+     * @param pck packet to send
+     */
+    protected void doTxPack(packHolder pck) {
+        if (clntSes == 0) {
+            cntr.drop(pck, counter.reasons.notInTab);
+            return;
+        }
+        cntr.rx(pck);
+        pck.getSkip(2);
+        pck.ETHtrg.setAddr(clntAdr);
+        pck.ETHsrc.setAddr(hwaddr);
+        packPppOE.updateHeader(pck, packPppOE.codeData, clntSes);
+        lower.sendPack(pck);
+    }
+
 }
 
 class ifcP2pOErelySer implements ifcUp {
@@ -195,16 +247,59 @@ class ifcP2pOErelySer implements ifcUp {
     }
 
     public void recvPack(packHolder pck) {
-        if (peer.clntSes == 0) {
-            cntr.drop(pck, counter.reasons.notInTab);
-            return;
-        }
-        cntr.rx(pck);
-        pck.getSkip(2);
-        pck.ETHtrg.setAddr(peer.clntAdr);
-        pck.ETHsrc.setAddr(peer.hwaddr);
-        packPppOE.updateHeader(pck, packPppOE.codeData, peer.clntSes);
-        peer.lower.sendPack(pck);
+        peer.doTxPack(pck);
+    }
+
+}
+
+class ifcP2pOErelyDial implements ifcDn {
+
+    public final ifcP2pOErely peer;
+
+    public counter cntr = new counter();
+
+    public ifcUp upper = new ifcNull();
+
+    public ifcP2pOErelyDial(ifcP2pOErely lower) {
+        peer = lower;
+    }
+
+    public counter getCounter() {
+        return cntr;
+    }
+
+    public void sendPack(packHolder pck) {
+        peer.doTxPack(pck);
+    }
+
+    public addrType getHwAddr() {
+        return new addrEmpty();
+    }
+
+    public void setFilter(boolean promisc) {
+    }
+
+    public state.states getState() {
+        return state.states.up;
+    }
+
+    public void closeDn() {
+    }
+
+    public void flapped() {
+    }
+
+    public int getMTUsize() {
+        return peer.lower.getMTUsize() - packPppOE.size;
+    }
+
+    public long getBandwidth() {
+        return peer.lower.getBandwidth();
+    }
+
+    public void setUpper(ifcUp server) {
+        upper = server;
+        upper.setParent(this);
     }
 
 }
