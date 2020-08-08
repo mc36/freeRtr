@@ -1,7 +1,7 @@
 file;code;test;stage;command
 -;-;freeRouter v20.8.8-rel, done by cs@nop.;-;-
--;-;2020-08-08 07:51:28, took 00:14:22, with 30 workers, on 1814 cases, 0 failed, 0 traces, 5 retries;-;-
--;-;java -Xmx4096m -jar rtr.jar;-;-
+-;-;2020-08-08 10:40:46, took 00:05:16, with 100 workers, on 1814 cases, 0 failed, 0 traces, 2 retries;-;-
+-;-;./rtr.bin;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
 conn-atmdxi.tst;0;atmdxi encapsulation;successfully;finished
