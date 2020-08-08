@@ -5,11 +5,11 @@ import addr.addrIPv4;
 import addr.addrPrefix;
 import auth.authConstant;
 import cry.cryBase64;
-import cry.cryHashSha2512;
 import java.util.ArrayList;
 import java.util.Comparator;
 import cfg.cfgAll;
 import ip.ipMpls;
+import java.util.List;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtAccept;
@@ -20,6 +20,7 @@ import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
+import user.userUpgrade;
 import util.bits;
 import util.cmds;
 import util.debugger;
@@ -196,6 +197,26 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     }
 
     /**
+     * send error line
+     *
+     * @param s line to send
+     */
+    protected void sendErr(String s) {
+        logger.info("sent error (" + s + ") to " + peer);
+        sendLn("error " + s);
+    }
+
+    /**
+     * send warning line
+     *
+     * @param s line to send
+     */
+    protected void sendWrn(String s) {
+        logger.info("sent warning (" + s + ") to " + peer);
+        sendLn("warning " + s);
+    }
+
+    /**
      * check prefix
      *
      * @param lst list
@@ -239,18 +260,18 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             return;
         }
         if (!need2run) {
-            sendLn("error notNeeded");
+            sendErr("notNeeded");
             return;
         }
         if (iface.encryptionMethod > 0) {
             sendLn("startEncrypt " + servGeneric.proto2string(iface.encryptionMethod));
             cmds cmd = recvLn();
             if (cmd == null) {
-                return;
+                cmd = new cmds("", "");
             }
             String a = cmd.word();
             if (!a.equals("startEncrypt")) {
-                sendLn("error startEncryptRequired");
+                sendErr("startEncryptRequired");
                 return;
             }
             if (peer.compare(peer, iface.iface.addr) > 0) {
@@ -273,7 +294,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             conn.wait4ready(iface.deadTimer);
         }
         if (!need2run) {
-            sendLn("error notNeeded");
+            sendErr("notNeeded");
             return;
         }
         sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.lower.getMTUsize() + " name=" + cfgAll.hostName);
@@ -283,7 +304,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         }
         String a = cmd.word();
         if (!a.equals("open")) {
-            sendLn("error openRequired");
+            sendErr("openRequired");
             return;
         }
         name = "?" + rtrId;
@@ -301,46 +322,43 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             }
         }
         if (iface.authentication != null) {
-            byte[] authenticate = new byte[128];
-            for (int i = 0; i < authenticate.length; i++) {
-                authenticate[i] = (byte) bits.randomB();
+            byte[] buf = new byte[128];
+            for (int i = 0; i < buf.length; i++) {
+                buf[i] = (byte) bits.randomB();
             }
-            sendLn("password-request " + cryBase64.encodeBytes(authenticate));
+            String b = cryBase64.encodeBytes(buf);
+            sendLn("password-request " + b);
             cmd = recvLn();
             if (cmd == null) {
-                return;
+                cmd = new cmds("", "");
             }
             a = cmd.word();
             if (!a.equals("password-request")) {
-                sendLn("error passReqRequired");
+                sendErr("passReqRequired");
                 return;
             }
             a = cmd.word();
-            byte[] chl = cryBase64.decodeBytes(a);
-            cryHashSha2512 hsh = new cryHashSha2512();
-            hsh.init();
-            hsh.update(chl);
-            hsh.update(iface.authentication.getBytes());
-            hsh.update(chl);
-            chl = hsh.finish();
-            sendLn("password-reply " + cryBase64.encodeBytes(chl));
+            List<String> lst = new ArrayList<String>();
+            lst.add(a);
+            lst.add(iface.authentication);
+            lst.add(a);
+            sendLn("password-reply " + userUpgrade.calcTextHash(lst));
             cmd = recvLn();
             if (cmd == null) {
-                return;
+                cmd = new cmds("", "");
             }
             a = cmd.word();
             if (!a.equals("password-reply")) {
-                sendLn("error passRepRequired");
+                sendErr("passRepRequired");
                 return;
             }
-            hsh.init();
-            hsh.update(authenticate);
-            hsh.update(iface.authentication.getBytes());
-            hsh.update(authenticate);
-            chl = hsh.finish();
-            a = cryBase64.encodeBytes(chl);
+            lst = new ArrayList<String>();
+            lst.add(b);
+            lst.add(iface.authentication);
+            lst.add(b);
+            a = userUpgrade.calcTextHash(lst);
             if (!a.equals(cmd.word())) {
-                sendLn("error badPassword");
+                sendErr("badPassword");
                 return;
             }
         }
@@ -598,7 +616,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 }
                 continue;
             }
-            lower.sendLn("warning badCommand " + a);
+            lower.sendWrn("badCommand " + a);
         }
     }
 

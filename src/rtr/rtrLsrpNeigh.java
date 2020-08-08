@@ -5,9 +5,10 @@ import addr.addrIPv4;
 import auth.authConstant;
 import cfg.cfgAll;
 import cry.cryBase64;
-import cry.cryHashSha2512;
 import ip.ipMpls;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtAccept;
@@ -17,6 +18,7 @@ import serv.servGeneric;
 import tab.tabGen;
 import tab.tabLabel;
 import tab.tabLabelNtry;
+import user.userUpgrade;
 import util.bits;
 import util.cmds;
 import util.debugger;
@@ -337,11 +339,12 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             }
         }
         if (iface.authentication != null) {
-            byte[] authenticate = new byte[128];
-            for (int i = 0; i < authenticate.length; i++) {
-                authenticate[i] = (byte) bits.randomB();
+            byte[] buf = new byte[128];
+            for (int i = 0; i < buf.length; i++) {
+                buf[i] = (byte) bits.randomB();
             }
-            sendLn("password-request " + cryBase64.encodeBytes(authenticate));
+            String b = cryBase64.encodeBytes(buf);
+            sendLn("password-request " + b);
             cmd = recvLn();
             if (cmd == null) {
                 cmd = new cmds("", "");
@@ -352,14 +355,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                 return;
             }
             a = cmd.word();
-            byte[] chl = cryBase64.decodeBytes(a);
-            cryHashSha2512 hsh = new cryHashSha2512();
-            hsh.init();
-            hsh.update(chl);
-            hsh.update(iface.authentication.getBytes());
-            hsh.update(chl);
-            chl = hsh.finish();
-            sendLn("password-reply " + cryBase64.encodeBytes(chl));
+            List<String> lst = new ArrayList<String>();
+            lst.add(a);
+            lst.add(iface.authentication);
+            lst.add(a);
+            sendLn("password-reply " + userUpgrade.calcTextHash(lst));
             cmd = recvLn();
             if (cmd == null) {
                 cmd = new cmds("", "");
@@ -369,12 +369,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                 sendErr("passRepRequired");
                 return;
             }
-            hsh.init();
-            hsh.update(authenticate);
-            hsh.update(iface.authentication.getBytes());
-            hsh.update(authenticate);
-            chl = hsh.finish();
-            a = cryBase64.encodeBytes(chl);
+            lst = new ArrayList<String>();
+            lst.add(b);
+            lst.add(iface.authentication);
+            lst.add(b);
+            a = userUpgrade.calcTextHash(lst);
             if (!a.equals(cmd.word())) {
                 sendErr("badPassword");
                 return;
