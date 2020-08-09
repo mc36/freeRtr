@@ -3135,6 +3135,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         switch (type) {
             case virtppp:
                 upp = getEncapProto();
+                upp.setState(state.states.close);
                 break;
             case pweth:
                 upp = ethtyp;
@@ -3146,7 +3147,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         nul.setUpper(upp);
         pwhe.stop2run();
         pwhe = null;
-        upp.setState(state.states.close);
     }
 
     /**
@@ -6231,6 +6231,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 case virtppp:
                     upp = getEncapProto();
                     pwt = packLdpPwe.pwtPpp;
+                    upp.setState(state.states.up);
                     break;
                 case pweth:
                     upp = new ifcEther(false, ethtyp);
@@ -6250,7 +6251,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             pwhe.start2run();
-            upp.setState(state.states.up);
             return;
         }
         if (a.equals("ipx")) {

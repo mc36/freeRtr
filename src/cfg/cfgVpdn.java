@@ -309,6 +309,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
 
     private ifcBridgeIfc brdgIfc;
 
+    private boolean running;
+
     /**
      * defaults text
      */
@@ -847,6 +849,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
      * stop process
      */
     public void stop2run() {
+        if (!running) {
+            return;
+        }
         if (ifaceDialer != null) {
             ifcUp enc = ifaceDialer.getEncapProto();
             if (enc != null) {
@@ -962,12 +967,16 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             gnv.workStop();
             gnv = null;
         }
+        running = false;
     }
 
     /**
      * restart process
      */
     public void setup2run() {
+        if (running) {
+            return;
+        }
         if (target == null) {
             return;
         }
@@ -1374,6 +1383,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 enc.setState(state.states.up);
             }
         }
+        running = true;
     }
 
 }
