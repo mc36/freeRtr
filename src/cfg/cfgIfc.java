@@ -1748,6 +1748,23 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * state changed
+     *
+     * @param s new state
+     */
+    public void stateChanged(state.states s) {
+        if (slaac != null) {
+            slaac.clearState();
+        }
+        if (dhcp4c != null) {
+            dhcp4c.clearState();
+        }
+        if (dhcp6c != null) {
+            dhcp6c.clearState();
+        }
+    }
+
+    /**
      * get forwarder interface
      *
      * @param adr address to test
@@ -2193,7 +2210,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      */
     public cfgIfc(String nam) {
         name = nam.trim();
-        ethtyp = new ifcEthTyp(name);
+        ethtyp = new ifcEthTyp(name, this);
         lower = new ifcNull();
         lower.setUpper(ethtyp);
         ethtyp.setState(state.states.down);
@@ -2253,6 +2270,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         addr6 = adr.copyBytes();
         mask6 = msk.copyBytes();
+        if (adr.isLinkLocal()) {
+            ipIf6.getLinkLocalAddr().fromIPv6addr(adr);
+        }
         if (gw != null) {
             if (gw.isEmpty()) {
                 gw = null;
@@ -4208,7 +4228,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         dialer.lower = new ifcNull();
         pppoeC = new ifcP2pOEclnt();
-        pppoeC.ifcName = dialer.name;
+        pppoeC.clnIfc = dialer;
         pppoeC.setUpper(enc);
         ethtyp.addET(packPppOE.typeCtr, "pppoeCctrl", pppoeC);
         ethtyp.updateET(packPppOE.typeCtr, pppoeC);
@@ -4254,7 +4274,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      */
     public synchronized boolean setup2pppoeRely(cfgIfc serial) {
         if (pppoeR != null) {
-            if (pppoeR.clnIfc.type == ifaceType.serial) {
+            if (pppoeR.ser != null) {
                 pppoeR.clnIfc.ethtyp.delET(-1);
             }
             pppoeR.closeUp();
@@ -5012,7 +5032,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (pppoeC == null) {
             l.add(cmds.tabulator + "no p2poe client");
         } else {
-            l.add(cmds.tabulator + "p2poe client " + pppoeC.ifcName);
+            l.add(cmds.tabulator + "p2poe client " + pppoeC.clnIfc.name);
         }
         if (pppoeS == null) {
             l.add(cmds.tabulator + "no p2poe server");
@@ -6822,7 +6842,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (dhcp6c != null) {
                     return;
                 }
-                dhcp6c = new clntDhcp6(vrfFor.udp6, fwdIf6, ethtyp, this);
+                dhcp6c = new clntDhcp6(vrfFor.udp6, fwdIf6, ipIf6, ethtyp, this);
                 return;
             }
             if (dhcp6c == null) {
@@ -6840,7 +6860,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("slaac")) {
-            slaac = new clntSlaac(vrfFor.fwd6, fwdIf6, ethtyp, this);
+            slaac = new clntSlaac(vrfFor.fwd6, fwdIf6, ipIf6, ethtyp, this);
             return;
         }
         if (a.equals("prefix-suppress")) {

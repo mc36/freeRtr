@@ -481,6 +481,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                     return;
                 }
                 remAddrCfg = adr;
+                ctrlIp4.remAddrCur = adr.copyBytes();
                 return;
             }
             if (a.equals("local")) {
@@ -668,6 +669,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             a = cmd.word();
             if (a.equals("peer")) {
                 remAddrCfg = null;
+                ctrlIp4.remAddrCur = null;
                 return;
             }
             if (a.equals("local")) {

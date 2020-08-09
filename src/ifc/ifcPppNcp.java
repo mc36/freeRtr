@@ -320,6 +320,8 @@ public abstract class ifcPppNcp {
      */
     public void recvPck(packHolder pck, int code, int id) {
         if ((sawBit & sawFrcClsd) != 0) {
+            pck.getSkip(-2 - ifcPpp.size);
+            parent.sendNcpCtrl(pck, ifcPppLcp.pppCtrl, ifcPppNcp.codeProtRej, bits.randomB());
             return;
         }
         cntr.rx(pck);

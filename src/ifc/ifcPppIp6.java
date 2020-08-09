@@ -153,10 +153,21 @@ public class ifcPppIp6 extends ifcPppNcp {
         if (dat.compress > 0) {
             cfg.compress = 0;
         }
+        if ((dat.ifid != null) && (locAddrCur != null)) {
+            locAddrCur = dat.ifid;
+            cfg.ifid = dat.ifid;
+        }
     }
 
     public void gotConfRej(Object data) {
-        gotConfNak(data);
+        ifcPppIp6conf dat = (ifcPppIp6conf) data;
+        ifcPppIp6conf cfg = (ifcPppIp6conf) txReq;
+        if (dat.compress > 0) {
+            cfg.compress = 0;
+        }
+        if (dat.ifid != null) {
+            cfg.ifid = null;
+        }
     }
 
     public boolean gotUnknownCode(packHolder pck, int code, int id) {

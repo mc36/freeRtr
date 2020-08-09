@@ -6,6 +6,8 @@ import auth.autherEap;
 import auth.autherPap;
 import pack.packHolder;
 import util.bits;
+import util.debugger;
+import util.logger;
 import util.state;
 import util.typLenVal;
 
@@ -458,6 +460,9 @@ public class ifcPppLcp extends ifcPppNcp {
             case codeCodeRej:
                 break;
             case codeProtRej:
+                if (debugger.ifcPppEvnt) {
+                    logger.debug("protocol: " + bits.toHexW(pck.msbGetW(0)));
+                }
                 break;
             case codeEchoReq:
                 if (id == lastEchoId) {
@@ -483,28 +488,28 @@ public class ifcPppLcp extends ifcPppNcp {
         }
         return false;
     }
-
+    
 }
 
 class ifcPppLcpConf {
-
+    
     public int mru = -1;
-
+    
     public int auth = -1;
-
+    
     public int quality = -1;
-
+    
     public int magic = 0;
-
+    
     public boolean pfc = false;
-
+    
     public boolean acfc = false;
-
+    
     public int accm = 0;
-
+    
     public String toString() {
         return "magic=" + magic + " mru=" + mru + " accm=" + accm + " auth=" + autherDoer.getName(auth) + " quality="
                 + quality + " pfc=" + pfc + " acfc=" + acfc;
     }
-
+    
 }

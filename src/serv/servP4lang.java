@@ -225,7 +225,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge)) {
+            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer)) {
                 cmd.error("not p4lang interface");
                 return false;
             }
@@ -248,7 +248,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                     }
                 }
                 if (ntry.master == null) {
-                    cmd.error("parent not exported");
+                    cmd.error("carrier not exported");
                     return false;
                 }
             }
@@ -379,8 +379,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         pipe.lineTx = pipeSide.modTyp.modeLF;
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ifc = expIfc.get(i);
+            ifc.lastState = state.states.up;
+            ifc.upper.setState(ifc.lastState);
             ifc.sentVlan = 0;
             ifc.sentBundle = 0;
+            ifc.sentPppoe = -1;
             ifc.sentVrf = 0;
             ifc.sentState = state.states.close;
             ifc.sentMtu = 0;
@@ -525,6 +528,9 @@ class servP4langNei implements Comparator<servP4langNei> {
         if (i != 0) {
             return i;
         }
+        if (o1.iface.ifc.type == cfgIfc.ifaceType.dialer) {
+            return 0;
+        }
         return o1.adr.compare(o1.adr, o2.adr);
     }
 
@@ -614,6 +620,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public int sentMtu;
 
+    public int sentPppoe;
+
     public state.states sentState = state.states.close;
 
     public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4in;
@@ -625,6 +633,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6out;
 
     public servP4langIfc master;
+
+    public servP4langIfc pppoe;
 
     public cfgIfc ifc;
 
@@ -990,7 +1000,20 @@ class servP4langConn implements Runnable {
         return null;
     }
 
-    private servP4langNei findIface(tabRouteIface ifc, addrIP hop) {
+    private servP4langIfc findIfc(cfgIfc ifc) {
+        if (ifc == null) {
+            return null;
+        }
+        for (int i = 0; i < lower.expIfc.size(); i++) {
+            servP4langIfc ntry = lower.expIfc.get(i);
+            if (ntry.ifc == ifc) {
+                return ntry;
+            }
+        }
+        return null;
+    }
+
+    private servP4langNei findIfc(tabRouteIface ifc, addrIP hop) {
         if (ifc == null) {
             return null;
         }
@@ -1059,7 +1082,7 @@ class servP4langConn implements Runnable {
         return null;
     }
 
-    private servP4langIfc findBridg(cfgBrdg ifc) {
+    private servP4langIfc findIfc(cfgBrdg ifc) {
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc old = lower.expIfc.get(i);
             if (old.ifc.bridgeIfc != null) {
@@ -1139,7 +1162,7 @@ class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        servP4langNei hop = findIface(ntry.iface, ntry.nextHop);
+        servP4langNei hop = findIfc(ntry.iface, ntry.nextHop);
         if (hop == null) {
             return;
         }
@@ -1195,7 +1218,7 @@ class servP4langConn implements Runnable {
             lower.sendLine("mysrv" + ntry.forwarder.ipVersion + "_" + act + " " + vr.id + " " + adr + " " + vrf.id);
             return;
         }
-        servP4langNei hop = findIface(ntry.iface, ntry.nextHop);
+        servP4langNei hop = findIfc(ntry.iface, ntry.nextHop);
         if (hop == null) {
             return;
         }
@@ -1226,7 +1249,7 @@ class servP4langConn implements Runnable {
     }
 
     private void doBrdg(servP4langBr br) {
-        br.routed = findBridg(br.br) != null;
+        br.routed = findIfc(br.br) != null;
         if (br.routed) {
             return;
         }
@@ -1329,7 +1352,7 @@ class servP4langConn implements Runnable {
             if (rou == null) {
                 continue;
             }
-            servP4langNei hop = findIface(rou.iface, rou.nextHop);
+            servP4langNei hop = findIfc(rou.iface, rou.nextHop);
             if (hop == null) {
                 continue;
             }
@@ -1352,6 +1375,18 @@ class servP4langConn implements Runnable {
     }
 
     private void doIface(servP4langIfc ifc) {
+        if (ifc.ifc.pppoeC != null) {
+            servP4langIfc res = findIfc(ifc.ifc.pppoeC.clnIfc);
+            if (res != null) {
+                res.pppoe = ifc;
+            }
+        }
+        if (ifc.ifc.pppoeR != null) {
+            servP4langIfc res = findIfc(ifc.ifc.pppoeR.clnIfc);
+            if (res != null) {
+                res.pppoe = ifc;
+            }
+        }
         state.states sta;
         if (ifc.ifc.ethtyp.forcedDN) {
             sta = state.states.admin;
@@ -1359,7 +1394,7 @@ class servP4langConn implements Runnable {
             sta = state.states.up;
         }
         int i = ifc.ifc.ethtyp.getMTUsize();
-        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge)) {
+        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge) || (ifc.ifc.type == cfgIfc.ifaceType.dialer)) {
             ifc.sentState = sta;
             ifc.sentMtu = i;
         }
@@ -1498,7 +1533,7 @@ class servP4langConn implements Runnable {
             if (ntry == null) {
                 return;
             }
-            servP4langNei hop = findIface(ntry.iface, ntry.nextHop);
+            servP4langNei hop = findIfc(ntry.iface, ntry.nextHop);
             if (hop == null) {
                 return;
             }
@@ -1512,7 +1547,7 @@ class servP4langConn implements Runnable {
             mstr = findBundl(ifc.ifc.bundleHed);
         }
         if (ifc.ifc.bridgeIfc != null) {
-            mstr = findBridg(ifc.ifc.bridgeHed);
+            mstr = findIfc(ifc.ifc.bridgeHed);
         }
         vrf = findVrf(mstr);
         if (vrf == null) {
@@ -1566,6 +1601,42 @@ class servP4langConn implements Runnable {
         }
         servP4langVrf vrf = findVrf(ifc);
         if (vrf == null) {
+            return;
+        }
+        if (ifc.pppoe != null) {
+            servP4langNei nei = findIfc(ifc.ifc.fwdIf4, new addrIP());
+            if (nei == null) {
+                nei = findIfc(ifc.ifc.fwdIf6, new addrIP());
+            }
+            if (nei == null) {
+                return;
+            }
+            int ses = -1;
+            addrMac mac = new addrMac();
+            if (ifc.pppoe.ifc.pppoeC != null) {
+                ses = ifc.pppoe.ifc.pppoeC.getSession(mac);
+            }
+            if (ifc.pppoe.ifc.pppoeR != null) {
+                ses = ifc.pppoe.ifc.pppoeR.getSession(mac);
+            }
+            if (ses == ifc.sentPppoe) {
+                return;
+            }
+            String act;
+            int sess;
+            if (ses < 0) {
+                act = "del";
+                sess = ifc.sentPppoe;
+            } else {
+                if (ifc.sentPppoe < 0) {
+                    act = "add";
+                } else {
+                    act = "mod";
+                }
+                sess = ses;
+            }
+            lower.sendLine("pppoe_" + act + " " + ifc.id + " " + ifc.pppoe.id + " " + nei.id + " " + sess + " " + ((addrMac) ifc.pppoe.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
+            ifc.sentPppoe = ses;
             return;
         }
         String afi;
@@ -1709,7 +1780,7 @@ class servP4langConn implements Runnable {
                 if (old == null) {
                     continue;
                 }
-                servP4langNei hop = findIface(old.iface, old.nextHop);
+                servP4langNei hop = findIfc(old.iface, old.nextHop);
                 if (hop == null) {
                     continue;
                 }
@@ -1731,7 +1802,7 @@ class servP4langConn implements Runnable {
             String act = "add";
             if (old != null) {
                 if (ntry.nextHop != null) {
-                    findIface(ntry.iface, ntry.nextHop);
+                    findIfc(ntry.iface, ntry.nextHop);
                 }
                 if (!ntry.differs(old)) {
                     continue;
@@ -1749,7 +1820,7 @@ class servP4langConn implements Runnable {
                 lower.sendLine("myaddr" + afi + "_" + act + " " + a + " -1 " + vrf);
                 continue;
             }
-            servP4langNei hop = findIface(ntry.iface, ntry.nextHop);
+            servP4langNei hop = findIfc(ntry.iface, ntry.nextHop);
             if (hop == null) {
                 continue;
             }
@@ -1774,7 +1845,7 @@ class servP4langConn implements Runnable {
                 if (old == null) {
                     continue;
                 }
-                servP4langNei hop = findIface(old.iface, old.nextHop);
+                servP4langNei hop = findIfc(old.iface, old.nextHop);
                 if (hop == null) {
                     continue;
                 }
@@ -1803,7 +1874,7 @@ class servP4langConn implements Runnable {
                 lower.sendLine("myaddr" + afi + "_del " + a + " -1 " + vrf);
                 continue;
             }
-            servP4langNei hop = findIface(ntry.iface, ntry.nextHop);
+            servP4langNei hop = findIfc(ntry.iface, ntry.nextHop);
             if (hop == null) {
                 continue;
             }

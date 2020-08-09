@@ -551,6 +551,7 @@ public class ipFwdTab {
             prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
             prf.iface = ifc;
             prf.rouTyp = tabRouteEntry.routeType.remote;
+            prf.nextHop = gtw;
             tabListing<tabPrfxlstN, addrIP> pfl = ifc.gatePrfx;
             if (pfl == null) {
                 continue;

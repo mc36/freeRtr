@@ -148,7 +148,7 @@ public class ifcP2pOEserv implements ifcUp {
                 if (old != null) {
                     ntry = old;
                 } else {
-                    ntry.sessid = bits.randomW() + 1;
+                    ntry.sessid = bits.random(1, 0xfffe);
                     ntry.startUpper();
                 }
                 packPppOE.updateHeader(pck, packPppOE.codePadS, ntry.sessid);

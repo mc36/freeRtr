@@ -6,6 +6,7 @@ import addr.addrMac;
 import cfg.cfgIfc;
 import ifc.ifcEthTyp;
 import ip.ipFwdIface;
+import ip.ipIfc6;
 import java.util.List;
 import pack.packDhcp6;
 import pack.packHolder;
@@ -90,6 +91,8 @@ public class clntDhcp6 implements prtServP {
 
     private ipFwdIface iface;
 
+    private ipIfc6 ipifc;
+
     private ifcEthTyp ethtyp;
 
     private int lastId;
@@ -107,12 +110,14 @@ public class clntDhcp6 implements prtServP {
      *
      * @param wrkr udp worker
      * @param ifc forwarder interface
+     * @param ipi ip interface
      * @param phy handler of interface
      * @param cfg config interface
      */
-    public clntDhcp6(prtGen wrkr, ipFwdIface ifc, ifcEthTyp phy, cfgIfc cfg) {
+    public clntDhcp6(prtGen wrkr, ipFwdIface ifc, ipIfc6 ipi, ifcEthTyp phy, cfgIfc cfg) {
         lower = wrkr;
         iface = ifc;
+        ipifc = ipi;
         ethtyp = phy;
         cfger = cfg;
         clearState();
@@ -192,13 +197,16 @@ public class clntDhcp6 implements prtServP {
         }
     }
 
-    private void clearState() {
+    /**
+     * clear state
+     */
+    public void clearState() {
         try {
             locMac = (addrMac) ethtyp.getHwAddr();
         } catch (Exception e) {
             locMac = addrMac.getRandom();
         }
-        locAddr = addrIPv6.genLinkLocal(locMac);
+        locAddr = ipifc.getLinkLocalAddr().toIPv6();
         locMask = new addrIPv6();
         locMask.fromString("ffff:ffff:ffff:ffff::");
         gwAddr = addrIPv6.getEmpty();

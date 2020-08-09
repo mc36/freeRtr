@@ -8,6 +8,7 @@ import ifc.ifcEthTyp;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipIcmp6;
+import ip.ipIfc6;
 import ip.ipPrt;
 import pack.packHolder;
 import util.counter;
@@ -32,6 +33,8 @@ public class clntSlaac implements Runnable, ipPrt {
     private ipFwd lower;
 
     private ipFwdIface iface;
+
+    private ipIfc6 ipifc;
 
     private ifcEthTyp ethtyp;
 
@@ -71,24 +74,19 @@ public class clntSlaac implements Runnable, ipPrt {
      *
      * @param wrkr ip worker
      * @param ifc forwarder interface
+     * @param ipi ip interface
      * @param phy handler of interface
      * @param cfg config interface
      */
-    public clntSlaac(ipFwd wrkr, ipFwdIface ifc, ifcEthTyp phy, cfgIfc cfg) {
+    public clntSlaac(ipFwd wrkr, ipFwdIface ifc, ipIfc6 ipi, ifcEthTyp phy, cfgIfc cfg) {
         lower = wrkr;
         iface = ifc;
+        ipifc = ipi;
         ethtyp = phy;
         cfger = cfg;
-        locAddr = addrIPv6.getEmpty();
-        locMask = addrIPv6.getEmpty();
-        gwAddr = addrIPv6.getEmpty();
-        dns1addr = addrIPv6.getEmpty();
-        dns2addr = addrIPv6.getEmpty();
+        clearState();
         working = true;
         new Thread(this).start();
-        if (debugger.clntSlaacTraf) {
-            logger.debug("started");
-        }
     }
 
     public String toString() {
@@ -103,7 +101,24 @@ public class clntSlaac implements Runnable, ipPrt {
         notif.wakeup();
     }
 
-    private void doWork() {
+    /**
+     * clear state
+     */
+    public void clearState() {
+        gotAddr = false;
+        locAddr = addrIPv6.getEmpty();
+        locMask = addrIPv6.getEmpty();
+        gwAddr = addrIPv6.getEmpty();
+        dns1addr = addrIPv6.getEmpty();
+        dns2addr = addrIPv6.getEmpty();
+        notif.wakeup();
+    }
+
+    private boolean doWork() {
+        if (gotAddr) {
+            notif.sleep(10000);
+            return false;
+        }
         addrMac mac;
         try {
             mac = (addrMac) ethtyp.getHwAddr();
@@ -111,12 +126,15 @@ public class clntSlaac implements Runnable, ipPrt {
             mac = addrMac.getRandom();
         }
         locMask.fromString("ffff:ffff:ffff:ffff::");
-        addrIPv6 ll = addrIPv6.genLinkLocal(mac);
+        addrIPv6 ll = ipifc.getLinkLocalAddr().toIPv6();
         cfger.addr6changed(ll, locMask, null);
         lower.protoAdd(this, iface, null);
         packHolder pck = new packHolder(true, true);
         for (;;) {
             if (!working) {
+                return true;
+            }
+            if (gotAddr) {
                 break;
             }
             if (debugger.clntSlaacTraf) {
@@ -128,25 +146,30 @@ public class clntSlaac implements Runnable, ipPrt {
             notif.sleep(10000);
         }
         lower.protoDel(this, iface, null);
-        if (debugger.clntSlaacTraf) {
-            logger.debug("stopped");
-        }
-        if (!gotAddr) {
-            return;
-        }
         addrIPv6 wld = new addrIPv6();
         wld.setNot(locMask);
         ll.setAnd(ll, wld);
         locAddr.setAnd(locAddr, locMask);
         locAddr.setOr(locAddr, ll);
         cfger.addr6changed(locAddr, locMask, gwAddr);
+        return false;
     }
 
     public void run() {
+        if (debugger.clntSlaacTraf) {
+            logger.debug("started");
+        }
         try {
-            doWork();
+            for (;;) {
+                if (doWork()) {
+                    break;
+                }
+            }
         } catch (Exception e) {
             logger.traceback(e);
+        }
+        if (debugger.clntSlaacTraf) {
+            logger.debug("stopped");
         }
     }
 
@@ -222,7 +245,6 @@ public class clntSlaac implements Runnable, ipPrt {
         if (locAddr.isLinkLocal()) {
             return;
         }
-        working = false;
         gotAddr = true;
         notif.wakeup();
     }

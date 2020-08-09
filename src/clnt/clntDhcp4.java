@@ -187,7 +187,10 @@ public class clntDhcp4 implements prtServP {
         }
     }
 
-    private void clearState() {
+    /**
+     * clear state
+     */
+    public void clearState() {
         locAddr = addrIPv4.getEmpty();
         locMask = addrIPv4.getBroadcast();
         gwAddr = addrIPv4.getEmpty();

@@ -48,7 +48,7 @@ public class ifcP2pOErely implements ifcUp {
     /**
      * client session
      */
-    public int clntSes = 0;
+    public int clntSes = -1;
 
     /**
      * hardware address
@@ -179,7 +179,7 @@ public class ifcP2pOErely implements ifcUp {
                 if (debugger.ifcP2pOErely) {
                     logger.debug("tx pads");
                 }
-                clntSes = bits.randomW() + 1;
+                clntSes = bits.random(1, 0xfffe);
                 clntAdr = src;
                 packPppOE.updateHeader(pck, packPppOE.codePadS, clntSes);
                 lower.sendPack(pck);
@@ -190,7 +190,7 @@ public class ifcP2pOErely implements ifcUp {
                     return;
                 }
                 clntAdr = new addrMac();
-                clntSes = 0;
+                clntSes = -1;
                 break;
             case packPppOE.codePadO:
             case packPppOE.codePadS:
@@ -206,7 +206,7 @@ public class ifcP2pOErely implements ifcUp {
      * @param pck packet to send
      */
     protected void doTxPack(packHolder pck) {
-        if (clntSes == 0) {
+        if (clntSes == -1) {
             cntr.drop(pck, counter.reasons.notInTab);
             return;
         }
@@ -216,6 +216,17 @@ public class ifcP2pOErely implements ifcUp {
         pck.ETHsrc.setAddr(hwaddr);
         packPppOE.updateHeader(pck, packPppOE.codeData, clntSes);
         lower.sendPack(pck);
+    }
+
+    /**
+     * get session info
+     *
+     * @param mac mac address
+     * @return session id, negative if down
+     */
+    public int getSession(addrMac mac) {
+        mac.setAddr(clntAdr);
+        return clntSes;
     }
 
 }

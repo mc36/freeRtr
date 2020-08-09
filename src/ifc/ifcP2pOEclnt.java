@@ -3,6 +3,7 @@ package ifc;
 import addr.addrEmpty;
 import addr.addrMac;
 import addr.addrType;
+import cfg.cfgIfc;
 import java.util.Timer;
 import java.util.TimerTask;
 import pack.packHolder;
@@ -66,9 +67,9 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
     public addrMac acAddr = new addrMac();
 
     /**
-     * dialer interface name
+     * interface to clone
      */
-    public String ifcName = "";
+    public cfgIfc clnIfc;
 
     private Timer keepTimer;
 
@@ -394,6 +395,17 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
         pck.ETHsrc.setAddr(hwAddr);
         packPppOE.updateHeader(pck, packPppOE.codeData, sessionId);
         lower.sendPack(pck);
+    }
+
+    /**
+     * get session info
+     *
+     * @param mac mac address
+     * @return session id, negative if down
+     */
+    public int getSession(addrMac mac) {
+        mac.setAddr(acAddr);
+        return sessionId;
     }
 
 }

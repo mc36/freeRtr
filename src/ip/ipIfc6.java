@@ -43,58 +43,58 @@ public class ipIfc6 implements ipIfc, ifcUp {
      * dns information
      */
     public addrIP rtrAdvDns;
-
+    
     private ipIfc6nei neiCache = null;
-
+    
     private addrIP ipaddr = new addrIP();
-
+    
     private addrIP lladdr = new addrIP();
-
+    
     private addrPrefix<addrIP> prefix;
-
+    
     private int ipmask;
-
+    
     private boolean needType;
 
     /**
      * interface handler
      */
     protected ipFwdIface ifcHdr;
-
+    
     private ifcDn lower = new ifcNull();
-
+    
     private ipMpls mpls = null;
 
     /**
      * forwarder
      */
     protected ipFwd upper = null;
-
+    
     private Timer timer;
-
+    
     private ipIcmp6 icc = new ipIcmp6();
-
+    
     private counter cntr = new counter();
-
+    
     public counter getCounter() {
         return cntr;
     }
-
+    
     public boolean checkMyAddress(addrIP adr) {
         if (lladdr.compare(lladdr, adr) == 0) {
             return true;
         }
         return (ipaddr.compare(ipaddr, adr) == 0);
     }
-
+    
     public addrType checkMyAlias(addrIP adr) {
         return ifcHdr.adrChk(adr);
     }
-
+    
     public boolean checkConnected(addrIP adr) {
         return adr.toIPv6().isLinkLocal() || prefix.matches(adr);
     }
-
+    
     public addrIP getLinkLocalAddr() {
         return lladdr;
     }
@@ -111,7 +111,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
         cntr = hdr.cntr;
         setState(lower.getState());
     }
-
+    
     public void setFilter(boolean promisc) {
         lower.setFilter(promisc);
     }
@@ -132,35 +132,35 @@ public class ipIfc6 implements ipIfc, ifcUp {
         }
         lladdr.fromIPv6addr(addrIPv6.genLinkLocal(hwaddr));
     }
-
+    
     public userFormat getShCache() {
         if (neiCache == null) {
             return null;
         }
         return neiCache.getShCache();
     }
-
+    
     public int getCacheTimer() {
         if (neiCache == null) {
             return ipIfcLoop.defaultCacheTime;
         }
         return neiCache.neiCacheTimeout;
     }
-
+    
     public void setCacheTimer(int tim) {
         if (neiCache == null) {
             return;
         }
         neiCache.neiCacheTimeout = tim;
     }
-
+    
     public int getCacheRetry() {
         if (neiCache == null) {
             return ipIfcLoop.defaultRetryTime;
         }
         return neiCache.neiCacheRetry;
     }
-
+    
     public void setCacheRetry(int tim) {
         if (neiCache == null) {
             return;
@@ -175,15 +175,6 @@ public class ipIfc6 implements ipIfc, ifcUp {
      */
     public addrType getHWaddr() {
         return lower.getHwAddr().copyBytes();
-    }
-
-    /**
-     * get link local address
-     *
-     * @return link local address
-     */
-    public addrIP getLLaddr() {
-        return lladdr.copyBytes();
     }
 
     /**
@@ -242,6 +233,9 @@ public class ipIfc6 implements ipIfc, ifcUp {
      * @param mask mask
      */
     public void setIPv6addr(addrIPv6 addr, int mask) {
+        if (addr.isLinkLocal()) {
+            lladdr.setAddr(addr);
+        }
         ipaddr = new addrIP();
         ipaddr.fromIPv6addr(addr);
         ipmask = mask;
@@ -256,7 +250,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
         prefix = new addrPrefix<addrIP>(ipaddr, ipm);
         upper.ifaceAddr(ifcHdr, ipaddr, ipm);
     }
-
+    
     private boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
         if (!needType) {
             return false;
@@ -289,7 +283,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
         pck.getSkip(2);
         upper.ifacePack(ifcHdr, pck);
     }
-
+    
     public void sendProto(packHolder pck, addrIP nexthop) {
         if (createETHheader(pck, nexthop, type)) {
             cntr.drop(pck, counter.reasons.notInTab);
@@ -297,7 +291,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
         }
         lower.sendPack(pck);
     }
-
+    
     public void sendMpls(packHolder pck, addrIP nexthop) {
         if (mpls == null) {
             return;
@@ -308,54 +302,54 @@ public class ipIfc6 implements ipIfc, ifcUp {
         }
         mpls.send2eth(pck);
     }
-
+    
     public void sendL2info(addrType l2info, addrIP nexthop) {
     }
-
+    
     public void updateL2info(int mod, addrType l2info, addrIP nexthop) {
         if (neiCache == null) {
             return;
         }
         neiCache.updateMACheader(mod, (addrMac) l2info, nexthop.toIPv6());
     }
-
+    
     public addrType getL2info(addrIP nexthop) {
         if (neiCache == null) {
             return null;
         }
         return neiCache.getMACaddr(nexthop.toIPv6());
     }
-
+    
     public boolean getL2info(int seq, addrIP nexthop, addrType mac) {
         if (neiCache == null) {
             return true;
         }
         return neiCache.getMACaddr(seq, nexthop, (addrMac) mac);
     }
-
+    
     public void getL2info(List<String> lst, String beg) {
         if (neiCache == null) {
             return;
         }
         neiCache.getMACaddr(lst, beg);
     }
-
+    
     public String toString() {
         return "" + lower;
     }
-
+    
     public int getMTUsize() {
         return lower.getMTUsize();
     }
-
+    
     public state.states getState() {
         return lower.getState();
     }
-
+    
     public long getBandwidth() {
         return lower.getBandwidth();
     }
-
+    
     public void gotIcmpPack(packHolder pck) {
         if (neiCache == null) {
             return;
@@ -402,25 +396,25 @@ public class ipIfc6 implements ipIfc, ifcUp {
         icc.createRouterAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu + ipCor6.size, dns);
         sendProto(pck, pck.IPtrg);
     }
-
+    
     public ifcUp getPeerHdr() {
         return neiCache;
     }
-
+    
     public int getEthtyp() {
         return type;
     }
-
+    
 }
 
 class ipIfc6timer extends TimerTask {
-
+    
     ipIfc6 parent;
-
+    
     public ipIfc6timer(ipIfc6 prnt) {
         parent = prnt;
     }
-
+    
     public void run() {
         try {
             parent.sendAdverts();
@@ -428,5 +422,5 @@ class ipIfc6timer extends TimerTask {
             logger.traceback(e);
         }
     }
-
+    
 }

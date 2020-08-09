@@ -92,6 +92,7 @@ public class ipIfc6nei implements ifcUp {
     public void setIPv6addr(addrIPv6 addr, int mask) {
         resetTimer(false);
         cache.clear();
+        lladdr = upper.getLinkLocalAddr().toIPv6();
         ipaddr = addr.copyBytes();
         network = new addrPrefix<addrIPv6>(addr, mask);
         resetTimer(true);
@@ -118,7 +119,7 @@ public class ipIfc6nei implements ifcUp {
     public void setParent(ifcDn parent) {
         lower = parent;
         hwaddr = (addrMac) lower.getHwAddr();
-        lladdr = addrIPv6.genLinkLocal(hwaddr);
+        lladdr = upper.getLinkLocalAddr().toIPv6();
     }
 
     /**

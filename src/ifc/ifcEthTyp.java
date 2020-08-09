@@ -3,6 +3,7 @@ package ifc;
 import addr.addrMac;
 import addr.addrType;
 import cfg.cfgAll;
+import cfg.cfgIfc;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Comparator;
@@ -165,6 +166,8 @@ public class ifcEthTyp implements Runnable, ifcUp {
 
     private final String name;
 
+    private final cfgIfc cfger;
+
     private RandomAccessFile logFile = null;
 
     /**
@@ -293,6 +296,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (defUpper.upper != null) {
             defUpper.upper.setState(s);
         }
+        cfger.stateChanged(s);
     }
 
     /**
@@ -441,11 +445,13 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * create new multiplexer
      *
      * @param nam name of interface
+     * @param ifc config interface
      */
-    public ifcEthTyp(String nam) {
+    public ifcEthTyp(String nam, cfgIfc ifc) {
         if (debugger.ifcEthTypTraf) {
             logger.debug("started");
         }
+        cfger = ifc;
         name = "" + nam;
         notif = new notifier();
         lower = new ifcNull();

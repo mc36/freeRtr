@@ -430,7 +430,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 if (ifc.rtrAdvDns != null) {
                     adr6 = ifc.rtrAdvDns.toIPv6();
                 }
-                createRouterAdv(ifc.getHWaddr(), pck, pck.IPsrc.toIPv6(), ifc.getLLaddr().toIPv6(), rxIfc.addr.toIPv6(), rxIfc.mask, rxIfc.mtu + ipCor6.size, adr6);
+                createRouterAdv(ifc.getHWaddr(), pck, pck.IPsrc.toIPv6(), ifc.getLinkLocalAddr().toIPv6(), rxIfc.addr.toIPv6(), rxIfc.mask, rxIfc.mtu + ipCor6.size, adr6);
                 ifc.sendProto(pck, pck.IPtrg);
                 break;
             case icmpRtrAdv:
