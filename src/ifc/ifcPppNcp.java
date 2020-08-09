@@ -380,7 +380,7 @@ public abstract class ifcPppNcp {
                     logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + tmp2);
                 }
                 if (sawReq1++ > 3) {
-                    sendReq();
+                    clearState();
                     break;
                 }
                 if (!getReady()) {
