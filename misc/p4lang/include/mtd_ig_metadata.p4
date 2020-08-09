@@ -7,6 +7,7 @@
 struct ingress_metadata_t {          
    SubIntId_t source_id;
    SubIntId_t target_id;
+   SubIntId_t aclport_id;
    NextHopId_t nexthop_id;
    SubIntId_t outport_id;
    SubIntId_t bridge_id;
@@ -22,6 +23,8 @@ struct ingress_metadata_t {
     bit<3>  vlan_size;
     bit<1>  mpls0_remove;
     bit<1>  mpls1_remove;
+    bit<1>  pppoe_ctrl_valid;
+    bit<1>  pppoe_data_valid;
     bit<1>  mpls0_valid;
     bit<1>  mpls1_valid;
     bit<1>  llc_valid;

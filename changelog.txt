@@ -9024,3 +9024,6 @@ qc pass: p4lang: ingress vlan pppoe access list
 qc pass: p4lang: egress vlan pppoe access list
 qc pass: p4lang: pppoe routing
 qc pass: p4lang: vlan pppoe routing
+---------------------------------- 2020-08-09 16:30:18
+qc pass: p4lang: pppoe mpls
+qc pass: p4lang: vlan pppoe mpls

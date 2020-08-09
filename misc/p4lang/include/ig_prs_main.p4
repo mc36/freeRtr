@@ -28,6 +28,8 @@ parser ig_prs_main(packet_in pkt,
          0 &&& 0xfe00: prs_llc; /* LLC SAP frame */ 
          0 &&& 0xfa00: prs_llc; /* LLC SAP frame */ 
          ETHERTYPE_VLAN : prs_vlan;
+         ETHERTYPE_PPPOE_CTRL : prs_pppoeCtrl;
+         ETHERTYPE_PPPOE_DATA : prs_pppoeData;
          ETHERTYPE_MPLS_UCAST : prs_mpls0;
          ETHERTYPE_IPV4: prs_ipv4;                   
          ETHERTYPE_IPV6: prs_ipv6;                   
@@ -43,6 +45,8 @@ parser ig_prs_main(packet_in pkt,
       transition select(hdr.vlan.ethertype) {
          0 &&& 0xfe00: prs_llc; /* LLC SAP frame */ 
          0 &&& 0xfa00: prs_llc; /* LLC SAP frame */ 
+         ETHERTYPE_PPPOE_CTRL : prs_pppoeCtrl;
+         ETHERTYPE_PPPOE_DATA : prs_pppoeData;
          ETHERTYPE_MPLS_UCAST : prs_mpls0;
          ETHERTYPE_IPV4: prs_ipv4;
          ETHERTYPE_IPV6: prs_ipv6;                   
@@ -51,6 +55,28 @@ parser ig_prs_main(packet_in pkt,
          ETHERTYPE_LLDP:prs_control;
          default: accept;
       }
+   }
+
+   state prs_pppoeCtrl {
+      pkt.extract(hdr.pppoeC);
+      ig_md.pppoe_ctrl_valid = 1;
+      transition accept; 
+   }
+
+   state prs_pppoeData {
+      pkt.extract(hdr.pppoeD);
+      ig_md.pppoe_data_valid = 1;
+      transition select(hdr.pppoeD.ppptyp) {
+          0x0021: prs_ipv4; 
+          0x0057: prs_ipv6; 
+          0x0281: prs_mpls0; 
+          default: prs_pppoeDataCtrl;
+      }
+   }
+
+   state prs_pppoeDataCtrl {
+      ig_md.pppoe_ctrl_valid = 1;
+      transition accept; 
    }
 
    state prs_mpls0 {

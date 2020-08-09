@@ -9,6 +9,7 @@ control ig_ctl(inout headers hdr,
                inout standard_metadata_t ig_intr_md) {        
                                                                                    
    IngressControlARP() ig_ctl_arp; 
+   IngressControlPPPOE() ig_ctl_pppoe;
    IngressControlMPLS() ig_ctl_mpls;
    IngressControlMPLS2() ig_ctl_mpls2;
    IngressControlBridge() ig_ctl_bridge;
@@ -44,6 +45,7 @@ control ig_ctl(inout headers hdr,
             * So it is a dataplane packet                                                     
             */                                                                       
          ig_ctl_vlan_in.apply(hdr,ig_md,ig_intr_md);
+         ig_ctl_pppoe.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_acl_in.apply(hdr,ig_md,ig_intr_md);
          if (ig_md.dropping == 1) {
            return;
@@ -77,6 +79,10 @@ control ig_ctl(inout headers hdr,
 
            if (hdr.vlan.isValid()) {
               hdr.vlan.setInvalid();
+           }
+
+           if (hdr.pppoeD.isValid()) {
+              hdr.pppoeD.setInvalid();
            }
 
            if (ig_md.srv_op_type != 0) {

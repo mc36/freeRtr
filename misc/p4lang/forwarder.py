@@ -103,6 +103,44 @@ def writeBundleRules(delete, p4info_helper, ingress_sw, port, hsh, trg):
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
+def writePppoeRules(delete, p4info_helper, ingress_sw, port, phport, nexthop, vrf, ses, dmac, smac):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_pppoe.tbl_pppoe",
+        match_fields={
+            "ig_md.source_id": phport,
+            "hdr.pppoeD.session": ses
+        },
+        action_name="ig_ctl.ig_ctl_pppoe.act_pppoe_data",
+        action_params={
+            "port": port
+        })
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_nexthop.tbl_nexthop",
+        match_fields={
+            "ig_md.nexthop_id": nexthop,
+        },
+        action_name="ig_ctl.ig_ctl_nexthop.act_ipv4_pppoe",
+        action_params={
+            "dst_mac_addr": dmac,
+            "src_mac_addr": smac,
+            "egress_port": phport,
+            "acl_port": port,
+            "session": ses
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
 def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, lab_loc, lab_rem):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
@@ -696,7 +734,7 @@ def writeInAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm,
 
 
 def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
-    matches={"ig_md.target_id": port}
+    matches={"ig_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
@@ -718,7 +756,7 @@ def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm
 
 
 def writeOutAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
-    matches={"ig_md.target_id": port}
+    matches={"ig_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
@@ -1397,6 +1435,16 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "portbundle_del":
             writeBundleRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if splt[0] == "pppoe_add":
+            writePppoeRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],splt[7])
+            continue
+        if splt[0] == "pppoe_mod":
+            writePppoeRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],splt[7])
+            continue
+        if splt[0] == "pppoe_del":
+            writePppoeRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],splt[7])
             continue
 
         if splt[0] == "xconnect_add":

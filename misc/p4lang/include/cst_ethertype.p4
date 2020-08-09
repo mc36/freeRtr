@@ -28,5 +28,7 @@ const bit<16> ETHERTYPE_MPLS_UCAST        = 0x8847;
 const bit<16> ETHERTYPE_MPLS_MCAST        = 0x8848;
 const bit<16> ETHERTYPE_LACP              = 0x8809;
 const bit<16> ETHERTYPE_LLDP              = 0x88cc;
+const bit<16> ETHERTYPE_PPPOE_CTRL        = 0x8863;
+const bit<16> ETHERTYPE_PPPOE_DATA        = 0x8864;
 
 #endif // _ETHERTYPE_P4_

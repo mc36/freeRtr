@@ -6,6 +6,8 @@ struct headers {
    pkt_in_header_t	pkt_in; 
    ethernet_t		ethernet;
    vlan_t               vlan;  
+   pppoe_t		pppoeC;
+   pppoe_t		pppoeD;
    mpls_t		mpls0;
    mpls_t		mpls1;
    ipv4_t		ipv4c;

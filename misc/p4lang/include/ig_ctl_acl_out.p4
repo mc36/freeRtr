@@ -17,7 +17,7 @@ control IngressControlAclOut(inout headers hdr,
    
    table tbl_ipv4_acl {
       key = {
-         ig_md.target_id: exact;
+         ig_md.aclport_id: exact;
          hdr.ipv4.protocol: ternary;
          hdr.ipv4.src_addr: ternary;
          hdr.ipv4.dst_addr: ternary;
@@ -35,7 +35,7 @@ control IngressControlAclOut(inout headers hdr,
 
    table tbl_ipv6_acl {
       key = {
-         ig_md.target_id: exact;
+         ig_md.aclport_id: exact;
          hdr.ipv6.next_hdr: ternary;
          hdr.ipv6.src_addr: ternary;
          hdr.ipv6.dst_addr: ternary;
