@@ -1248,40 +1248,31 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         int newProt = -1;
         switch (prot) {
             case ifcPppMpls.ethTypU:
-                ctrlMpls.setLocalNeed();
                 newProt = ifcPppMpls.pppDataU;
                 break;
             case ifcPppIp4.ethTyp:
-                ctrlIp4.setLocalNeed();
                 newProt = ifcPppIp4.pppData;
                 break;
             case ifcPppIp6.ethTyp:
-                ctrlIp6.setLocalNeed();
                 newProt = ifcPppIp6.pppData;
                 break;
             case ifcPppBrdg.ethTyp:
                 ifcPppBrdg.patchPackTx(pck);
-                ctrlBrdg.setLocalNeed();
                 newProt = ifcPppBrdg.pppData;
                 break;
             case ifcPppOsi.ethTyp:
-                ctrlOsi.setLocalNeed();
                 newProt = ifcPppOsi.pppData;
                 break;
             case ifcPppIpx.ethTyp:
-                ctrlIpx.setLocalNeed();
                 newProt = ifcPppIpx.pppData;
                 break;
             case ifcPppCrypt.ethTyp:
-                ctrlCrypt.setLocalNeed();
                 newProt = ifcPppCrypt.pppData;
                 break;
             case ifcPppNsh.ethTyp:
-                ctrlNsh.setLocalNeed();
                 newProt = ifcPppNsh.pppData;
                 break;
             case ifcPppMpls.ethTypM:
-                ctrlMpls.setLocalNeed();
                 newProt = ifcPppMpls.pppDataM;
                 break;
             default:

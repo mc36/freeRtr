@@ -18,6 +18,7 @@ prefix-list p1
  exit
 int di1
  enc ppp
+ ppp ip4cp open
  vrf for v1
  ipv4 addr 3.3.3.3 255.255.255.0
  ppp ip4cp local 0.0.0.0
