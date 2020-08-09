@@ -9017,3 +9017,10 @@ qc pass: static routing over point2point ethernet
 ---------------------------------- 2020-08-06 08:32:41
 qc pass: ospf multi area
 qc pass: ospf asymmetric multi area
+---------------------------------- 2020-08-09 13:04:24
+qc pass: p4lang: ingress pppoe access list
+qc pass: p4lang: egress pppoe access list
+qc pass: p4lang: ingress vlan pppoe access list
+qc pass: p4lang: egress vlan pppoe access list
+qc pass: p4lang: pppoe routing
+qc pass: p4lang: vlan pppoe routing

@@ -990,6 +990,10 @@ qc pass: p4lang: bridge ingress access list
 qc pass: p4lang: bridge egress access list
 qc pass: p4lang: vlan bridge ingress access list
 qc pass: p4lang: vlan bridge egress access list
+qc pass: p4lang: ingress pppoe access list
+qc pass: p4lang: egress pppoe access list
+qc pass: p4lang: ingress vlan pppoe access list
+qc pass: p4lang: egress vlan pppoe access list
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -1016,6 +1020,8 @@ qc pass: p4lang: vlan vpls/ldp with bgp
 qc pass: p4lang: vlan eompls
 qc pass: p4lang: bundle vlan vpls/ldp with bgp
 qc pass: p4lang: bundle vlan eompls
+qc pass: p4lang: pppoe routing
+qc pass: p4lang: vlan pppoe routing
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

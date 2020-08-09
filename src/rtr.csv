@@ -1,6 +1,6 @@
 file;code;test;stage;command
 -;-;freeRouter v20.8.9-rel, done by cs@nop.;-;-
--;-;2020-08-09 12:17:34, took 00:04:39, with 100 workers, on 1814 cases, 0 failed, 0 traces, 3 retries;-;-
+-;-;2020-08-09 13:10:25, took 00:06:01, with 100 workers, on 1820 cases, 0 failed, 0 traces, 1 retries;-;-
 -;-;./rtr.bin;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -994,6 +994,10 @@ p4lang-acl09.tst;0;p4lang: bridge ingress access list;successfully;finished
 p4lang-acl10.tst;0;p4lang: bridge egress access list;successfully;finished
 p4lang-acl11.tst;0;p4lang: vlan bridge ingress access list;successfully;finished
 p4lang-acl12.tst;0;p4lang: vlan bridge egress access list;successfully;finished
+p4lang-acl13.tst;0;p4lang: ingress pppoe access list;successfully;finished
+p4lang-acl14.tst;0;p4lang: egress pppoe access list;successfully;finished
+p4lang-acl15.tst;0;p4lang: ingress vlan pppoe access list;successfully;finished
+p4lang-acl16.tst;0;p4lang: egress vlan pppoe access list;successfully;finished
 p4lang-rout01.tst;0;p4lang: routing;successfully;finished
 p4lang-rout02.tst;0;p4lang: bridging;successfully;finished
 p4lang-rout03.tst;0;p4lang: mpls core;successfully;finished
@@ -1020,6 +1024,8 @@ p4lang-rout23.tst;0;p4lang: vlan vpls/ldp with bgp;successfully;finished
 p4lang-rout24.tst;0;p4lang: vlan eompls;successfully;finished
 p4lang-rout25.tst;0;p4lang: bundle vlan vpls/ldp with bgp;successfully;finished
 p4lang-rout26.tst;0;p4lang: bundle vlan eompls;successfully;finished
+p4lang-rout27.tst;0;p4lang: pppoe routing;successfully;finished
+p4lang-rout28.tst;0;p4lang: vlan pppoe routing;successfully;finished
 qos-action01.tst;0;qos ingress transmit action;successfully;finished
 qos-action02.tst;0;qos egress transmit action;successfully;finished
 qos-action03.tst;0;qos ingress drop action;successfully;finished
