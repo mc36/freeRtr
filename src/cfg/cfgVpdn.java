@@ -30,6 +30,7 @@ import clnt.clntGeneve;
 import clnt.clntSrEth;
 import ifc.ifcBridgeIfc;
 import ifc.ifcNull;
+import ifc.ifcUp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -39,6 +40,7 @@ import user.userFilter;
 import user.userHelping;
 import util.bits;
 import util.cmds;
+import util.state;
 
 /**
  * one virtual private dialup network configuration
@@ -846,6 +848,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
      */
     public void stop2run() {
         if (ifaceDialer != null) {
+            ifcUp enc = ifaceDialer.getEncapProto();
+            if (enc != null) {
+                enc.setState(state.states.close);
+            }
             ifaceDialer.setLowerHandler(new ifcNull());
         }
         if (brdgIfc != null) {
@@ -1361,6 +1367,12 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 gnv.setUpper(brdgIfc);
                 gnv.workStart();
                 break;
+        }
+        if (ifaceDialer != null) {
+            ifcUp enc = ifaceDialer.getEncapProto();
+            if (enc != null) {
+                enc.setState(state.states.up);
+            }
         }
     }
 

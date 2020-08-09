@@ -3146,6 +3146,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         nul.setUpper(upp);
         pwhe.stop2run();
         pwhe = null;
+        upp.setState(state.states.close);
     }
 
     /**
@@ -6249,6 +6250,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             pwhe.start2run();
+            upp.setState(state.states.up);
             return;
         }
         if (a.equals("ipx")) {

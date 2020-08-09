@@ -1078,6 +1078,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 curMode = modeUp;
                 break;
             case modeAuth:
+                if (debugger.ifcPppEvnt) {
+                    logger.debug("sending auth request");
+                }
                 ctrlAuth.sendReq();
                 checkAuthUp();
                 break;
@@ -1202,6 +1205,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             case autherEap.pppCtrl:
             case autherChap.pppCtrl:
             case autherPap.pppCtrl:
+                if (debugger.ifcPppEvnt) {
+                    logger.debug("got auth request");
+                }
                 if (!ctrlLcp.getReady()) {
                     break;
                 }
