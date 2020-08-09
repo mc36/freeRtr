@@ -142,6 +142,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     struct nat4_entry nat4_ntry;
     struct nat6_entry nat6_ntry;
     struct bundle_entry bundle_ntry;
+    struct pppoe_entry pppoe_ntry;
     struct mpls_entry *mpls_res;
     struct portvrf_entry *portvrf_res;
     struct route4_entry *route4_res;
@@ -153,6 +154,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     struct nat4_entry *nat4_res;
     struct nat6_entry *nat6_res;
     struct bundle_entry *bundle_res;
+    struct pppoe_entry *pppoe_res;
     int index;
     int label;
     int prt;
@@ -237,10 +239,36 @@ ethtyp_tx:
                         return;
                     }
                     neigh_res = table_get(&neigh_table, index);
+neigh_tx:
                     neigh_res->pack++;
                     neigh_res->byte += bufS;
                     prt = neigh_res->port;
-vlan_tx:
+                    if (neigh_res->command == 2) { // pppoe
+                        switch (ethtyp) {
+                            case 0x800:
+                                index = 0x0021;
+                                break;
+                            case 0x86dd:
+                                index = 0x0057;
+                                break;
+                            case 0x8847:
+                                index = 0x0281;
+                                break;
+                            default:
+                                packDr[port]++;
+                                byteDr[port] += bufS;
+                                return;
+                        }
+                        put16msb(bufD, bufP, index);
+                        index = bufS - bufP + preBuff;
+                        bufP -= 6;
+                        put16msb(bufD, bufP + 0, 0x1100);
+                        put16msb(bufD, bufP + 2, neigh_res->session);
+                        put16msb(bufD, bufP + 4, index);
+                        ethtyp = 0x8864;
+                        bufP -= 2;
+                        put16msb(bufD, bufP, ethtyp);
+                    }
                     vlan_ntry.id = prt;
                     index = table_find(&vlanout_table, &vlan_ntry);
                     if (index >= 0) {
@@ -399,11 +427,8 @@ ipv4_rou:
                             return;
                         }
                         neigh_res = table_get(&neigh_table, index);
-                        neigh_res->pack++;
-                        neigh_res->byte += bufS;
-                        prt = neigh_res->port;
                         acls_ntry.dir = 2;
-                        acls_ntry.port = prt;
+                        acls_ntry.port = neigh_res->aclport;
                         index = table_find(&acls_table, &acls_ntry);
                         if (index >= 0) {
                             acls_res = table_get(&acls_table, index);
@@ -413,7 +438,7 @@ ipv4_rou:
                                 return;
                             }
                         }            
-                        goto vlan_tx;
+                        goto neigh_tx;
                     case 2: // punt
                         goto cpu;
                     case 3: // mpls1
@@ -578,11 +603,8 @@ ipv6_hit:
                             return;
                         }
                         neigh_res = table_get(&neigh_table, index);
-                        neigh_res->pack++;
-                        neigh_res->byte += bufS;
-                        prt = neigh_res->port;
                         acls_ntry.dir = 2;
-                        acls_ntry.port = prt;
+                        acls_ntry.port = neigh_res->aclport;
                         index = table_find(&acls_table, &acls_ntry);
                         if (index >= 0) {
                             acls_res = table_get(&acls_table, index);
@@ -592,7 +614,7 @@ ipv6_hit:
                                 return;
                             }
                         }            
-                        goto vlan_tx;
+                        goto neigh_tx;
                     case 2: // punt
                         goto cpu;
                     case 3: // mpls1
@@ -613,6 +635,37 @@ ipv6_hit:
                         neigh_ntry.id = route6_res->nexthop;
                         goto ethtyp_tx;
                 }
+            }
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        case 0x8864:
+            pppoe_ntry.port = prt;
+            pppoe_ntry.session = get16msb(bufD, bufP + 2);
+            index = table_find(&pppoe_table, &pppoe_ntry);
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            pppoe_res = table_get(&pppoe_table, index);
+            pppoe_res->pack++;
+            pppoe_res->byte += bufS;
+            prt = pppoe_res->aclport;
+            bufP += 6;
+            index = get16msb(bufD, bufP);
+            bufP += 2;
+            if ((index & 0x8000) != 0) goto cpu;
+            switch (index) {
+                case 0x0021:
+                    ethtyp = 0x800;
+                    goto ipv4_rx;
+                case 0x0057:
+                    ethtyp = 0x86dd;
+                    goto ipv6_rx;
+                case 0x0281:
+                    ethtyp = 0x8847;
+                    goto mpls_rx;
             }
             packDr[port]++;
             byteDr[port] += bufS;

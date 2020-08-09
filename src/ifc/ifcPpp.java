@@ -1148,27 +1148,51 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 newProt = ifcPppMpls.ethTypM;
                 break;
             case ifcPppIp4.pppCtrl:
+                if (curMode != modeUp) {
+                    break;
+                }
                 recvNcpCtrl(pck, ctrlIp4, prot);
                 break;
             case ifcPppIp6.pppCtrl:
+                if (curMode != modeUp) {
+                    break;
+                }
                 recvNcpCtrl(pck, ctrlIp6, prot);
                 break;
             case ifcPppBrdg.pppCtrl:
+                if (curMode != modeUp) {
+                    break;
+                }
                 recvNcpCtrl(pck, ctrlBrdg, prot);
                 break;
             case ifcPppMpls.pppCtrl:
+                if (curMode != modeUp) {
+                    break;
+                }
                 recvNcpCtrl(pck, ctrlMpls, prot);
                 break;
             case ifcPppOsi.pppCtrl:
+                if (curMode != modeUp) {
+                    break;
+                }
                 recvNcpCtrl(pck, ctrlOsi, prot);
                 break;
             case ifcPppIpx.pppCtrl:
+                if (curMode != modeUp) {
+                    break;
+                }
                 recvNcpCtrl(pck, ctrlIpx, prot);
                 break;
             case ifcPppCrypt.pppCtrl:
+                if (curMode != modeUp) {
+                    break;
+                }
                 recvNcpCtrl(pck, ctrlCrypt, prot);
                 break;
             case ifcPppNsh.pppCtrl:
+                if (curMode != modeUp) {
+                    break;
+                }
                 recvNcpCtrl(pck, ctrlNsh, prot);
                 break;
             case ifcPppLcp.pppCtrl:
@@ -1178,6 +1202,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             case autherEap.pppCtrl:
             case autherChap.pppCtrl:
             case autherPap.pppCtrl:
+                if (!ctrlLcp.getReady()) {
+                    break;
+                }
                 recvAuthPack(pck);
                 checkAuthUp();
                 break;

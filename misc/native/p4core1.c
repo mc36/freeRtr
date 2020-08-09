@@ -130,7 +130,10 @@ int route6_compare(void *ptr1, void *ptr2) {
 struct neigh_entry {
     int id;
     int vrf;
+    int command;    // 1=rawip, 2=pppoe
     int port;
+    int aclport;
+    int session;
     unsigned char smac[6];
     unsigned char dmac[6];
     long pack;
@@ -450,6 +453,27 @@ int bundle_compare(void *ptr1, void *ptr2) {
 }
 
 
+struct pppoe_entry {
+    int port;
+    int session;
+    int aclport;
+    long pack;
+    long byte;
+};
+
+struct table_head pppoe_table;
+
+int pppoe_compare(void *ptr1, void *ptr2) {
+    struct pppoe_entry *ntry1 = ptr1;
+    struct pppoe_entry *ntry2 = ptr2;
+    if (ntry1->port < ntry2->port) return -1;
+    if (ntry1->port > ntry2->port) return +1;
+    if (ntry1->session < ntry2->session) return -1;
+    if (ntry1->session > ntry2->session) return +1;
+    return 0;
+}
+
+
 
 
 void initIface(int port, unsigned char *name) {
@@ -477,4 +501,5 @@ void initTables() {
     table_init(&nat4_table, sizeof(struct nat4_entry), &nat4_compare);
     table_init(&nat6_table, sizeof(struct nat6_entry), &nat6_compare);
     table_init(&bundle_table, sizeof(struct bundle_entry), &bundle_compare);
+    table_init(&pppoe_table, sizeof(struct pppoe_entry), &pppoe_compare);
 }

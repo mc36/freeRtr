@@ -99,7 +99,14 @@ int lo0
  ipv4 addr 2.2.2.103 255.255.255.255
  ipv6 addr 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+bridge 1
+ mac-learn
+ block-unicast
+ exit
 int eth1
+ bridge-gr 1
+ exit
+int bvi1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::

@@ -121,6 +121,8 @@ int doOneCommand(unsigned char* buf) {
     struct bundle_entry bundle_ntry;
     memset(&bundle_ntry, 0, sizeof(bundle_ntry));
     struct bundle_entry *bundle_res;
+    struct pppoe_entry pppoe_ntry;
+    memset(&pppoe_ntry, 0, sizeof(pppoe_ntry));
     int index = 0;
     if (strcmp(arg[0], "quit") == 0) {
         return 1;
@@ -297,7 +299,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.command = 1;
         neigh_ntry.id = route4_ntry.nexthop;
         neigh_ntry.vrf = route4_ntry.vrf;
-        neigh_ntry.port = atoi(arg[7]);
+        neigh_ntry.aclport = neigh_ntry.port = atoi(arg[7]);
+        neigh_ntry.command = 1;
         str2mac(neigh_ntry.dmac, arg[4]);
         str2mac(neigh_ntry.smac, arg[6]);
         if (del == 0) table_del(&route4_table, &route4_ntry); else table_add(&route4_table, &route4_ntry);
@@ -370,7 +373,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.command = 1;
         neigh_ntry.id = route6_ntry.nexthop;
         neigh_ntry.vrf = route6_ntry.vrf;
-        neigh_ntry.port = atoi(arg[7]);
+        neigh_ntry.aclport = neigh_ntry.port = atoi(arg[7]);
+        neigh_ntry.command = 1;
         str2mac(neigh_ntry.dmac, arg[4]);
         str2mac(neigh_ntry.smac, arg[6]);
         if (del == 0) table_del(&route6_table, &route6_ntry); else table_add(&route6_table, &route6_ntry);
@@ -577,6 +581,22 @@ int doOneCommand(unsigned char* buf) {
         if (del == 0) table_del(&vlanin_table, &vlan_ntry); else table_add(&vlanin_table, &vlan_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "pppoe") == 0) {
+        pppoe_ntry.aclport = atoi(arg[2]);
+        pppoe_ntry.port = atoi(arg[3]);
+        pppoe_ntry.session = atoi(arg[6]);
+        neigh_ntry.id = atoi(arg[4]);
+        neigh_ntry.vrf = atoi(arg[5]);
+        neigh_ntry.port = pppoe_ntry.port;
+        neigh_ntry.aclport = pppoe_ntry.aclport;
+        neigh_ntry.session = pppoe_ntry.session;
+        neigh_ntry.command = 2;
+        str2mac(neigh_ntry.dmac, arg[7]);
+        str2mac(neigh_ntry.smac, arg[8]);
+        if (del == 0) table_del(&pppoe_table, &pppoe_ntry); else table_add(&pppoe_table, &pppoe_ntry);
+        if (del == 0) table_del(&neigh_table, &neigh_ntry); else table_add(&neigh_table, &neigh_ntry);
+        return 0;
+    }
     return 0;
 }
 
@@ -655,6 +675,10 @@ void doStatRount(FILE *commands) {
     for (int i=0; i<bundle_table.size; i++) {
         struct bundle_entry *ntry = table_get(&bundle_table, i);
         fprintf(commands, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<pppoe_table.size; i++) {
+        struct pppoe_entry *ntry = table_get(&pppoe_table, i);
+        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
     }
     for (int i=0; i<vlanout_table.size; i++) {
         struct vlan_entry *ontry = table_get(&vlanout_table, i);

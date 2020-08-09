@@ -1635,7 +1635,7 @@ class servP4langConn implements Runnable {
                 }
                 sess = ses;
             }
-            lower.sendLine("pppoe_" + act + " " + ifc.id + " " + ifc.pppoe.id + " " + nei.id + " " + sess + " " + ((addrMac) ifc.pppoe.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
+            lower.sendLine("pppoe_" + act + " " + ifc.id + " " + ifc.pppoe.id + " " + nei.id + " " + vrf.id + " " + sess + " " + mac.toEmuStr() + " " + ((addrMac) ifc.pppoe.ifc.ethtyp.getHwAddr()).toEmuStr());
             ifc.sentPppoe = ses;
             return;
         }

@@ -307,7 +307,7 @@ public abstract class ifcPppNcp {
         writeOptions(pck, txReq);
         parent.sendNcpCtrl(pck, getPPPctrl(), codeConfReq, lastTxIdnt);
         if (debugger.ifcPppEvnt) {
-            logger.debug("options: " + txReq);
+            logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + txReq);
         }
     }
 
@@ -348,7 +348,7 @@ public abstract class ifcPppNcp {
                     rej = copyOptions(rej, pck);
                     parent.sendNcpCtrl(rej, getPPPctrl(), codeConfRej, id);
                     if (debugger.ifcPppEvnt) {
-                        logger.debug("options: " + tmp1);
+                        logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + tmp1);
                     }
                     break;
                 }
@@ -370,17 +370,17 @@ public abstract class ifcPppNcp {
                         parent.sendNcpCtrl(rej, getPPPctrl(), codeConfRej, id);
                     }
                     if (debugger.ifcPppEvnt) {
-                        logger.debug("options: " + tmp1);
+                        logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + tmp1);
                     }
                     break;
                 }
                 sawBit |= sawTxAck;
                 parent.sendNcpCtrl(rej, getPPPctrl(), codeConfAck, id);
                 if (debugger.ifcPppEvnt) {
-                    logger.debug("options: " + tmp2);
+                    logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + tmp2);
                 }
                 if (sawReq1++ > 3) {
-                    clearState();
+                    sendReq();
                     break;
                 }
                 if (!getReady()) {
@@ -471,7 +471,7 @@ public abstract class ifcPppNcp {
         }
         pck.setBytesLeft(siz);
         if (debugger.ifcPppEvnt) {
-            logger.debug("options: " + config);
+            logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + config);
         }
         if (rej.headSize() > 0) {
             rej.merge2beg();
