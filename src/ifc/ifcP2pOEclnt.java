@@ -310,6 +310,10 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
                 cntr.drop(pck, counter.reasons.notInTab);
                 return;
             }
+            if (acAddr.compare(acAddr, pck.ETHsrc) != 0) {
+                cntr.drop(pck, counter.reasons.badAddr);
+                return;
+            }
             cntr.rx(pck);
             pck.putStart();
             pck.putByte(0, 0xff);
@@ -321,33 +325,6 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
         }
         if (debugger.ifcP2pOEclnt) {
             logger.debug("rx " + packPppOE.code2string(poe.cod) + " sess=" + poe.ses);
-        }
-        switch (poe.cod) {
-            case packPppOE.codePadO:
-                if ((currState & 1) != 0) {
-                    return;
-                }
-                acAddr.setAddr(pck.ETHsrc);
-                currState |= 1;
-                break;
-            case packPppOE.codePadS:
-                if ((currState & 2) != 0) {
-                    return;
-                }
-                sessionId = poe.ses;
-                currState |= 2;
-                break;
-            case packPppOE.codePadT:
-                if (sessionId != poe.ses) {
-                    break;
-                }
-                clearState();
-                break;
-            case packPppOE.codePadR:
-            case packPppOE.codePadI:
-                break;
-            default:
-                return;
         }
         for (;;) {
             if (tlv.getBytes(pck)) {
@@ -378,6 +355,37 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
                 case packPppOE.typeGenErr:
                     break;
             }
+        }
+        switch (poe.cod) {
+            case packPppOE.codePadO:
+                if ((currState & 1) != 0) {
+                    return;
+                }
+                acAddr.setAddr(pck.ETHsrc);
+                currState |= 1;
+                break;
+            case packPppOE.codePadS:
+                if ((currState & 2) != 0) {
+                    return;
+                }
+                sessionId = poe.ses;
+                currState |= 2;
+                break;
+            case packPppOE.codePadT:
+                if (sessionId != poe.ses) {
+                    break;
+                }
+                if (acAddr.compare(acAddr, pck.ETHsrc) != 0) {
+                    cntr.drop(pck, counter.reasons.badAddr);
+                    return;
+                }
+                clearState();
+                break;
+            case packPppOE.codePadR:
+            case packPppOE.codePadI:
+                break;
+            default:
+                return;
         }
         checkPeerState(state.states.up);
         sendKeepalive();
