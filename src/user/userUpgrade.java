@@ -128,17 +128,12 @@ public class userUpgrade {
             if (s.length() < 1) {
                 break;
             }
-            String a = "" + s;
-            int i = a.indexOf("@");
-            if (i >= 0) {
-                a = s.substring(0, i);
-                s = s.substring(i + 1, s.length());
+            int f = bits.str2num(cmd.word());
+            String h = calcFileHash(s);
+            if (h == null) {
+                cmd.error(s + " not found");
             }
-            s = calcFileHash(s);
-            if (s == null) {
-                cmd.error(a + " not found");
-            }
-            blb.files.put(new userUpgradeNtry(s, a));
+            blb.files.put(new userUpgradeNtry(h, f, s));
         }
         blb.doSign(ky);
         bits.buf2txt(true, blb.getText(2), myVerFile());
@@ -349,6 +344,11 @@ public class userUpgrade {
             exe.executeCommand(s);
         }
         logger.info("upgrading to " + blb.head);
+        if (upgradeFiles(blb, server, tmp, userUpgradeNtry.flgBefore)) {
+            if (needStop(0x40)) {
+                return;
+            }
+        }
         int i = upgradeFile(blb.jars, version.getFileName(), server + myFileName(), tmp);
         if (i == 2) {
             if (cfgAll.upgradeScript != null) {
@@ -368,18 +368,9 @@ public class userUpgrade {
                 return;
             }
         }
-        boolean some = false;
-        for (int o = 0; o < blb.files.size(); o++) {
-            userUpgradeNtry ntry = blb.files.get(o);
-            i = upgradeFile(ntry.chk, version.myWorkDir() + ntry.name, server + ntry.name, tmp);
-            if (i == 2) {
-                some = true;
-                continue;
-            }
-            if (i != 0) {
-                if (needStop(0x8)) {
-                    return;
-                }
+        if (upgradeFiles(blb, server, tmp, userUpgradeNtry.flgAfter)) {
+            if (needStop(0x80)) {
+                return;
             }
         }
         if (needStop(justSimu)) {
@@ -395,12 +386,52 @@ public class userUpgrade {
         }
         fl.cons.debugRes("successfully finished!");
         logger.info("upgrade finished!");
-        if (!some) {
-            return;
+    }
+
+    private boolean upgradeFiles(userUpgradeBlob blb, String server, String tmp, int flg) {
+        userFlash fl = new userFlash(cmd.pipe);
+        boolean some = false;
+        for (int o = 0; o < blb.files.size(); o++) {
+            userUpgradeNtry ntry = blb.files.get(o);
+            if ((ntry.flag & flg) == 0) {
+                continue;
+            }
+            int i = upgradeFile(ntry.chk, version.myWorkDir() + ntry.name, server + ntry.name, tmp);
+            if (i == 2) {
+                some = (ntry.flag & userUpgradeNtry.flgData) == 0;
+                continue;
+            }
+            if (i != 0) {
+                if (needStop(0x8)) {
+                    return true;
+                }
+            }
         }
-        List<String> scr = bits.txt2buf(version.myPathName() + ".scr");
-        if (scr == null) {
-            return;
+        if (!some) {
+            fl.cons.debugRes("nothing done in this round");
+            return false;
+        }
+        if (needStop(justSimu)) {
+            return false;
+        }
+        List<String> scr = new ArrayList<String>();
+        for (int o = 0; o < blb.files.size(); o++) {
+            userUpgradeNtry ntry = blb.files.get(o);
+            if ((ntry.flag & flg) == 0) {
+                continue;
+            }
+            if ((ntry.flag & userUpgradeNtry.flgScript) == 0) {
+                continue;
+            }
+            List<String> res = bits.txt2buf(version.myWorkDir() + ntry.name);
+            if (res == null) {
+                continue;
+            }
+            scr.addAll(res);
+        }
+        if (scr.size() < 1) {
+            fl.cons.debugRes("no script for this round");
+            return false;
         }
         fl.cons.debugRes("running upgrade script");
         pipeLine pl = new pipeLine(32768, false);
@@ -419,6 +450,7 @@ public class userUpgrade {
             logger.traceback(e);
         }
         pl.setClose();
+        return false;
     }
 
     private cryKeyRSA readUpKey(String s) {
@@ -500,12 +532,23 @@ public class userUpgrade {
 
 class userUpgradeNtry implements Comparator<userUpgradeNtry> {
 
+    public final static int flgBefore = 0x1;
+
+    public final static int flgAfter = 0x2;
+
+    public final static int flgData = 0x4;
+
+    public final static int flgScript = 0x8;
+
     public final String name;
+
+    public final int flag;
 
     public final String chk;
 
-    public userUpgradeNtry(String sum, String nam) {
+    public userUpgradeNtry(String sum, int flg, String nam) {
         name = nam;
+        flag = flg;
         chk = sum;
     }
 
@@ -514,15 +557,14 @@ class userUpgradeNtry implements Comparator<userUpgradeNtry> {
     }
 
     public String toString() {
-        return chk + " " + name;
+        return chk + " " + flag + " " + name;
     }
 
     public static userUpgradeNtry fromString(String s) {
-        int i = s.indexOf(" ");
-        if (i < 0) {
-            return new userUpgradeNtry(s, version.getFileName());
-        }
-        return new userUpgradeNtry(s.substring(0, i), s.substring(i + 1, s.length()));
+        cmds cmd = new cmds("upgrade", s);
+        String h = cmd.word();
+        int f = bits.str2num(cmd.word());
+        return new userUpgradeNtry(h, f, cmd.getRemaining());
     }
 
 }
@@ -545,12 +587,20 @@ class userUpgradeBlob {
         time = 0;
     }
 
-    public String getFilelist() {
-        String s = version.getFileName();
+    public String getFilelist(int flg) {
+        String s = "";
         for (int i = 0; i < files.size(); i++) {
-            s += " " + files.get(i).name;
+            userUpgradeNtry ntry = files.get(i);
+            if ((ntry.flag & flg) == 0) {
+                continue;
+            }
+            s += " " + ntry.name;
         }
-        return s;
+        return s.trim();
+    }
+
+    public String getFilelist() {
+        return getFilelist(userUpgradeNtry.flgBefore) + " " + version.getFileName() + " " + getFilelist(userUpgradeNtry.flgAfter);
     }
 
     public String getTime() {
