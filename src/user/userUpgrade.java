@@ -124,16 +124,16 @@ public class userUpgrade {
         userUpgradeBlob blb = new userUpgradeBlob();
         blb.putSelf();
         for (;;) {
-            String s = cmd.word();
-            if (s.length() < 1) {
+            String n = cmd.word();
+            if (n.length() < 1) {
                 break;
             }
             int f = bits.str2num(cmd.word());
-            String h = calcFileHash(s);
+            String h = calcFileHash(n);
             if (h == null) {
-                cmd.error(s + " not found");
+                cmd.error(n + " not found");
             }
-            blb.files.put(new userUpgradeNtry(h, f, s));
+            blb.files.put(new userUpgradeNtry(h, f, n));
         }
         blb.doSign(ky);
         bits.buf2txt(true, blb.getText(2), myVerFile());
@@ -411,9 +411,6 @@ public class userUpgrade {
             fl.cons.debugRes("nothing done in this round");
             return false;
         }
-        if (needStop(justSimu)) {
-            return false;
-        }
         List<String> scr = new ArrayList<String>();
         for (int o = 0; o < blb.files.size(); o++) {
             userUpgradeNtry ntry = blb.files.get(o);
@@ -431,6 +428,9 @@ public class userUpgrade {
         }
         if (scr.size() < 1) {
             fl.cons.debugRes("no script for this round");
+            return false;
+        }
+        if (needStop(justSimu)) {
             return false;
         }
         fl.cons.debugRes("running upgrade script");
