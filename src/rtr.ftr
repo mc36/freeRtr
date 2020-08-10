@@ -730,6 +730,8 @@ qc pass: interop2: ospf p2mp te
 qc pass: interop2: ospf sr
 qc pass: interop2: ospf php sr
 qc pass: interop2: ospf te with pcep
+qc pass: interop2: pppoe with pap
+qc pass: interop2: pppoe with chap
 qc pass: interop2: rip
 qc pass: interop2: rip prefix withdraw
 qc pass: interop2: rip authentication

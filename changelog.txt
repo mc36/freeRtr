@@ -9027,3 +9027,6 @@ qc pass: p4lang: vlan pppoe routing
 ---------------------------------- 2020-08-09 16:30:18
 qc pass: p4lang: pppoe mpls
 qc pass: p4lang: vlan pppoe mpls
+---------------------------------- 2020-08-10 10:40:16
+qc pass: interop2: pppoe with pap
+qc pass: interop2: pppoe with chap

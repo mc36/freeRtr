@@ -1,6 +1,6 @@
 file;code;test;stage;command
 -;-;freeRouter v20.8.10-rel, done by cs@nop.;-;-
--;-;2020-08-10 04:21:32, took 00:07:36, with 100 workers, on 1822 cases, 0 failed, 0 traces, 4 retries;-;-
+-;-;2020-08-10 10:45:13, took 00:04:57, with 100 workers, on 1824 cases, 0 failed, 0 traces, 0 retries;-;-
 -;-;./rtr.bin;-;-
 basic.tst;0;dummy test;successfully;finished
 conn-anyconn.tst;0;ip over anyconnect;successfully;finished
@@ -734,6 +734,8 @@ intop2-ospf10.tst;0;interop2: ospf p2mp te;successfully;finished
 intop2-ospf11.tst;0;interop2: ospf sr;successfully;finished
 intop2-ospf12.tst;0;interop2: ospf php sr;successfully;finished
 intop2-ospf13.tst;0;interop2: ospf te with pcep;successfully;finished
+intop2-pppoe01.tst;0;interop2: pppoe with pap;successfully;finished
+intop2-pppoe02.tst;0;interop2: pppoe with chap;successfully;finished
 intop2-rip01.tst;0;interop2: rip;successfully;finished
 intop2-rip02.tst;0;interop2: rip prefix withdraw;successfully;finished
 intop2-rip03.tst;0;interop2: rip authentication;successfully;finished
