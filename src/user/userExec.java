@@ -3184,7 +3184,7 @@ public class userExec {
         }
         if (a.equals("verify")) {
             userUpgrade u = new userUpgrade(cmd);
-            u.doVerify();
+            u.doVerify(null);
             return;
         }
         if (a.equals("type")) {

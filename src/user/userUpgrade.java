@@ -207,27 +207,30 @@ public class userUpgrade {
     /**
      * verify installation
      *
+     * @param blb blob to use, null if read from disk
      * @return error count
      */
-    public int doVerify() {
+    public int doVerify(userUpgradeBlob blb) {
         int err = 0;
         cmd.error("server: " + cfgAll.upgradeServer);
         cmd.error("archive: " + version.getFileName());
         cmd.error("version: " + myVerFile());
-        List<String> txt = bits.txt2buf(myVerFile());
-        if (txt == null) {
-            cmd.error("error reading version info!");
-        }
-        userUpgradeBlob blb = new userUpgradeBlob();
-        String s = blb.fromText(txt, true);
-        if (s != null) {
-            cmd.error("version info parser: " + s);
-            err++;
+        if (blb == null) {
+            List<String> txt = bits.txt2buf(myVerFile());
+            if (txt == null) {
+                cmd.error("error reading version info!");
+            }
+            blb = new userUpgradeBlob();
+            String s = blb.fromText(txt, true);
+            if (s != null) {
+                cmd.error("version info parser: " + s);
+                err++;
+            }
         }
         cmd.error("release: " + blb.head);
         cmd.error("files: " + blb.getFilelist());
-        cmd.error("hash: " + blb.getSum(2));
         cmd.error("time: " + blb.getTime());
+        cmd.error("hash: " + blb.getSum(2));
         err += verifyFile(version.getFileName(), blb.jars);
         for (int i = 0; i < blb.files.size(); i++) {
             userUpgradeNtry ntry = blb.files.get(i);
@@ -371,13 +374,13 @@ public class userUpgrade {
                 return;
             }
         }
-        if (needStop(justSimu)) {
-            return;
-        }
-        if (doVerify() > 0) {
+        if (doVerify(blb) > 0) {
             if (needStop(0x10)) {
                 return;
             }
+        }
+        if (needStop(justSimu)) {
+            return;
         }
         if (bits.buf2txt(true, blb.getText(2), myVerFile())) {
             fl.cons.debugRes("failed to write version info!");
