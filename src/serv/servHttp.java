@@ -89,6 +89,11 @@ public class servHttp extends servGeneric implements prtServS {
     protected String error;
 
     /**
+     * single request
+     */
+    protected boolean singleRequest;
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
@@ -96,6 +101,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! protocol " + proto2string(protoAllStrm),
         "server http .*! no proxy",
         "server http .*! no error",
+        "server http .*! no single-request",
         "server http .*! host .* nostyle",
         "server http .*! host .* noredir",
         "server http .*! host .* noreconn",
@@ -180,6 +186,7 @@ public class servHttp extends servGeneric implements prtServS {
         } else {
             l.add(beg + "error " + error);
         }
+        cmds.cfgLine(l, !singleRequest, beg, "single-request", "");
         for (int hn = 0; hn < hosts.size(); hn++) {
             servHttpServ ntry = hosts.get(hn);
             if (ntry == null) {
@@ -309,6 +316,10 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
+        if (a.equals("single-request")) {
+            singleRequest = true;
+            return false;
+        }
         if (a.equals("proxy")) {
             cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
             if (prx == null) {
@@ -324,6 +335,10 @@ public class servHttp extends servGeneric implements prtServS {
         }
         if (a.equals("no")) {
             a = cmd.word();
+            if (a.equals("single-request")) {
+                singleRequest = false;
+                return false;
+            }
             if (a.equals("proxy")) {
                 proxy = null;
                 return false;
@@ -596,6 +611,7 @@ public class servHttp extends servGeneric implements prtServS {
     public void srvHelp(userHelping l) {
         l.add("1 2  delhost                        delete one virtual server");
         l.add("2 .    <name>                       name of server");
+        l.add("1 .  single-request                 one request per connection");
         l.add("1 2  proxy                          enable proxy support");
         l.add("2 .    <name>                       proxy profile");
         l.add("1 2  error                          set error message");
@@ -1027,7 +1043,7 @@ class servHttpConn implements Runnable {
         if (size >= 0) {
             sendLn("Content-Length: " + size);
         }
-        if (!gotKeep) {
+        if (!gotKeep || lower.singleRequest) {
             sendLn("Connection: Close");
         } else {
             sendLn("Connection: Keep-Alive");
@@ -2371,6 +2387,9 @@ class servHttpConn implements Runnable {
                 }
                 serveRequest();
                 if (!gotKeep) {
+                    break;
+                }
+                if (lower.singleRequest) {
                     break;
                 }
             }
