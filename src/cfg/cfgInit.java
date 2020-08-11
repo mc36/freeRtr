@@ -787,6 +787,17 @@ public class cfgInit implements Runnable {
             bits.buf2txt(true, bits.str2lst("code#" + code + "=" + reason), version.myReloadFile());
         } catch (Exception e) {
         }
+        if (clean && cfgAll.graceReload) {
+            for (int i = 0; i < cfgAll.vrfs.size(); i++) {
+                try {
+                    cfgAll.vrfs.get(i).closeConns();
+                } catch (Exception e) {
+                }
+            }
+            prtRedun.doShut();
+            prtWatch.doShut();
+            bits.sleep(100);
+        }
         for (int i = 0; i < vdcLst.size(); i++) {
             try {
                 vdcLst.get(i).stopNow();
@@ -798,17 +809,6 @@ public class cfgInit implements Runnable {
                 cfgAll.prcs.get(i).stopNow();
             } catch (Exception e) {
             }
-        }
-        if (clean && cfgAll.graceReload) {
-            for (int i = 0; i < cfgAll.vrfs.size(); i++) {
-                try {
-                    cfgAll.vrfs.get(i).closeConns();
-                } catch (Exception e) {
-                }
-            }
-            prtRedun.doShut();
-            prtWatch.doShut();
-            bits.sleep(100);
         }
         logger.error("shutdown code=" + code + " reason=" + reason);
         logger.fileStart("");
