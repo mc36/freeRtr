@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
 import pack.packRedun;
+import pipe.pipeSide;
 import user.userFormat;
 import user.userFlash;
 import util.bits;
@@ -41,9 +42,9 @@ public class prtRedun implements Runnable {
      * current uptime
      */
     protected static int uptime = 0;
-
+    
     private final static List<prtRedunIfc> ifaces = new ArrayList<prtRedunIfc>();
-
+    
     public void run() {
         try {
             packHolder pck = new packHolder(true, true);
@@ -124,8 +125,10 @@ public class prtRedun implements Runnable {
 
     /**
      * initialize the redundancy
+     *
+     * @param con console
      */
-    public static void doInit() {
+    public static void doInit(pipeSide con) {
         if (ifaces.size() < 1) {
             state = packRedun.statActive;
             return;
@@ -146,6 +149,15 @@ public class prtRedun implements Runnable {
             if (findActive() < 0) {
                 break;
             }
+            if (con == null) {
+                continue;
+            }
+            if (con.ready2rx() < 1) {
+                continue;
+            }
+            byte[] buf = new byte[256];
+            con.nonBlockGet(buf, 0, buf.length);
+            con.linePut("this node is standby and not ready for login");
         }
         state = packRedun.statActive;
         logger.info("lost active");
@@ -168,39 +180,39 @@ public class prtRedun implements Runnable {
             ifaces.get(i).doRetry(packRedun.typReload, new packHolder(true, true));
         }
     }
-
+    
 }
 
 class prtRedunIfc implements ifcUp {
-
+    
     private ifcThread lower;
-
+    
     private counter cntr = new counter();
-
+    
     private addrMac hwaddr;
-
+    
     private RandomAccessFile filRx;
-
+    
     private String filNm;
-
+    
     public String name;
-
+    
     public boolean bidir;
-
+    
     public int magic;
-
+    
     public int state;
-
+    
     public int uptime;
-
+    
     public long heard;
-
+    
     public int dualAct;
-
+    
     public notifier notif = new notifier();
-
+    
     public int ackRx;
-
+    
     public void doInit(String nam, ifcThread thrd) {
         bidir = false;
         name = nam;
@@ -216,24 +228,24 @@ class prtRedunIfc implements ifcUp {
         hwaddr = (addrMac) lower.getHwAddr();
         filNm = version.myWorkDir() + "red" + bits.randomD() + ".tmp";
     }
-
+    
     public String doShow() {
         return name + "|" + state + "|" + bidir + "|" + magic + "|" + bits.timeDump(uptime) + "|" + bits.timePast(heard);
     }
-
+    
     public void setParent(ifcDn parent) {
     }
-
+    
     public void setState(state.states stat) {
     }
-
+    
     public void closeUp() {
     }
-
+    
     public counter getCounter() {
         return cntr;
     }
-
+    
     public void recvPack(packHolder pck) {
         packRedun pckP = new packRedun();
         if (pckP.parseHeader(pck)) {
@@ -337,7 +349,7 @@ class prtRedunIfc implements ifcUp {
             break;
         }
     }
-
+    
     public void doPack(int typ, packHolder pckB) {
         pckB.merge2beg();
         packRedun pckP = new packRedun();
@@ -354,14 +366,14 @@ class prtRedunIfc implements ifcUp {
         pckB.ETHtrg.setAddr(addrMac.getBroadcast());
         lower.sendPack(pckB);
     }
-
+    
     public void doAck(int ofs) {
         packHolder pck = new packHolder(true, true);
         pck.msbPutD(0, ofs);
         pck.putSkip(4);
         doPack(packRedun.typAck, pck);
     }
-
+    
     public boolean doRetry(int typ, packHolder pck) {
         ackRx = -1;
         for (int i = 0; i < 8; i++) {
@@ -374,7 +386,7 @@ class prtRedunIfc implements ifcUp {
         logger.error("peer does not respond");
         return true;
     }
-
+    
     public boolean doFile(String fn, String rfn) {
         RandomAccessFile fr;
         long siz;
@@ -435,5 +447,5 @@ class prtRedunIfc implements ifcUp {
         }
         return false;
     }
-
+    
 }

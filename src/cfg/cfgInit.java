@@ -550,13 +550,7 @@ public class cfgInit implements Runnable {
         return err;
     }
 
-    /**
-     * initialize the router
-     *
-     * @param hw hw config
-     * @param sw sw config
-     */
-    private static void doInit(List<String> hw, List<String> sw) {
+    private static void doInit(List<String> hw, List<String> sw, pipeSide cons) {
         if (jvmStarted > 0) {
             logger.info("overlapping boot eliminated");
             return;
@@ -727,7 +721,7 @@ public class cfgInit implements Runnable {
             ntry.startNow(defs, mibs, o, o + step);
         }
         try {
-            prtRedun.doInit();
+            prtRedun.doInit(cons);
         } catch (Exception e) {
             logger.exception(e);
         }
@@ -830,7 +824,7 @@ public class cfgInit implements Runnable {
         for (int i = 0; i < logo.size(); i++) {
             ps.linePut(logo.get(i));
         }
-        doInit(null, httpGet(url));
+        doInit(null, httpGet(url), null);
         userLine lin = new userLine();
         lin.execTimeOut = 0;
         lin.createHandler(ps, "applet", true);
@@ -898,7 +892,7 @@ public class cfgInit implements Runnable {
             cfgFileSw = swN;
             List<String> hwT = httpGet(cfgFileHw);
             List<String> swT = httpGet(cfgFileSw);
-            doInit(hwT, swT);
+            doInit(hwT, swT, pipCon);
             if (pipCon != null) {
                 userLine lin = new userLine();
                 lin.execTimeOut = 0;

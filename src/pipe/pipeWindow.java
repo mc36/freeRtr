@@ -203,6 +203,9 @@ public class pipeWindow extends JPanel {
      * @param plt palette to use
      */
     public pipeWindow(pipeSide pip, int x, int y, byte[][][] fnt, int[] plt) {
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        pip.timeout = 0;
         img = new pipeImage(pip, x, y, fnt, plt);
         img3 = createImage(img);
         win = new JFrame("console");
