@@ -10,11 +10,9 @@ import cry.cryKeyRSA;
 import cry.cryUtils;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import pipe.pipeLine;
 import pipe.pipeSide;
-import tab.tabGen;
 import util.bits;
 import util.cmds;
 import util.logger;
@@ -133,7 +131,7 @@ public class userUpgrade {
             if (h == null) {
                 cmd.error(n + " not found");
             }
-            blb.files.put(new userUpgradeNtry(h, f, n));
+            blb.files.add(new userUpgradeNtry(h, f, n));
         }
         blb.doSign(ky);
         bits.buf2txt(true, blb.getText(2), myVerFile());
@@ -376,13 +374,13 @@ public class userUpgrade {
         if (needStop(justSimu)) {
             return;
         }
-        if (bits.buf2txt(true, blb.getText(2), myVerFile())) {
-            fl.cons.debugRes("failed to write version info!");
-        }
         if (doVerify() > 0) {
             if (needStop(0x10)) {
                 return;
             }
+        }
+        if (bits.buf2txt(true, blb.getText(2), myVerFile())) {
+            fl.cons.debugRes("failed to write version info!");
         }
         fl.cons.debugRes("successfully finished!");
         logger.info("upgrade finished!");
@@ -530,7 +528,7 @@ public class userUpgrade {
 
 }
 
-class userUpgradeNtry implements Comparator<userUpgradeNtry> {
+class userUpgradeNtry {
 
     public final static int flgBefore = 0x1;
 
@@ -550,10 +548,6 @@ class userUpgradeNtry implements Comparator<userUpgradeNtry> {
         name = nam;
         flag = flg;
         chk = sum;
-    }
-
-    public int compare(userUpgradeNtry o1, userUpgradeNtry o2) {
-        return o1.name.compareTo(o2.name);
     }
 
     public String toString() {
@@ -579,7 +573,7 @@ class userUpgradeBlob {
 
     public String sign;
 
-    public final tabGen<userUpgradeNtry> files = new tabGen<userUpgradeNtry>();
+    public final List<userUpgradeNtry> files = new ArrayList<userUpgradeNtry>();
 
     public void putSelf() {
         head = version.headLine;
@@ -658,7 +652,7 @@ class userUpgradeBlob {
         sign = txt.get(len);
         txt.remove(len);
         for (int i = 3; i < len; i++) {
-            files.put(userUpgradeNtry.fromString(txt.get(i)));
+            files.add(userUpgradeNtry.fromString(txt.get(i)));
         }
         if (!sum.equals(getSum(1))) {
             return "checksum invalid!";
