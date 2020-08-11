@@ -678,14 +678,15 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         bits.sleep(del);
         for (;;) {
+            bits.sleep(interval);
+            if (!need2run) {
+                break;
+            }
+            if (!respawn) {
+                continue;
+            }
             try {
-                if (respawn) {
-                    doRound();
-                }
-                bits.sleep(interval);
-                if (!need2run) {
-                    break;
-                }
+                doRound();
             } catch (Exception e) {
                 logger.traceback(e);
             }
@@ -803,11 +804,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      */
     public void restartNow() {
         try {
-            pipe.setClose();
+            proc.kill();
         } catch (Exception e) {
         }
         try {
-            proc.kill();
+            pipe.setClose();
         } catch (Exception e) {
         }
     }

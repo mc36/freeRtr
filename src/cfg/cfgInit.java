@@ -369,7 +369,7 @@ public class cfgInit implements Runnable {
             }
             if (s.equals("proc")) {
                 cfgPrcss prc = new cfgPrcss(cmd.word());
-                prc.hiddenProcess = true;
+                prc.hidden = true;
                 prc.execName = cmd.getRemaining();
                 cfgAll.prcs.add(prc);
                 prc.startNow();

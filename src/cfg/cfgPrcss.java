@@ -35,7 +35,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     /**
      * hidden process
      */
-    public boolean hiddenProcess = false;
+    protected boolean hidden = false;
 
     /**
      * respawn on termination
@@ -134,11 +134,11 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
      */
     public void restartNow() {
         try {
-            pipe.setClose();
+            proc.kill();
         } catch (Exception e) {
         }
         try {
-            proc.kill();
+            pipe.setClose();
         } catch (Exception e) {
         }
     }
@@ -189,7 +189,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
 
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
-        if (hiddenProcess) {
+        if (hidden) {
             return l;
         }
         l.add("process definition " + name);
@@ -322,14 +322,15 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
             logger.traceback(e);
         }
         for (;;) {
+            bits.sleep(interval);
+            if (!need2run) {
+                break;
+            }
+            if (!respawn) {
+                continue;
+            }
             try {
-                if (respawn) {
-                    doRound();
-                }
-                bits.sleep(interval);
-                if (!need2run) {
-                    break;
-                }
+                doRound();
             } catch (Exception e) {
                 logger.traceback(e);
             }
