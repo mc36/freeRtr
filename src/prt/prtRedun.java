@@ -157,7 +157,7 @@ public class prtRedun implements Runnable {
             }
             byte[] buf = new byte[256];
             con.nonBlockGet(buf, 0, buf.length);
-            con.linePut("this node is standby and not ready for login");
+            con.linePut("this node is standby");
         }
         state = packRedun.statActive;
         logger.info("lost active");
