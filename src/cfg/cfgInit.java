@@ -124,9 +124,14 @@ public class cfgInit implements Runnable {
     public static boolean booting = true;
 
     /**
-     * time when started
+     * time when jvm started
      */
     public static long jvmStarted = -1;
+
+    /**
+     * time when started
+     */
+    public static long started = -1;
 
     /**
      * hw config file in use
@@ -560,6 +565,7 @@ public class cfgInit implements Runnable {
             return;
         }
         jvmStarted = bits.getTime();
+        started = bits.getTime();
         logger.info("booting");
         setupJVM();
         if (hw == null) {
@@ -728,6 +734,7 @@ public class cfgInit implements Runnable {
         } catch (Exception e) {
             logger.exception(e);
         }
+        started = bits.getTime();
         booting = false;
         new Thread(new cfgInit()).start();
         logger.info("done");

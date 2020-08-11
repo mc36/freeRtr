@@ -287,7 +287,7 @@ public class tabSession implements Runnable {
         packNetflow pckF = new packNetflow();
         pckF.seq = count;
         pckF.tim = (int) (bits.getTime() / 1000);
-        pckF.upt = pckF.tim - (int) (cfgInit.jvmStarted / 1000);
+        pckF.upt = pckF.tim - (int) (cfgInit.started / 1000);
         pckF.sou = source;
         pckF.ipv4 = ipv4;
         if (tmp) {

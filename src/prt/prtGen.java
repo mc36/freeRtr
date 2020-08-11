@@ -517,8 +517,8 @@ public abstract class prtGen implements ipPrt {
      * @param prf remote prefix
      * @return number of clients
      */
-    public int countClients(ipFwdIface ifc, int prt, addrPrefix<addrIP> prf) {
-        return clnts.countClients(ifc.ifwNum, prt, prf);
+    public int countSubnet(ipFwdIface ifc, int prt, addrPrefix<addrIP> prf) {
+        return clnts.countSubnet(ifc.ifwNum, prt, prf);
     }
 
 }

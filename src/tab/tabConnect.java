@@ -249,7 +249,7 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
      * @param prf remote prefix
      * @return number of clients
      */
-    public int countClients(int ifc, int prt, addrPrefix<Ta> prf) {
+    public int countSubnet(int ifc, int prt, addrPrefix<Ta> prf) {
         int res = 0;
         for (int i = 0; i < conns.size(); i++) {
             tabConnectEntry<Ta, Td> ntry = conns.get(i);

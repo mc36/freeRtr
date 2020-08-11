@@ -8,6 +8,7 @@ import cfg.cfgAll;
 import cfg.cfgAuther;
 import cfg.cfgCert;
 import cfg.cfgIfc;
+import cfg.cfgInit;
 import cfg.cfgKey;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
@@ -119,6 +120,11 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * accesses per interval
      */
     public int srvAccCnt;
+
+    /**
+     * limit on startup
+     */
+    protected int srvStartup;
 
     /**
      * limit of all clients
@@ -302,7 +308,8 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         "server .*! no access-prefix",
         "server .*! no access-map",
         "server .*! no access-policy",
-        "server .*! no access-rate",
+        "server .*! access-rate 0 0",
+        "server .*! access-startup 0",
         "server .*! access-total 0",
         "server .*! access-peer 0",
         "server .*! access-subnet 0",
@@ -880,38 +887,65 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         return false;
     }
 
-    private int srvCheckAccept(ipFwdIface ifc, int prt, boolean is4, addrIP adr) {
+    private addrPrefix<addrIP> srvGetSubnet(boolean ipv4, addrIP adr) {
+        addrPrefix<addrIP> prf;
+        if (ipv4) {
+            prf = new addrPrefix<addrIP>(adr, cfgAll.accessSubnet4);
+        } else {
+            prf = new addrPrefix<addrIP>(adr, cfgAll.accessSubnet6);
+        }
+        return prf;
+    }
+
+    private int srvCountClients(int ifc, int prt, boolean ipv4, addrIP adr) {
+        if (ipv4) {
+            return srvVrf.fwd4.protos.countClients(ifc, prt, adr);
+        } else {
+            return srvVrf.fwd6.protos.countClients(ifc, prt, adr);
+        }
+    }
+
+    private int srvCountSubnet(boolean ipv4, int ifc, int prt, addrIP adr) {
+        addrPrefix<addrIP> prf = srvGetSubnet(ipv4, adr);
+        if (ipv4) {
+            return srvVrf.fwd4.protos.countSubnet(ifc, prt, prf);
+        } else {
+            return srvVrf.fwd6.protos.countSubnet(ifc, prt, prf);
+        }
+    }
+
+    private int srvCountClients(ipFwdIface ifc, int prt, boolean ipv4, addrIP adr) {
         int res = 0;
         if ((srvProto & protoTcp) != 0) {
-            if (is4) {
+            if (ipv4) {
                 res += srvVrf.tcp4.countClients(ifc, prt, adr);
             } else {
                 res += srvVrf.tcp6.countClients(ifc, prt, adr);
             }
         }
         if ((srvProto & protoUdp) != 0) {
-            if (is4) {
+            if (ipv4) {
                 res += srvVrf.udp4.countClients(ifc, prt, adr);
             } else {
                 res += srvVrf.udp6.countClients(ifc, prt, adr);
             }
         }
         if ((srvProto & protoLudp) != 0) {
-            if (is4) {
+            if (ipv4) {
                 res += srvVrf.ludp4.countClients(ifc, prt, adr);
             } else {
                 res += srvVrf.ludp6.countClients(ifc, prt, adr);
             }
         }
         if ((srvProto & protoDccp) != 0) {
-            if (is4) {
+            if (ipv4) {
                 res += srvVrf.dccp4.countClients(ifc, prt, adr);
             } else {
                 res += srvVrf.dccp6.countClients(ifc, prt, adr);
             }
         }
         if ((srvProto & protoSctp) != 0) {
-            if (is4) {
+            if (ipv4) {
                 res += srvVrf.sctp4.countClients(ifc, prt, adr);
             } else {
                 res += srvVrf.sctp6.countClients(ifc, prt, adr);
@@ -920,59 +954,64 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         return res;
     }
 
-    private int srvCheckAccept(ipFwdIface ifc, int prt, addrIP adr) {
-        boolean is4 = adr.isIPv4();
-        addrPrefix<addrIP> prf;
-        if (is4) {
-            prf = new addrPrefix<addrIP>(adr, cfgAll.accessSubnet4);
-        } else {
-            prf = new addrPrefix<addrIP>(adr, cfgAll.accessSubnet6);
-        }
+    private int srvCountSubnet(boolean ipv4, ipFwdIface ifc, int prt, addrIP adr) {
+        addrPrefix<addrIP> prf = srvGetSubnet(ipv4, adr);
         int res = 0;
         if ((srvProto & protoTcp) != 0) {
-            if (is4) {
-                res += srvVrf.tcp4.countClients(ifc, prt, prf);
+            if (ipv4) {
+                res += srvVrf.tcp4.countSubnet(ifc, prt, prf);
             } else {
-                res += srvVrf.tcp6.countClients(ifc, prt, prf);
+                res += srvVrf.tcp6.countSubnet(ifc, prt, prf);
             }
         }
         if ((srvProto & protoUdp) != 0) {
-            if (is4) {
-                res += srvVrf.udp4.countClients(ifc, prt, prf);
+            if (ipv4) {
+                res += srvVrf.udp4.countSubnet(ifc, prt, prf);
             } else {
-                res += srvVrf.udp6.countClients(ifc, prt, prf);
+                res += srvVrf.udp6.countSubnet(ifc, prt, prf);
             }
         }
         if ((srvProto & protoLudp) != 0) {
-            if (is4) {
-                res += srvVrf.ludp4.countClients(ifc, prt, prf);
+            if (ipv4) {
+                res += srvVrf.ludp4.countSubnet(ifc, prt, prf);
             } else {
-                res += srvVrf.ludp6.countClients(ifc, prt, prf);
+                res += srvVrf.ludp6.countSubnet(ifc, prt, prf);
             }
         }
         if ((srvProto & protoDccp) != 0) {
-            if (is4) {
-                res += srvVrf.dccp4.countClients(ifc, prt, prf);
+            if (ipv4) {
+                res += srvVrf.dccp4.countSubnet(ifc, prt, prf);
             } else {
-                res += srvVrf.dccp6.countClients(ifc, prt, prf);
+                res += srvVrf.dccp6.countSubnet(ifc, prt, prf);
             }
         }
         if ((srvProto & protoSctp) != 0) {
-            if (is4) {
-                res += srvVrf.sctp4.countClients(ifc, prt, prf);
+            if (ipv4) {
+                res += srvVrf.sctp4.countSubnet(ifc, prt, prf);
             } else {
-                res += srvVrf.sctp6.countClients(ifc, prt, prf);
+                res += srvVrf.sctp6.countSubnet(ifc, prt, prf);
             }
         }
         return res;
     }
 
-    private boolean srvCheckAccept(addrIP adr) {
+    private boolean srvCheckAccept1(addrIP adr, int prt) {
+        if (srvStartup > 0) {
+            if ((bits.getTime() - cfgInit.started) < srvStartup) {
+                if (srvLogDrop) {
+                    logger.info("access startup dropped " + adr + " " + prt);
+                }
+                return true;
+            }
+        }
         if (srvAccRat > 0) {
             if ((bits.getTime() - srvAccLst) > srvAccInt) {
                 srvAccCnt = 0;
             }
-            if (srvAccCnt > srvAccRat) {
+            if (srvAccCnt >= srvAccRat) {
+                if (srvLogDrop) {
+                    logger.info("access rate dropped " + adr + " " + prt);
+                }
                 return true;
             }
             srvAccLst = bits.getTime();
@@ -984,29 +1023,76 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         ipFwd fwd = srvVrf.getFwd(adr);
         tabRouteEntry<addrIP> ntry = fwd.actualU.route(adr);
         if (ntry == null) {
+            if (srvLogDrop) {
+                logger.info("access rpf dropped " + adr + " " + prt);
+            }
             return true;
         }
         if (srvPrfLst != null) {
             if (!srvPrfLst.matches(rtrBgpUtil.safiUnicast, ntry.prefix)) {
+                if (srvLogDrop) {
+                    logger.info("access prefix list dropped " + adr + " " + prt);
+                }
                 return true;
             }
         }
         if (srvRouMap != null) {
             if (!srvRouMap.matches(rtrBgpUtil.safiUnicast, ntry)) {
+                if (srvLogDrop) {
+                    logger.info("access route map dropped " + adr + " " + prt);
+                }
                 return true;
             }
         }
         if (srvRouPol != null) {
             ntry = tabRtrplc.doRpl(rtrBgpUtil.safiUnicast, ntry, srvRouPol, true);
             if (ntry == null) {
+                if (srvLogDrop) {
+                    logger.info("access route policy dropped " + adr + " " + prt);
+                }
                 return true;
             }
         }
         return false;
     }
 
+    private boolean srvCheckAccept2(boolean ipv4, addrIP adr, int prt) {
+        if (ipv4) {
+            if (srvBlckhl4 != null) {
+                if (srvBlckhl4.checkAddr(adr)) {
+                    if (srvLogDrop) {
+                        logger.info("blackhole dropped " + adr + " " + prt);
+                    }
+                    return true;
+                }
+            }
+        } else {
+            if (srvBlckhl6 != null) {
+                if (srvBlckhl6.checkAddr(adr)) {
+                    if (srvLogDrop) {
+                        logger.info("blackhole dropped " + adr + " " + prt);
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void srvBlackholePeer(boolean ipv4, addrIP adr) {
+        if (ipv4) {
+            if (srvBlckhl4 != null) {
+                srvBlckhl4.blockAddr(adr);
+            }
+        } else {
+            if (srvBlckhl6 != null) {
+                srvBlckhl6.blockAddr(adr);
+            }
+        }
+    }
+
     private boolean srvCheckAccept(prtGenConn conn) {
-        if (srvCheckAccept(conn.peerAddr)) {
+        if (srvCheckAccept1(conn.peerAddr, conn.portLoc)) {
             return true;
         }
         if (srvAccess != null) {
@@ -1018,27 +1104,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             }
         }
         boolean ipv4 = conn.peerAddr.isIPv4();
-        if (ipv4) {
-            if (srvBlckhl4 != null) {
-                if (srvBlckhl4.checkAddr(conn.peerAddr)) {
-                    if (srvLogDrop) {
-                        logger.info("blackhole dropped " + conn);
-                    }
-                    return true;
-                }
-            }
-        } else {
-            if (srvBlckhl6 != null) {
-                if (srvBlckhl6.checkAddr(conn.peerAddr)) {
-                    if (srvLogDrop) {
-                        logger.info("blackhole dropped " + conn);
-                    }
-                    return true;
-                }
-            }
-        }
+        srvCheckAccept2(ipv4, conn.peerAddr, conn.portLoc);
         if (srvTotLim > 0) {
-            if (srvCheckAccept(conn.iface, conn.portLoc, ipv4, null) > srvTotLim) {
+            if (srvCountClients(conn.iface, conn.portLoc, ipv4, null) >= srvTotLim) {
                 if (srvLogDrop) {
                     logger.info("total limit dropped " + conn);
                 }
@@ -1046,36 +1114,20 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             }
         }
         if (srvPerLim > 0) {
-            if (srvCheckAccept(conn.iface, conn.portLoc, ipv4, conn.peerAddr) > srvPerLim) {
+            if (srvCountClients(conn.iface, conn.portLoc, ipv4, conn.peerAddr) >= srvPerLim) {
                 if (srvLogDrop) {
                     logger.info("peer limit dropped " + conn);
                 }
-                if (ipv4) {
-                    if (srvBlckhl4 != null) {
-                        srvBlckhl4.blockAddr(conn.peerAddr);
-                    }
-                } else {
-                    if (srvBlckhl6 != null) {
-                        srvBlckhl6.blockAddr(conn.peerAddr);
-                    }
-                }
+                srvBlackholePeer(ipv4, conn.peerAddr);
                 return true;
             }
         }
         if (srvNetLim > 0) {
-            if (srvCheckAccept(conn.iface, conn.portLoc, conn.peerAddr) > srvNetLim) {
+            if (srvCountSubnet(ipv4, conn.iface, conn.portLoc, conn.peerAddr) >= srvNetLim) {
                 if (srvLogDrop) {
                     logger.info("subnet limit dropped " + conn);
                 }
-                if (ipv4) {
-                    if (srvBlckhl4 != null) {
-                        srvBlckhl4.blockAddr(conn.peerAddr);
-                    }
-                } else {
-                    if (srvBlckhl6 != null) {
-                        srvBlckhl6.blockAddr(conn.peerAddr);
-                    }
-                }
+                srvBlackholePeer(ipv4, conn.peerAddr);
                 return true;
             }
         }
@@ -1090,7 +1142,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * @return false if acceptable, true if not
      */
     protected boolean srvCheckAccept(ipFwdIface ifc, packHolder pck) {
-        if (srvCheckAccept(pck.IPsrc)) {
+        if (srvCheckAccept1(pck.IPsrc, pck.IPprt)) {
             return true;
         }
         if (srvAccess != null) {
@@ -1101,17 +1153,33 @@ public abstract class servGeneric implements Comparator<servGeneric> {
                 return true;
             }
         }
+        boolean ipv4 = pck.IPsrc.isIPv4();
+        if (srvCheckAccept2(ipv4, pck.IPsrc, pck.IPprt)) {
+            return true;
+        }
         if (srvTotLim > 0) {
-            int res = 0;
-            if (pck.IPsrc.isIPv4()) {
-                res = srvVrf.fwd4.protos.countClients(ifc.ifwNum, pck.IPprt, pck.IPsrc);
-            } else {
-                res = srvVrf.fwd6.protos.countClients(ifc.ifwNum, pck.IPprt, pck.IPsrc);
-            }
-            if (res > srvTotLim) {
+            if (srvCountClients(ifc.ifwNum, pck.IPprt, ipv4, null) >= srvTotLim) {
                 if (srvLogDrop) {
                     logger.info("total limit dropped " + pck.IPsrc + " " + pck.IPprt);
                 }
+                return true;
+            }
+        }
+        if (srvPerLim > 0) {
+            if (srvCountClients(ifc.ifwNum, pck.IPprt, ipv4, pck.IPsrc) >= srvPerLim) {
+                if (srvLogDrop) {
+                    logger.info("peer limit dropped " + pck.IPsrc + " " + pck.IPprt);
+                }
+                srvBlackholePeer(ipv4, pck.IPsrc);
+                return true;
+            }
+        }
+        if (srvNetLim > 0) {
+            if (srvCountSubnet(ipv4, ifc.ifwNum, pck.IPprt, pck.IPsrc) >= srvNetLim) {
+                if (srvLogDrop) {
+                    logger.info("subnet limit dropped " + pck.IPsrc + " " + pck.IPprt);
+                }
+                srvBlackholePeer(ipv4, pck.IPsrc);
                 return true;
             }
         }
@@ -1181,7 +1249,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         l.add("2 .    <name>               access list name");
         l.add("1 2  access-prefix          set prefix list");
         l.add("2 .    <name>               prefix list name");
-        l.add("1 2  access-rate            set route map");
+        l.add("1 2  access-rate            access rate for this server");
         l.add("2 3    <num>                new sessions per interval");
         l.add("3 .      <num>              interval");
         l.add("1 2  access-map             set route map");
@@ -1190,6 +1258,8 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         l.add("2 .    <name>               route policy name");
         l.add("1 2  access-total           session limit for this server");
         l.add("2 .    <num>                number of connections");
+        l.add("1 2  access-startup         initial downtime for this server");
+        l.add("2 .    <num>                time");
         l.add("1 2  access-peer            per client session limit");
         l.add("2 .    <num>                number of connections");
         l.add("1 2  access-subnet          per subnet session limit");
@@ -1300,12 +1370,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         } else {
             l.add(beg + "no access-policy");
         }
-        if (srvAccRat > 0) {
-            l.add(beg + "access-rate " + srvAccRat + " " + srvAccInt);
-        } else {
-            l.add(beg + "no access-rate");
-        }
         cmds.cfgLine(l, !srvLogDrop, beg, "access-log", "");
+        l.add(beg + "access-rate " + srvAccRat + " " + srvAccInt);
+        l.add(beg + "access-startup " + srvStartup);
         l.add(beg + "access-total " + srvTotLim);
         l.add(beg + "access-peer " + srvPerLim);
         l.add(beg + "access-subnet " + srvNetLim);
@@ -1447,6 +1514,10 @@ public abstract class servGeneric implements Comparator<servGeneric> {
                 return false;
             }
             srvPrfLst = ntry.prflst;
+            return false;
+        }
+        if (a.equals("access-startup")) {
+            srvStartup = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("access-rate")) {
@@ -1601,9 +1672,13 @@ public abstract class servGeneric implements Comparator<servGeneric> {
                 srvPrfLst = null;
                 return false;
             }
+            if (a.equals("access-startup")) {
+                srvStartup = 0;
+                return false;
+            }
             if (a.equals("access-rate")) {
-                srvAccRat = -1;
-                srvAccInt = -1;
+                srvAccRat = 0;
+                srvAccInt = 0;
                 return false;
             }
             if (a.equals("access-map")) {

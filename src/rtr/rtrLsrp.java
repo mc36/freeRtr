@@ -583,7 +583,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             old.fromString(new cmds("", ""));
         }
         dat.sequence = old.sequence + 1;
-        dat.uptime = tim - cfgInit.jvmStarted;
+        dat.uptime = tim - cfgInit.started;
         dat.changesNum = changeNum;
         dat.changesTim = tim - changeTim;
         boolean ned = !dat.dump(rtrLsrpData.dmpComp).equals(old.dump(rtrLsrpData.dmpComp));
