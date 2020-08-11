@@ -124,11 +124,6 @@ public class cfgInit implements Runnable {
     public static boolean booting = true;
 
     /**
-     * time when jvm started
-     */
-    public static long jvmStarted = -1;
-
-    /**
      * time when started
      */
     public static long started = -1;
@@ -194,6 +189,8 @@ public class cfgInit implements Runnable {
     public static int vdcPortEnd = 32768;
 
     private static final tabGen<cfgInitMime> types = new tabGen<cfgInitMime>();
+
+    private static long jvmStarted = -1;
 
     private static boolean jvmSetup = false;
 
@@ -737,7 +734,7 @@ public class cfgInit implements Runnable {
         started = bits.getTime();
         booting = false;
         new Thread(new cfgInit()).start();
-        logger.info("done");
+        logger.info("finished boot");
     }
 
     private static tabGen<userFilter> createFilter(String[] lst) {

@@ -15,7 +15,7 @@ public class packRedun {
     /**
      * header size
      */
-    public static final int size = 12;
+    public static final int size = 16;
 
     /**
      * hello
@@ -113,9 +113,14 @@ public class packRedun {
     public int magic;
 
     /**
-     * peer state
+     * peer magic
      */
     public int peer;
+
+    /**
+     * uptime
+     */
+    public int uptime;
 
     /**
      * type to string
@@ -156,6 +161,7 @@ public class packRedun {
         state = pck.getByte(3);
         magic = pck.msbGetD(4);
         peer = pck.msbGetD(8);
+        uptime = pck.msbGetD(12);
         pck.getSkip(size);
         return false;
     }
@@ -171,12 +177,13 @@ public class packRedun {
         pck.putByte(3, state);
         pck.msbPutD(4, magic);
         pck.msbPutD(8, peer);
+        pck.msbPutD(12, uptime);
         pck.putSkip(size);
         pck.merge2beg();
     }
 
     public String toString() {
-        return "type=" + typ2str(type) + " state=" + state + " magic=" + magic + " peer=" + peer;
+        return "type=" + typ2str(type) + " state=" + state + " magic=" + magic + " peer=" + peer + " uptime=" + uptime;
     }
 
 }

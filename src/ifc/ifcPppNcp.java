@@ -294,7 +294,8 @@ public abstract class ifcPppNcp {
      * send one confreq
      */
     public void sendReq() {
-        if (sawReq2++ > 32) {
+        sawReq2++;
+        if (sawReq2 > 32) {
             parent.clearState();
             return;
         }
@@ -379,7 +380,8 @@ public abstract class ifcPppNcp {
                 if (debugger.ifcPppEvnt) {
                     logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + tmp2);
                 }
-                if (sawReq1++ > 3) {
+                sawReq1++;
+                if (sawReq1 > 3) {
                     clearState();
                     break;
                 }

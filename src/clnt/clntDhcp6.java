@@ -423,7 +423,8 @@ public class clntDhcp6 implements prtServP {
     private void sendKeepalive() {
         switch (lastStat) {
             case 1: // sending discovery
-                if (lastSent++ > 32) {
+                lastSent++;
+                if (lastSent > 32) {
                     clearState();
                     break;
                 }
@@ -431,7 +432,8 @@ public class clntDhcp6 implements prtServP {
                 sendSolicit();
                 break;
             case 3: // sending request
-                if (lastSent++ > 16) {
+                lastSent++;
+                if (lastSent > 16) {
                     clearState();
                     break;
                 }

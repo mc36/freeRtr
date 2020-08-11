@@ -30,12 +30,17 @@ public class prtRedun implements Runnable {
     /**
      * my magic number
      */
-    protected static int magic = 0;
+    protected static int magic = (bits.randomD() & 0x3fffffff) + 1;
 
     /**
      * current state
      */
     protected static int state = packRedun.statInit;
+
+    /**
+     * current uptime
+     */
+    protected static int uptime = 0;
 
     private final static List<prtRedunIfc> ifaces = new ArrayList<prtRedunIfc>();
 
@@ -43,6 +48,7 @@ public class prtRedun implements Runnable {
         try {
             packHolder pck = new packHolder(true, true);
             for (;;) {
+                uptime = (int) ((bits.getTime() - cfgInit.started) / 1000);
                 for (int i = 0; i < ifaces.size(); i++) {
                     pck.clear();
                     ifaces.get(i).doPack(packRedun.typHello, pck);
@@ -60,8 +66,8 @@ public class prtRedun implements Runnable {
      * @return output
      */
     public static userFormat doShow() {
-        userFormat l = new userFormat("|", "iface|state|bidir|magic|heard");
-        l.add("self|" + state + "|-|" + magic + "|-");
+        userFormat l = new userFormat("|", "iface|state|bidir|magic|uptime|heard");
+        l.add("self|" + state + "|-|" + magic + "|" + bits.timeDump(uptime) + "|-");
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
             l.add(ifc.doShow());
@@ -95,7 +101,7 @@ public class prtRedun implements Runnable {
             if (!ifc.bidir) {
                 continue;
             }
-            if ((tim - ifc.time) > packRedun.timeHold) {
+            if ((tim - ifc.heard) > packRedun.timeHold) {
                 continue;
             }
             if (ifc.state == packRedun.statActive) {
@@ -120,7 +126,6 @@ public class prtRedun implements Runnable {
      * initialize the redundancy
      */
     public static void doInit() {
-        magic = (bits.randomD() & 0x3fffffff) + 1;
         if (ifaces.size() < 1) {
             state = packRedun.statActive;
             return;
@@ -186,7 +191,11 @@ class prtRedunIfc implements ifcUp {
 
     public int state;
 
-    public long time;
+    public int uptime;
+
+    public long heard;
+
+    public int dualAct;
 
     public notifier notif = new notifier();
 
@@ -198,7 +207,9 @@ class prtRedunIfc implements ifcUp {
         lower = thrd;
         state = packRedun.statInit;
         magic = 0;
-        time = 0;
+        heard = 0;
+        uptime = 0;
+        dualAct = 0;
         lower.setFilter(false);
         lower.setUpper(this);
         lower.startLoop(1);
@@ -207,7 +218,7 @@ class prtRedunIfc implements ifcUp {
     }
 
     public String doShow() {
-        return name + "|" + state + "|" + bidir + "|" + magic + "|" + bits.timePast(time);
+        return name + "|" + state + "|" + bidir + "|" + magic + "|" + bits.timeDump(uptime) + "|" + bits.timePast(heard);
     }
 
     public void setParent(ifcDn parent) {
@@ -234,15 +245,30 @@ class prtRedunIfc implements ifcUp {
         magic = pckP.magic;
         state = pckP.state;
         bidir = pckP.peer == prtRedun.magic;
-        time = bits.getTime();
+        uptime = pckP.uptime;
+        heard = bits.getTime();
         switch (pckP.type) {
             case packRedun.typHello:
                 if ((magic == prtRedun.magic) && (state >= prtRedun.state)) {
                     cfgInit.stopRouter(true, 6, "magic collision");
                 }
-                if ((prtRedun.state == packRedun.statActive) && (state == packRedun.statActive) && (magic <= prtRedun.magic)) {
-                    cfgInit.stopRouter(true, 6, "dual active");
+                if (prtRedun.state != packRedun.statActive) {
+                    dualAct = 0;
+                    break;
                 }
+                if (state != packRedun.statActive) {
+                    dualAct = 0;
+                    break;
+                }
+                if (uptime >= prtRedun.uptime) {
+                    cfgInit.stopRouter(true, 6, "dual active, peer older");
+                }
+                logger.warn("dual active, peer younger");
+                dualAct++;
+                if (dualAct < 5) {
+                    break;
+                }
+                doPack(packRedun.typReload, new packHolder(true, true));
                 break;
             case packRedun.typReload:
                 if (prtRedun.state == packRedun.statActive) {
@@ -318,6 +344,7 @@ class prtRedunIfc implements ifcUp {
         pckP.type = typ;
         pckP.state = prtRedun.state;
         pckP.magic = prtRedun.magic;
+        pckP.uptime = prtRedun.uptime;
         pckP.peer = magic;
         pckP.createHeader(pckB);
         if (debugger.prtRedun) {

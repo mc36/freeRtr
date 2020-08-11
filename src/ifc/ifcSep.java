@@ -368,7 +368,8 @@ public class ifcSep implements ifcUp, ifcDn {
      * send keepalive over lcp
      */
     public void sendKeepReq() {
-        if (echoSent++ > 5) {
+        echoSent++;
+        if (echoSent > 5) {
             clearState();
             checkPeerState(state.states.up);
         }
