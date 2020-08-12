@@ -170,7 +170,11 @@ public class userReader implements Comparator<String> {
         /**
          * specified section
          */
-        section
+        section,
+        /**
+         * set/delete mode
+         */
+        setdel
 
     }
 
@@ -448,6 +452,12 @@ public class userReader implements Comparator<String> {
                 return lst;
             case section:
                 lst = userFilter.getSection(lst, filterS);
+                if (filterF == mode.count) {
+                    lst = doCount(lst);
+                }
+                return lst;
+            case setdel:
+                lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.setdel);
                 if (filterF == mode.count) {
                     lst = doCount(lst);
                 }
@@ -1095,6 +1105,10 @@ public class userReader implements Comparator<String> {
             }
             if (a.equals("html")) {
                 filterM = mode.html;
+                return cmd;
+            }
+            if (a.equals("setdel")) {
+                filterM = mode.setdel;
                 return cmd;
             }
             if (a.equals("level")) {

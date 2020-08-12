@@ -898,6 +898,7 @@ public class userExec {
         hl.add("111 .      level                 raw level hierarchy");
         hl.add("111 .      csv                   level hierarchy in csv");
         hl.add("111 .      html                  level hierarchy in html");
+        hl.add("111 .      setdel                level hierarchy in set/delete");
         hl.add("111 .      linenumbers           prepend lines with numbers");
         hl.add("111 .      raw                   unfiltered");
         hl.add("111 .      count                 count entities");

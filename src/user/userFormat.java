@@ -40,7 +40,11 @@ public class userFormat {
         /**
          * html mode
          */
-        html
+        html,
+        /**
+         * set/delete mode
+         */
+        setdel
 
     }
 

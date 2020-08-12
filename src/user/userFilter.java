@@ -116,19 +116,17 @@ public class userFilter implements Comparator<userFilter> {
         String nextSec = "";
         for (int ln = 0; ln < txt.size(); ln++) {
             sec = nextSec;
-            String old = txt.get(ln);
-            String s = old.trim();
-            if (s.length() < 1) {
-                res.add(new userFilter("", old, null));
+            String a = txt.get(ln);
+            if (a.length() <= 1) {
+                res.add(new userFilter("", a, null));
                 nextSec = "";
                 continue;
             }
-            int i = old.indexOf(" ");
-            if (i > 0) {
-                nextSec = s;
+            if (!a.startsWith(" ")) {
+                nextSec = a;
                 sec = "";
             }
-            res.add(new userFilter(sec, old, null));
+            res.add(new userFilter(sec, a, null));
         }
         return res;
     }
@@ -188,6 +186,15 @@ public class userFilter implements Comparator<userFilter> {
                     break;
                 case html:
                     txt.add("<tr><td>" + ntry.section + "</td><td>" + ntry.command + "</td></tr>");
+                    break;
+                case setdel:
+                    String a = ntry.command.trim();
+                    String s = "set";
+                    if (a.startsWith("no ")) {
+                        s = "delete";
+                        a = a.substring(3, a.length());
+                    }
+                    txt.add(s + " " + ntry.section.trim() + " " + a);
                     break;
                 default:
                     break;
