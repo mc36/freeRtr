@@ -728,7 +728,7 @@ public class cfgInit implements Runnable {
         started = bits.getTime();
         booting = false;
         new Thread(new cfgInit()).start();
-        logger.info("finished boot");
+        logger.info("boot completed");
     }
 
     private static tabGen<userFilter> createFilter(String[] lst) {
