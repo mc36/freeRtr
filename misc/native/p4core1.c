@@ -331,7 +331,7 @@ int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *)) {
         if (matcher(ntry, res) != 0) continue;
         return res->act;
     }
-    return 0;
+    return 1;
 }
 
 
