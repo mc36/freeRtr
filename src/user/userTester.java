@@ -476,15 +476,15 @@ public class userTester {
         txt.add("tested: " + a + "<br/>");
         txt.add("jvm: " + jvn + jvp + "<br/>");
         txt.add("<br/>");
-        txt.add("<table border=1><tr><td><b>file</b></td><td><b>code</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>");
+        txt.add("<table border=1><tr><td><b>file</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>");
         txt.addAll(features2list(finished, 3));
         txt.add("</table></body></html>");
         bits.buf2txt(true, txt, "rtr" + beg + ".html");
         txt = new ArrayList<String>();
-        txt.add("file;code;test;stage;command");
-        txt.add("-;-;" + release + ";-;-");
-        txt.add("-;-;" + a + ";-;-");
-        txt.add("-;-;" + jvn + jvp + ";-;-");
+        txt.add("file;test;stage;command");
+        txt.add("-;" + release + ";-;-");
+        txt.add("-;" + a + ";-;-");
+        txt.add("-;" + jvn + jvp + ";-;-");
         txt.addAll(features2list(finished, 4));
         bits.buf2txt(true, txt, "rtr" + beg + ".csv");
         a = "rtr" + beg + ".ftr";
@@ -954,7 +954,7 @@ class userTesterOne {
     public String getFet() {
         String qc;
         if (testRes != 0) {
-            qc = cmds.negated + "work: ";
+            qc = "failed: ";
         } else {
             qc = "qc pass: ";
         }
@@ -962,11 +962,11 @@ class userTesterOne {
     }
 
     public String getCsv() {
-        return fileName + ";" + testRes + ";" + testName + ";" + stage + ";" + cmd.getOriginal();
+        return fileName + ";" + testName + ";" + stage + ";" + cmd.getOriginal();
     }
 
     public String getHtm(String url) {
-        return "<tr><td><a href=\"" + url + fileName + "\">" + fileName + "</a></td><td>" + testRes + "</td><td>" + testName + "</td><td>" + stage + "</td><td>" + cmd.getOriginal() + "</td></tr>";
+        return "<tr><td><a href=\"" + url + fileName + "\">" + fileName + "</a></td><td>" + testName + "</td><td>" + stage + "</td><td>" + cmd.getOriginal() + "</td></tr>";
     }
 
     public String getLin() {
@@ -1373,6 +1373,13 @@ class userTesterOne {
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             p.putLine("terminal no monitor");
             p.putLine("terminal length 0");
+            for (int i = 0; i < capture.size(); i++) {
+                userTesterCap cap = capture.get(i);
+                if (!rn.equals(cap.rtr)) {
+                    continue;
+                }
+                p.putLine("packet capture " + cap.ifc + " " + path + slot + "log-" + rn + "-" + cap.ifc + ".pcap");
+            }
             if (fancy) {
                 p.putLine("terminal table fancy");
             }
@@ -1381,13 +1388,6 @@ class userTesterOne {
             }
             p.putLine("reload in 10");
             p.putLine("y");
-            for (int i = 0; i < capture.size(); i++) {
-                userTesterCap cap = capture.get(i);
-                if (!rn.equals(cap.rtr)) {
-                    continue;
-                }
-                p.putLine("packet capture " + cap.ifc + " " + path + slot + "log-" + rn + "-" + cap.ifc + ".pcap");
-            }
             for (int i = 0; i < reapply; i++) {
                 p.putLine("configure reapply");
             }

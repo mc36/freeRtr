@@ -26,11 +26,6 @@ public class cmds {
     public final static String finish = "exit";
 
     /**
-     * negate a command
-     */
-    public final static String negated = "no" + tabulator;
-
-    /**
      * pipe side to use
      */
     public pipeSide pipe;

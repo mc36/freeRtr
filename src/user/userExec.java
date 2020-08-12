@@ -2029,7 +2029,7 @@ public class userExec {
             return;
         }
         if (last && negated) {
-            a = cmds.negated + a;
+            a = "no " + a;
         }
         cfg.executeCommand(a);
         if (last) {
@@ -2044,7 +2044,7 @@ public class userExec {
             return;
         }
         if (negated) {
-            a = cmds.negated + a;
+            a = "no " + a;
         }
         cfg.executeCommand(a);
     }
