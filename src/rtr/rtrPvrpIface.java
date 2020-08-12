@@ -771,6 +771,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         }
         if (seen > 0) {
             nei.lastHeard = bits.getTime();
+        } else {
+            sendHello(conn);
         }
         return false;
     }
