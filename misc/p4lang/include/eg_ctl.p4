@@ -5,12 +5,14 @@
                                                                                  
 control eg_ctl(                                                                  
    /* User */                                                                    
-   inout headers eg_hdr,                       
-   inout ingress_metadata_t eg_md,                        
+   inout headers ig_hdr,                       
+   inout ingress_metadata_t ig_md,                        
    /* Intrinsic */                                                                    
    inout standard_metadata_t ig_intr_md)               
 {                                                                                
-   apply {                                                                       
+   apply {         
+       egress_headers_t eg_hdr;
+       if (ig_md.need_recir == 1) recirculate<egress_headers_t>(eg_hdr);
    }                                                                             
 }                                                                                
                                                                                  

@@ -10,7 +10,7 @@ control IngressControlPPPOE(inout headers hdr,
                                                                                                   
    action send_to_cpu() {                                                                         
       /*                                                                                          
-       * Prepend pkt_in header to pkt sent to controller                                          
+       * Prepend cpu header to pkt sent to controller                                          
        * by calling setValid() so it is tekne into account by deparser                            
        */                                                                                         
         ig_md.nexthop_id = CPU_PORT;                                                                   

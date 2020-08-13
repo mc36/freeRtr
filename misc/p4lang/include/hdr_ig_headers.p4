@@ -2,10 +2,9 @@
 #define _HEADERS_P4_
 
 struct headers {
-   pkt_out_header_t	pkt_out;
-   pkt_in_header_t	pkt_in; 
+   cpu_header_t		cpu;
    ethernet_t		ethernet;
-   vlan_t               vlan;  
+   vlan_t               vlan;
    pppoe_t		pppoeC;
    pppoe_t		pppoeD;
    mpls_t		mpls0;
@@ -13,8 +12,8 @@ struct headers {
    ipv4_t		ipv4c;
    ipv6_t		ipv6c;
    ethernet_t		eth2;
-   arp_t		arp; 
-   llc_t                llc; 
+   arp_t		arp;
+   llc_t                llc;
    ipv4_t		ipv4;
    ipv6_t		ipv6;
    ethernet_t		eth3;

@@ -34,7 +34,7 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_vlan_in.tbl_vlan_in",
         match_fields={
-            "ig_intr_md.ingress_port": main,
+            "ig_md.ingress_id": main,
             "hdr.vlan.vid": vlan
         },
         action_name="ig_ctl.ig_ctl_vlan_in.act_set_iface",
@@ -69,7 +69,7 @@ def writeBunVlanRules(delete, p4info_helper, ingress_sw, main, vlan, port):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_vlan_in.tbl_vlan_in",
         match_fields={
-            "ig_intr_md.ingress_port": main,
+            "ig_md.ingress_id": main,
             "hdr.vlan.vid": vlan
         },
         action_name="ig_ctl.ig_ctl_vlan_in.act_set_iface",
@@ -101,6 +101,26 @@ def writeBundleRules(delete, p4info_helper, ingress_sw, port, hsh, trg):
         ingress_sw.ModifyTableEntry(table_entry, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeHairpinRules(delete, p4info_helper, ingress_sw, port, trg):
+    for hsh in range(0, 16):
+        table_entry = p4info_helper.buildTableEntry(
+            table_name="ig_ctl.ig_ctl_bundle.tbl_bundle",
+            match_fields={
+                "ig_md.outport_id": port,
+                "ig_md.hash_id": hsh
+            },
+            action_name="ig_ctl.ig_ctl_bundle.act_set_recir",
+            action_params={
+                "port": trg
+            })
+        if delete == 1:
+            ingress_sw.WriteTableEntry(table_entry, False)
+        elif delete == 2:
+            ingress_sw.ModifyTableEntry(table_entry, False)
+        else:
+            ingress_sw.DeleteTableEntry(table_entry, False)
 
 
 def writePppoeRules(delete, p4info_helper, ingress_sw, port, phport, nexthop, vrf, ses, dmac, smac):
@@ -1435,6 +1455,16 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "portbundle_del":
             writeBundleRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if splt[0] == "hairpin_add":
+            writeHairpinRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "hairpin_mod":
+            writeHairpinRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+        if splt[0] == "hairpin_del":
+            writeHairpinRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
 
         if splt[0] == "pppoe_add":

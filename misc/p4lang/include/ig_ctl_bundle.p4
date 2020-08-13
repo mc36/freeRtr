@@ -7,10 +7,19 @@ control IngressControlBundle(inout headers hdr,
 
    action act_set_hash(PortId_t port) {
       ig_intr_md.egress_spec = port;
+      ig_md.need_recir = 0;
    }
 
    action act_set_port() {
       ig_intr_md.egress_spec = (PortId_t)ig_md.outport_id;
+      ig_md.need_recir = 0;
+   }
+
+   action act_set_recir(SubIntId_t port) {
+      hdr.cpu.setValid();
+      hdr.cpu.port = port;
+      ig_intr_md.egress_spec = (PortId_t)port;
+      ig_md.need_recir = 1;
    }
 
    table tbl_bundle {
@@ -21,6 +30,7 @@ control IngressControlBundle(inout headers hdr,
       actions = {
          act_set_port;
          act_set_hash;
+         act_set_recir;
       }
       size = 1024;
       default_action = act_set_port();

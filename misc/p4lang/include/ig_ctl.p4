@@ -32,18 +32,19 @@ control ig_ctl(inout headers hdr,
    apply {                                                                         
            if (ig_intr_md.ingress_port == CPU_PORT) {                                   
               /*                                                                        
-               * pkt received from the controlled has a pkt_out header                  
+               * pkt received from the controlled has a cpu header                  
                * that containes egress port id. Once retrieve                           
-               * we remove the pkt_out header (setInvalid)                              
+               * we remove the cpu header (setInvalid)                              
                * So it will not be taken into accoiunt by deparser                      
                */                                                                       
-              ig_intr_md.egress_spec = hdr.pkt_out.egress_port;                    
-              hdr.pkt_out.setInvalid();                                                
+              ig_intr_md.egress_spec = (PortId_t)hdr.cpu.port;                    
+              hdr.cpu.setInvalid();                                                
               return;
            }
            /*                                                                        
             * So it is a dataplane packet                                                     
             */                                                                       
+         hdr.cpu.setInvalid();                                                
          ig_ctl_vlan_in.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_pppoe.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_acl_in.apply(hdr,ig_md,ig_intr_md);
@@ -56,8 +57,8 @@ control ig_ctl(inout headers hdr,
          ig_ctl_mpls.apply(hdr,ig_md,ig_intr_md);
          ig_ctl_nat.apply(hdr,ig_md,ig_intr_md);
          if ( ig_md.dropping == 1) {
-           hdr.pkt_in.setValid();
-           hdr.pkt_in.ingress_port = ig_intr_md.ingress_port;
+           hdr.cpu.setValid();
+           hdr.cpu.port = ig_md.ingress_id;
            ig_intr_md.egress_spec = CPU_PORT;
            return;
          }
@@ -71,8 +72,8 @@ control ig_ctl(inout headers hdr,
            if (ig_md.dropping == 1) {
              return;
            }
-           hdr.pkt_in.setValid();
-           hdr.pkt_in.ingress_port = ig_intr_md.ingress_port;
+           hdr.cpu.setValid();
+           hdr.cpu.port = ig_md.ingress_id;
            ig_intr_md.egress_spec = CPU_PORT;
            return;
          }

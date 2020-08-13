@@ -12,13 +12,13 @@ control IngressControlVlanIn(inout headers hdr,
    }
 
    action act_set_def_iface() {
-      ig_md.source_id = (SubIntId_t)ig_intr_md.ingress_port;
+      ig_md.source_id = ig_md.ingress_id;
       ig_md.ethertype = hdr.ethernet.ethertype;
    }
 
    table tbl_vlan_in {
       key = {
-         ig_intr_md.ingress_port: exact;  
+         ig_md.ingress_id: exact;  
          hdr.vlan.vid: exact;  
       }
       actions = {

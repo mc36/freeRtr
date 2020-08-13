@@ -5,6 +5,7 @@
  * User defined metadata type
  */                          
 struct ingress_metadata_t {          
+   SubIntId_t ingress_id;
    SubIntId_t source_id;
    SubIntId_t target_id;
    SubIntId_t aclport_id;
@@ -18,6 +19,7 @@ struct ingress_metadata_t {
    switch_vrf_t vrf;
    label_t mpls_label;
     bit<1>  dropping;
+    bit<1>  need_recir;
     bit<3>  mpls_op_type;
     bit<3>  srv_op_type;
     bit<3>  vlan_size;

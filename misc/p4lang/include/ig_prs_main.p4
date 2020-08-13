@@ -12,14 +12,23 @@ parser ig_prs_main(packet_in pkt,
                                                                                  
    state start {                                                             
       transition select(ig_intr_md.ingress_port) {                               
-          CPU_PORT: prs_pkt_out;                                                 
-          default: prs_ethernet;                                                       
+          CPU_PORT: prs_cpu;                                                 
+          default: prs_data;                                                       
       }                                                                          
    }                                                                             
                                                                                  
-   state prs_pkt_out {                                                           
-      pkt.extract(hdr.pkt_out);                                                  
-      transition accept;                                                         
+   state prs_data {                                                           
+      ig_md.ingress_id = (SubIntId_t)ig_intr_md.ingress_port;
+      transition select(ig_intr_md.instance_type) {                               
+          32w0: prs_ethernet;
+          default: prs_cpu;
+      }
+   }
+
+   state prs_cpu {                                                           
+      pkt.extract(hdr.cpu);                                                  
+      ig_md.ingress_id = hdr.cpu.port;
+      transition prs_ethernet;                                                         
    }                                                                             
 
    state prs_ethernet {                              

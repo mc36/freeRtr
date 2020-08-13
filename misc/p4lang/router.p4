@@ -7,12 +7,11 @@
 #include "include/cst_ethertype.p4"
 #include "include/cst_ip_protocol.p4"
 #include "include/cst_table_size.p4"
-#include "include/hdr_pkt_in.p4"
-#include "include/hdr_pkt_out.p4"
+#include "include/hdr_cpu.p4"
 #include "include/hdr_ethernet.p4"
 #include "include/hdr_arp.p4"
 #include "include/hdr_llc.p4"
-#include "include/hdr_vlan.p4" 
+#include "include/hdr_vlan.p4"
 #include "include/hdr_pppoe.p4"
 #include "include/hdr_mpls.p4"
 #include "include/hdr_ipv4.p4"
@@ -57,6 +56,10 @@
 #include "include/ig_ctl_acl_out.p4"
 #include "include/ig_ctl_nat.p4"
 #include "include/ig_ctl.p4"
+
+
+/*------------------ E G R E S S  H E A D E R S ----------------------------- */ 
+#include "include/hdr_eg_headers.p4"                                             
 
 /*------------------ E G R E S S - M A T C H - A C T I O N ------------------ */
 #include "include/eg_ctl.p4"
