@@ -437,6 +437,7 @@ int nat6_compare(void *ptr1, void *ptr2) {
 
 struct bundle_entry {
     int id;
+    int command;    // 1=port, 2=hairpin
     int out[16];
     long pack;
     long byte;

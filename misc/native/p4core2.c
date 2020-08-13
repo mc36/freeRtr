@@ -589,6 +589,14 @@ int doOneCommand(unsigned char* buf) {
         if (del == 0) table_del(&nat6_table, &nat6_ntry); else table_add(&nat6_table, &nat6_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "hairpin") == 0) {
+        bundle_ntry.id = atoi(arg[2]);
+        bundle_ntry.command = 2;
+        o = atoi(arg[3]);
+        for (int i = 0; i < 16; i++) bundle_ntry.out[i] = o;
+        if (del == 0) table_del(&bundle_table, &bundle_ntry); else table_add(&bundle_table, &bundle_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "portbundle") == 0) {
         bundle_ntry.id = atoi(arg[2]);
         if (del == 0) {
@@ -603,6 +611,7 @@ int doOneCommand(unsigned char* buf) {
             bundle_res = table_get(&bundle_table, index);
         }
         i = atoi(arg[3]);
+        bundle_res->command = 1;
         bundle_res->out[i] = atoi(arg[4]);
         return 0;
     }

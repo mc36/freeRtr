@@ -161,11 +161,12 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     int sum;
     int ttl;
     int hash = 0;
-    bufP = preBuff;
     packRx[port]++;
     byteRx[port] += bufS;
-    bufP += 6 * 2; // dmac, smac
     prt = port;
+ether_rx:
+    bufP = preBuff;
+    bufP += 6 * 2; // dmac, smac
 ethtyp_rx:
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
@@ -281,6 +282,10 @@ neigh_tx:
                         vlan_res->pack++;
                         vlan_res->byte += bufS;
                     }
+                    bufP -= 6;
+                    memmove(&bufD[bufP], &neigh_res->smac, 6);
+                    bufP -= 6;
+                    memmove(&bufD[bufP], &neigh_res->dmac, 6);
                     bundle_ntry.id = prt;
                     index = table_find(&bundle_table, &bundle_ntry);
                     if (index >= 0) {
@@ -289,16 +294,17 @@ neigh_tx:
                         prt = bundle_res->out[hash];
                         bundle_res->pack++;
                         bundle_res->byte += bufS;
+                        if (bundle_res->command == 2) {
+                            bufS = bufS - bufP + preBuff;
+                            memmove(&bufD[preBuff], &bufD[bufP], bufS);
+                            goto ether_rx;
+                        }
                     }
                     if (prt >= ports) {
                         packDr[port]++;
                         byteDr[port] += bufS;
                         return;
                     }
-                    bufP -= 6;
-                    memmove(&bufD[bufP], &neigh_res->smac, 6);
-                    bufP -= 6;
-                    memmove(&bufD[bufP], &neigh_res->dmac, 6);
                     send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
                     return;
                 case 4: // xconn
@@ -756,6 +762,8 @@ layer2_tx:
                 vlan_res->pack++;
                 vlan_res->byte += bufS;
             }
+            bufP -= 12;
+            memmove(&bufD[bufP], &buf2[0], 12);
             bundle_ntry.id = prt;
             index = table_find(&bundle_table, &bundle_ntry);
             if (index >= 0) {
@@ -764,14 +772,17 @@ layer2_tx:
                 prt = bundle_res->out[hash];
                 bundle_res->pack++;
                 bundle_res->byte += bufS;
+                if (bundle_res->command == 2) {
+                    bufS = bufS - bufP + preBuff;
+                    memmove(&bufD[preBuff], &bufD[bufP], bufS);
+                    goto ether_rx;
+                }
             }
             if (prt >= ports) {
                 packDr[port]++;
                 byteDr[port] += bufS;
                 return;
             }
-            bufP -= 12;
-            memmove(&bufD[bufP], &buf2[0], 12);
             send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
             return;
         default:

@@ -225,7 +225,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer)) {
+            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer) && (ifc.type != cfgIfc.ifaceType.hairpin)) {
                 cmd.error("not p4lang interface");
                 return false;
             }
@@ -383,6 +383,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ifc.upper.setState(ifc.lastState);
             ifc.sentVlan = 0;
             ifc.sentBundle = 0;
+            ifc.sentHairpin = 0;
             ifc.sentPppoe = -1;
             ifc.sentVrf = 0;
             ifc.sentState = state.states.close;
@@ -617,6 +618,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public int sentVlan;
 
     public int sentBundle;
+
+    public int sentHairpin;
 
     public int sentMtu;
 
@@ -1394,7 +1397,7 @@ class servP4langConn implements Runnable {
             sta = state.states.up;
         }
         int i = ifc.ifc.ethtyp.getMTUsize();
-        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge) || (ifc.ifc.type == cfgIfc.ifaceType.dialer)) {
+        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge) || (ifc.ifc.type == cfgIfc.ifaceType.dialer) || (ifc.ifc.type == cfgIfc.ifaceType.hairpin)) {
             ifc.sentState = sta;
             ifc.sentMtu = i;
         }
@@ -1415,6 +1418,37 @@ class servP4langConn implements Runnable {
         if ((ifc.master != null) && (ifc.sentVlan == 0)) {
             lower.sendLine("portvlan_add " + ifc.id + " " + ifc.master.id + " " + ifc.ifc.vlanNum);
             ifc.sentVlan = ifc.ifc.vlanNum;
+        }
+        if (ifc.ifc.hairpinHed != null) {
+            int o = 0;
+            for (i = 0; i < lower.expIfc.size(); i++) {
+                servP4langIfc ntry = lower.expIfc.get(i);
+                if (ntry == ifc) {
+                    continue;
+                }
+                if (ntry == ifc) {
+                    continue;
+                }
+                if (ntry.ifc.hairpinHed != ifc.ifc.hairpinHed) {
+                    continue;
+                }
+                o = ntry.id;
+                break;
+            }
+            if (o != ifc.sentHairpin) {
+                String act;
+                if (o < 1) {
+                    act = "del";
+                } else {
+                    if (ifc.sentHairpin > 0) {
+                        act = "mod";
+                    } else {
+                        act = "add";
+                    }
+                }
+                lower.sendLine("hairpin_" + act + " " + ifc.id + " " + o);
+                ifc.sentHairpin = o;
+            }
         }
         if ((ifc.ifc.bundleHed != null) && (ifc.ifc.bundleIfc == null)) {
             List<servP4langIfc> prt = new ArrayList<servP4langIfc>();
