@@ -9030,3 +9030,22 @@ qc pass: p4lang: vlan pppoe mpls
 ---------------------------------- 2020-08-10 10:40:16
 qc pass: interop2: pppoe with pap
 qc pass: interop2: pppoe with chap
+---------------------------------- 2020-08-13 15:39:57
+qc pass: p4lang: hairpin ingress access list
+qc pass: p4lang: hairpin egress access list
+qc pass: p4lang: hairpin vlan ingress access list
+qc pass: p4lang: hairpin vlan egress access list
+qc pass: p4lang: hairpin pppoe ingress access list
+qc pass: p4lang: hairpin pppoe egress access list
+qc pass: p4lang: hairpin vlan pppoe ingress access list
+qc pass: p4lang: hairpin vlan pppoe egress access list
+qc pass: p4lang: hairpin routing
+qc pass: p4lang: hairpin bridging
+qc pass: p4lang: hairpin mpls
+qc pass: p4lang: hairpin vlan routing
+qc pass: p4lang: hairpin vlan bridging
+qc pass: p4lang: hairpin vlan mpls
+qc pass: p4lang: hairpin pppoe routing
+qc pass: p4lang: hairpin vlan pppoe routing
+qc pass: p4lang: hairpin pppoe mpls
+qc pass: p4lang: hairpin vlan pppoe mpls

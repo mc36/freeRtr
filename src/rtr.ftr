@@ -996,6 +996,14 @@ qc pass: p4lang: ingress pppoe access list
 qc pass: p4lang: egress pppoe access list
 qc pass: p4lang: ingress vlan pppoe access list
 qc pass: p4lang: egress vlan pppoe access list
+qc pass: p4lang: hairpin ingress access list
+qc pass: p4lang: hairpin egress access list
+qc pass: p4lang: hairpin vlan ingress access list
+qc pass: p4lang: hairpin vlan egress access list
+qc pass: p4lang: hairpin pppoe ingress access list
+qc pass: p4lang: hairpin pppoe egress access list
+qc pass: p4lang: hairpin vlan pppoe ingress access list
+qc pass: p4lang: hairpin vlan pppoe egress access list
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -1026,6 +1034,16 @@ qc pass: p4lang: pppoe routing
 qc pass: p4lang: vlan pppoe routing
 qc pass: p4lang: pppoe mpls
 qc pass: p4lang: vlan pppoe mpls
+qc pass: p4lang: hairpin routing
+qc pass: p4lang: hairpin bridging
+qc pass: p4lang: hairpin mpls
+qc pass: p4lang: hairpin vlan routing
+qc pass: p4lang: hairpin vlan bridging
+qc pass: p4lang: hairpin vlan mpls
+qc pass: p4lang: hairpin pppoe routing
+qc pass: p4lang: hairpin vlan pppoe routing
+qc pass: p4lang: hairpin pppoe mpls
+qc pass: p4lang: hairpin vlan pppoe mpls
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
