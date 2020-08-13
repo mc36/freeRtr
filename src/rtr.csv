@@ -1,6 +1,6 @@
 file;test;stage;command
 -;freeRouter v20.8.13-rel, done by cs@nop.;-;-
--;2020-08-13 16:40:40, took 00:06:32, with 100 workers, on 1842 cases, 0 failed, 0 traces, 1 retries;-;-
+-;2020-08-13 18:32:21, took 00:05:29, with 100 workers, on 1846 cases, 0 failed, 0 traces, 0 retries;-;-
 -;./rtr.bin;-;-
 basic.tst;dummy test;successfully;finished
 conn-anyconn.tst;ip over anyconnect;successfully;finished
@@ -1048,6 +1048,10 @@ p4lang-rout37.tst;p4lang: hairpin pppoe routing;successfully;finished
 p4lang-rout38.tst;p4lang: hairpin vlan pppoe routing;successfully;finished
 p4lang-rout39.tst;p4lang: hairpin pppoe mpls;successfully;finished
 p4lang-rout40.tst;p4lang: hairpin vlan pppoe mpls;successfully;finished
+p4lang-rout41.tst;p4lang: hairpin vpls/ldp with bgp;successfully;finished
+p4lang-rout42.tst;p4lang: hairpin vlan vpls/ldp with bgp;successfully;finished
+p4lang-rout43.tst;p4lang: hairpin eompls;successfully;finished
+p4lang-rout44.tst;p4lang: hairpin vlan eompls;successfully;finished
 qos-action01.tst;qos ingress transmit action;successfully;finished
 qos-action02.tst;qos egress transmit action;successfully;finished
 qos-action03.tst;qos ingress drop action;successfully;finished

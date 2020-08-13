@@ -1044,6 +1044,10 @@ qc pass: p4lang: hairpin pppoe routing
 qc pass: p4lang: hairpin vlan pppoe routing
 qc pass: p4lang: hairpin pppoe mpls
 qc pass: p4lang: hairpin vlan pppoe mpls
+qc pass: p4lang: hairpin vpls/ldp with bgp
+qc pass: p4lang: hairpin vlan vpls/ldp with bgp
+qc pass: p4lang: hairpin eompls
+qc pass: p4lang: hairpin vlan eompls
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
