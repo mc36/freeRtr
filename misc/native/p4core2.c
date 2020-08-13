@@ -429,6 +429,22 @@ int doOneCommand(unsigned char* buf) {
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry); else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "copp4") == 0) {
+        acls_ntry.dir = 4;
+        acls_ntry.ver = 4;
+        acls_ntry.port = 0;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        readAcl4(&acl4_ntry, &arg[-1]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry); else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "inacl6") == 0) {
         acls_ntry.dir = 1;
         acls_ntry.ver = 6;
@@ -474,6 +490,22 @@ int doOneCommand(unsigned char* buf) {
             acls_res = table_get(&acls_table, index);
         }
         readAcl6(&acl6_ntry, &arg[0]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry); else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "copp6") == 0) {
+        acls_ntry.dir = 4;
+        acls_ntry.ver = 6;
+        acls_ntry.port = 0;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        readAcl6(&acl6_ntry, &arg[-1]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry); else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }

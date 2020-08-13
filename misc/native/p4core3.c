@@ -440,6 +440,17 @@ ipv4_rou:
                         }            
                         goto neigh_tx;
                     case 2: // punt
+                        acls_ntry.dir = 4;
+                        acls_ntry.port = 0;
+                        index = table_find(&acls_table, &acls_ntry);
+                        if (index >= 0) {
+                            acls_res = table_get(&acls_table, index);
+                            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) {
+                                packDr[port]++;
+                                byteDr[port] += bufS;
+                                return;
+                            }
+                        }            
                         goto cpu;
                     case 3: // mpls1
                         ethtyp = 0x8847;
@@ -616,6 +627,17 @@ ipv6_hit:
                         }            
                         goto neigh_tx;
                     case 2: // punt
+                        acls_ntry.dir = 4;
+                        acls_ntry.port = 0;
+                        index = table_find(&acls_table, &acls_ntry);
+                        if (index >= 0) {
+                            acls_res = table_get(&acls_table, index);
+                            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) {
+                                packDr[port]++;
+                                byteDr[port] += bufS;
+                                return;
+                            }
+                        }            
                         goto cpu;
                     case 3: // mpls1
                         ethtyp = 0x8847;
