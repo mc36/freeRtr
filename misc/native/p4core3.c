@@ -682,10 +682,25 @@ ipv6_hit:
             pppoe_res->byte += bufS;
             prt = pppoe_res->aclport;
             bufP += 6;
-            index = get16msb(bufD, bufP);
+            ethtyp = get16msb(bufD, bufP);
             bufP += 2;
-            if ((index & 0x8000) != 0) goto cpu;
-            switch (index) {
+            if ((ethtyp & 0x8000) != 0) goto cpu;
+            portvrf_ntry.port = prt;
+            index = table_find(&portvrf_table, &portvrf_ntry);
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            portvrf_res = table_get(&portvrf_table, index);
+            if (portvrf_res->command != 1) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            route4_ntry.vrf = portvrf_res->vrf;
+            route6_ntry.vrf = portvrf_res->vrf;
+            switch (ethtyp) {
                 case 0x0021:
                     ethtyp = 0x800;
                     goto ipv4_rx;
