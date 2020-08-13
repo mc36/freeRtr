@@ -125,10 +125,9 @@ int masks[] = {
 
 
 void processDataPacket(unsigned char *bufD, int bufS, int port) {
+    packRx[port]++;
+    byteRx[port] += bufS;
     unsigned char buf2[preBuff];
-    int bufP;
-    int bufT;
-    int ethtyp;
     struct mpls_entry mpls_ntry;
     struct portvrf_entry portvrf_ntry;
     struct route4_entry route4_ntry;
@@ -157,13 +156,14 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     struct pppoe_entry *pppoe_res;
     int index;
     int label;
-    int prt;
     int sum;
     int ttl;
     int hash = 0;
-    packRx[port]++;
-    byteRx[port] += bufS;
-    prt = port;
+    int bufP;
+    int bufT;
+    int ethtyp;
+    int prt = port;
+    int prt2 = port;
 ether_rx:
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
@@ -297,6 +297,7 @@ neigh_tx:
                         if (bundle_res->command == 2) {
                             bufS = bufS - bufP + preBuff;
                             memmove(&bufD[preBuff], &bufD[bufP], bufS);
+                            prt2 = prt;
                             goto ether_rx;
                         }
                     }
@@ -775,6 +776,7 @@ layer2_tx:
                 if (bundle_res->command == 2) {
                     bufS = bufS - bufP + preBuff;
                     memmove(&bufD[preBuff], &bufD[bufP], bufS);
+                    prt2 = prt;
                     goto ether_rx;
                 }
             }
@@ -787,7 +789,7 @@ layer2_tx:
             return;
         default:
 cpu:
-            send2cpu(bufD, bufS, port);
+            send2cpu(bufD, bufS, prt2);
             return;
     }
 }

@@ -471,7 +471,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             cntr.drop(pck, counter.reasons.noIface);
             return;
         }
-        ntry.upper.recvPack(pck);
+        if (ntry.ifc.type != cfgIfc.ifaceType.sdn) {
+            ntry.ifc.ethtyp.recvPack(pck);
+        } else {
+            ntry.upper.recvPack(pck);
+        }
     }
 
     /**
@@ -922,7 +926,11 @@ class servP4langConn implements Runnable {
                 lower.cntr.drop(pck, counter.reasons.noIface);
                 return false;
             }
-            ntry.upper.recvPack(pck);
+            if (ntry.ifc.type != cfgIfc.ifaceType.sdn) {
+                ntry.ifc.ethtyp.recvPack(pck);
+            } else {
+                ntry.upper.recvPack(pck);
+            }
             return false;
         }
         if (pipe.isClosed() != 0) {
