@@ -1,4 +1,4 @@
-description p4lang: evpn/cmac with bgp over srv6
+description p4lang: bundle vlan evpn/cmac with bgp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -12,6 +12,8 @@ bridge 1
  rd 1:1
  rt-both 1:1
  mac-learn
+ exit
+bundle 1
  exit
 vrf def v9
  rd 1:1
@@ -46,26 +48,27 @@ int sdn1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
+ mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 int sdn2
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
  ipv6 ena
+ mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 int sdn3
- bridge-gr 1
+ bundle-gr 1
  exit
 int sdn4
- bridge-gr 1
+ bundle-gr 1
  exit
-int tun1
- vrf for v1
- ipv6 addr 4444:1:: ffff:ffff::
- tun sour sdn1
- tun dest 4444:1::
- tun vrf v1
- tun mod srv6
+int bun1.111
+ bridge-gr 1
  exit
 router bgp4 1
  vrf v1
@@ -75,13 +78,11 @@ router bgp4 1
  temp a remote-as 1
  temp a update lo0
  temp a send-comm both
- temp a segrou
  temp a pmsi
  temp a route-reflect
  neigh 2.2.2.103 temp a
  neigh 2.2.2.104 temp a
  afi-evpn 101 bridge 1
- afi-evpn 101 srv6 tun1
  afi-evpn 101 update lo0
  afi-evpn 101 encap cmac
  exit
@@ -93,7 +94,6 @@ router bgp6 1
  temp a remote-as 1
  temp a update lo0
  temp a send-comm both
- temp a segrou
  temp a pmsi
  temp a route-reflect
  neigh 4321::103 temp a
@@ -103,11 +103,12 @@ server p4lang p4
  interconnect eth2
  export-vrf v1 1
  export-br 1
- export-srv6 tun1
  export-port sdn1 1
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4
+ export-port bun1 44
+ export-port bun1.111 111
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
@@ -159,14 +160,9 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
- exit
-int tun1
- vrf for v1
- ipv6 addr 4444:3:: ffff:ffff::
- tun sour eth1
- tun dest 4444:3::
- tun vrf v1
- tun mod srv6
+ mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 router bgp4 1
  vrf v1
@@ -176,10 +172,8 @@ router bgp4 1
  neigh 2.2.2.101 remote-as 1
  neigh 2.2.2.101 update lo0
  neigh 2.2.2.101 send-comm both
- neigh 2.2.2.101 segrou
  neigh 2.2.2.101 pmsi
  afi-evpn 101 bridge 1
- afi-evpn 101 srv6 tun1
  afi-evpn 101 update lo0
  afi-evpn 101 encap cmac
  exit
@@ -191,7 +185,6 @@ router bgp6 1
  neigh 4321::101 remote-as 1
  neigh 4321::101 update lo0
  neigh 4321::101 send-comm both
- neigh 4321::101 segrou
  neigh 4321::101 pmsi
  exit
 ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
@@ -202,10 +195,8 @@ ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 ipv4 route v1 3.3.3.104 255.255.255.255 1.1.3.4
 ipv4 route v1 3.3.3.105 255.255.255.255 1.1.3.5
-ipv4 route v1 3.3.3.106 255.255.255.255 1.1.3.6
 ipv6 route v1 3333::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::4
 ipv6 route v1 3333::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::5
-ipv6 route v1 3333::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::6
 ipv6 route v1 4444:1:: ffff:ffff:: 1234:1::1
 ipv6 route v1 4444:4:: ffff:ffff:: 1234:1::1
 !
@@ -241,14 +232,9 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
- exit
-int tun1
- vrf for v1
- ipv6 addr 4444:4:: ffff:ffff::
- tun sour eth1
- tun dest 4444:4::
- tun vrf v1
- tun mod srv6
+ mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 router bgp4 1
  vrf v1
@@ -258,10 +244,8 @@ router bgp4 1
  neigh 2.2.2.101 remote-as 1
  neigh 2.2.2.101 update lo0
  neigh 2.2.2.101 send-comm both
- neigh 2.2.2.101 segrou
  neigh 2.2.2.101 pmsi
  afi-evpn 101 bridge 1
- afi-evpn 101 srv6 tun1
  afi-evpn 101 update lo0
  afi-evpn 101 encap cmac
  exit
@@ -273,7 +257,6 @@ router bgp6 1
  neigh 4321::101 remote-as 1
  neigh 4321::101 update lo0
  neigh 4321::101 send-comm both
- neigh 4321::101 segrou
  neigh 4321::101 pmsi
  exit
 ipv4 route v1 1.1.1.0 255.255.255.0 1.1.2.1
@@ -284,16 +267,15 @@ ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 ipv4 route v1 3.3.3.103 255.255.255.255 1.1.3.3
 ipv4 route v1 3.3.3.105 255.255.255.255 1.1.3.5
-ipv4 route v1 3.3.3.106 255.255.255.255 1.1.3.6
 ipv6 route v1 3333::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::3
 ipv6 route v1 3333::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::5
-ipv6 route v1 3333::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::6
 ipv6 route v1 4444:1:: ffff:ffff:: 1234:2::1
 ipv6 route v1 4444:3:: ffff:ffff:: 1234:2::1
 !
 
 addrouter r5
 int eth1 eth 0000.0000.5555 $5b$ $5a$
+int eth2 eth 0000.0000.6666 $6b$ $6a$
 !
 vrf def v1
  rd 1:1
@@ -303,41 +285,23 @@ int lo0
  ipv4 addr 3.3.3.105 255.255.255.255
  ipv6 addr 3333::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+bundle 1
+ exit
 int eth1
+ bundle-gr 1
+ exit
+int eth2
+ bundle-gr 1
+ exit
+int bun1.111
  vrf for v1
  ipv4 addr 1.1.3.5 255.255.255.0
  ipv6 addr 1234:3::5 ffff:ffff::
  exit
 ipv4 route v1 3.3.3.103 255.255.255.255 1.1.3.3
 ipv4 route v1 3.3.3.104 255.255.255.255 1.1.3.4
-ipv4 route v1 3.3.3.106 255.255.255.255 1.1.3.6
 ipv6 route v1 3333::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::3
 ipv6 route v1 3333::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::4
-ipv6 route v1 3333::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::6
-!
-
-addrouter r6
-int eth1 eth 0000.0000.6666 $6b$ $6a$
-!
-vrf def v1
- rd 1:1
- exit
-int lo0
- vrf for v1
- ipv4 addr 3.3.3.106 255.255.255.255
- ipv6 addr 3333::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int eth1
- vrf for v1
- ipv4 addr 1.1.3.6 255.255.255.0
- ipv6 addr 1234:3::6 ffff:ffff::
- exit
-ipv4 route v1 3.3.3.103 255.255.255.255 1.1.3.3
-ipv4 route v1 3.3.3.104 255.255.255.255 1.1.3.4
-ipv4 route v1 3.3.3.105 255.255.255.255 1.1.3.5
-ipv6 route v1 3333::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::3
-ipv6 route v1 3333::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::4
-ipv6 route v1 3333::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::5
 !
 
 
@@ -368,8 +332,6 @@ r5 tping 100 10 3.3.3.104 /vrf v1 /int lo0
 r5 tping 100 10 3333::104 /vrf v1 /int lo0
 r5 tping 100 10 3.3.3.105 /vrf v1 /int lo0
 r5 tping 100 10 3333::105 /vrf v1 /int lo0
-r5 tping 100 10 3.3.3.106 /vrf v1 /int lo0
-r5 tping 100 10 3333::106 /vrf v1 /int lo0
 
 r6 tping 100 10 3.3.3.103 /vrf v1 /int lo0
 r6 tping 100 10 3333::103 /vrf v1 /int lo0
@@ -377,8 +339,6 @@ r6 tping 100 10 3.3.3.104 /vrf v1 /int lo0
 r6 tping 100 10 3333::104 /vrf v1 /int lo0
 r6 tping 100 10 3.3.3.105 /vrf v1 /int lo0
 r6 tping 100 10 3333::105 /vrf v1 /int lo0
-r6 tping 100 10 3.3.3.106 /vrf v1 /int lo0
-r6 tping 100 10 3333::106 /vrf v1 /int lo0
 
 r3 tping 100 10 3.3.3.103 /vrf v1 /int lo1
 r3 tping 100 10 3333::103 /vrf v1 /int lo1
@@ -386,8 +346,6 @@ r3 tping 100 10 3.3.3.104 /vrf v1 /int lo1
 r3 tping 100 10 3333::104 /vrf v1 /int lo1
 r3 tping 100 10 3.3.3.105 /vrf v1 /int lo1
 r3 tping 100 10 3333::105 /vrf v1 /int lo1
-r3 tping 100 10 3.3.3.106 /vrf v1 /int lo1
-r3 tping 100 10 3333::106 /vrf v1 /int lo1
 
 r4 tping 100 10 3.3.3.103 /vrf v1 /int lo1
 r4 tping 100 10 3333::103 /vrf v1 /int lo1
@@ -395,8 +353,6 @@ r4 tping 100 10 3.3.3.104 /vrf v1 /int lo1
 r4 tping 100 10 3333::104 /vrf v1 /int lo1
 r4 tping 100 10 3.3.3.105 /vrf v1 /int lo1
 r4 tping 100 10 3333::105 /vrf v1 /int lo1
-r4 tping 100 10 3.3.3.106 /vrf v1 /int lo1
-r4 tping 100 10 3333::106 /vrf v1 /int lo1
 
 r1 output sho inter summ
 r1 output sho inter hwsumm
