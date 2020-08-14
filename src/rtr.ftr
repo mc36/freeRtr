@@ -1048,6 +1048,10 @@ qc pass: p4lang: hairpin vpls/ldp with bgp
 qc pass: p4lang: hairpin vlan vpls/ldp with bgp
 qc pass: p4lang: hairpin eompls
 qc pass: p4lang: hairpin vlan eompls
+qc pass: p4lang: vlan evpn/cmac with bgp
+qc pass: p4lang: bundle vlan evpn/cmac with bgp
+qc pass: p4lang: hairpin evpn/cmac with bgp
+qc pass: p4lang: hairpin vlan evpn/cmac with bgp
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

@@ -1,6 +1,6 @@
 file;test;stage;command
--;freeRouter v20.8.13-rel, done by cs@nop.;-;-
--;2020-08-13 18:40:28, took 00:05:30, with 100 workers, on 1846 cases, 0 failed, 0 traces, 1 retries;-;-
+-;freeRouter v20.8.14-rel, done by cs@nop.;-;-
+-;2020-08-14 01:19:52, took 00:05:18, with 100 workers, on 1850 cases, 0 failed, 0 traces, 1 retries;-;-
 -;./rtr.bin;-;-
 basic.tst;dummy test;successfully;finished
 conn-anyconn.tst;ip over anyconnect;successfully;finished
@@ -1052,6 +1052,10 @@ p4lang-rout41.tst;p4lang: hairpin vpls/ldp with bgp;successfully;finished
 p4lang-rout42.tst;p4lang: hairpin vlan vpls/ldp with bgp;successfully;finished
 p4lang-rout43.tst;p4lang: hairpin eompls;successfully;finished
 p4lang-rout44.tst;p4lang: hairpin vlan eompls;successfully;finished
+p4lang-rout45.tst;p4lang: vlan evpn/cmac with bgp;successfully;finished
+p4lang-rout46.tst;p4lang: bundle vlan evpn/cmac with bgp;successfully;finished
+p4lang-rout47.tst;p4lang: hairpin evpn/cmac with bgp;successfully;finished
+p4lang-rout48.tst;p4lang: hairpin vlan evpn/cmac with bgp;successfully;finished
 qos-action01.tst;qos ingress transmit action;successfully;finished
 qos-action02.tst;qos egress transmit action;successfully;finished
 qos-action03.tst;qos ingress drop action;successfully;finished
