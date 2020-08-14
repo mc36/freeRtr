@@ -145,6 +145,7 @@ public class tabSession implements Runnable {
         pck.getSkip(o - i);
         tabSessionEntry ses = new tabSessionEntry(logMacs);
         ses.ipPrt = pck.IPprt;
+        ses.ipTos = pck.IPtos;
         ses.dir = dir;
         ses.srcPrt = pck.UDPsrc;
         ses.trgPrt = pck.UDPtrg;
@@ -189,9 +190,9 @@ public class tabSession implements Runnable {
     public userFormat doShowInsp() {
         userFormat l;
         if (logMacs) {
-            l = new userFormat("|", "dir|prt|tos|addr|port|addr|port|rx|tx|rx|tx|time|src|trg", "3|2source|2target|2byte|2packet|1|2mac");
+            l = new userFormat("|", "dir|prt|tos|addr|port|addr|port|rx|tx|rx|tx|time|src|trg", "3|2source|2target|2packet|2byte|1|2mac");
         } else {
-            l = new userFormat("|", "dir|prt|tos|addr|port|addr|port|rx|tx|rx|tx|time", "3|2source|2target|2byte|2packet|1");
+            l = new userFormat("|", "dir|prt|tos|addr|port|addr|port|rx|tx|rx|tx|time", "3|2source|2target|2packet|2byte|1");
         }
         for (int i = 0; i < connects.size(); i++) {
             l.add(connects.get(i).dump());
@@ -206,7 +207,7 @@ public class tabSession implements Runnable {
      */
     public userFormat doShowTalk() {
         tabGen<tabSessionEndpoint> ept = getTopTalker();
-        userFormat l = new userFormat("|", "addr|rx|tx|rx|tx|time", "1|2byte|2packet|1");
+        userFormat l = new userFormat("|", "addr|rx|tx|rx|tx|time", "1|2packet|2byte|1");
         for (int i = 0; i < ept.size(); i++) {
             l.add(ept.get(i).dump());
         }
@@ -364,7 +365,7 @@ class tabSessionEndpoint implements Comparator<tabSessionEndpoint> {
     public long tim;
 
     public String dump() {
-        return adr + "|" + rxb + "|" + txb + "|" + rxp + "|" + txp + "|" + bits.timePast(tim);
+        return adr + "|" + rxp + "|" + txp + "|" + rxb + "|" + txb + "|" + bits.timePast(tim);
     }
 
     public int compare(tabSessionEndpoint o1, tabSessionEndpoint o2) {

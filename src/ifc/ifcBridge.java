@@ -220,7 +220,7 @@ public class ifcBridge implements ifcDn {
      * @return list of interface
      */
     public userFormat getShowIfc() {
-        userFormat lst = new userFormat("|", "interface|forward|physical|tx|rx|drop");
+        userFormat lst = new userFormat("|", "iface|fwd|phys|tx|rx|drop|tx|rx|drop", "3|3packet|3byte");
         lst.add("" + upNtry);
         for (int i = 0; i < ifaces.size(); i++) {
             lst.add("" + ifaces.get(i));
@@ -237,7 +237,7 @@ public class ifcBridge implements ifcDn {
         if (learned == null) {
             return null;
         }
-        userFormat lst = new userFormat("|", "address|interface|time|tx|rx|drop");
+        userFormat lst = new userFormat("|", "addr|iface|time|tx|rx|drop|tx|rx|drop", "3|3packet|3byte");
         for (int i = 0; i < learned.size(); i++) {
             lst.add("" + learned.get(i));
         }

@@ -388,6 +388,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ifc.sentVrf = 0;
             ifc.sentState = state.states.close;
             ifc.sentMtu = 0;
+            ifc.sentLabel = -1;
             ifc.sentAcl4in = null;
             ifc.sentAcl4out = null;
             ifc.sentAcl6in = null;
@@ -628,6 +629,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public int sentMtu;
 
     public int sentPppoe;
+
+    public int sentLabel;
 
     public state.states sentState = state.states.close;
 
@@ -1557,7 +1560,11 @@ class servP4langConn implements Runnable {
             }
         }
         if (ifc.ifc.xconn != null) {
-            if (ifc.sentVrf == -1) {
+            int lr = ifc.ifc.xconn.pwom.getLabelRem();
+            if (lr < 0) {
+                return;
+            }
+            if ((ifc.sentVrf == -1) && (lr == ifc.sentLabel)) {
                 return;
             }
             if (ifc.ifc.xconn.pwom == null) {
@@ -1565,10 +1572,6 @@ class servP4langConn implements Runnable {
             }
             int ll = ifc.ifc.xconn.pwom.getLabelLoc();
             if (ll < 0) {
-                return;
-            }
-            int lr = ifc.ifc.xconn.pwom.getLabelRem();
-            if (lr < 0) {
                 return;
             }
             tabRouteEntry<addrIP> ntry = ifc.ifc.xconn.vrf.getFwd(ifc.ifc.xconn.adr).actualU.route(ifc.ifc.xconn.adr);
@@ -1580,6 +1583,7 @@ class servP4langConn implements Runnable {
                 return;
             }
             lower.sendLine("xconnect_" + a + " " + ifc.id + " " + ifc.ifc.xconn.adr + " " + hop.id + " " + getLabel(ntry) + " " + ll + " " + lr);
+            ifc.sentLabel = lr;
             ifc.sentVrf = -1;
             return;
         }

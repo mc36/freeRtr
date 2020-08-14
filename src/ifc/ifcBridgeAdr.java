@@ -58,7 +58,7 @@ public class ifcBridgeAdr implements Comparator<ifcBridgeAdr> {
     }
 
     public String toString() {
-        return adr + "|" + ifc.getIfcName() + "|" + bits.timePast(time) + "|" + cntr.getShHwBsum(hwCntr);
+        return adr + "|" + ifc.getIfcName() + "|" + bits.timePast(time) + "|" + cntr.getShHwPsum(hwCntr) + "|" + cntr.getShHwBsum(hwCntr);
     }
 
 }

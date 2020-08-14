@@ -268,7 +268,7 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
     }
 
     public String toString() {
-        return getIfcName() + "|" + (!blocked) + "|" + physical + "|" + cntr.getShBsum();
+        return getIfcName() + "|" + (!blocked) + "|" + physical + "|" + cntr.getShPsum() + "|" + cntr.getShBsum();
     }
 
 }
