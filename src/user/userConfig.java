@@ -449,8 +449,8 @@ public class userConfig {
         l.add("3  .      <text>                     set username");
         l.add("2  3    config-password              specify password on config server");
         l.add("3  .      <text>                     set password");
-        l.add("2  3    config-backup                specify backup config file");
-        l.add("3  .      <text>                     file to use");
+        l.add("2  3,.  config-backup                specify backup config file");
+        l.add("3  3,.    <text>                     file to use");
         l.add("2  .    config-save                  automatically save configuration");
         l.add("2  .    config-archive               automatically archive configuration");
         l.add("2  .    config-exclusive             allow only one user in configuration mode");
@@ -1537,7 +1537,7 @@ public class userConfig {
                 return;
             }
             if (a.equals("config-backup")) {
-                cfgAll.configBackup = cmd.word();
+                cfgAll.configBackup = cmd.getRemaining();
                 return;
             }
             if (a.equals("config-exclusive")) {

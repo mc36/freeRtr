@@ -43,6 +43,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public boolean respawn = true;
 
     /**
+     * config to use
+     */
+    public String configFile = null;
+
+    /**
      * image to use
      */
     public String image1name = null;
@@ -181,6 +186,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public final static String defaultL[] = {
         "vdc definition .*! no description",
         "vdc definition .*! respawn",
+        "vdc definition .*! config null",
         "vdc definition .*! image null",
         "vdc definition .*! disk2 null",
         "vdc definition .*! disk3 null",
@@ -235,6 +241,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         n.cpuType = cpuType;
         n.initial = initial;
         n.interval = interval;
+        n.configFile = configFile;
         n.image1name = image1name;
         n.image2name = image2name;
         n.image3name = image3name;
@@ -293,6 +300,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("1  2  local                          add connection to this vdc");
         l.add("2  3,.  <name>                       name of interface");
         l.add("3  .      redundancy                 flagged for redundancy");
+        l.add("1  2  config                         set config file to use");
+        l.add("2  2,.  <name>                       name of image");
         l.add("1  2  bios                           set bios image to use");
         l.add("2  2,.  <name>                       name of image");
         l.add("1  2  image                          set external image to use");
@@ -355,6 +364,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "pinning " + cpuPinning);
         l.add(cmds.tabulator + "cpu " + cpuType);
         l.add(cmds.tabulator + "bios " + biosName);
+        l.add(cmds.tabulator + "config " + configFile);
         l.add(cmds.tabulator + "image " + image1name);
         l.add(cmds.tabulator + "disk2 " + image2name);
         l.add(cmds.tabulator + "disk3 " + image3name);
@@ -404,6 +414,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("bios")) {
             biosName = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("config")) {
+            configFile = cmd.getRemaining();
             return;
         }
         if (a.equals("image")) {
@@ -581,6 +595,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             biosName = null;
             return;
         }
+        if (a.equals("config")) {
+            configFile = null;
+            return;
+        }
         if (a.equals("image")) {
             image1name = null;
             return;
@@ -713,7 +731,12 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         addrMac one = new addrMac();
         one.fromString("0000:0000:0001");
         if (image1name == null) {
-            cmd = "java " + cfgInit.jvmParam + " -Xmx" + imageMem + "m -jar " + version.getFileName() + " routerc " + cfgBase;
+            String a = cfgBase + cfgInit.hwCfgEnd;
+            String s = cfgBase + cfgInit.swCfgEnd;
+            if (configFile != null) {
+                s = configFile;
+            }
+            cmd = "java " + cfgInit.jvmParam + " -Xmx" + imageMem + "m -jar " + version.getFileName() + " routercs " + a + " " + s;
         } else {
             cmd = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -hda " + image1name + " -m " + imageMem;
             if (biosName != null) {
@@ -842,13 +865,17 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         cfgBase = cfgInit.cfgFileSw;
         int i = cfgBase.lastIndexOf("/");
         if (i < 0) {
-            cfgBase = "";
+            cfgBase = "./";
         } else {
             cfgBase = cfgBase.substring(0, i + 1);
         }
         cfgBase += "vdc-" + name + "-";
         List<String> l = new ArrayList<String>();
-        l.add("hwid " + cfgInit.hwIdNum + "-" + name);
+        if (uuidValue == null) {
+            l.add("hwid " + cfgInit.hwIdNum + "-" + name);
+        } else {
+            l.add("hwid " + uuidValue);
+        }
         l.add("port " + beg + " " + end);
         addParam(l, "jvm", cfgInit.jvmParam);
         addParam(l, "url", cfgAll.upgradeServer);
@@ -900,10 +927,14 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             mac.setAdd(mac, one);
         }
         bits.buf2txt(true, l, cfgBase + cfgInit.hwCfgEnd);
-        if (!new File(cfgBase + cfgInit.swCfgEnd).exists()) {
+        String a = cfgBase + cfgInit.swCfgEnd;
+        if (configFile != null) {
+            a = configFile;
+        }
+        if (!new File(a).exists()) {
             l = new ArrayList<String>();
             l.add("hostname " + cfgAll.hostName + "-" + name);
-            bits.buf2txt(true, l, cfgBase + cfgInit.swCfgEnd);
+            bits.buf2txt(true, l, a);
         }
         new Thread(this).start();
     }

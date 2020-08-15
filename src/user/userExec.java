@@ -1857,15 +1857,22 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("memory")) {
-                List<String> old = null;
                 if (cfgAll.configBackup != null) {
-                    old = bits.txt2buf(cfgInit.cfgFileSw);
+                    a = cfgAll.configBackup;
+                    if (a.length() < 1) {
+                        a = cfgInit.cfgFileSw;
+                        int i = a.lastIndexOf(".");
+                        if (i > 0) {
+                            a = a.substring(0, i);
+                        }
+                        a = a + ".bak";
+                    }
+                    List<String> old = bits.txt2buf(cfgInit.cfgFileSw);
+                    if (old != null) {
+                        bits.buf2txt(true, old, a);
+                    }
                 }
-                boolean b = bits.buf2txt(true, cfgAll.getShRun(true),
-                        cfgInit.cfgFileSw);
-                if ((cfgAll.configBackup != null) && (old != null)) {
-                    bits.buf2txt(true, old, cfgAll.configBackup);
-                }
+                boolean b = bits.buf2txt(true, cfgAll.getShRun(true), cfgInit.cfgFileSw);
                 prtRedun.doConfig();
                 prtRedun.doReload();
                 cmd.error(doneFail(b));
