@@ -254,7 +254,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                     s += " segrouadj=" + ntry.segrou;
                     segrou = ntry.segrou;
                 }
-                s += " neighaddr=" + ntry.peer;
+                s += " peeraddr=" + ntry.peer;
                 s += " neighbor=" + ntry.rtrid;
             }
         }
@@ -472,7 +472,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 address.add(adr);
                 continue;
             }
-            if (a.equals("neighaddr")) {
+            if (a.equals("peeraddr")) {
                 peerAddr.fromString(s);
                 continue;
             }
