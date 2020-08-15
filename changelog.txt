@@ -9059,3 +9059,10 @@ qc pass: p4lang: vlan evpn/cmac with bgp
 qc pass: p4lang: bundle vlan evpn/cmac with bgp
 qc pass: p4lang: hairpin evpn/cmac with bgp
 qc pass: p4lang: hairpin vlan evpn/cmac with bgp
+---------------------------------- 2020-08-15 17:13:27
+qc pass: ingress protocol matching common access list
+qc pass: egress protocol matching common access list
+qc pass: ingress destination matching common access list
+qc pass: egress destination matching common access list
+qc pass: ingress source matching common access list
+qc pass: egress source matching common access list

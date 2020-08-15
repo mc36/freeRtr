@@ -365,6 +365,12 @@ qc pass: ingress destination matching hibryd access list
 qc pass: egress destination matching hibryd access list
 qc pass: ingress source matching hibryd access list
 qc pass: egress source matching hibryd access list
+qc pass: ingress protocol matching common access list
+qc pass: egress protocol matching common access list
+qc pass: ingress destination matching common access list
+qc pass: egress destination matching common access list
+qc pass: ingress source matching common access list
+qc pass: egress source matching common access list
 qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6

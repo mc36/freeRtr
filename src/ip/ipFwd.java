@@ -984,6 +984,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         lower.cntr.tx(pck);
+        if (lower.cfilterOut != null) {
+            if (!lower.cfilterOut.matches(false, true, pck)) {
+                doDrop(pck, lower, counter.reasons.denied);
+                return;
+            }
+        }
         if (lower.filterOut != null) {
             if (!lower.filterOut.matches(false, true, pck)) {
                 doDrop(pck, lower, counter.reasons.denied);
@@ -1053,6 +1059,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (ipCore.parseIPheader(pck, true)) {
             lower.cntr.drop(pck, counter.reasons.badHdr);
             return;
+        }
+        if (lower.cfilterIn != null) {
+            if (!lower.cfilterIn.matches(false, true, pck)) {
+                doDrop(pck, lower, counter.reasons.denied);
+                return;
+            }
         }
         if (lower.filterIn != null) {
             if (!lower.filterIn.matches(false, true, pck)) {

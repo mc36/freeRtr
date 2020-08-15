@@ -149,6 +149,16 @@ public class ipFwdIface extends tabRouteIface {
     public tabListing<tabAceslstN<addrIP>, addrIP> filterOut;
 
     /**
+     * common ingress acl
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> cfilterIn;
+
+    /**
+     * common egress acl
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> cfilterOut;
+
+    /**
      * the pbr entries
      */
     public final tabListing<tabPbrN, addrIP> pbrCfg = new tabListing<tabPbrN, addrIP>();
@@ -334,6 +344,10 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 .       <name>                    name of access list");
         l.add("2 3     access-group-out            access list to apply to egress packets");
         l.add("3 .       <name>                    name of access list");
+        l.add("2 3     access-group-common-in      common access list to apply to ingress packets");
+        l.add("3 .       <name>                    name of access list");
+        l.add("2 3     access-group-common-out     common access list to apply to egress packets");
+        l.add("3 .       <name>                    name of access list");
         l.add("2 3,.   inspect                     enable packet inspection");
         l.add("3 3,.     mac                       with mac addresses");
         l.add("3 3,.     before                    log on session start");
@@ -467,6 +481,8 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, gateRtmp == null, cmds.tabulator, beg + "gateway-routemap", "" + gateRtmp);
         cmds.cfgLine(l, filterIn == null, cmds.tabulator, beg + "access-group-in", "" + filterIn);
         cmds.cfgLine(l, filterOut == null, cmds.tabulator, beg + "access-group-out", "" + filterOut);
+        cmds.cfgLine(l, cfilterIn == null, cmds.tabulator, beg + "access-group-common-in", "" + cfilterIn);
+        cmds.cfgLine(l, cfilterOut == null, cmds.tabulator, beg + "access-group-common-out", "" + cfilterOut);
         cmds.cfgLine(l, inspect == null, cmds.tabulator, beg + "inspect", "" + inspect);
         cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop);
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "");
@@ -699,6 +715,28 @@ public class ipFwdIface extends tabRouteIface {
             ntry.aceslst.myCor = cor;
             ntry.aceslst.myIcmp = fwd.icmpCore;
             filterOut = ntry.aceslst;
+            return false;
+        }
+        if (a.equals("access-group-common-in")) {
+            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such access list");
+                return false;
+            }
+            ntry.aceslst.myCor = cor;
+            ntry.aceslst.myIcmp = fwd.icmpCore;
+            cfilterIn = ntry.aceslst;
+            return false;
+        }
+        if (a.equals("access-group-common-out")) {
+            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such access list");
+                return false;
+            }
+            ntry.aceslst.myCor = cor;
+            ntry.aceslst.myIcmp = fwd.icmpCore;
+            cfilterOut = ntry.aceslst;
             return false;
         }
         if (a.equals("tcp-mss-in")) {
@@ -1077,6 +1115,14 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("access-group-out")) {
             filterOut = null;
+            return false;
+        }
+        if (a.equals("access-group-common-in")) {
+            cfilterIn = null;
+            return false;
+        }
+        if (a.equals("access-group-common-out")) {
+            cfilterOut = null;
             return false;
         }
         if (a.equals("tcp-mss-in")) {

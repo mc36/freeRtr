@@ -1,6 +1,6 @@
 file;test;stage;command
 -;freeRouter v20.8.15-rel, done by cs@nop.;-;-
--;2020-08-15 08:40:02, took 00:06:03, with 100 workers, on 1850 cases, 0 failed, 0 traces, 9 retries;-;-
+-;2020-08-15 17:18:17, took 00:04:50, with 100 workers, on 1856 cases, 0 failed, 0 traces, 1 retries;-;-
 -;./rtr.bin;-;-
 basic.tst;dummy test;successfully;finished
 conn-anyconn.tst;ip over anyconnect;successfully;finished
@@ -369,6 +369,12 @@ crypt-acl19.tst;ingress destination matching hibryd access list;successfully;fin
 crypt-acl20.tst;egress destination matching hibryd access list;successfully;finished
 crypt-acl21.tst;ingress source matching hibryd access list;successfully;finished
 crypt-acl22.tst;egress source matching hibryd access list;successfully;finished
+crypt-acl23.tst;ingress protocol matching common access list;successfully;finished
+crypt-acl24.tst;egress protocol matching common access list;successfully;finished
+crypt-acl25.tst;ingress destination matching common access list;successfully;finished
+crypt-acl26.tst;egress destination matching common access list;successfully;finished
+crypt-acl27.tst;ingress source matching common access list;successfully;finished
+crypt-acl28.tst;egress source matching common access list;successfully;finished
 crypt-dtls.tst;dtls test;successfully;finished
 crypt-esp101.tst;ipv4 in esp over ipv4;successfully;finished
 crypt-esp102.tst;ipv4 in esp over ipv6;successfully;finished

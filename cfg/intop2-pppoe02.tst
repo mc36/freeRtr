@@ -1,5 +1,7 @@
 description interop2: pppoe with chap
 
+exit
+
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
 !
