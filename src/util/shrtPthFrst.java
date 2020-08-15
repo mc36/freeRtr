@@ -715,7 +715,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         res.add("nobier|" + listNoBier());
         String a = listTopoSum();
         res.add("topostr|" + a);
-        res.add("topoid|" + a.hashCode());
+        res.add("topoid|" + bits.toHexD(a.hashCode()));
         res.add("last|" + bits.time2str(cfgAll.timeZoneName, tim1 + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(tim1) + " ago)");
         res.add("fill|" + (tim2 - tim1) + " ms");
         res.add("calc|" + (tim3 - tim2) + " ms");
@@ -810,7 +810,7 @@ class shrtPthFrstLog {
     protected String unreach;
 
     public String toString() {
-        return bits.time2str(cfgAll.timeZoneName, when + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(when) + "|" + tim + "|" + topo + "|" + unreach;
+        return bits.time2str(cfgAll.timeZoneName, when + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(when) + "|" + tim + "|" + bits.toHexD(topo) + "|" + unreach;
     }
 
 }
