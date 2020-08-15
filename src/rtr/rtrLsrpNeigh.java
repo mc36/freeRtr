@@ -43,6 +43,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     public String name;
 
     /**
+     * interface of peer
+     */
+    public String inam;
+
+    /**
      * router id of peer
      */
     public final addrIPv4 rtrId;
@@ -213,6 +218,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         if (debugger.rtrLsrpTraf) {
             logger.debug(peer + " rx " + a);
         }
+        iface.dumpLine(false, a);
         return new cmds("rx", a);
     }
 
@@ -226,6 +232,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             logger.debug(peer + " tx " + s);
         }
         conn.linePut(s);
+        iface.dumpLine(true, s);
     }
 
     /**
@@ -359,7 +366,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             sendErr("notNeeded");
             return;
         }
-        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.lower.getMTUsize() + " bfd=" + iface.bfdTrigger + " name=" + cfgAll.hostName);
+        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.lower.getMTUsize() + " bfd=" + iface.bfdTrigger + " iface=" + iface.iface + " name=" + cfgAll.hostName);
         cmds cmd = recvLn();
         if (cmd == null) {
             cmd = new cmds("", "");
@@ -368,13 +375,18 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             sendErr("openRequired");
             return;
         }
-        name = "?" + rtrId;
+        name = "?";
+        inam = "?";
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
                 break;
             }
             if (a.startsWith("rtrid")) {
+                continue;
+            }
+            if (a.startsWith("iface")) {
+                inam = a.substring(6, a.length());
                 continue;
             }
             if (a.startsWith("name")) {

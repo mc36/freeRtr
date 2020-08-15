@@ -241,12 +241,7 @@ public class logger {
         if (logIrcLev.compareTo(level) <= 0) {
             logIrcHnd.logMsg(msg);
         }
-        long tim = bits.getTime() + cfgAll.timeServerOffset;
-        a = "";
-        if (logMillis) {
-            a = "." + bits.padBeg("" + (tim % 1000), 3, "0");
-        }
-        msg = bits.time2str(cfgAll.timeZoneName, tim, 3) + a + " " + msg;
+        msg = getTimestamp() + " " + msg;
         if (logBufLev.compareTo(level) <= 0) {
             synchronized (logBufLst) {
                 logBufPos = (logBufPos + 1) % logBufLst.length;
@@ -284,6 +279,15 @@ public class logger {
             traceback(e);
         }
         logFilSiz = 0;
+    }
+
+    public static String getTimestamp() {
+        long tim = bits.getTime() + cfgAll.timeServerOffset;
+        String a = "";
+        if (logMillis) {
+            a = "." + bits.padBeg("" + (tim % 1000), 3, "0");
+        }
+        return bits.time2str(cfgAll.timeZoneName, tim, 3) + a;
     }
 
     /**

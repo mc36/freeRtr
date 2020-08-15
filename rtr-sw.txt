@@ -462,9 +462,11 @@ interface template1
  mpls rsvp4
  mpls rsvp6
  router lsrp4 1 enable
+ router lsrp4 1 dump lsrp4.log
  router lsrp4 1 accept-metric
  router lsrp4 1 bfd
  router lsrp6 1 enable
+ router lsrp6 1 dump lsrp6.log
  router lsrp6 1 accept-metric
  router lsrp6 1 bfd
  shutdown
@@ -858,9 +860,7 @@ server http web
  exit
 !
 server bmp2mrt bmp
- max-time 600000
- backup bmp-old.log
- file bmp-cur.log
+ file bmp.log
  bulk-down
  vrf v1
  exit

@@ -175,26 +175,12 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * @return list
      */
     public userFormat showNeighs() {
-        userFormat res = new userFormat("|", "iface|router|name|peer|learned|adverted|uptime");
+        userFormat res = new userFormat("|", "iface|router|name|peerif|peer|learned|adverted|uptime");
         for (int i = 0; i < ifaces.size(); i++) {
             rtrPvrpIface ifc = ifaces.get(i);
             ifc.showNeighs(res);
         }
         return res;
-    }
-
-    /**
-     * list interfaces
-     *
-     * @return list of interfaces
-     */
-    public userFormat showIfaces() {
-        userFormat l = new userFormat("|", "interface|neighbors");
-        for (int i = 0; i < ifaces.size(); i++) {
-            rtrPvrpIface ifc = ifaces.get(i);
-            l.add(ifc.iface + "|" + ifc.neighs.size());
-        }
-        return l;
     }
 
     /**
@@ -206,12 +192,32 @@ public class rtrPvrp extends ipRtr implements Runnable {
     public rtrPvrpNeigh findNeigh(addrIP adr) {
         for (int i = 0; i < ifaces.size(); i++) {
             rtrPvrpIface ifc = ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             rtrPvrpNeigh r = ifc.findNeigh(adr);
             if (r != null) {
                 return r;
             }
         }
         return null;
+    }
+
+    /**
+     * list interfaces
+     *
+     * @return list of interfaces
+     */
+    public userFormat showIfaces() {
+        userFormat l = new userFormat("|", "interface|neighbors");
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrPvrpIface ifc = ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
+            l.add(ifc.iface + "|" + ifc.neighs.size());
+        }
+        return l;
     }
 
     /**

@@ -10,6 +10,8 @@ import cry.cryKeyDSA;
 import cry.cryKeyECDSA;
 import cry.cryKeyRSA;
 import ip.ipFwdIface;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
@@ -17,6 +19,7 @@ import prt.prtGenConn;
 import prt.prtServP;
 import serv.servGeneric;
 import tab.tabGen;
+import user.userFlash;
 import user.userFormat;
 import user.userHelping;
 import util.bits;
@@ -107,6 +110,56 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public boolean databaseFilter = false;
 
     /**
+     * rsa key to use
+     */
+    public cfgKey<cryKeyRSA> keyRsa;
+
+    /**
+     * dsa key to use
+     */
+    public cfgKey<cryKeyDSA> keyDsa;
+
+    /**
+     * ecdsa key to use
+     */
+    public cfgKey<cryKeyECDSA> keyEcDsa;
+
+    /**
+     * rsa certificate to use
+     */
+    public cfgCert certRsa;
+
+    /**
+     * dsa certificate to use
+     */
+    public cfgCert certDsa;
+
+    /**
+     * ecdsa certificate to use
+     */
+    public cfgCert certEcDsa;
+
+    /**
+     * security method
+     */
+    public int encryptionMethod = 0;
+
+    /**
+     * dump file
+     */
+    public String dumpFile;
+
+    /**
+     * dump backup time
+     */
+    public int dumpTime;
+
+    /**
+     * name of backup file
+     */
+    public String dumpBackup;
+
+    /**
      * the interface this works on
      */
     protected final ipFwdIface iface;
@@ -126,40 +179,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      */
     protected tabGen<rtrLsrpNeigh> neighs;
 
-    /**
-     * rsa key to use
-     */
-    protected cfgKey<cryKeyRSA> keyRsa;
+    private FileOutputStream dumpHandle1;
 
-    /**
-     * dsa key to use
-     */
-    protected cfgKey<cryKeyDSA> keyDsa;
+    private PrintStream dumpHandle2;
 
-    /**
-     * ecdsa key to use
-     */
-    protected cfgKey<cryKeyECDSA> keyEcDsa;
-
-    /**
-     * rsa certificate to use
-     */
-    protected cfgCert certRsa;
-
-    /**
-     * dsa certificate to use
-     */
-    protected cfgCert certDsa;
-
-    /**
-     * ecdsa certificate to use
-     */
-    protected cfgCert certEcDsa;
-
-    /**
-     * security method
-     */
-    protected int encryptionMethod = 0;
+    private long dumpStarted;
 
     private boolean need2run;
 
@@ -205,6 +229,59 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     }
 
     /**
+     * dump one line
+     *
+     * @param dir direction: false=rx, true=tx
+     * @param dat line
+     */
+    protected void dumpLine(boolean dir, String dat) {
+        if (dumpHandle2 == null) {
+            return;
+        }
+        synchronized (dumpFile) {
+            if (dumpTime > 0) {
+                if ((bits.getTime() - dumpStarted) > dumpTime) {
+                    dumpStarted = bits.getTime();
+                    try {
+                        dumpHandle2.flush();
+                        dumpHandle1.close();
+                    } catch (Exception e) {
+                        logger.error("unable to close file");
+                    }
+                    dumpHandle2 = null;
+                    dumpHandle1 = null;
+                    userFlash.rename(dumpFile, dumpBackup, true, true);
+                    try {
+                        dumpHandle1 = new FileOutputStream(dumpFile);
+                        dumpHandle2 = new PrintStream(dumpHandle1);
+                    } catch (Exception e) {
+                        logger.error("unable to open file");
+                    }
+                }
+            }
+            try {
+                dumpHandle2.print(logger.getTimestamp());
+                if (dir) {
+                    dumpHandle2.print(" tx ");
+                } else {
+                    dumpHandle2.print(" rx ");
+                }
+                dumpHandle2.println(dat);
+                dumpHandle2.flush();
+                return;
+            } catch (Exception e) {
+                logger.error("unable to write file");
+            }
+            try {
+                dumpHandle2.close();
+            } catch (Exception e) {
+            }
+            dumpHandle1 = null;
+            dumpHandle2 = null;
+        }
+    }
+
+    /**
      * list of neighbors
      *
      * @param res list to update
@@ -215,8 +292,27 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             if (nei == null) {
                 continue;
             }
-            res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.peer + "|" + nei.isReady() + "|" + bits.timePast(nei.upTime));
+            res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.inam + "|" + nei.peer + "|" + nei.isReady() + "|" + bits.timePast(nei.upTime));
         }
+    }
+
+    /**
+     * find one neighbor
+     *
+     * @param adr address of peer
+     * @return neighbor, null if not found
+     */
+    protected rtrLsrpNeigh findNeigh(addrIP adr) {
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrLsrpNeigh nei = neighs.get(i);
+            if (nei == null) {
+                continue;
+            }
+            if (adr.compare(adr, nei.peer) == 0) {
+                return nei;
+            }
+        }
+        return null;
     }
 
     /**
@@ -227,6 +323,15 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      */
     public void routerGetConfig(List<String> l, String beg) {
         l.add(cmds.tabulator + beg + "enable");
+        if (dumpFile == null) {
+            l.add(cmds.tabulator + "no " + beg + "dump");
+        } else {
+            String a = "";
+            if (dumpTime != 0) {
+                a = " " + dumpTime + " " + dumpBackup;
+            }
+            l.add(cmds.tabulator + beg + "dump " + dumpFile + a);
+        }
         cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
         cmds.cfgLine(l, !databaseFilter, cmds.tabulator, beg + "database-filter", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
@@ -270,6 +375,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add("9 10                  <name>        rsa certificate");
         l.add("10 11                   <name>      dsa certificate");
         l.add("11 .                      <name>    ecdsa certificate");
+        l.add("4 5         dump                    setup dump file");
+        l.add("5 6,.         <file>                name of file");
+        l.add("6 7             <num>               ms between backup");
+        l.add("7 .               <file>            name of backup");
         l.add("4 5         password                password for authentication");
         l.add("5 .           <text>                set password");
         l.add("4 5         metric                  interface metric");
@@ -313,6 +422,29 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("database-filter")) {
             databaseFilter = true;
+            return;
+        }
+        if (a.equals("dump")) {
+            try {
+                dumpHandle2.flush();
+                dumpHandle1.close();
+            } catch (Exception e) {
+            }
+            dumpHandle2 = null;
+            dumpHandle1 = null;
+            dumpFile = cmd.word();
+            dumpTime = bits.str2num(cmd.word());
+            dumpBackup = cmd.word();
+            dumpStarted = bits.getTime();
+            if (dumpTime > 0) {
+                userFlash.rename(dumpFile, dumpBackup, true, true);
+            }
+            try {
+                dumpHandle1 = new FileOutputStream(dumpFile);
+                dumpHandle2 = new PrintStream(dumpHandle1);
+            } catch (Exception e) {
+                logger.error("unable to open file");
+            }
             return;
         }
         if (a.equals("password")) {
@@ -409,6 +541,19 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("database-filter")) {
             databaseFilter = false;
+            return;
+        }
+        if (a.equals("dump")) {
+            try {
+                dumpHandle1.flush();
+                dumpHandle2.close();
+            } catch (Exception e) {
+            }
+            dumpHandle2 = null;
+            dumpHandle1 = null;
+            dumpFile = null;
+            dumpTime = 0;
+            dumpBackup = null;
             return;
         }
         if (a.equals("password")) {

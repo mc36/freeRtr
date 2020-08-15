@@ -290,7 +290,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return list
      */
     public userFormat showNeighs() {
-        userFormat res = new userFormat("|", "iface|router|name|peer|ready|uptime");
+        userFormat res = new userFormat("|", "iface|router|name|peerif|peer|ready|uptime");
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);
             ifc.showNeighs(res);
@@ -307,11 +307,12 @@ public class rtrLsrp extends ipRtr implements Runnable {
     public rtrLsrpNeigh findNeigh(addrIP adr) {
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);
-            for (int o = 0; o < ifc.neighs.size(); o++) {
-                rtrLsrpNeigh nei = ifc.neighs.get(o);
-                if (adr.compare(adr, nei.peer) == 0) {
-                    return nei;
-                }
+            if (ifc == null) {
+                continue;
+            }
+            rtrLsrpNeigh r = ifc.findNeigh(adr);
+            if (r != null) {
+                return r;
             }
         }
         return null;
@@ -326,6 +327,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         userFormat l = new userFormat("|", "interface|neighbors");
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             l.add(ifc.iface + "|" + ifc.neighs.size());
         }
         return l;
