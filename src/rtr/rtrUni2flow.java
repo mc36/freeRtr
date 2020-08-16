@@ -59,7 +59,7 @@ public class rtrUni2flow extends ipRtr {
     /**
      * rate to give
      */
-    protected int trgRate;
+    protected long trgRate;
 
     /**
      * create unicast to flowspec process
@@ -128,7 +128,7 @@ public class rtrUni2flow extends ipRtr {
             attr.lrgComm = ntry.lrgComm;
             attr.metric = ntry.metric;
             attr.tag = ntry.tag;
-            if (trgRate > 0) {
+            if (trgRate >= 0) {
                 if (attr.extComm == null) {
                     attr.extComm = new ArrayList<Long>();
                 }
@@ -215,7 +215,7 @@ public class rtrUni2flow extends ipRtr {
             return false;
         }
         if (s.equals("rate")) {
-            trgRate = bits.str2num(cmd.word());
+            trgRate = bits.str2long(cmd.word());
             return false;
         }
         return true;
