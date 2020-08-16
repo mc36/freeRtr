@@ -1,6 +1,6 @@
 file;test;stage;command
 -;freeRouter v20.8.16-rel, done by cs@nop.;-;-
--;2020-08-16 04:10:45, took 00:05:22, with 100 workers, on 1874 cases, 0 failed, 0 traces, 6 retries;-;-
+-;2020-08-16 08:05:00, took 00:04:44, with 100 workers, on 1884 cases, 0 failed, 0 traces, 4 retries;-;-
 -;./rtr.bin;-;-
 basic.tst;dummy test;successfully;finished
 conn-anyconn.tst;ip over anyconnect;successfully;finished
@@ -1094,6 +1094,16 @@ qos-action11.tst;qos ingress shaper action;successfully;finished
 qos-action12.tst;qos egress shaper action;successfully;finished
 qos-action13.tst;qos ingress hierarchical action;successfully;finished
 qos-action14.tst;qos egress hierarchical action;successfully;finished
+qos-copp01.tst;qos ingress transmit copp;successfully;finished
+qos-copp02.tst;qos egress transmit copp;successfully;finished
+qos-copp03.tst;qos ingress drop copp;successfully;finished
+qos-copp04.tst;qos egress drop copp;successfully;finished
+qos-copp05.tst;qos ingress policer copp;successfully;finished
+qos-copp06.tst;qos egress policer copp;successfully;finished
+qos-copp07.tst;qos transmit dapp;successfully;finished
+qos-copp08.tst;qos drop dapp;successfully;finished
+qos-copp09.tst;qos policer dapp;successfully;finished
+qos-copp10.tst;qos priority dapp;successfully;finished
 qos-match01.tst;qos ingress length matcher;successfully;finished
 qos-match02.tst;qos egress length matcher;successfully;finished
 qos-match03.tst;qos ingress tos matcher;successfully;finished

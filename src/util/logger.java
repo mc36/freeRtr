@@ -281,6 +281,11 @@ public class logger {
         logFilSiz = 0;
     }
 
+    /**
+     * get timestamp
+     *
+     * @return timestamp
+     */
     public static String getTimestamp() {
         long tim = bits.getTime() + cfgAll.timeServerOffset;
         String a = "";

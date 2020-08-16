@@ -23,6 +23,7 @@ import prt.prtLudp;
 import tab.tabGen;
 import tab.tabNatCfgN;
 import tab.tabPbrN;
+import tab.tabQos;
 import tab.tabRtrmapN;
 import user.userFilter;
 import user.userFormat;
@@ -277,6 +278,36 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public cfgRoump counter6map = null;
 
     /**
+     * ipv4 dapp
+     */
+    public cfgPlymp dapp4 = null;
+
+    /**
+     * ipv6 dapp
+     */
+    public cfgPlymp dapp6 = null;
+
+    /**
+     * ipv4 receive copp
+     */
+    public cfgPlymp copp4in = null;
+
+    /**
+     * ipv4 transmit copp
+     */
+    public cfgPlymp copp4out = null;
+
+    /**
+     * ipv6 receive copp
+     */
+    public cfgPlymp copp6in = null;
+
+    /**
+     * ipv6 transmit copp
+     */
+    public cfgPlymp copp6out = null;
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
@@ -302,6 +333,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no import6policy",
         "vrf definition .*! no export4policy",
         "vrf definition .*! no export6policy",
+        "vrf definition .*! no dapp4",
+        "vrf definition .*! no dapp6",
+        "vrf definition .*! no copp4in",
+        "vrf definition .*! no copp4out",
+        "vrf definition .*! no copp6in",
+        "vrf definition .*! no copp6out",
         "vrf definition .*! no packet4filter",
         "vrf definition .*! no packet6filter",
         "vrf definition .*! no source4route",
@@ -562,6 +599,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, import6pol == null, cmds.tabulator, "import6policy", "" + import6pol);
         cmds.cfgLine(l, export4pol == null, cmds.tabulator, "export4policy", "" + export4pol);
         cmds.cfgLine(l, export6pol == null, cmds.tabulator, "export6policy", "" + export6pol);
+        cmds.cfgLine(l, dapp4 == null, cmds.tabulator, "dapp4", "" + dapp4);
+        cmds.cfgLine(l, dapp6 == null, cmds.tabulator, "dapp6", "" + dapp6);
+        cmds.cfgLine(l, copp4in == null, cmds.tabulator, "copp4in", "" + copp4in);
+        cmds.cfgLine(l, copp4out == null, cmds.tabulator, "copp4out", "" + copp4out);
+        cmds.cfgLine(l, copp6in == null, cmds.tabulator, "copp6in", "" + copp6in);
+        cmds.cfgLine(l, copp6out == null, cmds.tabulator, "copp6out", "" + copp6out);
         cmds.cfgLine(l, packet4fltr == null, cmds.tabulator, "packet4filter", "" + packet4fltr);
         cmds.cfgLine(l, packet6fltr == null, cmds.tabulator, "packet6filter", "" + packet6fltr);
         cmds.cfgLine(l, source4rtr == null, cmds.tabulator, "source4route", "" + source4rtr);
@@ -660,6 +703,18 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("2 .    <name>            name of route policy");
         l.add("1 2  export6policy       specify ipv6 export filter");
         l.add("2 .    <name>            name of route policy");
+        l.add("1 2  dapp4               specify ipv4 data plane policer");
+        l.add("2 .    <name>            name of policy map");
+        l.add("1 2  dapp6               specify ipv6 data plane policer");
+        l.add("2 .    <name>            name of policy map");
+        l.add("1 2  copp4in             specify ipv4 receive control plane policer");
+        l.add("2 .    <name>            name of policy map");
+        l.add("1 2  copp4out            specify ipv4 transmit control plane policer");
+        l.add("2 .    <name>            name of policy map");
+        l.add("1 2  copp6in             specify ipv6 receive control plane policer");
+        l.add("2 .    <name>            name of policy map");
+        l.add("1 2  copp6out            specify ipv6 transmit control plane policer");
+        l.add("2 .    <name>            name of policy map");
         l.add("1 2  packet4filter       specify ipv4 packet filter");
         l.add("2 .    <name>            name of access list");
         l.add("1 2  packet6filter       specify ipv6 packet filter");
@@ -916,6 +971,90 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.routerStaticChg();
             return;
         }
+        if (a.equals("dapp4")) {
+            dapp4 = cfgAll.plmpFind(cmd.word(), false);
+            if (dapp4 == null) {
+                cmd.error("no such policy map");
+                return;
+            }
+            tabQos wrkr = tabQos.convertPolicy(dapp4.plcmap);
+            if (wrkr == null) {
+                cmd.error("error applying policy map");
+                return;
+            }
+            fwd4.dapp = wrkr;
+            return;
+        }
+        if (a.equals("dapp6")) {
+            dapp6 = cfgAll.plmpFind(cmd.word(), false);
+            if (dapp6 == null) {
+                cmd.error("no such policy map");
+                return;
+            }
+            tabQos wrkr = tabQos.convertPolicy(dapp6.plcmap);
+            if (wrkr == null) {
+                cmd.error("error applying policy map");
+                return;
+            }
+            fwd6.dapp = wrkr;
+            return;
+        }
+        if (a.equals("copp4in")) {
+            copp4in = cfgAll.plmpFind(cmd.word(), false);
+            if (copp4in == null) {
+                cmd.error("no such policy map");
+                return;
+            }
+            tabQos wrkr = tabQos.convertPolicy(copp4in.plcmap);
+            if (wrkr == null) {
+                cmd.error("error applying policy map");
+                return;
+            }
+            fwd4.coppIn = wrkr;
+            return;
+        }
+        if (a.equals("copp4out")) {
+            copp4out = cfgAll.plmpFind(cmd.word(), false);
+            if (copp4out == null) {
+                cmd.error("no such policy map");
+                return;
+            }
+            tabQos wrkr = tabQos.convertPolicy(copp4out.plcmap);
+            if (wrkr == null) {
+                cmd.error("error applying policy map");
+                return;
+            }
+            fwd4.coppOut = wrkr;
+            return;
+        }
+        if (a.equals("copp6in")) {
+            copp6in = cfgAll.plmpFind(cmd.word(), false);
+            if (copp6in == null) {
+                cmd.error("no such policy map");
+                return;
+            }
+            tabQos wrkr = tabQos.convertPolicy(copp6in.plcmap);
+            if (wrkr == null) {
+                cmd.error("error applying policy map");
+                return;
+            }
+            fwd6.coppIn = wrkr;
+            return;
+        }
+        if (a.equals("copp6out")) {
+            copp6out = cfgAll.plmpFind(cmd.word(), false);
+            if (copp6out == null) {
+                cmd.error("no such policy map");
+                return;
+            }
+            tabQos wrkr = tabQos.convertPolicy(copp6out.plcmap);
+            if (wrkr == null) {
+                cmd.error("error applying policy map");
+                return;
+            }
+            fwd6.coppOut = wrkr;
+            return;
+        }
         if (a.equals("packet4filter")) {
             packet4fltr = cfgAll.aclsFind(cmd.word(), false);
             if (packet4fltr == null) {
@@ -1098,6 +1237,36 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             export6pol = null;
             fwd6.exportPol = null;
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("dapp4")) {
+            dapp4 = null;
+            fwd4.dapp = null;
+            return;
+        }
+        if (a.equals("dapp6")) {
+            dapp6 = null;
+            fwd6.dapp = null;
+            return;
+        }
+        if (a.equals("copp4in")) {
+            copp4in = null;
+            fwd4.coppIn = null;
+            return;
+        }
+        if (a.equals("copp4out")) {
+            copp4out = null;
+            fwd4.coppOut = null;
+            return;
+        }
+        if (a.equals("copp6in")) {
+            copp6in = null;
+            fwd6.coppIn = null;
+            return;
+        }
+        if (a.equals("copp6out")) {
+            copp6out = null;
+            fwd6.coppOut = null;
             return;
         }
         if (a.equals("packet4filter")) {

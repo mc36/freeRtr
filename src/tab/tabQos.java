@@ -127,94 +127,79 @@ public class tabQos {
         return res;
     }
 
-    /**
-     * classify packet
-     *
-     * @param pck packet to classify
-     */
-    public void classifyPack(packHolder pck) {
+    private boolean classifyLayer3(packHolder pck) {
         pck.ETHtype = pck.msbGetW(0);
         pck.getSkip(2);
-        boolean b;
         switch (pck.ETHtype) {
             case ipIfc4.type:
-                b = ip4cor.parseIPheader(pck, true);
-                break;
+                return ip4cor.parseIPheader(pck, true);
             case ipIfc6.type:
-                b = ip6cor.parseIPheader(pck, true);
-                break;
+                return ip6cor.parseIPheader(pck, true);
             case ipMpls.typeM:
             case ipMpls.typeU:
                 int i = pck.dataSize();
                 ipMpls.parseMPLSheader(pck);
                 pck.setBytesLeft(i);
-                b = true;
-                break;
+                return true;
             case ifcDot1q.type:
                 pck.getSkip(-2);
                 ifcDot1q.parseHeader(pck);
                 pck.getSkip(2);
-                b = true;
-                break;
+                return true;
             case ifcDot1ah.type:
                 pck.getSkip(-2);
                 ifcDot1ah.parseHeader(pck);
                 pck.getSkip(2);
-                b = true;
-                break;
+                return true;
             case ifcDot1ad.type:
                 pck.getSkip(-2);
                 ifcDot1ad.parseHeader(pck);
                 pck.getSkip(2);
-                b = true;
-                break;
+                return true;
             case ifcQinq1.type:
                 pck.getSkip(-2);
                 ifcQinq1.parseHeader(pck);
                 pck.getSkip(2);
-                b = true;
-                break;
+                return true;
             case ifcQinq2.type:
                 pck.getSkip(-2);
                 ifcQinq2.parseHeader(pck);
                 pck.getSkip(2);
-                b = true;
-                break;
+                return true;
             case ifcQinq3.type:
                 pck.getSkip(-2);
                 ifcQinq3.parseHeader(pck);
                 pck.getSkip(2);
-                b = true;
-                break;
+                return true;
             default:
-                b = true;
+                return true;
+        }
+    }
+
+    private void classifyLayer4(packHolder pck) {
+        pck.UDPsrc = 0;
+        pck.UDPtrg = 0;
+        pck.UDPsiz = 0;
+        switch (pck.IPprt) {
+            case prtTcp.protoNum:
+                prtTcp.parseTCPports(pck);
+                break;
+            case prtUdp.protoNum:
+                prtUdp.parseUDPports(pck);
+                break;
+            case prtLudp.protoNum:
+                prtLudp.parseLUDPports(pck);
+                break;
+            case prtDccp.protoNum:
+                prtDccp.parseDCCPports(pck);
+                break;
+            case prtSctp.protoNum:
+                prtSctp.parseSCTPports(pck);
                 break;
         }
-        if (!b) {
-            pck.getSkip(pck.IPsiz);
-            pck.UDPsrc = 0;
-            pck.UDPtrg = 0;
-            pck.UDPsiz = 0;
-            switch (pck.IPprt) {
-                case prtTcp.protoNum:
-                    prtTcp.parseTCPports(pck);
-                    break;
-                case prtUdp.protoNum:
-                    prtUdp.parseUDPports(pck);
-                    break;
-                case prtLudp.protoNum:
-                    prtLudp.parseLUDPports(pck);
-                    break;
-                case prtDccp.protoNum:
-                    prtDccp.parseDCCPports(pck);
-                    break;
-                case prtSctp.protoNum:
-                    prtSctp.parseSCTPports(pck);
-                    break;
-            }
-            pck.getSkip(-pck.IPsiz);
-        }
-        pck.getSkip(-2);
+    }
+
+    private void doClassifycation(packHolder pck) {
         pck.INTclass = -1;
         for (int i = 0; i < classesD.size(); i++) {
             tabQosN cls = classesD.get(i);
@@ -231,6 +216,38 @@ public class tabQos {
             pck.INTclass = i;
             break;
         }
+    }
+
+    /**
+     * classify packet
+     *
+     * @param pck packet to classify
+     */
+    public void classifyPack(packHolder pck) {
+        if (!classifyLayer3(pck)) {
+            pck.getSkip(pck.IPsiz);
+            classifyLayer4(pck);
+            pck.getSkip(-pck.IPsiz);
+        }
+        pck.getSkip(-2);
+        doClassifycation(pck);
+    }
+
+    /**
+     * classify packet
+     *
+     * @param pck packet to classify
+     * @param skip skip ip header
+     */
+    public void classifyUpper(packHolder pck, boolean skip) {
+        if (skip) {
+            pck.getSkip(pck.IPsiz);
+        }
+        classifyLayer4(pck);
+        if (skip) {
+            pck.getSkip(-pck.IPsiz);
+        }
+        doClassifycation(pck);
     }
 
     /**
@@ -347,6 +364,32 @@ public class tabQos {
         synchronized (cls) {
             cls.enqueuePack(pck);
         }
+    }
+
+    /**
+     * check packet
+     *
+     * @param curr current time
+     * @param pck packet to check
+     * @return false if allowed, true if droping
+     */
+    public synchronized boolean checkPacket(long curr, packHolder pck) {
+        if (pck.INTclass < 0) {
+            return true;
+        }
+        tabQosN cls = classesD.get(pck.INTclass);
+        if (cls == null) {
+            return true;
+        }
+        cls.recUpdateTime(curr);
+        if (cls.checkPacket(pck)) {
+            return true;
+        }
+        updatePack(pck, cls);
+        cls.updateBytes(pck.dataSize());
+        cls.countPack++;
+        cls.countByte += pck.dataSize();
+        return false;
     }
 
     /**

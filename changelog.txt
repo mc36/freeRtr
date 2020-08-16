@@ -9085,3 +9085,14 @@ qc pass: ingress source port matching common access list
 qc pass: egress source port matching common access list
 qc pass: ingress destination port matching common access list
 qc pass: egress destination port matching common access list
+---------------------------------- 2020-08-16 08:00:16
+qc pass: qos ingress transmit copp
+qc pass: qos egress transmit copp
+qc pass: qos ingress drop copp
+qc pass: qos egress drop copp
+qc pass: qos ingress policer copp
+qc pass: qos egress policer copp
+qc pass: qos transmit dapp
+qc pass: qos drop dapp
+qc pass: qos policer dapp
+qc pass: qos priority dapp

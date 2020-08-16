@@ -543,24 +543,77 @@ public class userShow {
             return null;
         }
         if (a.equals("policy-map")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
-            if (ifc == null) {
-                cmd.error("no such interface");
-                return null;
-            }
             a = cmd.word();
-            tabQos tab = null;
-            if (a.equals("in")) {
-                tab = ifc.ethtyp.qosIn;
-            }
-            if (a.equals("out")) {
-                tab = ifc.ethtyp.qosOut;
-            }
-            if (tab == null) {
-                cmd.error("no such policy");
+            if (a.equals("data-plane")) {
+                cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+                if (vrf == null) {
+                    cmd.error("no such vrf");
+                    return null;
+                }
+                a = cmd.word();
+                tabQos tab = null;
+                if (a.equals("ipv4")) {
+                    tab = vrf.fwd4.dapp;
+                }
+                if (a.equals("ipv6")) {
+                    tab = vrf.fwd6.dapp;
+                }
+                if (tab == null) {
+                    cmd.error("no such policy");
+                    return null;
+                }
+                rdr.putStrArr(tab.getStats());
                 return null;
             }
-            rdr.putStrArr(tab.getStats());
+            if (a.equals("control-plane")) {
+                cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+                if (vrf == null) {
+                    cmd.error("no such vrf");
+                    return null;
+                }
+                a = cmd.word();
+                tabQos tab = null;
+                if (a.equals("ipv4in")) {
+                    tab = vrf.fwd4.coppIn;
+                }
+                if (a.equals("ipv4out")) {
+                    tab = vrf.fwd4.coppOut;
+                }
+                if (a.equals("ipv6in")) {
+                    tab = vrf.fwd6.coppIn;
+                }
+                if (a.equals("ipv6out")) {
+                    tab = vrf.fwd6.coppOut;
+                }
+                if (tab == null) {
+                    cmd.error("no such policy");
+                    return null;
+                }
+                rdr.putStrArr(tab.getStats());
+                return null;
+            }
+            if (a.equals("interface")) {
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                a = cmd.word();
+                tabQos tab = null;
+                if (a.equals("in")) {
+                    tab = ifc.ethtyp.qosIn;
+                }
+                if (a.equals("out")) {
+                    tab = ifc.ethtyp.qosOut;
+                }
+                if (tab == null) {
+                    cmd.error("no such policy");
+                    return null;
+                }
+                rdr.putStrArr(tab.getStats());
+                return null;
+            }
+            cmd.badCmd();
             return null;
         }
         if (a.equals("object-group")) {

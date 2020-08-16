@@ -106,6 +106,10 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         return "plcmp";
     }
 
+    public String toString() {
+        return name;
+    }
+
     public userHelping getHelp() {
         userHelping l = userHelping.getGenCfg();
         l.add("1 2   sequence              sequence number of an entry");

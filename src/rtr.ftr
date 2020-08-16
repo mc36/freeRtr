@@ -1090,6 +1090,16 @@ qc pass: qos ingress shaper action
 qc pass: qos egress shaper action
 qc pass: qos ingress hierarchical action
 qc pass: qos egress hierarchical action
+qc pass: qos ingress transmit copp
+qc pass: qos egress transmit copp
+qc pass: qos ingress drop copp
+qc pass: qos egress drop copp
+qc pass: qos ingress policer copp
+qc pass: qos egress policer copp
+qc pass: qos transmit dapp
+qc pass: qos drop dapp
+qc pass: qos policer dapp
+qc pass: qos priority dapp
 qc pass: qos ingress length matcher
 qc pass: qos egress length matcher
 qc pass: qos ingress tos matcher

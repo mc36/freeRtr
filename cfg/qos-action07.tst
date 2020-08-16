@@ -40,7 +40,7 @@ r2 tping 91 5 1234::1 /vrf v1 /rep 100 /tim 500 /siz 100
 r1 tping 91 5 1.1.1.2 /vrf v1 /rep 100 /tim 500 /siz 100
 r1 tping 91 5 1234::2 /vrf v1 /rep 100 /tim 500 /siz 100
 
-r2 output show policy eth1 in
+r2 output show policy int eth1 in
 output ../binTmp/qos-priority.html
 <html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">
 here is the policy:

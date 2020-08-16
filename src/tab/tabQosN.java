@@ -174,6 +174,19 @@ public class tabQosN {
     }
 
     /**
+     * recursively update time
+     *
+     * @param curr current time
+     */
+    protected void recUpdateTime(long curr) {
+        updateTime(curr);
+        if (parent == null) {
+            return;
+        }
+        parent.recUpdateTime(curr);
+    }
+
+    /**
      * enqueue one packet
      *
      * @param pck packet to enqueue
@@ -188,6 +201,35 @@ public class tabQosN {
             packets.remove(bits.random(0, packets.size()));
         }
         packets.add(pck.copyBytes(true, true));
+    }
+
+    /**
+     * check packet
+     *
+     * @param pck packet to check
+     * @return false if allowed, true if droping
+     */
+    public boolean checkPacket(packHolder pck) {
+        entry.countPack++;
+        entry.countByte += pck.dataSize();
+        switch (entry.action) {
+            case actPermit:
+                return false;
+            case actPolice:
+            case actPriorty:
+            case actShaper:
+            case actBndwdth:
+                if (checkMyBytes(pck.dataSize())) {
+                    return true;
+                }
+                if (checkPrntBytes(pck.dataSize())) {
+                    return true;
+                }
+                return false;
+            case actDeny:
+            default:
+                return true;
+        }
     }
 
     /**
