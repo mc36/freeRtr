@@ -1,6 +1,6 @@
 file;test;stage;command
 -;freeRouter v20.8.16-rel, done by cs@nop.;-;-
--;2020-08-16 10:54:03, took 00:04:34, with 100 workers, on 1884 cases, 0 failed, 0 traces, 0 retries;-;-
+-;2020-08-16 16:31:17, took 00:04:46, with 100 workers, on 1888 cases, 0 failed, 0 traces, 1 retries;-;-
 -;./rtr.bin;-;-
 basic.tst;dummy test;successfully;finished
 conn-anyconn.tst;ip over anyconnect;successfully;finished
@@ -1104,6 +1104,10 @@ qos-copp07.tst;qos transmit dapp;successfully;finished
 qos-copp08.tst;qos drop dapp;successfully;finished
 qos-copp09.tst;qos policer dapp;successfully;finished
 qos-copp10.tst;qos priority dapp;successfully;finished
+qos-copp11.tst;qos transmit flowspec;successfully;finished
+qos-copp12.tst;qos drop flowspec;successfully;finished
+qos-copp13.tst;qos policer flowspec;successfully;finished
+qos-copp14.tst;qos priority flowspec;successfully;finished
 qos-match01.tst;qos ingress length matcher;successfully;finished
 qos-match02.tst;qos egress length matcher;successfully;finished
 qos-match03.tst;qos ingress tos matcher;successfully;finished

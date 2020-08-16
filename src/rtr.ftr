@@ -1100,6 +1100,10 @@ qc pass: qos transmit dapp
 qc pass: qos drop dapp
 qc pass: qos policer dapp
 qc pass: qos priority dapp
+qc pass: qos transmit flowspec
+qc pass: qos drop flowspec
+qc pass: qos policer flowspec
+qc pass: qos priority flowspec
 qc pass: qos ingress length matcher
 qc pass: qos egress length matcher
 qc pass: qos ingress tos matcher

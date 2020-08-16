@@ -9096,3 +9096,8 @@ qc pass: qos transmit dapp
 qc pass: qos drop dapp
 qc pass: qos policer dapp
 qc pass: qos priority dapp
+---------------------------------- 2020-08-16 16:26:30
+qc pass: qos transmit flowspec
+qc pass: qos drop flowspec
+qc pass: qos policer flowspec
+qc pass: qos priority flowspec
