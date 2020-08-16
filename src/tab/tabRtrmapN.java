@@ -420,6 +420,26 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     }
 
     /**
+     * decode flowspec rate
+     *
+     * @param comm extended community
+     * @return -1 on error, rate if success
+     */
+    public static long comm2rate(long comm) {
+        if (((comm >>> 48) & 0xffff) != 0x8006) {
+            return -1;
+        }
+        float rate = Float.intBitsToFloat((int) comm);
+        if (rate < 1) {
+            return 0;
+        }
+        if (rate > Long.MAX_VALUE) {
+            return Long.MAX_VALUE;
+        }
+        return (long) rate;
+    }
+
+    /**
      * generate dmz link bandwidth
      *
      * @param as as number

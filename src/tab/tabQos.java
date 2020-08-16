@@ -62,9 +62,10 @@ public class tabQos {
     /**
      * get statistics
      *
+     * @param dump dump entries
      * @return statistics
      */
-    public List<String> getStats() {
+    public List<String> getStats(boolean dump) {
         List<String> l = new ArrayList<String>();
         for (int i = 0; i < classesD.size(); i++) {
             tabQosN cls = classesD.get(i);
@@ -72,6 +73,14 @@ public class tabQos {
                 continue;
             }
             cls.getStats(l);
+            if (!dump) {
+                continue;
+            }
+            l.addAll(cls.entry.usrString("    "));
+            if (cls.entry.aclMatch == null) {
+                continue;
+            }
+            l.addAll(cls.entry.aclMatch.dump("      "));
         }
         return l;
     }

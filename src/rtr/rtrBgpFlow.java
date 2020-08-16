@@ -9,6 +9,7 @@ import pack.packHolder;
 import tab.tabAceslstN;
 import tab.tabIntMatcher;
 import tab.tabListing;
+import tab.tabListingEntry;
 import tab.tabPlcmapN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
@@ -21,6 +22,29 @@ import util.bits;
  * @author matecsaba
  */
 public class rtrBgpFlow {
+
+    /**
+     * decode rules
+     *
+     * @param tab list of routes
+     * @param ipv6 set to ipv6 addresses
+     * @return list of rules
+     */
+    public static tabListing<tabPlcmapN, addrIP> doDecode(tabRoute<addrIP> tab, boolean ipv6) {
+        tabListing<tabPlcmapN, addrIP> lst = new tabListing<tabPlcmapN, addrIP>();
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> rou = tab.get(i);
+            tabPlcmapN res = decodePolicy(rou, ipv6);
+            res.sequence = lst.size() + 1;
+            lst.add(res);
+        }
+        tabPlcmapN res = new tabPlcmapN();
+        res.description = "default";
+        res.action = tabListingEntry.actionType.actPermit;
+        res.sequence = lst.size() + 1;
+        lst.add(res);
+        return lst;
+    }
 
     /**
      * advertise flowspec policy
@@ -47,16 +71,28 @@ public class rtrBgpFlow {
 
     private static boolean advertPolicy(tabRoute<addrIP> tab, tabPlcmapN plcy, tabRouteEntry<addrIP> attr, boolean ipv6, int as) {
         packHolder pck = new packHolder(true, true);
+        long rate;
+        switch (plcy.action) {
+            case actDeny:
+                rate = 0;
+                break;
+            case actPermit:
+                rate = -1;
+                break;
+            default:
+                rate = plcy.accessRate;
+                break;
+        }
         if (plcy.aclMatch == null) {
             encodeOthers(pck, plcy);
-            return advertEntry(tab, pck, attr, as, plcy.accessRate);
+            return advertEntry(tab, pck, attr, as, rate);
         }
         boolean res = true;
         for (int i = 0; i < plcy.aclMatch.size(); i++) {
             pck.clear();
             encodeAceslst(pck, plcy.aclMatch.get(i), ipv6);
             encodeOthers(pck, plcy);
-            res &= advertEntry(tab, pck, attr, as, plcy.accessRate);
+            res &= advertEntry(tab, pck, attr, as, rate);
         }
         return res;
     }
@@ -74,7 +110,7 @@ public class rtrBgpFlow {
     public static boolean advertNetwork(tabRoute<addrIP> tab, addrPrefix<addrIP> trg, boolean ipv6, int dir, tabRouteEntry<addrIP> attr) {
         packHolder pck = new packHolder(true, true);
         encodeAddrMtch(pck, dir, ipv6, trg.network, trg.mask);
-        return advertEntry(tab, pck, attr, 0, 0);
+        return advertEntry(tab, pck, attr, 0, -1);
     }
 
     private static boolean advertEntry(tabRoute<addrIP> tab, packHolder pck, tabRouteEntry<addrIP> attr, int as, long rate) {
@@ -103,7 +139,7 @@ public class rtrBgpFlow {
         if (attr.extComm == null) {
             attr.extComm = new ArrayList<Long>();
         }
-        if (rate > 0) {
+        if (rate >= 0) {
             attr.extComm.add(tabRtrmapN.rate2comm(as, rate));
         }
         tab.add(tabRoute.addType.better, attr, true, true);
@@ -195,6 +231,170 @@ public class rtrBgpFlow {
         pck.putByte(0, flg | 0x20);
         pck.msbPutD(1, val);
         pck.putSkip(5);
+    }
+
+    private static tabPlcmapN decodePolicy(tabRouteEntry<addrIP> rou, boolean ipv6) {
+        packHolder pck = new packHolder(true, true);
+        pck.putAddr(addrIP.size * 0, rou.prefix.network);
+        pck.putAddr(addrIP.size * 1, rou.prefix.broadcast);
+        pck.putAddr(addrIP.size * 2, rou.prefix.wildcard);
+        pck.putAddr(addrIP.size * 3, rou.prefix.mask);
+        pck.putSkip(addrIP.size * 4);
+        pck.merge2end();
+        int i = pck.getByte(0);
+        pck.getSkip(1);
+        pck.setDataSize(i);
+        tabPlcmapN res = new tabPlcmapN();
+        res.description = pck.dump();
+        res.action = tabListingEntry.actionType.actPermit;
+        for (;;) {
+            if (pck.dataSize() < 1) {
+                break;
+            }
+            i = pck.getByte(0);
+            pck.getSkip(1);
+            switch (i) {
+                case 1:
+                    tabAceslstN<addrIP> ace = getAce(res);
+                    tabRouteEntry<addrIP> prf = decodeAddrMtch(pck, ipv6);
+                    ace.trgAddr = prf.prefix.network;
+                    ace.trgMask = prf.prefix.mask;
+                    break;
+                case 2:
+                    ace = getAce(res);
+                    prf = decodeAddrMtch(pck, ipv6);
+                    ace.srcAddr = prf.prefix.network;
+                    ace.srcMask = prf.prefix.mask;
+                    break;
+                case 3:
+                    ace = getAce(res);
+                    ace.proto = decodeIntMtch(pck);
+                    break;
+                case 4:
+                    ace = getAce(res);
+                    ace.srcPort = decodeIntMtch(pck);
+                    ace.trgPort = ace.srcPort;
+                    break;
+                case 5:
+                    ace = getAce(res);
+                    ace.trgPort = decodeIntMtch(pck);
+                    break;
+                case 6:
+                    ace = getAce(res);
+                    ace.srcPort = decodeIntMtch(pck);
+                    break;
+                case 7:
+                    decodeIntMtch(pck); // icmp type
+                    break;
+                case 8:
+                    decodeIntMtch(pck); // icmp code
+                    break;
+                case 9:
+                    ace = getAce(res);
+                    ace.flag = decodeIntMtch(pck);
+                    break;
+                case 10:
+                    ace = getAce(res);
+                    ace.len = decodeIntMtch(pck);
+                    break;
+                case 11:
+                    ace = getAce(res);
+                    ace.dscp = decodeIntMtch(pck);
+                    break;
+                case 12:
+                    pck.getSkip(1); // fragments
+                    break;
+            }
+        }
+        if (rou.extComm == null) {
+            return res;
+        }
+        for (i = 0; i < rou.extComm.size(); i++) {
+            long rate = rou.extComm.get(i);
+            rate = tabRtrmapN.comm2rate(rate);
+            if (rate < 0) {
+                continue;
+            }
+            if (rate == 0) {
+                res.action = tabListingEntry.actionType.actDeny;
+                continue;
+            }
+            res.action = tabListingEntry.actionType.actPolice;
+            res.accessRate = rate;
+        }
+        return res;
+    }
+
+    private static tabAceslstN<addrIP> getAce(tabPlcmapN res) {
+        if (res.aclMatch != null) {
+            return res.aclMatch.get(0);
+        }
+        tabAceslstN<addrIP> ntry = new tabAceslstN<addrIP>(new addrIP());
+        ntry.action = tabListingEntry.actionType.actPermit;
+        ntry.sequence = 1;
+        res.aclMatch = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        res.aclMatch.add(ntry);
+        return ntry;
+    }
+
+    private static tabIntMatcher decodeIntMtch(packHolder pck) {
+        tabIntMatcher res = new tabIntMatcher();
+        res.action = tabIntMatcher.actionType.range;
+        res.rangeMin = Integer.MIN_VALUE;
+        res.rangeMax = Integer.MAX_VALUE;
+        for (;;) {
+            int flg = pck.getByte(0);
+            pck.getSkip(1);
+            int val = 0;
+            switch ((flg >>> 4) & 3) {
+                case 0:
+                    val = pck.getByte(0);
+                    pck.getSkip(1);
+                    break;
+                case 1:
+                    val = pck.msbGetW(0);
+                    pck.getSkip(2);
+                    break;
+                case 2:
+                    val = pck.msbGetD(0);
+                    pck.getSkip(4);
+                    break;
+                case 3:
+                    val = pck.msbGetD(4);
+                    pck.getSkip(8);
+                    break;
+            }
+            switch (flg & 7) {
+                case 1:
+                    res.rangeMin = val;
+                    res.rangeMax = val;
+                    break;
+                case 2:
+                case 3:
+                    res.rangeMin = val;
+                    break;
+                case 4:
+                case 5:
+                    res.rangeMax = val;
+                    break;
+            }
+            if ((flg & 0x80) != 0) {
+                break;
+            }
+        }
+        return res;
+    }
+
+    private static tabRouteEntry<addrIP> decodeAddrMtch(packHolder pck, boolean ipv6) {
+        if (ipv6) {
+            pck.putByte(0, pck.getByte(0));
+            pck.getSkip(2);
+            pck.putSkip(1);
+            pck.merge2beg();
+            return rtrBgpUtil.readPrefix(rtrBgpUtil.afiIpv6, true, pck);
+        } else {
+            return rtrBgpUtil.readPrefix(rtrBgpUtil.afiIpv4, true, pck);
+        }
     }
 
 }

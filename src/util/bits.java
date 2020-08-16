@@ -348,7 +348,7 @@ public class bits {
     }
 
     /**
-     * convert u16 to hex string
+     * convert u32 to hex string
      *
      * @param val value to convert
      * @return hex representation of value
@@ -356,6 +356,20 @@ public class bits {
     public static String toHexD(int val) {
         String a = Integer.toHexString(val);
         while (a.length() < 8) {
+            a = "0" + a;
+        }
+        return a;
+    }
+
+    /**
+     * convert u64 to hex string
+     *
+     * @param val value to convert
+     * @return hex representation of value
+     */
+    public static String toHexQ(long val) {
+        String a = Long.toHexString(val);
+        while (a.length() < 16) {
             a = "0" + a;
         }
         return a;

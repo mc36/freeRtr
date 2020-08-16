@@ -15,6 +15,7 @@ import java.util.List;
 import tab.tabGen;
 import tab.tabListing;
 import tab.tabPlcmapN;
+import tab.tabQos;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
@@ -41,6 +42,11 @@ public class rtrBgpVrfRtr extends ipRtr {
     public tabListing<tabPlcmapN, addrIP> flowSpec;
 
     /**
+     * install flow specification
+     */
+    public boolean flowInst;
+
+    /**
      * mvpn advertisement source
      */
     public cfgIfc mvpn;
@@ -50,11 +56,14 @@ public class rtrBgpVrfRtr extends ipRtr {
      */
     public cfgIfc srv6;
 
+    /**
+     * forwarder to use
+     */
+    protected final ipFwd fwd;
+
     private final rtrBgp parent;
 
     private final cfgVrf vrf;
-
-    private final ipFwd fwd;
 
     private final boolean other;
 
@@ -277,6 +286,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         routerComputedM = tabM;
         routerComputedF = tabF;
         fwd.routerChg(this);
+        if (flowInst) {
+            fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, other ^ (parent.afiUni == rtrBgpUtil.safiIp6uni)));
+        }
         return fwd.prefixMode != ipFwd.labelMode.common;
     }
 
@@ -330,7 +342,8 @@ public class rtrBgpVrfRtr extends ipRtr {
         beg2 += vrf.name + " ";
         l.add(beg1 + beg2 + "enable");
         l.add(beg1 + beg2 + "distance " + distance);
-        cmds.cfgLine(l, flowSpec == null, beg1, beg2 + "flowspec", "" + flowSpec);
+        cmds.cfgLine(l, !flowInst, beg1, beg2 + "flowspec-install", "");
+        cmds.cfgLine(l, flowSpec == null, beg1, beg2 + "flowspec-advert", "" + flowSpec);
         if (mvpn != null) {
             l.add(beg1 + beg2 + "mvpn " + mvpn.name);
         }

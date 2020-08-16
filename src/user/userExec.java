@@ -713,6 +713,10 @@ public class userExec {
         hl.add("4 5          <name>              name of vrf");
         hl.add("5 .            ipv4              ipv4 policy");
         hl.add("5 .            ipv6              ipv6 policy");
+        hl.add("3 4        flowspec              applied to vrf");
+        hl.add("4 5          <name>              name of vrf");
+        hl.add("5 .            ipv4              ipv4 policy");
+        hl.add("5 .            ipv6              ipv6 policy");
         hl.add("2 3      object-group            object group statistics");
         hl.add("3 4        network               network list");
         hl.add("4 .          <name>              name of list");

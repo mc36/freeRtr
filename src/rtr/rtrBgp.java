@@ -39,6 +39,7 @@ import tab.tabLabelBierN;
 import tab.tabLabelNtry;
 import tab.tabPlcmapN;
 import tab.tabPrfxlstN;
+import tab.tabQos;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
@@ -299,6 +300,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * flow specification
      */
     protected tabListing<tabPlcmapN, addrIP> flowSpec;
+
+    /**
+     * install flow specification
+     */
+    protected boolean flowInst;
 
     /**
      * list of rpkis
@@ -1480,6 +1486,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " export");
         }
         otherTrigger = (addrFams & rtrBgpParam.mskLab) != 0;
+        if (flowInst) {
+            fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
+        }
         otherTrigger |= other.doPeers(nOtr);
         for (int i = 0; i < vrfs.size(); i++) {
             otherTrigger |= vrfs.get(i).doer.doPeers(nVpnU, nVpnM, nVpnF);
@@ -1724,6 +1733,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computeIncrUpdate(afiMvpo, changedMvpo, computedMvpo, origntedMvpo);
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " export");
+        }
+        if (flowInst) {
+            fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
         other.doPeers(computedOtr);
         for (int i = 0; i < vrfs.size(); i++) {
@@ -1988,7 +2000,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("2 3     <num>                     bitstring length");
         l.add("3 4       <num>                   maximum index");
         l.add("4 .         <num>                 this node index");
-        l.add("1 2   flowspec                    specify flowspec parameter");
+        l.add("1 .   flowspec-install            specify flowspec installation");
+        l.add("1 2   flowspec-advert             specify flowspec parameter");
         l.add("2 .     <name>                    name of policy map");
         l.add("1 2   neighbor                    specify neighbor parameters");
         l.add("2 3     <addr>                    address of peer");
@@ -2033,7 +2046,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("4 .         <name>                select source to advertise");
         l.add("3 4       distance                set import distance");
         l.add("4 .         <num>                 distance");
-        l.add("3 4       flowspec                specify flowspec parameter");
+        l.add("3 .       flowspec-install        specify flowspec installation");
+        l.add("3 4       flowspec-advert         specify flowspec parameter");
         l.add("4 .         <name>                name of policy map");
         cfgRtr.getRedistHelp(l, 2);
         l.add("1 2   afi-ovrf                    select other vrf to advertise");
@@ -2045,7 +2059,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("4 .         <name>                select source to advertise");
         l.add("3 4       distance                set import distance");
         l.add("4 .         <num>                 distance");
-        l.add("3 4       flowspec                specify flowspec parameter");
+        l.add("3 .       flowspec-install        specify flowspec installation");
+        l.add("3 4       flowspec-advert         specify flowspec parameter");
         l.add("4 .         <name>                name of policy map");
         cfgRtr.getRedistHelp(l, 2);
         l.add("1 2   afi-vpls                    select vpls to advertise");
@@ -2101,7 +2116,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
-        cmds.cfgLine(l, flowSpec == null, beg, "flowspec", "" + flowSpec);
+        cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
+        cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
         for (int i = 0; i < mons.size(); i++) {
             mons.get(i).getConfig(l, beg);
         }
@@ -2295,7 +2311,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             return true;
         }
-        if (s.equals("flowspec")) {
+        if (s.equals("flowspec-install")) {
+            flowInst = !negated;
+            if (negated) {
+                fwdCore.flowspec = null;
+            }
+            needFull.add(1);
+            compute.wakeup();
+            return false;
+        }
+        if (s.equals("flowspec-advert")) {
             if (negated) {
                 flowSpec = null;
                 needFull.add(1);
@@ -2394,7 +2419,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 compute.wakeup();
                 return false;
             }
-            if (s.equals("flowspec")) {
+            if (s.equals("flowspec-install")) {
+                cur.doer.flowInst = !negated;
+                if (negated) {
+                    cur.doer.fwd.flowspec = null;
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("flowspec-advert")) {
                 if (negated) {
                     cur.doer.flowSpec = null;
                     needFull.add(1);
@@ -2475,7 +2509,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 compute.wakeup();
                 return false;
             }
-            if (s.equals("flowspec")) {
+            if (s.equals("flowspec-install")) {
+                cur.doer.flowInst = !negated;
+                if (negated) {
+                    cur.doer.fwd.flowspec = null;
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("flowspec-advert")) {
                 if (negated) {
                     cur.doer.flowSpec = null;
                     needFull.add(1);

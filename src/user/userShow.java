@@ -544,6 +544,27 @@ public class userShow {
         }
         if (a.equals("policy-map")) {
             a = cmd.word();
+            if (a.equals("flowspec")) {
+                cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+                if (vrf == null) {
+                    cmd.error("no such vrf");
+                    return null;
+                }
+                a = cmd.word();
+                tabQos tab = null;
+                if (a.equals("ipv4")) {
+                    tab = vrf.fwd4.flowspec;
+                }
+                if (a.equals("ipv6")) {
+                    tab = vrf.fwd6.flowspec;
+                }
+                if (tab == null) {
+                    cmd.error("no such policy");
+                    return null;
+                }
+                rdr.putStrArr(tab.getStats(true));
+                return null;
+            }
             if (a.equals("data-plane")) {
                 cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
                 if (vrf == null) {
@@ -562,7 +583,7 @@ public class userShow {
                     cmd.error("no such policy");
                     return null;
                 }
-                rdr.putStrArr(tab.getStats());
+                rdr.putStrArr(tab.getStats(false));
                 return null;
             }
             if (a.equals("control-plane")) {
@@ -589,7 +610,7 @@ public class userShow {
                     cmd.error("no such policy");
                     return null;
                 }
-                rdr.putStrArr(tab.getStats());
+                rdr.putStrArr(tab.getStats(false));
                 return null;
             }
             if (a.equals("interface")) {
@@ -610,7 +631,7 @@ public class userShow {
                     cmd.error("no such policy");
                     return null;
                 }
-                rdr.putStrArr(tab.getStats());
+                rdr.putStrArr(tab.getStats(false));
                 return null;
             }
             cmd.badCmd();

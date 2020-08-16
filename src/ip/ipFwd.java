@@ -244,6 +244,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public tabQos dapp;
 
     /**
+     * flowspec qos
+     */
+    public tabQos flowspec;
+
+    /**
      * receive control plane qos
      */
     public tabQos coppIn;
@@ -1682,6 +1687,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (dapp != null) {
             if (dapp.checkPacket(bits.getTime(), pck)) {
+                cntr.drop(pck, counter.reasons.noBuffer);
+                return;
+            }
+        }
+        if (flowspec != null) {
+            if (flowspec.checkPacket(bits.getTime(), pck)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
