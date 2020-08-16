@@ -1178,8 +1178,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         if (coppIn != null) {
-            coppIn.classifyUpper(pck, true);
-            if (coppIn.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize() - pck.IPsiz)) {
+            if (coppIn.checkPacket(bits.getTime(), pck)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
@@ -1213,8 +1212,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return true;
         }
         if (coppIn != null) {
-            coppIn.classifyUpper(pck, true);
-            if (coppIn.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize() - pck.IPsiz)) {
+            if (coppIn.checkPacket(bits.getTime(), pck)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return false;
             }
@@ -1256,14 +1254,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.INTiface = -1;
         pck.INTupper = pck.IPprt;
         pck.merge2beg();
+        ipCore.createIPheader(pck);
         if (coppOut != null) {
-            coppOut.classifyUpper(pck, false);
-            if (coppOut.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize())) {
+            if (coppOut.checkPacket(bits.getTime(), pck)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
         }
-        ipCore.createIPheader(pck);
         if (debugger.ipFwdTraf) {
             logger.debug("snd " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
@@ -1307,14 +1304,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.INTiface = iface.ifwNum;
         pck.INTupper = pck.IPprt;
         pck.merge2beg();
+        ipCore.createIPheader(pck);
         if (coppOut != null) {
-            coppOut.classifyUpper(pck, false);
-            if (coppOut.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize())) {
+            if (coppOut.checkPacket(bits.getTime(), pck)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
         }
-        ipCore.createIPheader(pck);
         if (debugger.ipFwdTraf) {
             logger.debug("snd " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
@@ -1417,14 +1413,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         //ipFwdEcho.addMplsFields(pck);
+        ipCore.createIPheader(pck);
         if (coppOut != null) {
-            coppOut.classifyUpper(pck, false);
-            if (coppOut.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize())) {
+            if (coppOut.checkPacket(bits.getTime(), pck)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
         }
-        ipCore.createIPheader(pck);
         pck.INTupper = -1;
         ipMpls.beginMPLSfields(pck, mplsPropTtl);
         forwardPacket(false, false, lower, pck);
@@ -1686,8 +1681,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         if (dapp != null) {
-            dapp.classifyUpper(pck, true);
-            if (dapp.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize() - pck.IPsiz)) {
+            if (dapp.checkPacket(bits.getTime(), pck)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
@@ -2005,14 +1999,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.IPttl = ttl;
         pck.IPtos = tos;
         pck.INTupper = -1;
+        ipCore.createIPheader(pck);
         if (coppOut != null) {
-            coppOut.classifyUpper(pck, false);
-            if (coppOut.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize())) {
+            if (coppOut.checkPacket(bits.getTime(), pck)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return ntry.notif;
             }
         }
-        ipCore.createIPheader(pck);
         ipMpls.beginMPLSfields(pck, mplsPropTtl);
         forwardPacket(false, false, ifc, pck);
         return ntry.notif;

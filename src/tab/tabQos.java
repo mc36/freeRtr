@@ -234,23 +234,6 @@ public class tabQos {
     }
 
     /**
-     * classify packet
-     *
-     * @param pck packet to classify
-     * @param skip skip ip header
-     */
-    public void classifyUpper(packHolder pck, boolean skip) {
-        if (skip) {
-            pck.getSkip(pck.IPsiz);
-        }
-        classifyLayer4(pck);
-        if (skip) {
-            pck.getSkip(-pck.IPsiz);
-        }
-        doClassifycation(pck);
-    }
-
-    /**
      * update one packet
      *
      * @param pck packet to update
@@ -370,19 +353,23 @@ public class tabQos {
      * check packet
      *
      * @param curr current time
-     * @param clas class
-     * @param len packet length
+     * @param pck packet to process
      * @return false if allowed, true if droping
      */
-    public synchronized boolean checkPacket(long curr, int clas, int len) {
-        if (clas < 0) {
+    public synchronized boolean checkPacket(long curr, packHolder pck) {
+        pck.getSkip(pck.IPsiz);
+        classifyLayer4(pck);
+        pck.getSkip(-pck.IPsiz);
+        doClassifycation(pck);
+        if (pck.INTclass < 0) {
             return true;
         }
-        tabQosN cls = classesD.get(clas);
+        tabQosN cls = classesD.get(pck.INTclass);
         if (cls == null) {
             return true;
         }
         cls.recUpdateTime(curr);
+        int len = pck.dataSize();
         if (cls.checkPacket(len)) {
             return true;
         }
