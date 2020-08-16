@@ -370,25 +370,25 @@ public class tabQos {
      * check packet
      *
      * @param curr current time
-     * @param pck packet to check
+     * @param clas class
+     * @param len packet length
      * @return false if allowed, true if droping
      */
-    public synchronized boolean checkPacket(long curr, packHolder pck) {
-        if (pck.INTclass < 0) {
+    public synchronized boolean checkPacket(long curr, int clas, int len) {
+        if (clas < 0) {
             return true;
         }
-        tabQosN cls = classesD.get(pck.INTclass);
+        tabQosN cls = classesD.get(clas);
         if (cls == null) {
             return true;
         }
         cls.recUpdateTime(curr);
-        if (cls.checkPacket(pck)) {
+        if (cls.checkPacket(len)) {
             return true;
         }
-        updatePack(pck, cls);
-        cls.updateBytes(pck.dataSize());
+        cls.updateBytes(len);
         cls.countPack++;
-        cls.countByte += pck.dataSize();
+        cls.countByte += len;
         return false;
     }
 

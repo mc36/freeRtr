@@ -77,7 +77,7 @@ public class rtrBgpFlow {
         return advertEntry(tab, pck, attr, 0, 0);
     }
 
-    private static boolean advertEntry(tabRoute<addrIP> tab, packHolder pck, tabRouteEntry<addrIP> attr, int as, int rate) {
+    private static boolean advertEntry(tabRoute<addrIP> tab, packHolder pck, tabRouteEntry<addrIP> attr, int as, long rate) {
         int o = pck.dataSize();
         if (o < 1) {
             return true;

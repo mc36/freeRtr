@@ -102,12 +102,12 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
     /**
      * byte rate of action
      */
-    public int accessRate;
+    public long accessRate;
 
     /**
      * exceed bytes of action
      */
-    public int exceedRate;
+    public long exceedRate;
 
     /**
      * queue limit

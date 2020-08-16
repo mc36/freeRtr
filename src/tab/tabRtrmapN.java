@@ -415,7 +415,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * @param bw flow rate
      * @return extended community
      */
-    public static long rate2comm(long as, int bw) {
+    public static long rate2comm(long as, long bw) {
         return (((as & 0xffff) | 0x80060000) << 32) | Float.floatToIntBits(bw);
     }
 

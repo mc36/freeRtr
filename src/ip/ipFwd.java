@@ -1179,7 +1179,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (coppIn != null) {
             coppIn.classifyUpper(pck, true);
-            if (coppIn.checkPacket(bits.getTime(), pck)) {
+            if (coppIn.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize() - pck.IPsiz)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
@@ -1214,7 +1214,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (coppIn != null) {
             coppIn.classifyUpper(pck, true);
-            if (coppIn.checkPacket(bits.getTime(), pck)) {
+            if (coppIn.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize() - pck.IPsiz)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return false;
             }
@@ -1258,7 +1258,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.merge2beg();
         if (coppOut != null) {
             coppOut.classifyUpper(pck, false);
-            if (coppOut.checkPacket(bits.getTime(), pck)) {
+            if (coppOut.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize())) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
@@ -1309,7 +1309,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.merge2beg();
         if (coppOut != null) {
             coppOut.classifyUpper(pck, false);
-            if (coppOut.checkPacket(bits.getTime(), pck)) {
+            if (coppOut.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize())) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
@@ -1419,7 +1419,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         //ipFwdEcho.addMplsFields(pck);
         if (coppOut != null) {
             coppOut.classifyUpper(pck, false);
-            if (coppOut.checkPacket(bits.getTime(), pck)) {
+            if (coppOut.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize())) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
@@ -1686,8 +1686,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         if (dapp != null) {
-            dapp.classifyUpper(pck, false);
-            if (dapp.checkPacket(bits.getTime(), pck)) {
+            dapp.classifyUpper(pck, true);
+            if (dapp.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize() - pck.IPsiz)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
@@ -2007,7 +2007,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.INTupper = -1;
         if (coppOut != null) {
             coppOut.classifyUpper(pck, false);
-            if (coppOut.checkPacket(bits.getTime(), pck)) {
+            if (coppOut.checkPacket(bits.getTime(), pck.INTclass, pck.dataSize())) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return ntry.notif;
             }

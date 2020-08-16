@@ -52,16 +52,6 @@ access-list all6
  sequence 10 permit all any all any all
  exit
 !
-access-list fs4
- sequence 10 permit 12-13 10.10.10.0 255.255.255.0 179 10.10.255.0 255.255.255.128 25-80
- sequence 20 permit 12-13 10.10.10.0 255.255.255.0 179 10.10.254.128 255.255.255.128 179
- exit
-!
-access-list fs6
- sequence 10 permit 13-14 2001:db8:1101:: ffff:ffff:ffff:ffff:: 179 2001:db8:1101:123:: ffff:ffff:ffff:ffff:ff00:: 25-80
- sequence 20 permit 13-14 2001:db8:1101:: ffff:ffff:ffff:ffff:: 179 2001:db8:1101:123:100:: ffff:ffff:ffff:ffff:ff00:: 179
- exit
-!
 prefix-list all
  sequence 10 permit 0.0.0.0/0 ge 0 le 32
  sequence 20 permit ::/0 ge 0 le 128
@@ -97,30 +87,6 @@ route-policy nht6
  sequence 50 elsif distance 0
  sequence 60   pass
  sequence 70 enif
- exit
-!
-policy-map fs4
- sequence 10 action transit
- sequence 10 match access-group fs4
- sequence 10 match length 123-321
- sequence 10 access-rate 512000
- !
- sequence 20 action transit
- sequence 20 match length 3333-4444
- sequence 20 access-rate 768000
- !
- exit
-!
-policy-map fs6
- sequence 10 action transit
- sequence 10 match access-group fs6
- sequence 10 match length 123-321
- sequence 10 access-rate 512000
- !
- sequence 20 action transit
- sequence 20 match length 3333-4444
- sequence 20 access-rate 768000
- !
  exit
 !
 bundle 9

@@ -266,12 +266,12 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         }
         if (a.equals("access-rate")) {
             tabPlcmapN ntry = getCurr();
-            ntry.accessRate = bits.str2num(cmd.word()) / 8;
+            ntry.accessRate = bits.str2long(cmd.word()) / 8;
             return;
         }
         if (a.equals("exceed-rate")) {
             tabPlcmapN ntry = getCurr();
-            ntry.exceedRate = bits.str2num(cmd.word()) / 8;
+            ntry.exceedRate = bits.str2long(cmd.word()) / 8;
             return;
         }
         if (a.equals("queue-limit")) {

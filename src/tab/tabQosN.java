@@ -30,7 +30,7 @@ public class tabQosN {
     /**
      * bytes used in this interval
      */
-    protected int bytes;
+    protected long bytes;
 
     /**
      * beginning of interval
@@ -103,7 +103,7 @@ public class tabQosN {
      *
      * @return bytes/int
      */
-    protected int getBytePerInt() {
+    protected long getBytePerInt() {
         int i = getInterval();
         if (i > 1000) {
             return entry.accessRate * (i / 1000);
@@ -206,12 +206,12 @@ public class tabQosN {
     /**
      * check packet
      *
-     * @param pck packet to check
+     * @param len packet length
      * @return false if allowed, true if droping
      */
-    public boolean checkPacket(packHolder pck) {
+    public boolean checkPacket(int len) {
         entry.countPack++;
-        entry.countByte += pck.dataSize();
+        entry.countByte += len;
         switch (entry.action) {
             case actPermit:
                 return false;
@@ -219,10 +219,10 @@ public class tabQosN {
             case actPriorty:
             case actShaper:
             case actBndwdth:
-                if (checkMyBytes(pck.dataSize())) {
+                if (checkMyBytes(len)) {
                     return true;
                 }
-                if (checkPrntBytes(pck.dataSize())) {
+                if (checkPrntBytes(len)) {
                     return true;
                 }
                 return false;
