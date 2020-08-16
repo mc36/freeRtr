@@ -1685,13 +1685,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
-        if (dapp != null) {
+        if (!rxIfc.disableDapp && (dapp != null)) {
             if (dapp.checkPacket(bits.getTime(), pck)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;
             }
         }
-        if (flowspec != null) {
+        if (!rxIfc.disableFlowspec && (flowspec != null)) {
             if (flowspec.checkPacket(bits.getTime(), pck)) {
                 cntr.drop(pck, counter.reasons.noBuffer);
                 return;

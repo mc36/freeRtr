@@ -69,6 +69,16 @@ public class ipFwdIface extends tabRouteIface {
     public boolean mcastAsBcast = false;
 
     /**
+     * set true to disable flowspec
+     */
+    public boolean disableFlowspec = false;
+
+    /**
+     * set true to disable dapp
+     */
+    public boolean disableDapp = false;
+
+    /**
      * set true to block host to host on communication
      */
     public boolean blockHost2host = true;
@@ -332,6 +342,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add("2 .     resend-packet               enable sending packet out on same interface");
         l.add("2 .     directed-broadcast          enable forwarding of directed broadcasts");
         l.add("2 .     broadcast-multicast         broadcast the multicast packets");
+        l.add("2 .     disable-flowspec            disable flowspec processing");
+        l.add("2 .     disable-dapp                disable dapp processing");
         l.add("2 3     verify-source               enable per packet validation");
         l.add("3 .       any                       source is reachable via any interface");
         l.add("3 .       rx                        source is reachable via this interface");
@@ -467,6 +479,8 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, blockHost2host, cmds.tabulator, beg + "resend-packet", "");
         cmds.cfgLine(l, blockBroadcast, cmds.tabulator, beg + "directed-broadcast", "");
         cmds.cfgLine(l, !mcastAsBcast, cmds.tabulator, beg + "broadcast-multicast", "");
+        cmds.cfgLine(l, !disableFlowspec, cmds.tabulator, beg + "disable-flowspec", "");
+        cmds.cfgLine(l, !disableDapp, cmds.tabulator, beg + "disable-dapp", "");
         String a = "";
         if (verifySource) {
             a = "any";
@@ -647,6 +661,14 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("resend-packet")) {
             blockHost2host = false;
+            return false;
+        }
+        if (a.equals("disable-flowspec")) {
+            disableFlowspec = true;
+            return false;
+        }
+        if (a.equals("disable-dapp")) {
+            disableDapp = true;
             return false;
         }
         if (a.equals("broadcast-multicast")) {
@@ -1086,6 +1108,14 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("resend-packet")) {
             blockHost2host = true;
+            return false;
+        }
+        if (a.equals("disable-flowspec")) {
+            disableFlowspec = false;
+            return false;
+        }
+        if (a.equals("disable-dapp")) {
+            disableDapp = false;
             return false;
         }
         if (a.equals("broadcast-multicast")) {
