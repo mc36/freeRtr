@@ -371,6 +371,24 @@ qc pass: ingress destination matching common access list
 qc pass: egress destination matching common access list
 qc pass: ingress source matching common access list
 qc pass: egress source matching common access list
+qc pass: ingress ttl matching common access list
+qc pass: egress ttl matching common access list
+qc pass: ingress tos matching common access list
+qc pass: egress tos matching common access list
+qc pass: ingress length matching common access list
+qc pass: egress length matching common access list
+qc pass: ingress source port matching access list
+qc pass: egress source port matching access list
+qc pass: ingress destination port matching access list
+qc pass: egress destination port matching access list
+qc pass: ingress source port matching hibryd access list
+qc pass: egress source port matching hibryd access list
+qc pass: ingress destination port matching hibryd access list
+qc pass: egress destination port matching hibryd access list
+qc pass: ingress source port matching common access list
+qc pass: egress source port matching common access list
+qc pass: ingress destination port matching common access list
+qc pass: egress destination port matching common access list
 qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6

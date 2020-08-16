@@ -1,6 +1,6 @@
 file;test;stage;command
--;freeRouter v20.8.15-rel, done by cs@nop.;-;-
--;2020-08-15 17:30:25, took 00:04:35, with 100 workers, on 1856 cases, 0 failed, 0 traces, 0 retries;-;-
+-;freeRouter v20.8.16-rel, done by cs@nop.;-;-
+-;2020-08-16 03:50:18, took 00:06:38, with 100 workers, on 1874 cases, 0 failed, 0 traces, 2 retries;-;-
 -;./rtr.bin;-;-
 basic.tst;dummy test;successfully;finished
 conn-anyconn.tst;ip over anyconnect;successfully;finished
@@ -375,6 +375,24 @@ crypt-acl25.tst;ingress destination matching common access list;successfully;fin
 crypt-acl26.tst;egress destination matching common access list;successfully;finished
 crypt-acl27.tst;ingress source matching common access list;successfully;finished
 crypt-acl28.tst;egress source matching common access list;successfully;finished
+crypt-acl29.tst;ingress ttl matching common access list;successfully;finished
+crypt-acl30.tst;egress ttl matching common access list;successfully;finished
+crypt-acl31.tst;ingress tos matching common access list;successfully;finished
+crypt-acl32.tst;egress tos matching common access list;successfully;finished
+crypt-acl33.tst;ingress length matching common access list;successfully;finished
+crypt-acl34.tst;egress length matching common access list;successfully;finished
+crypt-acl35.tst;ingress source port matching access list;successfully;finished
+crypt-acl36.tst;egress source port matching access list;successfully;finished
+crypt-acl37.tst;ingress destination port matching access list;successfully;finished
+crypt-acl38.tst;egress destination port matching access list;successfully;finished
+crypt-acl39.tst;ingress source port matching hibryd access list;successfully;finished
+crypt-acl40.tst;egress source port matching hibryd access list;successfully;finished
+crypt-acl41.tst;ingress destination port matching hibryd access list;successfully;finished
+crypt-acl42.tst;egress destination port matching hibryd access list;successfully;finished
+crypt-acl43.tst;ingress source port matching common access list;successfully;finished
+crypt-acl44.tst;egress source port matching common access list;successfully;finished
+crypt-acl45.tst;ingress destination port matching common access list;successfully;finished
+crypt-acl46.tst;egress destination port matching common access list;successfully;finished
 crypt-dtls.tst;dtls test;successfully;finished
 crypt-esp101.tst;ipv4 in esp over ipv4;successfully;finished
 crypt-esp102.tst;ipv4 in esp over ipv6;successfully;finished

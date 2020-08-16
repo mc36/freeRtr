@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v20.8.15-rel, done by cs@nop.<br/>
-tested: 2020-08-15 17:30:25, took 00:04:35, with 100 workers, on 1856 cases, 0 failed, 0 traces, 0 retries<br/>
+release: freeRouter v20.8.16-rel, done by cs@nop.<br/>
+tested: 2020-08-16 03:50:18, took 00:06:38, with 100 workers, on 1874 cases, 0 failed, 0 traces, 2 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>
@@ -378,6 +378,24 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-acl26.tst">crypt-acl26.tst</a></td><td>egress destination matching common access list</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-acl27.tst">crypt-acl27.tst</a></td><td>ingress source matching common access list</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-acl28.tst">crypt-acl28.tst</a></td><td>egress source matching common access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl29.tst">crypt-acl29.tst</a></td><td>ingress ttl matching common access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl30.tst">crypt-acl30.tst</a></td><td>egress ttl matching common access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl31.tst">crypt-acl31.tst</a></td><td>ingress tos matching common access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl32.tst">crypt-acl32.tst</a></td><td>egress tos matching common access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl33.tst">crypt-acl33.tst</a></td><td>ingress length matching common access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl34.tst">crypt-acl34.tst</a></td><td>egress length matching common access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl35.tst">crypt-acl35.tst</a></td><td>ingress source port matching access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl36.tst">crypt-acl36.tst</a></td><td>egress source port matching access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl37.tst">crypt-acl37.tst</a></td><td>ingress destination port matching access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl38.tst">crypt-acl38.tst</a></td><td>egress destination port matching access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl39.tst">crypt-acl39.tst</a></td><td>ingress source port matching hibryd access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl40.tst">crypt-acl40.tst</a></td><td>egress source port matching hibryd access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl41.tst">crypt-acl41.tst</a></td><td>ingress destination port matching hibryd access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl42.tst">crypt-acl42.tst</a></td><td>egress destination port matching hibryd access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl43.tst">crypt-acl43.tst</a></td><td>ingress source port matching common access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl44.tst">crypt-acl44.tst</a></td><td>egress source port matching common access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl45.tst">crypt-acl45.tst</a></td><td>ingress destination port matching common access list</td><td>successfully</td><td>finished</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl46.tst">crypt-acl46.tst</a></td><td>egress destination port matching common access list</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-dtls.tst">crypt-dtls.tst</a></td><td>dtls test</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-esp101.tst">crypt-esp101.tst</a></td><td>ipv4 in esp over ipv4</td><td>successfully</td><td>finished</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-esp102.tst">crypt-esp102.tst</a></td><td>ipv4 in esp over ipv6</td><td>successfully</td><td>finished</td></tr>
