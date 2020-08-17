@@ -9101,3 +9101,6 @@ qc pass: qos transmit flowspec
 qc pass: qos drop flowspec
 qc pass: qos policer flowspec
 qc pass: qos priority flowspec
+---------------------------------- 2020-08-17 04:26:30
+qc pass: lsrp with selective sr
+qc pass: lsrp with selective bier

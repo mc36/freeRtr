@@ -1,6 +1,6 @@
 file;test;stage;command
--;freeRouter v20.8.16-rel, done by cs@nop.;-;-
--;2020-08-16 17:28:43, took 00:06:21, with 100 workers, on 1888 cases, 0 failed, 0 traces, 1 retries;-;-
+-;freeRouter v20.8.17-rel, done by cs@nop.;-;-
+-;2020-08-17 04:32:17, took 00:05:47, with 100 workers, on 1890 cases, 0 failed, 0 traces, 0 retries;-;-
 -;./rtr.bin;-;-
 basic.tst;dummy test;successfully;finished
 conn-anyconn.tst;ip over anyconnect;successfully;finished
@@ -1686,6 +1686,8 @@ rout-lsrp29.tst;lsrp address unsuppression;successfully;finished
 rout-lsrp30.tst;lsrp with php sr;successfully;finished
 rout-lsrp31.tst;lsrp with srgb sr;successfully;finished
 rout-lsrp32.tst;lsrp over point2point ethernet;successfully;finished
+rout-lsrp33.tst;lsrp with selective sr;successfully;finished
+rout-lsrp34.tst;lsrp with selective bier;successfully;finished
 rout-mcast01.tst;multicast routing with static flooding;successfully;finished
 rout-mcast02.tst;multicast routing with pim ssm;successfully;finished
 rout-mcast03.tst;multicast routing with igmp/mld;successfully;finished

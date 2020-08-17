@@ -1682,6 +1682,8 @@ qc pass: lsrp address unsuppression
 qc pass: lsrp with php sr
 qc pass: lsrp with srgb sr
 qc pass: lsrp over point2point ethernet
+qc pass: lsrp with selective sr
+qc pass: lsrp with selective bier
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
