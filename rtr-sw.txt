@@ -268,17 +268,9 @@ interface loopback0
  no description
  vrf forwarding v1
  ipv4 address 10.10.10.227 255.255.255.255
- ipv4 pim enable
- ipv4 pim bier-tunnel 299
- ipv4 pim join-source loopback0
  ipv6 address 2001:db8:1101::227:227 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- ipv6 pim enable
- ipv6 pim bier-tunnel 299
- ipv6 pim join-source loopback0
- mpls rsvp4
- mpls rsvp6
+ template template1
  no shutdown
- no log-link-change
  exit
 !
 interface loopback42
