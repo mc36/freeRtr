@@ -308,13 +308,56 @@ interface loopback65535
  no log-link-change
  exit
 !
+interface template1
+ description core links
+ monitor-buffer 10240000
+ lldp enable
+ cdp enable
+ cdp odr4 10.1.123.91
+ cdp odr6 2001:db8:1123::91
+ ptp enable
+ ptp receive
+ carrier-delay 123
+ vrf forwarding v1
+ ipv4 address dynamic 255.255.255.252
+ ipv4 inspect mac
+ ipv4 host-watch
+ ipv4 ptp enable
+ ipv4 ptp receive
+ ipv4 bfd 1000 3000 3
+ ipv4 pim enable
+ ipv4 pim bier-tunnel 299
+ ipv4 pim join-source loopback0
+ ipv6 address dynamic ffff:ffff:ffff:ffff::
+ ipv6 inspect mac
+ ipv6 host-watch
+ ipv6 ptp enable
+ ipv6 ptp receive
+ ipv6 bfd 1000 3000 3
+ ipv6 pim enable
+ ipv6 pim bier-tunnel 299
+ ipv6 pim join-source loopback0
+ mpls enable
+ mpls inspect
+ mpls ldp4
+ mpls ldp6
+ mpls rsvp4
+ mpls rsvp6
+ router lsrp4 1 enable
+ router lsrp4 1 dump lsrp4.log
+ router lsrp4 1 accept-metric
+ router lsrp4 1 bfd
+ router lsrp6 1 enable
+ router lsrp6 1 dump lsrp6.log
+ router lsrp6 1 accept-metric
+ router lsrp6 1 bfd
+ shutdown
+ log-link-change
+ exit
+!
 interface bundle9
  description uplink
  bridge-group 9
- bridge-filter ipv4in all4
- bridge-filter ipv4out all4
- bridge-filter ipv6in all6
- bridge-filter ipv6out all6
  no shutdown
  no log-link-change
  exit
@@ -390,53 +433,6 @@ interface ethernet9
  cdp enable
  no shutdown
  no log-link-change
- exit
-!
-interface template1
- description core links
- monitor-buffer 10240000
- lldp enable
- cdp enable
- cdp odr4 10.1.123.91
- cdp odr6 2001:db8:1123::91
- ptp enable
- ptp receive
- carrier-delay 123
- vrf forwarding v1
- ipv4 address dynamic 255.255.255.252
- ipv4 inspect mac
- ipv4 host-watch
- ipv4 ptp enable
- ipv4 ptp receive
- ipv4 bfd 1000 3000 3
- ipv4 pim enable
- ipv4 pim bier-tunnel 299
- ipv4 pim join-source loopback0
- ipv6 address dynamic ffff:ffff:ffff:ffff::
- ipv6 inspect mac
- ipv6 host-watch
- ipv6 ptp enable
- ipv6 ptp receive
- ipv6 bfd 1000 3000 3
- ipv6 pim enable
- ipv6 pim bier-tunnel 299
- ipv6 pim join-source loopback0
- mpls enable
- mpls inspect
- mpls ldp4
- mpls ldp6
- mpls rsvp4
- mpls rsvp6
- router lsrp4 1 enable
- router lsrp4 1 dump lsrp4.log
- router lsrp4 1 accept-metric
- router lsrp4 1 bfd
- router lsrp6 1 enable
- router lsrp6 1 dump lsrp6.log
- router lsrp6 1 accept-metric
- router lsrp6 1 bfd
- shutdown
- log-link-change
  exit
 !
 router bgp4 65535

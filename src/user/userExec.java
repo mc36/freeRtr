@@ -372,8 +372,6 @@ public class userExec {
         hl.add("4 5          <num>               process id");
         hl.add("5 .            neighbor          list of neighbor");
         hl.add("5 .            interface         list of interfaces");
-        hl.add("5 .            segrout           list of segment routing");
-        hl.add("5 .            bier              list of bier");
         hl.add("5 .            software          list of software");
         hl.add("5 6            zonefile          list of reverse zone");
         hl.add("6 .              <name>          name of zone");

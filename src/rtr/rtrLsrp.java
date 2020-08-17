@@ -338,7 +338,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * list database
      *
-     * @param mod mode: 1=summary, 2=segrout, 3=uptime, 4=software, 5=bier
+     * @param mod mode: 1=summary, 2=uptime, 3=software
      * @return list of database
      */
     public userFormat showDatabase(int mod) {
@@ -348,16 +348,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 l = new userFormat("|", "id|name|nei|net|seq|topo|left");
                 break;
             case 2:
-                l = new userFormat("|", "id|name|pop|index|max|base");
-                break;
-            case 3:
                 l = new userFormat("|", "id|name|uptime|changes|changed");
                 break;
-            case 4:
+            case 3:
                 l = new userFormat("|", "id|name|hw|sw|middle|kernel");
-                break;
-            case 5:
-                l = new userFormat("|", "id|name|index|max|len|base");
                 break;
             default:
                 return null;
@@ -372,16 +366,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.neighbor.size() + "|" + ntry.network.size() + "|" + ntry.sequence + "|" + bits.toHexD(ntry.topoSum) + "|" + bits.timeLeft(ntry.time));
                     break;
                 case 2:
-                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.segrouPop + "|" + ntry.segrouIdx + "|" + ntry.segrouMax + "|" + ntry.segrouBeg);
-                    break;
-                case 3:
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + bits.timeDump(ntry.uptime / 1000) + "|" + ntry.changesNum + "|" + bits.timeDump(ntry.changesTim / 1000));
                     break;
-                case 4:
+                case 3:
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.hardware + "|" + ntry.software + "|" + ntry.middleware + "|" + ntry.kernel);
-                    break;
-                case 5:
-                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.bierIdx + "|" + ntry.bierMax + "|" + ntry.bierLen + "|" + ntry.bierBeg);
                     break;
             }
         }
@@ -513,24 +501,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
+            ntry.segrouIdx = segrouIdx;
+            ntry.rouSrc = segrouPop ? 16 : 0;
+            ntry.bierIdx = bierIdx;
             dat.network.add(tabRoute.addType.always, ntry, true, true);
-        }
-        for (int i = 0; i < ifaces.size(); i++) {
-            rtrLsrpIface ifc = ifaces.get(i);
-            if (ifc == null) {
-                continue;
-            }
-            if (ifc.iface.lower.getState() != state.states.up) {
-                continue;
-            }
-            dat.address.add(ifc.iface.addr.copyBytes());
-            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
-                continue;
-            }
-            tabRouteEntry<addrIP> ntry = dat.network.add(tabRoute.addType.better, ifc.iface.network, null);
-            ntry.rouTyp = tabRouteEntry.routeType.conn;
-            ntry.iface = ifc.iface;
-            ntry.distance = tabRouteEntry.distanIfc;
         }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrLsrpIface ifc = ifaces.get(o);
@@ -558,8 +532,39 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 }
                 dat.addNeigh(nei.rtrId, met, (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj, nei.peer);
             }
+            dat.address.add(ifc.iface.addr.copyBytes());
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
+                continue;
+            }
+            tabRouteEntry<addrIP> ntry = dat.network.add(tabRoute.addType.better, ifc.iface.network, null);
+            ntry.rouTyp = tabRouteEntry.routeType.conn;
+            ntry.iface = ifc.iface;
+            ntry.distance = tabRouteEntry.distanIfc;
+            if (ifc.segrouIdx >= 0) {
+                ntry.segrouIdx = ifc.segrouIdx;
+                ntry.rouSrc = ifc.segrouPop ? 16 : 0;
+            } else {
+                ntry.segrouIdx = segrouIdx;
+                ntry.rouSrc = segrouPop ? 16 : 0;
+            }
+            if (ifc.bierIdx >= 0) {
+                ntry.bierIdx = ifc.bierIdx;
+            } else {
+                ntry.bierIdx = bierIdx;
+            }
         }
-        dat.network.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteEntry.distanLim);
+        for (int i = 0; i < routerRedistedU.size(); i++) {
+            tabRouteEntry<addrIP> ntry = routerRedistedU.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry = ntry.copyBytes();
+            ntry.distance = tabRouteEntry.distanIfc + 1;
+            ntry.segrouIdx = segrouIdx;
+            ntry.rouSrc = segrouPop ? 17 : 1;
+            ntry.bierIdx = bierIdx;
+            dat.network.add(tabRoute.addType.better, ntry, false, false);
+        }
         dat.rtrId = routerID.copyBytes();
         dat.topoSum = lastSpf.listTopoSum().hashCode();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
@@ -568,13 +573,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
         dat.middleware = version.getVMname().replaceAll(" ", "_");
         dat.kernel = version.getKernelName().replaceAll(" ", "_");
         if (segrouLab != null) {
-            dat.segrouIdx = segrouIdx;
             dat.segrouMax = segrouMax;
             dat.segrouBeg = segrouLab[0].getValue();
-            dat.segrouPop = segrouPop;
         }
         if (bierLab != null) {
-            dat.bierIdx = bierIdx;
             dat.bierMax = bierMax;
             dat.bierLen = bierLen;
             dat.bierBeg = bierLab[0].getValue();
@@ -618,20 +620,13 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             ntry.putNeighs(spf);
             spf.addSegRouB(ntry.rtrId, ntry.segrouBeg);
-            spf.addSegRouI(ntry.rtrId, ntry.segrouIdx);
             spf.addBierB(ntry.rtrId, ntry.bierBeg);
-            spf.addBierI(ntry.rtrId, ntry.bierIdx, true);
-            if (routerID.compare(routerID, ntry.rtrId) == 0) {
-                continue;
-            }
-            if ((segrouIdx != 0) && (segrouIdx == ntry.segrouIdx)) {
-                logger.error("duplicate segrout index with " + ntry.rtrId);
-            }
-            if ((bierIdx != 0) && (bierIdx == ntry.bierIdx)) {
-                logger.error("duplicate bier index with " + ntry.rtrId);
-            }
         }
         spf.doCalc(routerID, null);
+        boolean[] segrouUsd = null;
+        if (segrouLab != null) {
+            segrouUsd = new boolean[segrouMax];
+        }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrLsrpIface ifc = ifaces.get(o);
             if (ifc == null) {
@@ -639,6 +634,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
+            }
+            if ((segrouUsd != null) && (ifc.segrouIdx > 0)) {
+                segrouLab[ifc.segrouIdx].setFwdCommon(6, fwdCore);
+                segrouUsd[ifc.segrouIdx] = true;
             }
             for (int i = 0; i < ifc.neighs.size(); i++) {
                 rtrLsrpNeigh nei = ifc.neighs.get(i);
@@ -656,10 +655,6 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
-        boolean[] segrouUsd = null;
-        if (segrouLab != null) {
-            segrouUsd = new boolean[segrouMax];
-        }
         for (int o = 0; o < database.size(); o++) {
             rtrLsrpData ntry = database.get(o);
             if (ntry == null) {
@@ -676,15 +671,6 @@ public class rtrLsrp extends ipRtr implements Runnable {
             int sro = spf.getSegRouB(ntry.rtrId, true);
             int brb = spf.getBierB(ntry.rtrId, false);
             int bro = spf.getBierB(ntry.rtrId, true);
-            List<Integer> label = null;
-            if ((segrouUsd != null) && (ntry.segrouIdx > 0) && (ntry.segrouIdx < segrouMax) && (srb > 0)) {
-                label = tabLabel.int2labels(srb + ntry.segrouIdx);
-                if (ntry.segrouPop && (hops <= 1)) {
-                    label = tabLabel.int2labels(ipMpls.labelImp);
-                }
-                segrouLab[ntry.segrouIdx].setFwdMpls(6, fwdCore, iface, hop, label);
-                segrouUsd[ntry.segrouIdx] = true;
-            }
             for (int i = 0; i < ntry.network.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.network.get(i).copyBytes();
                 rou.srcRtr = ntry.rtrId.copyBytes();
@@ -692,11 +678,19 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 rou.metric += met;
                 rou.distance = distance;
                 rou.iface = iface;
-                rou.labelRem = label;
-                rou.segrouIdx = ntry.segrouIdx;
+                spf.addSegRouI(ntry.rtrId, rou.segrouIdx);
+                spf.addBierI(ntry.rtrId, rou.bierIdx, true);
+                if ((segrouUsd != null) && (rou.segrouIdx > 0) && (rou.segrouIdx < segrouMax) && (srb > 0)) {
+                    List<Integer> lab = tabLabel.int2labels(srb + rou.segrouIdx);
+                    if (((rou.rouSrc & 16) != 0) && (hops <= 1)) {
+                        lab = tabLabel.int2labels(ipMpls.labelImp);
+                    }
+                    segrouLab[rou.segrouIdx].setFwdMpls(6, fwdCore, iface, hop, lab);
+                    segrouUsd[rou.segrouIdx] = true;
+                    rou.labelRem = lab;
+                }
                 rou.segrouBeg = srb;
                 rou.segrouOld = sro;
-                rou.bierIdx = ntry.bierIdx;
                 rou.bierBeg = brb;
                 rou.bierOld = bro;
                 rou.bierHdr = tabLabelBier.num2bsl(ntry.bierLen);
@@ -704,8 +698,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         if (segrouUsd != null) {
-            segrouLab[segrouIdx].setFwdCommon(6, fwdCore);
-            segrouUsd[segrouIdx] = true;
+            if (segrouIdx > 0) {
+                segrouLab[segrouIdx].setFwdCommon(6, fwdCore);
+                segrouUsd[segrouIdx] = true;
+            }
             for (int i = 0; i < segrouUsd.length; i++) {
                 if (segrouUsd[i]) {
                     continue;
@@ -722,6 +718,19 @@ public class rtrLsrp extends ipRtr implements Runnable {
             res.fwdr = fwdCore;
             res.bsl = tabLabelBier.num2bsl(bierLen);
             res.idx = bierIdx;
+            if (bierIdx < 1) {
+                for (int i = 0; i < ifaces.size(); i++) {
+                    rtrLsrpIface ifc = ifaces.get(i);
+                    if (ifc == null) {
+                        continue;
+                    }
+                    if (ifc.bierIdx < 1) {
+                        continue;
+                    }
+                    res.idx = ifc.bierIdx;
+                    break;
+                }
+            }
             for (int i = 0; i < bierLab.length; i++) {
                 bierLab[i].setBierMpls(18, fwdCore, res);
             }

@@ -1,4 +1,4 @@
-description lsrp with bier
+description lsrp with selective bier
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -17,19 +17,23 @@ access-list test6
 router lsrp4 1
  vrf v1
  router 4.4.4.1
- bier 256 10 1
+ bier 256 10 0
  red conn
  exit
 router lsrp6 1
  vrf v1
  router 6.6.6.1
- bier 256 10 1
+ bier 256 10 0
  red conn
  exit
 int lo1
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.255
  ipv6 addr 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ router lsrp4 1 ena
+ router lsrp6 1 ena
+ router lsrp4 1 bier 1
+ router lsrp6 1 bier 1
  exit
 int eth1
  vrf for v1
@@ -81,19 +85,23 @@ access-list test6
 router lsrp4 1
  vrf v1
  router 4.4.4.2
- bier 256 10 2
+ bier 256 10 0
  red conn
  exit
 router lsrp6 1
  vrf v1
  router 6.6.6.2
- bier 256 10 2
+ bier 256 10 0
  red conn
  exit
 int lo1
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.255
  ipv6 addr 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ router lsrp4 1 ena
+ router lsrp6 1 ena
+ router lsrp4 1 bier 2
+ router lsrp6 1 bier 2
  exit
 int eth1
  vrf for v1
@@ -134,19 +142,23 @@ access-list test6
 router lsrp4 1
  vrf v1
  router 4.4.4.3
- bier 256 10 3
+ bier 256 10 0
  red conn
  exit
 router lsrp6 1
  vrf v1
  router 6.6.6.3
- bier 256 10 3
+ bier 256 10 0
  red conn
  exit
 int lo1
  vrf for v1
  ipv4 addr 2.2.2.3 255.255.255.255
  ipv6 addr 4321::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ router lsrp4 1 ena
+ router lsrp6 1 ena
+ router lsrp4 1 bier 3
+ router lsrp6 1 bier 3
  exit
 int eth1
  vrf for v1

@@ -1561,12 +1561,8 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showIfaces());
             return;
         }
-        if (a.equals("segrout")) {
-            rdr.putStrTab(r.lsrp.showDatabase(2));
-            return;
-        }
         if (a.equals("uptime")) {
-            rdr.putStrTab(r.lsrp.showDatabase(3));
+            rdr.putStrTab(r.lsrp.showDatabase(2));
             return;
         }
         if (a.equals("zonefile")) {
@@ -1574,11 +1570,7 @@ public class userShow {
             return;
         }
         if (a.equals("software")) {
-            rdr.putStrTab(r.lsrp.showDatabase(4));
-            return;
-        }
-        if (a.equals("bier")) {
-            rdr.putStrTab(r.lsrp.showDatabase(5));
+            rdr.putStrTab(r.lsrp.showDatabase(3));
             return;
         }
         if (a.equals("database")) {

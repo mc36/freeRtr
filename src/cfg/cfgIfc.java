@@ -1469,6 +1469,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no router lsrp[4|6] .* dump",
         "interface .*! no router lsrp[4|6] .* accept-metric",
         "interface .*! no router lsrp[4|6] .* bfd",
+        "interface .*! no router lsrp[4|6] .* segrout",
+        "interface .*! no router lsrp[4|6] .* bier",
         "interface .*! no router lsrp[4|6] .* stub",
         "interface .*! no router lsrp[4|6] .* unstub",
         "interface .*! no router lsrp[4|6] .* suppress-prefix",
@@ -1811,6 +1813,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         String s2 = o2.name.toLowerCase();
         boolean l1 = s1.startsWith("loopback");
         boolean l2 = s2.startsWith("loopback");
+        if (l1 != l2) {
+            return l1 ? -1 : +1;
+        }
+        l1 = s1.startsWith("template");
+        l2 = s2.startsWith("template");
         if (l1 != l2) {
             return l1 ? -1 : +1;
         }

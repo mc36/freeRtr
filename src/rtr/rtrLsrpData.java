@@ -64,11 +64,6 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public String kernel;
 
     /**
-     * segment routing index
-     */
-    public int segrouIdx;
-
-    /**
      * segment routing maximum
      */
     public int segrouMax;
@@ -77,16 +72,6 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * segment routing base
      */
     public int segrouBeg;
-
-    /**
-     * segment routing pop
-     */
-    public boolean segrouPop;
-
-    /**
-     * bier index
-     */
-    public int bierIdx;
 
     /**
      * bier length
@@ -211,13 +196,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         if ((typ & 0x40) != 0) {
             s += " segroubeg=" + segrouBeg;
             s += " segroumax=" + segrouMax;
-            s += " segrouidx=" + segrouIdx;
-            s += " segroupop=" + segrouPop;
         }
         if ((typ & 0x400) != 0) {
             s += " bierbeg=" + bierBeg;
             s += " biermax=" + bierMax;
-            s += " bieridx=" + bierIdx;
             s += " bierlen=" + bierLen;
         }
         int metric = 0;
@@ -225,7 +207,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         long bndwdt = 0;
         int affinity = 0;
         int srlg = 0;
-        int segrou = 0;
+        int segrouAdj = 0;
+        int segrouIdx = 0;
+        boolean segrouPop = false;
+        int bierIdx = 0;
         int tag = 0;
         if ((typ & 0x10) != 0) {
             for (int i = 0; i < neighbor.size(); i++) {
@@ -250,9 +235,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                     s += " affinity=" + ntry.affnty;
                     affinity = ntry.affnty;
                 }
-                if (ntry.segrou != segrou) {
+                if (ntry.segrou != segrouAdj) {
                     s += " segrouadj=" + ntry.segrou;
-                    segrou = ntry.segrou;
+                    segrouAdj = ntry.segrou;
                 }
                 s += " peeraddr=" + ntry.peer;
                 s += " neighbor=" + ntry.rtrid;
@@ -268,6 +253,19 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (ntry.tag != tag) {
                     s += " tag=" + ntry.tag;
                     tag = ntry.tag;
+                }
+                if (ntry.segrouIdx != segrouIdx) {
+                    s += " segrouidx=" + ntry.segrouIdx;
+                    segrouIdx = ntry.segrouIdx;
+                }
+                boolean srp = (ntry.rouSrc & 16) != 0;
+                if (srp != segrouPop) {
+                    s += " segroupop=" + srp;
+                    segrouPop = srp;
+                }
+                if (ntry.bierIdx != bierIdx) {
+                    s += " bieridx=" + ntry.bierIdx;
+                    bierIdx = ntry.bierIdx;
                 }
                 s += " network=" + addrPrefix.ip2str(ntry.prefix);
             }
@@ -318,12 +316,12 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         topoSum = 0;
         sequence = 0;
         segrouBeg = 0;
-        segrouIdx = 0;
+        int segrouIdx = 0;
         segrouMax = 0;
-        segrouPop = false;
+        boolean segrouPop = false;
         bierBeg = 0;
         bierMax = 0;
-        bierIdx = 0;
+        int bierIdx = 0;
         bierLen = 0;
         time = 0;
         uptime = 0;
@@ -484,6 +482,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 }
                 ntry.metric = metric;
                 ntry.tag = tag;
+                ntry.bierIdx = bierIdx;
+                ntry.segrouIdx = segrouIdx;
+                ntry.rouSrc = segrouPop ? 16 : 0;
                 network.add(tabRoute.addType.better, ntry, true, true);
                 continue;
             }

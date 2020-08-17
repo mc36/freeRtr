@@ -120,72 +120,72 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     /**
      * ingress label filter
      */
-    public tabListing<tabPrfxlstN, addrIP> labelIn;
+    public tabListing<tabPrfxlstN, addrIP> labelIn = null;
 
     /**
      * egress label filter
      */
-    public tabListing<tabPrfxlstN, addrIP> labelOut;
+    public tabListing<tabPrfxlstN, addrIP> labelOut = null;
 
     /**
      * ingress prefix list
      */
-    public tabListing<tabPrfxlstN, addrIP> prflstIn;
+    public tabListing<tabPrfxlstN, addrIP> prflstIn = null;
 
     /**
      * egress prefix list
      */
-    public tabListing<tabPrfxlstN, addrIP> prflstOut;
+    public tabListing<tabPrfxlstN, addrIP> prflstOut = null;
 
     /**
      * ingress route map
      */
-    public tabListing<tabRtrmapN, addrIP> roumapIn;
+    public tabListing<tabRtrmapN, addrIP> roumapIn = null;
 
     /**
      * egress route map
      */
-    public tabListing<tabRtrmapN, addrIP> roumapOut;
+    public tabListing<tabRtrmapN, addrIP> roumapOut = null;
 
     /**
      * ingress route policy
      */
-    public tabListing<tabRtrplcN, addrIP> roupolIn;
+    public tabListing<tabRtrplcN, addrIP> roupolIn = null;
 
     /**
      * egress route policy
      */
-    public tabListing<tabRtrplcN, addrIP> roupolOut;
+    public tabListing<tabRtrplcN, addrIP> roupolOut = null;
 
     /**
      * rsa key to use
      */
-    public cfgKey<cryKeyRSA> keyRsa;
+    public cfgKey<cryKeyRSA> keyRsa = null;
 
     /**
      * dsa key to use
      */
-    public cfgKey<cryKeyDSA> keyDsa;
+    public cfgKey<cryKeyDSA> keyDsa = null;
 
     /**
      * ecdsa key to use
      */
-    public cfgKey<cryKeyECDSA> keyEcDsa;
+    public cfgKey<cryKeyECDSA> keyEcDsa = null;
 
     /**
      * rsa certificate to use
      */
-    public cfgCert certRsa;
+    public cfgCert certRsa = null;
 
     /**
      * dsa certificate to use
      */
-    public cfgCert certDsa;
+    public cfgCert certDsa = null;
 
     /**
      * ecdsa certificate to use
      */
-    public cfgCert certEcDsa;
+    public cfgCert certEcDsa = null;
 
     /**
      * security method
@@ -195,17 +195,17 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     /**
      * dump file
      */
-    public String dumpFile;
+    public String dumpFile = null;
 
     /**
      * dump backup time
      */
-    public int dumpTime;
+    public int dumpTime = 0;
 
     /**
      * name of backup file
      */
-    public String dumpBackup;
+    public String dumpBackup = null;
 
     /**
      * the interface this works on
@@ -232,11 +232,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
      */
     protected tabRoute<addrIP> need2adv;
 
-    private FileOutputStream dumpHandle1;
+    private FileOutputStream dumpHandle1 = null;
 
-    private PrintStream dumpHandle2;
+    private PrintStream dumpHandle2 = null;
 
-    private long dumpStarted;
+    private long dumpStarted = 0;
 
     private boolean need2run;
 

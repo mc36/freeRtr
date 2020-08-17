@@ -60,6 +60,21 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public boolean unstub = false;
 
     /**
+     * segment rou index
+     */
+    public int segrouIdx = -1;
+
+    /**
+     * segment rou pop
+     */
+    public boolean segrouPop = false;
+
+    /**
+     * bier index
+     */
+    public int bierIdx = -1;
+
+    /**
      * affinity
      */
     public int affinity = 0;
@@ -112,32 +127,32 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     /**
      * rsa key to use
      */
-    public cfgKey<cryKeyRSA> keyRsa;
+    public cfgKey<cryKeyRSA> keyRsa = null;
 
     /**
      * dsa key to use
      */
-    public cfgKey<cryKeyDSA> keyDsa;
+    public cfgKey<cryKeyDSA> keyDsa = null;
 
     /**
      * ecdsa key to use
      */
-    public cfgKey<cryKeyECDSA> keyEcDsa;
+    public cfgKey<cryKeyECDSA> keyEcDsa = null;
 
     /**
      * rsa certificate to use
      */
-    public cfgCert certRsa;
+    public cfgCert certRsa = null;
 
     /**
      * dsa certificate to use
      */
-    public cfgCert certDsa;
+    public cfgCert certDsa = null;
 
     /**
      * ecdsa certificate to use
      */
-    public cfgCert certEcDsa;
+    public cfgCert certEcDsa = null;
 
     /**
      * security method
@@ -147,17 +162,17 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     /**
      * dump file
      */
-    public String dumpFile;
+    public String dumpFile = null;
 
     /**
      * dump backup time
      */
-    public int dumpTime;
+    public int dumpTime = 0;
 
     /**
      * name of backup file
      */
-    public String dumpBackup;
+    public String dumpBackup = null;
 
     /**
      * the interface this works on
@@ -179,11 +194,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      */
     protected tabGen<rtrLsrpNeigh> neighs;
 
-    private FileOutputStream dumpHandle1;
+    private FileOutputStream dumpHandle1 = null;
 
-    private PrintStream dumpHandle2;
+    private PrintStream dumpHandle2 = null;
 
-    private long dumpStarted;
+    private long dumpStarted = 0;
 
     private boolean need2run;
 
@@ -332,6 +347,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             }
             l.add(cmds.tabulator + beg + "dump " + dumpFile + a);
         }
+        String a = "";
+        if (segrouPop) {
+            a = " pop";
+        }
+        cmds.cfgLine(l, segrouIdx < 0, cmds.tabulator, beg + "segrout", "" + segrouIdx + a);
+        cmds.cfgLine(l, bierIdx < 0, cmds.tabulator, beg + "bier", "" + bierIdx);
         cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
         cmds.cfgLine(l, !databaseFilter, cmds.tabulator, beg + "database-filter", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
@@ -364,6 +385,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add("4 .         accept-metric           accept peer metric");
         l.add("4 .         stub                    do not route traffic");
         l.add("4 .         unstub                  do route traffic");
+        l.add("4 5         segrout                 set segment routing parameters");
+        l.add("5 6,.         <num>                 index");
+        l.add("6 6,.           pop                 advertise pop label");
+        l.add("4 5         bier                    set bier parameters");
+        l.add("5 .           <num>                 index");
         l.add("4 .         suppress-prefix         do not advertise interface");
         l.add("4 .         unsuppress-prefix       do advertise interface");
         l.add("4 5         encryption              select encryption method");
@@ -412,6 +438,29 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("unstub")) {
             unstub = true;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("segrout")) {
+            segrouIdx = bits.str2num(cmd.word());
+            segrouPop = false;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("pop")) {
+                    segrouPop = true;
+                    continue;
+                }
+            }
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("bier")) {
+            bierIdx = bits.str2num(cmd.word());
             lower.todo.set(0);
             lower.notif.wakeup();
             return;
@@ -531,6 +580,19 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("unstub")) {
             unstub = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("segrout")) {
+            segrouIdx = -1;
+            segrouPop = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("bier")) {
+            bierIdx = -1;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;
