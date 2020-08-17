@@ -255,10 +255,6 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                     s += " tag=" + ntry.tag;
                     tag = ntry.tag;
                 }
-                if (ntry.segrouIdx != segrouIdx) {
-                    s += " segrouidx=" + ntry.segrouIdx;
-                    segrouIdx = ntry.segrouIdx;
-                }
                 boolean ext = (ntry.rouSrc & 1) != 0;
                 if (ext != external) {
                     s += " external=" + ext;
@@ -268,6 +264,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (srp != segrouPop) {
                     s += " segroupop=" + srp;
                     segrouPop = srp;
+                }
+                if (ntry.segrouIdx != segrouIdx) {
+                    s += " segrouidx=" + ntry.segrouIdx;
+                    segrouIdx = ntry.segrouIdx;
                 }
                 if (ntry.bierIdx != bierIdx) {
                     s += " bieridx=" + ntry.bierIdx;
