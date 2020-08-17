@@ -466,7 +466,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
                 a = "";
             }
         }
-        sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.metric + iface.metricOut) + " tag=" + ntry.tag + " path= " + lower.routerID + " " + tabRouteEntry.dumpAddrList(ntry.clustList));
+        sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.metric + iface.metricOut) + " tag=" + ntry.tag + " external=" + ((ntry.rouSrc & 1) != 0) + " path= " + lower.routerID + " " + tabRouteEntry.dumpAddrList(ntry.clustList));
     }
 
 }
@@ -495,6 +495,10 @@ class rtrPvrpNeighRcvr implements Runnable {
             a = a.toLowerCase().trim();
             if (a.equals("prefix")) {
                 ntry.prefix = addrPrefix.str2ip(s);
+                continue;
+            }
+            if (a.equals("external")) {
+                ntry.rouSrc = s.toLowerCase().equals("true") ? 1 : 0;
                 continue;
             }
             if (a.equals("metric")) {

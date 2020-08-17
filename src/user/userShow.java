@@ -982,7 +982,7 @@ public class userShow {
                     if (prf == null) {
                         continue;
                     }
-                    l.add(tabRouteEntry.rouTyp2string(prf.rouTyp) + "|" + prf.prefix + "|" + prf.distance + "/" + prf.metric + "|" + prf.iface + "|" + prf.nextHop + "|" + bits.timePast(prf.time));
+                    l.add(tabRouteEntry.rouTyp2string(prf) + "|" + prf.prefix + "|" + prf.distance + "/" + prf.metric + "|" + prf.iface + "|" + prf.nextHop + "|" + bits.timePast(prf.time));
                 }
                 rdr.putStrTab(l);
                 return null;

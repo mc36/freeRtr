@@ -483,14 +483,16 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     /**
      * convert route type to string
      *
-     * @param i route type
+     * @param <T> class of address
+     * @param ntry route
      * @return displayable string
      */
-    public static String rouTyp2string(routeType i) {
-        if (i == null) {
+    public static <T extends addrType> String rouTyp2string(tabRouteEntry<T> ntry) {
+        if (ntry.rouTyp == null) {
             return "null";
         }
-        switch (i) {
+        String a = "";
+        switch (ntry.rouTyp) {
             case conn:
                 return "C";
             case staticRoute:
@@ -509,19 +511,48 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                 return "N";
             case ospf4:
             case ospf6:
-                return "O";
+                switch (ntry.origin) {
+                    case 109:
+                        a += "";
+                        break;
+                    case 110:
+                        a += " IA";
+                        break;
+                    case 111:
+                        a += " E1";
+                        break;
+                    case 112:
+                        a += " E2";
+                        break;
+                }
+                return "O" + a;
             case isis4:
             case isis6:
-                return "I";
+                if ((ntry.rouSrc & 2) != 0) {
+                    a += " IA";
+                }
+                if ((ntry.rouSrc & 1) != 0) {
+                    a += " EX";
+                }
+                return "I" + a;
             case pvrp4:
             case pvrp6:
-                return "P";
+                if ((ntry.rouSrc & 1) != 0) {
+                    a += " EX";
+                }
+                return "P" + a;
             case lsrp4:
             case lsrp6:
-                return "L";
+                if ((ntry.rouSrc & 1) != 0) {
+                    a += " EX";
+                }
+                return "L" + a;
             case eigrp4:
             case eigrp6:
-                return "D";
+                if (ntry.aggrRtr != null) {
+                    a += " EX";
+                }
+                return "D" + a;
             case bgp4:
             case bgp6:
                 return "B";
@@ -1075,7 +1106,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         if (prf.rouTab != null) {
             s = "@" + prf.rouTab.vrfName;
         }
-        return rouTyp2string(prf.rouTyp) + "|" + addrPrefix.ip2str(prf.prefix)
+        return rouTyp2string(prf) + "|" + addrPrefix.ip2str(prf.prefix)
                 + "|" + prf.distance + "/" + prf.metric + "|"
                 + prf.iface + s + "|"
                 + prf.nextHop + "|" + bits.timePast(prf.time);

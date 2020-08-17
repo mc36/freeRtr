@@ -210,6 +210,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         int segrouAdj = 0;
         int segrouIdx = 0;
         boolean segrouPop = false;
+        boolean external = false;
         int bierIdx = 0;
         int tag = 0;
         if ((typ & 0x10) != 0) {
@@ -257,6 +258,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (ntry.segrouIdx != segrouIdx) {
                     s += " segrouidx=" + ntry.segrouIdx;
                     segrouIdx = ntry.segrouIdx;
+                }
+                boolean ext = (ntry.rouSrc & 1) != 0;
+                if (ext != external) {
+                    s += " external=" + ext;
+                    external = ext;
                 }
                 boolean srp = (ntry.rouSrc & 16) != 0;
                 if (srp != segrouPop) {
@@ -334,6 +340,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         long bndwdt = 0;
         int affinity = 0;
         int srlg = 0;
+        boolean external = false;
         int tag = 0;
         address = new tabGen<addrIP>();
         network = new tabRoute<addrIP>("net");
@@ -356,6 +363,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (rtrId.fromString(s)) {
                     return true;
                 }
+                continue;
+            }
+            if (a.equals("external")) {
+                external = s.toLowerCase().equals("true");
                 continue;
             }
             if (a.equals("stub")) {
@@ -485,6 +496,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 ntry.bierIdx = bierIdx;
                 ntry.segrouIdx = segrouIdx;
                 ntry.rouSrc = segrouPop ? 16 : 0;
+                if (external) {
+                    ntry.rouSrc |= 1;
+                }
                 network.add(tabRoute.addType.better, ntry, true, true);
                 continue;
             }

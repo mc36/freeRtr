@@ -274,7 +274,16 @@ public class rtrPvrp extends ipRtr implements Runnable {
         tabRoute<addrIP> tab2 = tab1;
         tab1 = new tabRoute<addrIP>("ned2adv");
         tab1.mergeFrom(tabRoute.addType.better, tab2, null, true, tabRouteEntry.distanLim);
-        tab1.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteEntry.distanLim);
+        for (int i = 0; i < routerRedistedU.size(); i++) {
+            ntry = routerRedistedU.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry = ntry.copyBytes();
+            ntry.distance = tabRouteEntry.distanIfc + 1;
+            ntry.rouSrc = 1;
+            tab1.add(tabRoute.addType.better, ntry, false, false);
+        }
         if (labels) {
             for (int i = 0; i < tab1.size(); i++) {
                 ntry = tab1.get(i);
