@@ -348,7 +348,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
-                break;
+                return true;
             }
             int i = a.indexOf("=");
             if (i < 0) {
@@ -482,7 +482,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 continue;
             }
             if (a.equals("peeraddr")) {
-                peerAddr.fromString(s);
+                if (peerAddr.fromString(s)) {
+                    return true;
+                }
                 continue;
             }
             if (a.equals("network")) {
@@ -511,7 +513,6 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 continue;
             }
         }
-        return (time < 1);
     }
 
     /**
