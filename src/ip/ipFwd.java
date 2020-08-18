@@ -2,7 +2,6 @@ package ip;
 
 import addr.addrIP;
 import addr.addrPrefix;
-import cfg.cfgAll;
 import clnt.clntMplsTeP2p;
 import clnt.clntNetflow;
 import ifc.ifcEthTyp;
@@ -227,6 +226,21 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * mpls propagate ip ttl
      */
     public boolean mplsPropTtl = true;
+
+    /**
+     * unreachable last
+     */
+    public long unreachLst = 0;
+
+    /**
+     * unreachable interval
+     */
+    public int unreachInt = 0;
+
+    /**
+     * ruin remote pmtud
+     */
+    public boolean ruinPmtuD = false;
 
     /**
      * label allocation filter
@@ -1118,7 +1132,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         pck.INTupper = 0;
-        ipMpls.beginMPLSfields(pck, mplsPropTtl);
+        ipMpls.beginMPLSfields(pck, (mplsPropTtl | lower.mplsPropTtlAlways) & lower.mplsPropTtlAllow);
         if (doPbrFwd(lower.pbrCfg, true, false, lower, pck)) {
             return;
         }
@@ -1175,7 +1189,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
 
     private void protoSend(ipFwdIface lower, packHolder pck) {
         if ((pck.IPmf) || (pck.IPfrg != 0)) {
-            if (cfgAll.ruinPmtuD) {
+            if (ruinPmtuD) {
                 doDrop(pck, lower, counter.reasons.fragment);
             } else {
                 lower.cntr.drop(pck, counter.reasons.fragment);
@@ -1260,12 +1274,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.INTupper = pck.IPprt;
         pck.merge2beg();
         ipCore.createIPheader(pck);
-        if (coppOut != null) {
-            if (coppOut.checkPacket(bits.getTime(), pck)) {
-                cntr.drop(pck, counter.reasons.noBuffer);
-                return;
-            }
-        }
         if (debugger.ipFwdTraf) {
             logger.debug("snd " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
@@ -1320,7 +1328,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             logger.debug("snd " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
         ipCore.testIPaddress(pck, pck.IPtrg);
-        ipMpls.beginMPLSfields(pck, mplsPropTtl);
+        ipMpls.beginMPLSfields(pck, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
         forwardPacket(false, false, iface, pck);
     }
 
@@ -1391,12 +1399,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void doDrop(packHolder pck, ipFwdIface lower, counter.reasons reason) {
         cntr.drop(pck, reason);
-        if (cfgAll.unreachInt > 0) {
+        if (unreachInt > 0) {
             long tim = bits.getTime();
-            if ((tim - cfgAll.unreachLst) < cfgAll.unreachInt) {
+            if ((tim - unreachLst) < unreachInt) {
                 return;
             }
-            cfgAll.unreachLst = tim;
+            unreachLst = tim;
         }
         if (debugger.ipFwdTraf) {
             logger.debug("drop " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " reason=" + counter.reason2string(reason));
@@ -1426,7 +1434,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         pck.INTupper = -1;
-        ipMpls.beginMPLSfields(pck, mplsPropTtl);
+        ipMpls.beginMPLSfields(pck, (mplsPropTtl | lower.mplsPropTtlAlways) & lower.mplsPropTtlAllow);
         forwardPacket(false, false, lower, pck);
     }
 
@@ -1851,7 +1859,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 default:
                     break;
             }
-            if (mplsPropTtl) {
+            if ((mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow) {
                 pck.IPttl = pck.MPLSttl;
             }
             ipCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, pck.IPprt, pck.IPttl, pck.IPtos, pck.dataSize() - pck.IPsiz);
@@ -1866,7 +1874,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             pck.INTiface = -3;
             pck.INTupper = -3;
             ipCore.testIPaddress(pck, pck.IPtrg);
-            ipMpls.beginMPLSfields(pck, mplsPropTtl);
+            ipMpls.beginMPLSfields(pck, (mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow);
             forwardPacket(fromIfc, fromMpls, rxIfc, pck);
             return;
         }
@@ -1883,7 +1891,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
-        if (mplsPropTtl) {
+        if ((mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow) {
             ipCore.updateIPheader(pck, null, null, -1, pck.MPLSttl - 1, -1, -1);
         } else {
             ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1);
@@ -1930,7 +1938,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             ipCore.createIPheader(pck);
             pck.INTupper = -1;
-            ipMpls.beginMPLSfields(pck, mplsPropTtl);
+            ipMpls.beginMPLSfields(pck, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
             forwardPacket(false, false, iface, pck);
             return;
         }
@@ -2017,7 +2025,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return ntry.notif;
             }
         }
-        ipMpls.beginMPLSfields(pck, mplsPropTtl);
+        ipMpls.beginMPLSfields(pck, (mplsPropTtl | ifc.mplsPropTtlAlways) & ifc.mplsPropTtlAllow);
         forwardPacket(false, false, ifc, pck);
         return ntry.notif;
     }

@@ -404,6 +404,13 @@ public class ipMpls implements ifcUp {
         if (lab.pweIfc != null) {
             return true;
         }
+        if (lab.forwarder.unreachInt > 0) {
+            long tim = bits.getTime();
+            if ((tim - lab.forwarder.unreachLst) < lab.forwarder.unreachInt) {
+                return true;
+            }
+            lab.forwarder.unreachLst = tim;
+        }
         ipFwdIface ifc = lab.iface;
         if (ifc == null) {
             ifc = ipFwdTab.findStableIface(lab.forwarder);
@@ -426,7 +433,7 @@ public class ipMpls implements ifcUp {
         }
         lab.forwarder.ipCore.createIPheader(pck);
         pck.INTupper = -1;
-        beginMPLSfields(pck, lab.forwarder.mplsPropTtl);
+        beginMPLSfields(pck, (lab.forwarder.mplsPropTtl | ifc.mplsPropTtlAlways) & ifc.mplsPropTtlAllow);
         return false;
     }
 

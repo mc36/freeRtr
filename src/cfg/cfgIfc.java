@@ -1306,6 +1306,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[4|6] enable",
         "interface .*! ipv[4|6] unreachables",
         "interface .*! no ipv[4|6] unreach-source",
+        "interface .*! no ipv[4|6] propagate-ttl-always",
+        "interface .*! ipv[4|6] propagate-ttl-allow",
         "interface .*! no ipv[4|6] resend-packet",
         "interface .*! no ipv[4|6] disable-dapp",
         "interface .*! no ipv[4|6] disable-flowspec",

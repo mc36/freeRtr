@@ -84,6 +84,16 @@ public class ipFwdIface extends tabRouteIface {
     public boolean blockHost2host = true;
 
     /**
+     * always mpls propagate ip ttl
+     */
+    public boolean mplsPropTtlAlways = false;
+
+    /**
+     * allow mpls propagate ip ttl
+     */
+    public boolean mplsPropTtlAllow = true;
+
+    /**
      * set true to verify that source reachable
      */
     public boolean verifySource = false;
@@ -336,6 +346,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 4       <addr>                    address of interface");
         l.add("4 .         dynamic                 dynamic netmask");
         l.add("4 .         <mask>                  subnet mask of address");
+        l.add("2 .     propagate-ttl-always        enable ttl propagation to mpls");
+        l.add("2 .     propagate-ttl-allow         allow ttl propagation to mpls");
         l.add("2 .     unreachables                enable sending icmp unreachable messages");
         l.add("2 3     unreach-source              set unreachable source");
         l.add("3 .       <name>                    name of interface");
@@ -475,6 +487,8 @@ public class ipFwdIface extends tabRouteIface {
     public void getConfig(List<String> l, ipFwd f, String beg) {
         cmds.cfgLine(l, !linkLocal, cmds.tabulator, beg + "enable", "");
         cmds.cfgLine(l, !unreachEna, cmds.tabulator, beg + "unreachables", "");
+        cmds.cfgLine(l, !mplsPropTtlAlways, cmds.tabulator, beg + "propagate-ttl-always", "");
+        cmds.cfgLine(l, !mplsPropTtlAllow, cmds.tabulator, beg + "propagate-ttl-allow", "");
         cmds.cfgLine(l, unreachSrc == null, cmds.tabulator, beg + "unreach-source", "" + unreachSrc);
         cmds.cfgLine(l, blockHost2host, cmds.tabulator, beg + "resend-packet", "");
         cmds.cfgLine(l, blockBroadcast, cmds.tabulator, beg + "directed-broadcast", "");
@@ -595,6 +609,14 @@ public class ipFwdIface extends tabRouteIface {
     public boolean doConfig(String a, cmds cmd, ipCor cor, ipFwd fwd, prtUdp udp) {
         if (a.equals("enable")) {
             linkLocal = true;
+            return false;
+        }
+        if (a.equals("propagate-ttl-always")) {
+            mplsPropTtlAlways = true;
+            return false;
+        }
+        if (a.equals("propagate-ttl-allow")) {
+            mplsPropTtlAllow = true;
             return false;
         }
         if (a.equals("unreachables")) {
@@ -1052,6 +1074,14 @@ public class ipFwdIface extends tabRouteIface {
     public boolean unConfig(String a, cmds cmd, ipFwd fwd) {
         if (a.equals("enable")) {
             linkLocal = false;
+            return false;
+        }
+        if (a.equals("propagate-ttl-always")) {
+            mplsPropTtlAlways = false;
+            return false;
+        }
+        if (a.equals("propagate-ttl-allow")) {
+            mplsPropTtlAllow = false;
             return false;
         }
         if (a.equals("unreachables")) {

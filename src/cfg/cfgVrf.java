@@ -28,6 +28,7 @@ import tab.tabRtrmapN;
 import user.userFilter;
 import user.userFormat;
 import user.userHelping;
+import util.bits;
 import util.cmds;
 
 /**
@@ -178,6 +179,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public boolean mplsPropTtl = true;
 
     /**
+     * unreachable interval
+     */
+    public int unreachInt = 0;
+
+    /**
+     * ruin remote pmtud
+     */
+    public boolean ruinPmtuD = false;
+
+    /**
      * ipv4 label filter
      */
     public cfgPrfxlst label4fltr = null;
@@ -317,6 +328,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! rt-export",
         "vrf definition .*! label-mode per-vrf",
         "vrf definition .*! propagate-ttl",
+        "vrf definition .*! unreach-interval 0",
+        "vrf definition .*! no punish-pmtud",
         "vrf definition .*! no mdt4",
         "vrf definition .*! no mdt6",
         "vrf definition .*! no label4filter",
@@ -585,6 +598,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
         l.add(cmds.tabulator + "label-mode " + s);
         cmds.cfgLine(l, !mplsPropTtl, cmds.tabulator, "propagate-ttl", "");
+        l.add(cmds.tabulator + "unreach-interval " + unreachInt);
+        cmds.cfgLine(l, !ruinPmtuD, cmds.tabulator, "punish-pmtud", "");
         cmds.cfgLine(l, label4fltr == null, cmds.tabulator, "label4filter", "" + label4fltr);
         cmds.cfgLine(l, label6fltr == null, cmds.tabulator, "label6filter", "" + label6fltr);
         cmds.cfgLine(l, import4list == null, cmds.tabulator, "import4list", "" + import4list);
@@ -675,6 +690,9 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("2 2,.  <rt>              rt in ASnum:IDnum format");
         l.add("1 2  rt-export           specify route target export");
         l.add("2 2,.  <rt>              rt in ASnum:IDnum format");
+        l.add(".1 . punish-pmtud        send back mtu exceeded if needed");
+        l.add("1 2  unreach-interval    rate limit icmp generation");
+        l.add("2 .    <num>             millisecs between them");
         l.add("1 2  label4filter        specify ipv4 label filter");
         l.add("2 .    <name>            name of prefix list");
         l.add("1 2  label6filter        specify ipv6 label filter");
@@ -823,6 +841,18 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.prefixMode = labelMode;
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("unreach-interval")) {
+            unreachInt = bits.str2num(cmd.word());
+            fwd4.unreachInt = unreachInt;
+            fwd6.unreachInt = unreachInt;
+            return;
+        }
+        if (a.equals("punish-pmtud")) {
+            ruinPmtuD = true;
+            fwd4.ruinPmtuD = true;
+            fwd6.ruinPmtuD = true;
             return;
         }
         if (a.equals("propagate-ttl")) {
@@ -1147,6 +1177,18 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("mdt6")) {
             mdt6 = false;
             fwd6.mdt = false;
+            return;
+        }
+        if (a.equals("unreach-interval")) {
+            unreachInt = 0;
+            fwd4.unreachInt = 0;
+            fwd6.unreachInt = 0;
+            return;
+        }
+        if (a.equals("punish-pmtud")) {
+            ruinPmtuD = false;
+            fwd4.ruinPmtuD = false;
+            fwd6.ruinPmtuD = false;
             return;
         }
         if (a.equals("propagate-ttl")) {

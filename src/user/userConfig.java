@@ -472,9 +472,6 @@ public class userConfig {
         l.add(".3 .      receive                    only check, not generate");
         l.add(".3 .      transmit                   only generate, not check");
         l.add(".3 .      none                       not generate nor check");
-        l.add(".2 .    punish-pmtud                 send back mtu exceeded if needed");
-        l.add("2  3    unreach-interval             rate limit icmp generation");
-        l.add("3  .      <num>                      millisecs between them");
         l.add("2  3    access-subnet-ipv4           access subnet length");
         l.add("3  .      <num>                      bits");
         l.add("2  3    access-subnet-ipv6           access subnet length");
@@ -1436,14 +1433,6 @@ public class userConfig {
                 cfgAll.sctpChecksumTx = (i & 2) != 0;
                 return;
             }
-            if (a.equals("unreach-interval")) {
-                cfgAll.unreachInt = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("punish-pmtud")) {
-                cfgAll.ruinPmtuD = true;
-                return;
-            }
             if (a.equals("ftp-passive")) {
                 cfgAll.ftpPassive = true;
                 return;
@@ -2184,14 +2173,6 @@ public class userConfig {
             }
             if (a.equals("prefer-ipv4")) {
                 cfgAll.preferIpv6 = true;
-                return;
-            }
-            if (a.equals("unreach-interval")) {
-                cfgAll.unreachInt = 0;
-                return;
-            }
-            if (a.equals("punish-pmtud")) {
-                cfgAll.ruinPmtuD = false;
                 return;
             }
             if (a.equals("ftp-passive")) {
