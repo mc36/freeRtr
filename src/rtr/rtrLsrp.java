@@ -618,9 +618,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            ntry.putNeighs(spf);
-            spf.addSegRouB(ntry.rtrId, ntry.segrouBeg);
-            spf.addBierB(ntry.rtrId, ntry.bierBeg);
+            ntry.put2spf(spf);
         }
         spf.doCalc(routerID, null);
         boolean[] segrouUsd = null;

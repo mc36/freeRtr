@@ -546,15 +546,17 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     }
 
     /**
-     * add neighbors
+     * add to spf
      *
      * @param spf calcer
      */
-    protected void putNeighs(shrtPthFrst<addrIPv4> spf) {
+    protected void put2spf(shrtPthFrst<addrIPv4> spf) {
         for (int i = 0; i < neighbor.size(); i++) {
             rtrLsrpDataNeigh ntry = neighbor.get(i);
-            spf.addConn(rtrId, ntry.rtrid, ntry.metric, true, ntry.stub, null);
+            spf.addConn(rtrId, ntry.rtrid, ntry.metric, true, ntry.stub, ntry.peer);
         }
+        spf.addSegRouB(rtrId, segrouBeg);
+        spf.addBierB(rtrId, bierBeg);
     }
 
 }
