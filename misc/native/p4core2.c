@@ -708,6 +708,7 @@ void doReportRount(FILE *commands) {
 
 
 void doStatRount(FILE *commands) {
+    punts = 10;
     for (int i = 0; i < ports; i++) {
         fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
         int o = getState(i);

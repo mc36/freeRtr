@@ -175,11 +175,7 @@ ethtyp_rx:
 mpls_rx:
             label = get32msb(bufD, bufP);
             ttl = (label & 0xff) - 1;
-            if (ttl <= 1) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
+            if (ttl <= 1) goto punt;
             bufP += 4;
             hash = mpls_ntry.label = (label >> 12) & 0xfffff;
             index = table_find(&mpls_table, &mpls_ntry);
@@ -364,11 +360,7 @@ ipv4_rx:
             acl4_ntry.trgAddr = route4_ntry.addr = get32msb(bufD, bufP + 16);
             hash = acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
             ttl = bufD[bufP + 8] - 1;
-            if (ttl <= 1) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
+            if (ttl <= 1) goto punt;
             bufD[bufP + 8] = ttl;
             update_chksum(bufP + 10, -1);
             bufT = bufP + 20;
@@ -478,9 +470,7 @@ ipv4_rou:
                         goto ethtyp_tx;
                 }
             }
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
+            goto punt;
         case 0x86dd:
             portvrf_ntry.port = prt;
             index = table_find(&portvrf_table, &portvrf_ntry);
@@ -513,11 +503,7 @@ ipv6_rx:
             acl6_ntry.trgAddr4 = route6_ntry.addr4 = get32msb(bufD, bufP + 36);
             hash = acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
             ttl = bufD[bufP + 7] - 1;
-            if (ttl <= 1) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
+            if (ttl <= 1) goto punt;
             bufD[bufP + 7] = ttl;
             bufT = bufP + 40;
             extract_layer4(acl6_ntry);
@@ -665,9 +651,7 @@ ipv6_hit:
                         goto ethtyp_tx;
                 }
             }
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
+            goto punt;
         case 0x8864:
             pppoe_ntry.port = prt;
             pppoe_ntry.session = get16msb(bufD, bufP + 2);
@@ -737,11 +721,11 @@ bridgevpls_rx:
             bridge_ntry.mac1 = get16msb(buf2, 6);
             bridge_ntry.mac2 = get32msb(buf2, 8);
             index = table_find(&bridge_table, &bridge_ntry);
-            if (index < 0) goto cpu;
+            if (index < 0) goto punt;
             bridge_ntry.mac1 = get16msb(buf2, 0);
             hash = bridge_ntry.mac2 = get32msb(buf2, 2);
             index = table_find(&bridge_table, &bridge_ntry);
-            if (index < 0) goto cpu;
+            if (index < 0) goto punt;
             bridge_res = table_get(&bridge_table, index);
             bridge_res->pack++;
             bridge_res->byte += bufS;
@@ -803,6 +787,13 @@ layer2_tx:
             send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
             return;
         default:
+punt:
+            if (punts < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            punts--;
 cpu:
             send2cpu(bufD, bufS, prt2);
             return;

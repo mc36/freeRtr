@@ -6,6 +6,7 @@
 
 int ports = 0;
 int cpuport = 0;
+int punts = 0;
 
 unsigned char *ifaceName[maxPorts];
 long int byteRx[maxPorts];
