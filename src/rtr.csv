@@ -1,6 +1,6 @@
 file;test;stage;command
 -;freeRouter v20.8.18-rel, done by cs@nop.;-;-
--;2020-08-18 15:34:55, took 00:05:04, with 100 workers, on 1890 cases, 0 failed, 0 traces, 3 retries;-;-
+-;2020-08-18 19:06:08, took 00:05:15, with 100 workers, on 1890 cases, 0 failed, 0 traces, 1 retries;-;-
 -;./rtr.bin;-;-
 basic.tst;dummy test;successfully;finished
 conn-anyconn.tst;ip over anyconnect;successfully;finished
