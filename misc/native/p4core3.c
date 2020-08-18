@@ -371,11 +371,7 @@ ipv4_rx:
             index = table_find(&acls_table, &acls_ntry);
             if (index >= 0) {
                 acls_res = table_get(&acls_table, index);
-                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) {
-                    packDr[port]++;
-                    byteDr[port] += bufS;
-                    return;
-                }
+                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) goto punt;
             }            
             acls_ntry.dir = 3;
             acls_ntry.port = route4_ntry.vrf;
@@ -431,11 +427,7 @@ ipv4_rou:
                         index = table_find(&acls_table, &acls_ntry);
                         if (index >= 0) {
                             acls_res = table_get(&acls_table, index);
-                            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) {
-                                packDr[port]++;
-                                byteDr[port] += bufS;
-                                return;
-                            }
+                            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) goto punt;
                         }            
                         goto neigh_tx;
                     case 2: // punt
@@ -513,11 +505,7 @@ ipv6_rx:
             index = table_find(&acls_table, &acls_ntry);
             if (index >= 0) {
                 acls_res = table_get(&acls_table, index);
-                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) {
-                    packDr[port]++;
-                    byteDr[port] += bufS;
-                    return;
-                }
+                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) goto punt;
             }            
             acls_ntry.dir = 3;
             acls_ntry.port = route6_ntry.vrf;
@@ -612,11 +600,7 @@ ipv6_hit:
                         index = table_find(&acls_table, &acls_ntry);
                         if (index >= 0) {
                             acls_res = table_get(&acls_table, index);
-                            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) {
-                                packDr[port]++;
-                                byteDr[port] += bufS;
-                                return;
-                            }
+                            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) goto punt;
                         }            
                         goto neigh_tx;
                     case 2: // punt
