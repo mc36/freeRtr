@@ -1740,15 +1740,12 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("reload")) {
-                userFlash.doReceive(pipe,
-                        uniResLoc.parseOne(cmd.getRemaining()), new File(
-                        cfgInit.cfgFileSw));
+                userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(cfgInit.cfgFileSw));
                 return cmdRes.command;
             }
             if (a.equals("network")) {
                 a = version.myWorkDir() + "cfg" + bits.randomD() + ".tmp";
-                userFlash.doReceive(pipe,
-                        uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+                userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
                 List<String> cfg = bits.txt2buf(a);
                 userFlash.delete(a);
                 int res = cfgInit.executeSWcommands(cfg, false);
@@ -1831,8 +1828,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("revert")) {
-                List<String> cfg = userFilter.getDiffs(cfgAll.getShRun(true),
-                        bits.txt2buf(cfgInit.cfgFileSw));
+                List<String> cfg = userFilter.getDiffs(cfgAll.getShRun(true), bits.txt2buf(cfgInit.cfgFileSw));
                 reader.putStrArr(bits.lst2lin(cfg, false));
                 int res = cfgInit.executeSWcommands(cfg, false);
                 reader.putStrArr(bits.str2lst("errors=" + res));

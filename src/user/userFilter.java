@@ -84,24 +84,22 @@ public class userFilter implements Comparator<userFilter> {
     }
 
     /**
-     * check if negated
-     *
-     * @return false if no, true if yes
-     */
-    public boolean negated() {
-        return command.startsWith("no ");
-    }
-
-    /**
      * negate this entry
      *
      * @return negated entry
      */
     public userFilter negate() {
-        if (!negated()) {
-            return new userFilter(section, "no " + command.trim(), listing);
+        String c = command;
+        String b = "";
+        for (; c.startsWith(" ");) {
+            c = c.substring(1, c.length());
+            b += " ";
         }
-        return new userFilter(section, command.substring(3, command.length()), listing);
+        if (c.startsWith("no ")) {
+            return new userFilter(section, b + c.substring(3, c.length()), listing);
+        } else {
+            return new userFilter(section, b + "no " + c, listing);
+        }
     }
 
     /**
@@ -194,7 +192,7 @@ public class userFilter implements Comparator<userFilter> {
                         s = "delete";
                         a = a.substring(3, a.length());
                     }
-                    txt.add(s + " " + ntry.section.trim() + " " + a);
+                    txt.add(s + " " + (ntry.section + " " + a).trim());
                     break;
                 default:
                     break;
@@ -397,9 +395,6 @@ public class userFilter implements Comparator<userFilter> {
             if (found != null) {
                 found.used = true;
                 res.add(neg);
-                continue;
-            }
-            if (ntry.negated()) {
                 continue;
             }
             res.add(neg);

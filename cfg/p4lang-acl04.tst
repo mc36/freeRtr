@@ -79,10 +79,12 @@ ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 access-list test4
  permit 17 2.2.2.0 255.255.255.0 all 2.2.2.0 255.255.255.0 all
  permit 6 2.2.2.0 255.255.255.0 all 2.2.2.0 255.255.255.0 all
+ deny all any all any all
  exit
 access-list test6
  permit 17 4321:: ffff:: all 4321:: ffff:: all
  permit 6 4321:: ffff:: all 4321:: ffff:: all
+ deny all any all any all
  exit
 ipv4 nat v1 srclist test4 interface lo0
 ipv6 nat v1 srclist test6 interface lo0
