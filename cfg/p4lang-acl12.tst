@@ -39,11 +39,11 @@ bridge 1
  mac-learn
  exit
 access-list test4
- deny 1 2.2.2.104 255.255.255.255 0 2.2.2.105 255.255.255.255 0
+ deny 1 2.2.2.104 255.255.255.255 all 2.2.2.105 255.255.255.255 all
  permit all any all any all
  exit
 access-list test6
- deny 58 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 0 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 0
+ deny 58 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all
  permit all any all any all
  exit
 int sdn1

@@ -333,13 +333,6 @@ r5 tping 100 10 3333::104 /vrf v1 /int lo0
 r5 tping 100 10 3.3.3.105 /vrf v1 /int lo0
 r5 tping 100 10 3333::105 /vrf v1 /int lo0
 
-r6 tping 100 10 3.3.3.103 /vrf v1 /int lo0
-r6 tping 100 10 3333::103 /vrf v1 /int lo0
-r6 tping 100 10 3.3.3.104 /vrf v1 /int lo0
-r6 tping 100 10 3333::104 /vrf v1 /int lo0
-r6 tping 100 10 3.3.3.105 /vrf v1 /int lo0
-r6 tping 100 10 3333::105 /vrf v1 /int lo0
-
 r3 tping 100 10 3.3.3.103 /vrf v1 /int lo1
 r3 tping 100 10 3333::103 /vrf v1 /int lo1
 r3 tping 100 10 3.3.3.104 /vrf v1 /int lo1
