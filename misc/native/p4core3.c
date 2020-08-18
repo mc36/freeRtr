@@ -770,6 +770,10 @@ layer2_tx:
             }
             send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
             return;
+        case 0x806:
+            goto cpu;
+        case 0x8863:
+            goto cpu;
         default:
 punt:
             if (punts < 0) {
