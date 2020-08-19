@@ -1840,6 +1840,8 @@ qc pass: redistribution with mobile
 qc pass: redistribution with deaggr
 qc pass: conditional redistribution with routemap
 qc pass: conditional redistribution with routepolicy
+qc pass: redistribution with interfaces
+qc pass: redistribution with metric
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist

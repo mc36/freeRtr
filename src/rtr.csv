@@ -1,6 +1,6 @@
 file;result;test
 -;-;freeRouter v20.8.19-rel, done by cs@nop.
--;-;2020-08-19 04:45:33, took 00:04:54, with 100 workers, on 1892 cases, 0 failed, 0 traces, 1 retries
+-;-;2020-08-19 07:14:48, took 00:04:51, with 100 workers, on 1894 cases, 0 failed, 2 traces, 4 retries
 -;-;./rtr.bin
 basic.tst;success;dummy test
 conn-anyconn.tst;success;ip over anyconnect
@@ -1844,6 +1844,8 @@ rout-redist22.tst;success;redistribution with mobile
 rout-redist23.tst;success;redistribution with deaggr
 rout-redist24.tst;success;conditional redistribution with routemap
 rout-redist25.tst;success;conditional redistribution with routepolicy
+rout-redist26.tst;success;redistribution with interfaces
+rout-redist27.tst;success;redistribution with metric
 rout-rip01.tst;success;rip on one subnet
 rout-rip02.tst;success;rip in chain
 rout-rip03.tst;success;rip ingress route filtering with prefixlist
