@@ -375,7 +375,8 @@ interface bvi3
  lldp enable
  cdp enable
  vrf forwarding bvi
- ipv4 address 2.2.2.1 255.255.255.0
+ ipv4 address 172.16.26.4 255.255.255.0
+ ipv6 address fd42:1235::4 ffff:ffff:ffff:ffff::
  no shutdown
  no log-link-change
  exit
@@ -540,6 +541,14 @@ proxy-profile p4
 !
 proxy-profile p5
  vrf v5
+ exit
+!
+mtracker l2v
+ logging
+ target 172.16.26.11
+ vrf bvi
+ source bvi3
+ start
  exit
 !
 mtracker v4
