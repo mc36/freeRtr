@@ -65,6 +65,11 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     public tabRoute<addrIP> adverted = new tabRoute<addrIP>("adv");
 
     /**
+     * metric of peer
+     */
+    public int gotMet;
+
+    /**
      * time last heard
      */
     public long lastHeard;
@@ -89,6 +94,11 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
      */
     protected long upTime;
 
+    /**
+     * advertised metric
+     */
+    protected int sentMet;
+
     private pipeSide conn;
 
     private boolean need2run;
@@ -107,6 +117,8 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         rtrId = peerId.copyBytes();
         peer = peerAd.copyBytes();
         lastHeard = bits.getTime();
+        sentMet = -1;
+        gotMet = 10;
     }
 
     public int compare(rtrPvrpNeigh o1, rtrPvrpNeigh o2) {
@@ -412,6 +424,10 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     }
 
     private void doAdvert() {
+        if (sentMet != iface.metricIn) {
+            sentMet = iface.metricIn;
+            sendLn("metric " + sentMet);
+        }
         int sent = 0;
         for (int i = 0; i < adverted.size(); i++) {
             tabRouteEntry<addrIP> ntry = adverted.get(i);
@@ -604,6 +620,10 @@ class rtrPvrpNeighRcvr implements Runnable {
                 lower.lastHeard += bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("metric")) {
+                lower.gotMet = bits.str2num(cmd.word());
+                continue;
+            }
             if (a.equals("reachable")) {
                 tabRouteEntry<addrIP> ntry = parsePrefix(cmd);
                 if (ntry == null) {
@@ -618,7 +638,11 @@ class rtrPvrpNeighRcvr implements Runnable {
                     }
                     continue;
                 }
-                ntry.metric += lower.iface.metricIn;
+                if (lower.iface.acceptMetric) {
+                    ntry.metric += lower.gotMet;
+                } else {
+                    ntry.metric += lower.iface.metricIn;
+                }
                 ntry.nextHop = lower.peer.copyBytes();
                 ntry.distance = lower.iface.distance;
                 ntry.iface = lower.iface.iface;

@@ -88,6 +88,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     public boolean passiveInt;
 
     /**
+     * accept metric
+     */
+    public boolean acceptMetric = false;
+
+    /**
      * advertise default route
      */
     public boolean defOrigin = false;
@@ -387,6 +392,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         }
         cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
+        cmds.cfgLine(l, !acceptMetric, cmds.tabulator, beg + "accept-metric", "");
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
         cmds.cfgLine(l, !labelPop, cmds.tabulator, beg + "label-pop", "");
@@ -423,6 +429,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add("4 .         label-pop               advertise php");
         l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 .         passive                 do not form neighborship");
+        l.add("4 .         accept-metric           accept peer metric");
         l.add("4 .         stub                    do not route traffic");
         l.add("4 .         unstub                  do route traffic");
         l.add("4 .         suppress-prefix         do not advertise interface");
@@ -551,6 +558,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         if (a.equals("unsuppress-prefix")) {
             unsuppressAddr = true;
             lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("accept-metric")) {
+            acceptMetric = true;
             return;
         }
         if (a.equals("passive")) {
@@ -724,6 +735,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         if (a.equals("unsuppress-prefix")) {
             unsuppressAddr = false;
             lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("accept-metric")) {
+            acceptMetric = false;
             return;
         }
         if (a.equals("passive")) {

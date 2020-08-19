@@ -1444,6 +1444,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router pvrp[4|6] .* split-horizon",
         "interface .*! no router pvrp[4|6] .* passive",
         "interface .*! no router pvrp[4|6] .* dump",
+        "interface .*! no router pvrp[4|6] .* accept-metric",
         "interface .*! no router pvrp[4|6] .* bfd",
         "interface .*! no router pvrp[4|6] .* default-originate",
         "interface .*! no router pvrp[4|6] .* label-pop",
