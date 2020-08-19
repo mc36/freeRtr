@@ -8,6 +8,7 @@ import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import addr.addrIP;
 import addr.addrPrefix;
+import tab.tabIntUpdater;
 import tab.tabRtrplcN;
 
 /**
@@ -31,6 +32,11 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
      * route policy
      */
     public tabListing<tabRtrplcN, addrIP> rouplc;
+
+    /**
+     * metric
+     */
+    public tabIntUpdater metric;
 
     /**
      * create advertisement
@@ -68,6 +74,10 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
         }
         if (prefix.compare(prefix, ntry.prefix) != 0) {
             return;
+        }
+        if (metric != null) {
+            ntry = ntry.copyBytes();
+            ntry.metric = metric.update(ntry.metric);
         }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, roumap, rouplc, null);
     }

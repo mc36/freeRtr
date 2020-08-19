@@ -464,31 +464,6 @@ public class tabRoute<T extends addrType> {
     }
 
     /**
-     * get just matching protocol
-     *
-     * @param typ protocol type
-     * @param num process number
-     * @return list of prefixes
-     */
-    public tabRoute<T> justProto(tabRouteEntry.routeType typ, int num) {
-        tabRoute<T> lst = new tabRoute<T>("justproto");
-        for (int i = 0; i < prefixes.size(); i++) {
-            tabRouteEntry<T> prf = prefixes.get(i);
-            if (prf == null) {
-                continue;
-            }
-            if (prf.rouTyp != typ) {
-                continue;
-            }
-            if (prf.protoNum != num) {
-                continue;
-            }
-            lst.add(addType.always, prf, true, true);
-        }
-        return lst;
-    }
-
-    /**
      * import all the entries from another table
      *
      * @param mod mode to use

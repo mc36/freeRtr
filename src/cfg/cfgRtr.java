@@ -31,6 +31,7 @@ import rtr.rtrUni2multi;
 import rtr.rtrDeaggr;
 import rtr.rtrMobile;
 import tab.tabGen;
+import tab.tabIntUpdater;
 import tab.tabRouteEntry;
 import user.userFilter;
 import user.userHelping;
@@ -769,6 +770,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (num2proc(red.typ)) {
             a += " " + red.num;
         }
+        if (red.metric != null) {
+            a += " metric " + red.metric;
+        }
         if (red.prflst != null) {
             a += " prefix-list " + red.prflst.listName;
         }
@@ -789,6 +793,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      */
     public static String advert2str(ipRtrAdv adv) {
         String a = "" + addrPrefix.ip2str(adv.prefix);
+        if (adv.metric != null) {
+            a += " metric " + adv.metric;
+        }
         if (adv.roumap != null) {
             a += " route-map " + adv.roumap.listName;
         }
@@ -806,6 +813,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      */
     public static String aggreg2str(ipRtrAgr agr) {
         String a = "" + addrPrefix.ip2str(agr.prefix);
+        if (agr.metric != null) {
+            a += " metric " + agr.metric;
+        }
         if (agr.prflst != null) {
             a += " prefix-list " + agr.prflst.listName;
         }
@@ -832,6 +842,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      */
     public static String advint2str(ipRtrInt ifc) {
         String a = "" + ifc.iface.name;
+        if (ifc.metric != null) {
+            a += " metric " + ifc.metric;
+        }
         if (ifc.roumap != null) {
             a += " route-map " + ifc.roumap.listName;
         }
@@ -861,6 +874,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             String s = cmd.word();
             if (s.length() < 1) {
                 break;
+            }
+            if (s.equals("metric")) {
+                red.metric = new tabIntUpdater();
+                s = cmd.word();
+                if (red.metric.fromString(s + " " + cmd.word())) {
+                    return null;
+                }
+                continue;
             }
             if (s.equals("prefix-list")) {
                 cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
@@ -908,6 +929,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             if (s.length() < 1) {
                 break;
             }
+            if (s.equals("metric")) {
+                adv.metric = new tabIntUpdater();
+                s = cmd.word();
+                if (adv.metric.fromString(s + " " + cmd.word())) {
+                    return null;
+                }
+                continue;
+            }
             if (s.equals("route-map")) {
                 cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
                 if (ntry == null) {
@@ -945,6 +974,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             String s = cmd.word();
             if (s.length() < 1) {
                 break;
+            }
+            if (s.equals("metric")) {
+                agr.metric = new tabIntUpdater();
+                s = cmd.word();
+                if (agr.metric.fromString(s + " " + cmd.word())) {
+                    return null;
+                }
+                continue;
             }
             if (s.equals("prefix-list")) {
                 cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
@@ -999,6 +1036,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             String s = cmd.word();
             if (s.length() < 1) {
                 break;
+            }
+            if (s.equals("metric")) {
+                adv.metric = new tabIntUpdater();
+                s = cmd.word();
+                if (adv.metric.fromString(s + " " + cmd.word())) {
+                    return null;
+                }
+                continue;
             }
             if (s.equals("route-map")) {
                 cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
@@ -1463,18 +1508,39 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 5) + " " + (p + 4) + ",.         <name>          name of route policy");
         l.add((p + 4) + " " + (p + 5) + "         prefix-list       filter prefixes on importing");
         l.add((p + 5) + " " + (p + 4) + ",.         <name>          name of prefix list");
+        l.add((p + 4) + " " + (p + 5) + "         metric            set metric");
+        l.add((p + 5) + " " + (p + 6) + "           set             set value to a specific value");
+        l.add((p + 6) + " " + (p + 4) + ",.           <num>         value");
+        l.add((p + 5) + " " + (p + 6) + "           add             add value to current value");
+        l.add((p + 6) + " " + (p + 4) + ",.           <num>         value");
+        l.add((p + 5) + " " + (p + 6) + "           sub             substract value to current value");
+        l.add((p + 6) + " " + (p + 4) + ",.           <num>         value");
         l.add((p + 1) + " " + (p + 2) + "   advertise               advertise one prefix");
         l.add((p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
         l.add((p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
-        l.add((p + 4) + " .         <name>            name of route map");
+        l.add((p + 4) + " " + (p + 3) + ",.       <name>            name of route map");
         l.add((p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
-        l.add((p + 4) + " .         <name>            name of route policy");
+        l.add((p + 4) + " " + (p + 3) + ",.       <name>            name of route policy");
+        l.add((p + 3) + " " + (p + 4) + "       metric              set metric");
+        l.add((p + 4) + " " + (p + 5) + "         set               set value to a specific value");
+        l.add((p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add((p + 4) + " " + (p + 5) + "         add               add value to current value");
+        l.add((p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add((p + 4) + " " + (p + 5) + "         sub               substract value to current value");
+        l.add((p + 5) + " " + (p + 3) + ",.         <num>           value");
         l.add((p + 1) + " " + (p + 2) + "   justadvert              advertise interface");
         l.add((p + 2) + " " + (p + 3) + ",.   <name>                name of interface");
         l.add((p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
-        l.add((p + 4) + " .         <name>            name of route map");
+        l.add((p + 4) + " " + (p + 3) + ",.       <name>            name of route map");
         l.add((p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
-        l.add((p + 4) + " .         <name>            name of route policy");
+        l.add((p + 4) + " " + (p + 3) + ",.       <name>            name of route policy");
+        l.add((p + 3) + " " + (p + 4) + "       metric              set metric");
+        l.add((p + 4) + " " + (p + 5) + "         set               set value to a specific value");
+        l.add((p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add((p + 4) + " " + (p + 5) + "         add               add value to current value");
+        l.add((p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add((p + 4) + " " + (p + 5) + "         sub               substract value to current value");
+        l.add((p + 5) + " " + (p + 3) + ",.         <num>           value");
         l.add((p + 1) + " " + (p + 2) + "   aggregate               aggregate more prefixes");
         l.add((p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
         l.add((p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
@@ -1483,6 +1549,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 4) + " " + (p + 3) + ",.       <name>            name of route policy");
         l.add((p + 3) + " " + (p + 4) + "       prefix-list         filter prefixes for aggregation");
         l.add((p + 4) + " " + (p + 3) + ",.       <name>            name of prefix list");
+        l.add((p + 3) + " " + (p + 4) + "       metric              set metric");
+        l.add((p + 4) + " " + (p + 5) + "         set               set value to a specific value");
+        l.add((p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add((p + 4) + " " + (p + 5) + "         add               add value to current value");
+        l.add((p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add((p + 4) + " " + (p + 5) + "         sub               substract value to current value");
+        l.add((p + 5) + " " + (p + 3) + ",.         <num>           value");
         l.add((p + 3) + " " + (p + 3) + ",.     as-set              generate as path information");
         l.add((p + 3) + " " + (p + 3) + ",.     summary-only        filter more specific prefixes");
     }

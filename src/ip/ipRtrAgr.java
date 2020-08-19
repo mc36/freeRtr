@@ -6,6 +6,7 @@ import addr.addrPrefix;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import tab.tabIntUpdater;
 import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabPrfxlstN;
@@ -40,6 +41,11 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
      * route policy
      */
     public tabListing<tabRtrplcN, addrIP> rouplc;
+
+    /**
+     * metric
+     */
+    public tabIntUpdater metric;
 
     /**
      * as path
@@ -136,6 +142,9 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
         ntry.rouSrc = src;
         ntry.rouTyp = rtrT;
         ntry.protoNum = rtrN;
+        if (metric != null) {
+            ntry.metric = metric.update(ntry.metric);
+        }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, true, roumap, rouplc, null);
     }
 

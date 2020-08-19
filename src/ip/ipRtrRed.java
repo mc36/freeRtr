@@ -7,6 +7,7 @@ import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRtrmapN;
 import addr.addrIP;
+import tab.tabIntUpdater;
 import tab.tabRouteEntry;
 import tab.tabRtrplcN;
 
@@ -43,6 +44,11 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
     public tabListing<tabRtrplcN, addrIP> rouplc;
 
     /**
+     * metric
+     */
+    public tabIntUpdater metric;
+
+    /**
      * create redistributor
      *
      * @param prot type of protocol
@@ -75,8 +81,23 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
      * @param src source table to use
      */
     public void filter(int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src) {
-        tabRoute<addrIP> lst = src.justProto(typ, num);
-        tabRoute.addUpdatedTable(tabRoute.addType.better, afi, trg, lst, true, roumap, rouplc, prflst);
+        for (int i = 0; i < src.size(); i++) {
+            tabRouteEntry<addrIP> ntry = src.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.rouTyp != typ) {
+                continue;
+            }
+            if (ntry.protoNum != num) {
+                continue;
+            }
+            if (metric != null) {
+                ntry = ntry.copyBytes();
+                ntry.metric = metric.update(ntry.metric);
+            }
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, roumap, rouplc, prflst);
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
 import cfg.cfgIfc;
+import tab.tabIntUpdater;
 import tab.tabRouteEntry;
 import tab.tabListing;
 import tab.tabRtrmapN;
@@ -33,6 +34,11 @@ public class ipRtrInt implements Comparator<ipRtrInt> {
      * route policy
      */
     public tabListing<tabRtrplcN, addrIP> rouplc;
+
+    /**
+     * metric
+     */
+    public tabIntUpdater metric;
 
     /**
      * create advertisement
@@ -79,6 +85,10 @@ public class ipRtrInt implements Comparator<ipRtrInt> {
         tabRouteEntry<addrIP> ntry = src.find(ifc.network);
         if (ntry == null) {
             return;
+        }
+        if (metric != null) {
+            ntry = ntry.copyBytes();
+            ntry.metric = metric.update(ntry.metric);
         }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, roumap, rouplc, null);
     }
