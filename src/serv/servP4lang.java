@@ -1122,7 +1122,7 @@ class servP4langConn implements Runnable {
         return null;
     }
 
-    private int getNullLabel(tabRouteEntry<addrIP> ntry) {
+    private static int getNullLabel(tabRouteEntry<addrIP> ntry) {
         if (ntry.prefix.network.isIPv4()) {
             return ipMpls.labelExp4;
         } else {
@@ -1130,7 +1130,22 @@ class servP4langConn implements Runnable {
         }
     }
 
-    private int getLabel(tabRouteEntry<addrIP> ntry) {
+    private static int getLabel(List<Integer> labs) {
+        if (labs == null) {
+            return -1;
+        }
+        if (labs.size() < 1) {
+            return -1;
+        }
+        int lab = labs.get(0);
+        if (lab == ipMpls.labelImp) {
+            return -1;
+        } else {
+            return lab;
+        }
+    }
+
+    private static int getLabel(tabRouteEntry<addrIP> ntry) {
         if (ntry.labelRem == null) {
             return getNullLabel(ntry);
         }
@@ -1180,15 +1195,12 @@ class servP4langConn implements Runnable {
         if (hop == null) {
             return;
         }
-        if (ntry.remoteLab == null) {
+        int lab = getLabel(ntry.remoteLab);
+        if (lab < 0) {
             lower.sendLine("unlabel" + afi + "_del " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop);
-            return;
+        } else {
+            lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop + " " + lab);
         }
-        if (ntry.remoteLab.size() < 1) {
-            lower.sendLine("unlabel" + afi + "_del " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop);
-            return;
-        }
-        lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop + " " + ntry.remoteLab.get(0));
     }
 
     private void doLab1(tabLabelNtry ntry) {
@@ -1251,15 +1263,12 @@ class servP4langConn implements Runnable {
             afi = "6";
         }
         labels.put(ntry);
-        if (ntry.remoteLab == null) {
+        int lab = getLabel(ntry.remoteLab);
+        if (lab < 0) {
             lower.sendLine("unlabel" + afi + "_" + act + " " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop);
-            return;
+        } else {
+            lower.sendLine("label" + afi + "_" + act + " " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop + " " + lab);
         }
-        if (ntry.remoteLab.size() < 1) {
-            lower.sendLine("unlabel" + afi + "_" + act + " " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop);
-            return;
-        }
-        lower.sendLine("label" + afi + "_" + act + " " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop + " " + ntry.remoteLab.get(0));
     }
 
     private void doBrdg(servP4langBr br) {

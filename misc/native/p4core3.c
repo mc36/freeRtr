@@ -207,6 +207,8 @@ mpls_rx:
                     byteDr[port] += bufS;
                     return;
                 case 2: // pop
+                    neigh_ntry.id = mpls_res->nexthop;
+                    if ((label & 0x100) == 0) goto ethtyp_tx;
                     switch (mpls_res->ver) {
                         case 4:
                             ethtyp = 0x800;
@@ -218,7 +220,6 @@ mpls_rx:
                             ethtyp = 0;
                             break;
                     }
-                    neigh_ntry.id = mpls_res->nexthop;
                     goto ethtyp_tx;
                     return;
                 case 3: // swap
