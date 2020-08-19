@@ -129,12 +129,6 @@ bridge 4
  private-bridge
  exit
 !
-bridge 9
- mac-learn
- inspect mac
- mac-move
- exit
-!
 vrf definition bvi
  rd 65535:2
  label-mode per-prefix
@@ -246,22 +240,22 @@ router logger6 1
 !
 router deaggr4 1
  vrf v1
- justadvert bvi9
+ justadvert bundle9
  exit
 !
 router deaggr6 1
  vrf v1
- justadvert bvi9
+ justadvert bundle9
  exit
 !
 router mobile4 1
  vrf v1
- justadvert bvi9
+ justadvert bundle9
  exit
 !
 router mobile6 1
  vrf v1
- justadvert bvi9
+ justadvert bundle9
  exit
 !
 interface loopback0
@@ -349,9 +343,11 @@ interface template1
 !
 interface bundle9
  description uplink
- bridge-group 9
+ vrf forwarding v1
+ ipv4 address 10.1.123.91 255.255.255.0
+ ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
+ template template1
  no shutdown
- no log-link-change
  exit
 !
 interface bvi1
@@ -387,15 +383,6 @@ interface bvi4
  cdp enable
  no shutdown
  no log-link-change
- exit
-!
-interface bvi9
- description uplink
- vrf forwarding v1
- ipv4 address 10.1.123.91 255.255.255.0
- ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
- template template1
- no shutdown
  exit
 !
 interface ethernet1
