@@ -903,7 +903,7 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
         }
         bits.sleep(1000);
         uniResLoc srvUrl = uniResLoc.parseOne(streamT);
-        addrIP adr = userTerminal.justResolv(srvUrl.server, 0);
+        addrIP adr = userTerminal.justResolv(srvUrl.server, streamP.prefer);
         if (adr == null) {
             return;
         }
@@ -1141,7 +1141,7 @@ class servHttpConn implements Runnable {
             sendRespError(502, "bad proxy profile");
             return false;
         }
-        addrIP adr = userTerminal.justResolv(l.get(1), 0);
+        addrIP adr = userTerminal.justResolv(l.get(1), prx.proxy.prefer);
         if (adr == null) {
             sendRespError(502, "bad target hostname");
             return false;
@@ -1922,7 +1922,7 @@ class servHttpConn implements Runnable {
                 return;
             }
             gotUrl.fromString("tcp://" + gotUrl.orig);
-            addrIP adr = userTerminal.justResolv(gotUrl.server, 0);
+            addrIP adr = userTerminal.justResolv(gotUrl.server, lower.proxy.prefer);
             if (adr == null) {
                 sendRespError(502, "bad gateway");
                 return;
@@ -2051,7 +2051,7 @@ class servHttpConn implements Runnable {
             }
             addrIP adrs[] = new addrIP[urls.size()];
             for (int i = 0; i < adrs.length; i++) {
-                adrs[i] = userTerminal.justResolv(urls.get(i).server, 0);
+                adrs[i] = userTerminal.justResolv(urls.get(i).server, gotHost.multiAccP.prefer);
             }
             pipeSide cons[] = new pipeSide[adrs.length];
             for (int i = 0; i < adrs.length; i++) {
@@ -2097,7 +2097,7 @@ class servHttpConn implements Runnable {
         }
         if (gotHost.reconnT != null) {
             uniResLoc srvUrl = uniResLoc.parseOne(gotHost.reconnT);
-            addrIP adr = userTerminal.justResolv(srvUrl.server, 0);
+            addrIP adr = userTerminal.justResolv(srvUrl.server, gotHost.reconnP.prefer);
             if (adr == null) {
                 sendRespError(502, "bad gateway");
                 return;

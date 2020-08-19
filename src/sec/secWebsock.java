@@ -151,7 +151,7 @@ public class secWebsock {
      * @return pipe if success, null on error
      */
     public final static pipeSide doConnect(clntProxy prx, uniResLoc trg, String prt) {
-        addrIP adr = userTerminal.justResolv(trg.server, 0);
+        addrIP adr = userTerminal.justResolv(trg.server, prx.prefer);
         if (adr == null) {
             return null;
         }

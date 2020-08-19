@@ -9104,3 +9104,6 @@ qc pass: qos priority flowspec
 ---------------------------------- 2020-08-17 04:26:30
 qc pass: lsrp with selective sr
 qc pass: lsrp with selective bier
+---------------------------------- 2020-08-19 03:45:01
+qc pass: lsrp peer metric
+qc pass: pvrp peer metric

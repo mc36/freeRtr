@@ -129,7 +129,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
 
     private void doWork() {
         bits.sleep(1000);
-        addrIP adr = userTerminal.justResolv(server, 0);
+        addrIP adr = userTerminal.justResolv(server, proxy.prefer);
         if (adr == null) {
             return;
         }

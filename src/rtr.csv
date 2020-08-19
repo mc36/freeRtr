@@ -1,6 +1,6 @@
 file;test;stage;command
--;freeRouter v20.8.18-rel, done by cs@nop.;-;-
--;2020-08-18 19:06:08, took 00:05:15, with 100 workers, on 1890 cases, 0 failed, 0 traces, 1 retries;-;-
+-;freeRouter v20.8.19-rel, done by cs@nop.;-;-
+-;2020-08-19 03:50:16, took 00:05:15, with 100 workers, on 1892 cases, 0 failed, 0 traces, 1 retries;-;-
 -;./rtr.bin;-;-
 basic.tst;dummy test;successfully;finished
 conn-anyconn.tst;ip over anyconnect;successfully;finished
@@ -1688,6 +1688,7 @@ rout-lsrp31.tst;lsrp with srgb sr;successfully;finished
 rout-lsrp32.tst;lsrp over point2point ethernet;successfully;finished
 rout-lsrp33.tst;lsrp with selective sr;successfully;finished
 rout-lsrp34.tst;lsrp with selective bier;successfully;finished
+rout-lsrp35.tst;lsrp peer metric;successfully;finished
 rout-mcast01.tst;multicast routing with static flooding;successfully;finished
 rout-mcast02.tst;multicast routing with pim ssm;successfully;finished
 rout-mcast03.tst;multicast routing with igmp/mld;successfully;finished
@@ -1817,6 +1818,7 @@ rout-pvrp36.tst;pvrp stub node;successfully;finished
 rout-pvrp37.tst;pvrp stub interface;successfully;finished
 rout-pvrp38.tst;pvrp unstub interface;successfully;finished
 rout-pvrp39.tst;pvrp over point2point ethernet;successfully;finished
+rout-pvrp40.tst;pvrp peer metric;successfully;finished
 rout-redist01.tst;redistribution with isis;successfully;finished
 rout-redist02.tst;redistribution with ospf;successfully;finished
 rout-redist03.tst;redistribution with rip;successfully;finished

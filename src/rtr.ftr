@@ -1684,6 +1684,7 @@ qc pass: lsrp with srgb sr
 qc pass: lsrp over point2point ethernet
 qc pass: lsrp with selective sr
 qc pass: lsrp with selective bier
+qc pass: lsrp peer metric
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -1813,6 +1814,7 @@ qc pass: pvrp stub node
 qc pass: pvrp stub interface
 qc pass: pvrp unstub interface
 qc pass: pvrp over point2point ethernet
+qc pass: pvrp peer metric
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip
