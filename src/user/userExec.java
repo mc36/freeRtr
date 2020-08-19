@@ -916,8 +916,10 @@ public class userExec {
         hl.add("111 .      raw                   unfiltered");
         hl.add("111 .      count                 count entities");
         hl.add("111 .      viewer                display in viewer");
-        hl.add("111 119    redirect              redirect output to file");
-        hl.add("119 .        <text>              name of file");
+        if (privileged) {
+            hl.add("111 119    redirect              redirect output to file");
+            hl.add("119 .        <text>              name of file");
+        }
         hl.add("1 2    watch                     running system periodic information");
         getHelpShow(hl);
         hl.add("1 2    view                      running system information");

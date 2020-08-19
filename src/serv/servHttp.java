@@ -241,8 +241,15 @@ public class servHttp extends servGeneric implements prtServS {
             } else {
                 l.add(a + " noindex");
             }
-            if (ntry.allowScript) {
-                l.add(a + " script");
+            if (ntry.allowScript != 0) {
+                String s = "";
+                if ((ntry.allowScript & 2) != 0) {
+                    s += " exec";
+                }
+                if ((ntry.allowScript & 4) != 0) {
+                    s += " config";
+                }
+                l.add(a + " script" + s);
             } else {
                 l.add(a + " noscript");
             }
@@ -481,11 +488,25 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("script")) {
-            ntry.allowScript = true;
+            ntry.allowScript = 1;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("exec")) {
+                    ntry.allowScript |= 2;
+                    continue;
+                }
+                if (a.equals("config")) {
+                    ntry.allowScript |= 4;
+                    continue;
+                }
+            }
             return false;
         }
         if (a.equals("noscript")) {
-            ntry.allowScript = false;
+            ntry.allowScript = 0;
             return false;
         }
         if (a.equals("imagemap")) {
@@ -646,7 +667,9 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("3 .      noindex                    forbit index for directory");
         l.add("3 .      dirlist                    allow directory listing");
         l.add("3 .      nodirlist                  forbid directory listing");
-        l.add("3 .      script                     allow script running");
+        l.add("3 4,.    script                     allow script running");
+        l.add("4 4,.      exec                     allow exec commands");
+        l.add("4 4,.      config                   allow config commands");
         l.add("3 .      noscript                   forbid script running");
         l.add("3 .      imagemap                   allow image map processing");
         l.add("3 .      noimagemap                 forbid image map processing");
@@ -826,7 +849,7 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
     /**
      * script running allowed
      */
-    public boolean allowScript;
+    public int allowScript;
 
     /**
      * image map decode allowed
@@ -1178,8 +1201,8 @@ class servHttpConn implements Runnable {
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userScript t = new userScript(pip, "");
         t.addLines(l);
-        t.allowConfig = true;
-        t.allowExec = true;
+        t.allowConfig = (gotHost.allowScript & 4) != 0;
+        t.allowExec = (gotHost.allowScript & 2) != 0;
         t.currDir = gotHost.path;
         pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCR;
@@ -1520,7 +1543,7 @@ class servHttpConn implements Runnable {
     }
 
     private boolean sendOneFile(String s, String a) {
-        if ((gotHost.allowScript) && a.equals(".tcl")) {
+        if ((gotHost.allowScript != 0) && a.equals(".tcl")) {
             return sendOneScript(s);
         }
         if ((gotHost.allowClass != null) && a.equals(".class")) {

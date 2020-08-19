@@ -802,7 +802,7 @@ server http web
  host * logging
  host * dirlist
  host * noindex
- host * script
+ host * script exec config
  host * websock
  host * webdav
  host * class
