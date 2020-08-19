@@ -21,7 +21,7 @@ long int packDr[maxPorts];
 
 struct mpls_entry {
     int label;
-    int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls
+    int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=punt
     int nexthop;
     int port;
     int bridge;

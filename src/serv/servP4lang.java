@@ -1164,6 +1164,14 @@ class servP4langConn implements Runnable {
             return;
         }
         labels.del(ntry);
+        if ((ntry.duplicate != null) || (ntry.bier != null)) {
+            servP4langVrf vrf = findVrf(ntry.forwarder);
+            if (vrf == null) {
+                return;
+            }
+            lower.sendLine("cpulabel_del " + ntry.getValue());
+            return;
+        }
         if (ntry.nextHop == null) {
             servP4langVrf vrf = findVrf(ntry.forwarder);
             if (vrf == null) {
@@ -1205,13 +1213,24 @@ class servP4langConn implements Runnable {
 
     private void doLab1(tabLabelNtry ntry) {
         ntry = ntry.copyBytes();
-        if (ntry.duplicate != null) {
-            return;
-        }
-        if (ntry.bier != null) {
-            return;
-        }
         if (ntry.pweIfc != null) {
+            return;
+        }
+        if ((ntry.duplicate != null) || (ntry.bier != null)) {
+            servP4langVrf vrf = findVrf(ntry.forwarder);
+            if (vrf == null) {
+                return;
+            }
+            tabLabelNtry old = labels.find(ntry);
+            String act = "add";
+            if (old != null) {
+                if (!old.differs(ntry)) {
+                    return;
+                }
+                act = "mod";
+            }
+            labels.put(ntry);
+            lower.sendLine("cpulabel_" + act + " " + ntry.getValue());
             return;
         }
         if (ntry.nextHop == null) {

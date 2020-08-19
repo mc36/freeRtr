@@ -315,6 +315,8 @@ neigh_tx:
                     bufP += 12;
                     bufP += 2;
                     goto bridgevpls_rx;
+                case 6: // punt
+                    goto cpu;
                 default:
                     return;
             }

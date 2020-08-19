@@ -184,6 +184,12 @@ int doOneCommand(unsigned char* buf) {
         if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "cpulabel") == 0) {
+        mpls_ntry.label = atoi(arg[2]);
+        mpls_ntry.command = 6;
+        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "portvrf") == 0) {
         portvrf_ntry.command = 1;
         portvrf_ntry.port = atoi(arg[2]);
