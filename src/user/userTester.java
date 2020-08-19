@@ -476,15 +476,15 @@ public class userTester {
         txt.add("tested: " + a + "<br/>");
         txt.add("jvm: " + jvn + jvp + "<br/>");
         txt.add("<br/>");
-        txt.add("<table border=1><tr><td><b>file</b></td><td><b>test</b></td><td><b>stage</b></td><td><b>command</b></td></tr>");
+        txt.add("<table border=1><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr>");
         txt.addAll(features2list(finished, 3));
         txt.add("</table></body></html>");
         bits.buf2txt(true, txt, "rtr" + beg + ".html");
         txt = new ArrayList<String>();
-        txt.add("file;test;stage;command");
-        txt.add("-;" + release + ";-;-");
-        txt.add("-;" + a + ";-;-");
-        txt.add("-;" + jvn + jvp + ";-;-");
+        txt.add("file;result;test");
+        txt.add("-;-;" + release);
+        txt.add("-;-;" + a);
+        txt.add("-;-;" + jvn + jvp);
         txt.addAll(features2list(finished, 4));
         bits.buf2txt(true, txt, "rtr" + beg + ".csv");
         a = "rtr" + beg + ".ftr";
@@ -961,12 +961,20 @@ class userTesterOne {
         return qc + testName;
     }
 
+    public String getRes() {
+        if (testRes == 0) {
+            return "success";
+        } else {
+            return testRes + " " + stage + " " + cmd.getOriginal();
+        }
+    }
+
     public String getCsv() {
-        return fileName + ";" + testName + ";" + stage + ";" + cmd.getOriginal();
+        return fileName + ";" + getRes() + ";" + testName;
     }
 
     public String getHtm(String url) {
-        return "<tr><td><a href=\"" + url + fileName + "\">" + fileName + "</a></td><td>" + testName + "</td><td>" + stage + "</td><td>" + cmd.getOriginal() + "</td></tr>";
+        return "<tr><td><a href=\"" + url + fileName + "\">" + fileName + "</a></td><td>" + getRes() + "</td><td>" + testName + "</td></tr>";
     }
 
     public String getLin() {
