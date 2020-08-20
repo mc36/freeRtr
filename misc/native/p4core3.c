@@ -79,7 +79,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
             ntry.trgPortV = 0;                                  \
             break;                                              \
     }                                                           \
-    hash = hash ^ ntry.srcPortV ^ ntry.trgPortV;
+    hash ^= ntry.srcPortV ^ ntry.trgPortV;
 
 
 #define update_chksum(ofs, val)                                 \
@@ -177,7 +177,8 @@ mpls_rx:
             ttl = (label & 0xff) - 1;
             if (ttl <= 1) goto punt;
             bufP += 4;
-            hash = mpls_ntry.label = (label >> 12) & 0xfffff;
+            mpls_ntry.label = (label >> 12) & 0xfffff;
+            hash ^= mpls_ntry.label;
             index = table_find(&mpls_table, &mpls_ntry);
             if (index < 0) {
                 packDr[port]++;
@@ -361,7 +362,7 @@ ipv4_rx:
             acl4_ntry.protV = bufD[bufP + 9];
             acl4_ntry.srcAddr = get32msb(bufD, bufP + 12);
             acl4_ntry.trgAddr = route4_ntry.addr = get32msb(bufD, bufP + 16);
-            hash = acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
+            hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
             ttl = bufD[bufP + 8] - 1;
             if (ttl <= 1) goto punt;
             bufD[bufP + 8] = ttl;
@@ -496,7 +497,7 @@ ipv6_rx:
             acl6_ntry.trgAddr2 = route6_ntry.addr2 = get32msb(bufD, bufP + 28);
             acl6_ntry.trgAddr3 = route6_ntry.addr3 = get32msb(bufD, bufP + 32);
             acl6_ntry.trgAddr4 = route6_ntry.addr4 = get32msb(bufD, bufP + 36);
-            hash = acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
+            hash ^= acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
             ttl = bufD[bufP + 7] - 1;
             if (ttl <= 1) goto punt;
             bufD[bufP + 7] = ttl;
@@ -707,10 +708,12 @@ bridge_rx:
 bridgevpls_rx:
             bridge_ntry.mac1 = get16msb(buf2, 6);
             bridge_ntry.mac2 = get32msb(buf2, 8);
+            hash ^= bridge_ntry.mac2;
             index = table_find(&bridge_table, &bridge_ntry);
             if (index < 0) goto punt;
             bridge_ntry.mac1 = get16msb(buf2, 0);
-            hash = bridge_ntry.mac2 = get32msb(buf2, 2);
+            bridge_ntry.mac2 = get32msb(buf2, 2);
+            hash ^= bridge_ntry.mac2;
             index = table_find(&bridge_table, &bridge_ntry);
             if (index < 0) goto punt;
             bridge_res = table_get(&bridge_table, index);
