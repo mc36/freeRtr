@@ -1,4 +1,4 @@
-description ppp over telnet
+description ppp over tcp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -30,7 +30,6 @@ aaa userlist usr
 server tel tel
  vrf v1
  login authen usr
- security protocol telnet
  exec int di1
  exit
 !
@@ -75,7 +74,7 @@ vpdn tel
  script login
  target 3.3.3.1
  vcid 23
- protocol telnet
+ protocol tcp
  exit
 !
 
@@ -84,7 +83,7 @@ r2 tping 100 30 2.2.2.0 /vrf v1
 r2 tping 100 5 1.1.1.1 /vrf v1
 
 r2 output show inter dia1 full
-output ../binTmp/conn-telnet.html
+output ../binTmp/conn-tcp.html
 <html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">
 here is the interface:
 <pre>

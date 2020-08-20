@@ -34,7 +34,17 @@ public class clntTelnet implements Runnable, ifcDn {
     /**
      * enable security
      */
-    public boolean tls;
+    public int security;
+
+    /**
+     * username
+     */
+    public String username;
+
+    /**
+     * password
+     */
+    public String password;
 
     /**
      * port number
@@ -206,8 +216,8 @@ public class clntTelnet implements Runnable, ifcDn {
             return;
         }
         conn.timeout = 120000;
-        if (tls) {
-            conn = secClient.openSec(conn, servGeneric.protoTls, null, null);
+        if (security > 0) {
+            conn = secClient.openSec(conn, security, username, password);
         }
         if (conn == null) {
             return;

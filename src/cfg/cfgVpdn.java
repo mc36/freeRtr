@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import pack.packLdpPwe;
+import serv.servGeneric;
 import tab.tabGen;
 import user.userFilter;
 import user.userHelping;
@@ -174,6 +175,14 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
          * tls
          */
         prTls,
+        /**
+         * ssh
+         */
+        prSsh,
+        /**
+         * tcp
+         */
+        prTcp,
         /**
          * bstun
          */
@@ -372,6 +381,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 return "telnet";
             case prTls:
                 return "tls";
+            case prSsh:
+                return "ssh";
+            case prTcp:
+                return "tcp";
             case prBstun:
                 return "bstun";
             case prGtp:
@@ -448,6 +461,12 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("tls")) {
             return protocolType.prTls;
+        }
+        if (s.equals("ssh")) {
+            return protocolType.prSsh;
+        }
+        if (s.equals("tcp")) {
+            return protocolType.prTcp;
         }
         if (s.equals("gtp")) {
             return protocolType.prGtp;
@@ -581,6 +600,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add("2 .    bstun                        select bstun");
         l.add("2 .    telnet                       select telnet");
         l.add("2 .    tls                          select tls");
+        l.add("2 .    ssh                          select ssh");
+        l.add("2 .    tcp                          select tcp");
         l.add("2 .    gtp                          select gtp");
         l.add("2 .    greppp                       select ppp over gre");
         l.add("2 .    gretap                       select tap over gre");
@@ -1114,7 +1135,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 telnet.target = target;
                 telnet.proxy = proxy;
                 telnet.port = vcid;
-                telnet.tls = false;
+                telnet.security = servGeneric.protoTelnet;
                 telnet.script = script.script;
                 telnet.setUpper(ifaceDialer.getEncapProto());
                 telnet.workStart();
@@ -1128,7 +1149,36 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 telnet.target = target;
                 telnet.proxy = proxy;
                 telnet.port = vcid;
-                telnet.tls = true;
+                telnet.security = servGeneric.protoTls;
+                telnet.script = script.script;
+                telnet.setUpper(ifaceDialer.getEncapProto());
+                telnet.workStart();
+                lower = telnet;
+                break;
+            case prSsh:
+                if (ifaceDialer == null) {
+                    return;
+                }
+                telnet = new clntTelnet();
+                telnet.target = target;
+                telnet.proxy = proxy;
+                telnet.port = vcid;
+                telnet.username = username;
+                telnet.password = password;
+                telnet.security = servGeneric.protoSsh;
+                telnet.script = script.script;
+                telnet.setUpper(ifaceDialer.getEncapProto());
+                telnet.workStart();
+                lower = telnet;
+                break;
+            case prTcp:
+                if (ifaceDialer == null) {
+                    return;
+                }
+                telnet = new clntTelnet();
+                telnet.target = target;
+                telnet.proxy = proxy;
+                telnet.port = vcid;
                 telnet.script = script.script;
                 telnet.setUpper(ifaceDialer.getEncapProto());
                 telnet.workStart();
