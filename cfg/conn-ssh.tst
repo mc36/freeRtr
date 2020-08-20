@@ -41,7 +41,7 @@ server tel tel
  security rsacert rsa
  security dsacert dsa
  security ecdsacert ecdsa
- security protocol tls
+ security protocol ssh
  security authen usr
  exec int di1
  exit
@@ -83,7 +83,7 @@ vpdn tel
  script login
  target 3.3.3.1
  vcid 23
- protocol tls
+ protocol ssh
  exit
 !
 
