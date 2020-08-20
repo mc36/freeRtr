@@ -1,6 +1,6 @@
 file;result;test
 -;-;freeRouter v20.8.20-rel, done by cs@nop.
--;-;2020-08-20 07:20:28, took 00:05:15, with 100 workers, on 1894 cases, 0 failed, 0 traces, 1 retries
+-;-;2020-08-20 10:01:24, took 00:05:29, with 100 workers, on 1896 cases, 0 failed, 0 traces, 4 retries
 -;-;./rtr.bin
 basic.tst;success;dummy test
 conn-anyconn.tst;success;ip over anyconnect
@@ -293,9 +293,11 @@ conn-sreth10.tst;success;sep tunneling with sreth
 conn-sreth11.tst;success;ethernet tunneling with sreth
 conn-sreth12.tst;success;vlan tunneling with sreth
 conn-sreth13.tst;success;tunnel interface with sreth
+conn-ssh.tst;success;ppp over ssh
 conn-sstp.tst;success;ppp over sstp
 conn-stp.tst;success;spantree over ethernet
 conn-stun.tst;success;ppp over stun
+conn-tcp.tst;success;ppp over tcp
 conn-telnet.tst;success;ppp over telnet
 conn-tls.tst;success;ppp over tls
 conn-tmux01.tst;success;tmux over ipv4

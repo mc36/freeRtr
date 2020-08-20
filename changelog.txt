@@ -9110,3 +9110,6 @@ qc pass: pvrp peer metric
 ---------------------------------- 2020-08-19 07:09:57
 qc pass: redistribution with interfaces
 qc pass: redistribution with metric
+---------------------------------- 2020-08-20 09:55:55
+qc pass: ppp over ssh
+qc pass: ppp over tcp
