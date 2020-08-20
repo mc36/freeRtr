@@ -373,7 +373,8 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
                 break;
             case packPppOE.codePadT:
                 if (sessionId != poe.ses) {
-                    break;
+                    cntr.drop(pck, counter.reasons.badVal);
+                    return;
                 }
                 if (acAddr.compare(acAddr, pck.ETHsrc) != 0) {
                     cntr.drop(pck, counter.reasons.badAddr);
