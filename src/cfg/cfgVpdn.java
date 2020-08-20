@@ -29,6 +29,7 @@ import clnt.clntVxlan;
 import clnt.clntGeneve;
 import clnt.clntSrEth;
 import ifc.ifcBridgeIfc;
+import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import java.util.ArrayList;
@@ -133,6 +134,11 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
      * control word
      */
     public boolean ctrlWrd = false;
+
+    /**
+     * lower layer handler
+     */
+    public ifcDn lower = new ifcNull();
 
     /**
      * target protocol
@@ -967,6 +973,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             gnv.workStop();
             gnv = null;
         }
+        lower = new ifcNull();
         running = false;
     }
 
@@ -1003,6 +1010,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 l2f.password = password;
                 l2f.setUpper(ifaceDialer.getEncapProto());
                 l2f.workStart();
+                lower = l2f;
                 break;
             case prL2tp2:
                 if (ifaceDialer == null) {
@@ -1020,6 +1028,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 l2tp2.password = password;
                 l2tp2.setUpper(ifaceDialer.getEncapProto());
                 l2tp2.workStart();
+                lower = l2tp2;
                 break;
             case prL2tp3:
                 if ((ifaceDialer == null) && (ifaceBridge == null)) {
@@ -1042,6 +1051,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                     l2tp3.setUpper(brdgIfc);
                 }
                 l2tp3.workStart();
+                lower = l2tp3;
                 break;
             case prSstp:
                 if (ifaceDialer == null) {
@@ -1055,6 +1065,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 sstp.password = password;
                 sstp.setUpper(ifaceDialer.getEncapProto());
                 sstp.workStart();
+                lower = sstp;
                 break;
             case prAnycon:
                 if (ifaceDialer == null) {
@@ -1068,6 +1079,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 anycon.password = password;
                 anycon.setUpper(ifaceDialer.getEncapProto());
                 anycon.workStart();
+                lower = anycon;
                 break;
             case prStun:
                 if (ifaceDialer == null) {
@@ -1079,6 +1091,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 stun.group = vcid;
                 stun.setUpper(ifaceDialer.getEncapProto());
                 stun.workStart();
+                lower = stun;
                 break;
             case prBstun:
                 if (ifaceDialer == null) {
@@ -1091,6 +1104,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 bstun.script = script.script;
                 bstun.setUpper(ifaceDialer.getEncapProto());
                 bstun.workStart();
+                lower = bstun;
                 break;
             case prTelnet:
                 if (ifaceDialer == null) {
@@ -1104,6 +1118,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 telnet.script = script.script;
                 telnet.setUpper(ifaceDialer.getEncapProto());
                 telnet.workStart();
+                lower = telnet;
                 break;
             case prTls:
                 if (ifaceDialer == null) {
@@ -1117,6 +1132,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 telnet.script = script.script;
                 telnet.setUpper(ifaceDialer.getEncapProto());
                 telnet.workStart();
+                lower = telnet;
                 break;
             case prGtp:
                 if (ifaceDialer == null) {
@@ -1133,6 +1149,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 gtp.imei = calling;
                 gtp.setUpper(ifaceDialer.getEncapProto());
                 gtp.workStart();
+                lower = gtp;
                 break;
             case prPptp:
                 if (ifaceDialer == null) {
@@ -1147,6 +1164,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pptp.called = called;
                 pptp.setUpper(ifaceDialer.getEncapProto());
                 pptp.workStart();
+                lower = pptp;
                 break;
             case prPou:
                 if ((ifaceDialer == null) && (ifaceBridge == null)) {
@@ -1170,6 +1188,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                     pou.setUpper(brdgIfc);
                 }
                 pou.workStart();
+                lower = pou;
                 break;
             case prPod:
                 if (ifaceDialer == null) {
@@ -1181,6 +1200,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pod.prtR = vcid;
                 pod.setUpper(ifaceDialer.getEncapProto());
                 pod.workStart();
+                lower = pod;
                 break;
             case prPot:
                 if (ifaceDialer == null) {
@@ -1192,6 +1212,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pot.prtR = vcid;
                 pot.setUpper(ifaceDialer.getEncapProto());
                 pot.workStart();
+                lower = pot;
                 break;
             case prPox:
                 if (ifaceDialer == null) {
@@ -1203,6 +1224,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pox.prtR = vcid;
                 pox.setUpper(ifaceDialer.getEncapProto());
                 pox.workStart();
+                lower = pox;
                 break;
             case prPog:
                 if (ifaceDialer == null) {
@@ -1216,6 +1238,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pog.vcid = vcid;
                 pog.setUpper(ifaceDialer.getEncapProto());
                 pog.workStart();
+                lower = pog;
                 break;
             case prTog:
                 if (ifaceBridge == null) {
@@ -1230,6 +1253,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 tog.setUpper(brdgIfc);
                 tog.workStart();
+                lower = tog;
                 break;
             case prAx25:
                 if (ifaceDialer == null) {
@@ -1242,6 +1266,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 ax25.srcIfc = proxy.srcIfc;
                 ax25.setUpper(ifaceDialer.getEncapProto());
                 ax25.workStart();
+                lower = ax25;
                 break;
             case prPwom:
                 if ((ifaceDialer == null) && (ifaceBridge == null)) {
@@ -1264,6 +1289,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                     pwom.setUpper(brdgIfc);
                 }
                 pwom.workStart();
+                lower = pwom;
                 break;
             case prErspan:
                 if (ifaceBridge == null) {
@@ -1279,6 +1305,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 erspan.setUpper(brdgIfc);
                 erspan.workStart();
+                lower = erspan;
                 break;
             case prDlsw:
                 if (ifaceBridge == null) {
@@ -1292,6 +1319,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 dlsw.setUpper(brdgIfc);
                 dlsw.workStart();
+                lower = dlsw;
                 break;
             case prEtherip:
                 if (ifaceBridge == null) {
@@ -1305,6 +1333,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 etherip.setUpper(brdgIfc);
                 etherip.workStart();
+                lower = etherip;
                 break;
             case prSreth:
                 if (ifaceBridge == null) {
@@ -1318,6 +1347,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 sreth.setUpper(brdgIfc);
                 sreth.workStart();
+                lower = sreth;
                 break;
             case prUti:
                 if (ifaceBridge == null) {
@@ -1332,6 +1362,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 uti.setUpper(brdgIfc);
                 uti.workStart();
+                lower = uti;
                 break;
             case prNvgre:
                 if (ifaceBridge == null) {
@@ -1346,6 +1377,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 nvgre.setUpper(brdgIfc);
                 nvgre.workStart();
+                lower = nvgre;
                 break;
             case prVxlan:
                 if (ifaceBridge == null) {
@@ -1361,6 +1393,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 vxl.setUpper(brdgIfc);
                 vxl.workStart();
+                lower = vxl;
                 break;
             case prGeneve:
                 if (ifaceBridge == null) {
@@ -1375,9 +1408,14 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 gnv.setUpper(brdgIfc);
                 gnv.workStart();
+                lower = gnv;
+                break;
+            default:
+                lower = new ifcNull();
                 break;
         }
         if (ifaceDialer != null) {
+            ifaceDialer.setLowerHandler(lower);
             ifcUp enc = ifaceDialer.getEncapProto();
             if (enc != null) {
                 enc.setState(state.states.up);

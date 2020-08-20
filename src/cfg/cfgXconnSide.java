@@ -18,6 +18,7 @@ import clnt.clntGrePpp;
 import clnt.clntGreTap;
 import clnt.clntL2f;
 import clnt.clntSrEth;
+import ifc.ifcDn;
 import ifc.ifcNshFwd;
 import ifc.ifcNull;
 import ifc.ifcUp;
@@ -77,6 +78,11 @@ public class cfgXconnSide {
      * upper layer handler
      */
     public ifcUp upper = new ifcNull();
+
+    /**
+     * lower layer handler
+     */
+    public ifcDn lower = new ifcNull();
 
     /**
      * vrf
@@ -298,6 +304,7 @@ public class cfgXconnSide {
             nvgre.workStop();
             nvgre = null;
         }
+        lower = new ifcNull();
     }
 
     private boolean getDir() {
@@ -336,6 +343,7 @@ public class cfgXconnSide {
                 pou.prtL = vcid;
                 pou.setUpper(upper);
                 pou.workStart();
+                lower = pou;
                 break;
             case prPog:
                 pog = new clntGrePpp();
@@ -345,6 +353,7 @@ public class cfgXconnSide {
                 pog.vcid = vcid;
                 pog.setUpper(upper);
                 pog.workStart();
+                lower = pog;
                 break;
             case prAx25:
                 ax25 = new clntAx25();
@@ -353,6 +362,7 @@ public class cfgXconnSide {
                 ax25.srcIfc = ifc;
                 ax25.setUpper(upper);
                 ax25.workStart();
+                lower = ax25;
                 break;
             case prL2f:
                 l2f = new clntL2f();
@@ -361,6 +371,7 @@ public class cfgXconnSide {
                 l2f.srcIfc = ifc;
                 l2f.setUpper(upper);
                 l2f.workStart();
+                lower = l2f;
                 break;
             case prVxlan:
                 vxl = new clntVxlan();
@@ -372,6 +383,7 @@ public class cfgXconnSide {
                 vxl.wildcard = ctrlWord;
                 vxl.setUpper(upper);
                 vxl.workStart();
+                lower = vxl;
                 break;
             case prGeneve:
                 gnv = new clntGeneve();
@@ -381,6 +393,7 @@ public class cfgXconnSide {
                 gnv.vni = vcid;
                 gnv.setUpper(upper);
                 gnv.workStart();
+                lower = gnv;
                 break;
             case prPptp:
                 pptp = new clntPptp();
@@ -391,6 +404,7 @@ public class cfgXconnSide {
                 pptp.called = "" + vcid;
                 pptp.setUpper(upper);
                 pptp.workStart();
+                lower = pptp;
                 break;
             case prL2tp2:
                 l2tp2 = new clntL2tp2();
@@ -402,6 +416,7 @@ public class cfgXconnSide {
                 l2tp2.calling = "" + vcid;
                 l2tp2.setUpper(upper);
                 l2tp2.workStart();
+                lower = l2tp2;
                 break;
             case prL2tp3:
                 l2tp3 = new clntL2tp3();
@@ -413,6 +428,7 @@ public class cfgXconnSide {
                 l2tp3.direction = getDir();
                 l2tp3.setUpper(upper);
                 l2tp3.workStart();
+                lower = l2tp3;
                 break;
             case prPwom:
                 pwom = new clntMplsPwe();
@@ -426,6 +442,7 @@ public class cfgXconnSide {
                 pwom.descr = name;
                 pwom.setUpper(upper);
                 pwom.workStart();
+                lower = pwom;
                 break;
             case prErspan:
                 erspan = new clntErspan();
@@ -436,6 +453,7 @@ public class cfgXconnSide {
                 erspan.vlnid = vcid;
                 erspan.setUpper(upper);
                 erspan.workStart();
+                lower = erspan;
                 break;
             case prDlsw:
                 dlsw = new clntDlsw();
@@ -444,6 +462,7 @@ public class cfgXconnSide {
                 dlsw.srcIfc = ifc;
                 dlsw.setUpper(upper);
                 dlsw.workStart();
+                lower = dlsw;
                 break;
             case prEtherip:
                 etherip = new clntEtherIp();
@@ -452,6 +471,7 @@ public class cfgXconnSide {
                 etherip.srcIfc = ifc;
                 etherip.setUpper(upper);
                 etherip.workStart();
+                lower = etherip;
                 break;
             case prSreth:
                 sreth = new clntSrEth();
@@ -460,6 +480,7 @@ public class cfgXconnSide {
                 sreth.srcIfc = ifc;
                 sreth.setUpper(upper);
                 sreth.workStart();
+                lower = sreth;
                 break;
             case prTog:
                 tog = new clntGreTap();
@@ -469,6 +490,7 @@ public class cfgXconnSide {
                 tog.vcid = vcid;
                 tog.setUpper(upper);
                 tog.workStart();
+                lower = tog;
                 break;
             case prUti:
                 uti = new clntUti();
@@ -478,6 +500,7 @@ public class cfgXconnSide {
                 uti.tunKey = vcid;
                 uti.setUpper(upper);
                 uti.workStart();
+                lower = uti;
                 break;
             case prNvgre:
                 nvgre = new clntNvGre();
@@ -487,8 +510,10 @@ public class cfgXconnSide {
                 nvgre.vsid = vcid;
                 nvgre.setUpper(upper);
                 nvgre.workStart();
+                lower = nvgre;
                 break;
             default:
+                lower = new ifcNull();
                 break;
         }
     }

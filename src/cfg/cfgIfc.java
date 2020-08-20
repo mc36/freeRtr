@@ -2957,8 +2957,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 ipOnly.setUpper(ethtyp);
                 break;
             default:
-                lower = new ifcNull();
-                lower.setUpper(ethtyp);
+                ifcNull nul = new ifcNull();
+                nul.setUpper(ethtyp);
                 break;
         }
         ethtyp.propagateState();
@@ -2971,6 +2971,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public synchronized void initPhysical() {
         switch (type) {
             case atm:
+                lower = thread;
                 atmsar = new ifcAtmSar();
                 thread.setUpper(atmsar);
                 atmsar.setUpper(ethtyp);
@@ -3163,6 +3164,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         nul.setUpper(upp);
         pwhe.stop2run();
         pwhe = null;
+        lower = nul;
     }
 
     /**
@@ -4082,6 +4084,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 lower = tunNvgre;
                 break;
             default:
+                lower = new ifcNull();
                 return true;
         }
         ethtyp.setState(state.states.up);
@@ -4229,6 +4232,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public synchronized boolean setup2pppoeClnt(cfgIfc dialer) {
         if (pppoeC != null) {
             pppoeC.clnIfc.getEncapProto().setState(state.states.close);
+            pppoeC.clnIfc.lower = new ifcNull();
             pppoeC.restartTimer(true);
             pppoeC = null;
             ethtyp.delET(packPppOE.typeCtr);
@@ -4244,9 +4248,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (enc == null) {
             return true;
         }
-        dialer.lower = new ifcNull();
         pppoeC = new ifcP2pOEclnt();
         pppoeC.clnIfc = dialer;
+        dialer.lower = pppoeC;
         pppoeC.setUpper(enc);
         ethtyp.addET(packPppOE.typeCtr, "pppoeCctrl", pppoeC);
         ethtyp.updateET(packPppOE.typeCtr, pppoeC);
@@ -4297,6 +4301,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 pppoeR.clnIfc.ethtyp.delET(-1);
             } else {
                 pppoeR.clnIfc.getEncapProto().setState(state.states.close);
+                pppoeR.clnIfc.lower = new ifcNull();
             }
             pppoeR.closeUp();
             pppoeR = null;
@@ -4321,6 +4326,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 pppoeR = new ifcP2pOErely(false);
                 pppoeR.diaI.setUpper(enc);
                 enc.setState(state.states.up);
+                serial.lower = pppoeR.diaI;
                 break;
             default:
                 return true;
@@ -6272,6 +6278,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             pwhe.start2run();
+            lower = pwhe.lower;
             return;
         }
         if (a.equals("ipx")) {
