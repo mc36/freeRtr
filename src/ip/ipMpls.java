@@ -630,10 +630,14 @@ public class ipMpls implements ifcUp {
      * @param secure secure configuration
      */
     public static void gotMplsPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, boolean secure, packHolder pck) {
+        int ttl = -1;
         for (;;) {
             if (parseMPLSheader(pck)) {
                 logger.info("received invalid header on " + fwdE);
                 return;
+            }
+            if (ttl >= 0) {
+                pck.MPLSttl = ttl;
             }
             switch (pck.MPLSlabel) {
                 case labelImp:
@@ -682,6 +686,9 @@ public class ipMpls implements ifcUp {
             if (ntry.forwarder == null) {
                 ntry.cntr.drop(pck, counter.reasons.noRoute);
                 return;
+            }
+            if (ntry.forwarder.mplsPropTtl) {
+                ttl = pck.MPLSttl;
             }
             if (secure) {
                 if ((ntry.forwarder != fwd4) && (ntry.forwarder != fwd6)) {
