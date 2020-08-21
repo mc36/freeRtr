@@ -9,6 +9,7 @@ import ifc.ifcNshFwd;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
 import tab.tabLabel;
@@ -389,9 +390,6 @@ public class ipMpls implements ifcUp {
      * @return false if succeed, true if error
      */
     public static boolean createError(packHolder pck, tabLabelNtry lab, counter.reasons res) {
-        if (!pck.MPLSbottom) {
-            return true;
-        }
         if (lab.forwarder == null) {
             return true;
         }
@@ -422,6 +420,19 @@ public class ipMpls implements ifcUp {
         if (src == null) {
             return true;
         }
+        List<Integer> labs = null;
+        if (!pck.MPLSbottom) {
+            labs = new ArrayList<Integer>();
+            for (;;) {
+                if (parseMPLSheader(pck)) {
+                    return true;
+                }
+                labs.add(pck.MPLSlabel);
+                if (pck.MPLSbottom) {
+                    break;
+                }
+            }
+        }
         if (lab.forwarder.ipCore.parseIPheader(pck, true)) {
             return true;
         }
@@ -434,6 +445,9 @@ public class ipMpls implements ifcUp {
         lab.forwarder.ipCore.createIPheader(pck);
         pck.INTupper = -1;
         beginMPLSfields(pck, (lab.forwarder.mplsPropTtl | ifc.mplsPropTtlAlways) & ifc.mplsPropTtlAllow);
+        if (labs != null) {
+            createMPLSlabels(pck, labs);
+        }
         return false;
     }
 
