@@ -422,6 +422,7 @@ public class ipMpls implements ifcUp {
         }
         List<Integer> labs = null;
         if (!pck.MPLSbottom) {
+            int old = pck.MPLSlabel;
             labs = new ArrayList<Integer>();
             for (;;) {
                 if (parseMPLSheader(pck)) {
@@ -432,6 +433,7 @@ public class ipMpls implements ifcUp {
                     break;
                 }
             }
+            pck.MPLSlabel = old;
         }
         if (lab.forwarder.ipCore.parseIPheader(pck, true)) {
             return true;
