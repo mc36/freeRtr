@@ -1,6 +1,6 @@
 file;result;test
 -;-;freeRouter v20.8.21-rel, done by cs@nop.
--;-;2020-08-21 10:06:01, took 00:04:54, with 100 workers, on 1896 cases, 0 failed, 0 traces, 1 retries
+-;-;2020-08-21 13:24:20, took 00:04:54, with 100 workers, on 1898 cases, 0 failed, 0 traces, 3 retries
 -;-;./rtr.bin
 basic.tst;success;dummy test
 conn-anyconn.tst;success;ip over anyconnect
@@ -1883,6 +1883,8 @@ rout-static05.tst;success;static routing with bfd tracker
 rout-static06.tst;success;static routing with labels
 rout-static07.tst;success;static routing with interface
 rout-static08.tst;success;static routing over point2point ethernet
+rout-static09.tst;success;recursive static routing
+rout-static10.tst;success;recursive static routing with labels
 serv-dns01.tst;success;authoritative dns server
 serv-dns02.tst;success;recursive dns server
 serv-dns03.tst;success;relaying dns server

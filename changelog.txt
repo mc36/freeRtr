@@ -9113,3 +9113,7 @@ qc pass: redistribution with metric
 ---------------------------------- 2020-08-20 09:55:55
 qc pass: ppp over ssh
 qc pass: ppp over tcp
+---------------------------------- 2020-08-21 13:19:26
+no todo: recursive static route
+qc pass: recursive static routing
+qc pass: recursive static routing with labels

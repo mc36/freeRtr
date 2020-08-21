@@ -1879,6 +1879,8 @@ qc pass: static routing with bfd tracker
 qc pass: static routing with labels
 qc pass: static routing with interface
 qc pass: static routing over point2point ethernet
+qc pass: recursive static routing
+qc pass: recursive static routing with labels
 qc pass: authoritative dns server
 qc pass: recursive dns server
 qc pass: relaying dns server
@@ -1909,7 +1911,6 @@ todo: hostwatch to execute script on acl match
 todo: protocol traceroute
 todo: optimal route reflection
 todo: bgp vpns with sr-policy
-todo: recursive static route
 todo: pipeline properties, terminal autoresize
 todo: temper: web access log
 todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
