@@ -2288,15 +2288,20 @@ public class userExec {
             }
             addrIP adr = trc.doRound(ttl, tos, timeout, len);
             String a = "";
+            int lab = trc.getLabel();
+            if (lab > 0) {
+                a += ", mpls=" + lab;
+            }
             if (resolv && (adr != null)) {
                 clntDns clnt = new clntDns();
                 clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(adr), false, packDnsRec.typePTR);
-                a += " (" + clnt.getPTR() + ")";
+                String nam = clnt.getPTR();
+                a += ", name=" + nam;
             }
             if ((rtr != null) && (adr != null)) {
                 tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(adr);
                 if (ntry != null) {
-                    a += " [" + ntry.asPathStr() + "]";
+                    a += ", path=" + ntry.asPathStr();
                 }
             }
             pipe.linePut(ttl + " " + adr + a);

@@ -3,6 +3,7 @@ package prt;
 import addr.addrIP;
 import addr.addrPrefix;
 import ip.ipFwd;
+import ip.ipFwdEcho;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
 import ip.ipPrt;
@@ -493,6 +494,7 @@ public abstract class prtGen implements ipPrt {
         if (ntry == null) {
             return;
         }
+        ntry.errLab = ipFwdEcho.getMplsExt(pck);
         ntry.errRtr = rtr.copyBytes();
         ntry.errCod = err;
     }

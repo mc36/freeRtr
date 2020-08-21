@@ -83,6 +83,7 @@ public class clntTrace implements prtServP {
             return null;
         }
         con.errRtr = null;
+        con.errLab = -1;
         con.errCod = null;
         con.sendTOS = tos;
         con.sendTTL = ttl;
@@ -95,6 +96,18 @@ public class clntTrace implements prtServP {
             return null;
         }
         return con.errRtr;
+    }
+
+    /**
+     * get reported label
+     *
+     * @return label
+     */
+    public int getLabel() {
+        if (con == null) {
+            return -1;
+        }
+        return con.errLab;
     }
 
     /**
@@ -148,6 +161,8 @@ public class clntTrace implements prtServP {
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         con.errRtr = pck.IPsrc.copyBytes();
+        con.errLab = -1;
+        con.errCod = null;
         return false;
     }
 

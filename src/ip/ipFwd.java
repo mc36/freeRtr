@@ -1422,10 +1422,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (pck.IPprt == ipCorSrh.protoNum) {
             ipCorSrh.skipHeader(pck);
         }
+        ipFwdEcho.addMplsExt(pck);
         if (icmpCore.createError(pck, reason, src.copyBytes())) {
             return;
         }
-        //ipFwdEcho.addMplsFields(pck);
         ipCore.createIPheader(pck);
         if (coppOut != null) {
             if (coppOut.checkPacket(bits.getTime(), pck)) {

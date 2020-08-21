@@ -61,6 +61,11 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     public counter.reasons errCod;
 
     /**
+     * reported label
+     */
+    public int errLab;
+
+    /**
      * direction of connection: true=incoming, false=outgoing
      */
     public final boolean direction;
