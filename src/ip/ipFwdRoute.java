@@ -63,6 +63,11 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
     public int mpls;
 
     /**
+     * recursive mode: 0=connected, 1=igp, 2=bgp, 3=vpn
+     */
+    public int recur;
+
+    /**
      * tracker
      */
     public clntTrack track;
@@ -152,6 +157,8 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
         }
         dist = 1;
         tag = 0;
+        mpls = 0;
+        recur = 0;
         for (;;) {
             a = cmd.word();
             if (a.length() < 1) {
@@ -185,6 +192,18 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
                 } else {
                     iface = ifc.fwdIf6;
                 }
+                continue;
+            }
+            if (a.equals("recurigp")) {
+                recur = 1;
+                continue;
+            }
+            if (a.equals("recurbgp")) {
+                recur = 2;
+                continue;
+            }
+            if (a.equals("recurvpn")) {
+                recur = 3;
                 continue;
             }
             if (a.equals("mplsimp")) {
@@ -221,6 +240,17 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
                 break;
             case 2:
                 s += " mplsexp";
+                break;
+        }
+        switch (recur) {
+            case 1:
+                s += " recurigp";
+                break;
+            case 2:
+                s += " recurbgp";
+                break;
+            case 3:
+                s += " recurvpn";
                 break;
         }
         return s;

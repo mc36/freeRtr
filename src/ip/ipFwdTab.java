@@ -478,8 +478,47 @@ public class ipFwdTab {
         }
     }
 
-    private static void static2table(ipFwdRoute ntry, tabRoute<addrIP> trg, ipFwd lower, tabRoute<addrIP> conn) {
+    private static void rstatic2table(ipFwdRoute ntry, tabRoute<addrIP> trg, int mode) {
         if (ntry == null) {
+            return;
+        }
+        if (ntry.recur != mode) {
+            return;
+        }
+        tabRouteEntry<addrIP> imp = ntry.getPrefix();
+        if (imp == null) {
+            return;
+        }
+        if (imp.distance >= tabRouteEntry.distanMax) {
+            return;
+        }
+        tabRouteEntry<addrIP> nh = trg.route(imp.nextHop);
+        if (nh == null) {
+            return;
+        }
+        imp.iface = nh.iface;
+        if (nh.rouTyp != tabRouteEntry.routeType.conn) {
+            if (nh.nextHop == null) {
+                return;
+            }
+            imp.nextHop = nh.nextHop.copyBytes();
+        }
+        imp.time = nh.time;
+        imp.rouTab = nh.rouTab;
+        if (nh.segrouPrf != null) {
+            imp.segrouPrf = nh.segrouPrf.copyBytes();
+        }
+        if (nh.labelRem != null) {
+            imp.labelRem = tabLabel.prependLabels(imp.labelRem, nh.labelRem);
+        }
+        trg.add(tabRoute.addType.better, imp, false, true);
+    }
+
+    private static void dstatic2table(ipFwdRoute ntry, tabRoute<addrIP> trg, ipFwd lower, tabRoute<addrIP> conn) {
+        if (ntry == null) {
+            return;
+        }
+        if (ntry.recur != 0) {
             return;
         }
         tabRouteEntry<addrIP> imp = ntry.getPrefix();
@@ -577,10 +616,10 @@ public class ipFwdTab {
         tabM.mergeFrom(tabRoute.addType.better, tabC, null, true, tabRouteEntry.distanLim);
         tabM.mergeFrom(tabRoute.addType.better, tabU, null, true, tabRouteEntry.distanLim);
         for (int i = 0; i < lower.staticU.size(); i++) {
-            static2table(lower.staticU.get(i), tabL, lower, tabC);
+            dstatic2table(lower.staticU.get(i), tabL, lower, tabC);
         }
         for (int i = 0; i < lower.staticM.size(); i++) {
-            static2table(lower.staticM.get(i), tabM, lower, tabC);
+            dstatic2table(lower.staticM.get(i), tabM, lower, tabC);
         }
         tabL.delDistance(tabRouteEntry.distanMax);
         tabM.delDistance(tabRouteEntry.distanMax);
@@ -599,6 +638,12 @@ public class ipFwdTab {
             tabL.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true, tabRouteEntry.distanMax);
             tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true, tabRouteEntry.distanMax);
             tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteEntry.distanMax);
+        }
+        for (int i = 0; i < lower.staticU.size(); i++) {
+            rstatic2table(lower.staticU.get(i), tabL, 1);
+        }
+        for (int i = 0; i < lower.staticM.size(); i++) {
+            rstatic2table(lower.staticM.get(i), tabM, 1);
         }
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);
@@ -660,6 +705,12 @@ public class ipFwdTab {
             tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, tabL, true, tabRouteEntry.distanMax);
             tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteEntry.distanMax);
         }
+        for (int i = 0; i < lower.staticU.size(); i++) {
+            rstatic2table(lower.staticU.get(i), tabU, 2);
+        }
+        for (int i = 0; i < lower.staticM.size(); i++) {
+            rstatic2table(lower.staticM.get(i), tabM, 2);
+        }
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
             if (rtr == null) {
@@ -671,6 +722,12 @@ public class ipFwdTab {
             tabU.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true, tabRouteEntry.distanMax);
             tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true, tabRouteEntry.distanMax);
             tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteEntry.distanMax);
+        }
+        for (int i = 0; i < lower.staticU.size(); i++) {
+            rstatic2table(lower.staticU.get(i), tabU, 3);
+        }
+        for (int i = 0; i < lower.staticM.size(); i++) {
+            rstatic2table(lower.staticM.get(i), tabM, 3);
         }
         if (lower.counterMap != null) {
             for (int i = 0; i < tabU.size(); i++) {

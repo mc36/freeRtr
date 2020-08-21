@@ -13,7 +13,6 @@ hostwatch to execute script on acl match
 protocol traceroute
 optimal route reflection
 bgp vpns with sr-policy
-recursive static route
 pipeline properties, terminal autoresize
 temper: web access log
 changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines

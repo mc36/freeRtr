@@ -2596,6 +2596,9 @@ public class userConfig {
         l.add("4  5          <network>                    destination network");
         l.add("5  6            <mask>                     destination mask");
         l.add("6  7,.            <nexthop>                forwarding router's address");
+        l.add("7  7,.              recurigp               use recursive nexthop");
+        l.add("7  7,.              recurbgp               use recursive nexthop");
+        l.add("7  7,.              recurvpn               use recursive nexthop");
         l.add("7  7,.              mplsimp                use mpls implicit null");
         l.add("7  7,.              mplsexp                use mpls explicit null");
         l.add("7  8                distance               set distance metric");

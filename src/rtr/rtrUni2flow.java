@@ -136,6 +136,7 @@ public class rtrUni2flow extends ipRtr {
             }
             rtrBgpFlow.advertNetwork(res, ntry.prefix, ipv6, direction, attr);
         }
+        res.preserveTime(routerComputedF);
         routerComputedF = res;
         fwdCore.routerChg(this);
     }
