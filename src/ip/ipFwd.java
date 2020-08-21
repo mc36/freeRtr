@@ -228,6 +228,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public boolean mplsPropTtl = true;
 
     /**
+     * mpls extended report
+     */
+    public boolean mplsExtRep = true;
+
+    /**
      * unreachable last
      */
     public long unreachLst = 0;
@@ -1422,8 +1427,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (pck.IPprt == ipCorSrh.protoNum) {
             ipCorSrh.skipHeader(pck);
         }
-        ipFwdEcho.addMplsExt(pck);
-        if (icmpCore.createError(pck, reason, src.copyBytes())) {
+        if (icmpCore.createError(pck, reason, src.copyBytes(), mplsExtRep)) {
             return;
         }
         ipCore.createIPheader(pck);
@@ -1933,7 +1937,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             natT.reverse.lastUsed = tim;
             natT.updateError(pck);
             natCfg.packUpdate(pck);
-            if (icmpCore.createError(pck, err, rtr)) {
+            if (icmpCore.createError(pck, err, rtr, false)) {
                 return;
             }
             ipCore.createIPheader(pck);

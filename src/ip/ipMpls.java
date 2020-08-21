@@ -441,8 +441,7 @@ public class ipMpls implements ifcUp {
         if (debugger.ipFwdTraf) {
             logger.debug("drop " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " reason=" + counter.reason2string(res));
         }
-        ipFwdEcho.addMplsExt(pck);
-        if (lab.forwarder.icmpCore.createError(pck, res, src.copyBytes())) {
+        if (lab.forwarder.icmpCore.createError(pck, res, src.copyBytes(), lab.forwarder.mplsExtRep)) {
             return true;
         }
         lab.forwarder.ipCore.createIPheader(pck);

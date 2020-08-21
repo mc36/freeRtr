@@ -179,6 +179,11 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public boolean mplsPropTtl = true;
 
     /**
+     * mpls extended report
+     */
+    public boolean mplsExtRep = true;
+
+    /**
      * unreachable interval
      */
     public int unreachInt = 0;
@@ -328,6 +333,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! rt-export",
         "vrf definition .*! label-mode per-vrf",
         "vrf definition .*! propagate-ttl",
+        "vrf definition .*! report-labels",
         "vrf definition .*! unreach-interval 0",
         "vrf definition .*! no punish-pmtud",
         "vrf definition .*! no mdt4",
@@ -598,6 +604,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
         l.add(cmds.tabulator + "label-mode " + s);
         cmds.cfgLine(l, !mplsPropTtl, cmds.tabulator, "propagate-ttl", "");
+        cmds.cfgLine(l, !mplsExtRep, cmds.tabulator, "report-labels", "");
         l.add(cmds.tabulator + "unreach-interval " + unreachInt);
         cmds.cfgLine(l, !ruinPmtuD, cmds.tabulator, "punish-pmtud", "");
         cmds.cfgLine(l, label4fltr == null, cmds.tabulator, "label4filter", "" + label4fltr);
@@ -746,6 +753,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("1 2  counter6map         specify ipv6 traffic counter");
         l.add("2 .    <name>            name of route map");
         l.add("1 .  propagate-ttl       specify to copy ip ttl to mpls ttl");
+        l.add("1 .  report-labels       append icmp extension with labels");
         l.add("1 .  mdt4                enable multicast distribution tree for ipv4");
         l.add("1 .  mdt6                enable multicast distribution tree for ipv6");
         l.add("1 2  label-mode          specify label allocation mode");
@@ -853,6 +861,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             ruinPmtuD = true;
             fwd4.ruinPmtuD = true;
             fwd6.ruinPmtuD = true;
+            return;
+        }
+        if (a.equals("report-labels")) {
+            mplsExtRep = true;
+            fwd4.mplsExtRep = true;
+            fwd6.mplsExtRep = true;
             return;
         }
         if (a.equals("propagate-ttl")) {
@@ -1189,6 +1203,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             ruinPmtuD = false;
             fwd4.ruinPmtuD = false;
             fwd6.ruinPmtuD = false;
+            return;
+        }
+        if (a.equals("report-labels")) {
+            mplsExtRep = false;
+            fwd4.mplsExtRep = false;
+            fwd6.mplsExtRep = false;
             return;
         }
         if (a.equals("propagate-ttl")) {

@@ -82,9 +82,10 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
      * @param pck packet
      * @param reason reason code
      * @param ifip address
+     * @param mplsExt add mpls extension
      * @return false on success, true on error
      */
-    public boolean createError(packHolder pck, counter.reasons reason, addrIP ifip) {
+    public boolean createError(packHolder pck, counter.reasons reason, addrIP ifip, boolean mplsExt) {
         final int maxErrorSize = 512;
         if (pck.IPprt == protoNum) {
             pck.getSkip(pck.IPsiz);
@@ -130,6 +131,9 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
             pck.setDataSize(maxErrorSize);
         }
         pck.ICMPtc = typ;
+        if (mplsExt) {
+            ipFwdEcho.addMplsExt(pck);
+        }
         pck.msbPutD(4, 0); // unused
         createICMPheader(pck);
         return false;
