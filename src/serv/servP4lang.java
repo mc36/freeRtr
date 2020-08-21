@@ -91,22 +91,27 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     /**
      * exported copp
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> expCopp4;
+    public tabListing<tabAceslstN<addrIP>, addrIP> expCopp4 = null;
 
     /**
      * exported copp
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> expCopp6;
+    public tabListing<tabAceslstN<addrIP>, addrIP> expCopp6 = null;
+
+    /**
+     * export interval
+     */
+    public int expDelay = 1000;
 
     /**
      * last connection
      */
-    protected servP4langConn conn;
+    protected servP4langConn conn = null;
 
     /**
      * interconnection interface
      */
-    protected ifcEthTyp interconn;
+    protected ifcEthTyp interconn = null;
 
     /**
      * counter
@@ -120,7 +125,12 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      */
     public final static String defaultL[] = {
         "server p4lang .*! port " + port,
-        "server p4lang .*! protocol " + proto2string(protoAllStrm),};
+        "server p4lang .*! protocol " + proto2string(protoAllStrm),
+        "server p4lang .*! no export-srv6",
+        "server p4lang .*! no export-copp4",
+        "server p4lang .*! no export-copp6",
+        "server p4lang .*! no interconnect",
+        "server p4lang .*! export-interval 1000",};
 
     /**
      * defaults filter
@@ -144,15 +154,22 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             servP4langIfc ntry = expIfc.get(i);
             l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id + " " + ntry.speed);
         }
-        if (expSrv6 != null) {
+        if (expSrv6 == null) {
+            l.add(beg + "no export-srv6");
+        } else {
             l.add(beg + "export-srv6 " + expSrv6.name);
         }
-        if (expCopp4 != null) {
+        if (expCopp4 == null) {
+            l.add(beg + "no export-copp4");
+        } else {
             l.add(beg + "export-copp4 " + expCopp4.listName);
         }
-        if (expCopp6 != null) {
+        if (expCopp6 == null) {
+            l.add(beg + "no export-copp6");
+        } else {
             l.add(beg + "export-copp6 " + expCopp6.listName);
         }
+        l.add(beg + "export-interval " + expDelay);
         cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
     }
 
@@ -209,6 +226,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 return false;
             }
             expCopp6 = acl.aceslst;
+            return false;
+        }
+        if (s.equals("export-interval")) {
+            expDelay = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("export-srv6")) {
@@ -346,6 +367,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("2 .    <name>                  acl name");
         l.add("1 2  export-copp6              specify copp acl to export");
         l.add("2 .    <name>                  acl name");
+        l.add("1 2  export-interval           specify export interval");
+        l.add("2 .    <num>                   time in ms");
         l.add("1 2  interconnect              specify port to for packetin");
         l.add("2 .    <name>                  interface name");
     }
@@ -986,7 +1009,7 @@ class servP4langConn implements Runnable {
         for (int i = neighs.size() - 1; i >= 0; i--) {
             doNeighs(neighs.get(i));
         }
-        bits.sleep(1000);
+        bits.sleep(lower.expDelay);
         return false;
     }
 
