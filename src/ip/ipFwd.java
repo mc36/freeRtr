@@ -1735,6 +1735,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                     natTrns.add(natT.reverseEntry());
                     natT.updatePack(pck);
                     natCfg.packUpdate(pck);
+                    tableChanger();
                 }
             }
         }

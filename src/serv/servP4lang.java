@@ -55,6 +55,7 @@ import util.logger;
 import util.state;
 import util.bits;
 import util.history;
+import util.notifier;
 
 /**
  * p4lang
@@ -117,6 +118,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * counter
      */
     protected counter cntr = new counter();
+
+    /**
+     * counter
+     */
+    protected notifier notif = new notifier();
 
     private ifcDn intercon;
 
@@ -185,6 +191,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ntry.vrf = vrf;
             ntry.id = bits.str2num(cmd.word());
             expVrf.put(ntry);
+            vrf.fwd4.tableChanged = notif;
+            vrf.fwd6.tableChanged = notif;
             return false;
         }
         if (s.equals("export-bridge")) {
@@ -291,6 +299,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 cmd.error("no such vrf");
                 return false;
             }
+            vrf.fwd4.tableChanged = null;
+            vrf.fwd6.tableChanged = null;
             servP4langVrf ntry = new servP4langVrf();
             ntry.vrf = vrf;
             ntry.id = bits.str2num(cmd.word());
@@ -396,6 +406,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         if (conn != null) {
             conn.pipe.setClose();
+            notif.wakeup();
         }
         id.timeout = 120000;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -1009,7 +1020,7 @@ class servP4langConn implements Runnable {
         for (int i = neighs.size() - 1; i >= 0; i--) {
             doNeighs(neighs.get(i));
         }
-        bits.sleep(lower.expDelay);
+        lower.notif.sleep(lower.expDelay);
         return false;
     }
 
