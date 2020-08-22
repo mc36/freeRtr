@@ -1,7 +1,9 @@
 package prt;
 
+import addr.addrIP;
 import ip.ipFwdIface;
 import pack.packHolder;
+import util.counter;
 
 /**
  * datagram servers have to use this to able to work with protocols
@@ -54,5 +56,17 @@ public interface prtServP {
      * @return return false if successful, true if error happened
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck);
+
+    /**
+     * notified that error arrived
+     *
+     * @param id id nomber to reference connection
+     * @param pck the packet
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     * @return return false if successful, true if error happened
+     */
+    public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab);
 
 }

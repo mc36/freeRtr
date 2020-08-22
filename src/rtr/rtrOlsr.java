@@ -19,6 +19,7 @@ import user.userFormat;
 import user.userHelping;
 import util.bits;
 import util.cmds;
+import util.counter;
 import util.debugger;
 import util.logger;
 import util.state;
@@ -361,6 +362,20 @@ public class rtrOlsr extends ipRtr implements prtServP {
             return;
         }
         id.setClosing();
+    }
+
+    /**
+     * received error
+     *
+     * @param id connection
+     * @param pck packet
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     * @return false on success, true on error
+     */
+    public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        return false;
     }
 
     /**

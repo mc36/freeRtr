@@ -388,6 +388,20 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
     }
 
     /**
+     * received error
+     *
+     * @param id connection
+     * @param pck packet
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     * @return false on success, true on error
+     */
+    public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        return false;
+    }
+
+    /**
      * received packet
      *
      * @param id connection

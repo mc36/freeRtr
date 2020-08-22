@@ -9,6 +9,8 @@ import prt.prtGenConn;
 import prt.prtServP;
 import prt.prtUdp;
 import util.bits;
+import util.counter;
+import util.notifier;
 
 /**
  * traceroute helper
@@ -37,7 +39,33 @@ public class clntTrace implements prtServP {
      */
     public int prt;
 
+    /**
+     * reporting router
+     */
+    public addrIP errRtr;
+
+    /**
+     * reported error
+     */
+    public counter.reasons errCod;
+
+    /**
+     * reported label
+     */
+    public int errLab;
+
+    /**
+     * reported time
+     */
+    public int errTim;
+
     private prtGenConn con;
+
+    private notifier notif = new notifier();
+
+    private int magic;
+
+    private long started;
 
     /**
      * register to protocol
@@ -76,38 +104,26 @@ public class clntTrace implements prtServP {
      * @param tos type of service
      * @param tim timeout
      * @param len size
-     * @return address of hop, null if nothing
+     * @return true on error, false on success
      */
-    public addrIP doRound(int ttl, int tos, int tim, int len) {
+    public boolean doRound(int ttl, int tos, int tim, int len) {
         if (con == null) {
-            return null;
+            return true;
         }
-        con.errRtr = null;
-        con.errLab = -1;
-        con.errCod = null;
+        errRtr = null;
+        errLab = -1;
+        errCod = null;
+        errTim = tim;
         con.sendTOS = tos;
         con.sendTTL = ttl;
         packHolder pck = new packHolder(true, true);
-        pck.msbPutQ(0, bits.getTime());
+        magic = bits.randomD();
+        pck.msbPutD(0, magic);
         pck.putSkip(len);
+        started = bits.getTime();
         con.send2net(pck);
-        bits.sleep(tim);
-        if (con.errRtr == null) {
-            return null;
-        }
-        return con.errRtr;
-    }
-
-    /**
-     * get reported label
-     *
-     * @return label
-     */
-    public int getLabel() {
-        if (con == null) {
-            return -1;
-        }
-        return con.errLab;
+        notif.misleep(tim);
+        return errRtr == null;
     }
 
     /**
@@ -153,6 +169,29 @@ public class clntTrace implements prtServP {
     }
 
     /**
+     * received error
+     *
+     * @param id connection
+     * @param pck packet
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     * @return false on success, true on error
+     */
+    public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        if (pck.msbGetD(0) != magic) {
+            return true;
+        }
+        magic++;
+        errTim = (int) (bits.getTime() - started);
+        errRtr = rtr.copyBytes();
+        errCod = err;
+        errLab = lab;
+        notif.wakeup();
+        return false;
+    }
+
+    /**
      * received packet
      *
      * @param id connection
@@ -160,9 +199,15 @@ public class clntTrace implements prtServP {
      * @return false on success, true on error
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        con.errRtr = pck.IPsrc.copyBytes();
-        con.errLab = -1;
-        con.errCod = null;
+        if (pck.msbGetD(0) != magic) {
+            return true;
+        }
+        magic++;
+        errTim = (int) (bits.getTime() - started);
+        errRtr = pck.IPsrc.copyBytes();
+        errLab = -1;
+        errCod = null;
+        notif.wakeup();
         return false;
     }
 

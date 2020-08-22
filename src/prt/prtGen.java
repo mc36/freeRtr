@@ -130,6 +130,17 @@ public abstract class prtGen implements ipPrt {
     protected abstract void connectionRcvd(prtGenConn clnt, packHolder pck);
 
     /**
+     * got one error check if good in the context
+     *
+     * @param clnt connection to send on
+     * @param pck packet to send
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     */
+    protected abstract void connectionError(prtGenConn clnt, packHolder pck, addrIP rtr, counter.reasons err, int lab);
+
+    /**
      * refuse one connection
      *
      * @param ifc source interface
@@ -494,9 +505,8 @@ public abstract class prtGen implements ipPrt {
         if (ntry == null) {
             return;
         }
-        ntry.errLab = ipFwdEcho.getMplsExt(pck);
-        ntry.errRtr = rtr.copyBytes();
-        ntry.errCod = err;
+        int lab = ipFwdEcho.getMplsExt(pck);
+        connectionError(ntry, pck, rtr.copyBytes(), err, lab);
     }
 
     /**

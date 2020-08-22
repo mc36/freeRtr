@@ -1,5 +1,6 @@
 package serv;
 
+import addr.addrIP;
 import java.util.List;
 import pack.packHolder;
 import pipe.pipeSide;
@@ -9,6 +10,7 @@ import tab.tabGen;
 import user.userFilter;
 import user.userHelping;
 import util.cmds;
+import util.counter;
 
 /**
  * echo (rfc862) server - packet mode
@@ -61,6 +63,20 @@ public class servEchoP extends servGeneric implements prtServP {
      * @param id connection
      */
     public void datagramWork(prtGenConn id) {
+    }
+
+    /**
+     * received error
+     *
+     * @param id connection
+     * @param pck packet
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     * @return false on success, true on error
+     */
+    public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        return false;
     }
 
     /**

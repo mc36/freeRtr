@@ -164,6 +164,7 @@ public class prtDccp extends prtGen {
     public static void parseDCCPports(packHolder pck) {
         pck.UDPsrc = pck.msbGetW(0); // source port
         pck.UDPtrg = pck.msbGetW(2); // target port
+        pck.UDPsiz = pck.getByte(4) * 4;
     }
 
     /**
@@ -175,7 +176,6 @@ public class prtDccp extends prtGen {
     public static boolean parseDCCPheader(packHolder pck) {
         parseDCCPports(pck);
         int len = pck.dataSize();
-        pck.UDPsiz = pck.getByte(4) * 4;
         if (len < pck.UDPsiz) {
             logger.info("got too small from " + pck.IPsrc);
             return true;
@@ -347,6 +347,12 @@ public class prtDccp extends prtGen {
         return 0xffffff;
     }
 
+    /**
+     * received packet
+     *
+     * @param clnt client
+     * @param pck packet
+     */
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
         prtDccpConn pr = (prtDccpConn) clnt.proto;
         byte[] buf;
@@ -404,6 +410,20 @@ public class prtDccp extends prtGen {
             sendMyPack(clnt, buf, typAck);
             pr.rxPkt = 0;
         }
+    }
+
+    /**
+     * received error
+     *
+     * @param clnt client
+     * @param pck packet
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     */
+    protected void connectionError(prtGenConn clnt, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        pck.getSkip(pck.UDPsiz);
+        clnt.error2server(pck, rtr, err, lab);
     }
 
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {

@@ -51,21 +51,6 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     public int timeout;
 
     /**
-     * reporting router
-     */
-    public addrIP errRtr;
-
-    /**
-     * reported error
-     */
-    public counter.reasons errCod;
-
-    /**
-     * reported label
-     */
-    public int errLab;
-
-    /**
      * direction of connection: true=incoming, false=outgoing
      */
     public final boolean direction;
@@ -292,6 +277,24 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
             return pck.pipeSend(pipeNetwork, 0, pck.dataSize(), 1) < 1;
         } else {
             return upperP.datagramRecv(this, pck);
+        }
+    }
+
+    /**
+     * send error to server
+     *
+     * @param pck packet errored
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     */
+    protected void error2server(packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        if (closing) {
+            return;
+        }
+        if (stream) {
+        } else {
+            upperP.datagramError(this, pck, rtr, err, lab);
         }
     }
 

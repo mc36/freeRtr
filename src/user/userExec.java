@@ -2286,34 +2286,33 @@ public class userExec {
             if (delay > 0) {
                 bits.sleep(delay);
             }
-            addrIP adr = trc.doRound(ttl, tos, timeout, len);
+            trc.doRound(ttl, tos, timeout, len);
             String a = "";
-            int lab = trc.getLabel();
-            if (lab > 0) {
-                a += ", mpls=" + lab;
+            if (trc.errLab > 0) {
+                a += ", mpls=" + trc.errLab;
             }
-            if (resolv && (adr != null)) {
+            if (resolv && (trc.errRtr != null)) {
                 clntDns clnt = new clntDns();
-                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(adr), false, packDnsRec.typePTR);
+                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(trc.errRtr), false, packDnsRec.typePTR);
                 String nam = clnt.getPTR();
                 a += ", name=" + nam;
             }
-            if ((rtr != null) && (adr != null)) {
-                tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(adr);
+            if ((rtr != null) && (trc.errRtr != null)) {
+                tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(trc.errRtr);
                 if (ntry != null) {
                     a += ", path=" + ntry.asPathStr();
                 }
             }
-            pipe.linePut(ttl + " " + adr + a);
+            pipe.linePut(ttl + " " + trc.errRtr + " time=" + trc.errTim + a);
             if (none >= 8) {
                 break;
             }
-            if (adr == null) {
+            if (trc.errRtr == null) {
                 none++;
                 continue;
             }
             none = 0;
-            if (trg.compare(trg, adr) == 0) {
+            if (trg.compare(trg, trc.errRtr) == 0) {
                 break;
             }
         }

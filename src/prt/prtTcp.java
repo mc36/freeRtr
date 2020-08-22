@@ -262,6 +262,8 @@ public class prtTcp extends prtGen {
         pck.UDPsrc = pck.msbGetW(0); // source port
         pck.UDPtrg = pck.msbGetW(2); // target port
         pck.TCPflg = pck.msbGetW(12); // dataofs:4 flags:12
+        pck.UDPsiz = (pck.TCPflg & 0xf000) >>> 10;
+        pck.TCPflg &= 0xfff;
     }
 
     /**
@@ -272,12 +274,11 @@ public class prtTcp extends prtGen {
      */
     public static boolean parseTCPheader(packHolder pck) {
         parseTCPports(pck);
-        int hdrSiz = (pck.TCPflg & 0xf000) >>> 10;
-        if (hdrSiz < size) {
+        if (pck.UDPsiz < size) {
             logger.info("got too small from " + pck.IPsrc);
             return true;
         }
-        if (hdrSiz > pck.dataSize()) {
+        if (pck.UDPsiz > pck.dataSize()) {
             logger.info("got truncated from " + pck.IPsrc);
             return true;
         }
@@ -294,8 +295,7 @@ public class prtTcp extends prtGen {
         // int sum = pck.msbGetW(16); // checksum
         pck.TCPurg = pck.msbGetW(18); // urgent pointer
         pck.getSkip(size);
-        pck.UDPsiz = hdrSiz;
-        hdrSiz -= size;
+        int hdrSiz = pck.UDPsiz - size;
         if (debugger.prtTcpTraf) {
             logger.debug("rx " + pck.UDPsrc + " -> " + pck.UDPtrg + " " + decodeFlags(pck.TCPflg) + " seq=" + pck.TCPseq
                     + " data=" + (pck.dataSize() - hdrSiz) + " ack=" + pck.TCPack);
@@ -856,6 +856,20 @@ public class prtTcp extends prtGen {
             }
             logger.info("got invalid flags " + clnt);
         }
+    }
+
+    /**
+     * received error
+     *
+     * @param clnt client
+     * @param pck packet
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     */
+    protected void connectionError(prtGenConn clnt, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        pck.getSkip(pck.UDPsiz);
+        clnt.error2server(pck, rtr, err, lab);
     }
 
     private boolean flush2net(prtGenConn clnt) {

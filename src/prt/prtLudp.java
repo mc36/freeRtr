@@ -75,6 +75,7 @@ public class prtLudp extends prtGen {
     public static void parseLUDPports(packHolder pck) {
         pck.UDPsrc = pck.msbGetW(0); // source port
         pck.UDPtrg = pck.msbGetW(2); // target port
+        pck.UDPsiz = size;
     }
 
     /**
@@ -112,7 +113,6 @@ public class prtLudp extends prtGen {
             logger.debug("rx " + pck.UDPsrc + " -> " + pck.UDPtrg);
         }
         pck.getSkip(size);
-        pck.UDPsiz = size;
         return false;
     }
 
@@ -225,6 +225,20 @@ public class prtLudp extends prtGen {
      */
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
         clnt.send2server(pck);
+    }
+
+    /**
+     * received error
+     *
+     * @param clnt client
+     * @param pck packet
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     */
+    protected void connectionError(prtGenConn clnt, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        pck.getSkip(pck.UDPsiz);
+        clnt.error2server(pck, rtr, err, lab);
     }
 
     /**

@@ -1,6 +1,7 @@
 package serv;
 
 import addr.addrEmpty;
+import addr.addrIP;
 import addr.addrType;
 import cfg.cfgAll;
 import cfg.cfgBrdg;
@@ -201,6 +202,20 @@ public class servVxlan extends servGeneric implements prtServP {
             id.setClosing();
             return;
         }
+    }
+
+    /**
+     * received error
+     *
+     * @param id connection
+     * @param pck packet
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     * @return false on success, true on error
+     */
+    public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        return false;
     }
 
     /**

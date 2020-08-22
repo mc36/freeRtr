@@ -16,6 +16,7 @@ import java.util.List;
 import tab.tabListing;
 import tab.tabPrfxlstN;
 import util.cmds;
+import util.counter;
 
 /**
  * label distribution protocol (rfc5036) interface
@@ -222,6 +223,20 @@ public class rtrLdpIface implements prtServP {
         pk.putTransAddr();
         pk.createLDPheader();
         id.send2net(pk.pack);
+    }
+
+    /**
+     * received error
+     *
+     * @param id connection
+     * @param pck packet
+     * @param rtr reporting router
+     * @param err error happened
+     * @param lab error label
+     * @return false on success, true on error
+     */
+    public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        return false;
     }
 
     /**

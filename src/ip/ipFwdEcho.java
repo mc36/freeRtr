@@ -37,7 +37,7 @@ public class ipFwdEcho implements Comparator<ipFwdEcho> {
      * time when entry created
      */
     public long created;
-
+    
     public int compare(ipFwdEcho o1, ipFwdEcho o2) {
         if (o1.echoNum < o2.echoNum) {
             return -1;
@@ -69,7 +69,7 @@ public class ipFwdEcho implements Comparator<ipFwdEcho> {
         }
         return getMplsExt(pck, 24);
     }
-
+    
     private static int getMplsExt(packHolder pck, int len) {
         int i = pck.dataSize() - len;
         if (i < 0) {
@@ -87,7 +87,9 @@ public class ipFwdEcho implements Comparator<ipFwdEcho> {
         if (pck.getIPsum(i, len, 0) != 0xffff) {
             return -1;
         }
-        return pck.msbGetD(i + 8) >>> 12;
+        int lab = pck.msbGetD(i + 8) >>> 12;
+        pck.setDataSize(i);
+        return lab;
     }
 
     /**
@@ -127,5 +129,5 @@ public class ipFwdEcho implements Comparator<ipFwdEcho> {
         pck.putSkip(12);
         pck.merge2end();
     }
-
+    
 }
