@@ -1809,6 +1809,9 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < need.size(); i++) {
             tabNatTraN ntry = need.get(i);
+            if (ntry == null) {
+                continue;
+            }
             if (done.find(ntry) != null) {
                 continue;
             }
