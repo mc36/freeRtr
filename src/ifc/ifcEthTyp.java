@@ -49,7 +49,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
     /**
      * forced down
      */
-    public boolean forcedDN = false;
+    public int forcedDN = 0;
 
     /**
      * forced up
@@ -248,7 +248,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @return state of line protocol
      */
     public state.states getState() {
-        if (forcedDN) {
+        if (forcedDN != 0) {
             return state.states.admin;
         }
         if (forcedUP) {
@@ -264,7 +264,10 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         cntr.stateChange(stat);
         lastState = stat;
-        if (forcedDN || forcedUP) {
+        if (forcedDN != 0) {
+            return;
+        }
+        if (forcedUP) {
             return;
         }
         propagateState();
@@ -278,7 +281,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (forcedUP) {
             s = state.states.up;
         }
-        if (forcedDN) {
+        if (forcedDN != 0) {
             s = state.states.admin;
         }
         if (logStateChg) {
@@ -591,7 +594,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }
-        if (forcedDN) {
+        if (forcedDN != 0) {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }
@@ -658,7 +661,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }
-        if (forcedDN) {
+        if (forcedDN != 0) {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }

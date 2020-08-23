@@ -1671,14 +1671,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @param tim length of flap
      */
     public synchronized void flapNow(int tim) {
-        if (ethtyp.forcedDN) {
+        if (ethtyp.forcedDN != 0) {
             return;
         }
-        ethtyp.forcedDN = true;
+        ethtyp.forcedDN |= 2;
         ethtyp.propagateState();
         propagateEthtypState();
         bits.sleep(tim);
-        ethtyp.forcedDN = false;
+        ethtyp.forcedDN &= ~2;
         ethtyp.propagateState();
         propagateEthtypState();
     }
@@ -1751,7 +1751,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (!cloned) {
             return;
         }
-        ethtyp.forcedDN = true;
+        ethtyp.forcedDN |= 4;
         ethtyp.propagateState();
         ethtyp.logStateChg = false;
         if (ip4polA != null) {
@@ -4725,11 +4725,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             logger.warn("interface " + name + " cannot to find configured tracker");
             return;
         }
-        boolean res = !trck.worker.getStatus();
-        if (res == ethtyp.forcedDN) {
+        final int myVal = 8;
+        int res = 0;
+        if (!trck.worker.getStatus()) {
+            res = myVal;
+        }
+        if ((ethtyp.forcedDN & myVal) == res) {
             return;
         }
-        ethtyp.forcedDN = res;
+        ethtyp.forcedDN = (ethtyp.forcedDN & (~myVal)) | res;
         ethtyp.propagateState();
         propagateEthtypState();
     }
@@ -5325,7 +5329,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         cmds.cfgLine(l, followTrack == null, cmds.tabulator, "follow-tracker", "" + followTrack);
         cmds.cfgLine(l, ethtyp.forcedUP, cmds.tabulator, "autostate", "");
-        cmds.cfgLine(l, !ethtyp.forcedDN, cmds.tabulator, "shutdown", "");
+        cmds.cfgLine(l, (ethtyp.forcedDN & 1) == 0, cmds.tabulator, "shutdown", "");
         cmds.cfgLine(l, !ethtyp.logStateChg, cmds.tabulator, "log-link-change", "");
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
@@ -5723,7 +5727,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("shutdown")) {
-            ethtyp.forcedDN = true;
+            ethtyp.forcedDN |= 1;
             ethtyp.propagateState();
             propagateEthtypState();
             return;
@@ -6380,7 +6384,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("shutdown")) {
-            ethtyp.forcedDN = false;
+            ethtyp.forcedDN &= ~1;
             ethtyp.propagateState();
             propagateEthtypState();
             return;

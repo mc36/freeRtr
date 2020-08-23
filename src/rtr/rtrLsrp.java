@@ -840,7 +840,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(beg + "refresh " + refresh);
         l.add(beg + "lifetime " + lifetime);
         l.add(beg + "spf-log " + lastSpf.logSize);
-        cmds.cfgLine(l, !lastSpf.bidir, beg, "spf-bidir", "");
+        cmds.cfgLine(l, lastSpf.bidir.get() == 0, beg, "spf-bidir", "");
         cmds.cfgLine(l, !stub, beg, "stub", "");
         cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
         cmds.cfgLine(l, !defOrigin, beg, "default-originate", "");
@@ -881,14 +881,18 @@ public class rtrLsrp extends ipRtr implements Runnable {
             return false;
         }
         if (s.equals("spf-log")) {
-            lastSpf.logSize = bits.str2num(cmd.word());
+            lastSpf.logSize.set(bits.str2num(cmd.word()));
             if (negated) {
-                lastSpf.logSize = 0;
+                lastSpf.logSize.set(0);
             }
             return false;
         }
         if (s.equals("spf-bidir")) {
-            lastSpf.bidir = !negated;
+            if (negated) {
+                lastSpf.bidir.set(0);
+            } else {
+                lastSpf.bidir.set(1);
+            }
             todo.set(0);
             notif.wakeup();
             return false;

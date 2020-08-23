@@ -1481,7 +1481,7 @@ class servP4langConn implements Runnable {
             }
         }
         state.states sta;
-        if (ifc.ifc.ethtyp.forcedDN) {
+        if (ifc.ifc.ethtyp.forcedDN != 0) {
             sta = state.states.admin;
         } else {
             sta = state.states.up;
@@ -1550,7 +1550,7 @@ class servP4langConn implements Runnable {
                 if (ntry.ifc.bundleHed != ifc.ifc.bundleHed) {
                     continue;
                 }
-                if (ntry.ifc.ethtyp.forcedDN) {
+                if (ntry.ifc.ethtyp.forcedDN != 0) {
                     continue;
                 }
                 prt.add(ntry);

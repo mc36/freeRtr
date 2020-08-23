@@ -45,12 +45,12 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     /**
      * log size
      */
-    public int logSize = 0;
+    public final syncInt logSize;
 
     /**
      * bidir check
      */
-    public boolean bidir = false;
+    public final syncInt bidir;
 
     /**
      * construct spf
@@ -63,6 +63,8 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         if (old == null) {
             log = new ArrayList<shrtPthFrstLog>();
             count = 1;
+            logSize = new syncInt(0);
+            bidir = new syncInt(0);
             return;
         }
         log = old.log;
@@ -75,7 +77,8 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         ntry.unreach = old.listUnreachables();
         ntry.topo = old.listTopoSum().hashCode();
         log.add(ntry);
-        for (; log.size() > logSize;) {
+        int max = logSize.get();
+        for (; log.size() > max;) {
             log.remove(0);
         }
     }
@@ -254,6 +257,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         ntry.hops = 0;
         lst.add(ntry);
         boolean frst = true;
+        boolean bid = bidir.get() != 0;
         for (;;) {
             if (lst.size() < 1) {
                 tim3 = bits.getTime();
@@ -281,7 +285,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 if ((!frst) && c.stub) {
                     continue;
                 }
-                if (bidir) {
+                if (bid) {
                     if (c.target.findConn(ntry) == null) {
                         continue;
                     }
