@@ -9117,3 +9117,12 @@ qc pass: ppp over tcp
 no todo: recursive static route
 qc pass: recursive static routing
 qc pass: recursive static routing with labels
+---------------------------------- 2020-08-23 11:28:44
+qc pass: isis with bidir check
+qc pass: isis narrow metric with bidir check
+qc pass: isis chain of broadcast nets with bidir check
+qc pass: isis multi-topology with bidir check
+qc pass: lsrp point2point connection with bidir check
+qc pass: lsrp point2multipoint connection with bidir check
+qc pass: ospf point2point chain with bidir check
+qc pass: ospf broadcast chain with bidir check

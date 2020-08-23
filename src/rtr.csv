@@ -1,6 +1,6 @@
 file;result;test
 -;-;freeRouter v20.8.23-rel, done by cs@nop.
--;-;2020-08-23 09:17:01, took 00:05:43, with 100 workers, on 1898 cases, 0 failed, 0 traces, 2 retries
+-;-;2020-08-23 11:34:20, took 00:05:35, with 100 workers, on 1906 cases, 0 failed, 0 traces, 1 retries
 -;-;./rtr.bin
 basic.tst;success;dummy test
 conn-anyconn.tst;success;ip over anyconnect
@@ -1656,6 +1656,10 @@ rout-isis56.tst;success;isis multi-topology change in tag
 rout-isis57.tst;success;isis with php sr
 rout-isis58.tst;success;isis with srgb sr
 rout-isis59.tst;success;isis over point2point ethernet
+rout-isis60.tst;success;isis with bidir check
+rout-isis61.tst;success;isis narrow metric with bidir check
+rout-isis62.tst;success;isis chain of broadcast nets with bidir check
+rout-isis63.tst;success;isis multi-topology with bidir check
 rout-lsrp01.tst;success;lsrp point2point connection
 rout-lsrp02.tst;success;lsrp point2multipoint connection
 rout-lsrp03.tst;success;lsrp point2point chain
@@ -1691,6 +1695,8 @@ rout-lsrp32.tst;success;lsrp over point2point ethernet
 rout-lsrp33.tst;success;lsrp with selective sr
 rout-lsrp34.tst;success;lsrp with selective bier
 rout-lsrp35.tst;success;lsrp peer metric
+rout-lsrp36.tst;success;lsrp point2point connection with bidir check
+rout-lsrp37.tst;success;lsrp point2multipoint connection with bidir check
 rout-mcast01.tst;success;multicast routing with static flooding
 rout-mcast02.tst;success;multicast routing with pim ssm
 rout-mcast03.tst;success;multicast routing with igmp/mld
@@ -1775,6 +1781,8 @@ rout-ospf42.tst;success;ospf with srgb sr
 rout-ospf43.tst;success;ospf over point2point ethernet
 rout-ospf44.tst;success;ospf multi area
 rout-ospf45.tst;success;ospf asymmetric multi area
+rout-ospf46.tst;success;ospf point2point chain with bidir check
+rout-ospf47.tst;success;ospf broadcast chain with bidir check
 rout-pbr01.tst;success;policy routing with nexthop
 rout-pbr02.tst;success;policy routing with interface and nexthop between vrfs
 rout-pbr03.tst;success;policy routing with interface and nexthop
