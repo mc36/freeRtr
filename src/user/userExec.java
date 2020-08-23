@@ -1109,6 +1109,7 @@ public class userExec {
         hl.add("3 .        <name>                name of process");
         hl.add("2 .      logging                 logged messages");
         hl.add("2 .      auto-bandwidth          set auto bandwidth values");
+        hl.add("2 .      follow-tracker          set interfaces based on trackers");
         hl.add("2 .      tunnel-domain           resolve destination domain names");
         hl.add("2 .      name-cache              dns local cache");
         hl.add("2 3,.    watchdog                watchdog");

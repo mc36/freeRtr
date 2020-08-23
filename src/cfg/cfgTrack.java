@@ -40,6 +40,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
     public final static String defaultL[] = {
         "tracker .*! no description",
         "tracker .*! force normal",
+        "tracker .*! no script",
         "tracker .*! no hidden",
         "tracker .*! no target",
         "tracker .*! no wake-vrf",
@@ -102,6 +103,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add("2  .        route                    any route table entry for address");
         l.add("2  .        prefix                   exact route table entry for prefix");
         l.add("2  .        script                   tcl script");
+        l.add("1  2,.    script                     modify result with script");
+        l.add("2  2,.      <str>                    script");
         l.add("1  2      force                      specify result of runs");
         l.add("2  .        up                       always up");
         l.add("2  .        down                     always down");
@@ -166,6 +169,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         cmds.cfgLine(l, !worker.logging, cmds.tabulator, "log", "");
         l.add(cmds.tabulator + "mode " + clntTrack.mode2string(worker.mode));
         l.add(cmds.tabulator + "force " + clntTrack.force2string(worker.force));
+        cmds.cfgLine(l, worker.script == null, cmds.tabulator, "script", worker.script);
         cmds.cfgLine(l, worker.target == null, cmds.tabulator, "target", worker.target);
         if (worker.hidden) {
             cmds.cfgLine(l, worker.execUp == null, cmds.tabulator, "exec-up", authLocal.passwdEncode(worker.execUp));
@@ -226,6 +230,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         String a = cmd.word();
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("script")) {
+            worker.script = cmd.getRemaining();
             return;
         }
         if (a.equals("hidden")) {
@@ -404,6 +412,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         a = cmd.word();
         if (a.equals("description")) {
             description = null;
+            return;
+        }
+        if (a.equals("script")) {
+            worker.script = null;
             return;
         }
         if (a.equals("hidden")) {

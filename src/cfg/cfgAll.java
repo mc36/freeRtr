@@ -2923,7 +2923,7 @@ public class cfgAll {
     /**
      * do things with more interfaces
      *
-     * @param what what to do: 1=tunnelDest, 2=clearCntr, 3=autoBw
+     * @param what what to do: 1=tunnelDest, 2=clearCntr, 3=autoBw, 4=flwTrc
      */
     public static void moreInterfaces(int what) {
         for (int i = 0; i < ifaces.size(); i++) {
@@ -2940,6 +2940,9 @@ public class cfgAll {
                     break;
                 case 3:
                     ifc.autoBandwidth();
+                    break;
+                case 4:
+                    ifc.followTracker();
                     break;
             }
         }

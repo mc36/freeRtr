@@ -142,6 +142,7 @@ import user.userHelping;
 import user.userTerminal;
 import util.bits;
 import util.cmds;
+import util.history;
 import util.logger;
 import util.state;
 import util.verCore;
@@ -162,6 +163,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * description of this interface
      */
     public String description = "";
+
+    /**
+     * name of followed tracker
+     */
+    public String followTrack = null;
 
     /**
      * type of this interface
@@ -1242,6 +1248,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no mtu",
         "interface .*! no macaddr",
         "interface .*! no template",
+        "interface .*! no follow-tracker",
         "interface .*! padup 0 0",
         "interface .*! autostate",
         "interface .*! encapsulation dot1q",
@@ -1669,9 +1676,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         ethtyp.forcedDN = true;
         ethtyp.propagateState();
+        propagateEthtypState();
         bits.sleep(tim);
         ethtyp.forcedDN = false;
         ethtyp.propagateState();
+        propagateEthtypState();
     }
 
     /**
@@ -4166,7 +4175,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ntry.ethtyp.forcedUP = ethtyp.forcedUP;
             ntry.ethtyp.forcedMTU = ethtyp.forcedMTU;
             ntry.ethtyp.propagateState();
-
         }
     }
 
@@ -4653,7 +4661,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * look up tunnel domain name
      */
-    public synchronized void tunnelDomainName() {
+    public void tunnelDomainName() {
         if (type != ifaceType.tunnel) {
             return;
         }
@@ -4674,11 +4682,17 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * set bandwidth based on traffic
      */
-    public synchronized void autoBandwidth() {
+    public void autoBandwidth() {
         if (autoBndWdt == 0) {
             return;
         }
-        long i = ethtyp.getHistory().getAutoBw(autoBndWdt);
+        history hst;
+        if (ethtyp.hwCntr == null) {
+            hst = ethtyp.getHistory();
+        } else {
+            hst = ethtyp.hwHstry;
+        }
+        long i = hst.getAutoBw(autoBndWdt);
         if (i < 1) {
             i = 1;
         }
@@ -4686,6 +4700,38 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (bundleHed != null) {
             bundleHed.bundleHed.propagateState();
         }
+    }
+
+    /**
+     * update interface history
+     */
+    public void updateHistory() {
+        ethtyp.getHistory().update(ethtyp.getCounter());
+        if (ethtyp.hwCntr == null) {
+            return;
+        }
+        ethtyp.hwHstry.update(ethtyp.hwCntr);
+    }
+
+    /**
+     * follow tracker
+     */
+    public void followTracker() {
+        if (followTrack == null) {
+            return;
+        }
+        cfgTrack trck = cfgAll.trackFind(followTrack, false);
+        if (trck == null) {
+            logger.warn("interface " + name + " cannot to find configured tracker");
+            return;
+        }
+        boolean res = !trck.worker.getStatus();
+        if (res == ethtyp.forcedDN) {
+            return;
+        }
+        ethtyp.forcedDN = res;
+        ethtyp.propagateState();
+        propagateEthtypState();
     }
 
     /**
@@ -5277,6 +5323,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (pwhe != null) {
             l.add(cmds.tabulator + "pseudowire " + pwhe.getCfg());
         }
+        cmds.cfgLine(l, followTrack == null, cmds.tabulator, "follow-tracker", "" + followTrack);
         cmds.cfgLine(l, ethtyp.forcedUP, cmds.tabulator, "autostate", "");
         cmds.cfgLine(l, !ethtyp.forcedDN, cmds.tabulator, "shutdown", "");
         cmds.cfgLine(l, !ethtyp.logStateChg, cmds.tabulator, "log-link-change", "");
@@ -5309,6 +5356,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 .   autostate                     administratively enable interface");
         l.add("1 2   mtu                           change interface maximum transmission unit");
         l.add("2 .     <num>                       physical layer bytes allowed");
+        l.add("1 2   follow-tracker                set administrative state based on a tracker");
+        l.add("2 .     <name>                      name of the tracker");
         l.add("1 2   padup                         change interface padding");
         l.add("2 3     <num>                       minimum bytes");
         l.add("3 .       <num>                     modulo bytes");
@@ -5719,6 +5768,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             ethtyp.monSes = ifc.ethtyp;
+            return;
+        }
+        if (a.equals("follow-tracker")) {
+            followTrack = cmd.word();
             return;
         }
         if (a.equals("padup")) {
@@ -6352,6 +6405,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("monitor-session")) {
             ethtyp.monSes = null;
+            return;
+        }
+        if (a.equals("follow-tracker")) {
+            followTrack = null;
             return;
         }
         if (a.equals("padup")) {

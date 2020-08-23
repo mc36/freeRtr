@@ -93,10 +93,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
             if (ntry == null) {
                 continue;
             }
-            ntry.ethtyp.getHistory().update(ntry.ethtyp.getCounter());
-            if (ntry.ethtyp.hwCntr != null) {
-                ntry.ethtyp.hwHstry.update(ntry.ethtyp.hwCntr);
-            }
+            ntry.updateHistory();
             if (ntry.thread == null) {
                 continue;
             }

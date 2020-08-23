@@ -122,6 +122,11 @@ public class clntTrack implements rtrBfdClnt {
     public forMode force = forMode.norm;
 
     /**
+     * final script
+     */
+    public String script = null;
+
+    /**
      * hide commands
      */
     public boolean hidden = false;
@@ -422,6 +427,32 @@ public class clntTrack implements rtrBfdClnt {
         keepTimer.schedule(task, del, interval);
     }
 
+    private static String doScript(String scrptTxt, boolean selfVal) {
+        pipeLine pl = new pipeLine(32768, false);
+        pipeSide pip = pl.getSide();
+        pip.timeout = 10000;
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        userScript t = new userScript(pip, "");
+        t.allowExec = true;
+        t.allowConfig = true;
+        t.addLine("set selfVal " + (selfVal ? "1" : "0"));
+        for (int i = 0; i < cfgAll.trackers.size(); i++) {
+            cfgTrack trck = cfgAll.trackers.get(i);
+            if (trck == null) {
+                continue;
+            }
+            t.addLine("set " + trck.worker.name + " " + (trck.worker.getStatus() ? "1" : "0"));
+        }
+        t.addLine(scrptTxt);
+        pip = pl.getSide();
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        pip.lineTx = pipeSide.modTyp.modeCR;
+        t.cmdAll();
+        pl.setClose();
+        return pip.lineGet(1);
+    }
+
     /**
      * do one timer round
      */
@@ -450,6 +481,10 @@ public class clntTrack implements rtrBfdClnt {
                     haveResult(false, false);
                     return;
                 }
+                if (vrf == null) {
+                    haveResult(false, false);
+                    return;
+                }
                 addrIP adr = new addrIP();
                 adr.fromString(target);
                 ipFwd fwdCor = vrf.getFwd(adr);
@@ -461,6 +496,10 @@ public class clntTrack implements rtrBfdClnt {
                 return;
             case prefix:
                 if (target == null) {
+                    haveResult(false, false);
+                    return;
+                }
+                if (vrf == null) {
                     haveResult(false, false);
                     return;
                 }
@@ -481,36 +520,15 @@ public class clntTrack implements rtrBfdClnt {
                     haveResult(false, false);
                     return;
                 }
-                pipeLine pl = new pipeLine(32768, false);
-                pipeSide pip = pl.getSide();
-                pip.timeout = 10000;
-                pip.lineRx = pipeSide.modTyp.modeCRorLF;
-                pip.lineTx = pipeSide.modTyp.modeCRLF;
-                userScript t = new userScript(pip, "");
-                t.allowExec = true;
-                t.allowConfig = true;
-                for (int i = 0; i < cfgAll.trackers.size(); i++) {
-                    cfgTrack trck = cfgAll.trackers.get(i);
-                    if (trck == null) {
-                        continue;
-                    }
-                    t.addLine("set " + trck.worker.name + " " + (trck.worker.getStatus() ? "1" : "0"));
+                String a = doScript(target, true);
+                if (logging) {
+                    logger.info("got " + a + " from script");
                 }
-                t.addLine(target);
-                pip = pl.getSide();
-                pip.lineRx = pipeSide.modTyp.modeCRorLF;
-                pip.lineTx = pipeSide.modTyp.modeCR;
-                t.cmdAll();
-                pl.setClose();
-                String a = pip.lineGet(1);
                 if (a == null) {
                     haveResult(false, false);
                     return;
                 }
-                if (logging) {
-                    logger.info("got " + a + " from script");
-                }
-                haveResult(a.equals("1"), false);
+                haveResult(bits.str2num(a) > 0, false);
                 return;
             case other:
                 if (target == null) {
@@ -561,12 +579,12 @@ public class clntTrack implements rtrBfdClnt {
             haveResult(false, false);
             return;
         }
-        addrIP fwdTrg = userTerminal.justResolv(target, prefer);
-        if (fwdTrg == null) {
+        if (vrf == null) {
             haveResult(false, false);
             return;
         }
-        if (vrf == null) {
+        addrIP fwdTrg = userTerminal.justResolv(target, prefer);
+        if (fwdTrg == null) {
             haveResult(false, false);
             return;
         }
@@ -666,6 +684,17 @@ public class clntTrack implements rtrBfdClnt {
                 }
             } else if (lastCount < delayDn) {
                 return;
+            }
+        }
+        if (script != null) {
+            String a = doScript(script, succ);
+            if (logging) {
+                logger.info("got " + a + " from script");
+            }
+            if (a == null) {
+                succ = false;
+            } else {
+                succ = bits.str2num(a) > 0;
             }
         }
         if (finalState == succ) {

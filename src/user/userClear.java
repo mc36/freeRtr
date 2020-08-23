@@ -212,6 +212,10 @@ public class userClear {
             cfgAll.moreInterfaces(3);
             return null;
         }
+        if (a.equals("follow-tracker")) {
+            cfgAll.moreInterfaces(4);
+            return null;
+        }
         if (a.equals("vpdn")) {
             cfgVpdn vpdn = cfgAll.vpdnFind(cmd.word(), false);
             if (vpdn == null) {
