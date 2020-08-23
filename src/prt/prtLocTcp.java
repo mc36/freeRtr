@@ -9,6 +9,7 @@ import ip.ipIfcLoop;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import pipe.pipeLine;
@@ -39,14 +40,17 @@ public class prtLocTcp implements Runnable {
      */
     public prtLocTcp(int local, prtGen prt, int remote, String bind) throws Exception {
         InetAddress addr = null;
+        InetSocketAddress sadr = new InetSocketAddress(local);
         if (bind.length() > 0) {
             try {
                 addr = InetAddress.getByName(bind);
+                sadr = new InetSocketAddress(addr, local);
             } catch (Exception e) {
-                addr = null;
             }
         }
-        socket = new ServerSocket(local, 32, addr);
+        socket = new ServerSocket();
+        socket.setReuseAddress(true);
+        socket.bind(sadr);
         proto = prt;
         port = remote;
         new Thread(this).start();
