@@ -1383,6 +1383,7 @@ class servP4langConn implements Runnable {
             if (ntry == null) {
                 break;
             }
+            seen.put(ntry);
             ifcBridgeAdr old = br.macs.find(ntry);
             String a = "add";
             if (old != null) {
@@ -1392,7 +1393,6 @@ class servP4langConn implements Runnable {
                 a = "mod";
             }
             br.macs.put(ntry);
-            seen.put(ntry);
             servP4langIfc ifc = findIfc(ntry.ifc);
             if (ifc != null) {
                 lower.sendLine("bridgemac_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + ifc.id);
