@@ -43,6 +43,16 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     private long tim3;
 
     /**
+     * log size
+     */
+    public int logSize = 0;
+
+    /**
+     * bidir check
+     */
+    public boolean bidir = false;
+
+    /**
      * construct spf
      *
      * @param old old spf
@@ -56,6 +66,8 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             return;
         }
         log = old.log;
+        logSize = old.logSize;
+        bidir = old.bidir;
         count = old.count + 1;
         shrtPthFrstLog ntry = new shrtPthFrstLog();
         ntry.when = old.tim1;
@@ -63,7 +75,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         ntry.unreach = old.listUnreachables();
         ntry.topo = old.listTopoSum().hashCode();
         log.add(ntry);
-        for (; log.size() > 250;) {
+        for (; log.size() > logSize;) {
             log.remove(0);
         }
     }
@@ -268,6 +280,11 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 }
                 if ((!frst) && c.stub) {
                     continue;
+                }
+                if (bidir) {
+                    if (c.target.findConn(ntry) == null) {
+                        continue;
+                    }
                 }
                 int o = ntry.metric + c.metric;
                 if ((c.target.metric < 0) || (c.target.metric > o)) {
@@ -894,6 +911,16 @@ class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<s
 
     public int compare(shrtPthFrstNode<Ta> o1, shrtPthFrstNode<Ta> o2) {
         return o1.name.compare(o1.name, o2.name);
+    }
+
+    public shrtPthFrstConn<Ta> findConn(shrtPthFrstNode<Ta> peer) {
+        for (int i = 0; i < conn.size(); i++) {
+            shrtPthFrstConn<Ta> ntry = conn.get(i);
+            if (peer.compare(peer, ntry.target) == 0) {
+                return ntry;
+            }
+        }
+        return null;
     }
 
     public String toString() {

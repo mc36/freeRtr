@@ -810,6 +810,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add("2 .     <num>                     age in ms");
         l.add("1 2   lifetime                    data life time");
         l.add("2 .     <num>                     age in ms");
+        l.add("1 .   spf-bidir                   spf bidir check");
+        l.add("1 2   spf-log                     spf log size");
+        l.add("2 .     <num>                     number of entries");
         l.add("1 .   stub                        stub router");
         l.add("1 .   suppress-prefix             do not advertise interfaces");
         l.add("1 2   segrout                     segment routing parameters");
@@ -836,6 +839,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(beg + "distance " + distance);
         l.add(beg + "refresh " + refresh);
         l.add(beg + "lifetime " + lifetime);
+        l.add(beg + "spf-log " + lastSpf.logSize);
+        cmds.cfgLine(l, !lastSpf.bidir, beg, "spf-bidir", "");
         cmds.cfgLine(l, !stub, beg, "stub", "");
         cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
         cmds.cfgLine(l, !defOrigin, beg, "default-originate", "");
@@ -871,6 +876,19 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (negated) {
                 routerID = new addrIPv4();
             }
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("spf-log")) {
+            lastSpf.logSize = bits.str2num(cmd.word());
+            if (negated) {
+                lastSpf.logSize = 0;
+            }
+            return false;
+        }
+        if (s.equals("spf-bidir")) {
+            lastSpf.bidir = !negated;
             todo.set(0);
             notif.wakeup();
             return false;

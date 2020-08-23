@@ -1011,6 +1011,9 @@ public class rtrIsis extends ipRtr {
         l.add("1 2   level1                      change level1 parameters");
         l.add("1 2   level2                      change level2 parameters");
         l.add("1 2   both                        change l1 and l2 parameters");
+        l.add("2 .     spf-bidir                 spf bidir check");
+        l.add("2 3     spf-log                   spf log size");
+        l.add("3 .       <num>                   number of entries");
         l.add("2 3     lsp-mtu                   maximum lsp size");
         l.add("3 .       <num>                   size of lsp in bytes");
         l.add("2 3     lsp-password              lsp authentication");
@@ -1204,6 +1207,8 @@ public class rtrIsis extends ipRtr {
      */
     public void getConfig(rtrIsisLevel lev, List<String> l, String beg) {
         String s = "level" + lev.level + " ";
+        l.add(beg + s + "spf-log " + lev.lastSpf.logSize);
+        cmds.cfgLine(l, !lev.lastSpf.bidir, beg, s + "spf-bidir", "");
         cmds.cfgLine(l, !lev.overloaded, beg, s + "set-overload", "");
         cmds.cfgLine(l, !lev.attachedSet, beg, s + "set-attached", "");
         cmds.cfgLine(l, !lev.attachedClr, beg, s + "clear-attached", "");
@@ -1236,24 +1241,36 @@ public class rtrIsis extends ipRtr {
      */
     public boolean doConfig(rtrIsisLevel lev, cmds cmd, boolean negated) {
         String s = cmd.word();
+        if (s.equals("spf-log")) {
+            lev.lastSpf.logSize = bits.str2num(cmd.word());
+            if (negated) {
+                lev.lastSpf.logSize = 0;
+            }
+            return false;
+        }
+        if (s.equals("spf-bidir")) {
+            lev.lastSpf.bidir = !negated;
+            lev.schedWork(3);
+            return false;
+        }
         if (s.equals("set-overload")) {
             lev.overloaded = !negated;
-            genLsps(3);
+            lev.schedWork(3);
             return false;
         }
         if (s.equals("set-attached")) {
             lev.attachedSet = !negated;
-            genLsps(3);
+            lev.schedWork(3);
             return false;
         }
         if (s.equals("allow-attached")) {
             lev.attachedAlw = !negated;
-            genLsps(3);
+            lev.schedWork(3);
             return false;
         }
         if (s.equals("clear-attached")) {
             lev.attachedClr = !negated;
-            genLsps(3);
+            lev.schedWork(3);
             return false;
         }
         if (s.equals("lsp-mtu")) {

@@ -249,6 +249,9 @@ public class rtrOspf4 extends ipRtr {
         l.add("1 2   area                        configure one area");
         l.add("2 3     <num>                     area number");
         l.add("3 .       enable                  create this area");
+        l.add("3 .       spf-bidir               spf bidir check");
+        l.add("3 4       spf-log                 spf log size");
+        l.add("4 .         <num>                 number of entries");
         l.add("3 .       stub                    configure as stub");
         l.add("3 .       nssa                    configure as nssa");
         l.add("3 .       traffeng                configure for traffic engineering");
@@ -294,6 +297,8 @@ public class rtrOspf4 extends ipRtr {
             rtrOspf4area ntry = areas.get(i);
             String s = "area " + ntry.area + " ";
             l.add(beg + s + "enable");
+            l.add(beg + s + "spf-log " + ntry.lastSpf.logSize);
+            cmds.cfgLine(l, !ntry.lastSpf.bidir, beg, s + "spf-bidir", "");
             cmds.cfgLine(l, !ntry.stub, beg, s + "stub", "");
             cmds.cfgLine(l, !ntry.nssa, beg, s + "nssa", "");
             cmds.cfgLine(l, !ntry.traffEng, beg, s + "traffeng", "");
@@ -377,6 +382,15 @@ public class rtrOspf4 extends ipRtr {
             dat = areas.find(dat);
             if (dat == null) {
                 cmd.error("area not exists");
+                return false;
+            }
+            if (s.equals("spf-log")) {
+                dat.lastSpf.logSize = bits.str2num(cmd.word());
+                return false;
+            }
+            if (s.equals("spf-bidir")) {
+                dat.lastSpf.bidir = true;
+                dat.schedWork(3);
                 return false;
             }
             if (s.equals("stub")) {
@@ -510,6 +524,15 @@ public class rtrOspf4 extends ipRtr {
                 dat.stopNow();
                 areas.del(dat);
                 genLsas(3);
+                return false;
+            }
+            if (s.equals("spf-log")) {
+                dat.lastSpf.logSize = 0;
+                return false;
+            }
+            if (s.equals("spf-bidir")) {
+                dat.lastSpf.bidir = false;
+                dat.schedWork(3);
                 return false;
             }
             if (s.equals("stub")) {

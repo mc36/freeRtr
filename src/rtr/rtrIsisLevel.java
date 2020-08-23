@@ -178,6 +178,7 @@ public class rtrIsisLevel implements Runnable {
      * @param lev level number
      */
     public rtrIsisLevel(rtrIsis parent, int lev) {
+        lastSpf = new shrtPthFrst<rtrIsisLevelSpf>(null);
         lower = parent;
         level = lev;
         lsps = new tabGen<rtrIsisLsp>();

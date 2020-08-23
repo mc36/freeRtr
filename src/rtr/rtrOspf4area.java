@@ -143,6 +143,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
      * @param num area number
      */
     public rtrOspf4area(rtrOspf4 parent, int num) {
+        lastSpf = new shrtPthFrst<addrIPv4>(null);
         lower = parent;
         area = num;
         lsas = new tabGen<rtrOspf4lsa>();

@@ -144,6 +144,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
      * @param num area number
      */
     public rtrOspf6area(rtrOspf6 parent, int num) {
+        lastSpf = new shrtPthFrst<rtrOspf6areaSpf>(null);
         lower = parent;
         area = num;
         lsas = new tabGen<rtrOspf6lsa>();
