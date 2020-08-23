@@ -555,20 +555,34 @@ public class ifcBridge implements ifcDn {
         if (ntry == null) {
             return null;
         }
+        delMacs(ntry);
+        return ntry.lowerIf;
+    }
+
+    /**
+     * delete macs on interface
+     *
+     * @param ifc interface
+     */
+    protected void delMacs(ifcBridgeIfc ifc) {
         if (learned == null) {
-            return ntry.lowerIf;
+            return;
         }
+        int seen = 0;
         for (int i = learned.size() - 1; i >= 0; i--) {
             ifcBridgeAdr mac = learned.get(i);
-            if (ntry.compare(ntry, mac.ifc) != 0) {
+            if (ifc.compare(ifc, mac.ifc) != 0) {
                 continue;
             }
             learned.del(mac);
-            if ((macRouter != null) && (ntry.physical)) {
-                macRouter.bridgeChanged();
-            }
+            seen++;
         }
-        return ntry.lowerIf;
+        if (seen < 1) {
+            return;
+        }
+        if ((macRouter != null) && (ifc.physical)) {
+            macRouter.bridgeChanged();
+        }
     }
 
     private void send2upper(int ifn, packHolder pck) {
