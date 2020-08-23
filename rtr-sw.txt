@@ -211,6 +211,8 @@ router lsrp4 1
  router-id 10.10.10.227
  refresh 600000
  lifetime 2147483000
+ spf-log 500
+ spf-bidir
  segrout 300 299
  bier 256 300 299
  justadvert loopback0
@@ -221,6 +223,8 @@ router lsrp6 1
  router-id 10.10.10.227
  refresh 600000
  lifetime 2147483000
+ spf-log 500
+ spf-bidir
  segrout 300 299
  bier 256 300 299
  justadvert loopback0
