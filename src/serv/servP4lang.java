@@ -1377,6 +1377,7 @@ class servP4langConn implements Runnable {
             lower.sendLine("bridgesrv_add " + br.br.num + " " + vr.id + " " + adr);
             continue;
         }
+        tabGen<ifcBridgeAdr> seen = new tabGen<ifcBridgeAdr>();
         for (int i = 0;; i++) {
             ifcBridgeAdr ntry = br.br.bridgeHed.getMacAddr(i);
             if (ntry == null) {
@@ -1391,6 +1392,7 @@ class servP4langConn implements Runnable {
                 a = "mod";
             }
             br.macs.put(ntry);
+            seen.put(ntry);
             servP4langIfc ifc = findIfc(ntry.ifc);
             if (ifc != null) {
                 lower.sendLine("bridgemac_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + ifc.id);
@@ -1436,6 +1438,21 @@ class servP4langConn implements Runnable {
                 lower.sendLine("bridgevpls_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + adr + " " + hop.id + " " + getLabel(rou) + " " + l);
             } else {
                 lower.sendLine("bridgesrv6_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + adr + " " + hop.id + " " + srv);
+            }
+        }
+        for (int i = br.macs.size() - 1; i >= 0; i--) {
+            ifcBridgeAdr ntry = br.macs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (seen.find(ntry) != null) {
+                continue;
+            }
+            br.macs.del(ntry);
+            servP4langIfc ifc = findIfc(ntry.ifc);
+            if (ifc != null) {
+                lower.sendLine("bridgemac_del " + br.br.num + " " + ntry.adr.toEmuStr() + " " + ifc.id);
+                continue;
             }
         }
     }
