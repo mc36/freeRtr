@@ -34,7 +34,8 @@ void sendpack(unsigned char *bufD, int bufS, int port) {
 
 
 void setState(int port, int sta) {
-    if (sta == 1) rte_eth_dev_set_link_up(port); else rte_eth_dev_set_link_down(port);
+    if (sta == 1) rte_eth_dev_set_link_up(port);
+    else rte_eth_dev_set_link_down(port);
 }
 
 
@@ -67,20 +68,20 @@ int commandSock;
 
 
 static const struct rte_eth_conf port_conf_default = {
-        .rxmode = {
-                .max_rx_pkt_len = RTE_ETHER_MAX_LEN,
-        },
-        .txmode = {
-        },
+    .rxmode = {
+        .max_rx_pkt_len = RTE_ETHER_MAX_LEN,
+    },
+    .txmode = {
+    },
 };
 
 
 
 struct lcore_conf {
-        int rx_num;
-        int rx_list[RTE_MAX_ETHPORTS];
-        int tx_num;
-        int tx_list[RTE_MAX_ETHPORTS];
+    int rx_num;
+    int rx_list[RTE_MAX_ETHPORTS];
+    int tx_num;
+    int tx_list[RTE_MAX_ETHPORTS];
 } __rte_cache_aligned;
 struct lcore_conf lcore_conf[RTE_MAX_LCORE];
 
@@ -183,7 +184,8 @@ static int doPacketLoop(__rte_unused void *arg) {
                     memmove(&bufD[preBuff], bufP, bufS);
                 }
                 rte_pktmbuf_free(bufs[i]);
-                if (port == cpuport) processCpuPack(&bufD[0], bufS); else processDataPacket(&bufD[0], bufS, port);
+                if (port == cpuport) processCpuPack(&bufD[0], bufS);
+                else processDataPacket(&bufD[0], bufS, port);
             }
             pkts += num;
         }

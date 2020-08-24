@@ -1,4 +1,4 @@
-/*  -*- P4_16 -*- */  
+/*  -*- P4_16 -*- */
 
 #include <core.p4>
 #include <v1model.p4>
@@ -19,15 +19,15 @@
 #include "include/hdr_udp.p4"
 #include "include/hdr_tcp.p4"
 
-/*----------------------------------------------------------------------------* 
- *                   I N G R E S S   P R O C E S S I N G                      * 
+/*----------------------------------------------------------------------------*
+ *                   I N G R E S S   P R O C E S S I N G                      *
  *----------------------------------------------------------------------------*/
 
-/*------------------ I N G R E S S  H E A D E R S --------------------------- */ 
-#include "include/hdr_ig_headers.p4"                                             
+/*------------------ I N G R E S S  H E A D E R S --------------------------- */
+#include "include/hdr_ig_headers.p4"
 
 /*------------------ I N G R E S S  G L O B A L  M E T A D A T A ------------ */
-#include "include/mtd_ig_metadata.p4"                                           
+#include "include/mtd_ig_metadata.p4"
 
 /*------------------ I N G R E S S   P A R S E R -----------------------------*/
 #include "include/ig_prs_main.p4"
@@ -36,7 +36,7 @@
 #include "include/ig_ctl_verify_checksum.p4"
 
 /*------------------ I N G R E S S - M A T C H - A C T I O N ---------------- */
-#include "include/ig_ctl_vlan_in.p4" 
+#include "include/ig_ctl_vlan_in.p4"
 #include "include/ig_ctl_vlan_out.p4"
 #include "include/ig_ctl_bundle.p4"
 #include "include/ig_ctl_vrf.p4"
@@ -58,8 +58,8 @@
 #include "include/ig_ctl.p4"
 
 
-/*------------------ E G R E S S  H E A D E R S ----------------------------- */ 
-#include "include/hdr_eg_headers.p4"                                             
+/*------------------ E G R E S S  H E A D E R S ----------------------------- */
+#include "include/hdr_eg_headers.p4"
 
 /*------------------ E G R E S S - M A T C H - A C T I O N ------------------ */
 #include "include/eg_ctl.p4"
@@ -72,10 +72,10 @@
 
 /*------------------ F I N A L  P A C K A G E ------------------------------- */
 V1Switch(
-   ig_prs_main(),
-   ig_ctl_verify_checksum(),
-   ig_ctl(),
-   eg_ctl(),
-   ig_ctl_compute_checksum(),
-   ig_ctl_dprs()
+    ig_prs_main(),
+    ig_ctl_verify_checksum(),
+    ig_ctl(),
+    eg_ctl(),
+    ig_ctl_compute_checksum(),
+    ig_ctl_dprs()
 ) main;

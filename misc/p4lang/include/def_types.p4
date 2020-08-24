@@ -2,7 +2,7 @@
 #define _TYPES_P4_
 
 typedef bit<16> ethertype_t;
-typedef bit<48> mac_addr_t; 
+typedef bit<48> mac_addr_t;
 typedef bit<20> label_t;
 typedef bit<32> ipv4_addr_t;
 typedef bit<128> ipv6_addr_t;

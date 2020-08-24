@@ -70,40 +70,40 @@ doer:
         goto doer;
     }
     switch (buf[0]) {
-        case 0:
-            goto doer;
-            break;
-        case 'H':
-        case 'h':
-        case '?':
-            printf("commands:\n");
-            printf("h - this help\n");
-            printf("q - exit process\n");
-            printf("d - display counters\n");
-            printf("c - clear counters\n");
-            break;
-        case 'Q':
-        case 'q':
-            err("exiting");
-            break;
-        case 'D':
-        case 'd':
-            printf("iface counters:\n");
-            printf("                      packets                bytes\n");
-            printf("received %20li %20li\n", packRx, byteRx);
-            printf("sent     %20li %20li\n", packTx, byteTx);
-            break;
-        case 'C':
-        case 'c':
-            printf("counters cleared.\n");
-            byteRx = 0;
-            packRx = 0;
-            byteTx = 0;
-            packTx = 0;
-            break;
-        default:
-            printf("unknown command '%s', try ?\n", buf);
-            break;
+    case 0:
+        goto doer;
+        break;
+    case 'H':
+    case 'h':
+    case '?':
+        printf("commands:\n");
+        printf("h - this help\n");
+        printf("q - exit process\n");
+        printf("d - display counters\n");
+        printf("c - clear counters\n");
+        break;
+    case 'Q':
+    case 'q':
+        err("exiting");
+        break;
+    case 'D':
+    case 'd':
+        printf("iface counters:\n");
+        printf("                      packets                bytes\n");
+        printf("received %20li %20li\n", packRx, byteRx);
+        printf("sent     %20li %20li\n", packTx, byteTx);
+        break;
+    case 'C':
+    case 'c':
+        printf("counters cleared.\n");
+        byteRx = 0;
+        packRx = 0;
+        byteTx = 0;
+        packTx = 0;
+        break;
+    default:
+        printf("unknown command '%s', try ?\n", buf);
+        break;
     }
     printf("\n");
 
@@ -117,24 +117,24 @@ int main(int argc, char **argv) {
         unsigned char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
-            case 'V':
-            case 'v':
-                err("libtuntap interface driver v1.0\n");
-                break;
-            case '?':
-            case 'h':
-            case 'H':
-                help :
-                        curr = argv[0];
-                printf("using: %s <lport> <raddr> <rport> <laddr> <addr> <maskbits>\n", curr);
-                printf("   or: %s <command>\n", curr);
-                printf("commands: v=version\n");
-                printf("          h=this help\n");
-                exit(1);
-                break;
-            default:
-                err("unknown command, try -h");
-                break;
+        case 'V':
+        case 'v':
+            err("libtuntap interface driver v1.0\n");
+            break;
+        case '?':
+        case 'h':
+        case 'H':
+help :
+            curr = argv[0];
+            printf("using: %s <lport> <raddr> <rport> <laddr> <addr> <maskbits>\n", curr);
+            printf("   or: %s <command>\n", curr);
+            printf("commands: v=version\n");
+            printf("          h=this help\n");
+            exit(1);
+            break;
+        default:
+            err("unknown command, try -h");
+            break;
         }
         exit(1);
     }

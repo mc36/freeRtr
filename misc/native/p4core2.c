@@ -74,17 +74,17 @@ int doOneCommand(unsigned char* buf) {
     int o = 0;
     for (;;) {
         switch (buf[i]) {
-            case 0:
-            case 10:
-            case 13:
-                o = 1;
-            case ' ':
-            case '/':
-            case '_':
-                buf[i] = 0;
-                cnt++;
-                arg[cnt] = &buf[i + 1];
-                break;
+        case 0:
+        case 10:
+        case 13:
+            o = 1;
+        case ' ':
+        case '/':
+        case '_':
+            buf[i] = 0;
+            cnt++;
+            arg[cnt] = &buf[i + 1];
+            break;
         }
         if (o > 0) break;
         i++;
@@ -139,7 +139,8 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.vrf = atoi(arg[3]);
         mpls_ntry.ver = 4;
         mpls_ntry.command = 1;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "mylabel6") == 0) {
@@ -147,7 +148,8 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.vrf = atoi(arg[3]);
         mpls_ntry.ver = 6;
         mpls_ntry.command = 1;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "unlabel4") == 0) {
@@ -155,7 +157,8 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.nexthop = atoi(arg[3]);
         mpls_ntry.ver = 4;
         mpls_ntry.command = 2;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "unlabel6") == 0) {
@@ -163,7 +166,8 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.nexthop = atoi(arg[3]);
         mpls_ntry.ver = 6;
         mpls_ntry.command = 2;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "label4") == 0) {
@@ -172,7 +176,8 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.swap = atoi(arg[5]);
         mpls_ntry.ver = 4;
         mpls_ntry.command = 3;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "label6") == 0) {
@@ -181,20 +186,23 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.swap = atoi(arg[5]);
         mpls_ntry.ver = 6;
         mpls_ntry.command = 3;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "cpulabel") == 0) {
         mpls_ntry.label = atoi(arg[2]);
         mpls_ntry.command = 6;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portvrf") == 0) {
         portvrf_ntry.command = 1;
         portvrf_ntry.port = atoi(arg[2]);
         portvrf_ntry.vrf = atoi(arg[3]);
-        if (del == 0) table_del(&portvrf_table, &portvrf_ntry); else table_add(&portvrf_table, &portvrf_ntry);
+        if (del == 0) table_del(&portvrf_table, &portvrf_ntry);
+        else table_add(&portvrf_table, &portvrf_ntry);
         return 0;
     }
     if (strcmp(arg[0], "xconnect") == 0) {
@@ -206,8 +214,10 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.label = atoi(arg[6]);
         mpls_ntry.port = portvrf_ntry.port;
         mpls_ntry.command = 4;
-        if (del == 0) table_del(&portvrf_table, &portvrf_ntry); else table_add(&portvrf_table, &portvrf_ntry);
-        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) table_del(&portvrf_table, &portvrf_ntry);
+        else table_add(&portvrf_table, &portvrf_ntry);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgevpls") == 0) {
@@ -219,21 +229,24 @@ int doOneCommand(unsigned char* buf) {
         bridge_ntry.label1 = atoi(arg[6]);
         bridge_ntry.label2 = atoi(arg[7]);
         bridge_ntry.command = 2;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry); else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) table_del(&bridge_table, &bridge_ntry);
+        else table_add(&bridge_table, &bridge_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgelabel") == 0) {
         mpls_ntry.label = atoi(arg[3]);
         mpls_ntry.bridge = atoi(arg[2]);
         mpls_ntry.command = 5;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry); else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portbridge") == 0) {
         portvrf_ntry.command = 2;
         portvrf_ntry.port = atoi(arg[2]);
         portvrf_ntry.bridge = atoi(arg[3]);
-        if (del == 0) table_del(&portvrf_table, &portvrf_ntry); else table_add(&portvrf_table, &portvrf_ntry);
+        if (del == 0) table_del(&portvrf_table, &portvrf_ntry);
+        else table_add(&portvrf_table, &portvrf_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgemac") == 0) {
@@ -243,15 +256,18 @@ int doOneCommand(unsigned char* buf) {
         bridge_ntry.mac2 = get32msb(buf2, 2);
         bridge_ntry.port = atoi(arg[4]);
         bridge_ntry.command = 1;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry); else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) table_del(&bridge_table, &bridge_ntry);
+        else table_add(&bridge_table, &bridge_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portvlan") == 0) {
         vlan_ntry.id = atoi(arg[2]);
         vlan_ntry.port = atoi(arg[3]);
         vlan_ntry.vlan = atoi(arg[4]);
-        if (del == 0) table_del(&vlanin_table, &vlan_ntry); else table_add(&vlanin_table, &vlan_ntry);
-        if (del == 0) table_del(&vlanout_table, &vlan_ntry); else table_add(&vlanout_table, &vlan_ntry);
+        if (del == 0) table_del(&vlanin_table, &vlan_ntry);
+        else table_add(&vlanin_table, &vlan_ntry);
+        if (del == 0) table_del(&vlanout_table, &vlan_ntry);
+        else table_add(&vlanout_table, &vlan_ntry);
         return 0;
     }
     if (strcmp(arg[0], "myaddr4") == 0) {
@@ -260,7 +276,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.vrf = atoi(arg[5]);
         route4_ntry.command = 2;
-        if (del == 0) table_del(&route4_table, &route4_ntry); else table_add(&route4_table, &route4_ntry);
+        if (del == 0) table_del(&route4_table, &route4_ntry);
+        else table_add(&route4_table, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "route4") == 0) {
@@ -270,7 +287,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.nexthop = atoi(arg[4]);
         route4_ntry.vrf = atoi(arg[6]);
         route4_ntry.command = 1;
-        if (del == 0) table_del(&route4_table, &route4_ntry); else table_add(&route4_table, &route4_ntry);
+        if (del == 0) table_del(&route4_table, &route4_ntry);
+        else table_add(&route4_table, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "labroute4") == 0) {
@@ -281,7 +299,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.vrf = atoi(arg[6]);
         route4_ntry.label1 = atoi(arg[7]);
         route4_ntry.command = 3;
-        if (del == 0) table_del(&route4_table, &route4_ntry); else table_add(&route4_table, &route4_ntry);
+        if (del == 0) table_del(&route4_table, &route4_ntry);
+        else table_add(&route4_table, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "vpnroute4") == 0) {
@@ -293,7 +312,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.label1 = atoi(arg[7]);
         route4_ntry.label2 = atoi(arg[8]);
         route4_ntry.command = 4;
-        if (del == 0) table_del(&route4_table, &route4_ntry); else table_add(&route4_table, &route4_ntry);
+        if (del == 0) table_del(&route4_table, &route4_ntry);
+        else table_add(&route4_table, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "neigh4") == 0) {
@@ -309,8 +329,10 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.command = 1;
         str2mac(neigh_ntry.dmac, arg[4]);
         str2mac(neigh_ntry.smac, arg[6]);
-        if (del == 0) table_del(&route4_table, &route4_ntry); else table_add(&route4_table, &route4_ntry);
-        if (del == 0) table_del(&neigh_table, &neigh_ntry); else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) table_del(&route4_table, &route4_ntry);
+        else table_add(&route4_table, &route4_ntry);
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "myaddr6") == 0) {
@@ -322,7 +344,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.mask = atoi(arg[3]);
         route6_ntry.vrf = atoi(arg[5]);
         route6_ntry.command = 2;
-        if (del == 0) table_del(&route6_table, &route6_ntry); else table_add(&route6_table, &route6_ntry);
+        if (del == 0) table_del(&route6_table, &route6_ntry);
+        else table_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "route6") == 0) {
@@ -335,7 +358,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.nexthop = atoi(arg[4]);
         route6_ntry.vrf = atoi(arg[6]);
         route6_ntry.command = 1;
-        if (del == 0) table_del(&route6_table, &route6_ntry); else table_add(&route6_table, &route6_ntry);
+        if (del == 0) table_del(&route6_table, &route6_ntry);
+        else table_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "labroute6") == 0) {
@@ -349,7 +373,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.vrf = atoi(arg[6]);
         route6_ntry.label1 = atoi(arg[7]);
         route6_ntry.command = 3;
-        if (del == 0) table_del(&route6_table, &route6_ntry); else table_add(&route6_table, &route6_ntry);
+        if (del == 0) table_del(&route6_table, &route6_ntry);
+        else table_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "vpnroute6") == 0) {
@@ -364,7 +389,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.label1 = atoi(arg[7]);
         route6_ntry.label2 = atoi(arg[8]);
         route6_ntry.command = 4;
-        if (del == 0) table_del(&route6_table, &route6_ntry); else table_add(&route6_table, &route6_ntry);
+        if (del == 0) table_del(&route6_table, &route6_ntry);
+        else table_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "neigh6") == 0) {
@@ -383,8 +409,10 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.command = 1;
         str2mac(neigh_ntry.dmac, arg[4]);
         str2mac(neigh_ntry.smac, arg[6]);
-        if (del == 0) table_del(&route6_table, &route6_ntry); else table_add(&route6_table, &route6_ntry);
-        if (del == 0) table_del(&neigh_table, &neigh_ntry); else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) table_del(&route6_table, &route6_ntry);
+        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inacl4") == 0) {
@@ -400,7 +428,8 @@ int doOneCommand(unsigned char* buf) {
             acls_res = table_get(&acls_table, index);
         }
         readAcl4(&acl4_ntry, &arg[0]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry); else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "outacl4") == 0) {
@@ -416,7 +445,8 @@ int doOneCommand(unsigned char* buf) {
             acls_res = table_get(&acls_table, index);
         }
         readAcl4(&acl4_ntry, &arg[0]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry); else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "natcfg4") == 0) {
@@ -432,7 +462,8 @@ int doOneCommand(unsigned char* buf) {
             acls_res = table_get(&acls_table, index);
         }
         readAcl4(&acl4_ntry, &arg[0]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry); else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "copp4") == 0) {
@@ -448,7 +479,8 @@ int doOneCommand(unsigned char* buf) {
             acls_res = table_get(&acls_table, index);
         }
         readAcl4(&acl4_ntry, &arg[-1]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry); else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inacl6") == 0) {
@@ -464,7 +496,8 @@ int doOneCommand(unsigned char* buf) {
             acls_res = table_get(&acls_table, index);
         }
         readAcl6(&acl6_ntry, &arg[0]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry); else table_add(&acls_res->aces, &acl6_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "outacl6") == 0) {
@@ -480,7 +513,8 @@ int doOneCommand(unsigned char* buf) {
             acls_res = table_get(&acls_table, index);
         }
         readAcl6(&acl6_ntry, &arg[0]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry); else table_add(&acls_res->aces, &acl6_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "natcfg6") == 0) {
@@ -496,7 +530,8 @@ int doOneCommand(unsigned char* buf) {
             acls_res = table_get(&acls_table, index);
         }
         readAcl6(&acl6_ntry, &arg[0]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry); else table_add(&acls_res->aces, &acl6_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "copp6") == 0) {
@@ -512,7 +547,8 @@ int doOneCommand(unsigned char* buf) {
             acls_res = table_get(&acls_table, index);
         }
         readAcl6(&acl6_ntry, &arg[-1]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry); else table_add(&acls_res->aces, &acl6_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nattrns4") == 0) {
@@ -540,7 +576,8 @@ int doOneCommand(unsigned char* buf) {
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.oTrgPort, -1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nSrcPort, +1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nTrgPort, +1);
-        if (del == 0) table_del(&nat4_table, &nat4_ntry); else table_add(&nat4_table, &nat4_ntry);
+        if (del == 0) table_del(&nat4_table, &nat4_ntry);
+        else table_add(&nat4_table, &nat4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nattrns6") == 0) {
@@ -592,7 +629,8 @@ int doOneCommand(unsigned char* buf) {
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.oTrgPort, -1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nSrcPort, +1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nTrgPort, +1);
-        if (del == 0) table_del(&nat6_table, &nat6_ntry); else table_add(&nat6_table, &nat6_ntry);
+        if (del == 0) table_del(&nat6_table, &nat6_ntry);
+        else table_add(&nat6_table, &nat6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "hairpin") == 0) {
@@ -600,7 +638,8 @@ int doOneCommand(unsigned char* buf) {
         bundle_ntry.command = 2;
         o = atoi(arg[3]);
         for (int i = 0; i < 16; i++) bundle_ntry.out[i] = o;
-        if (del == 0) table_del(&bundle_table, &bundle_ntry); else table_add(&bundle_table, &bundle_ntry);
+        if (del == 0) table_del(&bundle_table, &bundle_ntry);
+        else table_add(&bundle_table, &bundle_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portbundle") == 0) {
@@ -625,7 +664,8 @@ int doOneCommand(unsigned char* buf) {
         vlan_ntry.id = atoi(arg[4]);
         vlan_ntry.port = atoi(arg[2]);
         vlan_ntry.vlan = atoi(arg[3]);
-        if (del == 0) table_del(&vlanin_table, &vlan_ntry); else table_add(&vlanin_table, &vlan_ntry);
+        if (del == 0) table_del(&vlanin_table, &vlan_ntry);
+        else table_add(&vlanin_table, &vlan_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pppoe") == 0) {
@@ -640,8 +680,10 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.command = 2;
         str2mac(neigh_ntry.dmac, arg[7]);
         str2mac(neigh_ntry.smac, arg[8]);
-        if (del == 0) table_del(&pppoe_table, &pppoe_ntry); else table_add(&pppoe_table, &pppoe_ntry);
-        if (del == 0) table_del(&neigh_table, &neigh_ntry); else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) table_del(&pppoe_table, &pppoe_ntry);
+        else table_add(&pppoe_table, &pppoe_ntry);
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
         return 0;
     }
     return 0;
@@ -745,112 +787,112 @@ void doStatRount(FILE *commands) {
 int doConsoleCommand(unsigned char*buf) {
     unsigned char buf2[1024];
     switch (buf[0]) {
-        case 0:
-            break;
-        case 'H':
-        case 'h':
-        case '?':
-            printf("commands:\n");
-            printf("h - this help\n");
-            printf("q - exit process\n");
-            printf("i - interface counters\n");
-            printf("p - display portvrf table\n");
-            printf("b - display bridge table\n");
-            printf("m - display mpls table\n");
-            printf("4 - display ipv4 table\n");
-            printf("6 - display ipv6 table\n");
-            printf("n - display nexthop table\n");
-            printf("a - display acl table\n");
-            printf("v - display vlan table\n");
-            break;
-        case 'Q':
-        case 'q':
-            return 1;
-            break;
-        case 'i':
-        case 'I':
-            printf("                           iface         rx         tx       drop         rx         tx       drop\n");
-            for (int i=0; i<ports; i++) {
-                printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], packRx[i], packTx[i], packDr[i], byteRx[i], byteTx[i], byteDr[i]);
-            }
-            break;
-        case 'm':
-        case 'M':
-            printf("     label ip        vrf cmd       swap    nexthop\n");
-            for (int i=0; i<mpls_table.size; i++) {
-                struct mpls_entry *ntry = table_get(&mpls_table, i);
-                printf("%10i %2i %10i %3i %10i %10i\n", ntry->label, ntry->ver, ntry->vrf, ntry->command, ntry->swap, ntry->nexthop);
-            }
-            break;
-        case 'a':
-        case 'A':
-            printf("  vrf/port dir ver       aces\n");
-            for (int i=0; i<acls_table.size; i++) {
-                struct acls_entry *ntry = table_get(&acls_table, i);
-                printf("%10i %3i %3i %10i\n", ntry->port, ntry->dir, ntry->ver, ntry->aces.size);
-            }
-            break;
-        case 'p':
-        case 'P':
-            printf("      port cmd        vrf     bridge\n");
-            for (int i=0; i<portvrf_table.size; i++) {
-                struct portvrf_entry *ntry = table_get(&portvrf_table, i);
-                printf("%10i %3i %10i %10i\n", ntry->port, ntry->command, ntry->vrf, ntry->bridge);
-            }
-            break;
-        case 'n':
-        case 'N':
-            printf("        id        vrf       port              smac              dmac\n");
-            for (int i=0; i<neigh_table.size; i++) {
-                struct neigh_entry *ntry = table_get(&neigh_table, i);
-                mac2str(ntry->smac, buf);
-                mac2str(ntry->dmac, buf2);
-                printf("%10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, &buf, &buf2);
-            }
-            break;
-        case 'b':
-        case 'B':
-            printf("    bridge               mac       port\n");
-            for (int i=0; i<bridge_table.size; i++) {
-                struct bridge_entry *ntry = table_get(&bridge_table, i);
-                put16msb(buf2, 0, ntry->mac1);
-                put32msb(buf2, 2, ntry->mac2);
-                mac2str(buf2, buf);
-                printf("%10i %s %10i\n", ntry->id, buf, ntry->port);
-            }
-            break;
-        case 'v':
-        case 'V':
-            printf("        id       vlan       port\n");
-            for (int i=0; i<vlanin_table.size; i++) {
-                struct vlan_entry *ntry = table_get(&vlanin_table, i);
-                printf("%10i %10i %10i\n", ntry->id, ntry->vlan, ntry->port);
-            }
-            break;
-        case '4':
-            printf("            addr msk        vrf cmd    nexthop     label1     label2\n");
-            for (int i=0; i<route4_table.size; i++) {
-                struct route4_entry *ntry = table_get(&route4_table, i);
-                put32msb(buf2, 0, ntry->addr);
-                inet_ntop(AF_INET, &buf2[0], &buf[0], sizeof(buf));
-                printf("%16s %3i %10i %3i %10i %10i %10i\n", &buf, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
-            }
-            break;
-        case '6':
-            printf("                                    addr msk        vrf cmd    nexthop     label1     label2\n");
-            for (int i=0; i<route6_table.size; i++) {
-                struct route6_entry *ntry = table_get(&route6_table, i);
-                put32msb(buf2, 0, ntry->addr1);
-                put32msb(buf2, 4, ntry->addr2);
-                put32msb(buf2, 8, ntry->addr3);
-                put32msb(buf2, 12, ntry->addr4);
-                inet_ntop(AF_INET6, &buf2[0], &buf[0], sizeof(buf));
-                printf("%40s %3i %10i %3i %10i %10i %10i\n", &buf, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
-            }
-            break;
-        default:
-            printf("unknown command '%s', try ?\n", buf);
-            break;
+    case 0:
+        break;
+    case 'H':
+    case 'h':
+    case '?':
+        printf("commands:\n");
+        printf("h - this help\n");
+        printf("q - exit process\n");
+        printf("i - interface counters\n");
+        printf("p - display portvrf table\n");
+        printf("b - display bridge table\n");
+        printf("m - display mpls table\n");
+        printf("4 - display ipv4 table\n");
+        printf("6 - display ipv6 table\n");
+        printf("n - display nexthop table\n");
+        printf("a - display acl table\n");
+        printf("v - display vlan table\n");
+        break;
+    case 'Q':
+    case 'q':
+        return 1;
+        break;
+    case 'i':
+    case 'I':
+        printf("                           iface         rx         tx       drop         rx         tx       drop\n");
+        for (int i=0; i<ports; i++) {
+            printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], packRx[i], packTx[i], packDr[i], byteRx[i], byteTx[i], byteDr[i]);
+        }
+        break;
+    case 'm':
+    case 'M':
+        printf("     label ip        vrf cmd       swap    nexthop\n");
+        for (int i=0; i<mpls_table.size; i++) {
+            struct mpls_entry *ntry = table_get(&mpls_table, i);
+            printf("%10i %2i %10i %3i %10i %10i\n", ntry->label, ntry->ver, ntry->vrf, ntry->command, ntry->swap, ntry->nexthop);
+        }
+        break;
+    case 'a':
+    case 'A':
+        printf("  vrf/port dir ver       aces\n");
+        for (int i=0; i<acls_table.size; i++) {
+            struct acls_entry *ntry = table_get(&acls_table, i);
+            printf("%10i %3i %3i %10i\n", ntry->port, ntry->dir, ntry->ver, ntry->aces.size);
+        }
+        break;
+    case 'p':
+    case 'P':
+        printf("      port cmd        vrf     bridge\n");
+        for (int i=0; i<portvrf_table.size; i++) {
+            struct portvrf_entry *ntry = table_get(&portvrf_table, i);
+            printf("%10i %3i %10i %10i\n", ntry->port, ntry->command, ntry->vrf, ntry->bridge);
+        }
+        break;
+    case 'n':
+    case 'N':
+        printf("        id        vrf       port              smac              dmac\n");
+        for (int i=0; i<neigh_table.size; i++) {
+            struct neigh_entry *ntry = table_get(&neigh_table, i);
+            mac2str(ntry->smac, buf);
+            mac2str(ntry->dmac, buf2);
+            printf("%10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, &buf, &buf2);
+        }
+        break;
+    case 'b':
+    case 'B':
+        printf("    bridge               mac       port\n");
+        for (int i=0; i<bridge_table.size; i++) {
+            struct bridge_entry *ntry = table_get(&bridge_table, i);
+            put16msb(buf2, 0, ntry->mac1);
+            put32msb(buf2, 2, ntry->mac2);
+            mac2str(buf2, buf);
+            printf("%10i %s %10i\n", ntry->id, buf, ntry->port);
+        }
+        break;
+    case 'v':
+    case 'V':
+        printf("        id       vlan       port\n");
+        for (int i=0; i<vlanin_table.size; i++) {
+            struct vlan_entry *ntry = table_get(&vlanin_table, i);
+            printf("%10i %10i %10i\n", ntry->id, ntry->vlan, ntry->port);
+        }
+        break;
+    case '4':
+        printf("            addr msk        vrf cmd    nexthop     label1     label2\n");
+        for (int i=0; i<route4_table.size; i++) {
+            struct route4_entry *ntry = table_get(&route4_table, i);
+            put32msb(buf2, 0, ntry->addr);
+            inet_ntop(AF_INET, &buf2[0], &buf[0], sizeof(buf));
+            printf("%16s %3i %10i %3i %10i %10i %10i\n", &buf, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+        }
+        break;
+    case '6':
+        printf("                                    addr msk        vrf cmd    nexthop     label1     label2\n");
+        for (int i=0; i<route6_table.size; i++) {
+            struct route6_entry *ntry = table_get(&route6_table, i);
+            put32msb(buf2, 0, ntry->addr1);
+            put32msb(buf2, 4, ntry->addr2);
+            put32msb(buf2, 8, ntry->addr3);
+            put32msb(buf2, 12, ntry->addr4);
+            inet_ntop(AF_INET6, &buf2[0], &buf[0], sizeof(buf));
+            printf("%40s %3i %10i %3i %10i %10i %10i\n", &buf, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+        }
+        break;
+    default:
+        printf("unknown command '%s', try ?\n", buf);
+        break;
     }
     return 0;
 }

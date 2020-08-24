@@ -171,575 +171,103 @@ ethtyp_rx:
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
     switch (ethtyp) {
-        case 0x8847:
+    case 0x8847:
 mpls_rx:
-            label = get32msb(bufD, bufP);
-            ttl = (label & 0xff) - 1;
-            if (ttl <= 1) goto punt;
-            bufP += 4;
-            mpls_ntry.label = (label >> 12) & 0xfffff;
-            hash ^= mpls_ntry.label;
-            index = table_find(&mpls_table, &mpls_ntry);
-            if (index < 0) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
-            mpls_res = table_get(&mpls_table, index);
-            mpls_res->pack++;
-            mpls_res->byte += bufS;
-            switch (mpls_res->command) {
-                case 1: // route
-                    route4_ntry.vrf = mpls_res->vrf;
-                    route6_ntry.vrf = mpls_res->vrf;
-                    if ((label & 0x100) == 0) goto mpls_rx;
-                    switch (mpls_res->ver) {
-                        case 4:
-                            ethtyp = 0x800;
-                            goto ipv4_rx;
-                        case 6:
-                            ethtyp = 0x86dd;
-                            goto ipv6_rx;
-                        default:
-                            ethtyp = 0;
-                            break;
-                    }
-                    packDr[port]++;
-                    byteDr[port] += bufS;
-                    return;
-                case 2: // pop
-                    neigh_ntry.id = mpls_res->nexthop;
-                    if ((label & 0x100) == 0) goto ethtyp_tx;
-                    switch (mpls_res->ver) {
-                        case 4:
-                            ethtyp = 0x800;
-                            break;
-                        case 6:
-                            ethtyp = 0x86dd;
-                            break;
-                        default:
-                            ethtyp = 0;
-                            break;
-                    }
-                    goto ethtyp_tx;
-                    return;
-                case 3: // swap
-                    bufP -= 4;
-                    label = (label & 0xf00) | ttl | (mpls_res->swap << 12);
-                    put32msb(bufD, bufP, label);
-                    neigh_ntry.id = mpls_res->nexthop;
-ethtyp_tx:
-                    bufP -= 2;
-                    put16msb(bufD, bufP, ethtyp);
-                    index = table_find(&neigh_table, &neigh_ntry);
-                    if (index < 0) {
-                        packDr[port]++;
-                        byteDr[port] += bufS;
-                        return;
-                    }
-                    neigh_res = table_get(&neigh_table, index);
-neigh_tx:
-                    neigh_res->pack++;
-                    neigh_res->byte += bufS;
-                    prt = neigh_res->port;
-                    if (neigh_res->command == 2) { // pppoe
-                        switch (ethtyp) {
-                            case 0x800:
-                                index = 0x0021;
-                                break;
-                            case 0x86dd:
-                                index = 0x0057;
-                                break;
-                            case 0x8847:
-                                index = 0x0281;
-                                break;
-                            default:
-                                packDr[port]++;
-                                byteDr[port] += bufS;
-                                return;
-                        }
-                        put16msb(bufD, bufP, index);
-                        index = bufS - bufP + preBuff;
-                        bufP -= 6;
-                        put16msb(bufD, bufP + 0, 0x1100);
-                        put16msb(bufD, bufP + 2, neigh_res->session);
-                        put16msb(bufD, bufP + 4, index);
-                        ethtyp = 0x8864;
-                        bufP -= 2;
-                        put16msb(bufD, bufP, ethtyp);
-                    }
-                    vlan_ntry.id = prt;
-                    index = table_find(&vlanout_table, &vlan_ntry);
-                    if (index >= 0) {
-                        vlan_res = table_get(&vlanout_table, index);
-                        bufP -= 2;
-                        put16msb(bufD, bufP, vlan_res->vlan);
-                        bufP -= 2;
-                        put16msb(bufD, bufP, 0x8100);
-                        prt = vlan_res->port;
-                        vlan_res->pack++;
-                        vlan_res->byte += bufS;
-                    }
-                    bufP -= 6;
-                    memmove(&bufD[bufP], &neigh_res->smac, 6);
-                    bufP -= 6;
-                    memmove(&bufD[bufP], &neigh_res->dmac, 6);
-                    bundle_ntry.id = prt;
-                    index = table_find(&bundle_table, &bundle_ntry);
-                    if (index >= 0) {
-                        bundle_res = table_get(&bundle_table, index);
-                        reduce_hash;
-                        prt = bundle_res->out[hash];
-                        bundle_res->pack++;
-                        bundle_res->byte += bufS;
-                        if (bundle_res->command == 2) {
-                            bufS = bufS - bufP + preBuff;
-                            memmove(&bufD[preBuff], &bufD[bufP], bufS);
-                            prt2 = prt;
-                            goto ether_rx;
-                        }
-                    }
-                    if (prt >= ports) {
-                        packDr[port]++;
-                        byteDr[port] += bufS;
-                        return;
-                    }
-                    send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
-                    return;
-                case 4: // xconn
-                    memmove(&buf2[0], &bufD[bufP], 12);
-                    bufP += 12;
-                    prt = mpls_res->port;
-                    goto layer2_tx;
-                case 5: // vpls
-                    memmove(&buf2[0], &bufD[bufP], 12);
-                    bufP += 12;
-                    bufP += 2;
-                    goto bridgevpls_rx;
-                case 6: // punt
-                    goto cpu;
-                default:
-                    return;
-            }
+        label = get32msb(bufD, bufP);
+        ttl = (label & 0xff) - 1;
+        if (ttl <= 1) goto punt;
+        bufP += 4;
+        mpls_ntry.label = (label >> 12) & 0xfffff;
+        hash ^= mpls_ntry.label;
+        index = table_find(&mpls_table, &mpls_ntry);
+        if (index < 0) {
+            packDr[port]++;
+            byteDr[port] += bufS;
             return;
-        case 0x8100:
-            vlan_ntry.port = prt;
-            vlan_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
-            bufP += 2;
-            index = table_find(&vlanin_table, &vlan_ntry);
-            if (index < 0) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
-            vlan_res = table_get(&vlanin_table, index);
-            prt = vlan_res->id;
-            vlan_res->pack++;
-            vlan_res->byte += bufS;
-            goto ethtyp_rx;
-            return;
-        case 0x800:
-            portvrf_ntry.port = prt;
-            index = table_find(&portvrf_table, &portvrf_ntry);
-            if (index < 0) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
-            portvrf_res = table_get(&portvrf_table, index);
-            switch (portvrf_res->command) {
-                case 1:
-                    break;
-                case 2:
-                    goto bridge_rx;
-                case 3:
-                    goto xconn_rx;
-                 default:
-                    return;
-            }
-            route4_ntry.vrf = portvrf_res->vrf;
-ipv4_rx:
-            acl4_ntry.protV = bufD[bufP + 9];
-            acl4_ntry.srcAddr = get32msb(bufD, bufP + 12);
-            acl4_ntry.trgAddr = route4_ntry.addr = get32msb(bufD, bufP + 16);
-            hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
-            ttl = bufD[bufP + 8] - 1;
-            if (ttl <= 1) goto punt;
-            bufD[bufP + 8] = ttl;
-            update_chksum(bufP + 10, -1);
-            bufT = bufP + 20;
-            extract_layer4(acl4_ntry);
-            acls_ntry.ver = 4;
-            acls_ntry.dir = 1;
-            acls_ntry.port = prt;
-            index = table_find(&acls_table, &acls_ntry);
-            if (index >= 0) {
-                acls_res = table_get(&acls_table, index);
-                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) goto punt;
-            }            
-            acls_ntry.dir = 3;
-            acls_ntry.port = route4_ntry.vrf;
-            index = table_find(&acls_table, &acls_ntry);
-            if (index >= 0) {
-                acls_res = table_get(&acls_table, index);
-                nat4_ntry.vrf = route4_ntry.vrf;
-                nat4_ntry.prot = acl4_ntry.protV;
-                nat4_ntry.oSrcAddr = acl4_ntry.srcAddr;
-                nat4_ntry.oTrgAddr = acl4_ntry.trgAddr;
-                nat4_ntry.oSrcPort = acl4_ntry.srcPortV;
-                nat4_ntry.oTrgPort = acl4_ntry.trgPortV;
-                index = table_find(&nat4_table, &nat4_ntry);
-                if (index < 0) {
-                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) == 0) goto cpu;
-                    goto ipv4_rou;
-                }
-                nat4_res = table_get(&nat4_table, index);
-                nat4_res->pack++;
-                nat4_res->byte += bufS;
-                acl4_ntry.srcAddr = nat4_res->nSrcAddr;
-                acl4_ntry.trgAddr = route4_ntry.addr = nat4_res->nTrgAddr;
-                acl4_ntry.srcPortV = nat4_res->nSrcPort;
-                acl4_ntry.trgPortV = nat4_res->nTrgPort;
-                put32msb(bufD, bufP + 12, acl4_ntry.srcAddr);
-                put32msb(bufD, bufP + 16, acl4_ntry.trgAddr);
-                update_chksum(bufP + 10, nat4_res->sum3);
-                update_layer4(nat4_res);
-            }            
-ipv4_rou:
-            for (int i = 32; i >= 0; i--) {
-                route4_ntry.mask = i;
-                route4_ntry.addr &= masks[i];
-                index = table_find(&route4_table, &route4_ntry);
-                if (index < 0) continue;
-                route4_res = table_get(&route4_table, index);
-                route4_res->pack++;
-                route4_res->byte += bufS;
-                switch (route4_res->command) {
-                    case 1: // route
-                        neigh_ntry.id = route4_res->nexthop;
-                        bufP -= 2;
-                        put16msb(bufD, bufP, ethtyp);
-                        index = table_find(&neigh_table, &neigh_ntry);
-                        if (index < 0) {
-                            packDr[port]++;
-                            byteDr[port] += bufS;
-                            return;
-                        }
-                        neigh_res = table_get(&neigh_table, index);
-                        acls_ntry.dir = 2;
-                        acls_ntry.port = neigh_res->aclport;
-                        index = table_find(&acls_table, &acls_ntry);
-                        if (index >= 0) {
-                            acls_res = table_get(&acls_table, index);
-                            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) goto punt;
-                        }            
-                        goto neigh_tx;
-                    case 2: // punt
-                        acls_ntry.dir = 4;
-                        acls_ntry.port = 0;
-                        index = table_find(&acls_table, &acls_ntry);
-                        if (index >= 0) {
-                            acls_res = table_get(&acls_table, index);
-                            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) {
-                                packDr[port]++;
-                                byteDr[port] += bufS;
-                                return;
-                            }
-                        }            
-                        goto cpu;
-                    case 3: // mpls1
-                        ethtyp = 0x8847;
-                        bufP -= 4;
-                        label = 0x100 | ttl | (route4_res->label1 << 12);
-                        put32msb(bufD, bufP, label);
-                        neigh_ntry.id = route4_res->nexthop;
-                        goto ethtyp_tx;
-                    case 4: // mpls2
-                        ethtyp = 0x8847;
-                        bufP -= 4;
-                        label = 0x100 | ttl | (route4_res->label2 << 12);
-                        put32msb(bufD, bufP, label);
-                        bufP -= 4;
-                        label = ttl | (route4_res->label1 << 12);
-                        put32msb(bufD, bufP, label);
-                        neigh_ntry.id = route4_res->nexthop;
-                        goto ethtyp_tx;
-                }
-            }
-            goto punt;
-        case 0x86dd:
-            portvrf_ntry.port = prt;
-            index = table_find(&portvrf_table, &portvrf_ntry);
-            if (index < 0) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
-            portvrf_res = table_get(&portvrf_table, index);
-            switch (portvrf_res->command) {
-                case 1:
-                    break;
-                case 2:
-                    goto bridge_rx;
-                case 3:
-                    goto xconn_rx;
-                 default:
-                    return;
-            }
-            route6_ntry.vrf = portvrf_res->vrf;
-ipv6_rx:
-            acl6_ntry.protV = bufD[bufP + 6];
-            acl6_ntry.srcAddr1 = get32msb(bufD, bufP + 8);
-            acl6_ntry.srcAddr2 = get32msb(bufD, bufP + 12);
-            acl6_ntry.srcAddr3 = get32msb(bufD, bufP + 16);
-            acl6_ntry.srcAddr4 = get32msb(bufD, bufP + 20);
-            acl6_ntry.trgAddr1 = route6_ntry.addr1 = get32msb(bufD, bufP + 24);
-            acl6_ntry.trgAddr2 = route6_ntry.addr2 = get32msb(bufD, bufP + 28);
-            acl6_ntry.trgAddr3 = route6_ntry.addr3 = get32msb(bufD, bufP + 32);
-            acl6_ntry.trgAddr4 = route6_ntry.addr4 = get32msb(bufD, bufP + 36);
-            hash ^= acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
-            ttl = bufD[bufP + 7] - 1;
-            if (ttl <= 1) goto punt;
-            bufD[bufP + 7] = ttl;
-            bufT = bufP + 40;
-            extract_layer4(acl6_ntry);
-            acls_ntry.ver = 6;
-            acls_ntry.dir = 1;
-            acls_ntry.port = prt;
-            index = table_find(&acls_table, &acls_ntry);
-            if (index >= 0) {
-                acls_res = table_get(&acls_table, index);
-                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) goto punt;
-            }            
-            acls_ntry.dir = 3;
-            acls_ntry.port = route6_ntry.vrf;
-            index = table_find(&acls_table, &acls_ntry);
-            if (index >= 0) {
-                acls_res = table_get(&acls_table, index);
-                nat6_ntry.vrf = route6_ntry.vrf;
-                nat6_ntry.prot = acl6_ntry.protV;
-                nat6_ntry.oSrcAddr1 = acl6_ntry.srcAddr1;
-                nat6_ntry.oSrcAddr2 = acl6_ntry.srcAddr2;
-                nat6_ntry.oSrcAddr3 = acl6_ntry.srcAddr3;
-                nat6_ntry.oSrcAddr4 = acl6_ntry.srcAddr4;
-                nat6_ntry.oTrgAddr1 = acl6_ntry.trgAddr1;
-                nat6_ntry.oTrgAddr2 = acl6_ntry.trgAddr2;
-                nat6_ntry.oTrgAddr3 = acl6_ntry.trgAddr3;
-                nat6_ntry.oTrgAddr4 = acl6_ntry.trgAddr4;
-                nat6_ntry.oSrcPort = acl6_ntry.srcPortV;
-                nat6_ntry.oTrgPort = acl6_ntry.trgPortV;
-                index = table_find(&nat6_table, &nat6_ntry);
-                if (index < 0) {
-                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) == 0) goto cpu;
-                    goto ipv6_rou;
-                }
-                nat6_res = table_get(&nat6_table, index);
-                nat6_res->pack++;
-                nat6_res->byte += bufS;
-                acl6_ntry.srcAddr1 = nat6_res->nSrcAddr1;
-                acl6_ntry.srcAddr2 = nat6_res->nSrcAddr2;
-                acl6_ntry.srcAddr3 = nat6_res->nSrcAddr3;
-                acl6_ntry.srcAddr4 = nat6_res->nSrcAddr4;
-                acl6_ntry.trgAddr1 = route6_ntry.addr1 = nat6_res->nTrgAddr1;
-                acl6_ntry.trgAddr2 = route6_ntry.addr2 = nat6_res->nTrgAddr2;
-                acl6_ntry.trgAddr3 = route6_ntry.addr3 = nat6_res->nTrgAddr3;
-                acl6_ntry.trgAddr4 = route6_ntry.addr4 = nat6_res->nTrgAddr4;
-                acl6_ntry.srcPortV = nat6_res->nSrcPort;
-                acl6_ntry.trgPortV = nat6_res->nTrgPort;
-                put32msb(bufD, bufP + 8, acl6_ntry.srcAddr1);
-                put32msb(bufD, bufP + 12, acl6_ntry.srcAddr2);
-                put32msb(bufD, bufP + 16, acl6_ntry.srcAddr3);
-                put32msb(bufD, bufP + 20, acl6_ntry.srcAddr4);
-                put32msb(bufD, bufP + 24, acl6_ntry.trgAddr1);
-                put32msb(bufD, bufP + 28, acl6_ntry.trgAddr2);
-                put32msb(bufD, bufP + 32, acl6_ntry.trgAddr3);
-                put32msb(bufD, bufP + 36, acl6_ntry.trgAddr4);
-                update_layer4(nat6_res);
-            }            
-ipv6_rou:
-            for (int i = 32; i >= 0; i--) {
-                route6_ntry.mask = 96 + i;
-                route6_ntry.addr4 &= masks[i];
-                index = table_find(&route6_table, &route6_ntry);
-                if (index < 0) continue;
-                goto ipv6_hit;
-            }
-            for (int i = 32; i >= 0; i--) {
-                route6_ntry.mask = 64 + i;
-                route6_ntry.addr3 &= masks[i];
-                index = table_find(&route6_table, &route6_ntry);
-                if (index < 0) continue;
-                goto ipv6_hit;
-            }
-            for (int i = 32; i >= 0; i--) {
-                route6_ntry.mask = 32 + i;
-                route6_ntry.addr2 &= masks[i];
-                index = table_find(&route6_table, &route6_ntry);
-                if (index < 0) continue;
-                goto ipv6_hit;
-            }
-            for (int i = 32; i >= 0; i--) {
-                route6_ntry.mask = i;
-                route6_ntry.addr1 &= masks[i];
-                index = table_find(&route6_table, &route6_ntry);
-                if (index < 0) continue;
-ipv6_hit:
-                route6_res = table_get(&route6_table, index);
-                route6_res->pack++;
-                route6_res->byte += bufS;
-                switch (route6_res->command) {
-                    case 1: // route
-                        neigh_ntry.id = route6_res->nexthop;
-                        bufP -= 2;
-                        put16msb(bufD, bufP, ethtyp);
-                        index = table_find(&neigh_table, &neigh_ntry);
-                        if (index < 0) {
-                            packDr[port]++;
-                            byteDr[port] += bufS;
-                            return;
-                        }
-                        neigh_res = table_get(&neigh_table, index);
-                        acls_ntry.dir = 2;
-                        acls_ntry.port = neigh_res->aclport;
-                        index = table_find(&acls_table, &acls_ntry);
-                        if (index >= 0) {
-                            acls_res = table_get(&acls_table, index);
-                            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) goto punt;
-                        }            
-                        goto neigh_tx;
-                    case 2: // punt
-                        acls_ntry.dir = 4;
-                        acls_ntry.port = 0;
-                        index = table_find(&acls_table, &acls_ntry);
-                        if (index >= 0) {
-                            acls_res = table_get(&acls_table, index);
-                            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) {
-                                packDr[port]++;
-                                byteDr[port] += bufS;
-                                return;
-                            }
-                        }            
-                        goto cpu;
-                    case 3: // mpls1
-                        ethtyp = 0x8847;
-                        bufP -= 4;
-                        label = 0x100 | ttl | (route6_res->label1 << 12);
-                        put32msb(bufD, bufP, label);
-                        neigh_ntry.id = route6_res->nexthop;
-                        goto ethtyp_tx;
-                    case 4: // mpls2
-                        ethtyp = 0x8847;
-                        bufP -= 4;
-                        label = 0x100 | ttl | (route6_res->label2 << 12);
-                        put32msb(bufD, bufP, label);
-                        bufP -= 4;
-                        label = ttl | (route6_res->label1 << 12);
-                        put32msb(bufD, bufP, label);
-                        neigh_ntry.id = route6_res->nexthop;
-                        goto ethtyp_tx;
-                }
-            }
-            goto punt;
-        case 0x8864:
-            pppoe_ntry.port = prt;
-            pppoe_ntry.session = get16msb(bufD, bufP + 2);
-            index = table_find(&pppoe_table, &pppoe_ntry);
-            if (index < 0) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
-            pppoe_res = table_get(&pppoe_table, index);
-            pppoe_res->pack++;
-            pppoe_res->byte += bufS;
-            prt = pppoe_res->aclport;
-            bufP += 6;
-            ethtyp = get16msb(bufD, bufP);
-            bufP += 2;
-            if ((ethtyp & 0x8000) != 0) goto cpu;
-            portvrf_ntry.port = prt;
-            index = table_find(&portvrf_table, &portvrf_ntry);
-            if (index < 0) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
-            portvrf_res = table_get(&portvrf_table, index);
-            if (portvrf_res->command != 1) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
-            route4_ntry.vrf = portvrf_res->vrf;
-            route6_ntry.vrf = portvrf_res->vrf;
-            switch (ethtyp) {
-                case 0x0021:
-                    ethtyp = 0x800;
-                    goto ipv4_rx;
-                case 0x0057:
-                    ethtyp = 0x86dd;
-                    goto ipv6_rx;
-                case 0x0281:
-                    ethtyp = 0x8847;
-                    goto mpls_rx;
+        }
+        mpls_res = table_get(&mpls_table, index);
+        mpls_res->pack++;
+        mpls_res->byte += bufS;
+        switch (mpls_res->command) {
+        case 1: // route
+            route4_ntry.vrf = mpls_res->vrf;
+            route6_ntry.vrf = mpls_res->vrf;
+            if ((label & 0x100) == 0) goto mpls_rx;
+            switch (mpls_res->ver) {
+            case 4:
+                ethtyp = 0x800;
+                goto ipv4_rx;
+            case 6:
+                ethtyp = 0x86dd;
+                goto ipv6_rx;
+            default:
+                ethtyp = 0;
+                break;
             }
             packDr[port]++;
             byteDr[port] += bufS;
             return;
-        case 0x65580001:
-xconn_rx:
-            memmove(&buf2[0], &bufD[preBuff], 12);
-            bufP -= 2;
-            bufP -= 12;
-            memmove(&bufD[bufP], &buf2[0], 12);
-            ethtyp = 0x8847;
-            bufP -= 4;
-            label = 0x1ff | (portvrf_res->label2 << 12);
-            put32msb(bufD, bufP, label);
-            bufP -= 4;
-            label = 0xff | (portvrf_res->label1 << 12);
-            put32msb(bufD, bufP, label);
-            neigh_ntry.id = portvrf_res->nexthop;
-            goto ethtyp_tx;
-        case 0x65580000:
-bridge_rx:
-            bridge_ntry.id = portvrf_res->bridge;
-            memmove(&buf2[0], &bufD[preBuff], 12);
-bridgevpls_rx:
-            bridge_ntry.mac1 = get16msb(buf2, 6);
-            bridge_ntry.mac2 = get32msb(buf2, 8);
-            hash ^= bridge_ntry.mac2;
-            index = table_find(&bridge_table, &bridge_ntry);
-            if (index < 0) goto punt;
-            bridge_ntry.mac1 = get16msb(buf2, 0);
-            bridge_ntry.mac2 = get32msb(buf2, 2);
-            hash ^= bridge_ntry.mac2;
-            index = table_find(&bridge_table, &bridge_ntry);
-            if (index < 0) goto punt;
-            bridge_res = table_get(&bridge_table, index);
-            bridge_res->pack++;
-            bridge_res->byte += bufS;
-            bufP -= 2;
-            switch (bridge_res->command) {
-                case 1:
-                    break;
-                case 2:
-                    bufP -= 12;
-                    memmove(&bufD[bufP], &buf2[0], 12);
-                    ethtyp = 0x8847;
-                    bufP -= 4;
-                    label = 0x1ff | (bridge_res->label2 << 12);
-                    put32msb(bufD, bufP, label);
-                    bufP -= 4;
-                    label = 0xff | (bridge_res->label1 << 12);
-                    put32msb(bufD, bufP, label);
-                    neigh_ntry.id = bridge_res->nexthop;
-                    goto ethtyp_tx;
-                default:
-                    return;
+        case 2: // pop
+            neigh_ntry.id = mpls_res->nexthop;
+            if ((label & 0x100) == 0) goto ethtyp_tx;
+            switch (mpls_res->ver) {
+            case 4:
+                ethtyp = 0x800;
+                break;
+            case 6:
+                ethtyp = 0x86dd;
+                break;
+            default:
+                ethtyp = 0;
+                break;
             }
-            prt = bridge_res->port;
-layer2_tx:
+            goto ethtyp_tx;
+            return;
+        case 3: // swap
+            bufP -= 4;
+            label = (label & 0xf00) | ttl | (mpls_res->swap << 12);
+            put32msb(bufD, bufP, label);
+            neigh_ntry.id = mpls_res->nexthop;
+ethtyp_tx:
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            index = table_find(&neigh_table, &neigh_ntry);
+            if (index < 0) {
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
+            }
+            neigh_res = table_get(&neigh_table, index);
+neigh_tx:
+            neigh_res->pack++;
+            neigh_res->byte += bufS;
+            prt = neigh_res->port;
+            if (neigh_res->command == 2) { // pppoe
+                switch (ethtyp) {
+                case 0x800:
+                    index = 0x0021;
+                    break;
+                case 0x86dd:
+                    index = 0x0057;
+                    break;
+                case 0x8847:
+                    index = 0x0281;
+                    break;
+                default:
+                    packDr[port]++;
+                    byteDr[port] += bufS;
+                    return;
+                }
+                put16msb(bufD, bufP, index);
+                index = bufS - bufP + preBuff;
+                bufP -= 6;
+                put16msb(bufD, bufP + 0, 0x1100);
+                put16msb(bufD, bufP + 2, neigh_res->session);
+                put16msb(bufD, bufP + 4, index);
+                ethtyp = 0x8864;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+            }
             vlan_ntry.id = prt;
             index = table_find(&vlanout_table, &vlan_ntry);
             if (index >= 0) {
@@ -752,8 +280,10 @@ layer2_tx:
                 vlan_res->pack++;
                 vlan_res->byte += bufS;
             }
-            bufP -= 12;
-            memmove(&bufD[bufP], &buf2[0], 12);
+            bufP -= 6;
+            memmove(&bufD[bufP], &neigh_res->smac, 6);
+            bufP -= 6;
+            memmove(&bufD[bufP], &neigh_res->dmac, 6);
             bundle_ntry.id = prt;
             index = table_find(&bundle_table, &bundle_ntry);
             if (index >= 0) {
@@ -776,21 +306,491 @@ layer2_tx:
             }
             send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
             return;
-        case 0x806:
-            goto cpu;
-        case 0x8863:
+        case 4: // xconn
+            memmove(&buf2[0], &bufD[bufP], 12);
+            bufP += 12;
+            prt = mpls_res->port;
+            goto layer2_tx;
+        case 5: // vpls
+            memmove(&buf2[0], &bufD[bufP], 12);
+            bufP += 12;
+            bufP += 2;
+            goto bridgevpls_rx;
+        case 6: // punt
             goto cpu;
         default:
-punt:
-            if (punts < 0) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
-            punts--;
-cpu:
-            send2cpu(bufD, bufS, prt2);
             return;
+        }
+        return;
+    case 0x8100:
+        vlan_ntry.port = prt;
+        vlan_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
+        bufP += 2;
+        index = table_find(&vlanin_table, &vlan_ntry);
+        if (index < 0) {
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        }
+        vlan_res = table_get(&vlanin_table, index);
+        prt = vlan_res->id;
+        vlan_res->pack++;
+        vlan_res->byte += bufS;
+        goto ethtyp_rx;
+        return;
+    case 0x800:
+        portvrf_ntry.port = prt;
+        index = table_find(&portvrf_table, &portvrf_ntry);
+        if (index < 0) {
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        }
+        portvrf_res = table_get(&portvrf_table, index);
+        switch (portvrf_res->command) {
+        case 1:
+            break;
+        case 2:
+            goto bridge_rx;
+        case 3:
+            goto xconn_rx;
+        default:
+            return;
+        }
+        route4_ntry.vrf = portvrf_res->vrf;
+ipv4_rx:
+        acl4_ntry.protV = bufD[bufP + 9];
+        acl4_ntry.srcAddr = get32msb(bufD, bufP + 12);
+        acl4_ntry.trgAddr = route4_ntry.addr = get32msb(bufD, bufP + 16);
+        hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
+        ttl = bufD[bufP + 8] - 1;
+        if (ttl <= 1) goto punt;
+        bufD[bufP + 8] = ttl;
+        update_chksum(bufP + 10, -1);
+        bufT = bufP + 20;
+        extract_layer4(acl4_ntry);
+        acls_ntry.ver = 4;
+        acls_ntry.dir = 1;
+        acls_ntry.port = prt;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index >= 0) {
+            acls_res = table_get(&acls_table, index);
+            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) goto punt;
+        }
+        acls_ntry.dir = 3;
+        acls_ntry.port = route4_ntry.vrf;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index >= 0) {
+            acls_res = table_get(&acls_table, index);
+            nat4_ntry.vrf = route4_ntry.vrf;
+            nat4_ntry.prot = acl4_ntry.protV;
+            nat4_ntry.oSrcAddr = acl4_ntry.srcAddr;
+            nat4_ntry.oTrgAddr = acl4_ntry.trgAddr;
+            nat4_ntry.oSrcPort = acl4_ntry.srcPortV;
+            nat4_ntry.oTrgPort = acl4_ntry.trgPortV;
+            index = table_find(&nat4_table, &nat4_ntry);
+            if (index < 0) {
+                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) == 0) goto cpu;
+                goto ipv4_rou;
+            }
+            nat4_res = table_get(&nat4_table, index);
+            nat4_res->pack++;
+            nat4_res->byte += bufS;
+            acl4_ntry.srcAddr = nat4_res->nSrcAddr;
+            acl4_ntry.trgAddr = route4_ntry.addr = nat4_res->nTrgAddr;
+            acl4_ntry.srcPortV = nat4_res->nSrcPort;
+            acl4_ntry.trgPortV = nat4_res->nTrgPort;
+            put32msb(bufD, bufP + 12, acl4_ntry.srcAddr);
+            put32msb(bufD, bufP + 16, acl4_ntry.trgAddr);
+            update_chksum(bufP + 10, nat4_res->sum3);
+            update_layer4(nat4_res);
+        }
+ipv4_rou:
+        for (int i = 32; i >= 0; i--) {
+            route4_ntry.mask = i;
+            route4_ntry.addr &= masks[i];
+            index = table_find(&route4_table, &route4_ntry);
+            if (index < 0) continue;
+            route4_res = table_get(&route4_table, index);
+            route4_res->pack++;
+            route4_res->byte += bufS;
+            switch (route4_res->command) {
+            case 1: // route
+                neigh_ntry.id = route4_res->nexthop;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                index = table_find(&neigh_table, &neigh_ntry);
+                if (index < 0) {
+                    packDr[port]++;
+                    byteDr[port] += bufS;
+                    return;
+                }
+                neigh_res = table_get(&neigh_table, index);
+                acls_ntry.dir = 2;
+                acls_ntry.port = neigh_res->aclport;
+                index = table_find(&acls_table, &acls_ntry);
+                if (index >= 0) {
+                    acls_res = table_get(&acls_table, index);
+                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) goto punt;
+                }
+                goto neigh_tx;
+            case 2: // punt
+                acls_ntry.dir = 4;
+                acls_ntry.port = 0;
+                index = table_find(&acls_table, &acls_ntry);
+                if (index >= 0) {
+                    acls_res = table_get(&acls_table, index);
+                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) {
+                        packDr[port]++;
+                        byteDr[port] += bufS;
+                        return;
+                    }
+                }
+                goto cpu;
+            case 3: // mpls1
+                ethtyp = 0x8847;
+                bufP -= 4;
+                label = 0x100 | ttl | (route4_res->label1 << 12);
+                put32msb(bufD, bufP, label);
+                neigh_ntry.id = route4_res->nexthop;
+                goto ethtyp_tx;
+            case 4: // mpls2
+                ethtyp = 0x8847;
+                bufP -= 4;
+                label = 0x100 | ttl | (route4_res->label2 << 12);
+                put32msb(bufD, bufP, label);
+                bufP -= 4;
+                label = ttl | (route4_res->label1 << 12);
+                put32msb(bufD, bufP, label);
+                neigh_ntry.id = route4_res->nexthop;
+                goto ethtyp_tx;
+            }
+        }
+        goto punt;
+    case 0x86dd:
+        portvrf_ntry.port = prt;
+        index = table_find(&portvrf_table, &portvrf_ntry);
+        if (index < 0) {
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        }
+        portvrf_res = table_get(&portvrf_table, index);
+        switch (portvrf_res->command) {
+        case 1:
+            break;
+        case 2:
+            goto bridge_rx;
+        case 3:
+            goto xconn_rx;
+        default:
+            return;
+        }
+        route6_ntry.vrf = portvrf_res->vrf;
+ipv6_rx:
+        acl6_ntry.protV = bufD[bufP + 6];
+        acl6_ntry.srcAddr1 = get32msb(bufD, bufP + 8);
+        acl6_ntry.srcAddr2 = get32msb(bufD, bufP + 12);
+        acl6_ntry.srcAddr3 = get32msb(bufD, bufP + 16);
+        acl6_ntry.srcAddr4 = get32msb(bufD, bufP + 20);
+        acl6_ntry.trgAddr1 = route6_ntry.addr1 = get32msb(bufD, bufP + 24);
+        acl6_ntry.trgAddr2 = route6_ntry.addr2 = get32msb(bufD, bufP + 28);
+        acl6_ntry.trgAddr3 = route6_ntry.addr3 = get32msb(bufD, bufP + 32);
+        acl6_ntry.trgAddr4 = route6_ntry.addr4 = get32msb(bufD, bufP + 36);
+        hash ^= acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
+        ttl = bufD[bufP + 7] - 1;
+        if (ttl <= 1) goto punt;
+        bufD[bufP + 7] = ttl;
+        bufT = bufP + 40;
+        extract_layer4(acl6_ntry);
+        acls_ntry.ver = 6;
+        acls_ntry.dir = 1;
+        acls_ntry.port = prt;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index >= 0) {
+            acls_res = table_get(&acls_table, index);
+            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) goto punt;
+        }
+        acls_ntry.dir = 3;
+        acls_ntry.port = route6_ntry.vrf;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index >= 0) {
+            acls_res = table_get(&acls_table, index);
+            nat6_ntry.vrf = route6_ntry.vrf;
+            nat6_ntry.prot = acl6_ntry.protV;
+            nat6_ntry.oSrcAddr1 = acl6_ntry.srcAddr1;
+            nat6_ntry.oSrcAddr2 = acl6_ntry.srcAddr2;
+            nat6_ntry.oSrcAddr3 = acl6_ntry.srcAddr3;
+            nat6_ntry.oSrcAddr4 = acl6_ntry.srcAddr4;
+            nat6_ntry.oTrgAddr1 = acl6_ntry.trgAddr1;
+            nat6_ntry.oTrgAddr2 = acl6_ntry.trgAddr2;
+            nat6_ntry.oTrgAddr3 = acl6_ntry.trgAddr3;
+            nat6_ntry.oTrgAddr4 = acl6_ntry.trgAddr4;
+            nat6_ntry.oSrcPort = acl6_ntry.srcPortV;
+            nat6_ntry.oTrgPort = acl6_ntry.trgPortV;
+            index = table_find(&nat6_table, &nat6_ntry);
+            if (index < 0) {
+                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) == 0) goto cpu;
+                goto ipv6_rou;
+            }
+            nat6_res = table_get(&nat6_table, index);
+            nat6_res->pack++;
+            nat6_res->byte += bufS;
+            acl6_ntry.srcAddr1 = nat6_res->nSrcAddr1;
+            acl6_ntry.srcAddr2 = nat6_res->nSrcAddr2;
+            acl6_ntry.srcAddr3 = nat6_res->nSrcAddr3;
+            acl6_ntry.srcAddr4 = nat6_res->nSrcAddr4;
+            acl6_ntry.trgAddr1 = route6_ntry.addr1 = nat6_res->nTrgAddr1;
+            acl6_ntry.trgAddr2 = route6_ntry.addr2 = nat6_res->nTrgAddr2;
+            acl6_ntry.trgAddr3 = route6_ntry.addr3 = nat6_res->nTrgAddr3;
+            acl6_ntry.trgAddr4 = route6_ntry.addr4 = nat6_res->nTrgAddr4;
+            acl6_ntry.srcPortV = nat6_res->nSrcPort;
+            acl6_ntry.trgPortV = nat6_res->nTrgPort;
+            put32msb(bufD, bufP + 8, acl6_ntry.srcAddr1);
+            put32msb(bufD, bufP + 12, acl6_ntry.srcAddr2);
+            put32msb(bufD, bufP + 16, acl6_ntry.srcAddr3);
+            put32msb(bufD, bufP + 20, acl6_ntry.srcAddr4);
+            put32msb(bufD, bufP + 24, acl6_ntry.trgAddr1);
+            put32msb(bufD, bufP + 28, acl6_ntry.trgAddr2);
+            put32msb(bufD, bufP + 32, acl6_ntry.trgAddr3);
+            put32msb(bufD, bufP + 36, acl6_ntry.trgAddr4);
+            update_layer4(nat6_res);
+        }
+ipv6_rou:
+        for (int i = 32; i >= 0; i--) {
+            route6_ntry.mask = 96 + i;
+            route6_ntry.addr4 &= masks[i];
+            index = table_find(&route6_table, &route6_ntry);
+            if (index < 0) continue;
+            goto ipv6_hit;
+        }
+        for (int i = 32; i >= 0; i--) {
+            route6_ntry.mask = 64 + i;
+            route6_ntry.addr3 &= masks[i];
+            index = table_find(&route6_table, &route6_ntry);
+            if (index < 0) continue;
+            goto ipv6_hit;
+        }
+        for (int i = 32; i >= 0; i--) {
+            route6_ntry.mask = 32 + i;
+            route6_ntry.addr2 &= masks[i];
+            index = table_find(&route6_table, &route6_ntry);
+            if (index < 0) continue;
+            goto ipv6_hit;
+        }
+        for (int i = 32; i >= 0; i--) {
+            route6_ntry.mask = i;
+            route6_ntry.addr1 &= masks[i];
+            index = table_find(&route6_table, &route6_ntry);
+            if (index < 0) continue;
+ipv6_hit:
+            route6_res = table_get(&route6_table, index);
+            route6_res->pack++;
+            route6_res->byte += bufS;
+            switch (route6_res->command) {
+            case 1: // route
+                neigh_ntry.id = route6_res->nexthop;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                index = table_find(&neigh_table, &neigh_ntry);
+                if (index < 0) {
+                    packDr[port]++;
+                    byteDr[port] += bufS;
+                    return;
+                }
+                neigh_res = table_get(&neigh_table, index);
+                acls_ntry.dir = 2;
+                acls_ntry.port = neigh_res->aclport;
+                index = table_find(&acls_table, &acls_ntry);
+                if (index >= 0) {
+                    acls_res = table_get(&acls_table, index);
+                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) goto punt;
+                }
+                goto neigh_tx;
+            case 2: // punt
+                acls_ntry.dir = 4;
+                acls_ntry.port = 0;
+                index = table_find(&acls_table, &acls_ntry);
+                if (index >= 0) {
+                    acls_res = table_get(&acls_table, index);
+                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) {
+                        packDr[port]++;
+                        byteDr[port] += bufS;
+                        return;
+                    }
+                }
+                goto cpu;
+            case 3: // mpls1
+                ethtyp = 0x8847;
+                bufP -= 4;
+                label = 0x100 | ttl | (route6_res->label1 << 12);
+                put32msb(bufD, bufP, label);
+                neigh_ntry.id = route6_res->nexthop;
+                goto ethtyp_tx;
+            case 4: // mpls2
+                ethtyp = 0x8847;
+                bufP -= 4;
+                label = 0x100 | ttl | (route6_res->label2 << 12);
+                put32msb(bufD, bufP, label);
+                bufP -= 4;
+                label = ttl | (route6_res->label1 << 12);
+                put32msb(bufD, bufP, label);
+                neigh_ntry.id = route6_res->nexthop;
+                goto ethtyp_tx;
+            }
+        }
+        goto punt;
+    case 0x8864:
+        pppoe_ntry.port = prt;
+        pppoe_ntry.session = get16msb(bufD, bufP + 2);
+        index = table_find(&pppoe_table, &pppoe_ntry);
+        if (index < 0) {
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        }
+        pppoe_res = table_get(&pppoe_table, index);
+        pppoe_res->pack++;
+        pppoe_res->byte += bufS;
+        prt = pppoe_res->aclport;
+        bufP += 6;
+        ethtyp = get16msb(bufD, bufP);
+        bufP += 2;
+        if ((ethtyp & 0x8000) != 0) goto cpu;
+        portvrf_ntry.port = prt;
+        index = table_find(&portvrf_table, &portvrf_ntry);
+        if (index < 0) {
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        }
+        portvrf_res = table_get(&portvrf_table, index);
+        if (portvrf_res->command != 1) {
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        }
+        route4_ntry.vrf = portvrf_res->vrf;
+        route6_ntry.vrf = portvrf_res->vrf;
+        switch (ethtyp) {
+        case 0x0021:
+            ethtyp = 0x800;
+            goto ipv4_rx;
+        case 0x0057:
+            ethtyp = 0x86dd;
+            goto ipv6_rx;
+        case 0x0281:
+            ethtyp = 0x8847;
+            goto mpls_rx;
+        }
+        packDr[port]++;
+        byteDr[port] += bufS;
+        return;
+    case 0x65580001:
+xconn_rx:
+        memmove(&buf2[0], &bufD[preBuff], 12);
+        bufP -= 2;
+        bufP -= 12;
+        memmove(&bufD[bufP], &buf2[0], 12);
+        ethtyp = 0x8847;
+        bufP -= 4;
+        label = 0x1ff | (portvrf_res->label2 << 12);
+        put32msb(bufD, bufP, label);
+        bufP -= 4;
+        label = 0xff | (portvrf_res->label1 << 12);
+        put32msb(bufD, bufP, label);
+        neigh_ntry.id = portvrf_res->nexthop;
+        goto ethtyp_tx;
+    case 0x65580000:
+bridge_rx:
+        bridge_ntry.id = portvrf_res->bridge;
+        memmove(&buf2[0], &bufD[preBuff], 12);
+bridgevpls_rx:
+        bridge_ntry.mac1 = get16msb(buf2, 6);
+        bridge_ntry.mac2 = get32msb(buf2, 8);
+        hash ^= bridge_ntry.mac2;
+        index = table_find(&bridge_table, &bridge_ntry);
+        if (index < 0) goto punt;
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        hash ^= bridge_ntry.mac2;
+        index = table_find(&bridge_table, &bridge_ntry);
+        if (index < 0) goto punt;
+        bridge_res = table_get(&bridge_table, index);
+        bridge_res->pack++;
+        bridge_res->byte += bufS;
+        bufP -= 2;
+        switch (bridge_res->command) {
+        case 1:
+            break;
+        case 2:
+            bufP -= 12;
+            memmove(&bufD[bufP], &buf2[0], 12);
+            ethtyp = 0x8847;
+            bufP -= 4;
+            label = 0x1ff | (bridge_res->label2 << 12);
+            put32msb(bufD, bufP, label);
+            bufP -= 4;
+            label = 0xff | (bridge_res->label1 << 12);
+            put32msb(bufD, bufP, label);
+            neigh_ntry.id = bridge_res->nexthop;
+            goto ethtyp_tx;
+        default:
+            return;
+        }
+        prt = bridge_res->port;
+layer2_tx:
+        vlan_ntry.id = prt;
+        index = table_find(&vlanout_table, &vlan_ntry);
+        if (index >= 0) {
+            vlan_res = table_get(&vlanout_table, index);
+            bufP -= 2;
+            put16msb(bufD, bufP, vlan_res->vlan);
+            bufP -= 2;
+            put16msb(bufD, bufP, 0x8100);
+            prt = vlan_res->port;
+            vlan_res->pack++;
+            vlan_res->byte += bufS;
+        }
+        bufP -= 12;
+        memmove(&bufD[bufP], &buf2[0], 12);
+        bundle_ntry.id = prt;
+        index = table_find(&bundle_table, &bundle_ntry);
+        if (index >= 0) {
+            bundle_res = table_get(&bundle_table, index);
+            reduce_hash;
+            prt = bundle_res->out[hash];
+            bundle_res->pack++;
+            bundle_res->byte += bufS;
+            if (bundle_res->command == 2) {
+                bufS = bufS - bufP + preBuff;
+                memmove(&bufD[preBuff], &bufD[bufP], bufS);
+                prt2 = prt;
+                goto ether_rx;
+            }
+        }
+        if (prt >= ports) {
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        }
+        send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
+        return;
+    case 0x806:
+        goto cpu;
+    case 0x8863:
+        goto cpu;
+    default:
+punt:
+        if (punts < 0) {
+            packDr[port]++;
+            byteDr[port] += bufS;
+            return;
+        }
+        punts--;
+cpu:
+        send2cpu(bufD, bufS, prt2);
+        return;
     }
 }
 

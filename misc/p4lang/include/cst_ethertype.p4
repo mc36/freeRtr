@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// source here: 
-// https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml 
+// source here:
+// https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml
 
 #ifndef _ETHERTYPE_P4_
 #define _ETHERTYPE_P4_

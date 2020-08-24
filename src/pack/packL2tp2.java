@@ -82,6 +82,8 @@ public class packL2tp2 extends packL2tp {
         int flags = 2;
         if (ctrl) {
             flags |= 0xc000;
+        } else {
+            flags |= 0x200;
         }
         if ((seqTx >= 0) || (seqRx >= 0)) {
             flags |= 0x800;
@@ -99,6 +101,10 @@ public class packL2tp2 extends packL2tp {
             pck.msbPutW(0, seqTx);
             pck.msbPutW(2, seqRx);
             pck.putSkip(4);
+        }
+        if ((flags & 0x200) != 0) {
+            pck.msbPutW(0, 0);
+            pck.putSkip(2);
         }
         if ((flags & 0x4000) != 0) {
             int i = pck.headSize();

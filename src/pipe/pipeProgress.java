@@ -1,5 +1,6 @@
 package pipe;
 
+import cfg.cfgAll;
 import util.bits;
 
 /**
@@ -148,7 +149,11 @@ public class pipeProgress {
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         int red = 0x32;
         if (hide) {
-            red |= 1;
+            if (cfgAll.passwdStars) {
+                red = 0x33;
+            } else {
+                red = 0x31;
+            }
         }
         String res = pipe.lineGet(red);
         pipe.lineRx = mod;

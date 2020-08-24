@@ -104,24 +104,24 @@ int main(int argc, char **argv) {
     if (portLoc < 1) {
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
-            case 'V':
-            case 'v':
-                err("std io console v1.0");
-                break;
-            case '?':
-            case 'h':
-            case 'H':
-                help :
-                        curr = argv[0];
-                printf("using: %s <lport>\n", curr);
-                printf("   or: %s <command>\n", curr);
-                printf("commands: v=version\n");
-                printf("          h=this help\n");
-                exit(1);
-                break;
-            default:
-                err("unknown command, try -h");
-                break;
+        case 'V':
+        case 'v':
+            err("std io console v1.0");
+            break;
+        case '?':
+        case 'h':
+        case 'H':
+help :
+            curr = argv[0];
+            printf("using: %s <lport>\n", curr);
+            printf("   or: %s <command>\n", curr);
+            printf("commands: v=version\n");
+            printf("          h=this help\n");
+            exit(1);
+            break;
+        default:
+            err("unknown command, try -h");
+            break;
         }
         exit(1);
     }
