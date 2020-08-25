@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v20.8.24-rel, done by cs@nop.<br/>
-tested: 2020-08-24 11:28:28, took 00:05:05, with 100 workers, on 1906 cases, 0 failed, 0 traces, 5 retries<br/>
+release: freeRouter v20.8.25-rel, done by cs@nop.<br/>
+tested: 2020-08-25 04:40:01, took 00:05:50, with 100 workers, on 1934 cases, 0 failed, 0 traces, 0 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr>
@@ -1017,26 +1017,32 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl02.tst">p4lang-acl02.tst</a></td><td>success</td><td>p4lang: ingress access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl03.tst">p4lang-acl03.tst</a></td><td>success</td><td>p4lang: egress access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl04.tst">p4lang-acl04.tst</a></td><td>success</td><td>p4lang: nat</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl05.tst">p4lang-acl05.tst</a></td><td>success</td><td>p4lang: bundle ingress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl06.tst">p4lang-acl06.tst</a></td><td>success</td><td>p4lang: bundle egress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl07.tst">p4lang-acl07.tst</a></td><td>success</td><td>p4lang: bundle vlan ingress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl08.tst">p4lang-acl08.tst</a></td><td>success</td><td>p4lang: bundle vlan egress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl09.tst">p4lang-acl09.tst</a></td><td>success</td><td>p4lang: bridge ingress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl10.tst">p4lang-acl10.tst</a></td><td>success</td><td>p4lang: bridge egress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl11.tst">p4lang-acl11.tst</a></td><td>success</td><td>p4lang: vlan bridge ingress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl12.tst">p4lang-acl12.tst</a></td><td>success</td><td>p4lang: vlan bridge egress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl13.tst">p4lang-acl13.tst</a></td><td>success</td><td>p4lang: ingress pppoe access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl14.tst">p4lang-acl14.tst</a></td><td>success</td><td>p4lang: egress pppoe access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl15.tst">p4lang-acl15.tst</a></td><td>success</td><td>p4lang: ingress vlan pppoe access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl16.tst">p4lang-acl16.tst</a></td><td>success</td><td>p4lang: egress vlan pppoe access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl17.tst">p4lang-acl17.tst</a></td><td>success</td><td>p4lang: hairpin ingress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl18.tst">p4lang-acl18.tst</a></td><td>success</td><td>p4lang: hairpin egress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl19.tst">p4lang-acl19.tst</a></td><td>success</td><td>p4lang: hairpin vlan ingress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl20.tst">p4lang-acl20.tst</a></td><td>success</td><td>p4lang: hairpin vlan egress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl21.tst">p4lang-acl21.tst</a></td><td>success</td><td>p4lang: hairpin pppoe ingress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl22.tst">p4lang-acl22.tst</a></td><td>success</td><td>p4lang: hairpin pppoe egress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl23.tst">p4lang-acl23.tst</a></td><td>success</td><td>p4lang: hairpin vlan pppoe ingress access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl24.tst">p4lang-acl24.tst</a></td><td>success</td><td>p4lang: hairpin vlan pppoe egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl05.tst">p4lang-acl05.tst</a></td><td>success</td><td>p4lang: vlan ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl06.tst">p4lang-acl06.tst</a></td><td>success</td><td>p4lang: vlan egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl07.tst">p4lang-acl07.tst</a></td><td>success</td><td>p4lang: bundle ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl08.tst">p4lang-acl08.tst</a></td><td>success</td><td>p4lang: bundle egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl09.tst">p4lang-acl09.tst</a></td><td>success</td><td>p4lang: bundle vlan ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl10.tst">p4lang-acl10.tst</a></td><td>success</td><td>p4lang: bundle vlan egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl11.tst">p4lang-acl11.tst</a></td><td>success</td><td>p4lang: bridge ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl12.tst">p4lang-acl12.tst</a></td><td>success</td><td>p4lang: bridge egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl13.tst">p4lang-acl13.tst</a></td><td>success</td><td>p4lang: vlan bridge ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl14.tst">p4lang-acl14.tst</a></td><td>success</td><td>p4lang: vlan bridge egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl15.tst">p4lang-acl15.tst</a></td><td>success</td><td>p4lang: ingress pppoe access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl16.tst">p4lang-acl16.tst</a></td><td>success</td><td>p4lang: egress pppoe access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl17.tst">p4lang-acl17.tst</a></td><td>success</td><td>p4lang: ingress vlan pppoe access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl18.tst">p4lang-acl18.tst</a></td><td>success</td><td>p4lang: egress vlan pppoe access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl19.tst">p4lang-acl19.tst</a></td><td>success</td><td>p4lang: hairpin ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl20.tst">p4lang-acl20.tst</a></td><td>success</td><td>p4lang: hairpin egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl21.tst">p4lang-acl21.tst</a></td><td>success</td><td>p4lang: hairpin vlan ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl22.tst">p4lang-acl22.tst</a></td><td>success</td><td>p4lang: hairpin vlan egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl23.tst">p4lang-acl23.tst</a></td><td>success</td><td>p4lang: hairpin pppoe ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl24.tst">p4lang-acl24.tst</a></td><td>success</td><td>p4lang: hairpin pppoe egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl25.tst">p4lang-acl25.tst</a></td><td>success</td><td>p4lang: hairpin vlan pppoe ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl26.tst">p4lang-acl26.tst</a></td><td>success</td><td>p4lang: hairpin vlan pppoe egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl27.tst">p4lang-acl27.tst</a></td><td>success</td><td>p4lang: ingress gre access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl28.tst">p4lang-acl28.tst</a></td><td>success</td><td>p4lang: egress gre access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl29.tst">p4lang-acl29.tst</a></td><td>success</td><td>p4lang: ingress vlan gre access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl30.tst">p4lang-acl30.tst</a></td><td>success</td><td>p4lang: egress vlan gre access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout01.tst">p4lang-rout01.tst</a></td><td>success</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout02.tst">p4lang-rout02.tst</a></td><td>success</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout03.tst">p4lang-rout03.tst</a></td><td>success</td><td>p4lang: mpls core</td></tr>
@@ -1085,6 +1091,28 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout46.tst">p4lang-rout46.tst</a></td><td>success</td><td>p4lang: bundle vlan evpn/cmac with bgp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout47.tst">p4lang-rout47.tst</a></td><td>success</td><td>p4lang: hairpin evpn/cmac with bgp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout48.tst">p4lang-rout48.tst</a></td><td>success</td><td>p4lang: hairpin vlan evpn/cmac with bgp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout49.tst">p4lang-rout49.tst</a></td><td>success</td><td>p4lang: gre routing over ipv4</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout50.tst">p4lang-rout50.tst</a></td><td>success</td><td>p4lang: gre routing over ipv6</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout51.tst">p4lang-rout51.tst</a></td><td>success</td><td>p4lang: gre routing over ipv4 loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout52.tst">p4lang-rout52.tst</a></td><td>success</td><td>p4lang: gre routing over ipv6 loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout53.tst">p4lang-rout53.tst</a></td><td>success</td><td>p4lang: gre routing over vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout54.tst">p4lang-rout54.tst</a></td><td>success</td><td>p4lang: gre routing over bundle</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout55.tst">p4lang-rout55.tst</a></td><td>success</td><td>p4lang: gre routing over bundle vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout56.tst">p4lang-rout56.tst</a></td><td>success</td><td>p4lang: gre routing over hairpin</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout57.tst">p4lang-rout57.tst</a></td><td>success</td><td>p4lang: gre routing over hairpin vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout58.tst">p4lang-rout58.tst</a></td><td>success</td><td>p4lang: gre routing over bridge</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout59.tst">p4lang-rout59.tst</a></td><td>success</td><td>p4lang: gre routing over vlan bridge</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout60.tst">p4lang-rout60.tst</a></td><td>success</td><td>p4lang: gre mpls over ipv4</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout61.tst">p4lang-rout61.tst</a></td><td>success</td><td>p4lang: gre mpls over ipv6</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout62.tst">p4lang-rout62.tst</a></td><td>success</td><td>p4lang: gre mpls over ipv4 loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout63.tst">p4lang-rout63.tst</a></td><td>success</td><td>p4lang: gre mpls over ipv6 loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout64.tst">p4lang-rout64.tst</a></td><td>success</td><td>p4lang: gre mpls over vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout65.tst">p4lang-rout65.tst</a></td><td>success</td><td>p4lang: gre mpls over bundle</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout66.tst">p4lang-rout66.tst</a></td><td>success</td><td>p4lang: gre mpls over bundle vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout67.tst">p4lang-rout67.tst</a></td><td>success</td><td>p4lang: gre mpls over hairpin</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout68.tst">p4lang-rout68.tst</a></td><td>success</td><td>p4lang: gre mpls over hairpin vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout69.tst">p4lang-rout69.tst</a></td><td>success</td><td>p4lang: gre mpls over bridge</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout70.tst">p4lang-rout70.tst</a></td><td>success</td><td>p4lang: gre mpls over vlan bridge</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/qos-action01.tst">qos-action01.tst</a></td><td>success</td><td>qos ingress transmit action</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/qos-action02.tst">qos-action02.tst</a></td><td>success</td><td>qos egress transmit action</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/qos-action03.tst">qos-action03.tst</a></td><td>success</td><td>qos ingress drop action</td></tr>

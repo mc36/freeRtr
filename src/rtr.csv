@@ -1,6 +1,6 @@
 file;result;test
--;-;freeRouter v20.8.24-rel, done by cs@nop.
--;-;2020-08-24 11:28:28, took 00:05:05, with 100 workers, on 1906 cases, 0 failed, 0 traces, 5 retries
+-;-;freeRouter v20.8.25-rel, done by cs@nop.
+-;-;2020-08-25 04:40:01, took 00:05:50, with 100 workers, on 1934 cases, 0 failed, 0 traces, 0 retries
 -;-;./rtr.bin
 basic.tst;success;dummy test
 conn-anyconn.tst;success;ip over anyconnect
@@ -1014,26 +1014,32 @@ p4lang-acl01.tst;success;p4lang: copp
 p4lang-acl02.tst;success;p4lang: ingress access list
 p4lang-acl03.tst;success;p4lang: egress access list
 p4lang-acl04.tst;success;p4lang: nat
-p4lang-acl05.tst;success;p4lang: bundle ingress access list
-p4lang-acl06.tst;success;p4lang: bundle egress access list
-p4lang-acl07.tst;success;p4lang: bundle vlan ingress access list
-p4lang-acl08.tst;success;p4lang: bundle vlan egress access list
-p4lang-acl09.tst;success;p4lang: bridge ingress access list
-p4lang-acl10.tst;success;p4lang: bridge egress access list
-p4lang-acl11.tst;success;p4lang: vlan bridge ingress access list
-p4lang-acl12.tst;success;p4lang: vlan bridge egress access list
-p4lang-acl13.tst;success;p4lang: ingress pppoe access list
-p4lang-acl14.tst;success;p4lang: egress pppoe access list
-p4lang-acl15.tst;success;p4lang: ingress vlan pppoe access list
-p4lang-acl16.tst;success;p4lang: egress vlan pppoe access list
-p4lang-acl17.tst;success;p4lang: hairpin ingress access list
-p4lang-acl18.tst;success;p4lang: hairpin egress access list
-p4lang-acl19.tst;success;p4lang: hairpin vlan ingress access list
-p4lang-acl20.tst;success;p4lang: hairpin vlan egress access list
-p4lang-acl21.tst;success;p4lang: hairpin pppoe ingress access list
-p4lang-acl22.tst;success;p4lang: hairpin pppoe egress access list
-p4lang-acl23.tst;success;p4lang: hairpin vlan pppoe ingress access list
-p4lang-acl24.tst;success;p4lang: hairpin vlan pppoe egress access list
+p4lang-acl05.tst;success;p4lang: vlan ingress access list
+p4lang-acl06.tst;success;p4lang: vlan egress access list
+p4lang-acl07.tst;success;p4lang: bundle ingress access list
+p4lang-acl08.tst;success;p4lang: bundle egress access list
+p4lang-acl09.tst;success;p4lang: bundle vlan ingress access list
+p4lang-acl10.tst;success;p4lang: bundle vlan egress access list
+p4lang-acl11.tst;success;p4lang: bridge ingress access list
+p4lang-acl12.tst;success;p4lang: bridge egress access list
+p4lang-acl13.tst;success;p4lang: vlan bridge ingress access list
+p4lang-acl14.tst;success;p4lang: vlan bridge egress access list
+p4lang-acl15.tst;success;p4lang: ingress pppoe access list
+p4lang-acl16.tst;success;p4lang: egress pppoe access list
+p4lang-acl17.tst;success;p4lang: ingress vlan pppoe access list
+p4lang-acl18.tst;success;p4lang: egress vlan pppoe access list
+p4lang-acl19.tst;success;p4lang: hairpin ingress access list
+p4lang-acl20.tst;success;p4lang: hairpin egress access list
+p4lang-acl21.tst;success;p4lang: hairpin vlan ingress access list
+p4lang-acl22.tst;success;p4lang: hairpin vlan egress access list
+p4lang-acl23.tst;success;p4lang: hairpin pppoe ingress access list
+p4lang-acl24.tst;success;p4lang: hairpin pppoe egress access list
+p4lang-acl25.tst;success;p4lang: hairpin vlan pppoe ingress access list
+p4lang-acl26.tst;success;p4lang: hairpin vlan pppoe egress access list
+p4lang-acl27.tst;success;p4lang: ingress gre access list
+p4lang-acl28.tst;success;p4lang: egress gre access list
+p4lang-acl29.tst;success;p4lang: ingress vlan gre access list
+p4lang-acl30.tst;success;p4lang: egress vlan gre access list
 p4lang-rout01.tst;success;p4lang: routing
 p4lang-rout02.tst;success;p4lang: bridging
 p4lang-rout03.tst;success;p4lang: mpls core
@@ -1082,6 +1088,28 @@ p4lang-rout45.tst;success;p4lang: vlan evpn/cmac with bgp
 p4lang-rout46.tst;success;p4lang: bundle vlan evpn/cmac with bgp
 p4lang-rout47.tst;success;p4lang: hairpin evpn/cmac with bgp
 p4lang-rout48.tst;success;p4lang: hairpin vlan evpn/cmac with bgp
+p4lang-rout49.tst;success;p4lang: gre routing over ipv4
+p4lang-rout50.tst;success;p4lang: gre routing over ipv6
+p4lang-rout51.tst;success;p4lang: gre routing over ipv4 loopback
+p4lang-rout52.tst;success;p4lang: gre routing over ipv6 loopback
+p4lang-rout53.tst;success;p4lang: gre routing over vlan
+p4lang-rout54.tst;success;p4lang: gre routing over bundle
+p4lang-rout55.tst;success;p4lang: gre routing over bundle vlan
+p4lang-rout56.tst;success;p4lang: gre routing over hairpin
+p4lang-rout57.tst;success;p4lang: gre routing over hairpin vlan
+p4lang-rout58.tst;success;p4lang: gre routing over bridge
+p4lang-rout59.tst;success;p4lang: gre routing over vlan bridge
+p4lang-rout60.tst;success;p4lang: gre mpls over ipv4
+p4lang-rout61.tst;success;p4lang: gre mpls over ipv6
+p4lang-rout62.tst;success;p4lang: gre mpls over ipv4 loopback
+p4lang-rout63.tst;success;p4lang: gre mpls over ipv6 loopback
+p4lang-rout64.tst;success;p4lang: gre mpls over vlan
+p4lang-rout65.tst;success;p4lang: gre mpls over bundle
+p4lang-rout66.tst;success;p4lang: gre mpls over bundle vlan
+p4lang-rout67.tst;success;p4lang: gre mpls over hairpin
+p4lang-rout68.tst;success;p4lang: gre mpls over hairpin vlan
+p4lang-rout69.tst;success;p4lang: gre mpls over bridge
+p4lang-rout70.tst;success;p4lang: gre mpls over vlan bridge
 qos-action01.tst;success;qos ingress transmit action
 qos-action02.tst;success;qos egress transmit action
 qos-action03.tst;success;qos ingress drop action

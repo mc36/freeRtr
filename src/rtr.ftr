@@ -1010,6 +1010,8 @@ qc pass: p4lang: copp
 qc pass: p4lang: ingress access list
 qc pass: p4lang: egress access list
 qc pass: p4lang: nat
+qc pass: p4lang: vlan ingress access list
+qc pass: p4lang: vlan egress access list
 qc pass: p4lang: bundle ingress access list
 qc pass: p4lang: bundle egress access list
 qc pass: p4lang: bundle vlan ingress access list
@@ -1030,6 +1032,10 @@ qc pass: p4lang: hairpin pppoe ingress access list
 qc pass: p4lang: hairpin pppoe egress access list
 qc pass: p4lang: hairpin vlan pppoe ingress access list
 qc pass: p4lang: hairpin vlan pppoe egress access list
+qc pass: p4lang: ingress gre access list
+qc pass: p4lang: egress gre access list
+qc pass: p4lang: ingress vlan gre access list
+qc pass: p4lang: egress vlan gre access list
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -1078,6 +1084,28 @@ qc pass: p4lang: vlan evpn/cmac with bgp
 qc pass: p4lang: bundle vlan evpn/cmac with bgp
 qc pass: p4lang: hairpin evpn/cmac with bgp
 qc pass: p4lang: hairpin vlan evpn/cmac with bgp
+qc pass: p4lang: gre routing over ipv4
+qc pass: p4lang: gre routing over ipv6
+qc pass: p4lang: gre routing over ipv4 loopback
+qc pass: p4lang: gre routing over ipv6 loopback
+qc pass: p4lang: gre routing over vlan
+qc pass: p4lang: gre routing over bundle
+qc pass: p4lang: gre routing over bundle vlan
+qc pass: p4lang: gre routing over hairpin
+qc pass: p4lang: gre routing over hairpin vlan
+qc pass: p4lang: gre routing over bridge
+qc pass: p4lang: gre routing over vlan bridge
+qc pass: p4lang: gre mpls over ipv4
+qc pass: p4lang: gre mpls over ipv6
+qc pass: p4lang: gre mpls over ipv4 loopback
+qc pass: p4lang: gre mpls over ipv6 loopback
+qc pass: p4lang: gre mpls over vlan
+qc pass: p4lang: gre mpls over bundle
+qc pass: p4lang: gre mpls over bundle vlan
+qc pass: p4lang: gre mpls over hairpin
+qc pass: p4lang: gre mpls over hairpin vlan
+qc pass: p4lang: gre mpls over bridge
+qc pass: p4lang: gre mpls over vlan bridge
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
