@@ -123,6 +123,10 @@ int doOneCommand(unsigned char* buf) {
     struct bundle_entry *bundle_res;
     struct pppoe_entry pppoe_ntry;
     memset(&pppoe_ntry, 0, sizeof(pppoe_ntry));
+    struct tun4_entry tun4_ntry;
+    memset(&tun4_ntry, 0, sizeof(tun4_ntry));
+    struct tun6_entry tun6_ntry;
+    memset(&tun6_ntry, 0, sizeof(tun6_ntry));
     int index = 0;
     if (strcmp(arg[0], "quit") == 0) {
         return 1;
@@ -686,6 +690,56 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&neigh_table, &neigh_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "gre4") == 0) {
+        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
+        neigh_ntry.port = atoi(arg[4]);
+        inet_pton(AF_INET, arg[5], buf2);
+        tun4_ntry.trgAddr = neigh_ntry.sip1 = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[6], buf2);
+        tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
+        tun4_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
+        str2mac(neigh_ntry.dmac, arg[7]);
+        str2mac(neigh_ntry.smac, arg[9]);
+        neigh_ntry.command = 3;
+        tun4_ntry.srcPort = 0;
+        tun4_ntry.trgPort = 0;
+        tun4_ntry.prot = 47;
+        tun4_ntry.command = 1;
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) table_del(&tun4_table, &tun4_ntry);
+        else table_add(&tun4_table, &tun4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "gre6") == 0) {
+        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
+        neigh_ntry.port = atoi(arg[4]);
+        inet_pton(AF_INET6, arg[5], buf2);
+        tun6_ntry.trgAddr1 = neigh_ntry.sip1 = get32msb(buf2, 0);
+        tun6_ntry.trgAddr2 = neigh_ntry.sip2 = get32msb(buf2, 4);
+        tun6_ntry.trgAddr3 = neigh_ntry.sip3 = get32msb(buf2, 8);
+        tun6_ntry.trgAddr4 = neigh_ntry.sip4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[6], buf2);
+        tun6_ntry.srcAddr1 = neigh_ntry.dip1 = get32msb(buf2, 0);
+        tun6_ntry.srcAddr2 = neigh_ntry.dip2 = get32msb(buf2, 4);
+        tun6_ntry.srcAddr3 = neigh_ntry.dip3 = get32msb(buf2, 8);
+        tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
+        tun6_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
+        str2mac(neigh_ntry.dmac, arg[7]);
+        str2mac(neigh_ntry.smac, arg[9]);
+        neigh_ntry.command = 4;
+        tun6_ntry.srcPort = 0;
+        tun6_ntry.trgPort = 0;
+        tun6_ntry.prot = 47;
+        tun6_ntry.command = 1;
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) table_del(&tun6_table, &tun6_ntry);
+        else table_add(&tun6_table, &tun6_ntry);
+        return 0;
+    }
     return 0;
 }
 
@@ -768,6 +822,14 @@ void doStatRount(FILE *commands) {
     }
     for (int i=0; i<pppoe_table.size; i++) {
         struct pppoe_entry *ntry = table_get(&pppoe_table, i);
+        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<tun4_table.size; i++) {
+        struct tun4_entry *ntry = table_get(&tun4_table, i);
+        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<tun6_table.size; i++) {
+        struct tun6_entry *ntry = table_get(&tun6_table, i);
         fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
     }
     for (int i=0; i<vlanout_table.size; i++) {

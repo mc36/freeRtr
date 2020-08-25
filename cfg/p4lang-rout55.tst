@@ -1,10 +1,13 @@
-description p4lang: bundle vlan ingress access list
+description p4lang: gre routing over bundle vlan
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 int eth2 eth 0000.0000.1111 $2b$ $2a$
 !
 vrf def v1
+ rd 1:1
+ exit
+vrf def v2
  rd 1:1
  exit
 vrf def v9
@@ -32,14 +35,6 @@ server dhcp4 eth1
  exit
 bundle 1
  exit
-access-list test4
- deny 1 2.2.2.105 255.255.255.255 all 2.2.2.104 255.255.255.255 all
- permit all any all any all
- exit
-access-list test6
- deny 58 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all
- permit all any all any all
- exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.101 255.255.255.255
@@ -63,23 +58,31 @@ int sdn3
 int sdn4
  bundle-gr 1
  exit
-int bun1.11
+int bun1.222
+ vrf for v2
+ ipv4 addr 9.9.9.1 255.255.255.0
+ exit
+int tun1
+ tun vrf v2
+ tun source bun1.222
+ tun destination 9.9.9.2
+ tun mode gre
  vrf for v1
  ipv4 addr 1.1.3.1 255.255.255.0
  ipv6 addr 1234:3::1 ffff:ffff::
- ipv4 access-group-in test4
- ipv6 access-group-in test6
  ipv6 ena
  exit
 server p4lang p4
  interconnect eth2
  export-vrf v1 1
+ export-vrf v2 2
  export-port sdn1 1
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4
  export-port bun1 44
- export-port bun1.11 444
+ export-port bun1.222 222
+ export-port tun1 111
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
@@ -167,6 +170,9 @@ int eth2 eth 0000.0000.6666 $6b$ $6a$
 vrf def v1
  rd 1:1
  exit
+vrf def v2
+ rd 1:1
+ exit
 bundle 1
  exit
 int lo0
@@ -180,7 +186,15 @@ int eth1
 int eth2
  bundle-gr 1
  exit
-int bun1.11
+int bun1.222
+ vrf for v2
+ ipv4 addr 9.9.9.2 255.255.255.0
+ exit
+int tun1
+ tun vrf v2
+ tun source bun1.222
+ tun destination 9.9.9.1
+ tun mode gre
  vrf for v1
  ipv4 addr 1.1.3.2 255.255.255.0
  ipv6 addr 1234:3::2 ffff:ffff::
@@ -200,6 +214,8 @@ ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
 !
 
 
+r1 tping 100 10 9.9.9.2 /vrf v2
+r5 tping 100 10 9.9.9.1 /vrf v2
 
 r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 10 1234:1::2 /vrf v1
@@ -253,15 +269,15 @@ r4 tping 100 10 2.2.2.103 /vrf v1 /int lo0
 r4 tping 100 10 4321::103 /vrf v1 /int lo0
 r4 tping 100 10 2.2.2.104 /vrf v1 /int lo0
 r4 tping 100 10 4321::104 /vrf v1 /int lo0
-r4 tping 0 10 2.2.2.105 /vrf v1 /int lo0
-r4 tping 0 10 4321::105 /vrf v1 /int lo0
+r4 tping 100 10 2.2.2.105 /vrf v1 /int lo0
+r4 tping 100 10 4321::105 /vrf v1 /int lo0
 
 r5 tping 100 10 2.2.2.101 /vrf v1 /int lo0
 r5 tping 100 10 4321::101 /vrf v1 /int lo0
 r5 tping 100 10 2.2.2.103 /vrf v1 /int lo0
 r5 tping 100 10 4321::103 /vrf v1 /int lo0
-r5 tping 0 10 2.2.2.104 /vrf v1 /int lo0
-r5 tping 0 10 4321::104 /vrf v1 /int lo0
+r5 tping 100 10 2.2.2.104 /vrf v1 /int lo0
+r5 tping 100 10 4321::104 /vrf v1 /int lo0
 r5 tping 100 10 2.2.2.105 /vrf v1 /int lo0
 r5 tping 100 10 4321::105 /vrf v1 /int lo0
 

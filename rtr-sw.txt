@@ -183,8 +183,17 @@ vrf definition v4
 !
 vrf definition v5
  rd 1:5
- rt-import 1:4
- rt-export 1:4
+ rt-import 1:5
+ rt-export 1:5
+ label-mode per-prefix
+ source4route all4
+ source6route all6
+ exit
+!
+vrf definition v6
+ rd 1:6
+ rt-import 1:6
+ rt-export 1:6
  label-mode per-prefix
  source4route all4
  source6route all6
@@ -632,6 +641,19 @@ mtracker v6v
 ipv4 flow v1 collect
 !
 ipv6 flow v1 collect
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
 !
 !
 !

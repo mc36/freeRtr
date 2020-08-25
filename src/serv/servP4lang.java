@@ -254,7 +254,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer) && (ifc.type != cfgIfc.ifaceType.hairpin)) {
+            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer) && (ifc.type != cfgIfc.ifaceType.hairpin) && (ifc.type != cfgIfc.ifaceType.tunnel)) {
                 cmd.error("not p4lang interface");
                 return false;
             }
@@ -568,7 +568,7 @@ class servP4langNei implements Comparator<servP4langNei> {
         if (i != 0) {
             return i;
         }
-        if (o1.iface.ifc.type == cfgIfc.ifaceType.dialer) {
+        if ((o1.iface.ifc.type == cfgIfc.ifaceType.dialer) || (o1.iface.ifc.type == cfgIfc.ifaceType.tunnel)) {
             return 0;
         }
         return o1.adr.compare(o1.adr, o2.adr);
@@ -1487,7 +1487,7 @@ class servP4langConn implements Runnable {
             sta = state.states.up;
         }
         int i = ifc.ifc.ethtyp.getMTUsize();
-        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge) || (ifc.ifc.type == cfgIfc.ifaceType.dialer) || (ifc.ifc.type == cfgIfc.ifaceType.hairpin)) {
+        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge) || (ifc.ifc.type == cfgIfc.ifaceType.dialer) || (ifc.ifc.type == cfgIfc.ifaceType.hairpin) || (ifc.ifc.type == cfgIfc.ifaceType.tunnel)) {
             ifc.sentState = sta;
             ifc.sentMtu = i;
         }
@@ -1550,7 +1550,7 @@ class servP4langConn implements Runnable {
                 if (ntry.ifc.bundleHed != ifc.ifc.bundleHed) {
                     continue;
                 }
-                if (ntry.ifc.ethtyp.forcedDN != 0) {
+                if (ntry.ifc.ethtyp.getState() != state.states.up) {
                     continue;
                 }
                 prt.add(ntry);
@@ -1717,7 +1717,11 @@ class servP4langConn implements Runnable {
         if (ntry.mac == null) {
             return;
         }
-        lower.sendLine("neigh" + (ntry.adr.isIPv4() ? "4" : "6") + "_del " + ntry.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + ntry.vrf.id + " " + ((addrMac) ntry.iface.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + ntry.sentIfc);
+        addrType mac = ntry.iface.ifc.ethtyp.getHwAddr();
+        if (mac.getSize() != addrMac.size) {
+            return;
+        }
+        lower.sendLine("neigh" + (ntry.adr.isIPv4() ? "4" : "6") + "_del " + ntry.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + ntry.vrf.id + " " + ((addrMac) mac).toEmuStr() + " " + ntry.sentIfc);
     }
 
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi) {
@@ -1728,7 +1732,7 @@ class servP4langConn implements Runnable {
         if (vrf == null) {
             return;
         }
-        if (ifc.pppoe != null) {
+        if (ifc.ifc.type == cfgIfc.ifaceType.tunnel) {
             servP4langNei nei = findIfc(ifc.ifc.fwdIf4, new addrIP());
             if (nei == null) {
                 nei = findIfc(ifc.ifc.fwdIf6, new addrIP());
@@ -1736,6 +1740,77 @@ class servP4langConn implements Runnable {
             if (nei == null) {
                 return;
             }
+            nei.need++;
+            nei.vrf = vrf;
+            if (ifc.ifc.tunVrf == null) {
+                return;
+            }
+            if (ifc.ifc.tunTrg == null) {
+                return;
+            }
+            if (ifc.ifc.tunSrc == null) {
+                return;
+            }
+            addrIP src = ifc.ifc.tunSrc.getLocAddr(ifc.ifc.tunTrg);
+            if (src == null) {
+                return;
+            }
+            ipFwd ofwd = ifc.ifc.tunVrf.getFwd(ifc.ifc.tunTrg);
+            servP4langVrf ovrf = findVrf(ofwd);
+            if (ovrf == null) {
+                return;
+            }
+            tabRouteEntry<addrIP> ntry = ofwd.actualU.route(ifc.ifc.tunTrg);
+            if (ntry == null) {
+                return;
+            }
+            if (ntry.iface == null) {
+                return;
+            }
+            addrIP nh = ntry.nextHop;
+            if (nh == null) {
+                nh = ifc.ifc.tunTrg;
+            }
+            servP4langNei hop = findIfc(ntry.iface, nh);
+            if (hop == null) {
+                return;
+            }
+            if (hop.mac == null) {
+                return;
+            }
+            String act;
+            if (nei.mac == null) {
+                act = "add";
+            } else {
+                act = "mod";
+                if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.sentIfc == hop.sentIfc)) {
+                    return;
+                }
+            }
+            nei.mac = hop.mac.copyBytes();
+            nei.sentIfc = hop.sentIfc;
+            String afi;
+            if (ifc.ifc.tunTrg.isIPv4()) {
+                afi = "4";
+            } else {
+                afi = "6";
+            }
+            lower.sendLine("gre" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.tunTrg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + ((addrMac) hop.iface.ifc.ethtyp.getHwAddr()).toEmuStr());
+            return;
+        }
+        if (ifc.ifc.type == cfgIfc.ifaceType.dialer) {
+            if (ifc.pppoe == null) {
+                return;
+            }
+            servP4langNei nei = findIfc(ifc.ifc.fwdIf4, new addrIP());
+            if (nei == null) {
+                nei = findIfc(ifc.ifc.fwdIf6, new addrIP());
+            }
+            if (nei == null) {
+                return;
+            }
+            nei.need++;
+            nei.vrf = vrf;
             int ses = -1;
             addrMac mac = new addrMac();
             if (ifc.pppoe.ifc.pppoeC != null) {

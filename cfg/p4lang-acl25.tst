@@ -1,4 +1,4 @@
-description p4lang: hairpin vlan egress access list
+description p4lang: hairpin vlan pppoe ingress access list
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -78,19 +78,27 @@ int sdn4
  ipv6 addr 1234:4::1 ffff:ffff::
  ipv6 ena
  exit
-int hair11.111
+int di1
+ enc ppp
  vrf for v1
  ipv4 addr 1.1.5.1 255.255.255.0
  ipv6 addr 1234:5::1 ffff:ffff::
  ipv6 ena
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
  exit
-int hair12.111
+int di2
+ enc ppp
  vrf for v2
  ipv4 addr 1.1.5.2 255.255.255.0
  ipv6 addr 1234:5::2 ffff:ffff::
  ipv6 ena
- ipv4 access-group-out test4
- ipv6 access-group-out test6
+ exit
+int hair11.111
+ p2poe client di1
+ exit
+int hair12.111
+ p2poe relay di2
  exit
 server p4lang p4
  interconnect eth2
@@ -104,6 +112,8 @@ server p4lang p4
  export-port hair12 12
  export-port hair11.111 111
  export-port hair12.111 112
+ export-port di1 221
+ export-port di2 222
  vrf v9
  exit
 ipv4 route v1 1.1.4.0 255.255.255.0 1.1.5.2

@@ -124,6 +124,21 @@ int masks[] = {
 };
 
 
+int calcIPsum(unsigned char *buf, int pos, int len) {
+    int sum = 0;
+    while (len > 1)  {
+        sum += get16lsb(buf, pos);
+        len -= 2;
+        pos += 2;
+    }
+    if (len > 0) sum += buf[pos];
+    sum = (sum >> 16) + (sum & 0xffff);
+    sum += (sum >> 16);
+    return sum;
+}
+
+
+
 void processDataPacket(unsigned char *bufD, int bufS, int port) {
     packRx[port]++;
     byteRx[port] += bufS;
@@ -142,6 +157,8 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     struct nat6_entry nat6_ntry;
     struct bundle_entry bundle_ntry;
     struct pppoe_entry pppoe_ntry;
+    struct tun4_entry tun4_ntry;
+    struct tun6_entry tun6_ntry;
     struct mpls_entry *mpls_res;
     struct portvrf_entry *portvrf_res;
     struct route4_entry *route4_res;
@@ -154,6 +171,8 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     struct nat6_entry *nat6_res;
     struct bundle_entry *bundle_res;
     struct pppoe_entry *pppoe_res;
+    struct tun4_entry *tun4_res;
+    struct tun6_entry *tun6_res;
     int index;
     int label;
     int sum;
@@ -242,7 +261,10 @@ neigh_tx:
             neigh_res->pack++;
             neigh_res->byte += bufS;
             prt = neigh_res->port;
-            if (neigh_res->command == 2) { // pppoe
+            switch (neigh_res->command) {
+            case 1: // raw ip
+                break;
+            case 2: // pppoe
                 switch (ethtyp) {
                 case 0x800:
                     index = 0x0021;
@@ -267,6 +289,49 @@ neigh_tx:
                 ethtyp = 0x8864;
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
+                break;
+            case 3: // gre4
+                bufP -= 2;
+                put16msb(bufD, bufP, 0x0000); // gre header
+                bufP -= 20;
+                put16msb(bufD, bufP + 0, 0x4500); // ip ver, hdrlen, tos
+                put16msb(bufD, bufP + 2, bufS - bufP + preBuff); // total length
+                ipids++;
+                put16msb(bufD, bufP + 4, ipids); // identify
+                put16msb(bufD, bufP + 6, 0); // fragment
+                put16msb(bufD, bufP + 8, 0xff2f); // ttl, protocol
+                put16msb(bufD, bufP + 10, 0); // checksum
+                put32msb(bufD, bufP + 12, neigh_res->sip1); // source
+                put32msb(bufD, bufP + 16, neigh_res->dip1); // target
+                put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20));
+                ethtyp = 0x800;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                break;
+            case 4: // gre6
+                bufP -= 2;
+                put16msb(bufD, bufP, 0x0000); // gre header
+                bufP -= 40;
+                put16msb(bufD, bufP + 0, 0x6000); // ip ver, tos
+                put16msb(bufD, bufP + 2, 0); // flow label
+                put16msb(bufD, bufP + 4, bufS - bufP + preBuff - 40); // payload length
+                put16msb(bufD, bufP + 6, 0x2fff); // protocol, ttl
+                put32msb(bufD, bufP + 8, neigh_res->sip1); // source
+                put32msb(bufD, bufP + 12, neigh_res->sip2); // source
+                put32msb(bufD, bufP + 16, neigh_res->sip3); // source
+                put32msb(bufD, bufP + 20, neigh_res->sip4); // source
+                put32msb(bufD, bufP + 24, neigh_res->dip1); // target
+                put32msb(bufD, bufP + 28, neigh_res->dip2); // target
+                put32msb(bufD, bufP + 32, neigh_res->dip3); // target
+                put32msb(bufD, bufP + 36, neigh_res->dip4); // target
+                ethtyp = 0x86dd;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                break;
+            default:
+                packDr[port]++;
+                byteDr[port] += bufS;
+                return;
             }
             vlan_ntry.id = prt;
             index = table_find(&vlanout_table, &vlan_ntry);
@@ -435,6 +500,33 @@ ipv4_rou:
                 }
                 goto neigh_tx;
             case 2: // punt
+                tun4_ntry.vrf = route4_ntry.vrf;
+                tun4_ntry.prot = acl4_ntry.protV;
+                tun4_ntry.srcAddr = acl4_ntry.srcAddr;
+                tun4_ntry.trgAddr = acl4_ntry.trgAddr;
+                tun4_ntry.srcPort = acl4_ntry.srcPortV;
+                tun4_ntry.trgPort = acl4_ntry.trgPortV;
+                index = table_find(&tun4_table, &tun4_ntry);
+                if (index >= 0) {
+                    tun4_res = table_get(&tun4_table, index);
+                    switch (tun4_res->command) {
+                    case 1: //gre
+                        bufP = bufT + 2; // gre header
+                        break;
+                    default:
+                        packDr[port]++;
+                        byteDr[port] += bufS;
+                        return;
+                    }
+                    bufP -= 12;
+                    memset(&bufD[bufP], 0, 12);
+                    tun4_res->pack++;
+                    tun4_res->byte += bufS;
+                    bufS = bufS - bufP + preBuff;
+                    memmove(&bufD[preBuff], &bufD[bufP], bufS);
+                    prt2 = prt = tun4_res->aclport;
+                    goto ether_rx;
+                }
                 acls_ntry.dir = 4;
                 acls_ntry.port = 0;
                 index = table_find(&acls_table, &acls_ntry);
@@ -608,6 +700,39 @@ ipv6_hit:
                 }
                 goto neigh_tx;
             case 2: // punt
+                tun6_ntry.vrf = route6_ntry.vrf;
+                tun6_ntry.prot = acl6_ntry.protV;
+                tun6_ntry.srcAddr1 = acl6_ntry.srcAddr1;
+                tun6_ntry.srcAddr2 = acl6_ntry.srcAddr2;
+                tun6_ntry.srcAddr3 = acl6_ntry.srcAddr3;
+                tun6_ntry.srcAddr4 = acl6_ntry.srcAddr4;
+                tun6_ntry.trgAddr1 = acl6_ntry.trgAddr1;
+                tun6_ntry.trgAddr2 = acl6_ntry.trgAddr2;
+                tun6_ntry.trgAddr3 = acl6_ntry.trgAddr3;
+                tun6_ntry.trgAddr4 = acl6_ntry.trgAddr4;
+                tun6_ntry.srcPort = acl6_ntry.srcPortV;
+                tun6_ntry.trgPort = acl6_ntry.trgPortV;
+                index = table_find(&tun6_table, &tun6_ntry);
+                if (index >= 0) {
+                    tun6_res = table_get(&tun6_table, index);
+                    switch (tun6_res->command) {
+                    case 1: //gre
+                        bufP = bufT + 2; // gre header
+                        break;
+                    default:
+                        packDr[port]++;
+                        byteDr[port] += bufS;
+                        return;
+                    }
+                    bufP -= 12;
+                    memset(&bufD[bufP], 0, 12);
+                    tun6_res->pack++;
+                    tun6_res->byte += bufS;
+                    bufS = bufS - bufP + preBuff;
+                    memmove(&bufD[preBuff], &bufD[bufP], bufS);
+                    prt2 = prt = tun6_res->aclport;
+                    goto ether_rx;
+                }
                 acls_ntry.dir = 4;
                 acls_ntry.port = 0;
                 index = table_find(&acls_table, &acls_ntry);

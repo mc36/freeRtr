@@ -1,4 +1,4 @@
-description p4lang: hairpin vlan ingress access list
+description p4lang: hairpin ingress access list
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -78,7 +78,7 @@ int sdn4
  ipv6 addr 1234:4::1 ffff:ffff::
  ipv6 ena
  exit
-int hair11.111
+int hair11
  vrf for v1
  ipv4 addr 1.1.5.1 255.255.255.0
  ipv6 addr 1234:5::1 ffff:ffff::
@@ -86,7 +86,7 @@ int hair11.111
  ipv4 access-group-in test4
  ipv6 access-group-in test6
  exit
-int hair12.111
+int hair12
  vrf for v2
  ipv4 addr 1.1.5.2 255.255.255.0
  ipv6 addr 1234:5::2 ffff:ffff::
@@ -102,8 +102,6 @@ server p4lang p4
  export-port sdn4 4
  export-port hair11 11
  export-port hair12 12
- export-port hair11.111 111
- export-port hair12.111 112
  vrf v9
  exit
 ipv4 route v1 1.1.4.0 255.255.255.0 1.1.5.2

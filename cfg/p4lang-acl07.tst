@@ -1,4 +1,4 @@
-description p4lang: bundle vlan ingress access list
+description p4lang: bundle ingress access list
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -63,7 +63,7 @@ int sdn3
 int sdn4
  bundle-gr 1
  exit
-int bun1.11
+int bun1
  vrf for v1
  ipv4 addr 1.1.3.1 255.255.255.0
  ipv6 addr 1234:3::1 ffff:ffff::
@@ -79,7 +79,6 @@ server p4lang p4
  export-port sdn3 3
  export-port sdn4 4
  export-port bun1 44
- export-port bun1.11 444
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
@@ -180,7 +179,7 @@ int eth1
 int eth2
  bundle-gr 1
  exit
-int bun1.11
+int bun1
  vrf for v1
  ipv4 addr 1.1.3.2 255.255.255.0
  ipv6 addr 1234:3::2 ffff:ffff::

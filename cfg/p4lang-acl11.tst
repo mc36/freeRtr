@@ -1,4 +1,4 @@
-description p4lang: vlan bridge ingress access list
+description p4lang: bridge ingress access list
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -56,13 +56,9 @@ int sdn2
  bridge-gr 1
  exit
 int sdn3
- exit
-int sdn3.111
  bridge-gr 1
  exit
 int sdn4
- exit
-int sdn4.222
  bridge-gr 1
  exit
 int bvi1
@@ -81,8 +77,6 @@ server p4lang p4
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4
- export-port sdn3.111 333
- export-port sdn4.222 444
  export-port bvi1 999
  vrf v9
  exit
@@ -173,7 +167,7 @@ int lo0
  ipv4 addr 2.2.2.105 255.255.255.255
  ipv6 addr 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.111
+int eth1
  vrf for v1
  ipv4 addr 1.1.2.3 255.255.255.0
  ipv6 addr 1234:2::3 ffff:ffff::
@@ -201,7 +195,7 @@ int lo0
  ipv4 addr 2.2.2.106 255.255.255.255
  ipv6 addr 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.222
+int eth1
  vrf for v1
  ipv4 addr 1.1.2.4 255.255.255.0
  ipv6 addr 1234:2::4 ffff:ffff::

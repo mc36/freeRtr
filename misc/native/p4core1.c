@@ -7,6 +7,7 @@
 int ports = 0;
 int cpuport = 0;
 int punts = 0;
+int ipids = 0;
 
 unsigned char *ifaceName[maxPorts];
 long int byteRx[maxPorts];
@@ -131,12 +132,20 @@ int route6_compare(void *ptr1, void *ptr2) {
 struct neigh_entry {
     int id;
     int vrf;
-    int command;    // 1=rawip, 2=pppoe
+    int command;    // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6
     int port;
     int aclport;
     int session;
     unsigned char smac[6];
     unsigned char dmac[6];
+    int sip1;
+    int sip2;
+    int sip3;
+    int sip4;
+    int dip1;
+    int dip2;
+    int dip3;
+    int dip4;
     long pack;
     long byte;
 };
@@ -476,6 +485,94 @@ int pppoe_compare(void *ptr1, void *ptr2) {
 }
 
 
+struct tun4_entry {
+    int vrf;
+    int prot;
+    int srcAddr;
+    int trgAddr;
+    int srcPort;
+    int trgPort;
+    int command;    // 1=gre, 2=l2tp
+    int aclport;
+    long pack;
+    long byte;
+};
+
+struct table_head tun4_table;
+
+int tun4_compare(void *ptr1, void *ptr2) {
+    struct tun4_entry *ntry1 = ptr1;
+    struct tun4_entry *ntry2 = ptr2;
+    if (ntry1->vrf < ntry2->vrf) return -1;
+    if (ntry1->vrf > ntry2->vrf) return +1;
+    if (ntry1->prot < ntry2->prot) return -1;
+    if (ntry1->prot > ntry2->prot) return +1;
+    if (ntry1->srcPort < ntry2->srcPort) return -1;
+    if (ntry1->srcPort > ntry2->srcPort) return +1;
+    if (ntry1->trgPort < ntry2->trgPort) return -1;
+    if (ntry1->trgPort > ntry2->trgPort) return +1;
+    if (ntry1->srcAddr < ntry2->srcAddr) return -1;
+    if (ntry1->srcAddr > ntry2->srcAddr) return +1;
+    if (ntry1->trgAddr < ntry2->trgAddr) return -1;
+    if (ntry1->trgAddr > ntry2->trgAddr) return +1;
+    return 0;
+}
+
+
+struct tun6_entry {
+    int vrf;
+    int prot;
+    int srcAddr1;
+    int srcAddr2;
+    int srcAddr3;
+    int srcAddr4;
+    int trgAddr1;
+    int trgAddr2;
+    int trgAddr3;
+    int trgAddr4;
+    int srcPort;
+    int trgPort;
+    int command;    // 1=gre, 2=l2tp
+    int aclport;
+    long pack;
+    long byte;
+};
+
+struct table_head tun6_table;
+
+int tun6_compare(void *ptr1, void *ptr2) {
+    struct tun6_entry *ntry1 = ptr1;
+    struct tun6_entry *ntry2 = ptr2;
+    if (ntry1->vrf < ntry2->vrf) return -1;
+    if (ntry1->vrf > ntry2->vrf) return +1;
+    if (ntry1->prot < ntry2->prot) return -1;
+    if (ntry1->prot > ntry2->prot) return +1;
+    if (ntry1->srcPort < ntry2->srcPort) return -1;
+    if (ntry1->srcPort > ntry2->srcPort) return +1;
+    if (ntry1->trgPort < ntry2->trgPort) return -1;
+    if (ntry1->trgPort > ntry2->trgPort) return +1;
+    if (ntry1->srcAddr1 < ntry2->srcAddr1) return -1;
+    if (ntry1->srcAddr1 > ntry2->srcAddr1) return +1;
+    if (ntry1->srcAddr2 < ntry2->srcAddr2) return -1;
+    if (ntry1->srcAddr2 > ntry2->srcAddr2) return +1;
+    if (ntry1->srcAddr3 < ntry2->srcAddr3) return -1;
+    if (ntry1->srcAddr3 > ntry2->srcAddr3) return +1;
+    if (ntry1->srcAddr4 < ntry2->srcAddr4) return -1;
+    if (ntry1->srcAddr4 > ntry2->srcAddr4) return +1;
+    if (ntry1->trgAddr1 < ntry2->trgAddr1) return -1;
+    if (ntry1->trgAddr1 > ntry2->trgAddr1) return +1;
+    if (ntry1->trgAddr2 < ntry2->trgAddr2) return -1;
+    if (ntry1->trgAddr2 > ntry2->trgAddr2) return +1;
+    if (ntry1->trgAddr3 < ntry2->trgAddr3) return -1;
+    if (ntry1->trgAddr3 > ntry2->trgAddr3) return +1;
+    if (ntry1->trgAddr4 < ntry2->trgAddr4) return -1;
+    if (ntry1->trgAddr4 > ntry2->trgAddr4) return +1;
+    return 0;
+}
+
+
+
+
 
 
 void initIface(int port, unsigned char *name) {
@@ -504,4 +601,6 @@ void initTables() {
     table_init(&nat6_table, sizeof(struct nat6_entry), &nat6_compare);
     table_init(&bundle_table, sizeof(struct bundle_entry), &bundle_compare);
     table_init(&pppoe_table, sizeof(struct pppoe_entry), &pppoe_compare);
+    table_init(&tun4_table, sizeof(struct tun4_entry), &tun4_compare);
+    table_init(&tun6_table, sizeof(struct tun6_entry), &tun6_compare);
 }
