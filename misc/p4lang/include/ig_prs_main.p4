@@ -175,6 +175,8 @@ ETHERTYPE_IPV6:
         ig_md.layer4_length = hdr.ipv4.total_len - 20;
         ig_md.ipv4_valid = 1;
         transition select(hdr.ipv4.protocol) {
+IP_PROTOCOL_GRE:
+            prs_gre;
 IP_PROTOCOL_UDP:
             prs_udp;
 IP_PROTOCOL_TCP:
@@ -195,6 +197,8 @@ IP_PROTOCOL_SRL2:
         ig_md.layer4_length = hdr.ipv6.payload_len;
         ig_md.ipv6_valid = 1;
         transition select(hdr.ipv6.next_hdr) {
+IP_PROTOCOL_GRE:
+            prs_gre;
 IP_PROTOCOL_UDP:
             prs_udp;
 IP_PROTOCOL_TCP:
@@ -210,6 +214,13 @@ IP_PROTOCOL_SRL2:
         }
     }
 
+
+    state prs_gre {
+        pkt.extract(hdr.gre);
+        ig_md.layer4_srcprt = 0;
+        ig_md.layer4_dstprt = 0;
+        transition accept;
+    }
 
     state prs_udp {
         pkt.extract(hdr.udp);

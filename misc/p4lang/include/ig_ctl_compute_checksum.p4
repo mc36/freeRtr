@@ -21,6 +21,57 @@ control ig_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t ig_m
         hdr.ipv4.hdr_checksum,
         HashAlgorithm.csum16);
 
+        update_checksum(
+            hdr.ipv4b.isValid(),
+        {   hdr.ipv4b.version,
+            hdr.ipv4b.ihl,
+            hdr.ipv4b.diffserv,
+            hdr.ipv4b.total_len,
+            hdr.ipv4b.identification,
+            hdr.ipv4b.flags,
+            hdr.ipv4b.frag_offset,
+            hdr.ipv4b.ttl,
+            hdr.ipv4b.protocol,
+            hdr.ipv4b.src_addr,
+            hdr.ipv4b.dst_addr
+        },
+        hdr.ipv4b.hdr_checksum,
+        HashAlgorithm.csum16);
+
+        update_checksum(
+            hdr.ipv4c.isValid(),
+        {   hdr.ipv4c.version,
+            hdr.ipv4c.ihl,
+            hdr.ipv4c.diffserv,
+            hdr.ipv4c.total_len,
+            hdr.ipv4c.identification,
+            hdr.ipv4c.flags,
+            hdr.ipv4c.frag_offset,
+            hdr.ipv4c.ttl,
+            hdr.ipv4c.protocol,
+            hdr.ipv4c.src_addr,
+            hdr.ipv4c.dst_addr
+        },
+        hdr.ipv4c.hdr_checksum,
+        HashAlgorithm.csum16);
+
+        update_checksum(
+            hdr.ipv4d.isValid(),
+        {   hdr.ipv4d.version,
+            hdr.ipv4d.ihl,
+            hdr.ipv4d.diffserv,
+            hdr.ipv4d.total_len,
+            hdr.ipv4d.identification,
+            hdr.ipv4d.flags,
+            hdr.ipv4d.frag_offset,
+            hdr.ipv4d.ttl,
+            hdr.ipv4d.protocol,
+            hdr.ipv4d.src_addr,
+            hdr.ipv4d.dst_addr
+        },
+        hdr.ipv4d.hdr_checksum,
+        HashAlgorithm.csum16);
+
         update_checksum_with_payload(hdr.ipv4.isValid() && hdr.tcp.isValid(),
         {   hdr.ipv4.src_addr,
             hdr.ipv4.dst_addr,

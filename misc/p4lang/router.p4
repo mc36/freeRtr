@@ -16,6 +16,7 @@
 #include "include/hdr_mpls.p4"
 #include "include/hdr_ipv4.p4"
 #include "include/hdr_ipv6.p4"
+#include "include/hdr_gre.p4"
 #include "include/hdr_udp.p4"
 #include "include/hdr_tcp.p4"
 
@@ -45,6 +46,7 @@
 #include "include/ig_ctl_nexthop.p4"
 #include "include/ig_ctl_bridge.p4"
 #include "include/ig_ctl_pppoe.p4"
+#include "include/ig_ctl_tunnel.p4"
 #include "include/ig_ctl_mpls.p4"
 #include "include/ig_ctl_mpls2.p4"
 #include "include/ig_ctl_ipv4.p4"
