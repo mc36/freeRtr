@@ -403,6 +403,25 @@ public class counter implements Comparator<counter> {
     }
 
     /**
+     * sum up rx and tx counters
+     *
+     * @param dr count drops too
+     * @return summary
+     */
+    public counter sumUp(boolean dr) {
+        counter res = new counter();
+        res.packRx = packRx + packTx;
+        res.byteRx = byteRx + byteTx;
+        if (dr) {
+            res.packRx += packDr;
+            res.byteRx += byteDr;
+        }
+        res.stateChg = stateChg;
+        res.lastChgd = lastChgd;
+        return res;
+    }
+
+    /**
      * multiply by integer
      *
      * @param m integer

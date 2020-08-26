@@ -463,6 +463,10 @@ public class clntTrack implements rtrBfdClnt {
         if (randInt > 0) {
             bits.sleep(bits.random(1, randInt));
         }
+        if (mode == null) {
+            haveResult(false, false);
+            return;
+        }
         switch (mode) {
             case iface:
                 if (target == null) {

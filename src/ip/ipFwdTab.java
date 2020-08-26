@@ -353,7 +353,7 @@ public class ipFwdTab {
      * @return output
      */
     public static String vrfListShow(ipFwd lower) {
-        return lower.ifaces.size() + "|" + lower.actualU.size() + "|" + lower.actualM.size() + "|" + lower.labeldR.size() + "|" + lower.groups.size() + "|" + lower.actualF.size() + "|" + lower.trafEngs.size() + "|" + lower.mp2mpLsp.size() + "|" + lower.natTrns.size() + "|" + lower.routers.size() + "|" + lower.cntr.packRx + "|" + lower.cntr.byteRx;
+        return lower.ifaces.size() + "|" + lower.actualU.size() + "|" + lower.actualM.size() + "|" + lower.labeldR.size() + "|" + lower.groups.size() + "|" + lower.actualF.size() + "|" + lower.trafEngs.size() + "|" + lower.mp2mpLsp.size() + "|" + lower.natTrns.size() + "|" + lower.routers.size() + "|" + lower.cntrT.packRx + "|" + lower.cntrT.byteRx;
     }
 
     /**
@@ -1356,13 +1356,15 @@ public class ipFwdTab {
     }
 
     /**
-     * check for stalled interfaces
+     * check for stalled vrfs
      */
     public static void checkVrfs() {
         for (int i = cfgAll.vrfs.size() - 1; i >= 0; i--) {
             cfgVrf ntry = cfgAll.vrfs.get(i);
-            ntry.fwd4.hstry.update(ntry.fwd4.cntr);
-            ntry.fwd6.hstry.update(ntry.fwd6.cntr);
+            ntry.fwd4.hstryT.update(ntry.fwd4.cntrT);
+            ntry.fwd6.hstryT.update(ntry.fwd6.cntrT);
+            ntry.fwd4.hstryL.update(ntry.fwd4.cntrL);
+            ntry.fwd6.hstryL.update(ntry.fwd6.cntrL);
         }
     }
 

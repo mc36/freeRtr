@@ -2966,7 +2966,7 @@ public class userShow {
             if (fwd == null) {
                 return;
             }
-            doShowHistory(cmd.word(), fwd.hstry);
+            doShowHistory(cmd.word(), fwd.hstryT);
             return;
         }
         userFormat l = new userFormat("|", "vrf|interface|unicast|multicast|label|mroute|flwspc|p2p|mp2mp|nat|proto|pack|byte");
@@ -3270,14 +3270,16 @@ public class userShow {
                 cmd.error("no such vrf");
                 return;
             }
-            doShowHistory(cmd.word(), vrf.fwd4.hstry.plus(vrf.fwd6.hstry));
+            doShowHistory(cmd.word(), vrf.fwd4.hstryT.plus(vrf.fwd6.hstryT));
             return;
         }
-        userFormat l = new userFormat("|", "name|rd|int4|int6|pack|byte");
+        userFormat l = new userFormat("|", "name|rd|int4|int6|pack|byte|pack|byte|pack|byte", "4|2total|2local|2forward");
         for (int o = 0; o < cfgAll.vrfs.size(); o++) {
             cfgVrf v = cfgAll.vrfs.get(o);
-            counter c = v.fwd4.cntr.plus(v.fwd6.cntr);
-            l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + v.fwd4.ifaces.size() + "|" + v.fwd6.ifaces.size() + "|" + c.packRx + "|" + c.byteRx);
+            counter ct = v.fwd4.cntrT.plus(v.fwd6.cntrT).sumUp(false);
+            counter cl = v.fwd4.cntrL.plus(v.fwd6.cntrL).sumUp(false);
+            counter cf = ct.minus(cl);
+            l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + v.fwd4.ifaces.size() + "|" + v.fwd6.ifaces.size() + "|" + ct.packRx + "|" + ct.byteRx + "|" + cl.packRx + "|" + cl.byteRx + "|" + cf.packRx + "|" + cf.byteRx);
         }
         rdr.putStrTab(l);
     }

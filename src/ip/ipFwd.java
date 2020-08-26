@@ -203,14 +203,24 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public final tabGen<clntMplsTeP2p> autoMesh;
 
     /**
-     * counter for this vrf
+     * total counter for this vrf
      */
-    public counter cntr;
+    public counter cntrT;
 
     /**
-     * historic for this vrf
+     * total historic for this vrf
      */
-    public history hstry;
+    public history hstryT;
+
+    /**
+     * local counter for this vrf
+     */
+    public counter cntrL;
+
+    /**
+     * local historic for this vrf
+     */
+    public history hstryL;
 
     /**
      * netflow exporter
@@ -449,8 +459,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         natCfg = new tabListing<tabNatCfgN, addrIP>();
         natCfg.myCor = ipCore;
         natCfg.myIcmp = icc;
-        cntr = new counter();
-        hstry = new history();
+        cntrT = new counter();
+        hstryT = new history();
+        cntrL = new counter();
+        hstryL = new history();
         triggerUpdate = new notifier();
         ipFwdTab.updateEverything(this);
         icc.setForwarder(this);
@@ -993,6 +1005,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     }
 
     private void ifaceProto(ipFwdIface lower, packHolder pck, addrIP hop) {
+        cntrT.tx(pck);
         if (!lower.ready) {
             lower.cntr.drop(pck, counter.reasons.notUp);
             return;
@@ -1051,6 +1064,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     }
 
     private void ifaceMpls(ipFwdIface lower, packHolder pck, addrIP hop) {
+        cntrT.tx(pck);
         if (!lower.ready) {
             lower.cntr.drop(pck, counter.reasons.notUp);
             return;
@@ -1089,7 +1103,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void ifacePack(ipFwdIface lower, packHolder pck) {
         if (lower == null) {
-            cntr.drop(pck, counter.reasons.noIface);
+            cntrT.drop(pck, counter.reasons.noIface);
             return;
         }
         if (!lower.ready) {
@@ -1193,6 +1207,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     }
 
     private void protoSend(ipFwdIface lower, packHolder pck) {
+        cntrL.rx(pck);
         if ((pck.IPmf) || (pck.IPfrg != 0)) {
             if (ruinPmtuD) {
                 doDrop(pck, lower, counter.reasons.fragment);
@@ -1203,7 +1218,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (coppIn != null) {
             if (coppIn.checkPacket(bits.getTime(), pck)) {
-                cntr.drop(pck, counter.reasons.noBuffer);
+                cntrL.drop(pck, counter.reasons.noBuffer);
                 return;
             }
         }
@@ -1232,12 +1247,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     }
 
     private boolean protoAlert(ipFwdIface lower, packHolder pck) {
+        cntrL.rx(pck);
         if ((pck.IPmf) || (pck.IPfrg != 0)) {
             return true;
         }
         if (coppIn != null) {
             if (coppIn.checkPacket(bits.getTime(), pck)) {
-                cntr.drop(pck, counter.reasons.noBuffer);
+                cntrL.drop(pck, counter.reasons.noBuffer);
                 return false;
             }
         }
@@ -1311,8 +1327,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param pck packet to send
      */
     public void protoPack(ipFwdIface iface, packHolder pck) {
+        cntrL.tx(pck);
         if (iface == null) {
-            cntr.drop(pck, counter.reasons.noIface);
+            cntrL.drop(pck, counter.reasons.noIface);
             return;
         }
         if (!iface.ready) {
@@ -1325,7 +1342,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ipCore.createIPheader(pck);
         if (coppOut != null) {
             if (coppOut.checkPacket(bits.getTime(), pck)) {
-                cntr.drop(pck, counter.reasons.noBuffer);
+                cntrL.drop(pck, counter.reasons.noBuffer);
                 return;
             }
         }
@@ -1403,7 +1420,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param reason reason
      */
     public void doDrop(packHolder pck, ipFwdIface lower, counter.reasons reason) {
-        cntr.drop(pck, reason);
+        cntrT.drop(pck, reason);
         if (unreachInt > 0) {
             long tim = bits.getTime();
             if ((tim - unreachLst) < unreachInt) {
@@ -1433,7 +1450,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ipCore.createIPheader(pck);
         if (coppOut != null) {
             if (coppOut.checkPacket(bits.getTime(), pck)) {
-                cntr.drop(pck, counter.reasons.noBuffer);
+                cntrL.drop(pck, counter.reasons.noBuffer);
                 return;
             }
         }
@@ -1444,7 +1461,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
 
     private void doMpls(ipFwdIface ifc, addrIP hop, List<Integer> labs, packHolder pck) {
         if (ifc == null) {
-            cntr.drop(pck, counter.reasons.noIface);
+            cntrT.drop(pck, counter.reasons.noIface);
             return;
         }
         if (labs != null) {
@@ -1479,7 +1496,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (lab.nextHop != null) {
             if ((lab.remoteLab == null) && (!pck.MPLSbottom)) {
                 logger.info("no label for " + lab.getValue());
-                cntr.drop(pck, counter.reasons.notInTab);
+                cntrT.drop(pck, counter.reasons.notInTab);
                 return;
             }
             doMpls(lab.iface, lab.nextHop, lab.remoteLab, pck);
@@ -1502,7 +1519,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             pck.BIERbsl = lab.bier.bsl;
             if (ipMpls.parseBIERheader(pck)) {
                 logger.info("received invalid bier header on label " + lab.getValue());
-                cntr.drop(pck, counter.reasons.badHdr);
+                cntrT.drop(pck, counter.reasons.badHdr);
                 return;
             }
             int bsl = tabLabelBier.bsl2num(lab.bier.bsl);
@@ -1540,7 +1557,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         if (!pck.MPLSbottom) {
-            cntr.drop(pck, counter.reasons.badProto);
+            cntrT.drop(pck, counter.reasons.badProto);
             return;
         }
         if (lab.pweIfc != null) {
@@ -1554,7 +1571,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         if (ipCore.parseIPheader(pck, true)) {
-            cntr.drop(pck, counter.reasons.badHdr);
+            cntrT.drop(pck, counter.reasons.badHdr);
             return;
         }
         pck.INTiface = 0;
@@ -1564,25 +1581,25 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             ifc = ipFwdTab.findStableIface(this);
         } else {
             if (lab.forwarder == null) {
-                cntr.drop(pck, counter.reasons.notInTab);
+                cntrT.drop(pck, counter.reasons.notInTab);
                 return;
             }
             tabRouteEntry<addrIP> prf = lab.forwarder.actualU.route(pck.IPtrg);
             if (prf == null) {
-                cntr.drop(pck, counter.reasons.noRoute);
+                cntrT.drop(pck, counter.reasons.noRoute);
                 return;
             }
             if (prf.rouTab != null) {
                 prf = prf.rouTab.actualU.route(prf.nextHop);
                 if (prf == null) {
-                    cntr.drop(pck, counter.reasons.noRoute);
+                    cntrT.drop(pck, counter.reasons.noRoute);
                     return;
                 }
             }
             ifc = (ipFwdIface) prf.iface;
         }
         if (ifc == null) {
-            cntr.drop(pck, counter.reasons.noIface);
+            cntrT.drop(pck, counter.reasons.noIface);
             return;
         }
         forwardPacket(true, true, ifc, pck);
@@ -1599,7 +1616,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.IPtrg.setAddr(trg);
         tabRouteEntry<addrIP> prf = actualU.route(trg);
         if (prf == null) {
-            cntr.drop(pck, counter.reasons.noRoute);
+            cntrT.drop(pck, counter.reasons.noRoute);
             return;
         }
         if ((prf.labelRem == null) && (req)) {
@@ -1608,7 +1625,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
             logger.info("no label for " + trg);
-            cntr.drop(pck, counter.reasons.notInTab);
+            cntrT.drop(pck, counter.reasons.notInTab);
             return;
         }
         if (prf.rouTab != null) {
@@ -1686,9 +1703,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param pck packet
      */
     private void forwardPacket(boolean fromIfc, boolean fromMpls, ipFwdIface rxIfc, packHolder pck) {
-        cntr.rx(pck);
+        cntrT.rx(pck);
         if (rxIfc == null) {
-            cntr.drop(pck, counter.reasons.noIface);
+            cntrT.drop(pck, counter.reasons.noIface);
             return;
         }
         if (packetFilter != null) {
@@ -1699,13 +1716,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (!rxIfc.disableDapp && (dapp != null)) {
             if (dapp.checkPacket(bits.getTime(), pck)) {
-                cntr.drop(pck, counter.reasons.noBuffer);
+                cntrT.drop(pck, counter.reasons.noBuffer);
                 return;
             }
         }
         if (!rxIfc.disableFlowspec && (flowspec != null)) {
             if (flowspec.checkPacket(bits.getTime(), pck)) {
-                cntr.drop(pck, counter.reasons.noBuffer);
+                cntrT.drop(pck, counter.reasons.noBuffer);
                 return;
             }
         }
@@ -1770,23 +1787,23 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
             if (pck.IPttl < 2) {
-                cntr.drop(pck, counter.reasons.ttlExceed);
+                cntrT.drop(pck, counter.reasons.ttlExceed);
                 return;
             }
             ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1);
             ipFwdMcast grp = new ipFwdMcast(pck.IPtrg, pck.IPsrc);
             grp = groups.find(grp);
             if (grp == null) {
-                cntr.drop(pck, counter.reasons.badNet);
+                cntrT.drop(pck, counter.reasons.badNet);
                 return;
             }
             if (fromIfc && (!fromMpls)) {
                 if (grp.iface == null) {
-                    cntr.drop(pck, counter.reasons.noRoute);
+                    cntrT.drop(pck, counter.reasons.noRoute);
                     return;
                 }
                 if (grp.iface.ifwNum != rxIfc.ifwNum) {
-                    cntr.drop(pck, counter.reasons.noRoute);
+                    cntrT.drop(pck, counter.reasons.noRoute);
                     return;
                 }
             }
@@ -1825,6 +1842,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             prf.cntr.tx(pck);
         }
         if (prf.rouTab != null) {
+            cntrT.tx(pck);
             if (prf.segrouPrf != null) {
                 pck.putDefaults();
                 pck.IPtrg.setAddr(prf.segrouPrf);
@@ -1859,7 +1877,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                     protoSend(txIfc, pck);
                     return;
                 case 1:
-                    cntr.drop(pck, counter.reasons.badHdr);
+                    cntrT.drop(pck, counter.reasons.badHdr);
                     return;
                 default:
                     break;
@@ -1901,7 +1919,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         } else {
             ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1);
         }
-        cntr.tx(pck);
         if (prf.rouTyp == tabRouteEntry.routeType.conn) {
             ifaceProto(txIfc, pck, null);
             return;
@@ -2026,7 +2043,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ipCore.createIPheader(pck);
         if (coppOut != null) {
             if (coppOut.checkPacket(bits.getTime(), pck)) {
-                cntr.drop(pck, counter.reasons.noBuffer);
+                cntrL.drop(pck, counter.reasons.noBuffer);
                 return ntry.notif;
             }
         }
