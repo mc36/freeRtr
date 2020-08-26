@@ -796,6 +796,9 @@ public class userShow {
                 rdr.putStrTab(ifc.ethtyp.getShSizes());
                 rdr.putStrTab(ifc.ethtyp.getShClasses());
                 rdr.putStrArr(ifc.getShIntTxt(2));
+                rdr.putStrArr(ifc.getShIntTxt(11));
+                rdr.putStrTab(doShowRates(ifc.ethtyp.hwHstry));
+                rdr.putStrArr(ifc.getShIntTxt(12));
                 return null;
             }
             if (a.equals("ethertypes")) {
@@ -3197,6 +3200,9 @@ public class userShow {
     }
 
     private userFormat doShowRates(history h) {
+        if (h == null) {
+            return null;
+        }
         userFormat l = new userFormat("|", "time|tx|rx|drop|tx|rx|drop", "1|3packet|3byte");
         l.add(h.getShRate());
         return l;
