@@ -609,6 +609,7 @@ public class ipFwdIface extends tabRouteIface {
     public boolean doConfig(String a, cmds cmd, ipCor cor, ipFwd fwd, prtUdp udp) {
         if (a.equals("enable")) {
             linkLocal = true;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("propagate-ttl-always")) {
@@ -728,6 +729,7 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             gatePrfx = ntry.prflst;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("gateway-routemap")) {
@@ -737,6 +739,7 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             gateRtmp = ntry.roumap;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("access-group-in")) {
@@ -1074,6 +1077,7 @@ public class ipFwdIface extends tabRouteIface {
     public boolean unConfig(String a, cmds cmd, ipFwd fwd) {
         if (a.equals("enable")) {
             linkLocal = false;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("propagate-ttl-always")) {
@@ -1163,10 +1167,12 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("gateway-prefix")) {
             gatePrfx = null;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("gateway-routemap")) {
             gateRtmp = null;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("access-group-in")) {
