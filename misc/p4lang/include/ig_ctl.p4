@@ -71,11 +71,11 @@ control ig_ctl(inout headers hdr,
         if ( ig_md.nexthop_id == CPU_PORT) {
             ig_ctl_tunnel.apply(hdr,ig_md,ig_intr_md);
             if (ig_md.need_recir == 1) {
-                if (ig_md.srv_op_type != 0) {
-                    hdr.ipv6.setInvalid();
+                if (hdr.vlan.isValid()) {
+                    hdr.vlan.setInvalid();
                 }
-                if (ig_md.srv_op_type == 2) {
-                    hdr.eth3.setInvalid();
+                if (hdr.pppoeD.isValid()) {
+                    hdr.pppoeD.setInvalid();
                 }
                 return;
             }
