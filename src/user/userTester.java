@@ -1292,7 +1292,7 @@ class userTesterOne {
                 cfg.add(s);
             }
             bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.swCfgEnd);
-            int round = 500;
+            int round = 5000;
             rdr.setMax(round);
             for (int rnd = 0; rnd < round; rnd++) {
                 String a = p.getLine();
