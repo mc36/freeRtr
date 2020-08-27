@@ -146,6 +146,9 @@ struct neigh_entry {
     int dip2;
     int dip3;
     int dip4;
+    int sprt;
+    int dprt;
+    int tid;
     long pack;
     long byte;
 };

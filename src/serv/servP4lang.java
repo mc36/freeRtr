@@ -254,7 +254,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer) && (ifc.type != cfgIfc.ifaceType.hairpin) && (ifc.type != cfgIfc.ifaceType.tunnel)) {
+            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer) && (ifc.type != cfgIfc.ifaceType.hairpin) && (ifc.type != cfgIfc.ifaceType.tunnel) && (ifc.type != cfgIfc.ifaceType.virtppp)) {
                 cmd.error("not p4lang interface");
                 return false;
             }
@@ -559,6 +559,8 @@ class servP4langNei implements Comparator<servP4langNei> {
 
     public int sentIfc;
 
+    public int sentTun;
+
     public int id;
 
     public int need;
@@ -568,7 +570,7 @@ class servP4langNei implements Comparator<servP4langNei> {
         if (i != 0) {
             return i;
         }
-        if ((o1.iface.ifc.type == cfgIfc.ifaceType.dialer) || (o1.iface.ifc.type == cfgIfc.ifaceType.tunnel)) {
+        if ((o1.iface.ifc.type == cfgIfc.ifaceType.dialer) || (o1.iface.ifc.type == cfgIfc.ifaceType.tunnel) || (o1.iface.ifc.type == cfgIfc.ifaceType.virtppp)) {
             return 0;
         }
         return o1.adr.compare(o1.adr, o2.adr);
@@ -1487,7 +1489,7 @@ class servP4langConn implements Runnable {
             sta = state.states.up;
         }
         int i = ifc.ifc.ethtyp.getMTUsize();
-        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge) || (ifc.ifc.type == cfgIfc.ifaceType.dialer) || (ifc.ifc.type == cfgIfc.ifaceType.hairpin) || (ifc.ifc.type == cfgIfc.ifaceType.tunnel)) {
+        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge) || (ifc.ifc.type == cfgIfc.ifaceType.dialer) || (ifc.ifc.type == cfgIfc.ifaceType.hairpin) || (ifc.ifc.type == cfgIfc.ifaceType.tunnel) || (ifc.ifc.type == cfgIfc.ifaceType.virtppp)) {
             ifc.sentState = sta;
             ifc.sentMtu = i;
         }
@@ -1639,6 +1641,9 @@ class servP4langConn implements Runnable {
             }
         }
         if (ifc.ifc.xconn != null) {
+            if (ifc.ifc.xconn.pwom == null) {
+                return;
+            }
             int lr = ifc.ifc.xconn.pwom.getLabelRem();
             if (lr < 0) {
                 return;
@@ -1646,15 +1651,20 @@ class servP4langConn implements Runnable {
             if ((ifc.sentVrf == -1) && (lr == ifc.sentLabel)) {
                 return;
             }
-            if (ifc.ifc.xconn.pwom == null) {
-                return;
-            }
             int ll = ifc.ifc.xconn.pwom.getLabelLoc();
             if (ll < 0) {
                 return;
             }
-            tabRouteEntry<addrIP> ntry = ifc.ifc.xconn.vrf.getFwd(ifc.ifc.xconn.adr).actualU.route(ifc.ifc.xconn.adr);
+            ipFwd ofwd = ifc.ifc.xconn.vrf.getFwd(ifc.ifc.xconn.adr);
+            servP4langVrf ovrf = findVrf(ofwd);
+            if (ovrf == null) {
+                return;
+            }
+            tabRouteEntry<addrIP> ntry = ofwd.actualU.route(ifc.ifc.xconn.adr);
             if (ntry == null) {
+                return;
+            }
+            if (ntry.iface == null) {
                 return;
             }
             servP4langNei hop = findIfc(ntry.iface, ntry.nextHop);
@@ -1730,6 +1740,87 @@ class servP4langConn implements Runnable {
         }
         servP4langVrf vrf = findVrf(ifc);
         if (vrf == null) {
+            return;
+        }
+        if (ifc.ifc.type == cfgIfc.ifaceType.virtppp) {
+            servP4langNei nei = findIfc(ifc.ifc.fwdIf4, new addrIP());
+            if (nei == null) {
+                nei = findIfc(ifc.ifc.fwdIf6, new addrIP());
+            }
+            if (nei == null) {
+                return;
+            }
+            nei.need++;
+            nei.vrf = vrf;
+            if (ifc.ifc.pwhe == null) {
+                return;
+            }
+            if (ifc.ifc.pwhe.l2tp2 == null) {
+                return;
+            }
+            addrIP src = ifc.ifc.pwhe.ifc.getLocAddr(ifc.ifc.pwhe.adr);
+            if (src == null) {
+                return;
+            }
+            ipFwd ofwd = ifc.ifc.pwhe.vrf.getFwd(ifc.ifc.pwhe.adr);
+            servP4langVrf ovrf = findVrf(ofwd);
+            if (ovrf == null) {
+                return;
+            }
+            tabRouteEntry<addrIP> ntry = ofwd.actualU.route(ifc.ifc.pwhe.adr);
+            if (ntry == null) {
+                return;
+            }
+            if (ntry.iface == null) {
+                return;
+            }
+            addrIP nh = ntry.nextHop;
+            if (nh == null) {
+                nh = ifc.ifc.pwhe.adr;
+            }
+            servP4langNei hop = findIfc(ntry.iface, nh);
+            if (hop == null) {
+                return;
+            }
+            if (hop.mac == null) {
+                return;
+            }
+            int tun = ifc.ifc.pwhe.l2tp2.getTunnRem();
+            if (tun < 1) {
+                return;
+            }
+            int ses = ifc.ifc.pwhe.l2tp2.getSessRem();
+            if (ses < 1) {
+                return;
+            }
+            tun = (tun << 16) | ses;
+            int lp = ifc.ifc.pwhe.l2tp2.getPortLoc();
+            if (lp < 1) {
+                return;
+            }
+            int rp = ifc.ifc.pwhe.l2tp2.getPortRem();
+            if (rp < 1) {
+                return;
+            }
+            String act;
+            if (nei.mac == null) {
+                act = "add";
+            } else {
+                act = "mod";
+                if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == lp)) {
+                    return;
+                }
+            }
+            nei.mac = hop.mac.copyBytes();
+            nei.sentIfc = hop.sentIfc;
+            nei.sentTun = lp;
+            String afi;
+            if (ifc.ifc.pwhe.adr.isIPv4()) {
+                afi = "4";
+            } else {
+                afi = "6";
+            }
+            lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.pwhe.adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + ((addrMac) hop.iface.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + lp + " " + rp + " " + tun);
             return;
         }
         if (ifc.ifc.type == cfgIfc.ifaceType.tunnel) {

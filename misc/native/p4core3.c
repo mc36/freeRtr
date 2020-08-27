@@ -111,6 +111,47 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     hash = ((hash >> 4) ^ hash) & 0xf;
 
 
+
+#define ethtyp2ppptyp                                           \
+    switch (ethtyp) {                                           \
+    case 0x800:                                                 \
+        ethtyp = 0x0021;                                        \
+        break;                                                  \
+    case 0x86dd:                                                \
+        ethtyp = 0x0057;                                        \
+        break;                                                  \
+    case 0x8847:                                                \
+        ethtyp = 0x0281;                                        \
+        break;                                                  \
+    default:                                                    \
+        packDr[port]++;                                         \
+        byteDr[port] += bufS;                                   \
+        return;                                                 \
+    }
+
+
+
+
+#define ppptyp2ethtyp                                           \
+    switch (ethtyp) {                                           \
+    case 0x0021:                                                \
+        ethtyp = 0x800;                                         \
+        break;                                                  \
+    case 0x0057:                                                \
+        ethtyp = 0x86dd;                                        \
+        break;                                                  \
+    case 0x0281:                                                \
+        ethtyp = 0x8847;                                        \
+        break;                                                  \
+    default:                                                    \
+        packDr[port]++;                                         \
+        byteDr[port] += bufS;                                   \
+        return;                                                 \
+    }
+
+
+
+
 int masks[] = {
     0x00000000,
     0x80000000, 0xc0000000, 0xe0000000, 0xf0000000,
@@ -124,8 +165,7 @@ int masks[] = {
 };
 
 
-int calcIPsum(unsigned char *buf, int pos, int len) {
-    int sum = 0;
+int calcIPsum(unsigned char *buf, int pos, int len, int sum) {
     while (len > 1)  {
         sum += get16lsb(buf, pos);
         len -= 2;
@@ -135,6 +175,20 @@ int calcIPsum(unsigned char *buf, int pos, int len) {
     sum = (sum >> 16) + (sum & 0xffff);
     sum += (sum >> 16);
     return sum;
+}
+
+
+void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip2, int ip3, int ip4, int ip5, int ip6, int ip7, int ip8) {
+    put32msb(buf, pos + 0, ip1);
+    put32msb(buf, pos + 4, ip2);
+    put32msb(buf, pos + 8, ip3);
+    put32msb(buf, pos + 12, ip4);
+    put32msb(buf, pos + 16, ip5);
+    put32msb(buf, pos + 20, ip6);
+    put32msb(buf, pos + 24, ip7);
+    put32msb(buf, pos + 28, ip8);
+    put16msb(buf, pos + 32, prt);
+    put16msb(buf, pos + 34, len);
 }
 
 
@@ -183,6 +237,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     int ethtyp;
     int prt = port;
     int prt2 = port;
+    int tmp;
 ether_rx:
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
@@ -265,27 +320,13 @@ neigh_tx:
             case 1: // raw ip
                 break;
             case 2: // pppoe
-                switch (ethtyp) {
-                case 0x800:
-                    index = 0x0021;
-                    break;
-                case 0x86dd:
-                    index = 0x0057;
-                    break;
-                case 0x8847:
-                    index = 0x0281;
-                    break;
-                default:
-                    packDr[port]++;
-                    byteDr[port] += bufS;
-                    return;
-                }
-                put16msb(bufD, bufP, index);
-                index = bufS - bufP + preBuff;
+                ethtyp2ppptyp;
+                put16msb(bufD, bufP, ethtyp);
+                tmp = bufS - bufP + preBuff;
                 bufP -= 6;
                 put16msb(bufD, bufP + 0, 0x1100);
                 put16msb(bufD, bufP + 2, neigh_res->session);
-                put16msb(bufD, bufP + 4, index);
+                put16msb(bufD, bufP + 4, tmp);
                 ethtyp = 0x8864;
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
@@ -303,7 +344,7 @@ neigh_tx:
                 put16msb(bufD, bufP + 10, 0); // checksum
                 put32msb(bufD, bufP + 12, neigh_res->sip1); // source
                 put32msb(bufD, bufP + 16, neigh_res->dip1); // target
-                put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20));
+                put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));
                 ethtyp = 0x800;
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
@@ -316,6 +357,72 @@ neigh_tx:
                 put16msb(bufD, bufP + 2, 0); // flow label
                 put16msb(bufD, bufP + 4, bufS - bufP + preBuff - 40); // payload length
                 put16msb(bufD, bufP + 6, 0x2fff); // protocol, ttl
+                put32msb(bufD, bufP + 8, neigh_res->sip1); // source
+                put32msb(bufD, bufP + 12, neigh_res->sip2); // source
+                put32msb(bufD, bufP + 16, neigh_res->sip3); // source
+                put32msb(bufD, bufP + 20, neigh_res->sip4); // source
+                put32msb(bufD, bufP + 24, neigh_res->dip1); // target
+                put32msb(bufD, bufP + 28, neigh_res->dip2); // target
+                put32msb(bufD, bufP + 32, neigh_res->dip3); // target
+                put32msb(bufD, bufP + 36, neigh_res->dip4); // target
+                ethtyp = 0x86dd;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                break;
+            case 5: // l2tp4
+                ethtyp2ppptyp;
+                put16msb(bufD, bufP, ethtyp);
+                bufP -= 10;
+                put16msb(bufD, bufP + 0, 0x0202); // l2tp header
+                put32msb(bufD, bufP + 2, neigh_res->tid); // tunid, sesid
+                put16msb(bufD, bufP + 6, 0); // offset
+                put16msb(bufD, bufP + 8, 0xff03); // ppp flags
+                bufP -= 8;
+                put16msb(bufD, bufP + 0, neigh_res->sprt); // source
+                put16msb(bufD, bufP + 2, neigh_res->dprt); // target
+                put16msb(bufD, bufP + 4, bufS - bufP + preBuff); // length
+                put16msb(bufD, bufP + 6, 0); // checksum
+                putPseudoSum(buf2, 0, 17, bufS - bufP + preBuff, neigh_res->sip1, neigh_res->dip1, 0, 0, 0, 0, 0, 0);
+                tmp = calcIPsum(buf2, 0, 36, 0);
+                tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);
+                put16lsb(bufD, bufP + 6, 0xffff - tmp); // checksum
+                bufP -= 20;
+                put16msb(bufD, bufP + 0, 0x4500); // ip ver, hdrlen, tos
+                put16msb(bufD, bufP + 2, bufS - bufP + preBuff); // total length
+                ipids++;
+                put16msb(bufD, bufP + 4, ipids); // identify
+                put16msb(bufD, bufP + 6, 0); // fragment
+                put16msb(bufD, bufP + 8, 0xff11); // ttl, protocol
+                put16msb(bufD, bufP + 10, 0); // checksum
+                put32msb(bufD, bufP + 12, neigh_res->sip1); // source
+                put32msb(bufD, bufP + 16, neigh_res->dip1); // target
+                put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));
+                ethtyp = 0x800;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                break;
+            case 6: // l2tp6
+                ethtyp2ppptyp;
+                put16msb(bufD, bufP, ethtyp);
+                bufP -= 10;
+                put16msb(bufD, bufP + 0, 0x0202); // l2tp header
+                put32msb(bufD, bufP + 2, neigh_res->tid); // tunid, sesid
+                put16msb(bufD, bufP + 6, 0); // offset
+                put16msb(bufD, bufP + 8, 0xff03); // ppp flags
+                bufP -= 8;
+                put16msb(bufD, bufP + 0, neigh_res->sprt); // source
+                put16msb(bufD, bufP + 2, neigh_res->dprt); // target
+                put16msb(bufD, bufP + 4, bufS - bufP + preBuff); // length
+                put16msb(bufD, bufP + 6, 0); // checksum
+                putPseudoSum(buf2, 0, 17, bufS - bufP + preBuff, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+                tmp = calcIPsum(buf2, 0, 36, 0);
+                tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);
+                put16lsb(bufD, bufP + 6, 0xffff - tmp); // checksum
+                bufP -= 40;
+                put16msb(bufD, bufP + 0, 0x6000); // ip ver, tos
+                put16msb(bufD, bufP + 2, 0); // flow label
+                put16msb(bufD, bufP + 4, bufS - bufP + preBuff - 40); // payload length
+                put16msb(bufD, bufP + 6, 0x11ff); // protocol, ttl
                 put32msb(bufD, bufP + 8, neigh_res->sip1); // source
                 put32msb(bufD, bufP + 12, neigh_res->sip2); // source
                 put32msb(bufD, bufP + 16, neigh_res->sip3); // source
@@ -510,8 +617,18 @@ ipv4_rou:
                 if (index >= 0) {
                     tun4_res = table_get(&tun4_table, index);
                     switch (tun4_res->command) {
-                    case 1: //gre
+                    case 1: // gre
                         bufP = bufT + 2; // gre header
+                        break;
+                    case 2: // l2tp
+                        bufP = bufT + 8; // udp header
+                        if ((get16msb(bufD, bufP) & 0x8000) != 0) goto cpu;
+                        bufP += 8; // l2tp header
+                        bufP += 2; // ppp flags
+                        ethtyp = get16msb(bufD, bufP);
+                        if ((ethtyp & 0x8000) != 0) goto cpu;
+                        ppptyp2ethtyp;
+                        put16msb(bufD, bufP, ethtyp);
                         break;
                     default:
                         packDr[port]++;
@@ -716,8 +833,18 @@ ipv6_hit:
                 if (index >= 0) {
                     tun6_res = table_get(&tun6_table, index);
                     switch (tun6_res->command) {
-                    case 1: //gre
+                    case 1: // gre
                         bufP = bufT + 2; // gre header
+                        break;
+                    case 2: // l2tp
+                        bufP = bufT + 8; // udp header
+                        if ((get16msb(bufD, bufP) & 0x8000) != 0) goto cpu;
+                        bufP += 8; // l2tp header
+                        bufP += 2; // ppp flags
+                        ethtyp = get16msb(bufD, bufP);
+                        if ((ethtyp & 0x8000) != 0) goto cpu;
+                        ppptyp2ethtyp;
+                        put16msb(bufD, bufP, ethtyp);
                         break;
                     default:
                         packDr[port]++;

@@ -198,6 +198,48 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
     }
 
     /**
+     * get local port number
+     *
+     * @return session id, 0 if no session
+     */
+    public int getPortLoc() {
+        if (sesRem == 0) {
+            return 0;
+        }
+        return conn.portLoc;
+    }
+
+    /**
+     * get remote port number
+     *
+     * @return session id, 0 if no session
+     */
+    public int getPortRem() {
+        if (sesRem == 0) {
+            return 0;
+        }
+        return conn.portRem;
+    }
+
+    /**
+     * get remote session id
+     *
+     * @return session id, 0 if no session
+     */
+    public int getSessRem() {
+        return sesRem;
+    }
+
+    /**
+     * get remote tunn id
+     *
+     * @return session id, 0 if no tunnel
+     */
+    public int getTunnRem() {
+        return tunRem;
+    }
+
+    /**
      * send packet
      *
      * @param pck packet
