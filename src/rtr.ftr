@@ -1036,6 +1036,10 @@ qc pass: p4lang: ingress gre access list
 qc pass: p4lang: egress gre access list
 qc pass: p4lang: ingress vlan gre access list
 qc pass: p4lang: egress vlan gre access list
+qc pass: p4lang: ingress l2tp access list
+qc pass: p4lang: egress l2tp access list
+qc pass: p4lang: ingress vlan l2tp access list
+qc pass: p4lang: egress vlan l2tp access list
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -1106,6 +1110,18 @@ qc pass: p4lang: gre mpls over hairpin
 qc pass: p4lang: gre mpls over hairpin vlan
 qc pass: p4lang: gre mpls over bridge
 qc pass: p4lang: gre mpls over vlan bridge
+qc pass: p4lang: l2tp routing over ipv4
+qc pass: p4lang: l2tp routing over ipv6
+qc pass: p4lang: l2tp routing over ipv4 loopback
+qc pass: p4lang: l2tp routing over ipv6 loopback
+qc pass: p4lang: l2tp routing over vlan
+qc pass: p4lang: l2tp routing over bundle
+qc pass: p4lang: l2tp mpls over ipv4
+qc pass: p4lang: l2tp mpls over ipv6
+qc pass: p4lang: l2tp mpls over ipv4 loopback
+qc pass: p4lang: l2tp mpls over ipv6 loopback
+qc pass: p4lang: l2tp mpls over vlan
+qc pass: p4lang: l2tp mpls over bundle
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

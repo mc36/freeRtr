@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
 release: freeRouter v20.8.27-rel, done by cs@nop.<br/>
-tested: 2020-08-27 10:58:26, took 00:05:50, with 100 workers, on 1934 cases, 0 failed, 0 traces, 1 retries<br/>
+tested: 2020-08-27 16:58:50, took 00:05:29, with 100 workers, on 1950 cases, 0 failed, 0 traces, 0 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr>
@@ -1043,6 +1043,10 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl28.tst">p4lang-acl28.tst</a></td><td>success</td><td>p4lang: egress gre access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl29.tst">p4lang-acl29.tst</a></td><td>success</td><td>p4lang: ingress vlan gre access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl30.tst">p4lang-acl30.tst</a></td><td>success</td><td>p4lang: egress vlan gre access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl31.tst">p4lang-acl31.tst</a></td><td>success</td><td>p4lang: ingress l2tp access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl32.tst">p4lang-acl32.tst</a></td><td>success</td><td>p4lang: egress l2tp access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl33.tst">p4lang-acl33.tst</a></td><td>success</td><td>p4lang: ingress vlan l2tp access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl34.tst">p4lang-acl34.tst</a></td><td>success</td><td>p4lang: egress vlan l2tp access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout01.tst">p4lang-rout01.tst</a></td><td>success</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout02.tst">p4lang-rout02.tst</a></td><td>success</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout03.tst">p4lang-rout03.tst</a></td><td>success</td><td>p4lang: mpls core</td></tr>
@@ -1113,6 +1117,18 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout68.tst">p4lang-rout68.tst</a></td><td>success</td><td>p4lang: gre mpls over hairpin vlan</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout69.tst">p4lang-rout69.tst</a></td><td>success</td><td>p4lang: gre mpls over bridge</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout70.tst">p4lang-rout70.tst</a></td><td>success</td><td>p4lang: gre mpls over vlan bridge</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout71.tst">p4lang-rout71.tst</a></td><td>success</td><td>p4lang: l2tp routing over ipv4</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout72.tst">p4lang-rout72.tst</a></td><td>success</td><td>p4lang: l2tp routing over ipv6</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout73.tst">p4lang-rout73.tst</a></td><td>success</td><td>p4lang: l2tp routing over ipv4 loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout74.tst">p4lang-rout74.tst</a></td><td>success</td><td>p4lang: l2tp routing over ipv6 loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout75.tst">p4lang-rout75.tst</a></td><td>success</td><td>p4lang: l2tp routing over vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout76.tst">p4lang-rout76.tst</a></td><td>success</td><td>p4lang: l2tp routing over bundle</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout77.tst">p4lang-rout77.tst</a></td><td>success</td><td>p4lang: l2tp mpls over ipv4</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout78.tst">p4lang-rout78.tst</a></td><td>success</td><td>p4lang: l2tp mpls over ipv6</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout79.tst">p4lang-rout79.tst</a></td><td>success</td><td>p4lang: l2tp mpls over ipv4 loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout80.tst">p4lang-rout80.tst</a></td><td>success</td><td>p4lang: l2tp mpls over ipv6 loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout81.tst">p4lang-rout81.tst</a></td><td>success</td><td>p4lang: l2tp mpls over vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout82.tst">p4lang-rout82.tst</a></td><td>success</td><td>p4lang: l2tp mpls over bundle</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/qos-action01.tst">qos-action01.tst</a></td><td>success</td><td>qos ingress transmit action</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/qos-action02.tst">qos-action02.tst</a></td><td>success</td><td>qos egress transmit action</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/qos-action03.tst">qos-action03.tst</a></td><td>success</td><td>qos ingress drop action</td></tr>

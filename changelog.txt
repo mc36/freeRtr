@@ -9155,3 +9155,20 @@ qc pass: p4lang: gre mpls over hairpin
 qc pass: p4lang: gre mpls over hairpin vlan
 qc pass: p4lang: gre mpls over bridge
 qc pass: p4lang: gre mpls over vlan bridge
+---------------------------------- 2020-08-27 16:53:21
+qc pass: p4lang: ingress l2tp access list
+qc pass: p4lang: egress l2tp access list
+qc pass: p4lang: ingress vlan l2tp access list
+qc pass: p4lang: egress vlan l2tp access list
+qc pass: p4lang: l2tp routing over ipv4
+qc pass: p4lang: l2tp routing over ipv6
+qc pass: p4lang: l2tp routing over ipv4 loopback
+qc pass: p4lang: l2tp routing over ipv6 loopback
+qc pass: p4lang: l2tp routing over vlan
+qc pass: p4lang: l2tp routing over bundle
+qc pass: p4lang: l2tp mpls over ipv4
+qc pass: p4lang: l2tp mpls over ipv6
+qc pass: p4lang: l2tp mpls over ipv4 loopback
+qc pass: p4lang: l2tp mpls over ipv6 loopback
+qc pass: p4lang: l2tp mpls over vlan
+qc pass: p4lang: l2tp mpls over bundle
