@@ -8,5 +8,8 @@ sudo rm -rf `find . -name *.log*`
 sudo rm -rf `find . -name *.pcap`
 cd /home/mc36/rare
 git pull
+git add .
+git commit -m "automatic commit at releng box"
+git push
 sudo dd if=/dev/zero of=/zzz bs=1M
 sudo rm /zzz

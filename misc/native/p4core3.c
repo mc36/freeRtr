@@ -123,6 +123,11 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     case 0x8847:                                                \
         ethtyp = 0x0281;                                        \
         break;                                                  \
+    case 0x6558:                                                \
+        bufP -= 2;                                              \
+        put16msb(bufD, bufP, 1);                                \
+        ethtyp = 0x0031;                                        \
+        break;                                                  \
     default:                                                    \
         packDr[port]++;                                         \
         byteDr[port] += bufS;                                   \
@@ -142,6 +147,10 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
         break;                                                  \
     case 0x0281:                                                \
         ethtyp = 0x8847;                                        \
+        break;                                                  \
+    case 0x0031:                                                \
+        ethtyp = 0x6558;                                        \
+        bufP += 2;                                              \
         break;                                                  \
     default:                                                    \
         packDr[port]++;                                         \
@@ -245,7 +254,7 @@ ethtyp_rx:
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
     switch (ethtyp) {
-    case 0x8847:
+    case 0x8847: // mpls
 mpls_rx:
         label = get32msb(bufD, bufP);
         ttl = (label & 0xff) - 1;
@@ -487,6 +496,7 @@ neigh_tx:
             memmove(&buf2[0], &bufD[bufP], 12);
             bufP += 12;
             bufP += 2;
+            bridge_ntry.id = mpls_ntry.bridge;
             goto bridgevpls_rx;
         case 6: // punt
             goto cpu;
@@ -494,7 +504,7 @@ neigh_tx:
             return;
         }
         return;
-    case 0x8100:
+    case 0x8100: // dot1q
         vlan_ntry.port = prt;
         vlan_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
         bufP += 2;
@@ -510,7 +520,7 @@ neigh_tx:
         vlan_res->byte += bufS;
         goto ethtyp_rx;
         return;
-    case 0x800:
+    case 0x800: // ipv4
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
         if (index < 0) {
@@ -676,7 +686,7 @@ ipv4_rou:
             }
         }
         goto punt;
-    case 0x86dd:
+    case 0x86dd: // ipv6
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
         if (index < 0) {
@@ -892,7 +902,7 @@ ipv6_hit:
             }
         }
         goto punt;
-    case 0x8864:
+    case 0x8864: // pppoe
         pppoe_ntry.port = prt;
         pppoe_ntry.session = get16msb(bufD, bufP + 2);
         index = table_find(&pppoe_table, &pppoe_ntry);
@@ -907,8 +917,16 @@ ipv6_hit:
         prt = pppoe_res->aclport;
         bufP += 6;
         ethtyp = get16msb(bufD, bufP);
-        bufP += 2;
         if ((ethtyp & 0x8000) != 0) goto cpu;
+        ppptyp2ethtyp;
+        put16msb(bufD, bufP, ethtyp);
+        bufP -= 12;
+        memset(&bufD[bufP], 0, 12);
+        bufS = bufS - bufP + preBuff;
+        memmove(&bufD[preBuff], &bufD[bufP], bufS);
+        prt2 = prt;
+        goto ether_rx;
+    case 0x6558: // routed bridge
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
         if (index < 0) {
@@ -917,28 +935,16 @@ ipv6_hit:
             return;
         }
         portvrf_res = table_get(&portvrf_table, index);
-        if (portvrf_res->command != 1) {
+        if (portvrf_res->command != 2) {
             packDr[port]++;
             byteDr[port] += bufS;
             return;
         }
-        route4_ntry.vrf = portvrf_res->vrf;
-        route6_ntry.vrf = portvrf_res->vrf;
-        switch (ethtyp) {
-        case 0x0021:
-            ethtyp = 0x800;
-            goto ipv4_rx;
-        case 0x0057:
-            ethtyp = 0x86dd;
-            goto ipv6_rx;
-        case 0x0281:
-            ethtyp = 0x8847;
-            goto mpls_rx;
-        }
-        packDr[port]++;
-        byteDr[port] += bufS;
-        return;
-    case 0x65580001:
+        bridge_ntry.id = portvrf_res->bridge;
+        memmove(&buf2[0], &bufD[bufP], 12);
+        bufP += 12;
+        bufP += 2;
+        goto bridgevpls_rx;
 xconn_rx:
         memmove(&buf2[0], &bufD[preBuff], 12);
         bufP -= 2;
@@ -953,10 +959,10 @@ xconn_rx:
         put32msb(bufD, bufP, label);
         neigh_ntry.id = portvrf_res->nexthop;
         goto ethtyp_tx;
-    case 0x65580000:
 bridge_rx:
         bridge_ntry.id = portvrf_res->bridge;
         memmove(&buf2[0], &bufD[preBuff], 12);
+        goto bridgevpls_rx;
 bridgevpls_rx:
         bridge_ntry.mac1 = get16msb(buf2, 6);
         bridge_ntry.mac2 = get32msb(buf2, 8);
@@ -985,6 +991,12 @@ bridgevpls_rx:
             bufP -= 4;
             label = 0xff | (bridge_res->label1 << 12);
             put32msb(bufD, bufP, label);
+            neigh_ntry.id = bridge_res->nexthop;
+            goto ethtyp_tx;
+        case 3:
+            bufP -= 12;
+            memmove(&bufD[bufP], &buf2[0], 12);
+            ethtyp = 0x6558;
             neigh_ntry.id = bridge_res->nexthop;
             goto ethtyp_tx;
         default:
@@ -1028,9 +1040,9 @@ layer2_tx:
         }
         send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
         return;
-    case 0x806:
+    case 0x806: // arp
         goto cpu;
-    case 0x8863:
+    case 0x8863: // pppoe ctrl
         goto cpu;
     default:
 punt:

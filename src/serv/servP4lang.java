@@ -1397,7 +1397,18 @@ class servP4langConn implements Runnable {
             br.macs.put(ntry);
             servP4langIfc ifc = findIfc(ntry.ifc);
             if (ifc != null) {
-                lower.sendLine("bridgemac_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + ifc.id);
+                if ((ifc.ifc.type != cfgIfc.ifaceType.dialer) && (ifc.ifc.type != cfgIfc.ifaceType.tunnel) && (ifc.ifc.type != cfgIfc.ifaceType.virtppp)) {
+                    lower.sendLine("bridgemac_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + ifc.id);
+                    continue;
+                }
+                servP4langNei nei = findIfc(ifc.ifc.fwdIf4, new addrIP());
+                if (nei == null) {
+                    nei = findIfc(ifc.ifc.fwdIf6, new addrIP());
+                }
+                if (nei == null) {
+                    continue;
+                }
+                lower.sendLine("routedmac_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + nei.id);
                 continue;
             }
             int l = -1;

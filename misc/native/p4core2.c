@@ -264,6 +264,17 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&bridge_table, &bridge_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "routedmac") == 0) {
+        bridge_ntry.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        bridge_ntry.nexthop = atoi(arg[4]);
+        bridge_ntry.command = 3;
+        if (del == 0) table_del(&bridge_table, &bridge_ntry);
+        else table_add(&bridge_table, &bridge_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "portvlan") == 0) {
         vlan_ntry.id = atoi(arg[2]);
         vlan_ntry.port = atoi(arg[3]);
@@ -970,13 +981,13 @@ int doConsoleCommand(unsigned char*buf) {
         break;
     case 'b':
     case 'B':
-        printf("    bridge               mac       port\n");
+        printf("    bridge               mac       port    nexthop\n");
         for (int i=0; i<bridge_table.size; i++) {
             struct bridge_entry *ntry = table_get(&bridge_table, i);
             put16msb(buf2, 0, ntry->mac1);
             put32msb(buf2, 2, ntry->mac2);
             mac2str(buf2, buf);
-            printf("%10i %s %10i\n", ntry->id, buf, ntry->port);
+            printf("%10i %s %10i %10i\n", ntry->id, buf, ntry->port, ntry->nexthop);
         }
         break;
     case 'v':

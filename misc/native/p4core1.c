@@ -168,7 +168,7 @@ struct bridge_entry {
     int id;
     int mac1;
     int mac2;
-    int command;    // 1=port, 2=vpls
+    int command;    // 1=port, 2=vpls, 3=route
     int port;
     int nexthop;
     int label1;
