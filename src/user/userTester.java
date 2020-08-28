@@ -1281,7 +1281,8 @@ class userTesterOne {
                 if (s.length() < 1) {
                     break;
                 }
-                if (otherP.indexOf(" " + ftr + " ") < 0) {
+                if (otherP.indexOf(" " + s + " ") < 0) {
+                    rdr.debugRes("missing feature " + s);
                     nothave();
                     return;
                 }
