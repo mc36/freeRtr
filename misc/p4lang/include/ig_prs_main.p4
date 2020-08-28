@@ -226,13 +226,23 @@ IP_PROTOCOL_SRL2:
         pkt.extract(hdr.udp);
         ig_md.layer4_srcprt = hdr.udp.src_port;
         ig_md.layer4_dstprt = hdr.udp.dst_port;
-        transition accept;
+        transition select(hdr.udp.src_port) {
+1701:
+            prs_l2tp;
+        default:
+            accept;
+        }
     }
 
     state prs_tcp {
         pkt.extract(hdr.tcp);
         ig_md.layer4_srcprt = hdr.tcp.src_port;
         ig_md.layer4_dstprt = hdr.tcp.dst_port;
+        transition accept;
+    }
+
+    state prs_l2tp {
+        pkt.extract(hdr.l2tp);
         transition accept;
     }
 

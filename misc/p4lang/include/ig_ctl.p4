@@ -40,6 +40,7 @@ control ig_ctl(inout headers hdr,
              */
             ig_intr_md.egress_spec = (PortId_t)hdr.cpu.port;
             hdr.cpu.setInvalid();
+            ig_md.punting = 1;
             return;
         }
         /*
@@ -61,6 +62,7 @@ control ig_ctl(inout headers hdr,
             hdr.cpu.setValid();
             hdr.cpu.port = ig_md.ingress_id;
             ig_intr_md.egress_spec = CPU_PORT;
+            ig_md.punting = 1;
             return;
         }
         ig_ctl_ipv4.apply(hdr,ig_md,ig_intr_md);
@@ -86,6 +88,7 @@ control ig_ctl(inout headers hdr,
             hdr.cpu.setValid();
             hdr.cpu.port = ig_md.ingress_id;
             ig_intr_md.egress_spec = CPU_PORT;
+            ig_md.punting = 1;
             return;
         }
 

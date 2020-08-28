@@ -10,6 +10,8 @@ struct headers {
     ipv4_t		ipv4d;
     ipv6_t		ipv6d;
     gre_t		gre2;
+    udp_t		udp2;
+    l2tp_t		l2tp2;
     mpls_t		mpls0;
     mpls_t		mpls1;
     ipv4_t		ipv4c;
@@ -24,6 +26,7 @@ struct headers {
     ipv6_t		ipv6b;
     gre_t		gre;
     udp_t		udp;
+    l2tp_t		l2tp;
     tcp_t		tcp;
 }
 
