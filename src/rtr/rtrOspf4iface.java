@@ -420,7 +420,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             deadTimer = bits.str2num(cmd.word());
             return;
         }
-        if (a.contains("retransmit-time")) {
+        if (a.equals("retransmit-time")) {
             retransTimer = bits.str2num(cmd.word());
             return;
         }

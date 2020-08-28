@@ -1316,7 +1316,7 @@ public class rtrIsis extends ipRtr {
             lev.schedWork(3);
             return false;
         }
-        if (s.contains("hostname")) {
+        if (s.equals("hostname")) {
             lev.hostname = !negated;
             lev.schedWork(3);
             return false;

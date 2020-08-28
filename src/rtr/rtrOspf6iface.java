@@ -409,7 +409,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             deadTimer = bits.str2num(cmd.word());
             return;
         }
-        if (a.contains("retransmit-time")) {
+        if (a.equals("retransmit-time")) {
             retransTimer = bits.str2num(cmd.word());
             return;
         }

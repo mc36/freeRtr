@@ -610,7 +610,7 @@ class servFtpDoer implements Runnable {
             doLine("250 moved to folder");
             return false;
         }
-        if (a.contains("type")) {
+        if (a.equals("type")) {
             s = "";
             a = cmd.word().toLowerCase();
             if (a.equals("a")) {

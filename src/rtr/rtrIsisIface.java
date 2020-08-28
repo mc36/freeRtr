@@ -365,7 +365,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             deadTimer = bits.str2num(cmd.word());
             return;
         }
-        if (a.contains("retransmit-time")) {
+        if (a.equals("retransmit-time")) {
             retransTimer = bits.str2num(cmd.word());
             return;
         }

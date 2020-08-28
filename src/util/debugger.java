@@ -1614,7 +1614,7 @@ public class debugger {
                 secTlsTraf = v;
                 return false;
             }
-            if (s.contains("ike")) {
+            if (s.equals("ike")) {
                 secIkeTraf = v;
                 return false;
             }

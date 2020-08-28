@@ -74,6 +74,8 @@ public class userTester {
 
     private String otherF = null;
 
+    private String otherP = null;
+
     private String otherI = null;
 
     private String otherN = null;
@@ -361,6 +363,7 @@ public class userTester {
         if (otherF != null) {
             paralell = 0;
             otherD = bits.txt2buf(path + otherF);
+            otherP = " " + otherD.remove(0) + " ";
             otherI = otherD.remove(0);
             otherM = bits.str2num(otherD.remove(0));
             otherC = bits.str2num(otherD.remove(0));
@@ -565,6 +568,7 @@ public class userTester {
         lt.reapply = reapply;
         lt.jvm = jvn + jvp;
         lt.otherD = otherD;
+        lt.otherP = otherP;
         lt.otherI = otherI;
         lt.otherN = otherN;
         lt.otherM = otherM;
@@ -910,6 +914,8 @@ class userTesterOne {
 
     public String remoteS;
 
+    public String otherP;
+
     public String otherI;
 
     public String otherN;
@@ -1054,6 +1060,12 @@ class userTesterOne {
         testRes = 0;
         stage = "successfully";
         cmd = new cmds("", "finished");
+    }
+
+    private void nothave() {
+        testRes = 7;
+        stage = "not";
+        cmd = new cmds("", "available");
     }
 
     public void doTest(String pt, String fn) {
@@ -1252,6 +1264,28 @@ class userTesterOne {
                 return;
             }
             String rn = cmd.word();
+            String ftr = "";
+            for (;;) {
+                s = cmd.word();
+                if (s.length() < 1) {
+                    break;
+                }
+                if (s.equals("feature")) {
+                    ftr = cmd.getRemaining();
+                    break;
+                }
+            }
+            cmd = new cmds("ftr", ftr);
+            for (;;) {
+                s = cmd.word();
+                if (s.length() < 1) {
+                    break;
+                }
+                if (otherP.indexOf(" " + ftr + " ") < 0) {
+                    nothave();
+                    return;
+                }
+            }
             List<String> cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();

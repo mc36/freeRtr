@@ -353,10 +353,11 @@ public class userReader implements Comparator<String> {
                 List<String> tab = new ArrayList<String>();
                 for (int i = 0; i < lst.size(); i++) {
                     String a = lst.get(i);
-                    if (tab.contains(a.substring(columnB, columnE))) {
+                    String b = a.substring(columnB, columnE);
+                    if (tab.contains(b)) {
                         continue;
                     }
-                    tab.add(a.substring(columnB, columnE));
+                    tab.add(b);
                     res.add(a);
                 }
                 if (filterF == mode.count) {
