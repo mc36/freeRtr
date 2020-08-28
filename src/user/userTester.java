@@ -463,6 +463,10 @@ public class userTester {
             return;
         }
         rdr.debugStat("writing summary");
+        if (otherD != null) {
+            cmds cmd = new cmds("ftr", otherP.trim());
+            beg += cmd.word();
+        }
         List<String> txt = bits.txt2buf("../todo.txt");
         if (txt == null) {
             txt = new ArrayList<String>();

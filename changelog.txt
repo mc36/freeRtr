@@ -9172,3 +9172,10 @@ qc pass: p4lang: l2tp mpls over ipv4 loopback
 qc pass: p4lang: l2tp mpls over ipv6 loopback
 qc pass: p4lang: l2tp mpls over vlan
 qc pass: p4lang: l2tp mpls over bundle
+---------------------------------- 2020-08-28 18:43:50
+qc pass: p4lang: bridging over gre
+qc pass: p4lang: bridging over gre vlan
+qc pass: p4lang: bridging over pppoe
+qc pass: p4lang: bridging over pppoe vlan
+qc pass: p4lang: bridging over l2tp
+qc pass: p4lang: bridging over l2tp vlan

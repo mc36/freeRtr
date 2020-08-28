@@ -1,6 +1,6 @@
 file;result;test
 -;-;freeRouter v20.8.28-rel, done by cs@nop.
--;-;2020-08-28 17:47:17, took 00:06:41, with 100 workers, on 1950 cases, 0 failed, 0 traces, 7 retries
+-;-;2020-08-28 18:48:26, took 00:04:36, with 100 workers, on 1956 cases, 0 failed, 0 traces, 0 retries
 -;-;./rtr.bin
 basic.tst;success;dummy test
 conn-anyconn.tst;success;ip over anyconnect
@@ -1126,6 +1126,12 @@ p4lang-rout79.tst;success;p4lang: l2tp mpls over ipv4 loopback
 p4lang-rout80.tst;success;p4lang: l2tp mpls over ipv6 loopback
 p4lang-rout81.tst;success;p4lang: l2tp mpls over vlan
 p4lang-rout82.tst;success;p4lang: l2tp mpls over bundle
+p4lang-rout83.tst;success;p4lang: bridging over gre
+p4lang-rout84.tst;success;p4lang: bridging over gre vlan
+p4lang-rout85.tst;success;p4lang: bridging over pppoe
+p4lang-rout86.tst;success;p4lang: bridging over pppoe vlan
+p4lang-rout87.tst;success;p4lang: bridging over l2tp
+p4lang-rout88.tst;success;p4lang: bridging over l2tp vlan
 qos-action01.tst;success;qos ingress transmit action
 qos-action02.tst;success;qos egress transmit action
 qos-action03.tst;success;qos ingress drop action
