@@ -571,6 +571,9 @@ public class ifcBridge implements ifcDn {
         int seen = 0;
         for (int i = learned.size() - 1; i >= 0; i--) {
             ifcBridgeAdr mac = learned.get(i);
+            if (mac == null) {
+                continue;
+            }
             if (ifc.compare(ifc, mac.ifc) != 0) {
                 continue;
             }
