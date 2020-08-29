@@ -972,11 +972,11 @@ class userTesterOne {
     }
 
     public String getRes() {
-        String a = "#" + testRes + "-" + stage;
-        if (testRes != 0) {
-            a += "-" + cmd.getOriginal();
+        if (testRes == 0) {
+            return stage;
+        } else {
+            return "#" + testRes + "-" + stage + "-" + cmd.getOriginal();
         }
-        return a;
     }
 
     public String getCsv() {
