@@ -24,7 +24,7 @@ void processCpuPack(unsigned char* bufD, int bufS) {
     prt = get16msb(bufD, preBuff);
     if (prt >= ports) return;
     send2port(&bufD[preBuff + 2], bufS - 2, prt);
-    if (get16msb(bufD, preBuff + 14) != 0x8100) return;
+    if (get16msb(bufD, preBuff + 14) != ETHERTYPE_VLAN) return;
     vlan_ntry.port = prt;
     vlan_ntry.vlan = get16msb(bufD, preBuff + 16) & 0xfff;
     index = table_find(&vlanin_table, &vlan_ntry);
@@ -48,7 +48,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     packRx[port]++;
     byteRx[port] += bufS;
     send2cpu(bufD, bufS, port);
-    if (get16msb(bufD, preBuff + 12) != 0x8100) return;
+    if (get16msb(bufD, preBuff + 12) != ETHERTYPE_VLAN) return;
     vlan_ntry.port = port;
     vlan_ntry.vlan = get16msb(bufD, preBuff + 14) & 0xfff;
     index = table_find(&vlanin_table, &vlan_ntry);
@@ -114,19 +114,19 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
 
 #define ethtyp2ppptyp                                           \
     switch (ethtyp) {                                           \
-    case 0x800:                                                 \
-        ethtyp = 0x0021;                                        \
+    case ETHERTYPE_IPV4:                                        \
+        ethtyp = PPPTYPE_IPV4;                                  \
         break;                                                  \
-    case 0x86dd:                                                \
-        ethtyp = 0x0057;                                        \
+    case ETHERTYPE_IPV6:                                        \
+        ethtyp = PPPTYPE_IPV6;                                  \
         break;                                                  \
-    case 0x8847:                                                \
-        ethtyp = 0x0281;                                        \
+    case ETHERTYPE_MPLS_UCAST:                                  \
+        ethtyp = PPPTYPE_MPLS_UCAST;                            \
         break;                                                  \
-    case 0x6558:                                                \
+    case ETHERTYPE_ROUTEDMAC:                                   \
         bufP -= 2;                                              \
         put16msb(bufD, bufP, 1);                                \
-        ethtyp = 0x0031;                                        \
+        ethtyp = PPPTYPE_ROUTEDMAC;                             \
         break;                                                  \
     default:                                                    \
         packDr[port]++;                                         \
@@ -139,17 +139,17 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
 
 #define ppptyp2ethtyp                                           \
     switch (ethtyp) {                                           \
-    case 0x0021:                                                \
-        ethtyp = 0x800;                                         \
+    case PPPTYPE_IPV4:                                          \
+        ethtyp = ETHERTYPE_IPV4;                                \
         break;                                                  \
-    case 0x0057:                                                \
-        ethtyp = 0x86dd;                                        \
+    case PPPTYPE_IPV6:                                          \
+        ethtyp = ETHERTYPE_IPV6;                                \
         break;                                                  \
-    case 0x0281:                                                \
-        ethtyp = 0x8847;                                        \
+    case PPPTYPE_MPLS_UCAST:                                    \
+        ethtyp = ETHERTYPE_MPLS_UCAST;                          \
         break;                                                  \
-    case 0x0031:                                                \
-        ethtyp = 0x6558;                                        \
+    case PPPTYPE_ROUTEDMAC:                                     \
+        ethtyp = ETHERTYPE_ROUTEDMAC;                           \
         bufP += 2;                                              \
         break;                                                  \
     default:                                                    \
@@ -254,7 +254,7 @@ ethtyp_rx:
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
     switch (ethtyp) {
-    case 0x8847: // mpls
+    case ETHERTYPE_MPLS_UCAST: // mpls
 mpls_rx:
         label = get32msb(bufD, bufP);
         ttl = (label & 0xff) - 1;
@@ -278,10 +278,10 @@ mpls_rx:
             if ((label & 0x100) == 0) goto mpls_rx;
             switch (mpls_res->ver) {
             case 4:
-                ethtyp = 0x800;
+                ethtyp = ETHERTYPE_IPV4;
                 goto ipv4_rx;
             case 6:
-                ethtyp = 0x86dd;
+                ethtyp = ETHERTYPE_IPV6;
                 goto ipv6_rx;
             default:
                 ethtyp = 0;
@@ -295,10 +295,10 @@ mpls_rx:
             if ((label & 0x100) == 0) goto ethtyp_tx;
             switch (mpls_res->ver) {
             case 4:
-                ethtyp = 0x800;
+                ethtyp = ETHERTYPE_IPV4;
                 break;
             case 6:
-                ethtyp = 0x86dd;
+                ethtyp = ETHERTYPE_IPV6;
                 break;
             default:
                 ethtyp = 0;
@@ -336,7 +336,7 @@ neigh_tx:
                 put16msb(bufD, bufP + 0, 0x1100);
                 put16msb(bufD, bufP + 2, neigh_res->session);
                 put16msb(bufD, bufP + 4, tmp);
-                ethtyp = 0x8864;
+                ethtyp = ETHERTYPE_PPPOE_DATA;
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
                 break;
@@ -354,7 +354,7 @@ neigh_tx:
                 put32msb(bufD, bufP + 12, neigh_res->sip1); // source
                 put32msb(bufD, bufP + 16, neigh_res->dip1); // target
                 put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));
-                ethtyp = 0x800;
+                ethtyp = ETHERTYPE_IPV4;
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
                 break;
@@ -374,7 +374,7 @@ neigh_tx:
                 put32msb(bufD, bufP + 28, neigh_res->dip2); // target
                 put32msb(bufD, bufP + 32, neigh_res->dip3); // target
                 put32msb(bufD, bufP + 36, neigh_res->dip4); // target
-                ethtyp = 0x86dd;
+                ethtyp = ETHERTYPE_IPV6;
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
                 break;
@@ -406,7 +406,7 @@ neigh_tx:
                 put32msb(bufD, bufP + 12, neigh_res->sip1); // source
                 put32msb(bufD, bufP + 16, neigh_res->dip1); // target
                 put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));
-                ethtyp = 0x800;
+                ethtyp = ETHERTYPE_IPV4;
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
                 break;
@@ -440,7 +440,7 @@ neigh_tx:
                 put32msb(bufD, bufP + 28, neigh_res->dip2); // target
                 put32msb(bufD, bufP + 32, neigh_res->dip3); // target
                 put32msb(bufD, bufP + 36, neigh_res->dip4); // target
-                ethtyp = 0x86dd;
+                ethtyp = ETHERTYPE_IPV6;
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
                 break;
@@ -456,7 +456,7 @@ neigh_tx:
                 bufP -= 2;
                 put16msb(bufD, bufP, vlan_res->vlan);
                 bufP -= 2;
-                put16msb(bufD, bufP, 0x8100);
+                put16msb(bufD, bufP, ETHERTYPE_VLAN);
                 prt = vlan_res->port;
                 vlan_res->pack++;
                 vlan_res->byte += bufS;
@@ -504,7 +504,7 @@ neigh_tx:
             return;
         }
         return;
-    case 0x8100: // dot1q
+    case ETHERTYPE_VLAN: // dot1q
         vlan_ntry.port = prt;
         vlan_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
         bufP += 2;
@@ -520,7 +520,7 @@ neigh_tx:
         vlan_res->byte += bufS;
         goto ethtyp_rx;
         return;
-    case 0x800: // ipv4
+    case ETHERTYPE_IPV4: // ipv4
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
         if (index < 0) {
@@ -667,14 +667,14 @@ ipv4_rou:
                 }
                 goto cpu;
             case 3: // mpls1
-                ethtyp = 0x8847;
+                ethtyp = ETHERTYPE_MPLS_UCAST;
                 bufP -= 4;
                 label = 0x100 | ttl | (route4_res->label1 << 12);
                 put32msb(bufD, bufP, label);
                 neigh_ntry.id = route4_res->nexthop;
                 goto ethtyp_tx;
             case 4: // mpls2
-                ethtyp = 0x8847;
+                ethtyp = ETHERTYPE_MPLS_UCAST;
                 bufP -= 4;
                 label = 0x100 | ttl | (route4_res->label2 << 12);
                 put32msb(bufD, bufP, label);
@@ -686,7 +686,7 @@ ipv4_rou:
             }
         }
         goto punt;
-    case 0x86dd: // ipv6
+    case ETHERTYPE_IPV6: // ipv6
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
         if (index < 0) {
@@ -883,14 +883,14 @@ ipv6_hit:
                 }
                 goto cpu;
             case 3: // mpls1
-                ethtyp = 0x8847;
+                ethtyp = ETHERTYPE_MPLS_UCAST;
                 bufP -= 4;
                 label = 0x100 | ttl | (route6_res->label1 << 12);
                 put32msb(bufD, bufP, label);
                 neigh_ntry.id = route6_res->nexthop;
                 goto ethtyp_tx;
             case 4: // mpls2
-                ethtyp = 0x8847;
+                ethtyp = ETHERTYPE_MPLS_UCAST;
                 bufP -= 4;
                 label = 0x100 | ttl | (route6_res->label2 << 12);
                 put32msb(bufD, bufP, label);
@@ -902,7 +902,7 @@ ipv6_hit:
             }
         }
         goto punt;
-    case 0x8864: // pppoe
+    case ETHERTYPE_PPPOE_DATA: // pppoe
         pppoe_ntry.port = prt;
         pppoe_ntry.session = get16msb(bufD, bufP + 2);
         index = table_find(&pppoe_table, &pppoe_ntry);
@@ -926,7 +926,7 @@ ipv6_hit:
         memmove(&bufD[preBuff], &bufD[bufP], bufS);
         prt2 = prt;
         goto ether_rx;
-    case 0x6558: // routed bridge
+    case ETHERTYPE_ROUTEDMAC: // routed bridge
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
         if (index < 0) {
@@ -950,7 +950,7 @@ xconn_rx:
         bufP -= 2;
         bufP -= 12;
         memmove(&bufD[bufP], &buf2[0], 12);
-        ethtyp = 0x8847;
+        ethtyp = ETHERTYPE_MPLS_UCAST;
         bufP -= 4;
         label = 0x1ff | (portvrf_res->label2 << 12);
         put32msb(bufD, bufP, label);
@@ -984,7 +984,7 @@ bridgevpls_rx:
         case 2:
             bufP -= 12;
             memmove(&bufD[bufP], &buf2[0], 12);
-            ethtyp = 0x8847;
+            ethtyp = ETHERTYPE_MPLS_UCAST;
             bufP -= 4;
             label = 0x1ff | (bridge_res->label2 << 12);
             put32msb(bufD, bufP, label);
@@ -996,7 +996,7 @@ bridgevpls_rx:
         case 3:
             bufP -= 12;
             memmove(&bufD[bufP], &buf2[0], 12);
-            ethtyp = 0x6558;
+            ethtyp = ETHERTYPE_ROUTEDMAC;
             neigh_ntry.id = bridge_res->nexthop;
             goto ethtyp_tx;
         default:
@@ -1011,7 +1011,7 @@ layer2_tx:
             bufP -= 2;
             put16msb(bufD, bufP, vlan_res->vlan);
             bufP -= 2;
-            put16msb(bufD, bufP, 0x8100);
+            put16msb(bufD, bufP, ETHERTYPE_VLAN);
             prt = vlan_res->port;
             vlan_res->pack++;
             vlan_res->byte += bufS;
@@ -1040,9 +1040,9 @@ layer2_tx:
         }
         send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
         return;
-    case 0x806: // arp
+    case ETHERTYPE_ARP: // arp
         goto cpu;
-    case 0x8863: // pppoe ctrl
+    case ETHERTYPE_PPPOE_CTRL: // pppoe ctrl
         goto cpu;
     default:
 punt:

@@ -6,8 +6,6 @@ control IngressControlPPPOE(inout headers hdr,
                             inout ingress_metadata_t ig_md,
                             inout standard_metadata_t ig_intr_md) {
 
-
-
     action send_to_cpu() {
         /*
          * Prepend cpu header to pkt sent to controller
@@ -23,9 +21,10 @@ control IngressControlPPPOE(inout headers hdr,
 
     action act_pppoe_data(SubIntId_t port) {
         ig_md.source_id = port;
-        if (hdr.pppoeD.ppptyp == 0x0021) ig_md.ethertype = ETHERTYPE_IPV4;
-        if (hdr.pppoeD.ppptyp == 0x0057) ig_md.ethertype = ETHERTYPE_IPV6;
-        if (hdr.pppoeD.ppptyp == 0x0281) ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
+        if (hdr.pppoeD.ppptyp == PPPTYPE_IPV4) ig_md.ethertype = ETHERTYPE_IPV4;
+        if (hdr.pppoeD.ppptyp == PPPTYPE_IPV6) ig_md.ethertype = ETHERTYPE_IPV6;
+        if (hdr.pppoeD.ppptyp == PPPTYPE_MPLS_UCAST) ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
+        if (hdr.pppoeD.ppptyp == PPPTYPE_ROUTEDMAC) ig_md.ethertype = ETHERTYPE_ROUTEDMAC;
     }
 
 
@@ -55,9 +54,15 @@ hdr.pppoeD.session:
             send_to_cpu();
             return;
         }
-        if (ig_md.pppoe_data_valid==1) {
-            tbl_pppoe.apply();
-        }
+        if (ig_md.pppoe_data_valid!=1) return;
+
+        tbl_pppoe.apply();
+
+        if (ig_md.ethertype != ETHERTYPE_ROUTEDMAC) return;
+
+        hdr.eth5.setValid();
+        hdr.eth5 = hdr.ethernet;
+
     }
 
 

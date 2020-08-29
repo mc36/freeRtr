@@ -7,11 +7,15 @@ struct headers {
     vlan_t              vlan;
     pppoe_t		pppoeC;
     pppoe_t		pppoeD;
+    pppbr_t		pppoeB;
+    ethernet_t		eth6;
     ipv4_t		ipv4d;
     ipv6_t		ipv6d;
     gre_t		gre2;
     udp_t		udp2;
     l2tp_t		l2tp2;
+    pppbr_t		pppbr;
+    ethernet_t		eth4;
     mpls_t		mpls0;
     mpls_t		mpls1;
     ipv4_t		ipv4c;
@@ -28,6 +32,8 @@ struct headers {
     udp_t		udp;
     l2tp_t		l2tp;
     tcp_t		tcp;
+    pppbr_t		l2tpbr;
+    ethernet_t		eth5;
 }
 
 #endif // _HEADERS_P4_

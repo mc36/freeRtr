@@ -134,7 +134,7 @@ def writeGre4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip
             "ig_md.layer4_srcprt": 0,
             "ig_md.layer4_dstprt": 0
         },
-        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel4_gre",
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_gre",
         action_params={
             "port": port
         })
@@ -177,7 +177,7 @@ def writeGre6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip
             "ig_md.layer4_srcprt": 0,
             "ig_md.layer4_dstprt": 0
         },
-        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel6_gre",
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_gre",
         action_params={
             "port": port
         })
@@ -220,7 +220,7 @@ def writeL2tp4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
             "ig_md.layer4_srcprt": dprt,
             "ig_md.layer4_dstprt": sprt,
         },
-        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel4_l2tp",
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_l2tp",
         action_params={
             "port": port
         })
@@ -266,7 +266,7 @@ def writeL2tp6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
             "ig_md.layer4_srcprt": dprt,
             "ig_md.layer4_dstprt": sprt,
         },
-        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel6_l2tp",
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_l2tp",
         action_params={
             "port": port
         })
@@ -531,6 +531,45 @@ def writeBrsrv6rules(delete, p4info_helper, ingress_sw, bridge, addr, port, targ
         ingress_sw.ModifyTableEntry(table_entry2, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
+def writeRoumacRules(delete, p4info_helper, ingress_sw, bridge, addr, nexthop, ppp):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_learn",
+        match_fields={
+            "ig_md.bridge_id": bridge,
+            "hdr.ethernet.src_mac_addr": addr
+        },
+        action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_port",
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    if ppp == 0:
+        actnam = "ig_ctl.ig_ctl_bridge.act_set_bridge_routed"
+    else:
+        actnam = "ig_ctl.ig_ctl_bridge.act_set_bridge_ppprouted"
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_target",
+        match_fields={
+            "ig_md.bridge_id": bridge,
+            "hdr.ethernet.dst_mac_addr": addr
+        },
+        action_name=actnam,
+        action_params={
+            "nexthop": nexthop
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
 
 
 def writeBrmacRules(delete, p4info_helper, ingress_sw, bridge, addr, port):
@@ -1726,6 +1765,16 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "bridgemac_del":
             writeBrmacRules(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
+            continue
+
+        if splt[0] == "routedmac_add":
+            writeRoumacRules(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]))
+            continue
+        if splt[0] == "routedmac_mod":
+            writeRoumacRules(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]))
+            continue
+        if splt[0] == "routedmac_del":
+            writeRoumacRules(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]))
             continue
 
         if splt[0] == "bridgelabel_add":

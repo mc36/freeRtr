@@ -13,6 +13,7 @@
 #include "include/hdr_llc.p4"
 #include "include/hdr_vlan.p4"
 #include "include/hdr_pppoe.p4"
+#include "include/hdr_pppbr.p4"
 #include "include/hdr_mpls.p4"
 #include "include/hdr_ipv4.p4"
 #include "include/hdr_ipv6.p4"

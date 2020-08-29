@@ -176,7 +176,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 bufP = rte_pktmbuf_mtod(bufs[i], void *);
                 if ((bufs[i]->ol_flags & PKT_RX_VLAN_STRIPPED) != 0) {
                     memmove(&bufD[preBuff], bufP, 12);
-                    put16msb(bufD, preBuff + 12, 0x8100);
+                    put16msb(bufD, preBuff + 12, ETHERTYPE_VLAN);
                     put16msb(bufD, preBuff + 14, bufs[i]->vlan_tci);
                     memmove(&bufD[preBuff + 16], bufP + 12, bufS - 12);
                     bufS += 4;

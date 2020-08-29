@@ -8,7 +8,7 @@ control IngressControlTunnel(inout headers hdr,
 
 
 
-    action act_tunnel4_gre(SubIntId_t port) {
+    action act_tunnel_gre(SubIntId_t port) {
         hdr.ethernet.ethertype = hdr.gre.gretyp;
         ig_intr_md.egress_spec = (PortId_t)port;
         ig_md.need_recir = 1;
@@ -16,29 +16,11 @@ control IngressControlTunnel(inout headers hdr,
     }
 
 
-    action act_tunnel6_gre(SubIntId_t port) {
-        hdr.ethernet.ethertype = hdr.gre.gretyp;
-        ig_intr_md.egress_spec = (PortId_t)port;
-        ig_md.need_recir = 1;
-        ig_md.source_id = port;
-    }
-
-
-    action act_tunnel4_l2tp(SubIntId_t port) {
-        if (hdr.l2tp.ppptyp == 0x0021) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
-        if (hdr.l2tp.ppptyp == 0x0057) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
-        if (hdr.l2tp.ppptyp == 0x0281) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
-        ig_intr_md.egress_spec = (PortId_t)port;
-        ig_md.need_recir = 1;
-        ig_md.source_id = port;
-        if ((hdr.l2tp.flags & 0x8000) != 0) ig_md.need_recir = 0;
-        if ((hdr.l2tp.ppptyp & 0x8000) != 0) ig_md.need_recir = 0;
-    }
-
-    action act_tunnel6_l2tp(SubIntId_t port) {
-        if (hdr.l2tp.ppptyp == 0x0021) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
-        if (hdr.l2tp.ppptyp == 0x0057) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
-        if (hdr.l2tp.ppptyp == 0x0281) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
+    action act_tunnel_l2tp(SubIntId_t port) {
+        if (hdr.l2tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+        if (hdr.l2tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+        if (hdr.l2tp.ppptyp == PPPTYPE_MPLS_UCAST) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
+        if (hdr.l2tp.ppptyp == PPPTYPE_ROUTEDMAC) hdr.ethernet.ethertype = ETHERTYPE_ROUTEDMAC;
         ig_intr_md.egress_spec = (PortId_t)port;
         ig_md.need_recir = 1;
         ig_md.source_id = port;
@@ -64,8 +46,8 @@ ig_md.layer4_dstprt:
             exact;
         }
         actions = {
-            act_tunnel4_gre;
-            act_tunnel4_l2tp;
+            act_tunnel_gre;
+            act_tunnel_l2tp;
             @defaultonly NoAction;
         }
         size = 1024;
@@ -89,8 +71,8 @@ ig_md.layer4_dstprt:
             exact;
         }
         actions = {
-            act_tunnel6_gre;
-            act_tunnel6_l2tp;
+            act_tunnel_gre;
+            act_tunnel_l2tp;
             @defaultonly NoAction;
         }
         size = 1024;
@@ -116,6 +98,12 @@ ig_md.layer4_dstprt:
         hdr.gre.setInvalid();
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
+        if (hdr.eth5.isValid()) {
+            hdr.eth6.setValid();
+            hdr.eth6 = hdr.eth5;
+            hdr.eth5.setInvalid();
+            hdr.ethernet.ethertype = ETHERTYPE_ROUTEDMAC;
+        }
         hdr.cpu.setValid();
         hdr.cpu.port = ig_md.source_id;
 

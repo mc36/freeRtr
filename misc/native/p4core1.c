@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "table.h"
+#include "types.h"
 
 
 #define preBuff 64

@@ -1408,7 +1408,11 @@ class servP4langConn implements Runnable {
                 if (nei == null) {
                     continue;
                 }
-                lower.sendLine("routedmac_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + nei.id);
+                String p = "0";
+                if ((ifc.ifc.type == cfgIfc.ifaceType.dialer) || (ifc.ifc.type == cfgIfc.ifaceType.virtppp)) {
+                    p = "1";
+                }
+                lower.sendLine("routedmac_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + nei.id + " " + p);
                 continue;
             }
             int l = -1;

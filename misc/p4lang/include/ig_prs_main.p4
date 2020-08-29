@@ -54,6 +54,8 @@ ETHERTYPE_IPV4:
             prs_ipv4;
 ETHERTYPE_IPV6:
             prs_ipv6;
+ETHERTYPE_ROUTEDMAC:
+            prs_eth6;
 ETHERTYPE_ARP:
             prs_arp;
 ETHERTYPE_LACP:
@@ -82,6 +84,8 @@ ETHERTYPE_IPV4:
             prs_ipv4;
 ETHERTYPE_IPV6:
             prs_ipv6;
+ETHERTYPE_ROUTEDMAC:
+            prs_eth6;
 ETHERTYPE_ARP:
             prs_arp;
 ETHERTYPE_LACP:
@@ -103,12 +107,14 @@ ETHERTYPE_LLDP:
         pkt.extract(hdr.pppoeD);
         ig_md.pppoe_data_valid = 1;
         transition select(hdr.pppoeD.ppptyp) {
-0x0021:
+PPPTYPE_IPV4:
             prs_ipv4;
-0x0057:
+PPPTYPE_IPV6:
             prs_ipv6;
-0x0281:
+PPPTYPE_MPLS_UCAST:
             prs_mpls0;
+PPPTYPE_ROUTEDMAC:
+            prs_pppoeb;
         default:
             prs_pppoeDataCtrl;
         }
@@ -116,6 +122,16 @@ ETHERTYPE_LLDP:
 
     state prs_pppoeDataCtrl {
         ig_md.pppoe_ctrl_valid = 1;
+        transition accept;
+    }
+
+    state prs_pppoeb {
+        pkt.extract(hdr.pppoeB);
+        transition prs_eth6;
+    }
+
+    state prs_eth6 {
+        pkt.extract(hdr.eth6);
         transition accept;
     }
 
@@ -219,6 +235,16 @@ IP_PROTOCOL_SRL2:
         pkt.extract(hdr.gre);
         ig_md.layer4_srcprt = 0;
         ig_md.layer4_dstprt = 0;
+        transition select(hdr.gre.gretyp) {
+ETHERTYPE_ROUTEDMAC:
+            prs_eth5;
+        default:
+            accept;
+        }
+    }
+
+    state prs_eth5 {
+        pkt.extract(hdr.eth5);
         transition accept;
     }
 
@@ -243,7 +269,17 @@ IP_PROTOCOL_SRL2:
 
     state prs_l2tp {
         pkt.extract(hdr.l2tp);
-        transition accept;
+        transition select(hdr.l2tp.ppptyp) {
+PPPTYPE_ROUTEDMAC:
+            prs_l2tpbr;
+        default:
+            accept;
+        }
+    }
+
+    state prs_l2tpbr {
+        pkt.extract(hdr.l2tpbr);
+        transition prs_eth5;
     }
 
     state prs_eth3 {

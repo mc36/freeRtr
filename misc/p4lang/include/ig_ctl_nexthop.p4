@@ -51,11 +51,12 @@ control IngressControlNexthop(inout headers hdr,
         hdr.pppoeD.type = 1;
         hdr.pppoeD.code = 0;
         hdr.pppoeD.session = session;
-        hdr.pppoeD.length = (bit<16>)ig_intr_md.packet_length - (bit<16>)ig_md.vlan_size - 12;
+        hdr.pppoeD.length = (bit<16>)ig_intr_md.packet_length - ig_md.vlan_size - 12;
         hdr.pppoeD.ppptyp = 0;
-        if (ig_md.ethertype == ETHERTYPE_IPV4) hdr.pppoeD.ppptyp = 0x0021;
-        if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.pppoeD.ppptyp = 0x0057;
-        if (ig_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.pppoeD.ppptyp = 0x0281;
+        if (ig_md.ethertype == ETHERTYPE_IPV4) hdr.pppoeD.ppptyp = PPPTYPE_IPV4;
+        if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.pppoeD.ppptyp = PPPTYPE_IPV6;
+        if (ig_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.pppoeD.ppptyp = PPPTYPE_MPLS_UCAST;
+        if (ig_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.pppoeD.ppptyp = PPPTYPE_ROUTEDMAC;
         ig_md.ethertype = ETHERTYPE_PPPOE_DATA;
     }
 
@@ -86,7 +87,7 @@ control IngressControlNexthop(inout headers hdr,
         hdr.ipv4d.version = 4;
         hdr.ipv4d.ihl = 5;
         hdr.ipv4d.diffserv = 0;
-        hdr.ipv4d.total_len = (bit<16>)ig_intr_md.packet_length - (bit<16>)ig_md.vlan_size - 14 + 24;
+        hdr.ipv4d.total_len = (bit<16>)ig_intr_md.packet_length - ig_md.vlan_size - 14 + 24;
         hdr.ipv4d.identification = 0;
         hdr.ipv4d.flags = 0;
         hdr.ipv4d.frag_offset = 0;
@@ -125,7 +126,7 @@ control IngressControlNexthop(inout headers hdr,
         hdr.ipv6d.version = 6;
         hdr.ipv6d.traffic_class = 0;
         hdr.ipv6d.flow_label = 0;
-        hdr.ipv6d.payload_len = (bit<16>)ig_intr_md.packet_length - (bit<16>)ig_md.vlan_size - 14 + 4;
+        hdr.ipv6d.payload_len = (bit<16>)ig_intr_md.packet_length - ig_md.vlan_size - 14 + 4;
         hdr.ipv6d.next_hdr = IP_PROTOCOL_GRE;
         hdr.ipv6d.hop_limit = 255;
         hdr.ipv6d.src_addr = src_ip_addr;
@@ -159,21 +160,22 @@ control IngressControlNexthop(inout headers hdr,
         hdr.l2tp2.offset = 0;
         hdr.l2tp2.pppflags = 0xff03;
         hdr.l2tp2.ppptyp = 0;
-        if (ig_md.ethertype == ETHERTYPE_IPV4) hdr.l2tp2.ppptyp = 0x0021;
-        if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = 0x0057;
-        if (ig_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = 0x0281;
+        if (ig_md.ethertype == ETHERTYPE_IPV4) hdr.l2tp2.ppptyp = PPPTYPE_IPV4;
+        if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = PPPTYPE_IPV6;
+        if (ig_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = PPPTYPE_MPLS_UCAST;
+        if (ig_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.l2tp2.ppptyp = PPPTYPE_ROUTEDMAC;
 
         hdr.udp2.setValid();
         hdr.udp2.src_port = src_port;
         hdr.udp2.dst_port = dst_port;
-        hdr.udp2.length = (bit<16>)ig_intr_md.packet_length - (bit<16>)ig_md.vlan_size - 14 + 20;
+        hdr.udp2.length = (bit<16>)ig_intr_md.packet_length - ig_md.vlan_size - 14 + 20;
         hdr.udp2.checksum = 0;
 
         hdr.ipv4d.setValid();
         hdr.ipv4d.version = 4;
         hdr.ipv4d.ihl = 5;
         hdr.ipv4d.diffserv = 0;
-        hdr.ipv4d.total_len = (bit<16>)ig_intr_md.packet_length - (bit<16>)ig_md.vlan_size - 14 + 40;
+        hdr.ipv4d.total_len = (bit<16>)ig_intr_md.packet_length - ig_md.vlan_size - 14 + 40;
         hdr.ipv4d.identification = 0;
         hdr.ipv4d.flags = 0;
         hdr.ipv4d.frag_offset = 0;
@@ -211,21 +213,22 @@ control IngressControlNexthop(inout headers hdr,
         hdr.l2tp2.offset = 0;
         hdr.l2tp2.pppflags = 0xff03;
         hdr.l2tp2.ppptyp = 0;
-        if (ig_md.ethertype == ETHERTYPE_IPV4) hdr.l2tp2.ppptyp = 0x0021;
-        if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = 0x0057;
-        if (ig_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = 0x0281;
+        if (ig_md.ethertype == ETHERTYPE_IPV4) hdr.l2tp2.ppptyp = PPPTYPE_IPV4;
+        if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = PPPTYPE_IPV6;
+        if (ig_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = PPPTYPE_MPLS_UCAST;
+        if (ig_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.l2tp2.ppptyp = PPPTYPE_ROUTEDMAC;
 
         hdr.udp2.setValid();
         hdr.udp2.src_port = src_port;
         hdr.udp2.dst_port = dst_port;
-        hdr.udp2.length = (bit<16>)ig_intr_md.packet_length - (bit<16>)ig_md.vlan_size - 14 + 20;
+        hdr.udp2.length = (bit<16>)ig_intr_md.packet_length - ig_md.vlan_size - 14 + 20;
         hdr.udp2.checksum = 0;
 
         hdr.ipv6d.setValid();
         hdr.ipv6d.version = 6;
         hdr.ipv6d.traffic_class = 0;
         hdr.ipv6d.flow_label = 0;
-        hdr.ipv6d.payload_len = (bit<16>)ig_intr_md.packet_length - (bit<16>)ig_md.vlan_size - 14 + 20;
+        hdr.ipv6d.payload_len = (bit<16>)ig_intr_md.packet_length - ig_md.vlan_size - 14 + 20;
         hdr.ipv6d.next_hdr = IP_PROTOCOL_UDP;
         hdr.ipv6d.hop_limit = 255;
         hdr.ipv6d.src_addr = src_ip_addr;

@@ -43,6 +43,44 @@ hdr.ethernet.src_mac_addr:
         ig_md.target_id = port;
     }
 
+    action act_set_bridge_ppprouted(NextHopId_t nexthop) {
+        ig_md.bridge_trg = MAX_PORT;
+        ig_md.vrf = 0;
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+        ig_md.arp_valid = 0;
+        ig_md.llc_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        hdr.pppbr.setValid();
+        hdr.pppbr.flags = 1;
+        hdr.eth4.setValid();
+        hdr.eth4.dst_mac_addr = hdr.ethernet.dst_mac_addr;
+        hdr.eth4.src_mac_addr = hdr.ethernet.src_mac_addr;
+        hdr.eth4.ethertype = ig_md.ethertype;
+        ig_md.nexthop_id = nexthop;
+        ig_md.ethertype = ETHERTYPE_ROUTEDMAC;
+        ig_md.vlan_size = ig_md.vlan_size - 16;
+    }
+
+    action act_set_bridge_routed(NextHopId_t nexthop) {
+        ig_md.bridge_trg = MAX_PORT;
+        ig_md.vrf = 0;
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+        ig_md.arp_valid = 0;
+        ig_md.llc_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        hdr.eth4.setValid();
+        hdr.eth4.dst_mac_addr = hdr.ethernet.dst_mac_addr;
+        hdr.eth4.src_mac_addr = hdr.ethernet.src_mac_addr;
+        hdr.eth4.ethertype = ig_md.ethertype;
+        ig_md.nexthop_id = nexthop;
+        ig_md.ethertype = ETHERTYPE_ROUTEDMAC;
+        ig_md.vlan_size = ig_md.vlan_size - 14;
+    }
+
     action act_set_bridge_vpls(NextHopId_t port, label_t lab_tun, label_t lab_svc) {
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
@@ -85,7 +123,7 @@ hdr.ethernet.src_mac_addr:
         ig_md.ethertype = ETHERTYPE_IPV6;
         hdr.ipv6c.setValid();
         hdr.ipv6c.version = 6;
-        hdr.ipv6c.payload_len = (bit<16>)ig_intr_md.packet_length - (bit<16>)ig_md.vlan_size;
+        hdr.ipv6c.payload_len = (bit<16>)ig_intr_md.packet_length - ig_md.vlan_size;
         hdr.ipv6c.next_hdr = IP_PROTOCOL_SRL2;
         hdr.ipv6c.hop_limit = 255;
         hdr.ipv6c.src_addr = target;
@@ -105,6 +143,8 @@ hdr.ethernet.dst_mac_addr:
         }
         actions = {
             act_set_bridge_out;
+            act_set_bridge_routed;
+            act_set_bridge_ppprouted;
             act_set_bridge_vpls;
             act_set_bridge_srv;
             act_bridge_punt;
@@ -125,11 +165,20 @@ hdr.ethernet.dst_mac_addr:
         ig_md.llc_valid = 0;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+        if (hdr.eth6.isValid()) {
+            hdr.ethernet.dst_mac_addr = hdr.eth6.dst_mac_addr;
+            hdr.ethernet.src_mac_addr = hdr.eth6.src_mac_addr;
+        }
         tbl_bridge_learn.apply();
         tbl_bridge_target.apply();
         if ((ig_md.bridge_src == 0) || (ig_md.bridge_trg == 0)) {
             send_to_cpu();
             return;
+        }
+        if (hdr.eth6.isValid()) {
+            ig_md.ethertype = hdr.eth6.ethertype;
+            hdr.eth6.setInvalid();
+            hdr.eth5.setInvalid();
         }
         if (hdr.mpls1.isValid() && (ig_md.mpls_op_type != 3)) {
             hdr.eth2.setInvalid();
