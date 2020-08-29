@@ -10,4 +10,4 @@
 export SDE=/usr/share/bf_switchd
 export SDE_INSTALL=/usr/share/bf_switchd/install
 cd /home/mc36/rare/p4src
-sudo -E $SDE/tools/p4_build.sh -I. -DHAVE_MPLS ./bf_router.p4
+sudo -E $SDE/tools/p4_build.sh -I. $1 $2 $3 $4 $5 $6 $7 $8 ./bf_router.p4

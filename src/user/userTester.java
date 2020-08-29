@@ -465,7 +465,7 @@ public class userTester {
         rdr.debugStat("writing summary");
         if (otherD != null) {
             cmds cmd = new cmds("ftr", otherP.trim());
-            beg += cmd.word();
+            beg += cmd.word() + "-";
         }
         List<String> txt = bits.txt2buf("../todo.txt");
         if (txt == null) {
@@ -972,11 +972,11 @@ class userTesterOne {
     }
 
     public String getRes() {
-        if (testRes == 0) {
-            return "success";
-        } else {
-            return testRes + " " + stage + " " + cmd.getOriginal();
+        String a = "#" + testRes + "-" + stage;
+        if (testRes != 0) {
+            a += "-" + cmd.getOriginal();
         }
+        return a;
     }
 
     public String getCsv() {
@@ -1062,14 +1062,14 @@ class userTesterOne {
 
     private void success() {
         testRes = 0;
-        stage = "successfully";
-        cmd = new cmds("", "finished");
+        stage = "success";
+        cmd = new cmds("", "");
     }
 
     private void nothave() {
-        testRes = 7;
-        stage = "not";
-        cmd = new cmds("", "available");
+        testRes = 0;
+        stage = "not applicable";
+        cmd = new cmds("", "");
     }
 
     public void doTest(String pt, String fn) {

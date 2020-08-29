@@ -10,6 +10,9 @@ vrf def v1
 vrf def v2
  rd 1:1
  exit
+vrf def v8
+ rd 1:1
+ exit
 vrf def v9
  rd 1:1
  exit
@@ -58,7 +61,7 @@ int virt1
  enc ppp
  pseudo v2 sdn3 l2tp2 9.9.9.2 1234
  bridge-gr 1
- vrf for v2
+ vrf for v8
  ipv4 addr 3.3.3.3 255.255.255.255
  exit
 int sdn4
@@ -68,6 +71,7 @@ server p4lang p4
  interconnect eth2
  export-vrf v1 1
  export-vrf v2 2
+ export-vrf v8 8
  export-br 1
  export-port sdn1 1
  export-port sdn2 2
