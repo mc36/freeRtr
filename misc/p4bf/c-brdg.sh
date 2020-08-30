@@ -1,2 +1,2 @@
 #!/bin/sh
-./c-all.sh -DHAVE_BRIDGE
+./c-all.sh -DHAVE_BRIDGE -DHAVE_NAT

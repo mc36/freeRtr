@@ -72,23 +72,7 @@ public class userTester {
 
     private String remoteS = null;
 
-    private String otherF = null;
-
-    private String otherP = null;
-
-    private String otherI = null;
-
-    private String otherN = null;
-
-    private String otherW = null;
-
-    private String otherS = null;
-
-    private int otherM = 0;
-
-    private int otherC = 0;
-
-    private List<String> otherD = null;
+    private List<userTesterImg> others = new ArrayList<userTesterImg>();
 
     private List<userTesterCap> capture = new ArrayList<userTesterCap>();
 
@@ -235,10 +219,12 @@ public class userTester {
                 remoteF = null;
             }
             if (s.equals("other")) {
-                otherF = cmd.word();
+                userTesterImg img = new userTesterImg();
+                img.otherF = cmd.word();
+                others.add(img);
             }
             if (s.equals("noother")) {
-                otherF = null;
+                others.clear();
             }
             if (s.equals("capture")) {
                 userTesterCap cap = new userTesterCap();
@@ -345,11 +331,23 @@ public class userTester {
         rdr.debugStat("reapply=" + reapply);
         rdr.debugStat("randord=" + randord);
         rdr.debugStat("retry=" + maxTry);
-        rdr.debugStat("other=" + otherF);
+        rdr.debugStat("other=" + others.size());
         rdr.debugStat("remote=" + remoteF);
         rdr.debugStat("persist=" + persistF);
         rdr.debugStat("capture=" + capture.size());
         rdr.debugStat("files=" + needed.size());
+        for (int i = 0; i < others.size(); i++) {
+            paralell = 0;
+            userTesterImg img = others.get(i);
+            img.otherD = bits.txt2buf(path + img.otherF);
+            img.otherP = " " + img.otherD.remove(0) + " ";
+            img.otherI = img.otherD.remove(0);
+            img.otherM = bits.str2num(img.otherD.remove(0));
+            img.otherC = bits.str2num(img.otherD.remove(0));
+            img.otherN = img.otherD.remove(0);
+            img.otherW = img.otherD.remove(0);
+            img.otherS = img.otherD.remove(0);
+        }
         if (remoteF != null) {
             paralell = 0;
             remoteD = bits.txt2buf(path + remoteF);
@@ -359,17 +357,6 @@ public class userTester {
             remoteL = new addrIP();
             remoteL.fromString(remoteD.remove(0));
             remoteS = remoteD.remove(0);
-        }
-        if (otherF != null) {
-            paralell = 0;
-            otherD = bits.txt2buf(path + otherF);
-            otherP = " " + otherD.remove(0) + " ";
-            otherI = otherD.remove(0);
-            otherM = bits.str2num(otherD.remove(0));
-            otherC = bits.str2num(otherD.remove(0));
-            otherN = otherD.remove(0);
-            otherW = otherD.remove(0);
-            otherS = otherD.remove(0);
         }
         if (persistF != null) {
             paralell = 0;
@@ -463,8 +450,8 @@ public class userTester {
             return;
         }
         rdr.debugStat("writing summary");
-        if (otherD != null) {
-            cmds cmd = new cmds("ftr", otherP.trim());
+        if (others.size() > 0) {
+            cmds cmd = new cmds("ftr", others.get(0).otherP.trim());
             beg += cmd.word() + "-";
         }
         List<String> txt = bits.txt2buf("../todo.txt");
@@ -571,14 +558,7 @@ public class userTester {
         lt.config = config;
         lt.reapply = reapply;
         lt.jvm = jvn + jvp;
-        lt.otherD = otherD;
-        lt.otherP = otherP;
-        lt.otherI = otherI;
-        lt.otherN = otherN;
-        lt.otherM = otherM;
-        lt.otherC = otherC;
-        lt.otherW = otherW;
-        lt.otherS = otherS;
+        lt.others = others;
         lt.remoteD = remoteD;
         lt.remoteA = remoteA;
         lt.remoteL = remoteL;
@@ -633,6 +613,28 @@ class userTesterWrk implements Runnable {
             logger.traceback(e);
         }
     }
+
+}
+
+class userTesterImg {
+
+    public String otherF = null;
+
+    public String otherP = null;
+
+    public String otherI = null;
+
+    public String otherN = null;
+
+    public String otherW = null;
+
+    public String otherS = null;
+
+    public int otherM = 0;
+
+    public int otherC = 0;
+
+    public List<String> otherD = null;
 
 }
 
@@ -918,21 +920,7 @@ class userTesterOne {
 
     public String remoteS;
 
-    public String otherP;
-
-    public String otherI;
-
-    public String otherN;
-
-    public String otherW;
-
-    public String otherS;
-
-    public int otherM;
-
-    public int otherC;
-
-    public List<String> otherD;
+    public List<userTesterImg> others = new ArrayList<userTesterImg>();
 
     public String window = "c";
 
@@ -1263,7 +1251,7 @@ class userTesterOne {
             return;
         }
         if (s.equals("addother")) {
-            if (otherD == null) {
+            if (others.size() < 1) {
                 success();
                 return;
             }
@@ -1279,18 +1267,29 @@ class userTesterOne {
                     break;
                 }
             }
-            cmd = new cmds("ftr", ftr);
-            for (;;) {
-                s = cmd.word();
-                if (s.length() < 1) {
-                    break;
+            List<userTesterImg> imgs = new ArrayList<userTesterImg>();
+            for (int i = 0; i < others.size(); i++) {
+                userTesterImg cur = others.get(i);
+                cmd = new cmds("ftr", ftr);
+                boolean miss = false;
+                for (;;) {
+                    s = cmd.word();
+                    if (s.length() < 1) {
+                        break;
+                    }
+                    miss |= cur.otherP.indexOf(" " + s + " ") < 0;
                 }
-                if (otherP.indexOf(" " + s + " ") < 0) {
-                    rdr.debugRes("missing feature " + s);
-                    nothave();
-                    return;
+                if (miss) {
+                    continue;
                 }
+                imgs.add(cur);
             }
+            rdr.debugRes("found " + imgs.size() + " images for features " + ftr);
+            if (imgs.size() < 1) {
+                nothave();
+                return;
+            }
+            userTesterImg img = imgs.get(bits.random(0, imgs.size()));
             List<String> cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();
@@ -1300,7 +1299,7 @@ class userTesterOne {
                 s = repairHwCfg(s);
                 cfg.add(s);
             }
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + otherC + ",threads=1,sockets=1 -hda " + otherI + " -m " + otherM;
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + img.otherC + ",threads=1,sockets=1 -hda " + img.otherI + " -m " + img.otherM;
             for (int i = 0; i < cfg.size(); i++) {
                 String a = cfg.get(i);
                 cmd = new cmds("hw", a);
@@ -1314,12 +1313,12 @@ class userTesterOne {
                 cmd.word();
                 int rp = bits.str2num(cmd.word());
                 int vl = i + 1;
-                s += " -netdev socket,id=n" + vl + ",udp=:" + rp + ",localaddr=:" + lp + " -device " + otherN + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
+                s += " -netdev socket,id=n" + vl + ",udp=:" + rp + ",localaddr=:" + lp + " -device " + img.otherN + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
             }
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
-            p.syncr = otherS;
+            p.syncr = img.otherS;
             procs.add(p);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             cfg = new ArrayList<String>();
@@ -1340,12 +1339,12 @@ class userTesterOne {
                     return;
                 }
                 a = a.trim();
-                if (a.matches(otherW)) {
+                if (a.matches(img.otherW)) {
                     break;
                 }
             }
             p.putChar(13);
-            p.applyCfg(otherD);
+            p.applyCfg(img.otherD);
             p.applyCfg(cfg);
             return;
         }
