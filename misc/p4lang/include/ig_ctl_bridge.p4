@@ -169,8 +169,7 @@ hdr.ethernet.dst_mac_addr:
             hdr.ethernet.dst_mac_addr = hdr.eth6.dst_mac_addr;
             hdr.ethernet.src_mac_addr = hdr.eth6.src_mac_addr;
         }
-        tbl_bridge_learn.apply();
-        tbl_bridge_target.apply();
+        if (tbl_bridge_learn.apply().hit) tbl_bridge_target.apply();
         if ((ig_md.bridge_src == 0) || (ig_md.bridge_trg == 0)) {
             send_to_cpu();
             return;
