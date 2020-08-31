@@ -10,14 +10,14 @@ vrf def v1
 vrf def v2
  rd 1:1
  exit
+vrf def v3
+ rd 1:1
+ exit
 vrf def v9
  rd 1:1
  exit
 hair 1
  ether
- exit
-bridge 1
- mac-learn
  exit
 int lo9
  vrf for v9
@@ -49,11 +49,17 @@ int hair11
  ipv4 addr 9.9.9.1 255.255.255.0
  exit
 int hair12
- bridge-gr 1
+ vrf for v3
+ ipv4 addr 9.9.9.11 255.255.255.0
+ ipv4 proxy-local
  exit
 int sdn1
- bridge-gr 1
+ vrf for v3
+ ipv4 addr 9.9.9.22 255.255.255.0
+ ipv4 proxy-local
  exit
+ipv4 route v3 9.9.9.1 255.255.255.255 9.9.9.1 int hair12
+ipv4 route v3 9.9.9.2 255.255.255.255 9.9.9.2 int sdn1
 int tun1
  tun vrf v2
  tun source hair11
@@ -86,7 +92,7 @@ server p4lang p4
  interconnect eth2
  export-vrf v1 1
  export-vrf v2 2
- export-br 1
+ export-vrf v3 3
  export-port sdn1 1
  export-port sdn2 2
  export-port sdn3 3
@@ -263,6 +269,8 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 !
 
 
+r1 tping 100 10 9.9.9.2 /vrf v3
+r1 tping 100 10 9.9.9.1 /vrf v3
 r1 tping 100 10 9.9.9.2 /vrf v2
 r3 tping 100 10 9.9.9.1 /vrf v2
 
