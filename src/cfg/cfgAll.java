@@ -1685,8 +1685,8 @@ public class cfgAll {
         ntry.setup2eapolClnt(null, null);
         ntry.setup2eapolServ(null);
         ntry.setup2pppoeClnt(null);
-        ntry.setup2pppoeServ(null);
-        ntry.setup2pppoeRely(null);
+        ntry.setup2pppoeServ(null, null);
+        ntry.setup2pppoeRely(null, null);
         ntry.clear2pseudowire();
         return false;
     }

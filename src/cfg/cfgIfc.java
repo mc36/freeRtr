@@ -4272,9 +4272,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * setup interface pppoe server
      *
      * @param dialer dialer interface to use
+     * @param cmd optional parameters
      * @return false on success, true on error
      */
-    public synchronized boolean setup2pppoeServ(cfgIfc dialer) {
+    public synchronized boolean setup2pppoeServ(cfgIfc dialer, cmds cmd) {
         if (pppoeS != null) {
             pppoeS.closeUp();
             pppoeS = null;
@@ -4294,6 +4295,20 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         ethtyp.updateET(packPppOE.typeCtr, pppoeS);
         ethtyp.addET(packPppOE.typeDat, "pppoeSdata", pppoeS);
         ethtyp.updateET(packPppOE.typeDat, pppoeS);
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("name")) {
+                pppoeS.serviceNam = cmd.word();
+                continue;
+            }
+            if (a.equals("delay")) {
+                pppoeS.serviceDly = bits.str2num(cmd.word());
+                continue;
+            }
+        }
         return false;
     }
 
@@ -4301,9 +4316,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * setup interface pppoe relay
      *
      * @param serial serial interface to use
+     * @param cmd optional parameters
      * @return false on success, true on error
      */
-    public synchronized boolean setup2pppoeRely(cfgIfc serial) {
+    public synchronized boolean setup2pppoeRely(cfgIfc serial, cmds cmd) {
         if (pppoeR != null) {
             if (pppoeR.ser != null) {
                 pppoeR.clnIfc.ethtyp.delET(-1);
@@ -4344,6 +4360,20 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         ethtyp.updateET(packPppOE.typeCtr, pppoeR);
         ethtyp.addET(packPppOE.typeDat, "pppoeRdata", pppoeR);
         ethtyp.updateET(packPppOE.typeDat, pppoeR);
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("name")) {
+                pppoeR.serviceNam = cmd.word();
+                continue;
+            }
+            if (a.equals("delay")) {
+                pppoeR.serviceDly = bits.str2num(cmd.word());
+                continue;
+            }
+        }
         return false;
     }
 
@@ -5112,16 +5142,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         } else {
             l.add(cmds.tabulator + "p2poe client " + pppoeC.clnIfc.name);
         }
-        if (pppoeS == null) {
-            l.add(cmds.tabulator + "no p2poe server");
-        } else {
-            l.add(cmds.tabulator + "p2poe server " + pppoeS.clnIfc.name);
-        }
-        if (pppoeR == null) {
-            l.add(cmds.tabulator + "no p2poe relay");
-        } else {
-            l.add(cmds.tabulator + "p2poe relay " + pppoeR.clnIfc.name);
-        }
+        cmds.cfgLine(l, pppoeS == null, cmds.tabulator, "p2poe server", "" + pppoeS);
+        cmds.cfgLine(l, pppoeR == null, cmds.tabulator, "p2poe relay", "" + pppoeR);
         if (eapolC == null) {
             l.add(cmds.tabulator + "no eapol client");
         } else {
@@ -5415,9 +5437,17 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 3     client                      start pppoe client");
         l.add("3 .       <name>                    name of dialer interface");
         l.add("2 3     server                      start pppoe server");
-        l.add("3 .       <name>                    name of dialer interface");
+        l.add("3 4,.     <name>                    name of dialer interface");
+        l.add("4 5         name                    set service name");
+        l.add("5 4,.         <name>                text");
+        l.add("4 5         delay                   set pado delay");
+        l.add("5 4,.         <num>                 time");
         l.add("2 3     relay                       start pppoe relay");
-        l.add("3 .       <name>                    name of serial interface");
+        l.add("3 4,.     <name>                    name of dialer interface");
+        l.add("4 5         name                    set service name");
+        l.add("5 4,.         <name>                text");
+        l.add("4 5         delay                   set pado delay");
+        l.add("5 4,.         <num>                 time");
         l.add("1 2   eapol                         eapol parameters on the interface");
         l.add("2 3     client                      start pppoe client");
         l.add("3 4       <text>                    username");
@@ -5844,14 +5874,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             if (a.equals("server")) {
-                if (setup2pppoeServ(cfgAll.ifcFind(cmd.word(), false))) {
+                if (setup2pppoeServ(cfgAll.ifcFind(cmd.word(), false), cmd)) {
                     cmd.error("failed to setup encapsulation");
                     return;
                 }
                 return;
             }
             if (a.equals("relay")) {
-                if (setup2pppoeRely(cfgAll.ifcFind(cmd.word(), false))) {
+                if (setup2pppoeRely(cfgAll.ifcFind(cmd.word(), false), cmd)) {
                     cmd.error("failed to setup encapsulation");
                     return;
                 }
@@ -6457,11 +6487,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             if (a.equals("server")) {
-                setup2pppoeServ(null);
+                setup2pppoeServ(null, null);
                 return;
             }
             if (a.equals("relay")) {
-                setup2pppoeRely(null);
+                setup2pppoeRely(null, null);
                 return;
             }
             cmd.badCmd();

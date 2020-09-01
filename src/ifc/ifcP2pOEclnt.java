@@ -368,6 +368,10 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
                 if ((currState & 2) != 0) {
                     return;
                 }
+                if (acAddr.compare(acAddr, pck.ETHsrc) != 0) {
+                    cntr.drop(pck, counter.reasons.badAddr);
+                    return;
+                }
                 sessionId = poe.ses;
                 currState |= 2;
                 break;

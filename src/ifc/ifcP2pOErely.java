@@ -3,6 +3,7 @@ package ifc;
 import addr.addrEmpty;
 import addr.addrMac;
 import addr.addrType;
+import cfg.cfgAll;
 import cfg.cfgIfc;
 import pack.packHolder;
 import pack.packPppOE;
@@ -33,7 +34,12 @@ public class ifcP2pOErely implements ifcUp {
     /**
      * configured service name
      */
-    public String serviceCfg = "pppoe";
+    public String serviceNam = "pppoe";
+
+    /**
+     * configured service delay
+     */
+    public int serviceDly = 0;
 
     /**
      * interface to clone
@@ -69,6 +75,17 @@ public class ifcP2pOErely implements ifcUp {
      * dialer interface handler
      */
     public final ifcDn diaI;
+
+    public String toString() {
+        String a = "";
+        if (!serviceNam.equals("pppoe")) {
+            a += " name " + serviceNam;
+        }
+        if (serviceDly > 0) {
+            a += " delay " + serviceDly;
+        }
+        return clnIfc.name + a;
+    }
 
     /**
      * create new instance
@@ -165,15 +182,15 @@ public class ifcP2pOErely implements ifcUp {
         if (host != null) {
             tlv.putBytes(pck, packPppOE.typeHstUnq, host);
         }
-        tlv.putStr(pck, packPppOE.typeACnam, "" + hwaddr);
-        tlv.putStr(pck, packPppOE.typeSrvNam, serviceCfg);
+        tlv.putStr(pck, packPppOE.typeACnam, cfgAll.hostName);
+        tlv.putStr(pck, packPppOE.typeSrvNam, serviceNam);
         switch (poe.cod) {
             case packPppOE.codePadI:
                 if (debugger.ifcP2pOErely) {
                     logger.debug("tx pado");
                 }
                 packPppOE.updateHeader(pck, packPppOE.codePadO, 0);
-                lower.sendPack(pck);
+                ifcDelay.sendPack(serviceDly,lower, pck);
                 break;
             case packPppOE.codePadR:
                 if (debugger.ifcP2pOErely) {
