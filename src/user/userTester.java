@@ -36,7 +36,7 @@ public class userTester {
     /**
      * slot increment
      */
-    protected final static int portSlot = 200;
+    protected final static int portSlot = 100;
 
     private pipeProgress rdr;
 
@@ -337,7 +337,6 @@ public class userTester {
         rdr.debugStat("capture=" + capture.size());
         rdr.debugStat("files=" + needed.size());
         for (int i = 0; i < others.size(); i++) {
-            paralell = 0;
             userTesterImg img = others.get(i);
             img.otherD = bits.txt2buf(path + img.otherF);
             img.otherP = " " + img.otherD.remove(0) + " ";
@@ -1299,7 +1298,9 @@ class userTesterOne {
                 s = repairHwCfg(s);
                 cfg.add(s);
             }
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + img.otherC + ",threads=1,sockets=1 -hda " + img.otherI + " -m " + img.otherM;
+            s = path + slot + rn + ".qcow2";
+            pipeShell.exec("qemu-img create -f qcow2 -o backing_file=" + img.otherI + " " + s, null, true);
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + img.otherC + ",threads=1,sockets=1 -hda " + s + " -m " + img.otherM;
             for (int i = 0; i < cfg.size(); i++) {
                 String a = cfg.get(i);
                 cmd = new cmds("hw", a);
