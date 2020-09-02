@@ -6,7 +6,6 @@
 #update-rc.d rtr defaults
 #systemctl mask serial-getty@ttyS0
 #systemctl disable serial-getty@ttyS0
-#git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare.git
 export SDE=/usr/share/bf_switchd
 export SDE_INSTALL=/usr/share/bf_switchd/install
 cd /home/mc36/rare/p4src

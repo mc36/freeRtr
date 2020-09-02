@@ -4,12 +4,15 @@ sudo apt-get dist-upgrade
 sudo apt-get remove apparmor
 sudo apt-get autoremove
 sudo apt-get clean
-sudo rm -rf `find . -name *.log*`
-sudo rm -rf `find . -name *.pcap`
-cd /home/mc36/rare
-git pull
-git add .
-git commit -m "automatic commit at releng box"
-git push
+cd ~
+mkdir a
+wget -O a/rtr.zip http://src.nop.hu/rtr.zip
+unzip a/rtr.zip -d a/
+mv ~/a/misc/p4bf/*.p4 ~/rare/p4src/
+mv ~/a/misc/p4bf/include/*.p4 ~/rare/p4src/include/
+mv ~/a/misc/p4bf/*.py ~/rare/bfrt_python/
+mv ~/a/misc/p4bf/*.sh ~/
+cd ~
+rm -rf a/
 sudo dd if=/dev/zero of=/zzz bs=1M
 sudo rm /zzz
