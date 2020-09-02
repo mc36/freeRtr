@@ -1,6 +1,6 @@
 file;result;test
--;-;freeRouter v20.9.1-rel, done by cs@nop.
--;-;2020-09-01 05:38:24, took 00:05:30, with 100 workers, on 1956 cases, 0 failed, 0 traces, 1 retries
+-;-;freeRouter v20.9.2-rel, done by cs@nop.
+-;-;2020-09-02 02:50:05, took 00:05:02, with 100 workers, on 1964 cases, 0 failed, 0 traces, 1 retries
 -;-;./rtr.bin
 basic.tst;success;dummy test
 conn-anyconn.tst;success;ip over anyconnect
@@ -1132,6 +1132,14 @@ p4lang-rout85.tst;success;p4lang: bridging over pppoe
 p4lang-rout86.tst;success;p4lang: bridging over pppoe vlan
 p4lang-rout87.tst;success;p4lang: bridging over l2tp
 p4lang-rout88.tst;success;p4lang: bridging over l2tp vlan
+p4lang-rout89.tst;success;p4lang: vxlan over ipv4
+p4lang-rout90.tst;success;p4lang: vxlan over ipv6
+p4lang-rout91.tst;success;p4lang: vxlan over ipv4 loopback
+p4lang-rout92.tst;success;p4lang: vxlan over ipv6 loopback
+p4lang-rout93.tst;success;p4lang: evpn/vxlan with bgp
+p4lang-rout94.tst;success;p4lang: vlan evpn/vxlan with bgp
+p4lang-rout95.tst;success;p4lang: bundle vlan evpn/vxlan with bgp
+p4lang-rout96.tst;success;p4lang: hairpin evpn/vxlan with bgp
 qos-action01.tst;success;qos ingress transmit action
 qos-action02.tst;success;qos egress transmit action
 qos-action03.tst;success;qos ingress drop action

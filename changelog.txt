@@ -9179,3 +9179,12 @@ qc pass: p4lang: bridging over pppoe
 qc pass: p4lang: bridging over pppoe vlan
 qc pass: p4lang: bridging over l2tp
 qc pass: p4lang: bridging over l2tp vlan
+---------------------------------- 2020-09-02 02:45:03
+qc pass: p4lang: vxlan over ipv4
+qc pass: p4lang: vxlan over ipv6
+qc pass: p4lang: vxlan over ipv4 loopback
+qc pass: p4lang: vxlan over ipv6 loopback
+qc pass: p4lang: evpn/vxlan with bgp
+qc pass: p4lang: vlan evpn/vxlan with bgp
+qc pass: p4lang: bundle vlan evpn/vxlan with bgp
+qc pass: p4lang: hairpin evpn/vxlan with bgp
