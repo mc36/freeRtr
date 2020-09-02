@@ -97,6 +97,30 @@ public class clntVxlan implements Runnable, prtServP, ifcDn {
     }
 
     /**
+     * get remote address
+     *
+     * @return address
+     */
+    public addrIP getRemote() {
+        if (conn == null) {
+            return null;
+        }
+        return trg.copyBytes();
+    }
+
+    /**
+     * get local address
+     *
+     * @return address
+     */
+    public addrIP getLocal() {
+        if (conn == null) {
+            return null;
+        }
+        return conn.iface.addr.copyBytes();
+    }
+
+    /**
      * get hw address
      *
      * @return address

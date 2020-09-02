@@ -169,11 +169,20 @@ struct bridge_entry {
     int id;
     int mac1;
     int mac2;
-    int command;    // 1=port, 2=vpls, 3=route
+    int command;    // 1=port, 2=vpls, 3=route, 4=vxlan4, 5=vxlan6
     int port;
     int nexthop;
     int label1;
     int label2;
+    int srcAddr1;
+    int srcAddr2;
+    int srcAddr3;
+    int srcAddr4;
+    int trgAddr1;
+    int trgAddr2;
+    int trgAddr3;
+    int trgAddr4;
+    int instance;
     long pack;
     long byte;
 };
@@ -496,7 +505,7 @@ struct tun4_entry {
     int trgAddr;
     int srcPort;
     int trgPort;
-    int command;    // 1=gre, 2=l2tp
+    int command;    // 1=gre, 2=l2tp, 3=vxlan
     int aclport;
     long pack;
     long byte;
@@ -536,7 +545,7 @@ struct tun6_entry {
     int trgAddr4;
     int srcPort;
     int trgPort;
-    int command;    // 1=gre, 2=l2tp
+    int command;    // 1=gre, 2=l2tp, 3=vxlan
     int aclport;
     long pack;
     long byte;

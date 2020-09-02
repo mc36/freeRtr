@@ -4,6 +4,7 @@ import addr.addrIP;
 import addr.addrMac;
 import cfg.cfgAlias;
 import cfg.cfgAll;
+import cfg.cfgBrdg;
 import cfg.cfgDial;
 import cfg.cfgIfc;
 import cfg.cfgInit;
@@ -137,6 +138,29 @@ public class userClear {
                 return null;
             }
             ntry.restartNow();
+            return null;
+        }
+        if (a.equals("bridge")) {
+            cfgBrdg ntry = cfgAll.brdgFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such bridge");
+                return null;
+            }
+            a = cmd.word();
+            if (a.length() < 1) {
+                ntry.bridgeHed.delMacs(null);
+                return null;
+            }
+            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return null;
+            }
+            if (ifc.bridgeIfc == null) {
+                cmd.error("not a bridge interface");
+                return null;
+            }
+            ntry.bridgeHed.delMacs(ifc.bridgeIfc);
             return null;
         }
         if (a.equals("counters")) {

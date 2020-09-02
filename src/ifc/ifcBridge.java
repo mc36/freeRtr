@@ -562,10 +562,17 @@ public class ifcBridge implements ifcDn {
     /**
      * delete macs on interface
      *
-     * @param ifc interface
+     * @param ifc interface, null means all
      */
-    protected void delMacs(ifcBridgeIfc ifc) {
+    public void delMacs(ifcBridgeIfc ifc) {
         if (learned == null) {
+            return;
+        }
+        if (ifc == null) {
+            learned.clear();
+            if (macRouter != null) {
+                macRouter.bridgeChanged();
+            }
             return;
         }
         int seen = 0;

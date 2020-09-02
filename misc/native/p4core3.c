@@ -640,6 +640,12 @@ ipv4_rou:
                         ppptyp2ethtyp;
                         put16msb(bufD, bufP, ethtyp);
                         break;
+                    case 3: // vxlan
+                        bufP = bufT + 8; // udp header
+                        bufP += 8; // vxlan header
+                        bufP -= 2;
+                        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+                        break;
                     default:
                         packDr[port]++;
                         byteDr[port] += bufS;
@@ -856,6 +862,12 @@ ipv6_hit:
                         ppptyp2ethtyp;
                         put16msb(bufD, bufP, ethtyp);
                         break;
+                    case 3: // vxlan
+                        bufP = bufT + 8; // udp header
+                        bufP += 8; // vxlan header
+                        bufP -= 2;
+                        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+                        break;
                     default:
                         packDr[port]++;
                         byteDr[port] += bufS;
@@ -979,9 +991,9 @@ bridgevpls_rx:
         bridge_res->byte += bufS;
         bufP -= 2;
         switch (bridge_res->command) {
-        case 1:
+        case 1: // port
             break;
-        case 2:
+        case 2: // vpls
             bufP -= 12;
             memmove(&bufD[bufP], &buf2[0], 12);
             ethtyp = ETHERTYPE_MPLS_UCAST;
@@ -993,10 +1005,72 @@ bridgevpls_rx:
             put32msb(bufD, bufP, label);
             neigh_ntry.id = bridge_res->nexthop;
             goto ethtyp_tx;
-        case 3:
+        case 3: // routed
             bufP -= 12;
             memmove(&bufD[bufP], &buf2[0], 12);
             ethtyp = ETHERTYPE_ROUTEDMAC;
+            neigh_ntry.id = bridge_res->nexthop;
+            goto ethtyp_tx;
+        case 4: // vxlan4
+            bufP -= 12;
+            memmove(&bufD[bufP], &buf2[0], 12);
+            bufP -= 8;
+            put16msb(bufD, bufP + 0, 0x800); // flags
+            put16msb(bufD, bufP + 2, 0); // group id
+            put32msb(bufD, bufP + 4, bridge_res->instance << 8); // inst id
+            bufP -= 8;
+            put16msb(bufD, bufP + 0, 4789); // source
+            put16msb(bufD, bufP + 2, 4789); // target
+            put16msb(bufD, bufP + 4, bufS - bufP + preBuff); // length
+            put16msb(bufD, bufP + 6, 0); // checksum
+            putPseudoSum(buf2, 0, 17, bufS - bufP + preBuff, bridge_res->srcAddr1, bridge_res->trgAddr1, 0, 0, 0, 0, 0, 0);
+            tmp = calcIPsum(buf2, 0, 36, 0);
+            tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);
+            put16lsb(bufD, bufP + 6, 0xffff - tmp); // checksum
+            bufP -= 20;
+            put16msb(bufD, bufP + 0, 0x4500); // ip ver, hdrlen, tos
+            put16msb(bufD, bufP + 2, bufS - bufP + preBuff); // total length
+            ipids++;
+            put16msb(bufD, bufP + 4, ipids); // identify
+            put16msb(bufD, bufP + 6, 0); // fragment
+            put16msb(bufD, bufP + 8, 0xff11); // ttl, protocol
+            put16msb(bufD, bufP + 10, 0); // checksum
+            put32msb(bufD, bufP + 12, bridge_res->srcAddr1); // source
+            put32msb(bufD, bufP + 16, bridge_res->trgAddr1); // target
+            put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));
+            ethtyp = ETHERTYPE_IPV4;
+            neigh_ntry.id = bridge_res->nexthop;
+            goto ethtyp_tx;
+        case 5: // vxlan6
+            bufP -= 12;
+            memmove(&bufD[bufP], &buf2[0], 12);
+            bufP -= 8;
+            put16msb(bufD, bufP + 0, 0x800); // flags
+            put16msb(bufD, bufP + 2, 0); // group id
+            put32msb(bufD, bufP + 4, bridge_res->instance << 8); // inst id
+            bufP -= 8;
+            put16msb(bufD, bufP + 0, 4789); // source
+            put16msb(bufD, bufP + 2, 4789); // target
+            put16msb(bufD, bufP + 4, bufS - bufP + preBuff); // length
+            put16msb(bufD, bufP + 6, 0); // checksum
+            putPseudoSum(buf2, 0, 17, bufS - bufP + preBuff, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            tmp = calcIPsum(buf2, 0, 36, 0);
+            tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);
+            put16lsb(bufD, bufP + 6, 0xffff - tmp); // checksum
+            bufP -= 40;
+            put16msb(bufD, bufP + 0, 0x6000); // ip ver, tos
+            put16msb(bufD, bufP + 2, 0); // flow label
+            put16msb(bufD, bufP + 4, bufS - bufP + preBuff - 40); // payload length
+            put16msb(bufD, bufP + 6, 0x11ff); // protocol, ttl
+            put32msb(bufD, bufP + 8, bridge_res->srcAddr1); // source
+            put32msb(bufD, bufP + 12, bridge_res->srcAddr2); // source
+            put32msb(bufD, bufP + 16, bridge_res->srcAddr3); // source
+            put32msb(bufD, bufP + 20, bridge_res->srcAddr4); // source
+            put32msb(bufD, bufP + 24, bridge_res->trgAddr1); // target
+            put32msb(bufD, bufP + 28, bridge_res->trgAddr2); // target
+            put32msb(bufD, bufP + 32, bridge_res->trgAddr3); // target
+            put32msb(bufD, bufP + 36, bridge_res->trgAddr4); // target
+            ethtyp = ETHERTYPE_IPV6;
             neigh_ntry.id = bridge_res->nexthop;
             goto ethtyp_tx;
         default:

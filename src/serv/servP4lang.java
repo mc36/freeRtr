@@ -14,6 +14,8 @@ import cfg.cfgBrdg;
 import cfg.cfgIfc;
 import cfg.cfgVrf;
 import clnt.clntMplsPwe;
+import clnt.clntVxlan;
+import ifc.ifcBridge;
 import ifc.ifcBridgeAdr;
 import ifc.ifcBridgeIfc;
 import ifc.ifcUp;
@@ -100,6 +102,26 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public tabListing<tabAceslstN<addrIP>, addrIP> expCopp6 = null;
 
     /**
+     * exported dynamic interface first
+     */
+    public int expDyn1st = 0;
+
+    /**
+     * exported dynamic range size
+     */
+    public int expDynSiz = 0;
+
+    /**
+     * exported dynamic interfaces
+     */
+    public ifcBridgeIfc[] expDynIfc;
+
+    /**
+     * exported dynamic next
+     */
+    public int expDynNxt = 0;
+
+    /**
      * export interval
      */
     public int expDelay = 1000;
@@ -135,6 +157,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         "server p4lang .*! no export-srv6",
         "server p4lang .*! no export-copp4",
         "server p4lang .*! no export-copp6",
+        "server p4lang .*! no export-dynamic",
         "server p4lang .*! no interconnect",
         "server p4lang .*! export-interval 1000",};
 
@@ -175,6 +198,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         } else {
             l.add(beg + "export-copp6 " + expCopp6.listName);
         }
+        cmds.cfgLine(l, expDynSiz < 1, beg, "export-dynamic", expDyn1st + " " + expDynSiz);
         l.add(beg + "export-interval " + expDelay);
         cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
     }
@@ -234,6 +258,12 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 return false;
             }
             expCopp6 = acl.aceslst;
+            return false;
+        }
+        if (s.equals("export-dynamic")) {
+            expDyn1st = bits.str2num(cmd.word());
+            expDynSiz = bits.str2num(cmd.word());
+            expDynIfc = new ifcBridgeIfc[expDynSiz];
             return false;
         }
         if (s.equals("export-interval")) {
@@ -335,6 +365,12 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             interconn = null;
             return false;
         }
+        if (s.equals("export-dynamic")) {
+            expDyn1st = 0;
+            expDynSiz = 0;
+            expDynIfc = null;
+            return false;
+        }
         if (s.equals("export-srv6")) {
             expSrv6 = null;
             return false;
@@ -365,6 +401,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("1 2  export-vrf                specify vrf to export");
         l.add("2 3    <name>                  vrf name");
         l.add("3 .      <num>                 p4lang vrf number");
+        l.add("1 2  export-dynamic            specify dynamic port range");
+        l.add("2 3    <num>                   first id");
+        l.add("3 .      <num>                 number of ids");
         l.add("1 2  export-bridge             specify bridge to export");
         l.add("2 .    <num>                   bridge number");
         l.add("1 2  export-port               specify port to export");
@@ -443,6 +482,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             br.ifcs.clear();
             br.macs.clear();
         }
+        expDynNxt = 0;
         conn = new servP4langConn(pipe, this);
         logger.warn("neighbor " + id.peerAddr + " up");
         return false;
@@ -489,16 +529,29 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     }
 
     /**
-     * received packet
+     * process cpu packet
      *
+     * @param id port id
      * @param pck packet
      */
-    public void recvPack(packHolder pck) {
-        cntr.rx(pck);
-        ifcEther.createETHheader(pck, false);
-        int id = pck.msbGetW(0);
-        pck.getSkip(2);
+    protected void gotCpuPack(int id, packHolder pck) {
         ifcEther.parseETHheader(pck, false);
+        if (expDynIfc != null) {
+            if ((id >= expDyn1st) && (id < (expDyn1st + expDynSiz))) {
+                if (pck.msbGetW(0) == ifcBridge.serialType) {
+                    pck.getSkip(2);
+                } else {
+                    pck.getSkip(-addrMac.sizeX2);
+                }
+                ifcBridgeIfc ifc = expDynIfc[id - expDyn1st];
+                if (ifc == null) {
+                    cntr.drop(pck, counter.reasons.noIface);
+                    return;
+                }
+                ifc.recvPack(pck);
+                return;
+            }
+        }
         servP4langIfc ntry = new servP4langIfc();
         ntry.id = id;
         ntry = expIfc.find(ntry);
@@ -511,6 +564,19 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         } else {
             ntry.upper.recvPack(pck);
         }
+    }
+
+    /**
+     * received packet
+     *
+     * @param pck packet
+     */
+    public void recvPack(packHolder pck) {
+        cntr.rx(pck);
+        ifcEther.createETHheader(pck, false);
+        int id = pck.msbGetW(0);
+        pck.getSkip(2);
+        gotCpuPack(id, pck);
     }
 
     /**
@@ -944,8 +1010,7 @@ class servP4langConn implements Runnable {
             if (!s.equals("packet")) {
                 return false;
             }
-            servP4langIfc ntry = new servP4langIfc();
-            ntry.id = bits.str2num(cmd.word());
+            int id = bits.str2num(cmd.word());
             packHolder pck = new packHolder(true, true);
             s = cmd.getRemaining();
             s = s.replaceAll(" ", "");
@@ -958,18 +1023,7 @@ class servP4langConn implements Runnable {
                 pck.putSkip(1);
                 pck.merge2end();
             }
-            ifcEther.parseETHheader(pck, false);
-            lower.cntr.rx(pck);
-            ntry = lower.expIfc.find(ntry);
-            if (ntry == null) {
-                lower.cntr.drop(pck, counter.reasons.noIface);
-                return false;
-            }
-            if (ntry.ifc.type != cfgIfc.ifaceType.sdn) {
-                ntry.ifc.ethtyp.recvPack(pck);
-            } else {
-                ntry.upper.recvPack(pck);
-            }
+            lower.gotCpuPack(id, pck);
             return false;
         }
         if (pipe.isClosed() != 0) {
@@ -1091,6 +1145,15 @@ class servP4langConn implements Runnable {
             return old;
         }
         return genNeighId(ntry);
+    }
+
+    private int findDyn(ifcBridgeIfc ifc) {
+        for (int i = 0; i < lower.expDynIfc.length; i++) {
+            if (lower.expDynIfc[i] == ifc) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private servP4langVrf findVrf(ipFwd fwd) {
@@ -1339,6 +1402,18 @@ class servP4langConn implements Runnable {
             if (br.ifcs.find(ntry) != null) {
                 continue;
             }
+            try {
+                clntVxlan ifc = (clntVxlan) ntry.lowerIf;
+                if (lower.expDynIfc == null) {
+                    continue;
+                }
+                lower.expDynNxt = (lower.expDynNxt + 1) % lower.expDynSiz;
+                lower.expDynIfc[lower.expDynNxt] = ntry;
+                br.ifcs.put(ntry);
+                lower.sendLine("portbridge_add " + (lower.expDyn1st + lower.expDynNxt) + " " + br.br.num);
+                continue;
+            } catch (Exception e) {
+            }
             int l = -1;
             try {
                 clntMplsPwe ifc = (clntMplsPwe) ntry.lowerIf;
@@ -1419,6 +1494,42 @@ class servP4langConn implements Runnable {
             addrIP adr = null;
             addrIP srv = null;
             tabRouteEntry<addrIP> rou = null;
+            try {
+                clntVxlan iface = (clntVxlan) ntry.ifc.lowerIf;
+                if (lower.expDynIfc == null) {
+                    continue;
+                }
+                int brif = findDyn(ntry.ifc);
+                if (brif < 0) {
+                    continue;
+                }
+                adr = iface.getRemote();
+                if (adr == null) {
+                    continue;
+                }
+                addrIP src = iface.getLocal();
+                if (src == null) {
+                    continue;
+                }
+                rou = iface.vrf.getFwd(adr).actualU.route(adr);
+                if (rou == null) {
+                    continue;
+                }
+                if (rou.iface == null) {
+                    continue;
+                }
+                addrIP nh = rou.nextHop;
+                if (nh == null) {
+                    nh = adr;
+                }
+                servP4langNei hop = findIfc(rou.iface, nh);
+                if (hop == null) {
+                    continue;
+                }
+                lower.sendLine("bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.inst + " " + hop.vrf.id + " " + (brif + lower.expDyn1st));
+                continue;
+            } catch (Exception e) {
+            }
             try {
                 clntMplsPwe iface = (clntMplsPwe) ntry.ifc.lowerIf;
                 l = iface.getLabelRem();
