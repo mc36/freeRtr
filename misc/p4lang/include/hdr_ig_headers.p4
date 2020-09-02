@@ -13,6 +13,7 @@ struct headers {
     ipv6_t		ipv6d;
     gre_t		gre2;
     udp_t		udp2;
+    vxlan_t		vxlan2;
     l2tp_t		l2tp2;
     pppbr_t		pppbr;
     ethernet_t		eth4;
@@ -31,6 +32,7 @@ struct headers {
     gre_t		gre;
     udp_t		udp;
     l2tp_t		l2tp;
+    vxlan_t		vxlan;
     tcp_t		tcp;
     pppbr_t		l2tpbr;
     ethernet_t		eth5;

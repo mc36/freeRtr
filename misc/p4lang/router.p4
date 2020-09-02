@@ -21,6 +21,7 @@
 #include "include/hdr_udp.p4"
 #include "include/hdr_tcp.p4"
 #include "include/hdr_l2tp.p4"
+#include "include/hdr_vxlan.p4"
 
 /*----------------------------------------------------------------------------*
  *                   I N G R E S S   P R O C E S S I N G                      *

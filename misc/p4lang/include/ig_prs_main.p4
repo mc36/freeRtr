@@ -255,6 +255,8 @@ ETHERTYPE_ROUTEDMAC:
         transition select(hdr.udp.src_port) {
 1701:
             prs_l2tp;
+4789:
+            prs_vxlan;
         default:
             accept;
         }
@@ -275,6 +277,12 @@ PPPTYPE_ROUTEDMAC:
         default:
             accept;
         }
+    }
+
+
+    state prs_vxlan {
+        pkt.extract(hdr.vxlan);
+        transition prs_eth5;
     }
 
     state prs_l2tpbr {

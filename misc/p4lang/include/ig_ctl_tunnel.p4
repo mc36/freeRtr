@@ -29,6 +29,13 @@ control IngressControlTunnel(inout headers hdr,
     }
 
 
+    action act_tunnel_vxlan(SubIntId_t port) {
+        ig_intr_md.egress_spec = (PortId_t)port;
+        ig_md.need_recir = 1;
+        ig_md.source_id = port;
+    }
+
+
 
     table tbl_tunnel4 {
         key = {
@@ -48,6 +55,7 @@ ig_md.layer4_dstprt:
         actions = {
             act_tunnel_gre;
             act_tunnel_l2tp;
+            act_tunnel_vxlan;
             @defaultonly NoAction;
         }
         size = 1024;
@@ -73,6 +81,7 @@ ig_md.layer4_dstprt:
         actions = {
             act_tunnel_gre;
             act_tunnel_l2tp;
+            act_tunnel_vxlan;
             @defaultonly NoAction;
         }
         size = 1024;
@@ -93,6 +102,7 @@ ig_md.layer4_dstprt:
 
         if (ig_md.need_recir == 0) return;
 
+        hdr.vxlan.setInvalid();
         hdr.l2tp.setInvalid();
         hdr.udp.setInvalid();
         hdr.gre.setInvalid();

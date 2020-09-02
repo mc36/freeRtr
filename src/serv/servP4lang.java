@@ -263,6 +263,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         if (s.equals("export-dynamic")) {
             expDyn1st = bits.str2num(cmd.word());
             expDynSiz = bits.str2num(cmd.word());
+            expDynNxt = 0;
             expDynIfc = new ifcBridgeIfc[expDynSiz];
             return false;
         }
@@ -368,6 +369,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         if (s.equals("export-dynamic")) {
             expDyn1st = 0;
             expDynSiz = 0;
+            expDynNxt = 0;
             expDynIfc = null;
             return false;
         }
@@ -481,6 +483,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             servP4langBr br = expBr.get(i);
             br.ifcs.clear();
             br.macs.clear();
+        }
+        if (expDynIfc != null) {
+            for (int i = 0; i < expDynIfc.length; i++) {
+                expDynIfc[i] = null;
+            }
         }
         expDynNxt = 0;
         conn = new servP4langConn(pipe, this);
@@ -1511,7 +1518,12 @@ class servP4langConn implements Runnable {
                 if (src == null) {
                     continue;
                 }
-                rou = iface.vrf.getFwd(adr).actualU.route(adr);
+                ipFwd ofwd = iface.vrf.getFwd(adr);
+                servP4langVrf ovrf = findVrf(ofwd);
+                if (ovrf == null) {
+                    continue;
+                }
+                rou = ofwd.actualU.route(adr);
                 if (rou == null) {
                     continue;
                 }
@@ -1526,7 +1538,7 @@ class servP4langConn implements Runnable {
                 if (hop == null) {
                     continue;
                 }
-                lower.sendLine("bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.inst + " " + hop.vrf.id + " " + (brif + lower.expDyn1st));
+                lower.sendLine("bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.inst + " " + ovrf.id + " " + (brif + lower.expDyn1st));
                 continue;
             } catch (Exception e) {
             }
