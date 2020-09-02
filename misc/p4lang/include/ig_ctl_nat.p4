@@ -22,6 +22,7 @@ control IngressControlNAT(inout headers hdr,
         hdr.udp.checksum = 0;
         ig_md.layer4_srcprt = srcprt;
         ig_md.layer4_dstprt = trgprt;
+        ig_md.natted = 1;
     }
 
     action act_rewrite_ipv4prt6(ipv4_addr_t srcadr, ipv4_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
@@ -32,6 +33,7 @@ control IngressControlNAT(inout headers hdr,
         hdr.tcp.checksum = 0;
         ig_md.layer4_srcprt = srcprt;
         ig_md.layer4_dstprt = trgprt;
+        ig_md.natted = 1;
     }
 
     action act_rewrite_ipv6prt17(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
@@ -42,6 +44,7 @@ control IngressControlNAT(inout headers hdr,
         hdr.udp.checksum = 0;
         ig_md.layer4_srcprt = srcprt;
         ig_md.layer4_dstprt = trgprt;
+        ig_md.natted = 1;
     }
 
     action act_rewrite_ipv6prt6(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
@@ -52,6 +55,7 @@ control IngressControlNAT(inout headers hdr,
         hdr.tcp.checksum = 0;
         ig_md.layer4_srcprt = srcprt;
         ig_md.layer4_dstprt = trgprt;
+        ig_md.natted = 1;
     }
 
     table tbl_ipv4_nat_trns {

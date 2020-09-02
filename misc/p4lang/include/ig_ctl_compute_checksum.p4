@@ -73,7 +73,7 @@ control ig_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t ig_m
         HashAlgorithm.csum16);
 
         update_checksum_with_payload(
-            (ig_md.punting == 0) && hdr.ipv4.isValid() && hdr.tcp.isValid(),
+            (ig_md.natted == 1) && hdr.ipv4.isValid() && hdr.tcp.isValid(),
         {   hdr.ipv4.src_addr,
             hdr.ipv4.dst_addr,
             8w0, hdr.ipv4.protocol,
@@ -91,7 +91,7 @@ control ig_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t ig_m
         HashAlgorithm.csum16);
 
         update_checksum_with_payload(
-            (ig_md.punting == 0) && hdr.ipv4.isValid() && hdr.udp.isValid(),
+            (ig_md.natted == 1) && hdr.ipv4.isValid() && hdr.udp.isValid(),
         {   hdr.ipv4.src_addr,
             hdr.ipv4.dst_addr,
             8w0, hdr.ipv4.protocol,
@@ -104,7 +104,7 @@ control ig_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t ig_m
         HashAlgorithm.csum16);
 
         update_checksum_with_payload(
-            (ig_md.punting == 0) && hdr.ipv6.isValid() && hdr.tcp.isValid(),
+            (ig_md.natted == 1) && hdr.ipv6.isValid() && hdr.tcp.isValid(),
         {   hdr.ipv6.src_addr,
             hdr.ipv6.dst_addr,
             8w0, hdr.ipv6.next_hdr,
@@ -122,7 +122,7 @@ control ig_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t ig_m
         HashAlgorithm.csum16);
 
         update_checksum_with_payload(
-            (ig_md.punting == 0) && hdr.ipv6.isValid() && hdr.udp.isValid(),
+            (ig_md.natted == 1) && hdr.ipv6.isValid() && hdr.udp.isValid(),
         {   hdr.ipv6.src_addr,
             hdr.ipv6.dst_addr,
             8w0, hdr.ipv6.next_hdr,
