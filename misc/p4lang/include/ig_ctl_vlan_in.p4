@@ -8,7 +8,7 @@ control IngressControlVlanIn(inout headers hdr,
     action act_set_iface(SubIntId_t src) {
         ig_md.source_id = src;
         ig_md.ethertype = hdr.vlan.ethertype;
-        ig_md.vlan_size = 4;
+        ig_md.vlan_size = ig_md.vlan_size + 4;
     }
 
     action act_set_def_iface() {
