@@ -25,13 +25,19 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
                              inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
+
+
 #ifdef HAVE_L2TP
     SubIntId_t l2tp_hit;
 #endif
 
+
+
+
 #ifdef HAVE_GRE
     action act_tunnel_gre(SubIntId_t port) {
         hdr.ethernet.ethertype = hdr.gre.gretyp;
+        ig_md.source_id = port;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.vlan.setInvalid();
@@ -46,11 +52,52 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
     }
 #endif
 
+
+
+
+#ifdef HAVE_IPIP
+
+    action act_tunnel_ip4ip(SubIntId_t port) {
+        hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+        ig_md.source_id = port;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        hdr.vlan.setInvalid();
+        ig_tm_md.ucast_egress_port = RECIR_PORT;
+        ig_tm_md.bypass_egress = 1;
+//        recirculate(RECIR_PORT);
+        hdr.cpu.setValid();
+        hdr.cpu.port = port;
+        hdr.ipv4.setInvalid();
+        hdr.ipv6.setInvalid();
+    }
+
+    action act_tunnel_ip6ip(SubIntId_t port) {
+        hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+        ig_md.source_id = port;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        hdr.vlan.setInvalid();
+        ig_tm_md.ucast_egress_port = RECIR_PORT;
+        ig_tm_md.bypass_egress = 1;
+//        recirculate(RECIR_PORT);
+        hdr.cpu.setValid();
+        hdr.cpu.port = port;
+        hdr.ipv4.setInvalid();
+        hdr.ipv6.setInvalid();
+    }
+#endif
+
+
+
 #ifdef HAVE_L2TP
     action act_tunnel_l2tp(SubIntId_t port) {
         l2tp_hit = port;
+        ig_md.source_id = port;
     }
 #endif
+
+
 
 #ifdef HAVE_VXLAN
     action act_tunnel_vxlan(SubIntId_t port) {
@@ -71,6 +118,9 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
     }
 #endif
 
+
+
+
     table tbl_tunnel4 {
         key = {
 ig_md.vrf:
@@ -90,6 +140,10 @@ ig_md.layer4_dstprt:
 #ifdef HAVE_GRE
             act_tunnel_gre;
 #endif
+#ifdef HAVE_IPIP
+            act_tunnel_ip4ip;
+            act_tunnel_ip6ip;
+#endif
 #ifdef HAVE_L2TP
             act_tunnel_l2tp;
 #endif
@@ -101,6 +155,8 @@ ig_md.layer4_dstprt:
         size = 1024;
         const default_action = NoAction();
     }
+
+
 
 
     table tbl_tunnel6 {
@@ -122,6 +178,10 @@ ig_md.layer4_dstprt:
 #ifdef HAVE_GRE
             act_tunnel_gre;
 #endif
+#ifdef HAVE_IPIP
+            act_tunnel_ip4ip;
+            act_tunnel_ip6ip;
+#endif
 #ifdef HAVE_L2TP
             act_tunnel_l2tp;
 #endif
@@ -142,15 +202,15 @@ ig_md.layer4_dstprt:
         if (hdr.ipv4.isValid()) {
             tbl_tunnel4.apply();
         }
-        else        if (hdr.ipv6.isValid()) {
+        else if (hdr.ipv6.isValid()) {
             tbl_tunnel6.apply();
         }
 #ifdef HAVE_L2TP
         if ((l2tp_hit != 0) && ((hdr.l2tp.flags & 0x8000)==0) && ((hdr.l2tp.ppptyp & 0x8000)==0)) {
             if (hdr.l2tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
-            else        if (hdr.l2tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
-            else        if (hdr.l2tp.ppptyp == PPPTYPE_MPLS_UCAST) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
-            else        if (hdr.l2tp.ppptyp == PPPTYPE_ROUTEDMAC) hdr.ethernet.ethertype = ETHERTYPE_ROUTEDMAC;
+            else if (hdr.l2tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+            else if (hdr.l2tp.ppptyp == PPPTYPE_MPLS_UCAST) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
+            else if (hdr.l2tp.ppptyp == PPPTYPE_ROUTEDMAC) hdr.ethernet.ethertype = ETHERTYPE_ROUTEDMAC;
             ig_md.ipv4_valid = 0;
             ig_md.ipv6_valid = 0;
             hdr.vlan.setInvalid();

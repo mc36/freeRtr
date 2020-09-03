@@ -137,6 +137,79 @@ control IngressControlNexthop(inout headers hdr, inout ingress_metadata_t ig_md,
 #endif
 
 
+
+#ifdef HAVE_IPIP
+
+    action act_ipv4_ipip4(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr) {
+        /*
+         * the packet header src_mac is now set to the previous header dst_mac
+         */
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+
+        /*
+         * the new packet header dst_mac is now the dst_mac
+         * set by the control plane entry
+         */
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+
+        /*
+         * the egress_spec port is set now the egress_port
+         * set by the control plane entry
+         */
+        ig_md.target_id = egress_port;
+        ig_md.aclport_id = acl_port;
+
+        hdr.ipv4d.setValid();
+        hdr.ipv4d.version = 4;
+        hdr.ipv4d.ihl = 5;
+        hdr.ipv4d.diffserv = 0;
+        hdr.ipv4d.total_len = pktlen + 20;
+        hdr.ipv4d.identification = 0;
+        hdr.ipv4d.flags = 0;
+        hdr.ipv4d.frag_offset = 0;
+        hdr.ipv4d.ttl = 255;
+        hdr.ipv4d.protocol = 0;
+        hdr.ipv4d.hdr_checksum = 0;
+        hdr.ipv4d.src_addr = src_ip_addr;
+        hdr.ipv4d.dst_addr = dst_ip_addr;
+        ig_md.ethertype = ETHERTYPE_IPV4;
+    }
+
+    action act_ipv4_ipip6(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr) {
+        /*
+         * the packet header src_mac is now set to the previous header dst_mac
+         */
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+
+        /*
+         * the new packet header dst_mac is now the dst_mac
+         * set by the control plane entry
+         */
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+
+        /*
+         * the egress_spec port is set now the egress_port
+         * set by the control plane entry
+         */
+        ig_md.target_id = egress_port;
+        ig_md.aclport_id = acl_port;
+
+        hdr.ipv6d.setValid();
+        hdr.ipv6d.version = 6;
+        hdr.ipv6d.traffic_class = 0;
+        hdr.ipv6d.flow_label = 0;
+        hdr.ipv6d.payload_len = pktlen;
+        hdr.ipv6d.next_hdr = 0;
+        hdr.ipv6d.hop_limit = 255;
+        hdr.ipv6d.src_addr = src_ip_addr;
+        hdr.ipv6d.dst_addr = dst_ip_addr;
+        ig_md.ethertype = ETHERTYPE_IPV6;
+    }
+
+#endif
+
+
+
 #ifdef HAVE_PPPOE
 
 
@@ -219,6 +292,7 @@ control IngressControlNexthop(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.ipv4d.hdr_checksum = 0;
         hdr.ipv4d.src_addr = src_ip_addr;
         hdr.ipv4d.dst_addr = dst_ip_addr;
+        ig_md.ethertype = ETHERTYPE_IPV4;
     }
 
 
@@ -263,6 +337,7 @@ control IngressControlNexthop(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.ipv6d.hop_limit = 255;
         hdr.ipv6d.src_addr = src_ip_addr;
         hdr.ipv6d.dst_addr = dst_ip_addr;
+        ig_md.ethertype = ETHERTYPE_IPV6;
     }
 
 
@@ -289,6 +364,10 @@ ig_md.nexthop_id:
             act_ipv4_l2tp4;
             act_ipv4_l2tp6;
 #endif
+#ifdef HAVE_IPIP
+            act_ipv4_ipip4;
+            act_ipv4_ipip6;
+#endif
             @defaultonly NoAction;
         }
         size = 512;
@@ -314,9 +393,15 @@ ig_md.nexthop_id:
                 else if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = PPPTYPE_IPV6;
                 else if (ig_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = PPPTYPE_MPLS_UCAST;
                 else if (ig_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.l2tp2.ppptyp = PPPTYPE_ROUTEDMAC;
-
-                if (hdr.ipv4d.isValid()) ig_md.ethertype = ETHERTYPE_IPV4;
-                else if (hdr.ipv6d.isValid()) ig_md.ethertype = ETHERTYPE_IPV6;
+            }
+#endif
+#ifdef HAVE_IPIP
+            if (hdr.ipv4d.isValid() && (hdr.ipv4d.protocol == 0)) {
+                if (ig_md.ethertype == ETHERTYPE_IPV4) hdr.ipv4d.protocol = IP_PROTOCOL_IPV4;
+                else if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.ipv4d.protocol = IP_PROTOCOL_IPV6;
+            } else if (hdr.ipv6d.isValid() && (hdr.ipv6d.next_hdr == 0)) {
+                if (ig_md.ethertype == ETHERTYPE_IPV4) hdr.ipv6d.next_hdr = IP_PROTOCOL_IPV4;
+                else if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.ipv6d.next_hdr = IP_PROTOCOL_IPV6;
             }
 #endif
         }

@@ -28,10 +28,6 @@
 #define NEED_PKTLEN
 #endif
 
-#ifdef HAVE_VXLAN
-#define NEED_PKTLEN
-#endif
-
 
 
 #ifdef NEED_PKTLEN
