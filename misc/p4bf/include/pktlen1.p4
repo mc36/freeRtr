@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-present GT RARE project
+ * Copyright 2019-present GÉANT RARE project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-#ifndef _TCP_P4_
-#define _TCP_P4_
 
-header tcp_t {
-    bit<16> src_port;
-    bit<16> dst_port;
-    bit<32> seq_no;
-    bit<32> ack_no;
-    bit<4>  data_offset;
-    bit<4>  res;
-    bit<8>  flags;
-    bit<16> window;
-    bit<16> checksum;
-    bit<16> urgent_ptr;
-}
 
-#endif // _TCP_P4_
+#undef NEED_PKTLEN
+
+
+
+#ifdef HAVE_TUN
+#define NEED_PKTLEN
+#endif
+
+#ifdef HAVE_PPPOE
+#define NEED_PKTLEN
+#endif
+
+#ifdef HAVE_VXLAN
+#define NEED_PKTLEN
+#endif
+
+
+
+#ifdef NEED_PKTLEN
+    bit<16> pktlen;
+#endif

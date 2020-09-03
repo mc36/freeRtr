@@ -23,6 +23,8 @@ control IngressControlBridge(inout headers hdr, inout ingress_metadata_t ig_md,
                              in ingress_intrinsic_metadata_t ig_intr_md)
 {
 
+#include "pktlen1.p4"
+
     action send_to_cpu() {
         ig_md.nexthop_id = CPU_PORT;
         // Packets sent to the controller needs to be prepended with the
@@ -92,6 +94,94 @@ hdr.ethernet.src_mac_addr:
     }
 #endif
 
+#ifdef HAVE_VXLAN
+    action act_set_bridge_vxlan4(NextHopId_t nexthop, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, bit<24> instance) {
+        ig_md.bridge_trg = MAX_PORT;
+        ig_md.vrf = 0;
+#ifdef HAVE_MPLS
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+#endif
+        ig_md.arp_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        hdr.vlan.setInvalid();
+        hdr.eth2.setValid();
+        hdr.eth2 = hdr.ethernet;
+        hdr.eth2.ethertype = ig_md.ethertype;
+        ig_md.nexthop_id = nexthop;
+
+        hdr.vxlan2.setValid();
+        hdr.vxlan2.flags = 0x800;
+        hdr.vxlan2.policy = 0;
+        hdr.vxlan2.instance = instance;
+        hdr.vxlan2.reserved = 0;
+
+        hdr.udp2.setValid();
+        hdr.udp2.src_port = 4789;
+        hdr.udp2.dst_port = 4789;
+        hdr.udp2.length = pktlen + 30;
+        hdr.udp2.checksum = 0;
+
+        hdr.ipv4d.setValid();
+        hdr.ipv4d.version = 4;
+        hdr.ipv4d.ihl = 5;
+        hdr.ipv4d.diffserv = 0;
+        hdr.ipv4d.total_len = pktlen + 50;
+        hdr.ipv4d.identification = 0;
+        hdr.ipv4d.flags = 0;
+        hdr.ipv4d.frag_offset = 0;
+        hdr.ipv4d.ttl = 255;
+        hdr.ipv4d.protocol = IP_PROTOCOL_UDP;
+        hdr.ipv4d.hdr_checksum = 0;
+        hdr.ipv4d.src_addr = src_ip_addr;
+        hdr.ipv4d.dst_addr = dst_ip_addr;
+        ig_md.ethertype = ETHERTYPE_IPV4;
+    }
+#endif
+
+#ifdef HAVE_VXLAN
+    action act_set_bridge_vxlan6(NextHopId_t nexthop, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, bit<24> instance) {
+        ig_md.bridge_trg = MAX_PORT;
+        ig_md.vrf = 0;
+#ifdef HAVE_MPLS
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+#endif
+        ig_md.arp_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        hdr.vlan.setInvalid();
+        hdr.eth2.setValid();
+        hdr.eth2 = hdr.ethernet;
+        hdr.eth2.ethertype = ig_md.ethertype;
+        ig_md.nexthop_id = nexthop;
+
+        hdr.vxlan2.setValid();
+        hdr.vxlan2.flags = 0x800;
+        hdr.vxlan2.policy = 0;
+        hdr.vxlan2.instance = instance;
+        hdr.vxlan2.reserved = 0;
+
+        hdr.udp2.setValid();
+        hdr.udp2.src_port = 4789;
+        hdr.udp2.dst_port = 4789;
+        hdr.udp2.length = pktlen + 30;
+        hdr.udp2.checksum = 0;
+
+        hdr.ipv6d.setValid();
+        hdr.ipv6d.version = 6;
+        hdr.ipv6d.traffic_class = 0;
+        hdr.ipv6d.flow_label = 0;
+        hdr.ipv6d.payload_len = pktlen + 30;
+        hdr.ipv6d.next_hdr = IP_PROTOCOL_UDP;
+        hdr.ipv6d.hop_limit = 255;
+        hdr.ipv6d.src_addr = src_ip_addr;
+        hdr.ipv6d.dst_addr = dst_ip_addr;
+        ig_md.ethertype = ETHERTYPE_IPV6;
+    }
+#endif
+
     action act_bridge_punt() {
         ig_md.bridge_trg = 0;
     }
@@ -110,6 +200,10 @@ hdr.ethernet.dst_mac_addr:
 #ifdef HAVE_MPLS
             act_set_bridge_vpls;
 #endif
+#ifdef HAVE_VXLAN
+            act_set_bridge_vxlan4;
+            act_set_bridge_vxlan6;
+#endif
             act_bridge_punt;
         }
         size = VRF_TABLE_SIZE;
@@ -117,6 +211,7 @@ hdr.ethernet.dst_mac_addr:
     }
 
     apply {
+#include "pktlen2.p4"
 
         if (ig_md.bridge_id != 0) {
             ig_md.vrf = 0;

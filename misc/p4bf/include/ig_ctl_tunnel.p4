@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019-present GT RARE project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed On an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #ifndef _IG_CTL_TUNNEL_P4_
 #define _IG_CTL_TUNNEL_P4_
 
@@ -9,7 +25,9 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
                              inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
-    SubIntId_t hit;
+#ifdef HAVE_L2TP
+    SubIntId_t l2tp_hit;
+#endif
 
 #ifdef HAVE_GRE
     action act_tunnel_gre(SubIntId_t port) {
@@ -30,7 +48,26 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
 
 #ifdef HAVE_L2TP
     action act_tunnel_l2tp(SubIntId_t port) {
-        hit = port;
+        l2tp_hit = port;
+    }
+#endif
+
+#ifdef HAVE_VXLAN
+    action act_tunnel_vxlan(SubIntId_t port) {
+        ig_md.source_id = port;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        hdr.ethernet.setInvalid();
+        hdr.vlan.setInvalid();
+        ig_tm_md.ucast_egress_port = RECIR_PORT;
+        ig_tm_md.bypass_egress = 1;
+//        recirculate(RECIR_PORT);
+        hdr.cpu.setValid();
+        hdr.cpu.port = port;
+        hdr.vxlan.setInvalid();
+        hdr.udp.setInvalid();
+        hdr.ipv4.setInvalid();
+        hdr.ipv6.setInvalid();
     }
 #endif
 
@@ -55,6 +92,9 @@ ig_md.layer4_dstprt:
 #endif
 #ifdef HAVE_L2TP
             act_tunnel_l2tp;
+#endif
+#ifdef HAVE_VXLAN
+            act_tunnel_vxlan;
 #endif
             @defaultonly NoAction;
         }
@@ -85,6 +125,9 @@ ig_md.layer4_dstprt:
 #ifdef HAVE_L2TP
             act_tunnel_l2tp;
 #endif
+#ifdef HAVE_VXLAN
+            act_tunnel_vxlan;
+#endif
             @defaultonly NoAction;
         }
         size = 1024;
@@ -94,7 +137,7 @@ ig_md.layer4_dstprt:
 
     apply {
 #ifdef HAVE_L2TP
-        hit = 0;
+        l2tp_hit = 0;
 #endif
         if (hdr.ipv4.isValid()) {
             tbl_tunnel4.apply();
@@ -103,7 +146,7 @@ ig_md.layer4_dstprt:
             tbl_tunnel6.apply();
         }
 #ifdef HAVE_L2TP
-        if ((hit != 0) && ((hdr.l2tp.flags & 0x8000)==0) && ((hdr.l2tp.ppptyp & 0x8000)==0)) {
+        if ((l2tp_hit != 0) && ((hdr.l2tp.flags & 0x8000)==0) && ((hdr.l2tp.ppptyp & 0x8000)==0)) {
             if (hdr.l2tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
             else        if (hdr.l2tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
             else        if (hdr.l2tp.ppptyp == PPPTYPE_MPLS_UCAST) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
@@ -115,7 +158,7 @@ ig_md.layer4_dstprt:
             ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
             hdr.cpu.setValid();
-            hdr.cpu.port = hit;
+            hdr.cpu.port = l2tp_hit;
             hdr.l2tp.setInvalid();
             hdr.udp.setInvalid();
             hdr.ipv4.setInvalid();

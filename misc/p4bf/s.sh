@@ -1,2 +1,2 @@
 #!/bin/sh
-astyle -n /home/mc36/rare/p4src/*.p4 /home/mc36/rare/p4src/include/*.p4
+astyle -n *.p4 include/*.p4

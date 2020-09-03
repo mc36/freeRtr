@@ -22,22 +22,8 @@ control IngressControlNexthop(inout headers hdr, inout ingress_metadata_t ig_md,
                               ig_dprsr_md)
 {
 
-#undef NEED_PKTLEN
 
-#ifdef HAVE_TUN
-#define NEED_PKTLEN
-#endif
-
-#ifdef HAVE_PPPOE
-#define NEED_PKTLEN
-#endif
-
-
-
-#ifdef NEED_PKTLEN
-    bit<16> pktlen;
-#endif
-
+#include "pktlen1.p4"
 
 
 
@@ -310,20 +296,8 @@ ig_md.nexthop_id:
     }
 
     apply {
+#include "pktlen2.p4"
         if (ig_md.target_id == 0) {
-#ifdef NEED_PKTLEN
-            pktlen = 0;
-            if (hdr.ipv4.isValid()) pktlen = hdr.ipv4.total_len;
-            else if (hdr.ipv6.isValid()) pktlen = hdr.ipv6.payload_len + 40;
-            else if (hdr.arp.isValid()) pktlen = 28;
-#ifdef HAVE_MPLS
-            if (hdr.mpls0.isValid()) pktlen = pktlen + 4;
-            if (hdr.mpls1.isValid()) pktlen = pktlen + 4;
-#endif
-#ifdef HAVE_TAP
-            if (hdr.eth4.isValid()) pktlen = pktlen + 14;
-#endif
-#endif
             tbl_nexthop.apply();
 #ifdef HAVE_PPPOE
             if (hdr.pppoeD.isValid()) {
@@ -337,12 +311,12 @@ ig_md.nexthop_id:
 #ifdef HAVE_L2TP
             if (hdr.l2tp2.isValid()) {
                 if (ig_md.ethertype == ETHERTYPE_IPV4) hdr.l2tp2.ppptyp = PPPTYPE_IPV4;
-                else    if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = PPPTYPE_IPV6;
-                else    if (ig_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = PPPTYPE_MPLS_UCAST;
-                else    if (ig_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.l2tp2.ppptyp = PPPTYPE_ROUTEDMAC;
+                else if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = PPPTYPE_IPV6;
+                else if (ig_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = PPPTYPE_MPLS_UCAST;
+                else if (ig_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.l2tp2.ppptyp = PPPTYPE_ROUTEDMAC;
 
-                if (hdr.ipv4d.isValid())         ig_md.ethertype = ETHERTYPE_IPV4;
-                else if (hdr.ipv6d.isValid())        ig_md.ethertype = ETHERTYPE_IPV6;
+                if (hdr.ipv4d.isValid()) ig_md.ethertype = ETHERTYPE_IPV4;
+                else if (hdr.ipv6d.isValid()) ig_md.ethertype = ETHERTYPE_IPV6;
             }
 #endif
         }

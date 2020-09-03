@@ -17,6 +17,32 @@
 #ifndef _HEADERS_P4_
 #define _HEADERS_P4_
 
+
+
+#undef NEED_UDP2
+
+#ifdef HAVE_L2TP 
+#define NEED_UDP2
+#endif
+
+#ifdef HAVE_VXLAN
+#define NEED_UDP2
+#endif
+
+
+
+#undef NEED_ETH4
+
+#ifdef HAVE_TAP
+#define NEED_ETH4
+#endif
+
+#ifdef HAVE_VXLAN
+#define NEED_ETH4
+#endif
+
+
+
 struct headers {
     cpu_header_t cpu;
     ethernet_t ethernet;
@@ -35,11 +61,16 @@ struct headers {
 #ifdef HAVE_GRE
     gre_t gre2;
 #endif
-#ifdef HAVE_L2TP
+#ifdef NEED_UDP2
     udp_t udp2;
+#endif
+#ifdef HAVE_L2TP
     l2tp_t l2tp2;
 #endif
-#ifdef HAVE_TAP
+#ifdef HAVE_VXLAN
+    vxlan_t vxlan2;
+#endif
+#ifdef NEED_ETH4
     ethernet_t eth4;
 #endif
 #ifdef HAVE_MPLS
@@ -62,6 +93,9 @@ struct headers {
     udp_t udp;
 #ifdef HAVE_L2TP
     l2tp_t l2tp;
+#endif
+#ifdef HAVE_VXLAN
+    vxlan_t vxlan;
 #endif
 }
 

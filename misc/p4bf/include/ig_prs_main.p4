@@ -389,6 +389,10 @@ IP_PROTOCOL_IPV6:
 1701:
             prs_l2tp;
 #endif
+#ifdef HAVE_VXLAN
+4789:
+            prs_vxlan;
+#endif
         default:
             accept;
         }
@@ -410,6 +414,13 @@ IP_PROTOCOL_IPV6:
 #ifdef HAVE_L2TP
     state prs_l2tp {
         pkt.extract(hdr.l2tp);
+        transition accept;
+    }
+#endif
+
+#ifdef HAVE_VXLAN
+    state prs_vxlan {
+        pkt.extract(hdr.vxlan);
         transition accept;
     }
 #endif

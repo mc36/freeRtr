@@ -1,7 +1,9 @@
 #!/bin/sh
-chmod -x `find . -executable -name *.java`
-chmod -x `find . -executable -name *.tcl`
-chmod -x `find . -executable -name *.tst`
+chmod -x `find . -executable -name *.java` 2> /dev/null
+chmod -x `find . -executable -name *.tcl` 2> /dev/null
+chmod -x `find . -executable -name *.tst` 2> /dev/null
+chmod -x `find . -executable -name *.c` 2> /dev/null
+chmod -x `find . -executable -name *.p4` 2> /dev/null
 echo -n `cd misc/android;./d.sh`
 echo -n `cd misc/applet;./d.sh`
 echo -n `cd misc/p4lang;./d.sh`
