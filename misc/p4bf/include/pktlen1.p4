@@ -35,5 +35,5 @@
 
 
 #ifdef NEED_PKTLEN
-    bit<16> pktlen;
+bit<16> pktlen;
 #endif

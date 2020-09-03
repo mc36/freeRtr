@@ -16,15 +16,15 @@
 
 
 #ifdef NEED_PKTLEN
-            pktlen = 0;
-            if (hdr.ipv4.isValid()) pktlen = hdr.ipv4.total_len;
-            else if (hdr.ipv6.isValid()) pktlen = hdr.ipv6.payload_len + 40;
-            else if (hdr.arp.isValid()) pktlen = 28;
+pktlen = 0;
+if (hdr.ipv4.isValid()) pktlen = hdr.ipv4.total_len;
+else if (hdr.ipv6.isValid()) pktlen = hdr.ipv6.payload_len + 40;
+else if (hdr.arp.isValid()) pktlen = 28;
 #ifdef HAVE_MPLS
-            if (hdr.mpls0.isValid()) pktlen = pktlen + 4;
-            if (hdr.mpls1.isValid()) pktlen = pktlen + 4;
+if (hdr.mpls0.isValid()) pktlen = pktlen + 4;
+if (hdr.mpls1.isValid()) pktlen = pktlen + 4;
 #endif
 #ifdef HAVE_TAP
-            if (hdr.eth4.isValid()) pktlen = pktlen + 14;
+if (hdr.eth4.isValid()) pktlen = pktlen + 14;
 #endif
 #endif

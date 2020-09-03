@@ -21,7 +21,7 @@
 
 #undef NEED_UDP2
 
-#ifdef HAVE_L2TP 
+#ifdef HAVE_L2TP
 #define NEED_UDP2
 #endif
 
