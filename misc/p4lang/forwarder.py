@@ -209,6 +209,134 @@ def writeGre6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip
         ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
+
+def writeIpip4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip, dip, dmac, vrf, smac):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv4.protocol": 4,
+            "hdr.ipv4.src_addr": dip,
+            "hdr.ipv4.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ip4ip",
+        action_params={
+            "port": port
+        })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv4.protocol": 41,
+            "hdr.ipv4.src_addr": dip,
+            "hdr.ipv4.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ip6ip",
+        action_params={
+            "port": port
+        })
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_nexthop.tbl_nexthop",
+        match_fields={
+            "ig_md.nexthop_id": nexthop,
+        },
+        action_name="ig_ctl.ig_ctl_nexthop.act_ipv4_ipip4",
+        action_params={
+            "dst_mac_addr": dmac,
+            "src_mac_addr": smac,
+            "egress_port": phport,
+            "acl_port": port,
+            "src_ip_addr": sip,
+            "dst_ip_addr": dip,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry3, False)
+
+
+def writeIpip6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip, dip, dmac, vrf, smac):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel6",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv6.next_hdr": 4,
+            "hdr.ipv6.src_addr": dip,
+            "hdr.ipv6.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ip4ip",
+        action_params={
+            "port": port
+        })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel6",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv6.next_hdr": 41,
+            "hdr.ipv6.src_addr": dip,
+            "hdr.ipv6.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ip6ip",
+        action_params={
+            "port": port
+        })
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_nexthop.tbl_nexthop",
+        match_fields={
+            "ig_md.nexthop_id": nexthop,
+        },
+        action_name="ig_ctl.ig_ctl_nexthop.act_ipv4_ipip6",
+        action_params={
+            "dst_mac_addr": dmac,
+            "src_mac_addr": smac,
+            "egress_port": phport,
+            "acl_port": port,
+            "src_ip_addr": sip,
+            "dst_ip_addr": dip,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry3, False)
+
+
+
 def writeL2tp4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip, dip, dmac, vrf, smac, sprt, dprt, tid):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
@@ -1826,6 +1954,27 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "gre6_del":
             writeGre6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
+            continue
+
+
+        if splt[0] == "ipip4_add":
+            writeIpip4rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
+            continue
+        if splt[0] == "ipip4_mod":
+            writeIpip4rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
+            continue
+        if splt[0] == "ipip4_del":
+            writeIpip4rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
+            continue
+
+        if splt[0] == "ipip6_add":
+            writeIpip6rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
+            continue
+        if splt[0] == "ipip6_mod":
+            writeIpip6rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
+            continue
+        if splt[0] == "ipip6_del":
+            writeIpip6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
             continue
 
 

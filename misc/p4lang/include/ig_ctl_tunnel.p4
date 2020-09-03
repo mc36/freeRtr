@@ -16,6 +16,21 @@ control IngressControlTunnel(inout headers hdr,
     }
 
 
+    action act_tunnel_ip4ip(SubIntId_t port) {
+        hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+        ig_intr_md.egress_spec = (PortId_t)port;
+        ig_md.need_recir = 1;
+        ig_md.source_id = port;
+    }
+
+    action act_tunnel_ip6ip(SubIntId_t port) {
+        hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+        ig_intr_md.egress_spec = (PortId_t)port;
+        ig_md.need_recir = 1;
+        ig_md.source_id = port;
+    }
+
+
     action act_tunnel_l2tp(SubIntId_t port) {
         if (hdr.l2tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
         if (hdr.l2tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
@@ -54,6 +69,8 @@ ig_md.layer4_dstprt:
         }
         actions = {
             act_tunnel_gre;
+            act_tunnel_ip4ip;
+            act_tunnel_ip6ip;
             act_tunnel_l2tp;
             act_tunnel_vxlan;
             @defaultonly NoAction;
@@ -80,6 +97,8 @@ ig_md.layer4_dstprt:
         }
         actions = {
             act_tunnel_gre;
+            act_tunnel_ip4ip;
+            act_tunnel_ip6ip;
             act_tunnel_l2tp;
             act_tunnel_vxlan;
             @defaultonly NoAction;
