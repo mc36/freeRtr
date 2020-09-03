@@ -292,7 +292,6 @@ control IngressControlNexthop(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.ipv4d.hdr_checksum = 0;
         hdr.ipv4d.src_addr = src_ip_addr;
         hdr.ipv4d.dst_addr = dst_ip_addr;
-        ig_md.ethertype = ETHERTYPE_IPV4;
     }
 
 
@@ -337,7 +336,6 @@ control IngressControlNexthop(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.ipv6d.hop_limit = 255;
         hdr.ipv6d.src_addr = src_ip_addr;
         hdr.ipv6d.dst_addr = dst_ip_addr;
-        ig_md.ethertype = ETHERTYPE_IPV6;
     }
 
 
@@ -393,6 +391,9 @@ ig_md.nexthop_id:
                 else if (ig_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = PPPTYPE_IPV6;
                 else if (ig_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = PPPTYPE_MPLS_UCAST;
                 else if (ig_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.l2tp2.ppptyp = PPPTYPE_ROUTEDMAC;
+
+                if (hdr.ipv4d.isValid()) ig_md.ethertype = ETHERTYPE_IPV4;
+                else if (hdr.ipv6d.isValid()) ig_md.ethertype = ETHERTYPE_IPV6;
             }
 #endif
 #ifdef HAVE_IPIP
