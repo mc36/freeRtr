@@ -444,6 +444,68 @@ neigh_tx:
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
                 break;
+            case 7: // ipip4
+                switch (ethtyp) {
+                case ETHERTYPE_IPV4:
+                    tmp = 4;
+                    break;
+                case ETHERTYPE_IPV6:
+                    tmp = 41;
+                    break;
+                default:
+                    packDr[port]++;
+                    byteDr[port] += bufS;
+                    return;
+                }
+                bufP += 2;
+                bufP -= 20;
+                put16msb(bufD, bufP + 0, 0x4500); // ip ver, hdrlen, tos
+                put16msb(bufD, bufP + 2, bufS - bufP + preBuff); // total length
+                ipids++;
+                put16msb(bufD, bufP + 4, ipids); // identify
+                put16msb(bufD, bufP + 6, 0); // fragment
+                bufD[bufP + 8] = 0xff; // ttl
+                bufD[bufP + 9] = tmp; // protocol
+                put16msb(bufD, bufP + 10, 0); // checksum
+                put32msb(bufD, bufP + 12, neigh_res->sip1); // source
+                put32msb(bufD, bufP + 16, neigh_res->dip1); // target
+                put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));
+                ethtyp = ETHERTYPE_IPV4;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                break;
+            case 8: // ipip6
+                switch (ethtyp) {
+                case ETHERTYPE_IPV4:
+                    tmp = 4;
+                    break;
+                case ETHERTYPE_IPV6:
+                    tmp = 41;
+                    break;
+                default:
+                    packDr[port]++;
+                    byteDr[port] += bufS;
+                    return;
+                }
+                bufP += 2;
+                bufP -= 40;
+                put16msb(bufD, bufP + 0, 0x6000); // ip ver, tos
+                put16msb(bufD, bufP + 2, 0); // flow label
+                put16msb(bufD, bufP + 4, bufS - bufP + preBuff - 40); // payload length
+                bufD[bufP + 6] = tmp; // protocol
+                bufD[bufP + 7] = 0xff; // ttl
+                put32msb(bufD, bufP + 8, neigh_res->sip1); // source
+                put32msb(bufD, bufP + 12, neigh_res->sip2); // source
+                put32msb(bufD, bufP + 16, neigh_res->sip3); // source
+                put32msb(bufD, bufP + 20, neigh_res->sip4); // source
+                put32msb(bufD, bufP + 24, neigh_res->dip1); // target
+                put32msb(bufD, bufP + 28, neigh_res->dip2); // target
+                put32msb(bufD, bufP + 32, neigh_res->dip3); // target
+                put32msb(bufD, bufP + 36, neigh_res->dip4); // target
+                ethtyp = ETHERTYPE_IPV6;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                break;
             default:
                 packDr[port]++;
                 byteDr[port] += bufS;
@@ -645,6 +707,14 @@ ipv4_rou:
                         bufP += 8; // vxlan header
                         bufP -= 2;
                         put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+                        break;
+                    case 4: // ip4ip
+                        bufP = bufT - 2; // ipip header
+                        put16msb(bufD, bufP, ETHERTYPE_IPV4);
+                        break;
+                    case 5: // ip6ip
+                        bufP = bufT - 2; // ipip header
+                        put16msb(bufD, bufP, ETHERTYPE_IPV6);
                         break;
                     default:
                         packDr[port]++;
@@ -867,6 +937,14 @@ ipv6_hit:
                         bufP += 8; // vxlan header
                         bufP -= 2;
                         put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+                        break;
+                    case 4: // ip4ip
+                        bufP = bufT - 2; // ipip header
+                        put16msb(bufD, bufP, ETHERTYPE_IPV4);
+                        break;
+                    case 5: // ip6ip
+                        bufP = bufT - 2; // ipip header
+                        put16msb(bufD, bufP, ETHERTYPE_IPV6);
                         break;
                     default:
                         packDr[port]++;

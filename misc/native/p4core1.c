@@ -133,7 +133,7 @@ int route6_compare(void *ptr1, void *ptr2) {
 struct neigh_entry {
     int id;
     int vrf;
-    int command;    // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6
+    int command;    // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6, 7=ipip4, 8=ipip6
     int port;
     int aclport;
     int session;
@@ -505,7 +505,7 @@ struct tun4_entry {
     int trgAddr;
     int srcPort;
     int trgPort;
-    int command;    // 1=gre, 2=l2tp, 3=vxlan
+    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip
     int aclport;
     long pack;
     long byte;
@@ -545,7 +545,7 @@ struct tun6_entry {
     int trgAddr4;
     int srcPort;
     int trgPort;
-    int command;    // 1=gre, 2=l2tp, 3=vxlan
+    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip
     int aclport;
     long pack;
     long byte;

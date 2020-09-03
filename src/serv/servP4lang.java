@@ -1971,6 +1971,17 @@ class servP4langConn implements Runnable {
             }
             nei.need++;
             nei.vrf = vrf;
+            String prt;
+            switch (ifc.ifc.tunMode) {
+                case gre:
+                    prt = "gre";
+                    break;
+                case ipip:
+                    prt = "ipip";
+                    break;
+                default:
+                    return;
+            }
             if (ifc.ifc.tunVrf == null) {
                 return;
             }
@@ -2024,7 +2035,7 @@ class servP4langConn implements Runnable {
             } else {
                 afi = "6";
             }
-            lower.sendLine("gre" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.tunTrg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + ((addrMac) hop.iface.ifc.ethtyp.getHwAddr()).toEmuStr());
+            lower.sendLine(prt + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.tunTrg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + ((addrMac) hop.iface.ifc.ethtyp.getHwAddr()).toEmuStr());
             return;
         }
         if (ifc.ifc.type == cfgIfc.ifaceType.dialer) {
