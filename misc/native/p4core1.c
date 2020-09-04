@@ -584,6 +584,42 @@ int tun6_compare(void *ptr1, void *ptr2) {
 }
 
 
+struct macsec_entry {
+    int port;
+    int ethtyp;
+    unsigned char encrKeyDat[256];
+    unsigned char hashKeyDat[256];
+    int encrKeyLen;
+    int hashKeyLen;
+    int encrBlkLen;
+    int hashBlkLen;
+    int needMacs;
+    int seqTx;
+    int seqRx;
+    pthread_mutex_t mutexRx;
+    pthread_mutex_t mutexTx;
+    const EVP_CIPHER *encrAlg;
+    const EVP_MD *hashAlg;
+    EVP_PKEY *hashPkey;
+    EVP_CIPHER_CTX *encrCtxTx;
+    EVP_CIPHER_CTX *encrCtxRx;
+    EVP_MD_CTX *hashCtxTx;
+    EVP_MD_CTX *hashCtxRx;
+};
+
+struct table_head macsec_table;
+
+int macsec_compare(void *ptr1, void *ptr2) {
+    struct pppoe_entry *ntry1 = ptr1;
+    struct pppoe_entry *ntry2 = ptr2;
+    if (ntry1->port < ntry2->port) return -1;
+    if (ntry1->port > ntry2->port) return +1;
+    return 0;
+}
+
+
+
+
 
 
 
@@ -616,4 +652,11 @@ void initTables() {
     table_init(&pppoe_table, sizeof(struct pppoe_entry), &pppoe_compare);
     table_init(&tun4_table, sizeof(struct tun4_entry), &tun4_compare);
     table_init(&tun6_table, sizeof(struct tun6_entry), &tun6_compare);
+    table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
+    OpenSSL_add_all_ciphers();
+    OpenSSL_add_all_digests();
+    OpenSSL_add_all_algorithms();
+    RAND_get_rand_method();
+    RAND_poll();
+    printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 }

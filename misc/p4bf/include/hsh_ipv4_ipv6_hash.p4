@@ -1,26 +1,20 @@
-/* -*- P4_16 -*- */
-
 /*
- * ipv4_ipv6_hash.p4
+ * Copyright 2019-present GT RARE project
  *
- * This file is intended to be included by simple_l3_lag_ecmp.p4 and provides
- * hash calculation, based on IPv4/IPv6 headers
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The hash module is supposed to define the following:
- *  1) Controls that will be called from the ingress() control to calculate
- *     hash. If they are not needed, then they should be empty
- *     1) calc_ipv4_hashes() -- called for IPv4 packets only
- *     2) calc_ipv6_hashes() -- called for IPv6 packets only
- *     3) calc_common_hashes() -- called for all packets
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  2) Optionally: SCRAMBLER_ENABLE
-*/
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed On an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-#ifndef SCRAMBLER_ENABLE
-#define SCRAMBLER_ENABLE 1
-#endif
-
-control calc_common_hashes(
+control calc_default_hashes(
     in    headers   hdr,
     in    ingress_metadata_t  ig_md,
     inout selector_hash_t        hash)
@@ -31,10 +25,15 @@ control calc_common_hashes(
 control calc_ipv4_hash(
     in    headers   hdr,
     in    ingress_metadata_t  ig_md,
-    out   bit<32>                hash)(
-        CRCPolynomial<bit<32>>       poly)
+    out   bit<32> hash)(bit<32> coeff)
 {
-    //@symmetric("hdr.ipv4.src_addr", "hdr.ipv4.dst_addr")
+    CRCPolynomial<bit<32>>(
+                            coeff    = coeff,
+                            reversed = true,
+                            msb      = false,
+                            extended = false,
+                            init     = 0xFFFFFFFF,
+                            xor      = 0xFFFFFFFF) poly;
     Hash<bit<32>>(HashAlgorithm_t.CUSTOM, poly) hash_algo;
 
     action do_hash() {
@@ -53,26 +52,15 @@ control calc_ipv4_hash(
 }
 
 control calc_ipv4_hashes(
-    in    headers   hdr,
-    in    ingress_metadata_t  ig_md,
-    inout selector_hash_t        hash)
+    in    headers hdr,
+    in    ingress_metadata_t ig_md,
+    inout selector_hash_t hash)
 {
-    calc_ipv4_hash(CRCPolynomial<bit<32>>(
-                       coeff=32w0x04C11DB7, reversed=true, msb=false, extended=false,
-                       init=32w0xFFFFFFFF, xor=32w0xFFFFFFFF))
-    hash1;
-
+    calc_ipv4_hash(coeff=0x04C11DB7) hash1;
 #if HASH_WIDTH > 32
-    calc_ipv4_hash(CRCPolynomial<bit<32>>(
-                       coeff=32w0x1EDC6F41, reversed=true, msb=false, extended=false,
-                       init=32w0xFFFFFFFF, xor=32w0xFFFFFFFF))
-    hash2;
-
+    calc_ipv4_hash(coeff=0x1EDC6F41) hash2;
 #if HASH_WIDTH > 64
-    calc_ipv4_hash(CRCPolynomial<bit<32>>(
-                       coeff=32w0xA833982B, reversed=true, msb=false, extended=false,
-                       init=32w0xFFFFFFFF, xor=32w0xFFFFFFFF))
-    hash3;
+    calc_ipv4_hash(coeff=0xA833982B) hash3;
 #endif
 #endif
 
@@ -87,23 +75,10 @@ control calc_ipv4_hashes(
     }
 }
 
-/*
- * This control is written differently compared to calc_ipv4_hash --
- * instead of accepting a CRCPolynomial extern as a compile-time parameter,
- * it takes the parameters for the extern instead.The extern itself is
- * instantiated inside the control.
- *
- * Both styles produce the same result, but this one allows the programmer
- * to have simplified constructors (in this case for the control), because some
- * parameters are assigned default values in the control itself. In this
- * particular case, when the control is instantiated we only need to specify
- * the polynomial coefficients.
- */
 control calc_ipv6_hash(
     in    headers   hdr,
     in    ingress_metadata_t  ig_md,
-    out   bit<32>                hash)(
-        bit<32>  coeff)
+    out   bit<32> hash)(bit<32> coeff)
 {
     CRCPolynomial<bit<32>>(
                             coeff    = coeff,
@@ -130,15 +105,66 @@ control calc_ipv6_hash(
 }
 
 control calc_ipv6_hashes(
-    in    headers   hdr,
-    in    ingress_metadata_t  ig_md,
-    inout selector_hash_t        hash)
+    in    headers hdr,
+    in    ingress_metadata_t ig_md,
+    inout selector_hash_t hash)
 {
     calc_ipv6_hash(coeff=0x04C11DB7) hash1;
 #if HASH_WIDTH > 32
     calc_ipv6_hash(coeff=0x1EDC6F41) hash2;
 #if HASH_WIDTH > 64
     calc_ipv6_hash(coeff=0xA833982B) hash3;
+#endif
+#endif
+
+    apply {
+        hash1.apply(hdr, ig_md, hash[31:0]);
+#if HASH_WIDTH > 32
+        hash2.apply(hdr, ig_md, hash[63:32]);
+#if HASH_WIDTH > 64
+        hash3.apply(hdr, ig_md, hash[95:64]);
+#endif
+#endif
+    }
+}
+
+control calc_ethernet_hash(
+    in    headers   hdr,
+    in    ingress_metadata_t  ig_md,
+    out   bit<32> hash)(bit<32> coeff)
+{
+    CRCPolynomial<bit<32>>(
+                            coeff    = coeff,
+                            reversed = true,
+                            msb      = false,
+                            extended = false,
+                            init     = 0xFFFFFFFF,
+                            xor      = 0xFFFFFFFF) poly;
+    Hash<bit<32>>(HashAlgorithm_t.CUSTOM, poly) hash_algo;
+
+    action do_hash() {
+        hash = hash_algo.get({
+            hdr.ethernet.dst_mac_addr,
+            hdr.ethernet.src_mac_addr,
+            hdr.ethernet.ethertype
+        });
+    }
+
+    apply {
+        do_hash();
+    }
+}
+
+control calc_ethernet_hashes(
+    in    headers hdr,
+    in    ingress_metadata_t ig_md,
+    inout selector_hash_t hash)
+{
+    calc_ethernet_hash(coeff=0x04C11DB7) hash1;
+#if HASH_WIDTH > 32
+    calc_ethernet_hash(coeff=0x1EDC6F41) hash2;
+#if HASH_WIDTH > 64
+    calc_ethernet_hash(coeff=0xA833982B) hash3;
 #endif
 #endif
 

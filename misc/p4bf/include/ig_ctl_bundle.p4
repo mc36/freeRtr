@@ -59,12 +59,14 @@ control IngressControlBundle(
 //        ttl_dec = 0;
     }
 
+    #ifdef HAVE_SCRAMBLE
+        @selector_enable_scramble(HAVE_SCRAMBLE)
+    #endif
+
     table tbl_nexthop_bundle {
         key = {
-ig_md.output_id:
-            exact;
-hash      :
-            selector;
+            ig_md.output_id: exact;
+            hash: selector;
         }
         actions = {
             act_send_to_member;
@@ -83,7 +85,7 @@ hash      :
         } else if (hdr.ipv6.isValid()) {
             calc_ipv6_hashes.apply(hdr, ig_md, hash);
         } else {
-            calc_common_hashes.apply(hdr, ig_md, hash);
+            calc_default_hashes.apply(hdr, ig_md, hash);
         }
         tbl_nexthop_bundle.apply();
     }

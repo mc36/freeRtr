@@ -1,41 +1,33 @@
-/*******************************************************************************
- * BAREFOOT NETWORKS CONFIDENTIAL & PROPRIETARY
+/*
+ * Copyright 2019-present GÉANT RARE project
  *
- * Copyright (c) 2019-present Barefoot Networks, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * All Rights Reserved.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * NOTICE: All information contained herein is, and remains the property of
- * Barefoot Networks, Inc. and its suppliers, if any. The intellectual and
- * technical concepts contained herein are proprietary to Barefoot Networks, Inc.
- * and its suppliers and may be covered by U.S. and Foreign Patents, patents in
- * process, and are protected by trade secret or copyright law.  Dissemination of
- * this information or reproduction of this material is strictly forbidden unless
- * prior written permission is obtained from Barefoot Networks, Inc.
- *
- * No warranty, explicit or implicit is provided, unless granted under a written
- * agreement with Barefoot Networks, Inc.
- *
- ******************************************************************************/
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed On an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #ifndef _BUNDLE_P4_
 #define _BUNDLE_P4_
 
 #define IPV4_IPV6_HASH   1
-#define RANDOM_HASH      2
-#define ROUND_ROBIN_HASH 3
-#define NO_HASH          4
 
-#if defined(USE_NO_HASH)
-#define HASHING NO_HASH
-#elif defined(USE_IPV4_IPV6)
-#define HASHING IPV4_IPV6_HASH
-#elif defined(USE_RANDOM)
-#define HASHING RANDOM_HASH
-#elif defined(USE_ROUND_ROBIN)
-#define HASHING ROUND_ROBIN_HASH
+/*
+   As per INTEL/BAREFOOT recommendation
+   should be enable by default
+   except for round robin hash algorithm selection
+*/
+#ifdef NO_SCRAMBLE
+#define HAVE_SCRAMBLE 0
 #else
-#define HASHING IPV4_IPV6_HASH
+#define HAVE_SCRAMBLE 1
 #endif
 
 #ifndef RESILIENT_SELECTION
@@ -54,21 +46,9 @@
 #define MAX_GROUPS 1024
 #endif
 
-/* The number of required hash bits depends on both the selection algorithm
- * (resilient or fair) and the maximum group size
- *
- * The rules are as follows:
- *
- * if MAX_GROUP_SZIE <= 120:      subgroup_select_bits = 0
- * elif MAX_GROUP_SIZE <= 3840:   subgroup_select_bits = 10
- * elif MAX_GROUP_SIZE <= 119040: subgroup_select_bits = 15
- * else: ERROR
- *
- * The rules for the hash size are:
- *
- * FAIR:      14 + subgroup_select_bits
- * RESILIENT: 51 + subgroup_select_bits
- *
+/*
+ * INTEL/BAREFOOT guidelines
+ * check BA-102 notes & training lab
  */
 #if RESILIENT_SELECTION == 0
 const SelectorMode_t SELECTION_MODE = SelectorMode_t.FAIR;

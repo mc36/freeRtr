@@ -46,6 +46,36 @@ public class ifcMacSec {
      */
     public boolean needLayer2 = true;
 
+    /**
+     * allow cleartext also
+     */
+    public boolean allowClear = false;
+
+    /**
+     * encryption keys
+     */
+    public byte[] keyEncr = new byte[32];
+
+    /**
+     * authentication keys
+     */
+    public byte[] keyHash = new byte[32];
+
+    /**
+     * ethertype in effect
+     */
+    public int myTyp;
+
+    /**
+     * cipher size
+     */
+    public int cphrSiz;
+
+    /**
+     * hash size
+     */
+    public int hashSiz;
+
     private tabWindow sequence;
 
     private addrMac myaddr;
@@ -60,15 +90,9 @@ public class ifcMacSec {
 
     private cryKeyDH keygen;
 
-    private int cphrSiz;
-
-    private int hashSiz;
-
     private int seqTx;
 
     private boolean reply;
-
-    private int myTyp;
 
     private long lastKex;
 
@@ -185,6 +209,9 @@ public class ifcMacSec {
         }
         int typ = pck.msbGetW(0);
         if (typ != myTyp) { // ethertype
+            if (allowClear) {
+                return false;
+            }
             logger.info("bad type (" + bits.toHexW(typ) + ") on " + etht);
             return true;
         }
@@ -230,6 +257,7 @@ public class ifcMacSec {
                 int pos = buf1.length + buf2.length;
                 bits.byteCopy(res, 0, buf1, 0, buf1.length);
                 bits.byteCopy(res, buf1.length, buf2, 0, buf2.length);
+                keyEncr = buf1;
                 cphrTx.init(buf1, buf2, true);
                 cphrRx.init(buf1, buf2, false);
                 cphrSiz = buf2.length;
@@ -240,6 +268,7 @@ public class ifcMacSec {
                 bits.byteCopy(res, pos, buf2, 0, buf2.length);
                 hashTx = profil.trans.getHmac(buf1);
                 hashRx = profil.trans.getHmac(buf2);
+                keyHash = buf1;
                 return true;
             default:
                 logger.info("bad type " + typ + " on " + etht);

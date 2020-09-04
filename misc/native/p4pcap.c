@@ -6,6 +6,11 @@
 #include <pthread.h>
 #include <pcap.h>
 #include <unistd.h>
+#include <openssl/conf.h>
+#include <openssl/evp.h>
+#include <openssl/rand.h>
+#include <openssl/err.h>
+#include <string.h>
 
 
 #include "p4core.h"

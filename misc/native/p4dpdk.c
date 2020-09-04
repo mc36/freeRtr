@@ -12,6 +12,11 @@
 #include <rte_ethdev.h>
 #include <rte_mbuf.h>
 #include <rte_ring.h>
+#include <openssl/conf.h>
+#include <openssl/evp.h>
+#include <openssl/rand.h>
+#include <openssl/err.h>
+#include <string.h>
 
 
 #undef basicLoop

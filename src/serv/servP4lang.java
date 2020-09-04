@@ -460,6 +460,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ifc.sentBundle = 0;
             ifc.sentHairpin = 0;
             ifc.sentPppoe = -1;
+            ifc.sentMacsec = null;
             ifc.sentVrf = 0;
             ifc.sentState = state.states.close;
             ifc.sentMtu = 0;
@@ -519,20 +520,15 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     protected void sendPack(int id, packHolder pckB) {
         cntr.tx(pckB);
         ifcEther.createETHheader(pckB, false);
-        if (intercon != null) {
-            pckB.msbPutW(0, id);
-            pckB.putSkip(2);
-            pckB.merge2beg();
-            ifcEther.parseETHheader(pckB, false);
-            intercon.sendPack(pckB);
+        if (intercon == null) {
+            sendLine("packet " + id + " " + bits.toHex(pckB.getCopy()));
             return;
         }
-        String a = "packet " + id + " ";
-        byte[] data = pckB.getCopy();
-        for (int i = 0; i < data.length; i++) {
-            a += bits.toHexB(data[i]);
-        }
-        sendLine(a);
+        pckB.msbPutW(0, id);
+        pckB.putSkip(2);
+        pckB.merge2beg();
+        ifcEther.parseETHheader(pckB, false);
+        intercon.sendPack(pckB);
     }
 
     /**
@@ -740,6 +736,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public int sentPppoe;
 
     public int sentLabel;
+
+    public String sentMacsec;
 
     public state.states sentState = state.states.close;
 
@@ -1608,6 +1606,23 @@ class servP4langConn implements Runnable {
     }
 
     private void doIface(servP4langIfc ifc) {
+        if (ifc.ifc.ethtyp.macSec == null) {
+            if (ifc.sentMacsec != null) {
+                lower.sendLine("macsec_del " + ifc.id + " " + ifc.sentMacsec);
+            }
+            ifc.sentMacsec = null;
+        } else {
+            ifc.ifc.ethtyp.macSec.allowClear = true;
+            String s = ifc.ifc.ethtyp.macSec.myTyp + " " + ifc.ifc.ethtyp.macSec.cphrSiz + " " + ifc.ifc.ethtyp.macSec.hashSiz + " " + (ifc.ifc.ethtyp.macSec.needLayer2 ? "1" : "0") + " " + ifc.ifc.ethtyp.macSec.profil.trans.encr2str() + " " + ifc.ifc.ethtyp.macSec.profil.trans.hash2str() + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyEncr) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyHash);
+            if (ifc.sentMacsec != null) {
+                if (!s.equals(ifc.sentMacsec)) {
+                    lower.sendLine("macsec_mod " + ifc.id + " " + s);
+                }
+            } else {
+                lower.sendLine("macsec_add " + ifc.id + " " + s);
+            }
+            ifc.sentMacsec = s;
+        }
         if (ifc.ifc.pppoeC != null) {
             servP4langIfc res = findIfc(ifc.ifc.pppoeC.clnIfc);
             if (res != null) {

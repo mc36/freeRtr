@@ -129,9 +129,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
         ethtyp = PPPTYPE_ROUTEDMAC;                             \
         break;                                                  \
     default:                                                    \
-        packDr[port]++;                                         \
-        byteDr[port] += bufS;                                   \
-        return;                                                 \
+        goto drop;                                              \
     }
 
 
@@ -153,9 +151,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
         bufP += 2;                                              \
         break;                                                  \
     default:                                                    \
-        packDr[port]++;                                         \
-        byteDr[port] += bufS;                                   \
-        return;                                                 \
+        goto drop;                                              \
     }
 
 
@@ -222,6 +218,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     struct pppoe_entry pppoe_ntry;
     struct tun4_entry tun4_ntry;
     struct tun6_entry tun6_ntry;
+    struct macsec_entry macsec_ntry;
     struct mpls_entry *mpls_res;
     struct portvrf_entry *portvrf_res;
     struct route4_entry *route4_res;
@@ -236,6 +233,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     struct pppoe_entry *pppoe_res;
     struct tun4_entry *tun4_res;
     struct tun6_entry *tun6_res;
+    struct macsec_entry *macsec_res;
     int index;
     int label;
     int sum;
@@ -246,13 +244,49 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     int ethtyp;
     int prt = port;
     int prt2 = port;
-    int tmp;
+    int tmp, tmp2;
+    size_t sizt;
 ether_rx:
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
 ethtyp_rx:
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
+    macsec_ntry.port = prt;
+    index = table_find(&macsec_table, &macsec_ntry);
+    if (index >= 0) {
+        macsec_res = table_get(&macsec_table, index);
+        if (bufD[bufP] != 0x08) goto cpu;
+        macsec_res->seqRx = get32msb(bufD, bufP + 2);
+        bufP += 6;
+        tmp = bufS - bufP + preBuff - macsec_res->hashBlkLen;
+        if (tmp < 1) goto drop;
+        if ((tmp % macsec_res->encrBlkLen) != 0) goto drop;
+        if (pthread_mutex_lock(&macsec_res->mutexRx) != 0) goto drop;
+        if (EVP_DigestSignInit(macsec_res->hashCtxRx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) {
+macsec_rxerr:
+            if (pthread_mutex_unlock(&macsec_res->mutexRx) != 0) goto drop;
+            goto drop;
+        }
+        if (macsec_res->needMacs != 0) {
+            if (EVP_DigestSignUpdate(macsec_res->hashCtxRx, &bufD[preBuff + 6], 6) != 1) goto macsec_rxerr;
+            if (EVP_DigestSignUpdate(macsec_res->hashCtxRx, &bufD[preBuff + 0], 6) != 1) goto macsec_rxerr;
+        }
+        if (EVP_DigestSignUpdate(macsec_res->hashCtxRx, &bufD[bufP], tmp) != 1) goto macsec_rxerr;
+        if (EVP_DigestSignFinal(macsec_res->hashCtxRx, &buf2[0], &sizt) != 1) goto macsec_rxerr;
+        if (sizt != macsec_res->hashBlkLen) goto macsec_rxerr;
+        if (memcmp(&buf2[0], &bufD[bufP + tmp], macsec_res->hashBlkLen) !=0) goto macsec_rxerr;
+        bufS -= macsec_res->hashBlkLen;
+        if (EVP_DecryptUpdate(macsec_res->encrCtxRx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto macsec_rxerr;
+        if (tmp2 != tmp) goto macsec_rxerr;
+        if (pthread_mutex_unlock(&macsec_res->mutexRx) != 0) goto drop;
+        bufP += macsec_res->encrBlkLen;
+        memmove(&bufD[preBuff + 12], &bufD[bufP], tmp);
+        bufP = preBuff + 12;
+        bufS = preBuff + tmp;
+        ethtyp = get16msb(bufD, bufP);
+        bufP += 2;
+    }
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST: // mpls
 mpls_rx:
@@ -263,11 +297,7 @@ mpls_rx:
         mpls_ntry.label = (label >> 12) & 0xfffff;
         hash ^= mpls_ntry.label;
         index = table_find(&mpls_table, &mpls_ntry);
-        if (index < 0) {
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
-        }
+        if (index < 0) goto drop;
         mpls_res = table_get(&mpls_table, index);
         mpls_res->pack++;
         mpls_res->byte += bufS;
@@ -287,9 +317,7 @@ mpls_rx:
                 ethtyp = 0;
                 break;
             }
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
+            goto drop;
         case 2: // pop
             neigh_ntry.id = mpls_res->nexthop;
             if ((label & 0x100) == 0) goto ethtyp_tx;
@@ -315,11 +343,7 @@ ethtyp_tx:
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
             index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
+            if (index < 0) goto drop;
             neigh_res = table_get(&neigh_table, index);
 neigh_tx:
             neigh_res->pack++;
@@ -453,9 +477,7 @@ neigh_tx:
                     tmp = 41;
                     break;
                 default:
-                    packDr[port]++;
-                    byteDr[port] += bufS;
-                    return;
+                    goto drop;
                 }
                 bufP += 2;
                 bufP -= 20;
@@ -483,9 +505,7 @@ neigh_tx:
                     tmp = 41;
                     break;
                 default:
-                    packDr[port]++;
-                    byteDr[port] += bufS;
-                    return;
+                    goto drop;
                 }
                 bufP += 2;
                 bufP -= 40;
@@ -507,48 +527,11 @@ neigh_tx:
                 put16msb(bufD, bufP, ethtyp);
                 break;
             default:
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
+                goto drop;
             }
-            vlan_ntry.id = prt;
-            index = table_find(&vlanout_table, &vlan_ntry);
-            if (index >= 0) {
-                vlan_res = table_get(&vlanout_table, index);
-                bufP -= 2;
-                put16msb(bufD, bufP, vlan_res->vlan);
-                bufP -= 2;
-                put16msb(bufD, bufP, ETHERTYPE_VLAN);
-                prt = vlan_res->port;
-                vlan_res->pack++;
-                vlan_res->byte += bufS;
-            }
-            bufP -= 6;
-            memmove(&bufD[bufP], &neigh_res->smac, 6);
-            bufP -= 6;
-            memmove(&bufD[bufP], &neigh_res->dmac, 6);
-            bundle_ntry.id = prt;
-            index = table_find(&bundle_table, &bundle_ntry);
-            if (index >= 0) {
-                bundle_res = table_get(&bundle_table, index);
-                reduce_hash;
-                prt = bundle_res->out[hash];
-                bundle_res->pack++;
-                bundle_res->byte += bufS;
-                if (bundle_res->command == 2) {
-                    bufS = bufS - bufP + preBuff;
-                    memmove(&bufD[preBuff], &bufD[bufP], bufS);
-                    prt2 = prt;
-                    goto ether_rx;
-                }
-            }
-            if (prt >= ports) {
-                packDr[port]++;
-                byteDr[port] += bufS;
-                return;
-            }
-            send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
-            return;
+            memmove(&buf2[0], &neigh_res->dmac, 6);
+            memmove(&buf2[6], &neigh_res->smac, 6);
+            goto layer2_tx;
         case 4: // xconn
             memmove(&buf2[0], &bufD[bufP], 12);
             bufP += 12;
@@ -571,11 +554,7 @@ neigh_tx:
         vlan_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
         bufP += 2;
         index = table_find(&vlanin_table, &vlan_ntry);
-        if (index < 0) {
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
-        }
+        if (index < 0) goto drop;
         vlan_res = table_get(&vlanin_table, index);
         prt = vlan_res->id;
         vlan_res->pack++;
@@ -585,11 +564,7 @@ neigh_tx:
     case ETHERTYPE_IPV4: // ipv4
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) {
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
-        }
+        if (index < 0) goto drop;
         portvrf_res = table_get(&portvrf_table, index);
         switch (portvrf_res->command) {
         case 1:
@@ -664,11 +639,7 @@ ipv4_rou:
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
                 index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) {
-                    packDr[port]++;
-                    byteDr[port] += bufS;
-                    return;
-                }
+                if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
                 acls_ntry.dir = 2;
                 acls_ntry.port = neigh_res->aclport;
@@ -717,9 +688,7 @@ ipv4_rou:
                         put16msb(bufD, bufP, ETHERTYPE_IPV6);
                         break;
                     default:
-                        packDr[port]++;
-                        byteDr[port] += bufS;
-                        return;
+                        goto drop;
                     }
                     bufP -= 12;
                     memset(&bufD[bufP], 0, 12);
@@ -735,11 +704,7 @@ ipv4_rou:
                 index = table_find(&acls_table, &acls_ntry);
                 if (index >= 0) {
                     acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) {
-                        packDr[port]++;
-                        byteDr[port] += bufS;
-                        return;
-                    }
+                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) goto drop;
                 }
                 goto cpu;
             case 3: // mpls1
@@ -765,11 +730,7 @@ ipv4_rou:
     case ETHERTYPE_IPV6: // ipv6
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) {
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
-        }
+        if (index < 0) goto drop;
         portvrf_res = table_get(&portvrf_table, index);
         switch (portvrf_res->command) {
         case 1:
@@ -888,11 +849,7 @@ ipv6_hit:
                 bufP -= 2;
                 put16msb(bufD, bufP, ethtyp);
                 index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) {
-                    packDr[port]++;
-                    byteDr[port] += bufS;
-                    return;
-                }
+                if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
                 acls_ntry.dir = 2;
                 acls_ntry.port = neigh_res->aclport;
@@ -947,9 +904,7 @@ ipv6_hit:
                         put16msb(bufD, bufP, ETHERTYPE_IPV6);
                         break;
                     default:
-                        packDr[port]++;
-                        byteDr[port] += bufS;
-                        return;
+                        goto drop;
                     }
                     bufP -= 12;
                     memset(&bufD[bufP], 0, 12);
@@ -965,11 +920,7 @@ ipv6_hit:
                 index = table_find(&acls_table, &acls_ntry);
                 if (index >= 0) {
                     acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) {
-                        packDr[port]++;
-                        byteDr[port] += bufS;
-                        return;
-                    }
+                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) goto drop;
                 }
                 goto cpu;
             case 3: // mpls1
@@ -996,11 +947,7 @@ ipv6_hit:
         pppoe_ntry.port = prt;
         pppoe_ntry.session = get16msb(bufD, bufP + 2);
         index = table_find(&pppoe_table, &pppoe_ntry);
-        if (index < 0) {
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
-        }
+        if (index < 0) goto drop;
         pppoe_res = table_get(&pppoe_table, index);
         pppoe_res->pack++;
         pppoe_res->byte += bufS;
@@ -1019,17 +966,9 @@ ipv6_hit:
     case ETHERTYPE_ROUTEDMAC: // routed bridge
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) {
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
-        }
+        if (index < 0) goto drop;
         portvrf_res = table_get(&portvrf_table, index);
-        if (portvrf_res->command != 2) {
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
-        }
+        if (portvrf_res->command != 2) goto drop;
         bridge_ntry.id = portvrf_res->bridge;
         memmove(&buf2[0], &bufD[bufP], 12);
         bufP += 12;
@@ -1156,6 +1095,44 @@ bridgevpls_rx:
         }
         prt = bridge_res->port;
 layer2_tx:
+        macsec_ntry.port = prt;
+        index = table_find(&macsec_table, &macsec_ntry);
+        if (index >= 0) {
+            macsec_res = table_get(&macsec_table, index);
+            tmp = bufS - bufP + preBuff;
+            tmp2 = tmp % macsec_res->encrBlkLen;
+            if (tmp2 != 0) {
+                tmp2 = macsec_res->encrBlkLen - tmp2;
+                RAND_bytes(&bufD[bufP + tmp], tmp2);
+                bufS += tmp2;
+            }
+            bufP -= macsec_res->encrBlkLen;
+            RAND_bytes(&bufD[bufP], macsec_res->encrBlkLen);
+            tmp = bufS - bufP + preBuff;
+            if (pthread_mutex_lock(&macsec_res->mutexTx) != 0) goto drop;
+            if (EVP_EncryptUpdate(macsec_res->encrCtxTx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) {
+macsec_txerr:
+                if (pthread_mutex_unlock(&macsec_res->mutexTx) != 0) goto drop;
+                goto drop;
+            }
+            if (tmp2 != tmp) goto macsec_txerr;
+            if (EVP_DigestSignInit(macsec_res->hashCtxTx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) goto macsec_txerr;
+            if (macsec_res->needMacs != 0) {
+                if (EVP_DigestSignUpdate(macsec_res->hashCtxTx, &buf2[6], 6) != 1) goto macsec_txerr;
+                if (EVP_DigestSignUpdate(macsec_res->hashCtxTx, &buf2[0], 6) != 1) goto macsec_txerr;
+            }
+            if (EVP_DigestSignUpdate(macsec_res->hashCtxTx, &bufD[bufP], tmp) != 1) goto macsec_txerr;
+            if (EVP_DigestSignFinal(macsec_res->hashCtxTx, &bufD[bufP + tmp], &sizt) != 1) goto macsec_txerr;
+            if (sizt != macsec_res->hashBlkLen) goto macsec_txerr;
+            if (pthread_mutex_unlock(&macsec_res->mutexTx) != 0) goto drop;
+            bufS += macsec_res->hashBlkLen;
+            bufP -= 8;
+            put16msb(bufD, bufP + 0, macsec_res->ethtyp);
+            bufD[bufP + 2] = 0x08; // tci=v,e
+            bufD[bufP + 3] = 0; // sl
+            put32msb(bufD, bufP + 4, macsec_res->seqTx);
+            macsec_res->seqTx++;
+        }
         vlan_ntry.id = prt;
         index = table_find(&vlanout_table, &vlan_ntry);
         if (index >= 0) {
@@ -1185,22 +1162,21 @@ layer2_tx:
                 goto ether_rx;
             }
         }
-        if (prt >= ports) {
-            packDr[port]++;
-            byteDr[port] += bufS;
-            return;
-        }
+        if (prt >= ports) goto drop;
         send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
         return;
     case ETHERTYPE_ARP: // arp
         goto cpu;
     case ETHERTYPE_PPPOE_CTRL: // pppoe ctrl
         goto cpu;
+    case ETHERTYPE_MACSEC: // macsec
+        goto cpu;
     default:
 punt:
         if (punts < 0) {
+drop:
             packDr[port]++;
-            byteDr[port] += bufS;
+            byteDr[port] += bufS - bufP + preBuff;
             return;
         }
         punts--;

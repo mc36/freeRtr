@@ -1,9 +1,3 @@
-#define accumulate_sum(sum, val, mul)                           \
-    put32msb(buf2, 0, val);                                     \
-    sum += mul*get16lsb(buf2, 0);                               \
-    sum += mul*get16lsb(buf2, 2);
-
-
 void str2mac(unsigned char *dst, unsigned char *src) {
     sscanf(src, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &dst[0], &dst[1], &dst[2], &dst[3], &dst[4], &dst[5]);
 }
@@ -11,6 +5,41 @@ void str2mac(unsigned char *dst, unsigned char *src) {
 void mac2str(unsigned char *src, unsigned char *dst) {
     snprintf(dst, 128, "%02x:%02x:%02x:%02x:%02x:%02x", src[0], src[1], src[2], src[3], src[4], src[5]);
 }
+
+
+int str2key(unsigned char *str, unsigned char *key) {
+    unsigned char buf[4];
+    int s = 0;
+    for (int i=0;;) {
+        memmove(&buf, &str[i], 2);
+        buf[2] = 0;
+        if (str[i] == 0) break;
+        sscanf(buf, "%hhx", &key[s]);
+        s++;
+        i += 2;
+    }
+    return s;
+}
+
+
+const EVP_CIPHER* getEncrAlg(unsigned char *buf) {
+    if (strcmp(buf, "des") == 0) return EVP_des_cbc();
+    if (strcmp(buf, "3des") == 0) return EVP_des_ede3_cbc();
+    if (strcmp(buf, "aes128") == 0) return EVP_aes_128_cbc();
+    if (strcmp(buf, "aes192") == 0) return EVP_aes_192_cbc();
+    if (strcmp(buf, "aes256") == 0) return EVP_aes_256_cbc();
+    return NULL;
+}
+
+
+const EVP_MD* getHashAlg(unsigned char *buf) {
+    if (strcmp(buf, "md5") == 0) return EVP_md5();
+    if (strcmp(buf, "sha1") == 0) return EVP_sha1();
+    if (strcmp(buf, "sha256") == 0) return EVP_sha256();
+    if (strcmp(buf, "sha512") == 0) return EVP_sha512();
+    return NULL;
+}
+
 
 void readAcl4(struct acl4_entry *acl4_ntry, unsigned char**arg) {
     unsigned char buf2[1024];
@@ -31,6 +60,8 @@ void readAcl4(struct acl4_entry *acl4_ntry, unsigned char**arg) {
     acl4_ntry->trgPortV = atoi(arg[13]);
     acl4_ntry->trgPortM = atoi(arg[14]);
 }
+
+
 
 void readAcl6(struct acl6_entry *acl6_ntry, unsigned char**arg) {
     unsigned char buf2[1024];
@@ -63,6 +94,15 @@ void readAcl6(struct acl6_entry *acl6_ntry, unsigned char**arg) {
     acl6_ntry->trgPortV = atoi(arg[13]);
     acl6_ntry->trgPortM = atoi(arg[14]);
 }
+
+
+
+#define accumulate_sum(sum, val, mul)                           \
+    put32msb(buf2, 0, val);                                     \
+    sum += mul*get16lsb(buf2, 0);                               \
+    sum += mul*get16lsb(buf2, 2);
+
+
 
 int doOneCommand(unsigned char* buf) {
     unsigned char buf2[1024];
@@ -127,6 +167,8 @@ int doOneCommand(unsigned char* buf) {
     memset(&tun4_ntry, 0, sizeof(tun4_ntry));
     struct tun6_entry tun6_ntry;
     memset(&tun6_ntry, 0, sizeof(tun6_ntry));
+    struct macsec_entry macsec_ntry;
+    memset(&macsec_ntry, 0, sizeof(macsec_ntry));
     int index = 0;
     if (strcmp(arg[0], "quit") == 0) {
         return 1;
@@ -917,6 +959,38 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&tun6_table, &tun6_ntry);
         else table_add(&tun6_table, &tun6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "macsec") == 0) {
+        macsec_ntry.port = atoi(arg[2]);
+        macsec_ntry.ethtyp = atoi(arg[3]);
+        macsec_ntry.encrBlkLen = atoi(arg[4]);
+        macsec_ntry.hashBlkLen = atoi(arg[5]);
+        macsec_ntry.needMacs = atoi(arg[6]);
+        macsec_ntry.encrAlg = getEncrAlg(arg[7]);
+        if (macsec_ntry.encrAlg == NULL) return 0;
+        macsec_ntry.hashAlg = getHashAlg(arg[8]);
+        if (macsec_ntry.hashAlg == NULL) return 0;
+        macsec_ntry.encrKeyLen = str2key(arg[9], macsec_ntry.encrKeyDat);
+        macsec_ntry.hashKeyLen = str2key(arg[10], macsec_ntry.hashKeyDat);
+        macsec_ntry.encrCtxTx = EVP_CIPHER_CTX_new();
+        if (macsec_ntry.encrCtxTx == NULL) return 0;
+        macsec_ntry.encrCtxRx = EVP_CIPHER_CTX_new();
+        if (macsec_ntry.encrCtxRx == NULL) return 0;
+        macsec_ntry.hashCtxTx = EVP_MD_CTX_create();
+        if (macsec_ntry.hashCtxTx == NULL) return 0;
+        macsec_ntry.hashCtxRx = EVP_MD_CTX_create();
+        if (macsec_ntry.hashCtxRx == NULL) return 0;
+        if (EVP_EncryptInit_ex(macsec_ntry.encrCtxTx, macsec_ntry.encrAlg, NULL, macsec_ntry.encrKeyDat, macsec_ntry.hashKeyDat) != 1) return 0;
+        if (EVP_CIPHER_CTX_set_padding(macsec_ntry.encrCtxTx, 0) != 1) return 0;
+        if (EVP_DecryptInit_ex(macsec_ntry.encrCtxRx, macsec_ntry.encrAlg, NULL, macsec_ntry.encrKeyDat, macsec_ntry.hashKeyDat) != 1) return 0;
+        if (EVP_CIPHER_CTX_set_padding(macsec_ntry.encrCtxRx, 0) != 1) return 0;
+        macsec_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, macsec_ntry.hashKeyDat, macsec_ntry.hashKeyLen);
+        if (macsec_ntry.hashPkey == NULL) return 0;
+        if (pthread_mutex_init(&macsec_ntry.mutexRx, NULL) != 0) return 0;
+        if (pthread_mutex_init(&macsec_ntry.mutexTx, NULL) != 0) return 0;
+        if (del == 0) table_del(&macsec_table, &macsec_ntry);
+        else table_add(&macsec_table, &macsec_ntry);
         return 0;
     }
     return 0;

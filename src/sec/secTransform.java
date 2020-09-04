@@ -106,17 +106,16 @@ public class secTransform {
     }
 
     public String toString() {
-        return "auth=" + authAlg + " grp=" + groupNum + " encr=" + encr2str(encrAlg) + "/" + encrKey + " hash=" + hash2str(hashAlg) + " prf=" + hash2str(prfAlg);
+        return "auth=" + authAlg + " grp=" + groupNum + " encr=" + encr2str() + "/" + encrKey + " hash=" + hash2str();
     }
 
     /**
      * decode encryption algorithm
      *
-     * @param i algorithm
      * @return string
      */
-    public String encr2str(int i) {
-        switch (i) {
+    public String encr2str() {
+        switch (encrAlg) {
             case 1:
                 return "des";
             case 2:
@@ -133,11 +132,10 @@ public class secTransform {
     /**
      * decode hash algorithm
      *
-     * @param i algorithm
      * @return string
      */
-    public String hash2str(int i) {
-        switch (i) {
+    public String hash2str() {
+        switch (hashAlg) {
             case 1:
                 return "md5";
             case 2:
@@ -892,8 +890,8 @@ public class secTransform {
      */
     public void getShRun(String beg, List<String> lst) {
         cmds.cfgLine(lst, groupNum == 0, beg, "group", bits.padBeg("" + groupNum, 2, "0"));
-        cmds.cfgLine(lst, encrAlg == 0, beg, "cipher", encr2str(encrAlg));
-        cmds.cfgLine(lst, hashAlg == 0, beg, "hash", hash2str(hashAlg));
+        cmds.cfgLine(lst, encrAlg == 0, beg, "cipher", encr2str());
+        cmds.cfgLine(lst, hashAlg == 0, beg, "hash", hash2str());
         cmds.cfgLine(lst, lifeSec == 0, beg, "seconds", "" + lifeSec);
         cmds.cfgLine(lst, lifeByt == 0, beg, "bytes", "" + lifeByt);
     }

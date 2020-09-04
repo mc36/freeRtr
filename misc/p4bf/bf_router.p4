@@ -1,5 +1,3 @@
-/*  -*- P4_16 -*- */
-
 /*
  * Copyright 2019-present GT RARE project
  *
@@ -55,18 +53,8 @@
 #include "include/ig_prs_main.p4"
 
 /*------------------ I N G R E S S - M A T C H - A C T I O N ---------------- */
-/* Include the proper hashing module */
-#if HASHING == IPV4_IPV6_HASH
 #include "include/hsh_ipv4_ipv6_hash.p4"
-#elif HASHING == RANDOM_HASH
-#include "include/hsh_random_hash.p4"
-#elif HASHING == ROUND_ROBIN_HASH
-#include "include/hsh_round_robin_hash.p4"
-#elif HASHING == NO_HASH
-#include "include/hsh_no_hash.p4"
-#else
-#error Unknown hashing module (HASHING)
-#endif
+
 #include "include/ig_ctl_bundle.p4"
 #include "include/ig_ctl_pkt_pre_emit.p4"
 #include "include/ig_ctl_vlan_in.p4"

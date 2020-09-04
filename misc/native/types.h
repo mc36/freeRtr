@@ -9,6 +9,7 @@
 #define ETHERTYPE_PPPOE_CTRL        0x8863
 #define ETHERTYPE_PPPOE_DATA        0x8864
 #define ETHERTYPE_ROUTEDMAC         0x6558
+#define ETHERTYPE_MACSEC            0x88e5
 
 #define PPPTYPE_IPV4                0x0021
 #define PPPTYPE_IPV6                0x0057
