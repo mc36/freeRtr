@@ -156,6 +156,10 @@ static int doPacketLoop(__rte_unused void *arg) {
     int num;
     int pkts;
     int i;
+    EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
+    if (encrCtx == NULL) rte_exit(EXIT_FAILURE, "error getting encr context");
+    EVP_MD_CTX *hashCtx = EVP_MD_CTX_create();
+    if (hashCtx == NULL) rte_exit(EXIT_FAILURE, "error getting hash context");
 
     int lcore = rte_lcore_id();
     struct lcore_conf *myconf = &lcore_conf[lcore];
@@ -190,7 +194,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 }
                 rte_pktmbuf_free(bufs[i]);
                 if (port == cpuport) processCpuPack(&bufD[0], bufS);
-                else processDataPacket(&bufD[0], bufS, port);
+                else processDataPacket(&bufD[0], bufS, port, encrCtx, hashCtx);
             }
             pkts += num;
         }

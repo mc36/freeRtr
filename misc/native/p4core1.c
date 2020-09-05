@@ -596,15 +596,9 @@ struct macsec_entry {
     int needMacs;
     int seqTx;
     int seqRx;
-    pthread_mutex_t mutexRx;
-    pthread_mutex_t mutexTx;
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
     EVP_PKEY *hashPkey;
-    EVP_CIPHER_CTX *encrCtxTx;
-    EVP_CIPHER_CTX *encrCtxRx;
-    EVP_MD_CTX *hashCtxTx;
-    EVP_MD_CTX *hashCtxRx;
 };
 
 struct table_head macsec_table;
@@ -653,10 +647,10 @@ void initTables() {
     table_init(&tun4_table, sizeof(struct tun4_entry), &tun4_compare);
     table_init(&tun6_table, sizeof(struct tun6_entry), &tun6_compare);
     table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
+    printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
     OpenSSL_add_all_ciphers();
     OpenSSL_add_all_digests();
     OpenSSL_add_all_algorithms();
     RAND_get_rand_method();
     RAND_poll();
-    printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 }

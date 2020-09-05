@@ -54,12 +54,12 @@ public class ifcMacSec {
     /**
      * encryption keys
      */
-    public byte[] keyEncr = new byte[32];
+    public byte[] keyEncr = null;
 
     /**
      * authentication keys
      */
-    public byte[] keyHash = new byte[32];
+    public byte[] keyHash = null;
 
     /**
      * ethertype in effect

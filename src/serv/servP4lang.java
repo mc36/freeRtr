@@ -1613,13 +1613,22 @@ class servP4langConn implements Runnable {
             ifc.sentMacsec = null;
         } else {
             ifc.ifc.ethtyp.macSec.allowClear = true;
-            String s = ifc.ifc.ethtyp.macSec.myTyp + " " + ifc.ifc.ethtyp.macSec.cphrSiz + " " + ifc.ifc.ethtyp.macSec.hashSiz + " " + (ifc.ifc.ethtyp.macSec.needLayer2 ? "1" : "0") + " " + ifc.ifc.ethtyp.macSec.profil.trans.encr2str() + " " + ifc.ifc.ethtyp.macSec.profil.trans.hash2str() + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyEncr) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyHash);
-            if (ifc.sentMacsec != null) {
-                if (!s.equals(ifc.sentMacsec)) {
-                    lower.sendLine("macsec_mod " + ifc.id + " " + s);
+            String s = null;
+            if (ifc.ifc.ethtyp.macSec.keyHash != null) {
+                s = ifc.ifc.ethtyp.macSec.myTyp + " " + ifc.ifc.ethtyp.macSec.cphrSiz + " " + ifc.ifc.ethtyp.macSec.hashSiz + " " + (ifc.ifc.ethtyp.macSec.needLayer2 ? "1" : "0") + " " + ifc.ifc.ethtyp.macSec.profil.trans.encr2str() + " " + ifc.ifc.ethtyp.macSec.profil.trans.hash2str() + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyEncr) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyHash);
+            }
+            if (s != null) {
+                if (ifc.sentMacsec != null) {
+                    if (!s.equals(ifc.sentMacsec)) {
+                        lower.sendLine("macsec_mod " + ifc.id + " " + s);
+                    }
+                } else {
+                    lower.sendLine("macsec_add " + ifc.id + " " + s);
                 }
             } else {
-                lower.sendLine("macsec_add " + ifc.id + " " + s);
+                if (ifc.sentMacsec != null) {
+                    lower.sendLine("macsec_del " + ifc.id + " " + ifc.sentMacsec);
+                }
             }
             ifc.sentMacsec = s;
         }

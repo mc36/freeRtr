@@ -41,7 +41,7 @@ void processCpuPack(unsigned char* bufD, int bufS) {
 #ifdef basicLoop
 
 
-void processDataPacket(unsigned char *bufD, int bufS, int port) {
+void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     struct vlan_entry vlan_ntry;
     struct vlan_entry *vlan_res;
     int index;
@@ -198,7 +198,7 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
 
 
 
-void processDataPacket(unsigned char *bufD, int bufS, int port) {
+void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
     byteRx[port] += bufS;
     unsigned char buf2[preBuff];
@@ -241,6 +241,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port) {
     int hash = 0;
     int bufP;
     int bufT;
+    int bufE;
     int ethtyp;
     int prt = port;
     int prt2 = port;
@@ -250,6 +251,7 @@ ether_rx:
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
 ethtyp_rx:
+    bufE = bufP;
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
     macsec_ntry.port = prt;
@@ -262,28 +264,27 @@ ethtyp_rx:
         tmp = bufS - bufP + preBuff - macsec_res->hashBlkLen;
         if (tmp < 1) goto drop;
         if ((tmp % macsec_res->encrBlkLen) != 0) goto drop;
-        if (pthread_mutex_lock(&macsec_res->mutexRx) != 0) goto drop;
-        if (EVP_DigestSignInit(macsec_res->hashCtxRx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) {
-macsec_rxerr:
-            if (pthread_mutex_unlock(&macsec_res->mutexRx) != 0) goto drop;
-            goto drop;
-        }
+        if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;
+        if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) goto drop;
         if (macsec_res->needMacs != 0) {
-            if (EVP_DigestSignUpdate(macsec_res->hashCtxRx, &bufD[preBuff + 6], 6) != 1) goto macsec_rxerr;
-            if (EVP_DigestSignUpdate(macsec_res->hashCtxRx, &bufD[preBuff + 0], 6) != 1) goto macsec_rxerr;
+            if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 6], 6) != 1) goto drop;
+            if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 0], 6) != 1) goto drop;
         }
-        if (EVP_DigestSignUpdate(macsec_res->hashCtxRx, &bufD[bufP], tmp) != 1) goto macsec_rxerr;
-        if (EVP_DigestSignFinal(macsec_res->hashCtxRx, &buf2[0], &sizt) != 1) goto macsec_rxerr;
-        if (sizt != macsec_res->hashBlkLen) goto macsec_rxerr;
-        if (memcmp(&buf2[0], &bufD[bufP + tmp], macsec_res->hashBlkLen) !=0) goto macsec_rxerr;
+        if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;
+        if (EVP_DigestSignFinal(hashCtx, &buf2[0], &sizt) != 1) goto drop;
+        if (sizt != macsec_res->hashBlkLen) goto drop;
+        if (memcmp(&buf2[0], &bufD[bufP + tmp], macsec_res->hashBlkLen) !=0) goto drop;
         bufS -= macsec_res->hashBlkLen;
-        if (EVP_DecryptUpdate(macsec_res->encrCtxRx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto macsec_rxerr;
-        if (tmp2 != tmp) goto macsec_rxerr;
-        if (pthread_mutex_unlock(&macsec_res->mutexRx) != 0) goto drop;
+        if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;
+        if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) goto drop;
+        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop;
+        if (EVP_CIPHER_CTX_set_key_length(encrCtx, macsec_res->encrKeyLen) != 1) goto drop;
+        if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;
+        if (tmp2 != tmp) goto drop;
         bufP += macsec_res->encrBlkLen;
-        memmove(&bufD[preBuff + 12], &bufD[bufP], tmp);
-        bufP = preBuff + 12;
-        bufS = preBuff + tmp;
+        bufS -= bufP - bufE;
+        memmove(&bufD[bufE], &bufD[bufP], tmp);
+        bufP = bufE;
         ethtyp = get16msb(bufD, bufP);
         bufP += 2;
     }
@@ -1109,22 +1110,20 @@ layer2_tx:
             bufP -= macsec_res->encrBlkLen;
             RAND_bytes(&bufD[bufP], macsec_res->encrBlkLen);
             tmp = bufS - bufP + preBuff;
-            if (pthread_mutex_lock(&macsec_res->mutexTx) != 0) goto drop;
-            if (EVP_EncryptUpdate(macsec_res->encrCtxTx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) {
-macsec_txerr:
-                if (pthread_mutex_unlock(&macsec_res->mutexTx) != 0) goto drop;
-                goto drop;
-            }
-            if (tmp2 != tmp) goto macsec_txerr;
-            if (EVP_DigestSignInit(macsec_res->hashCtxTx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) goto macsec_txerr;
+            if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;
+            if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) goto drop;
+            if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop;
+            if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;
+            if (tmp2 != tmp) goto drop;
+            if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;
+            if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) goto drop;
             if (macsec_res->needMacs != 0) {
-                if (EVP_DigestSignUpdate(macsec_res->hashCtxTx, &buf2[6], 6) != 1) goto macsec_txerr;
-                if (EVP_DigestSignUpdate(macsec_res->hashCtxTx, &buf2[0], 6) != 1) goto macsec_txerr;
+                if (EVP_DigestSignUpdate(hashCtx, &buf2[6], 6) != 1) goto drop;
+                if (EVP_DigestSignUpdate(hashCtx, &buf2[0], 6) != 1) goto drop;
             }
-            if (EVP_DigestSignUpdate(macsec_res->hashCtxTx, &bufD[bufP], tmp) != 1) goto macsec_txerr;
-            if (EVP_DigestSignFinal(macsec_res->hashCtxTx, &bufD[bufP + tmp], &sizt) != 1) goto macsec_txerr;
-            if (sizt != macsec_res->hashBlkLen) goto macsec_txerr;
-            if (pthread_mutex_unlock(&macsec_res->mutexTx) != 0) goto drop;
+            if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;
+            if (EVP_DigestSignFinal(hashCtx, &bufD[bufP + tmp], &sizt) != 1) goto drop;
+            if (sizt != macsec_res->hashBlkLen) goto drop;
             bufS += macsec_res->hashBlkLen;
             bufP -= 8;
             put16msb(bufD, bufP + 0, macsec_res->ethtyp);
