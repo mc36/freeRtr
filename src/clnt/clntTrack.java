@@ -606,7 +606,7 @@ public class clntTrack implements rtrBfdClnt {
         }
         switch (mode) {
             case icmp:
-                notifier notif = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, typOsrv);
+                notifier notif = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, typOsrv, 0);
                 if (notif == null) {
                     break;
                 }

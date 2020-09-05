@@ -1035,6 +1035,8 @@ public class userExec {
         hl.add("2 3,.    <host>                  name of host");
         hl.add("3 3,.      /flood                specify flood mode");
         hl.add("3 3,.      /detail               specify detail mode");
+        hl.add("3 4        /data                 specify data to send");
+        hl.add("4 3,.        <num>               payload byte");
         hl.add("3 3,.      /ipv4                 specify ipv4 to use");
         hl.add("3 3,.      /ipv6                 specify ipv6 to use");
         hl.add("3 4        /vrf                  specify vrf to use");
@@ -2420,7 +2422,7 @@ public class userExec {
                 continue;
             }
             ipFwd fwd = vrf.getFwd(strt);
-            notifier notif = fwd.echoSendReq(src, strt, len, ttl, tos);
+            notifier notif = fwd.echoSendReq(src, strt, len, ttl, tos, 0);
             if (notif == null) {
                 continue;
             }
@@ -2438,6 +2440,7 @@ public class userExec {
         cfgVrf vrf = cfgAll.getClntVrf();
         cfgIfc ifc = cfgAll.getClntIfc();
         int size = 64;
+        int data = 0;
         int timeout = 1000;
         int repeat = 5;
         int tos = 0;
@@ -2458,6 +2461,10 @@ public class userExec {
             }
             if (a.equals("/flood")) {
                 flood = true;
+                continue;
+            }
+            if (a.equals("/data")) {
+                data = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("/detail")) {
@@ -2550,7 +2557,7 @@ public class userExec {
                 continue;
             }
             sent++;
-            notifier notif = fwd.echoSendReq(src, trg, size, ttl, tos);
+            notifier notif = fwd.echoSendReq(src, trg, size, ttl, tos, data);
             if (notif == null) {
                 pipe.strPut("R");
                 continue;

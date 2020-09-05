@@ -1995,9 +1995,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param size size of payload
      * @param ttl ttl to use
      * @param tos tos to use
+     * @param dat filler byte
      * @return notifier notified on reply
      */
-    public notifier echoSendReq(addrIP src, addrIP trg, int size, int ttl, int tos) {
+    public notifier echoSendReq(addrIP src, addrIP trg, int size, int ttl, int tos, int dat) {
         final int maxSize = 8192;
         final int minSize = 16;
         if (size < minSize) {
@@ -2007,7 +2008,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             size = maxSize;
         }
         packHolder pck = new packHolder(true, true);
-        pck.putFill(0, size, 0);
+        pck.putFill(0, size, dat);
         pck.putSkip(size);
         pck.merge2beg();
         ipFwdEcho ntry = new ipFwdEcho();

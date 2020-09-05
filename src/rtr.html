@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
 release: freeRouter v20.9.5-rel, done by cs@nop.<br/>
-tested: 2020-09-05 03:41:31, took 00:05:22, with 100 workers, on 1998 cases, 0 failed, 0 traces, 0 retries<br/>
+tested: 2020-09-05 15:01:34, took 00:05:51, with 100 workers, on 2020 cases, 0 failed, 0 traces, 1 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr>
@@ -1073,6 +1073,28 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt18.tst">p4lang-crypt18.tst</a></td><td>success</td><td>p4lang: macsec egress access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt19.tst">p4lang-crypt19.tst</a></td><td>success</td><td>p4lang: macsec vlan ingress access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt20.tst">p4lang-crypt20.tst</a></td><td>success</td><td>p4lang: macsec vlan egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt21.tst">p4lang-crypt21.tst</a></td><td>success</td><td>p4lang: ipsec with des</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt22.tst">p4lang-crypt22.tst</a></td><td>success</td><td>p4lang: ipsec with 3des</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt23.tst">p4lang-crypt23.tst</a></td><td>success</td><td>p4lang: ipsec with aes128</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt24.tst">p4lang-crypt24.tst</a></td><td>success</td><td>p4lang: ipsec with aes192</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt25.tst">p4lang-crypt25.tst</a></td><td>success</td><td>p4lang: ipsec with aes256</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt26.tst">p4lang-crypt26.tst</a></td><td>success</td><td>p4lang: ipsec with md5</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt27.tst">p4lang-crypt27.tst</a></td><td>success</td><td>p4lang: ipsec with sha1</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt28.tst">p4lang-crypt28.tst</a></td><td>success</td><td>p4lang: ipsec with sha256</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt29.tst">p4lang-crypt29.tst</a></td><td>success</td><td>p4lang: ipsec with sha512</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt30.tst">p4lang-crypt30.tst</a></td><td>success</td><td>p4lang: ipv4 over ipsec</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt31.tst">p4lang-crypt31.tst</a></td><td>success</td><td>p4lang: ipv6 over ipsec</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt32.tst">p4lang-crypt32.tst</a></td><td>success</td><td>p4lang: ipsec over ipv4</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt33.tst">p4lang-crypt33.tst</a></td><td>success</td><td>p4lang: ipsec over ipv6</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt34.tst">p4lang-crypt34.tst</a></td><td>success</td><td>p4lang: ipsec over ipv4 loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt35.tst">p4lang-crypt35.tst</a></td><td>success</td><td>p4lang: ipsec over ipv6 loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt36.tst">p4lang-crypt36.tst</a></td><td>success</td><td>p4lang: ipsec over vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt37.tst">p4lang-crypt37.tst</a></td><td>success</td><td>p4lang: ipv4 over ipsec with ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt38.tst">p4lang-crypt38.tst</a></td><td>success</td><td>p4lang: ipv4 over ipsec with egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt39.tst">p4lang-crypt39.tst</a></td><td>success</td><td>p4lang: ipv6 over ipsec with ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt40.tst">p4lang-crypt40.tst</a></td><td>success</td><td>p4lang: ipv6 over ipsec with egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt41.tst">p4lang-crypt41.tst</a></td><td>success</td><td>p4lang: ipsec with ike1</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt42.tst">p4lang-crypt42.tst</a></td><td>success</td><td>p4lang: ipsec with ike2</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout001.tst">p4lang-rout001.tst</a></td><td>success</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout002.tst">p4lang-rout002.tst</a></td><td>success</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout003.tst">p4lang-rout003.tst</a></td><td>success</td><td>p4lang: mpls core</td></tr>

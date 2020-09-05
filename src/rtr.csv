@@ -1,6 +1,6 @@
 file;result;test
 -;-;freeRouter v20.9.5-rel, done by cs@nop.
--;-;2020-09-05 03:41:31, took 00:05:22, with 100 workers, on 1998 cases, 0 failed, 0 traces, 0 retries
+-;-;2020-09-05 15:01:34, took 00:05:51, with 100 workers, on 2020 cases, 0 failed, 0 traces, 1 retries
 -;-;./rtr.bin
 basic.tst;success;dummy test
 conn-anyconn.tst;success;ip over anyconnect
@@ -1070,6 +1070,28 @@ p4lang-crypt17.tst;success;p4lang: macsec ingress access list
 p4lang-crypt18.tst;success;p4lang: macsec egress access list
 p4lang-crypt19.tst;success;p4lang: macsec vlan ingress access list
 p4lang-crypt20.tst;success;p4lang: macsec vlan egress access list
+p4lang-crypt21.tst;success;p4lang: ipsec with des
+p4lang-crypt22.tst;success;p4lang: ipsec with 3des
+p4lang-crypt23.tst;success;p4lang: ipsec with aes128
+p4lang-crypt24.tst;success;p4lang: ipsec with aes192
+p4lang-crypt25.tst;success;p4lang: ipsec with aes256
+p4lang-crypt26.tst;success;p4lang: ipsec with md5
+p4lang-crypt27.tst;success;p4lang: ipsec with sha1
+p4lang-crypt28.tst;success;p4lang: ipsec with sha256
+p4lang-crypt29.tst;success;p4lang: ipsec with sha512
+p4lang-crypt30.tst;success;p4lang: ipv4 over ipsec
+p4lang-crypt31.tst;success;p4lang: ipv6 over ipsec
+p4lang-crypt32.tst;success;p4lang: ipsec over ipv4
+p4lang-crypt33.tst;success;p4lang: ipsec over ipv6
+p4lang-crypt34.tst;success;p4lang: ipsec over ipv4 loopback
+p4lang-crypt35.tst;success;p4lang: ipsec over ipv6 loopback
+p4lang-crypt36.tst;success;p4lang: ipsec over vlan
+p4lang-crypt37.tst;success;p4lang: ipv4 over ipsec with ingress access list
+p4lang-crypt38.tst;success;p4lang: ipv4 over ipsec with egress access list
+p4lang-crypt39.tst;success;p4lang: ipv6 over ipsec with ingress access list
+p4lang-crypt40.tst;success;p4lang: ipv6 over ipsec with egress access list
+p4lang-crypt41.tst;success;p4lang: ipsec with ike1
+p4lang-crypt42.tst;success;p4lang: ipsec with ike2
 p4lang-rout001.tst;success;p4lang: routing
 p4lang-rout002.tst;success;p4lang: bridging
 p4lang-rout003.tst;success;p4lang: mpls core
