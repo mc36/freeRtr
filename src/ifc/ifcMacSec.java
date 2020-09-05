@@ -252,7 +252,7 @@ public class ifcMacSec {
                 cphrTx = profil.trans.getEncr();
                 cphrRx = profil.trans.getEncr();
                 byte[] res = buf1;
-                buf1 = new byte[cphrTx.getKeySize()];
+                buf1 = new byte[profil.trans.getKeyS()];
                 byte[] buf2 = new byte[cphrTx.getBlockSize()];
                 int pos = buf1.length + buf2.length;
                 bits.byteCopy(res, 0, buf1, 0, buf1.length);

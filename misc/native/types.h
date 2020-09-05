@@ -15,3 +15,4 @@
 #define PPPTYPE_IPV6                0x0057
 #define PPPTYPE_MPLS_UCAST          0x0281
 #define PPPTYPE_ROUTEDMAC           0x0031
+#define PPPTYPE_MACSEC              0x0053

@@ -114,14 +114,17 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
 
 #define ethtyp2ppptyp                                           \
     switch (ethtyp) {                                           \
+    case ETHERTYPE_MPLS_UCAST:                                  \
+        ethtyp = PPPTYPE_MPLS_UCAST;                            \
+        break;                                                  \
     case ETHERTYPE_IPV4:                                        \
         ethtyp = PPPTYPE_IPV4;                                  \
         break;                                                  \
     case ETHERTYPE_IPV6:                                        \
         ethtyp = PPPTYPE_IPV6;                                  \
         break;                                                  \
-    case ETHERTYPE_MPLS_UCAST:                                  \
-        ethtyp = PPPTYPE_MPLS_UCAST;                            \
+    case ETHERTYPE_MACSEC:                                      \
+        ethtyp = PPPTYPE_MACSEC;                                \
         break;                                                  \
     case ETHERTYPE_ROUTEDMAC:                                   \
         bufP -= 2;                                              \
@@ -137,14 +140,17 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
 
 #define ppptyp2ethtyp                                           \
     switch (ethtyp) {                                           \
+    case PPPTYPE_MPLS_UCAST:                                    \
+        ethtyp = ETHERTYPE_MPLS_UCAST;                          \
+        break;                                                  \
     case PPPTYPE_IPV4:                                          \
         ethtyp = ETHERTYPE_IPV4;                                \
         break;                                                  \
     case PPPTYPE_IPV6:                                          \
         ethtyp = ETHERTYPE_IPV6;                                \
         break;                                                  \
-    case PPPTYPE_MPLS_UCAST:                                    \
-        ethtyp = ETHERTYPE_MPLS_UCAST;                          \
+    case PPPTYPE_MACSEC:                                        \
+        ethtyp = ETHERTYPE_MACSEC;                              \
         break;                                                  \
     case PPPTYPE_ROUTEDMAC:                                     \
         ethtyp = ETHERTYPE_ROUTEDMAC;                           \
@@ -278,9 +284,7 @@ ethtyp_rx:
         if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;
         if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) goto drop;
         if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop;
-        if (EVP_CIPHER_CTX_set_key_length(encrCtx, macsec_res->encrKeyLen) != 1) goto drop;
         if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;
-        if (tmp2 != tmp) goto drop;
         bufP += macsec_res->encrBlkLen;
         bufS -= bufP - bufE;
         memmove(&bufD[bufE], &bufD[bufP], tmp);
@@ -350,6 +354,43 @@ neigh_tx:
             neigh_res->pack++;
             neigh_res->byte += bufS;
             prt = neigh_res->port;
+            memmove(&buf2[0], &neigh_res->dmac, 6);
+            memmove(&buf2[6], &neigh_res->smac, 6);
+            macsec_ntry.port = prt;
+            index = table_find(&macsec_table, &macsec_ntry);
+            if (index >= 0) {
+                macsec_res = table_get(&macsec_table, index);
+                tmp = bufS - bufP + preBuff;
+                tmp2 = tmp % macsec_res->encrBlkLen;
+                if (tmp2 != 0) {
+                    tmp2 = macsec_res->encrBlkLen - tmp2;
+                    RAND_bytes(&bufD[bufP + tmp], tmp2);
+                    bufS += tmp2;
+                }
+                bufP -= macsec_res->encrBlkLen;
+                RAND_bytes(&bufD[bufP], macsec_res->encrBlkLen);
+                tmp = bufS - bufP + preBuff;
+                if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;
+                if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) goto drop;
+                if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop;
+                if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;
+                if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;
+                if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) goto drop;
+                if (macsec_res->needMacs != 0) {
+                    if (EVP_DigestSignUpdate(hashCtx, &buf2[6], 6) != 1) goto drop;
+                    if (EVP_DigestSignUpdate(hashCtx, &buf2[0], 6) != 1) goto drop;
+                }
+                if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;
+                if (EVP_DigestSignFinal(hashCtx, &bufD[bufP + tmp], &sizt) != 1) goto drop;
+                if (sizt != macsec_res->hashBlkLen) goto drop;
+                bufS += macsec_res->hashBlkLen;
+                bufP -= 8;
+                put16msb(bufD, bufP + 0, macsec_res->ethtyp);
+                bufD[bufP + 2] = 0x08; // tci=v,e
+                bufD[bufP + 3] = 0; // sl
+                put32msb(bufD, bufP + 4, macsec_res->seqTx);
+                macsec_res->seqTx++;
+            }
             switch (neigh_res->command) {
             case 1: // raw ip
                 break;
@@ -530,8 +571,6 @@ neigh_tx:
             default:
                 goto drop;
             }
-            memmove(&buf2[0], &neigh_res->dmac, 6);
-            memmove(&buf2[6], &neigh_res->smac, 6);
             goto layer2_tx;
         case 4: // xconn
             memmove(&buf2[0], &bufD[bufP], 12);
@@ -1096,42 +1135,6 @@ bridgevpls_rx:
         }
         prt = bridge_res->port;
 layer2_tx:
-        macsec_ntry.port = prt;
-        index = table_find(&macsec_table, &macsec_ntry);
-        if (index >= 0) {
-            macsec_res = table_get(&macsec_table, index);
-            tmp = bufS - bufP + preBuff;
-            tmp2 = tmp % macsec_res->encrBlkLen;
-            if (tmp2 != 0) {
-                tmp2 = macsec_res->encrBlkLen - tmp2;
-                RAND_bytes(&bufD[bufP + tmp], tmp2);
-                bufS += tmp2;
-            }
-            bufP -= macsec_res->encrBlkLen;
-            RAND_bytes(&bufD[bufP], macsec_res->encrBlkLen);
-            tmp = bufS - bufP + preBuff;
-            if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;
-            if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) goto drop;
-            if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop;
-            if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;
-            if (tmp2 != tmp) goto drop;
-            if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;
-            if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) goto drop;
-            if (macsec_res->needMacs != 0) {
-                if (EVP_DigestSignUpdate(hashCtx, &buf2[6], 6) != 1) goto drop;
-                if (EVP_DigestSignUpdate(hashCtx, &buf2[0], 6) != 1) goto drop;
-            }
-            if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;
-            if (EVP_DigestSignFinal(hashCtx, &bufD[bufP + tmp], &sizt) != 1) goto drop;
-            if (sizt != macsec_res->hashBlkLen) goto drop;
-            bufS += macsec_res->hashBlkLen;
-            bufP -= 8;
-            put16msb(bufD, bufP + 0, macsec_res->ethtyp);
-            bufD[bufP + 2] = 0x08; // tci=v,e
-            bufD[bufP + 3] = 0; // sl
-            put32msb(bufD, bufP + 4, macsec_res->seqTx);
-            macsec_res->seqTx++;
-        }
         vlan_ntry.id = prt;
         index = table_find(&vlanout_table, &vlan_ntry);
         if (index >= 0) {
