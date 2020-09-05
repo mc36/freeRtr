@@ -1,4 +1,4 @@
-description p4lang: ipsec over ipv6 loopback
+description p4lang: ipsec over vlan
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -38,11 +38,9 @@ int lo0
  ipv4 addr 2.2.2.101 255.255.255.255
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int lo1
- vrf for v2
- ipv6 addr 8888::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
 int sdn1
+ exit
+int sdn1.222
  vrf for v2
  ipv6 addr 9999::1 ffff:ffff::
  ipv6 ena
@@ -61,8 +59,8 @@ crypto ipsec ips
  exit
 int tun1
  tun vrf v2
- tun source lo1
- tun destination 8888::2
+ tun source sdn1.222
+ tun destination 9999::2
  tun prot ips
  tun mode ipsec
  vrf for v1
@@ -93,13 +91,13 @@ server p4lang p4
  export-vrf v1 1
  export-vrf v2 2
  export-port sdn1 1
+ export-port sdn1.222 222
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4
  export-port tun1 111
  vrf v9
  exit
-ipv6 route v2 8888::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 9999::2
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.2
 ipv4 route v1 2.2.2.105 255.255.255.255 1.1.3.2
@@ -134,10 +132,6 @@ int lo0
  ipv4 addr 2.2.2.103 255.255.255.255
  ipv6 addr 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int lo1
- vrf for v2
- ipv6 addr 8888::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
 bridge 1
  mac-learn
  block-unicast
@@ -145,7 +139,7 @@ bridge 1
 int eth1
  bridge-gr 1
  exit
-int bvi1
+int bvi1.222
  vrf for v2
  ipv6 addr 9999::2 ffff:ffff::
  exit
@@ -163,15 +157,14 @@ crypto ipsec ips
  exit
 int tun1
  tun vrf v2
- tun source lo1
- tun destination 8888::1
+ tun source bvi1.222
+ tun destination 9999::1
  tun prot ips
  tun mode ipsec
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
-ipv6 route v2 8888::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 9999::1
 ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
 ipv4 route v1 1.1.3.0 255.255.255.0 1.1.1.1
 ipv4 route v1 1.1.4.0 255.255.255.0 1.1.1.1
@@ -289,8 +282,6 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 
 r1 tping 100 10 9999::2 /vrf v2
 r3 tping 100 10 9999::1 /vrf v2
-r1 tping 100 10 8888::2 /vrf v2
-r3 tping 100 10 8888::1 /vrf v2
 
 r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 10 1.1.2.2 /vrf v1
