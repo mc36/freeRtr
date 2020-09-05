@@ -1294,10 +1294,12 @@ public class packIke {
         byte[] last = new byte[i];
         bits.byteCopy(buf, p, last, 0, last.length);
         ciph.init(last, new byte[ciph.getBlockSize()], encr);
+        esp.keyEncr = last;
         last = new byte[esp.hasher.getHashSize()];
         bits.byteCopy(buf, p + i, last, 0, last.length);
         esp.hasher = transform.getHmac(last);
         esp.cipher = ciph;
+        esp.keyHash = last;
         esp.doInit();
     }
 

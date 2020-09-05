@@ -48,7 +48,7 @@ public class packEsp implements ipPrt {
     /**
      * spi value
      */
-    protected int spi;
+    public int spi;
 
     /**
      * hasher function
@@ -63,12 +63,22 @@ public class packEsp implements ipPrt {
     /**
      * size of hash
      */
-    protected int hashSize;
+    public int hashSize;
 
     /**
      * size of cipher
      */
-    protected int encrSize;
+    public int encrSize;
+
+    /**
+     * encryption keys
+     */
+    public byte[] keyEncr = null;
+
+    /**
+     * authentication keys
+     */
+    public byte[] keyHash = null;
 
     private int seqTx;
 

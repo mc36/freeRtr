@@ -1307,9 +1307,11 @@ public class packIsakmp {
         last = new byte[i];
         bits.byteCopy(buf, 0, last, 0, last.length);
         ciph.init(last, new byte[ciph.getBlockSize()], encr);
+        esp.keyEncr = last;
         last = new byte[esp.hasher.getHashSize()];
         bits.byteCopy(buf, i, last, 0, last.length);
         esp.hasher = transform.getHmac(last);
+        esp.keyHash = last;
         esp.cipher = ciph;
         esp.doInit();
     }

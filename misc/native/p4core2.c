@@ -979,6 +979,84 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&macsec_table, &macsec_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "ipsec4") == 0) {
+        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
+        neigh_ntry.port = atoi(arg[4]);
+        inet_pton(AF_INET, arg[5], buf2);
+        tun4_ntry.trgAddr = neigh_ntry.sip1 = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[6], buf2);
+        tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
+        tun4_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
+        str2mac(neigh_ntry.dmac, arg[7]);
+        str2mac(neigh_ntry.smac, arg[9]);
+        neigh_ntry.command = 9;
+        tun4_ntry.encrBlkLen = neigh_ntry.encrBlkLen = atoi(arg[10]);
+        tun4_ntry.hashBlkLen = neigh_ntry.hashBlkLen = atoi(arg[11]);
+        tun4_ntry.encrAlg = neigh_ntry.encrAlg = getEncrAlg(arg[12]);
+        if (neigh_ntry.encrAlg == NULL) return 0;
+        tun4_ntry.hashAlg = neigh_ntry.hashAlg = getHashAlg(arg[13]);
+        if (neigh_ntry.hashAlg == NULL) return 0;
+        tun4_ntry.spi = atoi(arg[14]);
+        tun4_ntry.encrKeyLen = str2key(arg[15], tun4_ntry.encrKeyDat);
+        tun4_ntry.hashKeyLen = str2key(arg[16], tun4_ntry.hashKeyDat);
+        tun4_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, tun4_ntry.hashKeyDat, tun4_ntry.hashKeyLen);
+        if (tun4_ntry.hashPkey == NULL) return 0;
+        neigh_ntry.spi = atoi(arg[17]);
+        neigh_ntry.encrKeyLen = str2key(arg[18], neigh_ntry.encrKeyDat);
+        neigh_ntry.hashKeyLen = str2key(arg[19], neigh_ntry.hashKeyDat);
+        neigh_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
+        if (neigh_ntry.hashPkey == NULL) return 0;
+        tun4_ntry.prot = 50;
+        tun4_ntry.command = 6;
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) table_del(&tun4_table, &tun4_ntry);
+        else table_add(&tun4_table, &tun4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "ipsec6") == 0) {
+        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
+        neigh_ntry.port = atoi(arg[4]);
+        inet_pton(AF_INET6, arg[5], buf2);
+        tun6_ntry.trgAddr1 = neigh_ntry.sip1 = get32msb(buf2, 0);
+        tun6_ntry.trgAddr2 = neigh_ntry.sip2 = get32msb(buf2, 4);
+        tun6_ntry.trgAddr3 = neigh_ntry.sip3 = get32msb(buf2, 8);
+        tun6_ntry.trgAddr4 = neigh_ntry.sip4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[6], buf2);
+        tun6_ntry.srcAddr1 = neigh_ntry.dip1 = get32msb(buf2, 0);
+        tun6_ntry.srcAddr2 = neigh_ntry.dip2 = get32msb(buf2, 4);
+        tun6_ntry.srcAddr3 = neigh_ntry.dip3 = get32msb(buf2, 8);
+        tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
+        tun6_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
+        str2mac(neigh_ntry.dmac, arg[7]);
+        str2mac(neigh_ntry.smac, arg[9]);
+        neigh_ntry.command = 9;
+        tun6_ntry.encrBlkLen = neigh_ntry.encrBlkLen = atoi(arg[10]);
+        tun6_ntry.hashBlkLen = neigh_ntry.hashBlkLen = atoi(arg[11]);
+        tun6_ntry.encrAlg = neigh_ntry.encrAlg = getEncrAlg(arg[12]);
+        if (neigh_ntry.encrAlg == NULL) return 0;
+        tun6_ntry.hashAlg = neigh_ntry.hashAlg = getHashAlg(arg[13]);
+        if (neigh_ntry.hashAlg == NULL) return 0;
+        tun6_ntry.spi = atoi(arg[14]);
+        tun6_ntry.encrKeyLen = str2key(arg[15], tun6_ntry.encrKeyDat);
+        tun6_ntry.hashKeyLen = str2key(arg[16], tun6_ntry.hashKeyDat);
+        tun6_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, tun6_ntry.hashKeyDat, tun6_ntry.hashKeyLen);
+        if (tun6_ntry.hashPkey == NULL) return 0;
+        neigh_ntry.spi = atoi(arg[17]);
+        neigh_ntry.encrKeyLen = str2key(arg[18], neigh_ntry.encrKeyDat);
+        neigh_ntry.hashKeyLen = str2key(arg[19], neigh_ntry.hashKeyDat);
+        neigh_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
+        if (neigh_ntry.hashPkey == NULL) return 0;
+        tun6_ntry.prot = 50;
+        tun6_ntry.command = 6;
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) table_del(&tun6_table, &tun6_ntry);
+        else table_add(&tun6_table, &tun6_ntry);
+        return 0;
+    }
     return 0;
 }
 

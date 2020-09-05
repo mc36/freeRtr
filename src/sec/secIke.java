@@ -68,6 +68,16 @@ public class secIke implements ifcDn, ifcUp {
      */
     public boolean ipv6 = false;
 
+    /**
+     * esp handler
+     */
+    public packEsp espRx;
+
+    /**
+     * esp handler
+     */
+    public packEsp espTx;
+
     private addrIP localAddr;
 
     private addrIP remoteAddr;
@@ -77,10 +87,6 @@ public class secIke implements ifcDn, ifcUp {
     private prtUdp fwdUdp;
 
     private packIke conn;
-
-    private packEsp espRx;
-
-    private packEsp espTx;
 
     private ifcUp upper = new ifcNull();
 

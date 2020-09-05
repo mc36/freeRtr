@@ -28,6 +28,7 @@ import ip.ipIfc;
 import ip.ipMpls;
 import java.util.ArrayList;
 import java.util.List;
+import pack.packEsp;
 import pack.packHolder;
 import pipe.pipeLine;
 import pipe.pipeSide;
@@ -36,6 +37,7 @@ import prt.prtServS;
 import prt.prtTcp;
 import prt.prtUdp;
 import rtr.rtrBgpEvpnPeer;
+import sec.secTransform;
 import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabIntMatcher;
@@ -625,6 +627,8 @@ class servP4langNei implements Comparator<servP4langNei> {
     public servP4langIfc iface;
 
     public servP4langVrf vrf;
+
+    public String sentIpsec = "";
 
     public int sentIfc;
 
@@ -1896,6 +1900,29 @@ class servP4langConn implements Runnable {
         lower.sendLine("neigh" + (ntry.adr.isIPv4() ? "4" : "6") + "_del " + ntry.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + ntry.vrf.id + " " + ((addrMac) mac).toEmuStr() + " " + ntry.sentIfc);
     }
 
+    private String getIpsecParam(packEsp esp) {
+        return " " + esp.spi + " " + bits.toHex(esp.keyEncr) + " " + bits.toHex(esp.keyHash);
+    }
+
+    private String getIpsecParam(packEsp rx, packEsp tx, secTransform ts) {
+        if (rx == null) {
+            return "";
+        }
+        if (tx == null) {
+            return "";
+        }
+        if (ts == null) {
+            return "";
+        }
+        if (rx.keyHash == null) {
+            return "";
+        }
+        if (tx.keyHash == null) {
+            return "";
+        }
+        return " " + rx.encrSize + " " + rx.hashSize + " " + ts.encr2str() + " " + ts.hash2str() + getIpsecParam(rx) + getIpsecParam(tx);
+    }
+
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi) {
         if (ipi == null) {
             return;
@@ -1996,12 +2023,25 @@ class servP4langConn implements Runnable {
             nei.need++;
             nei.vrf = vrf;
             String prt;
+            String par = "";
             switch (ifc.ifc.tunMode) {
                 case gre:
                     prt = "gre";
                     break;
                 case ipip:
                     prt = "ipip";
+                    break;
+                case ipsec:
+                    prt = "ipsec";
+                    if (ifc.ifc.tunIPsec1 != null) {
+                        par = getIpsecParam(ifc.ifc.tunIPsec1.espRx, ifc.ifc.tunIPsec1.espTx, ifc.ifc.tunIPsec1.transform);
+                    }
+                    if (ifc.ifc.tunIPsec2 != null) {
+                        par = getIpsecParam(ifc.ifc.tunIPsec2.espRx, ifc.ifc.tunIPsec2.espTx, ifc.ifc.tunIPsec2.transform);
+                    }
+                    if (par.length() < 1) {
+                        return;
+                    }
                     break;
                 default:
                     return;
@@ -2047,19 +2087,20 @@ class servP4langConn implements Runnable {
                 act = "add";
             } else {
                 act = "mod";
-                if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.sentIfc == hop.sentIfc)) {
+                if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (par.equals(nei.sentIpsec))) {
                     return;
                 }
             }
             nei.mac = hop.mac.copyBytes();
             nei.sentIfc = hop.sentIfc;
+            nei.sentIpsec = par;
             String afi;
             if (ifc.ifc.tunTrg.isIPv4()) {
                 afi = "4";
             } else {
                 afi = "6";
             }
-            lower.sendLine(prt + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.tunTrg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + ((addrMac) hop.iface.ifc.ethtyp.getHwAddr()).toEmuStr());
+            lower.sendLine(prt + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.tunTrg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + ((addrMac) hop.iface.ifc.ethtyp.getHwAddr()).toEmuStr() + par);
             return;
         }
         if (ifc.ifc.type == cfgIfc.ifaceType.dialer) {
