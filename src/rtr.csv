@@ -1,6 +1,6 @@
 file;result;test
--;-;freeRouter v20.9.4-rel, done by cs@nop.
--;-;2020-09-04 16:23:53, took 00:05:03, with 100 workers, on 1976 cases, 0 failed, 5 traces, 2 retries
+-;-;freeRouter v20.9.5-rel, done by cs@nop.
+-;-;2020-09-05 03:41:31, took 00:05:22, with 100 workers, on 1998 cases, 0 failed, 0 traces, 0 retries
 -;-;./rtr.bin
 basic.tst;success;dummy test
 conn-anyconn.tst;success;ip over anyconnect
@@ -501,6 +501,8 @@ crypt-macsec27.tst;success;macsec with group18
 crypt-macsec28.tst;success;macsec with group22
 crypt-macsec29.tst;success;macsec with group23
 crypt-macsec30.tst;success;macsec with group24
+crypt-macsec31.tst;success;macsec over ethernet bundle
+crypt-macsec32.tst;success;macsec over ethernet hairpin
 crypt-nat01.tst;success;source list translation to interface
 crypt-nat02.tst;success;source list translation to address
 crypt-nat03.tst;success;source address translation to interface
@@ -1048,6 +1050,26 @@ p4lang-acl35.tst;success;p4lang: ingress ipip access list
 p4lang-acl36.tst;success;p4lang: egress ipip access list
 p4lang-acl37.tst;success;p4lang: ingress vlan ipip access list
 p4lang-acl38.tst;success;p4lang: egress vlan ipip access list
+p4lang-crypt01.tst;success;p4lang: macsec with des
+p4lang-crypt02.tst;success;p4lang: macsec with 3des
+p4lang-crypt03.tst;success;p4lang: macsec with aes128
+p4lang-crypt04.tst;success;p4lang: macsec with aes192
+p4lang-crypt05.tst;success;p4lang: macsec with aes256
+p4lang-crypt06.tst;success;p4lang: macsec with md5
+p4lang-crypt07.tst;success;p4lang: macsec with sha1
+p4lang-crypt08.tst;success;p4lang: macsec with sha256
+p4lang-crypt09.tst;success;p4lang: macsec with sha512
+p4lang-crypt10.tst;success;p4lang: macsec over ethernet
+p4lang-crypt11.tst;success;p4lang: macsec over vlan
+p4lang-crypt12.tst;success;p4lang: macsec over bundle vlan
+p4lang-crypt13.tst;success;p4lang: macsec over gre
+p4lang-crypt14.tst;success;p4lang: macsec over pppoe
+p4lang-crypt15.tst;success;p4lang: macsec over l2tp
+p4lang-crypt16.tst;success;p4lang: macsec over hairpin
+p4lang-crypt17.tst;success;p4lang: macsec ingress access list
+p4lang-crypt18.tst;success;p4lang: macsec egress access list
+p4lang-crypt19.tst;success;p4lang: macsec vlan ingress access list
+p4lang-crypt20.tst;success;p4lang: macsec vlan egress access list
 p4lang-rout001.tst;success;p4lang: routing
 p4lang-rout002.tst;success;p4lang: bridging
 p4lang-rout003.tst;success;p4lang: mpls core

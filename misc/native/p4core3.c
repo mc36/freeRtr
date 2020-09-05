@@ -458,8 +458,8 @@ neigh_tx:
                 put16msb(bufD, bufP + 2, neigh_res->dprt); // target
                 put16msb(bufD, bufP + 4, bufS - bufP + preBuff); // length
                 put16msb(bufD, bufP + 6, 0); // checksum
-                putPseudoSum(buf2, 0, 17, bufS - bufP + preBuff, neigh_res->sip1, neigh_res->dip1, 0, 0, 0, 0, 0, 0);
-                tmp = calcIPsum(buf2, 0, 36, 0);
+                putPseudoSum(buf2, 16, 17, bufS - bufP + preBuff, neigh_res->sip1, neigh_res->dip1, 0, 0, 0, 0, 0, 0);
+                tmp = calcIPsum(buf2, 16, 36, 0);
                 tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);
                 put16lsb(bufD, bufP + 6, 0xffff - tmp); // checksum
                 bufP -= 20;
@@ -490,8 +490,8 @@ neigh_tx:
                 put16msb(bufD, bufP + 2, neigh_res->dprt); // target
                 put16msb(bufD, bufP + 4, bufS - bufP + preBuff); // length
                 put16msb(bufD, bufP + 6, 0); // checksum
-                putPseudoSum(buf2, 0, 17, bufS - bufP + preBuff, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-                tmp = calcIPsum(buf2, 0, 36, 0);
+                putPseudoSum(buf2, 16, 17, bufS - bufP + preBuff, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+                tmp = calcIPsum(buf2, 16, 36, 0);
                 tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);
                 put16lsb(bufD, bufP + 6, 0xffff - tmp); // checksum
                 bufP -= 40;

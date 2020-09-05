@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
-release: freeRouter v20.9.4-rel, done by cs@nop.<br/>
-tested: 2020-09-04 16:23:53, took 00:05:03, with 100 workers, on 1976 cases, 0 failed, 5 traces, 2 retries<br/>
+release: freeRouter v20.9.5-rel, done by cs@nop.<br/>
+tested: 2020-09-05 03:41:31, took 00:05:22, with 100 workers, on 1998 cases, 0 failed, 0 traces, 0 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr>
@@ -504,6 +504,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-macsec28.tst">crypt-macsec28.tst</a></td><td>success</td><td>macsec with group22</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-macsec29.tst">crypt-macsec29.tst</a></td><td>success</td><td>macsec with group23</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-macsec30.tst">crypt-macsec30.tst</a></td><td>success</td><td>macsec with group24</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-macsec31.tst">crypt-macsec31.tst</a></td><td>success</td><td>macsec over ethernet bundle</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-macsec32.tst">crypt-macsec32.tst</a></td><td>success</td><td>macsec over ethernet hairpin</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-nat01.tst">crypt-nat01.tst</a></td><td>success</td><td>source list translation to interface</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-nat02.tst">crypt-nat02.tst</a></td><td>success</td><td>source list translation to address</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-nat03.tst">crypt-nat03.tst</a></td><td>success</td><td>source address translation to interface</td></tr>
@@ -1051,6 +1053,26 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl36.tst">p4lang-acl36.tst</a></td><td>success</td><td>p4lang: egress ipip access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl37.tst">p4lang-acl37.tst</a></td><td>success</td><td>p4lang: ingress vlan ipip access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl38.tst">p4lang-acl38.tst</a></td><td>success</td><td>p4lang: egress vlan ipip access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt01.tst">p4lang-crypt01.tst</a></td><td>success</td><td>p4lang: macsec with des</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt02.tst">p4lang-crypt02.tst</a></td><td>success</td><td>p4lang: macsec with 3des</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt03.tst">p4lang-crypt03.tst</a></td><td>success</td><td>p4lang: macsec with aes128</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt04.tst">p4lang-crypt04.tst</a></td><td>success</td><td>p4lang: macsec with aes192</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt05.tst">p4lang-crypt05.tst</a></td><td>success</td><td>p4lang: macsec with aes256</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt06.tst">p4lang-crypt06.tst</a></td><td>success</td><td>p4lang: macsec with md5</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt07.tst">p4lang-crypt07.tst</a></td><td>success</td><td>p4lang: macsec with sha1</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt08.tst">p4lang-crypt08.tst</a></td><td>success</td><td>p4lang: macsec with sha256</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt09.tst">p4lang-crypt09.tst</a></td><td>success</td><td>p4lang: macsec with sha512</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt10.tst">p4lang-crypt10.tst</a></td><td>success</td><td>p4lang: macsec over ethernet</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt11.tst">p4lang-crypt11.tst</a></td><td>success</td><td>p4lang: macsec over vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt12.tst">p4lang-crypt12.tst</a></td><td>success</td><td>p4lang: macsec over bundle vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt13.tst">p4lang-crypt13.tst</a></td><td>success</td><td>p4lang: macsec over gre</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt14.tst">p4lang-crypt14.tst</a></td><td>success</td><td>p4lang: macsec over pppoe</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt15.tst">p4lang-crypt15.tst</a></td><td>success</td><td>p4lang: macsec over l2tp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt16.tst">p4lang-crypt16.tst</a></td><td>success</td><td>p4lang: macsec over hairpin</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt17.tst">p4lang-crypt17.tst</a></td><td>success</td><td>p4lang: macsec ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt18.tst">p4lang-crypt18.tst</a></td><td>success</td><td>p4lang: macsec egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt19.tst">p4lang-crypt19.tst</a></td><td>success</td><td>p4lang: macsec vlan ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt20.tst">p4lang-crypt20.tst</a></td><td>success</td><td>p4lang: macsec vlan egress access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout001.tst">p4lang-rout001.tst</a></td><td>success</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout002.tst">p4lang-rout002.tst</a></td><td>success</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout003.tst">p4lang-rout003.tst</a></td><td>success</td><td>p4lang: mpls core</td></tr>

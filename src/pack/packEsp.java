@@ -251,6 +251,11 @@ public class packEsp implements ipPrt {
         pck.getSkip(8);
         siz -= 8;
         pck.encrData(cipher, 0, siz);
+        if (pck.getByte(siz - 1) != getProto()) {
+            logger.info("bad protocol from " + peerAddr);
+            cntr.drop(pck, counter.reasons.badSum);
+            return;
+        }
         siz -= pck.getByte(siz - 2) + encrSize + 2;
         pck.getSkip(encrSize);
         pck.setDataSize(siz);

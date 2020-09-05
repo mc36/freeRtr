@@ -497,6 +497,8 @@ qc pass: macsec with group18
 qc pass: macsec with group22
 qc pass: macsec with group23
 qc pass: macsec with group24
+qc pass: macsec over ethernet bundle
+qc pass: macsec over ethernet hairpin
 qc pass: source list translation to interface
 qc pass: source list translation to address
 qc pass: source address translation to interface
@@ -1044,6 +1046,26 @@ qc pass: p4lang: ingress ipip access list
 qc pass: p4lang: egress ipip access list
 qc pass: p4lang: ingress vlan ipip access list
 qc pass: p4lang: egress vlan ipip access list
+qc pass: p4lang: macsec with des
+qc pass: p4lang: macsec with 3des
+qc pass: p4lang: macsec with aes128
+qc pass: p4lang: macsec with aes192
+qc pass: p4lang: macsec with aes256
+qc pass: p4lang: macsec with md5
+qc pass: p4lang: macsec with sha1
+qc pass: p4lang: macsec with sha256
+qc pass: p4lang: macsec with sha512
+qc pass: p4lang: macsec over ethernet
+qc pass: p4lang: macsec over vlan
+qc pass: p4lang: macsec over bundle vlan
+qc pass: p4lang: macsec over gre
+qc pass: p4lang: macsec over pppoe
+qc pass: p4lang: macsec over l2tp
+qc pass: p4lang: macsec over hairpin
+qc pass: p4lang: macsec ingress access list
+qc pass: p4lang: macsec egress access list
+qc pass: p4lang: macsec vlan ingress access list
+qc pass: p4lang: macsec vlan egress access list
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
