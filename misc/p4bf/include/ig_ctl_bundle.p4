@@ -59,14 +59,16 @@ control IngressControlBundle(
 //        ttl_dec = 0;
     }
 
-    #ifdef HAVE_SCRAMBLE
-        @selector_enable_scramble(HAVE_SCRAMBLE)
-    #endif
+#ifdef HAVE_SCRAMBLE
+    @selector_enable_scramble(HAVE_SCRAMBLE)
+#endif
 
     table tbl_nexthop_bundle {
         key = {
-            ig_md.output_id: exact;
-            hash: selector;
+ig_md.output_id:
+            exact;
+hash:
+            selector;
         }
         actions = {
             act_send_to_member;

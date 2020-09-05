@@ -247,7 +247,7 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
 
 #define putGreHeader                                            \
     bufP -= 2;                                                  \
-    put16msb(bufD, bufP, 0x0000);                
+    put16msb(bufD, bufP, 0x0000);
 
 
 
@@ -345,7 +345,7 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
     putPseudoSum(buf2, 16, 17, bufS - bufP + preBuff, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);  \
     tmp = calcIPsum(buf2, 16, 36, 0);                                       \
     tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);                \
-    put16lsb(bufD, bufP + 6, 0xffff - tmp);                
+    put16lsb(bufD, bufP + 6, 0xffff - tmp);
 
 
 
@@ -355,7 +355,7 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
     put16msb(bufD, bufP + 0, 0x0202);                           \
     put32msb(bufD, bufP + 2, neigh_res->tid);                   \
     put16msb(bufD, bufP + 6, 0);                                \
-    put16msb(bufD, bufP + 8, 0xff03);                 
+    put16msb(bufD, bufP + 8, 0xff03);
 
 
 
