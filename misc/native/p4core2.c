@@ -1032,7 +1032,7 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         str2mac(neigh_ntry.dmac, arg[7]);
         str2mac(neigh_ntry.smac, arg[9]);
-        neigh_ntry.command = 9;
+        neigh_ntry.command = 10;
         tun6_ntry.encrBlkLen = neigh_ntry.encrBlkLen = atoi(arg[10]);
         tun6_ntry.hashBlkLen = neigh_ntry.hashBlkLen = atoi(arg[11]);
         tun6_ntry.encrAlg = neigh_ntry.encrAlg = getEncrAlg(arg[12]);

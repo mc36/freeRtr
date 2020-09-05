@@ -309,25 +309,25 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
     neigh_res->seq++;
 
 
-#define decapEsp                                                \
+#define decapEsp(tun_res)                                       \
     bufP = bufT;                                                \
-    if (get32msb(bufD, bufP + 0) != tun4_res->spi) goto drop;   \
-    tun4_res->seq = get32msb(bufD, bufP + 4);                   \
-    tmp = bufS - bufP + preBuff - tun4_res->hashBlkLen;         \
+    if (get32msb(bufD, bufP + 0) != tun_res->spi) goto drop;    \
+    tun_res->seq = get32msb(bufD, bufP + 4);                    \
+    tmp = bufS - bufP + preBuff - tun_res->hashBlkLen;          \
     if (tmp < 1) goto drop;                                     \
-    if (EVP_DigestSignInit(hashCtx, NULL, tun4_res->hashAlg, NULL, tun4_res->hashPkey) != 1) goto drop; \
+    if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) goto drop; \
     if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;    \
     if (EVP_DigestSignFinal(hashCtx, &buf2[0], &sizt) != 1) goto drop;      \
-    if (memcmp(&buf2[0], &bufD[bufP + tmp], tun4_res->hashBlkLen) !=0) goto drop;   \
-    bufS -= tun4_res->hashBlkLen;                               \
+    if (memcmp(&buf2[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) goto drop;   \
+    bufS -= tun_res->hashBlkLen;                                \
     bufP += 8;                                                  \
     tmp -= 8;                                                   \
     if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
-    if (EVP_DecryptInit_ex(encrCtx, tun4_res->encrAlg, NULL, tun4_res->encrKeyDat, tun4_res->hashKeyDat) != 1) goto drop;   \
+    if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) goto drop;   \
     if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
     if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
-    bufP += tun4_res->encrBlkLen;                               \
-    tmp -= tun4_res->encrBlkLen;                                \
+    bufP += tun_res->encrBlkLen;                                \
+    tmp -= tun_res->encrBlkLen;                                 \
     ethtyp = bufD[bufP + tmp - 1];                              \
     bufS -= bufD[bufP + tmp - 2] + 2;                           \
     ipip2ethtyp;                                                \
@@ -759,7 +759,7 @@ ipv4_rou:
                         put16msb(bufD, bufP, ETHERTYPE_IPV6);
                         break;
                     case 6: // esp
-                        decapEsp;
+                        decapEsp(tun4_res);
                         break;
                     default:
                         goto drop;
@@ -978,7 +978,7 @@ ipv6_hit:
                         put16msb(bufD, bufP, ETHERTYPE_IPV6);
                         break;
                     case 6: // esp
-                        decapEsp;
+                        decapEsp(tun6_res);
                         break;
                     default:
                         goto drop;
