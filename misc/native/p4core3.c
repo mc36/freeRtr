@@ -315,6 +315,7 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
     tun_res->seq = get32msb(bufD, bufP + 4);                    \
     tmp = bufS - bufP + preBuff - tun_res->hashBlkLen;          \
     if (tmp < 1) goto drop;                                     \
+    if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;              \
     if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) goto drop; \
     if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;    \
     if (EVP_DigestSignFinal(hashCtx, &buf2[0], &sizt) != 1) goto drop;      \
