@@ -356,7 +356,7 @@ neigh_tx:
             prt = neigh_res->port;
             memmove(&buf2[0], &neigh_res->dmac, 6);
             memmove(&buf2[6], &neigh_res->smac, 6);
-            macsec_ntry.port = prt;
+            macsec_ntry.port = neigh_res->aclport;
             index = table_find(&macsec_table, &macsec_ntry);
             if (index >= 0) {
                 macsec_res = table_get(&macsec_table, index);
@@ -385,6 +385,7 @@ neigh_tx:
                 if (sizt != macsec_res->hashBlkLen) goto drop;
                 bufS += macsec_res->hashBlkLen;
                 bufP -= 8;
+                ethtyp = macsec_res->ethtyp;
                 put16msb(bufD, bufP + 0, macsec_res->ethtyp);
                 bufD[bufP + 2] = 0x08; // tci=v,e
                 bufD[bufP + 3] = 0; // sl

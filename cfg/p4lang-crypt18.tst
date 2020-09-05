@@ -1,4 +1,4 @@
-description p4lang: macsec over vlan
+description p4lang: macsec egress access list
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -35,23 +35,21 @@ int lo0
  ipv4 addr 2.2.2.101 255.255.255.255
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+access-list test4
+ deny 1 2.2.2.104 255.255.255.255 all 2.2.2.106 255.255.255.255 all
+ permit all any all any all
+ exit
+access-list test6
+ deny 58 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all
+ permit all any all any all
+ exit
 int sdn1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
  exit
-crypto ipsec ips
- group 02
- cipher des
- hash md5
- key tester
- replay 0
- exit
 int sdn2
- exit
-int sdn2.111
- macsec ips
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
@@ -63,18 +61,27 @@ int sdn3
  ipv6 addr 1234:3::1 ffff:ffff::
  ipv6 ena
  exit
+crypto ipsec ips
+ group 02
+ cipher des
+ hash md5
+ key tester
+ replay 0
+ exit
 int sdn4
+ macsec ips
  vrf for v1
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
  ipv6 ena
+ ipv4 access-group-out test4
+ ipv6 access-group-out test6
  exit
 server p4lang p4
  interconnect eth2
  export-vrf v1 1
  export-port sdn1 1
  export-port sdn2 2
- export-port sdn2.111 111
  export-port sdn3 3
  export-port sdn4 4
  vrf v9
@@ -89,7 +96,7 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
 ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
-addother r2 feature route macsec
+addother r2 feature acl macsec
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -110,14 +117,7 @@ int lo0
  ipv4 addr 2.2.2.103 255.255.255.255
  ipv6 addr 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-bridge 1
- mac-learn
- block-unicast
- exit
 int eth1
- bridge-gr 1
- exit
-int bvi1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
@@ -149,15 +149,7 @@ int lo0
  ipv4 addr 2.2.2.104 255.255.255.255
  ipv6 addr 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-crypto ipsec ips
- group 02
- cipher des
- hash md5
- key tester
- replay 0
- exit
-int eth1.111
- macsec ips
+int eth1
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
@@ -221,7 +213,15 @@ int lo0
  ipv4 addr 2.2.2.106 255.255.255.255
  ipv6 addr 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+crypto ipsec ips
+ group 02
+ cipher des
+ hash md5
+ key tester
+ replay 0
+ exit
 int eth1
+ macsec ips
  vrf for v1
  ipv4 addr 1.1.4.2 255.255.255.0
  ipv6 addr 1234:4::2 ffff:ffff::
@@ -318,8 +318,8 @@ r4 tping 100 10 2.2.2.104 /vrf v1 /int lo0
 r4 tping 100 10 4321::104 /vrf v1 /int lo0
 r4 tping 100 10 2.2.2.105 /vrf v1 /int lo0
 r4 tping 100 10 4321::105 /vrf v1 /int lo0
-r4 tping 100 10 2.2.2.106 /vrf v1 /int lo0
-r4 tping 100 10 4321::106 /vrf v1 /int lo0
+r4 tping 0 10 2.2.2.106 /vrf v1 /int lo0
+r4 tping 0 10 4321::106 /vrf v1 /int lo0
 
 r5 tping 100 10 2.2.2.101 /vrf v1 /int lo0
 r5 tping 100 10 4321::101 /vrf v1 /int lo0
@@ -336,8 +336,8 @@ r6 tping 100 10 2.2.2.101 /vrf v1 /int lo0
 r6 tping 100 10 4321::101 /vrf v1 /int lo0
 r6 tping 100 10 2.2.2.103 /vrf v1 /int lo0
 r6 tping 100 10 4321::103 /vrf v1 /int lo0
-r6 tping 100 10 2.2.2.104 /vrf v1 /int lo0
-r6 tping 100 10 4321::104 /vrf v1 /int lo0
+r6 tping 0 10 2.2.2.104 /vrf v1 /int lo0
+r6 tping 0 10 4321::104 /vrf v1 /int lo0
 r6 tping 100 10 2.2.2.105 /vrf v1 /int lo0
 r6 tping 100 10 4321::105 /vrf v1 /int lo0
 r6 tping 100 10 2.2.2.106 /vrf v1 /int lo0

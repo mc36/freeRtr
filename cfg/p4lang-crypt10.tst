@@ -1,4 +1,4 @@
-description p4lang: macsec over vlan
+description p4lang: macsec over ethernet
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -49,8 +49,6 @@ crypto ipsec ips
  replay 0
  exit
 int sdn2
- exit
-int sdn2.111
  macsec ips
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
@@ -74,7 +72,6 @@ server p4lang p4
  export-vrf v1 1
  export-port sdn1 1
  export-port sdn2 2
- export-port sdn2.111 111
  export-port sdn3 3
  export-port sdn4 4
  vrf v9
@@ -156,7 +153,7 @@ crypto ipsec ips
  key tester
  replay 0
  exit
-int eth1.111
+int eth1
  macsec ips
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
