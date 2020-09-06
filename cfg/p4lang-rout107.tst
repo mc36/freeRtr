@@ -66,7 +66,7 @@ vpdn vx
  bridge-group 1
  proxy p2
  target 8.8.8.2
- vcid 123
+ vcid 2554
  protocol pckoudp
  exit
 int sdn4
@@ -167,7 +167,7 @@ int pweth1
  vrf for v1
  ipv4 addr 1.1.2.5 255.255.255.0
  ipv6 addr 1234:2::5 ffff:ffff::
- pseudo v2 lo1 pckoudp 8.8.8.1 123
+ pseudo v2 lo1 pckoudp 8.8.8.1 2554
  exit
 ipv4 route v2 8.8.8.1 255.255.255.255 9.9.9.1
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.4

@@ -50,6 +50,12 @@ control IngressControlTunnel(inout headers hdr,
         ig_md.source_id = port;
     }
 
+    action act_tunnel_pckoudp(SubIntId_t port) {
+        ig_intr_md.egress_spec = (PortId_t)port;
+        ig_md.need_recir = 1;
+        ig_md.source_id = port;
+    }
+
 
 
     table tbl_tunnel4 {
@@ -73,6 +79,7 @@ ig_md.layer4_dstprt:
             act_tunnel_ip6ip;
             act_tunnel_l2tp;
             act_tunnel_vxlan;
+            act_tunnel_pckoudp;
             @defaultonly NoAction;
         }
         size = 1024;
@@ -101,6 +108,7 @@ ig_md.layer4_dstprt:
             act_tunnel_ip6ip;
             act_tunnel_l2tp;
             act_tunnel_vxlan;
+            act_tunnel_pckoudp;
             @defaultonly NoAction;
         }
         size = 1024;

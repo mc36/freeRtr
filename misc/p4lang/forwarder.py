@@ -543,6 +543,122 @@ def writeVxlan6rules(delete, p4info_helper, ingress_sw, bridge, addr, sip, dip, 
         ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
+def writePckoudp4rules(delete, p4info_helper, ingress_sw, bridge, addr, sip, dip, sprt, dprt, nexthop, vrf, port):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_learn",
+        match_fields={
+            "ig_md.bridge_id": bridge,
+            "hdr.ethernet.src_mac_addr": addr
+        },
+        action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_port",
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_target",
+        match_fields={
+            "ig_md.bridge_id": bridge,
+            "hdr.ethernet.dst_mac_addr": addr
+        },
+        action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_pckoudp4",
+        action_params={
+            "nexthop": nexthop,
+            "dst_ip_addr": dip,
+            "src_ip_addr": sip,
+            "src_port": sprt,
+            "dst_port": dprt,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv4.protocol": 17,
+            "hdr.ipv4.src_addr": dip,
+            "hdr.ipv4.dst_addr": sip,
+            "ig_md.layer4_srcprt": dprt,
+            "ig_md.layer4_dstprt": sprt,
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_pckoudp",
+        action_params={
+            "port": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry3, False)
+
+
+def writePckoudp6rules(delete, p4info_helper, ingress_sw, bridge, addr, sip, dip, sprt, dprt, nexthop, vrf, port):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_learn",
+        match_fields={
+            "ig_md.bridge_id": bridge,
+            "hdr.ethernet.src_mac_addr": addr
+        },
+        action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_port",
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_target",
+        match_fields={
+            "ig_md.bridge_id": bridge,
+            "hdr.ethernet.dst_mac_addr": addr
+        },
+        action_name="ig_ctl.ig_ctl_bridge.act_set_bridge_pckoudp6",
+        action_params={
+            "nexthop": nexthop,
+            "dst_ip_addr": dip,
+            "src_ip_addr": sip,
+            "src_port": sprt,
+            "dst_port": dprt,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel6",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv6.next_hdr": 17,
+            "hdr.ipv6.src_addr": dip,
+            "hdr.ipv6.dst_addr": sip,
+            "ig_md.layer4_srcprt": dprt,
+            "ig_md.layer4_dstprt": sprt,
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_pckoudp",
+        action_params={
+            "port": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry3, False)
+
+
 def writePppoeRules(delete, p4info_helper, ingress_sw, port, phport, nexthop, vrf, ses, dmac, smac):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_pppoe.tbl_pppoe",
@@ -2017,6 +2133,27 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         if splt[0] == "bridgevxlan6_del":
             writeVxlan6rules(3,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]));
             continue
+
+        if splt[0] == "bridgepckoudp4_add":
+            writePckoudp4rules(1,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
+            continue
+        if splt[0] == "bridgepckoudp4_mod":
+            writePckoudp4rules(2,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
+            continue
+        if splt[0] == "bridgepckoudp4_del":
+            writePckoudp4rules(3,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
+            continue
+
+        if splt[0] == "bridgepckoudp6_add":
+            writePckoudp6rules(1,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
+            continue
+        if splt[0] == "bridgepckoudp6_mod":
+            writePckoudp6rules(2,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
+            continue
+        if splt[0] == "bridgepckoudp6_del":
+            writePckoudp6rules(3,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
+            continue
+
 
         if splt[0] == "xconnect_add":
             writeXconnRules(1,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
