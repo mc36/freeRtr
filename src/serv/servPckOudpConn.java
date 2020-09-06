@@ -95,6 +95,12 @@ public class servPckOudpConn implements ifcDn, Comparator<servPckOudpConn> {
         return conn.portLoc;
     }
 
+    /**
+     * create instance
+     *
+     * @param id connection
+     * @param parent lower layer
+     */
     public servPckOudpConn(prtGenConn id, servPckOudp parent) {
         conn = id;
         lower = parent;

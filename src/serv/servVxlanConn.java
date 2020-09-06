@@ -20,7 +20,7 @@ import util.state;
  *
  * @author matecsaba
  */
-class servVxlanConn implements ifcDn, Comparator<servVxlanConn> {
+public class servVxlanConn implements ifcDn, Comparator<servVxlanConn> {
 
     private prtGenConn conn;
 
@@ -85,6 +85,12 @@ class servVxlanConn implements ifcDn, Comparator<servVxlanConn> {
         return lower.inst;
     }
 
+    /**
+     * create instance
+     *
+     * @param id connection
+     * @param parent lower layer
+     */
     public servVxlanConn(prtGenConn id, servVxlan parent) {
         conn = id;
         lower = parent;
