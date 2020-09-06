@@ -1388,7 +1388,7 @@ class userTesterOne {
                 cfg.add(s);
             }
             cfg.add("hwid tester-slot" + slot);
-            cfg.add("tcp2vrf " + (2001 + (slot * userTester.portSlot) + procs.size()) + " tester 23");
+            cfg.add("tcp2vrf " + (20001 + (slot * userTester.portSlot) + procs.size()) + " tester 23");
             bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.hwCfgEnd);
             cfg = new ArrayList<String>();
             cfg.add("");

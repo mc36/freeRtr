@@ -190,22 +190,21 @@ int calcIPsum(unsigned char *buf, int pos, int len, int sum) {
 }
 
 
-void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip2, int ip3, int ip4, int ip5, int ip6, int ip7, int ip8) {
-    put32msb(buf, pos + 0, ip1);
-    put32msb(buf, pos + 4, ip2);
-    put32msb(buf, pos + 8, ip3);
-    put32msb(buf, pos + 12, ip4);
-    put32msb(buf, pos + 16, ip5);
-    put32msb(buf, pos + 20, ip6);
-    put32msb(buf, pos + 24, ip7);
-    put32msb(buf, pos + 28, ip8);
-    put16msb(buf, pos + 32, prt);
+#define putPseudoSum(buf, pos, prt, len, ip1, ip2, ip3, ip4, ip5, ip6, ip7, ip8)    \
+    put32msb(buf, pos + 0, ip1);                                            \
+    put32msb(buf, pos + 4, ip2);                                            \
+    put32msb(buf, pos + 8, ip3);                                            \
+    put32msb(buf, pos + 12, ip4);                                           \
+    put32msb(buf, pos + 16, ip5);                                           \
+    put32msb(buf, pos + 20, ip6);                                           \
+    put32msb(buf, pos + 24, ip7);                                           \
+    put32msb(buf, pos + 28, ip8);                                           \
+    put16msb(buf, pos + 32, prt);                                           \
     put16msb(buf, pos + 34, len);
-}
 
 
 
-#define putIpv4header(proto)                                                \
+#define putIpv4header(proto, sip, dip)                                      \
     bufP -= 20;                                                             \
     put16msb(bufD, bufP + 0, 0x4500);                                       \
     put16msb(bufD, bufP + 2, bufS - bufP + preBuff);                        \
@@ -215,8 +214,8 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
     bufD[bufP + 8] = 0xff;                                                  \
     bufD[bufP + 9] = proto;                                                 \
     put16msb(bufD, bufP + 10, 0);                                           \
-    put32msb(bufD, bufP + 12, neigh_res->sip1);                             \
-    put32msb(bufD, bufP + 16, neigh_res->dip1);                             \
+    put32msb(bufD, bufP + 12, sip);                                         \
+    put32msb(bufD, bufP + 16, dip);                                         \
     put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));       \
     ethtyp = ETHERTYPE_IPV4;                                                \
     bufP -= 2;                                                              \
@@ -224,21 +223,21 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
 
 
 
-#define putIpv6header(proto)                                                \
+#define putIpv6header(proto, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4)\
     bufP -= 40;                                                             \
     put16msb(bufD, bufP + 0, 0x6000);                                       \
     put16msb(bufD, bufP + 2, 0);                                            \
     put16msb(bufD, bufP + 4, bufS - bufP + preBuff - 40);                   \
     bufD[bufP + 6] = proto;                                                 \
     bufD[bufP + 7] = 0xff;                                                  \
-    put32msb(bufD, bufP + 8, neigh_res->sip1);                              \
-    put32msb(bufD, bufP + 12, neigh_res->sip2);                             \
-    put32msb(bufD, bufP + 16, neigh_res->sip3);                             \
-    put32msb(bufD, bufP + 20, neigh_res->sip4);                             \
-    put32msb(bufD, bufP + 24, neigh_res->dip1);                             \
-    put32msb(bufD, bufP + 28, neigh_res->dip2);                             \
-    put32msb(bufD, bufP + 32, neigh_res->dip3);                             \
-    put32msb(bufD, bufP + 36, neigh_res->dip4);                             \
+    put32msb(bufD, bufP + 8, sip1);                                         \
+    put32msb(bufD, bufP + 12, sip2);                                        \
+    put32msb(bufD, bufP + 16, sip3);                                        \
+    put32msb(bufD, bufP + 20, sip4);                                        \
+    put32msb(bufD, bufP + 24, dip1);                                        \
+    put32msb(bufD, bufP + 28, dip2);                                        \
+    put32msb(bufD, bufP + 32, dip3);                                        \
+    put32msb(bufD, bufP + 36, dip4);                                        \
     ethtyp = ETHERTYPE_IPV6;                                                \
     bufP -= 2;                                                              \
     put16msb(bufD, bufP, ethtyp);
@@ -337,13 +336,13 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
 
 
 
-#define putUdpHeader                                                        \
+#define putUdpHeader(sprt, dprt, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4)    \
     bufP -= 8;                                                              \
-    put16msb(bufD, bufP + 0, neigh_res->sprt);                              \
-    put16msb(bufD, bufP + 2, neigh_res->dprt);                              \
+    put16msb(bufD, bufP + 0, sprt);                                         \
+    put16msb(bufD, bufP + 2, dprt);                                         \
     put16msb(bufD, bufP + 4, bufS - bufP + preBuff);                        \
     put16msb(bufD, bufP + 6, 0);                                            \
-    putPseudoSum(buf2, 16, 17, bufS - bufP + preBuff, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);  \
+    putPseudoSum(buf2, 16, 17, bufS - bufP + preBuff, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4);      \
     tmp = calcIPsum(buf2, 16, 36, 0);                                       \
     tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);                \
     put16lsb(bufD, bufP + 6, 0xffff - tmp);
@@ -358,6 +357,19 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
     put16msb(bufD, bufP + 6, 0);                                \
     put16msb(bufD, bufP + 8, 0xff03);
 
+
+#define putVxlanHeader                                          \
+    bufP -= 12;                                                 \
+    memmove(&bufD[bufP], &buf2[0], 12);                         \
+    bufP -= 8;                                                  \
+    put16msb(bufD, bufP + 0, 0x800);                            \
+    put16msb(bufD, bufP + 2, 0);                                \
+    put32msb(bufD, bufP + 4, bridge_res->instance << 8);
+
+
+#define putPckoudpHeader                                        \
+    bufP -= 12;                                                 \
+    memmove(&bufD[bufP], &buf2[0], 12);
 
 
 #define checkLayer2                                             \
@@ -518,6 +530,7 @@ mpls_rx:
 ethtyp_tx:
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
+nethtyp_tx:
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) goto drop;
             neigh_res = table_get(&neigh_table, index);
@@ -579,41 +592,41 @@ neigh_tx:
                 break;
             case 3: // gre4
                 putGreHeader;
-                putIpv4header(47);
+                putIpv4header(47, neigh_res->sip1, neigh_res->dip1);
                 break;
             case 4: // gre6
                 putGreHeader;
-                putIpv6header(47);
+                putIpv6header(47, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
                 break;
             case 5: // l2tp4
                 ethtyp2ppptyp;
                 putL2tpHeader;
-                putUdpHeader;
-                putIpv4header(17);
+                putUdpHeader(neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, 0, 0, 0, neigh_res->dip1, 0, 0, 0);
+                putIpv4header(17, neigh_res->sip1, neigh_res->dip1);
                 break;
             case 6: // l2tp6
                 ethtyp2ppptyp;
                 putL2tpHeader;
-                putUdpHeader;
-                putIpv6header(17);
+                putUdpHeader(neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+                putIpv6header(17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
                 break;
             case 7: // ipip4
                 putIpipHeader;
-                putIpv4header(ethtyp);
+                putIpv4header(ethtyp, neigh_res->sip1, neigh_res->dip1);
                 break;
             case 8: // ipip6
                 putIpipHeader;
-                putIpv6header(ethtyp);
+                putIpv6header(ethtyp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
                 break;
             case 9: // esp4
                 putIpipHeader;
                 putEspHeader;
-                putIpv4header(50);
+                putIpv4header(50, neigh_res->sip1, neigh_res->dip1);
                 break;
             case 10: // esp6
                 putIpipHeader;
                 putEspHeader;
-                putIpv6header(50);
+                putIpv6header(50, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
                 break;
             default:
                 goto drop;
@@ -765,6 +778,11 @@ ipv4_rou:
                         break;
                     case 6: // esp
                         decapEsp(tun4_res);
+                        break;
+                    case 7: // vxlan
+                        bufP = bufT + 8; // udp header
+                        bufP -= 2;
+                        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
                         break;
                     default:
                         goto drop;
@@ -973,6 +991,11 @@ ipv6_hit:
                     case 6: // esp
                         decapEsp(tun6_res);
                         break;
+                    case 7: // vxlan
+                        bufP = bufT + 8; // udp header
+                        bufP -= 2;
+                        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+                        break;
                     default:
                         goto drop;
                     }
@@ -1100,67 +1123,29 @@ bridgevpls_rx:
             neigh_ntry.id = bridge_res->nexthop;
             goto ethtyp_tx;
         case 4: // vxlan4
-            bufP -= 12;
-            memmove(&bufD[bufP], &buf2[0], 12);
-            bufP -= 8;
-            put16msb(bufD, bufP + 0, 0x800); // flags
-            put16msb(bufD, bufP + 2, 0); // group id
-            put32msb(bufD, bufP + 4, bridge_res->instance << 8); // inst id
-            bufP -= 8;
-            put16msb(bufD, bufP + 0, 4789); // source
-            put16msb(bufD, bufP + 2, 4789); // target
-            put16msb(bufD, bufP + 4, bufS - bufP + preBuff); // length
-            put16msb(bufD, bufP + 6, 0); // checksum
-            putPseudoSum(buf2, 0, 17, bufS - bufP + preBuff, bridge_res->srcAddr1, bridge_res->trgAddr1, 0, 0, 0, 0, 0, 0);
-            tmp = calcIPsum(buf2, 0, 36, 0);
-            tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);
-            put16lsb(bufD, bufP + 6, 0xffff - tmp); // checksum
-            bufP -= 20;
-            put16msb(bufD, bufP + 0, 0x4500); // ip ver, hdrlen, tos
-            put16msb(bufD, bufP + 2, bufS - bufP + preBuff); // total length
-            ipids++;
-            put16msb(bufD, bufP + 4, ipids); // identify
-            put16msb(bufD, bufP + 6, 0); // fragment
-            put16msb(bufD, bufP + 8, 0xff11); // ttl, protocol
-            put16msb(bufD, bufP + 10, 0); // checksum
-            put32msb(bufD, bufP + 12, bridge_res->srcAddr1); // source
-            put32msb(bufD, bufP + 16, bridge_res->trgAddr1); // target
-            put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));
-            ethtyp = ETHERTYPE_IPV4;
+            putVxlanHeader;
+            putUdpHeader(4789, 4789, bridge_res->srcAddr1, 0, 0, 0, bridge_res->trgAddr1, 0, 0, 0);
+            putIpv4header(17, bridge_res->srcAddr1, bridge_res->trgAddr1);
             neigh_ntry.id = bridge_res->nexthop;
-            goto ethtyp_tx;
+            goto nethtyp_tx;
         case 5: // vxlan6
-            bufP -= 12;
-            memmove(&bufD[bufP], &buf2[0], 12);
-            bufP -= 8;
-            put16msb(bufD, bufP + 0, 0x800); // flags
-            put16msb(bufD, bufP + 2, 0); // group id
-            put32msb(bufD, bufP + 4, bridge_res->instance << 8); // inst id
-            bufP -= 8;
-            put16msb(bufD, bufP + 0, 4789); // source
-            put16msb(bufD, bufP + 2, 4789); // target
-            put16msb(bufD, bufP + 4, bufS - bufP + preBuff); // length
-            put16msb(bufD, bufP + 6, 0); // checksum
-            putPseudoSum(buf2, 0, 17, bufS - bufP + preBuff, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
-            tmp = calcIPsum(buf2, 0, 36, 0);
-            tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);
-            put16lsb(bufD, bufP + 6, 0xffff - tmp); // checksum
-            bufP -= 40;
-            put16msb(bufD, bufP + 0, 0x6000); // ip ver, tos
-            put16msb(bufD, bufP + 2, 0); // flow label
-            put16msb(bufD, bufP + 4, bufS - bufP + preBuff - 40); // payload length
-            put16msb(bufD, bufP + 6, 0x11ff); // protocol, ttl
-            put32msb(bufD, bufP + 8, bridge_res->srcAddr1); // source
-            put32msb(bufD, bufP + 12, bridge_res->srcAddr2); // source
-            put32msb(bufD, bufP + 16, bridge_res->srcAddr3); // source
-            put32msb(bufD, bufP + 20, bridge_res->srcAddr4); // source
-            put32msb(bufD, bufP + 24, bridge_res->trgAddr1); // target
-            put32msb(bufD, bufP + 28, bridge_res->trgAddr2); // target
-            put32msb(bufD, bufP + 32, bridge_res->trgAddr3); // target
-            put32msb(bufD, bufP + 36, bridge_res->trgAddr4); // target
-            ethtyp = ETHERTYPE_IPV6;
+            putVxlanHeader;
+            putUdpHeader(4789, 4789, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            putIpv6header(17, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
             neigh_ntry.id = bridge_res->nexthop;
-            goto ethtyp_tx;
+            goto nethtyp_tx;
+        case 6: // pckoudp4
+            putPckoudpHeader;
+            putUdpHeader(bridge_res->srcPort, bridge_res->trgPort, bridge_res->srcAddr1, 0, 0, 0, bridge_res->trgAddr1, 0, 0, 0);
+            putIpv4header(17, bridge_res->srcAddr1, bridge_res->trgAddr1);
+            neigh_ntry.id = bridge_res->nexthop;
+            goto nethtyp_tx;
+        case 7: // pckoudp6
+            putPckoudpHeader;
+            putUdpHeader(bridge_res->srcPort, bridge_res->trgPort, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            putIpv6header(17, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            neigh_ntry.id = bridge_res->nexthop;
+            goto nethtyp_tx;
         default:
             return;
         }

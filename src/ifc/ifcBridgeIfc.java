@@ -38,7 +38,7 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
     /**
      * interface handler, null means bvi
      */
-    public ifcDn lowerIf;
+    public ifcDn lowerIf = new ifcNull();
 
     /**
      * interface is physical

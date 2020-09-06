@@ -1,16 +1,9 @@
 package serv;
 
-import addr.addrEmpty;
 import addr.addrIP;
-import addr.addrType;
 import cfg.cfgAll;
 import cfg.cfgBrdg;
 import cfg.cfgIfc;
-import ifc.ifcBridgeIfc;
-import ifc.ifcDn;
-import ifc.ifcNull;
-import ifc.ifcUp;
-import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
 import pipe.pipeSide;
@@ -21,7 +14,6 @@ import user.userFilter;
 import user.userHelping;
 import util.cmds;
 import util.counter;
-import util.state;
 
 /**
  * packet over udp encapsulation server
@@ -252,86 +244,6 @@ public class servPckOudp extends servGeneric implements prtServP {
         ntry.cntr.rx(pck);
         ntry.upper.recvPack(pck);
         return false;
-    }
-
-}
-
-class servPckOudpConn implements ifcDn, Comparator<servPckOudpConn> {
-
-    public prtGenConn conn;
-
-    public servPckOudp lower;
-
-    public counter cntr = new counter();
-
-    public ifcUp upper = new ifcNull();
-
-    public cfgIfc dialIfc;
-
-    public ifcBridgeIfc brdgIfc;
-
-    public String toString() {
-        return "pckoudp with " + conn.peerAddr;
-    }
-
-    public servPckOudpConn(prtGenConn id, servPckOudp parent) {
-        conn = id;
-        lower = parent;
-    }
-
-    public int compare(servPckOudpConn o1, servPckOudpConn o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
-    }
-
-    public addrType getHwAddr() {
-        return new addrEmpty();
-    }
-
-    public void setFilter(boolean promisc) {
-    }
-
-    public state.states getState() {
-        return state.states.up;
-    }
-
-    public void closeDn() {
-        lower.connDel(conn);
-        upper.closeUp();
-        conn.setClosing();
-        if (dialIfc != null) {
-            dialIfc.cloneStop();
-        }
-        if (brdgIfc != null) {
-            brdgIfc.closeUp();
-        }
-    }
-
-    public void flapped() {
-        closeDn();
-    }
-
-    public void setUpper(ifcUp server) {
-        upper = server;
-        upper.setParent(this);
-    }
-
-    public counter getCounter() {
-        return cntr;
-    }
-
-    public int getMTUsize() {
-        return 1400;
-    }
-
-    public long getBandwidth() {
-        return 8000000;
-    }
-
-    public void sendPack(packHolder pck) {
-        pck.merge2beg();
-        cntr.tx(pck);
-        pck.putDefaults();
-        conn.send2net(pck);
     }
 
 }

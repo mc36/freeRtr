@@ -371,6 +371,58 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&tun6_table, &tun6_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "bridgepckoudp4") == 0) {
+        bridge_ntry.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        inet_pton(AF_INET, arg[4], buf2);
+        tun4_ntry.trgAddr = bridge_ntry.srcAddr1 = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[5], buf2);
+        tun4_ntry.srcAddr = bridge_ntry.trgAddr1 = get32msb(buf2, 0);
+        tun4_ntry.trgPort = bridge_ntry.srcPort = atoi(arg[6]);
+        tun4_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[7]);
+        bridge_ntry.nexthop = atoi(arg[8]);
+        bridge_ntry.command = 6;
+        tun4_ntry.vrf = atoi(arg[9]);
+        tun4_ntry.aclport = atoi(arg[10]);
+        tun4_ntry.prot = 17;
+        tun4_ntry.command = 7;
+        if (del == 0) table_del(&bridge_table, &bridge_ntry);
+        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) table_del(&tun4_table, &tun4_ntry);
+        else table_add(&tun4_table, &tun4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgepckoudp6") == 0) {
+        bridge_ntry.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        inet_pton(AF_INET6, arg[4], buf2);
+        tun6_ntry.trgAddr1 = bridge_ntry.srcAddr1 = get32msb(buf2, 0);
+        tun6_ntry.trgAddr2 = bridge_ntry.srcAddr2 = get32msb(buf2, 4);
+        tun6_ntry.trgAddr3 = bridge_ntry.srcAddr3 = get32msb(buf2, 8);
+        tun6_ntry.trgAddr4 = bridge_ntry.srcAddr4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[5], buf2);
+        tun6_ntry.srcAddr1 = bridge_ntry.trgAddr1 = get32msb(buf2, 0);
+        tun6_ntry.srcAddr2 = bridge_ntry.trgAddr2 = get32msb(buf2, 4);
+        tun6_ntry.srcAddr3 = bridge_ntry.trgAddr3 = get32msb(buf2, 8);
+        tun6_ntry.srcAddr4 = bridge_ntry.trgAddr4 = get32msb(buf2, 12);
+        tun6_ntry.trgPort = bridge_ntry.srcPort = atoi(arg[6]);
+        tun6_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[7]);
+        bridge_ntry.nexthop = atoi(arg[8]);
+        bridge_ntry.command = 7;
+        tun6_ntry.vrf = atoi(arg[9]);
+        tun6_ntry.aclport = atoi(arg[10]);
+        tun6_ntry.prot = 17;
+        tun6_ntry.command = 7;
+        if (del == 0) table_del(&bridge_table, &bridge_ntry);
+        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) table_del(&tun6_table, &tun6_ntry);
+        else table_add(&tun6_table, &tun6_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "portvlan") == 0) {
         vlan_ntry.id = atoi(arg[2]);
         vlan_ntry.port = atoi(arg[3]);

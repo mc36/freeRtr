@@ -14,6 +14,7 @@ import cfg.cfgBrdg;
 import cfg.cfgIfc;
 import cfg.cfgVrf;
 import clnt.clntMplsPwe;
+import clnt.clntPckOudp;
 import clnt.clntVxlan;
 import ifc.ifcBridge;
 import ifc.ifcBridgeAdr;
@@ -1394,6 +1395,19 @@ class servP4langConn implements Runnable {
         }
     }
 
+    private void addBrDyn(servP4langBr br, ifcBridgeIfc ntry, ifcDn ifc) {
+        if (lower.expDynIfc == null) {
+            return;
+        }
+        lower.expDynNxt = (lower.expDynNxt + 1) % lower.expDynSiz;
+        if (lower.expDynIfc[lower.expDynNxt] != null) {
+            br.ifcs.del(lower.expDynIfc[lower.expDynNxt]);
+        }
+        lower.expDynIfc[lower.expDynNxt] = ntry;
+        br.ifcs.put(ntry);
+        lower.sendLine("portbridge_add " + (lower.expDyn1st + lower.expDynNxt) + " " + br.br.num);
+    }
+
     private void doBrdg(servP4langBr br) {
         br.routed = findIfc(br.br) != null;
         if (br.routed) {
@@ -1409,13 +1423,19 @@ class servP4langConn implements Runnable {
             }
             try {
                 clntVxlan ifc = (clntVxlan) ntry.lowerIf;
-                if (lower.expDynIfc == null) {
-                    continue;
-                }
-                lower.expDynNxt = (lower.expDynNxt + 1) % lower.expDynSiz;
-                lower.expDynIfc[lower.expDynNxt] = ntry;
-                br.ifcs.put(ntry);
-                lower.sendLine("portbridge_add " + (lower.expDyn1st + lower.expDynNxt) + " " + br.br.num);
+                addBrDyn(br, ntry, ifc);
+                continue;
+            } catch (Exception e) {
+            }
+            try {
+                clntPckOudp ifc = (clntPckOudp) ntry.lowerIf;
+                addBrDyn(br, ntry, ifc);
+                continue;
+            } catch (Exception e) {
+            }
+            try {
+                servPckOudpConn ifc = (servPckOudpConn) ntry.lowerIf;
+                addBrDyn(br, ntry, ifc);
                 continue;
             } catch (Exception e) {
             }
@@ -1537,6 +1557,88 @@ class servP4langConn implements Runnable {
                     continue;
                 }
                 lower.sendLine("bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.inst + " " + ovrf.id + " " + (brif + lower.expDyn1st));
+                continue;
+            } catch (Exception e) {
+            }
+            try {
+                clntPckOudp iface = (clntPckOudp) ntry.ifc.lowerIf;
+                if (lower.expDynIfc == null) {
+                    continue;
+                }
+                int brif = findDyn(ntry.ifc);
+                if (brif < 0) {
+                    continue;
+                }
+                adr = iface.getRemAddr();
+                if (adr == null) {
+                    continue;
+                }
+                addrIP src = iface.getLocAddr();
+                if (src == null) {
+                    continue;
+                }
+                ipFwd ofwd = iface.vrf.getFwd(adr);
+                servP4langVrf ovrf = findVrf(ofwd);
+                if (ovrf == null) {
+                    continue;
+                }
+                rou = ofwd.actualU.route(adr);
+                if (rou == null) {
+                    continue;
+                }
+                if (rou.iface == null) {
+                    continue;
+                }
+                addrIP nh = rou.nextHop;
+                if (nh == null) {
+                    nh = adr;
+                }
+                servP4langNei hop = findIfc(rou.iface, nh);
+                if (hop == null) {
+                    continue;
+                }
+                lower.sendLine("bridgepckoudp" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + iface.getLocPort() + " " + iface.getRemPort() + " " + hop.id + " " + ovrf.id + " " + (brif + lower.expDyn1st));
+                continue;
+            } catch (Exception e) {
+            }
+            try {
+                servPckOudpConn iface = (servPckOudpConn) ntry.ifc.lowerIf;
+                if (lower.expDynIfc == null) {
+                    continue;
+                }
+                int brif = findDyn(ntry.ifc);
+                if (brif < 0) {
+                    continue;
+                }
+                adr = iface.getRemAddr();
+                if (adr == null) {
+                    continue;
+                }
+                addrIP src = iface.getLocAddr();
+                if (src == null) {
+                    continue;
+                }
+                ipFwd ofwd = iface.getFwder();
+                servP4langVrf ovrf = findVrf(ofwd);
+                if (ovrf == null) {
+                    continue;
+                }
+                rou = ofwd.actualU.route(adr);
+                if (rou == null) {
+                    continue;
+                }
+                if (rou.iface == null) {
+                    continue;
+                }
+                addrIP nh = rou.nextHop;
+                if (nh == null) {
+                    nh = adr;
+                }
+                servP4langNei hop = findIfc(rou.iface, nh);
+                if (hop == null) {
+                    continue;
+                }
+                lower.sendLine("bridgepckoudp" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + iface.getLocPort() + " " + iface.getRemPort() + " " + hop.id + " " + ovrf.id + " " + (brif + lower.expDyn1st));
                 continue;
             } catch (Exception e) {
             }

@@ -212,6 +212,7 @@ public class ifcBridge implements ifcDn {
         ifaces = new tabGen<ifcBridgeIfc>();
         upNtry = new ifcBridgeIfc(null, true, false, false);
         upNtry.ifcNum = 0;
+        upNtry.lowerIf = null;
     }
 
     /**
