@@ -47,11 +47,6 @@ public class ifcMacSec {
     public boolean needLayer2 = true;
 
     /**
-     * allow cleartext also
-     */
-    public boolean allowClear = false;
-
-    /**
      * encryption keys
      */
     public byte[] keyEncr = null;
@@ -162,13 +157,18 @@ public class ifcMacSec {
         }
         keyUsage.tx(pck);
         int pad = pck.dataSize() % cphrSiz;
+        byte[] buf;
         if (pad > 0) {
             pad = cphrSiz - pad;
-            pck.putFill(0, pad, 0); // padding
+            buf = new byte[pad];
+            for (int i = 0; i < buf.length; i++) {
+                buf[i] = (byte) bits.randomB();
+            }
+            pck.putCopy(buf, 0, 0, pad);
             pck.putSkip(pad);
             pck.merge2end();
         }
-        byte[] buf = new byte[cphrSiz];
+        buf = new byte[cphrSiz];
         for (int i = 0; i < buf.length; i++) {
             buf[i] = (byte) bits.randomB();
         }
@@ -200,9 +200,10 @@ public class ifcMacSec {
      * decrypt one packet
      *
      * @param pck packet to decrypt
+     * @param allowClear allot cleartext also
      * @return false on success, true on error
      */
-    public synchronized boolean doDecrypt(packHolder pck) {
+    public synchronized boolean doDecrypt(packHolder pck, boolean allowClear) {
         if (pck.dataSize() < size) {
             logger.info("too short on " + etht);
             return true;

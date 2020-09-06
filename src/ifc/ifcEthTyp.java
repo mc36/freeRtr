@@ -637,6 +637,19 @@ public class ifcEthTyp implements Runnable, ifcUp {
     }
 
     public void recvPack(packHolder pck) {
+        doRxWork(pck, false);
+    }
+
+    /**
+     * got packet from dataplane
+     *
+     * @param pck packet
+     */
+    public void gotFromDataplane(packHolder pck) {
+        doRxWork(pck, true);
+    }
+
+    private void doRxWork(packHolder pck, boolean fromDp) {
         cntr.rx(pck);
         if (mtuCheckRx) {
             if (pck.dataSize() > getMTUsize()) {
@@ -646,7 +659,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         sizes[pktsiz2bucket(pck.dataSize())].rx(pck);
         if (macSec != null) {
-            if (macSec.doDecrypt(pck)) {
+            if (macSec.doDecrypt(pck, fromDp)) {
                 cntr.drop(pck, counter.reasons.badSum);
                 return;
             }

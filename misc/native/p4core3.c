@@ -360,6 +360,20 @@ void putPseudoSum(unsigned char *buf, int pos, int prt, int len, int ip1, int ip
 
 
 
+#define checkLayer2                                             \
+    portvrf_ntry.port = prt;                                    \
+    index = table_find(&portvrf_table, &portvrf_ntry);          \
+    if (index >= 0) {                                           \
+        portvrf_res = table_get(&portvrf_table, index);         \
+        switch (portvrf_res->command) {                         \
+        case 2:                                                 \
+            goto bridge_rx;                                     \
+        case 3:                                                 \
+            goto xconn_rx;                                      \
+        }                                                       \
+    }
+
+
 
 void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
@@ -404,7 +418,6 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
     int hash = 0;
     int bufP;
     int bufT;
-    int bufE;
     int ethtyp;
     int prt = port;
     int prt2 = port;
@@ -414,7 +427,6 @@ ether_rx:
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
 ethtyp_rx:
-    bufE = bufP;
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
     macsec_ntry.port = prt;
@@ -442,14 +454,17 @@ ethtyp_rx:
         if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop;
         if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;
         bufP += macsec_res->encrBlkLen;
-        bufS -= bufP - bufE;
-        memmove(&bufD[bufE], &bufD[bufP], tmp);
-        bufP = bufE;
+        tmp -= macsec_res->encrBlkLen;
+        memmove(&bufD[preBuff + 12], &bufD[bufP], tmp);
+        bufP = preBuff + 12;
+        bufS = tmp + 12;
+        prt2 = prt;
         ethtyp = get16msb(bufD, bufP);
         bufP += 2;
     }
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST: // mpls
+        checkLayer2;
 mpls_rx:
         label = get32msb(bufD, bufP);
         ttl = (label & 0xff) - 1;
@@ -622,6 +637,7 @@ neigh_tx:
         }
         return;
     case ETHERTYPE_VLAN: // dot1q
+        checkLayer2;
         vlan_ntry.port = prt;
         vlan_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
         bufP += 2;
@@ -634,20 +650,8 @@ neigh_tx:
         goto ethtyp_rx;
         return;
     case ETHERTYPE_IPV4: // ipv4
-        portvrf_ntry.port = prt;
-        index = table_find(&portvrf_table, &portvrf_ntry);
+        checkLayer2;
         if (index < 0) goto drop;
-        portvrf_res = table_get(&portvrf_table, index);
-        switch (portvrf_res->command) {
-        case 1:
-            break;
-        case 2:
-            goto bridge_rx;
-        case 3:
-            goto xconn_rx;
-        default:
-            return;
-        }
         route4_ntry.vrf = portvrf_res->vrf;
 ipv4_rx:
         acl4_ntry.protV = bufD[bufP + 9];
@@ -803,20 +807,8 @@ ipv4_rou:
         }
         goto punt;
     case ETHERTYPE_IPV6: // ipv6
-        portvrf_ntry.port = prt;
-        index = table_find(&portvrf_table, &portvrf_ntry);
+        checkLayer2;
         if (index < 0) goto drop;
-        portvrf_res = table_get(&portvrf_table, index);
-        switch (portvrf_res->command) {
-        case 1:
-            break;
-        case 2:
-            goto bridge_rx;
-        case 3:
-            goto xconn_rx;
-        default:
-            return;
-        }
         route6_ntry.vrf = portvrf_res->vrf;
 ipv6_rx:
         acl6_ntry.protV = bufD[bufP + 6];
@@ -1022,6 +1014,7 @@ ipv6_hit:
         }
         goto punt;
     case ETHERTYPE_PPPOE_DATA: // pppoe
+        checkLayer2;
         pppoe_ntry.port = prt;
         pppoe_ntry.session = get16msb(bufD, bufP + 2);
         index = table_find(&pppoe_table, &pppoe_ntry);
@@ -1206,12 +1199,16 @@ layer2_tx:
         send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
         return;
     case ETHERTYPE_ARP: // arp
+        checkLayer2;
         goto cpu;
     case ETHERTYPE_PPPOE_CTRL: // pppoe ctrl
+        checkLayer2;
         goto cpu;
     case ETHERTYPE_MACSEC: // macsec
+        checkLayer2;
         goto cpu;
     default:
+        checkLayer2;
 punt:
         if (punts < 0) {
 drop:

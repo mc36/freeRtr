@@ -564,11 +564,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             cntr.drop(pck, counter.reasons.noIface);
             return;
         }
-        if (ntry.ifc.type != cfgIfc.ifaceType.sdn) {
-            ntry.ifc.ethtyp.recvPack(pck);
-        } else {
-            ntry.upper.recvPack(pck);
-        }
+        ntry.ifc.ethtyp.gotFromDataplane(pck);
     }
 
     /**
@@ -1616,7 +1612,6 @@ class servP4langConn implements Runnable {
             }
             ifc.sentMacsec = null;
         } else {
-            ifc.ifc.ethtyp.macSec.allowClear = true;
             String s = null;
             if (ifc.ifc.ethtyp.macSec.keyHash != null) {
                 s = ifc.ifc.ethtyp.macSec.myTyp + " " + ifc.ifc.ethtyp.macSec.cphrSiz + " " + ifc.ifc.ethtyp.macSec.hashSiz + " " + (ifc.ifc.ethtyp.macSec.needLayer2 ? "1" : "0") + " " + ifc.ifc.ethtyp.macSec.profil.trans.encr2str() + " " + ifc.ifc.ethtyp.macSec.profil.trans.hash2str() + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyEncr) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyHash);
