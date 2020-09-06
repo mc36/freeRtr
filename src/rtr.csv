@@ -1,6 +1,6 @@
 file;result;test
 -;-;freeRouter v20.9.6-rel, done by cs@nop.
--;-;2020-09-06 12:58:41, took 00:04:57, with 100 workers, on 2030 cases, 0 failed, 0 traces, 1 retries
+-;-;2020-09-06 14:21:05, took 00:04:55, with 100 workers, on 2034 cases, 0 failed, 0 traces, 0 retries
 -;-;./rtr.bin
 basic.tst;success;dummy test
 conn-anyconn.tst;success;ip over anyconnect
@@ -1206,6 +1206,10 @@ p4lang-rout111.tst;success;p4lang: pckoudp server over ipv4
 p4lang-rout112.tst;success;p4lang: pckoudp server over ipv6
 p4lang-rout113.tst;success;p4lang: pckoudp server over ipv4 loopback
 p4lang-rout114.tst;success;p4lang: pckoudp server over ipv6 loopback
+p4lang-rout115.tst;success;p4lang: vxlan server over ipv4
+p4lang-rout116.tst;success;p4lang: vxlan server over ipv6
+p4lang-rout117.tst;success;p4lang: vxlan server over ipv4 loopback
+p4lang-rout118.tst;success;p4lang: vxlan server over ipv6 loopback
 qos-action01.tst;success;qos ingress transmit action
 qos-action02.tst;success;qos egress transmit action
 qos-action03.tst;success;qos ingress drop action

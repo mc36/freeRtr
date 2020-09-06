@@ -9258,3 +9258,8 @@ qc pass: p4lang: pckoudp server over ipv4
 qc pass: p4lang: pckoudp server over ipv6
 qc pass: p4lang: pckoudp server over ipv4 loopback
 qc pass: p4lang: pckoudp server over ipv6 loopback
+---------------------------------- 2020-09-06 14:16:10
+qc pass: p4lang: vxlan server over ipv4
+qc pass: p4lang: vxlan server over ipv6
+qc pass: p4lang: vxlan server over ipv4 loopback
+qc pass: p4lang: vxlan server over ipv6 loopback
