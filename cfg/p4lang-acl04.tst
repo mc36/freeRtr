@@ -199,10 +199,12 @@ int di1
  exit
 server pckoudp pou
  clone di1
+ port 4552
  vrf v1
  exit
 server pckotcp pou
  clone di1
+ port 4552
  vrf v1
  exit
 !
@@ -264,6 +266,7 @@ vpdn di1
  int di1
  proxy p1
  tar 2.2.2.105
+ vcid 4552
  prot pckoudp
  exit
 int di2
@@ -277,6 +280,7 @@ vpdn di2
  int di2
  proxy p1
  tar 4321::105
+ vcid 4552
  prot pckoudp
  exit
 int di3
@@ -290,7 +294,7 @@ vpdn di3
  int di3
  proxy p1
  tar 2.2.2.105
- vcid 2554
+ vcid 4552
  prot pckotcp
  exit
 int di4
@@ -304,7 +308,7 @@ vpdn di4
  int di4
  proxy p1
  tar 4321::105
- vcid 2554
+ vcid 4552
  prot pckotcp
  exit
 !
