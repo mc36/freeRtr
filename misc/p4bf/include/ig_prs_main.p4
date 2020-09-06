@@ -384,14 +384,24 @@ IP_PROTOCOL_IPV6:
         udp_checksum.subtract({hdr.udp.dst_port});
         ig_md.checksum_udp_tmp = udp_checksum.get();
 #endif
-        transition select(hdr.udp.src_port) {
+        transition select(hdr.udp.src_port, hdr.udp.dst_port) {
 #ifdef HAVE_L2TP
-1701:
-            prs_l2tp;
+            (1701, 0 &&& 0):
+                prs_l2tp;
+            (0 &&& 0, 1701):
+                prs_l2tp;
 #endif
 #ifdef HAVE_VXLAN
-4789:
-            prs_vxlan;
+            (4789, 0 &&& 0):
+                prs_vxlan;
+            (0 &&& 0, 4789):
+                prs_vxlan;
+#endif
+#ifdef HAVE_PCKOUDP
+            (2554, 0 &&& 0):
+                prs_pckoudp;
+            (0 &&& 0, 2554):
+                prs_pckoudp;
 #endif
         default:
             accept;
@@ -421,6 +431,12 @@ IP_PROTOCOL_IPV6:
 #ifdef HAVE_VXLAN
     state prs_vxlan {
         pkt.extract(hdr.vxlan);
+        transition accept;
+    }
+#endif
+
+#ifdef HAVE_PCKOUDP
+    state prs_pckoudp {
         transition accept;
     }
 #endif

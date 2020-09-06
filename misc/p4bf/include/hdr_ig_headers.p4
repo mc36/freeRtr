@@ -29,6 +29,10 @@
 #define NEED_UDP2
 #endif
 
+#ifdef HAVE_PCKOUDP
+#define NEED_UDP2
+#endif
+
 
 
 #undef NEED_ETH4
