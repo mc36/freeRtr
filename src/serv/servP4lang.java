@@ -1428,6 +1428,12 @@ class servP4langConn implements Runnable {
             } catch (Exception e) {
             }
             try {
+                servVxlanConn ifc = (servVxlanConn) ntry.lowerIf;
+                addBrDyn(br, ntry, ifc);
+                continue;
+            } catch (Exception e) {
+            }
+            try {
                 clntPckOudp ifc = (clntPckOudp) ntry.lowerIf;
                 addBrDyn(br, ntry, ifc);
                 continue;
@@ -1557,6 +1563,47 @@ class servP4langConn implements Runnable {
                     continue;
                 }
                 lower.sendLine("bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.inst + " " + ovrf.id + " " + (brif + lower.expDyn1st));
+                continue;
+            } catch (Exception e) {
+            }
+            try {
+                servVxlanConn iface = (servVxlanConn) ntry.ifc.lowerIf;
+                if (lower.expDynIfc == null) {
+                    continue;
+                }
+                int brif = findDyn(ntry.ifc);
+                if (brif < 0) {
+                    continue;
+                }
+                adr = iface.getRemote();
+                if (adr == null) {
+                    continue;
+                }
+                addrIP src = iface.getLocal();
+                if (src == null) {
+                    continue;
+                }
+                ipFwd ofwd = iface.getFwder();
+                servP4langVrf ovrf = findVrf(ofwd);
+                if (ovrf == null) {
+                    continue;
+                }
+                rou = ofwd.actualU.route(adr);
+                if (rou == null) {
+                    continue;
+                }
+                if (rou.iface == null) {
+                    continue;
+                }
+                addrIP nh = rou.nextHop;
+                if (nh == null) {
+                    nh = adr;
+                }
+                servP4langNei hop = findIfc(rou.iface, nh);
+                if (hop == null) {
+                    continue;
+                }
+                lower.sendLine("bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.getInst() + " " + ovrf.id + " " + (brif + lower.expDyn1st));
                 continue;
             } catch (Exception e) {
             }
