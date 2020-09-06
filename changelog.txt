@@ -9247,3 +9247,14 @@ qc pass: p4lang: ipv6 over ipsec with ingress access list
 qc pass: p4lang: ipv6 over ipsec with egress access list
 qc pass: p4lang: ipsec with ike1
 qc pass: p4lang: ipsec with ike2
+---------------------------------- 2020-09-06 07:52:44
+qc pass: p4lang: pckoudp over ipv4
+qc pass: p4lang: pckoudp over ipv6
+qc pass: p4lang: pckoudp over ipv4 loopback
+qc pass: p4lang: pckoudp over ipv6 loopback
+qc pass: p4lang: pckoudp over vlan
+qc pass: p4lang: pckoudp over bundle
+qc pass: p4lang: pckoudp server over ipv4
+qc pass: p4lang: pckoudp server over ipv6
+qc pass: p4lang: pckoudp server over ipv4 loopback
+qc pass: p4lang: pckoudp server over ipv6 loopback

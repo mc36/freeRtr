@@ -259,6 +259,8 @@ ETHERTYPE_ROUTEDMAC:
             prs_l2tp;
 4789:
             prs_vxlan;
+2554:
+            prs_pckoudp;
         default:
             accept;
         }
@@ -284,6 +286,10 @@ PPPTYPE_ROUTEDMAC:
 
     state prs_vxlan {
         pkt.extract(hdr.vxlan);
+        transition prs_eth5;
+    }
+
+    state prs_pckoudp {
         transition prs_eth5;
     }
 
