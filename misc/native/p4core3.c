@@ -127,11 +127,10 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     if (bufO < 1) return;
     int old = get16msb(bufD, bufO);
     if (old <= mss) return;
+    int sum2 = calcIPsum(bufD, bufT, bufE - bufT, 0);
     put16msb(bufD, bufO, mss);
-    int sum, sum2 = 0;
-    unsigned char buf2[4];
-    accumulate_sum(sum2, old, -1)
-    accumulate_sum(sum2, mss, +1)
+    sum2 = calcIPsum(bufD, bufT, bufE - bufT, 0) - sum2;
+    int sum;
     update_chksum(bufT + 16, sum2);
 }
 
