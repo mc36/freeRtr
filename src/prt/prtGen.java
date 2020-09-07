@@ -533,4 +533,29 @@ public abstract class prtGen implements ipPrt {
         return clnts.countSubnet(ifc.ifwNum, prt, prf);
     }
 
+    /**
+     * got counter update
+     *
+     * @param ifc interface
+     * @param adr peer address
+     * @param rem remote port
+     * @param loc local port
+     * @param cntr
+     */
+    public void counterUpdate(ipFwdIface ifc, addrIP adr, int rem, int loc, counter cntr) {
+        prtGenConn ntry = clnts.get(ifc.ifwNum, adr, loc, rem);
+        if (ntry == null) {
+            return;
+        }
+        counter old = ntry.hwCntr;
+        ntry.hwCntr = cntr;
+        if (old == null) {
+            old = new counter();
+        }
+        if (old.compare(old, ntry.hwCntr) == 0) {
+            return;
+        }
+        ntry.lastActivity = bits.getTime();
+    }
+
 }

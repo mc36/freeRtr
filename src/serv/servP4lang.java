@@ -25,6 +25,7 @@ import ifc.ifcEther;
 import ifc.ifcEthTyp;
 import ifc.ifcNull;
 import ip.ipFwd;
+import ip.ipFwdIface;
 import ip.ipIfc;
 import ip.ipMpls;
 import java.util.ArrayList;
@@ -33,7 +34,11 @@ import pack.packEsp;
 import pack.packHolder;
 import pipe.pipeLine;
 import pipe.pipeSide;
+import prt.prtDccp;
+import prt.prtGen;
 import prt.prtGenConn;
+import prt.prtLudp;
+import prt.prtSctp;
 import prt.prtServS;
 import prt.prtTcp;
 import prt.prtUdp;
@@ -871,13 +876,46 @@ class servP4langConn implements Runnable {
         ntry.hwCntr.packRx = bits.str2long(cmd.word());
         ntry.hwCntr.byteRx = bits.str2long(cmd.word());
         if (old == null) {
-            return;
+            old = new counter();
         }
         if (old.compare(old, ntry.hwCntr) == 0) {
             return;
         }
         ntry.lastUsed = bits.getTime();
         ntry.reverse.lastUsed = ntry.lastUsed;
+    }
+
+    private void updateRoute(cmds cmd, ipFwd fwd) {
+        addrIPv4 adr = new addrIPv4();
+        adr.fromString(cmd.word());
+        addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(adr, bits.str2num(cmd.word()));
+        tabRouteEntry<addrIP> ntry = fwd.actualU.find(addrPrefix.ip4toIP(prf));
+        if (ntry == null) {
+            return;
+        }
+        ntry.hwCntr = new counter();
+        ntry.hwCntr.packTx = bits.str2long(cmd.word());
+        ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+    }
+
+    private void updateTunn(cmds cmd, ipFwd fwd, prtGen prt) {
+        addrIP sa = new addrIP();
+        sa.fromString(cmd.word());
+        addrIP da = new addrIP();
+        da.fromString(cmd.word());
+        int sp = bits.str2num(cmd.word());
+        int dp = bits.str2num(cmd.word());
+        tabRouteEntry<addrIP> ntry = fwd.actualU.route(da);
+        if (ntry == null) {
+            return;
+        }
+        if (ntry.iface == null) {
+            return;
+        }
+        counter cntr = new counter();
+        cntr.packTx = bits.str2long(cmd.word());
+        cntr.byteTx = bits.str2long(cmd.word());
+        prt.counterUpdate((ipFwdIface) ntry.iface, sa, sp, dp, cntr);
     }
 
     private boolean doRound() {
@@ -888,6 +926,36 @@ class servP4langConn implements Runnable {
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
+            if (s.equals("state")) {
+                servP4langIfc ntry = new servP4langIfc();
+                ntry.id = bits.str2num(cmd.word());
+                ntry = lower.expIfc.find(ntry);
+                if (ntry == null) {
+                    return false;
+                }
+                if (cmd.word().equals("1")) {
+                    ntry.lastState = state.states.up;
+                } else {
+                    ntry.lastState = state.states.down;
+                }
+                ntry.upper.setState(ntry.lastState);
+                return false;
+            }
+            if (s.equals("counter")) {
+                servP4langIfc ntry = new servP4langIfc();
+                ntry.id = bits.str2num(cmd.word());
+                ntry = lower.expIfc.find(ntry);
+                if (ntry == null) {
+                    return false;
+                }
+                ntry.ifc.ethtyp.hwCntr.packRx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.hwCntr.byteRx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.hwCntr.packTx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.hwCntr.byteTx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.hwCntr.packDr = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.hwCntr.byteDr = bits.str2long(cmd.word());
+                return false;
+            }
             if (s.equals("nattrns4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf();
                 vrf.id = bits.str2num(cmd.word());
@@ -941,16 +1009,7 @@ class servP4langConn implements Runnable {
                 if (vrf == null) {
                     return false;
                 }
-                addrIPv4 adr = new addrIPv4();
-                adr.fromString(cmd.word());
-                addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(adr, bits.str2num(cmd.word()));
-                tabRouteEntry<addrIP> ntry = vrf.vrf.fwd4.actualU.find(addrPrefix.ip4toIP(prf));
-                if (ntry == null) {
-                    return false;
-                }
-                ntry.hwCntr = new counter();
-                ntry.hwCntr.packTx = bits.str2long(cmd.word());
-                ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+                updateRoute(cmd, vrf.vrf.fwd4);
                 return false;
             }
             if (s.equals("route6_cnt")) {
@@ -960,16 +1019,7 @@ class servP4langConn implements Runnable {
                 if (vrf == null) {
                     return false;
                 }
-                addrIPv6 adr = new addrIPv6();
-                adr.fromString(cmd.word());
-                addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(adr, bits.str2num(cmd.word()));
-                tabRouteEntry<addrIP> ntry = vrf.vrf.fwd6.actualU.find(addrPrefix.ip6toIP(prf));
-                if (ntry == null) {
-                    return false;
-                }
-                ntry.hwCntr = new counter();
-                ntry.hwCntr.packTx = bits.str2long(cmd.word());
-                ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+                updateRoute(cmd, vrf.vrf.fwd6);
                 return false;
             }
             if (s.equals("mpls_cnt")) {
@@ -983,34 +1033,56 @@ class servP4langConn implements Runnable {
                 ntry.hwCntr.byteRx = bits.str2long(cmd.word());
                 return false;
             }
-            if (s.equals("counter")) {
-                servP4langIfc ntry = new servP4langIfc();
-                ntry.id = bits.str2num(cmd.word());
-                ntry = lower.expIfc.find(ntry);
-                if (ntry == null) {
+            if (s.equals("tun4_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
                     return false;
                 }
-                ntry.ifc.ethtyp.hwCntr.packRx = bits.str2long(cmd.word());
-                ntry.ifc.ethtyp.hwCntr.byteRx = bits.str2long(cmd.word());
-                ntry.ifc.ethtyp.hwCntr.packTx = bits.str2long(cmd.word());
-                ntry.ifc.ethtyp.hwCntr.byteTx = bits.str2long(cmd.word());
-                ntry.ifc.ethtyp.hwCntr.packDr = bits.str2long(cmd.word());
-                ntry.ifc.ethtyp.hwCntr.byteDr = bits.str2long(cmd.word());
+                switch (bits.str2num(cmd.word())) {
+                    case prtUdp.protoNum:
+                        updateTunn(cmd, vrf.vrf.fwd4, vrf.vrf.udp4);
+                        return false;
+                    case prtTcp.protoNum:
+                        updateTunn(cmd, vrf.vrf.fwd4, vrf.vrf.tcp4);
+                        return false;
+                    case prtLudp.protoNum:
+                        updateTunn(cmd, vrf.vrf.fwd4, vrf.vrf.ludp4);
+                        return false;
+                    case prtDccp.protoNum:
+                        updateTunn(cmd, vrf.vrf.fwd4, vrf.vrf.dccp4);
+                        return false;
+                    case prtSctp.protoNum:
+                        updateTunn(cmd, vrf.vrf.fwd4, vrf.vrf.sctp4);
+                        return false;
+                }
                 return false;
             }
-            if (s.equals("state")) {
-                servP4langIfc ntry = new servP4langIfc();
-                ntry.id = bits.str2num(cmd.word());
-                ntry = lower.expIfc.find(ntry);
-                if (ntry == null) {
+            if (s.equals("tun6_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
                     return false;
                 }
-                if (cmd.word().equals("1")) {
-                    ntry.lastState = state.states.up;
-                } else {
-                    ntry.lastState = state.states.down;
+                switch (bits.str2num(cmd.word())) {
+                    case prtUdp.protoNum:
+                        updateTunn(cmd, vrf.vrf.fwd6, vrf.vrf.udp6);
+                        return false;
+                    case prtTcp.protoNum:
+                        updateTunn(cmd, vrf.vrf.fwd6, vrf.vrf.tcp6);
+                        return false;
+                    case prtLudp.protoNum:
+                        updateTunn(cmd, vrf.vrf.fwd6, vrf.vrf.ludp6);
+                        return false;
+                    case prtDccp.protoNum:
+                        updateTunn(cmd, vrf.vrf.fwd6, vrf.vrf.dccp6);
+                        return false;
+                    case prtSctp.protoNum:
+                        updateTunn(cmd, vrf.vrf.fwd6, vrf.vrf.sctp6);
+                        return false;
                 }
-                ntry.upper.setState(ntry.lastState);
                 return false;
             }
             if (!s.equals("packet")) {
@@ -1408,6 +1480,21 @@ class servP4langConn implements Runnable {
         lower.sendLine("portbridge_add " + (lower.expDyn1st + lower.expDynNxt) + " " + br.br.num);
     }
 
+    private servP4langNei findHop(ipFwd fwd, addrIP adr) {
+        tabRouteEntry<addrIP> rou = fwd.actualU.route(adr);
+        if (rou == null) {
+            return null;
+        }
+        if (rou.iface == null) {
+            return null;
+        }
+        addrIP nh = rou.nextHop;
+        if (nh == null) {
+            nh = adr;
+        }
+        return findIfc(rou.iface, nh);
+    }
+
     private void doBrdg(servP4langBr br) {
         br.routed = findIfc(br.br) != null;
         if (br.routed) {
@@ -1547,18 +1634,7 @@ class servP4langConn implements Runnable {
                 if (ovrf == null) {
                     continue;
                 }
-                rou = ofwd.actualU.route(adr);
-                if (rou == null) {
-                    continue;
-                }
-                if (rou.iface == null) {
-                    continue;
-                }
-                addrIP nh = rou.nextHop;
-                if (nh == null) {
-                    nh = adr;
-                }
-                servP4langNei hop = findIfc(rou.iface, nh);
+                servP4langNei hop = findHop(ofwd, adr);
                 if (hop == null) {
                     continue;
                 }
@@ -1588,18 +1664,7 @@ class servP4langConn implements Runnable {
                 if (ovrf == null) {
                     continue;
                 }
-                rou = ofwd.actualU.route(adr);
-                if (rou == null) {
-                    continue;
-                }
-                if (rou.iface == null) {
-                    continue;
-                }
-                addrIP nh = rou.nextHop;
-                if (nh == null) {
-                    nh = adr;
-                }
-                servP4langNei hop = findIfc(rou.iface, nh);
+                servP4langNei hop = findHop(ofwd, adr);
                 if (hop == null) {
                     continue;
                 }
@@ -1629,18 +1694,7 @@ class servP4langConn implements Runnable {
                 if (ovrf == null) {
                     continue;
                 }
-                rou = ofwd.actualU.route(adr);
-                if (rou == null) {
-                    continue;
-                }
-                if (rou.iface == null) {
-                    continue;
-                }
-                addrIP nh = rou.nextHop;
-                if (nh == null) {
-                    nh = adr;
-                }
-                servP4langNei hop = findIfc(rou.iface, nh);
+                servP4langNei hop = findHop(ofwd, adr);
                 if (hop == null) {
                     continue;
                 }
@@ -1670,18 +1724,7 @@ class servP4langConn implements Runnable {
                 if (ovrf == null) {
                     continue;
                 }
-                rou = ofwd.actualU.route(adr);
-                if (rou == null) {
-                    continue;
-                }
-                if (rou.iface == null) {
-                    continue;
-                }
-                addrIP nh = rou.nextHop;
-                if (nh == null) {
-                    nh = adr;
-                }
-                servP4langNei hop = findIfc(rou.iface, nh);
+                servP4langNei hop = findHop(ofwd, adr);
                 if (hop == null) {
                     continue;
                 }
@@ -2100,18 +2143,7 @@ class servP4langConn implements Runnable {
             if (ovrf == null) {
                 return;
             }
-            tabRouteEntry<addrIP> ntry = ofwd.actualU.route(ifc.ifc.pwhe.adr);
-            if (ntry == null) {
-                return;
-            }
-            if (ntry.iface == null) {
-                return;
-            }
-            addrIP nh = ntry.nextHop;
-            if (nh == null) {
-                nh = ifc.ifc.pwhe.adr;
-            }
-            servP4langNei hop = findIfc(ntry.iface, nh);
+            servP4langNei hop = findHop(ofwd, ifc.ifc.pwhe.adr);
             if (hop == null) {
                 return;
             }
@@ -2208,18 +2240,7 @@ class servP4langConn implements Runnable {
             if (ovrf == null) {
                 return;
             }
-            tabRouteEntry<addrIP> ntry = ofwd.actualU.route(ifc.ifc.tunTrg);
-            if (ntry == null) {
-                return;
-            }
-            if (ntry.iface == null) {
-                return;
-            }
-            addrIP nh = ntry.nextHop;
-            if (nh == null) {
-                nh = ifc.ifc.tunTrg;
-            }
-            servP4langNei hop = findIfc(ntry.iface, nh);
+            servP4langNei hop = findHop(ofwd, ifc.ifc.tunTrg);
             if (hop == null) {
                 return;
             }

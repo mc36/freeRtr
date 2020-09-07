@@ -1440,6 +1440,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 vxl.srcIfc = proxy.srcIfc;
                 vxl.inst = vcid;
                 vxl.prot = pwtype;
+                vxl.wildcard = ctrlWrd;
                 brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
                 vxl.setUpper(brdgIfc);
                 vxl.workStart();

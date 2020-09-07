@@ -340,7 +340,11 @@ public class cfgXconnSide {
                 pou.vrf = vrf;
                 pou.srcIfc = ifc;
                 pou.prtR = vcid;
-                pou.prtL = vcid;
+                if (ctrlWord) {
+                    pou.prtL = -1;
+                } else {
+                    pou.prtL = vcid;
+                }
                 pou.setUpper(upper);
                 pou.workStart();
                 lower = pou;

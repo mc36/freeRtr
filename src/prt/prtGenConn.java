@@ -100,6 +100,11 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
      */
     public final String passwd;
 
+    /**
+     * hardware counter
+     */
+    public counter hwCntr;
+    
     private final pipeSide pipeNetwork;
 
     private final boolean stream;

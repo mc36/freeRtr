@@ -1173,6 +1173,28 @@ void doReportRount(FILE *commands) {
         inet_ntop(AF_INET6, &buf[0], &buf3[0], sizeof(buf3));
         fprintf(commands, "nattrns6_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
     }
+    for (int i=0; i<tun4_table.size; i++) {
+        struct tun4_entry *ntry = table_get(&tun4_table, i);
+        put32msb(buf, 0, ntry->srcAddr);
+        inet_ntop(AF_INET, &buf[0], &buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry->trgAddr);
+        inet_ntop(AF_INET, &buf[0], &buf3[0], sizeof(buf3));
+        fprintf(commands, "tun4_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<tun6_table.size; i++) {
+        struct tun6_entry *ntry = table_get(&tun6_table, i);
+        put32msb(buf, 0, ntry->srcAddr1);
+        put32msb(buf, 4, ntry->srcAddr2);
+        put32msb(buf, 8, ntry->srcAddr3);
+        put32msb(buf, 12, ntry->srcAddr4);
+        inet_ntop(AF_INET6, &buf[0], &buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry->trgAddr1);
+        put32msb(buf, 4, ntry->trgAddr2);
+        put32msb(buf, 8, ntry->trgAddr3);
+        put32msb(buf, 12, ntry->trgAddr4);
+        inet_ntop(AF_INET6, &buf[0], &buf3[0], sizeof(buf3));
+        fprintf(commands, "tun6_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
+    }
     fflush(commands);
 }
 
