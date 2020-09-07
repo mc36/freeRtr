@@ -135,6 +135,7 @@ int doOneCommand(unsigned char* buf) {
     int del = strcmp(arg[1], "del");
     struct mpls_entry mpls_ntry;
     memset(&mpls_ntry, 0, sizeof(mpls_ntry));
+    struct portvrf_entry *portvrf_res;
     struct portvrf_entry portvrf_ntry;
     memset(&portvrf_ntry, 0, sizeof(portvrf_ntry));
     struct route4_entry route4_ntry;
@@ -249,6 +250,22 @@ int doOneCommand(unsigned char* buf) {
         portvrf_ntry.vrf = atoi(arg[3]);
         if (del == 0) table_del(&portvrf_table, &portvrf_ntry);
         else table_add(&portvrf_table, &portvrf_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "tcpmss4in") == 0) {
+        portvrf_ntry.port = atoi(arg[2]);
+        index = table_find(&portvrf_table, &portvrf_ntry);
+        if (index < 0) return 0;
+        portvrf_res = table_get(&portvrf_table, index);
+        portvrf_res->tcpmss4 = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "tcpmss6in") == 0) {
+        portvrf_ntry.port = atoi(arg[2]);
+        index = table_find(&portvrf_table, &portvrf_ntry);
+        if (index < 0) return 0;
+        portvrf_res = table_get(&portvrf_table, index);
+        portvrf_res->tcpmss6 = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "xconnect") == 0) {

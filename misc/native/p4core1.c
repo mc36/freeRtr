@@ -53,6 +53,8 @@ struct portvrf_entry {
     int nexthop;
     int label1;
     int label2;
+    int tcpmss4;
+    int tcpmss6;
 };
 
 struct table_head portvrf_table;

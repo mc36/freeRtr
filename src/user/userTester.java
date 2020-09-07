@@ -474,7 +474,7 @@ public class userTester {
         txt.add("</table></body></html>");
         bits.buf2txt(true, txt, "rtr" + beg + ".html");
         txt = new ArrayList<String>();
-        txt.add("file;result;test");
+        txt.add("file;url;result;test");
         txt.add("-;-;" + release);
         txt.add("-;-;" + a);
         txt.add("-;-;" + jvn + jvp);
@@ -533,7 +533,7 @@ public class userTester {
             del |= ftr.ret < 1;
             retries.add(1);
         }
-        lt.rdr.debugRes(lt.getCsv());
+        lt.rdr.debugRes(lt.getCsv(url));
         if (!del) {
             ftr.lck.set(0);
             return;
@@ -544,7 +544,7 @@ public class userTester {
         }
         ftr.res = lt.getSucc();
         ftr.htm = lt.getHtm(url);
-        ftr.csv = lt.getCsv();
+        ftr.csv = lt.getCsv(url);
         ftr.ftr = lt.getFet();
         finished.add(ftr);
         lt.saveMd();
@@ -966,8 +966,8 @@ class userTesterOne {
         }
     }
 
-    public String getCsv() {
-        return fileName + ";" + getRes() + ";" + testName;
+    public String getCsv(String url) {
+        return url + fileName + ";" + fileName + ";" + getRes() + ";" + testName;
     }
 
     public String getHtm(String url) {
