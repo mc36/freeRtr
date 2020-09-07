@@ -779,7 +779,7 @@ ipv4_rou:
                     case 6: // esp
                         decapEsp(tun4_res);
                         break;
-                    case 7: // vxlan
+                    case 7: // pckoudp
                         bufP = bufT + 8; // udp header
                         bufP -= 2;
                         put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
@@ -991,7 +991,7 @@ ipv6_hit:
                     case 6: // esp
                         decapEsp(tun6_res);
                         break;
-                    case 7: // vxlan
+                    case 7: // pckoudp
                         bufP = bufT + 8; // udp header
                         bufP -= 2;
                         put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
