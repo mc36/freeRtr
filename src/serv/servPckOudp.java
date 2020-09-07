@@ -38,6 +38,11 @@ public class servPckOudp extends servGeneric implements prtServP {
     public cfgBrdg brdgIfc;
 
     /**
+     * physical interface
+     */
+    public boolean physInt = false;
+
+    /**
      * list of connections
      */
     public tabGen<servPckOudpConn> conns = new tabGen<servPckOudpConn>();
@@ -47,7 +52,9 @@ public class servPckOudp extends servGeneric implements prtServP {
      */
     public final static String defaultL[] = {
         "server pckoudp .*! port " + port,
-        "server pckoudp .*! protocol " + proto2string(protoAllDgrm),};
+        "server pckoudp .*! protocol " + proto2string(protoAllDgrm),
+        "server pckoudp .*! no physical-interface"
+    };
 
     /**
      * defaults filter
@@ -79,7 +86,7 @@ public class servPckOudp extends servGeneric implements prtServP {
             return ntry;
         }
         if (brdgIfc != null) {
-            ntry.brdgIfc = brdgIfc.bridgeHed.newIface(false, true, false);
+            ntry.brdgIfc = brdgIfc.bridgeHed.newIface(physInt, true, false);
             ntry.setUpper(ntry.brdgIfc);
             return ntry;
         }
@@ -108,6 +115,7 @@ public class servPckOudp extends servGeneric implements prtServP {
         } else {
             l.add(beg + "bridge " + brdgIfc.name);
         }
+        cmds.cfgLine(l, !physInt, beg, "physical-interface", "");
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -133,6 +141,10 @@ public class servPckOudp extends servGeneric implements prtServP {
             }
             return false;
         }
+        if (s.equals("physical-interface")) {
+            physInt = true;
+            return false;
+        }
         if (!s.equals("no")) {
             return true;
         }
@@ -145,6 +157,10 @@ public class servPckOudp extends servGeneric implements prtServP {
             brdgIfc = null;
             return false;
         }
+        if (s.equals("physical-interface")) {
+            physInt = false;
+            return false;
+        }
         return true;
     }
 
@@ -153,6 +169,7 @@ public class servPckOudp extends servGeneric implements prtServP {
         l.add("2 .    <name>                     name of interface");
         l.add("1 2  bridge                       set interface to bridge");
         l.add("2 .    <name>                     name of interface");
+        l.add("1 .  physical-interface           adding as physical to bridge");
     }
 
     public String srvName() {

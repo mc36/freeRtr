@@ -137,6 +137,11 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     public boolean ctrlWrd = false;
 
     /**
+     * physical interface
+     */
+    public boolean physInt = false;
+
+    /**
      * lower layer handler
      */
     public ifcDn lower = new ifcNull();
@@ -344,6 +349,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         "vpdn .*! no vcid",
         "vpdn .*! direction outgoing",
         "vpdn .*! no control-word",
+        "vpdn .*! no physical-interface",
         "vpdn .*! no pwtype",
         "vpdn .*! prefer none",
         "vpdn .*! no protocol"
@@ -578,6 +584,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         l.add(cmds.tabulator + "prefer " + s);
         cmds.cfgLine(l, !ctrlWrd, cmds.tabulator, "control-word", "");
+        cmds.cfgLine(l, !physInt, cmds.tabulator, "physical-interface", "");
         cmds.cfgLine(l, pwtype < 1, cmds.tabulator, "pwtype", packLdpPwe.type2string(pwtype));
         cmds.cfgLine(l, proto == null, cmds.tabulator, "protocol", type2str(proto));
         l.add(cmds.tabulator + cmds.finish);
@@ -650,6 +657,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add("1 2  vcid                           specify vc id");
         l.add("2 .    <num>                        vc id");
         l.add("1 .  control-word                   enable/disable control word");
+        l.add("1 .  physical-interface             adding as physical to bridge");
         l.add("1 2  mtu                            specify vc mtu");
         l.add("2 .    <num>                        mtu");
         l.add("1 2  pwtype                         type of pseudowire");
@@ -781,6 +789,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             ctrlWrd = true;
             return;
         }
+        if (s.equals("physical-interface")) {
+            physInt = true;
+            return;
+        }
         if (s.equals("vcid")) {
             vcid = bits.str2num(cmd.word());
             return;
@@ -851,6 +863,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("control-word")) {
             ctrlWrd = false;
+            return;
+        }
+        if (s.equals("physical-interface")) {
+            physInt = false;
             return;
         }
         if (s.equals("vcid")) {
@@ -1068,7 +1084,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer != null) {
                     l2tp3.setUpper(ifaceDialer.getEncapProto());
                 } else {
-                    brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                    brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                     l2tp3.setUpper(brdgIfc);
                 }
                 l2tp3.workStart();
@@ -1234,7 +1250,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer != null) {
                     pou.setUpper(ifaceDialer.getEncapProto());
                 } else {
-                    brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                    brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                     pou.setUpper(brdgIfc);
                 }
                 pou.workStart();
@@ -1300,7 +1316,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 tog.vrf = proxy.vrf;
                 tog.srcIfc = proxy.srcIfc;
                 tog.vcid = vcid;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                 tog.setUpper(brdgIfc);
                 tog.workStart();
                 lower = tog;
@@ -1335,7 +1351,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer != null) {
                     pwom.setUpper(ifaceDialer.getEncapProto());
                 } else {
-                    brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                    brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                     pwom.setUpper(brdgIfc);
                 }
                 pwom.workStart();
@@ -1352,7 +1368,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 erspan.srcIfc = proxy.srcIfc;
                 erspan.spnid = vcid;
                 erspan.vlnid = vcid;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                 erspan.setUpper(brdgIfc);
                 erspan.workStart();
                 lower = erspan;
@@ -1366,7 +1382,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 dlsw.prefer = prefer;
                 dlsw.vrf = proxy.vrf;
                 dlsw.srcIfc = proxy.srcIfc;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                 dlsw.setUpper(brdgIfc);
                 dlsw.workStart();
                 lower = dlsw;
@@ -1380,7 +1396,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 etherip.prefer = prefer;
                 etherip.vrf = proxy.vrf;
                 etherip.srcIfc = proxy.srcIfc;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                 etherip.setUpper(brdgIfc);
                 etherip.workStart();
                 lower = etherip;
@@ -1394,7 +1410,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 sreth.prefer = prefer;
                 sreth.vrf = proxy.vrf;
                 sreth.srcIfc = proxy.srcIfc;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                 sreth.setUpper(brdgIfc);
                 sreth.workStart();
                 lower = sreth;
@@ -1409,7 +1425,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 uti.vrf = proxy.vrf;
                 uti.srcIfc = proxy.srcIfc;
                 uti.tunKey = vcid;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                 uti.setUpper(brdgIfc);
                 uti.workStart();
                 lower = uti;
@@ -1424,7 +1440,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 nvgre.vrf = proxy.vrf;
                 nvgre.srcIfc = proxy.srcIfc;
                 nvgre.vsid = vcid;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                 nvgre.setUpper(brdgIfc);
                 nvgre.workStart();
                 lower = nvgre;
@@ -1441,7 +1457,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 vxl.inst = vcid;
                 vxl.prot = pwtype;
                 vxl.wildcard = ctrlWrd;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                 vxl.setUpper(brdgIfc);
                 vxl.workStart();
                 lower = vxl;
@@ -1456,7 +1472,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 gnv.vrf = proxy.vrf;
                 gnv.srcIfc = proxy.srcIfc;
                 gnv.vni = vcid;
-                brdgIfc = ifaceBridge.bridgeHed.newIface(false, true, false);
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
                 gnv.setUpper(brdgIfc);
                 gnv.workStart();
                 lower = gnv;

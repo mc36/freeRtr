@@ -29,6 +29,11 @@ public class servVxlan extends servGeneric implements prtServP {
     public cfgBrdg brdgIfc;
 
     /**
+     * physical interface
+     */
+    public boolean physInt = false;
+
+    /**
      * instance id
      */
     public int inst;
@@ -48,7 +53,9 @@ public class servVxlan extends servGeneric implements prtServP {
      */
     public final static String defaultL[] = {
         "server vxlan .*! port " + packVxlan.port,
-        "server vxlan .*! protocol " + proto2string(protoAllDgrm),};
+        "server vxlan .*! protocol " + proto2string(protoAllDgrm),
+        "server vxlan .*! no physical-interface"
+    };
 
     /**
      * defaults filter
@@ -79,7 +86,7 @@ public class servVxlan extends servGeneric implements prtServP {
         if (old != null) {
             return old;
         }
-        ntry.brdgIfc = brdgIfc.bridgeHed.newIface(false, true, false);
+        ntry.brdgIfc = brdgIfc.bridgeHed.newIface(physInt, true, false);
         ntry.setUpper(ntry.brdgIfc);
         return ntry;
     }
@@ -101,7 +108,8 @@ public class servVxlan extends servGeneric implements prtServP {
         } else {
             l.add(beg + "bridge " + brdgIfc.name);
         }
-        l.add(cmds.tabulator + "instance " + inst);
+        cmds.cfgLine(l, !physInt, beg, "physical-interface", "");
+        l.add(beg + "instance " + inst);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -118,12 +126,20 @@ public class servVxlan extends servGeneric implements prtServP {
             inst = bits.str2num(cmd.word());
             return false;
         }
+        if (s.equals("physical-interface")) {
+            physInt = true;
+            return false;
+        }
         if (!s.equals("no")) {
             return true;
         }
         s = cmd.word();
         if (s.equals("bridge")) {
             brdgIfc = null;
+            return false;
+        }
+        if (s.equals("physical-interface")) {
+            physInt = false;
             return false;
         }
         return true;
@@ -134,6 +150,7 @@ public class servVxlan extends servGeneric implements prtServP {
         l.add("2 .    <name>                     name of interface");
         l.add("1 2  instance                     set instance id");
         l.add("2 .    <num>                      instance id");
+        l.add("1 .  physical-interface           adding as physical to bridge");
     }
 
     public String srvName() {

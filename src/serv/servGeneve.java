@@ -37,6 +37,11 @@ public class servGeneve extends servGeneric implements prtServP {
     public cfgBrdg brdgIfc;
 
     /**
+     * physical interface
+     */
+    public boolean physInt = false;
+
+    /**
      * virtual network id
      */
     public int vni;
@@ -56,7 +61,9 @@ public class servGeneve extends servGeneric implements prtServP {
      */
     public final static String defaultL[] = {
         "server geneve .*! port " + packGeneve.port,
-        "server geneve .*! protocol " + proto2string(protoAllDgrm),};
+        "server geneve .*! protocol " + proto2string(protoAllDgrm),
+        "server geneve .*! no physical-interface"
+    };
 
     /**
      * defaults filter
@@ -87,7 +94,7 @@ public class servGeneve extends servGeneric implements prtServP {
         if (old != null) {
             return old;
         }
-        ntry.brdgIfc = brdgIfc.bridgeHed.newIface(false, true, false);
+        ntry.brdgIfc = brdgIfc.bridgeHed.newIface(physInt, true, false);
         ntry.setUpper(ntry.brdgIfc);
         return ntry;
     }
@@ -109,7 +116,8 @@ public class servGeneve extends servGeneric implements prtServP {
         } else {
             l.add(beg + "bridge " + brdgIfc.name);
         }
-        l.add(cmds.tabulator + "vni " + vni);
+        cmds.cfgLine(l, !physInt, beg, "physical-interface", "");
+        l.add(beg + "vni " + vni);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -126,12 +134,20 @@ public class servGeneve extends servGeneric implements prtServP {
             vni = bits.str2num(cmd.word());
             return false;
         }
+        if (s.equals("physical-interface")) {
+            physInt = true;
+            return false;
+        }
         if (!s.equals("no")) {
             return true;
         }
         s = cmd.word();
         if (s.equals("bridge")) {
             brdgIfc = null;
+            return false;
+        }
+        if (s.equals("physical-interface")) {
+            physInt = false;
             return false;
         }
         return true;
@@ -142,6 +158,7 @@ public class servGeneve extends servGeneric implements prtServP {
         l.add("2 .    <name>                     name of interface");
         l.add("1 2  vni                          set virtual network id");
         l.add("2 .    <num>                      net id");
+        l.add("1 .  physical-interface           adding as physical to bridge");
     }
 
     public String srvName() {

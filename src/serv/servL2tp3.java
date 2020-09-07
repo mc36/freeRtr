@@ -53,6 +53,11 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     public cfgBrdg brdgIfc;
 
     /**
+     * physical interface
+     */
+    public boolean physInt = false;
+
+    /**
      * password
      */
     public String password;
@@ -83,6 +88,7 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     public final static String defaultL[] = {
         "server l2tp3 .*! port " + packL2tp3.prot,
         "server l2tp3 .*! protocol " + proto2string(protoAllDgrm),
+        "server l2tp3 .*! no physical-interface",
         "server l2tp3 .*! no password"
     };
 
@@ -106,7 +112,8 @@ public class servL2tp3 extends servGeneric implements ipPrt {
         } else {
             l.add(beg + "bridge " + brdgIfc.name);
         }
-        cmds.cfgLine(l, password == null, cmds.tabulator, "password", authLocal.passwdEncode(password));
+        cmds.cfgLine(l, !physInt, beg, "physical-interface", "");
+        cmds.cfgLine(l, password == null, beg, "password", authLocal.passwdEncode(password));
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -136,6 +143,10 @@ public class servL2tp3 extends servGeneric implements ipPrt {
             password = authLocal.passwdDecode(cmd.getRemaining());
             return false;
         }
+        if (s.equals("physical-interface")) {
+            physInt = true;
+            return false;
+        }
         if (!s.equals("no")) {
             return true;
         }
@@ -152,6 +163,10 @@ public class servL2tp3 extends servGeneric implements ipPrt {
             password = null;
             return false;
         }
+        if (s.equals("physical-interface")) {
+            physInt = false;
+            return false;
+        }
         return true;
     }
 
@@ -162,6 +177,7 @@ public class servL2tp3 extends servGeneric implements ipPrt {
         l.add("2 .    <name>                     name of interface");
         l.add("1 2  password                     set password");
         l.add("2 .    <name>                     password");
+        l.add("1 .  physical-interface           adding as physical to bridge");
     }
 
     public String srvName() {
@@ -544,7 +560,7 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
                 if (lower.brdgIfc == null) {
                     return null;
                 }
-                ntry.brdgIfc = lower.brdgIfc.bridgeHed.newIface(false, true, false);
+                ntry.brdgIfc = lower.brdgIfc.bridgeHed.newIface(lower.physInt, true, false);
                 ntry.setUpper(ntry.brdgIfc);
                 break;
             case packLdpPwe.pwtHdlc:

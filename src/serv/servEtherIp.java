@@ -34,6 +34,11 @@ public class servEtherIp extends servGeneric implements ipPrt {
     public cfgBrdg brdgIfc;
 
     /**
+     * physical interface
+     */
+    public boolean physInt = false;
+
+    /**
      * list of connections
      */
     public tabGen<servEtherIpConn> conns = new tabGen<servEtherIpConn>();
@@ -54,6 +59,7 @@ public class servEtherIp extends servGeneric implements ipPrt {
     public final static String defaultL[] = {
         "server etherip .*! port " + clntEtherIp.prot,
         "server etherip .*! protocol " + proto2string(protoAllDgrm),
+        "server etherip .*! no physical-interface",
         "server etherip .*! timeout 60000"
     };
 
@@ -72,6 +78,7 @@ public class servEtherIp extends servGeneric implements ipPrt {
         } else {
             l.add(beg + "bridge " + brdgIfc.name);
         }
+        cmds.cfgLine(l, !physInt, beg, "physical-interface", "");
         l.add(beg + "timeout " + timeout);
     }
 
@@ -89,12 +96,20 @@ public class servEtherIp extends servGeneric implements ipPrt {
             }
             return false;
         }
+        if (s.equals("physical-interface")) {
+            physInt = true;
+            return false;
+        }
         if (!s.equals("no")) {
             return true;
         }
         s = cmd.word();
         if (s.equals("bridge")) {
             brdgIfc = null;
+            return false;
+        }
+        if (s.equals("physical-interface")) {
+            physInt = false;
             return false;
         }
         return true;
@@ -105,6 +120,7 @@ public class servEtherIp extends servGeneric implements ipPrt {
         l.add("2 .    <name>                     name of interface");
         l.add("1 2  timeout                      timeout of client");
         l.add("2 .    <num>                      milliseconds");
+        l.add("1 .  physical-interface           adding as physical to bridge");
     }
 
     public String srvName() {
@@ -251,7 +267,7 @@ class servEtherIpConn implements Runnable, Comparator<servEtherIpConn> {
 
     public void doStartup() {
         worker.setEndpoints(fwdCor, iface, peer);
-        brdgIfc = lower.brdgIfc.bridgeHed.newIface(false, true, false);
+        brdgIfc = lower.brdgIfc.bridgeHed.newIface(lower.physInt, true, false);
         worker.setUpper(brdgIfc);
         new Thread(this).start();
     }
