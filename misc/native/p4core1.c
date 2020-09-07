@@ -3,7 +3,7 @@
 #include "types.h"
 
 
-#define preBuff 64
+#define preBuff 128
 
 int ports = 0;
 int cpuport = 0;
