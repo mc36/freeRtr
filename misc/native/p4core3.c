@@ -64,11 +64,86 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
 
 
 
-#define extract_layer4(ntry)                                    \
+
+#define update_chksum(ofs, val)                                 \
+    sum = get16lsb(bufD, ofs);                                  \
+    sum -= val;                                                 \
+    sum = (sum & 0xffff) + (sum >> 16);                         \
+    put16lsb(bufD, ofs, sum);
+
+
+
+
+
+int calcIPsum(unsigned char *buf, int pos, int len, int sum) {
+    while (len > 1)  {
+        sum += get16lsb(buf, pos);
+        len -= 2;
+        pos += 2;
+    }
+    if (len > 0) sum += buf[pos];
+    sum = (sum >> 16) + (sum & 0xffff);
+    sum += (sum >> 16);
+    return sum;
+}
+
+
+#define putPseudoSum(buf, pos, prt, len, ip1, ip2, ip3, ip4, ip5, ip6, ip7, ip8)    \
+    put32msb(buf, pos + 0, ip1);                                            \
+    put32msb(buf, pos + 4, ip2);                                            \
+    put32msb(buf, pos + 8, ip3);                                            \
+    put32msb(buf, pos + 12, ip4);                                           \
+    put32msb(buf, pos + 16, ip5);                                           \
+    put32msb(buf, pos + 20, ip6);                                           \
+    put32msb(buf, pos + 24, ip7);                                           \
+    put32msb(buf, pos + 28, ip8);                                           \
+    put16msb(buf, pos + 32, prt);                                           \
+    put16msb(buf, pos + 34, len);
+
+
+
+
+
+void adjustMss(unsigned char *bufD, int bufT, int mss) {
+    int bufE = ((bufD[bufT + 12] & 0xf0) >> 2) + bufT;
+    int bufO = -1;
+    for (int bufP = bufT + 20; bufP < bufE ; ) {
+        int opt = bufD[bufP + 0];
+        int siz = bufD[bufP + 1];
+        if (siz < 2) siz = 2;
+        switch (opt) {
+        case 0: // end of options
+            siz = 1024;
+            break;
+        case 1: // noop
+            siz = 1;
+            break;
+        case 2: // mss
+            bufO = bufP + 2;
+            break;
+        }
+        bufP += siz;
+    }
+    if (bufO < 1) return;
+    int old = get16msb(bufD, bufO);
+    if (old <= mss) return;
+    put16msb(bufD, bufO, mss);
+    int sum, sum2 = 0;
+    unsigned char buf2[4];
+    accumulate_sum(sum2, old, -1)
+    accumulate_sum(sum2, mss, +1)
+    update_chksum(bufT + 16, sum2);
+}
+
+
+#define extract_layer4(ntry, mss)                               \
     switch (ntry.protV) {                                       \
         case 6:                                                 \
             ntry.srcPortV = get16msb(bufD, bufT + 0);           \
             ntry.trgPortV = get16msb(bufD, bufT + 2);           \
+            if (mss < 1) break;                                 \
+            if ((bufD[bufT + 13] & 2) == 0) break;              \
+            adjustMss(bufD, bufT, mss);                         \
             break;                                              \
         case 17:                                                \
             ntry.srcPortV = get16msb(bufD, bufT + 0);           \
@@ -81,12 +156,6 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
     }                                                           \
     hash ^= ntry.srcPortV ^ ntry.trgPortV;
 
-
-#define update_chksum(ofs, val)                                 \
-    sum = get16lsb(bufD, ofs);                                  \
-    sum -= val;                                                 \
-    sum = (sum & 0xffff) + (sum >> 16);                         \
-    put16lsb(bufD, ofs, sum);
 
 
 
@@ -176,31 +245,6 @@ int masks[] = {
 };
 
 
-
-int calcIPsum(unsigned char *buf, int pos, int len, int sum) {
-    while (len > 1)  {
-        sum += get16lsb(buf, pos);
-        len -= 2;
-        pos += 2;
-    }
-    if (len > 0) sum += buf[pos];
-    sum = (sum >> 16) + (sum & 0xffff);
-    sum += (sum >> 16);
-    return sum;
-}
-
-
-#define putPseudoSum(buf, pos, prt, len, ip1, ip2, ip3, ip4, ip5, ip6, ip7, ip8)    \
-    put32msb(buf, pos + 0, ip1);                                            \
-    put32msb(buf, pos + 4, ip2);                                            \
-    put32msb(buf, pos + 8, ip3);                                            \
-    put32msb(buf, pos + 12, ip4);                                           \
-    put32msb(buf, pos + 16, ip5);                                           \
-    put32msb(buf, pos + 20, ip6);                                           \
-    put32msb(buf, pos + 24, ip7);                                           \
-    put32msb(buf, pos + 28, ip8);                                           \
-    put16msb(buf, pos + 32, prt);                                           \
-    put16msb(buf, pos + 34, len);
 
 
 
@@ -676,7 +720,7 @@ ipv4_rx:
         bufD[bufP + 8] = ttl;
         update_chksum(bufP + 10, -1);
         bufT = bufP + 20;
-        extract_layer4(acl4_ntry);
+        extract_layer4(acl4_ntry, portvrf_res->tcpmss4);
         acls_ntry.ver = 4;
         acls_ntry.dir = 1;
         acls_ntry.port = prt;
@@ -843,7 +887,7 @@ ipv6_rx:
         if (ttl <= 1) goto punt;
         bufD[bufP + 7] = ttl;
         bufT = bufP + 40;
-        extract_layer4(acl6_ntry);
+        extract_layer4(acl6_ntry, portvrf_res->tcpmss6);
         acls_ntry.ver = 6;
         acls_ntry.dir = 1;
         acls_ntry.port = prt;
