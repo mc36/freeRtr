@@ -474,10 +474,10 @@ public class userTester {
         txt.add("</table></body></html>");
         bits.buf2txt(true, txt, "rtr" + beg + ".html");
         txt = new ArrayList<String>();
-        txt.add("file;url;result;test");
-        txt.add("-;-;" + release);
-        txt.add("-;-;" + a);
-        txt.add("-;-;" + jvn + jvp);
+        txt.add("url;file;result;test");
+        txt.add("-;-;-;" + release);
+        txt.add("-;-;-;" + a);
+        txt.add("-;-;-;" + jvn + jvp);
         txt.addAll(features2list(finished, 4));
         bits.buf2txt(true, txt, "rtr" + beg + ".csv");
         a = "rtr" + beg + ".ftr";
