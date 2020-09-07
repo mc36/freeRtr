@@ -2070,10 +2070,12 @@ class servP4langConn implements Runnable {
         }
         lower.sendLine("portvrf_" + a + " " + ifc.id + " " + vrf.id);
         if (ifc.ifc.fwdIf4 != null) {
-            lower.sendLine("tcpmss4_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf4.tcpMssIn);
+            lower.sendLine("tcpmss4in_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf4.tcpMssIn);
+            lower.sendLine("tcpmss4out_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf4.tcpMssOut);
         }
         if (ifc.ifc.fwdIf6 != null) {
-            lower.sendLine("tcpmss6_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf6.tcpMssIn);
+            lower.sendLine("tcpmss6in_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf6.tcpMssIn);
+            lower.sendLine("tcpmss6out_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf6.tcpMssOut);
         }
         ifc.sentVrf = vrf.id;
     }
