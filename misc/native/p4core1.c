@@ -198,8 +198,10 @@ struct bridge_entry {
     int srcPort;
     int trgPort;
     int instance;
-    long pack;
-    long byte;
+    long packRx;
+    long byteRx;
+    long packTx;
+    long byteTx;
 };
 
 struct table_head bridge_table;

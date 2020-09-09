@@ -991,6 +991,8 @@ class servP4langConn implements Runnable {
                 }
                 counter old = ntry.hwCntr;
                 ntry.hwCntr = new counter();
+                ntry.hwCntr.packRx = bits.str2long(cmd.word());
+                ntry.hwCntr.byteRx = bits.str2long(cmd.word());
                 ntry.hwCntr.packTx = bits.str2long(cmd.word());
                 ntry.hwCntr.byteTx = bits.str2long(cmd.word());
                 if (old == null) {

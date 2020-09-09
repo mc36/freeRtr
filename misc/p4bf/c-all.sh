@@ -1,5 +1,5 @@
 #!/bin/sh
-#sudo apt-get install bf_sde socat tshark gcc telnet astyle
+#sudo apt-get install bf_sde socat tshark iperf gcc telnet
 #gcc -O3 -o cons.bin cons.c
 #cp initd /etc/init.d/rtr
 #chmod 755 /etc/init.d/rtr

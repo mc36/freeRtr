@@ -1151,7 +1151,7 @@ void doReportRount(FILE *commands) {
         put16msb(buf2, 0, ntry->mac1);
         put32msb(buf2, 2, ntry->mac2);
         mac2str(buf2, buf);
-        fprintf(commands, "bridge_cnt %i %s %li %li\r\n", ntry->id, &buf, ntry->pack, ntry->byte);
+        fprintf(commands, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, &buf, ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
     }
     for (int i=0; i<route4_table.size; i++) {
         struct route4_entry *ntry = table_get(&route4_table, i);

@@ -1135,14 +1135,17 @@ bridgevpls_rx:
         hash ^= bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
         if (index < 0) goto punt;
+        bridge_res = table_get(&bridge_table, index);
+        bridge_res->packRx++;
+        bridge_res->byteRx += bufS;
         bridge_ntry.mac1 = get16msb(buf2, 0);
         bridge_ntry.mac2 = get32msb(buf2, 2);
         hash ^= bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
         if (index < 0) goto punt;
         bridge_res = table_get(&bridge_table, index);
-        bridge_res->pack++;
-        bridge_res->byte += bufS;
+        bridge_res->packTx++;
+        bridge_res->byteTx += bufS;
         bufP -= 2;
         switch (bridge_res->command) {
         case 1: // port
