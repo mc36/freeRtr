@@ -543,12 +543,12 @@ public class userTester {
         if (!lt.getSucc()) {
             errored.add(1);
         }
+        lt.saveMd();
         ftr.res = lt.getSucc();
         ftr.htm = lt.getHtm(url);
         ftr.csv = lt.getCsv(url);
         ftr.ftr = lt.getFet();
         finished.add(ftr);
-        lt.saveMd();
     }
 
     private userTesterOne getTester(int slt) {
@@ -1126,7 +1126,7 @@ class userTesterOne {
             }
         }
         l.add(shrtPthFrst.graphEnd);
-        bits.buf2txt(true, l, path + fileName + ".dot");
+        bits.buf2txt(true, l, path + fileName + ".png");
     }
 
     public userTesterPrc getPrc(String s) {
