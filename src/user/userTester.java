@@ -18,6 +18,7 @@ import tab.tabGen;
 import util.bits;
 import util.cmds;
 import util.logger;
+import util.shrtPthFrst;
 import util.syncInt;
 import util.version;
 
@@ -702,6 +703,8 @@ class userTesterPrc {
 
     public String syncr = "!!!hello there!!!";
 
+    public tabGen<userTesterCnn> conns;
+
     public userTesterPrc(pipeProgress reader, int slt, String nam, String command) {
         slot = slt;
         name = nam;
@@ -747,7 +750,7 @@ class userTesterPrc {
                 s = "log";
                 break;
         }
-        return userTesterOne.path + slt + nam + "-log." + s;
+        return userTesterOne.prefix + slt + nam + "-log." + s;
     }
 
     public String getLogName(int mod) {
@@ -879,13 +882,67 @@ class userTesterPrc {
         doSync();
     }
 
+    public void readConns() {
+        conns = new tabGen<userTesterCnn>();
+        List<String> l = bits.txt2buf(userTesterOne.prefix + slot + name + "-" + cfgInit.hwCfgEnd);
+        if (l == null) {
+            return;
+        }
+        for (int i = 0; i < l.size(); i++) {
+            String a = l.get(i);
+            if (!a.startsWith("int ")) {
+                continue;
+            }
+            userTesterCnn c = new userTesterCnn();
+            a = a.substring(4, a.length());
+            c.ifc = a.substring(0, a.indexOf(" "));
+            int p = a.indexOf("127.0.0.1");
+            if (p < 0) {
+                continue;
+            }
+            c.locP = bits.str2num(a.substring(p + 10, p + 15));
+            p = a.lastIndexOf("127.0.0.1");
+            if (p < 0) {
+                continue;
+            }
+            c.remP = bits.str2num(a.substring(p + 10, p + 15));
+            conns.add(c);
+        }
+    }
+
+}
+
+class userTesterCnn implements Comparator<userTesterCnn> {
+
+    public int locP;
+
+    public int remP;
+
+    public userTesterPrc perP;
+
+    public userTesterCnn perC;
+
+    public String ifc;
+
+    public int compare(userTesterCnn o1, userTesterCnn o2) {
+        if (o1.locP < o2.locP) {
+            return -1;
+        }
+        if (o1.locP > o2.locP) {
+            return +1;
+        }
+        return 0;
+    }
+
 }
 
 class userTesterOne {
 
     public int slot = 0;
 
-    public static final String path = "../binTmp/zzz";
+    public static final String path = "../binTmp/";
+
+    public static final String prefix = path + "zzz";
 
     public String fileName;
 
@@ -1020,7 +1077,7 @@ class userTesterOne {
             l.add("");
             l.add("**" + p.name + ":**");
             l.add("```");
-            l.addAll(bits.txt2buf(path + slot + p.name + "-" + cfgInit.swCfgEnd));
+            l.addAll(bits.txt2buf(prefix + slot + p.name + "-" + cfgInit.swCfgEnd));
             l.add("```");
         }
         if (shows.size() > 0) {
@@ -1033,7 +1090,43 @@ class userTesterOne {
             l.addAll(shows.get(i));
             l.add("```");
         }
-        bits.buf2txt(true, l, "../binTmp/" + fileName + ".md");
+        bits.buf2txt(true, l, path + fileName + ".md");
+        l = new ArrayList<String>();
+        for (int i = 0; i < procs.size(); i++) {
+            procs.get(i).readConns();
+        }
+        for (int o = 0; o < procs.size(); o++) {
+            userTesterPrc p = procs.get(o);
+            for (int i = 0; i < p.conns.size(); i++) {
+                userTesterCnn c = p.conns.get(i);
+                userTesterCnn cr = new userTesterCnn();
+                cr.locP = c.remP;
+                for (int q = 0; q < procs.size(); q++) {
+                    userTesterPrc pp = procs.get(q);
+                    userTesterCnn cf = pp.conns.del(cr);
+                    if (cf == null) {
+                        continue;
+                    }
+                    c.perP = pp;
+                    c.perC = cf;
+                    break;
+                }
+            }
+        }
+        l.add(shrtPthFrst.graphBeg);
+        for (int o = 0; o < procs.size(); o++) {
+            userTesterPrc p = procs.get(o);
+            l.add("//" + p.name);
+            for (int i = 0; i < p.conns.size(); i++) {
+                userTesterCnn c = p.conns.get(i);
+                if (c.perP == null) {
+                    continue;
+                }
+                l.add("  " + p.name + " -- " + c.perP.name + " [weight=10] [headlabel=" + c.perC.ifc + "] [taillabel=" + c.ifc + "]");
+            }
+        }
+        l.add(shrtPthFrst.graphEnd);
+        bits.buf2txt(true, l, path + fileName + ".dot");
     }
 
     public userTesterPrc getPrc(String s) {
@@ -1173,7 +1266,7 @@ class userTesterOne {
                 }
                 if (s.startsWith(beg2)) {
                     s = s.substring(beg2.length(), s.length());
-                    cfg.addAll(bits.txt2buf(path + slot + s + "-" + cfgInit.swCfgEnd));
+                    cfg.addAll(bits.txt2buf(prefix + slot + s + "-" + cfgInit.swCfgEnd));
                     continue;
                 }
                 cfg.add(s);
@@ -1197,7 +1290,7 @@ class userTesterOne {
                 s = repairHwCfg(s);
                 cfg.add(s);
             }
-            bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.hwCfgEnd);
+            bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             persistC.name = rn;
             procs.add(persistC);
             bits.buf2txt(true, bits.str2lst(""), persistC.getLogName(4));
@@ -1209,7 +1302,7 @@ class userTesterOne {
                 }
                 cfg.add(s);
             }
-            bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.swCfgEnd);
+            bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
             persistC.applyCfg(persistD);
             persistC.applyCfg(cfg);
             return;
@@ -1231,7 +1324,7 @@ class userTesterOne {
             }
             s = "telnet " + remoteA + " " + remoteP;
             cfg.add("!" + s);
-            bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.hwCfgEnd);
+            bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
             p.syncr = remoteS;
             procs.add(p);
@@ -1244,7 +1337,7 @@ class userTesterOne {
                 }
                 cfg.add(s);
             }
-            bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.swCfgEnd);
+            bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
             p.applyCfg(remoteD);
             p.applyCfg(cfg);
             return;
@@ -1298,7 +1391,7 @@ class userTesterOne {
                 s = repairHwCfg(s);
                 cfg.add(s);
             }
-            s = path + slot + rn + ".qcow2";
+            s = prefix + slot + rn + ".qcow2";
             pipeShell.exec("qemu-img create -f qcow2 -o backing_file=" + img.otherI + " " + s, null, true);
             s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + img.otherC + ",threads=1,sockets=1 -hda " + s + " -m " + img.otherM;
             for (int i = 0; i < cfg.size(); i++) {
@@ -1317,7 +1410,7 @@ class userTesterOne {
                 s += " -netdev socket,id=n" + vl + ",udp=:" + rp + ",localaddr=:" + lp + " -device " + img.otherN + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
             }
             cfg.add("!" + s);
-            bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.hwCfgEnd);
+            bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
             p.syncr = img.otherS;
             procs.add(p);
@@ -1330,7 +1423,7 @@ class userTesterOne {
                 }
                 cfg.add(s);
             }
-            bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.swCfgEnd);
+            bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
             int round = 5000;
             rdr.setMax(round);
             for (int rnd = 0; rnd < round; rnd++) {
@@ -1389,7 +1482,7 @@ class userTesterOne {
             }
             cfg.add("hwid tester-slot" + slot);
             cfg.add("tcp2vrf " + (20001 + (slot * userTester.portSlot) + procs.size()) + " tester 23");
-            bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.hwCfgEnd);
+            bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             cfg = new ArrayList<String>();
             cfg.add("");
             cfg.add("");
@@ -1414,8 +1507,8 @@ class userTesterOne {
                 }
                 cfg.add(s);
             }
-            bits.buf2txt(true, cfg, path + slot + rn + "-" + cfgInit.swCfgEnd);
-            userTesterPrc p = new userTesterPrc(rdr, slot, rn, jvm + " router" + window + " " + path + slot + rn + "-");
+            bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
+            userTesterPrc p = new userTesterPrc(rdr, slot, rn, jvm + " router" + window + " " + prefix + slot + rn + "-");
             procs.add(p);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             p.putLine("terminal no monitor");
@@ -1425,7 +1518,7 @@ class userTesterOne {
                 if (!rn.equals(cap.rtr)) {
                     continue;
                 }
-                p.putLine("packet capture " + cap.ifc + " " + path + slot + "log-" + rn + "-" + cap.ifc + ".pcap");
+                p.putLine("packet capture " + cap.ifc + " " + prefix + slot + "log-" + rn + "-" + cap.ifc + ".pcap");
             }
             if (fancy) {
                 p.putLine("terminal table fancy");

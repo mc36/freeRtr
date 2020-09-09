@@ -28,7 +28,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     /**
      * ending of graph
      */
-    public final static String graphEnd = "}\" | dot -Tsvg > net.svg";
+    public final static String graphEnd = "}\" | dot -Tpng > net.png";
 
     private final tabGen<shrtPthFrstNode<Ta>> nodes;
 
