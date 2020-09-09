@@ -76,7 +76,7 @@ public class ifcMacSec {
      */
     public counter hwCntr;
 
-    private counter cntr;
+    private counter cntr = new counter();
 
     private tabWindow sequence;
 
