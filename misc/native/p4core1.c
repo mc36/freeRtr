@@ -638,6 +638,10 @@ struct macsec_entry {
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
     EVP_PKEY *hashPkey;
+    long packRx;
+    long byteRx;
+    long packTx;
+    long byteTx;
 };
 
 struct table_head macsec_table;

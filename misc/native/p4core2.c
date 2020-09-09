@@ -1212,6 +1212,10 @@ void doReportRount(FILE *commands) {
         inet_ntop(AF_INET6, &buf[0], &buf3[0], sizeof(buf3));
         fprintf(commands, "tun6_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
     }
+    for (int i=0; i<macsec_table.size; i++) {
+        struct macsec_entry *ntry = table_get(&macsec_table, i);
+        fprintf(commands, "macsec_cnt %i %li %li %li %li\r\n", ntry->port, ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
+    }
     fflush(commands);
 }
 

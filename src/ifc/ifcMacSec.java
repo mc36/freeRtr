@@ -71,6 +71,13 @@ public class ifcMacSec {
      */
     public int hashSiz;
 
+    /**
+     * hardware counter
+     */
+    public counter hwCntr;
+
+    private counter cntr;
+
     private tabWindow sequence;
 
     private addrMac myaddr;
@@ -110,8 +117,10 @@ public class ifcMacSec {
      */
     public userFormat getShow() {
         userFormat l = new userFormat("|", "category|value");
-        l.add("tx|" + seqTx);
-        l.add("rx|" + sequence);
+        l.add("seq|" + seqTx);
+        l.add("win|" + sequence);
+        l.add("pack|" + cntr.getShHwPsum(hwCntr));
+        l.add("byte|" + cntr.getShHwBsum(hwCntr));
         return l;
     }
 
@@ -156,6 +165,7 @@ public class ifcMacSec {
             return true;
         }
         keyUsage.tx(pck);
+        cntr.tx(pck);
         int pad = pck.dataSize() % cphrSiz;
         byte[] buf;
         if (pad > 0) {
@@ -205,6 +215,7 @@ public class ifcMacSec {
      */
     public synchronized boolean doDecrypt(packHolder pck, boolean allowClear) {
         if (pck.dataSize() < size) {
+            cntr.drop(pck, counter.reasons.tooSmall);
             logger.info("too short on " + etht);
             return true;
         }
@@ -213,6 +224,7 @@ public class ifcMacSec {
             if (allowClear) {
                 return false;
             }
+            cntr.drop(pck, counter.reasons.badTyp);
             logger.info("bad type (" + bits.toHexW(typ) + ") on " + etht);
             return true;
         }
@@ -272,6 +284,7 @@ public class ifcMacSec {
                 keyHash = buf1;
                 return true;
             default:
+                cntr.drop(pck, counter.reasons.badTyp);
                 logger.info("bad type " + typ + " on " + etht);
                 return true;
         }
@@ -283,16 +296,19 @@ public class ifcMacSec {
         pck.getSkip(size);
         if (sequence != null) {
             if (sequence.gotDat(seqRx)) {
+                cntr.drop(pck, counter.reasons.badRxSeq);
                 logger.info("replay check failed on " + etht);
                 return true;
             }
         }
         int siz = pck.dataSize();
         if (siz < (hashSiz + cphrSiz)) {
+            cntr.drop(pck, counter.reasons.tooSmall);
             logger.info("too small on " + etht);
             return true;
         }
         if (((siz - hashSiz) % cphrSiz) != 0) {
+            cntr.drop(pck, counter.reasons.badSiz);
             logger.info("bad padding on " + etht);
             return true;
         }
@@ -306,6 +322,7 @@ public class ifcMacSec {
         byte[] sum = new byte[hashSiz];
         pck.getCopy(sum, 0, siz, hashSiz);
         if (bits.byteComp(sum, 0, hashRx.finish(), 0, hashSiz) != 0) {
+            cntr.drop(pck, counter.reasons.badSum);
             logger.info("bad hash on " + etht);
             return true;
         }
@@ -313,6 +330,7 @@ public class ifcMacSec {
         pck.setDataSize(siz - pad);
         pck.getSkip(cphrSiz);
         keyUsage.rx(pck);
+        cntr.rx(pck);
         return false;
     }
 

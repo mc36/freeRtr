@@ -488,6 +488,8 @@ ethtyp_rx:
     index = table_find(&macsec_table, &macsec_ntry);
     if (index >= 0) {
         macsec_res = table_get(&macsec_table, index);
+        macsec_res->packRx++;
+        macsec_res->byteRx += bufS;
         if (bufD[bufP] != 0x08) goto cpu;
         macsec_res->seqRx = get32msb(bufD, bufP + 2);
         bufP += 6;
@@ -587,6 +589,8 @@ neigh_tx:
             index = table_find(&macsec_table, &macsec_ntry);
             if (index >= 0) {
                 macsec_res = table_get(&macsec_table, index);
+                macsec_res->packTx++;
+                macsec_res->byteTx += bufS;
                 tmp = bufS - bufP + preBuff;
                 tmp2 = tmp % macsec_res->encrBlkLen;
                 if (tmp2 != 0) {

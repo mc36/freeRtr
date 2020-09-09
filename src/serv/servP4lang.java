@@ -976,6 +976,23 @@ class servP4langConn implements Runnable {
                 updateTrans(cmd, vrf.vrf.fwd6);
                 return false;
             }
+            if (s.equals("macsec_cnt")) {
+                servP4langIfc ntry = new servP4langIfc();
+                ntry.id = bits.str2num(cmd.word());
+                ntry = lower.expIfc.find(ntry);
+                if (ntry == null) {
+                    return false;
+                }
+                if (ntry.ifc.ethtyp.macSec == null) {
+                    return false;
+                }
+                ntry.ifc.ethtyp.macSec.hwCntr = new counter();
+                ntry.ifc.ethtyp.macSec.hwCntr.packRx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.macSec.hwCntr.byteRx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.macSec.hwCntr.packTx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.macSec.hwCntr.byteTx = bits.str2long(cmd.word());
+                return false;
+            }
             if (s.equals("bridge_cnt")) {
                 servP4langBr br = new servP4langBr();
                 br.id = bits.str2num(cmd.word());
