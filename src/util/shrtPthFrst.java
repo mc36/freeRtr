@@ -656,7 +656,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry == null) {
                 continue;
             }
-            s += " " + ntry + "," + (ntry.metric >= 0) + "," + ntry.conn.size() + "," + ntry.srIdx + "," + ntry.brIdx;
+            s += " " + ntry + "," + (ntry.metric >= 0) + "," + ntry.conn.size();
         }
         return s;
     }
