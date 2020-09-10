@@ -439,8 +439,8 @@ public class userTester {
                 rdr.debugStat("failed: " + ftr.csv);
                 continue;
             }
-            if (ftr.fld > 0) {
-                rdr.debugStat("retried " + ftr.fld + "x: " + ftr.csv);
+            if (ftr.ran > 1) {
+                rdr.debugStat("ran " + ftr.ran + "x: " + ftr.csv);
                 continue;
             }
         }
@@ -528,22 +528,22 @@ public class userTester {
         workers[slt] = getTester(slt);
         traces.add(lt.traces);
         boolean del = lt.getSucc();
-        if (!del) {
-            ftr.fld++;
-            ftr.ret--;
-            del |= ftr.ret < 1;
-            retries.add(1);
-        }
+        ftr.ran++;
+        ftr.ret--;
+        del |= ftr.ret < 1;
         lt.rdr.debugRes(lt.getCsv(url));
         if (!del) {
             ftr.lck.set(0);
+            retries.add(1);
             return;
         }
         needed.del(ftr);
         if (!lt.getSucc()) {
             errored.add(1);
         }
-        lt.saveMd();
+        if (mdfile) {
+            lt.saveMd();
+        }
         ftr.res = lt.getSucc();
         ftr.htm = lt.getHtm(url);
         ftr.csv = lt.getCsv(url);
@@ -554,7 +554,6 @@ public class userTester {
     private userTesterOne getTester(int slt) {
         userTesterOne lt = new userTesterOne();
         lt.slot = slot + slt;
-        lt.mdfile = mdfile;
         lt.config = config;
         lt.reapply = reapply;
         lt.jvm = jvn + jvp;
@@ -646,7 +645,7 @@ class userTesterFtr implements Comparator<userTesterFtr> {
 
     public int ret;
 
-    public int fld;
+    public int ran;
 
     public boolean res;
 
@@ -685,6 +684,42 @@ class userTesterFtr implements Comparator<userTesterFtr> {
 
 }
 
+class userTesterCon implements Comparator<userTesterCon> {
+
+    public int locP;
+
+    public int remP;
+
+    public userTesterPrc perP;
+
+    public userTesterCon perC;
+
+    public String ifc;
+
+    public int compare(userTesterCon o1, userTesterCon o2) {
+        if (o1.locP < o2.locP) {
+            return -1;
+        }
+        if (o1.locP > o2.locP) {
+            return +1;
+        }
+        return 0;
+    }
+
+}
+
+class userTesterCap {
+
+    public String rtr;
+
+    public String ifc;
+
+    public userTesterCap() {
+
+    }
+
+}
+
 class userTesterPrc {
 
     public int slot = 0;
@@ -703,7 +738,7 @@ class userTesterPrc {
 
     public String syncr = "!!!hello there!!!";
 
-    public tabGen<userTesterCnn> conns;
+    public tabGen<userTesterCon> conns;
 
     public userTesterPrc(pipeProgress reader, int slt, String nam, String command) {
         slot = slt;
@@ -883,7 +918,7 @@ class userTesterPrc {
     }
 
     public void readConns() {
-        conns = new tabGen<userTesterCnn>();
+        conns = new tabGen<userTesterCon>();
         List<String> l = bits.txt2buf(userTesterOne.prefix + slot + name + "-" + cfgInit.hwCfgEnd);
         if (l == null) {
             return;
@@ -893,7 +928,7 @@ class userTesterPrc {
             if (!a.startsWith("int ")) {
                 continue;
             }
-            userTesterCnn c = new userTesterCnn();
+            userTesterCon c = new userTesterCon();
             a = a.substring(4, a.length());
             c.ifc = a.substring(0, a.indexOf(" "));
             int p = a.indexOf("127.0.0.1");
@@ -908,30 +943,6 @@ class userTesterPrc {
             c.remP = bits.str2num(a.substring(p + 10, p + 15));
             conns.add(c);
         }
-    }
-
-}
-
-class userTesterCnn implements Comparator<userTesterCnn> {
-
-    public int locP;
-
-    public int remP;
-
-    public userTesterPrc perP;
-
-    public userTesterCnn perC;
-
-    public String ifc;
-
-    public int compare(userTesterCnn o1, userTesterCnn o2) {
-        if (o1.locP < o2.locP) {
-            return -1;
-        }
-        if (o1.locP > o2.locP) {
-            return +1;
-        }
-        return 0;
     }
 
 }
@@ -951,8 +962,6 @@ class userTesterOne {
     public int testRes = 1;
 
     public boolean config;
-
-    public boolean mdfile;
 
     public int reapply;
 
@@ -1061,9 +1070,7 @@ class userTesterOne {
     }
 
     public void saveMd() {
-        if (!mdfile) {
-            return;
-        }
+        rdr.debugRes("generating mdfile");
         List<String> l = new ArrayList<String>();
         l.add("# Example: " + testName);
         l.add("");
@@ -1098,15 +1105,24 @@ class userTesterOne {
         for (int o = 0; o < procs.size(); o++) {
             userTesterPrc p = procs.get(o);
             for (int i = 0; i < p.conns.size(); i++) {
-                userTesterCnn c = p.conns.get(i);
-                userTesterCnn cr = new userTesterCnn();
-                cr.locP = c.remP;
+                userTesterCon c = p.conns.get(i);
+                userTesterCon c1 = new userTesterCon();
+                userTesterCon c2 = new userTesterCon();
+                c1.locP = c.remP;
+                c2.locP = c.locP;
                 for (int q = 0; q < procs.size(); q++) {
                     userTesterPrc pp = procs.get(q);
-                    userTesterCnn cf = pp.conns.del(cr);
+                    if (p == pp) {
+                        continue;
+                    }
+                    userTesterCon cf = pp.conns.find(c1);
+                    if (cf == null) {
+                        cf = pp.conns.find(c2);
+                    }
                     if (cf == null) {
                         continue;
                     }
+                    pp.conns.del(cf);
                     c.perP = pp;
                     c.perC = cf;
                     break;
@@ -1118,11 +1134,11 @@ class userTesterOne {
             userTesterPrc p = procs.get(o);
             l.add("//" + p.name);
             for (int i = 0; i < p.conns.size(); i++) {
-                userTesterCnn c = p.conns.get(i);
+                userTesterCon c = p.conns.get(i);
                 if (c.perP == null) {
                     continue;
                 }
-                l.add("  " + p.name + " -- " + c.perP.name + " [weight=10] [headlabel=" + c.perC.ifc + "] [taillabel=" + c.ifc + "]");
+                l.add("  " + p.name + " -- " + c.perP.name + " [weight=10] [taillabel=" + c.ifc + "] [headlabel=" + c.perC.ifc + "]");
             }
         }
         l.add(shrtPthFrst.graphEnd);
@@ -1609,18 +1625,6 @@ class userTesterOne {
             return;
         }
         testRes = 6;
-    }
-
-}
-
-class userTesterCap {
-
-    public String rtr;
-
-    public String ifc;
-
-    public userTesterCap() {
-
     }
 
 }

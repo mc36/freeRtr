@@ -540,7 +540,7 @@ public abstract class prtGen implements ipPrt {
      * @param adr peer address
      * @param rem remote port
      * @param loc local port
-     * @param cntr
+     * @param cntr counter
      */
     public void counterUpdate(ipFwdIface ifc, addrIP adr, int rem, int loc, counter cntr) {
         prtGenConn ntry = clnts.get(ifc.ifwNum, adr, loc, rem);
