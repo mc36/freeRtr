@@ -125,6 +125,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public ifcBridgeIfc[] expDynIfc;
 
     /**
+     * exported dynamic interfaces
+     */
+    public String[] expDynTun;
+
+    /**
      * exported dynamic next
      */
     public int expDynNxt = 0;
@@ -273,6 +278,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             expDynSiz = bits.str2num(cmd.word());
             expDynNxt = 0;
             expDynIfc = new ifcBridgeIfc[expDynSiz];
+            expDynTun = new String[expDynSiz];
             return false;
         }
         if (s.equals("export-interval")) {
@@ -379,6 +385,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             expDynSiz = 0;
             expDynNxt = 0;
             expDynIfc = null;
+            expDynTun = null;
             return false;
         }
         if (s.equals("export-srv6")) {
@@ -496,6 +503,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         if (expDynIfc != null) {
             for (int i = 0; i < expDynIfc.length; i++) {
                 expDynIfc[i] = null;
+                expDynTun[i] = null;
             }
         }
         expDynNxt = 0;
@@ -1301,7 +1309,10 @@ class servP4langConn implements Runnable {
         return genNeighId(ntry);
     }
 
-    private int findDyn(ifcBridgeIfc ifc) {
+    private int findBrDyn(ifcBridgeIfc ifc) {
+        if (lower.expDynIfc == null) {
+            return -1;
+        }
         for (int i = 0; i < lower.expDynIfc.length; i++) {
             if (lower.expDynIfc[i] == ifc) {
                 return i;
@@ -1576,11 +1587,13 @@ class servP4langConn implements Runnable {
         if (br.routed) {
             return;
         }
+        tabGen<ifcBridgeIfc> seenI = new tabGen<ifcBridgeIfc>();
         for (int i = 0;; i++) {
             ifcBridgeIfc ntry = br.br.bridgeHed.getIface(i);
             if (ntry == null) {
                 break;
             }
+            seenI.put(ntry);
             if (br.ifcs.find(ntry) != null) {
                 continue;
             }
@@ -1648,14 +1661,39 @@ class servP4langConn implements Runnable {
             lower.sendLine("bridgesrv_add " + br.br.num + " " + vr.id + " " + adr);
             continue;
         }
-        tabGen<ifcBridgeAdr> seen = new tabGen<ifcBridgeAdr>();
+        for (int i = br.ifcs.size() - 1; i >= 0; i--) {
+            ifcBridgeIfc ntry = br.ifcs.get(i);
+            if (seenI.find(ntry) != null) {
+                continue;
+            }
+            br.ifcs.del(ntry);
+            int brif = findBrDyn(ntry);
+            if (brif < 0) {
+                continue;
+            }
+            lower.sendLine("portbridge_del " + (brif + lower.expDyn1st) + " " + br.br.num);
+            String s = lower.expDynTun[brif];
+            lower.expDynIfc[brif] = null;
+            lower.expDynTun[brif] = null;
+            if (s == null) {
+                continue;
+            }
+            cmds cmd = new cmds("lin", s);
+            s = cmd.word() + " ";
+            s = s.replaceAll("_add ", "_del ");
+            s = s.replaceAll("_mod ", "_del ");
+            s += cmd.word();
+            cmd.word();
+            lower.sendLine(s + " " + addrMac.getRandom() + " " + cmd.getRemaining());
+        }
+        tabGen<ifcBridgeAdr> seenM = new tabGen<ifcBridgeAdr>();
         for (int i = 0;; i++) {
             ifcBridgeAdr ntry = br.br.bridgeHed.getMacAddr(i);
             if (ntry == null) {
                 break;
             }
             ntry = ntry.copyBytes();
-            seen.put(ntry);
+            seenM.put(ntry);
             ifcBridgeAdr old = br.macs.find(ntry);
             String a = "add";
             if (old != null) {
@@ -1691,10 +1729,7 @@ class servP4langConn implements Runnable {
             tabRouteEntry<addrIP> rou = null;
             try {
                 clntVxlan iface = (clntVxlan) ntry.ifc.lowerIf;
-                if (lower.expDynIfc == null) {
-                    continue;
-                }
-                int brif = findDyn(ntry.ifc);
+                int brif = findBrDyn(ntry.ifc);
                 if (brif < 0) {
                     continue;
                 }
@@ -1715,16 +1750,15 @@ class servP4langConn implements Runnable {
                 if (hop == null) {
                     continue;
                 }
-                lower.sendLine("bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.inst + " " + ovrf.id + " " + (brif + lower.expDyn1st));
+                a = "bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.inst + " " + ovrf.id + " " + (brif + lower.expDyn1st);
+                lower.expDynTun[brif] = a;
+                lower.sendLine(a);
                 continue;
             } catch (Exception e) {
             }
             try {
                 servVxlanConn iface = (servVxlanConn) ntry.ifc.lowerIf;
-                if (lower.expDynIfc == null) {
-                    continue;
-                }
-                int brif = findDyn(ntry.ifc);
+                int brif = findBrDyn(ntry.ifc);
                 if (brif < 0) {
                     continue;
                 }
@@ -1745,16 +1779,15 @@ class servP4langConn implements Runnable {
                 if (hop == null) {
                     continue;
                 }
-                lower.sendLine("bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.getInst() + " " + ovrf.id + " " + (brif + lower.expDyn1st));
+                a = "bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.getInst() + " " + ovrf.id + " " + (brif + lower.expDyn1st);
+                lower.sendLine(a);
+                lower.expDynTun[brif] = a;
                 continue;
             } catch (Exception e) {
             }
             try {
                 clntPckOudp iface = (clntPckOudp) ntry.ifc.lowerIf;
-                if (lower.expDynIfc == null) {
-                    continue;
-                }
-                int brif = findDyn(ntry.ifc);
+                int brif = findBrDyn(ntry.ifc);
                 if (brif < 0) {
                     continue;
                 }
@@ -1775,16 +1808,15 @@ class servP4langConn implements Runnable {
                 if (hop == null) {
                     continue;
                 }
-                lower.sendLine("bridgepckoudp" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + iface.getLocPort() + " " + iface.getRemPort() + " " + hop.id + " " + ovrf.id + " " + (brif + lower.expDyn1st));
+                a = "bridgepckoudp" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + iface.getLocPort() + " " + iface.getRemPort() + " " + hop.id + " " + ovrf.id + " " + (brif + lower.expDyn1st);
+                lower.sendLine(a);
+                lower.expDynTun[brif] = a;
                 continue;
             } catch (Exception e) {
             }
             try {
                 servPckOudpConn iface = (servPckOudpConn) ntry.ifc.lowerIf;
-                if (lower.expDynIfc == null) {
-                    continue;
-                }
-                int brif = findDyn(ntry.ifc);
+                int brif = findBrDyn(ntry.ifc);
                 if (brif < 0) {
                     continue;
                 }
@@ -1805,7 +1837,9 @@ class servP4langConn implements Runnable {
                 if (hop == null) {
                     continue;
                 }
-                lower.sendLine("bridgepckoudp" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + iface.getLocPort() + " " + iface.getRemPort() + " " + hop.id + " " + ovrf.id + " " + (brif + lower.expDyn1st));
+                a = "bridgepckoudp" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + iface.getLocPort() + " " + iface.getRemPort() + " " + hop.id + " " + ovrf.id + " " + (brif + lower.expDyn1st);
+                lower.sendLine(a);
+                lower.expDynTun[brif] = a;
                 continue;
             } catch (Exception e) {
             }
@@ -1852,7 +1886,7 @@ class servP4langConn implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (seen.find(ntry) != null) {
+            if (seenM.find(ntry) != null) {
                 continue;
             }
             br.macs.del(ntry);
