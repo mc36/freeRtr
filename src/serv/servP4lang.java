@@ -556,6 +556,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 }
                 ifcBridgeIfc ifc = expDynIfc[id - expDyn1st];
                 if (ifc == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded target: " + id);
+                    }
                     cntr.drop(pck, counter.reasons.noIface);
                     return;
                 }
@@ -567,6 +570,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         ntry.id = id;
         ntry = expIfc.find(ntry);
         if (ntry == null) {
+            if (debugger.servP4langErr) {
+                logger.debug("got unneeded target: " + id);
+            }
             cntr.drop(pck, counter.reasons.noIface);
             return;
         }
@@ -869,6 +875,9 @@ class servP4langConn implements Runnable {
         ntry.origTrgPort = bits.str2num(cmd.word());
         ntry = fwd.natTrns.find(ntry);
         if (ntry == null) {
+            if (debugger.servP4langErr) {
+                logger.debug("got unneeded report: " + cmd.getOriginal());
+            }
             return;
         }
         counter old = ntry.hwCntr;
@@ -891,6 +900,9 @@ class servP4langConn implements Runnable {
         addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(adr, bits.str2num(cmd.word()));
         tabRouteEntry<addrIP> ntry = fwd.actualU.find(addrPrefix.ip4toIP(prf));
         if (ntry == null) {
+            if (debugger.servP4langErr) {
+                logger.debug("got unneeded report: " + cmd.getOriginal());
+            }
             return;
         }
         ntry.hwCntr = new counter();
@@ -907,9 +919,15 @@ class servP4langConn implements Runnable {
         int dp = bits.str2num(cmd.word());
         tabRouteEntry<addrIP> ntry = fwd.actualU.route(da);
         if (ntry == null) {
+            if (debugger.servP4langErr) {
+                logger.debug("got unneeded report: " + cmd.getOriginal());
+            }
             return;
         }
         if (ntry.iface == null) {
+            if (debugger.servP4langErr) {
+                logger.debug("got unneeded report: " + cmd.getOriginal());
+            }
             return;
         }
         counter cntr = new counter();
@@ -931,6 +949,9 @@ class servP4langConn implements Runnable {
                 ntry.id = bits.str2num(cmd.word());
                 ntry = lower.expIfc.find(ntry);
                 if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 if (cmd.word().equals("1")) {
@@ -946,6 +967,9 @@ class servP4langConn implements Runnable {
                 ntry.id = bits.str2num(cmd.word());
                 ntry = lower.expIfc.find(ntry);
                 if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 ntry.ifc.ethtyp.hwCntr.packRx = bits.str2long(cmd.word());
@@ -961,6 +985,9 @@ class servP4langConn implements Runnable {
                 vrf.id = bits.str2num(cmd.word());
                 vrf = lower.expVrf.find(vrf);
                 if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 updateTrans(cmd, vrf.vrf.fwd4);
@@ -971,6 +998,9 @@ class servP4langConn implements Runnable {
                 vrf.id = bits.str2num(cmd.word());
                 vrf = lower.expVrf.find(vrf);
                 if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 updateTrans(cmd, vrf.vrf.fwd6);
@@ -980,10 +1010,16 @@ class servP4langConn implements Runnable {
                 servP4langIfc ntry = new servP4langIfc();
                 ntry.id = bits.str2num(cmd.word());
                 ntry = lower.expIfc.find(ntry);
+                if (debugger.servP4langErr) {
+                    logger.debug("got unneeded report: " + cmd.getOriginal());
+                }
                 if (ntry == null) {
                     return false;
                 }
                 if (ntry.ifc.ethtyp.macSec == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 ntry.ifc.ethtyp.macSec.hwCntr = new counter();
@@ -998,12 +1034,18 @@ class servP4langConn implements Runnable {
                 br.id = bits.str2num(cmd.word());
                 br = lower.expBr.find(br);
                 if (br == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 addrMac mac = new addrMac();
                 mac.fromString(cmd.word());
                 ifcBridgeAdr ntry = br.br.bridgeHed.findMacAddr(mac);
                 if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 counter old = ntry.hwCntr;
@@ -1026,6 +1068,9 @@ class servP4langConn implements Runnable {
                 vrf.id = bits.str2num(cmd.word());
                 vrf = lower.expVrf.find(vrf);
                 if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 updateRoute(cmd, vrf.vrf.fwd4);
@@ -1036,6 +1081,9 @@ class servP4langConn implements Runnable {
                 vrf.id = bits.str2num(cmd.word());
                 vrf = lower.expVrf.find(vrf);
                 if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 updateRoute(cmd, vrf.vrf.fwd6);
@@ -1045,6 +1093,9 @@ class servP4langConn implements Runnable {
                 tabLabelNtry ntry = new tabLabelNtry(bits.str2num(cmd.word()));
                 ntry = tabLabel.labels.find(ntry);
                 if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 ntry.hwCntr = new counter();
@@ -1057,6 +1108,9 @@ class servP4langConn implements Runnable {
                 vrf.id = bits.str2num(cmd.word());
                 vrf = lower.expVrf.find(vrf);
                 if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 switch (bits.str2num(cmd.word())) {
@@ -1083,6 +1137,9 @@ class servP4langConn implements Runnable {
                 vrf.id = bits.str2num(cmd.word());
                 vrf = lower.expVrf.find(vrf);
                 if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
                     return false;
                 }
                 switch (bits.str2num(cmd.word())) {
@@ -1597,6 +1654,7 @@ class servP4langConn implements Runnable {
             if (ntry == null) {
                 break;
             }
+            ntry = ntry.copyBytes();
             seen.put(ntry);
             ifcBridgeAdr old = br.macs.find(ntry);
             String a = "add";

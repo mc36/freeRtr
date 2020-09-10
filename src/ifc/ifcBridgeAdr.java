@@ -47,6 +47,20 @@ public class ifcBridgeAdr implements Comparator<ifcBridgeAdr> {
     }
 
     /**
+     * copy data
+     *
+     * @return copy
+     */
+    public ifcBridgeAdr copyBytes() {
+        ifcBridgeAdr n = new ifcBridgeAdr(adr.copyBytes());
+        n.ifc = ifc;
+        n.time = time;
+        n.cntr = cntr;
+        n.hwCntr = hwCntr;
+        return n;
+    }
+
+    /**
      * compare
      *
      * @param o1 one
