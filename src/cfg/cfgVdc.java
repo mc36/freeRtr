@@ -158,6 +158,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public final tabGen<cfgVdcUsb> usbs = new tabGen<cfgVdcUsb>();
 
     /**
+     * list of tcp
+     */
+    public final tabGen<cfgVdcTcp> tcps = new tabGen<cfgVdcTcp>();
+
+    /**
      * console pipeline
      */
     public pipeSide con;
@@ -269,6 +274,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         for (int i = 0; i < usbs.size(); i++) {
             n.usbs.add(usbs.get(i));
         }
+        for (int i = 0; i < tcps.size(); i++) {
+            n.tcps.add(tcps.get(i));
+        }
         return n;
     }
 
@@ -335,6 +343,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("1  2  usb                            pass through usb device");
         l.add("2  3    <num>                        bus");
         l.add("3  .      <num>                      port");
+        l.add("1  2  tcp2vrf                        pass host port in");
+        l.add("2  3    <num>                        host port");
+        l.add("3  4      <name>                     vdc vrf");
+        l.add("4  .        <num>                    vdc port");
         l.add("1  2  time                           specify time between runs");
         l.add("2  .    <num>                        milliseconds between runs");
         l.add("1  2  delay                          specify initial delay");
@@ -379,6 +391,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         for (int i = 0; i < usbs.size(); i++) {
             l.add(cmds.tabulator + "usb " + usbs.get(i));
+        }
+        for (int i = 0; i < tcps.size(); i++) {
+            l.add(cmds.tabulator + "tcp2vrf " + tcps.get(i));
         }
         l.add(cmds.tabulator + "delay " + initial);
         l.add(cmds.tabulator + "time " + interval);
@@ -562,6 +577,14 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             usbs.add(dev);
             return;
         }
+        if (a.equals("tcp2vrf")) {
+            cfgVdcTcp dev = new cfgVdcTcp();
+            dev.portH = bits.str2num(cmd.word());
+            dev.vrf = cmd.word();
+            dev.portV = bits.str2num(cmd.word());
+            tcps.add(dev);
+            return;
+        }
         if (a.equals("delay")) {
             initial = bits.str2num(cmd.word());
             return;
@@ -672,6 +695,14 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             dev.bus = bits.str2num(cmd.word());
             dev.prt = bits.str2num(cmd.word());
             usbs.del(dev);
+            return;
+        }
+        if (a.equals("tcp2vrf")) {
+            cfgVdcTcp dev = new cfgVdcTcp();
+            dev.portH = bits.str2num(cmd.word());
+            dev.vrf = cmd.word();
+            dev.portV = bits.str2num(cmd.word());
+            tcps.del(dev);
             return;
         }
         if (a.equals("random-time")) {
@@ -886,6 +917,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         for (i = 0; i < mibs.size(); i++) {
             l.add("snmp " + mibs.get(i));
         }
+        for (i = 0; i < tcps.size(); i++) {
+            l.add("tcp2vrf " + tcps.get(i));
+        }
         for (i = 0; i < ifaces.size(); i++) {
             cfgVdcIfc ntry = ifaces.get(i);
             l.add("int " + ntry.line);
@@ -937,6 +971,30 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             bits.buf2txt(true, l, a);
         }
         new Thread(this).start();
+    }
+
+}
+
+class cfgVdcTcp implements Comparator<cfgVdcTcp> {
+
+    public int portH;
+
+    public String vrf;
+
+    public int portV;
+
+    public int compare(cfgVdcTcp o1, cfgVdcTcp o2) {
+        if (o1.portH < o2.portH) {
+            return -1;
+        }
+        if (o1.portH > o2.portH) {
+            return +1;
+        }
+        return 0;
+    }
+
+    public String toString() {
+        return portH + " " + vrf + " " + portV;
     }
 
 }
