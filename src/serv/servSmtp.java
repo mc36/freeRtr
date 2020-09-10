@@ -69,9 +69,14 @@ public class servSmtp extends servGeneric implements prtServS {
     protected String bccUser = null;
 
     /**
-     * list of email addresses
+     * list of local email addresses
      */
-    public tabGen<servSmtpAddr> emails = new tabGen<servSmtpAddr>();
+    public tabGen<servSmtpLoc> locals = new tabGen<servSmtpLoc>();
+
+    /**
+     * list of forward email addresses
+     */
+    public tabGen<servSmtpFwd> forwards = new tabGen<servSmtpFwd>();
 
     /**
      * list of rbl servers
@@ -138,8 +143,11 @@ public class servSmtp extends servGeneric implements prtServS {
         cmds.cfgLine(lst, !recursEna, beg, "recursion enable", "");
         cmds.cfgLine(lst, bccUser == null, beg, "bcc", "" + bccUser);
         lst.add(beg + "path " + mailFolders);
-        for (int i = 0; i < emails.size(); i++) {
-            lst.add(beg + "email " + emails.get(i));
+        for (int i = 0; i < locals.size(); i++) {
+            lst.add(beg + "local " + locals.get(i));
+        }
+        for (int i = 0; i < forwards.size(); i++) {
+            lst.add(beg + "forward " + forwards.get(i));
         }
     }
 
@@ -176,12 +184,20 @@ public class servSmtp extends servGeneric implements prtServS {
             bccUser = cmd.word();
             return false;
         }
-        if (s.equals("email")) {
-            servSmtpAddr ntry = new servSmtpAddr();
+        if (s.equals("local")) {
+            servSmtpLoc ntry = new servSmtpLoc();
             if (ntry.fromString(cmd)) {
                 return true;
             }
-            emails.put(ntry);
+            locals.put(ntry);
+            return false;
+        }
+        if (s.equals("forward")) {
+            servSmtpFwd ntry = new servSmtpFwd();
+            if (ntry.fromString(cmd)) {
+                return true;
+            }
+            forwards.put(ntry);
             return false;
         }
         if (s.equals("rbl-server")) {
@@ -229,12 +245,19 @@ public class servSmtp extends servGeneric implements prtServS {
             bccUser = null;
             return false;
         }
-        if (s.equals("email")) {
-            servSmtpAddr ntry = new servSmtpAddr();
+        if (s.equals("local")) {
+            servSmtpLoc ntry = new servSmtpLoc();
             if (ntry.fromString(cmd)) {
                 return true;
             }
-            return emails.del(ntry) == null;
+            return locals.del(ntry) == null;
+        }
+        if (s.equals("forward")) {
+            servSmtpFwd ntry = new servSmtpFwd();
+            if (ntry.fromString(cmd)) {
+                return true;
+            }
+            return forwards.del(ntry) == null;
         }
         if (s.equals("rbl-server")) {
             servSmtpRbl ntry = new servSmtpRbl();
@@ -263,9 +286,13 @@ public class servSmtp extends servGeneric implements prtServS {
         l.add("3 .      <name>                   name of authentication list");
         l.add("1 2  bcc                          set bcc user");
         l.add("2 .    <user>                     name of user");
-        l.add("1 2  email                        set email address");
-        l.add("2 3    <user>                     name of user");
-        l.add("3 4,.    <addr>                   email address");
+        l.add("1 2  local                        set local email address");
+        l.add("2 3    <user>                     name of local user");
+        l.add("3 4,.    <addr>                   local email address");
+        l.add("4 .        <user>                 name of bcc user");
+        l.add("1 2  forward                      set forward email address");
+        l.add("2 3    <user>                     remote email address");
+        l.add("3 4,.    <addr>                   local email address");
         l.add("4 .        <user>                 name of bcc user");
         l.add("1 2  path                         set root folder");
         l.add("2 .    <path>                     name of root folder");
@@ -300,7 +327,38 @@ public class servSmtp extends servGeneric implements prtServS {
 
 }
 
-class servSmtpAddr implements Comparator<servSmtpAddr> {
+class servSmtpFwd implements Comparator<servSmtpFwd> {
+
+    public String email;
+
+    public String remote;
+
+    public String bcc;
+
+    public String toString() {
+        return (remote + " " + email + " " + bcc).trim();
+    }
+
+    public boolean fromString(cmds cmd) {
+        remote = cmd.word();
+        email = cmd.word();
+        bcc = cmd.word();
+        if (remote.length() < 1) {
+            return true;
+        }
+        if (email.length() < 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public int compare(servSmtpFwd o1, servSmtpFwd o2) {
+        return o1.email.toLowerCase().compareTo(o2.email.toLowerCase());
+    }
+
+}
+
+class servSmtpLoc implements Comparator<servSmtpLoc> {
 
     public String email;
 
@@ -325,7 +383,7 @@ class servSmtpAddr implements Comparator<servSmtpAddr> {
         return false;
     }
 
-    public int compare(servSmtpAddr o1, servSmtpAddr o2) {
+    public int compare(servSmtpLoc o1, servSmtpLoc o2) {
         return o1.email.toLowerCase().compareTo(o2.email.toLowerCase());
     }
 
@@ -423,7 +481,7 @@ class servSmtpDoer implements Runnable {
 
     private String src = "";
 
-    private tabGen<servSmtpAddr> trgL = new tabGen<servSmtpAddr>();
+    private tabGen<servSmtpLoc> trgL = new tabGen<servSmtpLoc>();
 
     private List<String> trgR = new ArrayList<String>();
 
@@ -442,10 +500,16 @@ class servSmtpDoer implements Runnable {
         new Thread(this).start();
     }
 
-    public servSmtpAddr findEmail(String s) {
-        servSmtpAddr ntry = new servSmtpAddr();
+    public servSmtpLoc findLocal(String s) {
+        servSmtpLoc ntry = new servSmtpLoc();
         ntry.email = uniResLoc.fromEmail(s).toLowerCase();
-        return lower.emails.find(ntry);
+        return lower.locals.find(ntry);
+    }
+
+    public servSmtpFwd findForward(String s) {
+        servSmtpFwd ntry = new servSmtpFwd();
+        ntry.email = uniResLoc.fromEmail(s).toLowerCase();
+        return lower.forwards.find(ntry);
     }
 
     public void doLine(String s) {
@@ -576,7 +640,6 @@ class servSmtpDoer implements Runnable {
             return false;
         }
         if (a.equals("rcpt")) {
-            servSmtpAddr ntry = null;
             String last = null;
             for (;;) {
                 a = cmd.word();
@@ -591,26 +654,38 @@ class servSmtpDoer implements Runnable {
                 }
                 a = a.toLowerCase();
                 if (a.equals("to")) {
-                    ntry = findEmail(s);
                     last = s;
                 }
             }
-            if (ntry == null) {
-                last = uniResLoc.fromEmail(last);
-                if (recurAva) {
-                    trgR.add(last);
-                    doLine("250 " + last + " will handled out");
+            last = uniResLoc.fromEmail(last);
+            servSmtpLoc loc = findLocal(last);
+            if (loc != null) {
+                if (trgL.add(loc) != null) {
+                    doLine("250 " + loc.email + " already added");
                     return false;
                 }
-                doLine("550 " + last + " no such user");
+                doLine("250 " + loc.email + " now added");
                 return false;
             }
-            if (trgL.add(ntry) != null) {
-                doLine("250 " + ntry.email + " already added");
+            servSmtpFwd fwd = findForward(last);
+            if (fwd != null) {
+                trgR.add(fwd.remote);
+                doLine("250 " + fwd.email + " added");
+                if (fwd.bcc.length() < 1) {
+                    return false;
+                }
+                loc = new servSmtpLoc();
+                loc.email = fwd.email;
+                loc.user = fwd.bcc;
+                trgL.add(loc);
                 return false;
             }
-            trgL.add(ntry);
-            doLine("250 " + ntry.email + " now added");
+            if (recurAva) {
+                trgR.add(last);
+                doLine("250 " + last + " will handled out");
+                return false;
+            }
+            doLine("550 " + last + " no such user");
             return false;
         }
         if (a.equals("rset")) {
@@ -632,7 +707,7 @@ class servSmtpDoer implements Runnable {
             int o = 0;
             long tim = bits.getTime();
             for (int i = 0; i < trgL.size(); i++) {
-                servSmtpAddr usr = trgL.get(i);
+                servSmtpLoc usr = trgL.get(i);
                 if (!bits.buf2txt(true, txt, lower.mailFolders + usr.user + "/" + tim + ".msg")) {
                     o++;
                 }
@@ -658,12 +733,18 @@ class servSmtpDoer implements Runnable {
             return false;
         }
         if (a.equals("vrfy")) {
-            servSmtpAddr ntry = findEmail(cmd.word());
-            if (ntry == null) {
-                doLine("550 no such user");
-            } else {
-                doLine("250 " + ntry.user + " <" + ntry.email + ">");
+            String last = uniResLoc.fromEmail(cmd.word());
+            servSmtpLoc loc = findLocal(last);
+            if (loc != null) {
+                doLine("250 " + loc.user + " <" + loc.email + ">");
+                return false;
             }
+            servSmtpFwd fwd = findForward(last);
+            if (fwd != null) {
+                doLine("250 <" + fwd.email + ">");
+                return false;
+            }
+            doLine("550 no such user");
             return false;
         }
         if (a.equals("expn")) {
