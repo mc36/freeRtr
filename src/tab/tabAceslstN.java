@@ -428,4 +428,94 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         return true;
     }
 
+    /**
+     * unroll this ace into an other list
+     *
+     * @param trg target list
+     * @param ace source ace
+     */
+    public static void unrollAce(tabListing<tabAceslstN<addrIP>, addrIP> trg, tabAceslstN<addrIP> ace) {
+        String str = ace.toString();
+        tabAceslstN<addrIP> ntry;
+        int sn = 0;
+        int sp = 0;
+        int dn = 0;
+        int dp = 0;
+        for (;;) {
+            ntry = new tabAceslstN<addrIP>(new addrIP());
+            fromString(ntry, new cmds("ace", str));
+            ntry.srcOGnet = null;
+            ntry.srcOGprt = null;
+            ntry.trgOGnet = null;
+            ntry.trgOGprt = null;
+            if (ace.srcOGnet != null) {
+                tabObjnetN<addrIP> obj = ace.srcOGnet.get(sn);
+                ntry.srcAddr = obj.addr;
+                ntry.srcMask = obj.mask;
+            }
+            if (ace.srcOGprt != null) {
+                ntry.srcPort = ace.srcOGprt.get(sp).port;
+            }
+            if (ace.trgOGnet != null) {
+                tabObjnetN<addrIP> obj = ace.trgOGnet.get(dn);
+                ntry.trgAddr = obj.addr;
+                ntry.trgMask = obj.mask;
+            }
+            if (ace.trgOGprt != null) {
+                ntry.trgPort = ace.trgOGprt.get(dp).port;
+            }
+            ntry.sequence = trg.nextseq();
+            ntry.action = ace.action;
+            trg.add(ntry);
+            boolean incr = true;
+            if (incr && (ace.trgOGprt != null)) {
+                dp++;
+                incr = dp >= ace.trgOGprt.size();
+                if (incr) {
+                    dp = 0;
+                }
+            }
+            if (incr && (ace.trgOGnet != null)) {
+                dn++;
+                incr = dn >= ace.trgOGnet.size();
+                if (incr) {
+                    dn = 0;
+                }
+            }
+            if (incr && (ace.srcOGprt != null)) {
+                sp++;
+                incr = sp >= ace.srcOGprt.size();
+                if (incr) {
+                    sp = 0;
+                }
+            }
+            if (incr && (ace.srcOGnet != null)) {
+                sn++;
+                incr = sn >= ace.srcOGnet.size();
+                if (incr) {
+                    sn = 0;
+                }
+            }
+            if (incr) {
+                break;
+            }
+        }
+    }
+
+    /**
+     * unroll one list
+     *
+     * @param src source list
+     * @return result
+     */
+    public static tabListing<tabAceslstN<addrIP>, addrIP> unrollAcl(tabListing<tabAceslstN<addrIP>, addrIP> src) {
+        tabListing<tabAceslstN<addrIP>, addrIP> res = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        res.copyCores(src);
+        res.listName = "unroll of " + src.listName;
+        for (int i = 0; i < src.size(); i++) {
+            unrollAce(res, src.get(i));
+        }
+        return res;
+    }
+
 }

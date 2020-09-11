@@ -128,17 +128,15 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      * @return next sequence number to give
      */
     public int nextseq() {
-        for (;;) {
-            int i = entries.size();
-            if (i < 1) {
-                return 10;
-            }
-            Te ntry = entries.get(i - 1);
-            if (ntry == null) {
-                continue;
-            }
-            return ntry.sequence + 10;
+        int i = entries.size();
+        if (i < 1) {
+            return 10;
         }
+        Te ntry = entries.get(i - 1);
+        if (ntry == null) {
+            return 10;
+        }
+        return ntry.sequence + 10;
     }
 
     /**
@@ -184,6 +182,52 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      */
     public Te get(int idx) {
         return entries.get(idx);
+    }
+
+    /**
+     * merge one list
+     *
+     * resequencing will happen
+     *
+     * @param l list
+     * @param skip last entries to skip
+     */
+    public void mergeOne(tabListing<Te, Ta> l, int skip) {
+        if (debugger.tabListingEvnt) {
+            logger.debug("merge " + l.listName);
+        }
+        copyCores(l);
+        listName = "merged from " + l.listName;
+        for (int i = 0; i < (l.size() - skip); i++) {
+            Te ntry = l.get(i);
+            ntry.sequence = nextseq();
+            entries.put(ntry);
+        }
+    }
+
+    /**
+     * merge two lists
+     *
+     * resequencing will happen
+     *
+     * @param l1 first
+     * @param l2 second
+     */
+    public void mergeTwo(tabListing<Te, Ta> l1, tabListing<Te, Ta> l2) {
+        if ((l1 == null) && (l2 == null)) {
+            return;
+        }
+        if (l2 == null) {
+            mergeOne(l1, 0);
+            return;
+        }
+        if (l1 == null) {
+            mergeOne(l2, 0);
+            return;
+        }
+        mergeOne(l1, 1);
+        mergeOne(l2, 0);
+        listName = "merged from " + l1.listName + " and " + l2.listName;
     }
 
     /**

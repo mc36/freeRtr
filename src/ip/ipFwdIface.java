@@ -507,10 +507,10 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, !answerDefReqs, cmds.tabulator, beg + "proxy-remote", "");
         cmds.cfgLine(l, gatePrfx == null, cmds.tabulator, beg + "gateway-prefix", "" + gatePrfx);
         cmds.cfgLine(l, gateRtmp == null, cmds.tabulator, beg + "gateway-routemap", "" + gateRtmp);
-        cmds.cfgLine(l, filterIn == null, cmds.tabulator, beg + "access-group-in", "" + filterIn);
-        cmds.cfgLine(l, filterOut == null, cmds.tabulator, beg + "access-group-out", "" + filterOut);
         cmds.cfgLine(l, cfilterIn == null, cmds.tabulator, beg + "access-group-common-in", "" + cfilterIn);
         cmds.cfgLine(l, cfilterOut == null, cmds.tabulator, beg + "access-group-common-out", "" + cfilterOut);
+        cmds.cfgLine(l, filterIn == null, cmds.tabulator, beg + "access-group-in", "" + filterIn);
+        cmds.cfgLine(l, filterOut == null, cmds.tabulator, beg + "access-group-out", "" + filterOut);
         cmds.cfgLine(l, inspect == null, cmds.tabulator, beg + "inspect", "" + inspect);
         cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop);
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "");

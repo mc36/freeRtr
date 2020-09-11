@@ -1356,6 +1356,9 @@ public class userExec {
         hl.add("7 8                <str>         source address");
         hl.add("8 .                  <str>       target address");
         hl.add("1 2    test                      test various things");
+        hl.add("2 3      acl                     access list merge, unroll");
+        hl.add("3 4,.      <name>                name of first acl");
+        hl.add("4 .          <name>              name of second acl");
         hl.add("2 3      dns                     dns zone creator");
         hl.add("3 .        <name>                name of zone");
         hl.add("2 3      translation             translation rule");

@@ -12,6 +12,7 @@ import addr.addrPrefix;
 import addr.addrType;
 import auth.authConstant;
 import auth.authLocal;
+import cfg.cfgAceslst;
 import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgIfc;
@@ -64,6 +65,8 @@ import pipe.pipeSide;
 import pipe.pipeWindow;
 import sec.secSsh;
 import sec.secTls;
+import tab.tabAceslstN;
+import tab.tabListing;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import util.bits;
@@ -105,6 +108,25 @@ public class userTest {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.test, false);
         if (alias != null) {
             return alias.getCommand(cmd);
+        }
+        if (a.equals("acl")) {
+            cfgAceslst cfg1 = cfgAll.aclsFind(cmd.word(), false);
+            cfgAceslst cfg2 = cfgAll.aclsFind(cmd.word(), false);
+            tabListing<tabAceslstN<addrIP>, addrIP> acl1 = null;
+            tabListing<tabAceslstN<addrIP>, addrIP> acl2 = null;
+            if (cfg1 != null) {
+                acl1 = tabAceslstN.unrollAcl(cfg1.aceslst);
+            }
+            if (cfg2 != null) {
+                acl2 = tabAceslstN.unrollAcl(cfg2.aceslst);
+            }
+            tabListing<tabAceslstN<addrIP>, addrIP> res = new tabListing<tabAceslstN<addrIP>, addrIP>();
+            res.mergeTwo(acl1, acl2);
+            List<String> lst = res.dump("");
+            for (int i = 0; i < lst.size(); i++) {
+                cmd.pipe.linePut(lst.get(i));
+            }
+            return null;
         }
         if (a.equals("dns")) {
             a = cmd.word();
