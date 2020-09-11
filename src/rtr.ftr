@@ -1046,6 +1046,10 @@ qc pass: p4lang: ingress ipip access list
 qc pass: p4lang: egress ipip access list
 qc pass: p4lang: ingress vlan ipip access list
 qc pass: p4lang: egress vlan ipip access list
+qc pass: p4lang: ingress common access list
+qc pass: p4lang: egress common access list
+qc pass: p4lang: ingress hibryd access list
+qc pass: p4lang: egress hibryd access list
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128

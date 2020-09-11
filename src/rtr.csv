@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v20.9.10-rel, done by cs@nop.
--;-;-;2020-09-10 17:39:42, took 00:04:50, with 100 workers, on 2034 cases, 0 failed, 0 traces, 2 retries
+-;-;-;freeRouter v20.9.11-rel, done by cs@nop.
+-;-;-;2020-09-11 03:59:51, took 00:05:15, with 100 workers, on 2038 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -1050,6 +1050,10 @@ http://sources.nop.hu/cfg/p4lang-acl35.tst;p4lang-acl35.tst;success;p4lang: ingr
 http://sources.nop.hu/cfg/p4lang-acl36.tst;p4lang-acl36.tst;success;p4lang: egress ipip access list
 http://sources.nop.hu/cfg/p4lang-acl37.tst;p4lang-acl37.tst;success;p4lang: ingress vlan ipip access list
 http://sources.nop.hu/cfg/p4lang-acl38.tst;p4lang-acl38.tst;success;p4lang: egress vlan ipip access list
+http://sources.nop.hu/cfg/p4lang-acl39.tst;p4lang-acl39.tst;success;p4lang: ingress common access list
+http://sources.nop.hu/cfg/p4lang-acl40.tst;p4lang-acl40.tst;success;p4lang: egress common access list
+http://sources.nop.hu/cfg/p4lang-acl41.tst;p4lang-acl41.tst;success;p4lang: ingress hibryd access list
+http://sources.nop.hu/cfg/p4lang-acl42.tst;p4lang-acl42.tst;success;p4lang: egress hibryd access list
 http://sources.nop.hu/cfg/p4lang-crypt01.tst;p4lang-crypt01.tst;success;p4lang: macsec with des
 http://sources.nop.hu/cfg/p4lang-crypt02.tst;p4lang-crypt02.tst;success;p4lang: macsec with 3des
 http://sources.nop.hu/cfg/p4lang-crypt03.tst;p4lang-crypt03.tst;success;p4lang: macsec with aes128
