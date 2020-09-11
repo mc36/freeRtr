@@ -481,9 +481,13 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ifc.sentMtu = 0;
             ifc.sentLabel = -1;
             ifc.sentAcl4in1 = null;
+            ifc.sentAcl4in2 = null;
             ifc.sentAcl4out1 = null;
+            ifc.sentAcl4out2 = null;
             ifc.sentAcl6in1 = null;
+            ifc.sentAcl6in2 = null;
             ifc.sentAcl6out1 = null;
+            ifc.sentAcl6out2 = null;
         }
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf vrf = expVrf.get(i);

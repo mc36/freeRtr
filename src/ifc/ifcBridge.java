@@ -99,9 +99,9 @@ public class ifcBridge implements ifcDn {
     public boolean staticAddr;
 
     /**
-     * spantree is running
+     * spantree mode: 0=none, 1=ieee, 2=drop
      */
-    public boolean needStp;
+    public int needStp;
 
     /**
      * spantree priority
@@ -343,7 +343,8 @@ public class ifcBridge implements ifcDn {
         l.add("2 .       <num>                     time in ms");
         l.add("1 2     stp-mode                    set spantree mode");
         l.add("2 .       ieee                      ieee");
-        l.add("2 .       none                      nothing");
+        l.add("2 .       none                      pass through");
+        l.add("2 .       drop                      drop");
         l.add("1 2     stp-time                    set spantree timers");
         l.add("2 3       <num>                     hello in ms");
         l.add("3 4         <num>                   maxage in ms");
@@ -375,11 +376,22 @@ public class ifcBridge implements ifcDn {
         l.add(beg + "mac-age " + macAgeTime);
         l.add(beg + "stp-priority " + stpPrio);
         l.add(beg + "stp-time " + stpHlo + " " + stpAge + " " + stpFwd);
-        if (needStp) {
-            l.add(beg + "stp-mode ieee");
-        } else {
-            l.add(beg + "stp-mode none");
+        String a;
+        switch (needStp) {
+            case 0:
+                a = "none";
+                break;
+            case 1:
+                a = "ieee";
+                break;
+            case 2:
+                a = "drop";
+                break;
+            default:
+                a = "unknown";
+                break;
         }
+        l.add(beg + "stp-mode " + a);
     }
 
     /**
@@ -445,13 +457,18 @@ public class ifcBridge implements ifcDn {
         }
         if (a.equals("stp-mode")) {
             a = cmd.word();
+            if (a.equals("none")) {
+                needStp = 0;
+                setBlocking(false);
+                return;
+            }
             if (a.equals("ieee")) {
-                needStp = true;
+                needStp = 1;
                 setBlocking(true);
                 return;
             }
-            if (a.equals("none")) {
-                needStp = false;
+            if (a.equals("drop")) {
+                needStp = 2;
                 setBlocking(false);
                 return;
             }
@@ -535,7 +552,7 @@ public class ifcBridge implements ifcDn {
         }
         ifcBridgeIfc ntry = new ifcBridgeIfc(this, physical, notEther, needType);
         ntry.ifcNum = nextIfaceNum++;
-        ntry.blocked = needStp;
+        ntry.blocked = needStp == 1;
         ifaces.add(ntry);
         return ntry;
     }
@@ -718,7 +735,7 @@ public class ifcBridge implements ifcDn {
      * @param rnd round number
      */
     protected void doStpFloop(int rnd) {
-        if (!needStp) {
+        if (needStp != 1) {
             return;
         }
         if ((rnd % (stpHlo / 1000)) != 0) {
@@ -919,12 +936,15 @@ public class ifcBridge implements ifcDn {
     }
 
     private boolean doRxStp(ifcBridgeIfc ifc, packHolder pck) {
-        if (!needStp) {
+        if (needStp == 0) {
             return true;
         }
         packStp stp = new packStp();
         if (stp.parseHeader(pck)) {
             return true;
+        }
+        if (needStp == 2) {
+            return false;
         }
         if (debugger.ifcBridgeTraf) {
             logger.debug("rx " + stp);
