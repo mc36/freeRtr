@@ -586,6 +586,8 @@ public class ifcBundle implements Runnable, ifcDn {
                     return;
             }
             if (sequence.gotDat(pckH.seq)) {
+                cntr.drop(pck, counter.reasons.badRxSeq);
+                logger.info("replay check failed on " + ifc);
                 return;
             }
             if (dejitter > 0) {

@@ -17,6 +17,7 @@ import prt.prtGenConn;
 import prt.prtServP;
 import prt.prtUdp;
 import sec.secTransform;
+import tab.tabWindow;
 import user.userTerminal;
 import util.bits;
 import util.counter;
@@ -44,6 +45,11 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
      * preferred ip protocol version
      */
     public int prefer = 0;
+
+    /**
+     * do replay checking
+     */
+    public int replayCheck = 1024;
 
     /**
      * target of tunnel
@@ -110,6 +116,8 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
     private cryHashGeneric hashTx;
 
     private cryEncrGeneric cphrTx;
+
+    private tabWindow sequence;
 
     private int seqRx;
 
@@ -295,6 +303,9 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
         cphrTx.init(buf2, buf3, true);
         cphrRx.init(buf2, buf3, false);
         cphrSiz = buf3.length;
+        if (replayCheck > 0) {
+            sequence = new tabWindow(replayCheck);
+        }
         addrIP trg = userTerminal.justResolv(target, prefer);
         if (trg == null) {
             return;
@@ -427,6 +438,13 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
         seqRx = pck.msbGetD(0);
         timRx = pck.msbGetD(4);
         pck.getSkip(8);
+        if (sequence != null) {
+            if (sequence.gotDat(seqRx)) {
+                cntr.drop(pck, counter.reasons.badRxSeq);
+                logger.info("replay check failed from " + target);
+                return false;
+            }
+        }
         int i = ifcEther.guessEtherType(pck);
         if (i < 0) {
             logger.info("got bad protocol from " + target);

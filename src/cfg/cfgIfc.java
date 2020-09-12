@@ -3639,6 +3639,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunOpenvpn = new clntOpenvpn();
                 tunOpenvpn.preshared = tunPrt.preshared;
                 tunOpenvpn.transform = tunPrt.trans;
+                tunOpenvpn.replayCheck = tunPrt.replay;
                 tunOpenvpn.sendingTOS = tunTOS;
                 tunOpenvpn.sendingTTL = tunTTL;
                 tunOpenvpn.vrf = tunVrf;
@@ -3656,6 +3657,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 tunWireguard = new clntWireguard();
                 tunWireguard.preshared = tunPrt.preshared;
+                tunWireguard.replayCheck = tunPrt.replay;
                 tunWireguard.sendingTOS = tunTOS;
                 tunWireguard.sendingTTL = tunTTL;
                 tunWireguard.vrf = tunVrf;

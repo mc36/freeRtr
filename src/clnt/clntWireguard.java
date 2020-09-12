@@ -20,6 +20,7 @@ import pack.packHolder;
 import prt.prtGenConn;
 import prt.prtServP;
 import prt.prtUdp;
+import tab.tabWindow;
 import user.userTerminal;
 import util.bits;
 import util.counter;
@@ -60,6 +61,11 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
      * preferred ip protocol version
      */
     public int prefer = 0;
+
+    /**
+     * do replay checking
+     */
+    public int replayCheck = 1024;
 
     /**
      * target of tunnel
@@ -109,6 +115,8 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     private prtGenConn conn;
 
     private boolean working = true;
+
+    private tabWindow sequence;
 
     private long seqRx;
 
@@ -432,7 +440,14 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 byte[] tmp1 = new byte[12];
                 pck.getCopy(tmp1, 4, 8, 8);
                 pck.getSkip(16);
-                seqRx = bits.lsbGetQ(tmp1, 0);
+                seqRx = bits.lsbGetQ(tmp1, 4);
+                if (sequence != null) {
+                    if (sequence.gotDat((int) seqRx)) {
+                        cntr.drop(pck, counter.reasons.badRxSeq);
+                        logger.info("replay check failed from " + target);
+                        return false;
+                    }
+                }
                 cryEnchChacha20poly1305 en = new cryEnchChacha20poly1305();
                 en.init(keyRx, tmp1, false);
                 typ = pck.enchData(en, 0, pck.dataSize());
@@ -727,6 +742,9 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         keyTx = ks[r];
         seqRx = 0;
         seqTx = 0;
+        if (replayCheck > 0) {
+            sequence = new tabWindow(replayCheck);
+        }
         if (debugger.clntWireguardTraf) {
             logger.debug("keys r=" + r + " ri=" + idxRx + " ti=" + idxTx + " rk=" + bits.byteDump(keyRx, 0, -1) + " tk=" + bits.byteDump(keyTx, 0, -1));
         }
