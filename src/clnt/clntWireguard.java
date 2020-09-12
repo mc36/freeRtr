@@ -112,6 +112,26 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
      */
     public counter cntr = new counter();
 
+    /**
+     * transmit index
+     */
+    public int idxTx;
+
+    /**
+     * receive index
+     */
+    public int idxRx;
+
+    /**
+     * decryption keys
+     */
+    public byte[] keyRx;
+
+    /**
+     * encryption keys
+     */
+    public byte[] keyTx;
+
     private prtGenConn conn;
 
     private boolean working = true;
@@ -130,14 +150,6 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     private long lasTim;
 
-    private int idxRx;
-
-    private int idxTx;
-
-    private byte[] keyRx;
-
-    private byte[] keyTx;
-
     private byte[] dh1;
 
     private byte[] dh2;
@@ -154,6 +166,54 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     public String toString() {
         return "wireguard to " + target;
+    }
+
+    /**
+     * get remote address
+     *
+     * @return address
+     */
+    public addrIP getRemAddr() {
+        if (conn == null) {
+            return null;
+        }
+        return conn.peerAddr.copyBytes();
+    }
+
+    /**
+     * get local address
+     *
+     * @return address
+     */
+    public addrIP getLocAddr() {
+        if (conn == null) {
+            return null;
+        }
+        return conn.iface.addr.copyBytes();
+    }
+
+    /**
+     * get remote port
+     *
+     * @return address
+     */
+    public int getRemPort() {
+        if (conn == null) {
+            return 0;
+        }
+        return conn.portRem;
+    }
+
+    /**
+     * get local port
+     *
+     * @return address
+     */
+    public int getLocPort() {
+        if (conn == null) {
+            return 0;
+        }
+        return conn.portLoc;
     }
 
     /**
@@ -392,7 +452,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         }
         pck.setDataSize(i);
         pck.lsbPutD(0, 4); // data
-        pck.msbPutD(4, idxRx);
+        pck.msbPutD(4, idxTx);
         pck.lsbPutQ(8, seqTx);
         pck.putSkip(16);
         pck.merge2beg();
@@ -426,14 +486,17 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         switch (typ) {
             case 4: // data
                 if (pck.dataSize() < 32) {
+                    cntr.drop(pck, counter.reasons.tooSmall);
                     logger.info("get truncated data from " + target);
                     return false;
                 }
                 if (keyRx == null) {
+                    cntr.drop(pck, counter.reasons.notUp);
                     logger.info("got unwanted data from " + target);
                     return false;
                 }
-                if (pck.msbGetD(4) != idxTx) {
+                if (pck.msbGetD(4) != idxRx) {
+                    cntr.drop(pck, counter.reasons.badID);
                     logger.info("got invalid index from " + target);
                     return false;
                 }
@@ -452,6 +515,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 en.init(keyRx, tmp1, false);
                 typ = pck.enchData(en, 0, pck.dataSize());
                 if (typ < 0) {
+                    cntr.drop(pck, counter.reasons.badSum);
                     logger.info("got invalid data from " + target);
                     return false;
                 }
@@ -541,7 +605,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                     logger.info("got replayed handshake from " + target);
                     return false;
                 }
-                idxRx = ridx;
+                idxTx = ridx;
                 initDH();
                 if (debugger.clntWireguardTraf) {
                     logger.debug("tx resp e=" + bits.byteDump(dh2, 0, -1));
@@ -569,8 +633,8 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 hr = h.finish();
                 pck.clear();
                 pck.lsbPutD(0, 2); // resp
-                pck.msbPutD(4, idxTx);
-                pck.msbPutD(8, idxRx);
+                pck.msbPutD(4, idxRx);
+                pck.msbPutD(8, idxTx);
                 pck.putSkip(12);
                 pck.putCopy(dh2, 0, 0, dh2.length);
                 pck.putSkip(dh2.length);
@@ -597,11 +661,11 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                     return false;
                 }
                 ridx = pck.msbGetD(4);
-                if (pck.msbGetD(8) != idxTx) {
+                if (pck.msbGetD(8) != idxRx) {
                     logger.info("got invalid index from " + target);
                     return false;
                 }
-                if (ridx == idxRx) {
+                if (ridx == idxTx) {
                     logger.info("got replayed resp from " + target);
                     return false;
                 }
@@ -643,7 +707,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 h.update(hr);
                 h.update(tmp2);
                 hr = h.finish();
-                idxRx = ridx;
+                idxTx = ridx;
                 initKeys(0);
                 sendKeep();
                 return false;
@@ -665,7 +729,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         }
         pck.setDataSize(i);
         pck.lsbPutD(0, 4); // data
-        pck.msbPutD(4, idxRx);
+        pck.msbPutD(4, idxTx);
         pck.lsbPutQ(8, seqTx);
         pck.putSkip(16);
         pck.merge2beg();
@@ -682,7 +746,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         }
         packHolder pck = new packHolder(true, true);
         pck.lsbPutD(0, 1); // init
-        pck.msbPutD(4, idxTx);
+        pck.msbPutD(4, idxRx);
         pck.putSkip(8);
         pck.putCopy(dh2, 0, 0, dh2.length);
         pck.putSkip(dh2.length);
@@ -733,7 +797,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     private void initDH() {
         dh1 = cryECcurve25519.make();
         dh2 = cryECcurve25519.calc(dh1, null);
-        idxTx = bits.randomD();
+        idxRx = bits.randomD();
     }
 
     private void initKeys(int r) {
@@ -746,7 +810,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
             sequence = new tabWindow(replayCheck);
         }
         if (debugger.clntWireguardTraf) {
-            logger.debug("keys r=" + r + " ri=" + idxRx + " ti=" + idxTx + " rk=" + bits.byteDump(keyRx, 0, -1) + " tk=" + bits.byteDump(keyTx, 0, -1));
+            logger.debug("keys r=" + r + " ri=" + idxTx + " ti=" + idxRx + " rk=" + bits.byteDump(keyRx, 0, -1) + " tk=" + bits.byteDump(keyTx, 0, -1));
         }
     }
 

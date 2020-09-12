@@ -477,6 +477,53 @@ int masks[] = {
     put16msb(bufD, bufP, ethtyp);
 
 
+#define putWireguardHeader                                      \
+    bufP += 2;                                                  \
+    tmp = bufS - bufP + preBuff;                                \
+    tmp2 = 16 - (tmp % 16);                                     \
+    for (int i=0; i<tmp2; i++) {                                \
+        bufD[bufP + tmp + i] = 0;                               \
+    }                                                           \
+    tmp += tmp2;                                                \
+    bufS += tmp2;                                               \
+    put32lsb(buf2, 16, 0);                                      \
+    put32lsb(buf2, 20, neigh_res->seq);                         \
+    put32lsb(buf2, 24, 0);                                      \
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
+    if (EVP_EncryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &buf2[16]) != 1) goto drop;   \
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
+    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
+    if (EVP_EncryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) goto drop; \
+    if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_GET_TAG, 16, &bufD[bufP + tmp]) != 1) goto drop; \
+    tmp += 16;                                                  \
+    bufS += 16;                                                 \
+    bufP -= 16;                                                 \
+    put32lsb(bufD, bufP + 0, 4);                                \
+    put32msb(bufD, bufP + 4, neigh_res->tid);                   \
+    put32lsb(bufD, bufP + 8, neigh_res->seq);                   \
+    put32lsb(bufD, bufP + 12, 0);                               \
+    neigh_res->seq++;
+
+
+#define decapWireguard(tun_res)                                 \
+    bufP = bufT + 8;                                            \
+    if (get32lsb(bufD, bufP) != 4) goto cpu;                    \
+    tmp = bufS - bufP + preBuff;                                \
+    if (tmp < 32) goto drop;                                    \
+    put32msb(bufD, bufP + 4, 0);                                \
+    bufP += 16;                                                 \
+    bufS -= 16;                                                 \
+    tmp -= 32;                                                  \
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
+    if (EVP_DecryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[bufP - 12]) != 1) goto drop;  \
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
+    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
+    if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[bufP + tmp]) != 1) goto drop; \
+    if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) goto drop; \
+    guessEthtyp;                                                \
+    bufP -= 2;                                                  \
+    put16msb(bufD, bufP, ethtyp);
+
 
 
 #define checkLayer2                                             \
@@ -749,6 +796,16 @@ neigh_tx:
                 putUdpHeader(neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
                 putIpv6header(17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
                 break;
+            case 13: // wireguard4
+                putWireguardHeader;
+                putUdpHeader(neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, 0, 0, 0, neigh_res->dip1, 0, 0, 0);
+                putIpv4header(17, neigh_res->sip1, neigh_res->dip1);
+                break;
+            case 14: // wireguard6
+                putWireguardHeader;
+                putUdpHeader(neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+                putIpv6header(17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+                break;
             default:
                 goto drop;
             }
@@ -907,6 +964,9 @@ ipv4_rou:
                         break;
                     case 8: // openvpn
                         decapOpenvpn(tun4_res);
+                        break;
+                    case 9: // wireguard
+                        decapWireguard(tun4_res);
                         break;
                     default:
                         goto drop;
@@ -1122,6 +1182,9 @@ ipv6_hit:
                         break;
                     case 8: // openvpn
                         decapOpenvpn(tun6_res);
+                        break;
+                    case 9: // wireguard
+                        decapWireguard(tun6_res);
                         break;
                     default:
                         goto drop;

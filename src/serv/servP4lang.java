@@ -2372,6 +2372,17 @@ class servP4langConn implements Runnable {
                     prt = "openvpn";
                     par = " " + lp + " " + ifc.ifc.tunOpenvpn.getRemPort() + " " + ifc.ifc.tunOpenvpn.timTx + " " + ifc.ifc.tunOpenvpn.cphrSiz + " " + ifc.ifc.tunOpenvpn.hashSiz + " " + ifc.ifc.tunOpenvpn.transform.encr2str() + " " + ifc.ifc.tunOpenvpn.transform.hash2str() + " " + bits.toHex(ifc.ifc.tunOpenvpn.keyEncr) + " " + bits.toHex(ifc.ifc.tunOpenvpn.keyHash);
                     break;
+                case wireguard:
+                    if (ifc.ifc.tunWireguard.keyTx == null) {
+                        return;
+                    }
+                    lp = ifc.ifc.tunWireguard.getLocPort();
+                    if (lp < 1) {
+                        return;
+                    }
+                    prt = "wireguard";
+                    par = " " + lp + " " + ifc.ifc.tunWireguard.getRemPort() + " " + ifc.ifc.tunWireguard.idxTx + " " + bits.toHex(ifc.ifc.tunWireguard.keyTx) + " " + bits.toHex(ifc.ifc.tunWireguard.keyRx);
+                    break;
                 default:
                     return;
             }
