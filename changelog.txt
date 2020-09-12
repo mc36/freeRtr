@@ -9285,3 +9285,12 @@ qc pass: p4lang: openvpn over ipv6 loopback
 qc pass: p4lang: openvpn over asymmetric ports
 qc pass: p4lang: openvpn with ingress access list
 qc pass: p4lang: openvpn with egress access list
+---------------------------------- 2020-09-12 14:35:22
+qc pass: p4lang: wireguard over ipv4
+qc pass: p4lang: wireguard over ipv6
+qc pass: p4lang: wireguard over ipv4 loopback
+qc pass: p4lang: wireguard over ipv6 loopback
+qc pass: p4lang: wireguard over vlan
+qc pass: p4lang: wireguard over asymmetric ports
+qc pass: p4lang: wireguard with ingress access list
+qc pass: p4lang: wireguard with egress access list

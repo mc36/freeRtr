@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v20.9.12-rel, done by cs@nop.
--;-;-;2020-09-12 11:37:55, took 00:05:25, with 100 workers, on 2054 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2020-09-12 14:41:13, took 00:05:51, with 100 workers, on 2062 cases, 0 failed, 0 traces, 6 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -1112,6 +1112,14 @@ http://sources.nop.hu/cfg/p4lang-crypt55.tst;p4lang-crypt55.tst;success;p4lang: 
 http://sources.nop.hu/cfg/p4lang-crypt56.tst;p4lang-crypt56.tst;success;p4lang: openvpn over asymmetric ports
 http://sources.nop.hu/cfg/p4lang-crypt57.tst;p4lang-crypt57.tst;success;p4lang: openvpn with ingress access list
 http://sources.nop.hu/cfg/p4lang-crypt58.tst;p4lang-crypt58.tst;success;p4lang: openvpn with egress access list
+http://sources.nop.hu/cfg/p4lang-crypt59.tst;p4lang-crypt59.tst;success;p4lang: wireguard over ipv4
+http://sources.nop.hu/cfg/p4lang-crypt60.tst;p4lang-crypt60.tst;success;p4lang: wireguard over ipv6
+http://sources.nop.hu/cfg/p4lang-crypt61.tst;p4lang-crypt61.tst;success;p4lang: wireguard over ipv4 loopback
+http://sources.nop.hu/cfg/p4lang-crypt62.tst;p4lang-crypt62.tst;success;p4lang: wireguard over ipv6 loopback
+http://sources.nop.hu/cfg/p4lang-crypt63.tst;p4lang-crypt63.tst;success;p4lang: wireguard over vlan
+http://sources.nop.hu/cfg/p4lang-crypt64.tst;p4lang-crypt64.tst;success;p4lang: wireguard over asymmetric ports
+http://sources.nop.hu/cfg/p4lang-crypt65.tst;p4lang-crypt65.tst;success;p4lang: wireguard with ingress access list
+http://sources.nop.hu/cfg/p4lang-crypt66.tst;p4lang-crypt66.tst;success;p4lang: wireguard with egress access list
 http://sources.nop.hu/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.nop.hu/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.nop.hu/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core
