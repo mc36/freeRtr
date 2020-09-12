@@ -914,11 +914,8 @@ class servP4langConn implements Runnable {
         ntry.reverse.lastUsed = ntry.lastUsed;
     }
 
-    private void updateRoute(cmds cmd, ipFwd fwd) {
-        addrIPv4 adr = new addrIPv4();
-        adr.fromString(cmd.word());
-        addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(adr, bits.str2num(cmd.word()));
-        tabRouteEntry<addrIP> ntry = fwd.actualU.find(addrPrefix.ip4toIP(prf));
+    private void updateRoute(cmds cmd, ipFwd fwd, addrPrefix<addrIP> prf) {
+        tabRouteEntry<addrIP> ntry = fwd.actualU.find(prf);
         if (ntry == null) {
             if (debugger.servP4langErr) {
                 logger.debug("got unneeded report: " + cmd.getOriginal());
@@ -1093,7 +1090,10 @@ class servP4langConn implements Runnable {
                     }
                     return false;
                 }
-                updateRoute(cmd, vrf.vrf.fwd4);
+                addrIPv4 adr = new addrIPv4();
+                adr.fromString(cmd.word());
+                addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(adr, bits.str2num(cmd.word()));
+                updateRoute(cmd, vrf.vrf.fwd4, addrPrefix.ip4toIP(prf));
                 return false;
             }
             if (s.equals("route6_cnt")) {
@@ -1106,7 +1106,10 @@ class servP4langConn implements Runnable {
                     }
                     return false;
                 }
-                updateRoute(cmd, vrf.vrf.fwd6);
+                addrIPv6 adr = new addrIPv6();
+                adr.fromString(cmd.word());
+                addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(adr, bits.str2num(cmd.word()));
+                updateRoute(cmd, vrf.vrf.fwd6, addrPrefix.ip6toIP(prf));
                 return false;
             }
             if (s.equals("mpls_cnt")) {
