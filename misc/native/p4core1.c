@@ -525,7 +525,6 @@ struct tun4_entry {
     int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=esp, 7=pckoudp, 8=openvpn
     int aclport;
     int spi;
-    int tid;
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
     int encrKeyLen;
@@ -577,7 +576,6 @@ struct tun6_entry {
     int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=esp, 7=pckoudp, 8=openvpn
     int aclport;
     int spi;
-    int tid;
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
     int encrKeyLen;
