@@ -415,6 +415,70 @@ int masks[] = {
     memmove(&bufD[bufP], &buf2[0], 12);
 
 
+#define putOpenvpnHeader                                        \
+    bufP += 2;                                                  \
+    bufP -= 8;                                                  \
+    put32msb(bufD, bufP + 0, neigh_res->seq);                   \
+    put32msb(bufD, bufP + 4, neigh_res->tid);                   \
+    tmp = bufS - bufP + preBuff;                                \
+    tmp2 = neigh_res->encrBlkLen - (tmp % neigh_res->encrBlkLen);   \
+    for (int i=0; i<tmp2; i++) {                                \
+        bufD[bufP + tmp + i] = tmp2;                            \
+    }                                                           \
+    tmp += tmp2;                                                \
+    bufS += tmp2;                                               \
+    bufP -= neigh_res->encrBlkLen;                              \
+    RAND_bytes(&bufD[bufP], neigh_res->encrBlkLen);             \
+    tmp += neigh_res->encrBlkLen;                               \
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
+    if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) goto drop;    \
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
+    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
+    if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;              \
+    if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) goto drop;   \
+    if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;    \
+    bufP -= neigh_res->hashBlkLen;                              \
+    if (EVP_DigestSignFinal(hashCtx, &bufD[bufP], &sizt) != 1) goto drop; \
+    neigh_res->seq++;
+
+
+#define guessEthtyp                                             \
+    switch (bufD[bufP] & 0xf0) {                                \
+        case 0x40:                                              \
+            ethtyp = ETHERTYPE_IPV4;                            \
+            break;                                              \
+        case 0x60:                                              \
+            ethtyp = ETHERTYPE_IPV6;                            \
+            break;                                              \
+    default:                                                    \
+        goto drop;                                              \
+    }
+
+
+#define decapOpenvpn(tun_res)                                   \
+    bufP = bufT + 8;                                            \
+    bufP += tun_res->hashBlkLen;                                \
+    tmp = bufS - bufP + preBuff;                                \
+    if (tmp < 1) goto drop;                                     \
+    if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;              \
+    if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) goto drop; \
+    if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;    \
+    if (EVP_DigestSignFinal(hashCtx, &buf2[0], &sizt) != 1) goto drop;      \
+    if (memcmp(&buf2[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) goto drop;    \
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
+    if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) goto drop;   \
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
+    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
+    bufP += tun_res->encrBlkLen;                                \
+    tmp -= tun_res->encrBlkLen;                                 \
+    bufP += 8;                                                  \
+    guessEthtyp;                                                \
+    bufP -= 2;                                                  \
+    put16msb(bufD, bufP, ethtyp);
+
+
+
+
 #define checkLayer2                                             \
     portvrf_ntry.port = prt;                                    \
     index = table_find(&portvrf_table, &portvrf_ntry);          \
@@ -675,6 +739,16 @@ neigh_tx:
                 putEspHeader;
                 putIpv6header(50, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
                 break;
+            case 11: // openvpn4
+                putOpenvpnHeader;
+                putUdpHeader(neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, 0, 0, 0, neigh_res->dip1, 0, 0, 0);
+                putIpv4header(17, neigh_res->sip1, neigh_res->dip1);
+                break;
+            case 12: // openvpn6
+                putOpenvpnHeader;
+                putUdpHeader(neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+                putIpv6header(17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+                break;
             default:
                 goto drop;
             }
@@ -830,6 +904,9 @@ ipv4_rou:
                         bufP = bufT + 8; // udp header
                         bufP -= 2;
                         put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+                        break;
+                    case 8: // openvpn
+                        decapOpenvpn(tun4_res);
                         break;
                     default:
                         goto drop;
@@ -1042,6 +1119,9 @@ ipv6_hit:
                         bufP = bufT + 8; // udp header
                         bufP -= 2;
                         put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+                        break;
+                    case 8: // openvpn
+                        decapOpenvpn(tun6_res);
                         break;
                     default:
                         goto drop;

@@ -101,13 +101,39 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
      */
     public counter cntr = new counter();
 
+    /**
+     * encryption keys
+     */
+    public byte[] keyEncr = null;
+
+    /**
+     * authentication keys
+     */
+    public byte[] keyHash = null;
+
+    /**
+     * cipher size
+     */
+    public int cphrSiz;
+
+    /**
+     * hash size
+     */
+    public int hashSiz;
+
+    /**
+     * key timestamp
+     */
+    public int timRx;
+
+    /**
+     * key timestamp
+     */
+    public int timTx;
+
     private prtGenConn conn;
 
     private boolean working = true;
-
-    private int cphrSiz;
-
-    private int hashSiz;
 
     private cryHashGeneric hashRx;
 
@@ -123,12 +149,56 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
 
     private int seqTx;
 
-    private int timRx;
-
-    private int timTx;
-
     public String toString() {
         return "openvpn to " + target;
+    }
+
+    /**
+     * get remote address
+     *
+     * @return address
+     */
+    public addrIP getRemAddr() {
+        if (conn == null) {
+            return null;
+        }
+        return conn.peerAddr.copyBytes();
+    }
+
+    /**
+     * get local address
+     *
+     * @return address
+     */
+    public addrIP getLocAddr() {
+        if (conn == null) {
+            return null;
+        }
+        return conn.iface.addr.copyBytes();
+    }
+
+    /**
+     * get remote port
+     *
+     * @return address
+     */
+    public int getRemPort() {
+        if (conn == null) {
+            return 0;
+        }
+        return conn.portRem;
+    }
+
+    /**
+     * get local port
+     *
+     * @return address
+     */
+    public int getLocPort() {
+        if (conn == null) {
+            return 0;
+        }
+        return conn.portLoc;
     }
 
     /**
@@ -294,14 +364,16 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
         bits.byteCopy(buf1, 64, buf2, 0, buf2.length);
         hashRx = transform.getHmac(buf2);
         hashTx = transform.getHmac(buf2);
+        keyHash = buf2;
         cphrRx = transform.getEncr();
         cphrTx = transform.getEncr();
-        buf2 = new byte[cphrTx.getKeySize()];
+        buf2 = new byte[transform.getKeyS()];
         byte[] buf3 = new byte[cphrTx.getBlockSize()];
         bits.byteCopy(buf1, 0, buf2, 0, buf2.length);
         bits.byteCopy(buf1, 0, buf3, 0, buf3.length);
         cphrTx.init(buf2, buf3, true);
         cphrRx.init(buf2, buf3, false);
+        keyEncr = buf2;
         cphrSiz = buf3.length;
         if (replayCheck > 0) {
             sequence = new tabWindow(replayCheck);
