@@ -61,6 +61,7 @@ int tun1
  vrf for v1
  ipv4 addr 3.3.3.1 255.255.255.0
  ipv4 access-group-out test4
+ no ipv4 unreachables
  exit
 int tun2
  tun sou lo1
@@ -72,6 +73,7 @@ int tun2
  vrf for v1
  ipv6 addr 4321::1111 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fff0
  ipv6 access-group-out test6
+ no ipv6 unreachables
  exit
 !
 
@@ -122,6 +124,7 @@ int tun1
  vrf for v1
  ipv4 addr 3.3.3.2 255.255.255.0
  ipv4 access-group-out test4
+ no ipv4 unreachables
  exit
 int tun2
  tun sou lo1
@@ -133,6 +136,7 @@ int tun2
  vrf for v1
  ipv6 addr 4321::1112 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fff0
  ipv6 access-group-out test6
+ no ipv6 unreachables
  exit
 !
 
@@ -183,6 +187,7 @@ int tun1
  vrf for v1
  ipv4 addr 3.3.3.3 255.255.255.0
  ipv4 access-group-out test4
+ no ipv4 unreachables
  exit
 int tun2
  tun sou lo1
@@ -194,6 +199,7 @@ int tun2
  vrf for v1
  ipv6 addr 4321::1113 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fff0
  ipv6 access-group-out test6
+ no ipv6 unreachables
  exit
 !
 
@@ -244,6 +250,7 @@ int tun1
  vrf for v1
  ipv4 addr 3.3.3.4 255.255.255.0
  ipv4 access-group-out test4
+ no ipv4 unreachables
  exit
 int tun2
  tun sou lo1
@@ -255,6 +262,7 @@ int tun2
  vrf for v1
  ipv6 addr 4321::1114 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fff0
  ipv6 access-group-out test6
+ no ipv6 unreachables
  exit
 !
 
