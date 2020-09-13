@@ -407,6 +407,13 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
      * @param pck packet
      */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
+        parseICMPports(pck);
+        if (pck.ICMPtc != icmpEchoReq) {
+            return;
+        }
+        int id = pck.msbGetD(4);
+        pck.UDPsiz = size;
+        fwdCore.echoRecvErr(pck, id, err, rtr);
     }
 
     public String toString() {

@@ -5,6 +5,7 @@ import java.util.Comparator;
 import util.notifier;
 import addr.addrIP;
 import pack.packHolder;
+import util.counter;
 
 /**
  * stores one echo session
@@ -34,10 +35,25 @@ public class ipFwdEcho implements Comparator<ipFwdEcho> {
     public addrIP trg;
 
     /**
+     * reported error
+     */
+    public counter.reasons err;
+
+    /**
+     * reporting router
+     */
+    public addrIP rtr;
+
+    /**
+     * reported label
+     */
+    public int lab;
+
+    /**
      * time when entry created
      */
     public long created;
-    
+
     public int compare(ipFwdEcho o1, ipFwdEcho o2) {
         if (o1.echoNum < o2.echoNum) {
             return -1;
@@ -69,7 +85,7 @@ public class ipFwdEcho implements Comparator<ipFwdEcho> {
         }
         return getMplsExt(pck, 24);
     }
-    
+
     private static int getMplsExt(packHolder pck, int len) {
         int i = pck.dataSize() - len;
         if (i < 0) {
@@ -129,5 +145,5 @@ public class ipFwdEcho implements Comparator<ipFwdEcho> {
         pck.putSkip(12);
         pck.merge2end();
     }
-    
+
 }

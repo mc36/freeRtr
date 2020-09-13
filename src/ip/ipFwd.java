@@ -1998,7 +1998,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param dat filler byte
      * @return notifier notified on reply
      */
-    public notifier echoSendReq(addrIP src, addrIP trg, int size, int ttl, int tos, int dat) {
+    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, int size, int ttl, int tos, int dat) {
         final int maxSize = 8192;
         final int minSize = 16;
         if (size < minSize) {
@@ -2045,12 +2045,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (coppOut != null) {
             if (coppOut.checkPacket(bits.getTime(), pck)) {
                 cntrL.drop(pck, counter.reasons.noBuffer);
-                return ntry.notif;
+                return ntry;
             }
         }
         ipMpls.beginMPLSfields(pck, (mplsPropTtl | ifc.mplsPropTtlAlways) & ifc.mplsPropTtlAllow);
         forwardPacket(false, false, ifc, pck);
-        return ntry.notif;
+        return ntry;
     }
 
     /**
@@ -2075,6 +2075,31 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         echoes.del(ntry);
+        ntry.err = null;
+        ntry.rtr = pck.IPsrc.copyBytes();
+        ntry.lab = -1;
+        ntry.notif.wakeup();
+    }
+
+    /**
+     * got error report to ping
+     *
+     * @param pck packet received
+     * @param id id received
+     * @param err error reported
+     * @param rtr reporting router
+     */
+    public void echoRecvErr(packHolder pck, int id, counter.reasons err, addrIP rtr) {
+        ipFwdEcho ntry = new ipFwdEcho();
+        ntry.echoNum = id;
+        ntry = echoes.find(ntry);
+        if (ntry == null) {
+            return;
+        }
+        echoes.del(ntry);
+        ntry.err = err;
+        ntry.rtr = rtr.copyBytes();
+        ntry.lab = ipFwdEcho.getMplsExt(pck);
         ntry.notif.wakeup();
     }
 

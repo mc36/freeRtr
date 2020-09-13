@@ -7,6 +7,7 @@ import cfg.cfgIfc;
 import cfg.cfgTrack;
 import cfg.cfgVrf;
 import ip.ipFwd;
+import ip.ipFwdEcho;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
 import java.util.ArrayList;
@@ -606,16 +607,22 @@ public class clntTrack implements rtrBfdClnt {
         }
         switch (mode) {
             case icmp:
-                notifier notif = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, typOsrv, 0);
-                if (notif == null) {
+                ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, typOsrv, 0);
+                if (ping == null) {
+                    haveResult(false, false);
                     break;
                 }
-                notif.sleep(timeout);
-                haveResult(notif.totalNotifies() > 0, false);
+                ping.notif.sleep(timeout);
+                if (ping.notif.totalNotifies() < 1) {
+                    haveResult(false, false);
+                    break;
+                }
+                haveResult(ping.err == null, false);
                 break;
             case tcp:
                 prtGen tcp = vrf.getTcp(fwdTrg);
                 if (tcp == null) {
+                    haveResult(false, false);
                     break;
                 }
                 pipeSide pipe = tcp.streamConnect(new pipeLine(65536, false), fwdIfc, 0, fwdTrg, size, "track", null, -1);

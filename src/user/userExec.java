@@ -39,6 +39,7 @@ import cry.cryHashSha3512;
 import cry.cryUtils;
 import ip.ipCor4;
 import ip.ipCor6;
+import ip.ipFwdEcho;
 import ip.ipFwdIface;
 import ip.ipIcmp4;
 import ip.ipIcmp6;
@@ -2433,15 +2434,19 @@ public class userExec {
                 continue;
             }
             ipFwd fwd = vrf.getFwd(strt);
-            notifier notif = fwd.echoSendReq(src, strt, len, ttl, tos, 0);
-            if (notif == null) {
+            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, ttl, tos, 0);
+            if (ping == null) {
                 continue;
             }
-            notif.sleep(tim);
-            if (notif.totalNotifies() < 1) {
+            ping.notif.sleep(tim);
+            if (ping.notif.totalNotifies() < 1) {
                 continue;
             }
-            pipe.linePut(strt + a + " is alive.");
+            if (ping.err == null) {
+                pipe.linePut(strt + a + " is alive.");
+            } else {
+                pipe.linePut(strt + a + " is " + ping.err + " at " + ping.rtr);
+            }
         }
     }
 
@@ -2568,17 +2573,49 @@ public class userExec {
                 continue;
             }
             sent++;
-            notifier notif = fwd.echoSendReq(src, trg, size, ttl, tos, data);
-            if (notif == null) {
+            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, ttl, tos, data);
+            if (ping == null) {
                 pipe.strPut("R");
                 continue;
             }
-            if (notif.totalNotifies() < 1) {
-                notif.sleep(timeout);
+            if (ping.notif.totalNotifies() < 1) {
+                ping.notif.sleep(timeout);
             }
             tiBeg = bits.getTime() - tiBeg;
-            if (notif.totalNotifies() < 1) {
+            if (ping.notif.totalNotifies() < 1) {
                 pipe.strPut(".");
+                continue;
+            }
+            if (ping.err != null) {
+                if (detail) {
+                    pipe.strPut(ping.err + "@" + ping.rtr + " ");
+                    continue;
+                }
+                String a = "?";
+                switch (ping.err) {
+                    case noRoute:
+                        a = "R";
+                        break;
+                    case denied:
+                        a = "D";
+                        break;
+                    case notInTab:
+                        a = "H";
+                        break;
+                    case fragment:
+                        a = "F";
+                        break;
+                    case ttlExceed:
+                        a = "T";
+                        break;
+                    case badProto:
+                        a = "P";
+                        break;
+                    case badPort:
+                        a = "p";
+                        break;
+                }
+                pipe.strPut(a);
                 continue;
             }
             recv++;
