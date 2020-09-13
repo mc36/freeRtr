@@ -2072,7 +2072,6 @@ todo: tls1.3
 todo: http2.0
 todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
-todo: protocol traceroute
 todo: optimal route reflection
 todo: bgp vpns with sr-policy
 todo: pipeline properties, terminal autoresize
