@@ -1025,6 +1025,8 @@ public class userExec {
         hl.add("4 3,.        <num>               tos");
         hl.add("3 4        /port                 specify port value");
         hl.add("4 3,.        <num>               port");
+        hl.add("3 4        /protocol             specify protocol value");
+        hl.add("4 3,.        <num>               port");
         hl.add("3 4        /size                 specify payload size");
         hl.add("4 3,.        <num>               byte count");
         hl.add("3 4        /router               lookup intermediate hops");
@@ -2196,9 +2198,10 @@ public class userExec {
         int timeout = 1000;
         int tos = 0;
         int len = 64;
-        int proto = 0;
+        int ipver = 0;
         int delay = 0;
         int port = 33440;
+        int proto = 0;
         boolean resolv = false;
         ipRtr rtr = null;
         for (;;) {
@@ -2223,16 +2226,20 @@ public class userExec {
                 port = bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("/protocol")) {
+                proto = bits.str2num(cmd.word());
+                continue;
+            }
             if (a.equals("/delay")) {
                 delay = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("/ipv4")) {
-                proto = 4;
+                ipver = 4;
                 continue;
             }
             if (a.equals("/ipv6")) {
-                proto = 6;
+                ipver = 6;
                 continue;
             }
             if (a.equals("/tos")) {
@@ -2264,7 +2271,7 @@ public class userExec {
             cmd.error("vrf not specified");
             return;
         }
-        addrIP trg = userTerminal.justResolv(rem, proto);
+        addrIP trg = userTerminal.justResolv(rem, ipver);
         if (trg == null) {
             cmd.error("bad host");
             return;
@@ -2276,7 +2283,8 @@ public class userExec {
         trc.vrf = vrf;
         trc.ifc = ifc;
         trc.trg = trg;
-        trc.prt = port;
+        trc.port = port;
+        trc.proto = proto;
         if (trc.register2ip()) {
             cmd.error("bind error");
             return;
@@ -2285,7 +2293,7 @@ public class userExec {
         if (ifc != null) {
             src = ifc.getLocAddr(trg);
         }
-        pipe.linePut("tracing " + trg + ", src=" + src + ", vrf=" + vrf.name + ", prt=" + port + ", tim=" + timeout + ", tos=" + tos + ", len=" + len);
+        pipe.linePut("tracing " + trg + ", src=" + src + ", vrf=" + vrf.name + ", prt=" + proto + "/" + port + ", tim=" + timeout + ", tos=" + tos + ", len=" + len);
         len -= adjustSize(trg);
         int none = 0;
         for (int ttl = 1; ttl < 255; ttl++) {

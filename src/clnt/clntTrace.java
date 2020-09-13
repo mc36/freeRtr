@@ -3,7 +3,11 @@ package clnt;
 import addr.addrIP;
 import cfg.cfgIfc;
 import cfg.cfgVrf;
+import ip.ipFwd;
+import ip.ipFwdEcho;
 import ip.ipFwdIface;
+import ip.ipFwdTab;
+import ip.ipPrt;
 import pack.packHolder;
 import prt.prtGenConn;
 import prt.prtServP;
@@ -11,13 +15,14 @@ import prt.prtUdp;
 import util.bits;
 import util.counter;
 import util.notifier;
+import util.state;
 
 /**
  * traceroute helper
  *
  * @author matecsaba
  */
-public class clntTrace implements prtServP {
+public class clntTrace implements prtServP, ipPrt {
 
     /**
      * vrf to use
@@ -37,7 +42,12 @@ public class clntTrace implements prtServP {
     /**
      * target port
      */
-    public int prt;
+    public int port;
+
+    /**
+     * target protocol
+     */
+    public int proto;
 
     /**
      * reporting router
@@ -61,11 +71,21 @@ public class clntTrace implements prtServP {
 
     private prtGenConn con;
 
+    private ipFwdIface ifc2;
+
+    private ipFwd fwd;
+
+    private prtUdp udp;
+
     private notifier notif = new notifier();
 
     private int magic;
 
     private long started;
+
+    public String toString() {
+        return "traceroute to " + trg;
+    }
 
     /**
      * register to protocol
@@ -79,21 +99,36 @@ public class clntTrace implements prtServP {
         if (vrf == null) {
             return true;
         }
-        ipFwdIface ifc2 = null;
+        ifc2 = null;
         if (ifc != null) {
             ifc2 = ifc.getFwdIfc(trg);
+        } else {
+            ifc2 = ipFwdTab.findSendingIface(fwd, trg);
         }
-        prtUdp udp = vrf.getUdp(trg);
-        con = udp.packetConnect(this, ifc2, 0, trg, prt, "traceroute", null, -1);
-        return con == null;
+        if (ifc2 == null) {
+            return true;
+        }
+        fwd = vrf.getFwd(trg);
+        udp = vrf.getUdp(trg);
+        if (proto > 0) {
+            return fwd.protoAdd(this, ifc2, trg);
+        } else {
+            con = udp.packetConnect(this, ifc2, 0, trg, port, "traceroute", null, -1);
+            return con == null;
+        }
     }
 
     /**
      * unregister from protocol
      */
     public void unregister2ip() {
-        if (con != null) {
-            con.setClosing();
+        if (proto > 0) {
+            fwd.protoDel(this, ifc2, trg);
+        } else {
+            if (con != null) {
+                con.setClosing();
+            }
+            con = null;
         }
     }
 
@@ -107,21 +142,31 @@ public class clntTrace implements prtServP {
      * @return true on error, false on success
      */
     public boolean doRound(int ttl, int tos, int tim, int len) {
-        if (con == null) {
-            return true;
-        }
         errRtr = null;
         errLab = -1;
         errCod = null;
         errTim = tim;
-        con.sendTOS = tos;
-        con.sendTTL = ttl;
+        if (con != null) {
+            con.sendTOS = tos;
+            con.sendTTL = ttl;
+        }
         packHolder pck = new packHolder(true, true);
+        pck.putDefaults();
         magic = bits.randomD();
         pck.msbPutD(0, magic);
         pck.putSkip(len);
+        pck.merge2beg();
+        pck.IPttl = ttl;
+        pck.IPtos = tos;
         started = bits.getTime();
-        con.send2net(pck);
+        pck.IPprt = proto;
+        pck.IPsrc.setAddr(ifc2.addr);
+        pck.IPtrg.setAddr(trg);
+        if (proto > 0) {
+            fwd.protoPack(ifc2, pck);
+        } else {
+            con.send2net(pck);
+        }
         notif.misleep(tim);
         return errRtr == null;
     }
@@ -168,6 +213,18 @@ public class clntTrace implements prtServP {
     public void datagramWork(prtGenConn id) {
     }
 
+    private void gotPack(packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        if (pck.msbGetD(0) != magic) {
+            return;
+        }
+        magic++;
+        errTim = (int) (bits.getTime() - started);
+        errRtr = rtr.copyBytes();
+        errCod = err;
+        errLab = lab;
+        notif.wakeup();
+    }
+
     /**
      * received error
      *
@@ -179,15 +236,7 @@ public class clntTrace implements prtServP {
      * @return false on success, true on error
      */
     public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
-        if (pck.msbGetD(0) != magic) {
-            return true;
-        }
-        magic++;
-        errTim = (int) (bits.getTime() - started);
-        errRtr = rtr.copyBytes();
-        errCod = err;
-        errLab = lab;
-        notif.wakeup();
+        gotPack(pck, rtr, err, lab);
         return false;
     }
 
@@ -199,16 +248,35 @@ public class clntTrace implements prtServP {
      * @return false on success, true on error
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        if (pck.msbGetD(0) != magic) {
-            return true;
-        }
-        magic++;
-        errTim = (int) (bits.getTime() - started);
-        errRtr = pck.IPsrc.copyBytes();
-        errLab = -1;
-        errCod = null;
-        notif.wakeup();
+        gotPack(pck, pck.IPsrc, null, -1);
         return false;
+    }
+
+    public int getProtoNum() {
+        return proto;
+    }
+
+    public void closeUp(ipFwdIface iface) {
+    }
+
+    public void setState(ipFwdIface iface, state.states stat) {
+    }
+
+    public void recvPack(ipFwdIface rxIfc, packHolder pck) {
+        gotPack(pck, pck.IPsrc, null, -1);
+    }
+
+    public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
+        return false;
+    }
+
+    public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
+        int lab = ipFwdEcho.getMplsExt(pck);
+        gotPack(pck, rtr, err, lab);
+    }
+
+    public counter getCounter() {
+        return new counter();
     }
 
 }

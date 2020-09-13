@@ -10,7 +10,6 @@ tls1.3
 http2.0
 terminal mode resolve
 hostwatch to execute script on acl match
-protocol traceroute
 optimal route reflection
 bgp vpns with sr-policy
 pipeline properties, terminal autoresize
