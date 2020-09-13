@@ -2071,7 +2071,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
-        if (ntry.trg.compare(ntry.src, pck.IPtrg) != 0) {
+        if (ntry.src.compare(ntry.src, pck.IPtrg) != 0) {
             return;
         }
         echoes.del(ntry);
@@ -2094,6 +2094,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ntry.echoNum = id;
         ntry = echoes.find(ntry);
         if (ntry == null) {
+            return;
+        }
+        if (ntry.trg.compare(ntry.trg, pck.IPtrg) != 0) {
+            return;
+        }
+        if (ntry.src.compare(ntry.src, pck.IPsrc) != 0) {
             return;
         }
         echoes.del(ntry);
