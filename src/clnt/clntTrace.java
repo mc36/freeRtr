@@ -99,6 +99,8 @@ public class clntTrace implements prtServP, ipPrt {
         if (vrf == null) {
             return true;
         }
+        fwd = vrf.getFwd(trg);
+        udp = vrf.getUdp(trg);
         ifc2 = null;
         if (ifc != null) {
             ifc2 = ifc.getFwdIfc(trg);
@@ -108,8 +110,6 @@ public class clntTrace implements prtServP, ipPrt {
         if (ifc2 == null) {
             return true;
         }
-        fwd = vrf.getFwd(trg);
-        udp = vrf.getUdp(trg);
         if (proto > 0) {
             return fwd.protoAdd(this, ifc2, trg);
         } else {
