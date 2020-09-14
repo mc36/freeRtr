@@ -522,11 +522,18 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
      *
      * @param trg target list
      * @param ace source ace
+     * @param neg negate ace
      */
-    public static void unrollAce(tabListing<tabAceslstN<addrIP>, addrIP> trg, tabAceslstN<addrIP> ace) {
+    public static void unrollAce(tabListing<tabAceslstN<addrIP>, addrIP> trg, tabAceslstN<addrIP> ace, boolean neg) {
         if (ace.evaluate != null) {
-            unrollAcl(trg, ace.evaluate);
+            unrollAcl(trg, ace.evaluate, ace.action != actionType.actPermit);
             return;
+        }
+        actionType act;
+        if (neg) {
+            act = tabListingEntry.negateAction(ace.action);
+        } else {
+            act = ace.action;
         }
         String str = ace.toString();
         tabAceslstN<addrIP> ntry;
@@ -558,7 +565,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
                 ntry.trgPort = ace.trgOGprt.get(dp).port;
             }
             ntry.sequence = trg.nextseq();
-            ntry.action = ace.action;
+            ntry.action = act;
             trg.add(ntry);
             boolean incr = true;
             if (incr && (ace.trgOGprt != null)) {
@@ -600,10 +607,11 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
      *
      * @param trg target list
      * @param src source list
+     * @param neg negate aces
      */
-    public static void unrollAcl(tabListing<tabAceslstN<addrIP>, addrIP> trg, tabListing<tabAceslstN<addrIP>, addrIP> src) {
+    public static void unrollAcl(tabListing<tabAceslstN<addrIP>, addrIP> trg, tabListing<tabAceslstN<addrIP>, addrIP> src, boolean neg) {
         for (int i = 0; i < src.size(); i++) {
-            unrollAce(trg, src.get(i));
+            unrollAce(trg, src.get(i), neg);
         }
     }
 
@@ -617,7 +625,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         tabListing<tabAceslstN<addrIP>, addrIP> res = new tabListing<tabAceslstN<addrIP>, addrIP>();
         res.copyCores(src);
         res.listName = "unroll of " + src.listName;
-        unrollAcl(res, src);
+        unrollAcl(res, src, false);
         return res;
     }
 

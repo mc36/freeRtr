@@ -48,6 +48,23 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
     }
 
     /**
+     * negate action
+     *
+     * @param act action
+     * @return negated
+     */
+    public static actionType negateAction(actionType act) {
+        switch (act) {
+            case actDeny:
+                return actionType.actPermit;
+            case actPermit:
+                return actionType.actDeny;
+            default:
+                return act;
+        }
+    }
+
+    /**
      * sequence number of this entry
      */
     public int sequence;
