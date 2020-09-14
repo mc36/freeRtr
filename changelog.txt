@@ -9296,3 +9296,24 @@ qc pass: p4lang: wireguard with ingress access list
 qc pass: p4lang: wireguard with egress access list
 ---------------------------------- 2020-09-13 03:31:43
 no todo: protocol traceroute
+---------------------------------- 2020-09-14 14:18:14
+qc pass: ingress protocol matching hierarchical access list
+qc pass: egress protocol matching hierarchical access list
+qc pass: ingress destination matching hierarchical access list
+qc pass: egress destination matching hierarchical access list
+qc pass: ingress source matching hierarchical access list
+qc pass: egress source matching hierarchical access list
+qc pass: ingress ttl matching hierarchical access list
+qc pass: egress ttl matching hierarchical access list
+qc pass: ingress tos matching hierarchical access list
+qc pass: egress tos matching hierarchical access list
+qc pass: ingress length matching hierarchical access list
+qc pass: egress length matching hierarchical access list
+qc pass: ingress source port matching hierarchical access list
+qc pass: egress source port matching hierarchical access list
+qc pass: ingress destination port matching hierarchical access list
+qc pass: egress destination port matching hierarchical access list
+qc pass: reflexive access list
+qc pass: p4lang: ingress hierarchical access list
+qc pass: p4lang: egress hierarchical access list
+qc pass: redistribution filtering with hierarchical prefixlist

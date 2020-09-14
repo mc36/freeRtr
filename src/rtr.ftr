@@ -391,6 +391,23 @@ qc pass: ingress source port matching common access list
 qc pass: egress source port matching common access list
 qc pass: ingress destination port matching common access list
 qc pass: egress destination port matching common access list
+qc pass: ingress protocol matching hierarchical access list
+qc pass: egress protocol matching hierarchical access list
+qc pass: ingress destination matching hierarchical access list
+qc pass: egress destination matching hierarchical access list
+qc pass: ingress source matching hierarchical access list
+qc pass: egress source matching hierarchical access list
+qc pass: ingress ttl matching hierarchical access list
+qc pass: egress ttl matching hierarchical access list
+qc pass: ingress tos matching hierarchical access list
+qc pass: egress tos matching hierarchical access list
+qc pass: ingress length matching hierarchical access list
+qc pass: egress length matching hierarchical access list
+qc pass: ingress source port matching hierarchical access list
+qc pass: egress source port matching hierarchical access list
+qc pass: ingress destination port matching hierarchical access list
+qc pass: egress destination port matching hierarchical access list
+qc pass: reflexive access list
 qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6
@@ -1050,6 +1067,8 @@ qc pass: p4lang: ingress common access list
 qc pass: p4lang: egress common access list
 qc pass: p4lang: ingress hibryd access list
 qc pass: p4lang: egress hibryd access list
+qc pass: p4lang: ingress hierarchical access list
+qc pass: p4lang: egress hierarchical access list
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128
@@ -2008,6 +2027,7 @@ qc pass: conditional redistribution with routemap
 qc pass: conditional redistribution with routepolicy
 qc pass: redistribution with interfaces
 qc pass: redistribution with metric
+qc pass: redistribution filtering with hierarchical prefixlist
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist

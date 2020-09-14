@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
 release: freeRouter v20.9.14-rel, done by cs@nop.<br/>
-tested: 2020-09-14 10:57:54, took 00:04:32, with 100 workers, on 2062 cases, 0 failed, 0 traces, 2 retries<br/>
+tested: 2020-09-14 14:25:01, took 00:06:47, with 100 workers, on 2082 cases, 0 failed, 0 traces, 9 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr>
@@ -398,6 +398,23 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-acl44.tst">crypt-acl44.tst</a></td><td>success</td><td>egress source port matching common access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-acl45.tst">crypt-acl45.tst</a></td><td>success</td><td>ingress destination port matching common access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-acl46.tst">crypt-acl46.tst</a></td><td>success</td><td>egress destination port matching common access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl47.tst">crypt-acl47.tst</a></td><td>success</td><td>ingress protocol matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl48.tst">crypt-acl48.tst</a></td><td>success</td><td>egress protocol matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl49.tst">crypt-acl49.tst</a></td><td>success</td><td>ingress destination matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl50.tst">crypt-acl50.tst</a></td><td>success</td><td>egress destination matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl51.tst">crypt-acl51.tst</a></td><td>success</td><td>ingress source matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl52.tst">crypt-acl52.tst</a></td><td>success</td><td>egress source matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl53.tst">crypt-acl53.tst</a></td><td>success</td><td>ingress ttl matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl54.tst">crypt-acl54.tst</a></td><td>success</td><td>egress ttl matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl55.tst">crypt-acl55.tst</a></td><td>success</td><td>ingress tos matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl56.tst">crypt-acl56.tst</a></td><td>success</td><td>egress tos matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl57.tst">crypt-acl57.tst</a></td><td>success</td><td>ingress length matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl58.tst">crypt-acl58.tst</a></td><td>success</td><td>egress length matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl59.tst">crypt-acl59.tst</a></td><td>success</td><td>ingress source port matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl60.tst">crypt-acl60.tst</a></td><td>success</td><td>egress source port matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl61.tst">crypt-acl61.tst</a></td><td>success</td><td>ingress destination port matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl62.tst">crypt-acl62.tst</a></td><td>success</td><td>egress destination port matching hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-acl63.tst">crypt-acl63.tst</a></td><td>success</td><td>reflexive access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-dtls.tst">crypt-dtls.tst</a></td><td>success</td><td>dtls test</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-esp101.tst">crypt-esp101.tst</a></td><td>success</td><td>ipv4 in esp over ipv4</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-esp102.tst">crypt-esp102.tst</a></td><td>success</td><td>ipv4 in esp over ipv6</td></tr>
@@ -1057,6 +1074,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl40.tst">p4lang-acl40.tst</a></td><td>success</td><td>p4lang: egress common access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl41.tst">p4lang-acl41.tst</a></td><td>success</td><td>p4lang: ingress hibryd access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl42.tst">p4lang-acl42.tst</a></td><td>success</td><td>p4lang: egress hibryd access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl43.tst">p4lang-acl43.tst</a></td><td>success</td><td>p4lang: ingress hierarchical access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl44.tst">p4lang-acl44.tst</a></td><td>success</td><td>p4lang: egress hierarchical access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt01.tst">p4lang-crypt01.tst</a></td><td>success</td><td>p4lang: macsec with des</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt02.tst">p4lang-crypt02.tst</a></td><td>success</td><td>p4lang: macsec with 3des</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt03.tst">p4lang-crypt03.tst</a></td><td>success</td><td>p4lang: macsec with aes128</td></tr>
@@ -2015,6 +2034,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist25.tst">rout-redist25.tst</a></td><td>success</td><td>conditional redistribution with routepolicy</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist26.tst">rout-redist26.tst</a></td><td>success</td><td>redistribution with interfaces</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-redist27.tst">rout-redist27.tst</a></td><td>success</td><td>redistribution with metric</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-redist28.tst">rout-redist28.tst</a></td><td>success</td><td>redistribution filtering with hierarchical prefixlist</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-rip01.tst">rout-rip01.tst</a></td><td>success</td><td>rip on one subnet</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-rip02.tst">rout-rip02.tst</a></td><td>success</td><td>rip in chain</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-rip03.tst">rout-rip03.tst</a></td><td>success</td><td>rip ingress route filtering with prefixlist</td></tr>
