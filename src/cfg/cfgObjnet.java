@@ -47,8 +47,8 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1  2   sequence              sequence number of an entry");
         l.add("2  1     <num>               sequence number");
-        l.add("1  3,. description                   specify description");
-        l.add("3  3,.   <str>                       text");
+        l.add("1  3,. description           specify description");
+        l.add("3  3,.   <str>               text");
         l.add("1  3       <addr>            address of network");
         l.add("3  .         <mask>          mask of network");
         l.add("1  2,. reindex               reindex access list");

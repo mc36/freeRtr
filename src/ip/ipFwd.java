@@ -333,11 +333,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public int untriggeredRecomputation = 120 * 1000;
 
     /**
-     * time when purge nat entries
-     */
-    public int natTimeout = 300 * 1000;
-
-    /**
      * notify when table changed
      */
     public notifier tableChanged;

@@ -15,6 +15,7 @@ import prt.prtSctp;
 import prt.prtTcp;
 import prt.prtUdp;
 import prt.prtLudp;
+import util.bits;
 import util.cmds;
 import util.debugger;
 import util.logger;
@@ -71,7 +72,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
                 continue;
             }
             l.addAll(ntry.usrString(" "));
-            l.add("  match=" + ntry.getCounters());
+            l.add("  match=" + ntry.getCounters() + " accessed=" + ntry.getTimes());
         }
         return l;
     }
@@ -98,6 +99,55 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             logger.debug("clear");
         }
         entries.clear();
+    }
+
+    /**
+     * clear counters
+     */
+    public void counterClear() {
+        if (debugger.tabListingEvnt) {
+            logger.debug("clear counters");
+        }
+        for (int i = 0; i < entries.size(); i++) {
+            Te ntry = entries.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry.countByte = 0;
+            ntry.countPack = 0;
+            ntry.lastMatch = 0;
+        }
+    }
+
+    /**
+     * clear aged entries
+     *
+     * @return entries removed
+     */
+    public int purgeAged() {
+        if (debugger.tabListingEvnt) {
+            logger.debug("purge aged");
+        }
+        long tim = bits.getTime();
+        int done = 0;
+        for (int i = entries.size() - 1; i >= 0; i--) {
+            Te ntry = entries.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.timeout < 1) {
+                continue;
+            }
+            if ((tim - ntry.lastMatch) < ntry.timeout) {
+                continue;
+            }
+            entries.del(ntry);
+            done++;
+        }
+        if (done > 0) {
+            reindex(0, 0);
+        }
+        return done;
     }
 
     /**
@@ -277,6 +327,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             }
             if (ntry.matches(afi, net)) {
                 ntry.countPack++;
+                ntry.lastMatch = bits.getTime();
                 if (ntry.logMatch) {
                     logger.info("list " + listName + " matched at sequence " + ntry.sequence + " on " + net);
                 }
@@ -301,6 +352,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             }
             if (ntry.matches(afi, net)) {
                 ntry.countPack++;
+                ntry.lastMatch = bits.getTime();
                 if (ntry.logMatch) {
                     logger.info("list " + listName + " matched at sequence " + ntry.sequence + " on " + net);
                 }
@@ -325,6 +377,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             if (ntry.matches(pck)) {
                 ntry.countPack += 1;
                 ntry.countByte += pck.dataSize();
+                ntry.lastMatch = bits.getTime();
                 if (ntry.logMatch) {
                     logger.info("list " + listName + " matched at sequence " + ntry.sequence + " on " + pck.ETHsrc + " " + pck.ETHtrg + " " + pck.IPprt + " " + pck.IPsrc + " " + pck.UDPsrc + " -> " + pck.IPtrg + " " + pck.UDPtrg);
                 }

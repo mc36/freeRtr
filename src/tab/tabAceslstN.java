@@ -108,6 +108,26 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
     public tabIntMatcher flag;
 
     /**
+     * list to evaluate
+     */
+    public tabListing<tabAceslstN<T>, T> evaluate;
+
+    /**
+     * list to forward reflect
+     */
+    public tabListing<tabAceslstN<T>, T> reflectFwd;
+
+    /**
+     * list to reverse reflect
+     */
+    public tabListing<tabAceslstN<T>, T> reflectRev;
+
+    /**
+     * timeout to reflect
+     */
+    public int reflectTim;
+
+    /**
      * create new access list entry
      *
      * @param adr empty address to use
@@ -317,8 +337,17 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
      * @return string
      */
     public List<String> usrString(String beg) {
+        String a;
+        if (evaluate != null) {
+            a = "evaluate " + tabListingEntry.action2string(action) + " " + evaluate.listName;
+        } else {
+            a = tabListingEntry.action2string(action) + " " + this;
+        }
         List<String> l = new ArrayList<String>();
-        l.add(beg + "sequence " + sequence + " " + tabListingEntry.action2string(action) + " " + this);
+        l.add(beg + "sequence " + sequence + " " + a);
+        if (reflectFwd != null) {
+            l.add(beg + "sequence " + sequence + " reflect " + reflectFwd.listName + " " + reflectRev.listName + " " + reflectTim);
+        }
         return l;
     }
 
@@ -360,6 +389,13 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
      * @return false on success, true on error
      */
     public boolean matches(packHolder pck) {
+        if (evaluate != null) {
+            tabAceslstN<T> res = evaluate.find(pck);
+            if (res == null) {
+                return false;
+            }
+            return res.matches(pck);
+        }
         if (!proto.matches(pck.IPprt)) {
             return false;
         }
@@ -425,7 +461,60 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
                 return false;
             }
         }
+        if (reflectFwd != null) {
+            tabAceslstN<T> ntry = pack2ace(pck);
+            ntry.sequence = reflectFwd.nextseq();
+            ntry.action = actionType.actPermit;
+            ntry.timeout = reflectTim;
+            reflectFwd.add(ntry);
+            ntry = pack2ace(pck);
+            ntry.reverseAce();
+            ntry.sequence = reflectRev.nextseq();
+            ntry.action = actionType.actPermit;
+            ntry.timeout = reflectTim;
+            reflectRev.add(ntry);
+        }
         return true;
+    }
+
+    /**
+     * reverse this ace
+     */
+    public void reverseAce() {
+        tabIntMatcher im = srcPort;
+        srcPort = trgPort;
+        trgPort = im;
+        T a = srcAddr;
+        srcAddr = trgAddr;
+        trgAddr = a;
+        a = srcMask;
+        srcMask = trgMask;
+        trgMask = a;
+        tabListing<tabObjnetN<T>, T> on = srcOGnet;
+        srcOGnet = trgOGnet;
+        trgOGnet = on;
+        tabListing<tabObjprtN<T>, T> op = srcOGprt;
+        srcOGprt = trgOGprt;
+        trgOGprt = op;
+    }
+
+    /**
+     * create ace from packet
+     *
+     * @param pck packet
+     * @return ace
+     */
+    public tabAceslstN<T> pack2ace(packHolder pck) {
+        tabAceslstN<T> ntry = new tabAceslstN<T>(trgAddr);
+        ntry.proto.setExact(pck.IPprt);
+        ntry.srcPort.setExact(pck.UDPsrc);
+        ntry.trgPort.setExact(pck.UDPtrg);
+        ntry.srcAddr.setAddr(pck.IPsrc);
+        ntry.trgAddr.setAddr(pck.IPtrg);
+        ntry.srcMask.fromNetmask(ntry.srcMask.maxBits());
+        ntry.trgMask.fromNetmask(ntry.trgMask.maxBits());
+        ntry.lastMatch = bits.getTime();
+        return ntry;
     }
 
     /**
@@ -435,6 +524,10 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
      * @param ace source ace
      */
     public static void unrollAce(tabListing<tabAceslstN<addrIP>, addrIP> trg, tabAceslstN<addrIP> ace) {
+        if (ace.evaluate != null) {
+            unrollAcl(trg, ace.evaluate);
+            return;
+        }
         String str = ace.toString();
         tabAceslstN<addrIP> ntry;
         int sn = 0;
@@ -505,6 +598,18 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
     /**
      * unroll one list
      *
+     * @param trg target list
+     * @param src source list
+     */
+    public static void unrollAcl(tabListing<tabAceslstN<addrIP>, addrIP> trg, tabListing<tabAceslstN<addrIP>, addrIP> src) {
+        for (int i = 0; i < src.size(); i++) {
+            unrollAce(trg, src.get(i));
+        }
+    }
+
+    /**
+     * unroll one list
+     *
      * @param src source list
      * @return result
      */
@@ -512,9 +617,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         tabListing<tabAceslstN<addrIP>, addrIP> res = new tabListing<tabAceslstN<addrIP>, addrIP>();
         res.copyCores(src);
         res.listName = "unroll of " + src.listName;
-        for (int i = 0; i < src.size(); i++) {
-            unrollAce(res, src.get(i));
-        }
+        unrollAcl(res, src);
         return res;
     }
 

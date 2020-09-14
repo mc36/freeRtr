@@ -40,37 +40,6 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         prflst = new tabListing<tabPrfxlstN, addrIP>();
     }
 
-    /**
-     * add one table entry with preset values
-     *
-     * @param seq sequence number
-     * @param act prefix allower, true to permit, false to deny
-     * @param s string represeting network/mask ge X le Y
-     * @return true if error happened, false if not
-     */
-    public synchronized boolean add(int seq, tabListingEntry.actionType act, String s) {
-        tabPrfxlstN ntry = new tabPrfxlstN();
-        if (ntry.fromString(s)) {
-            return true;
-        }
-        ntry.sequence = seq;
-        ntry.action = act;
-        prflst.add(ntry);
-        return false;
-    }
-
-    /**
-     * delete one entry
-     *
-     * @param seq sequence number
-     * @return true if deleted, false if not
-     */
-    public boolean del(int seq) {
-        tabPrfxlstN ntry = new tabPrfxlstN();
-        ntry.sequence = seq;
-        return prflst.del(ntry);
-    }
-
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         l.add("prefix-list " + name);
@@ -89,6 +58,10 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         l.add("2 1     <num>               sequence number");
         l.add("1 3,. description           specify description");
         l.add("3 3,.   <str>               text");
+        l.add("1 3   evaluate              evaluate another list");
+        l.add("3 4     permit              specify list to allow");
+        l.add("3 4     deny                specify list to forbid");
+        l.add("4 .       <name>            name of list");
         l.add("1 3   permit                specify networks to allow");
         l.add("1 3   deny                  specify networks to forbid");
         l.add("3 4,.   <net/mask>          network in perfix/mask format");
@@ -112,7 +85,9 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
                 return;
             }
             if (a.equals("sequence")) {
-                if (del(bits.str2num(cmd.word()))) {
+                tabPrfxlstN ntry = new tabPrfxlstN();
+                ntry.sequence = bits.str2num(cmd.word());
+                if (prflst.del(ntry)) {
                     cmd.error("invalid sequence");
                     return;
                 }
@@ -135,10 +110,25 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
             seq = bits.str2num(cmd.word());
             a = cmd.word();
         }
-        if (add(seq, tabListingEntry.string2action(a), cmd.getRemaining())) {
+        tabPrfxlstN ntry = new tabPrfxlstN();
+        ntry.sequence = seq;
+        if (a.equals("evaluate")) {
+            ntry.action = tabListingEntry.string2action(cmd.word());
+            cfgPrfxlst res = cfgAll.prfxFind(cmd.word(), false);
+            if (res == null) {
+                cmd.error("no such list");
+                return;
+            }
+            ntry.evaluate = res.prflst;
+            prflst.add(ntry);
+            return;
+        }
+        ntry.action = tabListingEntry.string2action(a);
+        if (ntry.fromString(cmd.getRemaining())) {
             cmd.error("invalid network");
             return;
         }
+        prflst.add(ntry);
     }
 
     public int compare(cfgPrfxlst o1, cfgPrfxlst o2) {

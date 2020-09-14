@@ -2,6 +2,7 @@ package user;
 
 import addr.addrIP;
 import addr.addrMac;
+import cfg.cfgAceslst;
 import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgBrdg;
@@ -9,11 +10,16 @@ import cfg.cfgDial;
 import cfg.cfgIfc;
 import cfg.cfgInit;
 import cfg.cfgLin;
+import cfg.cfgObjnet;
+import cfg.cfgObjprt;
 import cfg.cfgRtr;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
 import cfg.cfgVdc;
 import cfg.cfgPrcss;
+import cfg.cfgPrfxlst;
+import cfg.cfgRoump;
+import cfg.cfgRouplc;
 import cfg.cfgVpdn;
 import cfg.cfgVrf;
 import clnt.clntDns;
@@ -161,6 +167,75 @@ public class userClear {
                 return null;
             }
             ntry.bridgeHed.delMacs(ifc.bridgeIfc);
+            return null;
+        }
+        if (a.equals("object-group")) {
+            a = cmd.word();
+            if (a.equals("network")) {
+                cfgObjnet ntry = cfgAll.objnetFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such object group");
+                    return null;
+                }
+                ntry.objgrp.counterClear();
+                return null;
+            }
+            if (a.equals("port")) {
+                cfgObjprt ntry = cfgAll.objprtFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such object group");
+                    return null;
+                }
+                ntry.objgrp.counterClear();
+                return null;
+            }
+            cmd.badCmd();
+            return null;
+        }
+        if (a.equals("reflected-acl")) {
+            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such list");
+                return null;
+            }
+            int i = ntry.aceslst.purgeAged();
+            cmd.error(i + " entries removed");
+            return null;
+        }
+        if (a.equals("access-list")) {
+            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such list");
+                return null;
+            }
+            ntry.aceslst.counterClear();
+            return null;
+        }
+        if (a.equals("prefix-list")) {
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such list");
+                return null;
+            }
+            ntry.prflst.counterClear();
+            return null;
+        }
+        if (a.equals("route-map")) {
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such map");
+                return null;
+            }
+            ntry.roumap.counterClear();
+            return null;
+        }
+        if (a.equals("route-policy")) {
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such map");
+                return null;
+            }
+            ntry.rouplc.counterClear();
             return null;
         }
         if (a.equals("counters")) {

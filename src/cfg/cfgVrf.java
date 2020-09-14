@@ -364,7 +364,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no source6route",
         "vrf definition .*! no counter4map",
         "vrf definition .*! no counter6map",
-        "!ipv[4|6] nat .* timeout 300000"
+        "!ipv[4|6] nat .* sequence .* timeout 300000"
     };
 
     /**
@@ -538,7 +538,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     }
 
     private void addCfgNats(List<String> l, int p, ipFwd f) {
-        l.add("ipv" + p + " nat " + name + " timeout " + f.natTimeout);
         for (int i = 0; i < f.natCfg.size(); i++) {
             tabNatCfgN nat = f.natCfg.get(i);
             l.addAll(nat.usrString("ipv" + p + " nat " + name + " "));

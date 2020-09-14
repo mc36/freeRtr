@@ -2369,12 +2369,17 @@ public class userConfig {
         }
         String s = cmd.getRemaining();
         String a = cmd.word();
-        if (a.equals("timeout")) {
-            fwd.natTimeout = bits.str2num(cmd.word());
+        ntry.sequence = fwd.natCfg.nextseq();
+        int ot = ntry.timeout;
+        if (ntry.fromString(s)) {
             return null;
         }
-        ntry.sequence = fwd.natCfg.nextseq();
-        if (ntry.fromString(s)) {
+        if (ot != ntry.timeout) {
+            tabNatCfgN res = fwd.natCfg.find(ntry);
+            if (res == null) {
+                return null;
+            }
+            res.timeout = ntry.timeout;
             return null;
         }
         if (ntry.origSrcList != null) {
@@ -2500,10 +2505,10 @@ public class userConfig {
         l.add("10 8,.                  <num>              service index");
         l.add("2  3    nat                                configure network address translation");
         l.add("3  4,6    <vrf>                            name of routing table");
-        l.add("4  5        timeout                        specify timeout");
-        l.add("5  .          <num>                        time in ms");
         l.add("4  5        sequence                       sequence number");
         l.add("5  6          <num>                        number");
+        l.add("6  7            timeout                    specify timeout");
+        l.add("7  .              <num>                    time in ms");
         l.add("6  7            srclist                    source address translation");
         l.add("7  8              <name>                   access list name");
         l.add("8  9                interface              translated interface");

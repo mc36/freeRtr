@@ -368,7 +368,7 @@ public class ipFwdTab {
             if (ntry == null) {
                 continue;
             }
-            if ((tim - ntry.lastUsed) < lower.natTimeout) {
+            if ((tim - ntry.lastUsed) < ntry.timeout) {
                 continue;
             }
             lower.natTrns.del(ntry);

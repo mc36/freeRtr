@@ -2948,7 +2948,7 @@ public class userShow {
         }
         String a = cmd.word();
         if (a.equals("translations")) {
-            userFormat l = new userFormat("|", "proto|source|target|source|target|age|last|pack|byte", "1|2original|2translated|4");
+            userFormat l = new userFormat("|", "proto|source|target|source|target|age|last|timeout|pack|byte", "1|2original|2translated|5");
             for (int i = 0; i < fwd.natTrns.size(); i++) {
                 l.add("" + fwd.natTrns.get(i));
             }

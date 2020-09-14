@@ -98,6 +98,13 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     public boolean randomize = false;
 
     /**
+     * create instance
+     */
+    public tabNatCfgN() {
+        timeout = 300 * 1000;
+    }
+
+    /**
      * convert string to address
      *
      * @param s string to convert
@@ -110,6 +117,10 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (s.equals("sequence")) {
             sequence = bits.str2num(cmd.word());
             s = cmd.word();
+        }
+        if (s.equals("timeout")) {
+            timeout = bits.str2num(cmd.word());
+            return false;
         }
         if (s.equals("source")) {
             what = 1;
@@ -306,6 +317,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             s += " randomize";
         }
         l.add(beg + s);
+        l.add(beg + "sequence " + sequence + " timeout " + timeout);
         return l;
     }
 
@@ -436,6 +448,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         tabNatTraN n = new tabNatTraN();
         n.lastUsed = bits.getTime();
         n.created = n.lastUsed;
+        n.timeout = timeout;
         n.protocol = pck.IPprt;
         n.origSrcAddr = pck.IPsrc.copyBytes();
         n.origTrgAddr = pck.IPtrg.copyBytes();

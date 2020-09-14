@@ -70,6 +70,11 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
     public long created;
 
     /**
+     * timeout on this entry
+     */
+    public int timeout;
+
+    /**
      * reverse translation
      */
     public tabNatTraN reverse;
@@ -93,6 +98,7 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
         tabNatTraN n = new tabNatTraN();
         n.lastUsed = lastUsed;
         n.created = created;
+        n.timeout = timeout;
         n.protocol = protocol;
         n.origTrgAddr = newSrcAddr.copyBytes();
         n.origSrcAddr = newTrgAddr.copyBytes();
@@ -114,7 +120,7 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
             a = "+" + hwCntr.packRx;
             s = "+" + hwCntr.byteRx;
         }
-        return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|" + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort + "|" + bits.timePast(created) + "|" + bits.timePast(lastUsed) + "|" + cntr.packRx + a + "|" + cntr.byteRx + s;
+        return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|" + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort + "|" + bits.timePast(created) + "|" + bits.timePast(lastUsed) + "|" + bits.timeDump(timeout / 1000) + "|" + cntr.packRx + a + "|" + cntr.byteRx + s;
     }
 
     public int compare(tabNatTraN o1, tabNatTraN o2) {

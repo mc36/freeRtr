@@ -96,6 +96,17 @@ public class tabIntMatcher {
         return false;
     }
 
+    /**
+     * set match exact value
+     *
+     * @param val value
+     */
+    public void setExact(int val) {
+        action = actionType.xact;
+        rangeMin = val;
+        rangeMax = rangeMin;
+    }
+
     public String toString() {
         switch (action) {
             case always:

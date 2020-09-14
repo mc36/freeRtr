@@ -39,6 +39,11 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
      */
     private addrPrefix<addrIP> prefix;
 
+    /**
+     * list to evaluate
+     */
+    public tabListing<tabPrfxlstN, addrIP> evaluate;
+
     private int ranger(int i) {
         int o = network.maxBits();
         if (i < 0) {
@@ -93,8 +98,12 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
      * @return string
      */
     public String toString() {
+        String a = "";
+        if (logMatch) {
+            a = " log";
+        }
         int i = addrPrefix.dispSub(prefix);
-        return network + "/" + (lenDef - i) + " ge " + (lenMin - i) + " le " + (lenMax - i);
+        return network + "/" + (lenDef - i) + " ge " + (lenMin - i) + " le " + (lenMax - i) + a;
     }
 
     /**
@@ -104,12 +113,14 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
      * @return string
      */
     public List<String> usrString(String beg) {
-        String a = "";
-        if (logMatch) {
-            a = " log";
+        String a;
+        if (evaluate != null) {
+            a = "evaluate " + tabListingEntry.action2string(action) + " " + evaluate.listName;
+        } else {
+            a = tabListingEntry.action2string(action) + " " + this;
         }
         List<String> l = new ArrayList<String>();
-        l.add(beg + "sequence " + sequence + " " + tabListingEntry.action2string(action) + " " + this + a);
+        l.add(beg + "sequence " + sequence + " " + a);
         return l;
     }
 
@@ -172,6 +183,13 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
      * @return false on success, true on error
      */
     public boolean matches(int afi, tabRouteEntry<addrIP> net) {
+        if (evaluate != null) {
+            tabPrfxlstN res = evaluate.find(afi, net);
+            if (res == null) {
+                return false;
+            }
+            return res.matches(afi, net);
+        }
         return matches(afi, net.prefix);
     }
 
@@ -182,6 +200,13 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
      * @return false on success, true on error
      */
     public boolean matches(packHolder pck) {
+        if (evaluate != null) {
+            tabPrfxlstN res = evaluate.find(pck);
+            if (res == null) {
+                return false;
+            }
+            return res.matches(pck);
+        }
         return matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
@@ -202,6 +227,13 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
      * @return false on success, true on error
      */
     public boolean matches(int afi, addrPrefix<addrIP> net) {
+        if (evaluate != null) {
+            tabPrfxlstN res = evaluate.find(afi, net);
+            if (res == null) {
+                return false;
+            }
+            return res.matches(afi, net);
+        }
         if (net.maskLen < lenMin) {
             return false;
         }

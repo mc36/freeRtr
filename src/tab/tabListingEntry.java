@@ -5,6 +5,7 @@ import addr.addrType;
 import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
+import util.bits;
 
 /**
  * represents one sequenced listing entry
@@ -72,6 +73,16 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
     public long countByte;
 
     /**
+     * last matched
+     */
+    public long lastMatch;
+
+    /**
+     * timeout on this entry
+     */
+    public int timeout;
+
+    /**
      * log matches
      */
     public boolean logMatch;
@@ -126,6 +137,15 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
      */
     public String getCounters() {
         return countPack + " packets (" + countByte + " bytes)";
+    }
+
+    /**
+     * get times
+     *
+     * @return times
+     */
+    public String getTimes() {
+        return bits.timePast(lastMatch) + " ago, " + bits.timeDump(timeout / 1000) + " timeout";
     }
 
     /**

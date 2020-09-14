@@ -29,6 +29,11 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
     public String description;
 
     /**
+     * hidden list
+     */
+    public boolean hidden;
+
+    /**
      * list of statements
      */
     public tabListing<tabAceslstN<addrIP>, addrIP> aceslst;
@@ -50,7 +55,12 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         if (description != null) {
             l.add(cmds.tabulator + "description " + description);
         }
-        l.addAll(aceslst.dump(cmds.tabulator));
+        if (hidden) {
+            l.add(cmds.tabulator + "hidden");
+        }
+        if (!hidden) {
+            l.addAll(aceslst.dump(cmds.tabulator));
+        }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         return l;
@@ -62,6 +72,15 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add("2  1     <num>                       sequence number");
         l.add("1  3,. description                   specify description");
         l.add("3  3,.   <str>                       text");
+        l.add("1  .   hidden                        hide the entries");
+        l.add("1  3   evaluate                      evaluate another list");
+        l.add("3  4     permit                      specify list to allow");
+        l.add("3  4     deny                        specify list to forbid");
+        l.add("4  .       <name>                    name of list");
+        l.add("1  3   reflect                       create forward entry on match");
+        l.add("3  4     <name>                      name of forward list");
+        l.add("4  5       <name>                    name of reverse list");
+        l.add("5  .         <num>                   timeout");
         l.add("1  3   permit                        specify networks to allow");
         l.add("1  3   deny                          specify networks to forbid");
         l.add("3  4     all                         no protocol matching");
@@ -115,6 +134,10 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
                 description = null;
                 return;
             }
+            if (a.equals("hidden")) {
+                hidden = false;
+                return;
+            }
             if (a.equals("sequence")) {
                 tabAceslstN<addrIP> ntry = new tabAceslstN<addrIP>(new addrIP());
                 ntry.sequence = bits.str2num(cmd.word());
@@ -131,6 +154,10 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
             description = cmd.getRemaining();
             return;
         }
+        if (a.equals("hidden")) {
+            hidden = true;
+            return;
+        }
         if (a.equals("reindex")) {
             int i = bits.str2num(cmd.word());
             aceslst.reindex(i, bits.str2num(cmd.word()));
@@ -142,12 +169,44 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
             a = cmd.word();
         }
         tabAceslstN<addrIP> ntry = new tabAceslstN<addrIP>(new addrIP());
+        ntry.sequence = seq;
+        if (a.equals("reflect")) {
+            ntry = aceslst.find(ntry);
+            if (ntry == null) {
+                cmd.error("no such entry");
+                return;
+            }
+            cfgAceslst res = cfgAll.aclsFind(cmd.word(), false);
+            if (res == null) {
+                cmd.error("no such list");
+                return;
+            }
+            ntry.reflectFwd = res.aceslst;
+            res = cfgAll.aclsFind(cmd.word(), false);
+            if (res == null) {
+                cmd.error("no such list");
+                return;
+            }
+            ntry.reflectRev = res.aceslst;
+            ntry.reflectTim = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("evaluate")) {
+            ntry.action = tabListingEntry.string2action(cmd.word());
+            cfgAceslst res = cfgAll.aclsFind(cmd.word(), false);
+            if (res == null) {
+                cmd.error("no such list");
+                return;
+            }
+            ntry.evaluate = res.aceslst;
+            aceslst.add(ntry);
+            return;
+        }
         ntry.action = tabListingEntry.string2action(a);
         if (tabAceslstN.fromString(ntry, cmd)) {
             cmd.error("invalid network");
             return;
         }
-        ntry.sequence = seq;
         aceslst.add(ntry);
     }
 
