@@ -162,6 +162,8 @@ int di1
  ipv6 addr 1234:1::2 ffff:ffff::
  ipv4 access-group-in test4
  ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
  mpls enable
  mpls ldp4
  mpls ldp6
@@ -213,6 +215,8 @@ int eth1
  ipv6 addr 1234:2::2 ffff:ffff::
  ipv4 access-group-in test4
  ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
  mpls enable
  mpls ldp4
  mpls ldp6
@@ -259,6 +263,8 @@ int eth1
  ipv6 addr 1234:3::2 ffff:ffff::
  ipv4 access-group-in test4
  ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
  mpls enable
  mpls ldp4
  mpls ldp6
@@ -305,6 +311,8 @@ int eth1
  ipv6 addr 1234:4::2 ffff:ffff::
  ipv4 access-group-in test4
  ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
  mpls enable
  mpls ldp4
  mpls ldp6
