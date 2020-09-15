@@ -76,6 +76,8 @@ public class tabRtrplc {
             net = net.copyBytes();
         }
         int lvl = 0;
+        long tim = bits.getTime();
+        packHolder pck = new packHolder(false, false);
         for (int pos = 0; pos < lst.entries.size(); pos++) {
             tabRtrplcN ntry = lst.entries.get(pos);
             if (ntry == null) {
@@ -83,6 +85,11 @@ public class tabRtrplc {
             }
             if (ntry.indent > lvl) {
                 continue;
+            }
+            ntry.cntr.rx(pck);
+            ntry.lastMatch = tim;
+            if (ntry.logMatch) {
+                logger.info("list " + lst.listName + " matched at sequence " + ntry.sequence + " on " + net);
             }
             switch (ntry.doMode) {
                 case next:
@@ -144,22 +151,10 @@ public class tabRtrplc {
                     lvl--;
                     continue;
                 case pass:
-                    ntry.cntr.rx(new packHolder(false, false));
-                    ntry.lastMatch = bits.getTime();
-                    if (ntry.logMatch) {
-                        logger.info("list " + lst.listName + " matched at sequence " + ntry.sequence + " on " + net);
-                    }
                     return net;
                 case drop:
-                    ntry.cntr.rx(new packHolder(false, false));
-                    ntry.lastMatch = bits.getTime();
-                    if (ntry.logMatch) {
-                        logger.info("list " + lst.listName + " matched at sequence " + ntry.sequence + " on " + net);
-                    }
                     return null;
                 case log:
-                    ntry.cntr.rx(new packHolder(false, false));
-                    ntry.lastMatch = bits.getTime();
                     logger.info("list " + lst.listName + " matched at sequence " + ntry.sequence + " on " + net);
                     continue;
                 case tcl:
