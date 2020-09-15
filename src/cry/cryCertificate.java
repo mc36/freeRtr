@@ -892,7 +892,7 @@ public class cryCertificate {
         crt.subject = ent;
         crt.key = key;
         crt.validBeg = bits.getTime();
-        crt.validEnd = crt.validBeg + (((long) days) * 1000 * 60 * 60 * 24);
+        crt.validEnd = crt.validBeg + (((long) days) * 60 * 60 * 24 * 1000);
         crt.setSignAlgo();
         crt.createCont();
         crt.selfSign();

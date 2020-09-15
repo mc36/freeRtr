@@ -107,7 +107,8 @@ r1 tping 100 60 4321::2 /vrf v1
 r2 tping 100 60 2.2.2.1 /vrf v1
 r2 tping 100 60 4321::1 /vrf v1
 
-sleep 3
+sleep 3000
+
 r1 output show ipv4 bgp 1 sum
 r1 output show ipv6 bgp 1 sum
 r1 output show ipv4 bgp 1 next

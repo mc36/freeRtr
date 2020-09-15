@@ -114,7 +114,7 @@ r1 tping 100 20 4321::2 /vrf v1
 r2 tping 100 20 2.2.2.1 /vrf v1
 r2 tping 100 20 4321::1 /vrf v1
 
-sleep 3
+sleep 3000
 
 r1 tping 100 5 2.2.2.2 /vrf v1 /int lo0
 r1 tping 100 5 4321::2 /vrf v1 /int lo0

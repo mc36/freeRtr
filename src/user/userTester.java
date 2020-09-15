@@ -1561,7 +1561,7 @@ class userTesterOne {
             if (i < 1) {
                 i = 1;
             }
-            bits.sleep(i * 1000);
+            bits.sleep(i);
             return;
         }
         userTesterPrc p = getPrc(s);

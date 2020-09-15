@@ -35,11 +35,11 @@ r1 send end
 
 r1 tping 100 5 1.1.1.1 /vrf v1
 
-sleep 1
+sleep 1000
 r1 char 3
-sleep 1
+sleep 1000
 r1 char 24
-sleep 1
+sleep 1000
 r1 read closed
 r1 tping 100 5 9.9.9.9 /vrf v1
 
