@@ -1363,20 +1363,20 @@ void doReportRount(FILE *commands) {
     for (int i=0; i<acls_table.size; i++) {
         struct acls_entry *ntry1 = table_get(&acls_table, i);
         switch (ntry1->dir) {
-            case 1:
-                snprintf(&buf2[0], 128, "inacl%i_cnt %i", ntry1->ver, ntry1->port);
-                break;
-            case 2:
-                snprintf(&buf2[0], 128, "outacl%i_cnt %i", ntry1->ver, ntry1->port);
-                break;
-            case 3:
-                snprintf(&buf2[0], 128, "natacl%i_cnt %i", ntry1->ver, ntry1->port);
-                break;
-            case 4:
-                snprintf(&buf2[0], 128, "coppacl%i_cnt", ntry1->ver);
-                break;
-            default:
-                continue;
+        case 1:
+            snprintf(&buf2[0], 128, "inacl%i_cnt %i", ntry1->ver, ntry1->port);
+            break;
+        case 2:
+            snprintf(&buf2[0], 128, "outacl%i_cnt %i", ntry1->ver, ntry1->port);
+            break;
+        case 3:
+            snprintf(&buf2[0], 128, "natacl%i_cnt %i", ntry1->ver, ntry1->port);
+            break;
+        case 4:
+            snprintf(&buf2[0], 128, "coppacl%i_cnt", ntry1->ver);
+            break;
+        default:
+            continue;
         }
         for (int o=0; o<ntry1->aces.size; o++) {
             struct aclH_entry *ntry2 = table_get(&ntry1->aces, o);
