@@ -955,7 +955,10 @@ class servP4langConn implements Runnable {
 
     private boolean doRound() {
         if (pipe.ready2rx() > 0) {
-            String s = pipe.lineGet(0x11);
+            String s = pipe.lineGet(0x11).trim();
+            if (s.length() < 1) {
+                return false;
+            }
             if (debugger.servP4langRx) {
                 logger.debug("rx: " + s);
             }
