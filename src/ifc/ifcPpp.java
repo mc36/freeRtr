@@ -122,7 +122,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     /**
      * current keepalive interval (0=disabled)
      */
-    public int keepaliveInterval = 5;
+    public int keepaliveInterval = 5000;
 
     /**
      * nak retry limit
@@ -345,7 +345,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      */
     public static void getHelp(userHelping l) {
         l.add("2 3     keepalive                   keepalive timer");
-        l.add("3 .       <num>                     time in seconds");
+        l.add("3 .       <num>                     time in ms");
         l.add("2 3     username                    name of user to send");
         l.add("3 .       <text>                    username");
         l.add("2 3     password                    password of user to send");
@@ -878,7 +878,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         }
         keepTimer = new Timer();
         ifcPppTxKeep task = new ifcPppTxKeep(this);
-        keepTimer.schedule(task, 500, keepaliveInterval * 1000);
+        keepTimer.schedule(task, 500, keepaliveInterval);
     }
 
     /**

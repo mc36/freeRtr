@@ -36,7 +36,7 @@ public class ifcHdlc implements ifcUp, ifcDn {
     /**
      * current keepalive interval (0=disabled)
      */
-    public int keepaliveInterval = 5;
+    public int keepaliveInterval = 5000;
 
     /**
      * last known state
@@ -159,9 +159,7 @@ public class ifcHdlc implements ifcUp, ifcDn {
      */
     public static void getHelp(userHelping l) {
         l.add("2 3     keepalive                   keepalive timer");
-        l.add("3 .       <num>                     time in seconds");
-        l.add("2 3     addrctrl                    address and control field");
-        l.add("3 .       <num>                     value in hex");
+        l.add("3 .       <num>                     time in ms");
     }
 
     /**
@@ -207,7 +205,7 @@ public class ifcHdlc implements ifcUp, ifcDn {
      */
     public boolean checkPeerState(state.states force) {
         state.states stat = state.states.down;
-        if (bits.getTime() - lastRxKeep < keepaliveInterval * 6000) {
+        if (bits.getTime() - lastRxKeep < keepaliveInterval * 6) {
             stat = state.states.up;
         }
         if (keepaliveInterval < 1) {
@@ -257,7 +255,7 @@ public class ifcHdlc implements ifcUp, ifcDn {
         }
         keepTimer = new Timer();
         ifcHdlcTxKeep task = new ifcHdlcTxKeep(this);
-        keepTimer.schedule(task, 500, keepaliveInterval * 1000);
+        keepTimer.schedule(task, 500, keepaliveInterval);
     }
 
     public void recvPack(packHolder pck) {

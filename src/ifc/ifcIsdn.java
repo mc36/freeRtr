@@ -44,7 +44,7 @@ public class ifcIsdn implements ifcUp, ifcDn {
     /**
      * current keepalive interval (0=disabled)
      */
-    public int keepaliveInterval = 5;
+    public int keepaliveInterval = 5000;
 
     /**
      * last known state
@@ -208,7 +208,7 @@ public class ifcIsdn implements ifcUp, ifcDn {
      */
     public static void getHelp(userHelping l) {
         l.add("2 3     keepalive                   keepalive timer");
-        l.add("3 .       <num>                     time in seconds");
+        l.add("3 .       <num>                     time in ms");
         l.add("2 3     mode                        my line mode");
         l.add("3 .       dce                       this side is dce");
         l.add("3 .       dte                       this side is dte");
@@ -295,7 +295,7 @@ public class ifcIsdn implements ifcUp, ifcDn {
         }
         keepTimer = new Timer();
         ifcIsdnTxKeep task = new ifcIsdnTxKeep(this);
-        keepTimer.schedule(task, 500, keepaliveInterval * 1000);
+        keepTimer.schedule(task, 500, keepaliveInterval);
     }
 
     private void clearState() {
@@ -312,7 +312,7 @@ public class ifcIsdn implements ifcUp, ifcDn {
      */
     public boolean checkPeerState(state.states force) {
         state.states stat = state.states.down;
-        if (bits.getTime() - lastRxKeep < keepaliveInterval * 6000) {
+        if (bits.getTime() - lastRxKeep < keepaliveInterval * 6) {
             stat = state.states.up;
         }
         if (keepaliveInterval < 1) {

@@ -1537,9 +1537,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! qinqx ethertype fa52",
         // sep
         "interface .*! sep mode peer",
-        "interface .*! sep keepalive 5",
+        "interface .*! sep keepalive 5000",
         // ppp
-        "interface .*! ppp keepalive 5",
+        "interface .*! ppp keepalive 5000",
         "interface .*! ppp naktry 16",
         "interface .*! no ppp username",
         "interface .*! no ppp password",
@@ -1572,14 +1572,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ppp scp open",
         "interface .*! no ppp authentication",
         // hdlc
-        "interface .*! hdlc keepalive 5",
+        "interface .*! hdlc keepalive 5000",
         // isdn
-        "interface .*! isdn keepalive 5",
+        "interface .*! isdn keepalive 5000",
         // labp
-        "interface .*! lapb keepalive 5",
+        "interface .*! lapb keepalive 5000",
         "interface .*! lapb modulus 8",
         // framerelay
-        "interface .*! framerelay keepalive 5",
+        "interface .*! framerelay keepalive 5000",
         "interface .*! framerelay lmi ansi",
         "interface .*! framerelay fragment 0",
         "interface .*! framerelay frgap 0",

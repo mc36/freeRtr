@@ -1060,7 +1060,7 @@ public class userExec {
         hl.add("3 4        /tos                  specify tos value");
         hl.add("4 3,.        <num>               tos");
         hl.add("1 2    sleep                     do nothing for a while");
-        hl.add("2 .      <num>                   seconds for sleep");
+        hl.add("2 .      <num>                   milliseconds for sleep");
         hl.add("1 2    whois                     perform whois query");
         hl.add("2 3      <host>                  name of host to query");
         hl.add("3 3,.      <text>                query string");
@@ -1123,7 +1123,7 @@ public class userExec {
         hl.add("3 .        <name>                name of script");
         hl.add("2 3      vpdn                    reconnect vpdn peer");
         hl.add("3 4,.      <name>                name of vpdn");
-        hl.add("4 .          [num]               downtime in seconds");
+        hl.add("4 .          [num]               downtime in milliseconds");
         hl.add("2 3      vdc                     restart vdc process");
         hl.add("3 4,.      <name>                name of vdc");
         hl.add("4 .          stop                stop");
@@ -1141,7 +1141,7 @@ public class userExec {
         hl.add("3 .        <name>                name of line");
         hl.add("2 3      interface               disconnect interface");
         hl.add("3 4,.      <name>                name of interface");
-        hl.add("4 .          [num]               downtime in seconds");
+        hl.add("4 .          [num]               downtime in milliseconds");
         hl.add("2 3      ipv4                    ipv4 parameters");
         hl.add("3 4        arp                   arp table");
         hl.add("4 5          <name>              interface name");
@@ -1577,13 +1577,11 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("sleep")) {
-            int o = bits.str2num(cmd.word());
-            for (int i = 0; i < o; i++) {
-                if (pipe.isClosed() != 0) {
-                    break;
-                }
-                bits.sleep(1000);
+            int i = bits.str2num(cmd.word());
+            if (i < 1) {
+                i = 1;
             }
+            bits.sleep(i);
             return cmdRes.command;
         }
         if (a.equals("whois")) {

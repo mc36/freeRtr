@@ -44,7 +44,7 @@ public class ifcCdp implements ifcUp {
     /**
      * time between advertisements
      */
-    public int advertiseInterval = 30;
+    public int advertiseInterval = 30000;
 
     /**
      * on demand gateway
@@ -310,7 +310,7 @@ public class ifcCdp implements ifcUp {
         }
         keepTimer = new Timer();
         ifcCdpTxAdv task = new ifcCdpTxAdv(this);
-        keepTimer.schedule(task, 500, advertiseInterval * 1000);
+        keepTimer.schedule(task, 500, advertiseInterval);
     }
 
     private void putAddr(typLenVal tlv, int typ, addrType adr) {
@@ -351,7 +351,7 @@ public class ifcCdp implements ifcUp {
         pck.putSkip(2);
         pck.merge2end();
         pck.putByte(0, 2); // version
-        pck.putByte(1, advertiseInterval * 4); // hold time
+        pck.putByte(1, (advertiseInterval * 4) / 1000); // hold time
         pck.msbPutW(2, 0); // checksum
         pck.putSkip(4);
         tlv.putStr(pck, ttypDevId, cfgAll.hostName);

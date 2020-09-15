@@ -38,7 +38,7 @@ public class ifcUdld implements ifcUp {
     /**
      * time between advertisements
      */
-    public int advertiseInterval = 5;
+    public int advertiseInterval = 5000;
 
     /**
      * list of neighbors
@@ -264,7 +264,7 @@ public class ifcUdld implements ifcUp {
         }
         keepTimer = new Timer();
         ifcUdldTxAdv task = new ifcUdldTxAdv(this);
-        keepTimer.schedule(task, 500, advertiseInterval * 1000);
+        keepTimer.schedule(task, 500, advertiseInterval);
     }
 
     private boolean findMyself(typLenVal tlv) {
@@ -353,8 +353,9 @@ public class ifcUdld implements ifcUp {
         tlv.putStr(pck, ttypPrtId, cfg.name);
         tlv.putBytes(pck, ttypEcho, getSeenList());
         byte[] buf = new byte[1];
-        buf[0] = (byte) advertiseInterval;
+        buf[0] = (byte) (advertiseInterval / 1000);
         tlv.putBytes(pck, ttypMsgInt, buf);
+        buf[0] = (byte) ((advertiseInterval * 3) / 1000);
         tlv.putBytes(pck, ttypTimOut, buf);
         tlv.putStr(pck, ttypDevNam, cfgAll.hostName);
         buf = new byte[4];

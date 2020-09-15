@@ -69,7 +69,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
     /**
      * lease time
      */
-    public int lease = 12 * 60 * 60;
+    public int lease = 12 * 60 * 60 * 1000;
 
     /**
      * renew time
@@ -93,8 +93,8 @@ public class servDhcp6 extends servGeneric implements prtServS {
         "server dhcp6 .*! protocol " + proto2string(protoIp6 + protoUdp),
         "server dhcp6 .*! boot-url ",
         "server dhcp6 .*! preference 0",
-        "server dhcp6 .*! lease 43200",
-        "server dhcp6 .*! renew 21600"
+        "server dhcp6 .*! lease 43200000",
+        "server dhcp6 .*! renew 21600000"
     };
 
     /**
@@ -300,9 +300,9 @@ public class servDhcp6 extends servGeneric implements prtServS {
         l.add("1 2  domain-name            domain name to delegate");
         l.add("2 .    <name>               domain name");
         l.add("1 2  lease                  lease time to delegate");
-        l.add("2 .    <sec>                lease time in seconds");
+        l.add("2 .    <sec>                lease time in ms");
         l.add("1 2  renew                  renew time to delegate");
-        l.add("2 .    <sec>                renew time in seconds");
+        l.add("2 .    <sec>                renew time in ms");
         l.add("1 2  netmask                network to delegate");
         l.add("2 .    <mask>               netmask to delegate");
         l.add("1 2  preference             server preference value");
@@ -412,8 +412,8 @@ public class servDhcp6 extends servGeneric implements prtServS {
         rep.servId = packDhcp6.encodeDUID(srvIface.ethtyp.getHwAddr());
         rep.iamod = req.iamod;
         rep.iaid = req.iaid;
-        rep.iat1 = renew;
-        rep.iat2 = lease;
+        rep.iat1 = renew / 1000;
+        rep.iat2 = lease / 1000;
         if (dns1 != null) {
             rep.dns1srv = dns1.copyBytes();
         }
@@ -491,7 +491,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
                 if (ntry.confed) {
                     continue;
                 }
-                if ((cur - ntry.reqd) < (lease * 1000)) {
+                if ((cur - ntry.reqd) < lease) {
                     continue;
                 }
                 if (debugger.servDhcp6traf) {

@@ -378,7 +378,7 @@ public class userClear {
             if (i < 1) {
                 i = 1;
             }
-            ifc.flapNow(i * 1000);
+            ifc.flapNow(i);
             return null;
         }
         if (a.equals("ipv4")) {

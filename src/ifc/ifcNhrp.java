@@ -78,7 +78,7 @@ public class ifcNhrp implements ifcUp {
     /**
      * time between advertisements
      */
-    public int advertiseInterval = 30;
+    public int advertiseInterval = 30000;
 
     private cfgIfc cfg;
 
@@ -273,7 +273,7 @@ public class ifcNhrp implements ifcUp {
         }
         keepTimer = new Timer();
         ifcNhrpTxAdv task = new ifcNhrpTxAdv(this);
-        keepTimer.schedule(task, 500, advertiseInterval * 1000);
+        keepTimer.schedule(task, 500, advertiseInterval);
     }
 
     /**
@@ -297,11 +297,11 @@ public class ifcNhrp implements ifcUp {
         } else {
             asrc = src.toIPv6();
         }
-        packHolder pck = createPack(typRegReq, 0, bits.randomD(), 0x8000, advertiseInterval * 5, asrc, cfg.addr4, ip4);
+        packHolder pck = createPack(typRegReq, 0, bits.randomD(), 0x8000, (advertiseInterval * 5) / 1000, asrc, cfg.addr4, ip4);
         if (pck != null) {
             lower.sendPack(pck);
         }
-        pck = createPack(typRegReq, 0, bits.randomD(), 0x8000, advertiseInterval * 5, asrc, cfg.addr6, ip6);
+        pck = createPack(typRegReq, 0, bits.randomD(), 0x8000, (advertiseInterval * 5) / 1000, asrc, cfg.addr6, ip6);
         if (pck != null) {
             lower.sendPack(pck);
         }

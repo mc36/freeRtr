@@ -374,7 +374,7 @@ public class clntSmtp implements Runnable {
                 return false;
             }
             logger.warn("error sending email from " + from + ", result=" + lastS);
-            bits.sleep(bits.random(3, 10) * 1000);
+            bits.sleep(bits.random(3000, 30000));
         }
         return true;
     }

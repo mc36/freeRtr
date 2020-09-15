@@ -36,7 +36,7 @@ public class ifcLldp implements ifcUp {
     /**
      * time between advertisements
      */
-    public int advertiseInterval = 30;
+    public int advertiseInterval = 30000;
 
     /**
      * list of neighbors
@@ -295,7 +295,7 @@ public class ifcLldp implements ifcUp {
         }
         keepTimer = new Timer();
         ifcLldpTxAdv task = new ifcLldpTxAdv(this);
-        keepTimer.schedule(task, 500, advertiseInterval * 1000);
+        keepTimer.schedule(task, 500, advertiseInterval);
     }
 
     private void putAddr(packHolder pck, typLenVal tlv, int typ, addrType adr) {
@@ -345,7 +345,7 @@ public class ifcLldp implements ifcUp {
         tlv.valDat[0] = 5; // name
         bits.byteCopy(buf, 0, tlv.valDat, 1, buf.length);
         tlv.putBytes(pck, ttypPrtId, buf.length + 1, tlv.valDat);
-        bits.msbPutW(tlv.valDat, 0, advertiseInterval * 4);
+        bits.msbPutW(tlv.valDat, 0, (advertiseInterval * 4) / 1000);
         tlv.putBytes(pck, ttypTime, 2, tlv.valDat);
         tlv.putStr(pck, ttypPrtDesc, cfg.name);
         tlv.putStr(pck, ttypSysName, cfgAll.hostName);

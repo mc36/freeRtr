@@ -62,7 +62,7 @@ public class ifcSep implements ifcUp, ifcDn {
     /**
      * current keepalive interval (0=disabled)
      */
-    public int keepaliveInterval = 5;
+    public int keepaliveInterval = 5000;
 
     /**
      * server that handler received packets
@@ -222,7 +222,7 @@ public class ifcSep implements ifcUp, ifcDn {
      */
     public static void getHelp(userHelping l) {
         l.add("2 3     keepalive                   keepalive timer");
-        l.add("3 .       <num>                     time in seconds");
+        l.add("3 .       <num>                     time in ms");
         l.add("2 3     mode                        interface mode");
         l.add("3 .       peer                      peering mode");
         l.add("3 .       server                    server mode");
@@ -361,7 +361,7 @@ public class ifcSep implements ifcUp, ifcDn {
         }
         keepTimer = new Timer();
         ifcSepKeep task = new ifcSepKeep(this);
-        keepTimer.schedule(task, 500, keepaliveInterval * 1000);
+        keepTimer.schedule(task, 500, keepaliveInterval);
     }
 
     /**

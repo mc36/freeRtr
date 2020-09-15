@@ -34,7 +34,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
     /**
      * current keepalive interval (0=disabled)
      */
-    public int keepaliveInterval = 5;
+    public int keepaliveInterval = 5000;
 
     /**
      * server that handler received packets
@@ -232,7 +232,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
         }
         keepTimer = new Timer();
         ifcP2pOEclntTxKeep task = new ifcP2pOEclntTxKeep(this);
-        keepTimer.schedule(task, 500, keepaliveInterval * 1000);
+        keepTimer.schedule(task, 500, keepaliveInterval);
     }
 
     /**
