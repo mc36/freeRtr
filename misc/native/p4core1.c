@@ -275,6 +275,8 @@ int acls_compare(void *ptr1, void *ptr2) {
 struct acl4_entry {
     int pri;
     int act;
+    long pack;
+    long byte;
     int srcAddr;
     int srcMask;
     int trgAddr;
@@ -310,6 +312,8 @@ int acl4_matcher(void *ptr1, void *ptr2) {
 struct acl6_entry {
     int pri;
     int act;
+    long pack;
+    long byte;
     int srcAddr1;
     int srcAddr2;
     int srcAddr3;
@@ -362,13 +366,17 @@ int acl6_matcher(void *ptr1, void *ptr2) {
 
 struct aclH_entry {
     int pri;
-    int act;
+    int act;        // 0=permit, 1=deny
+    long pack;
+    long byte;
 };
 
-int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *)) {
+int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *),int siz) {
     for (int i=tab->size-1; i>=0; i--) {
         struct aclH_entry *res = table_get(tab, i);
         if (matcher(ntry, res) != 0) continue;
+        res->pack++;
+        res->byte += siz;
         return res->act;
     }
     return 1;

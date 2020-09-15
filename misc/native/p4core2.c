@@ -1360,6 +1360,13 @@ void doReportRount(FILE *commands) {
         struct macsec_entry *ntry = table_get(&macsec_table, i);
         fprintf(commands, "macsec_cnt %i %li %li %li %li\r\n", ntry->port, ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
     }
+    for (int i=0; i<acls_table.size; i++) {
+        struct acls_entry *ntry1 = table_get(&acls_table, i);
+        for (int o=0; o<ntry1->aces.size; o++) {
+            struct aclH_entry *ntry2 = table_get(&ntry1->aces, o);
+            fprintf(commands, "acls_cnt %i %i %i %i %li %li\r\n", ntry1->ver, ntry1->dir, ntry1->port, ntry2->pri, ntry2->pack, ntry2->byte);
+        }
+    }
     fflush(commands);
 }
 

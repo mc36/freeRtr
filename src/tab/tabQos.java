@@ -21,6 +21,7 @@ import prt.prtSctp;
 import prt.prtTcp;
 import prt.prtUdp;
 import prt.prtLudp;
+import util.counter;
 
 /**
  * quality of service worker
@@ -356,6 +357,7 @@ public class tabQos {
         synchronized (cls) {
             cls.enqueuePack(pck);
         }
+        cls.cntr.rx(pck);
     }
 
     /**
@@ -378,13 +380,12 @@ public class tabQos {
             return true;
         }
         cls.recUpdateTime(curr);
-        int len = pck.dataSize();
-        if (cls.checkPacket(len)) {
+        if (cls.checkPacket(pck)) {
+            cls.cntr.drop(pck, counter.reasons.noBuffer);
             return true;
         }
-        cls.updateBytes(len);
-        cls.countPack++;
-        cls.countByte += len;
+        cls.updateBytes(pck.dataSize());
+        cls.cntr.tx(pck);
         return false;
     }
 
@@ -421,8 +422,7 @@ public class tabQos {
             }
             updatePack(pck, cls);
             cls.updateBytes(pck.dataSize());
-            cls.countPack++;
-            cls.countByte += pck.dataSize();
+            cls.cntr.tx(pck);
             return pck;
         }
         return null;

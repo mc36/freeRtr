@@ -113,8 +113,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             if (ntry == null) {
                 continue;
             }
-            ntry.countByte = 0;
-            ntry.countPack = 0;
+            ntry.cntr.clear();
             ntry.lastMatch = 0;
         }
     }
@@ -325,14 +324,15 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.matches(afi, net)) {
-                ntry.countPack++;
-                ntry.lastMatch = bits.getTime();
-                if (ntry.logMatch) {
-                    logger.info("list " + listName + " matched at sequence " + ntry.sequence + " on " + net);
-                }
-                return ntry;
+            if (!ntry.matches(afi, net)) {
+                continue;
             }
+            ntry.cntr.rx(new packHolder(false, false));
+            ntry.lastMatch = bits.getTime();
+            if (ntry.logMatch) {
+                logger.info("list " + listName + " matched at sequence " + ntry.sequence + " on " + net);
+            }
+            return ntry;
         }
         return null;
     }
@@ -350,14 +350,15 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.matches(afi, net)) {
-                ntry.countPack++;
-                ntry.lastMatch = bits.getTime();
-                if (ntry.logMatch) {
-                    logger.info("list " + listName + " matched at sequence " + ntry.sequence + " on " + net);
-                }
-                return ntry;
+            if (!ntry.matches(afi, net)) {
+                continue;
             }
+            ntry.cntr.rx(new packHolder(false, false));
+            ntry.lastMatch = bits.getTime();
+            if (ntry.logMatch) {
+                logger.info("list " + listName + " matched at sequence " + ntry.sequence + " on " + net);
+            }
+            return ntry;
         }
         return null;
     }
@@ -374,15 +375,15 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.matches(pck)) {
-                ntry.countPack += 1;
-                ntry.countByte += pck.dataSize();
-                ntry.lastMatch = bits.getTime();
-                if (ntry.logMatch) {
-                    logger.info("list " + listName + " matched at sequence " + ntry.sequence + " on " + pck.ETHsrc + " " + pck.ETHtrg + " " + pck.IPprt + " " + pck.IPsrc + " " + pck.UDPsrc + " -> " + pck.IPtrg + " " + pck.UDPtrg);
-                }
-                return ntry;
+            if (!ntry.matches(pck)) {
+                continue;
             }
+            ntry.cntr.rx(pck);
+            ntry.lastMatch = bits.getTime();
+            if (ntry.logMatch) {
+                logger.info("list " + listName + " matched at sequence " + ntry.sequence + " on " + pck.ETHsrc + " " + pck.ETHtrg + " " + pck.IPprt + " " + pck.IPsrc + " " + pck.UDPsrc + " -> " + pck.IPtrg + " " + pck.UDPtrg);
+            }
+            return ntry;
         }
         return null;
     }

@@ -861,7 +861,7 @@ ipv4_rx:
         index = table_find(&acls_table, &acls_ntry);
         if (index >= 0) {
             acls_res = table_get(&acls_table, index);
-            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) goto punt;
+            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto punt;
         }
         acls_ntry.dir = 3;
         acls_ntry.port = route4_ntry.vrf;
@@ -876,7 +876,7 @@ ipv4_rx:
             nat4_ntry.oTrgPort = acl4_ntry.trgPortV;
             index = table_find(&nat4_table, &nat4_ntry);
             if (index < 0) {
-                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) == 0) goto cpu;
+                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) goto cpu;
                 goto ipv4_rou;
             }
             nat4_res = table_get(&nat4_table, index);
@@ -913,7 +913,7 @@ ipv4_rou:
                 index = table_find(&acls_table, &acls_ntry);
                 if (index >= 0) {
                     acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) goto punt;
+                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto punt;
                 }
                 goto neigh_tx;
             case 2: // punt
@@ -985,7 +985,7 @@ ipv4_rou:
                 index = table_find(&acls_table, &acls_ntry);
                 if (index >= 0) {
                     acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher) != 0) goto drop;
+                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto drop;
                 }
                 goto cpu;
             case 3: // mpls1
@@ -1034,7 +1034,7 @@ ipv6_rx:
         index = table_find(&acls_table, &acls_ntry);
         if (index >= 0) {
             acls_res = table_get(&acls_table, index);
-            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) goto punt;
+            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto punt;
         }
         acls_ntry.dir = 3;
         acls_ntry.port = route6_ntry.vrf;
@@ -1055,7 +1055,7 @@ ipv6_rx:
             nat6_ntry.oTrgPort = acl6_ntry.trgPortV;
             index = table_find(&nat6_table, &nat6_ntry);
             if (index < 0) {
-                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) == 0) goto cpu;
+                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) goto cpu;
                 goto ipv6_rou;
             }
             nat6_res = table_get(&nat6_table, index);
@@ -1125,7 +1125,7 @@ ipv6_hit:
                 index = table_find(&acls_table, &acls_ntry);
                 if (index >= 0) {
                     acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) goto punt;
+                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto punt;
                 }
                 goto neigh_tx;
             case 2: // punt
@@ -1203,7 +1203,7 @@ ipv6_hit:
                 index = table_find(&acls_table, &acls_ntry);
                 if (index >= 0) {
                     acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher) != 0) goto drop;
+                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto drop;
                 }
                 goto cpu;
             case 3: // mpls1

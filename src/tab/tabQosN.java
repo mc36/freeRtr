@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
 import util.bits;
+import util.counter;
 
 /**
  * qos entry
@@ -45,12 +46,7 @@ public class tabQosN {
     /**
      * packet counter
      */
-    protected long countPack;
-
-    /**
-     * byte counter
-     */
-    protected long countByte;
+    protected counter cntr = new counter();
 
     /**
      * create new qos class
@@ -68,7 +64,7 @@ public class tabQosN {
         l.add("description=" + entry.description);
         l.add("  childs=" + childs + ", queues=" + packets.size() + "/" + getQueues() + ", interval=" + getInterval() + ", bytes/interval=" + getBytePerInt());
         l.add("  match=" + entry.getCounters());
-        l.add("  transmit=" + countPack + " packets (" + countByte + " bytes)");
+        l.add("  transmit=" + cntr.getShStat());
     }
 
     /**
@@ -192,8 +188,7 @@ public class tabQosN {
      * @param pck packet to enqueue
      */
     public void enqueuePack(packHolder pck) {
-        entry.countPack++;
-        entry.countByte += pck.dataSize();
+        entry.cntr.rx(pck);
         if (packets.size() > getQueues()) {
             if (!entry.randomDetect) {
                 return;
@@ -206,12 +201,12 @@ public class tabQosN {
     /**
      * check packet
      *
-     * @param len packet length
+     * @param pck packet
      * @return false if allowed, true if droping
      */
-    public boolean checkPacket(int len) {
-        entry.countPack++;
-        entry.countByte += len;
+    public boolean checkPacket(packHolder pck) {
+        entry.cntr.rx(pck);
+        int len = pck.dataSize();
         switch (entry.action) {
             case actPermit:
                 return false;

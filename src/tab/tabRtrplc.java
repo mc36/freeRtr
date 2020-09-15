@@ -3,6 +3,7 @@ package tab;
 import addr.addrIP;
 import java.util.ArrayList;
 import java.util.List;
+import pack.packHolder;
 import util.bits;
 import util.logger;
 
@@ -143,21 +144,21 @@ public class tabRtrplc {
                     lvl--;
                     continue;
                 case pass:
-                    ntry.countPack++;
+                    ntry.cntr.rx(new packHolder(false, false));
                     ntry.lastMatch = bits.getTime();
                     if (ntry.logMatch) {
                         logger.info("list " + lst.listName + " matched at sequence " + ntry.sequence + " on " + net);
                     }
                     return net;
                 case drop:
-                    ntry.countPack++;
+                    ntry.cntr.rx(new packHolder(false, false));
                     ntry.lastMatch = bits.getTime();
                     if (ntry.logMatch) {
                         logger.info("list " + lst.listName + " matched at sequence " + ntry.sequence + " on " + net);
                     }
                     return null;
                 case log:
-                    ntry.countPack++;
+                    ntry.cntr.rx(new packHolder(false, false));
                     ntry.lastMatch = bits.getTime();
                     logger.info("list " + lst.listName + " matched at sequence " + ntry.sequence + " on " + net);
                     continue;

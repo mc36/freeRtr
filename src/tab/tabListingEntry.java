@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
 import util.bits;
+import util.counter;
 
 /**
  * represents one sequenced listing entry
@@ -82,12 +83,7 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
     /**
      * packet counter
      */
-    public long countPack;
-
-    /**
-     * byte counter
-     */
-    public long countByte;
+    public counter cntr = new counter();
 
     /**
      * last matched
@@ -153,7 +149,7 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
      * @return counters
      */
     public String getCounters() {
-        return countPack + " packets (" + countByte + " bytes)";
+        return cntr.getShStat();
     }
 
     /**
