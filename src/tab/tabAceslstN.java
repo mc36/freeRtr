@@ -226,7 +226,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
             if (addr.fromString(cmd.word())) {
                 return true;
             }
-            mask.fromNetmask(mask.maxBits());
+            mask.setAddr(getMaxMask(addr));
         } else {
             if (addr.fromString(a)) {
                 return true;
@@ -511,10 +511,30 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         ntry.trgPort.setExact(pck.UDPtrg);
         ntry.srcAddr.setAddr(pck.IPsrc);
         ntry.trgAddr.setAddr(pck.IPtrg);
-        ntry.srcMask.fromNetmask(ntry.srcMask.maxBits());
-        ntry.trgMask.fromNetmask(ntry.trgMask.maxBits());
+        ntry.srcMask.setAddr(getMaxMask(pck.IPsrc));
+        ntry.trgMask.setAddr(getMaxMask(pck.IPtrg));
         ntry.lastMatch = bits.getTime();
         return ntry;
+    }
+
+    /**
+     * get host mask for address
+     *
+     * @param adr address
+     * @return netmask
+     */
+    public static addrIP getMaxMask(addrIP adr) {
+        addrIP res = new addrIP();
+        if (adr.isIPv4()) {
+            addrIPv4 msk = new addrIPv4();
+            msk.fromNetmask(msk.maxBits());
+            res.fromIPv4addr(msk);
+        } else {
+            addrIPv6 msk = new addrIPv6();
+            msk.fromNetmask(msk.maxBits());
+            res.fromIPv6addr(msk);
+        }
+        return res;
     }
 
     /**

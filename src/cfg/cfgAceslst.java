@@ -87,6 +87,7 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add("3  4     <proto>                     protocol number");
         l.add("4  6       any                       no source address matching");
         l.add("4  5       obj                       object group source address matching");
+        l.add("4  5       host                      host source address matching");
         l.add("4  5       <addr>                    address of source network");
         l.add("5  6         <mask>                  mask of source network");
         l.add("6  8           all                   no source port matching");
@@ -95,6 +96,7 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add("7  8             <name>              name of object group");
         l.add("8  10            any                 no target address matching");
         l.add("8  9             obj                 object group target address matching");
+        l.add("8  9             host                host target address matching");
         l.add("8  9             <addr>              address of target network");
         l.add("9  10              <mask>            mask of target network");
         l.add("10 12,.              all             no target port matching");
