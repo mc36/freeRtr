@@ -499,7 +499,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             vrf.routes6.clear();
             vrf.sentMcast = false;
             vrf.natCfg4 = null;
+            vrf.natCfg4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
             vrf.natCfg6 = null;
+            vrf.natCfg6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
             vrf.natTrns4.clear();
             vrf.natTrns6.clear();
         }
@@ -727,6 +729,10 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
     public tabListing<tabAceslstN<addrIP>, addrIP> natCfg6;
 
+    public tabListing<tabAceslstN<addrIP>, addrIP> natCfg4f;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> natCfg6f;
+
     public tabGen<tabNatTraN> natTrns4 = new tabGen<tabNatTraN>();
 
     public tabGen<tabNatTraN> natTrns6 = new tabGen<tabNatTraN>();
@@ -875,6 +881,10 @@ class servP4langConn implements Runnable {
 
     public tabListing<tabAceslstN<addrIP>, addrIP> copp6;
 
+    public tabListing<tabAceslstN<addrIP>, addrIP> copp4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> copp6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+
     public servP4langConn(pipeSide pip, servP4lang upper) {
         pipe = pip;
         lower = upper;
@@ -939,7 +949,7 @@ class servP4langConn implements Runnable {
         ntry.hwCntr.byteTx = bits.str2long(cmd.word());
     }
 
-    private void updatePortAcl(cmds cmd, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
+    private void updateAcl(cmds cmd, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
         tabAceslstN<addrIP> ntry = acl.get(acl.size() - bits.str2num(cmd.word()));
         if (ntry == null) {
             if (debugger.servP4langErr) {
@@ -1126,7 +1136,7 @@ class servP4langConn implements Runnable {
                     }
                     return false;
                 }
-                updatePortAcl(cmd, ntry.sentAcl4inF);
+                updateAcl(cmd, ntry.sentAcl4inF);
                 return false;
             }
             if (s.equals("inacl6_cnt")) {
@@ -1139,7 +1149,7 @@ class servP4langConn implements Runnable {
                     }
                     return false;
                 }
-                updatePortAcl(cmd, ntry.sentAcl6inF);
+                updateAcl(cmd, ntry.sentAcl6inF);
                 return false;
             }
             if (s.equals("outacl4_cnt")) {
@@ -1152,7 +1162,7 @@ class servP4langConn implements Runnable {
                     }
                     return false;
                 }
-                updatePortAcl(cmd, ntry.sentAcl4outF);
+                updateAcl(cmd, ntry.sentAcl4outF);
                 return false;
             }
             if (s.equals("outacl6_cnt")) {
@@ -1165,19 +1175,41 @@ class servP4langConn implements Runnable {
                     }
                     return false;
                 }
-                updatePortAcl(cmd, ntry.sentAcl6outF);
+                updateAcl(cmd, ntry.sentAcl6outF);
                 return false;
             }
             if (s.equals("natacl4_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateAcl(cmd, vrf.natCfg4f);
                 return false;
             }
             if (s.equals("natacl6_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateAcl(cmd, vrf.natCfg6f);
                 return false;
             }
             if (s.equals("coppacl4_cnt")) {
+                updateAcl(cmd, copp4f);
                 return false;
             }
             if (s.equals("coppacl6_cnt")) {
+                updateAcl(cmd, copp6f);
                 return false;
             }
             if (s.equals("route4_cnt")) {
@@ -1319,14 +1351,14 @@ class servP4langConn implements Runnable {
             keepalive = 0;
         }
         if (copp4 != lower.expCopp4) {
-            sendAcl("copp4_del ", true, copp4, null, null);
+            sendAcl("copp4_del ", true, copp4f, null, null);
             copp4 = lower.expCopp4;
-            sendAcl("copp4_add ", true, copp4, null, null);
+            sendAcl("copp4_add ", true, copp4, null, copp4f);
         }
         if (copp6 != lower.expCopp6) {
-            sendAcl("copp6_del ", false, copp6, null, null);
+            sendAcl("copp6_del ", false, copp6f, null, null);
             copp6 = lower.expCopp6;
-            sendAcl("copp6_add ", false, copp6, null, null);
+            sendAcl("copp6_add ", false, copp6, null, copp6f);
         }
         for (int i = 0; i < lower.expBr.size(); i++) {
             doBrdg(lower.expBr.get(i));
@@ -1336,8 +1368,8 @@ class servP4langConn implements Runnable {
             doVrf(vrf);
             doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4);
             doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6);
-            vrf.natCfg4 = doNatCfg(true, vrf.id, vrf.vrf.fwd4.natCfg, vrf.natCfg4);
-            vrf.natCfg6 = doNatCfg(false, vrf.id, vrf.vrf.fwd6.natCfg, vrf.natCfg6);
+            vrf.natCfg4 = doNatCfg(true, vrf.id, vrf.vrf.fwd4.natCfg, vrf.natCfg4, vrf.natCfg4f);
+            vrf.natCfg6 = doNatCfg(false, vrf.id, vrf.vrf.fwd6.natCfg, vrf.natCfg6, vrf.natCfg6f);
             doNatTrns(true, vrf.id, vrf.vrf.fwd4.natTrns, vrf.natTrns4);
             doNatTrns(false, vrf.id, vrf.vrf.fwd6.natTrns, vrf.natTrns6);
         }
@@ -2671,7 +2703,7 @@ class servP4langConn implements Runnable {
         }
     }
 
-    private tabListing<tabAceslstN<addrIP>, addrIP> doNatCfg(boolean ipv4, int vrf, tabListing<tabNatCfgN, addrIP> curr, tabListing<tabAceslstN<addrIP>, addrIP> old) {
+    private tabListing<tabAceslstN<addrIP>, addrIP> doNatCfg(boolean ipv4, int vrf, tabListing<tabNatCfgN, addrIP> curr, tabListing<tabAceslstN<addrIP>, addrIP> old, tabListing<tabAceslstN<addrIP>, addrIP> res) {
         tabListing<tabAceslstN<addrIP>, addrIP> need;
         if (curr.size() < 1) {
             need = null;
@@ -2688,8 +2720,8 @@ class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        sendAcl("natcfg" + afi + "_del " + vrf + " ", ipv4, old, null, null);
-        sendAcl("natcfg" + afi + "_add " + vrf + " ", ipv4, need, null, null);
+        sendAcl("natcfg" + afi + "_del " + vrf + " ", ipv4, res, null, null);
+        sendAcl("natcfg" + afi + "_add " + vrf + " ", ipv4, need, null, res);
         return need;
     }
 
