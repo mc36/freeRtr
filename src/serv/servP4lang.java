@@ -482,12 +482,16 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ifc.sentLabel = -1;
             ifc.sentAcl4in1 = null;
             ifc.sentAcl4in2 = null;
+            ifc.sentAcl4inF = new tabListing<tabAceslstN<addrIP>, addrIP>();
             ifc.sentAcl4out1 = null;
             ifc.sentAcl4out2 = null;
+            ifc.sentAcl4outF = new tabListing<tabAceslstN<addrIP>, addrIP>();
             ifc.sentAcl6in1 = null;
             ifc.sentAcl6in2 = null;
+            ifc.sentAcl6inF = new tabListing<tabAceslstN<addrIP>, addrIP>();
             ifc.sentAcl6out1 = null;
             ifc.sentAcl6out2 = null;
+            ifc.sentAcl6outF = new tabListing<tabAceslstN<addrIP>, addrIP>();
         }
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf vrf = expVrf.get(i);
@@ -781,6 +785,14 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6out2;
 
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4inF;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4outF;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6inF;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6outF;
+
     public servP4langIfc master;
 
     public servP4langIfc pppoe;
@@ -925,6 +937,27 @@ class servP4langConn implements Runnable {
         ntry.hwCntr = new counter();
         ntry.hwCntr.packTx = bits.str2long(cmd.word());
         ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+    }
+
+    private void updatePortAcl(cmds cmd, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
+        tabAceslstN<addrIP> ntry = acl.get(acl.size() - bits.str2num(cmd.word()));
+        if (ntry == null) {
+            if (debugger.servP4langErr) {
+                logger.debug("got unneeded report: " + cmd.getOriginal());
+            }
+            return;
+        }
+        counter old = ntry.rolledFrom.hwCntr;
+        ntry.rolledFrom.hwCntr = new counter();
+        ntry.rolledFrom.hwCntr.packRx = bits.str2long(cmd.word());
+        ntry.rolledFrom.hwCntr.byteRx = bits.str2long(cmd.word());
+        if (old == null) {
+            old = new counter();
+        }
+        if (old.compare(old, ntry.rolledFrom.hwCntr) == 0) {
+            return;
+        }
+        ntry.rolledFrom.lastMatch = bits.getTime();
     }
 
     private void updateTunn(cmds cmd, ipFwd fwd, prtGen prt) {
@@ -1083,6 +1116,70 @@ class servP4langConn implements Runnable {
                 ntry.time = bits.getTime();
                 return false;
             }
+            if (s.equals("inacl4_cnt")) {
+                servP4langIfc ntry = new servP4langIfc();
+                ntry.id = bits.str2num(cmd.word());
+                ntry = lower.expIfc.find(ntry);
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updatePortAcl(cmd, ntry.sentAcl4inF);
+                return false;
+            }
+            if (s.equals("inacl6_cnt")) {
+                servP4langIfc ntry = new servP4langIfc();
+                ntry.id = bits.str2num(cmd.word());
+                ntry = lower.expIfc.find(ntry);
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updatePortAcl(cmd, ntry.sentAcl6inF);
+                return false;
+            }
+            if (s.equals("outacl4_cnt")) {
+                servP4langIfc ntry = new servP4langIfc();
+                ntry.id = bits.str2num(cmd.word());
+                ntry = lower.expIfc.find(ntry);
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updatePortAcl(cmd, ntry.sentAcl4outF);
+                return false;
+            }
+            if (s.equals("outacl6_cnt")) {
+                servP4langIfc ntry = new servP4langIfc();
+                ntry.id = bits.str2num(cmd.word());
+                ntry = lower.expIfc.find(ntry);
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updatePortAcl(cmd, ntry.sentAcl6outF);
+                return false;
+            }
+            if (s.equals("natacl4_cnt")) {
+                return false;
+            }
+            if (s.equals("natacl6_cnt")) {
+                return false;
+            }
+            if (s.equals("coppacl4_cnt")) {
+                return false;
+            }
+            if (s.equals("coppacl6_cnt")) {
+                return false;
+            }
             if (s.equals("route4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf();
                 vrf.id = bits.str2num(cmd.word());
@@ -1188,6 +1285,9 @@ class servP4langConn implements Runnable {
                 return false;
             }
             if (!s.equals("packet")) {
+                if (debugger.servP4langErr) {
+                    logger.debug("got unneeded report: " + cmd.getOriginal());
+                }
                 return false;
             }
             int id = bits.str2num(cmd.word());
@@ -1219,14 +1319,14 @@ class servP4langConn implements Runnable {
             keepalive = 0;
         }
         if (copp4 != lower.expCopp4) {
-            sendAcl("copp4_del ", true, copp4, null);
+            sendAcl("copp4_del ", true, copp4, null, null);
             copp4 = lower.expCopp4;
-            sendAcl("copp4_add ", true, copp4, null);
+            sendAcl("copp4_add ", true, copp4, null, null);
         }
         if (copp6 != lower.expCopp6) {
-            sendAcl("copp6_del ", false, copp6, null);
+            sendAcl("copp6_del ", false, copp6, null, null);
             copp6 = lower.expCopp6;
-            sendAcl("copp6_add ", false, copp6, null);
+            sendAcl("copp6_add ", false, copp6, null, null);
         }
         for (int i = 0; i < lower.expBr.size(); i++) {
             doBrdg(lower.expBr.get(i));
@@ -2095,28 +2195,28 @@ class servP4langConn implements Runnable {
             }
             if (!br.routed) {
                 if (ifc.sentAcl4in1 != ifc.ifc.bridgeIfc.filter4in) {
-                    sendAcl("inacl4_del " + ifc.id + " ", true, ifc.sentAcl4in1, null);
+                    sendAcl("inacl4_del " + ifc.id + " ", true, ifc.sentAcl4inF, null, null);
                     ifc.sentAcl4in1 = ifc.ifc.bridgeIfc.filter4in;
                     ifc.sentAcl4in2 = null;
-                    sendAcl("inacl4_add " + ifc.id + " ", true, ifc.sentAcl4in1, null);
+                    sendAcl("inacl4_add " + ifc.id + " ", true, ifc.sentAcl4in1, null, ifc.sentAcl4inF);
                 }
                 if (ifc.sentAcl4out1 != ifc.ifc.bridgeIfc.filter4out) {
-                    sendAcl("outacl4_del " + ifc.id + " ", true, ifc.sentAcl4out1, null);
+                    sendAcl("outacl4_del " + ifc.id + " ", true, ifc.sentAcl4outF, null, null);
                     ifc.sentAcl4out1 = ifc.ifc.bridgeIfc.filter4out;
                     ifc.sentAcl4out2 = null;
-                    sendAcl("outacl4_add " + ifc.id + " ", true, ifc.sentAcl4out1, null);
+                    sendAcl("outacl4_add " + ifc.id + " ", true, ifc.sentAcl4out1, null, ifc.sentAcl4outF);
                 }
                 if (ifc.sentAcl6in1 != ifc.ifc.bridgeIfc.filter6in) {
-                    sendAcl("inacl6_del " + ifc.id + " ", false, ifc.sentAcl6in1, null);
+                    sendAcl("inacl6_del " + ifc.id + " ", false, ifc.sentAcl6inF, null, null);
                     ifc.sentAcl6in1 = ifc.ifc.bridgeIfc.filter6in;
                     ifc.sentAcl6in2 = null;
-                    sendAcl("inacl6_add " + ifc.id + " ", false, ifc.sentAcl6in1, null);
+                    sendAcl("inacl6_add " + ifc.id + " ", false, ifc.sentAcl6in1, null, ifc.sentAcl6inF);
                 }
                 if (ifc.sentAcl6out1 != ifc.ifc.bridgeIfc.filter6out) {
-                    sendAcl("outacl6_del " + ifc.id + " ", false, ifc.sentAcl6out1, null);
+                    sendAcl("outacl6_del " + ifc.id + " ", false, ifc.sentAcl6outF, null, null);
                     ifc.sentAcl6out1 = ifc.ifc.bridgeIfc.filter6out;
                     ifc.sentAcl6out2 = null;
-                    sendAcl("outacl6_add " + ifc.id + " ", false, ifc.sentAcl6out1, null);
+                    sendAcl("outacl6_add " + ifc.id + " ", false, ifc.sentAcl6out1, null, ifc.sentAcl6outF);
                 }
                 if (ifc.sentVrf == -2) {
                     return;
@@ -2176,30 +2276,30 @@ class servP4langConn implements Runnable {
         }
         if (mstr.ifc.fwdIf4 != null) {
             if ((ifc.sentAcl4in1 != mstr.ifc.fwdIf4.filterIn) || (ifc.sentAcl4in2 != mstr.ifc.fwdIf4.cfilterIn)) {
-                sendAcl("inacl4_del " + ifc.id + " ", true, ifc.sentAcl4in1, ifc.sentAcl4in2);
+                sendAcl("inacl4_del " + ifc.id + " ", true, ifc.sentAcl4inF, null, null);
                 ifc.sentAcl4in1 = mstr.ifc.fwdIf4.filterIn;
                 ifc.sentAcl4in2 = mstr.ifc.fwdIf4.cfilterIn;
-                sendAcl("inacl4_add " + ifc.id + " ", true, ifc.sentAcl4in1, ifc.sentAcl4in2);
+                sendAcl("inacl4_add " + ifc.id + " ", true, ifc.sentAcl4in1, ifc.sentAcl4in2, ifc.sentAcl4inF);
             }
             if ((ifc.sentAcl4out1 != mstr.ifc.fwdIf4.filterOut) || (ifc.sentAcl4out2 != mstr.ifc.fwdIf4.cfilterOut)) {
-                sendAcl("outacl4_del " + ifc.id + " ", true, ifc.sentAcl4out1, ifc.sentAcl4out2);
+                sendAcl("outacl4_del " + ifc.id + " ", true, ifc.sentAcl4outF, null, null);
                 ifc.sentAcl4out1 = mstr.ifc.fwdIf4.filterOut;
                 ifc.sentAcl4out2 = mstr.ifc.fwdIf4.cfilterOut;
-                sendAcl("outacl4_add " + ifc.id + " ", true, ifc.sentAcl4out1, ifc.sentAcl4out2);
+                sendAcl("outacl4_add " + ifc.id + " ", true, ifc.sentAcl4out1, ifc.sentAcl4out2, ifc.sentAcl4outF);
             }
         }
         if (mstr.ifc.fwdIf6 != null) {
             if ((ifc.sentAcl6in1 != mstr.ifc.fwdIf6.filterIn) || (ifc.sentAcl6in2 != mstr.ifc.fwdIf6.cfilterIn)) {
-                sendAcl("inacl6_del " + ifc.id + " ", false, ifc.sentAcl6in1, ifc.sentAcl6in2);
+                sendAcl("inacl6_del " + ifc.id + " ", false, ifc.sentAcl6inF, null, null);
                 ifc.sentAcl6in1 = mstr.ifc.fwdIf6.filterIn;
                 ifc.sentAcl6in2 = mstr.ifc.fwdIf6.cfilterIn;
-                sendAcl("inacl6_add " + ifc.id + " ", false, ifc.sentAcl6in1, ifc.sentAcl6in2);
+                sendAcl("inacl6_add " + ifc.id + " ", false, ifc.sentAcl6in1, ifc.sentAcl6in2, ifc.sentAcl6inF);
             }
             if ((ifc.sentAcl6out1 != mstr.ifc.fwdIf6.filterOut) || (ifc.sentAcl6out2 != mstr.ifc.fwdIf6.cfilterOut)) {
-                sendAcl("outacl6_del " + ifc.id + " ", false, ifc.sentAcl6out1, ifc.sentAcl6out2);
+                sendAcl("outacl6_del " + ifc.id + " ", false, ifc.sentAcl6outF, null, null);
                 ifc.sentAcl6out1 = mstr.ifc.fwdIf6.filterOut;
                 ifc.sentAcl6out2 = mstr.ifc.fwdIf6.cfilterOut;
-                sendAcl("outacl6_add " + ifc.id + " ", false, ifc.sentAcl6out1, ifc.sentAcl6out2);
+                sendAcl("outacl6_add " + ifc.id + " ", false, ifc.sentAcl6out1, ifc.sentAcl6out2, ifc.sentAcl6outF);
             }
         }
         if (vrf.id == ifc.sentVrf) {
@@ -2588,8 +2688,8 @@ class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        sendAcl("natcfg" + afi + "_del " + vrf + " ", ipv4, old, null);
-        sendAcl("natcfg" + afi + "_add " + vrf + " ", ipv4, need, null);
+        sendAcl("natcfg" + afi + "_del " + vrf + " ", ipv4, old, null, null);
+        sendAcl("natcfg" + afi + "_add " + vrf + " ", ipv4, need, null, null);
         return need;
     }
 
@@ -2746,14 +2846,17 @@ class servP4langConn implements Runnable {
         return seq + " " + tabListingEntry.action2string(ace.action) + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535);
     }
 
-    public void sendAcl(String pre, boolean ipv4, tabListing<tabAceslstN<addrIP>, addrIP> iface, tabListing<tabAceslstN<addrIP>, addrIP> infra) {
+    public void sendAcl(String pre, boolean ipv4, tabListing<tabAceslstN<addrIP>, addrIP> iface, tabListing<tabAceslstN<addrIP>, addrIP> infra, tabListing<tabAceslstN<addrIP>, addrIP> res) {
+        if (res == null) {
+            res = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        }
+        res.clear();
         if (iface != null) {
             iface = tabAceslstN.unrollAcl(iface);
         }
         if (infra != null) {
             infra = tabAceslstN.unrollAcl(infra);
         }
-        tabListing<tabAceslstN<addrIP>, addrIP> res = new tabListing<tabAceslstN<addrIP>, addrIP>();
         res.mergeTwo(infra, iface);
         for (int i = 0; i < res.size(); i++) {
             lower.sendLine(pre + ace2str(res.size() - i, ipv4, res.get(i)));

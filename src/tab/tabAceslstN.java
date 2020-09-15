@@ -128,6 +128,11 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
     public int reflectTim;
 
     /**
+     * original entry
+     */
+    public tabAceslstN<T> rolledFrom;
+
+    /**
      * create new access list entry
      *
      * @param adr empty address to use
@@ -394,7 +399,11 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
             if (res == null) {
                 return false;
             }
-            return res.matches(pck);
+            if (!res.matches(pck)) {
+                return false;
+            }
+            doReflect(pck);
+            return true;
         }
         if (!proto.matches(pck.IPprt)) {
             return false;
@@ -461,20 +470,25 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
                 return false;
             }
         }
-        if (reflectFwd != null) {
-            tabAceslstN<T> ntry = pack2ace(pck);
-            ntry.sequence = reflectFwd.nextseq();
-            ntry.action = actionType.actPermit;
-            ntry.timeout = reflectTim;
-            reflectFwd.add(ntry);
-            ntry = pack2ace(pck);
-            ntry.reverseAce();
-            ntry.sequence = reflectRev.nextseq();
-            ntry.action = actionType.actPermit;
-            ntry.timeout = reflectTim;
-            reflectRev.add(ntry);
-        }
+        doReflect(pck);
         return true;
+    }
+
+    private void doReflect(packHolder pck) {
+        if (reflectFwd == null) {
+            return;
+        }
+        tabAceslstN<T> ntry = pack2ace(pck);
+        ntry.sequence = reflectFwd.nextseq();
+        ntry.action = action;
+        ntry.timeout = reflectTim;
+        reflectFwd.add(ntry);
+        ntry = pack2ace(pck);
+        ntry.reverseAce();
+        ntry.sequence = reflectRev.nextseq();
+        ntry.action = action;
+        ntry.timeout = reflectTim;
+        reflectRev.add(ntry);
     }
 
     /**
@@ -586,6 +600,10 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
             }
             ntry.sequence = trg.nextseq();
             ntry.action = act;
+            ntry.rolledFrom = ace;
+            ntry.reflectFwd = ace.reflectFwd;
+            ntry.reflectRev = ace.reflectRev;
+            ntry.reflectTim = ace.reflectTim;
             trg.add(ntry);
             boolean incr = true;
             if (incr && (ace.trgOGprt != null)) {

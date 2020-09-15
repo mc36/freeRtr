@@ -86,6 +86,11 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
     public counter cntr = new counter();
 
     /**
+     * hardware packet counter
+     */
+    public counter hwCntr;
+
+    /**
      * last matched
      */
     public long lastMatch;
@@ -149,7 +154,7 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
      * @return counters
      */
     public String getCounters() {
-        return cntr.getShStat();
+        return cntr.getShHwStat(hwCntr);
     }
 
     /**

@@ -525,6 +525,30 @@ public class counter implements Comparator<counter> {
     /**
      * get statistics
      *
+     * @param hw hw counter
+     * @return summary for table
+     */
+    public String getShHwStat(counter hw) {
+        String tb = "";
+        String rb = "";
+        String db = "";
+        String tp = "";
+        String rp = "";
+        String dp = "";
+        if (hw != null) {
+            tb = "+" + hw.byteTx;
+            rb = "+" + hw.byteRx;
+            db = "+" + hw.byteDr;
+            tp = "+" + hw.packTx;
+            rp = "+" + hw.packRx;
+            dp = "+" + hw.packDr;
+        }
+        return "tx=" + byteTx + tb + "(" + packTx + tp + ") rx=" + byteRx + rb + "(" + packRx + rp + ") drp=" + byteDr + db + "(" + packDr + dp + ")";
+    }
+
+    /**
+     * get statistics
+     *
      * @param c counter to show
      * @return statistics
      */
