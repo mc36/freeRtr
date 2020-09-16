@@ -170,7 +170,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         "server p4lang .*! no export-srv6",
         "server p4lang .*! no export-copp4",
         "server p4lang .*! no export-copp6",
-        "server p4lang .*! no export-dynamic",
+        "server p4lang .*! no export-dynbr",
         "server p4lang .*! no interconnect",
         "server p4lang .*! export-interval 1000",};
 
@@ -211,7 +211,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         } else {
             l.add(beg + "export-copp6 " + expCopp6.listName);
         }
-        cmds.cfgLine(l, expDynSiz < 1, beg, "export-dynamic", expDyn1st + " " + expDynSiz);
+        cmds.cfgLine(l, expDynSiz < 1, beg, "export-dynbr", expDyn1st + " " + expDynSiz);
         l.add(beg + "export-interval " + expDelay);
         cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
     }
@@ -273,7 +273,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             expCopp6 = acl.aceslst;
             return false;
         }
-        if (s.equals("export-dynamic")) {
+        if (s.equals("export-dynbr")) {
             expDyn1st = bits.str2num(cmd.word());
             expDynSiz = bits.str2num(cmd.word());
             expDynNxt = 0;
@@ -380,7 +380,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             interconn = null;
             return false;
         }
-        if (s.equals("export-dynamic")) {
+        if (s.equals("export-dynbr")) {
             expDyn1st = 0;
             expDynSiz = 0;
             expDynNxt = 0;
@@ -418,7 +418,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("1 2  export-vrf                specify vrf to export");
         l.add("2 3    <name>                  vrf name");
         l.add("3 .      <num>                 p4lang vrf number");
-        l.add("1 2  export-dynamic            specify dynamic port range");
+        l.add("1 2  export-dynbr              specify dynamic bridge port range");
         l.add("2 3    <num>                   first id");
         l.add("3 .      <num>                 number of ids");
         l.add("1 2  export-bridge             specify bridge to export");
