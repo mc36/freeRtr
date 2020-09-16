@@ -94,5 +94,6 @@ struct ingress_metadata_t {
     bit<16> checksum_udp_tmp;
 #endif
     l4_lookup_t   l4_lookup;
+    bit<16> always_zero;
 }
 #endif	// _INGRESS_METADATA_P4_

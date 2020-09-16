@@ -35,6 +35,7 @@ parser ig_prs_main(packet_in pkt,
     state start {
         pkt.extract(ig_intr_md);
         pkt.advance(PORT_METADATA_SIZE);
+        ig_md.always_zero = 0;
 #ifdef HAVE_PPPOE
         ig_md.pppoe_ctrl_valid = 0;
         ig_md.pppoe_data_valid = 0;

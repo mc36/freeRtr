@@ -68,9 +68,9 @@ hdr.ethernet.src_mac_addr:
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.eth4.setValid();
-        hdr.eth4.ethertype = ig_md.ethertype;
         hdr.eth4.dst_mac_addr = hdr.ethernet.dst_mac_addr;
         hdr.eth4.src_mac_addr = hdr.ethernet.src_mac_addr;
+        hdr.eth4.ethertype = ig_md.ethertype + ig_md.always_zero; // hack
         ig_md.nexthop_id = nexthop;
         ig_md.ethertype = ETHERTYPE_ROUTEDMAC;
 #ifdef NEED_PKTLEN
