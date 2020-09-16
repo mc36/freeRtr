@@ -47,6 +47,9 @@ parser ig_prs_main(packet_in pkt,
         ig_md.bridge_src = 0;
         ig_md.bridge_trg = 0;
 #endif
+#ifdef NEED_PKTLEN
+        ig_md.pktlen = 0;
+#endif
         ig_md.ethertype = 0;
         ig_md.vrf = 0;
 #ifdef HAVE_MPLS
@@ -298,6 +301,9 @@ ETHERTYPE_IPV6:
         udp_checksum.subtract({hdr.ipv4.src_addr});
         udp_checksum.subtract({hdr.ipv4.dst_addr});
 #endif
+#ifdef NEED_PKTLEN
+        ig_md.pktlen = hdr.ipv4.total_len;
+#endif
         transition select(hdr.ipv4.protocol) {
 #ifdef HAVE_GRE
 IP_PROTOCOL_GRE:
@@ -329,6 +335,9 @@ IP_PROTOCOL_IPV6:
         udp_checksum.subtract({hdr.ipv6.src_addr});
         udp_checksum.subtract({hdr.ipv6.dst_addr});
 #endif
+#ifdef NEED_PKTLEN
+//        ig_md.pktlen = hdr.ipv6.payload_len + 40;
+#endif
         transition select(hdr.ipv6.next_hdr) {
 #ifdef HAVE_GRE
 IP_PROTOCOL_GRE:
@@ -357,8 +366,12 @@ IP_PROTOCOL_IPV6:
     state prs_arp {
         pkt.extract(hdr.arp);
         ig_md.arp_valid = 1;
+#ifdef NEED_PKTLEN
+        ig_md.pktlen = 28;
+#endif
         transition accept;
     }
+
     state prs_llc {
         pkt.extract(hdr.llc);
         ig_md.nexthop_id = CPU_PORT;

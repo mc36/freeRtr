@@ -23,21 +23,16 @@ control IngressControlBridge(inout headers hdr, inout ingress_metadata_t ig_md,
                              in ingress_intrinsic_metadata_t ig_intr_md)
 {
 
-#include "pktlen1.p4"
-
-    action send_to_cpu() {
-        ig_md.nexthop_id = CPU_PORT;
-        // Packets sent to the controller needs to be prepended with the
-        // packet-in header. By setting it valid we make sure it will be
-        // deparsed on the wire (see c_deparser).
-    }
-
     action act_set_bridge_port() {
         ig_md.bridge_src = 1;
     }
 
     action act_bridge_miss() {
         ig_md.bridge_src = 0;
+        ig_md.nexthop_id = CPU_PORT;
+        // Packets sent to the controller needs to be prepended with the
+        // packet-in header. By setting it valid we make sure it will be
+        // deparsed on the wire (see c_deparser).
     }
 
     table tbl_bridge_learn {
@@ -61,7 +56,6 @@ hdr.ethernet.src_mac_addr:
 
 #ifdef HAVE_TAP
 
-    bit<16> tap_ethtyp_hack;
 
     action act_set_bridge_routed(NextHopId_t nexthop) {
         ig_md.bridge_trg = MAX_PORT;
@@ -74,11 +68,14 @@ hdr.ethernet.src_mac_addr:
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.eth4.setValid();
-        hdr.eth4.ethertype = ig_md.ethertype + tap_ethtyp_hack;
+        hdr.eth4.ethertype = ig_md.ethertype;
         hdr.eth4.dst_mac_addr = hdr.ethernet.dst_mac_addr;
         hdr.eth4.src_mac_addr = hdr.ethernet.src_mac_addr;
         ig_md.nexthop_id = nexthop;
         ig_md.ethertype = ETHERTYPE_ROUTEDMAC;
+#ifdef NEED_PKTLEN
+        ig_md.pktlen = ig_md.pktlen + 14;
+#endif
     }
 #endif
 
@@ -120,14 +117,14 @@ hdr.ethernet.src_mac_addr:
         hdr.udp2.setValid();
         hdr.udp2.src_port = 4789;
         hdr.udp2.dst_port = 4789;
-        hdr.udp2.length = pktlen + 30;
+        hdr.udp2.length = ig_md.pktlen + 30;
         hdr.udp2.checksum = 0;
 
         hdr.ipv4d.setValid();
         hdr.ipv4d.version = 4;
         hdr.ipv4d.ihl = 5;
         hdr.ipv4d.diffserv = 0;
-        hdr.ipv4d.total_len = pktlen + 50;
+        hdr.ipv4d.total_len = ig_md.pktlen + 50;
         hdr.ipv4d.identification = 0;
         hdr.ipv4d.flags = 0;
         hdr.ipv4d.frag_offset = 0;
@@ -166,14 +163,14 @@ hdr.ethernet.src_mac_addr:
         hdr.udp2.setValid();
         hdr.udp2.src_port = 4789;
         hdr.udp2.dst_port = 4789;
-        hdr.udp2.length = pktlen + 30;
+        hdr.udp2.length = ig_md.pktlen + 30;
         hdr.udp2.checksum = 0;
 
         hdr.ipv6d.setValid();
         hdr.ipv6d.version = 6;
         hdr.ipv6d.traffic_class = 0;
         hdr.ipv6d.flow_label = 0;
-        hdr.ipv6d.payload_len = pktlen + 30;
+        hdr.ipv6d.payload_len = ig_md.pktlen + 30;
         hdr.ipv6d.next_hdr = IP_PROTOCOL_UDP;
         hdr.ipv6d.hop_limit = 255;
         hdr.ipv6d.src_addr = src_ip_addr;
@@ -203,14 +200,14 @@ hdr.ethernet.src_mac_addr:
         hdr.udp2.setValid();
         hdr.udp2.src_port = src_port;
         hdr.udp2.dst_port = dst_port;
-        hdr.udp2.length = pktlen + 22;
+        hdr.udp2.length = ig_md.pktlen + 22;
         hdr.udp2.checksum = 0;
 
         hdr.ipv4d.setValid();
         hdr.ipv4d.version = 4;
         hdr.ipv4d.ihl = 5;
         hdr.ipv4d.diffserv = 0;
-        hdr.ipv4d.total_len = pktlen + 42;
+        hdr.ipv4d.total_len = ig_md.pktlen + 42;
         hdr.ipv4d.identification = 0;
         hdr.ipv4d.flags = 0;
         hdr.ipv4d.frag_offset = 0;
@@ -244,14 +241,14 @@ hdr.ethernet.src_mac_addr:
         hdr.udp2.setValid();
         hdr.udp2.src_port = src_port;
         hdr.udp2.dst_port = dst_port;
-        hdr.udp2.length = pktlen + 22;
+        hdr.udp2.length = ig_md.pktlen + 22;
         hdr.udp2.checksum = 0;
 
         hdr.ipv6d.setValid();
         hdr.ipv6d.version = 6;
         hdr.ipv6d.traffic_class = 0;
         hdr.ipv6d.flow_label = 0;
-        hdr.ipv6d.payload_len = pktlen + 22;
+        hdr.ipv6d.payload_len = ig_md.pktlen + 22;
         hdr.ipv6d.next_hdr = IP_PROTOCOL_UDP;
         hdr.ipv6d.hop_limit = 255;
         hdr.ipv6d.src_addr = src_ip_addr;
@@ -263,6 +260,10 @@ hdr.ethernet.src_mac_addr:
 
     action act_bridge_punt() {
         ig_md.bridge_trg = 0;
+        ig_md.nexthop_id = CPU_PORT;
+        // Packets sent to the controller needs to be prepended with the
+        // packet-in header. By setting it valid we make sure it will be
+        // deparsed on the wire (see c_deparser).
     }
 
     table tbl_bridge_target {
@@ -294,7 +295,6 @@ hdr.ethernet.dst_mac_addr:
     }
 
     apply {
-#include "pktlen2.p4"
 
         if (ig_md.bridge_id != 0) {
             ig_md.vrf = 0;
@@ -313,30 +313,26 @@ hdr.ethernet.dst_mac_addr:
             }
 #endif
 
-            if (tbl_bridge_learn.apply().hit) tbl_bridge_target.apply();
-
-            if ((ig_md.bridge_src == 0) || (ig_md.bridge_trg == 0)) {
-                send_to_cpu();
-            } else {
+            if (tbl_bridge_learn.apply().hit) if (tbl_bridge_target.apply().hit) {
 
 #ifdef HAVE_TAP
-                if (hdr.eth6.isValid()) {
-                    ig_md.ethertype = hdr.eth6.ethertype;
-                    hdr.eth6.setInvalid();
-                }
+                    if (hdr.eth6.isValid()) {
+                        ig_md.ethertype = hdr.eth6.ethertype;
+                        hdr.eth6.setInvalid();
+                    }
 #endif
 
 #ifdef HAVE_MPLS
-                if (hdr.mpls1.isValid() && (ig_md.mpls_op_type != 3)) {
-                    hdr.eth2.setInvalid();
-                    hdr.mpls1.setInvalid();
-                    hdr.mpls0.setInvalid();
-                    hdr.vlan.setInvalid();
-                    ig_md.mpls0_remove = 0;
-                    ig_md.mpls1_remove = 0;
-                }
+                    if (hdr.mpls1.isValid() && (ig_md.mpls_op_type != 3)) {
+                        hdr.eth2.setInvalid();
+                        hdr.mpls1.setInvalid();
+                        hdr.mpls0.setInvalid();
+                        hdr.vlan.setInvalid();
+                        ig_md.mpls0_remove = 0;
+                        ig_md.mpls1_remove = 0;
+                    }
 #endif
-            }
+                }
         }
 
     }

@@ -31,8 +31,28 @@ BSP_FILE_PATH = SDE_INSTALL + "/lib/libpltfm_mgr.so"
 sys.path.append(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "./", BF_RUNTIME_LIB)
 )
-
 import bfrt_grpc.client as gc
+
+try:
+    from sal_services_pb2 import (
+        UNDEFINED_SPEED,
+        SPEED_NONE,
+        SPEED_1G,
+        SPEED_2P5G,
+        SPEED_5G,
+        SPEED_10G,
+        SPEED_25G,
+        SPEED_40G,
+        SPEED_50G,
+        SPEED_100G,
+    )
+    from sal_services_pb2 import UNDEFINED_FEC, FEC_NONE, FEC_FC, FEC_RS
+    from sal_services_pb2 import UNDEFINED_FC, FC_NONE, FC_PAUSE, FC_PFC
+    from sal_services_pb2 import UNDEFINED_AN, AN_OFF, AN_ON
+    from salgrpcclient import SalGrpcClient, SAL_PORT_ID
+except ImportError:
+    print "sal import failed"
+
 
 MODEL = 0
 WEDGEBF10032X = 1
@@ -63,7 +83,6 @@ DELETE = 3
 
 # p4_program_name = "bf_router"
 
-logger.warn("%s running on: %s" % (PROGRAM_NAME, SESSION_TYPE[SESSION_ID]))
 
 def _Exception():
     exc_type, exc_obj, tb = sys.exc_info()
@@ -76,6 +95,7 @@ def _Exception():
 
 class BfRuntimeGrpcClient:
     def __init__(self, grpc_addr, p4_program_name, client_id, pipe_name):
+        self.class_name = type(self).__name__
         self.grpc_addr = grpc_addr # "localhost:50052"
         self.p4_name = p4_program_name
         self.client_id = client_id
@@ -109,6 +129,7 @@ class BfRuntimeGrpcClient:
 
 class BfSubIfCounter(Thread):
     def __init__(self, threadID, name, bfgc, sck_file,pipe_name,subif_counter_interval,):
+        self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
         self.name = name
@@ -120,19 +141,19 @@ class BfSubIfCounter(Thread):
 
     def run(self):
         try:
-            logger.warn("BfSubIfCounter - main")
+            logger.warn("%s - main" % (self.class_name))
             while not self.die:
-                logger.debug("BfSubIfCounter - loop")
+                logger.debug("%s - loop" % (self.class_name))
                 if len(ACTIVE_PORTS.keys())==0:
-                    logger.warn("BfSubIfCounter - No active ports")
+                    logger.warn("%s - No active ports" % (self.class_name))
                 else:
-                    logger.debug("BfSubIfCounter - ACTIVE_PORTS%s" % ACTIVE_PORTS.keys())
+                    logger.debug("%s - ACTIVE_PORTS%s" % (self.class_name, ACTIVE_PORTS.keys()))
                     self.getReadSwitchSubIfCounter()
                 sleep(self.subif_counter_interval)
 
         except Exception as e:
             e = sys.exc_info()[0]
-            logger.warn("BfSubIfCounter - exited with code [%s]" % _Exception())
+            logger.warn("%s - exited with code [%s]" % (self.class_name,_Exception()))
             self.tearDown()
 
     def getReadSwitchSubIfCounter(self):
@@ -172,7 +193,7 @@ class BfSubIfCounter(Thread):
 
         for counter_id in SUBIF_COUNTERS.keys():
         # read counter from p4 switch via grpc client
-            logger.debug("BfSubIfCounter - reading counter_id[%s]" % counter_id)
+            logger.debug("%s - reading counter_id[%s]" % (self.class_name,counter_id))
             # IN counters
             key_list=[tbl_stats_in.make_key([gc.KeyTuple("$COUNTER_INDEX", counter_id)])]
             data_list=None
@@ -229,6 +250,7 @@ class BfSubIfCounter(Thread):
 
 class BfIfStatus(Thread):
     def __init__(self, threadID, name, bfgc, sck_file,oper_status_interval,):
+        self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
         self.name = name
@@ -238,14 +260,23 @@ class BfIfStatus(Thread):
         self.die=False
         self.oper_status_interval=oper_status_interval
 
+    def getAllActivePorts(self):
+        resp = self.bfgc.port_table.entry_get(self.bfgc.target, [], {"from_hw": False})
+        for d, k in resp:
+            key_fields = k.to_dict()
+            data_fields = d.to_dict()
+            return (key_fields[b'$DEV_PORT']['value'], data_fields[b'$PORT_NAME'])
+
     def run(self):
         try:
 
-            logger.warn("BfIfStatus - main")
+            logger.warn("%s - main" % (self.class_name))
             while not self.die:
-                logger.debug("BfIfStatus - loop")
+                logger.debug("%s - loop" % (self.class_name))
+                logger.debug("%s - %s" % (self.class_name,self.getAllActivePorts()))
+                self.getAllActivePorts()
                 if len(ACTIVE_PORTS.keys())==0:
-                    logger.warn("BfIfStatus - No active ports")
+                    logger.warn("%s - No active ports" %(self.class_name))
                 else:
                     self.getActiveSwitchOperStatus()
 
@@ -254,7 +285,7 @@ class BfIfStatus(Thread):
 
         except Exception as e:
             e = sys.exc_info()[0]
-            logger.warn("BfIfStatus - exited with code [%s]" % _Exception())
+            logger.warn("%s - exited with code [%s]" % (self.class_name,_Exception()))
             self.tearDown()
 
     def getActiveSwitchOperStatus(self):
@@ -269,7 +300,7 @@ class BfIfStatus(Thread):
             if PORTS_OPER_STATUS.has_key(port_id):
                 # notify control plane if needed
                 if PORTS_OPER_STATUS[port_id] == port["$PORT_UP"]:
-                    logger.debug("BfIfStatus - PORTS_OPER_STATUS[%s] no state change" % port_id )
+                    logger.debug("%s - PORTS_OPER_STATUS[%s] no state change" % (self.class_name,port_id) )
                     continue
                 elif (PORTS_OPER_STATUS[port_id] == True) and (port["$PORT_UP"] == False):
                     self.file.write("state %s %s\n" % (port_id, 0))
@@ -277,17 +308,17 @@ class BfIfStatus(Thread):
                     self.file.flush()
                     logger.warn("tx: ['state','%s','0','\\n']" % port_id )
                     PORTS_OPER_STATUS[port_id] = False
-                    logger.debug("BfIfStatus - PORTS_OPER_STATUS[%s] state change to DOWN" % port_id )
+                    logger.debug("%s - PORTS_OPER_STATUS[%s] state change to DOWN" % (self.class_name,port_id) )
                 elif (PORTS_OPER_STATUS[port_id] == False) and (port["$PORT_UP"] == True):
                     self.file.write("state %s %s\n" % (port_id, 1))
                     #self.file.writelines(["state %s %s" % (port_id, 1)])
                     self.file.flush()
                     logger.warn("tx: ['state','%s','1','\\n']" % port_id )
                     PORTS_OPER_STATUS[port_id] = True
-                    logger.debug("BfIfStatus - PORTS_OPER_STATUS[%s] state change to UP" % port_id )
+                    logger.debug("%s - PORTS_OPER_STATUS[%s] state change to UP" % (self.class_name,port_id) )
 
             else:
-                logger.warn("BfIfStatus - PORTS_OPER_STATUS[%s] does not exist, adding it ..." % port_id )
+                logger.warn("%s - PORTS_OPER_STATUS[%s] does not exist, adding it ..." % (self.class_name,port_id) )
                 PORTS_OPER_STATUS[port_id]=port["$PORT_UP"]
 
     def tearDown(self):
@@ -295,6 +326,7 @@ class BfIfStatus(Thread):
 
 class BfIfSnmpClient(Thread):
     def __init__(self, threadID, name, bfgc, ifmibs_dir,stats_interval,ifindex):
+        self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
         self.name = name
@@ -314,34 +346,34 @@ class BfIfSnmpClient(Thread):
                 os.unlink(self.ifmibs_dir + "/" + file)
 
     def run(self):
-        logger.warn("BfIfSnmpClient - main")
+        logger.warn("%s - main" % (self.class_name))
         try:
             # re-initialize ifindex file
             shutil.copy("%s.init" % self.ifindex,self.ifindex)
             while not self.die:
                 if len(ACTIVE_PORTS.keys())==0:
-                    logger.warn("BfIfSnmpClient - No active ports")
+                    logger.warn("%s - No active ports" % (self.class_name))
                 else:
                     for port in ACTIVE_PORTS.keys():
                         if port not in self.snmp_ports:
                             self.addSnmpPort(port,ACTIVE_PORTS[port])
                             self.snmp_ports.append(port)
-                            logger.warn("BfIfSnmpClient - added stats for port %s" % port)
+                            logger.warn("%s - added stats for port %s" % (self.class_name,port))
                     for subif in ACTIVE_SUBIFS.keys():
                         if subif not in self.snmp_subifs:
                                 self.addSnmpSubIf(subif)
                                 self.snmp_subifs.append(subif)
-                                logger.warn("BfIfSnmpClient - added stats for sub-interface %s" % subif)
+                                logger.warn("%s - added stats for sub-interface %s" % (self.class_name,subif))
                     for port in self.snmp_ports:
                         if port not in ACTIVE_PORTS.keys():
                             self.deleteSnmpPort(port,0)
                             self.snmp_ports.remove(port)
-                            logger.warn("BfIfSnmpClient - removing stats for port %s" % port)
+                            logger.warn("%s - removing stats for port %s" % (self.class_name,port))
                     for subif in self.snmp_subifs:
                         if subif not in ACTIVE_SUBIFS.keys():
                             self.deleteSnmpPort(subif,1)
                             self.snmp_subifs.remove(subif)
-                            logger.warn("BfIfSnmpClient - removing stats for sub-interface %s" % subif)
+                            logger.warn("%s - removing stats for sub-interface %s" % (self.class_name,subif))
 
                     self.updateStats()
 
@@ -349,7 +381,7 @@ class BfIfSnmpClient(Thread):
 
         except Exception as e:
             e = sys.exc_info()[0]
-            logger.warn("BfIfSnmpClient - exited with code [%s]" % _Exception())
+            logger.warn("%s - exited with code [%s]" % (self.class_name,_Exception()))
             self.tearDown()
 
     def addSnmpSubIf(self, port_id):
@@ -517,20 +549,21 @@ class BfIfSnmpClient(Thread):
         self.die=True
 
 class BfForwarder(Thread):
-    def __init__(self, threadID, name, bfgc, sck_file, brdg, mpls, srv6, nat, tun, poe):
+    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, tun, poe):
+        self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
         self.name = name
+        self.platform = platform
         self.bfgc = bfgc
+        self.salgc = salgc
         self.brdg = brdg
         self.mpls = mpls
         self.srv6 = srv6
         self.nat = nat
         self.tun = tun
         self.poe = poe
-        logger.warn("BfForwarder - loop")
         self.die=False
-        #self.fil =  sck.makefile("rw")
         self.file = sck_file
         self._clearTable()
 
@@ -662,6 +695,17 @@ class BfForwarder(Thread):
             self.bfgc.port_table.entry_mod(self.bfgc.target,key,data)
             logger.debug("Port[%s] MTU set to %s" % (port_id,mtu_size))
 
+    def _setPortAdmStatusBF2556X1T(self, port_id, adm_status, port_speed):
+        new_speed = self.salgc.speedTnaToSal(port_speed)
+        sal_port = SAL_PORT_ID[port_id]
+        if adm_status == 1:
+            self.salgc.AddPort(sal_port, lane=0, speed=new_speed, fec=1, an=1, fc=0, enable=adm_status, up=adm_status)
+            ACTIVE_PORTS[port_id]=port_speed
+        else:
+            self.salgc.DelPort(port_num=sal_port, lane=0)
+            ACTIVE_PORTS.pop(port_id)
+
+
     def _setPortAdmStatus(self, port_id, adm_status, port_speed):
         # set port_id to adm_status
 
@@ -698,6 +742,9 @@ class BfForwarder(Thread):
                     )
                 ],
             )
+
+            ACTIVE_PORTS.pop(port_id)
+
             logger.debug("Port[%s] administratively disabled", port_id)
 
 
@@ -4761,7 +4808,12 @@ class BfForwarder(Thread):
                 self.setPortMTU(int(splt[1]), int(splt[2]))
                 continue
             if splt[0] == "state":
-                self._setPortAdmStatus(int(splt[1]), int(splt[2]), int(splt[3]))
+                if (self.platform == "wedge100bf32x"):
+                    self._setPortAdmStatus(int(splt[1]), int(splt[2]), int(splt[3]))
+                elif SAL_PORT_ID.has_key(int(splt[1])):
+                    self._setPortAdmStatusBF2556X1T(int(splt[1]), int(splt[2]), int(splt[3]))
+                else:
+                    self._setPortAdmStatus(int(splt[1]), int(splt[2]), int(splt[3]))
                 continue
             if splt[0] == "bundlelist_add":
                 self.setBundleAdmStatus(1, int(splt[1]), list(splt[2:]))
@@ -4903,6 +4955,16 @@ if __name__ == "__main__":
         default=True,
     )
     parser.add_argument(
+        "--snmp",
+        help="enable snmp export locally",
+        type=str2bool,
+        nargs='?',
+        const=True,
+        action="store",
+        required=False,
+        default=False,
+    )
+    parser.add_argument(
         "--ifmibs-dir",
         help="Path to the directory where the interface MIBs are stored",
         type=str,
@@ -4926,6 +4988,22 @@ if __name__ == "__main__":
         required=False,
         default="/root/rare/snmp/ifindex",
     )
+    parser.add_argument(
+        "--platform",
+        help="Platform used: wedge100bf32x, bf2556x1t ",
+        type=str,
+        action="store",
+        required=False,
+        default="wedge100bf32x",
+    )
+    parser.add_argument(
+        "--sal-grpc-server-address",
+        help="SAL GRPC server address",
+        type=str,
+        action="store",
+        required=False,
+        default="127.0.0.1:50053",
+    )
     args = parser.parse_args()
 
     try:
@@ -4935,6 +5013,18 @@ if __name__ == "__main__":
         SUBIF_COUNTERS = {}
         SUBIF_COUNTERS_IN = {}
         SUBIF_COUNTERS_OUT = {}
+        if (args.platform=="bf2556x1t"):
+            # start TOFINO via SAL GRPC client
+            logger.warn('Starting TOFINO via SAL') 
+            sal_client = SalGrpcClient(args.sal_grpc_server_address)
+            sal_client.TestConnection()
+            sal_client.GetSwitchModel()
+            sal_client.StartTofino()
+            sal_client.StartGearBox()
+        else:
+            sal_client = None
+
+        logger.warn("%s running on: %s" % (PROGRAM_NAME,args.platform.upper()))
 
         sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sck.connect((args.freerouter_address,
@@ -4947,18 +5037,24 @@ if __name__ == "__main__":
                                     args.client_id,
                                     args.pipe_name,)
 
-        bf_snmp = BfIfSnmpClient(1,
+        if args.snmp:
+            bf_snmp = BfIfSnmpClient(1,
                              "bf_snmp",
                              bf_client,
                              args.ifmibs_dir,
                              args.stats_interval,
                              args.ifindex)
-        bf_snmp.daemon=True
-        bf_snmp.start()
+            bf_snmp.daemon=True
+            bf_snmp.start()
+            logger.warn("bf_switchd started with SNMP export")
+        else:
+            logger.warn("bf_switchd started with no SNMP export")
 
         bf_forwarder = BfForwarder(2,
                                "bf_forwarder",
+                               args.platform,
                                bf_client,
+                               sal_client,
                                sck_file,
                                args.brdg,
                                args.mpls,
@@ -4990,7 +5086,10 @@ if __name__ == "__main__":
         bf_if_counter.daemon=True
         bf_if_counter.start()
 
-        ALL_THREADS = [bf_snmp,bf_forwarder,bf_if_status,bf_if_counter]
+        if args.snmp:
+            ALL_THREADS = [bf_snmp,bf_forwarder,bf_if_status,bf_if_counter]
+        else:
+            ALL_THREADS = [bf_forwarder,bf_if_status,bf_if_counter]
 
         while is_any_thread_alive(ALL_THREADS):
             [t.join(1) for t in ALL_THREADS

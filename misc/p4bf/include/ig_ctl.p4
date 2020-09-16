@@ -82,6 +82,14 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 
         ig_dprsr_md.drop_ctl = 0; /// hack for odd/even ports
 
+#ifdef NEED_PKTLEN
+        if (hdr.ipv6.isValid()) ig_md.pktlen = hdr.ipv6.payload_len + 40;
+#ifdef HAVE_MPLS
+        if (hdr.mpls1.isValid()) ig_md.pktlen = ig_md.pktlen + 8;
+        else if (hdr.mpls0.isValid()) ig_md.pktlen = ig_md.pktlen + 4;
+#endif
+#endif
+
         ig_ctl_vlan_in.apply(hdr, ig_md, ig_intr_md);
 
         if (ig_intr_md.ingress_port == CPU_PORT) {

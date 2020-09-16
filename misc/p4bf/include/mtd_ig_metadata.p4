@@ -17,6 +17,24 @@
 #ifndef _INGRESS_METADATA_P4_
 #define _INGRESS_METADATA_P4_
 
+
+
+#undef NEED_PKTLEN
+
+#ifdef HAVE_TUN
+#define NEED_PKTLEN
+#endif
+
+#ifdef HAVE_PPPOE
+#define NEED_PKTLEN
+#endif
+
+
+
+
+
+
+
 /*
  * User defined metadata type
  */
@@ -36,6 +54,9 @@ struct ingress_metadata_t {
     SubIntId_t output_id;
     ethertype_t ethertype;
     switch_vrf_t vrf;
+#ifdef NEED_PKTLEN
+    bit<16> pktlen;
+#endif
 #ifdef HAVE_MPLS
     label_t mpls_label;
     label_t mpls_encap_egress_label;
