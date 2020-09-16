@@ -208,13 +208,6 @@ vrf definition vpn
  mdt6
  exit
 !
-vrf definition vv
- rd 1:1
- rt-import 1:1
- rt-export 1:1
- label-mode per-prefix
- exit
-!
 router lsrp4 1
  vrf v1
  router-id 10.10.10.227
@@ -285,15 +278,6 @@ interface loopback42
  vrf forwarding dn42
  ipv4 address 172.23.199.109 255.255.255.255
  ipv6 address fd40:cc1e:c0de::fffd ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- no shutdown
- no log-link-change
- exit
-!
-interface loopback6
- no description
- vrf forwarding vv
- ipv4 address 1.1.1.227 255.255.255.255
- ipv6 address 1234::227 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  no shutdown
  no log-link-change
  exit
@@ -641,19 +625,6 @@ mtracker v6v
 ipv4 flow v1 collect
 !
 ipv6 flow v1 collect
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
 !
 !
 !
