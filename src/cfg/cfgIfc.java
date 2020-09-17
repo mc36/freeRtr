@@ -175,9 +175,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public ifaceType type;
 
     /**
-     * set to true if this is a cloned interface
+     * where it was cloned, null if not
      */
-    public boolean cloned;
+    public cfgIfc cloned;
 
     /**
      * truly random variable
@@ -1711,12 +1711,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         cfgIfc res;
         for (;;) {
             res = cfgAll.ifcFind("access" + bits.randomD(), true);
-            if (res.cloned) {
+            if (res.cloned != null) {
                 continue;
             }
             break;
         }
-        res.cloned = true;
+        res.cloned = this;
         res.lower = lower;
         for (int i = 1; i < l.size() - 2; i++) {
             res.doCfgStr(new cmds("clone", l.get(i).trim()));
@@ -1748,7 +1748,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * stop this cloned interface
      */
     public synchronized void cloneStop() {
-        if (!cloned) {
+        if (cloned == null) {
             return;
         }
         ethtyp.forcedDN |= 4;
@@ -4293,6 +4293,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         dialer.lower = new ifcNull();
         pppoeS = new ifcP2pOEserv();
         pppoeS.clnIfc = dialer;
+        pppoeS.pktIfc = this;
         ethtyp.addET(packPppOE.typeCtr, "pppoeSctrl", pppoeS);
         ethtyp.updateET(packPppOE.typeCtr, pppoeS);
         ethtyp.addET(packPppOE.typeDat, "pppoeSdata", pppoeS);
@@ -4949,7 +4950,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
 
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
-        if (cloned) {
+        if (cloned != null) {
             return l;
         }
         l.add("interface " + name);

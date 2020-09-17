@@ -416,8 +416,8 @@ public class userHwdet {
         starter.add("#modprobe kvm_intel nested=1");
         starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
         starter.add("#echo 64 > /proc/sys/vm/nr_hugepages");
-        starter.add("#modprobe uio_pci_generic");
-        starter.add("#dpdk-devbind.py -b uio_pci_generic 00:03.0");
+        starter.add("#modprobe vfio-pci");
+        starter.add("#dpdk-devbind.py -b vfio-pci 00:03.0");
         detectMacs(path + lstMac);
         detectIfaces(path + lstEth);
         detectCrosses(cross);

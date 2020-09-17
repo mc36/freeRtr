@@ -133,7 +133,7 @@ public class userTest {
             packDnsZone zon = new packDnsZone(a);
             for (int i = 0; i < cfgAll.ifaces.size(); i++) {
                 cfgIfc ifc = cfgAll.ifaces.get(i);
-                if (ifc.cloned) {
+                if (ifc.cloned != null) {
                     continue;
                 }
                 if (ifc.addr4 != null) {
