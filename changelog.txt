@@ -9317,3 +9317,12 @@ qc pass: reflexive access list
 qc pass: p4lang: ingress hierarchical access list
 qc pass: p4lang: egress hierarchical access list
 qc pass: redistribution filtering with hierarchical prefixlist
+---------------------------------- 2020-09-17 08:14:54
+qc pass: p4lang: pppoe server routing
+qc pass: p4lang: vlan pppoe server routing
+qc pass: p4lang: pppoe server mpls
+qc pass: p4lang: vlan pppoe server mpls
+qc pass: p4lang: l2tp server routing
+qc pass: p4lang: vlan l2tp server routing
+qc pass: p4lang: l2tp server mpls
+qc pass: p4lang: vlan l2tp server mpls

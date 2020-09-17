@@ -1253,6 +1253,14 @@ qc pass: p4lang: vxlan server over ipv4
 qc pass: p4lang: vxlan server over ipv6
 qc pass: p4lang: vxlan server over ipv4 loopback
 qc pass: p4lang: vxlan server over ipv6 loopback
+qc pass: p4lang: pppoe server routing
+qc pass: p4lang: vlan pppoe server routing
+qc pass: p4lang: pppoe server mpls
+qc pass: p4lang: vlan pppoe server mpls
+qc pass: p4lang: l2tp server routing
+qc pass: p4lang: vlan l2tp server routing
+qc pass: p4lang: l2tp server mpls
+qc pass: p4lang: vlan l2tp server mpls
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
