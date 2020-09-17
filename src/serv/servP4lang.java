@@ -216,7 +216,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
-            l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id + " " + ntry.speed);
+            l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id + " " + ntry.speed + " " + ntry.lanes + " " + ntry.errCorr + " " + ntry.autoNeg + " " + ntry.flowCtrl);
         }
         if (expSrv6 == null) {
             l.add(beg + "no export-srv6");
@@ -337,6 +337,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ntry.id = bits.str2num(cmd.word());
             ntry.ifc = ifc;
             ntry.speed = bits.str2num(cmd.word());
+            ntry.lanes = bits.str2num(cmd.word());
+            ntry.errCorr = bits.str2num(cmd.word());
+            ntry.autoNeg = bits.str2num(cmd.word());
+            ntry.flowCtrl = bits.str2num(cmd.word());
             ntry.lower = this;
             boolean need = ifc.type == cfgIfc.ifaceType.sdn;
             if (ifc.vlanNum > 0) {
@@ -465,8 +469,12 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("2 .    <num>                   bridge number");
         l.add("1 2  export-port               specify port to export");
         l.add("2 3    <name>                  interface name");
-        l.add("3 4,.    <num>                 p4lang port number");
-        l.add("4 .        <num>               p4lang port type");
+        l.add("3 4,.    <num>                 port number");
+        l.add("4 5,.      <num>               speed");
+        l.add("5 6,.        <num>             lanes");
+        l.add("6 7,.          <num>           fec");
+        l.add("7 8,.            <num>         autoneg");
+        l.add("8 .                <num>       flowctrl");
         l.add("1 2  export-srv6               specify srv6 to export");
         l.add("2 .    <name>                  interface name");
         l.add("1 2  export-copp4              specify copp acl to export");
@@ -798,6 +806,14 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public int id;
 
     public int speed;
+
+    public int lanes;
+
+    public int errCorr;
+
+    public int autoNeg;
+
+    public int flowCtrl;
 
     public int sentVrf;
 
@@ -2252,7 +2268,7 @@ class servP4langConn implements Runnable {
             } else {
                 a = "0";
             }
-            lower.sendLine("state " + ifc.id + " " + a + " " + ifc.speed);
+            lower.sendLine("state " + ifc.id + " " + a + " " + ifc.speed + " " + ifc.lanes + " " + ifc.errCorr + " " + ifc.autoNeg + " " + ifc.flowCtrl);
             ifc.sentState = sta;
         }
         if (ifc.sentMtu != i) {
