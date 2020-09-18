@@ -1253,7 +1253,6 @@ class servP4langConn implements Runnable {
             if (s.equals("natacl4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf();
                 vrf.id = bits.str2num(cmd.word());
-                ///////////////////////
                 vrf = lower.expVrf.find(vrf);
                 if (vrf == null) {
                     if (debugger.servP4langErr) {
@@ -1267,7 +1266,6 @@ class servP4langConn implements Runnable {
             if (s.equals("natacl6_cnt")) {
                 servP4langVrf vrf = new servP4langVrf();
                 vrf.id = bits.str2num(cmd.word());
-                //////////////////////////
                 vrf = lower.expVrf.find(vrf);
                 if (vrf == null) {
                     if (debugger.servP4langErr) {
@@ -1289,7 +1287,6 @@ class servP4langConn implements Runnable {
             if (s.equals("route4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf();
                 vrf.id = bits.str2num(cmd.word());
-                ///////////////////////
                 vrf = lower.expVrf.find(vrf);
                 if (vrf == null) {
                     if (debugger.servP4langErr) {
@@ -1306,7 +1303,6 @@ class servP4langConn implements Runnable {
             if (s.equals("route6_cnt")) {
                 servP4langVrf vrf = new servP4langVrf();
                 vrf.id = bits.str2num(cmd.word());
-                ///////////////////////
                 vrf = lower.expVrf.find(vrf);
                 if (vrf == null) {
                     if (debugger.servP4langErr) {

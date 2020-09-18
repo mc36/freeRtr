@@ -223,15 +223,16 @@ class servRadiusConn implements Runnable {
             logger.debug("rx " + radRx.dump());
         }
         boolean b = lower.authentic != null;
+        authResult res = null;
         if (radRx.valUsrNam == null) {
             b = false;
         }
         if (b && (radRx.valUsrPwd != null)) {
-            authResult res = lower.authentic.authUserPass(radRx.valUsrNam, radRx.valUsrPwd);
+            res = lower.authentic.authUserPass(radRx.valUsrNam, radRx.valUsrPwd);
             b = res.result == authResult.authSuccessful;
         }
         if (b && (radRx.valChpPwd != null)) {
-            authResult res = lower.authentic.authUserChap(radRx.valUsrNam, radRx.valChpIdn, radRx.valChpChl, radRx.valChpPwd);
+            res = lower.authentic.authUserChap(radRx.valUsrNam, radRx.valChpIdn, radRx.valChpChl, radRx.valChpPwd);
             b = res.result == authResult.authSuccessful;
         }
         packRadius radTx = new packRadius();
@@ -241,6 +242,24 @@ class servRadiusConn implements Runnable {
         if (b) {
             radTx.code = packRadius.typeAccAcc;
             radTx.valReply = lower.msgSucc;
+            if (res.privilege > 0) {
+                radTx.valMgtPrv = res.privilege;
+            }
+            if (res.ipv4addr != null) {
+                radTx.valFrmAdr4 = res.ipv4addr.copyBytes();
+            }
+            if (res.ipv4route != null) {
+                radTx.valFrmRou4 = res.ipv4route;
+            }
+            if (res.ipv6addr != null) {
+                radTx.valFrmAdr6 = res.ipv6addr.copyBytes();
+            }
+            if (res.ipv6ifid != null) {
+                radTx.valFrmIfi = res.ipv6ifid.copyBytes();
+            }
+            if (res.ipv6route != null) {
+                radTx.valFrmRou6 = res.ipv6route;
+            }
         } else {
             radTx.code = packRadius.typeAccRej;
             radTx.valReply = lower.msgFail;

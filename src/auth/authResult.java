@@ -61,7 +61,7 @@ public class authResult {
     /**
      * ipv4 routes
      */
-    public List<String> ipv4route;
+    public String ipv4route;
 
     /**
      * ipv6 address
@@ -76,7 +76,7 @@ public class authResult {
     /**
      * ipv6 routes
      */
-    public List<String> ipv6route;
+    public String ipv6route;
 
     private final authGeneric lower;
 

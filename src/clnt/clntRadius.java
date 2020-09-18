@@ -151,6 +151,24 @@ public class clntRadius {
         }
         authResult res = new authResult(par, authResult.authSuccessful, radUsr, radPwd);
         res.privilege = priv;
+        if (radRx.valMgtPrv > 0) {
+            res.privilege = radRx.valMgtPrv;
+        }
+        if (radRx.valFrmAdr4 != null) {
+            res.ipv4addr = radRx.valFrmAdr4.copyBytes();
+        }
+        if (radRx.valFrmRou4 != null) {
+            res.ipv4route = radRx.valFrmRou4;
+        }
+        if (radRx.valFrmAdr6 != null) {
+            res.ipv6addr = radRx.valFrmAdr6.copyBytes();
+        }
+        if (radRx.valFrmIfi != null) {
+            res.ipv6ifid = radRx.valFrmIfi.copyBytes();
+        }
+        if (radRx.valFrmRou6 != null) {
+            res.ipv6route = radRx.valFrmRou6;
+        }
         return res;
     }
 

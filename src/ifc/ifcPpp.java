@@ -1046,10 +1046,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             ctrlIp6.clearState();
         }
         if ((ctrlAuth.result.ipv4route != null) && (cfger.fwdIf4 != null)) {
-            cfger.fwdIf4.gatePrfx = authGeneric.routes2prefixes(ctrlAuth.result.ipv4route);
+            cfger.fwdIf4.gatePrfx = authGeneric.route2prefixes(ctrlAuth.result.ipv4route);
         }
         if ((ctrlAuth.result.ipv6route != null) && (cfger.fwdIf6 != null)) {
-            cfger.fwdIf6.gatePrfx = authGeneric.routes2prefixes(ctrlAuth.result.ipv6route);
+            cfger.fwdIf6.gatePrfx = authGeneric.route2prefixes(ctrlAuth.result.ipv6route);
         }
         sendKeepReq();
     }

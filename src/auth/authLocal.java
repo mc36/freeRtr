@@ -337,9 +337,8 @@ public class authLocal extends authGeneric {
         if (ntry.ipv4addr != null) {
             res.ipv4addr = ntry.ipv4addr.copyBytes();
         }
-        if (ntry.ipv4route.size() > 0) {
-            res.ipv4route = new ArrayList<String>();
-            res.ipv4route.addAll(ntry.ipv4route);
+        if (ntry.ipv4route != null) {
+            res.ipv4route = ntry.ipv4route;
         }
         if (ntry.ipv6addr != null) {
             res.ipv6addr = ntry.ipv6addr.copyBytes();
@@ -347,9 +346,8 @@ public class authLocal extends authGeneric {
         if (ntry.ipv6ifid != null) {
             res.ipv6ifid = ntry.ipv6ifid.copyBytes();
         }
-        if (ntry.ipv6route.size() > 0) {
-            res.ipv6route = new ArrayList<String>();
-            res.ipv6route.addAll(ntry.ipv6route);
+        if (ntry.ipv6route != null) {
+            res.ipv6route = ntry.ipv6route;
         }
         return res;
     }
@@ -561,7 +559,7 @@ class authLocalEntry implements Comparator<authLocalEntry> {
     /**
      * ipv4 routes
      */
-    public List<String> ipv4route = new ArrayList<String>();
+    public String ipv4route;
 
     /**
      * ipv6 address
@@ -576,7 +574,7 @@ class authLocalEntry implements Comparator<authLocalEntry> {
     /**
      * ipv6 routes
      */
-    public List<String> ipv6route = new ArrayList<String>();
+    public String ipv6route;
 
     /**
      * get running configuration
@@ -623,6 +621,11 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         } else {
             lst.add(beg + "noipv4addr");
         }
+        if (ipv4route != null) {
+            lst.add(beg + "ipv4route " + ipv4route);
+        } else {
+            lst.add(beg + "noipv4route");
+        }
         if (ipv6addr != null) {
             lst.add(beg + "ipv6addr " + ipv6addr);
         } else {
@@ -633,11 +636,10 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         } else {
             lst.add(beg + "noipv6ifid");
         }
-        for (int i = 0; i < ipv4route.size(); i++) {
-            lst.add(beg + "ipv4route " + ipv4route.get(i));
-        }
-        for (int i = 0; i < ipv6route.size(); i++) {
-            lst.add(beg + "ipv6route " + ipv6route.get(i));
+        if (ipv6route != null) {
+            lst.add(beg + "ipv6route " + ipv6route);
+        } else {
+            lst.add(beg + "noipv6route");
         }
         lst.add(beg + "autocommand " + autoCommand);
         lst.add(beg + "privilege " + privilege);
@@ -711,7 +713,7 @@ class authLocalEntry implements Comparator<authLocalEntry> {
             return false;
         }
         if (s.equals("ipv4route")) {
-            ipv4route.add(cmd.getRemaining());
+            ipv4route = cmd.getRemaining();
             return false;
         }
         if (s.equals("ipv6addr")) {
@@ -725,7 +727,7 @@ class authLocalEntry implements Comparator<authLocalEntry> {
             return false;
         }
         if (s.equals("ipv6route")) {
-            ipv6route.add(cmd.getRemaining());
+            ipv6route = cmd.getRemaining();
             return false;
         }
         if (s.equals("privilege")) {
@@ -757,7 +759,7 @@ class authLocalEntry implements Comparator<authLocalEntry> {
             return false;
         }
         if (s.equals("noipv4route")) {
-            ipv4route.clear();
+            ipv4route = null;
             return false;
         }
         if (s.equals("noipv6addr")) {
@@ -769,7 +771,7 @@ class authLocalEntry implements Comparator<authLocalEntry> {
             return false;
         }
         if (s.equals("noipv6route")) {
-            ipv6route.clear();
+            ipv6route = null;
             return false;
         }
         return true;

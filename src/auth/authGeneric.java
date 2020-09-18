@@ -131,6 +131,43 @@ public abstract class authGeneric implements Comparator<authGeneric> {
     }
 
     /**
+     * convert route to prefix
+     *
+     * @param trg target
+     * @param src route
+     */
+    public static void route2prefix(tabListing<tabPrfxlstN, addrIP> trg, String src) {
+        src = src.trim();
+        int i = src.indexOf(" ");
+        if (i >= 0) {
+            src = src.substring(0, i);
+        }
+        tabPrfxlstN ntry = new tabPrfxlstN();
+        if (ntry.fromString(src)) {
+            return;
+        }
+        ntry.sequence = trg.nextseq();
+        ntry.action = tabListingEntry.actionType.actPermit;
+        trg.add(ntry);
+    }
+
+    /**
+     * convert route list to prefixes
+     *
+     * @param src route
+     * @return converted
+     */
+    public static tabListing<tabPrfxlstN, addrIP> route2prefixes(String src) {
+        tabListing<tabPrfxlstN, addrIP> res = new tabListing<tabPrfxlstN, addrIP>();
+        res.listName = "converted";
+        route2prefix(res, src);
+        if (res.size() < 1) {
+            return null;
+        }
+        return res;
+    }
+
+    /**
      * convert route list to prefixes
      *
      * @param src list
@@ -139,19 +176,11 @@ public abstract class authGeneric implements Comparator<authGeneric> {
     public static tabListing<tabPrfxlstN, addrIP> routes2prefixes(List<String> src) {
         tabListing<tabPrfxlstN, addrIP> res = new tabListing<tabPrfxlstN, addrIP>();
         res.listName = "converted";
-        for (int o = 0; o < src.size(); o++) {
-            String a = src.get(o).trim();
-            int i = a.indexOf(" ");
-            if (i >= 0) {
-                a = a.substring(0, i);
-            }
-            tabPrfxlstN ntry = new tabPrfxlstN();
-            if (ntry.fromString(a)) {
-                continue;
-            }
-            ntry.sequence = res.nextseq();
-            ntry.action = tabListingEntry.actionType.actPermit;
-            res.add(ntry);
+        for (int i = 0; i < src.size(); i++) {
+            route2prefix(res, src.get(i));
+        }
+        if (res.size() < 1) {
+            return null;
         }
         return res;
     }
