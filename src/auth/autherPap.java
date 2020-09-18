@@ -82,13 +82,11 @@ public class autherPap extends autherDoer {
                 if (isClient()) {
                     return;
                 }
-                authResult res = authenRem.authUserPass(msg.user, msg.pass);
-                if (res.result == authResult.authSuccessful) {
+                result = authenRem.authUserPass(msg.user, msg.pass);
+                if (result.result == authResult.authSuccessful) {
                     msg.code = codeAck;
-                    succeed = true;
                 } else {
                     msg.code = codeNak;
-                    succeed = false;
                 }
                 msg.user = code2str(msg.code);
                 msg.createPack(pck);
@@ -98,13 +96,13 @@ public class autherPap extends autherDoer {
                 if (!isClient()) {
                     return;
                 }
-                succeed = true;
+                result = new authResult(authenRem, authResult.authSuccessful, sentUser, sentPass);
                 break;
             case codeNak:
                 if (!isClient()) {
                     return;
                 }
-                succeed = false;
+                result = new authResult(authenRem, authResult.authBadUserPass, sentUser, sentPass);
                 break;
             default:
                 working = true;

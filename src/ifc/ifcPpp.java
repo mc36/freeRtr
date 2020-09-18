@@ -6,6 +6,7 @@ import addr.addrIPv4;
 import addr.addrType;
 import auth.authGeneric;
 import auth.authLocal;
+import auth.authResult;
 import auth.authenDown;
 import auth.authenHead;
 import auth.autherChap;
@@ -63,6 +64,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      * my configured address
      */
     public addrEui locIfIdCfg;
+
+    /**
+     * peer configured address
+     */
+    public addrEui remIfIdCfg;
 
     /**
      * my configured address
@@ -425,6 +431,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         cmds.cfgLine(l, !locAddrReq, cmds.tabulator, "ppp ip4cp reqaddr", "");
         cmds.cfgLine(l, !ctrlIp6.forced2close(), cmds.tabulator, "ppp ip6cp close", "");
         cmds.cfgLine(l, !ctrlIp6.forced2open(), cmds.tabulator, "ppp ip6cp open", "");
+        cmds.cfgLine(l, remIfIdCfg == null, cmds.tabulator, "ppp ip6cp peer", "" + remIfIdCfg);
         cmds.cfgLine(l, locIfIdCfg == null, cmds.tabulator, "ppp ip6cp local", "" + locIfIdCfg);
         cmds.cfgLine(l, !ctrlBrdg.forced2close(), cmds.tabulator, "ppp bcp close", "");
         cmds.cfgLine(l, !ctrlBrdg.forced2open(), cmds.tabulator, "ppp bcp open", "");
@@ -531,10 +538,19 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             if (a.equals("local")) {
                 addrEui adr = new addrEui();
                 if (adr.fromString(cmd.word())) {
-                    cmd.error("bad ip address");
+                    cmd.error("bad eui address");
                     return;
                 }
                 locIfIdCfg = adr;
+                return;
+            }
+            if (a.equals("peer")) {
+                addrEui adr = new addrEui();
+                if (adr.fromString(cmd.word())) {
+                    cmd.error("bad eui address");
+                    return;
+                }
+                remIfIdCfg = adr;
                 return;
             }
         }
@@ -710,6 +726,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             }
             if (a.equals("local")) {
                 locIfIdCfg = null;
+                return;
+            }
+            if (a.equals("peer")) {
+                remIfIdCfg = null;
                 return;
             }
         }
@@ -1008,7 +1028,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         if (ctrlAuth.working) {
             return;
         }
-        boolean b = ctrlAuth.succeed;
+        boolean b = ctrlAuth.result.result == authResult.authSuccessful;
         if (debugger.ifcPppEvnt) {
             logger.debug("authentication passed=" + b);
         }
@@ -1017,6 +1037,20 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             return;
         }
         curMode = modeUp;
+        if (ctrlAuth.result.ipv4addr != null) {
+            remAddrCfg = ctrlAuth.result.ipv4addr;
+            ctrlIp4.clearState();
+        }
+        if (ctrlAuth.result.ipv6ifid != null) {
+            remIfIdCfg = ctrlAuth.result.ipv6ifid;
+            ctrlIp6.clearState();
+        }
+        if ((ctrlAuth.result.ipv4route != null) && (cfger.fwdIf4 != null)) {
+            cfger.fwdIf4.gatePrfx = authGeneric.routes2prefixes(ctrlAuth.result.ipv4route);
+        }
+        if ((ctrlAuth.result.ipv6route != null) && (cfger.fwdIf6 != null)) {
+            cfger.fwdIf6.gatePrfx = authGeneric.routes2prefixes(ctrlAuth.result.ipv6route);
+        }
         sendKeepReq();
     }
 

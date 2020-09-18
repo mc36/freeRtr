@@ -124,13 +124,11 @@ public class autherChap extends autherDoer {
                     working = true;
                     return;
                 }
-                authResult res = authenRem.authUserChap(msg.message, sentId, sentCh, msg.value);
-                if (res.result == authResult.authSuccessful) {
+                result = authenRem.authUserChap(msg.message, sentId, sentCh, msg.value);
+                if (result.result == authResult.authSuccessful) {
                     msg.code = codeSucc;
-                    succeed = true;
                 } else {
                     msg.code = codeFail;
-                    succeed = false;
                 }
                 msg.message = code2str(msg.code);
                 msg.id = sentId;
@@ -141,13 +139,13 @@ public class autherChap extends autherDoer {
                 if (!isClient()) {
                     return;
                 }
-                succeed = true;
+                result = new authResult(authenRem, authResult.authSuccessful, sentUser, sentPass);
                 break;
             case codeFail:
                 if (!isClient()) {
                     return;
                 }
-                succeed = false;
+                result = new authResult(authenRem, authResult.authBadUserPass, sentUser, sentPass);
                 break;
             default:
                 working = true;

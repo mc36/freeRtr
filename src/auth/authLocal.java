@@ -1,5 +1,8 @@
 package auth;
 
+import addr.addrEui;
+import addr.addrIPv4;
+import addr.addrIPv6;
 import cfg.cfgAll;
 import cry.cryBase64;
 import cry.cryEncrCTRaes;
@@ -233,7 +236,7 @@ public class authLocal extends authGeneric {
         l.add("3 .      nootpseed       clear seed of user");
         l.add("3 4      otppass         set seed of user");
         l.add("4 5        <num>         length of tokencode");
-        l.add("5 5,.        [text]        seed of user");
+        l.add("5 5,.        [text]      seed of user");
         l.add("3 4      autocommand     set automatic command");
         l.add("4 4,.      [text]        autocommand of user");
         l.add("3 .      noautocommand   clear automatic command");
@@ -242,7 +245,23 @@ public class authLocal extends authGeneric {
         l.add("3 .      nocountdown     clear login counter");
         l.add("3 .      anypass         any password will be accepted");
         l.add("3 .      noanypass       just good password will accepted");
+        l.add("3 .      autohangup      disconnect user after autocommand");
         l.add("3 .      noautohangup    leave user after autocommand");
+        l.add("3 4      ipv4addr        specify ipv4 address");
+        l.add("4 .        <addr>        address");
+        l.add("3 .      noipv4addr      remove ipv4 address");
+        l.add("3 4      ipv4route       specify ipv4 route");
+        l.add("4 4,.      [text]        route");
+        l.add("3 .      noipv4route     remove ipv4 routes");
+        l.add("3 4      ipv6addr        specify ipv6 address");
+        l.add("4 .        <addr>        address");
+        l.add("3 .      noipv6addr      remove ipv6 address");
+        l.add("3 4      ipv6ifid        specify ipv6 interface id");
+        l.add("4 .        <addr>        address");
+        l.add("3 .      noipv6ifid      remove ipv6 interface id");
+        l.add("3 4      ipv6route       specify ipv6 route");
+        l.add("4 4,.      [text]        route");
+        l.add("3 .      noipv6route     remove ipv6 routes");
         l.add("3 4      privilege       set privilege level of user");
         l.add("4 .        <priv>        privilege of user");
     }
@@ -315,6 +334,23 @@ public class authLocal extends authGeneric {
         res.autoCommand = ntry.autoCommand;
         res.autoHangup = ntry.autoHangup;
         res.privilege = ntry.privilege;
+        if (ntry.ipv4addr != null) {
+            res.ipv4addr = ntry.ipv4addr.copyBytes();
+        }
+        if (ntry.ipv4route.size() > 0) {
+            res.ipv4route = new ArrayList<String>();
+            res.ipv4route.addAll(ntry.ipv4route);
+        }
+        if (ntry.ipv6addr != null) {
+            res.ipv6addr = ntry.ipv6addr.copyBytes();
+        }
+        if (ntry.ipv6ifid != null) {
+            res.ipv6ifid = ntry.ipv6ifid.copyBytes();
+        }
+        if (ntry.ipv6route.size() > 0) {
+            res.ipv6route = new ArrayList<String>();
+            res.ipv6route.addAll(ntry.ipv6route);
+        }
         return res;
     }
 
@@ -518,6 +554,31 @@ class authLocalEntry implements Comparator<authLocalEntry> {
     public int countdown = -1;
 
     /**
+     * ipv4 address
+     */
+    public addrIPv4 ipv4addr;
+
+    /**
+     * ipv4 routes
+     */
+    public List<String> ipv4route = new ArrayList<String>();
+
+    /**
+     * ipv6 address
+     */
+    public addrIPv6 ipv6addr;
+
+    /**
+     * ipv6 interface id
+     */
+    public addrEui ipv6ifid;
+
+    /**
+     * ipv6 routes
+     */
+    public List<String> ipv6route = new ArrayList<String>();
+
+    /**
      * get running configuration
      *
      * @param beg beginning string
@@ -556,6 +617,27 @@ class authLocalEntry implements Comparator<authLocalEntry> {
             lst.add(beg + "anypass");
         } else {
             lst.add(beg + "noanypass");
+        }
+        if (ipv4addr != null) {
+            lst.add(beg + "ipv4addr " + ipv4addr);
+        } else {
+            lst.add(beg + "noipv4addr");
+        }
+        if (ipv6addr != null) {
+            lst.add(beg + "ipv6addr " + ipv6addr);
+        } else {
+            lst.add(beg + "noipv6addr");
+        }
+        if (ipv6ifid != null) {
+            lst.add(beg + "ipv6ifid " + ipv6ifid);
+        } else {
+            lst.add(beg + "noipv6ifid");
+        }
+        for (int i = 0; i < ipv4route.size(); i++) {
+            lst.add(beg + "ipv4route " + ipv4route.get(i));
+        }
+        for (int i = 0; i < ipv6route.size(); i++) {
+            lst.add(beg + "ipv6route " + ipv6route.get(i));
         }
         lst.add(beg + "autocommand " + autoCommand);
         lst.add(beg + "privilege " + privilege);
@@ -623,6 +705,29 @@ class authLocalEntry implements Comparator<authLocalEntry> {
             autoHangup = true;
             return false;
         }
+        if (s.equals("ipv4addr")) {
+            ipv4addr = new addrIPv4();
+            ipv4addr.fromString(cmd.word());
+            return false;
+        }
+        if (s.equals("ipv4route")) {
+            ipv4route.add(cmd.getRemaining());
+            return false;
+        }
+        if (s.equals("ipv6addr")) {
+            ipv6addr = new addrIPv6();
+            ipv6addr.fromString(cmd.word());
+            return false;
+        }
+        if (s.equals("ipv6ifid")) {
+            ipv6ifid = new addrEui();
+            ipv6ifid.fromString(cmd.word());
+            return false;
+        }
+        if (s.equals("ipv6route")) {
+            ipv6route.add(cmd.getRemaining());
+            return false;
+        }
         if (s.equals("privilege")) {
             privilege = bits.str2num(cmd.word()) & 0xf;
             return false;
@@ -645,6 +750,26 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         }
         if (s.equals("nootpseed")) {
             otpseed = null;
+            return false;
+        }
+        if (s.equals("noipv4addr")) {
+            ipv4addr = null;
+            return false;
+        }
+        if (s.equals("noipv4route")) {
+            ipv4route.clear();
+            return false;
+        }
+        if (s.equals("noipv6addr")) {
+            ipv6addr = null;
+            return false;
+        }
+        if (s.equals("noipv6ifid")) {
+            ipv6ifid = null;
+            return false;
+        }
+        if (s.equals("noipv6route")) {
+            ipv6route.clear();
             return false;
         }
         return true;

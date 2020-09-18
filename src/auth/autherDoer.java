@@ -60,7 +60,7 @@ public abstract class autherDoer {
     /**
      * result
      */
-    public boolean succeed = false;
+    public authResult result = new authResult();
 
     /**
      * sent username

@@ -84,7 +84,11 @@ public class ifcPppIp6 extends ifcPppNcp {
         } else {
             locAddrCur = addrEui.getRandom();
         }
-        remAddrCur = new addrEui();
+        if (parent.remIfIdCfg != null) {
+            remAddrCur = parent.remIfIdCfg.copyBytes();
+        } else {
+            remAddrCur = new addrEui();
+        }
         clearUpperState();
     }
 
@@ -132,6 +136,7 @@ public class ifcPppIp6 extends ifcPppNcp {
     }
 
     public Object gotConfReq(Object data, boolean rej) {
+        boolean val = false;
         ifcPppIp6conf dat = (ifcPppIp6conf) data;
         ifcPppIp6conf res = new ifcPppIp6conf();
         if (dat.compress > 0) {
@@ -142,9 +147,19 @@ public class ifcPppIp6 extends ifcPppNcp {
             return null;
         }
         if (dat.ifid != null) {
+            if (parent.remIfIdCfg != null) {
+                if (dat.ifid.compare(dat.ifid, parent.remIfIdCfg) != 0) {
+                    res.ifid = parent.remIfIdCfg.copyBytes();
+                    val = true;
+                }
+            }
             remAddrCur = dat.ifid;
         }
-        return null;
+        if (val) {
+            return res;
+        } else {
+            return null;
+        }
     }
 
     public void gotConfNak(Object data) {

@@ -1,6 +1,7 @@
 package ifc;
 
 import addr.addrMac;
+import auth.authResult;
 import auth.authenDown;
 import auth.authenHead;
 import auth.autherDoer;
@@ -136,7 +137,7 @@ public class ifcEapOLclnt implements ifcUp, authenDown {
         if (doer.working) {
             return;
         }
-        if (!doer.succeed) {
+        if (doer.result.result != authResult.authSuccessful) {
             return;
         }
         gotData = 20;

@@ -1,5 +1,9 @@
 package auth;
 
+import addr.addrEui;
+import addr.addrIPv4;
+import addr.addrIPv6;
+import java.util.List;
 import util.logger;
 
 /**
@@ -49,6 +53,31 @@ public class authResult {
      */
     public int privilege = 0;
 
+    /**
+     * ipv4 address
+     */
+    public addrIPv4 ipv4addr;
+
+    /**
+     * ipv4 routes
+     */
+    public List<String> ipv4route;
+
+    /**
+     * ipv6 address
+     */
+    public addrIPv6 ipv6addr;
+
+    /**
+     * ipv6 interface id
+     */
+    public addrEui ipv6ifid;
+
+    /**
+     * ipv6 routes
+     */
+    public List<String> ipv6route;
+
     private final authGeneric lower;
 
     /**
@@ -72,6 +101,9 @@ public class authResult {
         result = res;
         user = nam;
         lower = par;
+        if (lower == null) {
+            return;
+        }
         if (lower.logPass) {
             nam = nam + "/" + pwd;
         }

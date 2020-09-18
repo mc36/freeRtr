@@ -1,7 +1,11 @@
 package auth;
 
+import addr.addrIP;
 import java.util.Comparator;
 import java.util.List;
+import tab.tabListing;
+import tab.tabListingEntry;
+import tab.tabPrfxlstN;
 import user.userHelping;
 import util.cmds;
 
@@ -124,6 +128,32 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      */
     public int compare(authGeneric o1, authGeneric o2) {
         return o1.autName.toLowerCase().compareTo(o2.autName.toLowerCase());
+    }
+
+    /**
+     * convert route list to prefixes
+     *
+     * @param src list
+     * @return converted
+     */
+    public static tabListing<tabPrfxlstN, addrIP> routes2prefixes(List<String> src) {
+        tabListing<tabPrfxlstN, addrIP> res = new tabListing<tabPrfxlstN, addrIP>();
+        res.listName = "converted";
+        for (int o = 0; o < src.size(); o++) {
+            String a = src.get(o).trim();
+            int i = a.indexOf(" ");
+            if (i >= 0) {
+                a = a.substring(0, i);
+            }
+            tabPrfxlstN ntry = new tabPrfxlstN();
+            if (ntry.fromString(a)) {
+                continue;
+            }
+            ntry.sequence = res.nextseq();
+            ntry.action = tabListingEntry.actionType.actPermit;
+            res.add(ntry);
+        }
+        return res;
     }
 
 }
