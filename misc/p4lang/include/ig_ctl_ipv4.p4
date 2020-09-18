@@ -156,6 +156,10 @@ ig_md.vrf:
          */
         //if (hdr.ipv4.isValid() && hdr.ipv4.ttl > 1) {
         if (ig_md.ipv4_valid==1)  {
+            if (hdr.ipv4.protocol==IP_PROTOCOL_RSVP) {
+                act_ipv4_cpl_set_nexthop();
+                return;
+            }
             if (!tbl_ipv4_fib_host.apply().hit) {
                 tbl_ipv4_fib_lpm.apply();
             }

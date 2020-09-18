@@ -892,6 +892,7 @@ ipv4_rx:
             update_layer4(nat4_res);
         }
 ipv4_rou:
+        if (acl4_ntry.protV == 46) goto cpu;
         for (int i = 32; i >= 0; i--) {
             route4_ntry.mask = i;
             route4_ntry.addr &= masks[i];
@@ -1082,6 +1083,7 @@ ipv6_rx:
             update_layer4(nat6_res);
         }
 ipv6_rou:
+        if (acl6_ntry.protV == 46) goto cpu;
         for (int i = 32; i >= 0; i--) {
             route6_ntry.mask = 96 + i;
             route6_ntry.addr4 &= masks[i];

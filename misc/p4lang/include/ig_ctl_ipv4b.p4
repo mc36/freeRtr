@@ -157,6 +157,10 @@ ig_md.vrf:
          */
         //if (hdr.ipv4.isValid() && hdr.ipv4.ttl > 1) {
         if (ig_md.srv_op_type==4)  {
+            if (hdr.ipv4b.protocol==IP_PROTOCOL_RSVP) {
+                act_ipv4_cpl_set_nexthop();
+                return;
+            }
             ig_md.ethertype = ETHERTYPE_IPV4;
             if (!tbl_ipv4_fib_host.apply().hit) {
                 tbl_ipv4_fib_lpm.apply();

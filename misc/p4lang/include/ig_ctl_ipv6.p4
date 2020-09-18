@@ -176,6 +176,10 @@ ig_md.vrf:
          */
         //if (hdr.ipv6.isValid() && hdr.ipv6.ttl > 1) {
         if (ig_md.ipv6_valid==1)  {
+            if (hdr.ipv6.next_hdr==IP_PROTOCOL_RSVP) {
+                act_ipv6_cpl_set_nexthop();
+                return;
+            }
             if (!tbl_ipv6_fib_host.apply().hit) {
                 tbl_ipv6_fib_lpm.apply();
             }

@@ -115,7 +115,9 @@ ig_md.vrf:
 
     apply {
         ig_md.mpls_encap_decap_sap_type = 4;
-        if (!tbl_ipv4_fib_host.apply().hit) {
+        if (hdr.ipv4.protocol==IP_PROTOCOL_RSVP) {
+            act_ipv4_cpl_set_nexthop();
+        } else if (!tbl_ipv4_fib_host.apply().hit) {
             tbl_ipv4_fib_lpm.apply();
         }
     }
