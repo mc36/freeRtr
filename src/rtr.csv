@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v20.9.18-rel, done by cs@nop.
--;-;-;2020-09-18 16:28:11, took 00:05:25, with 100 workers, on 2090 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2020-09-18 17:47:25, took 00:05:13, with 100 workers, on 2092 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -272,6 +272,8 @@ http://sources.nop.hu/cfg/conn-ppp04.tst;conn-ppp04.tst;success;ppp with tacacs 
 http://sources.nop.hu/cfg/conn-ppp05.tst;conn-ppp05.tst;success;ppp with pap authentication
 http://sources.nop.hu/cfg/conn-ppp06.tst;conn-ppp06.tst;success;ppp with chap authentication
 http://sources.nop.hu/cfg/conn-ppp07.tst;conn-ppp07.tst;success;ppp with eap authentication
+http://sources.nop.hu/cfg/conn-ppp08.tst;conn-ppp08.tst;success;ppp routes with local authentication
+http://sources.nop.hu/cfg/conn-ppp09.tst;conn-ppp09.tst;success;ppp routes with radius authentication
 http://sources.nop.hu/cfg/conn-pppoe01.tst;conn-pppoe01.tst;success;pppoe over ethernet encapsulation
 http://sources.nop.hu/cfg/conn-pppoe02.tst;conn-pppoe02.tst;success;pppoe over bridge encapsulation
 http://sources.nop.hu/cfg/conn-pppoe03.tst;conn-pppoe03.tst;success;ppp relay over pppoe

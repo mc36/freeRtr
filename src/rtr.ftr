@@ -268,6 +268,8 @@ qc pass: ppp with tacacs authentication
 qc pass: ppp with pap authentication
 qc pass: ppp with chap authentication
 qc pass: ppp with eap authentication
+qc pass: ppp routes with local authentication
+qc pass: ppp routes with radius authentication
 qc pass: pppoe over ethernet encapsulation
 qc pass: pppoe over bridge encapsulation
 qc pass: ppp relay over pppoe

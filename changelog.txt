@@ -9326,3 +9326,6 @@ qc pass: p4lang: l2tp server routing
 qc pass: p4lang: vlan l2tp server routing
 qc pass: p4lang: l2tp server mpls
 qc pass: p4lang: vlan l2tp server mpls
+---------------------------------- 2020-09-18 17:42:12
+qc pass: ppp routes with local authentication
+qc pass: ppp routes with radius authentication
