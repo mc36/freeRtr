@@ -216,7 +216,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
-            l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id + " " + ntry.speed + " " + ntry.lanes + " " + ntry.errCorr + " " + ntry.autoNeg + " " + ntry.flowCtrl);
+            l.add(beg + "export-port " + ntry.ifc.name + " " + ntry.id + " " + ntry.speed + " " + ntry.errCorr + " " + ntry.autoNeg + " " + ntry.flowCtrl);
         }
         if (expSrv6 == null) {
             l.add(beg + "no export-srv6");
@@ -337,7 +337,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ntry.id = bits.str2num(cmd.word());
             ntry.ifc = ifc;
             ntry.speed = bits.str2num(cmd.word());
-            ntry.lanes = bits.str2num(cmd.word());
             ntry.errCorr = bits.str2num(cmd.word());
             ntry.autoNeg = bits.str2num(cmd.word());
             ntry.flowCtrl = bits.str2num(cmd.word());
@@ -471,10 +470,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("2 3    <name>                  interface name");
         l.add("3 4,.    <num>                 port number");
         l.add("4 5,.      <num>               speed");
-        l.add("5 6,.        <num>             lanes");
-        l.add("6 7,.          <num>           fec");
-        l.add("7 8,.            <num>         autoneg");
-        l.add("8 .                <num>       flowctrl");
+        l.add("5 6,.        <num>             fec");
+        l.add("6 7,.          <num>           autoneg");
+        l.add("7 .              <num>         flowctrl");
         l.add("1 2  export-srv6               specify srv6 to export");
         l.add("2 .    <name>                  interface name");
         l.add("1 2  export-copp4              specify copp acl to export");
@@ -806,8 +804,6 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public int id;
 
     public int speed;
-
-    public int lanes;
 
     public int errCorr;
 
@@ -1527,38 +1523,39 @@ class servP4langConn implements Runnable {
         return null;
     }
 
-    private servP4langNei findIfc(tabRouteIface ifc, addrIP hop) {
+    private servP4langIfc findIfc(tabRouteIface ifc) {
         if (ifc == null) {
             return null;
         }
-        servP4langIfc id = null;
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ntry = lower.expIfc.get(i);
             if (ifc == ntry.ifc.fwdIf4) {
-                id = ntry;
-                break;
+                return ntry;
             }
             if (ifc == ntry.ifc.fwdIf6) {
-                id = ntry;
-                break;
+                return ntry;
             }
         }
-        if ((id == null) && (lower.expDynAccIfc != null)) {
-            for (int i = 0; i < lower.expDynAccIfc.length; i++) {
-                servP4langIfc ntry = lower.expDynAccIfc[i];
-                if (ntry == null) {
-                    continue;
-                }
-                if (ifc == ntry.ifc.fwdIf4) {
-                    id = ntry;
-                    break;
-                }
-                if (ifc == ntry.ifc.fwdIf6) {
-                    id = ntry;
-                    break;
-                }
+        if (lower.expDynAccIfc == null) {
+            return null;
+        }
+        for (int i = 0; i < lower.expDynAccIfc.length; i++) {
+            servP4langIfc ntry = lower.expDynAccIfc[i];
+            if (ntry == null) {
+                continue;
+            }
+            if (ifc == ntry.ifc.fwdIf4) {
+                return ntry;
+            }
+            if (ifc == ntry.ifc.fwdIf6) {
+                return ntry;
             }
         }
+        return null;
+    }
+
+    private servP4langNei findIfc(tabRouteIface ifc, addrIP hop) {
+        servP4langIfc id = findIfc(ifc);
         if (id == null) {
             return null;
         }
@@ -1831,8 +1828,38 @@ class servP4langConn implements Runnable {
         lower.sendLine("portbridge_add " + (lower.expDynBr1st + lower.expDynBrNxt) + " " + br.br.num);
     }
 
+    private tabRouteEntry<addrIP> convRou(tabRouteEntry<addrIP> rou) {
+        if (rou == null) {
+            return null;
+        }
+        if (rou.nextHop == null) {
+            return rou;
+        }
+        if (rou.iface == null) {
+            return rou;
+        }
+        servP4langIfc ifc = findIfc(rou.iface);
+        if (ifc == null) {
+            return rou;
+        }
+        if (ifc.ifc.type != cfgIfc.ifaceType.tunnel) {
+            return rou;
+        }
+        switch (ifc.ifc.tunMode) {
+            case teP2p:
+                return ifc.ifc.tunTeP2p.getResultRoute(rou);
+            case ldpP2p:
+                return ifc.ifc.tunLdpP2p.getResultRoute(rou);
+            case srMpls:
+                return ifc.ifc.tunSrMpls.getResultRoute(rou);
+            default:
+                return rou;
+        }
+    }
+
     private servP4langNei findHop(ipFwd fwd, addrIP adr) {
         tabRouteEntry<addrIP> rou = fwd.actualU.route(adr);
+        rou = convRou(rou);
         if (rou == null) {
             return null;
         }
@@ -2129,6 +2156,7 @@ class servP4langConn implements Runnable {
                 }
             } catch (Exception e) {
             }
+            rou = convRou(rou);
             if (l < 1) {
                 continue;
             }
@@ -2264,7 +2292,7 @@ class servP4langConn implements Runnable {
             } else {
                 a = "0";
             }
-            lower.sendLine("state " + ifc.id + " " + a + " " + ifc.speed + " " + ifc.lanes + " " + ifc.errCorr + " " + ifc.autoNeg + " " + ifc.flowCtrl);
+            lower.sendLine("state " + ifc.id + " " + a + " " + ifc.speed + " " + ifc.errCorr + " " + ifc.autoNeg + " " + ifc.flowCtrl);
             ifc.sentState = sta;
         }
         if (ifc.sentMtu != i) {
@@ -2429,6 +2457,7 @@ class servP4langConn implements Runnable {
                 return;
             }
             tabRouteEntry<addrIP> ntry = ofwd.actualU.route(ifc.ifc.xconn.adr);
+            ntry = convRou(ntry);
             if (ntry == null) {
                 return;
             }
@@ -3001,6 +3030,7 @@ class servP4langConn implements Runnable {
                 } else {
                     old = ntry.rouTab.actualU.route(ntry.segrouPrf);
                 }
+                old = convRou(old);
                 if (old == null) {
                     continue;
                 }
@@ -3033,7 +3063,12 @@ class servP4langConn implements Runnable {
                 }
                 act = "mod";
             }
+            old = convRou(ntry);
+            if (old == null) {
+                continue;
+            }
             done.add(tabRoute.addType.always, ntry, true, true);
+            ntry = old;
             String a;
             if (ipv4) {
                 a = "" + addrPrefix.ip2ip4(ntry.prefix);
@@ -3066,6 +3101,7 @@ class servP4langConn implements Runnable {
                 } else {
                     old = ntry.rouTab.actualU.route(ntry.segrouPrf);
                 }
+                old = convRou(old);
                 if (old == null) {
                     continue;
                 }
@@ -3088,6 +3124,10 @@ class servP4langConn implements Runnable {
                 continue;
             }
             done.del(ntry);
+            ntry = convRou(ntry);
+            if (ntry == null) {
+                continue;
+            }
             String a;
             if (ipv4) {
                 a = "" + addrPrefix.ip2ip4(ntry.prefix);

@@ -160,6 +160,28 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
     }
 
     /**
+     * get resulting route
+     *
+     * @param src source to use
+     * @return route, null if no suitable
+     */
+    public tabRouteEntry<addrIP> getResultRoute(tabRouteEntry<addrIP> src) {
+        tabRouteEntry<addrIP> prf = fwdCor.actualU.route(target);
+        if (prf == null) {
+            return null;
+        }
+        if (prf.labelRem == null) {
+            return null;
+        }
+        src = src.copyBytes();
+        src.iface = prf.iface;
+        if (prf.nextHop != null) {
+            src.nextHop = prf.nextHop;
+        }
+        return src;
+    }
+
+    /**
      * start connection
      */
     public void workStart() {

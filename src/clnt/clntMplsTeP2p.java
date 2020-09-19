@@ -15,6 +15,8 @@ import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
 import tab.tabHop;
+import tab.tabLabel;
+import tab.tabRouteEntry;
 import util.bits;
 import util.counter;
 import util.debugger;
@@ -228,6 +230,29 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         }
         ipMpls.createMPLSheader(pck);
         fwdCor.mplsTxPack(trfEng.trgHop, pck, false);
+    }
+
+    /**
+     * get resulting route
+     *
+     * @param src source to use
+     * @return route, null if no suitable
+     */
+    public tabRouteEntry<addrIP> getResultRoute(tabRouteEntry<addrIP> src) {
+        if (trfEng == null) {
+            return null;
+        }
+        if (trfEng.trgHop == null) {
+            return null;
+        }
+        if (trfEng.srcLoc != 1) {
+            return null;
+        }
+        src = src.copyBytes();
+        src.nextHop = trfEng.trgHop.copyBytes();
+        src.iface = trfEng.trgIfc;
+        src.labelRem = tabLabel.int2labels(trfEng.trgLab);
+        return src;
     }
 
     /**

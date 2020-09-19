@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
 import tab.tabHop;
+import tab.tabLabel;
 import tab.tabRouteEntry;
+import tab.tabRouteIface;
 import util.cmds;
 import util.counter;
 import util.debugger;
@@ -87,6 +89,8 @@ public class clntMplsSr implements Runnable, ifcDn {
     private addrIP[] targets = new addrIP[1];
 
     private addrIP nextHop = new addrIP();
+
+    private tabRouteIface nextIfc;
 
     private int[] labels = null;
 
@@ -202,6 +206,24 @@ public class clntMplsSr implements Runnable, ifcDn {
             ipMpls.createMPLSheader(pck);
         }
         fwdCor.mplsTxPack(nextHop, pck, false);
+    }
+
+    /**
+     * get resulting route
+     *
+     * @param src source to use
+     * @return route, null if no suitable
+     */
+    public tabRouteEntry<addrIP> getResultRoute(tabRouteEntry<addrIP> src) {
+        int[] labs = labels;
+        if (labs == null) {
+            return null;
+        }
+        src = src.copyBytes();
+        src.nextHop = nextHop.copyBytes();
+        src.iface = nextIfc;
+        src.labelRem = tabLabel.int2labels(labs[0]);
+        return src;
     }
 
     /**
@@ -360,6 +382,7 @@ public class clntMplsSr implements Runnable, ifcDn {
                 labs[0] = hop.label >>> 12;
             }
             nextHop = ntry.nextHop.copyBytes();
+            nextIfc = ntry.iface;
             labels = labs;
             upper.setState(state.states.up);
             return;
@@ -408,6 +431,7 @@ public class clntMplsSr implements Runnable, ifcDn {
         }
         labs[0] = prev.segrouBeg + prev.segrouIdx;
         nextHop = prev.nextHop.copyBytes();
+        nextIfc = prev.iface;
         labels = labs;
         upper.setState(state.states.up);
     }
