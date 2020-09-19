@@ -54,7 +54,6 @@ parser ig_prs_main(packet_in pkt,
         ig_md.ethertype = 0;
         ig_md.vrf = 0;
 #ifdef HAVE_MPLS
-        ig_md.mpls_label = 0;
         ig_md.mpls_encap_egress_label = 0;
         ig_md.mpls_encap_svc_label = 0;
 #endif

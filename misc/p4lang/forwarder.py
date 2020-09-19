@@ -701,7 +701,7 @@ def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, la
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
         match_fields={
-            "ig_md.mpls_label": lab_loc
+            "hdr.mpls0.label": lab_loc
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_l2vpn",
         action_params={
@@ -716,7 +716,7 @@ def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, la
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
         match_fields={
-            "ig_md.mpls_label": lab_loc
+            "hdr.mpls1.label": lab_loc
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_l2vpn",
         action_params={
@@ -769,7 +769,7 @@ def writeBrlabRules(delete, p4info_helper, ingress_sw, bridge, label):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
         match_fields={
-            "ig_md.mpls_label": label
+            "hdr.mpls0.label": label
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_vpls",
         action_params={
@@ -784,7 +784,7 @@ def writeBrlabRules(delete, p4info_helper, ingress_sw, bridge, label):
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
         match_fields={
-            "ig_md.mpls_label": label
+            "hdr.mpls1.label": label
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_vpls",
         action_params={
@@ -1616,7 +1616,7 @@ def writeMplsRules(delete, p4info_helper, ingress_sw, dst_label, new_label, port
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
         match_fields={
-            "ig_md.mpls_label": (dst_label)
+            "hdr.mpls0.label": (dst_label)
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_swap0_set_nexthop",
         action_params={
@@ -1627,7 +1627,7 @@ def writeMplsRules(delete, p4info_helper, ingress_sw, dst_label, new_label, port
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
         match_fields={
-            "ig_md.mpls_label": (dst_label)
+            "hdr.mpls1.label": (dst_label)
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_swap1_set_nexthop",
         action_params={
@@ -1650,7 +1650,7 @@ def writeUnMplsRules(delete, p4info_helper, ingress_sw, dst_label, port):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
         match_fields={
-            "ig_md.mpls_label": (dst_label)
+            "hdr.mpls0.label": (dst_label)
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_set_nexthop",
         action_params={
@@ -1660,7 +1660,7 @@ def writeUnMplsRules(delete, p4info_helper, ingress_sw, dst_label, port):
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
         match_fields={
-            "ig_md.mpls_label": (dst_label)
+            "hdr.mpls1.label": (dst_label)
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_set_nexthop",
         action_params={
@@ -1682,7 +1682,7 @@ def writeMyMplsRules(delete, p4info_helper, ingress_sw, dst_label, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
         match_fields={
-            "ig_md.mpls_label": (dst_label)
+            "hdr.mpls0.label": (dst_label)
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_ipv4",
         action_params={
@@ -1692,7 +1692,7 @@ def writeMyMplsRules(delete, p4info_helper, ingress_sw, dst_label, vrf):
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
         match_fields={
-            "ig_md.mpls_label": (dst_label)
+            "hdr.mpls1.label": (dst_label)
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_l3vpn",
         action_params={

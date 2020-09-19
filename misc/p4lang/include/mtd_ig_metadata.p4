@@ -17,7 +17,6 @@ struct ingress_metadata_t {
     bit<4> hash_id;
     ethertype_t ethertype;
     switch_vrf_t vrf;
-    label_t mpls_label;
     bit<1>  dropping;
     bit<1>  punting;
     bit<1>  natted;

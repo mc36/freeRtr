@@ -138,7 +138,7 @@ control IngressControlMPLS(inout headers hdr,
 
     table tbl_mpls_fib {
         key = {
-ig_md.mpls_label:
+hdr.mpls0.label:
             exact;
         }
         actions = {
@@ -180,7 +180,7 @@ ig_md.mpls_label:
 
     table tbl_mpls_fib_decap {
         key = {
-ig_md.mpls_label:
+hdr.mpls1.label:
             exact;
         }
         actions = {
@@ -222,10 +222,8 @@ ig_md.mpls_label:
 
     apply {
         if (ig_md.mpls0_valid == 1) {
-            ig_md.mpls_label = hdr.mpls0.label;
             tbl_mpls_fib.apply();
             if ((ig_md.mpls_op_type == 1) && (ig_md.mpls1_valid == 1)) {
-                ig_md.mpls_label = hdr.mpls1.label;
                 tbl_mpls_fib_decap.apply();
             }
         }

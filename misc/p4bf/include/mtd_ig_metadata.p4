@@ -58,7 +58,6 @@ struct ingress_metadata_t {
     bit<16> pktlen;
 #endif
 #ifdef HAVE_MPLS
-    label_t mpls_label;
     label_t mpls_encap_egress_label;
     label_t mpls_encap_svc_label;
 #endif
