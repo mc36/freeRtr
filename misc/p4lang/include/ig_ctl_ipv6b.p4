@@ -155,7 +155,7 @@ ig_md.vrf:
          */
         //if (hdr.ipv6.isValid() && hdr.ipv6.ttl > 1) {
         if (ig_md.srv_op_type==6)  {
-            if (hdr.ipv6b.next_hdr==IP_PROTOCOL_RSVP) {
+            if (hdr.ipv6b.next_hdr==IP_PROTOCOL_HOPOPT) {
                 act_ipv6_cpl_set_nexthop();
                 return;
             }

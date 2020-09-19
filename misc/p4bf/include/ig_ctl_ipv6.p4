@@ -140,7 +140,7 @@ ig_md.vrf:
 
     apply {
         ig_md.mpls_encap_decap_sap_type = 6;
-        if (hdr.ipv6.next_hdr==IP_PROTOCOL_RSVP) {
+        if (hdr.ipv6.next_hdr==IP_PROTOCOL_HOPOPT) {
             act_ipv6_cpl_set_nexthop();
         } else if (!tbl_ipv6_fib_host.apply().hit) {
             tbl_ipv6_fib_lpm.apply();
