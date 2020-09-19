@@ -82,6 +82,8 @@ hdr.ethernet.src_mac_addr:
 #ifdef HAVE_MPLS
     action act_set_bridge_vpls(NextHopId_t port, label_t lab_tun, label_t lab_svc) {
         ig_md.bridge_trg = MAX_PORT;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
         ig_md.mpls_encap_egress_label = lab_tun;
         ig_md.mpls_encap_svc_label = lab_svc;
         ig_md.mpls_encap_decap_sap_type = 2;

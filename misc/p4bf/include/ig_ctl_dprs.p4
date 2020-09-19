@@ -32,18 +32,20 @@ control ig_ctl_dprs(packet_out pkt, inout headers hdr,
 
     apply {
 
-        hdr.ipv4.hdr_checksum = ipv4_checksum.update( {
-            hdr.ipv4.version, hdr.ipv4.ihl,
-            hdr.ipv4.diffserv,
-            hdr.ipv4.total_len,
-            hdr.ipv4.identification,
-            hdr.ipv4.flags,
-            hdr.ipv4.frag_offset,
-            hdr.ipv4.ttl,
-            hdr.ipv4.protocol,
-            hdr.ipv4.src_addr,
-            hdr.ipv4.dst_addr
-        }                                                    );
+        if (ig_md.saw_rsvp == 0) {
+            hdr.ipv4.hdr_checksum = ipv4_checksum.update( {
+                hdr.ipv4.version, hdr.ipv4.ihl,
+                hdr.ipv4.diffserv,
+                hdr.ipv4.total_len,
+                hdr.ipv4.identification,
+                hdr.ipv4.flags,
+                hdr.ipv4.frag_offset,
+                hdr.ipv4.ttl,
+                hdr.ipv4.protocol,
+                hdr.ipv4.src_addr,
+                hdr.ipv4.dst_addr
+            }                                                    );
+        }
 
 #ifdef HAVE_TUN
         hdr.ipv4d.hdr_checksum = ipv4_checksum.update( {

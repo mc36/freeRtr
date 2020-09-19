@@ -42,7 +42,8 @@ control IngressControlIPv6b(inout headers hdr, inout ingress_metadata_t ig_md,
     action act_ipv6_mpls2_encap_set_nexthop(label_t vpn_label,
                                             label_t egress_label,
                                             NextHopId_t nexthop_id) {
-        hdr.ipv6.hop_limit = hdr.ipv6.hop_limit - 1;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
         ig_md.mpls_encap_egress_label = egress_label;
         ig_md.mpls_encap_svc_label = vpn_label;
         ig_md.mpls_encap_l3vpn_valid = 1;
@@ -53,6 +54,7 @@ control IngressControlIPv6b(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_MPLS
     action act_ipv6_mpls1_encap_set_nexthop(label_t egress_label,
                                             NextHopId_t nexthop_id) {
+        ig_md.mpls0_remove = 0;
         ig_md.mpls_encap_egress_label = egress_label;
         ig_md.mpls_encap_rawip_valid = 1;
         ig_md.nexthop_id = nexthop_id;

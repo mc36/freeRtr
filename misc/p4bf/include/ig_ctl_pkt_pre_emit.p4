@@ -124,6 +124,23 @@ control IngressControlPktPreEmit(inout headers hdr,
 
 
 #ifdef HAVE_MPLS
+    action act_pkt_mpls_rawip_ipv4_reencap() {
+        hdr.mpls1.setInvalid();
+        _act_pkt_mpls1_encap();
+        hdr.mpls0.ttl = hdr.ipv4.ttl;
+    }
+#endif
+
+#ifdef HAVE_MPLS
+    action act_pkt_mpls_rawip_ipv6_reencap() {
+        hdr.mpls1.setInvalid();
+        _act_pkt_mpls1_encap();
+        hdr.mpls0.ttl = hdr.ipv6.hop_limit;
+    }
+#endif
+
+
+#ifdef HAVE_MPLS
     action act_pkt_mpls_l3vpn_ipv4_encap() {
         _act_pkt_mpls2_encap();
         hdr.mpls0.ttl = hdr.ipv4.ttl;
@@ -232,6 +249,8 @@ ig_md.nexthop_id:
             act_pkt_mpls_l3vpn_ipv6_encap;
             act_pkt_mpls_rawip_ipv4_encap;
             act_pkt_mpls_rawip_ipv6_encap;
+            act_pkt_mpls_rawip_ipv4_reencap;
+            act_pkt_mpls_rawip_ipv6_reencap;
 #ifdef HAVE_BRIDGE
             act_pkt_mpls_l2vpn_encap;
             act_pkt_mpls_xconnect_encap;
@@ -261,6 +280,8 @@ ig_md.nexthop_id:
 #ifdef HAVE_MPLS
             (0, 1, 0, 0, 0, 0, 0, 0, 4, _):act_pkt_mpls_rawip_ipv4_encap();
             (0, 1, 0, 0, 0, 0, 0, 0, 6, _):act_pkt_mpls_rawip_ipv6_encap();
+            (0, 1, 0, 0, 0, 0, 0, 1, 4, _):act_pkt_mpls_rawip_ipv4_reencap();
+            (0, 1, 0, 0, 0, 0, 0, 1, 6, _):act_pkt_mpls_rawip_ipv6_reencap();
             (0, 0, 1, 0, 0, 0, 0, 0, 4, _):act_pkt_mpls_l3vpn_ipv4_encap();
             (0, 0, 1, 0, 0, 0, 0, 0, 6, _):act_pkt_mpls_l3vpn_ipv6_encap();
 #ifdef HAVE_BRIDGE
@@ -294,7 +315,7 @@ ig_md.nexthop_id:
 #endif
         }
 
-        size = 16;
+        size = 18;
         default_action = NoAction();
 
     }

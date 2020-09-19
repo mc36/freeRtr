@@ -34,6 +34,8 @@ control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
         ig_md.vrf = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
         ig_md.arp_valid = 0;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;

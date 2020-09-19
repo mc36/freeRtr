@@ -31,7 +31,7 @@ typedef bit <16> switch_vrf_t;
 //typedef bit<9> PortId_t;
 typedef bit<16> NextHopId_t;
 typedef bit<9> SubIntId_t;
-#define MAX_PORT 1023
+#define MAX_PORT 511
 
 struct l4_lookup_t {
     bit<16>  word_1;

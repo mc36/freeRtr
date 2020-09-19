@@ -39,6 +39,8 @@ control IngressControlIPv4(inout headers hdr, inout ingress_metadata_t ig_md,
     action act_ipv4_mpls2_encap_set_nexthop(label_t vpn_label,
                                             label_t egress_label,
                                             NextHopId_t nexthop_id) {
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
         ig_md.mpls_encap_egress_label = egress_label;
         ig_md.mpls_encap_svc_label = vpn_label;
         ig_md.mpls_encap_l3vpn_valid = 1;
@@ -49,6 +51,7 @@ control IngressControlIPv4(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_MPLS
     action act_ipv4_mpls1_encap_set_nexthop(label_t egress_label,
                                             NextHopId_t nexthop_id) {
+        ig_md.mpls0_remove = 0;
         ig_md.mpls_encap_egress_label = egress_label;
         ig_md.mpls_encap_rawip_valid = 1;
         ig_md.nexthop_id = nexthop_id;
@@ -116,6 +119,7 @@ ig_md.vrf:
     apply {
         ig_md.mpls_encap_decap_sap_type = 4;
         if (hdr.ipv4.protocol==IP_PROTOCOL_RSVP) {
+            ig_md.saw_rsvp = 1;
             act_ipv4_cpl_set_nexthop();
         } else if (!tbl_ipv4_fib_host.apply().hit) {
             tbl_ipv4_fib_lpm.apply();

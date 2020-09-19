@@ -67,6 +67,7 @@ struct ingress_metadata_t {
     bit <3> mpls_op_type;
     bit <3> srv_op_type;
     bit <1> srv_remove;
+    bit <1> saw_rsvp;
     bit <1> mpls0_remove;
     bit <1> mpls1_remove;
 #ifdef HAVE_PPPOE
