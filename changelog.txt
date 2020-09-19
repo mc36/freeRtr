@@ -9329,3 +9329,10 @@ qc pass: p4lang: vlan l2tp server mpls
 ---------------------------------- 2020-09-18 17:42:12
 qc pass: ppp routes with local authentication
 qc pass: ppp routes with radius authentication
+---------------------------------- 2020-09-19 14:57:26
+qc pass: p4lang: p2p ldp tail+head
+qc pass: p4lang: p2p ldp mid
+qc pass: p4lang: p2p te tail+head
+qc pass: p4lang: p2p te mid
+qc pass: p4lang: sr te over mpls tail+head
+qc pass: p4lang: sr te over mpls mid
