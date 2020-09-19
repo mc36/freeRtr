@@ -1847,10 +1847,19 @@ class servP4langConn implements Runnable {
         }
         switch (ifc.ifc.tunMode) {
             case teP2p:
+                if (ifc.ifc.tunTeP2p == null) {
+                    return null;
+                }
                 return ifc.ifc.tunTeP2p.getResultRoute(rou);
             case ldpP2p:
+                if (ifc.ifc.tunLdpP2p == null) {
+                    return null;
+                }
                 return ifc.ifc.tunLdpP2p.getResultRoute(rou);
             case srMpls:
+                if (ifc.ifc.tunSrMpls == null) {
+                    return null;
+                }
                 return ifc.ifc.tunSrMpls.getResultRoute(rou);
             default:
                 return rou;
