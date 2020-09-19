@@ -20,6 +20,7 @@
 #ifndef _IP_PROTOCOL_P4_
 #define _IP_PROTOCOL_P4_
 
+const bit <8> IP_PROTOCOL_HOPOPT = 0;
 const bit <8> IP_PROTOCOL_ICMP = 1;
 const bit <8> IP_PROTOCOL_IGMP = 2;
 const bit <8> IP_PROTOCOL_IPV4 = 4;
