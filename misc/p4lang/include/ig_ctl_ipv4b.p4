@@ -44,6 +44,7 @@ control IngressControlIPv4b(inout headers hdr,
          * (LABEL imposition)
          */
         ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
+        ig_md.mpls0_remove = 0;
         /*
          * Encapsulate MPLS header
          * And set egress label
@@ -65,6 +66,8 @@ control IngressControlIPv4b(inout headers hdr,
          * (LABEL imposition)
          */
         ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
         /*
          * Encapsulate MPLS header
          * And set egress label

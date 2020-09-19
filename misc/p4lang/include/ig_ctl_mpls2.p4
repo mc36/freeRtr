@@ -7,17 +7,13 @@ control IngressControlMPLS2(inout headers hdr,
 
 
     apply {
-        if (ig_md.mpls0_remove == 1) {
-            hdr.mpls0.setInvalid();
-            if (ig_md.ipv4_valid == 1) {
-                ig_md.ethertype = ETHERTYPE_IPV4;
-            } else {
-                ig_md.ethertype = ETHERTYPE_IPV6;
-            }
-        }
 
         if (ig_md.mpls1_remove == 1) {
             hdr.mpls1.setInvalid();
+        }
+
+        if (ig_md.mpls0_remove == 1) {
+            hdr.mpls0.setInvalid();
             if (ig_md.ipv4_valid == 1) {
                 ig_md.ethertype = ETHERTYPE_IPV4;
             } else {
