@@ -572,11 +572,11 @@ public class tabRouteAttr<T extends addrType> {
     /**
      * clone this table entry
      *
-     * @return new instance containing same data
+     * @param atr target
+     * @param fwd copy forwarding info
      */
     @SuppressWarnings("unchecked")
-    public tabRouteAttr<T> copyBytes() {
-        tabRouteAttr<T> atr = new tabRouteAttr<T>();
+    public void copyBytes(tabRouteAttr<T> atr, boolean fwd) {
         atr.rouTab = rouTab;
         atr.distance = distance;
         atr.metric = metric;
@@ -640,7 +640,7 @@ public class tabRouteAttr<T extends addrType> {
         if (extComm != null) {
             atr.extComm = new ArrayList<Long>();
             for (int i = 0; i < extComm.size(); i++) {
-                atr.extComm.add((long) extComm.get(i));
+                atr.extComm.add(Long.valueOf(extComm.get(i)));
             }
         }
         if (lrgComm != null) {
@@ -649,21 +649,23 @@ public class tabRouteAttr<T extends addrType> {
                 atr.lrgComm.add(lrgComm.get(i).copyBytes());
             }
         }
+        atr.protoNum = protoNum;
+        atr.rouTyp = rouTyp;
+        atr.rouSrc = rouSrc;
+        atr.time = time;
+        atr.version = version;
+        atr.labelLoc = labelLoc;
+        if (!fwd) {
+            return;
+        }
+        atr.iface = iface;
+        atr.labelRem = tabLabel.copyLabels(labelRem);
         if (nextHop != null) {
             atr.nextHop = (T) nextHop.copyBytes();
         }
         if (oldHop != null) {
             atr.oldHop = (T) oldHop.copyBytes();
         }
-        atr.labelRem = tabLabel.copyLabels(labelRem);
-        atr.labelLoc = labelLoc;
-        atr.protoNum = protoNum;
-        atr.rouTyp = rouTyp;
-        atr.rouSrc = rouSrc;
-        atr.time = time;
-        atr.version = version;
-        atr.iface = iface;
-        return atr;
     }
 
     private static boolean diffIntList(List<Integer> l1, List<Integer> l2) {
@@ -959,9 +961,10 @@ public class tabRouteAttr<T extends addrType> {
      * need to update with this prefix
      *
      * @param imp new prefix
+     * @param tim consider time
      * @return true if yes, false if not
      */
-    public boolean isOtherBetter(tabRouteAttr<T> imp) {
+    public boolean isOtherBetter(tabRouteAttr<T> imp, boolean tim) {
         if (imp.distance < distance) {
             return true;
         }
@@ -1012,6 +1015,9 @@ public class tabRouteAttr<T extends addrType> {
             return true;
         }
         if (il > ol) {
+            return false;
+        }
+        if (!tim) {
             return false;
         }
         return imp.time < time;

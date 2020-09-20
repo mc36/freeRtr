@@ -54,7 +54,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         if (prefix != null) {
             prf.prefix = prefix.copyBytes();
         }
-        prf.best = best.copyBytes();
+        best.copyBytes(prf.best, true);
         prf.cntr = cntr;
         prf.hwCntr = hwCntr;
         return prf;
@@ -87,7 +87,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @return true if yes, false if not
      */
     public boolean isOtherBetter(tabRouteEntry<T> imp) {
-        return best.isOtherBetter(imp.best);
+        return best.isOtherBetter(imp.best, true);
     }
 
     /**
