@@ -339,33 +339,33 @@ public class clntMplsBier implements Runnable, ifcDn {
                 }
                 continue;
             }
-            if (rou.oldHop != null) {
-                rou = fwdCor.actualU.route(rou.oldHop);
+            if (rou.best.oldHop != null) {
+                rou = fwdCor.actualU.route(rou.best.oldHop);
                 if (rou == null) {
                     continue;
                 }
             }
-            if (rou.bierIdx < 1) {
+            if (rou.best.bierIdx < 1) {
                 if (debugger.clntMplsBierTraf) {
                     logger.debug("no index for " + trg);
                 }
                 continue;
             }
-            if (rou.bierBeg < 1) {
+            if (rou.best.bierBeg < 1) {
                 if (debugger.clntMplsBierTraf) {
                     logger.debug("no base for " + trg);
                 }
                 continue;
             }
-            tabLabelBierN ntry = new tabLabelBierN(rou.iface, rou.nextHop, rou.bierBeg);
+            tabLabelBierN ntry = new tabLabelBierN(rou.best.iface, rou.best.nextHop, rou.best.bierBeg);
             tabLabelBierN old = trgs.add(ntry);
             if (old != null) {
                 ntry = old;
             } else {
                 ntry.ned = BigInteger.ZERO;
             }
-            ntry.len = rou.bierHdr;
-            ntry.ned = ntry.ned.setBit(rou.bierIdx - 1);
+            ntry.len = rou.best.bierHdr;
+            ntry.ned = ntry.ned.setBit(rou.best.bierIdx - 1);
         }
         for (int i = 0; i < trgs.size(); i++) {
             tabLabelBierN ntry = trgs.get(i);

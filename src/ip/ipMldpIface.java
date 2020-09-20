@@ -38,8 +38,8 @@ public class ipMldpIface {
         addrIP rot = grp.source.copyBytes();
         tabRouteEntry<addrIP> rou = fwdCore.actualU.route(rot);
         if (rou != null) {
-            if (rou.oldHop != null) {
-                rot = rou.oldHop.copyBytes();
+            if (rou.best.oldHop != null) {
+                rot = rou.best.oldHop.copyBytes();
             }
         }
         ipFwdMpmp ntry = ipFwdMpmp.create4multicast(false, rot, grp);

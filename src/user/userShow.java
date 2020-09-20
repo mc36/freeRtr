@@ -65,6 +65,7 @@ import tab.tabNshNtry;
 import tab.tabPrfxlstN;
 import tab.tabQos;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabSession;
@@ -918,7 +919,7 @@ public class userShow {
             return null;
         }
         if (a.equals("router")) {
-            tabRouteEntry.routeType typ = cfgRtr.name2num(cmd.word());
+            tabRouteAttr.routeType typ = cfgRtr.name2num(cmd.word());
             if (typ == null) {
                 cmd.error("invalid process");
                 return null;
@@ -985,7 +986,7 @@ public class userShow {
                     if (prf == null) {
                         continue;
                     }
-                    l.add(tabRouteEntry.rouTyp2string(prf) + "|" + prf.prefix + "|" + prf.distance + "/" + prf.metric + "|" + prf.iface + "|" + prf.nextHop + "|" + bits.timePast(prf.time));
+                    l.add(tabRouteAttr.rouTyp2string(prf.best) + "|" + prf.prefix + "|" + prf.best.distance + "/" + prf.best.metric + "|" + prf.best.iface + "|" + prf.best.nextHop + "|" + bits.timePast(prf.best.time));
                 }
                 rdr.putStrTab(l);
                 return null;
@@ -1004,27 +1005,27 @@ public class userShow {
                 return null;
             }
             if (a.equals("logger")) {
-                doShowIpXlogger(tabRouteEntry.routeType.logger4);
+                doShowIpXlogger(tabRouteAttr.routeType.logger4);
                 return null;
             }
             if (a.equals("isis")) {
-                doShowIpXisis(tabRouteEntry.routeType.isis4);
+                doShowIpXisis(tabRouteAttr.routeType.isis4);
                 return null;
             }
             if (a.equals("pvrp")) {
-                doShowIpXpvrp(tabRouteEntry.routeType.pvrp4);
+                doShowIpXpvrp(tabRouteAttr.routeType.pvrp4);
                 return null;
             }
             if (a.equals("lsrp")) {
-                doShowIpXlsrp(tabRouteEntry.routeType.lsrp4);
+                doShowIpXlsrp(tabRouteAttr.routeType.lsrp4);
                 return null;
             }
             if (a.equals("eigrp")) {
-                doShowIpXeigrp(tabRouteEntry.routeType.eigrp4);
+                doShowIpXeigrp(tabRouteAttr.routeType.eigrp4);
                 return null;
             }
             if (a.equals("ospf")) {
-                cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.ospf4, bits.str2num(cmd.word()), false);
+                cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.ospf4, bits.str2num(cmd.word()), false);
                 if (r == null) {
                     cmd.error("no such process");
                     return null;
@@ -1106,7 +1107,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("msdp")) {
-                doShowIpXmsdp(tabRouteEntry.routeType.msdp4);
+                doShowIpXmsdp(tabRouteAttr.routeType.msdp4);
                 return null;
             }
             if (a.equals("ldp")) {
@@ -1118,19 +1119,19 @@ public class userShow {
                 return null;
             }
             if (a.equals("bgp")) {
-                doShowIpXbgp(tabRouteEntry.routeType.bgp4);
+                doShowIpXbgp(tabRouteAttr.routeType.bgp4);
                 return null;
             }
             if (a.equals("babel")) {
-                doShowIpXbabel(tabRouteEntry.routeType.babel4);
+                doShowIpXbabel(tabRouteAttr.routeType.babel4);
                 return null;
             }
             if (a.equals("olsr")) {
-                doShowIpXolsr(tabRouteEntry.routeType.olsr4);
+                doShowIpXolsr(tabRouteAttr.routeType.olsr4);
                 return null;
             }
             if (a.equals("rip")) {
-                cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.rip4, bits.str2num(cmd.word()), false);
+                cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.rip4, bits.str2num(cmd.word()), false);
                 if (r == null) {
                     cmd.error("no such process");
                     return null;
@@ -1242,27 +1243,27 @@ public class userShow {
                 return null;
             }
             if (a.equals("logger")) {
-                doShowIpXlogger(tabRouteEntry.routeType.logger6);
+                doShowIpXlogger(tabRouteAttr.routeType.logger6);
                 return null;
             }
             if (a.equals("isis")) {
-                doShowIpXisis(tabRouteEntry.routeType.isis6);
+                doShowIpXisis(tabRouteAttr.routeType.isis6);
                 return null;
             }
             if (a.equals("pvrp")) {
-                doShowIpXpvrp(tabRouteEntry.routeType.pvrp6);
+                doShowIpXpvrp(tabRouteAttr.routeType.pvrp6);
                 return null;
             }
             if (a.equals("lsrp")) {
-                doShowIpXlsrp(tabRouteEntry.routeType.lsrp6);
+                doShowIpXlsrp(tabRouteAttr.routeType.lsrp6);
                 return null;
             }
             if (a.equals("eigrp")) {
-                doShowIpXeigrp(tabRouteEntry.routeType.eigrp6);
+                doShowIpXeigrp(tabRouteAttr.routeType.eigrp6);
                 return null;
             }
             if (a.equals("ospf")) {
-                cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.ospf6, bits.str2num(cmd.word()), false);
+                cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.ospf6, bits.str2num(cmd.word()), false);
                 if (r == null) {
                     cmd.error("no such process");
                     return null;
@@ -1344,7 +1345,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("msdp")) {
-                doShowIpXmsdp(tabRouteEntry.routeType.msdp6);
+                doShowIpXmsdp(tabRouteAttr.routeType.msdp6);
                 return null;
             }
             if (a.equals("ldp")) {
@@ -1356,19 +1357,19 @@ public class userShow {
                 return null;
             }
             if (a.equals("bgp")) {
-                doShowIpXbgp(tabRouteEntry.routeType.bgp6);
+                doShowIpXbgp(tabRouteAttr.routeType.bgp6);
                 return null;
             }
             if (a.equals("babel")) {
-                doShowIpXbabel(tabRouteEntry.routeType.babel6);
+                doShowIpXbabel(tabRouteAttr.routeType.babel6);
                 return null;
             }
             if (a.equals("olsr")) {
-                doShowIpXolsr(tabRouteEntry.routeType.olsr6);
+                doShowIpXolsr(tabRouteAttr.routeType.olsr6);
                 return null;
             }
             if (a.equals("rip")) {
-                cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.rip6, bits.str2num(cmd.word()), false);
+                cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.rip6, bits.str2num(cmd.word()), false);
                 if (r == null) {
                     cmd.error("no such process");
                     return null;
@@ -1473,7 +1474,7 @@ public class userShow {
         return null;
     }
 
-    private void doShowIpXeigrp(tabRouteEntry.routeType afi) {
+    private void doShowIpXeigrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -1520,7 +1521,7 @@ public class userShow {
         return;
     }
 
-    private void doShowIpXlogger(tabRouteEntry.routeType afi) {
+    private void doShowIpXlogger(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -1549,7 +1550,7 @@ public class userShow {
         }
     }
 
-    private void doShowIpXlsrp(tabRouteEntry.routeType afi) {
+    private void doShowIpXlsrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -1613,7 +1614,7 @@ public class userShow {
         return;
     }
 
-    private void doShowIpXpvrp(tabRouteEntry.routeType afi) {
+    private void doShowIpXpvrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -1660,7 +1661,7 @@ public class userShow {
         return;
     }
 
-    private void doShowIpXisis(tabRouteEntry.routeType afi) {
+    private void doShowIpXisis(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -1859,7 +1860,7 @@ public class userShow {
         cmd.badCmd();
     }
 
-    private void doShowIpXmsdp(tabRouteEntry.routeType afi) {
+    private void doShowIpXmsdp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -1929,13 +1930,13 @@ public class userShow {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.labelRem == null) {
+            if (ntry.best.labelRem == null) {
                 continue;
             }
-            if (ntry.labelRem.size() != 1) {
+            if (ntry.best.labelRem.size() != 1) {
                 continue;
             }
-            int o = ntry.labelRem.get(0);
+            int o = ntry.best.labelRem.get(0);
             if ((o != ipMpls.labelImp) && (o != ipMpls.labelExp4) && (o != ipMpls.labelExp6)) {
                 continue;
             }
@@ -2015,7 +2016,7 @@ public class userShow {
         cmd.badCmd();
     }
 
-    private void doShowIpXbabel(tabRouteEntry.routeType afi) {
+    private void doShowIpXbabel(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -2057,7 +2058,7 @@ public class userShow {
         cmd.badCmd();
     }
 
-    private void doShowIpXolsr(tabRouteEntry.routeType afi) {
+    private void doShowIpXolsr(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -2109,139 +2110,139 @@ public class userShow {
             }
             prf1 = prf1.copyBytes();
             prf2 = prf2.copyBytes();
-            prf1.srcRtr = null;
-            prf2.srcRtr = null;
-            prf1.rouSrc = 0;
-            prf2.rouSrc = 0;
-            prf1.rouTyp = tabRouteEntry.routeType.bgp4;
-            prf2.rouTyp = tabRouteEntry.routeType.bgp4;
-            prf1.iface = null;
-            prf2.iface = null;
+            prf1.best.srcRtr = null;
+            prf2.best.srcRtr = null;
+            prf1.best.rouSrc = 0;
+            prf2.best.rouSrc = 0;
+            prf1.best.rouTyp = tabRouteAttr.routeType.bgp4;
+            prf2.best.rouTyp = tabRouteAttr.routeType.bgp4;
+            prf1.best.iface = null;
+            prf2.best.iface = null;
             if ((ign & 0x1) != 0) {
-                prf1.clustList = null;
-                prf2.clustList = null;
+                prf1.best.clustList = null;
+                prf2.best.clustList = null;
             }
             if ((ign & 0x2) != 0) {
-                prf1.nextHop = null;
-                prf2.nextHop = null;
-                prf1.oldHop = null;
-                prf2.oldHop = null;
+                prf1.best.nextHop = null;
+                prf2.best.nextHop = null;
+                prf1.best.oldHop = null;
+                prf2.best.oldHop = null;
             }
             if ((ign & 0x4) != 0) {
-                prf1.origin = 0;
-                prf2.origin = 0;
+                prf1.best.origin = 0;
+                prf2.best.origin = 0;
             }
             if ((ign & 0x8) != 0) {
-                prf1.metric = 0;
-                prf2.metric = 0;
+                prf1.best.metric = 0;
+                prf2.best.metric = 0;
             }
             if ((ign & 0x10) != 0) {
-                prf1.locPref = 0;
-                prf2.locPref = 0;
+                prf1.best.locPref = 0;
+                prf2.best.locPref = 0;
             }
             if ((ign & 0x20) != 0) {
-                prf1.distance = 0;
-                prf2.distance = 0;
+                prf1.best.distance = 0;
+                prf2.best.distance = 0;
             }
             if ((ign & 0x40) != 0) {
-                prf1.tag = 0;
-                prf2.tag = 0;
+                prf1.best.tag = 0;
+                prf2.best.tag = 0;
             }
             if ((ign & 0x80) != 0) {
-                prf1.validity = 0;
-                prf2.validity = 0;
+                prf1.best.validity = 0;
+                prf2.best.validity = 0;
             }
             if ((ign & 0x100) != 0) {
-                prf1.pathSeq = null;
-                prf2.pathSeq = null;
-                prf1.pathSet = null;
-                prf2.pathSet = null;
+                prf1.best.pathSeq = null;
+                prf2.best.pathSeq = null;
+                prf1.best.pathSet = null;
+                prf2.best.pathSet = null;
             }
             if ((ign & 0x200) != 0) {
-                prf1.confSeq = null;
-                prf2.confSeq = null;
-                prf1.confSet = null;
-                prf2.confSet = null;
+                prf1.best.confSeq = null;
+                prf2.best.confSeq = null;
+                prf1.best.confSet = null;
+                prf2.best.confSet = null;
             }
             if ((ign & 0x400) != 0) {
-                prf1.stdComm = null;
-                prf2.stdComm = null;
+                prf1.best.stdComm = null;
+                prf2.best.stdComm = null;
             }
             if ((ign & 0x800) != 0) {
-                prf1.extComm = null;
-                prf2.extComm = null;
+                prf1.best.extComm = null;
+                prf2.best.extComm = null;
             }
             if ((ign & 0x1000) != 0) {
-                prf1.accIgp = 0;
-                prf2.accIgp = 0;
+                prf1.best.accIgp = 0;
+                prf2.best.accIgp = 0;
             }
             if ((ign & 0x2000) != 0) {
-                prf1.bandwidth = 0;
-                prf2.bandwidth = 0;
+                prf1.best.bandwidth = 0;
+                prf2.best.bandwidth = 0;
             }
             if ((ign & 0x4000) != 0) {
-                prf1.labelLoc = null;
-                prf2.labelLoc = null;
-                prf1.labelRem = null;
-                prf2.labelRem = null;
+                prf1.best.labelLoc = null;
+                prf2.best.labelLoc = null;
+                prf1.best.labelRem = null;
+                prf2.best.labelRem = null;
             }
             if ((ign & 0x8000) != 0) {
-                prf1.atomicAggr = false;
-                prf2.atomicAggr = false;
-                prf1.aggrAs = 0;
-                prf2.aggrAs = 0;
-                prf1.aggrRtr = null;
-                prf2.aggrRtr = null;
+                prf1.best.atomicAggr = false;
+                prf2.best.atomicAggr = false;
+                prf1.best.aggrAs = 0;
+                prf2.best.aggrAs = 0;
+                prf1.best.aggrRtr = null;
+                prf2.best.aggrRtr = null;
             }
             if ((ign & 0x10000) != 0) {
-                prf1.originator = null;
-                prf2.originator = null;
+                prf1.best.originator = null;
+                prf2.best.originator = null;
             }
             if ((ign & 0x20000) != 0) {
-                prf1.pmsiLab = 0;
-                prf2.pmsiLab = 0;
-                prf1.pmsiTyp = 0;
-                prf2.pmsiTyp = 0;
-                prf1.pmsiTun = null;
-                prf2.pmsiTun = null;
+                prf1.best.pmsiLab = 0;
+                prf2.best.pmsiLab = 0;
+                prf1.best.pmsiTyp = 0;
+                prf2.best.pmsiTyp = 0;
+                prf1.best.pmsiTun = null;
+                prf2.best.pmsiTun = null;
             }
             if ((ign & 0x40000) != 0) {
-                prf1.segrouIdx = 0;
-                prf2.segrouIdx = 0;
-                prf1.segrouBeg = 0;
-                prf2.segrouBeg = 0;
-                prf1.segrouOld = 0;
-                prf2.segrouOld = 0;
-                prf1.segrouSiz = 0;
-                prf2.segrouSiz = 0;
+                prf1.best.segrouIdx = 0;
+                prf2.best.segrouIdx = 0;
+                prf1.best.segrouBeg = 0;
+                prf2.best.segrouBeg = 0;
+                prf1.best.segrouOld = 0;
+                prf2.best.segrouOld = 0;
+                prf1.best.segrouSiz = 0;
+                prf2.best.segrouSiz = 0;
             }
             if ((ign & 0x80000) != 0) {
-                prf1.lrgComm = null;
-                prf2.lrgComm = null;
+                prf1.best.lrgComm = null;
+                prf2.best.lrgComm = null;
             }
             if ((ign & 0x100000) != 0) {
-                prf1.tunelTyp = 0;
-                prf2.tunelTyp = 0;
-                prf1.tunelVal = null;
-                prf2.tunelVal = null;
+                prf1.best.tunelTyp = 0;
+                prf2.best.tunelTyp = 0;
+                prf1.best.tunelVal = null;
+                prf2.best.tunelVal = null;
             }
             if ((ign & 0x200000) != 0) {
-                prf1.attribAs = 0;
-                prf2.attribAs = 0;
-                prf1.attribVal = null;
-                prf2.attribVal = null;
+                prf1.best.attribAs = 0;
+                prf2.best.attribAs = 0;
+                prf1.best.attribVal = null;
+                prf2.best.attribVal = null;
             }
             if ((ign & 0x400000) != 0) {
-                prf1.bierIdx = 0;
-                prf2.bierIdx = 0;
-                prf1.bierBeg = 0;
-                prf2.bierBeg = 0;
-                prf1.bierOld = 0;
-                prf2.bierOld = 0;
-                prf1.bierSiz = 0;
-                prf2.bierSiz = 0;
-                prf1.bierHdr = 0;
-                prf2.bierHdr = 0;
+                prf1.best.bierIdx = 0;
+                prf2.best.bierIdx = 0;
+                prf1.best.bierBeg = 0;
+                prf2.best.bierBeg = 0;
+                prf1.best.bierOld = 0;
+                prf2.best.bierOld = 0;
+                prf1.best.bierSiz = 0;
+                prf2.best.bierSiz = 0;
+                prf1.best.bierHdr = 0;
+                prf2.best.bierHdr = 0;
             }
             if (!prf1.differs(prf2)) {
                 continue;
@@ -2250,7 +2251,7 @@ public class userShow {
         }
     }
 
-    private void doShowIpXbgp(tabRouteEntry.routeType afi) {
+    private void doShowIpXbgp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");

@@ -25,6 +25,7 @@ import tab.tabNatCfgN;
 import tab.tabNatTraN;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFormat;
 import util.bits;
@@ -72,10 +73,10 @@ public class ipFwdTab {
         if (prf == null) {
             return null;
         }
-        if (prf.rouTab != null) {
+        if (prf.best.rouTab != null) {
             return findStableIface(lower);
         }
-        return (ipFwdIface) prf.iface;
+        return (ipFwdIface) prf.best.iface;
     }
 
     /**
@@ -90,7 +91,7 @@ public class ipFwdTab {
         if (prf == null) {
             return null;
         }
-        switch (prf.rouTyp) {
+        switch (prf.best.rouTyp) {
             case conn:
             case remote:
             case defpref:
@@ -99,7 +100,7 @@ public class ipFwdTab {
             default:
                 return null;
         }
-        return (ipFwdIface) prf.iface;
+        return (ipFwdIface) prf.best.iface;
     }
 
     /**
@@ -489,27 +490,27 @@ public class ipFwdTab {
         if (imp == null) {
             return;
         }
-        if (imp.distance >= tabRouteEntry.distanMax) {
+        if (imp.best.distance >= tabRouteAttr.distanMax) {
             return;
         }
-        tabRouteEntry<addrIP> nh = trg.route(imp.nextHop);
+        tabRouteEntry<addrIP> nh = trg.route(imp.best.nextHop);
         if (nh == null) {
             return;
         }
-        imp.iface = nh.iface;
-        if (nh.rouTyp != tabRouteEntry.routeType.conn) {
-            if (nh.nextHop == null) {
+        imp.best.iface = nh.best.iface;
+        if (nh.best.rouTyp != tabRouteAttr.routeType.conn) {
+            if (nh.best.nextHop == null) {
                 return;
             }
-            imp.nextHop = nh.nextHop.copyBytes();
+            imp.best.nextHop = nh.best.nextHop.copyBytes();
         }
-        imp.time = nh.time;
-        imp.rouTab = nh.rouTab;
-        if (nh.segrouPrf != null) {
-            imp.segrouPrf = nh.segrouPrf.copyBytes();
+        imp.best.time = nh.best.time;
+        imp.best.rouTab = nh.best.rouTab;
+        if (nh.best.segrouPrf != null) {
+            imp.best.segrouPrf = nh.best.segrouPrf.copyBytes();
         }
-        if (nh.labelRem != null) {
-            imp.labelRem = tabLabel.prependLabels(imp.labelRem, nh.labelRem);
+        if (nh.best.labelRem != null) {
+            imp.best.labelRem = tabLabel.prependLabels(imp.best.labelRem, nh.best.labelRem);
         }
         trg.add(tabRoute.addType.better, imp, false, true);
     }
@@ -526,11 +527,11 @@ public class ipFwdTab {
             return;
         }
         if (ntry.iface == null) {
-            tabRouteEntry<addrIP> nh = conn.route(imp.nextHop);
+            tabRouteEntry<addrIP> nh = conn.route(imp.best.nextHop);
             if (nh == null) {
                 return;
             }
-            imp.iface = nh.iface;
+            imp.best.iface = nh.best.iface;
         } else {
             ipFwdIface ifc = new ipFwdIface(ntry.iface.ifwNum, null);
             ifc = lower.ifaces.find(ifc);
@@ -540,10 +541,10 @@ public class ipFwdTab {
             if (!ifc.ready) {
                 return;
             }
-            if (!ifc.network.matches(imp.nextHop)) {
+            if (!ifc.network.matches(imp.best.nextHop)) {
                 return;
             }
-            imp.iface = ifc;
+            imp.best.iface = ifc;
         }
         trg.add(tabRoute.addType.better, imp, false, true);
     }
@@ -558,44 +559,44 @@ public class ipFwdTab {
         tabRoute<addrIP> tabC = new tabRoute<addrIP>("connected");
         tabC.defDist = 0;
         tabC.defMetr = 0;
-        tabC.defRouTyp = tabRouteEntry.routeType.conn;
+        tabC.defRouTyp = tabRouteAttr.routeType.conn;
         tabRoute<addrIP> tabL = new tabRoute<addrIP>("labeled");
-        tabL.defDist = tabRouteEntry.distanMax;
+        tabL.defDist = tabRouteAttr.distanMax;
         tabRoute<addrIP> tabM = new tabRoute<addrIP>("rpf");
-        tabM.defDist = tabRouteEntry.distanMax;
+        tabM.defDist = tabRouteAttr.distanMax;
         tabRoute<addrIP> tabF = new tabRoute<addrIP>("flwspc");
-        tabF.defDist = tabRouteEntry.distanMax;
+        tabF.defDist = tabRouteAttr.distanMax;
         tabRoute<addrIP> tabU = new tabRoute<addrIP>("locals");
         tabU.defDist = 0;
         tabU.defMetr = 1;
-        tabU.defRouTyp = tabRouteEntry.routeType.local;
+        tabU.defRouTyp = tabRouteAttr.routeType.local;
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);
             if (!ifc.ready) {
                 continue;
             }
             tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, ifc.network, null);
-            prf.iface = ifc;
-            prf.rouTyp = tabRouteEntry.routeType.conn;
+            prf.best.iface = ifc;
+            prf.best.rouTyp = tabRouteAttr.routeType.conn;
             prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(ifc.addr, ifc.addr.maxBits()), null);
-            prf.iface = ifc;
-            prf.rouTyp = tabRouteEntry.routeType.local;
+            prf.best.iface = ifc;
+            prf.best.rouTyp = tabRouteAttr.routeType.local;
             if (ifc.linkLocal) {
                 addrIPv6 adr6 = addrIPv6.genLinkLocal(new addrMac());
                 addrIP adr = new addrIP();
                 adr.fromIPv6addr(adr6);
                 prf = tabC.add(tabRoute.addType.always, new addrPrefix<addrIP>(adr, 64), null);
-                prf.iface = ifc;
-                prf.rouTyp = tabRouteEntry.routeType.conn;
+                prf.best.iface = ifc;
+                prf.best.rouTyp = tabRouteAttr.routeType.conn;
             }
             addrIP gtw = ifc.gateAddr;
             if (gtw == null) {
                 continue;
             }
             prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
-            prf.iface = ifc;
-            prf.rouTyp = tabRouteEntry.routeType.remote;
-            prf.nextHop = gtw;
+            prf.best.iface = ifc;
+            prf.best.rouTyp = tabRouteAttr.routeType.remote;
+            prf.best.nextHop = gtw;
             tabListing<tabPrfxlstN, addrIP> pfl = ifc.gatePrfx;
             if (pfl == null) {
                 continue;
@@ -603,27 +604,27 @@ public class ipFwdTab {
             for (int o = 0; o < pfl.size(); o++) {
                 prf = new tabRouteEntry<addrIP>();
                 tabU.updateBase(prf);
-                prf.metric = 2;
+                prf.best.metric = 2;
                 prf.prefix = pfl.get(o).getPrefix();
-                prf.nextHop = gtw.copyBytes();
-                prf.rouTyp = tabRouteEntry.routeType.defpref;
-                prf.iface = ifc;
+                prf.best.nextHop = gtw.copyBytes();
+                prf.best.rouTyp = tabRouteAttr.routeType.defpref;
+                prf.best.iface = ifc;
                 tabRoute.addUpdatedEntry(tabRoute.addType.better, tabU, rtrBgpUtil.safiUnicast, prf, true, ifc.gateRtmp, null, null);
             }
         }
-        tabL.mergeFrom(tabRoute.addType.better, tabC, null, true, tabRouteEntry.distanLim);
-        tabL.mergeFrom(tabRoute.addType.better, tabU, null, true, tabRouteEntry.distanLim);
-        tabM.mergeFrom(tabRoute.addType.better, tabC, null, true, tabRouteEntry.distanLim);
-        tabM.mergeFrom(tabRoute.addType.better, tabU, null, true, tabRouteEntry.distanLim);
+        tabL.mergeFrom(tabRoute.addType.better, tabC, null, true, tabRouteAttr.distanLim);
+        tabL.mergeFrom(tabRoute.addType.better, tabU, null, true, tabRouteAttr.distanLim);
+        tabM.mergeFrom(tabRoute.addType.better, tabC, null, true, tabRouteAttr.distanLim);
+        tabM.mergeFrom(tabRoute.addType.better, tabU, null, true, tabRouteAttr.distanLim);
         for (int i = 0; i < lower.staticU.size(); i++) {
             dstatic2table(lower.staticU.get(i), tabL, lower, tabC);
         }
         for (int i = 0; i < lower.staticM.size(); i++) {
             dstatic2table(lower.staticM.get(i), tabM, lower, tabC);
         }
-        tabL.delDistance(tabRouteEntry.distanMax);
-        tabM.delDistance(tabRouteEntry.distanMax);
-        tabF.delDistance(tabRouteEntry.distanMax);
+        tabL.delDistance(tabRouteAttr.distanMax);
+        tabM.delDistance(tabRouteAttr.distanMax);
+        tabF.delDistance(tabRouteAttr.distanMax);
         tabL.preserveTime(lower.actualU);
         tabM.preserveTime(lower.actualM);
         tabF.preserveTime(lower.actualF);
@@ -635,9 +636,9 @@ public class ipFwdTab {
             if (rtr.isBGP() != 0) {
                 continue;
             }
-            tabL.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true, tabRouteEntry.distanMax);
-            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true, tabRouteEntry.distanMax);
-            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteEntry.distanMax);
+            tabL.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true, tabRouteAttr.distanMax);
+            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true, tabRouteAttr.distanMax);
+            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabL, 1);
@@ -657,42 +658,42 @@ public class ipFwdTab {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.rouTyp != ifc.autRouTyp) {
+            if (ntry.best.rouTyp != ifc.autRouTyp) {
                 continue;
             }
-            if (ntry.protoNum != ifc.autRouPrt) {
+            if (ntry.best.protoNum != ifc.autRouPrt) {
                 continue;
             }
-            if (ntry.srcRtr == null) {
+            if (ntry.best.srcRtr == null) {
                 continue;
             }
             for (int o = 0; o < tabL.size(); o++) {
                 tabRouteEntry<addrIP> prf = tabL.get(o);
-                if (prf.rouTyp != ntry.rouTyp) {
+                if (prf.best.rouTyp != ntry.best.rouTyp) {
                     continue;
                 }
-                if (prf.protoNum != ntry.protoNum) {
+                if (prf.best.protoNum != ntry.best.protoNum) {
                     continue;
                 }
-                if (prf.srcRtr == null) {
+                if (prf.best.srcRtr == null) {
                     continue;
                 }
-                if (prf.srcRtr.getSize() != ntry.srcRtr.getSize()) {
+                if (prf.best.srcRtr.getSize() != ntry.best.srcRtr.getSize()) {
                     continue;
                 }
-                if (prf.srcRtr.compare(prf.srcRtr, ntry.srcRtr) != 0) {
+                if (prf.best.srcRtr.compare(prf.best.srcRtr, ntry.best.srcRtr) != 0) {
                     continue;
                 }
                 if (prf.prefix.compare(prf.prefix, ntry.prefix) == 0) {
                     continue;
                 }
-                prf.iface = ifc;
-                prf.nextHop = ifc.autRouHop.copyBytes();
-                prf.labelRem = null;
+                prf.best.iface = ifc;
+                prf.best.nextHop = ifc.autRouHop.copyBytes();
+                prf.best.labelRem = null;
             }
         }
         tabU = new tabRoute<addrIP>("locals");
-        tabU.mergeFrom(tabRoute.addType.better, tabL, null, true, tabRouteEntry.distanLim);
+        tabU.mergeFrom(tabRoute.addType.better, tabL, null, true, tabRouteAttr.distanLim);
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
             if (rtr == null) {
@@ -701,9 +702,9 @@ public class ipFwdTab {
             if (rtr.isBGP() != 1) {
                 continue;
             }
-            tabU.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, tabL, true, tabRouteEntry.distanMax);
-            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, tabL, true, tabRouteEntry.distanMax);
-            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteEntry.distanMax);
+            tabU.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, tabL, true, tabRouteAttr.distanMax);
+            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, tabL, true, tabRouteAttr.distanMax);
+            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabU, 2);
@@ -719,9 +720,9 @@ public class ipFwdTab {
             if (rtr.isBGP() != 2) {
                 continue;
             }
-            tabU.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true, tabRouteEntry.distanMax);
-            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true, tabRouteEntry.distanMax);
-            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteEntry.distanMax);
+            tabU.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true, tabRouteAttr.distanMax);
+            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true, tabRouteAttr.distanMax);
+            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabU, 3);
@@ -762,7 +763,7 @@ public class ipFwdTab {
                 break;
             case all:
                 tabL = new tabRoute<addrIP>("labeled");
-                tabL.mergeFrom(tabRoute.addType.better, tabU, null, true, tabRouteEntry.distanLim);
+                tabL.mergeFrom(tabRoute.addType.better, tabU, null, true, tabRouteAttr.distanLim);
                 break;
             default:
                 tabL = new tabRoute<addrIP>("labeled");
@@ -774,73 +775,73 @@ public class ipFwdTab {
             if (old == null) {
                 continue;
             }
-            if (old.labelLoc == null) {
+            if (old.best.labelLoc == null) {
                 continue;
             }
-            if (old.labelLoc.getValue() == lower.commonLabel.getValue()) {
+            if (old.best.labelLoc.getValue() == lower.commonLabel.getValue()) {
                 continue;
             }
-            if (tabLabel.find(old.labelLoc.getValue()) == null) {
+            if (tabLabel.find(old.best.labelLoc.getValue()) == null) {
                 continue;
             }
             tabRouteEntry<addrIP> cur = tabL.find(old);
             if (cur == null) {
-                tabLabel.release(old.labelLoc, 2);
+                tabLabel.release(old.best.labelLoc, 2);
                 continue;
             }
-            cur.labelLoc = old.labelLoc;
+            cur.best.labelLoc = old.best.labelLoc;
         }
         for (int i = 0; i < tabL.size(); i++) {
             tabRouteEntry<addrIP> ntry = tabL.get(i);
-            if (ntry.labelLoc != null) {
+            if (ntry.best.labelLoc != null) {
                 continue;
             }
-            if (ntry.nextHop == null) {
-                ntry.labelLoc = lower.commonLabel;
+            if (ntry.best.nextHop == null) {
+                ntry.best.labelLoc = lower.commonLabel;
                 continue;
             }
             tabLabelNtry lab = tabLabel.allocate(2);
-            ntry.labelLoc = lab;
+            ntry.best.labelLoc = lab;
         }
         for (int i = 0; i < tabU.size(); i++) {
             tabRouteEntry<addrIP> ntry = tabU.get(i);
             tabRouteEntry<addrIP> loc = tabL.find(ntry);
             if (loc != null) {
-                ntry.labelLoc = loc.labelLoc;
+                ntry.best.labelLoc = loc.best.labelLoc;
             }
-            if (ntry.nextHop == null) {
+            if (ntry.best.nextHop == null) {
                 continue;
             }
-            if (ntry.labelLoc != null) {
+            if (ntry.best.labelLoc != null) {
                 ipFwd vrf = lower;
-                ipFwdIface ifc = (ipFwdIface) ntry.iface;
-                addrIP hop = ntry.nextHop;
-                List<Integer> lrs = ntry.labelRem;
-                if (ntry.rouTab != null) {
-                    vrf = ntry.rouTab;
+                ipFwdIface ifc = (ipFwdIface) ntry.best.iface;
+                addrIP hop = ntry.best.nextHop;
+                List<Integer> lrs = ntry.best.labelRem;
+                if (ntry.best.rouTab != null) {
+                    vrf = ntry.best.rouTab;
                     tabRouteEntry<addrIP> nh = vrf.actualU.route(hop);
                     if (nh != null) {
-                        ifc = (ipFwdIface) nh.iface;
-                        hop = nh.nextHop;
-                        lrs = tabLabel.prependLabels(new ArrayList<Integer>(), ntry.labelRem);
-                        lrs = tabLabel.prependLabels(lrs, nh.labelRem);
+                        ifc = (ipFwdIface) nh.best.iface;
+                        hop = nh.best.nextHop;
+                        lrs = tabLabel.prependLabels(new ArrayList<Integer>(), ntry.best.labelRem);
+                        lrs = tabLabel.prependLabels(lrs, nh.best.labelRem);
                     }
                 }
                 if (hop != null) {
-                    ntry.labelLoc.setFwdMpls(2, vrf, ifc, hop, lrs);
+                    ntry.best.labelLoc.setFwdMpls(2, vrf, ifc, hop, lrs);
                 } else {
-                    ntry.labelLoc.setFwdDrop(2);
+                    ntry.best.labelLoc.setFwdDrop(2);
                 }
             }
-            if (ntry.rouTab != null) {
+            if (ntry.best.rouTab != null) {
                 continue;
             }
-            rtrLdpNeigh nei = lower.ldpNeighFind(null, ntry.nextHop, false);
+            rtrLdpNeigh nei = lower.ldpNeighFind(null, ntry.best.nextHop, false);
             if (nei == null) {
-                if (ntry.oldHop == null) {
+                if (ntry.best.oldHop == null) {
                     continue;
                 }
-                tabRouteEntry<addrIP> prf = tabU.route(ntry.oldHop);
+                tabRouteEntry<addrIP> prf = tabU.route(ntry.best.oldHop);
                 if (prf == null) {
                     continue;
                 }
@@ -852,10 +853,10 @@ public class ipFwdTab {
                 updateTableRouteLabels(ntry, loc, rem);
                 continue;
             }
-            if (ntry.oldHop == null) {
+            if (ntry.best.oldHop == null) {
                 continue;
             }
-            tabRouteEntry<addrIP> prf = tabU.route(ntry.oldHop);
+            tabRouteEntry<addrIP> prf = tabU.route(ntry.best.oldHop);
             if (prf == null) {
                 continue;
             }
@@ -900,7 +901,7 @@ public class ipFwdTab {
             tabRouteEntry<addrIP> ntry = tabT.get(i);
             tabRouteEntry<addrIP> rou = tabU.find(ntry);
             if (rou != null) {
-                if (rou.nextHop == null) {
+                if (rou.best.nextHop == null) {
                     continue;
                 }
             } else {
@@ -909,20 +910,20 @@ public class ipFwdTab {
                     continue;
                 }
                 addrIP hop;
-                if (old.rouTyp == tabRouteEntry.routeType.conn) {
+                if (old.best.rouTyp == tabRouteAttr.routeType.conn) {
                     hop = ntry.prefix.network;
                 } else {
-                    hop = old.nextHop;
+                    hop = old.best.nextHop;
                 }
                 if (hop == null) {
                     continue;
                 }
                 rou = new tabRouteEntry<addrIP>();
                 rou.prefix = ntry.prefix;
-                rou.nextHop = hop;
-                rou.iface = old.iface;
-                rou.metric = 3;
-                rou.rouTyp = tabRouteEntry.routeType.automesh;
+                rou.best.nextHop = hop;
+                rou.best.iface = old.best.iface;
+                rou.best.metric = 3;
+                rou.best.rouTyp = tabRouteAttr.routeType.automesh;
                 tabU.add(tabRoute.addType.better, rou, false, false);
             }
             clntMplsTeP2p clnt = new clntMplsTeP2p();
@@ -933,17 +934,17 @@ public class ipFwdTab {
                 if (trf == null) {
                     continue;
                 }
-                if (trf.trgIfc != rou.iface) {
+                if (trf.trgIfc != rou.best.iface) {
                     continue;
                 }
-                if (trf.trgHop.compare(trf.trgHop, rou.nextHop) != 0) {
+                if (trf.trgHop.compare(trf.trgHop, rou.best.nextHop) != 0) {
                     continue;
                 }
-                rou.labelRem = tabLabel.prependLabels(rou.labelRem, tabLabel.int2labels(trf.trgLab));
-                if (rou.labelLoc == null) {
+                rou.best.labelRem = tabLabel.prependLabels(rou.best.labelRem, tabLabel.int2labels(trf.trgLab));
+                if (rou.best.labelLoc == null) {
                     continue;
                 }
-                rou.labelLoc.setFwdMpls(2, lower, (ipFwdIface) rou.iface, rou.nextHop, rou.labelRem);
+                rou.best.labelLoc.setFwdMpls(2, lower, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
                 continue;
             }
             lower.autoMesh.add(clnt);
@@ -984,12 +985,12 @@ public class ipFwdTab {
     }
 
     private static void updateTableRouteLabels(tabRouteEntry<addrIP> ntry, tabRouteEntry<addrIP> loc, tabRouteEntry<addrIP> rem) {
-        ntry.labelRem = tabLabel.prependLabels(ntry.labelRem, rem.labelRem);
+        ntry.best.labelRem = tabLabel.prependLabels(ntry.best.labelRem, rem.best.labelRem);
         if (loc != null) {
-            loc.labelRem = tabLabel.prependLabels(loc.labelRem, rem.labelRem);
+            loc.best.labelRem = tabLabel.prependLabels(loc.best.labelRem, rem.best.labelRem);
         }
-        if (ntry.labelLoc != null) {
-            ntry.labelLoc.remoteLab = tabLabel.prependLabels(ntry.labelLoc.remoteLab, rem.labelRem);
+        if (ntry.best.labelLoc != null) {
+            ntry.best.labelLoc.remoteLab = tabLabel.prependLabels(ntry.best.labelLoc.remoteLab, rem.best.labelRem);
         }
     }
 
@@ -1034,17 +1035,17 @@ public class ipFwdTab {
             grp.upstream = null;
             return;
         }
-        grp.iface = (ipFwdIface) prf.iface;
-        if (prf.nextHop == null) {
+        grp.iface = (ipFwdIface) prf.best.iface;
+        if (prf.best.nextHop == null) {
             grp.upstream = grp.source.copyBytes();
         } else {
-            grp.upstream = prf.nextHop.copyBytes();
+            grp.upstream = prf.best.nextHop.copyBytes();
         }
         if (!lower.mdt) {
             grp.upsVrf = null;
             return;
         }
-        grp.upsVrf = prf.rouTab;
+        grp.upsVrf = prf.best.rouTab;
     }
 
     /**
@@ -1171,7 +1172,7 @@ public class ipFwdTab {
         if (ntry == null) {
             return true;
         }
-        if (ntry.nextHop == null) {
+        if (ntry.best.nextHop == null) {
             return false;
         }
         if (pck.expRout.size() > 0) {
@@ -1181,7 +1182,7 @@ public class ipFwdTab {
             }
         }
         tabHop hop = new tabHop();
-        hop.adr = ntry.nextHop.copyBytes();
+        hop.adr = ntry.best.nextHop.copyBytes();
         hop.strict = true;
         pck.expRout.add(0, hop);
         return false;

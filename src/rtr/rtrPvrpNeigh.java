@@ -19,6 +19,7 @@ import serv.servGeneric;
 import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userUpgrade;
 import util.bits;
@@ -472,8 +473,8 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             adverted.add(tabRoute.addType.always, ntry, true, true);
         }
         String a = "";
-        if (lower.labels && (ntry.labelLoc != null)) {
-            int val = ntry.labelLoc.getValue();
+        if (lower.labels && (ntry.best.labelLoc != null)) {
+            int val = ntry.best.labelLoc.getValue();
             if (iface.labelPop && (lower.fwdCore.commonLabel.getValue() == val)) {
                 val = ipMpls.labelImp;
             }
@@ -482,7 +483,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
                 a = "";
             }
         }
-        sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.metric + iface.metricOut) + " tag=" + ntry.tag + " external=" + ((ntry.rouSrc & 1) != 0) + " path= " + lower.routerID + " " + tabRouteEntry.dumpAddrList(ntry.clustList));
+        sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.best.metric + iface.metricOut) + " tag=" + ntry.best.tag + " external=" + ((ntry.best.rouSrc & 1) != 0) + " path= " + lower.routerID + " " + tabRouteAttr.dumpAddrList(ntry.best.clustList));
     }
 
 }
@@ -514,23 +515,23 @@ class rtrPvrpNeighRcvr implements Runnable {
                 continue;
             }
             if (a.equals("external")) {
-                ntry.rouSrc = s.toLowerCase().equals("true") ? 1 : 0;
+                ntry.best.rouSrc = s.toLowerCase().equals("true") ? 1 : 0;
                 continue;
             }
             if (a.equals("metric")) {
-                ntry.metric = bits.str2num(s);
+                ntry.best.metric = bits.str2num(s);
                 continue;
             }
             if (a.equals("label")) {
                 if (!lower.lower.labels) {
                     continue;
                 }
-                ntry.labelRem = new ArrayList<Integer>();
-                ntry.labelRem.add(bits.str2num(s));
+                ntry.best.labelRem = new ArrayList<Integer>();
+                ntry.best.labelRem.add(bits.str2num(s));
                 continue;
             }
             if (a.equals("tag")) {
-                ntry.tag = bits.str2num(s);
+                ntry.best.tag = bits.str2num(s);
                 continue;
             }
             if (a.equals("path")) {
@@ -541,9 +542,9 @@ class rtrPvrpNeighRcvr implements Runnable {
             return null;
         }
         if (lower.checkPrefix(lower.iface.labelIn, ntry.prefix)) {
-            ntry.labelRem = null;
+            ntry.best.labelRem = null;
         }
-        ntry.clustList = new ArrayList<addrIP>();
+        ntry.best.clustList = new ArrayList<addrIP>();
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -551,7 +552,7 @@ class rtrPvrpNeighRcvr implements Runnable {
             }
             addrIP adr = new addrIP();
             adr.fromString(a);
-            ntry.clustList.add(adr);
+            ntry.best.clustList.add(adr);
         }
         return ntry;
     }
@@ -632,21 +633,21 @@ class rtrPvrpNeighRcvr implements Runnable {
                 int cnt = tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.safiUnicast, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
                 addrIP adr = new addrIP();
                 adr.fromIPv4addr(lower.lower.routerID);
-                if (rtrBgpUtil.findAddrList(ntry.clustList, adr) >= 0) {
+                if (rtrBgpUtil.findAddrList(ntry.best.clustList, adr) >= 0) {
                     if (cnt > 0) {
                         lower.lower.notif.wakeup();
                     }
                     continue;
                 }
                 if (lower.iface.acceptMetric) {
-                    ntry.metric += lower.gotMet;
+                    ntry.best.metric += lower.gotMet;
                 } else {
-                    ntry.metric += lower.iface.metricIn;
+                    ntry.best.metric += lower.iface.metricIn;
                 }
-                ntry.nextHop = lower.peer.copyBytes();
-                ntry.distance = lower.iface.distance;
-                ntry.iface = lower.iface.iface;
-                ntry.srcRtr = lower.peer.copyBytes();
+                ntry.best.nextHop = lower.peer.copyBytes();
+                ntry.best.distance = lower.iface.distance;
+                ntry.best.iface = lower.iface.iface;
+                ntry.best.srcRtr = lower.peer.copyBytes();
                 cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, lower.learned, rtrBgpUtil.safiUnicast, ntry, true, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
                 if (cnt > 0) {
                     lower.lower.notif.wakeup();

@@ -338,10 +338,10 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
                 default:
                     continue;
             }
-            ntry.nextHop = peer.copyBytes();
-            ntry.distance = iface.distance;
-            ntry.iface = iface.iface;
-            ntry.srcRtr = peer.copyBytes();
+            ntry.best.nextHop = peer.copyBytes();
+            ntry.best.distance = iface.distance;
+            ntry.best.iface = iface.iface;
+            ntry.best.srcRtr = peer.copyBytes();
             if (debugger.rtrEigrpTraf) {
                 logger.debug("prefix " + reach + " " + ntry);
             }
@@ -483,7 +483,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
             }
             ntry = ntry.copyBytes();
             adverted.add(tabRoute.addType.always, ntry, true, true);
-            if (ntry.originator == null) {
+            if (ntry.best.originator == null) {
                 writeMetric(ntry, true);
             }
             txBuf = createEntry(ntry);
@@ -496,10 +496,10 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
     private void readExtern(tabRouteEntry<addrIP> ntry, typLenVal tlv, int ofs) {
         addrIPv4 a4 = new addrIPv4();
         a4.fromBuf(tlv.valDat, ofs);
-        ntry.aggrRtr = new addrIP();
-        ntry.aggrRtr.fromIPv4addr(a4);
-        ntry.aggrAs = bits.msbGetD(tlv.valDat, ofs + 4);
-        ntry.tag = bits.msbGetD(tlv.valDat, ofs + 8);
+        ntry.best.aggrRtr = new addrIP();
+        ntry.best.aggrRtr.fromIPv4addr(a4);
+        ntry.best.aggrAs = bits.msbGetD(tlv.valDat, ofs + 4);
+        ntry.best.tag = bits.msbGetD(tlv.valDat, ofs + 8);
     }
 
     private boolean readMetric(tabRouteEntry<addrIP> ntry, typLenVal tlv, int ofs) {
@@ -519,11 +519,11 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         if (lower.k5 != 0) {
             i = (i * lower.k5) / (lower.k4 + (tlv.valDat[ofs + 12] & 0xff));
         }
-        ntry.metric = i;
-        ntry.accIgp = dly;
-        ntry.bandwidth = bwd;
-        ntry.originator = new addrIP();
-        ntry.originator.fromBuf(tlv.valDat, ofs);
+        ntry.best.metric = i;
+        ntry.best.accIgp = dly;
+        ntry.best.bandwidth = bwd;
+        ntry.best.originator = new addrIP();
+        ntry.best.originator.fromBuf(tlv.valDat, ofs);
         return dly != -1;
     }
 
@@ -532,14 +532,14 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         if (!reach) {
             bits.msbPutD(buf, 0, -1); // delay
         } else {
-            bits.msbPutD(buf, 0, ntry.accIgp + iface.delayOut); // delay
+            bits.msbPutD(buf, 0, ntry.best.accIgp + iface.delayOut); // delay
         }
-        bits.msbPutD(buf, 4, ntry.bandwidth); // bw
+        bits.msbPutD(buf, 4, ntry.best.bandwidth); // bw
         bits.msbPutW(buf, 9, 1500); // mtu
         buf[12] = (byte) 255; // reliability
         buf[13] = (byte) 1; // load
-        ntry.originator = new addrIP();
-        ntry.originator.fromBuf(buf, 0);
+        ntry.best.originator = new addrIP();
+        ntry.best.originator.fromBuf(buf, 0);
     }
 
     private packHolder createEntry(tabRouteEntry<addrIP> ntry) {
@@ -549,11 +549,11 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         typLenVal tlv = rtrEigrp.getTlv();
         packHolder pck = new packHolder(true, true);
         boolean ipv4 = ntry.prefix.network.isIPv4();
-        if (ntry.aggrRtr != null) {
+        if (ntry.best.aggrRtr != null) {
             tlv.valTyp = 3; // external
-            pck.putAddr(0, ntry.aggrRtr.toIPv4()); // rtr
-            pck.msbPutD(4, ntry.aggrAs); // as
-            pck.msbPutD(8, ntry.tag); // tag
+            pck.putAddr(0, ntry.best.aggrRtr.toIPv4()); // rtr
+            pck.msbPutD(4, ntry.best.aggrAs); // as
+            pck.msbPutD(8, ntry.best.tag); // tag
             pck.msbPutD(12, 0); // metric
             pck.msbPutD(17, 0xb00); // type
             pck.putSkip(20);
@@ -569,8 +569,8 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
             pck.putFill(0, addrIPv6.size, 0);
             pck.putSkip(addrIPv6.size);
         }
-        pck.putAddr(0, ntry.originator);
-        pck.putSkip(ntry.originator.getSize());
+        pck.putAddr(0, ntry.best.originator);
+        pck.putSkip(ntry.best.originator.getSize());
         if (ipv4) {
             rtrBgpUtil.writePrefix(rtrBgpUtil.afiIpv4, pck, ntry);
         } else {

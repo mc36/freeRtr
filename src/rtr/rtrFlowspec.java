@@ -9,6 +9,7 @@ import ip.ipRtr;
 import java.util.ArrayList;
 import java.util.List;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userHelping;
 import util.bits;
@@ -29,7 +30,7 @@ public class rtrFlowspec extends ipRtr {
     /**
      * route type
      */
-    protected final tabRouteEntry.routeType rouTyp;
+    protected final tabRouteAttr.routeType rouTyp;
 
     /**
      * router number
@@ -57,10 +58,10 @@ public class rtrFlowspec extends ipRtr {
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.flwspc4;
+                rouTyp = tabRouteAttr.routeType.flwspc4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.flwspc6;
+                rouTyp = tabRouteAttr.routeType.flwspc6;
                 break;
             default:
                 rouTyp = null;
@@ -97,10 +98,10 @@ public class rtrFlowspec extends ipRtr {
                 continue;
             }
             ntry = ntry.copyBytes();
-            ntry.rouTyp = rouTyp;
-            ntry.protoNum = rtrNum;
+            ntry.best.rouTyp = rouTyp;
+            ntry.best.protoNum = rtrNum;
             if (distance > 0) {
-                ntry.distance = distance;
+                ntry.best.distance = distance;
             }
             bits.byteCopy(ntry.prefix.network.getBytes(), 1, buf, 0, 15);
             bits.byteCopy(ntry.prefix.broadcast.getBytes(), 0, buf, 15, 16);

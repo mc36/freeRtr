@@ -593,7 +593,7 @@ public class userTest {
 
     private <T extends addrType> void doTestRoutingGet(tabRoute<T> tab, int idx, boolean dmp, String typ) {
         for (int i = 0; i < tab.size(); i++) {
-            tab.get(i).time = i;
+            tab.get(i).best.time = i;
         }
         long beg = bits.getTime();
         long rnd = 0;
@@ -602,7 +602,7 @@ public class userTest {
                 break;
             }
             for (int i = 0; i < tab.size(); i++) {
-                tab.get(i).time = rnd;
+                tab.get(i).best.time = rnd;
                 rnd++;
             }
         }
@@ -627,9 +627,9 @@ public class userTest {
             }
             for (int i = 0; i < routingRnd; i++) {
                 if (prf == null) {
-                    tab.find(tab.get(bits.random(0, siz))).time = rnd;
+                    tab.find(tab.get(bits.random(0, siz))).best.time = rnd;
                 } else {
-                    tab.find(prf).time = rnd;
+                    tab.find(prf).best.time = rnd;
                 }
                 rnd++;
             }
@@ -644,9 +644,9 @@ public class userTest {
             }
             for (int i = 0; i < routingRnd; i++) {
                 if (adr == null) {
-                    tab.route(tab.get(bits.random(0, siz)).prefix.network).time = rnd;
+                    tab.route(tab.get(bits.random(0, siz)).prefix.network).best.time = rnd;
                 } else {
-                    tab.route(adr).time = rnd;
+                    tab.route(adr).best.time = rnd;
                 }
                 rnd++;
             }

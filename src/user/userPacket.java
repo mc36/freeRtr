@@ -52,6 +52,7 @@ import rtr.rtrBgpUtil;
 import sec.secWebsock;
 import serv.servGeneric;
 import tab.tabHop;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.cmds;
@@ -241,7 +242,7 @@ public class userPacket {
             return;
         }
         if (a.equals("mrt2self")) {
-            tabRouteEntry.routeType rt = cfgRtr.name2num(cmd.word());
+            tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
             if (rt == null) {
                 cmd.error("invalid routing protocol");
                 return;
@@ -534,7 +535,7 @@ public class userPacket {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = prf.copyBytes();
             rmp.roumap.update(rtrBgpUtil.safiUnicast, ntry, false);
-            ntry.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
+            ntry.best.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
             packHolder tmp = new packHolder(true, true);
             cmd.error("sending update");
             pck.clear();
@@ -637,7 +638,7 @@ public class userPacket {
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             ntry.prefix = prf.copyBytes();
             rmp.roumap.update(rtrBgpUtil.safiUnicast, ntry, false);
-            ntry.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
+            ntry.best.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
             packHolder tmp = new packHolder(true, true);
             for (int o = 0; o < num; o++) {
                 int i = strm.ready2rx();

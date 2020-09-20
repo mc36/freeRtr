@@ -484,10 +484,10 @@ public class ipMpls implements ifcUp {
         if (ifc.addr6 == null) {
             return true;
         }
-        ntry.segrouPrf = new addrIP();
-        ntry.segrouPrf.fromIPv6addr(ifc.addr6);
-        bits.msbPutD(ntry.segrouPrf.getBytes(), 12, lab.getValue());
-        ntry.labelLoc = new tabLabelNtry(labelImp);
+        ntry.best.segrouPrf = new addrIP();
+        ntry.best.segrouPrf.fromIPv6addr(ifc.addr6);
+        bits.msbPutD(ntry.best.segrouPrf.getBytes(), 12, lab.getValue());
+        ntry.best.labelLoc = new tabLabelNtry(labelImp);
         return false;
     }
 

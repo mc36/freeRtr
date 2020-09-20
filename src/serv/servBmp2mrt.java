@@ -18,6 +18,7 @@ import rtr.rtrBgpNeigh;
 import rtr.rtrBgpSpeak;
 import rtr.rtrBgpUtil;
 import tab.tabGen;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFilter;
 import user.userFlash;
@@ -129,7 +130,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             a2.fromString(cmd.word());
             servBmp2mrtStat stat = getStat(a1, a2, 2);
             stat.rouD = cmd.word().equals("tx");
-            tabRouteEntry.routeType rt = cfgRtr.name2num(cmd.word());
+            tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
             if (rt == null) {
                 cmd.error("invalid routing protocol");
                 return false;
@@ -530,7 +531,7 @@ class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
 
     public int change;
 
-    public tabRouteEntry.routeType rouT;
+    public tabRouteAttr.routeType rouT;
 
     public int rouI;
 

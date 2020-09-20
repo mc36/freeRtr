@@ -7,6 +7,7 @@ import java.util.Comparator;
 import pack.packHolder;
 import prt.prtGenConn;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.debugger;
@@ -108,26 +109,26 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
             return false;
         }
         tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteEntry.distanLim);
+        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteAttr.distanLim);
         for (; pck.dataSize() >= rtrRip4.sizeNtry; pck.getSkip(rtrRip4.sizeNtry)) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.rouTyp = tabRouteEntry.routeType.rip4;
-            ntry.srcRtr = conn.peerAddr.copyBytes();
-            ntry.iface = iface.iface;
-            ntry.distance = iface.distance;
-            ntry.nextHop = conn.peerAddr.copyBytes();
+            ntry.best.rouTyp = tabRouteAttr.routeType.rip4;
+            ntry.best.srcRtr = conn.peerAddr.copyBytes();
+            ntry.best.iface = iface.iface;
+            ntry.best.distance = iface.distance;
+            ntry.best.nextHop = conn.peerAddr.copyBytes();
             if (pck.msbGetW(0) != rtrRip4.afiID) {
                 logger.info("bad afi id " + conn);
                 continue;
             }
-            ntry.tag = pck.msbGetW(2); // route tag
-            ntry.metric = pck.msbGetD(16) + iface.metricIn; // metric
-            if (ntry.metric < rtrRip4.metricMin) {
-                ntry.metric = rtrRip4.metricMin;
+            ntry.best.tag = pck.msbGetW(2); // route tag
+            ntry.best.metric = pck.msbGetD(16) + iface.metricIn; // metric
+            if (ntry.best.metric < rtrRip4.metricMin) {
+                ntry.best.metric = rtrRip4.metricMin;
             }
-            if (ntry.metric >= rtrRip4.metricMax) {
-                ntry.distance = tabRouteEntry.distanMax;
-                ntry.metric = rtrRip4.metricMax;
+            if (ntry.best.metric >= rtrRip4.metricMax) {
+                ntry.best.distance = tabRouteAttr.distanMax;
+                ntry.best.metric = rtrRip4.metricMax;
             }
             addrIPv4 net4 = new addrIPv4();
             addrIPv4 msk4 = new addrIPv4();
@@ -148,16 +149,16 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
             if (iface.iface.lower.checkMyAddress(hopI)) {
                 hopI = conn.peerAddr.copyBytes();
             }
-            ntry.nextHop = hopI;
+            ntry.best.nextHop = hopI;
             if (debugger.rtrRip4traf) {
                 logger.debug("rxnet " + ntry);
             }
-            if (ntry.metric >= rtrRip4.metricMax) {
+            if (ntry.best.metric >= rtrRip4.metricMax) {
                 tabRouteEntry<addrIP> old = learned.find(ntry);
                 if (old == null) {
                     continue;
                 }
-                if (old.metric >= rtrRip4.metricMax) {
+                if (old.best.metric >= rtrRip4.metricMax) {
                     continue;
                 }
             }
@@ -181,18 +182,18 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
             if (ntry == null) {
                 continue;
             }
-            if ((curTim - ntry.time) < iface.holdTimer) {
+            if ((curTim - ntry.best.time) < iface.holdTimer) {
                 continue;
             }
-            ntry.metric = rtrRip4.metricMax;
-            if (ntry.distance < tabRouteEntry.distanMax) {
+            ntry.best.metric = rtrRip4.metricMax;
+            if (ntry.best.distance < tabRouteAttr.distanMax) {
                 if (debugger.rtrRip4evnt) {
                     logger.debug("netdown " + ntry);
                 }
-                ntry.distance = tabRouteEntry.distanMax;
+                ntry.best.distance = tabRouteAttr.distanMax;
                 done++;
             }
-            if ((curTim - ntry.time) < iface.flushTimer) {
+            if ((curTim - ntry.best.time) < iface.flushTimer) {
                 continue;
             }
             if (debugger.rtrRip4evnt) {

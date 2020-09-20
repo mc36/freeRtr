@@ -143,12 +143,12 @@ public class rtrIsisSr {
             return;
         }
         if ((tlv.valDat[0] & 0x20) == 0) { // no-php
-            prf.rouSrc |= 16;
+            prf.best.rouSrc |= 16;
         }
         if ((tlv.valDat[0] & 0x10) != 0) { // expnull
-            prf.rouSrc |= 16;
+            prf.best.rouSrc |= 16;
         }
-        prf.segrouIdx = bits.msbGetD(tlv.valDat, 2);
+        prf.best.segrouIdx = bits.msbGetD(tlv.valDat, 2);
     }
 
     /**

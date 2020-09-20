@@ -53,7 +53,7 @@ public class tabRoute<T extends addrType> {
     /**
      * default route type
      */
-    public tabRouteEntry.routeType defRouTyp = null;
+    public tabRouteAttr.routeType defRouTyp = null;
 
     /**
      * list of prefixes
@@ -189,7 +189,7 @@ public class tabRoute<T extends addrType> {
             prefix = prefix.copyBytes();
         }
         if (newTime) {
-            prefix.time = bits.getTime();
+            prefix.best.time = bits.getTime();
         }
         boolean added = prefixes.put(prefix) == null;
         if (debugger.tabRouteEvnt) {
@@ -216,7 +216,7 @@ public class tabRoute<T extends addrType> {
         tabRouteEntry<T> prf = new tabRouteEntry<T>();
         prf.prefix = prefix.copyBytes();
         if (nextHop != null) {
-            prf.nextHop = (T) nextHop.copyBytes();
+            prf.best.nextHop = (T) nextHop.copyBytes();
         }
         updateBase(prf);
         add(mod, prf, false, true);
@@ -229,10 +229,10 @@ public class tabRoute<T extends addrType> {
      * @param prf table entry to update
      */
     public void updateBase(tabRouteEntry<T> prf) {
-        prf.distance = defDist;
-        prf.metric = defMetr;
-        prf.protoNum = defProto;
-        prf.rouTyp = defRouTyp;
+        prf.best.distance = defDist;
+        prf.best.metric = defMetr;
+        prf.best.protoNum = defProto;
+        prf.best.rouTyp = defRouTyp;
     }
 
     /**
@@ -325,7 +325,7 @@ public class tabRoute<T extends addrType> {
             if (prf == null) {
                 continue;
             }
-            if (prf.distance < distan) {
+            if (prf.best.distance < distan) {
                 continue;
             }
             if (debugger.tabRouteEvnt) {
@@ -353,7 +353,7 @@ public class tabRoute<T extends addrType> {
             if (prf == null) {
                 continue;
             }
-            if (prf.metric < metric) {
+            if (prf.best.metric < metric) {
                 continue;
             }
             if (debugger.tabRouteEvnt) {
@@ -381,7 +381,7 @@ public class tabRoute<T extends addrType> {
             if (prf == null) {
                 continue;
             }
-            if (prf.protoNum != proto) {
+            if (prf.best.protoNum != proto) {
                 continue;
             }
             if (debugger.tabRouteEvnt) {
@@ -409,7 +409,7 @@ public class tabRoute<T extends addrType> {
             if (prf == null) {
                 continue;
             }
-            if (prf.iface != iface) {
+            if (prf.best.iface != iface) {
                 continue;
             }
             if (debugger.tabRouteEvnt) {
@@ -442,7 +442,7 @@ public class tabRoute<T extends addrType> {
             if (prf.differs(old)) {
                 continue;
             }
-            prf.time = old.time;
+            prf.best.time = old.best.time;
         }
     }
 
@@ -452,14 +452,14 @@ public class tabRoute<T extends addrType> {
      * @param typ protocol type
      * @param num protocol number
      */
-    public void setProto(tabRouteEntry.routeType typ, int num) {
+    public void setProto(tabRouteAttr.routeType typ, int num) {
         for (int i = 0; i < prefixes.size(); i++) {
             tabRouteEntry<T> prf = prefixes.get(i);
             if (prf == null) {
                 continue;
             }
-            prf.rouTyp = typ;
-            prf.protoNum = num;
+            prf.best.rouTyp = typ;
+            prf.best.protoNum = num;
         }
     }
 
@@ -481,25 +481,25 @@ public class tabRoute<T extends addrType> {
             if (imp == null) {
                 continue;
             }
-            if (imp.distance >= distan) {
+            if (imp.best.distance >= distan) {
                 continue;
             }
             if (copy) {
                 imp = imp.copyBytes();
             }
             if (nexthops != null) {
-                if (imp.nextHop == null) {
+                if (imp.best.nextHop == null) {
                     continue;
                 }
-                tabRouteEntry<T> nh = nexthops.route(imp.nextHop);
+                tabRouteEntry<T> nh = nexthops.route(imp.best.nextHop);
                 if (nh == null) {
                     continue;
                 }
-                if (nh.nextHop != null) {
-                    imp.oldHop = imp.nextHop;
-                    imp.nextHop = (T) nh.nextHop.copyBytes();
+                if (nh.best.nextHop != null) {
+                    imp.best.oldHop = imp.best.nextHop;
+                    imp.best.nextHop = (T) nh.best.nextHop.copyBytes();
                 }
-                imp.iface = nh.iface;
+                imp.best.iface = nh.best.iface;
             }
             if (add(mod, imp, false, false)) {
                 cnt++;

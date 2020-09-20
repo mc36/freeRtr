@@ -12,6 +12,7 @@ import java.util.List;
 import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userHelping;
 import util.bits;
@@ -33,7 +34,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
     /**
      * route type
      */
-    public final tabRouteEntry.routeType rouTyp;
+    public final tabRouteAttr.routeType rouTyp;
 
     /**
      * router number
@@ -69,11 +70,11 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.blackhole4;
+                rouTyp = tabRouteAttr.routeType.blackhole4;
                 proto = 4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.blackhole6;
+                rouTyp = tabRouteAttr.routeType.blackhole6;
                 proto = 6;
                 break;
             default:
@@ -104,7 +105,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      */
     public synchronized void routerCreateComputed() {
         tabRoute<addrIP> res = new tabRoute<addrIP>("computed");
-        res.mergeFrom(tabRoute.addType.better, entries, null, true, tabRouteEntry.distanLim);
+        res.mergeFrom(tabRoute.addType.better, entries, null, true, tabRouteAttr.distanLim);
         routerDoAggregates(rtrBgpUtil.safiUnicast, res, null, fwdCore.commonLabel, 0, null, 0);
         res.preserveTime(routerComputedU);
         routerComputedU = res;
@@ -233,7 +234,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.time > tim) {
+            if (ntry.best.time > tim) {
                 continue;
             }
             entries.del(ntry);
@@ -278,7 +279,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         }
         tabRouteEntry<addrIP> ntry = entries.route(adr);
         if (ntry != null) {
-            ntry.time = bits.getTime();
+            ntry.best.time = bits.getTime();
             return true;
         }
         ntry = fwdCore.actualU.route(adr);
@@ -302,10 +303,10 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = prf;
-        ntry.time = bits.getTime();
-        ntry.rouTyp = rouTyp;
-        ntry.protoNum = rtrNum;
-        ntry.distance = distance;
+        ntry.best.time = bits.getTime();
+        ntry.best.rouTyp = rouTyp;
+        ntry.best.protoNum = rtrNum;
+        ntry.best.distance = distance;
         entries.add(tabRoute.addType.always, ntry, false, false);
         routerCreateComputed();
     }

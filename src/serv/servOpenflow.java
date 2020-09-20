@@ -1206,7 +1206,7 @@ class servOpenflowTx implements Runnable {
                 continue;
             }
             servOpenflowFlw ntry = new servOpenflowFlw();
-            if (rou.iface == null) {
+            if (rou.best.iface == null) {
                 createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
                 if (ipv4) {
                     addTable(n, tabIpv4, ntry);
@@ -1215,7 +1215,7 @@ class servOpenflowTx implements Runnable {
                 }
                 continue;
             }
-            servOpenflowIfc2 ifc = new servOpenflowIfc2((ipFwdIface) rou.iface, null, null);
+            servOpenflowIfc2 ifc = new servOpenflowIfc2((ipFwdIface) rou.best.iface, null, null);
             ifc = ifcs.find(ifc);
             if (ifc == null) {
                 createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
@@ -1226,7 +1226,7 @@ class servOpenflowTx implements Runnable {
                 }
                 continue;
             }
-            if (rou.nextHop == null) {
+            if (rou.best.nextHop == null) {
                 createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
                 if (ipv4) {
                     addTable(n, tabIpv4, ntry);
@@ -1235,7 +1235,7 @@ class servOpenflowTx implements Runnable {
                 }
                 continue;
             }
-            addrMac mac = (addrMac) ifc.ipi.getL2info(rou.nextHop);
+            addrMac mac = (addrMac) ifc.ipi.getL2info(rou.best.nextHop);
             if (mac == null) {
                 createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
                 if (ipv4) {
@@ -1263,7 +1263,7 @@ class servOpenflowTx implements Runnable {
             pckB.clear();
             pckO.createMatchMac(pckB, false, mac, null);
             tlvs.add(pckO.getActionSetField(pckB));
-            int o = getLabel(rou.labelRem);
+            int o = getLabel(rou.best.labelRem);
             if (o >= 0) {
                 tlvs.add(pckO.getActionPush(packOpenflow.actionMplsPush, ipMpls.typeU));
                 pckB.clear();

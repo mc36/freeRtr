@@ -132,11 +132,11 @@ public class rtrRsvpIface implements ipPrt {
             if (rt == null) {
                 return 0;
             }
-            ntry.trgIfc = (ipFwdIface) rt.iface;
+            ntry.trgIfc = (ipFwdIface) rt.best.iface;
             if (ntry.trgIfc == null) {
                 return 0;
             }
-            switch (rt.rouTyp) {
+            switch (rt.best.rouTyp) {
                 case local:
                     pck.expRout.remove(0);
                     break;
@@ -153,7 +153,7 @@ public class rtrRsvpIface implements ipPrt {
                     ntry.trgHop.setAddr(hp.adr);
                     return 1;
                 default:
-                    ntry.trgHop.setAddr(rt.nextHop);
+                    ntry.trgHop.setAddr(rt.best.nextHop);
                     return 1;
             }
         }

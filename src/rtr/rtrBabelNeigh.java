@@ -9,6 +9,7 @@ import java.util.Comparator;
 import pack.packHolder;
 import prt.prtGenConn;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.debugger;
@@ -117,7 +118,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
         typLenVal tlv = rtrBabel.getTlv();
         addrIP rtrid = new addrIP();
         tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteEntry.distanLim);
+        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteAttr.distanLim);
         long tim = bits.getTime();
         for (;;) {
             if (tlv.getBytes(pck)) {
@@ -137,15 +138,15 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
                     break;
                 case rtrBabel.tlvUpdate:
                     tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-                    ntry.srcRtr = conn.peerAddr.copyBytes();
-                    ntry.iface = iface.iface;
-                    ntry.distance = iface.distance;
-                    ntry.nextHop = conn.peerAddr.copyBytes();
-                    ntry.aggrRtr = rtrid.copyBytes();
-                    ntry.time = tim;
-                    ntry.accIgp = bits.msbGetW(tlv.valDat, 4) * 22; // interval
-                    ntry.aggrAs = bits.msbGetW(tlv.valDat, 6); // seqno
-                    ntry.metric = iface.metricIn + bits.msbGetW(tlv.valDat, 8); // metric
+                    ntry.best.srcRtr = conn.peerAddr.copyBytes();
+                    ntry.best.iface = iface.iface;
+                    ntry.best.distance = iface.distance;
+                    ntry.best.nextHop = conn.peerAddr.copyBytes();
+                    ntry.best.aggrRtr = rtrid.copyBytes();
+                    ntry.best.time = tim;
+                    ntry.best.accIgp = bits.msbGetW(tlv.valDat, 4) * 22; // interval
+                    ntry.best.aggrAs = bits.msbGetW(tlv.valDat, 6); // seqno
+                    ntry.best.metric = iface.metricIn + bits.msbGetW(tlv.valDat, 8); // metric
                     ntry.prefix = getPrefix(tlv, 10, bits.getByte(tlv.valDat, 0), bits.getByte(tlv.valDat, 2));
                     if (ntry.prefix == null) {
                         break;
@@ -153,7 +154,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
                     if (debugger.rtrBabelTraf) {
                         logger.debug("rxnet " + ntry);
                     }
-                    if (ntry.metric >= 0xffff) {
+                    if (ntry.best.metric >= 0xffff) {
                         tabRoute.delUpdatedEntry(learned, rtrBgpUtil.safiUnicast, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     } else {
                         tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
@@ -203,7 +204,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
             if (ntry == null) {
                 continue;
             }
-            if ((curTim - ntry.time) < ntry.accIgp) {
+            if ((curTim - ntry.best.time) < ntry.best.accIgp) {
                 continue;
             }
             if (debugger.rtrBabelEvnt) {

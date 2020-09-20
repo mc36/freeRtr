@@ -22,6 +22,7 @@ import ip.ipMpls;
 import java.util.List;
 import tab.tabLabel;
 import tab.tabLabelBier;
+import tab.tabRouteAttr;
 import tab.tabRtrplcN;
 import util.state;
 import util.syncInt;
@@ -469,7 +470,7 @@ public class rtrIsisLevel implements Runnable {
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = lower.getDefaultRoute();
-            ntry.origin = 1;
+            ntry.best.origin = 1;
             rs.add(tabRoute.addType.better, ntry, false, false);
         }
         for (int i = 0; i < lower.ifaces.size(); i++) {
@@ -488,16 +489,16 @@ public class rtrIsisLevel implements Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = ifc.iface.network.copyBytes();
-            ntry.distance = tabRouteEntry.distanIfc;
-            ntry.metric = ifc.metric;
-            ntry.segrouIdx = ifc.srIndex;
+            ntry.best.distance = tabRouteAttr.distanIfc;
+            ntry.best.metric = ifc.metric;
+            ntry.best.segrouIdx = ifc.srIndex;
             if (ifc.srNode) {
-                ntry.rouSrc |= 8;
+                ntry.best.rouSrc |= 8;
             }
             if (ifc.srPop) {
-                ntry.rouSrc |= 16;
+                ntry.best.rouSrc |= 16;
             }
-            ntry.bierIdx = ifc.brIndex;
+            ntry.best.bierIdx = ifc.brIndex;
             oa.add(tabRoute.addType.better, ntry, false, false);
             if ((ifc.circuitLevel & level) == 0) {
                 continue;
@@ -510,10 +511,10 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             ntry = ntry.copyBytes();
-            ntry.distance = tabRouteEntry.distanIfc + 1;
-            ntry.rouSrc = 1;
-            ntry.segrouIdx = 0;
-            ntry.bierIdx = 0;
+            ntry.best.distance = tabRouteAttr.distanIfc + 1;
+            ntry.best.rouSrc = 1;
+            ntry.best.segrouIdx = 0;
+            ntry.best.bierIdx = 0;
             rs.add(tabRoute.addType.better, ntry, false, false);
         }
         if (interLevels) {
@@ -524,20 +525,20 @@ public class rtrIsisLevel implements Runnable {
                     continue;
                 }
                 ntry = ntry.copyBytes();
-                if ((ntry.rouSrc & 4) != 0) {
+                if ((ntry.best.rouSrc & 4) != 0) {
                     continue;
                 }
                 if (level == 2) {
-                    if ((ntry.rouSrc & 2) != 0) {
+                    if ((ntry.best.rouSrc & 2) != 0) {
                         continue;
                     }
                 } else {
-                    ntry.rouSrc |= 2;
+                    ntry.best.rouSrc |= 2;
                 }
                 if (oa.find(ntry.prefix) != null) {
                     continue;
                 }
-                ntry.rouSrc &= -1 - 8;
+                ntry.best.rouSrc &= -1 - 8;
                 rs.add(tabRoute.addType.better, ntry, false, false);
             }
         }
@@ -549,16 +550,16 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             byte[] subs = new byte[0];
-            if (ntry.tag != 0) {
-                subs = bits.byteConcat(subs, lower.putAddrTag(ntry.tag));
+            if (ntry.best.tag != 0) {
+                subs = bits.byteConcat(subs, lower.putAddrTag(ntry.best.tag));
             }
-            if (segrouEna && (ntry.segrouIdx > 0)) {
-                subs = bits.byteConcat(subs, rtrIsisSr.putPref(ntry.segrouIdx, ((ntry.rouSrc & 16) != 0), (ntry.rouSrc & 3) != 0, (ntry.rouSrc & 8) != 0));
+            if (segrouEna && (ntry.best.segrouIdx > 0)) {
+                subs = bits.byteConcat(subs, rtrIsisSr.putPref(ntry.best.segrouIdx, ((ntry.best.rouSrc & 16) != 0), (ntry.best.rouSrc & 3) != 0, (ntry.best.rouSrc & 8) != 0));
             }
-            if (bierEna && (ntry.bierIdx > 0)) {
-                subs = bits.byteConcat(subs, rtrIsisBr.putPref(lower, ntry.bierIdx));
+            if (bierEna && (ntry.best.bierIdx > 0)) {
+                subs = bits.byteConcat(subs, rtrIsisBr.putPref(lower, ntry.best.bierIdx));
             }
-            advertiseTlv(pck, lower.putAddrReach(ntry.prefix, ntry.rouSrc, ntry.metric, subs));
+            advertiseTlv(pck, lower.putAddrReach(ntry.prefix, ntry.best.rouSrc, ntry.best.metric, subs));
         }
     }
 
@@ -672,10 +673,10 @@ public class rtrIsisLevel implements Runnable {
                     if (pref == null) {
                         continue;
                     }
-                    if (pref.bierBeg == 0) {
+                    if (pref.best.bierBeg == 0) {
                         continue;
                     }
-                    spf.addBierB(src, pref.bierBeg);
+                    spf.addBierB(src, pref.best.bierBeg);
                 }
             }
         }
@@ -733,12 +734,12 @@ public class rtrIsisLevel implements Runnable {
             if ((lsp.flags & rtrIsisLsp.flgAttach) != 0) {
                 tabRouteEntry<addrIP> pref = new tabRouteEntry<addrIP>();
                 pref.prefix = lower.getDefaultRoute();
-                pref.metric = met;
-                pref.distance = lower.distantInt;
-                pref.rouSrc = 6;
-                pref.nextHop = hop.copyBytes();
-                pref.srcRtr = lsp.srcID.copyBytes();
-                pref.iface = iface;
+                pref.best.metric = met;
+                pref.best.distance = lower.distantInt;
+                pref.best.rouSrc = 6;
+                pref.best.nextHop = hop.copyBytes();
+                pref.best.srcRtr = lsp.srcID.copyBytes();
+                pref.best.iface = iface;
                 if (needAttach && ((lsp.flags & rtrIsisLsp.flgOver) == 0)) {
                     rs.add(tabRoute.addType.better, pref, false, true);
                 }
@@ -756,29 +757,29 @@ public class rtrIsisLevel implements Runnable {
                     if (pref == null) {
                         continue;
                     }
-                    pref.metric += met;
-                    if ((pref.rouSrc & 1) == 0) {
-                        pref.distance = lower.distantInt;
+                    pref.best.metric += met;
+                    if ((pref.best.rouSrc & 1) == 0) {
+                        pref.best.distance = lower.distantInt;
                     } else {
-                        pref.distance = lower.distantExt;
+                        pref.best.distance = lower.distantExt;
                     }
-                    pref.nextHop = hop.copyBytes();
-                    pref.srcRtr = lsp.srcID.copyBytes();
-                    pref.iface = iface;
-                    spf.addSegRouI(src, pref.segrouIdx);
-                    spf.addBierI(src, pref.bierIdx, (pref.rouSrc & 3) == 0);
-                    pref.segrouBeg = srb;
-                    pref.segrouOld = sro;
-                    pref.bierBeg = brb;
-                    pref.bierOld = bro;
-                    if ((segrouUsd != null) && (pref.segrouIdx > 0) && (pref.segrouIdx < lower.segrouMax) && (srb > 0)) {
-                        List<Integer> lab = tabLabel.int2labels(srb + pref.segrouIdx);
-                        if (((pref.rouSrc & 16) != 0) && (hops <= 1)) {
+                    pref.best.nextHop = hop.copyBytes();
+                    pref.best.srcRtr = lsp.srcID.copyBytes();
+                    pref.best.iface = iface;
+                    spf.addSegRouI(src, pref.best.segrouIdx);
+                    spf.addBierI(src, pref.best.bierIdx, (pref.best.rouSrc & 3) == 0);
+                    pref.best.segrouBeg = srb;
+                    pref.best.segrouOld = sro;
+                    pref.best.bierBeg = brb;
+                    pref.best.bierOld = bro;
+                    if ((segrouUsd != null) && (pref.best.segrouIdx > 0) && (pref.best.segrouIdx < lower.segrouMax) && (srb > 0)) {
+                        List<Integer> lab = tabLabel.int2labels(srb + pref.best.segrouIdx);
+                        if (((pref.best.rouSrc & 16) != 0) && (hops <= 1)) {
                             lab = tabLabel.int2labels(ipMpls.labelImp);
                         }
-                        lower.segrouLab[pref.segrouIdx].setFwdMpls(7, lower.fwdCore, iface, hop, lab);
-                        segrouUsd[pref.segrouIdx] = true;
-                        pref.labelRem = lab;
+                        lower.segrouLab[pref.best.segrouIdx].setFwdMpls(7, lower.fwdCore, iface, hop, lab);
+                        segrouUsd[pref.best.segrouIdx] = true;
+                        pref.best.labelRem = lab;
                     }
                     rs.add(tabRoute.addType.better, pref, false, true);
                 }

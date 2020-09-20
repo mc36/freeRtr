@@ -18,6 +18,7 @@ import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelNtry;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFlash;
 import user.userFormat;
@@ -136,7 +137,7 @@ public class rtrOspf4 extends ipRtr {
         distantInt = 110;
         distantSum = 110;
         routerCreateComputed();
-        fwdCore.routerAdd(this, tabRouteEntry.routeType.ospf4, id);
+        fwdCore.routerAdd(this, tabRouteAttr.routeType.ospf4, id);
     }
 
     /**
@@ -161,7 +162,7 @@ public class rtrOspf4 extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            tab.mergeFrom(tabRoute.addType.better, ntry.routes, null, true, tabRouteEntry.distanLim);
+            tab.mergeFrom(tabRoute.addType.better, ntry.routes, null, true, tabRouteAttr.distanLim);
         }
         if (segrouLab != null) {
             for (int o = 0; o < segrouLab.length; o++) {

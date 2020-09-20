@@ -14,6 +14,7 @@ import prt.prtServP;
 import prt.prtUdp;
 import tab.tabGen;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFormat;
 import user.userHelping;
@@ -99,13 +100,13 @@ public class rtrOlsr extends ipRtr implements prtServP {
         }
         fwdCore = forwarder;
         udpCore = protocol;
-        tabRouteEntry.routeType rouTyp = null;
+        tabRouteAttr.routeType rouTyp = null;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.olsr4;
+                rouTyp = tabRouteAttr.routeType.olsr4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.olsr6;
+                rouTyp = tabRouteAttr.routeType.olsr6;
                 break;
             default:
                 break;
@@ -419,9 +420,9 @@ public class rtrOlsr extends ipRtr implements prtServP {
                 continue;
             }
             ntry = tab.add(tabRoute.addType.better, ifc.iface.network, null);
-            ntry.rouTyp = tabRouteEntry.routeType.conn;
-            ntry.iface = ifc.iface;
-            ntry.distance = tabRouteEntry.distanIfc;
+            ntry.best.rouTyp = tabRouteAttr.routeType.conn;
+            ntry.best.iface = ifc.iface;
+            ntry.best.distance = tabRouteAttr.distanIfc;
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrOlsrNeigh nei = neighs.get(i);
@@ -431,7 +432,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
             if (nei.iface.iface.lower.getState() != state.states.up) {
                 continue;
             }
-            tab.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteEntry.distanLim);
+            tab.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteAttr.distanLim);
         }
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab, null, fwdCore.commonLabel, 0, null, 0);
         tab.setProto(routerProtoTyp, routerProcNum);

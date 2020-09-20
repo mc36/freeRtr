@@ -23,6 +23,7 @@ import cfg.cfgAll;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
 import cfg.cfgRouplc;
+import tab.tabRouteAttr;
 import tab.tabRtrplcN;
 
 /**
@@ -520,24 +521,24 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
 
     private void createRIPupdate(tabRouteEntry<addrIP> ntry, packHolder pck) {
         pck.msbPutW(0, rtrRip4.afiID); // address family id
-        pck.msbPutW(2, ntry.tag); // route tag
+        pck.msbPutW(2, ntry.best.tag); // route tag
         pck.putAddr(4, ntry.prefix.network.toIPv4()); // network
         pck.putAddr(8, ntry.prefix.mask.toIPv4()); // subnet mask
         addrIPv4 hop;
-        if (ntry.nextHop == null) {
+        if (ntry.best.nextHop == null) {
             hop = new addrIPv4();
         } else {
-            hop = ntry.nextHop.toIPv4();
+            hop = ntry.best.nextHop.toIPv4();
         }
         pck.putAddr(12, hop); // next hop
-        int i = ntry.metric + metricOut;
+        int i = ntry.best.metric + metricOut;
         if (i > rtrRip4.metricMax) {
             i = rtrRip4.metricMax;
         }
         if (i < rtrRip4.metricMin) {
             i = rtrRip4.metricMin;
         }
-        ntry.metric = i;
+        ntry.best.metric = i;
         pck.msbPutD(16, i); // metric
         pck.putSkip(rtrRip4.sizeNtry);
         if (debugger.rtrRip4traf) {
@@ -556,21 +557,21 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
         if (defOrigin) {
             tab1.add(tabRoute.addType.better, addrPrefix.ip4toIP(addrPrefix.defaultRoute4()), new addrIP());
         }
-        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, null, true, tabRouteEntry.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, null, true, tabRouteAttr.distanLim);
         if (splitHorizon) {
             if (poisonReverse) {
                 for (int i = 0; i < tab1.size(); i++) {
                     tabRouteEntry<addrIP> ntry = tab1.get(i);
-                    if (ntry.iface != conn.iface) {
+                    if (ntry.best.iface != conn.iface) {
                         continue;
                     }
-                    ntry.metric = rtrRip4.metricMax;
+                    ntry.best.metric = rtrRip4.metricMax;
                 }
             } else {
                 tab1.delIface(conn.iface);
             }
         }
-        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true, tabRouteEntry.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true, tabRouteAttr.distanLim);
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("copy");
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, tab2, tab1, true, roumapOut, roupolOut, prflstOut);
         if (debugger.rtrRip4traf) {
@@ -583,8 +584,8 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.iface != conn.iface) {
-                ntry.nextHop = null;
+            if (ntry.best.iface != conn.iface) {
+                ntry.best.nextHop = null;
             }
             createRIPupdate(ntry, pck);
             entries++;

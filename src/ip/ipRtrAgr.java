@@ -11,6 +11,7 @@ import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabRtrplcN;
@@ -96,7 +97,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
      * @param rtrT router type
      * @param rtrN router number
      */
-    public void filter(int afi, tabRoute<addrIP> tab, addrIP hop, tabLabelNtry lab, int src, addrIPv4 agrR, int agrA, tabRouteEntry.routeType rtrT, int rtrN) {
+    public void filter(int afi, tabRoute<addrIP> tab, addrIP hop, tabLabelNtry lab, int src, addrIPv4 agrR, int agrA, tabRouteAttr.routeType rtrT, int rtrN) {
         int cnt = 0;
         List<Integer> pathSet = new ArrayList<Integer>();
         List<Integer> confSet = new ArrayList<Integer>();
@@ -111,10 +112,10 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
                 }
             }
             if (aspath) {
-                addAll(pathSet, ntry.pathSet);
-                addAll(pathSet, ntry.pathSeq);
-                addAll(confSet, ntry.confSet);
-                addAll(confSet, ntry.confSeq);
+                addAll(pathSet, ntry.best.pathSet);
+                addAll(pathSet, ntry.best.pathSeq);
+                addAll(confSet, ntry.best.confSet);
+                addAll(confSet, ntry.best.confSeq);
             }
             if (summary) {
                 tab.del(ntry);
@@ -126,24 +127,24 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = prefix.copyBytes();
-        ntry.aggrAs = agrA;
+        ntry.best.aggrAs = agrA;
         if (agrR != null) {
             addrIP adr = new addrIP();
             adr.fromIPv4addr(agrR);
-            ntry.aggrRtr = adr;
+            ntry.best.aggrRtr = adr;
         }
         if (hop != null) {
-            ntry.nextHop = hop.copyBytes();
+            ntry.best.nextHop = hop.copyBytes();
         }
-        ntry.pathSet = pathSet;
-        ntry.confSet = confSet;
-        ntry.atomicAggr = !aspath;
-        ntry.labelLoc = lab;
-        ntry.rouSrc = src;
-        ntry.rouTyp = rtrT;
-        ntry.protoNum = rtrN;
+        ntry.best.pathSet = pathSet;
+        ntry.best.confSet = confSet;
+        ntry.best.atomicAggr = !aspath;
+        ntry.best.labelLoc = lab;
+        ntry.best.rouSrc = src;
+        ntry.best.rouTyp = rtrT;
+        ntry.best.protoNum = rtrN;
         if (metric != null) {
-            ntry.metric = metric.update(ntry.metric);
+            ntry.best.metric = metric.update(ntry.best.metric);
         }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, true, roumap, rouplc, null);
     }

@@ -7,6 +7,7 @@ import ip.ipFwd;
 import ip.ipRtr;
 import java.util.List;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userHelping;
 import util.bits;
@@ -27,7 +28,7 @@ public class rtrUni2multi extends ipRtr {
     /**
      * route type
      */
-    protected final tabRouteEntry.routeType rouTyp;
+    protected final tabRouteAttr.routeType rouTyp;
 
     /**
      * router number
@@ -50,10 +51,10 @@ public class rtrUni2multi extends ipRtr {
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.uni2multi4;
+                rouTyp = tabRouteAttr.routeType.uni2multi4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.uni2multi6;
+                rouTyp = tabRouteAttr.routeType.uni2multi6;
                 break;
             default:
                 rouTyp = null;
@@ -87,10 +88,10 @@ public class rtrUni2multi extends ipRtr {
                 continue;
             }
             ntry = ntry.copyBytes();
-            ntry.rouTyp = rouTyp;
-            ntry.protoNum = rtrNum;
+            ntry.best.rouTyp = rouTyp;
+            ntry.best.protoNum = rtrNum;
             if (distance > 0) {
-                ntry.distance = distance;
+                ntry.best.distance = distance;
             }
             res.add(tabRoute.addType.better, ntry, false, false);
         }

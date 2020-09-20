@@ -9,7 +9,7 @@ import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
-import tab.tabRouteEntry;
+import tab.tabRouteAttr;
 import user.userHelping;
 import util.cmds;
 
@@ -33,7 +33,7 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     /**
      * protocol type of this routing protocol
      */
-    protected tabRouteEntry.routeType routerProtoTyp;
+    protected tabRouteAttr.routeType routerProtoTyp;
 
     /**
      * vpn instance

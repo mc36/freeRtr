@@ -85,6 +85,7 @@ import serv.servUpnpHub;
 import serv.servVoice;
 import tab.tabGen;
 import tab.tabNshNtry;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFilter;
 import user.userFormat;
@@ -2359,7 +2360,7 @@ public class cfgAll {
      * @param create create new on this number if not found
      * @return descriptor, null if not found
      */
-    public static cfgRtr rtrFind(tabRouteEntry.routeType typ, int num,
+    public static cfgRtr rtrFind(tabRouteAttr.routeType typ, int num,
             boolean create) {
         if (num < 1) {
             return null;
@@ -2382,7 +2383,7 @@ public class cfgAll {
      * @param num number of this
      * @return descriptor, null if not found
      */
-    public static cfgRtr rtrDel(tabRouteEntry.routeType typ, int num) {
+    public static cfgRtr rtrDel(tabRouteAttr.routeType typ, int num) {
         cfgRtr ntry = new cfgRtr(typ, num);
         ntry = routers.del(ntry);
         if (ntry == null) {

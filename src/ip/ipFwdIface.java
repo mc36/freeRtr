@@ -27,8 +27,8 @@ import tab.tabGen;
 import tab.tabListing;
 import tab.tabPbrN;
 import tab.tabPrfxlstN;
+import tab.tabRouteAttr;
 import tab.tabRouteIface;
-import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabSession;
 import user.userHelping;
@@ -266,7 +266,7 @@ public class ipFwdIface extends tabRouteIface {
     /**
      * autoroute type
      */
-    public tabRouteEntry.routeType autRouTyp;
+    public tabRouteAttr.routeType autRouTyp;
 
     /**
      * autoroute proto

@@ -58,6 +58,7 @@ import prt.prtGen;
 import prt.prtRedun;
 import rtr.rtrBgpParam;
 import serv.servGeneric;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.cmds;
@@ -2265,7 +2266,7 @@ public class userExec {
                 continue;
             }
             if (a.equals("/router")) {
-                tabRouteEntry.routeType typ = cfgRtr.name2num(cmd.word());
+                tabRouteAttr.routeType typ = cfgRtr.name2num(cmd.word());
                 if (typ == null) {
                     continue;
                 }
@@ -2331,7 +2332,7 @@ public class userExec {
             if ((rtr != null) && (trc.errRtr != null)) {
                 tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(trc.errRtr);
                 if (ntry != null) {
-                    a += ", path=" + ntry.asPathStr();
+                    a += ", path=" + ntry.best.asPathStr();
                 }
             }
             pipe.linePut(ttl + " " + trc.errRtr + " time=" + trc.errTim + a);

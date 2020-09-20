@@ -17,6 +17,7 @@ import tab.tabListing;
 import tab.tabPlcmapN;
 import tab.tabQos;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import user.userHelping;
@@ -97,7 +98,7 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param o other afi
      */
     public rtrBgpVrfRtr(rtrBgp p, cfgVrf v, boolean o) {
-        if (o ^ (p.rouTyp == tabRouteEntry.routeType.bgp4)) {
+        if (o ^ (p.rouTyp == tabRouteAttr.routeType.bgp4)) {
             fwd = v.fwd4;
         } else {
             fwd = v.fwd6;
@@ -148,16 +149,16 @@ public class rtrBgpVrfRtr extends ipRtr {
             return;
         }
         ntry = ntry.copyBytes();
-        if (ntry.labelLoc == null) {
-            ntry.labelLoc = fwd.commonLabel;
+        if (ntry.best.labelLoc == null) {
+            ntry.best.labelLoc = fwd.commonLabel;
         }
-        if (ntry.extComm == null) {
-            ntry.extComm = new ArrayList<Long>();
+        if (ntry.best.extComm == null) {
+            ntry.best.extComm = new ArrayList<Long>();
         }
         ntry.rouDst = vrf.rd;
-        ntry.extComm.addAll(rt);
-        ntry.rouSrc = rtrBgpUtil.peerOriginate;
-        ipMpls.putSrv6prefix(ntry, srv6, ntry.labelLoc);
+        ntry.best.extComm.addAll(rt);
+        ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+        ipMpls.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
     }
 
@@ -185,9 +186,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         if (flowSpec != null) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.extComm = new ArrayList<Long>();
+            ntry.best.extComm = new ArrayList<Long>();
             ntry.rouDst = vrf.rd;
-            ntry.extComm.addAll(rt);
+            ntry.best.extComm.addAll(rt);
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, ntry, other ^ (parent.afiUni == rtrBgpUtil.safiIp6uni), parent.localAs);
         }
         if (mvpn != null) {
@@ -213,24 +214,24 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.prefix.broadcast.fromBuf(buf, 16);
             ntry.prefix.wildcard.fromBuf(buf, 32);
             ntry.prefix.mask.fromBuf(buf, 48);
-            ntry.extComm = new ArrayList<Long>();
+            ntry.best.extComm = new ArrayList<Long>();
             ntry.rouDst = vrf.rd;
-            ntry.extComm.addAll(rt);
-            ntry.rouSrc = rtrBgpUtil.peerOriginate;
+            ntry.best.extComm.addAll(rt);
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, other ? parent.afiVpoM : parent.afiVpnM, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
         }
     }
 
     private void doImportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, List<Long> rt) {
-        if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
+        if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
             return;
         }
-        if (ntry.extComm == null) {
+        if (ntry.best.extComm == null) {
             return;
         }
         boolean needed = false;
         for (int i = 0; i < rt.size(); i++) {
-            needed |= rtrBgpUtil.findLongList(ntry.extComm, rt.get(i)) >= 0;
+            needed |= rtrBgpUtil.findLongList(ntry.best.extComm, rt.get(i)) >= 0;
             if (needed) {
                 break;
             }
@@ -240,18 +241,18 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         ntry = ntry.copyBytes();
         ntry.rouDst = 0;
-        ntry.rouTab = parent.fwdCore;
-        if (ntry.segrouPrf != null) {
-            ntry.rouTab = parent.vrfCore.fwd6;
+        ntry.best.rouTab = parent.fwdCore;
+        if (ntry.best.segrouPrf != null) {
+            ntry.best.rouTab = parent.vrfCore.fwd6;
         }
         if (distance > 0) {
-            ntry.distance = distance;
+            ntry.best.distance = distance;
         }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, false, fwd.importMap, fwd.importPol, fwd.importList);
         if (parent.routerAutoMesh == null) {
             return;
         }
-        peers.add(ntry.nextHop);
+        peers.add(ntry.best.nextHop);
     }
 
     /**

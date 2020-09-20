@@ -41,6 +41,7 @@ import tab.tabPlcmapN;
 import tab.tabPrfxlstN;
 import tab.tabQos;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabRtrplcN;
@@ -179,7 +180,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * route type
      */
-    protected final tabRouteEntry.routeType rouTyp;
+    protected final tabRouteAttr.routeType rouTyp;
 
     /**
      * unicast afi
@@ -724,7 +725,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.bgp4;
+                rouTyp = tabRouteAttr.routeType.bgp4;
                 afiUni = rtrBgpUtil.safiIp4uni;
                 afiLab = rtrBgpUtil.safiIp4lab;
                 afiMlt = rtrBgpUtil.safiIp4multi;
@@ -746,7 +747,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 other = new rtrBgpOther(this, vrfCore.fwd6);
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.bgp6;
+                rouTyp = tabRouteAttr.routeType.bgp6;
                 afiUni = rtrBgpUtil.safiIp6uni;
                 afiLab = rtrBgpUtil.safiIp6lab;
                 afiMlt = rtrBgpUtil.safiIp6multi;
@@ -1283,9 +1284,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < routerRedistedF.size(); i++) {
             tabRouteEntry<addrIP> ntry = routerRedistedF.get(i);
             ntry = ntry.copyBytes();
-            ntry.rouTyp = rouTyp;
-            ntry.protoNum = rtrNum;
-            ntry.distance = distantLoc;
+            ntry.best.rouTyp = rouTyp;
+            ntry.best.protoNum = rtrNum;
+            ntry.best.distance = distantLoc;
             nFlw.add(tabRoute.addType.better, ntry, false, false);
         }
         other.doAdvertise(nOtr);
@@ -1321,7 +1322,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         computedRpki = new tabRoute<addrIP>("bgp");
         for (int i = 0; i < rpkis.size(); i++) {
-            computedRpki.mergeFrom(tabRoute.addType.better, rpkis.get(i).table, null, true, tabRouteEntry.distanLim);
+            computedRpki.mergeFrom(tabRoute.addType.better, rpkis.get(i).table, null, true, tabRouteAttr.distanLim);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");
@@ -1419,19 +1420,19 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                if (ntry.segrouBeg < 1) {
+                if (ntry.best.segrouBeg < 1) {
                     continue;
                 }
-                if ((ntry.segrouIdx <= 0) || (ntry.segrouIdx >= segrouMax)) {
+                if ((ntry.best.segrouIdx <= 0) || (ntry.best.segrouIdx >= segrouMax)) {
                     continue;
                 }
-                rtrBgpNeigh nei = findPeer(ntry.nextHop);
+                rtrBgpNeigh nei = findPeer(ntry.best.nextHop);
                 if (nei == null) {
                     continue;
                 }
-                List<Integer> lab = tabLabel.int2labels(ntry.segrouBeg + ntry.segrouIdx);
-                segrouLab[ntry.segrouIdx].setFwdMpls(13, fwdCore, nei.localIfc, nei.peerAddr, lab);
-                segrouUsd[ntry.segrouIdx] = true;
+                List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                segrouLab[ntry.best.segrouIdx].setFwdMpls(13, fwdCore, nei.localIfc, nei.peerAddr, lab);
+                segrouUsd[ntry.best.segrouIdx] = true;
             }
             segrouUsd[segrouIdx] = true;
             segrouLab[segrouIdx].setFwdCommon(13, fwdCore);
@@ -1456,23 +1457,23 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                if (ntry.bierBeg < 1) {
+                if (ntry.best.bierBeg < 1) {
                     continue;
                 }
-                if ((ntry.bierIdx <= 0) || (ntry.bierIdx >= bierMax)) {
+                if ((ntry.best.bierIdx <= 0) || (ntry.best.bierIdx >= bierMax)) {
                     continue;
                 }
-                rtrBgpNeigh nei = findPeer(ntry.nextHop);
+                rtrBgpNeigh nei = findPeer(ntry.best.nextHop);
                 if (nei == null) {
                     continue;
                 }
-                tabLabelBierN per = new tabLabelBierN(nei.localIfc, nei.peerAddr, ntry.bierBeg);
+                tabLabelBierN per = new tabLabelBierN(nei.localIfc, nei.peerAddr, ntry.best.bierBeg);
                 per.ned = BigInteger.ZERO;
                 tabLabelBierN old = res.peers.add(per);
                 if (old != null) {
                     per = old;
                 }
-                per.ned = per.ned.setBit(ntry.bierIdx);
+                per.ned = per.ned.setBit(ntry.best.bierIdx);
             }
             for (int i = 0; i < res.peers.size(); i++) {
                 tabLabelBierN ntry = res.peers.get(i);
@@ -1542,7 +1543,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         tabRouteEntry<addrIP> best = org.find(curr);
         if (best != null) {
             best = best.copyBytes();
-            best.rouSrc = rtrBgpUtil.peerOriginate;
+            best.best.rouSrc = rtrBgpUtil.peerOriginate;
         }
         for (int i = 0; i < lstnNei.size(); i++) {
             best = computeIncrBest(afi, lstnNei.get(i), best, curr);
@@ -1552,7 +1553,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (best == null) {
             cmp.del(curr);
-            curr.version = compRound.get() + 1;
+            curr.best.version = compRound.get() + 1;
             for (int i = 0; i < groups.size(); i++) {
                 rtrBgpGroup grp = groups.get(i);
                 tabRoute<addrIP> wil = grp.getWilling(afi);
@@ -1568,14 +1569,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             return;
         }
-        best.version = compRound.get() + 1;
+        best.best.version = compRound.get() + 1;
         if (conquer) {
             tabRouteEntry<addrIP> res = computeConquerEntry(cmp, best);
             if (res != null) {
                 best = res;
             }
         }
-        if ((best.rouSrc == rtrBgpUtil.peerOriginate) && ((afi == afiUni) || (afi == afiMlt))) {
+        if ((best.best.rouSrc == rtrBgpUtil.peerOriginate) && ((afi == afiUni) || (afi == afiMlt))) {
             cmp.del(best);
         } else {
             cmp.add(tabRoute.addType.always, best, false, false);
@@ -1590,7 +1591,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = best.copyBytes();
             tabRouteEntry<addrIP> old = wil.find(ntry);
-            if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
+            if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 grp.originatePrefix(afi, ntry);
             } else if (grp.readvertPrefix(afi, ntry)) {
                 ntry = null;
@@ -1627,7 +1628,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     private void computeIncrPurge(int ver, tabRoute<addrIP> chg) {
         for (int i = chg.size() - 1; i >= 0; i--) {
             tabRouteEntry<addrIP> ntry = chg.get(i);
-            if (ntry.version >= ver) {
+            if (ntry.best.version >= ver) {
                 continue;
             }
             chg.del(ntry);
@@ -1757,22 +1758,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     private tabRouteEntry<addrIP> computeConquerEntry(tabRoute<addrIP> cmp, tabRouteEntry<addrIP> best) {
-        if (best.nextHop == null) {
+        if (best.best.nextHop == null) {
             return null;
         }
         tabRouteEntry<addrIP> old = cmp.find(best);
         if (old == null) {
             return null;
         }
-        if (old.nextHop == null) {
+        if (old.best.nextHop == null) {
             return null;
         }
         best = best.copyBytes();
-        if (best.locPref < old.locPref) {
-            best.locPref = old.locPref;
+        if (best.best.locPref < old.best.locPref) {
+            best.best.locPref = old.best.locPref;
         }
-        if (old.nextHop.compare(old.nextHop, best.nextHop) != 0) {
-            best.locPref++;
+        if (old.best.nextHop.compare(old.best.nextHop, best.best.nextHop) != 0) {
+            best.best.locPref++;
         }
         return best;
     }
@@ -1796,23 +1797,23 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected void setValidity(tabRouteEntry<addrIP> ntry) {
         tabRouteEntry<addrIP> res = computedRpki.route(ntry.prefix.broadcast);
         if (res == null) {
-            ntry.validity = 2;
+            ntry.best.validity = 2;
             return;
         }
-        if (ntry.pathSeq == null) {
-            ntry.validity = 3;
+        if (ntry.best.pathSeq == null) {
+            ntry.best.validity = 3;
             return;
         }
-        int i = ntry.pathSeq.size();
+        int i = ntry.best.pathSeq.size();
         if (i < 1) {
-            ntry.validity = 3;
+            ntry.best.validity = 3;
             return;
         }
-        if (ntry.pathSeq.get(i - 1) != res.rouSrc) {
-            ntry.validity = 3;
+        if (ntry.best.pathSeq.get(i - 1) != res.best.rouSrc) {
+            ntry.best.validity = 3;
             return;
         }
-        ntry.validity = 1;
+        ntry.best.validity = 1;
     }
 
     /**
@@ -3188,13 +3189,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.pathSeq == null) {
+            if (ntry.best.pathSeq == null) {
                 continue;
             }
-            if (ntry.pathSeq.size() < 1) {
+            if (ntry.best.pathSeq.size() < 1) {
                 continue;
             }
-            getAsOrigin(lst, ntry.pathSeq.get(ntry.pathSeq.size() - 1));
+            getAsOrigin(lst, ntry.best.pathSeq.get(ntry.best.pathSeq.size() - 1));
         }
         userFormat res = new userFormat("|", "as|nets");
         for (int i = 0; i < lst.size(); i++) {
@@ -3218,11 +3219,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.pathSeq == null) {
+            if (ntry.best.pathSeq == null) {
                 continue;
             }
-            for (int o = 0; o < (ntry.pathSeq.size() - 1); o++) {
-                getAsOrigin(lst, ntry.pathSeq.get(o));
+            for (int o = 0; o < (ntry.best.pathSeq.size() - 1); o++) {
+                getAsOrigin(lst, ntry.best.pathSeq.get(o));
             }
         }
         userFormat res = new userFormat("|", "as|nets");
@@ -3290,7 +3291,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (prf == null) {
                 continue;
             }
-            cmd = new cmds("path", prf.asPathStr());
+            cmd = new cmds("path", prf.best.asPathStr());
             String prv = cmd.word();
             for (;;) {
                 String a = cmd.word();
@@ -3401,7 +3402,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (old != null) {
                 ntry = old;
             }
-            String a = "" + prf.nextHop;
+            String a = "" + prf.best.nextHop;
             rtrBgpFlapath pth = new rtrBgpFlapath();
             pth.path = a;
             ntry.paths.add(pth);
@@ -3454,7 +3455,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (old != null) {
                 ntry = old;
             }
-            String a = prf.asPathStr();
+            String a = prf.best.asPathStr();
             int o = a.lastIndexOf(" ");
             if (o >= 0) {
                 a = a.substring(o + 1, a.length());

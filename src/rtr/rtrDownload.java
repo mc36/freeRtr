@@ -18,6 +18,7 @@ import pipe.pipeDiscard;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFlash;
 import user.userHelping;
@@ -42,7 +43,7 @@ public class rtrDownload extends ipRtr {
     /**
      * route type
      */
-    protected final tabRouteEntry.routeType rouTyp;
+    protected final tabRouteAttr.routeType rouTyp;
 
     /**
      * router number
@@ -104,11 +105,11 @@ public class rtrDownload extends ipRtr {
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.download4;
+                rouTyp = tabRouteAttr.routeType.download4;
                 proto = 4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.download6;
+                rouTyp = tabRouteAttr.routeType.download6;
                 proto = 6;
                 break;
             default:
@@ -216,8 +217,8 @@ public class rtrDownload extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            ntry.rouTyp = rouTyp;
-            ntry.protoNum = rtrNum;
+            ntry.best.rouTyp = rouTyp;
+            ntry.best.protoNum = rtrNum;
             res.add(tabRoute.addType.better, ntry, false, false);
         }
         routerDoAggregates(rtrBgpUtil.safiUnicast, res, null, fwdCore.commonLabel, 0, null, 0);

@@ -425,21 +425,21 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
     }
 
     private void clearState() {
-        if (fwdIfc != null) {
-            fwdCor.protoDel(this, fwdIfc, fwdTrg);
-            fwdIfc = null;
-        }
-        queue = new ArrayList<packL2tp3>();
+        sesRem = 0;
+        sesLoc = 0;
+        conRem = 0;
+        conLoc = 0;
         seqRx = 0;
         seqTx = 0;
-        sesLoc = 0;
-        sesRem = 0;
-        sesLoc = 0;
-        sesRem = 0;
         keep = 0;
         txed = 0;
         notif = new notifier();
         pckRx = new packL2tp3();
+        queue = new ArrayList<packL2tp3>();
+        if (fwdIfc != null) {
+            fwdCor.protoDel(this, fwdIfc, fwdTrg);
+            fwdIfc = null;
+        }
     }
 
     private boolean txDoer() {

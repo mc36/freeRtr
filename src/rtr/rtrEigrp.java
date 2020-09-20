@@ -11,6 +11,7 @@ import ip.ipRtr;
 import java.util.List;
 import tab.tabGen;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFormat;
 import user.userHelping;
@@ -116,13 +117,13 @@ public class rtrEigrp extends ipRtr implements Runnable {
         fwdCore = forwarder;
         routerID = new addrIPv4();
         ifaces = new tabGen<rtrEigrpIface>();
-        tabRouteEntry.routeType rouTyp = null;
+        tabRouteAttr.routeType rouTyp = null;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.eigrp4;
+                rouTyp = tabRouteAttr.routeType.eigrp4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.eigrp6;
+                rouTyp = tabRouteAttr.routeType.eigrp6;
                 break;
             default:
                 break;
@@ -274,9 +275,9 @@ public class rtrEigrp extends ipRtr implements Runnable {
                 continue;
             }
             ntry = tab1.add(tabRoute.addType.better, ifc.iface.network, null);
-            ntry.rouTyp = tabRouteEntry.routeType.conn;
-            ntry.iface = ifc.iface;
-            ntry.distance = tabRouteEntry.distanIfc;
+            ntry.best.rouTyp = tabRouteAttr.routeType.conn;
+            ntry.best.iface = ifc.iface;
+            ntry.best.distance = tabRouteAttr.distanIfc;
         }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrEigrpIface ifc = ifaces.get(o);
@@ -291,14 +292,14 @@ public class rtrEigrp extends ipRtr implements Runnable {
                 if (nei == null) {
                     continue;
                 }
-                tab1.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteEntry.distanLim);
+                tab1.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteAttr.distanLim);
             }
         }
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab1, null, fwdCore.commonLabel, 0, null, 0);
         tabRoute<addrIP> tab2 = tab1;
         tab1 = new tabRoute<addrIP>("ned2adv");
-        tab1.mergeFrom(tabRoute.addType.better, tab2, null, true, tabRouteEntry.distanLim);
-        tab1.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteEntry.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, tab2, null, true, tabRouteAttr.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, routerRedistedU, null, true, tabRouteAttr.distanLim);
         need2adv = tab1;
         for (int o = 0; o < ifaces.size(); o++) {
             rtrEigrpIface ifc = ifaces.get(o);

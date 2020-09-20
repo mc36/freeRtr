@@ -13,6 +13,7 @@ import prt.prtTcp;
 import prt.prtUdp;
 import tab.tabGen;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFormat;
 import user.userHelping;
@@ -100,13 +101,13 @@ public class rtrPvrp extends ipRtr implements Runnable {
         tcpCore = tcp;
         routerID = new addrIPv4();
         ifaces = new tabGen<rtrPvrpIface>();
-        tabRouteEntry.routeType rouTyp = null;
+        tabRouteAttr.routeType rouTyp = null;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.pvrp4;
+                rouTyp = tabRouteAttr.routeType.pvrp4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.pvrp6;
+                rouTyp = tabRouteAttr.routeType.pvrp6;
                 break;
             default:
                 break;
@@ -250,9 +251,9 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 continue;
             }
             ntry = tab1.add(tabRoute.addType.better, ifc.iface.network, null);
-            ntry.rouTyp = tabRouteEntry.routeType.conn;
-            ntry.iface = ifc.iface;
-            ntry.distance = tabRouteEntry.distanIfc;
+            ntry.best.rouTyp = tabRouteAttr.routeType.conn;
+            ntry.best.iface = ifc.iface;
+            ntry.best.distance = tabRouteAttr.distanIfc;
         }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrPvrpIface ifc = ifaces.get(o);
@@ -267,21 +268,21 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 if (nei == null) {
                     continue;
                 }
-                tab1.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteEntry.distanLim);
+                tab1.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteAttr.distanLim);
             }
         }
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab1, null, fwdCore.commonLabel, 0, null, 0);
         tabRoute<addrIP> tab2 = tab1;
         tab1 = new tabRoute<addrIP>("ned2adv");
-        tab1.mergeFrom(tabRoute.addType.better, tab2, null, true, tabRouteEntry.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, tab2, null, true, tabRouteAttr.distanLim);
         for (int i = 0; i < routerRedistedU.size(); i++) {
             ntry = routerRedistedU.get(i);
             if (ntry == null) {
                 continue;
             }
             ntry = ntry.copyBytes();
-            ntry.distance = tabRouteEntry.distanIfc + 1;
-            ntry.rouSrc = 1;
+            ntry.best.distance = tabRouteAttr.distanIfc + 1;
+            ntry.best.rouSrc = 1;
             tab1.add(tabRoute.addType.better, ntry, false, false);
         }
         if (labels) {
@@ -291,7 +292,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 if (org == null) {
                     continue;
                 }
-                ntry.labelLoc = org.labelLoc;
+                ntry.best.labelLoc = org.best.labelLoc;
             }
         }
         need2adv = tab1;
@@ -306,7 +307,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
                 if (labels) {
-                    ntry.labelLoc = fwdCore.commonLabel;
+                    ntry.best.labelLoc = fwdCore.commonLabel;
                 }
                 tab1.add(tabRoute.addType.always, ntry, true, true);
             }
@@ -319,10 +320,10 @@ public class rtrPvrp extends ipRtr implements Runnable {
                     if (ntry == null) {
                         continue;
                     }
-                    if (ntry.clustList == null) {
+                    if (ntry.best.clustList == null) {
                         continue;
                     }
-                    if (ntry.clustList.size() < 1) {
+                    if (ntry.best.clustList.size() < 1) {
                         continue;
                     }
                     tab1.del(ntry);

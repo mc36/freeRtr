@@ -8,6 +8,7 @@ import java.util.Comparator;
 import pack.packHolder;
 import prt.prtGenConn;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.debugger;
@@ -91,7 +92,7 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
         int pckSeq = pck.msbGetW(2);
         pck.getSkip(4);
         tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteEntry.distanLim);
+        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteAttr.distanLim);
         long tim = bits.getTime();
         boolean ipv4 = conn.peerAddr.isIPv4();
         for (;;) {
@@ -144,14 +145,14 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
                     break;
                 case rtrOlsr.typHna:
                     tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-                    ntry.iface = iface.iface;
-                    ntry.srcRtr = conn.peerAddr.copyBytes();
-                    ntry.distance = iface.distance;
-                    ntry.nextHop = conn.peerAddr.copyBytes();
-                    ntry.aggrRtr = orig.copyBytes();
-                    ntry.time = tim;
-                    ntry.accIgp = vldTim;
-                    ntry.metric = iface.metricIn + hop;
+                    ntry.best.iface = iface.iface;
+                    ntry.best.srcRtr = conn.peerAddr.copyBytes();
+                    ntry.best.distance = iface.distance;
+                    ntry.best.nextHop = conn.peerAddr.copyBytes();
+                    ntry.best.aggrRtr = orig.copyBytes();
+                    ntry.best.time = tim;
+                    ntry.best.accIgp = vldTim;
+                    ntry.best.metric = iface.metricIn + hop;
                     if (ipv4) {
                         addrIPv4 a4 = new addrIPv4();
                         addrIPv4 m4 = new addrIPv4();
@@ -193,7 +194,7 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
             if (ntry == null) {
                 continue;
             }
-            if ((curTim - ntry.time) < ntry.accIgp) {
+            if ((curTim - ntry.best.time) < ntry.best.accIgp) {
                 continue;
             }
             if (debugger.rtrOlsrEvnt) {

@@ -10,6 +10,7 @@ import ip.ipFwdIface;
 import ip.ipRtr;
 import java.util.List;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userHelping;
 import util.bits;
@@ -30,7 +31,7 @@ public class rtrMobile extends ipRtr implements Runnable {
     /**
      * route type
      */
-    protected final tabRouteEntry.routeType rouTyp;
+    protected final tabRouteAttr.routeType rouTyp;
 
     /**
      * router number
@@ -58,10 +59,10 @@ public class rtrMobile extends ipRtr implements Runnable {
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.mobile4;
+                rouTyp = tabRouteAttr.routeType.mobile4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.mobile6;
+                rouTyp = tabRouteAttr.routeType.mobile6;
                 break;
             default:
                 rouTyp = null;
@@ -96,16 +97,17 @@ public class rtrMobile extends ipRtr implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.rouTyp != tabRouteEntry.routeType.conn) {
+            if (ntry.best.rouTyp != tabRouteAttr.routeType.conn) {
                 continue;
             }
-            if (ntry.iface == null) {
+            if (ntry.best.iface == null) {
                 continue;
             }
-            ipFwdIface ifc = fwdCore.ifaces.find((ipFwdIface) ntry.iface);
+            ipFwdIface ifc = fwdCore.ifaces.find((ipFwdIface) ntry.best.iface);
             if (ifc == null) {
                 continue;
             }
+            long tim = bits.getTime();
             for (int o = 0;; o++) {
                 addrIP adr = new addrIP();
                 addrMac mac = new addrMac();
@@ -118,12 +120,12 @@ public class rtrMobile extends ipRtr implements Runnable {
                 addrPrefix<addrIP> prf = new addrPrefix<addrIP>(adr.copyBytes(), adr.maxBits());
                 tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
                 rou.prefix = prf;
-                rou.iface = ntry.iface;
-                rou.nextHop = adr.copyBytes();
-                rou.rouTyp = rouTyp;
-                rou.protoNum = rtrNum;
-                rou.distance = distance;
-                rou.time = bits.getTime();
+                rou.best.iface = ntry.best.iface;
+                rou.best.nextHop = adr.copyBytes();
+                rou.best.rouTyp = rouTyp;
+                rou.best.protoNum = rtrNum;
+                rou.best.distance = distance;
+                rou.best.time = tim;
                 res.add(tabRoute.addType.better, rou, false, false);
             }
         }

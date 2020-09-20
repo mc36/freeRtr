@@ -8,6 +8,7 @@ import ip.ipFwd;
 import ip.ipRtr;
 import java.util.List;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userHelping;
 import util.bits;
@@ -38,7 +39,7 @@ public class rtrDeaggr extends ipRtr {
     /**
      * route type
      */
-    protected final tabRouteEntry.routeType rouTyp;
+    protected final tabRouteAttr.routeType rouTyp;
 
     /**
      * router number
@@ -56,10 +57,10 @@ public class rtrDeaggr extends ipRtr {
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.deaggr4;
+                rouTyp = tabRouteAttr.routeType.deaggr4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.deaggr6;
+                rouTyp = tabRouteAttr.routeType.deaggr6;
                 break;
             default:
                 rouTyp = null;
@@ -91,11 +92,11 @@ public class rtrDeaggr extends ipRtr {
             return;
         }
         ntry = ntry.copyBytes();
-        ntry.rouTyp = rouTyp;
-        ntry.protoNum = rtrNum;
+        ntry.best.rouTyp = rouTyp;
+        ntry.best.protoNum = rtrNum;
         ntry.prefix.setMask(ntry.prefix.maskLen + 1);
         if (distance1 > 0) {
-            ntry.distance = distance1;
+            ntry.best.distance = distance1;
         }
         tab.add(tabRoute.addType.better, ntry.copyBytes(), false, false);
         addrIP adr = new addrIP();
@@ -103,7 +104,7 @@ public class rtrDeaggr extends ipRtr {
         adr.setOr(adr, ntry.prefix.network);
         ntry.prefix = new addrPrefix<addrIP>(adr, ntry.prefix.maskLen);
         if (distance2 > 0) {
-            ntry.distance = distance2;
+            ntry.best.distance = distance2;
         }
         tab.add(tabRoute.addType.better, ntry.copyBytes(), false, false);
     }

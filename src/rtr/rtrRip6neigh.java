@@ -7,6 +7,7 @@ import java.util.Comparator;
 import pack.packHolder;
 import prt.prtGenConn;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.debugger;
@@ -96,22 +97,22 @@ public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
             return false;
         }
         tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteEntry.distanLim);
+        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteAttr.distanLim);
         for (; pck.dataSize() >= rtrRip6.sizeNtry; pck.getSkip(rtrRip6.sizeNtry)) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.rouTyp = tabRouteEntry.routeType.rip6;
-            ntry.srcRtr = conn.peerAddr.copyBytes();
-            ntry.iface = iface.iface;
-            ntry.distance = iface.distance;
-            ntry.nextHop = conn.peerAddr.copyBytes();
-            ntry.tag = pck.msbGetW(16); // route tag
-            ntry.metric = pck.getByte(19) + iface.metricIn; // metric
-            if (ntry.metric < rtrRip6.metricMin) {
-                ntry.metric = rtrRip6.metricMin;
+            ntry.best.rouTyp = tabRouteAttr.routeType.rip6;
+            ntry.best.srcRtr = conn.peerAddr.copyBytes();
+            ntry.best.iface = iface.iface;
+            ntry.best.distance = iface.distance;
+            ntry.best.nextHop = conn.peerAddr.copyBytes();
+            ntry.best.tag = pck.msbGetW(16); // route tag
+            ntry.best.metric = pck.getByte(19) + iface.metricIn; // metric
+            if (ntry.best.metric < rtrRip6.metricMin) {
+                ntry.best.metric = rtrRip6.metricMin;
             }
-            if (ntry.metric >= rtrRip6.metricMax) {
-                ntry.distance = tabRouteEntry.distanMax;
-                ntry.metric = rtrRip6.metricMax;
+            if (ntry.best.metric >= rtrRip6.metricMax) {
+                ntry.best.distance = tabRouteAttr.distanMax;
+                ntry.best.metric = rtrRip6.metricMax;
             }
             addrIPv6 net6 = new addrIPv6();
             addrIPv6 msk6 = new addrIPv6();
@@ -122,16 +123,16 @@ public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
             netI.fromIPv6addr(net6);
             mskI.fromIPv6mask(msk6);
             ntry.prefix = new addrPrefix<addrIP>(netI, mskI.toNetmask());
-            ntry.nextHop = conn.peerAddr.copyBytes();
+            ntry.best.nextHop = conn.peerAddr.copyBytes();
             if (debugger.rtrRip6traf) {
                 logger.debug("rxnet " + ntry);
             }
-            if (ntry.metric >= rtrRip6.metricMax) {
+            if (ntry.best.metric >= rtrRip6.metricMax) {
                 tabRouteEntry<addrIP> old = learned.find(ntry);
                 if (old == null) {
                     continue;
                 }
-                if (old.metric >= rtrRip6.metricMax) {
+                if (old.best.metric >= rtrRip6.metricMax) {
                     continue;
                 }
             }
@@ -155,18 +156,18 @@ public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
             if (ntry == null) {
                 continue;
             }
-            if ((curTim - ntry.time) < iface.holdTimer) {
+            if ((curTim - ntry.best.time) < iface.holdTimer) {
                 continue;
             }
-            ntry.metric = rtrRip6.metricMax;
-            if (ntry.distance < tabRouteEntry.distanMax) {
+            ntry.best.metric = rtrRip6.metricMax;
+            if (ntry.best.distance < tabRouteAttr.distanMax) {
                 if (debugger.rtrRip6evnt) {
                     logger.debug("netdown " + ntry);
                 }
-                ntry.distance = tabRouteEntry.distanMax;
+                ntry.best.distance = tabRouteAttr.distanMax;
                 done++;
             }
-            if ((curTim - ntry.time) < iface.flushTimer) {
+            if ((curTim - ntry.best.time) < iface.flushTimer) {
                 continue;
             }
             if (debugger.rtrRip6evnt) {

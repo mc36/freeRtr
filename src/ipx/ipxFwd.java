@@ -7,6 +7,7 @@ import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.cmds;
 import util.counter;
@@ -97,7 +98,7 @@ public class ipxFwd implements Runnable {
     public void getShRun(List<String> l) {
         for (int i = 0; i < staticR.size(); i++) {
             tabRouteEntry<addrIpx> prf = staticR.get(i);
-            l.add("ipx route " + vrfName + " " + prf.prefix.network + " " + prf.prefix.mask + " " + prf.nextHop);
+            l.add("ipx route " + vrfName + " " + prf.prefix.network + " " + prf.prefix.mask + " " + prf.best.nextHop);
         }
     }
 
@@ -105,37 +106,37 @@ public class ipxFwd implements Runnable {
         tabRoute<addrIpx> tabC = new tabRoute<addrIpx>("connected");
         tabC.defDist = 0;
         tabC.defMetr = 0;
-        tabC.defRouTyp = tabRouteEntry.routeType.conn;
+        tabC.defRouTyp = tabRouteAttr.routeType.conn;
         tabRoute<addrIpx> tabA = new tabRoute<addrIpx>("locals");
         tabA.defDist = 0;
         tabA.defMetr = 1;
-        tabA.defRouTyp = tabRouteEntry.routeType.local;
+        tabA.defRouTyp = tabRouteAttr.routeType.local;
         for (int i = 0; i < ifaces.size(); i++) {
             ipxIface ifc = ifaces.get(i);
             if (!ifc.ready) {
                 continue;
             }
             tabRouteEntry<addrIpx> prf = tabC.add(tabRoute.addType.always, ifc.network, null);
-            prf.iface = ifc;
+            prf.best.iface = ifc;
             prf = tabA.add(tabRoute.addType.always, new addrPrefix<addrIpx>(ifc.addr, ifc.addr.maxBits()), null);
-            prf.iface = ifc;
-            prf.rouTyp = tabRouteEntry.routeType.local;
+            prf.best.iface = ifc;
+            prf.best.rouTyp = tabRouteAttr.routeType.local;
         }
-        tabA.mergeFrom(tabRoute.addType.better, tabC, null, true, tabRouteEntry.distanLim);
+        tabA.mergeFrom(tabRoute.addType.better, tabC, null, true, tabRouteAttr.distanLim);
         for (int i = 0; i < staticR.size(); i++) {
             tabRouteEntry<addrIpx> ntry = staticR.get(i);
             if (ntry == null) {
                 continue;
             }
-            if (ntry.distance >= tabRouteEntry.distanMax) {
+            if (ntry.best.distance >= tabRouteAttr.distanMax) {
                 continue;
             }
-            tabRouteEntry<addrIpx> nh = tabC.route(ntry.nextHop);
+            tabRouteEntry<addrIpx> nh = tabC.route(ntry.best.nextHop);
             if (nh == null) {
                 continue;
             }
             tabRouteEntry<addrIpx> imp = ntry.copyBytes();
-            imp.iface = nh.iface;
+            imp.best.iface = nh.best.iface;
             tabA.add(tabRoute.addType.better, imp, false, true);
         }
         connedR = tabC;
@@ -199,7 +200,7 @@ public class ipxFwd implements Runnable {
         if (adr.fromString(cmd.word())) {
             return null;
         }
-        ntry.nextHop = adr;
+        ntry.best.nextHop = adr;
         return ntry;
     }
 
@@ -339,10 +340,10 @@ public class ipxFwd implements Runnable {
         if (prf == null) {
             return;
         }
-        if (prf.iface == null) {
+        if (prf.best.iface == null) {
             return;
         }
-        ipxIface txIfc = (ipxIface) prf.iface;
+        ipxIface txIfc = (ipxIface) prf.best.iface;
         if (pck.INTiface == txIfc.ifwNum) {
             return;
         }
@@ -350,10 +351,10 @@ public class ipxFwd implements Runnable {
             return;
         }
         updateIPXheader(pck, pck.IPttl + 1);
-        if (prf.rouTyp == tabRouteEntry.routeType.conn) {
+        if (prf.best.rouTyp == tabRouteAttr.routeType.conn) {
             pck.ETHtrg.setAddr(dst.getMac());
         } else {
-            pck.ETHtrg.setAddr(prf.nextHop.getMac());
+            pck.ETHtrg.setAddr(prf.best.nextHop.getMac());
         }
         pck.ETHsrc.setAddr(txIfc.hwaddr);
         txIfc.sendPack(pck);

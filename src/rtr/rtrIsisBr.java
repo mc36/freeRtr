@@ -60,7 +60,7 @@ public class rtrIsisBr {
         if (tlv.valTyp != typBier) {
             return;
         }
-        prf.bierIdx = bits.msbGetW(tlv.valDat, 3); // bfr id
+        prf.best.bierIdx = bits.msbGetW(tlv.valDat, 3); // bfr id
         if (tlv.valDat[5] != 1) { // type
             return;
         }
@@ -68,8 +68,8 @@ public class rtrIsisBr {
             return;
         }
         int i = bits.msbGetD(tlv.valDat, 7);
-        prf.bierBeg = i & 0xfffff; // label
-        prf.bierHdr = (i >>> 20) & 0xf; // bsl
+        prf.best.bierBeg = i & 0xfffff; // label
+        prf.best.bierHdr = (i >>> 20) & 0xf; // bsl
     }
 
 }

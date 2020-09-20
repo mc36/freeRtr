@@ -1511,13 +1511,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         pck.getSkip(2);
         prt = pck.dataSize() - prt;
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.rouTyp = neigh.lower.rouTyp;
-        ntry.protoNum = neigh.lower.rtrNum;
-        ntry.distance = neigh.distance;
-        ntry.rouSrc = neigh.peerType;
-        ntry.srcRtr = neigh.peerAddr.copyBytes();
-        ntry.locPref = 100;
-        ntry.nextHop = neigh.peerAddr.copyBytes();
+        ntry.best.rouTyp = neigh.lower.rouTyp;
+        ntry.best.protoNum = neigh.lower.rtrNum;
+        ntry.best.distance = neigh.distance;
+        ntry.best.rouSrc = neigh.peerType;
+        ntry.best.srcRtr = neigh.peerAddr.copyBytes();
+        ntry.best.locPref = 100;
+        ntry.best.nextHop = neigh.peerAddr.copyBytes();
         for (;;) {
             if (pck.dataSize() <= prt) {
                 break;
@@ -1527,7 +1527,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, false, pck);
             ntry.prefix = res.prefix;
-            ntry.labelRem = res.labelRem;
+            ntry.best.labelRem = res.best.labelRem;
             prefixWithdraw(rtrBgpUtil.safiIp4uni, ntry);
         }
         pck.setBytesLeft(prt);
@@ -1551,7 +1551,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, false, pck);
             ntry.prefix = res.prefix;
-            ntry.labelRem = res.labelRem;
+            ntry.best.labelRem = res.best.labelRem;
             prefixReach(rtrBgpUtil.safiIp4uni, ntry);
         }
         addAttribed(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
@@ -1620,13 +1620,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         for (int i = 0; i < currAdd.size(); i++) {
             tabRouteEntry<addrIP> cur = currAdd.get(i);
             attr.prefix = cur.prefix;
-            attr.nextHop = cur.nextHop;
+            attr.best.nextHop = cur.best.nextHop;
             attr.rouDst = cur.rouDst;
-            attr.labelRem = cur.labelRem;
-            attr.evpnLab = cur.evpnLab;
+            attr.best.labelRem = cur.best.labelRem;
+            attr.best.evpnLab = cur.best.evpnLab;
             cur = attr.copyBytes();
             if (parent.flaps != null) {
-                parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.asPathStr());
+                parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
             }
             if (!neigh.softReconfig) {
                 tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, cur, roumap, roupol, prflst);
@@ -1768,12 +1768,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             switch (neigh.peerType) {
                 case rtrBgpUtil.peerExtrn:
                 case rtrBgpUtil.peerServr:
-                    if (rtrBgpUtil.firstIntList(ntry.pathSeq, neigh.remoteAs)) {
+                    if (rtrBgpUtil.firstIntList(ntry.best.pathSeq, neigh.remoteAs)) {
                         return true;
                     }
                     break;
                 case rtrBgpUtil.peerCnfed:
-                    if (rtrBgpUtil.firstIntList(ntry.confSeq, neigh.remoteAs)) {
+                    if (rtrBgpUtil.firstIntList(ntry.best.confSeq, neigh.remoteAs)) {
                         return true;
                     }
                     break;
@@ -1785,18 +1785,18 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             switch (neigh.peerType) {
                 case rtrBgpUtil.peerExtrn:
                 case rtrBgpUtil.peerServr:
-                    if (rtrBgpUtil.findIntList(ntry.pathSeq, neigh.localAs) >= 0) {
+                    if (rtrBgpUtil.findIntList(ntry.best.pathSeq, neigh.localAs) >= 0) {
                         return true;
                     }
-                    if (rtrBgpUtil.findIntList(ntry.pathSet, neigh.localAs) >= 0) {
+                    if (rtrBgpUtil.findIntList(ntry.best.pathSet, neigh.localAs) >= 0) {
                         return true;
                     }
                     break;
                 case rtrBgpUtil.peerCnfed:
-                    if (rtrBgpUtil.findIntList(ntry.confSeq, neigh.localAs) >= 0) {
+                    if (rtrBgpUtil.findIntList(ntry.best.confSeq, neigh.localAs) >= 0) {
                         return true;
                     }
-                    if (rtrBgpUtil.findIntList(ntry.confSet, neigh.localAs) >= 0) {
+                    if (rtrBgpUtil.findIntList(ntry.best.confSet, neigh.localAs) >= 0) {
                         return true;
                     }
                     break;
@@ -1808,61 +1808,61 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             case rtrBgpUtil.peerIntrn:
                 addrIP a = new addrIP();
                 a.fromIPv4addr(parent.routerID);
-                if (ntry.originator != null) {
-                    if (a.compare(ntry.originator, a) == 0) {
+                if (ntry.best.originator != null) {
+                    if (a.compare(ntry.best.originator, a) == 0) {
                         return true;
                     }
                 }
-                if (ntry.clustList != null) {
-                    if (rtrBgpUtil.findAddrList(ntry.clustList, a) >= 0) {
+                if (ntry.best.clustList != null) {
+                    if (rtrBgpUtil.findAddrList(ntry.best.clustList, a) >= 0) {
                         return true;
                     }
                 }
                 break;
             case rtrBgpUtil.peerRflct:
-                if (ntry.originator == null) {
+                if (ntry.best.originator == null) {
                     a = new addrIP();
                     a.fromIPv4addr(peerRouterID);
-                    ntry.originator = a;
+                    ntry.best.originator = a;
                 }
                 a = new addrIP();
                 a.fromIPv4addr(parent.routerID);
-                if (a.compare(ntry.originator, a) == 0) {
+                if (a.compare(ntry.best.originator, a) == 0) {
                     return true;
                 }
-                if (ntry.clustList == null) {
-                    ntry.clustList = new ArrayList<addrIP>();
+                if (ntry.best.clustList == null) {
+                    ntry.best.clustList = new ArrayList<addrIP>();
                 }
-                if (rtrBgpUtil.findAddrList(ntry.clustList, a) >= 0) {
+                if (rtrBgpUtil.findAddrList(ntry.best.clustList, a) >= 0) {
                     return true;
                 }
-                ntry.clustList.add(a);
+                ntry.best.clustList.add(a);
                 break;
             default:
                 break;
         }
         if (neigh.nxtHopPeer) {
-            ntry.nextHop = neigh.peerAddr.copyBytes();
+            ntry.best.nextHop = neigh.peerAddr.copyBytes();
         }
-        if ((ntry.labelRem == null) && (ntry.segrouIdx > 0) && (ntry.segrouBeg > 0)) {
-            ntry.labelRem = tabLabel.int2labels(ntry.segrouBeg + ntry.segrouIdx);
+        if ((ntry.best.labelRem == null) && (ntry.best.segrouIdx > 0) && (ntry.best.segrouBeg > 0)) {
+            ntry.best.labelRem = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
         }
         if (neigh.egressEng > 0) {
-            ntry.segrouIdx = neigh.egressEng;
+            ntry.best.segrouIdx = neigh.egressEng;
         }
         if (neigh.dmzLinkBw >= 0) {
-            if (ntry.extComm == null) {
-                ntry.extComm = new ArrayList<Long>();
+            if (ntry.best.extComm == null) {
+                ntry.best.extComm = new ArrayList<Long>();
             }
-            ntry.extComm.add(tabRtrmapN.dmzbw2comm(neigh.localAs, neigh.dmzLinkBw));
+            ntry.best.extComm.add(tabRtrmapN.dmzbw2comm(neigh.localAs, neigh.dmzLinkBw));
         }
         if (neigh.removePrivAsIn) {
-            rtrBgpUtil.removePrivateAs(ntry.pathSeq);
-            rtrBgpUtil.removePrivateAs(ntry.pathSet);
+            rtrBgpUtil.removePrivateAs(ntry.best.pathSeq);
+            rtrBgpUtil.removePrivateAs(ntry.best.pathSet);
         }
         if (neigh.overridePeerIn) {
-            rtrBgpUtil.replaceIntList(ntry.pathSeq, neigh.remoteAs, neigh.localAs);
-            rtrBgpUtil.replaceIntList(ntry.pathSet, neigh.remoteAs, neigh.localAs);
+            rtrBgpUtil.replaceIntList(ntry.best.pathSeq, neigh.remoteAs, neigh.localAs);
+            rtrBgpUtil.replaceIntList(ntry.best.pathSet, neigh.remoteAs, neigh.localAs);
         }
         if (neigh.intVpnClnt) {
             rtrBgpUtil.encodeAttribSet(neigh.localAs, ntry);

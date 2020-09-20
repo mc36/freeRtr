@@ -829,7 +829,7 @@ public class rtrBgpUtil {
                 buf = new byte[addrIP.size];
                 pck.getCopy(buf, 2, 0, 14); // esi + eti
                 ntry.prefix.network.fromBuf(buf, 0);
-                ntry.evpnLab = pck.msbGetD(14) >>> 8;
+                ntry.best.evpnLab = pck.msbGetD(14) >>> 8;
                 return false;
             case 2: // mac ip advertisement
                 buf = new byte[addrIP.size];
@@ -862,7 +862,7 @@ public class rtrBgpUtil {
                     default:
                         return true;
                 }
-                ntry.evpnLab = pck.msbGetD(0) >>> 8;
+                ntry.best.evpnLab = pck.msbGetD(0) >>> 8;
                 return false;
             case 3: // inclusive multicast ethernet tag
                 buf = new byte[addrIP.size];
@@ -922,7 +922,7 @@ public class rtrBgpUtil {
                     default:
                         return true;
                 }
-                ntry.evpnLab = pck.msbGetD(0) >>> 8;
+                ntry.best.evpnLab = pck.msbGetD(0) >>> 8;
                 return false;
             default:
                 return true;
@@ -938,7 +938,7 @@ public class rtrBgpUtil {
                 ntry.prefix.network.toBuffer(buf, 0);
                 bits.byteCopy(buf, 2, trg, pos, 14); // esi + eti
                 pos += 14;
-                bits.msbPutD(trg, pos, ntry.evpnLab << 8);
+                bits.msbPutD(trg, pos, ntry.best.evpnLab << 8);
                 pos += 3;
                 return pos;
             case 2: // mac ip advertisement
@@ -965,7 +965,7 @@ public class rtrBgpUtil {
                 pos++;
                 adr.toBuffer(trg, pos);
                 pos += adr.getSize();
-                bits.msbPutD(trg, pos, ntry.evpnLab << 8);
+                bits.msbPutD(trg, pos, ntry.best.evpnLab << 8);
                 pos += 3;
                 return pos;
             case 3: // inclusive multicast ethernet tag
@@ -1019,7 +1019,7 @@ public class rtrBgpUtil {
                 }
                 adr.toBuffer(trg, pos);
                 pos += adr.getSize();
-                bits.msbPutD(trg, pos, ntry.evpnLab << 8);
+                bits.msbPutD(trg, pos, ntry.best.evpnLab << 8);
                 pos += 3;
                 return pos;
             default:
@@ -1080,7 +1080,7 @@ public class rtrBgpUtil {
                 break;
         }
         if ((sfi == safiLabeled) || (sfi == safiMplsVpnU)) {
-            ntry.labelRem = new ArrayList<Integer>();
+            ntry.best.labelRem = new ArrayList<Integer>();
             p = 0;
             for (;;) {
                 if ((p & 1) != 0) {
@@ -1092,7 +1092,7 @@ public class rtrBgpUtil {
                 p = pck.msbGetD(0) >>> 8;
                 pck.getSkip(3);
                 i -= 24;
-                ntry.labelRem.add(p >>> 4);
+                ntry.best.labelRem.add(p >>> 4);
                 if (oneLab) {
                     break;
                 }
@@ -1219,8 +1219,8 @@ public class rtrBgpUtil {
         byte[] buf1 = new byte[128];
         int p = 0;
         if ((sfi == safiLabeled) || (sfi == safiMplsVpnU)) {
-            for (int q = 0; q < ntry.labelRem.size(); q++) {
-                bits.msbPutD(buf1, p, ntry.labelRem.get(q) << 12);
+            for (int q = 0; q < ntry.best.labelRem.size(); q++) {
+                bits.msbPutD(buf1, p, ntry.best.labelRem.get(q) << 12);
                 p += 3;
                 i += 24;
             }
@@ -1530,7 +1530,7 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseOrigin(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.origin = pck.getByte(0);
+        ntry.best.origin = pck.getByte(0);
     }
 
     private static void parseAsList(boolean longAs, List<Integer> lst, packHolder pck) {
@@ -1557,25 +1557,25 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseAsPath(boolean longAs, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.pathSeq = new ArrayList<Integer>();
-        ntry.pathSet = new ArrayList<Integer>();
-        ntry.confSeq = new ArrayList<Integer>();
-        ntry.confSet = new ArrayList<Integer>();
+        ntry.best.pathSeq = new ArrayList<Integer>();
+        ntry.best.pathSet = new ArrayList<Integer>();
+        ntry.best.confSeq = new ArrayList<Integer>();
+        ntry.best.confSet = new ArrayList<Integer>();
         for (; pck.dataSize() > 0;) {
             int i = pck.getByte(0);
             pck.getSkip(1);
             switch (i) {
                 case 1: // as set
-                    parseAsList(longAs, ntry.pathSet, pck);
+                    parseAsList(longAs, ntry.best.pathSet, pck);
                     break;
                 case 2: // as seq
-                    parseAsList(longAs, ntry.pathSeq, pck);
+                    parseAsList(longAs, ntry.best.pathSeq, pck);
                     break;
                 case 3: // confed seq
-                    parseAsList(longAs, ntry.confSeq, pck);
+                    parseAsList(longAs, ntry.best.confSeq, pck);
                     break;
                 case 4: // confed set
-                    parseAsList(longAs, ntry.pathSet, pck);
+                    parseAsList(longAs, ntry.best.pathSet, pck);
                     break;
             }
         }
@@ -1592,7 +1592,7 @@ public class rtrBgpUtil {
         pck.getAddr(as, 0);
         addrIP ax = new addrIP();
         ax.fromIPv4addr(as);
-        ntry.nextHop = ax;
+        ntry.best.nextHop = ax;
     }
 
     /**
@@ -1602,7 +1602,7 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseMetric(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.metric = pck.msbGetD(0);
+        ntry.best.metric = pck.msbGetD(0);
     }
 
     /**
@@ -1612,7 +1612,7 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseLocPref(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.locPref = pck.msbGetD(0);
+        ntry.best.locPref = pck.msbGetD(0);
     }
 
     /**
@@ -1621,7 +1621,7 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void parseAtomicAggr(tabRouteEntry<addrIP> ntry) {
-        ntry.atomicAggr = true;
+        ntry.best.atomicAggr = true;
     }
 
     /**
@@ -1633,17 +1633,17 @@ public class rtrBgpUtil {
      */
     public static void parseAggregator(boolean longAs, tabRouteEntry<addrIP> ntry, packHolder pck) {
         if (longAs) {
-            ntry.aggrAs = pck.msbGetD(0);
+            ntry.best.aggrAs = pck.msbGetD(0);
             pck.getSkip(4);
         } else {
-            ntry.aggrAs = pck.msbGetW(0);
+            ntry.best.aggrAs = pck.msbGetW(0);
             pck.getSkip(2);
         }
         addrIPv4 as = new addrIPv4();
         pck.getAddr(as, 0);
         addrIP ax = new addrIP();
         ax.fromIPv4addr(as);
-        ntry.aggrRtr = ax;
+        ntry.best.aggrRtr = ax;
     }
 
     /**
@@ -1653,9 +1653,9 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseStdComm(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.stdComm = new ArrayList<Integer>();
+        ntry.best.stdComm = new ArrayList<Integer>();
         for (; pck.dataSize() >= 4;) {
-            ntry.stdComm.add(pck.msbGetD(0));
+            ntry.best.stdComm.add(pck.msbGetD(0));
             pck.getSkip(4);
         }
     }
@@ -1667,9 +1667,9 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseExtComm(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.extComm = new ArrayList<Long>();
+        ntry.best.extComm = new ArrayList<Long>();
         for (; pck.dataSize() >= 8;) {
-            ntry.extComm.add(pck.msbGetQ(0));
+            ntry.best.extComm.add(pck.msbGetQ(0));
             pck.getSkip(8);
         }
     }
@@ -1681,13 +1681,13 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseLrgComm(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.lrgComm = new ArrayList<tabLargeComm>();
+        ntry.best.lrgComm = new ArrayList<tabLargeComm>();
         for (; pck.dataSize() >= 12;) {
             tabLargeComm d = new tabLargeComm();
             d.as = pck.msbGetD(0);
             d.d1 = pck.msbGetD(4);
             d.d2 = pck.msbGetD(8);
-            ntry.lrgComm.add(d);
+            ntry.best.lrgComm.add(d);
             pck.getSkip(12);
         }
     }
@@ -1703,7 +1703,7 @@ public class rtrBgpUtil {
         pck.getAddr(as, 0);
         addrIP ax = new addrIP();
         ax.fromIPv4addr(as);
-        ntry.originator = ax;
+        ntry.best.originator = ax;
     }
 
     /**
@@ -1719,7 +1719,7 @@ public class rtrBgpUtil {
         if (pck.msbGetW(1) < 11) {
             return;
         }
-        ntry.accIgp = (int) pck.msbGetQ(3);
+        ntry.best.accIgp = (int) pck.msbGetQ(3);
     }
 
     /**
@@ -1729,7 +1729,7 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseTraffEng(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.bandwidth = ((Float) Float.intBitsToFloat(pck.msbGetD(4))).intValue() * 8;
+        ntry.best.bandwidth = ((Float) Float.intBitsToFloat(pck.msbGetD(4))).intValue() * 8;
     }
 
     /**
@@ -1739,10 +1739,10 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parsePmsiTun(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.pmsiTyp = pck.msbGetW(0);
-        ntry.pmsiLab = pck.msbGetD(2) >>> 8;
+        ntry.best.pmsiTyp = pck.msbGetW(0);
+        ntry.best.pmsiLab = pck.msbGetD(2) >>> 8;
         pck.getSkip(5);
-        ntry.pmsiTun = pck.getCopy();
+        ntry.best.pmsiTun = pck.getCopy();
     }
 
     /**
@@ -1752,14 +1752,14 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseTunEnc(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.tunelTyp = pck.msbGetW(0);
+        ntry.best.tunelTyp = pck.msbGetW(0);
         int len = pck.msbGetW(2);
         pck.getSkip(4);
         if (pck.dataSize() < len) {
             return;
         }
         pck.setDataSize(len);
-        ntry.tunelVal = pck.getCopy();
+        ntry.best.tunelVal = pck.getCopy();
     }
 
     /**
@@ -1769,9 +1769,9 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseAttribSet(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.attribAs = pck.msbGetD(0);
+        ntry.best.attribAs = pck.msbGetD(0);
         pck.getSkip(4);
-        ntry.attribVal = pck.getCopy();
+        ntry.best.attribVal = pck.getCopy();
     }
 
     /**
@@ -1788,17 +1788,17 @@ public class rtrBgpUtil {
             }
             switch (tlv.valTyp) {
                 case 1: // label index
-                    ntry.segrouIdx = bits.msbGetD(tlv.valDat, 3); // index
+                    ntry.best.segrouIdx = bits.msbGetD(tlv.valDat, 3); // index
                     break;
                 case 3: // srgb
-                    ntry.segrouBeg = bits.msbGetD(tlv.valDat, 2) >>> 8; // base
-                    ntry.segrouSiz = bits.msbGetD(tlv.valDat, 5) >>> 8; // range
+                    ntry.best.segrouBeg = bits.msbGetD(tlv.valDat, 2) >>> 8; // base
+                    ntry.best.segrouSiz = bits.msbGetD(tlv.valDat, 5) >>> 8; // range
                     break;
                 case 4: // prefix sid
                     addrIPv6 adr6 = new addrIPv6();
-                    ntry.segrouPrf = new addrIP();
+                    ntry.best.segrouPrf = new addrIP();
                     adr6.fromBuf(tlv.valDat, 3);
-                    ntry.segrouPrf.fromIPv6addr(adr6);
+                    ntry.best.segrouPrf.fromIPv6addr(adr6);
                     break;
             }
         }
@@ -1818,12 +1818,12 @@ public class rtrBgpUtil {
             }
             switch (tlv.valTyp) {
                 case 1: // bier
-                    ntry.bierIdx = bits.msbGetW(tlv.valDat, 1); // bfr id
+                    ntry.best.bierIdx = bits.msbGetW(tlv.valDat, 1); // bfr id
                     break;
                 case 2: // mpls
-                    ntry.bierBeg = bits.msbGetD(tlv.valDat, 0) >>> 8; // base
-                    ntry.bierSiz = tlv.valDat[3] & 0xff; // range
-                    ntry.bierHdr = (tlv.valDat[4] >>> 4) & 0xf; // bsl
+                    ntry.best.bierBeg = bits.msbGetD(tlv.valDat, 0) >>> 8; // base
+                    ntry.best.bierSiz = tlv.valDat[3] & 0xff; // range
+                    ntry.best.bierHdr = (tlv.valDat[4] >>> 4) & 0xf; // bsl
                     break;
             }
         }
@@ -1836,14 +1836,14 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseClustList(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.clustList = new ArrayList<addrIP>();
+        ntry.best.clustList = new ArrayList<addrIP>();
         for (; pck.dataSize() >= 4;) {
             addrIPv4 as = new addrIPv4();
             pck.getAddr(as, 0);
             pck.getSkip(addrIPv4.size);
             addrIP ax = new addrIP();
             ax.fromIPv4addr(as);
-            ntry.clustList.add(ax);
+            ntry.best.clustList.add(ax);
         }
     }
 
@@ -1882,7 +1882,7 @@ public class rtrBgpUtil {
                     continue;
                 }
             }
-            ntry.nextHop = adr;
+            ntry.best.nextHop = adr;
         }
         pck.setBytesLeft(len);
         len = pck.getByte(0);
@@ -1900,8 +1900,8 @@ public class rtrBgpUtil {
             }
             ntry.rouDst = res.rouDst;
             ntry.prefix = res.prefix;
-            ntry.labelRem = res.labelRem;
-            ntry.evpnLab = res.evpnLab;
+            ntry.best.labelRem = res.best.labelRem;
+            ntry.best.evpnLab = res.best.evpnLab;
             lower.prefixReach(safi, ntry);
         }
     }
@@ -1927,8 +1927,8 @@ public class rtrBgpUtil {
             }
             ntry.rouDst = res.rouDst;
             ntry.prefix = res.prefix;
-            ntry.labelRem = res.labelRem;
-            ntry.evpnLab = res.evpnLab;
+            ntry.best.labelRem = res.best.labelRem;
+            ntry.best.evpnLab = res.best.evpnLab;
             lower.prefixWithdraw(safi, ntry);
         }
     }
@@ -2029,16 +2029,16 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void decodeAttribSet(tabRouteEntry<addrIP> ntry) {
-        if (ntry.attribVal == null) {
+        if (ntry.best.attribVal == null) {
             return;
         }
         packHolder pck = new packHolder(true, true);
         packHolder cur = new packHolder(true, true);
-        pck.putCopy(ntry.attribVal, 0, 0, ntry.attribVal.length);
-        pck.putSkip(ntry.attribVal.length);
+        pck.putCopy(ntry.best.attribVal, 0, 0, ntry.best.attribVal.length);
+        pck.putSkip(ntry.best.attribVal.length);
         pck.merge2beg();
-        ntry.attribVal = null;
-        ntry.attribAs = 0;
+        ntry.best.attribVal = null;
+        ntry.best.attribAs = 0;
         for (;;) {
             if (pck.dataSize() < 1) {
                 break;
@@ -2059,8 +2059,8 @@ public class rtrBgpUtil {
         lst.add(ntry);
         packHolder pck = new packHolder(true, true);
         createReachable(pck, new packHolder(true, true), safiAttrib, false, true, lst, null);
-        ntry.attribAs = as;
-        ntry.attribVal = pck.getCopy();
+        ntry.best.attribAs = as;
+        ntry.best.attribVal = pck.getCopy();
     }
 
     /**
@@ -2285,7 +2285,7 @@ public class rtrBgpUtil {
      */
     public static void placeOrigin(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
-        hlp.putByte(0, ntry.origin % 3);
+        hlp.putByte(0, ntry.best.origin % 3);
         hlp.putSkip(1);
         placeAttrib(flagTransitive, attrOrigin, trg, hlp);
     }
@@ -2327,10 +2327,10 @@ public class rtrBgpUtil {
      */
     public static void placeAsPath(boolean longAs, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
-        placeAsList(longAs, hlp, 3, ntry.confSeq); // confed seq
-        placeAsList(longAs, hlp, 4, ntry.confSet); // confed set
-        placeAsList(longAs, hlp, 2, ntry.pathSeq); // as seq
-        placeAsList(longAs, hlp, 1, ntry.pathSet); // as set
+        placeAsList(longAs, hlp, 3, ntry.best.confSeq); // confed seq
+        placeAsList(longAs, hlp, 4, ntry.best.confSet); // confed set
+        placeAsList(longAs, hlp, 2, ntry.best.pathSeq); // as seq
+        placeAsList(longAs, hlp, 1, ntry.best.pathSet); // as set
         placeAttrib(flagTransitive, attrAsPath, trg, hlp);
     }
 
@@ -2343,7 +2343,7 @@ public class rtrBgpUtil {
      */
     public static void placeNextHop(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
-        hlp.putAddr(0, ntry.nextHop.toIPv4());
+        hlp.putAddr(0, ntry.best.nextHop.toIPv4());
         hlp.putSkip(addrIPv4.size);
         placeAttrib(flagTransitive, attrNextHop, trg, hlp);
     }
@@ -2356,11 +2356,11 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeMetric(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.metric < 1) {
+        if (ntry.best.metric < 1) {
             return;
         }
         hlp.clear();
-        hlp.msbPutD(0, ntry.metric);
+        hlp.msbPutD(0, ntry.best.metric);
         hlp.putSkip(4);
         placeAttrib(flagOptional, attrMetric, trg, hlp);
     }
@@ -2373,11 +2373,11 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeLocPref(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.locPref < 1) {
+        if (ntry.best.locPref < 1) {
             return;
         }
         hlp.clear();
-        hlp.msbPutD(0, ntry.locPref);
+        hlp.msbPutD(0, ntry.best.locPref);
         hlp.putSkip(4);
         placeAttrib(flagTransitive, attrLocPref, trg, hlp);
     }
@@ -2390,7 +2390,7 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeAtomicAggr(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (!ntry.atomicAggr) {
+        if (!ntry.best.atomicAggr) {
             return;
         }
         hlp.clear();
@@ -2406,18 +2406,18 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeAggregator(boolean longAs, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.aggrRtr == null) {
+        if (ntry.best.aggrRtr == null) {
             return;
         }
         hlp.clear();
         if (longAs) {
-            hlp.msbPutD(0, ntry.aggrAs);
+            hlp.msbPutD(0, ntry.best.aggrAs);
             hlp.putSkip(4);
         } else {
-            hlp.msbPutW(0, asNum16bit(ntry.aggrAs));
+            hlp.msbPutW(0, asNum16bit(ntry.best.aggrAs));
             hlp.putSkip(2);
         }
-        hlp.putAddr(0, ntry.aggrRtr.toIPv4());
+        hlp.putAddr(0, ntry.best.aggrRtr.toIPv4());
         hlp.putSkip(addrIPv4.size);
         placeAttrib(flagOptional | flagTransitive, attrAggregator, trg, hlp);
     }
@@ -2430,12 +2430,12 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeStdComm(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.stdComm == null) {
+        if (ntry.best.stdComm == null) {
             return;
         }
         hlp.clear();
-        for (int i = 0; i < ntry.stdComm.size(); i++) {
-            hlp.msbPutD(0, ntry.stdComm.get(i));
+        for (int i = 0; i < ntry.best.stdComm.size(); i++) {
+            hlp.msbPutD(0, ntry.best.stdComm.get(i));
             hlp.putSkip(4);
         }
         placeAttrib(flagOptional | flagTransitive, attrStdComm, trg, hlp);
@@ -2449,12 +2449,12 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeExtComm(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.extComm == null) {
+        if (ntry.best.extComm == null) {
             return;
         }
         hlp.clear();
-        for (int i = 0; i < ntry.extComm.size(); i++) {
-            hlp.msbPutQ(0, ntry.extComm.get(i));
+        for (int i = 0; i < ntry.best.extComm.size(); i++) {
+            hlp.msbPutQ(0, ntry.best.extComm.get(i));
             hlp.putSkip(8);
         }
         placeAttrib(flagOptional | flagTransitive, attrExtComm, trg, hlp);
@@ -2468,12 +2468,12 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeLrgComm(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.lrgComm == null) {
+        if (ntry.best.lrgComm == null) {
             return;
         }
         hlp.clear();
-        for (int i = 0; i < ntry.lrgComm.size(); i++) {
-            tabLargeComm d = ntry.lrgComm.get(i);
+        for (int i = 0; i < ntry.best.lrgComm.size(); i++) {
+            tabLargeComm d = ntry.best.lrgComm.get(i);
             hlp.msbPutD(0, d.as);
             hlp.msbPutD(4, d.d1);
             hlp.msbPutD(8, d.d2);
@@ -2490,11 +2490,11 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeOriginator(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.originator == null) {
+        if (ntry.best.originator == null) {
             return;
         }
         hlp.clear();
-        hlp.putAddr(0, ntry.originator.toIPv4());
+        hlp.putAddr(0, ntry.best.originator.toIPv4());
         hlp.putSkip(addrIPv4.size);
         placeAttrib(flagOptional, attrOriginator, trg, hlp);
     }
@@ -2507,13 +2507,13 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeAccIgp(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.accIgp < 1) {
+        if (ntry.best.accIgp < 1) {
             return;
         }
         hlp.clear();
         hlp.putByte(0, 1); // type
         hlp.msbPutW(1, 11); // length
-        hlp.msbPutQ(3, ntry.accIgp); // value
+        hlp.msbPutQ(3, ntry.best.accIgp); // value
         hlp.putSkip(11);
         placeAttrib(flagOptional, attrAccIgp, trg, hlp);
     }
@@ -2526,14 +2526,14 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeTraffEng(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.bandwidth < 1) {
+        if (ntry.best.bandwidth < 1) {
             return;
         }
         hlp.clear();
         hlp.putByte(0, 1); // psc1
         hlp.putByte(1, 1); // packet
         hlp.msbPutW(2, 0); // reserved
-        int i = Float.floatToIntBits(ntry.bandwidth / 8);
+        int i = Float.floatToIntBits(ntry.best.bandwidth / 8);
         hlp.msbPutD(4, i); // pri0
         hlp.msbPutD(8, i); // pri1
         hlp.msbPutD(12, i); // pri2
@@ -2556,15 +2556,15 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placePmsiTun(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.pmsiTun == null) {
+        if (ntry.best.pmsiTun == null) {
             return;
         }
         hlp.clear();
-        hlp.msbPutW(0, ntry.pmsiTyp);
-        hlp.msbPutD(2, ntry.pmsiLab << 8);
+        hlp.msbPutW(0, ntry.best.pmsiTyp);
+        hlp.msbPutD(2, ntry.best.pmsiLab << 8);
         hlp.putSkip(5);
-        hlp.putCopy(ntry.pmsiTun, 0, 0, ntry.pmsiTun.length);
-        hlp.putSkip(ntry.pmsiTun.length);
+        hlp.putCopy(ntry.best.pmsiTun, 0, 0, ntry.best.pmsiTun.length);
+        hlp.putSkip(ntry.best.pmsiTun.length);
         placeAttrib(flagOptional | flagTransitive, attrPmsiTun, trg, hlp);
     }
 
@@ -2576,15 +2576,15 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeTunEnc(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.tunelVal == null) {
+        if (ntry.best.tunelVal == null) {
             return;
         }
         hlp.clear();
-        hlp.msbPutW(0, ntry.tunelTyp);
-        hlp.msbPutW(2, ntry.tunelVal.length);
+        hlp.msbPutW(0, ntry.best.tunelTyp);
+        hlp.msbPutW(2, ntry.best.tunelVal.length);
         hlp.putSkip(4);
-        hlp.putCopy(ntry.tunelVal, 0, 0, ntry.tunelVal.length);
-        hlp.putSkip(ntry.tunelVal.length);
+        hlp.putCopy(ntry.best.tunelVal, 0, 0, ntry.best.tunelVal.length);
+        hlp.putSkip(ntry.best.tunelVal.length);
         placeAttrib(flagOptional | flagTransitive, attrTunEnc, trg, hlp);
     }
 
@@ -2596,14 +2596,14 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeAttribSet(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.attribVal == null) {
+        if (ntry.best.attribVal == null) {
             return;
         }
         hlp.clear();
-        hlp.msbPutD(0, ntry.attribAs);
+        hlp.msbPutD(0, ntry.best.attribAs);
         hlp.putSkip(4);
-        hlp.putCopy(ntry.attribVal, 0, 0, ntry.attribVal.length);
-        hlp.putSkip(ntry.attribVal.length);
+        hlp.putCopy(ntry.best.attribVal, 0, 0, ntry.best.attribVal.length);
+        hlp.putSkip(ntry.best.attribVal.length);
         placeAttrib(flagOptional | flagTransitive, attrAttribSet, trg, hlp);
     }
 
@@ -2617,22 +2617,22 @@ public class rtrBgpUtil {
     public static void placePrefSid(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
         typLenVal tlv = getPrefSidTlv();
-        if (ntry.segrouIdx != 0) {
+        if (ntry.best.segrouIdx != 0) {
             tlv.valDat[0] = 0; // reserved
             bits.msbPutW(tlv.valDat, 1, 0); // flags
-            bits.msbPutD(tlv.valDat, 3, ntry.segrouIdx); // index
+            bits.msbPutD(tlv.valDat, 3, ntry.best.segrouIdx); // index
             tlv.putBytes(hlp, 1, 7, tlv.valDat);
         }
-        if (ntry.segrouSiz != 0) {
+        if (ntry.best.segrouSiz != 0) {
             bits.msbPutW(tlv.valDat, 0, 0); // flags
-            bits.msbPutD(tlv.valDat, 2, ntry.segrouBeg << 8); // base
-            bits.msbPutD(tlv.valDat, 5, ntry.segrouSiz << 8); // range
+            bits.msbPutD(tlv.valDat, 2, ntry.best.segrouBeg << 8); // base
+            bits.msbPutD(tlv.valDat, 5, ntry.best.segrouSiz << 8); // range
             tlv.putBytes(hlp, 3, 8, tlv.valDat);
         }
-        if (ntry.segrouPrf != null) {
+        if (ntry.best.segrouPrf != null) {
             tlv.valDat[0] = 0; // reserved
             bits.msbPutW(tlv.valDat, 1, 0x100); // flags
-            ntry.segrouPrf.toIPv6().toBuffer(tlv.valDat, 3);
+            ntry.best.segrouPrf.toIPv6().toBuffer(tlv.valDat, 3);
             tlv.putBytes(hlp, 4, addrIPv6.size + 3, tlv.valDat);
         }
         if (hlp.headSize() < 1) {
@@ -2649,19 +2649,19 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeBier(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.bierIdx == 0) {
+        if (ntry.best.bierIdx == 0) {
             return;
         }
         hlp.clear();
         typLenVal tlv = getBierTlv();
         tlv.valDat[0] = 0; // subdomain
-        bits.msbPutW(tlv.valDat, 1, ntry.bierIdx); // bfr id
+        bits.msbPutW(tlv.valDat, 1, ntry.best.bierIdx); // bfr id
         tlv.putBytes(hlp, 1, 4, tlv.valDat);
-        if (ntry.bierSiz != 0) {
+        if (ntry.best.bierSiz != 0) {
             tlv = getBierTlv();
-            bits.msbPutD(tlv.valDat, 0, ntry.bierBeg << 8); // base
-            tlv.valDat[3] = (byte) ntry.bierSiz; // range
-            tlv.valDat[4] = (byte) (ntry.bierHdr << 4); // bsl
+            bits.msbPutD(tlv.valDat, 0, ntry.best.bierBeg << 8); // base
+            tlv.valDat[3] = (byte) ntry.best.bierSiz; // range
+            tlv.valDat[4] = (byte) (ntry.best.bierHdr << 4); // bsl
             tlv.putBytes(hlp, 2, 8, tlv.valDat);
         }
         placeAttrib(flagOptional | flagTransitive, attrBier, trg, hlp);
@@ -2675,12 +2675,12 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeClustList(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.clustList == null) {
+        if (ntry.best.clustList == null) {
             return;
         }
         hlp.clear();
-        for (int i = 0; i < ntry.clustList.size(); i++) {
-            hlp.putAddr(0, ntry.clustList.get(i).toIPv4());
+        for (int i = 0; i < ntry.best.clustList.size(); i++) {
+            hlp.putAddr(0, ntry.best.clustList.get(i).toIPv4());
             hlp.putSkip(addrIPv4.size);
         }
         placeAttrib(flagOptional, attrClustList, trg, hlp);
@@ -2709,7 +2709,7 @@ public class rtrBgpUtil {
             hlp.msbPutQ(0, 0); // rd
             hlp.putSkip(8);
         }
-        writeAddress(safi, hlp, lst.get(0).nextHop);
+        writeAddress(safi, hlp, lst.get(0).best.nextHop);
         hlp.putByte(0, 0);
         hlp.putSkip(1);
         for (i = 0; i < lst.size(); i++) {

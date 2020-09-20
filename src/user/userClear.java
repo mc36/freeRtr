@@ -48,6 +48,7 @@ import rtr.rtrRip4neigh;
 import rtr.rtrRip6neigh;
 import tab.tabRouteEntry;
 import serv.servBmp2mrt;
+import tab.tabRouteAttr;
 import util.bits;
 import util.cmds;
 import util.logger;
@@ -420,7 +421,7 @@ public class userClear {
                 return null;
             }
             if (a.equals("bgp")) {
-                doClearIpXbgp(tabRouteEntry.routeType.bgp4);
+                doClearIpXbgp(tabRouteAttr.routeType.bgp4);
                 return null;
             }
             if (a.equals("bfd")) {
@@ -428,15 +429,15 @@ public class userClear {
                 return null;
             }
             if (a.equals("babel")) {
-                doClearIpXbabel(tabRouteEntry.routeType.babel4);
+                doClearIpXbabel(tabRouteAttr.routeType.babel4);
                 return null;
             }
             if (a.equals("eigrp")) {
-                doClearIpXeigrp(tabRouteEntry.routeType.eigrp4);
+                doClearIpXeigrp(tabRouteAttr.routeType.eigrp4);
                 return null;
             }
             if (a.equals("isis")) {
-                doClearIpXisis(tabRouteEntry.routeType.isis4);
+                doClearIpXisis(tabRouteAttr.routeType.isis4);
                 return null;
             }
             if (a.equals("ldp")) {
@@ -444,15 +445,15 @@ public class userClear {
                 return null;
             }
             if (a.equals("lsrp")) {
-                doClearIpXlsrp(tabRouteEntry.routeType.lsrp4);
+                doClearIpXlsrp(tabRouteAttr.routeType.lsrp4);
                 return null;
             }
             if (a.equals("msdp")) {
-                doClearIpXmsdp(tabRouteEntry.routeType.msdp4);
+                doClearIpXmsdp(tabRouteAttr.routeType.msdp4);
                 return null;
             }
             if (a.equals("olsr")) {
-                doClearIpXolsr(tabRouteEntry.routeType.olsr4);
+                doClearIpXolsr(tabRouteAttr.routeType.olsr4);
                 return null;
             }
             if (a.equals("ospf")) {
@@ -460,7 +461,7 @@ public class userClear {
                 return null;
             }
             if (a.equals("pvrp")) {
-                doClearIpXpvrp(tabRouteEntry.routeType.pvrp4);
+                doClearIpXpvrp(tabRouteAttr.routeType.pvrp4);
                 return null;
             }
             if (a.equals("rip")) {
@@ -509,7 +510,7 @@ public class userClear {
                 return null;
             }
             if (a.equals("bgp")) {
-                doClearIpXbgp(tabRouteEntry.routeType.bgp6);
+                doClearIpXbgp(tabRouteAttr.routeType.bgp6);
                 return null;
             }
             if (a.equals("bfd")) {
@@ -517,15 +518,15 @@ public class userClear {
                 return null;
             }
             if (a.equals("babel")) {
-                doClearIpXbabel(tabRouteEntry.routeType.babel6);
+                doClearIpXbabel(tabRouteAttr.routeType.babel6);
                 return null;
             }
             if (a.equals("eigrp")) {
-                doClearIpXeigrp(tabRouteEntry.routeType.eigrp6);
+                doClearIpXeigrp(tabRouteAttr.routeType.eigrp6);
                 return null;
             }
             if (a.equals("isis")) {
-                doClearIpXisis(tabRouteEntry.routeType.isis6);
+                doClearIpXisis(tabRouteAttr.routeType.isis6);
                 return null;
             }
             if (a.equals("ldp")) {
@@ -533,15 +534,15 @@ public class userClear {
                 return null;
             }
             if (a.equals("lsrp")) {
-                doClearIpXlsrp(tabRouteEntry.routeType.lsrp6);
+                doClearIpXlsrp(tabRouteAttr.routeType.lsrp6);
                 return null;
             }
             if (a.equals("msdp")) {
-                doClearIpXmsdp(tabRouteEntry.routeType.msdp6);
+                doClearIpXmsdp(tabRouteAttr.routeType.msdp6);
                 return null;
             }
             if (a.equals("olsr")) {
-                doClearIpXolsr(tabRouteEntry.routeType.olsr6);
+                doClearIpXolsr(tabRouteAttr.routeType.olsr6);
                 return null;
             }
             if (a.equals("ospf")) {
@@ -549,7 +550,7 @@ public class userClear {
                 return null;
             }
             if (a.equals("pvrp")) {
-                doClearIpXpvrp(tabRouteEntry.routeType.pvrp6);
+                doClearIpXpvrp(tabRouteAttr.routeType.pvrp6);
                 return null;
             }
             if (a.equals("rip")) {
@@ -563,7 +564,7 @@ public class userClear {
         return null;
     }
 
-    private void doClearIpXbgp(tabRouteEntry.routeType afi) {
+    private void doClearIpXbgp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -646,7 +647,7 @@ public class userClear {
         nei.stopNow();
     }
 
-    private void doClearIpXbabel(tabRouteEntry.routeType afi) {
+    private void doClearIpXbabel(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -665,7 +666,7 @@ public class userClear {
         nei.bfdPeerDown();
     }
 
-    private void doClearIpXeigrp(tabRouteEntry.routeType afi) {
+    private void doClearIpXeigrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -684,7 +685,7 @@ public class userClear {
         nei.bfdPeerDown();
     }
 
-    private void doClearIpXisis(tabRouteEntry.routeType afi) {
+    private void doClearIpXisis(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -728,7 +729,7 @@ public class userClear {
         nei.stopPeer();
     }
 
-    private void doClearIpXlsrp(tabRouteEntry.routeType afi) {
+    private void doClearIpXlsrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -747,7 +748,7 @@ public class userClear {
         nei.bfdPeerDown();
     }
 
-    private void doClearIpXmsdp(tabRouteEntry.routeType afi) {
+    private void doClearIpXmsdp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -766,7 +767,7 @@ public class userClear {
         nei.bfdPeerDown();
     }
 
-    private void doClearIpXolsr(tabRouteEntry.routeType afi) {
+    private void doClearIpXolsr(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -786,7 +787,7 @@ public class userClear {
     }
 
     private void doClearIpXospf4() {
-        cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.ospf4, bits.str2num(cmd.word()), false);
+        cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.ospf4, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
             return;
@@ -806,7 +807,7 @@ public class userClear {
     }
 
     private void doClearIpXospf6() {
-        cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.ospf6, bits.str2num(cmd.word()), false);
+        cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.ospf6, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
             return;
@@ -825,7 +826,7 @@ public class userClear {
         nei.bfdPeerDown();
     }
 
-    private void doClearIpXpvrp(tabRouteEntry.routeType afi) {
+    private void doClearIpXpvrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
@@ -845,7 +846,7 @@ public class userClear {
     }
 
     private void doClearIpXrip4() {
-        cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.rip4, bits.str2num(cmd.word()), false);
+        cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.rip4, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
             return;
@@ -864,7 +865,7 @@ public class userClear {
     }
 
     private void doClearIpXrip6() {
-        cfgRtr r = cfgAll.rtrFind(tabRouteEntry.routeType.rip6, bits.str2num(cmd.word()), false);
+        cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.rip6, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
             return;

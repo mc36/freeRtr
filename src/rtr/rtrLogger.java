@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import tab.tabGen;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFormat;
 import user.userHelping;
@@ -33,7 +34,7 @@ public class rtrLogger extends ipRtr {
     /**
      * route type
      */
-    protected final tabRouteEntry.routeType rouTyp;
+    protected final tabRouteAttr.routeType rouTyp;
 
     /**
      * router number
@@ -76,10 +77,10 @@ public class rtrLogger extends ipRtr {
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.logger4;
+                rouTyp = tabRouteAttr.routeType.logger4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.logger6;
+                rouTyp = tabRouteAttr.routeType.logger6;
                 break;
             default:
                 rouTyp = null;

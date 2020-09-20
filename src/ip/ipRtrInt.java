@@ -88,7 +88,7 @@ public class ipRtrInt implements Comparator<ipRtrInt> {
         }
         if (metric != null) {
             ntry = ntry.copyBytes();
-            ntry.metric = metric.update(ntry.metric);
+            ntry.best.metric = metric.update(ntry.best.metric);
         }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, roumap, rouplc, null);
     }

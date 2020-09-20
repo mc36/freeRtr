@@ -8,6 +8,7 @@ import tab.tabRoute;
 import tab.tabRtrmapN;
 import addr.addrIP;
 import tab.tabIntUpdater;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrplcN;
 
@@ -21,7 +22,7 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
     /**
      * type of protocol
      */
-    public final tabRouteEntry.routeType typ;
+    public final tabRouteAttr.routeType typ;
 
     /**
      * number of process
@@ -54,7 +55,7 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
      * @param prot type of protocol
      * @param proc number of process
      */
-    public ipRtrRed(tabRouteEntry.routeType prot, int proc) {
+    public ipRtrRed(tabRouteAttr.routeType prot, int proc) {
         typ = prot;
         num = proc;
     }
@@ -86,15 +87,15 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.rouTyp != typ) {
+            if (ntry.best.rouTyp != typ) {
                 continue;
             }
-            if (ntry.protoNum != num) {
+            if (ntry.best.protoNum != num) {
                 continue;
             }
             if (metric != null) {
                 ntry = ntry.copyBytes();
-                ntry.metric = metric.update(ntry.metric);
+                ntry.best.metric = metric.update(ntry.best.metric);
             }
             tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, roumap, rouplc, prflst);
         }

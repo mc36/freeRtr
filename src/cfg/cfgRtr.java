@@ -32,6 +32,7 @@ import rtr.rtrDeaggr;
 import rtr.rtrMobile;
 import tab.tabGen;
 import tab.tabIntUpdater;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFilter;
 import user.userHelping;
@@ -48,7 +49,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     /**
      * type of routing process
      */
-    public tabRouteEntry.routeType type;
+    public tabRouteAttr.routeType type;
 
     /**
      * number of routing process
@@ -429,123 +430,123 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * @param a name to convert
      * @return value, negative on error
      */
-    public static tabRouteEntry.routeType name2num(String a) {
+    public static tabRouteAttr.routeType name2num(String a) {
         if (a.equals("rip4")) {
-            return tabRouteEntry.routeType.rip4;
+            return tabRouteAttr.routeType.rip4;
         }
         if (a.equals("rip6")) {
-            return tabRouteEntry.routeType.rip6;
+            return tabRouteAttr.routeType.rip6;
         }
         if (a.equals("babel4")) {
-            return tabRouteEntry.routeType.babel4;
+            return tabRouteAttr.routeType.babel4;
         }
         if (a.equals("babel6")) {
-            return tabRouteEntry.routeType.babel6;
+            return tabRouteAttr.routeType.babel6;
         }
         if (a.equals("blackhole4")) {
-            return tabRouteEntry.routeType.blackhole4;
+            return tabRouteAttr.routeType.blackhole4;
         }
         if (a.equals("blackhole6")) {
-            return tabRouteEntry.routeType.blackhole6;
+            return tabRouteAttr.routeType.blackhole6;
         }
         if (a.equals("olsr4")) {
-            return tabRouteEntry.routeType.olsr4;
+            return tabRouteAttr.routeType.olsr4;
         }
         if (a.equals("olsr6")) {
-            return tabRouteEntry.routeType.olsr6;
+            return tabRouteAttr.routeType.olsr6;
         }
         if (a.equals("ospf4")) {
-            return tabRouteEntry.routeType.ospf4;
+            return tabRouteAttr.routeType.ospf4;
         }
         if (a.equals("ospf6")) {
-            return tabRouteEntry.routeType.ospf6;
+            return tabRouteAttr.routeType.ospf6;
         }
         if (a.equals("isis4")) {
-            return tabRouteEntry.routeType.isis4;
+            return tabRouteAttr.routeType.isis4;
         }
         if (a.equals("isis6")) {
-            return tabRouteEntry.routeType.isis6;
+            return tabRouteAttr.routeType.isis6;
         }
         if (a.equals("pvrp4")) {
-            return tabRouteEntry.routeType.pvrp4;
+            return tabRouteAttr.routeType.pvrp4;
         }
         if (a.equals("pvrp6")) {
-            return tabRouteEntry.routeType.pvrp6;
+            return tabRouteAttr.routeType.pvrp6;
         }
         if (a.equals("lsrp4")) {
-            return tabRouteEntry.routeType.lsrp4;
+            return tabRouteAttr.routeType.lsrp4;
         }
         if (a.equals("lsrp6")) {
-            return tabRouteEntry.routeType.lsrp6;
+            return tabRouteAttr.routeType.lsrp6;
         }
         if (a.equals("eigrp4")) {
-            return tabRouteEntry.routeType.eigrp4;
+            return tabRouteAttr.routeType.eigrp4;
         }
         if (a.equals("eigrp6")) {
-            return tabRouteEntry.routeType.eigrp6;
+            return tabRouteAttr.routeType.eigrp6;
         }
         if (a.equals("bgp4")) {
-            return tabRouteEntry.routeType.bgp4;
+            return tabRouteAttr.routeType.bgp4;
         }
         if (a.equals("bgp6")) {
-            return tabRouteEntry.routeType.bgp6;
+            return tabRouteAttr.routeType.bgp6;
         }
         if (a.equals("static")) {
-            return tabRouteEntry.routeType.staticRoute;
+            return tabRouteAttr.routeType.staticRoute;
         }
         if (a.equals("defgw")) {
-            return tabRouteEntry.routeType.defpref;
+            return tabRouteAttr.routeType.defpref;
         }
         if (a.equals("connected")) {
-            return tabRouteEntry.routeType.conn;
+            return tabRouteAttr.routeType.conn;
         }
         if (a.equals("msdp4")) {
-            return tabRouteEntry.routeType.msdp4;
+            return tabRouteAttr.routeType.msdp4;
         }
         if (a.equals("msdp6")) {
-            return tabRouteEntry.routeType.msdp6;
+            return tabRouteAttr.routeType.msdp6;
         }
         if (a.equals("flowspec4")) {
-            return tabRouteEntry.routeType.flwspc4;
+            return tabRouteAttr.routeType.flwspc4;
         }
         if (a.equals("flowspec6")) {
-            return tabRouteEntry.routeType.flwspc6;
+            return tabRouteAttr.routeType.flwspc6;
         }
         if (a.equals("uni2multi4")) {
-            return tabRouteEntry.routeType.uni2multi4;
+            return tabRouteAttr.routeType.uni2multi4;
         }
         if (a.equals("uni2multi6")) {
-            return tabRouteEntry.routeType.uni2multi6;
+            return tabRouteAttr.routeType.uni2multi6;
         }
         if (a.equals("uni2flow4")) {
-            return tabRouteEntry.routeType.uni2flow4;
+            return tabRouteAttr.routeType.uni2flow4;
         }
         if (a.equals("uni2flow6")) {
-            return tabRouteEntry.routeType.uni2flow6;
+            return tabRouteAttr.routeType.uni2flow6;
         }
         if (a.equals("logger4")) {
-            return tabRouteEntry.routeType.logger4;
+            return tabRouteAttr.routeType.logger4;
         }
         if (a.equals("logger6")) {
-            return tabRouteEntry.routeType.logger6;
+            return tabRouteAttr.routeType.logger6;
         }
         if (a.equals("download4")) {
-            return tabRouteEntry.routeType.download4;
+            return tabRouteAttr.routeType.download4;
         }
         if (a.equals("download6")) {
-            return tabRouteEntry.routeType.download6;
+            return tabRouteAttr.routeType.download6;
         }
         if (a.equals("deaggr4")) {
-            return tabRouteEntry.routeType.deaggr4;
+            return tabRouteAttr.routeType.deaggr4;
         }
         if (a.equals("deaggr6")) {
-            return tabRouteEntry.routeType.deaggr6;
+            return tabRouteAttr.routeType.deaggr6;
         }
         if (a.equals("mobile4")) {
-            return tabRouteEntry.routeType.mobile4;
+            return tabRouteAttr.routeType.mobile4;
         }
         if (a.equals("mobile6")) {
-            return tabRouteEntry.routeType.mobile6;
+            return tabRouteAttr.routeType.mobile6;
         }
         return null;
     }
@@ -556,7 +557,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * @param i number to convert
      * @return name of protocol
      */
-    public static String num2name(tabRouteEntry.routeType i) {
+    public static String num2name(tabRouteAttr.routeType i) {
         switch (i) {
             case rip4:
                 return "rip4";
@@ -647,7 +648,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * @param i router type
      * @return true if needed, false if not
      */
-    public static boolean num2proc(tabRouteEntry.routeType i) {
+    public static boolean num2proc(tabRouteAttr.routeType i) {
         switch (i) {
             case staticRoute:
             case conn:
@@ -867,7 +868,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * @return redistribution
      */
     public static ipRtrRed str2redist(cmds cmd) {
-        tabRouteEntry.routeType i = name2num(cmd.word());
+        tabRouteAttr.routeType i = name2num(cmd.word());
         if (i == null) {
             return null;
         }
@@ -1096,7 +1097,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * @param typ type of routing process
      * @param num number of bridge
      */
-    public cfgRtr(tabRouteEntry.routeType typ, int num) {
+    public cfgRtr(tabRouteAttr.routeType typ, int num) {
         type = typ;
         number = num;
     }

@@ -202,12 +202,12 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
     }
 
     private void putPmsi(tabRouteEntry<addrIP> ntry, int lab) {
-        ntry.pmsiTyp = 6;
-        ntry.pmsiLab = lab;
-        if (ntry.nextHop.isIPv4()) {
-            ntry.pmsiTun = ntry.nextHop.toIPv4().getBytes();
+        ntry.best.pmsiTyp = 6;
+        ntry.best.pmsiLab = lab;
+        if (ntry.best.nextHop.isIPv4()) {
+            ntry.best.pmsiTun = ntry.best.nextHop.toIPv4().getBytes();
         } else {
-            ntry.pmsiTun = ntry.nextHop.toIPv6().getBytes();
+            ntry.best.pmsiTun = ntry.best.nextHop.toIPv6().getBytes();
         }
     }
 
@@ -239,20 +239,20 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
             if (adr == null) {
                 return;
             }
-            ntry.nextHop = new addrIP();
-            ntry.nextHop.fromIPv4addr(adr);
+            ntry.best.nextHop = new addrIP();
+            ntry.best.nextHop.fromIPv4addr(adr);
         } else {
             addrIPv6 adr = iface.addr6;
             if (adr == null) {
                 return;
             }
-            ntry.nextHop = new addrIP();
-            ntry.nextHop.fromIPv6addr(adr);
+            ntry.best.nextHop = new addrIP();
+            ntry.best.nextHop.fromIPv6addr(adr);
         }
         ntry.rouDst = bridge.bridgeHed.rd;
-        ntry.extComm = new ArrayList<Long>();
-        ntry.extComm.add(tabRtrmapN.rt2comm(bridge.bridgeHed.rtExp));
-        ntry.rouSrc = rtrBgpUtil.peerOriginate;
+        ntry.best.extComm = new ArrayList<Long>();
+        ntry.best.extComm.add(tabRtrmapN.rt2comm(bridge.bridgeHed.rtExp));
+        ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         byte[] buf = new byte[addrIP.size];
         ntry.prefix.wildcard.fromBuf(buf, 0);
         ntry.prefix.broadcast.fromBuf(buf, 0);
@@ -262,18 +262,18 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 bbmac.toBuffer(buf, 10);
                 ntry.prefix.network.fromBuf(buf, 0);
                 if (!ipMpls.putSrv6prefix(ntry, srv6, parent.evpnUni)) {
-                    ntry.evpnLab = convLab(ntry.labelLoc);
+                    ntry.best.evpnLab = convLab(ntry.best.labelLoc);
                 } else {
-                    ntry.evpnLab = convLab(parent.evpnUni);
+                    ntry.best.evpnLab = convLab(parent.evpnUni);
                 }
                 tab.add(tabRoute.addType.better, ntry, true, true);
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
                 bits.msbPutD(buf, 2, id);
                 ntry.prefix.network.fromBuf(buf, 0);
-                ntry.prefix.broadcast = ntry.nextHop.copyBytes();
+                ntry.prefix.broadcast = ntry.best.nextHop.copyBytes();
                 if (!ipMpls.putSrv6prefix(ntry, srv6, parent.evpnMul)) {
-                    putPmsi(ntry, convLab(ntry.labelLoc));
+                    putPmsi(ntry, convLab(ntry.best.labelLoc));
                 } else {
                     putPmsi(ntry, convLab(parent.evpnMul));
                 }
@@ -282,8 +282,8 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 break;
             case vxlan:
                 buf[0] = 2; // mac advertisement
-                ntry.extComm.add(tabRtrmapN.tuntyp2comm(8));
-                ntry.evpnLab = id;
+                ntry.best.extComm.add(tabRtrmapN.tuntyp2comm(8));
+                ntry.best.evpnLab = id;
                 List<addrMac> cmac = bridge.bridgeHed.getMacList();
                 for (int i = 0; i < cmac.size(); i++) {
                     cmac.get(i).toBuffer(buf, 10);
@@ -293,7 +293,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
                 ntry.prefix.network.fromBuf(buf, 0);
-                ntry.prefix.broadcast = ntry.nextHop.copyBytes();
+                ntry.prefix.broadcast = ntry.best.nextHop.copyBytes();
                 putPmsi(ntry, id);
                 tab.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
@@ -309,9 +309,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 }
                 buf[0] = 2; // mac advertisement
                 if (!ipMpls.putSrv6prefix(ntry, srv6, label)) {
-                    ntry.evpnLab = convLab(ntry.labelLoc);
+                    ntry.best.evpnLab = convLab(ntry.best.labelLoc);
                 } else {
-                    ntry.evpnLab = convLab(label);
+                    ntry.best.evpnLab = convLab(label);
                 }
                 bits.msbPutD(buf, 2, id);
                 cmac = bridge.bridgeHed.getMacList();
@@ -324,9 +324,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 buf[0] = 3; // inclusive multicast
                 bits.msbPutD(buf, 2, id);
                 ntry.prefix.network.fromBuf(buf, 0);
-                ntry.prefix.broadcast = ntry.nextHop.copyBytes();
+                ntry.prefix.broadcast = ntry.best.nextHop.copyBytes();
                 if (!ipMpls.putSrv6prefix(ntry, srv6, label)) {
-                    putPmsi(ntry, convLab(ntry.labelLoc));
+                    putPmsi(ntry, convLab(ntry.best.labelLoc));
                 } else {
                     putPmsi(ntry, convLab(label));
                 }
@@ -344,9 +344,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 }
                 buf[0] = 1; // eth advertisement
                 if (!ipMpls.putSrv6prefix(ntry, srv6, label)) {
-                    ntry.evpnLab = convLab(ntry.labelLoc);
+                    ntry.best.evpnLab = convLab(ntry.best.labelLoc);
                 } else {
-                    ntry.evpnLab = convLab(label);
+                    ntry.best.evpnLab = convLab(label);
                 }
                 bits.msbPutD(buf, 12, id);
                 ntry.prefix.network.fromBuf(buf, 0);
@@ -369,13 +369,13 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         byte[] buf = new byte[addrIP.size];
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
-            if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
+            if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 continue;
             }
-            if (ntry.extComm == null) {
+            if (ntry.best.extComm == null) {
                 continue;
             }
-            if (rtrBgpUtil.findLongList(ntry.extComm, rt) < 0) {
+            if (rtrBgpUtil.findLongList(ntry.best.extComm, rt) < 0) {
                 continue;
             }
             rtrBgpEvpnPeer per;
@@ -395,17 +395,17 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                     }
                     per = new rtrBgpEvpnPeer(this);
                     per.bbmac = new addrMac();
-                    old = findPeer(ntry.nextHop);
+                    old = findPeer(ntry.best.nextHop);
                     if (old == null) {
                         peers.add(per);
                     } else {
                         per = old;
                     }
                     per.needed |= 1;
-                    per.peer = ntry.nextHop.copyBytes();
-                    per.labUni = ntry.evpnLab >>> 4;
-                    if (ntry.segrouPrf != null) {
-                        per.srv6uni = ntry.segrouPrf.copyBytes();
+                    per.peer = ntry.best.nextHop.copyBytes();
+                    per.labUni = ntry.best.evpnLab >>> 4;
+                    if (ntry.best.segrouPrf != null) {
+                        per.srv6uni = ntry.best.segrouPrf.copyBytes();
                     }
                     break;
                 case 2: // mac advertisement
@@ -436,7 +436,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                             old = peers.find(per);
                             break;
                         case vxlan:
-                            old = findPeer(ntry.nextHop);
+                            old = findPeer(ntry.best.nextHop);
                             break;
                         case cmac:
                             old = peers.find(per);
@@ -450,17 +450,17 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                         per = old;
                     }
                     per.needed |= 1;
-                    per.peer = ntry.nextHop.copyBytes();
-                    per.labUni = ntry.evpnLab >>> 4;
-                    if (ntry.segrouPrf != null) {
-                        per.srv6uni = ntry.segrouPrf.copyBytes();
+                    per.peer = ntry.best.nextHop.copyBytes();
+                    per.labUni = ntry.best.evpnLab >>> 4;
+                    if (ntry.best.segrouPrf != null) {
+                        per.srv6uni = ntry.best.segrouPrf.copyBytes();
                     }
                     break;
                 case 3: // inclusive multicast
-                    if (ntry.pmsiTun == null) {
+                    if (ntry.best.pmsiTun == null) {
                         continue;
                     }
-                    if (ntry.pmsiTyp != 6) {
+                    if (ntry.best.pmsiTyp != 6) {
                         continue;
                     }
                     switch (encap) {
@@ -482,19 +482,19 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                         case vpws:
                             continue;
                     }
-                    old = findPeer(ntry.nextHop);
+                    old = findPeer(ntry.best.nextHop);
                     if (old == null) {
                         per = new rtrBgpEvpnPeer(this);
                         per.bbmac = addrMac.getRandom();
-                        per.peer = ntry.nextHop.copyBytes();
+                        per.peer = ntry.best.nextHop.copyBytes();
                         peers.add(per);
                     } else {
                         per = old;
                     }
                     per.needed |= 2;
-                    per.labMul = ntry.pmsiLab >>> 4;
-                    if (ntry.segrouPrf != null) {
-                        per.srv6mul = ntry.segrouPrf.copyBytes();
+                    per.labMul = ntry.best.pmsiLab >>> 4;
+                    if (ntry.best.segrouPrf != null) {
+                        per.srv6mul = ntry.best.segrouPrf.copyBytes();
                     }
                     break;
             }

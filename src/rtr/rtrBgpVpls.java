@@ -118,7 +118,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             return;
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.extComm = new ArrayList<Long>();
+        ntry.best.extComm = new ArrayList<Long>();
         if (veId == 0) {
             if (veLab != null) {
                 tabLabel.release(veLab, 12);
@@ -138,7 +138,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
                 }
                 ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(adr, adr.maxBits()));
             }
-            ntry.extComm.add(tabRtrmapN.agi2comm(id));
+            ntry.best.extComm.add(tabRtrmapN.agi2comm(id));
         } else {
             if (veLab == null) {
                 veLab = tabLabel.allocate(12, veMax);
@@ -155,10 +155,10 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             bits.msbPutD(buf, 2, (veLab[0].getValue() << 4) | 1);
             bits.msbPutW(buf, 1, veMax);
             ntry.prefix.wildcard.fromBuf(buf, 0);
-            ntry.extComm.add(tabRtrmapN.l2info2comm(19, 0, bridge.bridgeHed.getMTUsize()));
+            ntry.best.extComm.add(tabRtrmapN.l2info2comm(19, 0, bridge.bridgeHed.getMTUsize()));
         }
-        ntry.extComm.add(tabRtrmapN.rt2comm(bridge.bridgeHed.rtExp));
-        ntry.rouSrc = rtrBgpUtil.peerOriginate;
+        ntry.best.extComm.add(tabRtrmapN.rt2comm(bridge.bridgeHed.rtExp));
+        ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         ntry.rouDst = bridge.bridgeHed.rd;
         tab.add(tabRoute.addType.better, ntry, true, true);
         adverted = true;
@@ -177,20 +177,20 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
         byte[] buf = new byte[addrIP.size];
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
-            if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
+            if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 continue;
             }
-            if (ntry.extComm == null) {
+            if (ntry.best.extComm == null) {
                 continue;
             }
-            if (rtrBgpUtil.findLongList(ntry.extComm, rt) < 0) {
+            if (rtrBgpUtil.findLongList(ntry.best.extComm, rt) < 0) {
                 continue;
             }
             rtrBgpVplsPeer per = new rtrBgpVplsPeer(parent, this);
             if (veId == 0) {
                 per.peer = ntry.prefix.network.copyBytes();
             } else {
-                per.peer = ntry.nextHop.copyBytes();
+                per.peer = ntry.best.nextHop.copyBytes();
             }
             rtrBgpVplsPeer old = peers.add(per);
             if (old != null) {

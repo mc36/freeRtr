@@ -172,8 +172,8 @@ public class rtrBgpRpki implements Comparator<rtrBgpRpki>, Runnable {
                             break;
                         }
                         ntry.prefix = addrPrefix.ip4toIP(pck.pref4);
-                        ntry.metric = pck.max;
-                        ntry.rouSrc = pck.as;
+                        ntry.best.metric = pck.max;
+                        ntry.best.rouSrc = pck.as;
                         if (pck.withdraw) {
                             table.del(ntry);
                         } else {
@@ -186,8 +186,8 @@ public class rtrBgpRpki implements Comparator<rtrBgpRpki>, Runnable {
                             break;
                         }
                         ntry.prefix = addrPrefix.ip6toIP(pck.pref6);
-                        ntry.metric = pck.max;
-                        ntry.rouSrc = pck.as;
+                        ntry.best.metric = pck.max;
+                        ntry.best.rouSrc = pck.as;
                         if (pck.withdraw) {
                             table.del(ntry);
                         } else {

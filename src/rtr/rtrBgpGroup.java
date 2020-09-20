@@ -403,36 +403,36 @@ public class rtrBgpGroup extends rtrBgpParam {
     }
 
     private void nextHopSelf(boolean nhs, tabRouteEntry<addrIP> ntry) {
-        ntry.nextHop = localAddr.copyBytes();
-        ntry.labelRem = new ArrayList<Integer>();
-        tabLabelNtry loc = ntry.labelLoc;
+        ntry.best.nextHop = localAddr.copyBytes();
+        ntry.best.labelRem = new ArrayList<Integer>();
+        tabLabelNtry loc = ntry.best.labelLoc;
         if (loc == null) {
             ipFwd tab;
-            if (ntry.rouTab == null) {
+            if (ntry.best.rouTab == null) {
                 tab = lower.fwdCore;
             } else {
-                tab = ntry.rouTab;
+                tab = ntry.best.rouTab;
             }
             tabRouteEntry<addrIP> org = tab.labeldR.find(ntry);
             if (org == null) {
                 loc = tab.commonLabel;
             } else {
-                loc = org.labelLoc;
+                loc = org.best.labelLoc;
             }
         }
         int val = loc.getValue();
         if (labelPop && nhs && (val == lower.fwdCore.commonLabel.getValue())) {
             val = ipMpls.labelImp;
         }
-        ntry.labelRem.add(val);
+        ntry.best.labelRem.add(val);
         if (lower.segrouLab != null) {
-            ntry.segrouSiz = lower.segrouMax;
-            ntry.segrouBeg = lower.segrouLab[0].getValue();
+            ntry.best.segrouSiz = lower.segrouMax;
+            ntry.best.segrouBeg = lower.segrouLab[0].getValue();
         }
         if (lower.bierLab != null) {
-            ntry.bierHdr = tabLabelBier.num2bsl(lower.bierLen);
-            ntry.bierSiz = lower.bierLab.length;
-            ntry.bierBeg = lower.bierLab[0].getValue();
+            ntry.best.bierHdr = tabLabelBier.num2bsl(lower.bierLen);
+            ntry.best.bierSiz = lower.bierLab.length;
+            ntry.best.bierBeg = lower.bierLab[0].getValue();
         }
     }
 
@@ -444,70 +444,70 @@ public class rtrBgpGroup extends rtrBgpParam {
 
     private void clearAttribs(tabRouteEntry<addrIP> ntry) {
         if ((sendCommunity & 1) == 0) {
-            ntry.stdComm = null;
+            ntry.best.stdComm = null;
         }
         if ((sendCommunity & 2) == 0) {
-            ntry.extComm = null;
+            ntry.best.extComm = null;
         }
         if ((sendCommunity & 4) == 0) {
-            ntry.lrgComm = null;
+            ntry.best.lrgComm = null;
         }
         if (!accIgp) {
-            ntry.accIgp = 0;
+            ntry.best.accIgp = 0;
         }
         if (!traffEng) {
-            ntry.bandwidth = 0;
+            ntry.best.bandwidth = 0;
         }
         if (!pmsiTun) {
-            ntry.pmsiLab = 0;
-            ntry.pmsiTyp = 0;
-            ntry.pmsiTun = null;
+            ntry.best.pmsiLab = 0;
+            ntry.best.pmsiTyp = 0;
+            ntry.best.pmsiTun = null;
         }
         if (!tunEnc) {
-            ntry.tunelTyp = 0;
-            ntry.tunelVal = null;
+            ntry.best.tunelTyp = 0;
+            ntry.best.tunelVal = null;
         }
         if (!attribSet) {
-            ntry.attribAs = 0;
-            ntry.attribVal = null;
+            ntry.best.attribAs = 0;
+            ntry.best.attribVal = null;
         }
         if (!segRout) {
-            ntry.segrouIdx = 0;
-            ntry.segrouBeg = 0;
-            ntry.segrouOld = 0;
-            ntry.segrouSiz = 0;
-            ntry.segrouPrf = null;
+            ntry.best.segrouIdx = 0;
+            ntry.best.segrouBeg = 0;
+            ntry.best.segrouOld = 0;
+            ntry.best.segrouSiz = 0;
+            ntry.best.segrouPrf = null;
         }
         if (!bier) {
-            ntry.bierIdx = 0;
-            ntry.bierBeg = 0;
-            ntry.bierOld = 0;
-            ntry.bierSiz = 0;
-            ntry.bierHdr = 0;
+            ntry.best.bierIdx = 0;
+            ntry.best.bierBeg = 0;
+            ntry.best.bierOld = 0;
+            ntry.best.bierSiz = 0;
+            ntry.best.bierHdr = 0;
         }
         if (removePrivAsOut) {
-            rtrBgpUtil.removePrivateAs(ntry.pathSeq);
-            rtrBgpUtil.removePrivateAs(ntry.pathSet);
+            rtrBgpUtil.removePrivateAs(ntry.best.pathSeq);
+            rtrBgpUtil.removePrivateAs(ntry.best.pathSet);
         }
         if (overridePeerOut) {
-            rtrBgpUtil.replaceIntList(ntry.pathSeq, remoteAs, localAs);
-            rtrBgpUtil.replaceIntList(ntry.pathSet, remoteAs, localAs);
+            rtrBgpUtil.replaceIntList(ntry.best.pathSeq, remoteAs, localAs);
+            rtrBgpUtil.replaceIntList(ntry.best.pathSet, remoteAs, localAs);
         }
-        ntry.srcRtr = null;
-        ntry.oldHop = null;
-        ntry.iface = null;
+        ntry.best.srcRtr = null;
+        ntry.best.oldHop = null;
+        ntry.best.iface = null;
         switch (peerType) {
             case rtrBgpUtil.peerServr:
             case rtrBgpUtil.peerExtrn:
-                ntry.originator = null;
-                ntry.clustList = null;
-                ntry.confSeq = null;
-                ntry.confSet = null;
-                ntry.locPref = 0;
+                ntry.best.originator = null;
+                ntry.best.clustList = null;
+                ntry.best.confSeq = null;
+                ntry.best.confSet = null;
+                ntry.best.locPref = 0;
                 break;
             case rtrBgpUtil.peerCnfed:
-                ntry.originator = null;
-                ntry.clustList = null;
+                ntry.best.originator = null;
+                ntry.best.clustList = null;
                 break;
         }
     }
@@ -525,23 +525,23 @@ public class rtrBgpGroup extends rtrBgpParam {
         switch (peerType) {
             case rtrBgpUtil.peerExtrn:
             case rtrBgpUtil.peerServr:
-                ntry.pathSeq = tabLabel.prependLabel(ntry.pathSeq, localAs);
+                ntry.best.pathSeq = tabLabel.prependLabel(ntry.best.pathSeq, localAs);
                 break;
             case rtrBgpUtil.peerCnfed:
-                ntry.confSeq = tabLabel.prependLabel(ntry.confSeq, localAs);
-                if (ntry.locPref == 0) {
-                    ntry.locPref = 100;
+                ntry.best.confSeq = tabLabel.prependLabel(ntry.best.confSeq, localAs);
+                if (ntry.best.locPref == 0) {
+                    ntry.best.locPref = 100;
                 }
                 break;
             case rtrBgpUtil.peerIntrn:
             case rtrBgpUtil.peerRflct:
-                if (ntry.locPref == 0) {
-                    ntry.locPref = 100;
+                if (ntry.best.locPref == 0) {
+                    ntry.best.locPref = 100;
                 }
                 break;
         }
-        ntry.segrouIdx = lower.segrouIdx;
-        ntry.bierIdx = lower.bierIdx;
+        ntry.best.segrouIdx = lower.segrouIdx;
+        ntry.best.bierIdx = lower.bierIdx;
         clearAttribs(ntry);
     }
 
@@ -556,34 +556,34 @@ public class rtrBgpGroup extends rtrBgpParam {
         boolean nhs = (afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0);
         updateAttribs(ntry);
         if (!allowAsOut) {
-            if (rtrBgpUtil.findIntList(ntry.pathSeq, remoteAs) >= 0) {
+            if (rtrBgpUtil.findIntList(ntry.best.pathSeq, remoteAs) >= 0) {
                 return true;
             }
-            if (rtrBgpUtil.findIntList(ntry.pathSet, remoteAs) >= 0) {
+            if (rtrBgpUtil.findIntList(ntry.best.pathSet, remoteAs) >= 0) {
                 return true;
             }
         }
-        if (rtrBgpUtil.findIntList(ntry.stdComm, rtrBgpUtil.commNoAdvertise) >= 0) {
+        if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoAdvertise) >= 0) {
             return true;
         }
         switch (peerType) {
             case rtrBgpUtil.peerExtrn:
-                if (rtrBgpUtil.findIntList(ntry.stdComm, rtrBgpUtil.commNoExport) >= 0) {
+                if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
                     return true;
                 }
-                ntry.pathSeq = tabLabel.prependLabel(ntry.pathSeq, localAs);
-                if (ntry.pathSeq.size() > 1) {
-                    ntry.metric = 0;
+                ntry.best.pathSeq = tabLabel.prependLabel(ntry.best.pathSeq, localAs);
+                if (ntry.best.pathSeq.size() > 1) {
+                    ntry.best.metric = 0;
                 }
                 if (!nxtHopUnchgd) {
                     nextHopSelf(nhs, ntry);
                 }
                 break;
             case rtrBgpUtil.peerCnfed:
-                if (rtrBgpUtil.findIntList(ntry.stdComm, rtrBgpUtil.commNoConfed) >= 0) {
+                if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoConfed) >= 0) {
                     return true;
                 }
-                switch (ntry.rouSrc) {
+                switch (ntry.best.rouSrc) {
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
                         if (!nxtHopUnchgd) {
@@ -591,10 +591,10 @@ public class rtrBgpGroup extends rtrBgpParam {
                         }
                         break;
                 }
-                ntry.confSeq = tabLabel.prependLabel(ntry.confSeq, localAs);
+                ntry.best.confSeq = tabLabel.prependLabel(ntry.best.confSeq, localAs);
                 break;
             case rtrBgpUtil.peerIntrn:
-                switch (ntry.rouSrc) {
+                switch (ntry.best.rouSrc) {
                     case rtrBgpUtil.peerIntrn:
                         return true;
                     case rtrBgpUtil.peerExtrn:
@@ -606,7 +606,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 }
                 break;
             case rtrBgpUtil.peerRflct:
-                switch (ntry.rouSrc) {
+                switch (ntry.best.rouSrc) {
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
                         if (!nxtHopUnchgd) {
@@ -616,10 +616,10 @@ public class rtrBgpGroup extends rtrBgpParam {
                 }
                 break;
             case rtrBgpUtil.peerServr:
-                if (rtrBgpUtil.findIntList(ntry.stdComm, rtrBgpUtil.commNoExport) >= 0) {
+                if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
                     return true;
                 }
-                switch (ntry.rouSrc) {
+                switch (ntry.best.rouSrc) {
                     case rtrBgpUtil.peerExtrn:
                         if (!nxtHopUnchgd) {
                             nextHopSelf(nhs, ntry);
@@ -632,7 +632,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (nxtHopSelf) {
             nextHopSelf(nhs, ntry);
         }
-        if (nhs && (ntry.labelRem == null)) {
+        if (nhs && (ntry.best.labelRem == null)) {
             nextHopSelf(nhs, ntry);
         }
         return false;
@@ -642,7 +642,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
             ntry = ntry.copyBytes();
-            if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
+            if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 originatePrefix(afi, ntry);
             } else if (readvertPrefix(afi, ntry)) {
                 continue;
@@ -655,7 +655,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         for (int i = 0; i < imp.size(); i++) {
             tabRouteEntry<addrIP> ntry = imp.get(i);
             ntry = ntry.copyBytes();
-            if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
+            if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 originatePrefix(afi, ntry);
             } else if (readvertPrefix(afi, ntry)) {
                 continue;
@@ -710,18 +710,18 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (sendDefRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = rtrBgpUtil.defaultRoute(lower.afiUni);
-            ntry.aggrRtr = new addrIP();
-            ntry.aggrRtr.fromIPv4addr(lower.routerID);
-            ntry.aggrAs = localAs;
-            ntry.rouSrc = rtrBgpUtil.peerOriginate;
+            ntry.best.aggrRtr = new addrIP();
+            ntry.best.aggrRtr.fromIPv4addr(lower.routerID);
+            ntry.best.aggrAs = localAs;
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(lower.afiUni, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nUni, lower.afiUni, ntry, true, roumapOut, roupolOut, prflstOut);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = rtrBgpUtil.defaultRoute(lower.afiUni);
-            ntry.aggrRtr = new addrIP();
-            ntry.aggrRtr.fromIPv4addr(lower.routerID);
-            ntry.aggrAs = localAs;
-            ntry.rouSrc = rtrBgpUtil.peerOriginate;
+            ntry.best.aggrRtr = new addrIP();
+            ntry.best.aggrRtr.fromIPv4addr(lower.routerID);
+            ntry.best.aggrAs = localAs;
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(lower.afiMlt, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, ntry, true, roumapOut, roupolOut, prflstOut);
         }
@@ -731,7 +731,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 continue;
             }
             ntry = ntry.copyBytes();
-            ntry.rouSrc = rtrBgpUtil.peerOriginate;
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(lower.afiUni, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nUni, lower.afiUni, ntry, true, roumapOut, roupolOut, prflstOut);
         }
@@ -741,7 +741,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 continue;
             }
             ntry = ntry.copyBytes();
-            ntry.rouSrc = rtrBgpUtil.peerOriginate;
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(lower.afiMlt, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, ntry, true, roumapOut, roupolOut, prflstOut);
         }
@@ -751,7 +751,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 continue;
             }
             ntry = ntry.copyBytes();
-            ntry.rouSrc = rtrBgpUtil.peerOriginate;
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(lower.afiFlw, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nFlw, lower.afiFlw, ntry, true, voumapOut, voupolOut, null);
         }

@@ -63,7 +63,7 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
         if (ntry == null) {
             return;
         }
-        switch (ntry.rouTyp) {
+        switch (ntry.best.rouTyp) {
             case conn:
             case staticRoute:
             case local:
@@ -77,7 +77,7 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
         }
         if (metric != null) {
             ntry = ntry.copyBytes();
-            ntry.metric = metric.update(ntry.metric);
+            ntry.best.metric = metric.update(ntry.best.metric);
         }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, roumap, rouplc, null);
     }

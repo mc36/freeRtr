@@ -314,8 +314,8 @@ public class rtrPimIface implements ipPrt {
             if (rou == null) {
                 return;
             }
-            if (rou.oldHop != null) {
-                ups = rou.oldHop;
+            if (rou.best.oldHop != null) {
+                ups = rou.best.oldHop;
             }
         } else {
             ups = grp.upstream;

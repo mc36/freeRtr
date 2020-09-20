@@ -247,31 +247,31 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         if ((typ & 0x20) != 0) {
             for (int i = 0; i < network.size(); i++) {
                 tabRouteEntry<addrIP> ntry = network.get(i);
-                if (ntry.metric != metric) {
-                    s += " metric=" + ntry.metric;
-                    metric = ntry.metric;
+                if (ntry.best.metric != metric) {
+                    s += " metric=" + ntry.best.metric;
+                    metric = ntry.best.metric;
                 }
-                if (ntry.tag != tag) {
-                    s += " tag=" + ntry.tag;
-                    tag = ntry.tag;
+                if (ntry.best.tag != tag) {
+                    s += " tag=" + ntry.best.tag;
+                    tag = ntry.best.tag;
                 }
-                boolean ext = (ntry.rouSrc & 1) != 0;
+                boolean ext = (ntry.best.rouSrc & 1) != 0;
                 if (ext != external) {
                     s += " external=" + ext;
                     external = ext;
                 }
-                boolean srp = (ntry.rouSrc & 16) != 0;
+                boolean srp = (ntry.best.rouSrc & 16) != 0;
                 if (srp != segrouPop) {
                     s += " segroupop=" + srp;
                     segrouPop = srp;
                 }
-                if (ntry.segrouIdx != segrouIdx) {
-                    s += " segrouidx=" + ntry.segrouIdx;
-                    segrouIdx = ntry.segrouIdx;
+                if (ntry.best.segrouIdx != segrouIdx) {
+                    s += " segrouidx=" + ntry.best.segrouIdx;
+                    segrouIdx = ntry.best.segrouIdx;
                 }
-                if (ntry.bierIdx != bierIdx) {
-                    s += " bieridx=" + ntry.bierIdx;
-                    bierIdx = ntry.bierIdx;
+                if (ntry.best.bierIdx != bierIdx) {
+                    s += " bieridx=" + ntry.best.bierIdx;
+                    bierIdx = ntry.best.bierIdx;
                 }
                 s += " network=" + addrPrefix.ip2str(ntry.prefix);
             }
@@ -493,13 +493,13 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (ntry.prefix == null) {
                     return true;
                 }
-                ntry.metric = metric;
-                ntry.tag = tag;
-                ntry.bierIdx = bierIdx;
-                ntry.segrouIdx = segrouIdx;
-                ntry.rouSrc = segrouPop ? 16 : 0;
+                ntry.best.metric = metric;
+                ntry.best.tag = tag;
+                ntry.best.bierIdx = bierIdx;
+                ntry.best.segrouIdx = segrouIdx;
+                ntry.best.rouSrc = segrouPop ? 16 : 0;
                 if (external) {
-                    ntry.rouSrc |= 1;
+                    ntry.best.rouSrc |= 1;
                 }
                 network.add(tabRoute.addType.better, ntry, true, true);
                 continue;

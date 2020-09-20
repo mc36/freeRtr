@@ -25,6 +25,7 @@ import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelNtry;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFlash;
 import user.userFormat;
@@ -172,13 +173,13 @@ public class rtrIsis extends ipRtr {
         maxAreaAddr = 3;
         metricWide = true;
         ifaces = new tabGen<rtrIsisIface>();
-        tabRouteEntry.routeType rouTyp = null;
+        tabRouteAttr.routeType rouTyp = null;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.isis4;
+                rouTyp = tabRouteAttr.routeType.isis4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.isis6;
+                rouTyp = tabRouteAttr.routeType.isis6;
                 break;
             default:
                 break;
@@ -488,7 +489,7 @@ public class rtrIsis extends ipRtr {
                 break;
             }
             if (tlv.valTyp == 1) { // tag
-                prf.tag = bits.msbGetD(tlv.valDat, 0);
+                prf.best.tag = bits.msbGetD(tlv.valDat, 0);
                 continue;
             }
             rtrIsisSr.getPref(tlv, prf);
@@ -497,10 +498,10 @@ public class rtrIsis extends ipRtr {
     }
 
     private int getAddrReach4(typLenVal tlv, int pos, tabRouteEntry<addrIP> prf) {
-        prf.metric = bits.msbGetD(tlv.valDat, pos + 0); // metric
+        prf.best.metric = bits.msbGetD(tlv.valDat, pos + 0); // metric
         int i = bits.getByte(tlv.valDat, pos + 4); // prefix length
         if ((i & 0x80) != 0) { // updown bit
-            prf.rouSrc |= 2;
+            prf.best.rouSrc |= 2;
         }
         int o = i & 0x3f;
         addrIPv4 adr = new addrIPv4();
@@ -517,13 +518,13 @@ public class rtrIsis extends ipRtr {
     }
 
     private int getAddrReach6(typLenVal tlv, int pos, tabRouteEntry<addrIP> prf) {
-        prf.metric = bits.msbGetD(tlv.valDat, pos + 0); // metric
+        prf.best.metric = bits.msbGetD(tlv.valDat, pos + 0); // metric
         int i = bits.getByte(tlv.valDat, pos + 4); // flags
         if ((i & 0x80) != 0) { // updown bit
-            prf.rouSrc |= 2;
+            prf.best.rouSrc |= 2;
         }
         if ((i & 0x40) != 0) { // external bit
-            prf.rouSrc |= 1;
+            prf.best.rouSrc |= 1;
         }
         int o = bits.getByte(tlv.valDat, pos + 5); // prefix length
         addrIPv6 adr = new addrIPv6();
@@ -611,10 +612,10 @@ public class rtrIsis extends ipRtr {
         for (int i = 0; i < tlv.valSiz;) {
             tabRouteEntry<addrIP> prf = new tabRouteEntry<addrIP>();
             int o = bits.getByte(tlv.valDat, i + 0);
-            prf.metric = o & 0x3f; // default metric
-            prf.rouSrc = ext;
+            prf.best.metric = o & 0x3f; // default metric
+            prf.best.rouSrc = ext;
             if ((o & 0x80) != 0) { // updown bit
-                prf.rouSrc |= 2;
+                prf.best.rouSrc |= 2;
             }
             addrIPv4 a1 = new addrIPv4();
             addrIPv4 a2 = new addrIPv4();
@@ -921,8 +922,8 @@ public class rtrIsis extends ipRtr {
             logger.debug("create table");
         }
         tabRoute<addrIP> tab = new tabRoute<addrIP>("isis");
-        tab.mergeFrom(tabRoute.addType.better, level1.routes, null, true, tabRouteEntry.distanLim);
-        tab.mergeFrom(tabRoute.addType.better, level2.routes, null, true, tabRouteEntry.distanLim);
+        tab.mergeFrom(tabRoute.addType.better, level1.routes, null, true, tabRouteAttr.distanLim);
+        tab.mergeFrom(tabRoute.addType.better, level2.routes, null, true, tabRouteAttr.distanLim);
         if (segrouLab != null) {
             for (int i = 0; i < segrouLab.length; i++) {
                 boolean b = false;

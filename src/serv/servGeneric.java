@@ -39,6 +39,7 @@ import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabListing;
 import tab.tabPrfxlstN;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabRtrplc;
@@ -1481,7 +1482,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             return false;
         }
         if (a.equals("access-blackhole4")) {
-            cfgRtr ntry = cfgAll.rtrFind(tabRouteEntry.routeType.blackhole4, bits.str2num(cmd.word()), false);
+            cfgRtr ntry = cfgAll.rtrFind(tabRouteAttr.routeType.blackhole4, bits.str2num(cmd.word()), false);
             if (ntry == null) {
                 cmd.error("no such process");
                 return false;
@@ -1490,7 +1491,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             return false;
         }
         if (a.equals("access-blackhole6")) {
-            cfgRtr ntry = cfgAll.rtrFind(tabRouteEntry.routeType.blackhole6, bits.str2num(cmd.word()), false);
+            cfgRtr ntry = cfgAll.rtrFind(tabRouteAttr.routeType.blackhole6, bits.str2num(cmd.word()), false);
             if (ntry == null) {
                 cmd.error("no such process");
                 return false;

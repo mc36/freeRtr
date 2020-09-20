@@ -103,11 +103,11 @@ public class rtrBgpOther extends ipRtr {
             return;
         }
         ntry = ntry.copyBytes();
-        if (ntry.labelLoc == null) {
-            ntry.labelLoc = fwd.commonLabel;
+        if (ntry.best.labelLoc == null) {
+            ntry.best.labelLoc = fwd.commonLabel;
         }
-        ntry.rouSrc = rtrBgpUtil.peerOriginate;
-        ipMpls.putSrv6prefix(ntry, srv6, ntry.labelLoc);
+        ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+        ipMpls.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, parent.afiOtr, ntry, true, null, null, null);
     }
 
@@ -123,22 +123,22 @@ public class rtrBgpOther extends ipRtr {
     }
 
     private void doImportRoute(tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg) {
-        if (ntry.rouSrc == rtrBgpUtil.peerOriginate) {
+        if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
             return;
         }
         ntry = ntry.copyBytes();
-        ntry.rouTab = parent.fwdCore;
-        if (ntry.segrouPrf != null) {
-            ntry.rouTab = parent.vrfCore.fwd6;
+        ntry.best.rouTab = parent.fwdCore;
+        if (ntry.best.segrouPrf != null) {
+            ntry.best.rouTab = parent.vrfCore.fwd6;
         }
         if (distance > 0) {
-            ntry.distance = distance;
+            ntry.best.distance = distance;
         }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, rtrBgpUtil.safiUnicast, ntry, false, null, null, null);
         if (parent.routerAutoMesh == null) {
             return;
         }
-        peers.add(ntry.nextHop);
+        peers.add(ntry.best.nextHop);
     }
 
     /**

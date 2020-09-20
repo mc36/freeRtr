@@ -25,6 +25,7 @@ import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabRtrplcN;
@@ -213,13 +214,13 @@ public class rtrLsrp extends ipRtr implements Runnable {
         tcpCore = tcp;
         routerID = new addrIPv4();
         ifaces = new tabGen<rtrLsrpIface>();
-        tabRouteEntry.routeType rouTyp = null;
+        tabRouteAttr.routeType rouTyp = null;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.lsrp4;
+                rouTyp = tabRouteAttr.routeType.lsrp4;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.lsrp6;
+                rouTyp = tabRouteAttr.routeType.lsrp6;
                 break;
             default:
                 break;
@@ -501,9 +502,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
-            ntry.segrouIdx = segrouIdx;
-            ntry.rouSrc = segrouPop ? 16 : 0;
-            ntry.bierIdx = bierIdx;
+            ntry.best.segrouIdx = segrouIdx;
+            ntry.best.rouSrc = segrouPop ? 16 : 0;
+            ntry.best.bierIdx = bierIdx;
             dat.network.add(tabRoute.addType.always, ntry, true, true);
         }
         for (int o = 0; o < ifaces.size(); o++) {
@@ -537,20 +538,20 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 continue;
             }
             tabRouteEntry<addrIP> ntry = dat.network.add(tabRoute.addType.better, ifc.iface.network, null);
-            ntry.rouTyp = tabRouteEntry.routeType.conn;
-            ntry.iface = ifc.iface;
-            ntry.distance = tabRouteEntry.distanIfc;
+            ntry.best.rouTyp = tabRouteAttr.routeType.conn;
+            ntry.best.iface = ifc.iface;
+            ntry.best.distance = tabRouteAttr.distanIfc;
             if (ifc.segrouIdx >= 0) {
-                ntry.segrouIdx = ifc.segrouIdx;
-                ntry.rouSrc = ifc.segrouPop ? 16 : 0;
+                ntry.best.segrouIdx = ifc.segrouIdx;
+                ntry.best.rouSrc = ifc.segrouPop ? 16 : 0;
             } else {
-                ntry.segrouIdx = segrouIdx;
-                ntry.rouSrc = segrouPop ? 16 : 0;
+                ntry.best.segrouIdx = segrouIdx;
+                ntry.best.rouSrc = segrouPop ? 16 : 0;
             }
             if (ifc.bierIdx >= 0) {
-                ntry.bierIdx = ifc.bierIdx;
+                ntry.best.bierIdx = ifc.bierIdx;
             } else {
-                ntry.bierIdx = bierIdx;
+                ntry.best.bierIdx = bierIdx;
             }
         }
         for (int i = 0; i < routerRedistedU.size(); i++) {
@@ -559,10 +560,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 continue;
             }
             ntry = ntry.copyBytes();
-            ntry.distance = tabRouteEntry.distanIfc + 1;
-            ntry.segrouIdx = segrouIdx;
-            ntry.rouSrc = segrouPop ? 17 : 1;
-            ntry.bierIdx = bierIdx;
+            ntry.best.distance = tabRouteAttr.distanIfc + 1;
+            ntry.best.segrouIdx = segrouIdx;
+            ntry.best.rouSrc = segrouPop ? 17 : 1;
+            ntry.best.bierIdx = bierIdx;
             dat.network.add(tabRoute.addType.better, ntry, false, false);
         }
         dat.rtrId = routerID.copyBytes();
@@ -671,27 +672,27 @@ public class rtrLsrp extends ipRtr implements Runnable {
             int bro = spf.getBierB(ntry.rtrId, true);
             for (int i = 0; i < ntry.network.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.network.get(i).copyBytes();
-                rou.srcRtr = ntry.rtrId.copyBytes();
-                rou.nextHop = hop.copyBytes();
-                rou.metric += met;
-                rou.distance = distance;
-                rou.iface = iface;
-                spf.addSegRouI(ntry.rtrId, rou.segrouIdx);
-                spf.addBierI(ntry.rtrId, rou.bierIdx, true);
-                if ((segrouUsd != null) && (rou.segrouIdx > 0) && (rou.segrouIdx < segrouMax) && (srb > 0)) {
-                    List<Integer> lab = tabLabel.int2labels(srb + rou.segrouIdx);
-                    if (((rou.rouSrc & 16) != 0) && (hops <= 1)) {
+                rou.best.srcRtr = ntry.rtrId.copyBytes();
+                rou.best.nextHop = hop.copyBytes();
+                rou.best.metric += met;
+                rou.best.distance = distance;
+                rou.best.iface = iface;
+                spf.addSegRouI(ntry.rtrId, rou.best.segrouIdx);
+                spf.addBierI(ntry.rtrId, rou.best.bierIdx, true);
+                if ((segrouUsd != null) && (rou.best.segrouIdx > 0) && (rou.best.segrouIdx < segrouMax) && (srb > 0)) {
+                    List<Integer> lab = tabLabel.int2labels(srb + rou.best.segrouIdx);
+                    if (((rou.best.rouSrc & 16) != 0) && (hops <= 1)) {
                         lab = tabLabel.int2labels(ipMpls.labelImp);
                     }
-                    segrouLab[rou.segrouIdx].setFwdMpls(6, fwdCore, iface, hop, lab);
-                    segrouUsd[rou.segrouIdx] = true;
-                    rou.labelRem = lab;
+                    segrouLab[rou.best.segrouIdx].setFwdMpls(6, fwdCore, iface, hop, lab);
+                    segrouUsd[rou.best.segrouIdx] = true;
+                    rou.best.labelRem = lab;
                 }
-                rou.segrouBeg = srb;
-                rou.segrouOld = sro;
-                rou.bierBeg = brb;
-                rou.bierOld = bro;
-                rou.bierHdr = tabLabelBier.num2bsl(ntry.bierLen);
+                rou.best.segrouBeg = srb;
+                rou.best.segrouOld = sro;
+                rou.best.bierBeg = brb;
+                rou.best.bierOld = bro;
+                rou.best.bierHdr = tabLabelBier.num2bsl(ntry.bierLen);
                 tab1.add(tabRoute.addType.better, rou, false, true);
             }
         }

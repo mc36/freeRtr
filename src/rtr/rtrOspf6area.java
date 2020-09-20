@@ -673,7 +673,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             return null;
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.metric = bits.msbGetD(tlv.valDat, 0) & 0xffffff; // metric
+        ntry.best.metric = bits.msbGetD(tlv.valDat, 0) & 0xffffff; // metric
         addrIPv6 a = new addrIPv6();
         a.fromBuf(tlv.valDat, 8); // address
         addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(a, tlv.valDat[4] & 0xff);
@@ -759,7 +759,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
-            ntry.origin = 111;
+            ntry.best.origin = 111;
             tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.safiUnicast, ntry, true, roumapInto, roupolInto, prflstInto);
         }
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, rs, lower.routerRedistedU, true, roumapInto, roupolInto, prflstInto);
@@ -768,7 +768,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            createExtLsa(i, ntry.prefix, ntry.origin, ntry.metric, ntry.tag);
+            createExtLsa(i, ntry.prefix, ntry.best.origin, ntry.best.metric, ntry.best.tag);
         }
     }
 
@@ -795,7 +795,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = ifc.iface.network.copyBytes();
-            ntry.metric = ifc.metric;
+            ntry.best.metric = ifc.metric;
             oa.add(tabRoute.addType.better, ntry, true, true);
             if (ifc.areas.get(0).area == area) {
                 continue;
@@ -807,7 +807,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.rouSrc == area) {
+            if (ntry.best.rouSrc == area) {
                 continue;
             }
             if (oa.find(ntry.prefix) != null) {
@@ -820,7 +820,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            createSumLsa(i, ntry.prefix, ntry.metric);
+            createSumLsa(i, ntry.prefix, ntry.best.metric);
         }
     }
 
@@ -928,20 +928,20 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.rouSrc == area) {
+            if (ntry.best.rouSrc == area) {
                 continue;
             }
             byte[] buf = new byte[0];
-            if (ntry.segrouIdx > 0) {
-                buf = rtrOspfSr.putPref(ntry.segrouIdx, false);
+            if (ntry.best.segrouIdx > 0) {
+                buf = rtrOspfSr.putPref(ntry.best.segrouIdx, false);
             }
-            if (ntry.bierIdx > 0) {
-                buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ntry.bierIdx));
+            if (ntry.best.bierIdx > 0) {
+                buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ntry.best.bierIdx));
             }
             if (buf.length < 1) {
                 continue;
             }
-            createEprfLsa(seq++, ntry.prefix, rtrOspf6lsa.lsaEinterPrf, rtrOspf6lsa.tlvInterPrf, ntry.metric, rtrOspf6lsa.prefProp, new byte[0], buf);
+            createEprfLsa(seq++, ntry.prefix, rtrOspf6lsa.lsaEinterPrf, rtrOspf6lsa.tlvInterPrf, ntry.best.metric, rtrOspf6lsa.prefProp, new byte[0], buf);
         }
     }
 
@@ -1055,7 +1055,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         if (pref == null) {
                             continue;
                         }
-                        spf.addBierB(new rtrOspf6areaSpf(ntry.rtrID, 0), pref.bierBeg);
+                        spf.addBierB(new rtrOspf6areaSpf(ntry.rtrID, 0), pref.best.bierBeg);
                     }
                     break;
                 default:
@@ -1138,13 +1138,13 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     prefixRead(pck, 4, prf6);
                     pref = new tabRouteEntry<addrIP>();
                     pref.prefix = prf6.prefix;
-                    pref.nextHop = hop.copyBytes();
-                    pref.metric = met;
-                    pref.origin = 110;
-                    pref.distance = lower.distantSum;
-                    pref.srcRtr = ntry.rtrID.copyBytes();
-                    pref.iface = iface;
-                    pref.rouSrc = area;
+                    pref.best.nextHop = hop.copyBytes();
+                    pref.best.metric = met;
+                    pref.best.origin = 110;
+                    pref.best.distance = lower.distantSum;
+                    pref.best.srcRtr = ntry.rtrID.copyBytes();
+                    pref.best.iface = iface;
+                    pref.best.rouSrc = area;
                     rs.add(tabRoute.addType.better, pref, false, true);
                     break;
                 case rtrOspf6lsa.lsaLink:
@@ -1155,13 +1155,13 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pck.getSkip(prefixRead(pck, 0, prf6));
                         pref = new tabRouteEntry<addrIP>();
                         pref.prefix = prf6.prefix;
-                        pref.nextHop = hop.copyBytes();
-                        pref.metric = met;
-                        pref.origin = 109;
-                        pref.distance = lower.distantSum;
-                        pref.srcRtr = ntry.rtrID.copyBytes();
-                        pref.iface = iface;
-                        pref.rouSrc = area;
+                        pref.best.nextHop = hop.copyBytes();
+                        pref.best.metric = met;
+                        pref.best.origin = 109;
+                        pref.best.distance = lower.distantSum;
+                        pref.best.srcRtr = ntry.rtrID.copyBytes();
+                        pref.best.iface = iface;
+                        pref.best.rouSrc = area;
                         rs.add(tabRoute.addType.better, pref, false, true);
                     }
                     break;
@@ -1173,13 +1173,13 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pck.getSkip(prefixRead(pck, 0, prf6));
                         pref = new tabRouteEntry<addrIP>();
                         pref.prefix = prf6.prefix;
-                        pref.nextHop = hop.copyBytes();
-                        pref.metric = met;
-                        pref.origin = 109;
-                        pref.distance = lower.distantSum;
-                        pref.srcRtr = ntry.rtrID.copyBytes();
-                        pref.iface = iface;
-                        pref.rouSrc = area;
+                        pref.best.nextHop = hop.copyBytes();
+                        pref.best.metric = met;
+                        pref.best.origin = 109;
+                        pref.best.distance = lower.distantSum;
+                        pref.best.srcRtr = ntry.rtrID.copyBytes();
+                        pref.best.iface = iface;
+                        pref.best.rouSrc = area;
                         rs.add(tabRoute.addType.better, pref, false, true);
                     }
                     break;
@@ -1194,20 +1194,20 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     }
                     pref = new tabRouteEntry<addrIP>();
                     pref.prefix = prf6.prefix;
-                    pref.nextHop = hop.copyBytes();
-                    pref.metric = o & 0xffffff;
+                    pref.best.nextHop = hop.copyBytes();
+                    pref.best.metric = o & 0xffffff;
                     if ((o & 0x04000000) != 0) {
-                        pref.origin = 112;
+                        pref.best.origin = 112;
                     } else {
-                        pref.metric += met;
-                        pref.origin = 111;
+                        pref.best.metric += met;
+                        pref.best.origin = 111;
                     }
-                    pref.distance = lower.distantExt;
-                    pref.srcRtr = ntry.rtrID.copyBytes();
-                    pref.iface = iface;
-                    pref.rouSrc = area;
+                    pref.best.distance = lower.distantExt;
+                    pref.best.srcRtr = ntry.rtrID.copyBytes();
+                    pref.best.iface = iface;
+                    pref.best.rouSrc = area;
                     if ((o & 0x01000000) != 0) {
-                        pref.tag = pck.msbGetD(0); // route tag
+                        pref.best.tag = pck.msbGetD(0); // route tag
                     }
                     rs.add(tabRoute.addType.better, pref, false, true);
                     break;
@@ -1232,28 +1232,28 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         if (old == null) {
                             continue;
                         }
-                        if (hop.compare(hop, old.nextHop) != 0) {
+                        if (hop.compare(hop, old.best.nextHop) != 0) {
                             continue;
                         }
-                        spf.addSegRouI(src, pref.segrouIdx);
-                        spf.addBierI(src, pref.bierIdx, old.origin == 109);
-                        old.segrouIdx = pref.segrouIdx;
-                        old.segrouBeg = srb;
-                        old.segrouOld = sro;
-                        old.bierIdx = pref.bierIdx;
-                        old.bierHdr = pref.bierHdr;
-                        old.bierBeg = brb;
-                        old.bierOld = bro;
-                        if ((pref.segrouIdx < 1) || (pref.segrouIdx >= lower.segrouMax) || (srb < 1)) {
+                        spf.addSegRouI(src, pref.best.segrouIdx);
+                        spf.addBierI(src, pref.best.bierIdx, old.best.origin == 109);
+                        old.best.segrouIdx = pref.best.segrouIdx;
+                        old.best.segrouBeg = srb;
+                        old.best.segrouOld = sro;
+                        old.best.bierIdx = pref.best.bierIdx;
+                        old.best.bierHdr = pref.best.bierHdr;
+                        old.best.bierBeg = brb;
+                        old.best.bierOld = bro;
+                        if ((pref.best.segrouIdx < 1) || (pref.best.segrouIdx >= lower.segrouMax) || (srb < 1)) {
                             continue;
                         }
-                        List<Integer> lab = tabLabel.int2labels(srb + pref.segrouIdx);
-                        if (((pref.rouSrc & 16) != 0) && (hops <= 1)) {
+                        List<Integer> lab = tabLabel.int2labels(srb + pref.best.segrouIdx);
+                        if (((pref.best.rouSrc & 16) != 0) && (hops <= 1)) {
                             lab = tabLabel.int2labels(ipMpls.labelImp);
                         }
-                        lower.segrouLab[pref.segrouIdx].setFwdMpls(9, lower.fwdCore, iface, hop, lab);
-                        segrouUsd[pref.segrouIdx] = true;
-                        old.labelRem = lab;
+                        lower.segrouLab[pref.best.segrouIdx].setFwdMpls(9, lower.fwdCore, iface, hop, lab);
+                        segrouUsd[pref.best.segrouIdx] = true;
+                        old.best.labelRem = lab;
                     }
                     break;
                 default:

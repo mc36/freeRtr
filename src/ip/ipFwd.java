@@ -28,8 +28,8 @@ import tab.tabPbrN;
 import tab.tabPrfxlstN;
 import tab.tabQos;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
-import tab.tabRouteEntry.routeType;
 import tab.tabRtrmapN;
 import tab.tabRtrplcN;
 import util.bits;
@@ -477,7 +477,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             if (ntry == null) {
                 continue;
             }
-            tabLabel.release(ntry.labelLoc, 2);
+            tabLabel.release(ntry.best.labelLoc, 2);
         }
         for (int i = 0; i < trafEngs.size(); i++) {
             ipFwdTrfng ntry = trafEngs.get(i);
@@ -1129,7 +1129,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 lower.cntr.drop(pck, counter.reasons.denied);
                 return;
             }
-            if ((lower.verifyStricht) && (prf.iface != lower)) {
+            if ((lower.verifyStricht) && (prf.best.iface != lower)) {
                 lower.cntr.drop(pck, counter.reasons.denied);
                 return;
             }
@@ -1356,7 +1356,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param typ route type that it provides
      * @param id process id
      */
-    public void routerAdd(ipRtr rtr, tabRouteEntry.routeType typ, int id) {
+    public void routerAdd(ipRtr rtr, tabRouteAttr.routeType typ, int id) {
         if (debugger.ipFwdEvnt) {
             logger.debug("add rtr " + rtr);
         }
@@ -1584,14 +1584,14 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 cntrT.drop(pck, counter.reasons.noRoute);
                 return;
             }
-            if (prf.rouTab != null) {
-                prf = prf.rouTab.actualU.route(prf.nextHop);
+            if (prf.best.rouTab != null) {
+                prf = prf.best.rouTab.actualU.route(prf.best.nextHop);
                 if (prf == null) {
                     cntrT.drop(pck, counter.reasons.noRoute);
                     return;
                 }
             }
-            ifc = (ipFwdIface) prf.iface;
+            ifc = (ipFwdIface) prf.best.iface;
         }
         if (ifc == null) {
             cntrT.drop(pck, counter.reasons.noIface);
@@ -1614,24 +1614,24 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             cntrT.drop(pck, counter.reasons.noRoute);
             return;
         }
-        if ((prf.labelRem == null) && (req)) {
-            if (prf.rouTyp == routeType.conn) {
-                doMpls((ipFwdIface) prf.iface, trg, null, pck);
+        if ((prf.best.labelRem == null) && (req)) {
+            if (prf.best.rouTyp == tabRouteAttr.routeType.conn) {
+                doMpls((ipFwdIface) prf.best.iface, trg, null, pck);
                 return;
             }
             logger.info("no label for " + trg);
             cntrT.drop(pck, counter.reasons.notInTab);
             return;
         }
-        if (prf.rouTab != null) {
-            ipMpls.createMPLSlabels(pck, prf.labelRem);
-            prf.rouTab.mplsTxPack(prf.nextHop, pck, true);
+        if (prf.best.rouTab != null) {
+            ipMpls.createMPLSlabels(pck, prf.best.labelRem);
+            prf.best.rouTab.mplsTxPack(prf.best.nextHop, pck, true);
             return;
         }
-        if (prf.nextHop != null) {
-            trg = prf.nextHop;
+        if (prf.best.nextHop != null) {
+            trg = prf.best.nextHop;
         }
-        doMpls((ipFwdIface) prf.iface, trg, prf.labelRem, pck);
+        doMpls((ipFwdIface) prf.best.iface, trg, prf.best.labelRem, pck);
     }
 
     /**
@@ -1681,11 +1681,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (ntry == null) {
             return false;
         }
-        if (ntry.iface == null) {
+        if (ntry.best.iface == null) {
             return false;
         }
         pck.INTiface = -2;
-        ifaceProto((ipFwdIface) ntry.iface, pck, pbr.setHop);
+        ifaceProto((ipFwdIface) ntry.best.iface, pck, pbr.setHop);
         return true;
     }
 
@@ -1836,31 +1836,31 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (prf.cntr != null) {
             prf.cntr.tx(pck);
         }
-        if (prf.rouTab != null) {
+        if (prf.best.rouTab != null) {
             cntrT.tx(pck);
-            if (prf.segrouPrf != null) {
+            if (prf.best.segrouPrf != null) {
                 pck.putDefaults();
-                pck.IPtrg.setAddr(prf.segrouPrf);
-                pck.IPsrc.setAddr(prf.segrouPrf);
+                pck.IPtrg.setAddr(prf.best.segrouPrf);
+                pck.IPsrc.setAddr(prf.best.segrouPrf);
                 pck.IPprt = ipCore.getProtocol();
-                prf.rouTab.createIPheader(pck);
+                prf.best.rouTab.createIPheader(pck);
                 ipMpls.beginMPLSfields(pck, false);
-                prf.rouTab.forwardPacket(fromIfc, fromMpls, rxIfc, pck);
+                prf.best.rouTab.forwardPacket(fromIfc, fromMpls, rxIfc, pck);
                 return;
             }
-            if (prf.labelRem == null) {
+            if (prf.best.labelRem == null) {
                 doDrop(pck, rxIfc, counter.reasons.notInTab);
                 return;
             }
-            ipMpls.createMPLSlabels(pck, prf.labelRem);
-            prf.rouTab.mplsTxPack(prf.nextHop, pck, true);
+            ipMpls.createMPLSlabels(pck, prf.best.labelRem);
+            prf.best.rouTab.mplsTxPack(prf.best.nextHop, pck, true);
             return;
         }
-        if (prf.iface == null) {
+        if (prf.best.iface == null) {
             doDrop(pck, rxIfc, counter.reasons.noIface);
             return;
         }
-        ipFwdIface txIfc = (ipFwdIface) prf.iface;
+        ipFwdIface txIfc = (ipFwdIface) prf.best.iface;
         if (txIfc.lower.checkMyAddress(pck.IPtrg)) {
             if (pck.IPprt != ipCorSrh.protoNum) {
                 protoSend(txIfc, pck);
@@ -1914,15 +1914,15 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         } else {
             ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1);
         }
-        if (prf.rouTyp == tabRouteEntry.routeType.conn) {
+        if (prf.best.rouTyp == tabRouteAttr.routeType.conn) {
             ifaceProto(txIfc, pck, null);
             return;
         }
         if (alerted) {
-            ifaceProto(txIfc, pck, prf.nextHop);
+            ifaceProto(txIfc, pck, prf.best.nextHop);
             return;
         }
-        doMpls(txIfc, prf.nextHop, prf.labelRem, pck);
+        doMpls(txIfc, prf.best.nextHop, prf.best.labelRem, pck);
     }
 
     /**

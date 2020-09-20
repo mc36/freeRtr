@@ -170,13 +170,13 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
         if (prf == null) {
             return null;
         }
-        if (prf.labelRem == null) {
+        if (prf.best.labelRem == null) {
             return null;
         }
         src = src.copyBytes();
-        src.iface = prf.iface;
-        if (prf.nextHop != null) {
-            src.nextHop = prf.nextHop;
+        src.best.iface = prf.best.iface;
+        if (prf.best.nextHop != null) {
+            src.best.nextHop = prf.best.nextHop;
         }
         return src;
     }
@@ -229,11 +229,11 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
                 protStat(state.states.down);
                 continue;
             }
-            if (ntry.labelRem == null) {
+            if (ntry.best.labelRem == null) {
                 protStat(state.states.down);
                 continue;
             }
-            if (ntry.labelRem.size() < 1) {
+            if (ntry.best.labelRem.size() < 1) {
                 protStat(state.states.down);
                 continue;
             }

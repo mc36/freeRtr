@@ -728,12 +728,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (aspathSet == null) {
             l.add(beg + "no set aspath");
         } else {
-            l.add(beg + "set aspath " + tabRouteEntry.dumpIntList(aspathSet, "", ""));
+            l.add(beg + "set aspath " + tabRouteAttr.dumpIntList(aspathSet, "", ""));
         }
         if (aspathCnf == null) {
             l.add(beg + "no set asconfed");
         } else {
-            l.add(beg + "set asconfed " + tabRouteEntry.dumpIntList(aspathCnf, "", ""));
+            l.add(beg + "set asconfed " + tabRouteAttr.dumpIntList(aspathCnf, "", ""));
         }
         if (stdCommSet == null) {
             l.add(beg + "no set stdcomm");
@@ -785,56 +785,56 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (!safiMatch.matches(afi & rtrBgpUtil.safiMask)) {
             return false;
         }
-        if (!distanceMatch.matches(net.distance)) {
+        if (!distanceMatch.matches(net.best.distance)) {
             return false;
         }
-        if (!locPrefMatch.matches(net.locPref)) {
+        if (!locPrefMatch.matches(net.best.locPref)) {
             return false;
         }
-        if (!accIgpMatch.matches(net.accIgp)) {
+        if (!accIgpMatch.matches(net.best.accIgp)) {
             return false;
         }
-        if (!bandwidthMatch.matches(net.bandwidth)) {
+        if (!bandwidthMatch.matches(net.best.bandwidth)) {
             return false;
         }
-        if (!originMatch.matches(net.origin)) {
+        if (!originMatch.matches(net.best.origin)) {
             return false;
         }
-        if (!metricMatch.matches(net.metric)) {
+        if (!metricMatch.matches(net.best.metric)) {
             return false;
         }
-        if (!tagMatch.matches(net.tag)) {
+        if (!tagMatch.matches(net.best.tag)) {
             return false;
         }
-        if (!segrouMatch.matches(net.segrouIdx)) {
+        if (!segrouMatch.matches(net.best.segrouIdx)) {
             return false;
         }
-        if (!bierMatch.matches(net.bierIdx)) {
+        if (!bierMatch.matches(net.best.bierIdx)) {
             return false;
         }
-        if (!validityMatch.matches(net.validity)) {
+        if (!validityMatch.matches(net.best.validity)) {
             return false;
         }
-        if (!pathlenMatch.matches(net.asPathLen())) {
+        if (!pathlenMatch.matches(net.best.asPathLen())) {
             return false;
         }
         if (noStdComm) {
-            if (net.stdComm != null) {
-                if (net.stdComm.size() > 0) {
+            if (net.best.stdComm != null) {
+                if (net.best.stdComm.size() > 0) {
                     return false;
                 }
             }
         }
         if (noExtComm) {
-            if (net.extComm != null) {
-                if (net.extComm.size() > 0) {
+            if (net.best.extComm != null) {
+                if (net.best.extComm.size() > 0) {
                     return false;
                 }
             }
         }
         if (noLrgComm) {
-            if (net.lrgComm != null) {
-                if (net.lrgComm.size() > 0) {
+            if (net.best.lrgComm != null) {
+                if (net.best.lrgComm.size() > 0) {
                     return false;
                 }
             }
@@ -849,17 +849,17 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
         }
         if (privasMatch) {
-            int i = rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.pathSeq));
-            i += rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.pathSet));
+            int i = rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
+            i += rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
             if (i < 1) {
                 return false;
             }
         }
         if (nexthopMatch != null) {
-            if (net.nextHop == null) {
+            if (net.best.nextHop == null) {
                 return false;
             }
-            if (nexthopMatch.compare(nexthopMatch, net.nextHop) != 0) {
+            if (nexthopMatch.compare(nexthopMatch, net.best.nextHop) != 0) {
                 return false;
             }
         }
@@ -869,27 +869,27 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
         }
         if (aspathMatch != null) {
-            if (!net.asPathStr().matches(aspathMatch)) {
+            if (!net.best.asPathStr().matches(aspathMatch)) {
                 return false;
             }
         }
         if (stdCommMatch != null) {
             for (int i = 0; i < stdCommMatch.size(); i++) {
-                if (rtrBgpUtil.findIntList(net.stdComm, stdCommMatch.get(i)) < 0) {
+                if (rtrBgpUtil.findIntList(net.best.stdComm, stdCommMatch.get(i)) < 0) {
                     return false;
                 }
             }
         }
         if (extCommMatch != null) {
             for (int i = 0; i < extCommMatch.size(); i++) {
-                if (rtrBgpUtil.findLongList(net.extComm, extCommMatch.get(i)) < 0) {
+                if (rtrBgpUtil.findLongList(net.best.extComm, extCommMatch.get(i)) < 0) {
                     return false;
                 }
             }
         }
         if (lrgCommMatch != null) {
             for (int i = 0; i < lrgCommMatch.size(); i++) {
-                if (rtrBgpUtil.findLrgList(net.lrgComm, lrgCommMatch.get(i)) < 0) {
+                if (rtrBgpUtil.findLrgList(net.best.lrgComm, lrgCommMatch.get(i)) < 0) {
                     return false;
                 }
             }
@@ -917,45 +917,45 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     }
 
     public void update(int afi, tabRouteEntry<addrIP> net) {
-        net.distance = distanceSet.update(net.distance);
-        net.locPref = locPrefSet.update(net.locPref);
-        net.accIgp = accIgpSet.update(net.accIgp);
-        net.bandwidth = bandwidthSet.update(net.bandwidth);
-        net.origin = originSet.update(net.origin);
-        net.metric = metricSet.update(net.metric);
-        net.tag = tagSet.update(net.tag);
-        net.segrouIdx = segrouSet.update(net.segrouIdx);
-        net.bierIdx = bierSet.update(net.bierIdx);
-        net.pathSeq = tabLabel.prependLabels(net.pathSeq, aspathSet);
-        net.confSeq = tabLabel.prependLabels(net.confSeq, aspathCnf);
+        net.best.distance = distanceSet.update(net.best.distance);
+        net.best.locPref = locPrefSet.update(net.best.locPref);
+        net.best.accIgp = accIgpSet.update(net.best.accIgp);
+        net.best.bandwidth = bandwidthSet.update(net.best.bandwidth);
+        net.best.origin = originSet.update(net.best.origin);
+        net.best.metric = metricSet.update(net.best.metric);
+        net.best.tag = tagSet.update(net.best.tag);
+        net.best.segrouIdx = segrouSet.update(net.best.segrouIdx);
+        net.best.bierIdx = bierSet.update(net.best.bierIdx);
+        net.best.pathSeq = tabLabel.prependLabels(net.best.pathSeq, aspathSet);
+        net.best.confSeq = tabLabel.prependLabels(net.best.confSeq, aspathCnf);
         if (stdCommClear) {
-            net.stdComm = null;
+            net.best.stdComm = null;
         }
         if (extCommClear) {
-            net.extComm = null;
+            net.best.extComm = null;
         }
         if (lrgCommClear) {
-            net.lrgComm = null;
+            net.best.lrgComm = null;
         }
         if (privasClear) {
-            rtrBgpUtil.removePrivateAs(net.pathSeq);
-            rtrBgpUtil.removePrivateAs(net.pathSet);
+            rtrBgpUtil.removePrivateAs(net.best.pathSeq);
+            rtrBgpUtil.removePrivateAs(net.best.pathSet);
         }
-        net.stdComm = tabLabel.prependLabels(net.stdComm, stdCommSet);
+        net.best.stdComm = tabLabel.prependLabels(net.best.stdComm, stdCommSet);
         if (nexthopSet != null) {
-            net.nextHop = nexthopSet.copyBytes();
+            net.best.nextHop = nexthopSet.copyBytes();
         }
         if (extCommSet != null) {
-            if (net.extComm == null) {
-                net.extComm = new ArrayList<Long>();
+            if (net.best.extComm == null) {
+                net.best.extComm = new ArrayList<Long>();
             }
-            net.extComm.addAll(extCommSet);
+            net.best.extComm.addAll(extCommSet);
         }
         if (lrgCommSet != null) {
-            if (net.lrgComm == null) {
-                net.lrgComm = new ArrayList<tabLargeComm>();
+            if (net.best.lrgComm == null) {
+                net.best.lrgComm = new ArrayList<tabLargeComm>();
             }
-            net.lrgComm.addAll(lrgCommSet);
+            net.best.lrgComm.addAll(lrgCommSet);
         }
         if (roumapSet != null) {
             roumapSet.update(afi, net, false);
@@ -992,22 +992,22 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         t.addLine("set wildcard " + net.prefix.wildcard);
         t.addLine("set broadcast " + net.prefix.broadcast);
         t.addLine("set rd " + rd2string(net.rouDst));
-        t.addLine("set nexthop " + net.nextHop);
-        t.addLine("set distance " + net.distance);
-        t.addLine("set validity " + net.validity);
-        t.addLine("set locpref " + net.locPref);
-        t.addLine("set accigp " + net.accIgp);
-        t.addLine("set bandwidth " + net.bandwidth);
-        t.addLine("set origin " + net.origin);
-        t.addLine("set metric " + net.metric);
-        t.addLine("set tag " + net.tag);
-        t.addLine("set segrout " + net.segrouIdx);
-        t.addLine("set bier " + net.bierIdx);
-        t.addLine("set aspath \"" + net.asPathStr() + "\"");
-        t.addLine("set pathlen \"" + net.asPathLen() + "\"");
-        t.addLine("set stdcomm \"" + stdComms2string(net.stdComm) + "\"");
-        t.addLine("set extcomm \"" + extComms2string(net.extComm) + "\"");
-        t.addLine("set lrgcomm \"" + lrgComms2string(net.lrgComm) + "\"");
+        t.addLine("set nexthop " + net.best.nextHop);
+        t.addLine("set distance " + net.best.distance);
+        t.addLine("set validity " + net.best.validity);
+        t.addLine("set locpref " + net.best.locPref);
+        t.addLine("set accigp " + net.best.accIgp);
+        t.addLine("set bandwidth " + net.best.bandwidth);
+        t.addLine("set origin " + net.best.origin);
+        t.addLine("set metric " + net.best.metric);
+        t.addLine("set tag " + net.best.tag);
+        t.addLine("set segrout " + net.best.segrouIdx);
+        t.addLine("set bier " + net.best.bierIdx);
+        t.addLine("set aspath \"" + net.best.asPathStr() + "\"");
+        t.addLine("set pathlen \"" + net.best.asPathLen() + "\"");
+        t.addLine("set stdcomm \"" + stdComms2string(net.best.stdComm) + "\"");
+        t.addLine("set extcomm \"" + extComms2string(net.best.extComm) + "\"");
+        t.addLine("set lrgcomm \"" + lrgComms2string(net.best.lrgComm) + "\"");
         t.addLines(scr);
         pip = pl.getSide();
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -1028,64 +1028,64 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             cmds cmd = new cmds("tcl", a);
             a = cmd.word();
             if (a.equals("nexthop")) {
-                net.nextHop.fromString(cmd.word());
+                net.best.nextHop.fromString(cmd.word());
                 continue;
             }
             if (a.equals("distance")) {
-                net.distance = bits.str2num(cmd.word());
+                net.best.distance = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("locpref")) {
-                net.locPref = bits.str2num(cmd.word());
+                net.best.locPref = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("accigp")) {
-                net.accIgp = bits.str2num(cmd.word());
+                net.best.accIgp = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("bandwidth")) {
-                net.bandwidth = bits.str2num(cmd.word());
+                net.best.bandwidth = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("validity")) {
-                net.validity = bits.str2num(cmd.word());
+                net.best.validity = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("origin")) {
-                net.origin = bits.str2num(cmd.word());
+                net.best.origin = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("metric")) {
-                net.metric = bits.str2num(cmd.word());
+                net.best.metric = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("tag")) {
-                net.tag = bits.str2num(cmd.word());
+                net.best.tag = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("segrout")) {
-                net.segrouIdx = bits.str2num(cmd.word());
+                net.best.segrouIdx = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("bier")) {
-                net.bierIdx = bits.str2num(cmd.word());
+                net.best.bierIdx = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("aspath")) {
                 List<Integer> lst = string2intList(cmd.getRemaining());
-                net.pathSeq = tabLabel.prependLabels(net.pathSeq, lst);
+                net.best.pathSeq = tabLabel.prependLabels(net.best.pathSeq, lst);
                 continue;
             }
             if (a.equals("stdcomm")) {
-                net.stdComm = string2stdComms(cmd.getRemaining());
+                net.best.stdComm = string2stdComms(cmd.getRemaining());
                 continue;
             }
             if (a.equals("extcomm")) {
-                net.extComm = string2extComms(cmd.getRemaining());
+                net.best.extComm = string2extComms(cmd.getRemaining());
                 continue;
             }
             if (a.equals("lrgcomm")) {
-                net.lrgComm = string2lrgComms(cmd.getRemaining());
+                net.best.lrgComm = string2lrgComms(cmd.getRemaining());
                 continue;
             }
         }

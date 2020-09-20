@@ -134,6 +134,7 @@ import sec.secIke;
 import sec.secIsakmp;
 import tab.tabGen;
 import tab.tabQos;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabSession;
 import user.userFilter;
@@ -7250,7 +7251,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     private void doCfgRouter(cmds cmd) {
-        tabRouteEntry.routeType o = cfgRtr.name2num(cmd.word());
+        tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
         int i = bits.str2num(cmd.word());
         cfgRtr rtr = cfgAll.rtrFind(o, i, false);
         if (rtr == null) {
@@ -7258,7 +7259,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         String a = cmd.word();
-        if (o == tabRouteEntry.routeType.babel4) {
+        if (o == tabRouteAttr.routeType.babel4) {
             if (a.equals("enable")) {
                 clear2router(rtrBabel4hnd);
                 setup2router(rtr);
@@ -7271,7 +7272,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrBabel4ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.babel6) {
+        if (o == tabRouteAttr.routeType.babel6) {
             if (a.equals("enable")) {
                 clear2router(rtrBabel6hnd);
                 setup2router(rtr);
@@ -7284,7 +7285,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrBabel6ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.olsr4) {
+        if (o == tabRouteAttr.routeType.olsr4) {
             if (a.equals("enable")) {
                 clear2router(rtrOlsr4hnd);
                 setup2router(rtr);
@@ -7297,7 +7298,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrOlsr4ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.olsr6) {
+        if (o == tabRouteAttr.routeType.olsr6) {
             if (a.equals("enable")) {
                 clear2router(rtrOlsr6hnd);
                 setup2router(rtr);
@@ -7310,7 +7311,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrOlsr6ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.rip4) {
+        if (o == tabRouteAttr.routeType.rip4) {
             if (a.equals("enable")) {
                 clear2router(rtrRip4hnd);
                 setup2router(rtr);
@@ -7323,7 +7324,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrRip4ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.rip6) {
+        if (o == tabRouteAttr.routeType.rip6) {
             if (a.equals("enable")) {
                 clear2router(rtrRip6hnd);
                 setup2router(rtr);
@@ -7336,7 +7337,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrRip6ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.ospf4) {
+        if (o == tabRouteAttr.routeType.ospf4) {
             if (a.equals("enable")) {
                 clear2router(rtrOspf4hnd);
                 setup2router(rtr);
@@ -7349,7 +7350,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrOspf4ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.ospf6) {
+        if (o == tabRouteAttr.routeType.ospf6) {
             if (a.equals("enable")) {
                 clear2router(rtrOspf6hnd);
                 setup2router(rtr);
@@ -7362,7 +7363,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrOspf6ifc.routerDoConfig(a, cmd);
             return;
         }
-        if ((o == tabRouteEntry.routeType.isis4) || (o == tabRouteEntry.routeType.isis6)) {
+        if ((o == tabRouteAttr.routeType.isis4) || (o == tabRouteAttr.routeType.isis6)) {
             if (a.equals("enable")) {
                 clear2router(rtrIsisHnd);
                 setup2router(rtr);
@@ -7375,7 +7376,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrIsisIfc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.pvrp4) {
+        if (o == tabRouteAttr.routeType.pvrp4) {
             if (a.equals("enable")) {
                 clear2router(rtrPvrp4hnd);
                 setup2router(rtr);
@@ -7388,7 +7389,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrPvrp4ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.pvrp6) {
+        if (o == tabRouteAttr.routeType.pvrp6) {
             if (a.equals("enable")) {
                 clear2router(rtrPvrp6hnd);
                 setup2router(rtr);
@@ -7401,7 +7402,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrPvrp6ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.lsrp4) {
+        if (o == tabRouteAttr.routeType.lsrp4) {
             if (a.equals("enable")) {
                 clear2router(rtrLsrp4hnd);
                 setup2router(rtr);
@@ -7414,7 +7415,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrLsrp4ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.lsrp6) {
+        if (o == tabRouteAttr.routeType.lsrp6) {
             if (a.equals("enable")) {
                 clear2router(rtrLsrp6hnd);
                 setup2router(rtr);
@@ -7427,7 +7428,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrLsrp6ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.eigrp4) {
+        if (o == tabRouteAttr.routeType.eigrp4) {
             if (a.equals("enable")) {
                 clear2router(rtrEigrp4hnd);
                 setup2router(rtr);
@@ -7440,7 +7441,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrEigrp4ifc.routerDoConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.eigrp6) {
+        if (o == tabRouteAttr.routeType.eigrp6) {
             if (a.equals("enable")) {
                 clear2router(rtrEigrp6hnd);
                 setup2router(rtr);
@@ -7457,7 +7458,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     private void doCfgNoRouter(cmds cmd) {
-        tabRouteEntry.routeType o = cfgRtr.name2num(cmd.word());
+        tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
         int i = bits.str2num(cmd.word());
         cfgRtr rtr = cfgAll.rtrFind(o, i, false);
         if (rtr == null) {
@@ -7465,7 +7466,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         String a = cmd.word();
-        if (o == tabRouteEntry.routeType.babel4) {
+        if (o == tabRouteAttr.routeType.babel4) {
             if (rtrBabel4hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7477,7 +7478,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrBabel4ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.babel6) {
+        if (o == tabRouteAttr.routeType.babel6) {
             if (rtrBabel6hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7489,7 +7490,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrBabel6ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.olsr4) {
+        if (o == tabRouteAttr.routeType.olsr4) {
             if (rtrOlsr4hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7501,7 +7502,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrOlsr4ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.olsr6) {
+        if (o == tabRouteAttr.routeType.olsr6) {
             if (rtrOlsr6hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7513,7 +7514,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrOlsr6ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.rip4) {
+        if (o == tabRouteAttr.routeType.rip4) {
             if (rtrRip4hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7525,7 +7526,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrRip4ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.rip6) {
+        if (o == tabRouteAttr.routeType.rip6) {
             if (rtrRip6hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7537,7 +7538,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrRip6ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.ospf4) {
+        if (o == tabRouteAttr.routeType.ospf4) {
             if (rtrOspf4hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7549,7 +7550,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrOspf4ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.ospf6) {
+        if (o == tabRouteAttr.routeType.ospf6) {
             if (rtrOspf6hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7561,7 +7562,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrOspf6ifc.routerUnConfig(a, cmd);
             return;
         }
-        if ((o == tabRouteEntry.routeType.isis4) || (o == tabRouteEntry.routeType.isis6)) {
+        if ((o == tabRouteAttr.routeType.isis4) || (o == tabRouteAttr.routeType.isis6)) {
             if (rtrIsisHnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7573,7 +7574,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrIsisIfc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.pvrp4) {
+        if (o == tabRouteAttr.routeType.pvrp4) {
             if (rtrPvrp4hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7585,7 +7586,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrPvrp4ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.pvrp6) {
+        if (o == tabRouteAttr.routeType.pvrp6) {
             if (rtrPvrp6hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7597,7 +7598,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrPvrp6ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.lsrp4) {
+        if (o == tabRouteAttr.routeType.lsrp4) {
             if (rtrLsrp4hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7609,7 +7610,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrLsrp4ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.lsrp6) {
+        if (o == tabRouteAttr.routeType.lsrp6) {
             if (rtrLsrp6hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7621,7 +7622,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrLsrp6ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.eigrp4) {
+        if (o == tabRouteAttr.routeType.eigrp4) {
             if (rtrEigrp4hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;
@@ -7633,7 +7634,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrEigrp4ifc.routerUnConfig(a, cmd);
             return;
         }
-        if (o == tabRouteEntry.routeType.eigrp6) {
+        if (o == tabRouteAttr.routeType.eigrp6) {
             if (rtrEigrp6hnd == null) {
                 cmd.error("process not enabled on interface");
                 return;

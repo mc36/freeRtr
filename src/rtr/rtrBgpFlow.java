@@ -60,8 +60,8 @@ public class rtrBgpFlow {
         if (plcy == null) {
             return true;
         }
-        attr.nextHop = new addrIP();
-        attr.rouSrc = rtrBgpUtil.peerOriginate;
+        attr.best.nextHop = new addrIP();
+        attr.best.rouSrc = rtrBgpUtil.peerOriginate;
         boolean res = true;
         for (int i = 0; i < plcy.size(); i++) {
             res &= advertPolicy(tab, plcy.get(i), attr, ipv6, as);
@@ -136,11 +136,11 @@ public class rtrBgpFlow {
         attr.prefix.wildcard.fromBuf(adr, 0);
         bits.byteCopy(buf, 47, adr, 0, 16);
         attr.prefix.mask.fromBuf(adr, 0);
-        if (attr.extComm == null) {
-            attr.extComm = new ArrayList<Long>();
+        if (attr.best.extComm == null) {
+            attr.best.extComm = new ArrayList<Long>();
         }
         if (rate >= 0) {
-            attr.extComm.add(tabRtrmapN.rate2comm(as, rate));
+            attr.best.extComm.add(tabRtrmapN.rate2comm(as, rate));
         }
         tab.add(tabRoute.addType.better, attr, true, true);
         return false;
@@ -306,11 +306,11 @@ public class rtrBgpFlow {
                     break;
             }
         }
-        if (rou.extComm == null) {
+        if (rou.best.extComm == null) {
             return res;
         }
-        for (i = 0; i < rou.extComm.size(); i++) {
-            long rate = rou.extComm.get(i);
+        for (i = 0; i < rou.best.extComm.size(); i++) {
+            long rate = rou.best.extComm.get(i);
             rate = tabRtrmapN.comm2rate(rate);
             if (rate < 0) {
                 continue;

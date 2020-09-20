@@ -391,9 +391,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case setNexthop:
                 return bits.str2lst(beg + "set nexthop " + nexthopSet);
             case setAspath:
-                return bits.str2lst(beg + "set aspath " + tabRouteEntry.dumpIntList(intLst, "", ""));
+                return bits.str2lst(beg + "set aspath " + tabRouteAttr.dumpIntList(intLst, "", ""));
             case setAsconf:
-                return bits.str2lst(beg + "set asconfed " + tabRouteEntry.dumpIntList(intLst, "", ""));
+                return bits.str2lst(beg + "set asconfed " + tabRouteAttr.dumpIntList(intLst, "", ""));
             case setDistance:
                 return bits.str2lst(beg + "set distance " + intSet);
             case setMetric:
@@ -501,24 +501,24 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case always:
                 return true;
             case aspath:
-                return net.asPathStr().matches(strVal);
+                return net.best.asPathStr().matches(strVal);
             case stdcomm:
                 for (int i = 0; i < intLst.size(); i++) {
-                    if (rtrBgpUtil.findIntList(net.stdComm, intLst.get(i)) < 0) {
+                    if (rtrBgpUtil.findIntList(net.best.stdComm, intLst.get(i)) < 0) {
                         return false;
                     }
                 }
                 return true;
             case extcomm:
                 for (int i = 0; i < lngLst.size(); i++) {
-                    if (rtrBgpUtil.findLongList(net.extComm, lngLst.get(i)) < 0) {
+                    if (rtrBgpUtil.findLongList(net.best.extComm, lngLst.get(i)) < 0) {
                         return false;
                     }
                 }
                 return true;
             case lrgcomm:
                 for (int i = 0; i < lrgLst.size(); i++) {
-                    if (rtrBgpUtil.findLrgList(net.lrgComm, lrgLst.get(i)) < 0) {
+                    if (rtrBgpUtil.findLrgList(net.best.lrgComm, lrgLst.get(i)) < 0) {
                         return false;
                     }
                 }
@@ -528,22 +528,22 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case network:
                 return networkMatch.matches(afi, net.prefix);
             case nostdcomm:
-                if (net.stdComm != null) {
-                    if (net.stdComm.size() > 0) {
+                if (net.best.stdComm != null) {
+                    if (net.best.stdComm.size() > 0) {
                         return false;
                     }
                 }
                 return true;
             case noextcomm:
-                if (net.extComm != null) {
-                    if (net.extComm.size() > 0) {
+                if (net.best.extComm != null) {
+                    if (net.best.extComm.size() > 0) {
                         return false;
                     }
                 }
                 return true;
             case nolrgcomm:
-                if (net.lrgComm != null) {
-                    if (net.lrgComm.size() > 0) {
+                if (net.best.lrgComm != null) {
+                    if (net.best.lrgComm.size() > 0) {
                         return false;
                     }
                 }
@@ -555,8 +555,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 }
                 return res.worker.getStatus();
             case privas:
-                int i = rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.pathSeq));
-                i += rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.pathSet));
+                int i = rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
+                i += rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
                 return i > 0;
             case prfxlst:
                 return prfxlst.matches(afi, net.prefix);
@@ -565,36 +565,36 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case rouplc:
                 return tabRtrplc.doRpl(afi, net, rouplc, true) != null;
             case distance:
-                return intMatch.matches(net.distance);
+                return intMatch.matches(net.best.distance);
             case metric:
-                return intMatch.matches(net.metric);
+                return intMatch.matches(net.best.metric);
             case origin:
-                return intMatch.matches(net.origin);
+                return intMatch.matches(net.best.origin);
             case locpref:
-                return intMatch.matches(net.locPref);
+                return intMatch.matches(net.best.locPref);
             case accigp:
-                return intMatch.matches(net.accIgp);
+                return intMatch.matches(net.best.accIgp);
             case validity:
-                return intMatch.matches(net.validity);
+                return intMatch.matches(net.best.validity);
             case pathlen:
-                return intMatch.matches(net.asPathLen());
+                return intMatch.matches(net.best.asPathLen());
             case bandwidth:
-                return intMatch.matches(net.bandwidth);
+                return intMatch.matches(net.best.bandwidth);
             case tag:
-                return intMatch.matches(net.tag);
+                return intMatch.matches(net.best.tag);
             case segrou:
-                return intMatch.matches(net.segrouIdx);
+                return intMatch.matches(net.best.segrouIdx);
             case bier:
-                return intMatch.matches(net.bierIdx);
+                return intMatch.matches(net.best.bierIdx);
             case afi:
                 return intMatch.matches(afi & rtrBgpUtil.afiMask);
             case safi:
                 return intMatch.matches(afi & rtrBgpUtil.safiMask);
             case nexthop:
-                if (net.nextHop == null) {
+                if (net.best.nextHop == null) {
                     return false;
                 }
-                return nexthopSet.compare(nexthopSet, net.nextHop) == 0;
+                return nexthopSet.compare(nexthopSet, net.best.nextHop) == 0;
             default:
                 return true;
         }
@@ -607,68 +607,68 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     public void update(int afi, tabRouteEntry<addrIP> net) {
         switch (doMode) {
             case clrStdcomm:
-                net.stdComm = null;
+                net.best.stdComm = null;
                 return;
             case clrExtcomm:
-                net.extComm = null;
+                net.best.extComm = null;
                 return;
             case clrLrgcomm:
-                net.lrgComm = null;
+                net.best.lrgComm = null;
                 return;
             case clrPrivas:
-                rtrBgpUtil.removePrivateAs(net.pathSeq);
-                rtrBgpUtil.removePrivateAs(net.pathSet);
+                rtrBgpUtil.removePrivateAs(net.best.pathSeq);
+                rtrBgpUtil.removePrivateAs(net.best.pathSet);
                 return;
             case setStdcomm:
-                net.stdComm = tabLabel.prependLabels(net.stdComm, intLst);
+                net.best.stdComm = tabLabel.prependLabels(net.best.stdComm, intLst);
                 return;
             case setExtcomm:
-                if (net.extComm == null) {
-                    net.extComm = new ArrayList<Long>();
+                if (net.best.extComm == null) {
+                    net.best.extComm = new ArrayList<Long>();
                 }
-                net.extComm.addAll(lngLst);
+                net.best.extComm.addAll(lngLst);
                 return;
             case setLrgcomm:
-                if (net.lrgComm == null) {
-                    net.lrgComm = new ArrayList<tabLargeComm>();
+                if (net.best.lrgComm == null) {
+                    net.best.lrgComm = new ArrayList<tabLargeComm>();
                 }
-                net.lrgComm.addAll(lrgLst);
+                net.best.lrgComm.addAll(lrgLst);
                 return;
             case setNexthop:
-                net.nextHop = nexthopSet.copyBytes();
+                net.best.nextHop = nexthopSet.copyBytes();
                 return;
             case setAspath:
-                net.pathSeq = tabLabel.prependLabels(net.pathSeq, intLst);
+                net.best.pathSeq = tabLabel.prependLabels(net.best.pathSeq, intLst);
                 return;
             case setAsconf:
-                net.confSeq = tabLabel.prependLabels(net.confSeq, intLst);
+                net.best.confSeq = tabLabel.prependLabels(net.best.confSeq, intLst);
                 return;
             case setDistance:
-                net.distance = intSet.update(net.distance);
+                net.best.distance = intSet.update(net.best.distance);
                 return;
             case setMetric:
-                net.metric = intSet.update(net.metric);
+                net.best.metric = intSet.update(net.best.metric);
                 return;
             case setOrigin:
-                net.origin = intSet.update(net.origin);
+                net.best.origin = intSet.update(net.best.origin);
                 return;
             case setLocPref:
-                net.locPref = intSet.update(net.locPref);
+                net.best.locPref = intSet.update(net.best.locPref);
                 return;
             case setAccIgp:
-                net.accIgp = intSet.update(net.accIgp);
+                net.best.accIgp = intSet.update(net.best.accIgp);
                 return;
             case setBandwidth:
-                net.bandwidth = intSet.update(net.bandwidth);
+                net.best.bandwidth = intSet.update(net.best.bandwidth);
                 return;
             case setTag:
-                net.tag = intSet.update(net.tag);
+                net.best.tag = intSet.update(net.best.tag);
                 return;
             case setSegrou:
-                net.segrouIdx = intSet.update(net.segrouIdx);
+                net.best.segrouIdx = intSet.update(net.best.segrouIdx);
                 return;
             case setBier:
-                net.bierIdx = intSet.update(net.bierIdx);
+                net.best.bierIdx = intSet.update(net.best.bierIdx);
                 return;
             case setRoumap:
                 roumap.update(afi, net, false);

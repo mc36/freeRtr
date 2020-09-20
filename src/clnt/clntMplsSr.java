@@ -220,9 +220,9 @@ public class clntMplsSr implements Runnable, ifcDn {
             return null;
         }
         src = src.copyBytes();
-        src.nextHop = nextHop.copyBytes();
-        src.iface = nextIfc;
-        src.labelRem = tabLabel.int2labels(labs[0]);
+        src.best.nextHop = nextHop.copyBytes();
+        src.best.iface = nextIfc;
+        src.best.labelRem = tabLabel.int2labels(labs[0]);
         return src;
     }
 
@@ -370,19 +370,19 @@ public class clntMplsSr implements Runnable, ifcDn {
                 return;
             }
             if (hop.index) {
-                if (ntry.segrouBeg < 1) {
+                if (ntry.best.segrouBeg < 1) {
                     if (debugger.clntMplsSrTraf) {
                         logger.debug("no base for " + ntry);
                     }
                     clearState();
                     return;
                 }
-                labs[0] = ntry.segrouBeg + hop.label;
+                labs[0] = ntry.best.segrouBeg + hop.label;
             } else {
                 labs[0] = hop.label >>> 12;
             }
-            nextHop = ntry.nextHop.copyBytes();
-            nextIfc = ntry.iface;
+            nextHop = ntry.best.nextHop.copyBytes();
+            nextIfc = ntry.best.iface;
             labels = labs;
             upper.setState(state.states.up);
             return;
@@ -405,33 +405,33 @@ public class clntMplsSr implements Runnable, ifcDn {
                 clearState();
                 return;
             }
-            if (prev.segrouIdx < 1) {
+            if (prev.best.segrouIdx < 1) {
                 if (debugger.clntMplsSrTraf) {
                     logger.debug("no index for " + prev);
                 }
                 clearState();
                 return;
             }
-            if (ntry.segrouOld < 1) {
+            if (ntry.best.segrouOld < 1) {
                 if (debugger.clntMplsSrTraf) {
                     logger.debug("no base for " + ntry);
                 }
                 clearState();
                 return;
             }
-            labs[i + 1] = ntry.segrouOld + prev.segrouIdx;
+            labs[i + 1] = ntry.best.segrouOld + prev.best.segrouIdx;
             prev = ntry;
         }
-        if (prev.segrouBeg < 1) {
+        if (prev.best.segrouBeg < 1) {
             if (debugger.clntMplsSrTraf) {
                 logger.debug("no base for " + prev);
             }
             clearState();
             return;
         }
-        labs[0] = prev.segrouBeg + prev.segrouIdx;
-        nextHop = prev.nextHop.copyBytes();
-        nextIfc = prev.iface;
+        labs[0] = prev.best.segrouBeg + prev.best.segrouIdx;
+        nextHop = prev.best.nextHop.copyBytes();
+        nextIfc = prev.best.iface;
         labels = labs;
         upper.setState(state.states.up);
     }

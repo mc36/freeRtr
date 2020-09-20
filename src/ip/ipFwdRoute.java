@@ -11,6 +11,7 @@ import clnt.clntTrack;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.cmds;
@@ -262,7 +263,7 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
      * @return prefix, null if nothing
      */
     public tabRouteEntry<addrIP> getPrefix() {
-        if (dist >= tabRouteEntry.distanMax) {
+        if (dist >= tabRouteAttr.distanMax) {
             return null;
         }
         if (track != null) {
@@ -272,14 +273,14 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
         }
         tabRouteEntry<addrIP> prf = new tabRouteEntry<addrIP>();
         prf.prefix = pref.copyBytes();
-        prf.nextHop = hop.copyBytes();
-        prf.distance = dist;
-        prf.tag = tag;
+        prf.best.nextHop = hop.copyBytes();
+        prf.best.distance = dist;
+        prf.best.tag = tag;
         switch (mpls) {
             case 1:
                 List<Integer> lab = new ArrayList<Integer>();
                 lab.add(ipMpls.labelImp);
-                prf.labelRem = lab;
+                prf.best.labelRem = lab;
                 break;
             case 2:
                 lab = new ArrayList<Integer>();
@@ -288,10 +289,10 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
                 } else {
                     lab.add(ipMpls.labelExp6);
                 }
-                prf.labelRem = lab;
+                prf.best.labelRem = lab;
                 break;
         }
-        prf.rouTyp = tabRouteEntry.routeType.staticRoute;
+        prf.best.rouTyp = tabRouteAttr.routeType.staticRoute;
         return prf;
     }
 

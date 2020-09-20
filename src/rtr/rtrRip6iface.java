@@ -21,6 +21,7 @@ import cfg.cfgAll;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
 import cfg.cfgRouplc;
+import tab.tabRouteAttr;
 import tab.tabRtrplcN;
 
 /**
@@ -472,16 +473,16 @@ public class rtrRip6iface implements Comparator<rtrRip6iface> {
 
     private void createRIPupdate(tabRouteEntry<addrIP> ntry, packHolder pck) {
         pck.putAddr(0, ntry.prefix.network.toIPv6()); // network
-        pck.msbPutW(16, ntry.tag); // route tag
+        pck.msbPutW(16, ntry.best.tag); // route tag
         pck.putByte(18, ntry.prefix.mask.toIPv6().toNetmask()); // subnet mask
-        int i = ntry.metric + metricOut;
+        int i = ntry.best.metric + metricOut;
         if (i > rtrRip6.metricMax) {
             i = rtrRip6.metricMax;
         }
         if (i < rtrRip6.metricMin) {
             i = rtrRip6.metricMin;
         }
-        ntry.metric = i;
+        ntry.best.metric = i;
         pck.putByte(19, i); // metric
         pck.putSkip(rtrRip6.sizeNtry);
         if (debugger.rtrRip6traf) {
@@ -500,21 +501,21 @@ public class rtrRip6iface implements Comparator<rtrRip6iface> {
         if (defOrigin) {
             tab1.add(tabRoute.addType.better, addrPrefix.ip6toIP(addrPrefix.defaultRoute6()), new addrIP());
         }
-        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, null, true, tabRouteEntry.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, null, true, tabRouteAttr.distanLim);
         if (splitHorizon) {
             if (poisonReverse) {
                 for (int i = 0; i < tab1.size(); i++) {
                     tabRouteEntry<addrIP> ntry = tab1.get(i);
-                    if (ntry.iface != conn.iface) {
+                    if (ntry.best.iface != conn.iface) {
                         continue;
                     }
-                    ntry.metric = rtrRip6.metricMax;
+                    ntry.best.metric = rtrRip6.metricMax;
                 }
             } else {
                 tab1.delIface(conn.iface);
             }
         }
-        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true, tabRouteEntry.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true, tabRouteAttr.distanLim);
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("copy");
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, tab2, tab1, true, roumapOut, roupolOut, prflstOut);
         if (debugger.rtrRip6traf) {
@@ -527,8 +528,8 @@ public class rtrRip6iface implements Comparator<rtrRip6iface> {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.iface != conn.iface) {
-                ntry.nextHop = null;
+            if (ntry.best.iface != conn.iface) {
+                ntry.best.nextHop = null;
             }
             createRIPupdate(ntry, pck);
             entries++;

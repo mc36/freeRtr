@@ -12,6 +12,7 @@ import prt.prtServP;
 import prt.prtUdp;
 import tab.tabGen;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userFormat;
 import user.userHelping;
@@ -94,7 +95,7 @@ public class rtrRip6 extends ipRtr implements prtServP {
         ifaces = new tabGen<rtrRip6iface>();
         neighs = new tabGen<rtrRip6neigh>();
         routerCreateComputed();
-        fwdCore.routerAdd(this, tabRouteEntry.routeType.rip6, id);
+        fwdCore.routerAdd(this, tabRouteAttr.routeType.rip6, id);
     }
 
     /**
@@ -323,9 +324,9 @@ public class rtrRip6 extends ipRtr implements prtServP {
                 continue;
             }
             ntry = tab.add(tabRoute.addType.better, ifc.iface.network, null);
-            ntry.rouTyp = tabRouteEntry.routeType.conn;
-            ntry.iface = ifc.iface;
-            ntry.distance = tabRouteEntry.distanIfc;
+            ntry.best.rouTyp = tabRouteAttr.routeType.conn;
+            ntry.best.iface = ifc.iface;
+            ntry.best.distance = tabRouteAttr.distanIfc;
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrRip6neigh nei = neighs.get(i);
@@ -338,7 +339,7 @@ public class rtrRip6 extends ipRtr implements prtServP {
             if (nei.iface.iface.lower.getState() != state.states.up) {
                 continue;
             }
-            tab.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteEntry.distanLim);
+            tab.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteAttr.distanLim);
         }
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab, null, fwdCore.commonLabel, 0, null, 0);
         tab.setProto(routerProtoTyp, routerProcNum);

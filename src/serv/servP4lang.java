@@ -1066,7 +1066,7 @@ class servP4langConn implements Runnable {
             }
             return;
         }
-        if (ntry.iface == null) {
+        if (ntry.best.iface == null) {
             if (debugger.servP4langErr) {
                 logger.debug("got unneeded report: " + cmd.getOriginal());
             }
@@ -1075,7 +1075,7 @@ class servP4langConn implements Runnable {
         counter cntr = new counter();
         cntr.packTx = bits.str2long(cmd.word());
         cntr.byteTx = bits.str2long(cmd.word());
-        prt.counterUpdate((ipFwdIface) ntry.iface, sa, sp, dp, cntr);
+        prt.counterUpdate((ipFwdIface) ntry.best.iface, sa, sp, dp, cntr);
     }
 
     private boolean doRound() {
@@ -1671,13 +1671,13 @@ class servP4langConn implements Runnable {
     }
 
     private static int getLabel(tabRouteEntry<addrIP> ntry) {
-        if (ntry.labelRem == null) {
+        if (ntry.best.labelRem == null) {
             return getNullLabel(ntry);
         }
-        if (ntry.labelRem.size() < 1) {
+        if (ntry.best.labelRem.size() < 1) {
             return getNullLabel(ntry);
         }
-        int i = ntry.labelRem.get(0);
+        int i = ntry.best.labelRem.get(0);
         if (i == ipMpls.labelImp) {
             return getNullLabel(ntry);
         }
@@ -1832,13 +1832,13 @@ class servP4langConn implements Runnable {
         if (rou == null) {
             return null;
         }
-        if (rou.nextHop == null) {
+        if (rou.best.nextHop == null) {
             return rou;
         }
-        if (rou.iface == null) {
+        if (rou.best.iface == null) {
             return rou;
         }
-        servP4langIfc ifc = findIfc(rou.iface);
+        servP4langIfc ifc = findIfc(rou.best.iface);
         if (ifc == null) {
             return rou;
         }
@@ -1872,14 +1872,14 @@ class servP4langConn implements Runnable {
         if (rou == null) {
             return null;
         }
-        if (rou.iface == null) {
+        if (rou.best.iface == null) {
             return null;
         }
-        addrIP nh = rou.nextHop;
+        addrIP nh = rou.best.nextHop;
         if (nh == null) {
             nh = adr;
         }
-        return findIfc(rou.iface, nh);
+        return findIfc(rou.best.iface, nh);
     }
 
     private void doBrdg(servP4langBr br) {
@@ -2172,7 +2172,7 @@ class servP4langConn implements Runnable {
             if (rou == null) {
                 continue;
             }
-            servP4langNei hop = findIfc(rou.iface, rou.nextHop);
+            servP4langNei hop = findIfc(rou.best.iface, rou.best.nextHop);
             if (hop == null) {
                 continue;
             }
@@ -2470,10 +2470,10 @@ class servP4langConn implements Runnable {
             if (ntry == null) {
                 return;
             }
-            if (ntry.iface == null) {
+            if (ntry.best.iface == null) {
                 return;
             }
-            servP4langNei hop = findIfc(ntry.iface, ntry.nextHop);
+            servP4langNei hop = findIfc(ntry.best.iface, ntry.best.nextHop);
             if (hop == null) {
                 return;
             }
@@ -3025,7 +3025,7 @@ class servP4langConn implements Runnable {
         for (int i = 0; i < need.size(); i++) {
             tabRouteEntry<addrIP> ntry = need.get(i);
             ntry = ntry.copyBytes();
-            if ((ntry.iface == null) && (ntry.rouTab != null)) {
+            if ((ntry.best.iface == null) && (ntry.best.rouTab != null)) {
                 tabRouteEntry<addrIP> old = done.find(ntry);
                 String act = "add";
                 if (old != null) {
@@ -3034,16 +3034,16 @@ class servP4langConn implements Runnable {
                     }
                     act = "mod";
                 }
-                if (ntry.segrouPrf == null) {
-                    old = ntry.rouTab.actualU.route(ntry.nextHop);
+                if (ntry.best.segrouPrf == null) {
+                    old = ntry.best.rouTab.actualU.route(ntry.best.nextHop);
                 } else {
-                    old = ntry.rouTab.actualU.route(ntry.segrouPrf);
+                    old = ntry.best.rouTab.actualU.route(ntry.best.segrouPrf);
                 }
                 old = convRou(old);
                 if (old == null) {
                     continue;
                 }
-                servP4langNei hop = findIfc(old.iface, old.nextHop);
+                servP4langNei hop = findIfc(old.best.iface, old.best.nextHop);
                 if (hop == null) {
                     continue;
                 }
@@ -3054,18 +3054,18 @@ class servP4langConn implements Runnable {
                 } else {
                     a = "" + addrPrefix.ip2ip6(ntry.prefix);
                 }
-                if (ntry.segrouPrf == null) {
-                    lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + getLabel(old) + " " + getLabel(ntry));
+                if (ntry.best.segrouPrf == null) {
+                    lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + getLabel(old) + " " + getLabel(ntry));
                 } else {
-                    lower.sendLine("srvroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + ntry.segrouPrf);
+                    lower.sendLine("srvroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + ntry.best.segrouPrf);
                 }
                 continue;
             }
             tabRouteEntry<addrIP> old = done.find(ntry);
             String act = "add";
             if (old != null) {
-                if (ntry.nextHop != null) {
-                    findIfc(ntry.iface, ntry.nextHop);
+                if (ntry.best.nextHop != null) {
+                    findIfc(ntry.best.iface, ntry.best.nextHop);
                 }
                 if (!ntry.differs(old)) {
                     continue;
@@ -3084,37 +3084,37 @@ class servP4langConn implements Runnable {
             } else {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
-            if (ntry.nextHop == null) {
+            if (ntry.best.nextHop == null) {
                 lower.sendLine("myaddr" + afi + "_" + act + " " + a + " -1 " + vrf);
                 continue;
             }
-            servP4langNei hop = findIfc(ntry.iface, ntry.nextHop);
+            servP4langNei hop = findIfc(ntry.best.iface, ntry.best.nextHop);
             if (hop == null) {
                 continue;
             }
-            if (ntry.labelRem != null) {
-                lower.sendLine("labroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + getLabel(ntry));
+            if (ntry.best.labelRem != null) {
+                lower.sendLine("labroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + getLabel(ntry));
                 continue;
             }
-            lower.sendLine("route" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf);
+            lower.sendLine("route" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf);
         }
         for (int i = done.size() - 1; i >= 0; i--) {
             tabRouteEntry<addrIP> ntry = done.get(i);
             if (need.find(ntry) != null) {
                 continue;
             }
-            if ((ntry.iface == null) && (ntry.rouTab != null)) {
+            if ((ntry.best.iface == null) && (ntry.best.rouTab != null)) {
                 tabRouteEntry<addrIP> old;
-                if (ntry.segrouPrf == null) {
-                    old = ntry.rouTab.actualU.route(ntry.nextHop);
+                if (ntry.best.segrouPrf == null) {
+                    old = ntry.best.rouTab.actualU.route(ntry.best.nextHop);
                 } else {
-                    old = ntry.rouTab.actualU.route(ntry.segrouPrf);
+                    old = ntry.best.rouTab.actualU.route(ntry.best.segrouPrf);
                 }
                 old = convRou(old);
                 if (old == null) {
                     continue;
                 }
-                servP4langNei hop = findIfc(old.iface, old.nextHop);
+                servP4langNei hop = findIfc(old.best.iface, old.best.nextHop);
                 if (hop == null) {
                     continue;
                 }
@@ -3125,10 +3125,10 @@ class servP4langConn implements Runnable {
                 } else {
                     a = "" + addrPrefix.ip2ip6(ntry.prefix);
                 }
-                if (ntry.segrouPrf == null) {
-                    lower.sendLine("vpnroute" + afi + "_del " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + getLabel(old) + " " + getLabel(ntry));
+                if (ntry.best.segrouPrf == null) {
+                    lower.sendLine("vpnroute" + afi + "_del " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + getLabel(old) + " " + getLabel(ntry));
                 } else {
-                    lower.sendLine("srvroute" + afi + "_del " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + ntry.segrouPrf);
+                    lower.sendLine("srvroute" + afi + "_del " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + ntry.best.segrouPrf);
                 }
                 continue;
             }
@@ -3143,19 +3143,19 @@ class servP4langConn implements Runnable {
             } else {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
-            if (ntry.nextHop == null) {
+            if (ntry.best.nextHop == null) {
                 lower.sendLine("myaddr" + afi + "_del " + a + " -1 " + vrf);
                 continue;
             }
-            servP4langNei hop = findIfc(ntry.iface, ntry.nextHop);
+            servP4langNei hop = findIfc(ntry.best.iface, ntry.best.nextHop);
             if (hop == null) {
                 continue;
             }
-            if (ntry.labelRem != null) {
-                lower.sendLine("labroute" + afi + "_del " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf + " " + getLabel(ntry));
+            if (ntry.best.labelRem != null) {
+                lower.sendLine("labroute" + afi + "_del " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + getLabel(ntry));
                 continue;
             }
-            lower.sendLine("route" + afi + "_del " + a + " " + hop.id + " " + ntry.nextHop + " " + vrf);
+            lower.sendLine("route" + afi + "_del " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf);
         }
     }
 

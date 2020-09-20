@@ -124,6 +124,7 @@ import tab.tabGen;
 import tab.tabNatCfgN;
 import tab.tabNshNtry;
 import tab.tabPbrN;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.cmds;
@@ -880,7 +881,7 @@ public class userConfig {
             return;
         }
         if (a.equals("router")) {
-            tabRouteEntry.routeType o = cfgRtr.name2num(cmd.word());
+            tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
             if (o == null) {
                 cmd.error("invalid routing protocol");
                 return;
@@ -1683,7 +1684,7 @@ public class userConfig {
             return;
         }
         if (a.equals("router")) {
-            tabRouteEntry.routeType o = cfgRtr.name2num(cmd.word());
+            tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
             if (o == null) {
                 cmd.error("invalid routing protocol");
                 return;

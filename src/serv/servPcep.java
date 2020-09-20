@@ -245,17 +245,17 @@ class servPcepConn implements Runnable {
                 continue;
             }
             pck.ero = new ArrayList<tabHop>();
-            if (ntry.oldHop != null) {
-                tabRouteEntry<addrIP> ntry2 = fwd.actualU.route(ntry.oldHop);
+            if (ntry.best.oldHop != null) {
+                tabRouteEntry<addrIP> ntry2 = fwd.actualU.route(ntry.best.oldHop);
                 if (ntry2 != null) {
                     tabHop mid = new tabHop();
                     mid.strict = false;
-                    mid.adr.setAddr(ntry.oldHop);
+                    mid.adr.setAddr(ntry.best.oldHop);
                     if (pck.setupType == 1) {
                         mid.index = !lower.explicit;
-                        mid.label = ntry2.segrouIdx;
+                        mid.label = ntry2.best.segrouIdx;
                         if (lower.explicit) {
-                            mid.label += ntry2.segrouOld;
+                            mid.label += ntry2.best.segrouOld;
                             mid.label <<= 12;
                         }
                     }
@@ -267,9 +267,9 @@ class servPcepConn implements Runnable {
             hop.adr.setAddr(pck.trgAddr);
             if (pck.setupType == 1) {
                 hop.index = !lower.explicit;
-                hop.label = ntry.segrouIdx;
+                hop.label = ntry.best.segrouIdx;
                 if (lower.explicit) {
-                    hop.label += ntry.segrouOld;
+                    hop.label += ntry.best.segrouOld;
                     hop.label <<= 12;
                 }
             }

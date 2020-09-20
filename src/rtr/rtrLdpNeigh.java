@@ -283,7 +283,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
      * @param prf prefix to advertise
      */
     public void sendLabelMap(tabRouteEntry<addrIP> prf) {
-        int val = prf.labelLoc.getValue();
+        int val = prf.best.labelLoc.getValue();
         if (labelPop && (val == ip.commonLabel.getValue())) {
             val = ipMpls.labelImp;
         }
@@ -511,9 +511,9 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             return;
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.labelRem = tabLabel.int2labels(pck.label);
-        ntry.nextHop = peer.copyBytes();
-        ntry.iface = ifc;
+        ntry.best.labelRem = tabLabel.int2labels(pck.label);
+        ntry.best.nextHop = peer.copyBytes();
+        ntry.best.iface = ifc;
         for (int i = 0; i < pck.prfLst.size(); i++) {
             ntry.prefix = pck.prfLst.get(i);
             if (debugger.rtrLdpTraf) {
@@ -877,7 +877,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             if (!ntry.differs(prefAdvert.find(ntry))) {
                 continue;
             }
-            if (ntry.labelLoc == null) {
+            if (ntry.best.labelLoc == null) {
                 continue;
             }
             if (filterOut != null) {

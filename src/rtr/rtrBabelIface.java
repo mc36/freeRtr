@@ -17,6 +17,7 @@ import prt.prtGenConn;
 import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabRtrplcN;
@@ -443,13 +444,13 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
 
     private void createBabelUpdate(tabRouteEntry<addrIP> ntry, addrEui last, packHolder pck) {
         typLenVal tlv = rtrBabel.getTlv();
-        if (ntry.aggrRtr == null) {
-            ntry.aggrRtr = new addrIP();
-            ntry.aggrRtr.fromIPv6addr(lower.routerID.toIPv6());
-            ntry.aggrAs = lower.seqno;
+        if (ntry.best.aggrRtr == null) {
+            ntry.best.aggrRtr = new addrIP();
+            ntry.best.aggrRtr.fromIPv6addr(lower.routerID.toIPv6());
+            ntry.best.aggrAs = lower.seqno;
         }
         addrEui ae = new addrEui();
-        ae.fromIPv6(ntry.aggrRtr.toIPv6());
+        ae.fromIPv6(ntry.best.aggrRtr.toIPv6());
         if (ae.compare(ae, last) != 0) {
             bits.msbPutW(tlv.valDat, 0, 0); // reserved
             ae.toBuffer(tlv.valDat, 2); // address
@@ -459,8 +460,8 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
         bits.putByte(tlv.valDat, 1, 0); // flags
         bits.putByte(tlv.valDat, 3, 0); // omitted
         bits.msbPutW(tlv.valDat, 4, updateTimer / 10); // interval
-        bits.msbPutW(tlv.valDat, 6, ntry.aggrAs); // seqno
-        bits.msbPutW(tlv.valDat, 8, ntry.metric + metricOut); // metric
+        bits.msbPutW(tlv.valDat, 6, ntry.best.aggrAs); // seqno
+        bits.msbPutW(tlv.valDat, 8, ntry.best.metric + metricOut); // metric
         int i;
         if (ntry.prefix.network.isIPv4()) {
             bits.putByte(tlv.valDat, 0, 1); // ipv4
@@ -497,11 +498,11 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
                 tab1.add(tabRoute.addType.better, addrPrefix.ip6toIP(addrPrefix.defaultRoute6()), new addrIP());
             }
         }
-        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, null, true, tabRouteEntry.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, null, true, tabRouteAttr.distanLim);
         if (splitHorizon) {
             tab1.delIface(conn.iface);
         }
-        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true, tabRouteEntry.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true, tabRouteAttr.distanLim);
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("copy");
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, tab2, tab1, true, roumapOut, roupolOut, prflstOut);
         advert = tab2;
@@ -535,7 +536,7 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
             if (ntry == null) {
                 continue;
             }
-            if ((ntry.metric + metricOut) >= 0xffff) {
+            if ((ntry.best.metric + metricOut) >= 0xffff) {
                 continue;
             }
             createBabelUpdate(ntry, last, pck);

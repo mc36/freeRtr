@@ -8,6 +8,7 @@ import ip.ipRtr;
 import java.util.ArrayList;
 import java.util.List;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import user.userHelping;
@@ -29,7 +30,7 @@ public class rtrUni2flow extends ipRtr {
     /**
      * route type
      */
-    protected final tabRouteEntry.routeType rouTyp;
+    protected final tabRouteAttr.routeType rouTyp;
 
     /**
      * router number
@@ -72,11 +73,11 @@ public class rtrUni2flow extends ipRtr {
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.uni2flow4;
+                rouTyp = tabRouteAttr.routeType.uni2flow4;
                 ipv6 = false;
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteEntry.routeType.uni2flow6;
+                rouTyp = tabRouteAttr.routeType.uni2flow6;
                 ipv6 = true;
                 break;
             default:
@@ -114,25 +115,25 @@ public class rtrUni2flow extends ipRtr {
             }
             ntry = ntry.copyBytes();
             tabRouteEntry<addrIP> attr = new tabRouteEntry<addrIP>();
-            attr.rouTyp = rouTyp;
-            attr.protoNum = rtrNum;
+            attr.best.rouTyp = rouTyp;
+            attr.best.protoNum = rtrNum;
             if (distance > 0) {
-                attr.distance = distance;
+                attr.best.distance = distance;
             }
-            attr.nextHop = ntry.nextHop;
-            if (attr.nextHop == null) {
-                attr.nextHop = new addrIP();
+            attr.best.nextHop = ntry.best.nextHop;
+            if (attr.best.nextHop == null) {
+                attr.best.nextHop = new addrIP();
             }
-            attr.stdComm = ntry.stdComm;
-            attr.extComm = ntry.extComm;
-            attr.lrgComm = ntry.lrgComm;
-            attr.metric = ntry.metric;
-            attr.tag = ntry.tag;
+            attr.best.stdComm = ntry.best.stdComm;
+            attr.best.extComm = ntry.best.extComm;
+            attr.best.lrgComm = ntry.best.lrgComm;
+            attr.best.metric = ntry.best.metric;
+            attr.best.tag = ntry.best.tag;
             if (trgRate >= 0) {
-                if (attr.extComm == null) {
-                    attr.extComm = new ArrayList<Long>();
+                if (attr.best.extComm == null) {
+                    attr.best.extComm = new ArrayList<Long>();
                 }
-                attr.extComm.add(tabRtrmapN.rate2comm(trgAs, trgRate));
+                attr.best.extComm.add(tabRtrmapN.rate2comm(trgAs, trgRate));
             }
             rtrBgpFlow.advertNetwork(res, ntry.prefix, ipv6, direction, attr);
         }

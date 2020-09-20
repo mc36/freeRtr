@@ -413,12 +413,12 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         if (rou == null) {
             return null;
         }
-        if (rou.iface == null) {
+        if (rou.best.iface == null) {
             return null;
         }
-        ipFwdIface ifc = (ipFwdIface) rou.iface;
+        ipFwdIface ifc = (ipFwdIface) rou.best.iface;
         selfRoot = false;
-        switch (rou.rouTyp) {
+        switch (rou.best.rouTyp) {
             case local:
                 selfRoot = true;
                 return null;
@@ -433,7 +433,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             case automesh:
                 return root;
             default:
-                return rou.nextHop;
+                return rou.best.nextHop;
         }
     }
 
