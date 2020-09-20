@@ -573,10 +573,9 @@ public class tabRouteAttr<T extends addrType> {
      * clone this table entry
      *
      * @param atr target
-     * @param fwd copy forwarding info
      */
     @SuppressWarnings("unchecked")
-    public void copyBytes(tabRouteAttr<T> atr, boolean fwd) {
+    public void copyBytes(tabRouteAttr<T> atr) {
         atr.rouTab = rouTab;
         atr.distance = distance;
         atr.metric = metric;
@@ -655,9 +654,6 @@ public class tabRouteAttr<T extends addrType> {
         atr.time = time;
         atr.version = version;
         atr.labelLoc = labelLoc;
-        if (!fwd) {
-            return;
-        }
         atr.iface = iface;
         atr.labelRem = tabLabel.copyLabels(labelRem);
         if (nextHop != null) {
