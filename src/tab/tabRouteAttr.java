@@ -573,9 +573,10 @@ public class tabRouteAttr<T extends addrType> {
      * clone this table entry
      *
      * @param atr target
+     * @param fwd forwarding info also
      */
     @SuppressWarnings("unchecked")
-    public void copyBytes(tabRouteAttr<T> atr) {
+    public void copyBytes(tabRouteAttr<T> atr, boolean fwd) {
         atr.rouTab = rouTab;
         atr.distance = distance;
         atr.metric = metric;
@@ -603,24 +604,36 @@ public class tabRouteAttr<T extends addrType> {
         atr.aggrAs = aggrAs;
         if (segrouPrf != null) {
             atr.segrouPrf = (T) segrouPrf.copyBytes();
+        } else {
+            atr.segrouPrf = null;
         }
         if (attribVal != null) {
             atr.attribVal = new byte[attribVal.length];
             bits.byteCopy(attribVal, 0, atr.attribVal, 0, attribVal.length);
+        } else {
+            atr.attribVal = null;
         }
         if (tunelVal != null) {
             atr.tunelVal = new byte[tunelVal.length];
             bits.byteCopy(tunelVal, 0, atr.tunelVal, 0, tunelVal.length);
+        } else {
+            atr.tunelVal = null;
         }
         if (pmsiTun != null) {
             atr.pmsiTun = new byte[pmsiTun.length];
             bits.byteCopy(pmsiTun, 0, atr.pmsiTun, 0, pmsiTun.length);
+        } else {
+            atr.pmsiTun = null;
         }
         if (aggrRtr != null) {
             atr.aggrRtr = (T) aggrRtr.copyBytes();
+        } else {
+            atr.aggrRtr = null;
         }
         if (srcRtr != null) {
             atr.srcRtr = srcRtr.copyBytes();
+        } else {
+            atr.srcRtr = null;
         }
         atr.stdComm = tabLabel.copyLabels(stdComm);
         atr.pathSeq = tabLabel.copyLabels(pathSeq);
@@ -629,24 +642,32 @@ public class tabRouteAttr<T extends addrType> {
         atr.confSet = tabLabel.copyLabels(confSet);
         if (originator != null) {
             atr.originator = (T) originator.copyBytes();
+        } else {
+            atr.originator = null;
         }
         if (clustList != null) {
             atr.clustList = new ArrayList<T>();
             for (int i = 0; i < clustList.size(); i++) {
                 atr.clustList.add((T) clustList.get(i).copyBytes());
             }
+        } else {
+            atr.clustList = null;
         }
         if (extComm != null) {
             atr.extComm = new ArrayList<Long>();
             for (int i = 0; i < extComm.size(); i++) {
                 atr.extComm.add(Long.valueOf(extComm.get(i)));
             }
+        } else {
+            atr.extComm = null;
         }
         if (lrgComm != null) {
             atr.lrgComm = new ArrayList<tabLargeComm>();
             for (int i = 0; i < lrgComm.size(); i++) {
                 atr.lrgComm.add(lrgComm.get(i).copyBytes());
             }
+        } else {
+            atr.lrgComm = null;
         }
         atr.protoNum = protoNum;
         atr.rouTyp = rouTyp;
@@ -654,13 +675,20 @@ public class tabRouteAttr<T extends addrType> {
         atr.time = time;
         atr.version = version;
         atr.labelLoc = labelLoc;
+        if (!fwd) {
+            return;
+        }
         atr.iface = iface;
         atr.labelRem = tabLabel.copyLabels(labelRem);
         if (nextHop != null) {
             atr.nextHop = (T) nextHop.copyBytes();
+        } else {
+            atr.nextHop = null;
         }
         if (oldHop != null) {
             atr.oldHop = (T) oldHop.copyBytes();
+        } else {
+            atr.oldHop = null;
         }
     }
 

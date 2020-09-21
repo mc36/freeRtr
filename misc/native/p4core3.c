@@ -601,6 +601,7 @@ ethtyp_rx:
         macsec_res = table_get(&macsec_table, index);
         macsec_res->packRx++;
         macsec_res->byteRx += bufS;
+        if (ethtyp != macsec_res->ethtyp) goto drop;
         if (bufD[bufP] != 0x08) goto cpu;
         macsec_res->seqRx = get32msb(bufD, bufP + 2);
         bufP += 6;

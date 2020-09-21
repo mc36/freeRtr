@@ -54,7 +54,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         if (prefix != null) {
             prf.prefix = prefix.copyBytes();
         }
-        best.copyBytes(prf.best);
+        best.copyBytes(prf.best, true);
         prf.cntr = cntr;
         prf.hwCntr = hwCntr;
         return prf;
