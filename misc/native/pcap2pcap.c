@@ -161,7 +161,7 @@ help :
     if (pcap_setdirection(iface1pcap, PCAP_D_IN) < 0) err("unable to set direction");
 
     iface2name = malloc(1024);
-    strcpy(iface2name, argv[1]);
+    strcpy(iface2name, argv[2]);
     printf("opening interface %s\n", iface2name);
     iface2pcap = pcap_create(iface2name, errbuf);
     if (iface2pcap == NULL) err("unable to open interface");
