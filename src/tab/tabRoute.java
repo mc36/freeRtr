@@ -146,20 +146,6 @@ public class tabRoute<T extends addrType> {
     }
 
     /**
-     * need to update with this prefix
-     *
-     * @param imp new prefix
-     * @return true if yes, false if not
-     */
-    public boolean isOtherBetter(tabRouteEntry<T> imp) {
-        tabRouteEntry<T> own = find(imp);
-        if (own == null) {
-            return true;
-        }
-        return own.isOtherBetter(imp);
-    }
-
-    /**
      * add one table entry with preset values
      *
      * @param mod mode to use
@@ -169,9 +155,19 @@ public class tabRoute<T extends addrType> {
      * @return true if newly added, false if updated existing entry
      */
     public boolean add(addType mod, tabRouteEntry<T> prefix, boolean copy, boolean newTime) {
+        if (copy) {
+            prefix = prefix.copyBytes();
+        }
+        if (newTime) {
+            prefix.best.time = bits.getTime();
+        }
         switch (mod) {
             case better:
-                if (!isOtherBetter(prefix)) {
+                tabRouteEntry<T> own = find(prefix);
+                if (own == null) {
+                    break;
+                }
+                if (!own.isOtherBetter(prefix)) {
                     return false;
                 }
                 break;
@@ -184,12 +180,6 @@ public class tabRoute<T extends addrType> {
                 break;
             default:
                 return false;
-        }
-        if (copy) {
-            prefix = prefix.copyBytes();
-        }
-        if (newTime) {
-            prefix.best.time = bits.getTime();
         }
         boolean added = prefixes.put(prefix) == null;
         if (debugger.tabRouteEvnt) {
