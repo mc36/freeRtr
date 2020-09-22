@@ -31,7 +31,12 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     /**
      * best path
      */
-    public tabRouteAttr<T> best = new tabRouteAttr<T>();
+    public tabRouteAttr<T> best;
+
+    /**
+     * alternate instances
+     */
+    public List<tabRouteAttr<T>> alts;
 
     /**
      * counter
@@ -42,6 +47,19 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * hardware counter
      */
     public counter hwCntr;
+
+    /**
+     * create instance
+     */
+    public tabRouteEntry() {
+        best = new tabRouteAttr<T>();
+        alts = new ArrayList<tabRouteAttr<T>>();
+        alts.add(best);
+    }
+
+    public String toString() {
+        return "" + prefix;
+    }
 
     /**
      * clone this table entry
@@ -60,8 +78,17 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         return prf;
     }
 
-    public String toString() {
-        return "" + prefix;
+    /**
+     * select best route
+     */
+    public void selectBest() {
+        best = alts.get(0);
+        for (int i = 1; i < alts.size(); i++) {
+            tabRouteAttr<T> ntry = alts.get(i);
+            if (best.isOtherBetter(ntry, true)) {
+                best = ntry;
+            }
+        }
     }
 
     /**
