@@ -14,7 +14,9 @@ for fn in p4emu p4pkt; do
   compileFile $fn "" "-lpthread -lpcap -lcrypto" "-O3"
   done
 
-compileFile pcapInt "" "-lpthread -lpcap" "-O3"
+for fn in pcapInt pcap2pcap; do
+  compileFile $fn "" "-lpthread -lpcap" "-O3"
+  done
 
 for fn in mapInt rawInt tapInt bundle vlan hdlcInt stdLin ttyLin modem; do
   compileFile $fn "" "-lpthread" "-O3"
