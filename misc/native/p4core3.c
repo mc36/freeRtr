@@ -1284,7 +1284,7 @@ bridgevpls_rx:
         bridge_ntry.mac2 = get32msb(buf2, 8);
         hash ^= bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
-        if (index < 0) goto punt;
+        if (index < 0) goto cpu;
         bridge_res = table_get(&bridge_table, index);
         bridge_res->packRx++;
         bridge_res->byteRx += bufS;
@@ -1292,7 +1292,7 @@ bridgevpls_rx:
         bridge_ntry.mac2 = get32msb(buf2, 2);
         hash ^= bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
-        if (index < 0) goto punt;
+        if (index < 0) goto cpu;
         bridge_res = table_get(&bridge_table, index);
         bridge_res->packTx++;
         bridge_res->byteTx += bufS;
