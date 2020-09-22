@@ -154,37 +154,40 @@ public class tabRoute<T extends addrType> {
      * @param newTime set true to set time, false to keep original time
      */
     public void add(addType mod, tabRouteEntry<T> prefix, boolean copy, boolean newTime) {
+        if (debugger.tabRouteEvnt) {
+            logger.debug("add " + prefix);
+        }
         if (copy) {
             prefix = prefix.copyBytes();
         }
         if (newTime) {
             prefix.best.time = bits.getTime();
         }
-        if (debugger.tabRouteEvnt) {
-            logger.debug("add " + prefix);
-        }
         switch (mod) {
             case better:
-                tabRouteEntry<T> own = find(prefix);
+                tabRouteEntry<T> own = prefixes.add(prefix);
                 if (own == null) {
-                    break;
+                    return;
                 }
                 if (!own.isOtherBetter(prefix)) {
                     return;
                 }
-                break;
+                prefixes.put(prefix);
+                version++;
+                return;
             case always:
-                break;
+                prefixes.put(prefix);
+                version++;
+                return;
             case notyet:
-                if (prefixes.find(prefix) != null) {
+                if (prefixes.add(prefix) != null) {
                     return;
                 }
-                break;
+                version++;
+                return;
             default:
                 return;
         }
-        prefixes.put(prefix);
-        version++;
     }
 
     /**
