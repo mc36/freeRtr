@@ -152,14 +152,16 @@ public class tabRoute<T extends addrType> {
      * @param prefix entry to add
      * @param copy set true to add just a copy of this prefix
      * @param newTime set true to set time, false to keep original time
-     * @return true if newly added, false if updated existing entry
      */
-    public boolean add(addType mod, tabRouteEntry<T> prefix, boolean copy, boolean newTime) {
+    public void add(addType mod, tabRouteEntry<T> prefix, boolean copy, boolean newTime) {
         if (copy) {
             prefix = prefix.copyBytes();
         }
         if (newTime) {
             prefix.best.time = bits.getTime();
+        }
+        if (debugger.tabRouteEvnt) {
+            logger.debug("add " + prefix);
         }
         switch (mod) {
             case better:
@@ -168,29 +170,21 @@ public class tabRoute<T extends addrType> {
                     break;
                 }
                 if (!own.isOtherBetter(prefix)) {
-                    return false;
+                    return;
                 }
                 break;
             case always:
                 break;
             case notyet:
                 if (prefixes.find(prefix) != null) {
-                    return false;
+                    return;
                 }
                 break;
             default:
-                return false;
+                return;
         }
-        boolean added = prefixes.put(prefix) == null;
-        if (debugger.tabRouteEvnt) {
-            if (added) {
-                logger.debug("add " + prefix);
-            } else {
-                logger.debug("update " + prefix);
-            }
-        }
+        prefixes.put(prefix);
         version++;
-        return added;
     }
 
     /**
@@ -461,11 +455,9 @@ public class tabRoute<T extends addrType> {
      * @param nexthops table where look up nexthops, null means not check
      * @param copy copy entries
      * @param distan highest allowed distance
-     * @return number of entries imported
      */
     @SuppressWarnings("unchecked")
-    public int mergeFrom(addType mod, tabRoute<T> other, tabRoute<T> nexthops, boolean copy, int distan) {
-        int cnt = 0;
+    public void mergeFrom(addType mod, tabRoute<T> other, tabRoute<T> nexthops, boolean copy, int distan) {
         for (int i = 0; i < other.prefixes.size(); i++) {
             tabRouteEntry<T> imp = other.prefixes.get(i);
             if (imp == null) {
@@ -491,14 +483,11 @@ public class tabRoute<T extends addrType> {
                 }
                 imp.best.iface = nh.best.iface;
             }
-            if (add(mod, imp, false, false)) {
-                cnt++;
-            }
+            add(mod, imp, false, false);
         }
         if (debugger.tabRouteEvnt) {
-            logger.debug("merged " + cnt + " prefixes from " + other.defRouTyp);
+            logger.debug("merged prefixes from " + other.defRouTyp);
         }
-        return cnt;
     }
 
     /**
