@@ -49,6 +49,11 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
     public ipFwdIface iface;
 
     /**
+     * id
+     */
+    public int id;
+
+    /**
      * distance
      */
     public int dist;
@@ -79,6 +84,12 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
     protected ipFwd fwdCor;
 
     public int compare(ipFwdRoute o1, ipFwdRoute o2) {
+        if (o1.id < o2.id) {
+            return -1;
+        }
+        if (o1.id > o2.id) {
+            return +1;
+        }
         if (o1.dist < o2.dist) {
             return -1;
         }
@@ -165,6 +176,10 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
             if (a.length() < 1) {
                 break;
             }
+            if (a.equals("id")) {
+                id = bits.str2num(cmd.word());
+                continue;
+            }
             if (a.equals("distance")) {
                 dist = bits.str2num(cmd.word());
                 continue;
@@ -223,6 +238,9 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
 
     public String toString() {
         String s = addr + " " + mask + " " + hop;
+        if (id != 0) {
+            s += " id " + id;
+        }
         if (iface != null) {
             s += " interface " + iface;
         }

@@ -2611,6 +2611,8 @@ public class userConfig {
         l.add("8  7,.                <dist>               distance value");
         l.add("7  8                tag                    set tag value");
         l.add("8  7,.                <tag>                tag value");
+        l.add("7  8                id                     set id value");
+        l.add("8  7,.                <id>                 id value");
         l.add("7  8                tracker                set tracker to check");
         l.add("8  7,.                <name>               tracker name");
         l.add("7  8                interface              force to interface");
@@ -2627,6 +2629,8 @@ public class userConfig {
         l.add("8  7,.                <dist>               distance value");
         l.add("7  8                tag                    set tag value");
         l.add("8  7,.                <tag>                tag value");
+        l.add("7  8                id                     set id value");
+        l.add("8  7,.                <id>                 id value");
         l.add("7  8                tracker                set tracker to check");
         l.add("8  7,.                <name>               tracker name");
         l.add("7  8                interface              force to interface");

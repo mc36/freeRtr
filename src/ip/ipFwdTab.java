@@ -512,7 +512,7 @@ public class ipFwdTab {
         if (nh.best.labelRem != null) {
             imp.best.labelRem = tabLabel.prependLabels(imp.best.labelRem, nh.best.labelRem);
         }
-        trg.add(tabRoute.addType.better, imp, false, true);
+        trg.add(tabRoute.addType.ecmp, imp, false, true);
     }
 
     private static void dstatic2table(ipFwdRoute ntry, tabRoute<addrIP> trg, ipFwd lower, tabRoute<addrIP> conn) {
@@ -546,7 +546,7 @@ public class ipFwdTab {
             }
             imp.best.iface = ifc;
         }
-        trg.add(tabRoute.addType.better, imp, false, true);
+        trg.add(tabRoute.addType.ecmp, imp, false, true);
     }
 
     /**
