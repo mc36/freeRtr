@@ -72,6 +72,7 @@ import tab.tabSession;
 import util.bits;
 import util.cmds;
 import util.counter;
+import util.differ;
 import util.history;
 import util.logger;
 import util.verCore;
@@ -2486,6 +2487,42 @@ public class userShow {
             rdr.putStrArr(r.bgp.getAllRoutes(sfi, ntry));
             return;
         }
+        if (a.equals("differ")) {
+            addrIP adr = new addrIP();
+            adr.fromString(cmd.word());
+            rtrBgpNeigh nei1 = r.bgp.findPeer(adr);
+            if (nei1 == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            adr = new addrIP();
+            adr.fromString(cmd.word());
+            rtrBgpNeigh nei2 = r.bgp.findPeer(adr);
+            if (nei2 == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = addrPrefix.str2ip(cmd.word());
+            if (ntry.prefix == null) {
+                cmd.error("bad prefix");
+                return;
+            }
+            ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
+            tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
+            tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
+            if ((acc1 == null) || (acc2 == null)) {
+                return;
+            }
+            tabRouteEntry<addrIP> ntry1 = acc1.find(ntry);
+            tabRouteEntry<addrIP> ntry2 = acc2.find(ntry);
+            List<String> dump1 = ntry1.fullDump(r.bgp.fwdCore);
+            List<String> dump2 = ntry2.fullDump(r.bgp.fwdCore);
+            differ df = new differ();
+            df.calc(dump1, dump2);
+            rdr.putStrArr(df.getText(rdr.width, 0));
+            return;
+        }
         if (a.equals("compare")) {
             addrIP adr = new addrIP();
             adr.fromString(cmd.word());
@@ -3163,13 +3200,13 @@ public class userShow {
                     tabRouteEntry.toShEvpn(l, prf);
                     break;
                 case 6:
-                    tabRouteEntry.toShCntr(l,prf);
+                    tabRouteEntry.toShCntr(l, prf);
                     break;
                 case 7:
-                    tabRouteEntry.toShSrRoute(l,prf);
+                    tabRouteEntry.toShSrRoute(l, prf);
                     break;
                 case 8:
-                    tabRouteEntry.toShBrRoute(l,prf);
+                    tabRouteEntry.toShBrRoute(l, prf);
                     break;
             }
         }
