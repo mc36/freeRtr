@@ -37,6 +37,10 @@ public class tabRoute<T extends addrType> {
          * add always
          */
         always,
+        /**
+         * add as alternatives
+         */
+        alters,
     }
 
     /**
@@ -212,6 +216,18 @@ public class tabRoute<T extends addrType> {
                 if (prefixes.add(prefix) != null) {
                     return;
                 }
+                version++;
+                return;
+            case alters:
+                own = prefixes.add(prefix);
+                if (own == null) {
+                    version++;
+                    return;
+                }
+                for (int i = 0; i < prefix.alts.size(); i++) {
+                    own.alts.add(prefix.alts.get(i));
+                }
+                own.selectBest();
                 version++;
                 return;
             default:

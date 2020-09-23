@@ -1683,7 +1683,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             parent.needFull.add(1);
             return;
         }
-        changed.add(tabRoute.addType.always, ntry.copyBytes(), false, false);
+        changed.add(tabRoute.addType.always, ntry, true, false);
     }
 
     /**

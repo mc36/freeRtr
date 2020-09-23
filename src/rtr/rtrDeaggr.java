@@ -98,7 +98,7 @@ public class rtrDeaggr extends ipRtr {
         if (distance1 > 0) {
             ntry.best.distance = distance1;
         }
-        tab.add(tabRoute.addType.better, ntry.copyBytes(), false, false);
+        tab.add(tabRoute.addType.better, ntry, true, false);
         addrIP adr = new addrIP();
         adr.bitSet(ntry.prefix.maskLen - 1);
         adr.setOr(adr, ntry.prefix.network);
@@ -106,7 +106,7 @@ public class rtrDeaggr extends ipRtr {
         if (distance2 > 0) {
             ntry.best.distance = distance2;
         }
-        tab.add(tabRoute.addType.better, ntry.copyBytes(), false, false);
+        tab.add(tabRoute.addType.better, ntry, true, false);
     }
 
     /**
