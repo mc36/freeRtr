@@ -3147,41 +3147,29 @@ public class userShow {
                     tabRouteEntry.toShRoute(l, prf);
                     break;
                 case 2:
-                    tabRouteEntry.toShBgp(l,prf);
+                    tabRouteEntry.toShBgp(l, prf);
                     break;
                 case 3:
-                    l.add(tabRouteEntry.toShLdp(prf));
+                    tabRouteEntry.toShLdp(l, prf);
                     break;
                 case 1002:
                 case 1005:
-                    l.add(tabRouteEntry.toShBgpLabels(prf, typ == 1005));
+                    tabRouteEntry.toShBgpLabels(l, prf, typ == 1005);
                     break;
                 case 4:
-                    l.add(tabRouteEntry.toShRpki(prf));
+                    tabRouteEntry.toShRpki(l, prf);
                     break;
                 case 5:
-                    l.add(tabRouteEntry.toShEvpn(prf));
+                    tabRouteEntry.toShEvpn(l, prf);
                     break;
                 case 6:
-                    String a = tabRouteEntry.toShCntr(prf);
-                    if (a == null) {
-                        continue;
-                    }
-                    l.add(a);
+                    tabRouteEntry.toShCntr(l,prf);
                     break;
                 case 7:
-                    a = tabRouteEntry.toShSrRoute(prf);
-                    if (a == null) {
-                        continue;
-                    }
-                    l.add(a);
+                    tabRouteEntry.toShSrRoute(l,prf);
                     break;
                 case 8:
-                    a = tabRouteEntry.toShBrRoute(prf);
-                    if (a == null) {
-                        continue;
-                    }
-                    l.add(a);
+                    tabRouteEntry.toShBrRoute(l,prf);
                     break;
             }
         }
