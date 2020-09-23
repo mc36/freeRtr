@@ -268,13 +268,13 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 if (nei == null) {
                     continue;
                 }
-                tab1.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteAttr.distanLim);
+                tab1.mergeFrom(tabRoute.addType.ecmp, nei.learned, null, true, tabRouteAttr.distanLim);
             }
         }
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab1, null, fwdCore.commonLabel, 0, null, 0);
         tabRoute<addrIP> tab2 = tab1;
         tab1 = new tabRoute<addrIP>("ned2adv");
-        tab1.mergeFrom(tabRoute.addType.better, tab2, null, true, tabRouteAttr.distanLim);
+        tab1.mergeFrom(tabRoute.addType.ecmp, tab2, null, true, tabRouteAttr.distanLim);
         for (int i = 0; i < routerRedistedU.size(); i++) {
             ntry = routerRedistedU.get(i);
             if (ntry == null) {

@@ -92,6 +92,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         best.copyBytes(prf.best, true);
         switch (mod) {
             case ecmp:
+                prf.alts.clear();
                 for (int i = 0; i < alts.size(); i++) {
                     tabRouteAttr<T> ntry = alts.get(i);
                     if (ntry.isOtherBetter(best, false)) {
@@ -104,6 +105,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                 prf.selectBest();
                 return prf;
             case alters:
+                prf.alts.clear();
                 for (int i = 0; i < alts.size(); i++) {
                     tabRouteAttr<T> ntry = alts.get(i);
                     tabRouteAttr<T> attr = new tabRouteAttr<T>();

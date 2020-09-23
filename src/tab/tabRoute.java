@@ -492,8 +492,11 @@ public class tabRoute<T extends addrType> {
             if (prf == null) {
                 continue;
             }
-            prf.best.rouTyp = typ;
-            prf.best.protoNum = num;
+            for (int o = 0; o < prf.alts.size(); o++) {
+                tabRouteAttr<T> attr = prf.alts.get(o);
+                attr.rouTyp = typ;
+                attr.protoNum = num;
+            }
         }
     }
 
