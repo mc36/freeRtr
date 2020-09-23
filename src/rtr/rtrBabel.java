@@ -425,7 +425,7 @@ public class rtrBabel extends ipRtr implements prtServP {
             if (nei.iface.iface.lower.getState() != state.states.up) {
                 continue;
             }
-            tab.mergeFrom(tabRoute.addType.better, nei.learned, null, true, tabRouteAttr.distanLim);
+            tab.mergeFrom(tabRoute.addType.ecmp, nei.learned, null, true, tabRouteAttr.distanLim);
         }
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab, null, fwdCore.commonLabel, 0, null, 0);
         tab.setProto(routerProtoTyp, routerProcNum);

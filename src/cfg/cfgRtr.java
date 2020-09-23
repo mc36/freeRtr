@@ -172,6 +172,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     public final static String defaultL[] = {
         // router *
         "router .*! no automesh",
+        "router .*! no ecmp",
         // router pvrp
         "router pvrp[4|6] .*! no suppress-prefix",
         "router pvrp[4|6] .*! no labels",
@@ -1427,6 +1428,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             } else {
                 l.add(cmds.tabulator + "automesh " + rtr.routerAutoMesh.listName);
             }
+            cmds.cfgLine(l, !rtr.routerEcmp, cmds.tabulator, "ecmp", "");
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
@@ -1571,6 +1573,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1 2   vrf                     specify vrf to use");
         l.add("2 .     <name>                name of table");
+        l.add("1 .   ecmp                    enable ecmp export to rib");
         l.add("1 2   automesh                specify auto mesh te tunnels");
         l.add("2 .     <name>                name of prefix list");
         getRedistHelp(l, 0);
@@ -1615,6 +1618,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         }
         if (rtr == null) {
             cmd.error("not initialized");
+            return;
+        }
+        if (a.equals("ecmp")) {
+            rtr.routerEcmp = !neg;
+            vrf.fwd4.routerStaticChg();
+            vrf.fwd6.routerStaticChg();
             return;
         }
         if (a.equals("automesh")) {

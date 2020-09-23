@@ -36,6 +36,11 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     protected tabRouteAttr.routeType routerProtoTyp;
 
     /**
+     * ecmp enabled
+     */
+    public boolean routerEcmp;
+
+    /**
      * vpn instance
      */
     public boolean routerVpn;
@@ -157,6 +162,19 @@ public abstract class ipRtr implements Comparator<ipRtr> {
                 return 1;
             default:
                 return 0;
+        }
+    }
+
+    /**
+     * get add mode
+     *
+     * @return add mode
+     */
+    public tabRoute.addType getAddMode() {
+        if (routerEcmp) {
+            return tabRoute.addType.ecmp;
+        } else {
+            return tabRoute.addType.better;
         }
     }
 

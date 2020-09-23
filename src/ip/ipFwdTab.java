@@ -636,9 +636,9 @@ public class ipFwdTab {
             if (rtr.isBGP() != 0) {
                 continue;
             }
-            tabL.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true, tabRouteAttr.distanMax);
-            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true, tabRouteAttr.distanMax);
-            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
+            tabL.mergeFrom(rtr.getAddMode(), rtr.routerComputedU, null, true, tabRouteAttr.distanMax);
+            tabM.mergeFrom(rtr.getAddMode(), rtr.routerComputedM, null, true, tabRouteAttr.distanMax);
+            tabF.mergeFrom(rtr.getAddMode(), rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabL, 1);
@@ -693,7 +693,7 @@ public class ipFwdTab {
             }
         }
         tabU = new tabRoute<addrIP>("locals");
-        tabU.mergeFrom(tabRoute.addType.better, tabL, null, true, tabRouteAttr.distanLim);
+        tabU.mergeFrom(tabRoute.addType.ecmp, tabL, null, true, tabRouteAttr.distanLim);
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
             if (rtr == null) {
@@ -702,9 +702,9 @@ public class ipFwdTab {
             if (rtr.isBGP() != 1) {
                 continue;
             }
-            tabU.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, tabL, true, tabRouteAttr.distanMax);
-            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, tabL, true, tabRouteAttr.distanMax);
-            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
+            tabU.mergeFrom(rtr.getAddMode(), rtr.routerComputedU, tabL, true, tabRouteAttr.distanMax);
+            tabM.mergeFrom(rtr.getAddMode(), rtr.routerComputedM, tabL, true, tabRouteAttr.distanMax);
+            tabF.mergeFrom(rtr.getAddMode(), rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabU, 2);
@@ -720,9 +720,9 @@ public class ipFwdTab {
             if (rtr.isBGP() != 2) {
                 continue;
             }
-            tabU.mergeFrom(tabRoute.addType.better, rtr.routerComputedU, null, true, tabRouteAttr.distanMax);
-            tabM.mergeFrom(tabRoute.addType.better, rtr.routerComputedM, null, true, tabRouteAttr.distanMax);
-            tabF.mergeFrom(tabRoute.addType.better, rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
+            tabU.mergeFrom(rtr.getAddMode(), rtr.routerComputedU, null, true, tabRouteAttr.distanMax);
+            tabM.mergeFrom(rtr.getAddMode(), rtr.routerComputedM, null, true, tabRouteAttr.distanMax);
+            tabF.mergeFrom(rtr.getAddMode(), rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabU, 3);
@@ -763,7 +763,7 @@ public class ipFwdTab {
                 break;
             case all:
                 tabL = new tabRoute<addrIP>("labeled");
-                tabL.mergeFrom(tabRoute.addType.better, tabU, null, true, tabRouteAttr.distanLim);
+                tabL.mergeFrom(tabRoute.addType.ecmp, tabU, null, true, tabRouteAttr.distanLim);
                 break;
             default:
                 tabL = new tabRoute<addrIP>("labeled");
