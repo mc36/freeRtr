@@ -690,6 +690,7 @@ public class ipFwdTab {
                 prf.best.iface = ifc;
                 prf.best.nextHop = ifc.autRouHop.copyBytes();
                 prf.best.labelRem = null;
+                prf.reduce2best();
             }
         }
         tabU = new tabRoute<addrIP>("locals");
@@ -789,7 +790,9 @@ public class ipFwdTab {
                 tabLabel.release(old.best.labelLoc, 2);
                 continue;
             }
-            cur.best.labelLoc = old.best.labelLoc;
+            for (int o = 0; o < cur.alts.size(); o++) {
+                cur.alts.get(o).labelLoc = old.best.labelLoc;
+            }
         }
         for (int i = 0; i < tabL.size(); i++) {
             tabRouteEntry<addrIP> ntry = tabL.get(i);
@@ -801,70 +804,20 @@ public class ipFwdTab {
                 continue;
             }
             tabLabelNtry lab = tabLabel.allocate(2);
-            ntry.best.labelLoc = lab;
+            for (int o = 0; o < ntry.alts.size(); o++) {
+                ntry.alts.get(o).labelLoc = lab;
+            }
         }
         for (int i = 0; i < tabU.size(); i++) {
             tabRouteEntry<addrIP> ntry = tabU.get(i);
-            tabRouteEntry<addrIP> loc = tabL.find(ntry);
-            if (loc != null) {
-                ntry.best.labelLoc = loc.best.labelLoc;
-            }
-            if (ntry.best.nextHop == null) {
-                continue;
-            }
-            if (ntry.best.labelLoc != null) {
-                ipFwd vrf = lower;
-                ipFwdIface ifc = (ipFwdIface) ntry.best.iface;
-                addrIP hop = ntry.best.nextHop;
-                List<Integer> lrs = ntry.best.labelRem;
-                if (ntry.best.rouTab != null) {
-                    vrf = ntry.best.rouTab;
-                    tabRouteEntry<addrIP> nh = vrf.actualU.route(hop);
-                    if (nh != null) {
-                        ifc = (ipFwdIface) nh.best.iface;
-                        hop = nh.best.nextHop;
-                        lrs = tabLabel.prependLabels(new ArrayList<Integer>(), ntry.best.labelRem);
-                        lrs = tabLabel.prependLabels(lrs, nh.best.labelRem);
-                    }
+            tabRouteEntry<addrIP> locN = tabL.find(ntry);
+            for (int o = 0; o < ntry.alts.size(); o++) {
+                tabRouteAttr<addrIP> alt = ntry.alts.get(o);
+                tabRouteAttr<addrIP> loc = null;
+                if (locN != null) {
+                    loc = locN.sameFwder(alt);
                 }
-                if (hop != null) {
-                    ntry.best.labelLoc.setFwdMpls(2, vrf, ifc, hop, lrs);
-                } else {
-                    ntry.best.labelLoc.setFwdDrop(2);
-                }
-            }
-            if (ntry.best.rouTab != null) {
-                continue;
-            }
-            rtrLdpNeigh nei = lower.ldpNeighFind(null, ntry.best.nextHop, false);
-            if (nei == null) {
-                if (ntry.best.oldHop == null) {
-                    continue;
-                }
-                tabRouteEntry<addrIP> prf = tabU.route(ntry.best.oldHop);
-                if (prf == null) {
-                    continue;
-                }
-                updateTableRouteLabels(ntry, loc, prf);
-                continue;
-            }
-            tabRouteEntry<addrIP> rem = nei.prefLearn.find(ntry);
-            if (rem != null) {
-                updateTableRouteLabels(ntry, loc, rem);
-                continue;
-            }
-            if (ntry.best.oldHop == null) {
-                continue;
-            }
-            tabRouteEntry<addrIP> prf = tabU.route(ntry.best.oldHop);
-            if (prf == null) {
-                continue;
-            }
-            rem = nei.prefLearn.find(prf);
-            if (rem == null) {
-                updateTableRouteLabels(ntry, loc, prf);
-            } else {
-                updateTableRouteLabels(ntry, loc, rem);
+                updateTableRouteLabels(lower, tabU, ntry, alt, loc);
             }
         }
         lower.commonLabel.setFwdCommon(1, lower);
@@ -984,13 +937,77 @@ public class ipFwdTab {
         return true;
     }
 
-    private static void updateTableRouteLabels(tabRouteEntry<addrIP> ntry, tabRouteEntry<addrIP> loc, tabRouteEntry<addrIP> rem) {
-        ntry.best.labelRem = tabLabel.prependLabels(ntry.best.labelRem, rem.best.labelRem);
+    private static void updateTableRouteLabels(ipFwd lower, tabRoute<addrIP> tabU, tabRouteEntry<addrIP> prefix, tabRouteAttr<addrIP> ntry, tabRouteAttr<addrIP> loc) {
         if (loc != null) {
-            loc.best.labelRem = tabLabel.prependLabels(loc.best.labelRem, rem.best.labelRem);
+            ntry.labelLoc = loc.labelLoc;
         }
-        if (ntry.best.labelLoc != null) {
-            ntry.best.labelLoc.remoteLab = tabLabel.prependLabels(ntry.best.labelLoc.remoteLab, rem.best.labelRem);
+        if (ntry.nextHop == null) {
+            return;
+        }
+        if (ntry.labelLoc != null) {
+            ipFwd vrf = lower;
+            ipFwdIface ifc = (ipFwdIface) ntry.iface;
+            addrIP hop = ntry.nextHop;
+            List<Integer> lrs = ntry.labelRem;
+            if (ntry.rouTab != null) {
+                vrf = ntry.rouTab;
+                tabRouteEntry<addrIP> nh = vrf.actualU.route(hop);
+                if (nh != null) {
+                    ifc = (ipFwdIface) nh.best.iface;
+                    hop = nh.best.nextHop;
+                    lrs = tabLabel.prependLabels(new ArrayList<Integer>(), ntry.labelRem);
+                    lrs = tabLabel.prependLabels(lrs, nh.best.labelRem);
+                }
+            }
+            if (hop != null) {
+                ntry.labelLoc.setFwdMpls(2, vrf, ifc, hop, lrs);
+            } else {
+                ntry.labelLoc.setFwdDrop(2);
+            }
+        }
+        if (ntry.rouTab != null) {
+            return;
+        }
+        rtrLdpNeigh nei = lower.ldpNeighFind(null, ntry.nextHop, false);
+        if (nei == null) {
+            if (ntry.oldHop == null) {
+                return;
+            }
+            tabRouteEntry<addrIP> prf = tabU.route(ntry.oldHop);
+            if (prf == null) {
+                return;
+            }
+            updateTableRouteLabels(ntry, loc, prf.best);
+            return;
+        }
+        tabRouteEntry<addrIP> rem = nei.prefLearn.find(prefix);
+        if (rem != null) {
+            updateTableRouteLabels(ntry, loc, rem.best);
+            return;
+        }
+        if (ntry.oldHop == null) {
+            return;
+        }
+        tabRouteEntry<addrIP> prf = tabU.route(ntry.oldHop);
+        if (prf == null) {
+            return;
+        }
+        rem = nei.prefLearn.find(prf);
+        if (rem == null) {
+            updateTableRouteLabels(ntry, loc, prf.best);
+        } else {
+            updateTableRouteLabels(ntry, loc, rem.best);
+        }
+
+    }
+
+    private static void updateTableRouteLabels(tabRouteAttr<addrIP> ntry, tabRouteAttr<addrIP> loc, tabRouteAttr<addrIP> rem) {
+        ntry.labelRem = tabLabel.prependLabels(ntry.labelRem, rem.labelRem);
+        if (loc != null) {
+            loc.labelRem = tabLabel.prependLabels(loc.labelRem, rem.labelRem);
+        }
+        if (ntry.labelLoc != null) {
+            ntry.labelLoc.remoteLab = tabLabel.prependLabels(ntry.labelLoc.remoteLab, rem.labelRem);
         }
     }
 

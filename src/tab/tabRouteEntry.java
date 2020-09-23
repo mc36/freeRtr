@@ -76,6 +76,39 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     }
 
     /**
+     * reduce to best route
+     */
+    public void reduce2best() {
+        alts.clear();
+        alts.add(best);
+    }
+
+    /**
+     * find same forwarder
+     *
+     * @param other
+     * @return
+     */
+    public tabRouteAttr<T> sameFwder(tabRouteAttr<T> other) {
+        if (other.nextHop == null) {
+            return null;
+        }
+        for (int i = 0; i < alts.size(); i++) {
+            tabRouteAttr<T> ntry = alts.get(i);
+            if (ntry.nextHop == null) {
+                continue;
+            }
+            if (other.nextHop.getSize() != ntry.nextHop.getSize()) {
+                continue;
+            }
+            if (other.nextHop.compare(other.nextHop, ntry.nextHop) == 0) {
+                return ntry;
+            }
+        }
+        return null;
+    }
+
+    /**
      * clone this table entry
      *
      * @param mod mode to use
