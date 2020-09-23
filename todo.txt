@@ -21,7 +21,6 @@ reenable which elliptic courves? sure? why that?
 https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 parse privilege levels from radius and tacacs
 ldap client, server
-bgp compare should write out that which attributes changed
 bfd need to send with ttl=255
 trustpoint for certificates
 vdc name tabbing
