@@ -9336,3 +9336,5 @@ qc pass: p4lang: p2p te tail+head
 qc pass: p4lang: p2p te mid
 qc pass: p4lang: sr te over mpls tail+head
 qc pass: p4lang: sr te over mpls mid
+---------------------------------- 2020-09-23 06:53:15
+no todo: bgp compare should write out that which attributes changed
