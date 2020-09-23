@@ -556,6 +556,11 @@ public class userExec {
         hl.add("6 7              allroute        list of specific routes");
         hl.add("7 8,.              <addr>        prefix to view");
         hl.add("8 .                  [rd]        route distinguisher");
+        hl.add("6 7              differ          compare route from neighbors");
+        hl.add("7 8                <addr>        neighbor address");
+        hl.add("8 9                  <addr>      neighbor address");
+        hl.add("9 10,.                 <addr>    prefix to view");
+        hl.add("10 .                     [rd]    route distinguisher");
         hl.add("6 7              compare         compare routes from neighbors");
         hl.add("7 8                <addr>        neighbor address");
         hl.add("8 9,.                <addr>      neighbor address");

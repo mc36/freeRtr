@@ -2516,6 +2516,14 @@ public class userShow {
             }
             tabRouteEntry<addrIP> ntry1 = acc1.find(ntry);
             tabRouteEntry<addrIP> ntry2 = acc2.find(ntry);
+            if (ntry1 == null) {
+                cmd.error("not from neighbor 1");
+                return;
+            }
+            if (ntry2 == null) {
+                cmd.error("not from neighbor 2");
+                return;
+            }
             List<String> dump1 = ntry1.fullDump(r.bgp.fwdCore);
             List<String> dump2 = ntry2.fullDump(r.bgp.fwdCore);
             differ df = new differ();
