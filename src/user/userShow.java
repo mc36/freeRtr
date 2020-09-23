@@ -3144,10 +3144,10 @@ public class userShow {
             }
             switch (typ) {
                 case 1:
-                    l.add(tabRouteEntry.toShRoute(prf));
+                    tabRouteEntry.toShRoute(l, prf);
                     break;
                 case 2:
-                    l.add(tabRouteEntry.toShBgp(prf));
+                    tabRouteEntry.toShBgp(l,prf);
                     break;
                 case 3:
                     l.add(tabRouteEntry.toShLdp(prf));

@@ -7,6 +7,7 @@ import ip.ipFwd;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import user.userFormat;
 import util.bits;
 import util.counter;
 
@@ -96,13 +97,18 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                     if (ntry.isOtherBetter(best, false)) {
                         continue;
                     }
-                    prf.alts.add(ntry);
+                    tabRouteAttr<T> attr = new tabRouteAttr<T>();
+                    ntry.copyBytes(attr, true);
+                    prf.alts.add(attr);
                 }
                 prf.selectBest();
                 return prf;
             case alters:
                 for (int i = 0; i < alts.size(); i++) {
-                    prf.alts.add(alts.get(i));
+                    tabRouteAttr<T> ntry = alts.get(i);
+                    tabRouteAttr<T> attr = new tabRouteAttr<T>();
+                    ntry.copyBytes(attr, true);
+                    prf.alts.add(attr);
                 }
                 prf.selectBest();
                 return prf;
@@ -180,30 +186,39 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     /**
      * convert to route format
      *
+     * @param l list to append
      * @param prf entry to dump
-     * @return converted
      */
-    public static String toShRoute(tabRouteEntry<addrIP> prf) {
-        return tabRouteAttr.rouTyp2string(prf.best) + "|" + addrPrefix.ip2str(prf.prefix) + "|" + prf.best.toShRoute();
+    public static void toShRoute(userFormat l, tabRouteEntry<addrIP> prf) {
+        String p = addrPrefix.ip2str(prf.prefix);
+        for (int i = 0; i < prf.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = prf.alts.get(i);
+            l.add(tabRouteAttr.rouTyp2string(attr) + "|" + p + "|" + attr.toShRoute());
+        }
     }
 
     /**
      * convert to bgp format
      *
+     * @param l list to append
      * @param prf entry to dump
-     * @return converted
      */
-    public static String toShBgp(tabRouteEntry<addrIP> prf) {
-        return toShBgpFirst(prf) + prf.best.toShBgpLast();
+    public static void toShBgp(userFormat l, tabRouteEntry<addrIP> prf) {
+        String p = toShBgpFirst(prf);
+        for (int i = 0; i < prf.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = prf.alts.get(i);
+            l.add(p + attr.toShBgpLast());
+        }
     }
 
     /**
      * convert to evpn format
      *
+     * @param l list to append
      * @param prf entry to dump
      * @return converted
      */
-    public static String toShEvpn(tabRouteEntry<addrIP> prf) {
+    public static String toShEvpn(userFormat l, tabRouteEntry<addrIP> prf) {
         return addrPrefix.ip2evpn(prf.prefix) + " " + tabRtrmapN.rd2string(prf.rouDst) + prf.best.toShBgpLast();
     }
 
