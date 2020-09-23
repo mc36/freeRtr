@@ -8,6 +8,7 @@ import ifc.ifcNull;
 import ifc.ifcUp;
 import ip.ipFwd;
 import pack.packHolder;
+import tab.tabRoute;
 import tab.tabRouteEntry;
 import util.bits;
 import util.counter;
@@ -173,7 +174,7 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
         if (prf.best.labelRem == null) {
             return null;
         }
-        src = src.copyBytes();
+        src = src.copyBytes(tabRoute.addType.notyet);
         src.best.iface = prf.best.iface;
         if (prf.best.nextHop != null) {
             src.best.nextHop = prf.best.nextHop;

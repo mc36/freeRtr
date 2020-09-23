@@ -641,7 +641,7 @@ public class rtrBgpGroup extends rtrBgpParam {
     private void readvertTable(int afi, tabRoute<addrIP> tab, tabRoute<addrIP> cmp) {
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 originatePrefix(afi, ntry);
             } else if (readvertPrefix(afi, ntry)) {
@@ -654,7 +654,7 @@ public class rtrBgpGroup extends rtrBgpParam {
     private void importTable(int afi, tabRoute<addrIP> tab, tabRoute<addrIP> imp) {
         for (int i = 0; i < imp.size(); i++) {
             tabRouteEntry<addrIP> ntry = imp.get(i);
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 originatePrefix(afi, ntry);
             } else if (readvertPrefix(afi, ntry)) {
@@ -730,7 +730,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(lower.afiUni, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nUni, lower.afiUni, ntry, true, roumapOut, roupolOut, prflstOut);
@@ -740,7 +740,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(lower.afiMlt, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, ntry, true, roumapOut, roupolOut, prflstOut);
@@ -750,7 +750,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             originatePrefix(lower.afiFlw, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nFlw, lower.afiFlw, ntry, true, voumapOut, voupolOut, null);

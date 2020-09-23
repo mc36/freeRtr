@@ -148,7 +148,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (ntry == null) {
             return;
         }
-        ntry = ntry.copyBytes();
+        ntry = ntry.copyBytes(tabRoute.addType.notyet);
         if (ntry.best.labelLoc == null) {
             ntry.best.labelLoc = fwd.commonLabel;
         }
@@ -239,7 +239,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (!needed) {
             return;
         }
-        ntry = ntry.copyBytes();
+        ntry = ntry.copyBytes(tabRoute.addType.notyet);
         ntry.rouDst = 0;
         ntry.best.rouTab = parent.fwdCore;
         if (ntry.best.segrouPrf != null) {

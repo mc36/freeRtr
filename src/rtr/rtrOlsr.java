@@ -394,8 +394,9 @@ public class rtrOlsr extends ipRtr implements prtServP {
             return false;
         }
         if (ntry.gotPack(pck)) {
-            routerCreateComputed();
+            return false;
         }
+        routerCreateComputed();
         return false;
     }
 

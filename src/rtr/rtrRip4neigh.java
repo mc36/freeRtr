@@ -84,32 +84,30 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
         }
         if (pck.getByte(1) != rtrRip4.version) {
             logger.info("bad version " + conn);
-            return false;
+            return true;
         }
         int cmd = pck.getByte(0); // command
         pck.getSkip(rtrRip4.sizeHead);
         if ((iface.authentication == null) && (pck.msbGetW(0) == 0xffff)) {
             logger.info("got authed " + conn);
-            return false;
+            return true;
         }
         byte buf[] = iface.getAuthData();
         for (int i = 0; i < buf.length; i++) {
             if (pck.getByte(i) != (buf[i] & 0xff)) {
                 logger.info("bad auth " + conn);
-                return false;
+                return true;
             }
         }
         pck.getSkip(buf.length);
         if (cmd == 1) { // request
             iface.sendOutUpdates(conn);
-            return false;
+            return true;
         }
         if (cmd != 2) { // response
             logger.info("bad command " + conn);
-            return false;
+            return true;
         }
-        tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteAttr.distanLim);
         for (; pck.dataSize() >= rtrRip4.sizeNtry; pck.getSkip(rtrRip4.sizeNtry)) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.best.rouTyp = tabRouteAttr.routeType.rip4;
@@ -164,7 +162,7 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
             }
             tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
         }
-        return learned.differs(oldTab);
+        return false;
     }
 
     /**

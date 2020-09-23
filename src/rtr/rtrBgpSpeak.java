@@ -1624,7 +1624,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             attr.rouDst = cur.rouDst;
             attr.best.labelRem = cur.best.labelRem;
             attr.best.evpnLab = cur.best.evpnLab;
-            cur = attr.copyBytes();
+            cur = attr.copyBytes(tabRoute.addType.notyet);
             if (parent.flaps != null) {
                 parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
             }

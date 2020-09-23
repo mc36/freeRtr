@@ -84,20 +84,18 @@ public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
         }
         if (pck.getByte(1) != rtrRip6.version) {
             logger.info("bad version " + conn);
-            return false;
+            return true;
         }
         int cmd = pck.getByte(0); // command
         pck.getSkip(rtrRip6.sizeHead);
         if (cmd == 1) { // request
             iface.sendOutUpdates(conn);
-            return false;
+            return true;
         }
         if (cmd != 2) { // response
             logger.info("bad command " + conn);
-            return false;
+            return true;
         }
-        tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteAttr.distanLim);
         for (; pck.dataSize() >= rtrRip6.sizeNtry; pck.getSkip(rtrRip6.sizeNtry)) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.best.rouTyp = tabRouteAttr.routeType.rip6;
@@ -138,7 +136,7 @@ public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
             }
             tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
         }
-        return learned.differs(oldTab);
+        return false;
     }
 
     /**

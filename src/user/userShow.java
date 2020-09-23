@@ -2108,8 +2108,8 @@ public class userShow {
                 uniq.add(tabRoute.addType.always, prf1, false, false);
                 continue;
             }
-            prf1 = prf1.copyBytes();
-            prf2 = prf2.copyBytes();
+            prf1 = prf1.copyBytes(tabRoute.addType.notyet);
+            prf2 = prf2.copyBytes(tabRoute.addType.notyet);
             prf1.best.srcRtr = null;
             prf2.best.srcRtr = null;
             prf1.best.rouSrc = 0;
@@ -2244,7 +2244,7 @@ public class userShow {
                 prf1.best.bierHdr = 0;
                 prf2.best.bierHdr = 0;
             }
-            if (!prf1.differs(prf2)) {
+            if (!prf1.differs(tabRoute.addType.alters, prf2)) {
                 continue;
             }
             diff.add(tabRoute.addType.always, prf1, false, false);

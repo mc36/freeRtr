@@ -1283,7 +1283,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < routerRedistedF.size(); i++) {
             tabRouteEntry<addrIP> ntry = routerRedistedF.get(i);
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.rouTyp = rouTyp;
             ntry.best.protoNum = rtrNum;
             ntry.best.distance = distantLoc;
@@ -1542,7 +1542,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         tabRouteEntry<addrIP> best = org.find(curr);
         if (best != null) {
-            best = best.copyBytes();
+            best = best.copyBytes(tabRoute.addType.notyet);
             best.best.rouSrc = rtrBgpUtil.peerOriginate;
         }
         for (int i = 0; i < lstnNei.size(); i++) {
@@ -1589,7 +1589,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 needFull.add(1);
                 continue;
             }
-            tabRouteEntry<addrIP> ntry = best.copyBytes();
+            tabRouteEntry<addrIP> ntry = best.copyBytes(tabRoute.addType.notyet);
             tabRouteEntry<addrIP> old = wil.find(ntry);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 grp.originatePrefix(afi, ntry);
@@ -1609,7 +1609,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 chg.add(tabRoute.addType.always, best, false, false);
                 continue;
             }
-            if (!ntry.differs(old)) {
+            if (!ntry.differs(tabRoute.addType.notyet, old)) {
                 continue;
             }
             wil.add(tabRoute.addType.always, ntry, false, false);
@@ -1768,7 +1768,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (old.best.nextHop == null) {
             return null;
         }
-        best = best.copyBytes();
+        best = best.copyBytes(tabRoute.addType.notyet);
         if (best.best.locPref < old.best.locPref) {
             best.best.locPref = old.best.locPref;
         }

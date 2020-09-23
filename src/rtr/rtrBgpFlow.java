@@ -118,7 +118,7 @@ public class rtrBgpFlow {
         if (o < 1) {
             return true;
         }
-        attr = attr.copyBytes();
+        attr = attr.copyBytes(tabRoute.addType.notyet);
         for (int i = 0; i < ((4 * addrIP.size) - o); i++) {
             pck.putByte(0, 0);
             pck.putSkip(1);

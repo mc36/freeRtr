@@ -510,7 +510,7 @@ public class rtrIsisLevel implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.distance = tabRouteAttr.distanIfc + 1;
             ntry.best.rouSrc = 1;
             ntry.best.segrouIdx = 0;
@@ -524,7 +524,7 @@ public class rtrIsisLevel implements Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                ntry = ntry.copyBytes();
+                ntry = ntry.copyBytes(tabRoute.addType.notyet);
                 if ((ntry.best.rouSrc & 4) != 0) {
                     continue;
                 }

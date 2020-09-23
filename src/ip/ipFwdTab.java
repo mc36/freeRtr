@@ -457,7 +457,7 @@ public class ipFwdTab {
                 ntry.filter(rtrBgpUtil.safiMulticast, tabM, lower.actualM);
                 ntry.filter(rtrBgpUtil.safiFlwSpc, tabF, lower.actualF);
             }
-            boolean diff = tabU.differs(rtr.routerRedistedU) || tabM.differs(rtr.routerRedistedM) || tabF.differs(rtr.routerRedistedF);
+            boolean diff = tabU.differs(tabRoute.addType.alters, rtr.routerRedistedU) || tabM.differs(tabRoute.addType.alters, rtr.routerRedistedM) || tabF.differs(tabRoute.addType.alters, rtr.routerRedistedF);
             if (chg) {
                 rtr.routerOthersChanged();
             }
@@ -963,7 +963,7 @@ public class ipFwdTab {
                 logger.debug("starting " + clnt);
             }
         }
-        if ((!tabC.differs(lower.connedR)) && (!tabL.differs(lower.labeldR)) && (!tabU.differs(lower.actualU)) && (!tabM.differs(lower.actualM)) && (!tabF.differs(lower.actualF))) {
+        if ((!tabC.differs(tabRoute.addType.alters, lower.connedR)) && (!tabL.differs(tabRoute.addType.alters, lower.labeldR)) && (!tabU.differs(tabRoute.addType.alters, lower.actualU)) && (!tabM.differs(tabRoute.addType.alters, lower.actualM)) && (!tabF.differs(tabRoute.addType.alters, lower.actualF))) {
             return false;
         }
         tabC.optimize4lookup();

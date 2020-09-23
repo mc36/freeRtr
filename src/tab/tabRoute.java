@@ -166,7 +166,7 @@ public class tabRoute<T extends addrType> {
             logger.debug("add " + prefix);
         }
         if (copy) {
-            prefix = prefix.copyBytes();
+            prefix = prefix.copyBytes(mod);
         }
         if (newTime) {
             prefix.best.time = bits.getTime();
@@ -471,10 +471,12 @@ public class tabRoute<T extends addrType> {
             if (old == null) {
                 continue;
             }
-            if (prf.differs(old)) {
+            if (prf.differs(addType.notyet, old)) {
                 continue;
             }
-            prf.best.time = old.best.time;
+            for (int o = 0; o < prf.alts.size(); o++) {
+                prf.alts.get(o).time = old.best.time;
+            }
         }
     }
 
@@ -515,7 +517,7 @@ public class tabRoute<T extends addrType> {
                 continue;
             }
             if (copy) {
-                imp = imp.copyBytes();
+                imp = imp.copyBytes(mod);
             }
             if (nexthops != null) {
                 if (imp.best.nextHop == null) {
@@ -560,10 +562,11 @@ public class tabRoute<T extends addrType> {
     /**
      * test if this table differs from the other
      *
+     * @param mod mode to use
      * @param other to compare with
      * @return false if identical, true if differs
      */
-    public boolean differs(tabRoute<T> other) {
+    public boolean differs(addType mod, tabRoute<T> other) {
         if (prefixes.size() != other.prefixes.size()) {
             return true;
         }
@@ -572,7 +575,7 @@ public class tabRoute<T extends addrType> {
             if (prf == null) {
                 continue;
             }
-            if (prf.differs(other.prefixes.get(i))) {
+            if (prf.differs(mod, other.prefixes.get(i))) {
                 return true;
             }
         }
@@ -612,7 +615,7 @@ public class tabRoute<T extends addrType> {
             }
         }
         if ((rouMap == null) && (rouPlc == null)) {
-            return ntry.copyBytes();
+            return ntry.copyBytes(addType.notyet);
         }
         if (rouMap != null) {
             ntry = rouMap.update(afi, ntry, true);

@@ -15,6 +15,7 @@ import java.util.List;
 import pack.packHolder;
 import tab.tabHop;
 import tab.tabLabel;
+import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRouteIface;
 import util.cmds;
@@ -219,7 +220,7 @@ public class clntMplsSr implements Runnable, ifcDn {
         if (labs == null) {
             return null;
         }
-        src = src.copyBytes();
+        src = src.copyBytes(tabRoute.addType.notyet);
         src.best.nextHop = nextHop.copyBytes();
         src.best.iface = nextIfc;
         src.best.labelRem = tabLabel.int2labels(labs[0]);

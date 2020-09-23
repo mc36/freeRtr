@@ -16,6 +16,7 @@ import java.util.List;
 import pack.packHolder;
 import tab.tabHop;
 import tab.tabLabel;
+import tab.tabRoute;
 import tab.tabRouteEntry;
 import util.bits;
 import util.counter;
@@ -248,7 +249,7 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         if (trfEng.srcLoc != 1) {
             return null;
         }
-        src = src.copyBytes();
+        src = src.copyBytes(tabRoute.addType.notyet);
         src.best.nextHop = trfEng.trgHop.copyBytes();
         src.best.iface = trfEng.trgIfc;
         src.best.labelRem = tabLabel.int2labels(trfEng.trgLab);

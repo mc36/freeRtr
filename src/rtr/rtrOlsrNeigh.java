@@ -91,8 +91,6 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
         pck.setDataSize(i);
         int pckSeq = pck.msbGetW(2);
         pck.getSkip(4);
-        tabRoute<addrIP> oldTab = new tabRoute<addrIP>("copy");
-        oldTab.mergeFrom(tabRoute.addType.better, learned, null, true, tabRouteAttr.distanLim);
         long tim = bits.getTime();
         boolean ipv4 = conn.peerAddr.isIPv4();
         for (;;) {
@@ -176,7 +174,7 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
                     break;
             }
         }
-        return learned.differs(oldTab);
+        return false;
     }
 
     /**

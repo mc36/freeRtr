@@ -603,13 +603,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.differs(done.find(ntry))) {
+            if (!ntry.differs(tabRoute.addType.notyet, done.find(ntry))) {
                 continue;
             }
             if (sen != null) {
                 sen.prefix = ntry.prefix;
             }
-            if (ntry.differs(sen)) {
+            if (ntry.differs(tabRoute.addType.notyet, sen)) {
                 if (lst.size() > 0) {
                     conn.sendUpdate(safi, lst, true);
                 }
@@ -617,7 +617,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                     return true;
                 }
                 lst.clear();
-                sen = ntry.copyBytes();
+                sen = ntry.copyBytes(tabRoute.addType.notyet);
             }
             done.add(tabRoute.addType.always, ntry, false, false);
             lst.add(ntry);
@@ -750,7 +750,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 lst.add(don);
                 conn.sendUpdate(safi, lst, false);
             } else {
-                if (!wil.differs(don)) {
+                if (!wil.differs(tabRoute.addType.notyet, don)) {
                     continue;
                 }
                 done.add(tabRoute.addType.always, wil, false, false);

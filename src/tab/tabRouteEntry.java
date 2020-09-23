@@ -62,23 +62,6 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     }
 
     /**
-     * clone this table entry
-     *
-     * @return new instance containing same data
-     */
-    public tabRouteEntry<T> copyBytes() {
-        tabRouteEntry<T> prf = new tabRouteEntry<T>();
-        prf.rouDst = rouDst;
-        prf.cntr = cntr;
-        prf.hwCntr = hwCntr;
-        if (prefix != null) {
-            prf.prefix = prefix.copyBytes();
-        }
-        best.copyBytes(prf.best, true);
-        return prf;
-    }
-
-    /**
      * select best route
      */
     public void selectBest() {
@@ -92,19 +75,70 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     }
 
     /**
+     * clone this table entry
+     *
+     * @param mod mode to use
+     * @return new instance containing same data
+     */
+    public tabRouteEntry<T> copyBytes(tabRoute.addType mod) {
+        tabRouteEntry<T> prf = new tabRouteEntry<T>();
+        prf.rouDst = rouDst;
+        prf.cntr = cntr;
+        prf.hwCntr = hwCntr;
+        if (prefix != null) {
+            prf.prefix = prefix.copyBytes();
+        }
+        best.copyBytes(prf.best, true);
+        switch (mod) {
+            case ecmp:
+                for (int i = 0; i < alts.size(); i++) {
+                    tabRouteAttr<T> ntry = alts.get(i);
+                    if (ntry.isOtherBetter(best, false)) {
+                        continue;
+                    }
+                    prf.alts.add(ntry);
+                }
+                prf.selectBest();
+                return prf;
+            case alters:
+                for (int i = 0; i < alts.size(); i++) {
+                    prf.alts.add(alts.get(i));
+                }
+                prf.selectBest();
+                return prf;
+            default:
+                return prf;
+        }
+    }
+
+    /**
      * check if differs from other
      *
+     * @param mod mode to use
      * @param other other to test
      * @return false on equals, true on differs
      */
-    public boolean differs(tabRouteEntry<T> other) {
+    public boolean differs(tabRoute.addType mod, tabRouteEntry<T> other) {
         if (other == null) {
             return true;
         }
         if (compare(this, other) != 0) {
             return true;
         }
-        return best.differs(other.best);
+        switch (mod) {
+            case alters:
+                if (alts.size() != other.alts.size()) {
+                    return true;
+                }
+                for (int i = 0; i < alts.size(); i++) {
+                    if (alts.get(i).differs(other.alts.get(i))) {
+                        return true;
+                    }
+                }
+                return false;
+            default:
+                return best.differs(other.best);
+        }
     }
 
     /**
@@ -261,7 +295,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         l.add("prefix broadcast = " + prefix.broadcast);
         l.add("prefix wildcard = " + prefix.wildcard);
         l.add("prefix netmask = " + prefix.mask);
-        best.fullDump(l);
+        l.add("alternates = " + alts.size());
+        for (int i = 0; i < alts.size(); i++) {
+            l.add("alternate #" + i + " attributes:");
+            alts.get(i).fullDump(l);
+        }
         l.add("counter = " + counter.getShStat(cntr));
         l.add("hardware counter = " + counter.getShStat(hwCntr));
         return l;

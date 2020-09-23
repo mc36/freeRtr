@@ -478,10 +478,10 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.differs(adverted.find(ntry))) {
+            if (!ntry.differs(tabRoute.addType.notyet, adverted.find(ntry))) {
                 continue;
             }
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             adverted.add(tabRoute.addType.always, ntry, true, true);
             if (ntry.best.originator == null) {
                 writeMetric(ntry, true);

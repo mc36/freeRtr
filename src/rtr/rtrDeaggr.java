@@ -91,7 +91,7 @@ public class rtrDeaggr extends ipRtr {
         if (ntry.prefix.maskLen >= ntry.prefix.network.maxBits()) {
             return;
         }
-        ntry = ntry.copyBytes();
+        ntry = ntry.copyBytes(tabRoute.addType.notyet);
         ntry.best.rouTyp = rouTyp;
         ntry.best.protoNum = rtrNum;
         ntry.prefix.setMask(ntry.prefix.maskLen + 1);

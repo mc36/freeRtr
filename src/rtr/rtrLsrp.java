@@ -559,7 +559,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.distance = tabRouteAttr.distanIfc + 1;
             ntry.best.segrouIdx = segrouIdx;
             ntry.best.rouSrc = segrouPop ? 17 : 1;
@@ -671,7 +671,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             int brb = spf.getBierB(ntry.rtrId, false);
             int bro = spf.getBierB(ntry.rtrId, true);
             for (int i = 0; i < ntry.network.size(); i++) {
-                tabRouteEntry<addrIP> rou = ntry.network.get(i).copyBytes();
+                tabRouteEntry<addrIP> rou = ntry.network.get(i).copyBytes(tabRoute.addType.notyet);
                 rou.best.srcRtr = ntry.rtrId.copyBytes();
                 rou.best.nextHop = hop.copyBytes();
                 rou.best.metric += met;

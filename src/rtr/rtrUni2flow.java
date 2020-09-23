@@ -113,7 +113,7 @@ public class rtrUni2flow extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             tabRouteEntry<addrIP> attr = new tabRouteEntry<addrIP>();
             attr.best.rouTyp = rouTyp;
             attr.best.protoNum = rtrNum;

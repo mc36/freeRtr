@@ -3024,12 +3024,12 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < need.size(); i++) {
             tabRouteEntry<addrIP> ntry = need.get(i);
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             if ((ntry.best.iface == null) && (ntry.best.rouTab != null)) {
                 tabRouteEntry<addrIP> old = done.find(ntry);
                 String act = "add";
                 if (old != null) {
-                    if (!ntry.differs(old)) {
+                    if (!ntry.differs(tabRoute.addType.notyet, old)) {
                         continue;
                     }
                     act = "mod";
@@ -3067,7 +3067,7 @@ class servP4langConn implements Runnable {
                 if (ntry.best.nextHop != null) {
                     findIfc(ntry.best.iface, ntry.best.nextHop);
                 }
-                if (!ntry.differs(old)) {
+                if (!ntry.differs(tabRoute.addType.notyet, old)) {
                     continue;
                 }
                 act = "mod";

@@ -87,7 +87,7 @@ public class rtrUni2multi extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes();
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.rouTyp = rouTyp;
             ntry.best.protoNum = rtrNum;
             if (distance > 0) {

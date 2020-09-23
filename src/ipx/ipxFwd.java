@@ -135,7 +135,7 @@ public class ipxFwd implements Runnable {
             if (nh == null) {
                 continue;
             }
-            tabRouteEntry<addrIpx> imp = ntry.copyBytes();
+            tabRouteEntry<addrIpx> imp = ntry.copyBytes(tabRoute.addType.notyet);
             imp.best.iface = nh.best.iface;
             tabA.add(tabRoute.addType.better, imp, false, true);
         }

@@ -274,7 +274,7 @@ public class rtrLogger extends ipRtr {
                 doChgd(afi, ntry, "reachable");
                 continue;
             }
-            if (!ntry.differs(old)) {
+            if (!ntry.differs(tabRoute.addType.alters, old)) {
                 continue;
             }
             doChgd(afi, ntry, "changed");

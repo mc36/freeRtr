@@ -515,7 +515,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             return null;
         }
         if (copy) {
-            net = net.copyBytes();
+            net = net.copyBytes(tabRoute.addType.notyet);
         }
         ntry.update(afi, net);
         return net;

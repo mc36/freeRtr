@@ -449,7 +449,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.differs(adverted.find(ntry))) {
+            if (!ntry.differs(tabRoute.addType.notyet, adverted.find(ntry))) {
                 continue;
             }
             if (conn.ready2tx() < 1024) {
