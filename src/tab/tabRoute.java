@@ -618,7 +618,7 @@ public class tabRoute<T extends addrType> {
             }
         }
         if ((rouMap == null) && (rouPlc == null)) {
-            return ntry.copyBytes(addType.notyet);
+            return ntry.copyBytes(addType.ecmp);
         }
         if (rouMap != null) {
             ntry = rouMap.update(afi, ntry, true);

@@ -37,6 +37,7 @@ import util.debugger;
 import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
+import util.shrtPthFrstUpl;
 import util.state;
 import util.syncInt;
 import util.version;
@@ -659,41 +660,34 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            addrIP hop = spf.getNextHop(ntry.rtrId);
-            if (hop == null) {
+            List<shrtPthFrstUpl<addrIPv4>> hop = spf.findNextHop(ntry.rtrId);
+            if (hop.size() < 1) {
                 continue;
             }
-            int hops = spf.getHops(ntry.rtrId);
-            ipFwdIface iface = (ipFwdIface) spf.getNextIfc(ntry.rtrId);
             int met = spf.getMetric(ntry.rtrId);
-            int srb = spf.getSegRouB(ntry.rtrId, false);
             int sro = spf.getSegRouB(ntry.rtrId, true);
-            int brb = spf.getBierB(ntry.rtrId, false);
             int bro = spf.getBierB(ntry.rtrId, true);
             for (int i = 0; i < ntry.network.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.network.get(i).copyBytes(tabRoute.addType.notyet);
-                rou.best.srcRtr = ntry.rtrId.copyBytes();
-                rou.best.nextHop = hop.copyBytes();
-                rou.best.metric += met;
-                rou.best.distance = distance;
-                rou.best.iface = iface;
                 spf.addSegRouI(ntry.rtrId, rou.best.segrouIdx);
                 spf.addBierI(ntry.rtrId, rou.best.bierIdx, true);
-                if ((segrouUsd != null) && (rou.best.segrouIdx > 0) && (rou.best.segrouIdx < segrouMax) && (srb > 0)) {
-                    List<Integer> lab = tabLabel.int2labels(srb + rou.best.segrouIdx);
-                    if (((rou.best.rouSrc & 16) != 0) && (hops <= 1)) {
+                rou.best.srcRtr = ntry.rtrId.copyBytes();
+                rou.best.segrouOld = sro;
+                rou.best.bierOld = bro;
+                rou.best.bierHdr = tabLabelBier.num2bsl(ntry.bierLen);
+                rou.best.metric += met;
+                rou.best.distance = distance;
+                shrtPthFrst.populateRoute(rou, hop);
+                if ((segrouUsd != null) && (rou.best.segrouIdx > 0) && (rou.best.segrouIdx < segrouMax) && (rou.best.segrouBeg > 0)) {
+                    List<Integer> lab = tabLabel.int2labels(rou.best.segrouBeg + rou.best.segrouIdx);
+                    if (((rou.best.rouSrc & 16) != 0) && (rou.best.hops <= 1)) {
                         lab = tabLabel.int2labels(ipMpls.labelImp);
                     }
-                    segrouLab[rou.best.segrouIdx].setFwdMpls(6, fwdCore, iface, hop, lab);
+                    segrouLab[rou.best.segrouIdx].setFwdMpls(6, fwdCore, (ipFwdIface) rou.best.iface, rou.best.nextHop, lab);
                     segrouUsd[rou.best.segrouIdx] = true;
                     rou.best.labelRem = lab;
                 }
-                rou.best.segrouBeg = srb;
-                rou.best.segrouOld = sro;
-                rou.best.bierBeg = brb;
-                rou.best.bierOld = bro;
-                rou.best.bierHdr = tabLabelBier.num2bsl(ntry.bierLen);
-                tab1.add(tabRoute.addType.better, rou, false, true);
+                tab1.add(tabRoute.addType.ecmp, rou, false, true);
             }
         }
         if (segrouUsd != null) {
@@ -709,7 +703,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("routes");
-        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab2, null, fwdCore.commonLabel, 0, null, 0);
         if (bierLab != null) {
             tabLabelBier res = spf.getBierI();

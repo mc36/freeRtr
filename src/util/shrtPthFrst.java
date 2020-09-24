@@ -9,6 +9,8 @@ import java.util.List;
 import tab.tabGen;
 import tab.tabLabelBier;
 import tab.tabLabelBierN;
+import tab.tabRouteAttr;
+import tab.tabRouteEntry;
 import tab.tabRouteIface;
 import user.userFormat;
 
@@ -890,6 +892,29 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         }
         res.add(graphEnd);
         return res;
+    }
+
+    /**
+     * populate route entry
+     *
+     * @param <Ta> type of nodes
+     * @param rou route
+     * @param hop hop list
+     */
+    public static <Ta extends Comparator<? super Ta>> void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstUpl<Ta>> hop) {
+        rou.alts.clear();
+        for (int i = 0; i < hop.size(); i++) {
+            shrtPthFrstUpl<Ta> upl = hop.get(i);
+            tabRouteAttr<addrIP> res = new tabRouteAttr<addrIP>();
+            rou.best.copyBytes(res, false);
+            res.nextHop = upl.nxtHop.copyBytes();
+            res.iface = upl.iface;
+            res.hops = upl.hops;
+            res.segrouBeg = upl.srBeg;
+            res.bierBeg = upl.brBeg;
+            rou.alts.add(res);
+        }
+        rou.selectBest();
     }
 
 }
