@@ -880,16 +880,13 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             res.bierHdr = src.bierHdr;
             res.bierOld = src.bierOld;
             if (i >= hop.size()) {
-                logger.debug("here "+rou+ " "+i+" "+hop.size());/////////////
                 continue;
             }
             shrtPthFrstUpl<Ta> upl = hop.get(i);
             if (upl.iface != res.iface) {
-                logger.debug("here "+rou+ " "+upl.iface+" "+res.iface);/////////////
                 continue;
             }
             if (upl.nxtHop.compare(upl.nxtHop, res.nextHop) != 0) {
-                logger.debug("here "+rou+ " "+upl.nxtHop+" "+res.nextHop);/////////////
                 continue;
             }
             if ((res.segrouIdx < 1) || (res.segrouBeg < 1)) {
