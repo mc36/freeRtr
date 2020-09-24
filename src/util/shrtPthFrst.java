@@ -323,14 +323,15 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 if (ecm) {
                     c.target.uplinks.add(ntry);
                 }
-                if (c.target.hops > p) {
-                    c.target.uplink = ntry;
-                    c.target.hops = p;
-                    if (!ecm) {
-                        c.target.uplinks.clear();
-                        c.target.uplinks.add(ntry);
-                    }
+                if (c.target.hops <= p) {
+                    continue;
                 }
+                if (!ecm) {
+                    c.target.uplinks.clear();
+                    c.target.uplinks.add(ntry);
+                }
+                c.target.uplink = ntry;
+                c.target.hops = p;
             }
             frst = false;
         }
