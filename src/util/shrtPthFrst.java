@@ -247,6 +247,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             ntry.metric = -1;
             ntry.iface = null;
             ntry.hops = -1;
+            ntry.nxtMet = Integer.MAX_VALUE;
         }
         shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(from));
         if (ntry == null) {
@@ -909,7 +910,6 @@ class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<s
     protected tabGen<shrtPthFrstIdx> brLst = new tabGen<shrtPthFrstIdx>();
 
     public shrtPthFrstNode(Ta nam) {
-        nxtMet = Integer.MAX_VALUE;
         name = nam;
     }
 
