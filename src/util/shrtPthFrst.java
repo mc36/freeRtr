@@ -311,25 +311,25 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 if (c.realHop) {
                     p++;
                 }
-                if (c.target.metric == o) {
-                    if (ecm) {
-                        c.target.uplinks.add(ntry);
-                    }
-                    if (c.target.hops > p) {
-                        c.target.uplink = ntry;
-                        c.target.hops = p;
-                        if (!ecm) {
-                            c.target.uplinks.clear();
-                            c.target.uplinks.add(ntry);
-                        }
-                    }
-                } else {
+                if (c.target.metric != o) {
                     c.target.uplinks = new ArrayList<shrtPthFrstNode<Ta>>();
                     c.target.uplinks.add(ntry);
                     c.target.uplink = ntry;
                     c.target.metric = o;
                     c.target.hops = p;
                     lst.add(c.target);
+                    continue;
+                }
+                if (ecm) {
+                    c.target.uplinks.add(ntry);
+                }
+                if (c.target.hops > p) {
+                    c.target.uplink = ntry;
+                    c.target.hops = p;
+                    if (!ecm) {
+                        c.target.uplinks.clear();
+                        c.target.uplinks.add(ntry);
+                    }
                 }
             }
             frst = false;
