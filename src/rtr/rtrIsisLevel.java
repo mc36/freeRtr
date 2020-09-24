@@ -24,6 +24,7 @@ import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabRouteAttr;
 import tab.tabRtrplcN;
+import util.shrtPthFrstUpl;
 import util.state;
 import util.syncInt;
 
@@ -716,17 +717,13 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             rtrIsisLevelSpf src = new rtrIsisLevelSpf(lsp.srcID, lsp.nodID);
-            addrIP hop = spf.getNextHop(src);
-            if (hop == null) {
+            List<shrtPthFrstUpl<rtrIsisLevelSpf>> hop = spf.findNextHop(src);
+            if (hop.size() < 1) {
                 continue;
             }
-            int hops = spf.getHops(src);
-            ipFwdIface iface = (ipFwdIface) spf.getNextIfc(src);
             int met = spf.getMetric(src);
-            int srb = spf.getSegRouB(src, false);
-            int sro = spf.getSegRouB(src, true);
-            int brb = spf.getBierB(src, false);
-            int bro = spf.getBierB(src, true);
+            int sro = spf.getSegRouB(src);
+            int bro = spf.getBierB(src);
             packHolder pck = lsp.getPayload();
             typLenVal tlv = rtrIsis.getTlv();
             if ((lsp.flags & rtrIsisLsp.flgAttach) != 0) {
@@ -735,11 +732,13 @@ public class rtrIsisLevel implements Runnable {
                 pref.best.metric = met;
                 pref.best.distance = lower.distantInt;
                 pref.best.rouSrc = 6;
-                pref.best.nextHop = hop.copyBytes();
                 pref.best.srcRtr = lsp.srcID.copyBytes();
-                pref.best.iface = iface;
+                pref.best.segrouOld = sro;
+                pref.best.bierOld = bro;
+                shrtPthFrst.populateRoute(pref, hop);
+                shrtPthFrst.populateSegrout(pref, pref.best, hop, (pref.best.rouSrc & 16) != 0);
                 if (needAttach && ((lsp.flags & rtrIsisLsp.flgOver) == 0)) {
-                    rs.add(tabRoute.addType.better, pref, false, true);
+                    rs.add(tabRoute.addType.ecmp, pref, false, true);
                 }
             }
             for (;;) {
@@ -761,30 +760,23 @@ public class rtrIsisLevel implements Runnable {
                     } else {
                         pref.best.distance = lower.distantExt;
                     }
-                    pref.best.nextHop = hop.copyBytes();
                     pref.best.srcRtr = lsp.srcID.copyBytes();
-                    pref.best.iface = iface;
                     spf.addSegRouI(src, pref.best.segrouIdx);
                     spf.addBierI(src, pref.best.bierIdx, (pref.best.rouSrc & 3) == 0);
-                    pref.best.segrouBeg = srb;
                     pref.best.segrouOld = sro;
-                    pref.best.bierBeg = brb;
                     pref.best.bierOld = bro;
-                    if ((segrouUsd != null) && (pref.best.segrouIdx > 0) && (pref.best.segrouIdx < lower.segrouMax) && (srb > 0)) {
-                        List<Integer> lab = tabLabel.int2labels(srb + pref.best.segrouIdx);
-                        if (((pref.best.rouSrc & 16) != 0) && (hops <= 1)) {
-                            lab = tabLabel.int2labels(ipMpls.labelImp);
-                        }
-                        lower.segrouLab[pref.best.segrouIdx].setFwdMpls(7, lower.fwdCore, iface, hop, lab);
+                    shrtPthFrst.populateRoute(pref, hop);
+                    shrtPthFrst.populateSegrout(pref, pref.best, hop, (pref.best.rouSrc & 16) != 0);
+                    if ((segrouUsd != null) && (pref.best.segrouIdx < lower.segrouMax) && (pref.best.labelRem != null)) {
+                        lower.segrouLab[pref.best.segrouIdx].setFwdMpls(7, lower.fwdCore, (ipFwdIface) pref.best.iface, pref.best.nextHop, pref.best.labelRem);
                         segrouUsd[pref.best.segrouIdx] = true;
-                        pref.best.labelRem = lab;
                     }
-                    rs.add(tabRoute.addType.better, pref, false, true);
+                    rs.add(tabRoute.addType.ecmp, pref, false, true);
                 }
             }
         }
         routes.clear();
-        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.safiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);
         if (bierEna) {
             bierRes = spf.getBierI();

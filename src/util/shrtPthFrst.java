@@ -404,34 +404,6 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     }
 
     /**
-     * get next hop address
-     *
-     * @param which node to query
-     * @return next hop, null if not found
-     */
-    public addrIP getNextHop(Ta which) {
-        List<shrtPthFrstUpl<Ta>> res = findNextHop(which);
-        if (res.size() < 1) {
-            return null;
-        }
-        return res.get(0).nxtHop;
-    }
-
-    /**
-     * get next hop interface
-     *
-     * @param which node to query
-     * @return interface, -1=not found
-     */
-    public tabRouteIface getNextIfc(Ta which) {
-        List<shrtPthFrstUpl<Ta>> res = findNextHop(which);
-        if (res.size() < 1) {
-            return null;
-        }
-        return res.get(0).iface;
-    }
-
-    /**
      * get metric to node
      *
      * @param which node to query
@@ -446,61 +418,31 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     }
 
     /**
-     * get hops to node
-     *
-     * @param which node to query
-     * @return hops to node, negative on error
-     */
-    public int getHops(Ta which) {
-        List<shrtPthFrstUpl<Ta>> res = findNextHop(which);
-        if (res.size() < 1) {
-            return -1;
-        }
-        return res.get(0).hops;
-    }
-
-    /**
      * get segment routing base
      *
      * @param which node to query
-     * @param orig true for original one
      * @return label, -1=not found
      */
-    public int getSegRouB(Ta which, boolean orig) {
-        if (orig) {
-            shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
-            if (ntry == null) {
-                return -1;
-            }
-            return ntry.srBeg;
-        }
-        List<shrtPthFrstUpl<Ta>> res = findNextHop(which);
-        if (res.size() < 1) {
+    public int getSegRouB(Ta which) {
+        shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
+        if (ntry == null) {
             return -1;
         }
-        return res.get(0).srBeg;
+        return ntry.srBeg;
     }
 
     /**
      * get bier base
      *
      * @param which node to query
-     * @param orig true for original one
      * @return label, -1=not found
      */
-    public int getBierB(Ta which, boolean orig) {
-        if (orig) {
-            shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
-            if (ntry == null) {
-                return -1;
-            }
-            return ntry.brBeg;
-        }
-        List<shrtPthFrstUpl<Ta>> res = findNextHop(which);
-        if (res.size() < 1) {
+    public int getBierB(Ta which) {
+        shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
+        if (ntry == null) {
             return -1;
         }
-        return res.get(0).brBeg;
+        return ntry.brBeg;
     }
 
     private void doBier(shrtPthFrstNode<Ta> ntry) {
@@ -902,9 +844,8 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param <Ta> type of nodes
      * @param rou route
      * @param hop hop list
-     * @param srPop sr pop requested
      */
-    public static <Ta extends Comparator<? super Ta>> void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstUpl<Ta>> hop, boolean srPop) {
+    public static <Ta extends Comparator<? super Ta>> void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstUpl<Ta>> hop) {
         rou.alts.clear();
         for (int i = 0; i < hop.size(); i++) {
             shrtPthFrstUpl<Ta> upl = hop.get(i);
@@ -915,17 +856,50 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             res.hops = upl.hops;
             res.segrouBeg = upl.srBeg;
             res.bierBeg = upl.brBeg;
-            if ((res.segrouIdx > 0) && (res.segrouBeg > 0)) {
-                res.labelRem = tabLabel.int2labels(res.segrouBeg + res.segrouIdx);
-                if (srPop && (res.hops <= 1)) {
-                    res.labelRem = tabLabel.int2labels(ipMpls.labelImp);
-                }
-            } else {
-                res.labelRem = null;
-            }
+            res.labelRem = null;
             rou.alts.add(res);
         }
         rou.hashBest();
+    }
+
+    /**
+     * populate route entry
+     *
+     * @param <Ta> type of nodes
+     * @param rou route
+     * @param src source
+     * @param hop hop list
+     * @param srPop sr pop requested
+     */
+    public static <Ta extends Comparator<? super Ta>> void populateSegrout(tabRouteEntry<addrIP> rou, tabRouteAttr<addrIP> src, List<shrtPthFrstUpl<Ta>> hop, boolean srPop) {
+        for (int i = 0; i < rou.alts.size(); i++) {
+            tabRouteAttr<addrIP> res = rou.alts.get(i);
+            res.segrouIdx = src.segrouIdx;
+            res.segrouOld = src.segrouOld;
+            res.bierIdx = src.bierIdx;
+            res.bierHdr = src.bierHdr;
+            res.bierOld = src.bierOld;
+            if (i >= hop.size()) {
+                logger.debug("here "+rou+ " "+i+" "+hop.size());/////////////
+                continue;
+            }
+            shrtPthFrstUpl<Ta> upl = hop.get(i);
+            if (upl.iface != res.iface) {
+                logger.debug("here "+rou+ " "+upl.iface+" "+res.iface);/////////////
+                continue;
+            }
+            if (upl.nxtHop.compare(upl.nxtHop, res.nextHop) != 0) {
+                logger.debug("here "+rou+ " "+upl.nxtHop+" "+res.nextHop);/////////////
+                continue;
+            }
+            if ((res.segrouIdx < 1) || (res.segrouBeg < 1)) {
+                continue;
+            }
+            res.labelRem = tabLabel.int2labels(res.segrouBeg + res.segrouIdx);
+            if (srPop && (res.hops <= 1)) {
+                res.labelRem = tabLabel.int2labels(ipMpls.labelImp);
+            }
+        }
     }
 
 }

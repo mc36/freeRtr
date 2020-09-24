@@ -665,8 +665,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 continue;
             }
             int met = spf.getMetric(ntry.rtrId);
-            int sro = spf.getSegRouB(ntry.rtrId, true);
-            int bro = spf.getBierB(ntry.rtrId, true);
+            int sro = spf.getSegRouB(ntry.rtrId);
+            int bro = spf.getBierB(ntry.rtrId);
+            int brh = tabLabelBier.num2bsl(ntry.bierLen);
             for (int i = 0; i < ntry.network.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.network.get(i).copyBytes(tabRoute.addType.notyet);
                 spf.addSegRouI(ntry.rtrId, rou.best.segrouIdx);
@@ -674,10 +675,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 rou.best.srcRtr = ntry.rtrId.copyBytes();
                 rou.best.segrouOld = sro;
                 rou.best.bierOld = bro;
-                rou.best.bierHdr = tabLabelBier.num2bsl(ntry.bierLen);
+                rou.best.bierHdr = brh;
                 rou.best.metric += met;
                 rou.best.distance = distance;
-                shrtPthFrst.populateRoute(rou, hop, (rou.best.rouSrc & 16) != 0);
+                shrtPthFrst.populateRoute(rou, hop);
+                shrtPthFrst.populateSegrout(rou, rou.best, hop, (rou.best.rouSrc & 16) != 0);
                 if ((segrouUsd != null) && (rou.best.segrouIdx < segrouMax) && (rou.best.labelRem != null)) {
                     segrouLab[rou.best.segrouIdx].setFwdMpls(6, fwdCore, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
                     segrouUsd[rou.best.segrouIdx] = true;

@@ -23,6 +23,7 @@ import util.debugger;
 import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
+import util.shrtPthFrstUpl;
 import util.state;
 import util.syncInt;
 import util.typLenVal;
@@ -1117,17 +1118,13 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 }
             }
             rtrOspf6areaSpf src = new rtrOspf6areaSpf(ntry.rtrID, 0);
-            addrIP hop = spf.getNextHop(src);
-            if (hop == null) {
+            List<shrtPthFrstUpl<rtrOspf6areaSpf>> hop = spf.findNextHop(src);
+            if (hop.size() < 1) {
                 continue;
             }
-            int hops = spf.getHops(src);
-            ipFwdIface iface = (ipFwdIface) spf.getNextIfc(src);
             int met = spf.getMetric(src);
-            int srb = spf.getSegRouB(src, false);
-            int sro = spf.getSegRouB(src, true);
-            int brb = spf.getBierB(src, false);
-            int bro = spf.getBierB(src, true);
+            int sro = spf.getSegRouB(src);
+            int bro = spf.getBierB(src);
             tabRouteEntry<addrIP> pref;
             rtrOspf6pref prf6;
             packHolder pck = ntry.getPayload();
@@ -1138,14 +1135,13 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     prefixRead(pck, 4, prf6);
                     pref = new tabRouteEntry<addrIP>();
                     pref.prefix = prf6.prefix;
-                    pref.best.nextHop = hop.copyBytes();
                     pref.best.metric = met;
                     pref.best.origin = 110;
                     pref.best.distance = lower.distantSum;
                     pref.best.srcRtr = ntry.rtrID.copyBytes();
-                    pref.best.iface = iface;
                     pref.best.rouSrc = area;
-                    rs.add(tabRoute.addType.better, pref, false, true);
+                    shrtPthFrst.populateRoute(pref, hop);
+                    rs.add(tabRoute.addType.ecmp, pref, false, true);
                     break;
                 case rtrOspf6lsa.lsaLink:
                     int o = pck.msbGetD(20); // number of prefixes
@@ -1155,14 +1151,13 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pck.getSkip(prefixRead(pck, 0, prf6));
                         pref = new tabRouteEntry<addrIP>();
                         pref.prefix = prf6.prefix;
-                        pref.best.nextHop = hop.copyBytes();
                         pref.best.metric = met;
                         pref.best.origin = 109;
                         pref.best.distance = lower.distantSum;
                         pref.best.srcRtr = ntry.rtrID.copyBytes();
-                        pref.best.iface = iface;
                         pref.best.rouSrc = area;
-                        rs.add(tabRoute.addType.better, pref, false, true);
+                        shrtPthFrst.populateRoute(pref, hop);
+                        rs.add(tabRoute.addType.ecmp, pref, false, true);
                     }
                     break;
                 case rtrOspf6lsa.lsaPrefix:
@@ -1173,14 +1168,13 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pck.getSkip(prefixRead(pck, 0, prf6));
                         pref = new tabRouteEntry<addrIP>();
                         pref.prefix = prf6.prefix;
-                        pref.best.nextHop = hop.copyBytes();
                         pref.best.metric = met;
                         pref.best.origin = 109;
                         pref.best.distance = lower.distantSum;
                         pref.best.srcRtr = ntry.rtrID.copyBytes();
-                        pref.best.iface = iface;
                         pref.best.rouSrc = area;
-                        rs.add(tabRoute.addType.better, pref, false, true);
+                        shrtPthFrst.populateRoute(pref, hop);
+                        rs.add(tabRoute.addType.ecmp, pref, false, true);
                     }
                     break;
                 case rtrOspf6lsa.lsaAsExt:
@@ -1194,7 +1188,6 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     }
                     pref = new tabRouteEntry<addrIP>();
                     pref.prefix = prf6.prefix;
-                    pref.best.nextHop = hop.copyBytes();
                     pref.best.metric = o & 0xffffff;
                     if ((o & 0x04000000) != 0) {
                         pref.best.origin = 112;
@@ -1204,12 +1197,12 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     }
                     pref.best.distance = lower.distantExt;
                     pref.best.srcRtr = ntry.rtrID.copyBytes();
-                    pref.best.iface = iface;
                     pref.best.rouSrc = area;
                     if ((o & 0x01000000) != 0) {
                         pref.best.tag = pck.msbGetD(0); // route tag
                     }
-                    rs.add(tabRoute.addType.better, pref, false, true);
+                    shrtPthFrst.populateRoute(pref, hop);
+                    rs.add(tabRoute.addType.ecmp, pref, false, true);
                     break;
                 case rtrOspf6lsa.lsaEinterPrf:
                 case rtrOspf6lsa.lsaEprefix:
@@ -1232,28 +1225,14 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         if (old == null) {
                             continue;
                         }
-                        if (hop.compare(hop, old.best.nextHop) != 0) {
-                            continue;
-                        }
                         spf.addSegRouI(src, pref.best.segrouIdx);
                         spf.addBierI(src, pref.best.bierIdx, old.best.origin == 109);
-                        old.best.segrouIdx = pref.best.segrouIdx;
-                        old.best.segrouBeg = srb;
-                        old.best.segrouOld = sro;
-                        old.best.bierIdx = pref.best.bierIdx;
-                        old.best.bierHdr = pref.best.bierHdr;
-                        old.best.bierBeg = brb;
-                        old.best.bierOld = bro;
-                        if ((pref.best.segrouIdx < 1) || (pref.best.segrouIdx >= lower.segrouMax) || (srb < 1)) {
+                        shrtPthFrst.populateSegrout(old, pref.best, hop, (pref.best.rouSrc & 16) != 0);
+                        if ((pref.best.segrouIdx >= lower.segrouMax) || (old.best.labelRem == null)) {
                             continue;
                         }
-                        List<Integer> lab = tabLabel.int2labels(srb + pref.best.segrouIdx);
-                        if (((pref.best.rouSrc & 16) != 0) && (hops <= 1)) {
-                            lab = tabLabel.int2labels(ipMpls.labelImp);
-                        }
-                        lower.segrouLab[pref.best.segrouIdx].setFwdMpls(9, lower.fwdCore, iface, hop, lab);
+                        lower.segrouLab[pref.best.segrouIdx].setFwdMpls(9, lower.fwdCore, (ipFwdIface) old.best.iface, old.best.nextHop, old.best.labelRem);
                         segrouUsd[pref.best.segrouIdx] = true;
-                        old.best.labelRem = lab;
                     }
                     break;
                 default:
@@ -1261,7 +1240,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             }
         }
         routes.clear();
-        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.safiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);
         if (bierEna) {
             bierRes = spf.getBierI();
