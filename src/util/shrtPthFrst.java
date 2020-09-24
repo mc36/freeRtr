@@ -244,10 +244,11 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             }
             ntry.uplink = null;
             ntry.nxtHop = null;
-            ntry.metric = -1;
+            ntry.metric = Integer.MAX_VALUE;
             ntry.iface = null;
-            ntry.hops = -1;
+            ntry.hops = Integer.MAX_VALUE;
             ntry.nxtMet = Integer.MAX_VALUE;
+            ntry.visited = false;
         }
         shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(from));
         if (ntry == null) {
@@ -256,6 +257,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         tabGen<shrtPthFrstNode<Ta>> lst = new tabGen<shrtPthFrstNode<Ta>>();
         ntry.metric = 0;
         ntry.hops = 0;
+        ntry.visited = true;
         lst.add(ntry);
         boolean frst = true;
         boolean bid = bidir.get() != 0;
@@ -265,7 +267,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 return true;
             }
             ntry = lst.get(0);
-            for (int i = 0; i < lst.size(); i++) {
+            for (int i = 1; i < lst.size(); i++) {
                 shrtPthFrstNode<Ta> cur = lst.get(i);
                 if (cur.metric < ntry.metric) {
                     ntry = cur;
@@ -292,10 +294,11 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                     }
                 }
                 int o = ntry.metric + c.metric;
-                if ((c.target.metric < 0) || (c.target.metric > o)) {
+                if (c.target.metric > o) {
                     c.target.uplink = ntry;
                     c.target.metric = o;
                     c.target.hops = ntry.hops;
+                    c.target.visited = true;
                     if (c.realHop) {
                         c.target.hops++;
                     }
@@ -597,7 +600,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.metric >= 0) {
+            if (ntry.visited) {
                 continue;
             }
             s += " " + ntry;
@@ -617,7 +620,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.metric < 0) {
+            if (!ntry.visited) {
                 continue;
             }
             s += " " + ntry;
@@ -657,7 +660,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry == null) {
                 continue;
             }
-            s += " " + ntry + "," + (ntry.metric >= 0) + "," + ntry.conn.size();
+            s += " " + ntry + "," + ntry.visited + "," + ntry.conn.size();
         }
         return s;
     }
@@ -676,7 +679,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             return null;
         }
         res.add("node|" + ntry);
-        res.add("reachable|" + (ntry.metric >= 0));
+        res.add("reachable|" + ntry.visited);
         res.add("stub|" + (ntry.conn.size() <= 1));
         res.add("uplink|" + ntry.uplink);
         res.add("reachvia|" + ntry.nxtHop);
@@ -708,7 +711,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry == null) {
                 continue;
             }
-            String s = ntry + "|" + (ntry.metric >= 0) + "|" + ntry.nxtHop + "|" + ntry.iface + "|" + ntry.metric + "|" + ntry.hops + "|" + ntry.conn.size() + "|" + ntry.srIdx + "|" + ntry.brIdx + "|";
+            String s = ntry + "|" + ntry.visited + "|" + ntry.nxtHop + "|" + ntry.iface + "|" + ntry.metric + "|" + ntry.hops + "|" + ntry.conn.size() + "|" + ntry.srIdx + "|" + ntry.brIdx + "|";
             for (int o = 0; o < ntry.conn.size(); o++) {
                 shrtPthFrstConn<Ta> con = ntry.conn.get(o);
                 if (con == null) {
@@ -884,6 +887,8 @@ class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<s
     protected int nxtMet;
 
     protected boolean nxtCon;
+
+    protected boolean visited;
 
     protected List<shrtPthFrstConn<Ta>> conn = new ArrayList<shrtPthFrstConn<Ta>>();
 

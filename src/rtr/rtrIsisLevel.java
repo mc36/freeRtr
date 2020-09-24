@@ -628,9 +628,7 @@ public class rtrIsisLevel implements Runnable {
             if (lsp.getTimeRemain(true) < 1) {
                 continue;
             }
-            if ((lsp.flags & rtrIsisLsp.flgOver) != 0) {
-                continue;
-            }
+            boolean stub = (lsp.flags & rtrIsisLsp.flgOver) != 0;
             packHolder pck = lsp.getPayload();
             rtrIsisLevelSpf src = new rtrIsisLevelSpf(lsp.srcID, lsp.nodID);
             typLenVal tlv = rtrIsis.getTlv();
@@ -646,8 +644,8 @@ public class rtrIsisLevel implements Runnable {
                 addrIsis adr = lower.getISalias(tlv);
                 if (adr != null) {
                     rtrIsisLevelSpf trg = new rtrIsisLevelSpf(adr, 0);
-                    spf.addConn(src, trg, 0, false, false, null);
-                    spf.addConn(trg, src, 0, false, false, null);
+                    spf.addConn(src, trg, 0, false, stub, null);
+                    spf.addConn(trg, src, 0, false, stub, null);
                     continue;
                 }
                 tabGen<rtrIsisLsp> nel = lower.getISneigh(tlv);
@@ -657,7 +655,7 @@ public class rtrIsisLevel implements Runnable {
                         if (nei == null) {
                             continue;
                         }
-                        spf.addConn(src, new rtrIsisLevelSpf(nei.srcID, nei.nodID), nei.lspNum, nei.nodID == 0, false, null);
+                        spf.addConn(src, new rtrIsisLevelSpf(nei.srcID, nei.nodID), nei.lspNum, nei.nodID == 0, stub, null);
                     }
                     continue;
                 }
