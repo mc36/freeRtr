@@ -729,18 +729,18 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             res.add("uplinkcnt|" + ntry.uplinks.size());
             for (int i = 0; i < ntry.uplinks.size(); i++) {
                 shrtPthFrstUpl<Ta> upl = ntry.uplinks.get(i);
-                res.add("uplinknod" + i + "|" + upl.nodeH);
-                res.add("uplinkhop" + i + "|" + upl.hops);
+                res.add("uplinknod|" + upl.nodeH);
+                res.add("uplinkhop|" + upl.hops);
             }
         }
         if (ntry.result != null) {
             res.add("reachcnt|" + ntry.result.size());
             for (int i = 0; i < ntry.result.size(); i++) {
                 shrtPthFrstUpl<Ta> upl = ntry.result.get(i);
-                res.add("reachnod" + i + "|" + upl.nodeH);
-                res.add("reachhop" + i + "|" + upl.hops);
-                res.add("reachvia" + i + "|" + upl.nxtHop);
-                res.add("reachifc" + i + "|" + upl.iface);
+                res.add("reachnod|" + upl.nodeH);
+                res.add("reachhop|" + upl.hops);
+                res.add("reachvia|" + upl.nxtHop);
+                res.add("reachifc|" + upl.iface);
             }
         }
         res.add("reachmet|" + ntry.metric);
@@ -925,7 +925,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             }
             rou.alts.add(res);
         }
-        rou.selectBest();
+        rou.hashBest();
     }
 
 }
