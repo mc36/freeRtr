@@ -339,7 +339,7 @@ interface template1
  router lsrp6 1 accept-metric
  router lsrp6 1 bfd
  shutdown
- log-link-change
+ no log-link-change
  exit
 !
 interface bundle9

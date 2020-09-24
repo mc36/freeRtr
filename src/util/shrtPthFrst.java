@@ -2,11 +2,13 @@ package util;
 
 import addr.addrIP;
 import cfg.cfgAll;
+import ip.ipMpls;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import tab.tabGen;
+import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelBierN;
 import tab.tabRouteAttr;
@@ -900,8 +902,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param <Ta> type of nodes
      * @param rou route
      * @param hop hop list
+     * @param srPop sr pop requested
      */
-    public static <Ta extends Comparator<? super Ta>> void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstUpl<Ta>> hop) {
+    public static <Ta extends Comparator<? super Ta>> void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstUpl<Ta>> hop, boolean srPop) {
         rou.alts.clear();
         for (int i = 0; i < hop.size(); i++) {
             shrtPthFrstUpl<Ta> upl = hop.get(i);
@@ -912,6 +915,14 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             res.hops = upl.hops;
             res.segrouBeg = upl.srBeg;
             res.bierBeg = upl.brBeg;
+            if ((res.segrouIdx > 0) && (res.segrouBeg > 0)) {
+                res.labelRem = tabLabel.int2labels(res.segrouBeg + res.segrouIdx);
+                if (srPop && (res.hops <= 1)) {
+                    res.labelRem = tabLabel.int2labels(ipMpls.labelImp);
+                }
+            } else {
+                res.labelRem = null;
+            }
             rou.alts.add(res);
         }
         rou.selectBest();

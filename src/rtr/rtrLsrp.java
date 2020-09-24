@@ -677,15 +677,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 rou.best.bierHdr = tabLabelBier.num2bsl(ntry.bierLen);
                 rou.best.metric += met;
                 rou.best.distance = distance;
-                shrtPthFrst.populateRoute(rou, hop);
-                if ((segrouUsd != null) && (rou.best.segrouIdx > 0) && (rou.best.segrouIdx < segrouMax) && (rou.best.segrouBeg > 0)) {
-                    List<Integer> lab = tabLabel.int2labels(rou.best.segrouBeg + rou.best.segrouIdx);
-                    if (((rou.best.rouSrc & 16) != 0) && (rou.best.hops <= 1)) {
-                        lab = tabLabel.int2labels(ipMpls.labelImp);
-                    }
-                    segrouLab[rou.best.segrouIdx].setFwdMpls(6, fwdCore, (ipFwdIface) rou.best.iface, rou.best.nextHop, lab);
+                shrtPthFrst.populateRoute(rou, hop, (rou.best.rouSrc & 16) != 0);
+                if ((segrouUsd != null) && (rou.best.segrouIdx < segrouMax) && (rou.best.labelRem != null)) {
+                    segrouLab[rou.best.segrouIdx].setFwdMpls(6, fwdCore, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
                     segrouUsd[rou.best.segrouIdx] = true;
-                    rou.best.labelRem = lab;
                 }
                 tab1.add(tabRoute.addType.ecmp, rou, false, true);
             }
