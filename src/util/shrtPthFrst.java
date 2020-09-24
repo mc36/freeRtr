@@ -150,14 +150,14 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         }
         if (met < ntry.nxtMet) {
             for (int i = 0; i < ntry.uplinks.size(); i++) {
-                shrtPthFrstUpl<Ta> upl = ntry.uplinks.get(i);
+                shrtPthFrstRes<Ta> upl = ntry.uplinks.get(i);
                 upl.nxtHop = null;
                 upl.iface = null;
             }
             ntry.nxtMet = met;
         }
         for (int i = 0; i < ntry.uplinks.size(); i++) {
-            shrtPthFrstUpl<Ta> upl = ntry.uplinks.get(i);
+            shrtPthFrstRes<Ta> upl = ntry.uplinks.get(i);
             if (upl.hops > 1) {
                 continue;
             }
@@ -331,9 +331,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 if (c.realHop) {
                     p++;
                 }
-                shrtPthFrstUpl<Ta> upl = new shrtPthFrstUpl<Ta>(ntry, p);
+                shrtPthFrstRes<Ta> upl = new shrtPthFrstRes<Ta>(ntry, p);
                 if (c.target.metric != o) {
-                    c.target.uplinks = new ArrayList<shrtPthFrstUpl<Ta>>();
+                    c.target.uplinks = new ArrayList<shrtPthFrstRes<Ta>>();
                     c.target.uplinks.add(upl);
                     c.target.uplink = upl;
                     c.target.metric = o;
@@ -362,8 +362,8 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param which node id
      * @return list of next hops
      */
-    public List<shrtPthFrstUpl<Ta>> findNextHop(Ta which) {
-        List<shrtPthFrstUpl<Ta>> res = new ArrayList<shrtPthFrstUpl<Ta>>();
+    public List<shrtPthFrstRes<Ta>> findNextHop(Ta which) {
+        List<shrtPthFrstRes<Ta>> res = new ArrayList<shrtPthFrstRes<Ta>>();
         shrtPthFrstNode<Ta> old = nodes.find(new shrtPthFrstNode<Ta>(which));
         if (old == null) {
             return res;
@@ -371,27 +371,27 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         if (old.result != null) {
             return old.result;
         }
-        List<shrtPthFrstUpl<Ta>> ned = new ArrayList<shrtPthFrstUpl<Ta>>();
-        ned.add(new shrtPthFrstUpl<Ta>(old, -1));
+        List<shrtPthFrstRes<Ta>> ned = new ArrayList<shrtPthFrstRes<Ta>>();
+        ned.add(new shrtPthFrstRes<Ta>(old, -1));
         for (;;) {
             if (ned.size() < 1) {
                 break;
             }
-            shrtPthFrstUpl<Ta> cur = ned.remove(0);
+            shrtPthFrstRes<Ta> cur = ned.remove(0);
             if (cur.nodeH.uplinks == null) {
                 continue;
             }
             for (int i = 0; i < cur.nodeH.uplinks.size(); i++) {
-                shrtPthFrstUpl<Ta> upl = cur.nodeH.uplinks.get(i);
+                shrtPthFrstRes<Ta> upl = cur.nodeH.uplinks.get(i);
                 int hops = cur.hops;
                 if (hops < 0) {
                     hops = upl.hops;
                 }
                 if (upl.iface == null) {
-                    ned.add(new shrtPthFrstUpl<Ta>(upl.nodeH, hops));
+                    ned.add(new shrtPthFrstRes<Ta>(upl.nodeH, hops));
                     continue;
                 }
-                shrtPthFrstUpl<Ta> out = new shrtPthFrstUpl<Ta>(cur.nodeH, hops);
+                shrtPthFrstRes<Ta> out = new shrtPthFrstRes<Ta>(cur.nodeH, hops);
                 out.iface = upl.iface;
                 out.nxtHop = upl.nxtHop;
                 out.srBeg = cur.nodeH.srBeg;
@@ -670,7 +670,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         if (ntry.uplinks != null) {
             res.add("uplinkcnt|" + ntry.uplinks.size());
             for (int i = 0; i < ntry.uplinks.size(); i++) {
-                shrtPthFrstUpl<Ta> upl = ntry.uplinks.get(i);
+                shrtPthFrstRes<Ta> upl = ntry.uplinks.get(i);
                 res.add("uplinknod|" + upl.nodeH);
                 res.add("uplinkhop|" + upl.hops);
             }
@@ -678,7 +678,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         if (ntry.result != null) {
             res.add("reachcnt|" + ntry.result.size());
             for (int i = 0; i < ntry.result.size(); i++) {
-                shrtPthFrstUpl<Ta> upl = ntry.result.get(i);
+                shrtPthFrstRes<Ta> upl = ntry.result.get(i);
                 res.add("reachnod|" + upl.nodeH);
                 res.add("reachhop|" + upl.hops);
                 res.add("reachvia|" + upl.nxtHop);
@@ -845,10 +845,10 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param rou route
      * @param hop hop list
      */
-    public static <Ta extends Comparator<? super Ta>> void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstUpl<Ta>> hop) {
+    public static <Ta extends Comparator<? super Ta>> void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop) {
         rou.alts.clear();
         for (int i = 0; i < hop.size(); i++) {
-            shrtPthFrstUpl<Ta> upl = hop.get(i);
+            shrtPthFrstRes<Ta> upl = hop.get(i);
             tabRouteAttr<addrIP> res = new tabRouteAttr<addrIP>();
             rou.best.copyBytes(res, false);
             res.nextHop = upl.nxtHop.copyBytes();
@@ -871,7 +871,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param hop hop list
      * @param srPop sr pop requested
      */
-    public static <Ta extends Comparator<? super Ta>> void populateSegrout(tabRouteEntry<addrIP> rou, tabRouteAttr<addrIP> src, List<shrtPthFrstUpl<Ta>> hop, boolean srPop) {
+    public static <Ta extends Comparator<? super Ta>> void populateSegrout(tabRouteEntry<addrIP> rou, tabRouteAttr<addrIP> src, List<shrtPthFrstRes<Ta>> hop, boolean srPop) {
         for (int i = 0; i < rou.alts.size(); i++) {
             tabRouteAttr<addrIP> res = rou.alts.get(i);
             res.segrouIdx = src.segrouIdx;
@@ -882,7 +882,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (i >= hop.size()) {
                 continue;
             }
-            shrtPthFrstUpl<Ta> upl = hop.get(i);
+            shrtPthFrstRes<Ta> upl = hop.get(i);
             if (upl.iface != res.iface) {
                 continue;
             }

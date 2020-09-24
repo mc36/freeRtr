@@ -10,7 +10,7 @@ import tab.tabRouteIface;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class shrtPthFrstUpl<Ta extends Comparator<? super Ta>> implements Comparator<shrtPthFrstUpl<Ta>> {
+public class shrtPthFrstRes<Ta extends Comparator<? super Ta>> implements Comparator<shrtPthFrstRes<Ta>> {
 
     /**
      * node handle
@@ -53,13 +53,13 @@ public class shrtPthFrstUpl<Ta extends Comparator<? super Ta>> implements Compar
      * @param nam node
      * @param hp hops
      */
-    public shrtPthFrstUpl(shrtPthFrstNode<Ta> nam, int hp) {
+    public shrtPthFrstRes(shrtPthFrstNode<Ta> nam, int hp) {
         nodeH = nam;
         nodeA = nam.name;
         hops = hp;
     }
 
-    public int compare(shrtPthFrstUpl<Ta> o1, shrtPthFrstUpl<Ta> o2) {
+    public int compare(shrtPthFrstRes<Ta> o1, shrtPthFrstRes<Ta> o2) {
         if (o1.hops < o2.hops) {
             return -1;
         }

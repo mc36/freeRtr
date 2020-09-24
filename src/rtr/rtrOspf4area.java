@@ -22,7 +22,7 @@ import util.debugger;
 import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
-import util.shrtPthFrstUpl;
+import util.shrtPthFrstRes;
 import util.state;
 import util.syncInt;
 import util.typLenVal;
@@ -1024,7 +1024,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                     continue;
                 }
             }
-            List<shrtPthFrstUpl<addrIPv4>> hop = spf.findNextHop(ntry.rtrID);
+            List<shrtPthFrstRes<addrIPv4>> hop = spf.findNextHop(ntry.rtrID);
             if (hop.size() < 1) {
                 continue;
             }

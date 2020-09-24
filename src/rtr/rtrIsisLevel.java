@@ -24,7 +24,7 @@ import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabRouteAttr;
 import tab.tabRtrplcN;
-import util.shrtPthFrstUpl;
+import util.shrtPthFrstRes;
 import util.state;
 import util.syncInt;
 
@@ -717,7 +717,7 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             rtrIsisLevelSpf src = new rtrIsisLevelSpf(lsp.srcID, lsp.nodID);
-            List<shrtPthFrstUpl<rtrIsisLevelSpf>> hop = spf.findNextHop(src);
+            List<shrtPthFrstRes<rtrIsisLevelSpf>> hop = spf.findNextHop(src);
             if (hop.size() < 1) {
                 continue;
             }

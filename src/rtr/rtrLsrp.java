@@ -37,7 +37,7 @@ import util.debugger;
 import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
-import util.shrtPthFrstUpl;
+import util.shrtPthFrstRes;
 import util.state;
 import util.syncInt;
 import util.version;
@@ -660,7 +660,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            List<shrtPthFrstUpl<addrIPv4>> hop = spf.findNextHop(ntry.rtrId);
+            List<shrtPthFrstRes<addrIPv4>> hop = spf.findNextHop(ntry.rtrId);
             if (hop.size() < 1) {
                 continue;
             }

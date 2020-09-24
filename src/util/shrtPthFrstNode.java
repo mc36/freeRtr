@@ -21,11 +21,11 @@ public class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Compa
 
     protected List<shrtPthFrstConn<Ta>> conn = new ArrayList<shrtPthFrstConn<Ta>>();
 
-    protected shrtPthFrstUpl<Ta> uplink;
+    protected shrtPthFrstRes<Ta> uplink;
 
-    protected List<shrtPthFrstUpl<Ta>> uplinks;
+    protected List<shrtPthFrstRes<Ta>> uplinks;
 
-    protected List<shrtPthFrstUpl<Ta>> result;
+    protected List<shrtPthFrstRes<Ta>> result;
 
     protected int metric;
 

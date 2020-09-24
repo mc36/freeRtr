@@ -23,7 +23,7 @@ import util.debugger;
 import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
-import util.shrtPthFrstUpl;
+import util.shrtPthFrstRes;
 import util.state;
 import util.syncInt;
 import util.typLenVal;
@@ -1118,7 +1118,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 }
             }
             rtrOspf6areaSpf src = new rtrOspf6areaSpf(ntry.rtrID, 0);
-            List<shrtPthFrstUpl<rtrOspf6areaSpf>> hop = spf.findNextHop(src);
+            List<shrtPthFrstRes<rtrOspf6areaSpf>> hop = spf.findNextHop(src);
             if (hop.size() < 1) {
                 continue;
             }
