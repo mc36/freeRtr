@@ -280,6 +280,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 }
             }
             lst.del(ntry);
+            ntry.visited = true;
             for (int i = 0; i < ntry.conn.size(); i++) {
                 shrtPthFrstConn<Ta> c = ntry.conn.get(i);
                 if (c == null) {
@@ -294,14 +295,14 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                     }
                 }
                 int o = ntry.metric + c.metric;
+                int p = ntry.hops;
+                if (c.realHop) {
+                    p++;
+                }
                 if (c.target.metric > o) {
                     c.target.uplink = ntry;
                     c.target.metric = o;
-                    c.target.hops = ntry.hops;
-                    c.target.visited = true;
-                    if (c.realHop) {
-                        c.target.hops++;
-                    }
+                    c.target.hops = p;
                     lst.add(c.target);
                 }
             }
