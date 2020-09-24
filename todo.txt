@@ -1,3 +1,5 @@
+show ipvX rousrc, ecmp...
+ecmp test cases
 looking glass rfc8522
 http conditional redirect with route-map, prefix-list or route-policy
 bridge security from dhcp, slaac, whatever server

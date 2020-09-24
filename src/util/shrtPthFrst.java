@@ -138,17 +138,33 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         if (ntry == null) {
             return true;
         }
-        if (ntry.nxtMet < met) {
+        if (ntry.uplinks == null) {
+            return true;
+        }
+        if (met > ntry.nxtMet) {
             return false;
         }
-        if (ntry.hops > 1) {
+        if (met < ntry.nxtMet) {
+            for (int i = 0; i < ntry.uplinks.size(); i++) {
+                shrtPthFrstUpl<Ta> upl = ntry.uplinks.get(i);
+                upl.nxtHop = null;
+                upl.iface = null;
+            }
+            ntry.nxtMet = met;
+        }
+        for (int i = 0; i < ntry.uplinks.size(); i++) {
+            shrtPthFrstUpl<Ta> upl = ntry.uplinks.get(i);
+            if (upl.hops > 1) {
+                continue;
+            }
+            if (upl.iface != null) {
+                continue;
+            }
+            upl.nxtHop = hop;
+            upl.iface = ifc;
             return false;
         }
-        ntry.nxtMet = met;
-        ntry.nxtHop = hop;
-        ntry.iface = ifc;
-        ntry.nxtCon = true;
-        return false;
+        return true;
     }
 
     /**
@@ -170,7 +186,6 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             return;
         }
         ntry.srBeg = beg;
-        ntry.srOrg = beg;
     }
 
     /**
@@ -210,7 +225,6 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             return;
         }
         ntry.brBeg = beg;
-        ntry.brOrg = beg;
     }
 
     /**
@@ -251,10 +265,8 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             }
             ntry.uplink = null;
             ntry.uplinks = null;
-            ntry.nxtHop = null;
+            ntry.result = null;
             ntry.metric = Integer.MAX_VALUE;
-            ntry.iface = null;
-            ntry.hops = Integer.MAX_VALUE;
             ntry.nxtMet = Integer.MAX_VALUE;
             ntry.visited = false;
         }
@@ -264,7 +276,6 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         }
         tabGen<shrtPthFrstNode<Ta>> lst = new tabGen<shrtPthFrstNode<Ta>>();
         ntry.metric = 0;
-        ntry.hops = 0;
         ntry.visited = true;
         lst.add(ntry);
         boolean frst = true;
@@ -307,31 +318,35 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 if (c.target.metric < o) {
                     continue;
                 }
-                int p = ntry.hops;
+                int p;
+                if (frst) {
+                    p = 0;
+                } else {
+                    p = ntry.uplink.hops;
+                }
                 if (c.realHop) {
                     p++;
                 }
+                shrtPthFrstUpl<Ta> upl = new shrtPthFrstUpl<Ta>(ntry, p);
                 if (c.target.metric != o) {
-                    c.target.uplinks = new ArrayList<shrtPthFrstNode<Ta>>();
-                    c.target.uplinks.add(ntry);
-                    c.target.uplink = ntry;
+                    c.target.uplinks = new ArrayList<shrtPthFrstUpl<Ta>>();
+                    c.target.uplinks.add(upl);
+                    c.target.uplink = upl;
                     c.target.metric = o;
-                    c.target.hops = p;
                     lst.add(c.target);
                     continue;
                 }
                 if (ecm) {
-                    c.target.uplinks.add(ntry);
+                    c.target.uplinks.add(upl);
                 }
-                if (c.target.hops <= p) {
+                if (upl.compare(c.target.uplink, upl) < 0) {
                     continue;
                 }
                 if (!ecm) {
                     c.target.uplinks.clear();
-                    c.target.uplinks.add(ntry);
+                    c.target.uplinks.add(upl);
                 }
-                c.target.uplink = ntry;
-                c.target.hops = p;
+                c.target.uplink = upl;
             }
             frst = false;
         }
@@ -351,28 +366,48 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         if (ntry.uplink == null) {
             return null;
         }
-        return ntry.uplink.name;
+        return ntry.uplink.node.name;
     }
 
-    private shrtPthFrstNode<Ta> findNextHop(Ta which) {
-        shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
-        if (ntry == null) {
-            return null;
+    private List<shrtPthFrstUpl<Ta>> findNextHop(Ta which) {
+        List<shrtPthFrstUpl<Ta>> res = new ArrayList<shrtPthFrstUpl<Ta>>();
+        shrtPthFrstNode<Ta> old = nodes.find(new shrtPthFrstNode<Ta>(which));
+        if (old == null) {
+            return res;
         }
-        shrtPthFrstNode<Ta> old = ntry;
+        if (old.result != null) {
+            return old.result;
+        }
+        List<shrtPthFrstUpl<Ta>> ned = new ArrayList<shrtPthFrstUpl<Ta>>();
+        ned.add(new shrtPthFrstUpl<Ta>(old, -1));
         for (;;) {
-            if (ntry.nxtHop != null) {
-                old.nxtHop = ntry.nxtHop;
-                old.iface = ntry.iface;
-                old.srBeg = ntry.srBeg;
-                old.brBeg = ntry.brBeg;
-                return ntry;
+            if (ned.size() < 1) {
+                break;
             }
-            if (ntry.uplink == null) {
-                return null;
+            shrtPthFrstUpl<Ta> cur = ned.remove(0);
+            if (cur.node.uplinks == null) {
+                continue;
             }
-            ntry = ntry.uplink;
+            for (int i = 0; i < cur.node.uplinks.size(); i++) {
+                shrtPthFrstUpl<Ta> upl = cur.node.uplinks.get(i);
+                int hops = cur.hops;
+                if (hops < 0) {
+                    hops = upl.hops;
+                }
+                if (upl.iface == null) {
+                    ned.add(new shrtPthFrstUpl<Ta>(upl.node, hops));
+                    continue;
+                }
+                shrtPthFrstUpl<Ta> out = new shrtPthFrstUpl<Ta>(cur.node, hops);
+                out.iface = upl.iface;
+                out.nxtHop = upl.nxtHop;
+                out.srBeg = cur.node.srBeg;
+                out.brBeg = cur.node.brBeg;
+                res.add(out);
+            }
         }
+        old.result = res;
+        return res;
     }
 
     /**
@@ -382,11 +417,11 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @return next hop, null if not found
      */
     public addrIP getNextHop(Ta which) {
-        shrtPthFrstNode<Ta> ntry = findNextHop(which);
-        if (ntry == null) {
+        List<shrtPthFrstUpl<Ta>> res = findNextHop(which);
+        if (res.size() < 1) {
             return null;
         }
-        return ntry.nxtHop;
+        return res.get(0).nxtHop;
     }
 
     /**
@@ -396,11 +431,11 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @return interface, -1=not found
      */
     public tabRouteIface getNextIfc(Ta which) {
-        shrtPthFrstNode<Ta> ntry = findNextHop(which);
-        if (ntry == null) {
+        List<shrtPthFrstUpl<Ta>> res = findNextHop(which);
+        if (res.size() < 1) {
             return null;
         }
-        return ntry.iface;
+        return res.get(0).iface;
     }
 
     /**
@@ -424,32 +459,11 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @return hops to node, negative on error
      */
     public int getHops(Ta which) {
-        shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
-        if (ntry == null) {
+        List<shrtPthFrstUpl<Ta>> res = findNextHop(which);
+        if (res.size() < 1) {
             return -1;
         }
-        return ntry.hops;
-    }
-
-    /**
-     * get segment routing label
-     *
-     * @param which node to query
-     * @return label, -1=not found
-     */
-    public int getSegRouL(Ta which) {
-        shrtPthFrstNode<Ta> nod = nodes.find(new shrtPthFrstNode<Ta>(which));
-        if (nod == null) {
-            return -1;
-        }
-        shrtPthFrstNode<Ta> hop = findNextHop(which);
-        if (hop == null) {
-            return -1;
-        }
-        if ((hop.srBeg < 1) || (nod.srIdx < 1)) {
-            return -1;
-        }
-        return hop.srBeg + nod.srIdx;
+        return res.get(0).hops;
     }
 
     /**
@@ -460,15 +474,18 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @return label, -1=not found
      */
     public int getSegRouB(Ta which, boolean orig) {
-        shrtPthFrstNode<Ta> hop = findNextHop(which);
-        if (hop == null) {
+        if (orig) {
+            shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
+            if (ntry == null) {
+                return -1;
+            }
+            return ntry.srBeg;
+        }
+        List<shrtPthFrstUpl<Ta>> res = findNextHop(which);
+        if (res.size() < 1) {
             return -1;
         }
-        if (orig) {
-            return hop.srOrg;
-        } else {
-            return hop.srBeg;
-        }
+        return res.get(0).srBeg;
     }
 
     /**
@@ -479,15 +496,18 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @return label, -1=not found
      */
     public int getBierB(Ta which, boolean orig) {
-        shrtPthFrstNode<Ta> hop = findNextHop(which);
-        if (hop == null) {
+        if (orig) {
+            shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
+            if (ntry == null) {
+                return -1;
+            }
+            return ntry.brBeg;
+        }
+        List<shrtPthFrstUpl<Ta>> res = findNextHop(which);
+        if (res.size() < 1) {
             return -1;
         }
-        if (orig) {
-            return hop.brOrg;
-        } else {
-            return hop.brBeg;
-        }
+        return res.get(0).brBeg;
     }
 
     private void doBier(shrtPthFrstNode<Ta> ntry) {
@@ -495,9 +515,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             return;
         }
         for (int o = 0; o < ntry.brLst.size(); o++) {
-            ntry.uplink.brLst.add(ntry.brLst.get(o));
+            ntry.uplink.node.brLst.add(ntry.brLst.get(o));
         }
-        doBier(ntry.uplink);
+        doBier(ntry.uplink.node);
     }
 
     /**
@@ -519,7 +539,10 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.nxtCon) {
+            if (ntry.uplink == null) {
+                continue;
+            }
+            if (ntry.uplink.iface == null) {
                 continue;
             }
             if (ntry.brBeg <= 0) {
@@ -529,7 +552,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             for (int o = 0; o < ntry.brLst.size(); o++) {
                 msk = msk.setBit(ntry.brLst.get(o).get());
             }
-            tabLabelBierN per = new tabLabelBierN(ntry.iface, ntry.nxtHop, ntry.brBeg);
+            tabLabelBierN per = new tabLabelBierN(ntry.uplink.iface, ntry.uplink.nxtHop, ntry.brBeg);
             per.ned = msk.shiftRight(1);
             res.peers.add(per);
         }
@@ -709,16 +732,24 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         res.add("node|" + ntry);
         res.add("reachable|" + ntry.visited);
         res.add("stub|" + (ntry.conn.size() <= 1));
-        res.add("uplink|" + ntry.uplink);
-        if ((ecmp.get() != 0) && (ntry.uplinks != null)) {
+        if (ntry.uplinks != null) {
             res.add("uplinkcnt|" + ntry.uplinks.size());
             for (int i = 0; i < ntry.uplinks.size(); i++) {
-                res.add("uplinknod|" + ntry.uplinks.get(i));
+                shrtPthFrstUpl<Ta> upl = ntry.uplinks.get(i);
+                res.add("uplinknod" + i + "|" + upl.node);
+                res.add("uplinkhop" + i + "|" + upl.hops);
             }
         }
-        res.add("reachvia|" + ntry.nxtHop);
-        res.add("reachifc|" + ntry.iface);
-        res.add("reachhop|" + ntry.hops);
+        if (ntry.result != null) {
+            res.add("reachcnt|" + ntry.result.size());
+            for (int i = 0; i < ntry.result.size(); i++) {
+                shrtPthFrstUpl<Ta> upl = ntry.result.get(i);
+                res.add("reachnod" + i + "|" + upl.node);
+                res.add("reachhop" + i + "|" + upl.hops);
+                res.add("reachvia" + i + "|" + upl.nxtHop);
+                res.add("reachifc" + i + "|" + upl.iface);
+            }
+        }
         res.add("reachmet|" + ntry.metric);
         res.add("connections|" + ntry.conn.size());
         res.add("segrou|" + ntry.srIdx);
@@ -740,33 +771,33 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      */
     public userFormat listTopology() {
         boolean ecm = ecmp.get() != 0;
-        String s = "";
-        if (ecm) {
-            s = "ups|";
-        }
-        userFormat res = new userFormat("|", "node|reach|via|ifc|met|uplink|" + s + "hop|conn|sr|br|neighbors");
+        userFormat res = new userFormat("|", "node|reach|met|uplink|ups|res|conn|sr|br|neighbors");
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
-            s = "";
-            if (ecm) {
-                if (ntry.uplinks == null) {
-                    s = "-1|";
-                } else {
-                    s = ntry.uplinks.size() + "|";
-                }
+            String a = "";
+            if (ntry.uplinks == null) {
+                a = "-1";
+            } else {
+                a = "" + ntry.uplinks.size();
             }
-            s = ntry + "|" + ntry.visited + "|" + ntry.nxtHop + "|" + ntry.iface + "|" + ntry.metric + "|" + ntry.uplink + "|" + s + ntry.hops + "|" + ntry.conn.size() + "|" + ntry.srIdx + "|" + ntry.brIdx + "|";
+            String s = "";
+            if (ntry.result == null) {
+                s = "-1";
+            } else {
+                s = "" + ntry.result.size();
+            }
+            a = ntry + "|" + ntry.visited + "|" + ntry.metric + "|" + ntry.uplink + "|" + a + "|" + s + "|" + ntry.conn.size() + "|" + ntry.srIdx + "|" + ntry.brIdx + "|";
             for (int o = 0; o < ntry.conn.size(); o++) {
                 shrtPthFrstConn<Ta> con = ntry.conn.get(o);
                 if (con == null) {
                     continue;
                 }
-                s += con.target + "=" + con.metric + "=" + con.ident + " ";
+                a += con.target + "=" + con.metric + "=" + con.ident + " ";
             }
-            res.add(s);
+            res.add(a);
         }
         return res;
     }
@@ -818,7 +849,10 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         shrtPthFrstNode<Ta> ntry = null;
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> cur = nodes.get(i);
-            if (cur.hops == 0) {
+            if (cur.uplink == null) {
+                continue;
+            }
+            if (cur.uplink.hops == 0) {
                 ntry = cur;
             }
         }
@@ -836,7 +870,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (cur.target.uplink == null) {
                 continue;
             }
-            if (ntry.compare(ntry, cur.target.uplink) != 0) {
+            if (ntry.compare(ntry, cur.target.uplink.node) != 0) {
                 continue;
             }
             down.add(cur);
@@ -925,39 +959,64 @@ class shrtPthFrstIdx implements Comparator<shrtPthFrstIdx> {
 
 }
 
-class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<shrtPthFrstNode<Ta>> {
+class shrtPthFrstUpl<Ta extends Comparator<? super Ta>> implements Comparator<shrtPthFrstUpl<Ta>> {
 
-    protected Ta name;
-
-    protected addrIP nxtHop;
-
-    protected int nxtMet;
-
-    protected boolean nxtCon;
-
-    protected boolean visited;
-
-    protected List<shrtPthFrstConn<Ta>> conn = new ArrayList<shrtPthFrstConn<Ta>>();
-
-    protected shrtPthFrstNode<Ta> uplink;
-
-    protected List<shrtPthFrstNode<Ta>> uplinks;
-
-    protected int metric;
+    protected shrtPthFrstNode<Ta> node;
 
     protected int hops;
+
+    protected addrIP nxtHop;
 
     protected tabRouteIface iface;
 
     protected int srBeg;
 
-    protected int srOrg;
+    protected int brBeg;
+
+    public shrtPthFrstUpl(shrtPthFrstNode<Ta> nam, int hp) {
+        node = nam;
+        hops = hp;
+    }
+
+    public int compare(shrtPthFrstUpl<Ta> o1, shrtPthFrstUpl<Ta> o2) {
+        if (o1.hops < o2.hops) {
+            return -1;
+        }
+        if (o1.hops > o2.hops) {
+            return +1;
+        }
+        return o1.node.compare(o1.node, o2.node);
+    }
+
+    public String toString() {
+        return "" + node;
+    }
+
+}
+
+class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<shrtPthFrstNode<Ta>> {
+
+    protected Ta name;
+
+    protected boolean visited;
+
+    protected int nxtMet;
+
+    protected List<shrtPthFrstConn<Ta>> conn = new ArrayList<shrtPthFrstConn<Ta>>();
+
+    protected shrtPthFrstUpl<Ta> uplink;
+
+    protected List<shrtPthFrstUpl<Ta>> uplinks;
+
+    protected List<shrtPthFrstUpl<Ta>> result;
+
+    protected int metric;
+
+    protected int srBeg;
 
     protected int srIdx;
 
     protected int brBeg;
-
-    protected int brOrg;
 
     protected int brIdx;
 
