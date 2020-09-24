@@ -180,6 +180,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router lsrp
         "router lsrp[4|6] .*! spf-log 0",
         "router lsrp[4|6] .*! no spf-bidir",
+        "router lsrp[4|6] .*! no spf-ecmp",
         "router lsrp[4|6] .*! distance 70",
         "router lsrp[4|6] .*! no default-originate",
         "router lsrp[4|6] .*! no stub",
@@ -200,6 +201,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router ospf[4|6] .*! no bier",
         "router ospf[4|6] .*! area .* spf-log 0",
         "router ospf[4|6] .*! no area .* spf-bidir",
+        "router ospf[4|6] .*! no area .* spf-ecmp",
         "router ospf[4|6] .*! no area .* stub",
         "router ospf[4|6] .*! no area .* nssa",
         "router ospf[4|6] .*! no area .* traffeng",
@@ -222,6 +224,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router isis[4|6] .*! no bier",
         "router isis[4|6] .*! level[1|2] spf-log 0",
         "router isis[4|6] .*! no level[1|2] spf-bidir",
+        "router isis[4|6] .*! no level[1|2] spf-ecmp",
         "router isis[4|6] .*! level2 clear-attached",
         "router isis[4|6] .*! no level2 allow-attached",
         "router isis[4|6] .*! no level1 clear-attached",

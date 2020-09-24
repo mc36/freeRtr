@@ -53,6 +53,11 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     public final syncInt bidir;
 
     /**
+     * consider ecmp
+     */
+    public final syncInt ecmp;
+
+    /**
      * construct spf
      *
      * @param old old spf
@@ -65,11 +70,13 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             count = 1;
             logSize = new syncInt(0);
             bidir = new syncInt(0);
+            ecmp = new syncInt(0);
             return;
         }
         log = old.log;
         logSize = old.logSize;
         bidir = old.bidir;
+        ecmp = old.ecmp;
         count = old.count + 1;
         shrtPthFrstLog ntry = new shrtPthFrstLog();
         ntry.when = old.tim1;
@@ -243,6 +250,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 continue;
             }
             ntry.uplink = null;
+            ntry.uplinks = null;
             ntry.nxtHop = null;
             ntry.metric = Integer.MAX_VALUE;
             ntry.iface = null;
@@ -261,6 +269,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         lst.add(ntry);
         boolean frst = true;
         boolean bid = bidir.get() != 0;
+        boolean ecm = ecmp.get() != 0;
         for (;;) {
             if (lst.size() < 1) {
                 tim3 = bits.getTime();
@@ -295,11 +304,28 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                     }
                 }
                 int o = ntry.metric + c.metric;
+                if (c.target.metric < o) {
+                    continue;
+                }
                 int p = ntry.hops;
                 if (c.realHop) {
                     p++;
                 }
-                if (c.target.metric > o) {
+                if (c.target.metric == o) {
+                    if (ecm) {
+                        c.target.uplinks.add(ntry);
+                    }
+                    if (c.target.hops > p) {
+                        c.target.uplink = ntry;
+                        c.target.hops = p;
+                        if (!ecm) {
+                            c.target.uplinks.clear();
+                            c.target.uplinks.add(ntry);
+                        }
+                    }
+                } else {
+                    c.target.uplinks = new ArrayList<shrtPthFrstNode<Ta>>();
+                    c.target.uplinks.add(ntry);
                     c.target.uplink = ntry;
                     c.target.metric = o;
                     c.target.hops = p;
@@ -683,6 +709,12 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         res.add("reachable|" + ntry.visited);
         res.add("stub|" + (ntry.conn.size() <= 1));
         res.add("uplink|" + ntry.uplink);
+        if ((ecmp.get() != 0) && (ntry.uplinks != null)) {
+            res.add("uplinkcnt|" + ntry.uplinks.size());
+            for (int i = 0; i < ntry.uplinks.size(); i++) {
+                res.add("uplinknod|" + ntry.uplinks.get(i));
+            }
+        }
         res.add("reachvia|" + ntry.nxtHop);
         res.add("reachifc|" + ntry.iface);
         res.add("reachhop|" + ntry.hops);
@@ -706,13 +738,26 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @return list of topology
      */
     public userFormat listTopology() {
-        userFormat res = new userFormat("|", "node|reach|via|ifc|met|hop|conn|sr|br|neighbors");
+        boolean ecm = ecmp.get() != 0;
+        String s = "";
+        if (ecm) {
+            s = "ups|";
+        }
+        userFormat res = new userFormat("|", "node|reach|via|ifc|met|uplink|" + s + "hop|conn|sr|br|neighbors");
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
-            String s = ntry + "|" + ntry.visited + "|" + ntry.nxtHop + "|" + ntry.iface + "|" + ntry.metric + "|" + ntry.hops + "|" + ntry.conn.size() + "|" + ntry.srIdx + "|" + ntry.brIdx + "|";
+            s = "";
+            if (ecm) {
+                if (ntry.uplinks == null) {
+                    s = "-1|";
+                } else {
+                    s = ntry.uplinks.size() + "|";
+                }
+            }
+            s = ntry + "|" + ntry.visited + "|" + ntry.nxtHop + "|" + ntry.iface + "|" + ntry.metric + "|" + ntry.uplink + "|" + s + ntry.hops + "|" + ntry.conn.size() + "|" + ntry.srIdx + "|" + ntry.brIdx + "|";
             for (int o = 0; o < ntry.conn.size(); o++) {
                 shrtPthFrstConn<Ta> con = ntry.conn.get(o);
                 if (con == null) {
@@ -894,6 +939,8 @@ class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<s
     protected List<shrtPthFrstConn<Ta>> conn = new ArrayList<shrtPthFrstConn<Ta>>();
 
     protected shrtPthFrstNode<Ta> uplink;
+
+    protected List<shrtPthFrstNode<Ta>> uplinks;
 
     protected int metric;
 

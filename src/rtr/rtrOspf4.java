@@ -251,6 +251,7 @@ public class rtrOspf4 extends ipRtr {
         l.add("2 3     <num>                     area number");
         l.add("3 .       enable                  create this area");
         l.add("3 .       spf-bidir               spf bidir check");
+        l.add("3 .       spf-ecmp                spf ecmp allow");
         l.add("3 4       spf-log                 spf log size");
         l.add("4 .         <num>                 number of entries");
         l.add("3 .       stub                    configure as stub");
@@ -300,6 +301,7 @@ public class rtrOspf4 extends ipRtr {
             l.add(beg + s + "enable");
             l.add(beg + s + "spf-log " + ntry.lastSpf.logSize);
             cmds.cfgLine(l, ntry.lastSpf.bidir.get() == 0, beg, s + "spf-bidir", "");
+            cmds.cfgLine(l, ntry.lastSpf.ecmp.get() == 0, beg, s + "spf-ecmp", "");
             cmds.cfgLine(l, !ntry.stub, beg, s + "stub", "");
             cmds.cfgLine(l, !ntry.nssa, beg, s + "nssa", "");
             cmds.cfgLine(l, !ntry.traffEng, beg, s + "traffeng", "");
@@ -391,6 +393,11 @@ public class rtrOspf4 extends ipRtr {
             }
             if (s.equals("spf-bidir")) {
                 dat.lastSpf.bidir.set(1);
+                dat.schedWork(3);
+                return false;
+            }
+            if (s.equals("spf-ecmp")) {
+                dat.lastSpf.ecmp.set(1);
                 dat.schedWork(3);
                 return false;
             }
@@ -533,6 +540,11 @@ public class rtrOspf4 extends ipRtr {
             }
             if (s.equals("spf-bidir")) {
                 dat.lastSpf.bidir.set(0);
+                dat.schedWork(3);
+                return false;
+            }
+            if (s.equals("spf-ecmp")) {
+                dat.lastSpf.ecmp.set(0);
                 dat.schedWork(3);
                 return false;
             }

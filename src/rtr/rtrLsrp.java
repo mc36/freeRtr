@@ -812,6 +812,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add("1 2   lifetime                    data life time");
         l.add("2 .     <num>                     age in ms");
         l.add("1 .   spf-bidir                   spf bidir check");
+        l.add("1 .   spf-ecmp                    spf ecmp allow");
         l.add("1 2   spf-log                     spf log size");
         l.add("2 .     <num>                     number of entries");
         l.add("1 .   stub                        stub router");
@@ -842,6 +843,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(beg + "lifetime " + lifetime);
         l.add(beg + "spf-log " + lastSpf.logSize);
         cmds.cfgLine(l, lastSpf.bidir.get() == 0, beg, "spf-bidir", "");
+        cmds.cfgLine(l, lastSpf.ecmp.get() == 0, beg, "spf-ecmp", "");
         cmds.cfgLine(l, !stub, beg, "stub", "");
         cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
         cmds.cfgLine(l, !defOrigin, beg, "default-originate", "");
@@ -893,6 +895,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 lastSpf.bidir.set(0);
             } else {
                 lastSpf.bidir.set(1);
+            }
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("spf-ecmp")) {
+            if (negated) {
+                lastSpf.ecmp.set(0);
+            } else {
+                lastSpf.ecmp.set(1);
             }
             todo.set(0);
             notif.wakeup();

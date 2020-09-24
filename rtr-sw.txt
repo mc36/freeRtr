@@ -215,9 +215,11 @@ router lsrp4 1
  lifetime 2147483000
  spf-log 500
  spf-bidir
+ spf-ecmp
  segrout 300 299
  bier 256 300 299
  justadvert loopback0
+ ecmp
  exit
 !
 router lsrp6 1
@@ -227,9 +229,11 @@ router lsrp6 1
  lifetime 2147483000
  spf-log 500
  spf-bidir
+ spf-ecmp
  segrout 300 299
  bier 256 300 299
  justadvert loopback0
+ ecmp
  exit
 !
 router logger4 1
