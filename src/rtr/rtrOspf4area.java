@@ -4,12 +4,10 @@ import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrPrefix;
 import ip.ipFwdIface;
-import ip.ipMpls;
 import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
-import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabListing;
 import tab.tabPrfxlstN;
@@ -1132,6 +1130,8 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                         }
                         spf.addSegRouI(ntry.rtrID, pref.best.segrouIdx);
                         spf.addBierI(ntry.rtrID, pref.best.bierIdx, old.best.origin == 109);
+                        pref.best.segrouOld = sro;
+                        pref.best.bierOld = bro;
                         shrtPthFrst.populateSegrout(old, pref.best, hop, (pref.best.rouSrc & 16) != 0);
                         if ((pref.best.segrouIdx >= lower.segrouMax) || (old.best.labelRem == null)) {
                             continue;

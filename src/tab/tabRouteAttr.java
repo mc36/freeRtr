@@ -217,7 +217,12 @@ public class tabRouteAttr<T extends addrType> {
     public int metric;
 
     /**
-     * hops of prefix
+     * identifier of prefix
+     */
+    public int ident;
+
+    /**
+     * hop count of prefix
      */
     public int hops;
 
@@ -585,6 +590,7 @@ public class tabRouteAttr<T extends addrType> {
         atr.rouTab = rouTab;
         atr.distance = distance;
         atr.metric = metric;
+        atr.ident = ident;
         atr.hops = hops;
         atr.tag = tag;
         atr.origin = origin;
@@ -739,6 +745,9 @@ public class tabRouteAttr<T extends addrType> {
             return true;
         }
         if (metric != other.metric) {
+            return true;
+        }
+        if (ident != other.ident) {
             return true;
         }
         if (hops != other.hops) {
@@ -1160,6 +1169,7 @@ public class tabRouteAttr<T extends addrType> {
         l.add("version = " + version);
         l.add("distance = " + distance);
         l.add("metric = " + metric);
+        l.add("ident = " + ident);
         l.add("hops = " + hops);
         l.add("interface = " + iface);
         l.add("table = " + rouTab);

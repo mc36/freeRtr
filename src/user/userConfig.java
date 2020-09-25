@@ -2369,7 +2369,6 @@ public class userConfig {
             fwd = vrf.fwd6;
         }
         String s = cmd.getRemaining();
-        String a = cmd.word();
         ntry.sequence = fwd.natCfg.nextseq();
         int ot = ntry.timeout;
         if (ntry.fromString(s)) {

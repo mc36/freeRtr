@@ -603,7 +603,7 @@ public class ipFwdTab {
             }
             for (int o = 0; o < pfl.size(); o++) {
                 prf = new tabRouteEntry<addrIP>();
-                tabU.updateBase(prf);
+                prf.best.distance = 0;
                 prf.best.metric = 2;
                 prf.prefix = pfl.get(o).getPrefix();
                 prf.best.nextHop = gtw.copyBytes();

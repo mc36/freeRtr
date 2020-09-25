@@ -169,7 +169,10 @@ public class tabRoute<T extends addrType> {
             prefix = prefix.copyBytes(mod);
         }
         if (newTime) {
-            prefix.best.time = bits.getTime();
+            long tim = bits.getTime();
+            for (int i = 0; i < prefix.alts.size(); i++) {
+                prefix.alts.get(i).time = tim;
+            }
         }
         switch (mod) {
             case better:
@@ -250,21 +253,12 @@ public class tabRoute<T extends addrType> {
         if (nextHop != null) {
             prf.best.nextHop = (T) nextHop.copyBytes();
         }
-        updateBase(prf);
-        add(mod, prf, false, true);
-        return prf;
-    }
-
-    /**
-     * update basic info from this table
-     *
-     * @param prf table entry to update
-     */
-    public void updateBase(tabRouteEntry<T> prf) {
         prf.best.distance = defDist;
         prf.best.metric = defMetr;
         prf.best.protoNum = defProto;
         prf.best.rouTyp = defRouTyp;
+        add(mod, prf, false, true);
+        return prf;
     }
 
     /**

@@ -12,7 +12,6 @@ import ip.ipCor4;
 import ip.ipCor6;
 import ip.ipFwd;
 import ip.ipFwdIface;
-import ip.ipMpls;
 import ip.ipRtr;
 import java.util.List;
 import prt.prtTcp;

@@ -93,8 +93,8 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     /**
      * find same forwarder
      *
-     * @param other
-     * @return
+     * @param other attribute to find
+     * @return instance, null if not found
      */
     public tabRouteAttr<T> sameFwder(tabRouteAttr<T> other) {
         if (other.nextHop == null) {
@@ -102,6 +102,9 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         }
         for (int i = 0; i < alts.size(); i++) {
             tabRouteAttr<T> ntry = alts.get(i);
+            if (ntry.iface != other.iface) {
+                continue;
+            }
             if (ntry.nextHop == null) {
                 continue;
             }

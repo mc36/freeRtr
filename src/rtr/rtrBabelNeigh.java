@@ -9,7 +9,6 @@ import java.util.Comparator;
 import pack.packHolder;
 import prt.prtGenConn;
 import tab.tabRoute;
-import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.debugger;

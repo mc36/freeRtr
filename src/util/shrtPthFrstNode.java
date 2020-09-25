@@ -13,32 +13,76 @@ import tab.tabGen;
  */
 public class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<shrtPthFrstNode<Ta>> {
 
+    /**
+     * node id
+     */
     protected Ta name;
 
+    /**
+     * reachable
+     */
     protected boolean visited;
 
+    /**
+     * next hop metric
+     */
     protected int nxtMet;
 
+    /**
+     * connections
+     */
     protected List<shrtPthFrstConn<Ta>> conn = new ArrayList<shrtPthFrstConn<Ta>>();
 
+    /**
+     * best uplink
+     */
     protected shrtPthFrstRes<Ta> uplink;
 
+    /**
+     * uplinks
+     */
     protected List<shrtPthFrstRes<Ta>> uplinks;
 
+    /**
+     * result
+     */
     protected List<shrtPthFrstRes<Ta>> result;
 
+    /**
+     * metric
+     */
     protected int metric;
 
+    /**
+     * segrou base
+     */
     protected int srBeg;
 
+    /**
+     * segrou index
+     */
     protected int srIdx;
 
+    /**
+     * bier base
+     */
     protected int brBeg;
 
+    /**
+     * bier index
+     */
     protected int brIdx;
 
+    /**
+     * bier nodes behind
+     */
     protected tabGen<shrtPthFrstIdx> brLst = new tabGen<shrtPthFrstIdx>();
 
+    /**
+     * create new instance
+     *
+     * @param nam node id
+     */
     public shrtPthFrstNode(Ta nam) {
         name = nam;
     }
@@ -47,7 +91,13 @@ public class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Compa
         return o1.name.compare(o1.name, o2.name);
     }
 
-    public shrtPthFrstConn<Ta> findConn(shrtPthFrstNode<Ta> peer) {
+    /**
+     * find connection
+     *
+     * @param peer node id
+     * @return connection, null if not found
+     */
+    protected shrtPthFrstConn<Ta> findConn(shrtPthFrstNode<Ta> peer) {
         for (int i = 0; i < conn.size(); i++) {
             shrtPthFrstConn<Ta> ntry = conn.get(i);
             if (peer.compare(peer, ntry.target) == 0) {

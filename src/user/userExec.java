@@ -65,7 +65,6 @@ import util.cmds;
 import util.debugger;
 import util.differ;
 import util.logger;
-import util.notifier;
 import util.uniResLoc;
 import util.version;
 
@@ -2611,7 +2610,7 @@ public class userExec {
                     pipe.strPut(ping.err + "@" + ping.rtr + " ");
                     continue;
                 }
-                String a = "?";
+                String a;
                 switch (ping.err) {
                     case noRoute:
                         a = "R";
@@ -2633,6 +2632,9 @@ public class userExec {
                         break;
                     case badPort:
                         a = "p";
+                        break;
+                    default:
+                        a = "?";
                         break;
                 }
                 pipe.strPut(a);

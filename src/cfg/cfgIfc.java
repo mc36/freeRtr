@@ -135,7 +135,6 @@ import sec.secIsakmp;
 import tab.tabGen;
 import tab.tabQos;
 import tab.tabRouteAttr;
-import tab.tabRouteEntry;
 import tab.tabSession;
 import user.userFilter;
 import user.userFormat;

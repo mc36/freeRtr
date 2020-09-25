@@ -19,7 +19,6 @@ import rtr.rtrBgpSpeak;
 import rtr.rtrBgpUtil;
 import tab.tabGen;
 import tab.tabRouteAttr;
-import tab.tabRouteEntry;
 import user.userFilter;
 import user.userFlash;
 import user.userFormat;

@@ -9,12 +9,25 @@ import java.util.Comparator;
  */
 public class shrtPthFrstIdx implements Comparator<shrtPthFrstIdx> {
 
+    /**
+     * value
+     */
     protected final int val;
 
+    /**
+     * create instance
+     *
+     * @param i index
+     */
     public shrtPthFrstIdx(int i) {
         val = i;
     }
 
+    /**
+     * get value
+     *
+     * @return value
+     */
     public int get() {
         return val;
     }

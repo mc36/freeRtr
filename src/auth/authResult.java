@@ -3,7 +3,6 @@ package auth;
 import addr.addrEui;
 import addr.addrIPv4;
 import addr.addrIPv6;
-import java.util.List;
 import util.logger;
 
 /**

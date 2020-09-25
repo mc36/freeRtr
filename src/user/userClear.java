@@ -46,7 +46,6 @@ import rtr.rtrOspf6neigh;
 import rtr.rtrPvrpNeigh;
 import rtr.rtrRip4neigh;
 import rtr.rtrRip6neigh;
-import tab.tabRouteEntry;
 import serv.servBmp2mrt;
 import tab.tabRouteAttr;
 import util.bits;

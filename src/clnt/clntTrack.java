@@ -29,7 +29,6 @@ import user.userScript;
 import user.userTerminal;
 import util.bits;
 import util.logger;
-import util.notifier;
 import util.state;
 
 /**

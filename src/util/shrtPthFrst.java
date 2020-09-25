@@ -667,6 +667,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         res.add("node|" + ntry);
         res.add("reachable|" + ntry.visited);
         res.add("stub|" + (ntry.conn.size() <= 1));
+        res.add("uplink|" + ntry.uplink);
         if (ntry.uplinks != null) {
             res.add("uplinks|" + ntry.uplinks.size());
             for (int i = 0; i < ntry.uplinks.size(); i++) {
@@ -705,7 +706,6 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @return list of topology
      */
     public userFormat listTopology() {
-        boolean ecm = ecmp.get() != 0;
         userFormat res = new userFormat("|", "node|reach|met|uplink|ups|res|conn|sr|br|neighbors");
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
@@ -879,6 +879,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             res.bierIdx = src.bierIdx;
             res.bierHdr = src.bierHdr;
             res.bierOld = src.bierOld;
+            if ((res.segrouIdx < 1) || (res.segrouBeg < 1)) {
+                continue;
+            }
             if (i >= hop.size()) {
                 continue;
             }
@@ -887,9 +890,6 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 continue;
             }
             if (upl.nxtHop.compare(upl.nxtHop, res.nextHop) != 0) {
-                continue;
-            }
-            if ((res.segrouIdx < 1) || (res.segrouBeg < 1)) {
                 continue;
             }
             res.labelRem = tabLabel.int2labels(res.segrouBeg + res.segrouIdx);

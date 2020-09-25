@@ -9,12 +9,24 @@ import cfg.cfgAll;
  */
 public class shrtPthFrstLog {
 
+    /**
+     * timestamp
+     */
     protected long when;
 
+    /**
+     * elapsed time
+     */
     protected int tim;
 
+    /**
+     * topology summary
+     */
     protected int topo;
 
+    /**
+     * unreachables
+     */
     protected String unreach;
 
     public String toString() {

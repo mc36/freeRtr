@@ -294,6 +294,7 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
         prf.best.nextHop = hop.copyBytes();
         prf.best.distance = dist;
         prf.best.tag = tag;
+        prf.best.ident = id;
         switch (mpls) {
             case 1:
                 List<Integer> lab = new ArrayList<Integer>();
