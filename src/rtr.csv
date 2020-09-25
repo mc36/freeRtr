@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v20.9.25-rel, done by cs@nop.
--;-;-;2020-09-25 14:40:47, took 00:04:45, with 100 workers, on 2098 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2020-09-25 16:45:39, took 00:05:06, with 100 workers, on 2108 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -1354,6 +1354,7 @@ http://sources.nop.hu/cfg/rout-babel22.tst;rout-babel22.tst;success;babel auto m
 http://sources.nop.hu/cfg/rout-babel23.tst;rout-babel23.tst;success;babel triangle connection
 http://sources.nop.hu/cfg/rout-babel24.tst;rout-babel24.tst;success;babel autoroute
 http://sources.nop.hu/cfg/rout-babel25.tst;rout-babel25.tst;success;babel over point2point ethernet
+http://sources.nop.hu/cfg/rout-babel26.tst;rout-babel26.tst;success;babel ecmp connection
 http://sources.nop.hu/cfg/rout-bgp001.tst;rout-bgp001.tst;success;ebgp in chain
 http://sources.nop.hu/cfg/rout-bgp002.tst;rout-bgp002.tst;success;confed bgp in chain
 http://sources.nop.hu/cfg/rout-bgp003.tst;rout-bgp003.tst;success;ibgp in chain
@@ -1766,6 +1767,7 @@ http://sources.nop.hu/cfg/rout-bgp409.tst;rout-bgp409.tst;success;bgp remove pri
 http://sources.nop.hu/cfg/rout-bgp410.tst;rout-bgp410.tst;success;bgp remove private as out with routepolicy
 http://sources.nop.hu/cfg/rout-bgp411.tst;rout-bgp411.tst;success;bgp with srgb sr
 http://sources.nop.hu/cfg/rout-bgp412.tst;rout-bgp412.tst;success;bgp over point2point ethernet
+http://sources.nop.hu/cfg/rout-bgp413.tst;rout-bgp413.tst;success;bgp ecmp connection
 http://sources.nop.hu/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.nop.hu/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.nop.hu/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain
@@ -1788,6 +1790,7 @@ http://sources.nop.hu/cfg/rout-eigrp19.tst;rout-eigrp19.tst;success;eigrp stub
 http://sources.nop.hu/cfg/rout-eigrp20.tst;rout-eigrp20.tst;success;eigrp triangle connection
 http://sources.nop.hu/cfg/rout-eigrp21.tst;rout-eigrp21.tst;success;eigrp autoroute
 http://sources.nop.hu/cfg/rout-eigrp22.tst;rout-eigrp22.tst;success;eigrp over point2point ethernet
+http://sources.nop.hu/cfg/rout-eigrp23.tst;rout-eigrp23.tst;success;eigrp ecmp connection
 http://sources.nop.hu/cfg/rout-isis01.tst;rout-isis01.tst;success;isis over ethernet
 http://sources.nop.hu/cfg/rout-isis02.tst;rout-isis02.tst;success;isis over ethernet vlan
 http://sources.nop.hu/cfg/rout-isis03.tst;rout-isis03.tst;success;isis over ethernet bridge
@@ -1851,6 +1854,7 @@ http://sources.nop.hu/cfg/rout-isis60.tst;rout-isis60.tst;success;isis with bidi
 http://sources.nop.hu/cfg/rout-isis61.tst;rout-isis61.tst;success;isis narrow metric with bidir check
 http://sources.nop.hu/cfg/rout-isis62.tst;rout-isis62.tst;success;isis chain of broadcast nets with bidir check
 http://sources.nop.hu/cfg/rout-isis63.tst;rout-isis63.tst;success;isis multi-topology with bidir check
+http://sources.nop.hu/cfg/rout-isis64.tst;rout-isis64.tst;success;isis ecmp connection
 http://sources.nop.hu/cfg/rout-lsrp01.tst;rout-lsrp01.tst;success;lsrp point2point connection
 http://sources.nop.hu/cfg/rout-lsrp02.tst;rout-lsrp02.tst;success;lsrp point2multipoint connection
 http://sources.nop.hu/cfg/rout-lsrp03.tst;rout-lsrp03.tst;success;lsrp point2point chain
@@ -1888,6 +1892,7 @@ http://sources.nop.hu/cfg/rout-lsrp34.tst;rout-lsrp34.tst;success;lsrp with sele
 http://sources.nop.hu/cfg/rout-lsrp35.tst;rout-lsrp35.tst;success;lsrp peer metric
 http://sources.nop.hu/cfg/rout-lsrp36.tst;rout-lsrp36.tst;success;lsrp point2point connection with bidir check
 http://sources.nop.hu/cfg/rout-lsrp37.tst;rout-lsrp37.tst;success;lsrp point2multipoint connection with bidir check
+http://sources.nop.hu/cfg/rout-lsrp38.tst;rout-lsrp38.tst;success;lsrp ecmp connection
 http://sources.nop.hu/cfg/rout-mcast01.tst;rout-mcast01.tst;success;multicast routing with static flooding
 http://sources.nop.hu/cfg/rout-mcast02.tst;rout-mcast02.tst;success;multicast routing with pim ssm
 http://sources.nop.hu/cfg/rout-mcast03.tst;rout-mcast03.tst;success;multicast routing with igmp/mld
@@ -1927,6 +1932,7 @@ http://sources.nop.hu/cfg/rout-olsr22.tst;rout-olsr22.tst;success;olsr auto mesh
 http://sources.nop.hu/cfg/rout-olsr23.tst;rout-olsr23.tst;success;olsr triangle connection
 http://sources.nop.hu/cfg/rout-olsr24.tst;rout-olsr24.tst;success;olsr autoroute
 http://sources.nop.hu/cfg/rout-olsr25.tst;rout-olsr25.tst;success;olsr over point2point ethernet
+http://sources.nop.hu/cfg/rout-olsr26.tst;rout-olsr26.tst;success;olsr ecmp connection
 http://sources.nop.hu/cfg/rout-ospf01.tst;rout-ospf01.tst;success;ospf point2point connection
 http://sources.nop.hu/cfg/rout-ospf02.tst;rout-ospf02.tst;success;ospf point2multipoint connection
 http://sources.nop.hu/cfg/rout-ospf03.tst;rout-ospf03.tst;success;ospf point2multipoint nonbroadcast connection
@@ -1974,6 +1980,7 @@ http://sources.nop.hu/cfg/rout-ospf44.tst;rout-ospf44.tst;success;ospf multi are
 http://sources.nop.hu/cfg/rout-ospf45.tst;rout-ospf45.tst;success;ospf asymmetric multi area
 http://sources.nop.hu/cfg/rout-ospf46.tst;rout-ospf46.tst;success;ospf point2point chain with bidir check
 http://sources.nop.hu/cfg/rout-ospf47.tst;rout-ospf47.tst;success;ospf broadcast chain with bidir check
+http://sources.nop.hu/cfg/rout-ospf48.tst;rout-ospf48.tst;success;ospf ecmp connection
 http://sources.nop.hu/cfg/rout-pbr01.tst;rout-pbr01.tst;success;policy routing with nexthop
 http://sources.nop.hu/cfg/rout-pbr02.tst;rout-pbr02.tst;success;policy routing with interface and nexthop between vrfs
 http://sources.nop.hu/cfg/rout-pbr03.tst;rout-pbr03.tst;success;policy routing with interface and nexthop
@@ -2020,6 +2027,7 @@ http://sources.nop.hu/cfg/rout-pvrp37.tst;rout-pvrp37.tst;success;pvrp stub inte
 http://sources.nop.hu/cfg/rout-pvrp38.tst;rout-pvrp38.tst;success;pvrp unstub interface
 http://sources.nop.hu/cfg/rout-pvrp39.tst;rout-pvrp39.tst;success;pvrp over point2point ethernet
 http://sources.nop.hu/cfg/rout-pvrp40.tst;rout-pvrp40.tst;success;pvrp peer metric
+http://sources.nop.hu/cfg/rout-pvrp41.tst;rout-pvrp41.tst;success;pvrp ecmp connection
 http://sources.nop.hu/cfg/rout-redist01.tst;rout-redist01.tst;success;redistribution with isis
 http://sources.nop.hu/cfg/rout-redist02.tst;rout-redist02.tst;success;redistribution with ospf
 http://sources.nop.hu/cfg/rout-redist03.tst;rout-redist03.tst;success;redistribution with rip
@@ -2075,6 +2083,7 @@ http://sources.nop.hu/cfg/rout-rip24.tst;rout-rip24.tst;success;rip auto mesh tu
 http://sources.nop.hu/cfg/rout-rip25.tst;rout-rip25.tst;success;rip triangle connection
 http://sources.nop.hu/cfg/rout-rip26.tst;rout-rip26.tst;success;rip autoroute
 http://sources.nop.hu/cfg/rout-rip27.tst;rout-rip27.tst;success;rip over point2point ethernet
+http://sources.nop.hu/cfg/rout-rip28.tst;rout-rip28.tst;success;rip ecmp connection
 http://sources.nop.hu/cfg/rout-static01.tst;rout-static01.tst;success;static routing
 http://sources.nop.hu/cfg/rout-static02.tst;rout-static02.tst;success;static routing with distance
 http://sources.nop.hu/cfg/rout-static03.tst;rout-static03.tst;success;static routing with icmp tracker
@@ -2085,6 +2094,7 @@ http://sources.nop.hu/cfg/rout-static07.tst;rout-static07.tst;success;static rou
 http://sources.nop.hu/cfg/rout-static08.tst;rout-static08.tst;success;static routing over point2point ethernet
 http://sources.nop.hu/cfg/rout-static09.tst;rout-static09.tst;success;recursive static routing
 http://sources.nop.hu/cfg/rout-static10.tst;rout-static10.tst;success;recursive static routing with labels
+http://sources.nop.hu/cfg/rout-static11.tst;rout-static11.tst;success;static routing with ecmp
 http://sources.nop.hu/cfg/serv-dns01.tst;serv-dns01.tst;success;authoritative dns server
 http://sources.nop.hu/cfg/serv-dns02.tst;serv-dns02.tst;success;recursive dns server
 http://sources.nop.hu/cfg/serv-dns03.tst;serv-dns03.tst;success;relaying dns server

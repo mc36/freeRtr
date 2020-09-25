@@ -9343,3 +9343,15 @@ todo: show ipvX rousrc, ecmp...
 todo: ecmp test cases
 ---------------------------------- 2020-09-25 03:42:53
 no todo: show ipvX rousrc, ecmp...
+---------------------------------- 2020-09-25 16:40:33
+no todo: ecmp test cases
+qc pass: babel ecmp connection
+qc pass: bgp ecmp connection
+qc pass: eigrp ecmp connection
+qc pass: isis ecmp connection
+qc pass: lsrp ecmp connection
+qc pass: olsr ecmp connection
+qc pass: ospf ecmp connection
+qc pass: pvrp ecmp connection
+qc pass: rip ecmp connection
+qc pass: static routing with ecmp
