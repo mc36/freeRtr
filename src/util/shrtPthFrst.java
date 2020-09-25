@@ -62,6 +62,11 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     public final syncInt ecmp;
 
     /**
+     * consider hops in ecmp
+     */
+    public final syncInt hops;
+
+    /**
      * construct spf
      *
      * @param old old spf
@@ -74,12 +79,14 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             count = 1;
             logSize = new syncInt(0);
             bidir = new syncInt(0);
+            hops = new syncInt(0);
             ecmp = new syncInt(0);
             return;
         }
         log = old.log;
         logSize = old.logSize;
         bidir = old.bidir;
+        hops = old.hops;
         ecmp = old.ecmp;
         count = old.count + 1;
         shrtPthFrstLog ntry = new shrtPthFrstLog();
@@ -285,6 +292,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         boolean frst = true;
         boolean bid = bidir.get() != 0;
         boolean ecm = ecmp.get() != 0;
+        boolean hps = hops.get() != 0;
         for (;;) {
             if (lst.size() < 1) {
                 tim3 = bits.getTime();
@@ -340,6 +348,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                     lst.add(c.target);
                     continue;
                 }
+                if (hps && (upl.hops > c.target.uplink.hops)) {
+                    continue;
+                }
                 if (ecm) {
                     c.target.uplinks.add(upl);
                 }
@@ -347,6 +358,10 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                     continue;
                 }
                 if (!ecm) {
+                    c.target.uplinks.clear();
+                    c.target.uplinks.add(upl);
+                }
+                if (hps && (upl.hops < c.target.uplink.hops)) {
                     c.target.uplinks.clear();
                     c.target.uplinks.add(upl);
                 }
