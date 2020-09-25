@@ -1202,6 +1202,10 @@ public class userShow {
                 doShowRouteU(4);
                 return null;
             }
+            if (a.equals("ecmp")) {
+                doShowRouteE(4);
+                return null;
+            }
             if (a.equals("segrout")) {
                 doShowRouteSR(4);
                 return null;
@@ -1438,6 +1442,10 @@ public class userShow {
             }
             if (a.equals("route")) {
                 doShowRouteU(6);
+                return null;
+            }
+            if (a.equals("ecmp")) {
+                doShowRouteE(6);
                 return null;
             }
             if (a.equals("segrout")) {
@@ -3096,6 +3104,14 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualU, 1);
     }
 
+    private void doShowRouteE(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        doShowRoutes(fwd, fwd.actualU, 9);
+    }
+
     private void doShowRouteSR(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -3179,6 +3195,9 @@ public class userShow {
             case 8:
                 l = new userFormat("|", "prefix|index|base|oldbase|size");
                 break;
+            case 9:
+                l = new userFormat("|", "prefix|alts|ecmp|best|proto|source");
+                break;
             default:
                 return;
         }
@@ -3215,6 +3234,9 @@ public class userShow {
                     break;
                 case 8:
                     tabRouteEntry.toShBrRoute(l, prf);
+                    break;
+                case 9:
+                    tabRouteEntry.toShEcmp(l, prf);
                     break;
             }
         }

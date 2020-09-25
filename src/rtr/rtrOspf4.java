@@ -162,7 +162,7 @@ public class rtrOspf4 extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            tab.mergeFrom(tabRoute.addType.better, ntry.routes, null, true, tabRouteAttr.distanLim);
+            tab.mergeFrom(tabRoute.addType.ecmp, ntry.routes, null, true, tabRouteAttr.distanLim);
         }
         if (segrouLab != null) {
             for (int o = 0; o < segrouLab.length; o++) {

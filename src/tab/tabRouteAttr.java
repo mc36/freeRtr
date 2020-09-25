@@ -1259,4 +1259,13 @@ public class tabRouteAttr<T extends addrType> {
         return metric + "|" + rouSrc;
     }
 
+    /**
+     * convert to ecmp format
+     *
+     * @return converted
+     */
+    public String toShEcmp() {
+        return rouTyp + " " + protoNum + "|" + srcRtr;
+    }
+
 }

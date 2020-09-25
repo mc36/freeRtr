@@ -668,7 +668,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         res.add("reachable|" + ntry.visited);
         res.add("stub|" + (ntry.conn.size() <= 1));
         if (ntry.uplinks != null) {
-            res.add("uplinkcnt|" + ntry.uplinks.size());
+            res.add("uplinks|" + ntry.uplinks.size());
             for (int i = 0; i < ntry.uplinks.size(); i++) {
                 shrtPthFrstRes<Ta> upl = ntry.uplinks.get(i);
                 res.add("uplinknod|" + upl.nodeH);
@@ -676,7 +676,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             }
         }
         if (ntry.result != null) {
-            res.add("reachcnt|" + ntry.result.size());
+            res.add("reaches|" + ntry.result.size());
             for (int i = 0; i < ntry.result.size(); i++) {
                 shrtPthFrstRes<Ta> upl = ntry.result.get(i);
                 res.add("reachnod|" + upl.nodeH);

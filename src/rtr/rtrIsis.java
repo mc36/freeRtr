@@ -922,8 +922,8 @@ public class rtrIsis extends ipRtr {
             logger.debug("create table");
         }
         tabRoute<addrIP> tab = new tabRoute<addrIP>("isis");
-        tab.mergeFrom(tabRoute.addType.better, level1.routes, null, true, tabRouteAttr.distanLim);
-        tab.mergeFrom(tabRoute.addType.better, level2.routes, null, true, tabRouteAttr.distanLim);
+        tab.mergeFrom(tabRoute.addType.ecmp, level1.routes, null, true, tabRouteAttr.distanLim);
+        tab.mergeFrom(tabRoute.addType.ecmp, level2.routes, null, true, tabRouteAttr.distanLim);
         if (segrouLab != null) {
             for (int i = 0; i < segrouLab.length; i++) {
                 boolean b = false;

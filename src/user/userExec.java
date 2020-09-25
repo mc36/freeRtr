@@ -239,8 +239,9 @@ public class userExec {
         hl.add("5 .            numhist           numeric historic byte counters");
         hl.add("5 .            numphist          numeric historic packet counters");
         hl.add("3 4        counter               unicast routing table traffic");
-        hl.add("4 5,.        <vrf>               name of routing table");
-        hl.add("5 .            [addr]            prefix to view");
+        hl.add("4 .          <vrf>               name of routing table");
+        hl.add("3 4        ecmp                  unicast routing table ecmp");
+        hl.add("4 .          <vrf>               name of routing table");
         hl.add("3 4        route                 unicast routing table entries");
         hl.add("4 5,.        <vrf>               name of routing table");
         hl.add("5 .            [addr]            prefix to view");

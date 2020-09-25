@@ -142,7 +142,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                     ntry.copyBytes(attr, true);
                     prf.alts.add(attr);
                 }
-                prf.selectBest();
+                prf.hashBest();
                 return prf;
             case alters:
                 prf.alts.clear();
@@ -357,6 +357,20 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     }
 
     /**
+     * convert to ecmp format
+     *
+     * @param l list to append
+     * @param prf entry to dump
+     */
+    public static void toShEcmp(userFormat l, tabRouteEntry<addrIP> prf) {
+        String a = addrPrefix.ip2str(prf.prefix);
+        for (int i = 0; i < prf.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = prf.alts.get(i);
+            l.add(a + "|" + prf.alts.size() + "|" + (!attr.isOtherBetter(prf.best, false)) + "|" + (attr == prf.best) + "|" + attr.toShEcmp());
+        }
+    }
+
+    /**
      * full dump of this prefix
      *
      * @param fwd forwarding core to use
@@ -376,8 +390,9 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         l.add("prefix netmask = " + prefix.mask);
         l.add("alternates = " + alts.size());
         for (int i = 0; i < alts.size(); i++) {
-            l.add("alternate #" + i + " attributes:");
-            alts.get(i).fullDump(l);
+            tabRouteAttr<T> ntry = alts.get(i);
+            l.add("alternate #" + i + " attributes: ecmp=" + (!ntry.isOtherBetter(best, false)) + " best=" + (ntry == best));
+            ntry.fullDump(l);
         }
         l.add("counter = " + counter.getShStat(cntr));
         l.add("hardware counter = " + counter.getShStat(hwCntr));
