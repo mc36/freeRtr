@@ -1206,6 +1206,10 @@ public class userShow {
                 doShowRouteE(4);
                 return null;
             }
+            if (a.equals("labels")) {
+                doShowRouteL(4);
+                return null;
+            }
             if (a.equals("segrout")) {
                 doShowRouteSR(4);
                 return null;
@@ -1446,6 +1450,10 @@ public class userShow {
             }
             if (a.equals("ecmp")) {
                 doShowRouteE(6);
+                return null;
+            }
+            if (a.equals("labels")) {
+                doShowRouteL(6);
                 return null;
             }
             if (a.equals("segrout")) {
@@ -3104,6 +3112,14 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualU, 1);
     }
 
+    private void doShowRouteL(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        doShowRoutes(fwd, fwd.actualU, 3);
+    }
+
     private void doShowRouteE(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -3156,10 +3172,9 @@ public class userShow {
                     return;
                 }
                 ntry = tab.route(adr);
-            } else {
-                ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
-                ntry = tab.find(ntry);
             }
+            ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
+            ntry = tab.find(ntry);
             if (ntry == null) {
                 cmd.error("no such prefix");
                 return;

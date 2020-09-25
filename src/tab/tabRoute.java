@@ -176,6 +176,9 @@ public class tabRoute<T extends addrType> {
         }
         switch (mod) {
             case better:
+                if (prefix.alts.size() > 1) {
+                    prefix = prefix.copyBytes(mod);
+                }
                 tabRouteEntry<T> own = prefixes.add(prefix);
                 if (own == null) {
                     version++;
@@ -212,10 +215,16 @@ public class tabRoute<T extends addrType> {
                 version++;
                 return;
             case always:
+                if (prefix.alts.size() > 1) {
+                    prefix = prefix.copyBytes(mod);
+                }
                 prefixes.put(prefix);
                 version++;
                 return;
             case notyet:
+                if (prefix.alts.size() > 1) {
+                    prefix = prefix.copyBytes(mod);
+                }
                 if (prefixes.add(prefix) != null) {
                     return;
                 }

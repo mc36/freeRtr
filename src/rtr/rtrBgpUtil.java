@@ -1890,8 +1890,10 @@ public class rtrBgpUtil {
         for (int i = 0; i < len; i++) {
             pck.getSkip(pck.getByte(0) + 1);
         }
+        boolean addpath = lower.addPthRx(safi);
         for (; pck.dataSize() > 0;) {
-            if (lower.addPthRx(safi)) {
+            if (addpath) {
+                ntry.best.ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
             tabRouteEntry<addrIP> res = readPrefix(safi, false, pck);
@@ -1902,7 +1904,7 @@ public class rtrBgpUtil {
             ntry.prefix = res.prefix;
             ntry.best.labelRem = res.best.labelRem;
             ntry.best.evpnLab = res.best.evpnLab;
-            lower.prefixReach(safi, ntry);
+            lower.prefixReach(safi, addpath, ntry);
         }
     }
 
@@ -1917,8 +1919,10 @@ public class rtrBgpUtil {
         pck.merge2beg();
         int safi = triplet2safi(pck.msbGetD(0));
         pck.getSkip(3);
+        boolean addpath = lower.addPthRx(safi);
         for (; pck.dataSize() > 0;) {
-            if (lower.addPthRx(safi)) {
+            if (addpath) {
+                ntry.best.ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
             tabRouteEntry<addrIP> res = readPrefix(safi, true, pck);
@@ -1929,7 +1933,7 @@ public class rtrBgpUtil {
             ntry.prefix = res.prefix;
             ntry.best.labelRem = res.best.labelRem;
             ntry.best.evpnLab = res.best.evpnLab;
-            lower.prefixWithdraw(safi, ntry);
+            lower.prefixWithdraw(safi, addpath, ntry);
         }
     }
 

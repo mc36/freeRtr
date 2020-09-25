@@ -83,6 +83,21 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     }
 
     /**
+     * find alternate by id
+     *
+     * @param id id to find
+     * @return entry number, -1 if not found
+     */
+    public int findId(int id) {
+        for (int i = 0; i < alts.size(); i++) {
+            if (alts.get(i).ident == id) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * reduce to best route
      */
     public void reduce2best() {

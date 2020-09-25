@@ -241,6 +241,8 @@ public class userExec {
         hl.add("4 .          <vrf>               name of routing table");
         hl.add("3 4        ecmp                  unicast routing table ecmp");
         hl.add("4 .          <vrf>               name of routing table");
+        hl.add("3 4        labels                unicast routing table labels");
+        hl.add("4 .          <vrf>               name of routing table");
         hl.add("3 4        route                 unicast routing table entries");
         hl.add("4 5,.        <vrf>               name of routing table");
         hl.add("5 .            [addr]            prefix to view");

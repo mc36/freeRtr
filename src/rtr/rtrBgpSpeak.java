@@ -13,6 +13,7 @@ import tab.tabLabel;
 import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabRtrplcN;
@@ -1518,17 +1519,19 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         ntry.best.srcRtr = neigh.peerAddr.copyBytes();
         ntry.best.locPref = 100;
         ntry.best.nextHop = neigh.peerAddr.copyBytes();
+        boolean addpath = addPthRx(rtrBgpUtil.safiIp4uni);
         for (;;) {
             if (pck.dataSize() <= prt) {
                 break;
             }
-            if (addPthRx(rtrBgpUtil.safiIp4uni)) {
+            if (addpath) {
+                ntry.best.ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
             tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, false, pck);
             ntry.prefix = res.prefix;
             ntry.best.labelRem = res.best.labelRem;
-            prefixWithdraw(rtrBgpUtil.safiIp4uni, ntry);
+            prefixWithdraw(rtrBgpUtil.safiIp4uni, addpath, ntry);
         }
         pck.setBytesLeft(prt);
         prt = pck.msbGetW(0);
@@ -1546,13 +1549,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (pck.dataSize() < 1) {
                 break;
             }
-            if (addPthRx(rtrBgpUtil.safiIp4uni)) {
+            if (addpath) {
+                ntry.best.ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
             tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, false, pck);
             ntry.prefix = res.prefix;
             ntry.best.labelRem = res.best.labelRem;
-            prefixReach(rtrBgpUtil.safiIp4uni, ntry);
+            prefixReach(rtrBgpUtil.safiIp4uni, addpath, ntry);
         }
         addAttribed(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currUni, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
@@ -1617,50 +1621,96 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (changed == null) {
             return;
         }
-        for (int i = 0; i < currAdd.size(); i++) {
-            tabRouteEntry<addrIP> cur = currAdd.get(i);
-            attr.prefix = cur.prefix;
-            attr.best.nextHop = cur.best.nextHop;
-            attr.rouDst = cur.rouDst;
-            attr.best.labelRem = cur.best.labelRem;
-            attr.best.evpnLab = cur.best.evpnLab;
-            cur = attr.copyBytes(tabRoute.addType.notyet);
-            if (parent.flaps != null) {
-                parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
-            }
-            if (!neigh.softReconfig) {
-                tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, cur, roumap, roupol, prflst);
-                if (res == null) {
-                    if (learned.del(cur)) {
+        boolean addpath = addPthRx(safi);
+        for (int o = 0; o < currAdd.size(); o++) {
+            tabRouteEntry<addrIP> cur = currAdd.get(o);
+            for (int i = 0; i < cur.alts.size(); i++) {
+                tabRouteAttr<addrIP> alt = cur.alts.get(i);
+                attr.prefix = cur.prefix;
+                attr.rouDst = cur.rouDst;
+                attr.best.ident = alt.ident;
+                attr.best.nextHop = alt.nextHop;
+                attr.best.labelRem = alt.labelRem;
+                attr.best.evpnLab = alt.evpnLab;
+                cur = attr.copyBytes(tabRoute.addType.notyet);
+                if (parent.flaps != null) {
+                    parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
+                }
+                if (!neigh.softReconfig) {
+                    tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, cur, roumap, roupol, prflst);
+                    if (res == null) {
+                        if (doPrefDel(learned, addpath, cur)) {
+                            continue;
+                        }
+                        currChg++;
+                        changed.add(tabRoute.addType.always, cur, false, false);
+                        continue;
+                    }
+                    cur = res;
+                }
+                if (prefixReachable(cur)) {
+                    if (doPrefDel(learned, addpath, cur)) {
                         continue;
                     }
                     currChg++;
                     changed.add(tabRoute.addType.always, cur, false, false);
                     continue;
                 }
-                cur = res;
-            }
-            if (prefixReachable(cur)) {
-                if (learned.del(cur)) {
-                    continue;
-                }
+                doPrefAdd(learned, addpath, cur);
                 currChg++;
                 changed.add(tabRoute.addType.always, cur, false, false);
-                continue;
             }
-            learned.add(tabRoute.addType.always, cur, false, true);
-            currChg++;
-            changed.add(tabRoute.addType.always, cur, false, false);
         }
+    }
+
+    private void doPrefAdd(tabRoute<addrIP> tab, boolean addpath, tabRouteEntry<addrIP> ntry) {
+        if (!addpath) {
+            tab.add(tabRoute.addType.always, ntry, false, false);
+            return;
+        }
+        tabRouteEntry<addrIP> old = tab.find(ntry);
+        if (old == null) {
+            tab.add(tabRoute.addType.always, ntry, false, false);
+            return;
+        }
+        int i = old.findId(ntry.best.ident);
+        if (i >= 0) {
+            old.alts.remove(i);
+        }
+        old.alts.add(ntry.best);
+        old.selectBest();
+    }
+
+    private boolean doPrefDel(tabRoute<addrIP> tab, boolean addpath, tabRouteEntry<addrIP> ntry) {
+        if (!addpath) {
+            return tab.del(ntry);
+        }
+        tabRouteEntry<addrIP> old = tab.find(ntry);
+        if (old == null) {
+            return true;
+        }
+        int i = old.findId(ntry.best.ident);
+        if (i < 0) {
+            return true;
+        }
+        old.alts.remove(i);
+        if (old.alts.size() < 1) {
+            old.alts.add(old.best);
+            tab.del(old);
+        } else {
+            old.selectBest();
+        }
+        return false;
     }
 
     /**
      * prefix withdrawal received
      *
      * @param safi safi
+     * @param addpath addpath mode
      * @param ntry prefix
      */
-    protected void prefixWithdraw(int safi, tabRouteEntry<addrIP> ntry) {
+    protected void prefixWithdraw(int safi, boolean addpath, tabRouteEntry<addrIP> ntry) {
         if (debugger.rtrBgpTraf) {
             logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix);
         }
@@ -1674,7 +1724,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (learned == null) {
             return;
         }
-        if (learned.del(ntry)) {
+        if (doPrefDel(learned, addpath, ntry)) {
             return;
         }
         currChg++;
@@ -1690,9 +1740,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * process reachable prefix
      *
      * @param safi address family
+     * @param addpath addpath mode
      * @param ntry route entry
      */
-    protected void prefixReach(int safi, tabRouteEntry<addrIP> ntry) {
+    protected void prefixReach(int safi, boolean addpath, tabRouteEntry<addrIP> ntry) {
         if (debugger.rtrBgpTraf) {
             logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix);
         }
@@ -1757,7 +1808,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (trg == null) {
             return;
         }
-        trg.add(tabRoute.addType.always, ntry, true, true);
+        ntry.best.time = bits.getTime();
+        if (addpath) {
+            trg.add(tabRoute.addType.alters, ntry, true, false);
+        } else {
+            trg.add(tabRoute.addType.always, ntry, true, false);
+        }
     }
 
     private boolean prefixReachable(tabRouteEntry<addrIP> ntry) {
