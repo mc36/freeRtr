@@ -134,8 +134,14 @@ public class servNrpe extends servGeneric implements prtServS {
             for (int i = 0; i < ntry.ignT.size(); i++) {
                 lst.add(beg + cn + " ign-txt " + ntry.ignT.get(i));
             }
+            for (int i = 0; i < ntry.allT.size(); i++) {
+                lst.add(beg + cn + " all-txt " + ntry.allT.get(i));
+            }
             for (int i = 0; i < ntry.ignR.size(); i++) {
                 lst.add(beg + cn + " ign-reg " + ntry.ignR.get(i));
+            }
+            for (int i = 0; i < ntry.allR.size(); i++) {
+                lst.add(beg + cn + " all-reg " + ntry.allR.get(i));
             }
             for (int i = 0; i < ntry.reqT.size(); i++) {
                 lst.add(beg + cn + " req-txt " + ntry.reqT.get(i));
@@ -250,6 +256,15 @@ public class servNrpe extends servGeneric implements prtServS {
             }
             return false;
         }
+        if (s.equals("all-reg")) {
+            s = cmd.getRemaining();
+            if (negated) {
+                ntry.allR.remove(s);
+            } else {
+                ntry.allR.add(s);
+            }
+            return false;
+        }
         if (s.equals("req-txt")) {
             s = cmd.getRemaining();
             if (negated) {
@@ -265,6 +280,15 @@ public class servNrpe extends servGeneric implements prtServS {
                 ntry.ignT.remove(s);
             } else {
                 ntry.ignT.add(s);
+            }
+            return false;
+        }
+        if (s.equals("all-txt")) {
+            s = cmd.getRemaining();
+            if (negated) {
+                ntry.allT.remove(s);
+            } else {
+                ntry.allT.add(s);
             }
             return false;
         }
@@ -308,9 +332,13 @@ public class servNrpe extends servGeneric implements prtServS {
         l.add("4 4,.      <str>                  text");
         l.add("3 4      ign-reg                  ignore one regexp line");
         l.add("4 4,.      <str>                  text");
+        l.add("3 4      all-reg                  ignore all regexp line");
+        l.add("4 4,.      <str>                  text");
         l.add("3 4      req-txt                  require one text line");
         l.add("4 4,.      <str>                  text");
         l.add("3 4      ign-txt                  ignore one text line");
+        l.add("4 4,.      <str>                  text");
+        l.add("3 4      all-txt                  ignore all text line");
         l.add("4 4,.      <str>                  text");
     }
 
@@ -529,9 +557,13 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
 
     public String err;
 
+    public final List<String> allR;
+
     public final List<String> ignR;
 
     public final List<String> reqR;
+
+    public final List<String> allT;
 
     public final List<String> ignT;
 
@@ -546,8 +578,10 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
     public servNrpeCheck(servNrpe p, String n) {
         lower = p;
         nam = n;
+        allR = new ArrayList<String>();
         ignR = new ArrayList<String>();
         reqR = new ArrayList<String>();
+        allT = new ArrayList<String>();
         ignT = new ArrayList<String>();
         reqT = new ArrayList<String>();
     }
@@ -611,6 +645,15 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
                 break;
             }
         }
+        for (int o = 0; o < allT.size(); o++) {
+            String s = allT.get(o);
+            for (int i = lst.size() - 1; i >= 0; i--) {
+                if (!lst.get(i).equals(s)) {
+                    continue;
+                }
+                lst.remove(i);
+            }
+        }
         for (int o = 0; o < ignR.size(); o++) {
             String s = ignR.get(o);
             for (int i = 0; i < lst.size(); i++) {
@@ -619,6 +662,15 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
                 }
                 lst.remove(i);
                 break;
+            }
+        }
+        for (int o = 0; o < allR.size(); o++) {
+            String s = allR.get(o);
+            for (int i = lst.size() - 1; i >= 0; i--) {
+                if (!lst.get(i).matches(s)) {
+                    continue;
+                }
+                lst.remove(i);
             }
         }
     }
