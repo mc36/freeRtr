@@ -1710,6 +1710,36 @@ def writeMyMplsRules(delete, p4info_helper, ingress_sw, dst_label, vrf):
         ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
+def writeCpuMplsRules(delete, p4info_helper, ingress_sw, dst_label):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
+        match_fields={
+            "hdr.mpls0.label": (dst_label)
+        },
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_cpulabel",
+        action_params={
+        }
+    )
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
+        match_fields={
+            "hdr.mpls1.label": (dst_label)
+        },
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_cpulabel",
+        action_params={
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
 def writeMySrv4rules(delete, p4info_helper, ingress_sw, glob, dst_addr, vrf):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv6.tbl_ipv6_fib_host",
@@ -1946,6 +1976,16 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "nattrns6_del":
             writeNatTrnsRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11],int(splt[12]))
+            continue
+
+        if splt[0] == "cpulabel_add":
+            writeCpuMplsRules(1,p4info_helper,sw1,int(splt[1]))
+            continue
+        if splt[0] == "cpulabel_mod":
+            writeCpuMplsRules(2,p4info_helper,sw1,int(splt[1]))
+            continue
+        if splt[0] == "cpulabel_del":
+            writeCpuMplsRules(3,p4info_helper,sw1,int(splt[1]))
             continue
 
         if splt[0] == "label4_add":

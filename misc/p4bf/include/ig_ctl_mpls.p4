@@ -23,6 +23,19 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
                            in ingress_intrinsic_metadata_t ig_intr_md)
 {
 
+
+    action act_mpls_cpulabel() {
+        ig_md.nexthop_id = CPU_PORT;
+        ig_md.mpls_op_type = 0;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+    }
+
+
     action act_mpls_swap0_set_nexthop(label_t egress_label, NextHopId_t nexthop_id) {
         hdr.mpls0.label = egress_label;
         ig_md.nexthop_id = nexthop_id;
@@ -102,6 +115,7 @@ hdr.mpls0.label:
             exact;
         }
         actions = {
+            act_mpls_cpulabel;
             act_mpls_swap0_set_nexthop;
             act_mpls_decap_set_nexthop;
             act_mpls_decap_ipv4;
@@ -121,6 +135,7 @@ hdr.mpls1.label:
             exact;
         }
         actions = {
+            act_mpls_cpulabel;
             act_mpls_swap1_set_nexthop;
             act_mpls_decap_set_nexthop;
             act_mpls_decap_l3vpn;
