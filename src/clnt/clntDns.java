@@ -385,6 +385,9 @@ public class clntDns {
         if (doResolvList(srv, nam, true, getTypPri(prefer))) {
             return doResolvList(srv, nam, true, getTypBck(prefer));
         }
+        if (reply == null) {
+            return doResolvList(srv, nam, true, getTypBck(prefer));
+        }
         if (reply.answers.size() < 1) {
             return doResolvList(srv, nam, true, getTypBck(prefer));
         }
@@ -398,6 +401,9 @@ public class clntDns {
      * @return number of entries added
      */
     public int getAnswers(List<packDnsRec> lst) {
+        if (reply == null) {
+            return 0;
+        }
         lst.addAll(reply.answers);
         return reply.answers.size();
     }
@@ -409,6 +415,9 @@ public class clntDns {
      * @return resource record, null if not found
      */
     public packDnsRec findAnswer(int typ) {
+        if (reply == null) {
+            return null;
+        }
         packDnsRec r = findAnswer(reply.answers, typ);
         if (r != null) {
             return r;
@@ -421,6 +430,9 @@ public class clntDns {
     }
 
     private static packDnsRec findAnswer(List<packDnsRec> lst, int typ) {
+        if (lst == null) {
+            return null;
+        }
         for (int i = 0; i < lst.size(); i++) {
             packDnsRec rr = lst.get(i);
             if (rr == null) {

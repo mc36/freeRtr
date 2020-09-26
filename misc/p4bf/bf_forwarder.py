@@ -567,6 +567,9 @@ class BfForwarder(Thread):
         self.file = sck_file
         self._clearTable()
 
+    def tearDown(self):
+        self.bfgc.interface._tear_down_stream()
+
     def _clearTable(self):
         table_dict = {}
         for (
@@ -610,6 +613,7 @@ class BfForwarder(Thread):
                 for (d, k) in table_dict[table_name_key].entry_get(self.bfgc.target):
                     if k is not None:
                         keys.append(k)
+                print ("   Keys to delete: %s" % (keys))
                 table_dict[table_name_key].entry_del(self.bfgc.target, keys)
 
         except Exception as e:
@@ -670,7 +674,7 @@ class BfForwarder(Thread):
                     data_list,
                 )
             else:
-                print("in ELSE")
+                print("Error op_type unknown")
 
         except gc.BfruntimeRpcException as e:
             print("Error processing entry from control plane: {}".format(e))
@@ -781,9 +785,14 @@ class BfForwarder(Thread):
                     )
                 ]
 
-                tbl_apr_bundle.entry_add(
-                    self.bfgc.target, tbl_apr_bundle_key, tbl_apr_bundle_data
-                )
+                try:
+                   tbl_apr_bundle.entry_add(
+                       self.bfgc.target, tbl_apr_bundle_key, tbl_apr_bundle_data
+                   )
+                except gc.BfruntimeRpcException as e:
+                    logger.warn("bundle_add - %s" %  e.__str__())
+                    logger.warn("bundle_add - GRPC error code: %s" % e.grpc_error.code())
+                     
 
             tbl_ase_bundle_key = [
                 tbl_ase_bundle.make_key([gc.KeyTuple("$SELECTOR_GROUP_ID", bundle_id)])
