@@ -795,6 +795,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (red.rouplc != null) {
             a += " route-policy " + red.rouplc.listName;
         }
+        if (red.ecmp) {
+            a += " ecmp";
+        }
         return a;
     }
 
@@ -887,6 +890,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             String s = cmd.word();
             if (s.length() < 1) {
                 break;
+            }
+            if (s.equals("ecmp")) {
+                red.ecmp = true;
+                continue;
             }
             if (s.equals("metric")) {
                 red.metric = new tabIntUpdater();
@@ -1516,6 +1523,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 2) + " " + (p + 4) + ",.   defgw                 routes through default gateway");
         getRouterList(l, p, " routes");
         l.add((p + 3) + " " + (p + 4) + ",.     <num>               process id");
+        l.add((p + 4) + " " + (p + 4) + ",.       ecmp              process ecmp alternatives also");
         l.add((p + 4) + " " + (p + 5) + "         route-map         process prefixes on importing");
         l.add((p + 5) + " " + (p + 4) + ",.         <name>          name of route map");
         l.add((p + 4) + " " + (p + 5) + "         route-policy      process prefixes on importing");

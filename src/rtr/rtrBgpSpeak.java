@@ -758,6 +758,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         ready2adv = false;
         adversion.set(0);
         needFull.set(3);
+        if (debugger.rtrBgpFull) {
+            logger.debug("neighbor down");
+        }
         parent.needFull.add(1);
         parent.compute.wakeup();
     }
@@ -901,6 +904,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.accMvpn = new tabRoute<addrIP>("rx");
         neigh.accMvpo = new tabRoute<addrIP>("rx");
         ready2adv = true;
+        if (debugger.rtrBgpFull) {
+            logger.debug("neighbor up");
+        }
         parent.needFull.add(1);
         parent.compute.wakeup();
         for (;;) {
@@ -1424,6 +1430,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         learned.clear();
+        if (debugger.rtrBgpFull) {
+            logger.debug("refresh request");
+        }
         parent.needFull.add(1);
         parent.compute.wakeup();
         packHolder pck = new packHolder(true, true);
@@ -1675,9 +1684,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         int i = old.findId(ntry.best.ident);
         if (i >= 0) {
-            old.alts.remove(i);
+            old.delAlt(i);
         }
-        old.alts.add(ntry.best);
+        old.addAlt(ntry.best);
         old.selectBest();
     }
 
@@ -1696,7 +1705,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (old.alts.size() <= 1) {
             tab.del(old);
         } else {
-            old.alts.remove(i);
+            old.delAlt(i);
             old.selectBest();
         }
         return false;
@@ -1729,6 +1738,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         currChg++;
         tabRoute<addrIP> changed = parent.getChanged(safi);
         if (changed == null) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("table not found");
+            }
             parent.needFull.add(1);
             return;
         }

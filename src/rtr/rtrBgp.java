@@ -1218,6 +1218,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * redistribution changed
      */
     public void routerRedistChanged() {
+        if (debugger.rtrBgpFull) {
+            logger.debug("redist changed");
+        }
         needFull.add(1);
         compute.wakeup();
     }
@@ -1227,6 +1230,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public void routerOthersChanged() {
         if (otherTrigger) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("others changed");
+            }
             needFull.add(1);
             compute.wakeup();
             return;
@@ -1517,6 +1523,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         tabRoute<addrIP> acc = nei.getAccepted(afi);
         if (acc == null) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("table not found");
+            }
             needFull.add(1);
             return best;
         }
@@ -1528,12 +1537,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             setValidity(ntry);
         }
         if (best == null) {
-            return ntry;
+            return ntry.copyBytes(tabRoute.addType.link);
         }
-        if (!best.isOtherBetter(ntry)) {
+        if (best.best.isOtherBetter(ntry.best, false)) {
+            return ntry.copyBytes(tabRoute.addType.link);
+        }
+        if (ntry.best.isOtherBetter(best.best, false)) {
             return best;
         }
-        return ntry;
+        ntry = ntry.copyBytes(tabRoute.addType.link);
+        best.addAlt(ntry.alts);
+        return best;
     }
 
     private void computeIncrEntry(int afi, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
@@ -1542,7 +1556,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         tabRouteEntry<addrIP> best = org.find(curr);
         if (best != null) {
-            best = best.copyBytes(tabRoute.addType.notyet);
+            best = best.copyBytes(tabRoute.addType.ecmp);
             best.best.rouSrc = rtrBgpUtil.peerOriginate;
         }
         for (int i = 0; i < lstnNei.size(); i++) {
@@ -1559,6 +1573,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 tabRoute<addrIP> wil = grp.getWilling(afi);
                 tabRoute<addrIP> chg = grp.getChanged(afi);
                 if ((wil == null) || (chg == null)) {
+                    if (debugger.rtrBgpFull) {
+                        logger.debug("table not found");
+                    }
                     needFull.add(1);
                     continue;
                 }
@@ -1586,10 +1603,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             tabRoute<addrIP> wil = grp.getWilling(afi);
             tabRoute<addrIP> chg = grp.getChanged(afi);
             if ((wil == null) || (chg == null)) {
+                if (debugger.rtrBgpFull) {
+                    logger.debug("table not found");
+                }
                 needFull.add(1);
                 continue;
             }
-            tabRouteEntry<addrIP> ntry = best.copyBytes(tabRoute.addType.notyet);
+            tabRouteEntry<addrIP> ntry = best.copyBytes(tabRoute.addType.ecmp);
             tabRouteEntry<addrIP> old = wil.find(ntry);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 grp.originatePrefix(afi, ntry);
@@ -1609,7 +1629,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 chg.add(tabRoute.addType.always, best, false, false);
                 continue;
             }
-            if (!ntry.differs(tabRoute.addType.notyet, old)) {
+            if (!ntry.differs(tabRoute.addType.alters, old)) {
                 continue;
             }
             wil.add(tabRoute.addType.always, ntry, false, false);
@@ -1758,6 +1778,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     private tabRouteEntry<addrIP> computeConquerEntry(tabRoute<addrIP> cmp, tabRouteEntry<addrIP> best) {
+////ecmp awareness
         if (best.best.nextHop == null) {
             return null;
         }
@@ -1795,6 +1816,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param ntry entry to update
      */
     protected void setValidity(tabRouteEntry<addrIP> ntry) {
+////ecmp awareness
         tabRouteEntry<addrIP> res = computedRpki.route(ntry.prefix.broadcast);
         if (res == null) {
             ntry.best.validity = 2;
@@ -1861,12 +1883,21 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 + changedVpls.size() + changedMspw.size() + changedEvpn.size()
                 + changedMdt.size() + changedSrte.size() + changedMvpn.size() + changedMvpo.size();
         if (chg > incrLimit) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("limit exceeded");
+            }
             needFull.add(1);
         }
         if (oldAggr) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("aggregation");
+            }
             needFull.add(1);
         }
         if (routerAggregating.size() > 0) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("aggregation");
+            }
             needFull.add(1);
             oldAggr = true;
         } else {

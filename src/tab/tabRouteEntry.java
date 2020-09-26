@@ -147,7 +147,6 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         if (prefix != null) {
             prf.prefix = prefix.copyBytes();
         }
-        best.copyBytes(prf.best, true);
         switch (mod) {
             case ecmp:
                 prf.alts.clear();
@@ -172,9 +171,48 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                 }
                 prf.selectBest();
                 return prf;
+            case link:
+                prf.alts.clear();
+                for (int i = 0; i < alts.size(); i++) {
+                    tabRouteAttr<T> ntry = alts.get(i);
+                    if (ntry.isOtherBetter(best, false)) {
+                        continue;
+                    }
+                    prf.alts.add(ntry);
+                }
+                prf.hashBest();
+                return prf;
             default:
+                best.copyBytes(prf.best, true);
                 return prf;
         }
+    }
+
+    /**
+     * add attribute
+     *
+     * @param other attribute to add
+     */
+    public void addAlt(tabRouteAttr<T> other) {
+        alts.add(other);
+    }
+
+    /**
+     * add attribute
+     *
+     * @param others attributes to add
+     */
+    public void addAlt(List<tabRouteAttr<T>> others) {
+        alts.addAll(others);
+    }
+
+    /**
+     * add attribute
+     *
+     * @param idx index
+     */
+    public void delAlt(int idx) {
+        alts.remove(idx);
     }
 
     /**

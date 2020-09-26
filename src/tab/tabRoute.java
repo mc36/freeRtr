@@ -41,6 +41,10 @@ public class tabRoute<T extends addrType> {
          * add as alternatives
          */
         alters,
+        /**
+         * ecmp but with linking copy mode
+         */
+        link,
     }
 
     /**
@@ -190,6 +194,7 @@ public class tabRoute<T extends addrType> {
                 prefixes.put(prefix);
                 version++;
                 return;
+            case link:
             case ecmp:
                 own = prefixes.add(prefix);
                 if (own == null) {
@@ -215,9 +220,6 @@ public class tabRoute<T extends addrType> {
                 version++;
                 return;
             case always:
-                if (prefix.alts.size() > 1) {
-                    prefix = prefix.copyBytes(mod);
-                }
                 prefixes.put(prefix);
                 version++;
                 return;
@@ -512,7 +514,6 @@ public class tabRoute<T extends addrType> {
      * @param copy copy entries
      * @param distan highest allowed distance
      */
-    @SuppressWarnings("unchecked")
     public void mergeFrom(addType mod, tabRoute<T> other, tabRoute<T> nexthops, boolean copy, int distan) {
         for (int i = 0; i < other.prefixes.size(); i++) {
             tabRouteEntry<T> imp = other.prefixes.get(i);
@@ -525,25 +526,44 @@ public class tabRoute<T extends addrType> {
             if (copy) {
                 imp = imp.copyBytes(mod);
             }
-            if (nexthops != null) {
-                if (imp.best.nextHop == null) {
-                    continue;
-                }
-                tabRouteEntry<T> nh = nexthops.route(imp.best.nextHop);
-                if (nh == null) {
-                    continue;
-                }
-                if (nh.best.nextHop != null) {
-                    imp.best.oldHop = imp.best.nextHop;
-                    imp.best.nextHop = (T) nh.best.nextHop.copyBytes();
-                }
-                imp.best.iface = nh.best.iface;
+            if (nexthops == null) {
+                add(mod, imp, false, false);
+                continue;
             }
+            imp = imp.copyBytes(addType.link);
+            for (int o = imp.alts.size() - 1; o >= 0; o--) {
+                tabRouteAttr<T> attr = imp.alts.get(o);
+                if (!doNexthopFix(attr, nexthops)) {
+                    continue;
+                }
+                imp.delAlt(o);
+            }
+            if (imp.alts.size() < 1) {
+                continue;
+            }
+            imp.hashBest();
             add(mod, imp, false, false);
         }
         if (debugger.tabRouteEvnt) {
             logger.debug("merged prefixes from " + other.defRouTyp);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean doNexthopFix(tabRouteAttr<T> attr, tabRoute<T> nexthops) {
+        if (attr.nextHop == null) {
+            return true;
+        }
+        tabRouteEntry<T> nh = nexthops.route(attr.nextHop);
+        if (nh == null) {
+            return true;
+        }
+        if (nh.best.nextHop != null) {
+            attr.oldHop = attr.nextHop;
+            attr.nextHop = (T) nh.best.nextHop.copyBytes();
+        }
+        attr.iface = nh.best.iface;
+        return false;
     }
 
     /**

@@ -11,6 +11,7 @@ import tab.tabGen;
 import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelBierN;
+import tab.tabRoute;
 import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRouteIface;
@@ -872,7 +873,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             res.segrouBeg = upl.srBeg;
             res.bierBeg = upl.brBeg;
             res.labelRem = null;
-            rou.alts.add(res);
+            rou.addAlt(res);
         }
         rou.hashBest();
     }

@@ -210,6 +210,9 @@ public class rtrBgpRpki implements Comparator<rtrBgpRpki>, Runnable {
                         session = pck.sess;
                         serial = pck.serial;
                         if (dat > 0) {
+                            if (debugger.rtrBgpFull) {
+                                logger.debug("rpki changed");
+                            }
                             lower.needFull.add(1);
                             lower.compute.wakeup();
                         }
