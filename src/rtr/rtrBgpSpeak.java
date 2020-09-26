@@ -1693,11 +1693,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (i < 0) {
             return true;
         }
-        old.alts.remove(i);
-        if (old.alts.size() < 1) {
-            old.alts.add(old.best);
+        if (old.alts.size() <= 1) {
             tab.del(old);
         } else {
+            old.alts.remove(i);
             old.selectBest();
         }
         return false;
