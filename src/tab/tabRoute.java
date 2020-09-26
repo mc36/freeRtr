@@ -30,7 +30,7 @@ public class tabRoute<T extends addrType> {
          */
         better,
         /**
-         * add as ecmp if not if better, overwrite otherwise
+         * add as ecmp if not better, overwrite otherwise
          */
         ecmp,
         /**
