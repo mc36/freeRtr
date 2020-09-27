@@ -162,7 +162,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             attr.rouSrc = rtrBgpUtil.peerOriginate;
         }
         ipMpls.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
-        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, afi, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
     }
 
     /**
