@@ -10,6 +10,7 @@ import ip.ipRtr;
 import java.util.List;
 import tab.tabGen;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import user.userHelping;
 import util.cmds;
@@ -102,13 +103,16 @@ public class rtrBgpOther extends ipRtr {
         if (ntry == null) {
             return;
         }
-        ntry = ntry.copyBytes(tabRoute.addType.notyet);
-        if (ntry.best.labelLoc == null) {
-            ntry.best.labelLoc = fwd.commonLabel;
+        ntry = ntry.copyBytes(tabRoute.addType.ecmp);
+        for (int i = 0; i < ntry.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+            if (attr.labelLoc == null) {
+                attr.labelLoc = fwd.commonLabel;
+            }
+            attr.rouSrc = rtrBgpUtil.peerOriginate;
         }
-        ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         ipMpls.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
-        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, parent.afiOtr, ntry, true, null, null, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, parent.afiOtr, ntry, true, null, null, null);
     }
 
     /**
@@ -126,15 +130,18 @@ public class rtrBgpOther extends ipRtr {
         if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
             return;
         }
-        ntry = ntry.copyBytes(tabRoute.addType.notyet);
-        ntry.best.rouTab = parent.fwdCore;
-        if (ntry.best.segrouPrf != null) {
-            ntry.best.rouTab = parent.vrfCore.fwd6;
+        ntry = ntry.copyBytes(tabRoute.addType.ecmp);
+        for (int i = 0; i < ntry.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+            attr.rouTab = parent.fwdCore;
+            if (attr.segrouPrf != null) {
+                attr.rouTab = parent.vrfCore.fwd6;
+            }
+            if (distance > 0) {
+                attr.distance = distance;
+            }
         }
-        if (distance > 0) {
-            ntry.best.distance = distance;
-        }
-        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, rtrBgpUtil.safiUnicast, ntry, false, null, null, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, rtrBgpUtil.safiUnicast, ntry, false, null, null, null);
         if (parent.routerAutoMesh == null) {
             return;
         }

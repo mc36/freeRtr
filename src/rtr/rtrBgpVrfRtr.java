@@ -148,16 +148,19 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (ntry == null) {
             return;
         }
-        ntry = ntry.copyBytes(tabRoute.addType.notyet);
-        if (ntry.best.labelLoc == null) {
-            ntry.best.labelLoc = fwd.commonLabel;
-        }
-        if (ntry.best.extComm == null) {
-            ntry.best.extComm = new ArrayList<Long>();
-        }
+        ntry = ntry.copyBytes(tabRoute.addType.ecmp);
         ntry.rouDst = vrf.rd;
-        ntry.best.extComm.addAll(rt);
-        ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+        for (int i = 0; i < ntry.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+            if (attr.labelLoc == null) {
+                attr.labelLoc = fwd.commonLabel;
+            }
+            if (attr.extComm == null) {
+                attr.extComm = new ArrayList<Long>();
+            }
+            attr.extComm.addAll(rt);
+            attr.rouSrc = rtrBgpUtil.peerOriginate;
+        }
         ipMpls.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
     }
@@ -239,16 +242,19 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (!needed) {
             return;
         }
-        ntry = ntry.copyBytes(tabRoute.addType.notyet);
+        ntry = ntry.copyBytes(tabRoute.addType.ecmp);
         ntry.rouDst = 0;
-        ntry.best.rouTab = parent.fwdCore;
-        if (ntry.best.segrouPrf != null) {
-            ntry.best.rouTab = parent.vrfCore.fwd6;
+        for (int i = 0; i < ntry.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+            attr.rouTab = parent.fwdCore;
+            if (attr.segrouPrf != null) {
+                attr.rouTab = parent.vrfCore.fwd6;
+            }
+            if (distance > 0) {
+                attr.distance = distance;
+            }
         }
-        if (distance > 0) {
-            ntry.best.distance = distance;
-        }
-        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, ntry, false, fwd.importMap, fwd.importPol, fwd.importList);
+        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, afi, ntry, false, fwd.importMap, fwd.importPol, fwd.importList);
         if (parent.routerAutoMesh == null) {
             return;
         }

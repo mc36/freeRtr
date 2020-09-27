@@ -16,6 +16,7 @@ import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelNtry;
 import tab.tabNshNtry;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabSession;
 import util.bits;
@@ -484,10 +485,14 @@ public class ipMpls implements ifcUp {
         if (ifc.addr6 == null) {
             return true;
         }
-        ntry.best.segrouPrf = new addrIP();
-        ntry.best.segrouPrf.fromIPv6addr(ifc.addr6);
-        bits.msbPutD(ntry.best.segrouPrf.getBytes(), 12, lab.getValue());
-        ntry.best.labelLoc = new tabLabelNtry(labelImp);
+        addrIP adr = new addrIP();
+        adr.fromIPv6addr(ifc.addr6);
+        bits.msbPutD(adr.getBytes(), 12, lab.getValue());
+        for (int i = 0; i < ntry.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+            attr.segrouPrf = adr.copyBytes();
+            attr.labelLoc = new tabLabelNtry(labelImp);
+        }
         return false;
     }
 
