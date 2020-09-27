@@ -5,7 +5,6 @@ import cfg.cfgAll;
 import clnt.clntDns;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import pack.packDnsRec;

@@ -1754,12 +1754,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tab.add(tabRoute.addType.always, ntry, false, false);
             return;
         }
+        old = old.copyBytes(tabRoute.addType.alters);
         int i = old.findId(ntry.best.ident);
         if (i >= 0) {
             old.delAlt(i);
         }
         old.addAlt(ntry.best);
         old.selectBest();
+        tab.add(tabRoute.addType.always, old, false, false);
     }
 
     private boolean doPrefDel(tabRoute<addrIP> tab, boolean addpath, tabRouteEntry<addrIP> ntry) {
@@ -1770,6 +1772,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (old == null) {
             return true;
         }
+        old = old.copyBytes(tabRoute.addType.alters);
         int i = old.findId(ntry.best.ident);
         if (i < 0) {
             return true;
@@ -1779,6 +1782,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         } else {
             old.delAlt(i);
             old.selectBest();
+            tab.add(tabRoute.addType.always, old, false, false);
         }
         return false;
     }
