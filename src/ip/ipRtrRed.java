@@ -87,10 +87,7 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
      * @param src source table to use
      */
     public void filter(int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src) {
-        tabRoute.addType mod = tabRoute.addType.better;
-        if (ecmp) {
-            mod = tabRoute.addType.ecmp;
-        }
+        tabRoute.addType mod = ecmp ? tabRoute.addType.ecmp : tabRoute.addType.better;
         for (int i = 0; i < src.size(); i++) {
             tabRouteEntry<addrIP> ntry = src.get(i);
             if (ntry == null) {

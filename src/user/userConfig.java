@@ -2608,6 +2608,8 @@ public class userConfig {
         l.add("7  7,.              mplsexp                use mpls explicit null");
         l.add("7  8                distance               set distance metric");
         l.add("8  7,.                <dist>               distance value");
+        l.add("7  8                metric                 set metric value");
+        l.add("8  7,.                <met>                metric value");
         l.add("7  8                tag                    set tag value");
         l.add("8  7,.                <tag>                tag value");
         l.add("7  8                id                     set id value");
@@ -2616,6 +2618,10 @@ public class userConfig {
         l.add("8  7,.                <name>               tracker name");
         l.add("7  8                interface              force to interface");
         l.add("8  7,.                <name>               interface name");
+        l.add("7  8                route-map              set parameters from route map");
+        l.add("8  7,.                <name>               name of route map");
+        l.add("7  8                route-policy           set parameters from route policy");
+        l.add("8  7,.                <name>               name of route policy");
         l.add("2  3    mroute                             configure static multicast routes");
         l.add("3  4        <vrf>                          name of routing table");
         l.add("4  5          <network>                    destination network");
@@ -2626,6 +2632,8 @@ public class userConfig {
         l.add("7  7,.              recurvpn               use recursive nexthop");
         l.add("7  8                distance               set distance metric");
         l.add("8  7,.                <dist>               distance value");
+        l.add("7  8                metric                 set metric value");
+        l.add("8  7,.                <met>                metric value");
         l.add("7  8                tag                    set tag value");
         l.add("8  7,.                <tag>                tag value");
         l.add("7  8                id                     set id value");
@@ -2634,6 +2642,10 @@ public class userConfig {
         l.add("8  7,.                <name>               tracker name");
         l.add("7  8                interface              force to interface");
         l.add("8  7,.                <name>               interface name");
+        l.add("7  8                route-map              set parameters from route map");
+        l.add("8  7,.                <name>               name of route map");
+        l.add("7  8                route-policy           set parameters from route policy");
+        l.add("8  7,.                <name>               name of route policy");
         l.add("2  3    pool                               configure address pool");
         l.add("3  4      <name>                           name of address pool");
         l.add("4  5        <first>                        first address in pool");

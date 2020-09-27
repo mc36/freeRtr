@@ -6,13 +6,20 @@ import addr.addrIPv6;
 import addr.addrPrefix;
 import cfg.cfgAll;
 import cfg.cfgIfc;
+import cfg.cfgRoump;
+import cfg.cfgRouplc;
 import cfg.cfgTrack;
 import clnt.clntTrack;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import rtr.rtrBgpUtil;
+import tab.tabListing;
+import tab.tabRoute;
 import tab.tabRouteAttr;
 import tab.tabRouteEntry;
+import tab.tabRtrmapN;
+import tab.tabRtrplcN;
 import util.bits;
 import util.cmds;
 
@@ -59,9 +66,24 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
     public int dist;
 
     /**
+     * metric
+     */
+    public int met;
+
+    /**
      * tag
      */
     public int tag;
+
+    /**
+     * route map
+     */
+    public tabListing<tabRtrmapN, addrIP> roumap;
+
+    /**
+     * route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> rouplc;
 
     /**
      * mpls mode: 0=untagged, 1=implicit, 2=explicit
@@ -168,9 +190,12 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
             pref = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(addr.toIPv6(), msk));
         }
         dist = 1;
+        met = 0;
         tag = 0;
         mpls = 0;
         recur = 0;
+        roumap = null;
+        rouplc = null;
         for (;;) {
             a = cmd.word();
             if (a.length() < 1) {
@@ -182,6 +207,10 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
             }
             if (a.equals("distance")) {
                 dist = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("metric")) {
+                met = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("tag")) {
@@ -208,6 +237,24 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
                 } else {
                     iface = ifc.fwdIf6;
                 }
+                continue;
+            }
+            if (a.equals("route-map")) {
+                cfgRoump rm = cfgAll.rtmpFind(cmd.word(), false);
+                if (rm == null) {
+                    cmd.error("no such route map");
+                    return true;
+                }
+                roumap = rm.roumap;
+                continue;
+            }
+            if (a.equals("route-policy")) {
+                cfgRouplc rp = cfgAll.rtplFind(cmd.word(), false);
+                if (rp == null) {
+                    cmd.error("no such route map");
+                    return true;
+                }
+                rouplc = rp.rouplc;
                 continue;
             }
             if (a.equals("recurigp")) {
@@ -247,8 +294,17 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
         if (dist != 1) {
             s += " distance " + dist;
         }
+        if (met != 0) {
+            s += " metric " + met;
+        }
         if (tag != 0) {
             s += " tag " + tag;
+        }
+        if (roumap != null) {
+            s += " route-map " + roumap.listName;
+        }
+        if (rouplc != null) {
+            s += " route-policy " + rouplc.listName;
         }
         if (track != null) {
             s += " tracker " + track.name;
@@ -293,6 +349,7 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
         prf.prefix = pref.copyBytes();
         prf.best.nextHop = hop.copyBytes();
         prf.best.distance = dist;
+        prf.best.metric = met;
         prf.best.tag = tag;
         prf.best.ident = id;
         switch (mpls) {
@@ -312,7 +369,12 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
                 break;
         }
         prf.best.rouTyp = tabRouteAttr.routeType.staticRoute;
-        return prf;
+        tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(rtrBgpUtil.safiUnicast, prf, roumap, rouplc, null);
+        if (res == null) {
+            return prf;
+        } else {
+            return res;
+        }
     }
 
 }

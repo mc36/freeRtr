@@ -818,6 +818,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (adv.rouplc != null) {
             a += " route-policy " + adv.rouplc.listName;
         }
+        if (adv.ecmp) {
+            a += " ecmp";
+        }
         return a;
     }
 
@@ -955,6 +958,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 if (adv.metric.fromString(s + " " + cmd.word())) {
                     return null;
                 }
+                continue;
+            }
+            if (s.equals("ecmp")) {
+                adv.ecmp = true;
                 continue;
             }
             if (s.equals("route-map")) {
@@ -1539,6 +1546,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 6) + " " + (p + 4) + ",.           <num>         value");
         l.add((p + 1) + " " + (p + 2) + "   advertise               advertise one prefix");
         l.add((p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
+        l.add((p + 3) + " " + (p + 3) + ",.     ecmp                process ecmp alternatives also");
         l.add((p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
         l.add((p + 4) + " " + (p + 3) + ",.       <name>            name of route map");
         l.add((p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
