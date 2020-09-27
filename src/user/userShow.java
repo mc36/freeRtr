@@ -2133,8 +2133,12 @@ public class userShow {
             prf2.best.rouSrc = 0;
             prf1.best.rouTyp = tabRouteAttr.routeType.bgp4;
             prf2.best.rouTyp = tabRouteAttr.routeType.bgp4;
+            prf1.best.protoNum = 0;
+            prf2.best.protoNum = 0;
             prf1.best.iface = null;
             prf2.best.iface = null;
+            prf1.best.ident = 0;
+            prf2.best.ident = 0;
             if ((ign & 0x1) != 0) {
                 prf1.best.clustList = null;
                 prf2.best.clustList = null;
