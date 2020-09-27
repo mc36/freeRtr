@@ -444,12 +444,6 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
     }
 
-    private void updateAttribs(tabRouteEntry<addrIP> ntry) {
-        if (intVpnClnt) {
-            rtrBgpUtil.decodeAttribSet(ntry);
-        }
-    }
-
     private void clearAttribs(tabRouteAttr<addrIP> ntry) {
         if ((sendCommunity & 1) == 0) {
             ntry.stdComm = null;
@@ -528,7 +522,9 @@ public class rtrBgpGroup extends rtrBgpParam {
      */
     public void originatePrefix(int afi, tabRouteEntry<addrIP> ntry) {
         boolean nhs = (afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0);
-        updateAttribs(ntry);
+        if (intVpnClnt) {
+            rtrBgpUtil.decodeAttribSet(ntry);
+        }
         nextHopSelf(nhs, ntry);
         switch (peerType) {
             case rtrBgpUtil.peerExtrn:
@@ -574,7 +570,9 @@ public class rtrBgpGroup extends rtrBgpParam {
      */
     public boolean readvertPrefix(int afi, tabRouteEntry<addrIP> ntry) {
         boolean nhs = (afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0);
-        updateAttribs(ntry);
+        if (intVpnClnt) {
+            rtrBgpUtil.decodeAttribSet(ntry);
+        }
         if (!allowAsOut) {
             if (rtrBgpUtil.findIntList(ntry.best.pathSeq, remoteAs) >= 0) {
                 return true;

@@ -597,27 +597,31 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             will = new tabRoute<addrIP>(will);
         }
         for (int i = 0; i < will.size(); i++) {
-            tabRouteEntry<addrIP> ntry = will.get(i);
-            if (ntry == null) {
+            tabRouteEntry<addrIP> wil = will.get(i);
+            if (wil == null) {
                 continue;
             }
-            if (!ntry.differs(tabRoute.addType.notyet, done.find(ntry))) {
+            tabRouteEntry<addrIP> don = done.find(wil);
+            if (!wil.differs(tabRoute.addType.alters, don)) {
                 continue;
             }
-            conn.sendUpdate(safi, ntry, true);
-            done.add(tabRoute.addType.always, ntry, false, false);
+            conn.sendUpdate(safi, wil, don);
+            done.add(tabRoute.addType.always, wil, false, false);
+            if (conn.txFree() < 1024) {
+                return true;
+            }
         }
         for (int i = done.size() - 1; i >= 0; i--) {
-            tabRouteEntry<addrIP> ntry = done.get(i);
-            if (ntry == null) {
+            tabRouteEntry<addrIP> don = done.get(i);
+            if (don == null) {
                 continue;
             }
-            if (will.find(ntry) != null) {
+            if (will.find(don) != null) {
                 continue;
             }
-            done.del(ntry);
-            conn.sendUpdate(safi, ntry, false);
-            if (conn.txFree() < 2048) {
+            done.del(don);
+            conn.sendUpdate(safi, null, don);
+            if (conn.txFree() < 1024) {
                 return true;
             }
         }
@@ -709,13 +713,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                     continue;
                 }
                 done.del(don);
-                conn.sendUpdate(safi, don, false);
+                conn.sendUpdate(safi, wil, don);
             } else {
-                if (!wil.differs(tabRoute.addType.notyet, don)) {
+                if (!wil.differs(tabRoute.addType.alters, don)) {
                     continue;
                 }
                 done.add(tabRoute.addType.always, wil, false, false);
-                conn.sendUpdate(safi, wil, true);
+                conn.sendUpdate(safi, wil, don);
             }
             if (conn.txFree() < 1024) {
                 return true;

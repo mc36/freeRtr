@@ -1778,7 +1778,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     private tabRouteEntry<addrIP> computeConquerEntry(tabRoute<addrIP> cmp, tabRouteEntry<addrIP> best) {
-////ecmp awareness
         if (best.best.nextHop == null) {
             return null;
         }
@@ -1816,26 +1815,29 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param ntry entry to update
      */
     protected void setValidity(tabRouteEntry<addrIP> ntry) {
-////ecmp awareness
         tabRouteEntry<addrIP> res = computedRpki.route(ntry.prefix.broadcast);
-        if (res == null) {
-            ntry.best.validity = 2;
-            return;
+        for (int o = 0; o < ntry.alts.size(); o++) {
+            tabRouteAttr<addrIP> attr = ntry.alts.get(o);
+            if (res == null) {
+                attr.validity = 2;
+                continue;
+            }
+            if (attr.pathSeq == null) {
+                attr.validity = 3;
+                continue;
+            }
+            int i = attr.pathSeq.size();
+            if (i < 1) {
+                attr.validity = 3;
+                continue;
+            }
+            if (attr.pathSeq.get(i - 1) != res.best.rouSrc) {
+                attr.validity = 3;
+                continue;
+            }
+            attr.validity = 1;
         }
-        if (ntry.best.pathSeq == null) {
-            ntry.best.validity = 3;
-            return;
-        }
-        int i = ntry.best.pathSeq.size();
-        if (i < 1) {
-            ntry.best.validity = 3;
-            return;
-        }
-        if (ntry.best.pathSeq.get(i - 1) != res.best.rouSrc) {
-            ntry.best.validity = 3;
-            return;
-        }
-        ntry.best.validity = 1;
+        ntry.selectBest();
     }
 
     /**

@@ -346,6 +346,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     private int currChg;
 
     /**
+     * addpath beginning
+     */
+    private int addpathBeg;
+
+    /**
      * peer hold time
      */
     public int peerHold;
@@ -437,6 +442,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket) {
         ready2adv = false;
+        addpathBeg = bits.randomD();
         parent = protocol;
         neigh = neighbor;
         pipe = socket;
@@ -1466,22 +1472,91 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * send update packet
      *
      * @param safi safi to update
-     * @param ntry prefix to advertise
-     * @param reach true to reachable, false to withdraw
+     * @param wil prefix to advertise, null to withdraw
+     * @param don old already advertised data
      */
-    public void sendUpdate(int safi, tabRouteEntry<addrIP> ntry, boolean reach) {
+    public void sendUpdate(int safi, tabRouteEntry<addrIP> wil, tabRouteEntry<addrIP> don) {
         if (debugger.rtrBgpTraf) {
-            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + ": " + (reach ? "reachable" : "withdraw") + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix);
+            String a;
+            String s;
+            if (wil == null) {
+                a = "withdraw";
+                s = tabRtrmapN.rd2string(don.rouDst) + " " + don.prefix;
+            } else {
+                a = "reachable";
+                s = tabRtrmapN.rd2string(wil.rouDst) + " " + wil.prefix;
+            }
+            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + ": " + a + " " + s);
         }
-        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
-        lst.add(ntry);
-        pckTx.clear();
         boolean addpath = addPthTx(safi);
-        if (!reach) {
+        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
+        if (wil == null) {
+            if (!addpath) {
+                lst.add(don);
+                pckTx.clear();
+                rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, addpath, lst);
+                packSend(pckTx, rtrBgpUtil.msgUpdate);
+                return;
+            }
+            for (int i = 0; i < don.alts.size(); i++) {
+                tabRouteEntry<addrIP> ntry = don.copyBytes(tabRoute.addType.notyet);
+                don.alts.get(i).copyBytes(ntry.best, true);
+                ntry.best.ident = addpathBeg + i;
+                lst.add(ntry);
+            }
+            pckTx.clear();
             rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, addpath, lst);
-        } else {
-            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst, null);
+            packSend(pckTx, rtrBgpUtil.msgUpdate);
+            return;
         }
+        if (!addpath) {
+            lst.add(wil);
+            pckTx.clear();
+            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst, null);
+            packSend(pckTx, rtrBgpUtil.msgUpdate);
+            return;
+        }
+        if (don == null) {
+            for (int i = 0; i < wil.alts.size(); i++) {
+                tabRouteEntry<addrIP> ntry = wil.copyBytes(tabRoute.addType.notyet);
+                wil.alts.get(i).copyBytes(ntry.best, true);
+                ntry.best.ident = addpathBeg + i;
+                lst.clear();
+                lst.add(ntry);
+                pckTx.clear();
+                rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst, null);
+                packSend(pckTx, rtrBgpUtil.msgUpdate);
+            }
+            return;
+        }
+        for (int i = 0; i < wil.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = wil.alts.get(i);
+            if (i < don.alts.size()) {
+                if (!attr.differs(don.alts.get(i))) {
+                    continue;
+                }
+            }
+            tabRouteEntry<addrIP> ntry = wil.copyBytes(tabRoute.addType.notyet);
+            attr.copyBytes(ntry.best, true);
+            ntry.best.ident = addpathBeg + i;
+            lst.clear();
+            lst.add(ntry);
+            pckTx.clear();
+            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst, null);
+            packSend(pckTx, rtrBgpUtil.msgUpdate);
+        }
+        lst.clear();
+        for (int i = wil.alts.size(); i < don.alts.size(); i++) {
+            tabRouteEntry<addrIP> ntry = don.copyBytes(tabRoute.addType.notyet);
+            don.alts.get(i).copyBytes(ntry.best, true);
+            ntry.best.ident = addpathBeg + i;
+            lst.add(ntry);
+        }
+        if (lst.size() < 1) {
+            return;
+        }
+        pckTx.clear();
+        rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, addpath, lst);
         packSend(pckTx, rtrBgpUtil.msgUpdate);
     }
 

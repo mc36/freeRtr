@@ -2174,7 +2174,7 @@ public class rtrBgpUtil {
             for (int i = 0; i < lst.size(); i++) {
                 tabRouteEntry<addrIP> ntry = lst.get(i);
                 if (addpath) {
-                    pck.msbPutD(0, 1);
+                    pck.msbPutD(0, ntry.best.ident);
                     pck.putSkip(4);
                 }
                 writePrefix(safiIp4uni, pck, ntry);
@@ -2244,7 +2244,7 @@ public class rtrBgpUtil {
             for (int i = 0; i < lst.size(); i++) {
                 ntry = lst.get(i);
                 if (addpath) {
-                    pck.msbPutD(0, 1);
+                    pck.msbPutD(0, ntry.best.ident);
                     pck.putSkip(4);
                 }
                 writePrefix(safiIp4uni, pck, ntry);
@@ -2719,7 +2719,7 @@ public class rtrBgpUtil {
         for (i = 0; i < lst.size(); i++) {
             tabRouteEntry<addrIP> ntry = lst.get(i);
             if (addpath) {
-                hlp.msbPutD(0, 1);
+                hlp.msbPutD(0, ntry.best.ident);
                 hlp.putSkip(4);
             }
             writePrefix(safi, hlp, ntry);
@@ -2743,7 +2743,7 @@ public class rtrBgpUtil {
         for (int i = 0; i < lst.size(); i++) {
             tabRouteEntry<addrIP> ntry = lst.get(i);
             if (addpath) {
-                hlp.msbPutD(0, 1);
+                hlp.msbPutD(0, ntry.best.ident);
                 hlp.putSkip(4);
             }
             writePrefix(safi, hlp, ntry);
