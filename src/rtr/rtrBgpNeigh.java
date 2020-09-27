@@ -596,8 +596,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (conn.needFull.get() < 2) {
             will = new tabRoute<addrIP>(will);
         }
-        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
-        tabRouteEntry<addrIP> sen = null;
         for (int i = 0; i < will.size(); i++) {
             tabRouteEntry<addrIP> ntry = will.get(i);
             if (ntry == null) {
@@ -606,32 +604,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             if (!ntry.differs(tabRoute.addType.notyet, done.find(ntry))) {
                 continue;
             }
-            if (sen != null) {
-                sen.prefix = ntry.prefix;
-            }
-            if (ntry.differs(tabRoute.addType.notyet, sen)) {
-                if (lst.size() > 0) {
-                    conn.sendUpdate(safi, lst, true);
-                }
-                if (conn.txFree() < 2048) {
-                    return true;
-                }
-                lst.clear();
-                sen = ntry.copyBytes(tabRoute.addType.notyet);
-            }
+            conn.sendUpdate(safi, ntry, true);
             done.add(tabRoute.addType.always, ntry, false, false);
-            lst.add(ntry);
-            if (lst.size() > 64) {
-                sen = null;
-            }
         }
-        if (lst.size() > 0) {
-            conn.sendUpdate(safi, lst, true);
-            if (conn.txFree() < 2048) {
-                return true;
-            }
-        }
-        lst.clear();
         for (int i = done.size() - 1; i >= 0; i--) {
             tabRouteEntry<addrIP> ntry = done.get(i);
             if (ntry == null) {
@@ -641,18 +616,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 continue;
             }
             done.del(ntry);
-            lst.add(ntry);
-            if (lst.size() < 64) {
-                continue;
-            }
-            conn.sendUpdate(safi, lst, false);
-            if (conn.txFree() < 2048) {
-                return true;
-            }
-            lst.clear();
-        }
-        if (lst.size() > 0) {
-            conn.sendUpdate(safi, lst, false);
+            conn.sendUpdate(safi, ntry, false);
             if (conn.txFree() < 2048) {
                 return true;
             }
@@ -733,7 +697,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             return false;
         }
         chg = new tabRoute<addrIP>(chg);
-        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         for (int i = 0; i < chg.size(); i++) {
             tabRouteEntry<addrIP> cur = chg.get(i);
             if (cur == null) {
@@ -746,17 +709,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                     continue;
                 }
                 done.del(don);
-                lst.clear();
-                lst.add(don);
-                conn.sendUpdate(safi, lst, false);
+                conn.sendUpdate(safi, don, false);
             } else {
                 if (!wil.differs(tabRoute.addType.notyet, don)) {
                     continue;
                 }
                 done.add(tabRoute.addType.always, wil, false, false);
-                lst.clear();
-                lst.add(wil);
-                conn.sendUpdate(safi, lst, true);
+                conn.sendUpdate(safi, wil, true);
             }
             if (conn.txFree() < 1024) {
                 return true;

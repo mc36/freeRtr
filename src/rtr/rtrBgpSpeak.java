@@ -1466,18 +1466,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * send update packet
      *
      * @param safi safi to update
-     * @param lst list of prefixes to advertise
+     * @param ntry prefix to advertise
      * @param reach true to reachable, false to withdraw
      */
-    public void sendUpdate(int safi, List<tabRouteEntry<addrIP>> lst, boolean reach) {
+    public void sendUpdate(int safi, tabRouteEntry<addrIP> ntry, boolean reach) {
         if (debugger.rtrBgpTraf) {
-            String s = "";
-            for (int i = 0; i < lst.size(); i++) {
-                tabRouteEntry<addrIP> ntry = lst.get(i);
-                s += " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix;
-            }
-            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + ": " + (reach ? "reachable" : "withdraw") + s);
+            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + ": " + (reach ? "reachable" : "withdraw") + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix);
         }
+        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
+        lst.add(ntry);
         pckTx.clear();
         boolean addpath = addPthTx(safi);
         if (!reach) {

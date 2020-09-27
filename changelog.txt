@@ -9355,3 +9355,6 @@ qc pass: ospf ecmp connection
 qc pass: pvrp ecmp connection
 qc pass: rip ecmp connection
 qc pass: static routing with ecmp
+---------------------------------- 2020-09-27 05:59:21
+todo: nat and pbr config to have reindex
+todo: chatscript and authlist to use tablisting and have reindex
