@@ -158,6 +158,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public List<rtrBgpGroup> groups;
 
     /**
+     * group minimum
+     */
+    public int groupMin;
+
+    /**
+     * group maximum
+     */
+    public int groupMax;
+
+    /**
      * listen template
      */
     public rtrBgpTemp lstnTmp;
@@ -1719,8 +1729,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setGrpVer();
         }
+        groupMin = compRound.get();
+        groupMax = 0;
         for (int i = 0; i < groups.size(); i++) {
             rtrBgpGroup grp = groups.get(i);
+            if (grp.minversion < groupMin) {
+                groupMin = grp.minversion;
+            }
+            if (grp.minversion > groupMax) {
+                groupMax = grp.minversion;
+            }
             computeIncrPurge(grp.minversion, grp.chgUni);
             computeIncrPurge(grp.minversion, grp.chgMlt);
             computeIncrPurge(grp.minversion, grp.chgOtr);
@@ -3521,6 +3539,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("incr last|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(incrLast) + " ago)");
         l.add("incr time|" + incrTime + " ms");
         l.add("changes|" + changedCur + ", total=" + changedTot);
+        l.add("version|" + compRound.get());
+        l.add("groups|" + groups.size() + ", vers=" + groupMin + ".." + groupMax);
         l.add("rpki table|" + computedRpki.size());
         l.add("unicast table|" + routerComputedU.size() + ", list=" + changedUni.size());
         l.add("multicast table|" + routerComputedM.size() + ", list=" + changedMlt.size());
