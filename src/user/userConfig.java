@@ -257,6 +257,20 @@ public class userConfig {
             resetMode();
             return "";
         }
+        if (a.equals("show")) {
+            userShow s = new userShow();
+            cmd = reader.setFilter(cmd);
+            s.cmd = cmd;
+            s.rdr = reader;
+            a = s.doer();
+            if (a == null) {
+                return null;
+            }
+            userExec e = new userExec(pipe, reader);
+            a = e.repairCommand(a);
+            e.executeCommand(a);
+            return null;
+        }
         if (a.equals("do")) {
             return cmd.getRemaining();
         }

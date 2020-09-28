@@ -220,7 +220,7 @@ public class userExec {
         hl.add("5 .            <addr>            neighbor address");
     }
 
-    private void getHelpShowIpX(userHelping hl) {
+    private static void getHelpShowIpX(userHelping hl) {
         hl.add("3 .        interface             interface information");
         hl.add("3 4,.      vrf                   vrf information");
         hl.add("4 5          [name]              name of vrf");
@@ -581,6 +581,7 @@ public class userExec {
         hl.add("9 9,.                  stdcomm   ignore standard community");
         hl.add("9 9,.                  extcomm   ignore extended community");
         hl.add("9 9,.                  lrgcomm   ignore large community");
+        hl.add("9 9,.                  sortcomm  sort communities");
         hl.add("9 9,.                  aigp      ignore accumulated igp");
         hl.add("9 9,.                  bandwidth ignore bandwidth");
         hl.add("9 9,.                  label     ignore labels");
@@ -602,7 +603,7 @@ public class userExec {
         hl.add("6 .              [num]           minimum count");
     }
 
-    private void getHelpShow(userHelping hl) {
+    public static void getHelpShow(userHelping hl, boolean privi, boolean pipes) {
         hl.add("2 3      macsec                  macsec information");
         hl.add("3 .        <name>                name of interface");
         hl.add("2 .      scheduler               scheduler information");
@@ -819,45 +820,9 @@ public class userExec {
         hl.add("4 .          <name>              name of (sub)interface");
         getHelpShowIpX(hl);
         cfgAll.aliasHelps(cfgAlias.aliasType.show, 2, hl);
-    }
-
-    private void getHelpTelnet(userHelping hl) {
-        hl.add("2 3,4,.  <host>                  name of host");
-        hl.add("3 4,.      [port]                port on host");
-        hl.add("4 4,.        /tcp                transmission control protocol");
-        hl.add("4 4,.        /udp                user datagram protocol");
-        hl.add("4 4,.        /ludp               lightweight user datagram protocol");
-        hl.add("4 4,.        /dccp               user datagram congestion control protocol");
-        hl.add("4 4,.        /sctp               stream control transmission protocol");
-        hl.add("4 4,.        /ssh                specify secure shell");
-        hl.add("4 4,.        /tls                specify transport layer security");
-        hl.add("4 4,.        /dtls               specify datagram transport layer security");
-        hl.add("4 4,.        /telnet             specify telnet protocol");
-        hl.add("4 4,.        /ipv4               specify ipv4 to use");
-        hl.add("4 4,.        /ipv6               specify ipv6 to use");
-        hl.add("4 5          /vrf                specify vrf to use");
-        hl.add("5 4,.          <vrf>             name of vrf");
-        hl.add("4 5          /user               specify username to use");
-        hl.add("5 4,.          <str>             username");
-        hl.add("4 5          /pass               specify password to use");
-        hl.add("5 4,.          <str>             password");
-        hl.add("4 5          /proxy              specify proxy to use");
-        hl.add("5 4,.          <name>            name of proxy profile");
-        hl.add("4 5          /interface          specify interface to use");
-        hl.add("5 4,.          <name>            name of interface");
-        hl.add("4 5          /chat               specify chat script to use");
-        hl.add("5 4,.          <name>            name of chat script");
-    }
-
-    /**
-     * get help text for exec commands
-     *
-     * @return helping instance
-     */
-    public userHelping getHelping() {
-        userHelping hl = new userHelping();
-        hl.add("1 2    show                      running system information");
-        getHelpShow(hl);
+        if (!pipes) {
+            return;
+        }
         hl.possible(-1, 110);
         hl.add("110 111  |                       output modifier");
         hl.add("111 112    include               only lines that match");
@@ -925,18 +890,58 @@ public class userExec {
         hl.add("111 .      raw                   unfiltered");
         hl.add("111 .      count                 count entities");
         hl.add("111 .      viewer                display in viewer");
-        if (privileged) {
-            hl.add("111 119    redirect              redirect output to file");
-            hl.add("119 .        <text>              name of file");
+        if (!privi) {
+            return;
         }
+        hl.add("111 119    redirect              redirect output to file");
+        hl.add("119 .        <text>              name of file");
+    }
+
+    private void getHelpTelnet(userHelping hl) {
+        hl.add("2 3,4,.  <host>                  name of host");
+        hl.add("3 4,.      [port]                port on host");
+        hl.add("4 4,.        /tcp                transmission control protocol");
+        hl.add("4 4,.        /udp                user datagram protocol");
+        hl.add("4 4,.        /ludp               lightweight user datagram protocol");
+        hl.add("4 4,.        /dccp               user datagram congestion control protocol");
+        hl.add("4 4,.        /sctp               stream control transmission protocol");
+        hl.add("4 4,.        /ssh                specify secure shell");
+        hl.add("4 4,.        /tls                specify transport layer security");
+        hl.add("4 4,.        /dtls               specify datagram transport layer security");
+        hl.add("4 4,.        /telnet             specify telnet protocol");
+        hl.add("4 4,.        /ipv4               specify ipv4 to use");
+        hl.add("4 4,.        /ipv6               specify ipv6 to use");
+        hl.add("4 5          /vrf                specify vrf to use");
+        hl.add("5 4,.          <vrf>             name of vrf");
+        hl.add("4 5          /user               specify username to use");
+        hl.add("5 4,.          <str>             username");
+        hl.add("4 5          /pass               specify password to use");
+        hl.add("5 4,.          <str>             password");
+        hl.add("4 5          /proxy              specify proxy to use");
+        hl.add("5 4,.          <name>            name of proxy profile");
+        hl.add("4 5          /interface          specify interface to use");
+        hl.add("5 4,.          <name>            name of interface");
+        hl.add("4 5          /chat               specify chat script to use");
+        hl.add("5 4,.          <name>            name of chat script");
+    }
+
+    /**
+     * get help text for exec commands
+     *
+     * @return helping instance
+     */
+    public userHelping getHelping() {
+        userHelping hl = new userHelping();
+        hl.add("1 2    show                      running system information");
+        getHelpShow(hl, privileged, true);
         hl.add("1 2    watch                     running system periodic information");
-        getHelpShow(hl);
+        getHelpShow(hl, privileged, false);
         hl.add("1 2    view                      running system information");
-        getHelpShow(hl);
+        getHelpShow(hl, privileged, false);
         hl.add("1 2    display                   running system periodic information");
-        getHelpShow(hl);
+        getHelpShow(hl, privileged, false);
         hl.add("1 2    differs                   running system difference information");
-        getHelpShow(hl);
+        getHelpShow(hl, privileged, false);
         hl.add("1 .    logout                    close this exec session");
         hl.add("1 .    exit                      close this exec session");
         hl.add("1 .    ppp                       start framed session");

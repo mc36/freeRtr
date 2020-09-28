@@ -38,6 +38,7 @@ import ip.ipFwdTrfng;
 import ip.ipMpls;
 import ip.ipRtr;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import pack.packLdpMp;
 import pack.packLdpPwe;
@@ -2265,10 +2266,25 @@ public class userShow {
                 prf1.best.bierHdr = 0;
                 prf2.best.bierHdr = 0;
             }
+            if ((ign & 0x800000) != 0) {
+                if (prf1.best.stdComm != null) {
+                    Collections.sort(prf1.best.stdComm);
+                }
+                if (prf2.best.stdComm != null) {
+                    Collections.sort(prf2.best.stdComm);
+                }
+                if (prf1.best.extComm != null) {
+                    Collections.sort(prf1.best.extComm);
+                }
+                if (prf2.best.extComm != null) {
+                    Collections.sort(prf2.best.extComm);
+                }
+            }
             if (!prf1.differs(tabRoute.addType.alters, prf2)) {
                 continue;
             }
             diff.add(tabRoute.addType.alters, prf1, false, false);
+            diff.add(tabRoute.addType.alters, prf2, false, false);
         }
     }
 
@@ -2640,6 +2656,9 @@ public class userShow {
                 }
                 if (a.equals("bier")) {
                     ign |= 0x400000;
+                }
+                if (a.equals("sortcomm")) {
+                    ign |= 0x800000;
                 }
             }
             tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
