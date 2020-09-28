@@ -798,8 +798,8 @@ server telnet ssh
 !
 server telnet tel
  security protocol telnet
- exec width 80
- exec height 25
+ exec width 100
+ exec height 28
  exec timestamp
  exec colorized
  exec tablemode fancy

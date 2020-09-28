@@ -3370,7 +3370,7 @@ public class userExec {
         cfgAll.reload = new userReload(at);
     }
 
-    private pipeSide getShPipe() {
+    private pipeSide getShPipe(boolean col) {
         pipeLine pl = new pipeLine(1024 * 1024, false);
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
@@ -3381,7 +3381,7 @@ public class userExec {
         exe.privileged = privileged;
         exe.reader.tabMod = reader.tabMod;
         exe.reader.timeStamp = reader.timeStamp;
-        exe.reader.colorize = reader.colorize;
+        exe.reader.colorize = reader.colorize & col;
         pip.timeout = 60000;
         String a = "show " + cmd.getRemaining();
         a = exe.repairCommand(a);
@@ -3395,7 +3395,7 @@ public class userExec {
 
     private void doView() {
         List<String> lst = new ArrayList<String>();
-        packText pt = new packText(getShPipe());
+        packText pt = new packText(getShPipe(false));
         pt.recvAll(lst);
         userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#show " + cmd.getRemaining(), false);
         edtr.doView();
@@ -3404,10 +3404,19 @@ public class userExec {
     private void doWatch() {
         reader.keyFlush();
         for (;;) {
-            String a = getShPipe().strGet(65536);
+            String a = getShPipe(true).strGet(65536);
             userScreen.sendCur(pipe, 0, 0);
             userScreen.sendCls(pipe);
+            if (reader.colorize) {
+                userScreen.sendCol(pipe, userScreen.colBrGreen);
+            }
             pipe.linePut(cfgAll.hostName + "#show " + cmd.getRemaining());
+            if (reader.colorize) {
+                userScreen.sendCol(pipe, userScreen.colWhite);
+            }
+            if (reader.timeStamp) {
+                pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+            }
             pipe.strPut(a);
             bits.sleep(1000);
             if (pipe.ready2rx() > 0) {
@@ -3423,7 +3432,7 @@ public class userExec {
         userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), reader.timeStamp);
         for (;;) {
             lst.clear();
-            packText pt = new packText(getShPipe());
+            packText pt = new packText(getShPipe(false));
             pt.recvAll(lst);
             if (edtr.doTimed(1000, false)) {
                 break;
@@ -3434,12 +3443,12 @@ public class userExec {
     }
 
     private void doDiffers() {
-        List<String> r1 = new packText(getShPipe()).recvAll();
+        List<String> r1 = new packText(getShPipe(false)).recvAll();
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
         userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), reader.timeStamp);
         for (;;) {
-            List<String> r2 = new packText(getShPipe()).recvAll();
+            List<String> r2 = new packText(getShPipe(false)).recvAll();
             differ df = new differ();
             df.calc(r1, r2);
             lst.clear();
