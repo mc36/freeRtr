@@ -470,6 +470,7 @@ router bgp4 65535
  afi-vrf dn42 mvpn loopback0
  afi-vrf dn42 redistribute connected
  afi-vrf dn42 redistribute static
+ afi-vrf dn42 ecmp
  afi-vrf vpn enable
  afi-vrf vpn mvpn loopback0
  afi-vrf vpn redistribute connected
@@ -520,6 +521,7 @@ router bgp6 65535
  afi-vrf dn42 mvpn loopback0
  afi-vrf dn42 redistribute connected
  afi-vrf dn42 redistribute static
+ afi-vrf dn42 ecmp
  afi-vrf vpn enable
  afi-vrf vpn mvpn loopback0
  afi-vrf vpn redistribute connected

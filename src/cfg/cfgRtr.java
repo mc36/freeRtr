@@ -171,7 +171,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     public final static String defaultL[] = {
         // router *
         "router .*! no automesh",
-        "router .*! no ecmp",
         // router pvrp
         "router pvrp[4|6] .*! no suppress-prefix",
         "router pvrp[4|6] .*! no labels",
@@ -701,6 +700,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             }
             lst.add(beg + "aggregate " + aggreg2str(ntry));
         }
+        if (rtr.routerEcmp) {
+            lst.add(beg + "ecmp");
+        }
     }
 
     /**
@@ -713,6 +715,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * @return false on success, true on error
      */
     public static boolean doCfgRedist(ipRtr rtr, boolean neg, String a, cmds cmd) {
+        if (a.equals("ecmp")) {
+            rtr.routerEcmp = !neg;
+            rtr.routerCreateComputed();
+            return false;
+        }
         if (a.equals("redistribute")) {
             ipRtrRed ntry = str2redist(cmd);
             if (ntry == null) {
@@ -1447,7 +1454,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             } else {
                 l.add(cmds.tabulator + "automesh " + rtr.routerAutoMesh.listName);
             }
-            cmds.cfgLine(l, !rtr.routerEcmp, cmds.tabulator, "ecmp", "");
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
@@ -1524,6 +1530,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * @param p number start
      */
     public static void getRedistHelp(userHelping l, int p) {
+        l.add((p + 1) + " .  ecmp                    enable ecmp export to rib");
         l.add((p + 1) + " " + (p + 2) + "   redistribute            redistribute prefixes from other protocols");
         l.add((p + 2) + " " + (p + 4) + ",.   connected             connected routes");
         l.add((p + 2) + " " + (p + 4) + ",.   static                static routes");
@@ -1594,7 +1601,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         userHelping l = userHelping.getGenCfg();
         l.add("1 2   vrf                     specify vrf to use");
         l.add("2 .     <name>                name of table");
-        l.add("1 .   ecmp                    enable ecmp export to rib");
         l.add("1 2   automesh                specify auto mesh te tunnels");
         l.add("2 .     <name>                name of prefix list");
         getRedistHelp(l, 0);
@@ -1639,12 +1645,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         }
         if (rtr == null) {
             cmd.error("not initialized");
-            return;
-        }
-        if (a.equals("ecmp")) {
-            rtr.routerEcmp = !neg;
-            vrf.fwd4.routerStaticChg();
-            vrf.fwd6.routerStaticChg();
             return;
         }
         if (a.equals("automesh")) {
