@@ -1550,6 +1550,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         return best;
     }
 
+    private void computeIncrVersion(tabRouteEntry<addrIP> curr) {
+        int ver = compRound.get() + 1;
+        for (int i = 0; i < curr.alts.size(); i++) {
+            curr.alts.get(i).version = ver;
+        }
+    }
+
     private void computeIncrEntry(int afi, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         if (debugger.rtrBgpIncr) {
             logger.debug("bestpath for " + tabRtrmapN.rd2string(curr.rouDst) + " " + curr.prefix + " in " + rtrBgpUtil.safi2string(afi));
@@ -1567,7 +1574,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (best == null) {
             cmp.del(curr);
-            curr.best.version = compRound.get() + 1;
+            computeIncrVersion(curr);
             for (int i = 0; i < groups.size(); i++) {
                 rtrBgpGroup grp = groups.get(i);
                 tabRoute<addrIP> wil = grp.getWilling(afi);
@@ -1586,7 +1593,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             return;
         }
-        best.best.version = compRound.get() + 1;
+        computeIncrVersion(best);
         if (conquer) {
             tabRouteEntry<addrIP> res = computeConquerEntry(cmp, best);
             if (res != null) {

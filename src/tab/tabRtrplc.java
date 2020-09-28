@@ -73,7 +73,7 @@ public class tabRtrplc {
      */
     public static tabRouteEntry<addrIP> doRpl(int afi, tabRouteEntry<addrIP> net, tabListing<tabRtrplcN, addrIP> lst, boolean copy) {
         if (copy) {
-            net = net.copyBytes(tabRoute.addType.notyet);
+            net = net.copyBytes(tabRoute.addType.ecmp);
         }
         int lvl = 0;
         long tim = bits.getTime();
@@ -170,7 +170,7 @@ public class tabRtrplc {
                         scr.add(ntry.strVal);
                     }
                     pos--;
-                    tabRtrmapN.doTcl(afi, net, scr);
+                    tabRtrmapN.doTcl(afi, net.best, net, scr);
                     continue;
                 default:
                     ntry.update(afi, net);

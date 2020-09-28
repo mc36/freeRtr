@@ -482,6 +482,7 @@ router bgp4 65535
  afi-evpn 2 update-source loopback0
  redistribute connected
  redistribute static
+ ecmp
  exit
 !
 router bgp6 65535
@@ -531,6 +532,7 @@ router bgp6 65535
  afi-evpn 2 update-source loopback0
  redistribute connected
  redistribute static
+ ecmp
  exit
 !
 proxy-profile p1

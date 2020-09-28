@@ -916,47 +916,54 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         return matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
-    public void update(int afi, tabRouteEntry<addrIP> net) {
-        net.best.distance = distanceSet.update(net.best.distance);
-        net.best.locPref = locPrefSet.update(net.best.locPref);
-        net.best.accIgp = accIgpSet.update(net.best.accIgp);
-        net.best.bandwidth = bandwidthSet.update(net.best.bandwidth);
-        net.best.origin = originSet.update(net.best.origin);
-        net.best.metric = metricSet.update(net.best.metric);
-        net.best.tag = tagSet.update(net.best.tag);
-        net.best.segrouIdx = segrouSet.update(net.best.segrouIdx);
-        net.best.bierIdx = bierSet.update(net.best.bierIdx);
-        net.best.pathSeq = tabLabel.prependLabels(net.best.pathSeq, aspathSet);
-        net.best.confSeq = tabLabel.prependLabels(net.best.confSeq, aspathCnf);
+    private void doUpdate(tabRouteAttr<addrIP> attr) {
+        attr.distance = distanceSet.update(attr.distance);
+        attr.locPref = locPrefSet.update(attr.locPref);
+        attr.accIgp = accIgpSet.update(attr.accIgp);
+        attr.bandwidth = bandwidthSet.update(attr.bandwidth);
+        attr.origin = originSet.update(attr.origin);
+        attr.metric = metricSet.update(attr.metric);
+        attr.tag = tagSet.update(attr.tag);
+        attr.segrouIdx = segrouSet.update(attr.segrouIdx);
+        attr.bierIdx = bierSet.update(attr.bierIdx);
+        attr.pathSeq = tabLabel.prependLabels(attr.pathSeq, aspathSet);
+        attr.confSeq = tabLabel.prependLabels(attr.confSeq, aspathCnf);
         if (stdCommClear) {
-            net.best.stdComm = null;
+            attr.stdComm = null;
         }
         if (extCommClear) {
-            net.best.extComm = null;
+            attr.extComm = null;
         }
         if (lrgCommClear) {
-            net.best.lrgComm = null;
+            attr.lrgComm = null;
         }
         if (privasClear) {
-            rtrBgpUtil.removePrivateAs(net.best.pathSeq);
-            rtrBgpUtil.removePrivateAs(net.best.pathSet);
+            rtrBgpUtil.removePrivateAs(attr.pathSeq);
+            rtrBgpUtil.removePrivateAs(attr.pathSet);
         }
-        net.best.stdComm = tabLabel.prependLabels(net.best.stdComm, stdCommSet);
+        attr.stdComm = tabLabel.prependLabels(attr.stdComm, stdCommSet);
         if (nexthopSet != null) {
-            net.best.nextHop = nexthopSet.copyBytes();
+            attr.nextHop = nexthopSet.copyBytes();
         }
         if (extCommSet != null) {
-            if (net.best.extComm == null) {
-                net.best.extComm = new ArrayList<Long>();
+            if (attr.extComm == null) {
+                attr.extComm = new ArrayList<Long>();
             }
-            net.best.extComm.addAll(extCommSet);
+            attr.extComm.addAll(extCommSet);
         }
         if (lrgCommSet != null) {
-            if (net.best.lrgComm == null) {
-                net.best.lrgComm = new ArrayList<tabLargeComm>();
+            if (attr.lrgComm == null) {
+                attr.lrgComm = new ArrayList<tabLargeComm>();
             }
-            net.best.lrgComm.addAll(lrgCommSet);
+            attr.lrgComm.addAll(lrgCommSet);
         }
+    }
+
+    public void update(int afi, tabRouteEntry<addrIP> net) {
+        for (int i = 0; i < net.alts.size(); i++) {
+            doUpdate(net.alts.get(i));
+        }
+        net.selectBest();
         if (roumapSet != null) {
             roumapSet.update(afi, net, false);
         }
@@ -964,7 +971,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             tabRtrplc.doRpl(afi, net, rouplcSet, false);
         }
         if (script != null) {
-            doTcl(afi, net, script);
+            doTcl(afi, net.best, net, script);
         }
     }
 
@@ -972,10 +979,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * execute script
      *
      * @param afi address family
+     * @param attr attribute to update
      * @param net prefix to update
      * @param scr updater script
      */
-    protected static void doTcl(int afi, tabRouteEntry<addrIP> net, List<String> scr) {
+    protected static void doTcl(int afi, tabRouteAttr<addrIP> attr, tabRouteEntry<addrIP> net, List<String> scr) {
         pipeLine pl = new pipeLine(32768, false);
         pipeSide pip = pl.getSide();
         pip.timeout = 10000;
@@ -992,22 +1000,22 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         t.addLine("set wildcard " + net.prefix.wildcard);
         t.addLine("set broadcast " + net.prefix.broadcast);
         t.addLine("set rd " + rd2string(net.rouDst));
-        t.addLine("set nexthop " + net.best.nextHop);
-        t.addLine("set distance " + net.best.distance);
-        t.addLine("set validity " + net.best.validity);
-        t.addLine("set locpref " + net.best.locPref);
-        t.addLine("set accigp " + net.best.accIgp);
-        t.addLine("set bandwidth " + net.best.bandwidth);
-        t.addLine("set origin " + net.best.origin);
-        t.addLine("set metric " + net.best.metric);
-        t.addLine("set tag " + net.best.tag);
-        t.addLine("set segrout " + net.best.segrouIdx);
-        t.addLine("set bier " + net.best.bierIdx);
-        t.addLine("set aspath \"" + net.best.asPathStr() + "\"");
-        t.addLine("set pathlen \"" + net.best.asPathLen() + "\"");
-        t.addLine("set stdcomm \"" + stdComms2string(net.best.stdComm) + "\"");
-        t.addLine("set extcomm \"" + extComms2string(net.best.extComm) + "\"");
-        t.addLine("set lrgcomm \"" + lrgComms2string(net.best.lrgComm) + "\"");
+        t.addLine("set nexthop " + attr.nextHop);
+        t.addLine("set distance " + attr.distance);
+        t.addLine("set validity " + attr.validity);
+        t.addLine("set locpref " + attr.locPref);
+        t.addLine("set accigp " + attr.accIgp);
+        t.addLine("set bandwidth " + attr.bandwidth);
+        t.addLine("set origin " + attr.origin);
+        t.addLine("set metric " + attr.metric);
+        t.addLine("set tag " + attr.tag);
+        t.addLine("set segrout " + attr.segrouIdx);
+        t.addLine("set bier " + attr.bierIdx);
+        t.addLine("set aspath \"" + attr.asPathStr() + "\"");
+        t.addLine("set pathlen \"" + attr.asPathLen() + "\"");
+        t.addLine("set stdcomm \"" + stdComms2string(attr.stdComm) + "\"");
+        t.addLine("set extcomm \"" + extComms2string(attr.extComm) + "\"");
+        t.addLine("set lrgcomm \"" + lrgComms2string(attr.lrgComm) + "\"");
         t.addLines(scr);
         pip = pl.getSide();
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -1028,64 +1036,64 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             cmds cmd = new cmds("tcl", a);
             a = cmd.word();
             if (a.equals("nexthop")) {
-                net.best.nextHop.fromString(cmd.word());
+                attr.nextHop.fromString(cmd.word());
                 continue;
             }
             if (a.equals("distance")) {
-                net.best.distance = bits.str2num(cmd.word());
+                attr.distance = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("locpref")) {
-                net.best.locPref = bits.str2num(cmd.word());
+                attr.locPref = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("accigp")) {
-                net.best.accIgp = bits.str2num(cmd.word());
+                attr.accIgp = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("bandwidth")) {
-                net.best.bandwidth = bits.str2num(cmd.word());
+                attr.bandwidth = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("validity")) {
-                net.best.validity = bits.str2num(cmd.word());
+                attr.validity = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("origin")) {
-                net.best.origin = bits.str2num(cmd.word());
+                attr.origin = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("metric")) {
-                net.best.metric = bits.str2num(cmd.word());
+                attr.metric = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("tag")) {
-                net.best.tag = bits.str2num(cmd.word());
+                attr.tag = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("segrout")) {
-                net.best.segrouIdx = bits.str2num(cmd.word());
+                attr.segrouIdx = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("bier")) {
-                net.best.bierIdx = bits.str2num(cmd.word());
+                attr.bierIdx = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("aspath")) {
                 List<Integer> lst = string2intList(cmd.getRemaining());
-                net.best.pathSeq = tabLabel.prependLabels(net.best.pathSeq, lst);
+                attr.pathSeq = tabLabel.prependLabels(attr.pathSeq, lst);
                 continue;
             }
             if (a.equals("stdcomm")) {
-                net.best.stdComm = string2stdComms(cmd.getRemaining());
+                attr.stdComm = string2stdComms(cmd.getRemaining());
                 continue;
             }
             if (a.equals("extcomm")) {
-                net.best.extComm = string2extComms(cmd.getRemaining());
+                attr.extComm = string2extComms(cmd.getRemaining());
                 continue;
             }
             if (a.equals("lrgcomm")) {
-                net.best.lrgComm = string2lrgComms(cmd.getRemaining());
+                attr.lrgComm = string2lrgComms(cmd.getRemaining());
                 continue;
             }
         }

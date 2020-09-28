@@ -2268,7 +2268,7 @@ public class userShow {
             if (!prf1.differs(tabRoute.addType.alters, prf2)) {
                 continue;
             }
-            diff.add(tabRoute.addType.always, prf1, false, false);
+            diff.add(tabRoute.addType.alters, prf1, false, false);
         }
     }
 
