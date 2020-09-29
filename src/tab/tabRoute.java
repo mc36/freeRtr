@@ -46,7 +46,7 @@ public class tabRoute<T extends addrType> {
          */
         lnkEcmp,
         /**
-         * ecmp but with linking copy mode
+         * alternatives but with linking copy mode
          */
         lnkAlters,
     }
