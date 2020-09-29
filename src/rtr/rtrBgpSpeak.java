@@ -1759,7 +1759,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tab.add(tabRoute.addType.always, ntry, false, false);
             return;
         }
-        old = old.copyBytes(tabRoute.addType.alters);
+        old = old.copyBytes(tabRoute.addType.lnkAlters);
         int i = old.findId(ntry.best.ident);
         if (i >= 0) {
             old.setAlt(i, ntry.best);

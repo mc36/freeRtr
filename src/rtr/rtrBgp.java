@@ -1547,15 +1547,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             setValidity(ntry);
         }
         if (best == null) {
-            return ntry.copyBytes(tabRoute.addType.link);
+            return ntry.copyBytes(tabRoute.addType.lnkEcmp);
         }
         if (best.best.isOtherBetter(ntry.best, false)) {
-            return ntry.copyBytes(tabRoute.addType.link);
+            return ntry.copyBytes(tabRoute.addType.lnkEcmp);
         }
         if (ntry.best.isOtherBetter(best.best, false)) {
             return best;
         }
-        ntry = ntry.copyBytes(tabRoute.addType.link);
+        ntry = ntry.copyBytes(tabRoute.addType.lnkEcmp);
         best.addAlt(ntry.alts);
         return best;
     }

@@ -171,7 +171,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                 }
                 prf.selectBest();
                 return prf;
-            case link:
+            case lnkEcmp:
                 prf.alts.clear();
                 for (int i = 0; i < alts.size(); i++) {
                     tabRouteAttr<T> ntry = alts.get(i);
@@ -181,6 +181,13 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                     prf.alts.add(ntry);
                 }
                 prf.hashBest();
+                return prf;
+            case lnkAlters:
+                prf.alts.clear();
+                for (int i = 0; i < alts.size(); i++) {
+                    prf.alts.add(alts.get(i));
+                }
+                prf.selectBest();
                 return prf;
             default:
                 best.copyBytes(prf.best, true);

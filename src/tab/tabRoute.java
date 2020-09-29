@@ -44,7 +44,11 @@ public class tabRoute<T extends addrType> {
         /**
          * ecmp but with linking copy mode
          */
-        link,
+        lnkEcmp,
+        /**
+         * ecmp but with linking copy mode
+         */
+        lnkAlters,
     }
 
     /**
@@ -194,7 +198,7 @@ public class tabRoute<T extends addrType> {
                 prefixes.put(prefix);
                 version++;
                 return;
-            case link:
+            case lnkEcmp:
             case ecmp:
                 own = prefixes.add(prefix);
                 if (own == null) {
@@ -232,6 +236,7 @@ public class tabRoute<T extends addrType> {
                 }
                 version++;
                 return;
+            case lnkAlters:
             case alters:
                 own = prefixes.add(prefix);
                 if (own == null) {
@@ -530,7 +535,7 @@ public class tabRoute<T extends addrType> {
                 add(mod, imp, false, false);
                 continue;
             }
-            imp = imp.copyBytes(addType.link);
+            imp = imp.copyBytes(addType.lnkEcmp);
             for (int o = imp.alts.size() - 1; o >= 0; o--) {
                 tabRouteAttr<T> attr = imp.alts.get(o);
                 if (!doNexthopFix(attr, nexthops)) {
