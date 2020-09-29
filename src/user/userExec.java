@@ -3487,7 +3487,8 @@ public class userExec {
         exe.reader.tabMod = reader.tabMod;
         exe.reader.timeStamp = reader.timeStamp;
         exe.reader.colorize = reader.colorize & col;
-        exe.reader.spacetab = reader.spacetab;
+        exe.reader.height = reader.height;
+        exe.reader.width = reader.width;
         pip.timeout = 60000;
         String a = "show " + cmd.getRemaining();
         a = exe.repairCommand(a);

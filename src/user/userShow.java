@@ -2161,121 +2161,125 @@ public class userShow {
         }
     }
 
-    private void ignoreAttribs(tabRouteEntry<addrIP> ntry, int ign) {
-        ntry.best.srcRtr = null;
-        ntry.best.rouSrc = 0;
-        ntry.best.rouTyp = tabRouteAttr.routeType.bgp4;
-        ntry.best.protoNum = 0;
-        ntry.best.iface = null;
-        ntry.best.ident = 0;
+    private void ignoreAttribs(tabRouteAttr<addrIP> ntry, int ign) {
+        ntry.srcRtr = null;
+        ntry.rouSrc = 0;
+        ntry.rouTyp = tabRouteAttr.routeType.bgp4;
+        ntry.protoNum = 0;
+        ntry.iface = null;
+        ntry.ident = 0;
         if ((ign & 0x1) != 0) {
-            ntry.best.clustList = null;
+            ntry.clustList = null;
         }
         if ((ign & 0x2) != 0) {
-            ntry.best.nextHop = null;
-            ntry.best.oldHop = null;
+            ntry.nextHop = null;
+            ntry.oldHop = null;
         }
         if ((ign & 0x4) != 0) {
-            ntry.best.origin = 0;
+            ntry.origin = 0;
         }
         if ((ign & 0x8) != 0) {
-            ntry.best.metric = 0;
+            ntry.metric = 0;
         }
         if ((ign & 0x10) != 0) {
-            ntry.best.locPref = 0;
+            ntry.locPref = 0;
         }
         if ((ign & 0x20) != 0) {
-            ntry.best.distance = 0;
+            ntry.distance = 0;
         }
         if ((ign & 0x40) != 0) {
-            ntry.best.tag = 0;
+            ntry.tag = 0;
         }
         if ((ign & 0x80) != 0) {
-            ntry.best.validity = 0;
+            ntry.validity = 0;
         }
         if ((ign & 0x100) != 0) {
-            ntry.best.pathSeq = null;
-            ntry.best.pathSet = null;
+            ntry.pathSeq = null;
+            ntry.pathSet = null;
         }
         if ((ign & 0x200) != 0) {
-            ntry.best.confSeq = null;
-            ntry.best.confSet = null;
+            ntry.confSeq = null;
+            ntry.confSet = null;
         }
         if ((ign & 0x400) != 0) {
-            ntry.best.stdComm = null;
+            ntry.stdComm = null;
         }
         if ((ign & 0x800) != 0) {
-            ntry.best.extComm = null;
+            ntry.extComm = null;
         }
         if ((ign & 0x1000) != 0) {
-            ntry.best.accIgp = 0;
+            ntry.accIgp = 0;
         }
         if ((ign & 0x2000) != 0) {
-            ntry.best.bandwidth = 0;
+            ntry.bandwidth = 0;
         }
         if ((ign & 0x4000) != 0) {
-            ntry.best.labelLoc = null;
-            ntry.best.labelRem = null;
+            ntry.labelLoc = null;
+            ntry.labelRem = null;
         }
         if ((ign & 0x8000) != 0) {
-            ntry.best.atomicAggr = false;
-            ntry.best.aggrAs = 0;
-            ntry.best.aggrRtr = null;
+            ntry.atomicAggr = false;
+            ntry.aggrAs = 0;
+            ntry.aggrRtr = null;
         }
         if ((ign & 0x10000) != 0) {
-            ntry.best.originator = null;
+            ntry.originator = null;
         }
         if ((ign & 0x20000) != 0) {
-            ntry.best.pmsiLab = 0;
-            ntry.best.pmsiTyp = 0;
-            ntry.best.pmsiTun = null;
+            ntry.pmsiLab = 0;
+            ntry.pmsiTyp = 0;
+            ntry.pmsiTun = null;
         }
         if ((ign & 0x40000) != 0) {
-            ntry.best.segrouIdx = 0;
-            ntry.best.segrouBeg = 0;
-            ntry.best.segrouOld = 0;
-            ntry.best.segrouSiz = 0;
+            ntry.segrouIdx = 0;
+            ntry.segrouBeg = 0;
+            ntry.segrouOld = 0;
+            ntry.segrouSiz = 0;
         }
         if ((ign & 0x80000) != 0) {
-            ntry.best.lrgComm = null;
+            ntry.lrgComm = null;
         }
         if ((ign & 0x100000) != 0) {
-            ntry.best.tunelTyp = 0;
-            ntry.best.tunelVal = null;
+            ntry.tunelTyp = 0;
+            ntry.tunelVal = null;
         }
         if ((ign & 0x200000) != 0) {
-            ntry.best.attribAs = 0;
-            ntry.best.attribVal = null;
+            ntry.attribAs = 0;
+            ntry.attribVal = null;
         }
         if ((ign & 0x400000) != 0) {
-            ntry.best.bierIdx = 0;
-            ntry.best.bierBeg = 0;
-            ntry.best.bierOld = 0;
-            ntry.best.bierSiz = 0;
-            ntry.best.bierHdr = 0;
+            ntry.bierIdx = 0;
+            ntry.bierBeg = 0;
+            ntry.bierOld = 0;
+            ntry.bierSiz = 0;
+            ntry.bierHdr = 0;
         }
         if ((ign & 0x800000) != 0) {
-            if (ntry.best.stdComm != null) {
-                Collections.sort(ntry.best.stdComm);
+            if (ntry.stdComm != null) {
+                Collections.sort(ntry.stdComm);
             }
-            if (ntry.best.extComm != null) {
-                Collections.sort(ntry.best.extComm);
+            if (ntry.extComm != null) {
+                Collections.sort(ntry.extComm);
             }
         }
     }
 
     private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign) {
-        for (int i = 0; i < nei1.size(); i++) {
-            tabRouteEntry<addrIP> prf1 = nei1.get(i);
+        for (int o = 0; o < nei1.size(); o++) {
+            tabRouteEntry<addrIP> prf1 = nei1.get(o);
             tabRouteEntry<addrIP> prf2 = nei2.find(prf1);
             if (prf2 == null) {
                 uniq.add(tabRoute.addType.always, prf1, false, false);
                 continue;
             }
-            prf1 = prf1.copyBytes(tabRoute.addType.notyet);
-            prf2 = prf2.copyBytes(tabRoute.addType.notyet);
-            ignoreAttribs(prf1, ign);
-            ignoreAttribs(prf2, ign);
+            prf1 = prf1.copyBytes(tabRoute.addType.alters);
+            prf2 = prf2.copyBytes(tabRoute.addType.alters);
+            for (int i = 0; i < prf1.alts.size(); i++) {
+                ignoreAttribs(prf1.alts.get(i), ign);
+            }
+            for (int i = 0; i < prf2.alts.size(); i++) {
+                ignoreAttribs(prf2.alts.get(i), ign);
+            }
             if (!prf1.differs(tabRoute.addType.alters, prf2)) {
                 continue;
             }
