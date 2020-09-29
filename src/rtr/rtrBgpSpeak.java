@@ -1757,9 +1757,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         old = old.copyBytes(tabRoute.addType.alters);
         int i = old.findId(ntry.best.ident);
         if (i >= 0) {
-            old.delAlt(i);
+            old.setAlt(i, ntry.best);
+        } else {
+            old.addAlt(ntry.best);
         }
-        old.addAlt(ntry.best);
         old.selectBest();
         tab.add(tabRoute.addType.always, old, false, false);
     }

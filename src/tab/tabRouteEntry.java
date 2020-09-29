@@ -200,6 +200,16 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     /**
      * add attribute
      *
+     * @param idx index
+     * @param other attribute to add
+     */
+    public void setAlt(int idx, tabRouteAttr<T> other) {
+        alts.set(idx, other);
+    }
+
+    /**
+     * add attribute
+     *
      * @param others attributes to add
      */
     public void addAlt(List<tabRouteAttr<T>> others) {

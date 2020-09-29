@@ -1506,7 +1506,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flowInst) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
-        otherTrigger |= other.doPeers(nOtr);
+        other.doPeers(nOtr);
         for (int i = 0; i < vrfs.size(); i++) {
             otherTrigger |= vrfs.get(i).doer.doPeers(nVpnU, nVpnM, nVpnF);
         }
