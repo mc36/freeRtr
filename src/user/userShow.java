@@ -2150,6 +2150,120 @@ public class userShow {
         cmd.badCmd();
     }
 
+    private void compareDiffs(tabRoute<addrIP> equ, tabRoute<addrIP> dif1, tabRoute<addrIP> dif2, int ign) {
+        for (int i = 0; i < dif1.size(); i++) {
+            tabRouteEntry<addrIP> prf1 = dif1.get(i);
+            tabRouteEntry<addrIP> prf2 = dif2.find(prf1);
+            if (prf2 == null) {
+                continue;
+            }
+            equ.add(tabRoute.addType.always, prf1, false, false);
+        }
+    }
+
+    private void clearAttribs(tabRouteEntry<addrIP> ntry, int ign) {
+        ntry.best.srcRtr = null;
+        ntry.best.rouSrc = 0;
+        ntry.best.rouTyp = tabRouteAttr.routeType.bgp4;
+        ntry.best.protoNum = 0;
+        ntry.best.iface = null;
+        ntry.best.ident = 0;
+        if ((ign & 0x1) != 0) {
+            ntry.best.clustList = null;
+        }
+        if ((ign & 0x2) != 0) {
+            ntry.best.nextHop = null;
+            ntry.best.oldHop = null;
+        }
+        if ((ign & 0x4) != 0) {
+            ntry.best.origin = 0;
+        }
+        if ((ign & 0x8) != 0) {
+            ntry.best.metric = 0;
+        }
+        if ((ign & 0x10) != 0) {
+            ntry.best.locPref = 0;
+        }
+        if ((ign & 0x20) != 0) {
+            ntry.best.distance = 0;
+        }
+        if ((ign & 0x40) != 0) {
+            ntry.best.tag = 0;
+        }
+        if ((ign & 0x80) != 0) {
+            ntry.best.validity = 0;
+        }
+        if ((ign & 0x100) != 0) {
+            ntry.best.pathSeq = null;
+            ntry.best.pathSet = null;
+        }
+        if ((ign & 0x200) != 0) {
+            ntry.best.confSeq = null;
+            ntry.best.confSet = null;
+        }
+        if ((ign & 0x400) != 0) {
+            ntry.best.stdComm = null;
+        }
+        if ((ign & 0x800) != 0) {
+            ntry.best.extComm = null;
+        }
+        if ((ign & 0x1000) != 0) {
+            ntry.best.accIgp = 0;
+        }
+        if ((ign & 0x2000) != 0) {
+            ntry.best.bandwidth = 0;
+        }
+        if ((ign & 0x4000) != 0) {
+            ntry.best.labelLoc = null;
+            ntry.best.labelRem = null;
+        }
+        if ((ign & 0x8000) != 0) {
+            ntry.best.atomicAggr = false;
+            ntry.best.aggrAs = 0;
+            ntry.best.aggrRtr = null;
+        }
+        if ((ign & 0x10000) != 0) {
+            ntry.best.originator = null;
+        }
+        if ((ign & 0x20000) != 0) {
+            ntry.best.pmsiLab = 0;
+            ntry.best.pmsiTyp = 0;
+            ntry.best.pmsiTun = null;
+        }
+        if ((ign & 0x40000) != 0) {
+            ntry.best.segrouIdx = 0;
+            ntry.best.segrouBeg = 0;
+            ntry.best.segrouOld = 0;
+            ntry.best.segrouSiz = 0;
+        }
+        if ((ign & 0x80000) != 0) {
+            ntry.best.lrgComm = null;
+        }
+        if ((ign & 0x100000) != 0) {
+            ntry.best.tunelTyp = 0;
+            ntry.best.tunelVal = null;
+        }
+        if ((ign & 0x200000) != 0) {
+            ntry.best.attribAs = 0;
+            ntry.best.attribVal = null;
+        }
+        if ((ign & 0x400000) != 0) {
+            ntry.best.bierIdx = 0;
+            ntry.best.bierBeg = 0;
+            ntry.best.bierOld = 0;
+            ntry.best.bierSiz = 0;
+            ntry.best.bierHdr = 0;
+        }
+        if ((ign & 0x800000) != 0) {
+            if (ntry.best.stdComm != null) {
+                Collections.sort(ntry.best.stdComm);
+            }
+            if (ntry.best.extComm != null) {
+                Collections.sort(ntry.best.extComm);
+            }
+        }
+    }
+
     private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign) {
         for (int i = 0; i < nei1.size(); i++) {
             tabRouteEntry<addrIP> prf1 = nei1.get(i);
@@ -2160,164 +2274,90 @@ public class userShow {
             }
             prf1 = prf1.copyBytes(tabRoute.addType.notyet);
             prf2 = prf2.copyBytes(tabRoute.addType.notyet);
-            prf1.best.srcRtr = null;
-            prf2.best.srcRtr = null;
-            prf1.best.rouSrc = 0;
-            prf2.best.rouSrc = 0;
-            prf1.best.rouTyp = tabRouteAttr.routeType.bgp4;
-            prf2.best.rouTyp = tabRouteAttr.routeType.bgp4;
-            prf1.best.protoNum = 0;
-            prf2.best.protoNum = 0;
-            prf1.best.iface = null;
-            prf2.best.iface = null;
-            prf1.best.ident = 0;
-            prf2.best.ident = 0;
-            if ((ign & 0x1) != 0) {
-                prf1.best.clustList = null;
-                prf2.best.clustList = null;
-            }
-            if ((ign & 0x2) != 0) {
-                prf1.best.nextHop = null;
-                prf2.best.nextHop = null;
-                prf1.best.oldHop = null;
-                prf2.best.oldHop = null;
-            }
-            if ((ign & 0x4) != 0) {
-                prf1.best.origin = 0;
-                prf2.best.origin = 0;
-            }
-            if ((ign & 0x8) != 0) {
-                prf1.best.metric = 0;
-                prf2.best.metric = 0;
-            }
-            if ((ign & 0x10) != 0) {
-                prf1.best.locPref = 0;
-                prf2.best.locPref = 0;
-            }
-            if ((ign & 0x20) != 0) {
-                prf1.best.distance = 0;
-                prf2.best.distance = 0;
-            }
-            if ((ign & 0x40) != 0) {
-                prf1.best.tag = 0;
-                prf2.best.tag = 0;
-            }
-            if ((ign & 0x80) != 0) {
-                prf1.best.validity = 0;
-                prf2.best.validity = 0;
-            }
-            if ((ign & 0x100) != 0) {
-                prf1.best.pathSeq = null;
-                prf2.best.pathSeq = null;
-                prf1.best.pathSet = null;
-                prf2.best.pathSet = null;
-            }
-            if ((ign & 0x200) != 0) {
-                prf1.best.confSeq = null;
-                prf2.best.confSeq = null;
-                prf1.best.confSet = null;
-                prf2.best.confSet = null;
-            }
-            if ((ign & 0x400) != 0) {
-                prf1.best.stdComm = null;
-                prf2.best.stdComm = null;
-            }
-            if ((ign & 0x800) != 0) {
-                prf1.best.extComm = null;
-                prf2.best.extComm = null;
-            }
-            if ((ign & 0x1000) != 0) {
-                prf1.best.accIgp = 0;
-                prf2.best.accIgp = 0;
-            }
-            if ((ign & 0x2000) != 0) {
-                prf1.best.bandwidth = 0;
-                prf2.best.bandwidth = 0;
-            }
-            if ((ign & 0x4000) != 0) {
-                prf1.best.labelLoc = null;
-                prf2.best.labelLoc = null;
-                prf1.best.labelRem = null;
-                prf2.best.labelRem = null;
-            }
-            if ((ign & 0x8000) != 0) {
-                prf1.best.atomicAggr = false;
-                prf2.best.atomicAggr = false;
-                prf1.best.aggrAs = 0;
-                prf2.best.aggrAs = 0;
-                prf1.best.aggrRtr = null;
-                prf2.best.aggrRtr = null;
-            }
-            if ((ign & 0x10000) != 0) {
-                prf1.best.originator = null;
-                prf2.best.originator = null;
-            }
-            if ((ign & 0x20000) != 0) {
-                prf1.best.pmsiLab = 0;
-                prf2.best.pmsiLab = 0;
-                prf1.best.pmsiTyp = 0;
-                prf2.best.pmsiTyp = 0;
-                prf1.best.pmsiTun = null;
-                prf2.best.pmsiTun = null;
-            }
-            if ((ign & 0x40000) != 0) {
-                prf1.best.segrouIdx = 0;
-                prf2.best.segrouIdx = 0;
-                prf1.best.segrouBeg = 0;
-                prf2.best.segrouBeg = 0;
-                prf1.best.segrouOld = 0;
-                prf2.best.segrouOld = 0;
-                prf1.best.segrouSiz = 0;
-                prf2.best.segrouSiz = 0;
-            }
-            if ((ign & 0x80000) != 0) {
-                prf1.best.lrgComm = null;
-                prf2.best.lrgComm = null;
-            }
-            if ((ign & 0x100000) != 0) {
-                prf1.best.tunelTyp = 0;
-                prf2.best.tunelTyp = 0;
-                prf1.best.tunelVal = null;
-                prf2.best.tunelVal = null;
-            }
-            if ((ign & 0x200000) != 0) {
-                prf1.best.attribAs = 0;
-                prf2.best.attribAs = 0;
-                prf1.best.attribVal = null;
-                prf2.best.attribVal = null;
-            }
-            if ((ign & 0x400000) != 0) {
-                prf1.best.bierIdx = 0;
-                prf2.best.bierIdx = 0;
-                prf1.best.bierBeg = 0;
-                prf2.best.bierBeg = 0;
-                prf1.best.bierOld = 0;
-                prf2.best.bierOld = 0;
-                prf1.best.bierSiz = 0;
-                prf2.best.bierSiz = 0;
-                prf1.best.bierHdr = 0;
-                prf2.best.bierHdr = 0;
-            }
-            if ((ign & 0x800000) != 0) {
-                if (prf1.best.stdComm != null) {
-                    Collections.sort(prf1.best.stdComm);
-                }
-                if (prf2.best.stdComm != null) {
-                    Collections.sort(prf2.best.stdComm);
-                }
-                if (prf1.best.extComm != null) {
-                    Collections.sort(prf1.best.extComm);
-                }
-                if (prf2.best.extComm != null) {
-                    Collections.sort(prf2.best.extComm);
-                }
-            }
+            clearAttribs(prf1, ign);
+            clearAttribs(prf2, ign);
             if (!prf1.differs(tabRoute.addType.alters, prf2)) {
                 continue;
             }
             diff.add(tabRoute.addType.alters, prf1, false, false);
             diff.add(tabRoute.addType.alters, prf2, false, false);
         }
+    }
+
+    private int str2ignore(String a) {
+        if (a.equals("cluster")) {
+            return 0x1;
+        }
+        if (a.equals("nexthop")) {
+            return 0x2;
+        }
+        if (a.equals("origin")) {
+            return 0x4;
+        }
+        if (a.equals("metric")) {
+            return 0x8;
+        }
+        if (a.equals("locpref")) {
+            return 0x10;
+        }
+        if (a.equals("distance")) {
+            return 0x20;
+        }
+        if (a.equals("tag")) {
+            return 0x40;
+        }
+        if (a.equals("validity")) {
+            return 0x80;
+        }
+        if (a.equals("aspath")) {
+            return 0x100;
+        }
+        if (a.equals("asconf")) {
+            return 0x200;
+        }
+        if (a.equals("stdcomm")) {
+            return 0x400;
+        }
+        if (a.equals("extcomm")) {
+            return 0x800;
+        }
+        if (a.equals("aigp")) {
+            return 0x1000;
+        }
+        if (a.equals("bandwidth")) {
+            return 0x2000;
+        }
+        if (a.equals("label")) {
+            return 0x4000;
+        }
+        if (a.equals("aggregate")) {
+            return 0x8000;
+        }
+        if (a.equals("orignted")) {
+            return 0x10000;
+        }
+        if (a.equals("pmsi")) {
+            return 0x20000;
+        }
+        if (a.equals("segrout")) {
+            return 0x40000;
+        }
+        if (a.equals("lrgcomm")) {
+            return 0x80000;
+        }
+        if (a.equals("tunnel")) {
+            return 0x100000;
+        }
+        if (a.equals("attrset")) {
+            return 0x200000;
+        }
+        if (a.equals("bier")) {
+            return 0x400000;
+        }
+        if (a.equals("sortcomm")) {
+            return 0x800000;
+        }
+        return 0;
     }
 
     private void doShowIpXbgp(tabRouteAttr.routeType afi) {
@@ -2620,78 +2660,7 @@ public class userShow {
                 if (a.length() < 1) {
                     break;
                 }
-                if (a.equals("cluster")) {
-                    ign |= 0x1;
-                }
-                if (a.equals("nexthop")) {
-                    ign |= 0x2;
-                }
-                if (a.equals("origin")) {
-                    ign |= 0x4;
-                }
-                if (a.equals("metric")) {
-                    ign |= 0x8;
-                }
-                if (a.equals("locpref")) {
-                    ign |= 0x10;
-                }
-                if (a.equals("distance")) {
-                    ign |= 0x20;
-                }
-                if (a.equals("tag")) {
-                    ign |= 0x40;
-                }
-                if (a.equals("validity")) {
-                    ign |= 0x80;
-                }
-                if (a.equals("aspath")) {
-                    ign |= 0x100;
-                }
-                if (a.equals("asconf")) {
-                    ign |= 0x200;
-                }
-                if (a.equals("stdcomm")) {
-                    ign |= 0x400;
-                }
-                if (a.equals("extcomm")) {
-                    ign |= 0x800;
-                }
-                if (a.equals("aigp")) {
-                    ign |= 0x1000;
-                }
-                if (a.equals("bandwidth")) {
-                    ign |= 0x2000;
-                }
-                if (a.equals("label")) {
-                    ign |= 0x4000;
-                }
-                if (a.equals("aggregate")) {
-                    ign |= 0x8000;
-                }
-                if (a.equals("orignted")) {
-                    ign |= 0x10000;
-                }
-                if (a.equals("pmsi")) {
-                    ign |= 0x20000;
-                }
-                if (a.equals("segrout")) {
-                    ign |= 0x40000;
-                }
-                if (a.equals("lrgcomm")) {
-                    ign |= 0x80000;
-                }
-                if (a.equals("tunnel")) {
-                    ign |= 0x100000;
-                }
-                if (a.equals("attrset")) {
-                    ign |= 0x200000;
-                }
-                if (a.equals("bier")) {
-                    ign |= 0x400000;
-                }
-                if (a.equals("sortcomm")) {
-                    ign |= 0x800000;
-                }
+                ign |= str2ignore(a);
             }
             tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
             tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
@@ -2709,6 +2678,52 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, uni2, dsp);
             cmd.error("attribute differs");
             doShowRoutes(r.bgp.fwdCore, diff, dsp);
+            return;
+        }
+        if (a.equals("dcompare")) {
+            addrIP adr = new addrIP();
+            adr.fromString(cmd.word());
+            rtrBgpNeigh nei1 = r.bgp.findPeer(adr);
+            if (nei1 == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            adr = new addrIP();
+            adr.fromString(cmd.word());
+            rtrBgpNeigh nei2 = r.bgp.findPeer(adr);
+            if (nei2 == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            int ign = 0;
+            int tim = 5000;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("time")) {
+                    tim = bits.str2num(cmd.word());
+                    continue;
+                }
+                ign |= str2ignore(a);
+            }
+            tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
+            tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
+            if ((acc1 == null) || (acc2 == null)) {
+                return;
+            }
+            tabRoute<addrIP> dif1 = new tabRoute<addrIP>("tab");
+            compareTables(dif1, dif1, acc1, acc2, ign);
+            compareTables(dif1, dif1, acc2, acc1, ign);
+            bits.sleep(tim);
+            tabRoute<addrIP> dif2 = new tabRoute<addrIP>("tab");
+            compareTables(dif2, dif2, acc1, acc2, ign);
+            compareTables(dif2, dif2, acc2, acc1, ign);
+            tabRoute<addrIP> dif3 = new tabRoute<addrIP>("tab");
+            cmd.error("constant differences");
+            compareDiffs(dif3, dif1, dif2, ign);
+            doShowRoutes(r.bgp.fwdCore, dif3, dsp);
             return;
         }
         tabRoute<addrIP> tab = r.bgp.getDatabase(sfi);

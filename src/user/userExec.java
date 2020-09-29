@@ -583,6 +583,7 @@ public class userExec {
         hl.add("9 10,.                 <addr>    prefix to view");
         hl.add("10 .                     [rd]    route distinguisher");
         hl.add("6 7              compare         compare routes from neighbors");
+        hl.add("6 7              dcompare        double compare routes from neighbors");
         hl.add("7 8                <addr>        neighbor address");
         hl.add("8 9,.                <addr>      neighbor address");
         hl.add("9 9,.                  bier      ignore bier");
@@ -609,6 +610,8 @@ public class userExec {
         hl.add("9 9,.                  pmsi      ignore pmsi");
         hl.add("9 9,.                  segrout   ignore segment routing");
         hl.add("9 9,.                  tunnel    ignore tunnel");
+        hl.add("9 10                   time      specify time");
+        hl.add("10 9,.                   <num>   milliseconds");
         hl.add("3 4        logger                route logger");
         hl.add("4 5          <num>               process id");
         hl.add("5 .            prefix-lengths    list of prefix lengths");
