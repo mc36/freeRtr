@@ -1510,6 +1510,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (!addpath) {
+            if (don != null) {
+                if (!wil.best.differs(don.best)) {
+                    return;
+                }
+            }
             lst.add(wil);
             pckTx.clear();
             rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst, null);
