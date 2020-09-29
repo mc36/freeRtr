@@ -34,6 +34,7 @@ import util.bits;
 import util.cmds;
 import util.debugger;
 import util.logger;
+import util.shrtPthFrst;
 import util.state;
 import util.typLenVal;
 
@@ -1690,6 +1691,43 @@ public class rtrIsis extends ipRtr {
     public List<String> showSpfTree(int level) {
         rtrIsisLevel lev = getLevel(level);
         return lev.lastSpf.listTree();
+    }
+
+    /**
+     * show tree
+     *
+     * @param level level number
+     * @param cmd entry to find
+     * @return tree of spf
+     */
+    public List<String> showSpfOtherTree(int level, cmds cmd) {
+        rtrIsisLevel lev = getLevel(level);
+        shrtPthFrst<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
+        rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
+        ned.fromString(cmd.word());
+        spf.doCalc(ned, null);
+        return spf.listTree();
+    }
+
+    /**
+     * show topology
+     *
+     * @param level level number
+     * @param cmd entry to find
+     * @return log of spf
+     */
+    public userFormat showSpfOtherTopo(int level, cmds cmd) {
+        rtrIsisLevel lev = getLevel(level);
+        shrtPthFrst<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
+        rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
+        ned.fromString(cmd.word());
+        spf.doCalc(ned, null);
+        if (cmd.size() < 1) {
+            return spf.listTopology();
+        }
+        ned = new rtrIsisLevelSpf(new addrIsis(), 0);
+        ned.fromString(cmd.word());
+        return spf.listTopology(ned);
     }
 
     /**

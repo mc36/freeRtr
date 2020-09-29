@@ -473,6 +473,39 @@ public class rtrLsrp extends ipRtr implements Runnable {
     }
 
     /**
+     * show tree
+     *
+     * @param cmd entry to find
+     * @return tree of spf
+     */
+    public List<String> showSpfOtherTree(cmds cmd) {
+        shrtPthFrst<addrIPv4> spf = lastSpf.copyBytes();
+        addrIPv4 ned = new addrIPv4();
+        ned.fromString(cmd.word());
+        spf.doCalc(ned, null);
+        return spf.listTree();
+    }
+
+    /**
+     * show topology
+     *
+     * @param cmd entry to find
+     * @return log of spf
+     */
+    public userFormat showSpfOtherTopo(cmds cmd) {
+        shrtPthFrst<addrIPv4> spf = lastSpf.copyBytes();
+        addrIPv4 ned = new addrIPv4();
+        ned.fromString(cmd.word());
+        spf.doCalc(ned, null);
+        if (cmd.size() < 1) {
+            return spf.listTopology();
+        }
+        ned = new addrIPv4();
+        ned.fromString(cmd.word());
+        return spf.listTopology(ned);
+    }
+
+    /**
      * show graph
      *
      * @return graph of spf

@@ -11,7 +11,6 @@ import tab.tabGen;
 import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelBierN;
-import tab.tabRoute;
 import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRouteIface;
@@ -46,6 +45,8 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     private long tim2;
 
     private long tim3;
+
+    private shrtPthFrstNode<Ta> spfRoot;
 
     /**
      * log size
@@ -100,6 +101,27 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         for (; log.size() > max;) {
             log.remove(0);
         }
+    }
+
+    /**
+     * copy topology
+     *
+     * @return copy
+     */
+    public shrtPthFrst<Ta> copyBytes() {
+        shrtPthFrst<Ta> res = new shrtPthFrst<Ta>(this);
+        for (int o = 0; o < nodes.size(); o++) {
+            shrtPthFrstNode<Ta> nod = nodes.get(o);
+            for (int i = 0; i < nod.conn.size(); i++) {
+                shrtPthFrstConn<Ta> con = nod.conn.get(i);
+                res.addConn(nod.name, con.target.name, con.metric, con.realHop, con.stub, con.ident);
+            }
+            res.addSegRouB(nod.name, nod.srBeg);
+            res.addSegRouI(nod.name, nod.srIdx);
+            res.addBierB(nod.name, nod.brBeg);
+            res.addBierI(nod.name, nod.brIdx, true);
+        }
+        return res;
     }
 
     /**
@@ -286,6 +308,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         if (ntry == null) {
             return true;
         }
+        spfRoot = ntry;
         tabGen<shrtPthFrstNode<Ta>> lst = new tabGen<shrtPthFrstNode<Ta>>();
         ntry.metric = 0;
         ntry.visited = true;
@@ -797,20 +820,10 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      */
     public List<String> listTree() {
         List<String> res = new ArrayList<String>();
-        shrtPthFrstNode<Ta> ntry = null;
-        for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> cur = nodes.get(i);
-            if (cur.uplink == null) {
-                continue;
-            }
-            if (cur.uplink.hops == 0) {
-                ntry = cur;
-            }
-        }
-        if (ntry == null) {
+        if (spfRoot == null) {
             return res;
         }
-        listTree(res, ntry, "");
+        listTree(res, spfRoot, "");
         return res;
     }
 

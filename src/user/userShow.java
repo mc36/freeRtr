@@ -1065,6 +1065,14 @@ public class userShow {
                     rdr.putStrArr(r.ospf4.showSpfTree(bits.str2num(cmd.word())));
                     return null;
                 }
+                if (a.equals("othertree")) {
+                    rdr.putStrArr(r.ospf4.showSpfOtherTree(bits.str2num(cmd.word()), cmd));
+                    return null;
+                }
+                if (a.equals("othertopology")) {
+                    rdr.putStrTab(r.ospf4.showSpfOtherTopo(bits.str2num(cmd.word()), cmd));
+                    return null;
+                }
                 if (a.equals("graph")) {
                     rdr.putStrArr(r.ospf4.showSpfGraph(bits.str2num(cmd.word())));
                     return null;
@@ -1309,6 +1317,14 @@ public class userShow {
                 }
                 if (a.equals("tree")) {
                     rdr.putStrArr(r.ospf6.showSpfTree(bits.str2num(cmd.word())));
+                    return null;
+                }
+                if (a.equals("othertree")) {
+                    rdr.putStrArr(r.ospf6.showSpfOtherTree(bits.str2num(cmd.word()), cmd));
+                    return null;
+                }
+                if (a.equals("othertopology")) {
+                    rdr.putStrTab(r.ospf6.showSpfOtherTopo(bits.str2num(cmd.word()), cmd));
                     return null;
                 }
                 if (a.equals("graph")) {
@@ -1616,6 +1632,14 @@ public class userShow {
             rdr.putStrArr(r.lsrp.showSpfTree());
             return;
         }
+        if (a.equals("othertree")) {
+            rdr.putStrArr(r.lsrp.showSpfOtherTree(cmd));
+            return;
+        }
+        if (a.equals("othertopology")) {
+            rdr.putStrTab(r.lsrp.showSpfOtherTopo(cmd));
+            return;
+        }
         if (a.equals("graph")) {
             rdr.putStrArr(r.lsrp.showSpfGraph());
             return;
@@ -1716,6 +1740,14 @@ public class userShow {
         }
         if (a.equals("tree")) {
             rdr.putStrArr(r.isis.showSpfTree(bits.str2num(cmd.word())));
+            return;
+        }
+        if (a.equals("othertree")) {
+            rdr.putStrArr(r.isis.showSpfOtherTree(bits.str2num(cmd.word()), cmd));
+            return;
+        }
+        if (a.equals("othertopology")) {
+            rdr.putStrTab(r.isis.showSpfOtherTopo(bits.str2num(cmd.word()), cmd));
             return;
         }
         if (a.equals("graph")) {

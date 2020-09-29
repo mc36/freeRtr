@@ -28,6 +28,7 @@ import util.bits;
 import util.cmds;
 import util.debugger;
 import util.logger;
+import util.shrtPthFrst;
 import util.state;
 
 /**
@@ -897,6 +898,51 @@ public class rtrOspf6 extends ipRtr {
             return new ArrayList<String>();
         }
         return ara.lastSpf.listTree();
+    }
+
+    /**
+     * show tree
+     *
+     * @param area area number
+     * @param cmd entry to find
+     * @return tree of spf
+     */
+    public List<String> showSpfOtherTree(int area, cmds cmd) {
+        rtrOspf6area ara = new rtrOspf6area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return new ArrayList<String>();
+        }
+        shrtPthFrst<rtrOspf6areaSpf> spf = ara.lastSpf.copyBytes();
+        rtrOspf6areaSpf ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
+        ned.fromString(cmd.word());
+        spf.doCalc(ned, null);
+        return spf.listTree();
+    }
+
+    /**
+     * show topology
+     *
+     * @param area area number
+     * @param cmd entry to find
+     * @return log of spf
+     */
+    public userFormat showSpfOtherTopo(int area, cmds cmd) {
+        rtrOspf6area ara = new rtrOspf6area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return null;
+        }
+        shrtPthFrst<rtrOspf6areaSpf> spf = ara.lastSpf.copyBytes();
+        rtrOspf6areaSpf ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
+        ned.fromString(cmd.word());
+        spf.doCalc(ned, null);
+        if (cmd.size() < 1) {
+            return spf.listTopology();
+        }
+        ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
+        ned.fromString(cmd.word());
+        return spf.listTopology(ned);
     }
 
     /**
