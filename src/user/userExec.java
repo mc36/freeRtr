@@ -960,6 +960,7 @@ public class userExec {
         hl.add("2 .      monitor                 log to this terminal");
         hl.add("2 .      timestamps              put time before each executed command");
         hl.add("2 .      colorized               sending to ansi terminal");
+        hl.add("2 .      spacetab                treat space as tabulator");
         hl.add("2 3      tablemode               select table formatting mode");
         hl.add("3 .        normal                select normal mode");
         hl.add("3 .        table                 select table mode");
@@ -1189,7 +1190,9 @@ public class userExec {
         hl.add("1 2    delete                    remove configuration command");
         hl.add("2 2,.    [str]                   config line to unset");
         hl.add("1 2,.  configure                 enter configuration mode");
-        hl.add("2 3      file                    from disk file");
+        hl.add("2 3      file                    append to running configuration");
+        hl.add("3 .        <file>                source file");
+        hl.add("2 3      replace                 overwrite the running configuration");
         hl.add("3 .        <file>                source file");
         hl.add("2 .      banner                  edit the banner");
         hl.add("2 .      startup                 edit the startup configuration");
@@ -1198,9 +1201,11 @@ public class userExec {
         hl.add("2 3,.    viewer                  view current configuration");
         hl.add("3 3,.      [name]                section name");
         hl.add("2 .      terminal                configure from this terminal");
-        hl.add("2 3      reload                  configure the startup configuration");
+        hl.add("2 3      reload                  overwrite the startup configuration");
         hl.add("3 3,.      <url>                 source url");
-        hl.add("2 3      network                 configure the running configuration");
+        hl.add("2 3      network                 append to running configuration");
+        hl.add("3 3,.      <url>                 source url");
+        hl.add("2 3      overwrite-network       overwrite the running configuration");
         hl.add("3 3,.      <url>                 source url");
         hl.add("2 .      rollback                configure within auto-revert session");
         hl.add("2 .      revert                  revert to startup configuration");
@@ -1767,6 +1772,7 @@ public class userExec {
                 return cmdRes.config;
             }
             if (a.equals("reapply")) {
+                cmd = reader.setFilter(cmd);
                 List<String> cfg = cfgAll.getShRun(true);
                 int res = cfgInit.executeSWcommands(cfg, false);
                 reader.putStrArr(bits.str2lst("errors=" + res));
@@ -1775,19 +1781,88 @@ public class userExec {
             if (a.equals("file")) {
                 cmd = reader.setFilter(cmd);
                 List<String> cfg = bits.txt2buf(cmd.word());
+                if (cfg == null) {
+                    cmd.error("error reading file");
+                    return cmdRes.command;
+                }
                 int res = cfgInit.executeSWcommands(cfg, false);
                 reader.putStrArr(bits.str2lst("errors=" + res));
                 return cmdRes.command;
             }
+            if (a.equals("replace")) {
+                cmd = reader.setFilter(cmd);
+                List<String> c2 = bits.txt2buf(cmd.word());
+                if (c2 == null) {
+                    cmd.error("error reading file");
+                    return cmdRes.command;
+                }
+                List<String> c1 = cfgAll.getShRun(true);
+                List<String> c3 = userFilter.getDiffs(c1, c2);
+                reader.putStrArr(bits.lst2lin(c3, false));
+                int res = cfgInit.executeSWcommands(c3, false);
+                reader.putStrArr(bits.str2lst("errors=" + res));
+                c3 = userFilter.getDiffs(c2, c1);
+                reader.putStrArr(c3);
+                return cmdRes.command;
+            }
             if (a.equals("reload")) {
-                userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(cfgInit.cfgFileSw));
+                cmd = reader.setFilter(cmd);
+                a = version.myWorkDir() + "cfg" + bits.randomD() + ".tmp";
+                boolean dl = userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+                List<String> cfg = bits.txt2buf(a);
+                userFlash.delete(a);
+                if (dl) {
+                    cmd.error("error fetching file");
+                    return cmdRes.command;
+                }
+                if (cfg == null) {
+                    cmd.error("error reading file");
+                    return cmdRes.command;
+                }
+                doCfgBackup();
+                boolean b = bits.buf2txt(true, cfg, cfgInit.cfgFileSw);
+                prtRedun.doConfig();
+                prtRedun.doReload();
+                cmd.error(doneFail(b));
+                return cmdRes.command;
+            }
+            if (a.equals("overwrite-network")) {
+                cmd = reader.setFilter(cmd);
+                a = version.myWorkDir() + "cfg" + bits.randomD() + ".tmp";
+                boolean dl = userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+                List<String> c2 = bits.txt2buf(a);
+                userFlash.delete(a);
+                if (dl) {
+                    cmd.error("error fetching file");
+                    return cmdRes.command;
+                }
+                if (c2 == null) {
+                    cmd.error("error reading file");
+                    return cmdRes.command;
+                }
+                List<String> c1 = cfgAll.getShRun(true);
+                List<String> c3 = userFilter.getDiffs(c1, c2);
+                reader.putStrArr(bits.lst2lin(c3, false));
+                int res = cfgInit.executeSWcommands(c3, false);
+                reader.putStrArr(bits.str2lst("errors=" + res));
+                c3 = userFilter.getDiffs(c2, c1);
+                reader.putStrArr(c3);
                 return cmdRes.command;
             }
             if (a.equals("network")) {
+                cmd = reader.setFilter(cmd);
                 a = version.myWorkDir() + "cfg" + bits.randomD() + ".tmp";
-                userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+                boolean dl = userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
                 List<String> cfg = bits.txt2buf(a);
                 userFlash.delete(a);
+                if (dl) {
+                    cmd.error("error fetching file");
+                    return cmdRes.command;
+                }
+                if (cfg == null) {
+                    cmd.error("error reading file");
+                    return cmdRes.command;
+                }
                 int res = cfgInit.executeSWcommands(cfg, false);
                 reader.putStrArr(bits.str2lst("errors=" + res));
                 return cmdRes.command;
@@ -1826,17 +1901,22 @@ public class userExec {
             if (a.equals("startup")) {
                 List<String> c1 = bits.txt2buf(cfgInit.cfgFileSw);
                 List<String> c2 = new ArrayList<String>();
+                if (c1 == null) {
+                    cmd.error("error reading file");
+                    return cmdRes.command;
+                }
                 c2.addAll(c1);
                 userEditor e = new userEditor(new userScreen(pipe, reader.width, reader.height), c2, "section '" + a + "'", false);
                 if (e.doEdit()) {
                     return cmdRes.command;
                 }
-                List<String> c3 = userFilter.getDiffs(c1, c2);
-                reader.putStrArr(bits.lst2lin(c3, false));
-                int res = cfgInit.executeSWcommands(c3, false);
-                reader.putStrArr(bits.str2lst("errors=" + res));
-                c3 = userFilter.getDiffs(c2, c1);
-                reader.putStrArr(c3);
+                reader.putStrArr(userFilter.getDiffs(c1, c2));
+                reader.putStrArr(userFilter.getDiffs(c2, c1));
+                doCfgBackup();
+                boolean b = bits.buf2txt(true, c2, cfgInit.cfgFileSw);
+                prtRedun.doConfig();
+                prtRedun.doReload();
+                cmd.error(doneFail(b));
                 return null;
             }
             if (a.equals("editor")) {
@@ -1868,10 +1948,18 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("revert")) {
-                List<String> cfg = userFilter.getDiffs(cfgAll.getShRun(true), bits.txt2buf(cfgInit.cfgFileSw));
-                reader.putStrArr(bits.lst2lin(cfg, false));
-                int res = cfgInit.executeSWcommands(cfg, false);
+                List<String> c1 = cfgAll.getShRun(true);
+                List<String> c2 = bits.txt2buf(cfgInit.cfgFileSw);
+                if (c2 == null) {
+                    cmd.error("error reading file");
+                    return cmdRes.command;
+                }
+                List<String> c3 = userFilter.getDiffs(c1, c2);
+                reader.putStrArr(bits.lst2lin(c3, false));
+                int res = cfgInit.executeSWcommands(c3, false);
                 reader.putStrArr(bits.str2lst("errors=" + res));
+                c3 = userFilter.getDiffs(c2, c1);
+                reader.putStrArr(c3);
                 return cmdRes.command;
             }
             cmd.badCmd();
@@ -1887,8 +1975,8 @@ public class userExec {
                 a = "memory";
             }
             if (a.equals("erase")) {
-                boolean b = bits.buf2txt(true, new ArrayList<String>(),
-                        cfgInit.cfgFileSw);
+                doCfgBackup();
+                boolean b = bits.buf2txt(true, new ArrayList<String>(), cfgInit.cfgFileSw);
                 prtRedun.doConfig();
                 prtRedun.doReload();
                 cmd.error(doneFail(b));
@@ -1900,27 +1988,12 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("file")) {
-                boolean b = bits.buf2txt(true, cfgAll.getShRun(true),
-                        cmd.getRemaining());
+                boolean b = bits.buf2txt(true, cfgAll.getShRun(true), cmd.getRemaining());
                 cmd.error(doneFail(b));
                 return cmdRes.command;
             }
             if (a.equals("memory")) {
-                if (cfgAll.configBackup != null) {
-                    a = cfgAll.configBackup;
-                    if (a.length() < 1) {
-                        a = cfgInit.cfgFileSw;
-                        int i = a.lastIndexOf(".");
-                        if (i > 0) {
-                            a = a.substring(0, i);
-                        }
-                        a = a + ".bak";
-                    }
-                    List<String> old = bits.txt2buf(cfgInit.cfgFileSw);
-                    if (old != null) {
-                        bits.buf2txt(true, old, a);
-                    }
-                }
+                doCfgBackup();
                 boolean b = bits.buf2txt(true, cfgAll.getShRun(true), cfgInit.cfgFileSw);
                 prtRedun.doConfig();
                 prtRedun.doReload();
@@ -2014,10 +2087,8 @@ public class userExec {
                 cfgInit.stopRouter(true, 3, "user requested");
                 return cmdRes.command;
             }
-            if (userFilter.doDiffer(cfgAll.getShRun(true),
-                    bits.txt2buf(cfgInit.cfgFileSw)) > 1) {
-                String b = pipe.strChr("configuration not saved, proceed?",
-                        "ynYN").toLowerCase();
+            if (userFilter.doDiffer(cfgAll.getShRun(true), bits.txt2buf(cfgInit.cfgFileSw)) > 1) {
+                String b = pipe.strChr("configuration not saved, proceed?", "ynYN").toLowerCase();
                 if (!b.equals("y")) {
                     return cmdRes.command;
                 }
@@ -3163,6 +3234,10 @@ public class userExec {
             reader.colorize = true;
             return;
         }
+        if (a.equals("spacetab")) {
+            reader.spacetab = true;
+            return;
+        }
         if (a.equals("length")) {
             reader.height = bits.str2num(cmd.word());
             return;
@@ -3186,6 +3261,10 @@ public class userExec {
         }
         if (a.equals("colorized")) {
             reader.colorize = false;
+            return;
+        }
+        if (a.equals("spacetab")) {
+            reader.spacetab = false;
             return;
         }
         cmd.badCmd();
@@ -3382,6 +3461,7 @@ public class userExec {
         exe.reader.tabMod = reader.tabMod;
         exe.reader.timeStamp = reader.timeStamp;
         exe.reader.colorize = reader.colorize & col;
+        exe.reader.spacetab = reader.spacetab;
         pip.timeout = 60000;
         String a = "show " + cmd.getRemaining();
         a = exe.repairCommand(a);
@@ -3459,6 +3539,28 @@ public class userExec {
         }
         edtr.doClear();
         reader.keyFlush();
+    }
+
+    private void doCfgBackup() {
+        if (cfgAll.configBackup == null) {
+            return;
+        }
+        cmd.error("backing up configuration");
+        String a = cfgAll.configBackup;
+        if (a.length() < 1) {
+            a = cfgInit.cfgFileSw;
+            int i = a.lastIndexOf(".");
+            if (i > 0) {
+                a = a.substring(0, i);
+            }
+            a = a + ".bak";
+        }
+        List<String> old = bits.txt2buf(cfgInit.cfgFileSw);
+        if (old == null) {
+            return;
+        }
+        boolean b = bits.buf2txt(true, old, a);
+        cmd.error(doneFail(b));
     }
 
 }

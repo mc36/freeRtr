@@ -53,6 +53,11 @@ public class userReader implements Comparator<String> {
     public boolean colorize;
 
     /**
+     * space as tab
+     */
+    public boolean spacetab;
+
+    /**
      * deactivation character
      */
     public int deactive = 65535;
@@ -981,8 +986,15 @@ public class userReader implements Comparator<String> {
                 cmdRefreshLine();
                 cmdClear();
                 return exit;
-            case 27:
+            case 27: // escape
                 cmdEscape();
+                break;
+            case 32: // space
+                if (spacetab) {
+                    cmdTabulator();
+                } else {
+                    cmdInsChr(ch);
+                }
                 break;
             case 63: // ? question mark
                 cmdShowHelp();

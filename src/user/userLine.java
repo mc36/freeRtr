@@ -50,6 +50,11 @@ public class userLine {
     public boolean execColor;
 
     /**
+     * space as tab
+     */
+    public boolean execSpace;
+
+    /**
      * table mode
      */
     public userFormat.tableMode execTables = userFormat.tableMode.normal;
@@ -161,6 +166,7 @@ public class userLine {
         lst.add(beg + "exec height " + execHeight);
         cmds.cfgLine(lst, !execTimes, beg, "exec timestamp", "");
         cmds.cfgLine(lst, !execColor, beg, "exec colorized", "");
+        cmds.cfgLine(lst, !execSpace, beg, "exec spacetab", "");
         lst.add(beg + "exec tablemode " + execTables);
         lst.add(beg + "exec welcome " + promptWelcome);
         lst.add(beg + "exec ready " + promptSuccess);
@@ -233,6 +239,10 @@ public class userLine {
             }
             if (s.equals("colorized")) {
                 execColor = true;
+                return false;
+            }
+            if (s.equals("spacetab")) {
+                execSpace = true;
                 return false;
             }
             if (s.equals("tablemode")) {
@@ -337,6 +347,10 @@ public class userLine {
                 execColor = false;
                 return false;
             }
+            if (s.equals("spacetab")) {
+                execSpace = false;
+                return false;
+            }
             if (s.equals("interface")) {
                 execIface = null;
                 return false;
@@ -386,6 +400,7 @@ public class userLine {
         l.add("2 .    logging                      enable logging");
         l.add("2 .    timestamp                    enable timestamps");
         l.add("2 .    colorized                    enable colorization");
+        l.add("2 .    spacetab                     enable space as tab");
         l.add("2 3    tablemode                    set table mode");
         l.add("3 .      csv                        select csv mode");
         l.add("3 .      fancy                      select fancy mode");
@@ -536,6 +551,7 @@ class userLineHandler implements Runnable {
         rdr.height = parent.execHeight;
         rdr.timeStamp = parent.execTimes;
         rdr.colorize = parent.execColor;
+        rdr.spacetab = parent.execSpace;
         rdr.tabMod = parent.execTables;
         userExec exe = new userExec(pipe, rdr);
         userConfig cfg = new userConfig(pipe, rdr);

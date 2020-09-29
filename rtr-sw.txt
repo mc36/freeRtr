@@ -802,6 +802,7 @@ server telnet tel
  exec height 28
  exec timestamp
  exec colorized
+ exec spacetab
  exec tablemode fancy
  no exec authorization
  login authentication access
