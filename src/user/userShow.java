@@ -2161,7 +2161,7 @@ public class userShow {
         }
     }
 
-    private void clearAttribs(tabRouteEntry<addrIP> ntry, int ign) {
+    private void ignoreAttribs(tabRouteEntry<addrIP> ntry, int ign) {
         ntry.best.srcRtr = null;
         ntry.best.rouSrc = 0;
         ntry.best.rouTyp = tabRouteAttr.routeType.bgp4;
@@ -2274,8 +2274,8 @@ public class userShow {
             }
             prf1 = prf1.copyBytes(tabRoute.addType.notyet);
             prf2 = prf2.copyBytes(tabRoute.addType.notyet);
-            clearAttribs(prf1, ign);
-            clearAttribs(prf2, ign);
+            ignoreAttribs(prf1, ign);
+            ignoreAttribs(prf2, ign);
             if (!prf1.differs(tabRoute.addType.alters, prf2)) {
                 continue;
             }
