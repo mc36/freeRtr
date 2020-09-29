@@ -1843,9 +1843,9 @@ public class userExec {
                 }
                 doCfgBackup();
                 boolean b = bits.buf2txt(true, cfg, cfgInit.cfgFileSw);
+                cmd.error(doneFail(b));
                 prtRedun.doConfig();
                 prtRedun.doReload();
-                cmd.error(doneFail(b));
                 return cmdRes.command;
             }
             if (a.equals("overwrite-network")) {
@@ -1936,9 +1936,9 @@ public class userExec {
                 reader.putStrArr(userFilter.getDiffs(c2, c1));
                 doCfgBackup();
                 boolean b = bits.buf2txt(true, c2, cfgInit.cfgFileSw);
+                cmd.error(doneFail(b));
                 prtRedun.doConfig();
                 prtRedun.doReload();
-                cmd.error(doneFail(b));
                 return null;
             }
             if (a.equals("editor")) {
@@ -1998,10 +1998,11 @@ public class userExec {
             }
             if (a.equals("erase")) {
                 doCfgBackup();
+                cmd.error("erasing configuration");
                 boolean b = bits.buf2txt(true, new ArrayList<String>(), cfgInit.cfgFileSw);
+                cmd.error(doneFail(b));
                 prtRedun.doConfig();
                 prtRedun.doReload();
-                cmd.error(doneFail(b));
                 return cmdRes.command;
             }
             if (a.equals("terminal")) {
@@ -2010,22 +2011,25 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("file")) {
+                cmd.error("exporting configuration");
                 boolean b = bits.buf2txt(true, cfgAll.getShRun(true), cmd.getRemaining());
                 cmd.error(doneFail(b));
                 return cmdRes.command;
             }
             if (a.equals("memory")) {
                 doCfgBackup();
+                cmd.error("saving configuration");
                 boolean b = bits.buf2txt(true, cfgAll.getShRun(true), cfgInit.cfgFileSw);
+                cmd.error(doneFail(b));
                 prtRedun.doConfig();
                 prtRedun.doReload();
-                cmd.error(doneFail(b));
                 if (!cfgAll.configAbackup) {
                     return cmdRes.command;
                 }
                 a = "network";
             }
             if (a.equals("network")) {
+                cmd.error("archiving configuration");
                 uniResLoc url = uniResLoc.parseOne(cmd.word());
                 if (url.server.length() < 1) {
                     url.fromString(cfgAll.configServer);
@@ -3579,6 +3583,7 @@ public class userExec {
         }
         List<String> old = bits.txt2buf(cfgInit.cfgFileSw);
         if (old == null) {
+            cmd.error("error reading file");
             return;
         }
         boolean b = bits.buf2txt(true, old, a);
