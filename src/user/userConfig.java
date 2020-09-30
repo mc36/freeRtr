@@ -487,6 +487,8 @@ public class userConfig {
         l.add(".3 .      receive                    only check, not generate");
         l.add(".3 .      transmit                   only generate, not check");
         l.add(".3 .      none                       not generate nor check");
+        l.add(".2  3    tcp-segments                set tcp segment size");
+        l.add("3  .      <num>                      bytes");
         l.add("2  3    access-subnet-ipv4           access subnet length");
         l.add("3  .      <num>                      bits");
         l.add("2  3    access-subnet-ipv6           access subnet length");
@@ -1422,6 +1424,10 @@ public class userConfig {
                 int i = parseUpRxtx();
                 cfgAll.udpChecksumRx = (i & 1) != 0;
                 cfgAll.udpChecksumTx = (i & 2) != 0;
+                return;
+            }
+            if (a.equals("tcp-segments")) {
+                cfgAll.tcpMaxSegment = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("tcp-checksum")) {

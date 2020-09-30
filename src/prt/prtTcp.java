@@ -143,8 +143,6 @@ public class prtTcp extends prtGen {
 
     private final static int winSizMax = 49152;
 
-    private final static int maxSegSiz = 1024;
-
     private final static int maxSegMax = 32768;
 
     private final static int pshNetOut = 16384;
@@ -532,7 +530,7 @@ public class prtTcp extends prtGen {
             pck.IPtos = clnt.sendTOS;
             if ((flg & flagSYN) != 0) {
                 pck.TCPseq--;
-                pck.TCPmss = maxSegSiz;
+                pck.TCPmss = cfgAll.tcpMaxSegment;
             }
             pr.netOut += datSiz;
         }
@@ -584,7 +582,7 @@ public class prtTcp extends prtGen {
         pipeLine pip = new pipeLine(65536, false);
         pr.netBufRx = pip.getSide();
         pr.netBufTx = pip.getSide();
-        pr.netMax = maxSegSiz;
+        pr.netMax = cfgAll.tcpMaxSegment;
         clnt.proto = pr;
         clnt.timeout = timeoutSyn;
         clnt.workInterval = 1000;
@@ -742,7 +740,7 @@ public class prtTcp extends prtGen {
                     if (pr.netOut < 0) {
                         pr.netOut = 0;
                     }
-                    pr.netMax += maxSegSiz;
+                    pr.netMax += cfgAll.tcpMaxSegment;
                     if (pr.netMax > maxSegMax) {
                         pr.netMax = maxSegMax;
                     }
@@ -903,8 +901,8 @@ public class prtTcp extends prtGen {
             if (snd > i) {
                 snd = i;
             }
-            if (snd > maxSegSiz) {
-                snd = maxSegSiz;
+            if (snd > cfgAll.tcpMaxSegment) {
+                snd = cfgAll.tcpMaxSegment;
                 flg = flagACK;
             }
             if (pr.netOut > pshNetOut) {
@@ -969,7 +967,7 @@ public class prtTcp extends prtGen {
                 break;
             case prtTcpConn.stOpened:
                 sendMyPacket(clnt, flagACK, 0);
-                pr.netMax = maxSegSiz;
+                pr.netMax = cfgAll.tcpMaxSegment;
                 pr.netOut = 0;
                 break;
             case prtTcpConn.stDelete:
