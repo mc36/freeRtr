@@ -389,7 +389,7 @@ class servPrometheusConn implements Runnable {
 
     private void doWork() {
         conn.lineRx = pipeSide.modTyp.modeCRtryLF;
-        conn.lineTx = pipeSide.modTyp.modeLF;
+        conn.lineTx = pipeSide.modTyp.modeCRLF;
         String gotCmd = conn.lineGet(1);
         if (debugger.servPrometheusTraf) {
             logger.debug("rx " + gotCmd);
@@ -427,11 +427,15 @@ class servPrometheusConn implements Runnable {
             conn.linePut("metric not found");
             return;
         }
+        List<String> res = ntry.doMetric();
+        ntry.tim = (int) (bits.getTime() - tim);
+        ntry.askLast = tim;
+        ntry.askNum++;
         conn.linePut("HTTP/1.1 200 ok");
         conn.linePut("Content-Type: text/plain");
         conn.linePut("Date: " + bits.time2str(cfgAll.timeZoneName, tim, 4));
         conn.linePut("");
-        List<String> res = ntry.doMetric();
+        conn.lineTx = pipeSide.modTyp.modeLF;
         for (i = 0; i < res.size(); i++) {
             conn.linePut(res.get(i));
         }
