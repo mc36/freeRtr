@@ -800,6 +800,9 @@ public class userExec {
         hl.add("4 .          drphistory          historic drop packet counters");
         hl.add("4 .          numhist             numeric historic byte counters");
         hl.add("4 .          numphist            numeric historic packet counters");
+        hl.add("2 3      nrpe                    nrpe protocol information");
+        hl.add("3 4,.      <name>                nrpe name");
+        hl.add("4 .          <name>              check name");
         hl.add("2 3      bmp                     bgp monitoring protocol information");
         hl.add("3 4,.      <name>                bmp name");
         hl.add("4 5          <addr>              from");

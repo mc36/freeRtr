@@ -348,6 +348,48 @@ public class servNrpe extends servGeneric implements prtServS {
         return false;
     }
 
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "name|state|asked|last passed|last failed");
+        for (int i = 0; i < chks.size(); i++) {
+            servNrpeCheck ntry = chks.get(i);
+            res.add(ntry.nam + "|" + (ntry.doCheck().size() < 1) + "|" + bits.timePast(ntry.lastOk) + "|" + bits.timePast(ntry.lastErr));
+        }
+        return res;
+    }
+
+    /**
+     * get show
+     *
+     * @param nam name of check
+     * @return result
+     */
+    public List<String> getShow(String nam) {
+        servNrpeCheck ntry = new servNrpeCheck(this, nam);
+        ntry = chks.find(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        List<String> res = new ArrayList<String>();
+        res.add("name=" + ntry.nam);
+        res.add("description=" + ntry.dsc);
+        res.add("command=" + ntry.cmd);
+        res.add("error=" + ntry.err);
+        res.add("alternate=" + ntry.alternate);
+        res.add("asked=" + ntry.asked);
+        res.add("passed=" + bits.time2str(cfgAll.timeZoneName, ntry.lastOk + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(ntry.lastOk) + " ago)");
+        res.add("failed=" + bits.time2str(cfgAll.timeZoneName, ntry.lastErr + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(ntry.lastErr) + " ago)");
+        res.add("output:");
+        res.addAll(ntry.getResult());
+        res.add("result:");
+        res.addAll(ntry.doCheck());
+        return res;
+    }
+
 }
 
 class servNrpeConn implements Runnable {
@@ -394,8 +436,10 @@ class servNrpeConn implements Runnable {
                     }
                     continue;
                 }
+                ntry.asked++;
                 List<String> lst = ntry.doCheck();
                 if (lst.size() < 1) {
+                    ntry.lastOk = bits.getTime();
                     pck.cod = packNrpe.coOk;
                     pck.str = "OK";
                     if (ntry.dsc != null) {
@@ -407,6 +451,7 @@ class servNrpeConn implements Runnable {
                     }
                     continue;
                 }
+                ntry.lastErr = bits.getTime();
                 pck.cod = packNrpe.coCri;
                 pck.str = "";
                 if (!lower.noState) {
@@ -550,6 +595,12 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
     private final servNrpe lower;
 
     public final String nam;
+
+    public int asked;
+
+    public long lastOk;
+
+    public long lastErr;
 
     public String cmd;
 
