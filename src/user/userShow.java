@@ -58,6 +58,7 @@ import rtr.rtrRip4neigh;
 import rtr.rtrRip6neigh;
 import serv.servBmp2mrt;
 import serv.servNrpe;
+import serv.servPrometheus;
 import tab.tabGen;
 import tab.tabIntMatcher;
 import tab.tabLabel;
@@ -400,6 +401,19 @@ public class userShow {
         }
         if (a.equals("vrf")) {
             doShowVrf();
+            return null;
+        }
+        if (a.equals("prometheus")) {
+            servPrometheus srv = cfgAll.srvrFind(new servPrometheus(), cfgAll.dmnPrometheus, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            if (cmd.size() < 1) {
+                rdr.putStrTab(srv.getShow());
+                return null;
+            }
+            rdr.putStrArr(srv.getShow(cmd.word()));
             return null;
         }
         if (a.equals("nrpe")) {

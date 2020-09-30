@@ -154,6 +154,11 @@ public class debugger {
     public static boolean servNrpeTraf = false;
 
     /**
+     * servPrometheus traffic
+     */
+    public static boolean servPrometheusTraf = false;
+
+    /**
      * servDcp traffic
      */
     public static boolean servDcpTraf = false;
@@ -940,6 +945,7 @@ public class debugger {
         h.add("3 .        irc               internet relay protocol");
         h.add("3 .        rpki              resource public key infrastructure");
         h.add("3 .        nrpe              nagios remote plugin");
+        h.add("3 .        prometheus        prometheus targets");
         h.add("3 .        dcp               direct connect protocol");
         h.add("3 .        pcep              path computation element protocol");
         h.add("3 4        openflow          openflow protocol");
@@ -1268,6 +1274,10 @@ public class debugger {
             }
             if (s.equals("nrpe")) {
                 servNrpeTraf = v;
+                return false;
+            }
+            if (s.equals("prometheus")) {
+                servPrometheusTraf = v;
                 return false;
             }
             if (s.equals("dcp")) {

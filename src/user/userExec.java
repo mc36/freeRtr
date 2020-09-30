@@ -627,6 +627,13 @@ public class userExec {
         hl.add("6 .              [num]           minimum count");
     }
 
+    /**
+     * get show help
+     *
+     * @param hl help to append
+     * @param privi allow privileges
+     * @param pipes allow pipes
+     */
     public static void getHelpShow(userHelping hl, boolean privi, boolean pipes) {
         hl.add("2 3      macsec                  macsec information");
         hl.add("3 .        <name>                name of interface");
@@ -803,6 +810,9 @@ public class userExec {
         hl.add("2 3      nrpe                    nrpe protocol information");
         hl.add("3 4,.      <name>                nrpe name");
         hl.add("4 .          <name>              check name");
+        hl.add("2 3      prometheus              prometheus protocol information");
+        hl.add("3 4,.      <name>                prometheus name");
+        hl.add("4 .          <name>              metric name");
         hl.add("2 3      bmp                     bgp monitoring protocol information");
         hl.add("3 4,.      <name>                bmp name");
         hl.add("4 5          <addr>              from");

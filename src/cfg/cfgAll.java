@@ -79,6 +79,7 @@ import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servP4lang;
 import serv.servPcep;
+import serv.servPrometheus;
 import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -509,6 +510,11 @@ public class cfgAll {
      * nrpe daemons
      */
     public static final servGenList<servNrpe> dmnNrpe = new servGenList<servNrpe>();
+
+    /**
+     * prometheus daemons
+     */
+    public static final servGenList<servPrometheus> dmnPrometheus = new servGenList<servPrometheus>();
 
     /**
      * bstun daemons
@@ -3155,6 +3161,7 @@ public class cfgAll {
         dmnSip.getShRun(l, filter);
         dmnRpki.getShRun(l, filter);
         dmnNrpe.getShRun(l, filter);
+        dmnPrometheus.getShRun(l, filter);
         dmnBStun.getShRun(l, filter);
         dmnStun.getShRun(l, filter);
         dmnPckOudp.getShRun(l, filter);

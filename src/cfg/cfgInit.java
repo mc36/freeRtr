@@ -80,6 +80,7 @@ import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servP4lang;
 import serv.servPcep;
+import serv.servPrometheus;
 import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -607,6 +608,7 @@ public class cfgInit implements Runnable {
         servBstun.defaultF = createFilter(servBstun.defaultL, srvdefsF, cfgLin.linedefF);
         servRpki.defaultF = createFilter(servRpki.defaultL, srvdefsF);
         servNrpe.defaultF = createFilter(servNrpe.defaultL, srvdefsF);
+        servPrometheus.defaultF = createFilter(servPrometheus.defaultL, srvdefsF);
         servCharGen.defaultF = createFilter(servCharGen.defaultL, srvdefsF);
         servOpenflow.defaultF = createFilter(servOpenflow.defaultL, srvdefsF);
         servP4lang.defaultF = createFilter(servP4lang.defaultL, srvdefsF);

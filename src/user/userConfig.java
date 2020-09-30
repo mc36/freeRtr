@@ -116,6 +116,7 @@ import serv.servNrpe;
 import serv.servOpenflow;
 import serv.servP4lang;
 import serv.servPcep;
+import serv.servPrometheus;
 import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -704,6 +705,8 @@ public class userConfig {
         l.add("2  3    rpki                         configure a rpki server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    nrpe                         configure a nrpe server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    prometheus                   configure a prometheus server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    bstun                        configure a bstun server");
         l.add("3  .      <name>                     name of server");
@@ -1299,6 +1302,10 @@ public class userConfig {
             }
             if (a.equals("nrpe")) {
                 daemonMake(new servNrpe(), cfgAll.dmnNrpe);
+                return;
+            }
+            if (a.equals("prometheus")) {
+                daemonMake(new servPrometheus(), cfgAll.dmnPrometheus);
                 return;
             }
             if (a.equals("bstun")) {
@@ -2093,6 +2100,10 @@ public class userConfig {
             }
             if (a.equals("nrpe")) {
                 daemonErase(new servNrpe(), cfgAll.dmnNrpe);
+                return;
+            }
+            if (a.equals("prometheus")) {
+                daemonErase(new servPrometheus(), cfgAll.dmnPrometheus);
                 return;
             }
             if (a.equals("bstun")) {

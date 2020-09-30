@@ -923,6 +923,7 @@ public class rtrOspf4 extends ipRtr {
     /**
      * show topology
      *
+     * @param area area number
      * @param cmd entry to find
      * @return log of spf
      */
