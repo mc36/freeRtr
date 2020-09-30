@@ -612,6 +612,8 @@ public class userExec {
         hl.add("9 9,.                  tunnel    ignore tunnel");
         hl.add("9 10                   time      specify time");
         hl.add("10 9,.                   <num>   milliseconds");
+        hl.add("9 10                   exclude   exclude prefixes from compare");
+        hl.add("10 9,.                   <name>  name of prefix list");
         hl.add("3 4        logger                route logger");
         hl.add("4 5          <num>               process id");
         hl.add("5 .            prefix-lengths    list of prefix lengths");
