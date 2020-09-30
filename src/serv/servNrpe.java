@@ -354,10 +354,10 @@ public class servNrpe extends servGeneric implements prtServS {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "name|state|asked|last passed|last failed");
+        userFormat res = new userFormat("|", "name|state|asked|reply|times|last|times|last", "4|2pass|2fail");
         for (int i = 0; i < chks.size(); i++) {
             servNrpeCheck ntry = chks.get(i);
-            res.add(ntry.nam + "|" + (ntry.doCheck().size() < 1) + "|" + bits.timePast(ntry.lastOk) + "|" + bits.timePast(ntry.lastErr));
+            res.add(ntry.nam + "|" + (ntry.doCheck().size() < 1) + "|" + (ntry.okNum + ntry.errNum) + "|" + ntry.tim + "|" + ntry.okNum + "|" + bits.timePast(ntry.okTim) + "|" + ntry.errNum + "|" + bits.timePast(ntry.errTim));
         }
         return res;
     }
@@ -380,9 +380,10 @@ public class servNrpe extends servGeneric implements prtServS {
         res.add("command=" + ntry.cmd);
         res.add("error=" + ntry.err);
         res.add("alternate=" + ntry.alternate);
-        res.add("asked=" + ntry.asked);
-        res.add("passed=" + bits.time2str(cfgAll.timeZoneName, ntry.lastOk + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(ntry.lastOk) + " ago)");
-        res.add("failed=" + bits.time2str(cfgAll.timeZoneName, ntry.lastErr + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(ntry.lastErr) + " ago)");
+        res.add("asked=" + (ntry.okNum + ntry.errNum) + " times");
+        res.add("reply=" + ntry.tim + " ms");
+        res.add("passed=" + ntry.okNum + " times, last " + bits.time2str(cfgAll.timeZoneName, ntry.okTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(ntry.okTim) + " ago)");
+        res.add("failed=" + ntry.errNum + " times, last " + bits.time2str(cfgAll.timeZoneName, ntry.errTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(ntry.errTim) + " ago)");
         res.add("output:");
         res.addAll(ntry.getResult());
         res.add("result:");
@@ -436,10 +437,12 @@ class servNrpeConn implements Runnable {
                     }
                     continue;
                 }
-                ntry.asked++;
+                long tim = bits.getTime();
                 List<String> lst = ntry.doCheck();
+                ntry.tim = (int) (bits.getTime() - tim);
                 if (lst.size() < 1) {
-                    ntry.lastOk = bits.getTime();
+                    ntry.okNum++;
+                    ntry.okTim = tim;
                     pck.cod = packNrpe.coOk;
                     pck.str = "OK";
                     if (ntry.dsc != null) {
@@ -451,7 +454,8 @@ class servNrpeConn implements Runnable {
                     }
                     continue;
                 }
-                ntry.lastErr = bits.getTime();
+                ntry.errNum++;
+                ntry.errTim = tim;
                 pck.cod = packNrpe.coCri;
                 pck.str = "";
                 if (!lower.noState) {
@@ -596,11 +600,15 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
 
     public final String nam;
 
-    public int asked;
+    public int tim;
 
-    public long lastOk;
+    public int okNum;
 
-    public long lastErr;
+    public int errNum;
+
+    public long okTim;
+
+    public long errTim;
 
     public String cmd;
 
