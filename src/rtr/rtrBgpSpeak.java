@@ -258,87 +258,103 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * currently updating unicast prefixes
      */
-    private tabRoute<addrIP> currUni = null;
+    private tabRoute<addrIP> currUni = new tabRoute<addrIP>("curr");
 
     /**
      * currently updating multicast prefixes
      */
-    private tabRoute<addrIP> currMlt = null;
+    private tabRoute<addrIP> currMlt = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating other prefixes
      */
-    private tabRoute<addrIP> currOtr = null;
+    private tabRoute<addrIP> currOtr = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating flowspec prefixes
      */
-    private tabRoute<addrIP> currFlw = null;
+    private tabRoute<addrIP> currFlw = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating vpn uni prefixes
      */
-    private tabRoute<addrIP> currVpnU = null;
+    private tabRoute<addrIP> currVpnU = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating vpn multi prefixes
      */
-    private tabRoute<addrIP> currVpnM = null;
+    private tabRoute<addrIP> currVpnM = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating vpn flow prefixes
      */
-    private tabRoute<addrIP> currVpnF = null;
+    private tabRoute<addrIP> currVpnF = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating other vpn uni prefixes
      */
-    private tabRoute<addrIP> currVpoU = null;
+    private tabRoute<addrIP> currVpoU = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating other vpn multi prefixes
      */
-    private tabRoute<addrIP> currVpoM = null;
+    private tabRoute<addrIP> currVpoM = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating other vpn flow prefixes
      */
-    private tabRoute<addrIP> currVpoF = null;
+    private tabRoute<addrIP> currVpoF = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating vpls prefixes
      */
-    private tabRoute<addrIP> currVpls = null;
+    private tabRoute<addrIP> currVpls = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating mspw prefixes
      */
-    private tabRoute<addrIP> currMspw = null;
+    private tabRoute<addrIP> currMspw = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating evpn prefixes
      */
-    private tabRoute<addrIP> currEvpn = null;
+    private tabRoute<addrIP> currEvpn = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating mdt prefixes
      */
-    private tabRoute<addrIP> currMdt = null;
+    private tabRoute<addrIP> currMdt = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating srte prefixes
      */
-    private tabRoute<addrIP> currSrte = null;
+    private tabRoute<addrIP> currSrte = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating mvpn prefixes
      */
-    private tabRoute<addrIP> currMvpn = null;
+    private tabRoute<addrIP> currMvpn = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently updating other mvpn prefixes
      */
-    private tabRoute<addrIP> currMvpo = null;
+    private tabRoute<addrIP> currMvpo = new tabRoute<addrIP>("curr");
+    ;
 
     /**
      * currently changed prefixes
@@ -1576,23 +1592,23 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (debugger.rtrBgpTraf) {
             logger.debug("update from peer " + neigh.peerAddr);
         }
-        currUni = new tabRoute<addrIP>("curr");
-        currMlt = new tabRoute<addrIP>("curr");
-        currOtr = new tabRoute<addrIP>("curr");
-        currFlw = new tabRoute<addrIP>("curr");
-        currVpnU = new tabRoute<addrIP>("curr");
-        currVpnM = new tabRoute<addrIP>("curr");
-        currVpnF = new tabRoute<addrIP>("curr");
-        currVpoU = new tabRoute<addrIP>("curr");
-        currVpoM = new tabRoute<addrIP>("curr");
-        currVpoF = new tabRoute<addrIP>("curr");
-        currVpls = new tabRoute<addrIP>("curr");
-        currMspw = new tabRoute<addrIP>("curr");
-        currEvpn = new tabRoute<addrIP>("curr");
-        currMdt = new tabRoute<addrIP>("curr");
-        currSrte = new tabRoute<addrIP>("curr");
-        currMvpn = new tabRoute<addrIP>("curr");
-        currMvpo = new tabRoute<addrIP>("curr");
+        currUni.clear();
+        currMlt.clear();
+        currOtr.clear();
+        currFlw.clear();
+        currVpnU.clear();
+        currVpnM.clear();
+        currVpnF.clear();
+        currVpoU.clear();
+        currVpoM.clear();
+        currVpoF.clear();
+        currVpls.clear();
+        currMspw.clear();
+        currEvpn.clear();
+        currMdt.clear();
+        currSrte.clear();
+        currMvpn.clear();
+        currMvpo.clear();
         currChg = 0;
         int prt = pck.msbGetW(0);
         pck.getSkip(2);
@@ -1662,23 +1678,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribed(currSrte, parent.afiSrte, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currMvpn, parent.afiMvpn, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currMvpo, parent.afiMvpo, ntry, neigh.voumapIn, neigh.voupolIn, null);
-        currUni = null;
-        currMlt = null;
-        currOtr = null;
-        currFlw = null;
-        currVpnU = null;
-        currVpnM = null;
-        currVpnF = null;
-        currVpoU = null;
-        currVpoM = null;
-        currVpoF = null;
-        currVpls = null;
-        currMspw = null;
-        currEvpn = null;
-        currMdt = null;
-        currSrte = null;
-        currMvpn = null;
-        currMvpo = null;
         if ((currChg > 0) && (rxReady() < (neigh.bufferSize / 4))) {
             parent.compute.wakeup();
         }
