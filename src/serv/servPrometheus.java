@@ -460,7 +460,7 @@ class servPrometheusConn implements Runnable {
 
     private void sendReply(String hdr, List<String> res) {
         conn.lineTx = pipeSide.modTyp.modeCRLF;
-        conn.linePut("HTTP/1.1 200 ok");
+        conn.linePut("HTTP/1.1 " + hdr);
         conn.linePut("Content-Type: text/plain");
         conn.linePut("Date: " + bits.time2str(cfgAll.timeZoneName, bits.getTime(), 4));
         int len = res.size();
