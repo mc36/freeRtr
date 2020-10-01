@@ -794,9 +794,9 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         res.add("topostr|" + a);
         res.add("topoid|" + bits.toHexD(a.hashCode()));
         res.add("last|" + bits.time2str(cfgAll.timeZoneName, tim1 + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(tim1) + " ago)");
-        res.add("fill|" + (tim2 - tim1) + " ms");
-        res.add("calc|" + (tim3 - tim2) + " ms");
-        res.add("run|" + count + " times");
+        res.add("fill|" + (tim2 - tim1));
+        res.add("calc|" + (tim3 - tim2));
+        res.add("run|" + count);
         return res;
     }
 

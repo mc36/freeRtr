@@ -3530,35 +3530,35 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of statistics
      */
     public userFormat getBestpath() {
-        userFormat l = new userFormat("|", "category|value");
+        userFormat l = new userFormat("|", "category|value|addition");
         l.add("version|" + compRound);
-        l.add("full run|" + fullCount + " times");
-        l.add("full last|" + bits.time2str(cfgAll.timeZoneName, fullLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(fullLast) + " ago)");
-        l.add("full time|" + fullTime + " ms");
-        l.add("incr run|" + incrCount + " times");
-        l.add("incr last|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(incrLast) + " ago)");
-        l.add("incr time|" + incrTime + " ms");
-        l.add("changes|" + changedCur + ", total=" + changedTot);
+        l.add("full run|" + fullCount);
+        l.add("full last|" + bits.time2str(cfgAll.timeZoneName, fullLast + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(fullLast));
+        l.add("full time|" + fullTime);
+        l.add("incr run|" + incrCount);
+        l.add("incr last|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(incrLast));
+        l.add("incr time|" + incrTime);
+        l.add("changes|" + changedCur + "|" + changedTot);
         l.add("version|" + compRound.get());
-        l.add("groups|" + groups.size() + ", vers=" + groupMin + ".." + groupMax);
+        l.add("groups|" + groups.size() + "|" + groupMin + ".." + groupMax);
         l.add("rpki table|" + computedRpki.size());
-        l.add("unicast table|" + routerComputedU.size() + ", list=" + changedUni.size());
-        l.add("multicast table|" + routerComputedM.size() + ", list=" + changedMlt.size());
-        l.add("other table|" + computedOtr.size() + ", list=" + changedOtr.size());
-        l.add("flowspec table|" + routerComputedF.size() + ", list=" + changedFlw.size());
-        l.add("vpnuni table|" + computedVpnU.size() + ", list=" + changedVpnU.size());
-        l.add("vpnmlt table|" + computedVpnM.size() + ", list=" + changedVpnM.size());
-        l.add("vpnflw table|" + computedVpnF.size() + ", list=" + changedVpnF.size());
-        l.add("ovpnuni table|" + computedVpoU.size() + ", list=" + changedVpoU.size());
-        l.add("ovpnmlt table|" + computedVpoM.size() + ", list=" + changedVpoM.size());
-        l.add("ovpnflw table|" + computedVpoF.size() + ", list=" + changedVpoF.size());
-        l.add("vpls table|" + computedVpls.size() + ", list=" + changedVpls.size());
-        l.add("mspw table|" + computedMspw.size() + ", list=" + changedMspw.size());
-        l.add("evpn table|" + computedEvpn.size() + ", list=" + changedEvpn.size());
-        l.add("mdt table|" + computedMdt.size() + ", list=" + changedMdt.size());
-        l.add("srte table|" + computedSrte.size() + ", list=" + changedSrte.size());
-        l.add("mvpn table|" + computedMvpn.size() + ", list=" + changedMvpn.size());
-        l.add("omvpn table|" + computedMvpo.size() + ", list=" + changedMvpo.size());
+        l.add("unicast table|" + routerComputedU.size() + "|" + changedUni.size());
+        l.add("multicast table|" + routerComputedM.size() + "|" + changedMlt.size());
+        l.add("other table|" + computedOtr.size() + "|" + changedOtr.size());
+        l.add("flowspec table|" + routerComputedF.size() + "|" + changedFlw.size());
+        l.add("vpnuni table|" + computedVpnU.size() + "|" + changedVpnU.size());
+        l.add("vpnmlt table|" + computedVpnM.size() + "|" + changedVpnM.size());
+        l.add("vpnflw table|" + computedVpnF.size() + "|" + changedVpnF.size());
+        l.add("ovpnuni table|" + computedVpoU.size() + "|" + changedVpoU.size());
+        l.add("ovpnmlt table|" + computedVpoM.size() + "|" + changedVpoM.size());
+        l.add("ovpnflw table|" + computedVpoF.size() + "|" + changedVpoF.size());
+        l.add("vpls table|" + computedVpls.size() + "|" + changedVpls.size());
+        l.add("mspw table|" + computedMspw.size() + "|" + changedMspw.size());
+        l.add("evpn table|" + computedEvpn.size() + "|" + changedEvpn.size());
+        l.add("mdt table|" + computedMdt.size() + "|" + changedMdt.size());
+        l.add("srte table|" + computedSrte.size() + "|" + changedSrte.size());
+        l.add("mvpn table|" + computedMvpn.size() + "|" + changedMvpn.size());
+        l.add("omvpn table|" + computedMvpo.size() + "|" + changedMvpo.size());
         return l;
     }
 
