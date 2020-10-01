@@ -525,7 +525,10 @@ class servPrometheusConn implements Runnable {
         long tim = bits.getTime();
         List<String> res = new ArrayList<String>();
         for (i = 0; i < lower.mets.size(); i++) {
+            ntry.askLast = bits.getTime();
             res.addAll(lower.mets.get(i).doMetric());
+            ntry.tim = (int) (bits.getTime() - ntry.askLast);
+            ntry.askNum++;
         }
         lower.allTim = (int) (bits.getTime() - tim);
         lower.allLast = tim;

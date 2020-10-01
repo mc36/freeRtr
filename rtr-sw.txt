@@ -854,6 +854,20 @@ server sip lab
  vrf v1
  exit
 !
+server prometheus home
+ metric intsw command sho inter summ
+ metric intsw prepend iface_swcntr_
+ metric intsw replace \. _
+ metric intsw column 1 name _state
+ metric intsw column 1 replace admin -1
+ metric intsw column 1 replace down 0
+ metric intsw column 1 replace up 1
+ metric intsw column 2 name _rx
+ metric intsw column 3 name _tx
+ metric intsw column 4 name _dr
+ vrf v1
+ exit
+!
 server radius rad
  authentication access
  secret $w10$GV+pcgTkgqct0vAiKD2PVg==
