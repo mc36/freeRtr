@@ -297,7 +297,14 @@ public class userReader implements Comparator<String> {
             }
             chr += o;
         }
-        return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
+        if (tabMod == userFormat.tableMode.normal) {
+            return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
+        }
+        userFormat res = new userFormat("|", "category|value");
+        res.add("lines|" + lst.size());
+        res.add("words|" + wrd);
+        res.add("chars|" + chr);
+        return res.formatAll(tabMod);
     }
 
     /**

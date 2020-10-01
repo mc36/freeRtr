@@ -38,13 +38,36 @@ public class servPrometheus extends servGeneric implements prtServS {
     public tabGen<servPrometheusMetric> mets = new tabGen<servPrometheusMetric>();
 
     /**
+     * list of metrics
+     */
+    public String allMets = "metrics";
+
+    /**
+     * number of queries
+     */
+    public int allNum;
+
+    /**
+     * time to respond
+     */
+    public int allTim;
+
+    /**
+     * time to respond
+     */
+    public long allLast;
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
         "server prometheus .*! port " + port,
         "server prometheus .*! protocol " + proto2string(protoAllStrm),
-        "server prometheus .*! metric .* column 1",
-        "server prometheus .*! metric .* skip 1",};
+        "server prometheus .*! all-metrics metrics",
+        "server prometheus .*! metric .* name 0",
+        "server prometheus .*! metric .* skip 1",
+        "server prometheus .*! metric .* column .* type counter",
+        "server prometheus .*! metric .* column .* help exported counter",};
 
     /**
      * defaults filter
@@ -76,23 +99,31 @@ public class servPrometheus extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst) {
-        for (int o = 0; o < mets.size(); o++) {
-            servPrometheusMetric ntry = mets.get(o);
-            if (ntry == null) {
+        for (int p = 0; p < mets.size(); p++) {
+            servPrometheusMetric met = mets.get(p);
+            if (met == null) {
                 continue;
             }
-            String cn = "metric " + ntry.nam;
-            lst.add(beg + cn + " command " + ntry.cmd);
-            lst.add(beg + cn + " prepend " + ntry.prep);
-            lst.add(beg + cn + " name " + ntry.col);
-            lst.add(beg + cn + " skip " + ntry.skp);
-            for (int i = 0; i < ntry.cols.size(); i++) {
-                servPrometheusColumn col = ntry.cols.get(i);
-                lst.add(beg + cn + " column " + col.num + " " + col.nam + " " + col.typ + " " + col.hlp);
+            lst.add(beg + "all-metrics " + allMets);
+            String mn = beg + "metric " + met.nam;
+            lst.add(mn + " command " + met.cmd);
+            lst.add(mn + " prepend " + met.prep);
+            lst.add(mn + " name " + met.col);
+            lst.add(mn + " skip " + met.skp);
+            for (int i = 0; i < met.reps.size(); i++) {
+                servPrometheusReplace rep = met.reps.get(i);
+                lst.add(mn + " replace " + rep.src + " " + rep.trg);
             }
-            for (int i = 0; i < ntry.reps.size(); i++) {
-                servPrometheusReplace rep = ntry.reps.get(i);
-                lst.add(beg + cn + " replace " + rep.src + " " + rep.trg);
+            for (int o = 0; o < met.cols.size(); o++) {
+                servPrometheusColumn col = met.cols.get(o);
+                String cn = mn + " column " + col.num;
+                lst.add(cn + " name " + col.nam);
+                lst.add(cn + " type " + col.typ);
+                lst.add(cn + " help " + col.hlp);
+                for (int i = 0; i < col.reps.size(); i++) {
+                    servPrometheusReplace rep = col.reps.get(i);
+                    lst.add(cn + " replace " + rep.src + " " + rep.trg);
+                }
             }
         }
     }
@@ -103,62 +134,86 @@ public class servPrometheus extends servGeneric implements prtServS {
         if (negated) {
             s = cmd.word();
         }
+        if (s.equals("all-metrics")) {
+            allMets = cmd.getRemaining();
+            return false;
+        }
         if (!s.equals("metric")) {
             return true;
         }
-        servPrometheusMetric ntry = new servPrometheusMetric(cmd.word());
-        servPrometheusMetric old = mets.add(ntry);
-        if (old != null) {
-            ntry = old;
+        servPrometheusMetric met = new servPrometheusMetric(cmd.word());
+        servPrometheusMetric oldm = mets.add(met);
+        if (oldm != null) {
+            met = oldm;
         }
         s = cmd.word();
         if (s.equals("command")) {
             if (negated) {
-                mets.del(ntry);
+                mets.del(met);
                 return false;
             }
-            ntry.cmd = cmd.getRemaining();
+            met.cmd = cmd.getRemaining();
             return false;
         }
-        if (ntry.cmd == null) {
-            mets.del(ntry);
+        if (met.cmd == null) {
+            mets.del(met);
             cmd.error("no such metric");
             return false;
         }
         if (s.equals("prepend")) {
-            ntry.prep = cmd.getRemaining();
-            if (negated) {
-                ntry.prep = null;
-            }
+            met.prep = cmd.getRemaining();
             return false;
         }
         if (s.equals("name")) {
-            ntry.col = bits.str2num(cmd.word());
+            met.col = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("skip")) {
-            ntry.skp = bits.str2num(cmd.word());
+            met.skp = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("replace")) {
             servPrometheusReplace rep = new servPrometheusReplace(cmd.word());
             rep.trg = cmd.word();
             if (negated) {
-                ntry.reps.del(rep);
+                met.reps.del(rep);
             } else {
-                ntry.reps.add(rep);
+                met.reps.add(rep);
             }
             return false;
         }
-        if (s.equals("column")) {
-            servPrometheusColumn col = new servPrometheusColumn(bits.str2num(cmd.word()));
-            col.nam = cmd.word();
-            col.typ = cmd.word();
-            col.hlp = cmd.getRemaining();
+        if (!s.equals("column")) {
+            return true;
+        }
+        servPrometheusColumn col = new servPrometheusColumn(bits.str2num(cmd.word()));
+        servPrometheusColumn oldc = met.cols.add(col);
+        if (oldc != null) {
+            col = oldc;
+        }
+        s = cmd.word();
+        if (s.equals("name")) {
             if (negated) {
-                ntry.cols.del(col);
+                met.cols.del(col);
+                return false;
+            }
+            col.nam = cmd.getRemaining();
+            return false;
+        }
+        if (s.equals("type")) {
+            col.typ = cmd.getRemaining();
+            return false;
+        }
+        if (s.equals("help")) {
+            col.hlp = cmd.getRemaining();
+            return false;
+        }
+        if (s.equals("replace")) {
+            servPrometheusReplace rep = new servPrometheusReplace(cmd.word());
+            rep.trg = cmd.word();
+            if (negated) {
+                col.reps.del(rep);
             } else {
-                ntry.cols.add(col);
+                col.reps.add(rep);
             }
             return false;
         }
@@ -166,6 +221,8 @@ public class servPrometheus extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add("1 2  all-metrics                  configure whole exporter");
+        l.add("2 .    <name>                     name to use");
         l.add("1 2  metric                       configure one metric");
         l.add("2 3    <name>                     name of metric");
         l.add("3 4      command                  specify command to execute");
@@ -181,9 +238,15 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("5 .          <str>                replacement string");
         l.add("3 4      column                   define column to export");
         l.add("4 5        <num>                  number");
-        l.add("5 6          <str>                metric name");
-        l.add("6 7            <str>              metric type");
-        l.add("7 7,.            <str>            description");
+        l.add("5 6          name                 set metric name");
+        l.add("6 .            <str>              metric name");
+        l.add("5 6          type                 set metric type");
+        l.add("6 .            <str>              metric type");
+        l.add("5 6          help                 set metric help");
+        l.add("6 6,.          <str>              metric help");
+        l.add("5 6          replace              define replaces in value");
+        l.add("6 7            <str>              string to replace");
+        l.add("7 .              <str>            replacement string");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -199,6 +262,7 @@ public class servPrometheus extends servGeneric implements prtServS {
      */
     public userFormat getShow() {
         userFormat res = new userFormat("|", "name|asked|reply|times|last");
+        res.add(allMets + "|" + allNum + "|" + allTim + "|" + bits.timePast(allLast));
         for (int i = 0; i < mets.size(); i++) {
             servPrometheusMetric ntry = mets.get(i);
             res.add(ntry.nam + "|" + ntry.askNum + "|" + ntry.tim + "|" + bits.timePast(ntry.askLast));
@@ -246,7 +310,7 @@ class servPrometheusMetric implements Comparator<servPrometheusMetric> {
 
     public String prep;
 
-    public int col = 1;
+    public int col = 0;
 
     public int skp = 1;
 
@@ -299,8 +363,8 @@ class servPrometheusMetric implements Comparator<servPrometheusMetric> {
         for (int i = 0; i < skp; i++) {
             res.remove(0);
         }
-        for (int o = 0; o < res.size(); o++) {
-            cmds cmd = new cmds("prom", res.get(o));
+        for (int p = 0; p < res.size(); p++) {
+            cmds cmd = new cmds("prom", res.get(p));
             List<String> cl = new ArrayList<String>();
             for (;;) {
                 String a = cmd.word(";");
@@ -317,15 +381,20 @@ class servPrometheusMetric implements Comparator<servPrometheusMetric> {
                 servPrometheusReplace rep = reps.get(i);
                 na = na.replaceAll(rep.src, rep.trg);
             }
-            for (int i = 0; i < cols.size(); i++) {
-                servPrometheusColumn col = cols.get(i);
+            for (int o = 0; o < cols.size(); o++) {
+                servPrometheusColumn col = cols.get(o);
                 if (cl.size() < col.num) {
                     continue;
                 }
                 String nb = na + col.nam;
                 lst.add("# HELP " + nb + " " + col.hlp);
                 lst.add("# TYPE " + nb + " " + col.typ);
-                lst.add(nb + " " + cl.get(col.num));
+                String a = cl.get(col.num);
+                for (int i = 0; i < col.reps.size(); i++) {
+                    servPrometheusReplace rep = col.reps.get(i);
+                    a = a.replaceAll(rep.src, rep.trg);
+                }
+                lst.add(nb + " " + a);
             }
         }
         return lst;
@@ -355,9 +424,11 @@ class servPrometheusColumn implements Comparator<servPrometheusColumn> {
 
     public String nam;
 
-    public String typ;
+    public String typ = "counter";
 
-    public String hlp;
+    public String hlp = "exported counter";
+
+    public tabGen<servPrometheusReplace> reps = new tabGen<servPrometheusReplace>();
 
     public servPrometheusColumn(int n) {
         num = n;
@@ -387,7 +458,27 @@ class servPrometheusConn implements Runnable {
         new Thread(this).start();
     }
 
-    private void doWork() {
+    private void sendReply(String hdr, List<String> res) {
+        conn.lineTx = pipeSide.modTyp.modeCRLF;
+        conn.linePut("HTTP/1.1 200 ok");
+        conn.linePut("Content-Type: text/plain");
+        conn.linePut("Date: " + bits.time2str(cfgAll.timeZoneName, bits.getTime(), 4));
+        int len = res.size();
+        for (int i = 0; i < res.size(); i++) {
+            len += res.get(i).length();
+        }
+        conn.linePut("Content-Length: " + len);
+        conn.linePut("");
+        conn.lineTx = pipeSide.modTyp.modeLF;
+        for (int i = 0; i < res.size(); i++) {
+            conn.linePut(res.get(i));
+        }
+        if (debugger.servPrometheusTraf) {
+            logger.debug("tx " + hdr + " and " + res.size() + " lines");
+        }
+    }
+
+    private boolean doWork() {
         conn.lineRx = pipeSide.modTyp.modeCRtryLF;
         conn.lineTx = pipeSide.modTyp.modeCRLF;
         String gotCmd = conn.lineGet(1);
@@ -395,7 +486,7 @@ class servPrometheusConn implements Runnable {
             logger.debug("rx " + gotCmd);
         }
         if (gotCmd.length() < 1) {
-            return;
+            return true;
         }
         for (;;) {
             String a = conn.lineGet(1);
@@ -404,49 +495,52 @@ class servPrometheusConn implements Runnable {
             }
         }
         uniResLoc gotUrl = new uniResLoc();
-        gotUrl.clear();
         int i = gotCmd.toLowerCase().lastIndexOf(" http/");
         if (i > 0) {
-            String s = gotCmd.substring(i + 6, gotCmd.length());
             gotCmd = gotCmd.substring(0, i);
-            i = s.indexOf(".");
         }
         i = gotCmd.indexOf(" ");
-        if (i > 0) {
-            String s = gotCmd.substring(i + 1, gotCmd.length());
-            gotCmd = gotCmd.substring(0, i);
-            gotUrl.fromString(s);
+        if (i < 0) {
+            sendReply("501 bad request", bits.str2lst("bad request"));
+            return true;
         }
+        String s = gotCmd.substring(i + 1, gotCmd.length());
+        gotCmd = gotCmd.substring(0, i);
+        gotUrl.fromString(s);
         servPrometheusMetric ntry = new servPrometheusMetric(gotUrl.filName);
         ntry = lower.mets.find(ntry);
+        if (ntry != null) {
+            long tim = bits.getTime();
+            List<String> res = ntry.doMetric();
+            ntry.tim = (int) (bits.getTime() - tim);
+            ntry.askLast = tim;
+            ntry.askNum++;
+            sendReply("200 ok", res);
+            return false;
+        }
+        if (!gotUrl.filName.equals(lower.allMets)) {
+            sendReply("404 not found", bits.str2lst("not found"));
+            return false;
+        }
         long tim = bits.getTime();
-        if (ntry == null) {
-            conn.linePut("HTTP/1.1 404 not found");
-            conn.linePut("Date: " + bits.time2str(cfgAll.timeZoneName, tim, 4));
-            conn.linePut("");
-            conn.linePut("metric not found");
-            return;
+        List<String> res = new ArrayList<String>();
+        for (i = 0; i < lower.mets.size(); i++) {
+            res.addAll(lower.mets.get(i).doMetric());
         }
-        List<String> res = ntry.doMetric();
-        ntry.tim = (int) (bits.getTime() - tim);
-        ntry.askLast = tim;
-        ntry.askNum++;
-        conn.linePut("HTTP/1.1 200 ok");
-        conn.linePut("Content-Type: text/plain");
-        conn.linePut("Date: " + bits.time2str(cfgAll.timeZoneName, tim, 4));
-        conn.linePut("");
-        conn.lineTx = pipeSide.modTyp.modeLF;
-        for (i = 0; i < res.size(); i++) {
-            conn.linePut(res.get(i));
-        }
-        if (debugger.servPrometheusTraf) {
-            logger.debug("tx " + res.size() + " lines");
-        }
+        lower.allTim = (int) (bits.getTime() - tim);
+        lower.allLast = tim;
+        lower.allNum++;
+        sendReply("200 ok", res);
+        return false;
     }
 
     public void run() {
         try {
-            doWork();
+            for (;;) {
+                if (doWork()) {
+                    break;
+                }
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
