@@ -35,7 +35,7 @@ public class servPrometheus extends servGeneric implements prtServS {
     /**
      * list of metrics
      */
-    public tabGen<servPrometheusMetric> mets = new tabGen<servPrometheusMetric>();
+    public tabGen<servPrometheusMet> mets = new tabGen<servPrometheusMet>();
 
     /**
      * list of metrics
@@ -100,7 +100,7 @@ public class servPrometheus extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst) {
         for (int p = 0; p < mets.size(); p++) {
-            servPrometheusMetric met = mets.get(p);
+            servPrometheusMet met = mets.get(p);
             if (met == null) {
                 continue;
             }
@@ -111,17 +111,17 @@ public class servPrometheus extends servGeneric implements prtServS {
             lst.add(mn + " name " + met.col);
             lst.add(mn + " skip " + met.skp);
             for (int i = 0; i < met.reps.size(); i++) {
-                servPrometheusReplace rep = met.reps.get(i);
+                servPrometheusRep rep = met.reps.get(i);
                 lst.add(mn + " replace " + rep.src + " " + rep.trg);
             }
             for (int o = 0; o < met.cols.size(); o++) {
-                servPrometheusColumn col = met.cols.get(o);
+                servPrometheusCol col = met.cols.get(o);
                 String cn = mn + " column " + col.num;
                 lst.add(cn + " name " + col.nam);
                 lst.add(cn + " type " + col.typ);
                 lst.add(cn + " help " + col.hlp);
                 for (int i = 0; i < col.reps.size(); i++) {
-                    servPrometheusReplace rep = col.reps.get(i);
+                    servPrometheusRep rep = col.reps.get(i);
                     lst.add(cn + " replace " + rep.src + " " + rep.trg);
                 }
             }
@@ -141,8 +141,8 @@ public class servPrometheus extends servGeneric implements prtServS {
         if (!s.equals("metric")) {
             return true;
         }
-        servPrometheusMetric met = new servPrometheusMetric(cmd.word());
-        servPrometheusMetric oldm = mets.add(met);
+        servPrometheusMet met = new servPrometheusMet(cmd.word());
+        servPrometheusMet oldm = mets.add(met);
         if (oldm != null) {
             met = oldm;
         }
@@ -173,7 +173,7 @@ public class servPrometheus extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("replace")) {
-            servPrometheusReplace rep = new servPrometheusReplace(cmd.word());
+            servPrometheusRep rep = new servPrometheusRep(cmd.word());
             rep.trg = cmd.word();
             if (negated) {
                 met.reps.del(rep);
@@ -185,8 +185,8 @@ public class servPrometheus extends servGeneric implements prtServS {
         if (!s.equals("column")) {
             return true;
         }
-        servPrometheusColumn col = new servPrometheusColumn(bits.str2num(cmd.word()));
-        servPrometheusColumn oldc = met.cols.add(col);
+        servPrometheusCol col = new servPrometheusCol(bits.str2num(cmd.word()));
+        servPrometheusCol oldc = met.cols.add(col);
         if (oldc != null) {
             col = oldc;
         }
@@ -208,7 +208,7 @@ public class servPrometheus extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("replace")) {
-            servPrometheusReplace rep = new servPrometheusReplace(cmd.word());
+            servPrometheusRep rep = new servPrometheusRep(cmd.word());
             rep.trg = cmd.word();
             if (negated) {
                 col.reps.del(rep);
@@ -264,7 +264,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         userFormat res = new userFormat("|", "name|asked|reply|times|last");
         res.add(allMets + "|" + allNum + "|" + allTim + "|" + bits.timePast(allLast));
         for (int i = 0; i < mets.size(); i++) {
-            servPrometheusMetric ntry = mets.get(i);
+            servPrometheusMet ntry = mets.get(i);
             res.add(ntry.nam + "|" + ntry.askNum + "|" + ntry.tim + "|" + bits.timePast(ntry.askLast));
         }
         return res;
@@ -277,7 +277,7 @@ public class servPrometheus extends servGeneric implements prtServS {
      * @return result
      */
     public List<String> getShow(String nam) {
-        servPrometheusMetric ntry = new servPrometheusMetric(nam);
+        servPrometheusMet ntry = new servPrometheusMet(nam);
         ntry = mets.find(ntry);
         if (ntry == null) {
             return null;
@@ -296,7 +296,7 @@ public class servPrometheus extends servGeneric implements prtServS {
 
 }
 
-class servPrometheusMetric implements Comparator<servPrometheusMetric> {
+class servPrometheusMet implements Comparator<servPrometheusMet> {
 
     public final String nam;
 
@@ -314,15 +314,15 @@ class servPrometheusMetric implements Comparator<servPrometheusMetric> {
 
     public int skp = 1;
 
-    public tabGen<servPrometheusColumn> cols = new tabGen<servPrometheusColumn>();
+    public tabGen<servPrometheusCol> cols = new tabGen<servPrometheusCol>();
 
-    public tabGen<servPrometheusReplace> reps = new tabGen<servPrometheusReplace>();
+    public tabGen<servPrometheusRep> reps = new tabGen<servPrometheusRep>();
 
-    public servPrometheusMetric(String n) {
+    public servPrometheusMet(String n) {
         nam = n;
     }
 
-    public int compare(servPrometheusMetric o1, servPrometheusMetric o2) {
+    public int compare(servPrometheusMet o1, servPrometheusMet o2) {
         return o1.nam.toLowerCase().compareTo(o2.nam.toLowerCase());
     }
 
@@ -378,11 +378,11 @@ class servPrometheusMetric implements Comparator<servPrometheusMetric> {
             }
             String na = prep + cl.get(col);
             for (int i = 0; i < reps.size(); i++) {
-                servPrometheusReplace rep = reps.get(i);
+                servPrometheusRep rep = reps.get(i);
                 na = na.replaceAll(rep.src, rep.trg);
             }
             for (int o = 0; o < cols.size(); o++) {
-                servPrometheusColumn col = cols.get(o);
+                servPrometheusCol col = cols.get(o);
                 if (cl.size() < col.num) {
                     continue;
                 }
@@ -391,7 +391,7 @@ class servPrometheusMetric implements Comparator<servPrometheusMetric> {
                 lst.add("# TYPE " + nb + " " + col.typ);
                 String a = cl.get(col.num);
                 for (int i = 0; i < col.reps.size(); i++) {
-                    servPrometheusReplace rep = col.reps.get(i);
+                    servPrometheusRep rep = col.reps.get(i);
                     a = a.replaceAll(rep.src, rep.trg);
                 }
                 lst.add(nb + " " + a);
@@ -402,23 +402,23 @@ class servPrometheusMetric implements Comparator<servPrometheusMetric> {
 
 }
 
-class servPrometheusReplace implements Comparator<servPrometheusReplace> {
+class servPrometheusRep implements Comparator<servPrometheusRep> {
 
     public final String src;
 
     public String trg;
 
-    public servPrometheusReplace(String n) {
+    public servPrometheusRep(String n) {
         src = n;
     }
 
-    public int compare(servPrometheusReplace o1, servPrometheusReplace o2) {
+    public int compare(servPrometheusRep o1, servPrometheusRep o2) {
         return o1.src.compareTo(o2.src);
     }
 
 }
 
-class servPrometheusColumn implements Comparator<servPrometheusColumn> {
+class servPrometheusCol implements Comparator<servPrometheusCol> {
 
     public final int num;
 
@@ -428,13 +428,13 @@ class servPrometheusColumn implements Comparator<servPrometheusColumn> {
 
     public String hlp = "exported counter";
 
-    public tabGen<servPrometheusReplace> reps = new tabGen<servPrometheusReplace>();
+    public tabGen<servPrometheusRep> reps = new tabGen<servPrometheusRep>();
 
-    public servPrometheusColumn(int n) {
+    public servPrometheusCol(int n) {
         num = n;
     }
 
-    public int compare(servPrometheusColumn o1, servPrometheusColumn o2) {
+    public int compare(servPrometheusCol o1, servPrometheusCol o2) {
         if (o1.num < o2.num) {
             return -1;
         }
@@ -507,7 +507,7 @@ class servPrometheusConn implements Runnable {
         String s = gotCmd.substring(i + 1, gotCmd.length());
         gotCmd = gotCmd.substring(0, i);
         gotUrl.fromString(s);
-        servPrometheusMetric ntry = new servPrometheusMetric(gotUrl.filName);
+        servPrometheusMet ntry = new servPrometheusMet(gotUrl.filName);
         ntry = lower.mets.find(ntry);
         if (ntry != null) {
             long tim = bits.getTime();

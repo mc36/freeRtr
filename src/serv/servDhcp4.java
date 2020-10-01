@@ -103,7 +103,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
 
     private Timer purgeTimer;
 
-    private List<servDhcp4binding> bindings = new ArrayList<servDhcp4binding>();
+    private List<servDhcp4bind> bindings = new ArrayList<servDhcp4bind>();
 
     /**
      * defaults text
@@ -167,7 +167,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         l.add(beg + "renew " + renew);
         synchronized (bindings) {
             for (int i = 0; i < bindings.size(); i++) {
-                servDhcp4binding ntry = bindings.get(i);
+                servDhcp4bind ntry = bindings.get(i);
                 if (!ntry.confed) {
                     continue;
                 }
@@ -277,7 +277,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
             if (ip.fromString(cmd.word())) {
                 return true;
             }
-            servDhcp4binding ntry = findBinding(mac, 1);
+            servDhcp4bind ntry = findBinding(mac, 1);
             if (ntry == null) {
                 return true;
             }
@@ -421,12 +421,12 @@ public class servDhcp4 extends servGeneric implements prtServS {
         purgeTimer.schedule(task, 1000, 60000);
     }
 
-    private servDhcp4binding findBinding(addrMac mac, int create) {
+    private servDhcp4bind findBinding(addrMac mac, int create) {
         synchronized (bindings) {
-            servDhcp4binding ntry = new servDhcp4binding();
-            Collections.sort(bindings, new servDhcp4bindingMac());
+            servDhcp4bind ntry = new servDhcp4bind();
+            Collections.sort(bindings, new servDhcp4bindMac());
             ntry.mac = mac.copyBytes();
-            int i = Collections.binarySearch(bindings, ntry, new servDhcp4bindingMac());
+            int i = Collections.binarySearch(bindings, ntry, new servDhcp4bindMac());
             if (i >= 0) {
                 ntry = bindings.get(i);
                 if ((create == 3) && (!ntry.confed)) {
@@ -446,7 +446,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
             if (poolLo == null) {
                 return null;
             }
-            Collections.sort(bindings, new servDhcp4bindingIp());
+            Collections.sort(bindings, new servDhcp4bindIp());
             for (int cnt = 0; cnt < 64; cnt++) {
                 addrIPv4 ip = new addrIPv4();
                 ip.fillRandom();
@@ -459,7 +459,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
                     continue;
                 }
                 ntry.ip = ip;
-                i = Collections.binarySearch(bindings, ntry, new servDhcp4bindingIp());
+                i = Collections.binarySearch(bindings, ntry, new servDhcp4bindIp());
                 if (i >= 0) {
                     continue;
                 }
@@ -471,7 +471,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         }
     }
 
-    private synchronized boolean sendPack(packDhcp4 pckd, servDhcp4binding ntry) {
+    private synchronized boolean sendPack(packDhcp4 pckd, servDhcp4bind ntry) {
         addrIP adr = new addrIP();
         if (pckd.bootpBroadcast) {
             adr.fromIPv4addr(addrIPv4.getBroadcast());
@@ -496,7 +496,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         return false;
     }
 
-    private void updatePack(packDhcp4 req, packDhcp4 rep, servDhcp4binding ntry) {
+    private void updatePack(packDhcp4 req, packDhcp4 rep, servDhcp4bind ntry) {
         rep.bootpOp = packDhcp4.bootpOpReply;
         rep.bootpXid = req.bootpXid;
         rep.bootpSecs = req.bootpSecs;
@@ -535,7 +535,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         if (req.bootpOp != packDhcp4.bootpOpRequest) {
             return null;
         }
-        servDhcp4binding ntry;
+        servDhcp4bind ntry;
         packDhcp4 rep = new packDhcp4();
         switch (req.dhcpOp) {
             case packDhcp4.dhcpOpDiscover:
@@ -571,7 +571,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         synchronized (bindings) {
             long cur = bits.getTime();
             for (int i = 0; i < bindings.size(); i++) {
-                servDhcp4binding ntry = bindings.get(i);
+                servDhcp4bind ntry = bindings.get(i);
                 if (ntry == null) {
                     continue;
                 }
@@ -591,23 +591,23 @@ public class servDhcp4 extends servGeneric implements prtServS {
 
 }
 
-class servDhcp4bindingIp implements Comparator<servDhcp4binding> {
+class servDhcp4bindIp implements Comparator<servDhcp4bind> {
 
-    public int compare(servDhcp4binding o1, servDhcp4binding o2) {
+    public int compare(servDhcp4bind o1, servDhcp4bind o2) {
         return o1.ip.compare(o1.ip, o2.ip);
     }
 
 }
 
-class servDhcp4bindingMac implements Comparator<servDhcp4binding> {
+class servDhcp4bindMac implements Comparator<servDhcp4bind> {
 
-    public int compare(servDhcp4binding o1, servDhcp4binding o2) {
+    public int compare(servDhcp4bind o1, servDhcp4bind o2) {
         return o1.mac.compare(o1.mac, o2.mac);
     }
 
 }
 
-class servDhcp4binding {
+class servDhcp4bind {
 
     public boolean confed = false;
 
@@ -617,7 +617,7 @@ class servDhcp4binding {
 
     public long reqd;
 
-    public servDhcp4binding() {
+    public servDhcp4bind() {
         reqd = bits.getTime();
     }
 

@@ -35,7 +35,7 @@ public class servNrpe extends servGeneric implements prtServS {
     /**
      * list of checks
      */
-    public tabGen<servNrpeCheck> chks = new tabGen<servNrpeCheck>();
+    public tabGen<servNrpeChk> chks = new tabGen<servNrpeChk>();
 
     /**
      * list of resolvers
@@ -122,7 +122,7 @@ public class servNrpe extends servGeneric implements prtServS {
             lst.add(beg + "replace " + reps.get(i));
         }
         for (int o = 0; o < chks.size(); o++) {
-            servNrpeCheck ntry = chks.get(o);
+            servNrpeChk ntry = chks.get(o);
             if (ntry == null) {
                 continue;
             }
@@ -201,8 +201,8 @@ public class servNrpe extends servGeneric implements prtServS {
         if (!s.equals("check")) {
             return true;
         }
-        servNrpeCheck ntry = new servNrpeCheck(this, cmd.word());
-        servNrpeCheck old = chks.add(ntry);
+        servNrpeChk ntry = new servNrpeChk(this, cmd.word());
+        servNrpeChk old = chks.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -356,7 +356,7 @@ public class servNrpe extends servGeneric implements prtServS {
     public userFormat getShow() {
         userFormat res = new userFormat("|", "name|state|asked|reply|times|last|times|last", "4|2pass|2fail");
         for (int i = 0; i < chks.size(); i++) {
-            servNrpeCheck ntry = chks.get(i);
+            servNrpeChk ntry = chks.get(i);
             res.add(ntry.nam + "|" + (ntry.doCheck().size() < 1) + "|" + (ntry.okNum + ntry.errNum) + "|" + ntry.tim + "|" + ntry.okNum + "|" + bits.timePast(ntry.okTim) + "|" + ntry.errNum + "|" + bits.timePast(ntry.errTim));
         }
         return res;
@@ -369,7 +369,7 @@ public class servNrpe extends servGeneric implements prtServS {
      * @return result
      */
     public List<String> getShow(String nam) {
-        servNrpeCheck ntry = new servNrpeCheck(this, nam);
+        servNrpeChk ntry = new servNrpeChk(this, nam);
         ntry = chks.find(ntry);
         if (ntry == null) {
             return null;
@@ -426,7 +426,7 @@ class servNrpeConn implements Runnable {
                     continue;
                 }
                 pck.typ = packNrpe.tyRep;
-                servNrpeCheck ntry = new servNrpeCheck(lower, pck.str.replaceAll("!", "-"));
+                servNrpeChk ntry = new servNrpeChk(lower, pck.str.replaceAll("!", "-"));
                 ntry = lower.chks.find(ntry);
                 if (ntry == null) {
                     pck.cod = packNrpe.coUnk;
@@ -594,7 +594,7 @@ class servNrpeRes implements Comparator<servNrpeRes> {
 
 }
 
-class servNrpeCheck implements Comparator<servNrpeCheck> {
+class servNrpeChk implements Comparator<servNrpeChk> {
 
     private final servNrpe lower;
 
@@ -634,7 +634,7 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
 
     public int lastStat = packNrpe.coWar;
 
-    public servNrpeCheck(servNrpe p, String n) {
+    public servNrpeChk(servNrpe p, String n) {
         lower = p;
         nam = n;
         allR = new ArrayList<String>();
@@ -645,7 +645,7 @@ class servNrpeCheck implements Comparator<servNrpeCheck> {
         reqT = new ArrayList<String>();
     }
 
-    public int compare(servNrpeCheck o1, servNrpeCheck o2) {
+    public int compare(servNrpeChk o1, servNrpeChk o2) {
         return o1.nam.toLowerCase().compareTo(o2.nam.toLowerCase());
     }
 

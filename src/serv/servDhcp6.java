@@ -81,7 +81,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
      */
     public tabGen<packDhcpOption> options = new tabGen<packDhcpOption>();
 
-    private List<servDhcp6binding> bindings = new ArrayList<servDhcp6binding>();
+    private List<servDhcp6bind> bindings = new ArrayList<servDhcp6bind>();
 
     private Timer purgeTimer;
 
@@ -142,7 +142,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
         l.add(beg + "preference " + prefer);
         synchronized (bindings) {
             for (int i = 0; i < bindings.size(); i++) {
-                servDhcp6binding ntry = bindings.get(i);
+                servDhcp6bind ntry = bindings.get(i);
                 if (!ntry.confed) {
                     continue;
                 }
@@ -224,7 +224,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
             if (ip.fromString(cmd.word())) {
                 return true;
             }
-            servDhcp6binding ntry = findBinding(mac, 1);
+            servDhcp6bind ntry = findBinding(mac, 1);
             if (ntry == null) {
                 return true;
             }
@@ -354,12 +354,12 @@ public class servDhcp6 extends servGeneric implements prtServS {
         purgeTimer.schedule(task, 1000, 60000);
     }
 
-    private servDhcp6binding findBinding(addrMac mac, int create) {
+    private servDhcp6bind findBinding(addrMac mac, int create) {
         synchronized (bindings) {
-            servDhcp6binding ntry = new servDhcp6binding();
-            Collections.sort(bindings, new servDhcp6bindingMac());
+            servDhcp6bind ntry = new servDhcp6bind();
+            Collections.sort(bindings, new servDhcp6bindMac());
             ntry.mac = mac.copyBytes();
-            int i = Collections.binarySearch(bindings, ntry, new servDhcp6bindingMac());
+            int i = Collections.binarySearch(bindings, ntry, new servDhcp6bindMac());
             if (i < 0) {
                 if (create != 1) {
                     return null;
@@ -378,7 +378,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
         }
     }
 
-    private synchronized boolean sendPack(packDhcp6 pckd, servDhcp6binding ntry) {
+    private synchronized boolean sendPack(packDhcp6 pckd, servDhcp6bind ntry) {
         addrIP adr = new addrIP();
         adr.fromIPv6addr(ntry.ip);
         if (debugger.servDhcp6traf) {
@@ -455,7 +455,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
             rep.status = 1;
             return rep;
         }
-        servDhcp6binding ntry = findBinding(mac, crt);
+        servDhcp6bind ntry = findBinding(mac, crt);
         if (crt != 1) {
             rep.ipaddr = req.ipaddr;
             rep.ipsize = req.ipsize;
@@ -484,7 +484,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
         synchronized (bindings) {
             long cur = bits.getTime();
             for (int i = 0; i < bindings.size(); i++) {
-                servDhcp6binding ntry = bindings.get(i);
+                servDhcp6bind ntry = bindings.get(i);
                 if (ntry == null) {
                     continue;
                 }
@@ -504,23 +504,23 @@ public class servDhcp6 extends servGeneric implements prtServS {
 
 }
 
-class servDhcp6bindingIp implements Comparator<servDhcp6binding> {
+class servDhcp6bindIp implements Comparator<servDhcp6bind> {
 
-    public int compare(servDhcp6binding o1, servDhcp6binding o2) {
+    public int compare(servDhcp6bind o1, servDhcp6bind o2) {
         return o1.ip.compare(o1.ip, o2.ip);
     }
 
 }
 
-class servDhcp6bindingMac implements Comparator<servDhcp6binding> {
+class servDhcp6bindMac implements Comparator<servDhcp6bind> {
 
-    public int compare(servDhcp6binding o1, servDhcp6binding o2) {
+    public int compare(servDhcp6bind o1, servDhcp6bind o2) {
         return o1.mac.compare(o1.mac, o2.mac);
     }
 
 }
 
-class servDhcp6binding {
+class servDhcp6bind {
 
     public boolean confed = false;
 
@@ -530,7 +530,7 @@ class servDhcp6binding {
 
     public long reqd;
 
-    public servDhcp6binding() {
+    public servDhcp6bind() {
         reqd = bits.getTime();
     }
 
