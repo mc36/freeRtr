@@ -3533,10 +3533,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         userFormat l = new userFormat("|", "category|value|addition");
         l.add("version|" + compRound);
         l.add("full run|" + fullCount);
-        l.add("full last|" + bits.time2str(cfgAll.timeZoneName, fullLast + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(fullLast));
+        l.add("full last|" + bits.timePast(fullLast) + "|" + bits.time2str(cfgAll.timeZoneName, fullLast + cfgAll.timeServerOffset, 3));
         l.add("full time|" + fullTime);
         l.add("incr run|" + incrCount);
-        l.add("incr last|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(incrLast));
+        l.add("incr last|" + bits.timePast(incrLast) + "|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3));
         l.add("incr time|" + incrTime);
         l.add("changes|" + changedCur + "|" + changedTot);
         l.add("version|" + compRound.get());
