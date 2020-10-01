@@ -258,103 +258,87 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * currently updating unicast prefixes
      */
-    private tabRoute<addrIP> currUni = new tabRoute<addrIP>("curr");
+    private List<tabRouteEntry<addrIP>> currUni = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating multicast prefixes
      */
-    private tabRoute<addrIP> currMlt = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currMlt = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating other prefixes
      */
-    private tabRoute<addrIP> currOtr = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currOtr = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating flowspec prefixes
      */
-    private tabRoute<addrIP> currFlw = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currFlw = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating vpn uni prefixes
      */
-    private tabRoute<addrIP> currVpnU = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currVpnU = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating vpn multi prefixes
      */
-    private tabRoute<addrIP> currVpnM = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currVpnM = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating vpn flow prefixes
      */
-    private tabRoute<addrIP> currVpnF = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currVpnF = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating other vpn uni prefixes
      */
-    private tabRoute<addrIP> currVpoU = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currVpoU = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating other vpn multi prefixes
      */
-    private tabRoute<addrIP> currVpoM = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currVpoM = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating other vpn flow prefixes
      */
-    private tabRoute<addrIP> currVpoF = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currVpoF = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating vpls prefixes
      */
-    private tabRoute<addrIP> currVpls = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currVpls = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating mspw prefixes
      */
-    private tabRoute<addrIP> currMspw = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currMspw = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating evpn prefixes
      */
-    private tabRoute<addrIP> currEvpn = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currEvpn = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating mdt prefixes
      */
-    private tabRoute<addrIP> currMdt = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currMdt = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating srte prefixes
      */
-    private tabRoute<addrIP> currSrte = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currSrte = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating mvpn prefixes
      */
-    private tabRoute<addrIP> currMvpn = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currMvpn = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating other mvpn prefixes
      */
-    private tabRoute<addrIP> currMvpo = new tabRoute<addrIP>("curr");
-    ;
+    private List<tabRouteEntry<addrIP>> currMvpo = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently changed prefixes
@@ -1694,7 +1678,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return false;
     }
 
-    private void addAttribed(tabRoute<addrIP> currAdd, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
+    private void addAttribed(List<tabRouteEntry<addrIP>> currAdd, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
         if (!afiMsk(peerAfis, safi)) {
             return;
         }
@@ -1842,7 +1826,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!afiMsk(peerAfis, safi)) {
             return;
         }
-        tabRoute<addrIP> trg = null;
+        List<tabRouteEntry<addrIP>> trg = null;
         if (safi == parent.afiUni) {
             trg = currUni;
         }
@@ -1901,11 +1885,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         ntry.best.time = bits.getTime();
-        if (addpath) {
-            trg.add(tabRoute.addType.alters, ntry, true, false);
-        } else {
-            trg.add(tabRoute.addType.always, ntry, true, false);
-        }
+        ntry = ntry.copyBytes(tabRoute.addType.always);
+        trg.add(ntry);
     }
 
     private boolean prefixReachable(tabRouteEntry<addrIP> ntry) {
