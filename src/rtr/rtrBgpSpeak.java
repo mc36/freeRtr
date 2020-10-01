@@ -1708,16 +1708,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         boolean addpath = addPthRx(safi);
         for (int o = 0; o < currAdd.size(); o++) {
-            tabRouteEntry<addrIP> cur = currAdd.get(o);
-            for (int i = 0; i < cur.alts.size(); i++) {
-                tabRouteAttr<addrIP> alt = cur.alts.get(i);
-                attr.prefix = cur.prefix;
-                attr.rouDst = cur.rouDst;
+            tabRouteEntry<addrIP> pref = currAdd.get(o);
+            for (int i = 0; i < pref.alts.size(); i++) {
+                tabRouteAttr<addrIP> alt = pref.alts.get(i);
+                attr.prefix = pref.prefix;
+                attr.rouDst = pref.rouDst;
                 attr.best.ident = alt.ident;
                 attr.best.nextHop = alt.nextHop;
                 attr.best.labelRem = alt.labelRem;
                 attr.best.evpnLab = alt.evpnLab;
-                cur = attr.copyBytes(tabRoute.addType.notyet);
+                tabRouteEntry<addrIP> cur = attr.copyBytes(tabRoute.addType.notyet);
                 if (parent.flaps != null) {
                     parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
                 }
