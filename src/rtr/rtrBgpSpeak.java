@@ -1606,18 +1606,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         ntry.best.locPref = 100;
         ntry.best.nextHop = neigh.peerAddr.copyBytes();
         boolean addpath = addPthRx(rtrBgpUtil.safiIp4uni);
+        int ident = 0;
         for (;;) {
             if (pck.dataSize() <= prt) {
                 break;
             }
             if (addpath) {
-                ntry.best.ident = pck.msbGetD(0);
+                ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
             tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, false, pck);
-            ntry.prefix = res.prefix;
-            ntry.best.labelRem = res.best.labelRem;
-            prefixWithdraw(rtrBgpUtil.safiIp4uni, addpath, ntry);
+            if (res == null) {
+                continue;
+            }
+            res.best.ident = ident;
+            prefixWithdraw(rtrBgpUtil.safiIp4uni, addpath, res);
         }
         pck.setBytesLeft(prt);
         prt = pck.msbGetW(0);
@@ -1636,13 +1639,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 break;
             }
             if (addpath) {
-                ntry.best.ident = pck.msbGetD(0);
+                ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
             tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, false, pck);
-            ntry.prefix = res.prefix;
-            ntry.best.labelRem = res.best.labelRem;
-            prefixReach(rtrBgpUtil.safiIp4uni, addpath, ntry);
+            if (res == null) {
+                continue;
+            }
+            res.best.ident = ident;
+            res.best.nextHop = ntry.best.nextHop.copyBytes();
+            prefixReach(rtrBgpUtil.safiIp4uni, addpath, res);
         }
         addAttribed(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currUni, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
@@ -1886,7 +1892,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         ntry.best.time = bits.getTime();
-        ntry = ntry.copyBytes(tabRoute.addType.always);
         trg.add(ntry);
     }
 

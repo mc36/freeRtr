@@ -1851,14 +1851,14 @@ public class rtrBgpUtil {
      * parse reachable attribute
      *
      * @param lower where to signal
-     * @param ntry table entry
      * @param pck packet to parse
      */
-    public static void parseReachable(rtrBgpSpeak lower, tabRouteEntry<addrIP> ntry, packHolder pck) {
+    public static void parseReachable(rtrBgpSpeak lower, packHolder pck) {
         int safi = triplet2safi(pck.msbGetD(0));
         int len = pck.getByte(3);
         pck.getSkip(4);
         len = pck.dataSize() - len;
+        addrIP nextHop = null;
         for (; pck.dataSize() > len;) {
             int sfi = safi & safiMask;
             if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM)) {
@@ -1882,7 +1882,7 @@ public class rtrBgpUtil {
                     continue;
                 }
             }
-            ntry.best.nextHop = adr;
+            nextHop = adr;
         }
         pck.setBytesLeft(len);
         len = pck.getByte(0);
@@ -1891,20 +1891,19 @@ public class rtrBgpUtil {
             pck.getSkip(pck.getByte(0) + 1);
         }
         boolean addpath = lower.addPthRx(safi);
+        int ident = 0;
         for (; pck.dataSize() > 0;) {
             if (addpath) {
-                ntry.best.ident = pck.msbGetD(0);
+                ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
             tabRouteEntry<addrIP> res = readPrefix(safi, false, pck);
             if (res == null) {
                 continue;
             }
-            ntry.rouDst = res.rouDst;
-            ntry.prefix = res.prefix;
-            ntry.best.labelRem = res.best.labelRem;
-            ntry.best.evpnLab = res.best.evpnLab;
-            lower.prefixReach(safi, addpath, ntry);
+            res.best.ident = ident;
+            res.best.nextHop = nextHop;
+            lower.prefixReach(safi, addpath, res);
         }
     }
 
@@ -1912,28 +1911,25 @@ public class rtrBgpUtil {
      * parse unreachable attribute
      *
      * @param lower where to signal
-     * @param ntry table entry
      * @param pck packet to parse
      */
-    public static void parseUnReach(rtrBgpSpeak lower, tabRouteEntry<addrIP> ntry, packHolder pck) {
+    public static void parseUnReach(rtrBgpSpeak lower, packHolder pck) {
         pck.merge2beg();
         int safi = triplet2safi(pck.msbGetD(0));
         pck.getSkip(3);
         boolean addpath = lower.addPthRx(safi);
+        int ident = 0;
         for (; pck.dataSize() > 0;) {
             if (addpath) {
-                ntry.best.ident = pck.msbGetD(0);
+                ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
             tabRouteEntry<addrIP> res = readPrefix(safi, true, pck);
             if (res == null) {
                 continue;
             }
-            ntry.rouDst = res.rouDst;
-            ntry.prefix = res.prefix;
-            ntry.best.labelRem = res.best.labelRem;
-            ntry.best.evpnLab = res.best.evpnLab;
-            lower.prefixWithdraw(safi, addpath, ntry);
+            res.best.ident = ident;
+            lower.prefixWithdraw(safi, addpath, res);
         }
     }
 
@@ -2076,6 +2072,18 @@ public class rtrBgpUtil {
      */
     public static void interpretAttribute(rtrBgpSpeak lower, tabRouteEntry<addrIP> ntry, packHolder pck) {
         switch (pck.ETHtype) {
+            case attrReachable:
+                if (lower == null) {
+                    break;
+                }
+                parseReachable(lower, pck);
+                break;
+            case attrUnReach:
+                if (lower == null) {
+                    break;
+                }
+                parseUnReach(lower, pck);
+                break;
             case attrOrigin:
                 parseOrigin(ntry, pck);
                 break;
@@ -2140,18 +2148,6 @@ public class rtrBgpUtil {
                 break;
             case attrClustList:
                 parseClustList(ntry, pck);
-                break;
-            case attrReachable:
-                if (lower == null) {
-                    break;
-                }
-                parseReachable(lower, ntry, pck);
-                break;
-            case attrUnReach:
-                if (lower == null) {
-                    break;
-                }
-                parseUnReach(lower, ntry, pck);
                 break;
             default:
                 if (debugger.rtrBgpTraf) {
