@@ -364,7 +364,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             }
             ntry.ifc.ethtyp.hwHstry = new history();
             ntry.ifc.ethtyp.hwCntr = new counter();
-            expIfc.put(ntry);
+            servP4langIfc old = expIfc.put(ntry);
+            if (old == null) {
+                return false;
+            }
+            sendLine("state " + old.id + " 0 " + old.getStateEnding());
             return false;
         }
         if (!s.equals("no")) {
@@ -445,6 +449,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             if (ntry == null) {
                 return false;
             }
+            sendLine("state " + ntry.id + " 0 " + ntry.getStateEnding());
             if ((ifc.type == cfgIfc.ifaceType.sdn) && (ifc.vlanNum == 0)) {
                 ifcNull nul = new ifcNull();
                 nul.setUpper(ifc.ethtyp);
@@ -879,6 +884,10 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public String toString() {
         return "p4lang port " + id;
+    }
+
+    public String getStateEnding() {
+        return speed + " " + errCorr + " " + autoNeg + " " + flowCtrl;
     }
 
     public addrType getHwAddr() {
@@ -2301,7 +2310,7 @@ class servP4langConn implements Runnable {
             } else {
                 a = "0";
             }
-            lower.sendLine("state " + ifc.id + " " + a + " " + ifc.speed + " " + ifc.errCorr + " " + ifc.autoNeg + " " + ifc.flowCtrl);
+            lower.sendLine("state " + ifc.id + " " + a + " " + ifc.getStateEnding());
             ifc.sentState = sta;
         }
         if (ifc.sentMtu != i) {
