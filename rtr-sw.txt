@@ -803,7 +803,7 @@ server telnet tel
  exec timestamp
  exec colorized
  exec spacetab
- exec tablemode table
+ exec tablemode fancy
  no exec authorization
  login authentication access
  vrf v1
