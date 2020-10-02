@@ -1737,6 +1737,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     private void doPrefAdd(tabRoute<addrIP> tab, boolean addpath, tabRouteEntry<addrIP> ntry) {
+        ntry.best.time = bits.getTime();
         if (!addpath) {
             tab.add(tabRoute.addType.always, ntry, false, false);
             return;
@@ -1891,7 +1892,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (ntry.best.nextHop == null) {
             ntry.best.nextHop = neigh.peerAddr.copyBytes();
         }
-        ntry.best.time = bits.getTime();
         trg.add(ntry);
     }
 
