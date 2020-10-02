@@ -1678,6 +1678,40 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return false;
     }
 
+    private void addAttribed(tabRouteAttr<addrIP> alt, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
+        attr.best.ident = alt.ident;
+        attr.best.nextHop = alt.nextHop;
+        attr.best.labelRem = alt.labelRem;
+        attr.best.evpnLab = alt.evpnLab;
+        tabRouteEntry<addrIP> cur = attr.copyBytes(tabRoute.addType.notyet);
+        if (parent.flaps != null) {
+            parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
+        }
+        if (!neigh.softReconfig) {
+            tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, cur, roumap, roupol, prflst);
+            if (res == null) {
+                if (doPrefDel(learned, addpath, cur)) {
+                    return;
+                }
+                currChg++;
+                changed.add(tabRoute.addType.always, cur, false, false);
+                return;
+            }
+            cur = res;
+        }
+        if (prefixReachable(cur)) {
+            if (doPrefDel(learned, addpath, cur)) {
+                return;
+            }
+            currChg++;
+            changed.add(tabRoute.addType.always, cur, false, false);
+            return;
+        }
+        doPrefAdd(learned, addpath, cur);
+        currChg++;
+        changed.add(tabRoute.addType.always, cur, false, false);
+    }
+
     private void addAttribed(List<tabRouteEntry<addrIP>> currAdd, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
         if (!afiMsk(peerAfis, safi)) {
             return;
@@ -1693,42 +1727,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         boolean addpath = addPthRx(safi);
         for (int o = 0; o < currAdd.size(); o++) {
             tabRouteEntry<addrIP> pref = currAdd.get(o);
-            for (int i = 0; i < pref.alts.size(); i++) {
-                tabRouteAttr<addrIP> alt = pref.alts.get(i);
-                attr.prefix = pref.prefix;
-                attr.rouDst = pref.rouDst;
-                attr.best.ident = alt.ident;
-                attr.best.nextHop = alt.nextHop;
-                attr.best.labelRem = alt.labelRem;
-                attr.best.evpnLab = alt.evpnLab;
-                tabRouteEntry<addrIP> cur = attr.copyBytes(tabRoute.addType.notyet);
-                if (parent.flaps != null) {
-                    parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
-                }
-                if (!neigh.softReconfig) {
-                    tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, cur, roumap, roupol, prflst);
-                    if (res == null) {
-                        if (doPrefDel(learned, addpath, cur)) {
-                            continue;
-                        }
-                        currChg++;
-                        changed.add(tabRoute.addType.always, cur, false, false);
-                        continue;
-                    }
-                    cur = res;
-                }
-                if (prefixReachable(cur)) {
-                    if (doPrefDel(learned, addpath, cur)) {
-                        continue;
-                    }
-                    currChg++;
-                    changed.add(tabRoute.addType.always, cur, false, false);
-                    continue;
-                }
-                doPrefAdd(learned, addpath, cur);
-                currChg++;
-                changed.add(tabRoute.addType.always, cur, false, false);
-            }
+            attr.prefix = pref.prefix;
+            attr.rouDst = pref.rouDst;
+            addAttribed(pref.best, addpath, learned, changed, safi, attr, roumap, roupol, prflst);
         }
     }
 
