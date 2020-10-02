@@ -1604,7 +1604,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         ntry.best.rouSrc = neigh.peerType;
         ntry.best.srcRtr = neigh.peerAddr.copyBytes();
         ntry.best.locPref = 100;
-        ntry.best.nextHop = neigh.peerAddr.copyBytes();
         boolean addpath = addPthRx(rtrBgpUtil.safiIp4uni);
         int ident = 0;
         for (;;) {
@@ -1647,7 +1646,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 continue;
             }
             res.best.ident = ident;
-            res.best.nextHop = ntry.best.nextHop.copyBytes();
+            res.best.nextHop = ntry.best.nextHop;
             prefixReach(rtrBgpUtil.safiIp4uni, addpath, res);
         }
         addAttribed(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
@@ -1888,6 +1887,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (trg == null) {
             return;
+        }
+        if (ntry.best.nextHop == null) {
+            ntry.best.nextHop = neigh.peerAddr.copyBytes();
         }
         ntry.best.time = bits.getTime();
         trg.add(ntry);
