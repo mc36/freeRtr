@@ -1684,12 +1684,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return false;
     }
 
-    private void addAttribed(tabRouteAttr<addrIP> alt, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
-        attr.best.ident = alt.ident;
-        attr.best.nextHop = alt.nextHop;
-        attr.best.labelRem = alt.labelRem;
-        attr.best.evpnLab = alt.evpnLab;
-        tabRouteEntry<addrIP> cur = attr.copyBytes(tabRoute.addType.notyet);
+    private void addAttribed(tabRouteEntry<addrIP> cur, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
         if (parent.flaps != null) {
             parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
         }
@@ -1733,9 +1728,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         boolean addpath = addPthRx(safi);
         for (int o = 0; o < currAdd.size(); o++) {
             tabRouteEntry<addrIP> pref = currAdd.get(o);
-            attr.prefix = pref.prefix;
-            attr.rouDst = pref.rouDst;
-            addAttribed(pref.best, addpath, learned, changed, safi, attr, roumap, roupol, prflst);
+            attr.best.ident = pref.best.ident;
+            attr.best.nextHop = pref.best.nextHop;
+            attr.best.labelRem = pref.best.labelRem;
+            attr.best.evpnLab = pref.best.evpnLab;
+            attr.best.copyBytes(pref.best, false);
+            addAttribed(pref, addpath, learned, changed, safi, roumap, roupol, prflst);
         }
     }
 
