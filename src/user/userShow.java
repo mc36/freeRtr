@@ -2293,7 +2293,7 @@ public class userShow {
         }
     }
 
-    private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign, tabListing<tabPrfxlstN, addrIP> flt) {
+    private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign, tabListing<tabRtrmapN, addrIP> flt) {
         for (int o = 0; o < nei1.size(); o++) {
             tabRouteEntry<addrIP> prf1 = nei1.get(o);
             if (flt != null) {
@@ -2305,6 +2305,11 @@ public class userShow {
             if (prf2 == null) {
                 uniq.add(tabRoute.addType.always, prf1, false, false);
                 continue;
+            }
+            if (flt != null) {
+                if (flt.matches(rtrBgpUtil.safiUnicast, prf2)) {
+                    continue;
+                }
             }
             prf1 = prf1.copyBytes(tabRoute.addType.alters);
             prf2 = prf2.copyBytes(tabRoute.addType.alters);
@@ -2693,18 +2698,18 @@ public class userShow {
                 return;
             }
             int ign = 0;
-            tabListing<tabPrfxlstN, addrIP> flt = null;
+            tabListing<tabRtrmapN, addrIP> flt = null;
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
                     break;
                 }
                 if (a.equals("exclude")) {
-                    cfgPrfxlst res = cfgAll.prfxFind(cmd.word(), false);
+                    cfgRoump res = cfgAll.rtmpFind(cmd.word(), false);
                     if (res == null) {
                         continue;
                     }
-                    flt = res.prflst;
+                    flt = res.roumap;
                     continue;
                 }
                 ign |= str2ignore(a);
@@ -2744,7 +2749,7 @@ public class userShow {
             }
             int ign = 0;
             int tim = 5000;
-            tabListing<tabPrfxlstN, addrIP> flt = null;
+            tabListing<tabRtrmapN, addrIP> flt = null;
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -2755,11 +2760,11 @@ public class userShow {
                     continue;
                 }
                 if (a.equals("exclude")) {
-                    cfgPrfxlst res = cfgAll.prfxFind(cmd.word(), false);
+                    cfgRoump res = cfgAll.rtmpFind(cmd.word(), false);
                     if (res == null) {
                         continue;
                     }
-                    flt = res.prflst;
+                    flt = res.roumap;
                     continue;
                 }
                 ign |= str2ignore(a);
