@@ -37,8 +37,98 @@ public class addrIP extends addrType {
      */
     public addrIP copyBytes() {
         addrIP a = new addrIP();
-        a.fromBuf(addr, 0);
+        a.addr[0] = addr[0];
+        a.addr[1] = addr[1];
+        a.addr[2] = addr[2];
+        a.addr[3] = addr[3];
+        a.addr[4] = addr[4];
+        a.addr[5] = addr[5];
+        a.addr[6] = addr[6];
+        a.addr[7] = addr[7];
+        a.addr[8] = addr[8];
+        a.addr[9] = addr[9];
+        a.addr[10] = addr[10];
+        a.addr[11] = addr[11];
+        a.addr[12] = addr[12];
+        a.addr[13] = addr[13];
+        a.addr[14] = addr[14];
+        a.addr[15] = addr[15];
         return a;
+    }
+
+    /**
+     * compare two instances
+     *
+     * @param o1 first
+     * @param o2 second
+     * @return as usual
+     */
+    public int compare(addrType o1, addrType o2) {
+        int v1 = bits.msbGetW(o1.addr, 0);
+        int v2 = bits.msbGetW(o2.addr, 0);
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return +1;
+        }
+        v1 = bits.msbGetW(o1.addr, 2);
+        v2 = bits.msbGetW(o2.addr, 2);
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return +1;
+        }
+        v1 = bits.msbGetW(o1.addr, 4);
+        v2 = bits.msbGetW(o2.addr, 4);
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return +1;
+        }
+        v1 = bits.msbGetW(o1.addr, 6);
+        v2 = bits.msbGetW(o2.addr, 6);
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return +1;
+        }
+        v1 = bits.msbGetW(o1.addr, 8);
+        v2 = bits.msbGetW(o2.addr, 8);
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return +1;
+        }
+        v1 = bits.msbGetW(o1.addr, 10);
+        v2 = bits.msbGetW(o2.addr, 10);
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return +1;
+        }
+        v1 = bits.msbGetW(o1.addr, 12);
+        v2 = bits.msbGetW(o2.addr, 12);
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return +1;
+        }
+        v1 = bits.msbGetW(o1.addr, 14);
+        v2 = bits.msbGetW(o2.addr, 14);
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return +1;
+        }
+        return 0;
     }
 
     /**

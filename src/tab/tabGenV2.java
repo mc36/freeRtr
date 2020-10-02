@@ -215,9 +215,13 @@ public class tabGenV2<T extends Comparator<? super T>> {
         int lower = 0;
         int upper = blkN - 1;
         if (upper > 0) {
+            int cmp = val.compare((T) valD[lstB][0], val);
+            if (cmp <= 0) {
+                lower = lstB;
+            }
             while (lower <= upper) {
                 lstB = (lower + upper) >>> 1;
-                int cmp = val.compare((T) valD[lstB][0], val);
+                cmp = val.compare((T) valD[lstB][0], val);
                 if (cmp < 0) {
                     lower = lstB + 1;
                     continue;

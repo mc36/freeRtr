@@ -16,16 +16,44 @@ public class addrIPv4 extends addrType {
      */
     public addrIPv4 copyBytes() {
         addrIPv4 a = new addrIPv4();
-        a.fromBuf(addr, 0);
+        a.addr[0] = addr[0];
+        a.addr[1] = addr[1];
+        a.addr[2] = addr[2];
+        a.addr[3] = addr[3];
         return a;
     }
 
-    ;
+    /**
+     * compare two instances
+     *
+     * @param o1 first
+     * @param o2 second
+     * @return as usual
+     */
+    public int compare(addrType o1, addrType o2) {
+        int v1 = bits.msbGetW(o1.addr, 0);
+        int v2 = bits.msbGetW(o2.addr, 0);
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return +1;
+        }
+        v1 = bits.msbGetW(o1.addr, 2);
+        v2 = bits.msbGetW(o2.addr, 2);
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return +1;
+        }
+        return 0;
+    }
 
-/**
- * size of address
- */
-public final static int size = 4;
+    /**
+     * size of address
+     */
+    public final static int size = 4;
 
     /**
      * get size
