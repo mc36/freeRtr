@@ -607,7 +607,7 @@ public class userTest {
             }
         }
         beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("  " + beg + " " + typ + "get/s");
+        cmd.pipe.strPut("  " + beg + " " + typ + "g");
         int siz = tab.size();
         tabRouteEntry<T> rou = tab.get(idx);
         addrPrefix<T> prf = null;
@@ -635,7 +635,7 @@ public class userTest {
             }
         }
         beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("  " + beg + " " + typ + "fnd/s");
+        cmd.pipe.strPut("  " + beg + " " + typ + "f");
         beg = bits.getTime();
         rnd = 0;
         for (;;) {
@@ -652,7 +652,7 @@ public class userTest {
             }
         }
         beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("  " + beg + " " + typ + "lok/s");
+        cmd.pipe.strPut("  " + beg + " " + typ + "l");
     }
 
     private <T extends addrType> void doTestRoutingAdd(tabRoute<T> tab, T adr, int fill, userTestIfc mod, boolean dmp, String typ) {
@@ -672,7 +672,7 @@ public class userTest {
             }
         }
         beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("  " + beg + " " + typ + "add/s");
+        cmd.pipe.strPut("  " + beg + " " + typ + "a");
         doTestRoutingChk(tab, dmp);
         beg = bits.getTime();
         rnd = 0;
@@ -694,7 +694,7 @@ public class userTest {
             }
         }
         beg = (rnd * 1000) / (bits.getTime() - beg);
-        cmd.pipe.strPut("  " + beg + " " + typ + "del/s");
+        cmd.pipe.strPut("  " + beg + " " + typ + "d");
         doTestRoutingChk(tab, dmp);
     }
 

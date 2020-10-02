@@ -219,9 +219,6 @@ public class tabGenV2<T extends Comparator<? super T>> {
             if (cmp <= 0) {
                 lower = lstB;
             }
-            if (cmp > 0) {
-                upper = lstB;
-            }
             while (lower <= upper) {
                 lstB = (lower + upper) >>> 1;
                 cmp = val.compare((T) valD[lstB][0], val);

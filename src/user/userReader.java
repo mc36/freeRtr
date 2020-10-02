@@ -997,7 +997,7 @@ public class userReader implements Comparator<String> {
                 cmdEscape();
                 break;
             case 32: // space
-                if (spacetab) {
+                if (spacetab && (pos >= len)) {
                     cmdTabulator();
                 } else {
                     cmdInsChr(ch);
