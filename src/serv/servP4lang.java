@@ -369,6 +369,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 return false;
             }
             sendLine("state " + old.id + " 0 " + old.getStateEnding());
+            sendLine("state " + ntry.id + " 1 " + ntry.getStateEnding());
             return false;
         }
         if (!s.equals("no")) {
