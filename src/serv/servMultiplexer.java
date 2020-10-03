@@ -115,6 +115,24 @@ public class servMultiplexer extends servGeneric implements prtServS {
                 return true;
             }
             ntry.port = bits.str2num(cmd.word());
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("logging")) {
+                    ntry.logging = true;
+                    continue;
+                }
+                if (a.equals("rx")) {
+                    ntry.limit = 1;
+                    continue;
+                }
+                if (a.equals("tx")) {
+                    ntry.limit = 2;
+                    continue;
+                }
+            }
             new Thread(ntry).start();
             servMultiplexerTrgt old = targets.put(ntry);
             if (old == null) {
@@ -155,7 +173,10 @@ public class servMultiplexer extends servGeneric implements prtServS {
         l.add("3 4      <name>                   name of vrf");
         l.add("4 5        <name>                 name of interface");
         l.add("5 6          <addr>               address of target");
-        l.add("6 .            <port>             port on target");
+        l.add("6 7,.          <port>             port on target");
+        l.add("7 7,.            rx               only rx");
+        l.add("7 7,.            tx               only tx");
+        l.add("7 7,.            logging          set logging");
     }
 
     public String srvName() {
@@ -200,6 +221,9 @@ public class servMultiplexer extends servGeneric implements prtServS {
                 continue;
             }
             if (!ntry.ready) {
+                continue;
+            }
+            if (ntry.limit == 1) {
                 continue;
             }
             ntry.conn.blockingPut(buf, 0, siz);
@@ -290,10 +314,26 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
 
     public pipeSide conn;
 
+    public boolean logging = false;
+
+    public int limit = 0;
+
     public boolean need2run = true;
 
     public String toString() {
-        return num + " " + vrf.name + " " + iface.name + " " + addr + " " + port;
+        String a = "";
+        if (logging) {
+            a += " logging";
+        }
+        switch (limit) {
+            case 1:
+                a += " rx";
+                break;
+            case 2:
+                a += " tx";
+                break;
+        }
+        return num + " " + vrf.name + " " + iface.name + " " + addr + " " + port + a;
     }
 
     public int compare(servMultiplexerTrgt o1, servMultiplexerTrgt o2) {
@@ -341,7 +381,7 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
             return true;
         }
         ready = true;
-        if (lower.logging) {
+        if (logging) {
             logger.info("connection to " + addr + " up");
         }
         byte[] buf = new byte[1024];
@@ -362,10 +402,13 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
             if (conn.blockingGet(buf, 0, siz) != siz) {
                 break;
             }
+            if (limit == 2) {
+                continue;
+            }
             lower.trgtData(buf, siz);
         }
         ready = false;
-        if (lower.logging) {
+        if (logging) {
             logger.info("connection to " + addr + " down");
         }
         return false;
