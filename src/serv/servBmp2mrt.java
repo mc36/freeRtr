@@ -2,6 +2,7 @@ package serv;
 
 import addr.addrIP;
 import cfg.cfgAll;
+import cfg.cfgRoump;
 import cfg.cfgRtr;
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -12,13 +13,17 @@ import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtGenConn;
 import prt.prtServS;
+import rtr.rtrBgp;
 import rtr.rtrBgpMon;
 import rtr.rtrBgpMrt;
 import rtr.rtrBgpNeigh;
 import rtr.rtrBgpSpeak;
+import rtr.rtrBgpTemp;
 import rtr.rtrBgpUtil;
 import tab.tabGen;
+import tab.tabListing;
 import tab.tabRouteAttr;
+import tab.tabRtrmapN;
 import user.userFilter;
 import user.userFlash;
 import user.userFormat;
@@ -72,6 +77,12 @@ public class servBmp2mrt extends servGeneric implements prtServS {
 
     private int packs;
 
+    private tabListing<tabRtrmapN, addrIP> dynMap;
+
+    private servBmp2mrtStat dynCfg;
+
+    private rtrBgpTemp dynTmp;
+
     /**
      * defaults text
      */
@@ -84,7 +95,8 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         "server bmp2mrt .*! max-pack 0",
         "server bmp2mrt .*! max-byte 0",
         "server bmp2mrt .*! no file",
-        "server bmp2mrt .*! no backup"
+        "server bmp2mrt .*! no backup",
+        "server bmp2mrt .*! no dyneigh"
     };
 
     /**
@@ -104,6 +116,11 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         cmds.cfgLine(l, backupName == null, beg, "backup", backupName);
         cmds.cfgLine(l, fileName == null, beg, "file", fileName);
         cmds.cfgLine(l, !bulkdn, beg, "bulk-down", "");
+        if (dynCfg != null) {
+            l.add(beg + "dyneigh " + dynMap.listName + " " + dynCfg.getCfg(false) + " " + dynTmp.tempName);
+        } else {
+            l.add(beg + "no dyneigh");
+        }
         for (int i = 0; i < stats.size(); i++) {
             servBmp2mrtStat stat = stats.get(i);
             if (stat == null) {
@@ -112,7 +129,10 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             if (stat.nei == null) {
                 continue;
             }
-            l.add(beg + "neighbor " + stat.from + " " + stat.peer + " " + (stat.rouD ? "tx" : "rx") + " " + cfgRtr.num2name(stat.rouT) + " " + stat.rouI + " " + stat.nei);
+            if (stat.dyn) {
+                continue;
+            }
+            l.add(beg + "neighbor " + stat.from + " " + stat.peer + " " + stat.getCfg(true));
         }
     }
 
@@ -122,38 +142,35 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             bulkdn = true;
             return false;
         }
+        if (s.equals("dyneigh")) {
+            cfgRoump rm = cfgAll.rtmpFind(cmd.word(), false);
+            if (rm == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            dynCfg = new servBmp2mrtStat();
+            if (dynCfg.fromString(cmd, false)) {
+                dynCfg = null;
+                dynMap = null;
+                return false;
+            }
+            dynMap = rm.roumap;
+            dynTmp = dynCfg.prc.findTemp(cmd.word());
+            if (dynTmp == null) {
+                cmd.error("no such template");
+                dynCfg = null;
+                dynMap = null;
+                return false;
+            }
+            return false;
+        }
         if (s.equals("neighbor")) {
             addrIP a1 = new addrIP();
             addrIP a2 = new addrIP();
             a1.fromString(cmd.word());
             a2.fromString(cmd.word());
             servBmp2mrtStat stat = getStat(a1, a2, 2);
-            stat.rouD = cmd.word().equals("tx");
-            tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
-            if (rt == null) {
-                cmd.error("invalid routing protocol");
-                return false;
-            }
-            int ri = bits.str2num(cmd.word());
-            cfgRtr rp = cfgAll.rtrFind(rt, ri, false);
-            if (rp == null) {
-                cmd.error("bad process number");
-                return false;
-            }
-            if (rp.bgp == null) {
-                cmd.error("not a bgp process");
-                return false;
-            }
-            addrIP adr = new addrIP();
-            adr.fromString(cmd.word());
-            rtrBgpNeigh nei = rp.bgp.findPeer(adr);
-            if (nei == null) {
-                cmd.error("no such peer");
-                return false;
-            }
-            stat.rouT = rt;
-            stat.rouI = ri;
-            stat.nei = nei;
+            stat.fromString(cmd, true);
             return false;
         }
         if (s.equals("local")) {
@@ -203,6 +220,11 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         s = cmd.word();
         if (s.equals("bulk-down")) {
             bulkdn = false;
+            return false;
+        }
+        if (s.equals("dyneigh")) {
+            dynCfg = null;
+            dynMap = null;
             return false;
         }
         if (s.equals("neighbor")) {
@@ -266,6 +288,13 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         l.add("2 .      <num>                   packets between backups");
         l.add("1 2    backup                    backup to file");
         l.add("2 2,.    <file>                  name of file");
+        l.add("1 2    dyneigh                   parse messages from dynamic neighbors");
+        l.add("2 3      <name>                  route map on peer name");
+        l.add("3 4        rx                    process received packets");
+        l.add("3 4        tx                    process transmitted packets");
+        l.add("4 5          <name>              process name");
+        l.add("5 6            <num>             process number");
+        l.add("6 .              <name>          template name");
         l.add("1 2    neighbor                  parse messages from neighbor");
         l.add("2 3      <addr>                  info source");
         l.add("3 4        <addr>                reported address");
@@ -536,7 +565,11 @@ class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
 
     public boolean rouD;
 
+    public rtrBgp prc;
+
     public rtrBgpNeigh nei;
+
+    public boolean dyn;
 
     public int compare(servBmp2mrtStat o1, servBmp2mrtStat o2) {
         int i = o1.from.compare(o1.from, o2.from);
@@ -548,6 +581,50 @@ class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
 
     public String toString() {
         return from + "|" + peer + "|" + as + "|" + state + "|" + change + "|" + bits.timePast(since);
+    }
+
+    public boolean fromString(cmds cmd, boolean stat) {
+        rouD = cmd.word().equals("tx");
+        tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
+        if (rt == null) {
+            cmd.error("invalid routing protocol");
+            return true;
+        }
+        int ri = bits.str2num(cmd.word());
+        cfgRtr rp = cfgAll.rtrFind(rt, ri, false);
+        if (rp == null) {
+            cmd.error("bad process number");
+            return true;
+        }
+        if (rp.bgp == null) {
+            cmd.error("not a bgp process");
+            return true;
+        }
+        prc = rp.bgp;
+        if (!stat) {
+            rouT = rt;
+            rouI = ri;
+            return false;
+        }
+        addrIP adr = new addrIP();
+        adr.fromString(cmd.word());
+        nei = rp.bgp.findPeer(adr);
+        if (nei == null) {
+            cmd.error("no such peer");
+            return true;
+        }
+        rouT = rt;
+        rouI = ri;
+        return false;
+    }
+
+    public String getCfg(boolean stat) {
+        String a = (rouD ? "tx" : "rx") + " " + cfgRtr.num2name(rouT) + " " + rouI;
+        if (stat) {
+            return a + " " + nei;
+        } else {
+            return a;
+        }
     }
 
 }

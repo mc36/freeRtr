@@ -491,7 +491,10 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (newTrgPort >= 0) {
             n.newTrgPort = newTrgPort;
         }
-        if (rangeMin > 0) {
+        if (rangeMin < 1) {
+            return n;
+        }
+        if (rangeMax < 1) {
             return n;
         }
         if (n.protocol == icc.getProtoNum()) {

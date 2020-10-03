@@ -366,7 +366,7 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
         }
         prtGen prt = servMultiplexer.getProtocol(vrf, lower.srvProto, addr);
         if (prt == null) {
-            return true;
+            return false;
         }
         ipFwdIface ifc = null;
         if (iface != null) {
@@ -374,11 +374,11 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
         }
         conn = prt.streamConnect(new pipeLine(lower.bufSiz, false), ifc, 0, addr, port, lower.srvName(), null, -1);
         if (conn == null) {
-            return true;
+            return false;
         }
         conn.timeout = lower.timeOut;
         if (conn.wait4ready(lower.timeOut)) {
-            return true;
+            return false;
         }
         ready = true;
         if (logging) {
