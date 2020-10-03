@@ -111,6 +111,7 @@ import serv.servGeneve;
 import serv.servGre;
 import serv.servMplsIp;
 import serv.servMplsUdp;
+import serv.servMultiplexer;
 import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
@@ -647,6 +648,8 @@ public class userConfig {
         l.add("2  3    syslog                       configure a syslog server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    loadbalancer                 configure a loadbalancer server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    multiplexer                  configure a multiplexer server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    telnet                       configure a telnet server");
         l.add("3  .      <name>                     name of server");
@@ -1186,6 +1189,10 @@ public class userConfig {
             }
             if (a.equals("loadbalancer")) {
                 daemonMake(new servLoadBalancer(), cfgAll.dmnLoadBalancer);
+                return;
+            }
+            if (a.equals("multiplexer")) {
+                daemonMake(new servMultiplexer(), cfgAll.dmnMultiplexer);
                 return;
             }
             if (a.equals("telnet")) {
@@ -1984,6 +1991,10 @@ public class userConfig {
             }
             if (a.equals("loadbalancer")) {
                 daemonErase(new servLoadBalancer(), cfgAll.dmnLoadBalancer);
+                return;
+            }
+            if (a.equals("multiplexer")) {
+                daemonErase(new servMultiplexer(), cfgAll.dmnMultiplexer);
                 return;
             }
             if (a.equals("telnet")) {

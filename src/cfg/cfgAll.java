@@ -74,6 +74,7 @@ import serv.servGeneve;
 import serv.servGre;
 import serv.servMplsIp;
 import serv.servMplsUdp;
+import serv.servMultiplexer;
 import serv.servNetflow;
 import serv.servNrpe;
 import serv.servOpenflow;
@@ -365,6 +366,11 @@ public class cfgAll {
      * loadbalancer daemons
      */
     public static final servGenList<servLoadBalancer> dmnLoadBalancer = new servGenList<servLoadBalancer>();
+
+    /**
+     * multiplexer daemons
+     */
+    public static final servGenList<servMultiplexer> dmnMultiplexer = new servGenList<servMultiplexer>();
 
     /**
      * telnet daemons
@@ -3135,6 +3141,7 @@ public class cfgAll {
         dmnForwarder.getShRun(l, filter);
         dmnSyslog.getShRun(l, filter);
         dmnLoadBalancer.getShRun(l, filter);
+        dmnMultiplexer.getShRun(l, filter);
         dmnSocks.getShRun(l, filter);
         dmnHttp.getShRun(l, filter);
         dmnFtp.getShRun(l, filter);
