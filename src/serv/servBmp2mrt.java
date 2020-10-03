@@ -1,6 +1,7 @@
 package serv;
 
 import addr.addrIP;
+import addr.addrPrefix;
 import cfg.cfgAll;
 import cfg.cfgRoump;
 import cfg.cfgRtr;
@@ -343,6 +344,17 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             return old;
         }
         res.state = crt == 1;
+        if (dynCfg == null) {
+            return res;
+        }
+        if (!dynMap.matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(peer, peer.maxBits()))) {
+            return res;
+        }
+        res.dyn = true;
+        res.rouD = dynCfg.rouD;
+        res.rouI = dynCfg.rouI;
+        res.rouT = dynCfg.rouT;
+        res.nei = dynCfg.prc.addListenPeer(peer, dynTmp);
         return res;
     }
 

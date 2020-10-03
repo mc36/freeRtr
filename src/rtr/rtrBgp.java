@@ -1216,6 +1216,31 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * add listen peer
+     *
+     * @param peer peer address
+     * @param temp template to use
+     * @return neighbor instance
+     */
+    public rtrBgpNeigh addListenPeer(addrIP peer, rtrBgpTemp temp) {
+        rtrBgpNeigh ntry = new rtrBgpNeigh(this);
+        ntry.peerAddr = peer.copyBytes();
+        if (neighs.find(ntry) != null) {
+            return null;
+        }
+        ntry.copyFrom(temp);
+        ntry.template = temp;
+        ntry.updatePeer();
+        rtrBgpNeigh res = lstnNei.put(ntry);
+        if (res != null) {
+            res.socketMode = 5;
+            res.stopNow();
+        }
+        ntry.socketMode = 5;
+        return ntry;
+    }
+
+    /**
      * get blocking mode
      *
      * @return mode
