@@ -93,9 +93,14 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     public int newTrgPort = -1;
 
     /**
-     * randomize port
+     * port range
      */
-    public boolean randomize = false;
+    public int rangeMin = -1;
+
+    /**
+     * port range
+     */
+    public int rangeMax = -1;
 
     /**
      * create instance
@@ -206,7 +211,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
                 break;
             }
             if (s.equals("randomize")) {
-                randomize = true;
+                rangeMin = bits.str2num(cmd.word());
+                rangeMax = bits.str2num(cmd.word());
+                continue;
             }
         }
         if (what == 2) {
@@ -313,8 +320,8 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if ((what & 8) != 0) {
             s = s + " " + mask;
         }
-        if (randomize) {
-            s += " randomize";
+        if (rangeMin > 0) {
+            s += " randomize " + rangeMin + " " + rangeMax;
         }
         l.add(beg + s);
         l.add(beg + "sequence " + sequence + " timeout " + timeout);
@@ -484,13 +491,13 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (newTrgPort >= 0) {
             n.newTrgPort = newTrgPort;
         }
-        if (!randomize) {
+        if (rangeMin > 0) {
             return n;
         }
         if (n.protocol == icc.getProtoNum()) {
             return n;
         }
-        n.newSrcPort = bits.random(0x1000, 0xfff0);
+        n.newSrcPort = bits.random(rangeMin, rangeMax);
         return n;
     }
 

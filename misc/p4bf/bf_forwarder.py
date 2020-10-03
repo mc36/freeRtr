@@ -19,7 +19,7 @@
 ###############################################################################
 
 from threading import Thread
-import argparse, grpc, os, sys, socket, logging, mib, re, linecache, shutil
+import argparse, grpc, os, sys, socket, logging, mib, re, linecache, shutil, inspect
 from time import sleep
 
 SDE = os.environ.get("SDE", "~/bf-sde-9.2.0")
@@ -32,6 +32,15 @@ sys.path.append(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "./", BF_RUNTIME_LIB)
 )
 import bfrt_grpc.client as gc
+
+PROGRAM_NAME = os.path.basename(sys.argv[0])
+
+log_level = logging.WARNING
+
+logger = logging.getLogger(PROGRAM_NAME)
+if not len(logger.handlers):
+    logger.addHandler(logging.StreamHandler())
+    logger.setLevel(log_level)
 
 try:
     from sal_services_pb2 import (
@@ -51,14 +60,24 @@ try:
     from sal_services_pb2 import UNDEFINED_AN, AN_OFF, AN_ON
     from salgrpcclient import SalGrpcClient, SAL_PORT_ID
 except ImportError:
-    print "sal import failed"
+    logger.warn("sal import failed")
+
+
+PORT_SPEED = [1,10,25,40, 50,100]
+UNDEFINED_FEC = 0 ;
+FEC_NONE = 1;
+FEC_FC = 2;
+FEC_RS = 3;
+
+UNDEFINED_AN = 0
+AN_OFF = 1
+AN_ON = 2
 
 
 MODEL = 0
 WEDGEBF10032X = 1
 SESSION_TYPE = ["MODEL", "WEDGEBF10032X"]
 
-PROGRAM_NAME = os.path.basename(sys.argv[0])
 ALL_THREADS = []
 
 if os.path.exists(BSP_FILE_PATH):
@@ -68,21 +87,12 @@ else:
     SESSION_ID = MODEL
     CPU_PORT = 64
 
-log_level = logging.WARNING
-
-logger = logging.getLogger(PROGRAM_NAME)
-if not len(logger.handlers):
-    logger.addHandler(logging.StreamHandler())
-    logger.setLevel(log_level)
 
 op_type = None
 
 WRITE = 1
 UPDATE = 2
 DELETE = 3
-
-# p4_program_name = "bf_router"
-
 
 def _Exception():
     exc_type, exc_obj, tb = sys.exc_info()
@@ -108,7 +118,6 @@ class BfRuntimeGrpcClient:
             self.interface = gc.ClientInterface(
                 self.grpc_addr, client_id=self.client_id, device_id=0, is_master=False
             )
-        # except RuntimeError as e:
         except Exception as e:
             logger.error("[setUp error]: %s" % e)
             logger.error(
@@ -699,57 +708,121 @@ class BfForwarder(Thread):
             self.bfgc.port_table.entry_mod(self.bfgc.target,key,data)
             logger.debug("Port[%s] MTU set to %s" % (port_id,mtu_size))
 
-    def _setPortAdmStatusBF2556X1T(self, port_id, adm_status, port_speed):
+    def _setPortAdmStatusBF2556X1T(self, port_id, adm_status,
+                                   port_speed,fec=0,autoneg=1,flowctrl=0):
+        method_name = inspect.currentframe().f_code.co_name
         new_speed = self.salgc.speedTnaToSal(port_speed)
         sal_port = SAL_PORT_ID[port_id]
         if adm_status == 1:
-            self.salgc.AddPort(sal_port, lane=0, speed=new_speed, fec=1, an=1, fc=0, enable=adm_status, up=adm_status)
-            ACTIVE_PORTS[port_id]=port_speed
+            if self._checkParamCoherence(port_speed,fec,autoneg,flowctrl) == False:
+                logger.warn("%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
+                                 % (self.class_name,port_id,port_speed,fec,autoneg,flowctrl ))
+                return None
+            try:
+                self.salgc.AddPort(sal_port,lane=0,
+                                   speed=new_speed,fec=fec,an=autoneg,fc=flowctrl,
+                                   enable=adm_status,up=adm_status)
+
+                ACTIVE_PORTS[port_id]=port_speed
+            except:
+                logger.warn("%s:%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
+                             % (self.class_name,method_name,port_id,port_speed,fec,autoneg,flowctrl ))
+                logger.warn("%s:%s - with code [%s]" % (self.class_name,method_name,_Exception()))
         else:
-            self.salgc.DelPort(port_num=sal_port, lane=0)
-            ACTIVE_PORTS.pop(port_id)
+            try:
+                self.salgc.DelPort(port_num=sal_port, lane=0)
+                ACTIVE_PORTS.pop(port_id)
+            except:
+                logger.warn("%s:%s - Error in deleting port [%s]" % (self.class_name,method_name,port_id))
+
+    def _checkParamCoherence(self,port_speed,fec,autoneg,flowctrl):
+        if (port_speed == 1) or (port_speed == 10):
+            if (fec == FEC_RS):
+               return False
+        elif (port_speed == 100):
+            if (fec == FEC_FC):
+               return False
+        else:
+            return True
+
+    def _getStrFEC(self,fec):
+        if fec == FEC_NONE:
+            return "BF_FEC_TYP_NONE"
+        elif fec == FEC_FC:
+            return "BF_FEC_TYP_FC"
+        elif fec == FEC_RS:
+            return "BF_FEC_TYP_RS"
+        else:
+            return "BF_FEC_TYP_NONE"
+
+    def _getStrAN(self,autoneg):
+        if autoneg == 0:
+            return "PM_AN_DEFAULT"
+        elif autoneg == AN_OFF:
+            return "PM_AN_FORCE_DISABLE"
+        elif autoneg == AN_ON:
+            return "PM_AN_FORCE_ENABLE"
+        else:
+            return "PM_AN_DEFAULT"
 
 
-    def _setPortAdmStatus(self, port_id, adm_status, port_speed):
+    def _setPortAdmStatus(self, port_id, adm_status=0,
+                          port_speed=10,fec=0,autoneg=1,flowctrl=0):
         # set port_id to adm_status
+        method_name = inspect.currentframe().f_code.co_name
 
         str_port_speed = ""
+        str_fec = ""
+        str_an = ""
+
         if adm_status == 1:
-            if port_speed in [10, 25, 40, 100]:
+            if port_speed in PORT_SPEED:
                 str_port_speed = "BF_SPEED_%sG" % (port_speed)
             else:
                 logger.error("Unknown port speed: %s", port_speed)
                 return
 
-            self.bfgc.port_table.entry_add(
-                self.bfgc.target,
-                [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
-                [
-                    self.bfgc.port_table.make_data(
-                        [
-                            gc.DataTuple("$SPEED", str_val=str_port_speed),
-                            gc.DataTuple("$FEC", str_val="BF_FEC_TYP_NONE"),
-                            gc.DataTuple("$PORT_ENABLE", bool_val=True),
-                        ]
-                    )
-                ],
-            )
-            ACTIVE_PORTS[port_id]=port_speed
-            logger.debug("Port[%s] administratively enabled", port_id)
+            if self._checkParamCoherence(port_speed,fec,autoneg,flowctrl) == False:
+                logger.warn("%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
+                                 % (self.class_name,port_id,port_speed,fec,autoneg,flowctrl ))
+                return None
+
+            str_fec = self._getStrFEC(fec)
+            str_an = self._getStrAN(autoneg)
+
+            try:
+                self.bfgc.port_table.entry_add(
+                    self.bfgc.target,
+                    [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
+                    [
+                        self.bfgc.port_table.make_data(
+                            [
+                                gc.DataTuple("$SPEED", str_val=str_port_speed),
+                                gc.DataTuple("$FEC", str_val=str_fec),
+                                gc.DataTuple("$AUTO_NEGOTIATION", str_val=str_an),
+                                gc.DataTuple("$PORT_ENABLE", bool_val=True),
+                            ]
+                        )
+                    ],
+                )
+                ACTIVE_PORTS[port_id]=port_speed
+                logger.debug("Port[%s] administratively enabled", port_id)
+            except:
+                logger.warn("%s:%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
+                            % (self.class_name,method_name,port_id,port_speed,fec,autoneg,flowctrl ))
+                logger.warn("%s:%s - with code [%s]" % (self.class_name,method_name,_Exception()))
         else:
-            self.bfgc.port_table.entry_mod(
-                self.bfgc.target,
-                [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
-                [
-                    self.bfgc.port_table.make_data(
-                        [gc.DataTuple("$PORT_ENABLE", bool_val=False)]
-                    )
-                ],
-            )
+            try:
+                self.bfgc.port_table.entry_del(
+                    self.bfgc.target,
+                    [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])]
+                )
 
-            ACTIVE_PORTS.pop(port_id)
+                ACTIVE_PORTS.pop(port_id)
 
-            logger.debug("Port[%s] administratively disabled", port_id)
+                logger.debug("Port[%s] administratively disabled", port_id)
+            except:
+                logger.warn("%s:%s - Error in deleting port [%s]" % (self.class_name,method_name,port_id))
 
 
     def setBundleAdmStatus(self, op_type, bundle_id, member_id_list):
@@ -792,7 +865,7 @@ class BfForwarder(Thread):
                 except gc.BfruntimeRpcException as e:
                     logger.warn("bundle_add - %s" %  e.__str__())
                     logger.warn("bundle_add - GRPC error code: %s" % e.grpc_error.code())
-                     
+
 
             tbl_ase_bundle_key = [
                 tbl_ase_bundle.make_key([gc.KeyTuple("$SELECTOR_GROUP_ID", bundle_id)])
@@ -4866,11 +4939,14 @@ class BfForwarder(Thread):
                 continue
             if splt[0] == "state":
                 if (self.platform == "wedge100bf32x"):
-                    self._setPortAdmStatus(int(splt[1]), int(splt[2]), int(splt[3]))
+                    self._setPortAdmStatus(int(splt[1]),int(splt[2]),int(splt[3]),
+                                           int(splt[4]),int(splt[5]),int(splt[6]))
                 elif SAL_PORT_ID.has_key(int(splt[1])):
-                    self._setPortAdmStatusBF2556X1T(int(splt[1]), int(splt[2]), int(splt[3]))
+                    self._setPortAdmStatusBF2556X1T(int(splt[1]), int(splt[2]),int(splt[3]),
+                                                    int(splt[4]), int(splt[5]),int(splt[6]))
                 else:
-                    self._setPortAdmStatus(int(splt[1]), int(splt[2]), int(splt[3]))
+                    self._setPortAdmStatus(int(splt[1]),int(splt[2]),int(splt[3]),
+                                           int(splt[4]),int(splt[5]),int(splt[6]))
                 continue
             if splt[0] == "bundlelist_add":
                 self.setBundleAdmStatus(1, int(splt[1]), list(splt[2:]))
@@ -5072,7 +5148,7 @@ if __name__ == "__main__":
         SUBIF_COUNTERS_OUT = {}
         if (args.platform=="bf2556x1t"):
             # start TOFINO via SAL GRPC client
-            logger.warn('Starting TOFINO via SAL') 
+            logger.warn('Starting TOFINO via SAL')
             sal_client = SalGrpcClient(args.sal_grpc_server_address)
             sal_client.TestConnection()
             sal_client.GetSwitchModel()
