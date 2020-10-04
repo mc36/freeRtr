@@ -128,6 +128,10 @@ public class servMultiplexer extends servGeneric implements prtServS {
                     ntry.clear = true;
                     continue;
                 }
+                if (a.equals("nowait")) {
+                    ntry.nowait = true;
+                    continue;
+                }
                 if (a.equals("rx")) {
                     ntry.limit = 1;
                     continue;
@@ -182,6 +186,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
         l.add("7 7,.            tx               only tx");
         l.add("7 7,.            logging          set logging");
         l.add("7 7,.            clear            clear clients on disconnect");
+        l.add("7 7,.            nowait           use nonblocking send");
     }
 
     public String srvName() {
@@ -231,7 +236,11 @@ public class servMultiplexer extends servGeneric implements prtServS {
             if (ntry.limit == 1) {
                 continue;
             }
-            ntry.conn.blockingPut(buf, 0, siz);
+            if (ntry.nowait) {
+                ntry.conn.nonBlockPut(buf, 0, siz);
+            } else {
+                ntry.conn.blockingPut(buf, 0, siz);
+            }
         }
     }
 
@@ -336,6 +345,8 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
 
     public boolean clear;
 
+    public boolean nowait;
+
     public int limit;
 
     public boolean need2run = true;
@@ -347,6 +358,9 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
         }
         if (clear) {
             a += " clear";
+        }
+        if (nowait) {
+            a += " nowait";
         }
         switch (limit) {
             case 1:
