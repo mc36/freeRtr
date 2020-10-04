@@ -214,14 +214,18 @@ public class tabGenV2<T extends Comparator<? super T>> {
     private int doFind(T val) {
         int lower = 0;
         int upper = blkN - 1;
+        boolean hit = false;
         if (upper > 0) {
-            int cmp = val.compare((T) valD[lstB][0], val);
-            if (cmp <= 0) {
-                lower = lstB;
+            if (lstB >= upper) {
+                int cmp = val.compare((T) valD[lstB][0], val);
+                if (cmp <= 0) {
+                    lower = lstB + 1;
+                    hit = true;
+                }
             }
             while (lower <= upper) {
                 lstB = (lower + upper) >>> 1;
-                cmp = val.compare((T) valD[lstB][0], val);
+                int cmp = val.compare((T) valD[lstB][0], val);
                 if (cmp < 0) {
                     lower = lstB + 1;
                     continue;
@@ -244,6 +248,13 @@ public class tabGenV2<T extends Comparator<? super T>> {
         upper = sizD[lstB] - 1;
         int rowB = begD[lstB];
         Object[] rowD = valD[lstB];
+        if (hit && (upper >= 0)) {
+            int cmp = val.compare((T) rowD[upper], val);
+            if (cmp < 0) {
+                lstI = upper;
+                return -rowB - (upper + 1) - 1;
+            }
+        }
         while (lower <= upper) {
             lstI = (lower + upper) >>> 1;
             int cmp = val.compare((T) rowD[lstI], val);
