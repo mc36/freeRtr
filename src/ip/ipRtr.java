@@ -171,11 +171,7 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      * @return add mode
      */
     public tabRoute.addType getAddMode() {
-        if (routerEcmp) {
-            return tabRoute.addType.altEcmp;
-        } else {
-            return tabRoute.addType.better;
-        }
+        return routerEcmp ? tabRoute.addType.altEcmp : tabRoute.addType.better;
     }
 
     /**

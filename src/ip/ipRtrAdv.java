@@ -84,7 +84,7 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
             ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.metric = metric.update(ntry.best.metric);
         }
-        tabRoute.addUpdatedEntry(ecmp ? tabRoute.addType.ecmp : tabRoute.addType.better, trg, afi, ntry, true, roumap, rouplc, null);
+        tabRoute.addUpdatedEntry(ecmp ? tabRoute.addType.altEcmp : tabRoute.addType.better, trg, afi, ntry, true, roumap, rouplc, null);
     }
 
 }
