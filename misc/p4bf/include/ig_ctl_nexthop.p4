@@ -366,7 +366,7 @@ ig_md.nexthop_id:
 #endif
             @defaultonly NoAction;
         }
-        size = 512;
+        size = NEXTHOP_TABLE_SIZE;
         const default_action = NoAction();
     }
 

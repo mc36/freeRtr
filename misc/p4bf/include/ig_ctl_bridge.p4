@@ -45,7 +45,7 @@ hdr.ethernet.src_mac_addr:
             act_set_bridge_port;
             act_bridge_miss;
         }
-        size = VRF_TABLE_SIZE;
+        size = MAC_TABLE_SIZE;
         default_action = act_bridge_miss();
     }
 
@@ -292,7 +292,7 @@ hdr.ethernet.dst_mac_addr:
 #endif
             act_bridge_punt;
         }
-        size = VRF_TABLE_SIZE;
+        size = MAC_TABLE_SIZE;
         default_action = act_bridge_punt();
     }
 

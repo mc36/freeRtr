@@ -618,6 +618,9 @@ class userLineHandler implements Runnable {
                 if (s.length() < 1) {
                     break;
                 }
+                if (rdr.timeStamp) {
+                    pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+                }
                 s = exe.repairCommand(s);
                 if (exe.authorization != null) {
                     authResult ntry = exe.authorization.authUserCommand(exe.username, s);

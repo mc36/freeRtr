@@ -486,23 +486,6 @@ router bgp4 65535
  ecmp
  exit
 !
-router bgp6 42
- vrf dn42
- local-as 4242421955
- router-id 172.23.199.109
- address-family unicast
- neighbor fd42:4242:2601:ac12::1 remote-as 4242422602
- neighbor fd42:4242:2601:ac12::1 description collector.dn42
- neighbor fd42:4242:2601:ac12::1 local-as 4242421955
- neighbor fd42:4242:2601:ac12::1 address-family unicast
- neighbor fd42:4242:2601:ac12::1 distance 255
- neighbor fd42:4242:2601:ac12::1 additional-path-rx unicast
- neighbor fd42:4242:2601:ac12::1 additional-path-tx unicast
- neighbor fd42:4242:2601:ac12::1 shutdown
- neighbor fd42:4242:2601:ac12::1 update-source loopback42
- no neighbor fd42:4242:2601:ac12::1 allow-as-out
- exit
-!
 router bgp6 65535
  vrf v1
  local-as 65535

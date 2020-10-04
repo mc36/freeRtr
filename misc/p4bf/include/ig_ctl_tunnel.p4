@@ -175,7 +175,7 @@ ig_md.layer4_dstprt:
 #endif
             @defaultonly NoAction;
         }
-        size = 1024;
+        size = IPV4_TUNNEL_TABLE_SIZE;
         const default_action = NoAction();
     }
 
@@ -216,7 +216,7 @@ ig_md.layer4_dstprt:
 #endif
             @defaultonly NoAction;
         }
-        size = 1024;
+        size = IPV6_TUNNEL_TABLE_SIZE;
         const default_action = NoAction();
     }
 

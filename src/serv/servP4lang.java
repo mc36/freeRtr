@@ -750,8 +750,8 @@ class servP4langBr implements Comparator<servP4langBr> {
     }
 
     public void doClear() {
-        ifcs.clear();
-        macs.clear();
+        ifcs = new tabGen<ifcBridgeIfc>();
+        macs = new tabGen<ifcBridgeAdr>();
     }
 }
 
@@ -790,15 +790,15 @@ class servP4langVrf implements Comparator<servP4langVrf> {
     }
 
     public void doClear() {
-        routes4.clear();
-        routes6.clear();
+        routes4 = new tabRoute<addrIP>("sent");
+        routes6 = new tabRoute<addrIP>("sent");
         sentMcast = false;
         natCfg4 = null;
         natCfg4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
         natCfg6 = null;
         natCfg6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
-        natTrns4.clear();
-        natTrns6.clear();
+        natTrns4 = new tabGen<tabNatTraN>();
+        natTrns6 = new tabGen<tabNatTraN>();
     }
 
 }

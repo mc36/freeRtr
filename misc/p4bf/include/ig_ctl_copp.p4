@@ -49,7 +49,7 @@ ig_md.layer4_dstprt:
             act_deny;
             @defaultonly NoAction;
         }
-        size = IPV4_HOST_TABLE_SIZE;
+        size = IPV4_COPP_TABLE_SIZE;
         const default_action = NoAction();
     }
 
@@ -71,7 +71,7 @@ ig_md.layer4_dstprt:
             act_deny;
             @defaultonly NoAction;
         }
-        size = IPV4_HOST_TABLE_SIZE;
+        size = IPV6_COPP_TABLE_SIZE;
         const default_action = NoAction();
     }
 

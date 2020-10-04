@@ -3303,6 +3303,10 @@ public class userShow {
                     return;
                 }
                 ntry = tab.route(adr);
+                if (ntry == null) {
+                    cmd.error("no such route");
+                    return;
+                }
             }
             ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
             ntry = tab.find(ntry);

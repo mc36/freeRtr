@@ -260,6 +260,9 @@ public class userConfig {
             return "";
         }
         if (a.equals("show")) {
+            if (reader.timeStamp) {
+                pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+            }
             userShow s = new userShow();
             cmd = reader.setFilter(cmd);
             s.cmd = cmd;

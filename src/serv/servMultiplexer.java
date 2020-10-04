@@ -124,6 +124,10 @@ public class servMultiplexer extends servGeneric implements prtServS {
                     ntry.logging = true;
                     continue;
                 }
+                if (a.equals("clear")) {
+                    ntry.clear = true;
+                    continue;
+                }
                 if (a.equals("rx")) {
                     ntry.limit = 1;
                     continue;
@@ -177,6 +181,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
         l.add("7 7,.            rx               only rx");
         l.add("7 7,.            tx               only tx");
         l.add("7 7,.            logging          set logging");
+        l.add("7 7,.            clear            clear clients on disconnect");
     }
 
     public String srvName() {
@@ -243,6 +248,19 @@ public class servMultiplexer extends servGeneric implements prtServS {
                 continue;
             }
             ntry.conn.blockingPut(buf, 0, siz);
+        }
+    }
+
+    protected void clearClients() {
+        for (int i = conns.size() - 1; i >= 0; i--) {
+            servMultiplexerConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.conn == null) {
+                continue;
+            }
+            ntry.conn.setClose();
         }
     }
 
@@ -314,9 +332,11 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
 
     public pipeSide conn;
 
-    public boolean logging = false;
+    public boolean logging;
 
-    public int limit = 0;
+    public boolean clear;
+
+    public int limit;
 
     public boolean need2run = true;
 
@@ -324,6 +344,9 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
         String a = "";
         if (logging) {
             a += " logging";
+        }
+        if (clear) {
+            a += " clear";
         }
         switch (limit) {
             case 1:
@@ -411,6 +434,10 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
         if (logging) {
             logger.info("connection to " + addr + " down");
         }
+        if (!clear) {
+            return false;
+        }
+        lower.clearClients();
         return false;
     }
 

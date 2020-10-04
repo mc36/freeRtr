@@ -76,7 +76,7 @@ hash:
             act_send_identical;
             NoAction;
         }
-        size = 1024;
+        size = BUNDLE_TABLE_SIZE;
         default_action = act_send_identical();
         implementation = ase_bundle;
     }
