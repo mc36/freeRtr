@@ -40,7 +40,7 @@ hdr.pppoeD.session:
             act_drop;
             act_pppoe_data;
         }
-        size = 1024;
+        size = PPPOE_TABLE_SIZE;
         default_action = act_drop();
     }
 

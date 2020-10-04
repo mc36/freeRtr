@@ -34,7 +34,7 @@ ig_md.hash_id:
             act_set_hash;
             act_set_recir;
         }
-        size = 1024;
+        size = BUNDLE_TABLE_SIZE;
         default_action = act_set_port();
     }
 

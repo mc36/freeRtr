@@ -60,7 +60,7 @@ ig_md.source_id:
             act_set_bridge;
             act_set_default_vrf;
         }
-        size = VRF_TABLE_SIZE;
+        size = PORT_TABLE_SIZE;
         default_action = act_set_default_vrf();
     }
 

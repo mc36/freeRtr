@@ -27,7 +27,7 @@ hdr.vlan.vid:
             act_set_iface;
             act_set_def_iface;
         }
-        size = 1024;
+        size = VLAN_TABLE_SIZE;
         default_action = act_set_def_iface();
     }
 

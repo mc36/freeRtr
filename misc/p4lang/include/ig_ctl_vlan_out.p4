@@ -27,7 +27,7 @@ ig_md.target_id:
             act_set_port;
             act_set_vlan_port;
         }
-        size = 1024;
+        size = VLAN_TABLE_SIZE;
         default_action = act_set_port();
     }
 
