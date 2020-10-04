@@ -1,9 +1,8 @@
 package serv;
 
 import addr.addrIP;
-import addr.addrPrefix;
+import cfg.cfgAceslst;
 import cfg.cfgAll;
-import cfg.cfgRoump;
 import cfg.cfgRtr;
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -21,10 +20,10 @@ import rtr.rtrBgpNeigh;
 import rtr.rtrBgpSpeak;
 import rtr.rtrBgpTemp;
 import rtr.rtrBgpUtil;
+import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabListing;
 import tab.tabRouteAttr;
-import tab.tabRtrmapN;
 import user.userFilter;
 import user.userFlash;
 import user.userFormat;
@@ -78,7 +77,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
 
     private int packs;
 
-    private tabListing<tabRtrmapN, addrIP> dynMap;
+    private tabListing<tabAceslstN<addrIP>, addrIP> dynAcl;
 
     private servBmp2mrtStat dynCfg;
 
@@ -118,7 +117,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         cmds.cfgLine(l, fileName == null, beg, "file", fileName);
         cmds.cfgLine(l, !bulkdn, beg, "bulk-down", "");
         if (dynCfg != null) {
-            l.add(beg + "dyneigh " + dynMap.listName + " " + dynCfg.getCfg(false) + " " + dynTmp.tempName);
+            l.add(beg + "dyneigh " + dynAcl.listName + " " + dynCfg.getCfg(false) + " " + dynTmp.tempName);
         } else {
             l.add(beg + "no dyneigh");
         }
@@ -144,23 +143,23 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("dyneigh")) {
-            cfgRoump rm = cfgAll.rtmpFind(cmd.word(), false);
-            if (rm == null) {
+            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+            if (acl == null) {
                 cmd.error("no such route map");
                 return false;
             }
             dynCfg = new servBmp2mrtStat();
             if (dynCfg.fromString(cmd, false)) {
                 dynCfg = null;
-                dynMap = null;
+                dynAcl = null;
                 return false;
             }
-            dynMap = rm.roumap;
+            dynAcl = acl.aceslst;
             dynTmp = dynCfg.prc.findTemp(cmd.word());
             if (dynTmp == null) {
                 cmd.error("no such template");
                 dynCfg = null;
-                dynMap = null;
+                dynAcl = null;
                 return false;
             }
             return false;
@@ -170,7 +169,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             addrIP a2 = new addrIP();
             a1.fromString(cmd.word());
             a2.fromString(cmd.word());
-            servBmp2mrtStat stat = getStat(a1, a2, 2);
+            servBmp2mrtStat stat = getStat(a1, a2, 2, 0);
             stat.fromString(cmd, true);
             return false;
         }
@@ -225,7 +224,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         }
         if (s.equals("dyneigh")) {
             dynCfg = null;
-            dynMap = null;
+            dynAcl = null;
             return false;
         }
         if (s.equals("neighbor")) {
@@ -233,7 +232,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             addrIP a2 = new addrIP();
             a1.fromString(cmd.word());
             a2.fromString(cmd.word());
-            servBmp2mrtStat stat = getStat(a1, a2, 0);
+            servBmp2mrtStat stat = getStat(a1, a2, 0, 0);
             if (stat == null) {
                 cmd.error("no such peer");
                 return false;
@@ -290,7 +289,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         l.add("1 2    backup                    backup to file");
         l.add("2 2,.    <file>                  name of file");
         l.add("1 2    dyneigh                   parse messages from dynamic neighbors");
-        l.add("2 3      <name>                  route map on peer name");
+        l.add("2 3      <name>                  access list on peer name");
         l.add("3 4        rx                    process received packets");
         l.add("3 4        tx                    process transmitted packets");
         l.add("4 5          <name>              process name");
@@ -332,7 +331,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         return false;
     }
 
-    private servBmp2mrtStat getStat(addrIP from, addrIP peer, int crt) {
+    private servBmp2mrtStat getStat(addrIP from, addrIP peer, int crt, int as) {
         servBmp2mrtStat res = new servBmp2mrtStat();
         res.from = from.copyBytes();
         res.peer = peer.copyBytes();
@@ -347,7 +346,11 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         if (dynCfg == null) {
             return res;
         }
-        if (!dynMap.matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(peer, peer.maxBits()))) {
+        packHolder pck = new packHolder(true, true);
+        pck.IPsrc.setAddr(from);
+        pck.IPtrg.setAddr(peer);
+        pck.UDPtrg = as;
+        if (!dynAcl.matches(false, false, pck)) {
             return res;
         }
         res.dyn = true;
@@ -367,7 +370,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * @param st state
      */
     public void gotState(int as, addrIP src, addrIP spk, boolean st) {
-        servBmp2mrtStat stat = getStat(spk, src, 1);
+        servBmp2mrtStat stat = getStat(spk, src, 1, as);
         stat.as = as;
         stat.state = st;
         stat.since = bits.getTime();
@@ -409,7 +412,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * @param dat bgp message
      */
     public synchronized void gotMessage(int as, addrIP src, addrIP spk, boolean dir, byte[] dat) {
-        servBmp2mrtStat stat = getStat(spk, src, 1);
+        servBmp2mrtStat stat = getStat(spk, src, 1, as);
         stat.as = as;
         if (dir) {
             stat.packOut++;
@@ -524,7 +527,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      */
     public userFormat getShow(addrIP frm, addrIP per) {
         userFormat res = new userFormat("|", "category|value");
-        servBmp2mrtStat stat = getStat(frm, per, 0);
+        servBmp2mrtStat stat = getStat(frm, per, 0, 0);
         if (stat == null) {
             return null;
         }
