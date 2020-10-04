@@ -316,7 +316,6 @@ router bgp4 2
  afi-vrf v1 red lsrp4 1
  afi-vrf v1 red eigrp4 1
  afi-vrf v1 red bgp4 1
- afi-vrf v1 red bgp4 2
  exit
 router bgp6 2
  vrf v2
@@ -336,7 +335,6 @@ router bgp6 2
  afi-vrf v1 red lsrp6 1
  afi-vrf v1 red eigrp6 1
  afi-vrf v1 red bgp6 1
- afi-vrf v1 red bgp6 2
  exit
 int lo1
  vrf for v1
