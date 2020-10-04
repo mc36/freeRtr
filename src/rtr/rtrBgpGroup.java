@@ -672,7 +672,7 @@ public class rtrBgpGroup extends rtrBgpParam {
     private void readvertTable(int afi, tabRoute<addrIP> tab, tabRoute<addrIP> cmp) {
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
-            ntry = ntry.copyBytes(tabRoute.addType.ecmp);
+            ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 originatePrefix(afi, ntry);
             } else if (readvertPrefix(afi, ntry)) {

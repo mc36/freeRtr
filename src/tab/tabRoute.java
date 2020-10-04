@@ -49,6 +49,10 @@ public class tabRoute<T extends addrType> {
          * alternatives but with linking copy mode
          */
         lnkAlters,
+        /**
+         * ecmp but assume ecmp on copy
+         */
+        altEcmp,
     }
 
     /**
@@ -183,19 +187,25 @@ public class tabRoute<T extends addrType> {
             }
         }
         switch (mod) {
-            case better:
-                if (prefix.alts.size() > 1) {
-                    prefix = prefix.copyBytes(mod);
-                }
+            case altEcmp:
                 tabRouteEntry<T> own = prefixes.add(prefix);
                 if (own == null) {
                     version++;
                     return;
                 }
-                if (!own.isOtherBetter(prefix)) {
+                if (own.best.isOtherBetter(prefix.best, false)) {
+                    prefixes.put(prefix);
+                    version++;
                     return;
                 }
-                prefixes.put(prefix);
+                if (prefix.best.isOtherBetter(own.best, false)) {
+                    return;
+                }
+                for (int i = 0; i < prefix.alts.size(); i++) {
+                    tabRouteAttr<T> ntry = prefix.alts.get(i);
+                    own.alts.add(ntry);
+                }
+                own.hashBest();
                 version++;
                 return;
             case lnkEcmp:
@@ -220,7 +230,22 @@ public class tabRoute<T extends addrType> {
                     }
                     own.alts.add(ntry);
                 }
-                own.selectBest();
+                own.hashBest();
+                version++;
+                return;
+            case better:
+                if (prefix.alts.size() > 1) {
+                    prefix = prefix.copyBytes(mod);
+                }
+                own = prefixes.add(prefix);
+                if (own == null) {
+                    version++;
+                    return;
+                }
+                if (!own.isOtherBetter(prefix)) {
+                    return;
+                }
+                prefixes.put(prefix);
                 version++;
                 return;
             case always:

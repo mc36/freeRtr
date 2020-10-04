@@ -148,6 +148,16 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
             prf.prefix = prefix.copyBytes();
         }
         switch (mod) {
+            case altEcmp:
+                prf.alts.clear();
+                for (int i = 0; i < alts.size(); i++) {
+                    tabRouteAttr<T> ntry = alts.get(i);
+                    tabRouteAttr<T> attr = new tabRouteAttr<T>();
+                    ntry.copyBytes(attr, true);
+                    prf.alts.add(attr);
+                }
+                prf.hashBest();
+                return prf;
             case ecmp:
                 prf.alts.clear();
                 for (int i = 0; i < alts.size(); i++) {
