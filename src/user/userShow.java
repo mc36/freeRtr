@@ -2799,6 +2799,10 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 1000);
             return;
         }
+        if (a.equals("ecmp")) {
+            doShowRoutes(r.bgp.fwdCore, tab, dsp + 2000);
+            return;
+        }
         if (a.equals("nostdcomm")) {
             a = cmd.getRemaining();
             cmd = new cmds("", "");
@@ -3345,6 +3349,8 @@ public class userShow {
             case 8:
                 l = new userFormat("|", "prefix|index|base|oldbase|size");
                 break;
+            case 2002:
+            case 2005:
             case 9:
                 l = new userFormat("|", "prefix|alts|ecmp|best|proto|source");
                 break;
@@ -3385,8 +3391,10 @@ public class userShow {
                 case 8:
                     tabRouteEntry.toShBrRoute(l, prf);
                     break;
+                case 2002:
+                case 2005:
                 case 9:
-                    tabRouteEntry.toShEcmp(l, prf);
+                    tabRouteEntry.toShEcmp(l, prf, typ == 2005);
                     break;
             }
         }

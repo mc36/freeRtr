@@ -434,9 +434,15 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      *
      * @param l list to append
      * @param prf entry to dump
+     * @param evpn evpn
      */
-    public static void toShEcmp(userFormat l, tabRouteEntry<addrIP> prf) {
-        String a = addrPrefix.ip2str(prf.prefix);
+    public static void toShEcmp(userFormat l, tabRouteEntry<addrIP> prf, boolean evpn) {
+        String a;
+        if (evpn) {
+            a = addrPrefix.ip2evpn(prf.prefix);
+        } else {
+            a = toShBgpFirst(prf);
+        }
         for (int i = 0; i < prf.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = prf.alts.get(i);
             l.add(a + "|" + prf.alts.size() + "|" + (!attr.isOtherBetter(prf.best, false)) + "|" + (attr == prf.best) + "|" + attr.toShEcmp());

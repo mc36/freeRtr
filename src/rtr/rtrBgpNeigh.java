@@ -986,6 +986,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (shutdown) {
             return;
         }
+        if (conn == null) {
+            return;
+        }
+        if (!conn.ready2adv) {
+            return;
+        }
         for (int i = 0; i < lower.groups.size(); i++) {
             rtrBgpGroup ntry = lower.groups.get(i);
             if (ntry.peerType != peerType) {

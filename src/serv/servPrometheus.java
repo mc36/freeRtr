@@ -361,6 +361,9 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
         List<String> lst = new ArrayList<String>();
         List<String> res = getResult();
         for (int i = 0; i < skp; i++) {
+            if (res.size() < 1) {
+                break;
+            }
             res.remove(0);
         }
         for (int p = 0; p < res.size(); p++) {
