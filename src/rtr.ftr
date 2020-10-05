@@ -1764,6 +1764,10 @@ qc pass: bgp remove private as out with routepolicy
 qc pass: bgp with srgb sr
 qc pass: bgp over point2point ethernet
 qc pass: bgp ecmp connection
+qc pass: bgp routemap filtering with peer asn
+qc pass: bgp routepolicy filtering with peer asn
+qc pass: bgp routemap filtering with peer asn with soft-reconfig
+qc pass: bgp routepolicy filtering with peer asn with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

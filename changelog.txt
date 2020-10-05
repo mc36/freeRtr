@@ -9358,3 +9358,8 @@ qc pass: static routing with ecmp
 ---------------------------------- 2020-09-27 05:59:21
 todo: nat and pbr config to have reindex
 todo: chatscript and authlist to use tablisting and have reindex
+---------------------------------- 2020-10-05 14:11:06
+qc pass: bgp routemap filtering with peer asn
+qc pass: bgp routepolicy filtering with peer asn
+qc pass: bgp routemap filtering with peer asn with soft-reconfig
+qc pass: bgp routepolicy filtering with peer asn with soft-reconfig
