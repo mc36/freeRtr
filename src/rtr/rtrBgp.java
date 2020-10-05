@@ -1652,12 +1652,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 needFull.add(1);
                 continue;
             }
-            tabRouteEntry<addrIP> ntry = best.copyBytes(tabRoute.addType.altEcmp);
-            tabRouteEntry<addrIP> old = wil.find(ntry);
-            if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
-                grp.originatePrefix(afi, ntry);
-            } else if (grp.readvertPrefix(afi, ntry)) {
-                ntry = null;
+            tabRouteEntry<addrIP> ntry = null;
+            tabRouteEntry<addrIP> old = wil.find(best);
+            if (best.best.rouSrc == rtrBgpUtil.peerOriginate) {
+                ntry = grp.originatePrefix(afi, best);
+            } else {
+                ntry = grp.readvertPrefix(afi, best);
             }
             if ((afi == afiUni) || (afi == afiMlt) || (afi == afiOtr)) {
                 ntry = tabRoute.doUpdateEntry(afi, ntry, grp.roumapOut, grp.roupolOut, grp.prflstOut);
