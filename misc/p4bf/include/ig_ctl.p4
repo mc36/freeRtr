@@ -65,9 +65,15 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_TUN
     IngressControlTunnel() ig_ctl_tunnel;
 #endif
+#ifdef HAVE_COPP
     IngressControlCoPP()ig_ctl_copp;
+#endif
+#ifdef HAVE_INACL
     IngressControlAclIn() ig_ctl_acl_in;
+#endif
+#ifdef HAVE_OUTACL
     IngressControlAclOut() ig_ctl_acl_out;
+#endif
     IngressControlNexthop()ig_ctl_nexthop;
     IngressControlVlanIn()ig_ctl_vlan_in;
     IngressControlVlanOut()ig_ctl_vlan_out;
@@ -105,7 +111,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             ig_ctl_pppoe.apply(hdr,ig_md,ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 
+#ifdef HAVE_INACL
             ig_ctl_acl_in.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
             ig_ctl_vrf.apply(hdr, ig_md);
 #ifdef HAVE_MPLS
             ig_ctl_mpls.apply(hdr, ig_md, ig_intr_md);
@@ -136,14 +144,18 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_TUN
                 ig_ctl_tunnel.apply(hdr,ig_md,ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
+#ifdef HAVE_COPP
                 ig_ctl_copp.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
             } else {
                 if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
 #ifdef HAVE_PPPOE
                 if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
 #endif
                 ig_ctl_nexthop.apply(hdr, ig_md, ig_dprsr_md);
+#ifdef HAVE_OUTACL
                 ig_ctl_acl_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
                 ig_ctl_vlan_out.apply(hdr, ig_md, ig_tm_md);
                 ig_ctl_bundle.apply (hdr, ig_md, ig_dprsr_md, ig_tm_md);
             }

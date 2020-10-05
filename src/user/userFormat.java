@@ -48,6 +48,64 @@ public class userFormat {
 
     }
 
+    /**
+     * convert table mode to string
+     *
+     * @param mod table mode
+     * @return string
+     */
+    public static String tabmod2str(tableMode mod) {
+        switch (mod) {
+            case raw:
+                return "raw";
+            case normal:
+                return "normal";
+            case table:
+                return "table";
+            case fancy:
+                return "fancy";
+            case csv:
+                return "csv";
+            case html:
+                return "html";
+            case setdel:
+                return "setdel";
+            default:
+                return "unknon";
+        }
+    }
+
+    /**
+     * convert string to table mode
+     *
+     * @param a string
+     * @return table mode
+     */
+    public static tableMode str2tabmod(String a) {
+        if (a.equals("raw")) {
+            return tableMode.raw;
+        }
+        if (a.equals("normal")) {
+            return tableMode.normal;
+        }
+        if (a.equals("table")) {
+            return tableMode.table;
+        }
+        if (a.equals("fancy")) {
+            return tableMode.fancy;
+        }
+        if (a.equals("csv")) {
+            return tableMode.csv;
+        }
+        if (a.equals("html")) {
+            return tableMode.html;
+        }
+        if (a.equals("setdel")) {
+            return tableMode.setdel;
+        }
+        return null;
+    }
+
     private String separator;
 
     private List<userFormatLine> lines;

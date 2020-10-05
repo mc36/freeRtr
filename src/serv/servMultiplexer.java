@@ -260,6 +260,9 @@ public class servMultiplexer extends servGeneric implements prtServS {
         }
     }
 
+    /**
+     * close client connections
+     */
     protected void clearClients() {
         for (int i = conns.size() - 1; i >= 0; i--) {
             servMultiplexerConn ntry = conns.get(i);

@@ -195,7 +195,7 @@ public class packSshKex {
      */
     public void hashBuf(byte[] buf) {
         for (int i = 0; i < buf.length; i++) {
-            hash1.add(Integer.valueOf(buf[i]));
+            hash1.add((int) buf[i]);
         }
     }
 

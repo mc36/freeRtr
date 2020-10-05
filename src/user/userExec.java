@@ -3285,7 +3285,7 @@ public class userExec {
             return;
         }
         if (a.equals("tablemode")) {
-            reader.tabMod = userFormat.tableMode.valueOf(cmd.word());
+            reader.tabMod = userFormat.str2tabmod(cmd.word());
             return;
         }
         if (!a.equals("no")) {

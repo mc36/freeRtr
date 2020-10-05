@@ -239,7 +239,7 @@ public class tabLabel {
             trg = new ArrayList<Integer>();
         }
         for (int i = 0; i < src.size(); i++) {
-            trg.add(i, (int) src.get(i));
+            trg.add(i, src.get(i));
         }
         return trg;
     }
@@ -262,7 +262,12 @@ public class tabLabel {
      * @return copyed labels
      */
     public static List<Integer> copyLabels(List<Integer> src) {
-        return prependLabels(null, src);
+        if (src == null) {
+            return null;
+        }
+        List<Integer> trg = new ArrayList<Integer>();
+        trg.addAll(src);
+        return src;
     }
 
 }

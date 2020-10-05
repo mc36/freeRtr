@@ -25,7 +25,6 @@ router isis4 1
  net 48.4444.0000.1111.00
  is-type level2
  red conn
- red isis4 1
  red ospf4 1
  red rip4 1
  red babel4 1
@@ -41,7 +40,6 @@ router isis6 1
  net 48.6666.0000.1111.00
  is-type level2
  red conn
- red isis6 1
  red ospf6 1
  red rip6 1
  red babel6 1
@@ -58,7 +56,6 @@ router ospf4 1
  area 0 ena
  red conn
  red isis4 1
- red ospf4 1
  red rip4 1
  red babel4 1
  red olsr4 1
@@ -74,7 +71,6 @@ router ospf6 1
  area 0 ena
  red conn
  red isis6 1
- red ospf6 1
  red rip6 1
  red babel6 1
  red olsr6 1
@@ -93,7 +89,6 @@ router pvrp4 1
  red rip4 1
  red babel4 1
  red olsr4 1
- red pvrp4 1
  red lsrp4 1
  red eigrp4 1
  red bgp4 1
@@ -108,7 +103,6 @@ router pvrp6 1
  red rip6 1
  red babel6 1
  red olsr6 1
- red pvrp6 1
  red lsrp6 1
  red eigrp6 1
  red bgp6 1
@@ -124,7 +118,6 @@ router lsrp4 1
  red babel4 1
  red olsr4 1
  red pvrp4 1
- red lsrp4 1
  red eigrp4 1
  red bgp4 1
  red bgp4 2
@@ -139,7 +132,6 @@ router lsrp6 1
  red babel6 1
  red olsr6 1
  red pvrp6 1
- red lsrp6 1
  red eigrp6 1
  red bgp6 1
  red bgp6 2
@@ -156,7 +148,6 @@ router eigrp4 1
  red olsr4 1
  red pvrp4 1
  red lsrp4 1
- red eigrp4 1
  red bgp4 1
  red bgp4 2
  exit
@@ -172,7 +163,6 @@ router eigrp6 1
  red olsr6 1
  red pvrp6 1
  red lsrp6 1
- red eigrp6 1
  red bgp6 1
  red bgp6 2
  exit
@@ -181,7 +171,6 @@ router rip4 1
  red conn
  red isis4 1
  red ospf4 1
- red rip4 1
  red babel4 1
  red olsr4 1
  red pvrp4 1
@@ -195,7 +184,6 @@ router rip6 1
  red conn
  red isis6 1
  red ospf6 1
- red rip6 1
  red babel6 1
  red olsr6 1
  red pvrp6 1
@@ -211,7 +199,6 @@ router babel4 1
  red isis4 1
  red ospf4 1
  red rip4 1
- red babel4 1
  red olsr4 1
  red pvrp4 1
  red lsrp4 1
@@ -226,7 +213,6 @@ router babel6 1
  red isis6 1
  red ospf6 1
  red rip6 1
- red babel6 1
  red olsr6 1
  red pvrp6 1
  red lsrp6 1
@@ -241,7 +227,6 @@ router olsr4 1
  red ospf4 1
  red rip4 1
  red babel4 1
- red olsr4 1
  red pvrp4 1
  red lsrp4 1
  red eigrp4 1
@@ -255,7 +240,6 @@ router olsr6 1
  red ospf6 1
  red rip6 1
  red babel6 1
- red olsr6 1
  red pvrp6 1
  red lsrp6 1
  red eigrp6 1
@@ -277,7 +261,6 @@ router bgp4 1
  red pvrp4 1
  red lsrp4 1
  red eigrp4 1
- red bgp4 1
  red bgp4 2
  exit
 router bgp6 1
@@ -295,7 +278,6 @@ router bgp6 1
  red pvrp6 1
  red lsrp6 1
  red eigrp6 1
- red bgp6 1
  red bgp6 2
  exit
 router bgp4 2

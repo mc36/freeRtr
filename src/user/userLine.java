@@ -167,7 +167,7 @@ public class userLine {
         cmds.cfgLine(lst, !execTimes, beg, "exec timestamp", "");
         cmds.cfgLine(lst, !execColor, beg, "exec colorized", "");
         cmds.cfgLine(lst, !execSpace, beg, "exec spacetab", "");
-        lst.add(beg + "exec tablemode " + execTables);
+        lst.add(beg + "exec tablemode " + userFormat.tabmod2str(execTables));
         lst.add(beg + "exec welcome " + promptWelcome);
         lst.add(beg + "exec ready " + promptSuccess);
         lst.add(beg + "exec bye " + promptGoodbye);
@@ -246,7 +246,7 @@ public class userLine {
                 return false;
             }
             if (s.equals("tablemode")) {
-                execTables = userFormat.tableMode.valueOf(cmd.word());
+                execTables = userFormat.str2tabmod(cmd.word());
                 return false;
             }
             if (s.equals("ready")) {

@@ -668,7 +668,7 @@ public class tabRouteAttr<T extends addrType> {
         if (extComm != null) {
             atr.extComm = new ArrayList<Long>();
             for (int i = 0; i < extComm.size(); i++) {
-                atr.extComm.add(Long.valueOf(extComm.get(i)));
+                atr.extComm.add(extComm.get(i));
             }
         } else {
             atr.extComm = null;

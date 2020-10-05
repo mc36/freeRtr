@@ -17,6 +17,8 @@
 #ifndef _IG_CTL_Acl_in_P4_
 #define _IG_CTL_Acl_in_P4_
 
+#ifdef HAVE_INACL
+
 control IngressControlAclIn(inout headers hdr, inout ingress_metadata_t ig_md,
                             in ingress_intrinsic_metadata_t ig_intr_md,
                             inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
@@ -88,5 +90,7 @@ ig_md.layer4_dstprt:
         }
     }
 }
+
+#endif
 
 #endif // _IG_CTL_Acl_in_P4_
