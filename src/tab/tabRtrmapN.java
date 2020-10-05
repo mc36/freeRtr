@@ -194,6 +194,16 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * community matcher
      */
+    public int peerStdMatch;
+
+    /**
+     * community matcher
+     */
+    public tabLargeComm peerLrgMatch;
+
+    /**
+     * community matcher
+     */
     public List<Integer> stdCommMatch;
 
     /**
@@ -589,6 +599,17 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     }
 
     /**
+     * stdcomm with asn
+     *
+     * @param comm community
+     * @param asn asn
+     * @return merged
+     */
+    public static int stdcommAsn(int comm, int asn) {
+        return (comm & 0xffff0000) | (asn & 0xffff);
+    }
+
+    /**
      * convert string to large community list
      *
      * @param a string
@@ -603,7 +624,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 break;
             }
             tabLargeComm d = new tabLargeComm();
-            d.fromString(a);
+            if (d.fromString(a)) {
+                continue;
+            }
             l.add(d);
         }
         return l;
@@ -692,6 +715,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         } else {
             l.add(beg + "match aspath " + aspathMatch);
         }
+        cmds.cfgLine(l, peerStdMatch == 0, beg, "match peerstd", stdComm2string(peerStdMatch));
+        cmds.cfgLine(l, peerLrgMatch == null, beg, "match peerlrg", "" + peerLrgMatch);
         if (stdCommMatch == null) {
             l.add(beg + "no match stdcomm");
         } else {
@@ -879,6 +904,19 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (aspathMatch != null) {
             if (!net.best.asPathStr().matches(aspathMatch)) {
+                return false;
+            }
+        }
+        if (peerStdMatch != 0) {
+            int i = stdcommAsn(peerStdMatch, asn);
+            if (rtrBgpUtil.findIntList(net.best.stdComm, i) < 0) {
+                return false;
+            }
+        }
+        if (peerLrgMatch != null) {
+            tabLargeComm lrg = peerLrgMatch.copyBytes();
+            lrg.d2 = asn;
+            if (rtrBgpUtil.findLrgList(net.best.lrgComm, lrg) < 0) {
                 return false;
             }
         }

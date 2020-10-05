@@ -99,6 +99,10 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("3 .       <addr>            address");
         l.add("2 3     aspath              match as path");
         l.add("3 3,.     <str>             regexp against as path");
+        l.add("2 3     peerstd             match standard community based on peer asn");
+        l.add("3 .       <str>             community");
+        l.add("2 3     peerlrg             match large community based on peer asn");
+        l.add("3 .       <str>             community");
         l.add("2 3     stdcomm             match standard community");
         l.add("3 3,.     <str>             community");
         l.add("2 3     extcomm             match extended community");
@@ -284,6 +288,16 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         if (a.equals("aspath")) {
             ntry.ifMode = tabRtrplcN.ifType.aspath;
             ntry.strVal = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("peerstd")) {
+            ntry.ifMode = tabRtrplcN.ifType.peerstd;
+            ntry.intLst = tabRtrmapN.string2stdComms(cmd.getRemaining());
+            return;
+        }
+        if (a.equals("peerlrg")) {
+            ntry.ifMode = tabRtrplcN.ifType.peerlrg;
+            ntry.lrgLst = tabRtrmapN.string2lrgComms(cmd.getRemaining());
             return;
         }
         if (a.equals("stdcomm")) {

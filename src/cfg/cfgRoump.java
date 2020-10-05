@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import tab.tabGen;
+import tab.tabLargeComm;
 import tab.tabListing;
 import tab.tabListingEntry;
 import tab.tabPrfxlstN;
@@ -50,6 +51,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no match rd",
         "route-map .*! sequence .* no match network",
         "route-map .*! sequence .* no match aspath",
+        "route-map .*! sequence .* no match peerstd",
+        "route-map .*! sequence .* no match peerlrg",
         "route-map .*! sequence .* no match stdcomm",
         "route-map .*! sequence .* no match extcomm",
         "route-map .*! sequence .* no match lrgcomm",
@@ -161,6 +164,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("1 2   match                 match values from source routing protocol");
         l.add("2 3     aspath              match as path");
         l.add("3 3,.     <str>             regexp against as path");
+        l.add("2 3     peerstd             match standard community based on peer asn");
+        l.add("3 .       <str>             community");
+        l.add("2 3     peerlrg             match large community based on peer asn");
+        l.add("3 .       <str>             community");
         l.add("2 3     stdcomm             match standard community");
         l.add("3 3,.     <str>             community");
         l.add("2 3     extcomm             match extended community");
@@ -388,6 +395,18 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("aspath")) {
                 ntry.aspathMatch = cmd.getRemaining();
+                return;
+            }
+            if (a.equals("peerstd")) {
+                ntry.peerStdMatch = tabRtrmapN.string2stdComm(cmd.word());
+                return;
+            }
+            if (a.equals("peerlrg")) {
+                tabLargeComm d = new tabLargeComm();
+                if (d.fromString(cmd.word())) {
+                    return;
+                }
+                ntry.peerLrgMatch = d;
                 return;
             }
             if (a.equals("stdcomm")) {
@@ -727,6 +746,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("aspath")) {
                 ntry.aspathMatch = null;
+                return;
+            }
+            if (a.equals("peerstd")) {
+                ntry.peerStdMatch = 0;
+                return;
+            }
+            if (a.equals("peerlrg")) {
+                ntry.peerLrgMatch = null;
                 return;
             }
             if (a.equals("stdcomm")) {

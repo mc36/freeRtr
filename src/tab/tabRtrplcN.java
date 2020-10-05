@@ -164,6 +164,14 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         aspath,
         /**
+         * peer stdcomm
+         */
+        peerstd,
+        /**
+         * peer lrgcomm
+         */
+        peerlrg,
+        /**
          * stdcomm
          */
         stdcomm,
@@ -439,6 +447,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "always";
             case aspath:
                 return "aspath " + strVal;
+            case peerstd:
+                return "peerstd " + tabRtrmapN.stdComms2string(intLst);
+            case peerlrg:
+                return "peerlrg " + tabRtrmapN.lrgComms2string(lrgLst);
             case stdcomm:
                 return "stdcomm " + tabRtrmapN.stdComms2string(intLst);
             case extcomm:
@@ -508,22 +520,35 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return true;
             case aspath:
                 return net.best.asPathStr().matches(strVal);
+            case peerstd:
+                int i = tabRtrmapN.stdcommAsn(intLst.get(0), asn);
+                if (rtrBgpUtil.findIntList(net.best.stdComm, i) < 0) {
+                    return false;
+                }
+                return true;
+            case peerlrg:
+                tabLargeComm lrg = lrgLst.get(0).copyBytes();
+                lrg.d2 = asn;
+                if (rtrBgpUtil.findLrgList(net.best.lrgComm, lrg) < 0) {
+                    return false;
+                }
+                return true;
             case stdcomm:
-                for (int i = 0; i < intLst.size(); i++) {
+                for (i = 0; i < intLst.size(); i++) {
                     if (rtrBgpUtil.findIntList(net.best.stdComm, intLst.get(i)) < 0) {
                         return false;
                     }
                 }
                 return true;
             case extcomm:
-                for (int i = 0; i < lngLst.size(); i++) {
+                for (i = 0; i < lngLst.size(); i++) {
                     if (rtrBgpUtil.findLongList(net.best.extComm, lngLst.get(i)) < 0) {
                         return false;
                     }
                 }
                 return true;
             case lrgcomm:
-                for (int i = 0; i < lrgLst.size(); i++) {
+                for (i = 0; i < lrgLst.size(); i++) {
                     if (rtrBgpUtil.findLrgList(net.best.lrgComm, lrgLst.get(i)) < 0) {
                         return false;
                     }
@@ -561,7 +586,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 }
                 return res.worker.getStatus();
             case privas:
-                int i = rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
+                i = rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
                 i += rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
                 return i > 0;
             case prfxlst:
