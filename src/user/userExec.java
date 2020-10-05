@@ -516,6 +516,12 @@ public class userExec {
         hl.add("7 .                <name>        name of list");
         hl.add("6 7              prefix-list     list of routes in database");
         hl.add("7 .                <name>        name of list");
+        hl.add("6 7              measure-map     measure filtering by route map");
+        hl.add("7 .                <name>        name of list");
+        hl.add("6 7              measure-policy  measure filtering by route policy");
+        hl.add("7 .                <name>        name of list");
+        hl.add("6 7              measure-list    measure filtering by prefix list");
+        hl.add("7 .                <name>        name of list");
         hl.add("6 7,.            database        list of routes in database");
         hl.add("7 8,.              [addr]        prefix to view");
         hl.add("8 .                  [rd]        route distinguisher");

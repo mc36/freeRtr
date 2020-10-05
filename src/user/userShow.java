@@ -3110,6 +3110,45 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, res, dsp);
             return;
         }
+        if (a.equals("measure-list")) {
+            a = cmd.word();
+            cfgPrfxlst fnd = cfgAll.prfxFind(a, false);
+            if (fnd == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            long tim = bits.getTime();
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, null, null, fnd.prflst);
+            cmd.error("took " + (bits.getTime() - tim) + " ms, permitted " + res.size() + " of " + tab.size());
+            return;
+        }
+        if (a.equals("measure-map")) {
+            a = cmd.word();
+            cfgRoump fnd = cfgAll.rtmpFind(a, false);
+            if (fnd == null) {
+                cmd.error("no such route map");
+                return;
+            }
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            long tim = bits.getTime();
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, fnd.roumap, null, null);
+            cmd.error("took " + (bits.getTime() - tim) + " ms, permitted " + res.size() + " of " + tab.size());
+            return;
+        }
+        if (a.equals("measure-policy")) {
+            a = cmd.word();
+            cfgRouplc fnd = cfgAll.rtplFind(a, false);
+            if (fnd == null) {
+                cmd.error("no such route policy");
+                return;
+            }
+            tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+            long tim = bits.getTime();
+            tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, res, tab, false, null, fnd.rouplc, null);
+            cmd.error("took " + (bits.getTime() - tim) + " ms, permitted " + res.size() + " of " + tab.size());
+            return;
+        }
         cmd.badCmd();
         return;
     }
