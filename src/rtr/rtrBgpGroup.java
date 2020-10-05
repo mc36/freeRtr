@@ -523,6 +523,7 @@ public class rtrBgpGroup extends rtrBgpParam {
      */
     public tabRouteEntry<addrIP> originatePrefix(int afi, tabRouteEntry<addrIP> ntry) {
         ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
+        ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         boolean nhs = (afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0);
         if (intVpnClnt) {
             rtrBgpUtil.decodeAttribSet(ntry);
@@ -684,7 +685,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             if (ntry == null) {
                 continue;
             }
-            tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, tab, afi, ntry, true, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, tab, afi, ntry, false, roumapOut, roupolOut, prflstOut);
         }
     }
 
@@ -699,7 +700,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             if (ntry == null) {
                 continue;
             }
-            tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, tab, afi, ntry, true, voumapOut, voupolOut, null);
+            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, tab, afi, ntry, false, voumapOut, voupolOut, null);
         }
     }
 
@@ -752,7 +753,6 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.best.aggrRtr = new addrIP();
             ntry.best.aggrRtr.fromIPv4addr(lower.routerID);
             ntry.best.aggrAs = localAs;
-            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             ntry = originatePrefix(lower.afiUni, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nUni, lower.afiUni, ntry, true, roumapOut, roupolOut, prflstOut);
             ntry = new tabRouteEntry<addrIP>();
@@ -760,7 +760,6 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.best.aggrRtr = new addrIP();
             ntry.best.aggrRtr.fromIPv4addr(lower.routerID);
             ntry.best.aggrAs = localAs;
-            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             ntry = originatePrefix(lower.afiMlt, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, ntry, true, roumapOut, roupolOut, prflstOut);
         }
@@ -769,30 +768,24 @@ public class rtrBgpGroup extends rtrBgpParam {
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes(tabRoute.addType.ecmp);
-            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             ntry = originatePrefix(lower.afiUni, ntry);
-            tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, nUni, lower.afiUni, ntry, true, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, nUni, lower.afiUni, ntry, true, roumapOut, roupolOut, prflstOut);
         }
         for (int i = 0; i < lower.routerRedistedM.size(); i++) {
             tabRouteEntry<addrIP> ntry = lower.routerRedistedM.get(i);
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes(tabRoute.addType.ecmp);
-            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             ntry = originatePrefix(lower.afiMlt, ntry);
-            tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, nMlt, lower.afiMlt, ntry, true, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, nMlt, lower.afiMlt, ntry, true, roumapOut, roupolOut, prflstOut);
         }
         for (int i = 0; i < lower.routerRedistedF.size(); i++) {
             tabRouteEntry<addrIP> ntry = lower.routerRedistedF.get(i);
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes(tabRoute.addType.ecmp);
-            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             ntry = originatePrefix(lower.afiFlw, ntry);
-            tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, nFlw, lower.afiFlw, ntry, true, voumapOut, voupolOut, null);
+            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, nFlw, lower.afiFlw, ntry, true, voumapOut, voupolOut, null);
         }
         readvertTable(lower.afiUni, nUni, cUni);
         readvertTable(lower.afiMlt, nMlt, cMlt);
