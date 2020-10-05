@@ -573,9 +573,9 @@ public class rtrBgpGroup extends rtrBgpParam {
      * @return copy of prefix, null if forbidden
      */
     public tabRouteEntry<addrIP> readvertPrefix(int afi, tabRouteEntry<addrIP> ntry) {
-        ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
         boolean nhs = (afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0);
         if (intVpnClnt) {
+            ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
             rtrBgpUtil.decodeAttribSet(ntry);
         }
         if (!allowAsOut) {
@@ -594,6 +594,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
                     return null;
                 }
+                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
                 for (int i = 0; i < ntry.alts.size(); i++) {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
                     attr.pathSeq = tabLabel.prependLabel(attr.pathSeq, localAs);
@@ -609,6 +610,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoConfed) >= 0) {
                     return null;
                 }
+                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
                 switch (ntry.best.rouSrc) {
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
@@ -628,13 +630,18 @@ public class rtrBgpGroup extends rtrBgpParam {
                         return null;
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
+                        ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
                         if (!nxtHopUnchgd) {
                             nextHopSelf(nhs, ntry);
                         }
                         break;
+                    default:
+                        ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
+                        break;
                 }
                 break;
             case rtrBgpUtil.peerRflct:
+                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
                 switch (ntry.best.rouSrc) {
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
@@ -648,6 +655,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
                     return null;
                 }
+                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
                 switch (ntry.best.rouSrc) {
                     case rtrBgpUtil.peerExtrn:
                         if (!nxtHopUnchgd) {
@@ -656,6 +664,8 @@ public class rtrBgpGroup extends rtrBgpParam {
                         break;
                 }
                 break;
+            default:
+                return null;
         }
         clearAttribs(ntry.best);
         if (nxtHopSelf) {
