@@ -265,9 +265,9 @@ public class tabLabel {
         if (src == null) {
             return null;
         }
-        List<Integer> trg = new ArrayList<Integer>();
-        trg.addAll(src);
-        return src;
+        List<Integer> res = new ArrayList<Integer>();
+        res.addAll(src);
+        return res;
     }
 
 }
