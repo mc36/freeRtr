@@ -72,9 +72,6 @@ public class tabRtrplc {
      * @return null if denied, copy otherwise
      */
     public static tabRouteEntry<addrIP> doRpl(int afi, tabRouteEntry<addrIP> net, tabListing<tabRtrplcN, addrIP> lst, boolean copy) {
-        if (copy) {
-            net = net.copyBytes(tabRoute.addType.ecmp);
-        }
         int lvl = 0;
         long tim = bits.getTime();
         packHolder pck = new packHolder(false, false);
@@ -151,6 +148,10 @@ public class tabRtrplc {
                     lvl--;
                     continue;
                 case pass:
+                    if (copy) {
+                        net = net.copyBytes(tabRoute.addType.ecmp);
+                        copy = false;
+                    }
                     return net;
                 case drop:
                     return null;
@@ -158,6 +159,10 @@ public class tabRtrplc {
                     logger.info("list " + lst.listName + " matched at sequence " + ntry.sequence + " on " + net);
                     continue;
                 case tcl:
+                    if (copy) {
+                        net = net.copyBytes(tabRoute.addType.ecmp);
+                        copy = false;
+                    }
                     List<String> scr = new ArrayList<String>();
                     for (; pos < lst.entries.size(); pos++) {
                         ntry = lst.entries.get(pos);
@@ -173,6 +178,10 @@ public class tabRtrplc {
                     tabRtrmapN.doTcl(afi, net.best, net, scr);
                     continue;
                 default:
+                    if (copy) {
+                        net = net.copyBytes(tabRoute.addType.ecmp);
+                        copy = false;
+                    }
                     ntry.update(afi, net);
                     continue;
             }
