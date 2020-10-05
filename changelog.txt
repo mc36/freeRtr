@@ -9363,3 +9363,12 @@ qc pass: bgp routemap filtering with peer asn
 qc pass: bgp routepolicy filtering with peer asn
 qc pass: bgp routemap filtering with peer asn with soft-reconfig
 qc pass: bgp routepolicy filtering with peer asn with soft-reconfig
+---------------------------------- 2020-10-05 17:00:28
+qc pass: bgp routemap filtering with peer standard community
+qc pass: bgp routepolicy filtering with peer standard community
+qc pass: bgp routemap filtering with peer standard community with soft-reconfig
+qc pass: bgp routepolicy filtering with peer standard community with soft-reconfig
+qc pass: bgp routemap filtering with peer large community
+qc pass: bgp routepolicy filtering with peer large community
+qc pass: bgp routemap filtering with peer large community with soft-reconfig
+qc pass: bgp routepolicy filtering with peer large community with soft-reconfig

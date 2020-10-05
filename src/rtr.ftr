@@ -1768,6 +1768,14 @@ qc pass: bgp routemap filtering with peer asn
 qc pass: bgp routepolicy filtering with peer asn
 qc pass: bgp routemap filtering with peer asn with soft-reconfig
 qc pass: bgp routepolicy filtering with peer asn with soft-reconfig
+qc pass: bgp routemap filtering with peer standard community
+qc pass: bgp routepolicy filtering with peer standard community
+qc pass: bgp routemap filtering with peer standard community with soft-reconfig
+qc pass: bgp routepolicy filtering with peer standard community with soft-reconfig
+qc pass: bgp routemap filtering with peer large community
+qc pass: bgp routepolicy filtering with peer large community
+qc pass: bgp routemap filtering with peer large community with soft-reconfig
+qc pass: bgp routepolicy filtering with peer large community with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
