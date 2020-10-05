@@ -222,11 +222,11 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         return l;
     }
 
-    public boolean matches(int afi, addrPrefix<addrIP> net) {
+    public boolean matches(int afi, int asn, addrPrefix<addrIP> net) {
         return false;
     }
 
-    public boolean matches(int afi, tabRouteEntry<addrIP> net) {
+    public boolean matches(int afi, int asn, tabRouteEntry<addrIP> net) {
         return false;
     }
 
@@ -266,7 +266,7 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         return true;
     }
 
-    public void update(int afi, tabRouteEntry<addrIP> net) {
+    public void update(int afi, int asn, tabRouteEntry<addrIP> net) {
     }
 
     /**

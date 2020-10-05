@@ -542,7 +542,7 @@ public class rtrIsisLevel implements Runnable {
             }
         }
         tabRoute<addrIP> fl = new tabRoute<addrIP>("fl");
-        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, fl, rs, true, roumapInto, roupolInto, prflstInto);
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.safiUnicast, 0, fl, rs, true, roumapInto, roupolInto, prflstInto);
         for (int i = 0; i < fl.size(); i++) {
             tabRouteEntry<addrIP> ntry = fl.get(i);
             if (ntry == null) {
@@ -774,7 +774,7 @@ public class rtrIsisLevel implements Runnable {
             }
         }
         routes.clear();
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.safiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);
         if (bierEna) {
             bierRes = spf.getBierI();

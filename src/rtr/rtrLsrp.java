@@ -732,7 +732,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("routes");
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, 0, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
         routerDoAggregates(rtrBgpUtil.safiUnicast, tab2, null, fwdCore.commonLabel, 0, null, 0);
         if (bierLab != null) {
             tabLabelBier res = spf.getBierI();
@@ -1141,7 +1141,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 }
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = new addrPrefix<addrIP>(nei.peer, addrIP.size * 8);
-                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, ntry, true, null, null, routerAutoMesh);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, 0, ntry, true, null, null, routerAutoMesh);
             }
         }
     }

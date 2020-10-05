@@ -767,13 +767,13 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         return l;
     }
 
-    public boolean matches(int afi, addrPrefix<addrIP> net) {
+    public boolean matches(int afi, int asn, addrPrefix<addrIP> net) {
         tabRouteEntry<addrIP> nt = new tabRouteEntry<addrIP>();
         nt.prefix = net;
-        return matches(afi, nt);
+        return matches(afi, asn, nt);
     }
 
-    public boolean matches(int afi, tabRouteEntry<addrIP> net) {
+    public boolean matches(int afi, int asn, tabRouteEntry<addrIP> net) {
         if (rouDstMatch != 0) {
             if (rouDstMatch != net.rouDst) {
                 return false;
@@ -864,7 +864,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
         }
         if (networkMatch != null) {
-            if (!networkMatch.matches(afi, net.prefix)) {
+            if (!networkMatch.matches(afi, asn, net.prefix)) {
                 return false;
             }
         }
@@ -895,17 +895,17 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
         }
         if (prfxlstMatch != null) {
-            if (!prfxlstMatch.matches(afi, net.prefix)) {
+            if (!prfxlstMatch.matches(afi, asn, net.prefix)) {
                 return false;
             }
         }
         if (roumapMatch != null) {
-            if (!roumapMatch.matches(afi, net)) {
+            if (!roumapMatch.matches(afi, asn, net)) {
                 return false;
             }
         }
         if (rouplcMatch != null) {
-            if (tabRtrplc.doRpl(afi, net, rouplcMatch, true) == null) {
+            if (tabRtrplc.doRpl(afi, asn, net, rouplcMatch, true) == null) {
                 return false;
             }
         }
@@ -913,7 +913,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     }
 
     public boolean matches(packHolder pck) {
-        return matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
+        return matches(rtrBgpUtil.safiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
     private void doUpdate(tabRouteAttr<addrIP> attr) {
@@ -959,19 +959,19 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
     }
 
-    public void update(int afi, tabRouteEntry<addrIP> net) {
+    public void update(int afi, int asn, tabRouteEntry<addrIP> net) {
         for (int i = 0; i < net.alts.size(); i++) {
             doUpdate(net.alts.get(i));
         }
         net.selectBest();
         if (roumapSet != null) {
-            roumapSet.update(afi, net, false);
+            roumapSet.update(afi, asn, net, false);
         }
         if (rouplcSet != null) {
-            tabRtrplc.doRpl(afi, net, rouplcSet, false);
+            tabRtrplc.doRpl(afi, asn, net, rouplcSet, false);
         }
         if (script != null) {
-            doTcl(afi, net.best, net, script);
+            doTcl(afi, asn, net.best, net, script);
         }
     }
 
@@ -983,7 +983,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * @param net prefix to update
      * @param scr updater script
      */
-    protected static void doTcl(int afi, tabRouteAttr<addrIP> attr, tabRouteEntry<addrIP> net, List<String> scr) {
+    protected static void doTcl(int afi, int asn, tabRouteAttr<addrIP> attr, tabRouteEntry<addrIP> net, List<String> scr) {
         pipeLine pl = new pipeLine(32768, false);
         pipeSide pip = pl.getSide();
         pip.timeout = 10000;
@@ -993,6 +993,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         t.allowExec = true;
         t.addLine("set afi " + (afi & rtrBgpUtil.afiMask));
         t.addLine("set safi " + (afi & rtrBgpUtil.safiMask));
+        t.addLine("set peeras " + asn);
         t.addLine("set prefix " + addrPrefix.ip2str(net.prefix));
         t.addLine("set network " + net.prefix.network);
         t.addLine("set masklen " + net.prefix.maskLen);

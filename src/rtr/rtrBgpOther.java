@@ -112,7 +112,7 @@ public class rtrBgpOther extends ipRtr {
             attr.rouSrc = rtrBgpUtil.peerOriginate;
         }
         ipMpls.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
-        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, parent.afiOtr, ntry, true, null, null, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, parent.afiOtr, 0, ntry, true, null, null, null);
     }
 
     /**
@@ -141,7 +141,7 @@ public class rtrBgpOther extends ipRtr {
                 attr.distance = distance;
             }
         }
-        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, rtrBgpUtil.safiUnicast, ntry, false, null, null, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, rtrBgpUtil.safiUnicast, 0, ntry, false, null, null, null);
         if (parent.routerAutoMesh == null) {
             return;
         }
@@ -250,7 +250,7 @@ public class rtrBgpOther extends ipRtr {
             addrIP adr = peers.get(i);
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, parent.afiUni, ntry, true, null, null, parent.routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, parent.afiUni, 0, ntry, true, null, null, parent.routerAutoMesh);
         }
     }
 

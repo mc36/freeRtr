@@ -315,16 +315,17 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      * find prefix list entry
      *
      * @param afi address family
+     * @param asn as number
      * @param net network to test
      * @return entry, null if nothing found
      */
-    public Te find(int afi, addrPrefix<Ta> net) {
+    public Te find(int afi, int asn, addrPrefix<Ta> net) {
         for (int i = 0; i < entries.size(); i++) {
             Te ntry = entries.get(i);
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.matches(afi, net)) {
+            if (!ntry.matches(afi, asn, net)) {
                 continue;
             }
             ntry.cntr.rx(new packHolder(false, false));
@@ -341,16 +342,17 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      * find route table entry
      *
      * @param afi address family
+     * @param asn as number
      * @param net network to test
      * @return entry, null if nothing found
      */
-    public Te find(int afi, tabRouteEntry<Ta> net) {
+    public Te find(int afi, int asn, tabRouteEntry<Ta> net) {
         for (int i = 0; i < entries.size(); i++) {
             Te ntry = entries.get(i);
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.matches(afi, net)) {
+            if (!ntry.matches(afi, asn, net)) {
                 continue;
             }
             ntry.cntr.rx(new packHolder(false, false));
@@ -472,11 +474,12 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      * test one network against this prefix list
      *
      * @param afi address family
+     * @param asn as number
      * @param net network to test
      * @return true if permitted, false if denied
      */
-    public boolean matches(int afi, addrPrefix<Ta> net) {
-        Te ntry = find(afi, net);
+    public boolean matches(int afi, int asn, addrPrefix<Ta> net) {
+        Te ntry = find(afi, asn, net);
         if (ntry == null) {
             return false;
         }
@@ -487,11 +490,12 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      * test one network against this prefix list
      *
      * @param afi address family
+     * @param asn as number
      * @param net network to test
      * @return true if permitted, false if denied
      */
-    public boolean matches(int afi, tabRouteEntry<Ta> net) {
-        Te ntry = find(afi, net);
+    public boolean matches(int afi, int asn, tabRouteEntry<Ta> net) {
+        Te ntry = find(afi, asn, net);
         if (ntry == null) {
             return false;
         }
@@ -502,12 +506,13 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      * update one entry
      *
      * @param afi address family
+     * @param asn as number
      * @param net network number
      * @param copy copy before update
      * @return null if denied, copy otherwise
      */
-    public tabRouteEntry<Ta> update(int afi, tabRouteEntry<Ta> net, boolean copy) {
-        Te ntry = find(afi, net);
+    public tabRouteEntry<Ta> update(int afi, int asn, tabRouteEntry<Ta> net, boolean copy) {
+        Te ntry = find(afi, asn, net);
         if (ntry == null) {
             return null;
         }
@@ -517,7 +522,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
         if (copy) {
             net = net.copyBytes(tabRoute.addType.ecmp);
         }
-        ntry.update(afi, net);
+        ntry.update(afi, asn, net);
         return net;
     }
 

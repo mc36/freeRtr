@@ -1660,9 +1660,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 ntry = grp.readvertPrefix(afi, best);
             }
             if ((afi == afiUni) || (afi == afiMlt) || (afi == afiOtr)) {
-                ntry = tabRoute.doUpdateEntry(afi, ntry, grp.roumapOut, grp.roupolOut, grp.prflstOut);
+                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.roumapOut, grp.roupolOut, grp.prflstOut);
             } else {
-                ntry = tabRoute.doUpdateEntry(afi, ntry, grp.voumapOut, grp.voupolOut, null);
+                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.voumapOut, grp.voupolOut, null);
             }
             if ((ntry == null) && (old == null)) {
                 continue;
@@ -3135,7 +3135,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, ntry, true, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, 0, ntry, true, null, null, routerAutoMesh);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
             rtrBgpNeigh nei = lstnNei.get(i);
@@ -3144,7 +3144,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, ntry, true, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, 0, ntry, true, null, null, routerAutoMesh);
         }
         other.getPeerList(tab);
         for (int i = 0; i < vrfs.size(); i++) {

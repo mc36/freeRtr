@@ -95,10 +95,11 @@ public class tabObjnetN<T extends addrType> extends tabListingEntry<T> {
      * test if matches
      *
      * @param afi address family
+     * @param asn as number
      * @param net network
      * @return false on success, true on error
      */
-    public boolean matches(int afi, addrPrefix<T> net) {
+    public boolean matches(int afi, int asn, addrPrefix<T> net) {
         return false;
     }
 
@@ -106,10 +107,11 @@ public class tabObjnetN<T extends addrType> extends tabListingEntry<T> {
      * test if matches
      *
      * @param afi address family
+     * @param asn as number
      * @param net network
      * @return false on success, true on error
      */
-    public boolean matches(int afi, tabRouteEntry<T> net) {
+    public boolean matches(int afi, int asn, tabRouteEntry<T> net) {
         return false;
     }
 
@@ -130,9 +132,10 @@ public class tabObjnetN<T extends addrType> extends tabListingEntry<T> {
      * update entry
      *
      * @param afi address family
+     * @param asn as number
      * @param net network
      */
-    public void update(int afi, tabRouteEntry<T> net) {
+    public void update(int afi, int asn, tabRouteEntry<T> net) {
     }
 
 }

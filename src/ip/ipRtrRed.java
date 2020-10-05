@@ -103,7 +103,7 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
                 ntry = ntry.copyBytes(tabRoute.addType.notyet);
                 ntry.best.metric = metric.update(ntry.best.metric);
             }
-            tabRoute.addUpdatedEntry(mod, trg, afi, ntry, true, roumap, rouplc, prflst);
+            tabRoute.addUpdatedEntry(mod, trg, afi, 0, ntry, true, roumap, rouplc, prflst);
         }
     }
 

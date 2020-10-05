@@ -134,7 +134,7 @@ public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
                     continue;
                 }
             }
-            tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+            tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, 0, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
         }
         return false;
     }

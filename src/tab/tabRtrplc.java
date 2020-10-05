@@ -66,12 +66,13 @@ public class tabRtrplc {
      * update one entry
      *
      * @param afi address family
+     * @param asn as number
      * @param net network number
      * @param lst list to use
      * @param copy copy before update
      * @return null if denied, copy otherwise
      */
-    public static tabRouteEntry<addrIP> doRpl(int afi, tabRouteEntry<addrIP> net, tabListing<tabRtrplcN, addrIP> lst, boolean copy) {
+    public static tabRouteEntry<addrIP> doRpl(int afi, int asn, tabRouteEntry<addrIP> net, tabListing<tabRtrplcN, addrIP> lst, boolean copy) {
         int lvl = 0;
         long tim = bits.getTime();
         packHolder pck = new packHolder(false, false);
@@ -94,7 +95,7 @@ public class tabRtrplc {
                 case description:
                     continue;
                 case iff:
-                    if (ntry.matches(afi, net)) {
+                    if (ntry.matches(afi, asn, net)) {
                         lvl++;
                         continue;
                     }
@@ -117,7 +118,7 @@ public class tabRtrplc {
                         boolean stop = false;
                         switch (ntry.doMode) {
                             case elsif:
-                                if (ntry.matches(afi, net)) {
+                                if (ntry.matches(afi, asn, net)) {
                                     lvl++;
                                     stop = true;
                                     break;
@@ -175,14 +176,14 @@ public class tabRtrplc {
                         scr.add(ntry.strVal);
                     }
                     pos--;
-                    tabRtrmapN.doTcl(afi, net.best, net, scr);
+                    tabRtrmapN.doTcl(afi, asn, net.best, net, scr);
                     continue;
                 default:
                     if (copy) {
                         net = net.copyBytes(tabRoute.addType.ecmp);
                         copy = false;
                     }
-                    ntry.update(afi, net);
+                    ntry.update(afi, asn, net);
                     continue;
             }
         }

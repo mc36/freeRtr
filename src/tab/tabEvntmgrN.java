@@ -45,10 +45,11 @@ public class tabEvntmgrN extends tabListingEntry<addrIP> {
      * test if matches
      *
      * @param afi address family
+     * @param asn as number
      * @param net network
      * @return false on success, true on error
      */
-    public boolean matches(int afi, addrPrefix<addrIP> net) {
+    public boolean matches(int afi, int asn, addrPrefix<addrIP> net) {
         return false;
     }
 
@@ -56,10 +57,11 @@ public class tabEvntmgrN extends tabListingEntry<addrIP> {
      * test if matches
      *
      * @param afi address family
+     * @param asn as number
      * @param net network
      * @return false on success, true on error
      */
-    public boolean matches(int afi, tabRouteEntry<addrIP> net) {
+    public boolean matches(int afi, int asn, tabRouteEntry<addrIP> net) {
         return false;
     }
 
@@ -77,9 +79,10 @@ public class tabEvntmgrN extends tabListingEntry<addrIP> {
      * update entry
      *
      * @param afi address family
+     * @param asn as number
      * @param net network
      */
-    public void update(int afi, tabRouteEntry<addrIP> net) {
+    public void update(int afi, int asn, tabRouteEntry<addrIP> net) {
     }
 
 }

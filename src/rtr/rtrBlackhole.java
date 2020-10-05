@@ -264,7 +264,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         if (whitelist == null) {
             return false;
         }
-        return whitelist.matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(adr, adr.maxBits()));
+        return whitelist.matches(rtrBgpUtil.safiUnicast, 0, new addrPrefix<addrIP>(adr, adr.maxBits()));
     }
 
     /**

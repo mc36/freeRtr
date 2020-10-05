@@ -1688,7 +1688,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
         }
         if (!neigh.softReconfig) {
-            tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, cur, roumap, roupol, prflst);
+            tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, neigh.remoteAs, cur, roumap, roupol, prflst);
             if (res == null) {
                 if (doPrefDel(learned, addpath, cur)) {
                     return;

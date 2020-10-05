@@ -655,18 +655,19 @@ public class tabRoute<T extends addrType> {
      * update entry
      *
      * @param afi address family
+     * @param asn as number
      * @param ntry entry to add
      * @param rouMap route map to apply, null=permit
      * @param rouPlc route policy to apply, null=permit
      * @param prfLst prefix list to apply, null=permit
      * @return updated entry, null if denied
      */
-    public static tabRouteEntry<addrIP> doUpdateEntry(int afi, tabRouteEntry<addrIP> ntry, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
+    public static tabRouteEntry<addrIP> doUpdateEntry(int afi, int asn, tabRouteEntry<addrIP> ntry, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
         if (ntry == null) {
             return null;
         }
         if (prfLst != null) {
-            if (!prfLst.matches(afi, ntry.prefix)) {
+            if (!prfLst.matches(afi, asn, ntry.prefix)) {
                 return null;
             }
         }
@@ -674,13 +675,13 @@ public class tabRoute<T extends addrType> {
             return ntry.copyBytes(addType.ecmp);
         }
         if (rouMap != null) {
-            ntry = rouMap.update(afi, ntry, true);
+            ntry = rouMap.update(afi, asn, ntry, true);
             if (ntry == null) {
                 return null;
             }
         }
         if (rouPlc != null) {
-            ntry = tabRtrplc.doRpl(afi, ntry, rouPlc, true);
+            ntry = tabRtrplc.doRpl(afi, asn, ntry, rouPlc, true);
             if (ntry == null) {
                 return null;
             }
@@ -694,6 +695,7 @@ public class tabRoute<T extends addrType> {
      * @param mod mode to use
      * @param rouTab route table to add
      * @param afi address family
+     * @param asn as number
      * @param ntry entry to add
      * @param newTime set true to set time, false to keep original time
      * @param rouMap route map to apply, null=permit
@@ -701,8 +703,8 @@ public class tabRoute<T extends addrType> {
      * @param prfLst prefix list to apply, null=permit
      * @return number of entries added
      */
-    public static int addUpdatedEntry(addType mod, tabRoute<addrIP> rouTab, int afi, tabRouteEntry<addrIP> ntry, boolean newTime, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
-        ntry = doUpdateEntry(afi, ntry, rouMap, rouPlc, prfLst);
+    public static int addUpdatedEntry(addType mod, tabRoute<addrIP> rouTab, int afi, int asn, tabRouteEntry<addrIP> ntry, boolean newTime, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
+        ntry = doUpdateEntry(afi, asn, ntry, rouMap, rouPlc, prfLst);
         if (ntry == null) {
             return 0;
         }
@@ -715,14 +717,15 @@ public class tabRoute<T extends addrType> {
      *
      * @param rouTab route table to add
      * @param afi address family
+     * @param asn as number
      * @param ntry entry to add
      * @param rouMap route map to apply, null=permit
      * @param rouPlc route policy to apply, null=permit
      * @param prfLst prefix list to apply, null=permit
      * @return number of entries added
      */
-    public static int delUpdatedEntry(tabRoute<addrIP> rouTab, int afi, tabRouteEntry<addrIP> ntry, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
-        ntry = doUpdateEntry(afi, ntry, rouMap, rouPlc, prfLst);
+    public static int delUpdatedEntry(tabRoute<addrIP> rouTab, int afi, int asn, tabRouteEntry<addrIP> ntry, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
+        ntry = doUpdateEntry(afi, asn, ntry, rouMap, rouPlc, prfLst);
         if (ntry == null) {
             return 0;
         }
@@ -735,6 +738,7 @@ public class tabRoute<T extends addrType> {
      *
      * @param mod mode to use
      * @param afi address family
+     * @param asn as number
      * @param trg route table to add to
      * @param src route table to add from
      * @param newTime set true to set time, false to keep original time
@@ -743,14 +747,14 @@ public class tabRoute<T extends addrType> {
      * @param prfLst prefix list to apply, null=permit
      * @return number of entries added
      */
-    public static int addUpdatedTable(addType mod, int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src, boolean newTime, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
+    public static int addUpdatedTable(addType mod, int afi, int asn, tabRoute<addrIP> trg, tabRoute<addrIP> src, boolean newTime, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
         int added = 0;
         for (int i = 0; i < src.size(); i++) {
             tabRouteEntry<addrIP> ntry = src.get(i);
             if (ntry == null) {
                 continue;
             }
-            added += addUpdatedEntry(mod, trg, afi, ntry, newTime, rouMap, rouPlc, prfLst);
+            added += addUpdatedEntry(mod, trg, afi, asn, ntry, newTime, rouMap, rouPlc, prfLst);
         }
         return added;
     }
@@ -759,6 +763,7 @@ public class tabRoute<T extends addrType> {
      * delete updated table to route table
      *
      * @param afi address family
+     * @param asn as number
      * @param trg route table to add to
      * @param src route table to add from
      * @param rouMap route map to apply, null=permit
@@ -766,14 +771,14 @@ public class tabRoute<T extends addrType> {
      * @param prfLst prefix list to apply, null=permit
      * @return number of entries added
      */
-    public static int delUpdatedTable(int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
+    public static int delUpdatedTable(int afi, int asn, tabRoute<addrIP> trg, tabRoute<addrIP> src, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
         int deled = 0;
         for (int i = 0; i < src.size(); i++) {
             tabRouteEntry<addrIP> ntry = src.get(i);
             if (ntry == null) {
                 continue;
             }
-            deled += delUpdatedEntry(trg, afi, ntry, rouMap, rouPlc, prfLst);
+            deled += delUpdatedEntry(trg, afi, asn, ntry, rouMap, rouPlc, prfLst);
         }
         return deled;
     }
@@ -782,11 +787,12 @@ public class tabRoute<T extends addrType> {
      * filter one table
      *
      * @param afi address family
+     * @param asn as number
      * @param tab table to filter
      * @param flt filter to use
      * @return number of entries deleted
      */
-    public static int filterTable(int afi, tabRoute<addrIP> tab, tabListing<tabPrfxlstN, addrIP> flt) {
+    public static int filterTable(int afi, int asn, tabRoute<addrIP> tab, tabListing<tabPrfxlstN, addrIP> flt) {
         if (flt == null) {
             return 0;
         }
@@ -796,7 +802,7 @@ public class tabRoute<T extends addrType> {
             if (ntry == null) {
                 continue;
             }
-            if (flt.matches(afi, ntry.prefix)) {
+            if (flt.matches(afi, asn, ntry.prefix)) {
                 continue;
             }
             tab.del(ntry.prefix);

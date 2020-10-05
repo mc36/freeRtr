@@ -179,18 +179,19 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
      * test if matches
      *
      * @param afi address family
+     * @param asn as number
      * @param net network
      * @return false on success, true on error
      */
-    public boolean matches(int afi, tabRouteEntry<addrIP> net) {
+    public boolean matches(int afi, int asn, tabRouteEntry<addrIP> net) {
         if (evaluate != null) {
-            tabPrfxlstN res = evaluate.find(afi, net);
+            tabPrfxlstN res = evaluate.find(afi, asn, net);
             if (res == null) {
                 return false;
             }
-            return res.matches(afi, net);
+            return res.matches(afi, asn, net);
         }
-        return matches(afi, net.prefix);
+        return matches(afi, asn, net.prefix);
     }
 
     /**
@@ -207,32 +208,34 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
             }
             return res.matches(pck);
         }
-        return matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
+        return matches(rtrBgpUtil.safiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
     /**
      * update entry
      *
      * @param afi address family
+     * @param asn as number
      * @param net network
      */
-    public void update(int afi, tabRouteEntry<addrIP> net) {
+    public void update(int afi, int asn, tabRouteEntry<addrIP> net) {
     }
 
     /**
      * test if matches
      *
      * @param afi address family
+     * @param asn as number
      * @param net network
      * @return false on success, true on error
      */
-    public boolean matches(int afi, addrPrefix<addrIP> net) {
+    public boolean matches(int afi, int asn, addrPrefix<addrIP> net) {
         if (evaluate != null) {
-            tabPrfxlstN res = evaluate.find(afi, net);
+            tabPrfxlstN res = evaluate.find(afi, asn, net);
             if (res == null) {
                 return false;
             }
-            return res.matches(afi, net);
+            return res.matches(afi, asn, net);
         }
         if (net.maskLen < lenMin) {
             return false;

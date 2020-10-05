@@ -107,7 +107,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
                 continue;
             }
             if (prflst != null) {
-                if (!prflst.matches(afi, ntry)) {
+                if (!prflst.matches(afi, 0, ntry)) {
                     continue;
                 }
             }
@@ -146,7 +146,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
         if (metric != null) {
             ntry.best.metric = metric.update(ntry.best.metric);
         }
-        tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, ntry, true, roumap, rouplc, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, 0, ntry, true, roumap, rouplc, null);
     }
 
 }

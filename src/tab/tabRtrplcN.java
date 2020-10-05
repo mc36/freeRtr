@@ -421,10 +421,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
         }
     }
 
-    public boolean matches(int afi, addrPrefix<addrIP> net) {
+    public boolean matches(int afi, int asn, addrPrefix<addrIP> net) {
         tabRouteEntry<addrIP> nt = new tabRouteEntry<addrIP>();
         nt.prefix = net;
-        return matches(afi, nt);
+        return matches(afi, asn, nt);
     }
 
     private String ifString() {
@@ -494,7 +494,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
         }
     }
 
-    public boolean matches(int afi, tabRouteEntry<addrIP> net) {
+    public boolean matches(int afi, int asn, tabRouteEntry<addrIP> net) {
         switch (ifMode) {
             case never:
                 return false;
@@ -526,7 +526,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case roudst:
                 return rouDstMatch == net.rouDst;
             case network:
-                return networkMatch.matches(afi, net.prefix);
+                return networkMatch.matches(afi, asn, net.prefix);
             case nostdcomm:
                 if (net.best.stdComm != null) {
                     if (net.best.stdComm.size() > 0) {
@@ -559,11 +559,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 i += rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
                 return i > 0;
             case prfxlst:
-                return prfxlst.matches(afi, net.prefix);
+                return prfxlst.matches(afi, asn, net.prefix);
             case roumap:
-                return roumap.matches(afi, net);
+                return roumap.matches(afi, asn, net);
             case rouplc:
-                return tabRtrplc.doRpl(afi, net, rouplc, true) != null;
+                return tabRtrplc.doRpl(afi, asn, net, rouplc, true) != null;
             case distance:
                 return intMatch.matches(net.best.distance);
             case metric:
@@ -601,7 +601,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     }
 
     public boolean matches(packHolder pck) {
-        return matches(rtrBgpUtil.safiUnicast, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
+        return matches(rtrBgpUtil.safiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
     private void doUpdate(tabRouteAttr<addrIP> attr) {
@@ -675,13 +675,13 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
         }
     }
 
-    public void update(int afi, tabRouteEntry<addrIP> net) {
+    public void update(int afi, int asn, tabRouteEntry<addrIP> net) {
         switch (doMode) {
             case setRoumap:
-                roumap.update(afi, net, false);
+                roumap.update(afi, asn, net, false);
                 return;
             case setRouplc:
-                tabRtrplc.doRpl(afi, net, rouplc, false);
+                tabRtrplc.doRpl(afi, asn, net, rouplc, false);
                 return;
             default:
                 break;
