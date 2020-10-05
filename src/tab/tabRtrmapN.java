@@ -47,6 +47,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabListing<tabPrfxlstN, addrIP> prfxlstMatch;
 
     /**
+     * peer asn matcher
+     */
+    public tabIntMatcher peerasnMatch = new tabIntMatcher();
+
+    /**
      * distance matcher
      */
     public tabIntMatcher distanceMatch = new tabIntMatcher();
@@ -702,6 +707,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         } else {
             l.add(beg + "match lrgcomm " + lrgComms2string(lrgCommMatch));
         }
+        l.add(beg + "match peerasn " + peerasnMatch);
         l.add(beg + "match distance " + distanceMatch);
         l.add(beg + "match locpref " + locPrefMatch);
         l.add(beg + "match validity " + validityMatch);
@@ -783,6 +789,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (!safiMatch.matches(afi & rtrBgpUtil.safiMask)) {
+            return false;
+        }
+        if (!peerasnMatch.matches(asn)) {
             return false;
         }
         if (!distanceMatch.matches(net.best.distance)) {
@@ -993,7 +1002,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         t.allowExec = true;
         t.addLine("set afi " + (afi & rtrBgpUtil.afiMask));
         t.addLine("set safi " + (afi & rtrBgpUtil.safiMask));
-        t.addLine("set peeras " + asn);
+        t.addLine("set peerasn " + asn);
         t.addLine("set prefix " + addrPrefix.ip2str(net.prefix));
         t.addLine("set network " + net.prefix.network);
         t.addLine("set masklen " + net.prefix.maskLen);

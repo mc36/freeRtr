@@ -752,15 +752,8 @@ public abstract class rtrBgpParam {
      * @return false if same, true if differs
      */
     public boolean sameOutput(rtrBgpParam src) {
-        if (!allowAsOut) {
-            if (remoteAs != src.remoteAs) {
-                return true;
-            }
-        }
-        if (overridePeerOut) {
-            if (remoteAs != src.remoteAs) {
-                return true;
-            }
+        if (remoteAs != src.remoteAs) {
+            return true;
         }
         if (localAs != src.localAs) {
             return true;

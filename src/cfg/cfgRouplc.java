@@ -108,6 +108,9 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("2 3     distance            match administrative distance");
         l.add("3 .       <num>             administrative distance");
         l.add("3 .       all               any value");
+        l.add("2 3     peerasn             match peer asn");
+        l.add("3 .       <num>             asn");
+        l.add("3 .       all               any value");
         l.add("2 3     locpref             match local preference");
         l.add("3 .       <num>             local preference");
         l.add("3 .       all               any value");
@@ -363,6 +366,14 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
                 return;
             }
             ntry.rouplc = roumap.rouplc;
+            return;
+        }
+        if (a.equals("peerasn")) {
+            ntry.ifMode = tabRtrplcN.ifType.peerasn;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
             return;
         }
         if (a.equals("distance")) {

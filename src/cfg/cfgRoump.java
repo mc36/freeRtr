@@ -56,6 +56,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no match privateas",
         "route-map .*! sequence .* no match tracker",
         "route-map .*! sequence .* no match nexthop",
+        "route-map .*! sequence .* match peerasn all",
         "route-map .*! sequence .* match distance all",
         "route-map .*! sequence .* match locpref all",
         "route-map .*! sequence .* match aigp all",
@@ -168,6 +169,9 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("3 3,.     <str>             community");
         l.add("2 3     nexthop             match next hop");
         l.add("3 .       <addr>            address");
+        l.add("2 3     peerasn             match peer asn");
+        l.add("3 .       <num>             asn");
+        l.add("3 .       all               any value");
         l.add("2 3     distance            match administrative distance");
         l.add("3 .       <num>             administrative distance");
         l.add("3 .       all               any value");
@@ -457,6 +461,13 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                     return;
                 }
                 ntry.rouplcMatch = roumap.rouplc;
+                return;
+            }
+            if (a.equals("peerasn")) {
+                if (ntry.peerasnMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
                 return;
             }
             if (a.equals("distance")) {
@@ -768,6 +779,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("tracker")) {
                 ntry.trackMatch = null;
+                return;
+            }
+            if (a.equals("peerasn")) {
+                ntry.peerasnMatch.set2always();
                 return;
             }
             if (a.equals("distance")) {

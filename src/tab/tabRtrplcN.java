@@ -216,6 +216,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         rouplc,
         /**
+         * peer asn
+         */
+        peerasn,
+        /**
          * distance
          */
         distance,
@@ -461,6 +465,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "route-map " + roumap;
             case rouplc:
                 return "route-policy " + rouplc;
+            case peerasn:
+                return "peerasn " + intMatch;
             case distance:
                 return "distance " + intMatch;
             case metric:
@@ -564,6 +570,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return roumap.matches(afi, asn, net);
             case rouplc:
                 return tabRtrplc.doRpl(afi, asn, net, rouplc, true) != null;
+            case peerasn:
+                return intMatch.matches(asn);
             case distance:
                 return intMatch.matches(net.best.distance);
             case metric:
