@@ -73,6 +73,11 @@ public abstract class rtrBgpParam {
     public boolean fallOver;
 
     /**
+     * consider remote asn in group membership
+     */
+    public boolean ungrpRemAs;
+
+    /**
      * confederation peer
      */
     public boolean remoteConfed;
@@ -731,6 +736,7 @@ public abstract class rtrBgpParam {
         enforceFirst = src.enforceFirst;
         removePrivAsOut = src.removePrivAsOut;
         removePrivAsIn = src.removePrivAsIn;
+        ungrpRemAs = src.ungrpRemAs;
         overridePeerOut = src.overridePeerOut;
         overridePeerIn = src.overridePeerIn;
         prflstIn = src.prflstIn;
@@ -762,7 +768,7 @@ public abstract class rtrBgpParam {
                 return true;
             }
         }
-        if (lower.ungrpRemAs) {
+        if (ungrpRemAs) {
             if (remoteAs != src.remoteAs) {
                 return true;
             }
@@ -956,6 +962,7 @@ public abstract class rtrBgpParam {
         l.add("3 .       enforce-first-as        discard unprepended aspath from peer");
         l.add("3 .       route-server-client     unmodified attributes to this client");
         l.add("3 .       remove-private-as-out   remove private as to peer");
+        l.add("3 .       ungroup-remoteas        consider remote asn while grouping peers");
         l.add("3 .       remove-private-as-in    remove private as from peer");
         l.add("3 .       override-peer-as-out    replace peer as to peer");
         l.add("3 .       override-peer-as-in     replace peer as from peer");
@@ -1082,6 +1089,7 @@ public abstract class rtrBgpParam {
             l.add(beg + nei + "dump " + dump.dumpName);
         }
         cmds.cfgLine(l, !bfdTrigger, beg, nei + "bfd", "");
+        cmds.cfgLine(l, !ungrpRemAs, beg, nei + "ungroup-remoteas", "");
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
         l.add(beg + nei + "graceful-restart" + mask2string(graceRestart));
         cmds.cfgLine(l, !hostname, beg, nei + "hostname", "");
@@ -1479,6 +1487,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("track-next-hop")) {
             trackNxthop = !negated;
+            return false;
+        }
+        if (s.equals("ungroup-remoteas")) {
+            ungrpRemAs = !negated;
             return false;
         }
         if (s.equals("remove-private-as-out")) {

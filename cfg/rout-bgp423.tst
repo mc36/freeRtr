@@ -42,11 +42,12 @@ router bgp4 1
  neigh 1.1.1.2 route-server
  neigh 1.1.1.2 send-comm all
  neigh 1.1.1.2 route-policy-out rm1
+ neigh 1.1.1.2 ungroup
  neigh 1.1.1.3 remote-as 3
  neigh 1.1.1.3 route-server
  neigh 1.1.1.3 send-comm all
  neigh 1.1.1.3 route-policy-out rm1
- ungroup
+ neigh 1.1.1.3 ungroup
  red conn
  exit
 router bgp6 1
@@ -58,11 +59,12 @@ router bgp6 1
  neigh 1234:1::2 route-server
  neigh 1234:1::2 send-comm all
  neigh 1234:1::2 route-policy-out rm1
+ neigh 1234:1::2 ungroup
  neigh 1234:1::3 remote-as 3
  neigh 1234:1::3 route-server
  neigh 1234:1::3 send-comm all
  neigh 1234:1::3 route-policy-out rm1
- ungroup
+ neigh 1234:1::3 ungroup
  red conn
  exit
 !

@@ -563,11 +563,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public int incrLimit;
 
     /**
-     * consider remote asn in group membership
-     */
-    public boolean ungrpRemAs;
-
-    /**
      * conquer bestpath
      */
     public boolean conquer;
@@ -807,7 +802,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 break;
         }
         incrLimit = 1000;
-        ungrpRemAs = false;
         conquer = false;
         flaps = null;
         scanTime = 1000;
@@ -2060,7 +2054,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         rtrBgpParam.getAfiList(l, "2 2,.", "to use", true);
         l.add("1 2   local-as                    specify local as number");
         l.add("2 .     <num>                     autonomous system number");
-        l.add("1 .   ungroup-remoteas            consider remote asn while grouping peers");
         l.add("1 .   conquer                     conquer bestpath advertisements");
         l.add("1 .   flapstat                    count flap statistics");
         l.add("1 2   incremental                 limit on incremental bestpath calculation");
@@ -2197,7 +2190,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(beg + "scandelay " + scanDelay);
         l.add(beg + "incremental " + incrLimit);
         l.add(beg + "graceful-restart " + restartTime);
-        cmds.cfgLine(l, !ungrpRemAs, beg, "ungroup-remoteas", "");
         cmds.cfgLine(l, !conquer, beg, "conquer", "");
         cmds.cfgLine(l, flaps == null, beg, "flapstat", "");
         cmds.cfgLine(l, nhtRoumap == null, beg, "nexthop route-map", "" + nhtRoumap);
@@ -2287,12 +2279,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("scandelay")) {
             scanDelay = bits.str2num(cmd.word());
-            return false;
-        }
-        if (s.equals("ungroup-remoteas")) {
-            ungrpRemAs = !negated;
-            needFull.add(1);
-            compute.wakeup();
             return false;
         }
         if (s.equals("incremental")) {
