@@ -412,7 +412,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public void getStatus(List<String> l) {
         l.add("peer = " + peerAddr);
         l.add("reachable state = " + reachable);
-        l.add("reachable changed = " + bits.timePast(reachTim));
+        l.add("reachable changed = " + bits.timePast(reachTim) + " ago, at " + bits.time2str(cfgAll.timeZoneName, reachTim + cfgAll.timeServerOffset, 3));
         l.add("reachable changes = " + reachNum);
         l.add("fallover = " + sendingIfc);
         l.add("update group = " + groupMember);
@@ -420,7 +420,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("safi = " + rtrBgpParam.mask2string(conn.peerAfis));
         l.add("local = " + localAddr);
         l.add("router id = " + conn.peerRouterID);
-        l.add("uptime = " + bits.timePast(conn.upTime));
+        l.add("uptime = " + bits.timePast(conn.upTime) + " ago, at " + bits.time2str(cfgAll.timeZoneName, conn.upTime + cfgAll.timeServerOffset, 3));
         l.add("hold time = " + bits.timeDump(conn.peerHold / 1000));
         l.add("keepalive time = " + bits.timeDump(conn.peerKeep / 1000));
         l.add("32bit as = " + conn.peer32bitAS);

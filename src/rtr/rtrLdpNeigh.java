@@ -3,6 +3,7 @@ package rtr;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrPrefix;
+import cfg.cfgAll;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdMpmp;
@@ -192,7 +193,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         l.add("transport = " + trans);
         l.add("lsrid = " + lsrID);
         l.add("local = " + ifc.addr);
-        l.add("uptime = " + bits.timePast(upTime));
+        l.add("uptime = " + bits.timePast(upTime) + " ago, at " + bits.time2str(cfgAll.timeZoneName, upTime + cfgAll.timeServerOffset, 3));
         l.add("hold time = " + bits.timeDump(sessHelloHldtm / 1000));
         l.add("keepalive time = " + bits.timeDump(sessHelloIntrvl / 1000));
         l.add("prefix learned = " + prefLearn.size());
