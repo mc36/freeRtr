@@ -400,7 +400,7 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
             }
             for (int o = 0; o < cols.size(); o++) {
                 servPrometheusCol col = cols.get(o);
-                if (cl.size() < col.num) {
+                if (cl.size() <= col.num) {
                     continue;
                 }
                 String nb = na + col.nam;
