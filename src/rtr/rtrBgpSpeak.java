@@ -343,7 +343,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * currently changed prefixes
      */
-    private int currChg;
+    public int currChg;
 
     /**
      * addpath beginning
@@ -1766,7 +1766,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (old == null) {
             return true;
         }
-        old = old.copyBytes(tabRoute.addType.alters);
+        old = old.copyBytes(tabRoute.addType.lnkAlters);
         int i = old.findId(ntry.best.ident);
         if (i < 0) {
             return true;
@@ -1790,7 +1790,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     protected void prefixWithdraw(int safi, boolean addpath, tabRouteEntry<addrIP> ntry) {
         if (debugger.rtrBgpTraf) {
-            logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix);
+            logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
         }
         if (!afiMsk(peerAfis, safi)) {
             return;
@@ -1826,7 +1826,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     protected void prefixReach(int safi, boolean addpath, tabRouteEntry<addrIP> ntry) {
         if (debugger.rtrBgpTraf) {
-            logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix);
+            logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
         }
         if (!afiMsk(peerAfis, safi)) {
             return;

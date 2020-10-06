@@ -239,13 +239,25 @@ router lsrp6 1
 router logger4 1
  vrf v1
  flapstat
- redistribute bgp4 1
+ redistribute lsrp4 1
+ exit
+!
+router logger4 65535
+ vrf v1
+ flapstat
+ redistribute bgp4 65535
  exit
 !
 router logger6 1
  vrf v1
  flapstat
- redistribute bgp6 1
+ redistribute lsrp6 1
+ exit
+!
+router logger6 65535
+ vrf v1
+ flapstat
+ redistribute bgp6 65535
  exit
 !
 router deaggr4 1

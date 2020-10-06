@@ -1153,8 +1153,8 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             bierRes = null;
         }
         if (debugger.rtrOspf4evnt) {
-            logger.debug("unreachable:" + spf.listUnreachables());
-            logger.debug("reachable:" + spf.listReachables());
+            logger.debug("unreachable:" + spf.listReachablility(false));
+            logger.debug("reachable:" + spf.listReachablility(true));
         }
         lastSpf = spf;
         lower.routerCreateComputed();

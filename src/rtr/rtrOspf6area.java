@@ -1248,8 +1248,8 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             bierRes = null;
         }
         if (debugger.rtrOspf6evnt) {
-            logger.debug("unreachable:" + spf.listUnreachables());
-            logger.debug("reachable:" + spf.listReachables());
+            logger.debug("unreachable:" + spf.listReachablility(false));
+            logger.debug("reachable:" + spf.listReachablility(true));
         }
         lastSpf = spf;
         lower.routerCreateComputed();

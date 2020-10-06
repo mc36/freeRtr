@@ -94,7 +94,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         shrtPthFrstLog ntry = new shrtPthFrstLog();
         ntry.when = old.tim1;
         ntry.tim = (int) (old.tim3 - old.tim1);
-        ntry.unreach = old.listUnreachables();
+        ntry.unreach = old.listReachablility(false);
         ntry.topo = old.listTopoSum().hashCode();
         log.add(ntry);
         int max = logSize.get();
@@ -614,38 +614,40 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     }
 
     /**
-     * list unreachables
+     * count reachables
      *
-     * @return list of unreachable nodes
+     * @param state required state
+     * @return number of reachable nodes
      */
-    public String listUnreachables() {
-        String s = "";
+    public int countReachablility(boolean state) {
+        int o = 0;
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
-            if (ntry.visited) {
+            if (ntry.visited != state) {
                 continue;
             }
-            s += " " + ntry;
+            o++;
         }
-        return s;
+        return o;
     }
 
     /**
      * list reachables
      *
+     * @param state required state
      * @return list of reachable nodes
      */
-    public String listReachables() {
+    public String listReachablility(boolean state) {
         String s = "";
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.visited) {
+            if (ntry.visited != state) {
                 continue;
             }
             s += " " + ntry;
@@ -783,8 +785,10 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      */
     public userFormat listStatistics() {
         userFormat res = new userFormat("|", "category|value");
-        res.add("reach|" + listReachables());
-        res.add("unreach|" + listUnreachables());
+        res.add("reach|" + listReachablility(true));
+        res.add("reachable|" + countReachablility(true));
+        res.add("unreach|" + listReachablility(false));
+        res.add("unreachable|" + countReachablility(false));
         res.add("stub|" + listStubs());
         res.add("segrou|" + listSegRou());
         res.add("nosegrou|" + listNoSegRou());

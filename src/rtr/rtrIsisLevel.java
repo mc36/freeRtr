@@ -782,8 +782,8 @@ public class rtrIsisLevel implements Runnable {
             bierRes = null;
         }
         if (debugger.rtrIsisEvnt) {
-            logger.debug("unreachable:" + spf.listUnreachables());
-            logger.debug("reachable:" + spf.listReachables());
+            logger.debug("unreachable:" + spf.listReachablility(false));
+            logger.debug("reachable:" + spf.listReachablility(true));
         }
         lastSpf = spf;
         lower.routerCreateComputed();

@@ -771,8 +771,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         if (debugger.rtrLsrpEvnt) {
-            logger.debug("unreachable:" + spf.listUnreachables());
-            logger.debug("reachable:" + spf.listReachables());
+            logger.debug("unreachable:" + spf.listReachablility(false));
+            logger.debug("reachable:" + spf.listReachablility(true));
         }
         lastSpf = spf;
         tab2.setProto(routerProtoTyp, routerProcNum);

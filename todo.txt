@@ -1,3 +1,7 @@
+decouple counters in sho ipv4 proto
+prometheus per metric exclude
+route count in sho vrf
+sho gc
 nat and pbr config to have reindex
 chatscript and authlist to use tablisting and have reindex
 looking glass rfc8522

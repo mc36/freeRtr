@@ -79,7 +79,7 @@ public class userPacket {
      * reader to use
      */
     public userReader rdr;
-
+    
     private static int readMrt(packHolder pck, RandomAccessFile f) {
         pck.clear();
         byte[] buf = new byte[12];
@@ -239,6 +239,113 @@ public class userPacket {
             } catch (Exception e) {
             }
             cmd.error(pk + " packets converted");
+            return;
+        }
+        if (a.equals("mrtfilter")) {
+            tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
+            if (rt == null) {
+                cmd.error("invalid routing protocol");
+                return;
+            }
+            cfgRtr rp = cfgAll.rtrFind(rt, bits.str2num(cmd.word()), false);
+            if (rp == null) {
+                cmd.error("bad process number");
+                return;
+            }
+            if (rp.bgp == null) {
+                cmd.error("not a bgp process");
+                return;
+            }
+            addrIP adr = new addrIP();
+            adr.fromString(cmd.word());
+            rtrBgpNeigh nei = rp.bgp.findPeer(adr);
+            if (nei == null) {
+                cmd.error("no such peer");
+                return;
+            }
+            RandomAccessFile fs;
+            RandomAccessFile ft;
+            try {
+                a = cmd.word();
+                cmd.error("opening source " + a);
+                fs = new RandomAccessFile(new File(a), "r");
+                a = cmd.word();
+                cmd.error("opening target " + a);
+                ft = new RandomAccessFile(new File(a), "rw");
+            } catch (Exception e) {
+                return;
+            }
+            addrIP sip = new addrIP();
+            sip.fromString(cmd.word());
+            addrIP tip = new addrIP();
+            tip.fromString(cmd.word());
+            cmd.error("sending updates as it was from " + sip + " to " + tip);
+            int mat = 0;
+            int snt = 0;
+            int tot = 0;
+            packHolder pck = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
+            for (;;) {
+                long fp;
+                try {
+                    fp = fs.getFilePointer();
+                } catch (Exception e) {
+                    return;
+                }
+                int i = readMrt(pck, fs);
+                if (i == 1) {
+                    break;
+                }
+                if (i == 2) {
+                    continue;
+                }
+                int typ = pck.getByte(rtrBgpSpeak.sizeU - 1);
+                pck.getSkip(rtrBgpSpeak.sizeU);
+                tot++;
+                if (sip.compare(sip, pck.IPsrc) != 0) {
+                    continue;
+                }
+                if (tip.compare(tip, pck.IPtrg) != 0) {
+                    continue;
+                }
+                if (cmd.pipe.ready2rx() > 0) {
+                    break;
+                }
+                nei.conn.currChg = 0;
+                switch (typ) {
+                    case rtrBgpUtil.msgUpdate:
+                        nei.conn.parseUpdate(pck, hlp);
+                        break;
+                    case rtrBgpUtil.msgOpen:
+                        nei.conn.parseOpen(pck);
+                        nei.conn.currChg++;
+                        break;
+                    default:
+                        continue;
+                }
+                snt++;
+                if (nei.conn.currChg < 1) {
+                    cmd.pipe.strPut(".");
+                    continue;
+                }
+                cmd.pipe.strPut("!");
+                mat++;
+                try {
+                    long cp = fs.getFilePointer();
+                    byte[] buf = new byte[(int) (cp - fp)];
+                    fs.seek(fp);
+                    fs.read(buf);
+                    ft.write(buf);
+                } catch (Exception e) {
+                    return;
+                }
+            }
+            try {
+                fs.close();
+                ft.close();
+            } catch (Exception e) {
+            }
+            cmd.error("sent " + snt + " of " + tot + " updates, " + mat + " accepted");
             return;
         }
         if (a.equals("mrt2self")) {
@@ -1097,5 +1204,5 @@ public class userPacket {
         cmd.badCmd();
         return;
     }
-
+    
 }

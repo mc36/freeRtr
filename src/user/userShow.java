@@ -2179,7 +2179,7 @@ public class userShow {
         cmd.badCmd();
     }
 
-    private void compareDiffs(tabRoute<addrIP> equ, tabRoute<addrIP> dif1, tabRoute<addrIP> dif2, int ign) {
+    private void compareDiffs(tabRoute<addrIP> equ, tabRoute<addrIP> dif1, tabRoute<addrIP> dif2) {
         for (int i = 0; i < dif1.size(); i++) {
             tabRouteEntry<addrIP> prf1 = dif1.get(i);
             tabRouteEntry<addrIP> prf2 = dif2.find(prf1);
@@ -2301,6 +2301,7 @@ public class userShow {
                     continue;
                 }
             }
+            prf1 = prf1.copyBytes(tabRoute.addType.alters);
             tabRouteEntry<addrIP> prf2 = nei2.find(prf1);
             if (prf2 == null) {
                 uniq.add(tabRoute.addType.always, prf1, false, false);
@@ -2311,7 +2312,6 @@ public class userShow {
                     continue;
                 }
             }
-            prf1 = prf1.copyBytes(tabRoute.addType.alters);
             prf2 = prf2.copyBytes(tabRoute.addType.alters);
             for (int i = 0; i < prf1.alts.size(); i++) {
                 ignoreAttribs(prf1.alts.get(i), ign);
@@ -2322,8 +2322,8 @@ public class userShow {
             if (!prf1.differs(tabRoute.addType.alters, prf2)) {
                 continue;
             }
-            diff.add(tabRoute.addType.alters, prf1, false, false);
-            diff.add(tabRoute.addType.alters, prf2, false, false);
+            diff.add(tabRoute.addType.always, prf1, false, false);
+            diff.add(tabRoute.addType.always, prf2, false, false);
         }
     }
 
@@ -2783,7 +2783,7 @@ public class userShow {
             compareTables(dif2, dif2, acc2, acc1, ign, flt);
             tabRoute<addrIP> dif3 = new tabRoute<addrIP>("tab");
             cmd.error("constant differences");
-            compareDiffs(dif3, dif1, dif2, ign);
+            compareDiffs(dif3, dif1, dif2);
             doShowRoutes(r.bgp.fwdCore, dif3, dsp);
             return;
         }
