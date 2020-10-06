@@ -9372,3 +9372,8 @@ qc pass: bgp routemap filtering with peer large community
 qc pass: bgp routepolicy filtering with peer large community
 qc pass: bgp routemap filtering with peer large community with soft-reconfig
 qc pass: bgp routepolicy filtering with peer large community with soft-reconfig
+---------------------------------- 2020-10-06 14:49:06
+todo: decouple counters in sho ipv4 proto
+todo: prometheus per metric exclude
+todo: route count in sho vrf
+todo: sho gc
