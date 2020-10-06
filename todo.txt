@@ -1,4 +1,3 @@
-sho gc
 nat and pbr config to have reindex
 chatscript and authlist to use tablisting and have reindex
 looking glass rfc8522

@@ -9377,3 +9377,7 @@ todo: decouple counters in sho ipv4 proto
 todo: prometheus per metric exclude
 todo: route count in sho vrf
 todo: sho gc
+---------------------------------- 2020-10-06 18:15:36
+no todo: route count in sho vrf
+no todo: prometheus per metric exclude
+no todo: decouple counters in sho ipv4 proto
