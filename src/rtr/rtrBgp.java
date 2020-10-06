@@ -3565,7 +3565,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("incr last|" + bits.timePast(incrLast) + "|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3));
         l.add("incr time|" + incrTime);
         l.add("changes|" + changedCur + "|" + changedTot);
-        l.add("version|" + compRound.get());
         l.add("static peers|" + neighs.size());
         l.add("dynamic peers|" + lstnNei.size());
         l.add("groups|" + groups.size() + "|" + groupMin + ".." + groupMax);

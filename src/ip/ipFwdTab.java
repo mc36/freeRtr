@@ -311,13 +311,13 @@ public class ipFwdTab {
      * @return list of protocols
      */
     public static userFormat routersShow(ipFwd lower) {
-        userFormat res = new userFormat("|", "proto|id|ifc|nei|cmp|chg|ago|red|chg|ago");
+        userFormat res = new userFormat("|", "proto|id|ifc|nei|uni|mlt|flw|chg|ago|uni|mlt|flw|chg|ago","4|5computed|5redist");
         for (int o = 0; o < lower.routers.size(); o++) {
             ipRtr rtr = lower.routers.get(o);
             res.add(cfgRtr.num2name(rtr.routerProtoTyp) + "|" + rtr.routerProcNum + "|" + rtr.routerIfaceCount() + "|" + rtr.routerNeighCount() + "|"
-                    + rtr.routerComputedU.size() + "/" + rtr.routerComputedM.size() + "/" + rtr.routerComputedF.size() + "|"
+                    + rtr.routerComputedU.size() + "|" + rtr.routerComputedM.size() + "|" + rtr.routerComputedF.size() + "|"
                     + rtr.routerComputeChg + "|" + bits.timePast(rtr.routerComputeTim) + "|"
-                    + rtr.routerRedistedU.size() + "/" + rtr.routerRedistedM.size() + "/" + rtr.routerRedistedF.size() + "|"
+                    + rtr.routerRedistedU.size() + "|" + rtr.routerRedistedM.size() + "|" + rtr.routerRedistedF.size() + "|"
                     + rtr.routerRedistChg + "|" + bits.timePast(rtr.routerRedistTim));
         }
         return res;

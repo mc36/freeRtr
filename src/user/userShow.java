@@ -400,7 +400,16 @@ public class userShow {
             return null;
         }
         if (a.equals("vrf")) {
-            doShowVrf();
+            a = cmd.word();
+            if (a.equals("traffic")) {
+                doShowVrfTraff();
+                return null;
+            }
+            if (a.equals("routing")) {
+                doShowVrfRout();
+                return null;
+            }
+            cmd.badCmd();
             return null;
         }
         if (a.equals("prometheus")) {
@@ -3522,7 +3531,16 @@ public class userShow {
         cmd.badCmd();
     }
 
-    private void doShowVrf() {
+    private void doShowVrfRout() {
+        userFormat l = new userFormat("|", "name|rd|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6", "2|2ifc|2uni|2mlt|2flw|2lab|2con");
+        for (int o = 0; o < cfgAll.vrfs.size(); o++) {
+            cfgVrf v = cfgAll.vrfs.get(o);
+            l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + v.fwd4.ifaces.size() + "|" + v.fwd6.ifaces.size() + "|" + v.fwd4.actualU.size() + "|" + v.fwd6.actualU.size() + "|" + v.fwd4.actualM.size() + "|" + v.fwd6.actualM.size() + "|" + v.fwd4.actualF.size() + "|" + v.fwd6.actualF.size() + "|" + v.fwd4.labeldR.size() + "|" + v.fwd6.labeldR.size() + "|" + v.fwd4.connedR.size() + "|" + v.fwd6.connedR.size());
+        }
+        rdr.putStrTab(l);
+    }
+
+    private void doShowVrfTraff() {
         if (cmd.size() > 0) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
             if (vrf == null) {
@@ -3532,13 +3550,13 @@ public class userShow {
             doShowHistory(cmd.word(), vrf.fwd4.hstryT.plus(vrf.fwd6.hstryT));
             return;
         }
-        userFormat l = new userFormat("|", "name|rd|int4|int6|pack|byte|pack|byte|pack|byte", "4|2total|2local|2forward");
+        userFormat l = new userFormat("|", "name|rd|pack|byte|pack|byte|pack|byte", "2|2total|2local|2forward");
         for (int o = 0; o < cfgAll.vrfs.size(); o++) {
             cfgVrf v = cfgAll.vrfs.get(o);
             counter ct = v.fwd4.cntrT.plus(v.fwd6.cntrT).sumUp(false);
             counter cl = v.fwd4.cntrL.plus(v.fwd6.cntrL).sumUp(false);
             counter cf = ct.minus(cl);
-            l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + v.fwd4.ifaces.size() + "|" + v.fwd6.ifaces.size() + "|" + ct.packRx + "|" + ct.byteRx + "|" + cl.packRx + "|" + cl.byteRx + "|" + cf.packRx + "|" + cf.byteRx);
+            l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + ct.packRx + "|" + ct.byteRx + "|" + cl.packRx + "|" + cl.byteRx + "|" + cf.packRx + "|" + cf.byteRx);
         }
         rdr.putStrTab(l);
     }
