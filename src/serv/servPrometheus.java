@@ -65,6 +65,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         "server prometheus .*! protocol " + proto2string(protoAllStrm),
         "server prometheus .*! all-metrics metrics",
         "server prometheus .*! metric .* name 0",
+        "server prometheus .*! metric .* addname -1 null",
         "server prometheus .*! metric .* skip 1",
         "server prometheus .*! no metric .* excluded",
         "server prometheus .*! metric .* column .* type counter",
@@ -111,6 +112,7 @@ public class servPrometheus extends servGeneric implements prtServS {
             lst.add(mn + " command " + met.cmd);
             lst.add(mn + " prepend " + met.prep);
             lst.add(mn + " name " + met.col);
+            lst.add(mn + " addname " + met.acol + " " + met.asep);
             lst.add(mn + " skip " + met.skp);
             if (met.exc) {
                 lst.add(mn + " excluded");
@@ -173,6 +175,16 @@ public class servPrometheus extends servGeneric implements prtServS {
         }
         if (s.equals("name")) {
             met.col = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("addname")) {
+            if (negated) {
+                met.acol = -1;
+                met.asep = null;
+            } else {
+                met.acol = bits.str2num(cmd.word());
+                met.asep = cmd.getRemaining();
+            }
             return false;
         }
         if (s.equals("skip")) {
@@ -241,7 +253,10 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("3 4      prepend                  specify metric name to prepend");
         l.add("4 .        <str>                  name");
         l.add("3 4      name                     name column number");
-        l.add("4 .        <num>                  column number of metric name");
+        l.add("4 .        <num>                  column number");
+        l.add("3 4      addname                  add name column number");
+        l.add("4 5        <num>                  column number");
+        l.add("5 .          <str>                separator");
         l.add("3 .      excluded                 exclude from whole reporting");
         l.add("3 4      skip                     rows to skip");
         l.add("4 .        <num>                  lines to skip");
@@ -324,6 +339,10 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
 
     public int col = 0;
 
+    public int acol = -1;
+
+    public String asep;
+
     public int skp = 1;
 
     public boolean exc;
@@ -390,10 +409,14 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                 }
                 cl.add(a);
             }
-            if (cl.size() <= col) {
+            int cls = cl.size();
+            if (col >= cls) {
                 continue;
             }
             String na = prep + cl.get(col);
+            if ((acol >= 0) && (acol < cls)) {
+                na += asep + cl.get(acol);
+            }
             for (int i = 0; i < reps.size(); i++) {
                 servPrometheusRep rep = reps.get(i);
                 na = na.replaceAll(rep.src, rep.trg);
