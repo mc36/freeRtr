@@ -2,26 +2,14 @@
  metric vrf prepend vrf_
  metric vrf skip 2
  metric vrf column 2 name _v4ifc
- metric vrf column 2 type gauge
  metric vrf column 3 name _v6ifc
- metric vrf column 3 type gauge
  metric vrf column 4 name _v4uni
- metric vrf column 4 type gauge
  metric vrf column 5 name _v6uni
- metric vrf column 5 type gauge
  metric vrf column 6 name _v4multi
- metric vrf column 6 type gauge
  metric vrf column 7 name _v6multi
- metric vrf column 7 type gauge
  metric vrf column 8 name _v4flow
- metric vrf column 8 type gauge
  metric vrf column 9 name _v6flow
- metric vrf column 9 type gauge
  metric vrf column 10 name _v4label
- metric vrf column 10 type gauge
  metric vrf column 11 name _v6label
- metric vrf column 11 type gauge
  metric vrf column 12 name _v4conn
- metric vrf column 12 type gauge
  metric vrf column 13 name _v6conn
- metric vrf column 13 type gauge
