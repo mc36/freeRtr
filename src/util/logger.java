@@ -8,8 +8,10 @@ import clnt.clntSyslog;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.lang.management.CompilationMXBean;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -616,6 +618,11 @@ public class logger {
         l.add("memory maximum|" + rt.maxMemory());
         l.add("memory used|" + rt.totalMemory());
         l.add("memory free|" + rt.freeMemory());
+        CompilationMXBean cmp = ManagementFactory.getCompilationMXBean();
+        l.add("compiler name|" + cmp.getName());
+        l.add("compiler time|" + cmp.getTotalCompilationTime());
+        OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+        l.add("load average|" + os.getSystemLoadAverage());
         List<GarbageCollectorMXBean> gcs = ManagementFactory.getGarbageCollectorMXBeans();
         for (int i = 0; i < gcs.size(); i++) {
             GarbageCollectorMXBean gc = gcs.get(i);
