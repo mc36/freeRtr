@@ -11,11 +11,14 @@ import java.io.PrintStream;
 import java.lang.management.CompilationMXBean;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.management.Attribute;
+import javax.management.AttributeList;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import tab.tabGen;
@@ -621,8 +624,16 @@ public class logger {
         CompilationMXBean cmp = ManagementFactory.getCompilationMXBean();
         l.add("compiler name|" + cmp.getName());
         l.add("compiler time|" + cmp.getTotalCompilationTime());
-        OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
-        l.add("load average|" + os.getSystemLoadAverage());
+        try {
+            MBeanServer mb = ManagementFactory.getPlatformMBeanServer();
+            AttributeList atrs = mb.getAttributes(ObjectName.getInstance("java.lang:type=OperatingSystem"), new String[]{"CommittedVirtualMemorySize", "FreePhysicalMemorySize", "ProcessCpuLoad", "ProcessCpuTime", "SystemCpuLoad", "SystemLoadAverage"});
+            for (int i = 0; i < atrs.size(); i++) {
+                Attribute atr = (Attribute) atrs.get(i);
+                l.add(atr.getName() + "|" + atr.getValue());
+            }
+        } catch (Exception e) {
+            traceback(e);
+        }
         List<GarbageCollectorMXBean> gcs = ManagementFactory.getGarbageCollectorMXBeans();
         for (int i = 0; i < gcs.size(); i++) {
             GarbageCollectorMXBean gc = gcs.get(i);
