@@ -288,7 +288,7 @@ public class servPrometheus extends servGeneric implements prtServS {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "name|asked|reply|times|last");
+        userFormat res = new userFormat("|", "name|asked|reply|last");
         res.add(allMets + "|" + allNum + "|" + allTim + "|" + bits.timePast(allLast));
         for (int i = 0; i < mets.size(); i++) {
             servPrometheusMet ntry = mets.get(i);

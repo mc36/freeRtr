@@ -1,0 +1,10 @@
+ metric nrpe command sho nrpe home
+ metric nrpe prepend nrpe_
+ metric nrpe skip 2
+ metric nrpe column 1 name _state
+ metric nrpe column 1 replace false 0
+ metric nrpe column 1 replace true 1
+ metric nrpe column 2 name _asked
+ metric nrpe column 3 name _time
+ metric nrpe column 4 name _passed
+ metric nrpe column 6 name _failed

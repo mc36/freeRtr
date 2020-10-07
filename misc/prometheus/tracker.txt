@@ -1,0 +1,6 @@
+ metric tracker command sho tracker
+ metric tracker prepend tracker_
+ metric tracker replace \- _
+ metric tracker column 4 name _state
+ metric tracker column 4 replace down 0
+ metric tracker column 4 replace up 1
