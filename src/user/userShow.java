@@ -1649,8 +1649,32 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showDatabase(2));
             return;
         }
-        if (a.equals("zonefile")) {
-            rdr.putStrTab(r.lsrp.showZoneFile(cmd.word()));
+        if (a.equals("zone-rev")) {
+            a = cmd.word();
+            String s = cmd.word();
+            List<String> rep = new ArrayList<String>();
+            for (;;) {
+                String b = cmd.word();
+                if (b.length() < 1) {
+                    break;
+                }
+                rep.add(b);
+            }
+            rdr.putStrTab(r.lsrp.showZoneRev(a, s, rep));
+            return;
+        }
+        if (a.equals("zone-fwd")) {
+            a = cmd.word();
+            String s = cmd.word();
+            List<String> rep = new ArrayList<String>();
+            for (;;) {
+                String b = cmd.word();
+                if (b.length() < 1) {
+                    break;
+                }
+                rep.add(b);
+            }
+            rdr.putStrTab(r.lsrp.showZoneFwd(a, s, rep));
             return;
         }
         if (a.equals("software")) {

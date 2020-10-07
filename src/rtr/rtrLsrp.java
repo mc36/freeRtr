@@ -12,6 +12,7 @@ import ip.ipCor4;
 import ip.ipCor6;
 import ip.ipFwd;
 import ip.ipFwdIface;
+import ip.ipFwdTab;
 import ip.ipRtr;
 import java.util.List;
 import prt.prtTcp;
@@ -413,18 +414,54 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * show zonefile
      *
-     * @param s domain
+     * @param d domain
+     * @param s separator
+     * @param r replacers
      * @return zonefile
      */
-    public userFormat showZoneFile(String s) {
+    public userFormat showZoneRev(String d, String s, List<String> r) {
         userFormat l = new userFormat("|", "cmd|value|cmd|value");
         for (int i = 0; i < database.size(); i++) {
             rtrLsrpData ntry = database.get(i);
             for (int o = 0; o < ntry.address.size(); o++) {
-                l.add("rr|" + packDnsRec.generateReverse(ntry.address.get(o)) + "|ptr|" + ntry.hostname + "." + s);
+                String a = ntry.address.get(o).iface;
+                for (int p = 0; p < r.size(); p += 2) {
+                    a = a.replaceAll(r.get(p), r.get(p + 1));
+                }
+                l.add("rr|" + packDnsRec.generateReverse(ntry.address.get(o).addr) + "|ptr|" + ntry.hostname + s + a + "." + d);
             }
             for (int o = 0; o < ntry.network.size(); o++) {
-                l.add("rr|" + packDnsRec.generateReverse(ntry.network.get(o).prefix.network) + "|ptr|" + ntry.hostname + "." + s);
+                l.add("rr|" + packDnsRec.generateReverse(ntry.network.get(o).prefix.network) + "|ptr|" + ntry.hostname + "." + d);
+            }
+        }
+        return l;
+    }
+
+    /**
+     * show zonefile
+     *
+     * @param d domain
+     * @param s separator
+     * @param r replacers
+     * @return zonefile
+     */
+    public userFormat showZoneFwd(String d, String s, List<String> r) {
+        userFormat l = new userFormat("|", "cmd|value|cmd|value");
+        for (int i = 0; i < database.size(); i++) {
+            rtrLsrpData ntry = database.get(i);
+            String t;
+            if (ntry.mgmtIp.isIPv4()) {
+                t = packDnsRec.type2str(packDnsRec.typeA);
+            } else {
+                t = packDnsRec.type2str(packDnsRec.typeAAAA);
+            }
+            l.add("rr|" + ntry.hostname + s + ntry.mgmtIp + "." + d + "|" + t + "|" + ntry.mgmtIp);
+            for (int o = 0; o < ntry.address.size(); o++) {
+                String a = ntry.address.get(o).iface;
+                for (int p = 0; p < r.size(); p += 2) {
+                    a = a.replaceAll(r.get(p), r.get(p + 1));
+                }
+                l.add("rr|" + ntry.hostname + s + a + "." + d + "|" + t + "|" + ntry.address.get(o).addr);
             }
         }
         return l;
@@ -564,9 +601,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (ifc.acceptMetric) {
                     met = nei.gotMet;
                 }
-                dat.addNeigh(nei.rtrId, met, (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj, nei.peer);
+                dat.addNeigh(nei.rtrId, "" + ifc.iface, met, (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj, nei.peer);
             }
-            dat.address.add(ifc.iface.addr.copyBytes());
+            dat.addAddr("" + ifc.iface, ifc.iface.addr);
             if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
@@ -600,6 +637,12 @@ public class rtrLsrp extends ipRtr implements Runnable {
             dat.network.add(tabRoute.addType.better, ntry, false, false);
         }
         dat.rtrId = routerID.copyBytes();
+        ipFwdIface mgmtIf = ipFwdTab.findStableIface(fwdCore);
+        if (mgmtIf != null) {
+            if (mgmtIf.addr != null) {
+                dat.mgmtIp = mgmtIf.addr.copyBytes();
+            }
+        }
         dat.topoSum = lastSpf.listTopoSum().hashCode();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
         dat.software = version.usrAgnt.replaceAll(" ", "_");

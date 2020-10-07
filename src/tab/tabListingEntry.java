@@ -198,7 +198,6 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
      * test if this entry matches a packet
      *
      * @param pck packet to test
-     * @param asn as number
      * @return true if matches, false if not matches
      */
     public abstract boolean matches(packHolder pck);

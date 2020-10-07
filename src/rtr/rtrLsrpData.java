@@ -34,6 +34,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public addrIPv4 rtrId;
 
     /**
+     * management address
+     */
+    public addrIP mgmtIp;
+
+    /**
      * topology summary
      */
     public int topoSum;
@@ -121,7 +126,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     /**
      * advertised addresses
      */
-    public tabGen<addrIP> address;
+    public tabGen<rtrLsrpDataAddr> address;
 
     /**
      * advertised neighbors
@@ -182,7 +187,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      *
      * @param typ type to use: 0x1=id, 0x2=nam, 0x4=seq, 0x8=time, 0x10=neighs,
      * 0x20=nets, 0x40=sr, 0x80=uptime 0x100=change 0x200=version, 0x400=bier
-     * 0x800=toposum, 0x1000=addrs
+     * 0x800=toposum, 0x1000=addrs, 0x2000=mgmtip
      * @return dumped data
      */
     public String dump(int typ) {
@@ -213,9 +218,14 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         boolean external = false;
         int bierIdx = 0;
         int tag = 0;
+        String iface = "";
         if ((typ & 0x10) != 0) {
             for (int i = 0; i < neighbor.size(); i++) {
                 rtrLsrpDataNeigh ntry = neighbor.get(i);
+                if (!iface.equals(ntry.iface)) {
+                    s += " interface=" + ntry.iface;
+                    iface = ntry.iface;
+                }
                 if (ntry.metric != metric) {
                     s += " metric=" + ntry.metric;
                     metric = ntry.metric;
@@ -294,8 +304,16 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         }
         if ((typ & 0x1000) != 0) {
             for (int i = 0; i < address.size(); i++) {
-                s += " address=" + address.get(i);
+                rtrLsrpDataAddr ntry = address.get(i);
+                if (!iface.equals(ntry.iface)) {
+                    s += " interface=" + ntry.iface;
+                    iface = ntry.iface;
+                }
+                s += " address=" + ntry.addr;
             }
+        }
+        if ((typ & 0x2000) != 0) {
+            s += " mgmtaddr=" + mgmtIp;
         }
         if ((typ & 0x80) != 0) {
             s += " uptime=" + uptime;
@@ -334,6 +352,8 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         changesNum = 0;
         changesTim = 0;
         addrIP peerAddr = new addrIP();
+        mgmtIp = new addrIP();
+        String iface = "unknown";
         boolean stub = false;
         int segrouAdj = 0;
         int metric = 0;
@@ -342,7 +362,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         int srlg = 0;
         boolean external = false;
         int tag = 0;
-        address = new tabGen<addrIP>();
+        address = new tabGen<rtrLsrpDataAddr>();
         network = new tabRoute<addrIP>("net");
         neighbor = new tabGen<rtrLsrpDataNeigh>();
         for (;;) {
@@ -473,12 +493,23 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 tag = bits.str2num(s);
                 continue;
             }
-            if (a.equals("address")) {
-                addrIP adr = new addrIP();
-                if (adr.fromString(s)) {
+            if (a.equals("mgmtaddr")) {
+                if (mgmtIp.fromString(s)) {
                     return true;
                 }
-                address.add(adr);
+                continue;
+            }
+            if (a.equals("address")) {
+                rtrLsrpDataAddr ntry = new rtrLsrpDataAddr();
+                if (ntry.addr.fromString(s)) {
+                    return true;
+                }
+                ntry.iface = iface;
+                address.add(ntry);
+                continue;
+            }
+            if (a.equals("interface")) {
+                iface = s;
                 continue;
             }
             if (a.equals("peeraddr")) {
@@ -509,16 +540,30 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (adr.fromString(s)) {
                     return true;
                 }
-                addNeigh(adr, metric, stub, bndwdt, affinity, srlg, segrouAdj, peerAddr);
+                addNeigh(adr, iface, metric, stub, bndwdt, affinity, srlg, segrouAdj, peerAddr);
                 continue;
             }
         }
     }
 
     /**
+     * add address
+     *
+     * @param ifc interface
+     * @param adr interface address
+     */
+    protected void addAddr(String ifc, addrIP adr) {
+        rtrLsrpDataAddr ntry = new rtrLsrpDataAddr();
+        ntry.addr.setAddr(adr);
+        ntry.iface = ifc;
+        address.add(ntry);
+    }
+
+    /**
      * add neighbor
      *
      * @param nei router id
+     * @param ifc interface
      * @param met metric
      * @param stb stub flag
      * @param bw bandwidth
@@ -527,11 +572,12 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * @param adj segrout adjacency
      * @param adr adjacency address
      */
-    protected void addNeigh(addrIPv4 nei, int met, boolean stb, long bw, int aff, int srl, int adj, addrIP adr) {
+    protected void addNeigh(addrIPv4 nei, String ifc, int met, boolean stb, long bw, int aff, int srl, int adj, addrIP adr) {
         rtrLsrpDataNeigh ntry = new rtrLsrpDataNeigh();
         ntry.rtrid = nei.copyBytes();
         ntry.metric = met;
         ntry.stub = stb;
+        ntry.iface = ifc;
         ntry.bndwdt = bw;
         ntry.affnty = aff;
         ntry.srlg = srl;
@@ -562,12 +608,35 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
 
 }
 
+class rtrLsrpDataAddr implements Comparator<rtrLsrpDataAddr> {
+
+    /**
+     * address
+     */
+    public addrIP addr = new addrIP();
+
+    /**
+     * interface
+     */
+    public String iface;
+
+    public int compare(rtrLsrpDataAddr o1, rtrLsrpDataAddr o2) {
+        return o1.addr.compare(o1.addr, o2.addr);
+    }
+
+}
+
 class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
 
     /**
      * router id
      */
     public addrIPv4 rtrid;
+
+    /**
+     * local interface
+     */
+    public String iface;
 
     /**
      * adjacency address

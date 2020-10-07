@@ -377,8 +377,16 @@ public class userExec {
         hl.add("5 .            neighbor          list of neighbor");
         hl.add("5 .            interface         list of interfaces");
         hl.add("5 .            software          list of software");
-        hl.add("5 6            zonefile          list of reverse zone");
-        hl.add("6 .              <name>          name of zone");
+        hl.add("5 6            zone-rev          list of reverse zone");
+        hl.add("6 7              <name>          name of zone");
+        hl.add("7 8,.              <str>         separator");
+        hl.add("8 9                  <str>       replace from");
+        hl.add("9 8,.                  <str>     replace to");
+        hl.add("5 6            zone-fwd          list of forward zone");
+        hl.add("6 7              <name>          name of zone");
+        hl.add("7 8,.              <str>         separator");
+        hl.add("8 9                  <str>       replace from");
+        hl.add("9 8,.                  <str>     replace to");
         hl.add("5 .            uptime            list of uptime");
         hl.add("5 6,.          database          list of database");
         hl.add("6 .              [addr]          entry to view");
