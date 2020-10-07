@@ -559,7 +559,7 @@ class servPrometheusConn implements Runnable {
             return false;
         }
         if (!gotUrl.filName.equals(lower.allMets)) {
-            sendReply("404 not found", bits.str2lst("not found"));
+            sendReply("404 not found", bits.str2lst("no such metric"));
             return false;
         }
         long tim = bits.getTime();

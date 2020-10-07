@@ -290,10 +290,6 @@ public class userShow {
         }
         if (a.equals("process")) {
             a = cmd.word();
-            if (a.equals("gc")) {
-                rdr.putStrTab(logger.listGcs());
-                return null;
-            }
             if (a.equals("cpu")) {
                 rdr.putStrTab(logger.listThreads());
                 return null;
@@ -330,6 +326,10 @@ public class userShow {
         }
         if (a.equals("watchdog")) {
             a = cmd.word();
+            if (a.equals("gc")) {
+                rdr.putStrTab(logger.listGcs());
+                return null;
+            }
             if (a.equals("software")) {
                 rdr.putStrTab(ifcThread.showStalls());
                 return null;

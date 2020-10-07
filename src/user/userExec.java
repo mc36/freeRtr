@@ -668,12 +668,12 @@ public class userExec {
         hl.add("3 .        key                   show some key");
         hl.add("3 .        bug                   show some bug");
         hl.add("2 3      process                 list processes");
-        hl.add("3 .        gc                    garbage collector details");
         hl.add("3 .        cpu                   internal router threads");
         hl.add("3 .        external              external processes");
         hl.add("2 .      redundancy              redundancy information");
         hl.add("2 .      name-cache              local dns cache");
         hl.add("2 3      watchdog                watchdog information");
+        hl.add("3 .        gc                    garbage collector information");
         hl.add("3 .        hardware              hardware watchdog information");
         hl.add("3 .        software              software watchdog information");
         hl.add("3 .        timer                 timer history information");
