@@ -3558,13 +3558,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public userFormat getBestpath() {
         userFormat l = new userFormat("|", "category|value|addition");
         l.add("version|" + compRound);
-        l.add("full run|" + fullCount);
+        l.add("full run|" + fullCount + "|times");
         l.add("full last|" + bits.timePast(fullLast) + "|" + bits.time2str(cfgAll.timeZoneName, fullLast + cfgAll.timeServerOffset, 3));
-        l.add("full time|" + fullTime);
-        l.add("incr run|" + incrCount);
+        l.add("full time|" + fullTime + "|ms");
+        l.add("incr run|" + incrCount + "|times");
         l.add("incr last|" + bits.timePast(incrLast) + "|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3));
-        l.add("incr time|" + incrTime);
-        l.add("changes|" + changedCur + "|" + changedTot);
+        l.add("incr time|" + incrTime + "|ms");
+        l.add("changes all|" + changedTot);
+        l.add("changes now|" + changedCur);
         l.add("static peers|" + neighs.size());
         l.add("dynamic peers|" + lstnNei.size());
         l.add("groups|" + groups.size() + "|" + groupMin + ".." + groupMax);

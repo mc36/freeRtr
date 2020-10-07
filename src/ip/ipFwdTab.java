@@ -311,7 +311,7 @@ public class ipFwdTab {
      * @return list of protocols
      */
     public static userFormat routersShow(ipFwd lower) {
-        userFormat res = new userFormat("|", "proto|id|ifc|nei|uni|mlt|flw|chg|ago|uni|mlt|flw|chg|ago","4|5computed|5redist");
+        userFormat res = new userFormat("|", "proto|id|ifc|nei|uni|mlt|flw|chg|ago|uni|mlt|flw|chg|ago", "4|5computed|5redisted");
         for (int o = 0; o < lower.routers.size(); o++) {
             ipRtr rtr = lower.routers.get(o);
             res.add(cfgRtr.num2name(rtr.routerProtoTyp) + "|" + rtr.routerProcNum + "|" + rtr.routerIfaceCount() + "|" + rtr.routerNeighCount() + "|"
@@ -330,20 +330,20 @@ public class ipFwdTab {
      * @return list of protocols
      */
     public static userFormat statisticShow(ipFwd lower) {
-        userFormat res = new userFormat("|", "category|value");
+        userFormat res = new userFormat("|", "category|value|addition");
         res.add("vrf name|" + lower.vrfName);
         res.add("vrf number|" + lower.vrfNum);
         res.add("ip version|" + lower.ipVersion);
-        res.add("update run|" + lower.updateCount + " times");
-        res.add("update last|" + bits.time2str(cfgAll.timeZoneName, lower.updateLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(lower.updateLast) + " ago)");
-        res.add("update time|" + lower.updateTime + " ms");
-        res.add("change run|" + lower.changeCount + " times");
-        res.add("change last|" + bits.time2str(cfgAll.timeZoneName, lower.changeLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(lower.changeLast) + " ago)");
-        res.add("connected|" + lower.connedR.size() + " routes");
-        res.add("labeled|" + lower.labeldR.size() + " routes");
-        res.add("unicast|" + lower.actualU.size() + " routes");
-        res.add("multicast|" + lower.actualM.size() + " routes");
-        res.add("flowspec|" + lower.actualF.size() + " routes");
+        res.add("update run|" + lower.updateCount + "|times");
+        res.add("update last|" + bits.timePast(lower.updateLast) + "|" + bits.time2str(cfgAll.timeZoneName, lower.updateLast + cfgAll.timeServerOffset, 3));
+        res.add("update time|" + lower.updateTime + "|ms");
+        res.add("change run|" + lower.changeCount + "|times");
+        res.add("change last|" + bits.timePast(lower.changeLast) + "|" + bits.time2str(cfgAll.timeZoneName, lower.changeLast + cfgAll.timeServerOffset, 3));
+        res.add("connected|" + lower.connedR.size() + "|routes");
+        res.add("labeled|" + lower.labeldR.size() + "|routes");
+        res.add("unicast|" + lower.actualU.size() + "|routes");
+        res.add("multicast|" + lower.actualM.size() + "|routes");
+        res.add("flowspec|" + lower.actualF.size() + "|routes");
         return res;
     }
 

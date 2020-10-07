@@ -290,8 +290,12 @@ public class userShow {
         }
         if (a.equals("process")) {
             a = cmd.word();
+            if (a.equals("gc")) {
+                rdr.putStrTab(logger.listGcs());
+                return null;
+            }
             if (a.equals("cpu")) {
-                rdr.putStrArr(logger.listThreads());
+                rdr.putStrTab(logger.listThreads());
                 return null;
             }
             if (a.equals("external")) {

@@ -8,6 +8,9 @@ import clnt.clntSyslog;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -15,6 +18,7 @@ import pipe.pipeLine;
 import pipe.pipeSide;
 import tab.tabGen;
 import user.userFlash;
+import user.userFormat;
 
 /**
  * logging features
@@ -558,7 +562,7 @@ public class logger {
         }
     }
 
-    private static void listThreads(List<String> l, String b, ThreadGroup g) {
+    private static void listThreads(userFormat l, ThreadMXBean m, ThreadGroup g) {
         if (g == null) {
             return;
         }
@@ -566,16 +570,16 @@ public class logger {
         ThreadGroup[] gs = new ThreadGroup[g.activeGroupCount()];
         g.enumerate(ts, false);
         g.enumerate(gs, false);
-        l.add(b + "grp: " + g.getName());
+        String b = g.getName() + "|";
         for (int i = 0; i < ts.length; i++) {
             Thread t = ts[i];
             if (t == null) {
                 continue;
             }
-            l.add(b + t.getName() + " " + t.getState() + " " + dumpStackTrace(t.getStackTrace()));
+            l.add(b + t.getName() + "|" + (m.getThreadUserTime(t.getId()) / 1000000) + "|" + t.getState() + "|" + dumpStackTrace(t.getStackTrace()));
         }
         for (int i = 0; i < gs.length; i++) {
-            listThreads(l, b + " ", gs[i]);
+            listThreads(l, m, gs[i]);
         }
     }
 
@@ -584,8 +588,9 @@ public class logger {
      *
      * @return list of threads
      */
-    public static List<String> listThreads() {
+    public static userFormat listThreads() {
         ThreadGroup r = Thread.currentThread().getThreadGroup();
+        /*
         for (;;) {
             ThreadGroup p = r.getParent();
             if (p == null) {
@@ -593,8 +598,31 @@ public class logger {
             }
             r = p;
         }
-        List<String> l = new ArrayList<String>();
-        listThreads(l, "", r);
+         */
+        ThreadMXBean tb = ManagementFactory.getThreadMXBean();
+        userFormat l = new userFormat("|", "grp|name|time|state|stack");
+        listThreads(l, tb, r);
+        return l;
+    }
+
+    /**
+     * list gcs
+     *
+     * @return list of gcs
+     */
+    public static userFormat listGcs() {
+        userFormat l = new userFormat("|", "category|value");
+        Runtime rt = Runtime.getRuntime();
+        l.add("memory maximum|" + rt.maxMemory());
+        l.add("memory used|" + rt.totalMemory());
+        l.add("memory free|" + rt.freeMemory());
+        List<GarbageCollectorMXBean> gcs = ManagementFactory.getGarbageCollectorMXBeans();
+        for (int i = 0; i < gcs.size(); i++) {
+            GarbageCollectorMXBean gc = gcs.get(i);
+            String n = gc.getName();
+            l.add(n + " ran|" + gc.getCollectionCount());
+            l.add(n + " time|" + gc.getCollectionTime());
+        }
         return l;
     }
 
