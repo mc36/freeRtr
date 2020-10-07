@@ -674,6 +674,7 @@ public class userExec {
         hl.add("2 .      name-cache              local dns cache");
         hl.add("2 3      watchdog                watchdog information");
         hl.add("3 .        gc                    garbage collector information");
+        hl.add("3 .        sys                   system information");
         hl.add("3 .        hardware              hardware watchdog information");
         hl.add("3 .        software              software watchdog information");
         hl.add("3 .        timer                 timer history information");

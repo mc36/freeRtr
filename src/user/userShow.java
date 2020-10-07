@@ -330,6 +330,10 @@ public class userShow {
                 rdr.putStrTab(logger.listGcs());
                 return null;
             }
+            if (a.equals("sys")) {
+                rdr.putStrTab(logger.listSys());
+                return null;
+            }
             if (a.equals("software")) {
                 rdr.putStrTab(ifcThread.showStalls());
                 return null;

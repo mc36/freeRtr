@@ -1,4 +1,0 @@
- metric sysgc command sho watchdog gc | exc name
- metric sysgc prepend system_gc_
- metric sysgc replace \s _
- metric sysgc column 1 name _cnt

@@ -611,6 +611,26 @@ public class logger {
     }
 
     /**
+     * list sys
+     *
+     * @return list of sys
+     */
+    public static userFormat listSys() {
+        userFormat l = new userFormat("|", "category|value");
+        try {
+            MBeanServer mb = ManagementFactory.getPlatformMBeanServer();
+            AttributeList atrs = mb.getAttributes(ObjectName.getInstance("java.lang:type=OperatingSystem"), new String[]{"CommittedVirtualMemorySize", "FreePhysicalMemorySize", "ProcessCpuLoad", "ProcessCpuTime", "SystemCpuLoad", "SystemLoadAverage"});
+            for (int i = 0; i < atrs.size(); i++) {
+                Attribute atr = (Attribute) atrs.get(i);
+                l.add(atr.getName() + "|" + atr.getValue());
+            }
+        } catch (Exception e) {
+            traceback(e);
+        }
+        return l;
+    }
+
+    /**
      * list gcs
      *
      * @return list of gcs
@@ -624,16 +644,6 @@ public class logger {
         CompilationMXBean cmp = ManagementFactory.getCompilationMXBean();
         l.add("compiler name|" + cmp.getName());
         l.add("compiler time|" + cmp.getTotalCompilationTime());
-        try {
-            MBeanServer mb = ManagementFactory.getPlatformMBeanServer();
-            AttributeList atrs = mb.getAttributes(ObjectName.getInstance("java.lang:type=OperatingSystem"), new String[]{"CommittedVirtualMemorySize", "FreePhysicalMemorySize", "ProcessCpuLoad", "ProcessCpuTime", "SystemCpuLoad", "SystemLoadAverage"});
-            for (int i = 0; i < atrs.size(); i++) {
-                Attribute atr = (Attribute) atrs.get(i);
-                l.add(atr.getName() + "|" + atr.getValue());
-            }
-        } catch (Exception e) {
-            traceback(e);
-        }
         List<GarbageCollectorMXBean> gcs = ManagementFactory.getGarbageCollectorMXBeans();
         for (int i = 0; i < gcs.size(); i++) {
             GarbageCollectorMXBean gc = gcs.get(i);
