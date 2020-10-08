@@ -1,0 +1,21 @@
+ metric dvigp4int command sho ipv4 pvrp 1 interface
+ metric dvigp4int prepend dvigp4_pvrp1_iface_
+ metric dvigp4int replace \. _
+ metric dvigp4int column 1 name _neighbors
+ metric dvigp4peer command sho ipv4 pvrp 1 summary
+ metric dvigp4peer prepend dvigp4_pvrp1_peers_
+ metric dvigp4peer name 4
+ metric dvigp4peer replace \. _
+ metric dvigp4peer column 5 name _learn
+ metric dvigp4peer column 6 name _advert
+
+ metric dvigp6int command sho ipv6 pvrp 1 interface
+ metric dvigp6int prepend dvigp6_pvrp1_iface_
+ metric dvigp6int replace \. _
+ metric dvigp6int column 1 name _neighbors
+ metric dvigp6peer command sho ipv6 pvrp 1 summary
+ metric dvigp6peer prepend dvigp6_pvrp1_peers_
+ metric dvigp6peer name 4
+ metric dvigp6peer replace \: _
+ metric dvigp6peer column 5 name _learn
+ metric dvigp6peer column 6 name _advert
