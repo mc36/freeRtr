@@ -11,6 +11,7 @@
  metric bgp4perf prepend bgp4_perf_
  metric bgp4perf replace \s _
  metric bgp4perf column 1 name _cnt
+
  metric bgp6peer command sho ipv6 bgp 65535 summ
  metric bgp6peer prepend bgp6_peer_
  metric bgp6peer name 4
