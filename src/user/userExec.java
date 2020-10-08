@@ -3410,24 +3410,28 @@ public class userExec {
         if (a.equals("disk")) {
             a = cmd.getRemaining();
             File f = new File(a);
+            userFormat l = new userFormat("|", "category|value");
             try {
-                cmd.error("path=" + f.getCanonicalPath());
-                cmd.error("free=" + f.getFreeSpace());
-                cmd.error("total=" + f.getTotalSpace());
-                cmd.error("usable=" + f.getUsableSpace());
+                l.add("path|" + f.getCanonicalPath());
+                l.add("free|" + f.getFreeSpace());
+                l.add("total|" + f.getTotalSpace());
+                l.add("usable|" + f.getUsableSpace());
             } catch (Exception e) {
             }
+            reader.putStrTab(l);
             return;
         }
         if (a.equals("info")) {
             a = cmd.getRemaining();
             File f = new File(a);
+            userFormat l = new userFormat("|", "category|value");
             try {
-                cmd.error("file=" + f.getCanonicalPath());
-                cmd.error("size=" + f.length());
-                cmd.error("modify=" + bits.time2str(cfgAll.timeZoneName, f.lastModified(), 3));
+                l.add("file|" + f.getCanonicalPath());
+                l.add("size|" + f.length());
+                l.add("modify|" + bits.time2str(cfgAll.timeZoneName, f.lastModified(), 3));
             } catch (Exception e) {
             }
+            reader.putStrTab(l);
             return;
         }
         if (a.equals("upgrade")) {
