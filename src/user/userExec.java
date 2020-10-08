@@ -644,13 +644,93 @@ public class userExec {
     }
 
     /**
+     * get pipes help
+     *
+     * @param hl help to append
+     * @param privi allow privileges
+     */
+    public static void getHelpPipes(userHelping hl, boolean privi) {
+        hl.possible(-1, 110);
+        hl.add("110 111  |                       output modifier");
+        hl.add("111 112    include               only lines that match");
+        hl.add("112 113,.    <text>              filter text");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    exclude               hide lines that match");
+        hl.add("112 113,.    <text>              filter text");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    begin                 only lines from match");
+        hl.add("112 113,.    <text>              filter text");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    end                   only lines to match");
+        hl.add("112 113,.    <text>              filter text");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    sort                  sort lines by");
+        hl.add("112 113,.    <text>              column name");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    uniq                  unique lines by");
+        hl.add("112 113,.    <text>              column name");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    section               only sections that match");
+        hl.add("112 113,.    <text>              filter text");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    reginc                only lines that match regular expression");
+        hl.add("112 113,.    <text>              filter text");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    regexc                hide lines that match regular expression");
+        hl.add("112 113,.    <text>              filter text");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    regbeg                only lines from match regular expression");
+        hl.add("112 113,.    <text>              filter text");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    regend                only lines to match regular expression");
+        hl.add("112 113,.    <text>              filter text");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    regsec                only sections that match regular expression");
+        hl.add("112 113,.    <text>              filter text");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    first                 only first some lines");
+        hl.add("112 113,.    <num>               number of lines");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 112    last                  only last some lines");
+        hl.add("112 113,.    <num>               number of lines");
+        hl.add("113 114        |                 output modifier");
+        hl.add("114 .            count           count entities");
+        hl.add("111 .      headers               only section headers");
+        hl.add("111 .      level                 raw level hierarchy");
+        hl.add("111 .      csv                   level hierarchy in csv");
+        hl.add("111 .      html                  level hierarchy in html");
+        hl.add("111 .      setdel                level hierarchy in set/delete");
+        hl.add("111 .      linenumbers           prepend lines with numbers");
+        hl.add("111 .      raw                   unfiltered");
+        hl.add("111 .      count                 count entities");
+        hl.add("111 .      viewer                display in viewer");
+        if (!privi) {
+            return;
+        }
+        hl.add("111 119    redirect              redirect output to file");
+        hl.add("119 .        <text>              name of file");
+    }
+
+    /**
      * get show help
      *
      * @param hl help to append
      * @param privi allow privileges
-     * @param pipes allow pipes
      */
-    public static void getHelpShow(userHelping hl, boolean privi, boolean pipes) {
+    public static void getHelpShow(userHelping hl, boolean privi) {
         hl.add("2 3      macsec                  macsec information");
         hl.add("3 .        <name>                name of interface");
         hl.add("2 .      scheduler               scheduler information");
@@ -877,81 +957,6 @@ public class userExec {
         hl.add("4 .          <name>              name of (sub)interface");
         getHelpShowIpX(hl);
         cfgAll.aliasHelps(cfgAlias.aliasType.show, 2, hl);
-        if (!pipes) {
-            return;
-        }
-        hl.possible(-1, 110);
-        hl.add("110 111  |                       output modifier");
-        hl.add("111 112    include               only lines that match");
-        hl.add("112 113,.    <text>              filter text");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    exclude               hide lines that match");
-        hl.add("112 113,.    <text>              filter text");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    begin                 only lines from match");
-        hl.add("112 113,.    <text>              filter text");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    end                   only lines to match");
-        hl.add("112 113,.    <text>              filter text");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    sort                  sort lines by");
-        hl.add("112 113,.    <text>              column name");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    uniq                  unique lines by");
-        hl.add("112 113,.    <text>              column name");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    section               only sections that match");
-        hl.add("112 113,.    <text>              filter text");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    reginc                only lines that match regular expression");
-        hl.add("112 113,.    <text>              filter text");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    regexc                hide lines that match regular expression");
-        hl.add("112 113,.    <text>              filter text");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    regbeg                only lines from match regular expression");
-        hl.add("112 113,.    <text>              filter text");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    regend                only lines to match regular expression");
-        hl.add("112 113,.    <text>              filter text");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    regsec                only sections that match regular expression");
-        hl.add("112 113,.    <text>              filter text");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    first                 only first some lines");
-        hl.add("112 113,.    <num>               number of lines");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 112    last                  only last some lines");
-        hl.add("112 113,.    <num>               number of lines");
-        hl.add("113 114        |                 output modifier");
-        hl.add("114 .            count           count entities");
-        hl.add("111 .      headers               only section headers");
-        hl.add("111 .      level                 raw level hierarchy");
-        hl.add("111 .      csv                   level hierarchy in csv");
-        hl.add("111 .      html                  level hierarchy in html");
-        hl.add("111 .      setdel                level hierarchy in set/delete");
-        hl.add("111 .      linenumbers           prepend lines with numbers");
-        hl.add("111 .      raw                   unfiltered");
-        hl.add("111 .      count                 count entities");
-        hl.add("111 .      viewer                display in viewer");
-        if (!privi) {
-            return;
-        }
-        hl.add("111 119    redirect              redirect output to file");
-        hl.add("119 .        <text>              name of file");
     }
 
     private void getHelpTelnet(userHelping hl) {
@@ -990,15 +995,16 @@ public class userExec {
     public userHelping getHelping() {
         userHelping hl = new userHelping();
         hl.add("1 2    show                      running system information");
-        getHelpShow(hl, privileged, true);
+        getHelpShow(hl, privileged);
+        getHelpPipes(hl, privileged);
         hl.add("1 2    watch                     running system periodic information");
-        getHelpShow(hl, privileged, false);
+        getHelpShow(hl, privileged);
         hl.add("1 2    view                      running system information");
-        getHelpShow(hl, privileged, false);
+        getHelpShow(hl, privileged);
         hl.add("1 2    display                   running system periodic information");
-        getHelpShow(hl, privileged, false);
+        getHelpShow(hl, privileged);
         hl.add("1 2    differs                   running system difference information");
-        getHelpShow(hl, privileged, false);
+        getHelpShow(hl, privileged);
         hl.add("1 .    logout                    close this exec session");
         hl.add("1 .    exit                      close this exec session");
         hl.add("1 .    ppp                       start framed session");
@@ -1268,6 +1274,20 @@ public class userExec {
         hl.add("2 .      revert                  revert to startup configuration");
         hl.add(".2 .     reapply                 try to reapply current configuration");
         hl.add("1 2    flash                     file system utility");
+        hl.add("2 3      list                    list directory");
+        hl.add("3 .        <file>                pathname");
+        hl.add("2 3      type                    type one ascii file");
+        hl.add("3 .        <file>                filename");
+        hl.add("2 3      info                    information about file");
+        hl.add("3 .        <file>                filename");
+        hl.add("2 3      hash                    hash of file");
+        hl.add("3 .        <file>                filename");
+        hl.add("2 3      disk                    information about disk");
+        hl.add("3 .        <file>                filename");
+        hl.add("2 3      bintype                 type one binary file");
+        hl.add("3 .        <file>                filename");
+        hl.add("2 .      verify                  verify routing software");
+////        userExec.getHelpPipes(hl, privileged);
         hl.add("2 3      receive                 receive file from network");
         hl.add("3 4        <file>                target file");
         hl.add("4 4,.        <url>               source url");
@@ -1284,23 +1304,10 @@ public class userExec {
         hl.add("3 3,.      <file>                filename");
         hl.add("2 3      mkdir                   make directory");
         hl.add("3 .        <file>                filename");
-        hl.add("2 3      list                    list directory");
-        hl.add("3 .        <file>                pathname");
-        hl.add("2 3      type                    type one ascii file");
-        hl.add("3 .        <file>                filename");
-        hl.add("2 3      info                    information about file");
-        hl.add("3 .        <file>                filename");
-        hl.add("2 3      hash                    hash of file");
-        hl.add("3 .        <file>                filename");
-        hl.add("2 3      disk                    information about disk");
-        hl.add("3 .        <file>                filename");
-        hl.add("2 3      bintype                 type one binary file");
-        hl.add("3 .        <file>                filename");
         hl.add("2 3,.    upgrade                 upgrade routing software");
         hl.add("3 3,.      [url]                 parameter of process");
         hl.add("2 3,.    simulate                simulate upgrade process");
         hl.add("3 3,.      [url]                 parameter of process");
-        hl.add("2 .      verify                  verify routing software");
         hl.add("2 3      editor                  compose text file");
         hl.add("3 .        <name>                name of file");
         hl.add("2 3      viewer                  read text file");
@@ -2031,6 +2038,7 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("flash")) {
+            cmd = reader.setFilter(cmd);
             doFlash();
             return cmdRes.command;
         }

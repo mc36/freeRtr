@@ -27,7 +27,8 @@ public class userHelping {
     public static userHelping getGenCfg() {
         userHelping l = new userHelping();
         l.add("1 2    show                running system information");
-        userExec.getHelpShow(l, true, true);
+        userExec.getHelpShow(l, true);
+        userExec.getHelpPipes(l, true);
         l.add("1 .    exit                go back to previous mode");
         l.add("1 2,.  end                 close this config session");
         l.add("2 2,.    <cmd>             parameters");

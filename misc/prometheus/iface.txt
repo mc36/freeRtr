@@ -1,21 +1,23 @@
  metric intsw command sho inter summ
  metric intsw prepend iface_swcntr_
+ metric intsw labeled
  metric intsw replace \. _
- metric intsw column 1 name _state
+ metric intsw column 1 name {dir="st"}
  metric intsw column 1 replace admin -1
  metric intsw column 1 replace down 0
  metric intsw column 1 replace up 1
- metric intsw column 2 name _rx
- metric intsw column 3 name _tx
- metric intsw column 4 name _dr
+ metric intsw column 2 name {dir="rx"}
+ metric intsw column 3 name {dir="tx"}
+ metric intsw column 4 name {dir="dr"}
 
  metric inthw command sho inter hwsumm
  metric inthw prepend iface_hwcntr_
+ metric inthw labeled
  metric inthw replace \. _
- metric inthw column 1 name _state
+ metric inthw column 1 name {dir="st"}
  metric inthw column 1 replace admin -1
  metric inthw column 1 replace down 0
  metric inthw column 1 replace up 1
- metric inthw column 2 name _rx
- metric inthw column 3 name _tx
- metric inthw column 4 name _dr
+ metric inthw column 2 name {dir="rx"}
+ metric inthw column 3 name {dir="tx"}
+ metric inthw column 4 name {dir="dr"}

@@ -67,6 +67,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         "server prometheus .*! metric .* name 0",
         "server prometheus .*! metric .* addname -1 null",
         "server prometheus .*! metric .* skip 1",
+        "server prometheus .*! no metric .* labeled",
         "server prometheus .*! no metric .* excluded",
         "server prometheus .*! metric .* column .* type gauge",
         "server prometheus .*! metric .* column .* help null",};
@@ -118,6 +119,11 @@ public class servPrometheus extends servGeneric implements prtServS {
                 lst.add(mn + " excluded");
             } else {
                 lst.add(nn + " excluded");
+            }
+            if (met.lab) {
+                lst.add(mn + " labeled");
+            } else {
+                lst.add(nn + " labeled");
             }
             for (int i = 0; i < met.reps.size(); i++) {
                 servPrometheusRep rep = met.reps.get(i);
@@ -195,6 +201,10 @@ public class servPrometheus extends servGeneric implements prtServS {
             met.exc = !negated;
             return false;
         }
+        if (s.equals("labeled")) {
+            met.lab = !negated;
+            return false;
+        }
         if (s.equals("replace")) {
             servPrometheusRep rep = new servPrometheusRep(cmd.word());
             rep.trg = cmd.word();
@@ -265,6 +275,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("3 4      addname                  add name column number");
         l.add("4 5        <num>                  column number");
         l.add("5 .          <str>                separator");
+        l.add("3 .      labeled                  expose labeled columns");
         l.add("3 .      excluded                 exclude from whole reporting");
         l.add("3 4      skip                     rows to skip");
         l.add("4 .        <num>                  lines to skip");
@@ -273,7 +284,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("5 .          <str>                replacement string");
         l.add("3 4      column                   define column to export");
         l.add("4 5        <num>                  number");
-        l.add("5 6          name                 set metric name");
+        l.add("5 6,.        name                 set metric name");
         l.add("6 .            <str>              metric name");
         l.add("5 6          type                 set metric type");
         l.add("6 .            <str>              metric type");
@@ -355,6 +366,8 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
 
     public boolean exc;
 
+    public boolean lab;
+
     public tabGen<servPrometheusCol> cols = new tabGen<servPrometheusCol>();
 
     public tabGen<servPrometheusRep> reps = new tabGen<servPrometheusRep>();
@@ -435,12 +448,19 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                     continue;
                 }
                 String nb = na + col.nam;
+                String h;
                 if (col.hlp == null) {
-                    lst.add("# HELP " + nb + " column " + col.num + " of " + cmd);
+                    h = " column " + col.num + " of " + cmd;
                 } else {
-                    lst.add("# HELP " + nb + " " + col.hlp);
+                    h = " " + col.hlp;
                 }
-                lst.add("# TYPE " + nb + " " + col.typ);
+                if (lab) {
+                    lst.add("# HELP " + na + h);
+                    lst.add("# TYPE " + na + " " + col.typ);
+                } else {
+                    lst.add("# HELP " + nb + h);
+                    lst.add("# TYPE " + nb + " " + col.typ);
+                }
                 String a = cl.get(col.num);
                 for (int i = 0; i < col.reps.size(); i++) {
                     servPrometheusRep rep = col.reps.get(i);

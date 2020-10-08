@@ -10,7 +10,7 @@
  metric bgp4perf command sho ipv4 bgp 65535 best | exc last
  metric bgp4perf prepend bgp4_perf_
  metric bgp4perf replace \s _
- metric bgp4perf column 1 name _cnt
+ metric bgp4perf column 1 name _val
 
  metric bgp6peer command sho ipv6 bgp 65535 summ
  metric bgp6peer prepend bgp6_peer_
@@ -24,4 +24,4 @@
  metric bgp6perf command sho ipv6 bgp 65535 best | exc last
  metric bgp6perf prepend bgp6_perf_
  metric bgp6perf replace \s _
- metric bgp6perf column 1 name _cnt
+ metric bgp6perf column 1 name _val
