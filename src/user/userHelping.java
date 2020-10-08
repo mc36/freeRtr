@@ -28,7 +28,7 @@ public class userHelping {
         userHelping l = new userHelping();
         l.add("1 2    show                running system information");
         userExec.getHelpShow(l, true);
-        userExec.getHelpPipes(l, true);
+        userExec.getHelpPipes(l, 110, true);
         l.add("1 .    exit                go back to previous mode");
         l.add("1 2,.  end                 close this config session");
         l.add("2 2,.    <cmd>             parameters");
@@ -90,6 +90,15 @@ public class userHelping {
         userHelpingData d = new userHelpingData();
         d.set(s);
         lines.add(d);
+    }
+
+    /**
+     * get lines from an other help
+     *
+     * @param src source
+     */
+    public void addOther(userHelping src) {
+        lines.addAll(src.lines);
     }
 
     /**
@@ -579,7 +588,6 @@ public class userHelping {
                 continue;
             }
             lns.after.add(nxt);
-
         }
     }
 
