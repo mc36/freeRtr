@@ -1,0 +1,31 @@
+ metric lsigp4int command sho ipv4 lsrp 1 interface
+ metric lsigp4int prepend lsigp4_lsrp1_iface_
+ metric lsigp4int replace \. _
+ metric lsigp4int column 1 name _neighbors
+ metric lsigp4peer command sho ipv4 lsrp 1 topology
+ metric lsigp4peer prepend lsigp4_lsrp1_peers_
+ metric lsigp4peer replace \. _
+ metric lsigp4peer column 1 name _reachable
+ metric lsigp4peer column 1 replace false 0
+ metric lsigp4peer column 1 replace true 1
+ metric lsigp4peer column 6 name _neighbors
+ metric lsigp4perf command sho ipv4 lsrp 1 spf | inc reachable|fill|calc|run
+ metric lsigp4perf prepend lsigp4_lsrp1_perf_
+ metric lsigp4perf skip 0
+ metric lsigp4perf column 1 name _cnt
+
+ metric lsigp6int command sho ipv6 lsrp 1 interface
+ metric lsigp6int prepend lsigp6_lsrp1_iface_
+ metric lsigp6int replace \. _
+ metric lsigp6int column 1 name _neighbors
+ metric lsigp6peer command sho ipv6 lsrp 1 topology
+ metric lsigp6peer prepend lsigp6_lsrp1_peers_
+ metric lsigp6peer replace \. _
+ metric lsigp6peer column 1 name _reachable
+ metric lsigp6peer column 1 replace false 0
+ metric lsigp6peer column 1 replace true 1
+ metric lsigp6peer column 6 name _neighbors
+ metric lsigp6perf command sho ipv6 lsrp 1 spf | inc reachable|fill|calc|run
+ metric lsigp6perf prepend lsigp6_lsrp1_perf_
+ metric lsigp6perf skip 0
+ metric lsigp6perf column 1 name _cnt
