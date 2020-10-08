@@ -38,7 +38,7 @@ public class servPrometheus extends servGeneric implements prtServS {
     public tabGen<servPrometheusMet> mets = new tabGen<servPrometheusMet>();
 
     /**
-     * list of metrics
+     * all the metrics
      */
     public String allMets = "metrics";
 
@@ -53,7 +53,7 @@ public class servPrometheus extends servGeneric implements prtServS {
     public int allTim;
 
     /**
-     * time to respond
+     * last response
      */
     public long allLast;
 
