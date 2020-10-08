@@ -3,6 +3,7 @@ package tab;
 import addr.addrIP;
 import addr.addrPrefix;
 import addr.addrType;
+import ip.ipMpls;
 import java.util.ArrayList;
 import java.util.List;
 import util.bits;
@@ -649,6 +650,34 @@ public class tabRoute<T extends addrType> {
             l.add("" + prefixes.get(i));
         }
         return l;
+    }
+
+    /**
+     * null labeled routes
+     *
+     * @param lst source
+     * @return result
+     */
+    public static tabRoute<addrIP> nullLabeled(tabRoute<addrIP> lst) {
+        tabRoute<addrIP> res = new tabRoute<addrIP>("rx");
+        for (int i = 0; i < lst.size(); i++) {
+            tabRouteEntry<addrIP> ntry = lst.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.best.labelRem == null) {
+                continue;
+            }
+            if (ntry.best.labelRem.size() != 1) {
+                continue;
+            }
+            int o = ntry.best.labelRem.get(0);
+            if ((o != ipMpls.labelImp) && (o != ipMpls.labelExp4) && (o != ipMpls.labelExp6)) {
+                continue;
+            }
+            res.add(tabRoute.addType.always, ntry, false, false);
+        }
+        return res;
     }
 
     /**

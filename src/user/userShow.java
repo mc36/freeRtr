@@ -35,7 +35,6 @@ import ip.ipFwdMcast;
 import ip.ipFwdMpmp;
 import ip.ipFwdTab;
 import ip.ipFwdTrfng;
-import ip.ipMpls;
 import ip.ipRtr;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -2043,34 +2042,16 @@ public class userShow {
         cmd.badCmd();
     }
 
-    private static tabRoute<addrIP> nullLabels(tabRoute<addrIP> lst) {
-        tabRoute<addrIP> res = new tabRoute<addrIP>("rx");
-        for (int i = 0; i < lst.size(); i++) {
-            tabRouteEntry<addrIP> ntry = lst.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (ntry.best.labelRem == null) {
-                continue;
-            }
-            if (ntry.best.labelRem.size() != 1) {
-                continue;
-            }
-            int o = ntry.best.labelRem.get(0);
-            if ((o != ipMpls.labelImp) && (o != ipMpls.labelExp4) && (o != ipMpls.labelExp6)) {
-                continue;
-            }
-            res.add(tabRoute.addType.always, ntry, false, false);
-        }
-        return res;
-    }
-
     private void doShowIpXldp(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
             return;
         }
         String a = cmd.word();
+        if (a.equals("nulled-summary")) {
+            rdr.putStrTab(ipFwdTab.ldpNulledShow(fwd));
+            return;
+        }
         if (a.equals("summary")) {
             rdr.putStrTab(ipFwdTab.ldpNeighShow(fwd));
             return;
@@ -2096,7 +2077,7 @@ public class userShow {
         }
         a = cmd.word();
         if (a.equals("nulled")) {
-            doShowRoutes(fwd, nullLabels(nei.prefLearn), 3);
+            doShowRoutes(fwd, tabRoute.nullLabeled(nei.prefLearn), 3);
             return;
         }
         if (a.equals("learned")) {

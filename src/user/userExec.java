@@ -319,6 +319,7 @@ public class userExec {
         hl.add("7 .                mpadvertised  multipoints advertised to neighbor");
         hl.add("7 .                status        status of neighbor");
         hl.add("5 .            summary           list of neighbors");
+        hl.add("5 .            nulled-summary    list of neighbors null label counts");
         hl.add("5 6,.          database          list of routes in database");
         hl.add("6 .              [addr]          prefix to view");
         hl.add("5 .            mpdatabase        list of multipoint sessions");

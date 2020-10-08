@@ -140,6 +140,24 @@ public class ipFwdTab {
     }
 
     /**
+     * list ldp nulled prefix neighbors
+     *
+     * @param lower forwarder
+     * @return list of neighbors
+     */
+    public static userFormat ldpNulledShow(ipFwd lower) {
+        userFormat l = new userFormat("|", "learn|advert|nulled|uptime");
+        for (int i = 0; i < lower.ldpNeighs.size(); i++) {
+            rtrLdpNeigh ntry = lower.ldpNeighs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            l.add(ntry.getShNulled());
+        }
+        return l;
+    }
+
+    /**
      * list ldp neighbors
      *
      * @param lower forwarder

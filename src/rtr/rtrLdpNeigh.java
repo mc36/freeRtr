@@ -184,6 +184,15 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
     }
 
     /**
+     * get show nulled neighbor string
+     *
+     * @return show line
+     */
+    public String getShNulled() {
+        return prefLearn.size() + "|" + prefAdvert.size() + "|" + tabRoute.nullLabeled(prefLearn).size() + "|" + peer + "|" + bits.timePast(upTime);
+    }
+
+    /**
      * get status of peer
      *
      * @param l list to append
