@@ -68,8 +68,8 @@ public class servPrometheus extends servGeneric implements prtServS {
         "server prometheus .*! metric .* addname -1 null",
         "server prometheus .*! metric .* skip 1",
         "server prometheus .*! no metric .* excluded",
-        "server prometheus .*! metric .* column .* type counter",
-        "server prometheus .*! metric .* column .* help exported counter",};
+        "server prometheus .*! metric .* column .* type gauge",
+        "server prometheus .*! metric .* column .* help null",};
 
     /**
      * defaults filter
@@ -223,11 +223,19 @@ public class servPrometheus extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("type")) {
-            col.typ = cmd.getRemaining();
+            if (negated) {
+                col.typ = "gauge";
+            } else {
+                col.typ = cmd.getRemaining();
+            }
             return false;
         }
         if (s.equals("help")) {
-            col.hlp = cmd.getRemaining();
+            if (negated) {
+                col.hlp = null;
+            } else {
+                col.hlp = cmd.getRemaining();
+            }
             return false;
         }
         if (s.equals("replace")) {
@@ -400,10 +408,10 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
             res.remove(0);
         }
         for (int p = 0; p < res.size(); p++) {
-            cmds cmd = new cmds("prom", res.get(p));
+            cmds cm = new cmds("prom", res.get(p));
             List<String> cl = new ArrayList<String>();
             for (;;) {
-                String a = cmd.word(";");
+                String a = cm.word(";");
                 if (a.length() < 1) {
                     break;
                 }
@@ -427,7 +435,11 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                     continue;
                 }
                 String nb = na + col.nam;
-                lst.add("# HELP " + nb + " " + col.hlp);
+                if (col.hlp == null) {
+                    lst.add("# HELP " + nb + " column " + col.num + " of " + cmd);
+                } else {
+                    lst.add("# HELP " + nb + " " + col.hlp);
+                }
                 lst.add("# TYPE " + nb + " " + col.typ);
                 String a = cl.get(col.num);
                 for (int i = 0; i < col.reps.size(); i++) {
@@ -464,9 +476,9 @@ class servPrometheusCol implements Comparator<servPrometheusCol> {
 
     public String nam;
 
-    public String typ = "counter";
+    public String typ = "gauge";
 
-    public String hlp = "exported counter";
+    public String hlp = null;
 
     public tabGen<servPrometheusRep> reps = new tabGen<servPrometheusRep>();
 
