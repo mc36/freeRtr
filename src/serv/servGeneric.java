@@ -1105,7 +1105,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             }
         }
         boolean ipv4 = conn.peerAddr.isIPv4();
-        srvCheckAccept2(ipv4, conn.peerAddr, conn.portLoc);
+        if (srvCheckAccept2(ipv4, conn.peerAddr, conn.portLoc)) {
+            return true;
+        }
         if (srvTotLim > 0) {
             if (srvCountClients(conn.iface, conn.portLoc, ipv4, null) >= srvTotLim) {
                 if (srvLogDrop) {
