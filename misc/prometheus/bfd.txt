@@ -1,0 +1,19 @@
+ metric bfd4 command sho ipv4 bfd inet neighbor
+ metric bfd4 prepend bfd4_
+ metric bfd4 name 1
+ metric bfd4 replace \. _
+ metric bfd4 column 2 name _state
+ metric bfd4 column 2 replace down 0
+ metric bfd4 column 2 replace init 1
+ metric bfd4 column 2 replace shut -1
+ metric bfd4 column 2 replace up 2
+
+ metric bfd6 command sho ipv6 bfd inet neighbor
+ metric bfd6 prepend bfd6_
+ metric bfd6 name 1
+ metric bfd6 replace \: _
+ metric bfd6 column 2 name _state
+ metric bfd6 column 2 replace down 0
+ metric bfd6 column 2 replace init 1
+ metric bfd6 column 2 replace shut -1
+ metric bfd6 column 2 replace up 2
