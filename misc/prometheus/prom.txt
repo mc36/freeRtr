@@ -1,4 +1,5 @@
  metric prom command sho prometheus home
  metric prom prepend prom_
- metric prom column 1 name _asked
- metric prom column 2 name _time
+ metric prom name 0 met=
+ metric prom column 1 name asked
+ metric prom column 2 name time

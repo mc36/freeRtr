@@ -1,16 +1,16 @@
  metric vrf command sho vrf routing
  metric vrf prepend vrf_
- metric vrf labeled
+ metric vrf name 0 name=
  metric vrf skip 2
- metric vrf column 2 name _v4 afi="ifc"
- metric vrf column 3 name _v6 afi="ifc"
- metric vrf column 4 name _v4 afi="uni"
- metric vrf column 5 name _v6 afi="uni"
- metric vrf column 6 name _v4 afi="multi"
- metric vrf column 7 name _v6 afi="multi"
- metric vrf column 8 name _v4 afi="flow"
- metric vrf column 9 name _v6 afi="flow"
- metric vrf column 10 name _v4 afi="label"
- metric vrf column 11 name _v6 afi="label"
- metric vrf column 12 name _v4 afi="conn"
- metric vrf column 13 name _v6 afi="conn"
+ metric vrf column 2 name v4 type="ifc"
+ metric vrf column 3 name v6 type="ifc"
+ metric vrf column 4 name v4 type="uni"
+ metric vrf column 5 name v6 type="uni"
+ metric vrf column 6 name v4 type="multi"
+ metric vrf column 7 name v6 type="multi"
+ metric vrf column 8 name v4 type="flow"
+ metric vrf column 9 name v6 type="flow"
+ metric vrf column 10 name v4 type="label"
+ metric vrf column 11 name v6 type="label"
+ metric vrf column 12 name v4 type="conn"
+ metric vrf column 13 name v6 type="conn"

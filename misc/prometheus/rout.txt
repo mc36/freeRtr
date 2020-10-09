@@ -1,29 +1,31 @@
  metric routing4 command sho ipv4 protocol inet | beg computed
  metric routing4 prepend routing_
- metric routing4 addname 1 _
+ metric routing4 name 0 proto=
+ metric routing4 addname 1 * id=
  metric routing4 skip 2
- metric routing4 column 2 name _ifaces
- metric routing4 column 3 name _neighbors
- metric routing4 column 4 name _computed_unicast
- metric routing4 column 5 name _computed_multicast
- metric routing4 column 6 name _computed_flowspec
- metric routing4 column 7 name _computed_changed
- metric routing4 column 9 name _redisted_unicast
- metric routing4 column 10 name _redisted_multicast
- metric routing4 column 11 name _redisted_flowspec
- metric routing4 column 12 name _redisted_changed
+ metric routing4 column 2 name ifaces
+ metric routing4 column 3 name neighbors
+ metric routing4 column 4 name computed_unicast
+ metric routing4 column 5 name computed_multicast
+ metric routing4 column 6 name computed_flowspec
+ metric routing4 column 7 name computed_changed
+ metric routing4 column 9 name redisted_unicast
+ metric routing4 column 10 name redisted_multicast
+ metric routing4 column 11 name redisted_flowspec
+ metric routing4 column 12 name redisted_changed
 
  metric routing6 command sho ipv6 protocol inet | beg computed
  metric routing6 prepend routing_
- metric routing6 addname 1 _
+ metric routing6 name 0 proto=
+ metric routing6 addname 1 * id=
  metric routing6 skip 2
- metric routing6 column 2 name _ifaces
- metric routing6 column 3 name _neighbors
- metric routing6 column 4 name _computed_unicast
- metric routing6 column 5 name _computed_multicast
- metric routing6 column 6 name _computed_flowspec
- metric routing6 column 7 name _computed_changed
- metric routing6 column 9 name _redisted_unicast
- metric routing6 column 10 name _redisted_multicast
- metric routing6 column 11 name _redisted_flowspec
- metric routing6 column 12 name _redisted_changed
+ metric routing6 column 2 name ifaces
+ metric routing6 column 3 name neighbors
+ metric routing6 column 4 name computed_unicast
+ metric routing6 column 5 name computed_multicast
+ metric routing6 column 6 name computed_flowspec
+ metric routing6 column 7 name computed_changed
+ metric routing6 column 9 name redisted_unicast
+ metric routing6 column 10 name redisted_multicast
+ metric routing6 column 11 name redisted_flowspec
+ metric routing6 column 12 name redisted_changed
