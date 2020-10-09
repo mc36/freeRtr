@@ -67,7 +67,6 @@ public class servPrometheus extends servGeneric implements prtServS {
         "server prometheus .*! metric .* name 0",
         "server prometheus .*! metric .* addname -1 null",
         "server prometheus .*! metric .* skip 1",
-        "server prometheus .*! no metric .* labeled",
         "server prometheus .*! no metric .* excluded",
         "server prometheus .*! metric .* column .* type gauge",
         "server prometheus .*! metric .* column .* help null",};
@@ -112,18 +111,17 @@ public class servPrometheus extends servGeneric implements prtServS {
             String nn = beg + "no metric " + met.nam;
             lst.add(mn + " command " + met.cmd);
             lst.add(mn + " prepend " + met.prep);
-            lst.add(mn + " name " + met.col);
+            String a = "";
+            if (met.lab != null) {
+                a = " " + met.lab;
+            }
+            lst.add(mn + " name " + met.col + a);
             lst.add(mn + " addname " + met.acol + " " + met.asep);
             lst.add(mn + " skip " + met.skp);
             if (met.exc) {
                 lst.add(mn + " excluded");
             } else {
                 lst.add(nn + " excluded");
-            }
-            if (met.lab) {
-                lst.add(mn + " labeled");
-            } else {
-                lst.add(nn + " labeled");
             }
             for (int i = 0; i < met.reps.size(); i++) {
                 servPrometheusRep rep = met.reps.get(i);
@@ -132,7 +130,11 @@ public class servPrometheus extends servGeneric implements prtServS {
             for (int o = 0; o < met.cols.size(); o++) {
                 servPrometheusCol col = met.cols.get(o);
                 String cn = mn + " column " + col.num;
-                lst.add(cn + " name " + col.nam);
+                a = "";
+                if (col.lab != null) {
+                    a = " " + col.lab;
+                }
+                lst.add(cn + " name " + col.nam + a);
                 lst.add(cn + " type " + col.typ);
                 lst.add(cn + " help " + col.hlp);
                 for (int i = 0; i < col.reps.size(); i++) {
@@ -150,7 +152,7 @@ public class servPrometheus extends servGeneric implements prtServS {
             s = cmd.word();
         }
         if (s.equals("all-metrics")) {
-            allMets = cmd.getRemaining();
+            allMets = cmd.word();
             return false;
         }
         if (!s.equals("metric")) {
@@ -176,20 +178,30 @@ public class servPrometheus extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("prepend")) {
-            met.prep = cmd.getRemaining();
+            met.prep = cmd.word();
             return false;
         }
         if (s.equals("name")) {
             met.col = bits.str2num(cmd.word());
+            if (cmd.size() < 1) {
+                met.lab = null;
+            } else {
+                met.lab = cmd.word();
+            }
             return false;
         }
         if (s.equals("addname")) {
             if (negated) {
                 met.acol = -1;
                 met.asep = null;
+                return false;
+            }
+            met.acol = bits.str2num(cmd.word());
+            met.asep = cmd.word();
+            if (cmd.size() < 1) {
+                met.alab = null;
             } else {
-                met.acol = bits.str2num(cmd.word());
-                met.asep = cmd.getRemaining();
+                met.alab = cmd.word();
             }
             return false;
         }
@@ -199,10 +211,6 @@ public class servPrometheus extends servGeneric implements prtServS {
         }
         if (s.equals("excluded")) {
             met.exc = !negated;
-            return false;
-        }
-        if (s.equals("labeled")) {
-            met.lab = !negated;
             return false;
         }
         if (s.equals("replace")) {
@@ -229,14 +237,19 @@ public class servPrometheus extends servGeneric implements prtServS {
                 met.cols.del(col);
                 return false;
             }
-            col.nam = cmd.getRemaining();
+            col.nam = cmd.word();
+            if (cmd.size() < 1) {
+                col.lab = null;
+            } else {
+                col.lab = cmd.word();
+            }
             return false;
         }
         if (s.equals("type")) {
             if (negated) {
                 col.typ = "gauge";
             } else {
-                col.typ = cmd.getRemaining();
+                col.typ = cmd.word();
             }
             return false;
         }
@@ -271,11 +284,12 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("3 4      prepend                  specify metric name to prepend");
         l.add("4 .        <str>                  name");
         l.add("3 4      name                     name column number");
-        l.add("4 .        <num>                  column number");
+        l.add("4 5,.      <num>                  column number");
+        l.add("5 .          <str>                label");
         l.add("3 4      addname                  add name column number");
         l.add("4 5        <num>                  column number");
-        l.add("5 .          <str>                separator");
-        l.add("3 .      labeled                  expose labeled columns");
+        l.add("5 6,.        <str>                separator");
+        l.add("6 .            <str>              label");
         l.add("3 .      excluded                 exclude from whole reporting");
         l.add("3 4      skip                     rows to skip");
         l.add("4 .        <num>                  lines to skip");
@@ -285,7 +299,8 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("3 4      column                   define column to export");
         l.add("4 5        <num>                  number");
         l.add("5 6,.        name                 set metric name");
-        l.add("6 .            <str>              metric name");
+        l.add("6 7,.          <str>              metric name, * means empty");
+        l.add("7 .              <str>            label");
         l.add("5 6          type                 set metric type");
         l.add("6 .            <str>              metric type");
         l.add("5 6          help                 set metric help");
@@ -356,17 +371,19 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
 
     public String prep;
 
-    public int col = 0;
+    public int col;
+
+    public String lab;
 
     public int acol = -1;
 
     public String asep;
 
+    public String alab;
+
     public int skp = 1;
 
     public boolean exc;
-
-    public boolean lab;
 
     public tabGen<servPrometheusCol> cols = new tabGen<servPrometheusCol>();
 
@@ -447,26 +464,37 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                 if (cl.size() <= col.num) {
                     continue;
                 }
-                String nb = na + col.nam;
+                String nb = na;
+                if (!col.nam.equals("*")) {
+                    nb += col.nam;
+                }
+                String labs = "";
+                if (lab != null) {
+                    labs += "," + lab;
+                }
+                if (alab != null) {
+                    labs += "," + alab;
+                }
                 String h;
                 if (col.hlp == null) {
                     h = " column " + col.num + " of " + cmd;
                 } else {
                     h = " " + col.hlp;
                 }
-                if (lab) {
-                    lst.add("# HELP " + na + h);
-                    lst.add("# TYPE " + na + " " + col.typ);
-                } else {
-                    lst.add("# HELP " + nb + h);
-                    lst.add("# TYPE " + nb + " " + col.typ);
+                if (col.lab != null) {
+                    labs += "," + col.lab;
                 }
+                lst.add("# HELP " + nb + h);
+                lst.add("# TYPE " + nb + " " + col.typ);
                 String a = cl.get(col.num);
                 for (int i = 0; i < col.reps.size(); i++) {
                     servPrometheusRep rep = col.reps.get(i);
                     a = a.replaceAll(rep.src, rep.trg);
                 }
-                lst.add(nb + " " + a);
+                if (labs.length() > 0) {
+                    labs = "{" + labs.substring(1, labs.length()) + "}";
+                }
+                lst.add(nb + labs + " " + a);
             }
         }
         return lst;
@@ -496,9 +524,11 @@ class servPrometheusCol implements Comparator<servPrometheusCol> {
 
     public String nam;
 
+    public String lab;
+
     public String typ = "gauge";
 
-    public String hlp = null;
+    public String hlp;
 
     public tabGen<servPrometheusRep> reps = new tabGen<servPrometheusRep>();
 

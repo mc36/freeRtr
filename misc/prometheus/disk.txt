@@ -1,0 +1,10 @@
+ metric disk command flas disk /rtr/ | exc path
+ metric disk prepend system_disk_
+ metric disk column 1 name _bytes
+
+ metric flash command flas list /rtr/
+ metric flash prepend system_flash_
+ metric flash name 2
+ metric flash replace \. _
+ metric flash column 1 name _size
+ metric flash column 1 replace dir -1
