@@ -194,6 +194,7 @@ public class servPrometheus extends servGeneric implements prtServS {
             if (negated) {
                 met.acol = -1;
                 met.asep = null;
+                met.alab = null;
                 return false;
             }
             met.acol = bits.str2num(cmd.word());
