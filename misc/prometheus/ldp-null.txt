@@ -1,0 +1,17 @@
+ metric ldp4 command sho ipv4 ldp inet nulled-summary
+ metric ldp4 prepend ldp4_
+ metric ldp4 name 3
+ metric ldp4 skip 2
+ metric ldp4 replace \. _
+ metric ldp4 column 0 name _prefix_learn
+ metric ldp4 column 1 name _prefix_advert
+ metric ldp4 column 2 name _prefix_nulled
+
+ metric ldp6 command sho ipv6 ldp inet nulled-summary
+ metric ldp6 prepend ldp6_
+ metric ldp6 name 3
+ metric ldp6 skip 2
+ metric ldp6 replace \: _
+ metric ldp4 column 0 name _prefix_learn
+ metric ldp4 column 1 name _prefix_advert
+ metric ldp4 column 2 name _prefix_nulled
