@@ -437,6 +437,7 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
             }
             res.remove(0);
         }
+        List<String> smt = new ArrayList<String>();
         for (int p = 0; p < res.size(); p++) {
             cmds cm = new cmds("prom", res.get(p));
             List<String> cl = new ArrayList<String>();
@@ -451,44 +452,55 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
             if (col >= cls) {
                 continue;
             }
-            String na = prep + cl.get(col);
+            String na = prep;
+            String nc = cl.get(col);
+            String nd = "";
             if ((acol >= 0) && (acol < cls)) {
-                na += asep + cl.get(acol);
+                nd = asep + cl.get(acol);
             }
             for (int i = 0; i < reps.size(); i++) {
                 servPrometheusRep rep = reps.get(i);
                 na = na.replaceAll(rep.src, rep.trg);
+                nc = nc.replaceAll(rep.src, rep.trg);
+                nd = nd.replaceAll(rep.src, rep.trg);
+            }
+            if (lab == null) {
+                na += nc;
+                na += nd;
             }
             for (int o = 0; o < cols.size(); o++) {
-                servPrometheusCol col = cols.get(o);
-                if (cl.size() <= col.num) {
+                servPrometheusCol cc = cols.get(o);
+                if (cl.size() <= cc.num) {
                     continue;
                 }
                 String nb = na;
-                if (!col.nam.equals("*")) {
-                    nb += col.nam;
+                if (!cc.nam.equals("*")) {
+                    nb += cc.nam;
                 }
                 String labs = "";
                 if (lab != null) {
-                    labs += "," + lab;
+                    labs += "," + lab + "\"" + nc + "\"";
                 }
                 if (alab != null) {
-                    labs += "," + alab;
+                    labs += "," + alab + "\"" + nd + "\"";
                 }
-                String h;
-                if (col.hlp == null) {
-                    h = " column " + col.num + " of " + cmd;
-                } else {
-                    h = " " + col.hlp;
+                if (cc.lab != null) {
+                    labs += "," + cc.lab;
                 }
-                if (col.lab != null) {
-                    labs += "," + col.lab;
+                if (smt.indexOf(nb) < 0) {
+                    String h;
+                    if (cc.hlp == null) {
+                        h = " column " + cc.num + " of " + cmd;
+                    } else {
+                        h = " " + cc.hlp;
+                    }
+                    lst.add("# HELP " + nb + h);
+                    lst.add("# TYPE " + nb + " " + cc.typ);
+                    smt.add(nb);
                 }
-                lst.add("# HELP " + nb + h);
-                lst.add("# TYPE " + nb + " " + col.typ);
-                String a = cl.get(col.num);
-                for (int i = 0; i < col.reps.size(); i++) {
-                    servPrometheusRep rep = col.reps.get(i);
+                String a = cl.get(cc.num);
+                for (int i = 0; i < cc.reps.size(); i++) {
+                    servPrometheusRep rep = cc.reps.get(i);
                     a = a.replaceAll(rep.src, rep.trg);
                 }
                 if (labs.length() > 0) {
