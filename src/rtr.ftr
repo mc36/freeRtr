@@ -2118,6 +2118,7 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: fully paraeterizable sho dash
 todo: nat and pbr config to have reindex
 todo: chatscript and authlist to use tablisting and have reindex
 todo: looking glass rfc8522
