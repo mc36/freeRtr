@@ -65,6 +65,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         "server prometheus .*! protocol " + proto2string(protoAllStrm),
         "server prometheus .*! all-metrics metrics",
         "server prometheus .*! metric .* name 0",
+        "server prometheus .*! no metric .* labels",
         "server prometheus .*! metric .* addname -1 null",
         "server prometheus .*! metric .* skip 1",
         "server prometheus .*! no metric .* excluded",
@@ -116,6 +117,11 @@ public class servPrometheus extends servGeneric implements prtServS {
                 a = " " + met.lab;
             }
             lst.add(mn + " name " + met.col + a);
+            if (met.slab != null) {
+                lst.add(mn + " labels " + met.slab);
+            } else {
+                lst.add(nn + " labels");
+            }
             lst.add(mn + " addname " + met.acol + " " + met.asep);
             lst.add(mn + " skip " + met.skp);
             if (met.exc) {
@@ -179,6 +185,14 @@ public class servPrometheus extends servGeneric implements prtServS {
         }
         if (s.equals("prepend")) {
             met.prep = cmd.word();
+            return false;
+        }
+        if (s.equals("labels")) {
+            if (negated) {
+                met.slab = null;
+            } else {
+                met.slab = cmd.word();
+            }
             return false;
         }
         if (s.equals("name")) {
@@ -284,6 +298,8 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("4 4,.      <str>                  command");
         l.add("3 4      prepend                  specify metric name to prepend");
         l.add("4 .        <str>                  name");
+        l.add("3 4      labels                   static labels");
+        l.add("4 .        <str>                  name");
         l.add("3 4      name                     name column number");
         l.add("4 5,.      <num>                  column number");
         l.add("5 .          <str>                label");
@@ -373,6 +389,8 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
     public String prep;
 
     public int col;
+
+    public String slab;
 
     public String lab;
 
@@ -479,6 +497,9 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                     nb += cc.nam;
                 }
                 String labs = "";
+                if (slab != null) {
+                    labs += "," + slab;
+                }
                 if (lab != null) {
                     labs += "," + lab + "\"" + nc + "\"";
                 }
