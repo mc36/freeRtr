@@ -308,6 +308,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public int groupMember = -1;
 
     /**
+     * last time advertised
+     */
+    public long advertLast;
+
+    /**
+     * advertise count
+     */
+    public int advertCount;
+
+    /**
      * neighbor reachable
      */
     public boolean reachable = false;
@@ -451,6 +461,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("version = " + conn.adversion + " of " + lower.compRound + ", needfull=" + conn.needFull + ", buffull=" + conn.buffFull);
         l.add("full = " + fullCount + ", " + bits.time2str(cfgAll.timeZoneName, fullLast + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(fullLast) + " ago, " + fullTime + " ms");
         l.add("incr = " + incrCount + ", " + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(incrLast) + " ago, " + incrTime + " ms");
+        l.add("sent = " + advertCount + ", " + bits.time2str(cfgAll.timeZoneName, advertLast + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(advertLast) + " ago");
         l.add("connection = " + conn.cntr.getShStat());
         l.add("uncompressed = " + conn.compressCntr.getShStat());
         l.add("buffer = " + pipeSide.getStatus(conn.pipe));
@@ -808,11 +819,22 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             conn.needFull.add(1);
             return;
         }
+        if (advertIntrval > 0) {
+            if ((bits.getTime() - advertLast) < advertIntrval) {
+                return;
+            }
+        }
         boolean b;
+        long advs = conn.cntr.packTx;
         if (conn.needFull.get() != 0) {
             b = advertFull();
         } else {
             b = advertIncr();
+        }
+        advs = conn.cntr.packTx - advs;
+        if (advs > 0) {
+            advertLast = bits.getTime();
+            advertCount++;
         }
         if (b) {
             conn.needFull.add(1);
