@@ -309,7 +309,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("5 .          <str>                label");
         l.add("3 4      addname                  add name column number");
         l.add("4 5        <num>                  column number");
-        l.add("5 6,.        <str>                separator, *=empty");
+        l.add("5 6,.        <str>                separator, * means empty");
         l.add("6 .            <str>              label");
         l.add("3 .      excluded                 exclude from whole reporting");
         l.add("3 4      skip                     rows to skip");
