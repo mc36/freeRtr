@@ -914,6 +914,11 @@ public class userExec {
         hl.add("2 3      prometheus              prometheus protocol information");
         hl.add("3 4,.      <name>                prometheus name");
         hl.add("4 .          <name>              metric name");
+        hl.add("2 3      streamingmdt            streaming telemetry protocol information");
+        hl.add("3 4,.      <name>                streamingmdt name");
+        hl.add("4 5,.        <name>              peer");
+        hl.add("5 6            <name>            path");
+        hl.add("6 .              <name>          key");
         hl.add("2 3      bmp                     bgp monitoring protocol information");
         hl.add("3 4,.      <name>                bmp name");
         hl.add("4 5          <addr>              from");
@@ -1494,6 +1499,8 @@ public class userExec {
         hl.add("2 3,.    xml                     decode xml");
         hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    json                    decode json");
+        hl.add("3 3,.      <str>                 parameter");
+        hl.add("2 3,.    protobuf                decode protobuf");
         hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    addr                    decode address");
         hl.add("3 3,.      <str>                 parameter");

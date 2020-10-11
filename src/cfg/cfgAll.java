@@ -81,6 +81,7 @@ import serv.servOpenflow;
 import serv.servP4lang;
 import serv.servPcep;
 import serv.servPrometheus;
+import serv.servStreamingMdt;
 import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -521,6 +522,11 @@ public class cfgAll {
      * prometheus daemons
      */
     public static final servGenList<servPrometheus> dmnPrometheus = new servGenList<servPrometheus>();
+
+    /**
+     * streaming telemetry daemons
+     */
+    public static final servGenList<servStreamingMdt> dmnStreamingMdt = new servGenList<servStreamingMdt>();
 
     /**
      * bstun daemons
@@ -3169,6 +3175,7 @@ public class cfgAll {
         dmnRpki.getShRun(l, filter);
         dmnNrpe.getShRun(l, filter);
         dmnPrometheus.getShRun(l, filter);
+        dmnStreamingMdt.getShRun(l, filter);
         dmnBStun.getShRun(l, filter);
         dmnStun.getShRun(l, filter);
         dmnPckOudp.getShRun(l, filter);

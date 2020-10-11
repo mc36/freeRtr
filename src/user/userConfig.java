@@ -118,6 +118,7 @@ import serv.servOpenflow;
 import serv.servP4lang;
 import serv.servPcep;
 import serv.servPrometheus;
+import serv.servStreamingMdt;
 import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -713,6 +714,8 @@ public class userConfig {
         l.add("2  3    nrpe                         configure a nrpe server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    prometheus                   configure a prometheus server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    streamingmdt                 configure a streaming telemetry server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    bstun                        configure a bstun server");
         l.add("3  .      <name>                     name of server");
@@ -1316,6 +1319,10 @@ public class userConfig {
             }
             if (a.equals("prometheus")) {
                 daemonMake(new servPrometheus(), cfgAll.dmnPrometheus);
+                return;
+            }
+            if (a.equals("streamingmdt")) {
+                daemonMake(new servStreamingMdt(), cfgAll.dmnStreamingMdt);
                 return;
             }
             if (a.equals("bstun")) {
@@ -2118,6 +2125,10 @@ public class userConfig {
             }
             if (a.equals("prometheus")) {
                 daemonErase(new servPrometheus(), cfgAll.dmnPrometheus);
+                return;
+            }
+            if (a.equals("streamingmdt")) {
+                daemonErase(new servStreamingMdt(), cfgAll.dmnStreamingMdt);
                 return;
             }
             if (a.equals("bstun")) {

@@ -775,6 +775,17 @@ public class cryAsn1 {
         if (cmd.size() < 1) {
             return false;
         }
+        buf = hex2bytes(cmd);
+        return false;
+    }
+
+    /**
+     * convert text to bytes
+     *
+     * @param cmd text
+     * @return bytes
+     */
+    public static byte[] hex2bytes(cmds cmd) {
         List<Integer> lst = new ArrayList<Integer>();
         for (;;) {
             String s = cmd.word();
@@ -783,11 +794,11 @@ public class cryAsn1 {
             }
             lst.add(bits.fromHex(s));
         }
-        buf = new byte[lst.size()];
+        byte[] buf = new byte[lst.size()];
         for (int i = 0; i < buf.length; i++) {
             buf[i] = (byte) ((int) lst.get(i));
         }
-        return false;
+        return buf;
     }
 
     /**

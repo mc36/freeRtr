@@ -82,6 +82,7 @@ import serv.servOpenflow;
 import serv.servP4lang;
 import serv.servPcep;
 import serv.servPrometheus;
+import serv.servStreamingMdt;
 import serv.servUdpFwd;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
@@ -610,6 +611,7 @@ public class cfgInit implements Runnable {
         servRpki.defaultF = createFilter(servRpki.defaultL, srvdefsF);
         servNrpe.defaultF = createFilter(servNrpe.defaultL, srvdefsF);
         servPrometheus.defaultF = createFilter(servPrometheus.defaultL, srvdefsF);
+        servStreamingMdt.defaultF = createFilter(servStreamingMdt.defaultL, srvdefsF);
         servCharGen.defaultF = createFilter(servCharGen.defaultL, srvdefsF);
         servOpenflow.defaultF = createFilter(servOpenflow.defaultL, srvdefsF);
         servP4lang.defaultF = createFilter(servP4lang.defaultL, srvdefsF);

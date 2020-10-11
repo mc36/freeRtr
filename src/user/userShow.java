@@ -58,6 +58,7 @@ import rtr.rtrRip6neigh;
 import serv.servBmp2mrt;
 import serv.servNrpe;
 import serv.servPrometheus;
+import serv.servStreamingMdt;
 import tab.tabGen;
 import tab.tabIntMatcher;
 import tab.tabLabel;
@@ -417,6 +418,27 @@ public class userShow {
                 return null;
             }
             cmd.badCmd();
+            return null;
+        }
+        if (a.equals("streamingmdt")) {
+            servStreamingMdt srv = cfgAll.srvrFind(new servStreamingMdt(), cfgAll.dmnStreamingMdt, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            if (cmd.size() < 1) {
+                rdr.putStrTab(srv.getShow());
+                return null;
+            }
+            addrIP adr = new addrIP();
+            adr.fromString(cmd.word());
+            if (cmd.size() < 1) {
+                rdr.putStrTab(srv.getShow(adr));
+                return null;
+            }
+            String p = cmd.word();
+            String k = cmd.word();
+            rdr.putStrTab(srv.getShow(adr, p, k));
             return null;
         }
         if (a.equals("prometheus")) {

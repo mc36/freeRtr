@@ -74,6 +74,7 @@ import util.cmds;
 import util.extMrkLng;
 import util.jasOn;
 import util.logger;
+import util.protoBuf;
 import util.uniResLoc;
 
 /**
@@ -239,6 +240,18 @@ public class userTest {
             cmd.error("orig: " + json.orig);
             cmd.error("done: " + json.toJSONstr());
             doShow(json.show());
+            return null;
+        }
+        if (a.equals("protobuf")) {
+            byte[] buf = cryAsn1.hex2bytes(cmd);
+            packHolder pck = new packHolder(true, true);
+            pck.putCopy(buf, 0, 0, buf.length);
+            pck.putSkip(buf.length);
+            pck.merge2beg();
+            cmd.error("orig: " + pck.dump());
+            protoBuf pb = protoBuf.parseOne(pck);
+            cmd.error("done: " + pb.toPacket().dump());
+            doShow(pb.show());
             return null;
         }
         if (a.equals("url")) {
