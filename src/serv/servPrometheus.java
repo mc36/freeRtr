@@ -122,7 +122,11 @@ public class servPrometheus extends servGeneric implements prtServS {
             } else {
                 lst.add(nn + " labels");
             }
-            lst.add(mn + " addname " + met.acol + " " + met.asep);
+            a = "";
+            if (met.alab != null) {
+                a = " " + met.alab;
+            }
+            lst.add(mn + " addname " + met.acol + " " + met.asep + a);
             lst.add(mn + " skip " + met.skp);
             if (met.exc) {
                 lst.add(mn + " excluded");
@@ -305,7 +309,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("5 .          <str>                label");
         l.add("3 4      addname                  add name column number");
         l.add("4 5        <num>                  column number");
-        l.add("5 6,.        <str>                separator");
+        l.add("5 6,.        <str>                separator, *=empty");
         l.add("6 .            <str>              label");
         l.add("3 .      excluded                 exclude from whole reporting");
         l.add("3 4      skip                     rows to skip");
@@ -475,7 +479,11 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
             String nc = cl.get(col);
             String nd = "";
             if ((acol >= 0) && (acol < cls)) {
-                nd = asep + cl.get(acol);
+                String a = asep;
+                if (asep.equals("*")) {
+                    a = "";
+                }
+                nd = a + cl.get(acol);
             }
             for (int i = 0; i < reps.size(); i++) {
                 servPrometheusRep rep = reps.get(i);
