@@ -98,7 +98,6 @@ bridge 1
  rt-import 65535:1
  rt-export 65535:1
  mac-learn
- mac-move
  private-bridge
  exit
 !
@@ -107,7 +106,6 @@ bridge 2
  rt-import 65535:2
  rt-export 65535:2
  mac-learn
- mac-move
  private-bridge
  exit
 !
@@ -116,7 +114,6 @@ bridge 3
  rt-import 65535:1
  rt-export 65535:1
  mac-learn
- mac-move
  private-bridge
  exit
 !
@@ -125,7 +122,6 @@ bridge 4
  rt-import 65535:2
  rt-export 65535:2
  mac-learn
- mac-move
  private-bridge
  exit
 !
@@ -901,6 +897,270 @@ server dns ns
 server sip lab
  protocol ipv4 ipv6 tcp udp
  interface loopback0
+ vrf v1
+ exit
+!
+server prometheus home
+ metric bfd4 command sho ipv4 bfd inet neighbor
+ metric bfd4 prepend bfd4_
+ metric bfd4 name 1 ip=
+ metric bfd4 replace \. _
+ metric bfd4 column 2 name state
+ metric bfd4 column 2 replace down 0
+ metric bfd4 column 2 replace init 1
+ metric bfd4 column 2 replace shut -1
+ metric bfd4 column 2 replace up 2
+ metric bfd6 command sho ipv6 bfd inet neighbor
+ metric bfd6 prepend bfd6_
+ metric bfd6 name 1 ip=
+ metric bfd6 replace \: _
+ metric bfd6 column 2 name state
+ metric bfd6 column 2 replace down 0
+ metric bfd6 column 2 replace init 1
+ metric bfd6 column 2 replace shut -1
+ metric bfd6 column 2 replace up 2
+ metric bgp4peer command sho ipv4 bgp 65535 summ
+ metric bgp4peer prepend bgp4_peer_
+ metric bgp4peer name 4 peer=
+ metric bgp4peer replace \. _
+ metric bgp4peer column 1 name learn
+ metric bgp4peer column 2 name advert
+ metric bgp4peer column 3 name state
+ metric bgp4peer column 3 replace false 0
+ metric bgp4peer column 3 replace true 1
+ metric bgp4perf command sho ipv4 bgp 65535 best | exc last
+ metric bgp4perf prepend bgp4_perf_
+ metric bgp4perf replace \s _
+ metric bgp4perf column 1 name val
+ metric bgp6peer command sho ipv6 bgp 65535 summ
+ metric bgp6peer prepend bgp6_peer_
+ metric bgp6peer name 4 peer=
+ metric bgp6peer replace \: _
+ metric bgp6peer column 1 name learn
+ metric bgp6peer column 2 name advert
+ metric bgp6peer column 3 name state
+ metric bgp6peer column 3 replace false 0
+ metric bgp6peer column 3 replace true 1
+ metric bgp6perf command sho ipv6 bgp 65535 best | exc last
+ metric bgp6perf prepend bgp6_perf_
+ metric bgp6perf replace \s _
+ metric bgp6perf column 1 name val
+ metric bmp command sho bmp bmp
+ metric bmp prepend bmp_
+ metric bmp name 0 from=
+ metric bmp addname 1 *
+ metric bmp replace \. _
+ metric bmp replace \: _
+ metric bmp column 2 name asn
+ metric bmp column 3 name state
+ metric bmp column 3 replace false 0
+ metric bmp column 3 replace true 1
+ metric bmp column 4 name flaps
+ metric disk command flas disk /rtr/ | exc path
+ metric disk prepend system_disk_
+ metric disk column 1 name _bytes
+ metric dvigp4int command sho ipv4 pvrp 1 interface
+ metric dvigp4int prepend dvigp4_iface_
+ metric dvigp4int name 0 proto="pvrp1",ifc=
+ metric dvigp4int replace \. _
+ metric dvigp4int column 1 name neighbors
+ metric dvigp4peer command sho ipv4 pvrp 1 summary
+ metric dvigp4peer prepend dvigp4_peers_
+ metric dvigp4peer name 4 proto="pvrp1",ip=
+ metric dvigp4peer replace \. _
+ metric dvigp4peer column 5 name learn
+ metric dvigp4peer column 6 name advert
+ metric dvigp6int command sho ipv6 pvrp 1 interface
+ metric dvigp6int prepend dvigp6_iface_
+ metric dvigp6int name 0 proto="pvrp1",ifc=
+ metric dvigp6int replace \. _
+ metric dvigp6int column 1 name neighbors
+ metric dvigp6peer command sho ipv6 pvrp 1 summary
+ metric dvigp6peer prepend dvigp6_peers_
+ metric dvigp6peer name 4 proto="pvrp1",ip=
+ metric dvigp6peer replace \: _
+ metric dvigp6peer column 5 name learn
+ metric dvigp6peer column 6 name advert
+ metric flash command flas list /rtr/
+ metric flash prepend system_flash_
+ metric flash name 2 name=
+ metric flash replace \- _
+ metric flash replace \. _
+ metric flash column 1 name size
+ metric flash column 1 replace dir -1
+ metric gc command sho watchdog gc | exc name
+ metric gc prepend system_gc_
+ metric gc replace \s _
+ metric gc column 1 name _val
+ metric inthw command sho inter hwsumm
+ metric inthw prepend iface_hw_
+ metric inthw name 0 ifc=
+ metric inthw replace \. _
+ metric inthw column 1 name st
+ metric inthw column 1 replace admin -1
+ metric inthw column 1 replace down 0
+ metric inthw column 1 replace up 1
+ metric inthw column 2 name tx
+ metric inthw column 3 name rx
+ metric inthw column 4 name dr
+ metric intsw command sho inter summ
+ metric intsw prepend iface_sw_
+ metric intsw name 0 ifc=
+ metric intsw replace \. _
+ metric intsw column 1 name st
+ metric intsw column 1 replace admin -1
+ metric intsw column 1 replace down 0
+ metric intsw column 1 replace up 1
+ metric intsw column 2 name tx
+ metric intsw column 3 name rx
+ metric intsw column 4 name dr
+ metric ldp4nul command sho ipv4 ldp inet nulled-summary
+ metric ldp4nul prepend ldp4null_
+ metric ldp4nul name 3 ip=
+ metric ldp4nul skip 2
+ metric ldp4nul replace \. _
+ metric ldp4nul column 0 name prefix_learn
+ metric ldp4nul column 1 name prefix_advert
+ metric ldp4nul column 2 name prefix_nulled
+ metric ldp4sum command sho ipv4 ldp inet summary
+ metric ldp4sum prepend ldp4_
+ metric ldp4sum name 6 ip=
+ metric ldp4sum skip 2
+ metric ldp4sum replace \. _
+ metric ldp4sum column 0 name prefix_learn
+ metric ldp4sum column 1 name prefix_advert
+ metric ldp4sum column 2 name layer2_learn
+ metric ldp4sum column 3 name layer2_advert
+ metric ldp4sum column 4 name p2mp_learn
+ metric ldp4sum column 5 name p2mp_advert
+ metric ldp6nul command sho ipv6 ldp inet nulled-summary
+ metric ldp6nul prepend ldp6null_
+ metric ldp6nul name 3 ip=
+ metric ldp6nul skip 2
+ metric ldp6nul replace \: _
+ metric ldp6nul column 0 name prefix_learn
+ metric ldp6nul column 1 name prefix_advert
+ metric ldp6nul column 2 name prefix_nulled
+ metric ldp6sum command sho ipv6 ldp inet summary
+ metric ldp6sum prepend ldp6_
+ metric ldp6sum name 6 ip=
+ metric ldp6sum skip 2
+ metric ldp6sum replace \: _
+ metric ldp6sum column 0 name prefix_learn
+ metric ldp6sum column 1 name prefix_advert
+ metric ldp6sum column 2 name layer2_learn
+ metric ldp6sum column 3 name layer2_advert
+ metric ldp6sum column 4 name p2mp_learn
+ metric ldp6sum column 5 name p2mp_advert
+ metric lsigp4int command sho ipv4 lsrp 1 interface
+ metric lsigp4int prepend lsigp4_iface_
+ metric lsigp4int name 0 proto="lsrp1",ifc=
+ metric lsigp4int replace \. _
+ metric lsigp4int column 1 name neighbors
+ metric lsigp4peer command sho ipv4 lsrp 1 topology
+ metric lsigp4peer prepend lsigp4_peers_
+ metric lsigp4peer name 0 proto="lsrp1",node=
+ metric lsigp4peer replace \. _
+ metric lsigp4peer column 1 name reachable
+ metric lsigp4peer column 1 replace false 0
+ metric lsigp4peer column 1 replace true 1
+ metric lsigp4peer column 6 name neighbors
+ metric lsigp4perf command sho ipv4 lsrp 1 spf | inc reachable|fill|calc|run
+ metric lsigp4perf prepend lsigp4_perf_
+ metric lsigp4perf labels proto="lsrp1"
+ metric lsigp4perf skip 0
+ metric lsigp4perf column 1 name val
+ metric lsigp6int command sho ipv6 lsrp 1 interface
+ metric lsigp6int prepend lsigp6_iface_
+ metric lsigp6int name 0 proto="lsrp1",ifc=
+ metric lsigp6int replace \. _
+ metric lsigp6int column 1 name neighbors
+ metric lsigp6peer command sho ipv6 lsrp 1 topology
+ metric lsigp6peer prepend lsigp6_peers_
+ metric lsigp6peer name 0 proto="lsrp1",node=
+ metric lsigp6peer replace \. _
+ metric lsigp6peer column 1 name reachable
+ metric lsigp6peer column 1 replace false 0
+ metric lsigp6peer column 1 replace true 1
+ metric lsigp6peer column 6 name neighbors
+ metric lsigp6perf command sho ipv6 lsrp 1 spf | inc reachable|fill|calc|run
+ metric lsigp6perf prepend lsigp6_perf_
+ metric lsigp6perf labels proto="lsrp1"
+ metric lsigp6perf skip 0
+ metric lsigp6perf column 1 name val
+ metric nrpe command sho nrpe home
+ metric nrpe prepend nrpe_
+ metric nrpe name 0 name=
+ metric nrpe skip 2
+ metric nrpe column 1 name state
+ metric nrpe column 1 replace false 0
+ metric nrpe column 1 replace true 1
+ metric nrpe column 2 name asked
+ metric nrpe column 3 name time
+ metric nrpe column 4 name passed
+ metric nrpe column 6 name failed
+ metric prom command sho prometheus home
+ metric prom prepend prom_
+ metric prom name 0 met=
+ metric prom column 1 name asked
+ metric prom column 2 name time
+ metric routing4 command sho ipv4 protocol inet | beg computed
+ metric routing4 prepend routing_
+ metric routing4 name 0 proto=
+ metric routing4 addname 1 *
+ metric routing4 skip 2
+ metric routing4 column 2 name ifaces
+ metric routing4 column 3 name neighbors
+ metric routing4 column 4 name computed_unicast
+ metric routing4 column 5 name computed_multicast
+ metric routing4 column 6 name computed_flowspec
+ metric routing4 column 7 name computed_changed
+ metric routing4 column 9 name redisted_unicast
+ metric routing4 column 10 name redisted_multicast
+ metric routing4 column 11 name redisted_flowspec
+ metric routing4 column 12 name redisted_changed
+ metric routing6 command sho ipv6 protocol inet | beg computed
+ metric routing6 prepend routing_
+ metric routing6 name 0 proto=
+ metric routing6 addname 1 *
+ metric routing6 skip 2
+ metric routing6 column 2 name ifaces
+ metric routing6 column 3 name neighbors
+ metric routing6 column 4 name computed_unicast
+ metric routing6 column 5 name computed_multicast
+ metric routing6 column 6 name computed_flowspec
+ metric routing6 column 7 name computed_changed
+ metric routing6 column 9 name redisted_unicast
+ metric routing6 column 10 name redisted_multicast
+ metric routing6 column 11 name redisted_flowspec
+ metric routing6 column 12 name redisted_changed
+ metric sys command sho watchdog sys | exc name
+ metric sys prepend system_
+ metric sys replace \s _
+ metric sys column 1 name _val
+ metric tracker command sho tracker
+ metric tracker prepend tracker_
+ metric tracker name 0 name=
+ metric tracker replace \- _
+ metric tracker column 4 name state
+ metric tracker column 4 replace down 0
+ metric tracker column 4 replace up 1
+ metric vrf command sho vrf routing
+ metric vrf prepend vrf_
+ metric vrf name 0 name=
+ metric vrf skip 2
+ metric vrf column 2 name v4 type="ifc"
+ metric vrf column 3 name v6 type="ifc"
+ metric vrf column 4 name v4 type="uni"
+ metric vrf column 5 name v6 type="uni"
+ metric vrf column 6 name v4 type="multi"
+ metric vrf column 7 name v6 type="multi"
+ metric vrf column 8 name v4 type="flow"
+ metric vrf column 9 name v6 type="flow"
+ metric vrf column 10 name v4 type="label"
+ metric vrf column 11 name v6 type="label"
+ metric vrf column 12 name v4 type="conn"
+ metric vrf column 13 name v6 type="conn"
  vrf v1
  exit
 !

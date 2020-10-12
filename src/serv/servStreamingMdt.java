@@ -31,6 +31,132 @@ public class servStreamingMdt extends servGeneric implements prtServS {
      * default port
      */
     public final static int port = 9002;
+
+    /**
+     * report node string - string
+     */
+    public final static int rpNodeStr = 1;
+
+    /**
+     * report node uuid - bytes
+     */
+    public final static int rpNodeUuid = 2;
+
+    /**
+     * report subscription string - string
+     */
+    public final static int rpSubsStr = 3;
+
+    /**
+     * report subscription id - uint32
+     */
+    public final static int rpSubsId = 4;
+
+    /**
+     * report sensor path - string
+     */
+    public final static int rpSens = 5;
+
+    /**
+     * report encoding path - string
+     */
+    public final static int rpEnc = 6;
+
+    /**
+     * report model version - string
+     */
+    public final static int rpModl = 7;
+
+    /**
+     * report collection id - uint64
+     */
+    public final static int rpColl = 8;
+
+    /**
+     * report collection start - uint64
+     */
+    public final static int rpStart = 9;
+
+    /**
+     * report message timestamp - uint64
+     */
+    public final static int rpTime = 10;
+
+    /**
+     * report kv gpb - repeated entry
+     */
+    public final static int rpKvgpb = 11;
+
+    /**
+     * report gpb - gpb table
+     */
+    public final static int rpGpb = 12;
+
+    /**
+     * report collection stop - uint64
+     */
+    public final static int rpStop = 13;
+
+    /**
+     * field timestamp
+     */
+    public final static int fnTime = 1;
+
+    /**
+     * field name
+     */
+    public final static int fnName = 2;
+
+    /**
+     * field bytes
+     */
+    public final static int fnByte = 4;
+
+    /**
+     * field string
+     */
+    public final static int fnString = 5;
+
+    /**
+     * field boolean
+     */
+    public final static int fnBool = 6;
+
+    /**
+     * field uint32
+     */
+    public final static int fnUint32 = 7;
+
+    /**
+     * field uint64
+     */
+    public final static int fnUint64 = 8;
+
+    /**
+     * field sint32
+     */
+    public final static int fnSint32 = 9;
+
+    /**
+     * field sint64
+     */
+    public final static int fnSint64 = 10;
+
+    /**
+     * field double
+     */
+    public final static int fnDouble = 11;
+
+    /**
+     * field float
+     */
+    public final static int fnFloat = 12;
+
+    /**
+     * field subfields
+     */
+    public final static int fnFields = 15;
+
     /**
      * defaults text
      */
@@ -42,6 +168,74 @@ public class servStreamingMdt extends servGeneric implements prtServS {
      * defaults filter
      */
     public static tabGen<userFilter> defaultF;
+
+    /**
+     * convert type to string
+     *
+     * @param i type
+     * @return string
+     */
+    public static String type2string(int i) {
+        switch (i) {
+            case fnByte:
+                return "bytes";
+            case fnString:
+                return "string";
+            case fnBool:
+                return "boolean";
+            case fnUint32:
+                return "uint32";
+            case fnUint64:
+                return "uint64";
+            case fnSint32:
+                return "sint32";
+            case fnSint64:
+                return "sint64";
+            case fnDouble:
+                return "double";
+            case fnFloat:
+                return "float";
+            default:
+                return "unknown";
+        }
+    }
+
+    /**
+     * convert string to type
+     *
+     * @param a string
+     * @return type, -1 on error
+     */
+    public static int string2type(String a) {
+        if (a.equals("bytes")) {
+            return fnByte;
+        }
+        if (a.equals("string")) {
+            return fnString;
+        }
+        if (a.equals("boolean")) {
+            return fnBool;
+        }
+        if (a.equals("uint32")) {
+            return fnUint32;
+        }
+        if (a.equals("uint64")) {
+            return fnUint64;
+        }
+        if (a.equals("sint32")) {
+            return fnSint32;
+        }
+        if (a.equals("sint64")) {
+            return fnSint64;
+        }
+        if (a.equals("double")) {
+            return fnDouble;
+        }
+        if (a.equals("float")) {
+            return fnFloat;
+        }
+        return -1;
+    }
 
     /**
      * clients
@@ -211,11 +405,11 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
     }
 
     private protoBufEntry getSubfld(protoBuf pb, int seq) {
-        return pb.getField(15, seq); // telemetry field
+        return pb.getField(servStreamingMdt.fnFields, seq); // telemetry field
     }
 
     private String getName(protoBuf pb) {
-        protoBufEntry res = pb.getField(2, 0); // name
+        protoBufEntry res = pb.getField(servStreamingMdt.fnName, 0); // name
         if (res == null) {
             return null;
         }
@@ -223,39 +417,39 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
     }
 
     private String getValue(protoBuf pb) {
-        protoBufEntry res = pb.getField(4, 0); // bytes
+        protoBufEntry res = pb.getField(servStreamingMdt.fnByte, 0); // bytes
         if (res != null) {
             return bits.byteDump(res.dat, 0, -1);
         }
-        res = pb.getField(5, 0); // string
+        res = pb.getField(servStreamingMdt.fnString, 0); // string
         if (res != null) {
             return res.getString();
         }
-        res = pb.getField(6, 0); // boolean
+        res = pb.getField(servStreamingMdt.fnBool, 0); // boolean
         if (res != null) {
             return "" + (res.val != 0);
         }
-        res = pb.getField(7, 0); // uint32
+        res = pb.getField(servStreamingMdt.fnUint32, 0); // uint32
         if (res != null) {
             return "" + res.val;
         }
-        res = pb.getField(8, 0); // uint64
+        res = pb.getField(servStreamingMdt.fnUint64, 0); // uint64
         if (res != null) {
             return "" + res.val;
         }
-        res = pb.getField(9, 0); // sint32
+        res = pb.getField(servStreamingMdt.fnSint32, 0); // sint32
         if (res != null) {
             return "" + protoBuf.fromZigzag(res.val);
         }
-        res = pb.getField(10, 0); // sint64
+        res = pb.getField(servStreamingMdt.fnSint64, 0); // sint64
         if (res != null) {
             return "" + protoBuf.fromZigzag(res.val);
         }
-        res = pb.getField(11, 0); // double
+        res = pb.getField(servStreamingMdt.fnDouble, 0); // double
         if (res != null) {
             return "" + Double.longBitsToDouble(res.val);
         }
-        res = pb.getField(12, 0); // float
+        res = pb.getField(servStreamingMdt.fnFloat, 0); // float
         if (res != null) {
             return "" + Float.intBitsToFloat((int) res.val);
         }
@@ -361,20 +555,20 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
                 if (pb.fromPacket(pck)) {
                     break;
                 }
-                res = pb.getField(1, 0); // node id
+                res = pb.getField(servStreamingMdt.rpNodeStr, 0); // node id
                 if (res == null) {
                     break;
                 }
                 node = res.getString();
                 tim = bits.getTime();
                 num++;
-                res = pb.getField(6, 0); // encoding path
+                res = pb.getField(servStreamingMdt.rpEnc, 0); // encoding path
                 if (res == null) {
                     break;
                 }
                 String path = res.getString();
                 for (int i = 0;; i++) {
-                    res = pb.getField(11, i); // telemetry field
+                    res = pb.getField(servStreamingMdt.rpKvgpb, i); // telemetry field
                     if (res == null) {
                         break;
                     }

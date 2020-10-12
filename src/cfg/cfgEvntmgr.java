@@ -62,7 +62,7 @@ public class cfgEvntmgr implements Comparator<cfgEvntmgr>, cfgGeneric {
     public static tabGen<userFilter> defaultF;
 
     /**
-     * create new access list
+     * create new event manager
      */
     public cfgEvntmgr() {
         script = new tabListing<tabEvntmgrN, addrIP>();
@@ -123,7 +123,7 @@ public class cfgEvntmgr implements Comparator<cfgEvntmgr>, cfgGeneric {
         l.add("1  3,. tcl                   specify tcl command to execute");
         l.add("3  3,.   <str>               text");
         l.add("1  .   suppress              suppress the log");
-        l.add("1  2,. reindex               reindex access list");
+        l.add("1  2,. reindex               reindex event manager");
         l.add("2  3,.   [num]               initial number to start with");
         l.add("3  4,.     [num]             increment number");
         return l;

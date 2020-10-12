@@ -323,7 +323,8 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("6 7,.          <str>              metric name, * means empty");
         l.add("7 .              <str>            label");
         l.add("5 6          type                 set metric type");
-        l.add("6 .            <str>              metric type");
+        l.add("6 .            gauge              gauge");
+        l.add("6 .            counter            counter");
         l.add("5 6          help                 set metric help");
         l.add("6 6,.          <str>              metric help");
         l.add("5 6          replace              define replaces in value");

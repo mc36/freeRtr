@@ -1,0 +1,9 @@
+ check ospf4 command sho ipv4 ospf 1 spf | include able
+ check ospf4 train
+ check ospf4 description ipv4 ospf reachability
+ check ospf4 error nodes changed
+
+ check ospf6 command sho ipv6 ospf 1 spf | include able
+ check ospf6 train
+ check ospf4 description ipv6 ospf reachability
+ check ospf4 error nodes changed

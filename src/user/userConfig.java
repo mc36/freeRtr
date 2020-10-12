@@ -39,6 +39,8 @@ import cfg.cfgScrpt;
 import cfg.cfgTrack;
 import cfg.cfgVdc;
 import cfg.cfgPrcss;
+import cfg.cfgTlmtdst;
+import cfg.cfgTlmtexp;
 import cfg.cfgTrnsltn;
 import cfg.cfgVpdn;
 import cfg.cfgVrf;
@@ -555,8 +557,13 @@ public class userConfig {
         l.add("3  .      <name>                     name of object group");
         l.add("1  2  access-list                    build an access list");
         l.add("2  .    <name>                       name of access list");
+        l.add("1  2  telemetry                      telemetry configuration");
+        l.add("2  3    exporter                     build a exported");
+        l.add("3  .      <name>                     name of exporter");
+        l.add("2  3    destination                  specify a collector");
+        l.add("3  .      <name>                     name of collector");
         l.add("1  2  event-manager                  build an event manager");
-        l.add("2  .    <name>                       name of access list");
+        l.add("2  .    <name>                       name of event manager");
         l.add("1  2  prefix-list                    build a prefix list");
         l.add("2  .    <name>                       name of prefix list");
         l.add("1  2  route-map                      build a route map");
@@ -1019,6 +1026,28 @@ public class userConfig {
                 return;
             }
             modeV = modes.config;
+            return;
+        }
+        if (a.equals("telemetry")) {
+            a = cmd.word();
+            if (a.equals("exporter")) {
+                modeDconfig = cfgAll.tlmexFind(cmd.word(), true);
+                if (modeDconfig == null) {
+                    cmd.error("bad exporter name");
+                    return;
+                }
+                modeV = modes.config;
+                return;
+            }
+            if (a.equals("destination")) {
+                modeDconfig = cfgAll.tlmdsFind(cmd.word(), true);
+                if (modeDconfig == null) {
+                    cmd.error("bad destination name");
+                    return;
+                }
+                modeV = modes.config;
+                return;
+            }
             return;
         }
         if (a.equals("event-manager")) {
@@ -1840,6 +1869,27 @@ public class userConfig {
             cfgAceslst prf = cfgAll.aclsDel(cmd.word());
             if (prf == null) {
                 cmd.error("no such access list");
+                return;
+            }
+            return;
+        }
+        if (a.equals("telemetry")) {
+            a = cmd.word();
+            if (a.equals("exporter")) {
+                cfgTlmtexp prf = cfgAll.tlmexDel(cmd.word());
+                if (prf == null) {
+                    cmd.error("no such exporter");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("destination")) {
+                cfgTlmtdst prf = cfgAll.tlmdsDel(cmd.word());
+                if (prf == null) {
+                    cmd.error("no such destination");
+                    return;
+                }
+                prf.worker.stopWork();
                 return;
             }
             return;
