@@ -24,6 +24,7 @@ import cfg.cfgVdcIfc;
 import cfg.cfgPrcss;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
+import cfg.cfgTlmtexp;
 import cfg.cfgVrf;
 import clnt.clntDns;
 import clnt.clntNetflow;
@@ -418,6 +419,25 @@ public class userShow {
                 return null;
             }
             cmd.badCmd();
+            return null;
+        }
+        if (a.equals("telemetry")) {
+            a = cmd.word();
+            if (a.length() < 1) {
+                userFormat l = new userFormat("name|rep|time|last", "|");
+                for (int i = 0; i < cfgAll.tlmtryexp.size(); i++) {
+                    cfgTlmtexp exp = cfgAll.tlmtryexp.get(i);
+                    l.add(exp.name + "|" + exp.cnt + "|" + exp.time + "|" + bits.timePast(exp.last));
+                }
+                rdr.putStrTab(l);
+                return null;
+            }
+            cfgTlmtexp exp = cfgAll.tlmexFind(a, false);
+            if (exp == null) {
+                cmd.error("no such exporter");
+                return null;
+            }
+            rdr.putStrArr(exp.getShow());
             return null;
         }
         if (a.equals("streamingmdt")) {

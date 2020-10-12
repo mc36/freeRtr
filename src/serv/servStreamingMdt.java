@@ -158,6 +158,16 @@ public class servStreamingMdt extends servGeneric implements prtServS {
     public final static int fnFields = 15;
 
     /**
+     * name of key
+     */
+    public final static String nmKey = "keys";
+
+    /**
+     * name of data
+     */
+    public final static String nmDat = "content";
+
+    /**
      * defaults text
      */
     public final static String defaultL[] = {
@@ -515,11 +525,14 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
                 continue;
             }
             String a = getName(pb2);
-            if (a.equals("keys")) {
+            if (a == null) {
+                continue;
+            }
+            if (a.equals(servStreamingMdt.nmKey)) {
                 key = parseKeys(pck, pb2);
                 continue;
             }
-            if (a.equals("content")) {
+            if (a.equals(servStreamingMdt.nmDat)) {
                 cnt = pb2;
                 continue;
             }

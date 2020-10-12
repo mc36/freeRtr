@@ -20,6 +20,8 @@ import cfg.cfgPrcss;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
 import cfg.cfgRouplc;
+import cfg.cfgTlmtdst;
+import cfg.cfgTlmtexp;
 import cfg.cfgVpdn;
 import cfg.cfgVrf;
 import clnt.clntDns;
@@ -29,6 +31,7 @@ import ip.ipFwdIface;
 import ip.ipFwdTab;
 import java.util.ArrayList;
 import java.util.List;
+import pack.packHolder;
 import prt.prtGen;
 import prt.prtWatch;
 import rtr.rtrBabelNeigh;
@@ -300,6 +303,36 @@ public class userClear {
             if (prt.connectStop(fifc, lp, adr, rp)) {
                 cmd.error("no such socket");
                 return null;
+            }
+            return null;
+        }
+        if (a.equals("telemetry")) {
+            a = cmd.word();
+            cfgTlmtexp exp = cfgAll.tlmexFind(a, false);
+            if (exp == null) {
+                cmd.error("no such exporter");
+                return null;
+            }
+            cmd.error("generating report");
+            packHolder rep = exp.getReport();
+            if (rep == null) {
+                logger.warn("telemetry exporter " + a + " returned nothing");
+                return null;
+            }
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                cmd.error("sending through " + a);
+                cfgTlmtdst dst = cfgAll.tlmdsFind(a, false);
+                if (dst == null) {
+                    logger.warn("telemetry destination " + a + " not found");
+                    continue;
+                }
+                packHolder pck = new packHolder(true, true);
+                pck.copyFrom(rep, true, true);
+                dst.worker.sendReport(pck);
             }
             return null;
         }

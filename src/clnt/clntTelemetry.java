@@ -1,13 +1,22 @@
 package clnt;
 
+import addr.addrIP;
+import pack.packHolder;
+import pack.packStreamingMdt;
+import pipe.pipeSide;
+import serv.servGeneric;
 import serv.servStreamingMdt;
+import user.userTerminal;
+import util.bits;
+import util.counter;
+import util.logger;
 
 /**
  * telemetry sender
  *
  * @author matecsaba
  */
-public class clntTelemetry {
+public class clntTelemetry implements Runnable {
 
     /**
      * target
@@ -30,6 +39,13 @@ public class clntTelemetry {
     public boolean need2run;
 
     /**
+     * counter
+     */
+    public counter cntr = new counter();
+
+    private pipeSide pipe;
+
+    /**
      * stop working
      */
     public void stopWork() {
@@ -37,6 +53,10 @@ public class clntTelemetry {
             return;
         }
         need2run = false;
+        if (pipe != null) {
+            pipe.setClose();
+        }
+        pipe = null;
     }
 
     /**
@@ -47,6 +67,75 @@ public class clntTelemetry {
             return;
         }
         need2run = true;
+        new Thread(this).start();
+    }
+
+    private void doWork() {
+        if (pipe != null) {
+            pipe.setClose();
+        }
+        pipe = null;
+        if (proxy == null) {
+            return;
+        }
+        if (target == null) {
+            return;
+        }
+        addrIP trg = userTerminal.justResolv(target, proxy.prefer);
+        if (trg == null) {
+            return;
+        }
+        pipe = proxy.doConnect(servGeneric.protoTcp, trg, port, "telemetry");
+        if (pipe == null) {
+            return;
+        }
+        pipe.timeout = 120000;
+        for (;;) {
+            bits.sleep(1000);
+            if (!need2run) {
+                break;
+            }
+            if (pipe.isClosed() != 0) {
+                break;
+            }
+        }
+    }
+
+    public void run() {
+        try {
+            for (;;) {
+                if (!need2run) {
+                    break;
+                }
+                doWork();
+                bits.sleep(1000);
+            }
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+    }
+
+    /**
+     * send one report
+     *
+     * @param pck packet, header prepended
+     */
+    public void sendReport(packHolder pck) {
+        if (pipe == null) {
+            cntr.drop(pck, counter.reasons.notUp);
+            return;
+        }
+        if (pipe.isClosed() != 0) {
+            cntr.drop(pck, counter.reasons.notUp);
+            return;
+        }
+        cntr.tx(pck);
+        packStreamingMdt pckPb = new packStreamingMdt(pipe, pck);
+        pckPb.typ = 1;
+        pckPb.encap = 1;
+        pckPb.vers = 1;
+        pckPb.flags = 0;
+        pckPb.sendPack();
     }
 
 }

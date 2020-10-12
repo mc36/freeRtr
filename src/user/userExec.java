@@ -914,6 +914,8 @@ public class userExec {
         hl.add("2 3      prometheus              prometheus protocol information");
         hl.add("3 4,.      <name>                prometheus name");
         hl.add("4 .          <name>              metric name");
+        hl.add("2 3      telemetry               telemetry exporter information");
+        hl.add("3 .        <name>                exporter name");
         hl.add("2 3      streamingmdt            streaming telemetry information");
         hl.add("3 4,.      <name>                streamingmdt name");
         hl.add("4 5,.        <name>              peer");
@@ -1182,7 +1184,7 @@ public class userExec {
         hl.add("4 .          <name>              name of list");
         hl.add("3 4        port                  port list");
         hl.add("4 .          <name>              name of list");
-        hl.add("2 3      reflected-acl           access list entries");
+        hl.add("2 3      reflected-acl           clear access list entries");
         hl.add("3 .        <name>                name of list");
         hl.add("2 3      access-list             access list statistics");
         hl.add("3 .        <name>                name of list");
@@ -1197,6 +1199,9 @@ public class userExec {
         hl.add("2 3      bridge                  learnt mac address on a bridge");
         hl.add("3 4,.      <num>                 bridge number");
         hl.add("4 .          <name>              name of interface");
+        hl.add("2 3      telemetry               trigger telemetry report");
+        hl.add("3 4        <name>                name of exporter");
+        hl.add("4 4,.        <name>              name of destination");
         hl.add("2 3      dial-peer               clear voip call");
         hl.add("3 4        <num>                 number of dial peer");
         hl.add("4 .          <str>               call id");

@@ -1,0 +1,23 @@
+ metric inthwp command sho inter hwpsumm
+ metric inthwp prepend iface_hw_pack_
+ metric inthwp name 0 ifc=
+ metric inthwp replace \. _
+ metric inthwp column 1 name st
+ metric inthwp column 1 replace admin -1
+ metric inthwp column 1 replace down 0
+ metric inthwp column 1 replace up 1
+ metric inthwp column 2 name tx
+ metric inthwp column 3 name rx
+ metric inthwp column 4 name dr
+
+ metric intswp command sho inter psumm
+ metric intswp prepend iface_sw_pack_
+ metric intswp name 0 ifc=
+ metric intswp replace \. _
+ metric intswp column 1 name st
+ metric intswp column 1 replace admin -1
+ metric intswp column 1 replace down 0
+ metric intswp column 1 replace up 1
+ metric intswp column 2 name tx
+ metric intswp column 3 name rx
+ metric intswp column 4 name dr

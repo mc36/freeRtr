@@ -1,5 +1,5 @@
  metric inthw command sho inter hwsumm
- metric inthw prepend iface_hw_
+ metric inthw prepend iface_hw_byte_
  metric inthw name 0 ifc=
  metric inthw replace \. _
  metric inthw column 1 name st
@@ -11,7 +11,7 @@
  metric inthw column 4 name dr
 
  metric intsw command sho inter summ
- metric intsw prepend iface_sw_
+ metric intsw prepend iface_sw_byte_
  metric intsw name 0 ifc=
  metric intsw replace \. _
  metric intsw column 1 name st

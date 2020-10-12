@@ -52,8 +52,8 @@ public class protoBuf {
     /**
      * get field
      *
-     * @param num field number
-     * @param seq sequence number of field
+     * @param num number
+     * @param seq sequence number
      * @return field, null if not found
      */
     public protoBufEntry getField(int num, int seq) {
@@ -68,6 +68,36 @@ public class protoBuf {
             }
         }
         return null;
+    }
+
+    /**
+     * put field
+     *
+     * @param num number
+     * @param typ type
+     * @param val value
+     */
+    public void putField(int num, int typ, long val) {
+        protoBufEntry dat = new protoBufEntry();
+        dat.num = num;
+        dat.typ = typ;
+        dat.val = val;
+        data.add(dat);
+    }
+
+    /**
+     * put field
+     *
+     * @param num number
+     * @param typ type
+     * @param val value
+     */
+    public void putField(int num, int typ, byte[] val) {
+        protoBufEntry dat = new protoBufEntry();
+        dat.num = num;
+        dat.typ = typ;
+        dat.dat = val;
+        data.add(dat);
     }
 
     /**
@@ -277,5 +307,5 @@ public class protoBuf {
         }
         return l;
     }
-    
+
 }
