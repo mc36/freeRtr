@@ -177,6 +177,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router pvrp[4|6] .*! no stub",
         // router lsrp
         "router lsrp[4|6] .*! spf-log 0",
+        "router lsrp[4|6] .*! no spf-topolog",
         "router lsrp[4|6] .*! no spf-bidir",
         "router lsrp[4|6] .*! no spf-hops",
         "router lsrp[4|6] .*! no spf-ecmp",
@@ -199,6 +200,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router ospf[4|6] .*! no segrout",
         "router ospf[4|6] .*! no bier",
         "router ospf[4|6] .*! area .* spf-log 0",
+        "router ospf[4|6] .*! no area .* spf-topolog",
         "router ospf[4|6] .*! no area .* spf-bidir",
         "router ospf[4|6] .*! no area .* spf-hops",
         "router ospf[4|6] .*! no area .* spf-ecmp",
@@ -223,6 +225,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router isis[4|6] .*! no segrout",
         "router isis[4|6] .*! no bier",
         "router isis[4|6] .*! level[1|2] spf-log 0",
+        "router isis[4|6] .*! no level[1|2] spf-topolog",
         "router isis[4|6] .*! no level[1|2] spf-bidir",
         "router isis[4|6] .*! no level[1|2] spf-hops",
         "router isis[4|6] .*! no level[1|2] spf-ecmp",

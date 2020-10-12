@@ -1014,6 +1014,7 @@ public class rtrIsis extends ipRtr {
         l.add("1 2   level2                      change level2 parameters");
         l.add("1 2   both                        change l1 and l2 parameters");
         l.add("2 .     spf-bidir                 spf bidir check");
+        l.add("2 .     spf-topolog               spf topology logging");
         l.add("2 .     spf-hops                  spf hops disallow");
         l.add("2 .     spf-ecmp                  spf ecmp allow");
         l.add("2 3     spf-log                   spf log size");
@@ -1212,6 +1213,7 @@ public class rtrIsis extends ipRtr {
     public void getConfig(rtrIsisLevel lev, List<String> l, String beg) {
         String s = "level" + lev.level + " ";
         l.add(beg + s + "spf-log " + lev.lastSpf.logSize);
+        cmds.cfgLine(l, lev.lastSpf.topoLog.get() == 0, beg, s + "spf-topolog", "");
         cmds.cfgLine(l, lev.lastSpf.bidir.get() == 0, beg, s + "spf-bidir", "");
         cmds.cfgLine(l, lev.lastSpf.hops.get() == 0, beg, s + "spf-hops", "");
         cmds.cfgLine(l, lev.lastSpf.ecmp.get() == 0, beg, s + "spf-ecmp", "");
@@ -1251,6 +1253,14 @@ public class rtrIsis extends ipRtr {
             lev.lastSpf.logSize.set(bits.str2num(cmd.word()));
             if (negated) {
                 lev.lastSpf.logSize.set(0);
+            }
+            return false;
+        }
+        if (s.equals("spf-topolog")) {
+            if (negated) {
+                lev.lastSpf.topoLog.set(0);
+            } else {
+                lev.lastSpf.topoLog.set(1);
             }
             return false;
         }

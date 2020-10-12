@@ -228,6 +228,7 @@ router lsrp4 1
  refresh 600000
  lifetime 2147483000
  spf-log 500
+ spf-topolog
  spf-bidir
  spf-ecmp
  segrout 300 299
@@ -242,6 +243,7 @@ router lsrp6 1
  refresh 600000
  lifetime 2147483000
  spf-log 500
+ spf-topolog
  spf-bidir
  spf-ecmp
  segrout 300 299

@@ -600,7 +600,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     protected void put2spf(shrtPthFrst<addrIPv4> spf) {
         for (int i = 0; i < neighbor.size(); i++) {
             rtrLsrpDataNeigh ntry = neighbor.get(i);
-            spf.addConn(rtrId, ntry.rtrid, ntry.metric, true, ntry.stub, ntry.peer);
+            spf.addConn(rtrId, ntry.rtrid, ntry.metric, true, ntry.stub, ntry.peer + "=" + ntry.iface);
         }
         spf.addSegRouB(rtrId, segrouBeg);
         spf.addBierB(rtrId, bierBeg);

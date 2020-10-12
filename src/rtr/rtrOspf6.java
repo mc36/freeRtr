@@ -253,6 +253,7 @@ public class rtrOspf6 extends ipRtr {
         l.add("2 3     <num>                     area number");
         l.add("3 .       enable                  create this area");
         l.add("3 .       spf-bidir               spf bidir check");
+        l.add("3 .       spf-topolog             spf topology logging");
         l.add("3 .       spf-hops                spf hops disallow");
         l.add("3 .       spf-ecmp                spf ecmp allow");
         l.add("3 4       spf-log                 spf log size");
@@ -303,6 +304,7 @@ public class rtrOspf6 extends ipRtr {
             String s = "area " + ntry.area + " ";
             l.add(beg + s + "enable");
             l.add(beg + s + "spf-log " + ntry.lastSpf.logSize);
+            cmds.cfgLine(l, ntry.lastSpf.topoLog.get() == 0, beg, s + "spf-topolog", "");
             cmds.cfgLine(l, ntry.lastSpf.bidir.get() == 0, beg, s + "spf-bidir", "");
             cmds.cfgLine(l, ntry.lastSpf.hops.get() == 0, beg, s + "spf-hops", "");
             cmds.cfgLine(l, ntry.lastSpf.ecmp.get() == 0, beg, s + "spf-ecmp", "");
@@ -393,6 +395,10 @@ public class rtrOspf6 extends ipRtr {
             }
             if (s.equals("spf-log")) {
                 dat.lastSpf.logSize.set(bits.str2num(cmd.word()));
+                return false;
+            }
+            if (s.equals("spf-topolog")) {
+                dat.lastSpf.topoLog.set(1);
                 return false;
             }
             if (s.equals("spf-bidir")) {
@@ -545,6 +551,10 @@ public class rtrOspf6 extends ipRtr {
             }
             if (s.equals("spf-log")) {
                 dat.lastSpf.logSize.set(0);
+                return false;
+            }
+            if (s.equals("spf-topolog")) {
+                dat.lastSpf.topoLog.set(0);
                 return false;
             }
             if (s.equals("spf-bidir")) {

@@ -27,12 +27,22 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
     /**
      * beginning of graph
      */
-    public final static String graphBeg = "echo \"graph net {";
+    public final static String graphBeg1 = "dot -Tpng > net.png << EOF";
+
+    /**
+     * beginning of graph
+     */
+    public final static String graphBeg2 = "graph net {";
 
     /**
      * ending of graph
      */
-    public final static String graphEnd = "}\" | dot -Tpng > net.png";
+    public final static String graphEnd1 = "}";
+
+    /**
+     * ending of graph
+     */
+    public final static String graphEnd2 = "EOF";
 
     private final tabGen<shrtPthFrstNode<Ta>> nodes;
 
@@ -48,10 +58,17 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
 
     private shrtPthFrstNode<Ta> spfRoot;
 
+    private shrtPthFrst<Ta> prev;
+
     /**
      * log size
      */
     public final syncInt logSize;
+
+    /**
+     * log topology changes
+     */
+    public final syncInt topoLog;
 
     /**
      * bidir check
@@ -80,6 +97,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             log = new ArrayList<shrtPthFrstLog>();
             count = 1;
             logSize = new syncInt(0);
+            topoLog = new syncInt(0);
             bidir = new syncInt(0);
             hops = new syncInt(0);
             ecmp = new syncInt(0);
@@ -87,10 +105,14 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
         }
         log = old.log;
         logSize = old.logSize;
+        topoLog = old.topoLog;
         bidir = old.bidir;
         hops = old.hops;
         ecmp = old.ecmp;
         count = old.count + 1;
+        if (topoLog.get() > 0) {
+            prev = old;
+        }
         shrtPthFrstLog ntry = new shrtPthFrstLog();
         ntry.when = old.tim1;
         ntry.tim = (int) (old.tim3 - old.tim1);
@@ -292,6 +314,45 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      */
     public boolean doCalc(Ta from, Ta to) {
         tim2 = bits.getTime();
+        if (prev != null) {
+            for (int o = 0; o < nodes.size(); o++) {
+                shrtPthFrstNode<Ta> cn = nodes.get(o);
+                if (cn == null) {
+                    continue;
+                }
+                shrtPthFrstNode<Ta> on = prev.nodes.find(cn);
+                if (on == null) {
+                    logger.warn("new node " + cn.name + " appeared");
+                    continue;
+                }
+                for (int i = 0; i < cn.conn.size(); i++) {
+                    shrtPthFrstConn<Ta> cc = cn.conn.get(i);
+                    if (cc == null) {
+                        continue;
+                    }
+                    shrtPthFrstConn<Ta> oc = on.findConn(cc.target);
+                    if (oc == null) {
+                        logger.warn("node " + cn.name + " established connection to " + cc.target);
+                        continue;
+                    }
+                    if (cc.metric != oc.metric) {
+                        logger.warn("metric changed from " + oc.metric + " to " + cc.metric + " on node " + cn.name + " toward " + cc.target);
+                    }
+                }
+                for (int i = 0; i < on.conn.size(); i++) {
+                    shrtPthFrstConn<Ta> oc = on.conn.get(i);
+                    if (oc == null) {
+                        continue;
+                    }
+                    shrtPthFrstConn<Ta> cc = cn.findConn(oc.target);
+                    if (cc == null) {
+                        logger.warn("node " + on.name + " lost connection to " + oc.target);
+                        continue;
+                    }
+                }
+            }
+            prev = null;
+        }
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
@@ -858,16 +919,22 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      */
     public List<String> listGraphviz() {
         List<String> res = new ArrayList<String>();
-        res.add(graphBeg);
+        res.add(graphBeg1);
+        res.add(graphBeg2);
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(o);
             res.add("//" + ntry);
             for (int i = 0; i < ntry.conn.size(); i++) {
                 shrtPthFrstConn<Ta> cur = ntry.conn.get(i);
-                res.add("  \\\"" + ntry + "\\\" -- \\\"" + cur.target + "\\\" [weight=" + cur.metric + "]");
+                String a = "";
+                if (cur.ident != null) {
+                    a = " [headlabel=\"" + cur.ident + "\"]";
+                }
+                res.add("  \"" + ntry + "\" -- \"" + cur.target + "\" [weight=" + cur.metric + "]" + a);
             }
         }
-        res.add(graphEnd);
+        res.add(graphEnd1);
+        res.add(graphEnd2);
         return res;
     }
 

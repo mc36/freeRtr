@@ -1129,7 +1129,8 @@ class userTesterOne {
                 }
             }
         }
-        l.add(shrtPthFrst.graphBeg);
+        l.add(shrtPthFrst.graphBeg1);
+        l.add(shrtPthFrst.graphBeg2);
         for (int o = 0; o < procs.size(); o++) {
             userTesterPrc p = procs.get(o);
             l.add("//" + p.name);
@@ -1141,7 +1142,8 @@ class userTesterOne {
                 l.add("  " + p.name + " -- " + c.perP.name + " [weight=10] [taillabel=" + c.ifc + "] [headlabel=" + c.perC.ifc + "]");
             }
         }
-        l.add(shrtPthFrst.graphEnd);
+        l.add(shrtPthFrst.graphEnd1);
+        l.add(shrtPthFrst.graphEnd2);
         bits.buf2txt(true, l, path + fileName + ".png");
     }
 

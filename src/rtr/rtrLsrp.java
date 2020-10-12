@@ -878,6 +878,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add("1 2   lifetime                    data life time");
         l.add("2 .     <num>                     age in ms");
         l.add("1 .   spf-bidir                   spf bidir check");
+        l.add("1 .   spf-topolog                 spf topology logging");
         l.add("1 .   spf-hops                    spf hops disallow");
         l.add("1 .   spf-ecmp                    spf ecmp allow");
         l.add("1 2   spf-log                     spf log size");
@@ -909,6 +910,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(beg + "refresh " + refresh);
         l.add(beg + "lifetime " + lifetime);
         l.add(beg + "spf-log " + lastSpf.logSize);
+        cmds.cfgLine(l, lastSpf.topoLog.get() == 0, beg, "spf-topolog", "");
         cmds.cfgLine(l, lastSpf.bidir.get() == 0, beg, "spf-bidir", "");
         cmds.cfgLine(l, lastSpf.hops.get() == 0, beg, "spf-hops", "");
         cmds.cfgLine(l, lastSpf.ecmp.get() == 0, beg, "spf-ecmp", "");
@@ -955,6 +957,14 @@ public class rtrLsrp extends ipRtr implements Runnable {
             lastSpf.logSize.set(bits.str2num(cmd.word()));
             if (negated) {
                 lastSpf.logSize.set(0);
+            }
+            return false;
+        }
+        if (s.equals("spf-topolog")) {
+            if (negated) {
+                lastSpf.topoLog.set(0);
+            } else {
+                lastSpf.topoLog.set(1);
             }
             return false;
         }

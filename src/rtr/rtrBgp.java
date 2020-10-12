@@ -3352,12 +3352,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         o += 2;
         List<String> res = new ArrayList<String>();
-        res.add(shrtPthFrst.graphBeg);
+        res.add(shrtPthFrst.graphBeg1);
+        res.add(shrtPthFrst.graphBeg2);
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapath ntry = lst.get(i);
             res.add(ntry.path + " [weight=" + (o - ntry.count) + "]");
         }
-        res.add(shrtPthFrst.graphEnd);
+        res.add(shrtPthFrst.graphEnd1);
+        res.add(shrtPthFrst.graphEnd2);
         return res;
     }
 
