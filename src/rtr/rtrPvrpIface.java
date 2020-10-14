@@ -963,6 +963,9 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
                 long tim = bits.getTime();
                 for (int i = neighs.size() - 1; i >= 0; i--) {
                     rtrPvrpNeigh nei = neighs.get(i);
+                    if (nei == null) {
+                        continue;
+                    }
                     if ((tim - nei.lastHeard) < deadTimer) {
                         continue;
                     }

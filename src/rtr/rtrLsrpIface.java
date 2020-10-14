@@ -840,6 +840,9 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
                 long tim = bits.getTime();
                 for (int i = neighs.size() - 1; i >= 0; i--) {
                     rtrLsrpNeigh nei = neighs.get(i);
+                    if (nei == null) {
+                        continue;
+                    }
                     if ((tim - nei.lastHeard) < deadTimer) {
                         continue;
                     }
