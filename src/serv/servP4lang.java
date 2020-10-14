@@ -438,22 +438,18 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             return false;
         }
         if (s.equals("export-port")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
-            if (ifc == null) {
-                cmd.error("no such interface");
-                return false;
-            }
+            cmd.word();
             servP4langIfc ntry = new servP4langIfc();
             ntry.id = bits.str2num(cmd.word());
-            ntry.ifc = ifc;
             ntry = expIfc.del(ntry);
             if (ntry == null) {
+                cmd.error("no such export");
                 return false;
             }
             sendLine("state " + ntry.id + " 0 " + ntry.getStateEnding());
-            if ((ifc.type == cfgIfc.ifaceType.sdn) && (ifc.vlanNum == 0)) {
+            if ((ntry.ifc.type == cfgIfc.ifaceType.sdn) && (ntry.ifc.vlanNum == 0)) {
                 ifcNull nul = new ifcNull();
-                nul.setUpper(ifc.ethtyp);
+                nul.setUpper(ntry.ifc.ethtyp);
             }
             return false;
         }
