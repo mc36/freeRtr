@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.2.0"
+      "version": "7.2.1"
     },
     {
       "type": "panel",
@@ -46,7 +46,7 @@
   "gnetId": 13162,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1602660742685,
+  "iteration": 1602673128848,
   "links": [],
   "panels": [
     {
@@ -88,7 +88,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.0",
+      "pluginVersion": "7.2.1",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -186,7 +186,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.0",
+      "pluginVersion": "7.2.1",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -257,14 +257,14 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_PROMETHEUS}",
-        "definition": "label_values({__name__=~\"^routing.*\"},instance)",
+        "definition": "label_values({__name__=~\"^routing${afi}.*\"},instance)",
         "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "instance",
         "options": [],
-        "query": "label_values({__name__=~\"^routing.*\"},instance)",
+        "query": "label_values({__name__=~\"^routing${afi}.*\"},instance)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -289,12 +289,12 @@
         "name": "afi",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "4",
             "value": "4"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "6",
             "value": "6"
           }
@@ -330,16 +330,16 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_PROMETHEUS}",
-        "definition": "label_values({__name__=~\"routing_(.*?)\"},__name__)",
+        "definition": "label_values({__name__=~\"routing${afi}_(.*?)\"},__name__)",
         "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "routing_report_type",
         "options": [],
-        "query": "label_values({__name__=~\"routing_(.*?)\"},__name__)",
+        "query": "label_values({__name__=~\"routing${afi}_(.*?)\"},__name__)",
         "refresh": 1,
-        "regex": "routing_computed_(unicast|multicast|flowspec)$",
+        "regex": "routing${afi}_computed_(unicast|multicast|flowspec)$",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
@@ -358,5 +358,5 @@
   "timezone": "",
   "title": "RARE/freeRouter  - Routing / Computed - Redistributed",
   "uid": "I7M4UF5CR",
-  "version": 30
+  "version": 5
 }

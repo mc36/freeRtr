@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.2.0"
+      "version": "7.2.1"
     },
     {
       "type": "panel",
@@ -46,7 +46,7 @@
   "gnetId": 13161,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1602660721687,
+  "iteration": 1602673176038,
   "links": [],
   "panels": [
     {
@@ -88,7 +88,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.0",
+      "pluginVersion": "7.2.1",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -161,14 +161,14 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_PROMETHEUS}",
-        "definition": "label_values({__name__=~\"^routing.*\"},instance)",
+        "definition": "label_values({__name__=~\"^routing${afi}.*\"},instance)",
         "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "instance",
         "options": [],
-        "query": "label_values({__name__=~\"^routing.*\"},instance)",
+        "query": "label_values({__name__=~\"^routing${afi}.*\"},instance)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -240,5 +240,5 @@
   "timezone": "",
   "title": "RARE/freeRouter  - Routing / Interfaces",
   "uid": "I7M4UF5Gk",
-  "version": 25
+  "version": 3
 }
