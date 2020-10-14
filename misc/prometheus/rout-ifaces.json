@@ -3,7 +3,7 @@
     {
       "name": "DS_PROMETHEUS",
       "label": "Prometheus",
-      "description": "prometheus metric collector that receives metric from freeRouter control plane",
+      "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
@@ -46,7 +46,7 @@
   "gnetId": 13161,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1602514724113,
+  "iteration": 1602660721687,
   "links": [],
   "panels": [
     {
@@ -100,7 +100,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "routing_ifaces{instance=\"$instance\",proto=\"$protocol\"}",
+          "expr": "routing${afi}_ifaces{instance=\"$instance\",proto=\"$protocol\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -181,16 +181,45 @@
       },
       {
         "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "4",
+          "value": "4"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "afi",
+        "options": [
+          {
+            "selected": false,
+            "text": "4",
+            "value": "4"
+          },
+          {
+            "selected": true,
+            "text": "6",
+            "value": "6"
+          }
+        ],
+        "query": "4,6",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "allValue": null,
         "current": {},
         "datasource": "${DS_PROMETHEUS}",
-        "definition": "label_values(routing_ifaces{instance=\"$instance\"},proto)",
+        "definition": "label_values(routing${afi}_ifaces{instance=\"$instance\"},proto)",
         "hide": 0,
         "includeAll": true,
         "label": null,
         "multi": true,
         "name": "protocol",
         "options": [],
-        "query": "label_values(routing_ifaces{instance=\"$instance\"},proto)",
+        "query": "label_values(routing${afi}_ifaces{instance=\"$instance\"},proto)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -211,6 +240,5 @@
   "timezone": "",
   "title": "RARE/freeRouter  - Routing / Interfaces",
   "uid": "I7M4UF5Gk",
-  "version": 18,
-  "description": "Display ipv4/ipv6 routing interface metrics"
+  "version": 25
 }

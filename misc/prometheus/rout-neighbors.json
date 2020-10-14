@@ -3,7 +3,7 @@
     {
       "name": "DS_PROMETHEUS",
       "label": "Prometheus",
-      "description": "prometheus metric collector that receives metric from freeRouter control plane",
+      "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
@@ -46,7 +46,7 @@
   "gnetId": 13160,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1602514709725,
+  "iteration": 1602660669192,
   "links": [],
   "panels": [
     {
@@ -65,7 +65,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 0
       },
@@ -100,7 +100,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "routing_neighbors{instance=\"$instance\",proto=\"$protocol\"}",
+          "expr": "routing${afi}_neighbors{instance=\"$instance\",proto=\"$protocol\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -181,16 +181,45 @@
       },
       {
         "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "4",
+          "value": "4"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "afi",
+        "options": [
+          {
+            "selected": true,
+            "text": "4",
+            "value": "4"
+          },
+          {
+            "selected": false,
+            "text": "6",
+            "value": "6"
+          }
+        ],
+        "query": "4,6",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "allValue": null,
         "current": {},
         "datasource": "${DS_PROMETHEUS}",
-        "definition": "label_values(routing_neighbors{instance=\"$instance\"},proto)",
+        "definition": "label_values(routing${afi}_neighbors{instance=\"$instance\"},proto)",
         "hide": 0,
         "includeAll": true,
         "label": null,
         "multi": true,
         "name": "protocol",
         "options": [],
-        "query": "label_values(routing_neighbors{instance=\"$instance\"},proto)",
+        "query": "label_values(routing${afi}_neighbors{instance=\"$instance\"},proto)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -211,6 +240,5 @@
   "timezone": "",
   "title": "RARE/freeRouter  - Routing / Neighbors",
   "uid": "I7M4UF5Gf",
-  "version": 10,
-  "description": "Display ipv4/ipv6 routing neighbor metrics"
+  "version": 21
 }

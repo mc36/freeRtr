@@ -3,7 +3,7 @@
     {
       "name": "DS_PROMETHEUS",
       "label": "Prometheus",
-      "description": "prometheus metric collector that receives metric from freeRouter control plane",
+      "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
@@ -46,7 +46,7 @@
   "gnetId": 13162,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1602514739404,
+  "iteration": 1602660742685,
   "links": [],
   "panels": [
     {
@@ -100,7 +100,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "routing_computed_${routing_report_type}{instance=\"$instance\",proto=\"$protocol\"}",
+          "expr": "routing${afi}_computed_${routing_report_type}{instance=\"$instance\",proto=\"$protocol\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -198,7 +198,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(routing_computed_changed{instance=\"$instance\",proto=\"$protocol\"}[1m])",
+          "expr": "rate(routing${afi}_computed_changed{instance=\"$instance\",proto=\"$protocol\"}[1m])",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -277,16 +277,45 @@
       },
       {
         "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "4",
+          "value": "4"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "afi",
+        "options": [
+          {
+            "selected": true,
+            "text": "4",
+            "value": "4"
+          },
+          {
+            "selected": false,
+            "text": "6",
+            "value": "6"
+          }
+        ],
+        "query": "4,6",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "allValue": null,
         "current": {},
         "datasource": "${DS_PROMETHEUS}",
-        "definition": "label_values(routing_ifaces{instance=\"$instance\"},proto)",
+        "definition": "label_values(routing${afi}_ifaces{instance=\"$instance\"},proto)",
         "hide": 0,
         "includeAll": true,
         "label": null,
         "multi": true,
         "name": "protocol",
         "options": [],
-        "query": "label_values(routing_ifaces{instance=\"$instance\"},proto)",
+        "query": "label_values(routing${afi}_ifaces{instance=\"$instance\"},proto)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -329,6 +358,5 @@
   "timezone": "",
   "title": "RARE/freeRouter  - Routing / Computed - Redistributed",
   "uid": "I7M4UF5CR",
-  "version": 23,
-  "description": "Display ipv4/ipv6 routing computed / redistributed route metrics"
+  "version": 30
 }

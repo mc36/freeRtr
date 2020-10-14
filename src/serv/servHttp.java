@@ -25,6 +25,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.zip.Deflater;
 import pack.packAnyconn;
 import pack.packHolder;
 import pack.packSstp;
@@ -1023,6 +1024,8 @@ class servHttpConn implements Runnable {
 
     protected boolean gotDepth; // depth
 
+    protected boolean gotCompr; // compression
+
     protected String gotDstntn; // destination
 
     protected List<String> gotCook; // rx cookie
@@ -1079,11 +1082,28 @@ class servHttpConn implements Runnable {
     }
 
     private void sendHtmlHeader(String head, String body) {
-        sendRespHeader(head, body.length(), "text/html");
         if (gotHead) {
+            sendRespHeader(head, body.length(), "text/html");
             return;
         }
-        pipe.strPut(body);
+        if (!gotCompr) {
+            sendRespHeader(head, body.length(), "text/html");
+            pipe.strPut(body);
+            return;
+        }
+        byte[] buf1 = body.getBytes();
+        Deflater cmp = new Deflater();
+        cmp.setInput(buf1);
+        byte[] buf2 = new byte[buf1.length];
+        int i = cmp.deflate(buf2, 0, buf2.length, Deflater.SYNC_FLUSH);
+        if (i >= buf2.length) {
+            sendRespHeader(head, body.length(), "text/html");
+            pipe.strPut(body);
+            return;
+        }
+        headers.add("Content-Encoding: deflate");
+        sendRespHeader(head, i, "text/html");
+        pipe.morePut(buf2, 0, i);
     }
 
     private String getStyle() {
@@ -1726,6 +1746,7 @@ class servHttpConn implements Runnable {
         gotHead = false;
         gotKeep = false;
         gotDepth = false;
+        gotCompr = false;
         int gotSize = 0;
         String gotType = "";
         if (pipe == null) {
@@ -1795,6 +1816,12 @@ class servHttpConn implements Runnable {
             }
             if (a.equals("depth")) {
                 gotDepth |= s.indexOf("1") >= 0;
+                continue;
+            }
+            if (a.equals("accept-encoding")) {
+                if (s.indexOf("deflate") >= 0) {
+                    gotCompr = true;
+                }
                 continue;
             }
             if (a.equals("content-length")) {
