@@ -1,5 +1,5 @@
  metric routing4 command sho ipv4 protocol inet | beg computed
- metric routing4 prepend routing_
+ metric routing4 prepend routing4_
  metric routing4 name 0 proto=
  metric routing4 addname 1 * id=
  metric routing4 skip 2
@@ -15,7 +15,7 @@
  metric routing4 column 12 name redisted_changed
 
  metric routing6 command sho ipv6 protocol inet | beg computed
- metric routing6 prepend routing_
+ metric routing6 prepend routing6_
  metric routing6 name 0 proto=
  metric routing6 addname 1 * id=
  metric routing6 skip 2
