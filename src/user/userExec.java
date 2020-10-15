@@ -909,6 +909,9 @@ public class userExec {
         hl.add("5 .            numhist           numeric historic byte counters");
         hl.add("5 .            numphist          numeric historic packet counters");
         hl.add("2 3,.    dashboard               generate dashboard of this node");
+        hl.add("3 4        replace               specify replacement");
+        hl.add("4 5          <str>               source");
+        hl.add("5 3,.          <str>             target");
         hl.add("3 4        text                  specify static text");
         hl.add("4 3,.        <str>               url to use, %hostname% and %domain% will be replaced");
         hl.add("3 4        iface                 specify intrefaces url");
