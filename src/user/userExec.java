@@ -910,9 +910,13 @@ public class userExec {
         hl.add("5 .            numphist          numeric historic packet counters");
         hl.add("2 3,.    dashboard               generate dashboard of this node");
         hl.add("3 4        text                  specify static text");
-        hl.add("4 3,.        <str>               url to use, %host% will be replaced");
+        hl.add("4 3,.        <str>               url to use, %hostname% and %domain% will be replaced");
         hl.add("3 4        iface                 specify intrefaces url");
         hl.add("4 3,.        <str>               url to use, %name% and %desc% will be replaced");
+        hl.add("3 4        vrf                   specify vrf url");
+        hl.add("4 3,.        <str>               url to use, %name% and %desc% will be replaced");
+        hl.add("3 4        router                specify router url");
+        hl.add("4 3,.        <str>               url to use, %name% and %id% will be replaced");
         hl.add("2 3      nrpe                    nrpe protocol information");
         hl.add("3 4,.      <name>                nrpe name");
         hl.add("4 .          <name>              check name");

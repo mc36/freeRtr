@@ -80,6 +80,7 @@ import util.counter;
 import util.differ;
 import util.history;
 import util.logger;
+import util.uniResLoc;
 import util.verCore;
 import util.version;
 
@@ -498,7 +499,15 @@ public class userShow {
                     continue;
                 }
                 if (a.equals("iface")) {
-                    rdr.putStrArr(getDashIface(cmd.word()));
+                    rdr.putStrArr(getDashIfc(cmd.word()));
+                    continue;
+                }
+                if (a.equals("vrf")) {
+                    rdr.putStrArr(getDashVrf(cmd.word()));
+                    continue;
+                }
+                if (a.equals("router")) {
+                    rdr.putStrArr(getDashRtr(cmd.word()));
                     continue;
                 }
             }
@@ -1688,7 +1697,41 @@ public class userShow {
         }
     }
 
-    private List<String> getDashIface(String u) {
+    private List<String> getDashRtr(String u) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < cfgAll.routers.size(); i++) {
+            cfgRtr ntry = cfgAll.routers.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            String a = u.replaceAll("%q%", "?").replaceAll("%s%", " ");
+            a = a.replaceAll("%name%", uniResLoc.percentEncode(cfgRtr.num2name(ntry.type)));
+            a = a.replaceAll("%id%", uniResLoc.percentEncode("" + ntry.number));
+            a = a.replaceAll("%Name%", cfgRtr.num2name(ntry.type));
+            a = a.replaceAll("%Id%", "" + ntry.number);
+            res.add(a);
+        }
+        return res;
+    }
+
+    private List<String> getDashVrf(String u) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < cfgAll.vrfs.size(); i++) {
+            cfgVrf ntry = cfgAll.vrfs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            String a = u.replaceAll("%q%", "?").replaceAll("%s%", " ");
+            a = a.replaceAll("%name%", uniResLoc.percentEncode(ntry.name));
+            a = a.replaceAll("%desc%", uniResLoc.percentEncode(ntry.description));
+            a = a.replaceAll("%Name%", ntry.name);
+            a = a.replaceAll("%Desc%", ntry.description);
+            res.add(a);
+        }
+        return res;
+    }
+
+    private List<String> getDashIfc(String u) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < cfgAll.ifaces.size(); i++) {
             cfgIfc ntry = cfgAll.ifaces.get(i);
@@ -1698,17 +1741,23 @@ public class userShow {
             if (ntry.cloned != null) {
                 continue;
             }
-            String a = u;
-            a = a.replaceAll("%name%", ntry.name);
-            a = a.replaceAll("%desc%", "" + ntry.description);
+            String a = u.replaceAll("%q%", "?").replaceAll("%s%", " ");
+            a = a.replaceAll("%name%", uniResLoc.percentEncode(ntry.name));
+            a = a.replaceAll("%desc%", uniResLoc.percentEncode(ntry.description));
+            a = a.replaceAll("%Name%", ntry.name);
+            a = a.replaceAll("%Desc%", ntry.description);
             res.add(a);
         }
         return res;
     }
 
-    private List<String> getDashText(String a) {
+    private List<String> getDashText(String u) {
         List<String> res = new ArrayList<String>();
-        a = a.replaceAll("%host%", cfgAll.hostName);
+        String a = u.replaceAll("%q%", "?").replaceAll("%s%", " ");
+        a = a.replaceAll("%hostname%", uniResLoc.percentEncode(cfgAll.hostName));
+        a = a.replaceAll("%domain%", uniResLoc.percentEncode(cfgAll.domainName));
+        a = a.replaceAll("%Hostname%", cfgAll.hostName);
+        a = a.replaceAll("%Domain%", cfgAll.domainName);
         res.add(a);
         return res;
     }
