@@ -1,9 +1,9 @@
 {
   "__inputs": [
     {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "description": "prometheus metric collector that receives metric from freeRouter control plane",
+      "name": "DS_MP-LS.PROMETHEUS",
+      "label": "mp-ls.prometheus",
+      "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
@@ -42,15 +42,16 @@
       }
     ]
   },
+  "description": "Display BMP metrics",
   "editable": true,
   "gnetId": 13156,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1602514629619,
+  "iteration": 1602750643800,
   "links": [],
   "panels": [
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "${DS_MP-LS.PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -156,14 +157,14 @@
   "schemaVersion": 26,
   "style": "dark",
   "tags": [
-    "[scope:local]"
+    "[scope:global]"
   ],
   "templating": {
     "list": [
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "${DS_MP-LS.PROMETHEUS}",
         "definition": "label_values({__name__=~\"bmp_.*\"},instance)",
         "hide": 0,
         "includeAll": false,
@@ -185,7 +186,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "${DS_MP-LS.PROMETHEUS}",
         "definition": "label_values({from=~\".*\",instance=\"$instance\"},from)",
         "hide": 0,
         "includeAll": false,
@@ -207,7 +208,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "${DS_MP-LS.PROMETHEUS}",
         "definition": "bmp_asn{instance=\"$instance\",from=\"$bmp_agent\"}",
         "hide": 2,
         "includeAll": true,
@@ -229,7 +230,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "${DS_MP-LS.PROMETHEUS}",
         "definition": "label_values({from=\"$bmp_agent\",instance=\"$instance\"},rpeer)",
         "hide": 0,
         "includeAll": true,
@@ -258,6 +259,5 @@
   "timezone": "",
   "title": "RARE/freeRouter - BMP metrics",
   "uid": "vZWgBhcMks",
-  "version": 48,
-  "description": "Display BMP metrics"
+  "version": 2
 }
