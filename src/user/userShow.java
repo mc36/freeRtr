@@ -487,6 +487,23 @@ public class userShow {
             rdr.putStrArr(srv.getShow(cmd.word()));
             return null;
         }
+        if (a.equals("dashboard")) {
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("text")) {
+                    rdr.putStrArr(getDashText(cmd.word()));
+                    continue;
+                }
+                if (a.equals("iface")) {
+                    rdr.putStrArr(getDashIface(cmd.word()));
+                    continue;
+                }
+            }
+            return null;
+        }
         if (a.equals("bmp")) {
             servBmp2mrt srv = cfgAll.srvrFind(new servBmp2mrt(), cfgAll.dmnBmp, cmd.word());
             if (srv == null) {
@@ -1669,6 +1686,31 @@ public class userShow {
             rdr.putStrTab(r.logger.prefixLengths());
             return;
         }
+    }
+
+    private List<String> getDashIface(String u) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < cfgAll.ifaces.size(); i++) {
+            cfgIfc ntry = cfgAll.ifaces.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.cloned != null) {
+                continue;
+            }
+            String a = u;
+            a = a.replaceAll("%name%", ntry.name);
+            a = a.replaceAll("%desc%", "" + ntry.description);
+            res.add(a);
+        }
+        return res;
+    }
+
+    private List<String> getDashText(String a) {
+        List<String> res = new ArrayList<String>();
+        a = a.replaceAll("%host%", cfgAll.hostName);
+        res.add(a);
+        return res;
     }
 
     private void doShowIpXlsrp(tabRouteAttr.routeType afi) {

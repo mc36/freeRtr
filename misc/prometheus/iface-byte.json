@@ -1,9 +1,9 @@
 {
   "__inputs": [
     {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "description": "prometheus metric collector that receives metric from freeRouter control plane",
+      "name": "DS_MP-LS.PROMETHEUS",
+      "label": "mp-ls.prometheus",
+      "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
@@ -42,11 +42,12 @@
       }
     ]
   },
+  "description": "Display interface bytes metrics",
   "editable": true,
   "gnetId": 13153,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1602514575386,
+  "iteration": 1602766201862,
   "links": [],
   "panels": [
     {
@@ -54,7 +55,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "${DS_MP-LS.PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -74,7 +75,7 @@
       "id": 2,
       "legend": {
         "alignAsTable": true,
-        "avg": false,
+        "avg": true,
         "current": true,
         "max": true,
         "min": true,
@@ -105,13 +106,13 @@
         {
           "expr": "rate(iface_${cntr_type}_byte_tx{ifc=\"$instance_iface\",instance=\"$instance\"}[1m])*8",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "tx",
           "refId": "A"
         },
         {
           "expr": "rate(iface_${cntr_type}_byte_rx{ifc=\"$instance_iface\",instance=\"$instance\"}[1m])*8",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "rx",
           "refId": "B"
         }
       ],
@@ -170,7 +171,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "${DS_MP-LS.PROMETHEUS}",
         "definition": "label_values({__name__=~\"^iface_.*\"},instance)",
         "hide": 0,
         "includeAll": false,
@@ -192,7 +193,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "hw",
           "value": "hw"
         },
@@ -250,7 +251,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "${DS_MP-LS.PROMETHEUS}",
         "definition": "label_values(iface_${cntr_type}_byte_${dir}{instance=\"$instance\"},ifc)",
         "hide": 0,
         "includeAll": true,
@@ -292,6 +293,5 @@
   "timezone": "",
   "title": "RARE/freeRouter - interfaces bytes",
   "uid": "sqqgkzcGz",
-  "version": 82,
-  "description": "Display interface bytes metrics"
+  "version": 4
 }

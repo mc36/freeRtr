@@ -1,9 +1,9 @@
 {
   "__inputs": [
     {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "description": "prometheus metric collector that receives metric from freeRouter control plane",
+      "name": "DS_MP-LS.PROMETHEUS",
+      "label": "mp-ls.prometheus",
+      "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
@@ -42,11 +42,12 @@
       }
     ]
   },
+  "description": "Display interface packet metrics",
   "editable": true,
   "gnetId": 13152,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1602514556379,
+  "iteration": 1602766731244,
   "links": [],
   "panels": [
     {
@@ -54,7 +55,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "${DS_MP-LS.PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -106,13 +107,13 @@
         {
           "expr": "rate(iface_${cntr_type}_pack_tx{ifc=\"$instance_iface\",instance=\"$instance\"}[1m])",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "tx",
           "refId": "A"
         },
         {
           "expr": "rate(iface_${cntr_type}_pack_rx{ifc=\"$instance_iface\",instance=\"$instance\"}[1m])",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "rx",
           "refId": "B"
         }
       ],
@@ -169,7 +170,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "${DS_MP-LS.PROMETHEUS}",
         "definition": "label_values({__name__=~\"^iface_.*\"},instance)",
         "hide": 0,
         "includeAll": false,
@@ -249,7 +250,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "${DS_MP-LS.PROMETHEUS}",
         "definition": "label_values(iface_${cntr_type}_pack_${dir}{instance=\"$instance\"},ifc)",
         "hide": 0,
         "includeAll": true,
@@ -291,6 +292,5 @@
   "timezone": "",
   "title": "RARE/freeRouter - interfaces packets",
   "uid": "sqqgkzcee",
-  "version": 10,
-  "description": "Display interface packet metrics"
+  "version": 2
 }
