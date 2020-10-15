@@ -255,6 +255,7 @@ class BfSubIfCounter(Thread):
             self.file.flush()
 
     def tearDown(self):
+        os._exit(0)
         self.die=True
 
 class BfIfStatus(Thread):
@@ -331,6 +332,7 @@ class BfIfStatus(Thread):
                 PORTS_OPER_STATUS[port_id]=port["$PORT_UP"]
 
     def tearDown(self):
+        os._exit(0)
         self.die=True
 
 class BfIfSnmpClient(Thread):
@@ -577,6 +579,7 @@ class BfForwarder(Thread):
         self._clearTable()
 
     def tearDown(self):
+        os._exit(0);
         self.bfgc.interface._tear_down_stream()
 
     def _clearTable(self):
@@ -3475,7 +3478,12 @@ class BfForwarder(Thread):
 
             # message loop from control plane
 
-            line = self.file.readline(8192)
+            try:
+                line = self.file.readline(8192)
+            except Exception as e:
+                e = sys.exc_info()[0]
+                logger.warn("%s - exited with code [%s]" % (self.class_name,_Exception()))
+                self.tearDown()
 
             if len(line) == 0:
                 logger.warn("BfForwarder - Empty message from control plane" )
@@ -4972,6 +4980,7 @@ def is_any_thread_alive(threads):
     return True in [t.isAlive() for t in threads]
 
 def graceful_exit(bf_client,sck):
+    os._exit(0)
     bf_client.interface._tear_down_stream()
     sck.close()
     sys.exit(0)
