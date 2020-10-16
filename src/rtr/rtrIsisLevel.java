@@ -635,6 +635,7 @@ public class rtrIsisLevel implements Runnable {
                 if (tlv.getBytes(pck)) {
                     break;
                 }
+                spf.addIdent(src, rtrIsis.getHostname(tlv));
                 int o = rtrIsisSr.getBase(tlv);
                 if ((o > 0) && (segrouUsd != null)) {
                     spf.addSegRouB(src, o);

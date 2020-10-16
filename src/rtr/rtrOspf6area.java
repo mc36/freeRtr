@@ -995,7 +995,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pck.getSkip(16);
                         switch (typ) {
                             case rtrOspf6lsa.lnkP2p:
-                                spf.addConn(src, new rtrOspf6areaSpf(adr, 0), met, true, false, lnk);
+                                spf.addConn(src, new rtrOspf6areaSpf(adr, 0), met, true, false, "" + lnk);
                                 break;
                             case rtrOspf6lsa.lnkTrns:
                                 spf.addConn(src, new rtrOspf6areaSpf(adr, lnk), met, false, false, null);

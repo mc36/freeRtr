@@ -542,6 +542,19 @@ public class rtrIsis extends ipRtr {
     }
 
     /**
+     * read hostname
+     *
+     * @param tlv tlv to read
+     * @return hostname, null if nothing
+     */
+    protected static String getHostname(typLenVal tlv) {
+        if (tlv.valTyp != rtrIsisLsp.tlvHostName) {
+            return null;
+        }
+        return new String(tlv.valDat);
+    }
+
+    /**
      * read reachable addresses
      *
      * @param tlv tlv to read

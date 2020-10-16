@@ -904,10 +904,10 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                         }
                         switch (l.type) {
                             case rtrOspf4lsa.lnkP2p:
-                                spf.addConn(ntry.rtrID, l.linkID, l.metric, true, false, l.linkDat);
+                                spf.addConn(ntry.rtrID, l.linkID, l.metric, true, false, "" + l.linkDat);
                                 break;
                             case rtrOspf4lsa.lnkTrns:
-                                spf.addConn(ntry.rtrID, l.linkID, l.metric, false, false, l.linkDat);
+                                spf.addConn(ntry.rtrID, l.linkID, l.metric, false, false, "" + l.linkDat);
                                 break;
                             default:
                                 break;

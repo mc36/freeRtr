@@ -28,7 +28,7 @@ public class shrtPthFrstConn<Ta extends Comparator<? super Ta>> {
     /**
      * identifier data
      */
-    protected Object ident;
+    protected String ident;
 
     /**
      * target

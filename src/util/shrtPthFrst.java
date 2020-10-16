@@ -138,6 +138,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 shrtPthFrstConn<Ta> con = nod.conn.get(i);
                 res.addConn(nod.name, con.target.name, con.metric, con.realHop, con.stub, con.ident);
             }
+            res.addIdent(nod.name, nod.ident);
             res.addSegRouB(nod.name, nod.srBeg);
             res.addSegRouI(nod.name, nod.srIdx);
             res.addBierB(nod.name, nod.brBeg);
@@ -156,7 +157,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param stub stub adjacency
      * @param ident link id
      */
-    public void addConn(Ta from, Ta to, int metric, boolean realHop, boolean stub, Object ident) {
+    public void addConn(Ta from, Ta to, int metric, boolean realHop, boolean stub, String ident) {
         if (metric < 0) {
             metric = 0;
         }
@@ -221,6 +222,24 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             return false;
         }
         return true;
+    }
+
+    /**
+     * add segment routing base
+     *
+     * @param nod node to add
+     * @param ident link id
+     */
+    public void addIdent(Ta nod, String ident) {
+        if (ident == null) {
+            return;
+        }
+        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
+        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        ntry.ident = ident;
     }
 
     /**
@@ -322,7 +341,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                 }
                 shrtPthFrstNode<Ta> on = prev.nodes.find(cn);
                 if (on == null) {
-                    logger.warn("new node " + cn.name + " appeared");
+                    logger.warn("new node " + cn + " appeared");
                     continue;
                 }
                 for (int i = 0; i < cn.conn.size(); i++) {
@@ -332,11 +351,11 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                     }
                     shrtPthFrstConn<Ta> oc = on.findConn(cc.target);
                     if (oc == null) {
-                        logger.warn("node " + cn.name + " established connection to " + cc.target);
+                        logger.warn("node " + cn + " established connection to " + cc.target);
                         continue;
                     }
                     if (cc.metric != oc.metric) {
-                        logger.warn("metric changed from " + oc.metric + " to " + cc.metric + " on node " + cn.name + " toward " + cc.target);
+                        logger.warn("metric changed from " + oc.metric + " to " + cc.metric + " on node " + cn + " toward " + cc.target);
                     }
                 }
                 for (int i = 0; i < on.conn.size(); i++) {
@@ -346,7 +365,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
                     }
                     shrtPthFrstConn<Ta> cc = cn.findConn(oc.target);
                     if (cc == null) {
-                        logger.warn("node " + on.name + " lost connection to " + oc.target);
+                        logger.warn("node " + on + " lost connection to " + oc.target);
                         continue;
                     }
                 }

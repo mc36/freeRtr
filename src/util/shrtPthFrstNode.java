@@ -19,6 +19,11 @@ public class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Compa
     protected Ta name;
 
     /**
+     * identifier data
+     */
+    protected String ident;
+
+    /**
      * reachable
      */
     protected boolean visited;
@@ -108,6 +113,9 @@ public class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Compa
     }
 
     public String toString() {
+        if (ident != null) {
+            return ident;
+        }
         return "" + name;
     }
 
