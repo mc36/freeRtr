@@ -12,6 +12,7 @@ import cfg.cfgInit;
 import cfg.cfgProxy;
 import clnt.clntProxy;
 import cry.cryBase64;
+import cry.cryHashCrc32;
 import ifc.ifcDn;
 import ifc.ifcEther;
 import ifc.ifcNull;
@@ -137,6 +138,42 @@ public class servHttp extends servGeneric implements prtServS {
      */
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
+    }
+
+    /**
+     * get gzip header
+     *
+     * @return header
+     */
+    public static byte[] getGzipHdr() {
+        byte[] res = new byte[10];
+        res[0] = 0x1f; // magic
+        res[1] = (byte) 0x8b; // magic
+        res[2] = Deflater.DEFLATED; // deflate
+        res[3] = 0; // flags
+        res[4] = 0; // mtime
+        res[5] = 0; // mtime
+        res[6] = 0; // mtime
+        res[7] = 0; // mtime
+        res[8] = 0; // extra flags
+        res[9] = (byte) 0xff; // os
+        return res;
+    }
+
+    /**
+     * get gzip trailer
+     *
+     * @param unc uncompressed data
+     * @return trailer
+     */
+    public static byte[] getGzipTrl(byte[] unc) {
+        byte[] res = new byte[8];
+        cryHashCrc32 crc = new cryHashCrc32();
+        crc.init();
+        crc.update(unc);
+        bits.lsbPutD(res, 0, bits.msbGetD(crc.finish(), 0));
+        bits.lsbPutD(res, 4, unc.length);
+        return res;
     }
 
     /**
@@ -1024,7 +1061,7 @@ class servHttpConn implements Runnable {
 
     protected boolean gotDepth; // depth
 
-    protected boolean gotCompr; // compression
+    protected int gotCompr; // compression, 1=deflate, 2=gzip
 
     protected String gotDstntn; // destination
 
@@ -1086,24 +1123,48 @@ class servHttpConn implements Runnable {
             sendRespHeader(head, body.length(), "text/html");
             return;
         }
-        if (!gotCompr) {
+        if (gotCompr == 0) {
             sendRespHeader(head, body.length(), "text/html");
             pipe.strPut(body);
             return;
         }
         byte[] buf1 = body.getBytes();
-        Deflater cmp = new Deflater();
+        Deflater cmp;
+        String enc;
+        byte[] buf3;
+        byte[] buf4;
+        switch (gotCompr) {
+            case 1:
+                cmp = new Deflater();
+                enc = "deflate";
+                buf3 = new byte[0];
+                buf4 = new byte[0];
+                break;
+            case 2:
+                cmp = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
+                enc = "gzip";
+                buf3 = servHttp.getGzipHdr();
+                buf4 = servHttp.getGzipTrl(buf1);
+                break;
+            default:
+                sendRespHeader(head, body.length(), "text/html");
+                pipe.strPut(body);
+                return;
+        }
         cmp.setInput(buf1);
+        cmp.finish();
         byte[] buf2 = new byte[buf1.length];
-        int i = cmp.deflate(buf2, 0, buf2.length, Deflater.SYNC_FLUSH);
+        int i = cmp.deflate(buf2);
         if (i >= buf2.length) {
             sendRespHeader(head, body.length(), "text/html");
             pipe.strPut(body);
             return;
         }
-        headers.add("Content-Encoding: deflate");
-        sendRespHeader(head, i, "text/html");
+        headers.add("Content-Encoding: " + enc);
+        sendRespHeader(head, buf3.length + i + buf4.length, "text/html");
+        pipe.morePut(buf3, 0, buf3.length);
         pipe.morePut(buf2, 0, i);
+        pipe.morePut(buf4, 0, buf4.length);
     }
 
     private String getStyle() {
@@ -1746,7 +1807,7 @@ class servHttpConn implements Runnable {
         gotHead = false;
         gotKeep = false;
         gotDepth = false;
-        gotCompr = false;
+        gotCompr = 0;
         int gotSize = 0;
         String gotType = "";
         if (pipe == null) {
@@ -1820,7 +1881,10 @@ class servHttpConn implements Runnable {
             }
             if (a.equals("accept-encoding")) {
                 if (s.indexOf("deflate") >= 0) {
-                    gotCompr = true;
+                    gotCompr = 1;
+                }
+                if (s.indexOf("gzip") >= 0) {
+                    gotCompr = 2;
                 }
                 continue;
             }

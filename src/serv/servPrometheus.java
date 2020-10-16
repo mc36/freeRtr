@@ -4,6 +4,7 @@ import cfg.cfgAll;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.zip.Deflater;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtGenConn;
@@ -597,6 +598,8 @@ class servPrometheusConn implements Runnable {
 
     private pipeSide conn;
 
+    private boolean gotCompr;
+
     public servPrometheusConn(servPrometheus parent, pipeSide pipe) {
         lower = parent;
         conn = pipe;
@@ -604,29 +607,56 @@ class servPrometheusConn implements Runnable {
     }
 
     private void sendReply(String hdr, List<String> res) {
-        conn.lineTx = pipeSide.modTyp.modeCRLF;
+        if (debugger.servPrometheusTraf) {
+            logger.debug("tx " + hdr);
+        }
         conn.linePut("HTTP/1.1 " + hdr);
         conn.linePut("Content-Type: text/plain");
         conn.linePut("Date: " + bits.time2str(cfgAll.timeZoneName, bits.getTime(), 4));
-        int len = res.size();
-        for (int i = 0; i < res.size(); i++) {
-            len += res.get(i).length();
+        if (res == null) {
+            conn.linePut("Content-Length: 0");
+            conn.linePut("");
+            return;
         }
-        conn.linePut("Content-Length: " + len);
+        byte[] buf1 = new byte[0];
+        byte[] buf3 = new byte[1];
+        buf3[0] = 10;
+        for (int i = 0; i < res.size(); i++) {
+            buf1 = bits.byteConcat(buf1, res.get(i).getBytes());
+            buf1 = bits.byteConcat(buf1, buf3);
+        }
+        if (!gotCompr) {
+            conn.linePut("Content-Length: " + buf1.length);
+            conn.linePut("");
+            conn.morePut(buf1, 0, buf1.length);
+            return;
+        }
+        byte[] buf2 = new byte[buf1.length];
+        Deflater cmp = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
+        cmp.setInput(buf1);
+        cmp.finish();
+        int i = cmp.deflate(buf2);
+        if (i >= buf2.length) {
+            conn.linePut("Content-Length: " + buf1.length);
+            conn.linePut("");
+            conn.morePut(buf1, 0, buf1.length);
+            return;
+        }
+        buf3 = servHttp.getGzipHdr();
+        byte[] buf4 = servHttp.getGzipTrl(buf1);
+        conn.linePut("Content-Encoding: gzip");
+        conn.linePut("Content-Length: " + (buf3.length + i + buf4.length));
         conn.linePut("");
-        conn.lineTx = pipeSide.modTyp.modeLF;
-        for (int i = 0; i < res.size(); i++) {
-            conn.linePut(res.get(i));
-        }
-        if (debugger.servPrometheusTraf) {
-            logger.debug("tx " + hdr + " and " + res.size() + " lines");
-        }
+        conn.morePut(buf3, 0, buf3.length);
+        conn.morePut(buf2, 0, i);
+        conn.morePut(buf4, 0, buf4.length);
     }
 
     private boolean doWork() {
         conn.lineRx = pipeSide.modTyp.modeCRtryLF;
         conn.lineTx = pipeSide.modTyp.modeCRLF;
         String gotCmd = conn.lineGet(1);
+        gotCompr = false;
         if (debugger.servPrometheusTraf) {
             logger.debug("rx " + gotCmd);
         }
@@ -638,6 +668,13 @@ class servPrometheusConn implements Runnable {
             if (a.length() < 1) {
                 break;
             }
+            a = a.toLowerCase();
+            if (a.startsWith("accept-encoding")) {
+                if (a.indexOf("gzip") >= 0) {
+                    gotCompr = true;
+                }
+                continue;
+            }
         }
         uniResLoc gotUrl = new uniResLoc();
         int i = gotCmd.toLowerCase().lastIndexOf(" http/");
@@ -646,7 +683,7 @@ class servPrometheusConn implements Runnable {
         }
         i = gotCmd.indexOf(" ");
         if (i < 0) {
-            sendReply("501 bad request", bits.str2lst("bad request"));
+            sendReply("501 bad request", null);
             return true;
         }
         String s = gotCmd.substring(i + 1, gotCmd.length());
@@ -664,7 +701,7 @@ class servPrometheusConn implements Runnable {
             return false;
         }
         if (!gotUrl.filName.equals(lower.allMets)) {
-            sendReply("404 not found", bits.str2lst("no such metric"));
+            sendReply("404 no such metric", null);
             return false;
         }
         long tim = bits.getTime();

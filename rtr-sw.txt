@@ -869,7 +869,7 @@ server rfb vnc
 !
 server http web
  access-log
- access-startup 60000
+ access-startup 10000
  access-total 128
  access-peer 16
  host * path /nfs2/own/web/
