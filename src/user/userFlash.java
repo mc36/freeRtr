@@ -289,25 +289,25 @@ public class userFlash {
      */
     public static boolean doReceive(pipeSide pipe, uniResLoc url, File f) {
         String a = url.proto.trim().toLowerCase();
-        if (a.equals("http") || a.equals("https")) {
+        if (a.startsWith("http")) {
             clntHttp c = new clntHttp(pipe);
             boolean b = c.download(url, f);
             c.cleanUp();
             return b;
         }
-        if (a.equals("ftp")) {
+        if (a.startsWith("ftp")) {
             clntFtp c = new clntFtp(pipe);
             boolean b = c.download(url, f);
             c.cleanUp();
             return b;
         }
-        if (a.equals("tftp")) {
+        if (a.startsWith("tftp")) {
             clntTftp c = new clntTftp(pipe);
             boolean b = c.download(url, f);
             c.cleanUp();
             return b;
         }
-        if (a.equals("xmodem")) {
+        if (a.startsWith("xmodem")) {
             clntXmodem c = new clntXmodem(pipe);
             boolean b = c.download(f);
             c.cleanUp();

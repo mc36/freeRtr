@@ -7,8 +7,10 @@ import cry.cryHashSha1;
 import java.io.File;
 import java.io.RandomAccessFile;
 import pipe.pipeDiscard;
+import pipe.pipeLine;
 import pipe.pipeProgress;
 import pipe.pipeSide;
+import sec.secHttp2;
 import serv.servGeneric;
 import serv.servHttp;
 import user.userTerminal;
@@ -245,6 +247,19 @@ public class clntHttp {
     private boolean doConnect(uniResLoc url) {
         if (pipe != null) {
             pipe.setClose();
+        }
+        if (url.proto.equals("http2")) {
+            url.proto = "http";
+            pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(new servHttp().srvPort()), "http");
+            if (pipe == null) {
+                return true;
+            }
+            secHttp2 ht2 = new secHttp2(pipe, new pipeLine(65536, false));
+            if (ht2.startClient()) {
+                return true;
+            }
+            pipe = ht2.getPipe();
+            return false;
         }
         if (!url.proto.equals("https")) {
             pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(new servHttp().srvPort()), "http");

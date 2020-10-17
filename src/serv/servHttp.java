@@ -36,6 +36,7 @@ import pipe.pipeLine;
 import pipe.pipeSide;
 import prt.prtGenConn;
 import prt.prtServS;
+import sec.secHttp2;
 import sec.secWebsock;
 import tab.tabGen;
 import user.userFilter;
@@ -1826,19 +1827,37 @@ class servHttpConn implements Runnable {
         gotRange = null;
         gotReferer = "";
         gotWebsock = null;
-        if (gotCmd.equals("")) {
+        if (gotCmd.length() < 1) {
             return true;
         }
         if (debugger.servHttpTraf) {
             logger.debug("rx '" + gotCmd + "'");
+        }
+        if (gotCmd.equals(secHttp2.magicCmd)) {
+            gotCmd = "";
+            secHttp2 ht2 = new secHttp2(pipe, new pipeLine(65536, false));
+            if (ht2.startServer(true)) {
+                return true;
+            }
+            pipe = ht2.getPipe();
+            gotCmd = pipe.lineGet(1);
+            if (gotCmd.length() < 1) {
+                return true;
+            }
+            if (debugger.servHttpTraf) {
+                logger.debug("rx '" + gotCmd + "'");
+            }
         }
         int i = gotCmd.toLowerCase().lastIndexOf(" http/");
         if (i > 0) {
             String s = gotCmd.substring(i + 6, gotCmd.length());
             gotCmd = gotCmd.substring(0, i);
             i = s.indexOf(".");
-            gotVer = bits.str2num(s.substring(0, i)
-                    + s.substring(i + 1, s.length()));
+            if (i < 0) {
+                gotVer = bits.str2num(s) * 10;
+            } else {
+                gotVer = bits.str2num(s.substring(0, i) + s.substring(i + 1, s.length()));
+            }
         }
         if ((gotVer < 10) || (gotVer > 11)) {
             gotVer = 10;
@@ -1980,6 +1999,17 @@ class servHttpConn implements Runnable {
         }
         gotUrl.normalizePath();
         if (gotUpgrade == null) {
+            return false;
+        }
+        if (gotUpgrade.toLowerCase().startsWith("h2")) {
+            headers.add("Upgrade: " + gotUpgrade);
+            headers.add("Connection: Upgrade");
+            sendRespHeader("101 switch protocol", -1, null);
+            secHttp2 ht2 = new secHttp2(pipe, new pipeLine(65536, false));
+            if (ht2.startServer(false)) {
+                return true;
+            }
+            pipe = ht2.getPipe();
             return false;
         }
         if (!gotUpgrade.toLowerCase().startsWith("tls/")) {
