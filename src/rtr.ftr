@@ -2130,7 +2130,6 @@ todo: interactive switch for traceroute to mimic mtr with class util.dampening, 
 todo: http server should honor no in the beginning for host commands
 todo: http host upload optional different authentication
 todo: tls1.3
-todo: http2.0
 todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
 todo: optimal route reflection
