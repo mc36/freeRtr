@@ -10,7 +10,6 @@ interactive switch for traceroute to mimic mtr with class util.dampening, simila
 http server should honor no in the beginning for host commands
 http host upload optional different authentication
 tls1.3
-http2.0
 terminal mode resolve
 hostwatch to execute script on acl match
 optimal route reflection
