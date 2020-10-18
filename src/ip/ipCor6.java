@@ -162,6 +162,7 @@ public class ipCor6 implements ipCor {
         if (debugger.ipCor6traf) {
             logger.debug("tx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
+        pck.IPid = (pck.UDPsrc ^ pck.UDPtrg ^ pck.IPprt) & 0xffff;
         pck.IPsiz = size;
         int oldPrt = pck.IPprt;
         if (pck.IPalrt != -1) {
@@ -173,7 +174,7 @@ public class ipCor6 implements ipCor {
             oldPrt = exthdrHopByHop;
         }
         pck.msbPutW(0, 0x6000 | ((pck.IPtos & 0xff) << 4)); // version:4 tos:8 reserved:4
-        pck.msbPutW(2, 0); // flow label
+        pck.msbPutW(2, pck.IPid); // flow label
         pck.msbPutW(4, pck.dataSize() + pck.IPsiz - size); // total length
         pck.putByte(6, oldPrt); // next header
         pck.putByte(7, pck.IPttl); // hop limit
@@ -184,7 +185,6 @@ public class ipCor6 implements ipCor {
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPver = protocolVersion;
-        pck.IPid = 0;
         pck.IPmf = false;
         pck.IPfrg = 0;
         pck.putSkip(pck.IPsiz);

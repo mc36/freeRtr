@@ -136,6 +136,7 @@ public class ipCor4 implements ipCor {
         if (debugger.ipCor4traf) {
             logger.debug("tx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
+        pck.IPid = (nextPackIDval++) & 0xffff;
         pck.IPsiz = size;
         if (pck.IPalrt != -1) {
             pck.msbPutD(size, 0x94040000);
@@ -144,8 +145,7 @@ public class ipCor4 implements ipCor {
         pck.putByte(0, 0x40 | (pck.IPsiz >>> 2)); // version:4 ihl:4
         pck.putByte(1, pck.IPtos); // type of service
         pck.msbPutW(2, pck.dataSize() + pck.IPsiz); // total length
-        nextPackIDval++;
-        pck.msbPutW(4, nextPackIDval); // identification
+        pck.msbPutW(4, pck.IPid); // identification
         int i;
         if (pck.IPdf) {
             i = 0x4000;
@@ -166,7 +166,6 @@ public class ipCor4 implements ipCor {
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPver = protocolVersion;
-        pck.IPid = nextPackIDval;
         pck.IPmf = false;
         pck.IPfrg = 0;
         pck.putSkip(pck.IPsiz);
