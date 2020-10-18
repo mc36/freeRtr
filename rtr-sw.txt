@@ -291,7 +291,7 @@ router mobile6 1
  exit
 !
 interface loopback0
- no description
+ description management
  vrf forwarding v1
  ipv4 address 10.10.10.227 255.255.255.255
  ipv6 address 2001:db8:1101::227:227 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
@@ -371,7 +371,7 @@ interface bundle9
  exit
 !
 interface bundle9.11
- no description
+ description uplink1
  vrf forwarding v1
  ipv4 address 10.1.123.91 255.255.255.0
  ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
@@ -380,7 +380,7 @@ interface bundle9.11
  exit
 !
 interface bundle9.12
- no description
+ description uplink2
  vrf forwarding v1
  ipv4 address 10.1.124.91 255.255.255.0
  ipv6 address 2001:db8:1124::91 ffff:ffff:ffff:ffff::
@@ -424,7 +424,7 @@ interface bvi4
  exit
 !
 interface ethernet1
- description uplink
+ description uplink1
  lldp enable
  cdp enable
  bundle-group 9
@@ -433,7 +433,7 @@ interface ethernet1
  exit
 !
 interface ethernet2
- description uplink
+ description uplink2
  lldp enable
  cdp enable
  bundle-group 9
@@ -875,6 +875,7 @@ server http web
  host * dirlist
  host * noindex
  host * script exec config
+ host * api exec config
  host * websock
  host * webdav
  host * class

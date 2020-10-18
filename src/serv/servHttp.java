@@ -39,9 +39,13 @@ import prt.prtServS;
 import sec.secHttp2;
 import sec.secWebsock;
 import tab.tabGen;
+import user.userConfig;
+import user.userExec;
 import user.userFilter;
 import user.userFlash;
+import user.userFormat;
 import user.userHelping;
+import user.userReader;
 import user.userScript;
 import user.userTerminal;
 import util.bits;
@@ -117,6 +121,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! host .* nomultiacc",
         "server http .*! host .* index",
         "server http .*! host .* nodirlist",
+        "server http .*! host .* noapi",
         "server http .*! host .* noscript",
         "server http .*! host .* noclass",
         "server http .*! host .* noupload",
@@ -291,6 +296,18 @@ public class servHttp extends servGeneric implements prtServS {
                 l.add(a + " script" + s);
             } else {
                 l.add(a + " noscript");
+            }
+            if (ntry.allowApi != 0) {
+                String s = "";
+                if ((ntry.allowApi & 2) != 0) {
+                    s += " exec";
+                }
+                if ((ntry.allowApi & 4) != 0) {
+                    s += " config";
+                }
+                l.add(a + " api" + s);
+            } else {
+                l.add(a + " noapi");
             }
             if (ntry.allowImgMap) {
                 l.add(a + " imagemap");
@@ -526,6 +543,28 @@ public class servHttp extends servGeneric implements prtServS {
             ntry.allowList = false;
             return false;
         }
+        if (a.equals("api")) {
+            ntry.allowApi = 1;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("exec")) {
+                    ntry.allowApi |= 2;
+                    continue;
+                }
+                if (a.equals("config")) {
+                    ntry.allowApi |= 4;
+                    continue;
+                }
+            }
+            return false;
+        }
+        if (a.equals("noapi")) {
+            ntry.allowApi = 0;
+            return false;
+        }
         if (a.equals("script")) {
             ntry.allowScript = 1;
             for (;;) {
@@ -710,6 +749,10 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("4 4,.      exec                     allow exec commands");
         l.add("4 4,.      config                   allow config commands");
         l.add("3 .      noscript                   forbid script running");
+        l.add("3 4,.    api                        allow api calls");
+        l.add("4 4,.      exec                     allow exec commands");
+        l.add("4 4,.      config                   allow config commands");
+        l.add("3 .      noapi                      forbid api calls");
         l.add("3 .      imagemap                   allow image map processing");
         l.add("3 .      noimagemap                 forbid image map processing");
         l.add("3 .      websock                    allow websocket processing");
@@ -889,6 +932,11 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      * script running allowed
      */
     public int allowScript;
+
+    /**
+     * api calls allowed
+     */
+    public int allowApi;
 
     /**
      * image map decode allowed
@@ -1271,6 +1319,77 @@ class servHttpConn implements Runnable {
         return false;
     }
 
+    private boolean sendOneApi(String s) {
+        cmds cmd = new cmds("api", s);
+        cmd.word("/");
+        s = cmd.word("/");
+        if (((gotHost.allowApi & 2) != 0) && s.equals("exec")) {
+            String r = "";
+            String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
+            for (;;) {
+                s = cmd.word("/");
+                if (s.length() < 1) {
+                    break;
+                }
+                pipeLine pl = new pipeLine(1024 * 1024, false);
+                pipeSide pip = pl.getSide();
+                pip.lineTx = pipeSide.modTyp.modeCRLF;
+                pip.lineRx = pipeSide.modTyp.modeCRorLF;
+                userReader rdr = new userReader(pip, 1023);
+                rdr.tabMod = userFormat.tableMode.raw;
+                rdr.height = 0;
+                userExec exe = new userExec(pip, rdr);
+                exe.privileged = (gotHost.allowApi & 4) != 0;
+                pip.timeout = 60000;
+                String a = exe.repairCommand(s);
+                r += ">" + a + e;
+                exe.executeCommand(a);
+                pip = pl.getSide();
+                pl.setClose();
+                s = pip.strGet(1024 * 1024);
+                if (s == null) {
+                    continue;
+                }
+                r += s;
+            }
+            sendHtmlHeader("200 ok", r);
+            return false;
+        }
+        if (((gotHost.allowApi & 4) != 0) && s.equals("config")) {
+            String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
+            pipeLine pl = new pipeLine(65535, false);
+            pipeSide pip = pl.getSide();
+            pip.lineTx = pipeSide.modTyp.modeCRLF;
+            pip.lineRx = pipeSide.modTyp.modeCRorLF;
+            userReader rdr = new userReader(pip, 1023);
+            rdr.tabMod = userFormat.tableMode.raw;
+            rdr.height = 0;
+            userConfig cfg = new userConfig(pip, rdr);
+            pip.timeout = 60000;
+            for (;;) {
+                s = cmd.word("/");
+                if (s.length() < 1) {
+                    break;
+                }
+                userHelping hlp = cfg.getHelping();
+                rdr.setContext(hlp, "");
+                String b = hlp.repairLine(s);
+                if (b.length() < 1) {
+                    pip.linePut("bad: " + s);
+                    continue;
+                }
+                pip.linePut("#" + b);
+                cfg.executeCommand(b);
+            }
+            pip = pl.getSide();
+            pl.setClose();
+            s = pip.strGet(65535);
+            sendHtmlHeader("200 ok", s);
+            return false;
+        }
+        return true;
+    }
+
     private boolean sendOneScript(String s) {
         List<String> l = bits.txt2buf(gotHost.path + s);
         if (l == null) {
@@ -1625,6 +1744,9 @@ class servHttpConn implements Runnable {
     }
 
     private boolean sendOneFile(String s, String a) {
+        if ((gotHost.allowApi != 0) && s.startsWith(".api./")) {
+            return sendOneApi(s);
+        }
         if ((gotHost.allowScript != 0) && a.equals(".tcl")) {
             return sendOneScript(s);
         }
