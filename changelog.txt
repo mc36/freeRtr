@@ -9387,3 +9387,8 @@ no todo: sho gc
 todo: fully paraeterizable sho dash
 ---------------------------------- 2020-10-17 18:13:47
 no todo: http2.0
+---------------------------------- 2020-10-19 08:50:04
+no todo: parse privilege levels from radius and tacacs
+no todo: looking glass rfc8522
+no todo: fully paraeterizable sho dash
+todo: parse privilege levels from tacacs
