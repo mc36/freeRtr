@@ -1,7 +1,5 @@
-fully paraeterizable sho dash
 nat and pbr config to have reindex
 chatscript and authlist to use tablisting and have reindex
-looking glass rfc8522
 http conditional redirect with route-map, prefix-list or route-policy
 bridge security from dhcp, slaac, whatever server
 lsrp, ospf, isis must list lsas/lsps as reachable or not
@@ -21,7 +19,7 @@ yang over netconf, proto over grpc
 interface range command
 reenable which elliptic courves? sure? why that?
 https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
-parse privilege levels from radius and tacacs
+parse privilege levels from tacacs
 ldap client, server
 bfd need to send with ttl=255
 trustpoint for certificates
