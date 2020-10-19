@@ -1,5 +1,6 @@
 package util;
 
+import addr.addrType;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -11,7 +12,7 @@ import tab.tabGen;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Comparator<shrtPthFrstNode<Ta>> {
+public class shrtPthFrstNode<Ta extends addrType> implements Comparator<shrtPthFrstNode<Ta>> {
 
     /**
      * node id
@@ -114,7 +115,7 @@ public class shrtPthFrstNode<Ta extends Comparator<? super Ta>> implements Compa
 
     public String toString() {
         if (ident != null) {
-            return ident;
+            return "" + ident;
         }
         return "" + name;
     }

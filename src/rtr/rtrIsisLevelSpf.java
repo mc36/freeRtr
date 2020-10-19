@@ -1,7 +1,7 @@
 package rtr;
 
 import addr.addrIsis;
-import java.util.Comparator;
+import addr.addrType;
 import util.bits;
 
 /**
@@ -9,17 +9,22 @@ import util.bits;
  *
  * @author matecsaba
  */
-public class rtrIsisLevelSpf implements Comparator<rtrIsisLevelSpf> {
+public class rtrIsisLevelSpf extends addrType {
+
+    /**
+     * size of address
+     */
+    public final static int size = addrIsis.size + 1;
 
     /**
      * node address
      */
-    public addrIsis adr;
+    private addrIsis adr;
 
     /**
      * pseudonode id
      */
-    public int psn;
+    private int psn;
 
     /**
      * create instance
@@ -30,16 +35,16 @@ public class rtrIsisLevelSpf implements Comparator<rtrIsisLevelSpf> {
     public rtrIsisLevelSpf(addrIsis a, int p) {
         adr = a;
         psn = p;
+        adr.toBuffer(addr, 0);
+        addr[addrIsis.size] = (byte) psn;
     }
 
-    public int compare(rtrIsisLevelSpf o1, rtrIsisLevelSpf o2) {
-        if (o1.psn < o2.psn) {
-            return -1;
-        }
-        if (o1.psn > o2.psn) {
-            return +1;
-        }
-        return o1.adr.compare(o1.adr, o2.adr);
+    public int getSize() {
+        return size;
+    }
+
+    public rtrIsisLevelSpf copyBytes() {
+        return new rtrIsisLevelSpf(adr, psn);
     }
 
     public String toString() {

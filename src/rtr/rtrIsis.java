@@ -551,7 +551,7 @@ public class rtrIsis extends ipRtr {
         if (tlv.valTyp != rtrIsisLsp.tlvHostName) {
             return null;
         }
-        return new String(tlv.valDat);
+        return tlv.getStr();
     }
 
     /**
@@ -1810,6 +1810,19 @@ public class rtrIsis extends ipRtr {
      */
     public int routerIfaceCount() {
         return ifaces.size();
+    }
+
+    /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param level level number
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public void routerLinkStates(tabRoute<addrIP> tab, int level, int asn, addrIPv4 adv) {
+        rtrIsisLevel lev = getLevel(level);
+        lev.lastSpf.listLinkStates(tab, lev.level, -1, asn, adv, addrIsis.size, rtrIsisLevelSpf.size);
     }
 
 }

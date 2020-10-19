@@ -1209,4 +1209,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
         return ifaces.size();
     }
 
+    /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param par parameter
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
+        lastSpf.listLinkStates(tab, 227, -1, asn, adv, addrIPv4.size, addrIPv4.size);
+    }
+
 }

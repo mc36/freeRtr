@@ -387,6 +387,17 @@ public class rtrBgpVrfRtr extends ipRtr {
     }
 
     /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param par parameter
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
+    }
+
+    /**
      * get peer list
      *
      * @param tab list to append

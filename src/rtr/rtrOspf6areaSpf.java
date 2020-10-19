@@ -1,7 +1,7 @@
 package rtr;
 
 import addr.addrIPv4;
-import java.util.Comparator;
+import addr.addrType;
 import util.bits;
 
 /**
@@ -9,17 +9,22 @@ import util.bits;
  *
  * @author matecsaba
  */
-public class rtrOspf6areaSpf implements Comparator<rtrOspf6areaSpf> {
+public class rtrOspf6areaSpf extends addrType {
+
+    /**
+     * size of address
+     */
+    public final static int size = addrIPv4.size + addrIPv4.size;
 
     /**
      * node address
      */
-    public addrIPv4 adr;
+    private addrIPv4 adr;
 
     /**
      * link id
      */
-    public int lnk;
+    private int lnk;
 
     /**
      * create instance
@@ -30,16 +35,16 @@ public class rtrOspf6areaSpf implements Comparator<rtrOspf6areaSpf> {
     public rtrOspf6areaSpf(addrIPv4 a, int l) {
         adr = a;
         lnk = l;
+        adr.toBuffer(addr, 0);
+        bits.msbPutD(addr, addrIPv4.size, lnk);
     }
 
-    public int compare(rtrOspf6areaSpf o1, rtrOspf6areaSpf o2) {
-        if (o1.lnk < o2.lnk) {
-            return -1;
-        }
-        if (o1.lnk > o2.lnk) {
-            return +1;
-        }
-        return o1.adr.compare(o1.adr, o2.adr);
+    public int getSize() {
+        return size;
+    }
+
+    public rtrOspf6areaSpf copyBytes() {
+        return new rtrOspf6areaSpf(adr, lnk);
     }
 
     public String toString() {

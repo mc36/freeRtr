@@ -1,6 +1,7 @@
 package util;
 
 import addr.addrIP;
+import addr.addrType;
 import java.util.Comparator;
 import tab.tabRouteIface;
 
@@ -10,7 +11,7 @@ import tab.tabRouteIface;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class shrtPthFrstRes<Ta extends Comparator<? super Ta>> implements Comparator<shrtPthFrstRes<Ta>> {
+public class shrtPthFrstRes<Ta extends addrType> implements Comparator<shrtPthFrstRes<Ta>> {
 
     /**
      * node handle
@@ -73,5 +74,4 @@ public class shrtPthFrstRes<Ta extends Comparator<? super Ta>> implements Compar
         return "" + nodeH;
     }
 
-    
 }

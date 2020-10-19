@@ -546,4 +546,15 @@ public class rtrEigrp extends ipRtr implements Runnable {
         return ifaces.size();
     }
 
+    /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param par parameter
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
+    }
+
 }

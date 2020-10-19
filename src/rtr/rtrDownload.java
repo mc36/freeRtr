@@ -1,6 +1,7 @@
 package rtr;
 
 import addr.addrIP;
+import addr.addrIPv4;
 import auth.authLocal;
 import cfg.cfgAll;
 import cfg.cfgTime;
@@ -368,6 +369,17 @@ public class rtrDownload extends ipRtr {
      */
     public int routerIfaceCount() {
         return 0;
+    }
+
+    /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param par parameter
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
     }
 
 }

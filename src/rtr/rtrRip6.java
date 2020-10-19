@@ -1,6 +1,7 @@
 package rtr;
 
 import addr.addrIP;
+import addr.addrIPv4;
 import addr.addrPrefix;
 import ip.ipFwd;
 import ip.ipFwdIface;
@@ -134,6 +135,17 @@ public class rtrRip6 extends ipRtr implements prtServP {
      */
     public int routerIfaceCount() {
         return ifaces.size();
+    }
+
+    /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param par parameter
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
     }
 
     /**

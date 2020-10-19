@@ -1044,4 +1044,21 @@ public class rtrOspf4 extends ipRtr {
         return ifaces.size();
     }
 
+    /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param area area number
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public void routerLinkStates(tabRoute<addrIP> tab, int area, int asn, addrIPv4 adv) {
+        rtrOspf4area ara = new rtrOspf4area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return;
+        }
+        ara.lastSpf.listLinkStates(tab, 3, ara.area, asn, adv, addrIPv4.size, addrIPv4.size);
+    }
+
 }

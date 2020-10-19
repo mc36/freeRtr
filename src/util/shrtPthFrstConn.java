@@ -1,6 +1,6 @@
 package util;
 
-import java.util.Comparator;
+import addr.addrType;
 
 /**
  * spf connection
@@ -8,7 +8,7 @@ import java.util.Comparator;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class shrtPthFrstConn<Ta extends Comparator<? super Ta>> {
+public class shrtPthFrstConn<Ta extends addrType> {
 
     /**
      * metric

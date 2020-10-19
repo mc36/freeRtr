@@ -1,6 +1,7 @@
 package rtr;
 
 import addr.addrIP;
+import addr.addrIPv4;
 import addr.addrMac;
 import addr.addrPrefix;
 import ip.ipCor4;
@@ -15,6 +16,7 @@ import tab.tabRouteEntry;
 import user.userHelping;
 import util.bits;
 import util.cmds;
+import util.logger;
 
 /**
  * mobile route creator
@@ -222,6 +224,17 @@ public class rtrMobile extends ipRtr implements Runnable {
         return 0;
     }
 
+    /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param par parameter
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
+    }
+
     public void run() {
         for (;;) {
             bits.sleep(5000);
@@ -231,6 +244,7 @@ public class rtrMobile extends ipRtr implements Runnable {
             try {
                 routerCreateComputed();
             } catch (Exception e) {
+                logger.traceback(e);
             }
         }
     }

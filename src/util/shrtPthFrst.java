@@ -1,16 +1,23 @@
 package util;
 
 import addr.addrIP;
+import addr.addrIPv4;
+import addr.addrPrefix;
+import addr.addrType;
 import cfg.cfgAll;
+import cry.cryHashMd5;
 import ip.ipMpls;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import pack.packHolder;
+import rtr.rtrBgpUtil;
 import tab.tabGen;
 import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelBierN;
+import tab.tabRoute;
 import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRouteIface;
@@ -22,7 +29,7 @@ import user.userFormat;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
+public class shrtPthFrst<Ta extends addrType> {
 
     /**
      * beginning of graph
@@ -945,11 +952,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             res.add("//" + ntry);
             for (int i = 0; i < ntry.conn.size(); i++) {
                 shrtPthFrstConn<Ta> cur = ntry.conn.get(i);
-                String a = "";
-                if (cur.ident != null) {
-                    a = " [headlabel=\"" + cur.ident + "\"]";
-                }
-                res.add("  \"" + ntry + "\" -- \"" + cur.target + "\" [weight=" + cur.metric + "]" + a);
+                res.add("  \"" + ntry + "\" -- \"" + cur.target + "\" [weight=" + cur.metric + "] [headlabel=\"" + cur.ident + "\"]");
             }
         }
         res.add(graphEnd1);
@@ -964,7 +967,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param rou route
      * @param hop hop list
      */
-    public static <Ta extends Comparator<? super Ta>> void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop) {
+    public static <Ta extends addrType> void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop) {
         rou.alts.clear();
         for (int i = 0; i < hop.size(); i++) {
             shrtPthFrstRes<Ta> upl = hop.get(i);
@@ -990,7 +993,7 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
      * @param hop hop list
      * @param srPop sr pop requested
      */
-    public static <Ta extends Comparator<? super Ta>> void populateSegrout(tabRouteEntry<addrIP> rou, tabRouteAttr<addrIP> src, List<shrtPthFrstRes<Ta>> hop, boolean srPop) {
+    public static <Ta extends addrType> void populateSegrout(tabRouteEntry<addrIP> rou, tabRouteAttr<addrIP> src, List<shrtPthFrstRes<Ta>> hop, boolean srPop) {
         for (int i = 0; i < rou.alts.size(); i++) {
             tabRouteAttr<addrIP> res = rou.alts.get(i);
             res.segrouIdx = src.segrouIdx;
@@ -1015,6 +1018,62 @@ public class shrtPthFrst<Ta extends Comparator<? super Ta>> {
             if (srPop && (res.hops <= 1)) {
                 res.labelRem = tabLabel.int2labels(ipMpls.labelImp);
             }
+        }
+    }
+
+    private void listLinStateHdr(typLenVal tlv, packHolder pck, packHolder hlp, int prt, int asn, addrIPv4 adv) {
+        pck.clear();
+        pck.msbPutW(0, 1); // node
+        pck.putByte(2, prt); // protocol
+        pck.msbPutQ(3, 0); // identifier
+        pck.putSkip(11);
+        hlp.clear();
+        tlv.valSiz = 4;
+        tlv.valTyp = 512; // asn
+        bits.msbPutD(tlv.valDat, 0, asn);
+        tlv.putThis(hlp);
+        tlv.putAddr(hlp, 513, adv); // ls id
+        hlp.merge2end();
+    }
+
+    private void listLinStateLoc(typLenVal tlv, packHolder pck, packHolder hlp, int sizNod, shrtPthFrstNode<Ta> nod) {
+        nod.name.toBuffer(tlv.valDat, 0);
+        tlv.putBytes(hlp, 515, sizNod, tlv.valDat); // router id
+        hlp.merge2end();
+        byte[] buf = hlp.getCopy();
+        bits.byteCopy(buf, 0, tlv.valDat, 0, buf.length);
+        tlv.valSiz = buf.length;
+        tlv.putBytes(pck, 256); // local node
+        pck.merge2end();
+    }
+
+    /**
+     * list link states
+     *
+     * @param tab table to populate
+     * @param prt protocol id
+     * @param par parameter
+     * @param asn asn
+     * @param adv advertiser
+     * @param sizNod size of node
+     * @param sizLan size of lan
+     */
+    public void listLinkStates(tabRoute<addrIP> tab, int prt, int par, int asn, addrIPv4 adv, int sizNod, int sizLan) {
+        typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+        packHolder pck = new packHolder(true, true);
+        packHolder hlp = new packHolder(true, true);
+        tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
+        rou.best.rouSrc = rtrBgpUtil.peerOriginate;
+        addrIP adr = new addrIP();
+        for (int o = 0; o < nodes.size(); o++) {
+            shrtPthFrstNode<Ta> nod = nodes.get(o);
+            listLinStateHdr(tlv, pck, hlp, prt, asn, adv);
+            listLinStateLoc(tlv, pck, hlp, sizNod, nod);
+            rou.nlri = pck.getCopy();
+            adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), rou.nlri), 0);
+            rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+            tab.add(tabRoute.addType.better, rou, true, true);
+            logger.debug("here " + bits.byteDump(rou.nlri, 0, -1));/////////////////
         }
     }
 

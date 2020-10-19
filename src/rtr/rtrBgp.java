@@ -318,6 +318,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected tabListing<tabPlcmapN, addrIP> flowSpec;
 
     /**
+     * link states
+     */
+    protected tabGen<rtrBgpLnkst> linkStates;
+
+    /**
      * install flow specification
      */
     protected boolean flowInst;
@@ -833,6 +838,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         distantExt = 20;
         distantInt = 200;
         distantLoc = 200;
+        linkStates = new tabGen<rtrBgpLnkst>();
         lstnNei = new tabGen<rtrBgpNeigh>();
         neighs = new tabGen<rtrBgpNeigh>();
         mons = new tabGen<rtrBgpMon>();
@@ -1361,6 +1367,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), afiUni == rtrBgpUtil.safiIp6uni, localAs);
         }
+        for (int i = 0; i < linkStates.size(); i++) {
+            rtrBgpLnkst ls = linkStates.get(i);
+            ls.rtr.routerLinkStates(nLnks, ls.par, localAs, routerID);
+        }
         for (int i = 0; i < routerRedistedF.size(); i++) {
             tabRouteEntry<addrIP> ntry = routerRedistedF.get(i);
             ntry = ntry.copyBytes(tabRoute.addType.notyet);
@@ -1570,6 +1580,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " export");
         }
         otherTrigger = (addrFams & rtrBgpParam.mskLab) != 0;
+        otherTrigger |= linkStates.size() > 0;
         if (flowInst) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
@@ -2130,6 +2141,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("2 3     <num>                     bitstring length");
         l.add("3 4       <num>                   maximum index");
         l.add("4 .         <num>                 this node index");
+        l.add("1 2   linkstate                   specify link state parameter");
+        cfgRtr.getRouterList(l, 0, " to advertise");
+        l.add("3 4       <num>                   process id");
+        l.add("4 .         <num>                 area/level number");
         l.add("1 .   flowspec-install            specify flowspec installation");
         l.add("1 2   flowspec-advert             specify flowspec parameter");
         l.add("2 .     <name>                    name of policy map");
@@ -2248,6 +2263,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
         cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
         cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
+        for (int i = 0; i < linkStates.size(); i++) {
+            rtrBgpLnkst ls = linkStates.get(i);
+            l.add(beg + "linkstate " + ls.rtr.routerGetName() + " " + ls.par);
+        }
         for (int i = 0; i < mons.size(); i++) {
             mons.get(i).getConfig(l, beg);
         }
@@ -2440,6 +2459,33 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return false;
             }
             return true;
+        }
+        if (s.equals("linkstate")) {
+            rtrBgpLnkst ls = new rtrBgpLnkst();
+            tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
+            if (rt == null) {
+                cmd.error("bad protocol");
+                return false;
+            }
+            cfgRtr rtr = cfgAll.rtrFind(rt, bits.str2num(cmd.word()), false);
+            if (rtr == null) {
+                cmd.error("no such router");
+                return false;
+            }
+            ls.rtr = rtr.getRouter();
+            if (ls.rtr == null) {
+                cmd.error("not initialized");
+                return false;
+            }
+            ls.par = bits.str2num(cmd.word());
+            if (negated) {
+                linkStates.del(ls);
+            } else {
+                linkStates.put(ls);
+            }
+            needFull.add(1);
+            compute.wakeup();
+            return false;
         }
         if (s.equals("flowspec-install")) {
             flowInst = !negated;
@@ -3213,6 +3259,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public int routerIfaceCount() {
         return 0;
+    }
+
+    /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param par parameter
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
     }
 
     /**

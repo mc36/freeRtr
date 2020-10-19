@@ -2,6 +2,7 @@ package ip;
 
 import addr.addrIP;
 import addr.addrIPv4;
+import cfg.cfgRtr;
 import java.util.Comparator;
 import java.util.List;
 import tab.tabGen;
@@ -131,6 +132,15 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     }
 
     /**
+     * get router name
+     *
+     * @return name
+     */
+    public String routerGetName() {
+        return cfgRtr.num2name(routerProtoTyp) + " " + routerProcNum;
+    }
+
+    /**
      * check if this is a bgp process
      *
      * @return 0=no, 1=bgp, 2=vpn
@@ -254,10 +264,20 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     public abstract void routerNeighList(tabRoute<addrIP> tab);
 
     /**
-     * count number of interfqces
+     * count number of interfaces
      *
      * @return number of interfaces
      */
     public abstract int routerIfaceCount();
+
+    /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param par parameter
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public abstract void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv);
 
 }
