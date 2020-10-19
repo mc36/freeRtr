@@ -1036,7 +1036,12 @@ public class shrtPthFrst<Ta extends addrType> {
         hlp.merge2end();
     }
 
-    private void listLinStateLoc(typLenVal tlv, packHolder pck, packHolder hlp, int sizNod, shrtPthFrstNode<Ta> nod) {
+    private void listLinStateLoc(typLenVal tlv, packHolder pck, packHolder hlp, int sizNod, int par, shrtPthFrstNode<Ta> nod) {
+        if (par != -1) {
+            byte[] buf = new byte[4];
+            bits.msbPutD(buf, 0, par);
+            tlv.putBytes(hlp, 514, buf); // area id
+        }
         nod.name.toBuffer(tlv.valDat, 0);
         tlv.putBytes(hlp, 515, sizNod, tlv.valDat); // router id
         hlp.merge2end();
@@ -1068,7 +1073,7 @@ public class shrtPthFrst<Ta extends addrType> {
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> nod = nodes.get(o);
             listLinStateHdr(tlv, pck, hlp, prt, asn, adv);
-            listLinStateLoc(tlv, pck, hlp, sizNod, nod);
+            listLinStateLoc(tlv, pck, hlp, sizNod, par, nod);
             rou.nlri = pck.getCopy();
             adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), rou.nlri), 0);
             rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
