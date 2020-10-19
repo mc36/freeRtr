@@ -7,6 +7,7 @@ import addr.addrIPv6;
 import addr.addrMac;
 import addr.addrPrefix;
 import addr.addrType;
+import cry.cryHashMd5;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
@@ -80,12 +81,17 @@ public class rtrBgpUtil {
     /**
      * l2vpn6 address family
      */
-    public final static int afiL2vpn6 = 0x70190000;
+    public final static int afiL2vpn6 = 0x80190000;
 
     /**
-     * linkstate address family
+     * linkstate4 address family
      */
-    public final static int afiLnkSt = 0x40040000;
+    public final static int afiLnks4 = 0x40040000;
+
+    /**
+     * linkstate6 address family
+     */
+    public final static int afiLnks6 = 0xc0040000;
 
     /**
      * address family mask
@@ -170,7 +176,7 @@ public class rtrBgpUtil {
     /**
      * link state vpn address family
      */
-    public final static int safiLnkStVpn = 0x48;
+    public final static int safiVpnLnkSt = 0x48;
 
     /**
      * segment routing traffic engineering address family
@@ -288,14 +294,24 @@ public class rtrBgpUtil {
     public final static int safiIp6mdt = afiIpv6 | safiMdt;
 
     /**
-     * link state address family
+     * ipv4 link state address family
      */
-    public final static int safiLnks = afiLnkSt | safiLnkSt;
+    public final static int safiIp4lnks = afiLnks4 | safiLnkSt;
 
     /**
-     * vpn link state address family
+     * ipv6 link state address family
      */
-    public final static int safiVpnLnks = afiLnkSt | safiLnkStVpn;
+    public final static int safiIp6lnks = afiLnks6 | safiLnkSt;
+
+    /**
+     * ipv4 vpn link state address family
+     */
+    public final static int safiIp4vpnL = afiLnks4 | safiVpnLnkSt;
+
+    /**
+     * ipv6 vpn link state address family
+     */
+    public final static int safiIp6vpnL = afiLnks6 | safiVpnLnkSt;
 
     /**
      * ipv4 srte address family
@@ -1057,6 +1073,19 @@ public class rtrBgpUtil {
         int i;
         int p = 0;
         switch (sfi) {
+            case safiLnkSt:
+            case safiVpnLnkSt:
+                p = pck.msbGetW(0);
+                i = pck.msbGetW(2);
+                pck.getSkip(4);
+                ntry.best.tunelTyp = p;
+                ntry.best.tunelVal = new byte[i];
+                pck.getCopy(ntry.best.tunelVal, 0, 0, ntry.best.tunelVal.length);
+                pck.getSkip(ntry.best.tunelVal.length);
+                addrIP adr = new addrIP();
+                adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), ntry.best.tunelVal), 0);
+                ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+                return ntry;
             case safiEthVpn:
                 ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
                 p = pck.getByte(0);
@@ -1114,7 +1143,7 @@ public class rtrBgpUtil {
                 }
             }
         }
-        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnLnks) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
+        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnLnkSt) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
             ntry.rouDst = pck.msbGetQ(0);
             pck.getSkip(8);
             i -= 64;
@@ -1195,12 +1224,14 @@ public class rtrBgpUtil {
         switch (safi & afiMask) {
             case afiIpv4:
             case afiL2vpn4:
+            case afiLnks4:
                 addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
                 i = a4.maskLen;
                 buf2 = a4.network.getBytes();
                 break;
             case afiIpv6:
             case afiL2vpn6:
+            case afiLnks6:
                 addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
                 i = a6.maskLen;
                 buf2 = a6.network.getBytes();
@@ -1242,12 +1273,17 @@ public class rtrBgpUtil {
             }
             buf1[p - 1] |= 1;
         }
-        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnLnks) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
+        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnLnkSt) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
             bits.msbPutQ(buf1, p, ntry.rouDst);
             p += 8;
             i += 64;
         }
         switch (sfi) {
+            case safiLnkSt:
+            case safiVpnLnkSt:
+                util.logger.debug("here " + ntry.prefix.network + " " + bits.byteDump(ntry.best.tunelVal, 0, -1));/////////////////
+                /////////////
+                break;
             case safiEthVpn:
                 o = ntry.prefix.network.getBytes()[0];
                 i = writeEvpn(buf1, ntry, o);
@@ -1305,6 +1341,7 @@ public class rtrBgpUtil {
         switch (safi & afiMask) {
             case afiIpv4:
             case afiL2vpn4:
+            case afiLnks4:
                 addrIPv4 a4 = new addrIPv4();
                 pck.getAddr(a4, 0);
                 pck.getSkip(addrIPv4.size);
@@ -1312,6 +1349,7 @@ public class rtrBgpUtil {
                 return ax;
             case afiIpv6:
             case afiL2vpn6:
+            case afiLnks6:
                 addrIPv6 a6 = new addrIPv6();
                 pck.getAddr(a6, 0);
                 pck.getSkip(addrIPv6.size);
@@ -1498,10 +1536,14 @@ public class rtrBgpUtil {
                 return "srte4";
             case safiIp6srte:
                 return "srte6";
-            case safiLnks:
-                return "linkstate";
-            case safiVpnLnks:
-                return "vpnlnkst";
+            case safiIp4lnks:
+                return "linkstate4";
+            case safiIp6lnks:
+                return "linkstate6";
+            case safiIp4vpnL:
+                return "ip4vpnL";
+            case safiIp6vpnL:
+                return "ip6vpnL";
             case safiIp4mvpn:
                 return "mvpn4";
             case safiIp6mvpn:

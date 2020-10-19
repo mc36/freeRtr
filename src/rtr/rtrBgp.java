@@ -771,7 +771,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMspw = rtrBgpUtil.safiMspw4;
                 afiEvpn = rtrBgpUtil.safiEvpn4;
                 afiMdt = rtrBgpUtil.safiIp4mdt;
-                afiLnks = rtrBgpUtil.safiLnks;
+                afiLnks = rtrBgpUtil.safiIp4lnks;
                 afiSrte = rtrBgpUtil.safiIp4srte;
                 afiMvpn = rtrBgpUtil.safiIp4mvpn;
                 afiMvpo = rtrBgpUtil.safiIp6mvpn;
@@ -794,7 +794,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMspw = rtrBgpUtil.safiMspw6;
                 afiEvpn = rtrBgpUtil.safiEvpn6;
                 afiMdt = rtrBgpUtil.safiIp6mdt;
-                afiLnks = rtrBgpUtil.safiLnks;
+                afiLnks = rtrBgpUtil.safiIp6lnks;
                 afiSrte = rtrBgpUtil.safiIp6srte;
                 afiMvpn = rtrBgpUtil.safiIp6mvpn;
                 afiMvpo = rtrBgpUtil.safiIp4mvpn;
