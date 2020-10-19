@@ -1769,17 +1769,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         boolean addpath = addPthRx(safi);
-        boolean tunenc = safi == parent.afiLnks;
         for (int o = 0; o < currAdd.size(); o++) {
             tabRouteEntry<addrIP> pref = currAdd.get(o);
             attr.best.ident = pref.best.ident;
             attr.best.nextHop = pref.best.nextHop;
             attr.best.labelRem = pref.best.labelRem;
             attr.best.evpnLab = pref.best.evpnLab;
-            if (tunenc) {
-                attr.best.tunelTyp = pref.best.tunelTyp;
-                attr.best.tunelVal = pref.best.tunelVal;
-            }
             attr.best.copyBytes(pref.best, false);
             addAttribed(pref, addpath, learned, changed, safi, roumap, roupol, prflst);
         }

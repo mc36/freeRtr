@@ -24,7 +24,7 @@ import util.typLenVal;
  * @author matecsaba
  */
 public class rtrBgpUtil {
-
+    
     private rtrBgpUtil() {
     }
 
@@ -851,7 +851,7 @@ public class rtrBgpUtil {
                 return err + "/" + sub;
         }
     }
-
+    
     private static boolean readEvpn(packHolder pck, tabRouteEntry<addrIP> ntry, int typ) {
         ntry.rouDst = pck.msbGetQ(0);
         pck.getSkip(8);
@@ -960,7 +960,7 @@ public class rtrBgpUtil {
                 return true;
         }
     }
-
+    
     private static int writeEvpn(byte[] trg, tabRouteEntry<addrIP> ntry, int typ) {
         bits.msbPutQ(trg, 0, ntry.rouDst);
         int pos = 8;
@@ -1074,16 +1074,15 @@ public class rtrBgpUtil {
         int p = 0;
         switch (sfi) {
             case safiLnkSt:
-            case safiVpnLnkSt:
                 p = pck.msbGetW(0);
                 i = pck.msbGetW(2);
                 pck.getSkip(4);
-                ntry.best.tunelTyp = p;
-                ntry.best.tunelVal = new byte[i];
-                pck.getCopy(ntry.best.tunelVal, 0, 0, ntry.best.tunelVal.length);
-                pck.getSkip(ntry.best.tunelVal.length);
+                ntry.nlri = new byte[i + 2];
+                bits.msbPutW(ntry.nlri, 0, p);
+                pck.getCopy(ntry.nlri, 2, 0, i);
+                pck.getSkip(i);
                 addrIP adr = new addrIP();
-                adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), ntry.best.tunelVal), 0);
+                adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), ntry.nlri), 0);
                 ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
                 return ntry;
             case safiEthVpn:
@@ -1280,10 +1279,13 @@ public class rtrBgpUtil {
         }
         switch (sfi) {
             case safiLnkSt:
-            case safiVpnLnkSt:
-                util.logger.debug("here " + ntry.prefix.network + " " + bits.byteDump(ntry.best.tunelVal, 0, -1));/////////////////
-                /////////////
-                break;
+                o = ntry.nlri.length - 2;
+                pck.putCopy(ntry.nlri, 0, 0, 2);
+                pck.msbPutW(2, o);
+                pck.putSkip(4);
+                pck.putCopy(ntry.nlri, 2, 0, o);
+                pck.putSkip(o);
+                return;
             case safiEthVpn:
                 o = ntry.prefix.network.getBytes()[0];
                 i = writeEvpn(buf1, ntry, o);
@@ -1594,7 +1596,7 @@ public class rtrBgpUtil {
     public static void parseOrigin(tabRouteEntry<addrIP> ntry, packHolder pck) {
         ntry.best.origin = pck.getByte(0);
     }
-
+    
     private static void parseAsList(boolean longAs, List<Integer> lst, packHolder pck) {
         int o = pck.getByte(0);
         pck.getSkip(1);
@@ -2065,7 +2067,7 @@ public class rtrBgpUtil {
         attr.putSkip(buf.length);
         attr.merge2beg();
     }
-
+    
     private static void placeAttrib(int flg, int typ, packHolder trg, packHolder attr) {
         attr.merge2beg();
         byte[] buf = attr.getCopy();
@@ -2351,7 +2353,7 @@ public class rtrBgpUtil {
         hlp.putSkip(1);
         placeAttrib(flagTransitive, attrOrigin, trg, hlp);
     }
-
+    
     private static void placeAsList(boolean longAs, packHolder pck, int typ, List<Integer> lst) {
         if (lst == null) {
             return;
@@ -2940,5 +2942,5 @@ public class rtrBgpUtil {
         }
         return o;
     }
-
+    
 }

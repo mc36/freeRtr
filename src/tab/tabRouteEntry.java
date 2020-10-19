@@ -30,6 +30,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     public addrPrefix<T> prefix;
 
     /**
+     * nlri
+     */
+    public byte[] nlri;
+
+    /**
      * best path
      */
     public tabRouteAttr<T> best;
@@ -57,7 +62,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         alts = new ArrayList<tabRouteAttr<T>>();
         alts.add(best);
     }
-
+    
     public String toString() {
         return "" + prefix;
     }
@@ -144,6 +149,10 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         prf.rouDst = rouDst;
         prf.cntr = cntr;
         prf.hwCntr = hwCntr;
+        if (nlri != null) {
+            prf.nlri = new byte[nlri.length];
+            bits.byteCopy(nlri, 0, prf.nlri, 0, nlri.length);
+        }
         if (prefix != null) {
             prf.prefix = prefix.copyBytes();
         }
@@ -477,6 +486,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         l.add("prefix broadcast = " + prefix.broadcast);
         l.add("prefix wildcard = " + prefix.wildcard);
         l.add("prefix netmask = " + prefix.mask);
+        l.add("nlri = " + bits.byteDump(nlri, 0, -1));
         l.add("alternates = " + alts.size());
         for (int i = 0; i < alts.size(); i++) {
             tabRouteAttr<T> ntry = alts.get(i);
@@ -487,7 +497,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         l.add("hardware counter = " + counter.getShStat(hwCntr));
         return l;
     }
-
+    
     public int compare(tabRouteEntry<T> o1, tabRouteEntry<T> o2) {
         if (o1.rouDst < o2.rouDst) {
             return -1;
@@ -497,5 +507,5 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         }
         return prefix.compare(o1.prefix, o2.prefix);
     }
-
+    
 }
