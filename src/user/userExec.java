@@ -618,6 +618,7 @@ public class userExec {
         hl.add("9 9,.                  extcomm   ignore extended community");
         hl.add("9 9,.                  lrgcomm   ignore large community");
         hl.add("9 9,.                  sortcomm  sort communities");
+        hl.add("9 9,.                  lnksta    ignore link state");
         hl.add("9 9,.                  aigp      ignore accumulated igp");
         hl.add("9 9,.                  bandwidth ignore bandwidth");
         hl.add("9 9,.                  label     ignore labels");

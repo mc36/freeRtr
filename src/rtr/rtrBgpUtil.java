@@ -24,7 +24,7 @@ import util.typLenVal;
  * @author matecsaba
  */
 public class rtrBgpUtil {
-    
+
     private rtrBgpUtil() {
     }
 
@@ -851,7 +851,7 @@ public class rtrBgpUtil {
                 return err + "/" + sub;
         }
     }
-    
+
     private static boolean readEvpn(packHolder pck, tabRouteEntry<addrIP> ntry, int typ) {
         ntry.rouDst = pck.msbGetQ(0);
         pck.getSkip(8);
@@ -960,7 +960,7 @@ public class rtrBgpUtil {
                 return true;
         }
     }
-    
+
     private static int writeEvpn(byte[] trg, tabRouteEntry<addrIP> ntry, int typ) {
         bits.msbPutQ(trg, 0, ntry.rouDst);
         int pos = 8;
@@ -1223,17 +1223,20 @@ public class rtrBgpUtil {
         switch (safi & afiMask) {
             case afiIpv4:
             case afiL2vpn4:
-            case afiLnks4:
                 addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
                 i = a4.maskLen;
                 buf2 = a4.network.getBytes();
                 break;
             case afiIpv6:
             case afiL2vpn6:
-            case afiLnks6:
                 addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
                 i = a6.maskLen;
                 buf2 = a6.network.getBytes();
+                break;
+            case afiLnks4:
+            case afiLnks6:
+                buf2 = new byte[0];
+                i = 0;
                 break;
             default:
                 pck.putByte(0, 0);
@@ -1373,12 +1376,14 @@ public class rtrBgpUtil {
         switch (safi & afiMask) {
             case afiIpv4:
             case afiL2vpn4:
+            case afiLnks4:
                 addrIPv4 a4 = addr.toIPv4();
                 pck.putAddr(0, a4);
                 pck.putSkip(addrIPv4.size);
                 break;
             case afiIpv6:
             case afiL2vpn6:
+            case afiLnks6:
                 addrIPv6 a6 = addr.toIPv6();
                 pck.putAddr(0, a6);
                 pck.putSkip(addrIPv6.size);
@@ -1398,9 +1403,11 @@ public class rtrBgpUtil {
         switch (safi & afiMask) {
             case afiIpv4:
             case afiL2vpn4:
+            case afiLnks4:
                 return addrIPv4.size;
             case afiIpv6:
             case afiL2vpn6:
+            case afiLnks6:
                 return addrIPv6.size;
             default:
                 return 0;
@@ -1417,9 +1424,11 @@ public class rtrBgpUtil {
         switch (safi & afiMask) {
             case afiIpv4:
             case afiL2vpn4:
+            case afiLnks4:
                 return addrPrefix.ip4toIP(addrPrefix.defaultRoute4());
             case afiIpv6:
             case afiL2vpn6:
+            case afiLnks6:
                 return addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
             default:
                 return null;
@@ -1596,7 +1605,7 @@ public class rtrBgpUtil {
     public static void parseOrigin(tabRouteEntry<addrIP> ntry, packHolder pck) {
         ntry.best.origin = pck.getByte(0);
     }
-    
+
     private static void parseAsList(boolean longAs, List<Integer> lst, packHolder pck) {
         int o = pck.getByte(0);
         pck.getSkip(1);
@@ -1824,6 +1833,16 @@ public class rtrBgpUtil {
         }
         pck.setDataSize(len);
         ntry.best.tunelVal = pck.getCopy();
+    }
+
+    /**
+     * parse link state attribute
+     *
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parseLnkSta(tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.linkStat = pck.getCopy();
     }
 
     /**
@@ -2067,7 +2086,7 @@ public class rtrBgpUtil {
         attr.putSkip(buf.length);
         attr.merge2beg();
     }
-    
+
     private static void placeAttrib(int flg, int typ, packHolder trg, packHolder attr) {
         attr.merge2beg();
         byte[] buf = attr.getCopy();
@@ -2198,6 +2217,9 @@ public class rtrBgpUtil {
             case attrPmsiTun:
                 parsePmsiTun(ntry, pck);
                 break;
+            case attrLinkState:
+                parseLnkSta(ntry, pck);
+                break;
             case attrTunEnc:
                 parseTunEnc(ntry, pck);
                 break;
@@ -2287,6 +2309,7 @@ public class rtrBgpUtil {
         placeAccIgp(pck, hlp, ntry);
         placePmsiTun(pck, hlp, ntry);
         placeTunEnc(pck, hlp, ntry);
+        placeLnkSta(pck, hlp, ntry);
         placePrefSid(pck, hlp, ntry);
         placeBier(pck, hlp, ntry);
         placeAttribSet(pck, hlp, ntry);
@@ -2353,7 +2376,7 @@ public class rtrBgpUtil {
         hlp.putSkip(1);
         placeAttrib(flagTransitive, attrOrigin, trg, hlp);
     }
-    
+
     private static void placeAsList(boolean longAs, packHolder pck, int typ, List<Integer> lst) {
         if (lst == null) {
             return;
@@ -2653,6 +2676,23 @@ public class rtrBgpUtil {
     }
 
     /**
+     * place link state attribute
+     *
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placeLnkSta(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.linkStat == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.linkStat, 0, 0, ntry.best.linkStat.length);
+        hlp.putSkip(ntry.best.linkStat.length);
+        placeAttrib(flagOptional, attrLinkState, trg, hlp);
+    }
+
+    /**
      * place attribute set attribute
      *
      * @param trg target packet
@@ -2942,5 +2982,5 @@ public class rtrBgpUtil {
         }
         return o;
     }
-    
+
 }

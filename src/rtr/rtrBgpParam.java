@@ -103,6 +103,11 @@ public abstract class rtrBgpParam {
     public boolean tunEnc;
 
     /**
+     * send link state
+     */
+    public boolean lnkSta;
+
+    /**
      * send attribute set
      */
     public boolean attribSet;
@@ -721,6 +726,7 @@ public abstract class rtrBgpParam {
         traffEng = src.traffEng;
         pmsiTun = src.pmsiTun;
         tunEnc = src.tunEnc;
+        lnkSta = src.lnkSta;
         attribSet = src.attribSet;
         segRout = src.segRout;
         bier = src.bier;
@@ -819,6 +825,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (tunEnc != src.tunEnc) {
+            return true;
+        }
+        if (lnkSta != src.lnkSta) {
             return true;
         }
         if (attribSet != src.attribSet) {
@@ -970,6 +979,7 @@ public abstract class rtrBgpParam {
         l.add("3 .       traffeng                send traffic engineering attribute");
         l.add("3 .       pmsitun                 send provider multicast service interface tunnel attribute");
         l.add("3 .       tunenc                  send tunnel encapsulation attribute");
+        l.add("3 .       linkstate               send link state attribute");
         l.add("3 .       attribset               send attribute set attribute");
         l.add("3 .       label-pop               advertise pop label");
         l.add("3 .       segrout                 send segment routing attribute");
@@ -1131,6 +1141,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !traffEng, beg, nei + "traffeng", "");
         cmds.cfgLine(l, !pmsiTun, beg, nei + "pmsitun", "");
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
+        cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
         cmds.cfgLine(l, !attribSet, beg, nei + "attribset", "");
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
@@ -1483,6 +1494,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("tunenc")) {
             tunEnc = !negated;
+            return false;
+        }
+        if (s.equals("linkstate")) {
+            lnkSta = !negated;
             return false;
         }
         if (s.equals("attribset")) {

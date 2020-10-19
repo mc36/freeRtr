@@ -332,6 +332,11 @@ public class tabRouteAttr<T extends addrType> {
     public byte[] tunelVal;
 
     /**
+     * link state
+     */
+    public byte[] linkStat;
+
+    /**
      * attrib as
      */
     public int attribAs;
@@ -630,6 +635,12 @@ public class tabRouteAttr<T extends addrType> {
             bits.byteCopy(tunelVal, 0, atr.tunelVal, 0, tunelVal.length);
         } else {
             atr.tunelVal = null;
+        }
+        if (linkStat != null) {
+            atr.linkStat = new byte[linkStat.length];
+            bits.byteCopy(linkStat, 0, atr.linkStat, 0, linkStat.length);
+        } else {
+            atr.linkStat = null;
         }
         if (pmsiTun != null) {
             atr.pmsiTun = new byte[pmsiTun.length];
@@ -936,6 +947,19 @@ public class tabRouteAttr<T extends addrType> {
         } else if (other.tunelVal != null) {
             return true;
         }
+        if (linkStat != null) {
+            if (other.linkStat == null) {
+                return true;
+            }
+            if (linkStat.length != other.linkStat.length) {
+                return true;
+            }
+            if (bits.byteComp(linkStat, 0, other.linkStat, 0, linkStat.length) != 0) {
+                return true;
+            }
+        } else if (other.linkStat != null) {
+            return true;
+        }
         if (pmsiTun != null) {
             if (other.pmsiTun == null) {
                 return true;
@@ -1183,6 +1207,7 @@ public class tabRouteAttr<T extends addrType> {
         l.add("attribute value = " + bits.byteDump(attribVal, 0, -1));
         l.add("tunnel type = " + tunelTyp);
         l.add("tunnel value = " + bits.byteDump(tunelVal, 0, -1));
+        l.add("link state = " + bits.byteDump(linkStat, 0, -1));
         l.add("pmsi type = " + pmsiTyp);
         l.add("pmsi label*16 = " + pmsiLab);
         l.add("pmsi tunnel = " + bits.byteDump(pmsiTun, 0, -1));

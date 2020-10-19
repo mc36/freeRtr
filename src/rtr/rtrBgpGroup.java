@@ -482,6 +482,9 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.pmsiTyp = 0;
             ntry.pmsiTun = null;
         }
+        if (!lnkSta) {
+            ntry.linkStat = null;
+        }
         if (!tunEnc) {
             ntry.tunelTyp = 0;
             ntry.tunelVal = null;

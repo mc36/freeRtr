@@ -2459,6 +2459,9 @@ public class userShow {
                 Collections.sort(ntry.extComm);
             }
         }
+        if ((ign & 0x1000000) != 0) {
+            ntry.linkStat = null;
+        }
     }
 
     private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign, tabListing<tabRtrmapN, addrIP> flt) {
@@ -2567,6 +2570,9 @@ public class userShow {
         }
         if (a.equals("sortcomm")) {
             return 0x800000;
+        }
+        if (a.equals("lnksta")) {
+            return 0x1000000;
         }
         return 0;
     }
