@@ -83,6 +83,11 @@ public class rtrBgpUtil {
     public final static int afiL2vpn6 = 0x70190000;
 
     /**
+     * linkstate address family
+     */
+    public final static int afiLnkSt = 0x40040000;
+
+    /**
      * address family mask
      */
     public final static int afiMask = 0xffff0000;
@@ -283,11 +288,22 @@ public class rtrBgpUtil {
     public final static int safiIp6mdt = afiIpv6 | safiMdt;
 
     /**
-     * ipv4 mvpn address family
+     * link state address family
+     */
+    public final static int safiLnks = afiLnkSt | safiLnkSt;
+
+    /**
+     * vpn link state address family
+     */
+    public final static int safiVpnLnks = afiLnkSt | safiLnkStVpn;
+
+    /**
+     * ipv4 srte address family
      */
     public final static int safiIp4srte = afiIpv4 | safiSrTe;
+
     /**
-     * ipv6 mvpn address family
+     * ipv6 srte address family
      */
     public final static int safiIp6srte = afiIpv6 | safiSrTe;
 
@@ -1098,7 +1114,7 @@ public class rtrBgpUtil {
                 }
             }
         }
-        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
+        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnLnks) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
             ntry.rouDst = pck.msbGetQ(0);
             pck.getSkip(8);
             i -= 64;
@@ -1226,7 +1242,7 @@ public class rtrBgpUtil {
             }
             buf1[p - 1] |= 1;
         }
-        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
+        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnLnks) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
             bits.msbPutQ(buf1, p, ntry.rouDst);
             p += 8;
             i += 64;
@@ -1482,6 +1498,10 @@ public class rtrBgpUtil {
                 return "srte4";
             case safiIp6srte:
                 return "srte6";
+            case safiLnks:
+                return "linkstate";
+            case safiVpnLnks:
+                return "vpnlnkst";
             case safiIp4mvpn:
                 return "mvpn4";
             case safiIp6mvpn:
