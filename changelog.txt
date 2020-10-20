@@ -9392,3 +9392,10 @@ no todo: parse privilege levels from radius and tacacs
 no todo: looking glass rfc8522
 no todo: fully paraeterizable sho dash
 todo: parse privilege levels from tacacs
+---------------------------------- 2020-10-20 02:14:27
+qc pass: unicast+linkstate over bgp
+qc pass: unicast+linkstate over bgp with soft-reconfig
+qc pass: unicast+linkstate over bgp with additional path
+qc pass: isis with bgp linkstate
+qc pass: lsrp with bgp linkstate
+qc pass: ospf with bgp linkstate

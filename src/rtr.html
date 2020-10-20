@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>
 release: freeRouter v20.10.20-rel, done by cs@nop.<br/>
-tested: 2020-10-20 01:07:54, took 00:04:59, with 100 workers, on 2120 cases, 0 failed, 0 traces, 2 retries<br/>
+tested: 2020-10-20 02:19:31, took 00:05:04, with 100 workers, on 2126 cases, 0 failed, 0 traces, 3 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table border=1><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr>
@@ -1783,6 +1783,9 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp423.tst">rout-bgp423.tst</a></td><td>success</td><td>bgp routepolicy filtering with peer large community</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp424.tst">rout-bgp424.tst</a></td><td>success</td><td>bgp routemap filtering with peer large community with soft-reconfig</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-bgp425.tst">rout-bgp425.tst</a></td><td>success</td><td>bgp routepolicy filtering with peer large community with soft-reconfig</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp426.tst">rout-bgp426.tst</a></td><td>success</td><td>unicast+linkstate over bgp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp427.tst">rout-bgp427.tst</a></td><td>success</td><td>unicast+linkstate over bgp with soft-reconfig</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-bgp428.tst">rout-bgp428.tst</a></td><td>success</td><td>unicast+linkstate over bgp with additional path</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp01.tst">rout-eigrp01.tst</a></td><td>success</td><td>eigrp point2point connection</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp02.tst">rout-eigrp02.tst</a></td><td>success</td><td>eigrp point2multipoint connection</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-eigrp03.tst">rout-eigrp03.tst</a></td><td>success</td><td>eigrp point2point chain</td></tr>
@@ -1870,6 +1873,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis62.tst">rout-isis62.tst</a></td><td>success</td><td>isis chain of broadcast nets with bidir check</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis63.tst">rout-isis63.tst</a></td><td>success</td><td>isis multi-topology with bidir check</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis64.tst">rout-isis64.tst</a></td><td>success</td><td>isis ecmp connection</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-isis65.tst">rout-isis65.tst</a></td><td>success</td><td>isis with bgp linkstate</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp01.tst">rout-lsrp01.tst</a></td><td>success</td><td>lsrp point2point connection</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp02.tst">rout-lsrp02.tst</a></td><td>success</td><td>lsrp point2multipoint connection</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp03.tst">rout-lsrp03.tst</a></td><td>success</td><td>lsrp point2point chain</td></tr>
@@ -1908,6 +1912,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp36.tst">rout-lsrp36.tst</a></td><td>success</td><td>lsrp point2point connection with bidir check</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp37.tst">rout-lsrp37.tst</a></td><td>success</td><td>lsrp point2multipoint connection with bidir check</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp38.tst">rout-lsrp38.tst</a></td><td>success</td><td>lsrp ecmp connection</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp39.tst">rout-lsrp39.tst</a></td><td>success</td><td>lsrp with bgp linkstate</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast01.tst">rout-mcast01.tst</a></td><td>success</td><td>multicast routing with static flooding</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast02.tst">rout-mcast02.tst</a></td><td>success</td><td>multicast routing with pim ssm</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast03.tst">rout-mcast03.tst</a></td><td>success</td><td>multicast routing with igmp/mld</td></tr>
@@ -1996,6 +2001,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf46.tst">rout-ospf46.tst</a></td><td>success</td><td>ospf point2point chain with bidir check</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf47.tst">rout-ospf47.tst</a></td><td>success</td><td>ospf broadcast chain with bidir check</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf48.tst">rout-ospf48.tst</a></td><td>success</td><td>ospf ecmp connection</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-ospf49.tst">rout-ospf49.tst</a></td><td>success</td><td>ospf with bgp linkstate</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pbr01.tst">rout-pbr01.tst</a></td><td>success</td><td>policy routing with nexthop</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pbr02.tst">rout-pbr02.tst</a></td><td>success</td><td>policy routing with interface and nexthop between vrfs</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pbr03.tst">rout-pbr03.tst</a></td><td>success</td><td>policy routing with interface and nexthop</td></tr>

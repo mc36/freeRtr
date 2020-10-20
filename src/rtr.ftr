@@ -1776,6 +1776,9 @@ qc pass: bgp routemap filtering with peer large community
 qc pass: bgp routepolicy filtering with peer large community
 qc pass: bgp routemap filtering with peer large community with soft-reconfig
 qc pass: bgp routepolicy filtering with peer large community with soft-reconfig
+qc pass: unicast+linkstate over bgp
+qc pass: unicast+linkstate over bgp with soft-reconfig
+qc pass: unicast+linkstate over bgp with additional path
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -1863,6 +1866,7 @@ qc pass: isis narrow metric with bidir check
 qc pass: isis chain of broadcast nets with bidir check
 qc pass: isis multi-topology with bidir check
 qc pass: isis ecmp connection
+qc pass: isis with bgp linkstate
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -1901,6 +1905,7 @@ qc pass: lsrp peer metric
 qc pass: lsrp point2point connection with bidir check
 qc pass: lsrp point2multipoint connection with bidir check
 qc pass: lsrp ecmp connection
+qc pass: lsrp with bgp linkstate
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -1989,6 +1994,7 @@ qc pass: ospf asymmetric multi area
 qc pass: ospf point2point chain with bidir check
 qc pass: ospf broadcast chain with bidir check
 qc pass: ospf ecmp connection
+qc pass: ospf with bgp linkstate
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
