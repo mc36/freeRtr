@@ -1085,13 +1085,13 @@ public class shrtPthFrst<Ta extends addrType> {
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> nod = nodes.get(o);
             listLinStateHdr(tlv, pck, prt, 1);
-            listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256);
+            listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
             listLinStateAdd(tab, tlv, pck, -1);
             for (int i = 0; i < nod.conn.size(); i++) {
                 shrtPthFrstConn<Ta> con = nod.conn.get(i);
                 listLinStateHdr(tlv, pck, prt, 2);
-                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256);
-                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, con.target, 257);
+                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, con.target, 257); // remote node
                 listLinStateAdd(tab, tlv, pck, con.metric);
             }
         }
