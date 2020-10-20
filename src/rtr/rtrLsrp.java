@@ -1218,7 +1218,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @param adv advertiser
      */
     public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
-        lastSpf.listLinkStates(tab, 227, -1, asn, adv, addrIPv4.size, addrIPv4.size);
+        lastSpf.listLinkStates(tab, 227, -1, asn, adv, addrIPv4.size);
     }
 
 }
