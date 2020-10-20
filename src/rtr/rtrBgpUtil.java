@@ -81,7 +81,7 @@ public class rtrBgpUtil {
     /**
      * l2vpn6 address family
      */
-    public final static int afiL2vpn6 = 0x80190000;
+    public final static int afiL2vpn6 = 0x07190000;
 
     /**
      * linkstate4 address family
@@ -91,7 +91,7 @@ public class rtrBgpUtil {
     /**
      * linkstate6 address family
      */
-    public final static int afiLnks6 = 0xc0040000;
+    public final static int afiLnks6 = 0x47040000;
 
     /**
      * address family mask
