@@ -95,6 +95,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
         "telemetry exporter .*! command null",
         "telemetry exporter .*! skip 1",
         "telemetry exporter .*! column .* name null",
+        "telemetry exporter .*! column .* split null null null",
         "telemetry exporter .*! column .* type sint64",};
 
     /**
@@ -152,6 +153,10 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
         l.add("3  4          replace              define replaces in value");
         l.add("4  5            <str>              string to replace");
         l.add("5  .              <str>            replacement string");
+        l.add("3  4          split                define split of value");
+        l.add("4  5            <str>              delimiter");
+        l.add("5  6              <str>            first label");
+        l.add("6  .                <str>          second label");
         return l;
     }
 
@@ -172,6 +177,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
             String cn = cmds.tabulator + "column " + col.num;
             l.add(cn + " name " + col.nam);
             l.add(cn + " type " + servStreamingMdt.type2string(col.typ));
+            l.add(cn + " split " + col.splS + " " + col.splL + " " + col.splR);
             for (int i = 0; i < col.reps.size(); i++) {
                 cfgTlmtexpRep rep = col.reps.get(i);
                 l.add(cn + " replace " + rep.src + " " + rep.trg);
@@ -255,6 +261,18 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
             col.typ = servStreamingMdt.string2type(cmd.word());
             return;
         }
+        if (s.equals("split")) {
+            if (negated) {
+                col.splS = null;
+                col.splL = null;
+                col.splR = null;
+            } else {
+                col.splS = cmd.word();
+                col.splL = cmd.word();
+                col.splR = cmd.word();
+            }
+            return;
+        }
         if (s.equals("replace")) {
             cfgTlmtexpRep rep = new cfgTlmtexpRep(cmd.word());
             rep.trg = cmd.word();
@@ -307,6 +325,56 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
         return lst;
     }
 
+    private void doMetric(packHolder pck2, packHolder pck3, int typ, String nam, String val) {
+        protoBuf pb2 = new protoBuf();
+        pb2.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, nam.getBytes());
+        switch (typ) {
+            case servStreamingMdt.fnByte:
+                pb2.putField(typ, protoBufEntry.tpBuf, val.getBytes());
+                break;
+            case servStreamingMdt.fnString:
+                pb2.putField(typ, protoBufEntry.tpBuf, val.getBytes());
+                break;
+            case servStreamingMdt.fnBool:
+                pb2.putField(typ, protoBufEntry.tpInt, bits.str2num(val));
+                break;
+            case servStreamingMdt.fnUint32:
+            case servStreamingMdt.fnUint64:
+                pb2.putField(typ, protoBufEntry.tpInt, bits.str2long(val));
+                break;
+            case servStreamingMdt.fnSint32:
+            case servStreamingMdt.fnSint64:
+                pb2.putField(typ, protoBufEntry.tpInt, protoBuf.toZigzag(bits.str2long(val)));
+                break;
+            case servStreamingMdt.fnDouble:
+                Double d;
+                try {
+                    d = Double.parseDouble(val);
+                } catch (Exception e) {
+                    return;
+                }
+                pb2.putField(typ, protoBufEntry.tpInt, Double.doubleToLongBits(d));
+                break;
+            case servStreamingMdt.fnFloat:
+                Float f;
+                try {
+                    f = Float.parseFloat(val);
+                } catch (Exception e) {
+                    return;
+                }
+                pb2.putField(typ, protoBufEntry.tpInt, Float.floatToIntBits(f));
+                break;
+            default:
+                return;
+        }
+        pck3.clear();
+        pb2.toPacket(pck3);
+        pb2.clear();
+        pb2.putField(servStreamingMdt.fnFields, protoBufEntry.tpBuf, pck3.getCopy());
+        pb2.toPacket(pck2);
+        pb2.clear();
+    }
+
     private packHolder doLine(String a) {
         cmds cm = new cmds("prom", a);
         List<String> cl = new ArrayList<String>();
@@ -347,53 +415,17 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
                 cfgTlmtexpRep rep = cc.reps.get(i);
                 a = a.replaceAll(rep.src, rep.trg);
             }
-            protoBuf pb2 = new protoBuf();
-            pb2.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, cc.nam.getBytes());
-            switch (cc.typ) {
-                case servStreamingMdt.fnByte:
-                    pb2.putField(cc.typ, protoBufEntry.tpBuf, a.getBytes());
-                    break;
-                case servStreamingMdt.fnString:
-                    pb2.putField(cc.typ, protoBufEntry.tpBuf, a.getBytes());
-                    break;
-                case servStreamingMdt.fnBool:
-                    pb2.putField(cc.typ, protoBufEntry.tpInt, bits.str2num(a));
-                    break;
-                case servStreamingMdt.fnUint32:
-                case servStreamingMdt.fnUint64:
-                    pb2.putField(cc.typ, protoBufEntry.tpInt, bits.str2long(a));
-                    break;
-                case servStreamingMdt.fnSint32:
-                case servStreamingMdt.fnSint64:
-                    pb2.putField(cc.typ, protoBufEntry.tpInt, protoBuf.toZigzag(bits.str2long(a)));
-                    break;
-                case servStreamingMdt.fnDouble:
-                    Double d;
-                    try {
-                        d = Double.parseDouble(a);
-                    } catch (Exception e) {
-                        continue;
-                    }
-                    pb2.putField(cc.typ, protoBufEntry.tpInt, Double.doubleToLongBits(d));
-                    break;
-                case servStreamingMdt.fnFloat:
-                    Float f;
-                    try {
-                        f = Float.parseFloat(a);
-                    } catch (Exception e) {
-                        continue;
-                    }
-                    pb2.putField(cc.typ, protoBufEntry.tpInt, Float.floatToIntBits(f));
-                    break;
-                default:
-                    continue;
+            if (cc.splS == null) {
+                doMetric(pck2, pck3, cc.typ, cc.nam, a);
+                continue;
             }
-            pck3.clear();
-            pb2.toPacket(pck3);
-            pb2.clear();
-            pb2.putField(servStreamingMdt.fnFields, protoBufEntry.tpBuf, pck3.getCopy());
-            pb2.toPacket(pck2);
-            pb2.clear();
+            int i = a.indexOf(cc.splS);
+            if (i < 0) {
+                doMetric(pck2, pck3, cc.typ, cc.nam, a);
+                continue;
+            }
+            doMetric(pck2, pck3, cc.typ, cc.nam + cc.splL, a.substring(0, i));
+            doMetric(pck2, pck3, cc.typ, cc.nam + cc.splR, a.substring(i + cc.splS.length(), a.length()));
         }
         protoBuf pb2 = new protoBuf();
         pb2.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, servStreamingMdt.nmKey.getBytes());
@@ -485,6 +517,12 @@ class cfgTlmtexpCol implements Comparator<cfgTlmtexpCol> {
     public final int num;
 
     public String nam;
+
+    public String splS;
+
+    public String splL;
+
+    public String splR;
 
     public int typ = servStreamingMdt.fnSint64;
 

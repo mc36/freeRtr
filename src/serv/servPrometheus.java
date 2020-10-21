@@ -71,6 +71,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         "server prometheus .*! metric .* skip 1",
         "server prometheus .*! no metric .* excluded",
         "server prometheus .*! metric .* column .* type gauge",
+        "server prometheus .*! metric .* column .* split null null null",
         "server prometheus .*! metric .* column .* help null",};
 
     /**
@@ -148,6 +149,7 @@ public class servPrometheus extends servGeneric implements prtServS {
                 lst.add(cn + " name " + col.nam + a);
                 lst.add(cn + " type " + col.typ);
                 lst.add(cn + " help " + col.hlp);
+                lst.add(cn + " split " + col.splS + " " + col.splL + " " + col.splR);
                 for (int i = 0; i < col.reps.size(); i++) {
                     servPrometheusRep rep = col.reps.get(i);
                     lst.add(cn + " replace " + rep.src + " " + rep.trg);
@@ -281,6 +283,18 @@ public class servPrometheus extends servGeneric implements prtServS {
             }
             return false;
         }
+        if (s.equals("split")) {
+            if (negated) {
+                col.splS = null;
+                col.splL = null;
+                col.splR = null;
+            } else {
+                col.splS = cmd.word();
+                col.splL = cmd.word();
+                col.splR = cmd.word();
+            }
+            return false;
+        }
         if (s.equals("replace")) {
             servPrometheusRep rep = new servPrometheusRep(cmd.word());
             rep.trg = cmd.word();
@@ -331,6 +345,10 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add("5 6          replace              define replaces in value");
         l.add("6 7            <str>              string to replace");
         l.add("7 .              <str>            replacement string");
+        l.add("5 6          split                define split of value");
+        l.add("6 7            <str>              delimiter");
+        l.add("7 8              <str>            first label");
+        l.add("8 .                <str>          second label");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -453,6 +471,13 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
         return lst;
     }
 
+    private void doMetric(List<String> lst, String nb, String labs, String val) {
+        if (labs.length() > 0) {
+            labs = "{" + labs.substring(1, labs.length()) + "}";
+        }
+        lst.add(nb + labs + " " + val);
+    }
+
     public List<String> doMetric() {
         List<String> lst = new ArrayList<String>();
         List<String> res = getResult();
@@ -535,10 +560,17 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                     servPrometheusRep rep = cc.reps.get(i);
                     a = a.replaceAll(rep.src, rep.trg);
                 }
-                if (labs.length() > 0) {
-                    labs = "{" + labs.substring(1, labs.length()) + "}";
+                if (cc.splS == null) {
+                    doMetric(lst, nb, labs, a);
+                    continue;
                 }
-                lst.add(nb + labs + " " + a);
+                int i = a.indexOf(cc.splS);
+                if (i < 0) {
+                    doMetric(lst, nb, labs, a);
+                    continue;
+                }
+                doMetric(lst, nb, labs + cc.splL, a.substring(0, i));
+                doMetric(lst, nb, labs + cc.splR, a.substring(i + cc.splS.length(), a.length()));
             }
         }
         return lst;
@@ -573,6 +605,12 @@ class servPrometheusCol implements Comparator<servPrometheusCol> {
     public String typ = "gauge";
 
     public String hlp;
+
+    public String splS;
+
+    public String splL;
+
+    public String splR;
 
     public tabGen<servPrometheusRep> reps = new tabGen<servPrometheusRep>();
 
