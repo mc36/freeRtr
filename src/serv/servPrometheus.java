@@ -569,8 +569,8 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                     doMetric(lst, nb, labs, a);
                     continue;
                 }
-                doMetric(lst, nb, labs + cc.splL, a.substring(0, i));
-                doMetric(lst, nb, labs + cc.splR, a.substring(i + cc.splS.length(), a.length()));
+                doMetric(lst, nb, labs + "," + cc.splL, a.substring(0, i));
+                doMetric(lst, nb, labs + "," + cc.splR, a.substring(i + cc.splS.length(), a.length()));
             }
         }
         return lst;
