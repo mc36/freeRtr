@@ -196,7 +196,7 @@ public class packDns {
             if (ntry == null) {
                 continue;
             }
-            s += "(" + ntry.toUserStr(" ") + ")";
+            s += "(" + ntry.toUserStr(" ", false) + ")";
         }
         return s;
     }

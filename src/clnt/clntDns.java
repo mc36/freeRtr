@@ -77,7 +77,7 @@ public class clntDns {
      * @return cache content
      */
     public static userFormat showLocalCache() {
-        return loCache.toUserStr();
+        return loCache.toUserStr(true);
     }
 
     private boolean doResolv(addrIP srv, String nam, int typ) {

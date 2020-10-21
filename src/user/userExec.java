@@ -3256,7 +3256,7 @@ public class userExec {
                 cmd.error("no reply");
                 return;
             }
-            reader.putStrTab(res.toUserStr());
+            reader.putStrTab(res.toUserStr(false));
             return;
         }
         if (recur) {
@@ -3265,7 +3265,7 @@ public class userExec {
                 cmd.error("no reply");
                 return;
             }
-            reader.putStrTab(res.toUserStr());
+            reader.putStrTab(res.toUserStr(false));
             return;
         }
         clnt.doResolvList(srvs, a, true, i);
@@ -3274,7 +3274,7 @@ public class userExec {
             cmd.error("no reply");
             return;
         }
-        reader.putStrArr(bits.str2lst(res.toUserStr(" ")));
+        reader.putStrArr(bits.str2lst(res.toUserStr(" ", false)));
     }
 
     private void doTclsh() {

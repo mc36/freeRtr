@@ -334,7 +334,7 @@ public class userConfig {
         l.add("1  2  enable                         set enable password");
         l.add("2  .    <name>                       enable password");
         l.add("1  2  password-encrypt               set password encryption key");
-        l.add("2  .    <name>                       enable password");
+        l.add("2  .    <name>                       encryption key");
         l.add("1  2  banner                         banner of system");
         l.add("2  3    set                          set banner");
         l.add("3  3,.    <cmd>                      first line of banner");

@@ -70,6 +70,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
                 continue;
             }
             ntry.added = tim;
+            ntry.asked = 1;
             if (recs.add(ntry) == null) {
                 add++;
             }
@@ -95,6 +96,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
                 continue;
             }
             ntry.added = tim;
+            ntry.asked = 1;
             if (recs.add(ntry) == null) {
                 add++;
             }
@@ -113,17 +115,23 @@ public class packDnsZone implements Comparator<packDnsZone> {
             ntry.ttl = defttl;
         }
         ntry.added = bits.getTime();
+        ntry.asked = 1;
         return recs.put(ntry) != null;
     }
 
     /**
      * find one entry
      *
-     * @param ntry record to delete
+     * @param ntry record to find
      * @return record, null if not found
      */
     public packDnsRec findBin(packDnsRec ntry) {
-        return recs.find(ntry);
+        ntry = recs.find(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        ntry.asked++;
+        return ntry;
     }
 
     /**
@@ -258,20 +266,25 @@ public class packDnsZone implements Comparator<packDnsZone> {
             if (ntry == null) {
                 continue;
             }
-            txt.add(beg + ntry.toUserStr(" "));
+            txt.add(beg + ntry.toUserStr(" ", false));
         }
         return txt;
     }
 
     /**
-     * conver to user string
+     * convert to user string
      *
+     * @param stat statistics
      * @return user string
      */
-    public userFormat toUserStr() {
-        userFormat res = new userFormat("|", "name|type|data");
+    public userFormat toUserStr(boolean stat) {
+        String a = "";
+        if (stat) {
+            a = "|hit|since";
+        }
+        userFormat res = new userFormat("|", "name|type|data" + a);
         for (int i = 0; i < recs.size(); i++) {
-            res.add(recs.get(i).toUserStr("|"));
+            res.add(recs.get(i).toUserStr("|", stat));
         }
         return res;
     }
