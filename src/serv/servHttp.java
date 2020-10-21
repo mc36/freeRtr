@@ -829,6 +829,20 @@ public class servHttp extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "host|hit|last");
+        for (int i = 0; i < hosts.size(); i++) {
+            servHttpServ ntry = hosts.get(i);
+            res.add(ntry.host + "|" + ntry.askNum + "|" + bits.timePast(ntry.askTim));
+        }
+        return res;
+    }
+
 }
 
 class servHttpServ implements Runnable, Comparator<servHttpServ> {
@@ -837,6 +851,16 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      * name of server
      */
     public String host = "";
+
+    /**
+     * asked
+     */
+    public int askNum;
+
+    /**
+     * asked
+     */
+    public long askTim;
 
     /**
      * path of root directory
@@ -2208,6 +2232,8 @@ class servHttpConn implements Runnable {
             sendRespError(404, "not found");
             return;
         }
+        gotHost.askNum++;
+        gotHost.askTim = bits.getTime();
         if (gotHost.logging) {
             logger.info(conn.peerAddr + " accessed " + gotUrl.toURL(false, true));
         }

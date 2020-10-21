@@ -40,6 +40,7 @@ import ip.ipRtr;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import pack.packDnsZone;
 import pack.packLdpMp;
 import pack.packLdpPwe;
 import prt.prtRedun;
@@ -57,6 +58,8 @@ import rtr.rtrPvrpNeigh;
 import rtr.rtrRip4neigh;
 import rtr.rtrRip6neigh;
 import serv.servBmp2mrt;
+import serv.servDns;
+import serv.servHttp;
 import serv.servNrpe;
 import serv.servPrometheus;
 import serv.servStreamingMdt;
@@ -420,6 +423,30 @@ public class userShow {
                 return null;
             }
             cmd.badCmd();
+            return null;
+        }
+        if (a.equals("dns")) {
+            servDns srv = cfgAll.srvrFind(new servDns(), cfgAll.dmnDns, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            packDnsZone ntry = new packDnsZone(cmd.word());
+            ntry = srv.zones.find(ntry);
+            if (ntry == null) {
+                cmd.error("no such zone");
+                return null;
+            }
+            rdr.putStrTab(ntry.toUserStr(true));
+            return null;
+        }
+        if (a.equals("http")) {
+            servHttp srv = cfgAll.srvrFind(new servHttp(), cfgAll.dmnHttp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
             return null;
         }
         if (a.equals("telemetry")) {
