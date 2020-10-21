@@ -1,4 +1,4 @@
- metric brmac command show bridge 1 | beg addr
+ metric brmac command sho bridge 1 | beg addr
  metric brmac prepend br_mac_
  metric brmac name 0 mac=
  metric brmac addname 1 * ifc=
