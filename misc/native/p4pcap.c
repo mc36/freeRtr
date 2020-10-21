@@ -103,7 +103,7 @@ void doStatLoop() {
     for (;;) {
         doStatRount(commands);
         rnd++;
-        if ((rnd % 30) == 0) doReportRount(commands);
+        if ((rnd % 15) == 0) doReportRount(commands);
         sleep(1);
     }
     err("stat thread exited");
