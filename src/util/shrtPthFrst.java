@@ -951,7 +951,7 @@ public class shrtPthFrst<Ta extends addrType> {
             res.add("//" + ntry);
             for (int i = 0; i < ntry.conn.size(); i++) {
                 shrtPthFrstConn<Ta> cur = ntry.conn.get(i);
-                res.add("  \"" + ntry + "\" -- \"" + cur.target + "\" [weight=" + cur.metric + "] [headlabel=\"" + cur.ident + "\"]");
+                res.add("  \"" + ntry + "\" -- \"" + cur.target + "\" [weight=" + cur.metric + "] [taillabel=\"" + cur.ident + "\"]");
             }
         }
         res.add(graphEnd1);
