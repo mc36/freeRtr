@@ -171,6 +171,12 @@ public class userEditor {
             case 0x0265: // ctrl+e
                 doKeyRgt();
                 return false;
+            case 0x0266: // ctrl+f
+                doKeyF7();
+                return false;
+            case 0x0267: // ctrl+g
+                doKeyF6();
+                return false;
             case 0x0268: // ctrl+h
                 doKeyBs();
                 return false;
@@ -234,6 +240,9 @@ public class userEditor {
                 return false;
             case 0x8014: // f1
                 doKeyF1();
+                return false;
+            case 0x8019: // f6
+                doKeyF6();
                 return false;
             case 0x801a: // f7
                 doKeyF7();
@@ -439,9 +448,12 @@ public class userEditor {
     private void doKeyF1() {
         List<String> l = new ArrayList<String>();
         l.add("f1 - help");
+        l.add("f6 - goto line");
         l.add("f7 - find text");
         l.add("f10 - exit");
         l.add("ctrl+s - help");
+        l.add("ctrl+g - goto line");
+        l.add("ctrl+f - find text");
         l.add("ctrl+a - move up");
         l.add("ctrl+z - move down");
         l.add("ctrl+w - move left");
@@ -454,6 +466,14 @@ public class userEditor {
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
         userScreenTest.helpWin(console, userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+    }
+
+    private void doKeyF6() {
+        String a = userScreenTest.askUser(console, "line number:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, -1, -1, "" + curY);
+        if (a.length() < 1) {
+            return;
+        }
+        curY = bits.str2num(a);
     }
 
     private void doKeyF7() {
