@@ -489,28 +489,28 @@ public class ifcPppLcp extends ifcPppNcp {
         }
         return false;
     }
-    
+
 }
 
 class ifcPppLcpConf {
-    
+
     public int mru = -1;
-    
+
     public int auth = -1;
-    
+
     public int quality = -1;
-    
+
     public int magic = 0;
-    
+
     public boolean pfc = false;
-    
+
     public boolean acfc = false;
-    
+
     public int accm = 0;
-    
+
     public String toString() {
         return "magic=" + magic + " mru=" + mru + " accm=" + accm + " auth=" + autherDoer.getName(auth) + " quality="
                 + quality + " pfc=" + pfc + " acfc=" + acfc;
     }
-    
+
 }

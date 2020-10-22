@@ -1,13 +1,12 @@
 package user;
 
-import cfg.cfgMenu;
-import auth.authGeneric;
-import auth.authResult;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
 import addr.addrIpx;
+import auth.authGeneric;
 import auth.authLocal;
+import auth.authResult;
 import cfg.cfgAceslst;
 import cfg.cfgAlias;
 import cfg.cfgAll;
@@ -18,17 +17,17 @@ import cfg.cfgCert;
 import cfg.cfgChat;
 import cfg.cfgDial;
 import cfg.cfgEvntmgr;
-import cfg.cfgTime;
-import cfg.cfgXconn;
 import cfg.cfgGeneric;
 import cfg.cfgHrpn;
 import cfg.cfgIconn;
 import cfg.cfgKey;
+import cfg.cfgMenu;
 import cfg.cfgMtrack;
 import cfg.cfgObjnet;
 import cfg.cfgObjprt;
 import cfg.cfgPlymp;
 import cfg.cfgPool;
+import cfg.cfgPrcss;
 import cfg.cfgPrfxlst;
 import cfg.cfgProxy;
 import cfg.cfgRoump;
@@ -36,14 +35,15 @@ import cfg.cfgRouplc;
 import cfg.cfgRtr;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
-import cfg.cfgTrack;
-import cfg.cfgVdc;
-import cfg.cfgPrcss;
+import cfg.cfgTime;
 import cfg.cfgTlmtdst;
 import cfg.cfgTlmtexp;
+import cfg.cfgTrack;
 import cfg.cfgTrnsltn;
+import cfg.cfgVdc;
 import cfg.cfgVpdn;
 import cfg.cfgVrf;
+import cfg.cfgXconn;
 import clnt.clntIrc;
 import clnt.clntNetflow;
 import clnt.clntNtp;
@@ -74,8 +74,11 @@ import serv.servForwarder;
 import serv.servFtp;
 import serv.servGenList;
 import serv.servGeneric;
+import serv.servGeneve;
 import serv.servGopher;
+import serv.servGre;
 import serv.servGtp;
+import serv.servHoneyPot;
 import serv.servHttp;
 import serv.servIrc;
 import serv.servIscsi;
@@ -84,47 +87,44 @@ import serv.servL2tp2;
 import serv.servL2tp3;
 import serv.servLoadBalancer;
 import serv.servLpd;
+import serv.servModem;
+import serv.servMplsIp;
+import serv.servMplsUdp;
+import serv.servMultiplexer;
+import serv.servNetflow;
+import serv.servNrpe;
 import serv.servNtp;
+import serv.servOpenflow;
+import serv.servP4lang;
+import serv.servPcep;
 import serv.servPckOdtls;
 import serv.servPckOtcp;
 import serv.servPckOtxt;
 import serv.servPckOudp;
 import serv.servPop3;
 import serv.servPptp;
+import serv.servPrometheus;
 import serv.servQuote;
 import serv.servRadius;
 import serv.servRfb;
-import serv.servModem;
+import serv.servRpki;
 import serv.servSip;
 import serv.servSmtp;
 import serv.servSnmp;
 import serv.servSocks;
+import serv.servStreamingMdt;
 import serv.servStun;
 import serv.servSyslog;
 import serv.servTacacs;
 import serv.servTelnet;
 import serv.servTftp;
 import serv.servTime;
-import serv.servUdptn;
-import serv.servHoneyPot;
-import serv.servRpki;
-import serv.servVxlan;
-import serv.servGeneve;
-import serv.servGre;
-import serv.servMplsIp;
-import serv.servMplsUdp;
-import serv.servMultiplexer;
-import serv.servNetflow;
-import serv.servNrpe;
-import serv.servOpenflow;
-import serv.servP4lang;
-import serv.servPcep;
-import serv.servPrometheus;
-import serv.servStreamingMdt;
 import serv.servUdpFwd;
+import serv.servUdptn;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
 import serv.servVoice;
+import serv.servVxlan;
 import tab.tabGen;
 import tab.tabNatCfgN;
 import tab.tabNshNtry;
@@ -478,6 +478,11 @@ public class userConfig {
         l.add("2  .    config-archive               automatically archive configuration");
         l.add("2  .    config-exclusive             allow only one user in configuration mode");
         l.add("2  .    graceful-reload              close sessions before reload");
+        l.add("2  3,.  end-format                   specify end format");
+        l.add("3  3,.    date                       append date");
+        l.add("3  3,.    image                      append image");
+        l.add("3  3,.    chksum                     append chksum");
+        l.add("3  3,.    none                       append nothing");
         l.add("2  3    whois-server                 set whois server");
         l.add("3  .      <nam>                      server name");
         l.add("2  .    password-stars               type stars in passwords");
@@ -774,6 +779,9 @@ public class userConfig {
         String a = cmd.word();
         if (a.equals("hostname")) {
             cfgAll.hostName = cmd.word();
+            return;
+        }
+        if (a.equals("end")) {
             return;
         }
         if (a.equals("enable")) {
@@ -1439,6 +1447,32 @@ public class userConfig {
                 cfgAll.whoisServer = cmd.getRemaining();
                 return;
             }
+            if (a.equals("end-format")) {
+                cfgAll.endForm = 0;
+                for (;;) {
+                    a = cmd.word();
+                    if (a.length() < 1) {
+                        break;
+                    }
+                    if (a.equals("date")) {
+                        cfgAll.endForm |= 0x1;
+                        continue;
+                    }
+                    if (a.equals("image")) {
+                        cfgAll.endForm |= 0x2;
+                        continue;
+                    }
+                    if (a.equals("chksum")) {
+                        cfgAll.endForm |= 0x4;
+                        continue;
+                    }
+                    if (a.equals("none")) {
+                        cfgAll.endForm = 0;
+                        continue;
+                    }
+                }
+                return;
+            }
             if (a.equals("graceful-reload")) {
                 cfgAll.graceReload = true;
                 return;
@@ -1647,6 +1681,9 @@ public class userConfig {
             return;
         }
         a = cmd.word();
+        if (a.equals("end")) {
+            return;
+        }
         if (a.equals("enable")) {
             cfgAll.enaPass = null;
             return;
@@ -2264,6 +2301,10 @@ public class userConfig {
             a = cmd.word();
             if (a.equals("whois-server")) {
                 cfgAll.whoisServer = null;
+                return;
+            }
+            if (a.equals("end-format")) {
+                cfgAll.endForm = 0;
                 return;
             }
             if (a.equals("graceful-reload")) {
@@ -3186,8 +3227,7 @@ public class userConfig {
         cmd.badCmd();
     }
 
-    private <T extends cryKeyGeneric> void cryptoDoKey(tabGen<cfgKey<T>> lst,
-            T key) {
+    private <T extends cryKeyGeneric> void cryptoDoKey(tabGen<cfgKey<T>> lst, T key) {
         String nam = cmd.word();
         String a = cmd.word();
         if (a.equals("zeroize")) {
@@ -3195,7 +3235,12 @@ public class userConfig {
             return;
         }
         if (a.equals("import")) {
-            if (key.pemReadStr(cmd.word(), false)) {
+            a = authLocal.passwdDecode(cmd.word());
+            if (a == null) {
+                cmd.error("error reading");
+                return;
+            }
+            if (key.pemReadStr(a, false)) {
                 cmd.error("error decoding");
                 return;
             }
@@ -3278,7 +3323,11 @@ public class userConfig {
                 }
                 cryCertificate c = new cryCertificate();
                 c.crtName = nam;
-                a = cmd.word();
+                a = authLocal.passwdDecode(cmd.word());
+                if (a == null) {
+                    cmd.error("error reading");
+                    return;
+                }
                 if (c.pemReadStr(a)) {
                     cmd.error("error decoding");
                     return;

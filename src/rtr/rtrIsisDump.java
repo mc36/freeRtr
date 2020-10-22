@@ -372,7 +372,7 @@ public class rtrIsisDump {
                     l.add("  link protect: " + bits.toHexW(bits.msbGetW(tlv.valDat, 0)));
                     break;
                 case rtrIsisTe.typSwchCapa:
-                    l.add("  switch capa: sc=" + tlv.valDat[0]+" enc=" + tlv.valDat[1]);
+                    l.add("  switch capa: sc=" + tlv.valDat[0] + " enc=" + tlv.valDat[1]);
                     break;
                 case rtrIsisTe.typBndwdtCnst:
                     l.add("  bandwidth constrain: " + tlv.valDat[0]);

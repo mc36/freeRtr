@@ -30,12 +30,12 @@ import cry.cryEncrChacha20;
 import cry.cryEncrGeneric;
 import cry.cryEncrRc4;
 import cry.cryHashBlake2s;
-import cry.cryHashHec8;
-import cry.cryHashFcs16;
 import cry.cryHashCrc16;
 import cry.cryHashCrc32;
 import cry.cryHashCrc32c;
+import cry.cryHashFcs16;
 import cry.cryHashGeneric;
+import cry.cryHashHec8;
 import cry.cryHashHmac;
 import cry.cryHashMd2;
 import cry.cryHashMd5;
@@ -56,8 +56,8 @@ import cry.cryKeyRSA;
 import cry.cryOtp;
 import java.util.ArrayList;
 import java.util.List;
-import pack.packDnsZone;
 import pack.packDnsRec;
+import pack.packDnsZone;
 import pack.packHolder;
 import pack.packTls;
 import pipe.pipeLine;
@@ -301,7 +301,12 @@ public class userTest {
             return null;
         }
         if (a.equals("logging")) {
-            logger.logLev i = logger.string2level(cmd.word());
+            a = cmd.word();
+            if (a.equals("traceback")) {
+                logger.traceback(new Exception(cmd.getRemaining()));
+                return null;
+            }
+            logger.logLev i = logger.string2level(a);
             switch (i) {
                 case msgDebg:
                     logger.debug(cmd.getRemaining());
@@ -583,16 +588,16 @@ public class userTest {
         cmd.badCmd();
         return null;
     }
-
+    
     private void doShow(List<String> l) {
         for (int i = 0; i < l.size(); i++) {
             cmd.error(l.get(i));
         }
     }
     private final static int routingTim = 5000;
-
+    
     private final static int routingRnd = 3000;
-
+    
     private <T extends addrType> void doTestRoutingChk(tabRoute<T> tab, boolean dmp) {
         int i = tab.checkConsistency();
         if (i >= 0) {
@@ -603,7 +608,7 @@ public class userTest {
         }
         cmd.pipe.strPut("," + tab.getTableInfo() + "  ");
     }
-
+    
     private <T extends addrType> void doTestRoutingGet(tabRoute<T> tab, int idx, boolean dmp, String typ) {
         for (int i = 0; i < tab.size(); i++) {
             tab.get(i).best.time = i;
@@ -667,7 +672,7 @@ public class userTest {
         beg = (rnd * 1000) / (bits.getTime() - beg);
         cmd.pipe.strPut("  " + beg + " " + typ + "l");
     }
-
+    
     private <T extends addrType> void doTestRoutingAdd(tabRoute<T> tab, T adr, int fill, userTestIfc mod, boolean dmp, String typ) {
         tab.clear();
         byte[] buf = new byte[256];
@@ -710,7 +715,7 @@ public class userTest {
         cmd.pipe.strPut("  " + beg + " " + typ + "d");
         doTestRoutingChk(tab, dmp);
     }
-
+    
     private <T extends addrType> void doTestRouting(int msk, T adr, tabRoute<T> tab, int fnd, int idx, boolean dmp) {
         int fill = adr.getSize() * 8;
         cmd.pipe.strPut("testing " + adr.getClass().getName() + "-" + fill + ":");
@@ -744,7 +749,7 @@ public class userTest {
         }
         cmd.pipe.linePut("");
     }
-
+    
     private void doTestPipe(String tst, pipeSide p1, pipeSide p2, int bl) {
         cmd.pipe.strPut(tst);
         p1.setReady();
@@ -781,14 +786,14 @@ public class userTest {
         finSpeedTest(tried + "/" + (tried - goodT) + "/" + (tried - goodR),
                 b1.length, goodR, tim);
     }
-
+    
     private void finSpeedTest(String beg, int blk, long rnd, long tim) {
         long xmit = rnd * blk;
         cmd.pipe.linePut(": " + beg + " rnd, " + xmit + " bytes, "
                 + (tim / 1000) + " sec, " + ((rnd * 1000) / tim) + " pps, "
                 + bits.bandwidth((xmit * 8000) / tim));
     }
-
+    
     private void doTestTls(boolean dtls, int ver) {
         cryKeyRSA rsa = new cryKeyRSA();
         cryKeyDSA dss = new cryKeyDSA();
@@ -807,7 +812,7 @@ public class userTest {
         doTestPipe(packTls.version2string(dtls, ver), srvH.getPipe(), clnH.getPipe(), 1024);
         conn.setClose();
     }
-
+    
     private void doTestEncr(cryEncrGeneric alg) {
         cmd.pipe.strPut(alg.getName());
         byte[] key = new byte[alg.getKeySize()];
@@ -828,7 +833,7 @@ public class userTest {
         tim = cur - tim;
         finSpeedTest("" + goodR, b1.length, goodR, tim);
     }
-
+    
     private void doTestHash(cryHashGeneric alg) {
         cmd.pipe.strPut(alg.getName());
         byte[] b1 = new byte[1024];
@@ -848,49 +853,49 @@ public class userTest {
         tim = cur - tim;
         finSpeedTest("" + goodR, b1.length, goodR, tim);
     }
-
+    
 }
 
 interface userTestIfc {
-
+    
     public int forAdd(long rnd);
-
+    
     public int forDel(int len);
-
+    
 }
 
 class userTestFwd implements userTestIfc {
-
+    
     public int forAdd(long rnd) {
         return (int) rnd;
     }
-
+    
     public int forDel(int len) {
         return len - 1;
     }
-
+    
 }
 
 class userTestBwd implements userTestIfc {
-
+    
     public int forAdd(long rnd) {
         return (int) (-rnd);
     }
-
+    
     public int forDel(int len) {
         return 0;
     }
-
+    
 }
 
 class userTestRnd implements userTestIfc {
-
+    
     public int forAdd(long rnd) {
         return bits.randomD();
     }
-
+    
     public int forDel(int len) {
         return bits.random(0, len);
     }
-
+    
 }

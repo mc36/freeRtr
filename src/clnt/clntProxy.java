@@ -212,27 +212,27 @@ public class clntProxy {
             switch (cProto) {
                 case servGeneric.protoTcp:
                     try {
-                        Socket sck = new Socket("" + cAddr, cPort);
-                        pipeLine pl = new pipeLine(65536, false);
-                        prtLocTcp.doSession(pl.getSide(), sck);
-                        pip = pl.getSide();
-                        pip.setReady();
-                    } catch (Exception e) {
-                        return null;
-                    }
-                    break;
+                    Socket sck = new Socket("" + cAddr, cPort);
+                    pipeLine pl = new pipeLine(65536, false);
+                    prtLocTcp.doSession(pl.getSide(), sck);
+                    pip = pl.getSide();
+                    pip.setReady();
+                } catch (Exception e) {
+                    return null;
+                }
+                break;
                 case servGeneric.protoUdp:
                     try {
-                        DatagramSocket sck = new DatagramSocket();
-                        sck.connect(InetAddress.getByName("" + cAddr), cPort);
-                        pipeLine pl = new pipeLine(65536, true);
-                        prtLocUdp.doSession(pl.getSide(), sck);
-                        pip = pl.getSide();
-                        pip.setReady();
-                    } catch (Exception e) {
-                        return null;
-                    }
-                    break;
+                    DatagramSocket sck = new DatagramSocket();
+                    sck.connect(InetAddress.getByName("" + cAddr), cPort);
+                    pipeLine pl = new pipeLine(65536, true);
+                    prtLocUdp.doSession(pl.getSide(), sck);
+                    pip = pl.getSide();
+                    pip.setReady();
+                } catch (Exception e) {
+                    return null;
+                }
+                break;
             }
             if (pip == null) {
                 return null;

@@ -79,7 +79,7 @@ public class userPacket {
      * reader to use
      */
     public userReader rdr;
-    
+
     private static int readMrt(packHolder pck, RandomAccessFile f) {
         pck.clear();
         byte[] buf = new byte[12];
@@ -1204,5 +1204,5 @@ public class userPacket {
         cmd.badCmd();
         return;
     }
-    
+
 }

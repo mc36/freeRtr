@@ -52,6 +52,7 @@ public class addrMac extends addrType {
         a.addr[5] = addr[5];
         return a;
     }
+
     /**
      * compare two instances
      *

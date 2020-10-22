@@ -43,15 +43,15 @@ public class lineRunner implements Runnable {
      * user action allowed
      */
     private boolean disabled = false;
-    
+
     private boolean needNewLine = true;
-    
+
     private lineThread thread;
-    
+
     private userLine line;
-    
+
     private String name;
-    
+
     private pipeSide pipe;
 
     /**
@@ -135,7 +135,7 @@ public class lineRunner implements Runnable {
         pipe = thread.getPipe();
         new Thread(this).start();
     }
-    
+
     public void run() {
         if (debugger.lineRunnerEvnt) {
             logger.debug("start watcher");
@@ -148,7 +148,7 @@ public class lineRunner implements Runnable {
             }
         }
     }
-    
+
     private void doWork() {
         bits.sleep(1000);
         if (pipe.isClosed() != 0) {
@@ -192,7 +192,7 @@ public class lineRunner implements Runnable {
         }
         needNewLine = false;
     }
-    
+
     private boolean doScript(lineScript scr) {
         if (scr == null) {
             return false;
@@ -251,5 +251,5 @@ public class lineRunner implements Runnable {
         dummy.setClose();
         return pipe;
     }
-    
+
 }

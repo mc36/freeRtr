@@ -48,7 +48,6 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
      */
     public String description;
 
-
     /**
      * transform to use
      */

@@ -62,12 +62,24 @@ public class authLocal extends authGeneric {
         if (str == null) {
             return null;
         }
-        if (cfgAll.passEnc == null) {
+        if ((cfgAll.passEnc == null) && (cfgAll.passEnh == null)) {
             return passwdHide(str);
         }
         cryEncrGeneric c = new cryEncrCTRaes();
-        byte[] buf1 = cryHashGeneric.compute(new cryHashSha2256(), cfgAll.passEnc.getBytes());
-        byte[] buf2 = cryHashGeneric.compute(new cryHashSha2224(), cfgAll.passEnc.getBytes());
+        cryHashGeneric h1 = new cryHashSha2256();
+        cryHashGeneric h2 = new cryHashSha2224();
+        h1.init();
+        h2.init();
+        if (cfgAll.passEnh != null) {
+            h1.update(cfgAll.passEnh.getBytes());
+            h2.update(cfgAll.passEnh.getBytes());
+        }
+        if (cfgAll.passEnc != null) {
+            h1.update(cfgAll.passEnc.getBytes());
+            h2.update(cfgAll.passEnc.getBytes());
+        }
+        byte[] buf1 = h1.finish();
+        byte[] buf2 = h2.finish();
         byte[] buf3 = new byte[c.getKeySize()];
         bits.byteCopy(buf1, 0, buf3, 0, buf3.length);
         int i = c.getBlockSize();
@@ -100,12 +112,24 @@ public class authLocal extends authGeneric {
             return str;
         }
         str = str.substring(passwdBeg.length(), str.length());
-        if (cfgAll.passEnc == null) {
+        if ((cfgAll.passEnc == null) && (cfgAll.passEnh == null)) {
             return null;
         }
         cryEncrGeneric c = new cryEncrCTRaes();
-        byte[] buf1 = cryHashGeneric.compute(new cryHashSha2256(), cfgAll.passEnc.getBytes());
-        byte[] buf2 = cryHashGeneric.compute(new cryHashSha2224(), cfgAll.passEnc.getBytes());
+        cryHashGeneric h1 = new cryHashSha2256();
+        cryHashGeneric h2 = new cryHashSha2224();
+        h1.init();
+        h2.init();
+        if (cfgAll.passEnh != null) {
+            h1.update(cfgAll.passEnh.getBytes());
+            h2.update(cfgAll.passEnh.getBytes());
+        }
+        if (cfgAll.passEnc != null) {
+            h1.update(cfgAll.passEnc.getBytes());
+            h2.update(cfgAll.passEnc.getBytes());
+        }
+        byte[] buf1 = h1.finish();
+        byte[] buf2 = h2.finish();
         byte[] buf3 = new byte[c.getKeySize()];
         bits.byteCopy(buf1, 0, buf3, 0, buf3.length);
         int i = c.getBlockSize();
@@ -173,7 +197,7 @@ public class authLocal extends authGeneric {
             s = s.substring(5, s.length());
             return cryBase64.decodeBytes(s);
         }
-        byte[] buf = new byte[bits.random(6, 8)];
+        byte[] buf = new byte[32 + bits.random(0, 16)];
         for (int i = 1; i < buf.length; i++) {
             buf[i] = (byte) bits.randomB();
         }

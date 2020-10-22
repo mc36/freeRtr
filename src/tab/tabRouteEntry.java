@@ -62,7 +62,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         alts = new ArrayList<tabRouteAttr<T>>();
         alts.add(best);
     }
-    
+
     public String toString() {
         return "" + prefix;
     }
@@ -497,7 +497,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         l.add("hardware counter = " + counter.getShStat(hwCntr));
         return l;
     }
-    
+
     public int compare(tabRouteEntry<T> o1, tabRouteEntry<T> o2) {
         if (o1.rouDst < o2.rouDst) {
             return -1;
@@ -507,5 +507,5 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         }
         return prefix.compare(o1.prefix, o2.prefix);
     }
-    
+
 }

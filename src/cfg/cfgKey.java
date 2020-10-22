@@ -1,12 +1,12 @@
 package cfg;
 
+import auth.authLocal;
+import cry.cryKeyGeneric;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import user.userHelping;
 import util.cmds;
-import cry.cryKeyGeneric;
 
 /**
  * cryptographic key configuration
@@ -47,7 +47,7 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, c
 
     public List<String> getShRun(boolean filter) {
         List<String> lst = new ArrayList<String>();
-        lst.add("crypto " + key.algName() + "key " + name + " import " + key.pemWriteStr(false));
+        lst.add("crypto " + key.algName() + "key " + name + " import " + authLocal.passwdEncode(key.pemWriteStr(false)));
         lst.add(cmds.comment);
         return lst;
     }

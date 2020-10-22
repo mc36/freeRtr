@@ -1,5 +1,6 @@
 package cfg;
 
+import auth.authLocal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -61,7 +62,7 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
 
     public List<String> getShRun(boolean filter) {
         List<String> lst = new ArrayList<String>();
-        lst.add("crypto certificate " + name + " import " + key.algName() + " " + key.keyName + " " + cert.pemWriteStr());
+        lst.add("crypto certificate " + name + " import " + key.algName() + " " + key.keyName + " " + authLocal.passwdEncode(cert.pemWriteStr()));
         lst.add(cmds.comment);
         return lst;
     }

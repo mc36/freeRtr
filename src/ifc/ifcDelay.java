@@ -10,11 +10,11 @@ import util.logger;
  * @author matecsaba
  */
 public class ifcDelay implements Runnable {
-    
+
     private ifcDn lower;
-    
+
     private int delay;
-    
+
     private packHolder pack;
 
     /**
@@ -35,7 +35,7 @@ public class ifcDelay implements Runnable {
         d.pack = pck.copyBytes(true, true);
         new Thread(d).start();
     }
-    
+
     public void run() {
         bits.sleep(delay);
         try {
@@ -44,5 +44,5 @@ public class ifcDelay implements Runnable {
             logger.traceback(e);
         }
     }
-    
+
 }

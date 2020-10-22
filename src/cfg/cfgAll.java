@@ -33,10 +33,13 @@ import serv.servEchoS;
 import serv.servEtherIp;
 import serv.servForwarder;
 import serv.servFtp;
-import serv.servGeneric;
 import serv.servGenList;
+import serv.servGeneric;
+import serv.servGeneve;
 import serv.servGopher;
+import serv.servGre;
 import serv.servGtp;
+import serv.servHoneyPot;
 import serv.servHttp;
 import serv.servIrc;
 import serv.servIscsi;
@@ -45,47 +48,44 @@ import serv.servL2tp2;
 import serv.servL2tp3;
 import serv.servLoadBalancer;
 import serv.servLpd;
+import serv.servModem;
+import serv.servMplsIp;
+import serv.servMplsUdp;
+import serv.servMultiplexer;
+import serv.servNetflow;
+import serv.servNrpe;
 import serv.servNtp;
+import serv.servOpenflow;
+import serv.servP4lang;
+import serv.servPcep;
 import serv.servPckOdtls;
 import serv.servPckOtcp;
 import serv.servPckOtxt;
 import serv.servPckOudp;
 import serv.servPop3;
 import serv.servPptp;
+import serv.servPrometheus;
 import serv.servQuote;
 import serv.servRadius;
 import serv.servRfb;
-import serv.servModem;
+import serv.servRpki;
 import serv.servSip;
 import serv.servSmtp;
 import serv.servSnmp;
 import serv.servSocks;
+import serv.servStreamingMdt;
 import serv.servStun;
 import serv.servSyslog;
 import serv.servTacacs;
 import serv.servTelnet;
 import serv.servTftp;
 import serv.servTime;
-import serv.servUdptn;
-import serv.servHoneyPot;
-import serv.servRpki;
-import serv.servVxlan;
-import serv.servGeneve;
-import serv.servGre;
-import serv.servMplsIp;
-import serv.servMplsUdp;
-import serv.servMultiplexer;
-import serv.servNetflow;
-import serv.servNrpe;
-import serv.servOpenflow;
-import serv.servP4lang;
-import serv.servPcep;
-import serv.servPrometheus;
-import serv.servStreamingMdt;
 import serv.servUdpFwd;
+import serv.servUdptn;
 import serv.servUpnpFwd;
 import serv.servUpnpHub;
 import serv.servVoice;
+import serv.servVxlan;
 import tab.tabGen;
 import tab.tabNshNtry;
 import tab.tabRouteAttr;
@@ -644,6 +644,16 @@ public class cfgAll {
     public static String domainName = null;
 
     /**
+     * end format
+     */
+    public static int endForm = 0;
+
+    /**
+     * encryption of this host
+     */
+    public static String passEnh = null;
+
+    /**
      * encryption of this host
      */
     public static String passEnc = null;
@@ -942,6 +952,7 @@ public class cfgAll {
         "!no client mail-password",
         "!no client prefer-ipv6",
         "!no client password-stars",
+        "!no client end-format",
         "!client graceful-reload",
         "!client ftp-passive",
         "!client ipv4-checksum both",
@@ -3152,6 +3163,17 @@ public class cfgAll {
         cmds.cfgLine(l, mailServerName == null, "", "client mail-server", "" + mailServerName);
         cmds.cfgLine(l, mailServerUser == null, "", "client mail-username", "" + mailServerUser);
         cmds.cfgLine(l, mailServerPass == null, "", "client mail-password", "" + authLocal.passwdEncode(mailServerPass));
+        a = "";
+        if ((endForm & 0x1) != 0) {
+            a += " date";
+        }
+        if ((endForm & 0x2) != 0) {
+            a += " image";
+        }
+        if ((endForm & 0x4) != 0) {
+            a += " chksum";
+        }
+        cmds.cfgLine(l, endForm == 0, "", "client end-format", a.trim());
         l.add(cmds.comment);
         if (!filter) {
             return l;
@@ -3280,11 +3302,15 @@ public class cfgAll {
         dmnRadius.getShRun(l, filter);
         dmnTacacs.getShRun(l, filter);
         l.addAll(getGlobalRunEnd(filter));
-        String s = null;
-        if (filter) {
-            s = "";
-        } else {
-            s = " date=" + bits.time2str(timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3).replaceAll(" ", "_") + " image=" + version.usrAgnt + " chksum=" + userUpgrade.calcTextHash(l);
+        String s = "";
+        if ((endForm & 0x1) != 0) {
+            s += " date=" + bits.time2str(timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3).replaceAll(" ", "_");
+        }
+        if ((endForm & 0x2) != 0) {
+            s += " image=" + version.usrAgnt;
+        }
+        if ((endForm & 0x4) != 0) {
+            s += " chksum=" + userUpgrade.calcTextHash(l);
         }
         l.add("end" + s);
         return l;
