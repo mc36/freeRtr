@@ -171,14 +171,24 @@ public class player implements Runnable {
         }
         try {
             Runtime rtm = Runtime.getRuntime();
-            String[] cmd = new String[7];
-            cmd[0] = "cclive";
-            cmd[1] = "--overwrite";
-            cmd[2] = "--output-file";
-            cmd[3] = "/tmp/player.url";
-            cmd[4] = "--exec";
-            cmd[5] = "mplayer -ao alsa -vo none -srate " + srate + " /tmp/player.url";
-            cmd[6] = "" + url;
+            String[] cmd = new String[3];
+            cmd[0] = "sh";
+            cmd[1] = "-c";
+            cmd[2] = "rm -f /tmp/player.*";
+            currProc = rtm.exec(cmd);
+            currProc.waitFor();
+            currProc = null;
+        } catch (Exception e) {
+        }
+        try {
+            Runtime rtm = Runtime.getRuntime();
+            String[] cmd = new String[6];
+            cmd[0] = "youtube-dl";
+            cmd[1] = "--output";
+            cmd[2] = "/tmp/player.url";
+            cmd[3] = "--exec";
+            cmd[4] = "mplayer -ao alsa -vo none -srate " + srate + " {}";
+            cmd[5] = "" + url;
             currProc = rtm.exec(cmd);
         } catch (Exception e) {
         }
@@ -267,7 +277,7 @@ public class player implements Runnable {
     private synchronized void stopPlay() {
         stopPlay("gmediarender");
         stopPlay("mplayer");
-        stopPlay("cclive");
+        stopPlay("youtube-dl");
         stopPlay("amixer");
     }
 
@@ -312,7 +322,7 @@ public class player implements Runnable {
         startPlay(-1, "0");
         ready = true;
     }
-    
+
     public void run() {
         for (;;) {
             try {

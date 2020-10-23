@@ -726,8 +726,6 @@ class userTesterPrc {
 
     public String name;
 
-    public Process proc;
-
     public pipeShell shell;
 
     public pipeSide pipe;
