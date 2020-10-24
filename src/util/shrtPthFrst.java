@@ -1132,7 +1132,7 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param rou route
      * @param hop hop list
      */
-    public static <Ta extends addrType> void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop) {
+    private void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop) {
         rou.alts.clear();
         for (int i = 0; i < hop.size(); i++) {
             shrtPthFrstRes<Ta> upl = hop.get(i);
@@ -1158,7 +1158,7 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param hop hop list
      * @param srPop sr pop requested
      */
-    public static <Ta extends addrType> void populateSegrout(tabRouteEntry<addrIP> rou, tabRouteAttr<addrIP> src, List<shrtPthFrstRes<Ta>> hop, boolean srPop) {
+    private void populateSegrout(tabRouteEntry<addrIP> rou, tabRouteAttr<addrIP> src, List<shrtPthFrstRes<Ta>> hop, boolean srPop) {
         for (int i = 0; i < rou.alts.size(); i++) {
             tabRouteAttr<addrIP> res = rou.alts.get(i);
             res.segrouIdx = src.segrouIdx;
