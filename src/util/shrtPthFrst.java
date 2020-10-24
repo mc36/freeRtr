@@ -1051,18 +1051,14 @@ public class shrtPthFrst<Ta extends addrType> {
     /**
      * get routes
      *
-     * @param fwdCore forwarding core
+     * @param fwdCor forwarding core
      * @param fwdKey forwarder key
      * @param segrouLab segment routing labels
      * @param segrouUsd segment routing usage
      * @return routes
      */
-    public tabRoute<addrIP> getRoutes(ipFwd fwdCore, int fwdKey, tabLabelNtry[] segrouLab, boolean[] segrouUsd) {
+    public tabRoute<addrIP> getRoutes(ipFwd fwdCor, int fwdKey, tabLabelNtry[] segrouLab, boolean[] segrouUsd) {
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
-        int segrouMax = 0;
-        if (segrouLab != null) {
-            segrouMax = segrouLab.length;
-        }
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(o);
             List<shrtPthFrstRes<Ta>> hop = findNextHop(ntry.name);
@@ -1078,62 +1074,22 @@ public class shrtPthFrst<Ta extends addrType> {
                 rou.best.segrouOld = sro;
                 rou.best.bierOld = bro;
                 rou.best.metric += met;
-                populateRoute(rou, hop);
-                populateSegrout(rou, rou.best, hop, (rou.best.rouSrc & 16) != 0);
-                long oldVer = tab1.version;
-                tab1.add(tabRoute.addType.ecmp, rou, false, true);
-                if (oldVer == tab1.version) {
-                    continue;
-                }
-                if (segrouUsd == null) {
-                    continue;
-                }
-                if (rou.best.labelRem == null) {
-                    continue;
-                }
-                if (rou.best.segrouIdx >= segrouMax) {
-                    continue;
-                }
-                segrouLab[rou.best.segrouIdx].setFwdMpls(fwdKey, fwdCore, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
-                segrouUsd[rou.best.segrouIdx] = true;
+                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop);
             }
             for (int i = 0; i < ntry.prfFix.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.prfFix.get(i).copyBytes(tabRoute.addType.notyet);
                 rou.best.srcRtr = ntry.name.copyBytes();
                 rou.best.segrouOld = sro;
                 rou.best.bierOld = bro;
-                populateRoute(rou, hop);
-                populateSegrout(rou, rou.best, hop, (rou.best.rouSrc & 16) != 0);
-                long oldVer = tab1.version;
-                tab1.add(tabRoute.addType.ecmp, rou, false, true);
-                if (oldVer == tab1.version) {
-                    continue;
-                }
-                if (segrouUsd == null) {
-                    continue;
-                }
-                if (rou.best.labelRem == null) {
-                    continue;
-                }
-                if (rou.best.segrouIdx >= segrouMax) {
-                    continue;
-                }
-                segrouLab[rou.best.segrouIdx].setFwdMpls(fwdKey, fwdCore, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
-                segrouUsd[rou.best.segrouIdx] = true;
+                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop);
             }
         }
         return tab1;
     }
 
-    /**
-     * populate route entry
-     *
-     * @param <Ta> type of nodes
-     * @param rou route
-     * @param hop hop list
-     */
-    private void populateRoute(tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop) {
+    private void populateRoute(tabRoute<addrIP> tab1, ipFwd fwdCor, int fwdKey, tabLabelNtry[] segrouLab, boolean[] segrouUsd, tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop) {
         rou.alts.clear();
+        boolean srPop = (rou.best.rouSrc & 16) != 0;
         for (int i = 0; i < hop.size(); i++) {
             shrtPthFrstRes<Ta> upl = hop.get(i);
             tabRouteAttr<addrIP> res = new tabRouteAttr<addrIP>();
@@ -1143,47 +1099,39 @@ public class shrtPthFrst<Ta extends addrType> {
             res.hops = upl.hops;
             res.segrouBeg = upl.srBeg;
             res.bierBeg = upl.brBeg;
-            res.labelRem = null;
-            rou.addAlt(res);
-        }
-        rou.hashBest();
-    }
-
-    /**
-     * populate route entry
-     *
-     * @param <Ta> type of nodes
-     * @param rou route
-     * @param src source
-     * @param hop hop list
-     * @param srPop sr pop requested
-     */
-    private void populateSegrout(tabRouteEntry<addrIP> rou, tabRouteAttr<addrIP> src, List<shrtPthFrstRes<Ta>> hop, boolean srPop) {
-        for (int i = 0; i < rou.alts.size(); i++) {
-            tabRouteAttr<addrIP> res = rou.alts.get(i);
-            res.segrouIdx = src.segrouIdx;
-            res.segrouOld = src.segrouOld;
-            res.bierIdx = src.bierIdx;
-            res.bierHdr = src.bierHdr;
-            res.bierOld = src.bierOld;
-            if ((res.segrouIdx < 1) || (res.segrouBeg < 1)) {
-                continue;
-            }
-            if (i >= hop.size()) {
-                continue;
-            }
-            shrtPthFrstRes<Ta> upl = hop.get(i);
-            if (upl.iface != res.iface) {
-                continue;
-            }
-            if (upl.nxtHop.compare(upl.nxtHop, res.nextHop) != 0) {
+            res.segrouIdx = rou.best.segrouIdx;
+            res.segrouOld = rou.best.segrouOld;
+            res.bierIdx = rou.best.bierIdx;
+            res.bierHdr = rou.best.bierHdr;
+            res.bierOld = rou.best.bierOld;
+            if ((segrouUsd == null) || (res.segrouIdx < 1) || (res.segrouBeg < 1)) {
+                res.labelRem = null;
+                rou.addAlt(res);
                 continue;
             }
             res.labelRem = tabLabel.int2labels(res.segrouBeg + res.segrouIdx);
             if (srPop && (res.hops <= 1)) {
                 res.labelRem = tabLabel.int2labels(ipMpls.labelImp);
             }
+            rou.addAlt(res);
         }
+        rou.hashBest();
+        long oldVer = tab1.version;
+        tab1.add(tabRoute.addType.ecmp, rou, false, true);
+        if (oldVer == tab1.version) {
+            return;
+        }
+        if (segrouUsd == null) {
+            return;
+        }
+        if (rou.best.labelRem == null) {
+            return;
+        }
+        if (rou.best.segrouIdx >= segrouUsd.length) {
+            return;
+        }
+        segrouLab[rou.best.segrouIdx].setFwdMpls(fwdKey, fwdCor, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
+        segrouUsd[rou.best.segrouIdx] = true;
     }
 
     private void listLinStateHdr(typLenVal tlv, packHolder pck, int prt, int typ) {
