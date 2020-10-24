@@ -3,9 +3,7 @@ package rtr;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrPrefix;
-import ip.ipFwdIface;
 import java.util.Comparator;
-import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabLabelBier;
@@ -20,7 +18,6 @@ import util.debugger;
 import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
-import util.shrtPthFrstRes;
 import util.state;
 import util.syncInt;
 import util.typLenVal;
@@ -892,6 +889,9 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                     continue;
                 }
             }
+            addrPrefix<addrIPv4> prf4;
+            tabRouteEntry<addrIP> pref;
+            addrIPv4 adr4;
             packHolder pck = ntry.getPayload();
             switch (ntry.lsaType) {
                 case rtrOspf4lsa.lsaRouter:
@@ -909,12 +909,30 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                             case rtrOspf4lsa.lnkTrns:
                                 spf.addConn(ntry.rtrID, l.linkID, l.metric, false, false, "" + l.linkDat);
                                 break;
+                            case rtrOspf4lsa.lnkStub:
+                                prf4 = new addrPrefix<addrIPv4>(l.linkID, l.linkDat.toNetmask());
+                                pref = new tabRouteEntry<addrIP>();
+                                pref.prefix = addrPrefix.ip4toIP(prf4);
+                                pref.best.origin = 109;
+                                pref.best.distance = lower.distantInt;
+                                pref.best.rouSrc = area;
+                                spf.addPref(ntry.rtrID, pref, false);
+                                break;
                             default:
                                 break;
                         }
                     }
                     break;
                 case rtrOspf4lsa.lsaNetwork:
+                    adr4 = new addrIPv4();
+                    pck.getAddr(adr4, 0); // mask
+                    prf4 = new addrPrefix<addrIPv4>(ntry.lsaID, adr4.toNetmask());
+                    pref = new tabRouteEntry<addrIP>();
+                    pref.prefix = addrPrefix.ip4toIP(prf4);
+                    pref.best.origin = 109;
+                    pref.best.distance = lower.distantInt;
+                    pref.best.rouSrc = area;
+                    spf.addPref(ntry.rtrID, pref, false);
                     pck.getSkip(addrIPv4.size); // netmask
                     for (;;) {
                         addrIPv4 adr = new addrIPv4();
@@ -926,8 +944,41 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                         spf.addConn(ntry.lsaID, adr, 0, true, false, null);
                     }
                     break;
+                case rtrOspf4lsa.lsaSumNet:
+                    adr4 = new addrIPv4();
+                    pck.getAddr(adr4, 0); // mask
+                    prf4 = new addrPrefix<addrIPv4>(ntry.lsaID, adr4.toNetmask());
+                    pref = new tabRouteEntry<addrIP>();
+                    pref.prefix = addrPrefix.ip4toIP(prf4);
+                    o = pck.msbGetD(4); // metric
+                    pref.best.metric = o & 0xffffff;
+                    pref.best.origin = 110;
+                    pref.best.distance = lower.distantSum;
+                    pref.best.rouSrc = area;
+                    spf.addPref(ntry.rtrID, pref, false);
+                    break;
                 case rtrOspf4lsa.lsaSumAsBr:
                     spf.addConn(ntry.rtrID, ntry.lsaID, pck.msbGetD(4) & 0xffffff, true, false, null);
+                    break;
+                case rtrOspf4lsa.lsaAsExt:
+                case rtrOspf4lsa.lsaNssaExt:
+                    adr4 = new addrIPv4();
+                    pck.getAddr(adr4, 0); // mask
+                    prf4 = new addrPrefix<addrIPv4>(ntry.lsaID, adr4.toNetmask());
+                    pref = new tabRouteEntry<addrIP>();
+                    pref.prefix = addrPrefix.ip4toIP(prf4);
+                    o = pck.msbGetD(4); // metric
+                    pref.best.metric = o & 0xffffff;
+                    pref.best.distance = lower.distantExt;
+                    pref.best.rouSrc = area;
+                    pref.best.tag = pck.msbGetD(12); // route tag
+                    if ((o & 0x80000000) != 0) {
+                        pref.best.origin = 112;
+                        spf.addPref(ntry.rtrID, pref, true);
+                    } else {
+                        pref.best.origin = 111;
+                        spf.addPref(ntry.rtrID, pref, false);
+                    }
                     break;
                 case rtrOspf4lsa.lsaOpArea:
                     if (ntry.lsaID.compare(ntry.lsaID, rtrOspfRi.getOpaque()) == 0) {
@@ -937,14 +988,8 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                                 break;
                             }
                             o = rtrOspfSr.getBase(tlv);
-                            if (o < 1) {
-                                continue;
-                            }
                             spf.addSegRouB(ntry.rtrID, o);
                         }
-                        continue;
-                    }
-                    if (!bierEna) {
                         continue;
                     }
                     if (checkPrfLsa(ntry)) {
@@ -955,11 +1000,13 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                         if (tlv.getBytes(pck)) {
                             break;
                         }
-                        tabRouteEntry<addrIP> pref = parsePrfTlv(tlv);
+                        pref = parsePrfTlv(tlv);
                         if (pref == null) {
                             continue;
                         }
                         spf.addBierB(ntry.rtrID, pref.best.bierBeg);
+                        spf.addSegRouI(ntry.rtrID, pref.prefix, pref.best.segrouIdx, pref.best.rouSrc & 16);
+                        spf.addBierI(ntry.rtrID, pref.prefix, pref.best.bierIdx, pref.best.bierHdr);
                     }
                     break;
                 default:
@@ -1011,139 +1058,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 spf.addNextHop(ifc.metric, nei.rtrID, adr, ifc.iface);
             }
         }
-        tabRoute<addrIP> rs = new tabRoute<addrIP>("rs");
-        for (int i = 0; i < lsas.size(); i++) {
-            rtrOspf4lsa ntry = lsas.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (!ntry.doNotAge) {
-                if (ntry.created < tim) {
-                    continue;
-                }
-            }
-            List<shrtPthFrstRes<addrIPv4>> hop = spf.findNextHop(ntry.rtrID);
-            if (hop.size() < 1) {
-                continue;
-            }
-            int met = spf.getMetric(ntry.rtrID);
-            int sro = spf.getSegRouB(ntry.rtrID);
-            int bro = spf.getBierB(ntry.rtrID);
-            addrPrefix<addrIPv4> prf4;
-            tabRouteEntry<addrIP> pref;
-            addrIPv4 adr4;
-            packHolder pck = ntry.getPayload();
-            switch (ntry.lsaType) {
-                case rtrOspf4lsa.lsaRouter:
-                    int o = pck.msbGetW(2); // number of links
-                    pck.getSkip(4);
-                    for (int p = 0; p < o; p++) {
-                        rtrOspf4areaLink l = getLink2rtrLsa(pck);
-                        if (l == null) {
-                            continue;
-                        }
-                        if (l.type != rtrOspf4lsa.lnkStub) {
-                            continue;
-                        }
-                        prf4 = new addrPrefix<addrIPv4>(l.linkID, l.linkDat.toNetmask());
-                        pref = new tabRouteEntry<addrIP>();
-                        pref.prefix = addrPrefix.ip4toIP(prf4);
-                        pref.best.metric = met;
-                        pref.best.origin = 109;
-                        pref.best.distance = lower.distantInt;
-                        pref.best.srcRtr = ntry.rtrID.copyBytes();
-                        pref.best.rouSrc = area;
-                        shrtPthFrst.populateRoute(pref, hop);
-                        rs.add(tabRoute.addType.ecmp, pref, false, true);
-                    }
-                    break;
-                case rtrOspf4lsa.lsaNetwork:
-                    adr4 = new addrIPv4();
-                    pck.getAddr(adr4, 0); // mask
-                    prf4 = new addrPrefix<addrIPv4>(ntry.lsaID, adr4.toNetmask());
-                    pref = new tabRouteEntry<addrIP>();
-                    pref.prefix = addrPrefix.ip4toIP(prf4);
-                    pref.best.metric = met;
-                    pref.best.origin = 109;
-                    pref.best.distance = lower.distantInt;
-                    pref.best.srcRtr = ntry.rtrID.copyBytes();
-                    pref.best.rouSrc = area;
-                    shrtPthFrst.populateRoute(pref, hop);
-                    rs.add(tabRoute.addType.ecmp, pref, false, true);
-                    break;
-                case rtrOspf4lsa.lsaSumNet:
-                    adr4 = new addrIPv4();
-                    pck.getAddr(adr4, 0); // mask
-                    prf4 = new addrPrefix<addrIPv4>(ntry.lsaID, adr4.toNetmask());
-                    pref = new tabRouteEntry<addrIP>();
-                    pref.prefix = addrPrefix.ip4toIP(prf4);
-                    o = pck.msbGetD(4); // metric
-                    pref.best.metric = (o & 0xffffff) + met;
-                    pref.best.origin = 110;
-                    pref.best.distance = lower.distantSum;
-                    pref.best.srcRtr = ntry.rtrID.copyBytes();
-                    pref.best.rouSrc = area;
-                    shrtPthFrst.populateRoute(pref, hop);
-                    rs.add(tabRoute.addType.ecmp, pref, false, true);
-                    break;
-                case rtrOspf4lsa.lsaAsExt:
-                case rtrOspf4lsa.lsaNssaExt:
-                    adr4 = new addrIPv4();
-                    pck.getAddr(adr4, 0); // mask
-                    prf4 = new addrPrefix<addrIPv4>(ntry.lsaID, adr4.toNetmask());
-                    pref = new tabRouteEntry<addrIP>();
-                    pref.prefix = addrPrefix.ip4toIP(prf4);
-                    o = pck.msbGetD(4); // metric
-                    pref.best.metric = o & 0xffffff;
-                    if ((o & 0x80000000) != 0) {
-                        pref.best.origin = 112;
-                    } else {
-                        pref.best.metric += met;
-                        pref.best.origin = 111;
-                    }
-                    pref.best.distance = lower.distantExt;
-                    pref.best.srcRtr = ntry.rtrID.copyBytes();
-                    pref.best.rouSrc = area;
-                    pref.best.tag = pck.msbGetD(12); // route tag
-                    shrtPthFrst.populateRoute(pref, hop);
-                    rs.add(tabRoute.addType.ecmp, pref, false, true);
-                    break;
-                case rtrOspf4lsa.lsaOpArea:
-                    if ((segrouUsd == null) && !bierEna) {
-                        continue;
-                    }
-                    if (checkPrfLsa(ntry)) {
-                        continue;
-                    }
-                    typLenVal tlv = rtrOspfTe.getTlvHandler();
-                    for (;;) {
-                        if (tlv.getBytes(pck)) {
-                            break;
-                        }
-                        pref = parsePrfTlv(tlv);
-                        if (pref == null) {
-                            continue;
-                        }
-                        tabRouteEntry<addrIP> old = rs.find(pref);
-                        if (old == null) {
-                            continue;
-                        }
-                        spf.addSegRouI(ntry.rtrID, pref.best.segrouIdx);
-                        spf.addBierI(ntry.rtrID, pref.best.bierIdx, old.best.origin == 109);
-                        pref.best.segrouOld = sro;
-                        pref.best.bierOld = bro;
-                        shrtPthFrst.populateSegrout(old, pref.best, hop, (pref.best.rouSrc & 16) != 0);
-                        if ((pref.best.segrouIdx >= lower.segrouMax) || (old.best.labelRem == null)) {
-                            continue;
-                        }
-                        lower.segrouLab[pref.best.segrouIdx].setFwdMpls(8, lower.fwdCore, (ipFwdIface) old.best.iface, old.best.nextHop, old.best.labelRem);
-                        segrouUsd[pref.best.segrouIdx] = true;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
+        tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 8, lower.segrouLab, segrouUsd);
         routes.clear();
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.safiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);

@@ -4,9 +4,7 @@ import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
 import addr.addrPrefix;
-import ip.ipFwdIface;
 import java.util.Comparator;
-import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabLabelBier;
@@ -21,7 +19,6 @@ import util.debugger;
 import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
-import util.shrtPthFrstRes;
 import util.state;
 import util.syncInt;
 import util.typLenVal;
@@ -979,6 +976,8 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 }
             }
             rtrOspf6areaSpf src = new rtrOspf6areaSpf(ntry.rtrID, ntry.lsaID);
+            tabRouteEntry<addrIP> pref;
+            rtrOspf6pref prf6;
             packHolder pck = ntry.getPayload();
             switch (ntry.lsaType) {
                 case rtrOspf6lsa.lsaRouter:
@@ -1024,24 +1023,88 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     int met = pck.msbGetD(4) & 0xffffff; // metric
                     spf.addConn(src, new rtrOspf6areaSpf(adr, 0), met, true, false, null);
                     break;
+                case rtrOspf6lsa.lsaInterPrf:
+                    src = new rtrOspf6areaSpf(ntry.rtrID, 0);
+                    met = pck.msbGetD(0) & 0xffffff;
+                    prf6 = new rtrOspf6pref();
+                    prefixRead(pck, 4, prf6);
+                    pref = new tabRouteEntry<addrIP>();
+                    pref.prefix = prf6.prefix;
+                    pref.best.metric = met;
+                    pref.best.origin = 110;
+                    pref.best.distance = lower.distantSum;
+                    pref.best.rouSrc = area;
+                    spf.addPref(src, pref, false);
+                    break;
+                case rtrOspf6lsa.lsaLink:
+                    src = new rtrOspf6areaSpf(ntry.rtrID, 0);
+                    int o = pck.msbGetD(20); // number of prefixes
+                    pck.getSkip(24);
+                    for (int p = 0; p < o; p++) {
+                        prf6 = new rtrOspf6pref();
+                        pck.getSkip(prefixRead(pck, 0, prf6));
+                        pref = new tabRouteEntry<addrIP>();
+                        pref.prefix = prf6.prefix;
+                        pref.best.origin = 109;
+                        pref.best.distance = lower.distantSum;
+                        pref.best.rouSrc = area;
+                        spf.addPref(src, pref, false);
+                    }
+                    break;
+                case rtrOspf6lsa.lsaPrefix:
+                    src = new rtrOspf6areaSpf(ntry.rtrID, 0);
+                    o = pck.msbGetW(0); // number of prefixes
+                    pck.getSkip(12);
+                    for (int p = 0; p < o; p++) {
+                        prf6 = new rtrOspf6pref();
+                        pck.getSkip(prefixRead(pck, 0, prf6));
+                        pref = new tabRouteEntry<addrIP>();
+                        pref.prefix = prf6.prefix;
+                        pref.best.origin = 109;
+                        pref.best.distance = lower.distantSum;
+                        pref.best.rouSrc = area;
+                        spf.addPref(src, pref, false);
+                    }
+                    break;
+                case rtrOspf6lsa.lsaAsExt:
+                case rtrOspf6lsa.lsaNssaExt:
+                    src = new rtrOspf6areaSpf(ntry.rtrID, 0);
+                    o = pck.msbGetD(0);
+                    pck.getSkip(4);
+                    prf6 = new rtrOspf6pref();
+                    pck.getSkip(prefixRead(pck, 0, prf6));
+                    if ((o & 0x02000000) != 0) {
+                        pck.getSkip(addrIPv6.size);
+                    }
+                    pref = new tabRouteEntry<addrIP>();
+                    pref.prefix = prf6.prefix;
+                    pref.best.metric = o & 0xffffff;
+                    pref.best.distance = lower.distantExt;
+                    pref.best.rouSrc = area;
+                    if ((o & 0x01000000) != 0) {
+                        pref.best.tag = pck.msbGetD(0); // route tag
+                    }
+                    if ((o & 0x04000000) != 0) {
+                        pref.best.origin = 112;
+                        spf.addPref(src, pref, true);
+                    } else {
+                        pref.best.origin = 111;
+                        spf.addPref(src, pref, false);
+                    }
+                    break;
                 case rtrOspf6lsa.lsaRtrInfo:
                     typLenVal tlv = rtrOspfTe.getTlvHandler();
                     for (;;) {
                         if (tlv.getBytes(pck)) {
                             break;
                         }
-                        int o = rtrOspfSr.getBase(tlv);
-                        if (o < 1) {
-                            continue;
-                        }
+                        o = rtrOspfSr.getBase(tlv);
                         spf.addSegRouB(src, o);
                     }
                     break;
                 case rtrOspf6lsa.lsaEinterPrf:
                 case rtrOspf6lsa.lsaEprefix:
-                    if (!bierEna) {
-                        continue;
-                    }
+                    src = new rtrOspf6areaSpf(ntry.rtrID, 0);
                     tlv = rtrOspfTe.getTlvHandler();
                     if (ntry.lsaType == rtrOspf6lsa.lsaEprefix) {
                         pck.getSkip(12);
@@ -1050,11 +1113,13 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         if (tlv.getBytes(pck)) {
                             break;
                         }
-                        tabRouteEntry<addrIP> pref = parseEprfTlv(tlv);
+                        pref = parseEprfTlv(tlv);
                         if (pref == null) {
                             continue;
                         }
-                        spf.addBierB(new rtrOspf6areaSpf(ntry.rtrID, 0), pref.best.bierBeg);
+                        spf.addBierB(src, pref.best.bierBeg);
+                        spf.addSegRouI(src, pref.prefix, pref.best.segrouIdx, pref.best.rouSrc & 16);
+                        spf.addBierI(src, pref.prefix, pref.best.bierIdx, pref.best.bierHdr);
                     }
                     break;
                 default:
@@ -1104,141 +1169,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 spf.addNextHop(ifc.metric, new rtrOspf6areaSpf(nei.rtrID, 0), adr, ifc.iface);
             }
         }
-        tabRoute<addrIP> rs = new tabRoute<addrIP>("rs");
-        for (int i = 0; i < lsas.size(); i++) {
-            rtrOspf6lsa ntry = lsas.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (!ntry.doNotAge) {
-                if (ntry.created < tim) {
-                    continue;
-                }
-            }
-            rtrOspf6areaSpf src = new rtrOspf6areaSpf(ntry.rtrID, 0);
-            List<shrtPthFrstRes<rtrOspf6areaSpf>> hop = spf.findNextHop(src);
-            if (hop.size() < 1) {
-                continue;
-            }
-            int met = spf.getMetric(src);
-            int sro = spf.getSegRouB(src);
-            int bro = spf.getBierB(src);
-            tabRouteEntry<addrIP> pref;
-            rtrOspf6pref prf6;
-            packHolder pck = ntry.getPayload();
-            switch (ntry.lsaType) {
-                case rtrOspf6lsa.lsaInterPrf:
-                    met += pck.msbGetD(0) & 0xffffff;
-                    prf6 = new rtrOspf6pref();
-                    prefixRead(pck, 4, prf6);
-                    pref = new tabRouteEntry<addrIP>();
-                    pref.prefix = prf6.prefix;
-                    pref.best.metric = met;
-                    pref.best.origin = 110;
-                    pref.best.distance = lower.distantSum;
-                    pref.best.srcRtr = ntry.rtrID.copyBytes();
-                    pref.best.rouSrc = area;
-                    shrtPthFrst.populateRoute(pref, hop);
-                    rs.add(tabRoute.addType.ecmp, pref, false, true);
-                    break;
-                case rtrOspf6lsa.lsaLink:
-                    int o = pck.msbGetD(20); // number of prefixes
-                    pck.getSkip(24);
-                    for (int p = 0; p < o; p++) {
-                        prf6 = new rtrOspf6pref();
-                        pck.getSkip(prefixRead(pck, 0, prf6));
-                        pref = new tabRouteEntry<addrIP>();
-                        pref.prefix = prf6.prefix;
-                        pref.best.metric = met;
-                        pref.best.origin = 109;
-                        pref.best.distance = lower.distantSum;
-                        pref.best.srcRtr = ntry.rtrID.copyBytes();
-                        pref.best.rouSrc = area;
-                        shrtPthFrst.populateRoute(pref, hop);
-                        rs.add(tabRoute.addType.ecmp, pref, false, true);
-                    }
-                    break;
-                case rtrOspf6lsa.lsaPrefix:
-                    o = pck.msbGetW(0); // number of prefixes
-                    pck.getSkip(12);
-                    for (int p = 0; p < o; p++) {
-                        prf6 = new rtrOspf6pref();
-                        pck.getSkip(prefixRead(pck, 0, prf6));
-                        pref = new tabRouteEntry<addrIP>();
-                        pref.prefix = prf6.prefix;
-                        pref.best.metric = met;
-                        pref.best.origin = 109;
-                        pref.best.distance = lower.distantSum;
-                        pref.best.srcRtr = ntry.rtrID.copyBytes();
-                        pref.best.rouSrc = area;
-                        shrtPthFrst.populateRoute(pref, hop);
-                        rs.add(tabRoute.addType.ecmp, pref, false, true);
-                    }
-                    break;
-                case rtrOspf6lsa.lsaAsExt:
-                case rtrOspf6lsa.lsaNssaExt:
-                    o = pck.msbGetD(0);
-                    pck.getSkip(4);
-                    prf6 = new rtrOspf6pref();
-                    pck.getSkip(prefixRead(pck, 0, prf6));
-                    if ((o & 0x02000000) != 0) {
-                        pck.getSkip(addrIPv6.size);
-                    }
-                    pref = new tabRouteEntry<addrIP>();
-                    pref.prefix = prf6.prefix;
-                    pref.best.metric = o & 0xffffff;
-                    if ((o & 0x04000000) != 0) {
-                        pref.best.origin = 112;
-                    } else {
-                        pref.best.metric += met;
-                        pref.best.origin = 111;
-                    }
-                    pref.best.distance = lower.distantExt;
-                    pref.best.srcRtr = ntry.rtrID.copyBytes();
-                    pref.best.rouSrc = area;
-                    if ((o & 0x01000000) != 0) {
-                        pref.best.tag = pck.msbGetD(0); // route tag
-                    }
-                    shrtPthFrst.populateRoute(pref, hop);
-                    rs.add(tabRoute.addType.ecmp, pref, false, true);
-                    break;
-                case rtrOspf6lsa.lsaEinterPrf:
-                case rtrOspf6lsa.lsaEprefix:
-                    if ((segrouUsd == null) && !bierEna) {
-                        continue;
-                    }
-                    if (ntry.lsaType == rtrOspf6lsa.lsaEprefix) {
-                        pck.getSkip(12);
-                    }
-                    typLenVal tlv = rtrOspfTe.getTlvHandler();
-                    for (;;) {
-                        if (tlv.getBytes(pck)) {
-                            break;
-                        }
-                        pref = parseEprfTlv(tlv);
-                        if (pref == null) {
-                            continue;
-                        }
-                        tabRouteEntry<addrIP> old = rs.find(pref);
-                        if (old == null) {
-                            continue;
-                        }
-                        spf.addSegRouI(src, pref.best.segrouIdx);
-                        spf.addBierI(src, pref.best.bierIdx, old.best.origin == 109);
-                        pref.best.segrouOld = sro;
-                        pref.best.bierOld = bro;
-                        shrtPthFrst.populateSegrout(old, pref.best, hop, (pref.best.rouSrc & 16) != 0);
-                        if ((pref.best.segrouIdx >= lower.segrouMax) || (old.best.labelRem == null)) {
-                            continue;
-                        }
-                        lower.segrouLab[pref.best.segrouIdx].setFwdMpls(9, lower.fwdCore, (ipFwdIface) old.best.iface, old.best.nextHop, old.best.labelRem);
-                        segrouUsd[pref.best.segrouIdx] = true;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
+        tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 9, lower.segrouLab, segrouUsd);
         routes.clear();
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.safiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);

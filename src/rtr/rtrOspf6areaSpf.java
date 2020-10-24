@@ -35,6 +35,10 @@ public class rtrOspf6areaSpf extends addrType {
     public rtrOspf6areaSpf(addrIPv4 a, int l) {
         adr = a;
         lnk = l;
+        setUp();
+    }
+
+    private void setUp() {
         adr.toBuffer(addr, 0);
         bits.msbPutD(addr, addrIPv4.size, lnk);
     }
@@ -66,6 +70,7 @@ public class rtrOspf6areaSpf extends addrType {
             return true;
         }
         lnk = bits.fromHex(s.substring(i + 1, s.length()));
+        setUp();
         return false;
     }
 

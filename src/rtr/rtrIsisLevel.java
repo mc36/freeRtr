@@ -1,30 +1,27 @@
 package rtr;
 
+import addr.addrIP;
+import addr.addrIsis;
+import cfg.cfgAll;
+import ip.ipCor4;
 import pack.packHolder;
 import tab.tabGen;
+import tab.tabLabelBier;
 import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
+import tab.tabRtrplcN;
 import util.bits;
 import util.debugger;
 import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
-import util.typLenVal;
-import addr.addrIP;
-import addr.addrIsis;
-import cfg.cfgAll;
-import ip.ipCor4;
-import ip.ipFwdIface;
-import java.util.List;
-import tab.tabLabelBier;
-import tab.tabRouteAttr;
-import tab.tabRtrplcN;
-import util.shrtPthFrstRes;
 import util.state;
 import util.syncInt;
+import util.typLenVal;
 
 /**
  * isis level
@@ -636,7 +633,6 @@ public class rtrIsisLevel implements Runnable {
                 pref.prefix = lower.getDefaultRoute();
                 pref.best.distance = lower.distantInt;
                 pref.best.rouSrc = 6;
-                pref.best.srcRtr = lsp.srcID.copyBytes();
                 spf.addPref(src, pref, false);
             }
             typLenVal tlv = rtrIsis.getTlv();
@@ -679,7 +675,7 @@ public class rtrIsisLevel implements Runnable {
                     }
                     spf.addBierB(src, pref.best.bierBeg);
                     spf.addSegRouI(src, pref.best.segrouIdx);
-                    spf.addBierI(src, pref.best.bierIdx, (pref.best.rouSrc & 3) == 0);
+                    spf.addBierI(src, pref.best.bierIdx);
                     if ((pref.best.rouSrc & 1) == 0) {
                         pref.best.distance = lower.distantInt;
                     } else {

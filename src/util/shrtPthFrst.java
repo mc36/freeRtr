@@ -157,7 +157,7 @@ public class shrtPthFrst<Ta extends addrType> {
             res.addSegRouB(nod.name, nod.srBeg);
             res.addSegRouI(nod.name, nod.srIdx);
             res.addBierB(nod.name, nod.brBeg);
-            res.addBierI(nod.name, nod.brIdx, true);
+            res.addBierI(nod.name, nod.brIdx);
         }
         return res;
     }
@@ -317,6 +317,37 @@ public class shrtPthFrst<Ta extends addrType> {
     }
 
     /**
+     * add segment routing index
+     *
+     * @param nod node to add
+     * @param pref prefix to update
+     * @param idx node index
+     * @param src rouSrc
+     */
+    public void addSegRouI(Ta nod, addrPrefix<addrIP> pref, int idx, int src) {
+        if (idx < 1) {
+            return;
+        }
+        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
+        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        ntry.srIdx = idx;
+        tabRouteEntry<addrIP> rou;
+        rou = ntry.prfFix.find(pref);
+        if (rou != null) {
+            rou.best.segrouIdx = idx;
+            rou.best.rouSrc |= src;
+        }
+        rou = ntry.prfAdd.find(pref);
+        if (rou != null) {
+            rou.best.segrouIdx = idx;
+            rou.best.rouSrc |= src;
+        }
+    }
+
+    /**
      * add bier base
      *
      * @param nod node to add
@@ -342,9 +373,8 @@ public class shrtPthFrst<Ta extends addrType> {
      *
      * @param nod node to add
      * @param idx node index
-     * @param pri primary index
      */
-    public void addBierI(Ta nod, int idx, boolean pri) {
+    public void addBierI(Ta nod, int idx) {
         if (idx < 1) {
             return;
         }
@@ -353,10 +383,40 @@ public class shrtPthFrst<Ta extends addrType> {
         if (old != null) {
             ntry = old;
         }
-        if (pri) {
-            ntry.brIdx = idx;
-        }
+        ntry.brIdx = idx;
         ntry.brLst.add(new shrtPthFrstIdx(idx));
+    }
+
+    /**
+     * add bier index
+     *
+     * @param nod node to add
+     * @param pref prefix
+     * @param idx node index
+     * @param hdr header
+     */
+    public void addBierI(Ta nod, addrPrefix<addrIP> pref, int idx, int hdr) {
+        if (idx < 1) {
+            return;
+        }
+        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
+        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        ntry.brIdx = idx;
+        ntry.brLst.add(new shrtPthFrstIdx(idx));
+        tabRouteEntry<addrIP> rou;
+        rou = ntry.prfFix.find(pref);
+        if (rou != null) {
+            rou.best.bierIdx = idx;
+            rou.best.bierHdr = hdr;
+        }
+        rou = ntry.prfAdd.find(pref);
+        if (rou != null) {
+            rou.best.bierIdx = idx;
+            rou.best.bierHdr = hdr;
+        }
     }
 
     /**

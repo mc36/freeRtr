@@ -35,6 +35,10 @@ public class rtrIsisLevelSpf extends addrType {
     public rtrIsisLevelSpf(addrIsis a, int p) {
         adr = a;
         psn = p;
+        setUp();
+    }
+
+    private void setUp() {
         adr.toBuffer(addr, 0);
         addr[addrIsis.size] = (byte) psn;
     }
@@ -66,6 +70,7 @@ public class rtrIsisLevelSpf extends addrType {
             return true;
         }
         psn = bits.fromHex(s.substring(i + 1, s.length()));
+        setUp();
         return false;
     }
 

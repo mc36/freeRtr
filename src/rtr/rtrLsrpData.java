@@ -620,7 +620,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             rou.best.distance = dist;
             spf.addPref(rtrId, rou, false);
             spf.addSegRouI(rtrId, rou.best.segrouIdx);
-            spf.addBierI(rtrId, rou.best.bierIdx, true);
+            spf.addBierI(rtrId, rou.best.bierIdx);
         }
     }
 
