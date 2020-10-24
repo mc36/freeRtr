@@ -1,10 +1,12 @@
 package util;
 
+import addr.addrIP;
 import addr.addrType;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import tab.tabGen;
+import tab.tabRoute;
 
 /**
  * spf node
@@ -53,6 +55,16 @@ public class shrtPthFrstNode<Ta extends addrType> implements Comparator<shrtPthF
      * result
      */
     protected List<shrtPthFrstRes<Ta>> result;
+
+    /**
+     * fixed metric prefixes
+     */
+    protected tabRoute<addrIP> prfFix = new tabRoute<addrIP>("prf");
+
+    /**
+     * cumulative metric prefixes
+     */
+    protected tabRoute<addrIP> prfAdd = new tabRoute<addrIP>("prf");
 
     /**
      * metric

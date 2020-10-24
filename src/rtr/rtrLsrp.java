@@ -15,9 +15,9 @@ import ip.ipFwdIface;
 import ip.ipFwdTab;
 import ip.ipRtr;
 import java.util.List;
+import pack.packDnsRec;
 import prt.prtTcp;
 import prt.prtUdp;
-import pack.packDnsRec;
 import tab.tabGen;
 import tab.tabLabel;
 import tab.tabLabelBier;
@@ -696,7 +696,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            ntry.put2spf(spf);
+            ntry.put2spf(spf, distance);
         }
         spf.doCalc(routerID, null);
         boolean[] segrouUsd = null;
@@ -730,39 +730,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 spf.addNextHop(met, nei.rtrId, nei.peer.copyBytes(), ifc.iface);
             }
         }
-        tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
-        for (int o = 0; o < database.size(); o++) {
-            rtrLsrpData ntry = database.get(o);
-            if (ntry == null) {
-                continue;
-            }
-            List<shrtPthFrstRes<addrIPv4>> hop = spf.findNextHop(ntry.rtrId);
-            if (hop.size() < 1) {
-                continue;
-            }
-            int met = spf.getMetric(ntry.rtrId);
-            int sro = spf.getSegRouB(ntry.rtrId);
-            int bro = spf.getBierB(ntry.rtrId);
-            int brh = tabLabelBier.num2bsl(ntry.bierLen);
-            for (int i = 0; i < ntry.network.size(); i++) {
-                tabRouteEntry<addrIP> rou = ntry.network.get(i).copyBytes(tabRoute.addType.notyet);
-                spf.addSegRouI(ntry.rtrId, rou.best.segrouIdx);
-                spf.addBierI(ntry.rtrId, rou.best.bierIdx, true);
-                rou.best.srcRtr = ntry.rtrId.copyBytes();
-                rou.best.segrouOld = sro;
-                rou.best.bierOld = bro;
-                rou.best.bierHdr = brh;
-                rou.best.metric += met;
-                rou.best.distance = distance;
-                shrtPthFrst.populateRoute(rou, hop);
-                shrtPthFrst.populateSegrout(rou, rou.best, hop, (rou.best.rouSrc & 16) != 0);
-                if ((segrouUsd != null) && (rou.best.segrouIdx < segrouMax) && (rou.best.labelRem != null)) {
-                    segrouLab[rou.best.segrouIdx].setFwdMpls(6, fwdCore, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
-                    segrouUsd[rou.best.segrouIdx] = true;
-                }
-                tab1.add(tabRoute.addType.ecmp, rou, false, true);
-            }
-        }
+        tabRoute<addrIP> tab1 = spf.getRoutes(fwdCore, 6, segrouLab, segrouUsd);
         if (segrouUsd != null) {
             if (segrouIdx > 0) {
                 segrouLab[segrouIdx].setFwdCommon(6, fwdCore);

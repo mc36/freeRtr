@@ -6,6 +6,8 @@ import addr.addrPrefix;
 import addr.addrType;
 import cfg.cfgAll;
 import cry.cryHashMd5;
+import ip.ipFwd;
+import ip.ipFwdIface;
 import ip.ipMpls;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import tab.tabGen;
 import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelBierN;
+import tab.tabLabelNtry;
 import tab.tabRoute;
 import tab.tabRouteAttr;
 import tab.tabRouteEntry;
@@ -144,6 +147,12 @@ public class shrtPthFrst<Ta extends addrType> {
                 shrtPthFrstConn<Ta> con = nod.conn.get(i);
                 res.addConn(nod.name, con.target.name, con.metric, con.realHop, con.stub, con.ident);
             }
+            for (int i = 0; i < nod.prfAdd.size(); i++) {
+                res.addPref(nod.name, nod.prfAdd.get(i), false);
+            }
+            for (int i = 0; i < nod.prfFix.size(); i++) {
+                res.addPref(nod.name, nod.prfFix.get(i), true);
+            }
             res.addIdent(nod.name, nod.ident);
             res.addSegRouB(nod.name, nod.srBeg);
             res.addSegRouI(nod.name, nod.srIdx);
@@ -231,7 +240,27 @@ public class shrtPthFrst<Ta extends addrType> {
     }
 
     /**
-     * add segment routing base
+     * add prefix
+     *
+     * @param nod node to add
+     * @param rou route
+     * @param fix fixed metric
+     */
+    public void addPref(Ta nod, tabRouteEntry<addrIP> rou, boolean fix) {
+        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
+        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        if (fix) {
+            ntry.prfFix.add(tabRoute.addType.ecmp, rou, false, false);
+        } else {
+            ntry.prfAdd.add(tabRoute.addType.ecmp, rou, false, false);
+        }
+    }
+
+    /**
+     * add ident
      *
      * @param nod node to add
      * @param ident link id
@@ -957,6 +986,83 @@ public class shrtPthFrst<Ta extends addrType> {
         res.add(graphEnd1);
         res.add(graphEnd2);
         return res;
+    }
+
+    /**
+     * get routes
+     *
+     * @param fwdCore forwarding core
+     * @param fwdKey forwarder key
+     * @param segrouLab segment routing labels
+     * @param segrouUsd segment routing usage
+     * @return routes
+     */
+    public tabRoute<addrIP> getRoutes(ipFwd fwdCore, int fwdKey, tabLabelNtry[] segrouLab, boolean[] segrouUsd) {
+        tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
+        int segrouMax = 0;
+        if (segrouLab != null) {
+            segrouMax = segrouLab.length;
+        }
+        for (int o = 0; o < nodes.size(); o++) {
+            shrtPthFrstNode<Ta> ntry = nodes.get(o);
+            List<shrtPthFrstRes<Ta>> hop = findNextHop(ntry.name);
+            if (hop.size() < 1) {
+                continue;
+            }
+            int met = getMetric(ntry.name);
+            int sro = getSegRouB(ntry.name);
+            int bro = getBierB(ntry.name);
+            for (int i = 0; i < ntry.prfAdd.size(); i++) {
+                tabRouteEntry<addrIP> rou = ntry.prfAdd.get(i).copyBytes(tabRoute.addType.notyet);
+                rou.best.srcRtr = ntry.name.copyBytes();
+                rou.best.segrouOld = sro;
+                rou.best.bierOld = bro;
+                rou.best.metric += met;
+                populateRoute(rou, hop);
+                populateSegrout(rou, rou.best, hop, (rou.best.rouSrc & 16) != 0);
+                long oldVer = tab1.version;
+                tab1.add(tabRoute.addType.ecmp, rou, false, true);
+                if (oldVer == tab1.version) {
+                    continue;
+                }
+                if (segrouUsd == null) {
+                    continue;
+                }
+                if (rou.best.labelRem == null) {
+                    continue;
+                }
+                if (rou.best.segrouIdx >= segrouMax) {
+                    continue;
+                }
+                segrouLab[rou.best.segrouIdx].setFwdMpls(fwdKey, fwdCore, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
+                segrouUsd[rou.best.segrouIdx] = true;
+            }
+            for (int i = 0; i < ntry.prfFix.size(); i++) {
+                tabRouteEntry<addrIP> rou = ntry.prfFix.get(i).copyBytes(tabRoute.addType.notyet);
+                rou.best.srcRtr = ntry.name.copyBytes();
+                rou.best.segrouOld = sro;
+                rou.best.bierOld = bro;
+                populateRoute(rou, hop);
+                populateSegrout(rou, rou.best, hop, (rou.best.rouSrc & 16) != 0);
+                long oldVer = tab1.version;
+                tab1.add(tabRoute.addType.ecmp, rou, false, true);
+                if (oldVer == tab1.version) {
+                    continue;
+                }
+                if (segrouUsd == null) {
+                    continue;
+                }
+                if (rou.best.labelRem == null) {
+                    continue;
+                }
+                if (rou.best.segrouIdx >= segrouMax) {
+                    continue;
+                }
+                segrouLab[rou.best.segrouIdx].setFwdMpls(fwdKey, fwdCore, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
+                segrouUsd[rou.best.segrouIdx] = true;
+            }
+        }
+        return tab1;
     }
 
     /**

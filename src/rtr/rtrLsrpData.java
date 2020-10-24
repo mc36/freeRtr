@@ -5,6 +5,7 @@ import addr.addrIPv4;
 import addr.addrPrefix;
 import java.util.Comparator;
 import tab.tabGen;
+import tab.tabLabelBier;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import util.bits;
@@ -596,8 +597,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * add to spf
      *
      * @param spf calcer
+     * @param dist distance
      */
-    protected void put2spf(shrtPthFrst<addrIPv4> spf) {
+    protected void put2spf(shrtPthFrst<addrIPv4> spf, int dist) {
         for (int i = 0; i < neighbor.size(); i++) {
             rtrLsrpDataNeigh ntry = neighbor.get(i);
             String a;
@@ -611,6 +613,15 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         spf.addIdent(rtrId, hostname);
         spf.addSegRouB(rtrId, segrouBeg);
         spf.addBierB(rtrId, bierBeg);
+        int brh = tabLabelBier.num2bsl(bierLen);
+        for (int i = 0; i < network.size(); i++) {
+            tabRouteEntry<addrIP> rou = network.get(i).copyBytes(tabRoute.addType.notyet);
+            rou.best.bierHdr = brh;
+            rou.best.distance = dist;
+            spf.addPref(rtrId, rou, false);
+            spf.addSegRouI(rtrId, rou.best.segrouIdx);
+            spf.addBierI(rtrId, rou.best.bierIdx, true);
+        }
     }
 
 }
