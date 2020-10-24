@@ -646,7 +646,7 @@ public class rtrIsisLevel implements Runnable {
                 }
                 spf.addIdent(src, rtrIsis.getHostname(tlv));
                 int o = rtrIsisSr.getBase(tlv);
-                if ((o > 0) && (segrouUsd != null)) {
+                if (o > 0) {
                     spf.addSegRouB(src, o);
                     continue;
                 }
@@ -678,6 +678,14 @@ public class rtrIsisLevel implements Runnable {
                         continue;
                     }
                     spf.addBierB(src, pref.best.bierBeg);
+                    spf.addSegRouI(src, pref.best.segrouIdx);
+                    spf.addBierI(src, pref.best.bierIdx, (pref.best.rouSrc & 3) == 0);
+                    if ((pref.best.rouSrc & 1) == 0) {
+                        pref.best.distance = lower.distantInt;
+                    } else {
+                        pref.best.distance = lower.distantExt;
+                    }
+                    spf.addPref(src, pref, false);
                 }
             }
         }
@@ -709,76 +717,6 @@ public class rtrIsisLevel implements Runnable {
             }
         }
         tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 7, lower.segrouLab, segrouUsd);
-        /*
-        tabRoute<addrIP> rs = new tabRoute<addrIP>("rs");
-        for (int i = 0; i < lsps.size(); i++) {
-            rtrIsisLsp lsp = lsps.get(i);
-            if (lsp == null) {
-                continue;
-            }
-            if (lsp.getTimeRemain(true) < 1) {
-                continue;
-            }
-            rtrIsisLevelSpf src = new rtrIsisLevelSpf(lsp.srcID, lsp.nodID);
-            List<shrtPthFrstRes<rtrIsisLevelSpf>> hop = spf.findNextHop(src);
-            if (hop.size() < 1) {
-                continue;
-            }
-            int met = spf.getMetric(src);
-            int sro = spf.getSegRouB(src);
-            int bro = spf.getBierB(src);
-            packHolder pck = lsp.getPayload();
-            typLenVal tlv = rtrIsis.getTlv();
-            if ((lsp.flags & rtrIsisLsp.flgAttach) != 0) {
-                tabRouteEntry<addrIP> pref = new tabRouteEntry<addrIP>();
-                pref.prefix = lower.getDefaultRoute();
-                pref.best.metric = met;
-                pref.best.distance = lower.distantInt;
-                pref.best.rouSrc = 6;
-                pref.best.srcRtr = lsp.srcID.copyBytes();
-                pref.best.segrouOld = sro;
-                pref.best.bierOld = bro;
-                shrtPthFrst.populateRoute(pref, hop);
-                shrtPthFrst.populateSegrout(pref, pref.best, hop, (pref.best.rouSrc & 16) != 0);
-                if (needAttach && ((lsp.flags & rtrIsisLsp.flgOver) == 0)) {
-                    rs.add(tabRoute.addType.ecmp, pref, false, true);
-                }
-            }
-            for (;;) {
-                if (tlv.getBytes(pck)) {
-                    break;
-                }
-                tabGen<tabRouteEntry<addrIP>> rou = lower.getAddrReach(tlv);
-                if (rou == null) {
-                    continue;
-                }
-                for (int o = 0; o < rou.size(); o++) {
-                    tabRouteEntry<addrIP> pref = rou.get(o);
-                    if (pref == null) {
-                        continue;
-                    }
-                    pref.best.metric += met;
-                    if ((pref.best.rouSrc & 1) == 0) {
-                        pref.best.distance = lower.distantInt;
-                    } else {
-                        pref.best.distance = lower.distantExt;
-                    }
-                    pref.best.srcRtr = lsp.srcID.copyBytes();
-                    spf.addSegRouI(src, pref.best.segrouIdx);
-                    spf.addBierI(src, pref.best.bierIdx, (pref.best.rouSrc & 3) == 0);
-                    pref.best.segrouOld = sro;
-                    pref.best.bierOld = bro;
-                    shrtPthFrst.populateRoute(pref, hop);
-                    shrtPthFrst.populateSegrout(pref, pref.best, hop, (pref.best.rouSrc & 16) != 0);
-                    if ((segrouUsd != null) && (pref.best.segrouIdx < lower.segrouMax) && (pref.best.labelRem != null)) {
-                        lower.segrouLab[pref.best.segrouIdx].setFwdMpls(7, lower.fwdCore, (ipFwdIface) pref.best.iface, pref.best.nextHop, pref.best.labelRem);
-                        segrouUsd[pref.best.segrouIdx] = true;
-                    }
-                    rs.add(tabRoute.addType.ecmp, pref, false, true);
-                }
-            }
-        }
-         */
         routes.clear();
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.safiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);
