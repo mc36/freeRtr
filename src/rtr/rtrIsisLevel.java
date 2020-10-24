@@ -619,6 +619,7 @@ public class rtrIsisLevel implements Runnable {
             segrouUsd = null;
         }
         shrtPthFrst<rtrIsisLevelSpf> spf = new shrtPthFrst<rtrIsisLevelSpf>(lastSpf);
+        boolean needAttach = (!lower.haveNeighbor(2)) && attachedAlw;
         for (int i = 0; i < lsps.size(); i++) {
             rtrIsisLsp lsp = lsps.get(i);
             if (lsp == null) {
@@ -630,6 +631,14 @@ public class rtrIsisLevel implements Runnable {
             boolean stub = (lsp.flags & rtrIsisLsp.flgOver) != 0;
             packHolder pck = lsp.getPayload();
             rtrIsisLevelSpf src = new rtrIsisLevelSpf(lsp.srcID, lsp.nodID);
+            if (needAttach && (!stub) && ((lsp.flags & rtrIsisLsp.flgAttach) != 0)) {
+                tabRouteEntry<addrIP> pref = new tabRouteEntry<addrIP>();
+                pref.prefix = lower.getDefaultRoute();
+                pref.best.distance = lower.distantInt;
+                pref.best.rouSrc = 6;
+                pref.best.srcRtr = lsp.srcID.copyBytes();
+                spf.addPref(src, pref, false);
+            }
             typLenVal tlv = rtrIsis.getTlv();
             for (;;) {
                 if (tlv.getBytes(pck)) {
@@ -659,9 +668,6 @@ public class rtrIsisLevel implements Runnable {
                     }
                     continue;
                 }
-                if (!bierEna) {
-                    continue;
-                }
                 tabGen<tabRouteEntry<addrIP>> rou = lower.getAddrReach(tlv);
                 if (rou == null) {
                     continue;
@@ -669,9 +675,6 @@ public class rtrIsisLevel implements Runnable {
                 for (o = 0; o < rou.size(); o++) {
                     tabRouteEntry<addrIP> pref = rou.get(o);
                     if (pref == null) {
-                        continue;
-                    }
-                    if (pref.best.bierBeg == 0) {
                         continue;
                     }
                     spf.addBierB(src, pref.best.bierBeg);
@@ -705,7 +708,8 @@ public class rtrIsisLevel implements Runnable {
                 spf.addNextHop(ifc.metric, new rtrIsisLevelSpf(nei.rtrID, 0), nei.ifcAddr.copyBytes(), ifc.iface);
             }
         }
-        boolean needAttach = (!lower.haveNeighbor(2)) && attachedAlw;
+        tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 7, lower.segrouLab, segrouUsd);
+        /*
         tabRoute<addrIP> rs = new tabRoute<addrIP>("rs");
         for (int i = 0; i < lsps.size(); i++) {
             rtrIsisLsp lsp = lsps.get(i);
@@ -774,6 +778,7 @@ public class rtrIsisLevel implements Runnable {
                 }
             }
         }
+         */
         routes.clear();
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.safiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);
