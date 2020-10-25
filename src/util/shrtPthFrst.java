@@ -419,6 +419,33 @@ public class shrtPthFrst<Ta extends addrType> {
         }
     }
 
+    private void diffPrefix(Ta nod, tabRoute<addrIP> cl, tabRoute<addrIP> ol) {
+        for (int i = 0; i < cl.size(); i++) {
+            tabRouteEntry<addrIP> cr = cl.get(i);
+            tabRouteEntry<addrIP> or = ol.find(cr);
+            if (or == null) {
+                logger.info("prefix " + cr + " appeared at " + nod);
+                continue;
+            }
+            if (cr.best.metric != or.best.metric) {
+                logger.info("prefix " + cr + " metric changed from " + or.best.metric + " to " + cr.best.metric + " at " + nod);
+                continue;
+            }
+            if (cr.best.tag != or.best.tag) {
+                logger.info("prefix " + cr + " tag changed from " + or.best.tag + " to " + cr.best.tag + " at " + nod);
+                continue;
+            }
+        }
+        for (int i = 0; i < ol.size(); i++) {
+            tabRouteEntry<addrIP> or = ol.get(i);
+            tabRouteEntry<addrIP> cr = cl.find(or);
+            if (cr == null) {
+                logger.info("prefix " + or + " lost at " + nod);
+                continue;
+            }
+        }
+    }
+
     /**
      * find shortest path
      *
@@ -464,6 +491,8 @@ public class shrtPthFrst<Ta extends addrType> {
                         continue;
                     }
                 }
+                diffPrefix(cn.name, cn.prfAdd, on.prfAdd);
+                diffPrefix(cn.name, cn.prfFix, on.prfFix);
             }
             prev = null;
         }
