@@ -1165,6 +1165,35 @@ public class shrtPthFrst<Ta extends addrType> {
         pck.merge2end();
     }
 
+    private void listLinStatePrf(tabRoute<addrIP> tab, typLenVal tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        hlp.clear();
+        rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, hlp, ntry);
+        hlp.merge2end();
+        tlv.putBytes(pck, 265, hlp.getCopy());
+        pck.merge2end();
+        tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
+        rou.best.rouSrc = rtrBgpUtil.peerOriginate;
+        addrIP adr = new addrIP();
+        rou.nlri = pck.getCopy();
+        adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), rou.nlri), 0);
+        rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+        pck.clear();
+        if (ntry.best.metric > 0) {
+            bits.msbPutD(tlv.valDat, 0, ntry.best.metric);
+            tlv.putBytes(pck, 1155, 4, tlv.valDat); // metric
+            pck.merge2end();
+        }
+        if (ntry.best.tag > 0) {
+            bits.msbPutD(tlv.valDat, 0, ntry.best.tag);
+            tlv.putBytes(pck, 1153, 4, tlv.valDat); // metric
+            pck.merge2end();
+        }
+        if (pck.dataSize() > 0) {
+            rou.best.linkStat = pck.getCopy();
+        }
+        tab.add(tabRoute.addType.better, rou, true, true);
+    }
+
     private void listLinStateAdd(tabRoute<addrIP> tab, typLenVal tlv, packHolder pck, int met) {
         tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
         rou.best.rouSrc = rtrBgpUtil.peerOriginate;
@@ -1207,6 +1236,18 @@ public class shrtPthFrst<Ta extends addrType> {
                 listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
                 listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, con.target, 257); // remote node
                 listLinStateAdd(tab, tlv, pck, con.metric);
+            }
+            for (int i = 0; i < nod.prfFix.size(); i++) {
+                tabRouteEntry<addrIP> rou = nod.prfFix.get(i);
+                listLinStateHdr(tlv, pck, prt, 3);
+                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                listLinStatePrf(tab, tlv, pck, hlp, rou);
+            }
+            for (int i = 0; i < nod.prfAdd.size(); i++) {
+                tabRouteEntry<addrIP> rou = nod.prfAdd.get(i);
+                listLinStateHdr(tlv, pck, prt, 3);
+                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                listLinStatePrf(tab, tlv, pck, hlp, rou);
             }
         }
     }
