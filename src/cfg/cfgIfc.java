@@ -3236,7 +3236,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 ethtyp.updateET(ipIfc4arp.type, arp);
             }
             vrfFor.fwd4.routerStaticChg();
-            vrfFor.fwd4.ifaceState(fwdIf4, ethtyp.getState());
         }
         if (ip6 && (addr6 != null)) {
             ipIf6 = new ipIfc6(ifaceNeedArp(), ifaceNeedType());
@@ -3245,7 +3244,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ethtyp.addET(ipIfc6.type, "ip6", ipIf6);
             ethtyp.updateET(ipIfc6.type, ipIf6);
             vrfFor.fwd6.routerStaticChg();
-            vrfFor.fwd6.ifaceState(fwdIf6, ethtyp.getState());
         }
         if (ipx && (ipxAddr != null)) {
             ipxIfc = vrfFor.ipx.ifaceAdd(ethtyp);
