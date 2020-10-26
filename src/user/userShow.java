@@ -14,17 +14,17 @@ import cfg.cfgInit;
 import cfg.cfgMtrack;
 import cfg.cfgObjnet;
 import cfg.cfgObjprt;
+import cfg.cfgPrcss;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
 import cfg.cfgRouplc;
 import cfg.cfgRtr;
-import cfg.cfgTrack;
-import cfg.cfgVdc;
-import cfg.cfgVdcIfc;
-import cfg.cfgPrcss;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
 import cfg.cfgTlmtexp;
+import cfg.cfgTrack;
+import cfg.cfgVdc;
+import cfg.cfgVdcIfc;
 import cfg.cfgVrf;
 import clnt.clntDns;
 import clnt.clntNetflow;
@@ -1149,7 +1149,16 @@ public class userShow {
                 return null;
             }
             if (a.equals("interface")) {
-                rdr.putStrTab(cfgAll.getShIntTab(4));
+                if (cmd.size() < 1) {
+                    rdr.putStrTab(cfgAll.getShIntTab(4));
+                    return null;
+                }
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                doShowIpXifc(ifc.fwdIf4);
                 return null;
             }
             if (a.equals("logger")) {
@@ -1403,7 +1412,16 @@ public class userShow {
                 return null;
             }
             if (a.equals("interface")) {
-                rdr.putStrTab(cfgAll.getShIntTab(5));
+                if (cmd.size() < 1) {
+                    rdr.putStrTab(cfgAll.getShIntTab(5));
+                    return null;
+                }
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                doShowIpXifc(ifc.fwdIf6);
                 return null;
             }
             if (a.equals("logger")) {
@@ -3421,6 +3439,14 @@ public class userShow {
             l.add(v.name + "|" + s);
         }
         rdr.putStrTab(l);
+    }
+
+    private void doShowIpXifc(ipFwdIface ifc) {
+        if (ifc == null) {
+            cmd.error("protocol not enabled");
+            return;
+        }
+        rdr.putStrArr(ifc.getShow());
     }
 
     private void doShowSockets(int ver) {

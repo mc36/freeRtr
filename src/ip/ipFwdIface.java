@@ -12,6 +12,7 @@ import cfg.cfgIfc;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
 import cfg.cfgRtr;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import prt.prtUdp;
@@ -333,6 +334,30 @@ public class ipFwdIface extends tabRouteIface {
             return addr;
         }
         return unreachSrc.addr;
+    }
+
+    /**
+     * get show text
+     *
+     * @return show
+     */
+    public List<String> getShow() {
+        List<String> l = new ArrayList<String>();
+        l.add(lower + " ready=" + ready);
+        l.add(cmds.tabulator + "num=" + ifwNum + " mtu=" + mtu + " bw=" + bits.bandwidth(bandwidth) + " p2p=" + point2point);
+        l.add(cmds.tabulator + "addr=" + addr + " mask=" + mask);
+        l.add(cmds.tabulator + "net=" + network);
+        l.add(cmds.tabulator + "ll=" + lower.getLinkLocalAddr());
+        for (int i = 0; i < adrs.size(); i++) {
+            ipFwdIfaceAddr adr = adrs.get(i);
+            if (adr == null) {
+                continue;
+            }
+            l.add(cmds.tabulator + "additional=" + adr.ip + " " + adr.mac);
+        }
+        l.add(cmds.tabulator + "cntr=" + cntr.getShStat());
+        l.add(cmds.tabulator + "ipcntr=" + lower.getCounter().getShStat());
+        return l;
     }
 
     /**

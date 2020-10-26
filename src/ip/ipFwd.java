@@ -961,13 +961,15 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void ifaceState(ipFwdIface ifc, state.states stat) {
         ifc.cntr.stateChange(stat);
-        boolean st = (stat == state.states.up);
-        if (ifc.ready == st) {
+        boolean old = ifc.ready;
+        ifc.ready = (stat == state.states.up);
+        ifc.mtu = ifc.lower.getMTUsize() - ipCore.getHeaderSize();
+        ifc.bandwidth = ifc.lower.getBandwidth();
+        if (old == ifc.ready) {
             return;
         }
-        ifc.ready = st;
         if (debugger.ipFwdEvnt) {
-            logger.debug("iface state " + st + " " + ifc.lower);
+            logger.debug("iface state " + ifc.ready + " " + ifc.lower);
         }
         for (int i = protos.size() - 1; i >= 0; i--) {
             ipFwdProto prt = protos.get(i);

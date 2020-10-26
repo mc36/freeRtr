@@ -221,7 +221,8 @@ public class userExec {
     }
 
     private static void getHelpShowIpX(userHelping hl) {
-        hl.add("3 .        interface             interface information");
+        hl.add("3 4,.      interface             interface information");
+        hl.add("4 .          [name]              name of interface");
         hl.add("3 4,.      vrf                   vrf information");
         hl.add("4 5          [name]              name of vrf");
         hl.add("5 .            full              full listing");
