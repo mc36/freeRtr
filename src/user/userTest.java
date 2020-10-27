@@ -567,7 +567,7 @@ public class userTest {
         }
         if (a.equals("hwext")) {
             userHwext h = new userHwext();
-            h.doer(cmd);
+            rdr.putStrArr(h.doer(cmd));
             return null;
         }
         if (a.equals("hwdet")) {
@@ -599,6 +599,7 @@ public class userTest {
             cmd.error(l.get(i));
         }
     }
+
     private final static int routingTim = 5000;
 
     private final static int routingRnd = 3000;

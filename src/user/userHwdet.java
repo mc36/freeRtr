@@ -18,7 +18,6 @@ import util.version;
 public class userHwdet {
 
     private enum ifcTyp {
-
         socat, pcap, raw, map
     }
 
@@ -90,6 +89,29 @@ public class userHwdet {
         config.add("proc " + fn + " " + cmd);
     }
 
+    /**
+     * set up interface
+     *
+     * @param lst list
+     * @param nam name
+     */
+    public static void setupIface(List<String> lst, String nam) {
+        lst.add("ip link set " + nam + " up multicast on promisc on mtu 1500");
+        lst.add("ethtool -K " + nam + " rx off");
+        lst.add("ethtool -K " + nam + " tx off");
+        lst.add("ethtool -K " + nam + " sg off");
+        lst.add("ethtool -K " + nam + " tso off");
+        lst.add("ethtool -K " + nam + " ufo off");
+        lst.add("ethtool -K " + nam + " gso off");
+        lst.add("ethtool -K " + nam + " gro off");
+        lst.add("ethtool -K " + nam + " lro off");
+        lst.add("ethtool -K " + nam + " rxvlan off");
+        lst.add("ethtool -K " + nam + " txvlan off");
+        lst.add("ethtool -K " + nam + " ntuple off");
+        lst.add("ethtool -K " + nam + " rxhash off");
+        lst.add("ethtool --set-eee " + nam + " eee off");
+    }
+
     private void createIface(String nam, String adr) {
         ifcNum += 1;
         int p1 = nextPort + 1;
@@ -113,20 +135,8 @@ public class userHwdet {
                 stat = "stat ";
                 break;
         }
-        List<String> ifc = bits.str2lst("ip link set " + nam + " up multicast on promisc on mtu 1500");
-        ifc.add("ethtool -K " + nam + " rx off");
-        ifc.add("ethtool -K " + nam + " tx off");
-        ifc.add("ethtool -K " + nam + " sg off");
-        ifc.add("ethtool -K " + nam + " tso off");
-        ifc.add("ethtool -K " + nam + " ufo off");
-        ifc.add("ethtool -K " + nam + " gso off");
-        ifc.add("ethtool -K " + nam + " gro off");
-        ifc.add("ethtool -K " + nam + " lro off");
-        ifc.add("ethtool -K " + nam + " rxvlan off");
-        ifc.add("ethtool -K " + nam + " txvlan off");
-        ifc.add("ethtool -K " + nam + " ntuple off");
-        ifc.add("ethtool -K " + nam + " rxhash off");
-        ifc.add("ethtool --set-eee " + nam + " eee off");
+        List<String> ifc = new ArrayList<String>();
+        setupIface(ifc, nam);
         makeLoop("ifc" + ifcNum + ".sh", ifc, cmd);
         config.add("int " + "eth" + ifcNum + " " + stat + "eth " + adr + " 127.0.0.1 " + p1 + " 127.0.0.1 " + p2);
     }

@@ -3424,7 +3424,26 @@ public class userShow {
             if (fwd == null) {
                 return;
             }
-            doShowHistory(cmd.word(), fwd.hstryT);
+            String a = cmd.word();
+            if (!a.equals("interface")) {
+                doShowHistory(a, fwd.hstryT);
+                return;
+            }
+            userFormat l = new userFormat("|", "interface");
+            for (int i = 0; i < cfgAll.ifaces.size(); i++) {
+                cfgIfc ntry = cfgAll.ifaces.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.vrfFor == null) {
+                    continue;
+                }
+                if ((ntry.vrfFor.fwd4 != fwd) && (ntry.vrfFor.fwd6 != fwd)) {
+                    continue;
+                }
+                l.add(ntry.name);
+            }
+            rdr.putStrTab(l);
             return;
         }
         userFormat l = new userFormat("|", "vrf|interface|unicast|multicast|label|mroute|flwspc|p2p|mp2mp|nat|proto|pack|byte");

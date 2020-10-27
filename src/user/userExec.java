@@ -226,6 +226,7 @@ public class userExec {
         hl.add("3 4,.      vrf                   vrf information");
         hl.add("4 5          [name]              name of vrf");
         hl.add("5 .            full              full listing");
+        hl.add("5 .            interface         interface list");
         hl.add("5 .            rates             traffic rates");
         hl.add("5 .            realtime          realtime counters");
         hl.add("5 .            history           historic byte counters");

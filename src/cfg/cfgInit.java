@@ -927,6 +927,7 @@ public class cfgInit implements Runnable {
             pipeSide pip = pipeConsole.create();
             logger.pipeStart(pip);
             userReader rdr = new userReader(pip, 1023);
+            rdr.height = 0;
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;
             s = exe.repairCommand(s);
