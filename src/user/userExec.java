@@ -1571,6 +1571,8 @@ public class userExec {
         hl.add("4 4,.        [str]               text");
         hl.add("3 4        image                 view image");
         hl.add("4 4,.        [str]               file");
+        hl.add("2 3,.    hwext                   perform hw externalization");
+        hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    hwdet                   perform hw detection");
         hl.add("3 3,.      <str>                 parameter");
         hl.add(".2 3,.   hwcfg                   perform hw configuration");
