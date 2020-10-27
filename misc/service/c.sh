@@ -103,6 +103,6 @@ cp ../../binTmp/*.bin $TRG/
 cp /proc/net/dev $TRG/hwdet.eth
 cp /proc/tty/driver/serial $TRG/hwdet.ser
 ip link show > $TRG/hwdet.mac
-java -jar $TRG/rtr.jar test hwdet tuntap 10.255.255.1/24 10.255.255.254 path $TRG/ iface raw line raw
+java -jar $TRG/rtr.jar test hwdet tuntap 10.255.255.1/24 10.255.255.254 path $TRG/ iface raw line raw inline
 chmod 755 $TRG/*.sh
 ls -l $TRG/
