@@ -288,6 +288,7 @@ public class userHwext {
             orig.error("error saving sw config");
             return;
         }
+        orig.error("done");
     }
 
 }
