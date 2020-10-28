@@ -96,6 +96,10 @@ public class userHwext {
         }
         List<String> hw1 = new ArrayList<String>();
         List<String> hw2 = new ArrayList<String>();
+        if (hwd.indexOf("### dataplane ###") >= 0) {
+            orig.error("already exists");
+            return;
+        }
         int o = hwd.indexOf("### main ###");
         if (o < 0) {
             orig.error("error splitting " + hwdn);
