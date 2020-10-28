@@ -22,6 +22,8 @@ public class userHwext {
 
     private String pref = "./rtr-";
 
+    private String hwdn = "hwdet-all.sh";
+
     private dpTyp dpt = null;
 
     /**
@@ -78,15 +80,37 @@ public class userHwext {
             path = "";
         }
         List<String> hwc = bits.txt2buf(pref + cfgInit.hwCfgEnd);
-        List<String> swc = bits.txt2buf(pref + cfgInit.swCfgEnd);
         if (hwc == null) {
             orig.error("error reading hw config");
             return null;
         }
+        List<String> swc = bits.txt2buf(pref + cfgInit.swCfgEnd);
         if (swc == null) {
             orig.error("error reading sw config");
             return null;
         }
+        List<String> hwd = bits.txt2buf(path + hwdn);
+        if (hwd == null) {
+            orig.error("error reading " + hwdn);
+            return null;
+        }
+        List<String> hw1 = new ArrayList<String>();
+        List<String> hw2 = new ArrayList<String>();
+        int o = hwd.indexOf("### main ###");
+        if (o < 0) {
+            orig.error("error splitting " + hwdn);
+            return null;
+        }
+        for (i = 0; i < o; i++) {
+            hw1.add(hwd.get(i));
+        }
+        hw1.add("");
+        hw2.add("");
+        for (i = o; i < hwd.size(); i++) {
+            hw2.add(hwd.get(i));
+        }
+        hwd = new ArrayList<String>();
+        hwd.add("### dataplane ###");
         List<String> ifp = new ArrayList<String>();
         List<String> ifl = new ArrayList<String>();
         for (i = hwc.size() - 1; i >= 0; i--) {
@@ -130,7 +154,7 @@ public class userHwext {
             ifr.add("sdn" + (i + 1));
         }
         List<String> vrf = new ArrayList<String>();
-        for (int o = 0; o < swc.size(); o++) {
+        for (o = 0; o < swc.size(); o++) {
             String a = swc.get(o);
             if (a.startsWith("vrf definition ")) {
                 vrf.add(a.substring(15, a.length()));
@@ -164,7 +188,6 @@ public class userHwext {
         swc.add(cmds.tabulator + "vrf " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
-        List<String> hwd = new ArrayList<String>();
         switch (dpt) {
             case opnflw:
                 hwd.add("ovs-vsctl init");
@@ -215,7 +238,7 @@ public class userHwext {
                         hwd.add("ip link add veth0a type veth peer name veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
-                        hwc.add(path + "p4dpdk.bin --vdev=net_af_packet0,iface=veth1b --vdev=net_af_packet1,iface=veth0b 127.0.0.1 " + servP4lang.port + " " + ifl.size());
+                        hwc.add("proc p4emu " + path + "p4dpdk.bin --vdev=net_af_packet0,iface=veth1b --vdev=net_af_packet1,iface=veth0b 127.0.0.1 " + servP4lang.port + " " + ifl.size());
                         break;
                     case p4emu:
                         ifn = "veth0a";
@@ -226,7 +249,7 @@ public class userHwext {
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);
                         }
-                        hwc.add(path + "p4emu.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
+                        hwc.add("proc p4emu " + path + "p4emu.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
                         break;
                     case p4sw:
                         ifn = "enp6s0";
@@ -244,8 +267,10 @@ public class userHwext {
         List<String> res = new ArrayList<String>();
         res.add("# here are my suggested changes:");
         res.add("");
-        res.add("cat >> " + path + "hwdet-all.sh << EOF");
+        res.add("cat > " + path + hwdn + " << EOF");
+        res.addAll(hw1);
         res.addAll(hwd);
+        res.addAll(hw2);
         res.add("EOF");
         res.add("");
         res.add("cat > " + pref + cfgInit.hwCfgEnd + " << EOF");
