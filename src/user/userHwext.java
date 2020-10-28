@@ -204,6 +204,7 @@ public class userHwext {
         hwd.add("ip addr add 10.255.255.1/24 dev veth1a");
         hwd.add("ip route add 0.0.0.0/0 via 10.255.255.254 dev veth1a");
         hwd.add("echo 0 > /proc/sys/net/ipv6/conf/veth1a/disable_ipv6");
+        String res = "";
         switch (dpt) {
             case opnflw:
                 hwd.add("ovs-vsctl init");
@@ -249,6 +250,7 @@ public class userHwext {
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
                         hwc.add("proc p4emu " + path + "p4dpdk.bin --vdev=net_af_packet0,iface=veth1b --vdev=net_af_packet1,iface=veth0b 127.0.0.1 " + servP4lang.port + " " + ifl.size());
+                        res = ", please enable nic bindings in " + hwdn;
                         break;
                     case p4emu:
                         ifn = "veth0a";
@@ -288,7 +290,7 @@ public class userHwext {
             orig.error("error saving sw config");
             return;
         }
-        orig.error("done");
+        orig.error("finished" + res);
     }
 
 }
