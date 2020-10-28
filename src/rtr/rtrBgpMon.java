@@ -172,8 +172,8 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         pipe = null;
     }
 
-    private void doSend(packHolder pck, boolean dir, int typ, rtrBgpSpeak spk, rtrBgpNeigh nei) {
-        if (pipe == null) {
+    private static void doSend(pipeSide pip, packHolder pck, boolean dir, int typ, rtrBgpSpeak spk, rtrBgpNeigh nei) {
+        if (pip == null) {
             return;
         }
         pck.putByte(0, 3); // version
@@ -197,7 +197,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         pck.msbPutD(44, (int) (l % 1000)); // microsecs
         pck.putSkip(size);
         pck.merge2beg();
-        pck.pipeSend(pipe, 0, pck.dataSize(), 1);
+        pck.pipeSend(pip, 0, pck.dataSize(), 1);
     }
 
     /**
@@ -218,7 +218,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
             pck.putSkip(1);
         }
         pck.merge2beg();
-        doSend(pck, false, i, spk, nei);
+        doSend(pipe, pck, false, i, spk, nei);
     }
 
     /**
@@ -242,7 +242,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         pck.putByte(18, typ);
         pck.putSkip(rtrBgpSpeak.sizeU);
         pck.merge2beg();
-        doSend(pck, dir, typMon, spk, nei);
+        doSend(pipe, pck, dir, typMon, spk, nei);
     }
 
 }
