@@ -183,11 +183,23 @@ public class userHwext {
         swc.add("vrf definition " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
+        for (i = 0; i < ifl.size(); i++) {
+            swc.add("interface " + ifl.get(i));
+            swc.add(cmds.tabulator + cmds.finish);
+            swc.add(cmds.comment);
+        }
         swc.add("server telnet " + dpv);
         swc.add(cmds.tabulator + "security protocol telnet");
         swc.add(cmds.tabulator + "vrf " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
+        hwd.add("ip link add veth1a type veth peer name veth1b");
+        userHwdet.setupIface(hwd, "veth1a", 1500);
+        userHwdet.setupIface(hwd, "veth1b", 8192);
+        hwd.add("ip link set veth1a up address 00:00:11:11:22:22 mtu 1500");
+        hwd.add("ip addr add 10.255.255.1/24 dev veth1a");
+        hwd.add("ip route add 0.0.0.0/0 via 10.255.255.254 dev veth1a");
+        hwd.add("echo 0 > /proc/sys/net/ipv6/conf/veth1a/disable_ipv6");
         switch (dpt) {
             case opnflw:
                 hwd.add("ovs-vsctl init");
@@ -199,6 +211,7 @@ public class userHwext {
                 }
                 hwc.add("tcp2vrf " + packOpenflow.port + " " + dpv + " " + packOpenflow.port);
                 swc.add("server openflow " + dpv);
+                swc.add(cmds.tabulator + "export-vrf " + vrf.get(0));
                 for (i = 0; i < ifr.size(); i++) {
                     swc.add(cmds.tabulator + "export-port " + ifr.get(i) + " " + (i + 1));
                 }
@@ -208,13 +221,6 @@ public class userHwext {
             case p4emu:
             case p4dpdk:
             case p4sw:
-                hwd.add("ip link add veth1a type veth peer name veth1b");
-                userHwdet.setupIface(hwd, "veth1a", 8192);
-                userHwdet.setupIface(hwd, "veth1b", 1500);
-                hwd.add("ip link set veth1b up address 00:00:11:11:22:22 mtu 1500");
-                hwd.add("ip addr add 10.255.255.1/24 dev veth1b");
-                hwd.add("ip route add 0.0.0.0/0 via 10.255.255.254 dev veth1b");
-                hwd.add("echo 0 > /proc/sys/net/ipv6/conf/veth1b/disable_ipv6");
                 hwc.add("tcp2vrf " + servP4lang.port + " " + dpv + " " + servP4lang.port);
                 swc.add("interface ethernet0");
                 swc.add(cmds.tabulator + "description p4 cpu port");
@@ -252,7 +258,7 @@ public class userHwext {
                         hwc.add("proc p4emu " + path + "p4emu.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
                         break;
                     case p4sw:
-                        ifn = "enp6s0";
+                        ifn = "ens1";
                         userHwdet.setupIface(hwd, ifn, 8192);
                         break;
                     default:
