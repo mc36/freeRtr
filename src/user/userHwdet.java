@@ -94,9 +94,10 @@ public class userHwdet {
      *
      * @param lst list
      * @param nam name
+     * @param mtu mtu value
      */
-    public static void setupIface(List<String> lst, String nam) {
-        lst.add("ip link set " + nam + " up multicast on promisc on mtu 1500");
+    public static void setupIface(List<String> lst, String nam, int mtu) {
+        lst.add("ip link set " + nam + " up multicast on promisc on mtu " + mtu);
         lst.add("ethtool -K " + nam + " rx off");
         lst.add("ethtool -K " + nam + " tx off");
         lst.add("ethtool -K " + nam + " sg off");
@@ -136,7 +137,7 @@ public class userHwdet {
                 break;
         }
         List<String> ifc = new ArrayList<String>();
-        setupIface(ifc, nam);
+        setupIface(ifc, nam, 1500);
         makeLoop("ifc" + ifcNum + ".sh", ifc, cmd);
         config.add("int " + "eth" + ifcNum + " " + stat + "eth " + adr + " 127.0.0.1 " + p1 + " 127.0.0.1 " + p2);
     }

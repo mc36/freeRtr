@@ -30,7 +30,8 @@ public class userHwext {
      * @param cmd command to do
      */
     public List<String> doer(cmds cmd) {
-        cmd.error("externalizing hardware");
+        cmds orig = cmd;
+        orig.error("externalizing forwarding");
         for (;;) {
             String s = cmd.word();
             if (s.length() < 1) {
@@ -66,7 +67,7 @@ public class userHwext {
             }
         }
         if (dpt == null) {
-            cmd.error("no dataplane selected");
+            orig.error("no dataplane selected");
             return null;
         }
         String path = pref;
@@ -79,11 +80,11 @@ public class userHwext {
         List<String> hwc = bits.txt2buf(pref + cfgInit.hwCfgEnd);
         List<String> swc = bits.txt2buf(pref + cfgInit.swCfgEnd);
         if (hwc == null) {
-            cmd.error("error reading hw config");
+            orig.error("error reading hw config");
             return null;
         }
         if (swc == null) {
-            cmd.error("error reading sw config");
+            orig.error("error reading sw config");
             return null;
         }
         List<String> ifp = new ArrayList<String>();
@@ -96,7 +97,8 @@ public class userHwext {
             }
             cmd.word();
             a = cmd.word();
-            if (!a.endsWith("pcapInt.bin") && !a.endsWith("rawInt.bin") && !a.endsWith("mapInt.bin") && !a.endsWith("tapInt.bin")) {
+            boolean tap = a.endsWith("tapInt.bin");
+            if (!a.endsWith("pcapInt.bin") && !a.endsWith("rawInt.bin") && !a.endsWith("mapInt.bin") && !tap) {
                 continue;
             }
             String s = cmd.word();
@@ -112,12 +114,15 @@ public class userHwext {
             }
             hwc.remove(i);
             hwc.remove(i);
+            if (tap) {
+                s = "veth1b";
+            }
             ifp.add(0, s);
             ifl.add(0, a);
         }
-        cmd.error("found " + ifp.size() + " interfaces");
+        orig.error("found " + ifp.size() + " interfaces");
         if (ifp.size() < 1) {
-            cmd.error("no interfaces found");
+            orig.error("no interfaces found");
             return null;
         }
         List<String> ifr = new ArrayList<String>();
@@ -136,14 +141,27 @@ public class userHwext {
             }
             swc.set(o, a);
         }
-        hwc.add("tcp2vrf 2323 dataplane 23");
+        String dpv = null;
+        switch (dpt) {
+            case opnflw:
+                dpv = "of";
+                break;
+            case p4dpdk:
+            case p4emu:
+            case p4sw:
+                dpv = "p4";
+                break;
+            default:
+                return null;
+        }
+        hwc.add("tcp2vrf 2323 " + dpv + " 23");
         swc.add(cmds.comment);
-        swc.add("vrf definition dataplane");
+        swc.add("vrf definition " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
-        swc.add("server telnet dataplane");
+        swc.add("server telnet " + dpv);
         swc.add(cmds.tabulator + "security protocol telnet");
-        swc.add(cmds.tabulator + "vrf dataplane");
+        swc.add(cmds.tabulator + "vrf " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
         List<String> hwd = new ArrayList<String>();
@@ -156,33 +174,69 @@ public class userHwext {
                 for (i = 0; i < ifp.size(); i++) {
                     hwd.add("ovs-vsctl add-port sw " + ifp.get(i));
                 }
-                hwc.add("tcp2vrf " + packOpenflow.port + " dataplane " + packOpenflow.port);
-                swc.add("server openflow of");
+                hwc.add("tcp2vrf " + packOpenflow.port + " " + dpv + " " + packOpenflow.port);
+                swc.add("server openflow " + dpv);
                 for (i = 0; i < ifr.size(); i++) {
                     swc.add(cmds.tabulator + "export-port " + ifr.get(i) + " " + (i + 1));
                 }
-                swc.add(cmds.tabulator + "vrf dataplane");
+                swc.add(cmds.tabulator + "vrf " + dpv);
                 swc.add(cmds.tabulator + cmds.finish);
                 break;
             case p4emu:
             case p4dpdk:
             case p4sw:
-                hwd.add("ip link add veth0a type veth peer name veth0b");
-                userHwdet.setupIface(hwd, "veth0a");
-                userHwdet.setupIface(hwd, "veth0b");
                 hwd.add("ip link add veth1a type veth peer name veth1b");
-                userHwdet.setupIface(hwd, "veth1a");
-                userHwdet.setupIface(hwd, "veth1b");
-                hwc.add("tcp2vrf " + servP4lang.port + " dataplane " + servP4lang.port);
-                swc.add("server p4lang p4");
+                userHwdet.setupIface(hwd, "veth1a", 8192);
+                userHwdet.setupIface(hwd, "veth1b", 1500);
+                hwd.add("ip link set veth1b up address 00:00:11:11:22:22 mtu 1500");
+                hwd.add("ip addr add 10.255.255.1/24 dev veth1b");
+                hwd.add("ip route add 0.0.0.0/0 via 10.255.255.254 dev veth1b");
+                hwd.add("echo 0 > /proc/sys/net/ipv6/conf/veth1b/disable_ipv6");
+                hwc.add("tcp2vrf " + servP4lang.port + " " + dpv + " " + servP4lang.port);
+                swc.add("interface ethernet0");
+                swc.add(cmds.tabulator + "description p4 cpu port");
+                swc.add(cmds.tabulator + "no shutdown");
+                swc.add(cmds.tabulator + cmds.finish);
+                swc.add(cmds.comment);
+                swc.add("server p4lang " + dpv);
                 for (i = 0; i < vrf.size(); i++) {
                     swc.add(cmds.tabulator + "export-vrf " + vrf.get(i) + " " + (i + 1));
                 }
                 for (i = 0; i < ifr.size(); i++) {
-                    swc.add(cmds.tabulator + "export-port " + ifr.get(i) + " " + (i + 1));
+                    swc.add(cmds.tabulator + "export-port " + ifr.get(i) + " " + i);
                 }
-                swc.add(cmds.tabulator + "vrf dataplane");
+                swc.add(cmds.tabulator + "interconnect ethernet0");
+                swc.add(cmds.tabulator + "vrf " + dpv);
                 swc.add(cmds.tabulator + cmds.finish);
+                String ifn = null;
+                switch (dpt) {
+                    case p4dpdk:
+                        ifn = "veth0a";
+                        hwd.add("ip link add veth0a type veth peer name veth0b");
+                        userHwdet.setupIface(hwd, "veth0a", 8192);
+                        userHwdet.setupIface(hwd, "veth0b", 8192);
+                        hwc.add(path + "p4dpdk.bin --vdev=net_af_packet0,iface=veth1b --vdev=net_af_packet1,iface=veth0b 127.0.0.1 " + servP4lang.port + " " + ifl.size());
+                        break;
+                    case p4emu:
+                        ifn = "veth0a";
+                        hwd.add("ip link add veth0a type veth peer name veth0b");
+                        userHwdet.setupIface(hwd, "veth0a", 8192);
+                        userHwdet.setupIface(hwd, "veth0b", 8192);
+                        String a = "";
+                        for (i = 0; i < ifp.size(); i++) {
+                            a += " " + ifp.get(i);
+                        }
+                        hwc.add(path + "p4emu.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
+                        break;
+                    case p4sw:
+                        ifn = "enp6s0";
+                        userHwdet.setupIface(hwd, ifn, 8192);
+                        break;
+                    default:
+                        return null;
+                }
+                hwc.add("int eth0 eth - 127.0.0.1 19999 127.0.0.1 19998");
+                hwc.add("proc veth0 " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                 break;
             default:
                 return null;
