@@ -183,8 +183,8 @@ public class userHwext {
         swc.add("vrf definition " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
-        for (i = 0; i < ifl.size(); i++) {
-            swc.add("interface " + ifl.get(i));
+        for (i = 0; i < ifr.size(); i++) {
+            swc.add("interface " + ifr.get(i));
             swc.add(cmds.tabulator + cmds.finish);
             swc.add(cmds.comment);
         }
