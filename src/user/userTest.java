@@ -567,7 +567,7 @@ public class userTest {
         }
         if (a.equals("hwext")) {
             userHwext h = new userHwext();
-            rdr.putStrArr(h.doer(cmd));
+            h.doer(cmd);
             return null;
         }
         if (a.equals("hwdet")) {

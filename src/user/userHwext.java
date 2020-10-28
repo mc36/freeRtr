@@ -31,7 +31,7 @@ public class userHwext {
      *
      * @param cmd command to do
      */
-    public List<String> doer(cmds cmd) {
+    public void doer(cmds cmd) {
         cmds orig = cmd;
         orig.error("externalizing forwarding");
         for (;;) {
@@ -70,7 +70,7 @@ public class userHwext {
         }
         if (dpt == null) {
             orig.error("no dataplane selected");
-            return null;
+            return;
         }
         String path = pref;
         int i = path.lastIndexOf("/");
@@ -82,24 +82,24 @@ public class userHwext {
         List<String> hwc = bits.txt2buf(pref + cfgInit.hwCfgEnd);
         if (hwc == null) {
             orig.error("error reading hw config");
-            return null;
+            return;
         }
         List<String> swc = bits.txt2buf(pref + cfgInit.swCfgEnd);
         if (swc == null) {
             orig.error("error reading sw config");
-            return null;
+            return;
         }
         List<String> hwd = bits.txt2buf(path + hwdn);
         if (hwd == null) {
             orig.error("error reading " + hwdn);
-            return null;
+            return;
         }
         List<String> hw1 = new ArrayList<String>();
         List<String> hw2 = new ArrayList<String>();
         int o = hwd.indexOf("### main ###");
         if (o < 0) {
             orig.error("error splitting " + hwdn);
-            return null;
+            return;
         }
         for (i = 0; i < o; i++) {
             hw1.add(hwd.get(i));
@@ -147,7 +147,7 @@ public class userHwext {
         orig.error("found " + ifp.size() + " interfaces");
         if (ifp.size() < 1) {
             orig.error("no interfaces found");
-            return null;
+            return;
         }
         List<String> ifr = new ArrayList<String>();
         for (i = 0; i < ifl.size(); i++) {
@@ -176,7 +176,7 @@ public class userHwext {
                 dpv = "p4";
                 break;
             default:
-                return null;
+                return;
         }
         hwc.add("tcp2vrf 2323 " + dpv + " 23");
         swc.add(cmds.comment);
@@ -262,31 +262,28 @@ public class userHwext {
                         userHwdet.setupIface(hwd, ifn, 8192);
                         break;
                     default:
-                        return null;
+                        return;
                 }
                 hwc.add("int eth0 eth - 127.0.0.1 19999 127.0.0.1 19998");
                 hwc.add("proc veth0 " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                 break;
             default:
-                return null;
+                return;
         }
-        List<String> res = new ArrayList<String>();
-        res.add("# here are my suggested changes:");
-        res.add("");
-        res.add("cat > " + path + hwdn + " << EOF");
-        res.addAll(hw1);
-        res.addAll(hwd);
-        res.addAll(hw2);
-        res.add("EOF");
-        res.add("");
-        res.add("cat > " + pref + cfgInit.hwCfgEnd + " << EOF");
-        res.addAll(hwc);
-        res.add("EOF");
-        res.add("");
-        res.add("cat > " + pref + cfgInit.swCfgEnd + " << EOF");
-        res.addAll(swc);
-        res.add("EOF");
-        return res;
+        hw1.addAll(hwd);
+        hw1.addAll(hw2);
+        if (bits.buf2txt(true, hw1, path + hwdn)) {
+            orig.error("error saving " + hwdn);
+            return;
+        }
+        if (bits.buf2txt(true, hwc, pref + cfgInit.hwCfgEnd)) {
+            orig.error("error saving hw config");
+            return;
+        }
+        if (bits.buf2txt(true, swc, pref + cfgInit.swCfgEnd)) {
+            orig.error("error saving sw config");
+            return;
+        }
     }
 
 }
