@@ -325,31 +325,31 @@ public class userFlash {
      */
     public static void doSend(pipeSide pipe, uniResLoc url, File f) {
         String a = url.proto.trim().toLowerCase();
-        if (a.equals("mailto")) {
+        if (a.startsWith("mailto")) {
             clntSmtp c = new clntSmtp(pipe);
             c.upload(url, f);
             c.cleanUp();
             return;
         }
-        if (a.equals("http") || a.equals("https")) {
+        if (a.startsWith("http")) {
             clntHttp c = new clntHttp(pipe);
             c.upload(url, f);
             c.cleanUp();
             return;
         }
-        if (a.equals("ftp")) {
+        if (a.startsWith("ftp")) {
             clntFtp c = new clntFtp(pipe);
             c.upload(url, f);
             c.cleanUp();
             return;
         }
-        if (a.equals("tftp")) {
+        if (a.startsWith("tftp")) {
             clntTftp c = new clntTftp(pipe);
             c.upload(url, f);
             c.cleanUp();
             return;
         }
-        if (a.equals("xmodem")) {
+        if (a.startsWith("xmodem")) {
             clntXmodem c = new clntXmodem(pipe);
             c.upload(f);
             c.cleanUp();

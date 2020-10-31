@@ -1275,7 +1275,7 @@ class servHttpConn implements Runnable {
                 + ">moved to <a href=\"" + where + "\">" + where
                 + "</a>. will be redirected.</body></html>\n";
         headers.add("Location: " + where);
-        sendRespHeader("302 found", s.length(), "text/html");
+        sendRespHeader("301 moved", s.length(), "text/html");
         if (gotHead) {
             return;
         }
@@ -1491,7 +1491,7 @@ class servHttpConn implements Runnable {
                 par[i] = "" + gotUrl.param.get(i);
             }
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            obj = mth[o].invoke(obj, gotUrl.toURL(true, false), gotHost.path
+            obj = mth[o].invoke(obj, gotUrl.toURL(false, false), gotHost.path
                     + s, "" + conn.peerAddr, gotAgent, gotAuth, par, buf);
             s = (String) obj;
             res = buf.toByteArray();
@@ -2386,7 +2386,7 @@ class servHttpConn implements Runnable {
                 fin = cons[i];
                 pipeSide.modTyp old = fin.lineTx;
                 fin.lineTx = pipeSide.modTyp.modeCRLF;
-                fin.linePut(gotCmd.toUpperCase() + " " + urls.get(i).toURL(true, true) + " HTTP/1.1");
+                fin.linePut(gotCmd.toUpperCase() + " " + urls.get(i).toURL(false, true) + " HTTP/1.1");
                 fin.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + conn.peerAddr + "]");
                 fin.linePut("Referer: " + gotReferer);
                 fin.linePut("Host: " + gotUrl.server);
@@ -2427,7 +2427,7 @@ class servHttpConn implements Runnable {
             }
             pipeSide.modTyp old = cnn.lineTx;
             cnn.lineTx = pipeSide.modTyp.modeCRLF;
-            cnn.linePut(gotCmd.toUpperCase() + " " + srvUrl.toURL(true, true) + " HTTP/1.1");
+            cnn.linePut(gotCmd.toUpperCase() + " " + srvUrl.toURL(false, true) + " HTTP/1.1");
             cnn.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + conn.peerAddr + "]");
             cnn.linePut("Referer: " + gotReferer);
             cnn.linePut("Host: " + srvUrl.server);

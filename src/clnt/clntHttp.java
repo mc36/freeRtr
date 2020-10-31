@@ -302,6 +302,16 @@ public class clntHttp {
         sendAuth(src);
         sendLine("");
         long ctl = -1;
+        String loc = null;
+        String res = getLine();
+        int i = res.indexOf(" ");
+        if (i >= 0) {
+            res = res.substring(i, res.length()).trim();
+        }
+        i = res.indexOf(" ");
+        if (i >= 0) {
+            res = res.substring(0, i).trim();
+        }
         for (;;) {
             String s = getLine();
             if (s.length() < 1) {
@@ -309,15 +319,24 @@ public class clntHttp {
             }
             s = s.trim();
             String a = "";
-            int i = s.indexOf(":");
+            i = s.indexOf(":");
             if (i > 0) {
                 a = s.substring(0, i).trim().toLowerCase();
                 s = s.substring(i + 1, s.length()).trim();
             }
+            if (a.equals("location")) {
+                loc = s;
+                continue;
+            }
             if (a.equals("content-length")) {
                 ctl = bits.str2long(s);
                 cons.setMax(ctl);
+                continue;
             }
+        }
+        if (res.equals("301") || res.equals("302") || res.equals("307")) {
+            src.fromString(loc);
+            return true;
         }
         cons.debugStat("receiving " + cons.getMax() + " bytes");
         pos = 0;
