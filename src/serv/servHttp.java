@@ -2172,6 +2172,31 @@ class servHttpConn implements Runnable {
         return false;
     }
 
+    private void doSubconn(uniResLoc srvUrl) {
+        if ((gotHost.subconn & 0x1) == 0) {
+            srvUrl.filPath = gotUrl.filPath;
+        }
+        if ((gotHost.subconn & 0x2) == 0) {
+            srvUrl.filName = gotUrl.filName;
+        }
+        if ((gotHost.subconn & 0x4) == 0) {
+            srvUrl.filExt = gotUrl.filExt;
+        }
+        if ((gotHost.subconn & 0x8) == 0) {
+            srvUrl.param = gotUrl.param;
+        }
+        if ((gotHost.subconn & 0x10) != 0) {
+            srvUrl.username = gotUrl.username;
+            srvUrl.password = gotUrl.password;
+        }
+        if ((gotHost.subconn & 0x20) != 0) {
+            srvUrl.server = gotUrl.server;
+        }
+        if ((gotHost.subconn & 0x40) != 0) {
+            srvUrl.filPath = (srvUrl.filPath + "/" + gotUrl.filPath).replaceAll("//", "/");
+        }
+    }
+
     private void serveRequest() {
         gotHost = lower.findHost(gotUrl.server);
         if (gotCmd.equals("connect")) {
@@ -2334,7 +2359,9 @@ class servHttpConn implements Runnable {
                 if (a.length() < 1) {
                     break;
                 }
-                urls.add(uniResLoc.parseOne(a));
+                uniResLoc srvUrl = uniResLoc.parseOne(a);
+                doSubconn(srvUrl);
+                urls.add(srvUrl);
             }
             addrIP adrs[] = new addrIP[urls.size()];
             for (int i = 0; i < adrs.length; i++) {
@@ -2359,7 +2386,7 @@ class servHttpConn implements Runnable {
                 fin = cons[i];
                 pipeSide.modTyp old = fin.lineTx;
                 fin.lineTx = pipeSide.modTyp.modeCRLF;
-                fin.linePut(gotCmd.toUpperCase() + " " + gotUrl.toURL(false, true) + " HTTP/1.1");
+                fin.linePut(gotCmd.toUpperCase() + " " + urls.get(i).toURL(true, true) + " HTTP/1.1");
                 fin.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + conn.peerAddr + "]");
                 fin.linePut("Referer: " + gotReferer);
                 fin.linePut("Host: " + gotUrl.server);
@@ -2394,30 +2421,13 @@ class servHttpConn implements Runnable {
                 sendRespError(504, "gateway timeout");
                 return;
             }
-            if ((gotHost.subconn & 0x1) == 0) {
-                srvUrl.filPath = gotUrl.filPath;
-            }
-            if ((gotHost.subconn & 0x2) == 0) {
-                srvUrl.filName = gotUrl.filName;
-            }
-            if ((gotHost.subconn & 0x4) == 0) {
-                srvUrl.filExt = gotUrl.filExt;
-            }
-            if ((gotHost.subconn & 0x8) == 0) {
-                srvUrl.param = gotUrl.param;
-            }
-            if ((gotHost.subconn & 0x10) != 0) {
-                srvUrl.server = gotUrl.server;
-            }
-            if ((gotHost.subconn & 0x20) != 0) {
-                srvUrl.filPath = (srvUrl.filPath + "/" + gotUrl.filPath).replaceAll("//", "/");
-            }
+            doSubconn(srvUrl);
             if (debugger.servHttpTraf) {
                 logger.debug("reconnect " + srvUrl.toURL(false, true));
             }
             pipeSide.modTyp old = cnn.lineTx;
             cnn.lineTx = pipeSide.modTyp.modeCRLF;
-            cnn.linePut(gotCmd.toUpperCase() + " " + srvUrl.toURL(false, true) + " HTTP/1.1");
+            cnn.linePut(gotCmd.toUpperCase() + " " + srvUrl.toURL(true, true) + " HTTP/1.1");
             cnn.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + conn.peerAddr + "]");
             cnn.linePut("Referer: " + gotReferer);
             cnn.linePut("Host: " + srvUrl.server);
@@ -2436,7 +2446,9 @@ class servHttpConn implements Runnable {
             return;
         }
         if (gotHost.redir != null) {
-            sendFoundAt(gotHost.redir);
+            uniResLoc srvUrl = uniResLoc.parseOne(gotHost.redir);
+            doSubconn(srvUrl);
+            sendFoundAt(srvUrl.toURL(true, true));
             return;
         }
         if (gotCmd.equals("options")) {
