@@ -36,7 +36,7 @@ public class shrtPthFrst<Ta extends addrType> {
     /**
      * beginning of graph
      */
-    public final static String graphBeg1 = "dot -Tpng > net.png << EOF";
+    public final static String graphBeg1 = "sfdp -Tsvg > net.svg << EOF";
 
     /**
      * beginning of graph

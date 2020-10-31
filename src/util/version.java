@@ -59,6 +59,7 @@ public class version {
         "tiff   image/tiff",
         "tif    image/tiff",
         "png    image/png",
+        "svg    image/svg+xml",
         "pbm    image/x-portable-bitmap",
         "pgm    image/x-portable-graymap",
         "pnm    image/x-portable-anymap",
@@ -71,6 +72,7 @@ public class version {
         "qt     video/quicktime",
         "mpeg   video/mpeg",
         "mpg    video/mpeg",
+        "ogv    video/ogg",
         // audio
         "aif    audio/x-aiff",
         "aiff   audio/x-aiff",
@@ -83,6 +85,7 @@ public class version {
         "ra     audio/x-realaudio",
         "rm     audio/x-pn-realaudio",
         "mp3    audio/mpeg",
+        "oga    audio/ogg",
         "flac   audio/flac",
         // application
         "bin    application/octet-stream",
@@ -103,6 +106,7 @@ public class version {
         "tgz    application/x-gzip",
         "zip    application/zip",
         "xml    application/xml",
+        "ogg    application/ogg",
         // wireless application
         "wml    text/vnd.wap.wml",
         "wbmp   image/vnd.wap.wbmp"
