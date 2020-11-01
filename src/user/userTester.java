@@ -1074,7 +1074,7 @@ class userTesterOne {
         l.add("");
         l.add("## **Topology diagram**");
         l.add("");
-        l.add("![topology](/img/" + fileName + ".svg)");
+        l.add("![topology](/img/" + fileName + ".png)");
         l.add("");
         l.add("## **Configuration**");
         for (int i = 0; i < procs.size(); i++) {
@@ -1129,6 +1129,7 @@ class userTesterOne {
         }
         l.add(shrtPthFrst.graphBeg1);
         l.add(shrtPthFrst.graphBeg2);
+        l.add(shrtPthFrst.graphBeg3);
         for (int o = 0; o < procs.size(); o++) {
             userTesterPrc p = procs.get(o);
             l.add("//" + p.name);
@@ -1142,7 +1143,7 @@ class userTesterOne {
         }
         l.add(shrtPthFrst.graphEnd1);
         l.add(shrtPthFrst.graphEnd2);
-        bits.buf2txt(true, l, path + fileName + ".svg");
+        bits.buf2txt(true, l, path + fileName + ".png");
     }
 
     public userTesterPrc getPrc(String s) {

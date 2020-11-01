@@ -36,12 +36,17 @@ public class shrtPthFrst<Ta extends addrType> {
     /**
      * beginning of graph
      */
-    public final static String graphBeg1 = "sfdp -Tsvg > net.svg << EOF";
+    public final static String graphBeg1 = "sfdp -Tpng > net.png << EOF";
 
     /**
      * beginning of graph
      */
     public final static String graphBeg2 = "graph net {";
+
+    /**
+     * beginning of graph
+     */
+    public final static String graphBeg3 = "node [shape=none,labelloc=b,fontcolor=green,image=\"../misc/router.png\"]";
 
     /**
      * ending of graph
