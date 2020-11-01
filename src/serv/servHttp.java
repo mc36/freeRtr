@@ -1116,7 +1116,7 @@ class servHttpConn implements Runnable {
 
     protected pipeSide pipe;
 
-    protected prtGenConn conn;
+    protected addrIP peer = new addrIP();
 
     protected String gotCmd; // command
 
@@ -1155,9 +1155,9 @@ class servHttpConn implements Runnable {
     public servHttpConn(servHttp parent, pipeSide stream, prtGenConn id) {
         lower = parent;
         pipe = stream;
-        conn = id;
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        peer.setAddr(id.peerAddr);
         new Thread(this).start();
     }
 
@@ -1291,12 +1291,7 @@ class servHttpConn implements Runnable {
         if (!new File(s).exists()) {
             return;
         }
-        String a = conn.peerAddr
-                + ";"
-                + bits.time2str(cfgAll.timeZoneName, bits.getTime()
-                        + cfgAll.timeServerOffset, 3) + ";"
-                + gotAgent.replaceAll(";", ",") + ";"
-                + gotReferer.replaceAll(";", ",") + "\n";
+        String a = peer + ";" + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ";" + gotAgent.replaceAll(";", ",") + ";" + gotReferer.replaceAll(";", ",") + "\n";
         bits.byteSave(false, a.getBytes(), s);
     }
 
@@ -1439,7 +1434,7 @@ class servHttpConn implements Runnable {
         if (gotAuth != null) {
             pip.linePut("auth=" + gotAuth);
         }
-        pip.linePut("clnt=" + conn.peerAddr);
+        pip.linePut("clnt=" + peer);
         for (int i = 0; i < gotUrl.param.size(); i++) {
             pip.linePut("par." + gotUrl.param.get(i));
         }
@@ -1491,8 +1486,7 @@ class servHttpConn implements Runnable {
                 par[i] = "" + gotUrl.param.get(i);
             }
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            obj = mth[o].invoke(obj, gotUrl.toURL(false, false), gotHost.path
-                    + s, "" + conn.peerAddr, gotAgent, gotAuth, par, buf);
+            obj = mth[o].invoke(obj, gotUrl.toURL(false, false), gotHost.path + s, "" + peer, gotAgent, gotAuth, par, buf);
             s = (String) obj;
             res = buf.toByteArray();
         } catch (Exception e) {
@@ -2064,6 +2058,18 @@ class servHttpConn implements Runnable {
                 gotRange = s;
                 continue;
             }
+            if (a.equals("x-forwarded-for") || a.equals("x-client-ip") || a.equals("true-client-ip")) {
+                i = s.indexOf(",");
+                if (i >= 0) {
+                    s = s.substring(0, i);
+                }
+                addrIP adr = new addrIP();
+                if (adr.fromString(s)) {
+                    continue;
+                }
+                peer.setAddr(adr);
+                continue;
+            }
             if (a.equals("user-agent")) {
                 gotAgent = s;
                 continue;
@@ -2255,7 +2261,7 @@ class servHttpConn implements Runnable {
         gotHost.askNum++;
         gotHost.askTim = bits.getTime();
         if (gotHost.logging) {
-            logger.info(conn.peerAddr + " accessed " + gotUrl.toURL(false, true));
+            logger.info(peer + " accessed " + gotUrl.toURL(false, true));
         }
         if (gotHost.allowAnyconn != null) {
             gotUrl.port = lower.srvPort;
@@ -2387,7 +2393,8 @@ class servHttpConn implements Runnable {
                 pipeSide.modTyp old = fin.lineTx;
                 fin.lineTx = pipeSide.modTyp.modeCRLF;
                 fin.linePut(gotCmd.toUpperCase() + " " + urls.get(i).toURL(false, true) + " HTTP/1.1");
-                fin.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + conn.peerAddr + "]");
+                fin.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + peer + "]");
+                fin.linePut("X-Forwarded-For: " + peer);
                 fin.linePut("Referer: " + gotReferer);
                 fin.linePut("Host: " + gotUrl.server);
                 fin.linePut("Accept: */*");
@@ -2428,7 +2435,8 @@ class servHttpConn implements Runnable {
             pipeSide.modTyp old = cnn.lineTx;
             cnn.lineTx = pipeSide.modTyp.modeCRLF;
             cnn.linePut(gotCmd.toUpperCase() + " " + srvUrl.toURL(false, true) + " HTTP/1.1");
-            cnn.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + conn.peerAddr + "]");
+            cnn.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + peer + "]");
+            cnn.linePut("X-Forwarded-For: " + peer);
             cnn.linePut("Referer: " + gotReferer);
             cnn.linePut("Host: " + srvUrl.server);
             cnn.linePut("Accept: */*");
@@ -2878,7 +2886,7 @@ class servHttpAnyconn implements Runnable, ifcDn {
             case packAnyconn.typData:
                 int i = ifcEther.guessEtherType(pckB);
                 if (i < 0) {
-                    logger.info("got bad protocol from " + lower.conn.peerAddr);
+                    logger.info("got bad protocol from " + lower.peer);
                     break;
                 }
                 pckB.msbPutW(0, i); // ethertype
