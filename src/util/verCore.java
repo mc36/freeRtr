@@ -58,13 +58,13 @@ public class verCore {
     /**
      * url of product
      */
-    public final static String homeUrl = "http://freertr.net/";
+    public final static String homeUrl = "http://www.freertr.net/";
 
     /**
      * license text
      */
     public final static String license[] = {
-        "place on the net: " + homeUrl,
+        "place on the web: " + homeUrl,
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
         "quote1: make the world better",
         "quote2: if a machine can learn the value of human life, maybe we can too",
