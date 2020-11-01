@@ -16,10 +16,10 @@ cat > $IMG/rtr.gns3a << EOF
     "category": "router",
     "description": "networking swiss army knife - it speaks routing protocols, and (re)encapsulates packets on interfaces",
     "vendor_name": "freeRouter",
-    "vendor_url": "http://freerouter.nop.hu/",
-    "documentation_url": "http://freerouter.nop.hu/",
+    "vendor_url": "http://www.freertr.net/",
+    "documentation_url": "http://www.freertr.net/",
     "product_name": "freeRouter",
-    "product_url": "http://freerouter.nop.hu/",
+    "product_url": "http://www.freertr.net/",
     "registry_version": 3,
     "status": "stable",
     "maintainer": "GNS3 Team",
@@ -40,7 +40,7 @@ cat > $IMG/rtr.gns3a << EOF
             "version": "$VER",
             "md5sum": "$SUM",
             "filesize": $SIZ,
-            "download_url": "http://freerouter.nop.hu/",
+            "download_url": "http://www.freertr.net/",
             "direct_download_url": "http://dl.nop.hu/rtr.qcow2"
         }
     ],

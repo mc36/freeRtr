@@ -18,7 +18,7 @@
     <AnnotationSection>
       <Info>A human-readable annotation</Info>
       <Annotation>rtros distribution
-more info at http://freerouter.nop.hu/
+more info at http://www.freertr.net/
 </Annotation>
     </AnnotationSection>
     <OperatingSystemSection ovf:id="95">
@@ -127,7 +127,7 @@ more info at http://freerouter.nop.hu/
     <vbox:Machine ovf:required="false" version="1.15-linux" uuid="{def38c53-aac5-477c-9f7d-b2c22c298aac}" name="rtr-dsk" OSType="Debian" snapshotFolder="Snapshots" lastStateChange="2018-03-02T06:02:55Z">
       <ovf:Info>Complete VirtualBox machine configuration in VirtualBox format</ovf:Info>
       <Description>rtros distribution
-more info at http://freerouter.nop.hu/
+more info at http://www.freertr.net/
 </Description>
       <ExtraData>
         <ExtraDataItem name="GUI/LastCloseAction" value="PowerOff"/>
