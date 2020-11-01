@@ -46,7 +46,7 @@ public class shrtPthFrst<Ta extends addrType> {
     /**
      * beginning of graph
      */
-    public final static String graphBeg3 = "node [shape=none,labelloc=b,fontcolor=green,image=\"../misc/router.png\"]";
+    public final static String graphBeg3 = "node [shape=none,labelloc=b,image=\"../misc/router.png\"]";
 
     /**
      * ending of graph
