@@ -32,6 +32,7 @@ exec cp ../binTmp/modem.bin %tmp%/rtr/
 exec cp ../binTmp/ttyLin.bin %tmp%/rtr/
 exec cp ../binTmp/rawInt.bin %tmp%/rtr/
 exec cp ../binTmp/tapInt.bin %tmp%/rtr/
+exec cp ../binTmp/p4emu.bin %tmp%/rtr/
 
 catalog-read main
 catalog-read contrib
