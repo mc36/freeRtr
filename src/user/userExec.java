@@ -1715,7 +1715,6 @@ public class userExec {
         if (a.equals("whois")) {
             clntWhois w = new clntWhois(cmd.word());
             w.quest = cmd.getRemaining();
-            w.doQuery(cmd);
             reader.putStrArr(w.doQuery(cmd));
             return cmdRes.command;
         }
