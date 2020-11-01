@@ -58,7 +58,7 @@ public class verCore {
     /**
      * url of product
      */
-    public final static String homeUrl = "http://freerouter.nop.hu/";
+    public final static String homeUrl = "http://freertr.net/";
 
     /**
      * license text
