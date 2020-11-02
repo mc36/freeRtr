@@ -51,6 +51,7 @@ public class version {
         "rtf    text/richtext",
         "text   text/plain",
         "txt    text/plain",
+        "md     text/markdown",
         "*      text/plain",
         // image
         "gif    image/gif",
@@ -72,6 +73,8 @@ public class version {
         "qt     video/quicktime",
         "mpeg   video/mpeg",
         "mpg    video/mpeg",
+        "mp4    video/mp4",
+        "3gp    video/3gpp",
         "ogv    video/ogg",
         // audio
         "aif    audio/x-aiff",
