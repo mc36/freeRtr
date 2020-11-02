@@ -871,6 +871,7 @@ server http web
  access-total 128
  access-peer 16
  host * path /nfs2/own/web/
+ host * style table, th, td { border: 1px solid }
  host * logging
  host * dirlist
  host * noindex
@@ -923,4 +924,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=be5d6338e7347bef43b3440d478663d46417440ac6cd4bd6ab073fe627c4104addc12543980e5cb6ce84ff099eb253fed3943182fd1a03ea444d1f13584dd975-e97ab23bc3982f8c50b7853220e5ffcfc5f422463e98fc1786be9d1d75f45192328256e0a28662a41a57f513446c9e354228a67d82b1dea4e59958df5c02c846
+end chksum=d7f65350f2c556b0406ba003766a4703888fc69d9b685189a3e760544fd54c19ea9948fed86558d9e87c0216e8152d84bfdc5cf43dd10b28e703ba8a5b468c44-56f2b152e8971f1efea4bdf913ea55c5e5cbf5b61ee0b79137202a0687067f0d4d89e657b304219b331111faf8df5d3ab6d4a591ce353cc1c7fa921b9ce245ee

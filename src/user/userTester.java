@@ -464,15 +464,21 @@ public class userTester {
             finished.add(ftr);
         }
         txt = new ArrayList<String>();
-        txt.add(servHttp.html401tr);
-        txt.add("<html><head><title>tester</title></head><body bgcolor=black text=white link=white vlink=white alink=white>");
+        txt.add(servHttp.htmlHead + "<style>");
+        txt.add(" body { background-color: black; color: white; }");
+        txt.add(" table, th, td { border: 1px solid }");
+        txt.add(" :link { color: white }");
+        txt.add(" :visited { color: white }");
+        txt.add(" :active { color: white }");
+        txt.add("</style>");
+        txt.add("<title>tester</title></head><body>");
         txt.add("release: " + release + "<br/>");
         txt.add("tested: " + a + "<br/>");
         txt.add("jvm: " + jvn + jvp + "<br/>");
         txt.add("<br/>");
-        txt.add("<table border=1><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr>");
+        txt.add("<table><tbody><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr>");
         txt.addAll(features2list(finished, 3));
-        txt.add("</table></body></html>");
+        txt.add("</tbody></table></body></html>");
         bits.buf2txt(true, txt, "rtr" + beg + ".html");
         txt = new ArrayList<String>();
         txt.add("url;file;result;test");
