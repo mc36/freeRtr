@@ -873,7 +873,8 @@ server http web
  host * path /nfs2/own/web/
  host * style table, th, td { border: 1px solid }
  host * logging
- host * dirlist
+ host * dirlist readme
+ host * markdown
  host * noindex
  host * script exec config
  host * api exec config
@@ -924,4 +925,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=d7f65350f2c556b0406ba003766a4703888fc69d9b685189a3e760544fd54c19ea9948fed86558d9e87c0216e8152d84bfdc5cf43dd10b28e703ba8a5b468c44-56f2b152e8971f1efea4bdf913ea55c5e5cbf5b61ee0b79137202a0687067f0d4d89e657b304219b331111faf8df5d3ab6d4a591ce353cc1c7fa921b9ce245ee
+end chksum=72a29b203d0b0c837133366dc86ee7f29f20b80860a0fa510febcf2f652c95aaea4ca531d830726f89704d872d70c9f7969cd59e7669503e1f49623151d75b73-a0adbc641899746125c62f94ec18226160c7131395cd8a5dec1cb44622d8568c34a769b4518453bde3c187e8938c0750b11f5f4c9c4b7e25bd4fa1fe9bc2bd31

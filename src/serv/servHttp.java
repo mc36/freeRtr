@@ -54,6 +54,7 @@ import util.counter;
 import util.debugger;
 import util.extMrkLng;
 import util.logger;
+import util.markDown;
 import util.state;
 import util.uniResLoc;
 import util.version;
@@ -121,6 +122,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! host .* nomultiacc",
         "server http .*! host .* index",
         "server http .*! host .* nodirlist",
+        "server http .*! host .* nomarkdown",
         "server http .*! host .* noapi",
         "server http .*! host .* noscript",
         "server http .*! host .* noclass",
@@ -277,10 +279,19 @@ public class servHttp extends servGeneric implements prtServS {
                 l.add(a + " multiacc " + ntry.multiAccP.name + " "
                         + ntry.multiAccT);
             }
-            if (ntry.allowList) {
-                l.add(a + " dirlist");
+            if (ntry.allowList != 0) {
+                String s = "";
+                if ((ntry.allowList & 2) != 0) {
+                    s += " readme";
+                }
+                l.add(a + " dirlist" + s);
             } else {
                 l.add(a + " nodirlist");
+            }
+            if (ntry.allowMarkdown) {
+                l.add(a + " markdown");
+            } else {
+                l.add(a + " nomarkdown");
             }
             if (ntry.autoIndex) {
                 l.add(a + " index");
@@ -540,12 +551,30 @@ public class servHttp extends servGeneric implements prtServS {
             ntry.autoIndex = false;
             return false;
         }
+        if (a.equals("markdown")) {
+            ntry.allowMarkdown = true;
+            return false;
+        }
+        if (a.equals("nomarkdown")) {
+            ntry.allowMarkdown = false;
+            return false;
+        }
         if (a.equals("dirlist")) {
-            ntry.allowList = true;
+            ntry.allowList = 1;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("readme")) {
+                    ntry.allowList |= 2;
+                    continue;
+                }
+            }
             return false;
         }
         if (a.equals("nodirlist")) {
-            ntry.allowList = false;
+            ntry.allowList = 0;
             return false;
         }
         if (a.equals("api")) {
@@ -746,9 +775,12 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("4 5        <name>                   proxy profile");
         l.add("5 5,.        <name>                 server to access");
         l.add("3 .      nomultiacc                 disable multiple access");
+        l.add("3 .      markdown                   allow markdown conversion");
+        l.add("3 .      nomarkdown                 forbid markdown conversion");
         l.add("3 .      index                      allow index for directory");
         l.add("3 .      noindex                    forbit index for directory");
-        l.add("3 .      dirlist                    allow directory listing");
+        l.add("3 4,.    dirlist                    allow directory listing");
+        l.add("4 4,.      readme                   put readme in front of listing");
         l.add("3 .      nodirlist                  forbid directory listing");
         l.add("3 4,.    script                     allow script running");
         l.add("4 4,.      exec                     allow exec commands");
@@ -953,9 +985,14 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
     public boolean autoIndex = true;
 
     /**
+     * convert markdown files
+     */
+    public boolean allowMarkdown = false;
+
+    /**
      * directory listing allowed
      */
-    public boolean allowList;
+    public int allowList;
 
     /**
      * script running allowed
@@ -1412,6 +1449,18 @@ class servHttpConn implements Runnable {
         return true;
     }
 
+    private boolean sendOneMarkdown(String s) {
+        List<String> l = bits.txt2buf(gotHost.path + s);
+        if (l == null) {
+            return true;
+        }
+        String rsp = servHttp.htmlHead + getStyle() + "<title>" + s + "</title></head><body>\n";
+        rsp += markDown.md2html(l);
+        rsp += "</body></html>\n";
+        sendTextHeader("200 ok", "text/html", rsp.getBytes());
+        return false;
+    }
+
     private boolean sendOneScript(String s) {
         List<String> l = bits.txt2buf(gotHost.path + s);
         if (l == null) {
@@ -1761,6 +1810,9 @@ class servHttpConn implements Runnable {
     }
 
     private boolean sendOneFile(String s, String a) {
+        if ((gotHost.allowMarkdown) && a.equals(".md")) {
+            return sendOneMarkdown(s);
+        }
         if ((gotHost.allowApi != 0) && s.startsWith(".api./")) {
             return sendOneApi(s);
         }
@@ -1787,6 +1839,12 @@ class servHttpConn implements Runnable {
             if (!sendOneFile(s + "index.html", ".html")) {
                 return false;
             }
+            if (!sendOneFile(s + "index.txt", ".txt")) {
+                return false;
+            }
+            if (!sendOneFile(s + "index.md", ".md")) {
+                return false;
+            }
             if (!sendOneFile(s + "index.class", ".class")) {
                 return false;
             }
@@ -1794,7 +1852,7 @@ class servHttpConn implements Runnable {
                 return false;
             }
         }
-        if (!gotHost.allowList) {
+        if (gotHost.allowList == 0) {
             sendRespError(404, "not found");
             return true;
         }
@@ -1804,7 +1862,11 @@ class servHttpConn implements Runnable {
         }
         String rsp = servHttp.htmlHead + getStyle() + "<title>dirlist</title></head><body>\n";
         rsp += "directory listing of " + gotHost.host + "/" + s + " at " + cfgAll.getFqdn() + ":<br/><br/>\n";
-        rsp += "<table><tbody><tr><td><b>date</b></td><td><b>size</b></td><td><b>name</b></td></tr>\n";
+        if ((gotHost.allowList & 2) != 0) {
+            rsp += markDown.txt2html(bits.txt2buf(gotHost.path + s + "readme.txt"));
+            rsp += markDown.md2html(bits.txt2buf(gotHost.path + s + "readme.md"));
+        }
+        rsp += "<table><thead><tr><td><b>date</b></td><td><b>size</b></td><td><b>name</b></td></tr></thead><tbody>\n";
         rsp += "<tr><td>-</td><td>dir</td><td><a href=\"/\">root</a></td></tr>\n";
         rsp += "<tr><td>-</td><td>dir</td><td><a href=\"../\">parent</a></td></tr>\n";
         int dirs = 0;

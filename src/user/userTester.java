@@ -476,7 +476,7 @@ public class userTester {
         txt.add("tested: " + a + "<br/>");
         txt.add("jvm: " + jvn + jvp + "<br/>");
         txt.add("<br/>");
-        txt.add("<table><tbody><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr>");
+        txt.add("<table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>");
         txt.addAll(features2list(finished, 3));
         txt.add("</tbody></table></body></html>");
         bits.buf2txt(true, txt, "rtr" + beg + ".html");
