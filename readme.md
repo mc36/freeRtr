@@ -1,4 +1,3 @@
-# testing
+# freeRouter source tree
 
-testing123
-
+more about the project at [here](http://www.freertr.net/)
