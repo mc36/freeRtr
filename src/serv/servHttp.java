@@ -1288,11 +1288,22 @@ class servHttpConn implements Runnable {
         if (gotHost.style == null) {
             return "";
         }
-        String a = "<style>\n";
-        for (int i = 0; i < gotHost.style.size(); i++) {
-            a += " " + gotHost.style.get(i) + "\n";
+        String s = "<style>\n";
+        for (int o = 0; o < gotHost.style.size(); o++) {
+            String a = gotHost.style.get(o);
+            if (!a.startsWith("@import ")) {
+                s += " " + a + "\n";
+                continue;
+            }
+            List<String> l = bits.txt2buf(gotHost.path + a.substring(8, a.length()));
+            if (l == null) {
+                continue;
+            }
+            for (int i = 0; i < l.size(); i++) {
+                s += " " + l.get(i) + "\n";
+            }
         }
-        return a + "</style>\n";
+        return s + "</style>\n";
     }
 
     private void sendRespError(int code, String text) {
