@@ -13,7 +13,7 @@
 #include <string.h>
 
 
-#include "p4core.h"
+#include "p4cns.h"
 
 pcap_t *ifacePcap[maxPorts];
 
@@ -30,9 +30,10 @@ int getState(int port) {
 
 
 
-#include "p4core1.c"
-#include "p4core2.c"
-#include "p4core3.c"
+
+#include "p4tab.h"
+#include "p4msg.h"
+#include "p4fwd.h"
 
 
 pthread_t threadRaw[maxPorts];

@@ -22,7 +22,7 @@
 #undef basicLoop
 
 
-#include "p4core.h"
+#include "p4cns.h"
 
 
 struct rte_mempool *mbuf_pool;
@@ -54,9 +54,9 @@ int getState(int port) {
 
 
 
-#include "p4core1.c"
-#include "p4core2.c"
-#include "p4core3.c"
+#include "p4tab.h"
+#include "p4msg.h"
+#include "p4fwd.h"
 
 
 int commandSock;
