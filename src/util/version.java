@@ -62,6 +62,7 @@ public class version {
         "tif    image/tiff",
         "png    image/png",
         "svg    image/svg+xml",
+        "ico    image/x-icon",
         "pbm    image/x-portable-bitmap",
         "pgm    image/x-portable-graymap",
         "pnm    image/x-portable-anymap",
