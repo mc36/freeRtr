@@ -48,6 +48,7 @@ public class version {
         // text
         "html   text/html",
         "htm    text/html",
+        "css    text/css",
         "rtf    text/richtext",
         "text   text/plain",
         "txt    text/plain",
