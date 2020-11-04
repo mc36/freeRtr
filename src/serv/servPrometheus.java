@@ -352,7 +352,7 @@ public class servPrometheus extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         new servPrometheusConn(this, pipe);
         return false;
     }
@@ -450,7 +450,7 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
         rdr.height = 0;
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
-        pip.timeout = 120000;
+        pip.setTime(120000);
         String a = exe.repairCommand(cmd);
         exe.executeCommand(a);
         pip = pl.getSide();

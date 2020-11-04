@@ -179,7 +179,7 @@ public class rtrDownload extends ipRtr {
         pipeLine pipe = new pipeLine(32768, false);
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
-        pip.timeout = 120000;
+        pip.setTime(120000);
         String tmp = version.myWorkDir() + "rou" + bits.randomD() + ".tmp";
         userFlash.delete(tmp);
         if (userFlash.doReceive(pip, uniResLoc.parseOne(url), new File(tmp))) {

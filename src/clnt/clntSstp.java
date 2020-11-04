@@ -244,7 +244,7 @@ public class clntSstp implements Runnable, ifcDn {
         if (pipe == null) {
             return;
         }
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         sendLine("SSTP_DUPLEX_POST " + url.toURL(false, true) + " HTTP/1.1");

@@ -211,7 +211,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = timeOut;
+        pipe.setTime(timeOut);
         servMultiplexerConn ntry = new servMultiplexerConn(this, id.peerAddr, pipe);
         new Thread(ntry).start();
         conns.add(ntry);
@@ -416,7 +416,7 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
         if (conn == null) {
             return false;
         }
-        conn.timeout = lower.timeOut;
+        conn.setTime(lower.timeOut);
         if (conn.wait4ready(lower.timeOut)) {
             return false;
         }

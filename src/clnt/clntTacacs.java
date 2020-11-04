@@ -99,7 +99,7 @@ public class clntTacacs {
             tacTx.usr = "";
             tacTx.dat = "";
         }
-        conn.timeout = 5000;
+        conn.setTime(5000);
         tacTx.ses = bits.randomD();
         tacTx.pipe = conn;
         tacTx.secret = secret;

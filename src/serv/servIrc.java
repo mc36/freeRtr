@@ -162,7 +162,7 @@ public class servIrc extends servGeneric implements prtServS {
      * @return false on success, true on error
      */
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         peers.add(new servIrcConn(this, pipe, id.peerAddr.copyBytes(), id.portRem));

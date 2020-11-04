@@ -127,7 +127,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 10000;
+        pipe.setTime(10000);
         new servDhcp4worker(this, pipe, id);
         return false;
     }
@@ -487,7 +487,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
             return true;
         }
         pip.wait4ready(1000);
-        pip.timeout = 1000;
+        pip.setTime(1000);
         packHolder pckh = new packHolder(true, true);
         pckd.createHeader(pckh, options);
         pckh.merge2end();
@@ -659,7 +659,7 @@ class servDhcp4worker implements Runnable {
     public servDhcp4worker(servDhcp4 prnt, pipeSide pip, prtGenConn id) {
         parent = prnt;
         pipe = pip;
-        pipe.timeout = 10000;
+        pipe.setTime(10000);
         conn = id;
         new Thread(this).start();
     }

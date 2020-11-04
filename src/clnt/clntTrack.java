@@ -430,7 +430,7 @@ public class clntTrack implements rtrBfdClnt {
     private static String doScript(String scrptTxt, boolean selfVal) {
         pipeLine pl = new pipeLine(32768, false);
         pipeSide pip = pl.getSide();
-        pip.timeout = 10000;
+        pip.setTime(10000);
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         userScript t = new userScript(pip, "");
@@ -634,13 +634,13 @@ public class clntTrack implements rtrBfdClnt {
                     pipe.setClose();
                     break;
                 }
-                pipe.timeout = timeout;
+                pipe.setTime(timeout);
                 pipe = secClient.openSec(pipe, secProto, null, null);
                 if (pipe == null) {
                     haveResult(false, false);
                     break;
                 }
-                pipe.timeout = timeout;
+                pipe.setTime(timeout);
                 if (chats == null) {
                     haveResult(true, false);
                 } else {
@@ -742,7 +742,7 @@ public class clntTrack implements rtrBfdClnt {
         rdr.height = 0;
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
-        pip.timeout = 120000;
+        pip.setTime(120000);
         String s = exe.repairCommand(cmd);
         exe.executeCommand(s);
         pipe.setClose();

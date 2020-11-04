@@ -273,7 +273,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         if (conn == null) {
             return;
         }
-        conn.timeout = iface.deadTimer * 3;
+        conn.setTime(iface.deadTimer * 3);
         conn.lineRx = pipeSide.modTyp.modeCRtryLF;
         conn.lineTx = pipeSide.modTyp.modeCRLF;
         if (conn.wait4ready(iface.deadTimer)) {
@@ -308,7 +308,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             if (conn == null) {
                 return;
             }
-            conn.timeout = iface.deadTimer * 3;
+            conn.setTime(iface.deadTimer * 3);
             conn.lineRx = pipeSide.modTyp.modeCRtryLF;
             conn.lineTx = pipeSide.modTyp.modeCRLF;
             conn.wait4ready(iface.deadTimer);

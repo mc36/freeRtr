@@ -326,7 +326,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         new servBmp2mrtConn(pipe, this, id);
         return false;
     }

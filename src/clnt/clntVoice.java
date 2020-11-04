@@ -89,7 +89,7 @@ public class clntVoice {
         pipeLine pip = new pipeLine(32768, false);
         pipeUsr = pip.getSide();
         pipeScr = pip.getSide();
-        pipeScr.timeout = 120000;
+        pipeScr.setTime(120000);
         pipeScr.lineTx = pipeSide.modTyp.modeCRLF;
         pipeScr.lineRx = pipeSide.modTyp.modeCRtryLF;
         scr = new sndScript(pipeScr, codec, pipeRtp, packSip.removeTag(calling), packSip.removeTag(called));

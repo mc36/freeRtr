@@ -159,7 +159,7 @@ public class servSocks extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 10000;
+        pipe.setTime(10000);
         new servSocksDoer(this, pipe);
         return false;
     }
@@ -171,7 +171,7 @@ public class servSocks extends servGeneric implements prtServS {
      * @return false on success, true on error
      */
     public boolean doConnStart(pipeSide con1) {
-        con1.timeout = trgTimeout;
+        con1.setTime(trgTimeout);
         con1.wait4ready(trgTimeout);
         if (trgVrf == null) {
             return true;
@@ -280,7 +280,7 @@ public class servSocks extends servGeneric implements prtServS {
             ifc = trgIface.getFwdIfc(trgAddr);
         }
         pipeSide con2 = prt.streamConnect(new pipeLine(65536, true), ifc, 0, trgAddr, trgPort, srvName(), null, -1);
-        con2.timeout = trgTimeout;
+        con2.setTime(trgTimeout);
         con2.wait4ready(trgTimeout);
         pipeConnect.connect(con1, con2, true);
         return false;

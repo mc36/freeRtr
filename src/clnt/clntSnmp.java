@@ -65,7 +65,7 @@ public class clntSnmp {
         if (pipe == null) {
             return true;
         }
-        pipe.timeout = 8000;
+        pipe.setTime(8000);
         packHolder pckBin = new packHolder(true, true);
         packSnmp pckDat = new packSnmp();
         pckDat.version = 1;

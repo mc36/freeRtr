@@ -208,12 +208,12 @@ public class secHttp2 {
      */
     public secHttp2(pipeSide session, pipeLine pipe) {
         lower = session;
-        lower.timeout = 120 * 1000;
+        lower.setTime(120 * 1000);
         userP = pipe;
         userS = pipe.getSide();
         userC = pipe.getSide();
-        userC.timeout = 120 * 1000;
-        userS.timeout = userC.timeout;
+        userC.setTime(120 * 1000);
+        userS.setTime(120 * 1000);
         userC.lineRx = pipeSide.modTyp.modeCRtryLF;
         userC.lineTx = pipeSide.modTyp.modeCRLF;
         userS.lineRx = pipeSide.modTyp.modeCRtryLF;

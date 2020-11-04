@@ -202,7 +202,7 @@ public class servNetflow extends servGeneric implements prtServS {
      * @return false on success, true on error
      */
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCRLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         new servNetflowConn(this, pipe);
@@ -298,7 +298,7 @@ class servNetflowConn implements Runnable {
         packHolder pckB = new packHolder(true, true);
         packNetflow pckF = new packNetflow();
         try {
-            pipe.wait4ready(pipe.timeout);
+            pipe.wait4ready(120000);
             for (;;) {
                 pckB.clear();
                 pckB = pipe.readPacket(pckB, 0, true);

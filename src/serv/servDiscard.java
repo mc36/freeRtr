@@ -42,7 +42,7 @@ public class servDiscard extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 10000;
+        pipe.setTime(10000);
         pipeDiscard.discard(pipe);
         return false;
     }

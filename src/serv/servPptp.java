@@ -138,7 +138,7 @@ public class servPptp extends servGeneric implements ipPrt, prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         servPptpConn ntry = new servPptpConn(this, pipe, id.iface, id.peerAddr.copyBytes());
         if (conns.add(ntry) != null) {
             return true;

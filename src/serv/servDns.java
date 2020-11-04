@@ -84,7 +84,7 @@ public class servDns extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 10000;
+        pipe.setTime(10000);
         new servDnsDoer(this, pipe, id);
         return false;
     }
@@ -688,7 +688,7 @@ class servDnsDoer implements Runnable {
 
     public void run() {
         try {
-            pipe.wait4ready(pipe.timeout);
+            pipe.wait4ready(10000);
             for (;;) {
                 if (doer()) {
                     break;

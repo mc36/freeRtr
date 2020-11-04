@@ -134,12 +134,12 @@ public class secWebsock {
      */
     public secWebsock(pipeSide session, pipeLine pipe) {
         lower = session;
-        lower.timeout = 120 * 1000;
+        lower.setTime(120 * 1000);
         userP = pipe;
         userS = pipe.getSide();
         userC = pipe.getSide();
-        userC.timeout = 120 * 1000;
-        userS.timeout = userC.timeout;
+        userC.setTime(120 * 1000);
+        userS.setTime(120 * 1000);
     }
 
     /**
@@ -261,6 +261,7 @@ public class secWebsock {
             logger.debug("tx started");
         }
         for (;;) {
+            lower.setTime(userS.getTime());
             byte[] buf = new byte[1024];
             int i = userS.blockingGet(buf, 0, buf.length);
             if (i < 1) {

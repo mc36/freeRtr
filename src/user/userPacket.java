@@ -904,7 +904,7 @@ public class userPacket {
                 pipeTerm trm = new pipeTerm(pip, usr);
                 trm.doTerm();
             } else {
-                usr.timeout = 120000;
+                usr.setTime(120000);
                 usr.lineTx = pipeSide.modTyp.modeCRLF;
                 usr.lineRx = pipeSide.modTyp.modeCRorLF;
                 userScript t = new userScript(usr, "");

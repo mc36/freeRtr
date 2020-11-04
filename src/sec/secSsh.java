@@ -112,12 +112,12 @@ public class secSsh implements Runnable {
      */
     public secSsh(pipeSide session, pipeLine pipe) {
         lower = session;
-        lower.timeout = 120 * 1000;
+        lower.setTime(120 * 1000);
         userP = pipe;
         userS = pipe.getSide();
         userC = pipe.getSide();
-        userC.timeout = 120 * 1000;
-        userS.timeout = userC.timeout;
+        userC.setTime(120 * 1000);
+        userS.setTime(120 * 1000);
     }
 
     /**
@@ -287,7 +287,7 @@ public class secSsh implements Runnable {
     protected void workerTx(packSsh p) {
         packSshChan pc = new packSshChan(p);
         for (;;) {
-            p.pipe.timeout = userS.timeout;
+            p.pipe.setTime(userS.getTime());
             if (chanBytes > 1024) {
                 pc.chanRem = chanRem;
                 pc.window = chanBytes;

@@ -137,7 +137,7 @@ public class servModem extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 180000;
+        pipe.setTime(180000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         new servModemDoer(this, pipe, id);

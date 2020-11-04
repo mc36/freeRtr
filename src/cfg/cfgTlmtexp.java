@@ -304,7 +304,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
         rdr.height = 0;
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
-        pip.timeout = 120000;
+        pip.setTime(120000);
         String a = exe.repairCommand(command);
         exe.executeCommand(a);
         pip = pl.getSide();

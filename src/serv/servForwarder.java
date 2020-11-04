@@ -307,7 +307,7 @@ public class servForwarder extends servGeneric implements prtServS {
         if (logging) {
             logger.info("connection from " + id.peerAddr);
         }
-        pipe.timeout = timeOut;
+        pipe.setTime(timeOut);
         new servForwarderDoer(this, pipe);
         return false;
     }
@@ -319,7 +319,7 @@ public class servForwarder extends servGeneric implements prtServS {
      * @return false on success, true on error
      */
     public boolean doConnStart(pipeSide con1) {
-        con1.timeout = timeOut;
+        con1.setTime(timeOut);
         if (con1.wait4ready(timeOut)) {
             return true;
         }
@@ -341,7 +341,7 @@ public class servForwarder extends servGeneric implements prtServS {
         if (con2 == null) {
             return true;
         }
-        con2.timeout = timeOut;
+        con2.setTime(timeOut);
         if (con2.wait4ready(timeOut)) {
             return true;
         }
@@ -350,7 +350,7 @@ public class servForwarder extends servGeneric implements prtServS {
             con2.setClose();
             return true;
         }
-        con3.timeout = timeOut;
+        con3.setTime(timeOut);
         if (con3.wait4ready(timeOut)) {
             con2.setClose();
             con3.setClose();

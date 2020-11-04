@@ -113,7 +113,7 @@ public class clntIrc implements Runnable {
         if (pipe == null) {
             return;
         }
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeLF;
         pipe.linePut("CAP LS");
@@ -158,7 +158,7 @@ public class clntIrc implements Runnable {
         userExec exe = new userExec(pip, rdr);
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRtryLF;
-        pip.timeout = 120000;
+        pip.setTime(120000);
         cmd = c.getRemaining();
         if (cmd.length() < 1) {
             return;
@@ -176,7 +176,7 @@ public class clntIrc implements Runnable {
         pip = pipE.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRtryLF;
-        pip.timeout = 1000;
+        pip.setTime(1000);
         pip.setClose();
         for (;;) {
             if (pip.ready2rx() < 1) {

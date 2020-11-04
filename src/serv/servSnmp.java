@@ -51,7 +51,7 @@ public class servSnmp extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 5000;
+        pipe.setTime(5000);
         new servSnmpWorker(this, pipe);
         return false;
     }
@@ -114,7 +114,7 @@ public class servSnmp extends servGeneric implements prtServS {
     private String doSnmp(String cmd, String oid) {
         pipeLine pl = new pipeLine(32768, false);
         pipeSide pip = pl.getSide();
-        pip.timeout = 10000;
+        pip.setTime(10000);
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         userFilter fltr = userFilter.findFilter(new userFilter(cmd, oid, null), cfgInit.snmpMibs);

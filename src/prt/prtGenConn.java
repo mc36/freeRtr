@@ -191,7 +191,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         pipeNetwork = pipeHandler.getSide();
         pipeClient = pipeHandler.getSide();
         pipeClient.setReady();
-        pipeClient.timeout = timeout;
+        pipeClient.setTime(timeout);
         notif = pipeNetwork.notif;
     }
 

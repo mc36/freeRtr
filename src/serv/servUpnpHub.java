@@ -44,7 +44,7 @@ public class servUpnpHub extends servGeneric implements prtServS {
     protected tabGen<servUpnpHubConn> conns = new tabGen<servUpnpHubConn>();
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         new servUpnpHubConn(this, pipe, id);
         return false;
     }
@@ -127,7 +127,7 @@ class servUpnpHubConn implements Runnable, Comparator<servUpnpHubConn> {
     public void run() {
         logger.info("forwarder " + conn.peerAddr + " up");
         try {
-            pipe.wait4ready(pipe.timeout);
+            pipe.wait4ready(120000);
             for (;;) {
                 packHolder pck = pipe.readPacket(true);
                 if (pck == null) {

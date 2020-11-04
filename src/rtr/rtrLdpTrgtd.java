@@ -1,10 +1,9 @@
 package rtr;
 
+import addr.addrIP;
 import ip.ipFwd;
 import ip.ipFwdIface;
-
 import java.util.Comparator;
-
 import pack.packHolder;
 import pack.packLdp;
 import pipe.pipeLine;
@@ -12,10 +11,9 @@ import pipe.pipeSide;
 import prt.prtTcp;
 import prt.prtUdp;
 import util.bits;
+import util.counter;
 import util.debugger;
 import util.logger;
-import addr.addrIP;
-import util.counter;
 
 /**
  * label distribution protocol (rfc5036) targeted
@@ -124,7 +122,7 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
                 ip.ldpTargetDel(this);
                 return;
             }
-            conn.timeout = rtrLdpIface.trgtHelloHldtm;
+            conn.setTime(rtrLdpIface.trgtHelloHldtm);
             int run = rtrLdpIface.trgtHelloHldtm;
             for (;;) {
                 bits.sleep(1000);

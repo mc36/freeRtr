@@ -124,7 +124,7 @@ public class clntDns {
             }
             query.createHeader(pck);
             pck.pipeSend(conn, 0, pck.dataSize(), 2);
-            conn.timeout = 10000;
+            conn.setTime(10000);
             pck.clear();
             if (debugger.clntDnsTraf) {
                 logger.debug("tx " + srv + " " + query);
@@ -259,7 +259,7 @@ public class clntDns {
         packSize blck = new packSize(conn, 2, true, 1, 0);
         query.createHeader(pck);
         blck.sendPacket(pck);
-        conn.timeout = 60000;
+        conn.setTime(60000);
         if (debugger.clntDnsTraf) {
             logger.debug("tx " + query);
         }

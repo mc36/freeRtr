@@ -3572,7 +3572,7 @@ public class userExec {
         rdr.colorize = reader.colorize & col;
         userExec exe = new userExec(pip, rdr);
         exe.privileged = privileged;
-        pip.timeout = 60000;
+        pip.setTime(60000);
         String a = "show " + cmd.getRemaining();
         a = exe.repairCommand(a);
         exe.executeCommand(a);

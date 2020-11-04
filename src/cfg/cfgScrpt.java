@@ -365,7 +365,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         loc = pl.getSide();
         new Thread(this).start();
         pipeSide pip = pl.getSide();
-        pip.timeout = 120000;
+        pip.setTime(120000);
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userScript s = new userScript(pip, "");

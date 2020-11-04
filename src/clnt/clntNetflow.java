@@ -95,7 +95,7 @@ public class clntNetflow implements Runnable {
                 if (b) {
                     pipe = proxy.doConnect(servGeneric.protoUdp, trgAddr, trgPort, "netflow");
                     if (pipe != null) {
-                        pipe.timeout = 120000;
+                        pipe.setTime(120000);
                     }
                 }
                 session.doNetflow(pipe);

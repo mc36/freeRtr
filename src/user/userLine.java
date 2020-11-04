@@ -484,14 +484,14 @@ class userLineHandler implements Runnable {
         physical = phys;
         user = new authResult();
         user.privilege = parent.promptPrivilege;
-        pipe.timeout = parent.execTimeOut;
+        pipe.setTime(parent.execTimeOut);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         new Thread(this).start();
     }
 
     private void doAuth() {
-        pipe.timeout = parent.promptTimeout;
+        pipe.setTime(parent.promptTimeout);
         pipe.blockingPut(cfgAll.banner, 0, cfgAll.banner.length);
         pipe.linePut(parent.promptWelcome);
         if (parent.authenticList == null) {
@@ -542,7 +542,7 @@ class userLineHandler implements Runnable {
             logger.info(user.user + " logged in from " + remote);
         }
         pipe.linePut(parent.promptSuccess);
-        pipe.timeout = parent.execTimeOut;
+        pipe.setTime(parent.execTimeOut);
         userReader rdr = new userReader(pipe, parent.promptDeActive);
         rdr.from = remote;
         rdr.user = user.user;

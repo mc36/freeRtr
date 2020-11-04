@@ -143,7 +143,7 @@ public class servVoice extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 180000;
+        pipe.setTime(180000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         new servVoiceDoer(this, pipe, id);
@@ -239,7 +239,7 @@ class servVoiceDoer implements Runnable {
                 pipeSide pipeC = pip.getSide();
                 pipeS.setReady();
                 pipeC.setReady();
-                pipeC.timeout = 120000;
+                pipeC.setTime(120000);
                 pipeC.lineTx = pipeSide.modTyp.modeCRLF;
                 pipeC.lineRx = pipeSide.modTyp.modeCRtryLF;
                 pipeC.linePut("from=" + uniResLoc.fromEmail(packSip.removeTag(rx.headerGet("From", 1))));
@@ -249,7 +249,7 @@ class servVoiceDoer implements Runnable {
                 }
                 pipeC.linePut(".");
                 pipeDiscard.discard(pipeC);
-                pipeS.timeout = 120000;
+                pipeS.setTime(120000);
                 pipeS.lineTx = pipeSide.modTyp.modeCRLF;
                 pipeS.lineRx = pipeSide.modTyp.modeCRorLF;
                 userScript t = new userScript(pipeS, "");
@@ -438,11 +438,11 @@ class servVoiceConn implements Runnable, Comparator<servVoiceConn> {
             pipeS.setClose();
             pipeC.setClose();
         } else {
-            pipeC.timeout = 120000;
+            pipeC.setTime(120000);
             pipeC.lineTx = pipeSide.modTyp.modeCRLF;
             pipeC.lineRx = pipeSide.modTyp.modeCRtryLF;
             new sndScript(pipeC, lower.getCodec(), data, uniResLoc.fromEmail(packSip.removeTag(callInv.headerGet("From", 1))), uniResLoc.fromEmail(packSip.removeTag(callInv.headerGet("To", 1))));
-            pipeS.timeout = 120000;
+            pipeS.setTime(120000);
             pipeS.lineTx = pipeSide.modTyp.modeCRLF;
             pipeS.lineRx = pipeSide.modTyp.modeCRorLF;
             userScript t = new userScript(pipeS, "");

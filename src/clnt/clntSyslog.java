@@ -90,7 +90,7 @@ public class clntSyslog {
         if (pipe == null) {
             return;
         }
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         if (pipe.ready2tx() < 1024) {
             return;
         }

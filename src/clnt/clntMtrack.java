@@ -227,7 +227,7 @@ public class clntMtrack implements Runnable, prtServS {
         if (pipe == null) {
             return;
         }
-        pipe.timeout = 5000;
+        pipe.setTime(5000);
         packHolder pckB = new packHolder(true, true);
         packMtrack pck = new packMtrack();
         pck.typ = packMtrack.typCfgReq;
@@ -322,7 +322,7 @@ public class clntMtrack implements Runnable, prtServS {
             }
         }
         for (int o = 0; o < pipes.size(); o++) {
-            pipes.get(o).timeout = 20000;
+            pipes.get(o).setTime(20000);
         }
         packHolder pckB = new packHolder(true, true);
         packMtrack pck = new packMtrack();
@@ -484,7 +484,7 @@ public class clntMtrack implements Runnable, prtServS {
      * @return false on success, true on error
      */
     public boolean streamAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 10000;
+        pipe.setTime(10000);
         id.sendTOS = typOsrv;
         id.sendTTL = tim2liv;
         new clntMtrackConn(this, pipe, id.peerAddr);
@@ -542,7 +542,7 @@ class clntMtrackConn implements Runnable {
 
     public void run() {
         try {
-            pipe.wait4ready(pipe.timeout);
+            pipe.wait4ready(10000);
             for (;;) {
                 packHolder pck = pipe.readPacket(true);
                 if (pck == null) {

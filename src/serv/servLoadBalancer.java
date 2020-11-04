@@ -188,7 +188,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         if (logging) {
             logger.info("connection from " + id.peerAddr);
         }
-        pipe.timeout = timeOut;
+        pipe.setTime(timeOut);
         new servLoadBalancerDoer(this, pipe);
         return false;
     }
@@ -200,7 +200,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
      * @return false on success, true on error
      */
     public boolean doConnStart(pipeSide con1) {
-        con1.timeout = timeOut;
+        con1.setTime(timeOut);
         con1.wait4ready(timeOut);
         servLoadBalancerEntry ntry = null;
         int o = servLst.size();
@@ -237,7 +237,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
             ntry.bad = bits.getTime();
             return true;
         }
-        con2.timeout = timeOut;
+        con2.setTime(timeOut);
         if (con2.wait4ready(timeOut)) {
             ntry.bad = bits.getTime();
             return true;

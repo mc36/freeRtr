@@ -1,27 +1,27 @@
 package clnt;
 
+import addr.addrEmpty;
+import addr.addrIP;
+import addr.addrType;
+import cfg.cfgIfc;
+import cfg.cfgVrf;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import ip.ipFwd;
 import ip.ipFwdIface;
+import ip.ipFwdTab;
 import ip.ipPrt;
 import pack.packHolder;
 import pack.packPptp;
 import pipe.pipeSide;
+import serv.servGeneric;
 import user.userTerminal;
 import util.bits;
 import util.counter;
 import util.debugger;
 import util.logger;
 import util.state;
-import addr.addrEmpty;
-import addr.addrIP;
-import addr.addrType;
-import cfg.cfgIfc;
-import cfg.cfgVrf;
-import ip.ipFwdTab;
-import serv.servGeneric;
 
 /**
  * point to point tunneling protocol (rfc2637) client
@@ -269,7 +269,7 @@ public class clntPptp implements Runnable, ipPrt, ifcDn {
         if (conn == null) {
             return;
         }
-        conn.timeout = 120000;
+        conn.setTime(120000);
         packHolder pckBin = new packHolder(true, true);
         packPptp pckPtp = new packPptp();
         pckPtp.fillStart(true);

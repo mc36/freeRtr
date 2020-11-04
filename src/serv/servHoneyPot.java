@@ -114,7 +114,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 60000;
+        pipe.setTime(60000);
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         new servHoneyPotConn(this, pipe, id.peerAddr.copyBytes());
@@ -159,7 +159,7 @@ class servHoneyPotConn implements Runnable {
         rdr.height = 0;
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
-        pip.timeout = 60000;
+        pip.setTime(60000);
         String a = exe.repairCommand(lower.command + " " + addr);
         exe.executeCommand(a);
         pip = pl.getSide();

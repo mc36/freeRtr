@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import pack.packRtp;
-
 import pack.packSip;
 import pipe.pipeLine;
 import pipe.pipeSide;
@@ -147,7 +146,7 @@ public class servSip extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 180000;
+        pipe.setTime(180000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         new servSipDoer(this, pipe, id);

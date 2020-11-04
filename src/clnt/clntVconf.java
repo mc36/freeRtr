@@ -61,7 +61,7 @@ public class clntVconf implements Runnable {
         pipeLine pip = new pipeLine(32768, false);
         reported = pip.getSide();
         user = pip.getSide();
-        user.timeout = 120000;
+        user.setTime(120000);
         user.lineTx = pipeSide.modTyp.modeCRLF;
         user.lineRx = pipeSide.modTyp.modeCRtryLF;
         started = bits.getTime();

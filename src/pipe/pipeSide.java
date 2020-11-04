@@ -14,7 +14,7 @@ public class pipeSide {
     /**
      * timeout in milliseconds
      */
-    public int timeout = 0;
+    protected int timeout = 0;
 
     /**
      * peer side of pipeline
@@ -210,6 +210,23 @@ public class pipeSide {
         int i = bufD[bufR];
         bufR = (bufR + 1) % bufS;
         return i & 0xff;
+    }
+
+    /**
+     * set timeout
+     *
+     * @param t timeout
+     */
+    public void setTime(int t) {
+        timeout = t;
+        peerSideOfPipeLine.timeout = t;
+    }
+
+    /**
+     * get timeout
+     */
+    public int getTime() {
+        return timeout;
     }
 
     /**

@@ -89,7 +89,7 @@ public class clntTelemetry implements Runnable {
         if (pipe == null) {
             return;
         }
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         for (;;) {
             bits.sleep(1000);
             if (!need2run) {

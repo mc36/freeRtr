@@ -1,5 +1,10 @@
 package sec;
 
+import cfg.cfgAll;
+import cry.cryCertificate;
+import cry.cryKeyDSA;
+import cry.cryKeyECDSA;
+import cry.cryKeyRSA;
 import pack.packTls;
 import pack.packTlsHndshk;
 import pipe.pipeLine;
@@ -7,11 +12,6 @@ import pipe.pipeSide;
 import util.bits;
 import util.debugger;
 import util.logger;
-import cfg.cfgAll;
-import cry.cryCertificate;
-import cry.cryKeyDSA;
-import cry.cryKeyECDSA;
-import cry.cryKeyRSA;
 
 /**
  * transport layer security (rfc5246) protocol
@@ -91,12 +91,12 @@ public class secTls implements Runnable {
      */
     public secTls(pipeSide session, pipeLine pipe, boolean dtls) {
         lower = session;
-        lower.timeout = 120 * 1000;
+        lower.setTime(120 * 1000);
         userP = pipe;
         userS = pipe.getSide();
         userC = pipe.getSide();
-        userC.timeout = 120 * 1000;
-        userS.timeout = userC.timeout;
+        userC.setTime(120 * 1000);
+        userS.setTime(120 * 1000);
         datagram = dtls;
     }
 
@@ -200,7 +200,7 @@ public class secTls implements Runnable {
             logger.debug("tx started");
         }
         for (;;) {
-            p.pipe.timeout = userS.timeout;
+            p.pipe.setTime(userS.getTime());
             byte[] buf = new byte[1024];
             int len;
             if (datagram) {

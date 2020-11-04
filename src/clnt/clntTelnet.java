@@ -215,14 +215,14 @@ public class clntTelnet implements Runnable, ifcDn {
         if (conn == null) {
             return;
         }
-        conn.timeout = 120000;
+        conn.setTime(120000);
         if (security > 0) {
             conn = secClient.openSec(conn, security, username, password);
         }
         if (conn == null) {
             return;
         }
-        conn.timeout = 120000;
+        conn.setTime(120000);
         if (script.doScript(conn)) {
             conn.setClose();
             return;

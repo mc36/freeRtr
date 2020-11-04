@@ -727,7 +727,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 ip.ldpNeighDel(this);
                 return;
             }
-            conn.timeout = sessHelloHldtm;
+            conn.setTime(sessHelloHldtm);
             if (conn.wait4ready(sessHelloHldtm)) {
                 conn.setClose();
                 ip.ldpNeighDel(this);

@@ -220,7 +220,7 @@ public class cfgEvntmgr implements Comparator<cfgEvntmgr>, cfgGeneric {
             }
             pipeLine pl = new pipeLine(32768, false);
             pipeSide pip = pl.getSide();
-            pip.timeout = 10000;
+            pip.setTime(10000);
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             userScript t = new userScript(pip, "");

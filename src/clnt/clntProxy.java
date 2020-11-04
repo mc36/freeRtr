@@ -237,12 +237,12 @@ public class clntProxy {
             if (pip == null) {
                 return null;
             }
-            pip.timeout = 120000;
+            pip.setTime(120000);
             pip = secClient.openSec(pip, secProto, username, password);
             if (pip == null) {
                 return null;
             }
-            pip.timeout = 180000;
+            pip.setTime(180000);
             return pip;
         }
         if (vrf == null) {
@@ -286,8 +286,8 @@ public class clntProxy {
             if (pip == null) {
                 return null;
             }
-            pip.timeout = 120000;
-            if (pip.wait4ready(pip.timeout)) {
+            pip.setTime(120000);
+            if (pip.wait4ready(120000)) {
                 pip.setClose();
                 return null;
             }
@@ -295,7 +295,7 @@ public class clntProxy {
             if (pip == null) {
                 return null;
             }
-            pip.timeout = 180000;
+            pip.setTime(180000);
             return pip;
         }
         if (cProto != servGeneric.protoTcp) {

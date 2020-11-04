@@ -1,18 +1,18 @@
 package clnt;
 
+import addr.addrIP;
+import auth.authGeneric;
+import auth.authResult;
+import cfg.cfgAll;
 import pack.packHolder;
 import pack.packRadius;
 import pipe.pipeSide;
+import serv.servGeneric;
 import serv.servRadius;
 import user.userTerminal;
 import util.bits;
 import util.debugger;
 import util.logger;
-import addr.addrIP;
-import auth.authGeneric;
-import auth.authResult;
-import cfg.cfgAll;
-import serv.servGeneric;
 
 /**
  * remote authentication dialin user (rfc2865) client
@@ -88,7 +88,7 @@ public class clntRadius {
         if (conn == null) {
             return true;
         }
-        conn.timeout = 5000;
+        conn.setTime(5000);
         radTx.secret = secret;
         radTx.valUsrNam = radUsr;
         radTx.valNasPrt = 2;

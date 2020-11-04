@@ -77,7 +77,7 @@ public class clntNtp implements Runnable {
             logger.debug("tx " + pckNtp);
         }
         pckBin.pipeSend(pipe, 0, pckBin.dataSize(), 2);
-        pipe.timeout = 5000;
+        pipe.setTime(5000);
         pckBin = pipe.readPacket(true);
         pipe.setClose();
         if (pckBin == null) {

@@ -751,10 +751,10 @@ class userTesterPrc {
         pipeLine pl = new pipeLine(32768, false);
         final int tim = 600 * 1000;
         pipe = pl.getSide();
-        pipe.timeout = tim;
+        pipe.setTime(tim);
         shell = pipeShell.exec(pipe, command, null, true, false);
         pipe = pl.getSide();
-        pipe.timeout = tim;
+        pipe.setTime(tim);
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCR;
         rdr.debugStat(slot + "/" + name + ": starting process");

@@ -60,7 +60,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     private ipFwdIface ifc;
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 10000;
+        pipe.setTime(10000);
         new servUpnpFwdClnt(this, pipe, id);
         return false;
     }
@@ -173,7 +173,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
             if (trgt == null) {
                 return;
             }
-            trgt.timeout = 120000;
+            trgt.setTime(120000);
             new servUpnpFwdServ(this, trgt);
         }
         packHolder pckB = new packHolder(true, true);
@@ -257,7 +257,7 @@ class servUpnpFwdServ implements Runnable {
 
     public void run() {
         try {
-            pipe.wait4ready(pipe.timeout);
+            pipe.wait4ready(120000);
             for (;;) {
                 packHolder pck = pipe.readPacket(true);
                 if (pck == null) {
@@ -290,7 +290,7 @@ class servUpnpFwdClnt implements Runnable {
 
     public void run() {
         try {
-            pipe.wait4ready(pipe.timeout);
+            pipe.wait4ready(120000);
             for (;;) {
                 packHolder pck = pipe.readPacket(true);
                 if (pck == null) {

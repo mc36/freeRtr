@@ -556,7 +556,7 @@ public class userScript {
             rdr.height = 0;
             userExec exe = new userExec(pip, rdr);
             exe.privileged = allowConfig;
-            pip.timeout = 60000;
+            pip.setTime(60000);
             a = getWord(true);
             if (a.length() < 1) {
                 return a;
@@ -579,7 +579,7 @@ public class userScript {
             rdr.height = 0;
             userExec exe = new userExec(pip, rdr);
             exe.privileged = allowConfig;
-            pip.timeout = 60000;
+            pip.setTime(60000);
             for (;;) {
                 a = e.getWord(true);
                 if (a.length() < 1) {
@@ -606,7 +606,7 @@ public class userScript {
             userReader rdr = new userReader(pip, 1023);
             rdr.height = 0;
             userConfig cfg = new userConfig(pip, rdr);
-            pip.timeout = 60000;
+            pip.setTime(60000);
             for (;;) {
                 a = e.getWord(true);
                 if (a.length() < 1) {

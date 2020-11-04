@@ -224,7 +224,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         if (pipe == null) {
             return true;
         }
-        pipe.timeout = holdTimer;
+        pipe.setTime(holdTimer);
         pipe.setReady();
         pipe.wait4ready(holdTimer);
         if (pipe.isReady() != 3) {

@@ -48,8 +48,8 @@ public class packRtp {
             setClose();
             return true;
         }
-        connData.timeout = 300000;
-        connCtrl.timeout = connData.timeout;
+        connData.setTime(300000);
+        connCtrl.setTime(300000);
         lastCtrl = bits.getTime();
         return false;
     }

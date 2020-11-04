@@ -856,7 +856,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (debugger.rtrBgpEvnt) {
             logger.debug("starting neighbor " + neigh.peerAddr);
         }
-        pipe.timeout = neigh.holdTimer;
+        pipe.setTime(neigh.holdTimer);
         peerKeep = neigh.keepAlive;
         pipe.setReady();
         pipe.wait4ready(neigh.holdTimer);
@@ -1282,7 +1282,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (peerHold < neigh.holdTimer) {
             peerKeep = peerHold / 3;
             if (pipe != null) {
-                pipe.timeout = peerHold;
+                pipe.setTime(peerHold);
             }
         }
         pck.getAddr(peerRouterID, 5);

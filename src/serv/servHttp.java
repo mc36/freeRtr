@@ -210,7 +210,7 @@ public class servHttp extends servGeneric implements prtServS {
      * @return false on success, true on error
      */
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         new servHttpConn(this, pipe, id);
         return false;
     }
@@ -1410,7 +1410,7 @@ class servHttpConn implements Runnable {
                 rdr.height = 0;
                 userExec exe = new userExec(pip, rdr);
                 exe.privileged = (gotHost.allowApi & 4) != 0;
-                pip.timeout = 60000;
+                pip.setTime(60000);
                 String a = exe.repairCommand(s);
                 r += ">" + a + e;
                 exe.executeCommand(a);
@@ -1435,7 +1435,7 @@ class servHttpConn implements Runnable {
             rdr.tabMod = userFormat.tableMode.raw;
             rdr.height = 0;
             userConfig cfg = new userConfig(pip, rdr);
-            pip.timeout = 60000;
+            pip.setTime(60000);
             for (;;) {
                 s = cmd.word("/");
                 if (s.length() < 1) {
@@ -1479,7 +1479,7 @@ class servHttpConn implements Runnable {
         }
         pipeLine pl = new pipeLine(1024 * 1024, false);
         pipeSide pip = pl.getSide();
-        pip.timeout = 60000;
+        pip.setTime(60000);
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userScript t = new userScript(pip, "");

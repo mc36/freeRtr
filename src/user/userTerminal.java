@@ -151,8 +151,8 @@ public class userTerminal {
         if (pipe == null) {
             return null;
         }
-        pipe.timeout = 60000;
-        pipe.wait4ready(pipe.timeout);
+        pipe.setTime(60000);
+        pipe.wait4ready(60000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         return pipe;

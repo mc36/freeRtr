@@ -352,7 +352,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         rdr.height = 0;
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
-        pip.timeout = 120000;
+        pip.setTime(120000);
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         String s = exe.repairCommand(command);

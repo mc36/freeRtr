@@ -182,7 +182,7 @@ public class clntPckOdtls implements Runnable, ifcDn {
         if (pipe == null) {
             return;
         }
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         packHolder pck = new packHolder(true, true);
         for (;;) {
             if (pipe == null) {

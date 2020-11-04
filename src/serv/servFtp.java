@@ -95,7 +95,7 @@ public class servFtp extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         servFtpConn ntry = new servFtpConn(id);
@@ -341,7 +341,7 @@ class servFtpDoer implements Runnable {
                 bits.sleep(1000);
                 continue;
             }
-            if (data.wait4ready(pipe.timeout)) {
+            if (data.wait4ready(120000)) {
                 data.setClose();
                 continue;
             }

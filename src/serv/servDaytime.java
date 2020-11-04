@@ -42,7 +42,7 @@ public class servDaytime extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 5000;
+        pipe.setTime(5000);
         new servDaytimeConn(pipe);
         return false;
     }

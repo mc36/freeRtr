@@ -141,7 +141,7 @@ public class servOpenflow extends servGeneric implements prtServS {
             conn.setClose();
             notif.wakeup();
         }
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         conn = pipe;
         thrdRx = new servOpenflowRx(conn, this);
         thrdTx = new servOpenflowTx(conn, this);

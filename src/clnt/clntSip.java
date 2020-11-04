@@ -658,7 +658,7 @@ public class clntSip implements Runnable {
         if (conn == null) {
             return;
         }
-        conn.timeout = 180000;
+        conn.setTime(180000);
         conn.lineRx = pipeSide.modTyp.modeCRtryLF;
         conn.lineTx = pipeSide.modTyp.modeCRLF;
         conn.setReady();

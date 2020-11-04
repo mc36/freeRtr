@@ -509,7 +509,7 @@ public class cfgInit implements Runnable {
         userConfig uc = new userConfig(psC, rd);
         psS.lineRx = pipeSide.modTyp.modeCRorLF;
         psC.lineTx = pipeSide.modTyp.modeCRLF;
-        psS.timeout = 100000;
+        psS.setTime(100000);
         for (int o = 0; o < cs.size(); o++) {
             String a = cs.get(o);
             int i = a.indexOf(cmds.comment);
@@ -831,7 +831,7 @@ public class cfgInit implements Runnable {
         pipeSide ps = pl.getSide();
         ps.lineTx = pipeSide.modTyp.modeCRLF;
         ps.lineRx = pipeSide.modTyp.modeCRorLF;
-        ps.timeout = 0;
+        ps.setTime(0);
         logger.pipeStart(ps);
         List<String> logo = version.shLogo(bootLogo);
         for (int i = 0; i < logo.size(); i++) {

@@ -42,7 +42,7 @@ public class servEchoS extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 10000;
+        pipe.setTime(10000);
         pipeConnect.loopback(pipe);
         return false;
     }

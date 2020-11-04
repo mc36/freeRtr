@@ -438,7 +438,7 @@ public class userUpgrade {
         pipeLine pl = new pipeLine(32768, false);
         pipeSide loc = pl.getSide();
         pipeSide pip = pl.getSide();
-        pip.timeout = 120000;
+        pip.setTime(120000);
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userScript s = new userScript(pip, "");

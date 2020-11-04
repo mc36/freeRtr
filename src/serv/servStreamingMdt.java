@@ -287,7 +287,7 @@ public class servStreamingMdt extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         servTelemetryConn ntry = new servTelemetryConn(this, pipe, id.peerAddr.copyBytes());
         new Thread(ntry).start();
         return false;

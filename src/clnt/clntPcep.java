@@ -71,7 +71,7 @@ public class clntPcep {
         if (pipe == null) {
             return true;
         }
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCR;
         pipe.lineTx = pipeSide.modTyp.modeCR;
         packPcep pck = new packPcep();

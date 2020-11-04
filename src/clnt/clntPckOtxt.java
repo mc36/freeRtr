@@ -183,7 +183,7 @@ public class clntPckOtxt implements Runnable, ifcDn {
         if (pipe == null) {
             return;
         }
-        pipe.timeout = 120000;
+        pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         packHolder pck = new packHolder(true, true);
