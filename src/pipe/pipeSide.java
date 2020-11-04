@@ -224,6 +224,8 @@ public class pipeSide {
 
     /**
      * get timeout
+     *
+     * @return timeout
      */
     public int getTime() {
         return timeout;
