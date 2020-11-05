@@ -14,7 +14,7 @@ global adr
 for {} {1<2} {} {
  set ln [gets -]
  if {[string equal $ln "."]} break
- set sh "$sh$ln<br>"
+ set sh "$sh$ln<br/>"
  if {[string first adr $ln] >= 0} {set adr [string range $ln 8 666]}
  }
 }

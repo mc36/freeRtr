@@ -1,7 +1,7 @@
 proc dosh { cmd } {
 global sh
 set res [exec "term tab html" $cmd]
-set sh "$sh<b><u>$cmd</b></u><br><table border=1><pre>$res</pre></table>"
+set sh "$sh<b><u>$cmd</b></u><br/><table border=1><pre>$res</pre></table>"
 }
 set sh ""
 dosh "show clock | html"

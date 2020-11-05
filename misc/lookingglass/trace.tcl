@@ -5,4 +5,4 @@ script local.tcl
 local
 param
 set a [exec "traceroute $adr /vrf $vrf /int $int"]
-puts "<html><body>result:<br><br><pre>$a</pre></body></html>"
+puts "<html><body>result:<br/><br/><pre>$a</pre></body></html>"

@@ -1,6 +1,6 @@
 proc dosh { cmd } {
 set res [exec "term tab fancy" $cmd]
-puts "<b><u>$cmd</b></u><br>"
+puts "<b><u>$cmd</b></u><br/>"
 puts "<pre>$res</pre>"
 }
 

@@ -10,4 +10,4 @@ set a [config "ipv6 route $vrf $adr ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff $ipb
 set a "$a[exec write]"
 set b "write network"
 set a "$a[exec $b]"
-puts "<html><body>result:<br><pre>$a</pre></body></html>"
+puts "<html><body>result:<br/><pre>$a</pre></body></html>"

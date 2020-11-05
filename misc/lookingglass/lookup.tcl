@@ -14,5 +14,5 @@ set cmd "lookup $type $domain $server"
 set res [exec $cmd]
 puts "<html><head><title>lookup</title></head>"
 puts "<body>"
-puts "<u>result:</u><br><pre>$res</pre><br>"
+puts "<u>result:</u><br/><pre>$res</pre><br/>"
 puts "</body></html>"

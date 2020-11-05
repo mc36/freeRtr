@@ -120,7 +120,7 @@ public class mailer {
                 BufferedReader f = new BufferedReader(new FileReader(mail + user + "/" + id));
                 while (f.ready()) {
                     buf.write(f.readLine().getBytes());
-                    buf.write("<br>".getBytes());
+                    buf.write("<br/>".getBytes());
                 }
                 f.close();
             } catch (Exception e) {
