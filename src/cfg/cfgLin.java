@@ -41,7 +41,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
     /**
      * line defaults text
      */
-    public final static String linedefL[] = {
+    public final static String[] linedefL = {
         ".*! no exec interface",
         ".*! exec timeout 300000",
         ".*! exec width 79",
@@ -76,7 +76,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "line .*! no script init",
         "line .*! no script activate",
         "line .*! no script hangup",

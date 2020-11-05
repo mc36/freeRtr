@@ -44,7 +44,7 @@ public class version {
     /**
      * mimetype text
      */
-    public final static String mimetypes[] = {
+    public final static String[] mimetypes = {
         // text
         "html   text/html",
         "htm    text/html",

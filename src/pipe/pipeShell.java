@@ -55,7 +55,7 @@ public class pipeShell {
         if (fincmd != null) {
             l.add(fincmd);
         }
-        String cm[] = new String[l.size()];
+        String[] cm = new String[l.size()];
         for (int i = 0; i < cm.length; i++) {
             cm[i] = l.get(i);
         }
@@ -222,7 +222,7 @@ class pipeShellInput implements Runnable {
 
     public void run() {
         for (;;) {
-            byte buf[] = null;
+            byte[] buf = null;
             try {
                 int siz = strm.available();
                 if (siz < 1) {
@@ -267,7 +267,7 @@ class pipeShellOutput implements Runnable {
 
     public void run() {
         for (;;) {
-            byte buf[] = new byte[1024];
+            byte[] buf = new byte[1024];
             int siz = prnt.console.nonBlockGet(buf, 0, buf.length);
             if (siz < 1) {
                 if (!prnt.isRunning()) {

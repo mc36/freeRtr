@@ -1202,7 +1202,6 @@ public class userPacket {
             return;
         }
         cmd.badCmd();
-        return;
     }
 
 }

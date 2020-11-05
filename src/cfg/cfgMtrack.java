@@ -37,7 +37,7 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "mtracker .*! no description",
         "mtracker .*! no vrf",
         "mtracker .*! no source",

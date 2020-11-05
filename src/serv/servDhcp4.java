@@ -108,7 +108,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server dhcp4 .*! port " + packDhcp4.portSnum,
         "server dhcp4 .*! protocol " + proto2string(protoIp4 + protoUdp),
         "server dhcp4 .*! boot-server ",
@@ -570,7 +570,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
     protected void doPurging() {
         synchronized (bindings) {
             long cur = bits.getTime();
-            for (int i = 0; i < bindings.size(); i++) {
+            for (int i = bindings.size()-1; i >= 0; i--) {
                 servDhcp4bind ntry = bindings.get(i);
                 if (ntry == null) {
                     continue;

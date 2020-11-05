@@ -88,7 +88,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server dhcp6 .*! port " + packDhcp6.portSnum,
         "server dhcp6 .*! protocol " + proto2string(protoIp6 + protoUdp),
         "server dhcp6 .*! boot-url ",
@@ -483,7 +483,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
     protected void doPurging() {
         synchronized (bindings) {
             long cur = bits.getTime();
-            for (int i = 0; i < bindings.size(); i++) {
+            for (int i = bindings.size()-1; i >= 0; i--) {
                 servDhcp6bind ntry = bindings.get(i);
                 if (ntry == null) {
                     continue;

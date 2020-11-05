@@ -222,7 +222,6 @@ class autherChapMsg {
         pck.putAsciiZ(0, message.length(), message, 0);
         pck.putSkip(message.length());
         pck.merge2beg();
-        return;
     }
 
     public String toString() {

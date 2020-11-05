@@ -160,7 +160,7 @@ public class ifcLapb implements ifcUp, ifcDn {
 
     private final static int bufferMax = 6;
 
-    private final packHolder bufferDat[] = new packHolder[bufferMax];
+    private final packHolder[] bufferDat = new packHolder[bufferMax];
 
     private int bufferCur = 0;
 

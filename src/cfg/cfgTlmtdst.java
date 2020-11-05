@@ -36,7 +36,7 @@ public class cfgTlmtdst implements Comparator<cfgTlmtdst>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "telemetry destination .*! port " + servStreamingMdt.port,
         "telemetry destination .*! no description",};
 

@@ -96,7 +96,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "process definition .*! no description",
         "process definition .*! respawn",
         "process definition .*! exec null",

@@ -548,8 +548,7 @@ public class cryAsn1 {
      * @return integer value
      */
     public BigInteger getBigInt() {
-        BigInteger i = new BigInteger(buf);
-        return i;
+        return new BigInteger(buf);
     }
 
     /**

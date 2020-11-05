@@ -32,7 +32,7 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "translation-rule .*! no description",
         "translation-rule .*! no track",
         "translation-rule .*! no time",
@@ -264,7 +264,6 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
             return;
         }
         cmd.badCmd();
-        return;
     }
 
     public String getPrompt() {

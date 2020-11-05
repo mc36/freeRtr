@@ -108,7 +108,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "scheduler .*! no description",
         "scheduler .*! respawn",
         "scheduler .*! time 0",

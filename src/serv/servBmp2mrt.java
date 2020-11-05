@@ -86,7 +86,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server bmp2mrt .*! port " + port,
         "server bmp2mrt .*! protocol " + proto2string(protoAllStrm),
         "server bmp2mrt .*! no local",

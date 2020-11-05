@@ -1243,7 +1243,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         // globals
         "interface .*! no mtu",
         "interface .*! no macaddr",
@@ -1619,7 +1619,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * template text
      */
-    public final static String notemplL[] = {
+    public final static String[] notemplL = {
         "interface .*! description.*",
         "interface .*! no description.*",
         "interface .*! vrf forwarding.*",
@@ -1642,7 +1642,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * clone text
      */
-    public final static String nocloneL[] = {
+    public final static String[] nocloneL = {
         "interface .*! autostate.*",
         "interface .*! no autostate.*",
         "interface .*! shutdown.*",

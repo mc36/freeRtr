@@ -51,7 +51,7 @@ public class servSocks extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server socks .*! port " + port,
         "server socks .*! protocol " + proto2string(protoAllStrm),
         "server socks .*! no target interface",

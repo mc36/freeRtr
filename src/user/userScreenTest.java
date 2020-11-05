@@ -614,7 +614,6 @@ public class userScreenTest {
             return;
         }
         cmd.badCmd();
-        return;
     }
 
 }

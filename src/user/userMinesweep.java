@@ -9,11 +9,11 @@ import util.bits;
  */
 public class userMinesweep {
 
-    private boolean bomb[][];
+    private boolean[][] bomb;
 
-    private boolean mark[][];
+    private boolean[][] mark;
 
-    private boolean show[][];
+    private boolean[][] show;
 
     private int curX;
 

@@ -27,9 +27,9 @@ public class prtWatch implements Runnable {
 
     private final int ports;
 
-    private String names[];
+    private String[] names;
 
-    private pipeShell procs[];
+    private pipeShell[] procs;
 
     private static List<prtWatch> dogList = new ArrayList<prtWatch>();
 

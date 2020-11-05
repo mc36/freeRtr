@@ -93,7 +93,7 @@ public class cryUtils {
             }
             pos += rndl;
             int rndi = (int) rndl;
-            byte buf[] = new byte[rndi];
+            byte[] buf = new byte[rndi];
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {

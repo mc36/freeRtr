@@ -15,7 +15,7 @@ public class userTetris implements Runnable {
 
     private List<userTetrisThing> things;
 
-    private int tab[][];
+    private int[][] tab;
 
     private int curX;
 
@@ -229,7 +229,7 @@ public class userTetris implements Runnable {
 
 class userTetrisThing {
 
-    private byte tab[][];
+    private byte[][] tab;
 
     private int sizeX;
 
@@ -287,7 +287,7 @@ class userTetrisThing {
         }
     }
 
-    public boolean isSpace(int t[][], int x, int y) {
+    public boolean isSpace(int[][] t, int x, int y) {
         if (x < 0) {
             return false;
         }
@@ -310,7 +310,7 @@ class userTetrisThing {
         return true;
     }
 
-    public void putThing(int t[][], int x, int y) {
+    public void putThing(int[][] t, int x, int y) {
         for (int o = 0; o < sizeY; o++) {
             for (int i = 0; i < sizeX; i++) {
                 if (tab[o][i] == userScreen.colBlack) {

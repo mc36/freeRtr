@@ -179,8 +179,7 @@ public class logger {
      */
     public static StackTraceElement[] getStackTrace() {
         try {
-            StackTraceElement sl[] = new Throwable().getStackTrace();
-            return sl;
+            return new Throwable().getStackTrace();
         } catch (Exception e) {
             return null;
         }

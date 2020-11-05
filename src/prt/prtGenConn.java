@@ -297,8 +297,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         if (closing) {
             return;
         }
-        if (stream) {
-        } else {
+        if (!stream) {
             upperP.datagramError(this, pck, rtr, err, lab);
         }
     }

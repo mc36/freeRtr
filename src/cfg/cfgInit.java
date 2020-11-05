@@ -198,7 +198,7 @@ public class cfgInit implements Runnable {
 
     private static boolean jvmSetup = false;
 
-    private final static String needInit[] = {
+    private final static String[] needInit = {
         "interface .*",
         "policy-map .*",
         "route-map .*",
@@ -209,7 +209,7 @@ public class cfgInit implements Runnable {
         "aaa .*"
     };
 
-    private final static String jvmMagic[] = {
+    private final static String[] jvmMagic = {
         "java.net.preferIPv4Stack=true",
         "java.net.preferIPv6Addresses=false"
     };
@@ -851,7 +851,7 @@ public class cfgInit implements Runnable {
      *
      * @param args parameters
      */
-    public static void doMain(String args[]) {
+    public static void doMain(String[] args) {
         String s = "";
         if (args.length > 0) {
             s = args[0];

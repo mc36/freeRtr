@@ -27,7 +27,7 @@ public class servDaytime extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server daytime .*! port " + port,
         "server daytime .*! protocol " + proto2string(protoAll)
     };

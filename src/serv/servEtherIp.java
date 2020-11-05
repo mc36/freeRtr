@@ -56,7 +56,7 @@ public class servEtherIp extends servGeneric implements ipPrt {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server etherip .*! port " + clntEtherIp.prot,
         "server etherip .*! protocol " + proto2string(protoAllDgrm),
         "server etherip .*! no physical-interface",

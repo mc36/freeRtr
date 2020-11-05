@@ -35,7 +35,7 @@ public class servRfb extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server rfb .*! port " + port,
         "server rfb .*! protocol " + proto2string(protoAllStrm)
     };

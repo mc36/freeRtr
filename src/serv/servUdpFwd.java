@@ -63,7 +63,7 @@ public class servUdpFwd extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server udpfwd .*! port " + port,
         "server udpfwd .*! protocol " + proto2string(protoAllDgrm),
         "server udpfwd .*! no target interface",

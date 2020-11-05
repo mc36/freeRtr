@@ -287,7 +287,6 @@ public class rtrVrrpIface implements ipPrt {
         nei.time = bits.getTime();
         nei.priority = hsr.priority;
         neighs.put(nei);
-        return;
     }
 
     /**

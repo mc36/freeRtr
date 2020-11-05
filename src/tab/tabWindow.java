@@ -10,9 +10,9 @@ public class tabWindow {
     /**
      * usage bitmap
      */
-    protected final byte mapDat[];
+    protected final byte[] mapDat;
 
-    private final Object mapPay[];
+    private final Object[] mapPay;
 
     private int mapSeq;
 
@@ -37,8 +37,7 @@ public class tabWindow {
                 o++;
             }
         }
-        String s = seq1st() + "-" + seqLst() + ", " + o + " miss, " + replay + " replay";
-        return s;
+        return seq1st() + "-" + seqLst() + ", " + o + " miss, " + replay + " replay";
     }
 
     /**

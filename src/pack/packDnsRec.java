@@ -520,7 +520,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
      */
     protected static String generateReverse4(addrIPv4 adr, String suff) {
         String s = "";
-        byte buf[] = adr.getBytes();
+        byte[] buf = adr.getBytes();
         for (int i = 0; i < buf.length; i++) {
             s = (buf[i] & 0xff) + "." + s;
         }
@@ -536,7 +536,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
      */
     protected static String generateReverse6(addrIPv6 adr, String suff) {
         String s = "";
-        byte buf[] = adr.getBytes();
+        byte[] buf = adr.getBytes();
         for (int i = 0; i < buf.length; i++) {
             String a = bits.toHexB(buf[i] & 0xff);
             s = a.substring(1, 2) + "." + a.substring(0, 1) + "." + s;

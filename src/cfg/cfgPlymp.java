@@ -38,7 +38,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "policy-map .*! sequence .* description ",
         "policy-map .*! sequence .* no match access-group",
         "policy-map .*! sequence .* match length all",

@@ -115,7 +115,7 @@ public class userTester {
 
     private syncInt traces = new syncInt(0);
 
-    private userTesterOne workers[];
+    private userTesterOne[] workers;
 
     /**
      * do the work
@@ -288,7 +288,7 @@ public class userTester {
             beg = "";
         }
         try {
-            File fils[] = new File(path).listFiles();
+            File[] fils = new File(path).listFiles();
             if (fils == null) {
                 return;
             }

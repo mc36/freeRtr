@@ -65,7 +65,7 @@ public class servFtp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server ftp .*! port " + portNum,
         "server ftp .*! protocol " + proto2string(protoAllStrm),
         "server ftp .*! readonly",
@@ -392,7 +392,7 @@ class servFtpDoer implements Runnable {
             }
             pos += rndl;
             int rndi = (int) rndl;
-            byte buf[] = new byte[rndi];
+            byte[] buf = new byte[rndi];
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {
@@ -440,7 +440,7 @@ class servFtpDoer implements Runnable {
         }
         for (;;) {
             final int max = 8192;
-            byte buf[] = new byte[max];
+            byte[] buf = new byte[max];
             int siz = data.moreGet(buf, 0, max);
             if (siz < 1) {
                 break;
@@ -744,7 +744,7 @@ class servFtpDoer implements Runnable {
         if (a.equals("pasv")) {
             addrIPv4 adr4 = conn.connCmnd.iface.addr.toIPv4();
             a = "";
-            byte buf[] = adr4.getBytes();
+            byte[] buf = adr4.getBytes();
             for (int i = 0; i < buf.length; i++) {
                 a = a + (buf[i] & 0xff) + ",";
             }
@@ -764,7 +764,7 @@ class servFtpDoer implements Runnable {
                 doLine("550 not allowed");
                 return false;
             }
-            byte buf[] = new byte[128];
+            byte[] buf = new byte[128];
             int i = 0;
             for (;;) {
                 a = cmd.word(",");

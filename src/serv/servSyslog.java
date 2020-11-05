@@ -40,7 +40,7 @@ public class servSyslog extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server syslog .*! port " + port,
         "server syslog .*! protocol " + proto2string(protoAllDgrm),
         "server syslog .*! no local",
@@ -55,7 +55,7 @@ public class servSyslog extends servGeneric implements prtServS {
     /**
      * facilities
      */
-    public final static String facilities[] = {
+    public final static String[] facilities = {
         "kernel", "user", "mail", "system", "security1", "syslogd",
         "lpd", "news", "uucp", "clock1", "security2", "ftp", "ntp",
         "logaudit", "logalert", "clock2", "local0", "local1", "local2",

@@ -9,7 +9,7 @@ import util.bits;
  */
 public class userGomoku {
 
-    private int store[][];
+    private int[][] store;
 
     private int curX;
 
@@ -97,7 +97,7 @@ public class userGomoku {
                         break;
                     }
                     store[curX][curY] = 1;
-                    int ps[] = evalMove(2);
+                    int[] ps = evalMove(2);
                     curX = ps[0];
                     curY = ps[1];
                     store[curX][curY] = 2;

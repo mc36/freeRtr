@@ -61,7 +61,7 @@ public class servPrometheus extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server prometheus .*! port " + port,
         "server prometheus .*! protocol " + proto2string(protoAllStrm),
         "server prometheus .*! all-metrics metrics",

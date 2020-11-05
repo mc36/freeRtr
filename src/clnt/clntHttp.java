@@ -342,7 +342,7 @@ public class clntHttp {
         pos = 0;
         for (;;) {
             final int max = 8192;
-            byte buf[] = new byte[max];
+            byte[] buf = new byte[max];
             int siz = pipe.moreGet(buf, 0, max);
             if (siz < 1) {
                 break;
@@ -441,7 +441,7 @@ public class clntHttp {
             }
             pos += rndl;
             int rndi = (int) rndl;
-            byte buf[] = new byte[rndi];
+            byte[] buf = new byte[rndi];
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {

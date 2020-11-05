@@ -119,7 +119,7 @@ public class servOpenflow extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server openflow .*! port " + packOpenflow.port,
         "server openflow .*! protocol " + proto2string(protoAllStrm),
         "server openflow .*! version 4"

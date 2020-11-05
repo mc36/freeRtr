@@ -42,7 +42,7 @@ public class servPckOtxt extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server pckotxt .*! port " + port,
         "server pckotxt .*! protocol " + proto2string(protoAllStrm)
     };

@@ -70,7 +70,7 @@ public class servNrpe extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server nrpe .*! port " + packNrpe.portNum,
         "server nrpe .*! protocol " + proto2string(protoAllStrm),
         "server nrpe .*! error-truncate 0",

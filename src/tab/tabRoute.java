@@ -147,7 +147,7 @@ public class tabRoute<T extends addrType> {
         tabRouteEntry<T> lst = get(0);
         for (int i = 1; i < size(); i++) {
             tabRouteEntry<T> cur = get(i);
-            if (lst.compare(lst, cur) != -1) {
+            if (lst.compare(lst, cur) >= 0) {
                 return i;
             }
             lst = cur;

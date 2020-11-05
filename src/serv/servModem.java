@@ -48,7 +48,7 @@ public class servModem extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server modem .*! port " + packSip.port,
         "server modem .*! protocol " + proto2string(protoAllDgrm),
         "server modem .*! codec alaw",

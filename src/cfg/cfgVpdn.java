@@ -334,7 +334,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "vpdn .*! no description",
         "vpdn .*! no interface",
         "vpdn .*! no bridge-group",

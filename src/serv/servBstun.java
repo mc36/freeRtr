@@ -30,7 +30,7 @@ public class servBstun extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server bstun .*! port " + lineBstun.port,
         "server bstun .*! protocol " + proto2string(protoAllStrm)
     };

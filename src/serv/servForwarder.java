@@ -91,7 +91,7 @@ public class servForwarder extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server forwarder .*! port " + port,
         "server forwarder .*! protocol " + proto2string(protoAllStrm),
         "server forwarder .*! no target interface",
@@ -209,10 +209,6 @@ public class servForwarder extends servGeneric implements prtServS {
         }
         if (a.equals("target")) {
             a = cmd.word();
-            if (a.equals("address")) {
-                trgAddr = null;
-                return false;
-            }
             if (a.equals("vrf")) {
                 trgVrf = null;
                 return false;

@@ -51,7 +51,7 @@ public class servVxlan extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server vxlan .*! port " + packVxlan.port,
         "server vxlan .*! protocol " + proto2string(protoAllDgrm),
         "server vxlan .*! no physical-interface"

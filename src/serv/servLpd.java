@@ -47,7 +47,7 @@ public class servLpd extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server lpd .*! port " + port,
         "server lpd .*! protocol " + proto2string(protoAllStrm),
         "server lpd .*! no script",

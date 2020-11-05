@@ -519,7 +519,7 @@ public class userScreen {
      * @param cl color
      */
     public void scrollDn(int cl) {
-        for (int i = sizY - 2; i >= 0; i++) {
+        for (int i = sizY - 2; i >= 0; i--) {
             chrs[i + 1] = chrs[i];
             atrs[i + 1] = atrs[i];
         }

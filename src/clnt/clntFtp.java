@@ -118,7 +118,7 @@ public class clntFtp implements prtServS {
                 return true;
             }
             prx.vrf.tcp4.streamListen(this, new pipeLine(65536, false), ifc, locprt, null, 0, "ftpc", null, -1);
-            byte buf[] = new byte[6];
+            byte[] buf = new byte[6];
             addrIPv4 adr4 = ifc.addr.toIPv4();
             adr4.toBuffer(buf, 0);
             bits.msbPutW(buf, 4, locprt);
@@ -134,7 +134,7 @@ public class clntFtp implements prtServS {
         cmds cmd = new cmds("ftp", getLine());
         cmd.word("(");
         cmd = new cmds("ftp", cmd.word(")"));
-        byte buf[] = new byte[6];
+        byte[] buf = new byte[6];
         for (int i = 0; i < buf.length; i++) {
             buf[i] = (byte) (bits.str2num(cmd.word(",")) & 0xff);
         }
@@ -213,7 +213,7 @@ public class clntFtp implements prtServS {
         cons.debugStat("receiving " + cons.getMax() + " bytes");
         for (;;) {
             final int max = 8192;
-            byte buf[] = new byte[max];
+            byte[] buf = new byte[max];
             int siz = data.moreGet(buf, 0, max);
             if (siz < 1) {
                 break;
@@ -290,7 +290,7 @@ public class clntFtp implements prtServS {
             }
             pos += rndl;
             int rndi = (int) rndl;
-            byte buf[] = new byte[rndi];
+            byte[] buf = new byte[rndi];
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {

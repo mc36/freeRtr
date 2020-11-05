@@ -66,7 +66,7 @@ public class servDns extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server dns .*! port " + packDns.portNum,
         "server dns .*! protocol " + proto2string(protoAll),
         "server dns .*! recursion access-all",

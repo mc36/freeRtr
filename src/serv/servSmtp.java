@@ -96,7 +96,7 @@ public class servSmtp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server smtp .*! port " + port,
         "server smtp .*! protocol " + proto2string(protoAllStrm),
         "server smtp .*! no recursion access-class",

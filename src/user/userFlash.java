@@ -74,7 +74,7 @@ public class userFlash {
             }
             pos += rndl;
             int rndi = (int) rndl;
-            byte buf[] = new byte[rndi];
+            byte[] buf = new byte[rndi];
             try {
                 fs.read(buf, 0, rndi);
             } catch (Exception e) {
@@ -268,7 +268,7 @@ public class userFlash {
                 if (red > max) {
                     red = max;
                 }
-                byte buf[] = new byte[(int) red];
+                byte[] buf = new byte[(int) red];
                 fs.read(buf, 0, buf.length);
                 buf2hex(l, buf, (int) pos);
                 pos += buf.length;

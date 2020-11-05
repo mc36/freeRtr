@@ -224,7 +224,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             pwom.setUpper(per.brdg);
             pwom.workStart();
         }
-        boolean usd[] = null;
+        boolean[] usd = null;
         if ((veId != 0) && (veLab != null)) {
             usd = new boolean[veMax];
         }

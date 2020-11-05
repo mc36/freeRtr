@@ -225,8 +225,7 @@ public class prtIcmp implements ipPrt, ifcDn {
      * @return mtu size
      */
     public int getMTUsize() {
-        int i = sendingIfc.mtu - icmpSiz;
-        return i;
+        return sendingIfc.mtu - icmpSiz;
     }
 
     /**

@@ -37,7 +37,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "tracker .*! no description",
         "tracker .*! force normal",
         "tracker .*! no script",

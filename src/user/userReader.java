@@ -73,7 +73,7 @@ public class userReader implements Comparator<String> {
 
     private userHelping help; // help context
 
-    private String histD[]; // history data
+    private String[] histD; // history data
 
     private int histN; // history number
 
@@ -220,7 +220,7 @@ public class userReader implements Comparator<String> {
      * @param num size
      */
     public void setHistory(int num) {
-        String d[] = new String[num];
+        String[] d = new String[num];
         for (int i = 0; i < num; i++) {
             d[i] = "";
         }
@@ -613,7 +613,7 @@ public class userReader implements Comparator<String> {
     }
 
     private int readChar() {
-        byte buf[] = new byte[1];
+        byte[] buf = new byte[1];
         int i = pipe.blockingGet(buf, 0, buf.length);
         if (i != buf.length) {
             return -1;

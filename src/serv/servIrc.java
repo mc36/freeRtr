@@ -47,7 +47,7 @@ public class servIrc extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server irc .*! port " + port,
         "server irc .*! protocol " + proto2string(protoAllStrm),
         "server irc .*! no logging"

@@ -60,7 +60,7 @@ public class servRadius extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server radius .*! port " + packRadius.port,
         "server radius .*! protocol " + proto2string(protoAllDgrm),
         "server radius .*! no secret",

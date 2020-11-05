@@ -20,7 +20,7 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "menu .*! no description",
         "menu .*! no ignore-case"
     };

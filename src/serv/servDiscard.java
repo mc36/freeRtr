@@ -27,7 +27,7 @@ public class servDiscard extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server discard .*! port " + port,
         "server discard .*! protocol " + proto2string(protoAll)
     };

@@ -50,7 +50,7 @@ public class servMplsIp extends servGeneric implements ipPrt {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server mplsip .*! port " + prtMplsIp.prot,
         "server mplsip .*! protocol " + proto2string(protoAllDgrm),
         "server mplsip .*! timeout 60000"

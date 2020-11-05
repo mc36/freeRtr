@@ -104,7 +104,7 @@ public class servHttp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server http .*! port " + clearPort,
         "server http .*! protocol " + proto2string(protoAllStrm),
         "server http .*! no proxy",
@@ -1799,7 +1799,7 @@ class servHttpConn implements Runnable {
                 rndl = max;
             }
             int rndi = (int) rndl;
-            byte buf[] = new byte[rndi];
+            byte[] buf = new byte[rndi];
             try {
                 fr.seek(pos);
                 fr.read(buf, 0, rndi);
@@ -2446,11 +2446,11 @@ class servHttpConn implements Runnable {
                 doSubconn(srvUrl);
                 urls.add(srvUrl);
             }
-            addrIP adrs[] = new addrIP[urls.size()];
+            addrIP[] adrs = new addrIP[urls.size()];
             for (int i = 0; i < adrs.length; i++) {
                 adrs[i] = userTerminal.justResolv(urls.get(i).server, gotHost.multiAccP.prefer);
             }
-            pipeSide cons[] = new pipeSide[adrs.length];
+            pipeSide[] cons = new pipeSide[adrs.length];
             for (int i = 0; i < adrs.length; i++) {
                 cons[i] = null;
                 if (adrs[i] == null) {

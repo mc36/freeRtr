@@ -76,9 +76,6 @@ public class state {
         if (stat == states.admin) {
             return states.admin;
         }
-        if (stat == states.admin) {
-            return states.admin;
-        }
         if (stat == states.close) {
             return states.admin;
         }

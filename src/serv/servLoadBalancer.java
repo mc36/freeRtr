@@ -64,7 +64,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server loadbalancer .*! port " + port,
         "server loadbalancer .*! protocol " + proto2string(protoAllStrm),
         "server loadbalancer .*! no source",

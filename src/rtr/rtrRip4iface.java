@@ -489,8 +489,8 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
         if (authentication == null) {
             return new byte[0];
         }
-        byte buf[] = new byte[rtrRip4.sizeNtry];
-        byte ab[] = authentication.getBytes();
+        byte[] buf = new byte[rtrRip4.sizeNtry];
+        byte[] ab = authentication.getBytes();
         bits.byteFill(buf, 0, rtrRip4.sizeNtry, 0);
         bits.msbPutW(buf, 0, 0xffff); // authentication header
         bits.msbPutW(buf, 2, 2); // authentication type
@@ -514,7 +514,7 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
         pck.putByte(1, rtrRip4.version); // version
         pck.msbPutW(2, 0); // reserved
         pck.putSkip(rtrRip4.sizeHead); // size of header
-        byte buf[] = getAuthData();
+        byte[] buf = getAuthData();
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
     }

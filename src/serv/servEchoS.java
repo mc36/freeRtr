@@ -27,7 +27,7 @@ public class servEchoS extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server echo .*! port " + port,
         "server echo .*! protocol " + proto2string(protoAll)
     };

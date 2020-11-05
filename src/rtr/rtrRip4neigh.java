@@ -92,7 +92,7 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
             logger.info("got authed " + conn);
             return true;
         }
-        byte buf[] = iface.getAuthData();
+        byte[] buf = iface.getAuthData();
         for (int i = 0; i < buf.length; i++) {
             if (pck.getByte(i) != (buf[i] & 0xff)) {
                 logger.info("bad auth " + conn);

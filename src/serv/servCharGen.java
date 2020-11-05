@@ -26,7 +26,7 @@ public class servCharGen extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server chargen .*! port " + port,
         "server chargen .*! protocol " + proto2string(protoAllStrm)
     };
@@ -96,7 +96,7 @@ class servCharGenDoer implements Runnable {
     public void run() {
         try {
             for (;;) {
-                byte buf[] = new byte[1024];
+                byte[] buf = new byte[1024];
                 pipe.nonBlockGet(buf, 0, buf.length);
                 if (pipe.isClosed() != 0) {
                     break;

@@ -69,7 +69,7 @@ class pipeDiscardDoer implements Runnable {
     public void run() {
         try {
             for (;;) {
-                byte buf[] = new byte[siz];
+                byte[] buf = new byte[siz];
                 if (rx.blockingGet(buf, 0, buf.length) < 0) {
                     break;
                 }

@@ -108,7 +108,7 @@ class pipeTermRx implements Runnable {
                 if (!parent.runningNeed) {
                     break;
                 }
-                byte buf[] = new byte[pipeTerm.theradBuf];
+                byte[] buf = new byte[pipeTerm.theradBuf];
                 int siz = parent.stream.nonBlockGet(buf, 0, buf.length);
                 if (siz < 1) {
                     bits.sleep(pipeTerm.threadTime);
@@ -138,7 +138,7 @@ class pipeTermTx implements Runnable {
                 if (!parent.runningNeed) {
                     break;
                 }
-                byte buf[] = new byte[pipeTerm.theradBuf];
+                byte[] buf = new byte[pipeTerm.theradBuf];
                 int siz = parent.console.nonBlockGet(buf, 0, buf.length);
                 if (siz < 1) {
                     bits.sleep(pipeTerm.threadTime);

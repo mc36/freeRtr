@@ -52,7 +52,7 @@ public class servL2f extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server l2f .*! port " + packL2f.port,
         "server l2f .*! protocol " + proto2string(protoAllDgrm),
         "server l2f .*! no password"

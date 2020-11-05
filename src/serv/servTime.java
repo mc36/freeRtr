@@ -28,7 +28,7 @@ public class servTime extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server time .*! port " + port,
         "server time .*! protocol " + proto2string(protoAll)
     };

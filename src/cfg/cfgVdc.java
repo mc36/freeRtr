@@ -188,7 +188,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "vdc definition .*! no description",
         "vdc definition .*! respawn",
         "vdc definition .*! config null",

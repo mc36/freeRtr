@@ -39,7 +39,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "proxy-profile .*! no description",
         "proxy-profile .*! protocol local",
         "proxy-profile .*! no security",

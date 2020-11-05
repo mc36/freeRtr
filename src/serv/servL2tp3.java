@@ -85,7 +85,7 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server l2tp3 .*! port " + packL2tp3.prot,
         "server l2tp3 .*! protocol " + proto2string(protoAllDgrm),
         "server l2tp3 .*! no physical-interface",

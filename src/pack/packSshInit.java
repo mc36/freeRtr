@@ -155,8 +155,7 @@ public class packSshInit {
         }
         byte[] keyT = new byte[h.getHashSize()];
         bits.byteCopy(keyO, 0, keyT, 0, keyT.length);
-        cryHashHmac x = new cryHashHmac(h, keyT);
-        return x;
+        return new cryHashHmac(h, keyT);
     }
 
     /**

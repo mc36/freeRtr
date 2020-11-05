@@ -37,7 +37,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "time-map .*! no description",
         "time-map .*! sequence .* match year all",
         "time-map .*! sequence .* match month all",

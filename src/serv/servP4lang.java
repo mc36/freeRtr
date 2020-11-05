@@ -185,7 +185,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server p4lang .*! port " + port,
         "server p4lang .*! protocol " + proto2string(protoAllStrm),
         "server p4lang .*! no export-srv6",
@@ -2322,9 +2322,6 @@ class servP4langConn implements Runnable {
             int o = 0;
             for (i = 0; i < lower.expIfc.size(); i++) {
                 servP4langIfc ntry = lower.expIfc.get(i);
-                if (ntry == ifc) {
-                    continue;
-                }
                 if (ntry == ifc) {
                     continue;
                 }

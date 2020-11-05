@@ -886,7 +886,7 @@ public class packHolder {
      * @return checksum calculated
      */
     public int pseudoIPsum(int len) {
-        byte buf[] = new byte[4];
+        byte[] buf = new byte[4];
         bits.msbPutW(buf, 0, IPprt);
         bits.msbPutW(buf, 2, len);
         int sum = bits.byteIPsum(IPsrc.getBytes(), 0, IPsrc.getSize(), 0);
@@ -1175,7 +1175,7 @@ public class packHolder {
      * @return value returned by nonblocking get on pipeline
      */
     public int pipeRecv(pipeSide pipe, int rofs, int len, int blocking) {
-        byte buf[] = null;
+        byte[] buf = null;
         switch ((blocking / 100) % 10) {
             case 0:
                 rofs += headS;

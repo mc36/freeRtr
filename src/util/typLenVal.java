@@ -13,7 +13,7 @@ public class typLenVal {
     /**
      * where to store value
      */
-    public byte valDat[];
+    public byte[] valDat;
 
     /**
      * size of value stored
@@ -164,7 +164,7 @@ public class typLenVal {
      * @return readed bytes
      */
     public byte[] copyBytes() {
-        byte buf[] = new byte[valSiz];
+        byte[] buf = new byte[valSiz];
         bits.byteCopy(valDat, 0, buf, 0, buf.length);
         return buf;
     }
@@ -178,7 +178,7 @@ public class typLenVal {
      * @param len length of value
      * @param val value
      */
-    public void putBytes(packHolder pck, int bits[], int typ, int len, byte val[]) {
+    public void putBytes(packHolder pck, int[] bits, int typ, int len, byte[] val) {
         pck.putFill(0, skipSiz, 0);
         if (typOfs <= lenOfs) {
             putType(pck, typ);
@@ -231,7 +231,7 @@ public class typLenVal {
      * @param len length of value
      * @param val value
      */
-    public void putBytes(packHolder pck, int typ, int len, byte val[]) {
+    public void putBytes(packHolder pck, int typ, int len, byte[] val) {
         putBytes(pck, null, typ, len, val);
     }
 
@@ -242,7 +242,7 @@ public class typLenVal {
      * @param typ type of value
      * @param val value
      */
-    public void putBytes(packHolder pck, int typ, byte val[]) {
+    public void putBytes(packHolder pck, int typ, byte[] val) {
         putBytes(pck, null, typ, val.length, val);
     }
 
@@ -254,7 +254,7 @@ public class typLenVal {
      * @param typ type of value
      * @param val value
      */
-    public void putBytes(packHolder pck, int bits[], int typ, byte val[]) {
+    public void putBytes(packHolder pck, int[] bits, int typ, byte[] val) {
         putBytes(pck, bits, typ, val.length, val);
     }
 

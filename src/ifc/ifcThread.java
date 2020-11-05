@@ -66,7 +66,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
 
     private long procTim = 0;
 
-    private Thread started[] = new Thread[0];
+    private Thread[] started = new Thread[0];
 
     private boolean need2run = true;
 

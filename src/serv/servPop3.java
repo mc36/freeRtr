@@ -49,7 +49,7 @@ public class servPop3 extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server pop3 .*! port " + port,
         "server pop3 .*! protocol " + proto2string(protoAllStrm)
     };
@@ -196,7 +196,7 @@ class servPop3doer implements Runnable {
 
     public tabGen<servPop3msg> getMsgList() {
         File f;
-        File fl[] = null;
+        File[] fl = null;
         try {
             f = new File(lower.mailFolders + userN);
             fl = f.listFiles();

@@ -170,7 +170,7 @@ public class servStreamingMdt extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server streamingmdt .*! port " + port,
         "server streamingmdt .*! protocol " + proto2string(protoAllStrm),};
 

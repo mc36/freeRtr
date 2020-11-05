@@ -49,7 +49,7 @@ public class servVoice extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server voice .*! port " + packSip.port,
         "server voice .*! protocol " + proto2string(protoAllDgrm),
         "server voice .*! codec alaw",

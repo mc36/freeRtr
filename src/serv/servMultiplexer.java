@@ -60,7 +60,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server multiplexer .*! port " + port,
         "server multiplexer .*! protocol " + proto2string(protoAllStrm),
         "server multiplexer .*! timeout 60000",

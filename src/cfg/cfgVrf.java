@@ -326,7 +326,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "vrf definition .*! no description",
         "vrf definition .*! rd 0:0",
         "vrf definition .*! rt-import",

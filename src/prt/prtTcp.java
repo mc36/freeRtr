@@ -171,11 +171,10 @@ public class prtTcp extends prtGen {
      * @return flag in string
      */
     public static String decodeFlags(int i) {
-        String s = bits.bit2str(i, flagFIN, "fin") + " " + bits.bit2str(i, flagSYN, "syn") + " "
+        return bits.bit2str(i, flagFIN, "fin") + " " + bits.bit2str(i, flagSYN, "syn") + " "
                 + bits.bit2str(i, flagRST, "rst") + " " + bits.bit2str(i, flagACK, "ack") + " " + bits.bit2str(i, flagPSH, "psh")
                 + " " + bits.bit2str(i, flagURG, "urg") + " " + bits.bit2str(i, flagECE, "ece") + " "
                 + bits.bit2str(i, flagCWR, "cwr");
-        return s;
     }
 
     private static typLenVal getTCPoption(packHolder pck) {
@@ -497,7 +496,7 @@ public class prtTcp extends prtGen {
         synchronized (pr.lck) {
             pck.clear();
             if (datSiz > 0) {
-                byte buf[] = new byte[pr.netOut + datSiz];
+                byte[] buf = new byte[pr.netOut + datSiz];
                 datSiz = pr.netBufRx.nonDestructiveGet(buf, 0, pr.netOut + datSiz) - pr.netOut;
                 if (datSiz < 1) {
                     return 0;

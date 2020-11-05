@@ -63,7 +63,7 @@ public class verCore {
     /**
      * license text
      */
-    public final static String license[] = {
+    public final static String[] license = {
         "place on the web: " + homeUrl,
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
         "quote1: make the world better",
@@ -78,7 +78,7 @@ public class verCore {
     /**
      * logo text
      */
-    public final static String logo[] = {
+    public final static String[] logo = {
         "#######                         ##################",
         " ##  ##                                 ##",
         " ##   # ## ###   #####   #####  ## ###  ## ## ###",
@@ -92,6 +92,6 @@ public class verCore {
     /**
      * interface names
      */
-    public final static String ifaces[] = {"atm", "ethernet", "serial", "cellular", "wireless"};
+    public final static String[] ifaces = {"atm", "ethernet", "serial", "cellular", "wireless"};
 
 }

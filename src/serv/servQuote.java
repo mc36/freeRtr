@@ -32,7 +32,7 @@ public class servQuote extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server quote .*! port " + port,
         "server quote .*! protocol " + proto2string(protoAll)
     };

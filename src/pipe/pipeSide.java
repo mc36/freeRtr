@@ -160,7 +160,7 @@ public class pipeSide {
 
     private final int headSize; // packet boundary size
 
-    private final byte bufD[]; // bytes
+    private final byte[] bufD; // bytes
 
     private final int bufS; // size
 
@@ -539,7 +539,7 @@ public class pipeSide {
      * @return bytes done, or negative error code
      */
     public int nonBlockSkip(int len) {
-        byte buf[] = new byte[len + 16];
+        byte[] buf = new byte[len + 16];
         int i = bufGet(buf, 0, len, false);
         if (i > 0) {
             peerSideOfPipeLine.notif.wakeup();
@@ -610,7 +610,7 @@ public class pipeSide {
      * @return bytes done, or negative error code
      */
     public int blockingSkip(int len) {
-        byte buf[] = new byte[len];
+        byte[] buf = new byte[len];
         for (;;) {
             int i = nonBlockGet(buf, 0, len);
             if (i == pipeLine.tryLater) {
@@ -704,7 +704,7 @@ public class pipeSide {
      * @param s string to put
      */
     public void strPut(String s) {
-        byte buf[] = s.getBytes();
+        byte[] buf = s.getBytes();
         morePut(buf, 0, buf.length);
     }
 
@@ -715,7 +715,7 @@ public class pipeSide {
      * @return string read, null on error
      */
     public String strGet(int len) {
-        byte buf[] = new byte[len];
+        byte[] buf = new byte[len];
         int o = moreGet(buf, 0, len);
         if (o < 1) {
             return null;
@@ -733,7 +733,7 @@ public class pipeSide {
     public String strChr(String quest, String need) {
         for (;;) {
             strPut(quest);
-            byte buf[] = new byte[1];
+            byte[] buf = new byte[1];
             int o = moreGet(buf, 0, buf.length);
             if (o != buf.length) {
                 return "";
@@ -753,7 +753,7 @@ public class pipeSide {
      * @param s string to write
      */
     public void linePut(String s) {
-        byte buf[] = s.getBytes();
+        byte[] buf = s.getBytes();
         int i = morePut(buf, 0, buf.length);
         if (i < buf.length) {
             return;
@@ -766,7 +766,7 @@ public class pipeSide {
     }
 
     private boolean gotOneChar(pipeSide.modTyp last, pipeSide.modTyp curr) {
-        byte buf[] = new byte[4];
+        byte[] buf = new byte[4];
         switch (lineRx) {
             case modeCR:
             case modeLF:
@@ -828,7 +828,7 @@ public class pipeSide {
         String s = "";
         pipeSide.modTyp last = null;
         for (;;) {
-            byte buf[] = new byte[4];
+            byte[] buf = new byte[4];
             pipeSide.modTyp curr = null;
             int i = blockingGet(buf, 0, 1);
             if (i == pipeLine.tryLater) {

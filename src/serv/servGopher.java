@@ -47,7 +47,7 @@ public class servGopher extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server gopher .*! port " + portNum,
         "server gopher .*! protocol " + proto2string(protoAllStrm),
         "server gopher .*! no dirlist"
@@ -184,7 +184,7 @@ class servGopherConn implements Runnable {
             }
             pos += rndl;
             int rndi = (int) rndl;
-            byte buf[] = new byte[rndi];
+            byte[] buf = new byte[rndi];
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {

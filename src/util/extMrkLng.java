@@ -519,7 +519,6 @@ public class extMrkLng {
      */
     public static int findParam(List<extMrkLngEntry> lst, String ned) {
         for (int i = 0; i < lst.size(); i++) {
-            lst.get(i);
             if (ned.indexOf("|" + lst.get(i).name.trim().toLowerCase() + "|") >= 0) {
                 return i;
             }

@@ -651,7 +651,6 @@ public class userClear {
                 nei.conn.gotRefresh(sfi);
             }
         }
-        return;
     }
 
     private void doClearIpXbfd(int afi) {

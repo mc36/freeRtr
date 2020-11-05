@@ -46,7 +46,7 @@ public class pipeConsole implements Runnable {
                 if (pipe.isClosed() != 0) {
                     break;
                 }
-                byte buf[] = new byte[1];
+                byte[] buf = new byte[1];
                 int i = System.in.read(buf);
                 if (i < 0) {
                     break;
@@ -73,7 +73,7 @@ class pipeConsoleDisp implements Runnable {
     public void run() {
         try {
             for (;;) {
-                byte buf[] = new byte[1024];
+                byte[] buf = new byte[1024];
                 int siz = pipe.blockingGet(buf, 0, buf.length);
                 if (siz < 0) {
                     break;

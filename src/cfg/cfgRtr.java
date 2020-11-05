@@ -168,7 +168,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         // router *
         "router .*! no automesh",
         // router pvrp

@@ -139,7 +139,6 @@ public class userImage {
         for (int i = 0; i < pkt.depend.size(); i++) {
             selectOnePackage(level + 1, pkt.depend.get(i), nam);
         }
-        return;
     }
 
     private void downAllFiles() {

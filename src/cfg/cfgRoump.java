@@ -42,7 +42,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "route-map .*! sequence .* description ",
         "route-map .*! sequence .* tcldel",
         "route-map .*! sequence .* no match prefix-list",

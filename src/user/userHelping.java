@@ -213,7 +213,7 @@ public class userHelping {
      * chars -3 string does not match to any of lines -4 generic error
      */
     private userHelpingList matchStr(userHelpingList lns, String s) {
-        byte b1[] = s.trim().toLowerCase().getBytes();
+        byte[] b1 = s.trim().toLowerCase().getBytes();
         userHelpingList d = new userHelpingList();
         for (int o = 0; o < lns.num; o++) {
             int i = lns.val[o];
@@ -226,7 +226,7 @@ public class userHelping {
                 d.add(-1);
                 continue;
             }
-            byte b2[] = dat.command.trim().toLowerCase().getBytes();
+            byte[] b2 = dat.command.trim().toLowerCase().getBytes();
             for (i = 0;; i++) {
                 if (i >= b1.length) {
                     break;
@@ -595,7 +595,7 @@ public class userHelping {
 
 class userHelpingList {
 
-    public int val[] = new int[128]; // values
+    public int[] val = new int[128]; // values
 
     public int num; // number of values
 

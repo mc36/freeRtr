@@ -24,7 +24,7 @@ public class servUpnpHub extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server upnphub .*! port " + packUpnpFwd.portNum,
         "server upnphub .*! protocol " + proto2string(protoNets + protoUdp)
     };

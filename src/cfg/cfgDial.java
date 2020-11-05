@@ -59,7 +59,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "dial-peer .*! no description",
         "dial-peer .*! no skip-peers-in",
         "dial-peer .*! no skip-peers-out",
@@ -1117,7 +1117,6 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
             return;
         }
         cmd.badCmd();
-        return;
     }
 
     public String getPrompt() {

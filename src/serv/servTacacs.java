@@ -69,7 +69,7 @@ public class servTacacs extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server tacacs .*! port " + packTacacs.port,
         "server tacacs .*! protocol " + proto2string(protoAllStrm),
         "server tacacs .*! no secret",

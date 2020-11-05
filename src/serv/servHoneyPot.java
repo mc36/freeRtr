@@ -41,7 +41,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server honeypot .*! port " + port,
         "server honeypot .*! protocol " + proto2string(protoAllStrm),
         "server honeypot .*! no command",

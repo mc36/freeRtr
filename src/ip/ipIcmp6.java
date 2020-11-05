@@ -628,7 +628,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
         if (hwa.getSize() > 0) {
             tlv.putAddr(pck, 1, hwa); // hw address
         }
-        byte buf[] = new byte[64];
+        byte[] buf = new byte[64];
         buf[0] = (byte) mask; // prefix length
         buf[1] = (byte) 0xc0; // onlink:1 auto:1 router:1 site:1 reserved:4
         bits.msbPutD(buf, 2, 2592000); // valid lifetime

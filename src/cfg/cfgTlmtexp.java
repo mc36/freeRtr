@@ -88,7 +88,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "telemetry exporter .*! no description",
         "telemetry exporter .*! name 0 null",
         "telemetry exporter .*! path null",

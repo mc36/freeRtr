@@ -41,9 +41,9 @@ public class clntMplsExp implements ifcDn {
      */
     public counter cntr = new counter();
 
-    private final ifcEthTyp lowers[] = new ifcEthTyp[8];
+    private final ifcEthTyp[] lowers = new ifcEthTyp[8];
 
-    private final cfgIfc ifaces[] = new cfgIfc[8];
+    private final cfgIfc[] ifaces = new cfgIfc[8];
 
     public String toString() {
         return "expbundle over " + getTargets();

@@ -64,7 +64,7 @@ public class servPptp extends servGeneric implements ipPrt, prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server pptp .*! port " + packPptp.port,
         "server pptp .*! protocol " + proto2string(protoAllStrm)
     };

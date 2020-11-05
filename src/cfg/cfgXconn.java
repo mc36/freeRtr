@@ -51,7 +51,7 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "xconnect .*! no description",
         "xconnect .*! mtu 1500",
         "xconnect .*! type ethernet",

@@ -51,7 +51,7 @@ public class servNetflow extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server netflow .*! port " + packNetflow.port,
         "server netflow .*! protocol " + proto2string(protoAllDgrm),
         "server netflow .*! timeout 60000",

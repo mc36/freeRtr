@@ -41,7 +41,7 @@ public class servL2tp2 extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server l2tp2 .*! port " + packL2tp2.port,
         "server l2tp2 .*! protocol " + proto2string(protoAllDgrm),
         "server l2tp2 .*! no password"

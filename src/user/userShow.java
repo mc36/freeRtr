@@ -1716,7 +1716,6 @@ public class userShow {
             return;
         }
         cmd.badCmd();
-        return;
     }
 
     private void doShowIpXlogger(tabRouteAttr.routeType afi) {
@@ -1913,7 +1912,6 @@ public class userShow {
             return;
         }
         cmd.badCmd();
-        return;
     }
 
     private void doShowIpXpvrp(tabRouteAttr.routeType afi) {
@@ -1960,7 +1958,6 @@ public class userShow {
             return;
         }
         cmd.badCmd();
-        return;
     }
 
     private void doShowIpXisis(tabRouteAttr.routeType afi) {
@@ -2023,7 +2020,6 @@ public class userShow {
             return;
         }
         cmd.badCmd();
-        return;
     }
 
     private ipFwd findVrf(int ver) {
@@ -3369,7 +3365,6 @@ public class userShow {
             return;
         }
         cmd.badCmd();
-        return;
     }
 
     private int bgpMask2filter(int mask) {
@@ -3415,7 +3410,6 @@ public class userShow {
             return;
         }
         cmd.badCmd();
-        return;
     }
 
     private void doShowIpXvrf(int ver) {

@@ -28,7 +28,7 @@ public class servTelnet extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         "server telnet .*! port " + port,
         "server telnet .*! protocol " + proto2string(protoAllStrm)
     };

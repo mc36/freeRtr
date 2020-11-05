@@ -911,7 +911,7 @@ public class cfgAll {
     /**
      * defaults text
      */
-    public final static String defaultL[] = {
+    public final static String[] defaultL = {
         // logging
         "!logging buffered debug 512",
         "!logging monitor debug",
