@@ -59,6 +59,16 @@ public class packSshChan {
     public final static String reqShell = "shell";
 
     /**
+     * exec request
+     */
+    public final static String reqExec = "exec";
+
+    /**
+     * subsystem request
+     */
+    public final static String reqSubsys = "subsystem";
+
+    /**
      * environment request
      */
     public final static String reqEnv = "env";

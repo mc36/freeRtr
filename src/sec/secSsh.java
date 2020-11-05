@@ -435,6 +435,16 @@ public class secSsh implements Runnable {
                 p.packSend();
                 break;
             }
+            if (pc.type.equals(packSshChan.reqExec)) {
+                pc.chanSuccCreate();
+                p.packSend();
+                break;
+            }
+            if (pc.type.equals(packSshChan.reqSubsys)) {
+                pc.chanSuccCreate();
+                p.packSend();
+                break;
+            }
             if (pc.type.equals(packSshChan.reqPtyReq)) {
                 pc.chanSuccCreate();
                 p.packSend();
