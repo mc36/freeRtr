@@ -174,7 +174,7 @@ public class markDown {
                 continue;
             }
             if (s.equals("---") || s.equals("***") || s.equals("___")) {
-                res += "<hr>\n";
+                res += "<hr/>\n";
                 continue;
             }
             if (isUnList(s)) {
