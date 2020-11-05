@@ -14,6 +14,9 @@ import util.logger;
  */
 public class tabRtrplc {
 
+    private tabRtrplc() {
+    }
+
     /**
      * indent table
      *

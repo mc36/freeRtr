@@ -16,6 +16,9 @@ import util.logger;
  */
 public class pipeModem {
 
+    private pipeModem() {
+    }
+
     /**
      * answer a call
      *

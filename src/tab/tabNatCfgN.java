@@ -1,11 +1,5 @@
 package tab;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import pack.packHolder;
-import util.bits;
-import util.cmds;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
@@ -14,6 +8,11 @@ import cfg.cfgAceslst;
 import cfg.cfgAll;
 import cfg.cfgIfc;
 import ip.ipIcmp;
+import java.util.ArrayList;
+import java.util.List;
+import pack.packHolder;
+import util.bits;
+import util.cmds;
 
 /**
  * represents one nat config (source/target, orig/new)

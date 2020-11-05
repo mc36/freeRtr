@@ -3,14 +3,14 @@ package tab;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
-import java.util.ArrayList;
-import java.util.List;
+import addr.addrPrefix;
+import addr.addrType;
 import cfg.cfgAll;
 import cfg.cfgObjnet;
 import cfg.cfgObjprt;
+import java.util.ArrayList;
+import java.util.List;
 import pack.packHolder;
-import addr.addrPrefix;
-import addr.addrType;
 import util.bits;
 import util.cmds;
 

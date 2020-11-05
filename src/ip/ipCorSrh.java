@@ -12,6 +12,9 @@ import util.logger;
  */
 public class ipCorSrh {
 
+    private ipCorSrh() {
+    }
+
     /**
      * protocol number
      */

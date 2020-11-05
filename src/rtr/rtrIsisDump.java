@@ -19,6 +19,9 @@ import util.typLenVal;
  */
 public class rtrIsisDump {
 
+    private rtrIsisDump() {
+    }
+
     /**
      * dump lsp
      *

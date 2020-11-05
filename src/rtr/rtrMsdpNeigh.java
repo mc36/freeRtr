@@ -1,9 +1,9 @@
 package rtr;
 
-import auth.authLocal;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
+import auth.authLocal;
 import cfg.cfgIfc;
 import ip.ipFwdIface;
 import ip.ipFwdMcast;

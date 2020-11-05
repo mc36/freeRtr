@@ -1,8 +1,8 @@
 package pack;
 
+import cry.cryHashMd5;
 import pipe.pipeSide;
 import util.bits;
-import cry.cryHashMd5;
 
 /**
  * terminal access controller access control system (rfc1492) packet

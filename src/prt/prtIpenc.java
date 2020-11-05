@@ -12,8 +12,8 @@ import ip.ipFwdIface;
 import ip.ipPrt;
 import pack.packHolder;
 import util.counter;
-import util.state;
 import util.logger;
+import util.state;
 
 /**
  * internet encapsulation protocol (rfc1241) packets

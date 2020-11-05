@@ -1,10 +1,16 @@
 package clnt;
 
+import addr.addrEmpty;
+import addr.addrIP;
+import addr.addrType;
+import cfg.cfgIfc;
+import cfg.cfgVrf;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import ip.ipFwd;
 import ip.ipFwdIface;
+import ip.ipFwdTab;
 import ip.ipMpls;
 import pack.packHolder;
 import pack.packLdpPwe;
@@ -18,12 +24,6 @@ import util.counter;
 import util.debugger;
 import util.logger;
 import util.state;
-import addr.addrEmpty;
-import addr.addrIP;
-import addr.addrType;
-import cfg.cfgIfc;
-import cfg.cfgVrf;
-import ip.ipFwdTab;
 
 /**
  * pseudo wire over mpls (rfc4447) client

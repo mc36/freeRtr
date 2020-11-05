@@ -17,8 +17,8 @@ import ip.ipIfc6;
 import ip.ipPrt;
 import pack.packHolder;
 import util.counter;
-import util.state;
 import util.logger;
+import util.state;
 
 /**
  * minimal encapsulation (rfc2004) packets

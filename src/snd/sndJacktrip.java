@@ -9,6 +9,9 @@ import pack.packHolder;
  */
 public class sndJacktrip {
 
+    private sndJacktrip() {
+    }
+
     /**
      * size of header
      */

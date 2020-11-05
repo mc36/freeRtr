@@ -1,13 +1,12 @@
 package cfg;
 
+import addr.addrPool;
+import addr.addrType;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import user.userHelping;
 import util.cmds;
-import addr.addrPool;
-import addr.addrType;
 
 /**
  * address pool configuration

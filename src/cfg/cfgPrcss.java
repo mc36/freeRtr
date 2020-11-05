@@ -8,12 +8,12 @@ import pipe.pipeDiscard;
 import pipe.pipeLine;
 import pipe.pipeShell;
 import pipe.pipeSide;
+import tab.tabGen;
 import user.userFilter;
 import user.userHelping;
-import util.cmds;
 import util.bits;
+import util.cmds;
 import util.logger;
-import tab.tabGen;
 
 /**
  * one process configuration

@@ -1,10 +1,9 @@
 package rtr;
 
+import addr.addrIsis;
 import java.util.Comparator;
-
 import pack.packHolder;
 import util.bits;
-import addr.addrIsis;
 
 /**
  * isis lsp

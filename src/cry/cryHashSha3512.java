@@ -1,7 +1,6 @@
 package cry;
 
 import java.security.MessageDigest;
-
 import util.logger;
 
 /**

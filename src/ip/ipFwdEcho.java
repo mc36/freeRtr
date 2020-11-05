@@ -1,11 +1,10 @@
 package ip;
 
-import java.util.Comparator;
-
-import util.notifier;
 import addr.addrIP;
+import java.util.Comparator;
 import pack.packHolder;
 import util.counter;
+import util.notifier;
 
 /**
  * stores one echo session

@@ -1,5 +1,8 @@
 package prt;
 
+import addr.addrEmpty;
+import addr.addrIP;
+import addr.addrType;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
@@ -11,9 +14,6 @@ import util.counter;
 import util.debugger;
 import util.logger;
 import util.state;
-import addr.addrEmpty;
-import addr.addrIP;
-import addr.addrType;
 
 /**
  * handle gre (rfc2784) packets

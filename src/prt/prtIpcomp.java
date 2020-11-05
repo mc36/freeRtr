@@ -13,8 +13,8 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import pack.packHolder;
 import util.counter;
-import util.state;
 import util.logger;
+import util.state;
 
 /**
  * ip compression (rfc2393) packets

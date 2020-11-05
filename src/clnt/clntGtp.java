@@ -1,5 +1,10 @@
 package clnt;
 
+import addr.addrEmpty;
+import addr.addrIP;
+import addr.addrType;
+import cfg.cfgIfc;
+import cfg.cfgVrf;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
@@ -15,11 +20,6 @@ import util.counter;
 import util.debugger;
 import util.logger;
 import util.state;
-import addr.addrEmpty;
-import addr.addrIP;
-import addr.addrType;
-import cfg.cfgIfc;
-import cfg.cfgVrf;
 
 /**
  * gprs tunneling protocol (3gpp29060) client

@@ -1,10 +1,9 @@
 package tab;
 
+import addr.addrIP;
 import java.util.Comparator;
-
 import pack.packHolder;
 import util.bits;
-import addr.addrIP;
 import util.counter;
 
 /**

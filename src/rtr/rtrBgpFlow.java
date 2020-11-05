@@ -23,6 +23,9 @@ import util.bits;
  */
 public class rtrBgpFlow {
 
+    private rtrBgpFlow() {
+    }
+
     /**
      * decode rules
      *

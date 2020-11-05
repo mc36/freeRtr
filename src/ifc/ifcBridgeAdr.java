@@ -1,7 +1,7 @@
 package ifc;
 
-import java.util.Comparator;
 import addr.addrMac;
+import java.util.Comparator;
 import util.bits;
 import util.counter;
 

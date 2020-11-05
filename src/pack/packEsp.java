@@ -3,8 +3,8 @@ package pack;
 import addr.addrIP;
 import cry.cryEncrGeneric;
 import cry.cryHashGeneric;
-import ifc.ifcUp;
 import ifc.ifcNull;
+import ifc.ifcUp;
 import ip.ipCor4;
 import ip.ipCor6;
 import ip.ipFwd;
@@ -12,11 +12,11 @@ import ip.ipFwdIface;
 import ip.ipIfc4;
 import ip.ipIfc6;
 import ip.ipPrt;
+import tab.tabWindow;
 import util.bits;
 import util.counter;
 import util.logger;
 import util.state;
-import tab.tabWindow;
 
 /**
  * encapsulating security payload (rfc2407) packet

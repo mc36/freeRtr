@@ -25,9 +25,9 @@ import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import util.bits;
+import util.counter;
 import util.debugger;
 import util.logger;
-import util.counter;
 
 /**
  * label distribution protocol (rfc5036) neighbor

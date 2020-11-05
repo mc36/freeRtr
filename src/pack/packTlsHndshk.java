@@ -1,11 +1,5 @@
 package pack;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import util.bits;
-import util.debugger;
-import util.logger;
 import cry.cryCertificate;
 import cry.cryEncrCBCaes;
 import cry.cryEncrCBCdes;
@@ -22,6 +16,11 @@ import cry.cryKeyDH;
 import cry.cryKeyDSA;
 import cry.cryKeyRSA;
 import cry.cryUtils;
+import java.util.ArrayList;
+import java.util.List;
+import util.bits;
+import util.debugger;
+import util.logger;
 
 /**
  * transport layer security (rfc5246) handshake packet

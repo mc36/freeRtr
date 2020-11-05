@@ -1,17 +1,16 @@
 package ip;
 
-import java.util.Comparator;
-
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
 import cfg.cfgIfc;
+import java.util.Comparator;
 import tab.tabIntUpdater;
-import tab.tabRouteEntry;
 import tab.tabListing;
+import tab.tabRoute;
+import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabRtrplcN;
-import tab.tabRoute;
 
 /**
  * interface import into routers

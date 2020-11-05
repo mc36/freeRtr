@@ -1,14 +1,13 @@
 package cfg;
 
 import auth.authLocal;
+import cry.cryCertificate;
+import cry.cryKeyGeneric;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import user.userHelping;
 import util.cmds;
-import cry.cryCertificate;
-import cry.cryKeyGeneric;
 
 /**
  * cryptographic certificate configuration

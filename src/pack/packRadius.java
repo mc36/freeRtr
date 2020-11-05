@@ -1,14 +1,14 @@
 package pack;
 
 import addr.addrEui;
-import util.bits;
-import util.typLenVal;
 import addr.addrIPv4;
 import addr.addrIPv6;
 import addr.addrPrefix;
 import addr.addrType;
 import cry.cryHashMd5;
 import tab.tabGen;
+import util.bits;
+import util.typLenVal;
 
 /**
  * remote authentication dialin user (rfc2865) packet

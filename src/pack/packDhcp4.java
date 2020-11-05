@@ -1,10 +1,10 @@
 package pack;
 
-import util.bits;
-import util.typLenVal;
 import addr.addrIPv4;
 import addr.addrMac;
 import tab.tabGen;
+import util.bits;
+import util.typLenVal;
 
 /**
  * dynamic host config protocol (rfc2131) packet

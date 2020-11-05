@@ -15,6 +15,9 @@ import util.typLenVal;
  */
 public class rtrOspfDump {
 
+    private rtrOspfDump() {
+    }
+
     /**
      * dump lsa4
      *

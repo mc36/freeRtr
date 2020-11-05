@@ -11,6 +11,9 @@ import pipe.pipeSide;
  */
 public class prtLocUdp {
 
+    private prtLocUdp() {
+    }
+
     /**
      * do one session
      *

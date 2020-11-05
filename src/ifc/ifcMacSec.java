@@ -7,12 +7,12 @@ import cry.cryHashGeneric;
 import cry.cryKeyDH;
 import java.math.BigInteger;
 import pack.packHolder;
+import tab.tabWindow;
+import user.userFormat;
 import util.bits;
 import util.counter;
 import util.debugger;
 import util.logger;
-import tab.tabWindow;
-import user.userFormat;
 
 /**
  * mac security (ieee 802.1ae) protocol

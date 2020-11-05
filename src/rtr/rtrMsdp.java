@@ -1,18 +1,16 @@
 package rtr;
 
-import auth.authLocal;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrPrefix;
+import auth.authLocal;
 import cfg.cfgAll;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdMcast;
 import ip.ipFwdTab;
 import ip.ipRtr;
-
 import java.util.List;
-
 import prt.prtTcp;
 import tab.tabGen;
 import tab.tabRoute;

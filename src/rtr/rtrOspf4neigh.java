@@ -1,17 +1,17 @@
 package rtr;
 
 import addr.addrIP;
+import addr.addrIPv4;
+import ip.ipMpls;
 import java.util.Comparator;
 import pack.packHolder;
 import tab.tabGen;
+import tab.tabLabel;
+import tab.tabLabelNtry;
 import util.bits;
 import util.counter;
 import util.debugger;
 import util.logger;
-import addr.addrIPv4;
-import ip.ipMpls;
-import tab.tabLabel;
-import tab.tabLabelNtry;
 import util.notifier;
 
 /**

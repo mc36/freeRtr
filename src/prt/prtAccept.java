@@ -1,10 +1,10 @@
 package prt;
 
+import addr.addrIP;
 import ip.ipFwdIface;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import util.notifier;
-import addr.addrIP;
 
 /**
  * accept one protocol connection

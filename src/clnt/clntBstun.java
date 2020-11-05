@@ -1,5 +1,8 @@
 package clnt;
 
+import addr.addrEmpty;
+import addr.addrIP;
+import addr.addrType;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
@@ -9,15 +12,12 @@ import line.lineScript;
 import pack.packHolder;
 import pipe.pipeSide;
 import serv.servBstun;
+import serv.servGeneric;
+import user.userTerminal;
 import util.bits;
 import util.counter;
 import util.logger;
 import util.state;
-import addr.addrEmpty;
-import addr.addrIP;
-import addr.addrType;
-import serv.servGeneric;
-import user.userTerminal;
 
 /**
  * block serial tunneling client

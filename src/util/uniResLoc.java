@@ -324,17 +324,17 @@ public class uniResLoc {
      * @param n url to follow
      */
     public void followLink(uniResLoc n) {
-        if (!n.server.equals("")) {
+        if (n.server.length() > 0) {
             copyBytes(n);
             return;
         }
         param = n.param;
-        if ((n.filName + n.filExt).equals("")) {
+        if ((n.filName + n.filExt).length() <= 0) {
             return;
         }
         filName = n.filName;
         filExt = n.filExt;
-        if (n.filPath.equals("")) {
+        if (n.filPath.length() <= 0) {
             return;
         }
         if (n.filPath.indexOf("/") == 0) {
@@ -366,10 +366,10 @@ public class uniResLoc {
             }
             String a = s.substring(0, i);
             s = s.substring(i + 1, s.length());
-            if (a.equals(".")) {
+            if (a.length() <= 0) {
                 continue;
             }
-            if (a.equals("")) {
+            if (a.equals(".")) {
                 continue;
             }
             if (!a.equals("..")) {

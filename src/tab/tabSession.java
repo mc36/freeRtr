@@ -3,20 +3,20 @@ package tab;
 import addr.addrIP;
 import cfg.cfgInit;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import pack.packHolder;
+import pack.packNetflow;
+import pipe.pipeSide;
 import prt.prtDccp;
+import prt.prtLudp;
 import prt.prtSctp;
 import prt.prtTcp;
 import prt.prtUdp;
-import prt.prtLudp;
 import user.userFormat;
 import util.bits;
-import util.logger;
-import java.util.Comparator;
-import java.util.List;
-import pack.packNetflow;
-import pipe.pipeSide;
 import util.cmds;
+import util.logger;
 
 /**
  * one session record

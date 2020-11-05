@@ -1,14 +1,13 @@
 package ip;
 
+import addr.addrIP;
+import addr.addrPrefix;
 import java.util.Comparator;
-
+import tab.tabIntUpdater;
 import tab.tabListing;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
-import addr.addrIP;
-import addr.addrPrefix;
-import tab.tabIntUpdater;
 import tab.tabRtrplcN;
 
 /**

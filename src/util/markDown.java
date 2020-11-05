@@ -9,6 +9,9 @@ import java.util.List;
  */
 public class markDown {
 
+    private markDown() {
+    }
+
     /**
      * convert plain text to html
      *

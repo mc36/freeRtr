@@ -129,7 +129,6 @@ public class clntHttp {
                 qop = s;
                 continue;
             }
-            System.out.println(a + "|" + s);
         }
         if (realm == null) {
             return null;

@@ -9,6 +9,9 @@ import util.bits;
  */
 public class cryOtp {
 
+    private cryOtp() {
+    }
+
     /**
      * time interval
      */

@@ -7,6 +7,9 @@ package user;
  */
 public class userFonts1 {
 
+    private userFonts1() {
+    }
+
     /**
      * color data
      */

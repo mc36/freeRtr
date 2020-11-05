@@ -11,6 +11,9 @@ import serv.servGeneric;
  */
 public class secClient {
 
+    private secClient() {
+    }
+
     /**
      * start secure connection
      *

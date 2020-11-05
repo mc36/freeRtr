@@ -2348,7 +2348,7 @@ class servHttpConn implements Runnable {
                 gotUrl.proto = "http";
             }
             headers.add("Set-Cookie: webvpncontext=00@defctx; path=/; Secure");
-            if (gotUrl.toPathName().equals("")) {
+            if (gotUrl.toPathName().length() <= 0) {
                 headers.add("Location: " + gotUrl.toURL(false, false) + "webvpn.html");
                 sendRespHeader("303 see other", -1, "text/html");
                 return;

@@ -19,8 +19,8 @@ import ipx.ipxIface;
 import pack.packHolder;
 import rtr.rtrIsis;
 import util.counter;
-import util.state;
 import util.logger;
+import util.state;
 
 /**
  * transport multiplexing protocol (rfc1692) packets

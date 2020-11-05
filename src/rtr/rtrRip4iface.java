@@ -1,20 +1,5 @@
 package rtr;
 
-import ip.ipFwdIface;
-import java.util.Comparator;
-import java.util.List;
-import pack.packHolder;
-import prt.prtGenConn;
-import tab.tabListing;
-import tab.tabPrfxlstN;
-import tab.tabRoute;
-import tab.tabRouteEntry;
-import tab.tabRtrmapN;
-import user.userHelping;
-import util.bits;
-import util.cmds;
-import util.debugger;
-import util.logger;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrPrefix;
@@ -23,8 +8,23 @@ import cfg.cfgAll;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
 import cfg.cfgRouplc;
+import ip.ipFwdIface;
+import java.util.Comparator;
+import java.util.List;
+import pack.packHolder;
+import prt.prtGenConn;
+import tab.tabListing;
+import tab.tabPrfxlstN;
+import tab.tabRoute;
 import tab.tabRouteAttr;
+import tab.tabRouteEntry;
+import tab.tabRtrmapN;
 import tab.tabRtrplcN;
+import user.userHelping;
+import util.bits;
+import util.cmds;
+import util.debugger;
+import util.logger;
 
 /**
  * ripv2 interface

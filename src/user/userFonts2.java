@@ -7,6 +7,9 @@ package user;
  */
 public class userFonts2 {
 
+    private userFonts2() {
+    }
+
     /**
      * 8x14 font data
      */

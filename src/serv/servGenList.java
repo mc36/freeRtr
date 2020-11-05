@@ -1,9 +1,8 @@
 package serv;
 
-import java.util.List;
-
-import tab.tabGen;
 import cfg.cfgGeneric;
+import java.util.List;
+import tab.tabGen;
 
 /**
  * list of generic server

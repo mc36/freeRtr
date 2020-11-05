@@ -1,11 +1,11 @@
 package pack;
 
+import cry.cryEncrGeneric;
+import cry.cryHashGeneric;
 import pipe.pipeSide;
 import util.bits;
 import util.debugger;
 import util.logger;
-import cry.cryEncrGeneric;
-import cry.cryHashGeneric;
 
 /**
  * transport layer security (rfc5246) packet

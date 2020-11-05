@@ -1,15 +1,14 @@
 package pack;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
-import util.bits;
-import util.debugger;
-import util.logger;
 import cry.cryHashGeneric;
 import cry.cryKeyDH;
 import cry.cryKeyGeneric;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import util.bits;
+import util.debugger;
+import util.logger;
 
 /**
  * secure shell group exchange (rfc4419) protocol

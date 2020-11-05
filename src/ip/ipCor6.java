@@ -1,10 +1,10 @@
 package ip;
 
+import addr.addrIP;
+import addr.addrIPv6;
 import pack.packHolder;
 import util.debugger;
 import util.logger;
-import addr.addrIP;
-import addr.addrIPv6;
 
 /**
  * does ipv6 (rfc2463) packet handling

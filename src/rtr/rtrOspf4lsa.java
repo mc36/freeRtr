@@ -1,10 +1,9 @@
 package rtr;
 
+import addr.addrIPv4;
 import java.util.Comparator;
-
 import pack.packHolder;
 import util.bits;
-import addr.addrIPv4;
 
 /**
  * ospfv2 lsa

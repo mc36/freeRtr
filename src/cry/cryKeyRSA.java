@@ -1,7 +1,6 @@
 package cry;
 
 import java.math.BigInteger;
-
 import pack.packHolder;
 import pack.packSsh;
 import util.bits;

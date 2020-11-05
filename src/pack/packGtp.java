@@ -1,10 +1,10 @@
 package pack;
 
-import util.bits;
-import util.typLenVal;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrIPv6;
+import util.bits;
+import util.typLenVal;
 
 /**
  * gprs tunneling protocol (3gpp29060) packet

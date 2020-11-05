@@ -2,7 +2,6 @@ package pack;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import pipe.pipeSide;
 import util.bits;
 

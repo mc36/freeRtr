@@ -1,7 +1,7 @@
 package rtr;
 
-import addr.addrIP;
 import addr.addrEui;
+import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrPrefix;
 import ip.ipCor4;

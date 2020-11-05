@@ -40,6 +40,9 @@ import util.logger;
  */
 public class ipFwdTab {
 
+    private ipFwdTab() {
+    }
+
     /**
      * convert interface number to name
      *

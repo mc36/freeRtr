@@ -1,21 +1,21 @@
 package clnt;
 
+import addr.addrEmpty;
+import addr.addrIP;
+import addr.addrType;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import pack.packHolder;
 import pack.packStun;
 import pipe.pipeSide;
+import serv.servGeneric;
 import serv.servStun;
 import user.userTerminal;
 import util.bits;
 import util.counter;
 import util.logger;
 import util.state;
-import addr.addrEmpty;
-import addr.addrIP;
-import addr.addrType;
-import serv.servGeneric;
 
 /**
  * serial tunneling client

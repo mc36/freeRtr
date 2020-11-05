@@ -1,10 +1,10 @@
 package clnt;
 
-import pipe.pipeSide;
-import serv.servSyslog;
 import addr.addrIP;
 import cfg.cfgAll;
+import pipe.pipeSide;
 import serv.servGeneric;
+import serv.servSyslog;
 import util.logger;
 
 /**

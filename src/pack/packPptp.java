@@ -1,8 +1,8 @@
 package pack;
 
+import cfg.cfgAll;
 import pipe.pipeSide;
 import util.version;
-import cfg.cfgAll;
 
 /**
  * point to point tunneling protocol (rfc2637) packet
