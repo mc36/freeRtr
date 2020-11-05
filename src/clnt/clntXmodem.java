@@ -144,10 +144,10 @@ public class clntXmodem {
                 switch (buf[0]) {
                     case 21: // nak
                         break;
-                    case 06: // ack
+                    case 6: // ack
                         blk++;
                         break;
-                    case 03: // brk
+                    case 3: // brk
                         return true;
                     default:
                         recvFlush();

@@ -360,7 +360,7 @@ class userImageList {
                 return false;
             }
             int i = Collections.binarySearch(lst, pkg, pkg);
-            Boolean b;
+            boolean b;
             if (i < 0) {
                 lst.add(pkg);
                 b = false;

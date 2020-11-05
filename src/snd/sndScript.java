@@ -445,7 +445,7 @@ public class sndScript implements Runnable {
             user.linePut("error bad-command");
         }
         if (rec != null) {
-            rec.stopWork();;
+            rec.stopWork();
             rec.wait4stop();
             bits.byteSave(true, rec.buf, recF);
         }

@@ -297,7 +297,7 @@ public class clntDns {
             }
         }
         conn.setClose();
-        if ((!end) || (rrF == null) || (rrL == null)) {
+        if ((rrF == null) || (rrL == null)) {
             return null;
         }
         if ((rrF.typ != packDnsRec.typeSOA) || (rrL.typ != packDnsRec.typeSOA)) {

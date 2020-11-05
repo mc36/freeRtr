@@ -6192,9 +6192,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (vrfFor == v) {
                     return;
                 }
-                if (vrfFor == v) {
-                    return;
-                }
                 clear2routing(true, true);
                 clear2vrf();
                 vrfFor = v;

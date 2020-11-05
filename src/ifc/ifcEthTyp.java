@@ -1124,19 +1124,19 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         for (int i = 0; i < sizes.length; i++) {
             sizes[i].clear();
-        };
+        }
         for (int i = 0; i < protos.length; i++) {
             protos[i].clear();
-        };
+        }
         for (int i = 0; i < clsCos.length; i++) {
             clsCos[i].clear();
-        };
+        }
         for (int i = 0; i < clsExp.length; i++) {
             clsExp[i].clear();
-        };
+        }
         for (int i = 0; i < clsPrc.length; i++) {
             clsPrc[i].clear();
-        };
+        }
         totCntr = totCntr.plus(cntr);
         cntr.clear();
     }

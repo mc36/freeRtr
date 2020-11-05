@@ -1,7 +1,6 @@
 package pack;
 
 import pipe.pipeSide;
-import util.bits;
 
 /**
  * streaming telemetry packet

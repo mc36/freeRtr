@@ -37,7 +37,7 @@ public class clntIrc implements Runnable {
     public clntIrc(String hst, String chan) {
         hostName = hst;
         chanName = chan;
-        running = hostName != null;;
+        running = hostName != null;
     }
 
     public String toString() {

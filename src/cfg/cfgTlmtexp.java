@@ -347,7 +347,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
                 pb2.putField(typ, protoBufEntry.tpInt, protoBuf.toZigzag(bits.str2long(val)));
                 break;
             case servStreamingMdt.fnDouble:
-                Double d;
+                double d;
                 try {
                     d = Double.parseDouble(val);
                 } catch (Exception e) {
@@ -356,7 +356,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
                 pb2.putField(typ, protoBufEntry.tpInt, Double.doubleToLongBits(d));
                 break;
             case servStreamingMdt.fnFloat:
-                Float f;
+                float f;
                 try {
                     f = Float.parseFloat(val);
                 } catch (Exception e) {

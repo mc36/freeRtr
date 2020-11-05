@@ -37,7 +37,6 @@ import util.debugger;
 import util.logger;
 import util.notifier;
 import util.shrtPthFrst;
-import util.shrtPthFrstRes;
 import util.state;
 import util.syncInt;
 import util.version;

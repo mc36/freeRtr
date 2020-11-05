@@ -171,7 +171,7 @@ public class packPtp {
         sequence = pck.msbGetW(30); // sequence
         clock = pck.msbGetQ(20); // clock
         port = pck.msbGetW(28); // sequence
-        offset = (pck.msbGetQ(32) & 0xffffffffffffl) * 1000; // seconds
+        offset = (pck.msbGetQ(32) & 0xffffffffffffL) * 1000; // seconds
         offset += pck.msbGetD(40) / 1000; // nanoseconds
         offset -= tim;
         return false;

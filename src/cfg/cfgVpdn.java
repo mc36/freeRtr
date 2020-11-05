@@ -1030,9 +1030,6 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         if (proto == null) {
             return;
         }
-        if (proto == null) {
-            return;
-        }
         switch (proto) {
             case prL2f:
                 if (ifaceDialer == null) {

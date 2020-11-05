@@ -83,7 +83,7 @@ public class clntSnmp {
         }
         pckBin.pipeSend(pipe, 0, pckBin.dataSize(), 2);
         pckBin = pipe.readPacket(true);
-        pipe.setClose();;
+        pipe.setClose();
         if (pckBin == null) {
             cons.debugRes("got no packet");
             return true;

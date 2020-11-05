@@ -378,7 +378,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         long asn = bits.str2num(s.substring(0, i));
         long num = bits.str2num(s.substring(i + 1, s.length()));
-        return (asn << 32) | (num & 0xffffffffl);
+        return (asn << 32) | (num & 0xffffffffL);
     }
 
     /**
@@ -388,7 +388,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * @return converted string
      */
     public static String rd2string(long i) {
-        return (i >>> 32) + ":" + (int) (i & 0xffffffffl);
+        return (i >>> 32) + ":" + (int) (i & 0xffffffffL);
     }
 
     /**
@@ -398,7 +398,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * @return converted string
      */
     public static String extComm2string(long i) {
-        return (i >>> 48) + ":" + ((i >>> 32) & 0xffff) + ":" + (int) (i & 0xffffffffl);
+        return (i >>> 48) + ":" + ((i >>> 32) & 0xffff) + ":" + (int) (i & 0xffffffffL);
     }
 
     /**
@@ -409,7 +409,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      */
     public static long rt2comm(long i) {
         long as = (i >>> 32) & 0xffff;
-        long id = i & 0xffffffffl;
+        long id = i & 0xffffffffL;
         return ((as | 0x20000) << 32) | id;
     }
 
@@ -420,7 +420,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * @return extended community
      */
     public static long tuntyp2comm(long i) {
-        return 0x030c000000000000l | (i & 0xffffffffffffl);
+        return 0x030c000000000000L | (i & 0xffffffffffffL);
     }
 
     /**
@@ -473,7 +473,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      */
     public static long agi2comm(long i) {
         long as = (i >>> 32) & 0xffff;
-        long id = i & 0xffffffffl;
+        long id = i & 0xffffffffL;
         return ((as | 0xa0000) << 32) | id;
     }
 
