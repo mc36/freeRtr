@@ -1,5 +1,6 @@
 package user;
 
+import java.util.List;
 import pipe.pipeSide;
 import util.extMrkLng;
 import util.logger;
@@ -36,6 +37,16 @@ public class userXml {
     }
 
     /**
+     * do request
+     *
+     * @param req request
+     * @return response, null if error
+     */
+    public extMrkLng doRequest(extMrkLng req) {
+        return null;
+    }
+
+    /**
      * do work
      */
     public void doWork() {
@@ -63,7 +74,23 @@ public class userXml {
                 conn.strPut(prompt);
                 continue;
             }
-            logger.debug("here " + x.toXMLstr());/////////////////
+            x = doRequest(x);
+            if (x == null) {
+                conn.linePut(extMrkLng.header + "\n<Response MajorVersion=\"1\" MinorVersion=\"0\" ErrorCode=\"2\" ErrorMsg=\"request error\"><ResultSummary ErrorCount=\"0\"/></Response>");
+                conn.strPut(prompt);
+                continue;
+            }
+            if (!form) {
+                conn.linePut(extMrkLng.header + "\n" + x.toXMLstr());
+                conn.strPut(prompt);
+                continue;
+            }
+            conn.linePut(extMrkLng.header);
+            List<String> r = x.toXMLlst();
+            for (int i = 0; i < r.size(); i++) {
+                conn.linePut(r.get(i));
+            }
+            conn.strPut(prompt);
         }
     }
     
