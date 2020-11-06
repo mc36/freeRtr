@@ -70,7 +70,7 @@ public class userXml {
             boolean b = x.fromString(s);
             logger.debug("here " + s + " " + b);
             s = "";
-            if (!b) {
+            if (b) {
                 conn.linePut(extMrkLng.header + "\n<Response MajorVersion=\"1\" MinorVersion=\"0\" ErrorCode=\"1\" ErrorMsg=\"parse error\"><ResultSummary ErrorCount=\"0\"/></Response>");
                 conn.strPut(prompt);
                 continue;
