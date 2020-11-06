@@ -7,7 +7,6 @@ import pipe.pipeSide;
 import util.cmds;
 import util.extMrkLng;
 import util.extMrkLngEntry;
-import util.logger;
 
 /**
  * xml handler
