@@ -1,8 +1,12 @@
 package user;
 
+import java.util.ArrayList;
 import java.util.List;
+import pipe.pipeLine;
 import pipe.pipeSide;
+import util.cmds;
 import util.extMrkLng;
+import util.extMrkLngEntry;
 import util.logger;
 
 /**
@@ -11,21 +15,22 @@ import util.logger;
  * @author matecsaba
  */
 public class userXml {
-    
+
     private final pipeSide conn;
-    
+
     private final boolean privi;
-    
+
     private final boolean form;
-    
+
     private final boolean echo;
-    
+
     private static final String prompt = "XML> ";
 
     /**
      * create handler
      *
      * @param pipe pipe to use
+     * @param prv privileged
      * @param frm format response
      * @param ech echo input
      */
@@ -43,33 +48,116 @@ public class userXml {
      * @return response, null if error
      */
     public extMrkLng doRequest(extMrkLng req) {
-        return null;
+        extMrkLng rep = new extMrkLng();
+        rep.data.add(new extMrkLngEntry("/Response", "", ""));
+        rep.data.add(new extMrkLngEntry("/Response/CLI", "MajorVersion=\"1\" MinorVersion=\"0\"", ""));
+        for (int i = 0; i < req.data.size(); i++) {
+            extMrkLngEntry ntry = req.data.get(i);
+            logger.debug(ntry.name + "|" + ntry.param + "|" + ntry.value);////////
+            if (ntry.name.equals("/?xml/Request/CLI/Exec")) {
+                cmds cmd = new cmds("xml", ntry.value);
+                String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
+                for (;;) {
+                    if (cmd.size() < 1) {
+                        break;
+                    }
+                    String s = cmd.word("/").trim();
+                    if (s.length() < 1) {
+                        continue;
+                    }
+                    pipeLine pl = new pipeLine(1024 * 1024, false);
+                    pipeSide pip = pl.getSide();
+                    pip.lineTx = pipeSide.modTyp.modeCRLF;
+                    pip.lineRx = pipeSide.modTyp.modeCRorLF;
+                    userReader rdr = new userReader(pip, null);
+                    rdr.tabMod = userFormat.tableMode.raw;
+                    rdr.height = 0;
+                    userExec exe = new userExec(pip, rdr);
+                    exe.privileged = privi;
+                    pip.setTime(60000);
+                    String a = exe.repairCommand(s);
+                    String r = "#" + a + e;
+                    exe.executeCommand(a);
+                    pip = pl.getSide();
+                    pl.setClose();
+                    s = pip.strGet(1024 * 1024);
+                    if (s == null) {
+                        continue;
+                    }
+                    rep.data.add(new extMrkLngEntry("/Response/CLI/Exec", "", r + s));
+                }
+                continue;
+            }
+            if (ntry.name.equals("/?xml/Request/CLI/Configuration")) {
+                if (!privi) {
+                    rep.data.add(new extMrkLngEntry("/Response/CLI/Configuration", "", "not enough privileges"));
+                    continue;
+                }
+                cmds cmd = new cmds("xml", ntry.value);
+                pipeLine pl = new pipeLine(65535, false);
+                pipeSide pip = pl.getSide();
+                pip.lineTx = pipeSide.modTyp.modeCRLF;
+                pip.lineRx = pipeSide.modTyp.modeCRorLF;
+                userReader rdr = new userReader(pip, null);
+                rdr.tabMod = userFormat.tableMode.raw;
+                rdr.height = 0;
+                userConfig cfg = new userConfig(pip, rdr);
+                pip.setTime(60000);
+                for (;;) {
+                    if (cmd.size() < 1) {
+                        break;
+                    }
+                    String s = cmd.word("/").trim();
+                    if (s.length() < 1) {
+                        continue;
+                    }
+                    userHelping hlp = cfg.getHelping();
+                    rdr.setContext(hlp, "");
+                    String b = hlp.repairLine(s);
+                    if (b.length() < 1) {
+                        pip.linePut("bad: " + s);
+                        continue;
+                    }
+                    pip.linePut("#" + b);
+                    cfg.executeCommand(b);
+                }
+                pip = pl.getSide();
+                pl.setClose();
+                String a = pip.strGet(65535);
+                rep.data.add(new extMrkLngEntry("/Response/CLI/Configuration", "", "" + a));
+                continue;
+            }
+        }
+        rep.data.add(new extMrkLngEntry("/Response/CLI", "", ""));
+        rep.data.add(new extMrkLngEntry("/Response", "", ""));
+        rep.data.add(new extMrkLngEntry("", "", ""));
+        return rep;
     }
 
     /**
      * do work
      */
     public void doWork() {
-        String s = "";
+        List<String> l = new ArrayList<String>();
         conn.strPut(prompt);
         for (;;) {
             if (conn.isClosed() != 0) {
                 return;
             }
-            s += conn.lineGet(echo ? 0x32 : 1);
-            if (s.equals("exit")) {
+            String a = conn.lineGet(echo ? 0x32 : 1);
+            if ((l.size() < 1) && (a.equals("exit"))) {
                 return;
             }
-            if (s.indexOf("<Request") < 0) {
+            if (a.length() < 1) {
                 continue;
             }
-            if (s.indexOf("</Request>") < 0) {
+            l.add(a);
+            if (a.indexOf("</Request>") < 0) {
                 continue;
             }
             extMrkLng x = new extMrkLng();
-            boolean b = x.fromString(s);
-            logger.debug("here " + s + " " + b);
-            s = "";
+            boolean b = x.fromString(l, "/");
+            l.clear();
             if (b) {
                 conn.linePut(extMrkLng.header + "\n<Response MajorVersion=\"1\" MinorVersion=\"0\" ErrorCode=\"1\" ErrorMsg=\"parse error\"><ResultSummary ErrorCount=\"0\"/></Response>");
                 conn.strPut(prompt);
@@ -94,5 +182,5 @@ public class userXml {
             conn.strPut(prompt);
         }
     }
-    
+
 }

@@ -21,6 +21,7 @@ public class userNetconf {
      * create handler
      *
      * @param pipe pipe to use
+     * @param prv privileged
      * @param frm format response
      * @param ech echo input
      */

@@ -62,12 +62,13 @@ public class extMrkLng {
      * convert strings to xml
      *
      * @param l list to parse
+     * @param a separator to use
      * @return false on success, true on error
      */
-    public boolean fromString(List<String> l) {
+    public boolean fromString(List<String> l, String a) {
         String s = "";
         for (int i = 0; i < l.size(); i++) {
-            s += l.get(i);
+            s += l.get(i) + a;
         }
         return fromString(s);
     }

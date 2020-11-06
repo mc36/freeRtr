@@ -213,7 +213,7 @@ public class userBrowser {
             return "error reading";
         }
         console.pipe.linePut("parsing");
-        if (xml.fromString(lst)) {
+        if (xml.fromString(lst, "")) {
             return "error parsing";
         }
         console.pipe.linePut("formatting");

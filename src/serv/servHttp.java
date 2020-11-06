@@ -1412,7 +1412,7 @@ class servHttpConn implements Runnable {
                 exe.privileged = (gotHost.allowApi & 4) != 0;
                 pip.setTime(60000);
                 String a = exe.repairCommand(s);
-                r += ">" + a + e;
+                r += "#" + a + e;
                 exe.executeCommand(a);
                 pip = pl.getSide();
                 pl.setClose();
@@ -1426,7 +1426,6 @@ class servHttpConn implements Runnable {
             return false;
         }
         if (((gotHost.allowApi & 4) != 0) && s.equals("config")) {
-            String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
             pipeLine pl = new pipeLine(65535, false);
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
