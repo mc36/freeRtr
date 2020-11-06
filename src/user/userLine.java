@@ -99,7 +99,7 @@ public class userLine {
     /**
      * disconnect warning
      */
-    public boolean expirity = true;
+    public boolean expirity = false;
 
     /**
      * username prompt
@@ -644,6 +644,7 @@ class userLineHandler implements Runnable {
             }
             if (i == userExec.cmdRes.logout) {
                 if (physical == 2) {
+                    pipe.linePut("% not possible on this line");
                     continue;
                 }
                 if (parent.loginLogging) {
