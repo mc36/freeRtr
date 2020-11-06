@@ -53,7 +53,6 @@ public class userXml {
         rep.data.add(new extMrkLngEntry("/Response/CLI", "MajorVersion=\"1\" MinorVersion=\"0\"", ""));
         for (int i = 0; i < req.data.size(); i++) {
             extMrkLngEntry ntry = req.data.get(i);
-            logger.debug(ntry.name + "|" + ntry.param + "|" + ntry.value);////////
             if (ntry.name.equals("/?xml/Request/CLI/Exec")) {
                 cmds cmd = new cmds("xml", ntry.value);
                 String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
