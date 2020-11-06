@@ -54,7 +54,7 @@ public class servRfb extends servGeneric implements prtServS {
         pipe.lineRx = pipeSide.modTyp.modeLF;
         pipe.lineTx = pipeSide.modTyp.modeLF;
         pipeLine pl = new pipeLine(65536, false);
-        lin.createHandler(pl.getSide(), "" + id, false);
+        lin.createHandler(pl.getSide(), "" + id, 0);
         new servRfbConn(pipe, new pipeImage(pl.getSide(), lin.execWidth + 1, lin.execHeight + 1, userFonts1.fontDefault(), userFonts1.colorData));
         return false;
     }

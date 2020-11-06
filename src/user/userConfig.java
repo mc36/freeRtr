@@ -301,29 +301,24 @@ public class userConfig {
     }
 
     /**
-     * execute some commands
+     * execute one command
      *
      * @return status of operation, see at one command
      */
-    public String doCommands() {
-        for (;;) {
-            reader.setContext(getHelping(), cfgAll.hostName + getPrompt() + "#");
-            String s = reader.readLine(reader.deactive, "exit");
-            if (s == null) {
-                return "";
-            }
-            if (authorization != null) {
-                authResult ntry = authorization.authUserCommand(username, s);
-                if (ntry.result != authResult.authSuccessful) {
-                    pipe.linePut("% not authorized to do that");
-                    continue;
-                }
-            }
-            s = executeCommand(s);
-            if (s != null) {
-                return s;
+    public String doCommand() {
+        reader.setContext(getHelping(), cfgAll.hostName + getPrompt() + "#");
+        String s = reader.readLine(reader.deactive, "exit");
+        if (s == null) {
+            return "";
+        }
+        if (authorization != null) {
+            authResult ntry = authorization.authUserCommand(username, s);
+            if (ntry.result != authResult.authSuccessful) {
+                pipe.linePut("% not authorized to do that");
+                return null;
             }
         }
+        return executeCommand(s);
     }
 
     private userHelping getHelpGlobal() {

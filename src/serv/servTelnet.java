@@ -43,7 +43,7 @@ public class servTelnet extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        lin.createHandler(pipe, "" + id, false);
+        lin.createHandler(pipe, "" + id, 0);
         return false;
     }
 

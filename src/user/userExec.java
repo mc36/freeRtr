@@ -1035,10 +1035,16 @@ public class userExec {
         getHelpShow(hl, privileged);
         hl.add("1 .    logout                    close this exec session");
         hl.add("1 .    exit                      close this exec session");
+        hl.add("1 2,.  netconf                   start netconf session");
+        hl.add("2 2,.    format                  format response");
+        hl.add("2 2,.    echo                    echo user input");
+        hl.add("1 2,.  xml                       start xml session");
+        hl.add("2 2,.    format                  format response");
+        hl.add("2 2,.    echo                    echo user input");
         hl.add("1 .    ppp                       start framed session");
         hl.add("1 .    modememu                  start modem emulation session");
         hl.add("1 .    gpsemu                    start gps emulation session");
-        hl.add("1 .    gpstime                  start gps session");
+        hl.add("1 .    gpstime                   start gps session");
         hl.add("1 .    nullemu                   start null session");
         hl.add("1 2    menu                      start menu session");
         hl.add("2 .      <name>                  name of menu");
@@ -1048,6 +1054,10 @@ public class userExec {
         hl.add("3 .        <num>                 width in columns");
         hl.add("2 3      length                  set terminal length");
         hl.add("3 .        <num>                 height in lines");
+        hl.add("2 3      escape                  set escape character");
+        hl.add("3 .        <num>                 ascii code");
+        hl.add("2 3      deactivate              set deactivate character");
+        hl.add("3 .        <num>                 ascii code");
         hl.add("2 .      monitor                 log to this terminal");
         hl.add("2 .      timestamps              put time before each executed command");
         hl.add("2 .      colorized               sending to ansi terminal");
@@ -1671,6 +1681,14 @@ public class userExec {
         }
         if (a.equals("logout")) {
             return cmdRes.logout;
+        }
+        if (a.equals("netconf")) {
+            doXml(false);
+            return cmdRes.command;
+        }
+        if (a.equals("xml")) {
+            doXml(true);
+            return cmdRes.command;
         }
         if (a.equals("ppp")) {
             doPpp();
@@ -2985,7 +3003,7 @@ public class userExec {
             cmd.error("timed out");
             return;
         }
-        pipeTerm trm = new pipeTerm(pipe, conn);
+        pipeTerm trm = new pipeTerm(pipe, conn, reader.escape);
         trm.doTerm();
     }
 
@@ -3110,7 +3128,7 @@ public class userExec {
         if (cht != null) {
             cht.script.doScript(strm);
         }
-        pipeTerm trm = new pipeTerm(pipe, strm);
+        pipeTerm trm = new pipeTerm(pipe, strm, reader.escape);
         trm.doTerm();
     }
 
@@ -3133,7 +3151,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), reader.escape);
             trm.doTerm();
             return;
         }
@@ -3148,7 +3166,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), reader.escape);
             trm.doTerm();
             return;
         }
@@ -3163,7 +3181,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), reader.escape);
             trm.doTerm();
             return;
         }
@@ -3178,7 +3196,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), reader.escape);
             trm.doTerm();
             return;
         }
@@ -3200,7 +3218,7 @@ public class userExec {
                 cmd.error("no such line");
                 return;
             }
-            pipeTerm trm = new pipeTerm(pipe, lin.runner.doAttach());
+            pipeTerm trm = new pipeTerm(pipe, lin.runner.doAttach(), reader.escape);
             trm.doTerm();
             return;
         }
@@ -3349,6 +3367,14 @@ public class userExec {
         }
         if (a.equals("length")) {
             reader.height = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("escape")) {
+            reader.escape = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("deactivate")) {
+            reader.deactive = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("tablemode")) {
@@ -3524,6 +3550,30 @@ public class userExec {
         cmd.badCmd();
     }
 
+    private void doXml(boolean xml) {
+        boolean frm = false;
+        boolean ech = false;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("format")) {
+                frm = true;
+                continue;
+            }
+            if (a.equals("echo")) {
+                ech = true;
+                continue;
+            }
+        }
+        if (xml) {
+            new userXml(pipe, privileged, frm, ech).doWork();
+        } else {
+            new userNetconf(pipe, privileged, frm, ech).doWork();
+        }
+    }
+
     private void doPpp() {
         if (framedIface == null) {
             cmd.error("not allowed on this line");
@@ -3564,7 +3614,7 @@ public class userExec {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip, 8191);
+        userReader rdr = new userReader(pip, null);
         rdr.width = reader.width;
         rdr.height = 0;
         rdr.tabMod = reader.tabMod;

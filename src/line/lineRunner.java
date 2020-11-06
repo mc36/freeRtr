@@ -186,7 +186,7 @@ public class lineRunner implements Runnable {
             return;
         }
         doScript(scrptActv);
-        line.createHandler(pipe, name, true);
+        line.createHandler(pipe, name, 1);
         if (debugger.lineRunnerEvnt) {
             logger.debug("restart line");
         }

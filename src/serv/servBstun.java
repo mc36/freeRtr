@@ -46,7 +46,7 @@ public class servBstun extends servGeneric implements prtServS {
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         lineBstun bst = new lineBstun(pipe, grpNum);
-        lin.createHandler(bst.getPipe(), "" + id, false);
+        lin.createHandler(bst.getPipe(), "" + id, 0);
         return false;
     }
 

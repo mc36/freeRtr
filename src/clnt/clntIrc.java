@@ -153,7 +153,7 @@ public class clntIrc implements Runnable {
         c.word();
         pipeLine pipE = new pipeLine(32768, false);
         pipeSide pip = pipE.getSide();
-        userReader rdr = new userReader(pip, 1023);
+        userReader rdr = new userReader(pip, null);
         rdr.height = 0;
         userExec exe = new userExec(pip, rdr);
         pip.lineTx = pipeSide.modTyp.modeCRLF;

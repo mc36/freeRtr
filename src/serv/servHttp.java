@@ -1405,7 +1405,7 @@ class servHttpConn implements Runnable {
                 pipeSide pip = pl.getSide();
                 pip.lineTx = pipeSide.modTyp.modeCRLF;
                 pip.lineRx = pipeSide.modTyp.modeCRorLF;
-                userReader rdr = new userReader(pip, 1023);
+                userReader rdr = new userReader(pip, null);
                 rdr.tabMod = userFormat.tableMode.raw;
                 rdr.height = 0;
                 userExec exe = new userExec(pip, rdr);
@@ -1431,7 +1431,7 @@ class servHttpConn implements Runnable {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, 1023);
+            userReader rdr = new userReader(pip, null);
             rdr.tabMod = userFormat.tableMode.raw;
             rdr.height = 0;
             userConfig cfg = new userConfig(pip, rdr);
@@ -2374,7 +2374,7 @@ class servHttpConn implements Runnable {
                 return;
             }
             if (gotUrl.toPathName().equals("1/VPNManifest.xml")) {
-                sendTextHeader("200 ok", "text/xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<vpn rev=\"1.0\">\n</vpn>\n".getBytes());
+                sendTextHeader("200 ok", "text/xml", (extMrkLng.header + "\n<vpn rev=\"1.0\">\n</vpn>\n").getBytes());
                 return;
             }
             if (gotUrl.toPathName().equals("1/binaries/update.txt")) {
@@ -2408,12 +2408,12 @@ class servHttpConn implements Runnable {
             authResult res = gotHost.authenticList.authUserPass(gotUrl.username, gotUrl.password);
             if (res.result != authResult.authSuccessful) {
                 headers.add("X-Transcend-Version: 1");
-                sendTextHeader("200 ok", "text/xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<auth id=\"main\"><title>login</title><message>enter username and password</message><form method=\"post\" action=\"webvpn.html\"><input type=\"text\" label=\"username:\" name=\"username\" value=\"\" /><input type=\"password\" label=\"password:\" name=\"password\" value=\"\" /><input type=\"submit\" name=\"login\" value=\"login\" /></form></auth>".getBytes());
+                sendTextHeader("200 ok", "text/xml", (extMrkLng.header + "\n<auth id=\"main\"><title>login</title><message>enter username and password</message><form method=\"post\" action=\"webvpn.html\"><input type=\"text\" label=\"username:\" name=\"username\" value=\"\" /><input type=\"password\" label=\"password:\" name=\"password\" value=\"\" /><input type=\"submit\" name=\"login\" value=\"login\" /></form></auth>").getBytes());
                 return;
             }
             headers.add("Set-Cookie: webvpn=00@0168430307@00071@3702439125@3326207229@defctx; path=/; Secure");
             headers.add("Set-Cookie: webvpnc=bu:0/&p:t&iu:1/&sh:%s; path=/; Secure");
-            sendTextHeader("200 ok", "text/xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<auth id=\"success\"><title>vpn</title><message>success</message><success/></auth>".getBytes());
+            sendTextHeader("200 ok", "text/xml", (extMrkLng.header + "\n<auth id=\"success\"><title>vpn</title><message>success</message><success/></auth>").getBytes());
             return;
         }
         if (gotHost.authenticList != null) {

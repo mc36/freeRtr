@@ -7,6 +7,8 @@ import cfg.cfgAuther;
 import cfg.cfgIfc;
 import cfg.cfgInit;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import pipe.pipeSide;
 import util.bits;
 import util.cmds;
@@ -90,6 +92,16 @@ public class userLine {
     public boolean autoHangup = false;
 
     /**
+     * display banner
+     */
+    public boolean banner = true;
+
+    /**
+     * disconnect warning
+     */
+    public boolean expirity = true;
+
+    /**
      * username prompt
      */
     public String promptUser = "username:";
@@ -130,9 +142,14 @@ public class userLine {
     public int promptActivate = 13;
 
     /**
+     * escape character
+     */
+    public int promptEscape = 3;
+
+    /**
      * deactivation character
      */
-    public int promptDeActive = 255;
+    public int promptDeActive = 256;
 
     /**
      * prompt delay
@@ -174,6 +191,8 @@ public class userLine {
         cmds.cfgLine(lst, !execLogging, beg, "exec logging", "");
         lst.add(beg + "exec autocommand " + autoCommand);
         cmds.cfgLine(lst, !autoHangup, beg, "exec autohangup", "");
+        cmds.cfgLine(lst, !banner, beg, "exec banner", "");
+        cmds.cfgLine(lst, !expirity, beg, "exec expirity", "");
         lst.add(beg + "exec privilege " + promptPrivilege);
         if (authorizeList == null) {
             lst.add(beg + "no exec authorization");
@@ -185,6 +204,7 @@ public class userLine {
         } else {
             lst.add(beg + "login authentication " + authenticList.autName);
         }
+        lst.add(beg + "login escape " + promptEscape);
         lst.add(beg + "login activate " + promptActivate);
         lst.add(beg + "login deactivate " + promptDeActive);
         lst.add(beg + "login timeout " + promptTimeout);
@@ -261,6 +281,14 @@ public class userLine {
                 promptGoodbye = cmd.getRemaining();
                 return false;
             }
+            if (s.equals("banner")) {
+                banner = true;
+                return false;
+            }
+            if (s.equals("expirity")) {
+                expirity = true;
+                return false;
+            }
             if (s.equals("autohangup")) {
                 autoHangup = true;
                 return false;
@@ -297,6 +325,10 @@ public class userLine {
                     return false;
                 }
                 authenticList = lst.getAuther();
+                return false;
+            }
+            if (s.equals("escape")) {
+                promptEscape = bits.str2num(cmd.word());
                 return false;
             }
             if (s.equals("activate")) {
@@ -357,6 +389,14 @@ public class userLine {
             }
             if (s.equals("logging")) {
                 execLogging = false;
+                return false;
+            }
+            if (s.equals("banner")) {
+                banner = false;
+                return false;
+            }
+            if (s.equals("expirity")) {
+                expirity = false;
                 return false;
             }
             if (s.equals("autohangup")) {
@@ -422,6 +462,8 @@ public class userLine {
         l.add("3 3,.    <text>                     text to display");
         l.add("2 3    autocommand                  set automatic command");
         l.add("3 3,.    <text>                     autocommand of user");
+        l.add("2 .    banner                       display banner");
+        l.add("2 .    expirity                     display expirity warnings");
         l.add("2 .    autohangup                   disconnect user after autocommand");
         l.add("2 3    privilege                    set default privilege");
         l.add("3 .      <num>                      privilege of terminal");
@@ -431,6 +473,8 @@ public class userLine {
         l.add("2 .    logging                      enable logging");
         l.add("2 3    authentication               set authentication");
         l.add("3 .      <name>                     name of authentication list");
+        l.add("2 3    escape                       set escape character");
+        l.add("3 .      <num>                      ascii number");
         l.add("2 3    activate                     set activation character");
         l.add("3 .      <num>                      ascii number");
         l.add("2 3    deactivate                   set deactivation character");
@@ -456,7 +500,7 @@ public class userLine {
      * @param nam name of remote
      * @param phys set true for physical lines
      */
-    public void createHandler(pipeSide pip, String nam, boolean phys) {
+    public void createHandler(pipeSide pip, String nam, int phys) {
         new userLineHandler(this, pip, nam, phys);
     }
 
@@ -464,20 +508,21 @@ public class userLine {
 
 class userLineHandler implements Runnable {
 
-    /**
-     * logged in user
-     */
     public authResult user;
 
-    private final pipeSide pipe;
+    public long last;
 
-    private final userLine parent;
+    public final pipeSide pipe;
 
-    private final String remote;
+    public final userLine parent;
 
-    private final boolean physical;
+    public final String remote;
 
-    public userLineHandler(userLine prnt, pipeSide pip, String rem, boolean phys) {
+    public final int physical;
+
+    public Timer expTim;
+
+    public userLineHandler(userLine prnt, pipeSide pip, String rem, int phys) {
         parent = prnt;
         pipe = pip;
         remote = rem;
@@ -492,8 +537,13 @@ class userLineHandler implements Runnable {
 
     private void doAuth() {
         pipe.setTime(parent.promptTimeout);
-        pipe.blockingPut(cfgAll.banner, 0, cfgAll.banner.length);
-        pipe.linePut(parent.promptWelcome);
+        last = bits.getTime();
+        if (parent.banner) {
+            pipe.blockingPut(cfgAll.banner, 0, cfgAll.banner.length);
+        }
+        if (parent.banner) {
+            pipe.linePut(parent.promptWelcome);
+        }
         if (parent.authenticList == null) {
             return;
         }
@@ -541,23 +591,18 @@ class userLineHandler implements Runnable {
         if (parent.loginLogging) {
             logger.info(user.user + " logged in from " + remote);
         }
-        pipe.linePut(parent.promptSuccess);
+        if (parent.banner) {
+            pipe.linePut(parent.promptSuccess);
+        }
         pipe.setTime(parent.execTimeOut);
-        userReader rdr = new userReader(pipe, parent.promptDeActive);
+        userReader rdr = new userReader(pipe, parent);
         rdr.from = remote;
         rdr.user = user.user;
-        rdr.logging = parent.execLogging;
-        rdr.width = parent.execWidth;
-        rdr.height = parent.execHeight;
-        rdr.timeStamp = parent.execTimes;
-        rdr.colorize = parent.execColor;
-        rdr.spacetab = parent.execSpace;
-        rdr.tabMod = parent.execTables;
         userExec exe = new userExec(pipe, rdr);
         userConfig cfg = new userConfig(pipe, rdr);
         exe.privileged = user.privilege >= 15;
         exe.framedIface = parent.execIface;
-        exe.physicalLin = physical;
+        exe.physicalLin = physical != 0;
         exe.authorization = parent.authorizeList;
         cfg.authorization = parent.authorizeList;
         if (user != null) {
@@ -586,12 +631,21 @@ class userLineHandler implements Runnable {
             }
             return;
         }
+        if (parent.expirity && (physical == 0)) {
+            expTim = new Timer();
+            userLineExpirity task = new userLineExpirity(this);
+            expTim.schedule(task, 30 * 1000, 60 * 1000);
+        }
         for (;;) {
+            last = bits.getTime();
             userExec.cmdRes i = exe.doCommands();
             if (i == userExec.cmdRes.command) {
                 continue;
             }
             if (i == userExec.cmdRes.logout) {
+                if (physical == 2) {
+                    continue;
+                }
                 if (parent.loginLogging) {
                     logger.info(user.user + " logged out from " + remote);
                 }
@@ -611,7 +665,8 @@ class userLineHandler implements Runnable {
                 sesStart = cfgAll.getShRun(true);
             }
             for (;;) {
-                s = cfg.doCommands();
+                last = bits.getTime();
+                s = cfg.doCommand();
                 if (s == null) {
                     continue;
                 }
@@ -651,15 +706,50 @@ class userLineHandler implements Runnable {
         }
     }
 
+    public void doExpire() {
+        long tim = bits.getTime() - last;
+        if (tim > parent.execTimeOut) {
+            if (parent.banner) {
+                pipe.linePut(parent.promptGoodbye);
+            }
+            pipe.setClose();
+            return;
+        }
+        if (tim < 60000) {
+            return;
+        }
+        pipe.linePut("% session is about to expire in " + bits.timeDump((parent.execTimeOut - tim) / 1000));
+    }
+
     public void run() {
         try {
             doAuth();
             doExec();
-            pipe.linePut(parent.promptGoodbye);
+            if (parent.banner) {
+                pipe.linePut(parent.promptGoodbye);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
+        try {
+            expTim.cancel();
+        } catch (Exception e) {
+        }
         pipe.setClose();
+    }
+
+}
+
+class userLineExpirity extends TimerTask {
+
+    public userLineHandler lower;
+
+    public userLineExpirity(userLineHandler parent) {
+        lower = parent;
+    }
+
+    public void run() {
+        lower.doExpire();
     }
 
 }

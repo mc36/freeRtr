@@ -552,7 +552,7 @@ public class userScript {
             pipeSide pip = pipeDiscard.needAny(null);
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, 1023);
+            userReader rdr = new userReader(pip, null);
             rdr.height = 0;
             userExec exe = new userExec(pip, rdr);
             exe.privileged = allowConfig;
@@ -575,7 +575,7 @@ public class userScript {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, 1023);
+            userReader rdr = new userReader(pip, null);
             rdr.height = 0;
             userExec exe = new userExec(pip, rdr);
             exe.privileged = allowConfig;
@@ -603,7 +603,7 @@ public class userScript {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, 1023);
+            userReader rdr = new userReader(pip, null);
             rdr.height = 0;
             userConfig cfg = new userConfig(pip, rdr);
             pip.setTime(60000);

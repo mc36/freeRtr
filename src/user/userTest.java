@@ -184,7 +184,7 @@ public class userTest {
             lin.execTimeOut = 0;
             lin.execWidth = x - 1;
             lin.execHeight = y - 1;
-            lin.createHandler(pipWin, "window", true);
+            lin.createHandler(pipWin, "window", 2);
             return null;
         }
         if (a.equals("otppass")) {

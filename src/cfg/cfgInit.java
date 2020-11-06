@@ -505,7 +505,8 @@ public class cfgInit implements Runnable {
         pipeLine pl = new pipeLine(65536, false);
         pipeSide psS = pl.getSide();
         pipeSide psC = pl.getSide();
-        userReader rd = new userReader(psC, 1023);
+        userReader rd = new userReader(psC, null);
+        rd.height = 0;
         userConfig uc = new userConfig(psC, rd);
         psS.lineRx = pipeSide.modTyp.modeCRorLF;
         psC.lineTx = pipeSide.modTyp.modeCRLF;
@@ -840,7 +841,7 @@ public class cfgInit implements Runnable {
         doInit(null, httpGet(url), null);
         userLine lin = new userLine();
         lin.execTimeOut = 0;
-        lin.createHandler(ps, "applet", true);
+        lin.createHandler(ps, "applet", 2);
         img.doRound(true);
         img.doImage();
         return img;
@@ -909,12 +910,12 @@ public class cfgInit implements Runnable {
             if (pipCon != null) {
                 userLine lin = new userLine();
                 lin.execTimeOut = 0;
-                lin.createHandler(pipCon, "console", true);
+                lin.createHandler(pipCon, "console", 2);
             }
             if (pipWin != null) {
                 userLine lin = new userLine();
                 lin.execTimeOut = 0;
-                lin.createHandler(pipWin, "window", true);
+                lin.createHandler(pipWin, "window", 2);
             }
             return;
         }
@@ -926,7 +927,7 @@ public class cfgInit implements Runnable {
             }
             pipeSide pip = pipeConsole.create();
             logger.pipeStart(pip);
-            userReader rdr = new userReader(pip, 1023);
+            userReader rdr = new userReader(pip, null);
             rdr.height = 0;
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;

@@ -738,7 +738,7 @@ public class clntTrack implements rtrBfdClnt {
         pipeLine pipe = new pipeLine(32768, false);
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
-        userReader rdr = new userReader(pip, 1023);
+        userReader rdr = new userReader(pip, null);
         rdr.height = 0;
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;

@@ -378,7 +378,7 @@ class servModemConn implements Runnable, Comparator<servModemConn> {
             pipeModem.originate(pipeC, lower.getCodec(), data);
         }
         bits.sleep(2000);
-        lower.lower.lin.createHandler(pipeS, "" + lower.conn, false);
+        lower.lower.lin.createHandler(pipeS, "" + lower.conn, 0);
         for (;;) {
             if (lower.ctrl.isClosed() != 0) {
                 break;

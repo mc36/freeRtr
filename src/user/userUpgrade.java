@@ -337,7 +337,7 @@ public class userUpgrade {
         }
         if (cfgAll.upgradeConfig) {
             fl.cons.debugRes("saving configuration");
-            userReader rdr = new userReader(cmd.pipe, 1023);
+            userReader rdr = new userReader(cmd.pipe, null);
             rdr.height = 0;
             userExec exe = new userExec(cmd.pipe, rdr);
             exe.privileged = true;

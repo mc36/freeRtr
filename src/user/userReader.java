@@ -60,7 +60,12 @@ public class userReader implements Comparator<String> {
     /**
      * deactivation character
      */
-    public int deactive = 65535;
+    public int deactive;
+
+    /**
+     * escape character
+     */
+    public int escape;
 
     /**
      * table mode
@@ -184,23 +189,32 @@ public class userReader implements Comparator<String> {
     }
 
     /**
-     * deactivation character
-     */
-    public int deactivate = 255;
-
-    /**
      * constructs new reader for a pipeline
      *
      * @param pip pipeline to use as input
-     * @param deact deactivation character
+     * @param parent line to use
      */
-    public userReader(pipeSide pip, int deact) {
+    public userReader(pipeSide pip, userLine parent) {
         pipe = pip;
         setHistory(64);
         width = 79;
         height = 24;
+        deactive = 256;
+        escape = 256;
         clip = "";
         filterS = "";
+        if (parent == null) {
+            return;
+        }
+        logging = parent.execLogging;
+        width = parent.execWidth;
+        height = parent.execHeight;
+        timeStamp = parent.execTimes;
+        colorize = parent.execColor;
+        spacetab = parent.execSpace;
+        tabMod = parent.execTables;
+        deactive = parent.promptDeActive;
+        escape = parent.promptEscape;
     }
 
     /**

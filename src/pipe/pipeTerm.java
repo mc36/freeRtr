@@ -13,6 +13,11 @@ import util.logger;
 public class pipeTerm {
 
     /**
+     * escape character
+     */
+    protected int escChr;
+
+    /**
      * stream handler
      */
     protected pipeSide stream;
@@ -45,17 +50,19 @@ public class pipeTerm {
     /**
      * thread buffer size
      */
-    protected final static int theradBuf = 1024;
+    protected final static int threadBuf = 1024;
 
     /**
      * create one terminal
      *
      * @param con console to use
      * @param strm stream to use
+     * @param esc escape character
      */
-    public pipeTerm(pipeSide con, pipeSide strm) {
+    public pipeTerm(pipeSide con, pipeSide strm, int esc) {
         console = con;
         stream = strm;
+        escChr = esc;
     }
 
     /**
@@ -108,7 +115,7 @@ class pipeTermRx implements Runnable {
                 if (!parent.runningNeed) {
                     break;
                 }
-                byte[] buf = new byte[pipeTerm.theradBuf];
+                byte[] buf = new byte[pipeTerm.threadBuf];
                 int siz = parent.stream.nonBlockGet(buf, 0, buf.length);
                 if (siz < 1) {
                     bits.sleep(pipeTerm.threadTime);
@@ -138,13 +145,13 @@ class pipeTermTx implements Runnable {
                 if (!parent.runningNeed) {
                     break;
                 }
-                byte[] buf = new byte[pipeTerm.theradBuf];
+                byte[] buf = new byte[pipeTerm.threadBuf];
                 int siz = parent.console.nonBlockGet(buf, 0, buf.length);
                 if (siz < 1) {
                     bits.sleep(pipeTerm.threadTime);
                     continue;
                 }
-                if ((siz > 1) || (buf[0] != 0x3)) {
+                if ((siz > 1) || (buf[0] != parent.escChr)) {
                     parent.stream.blockingPut(buf, 0, siz);
                     continue;
                 }

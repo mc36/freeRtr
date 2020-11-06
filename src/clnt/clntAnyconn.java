@@ -17,6 +17,7 @@ import user.userTerminal;
 import util.bits;
 import util.counter;
 import util.debugger;
+import util.extMrkLng;
 import util.logger;
 import util.state;
 import util.uniResLoc;
@@ -343,7 +344,7 @@ public class clntAnyconn implements Runnable, ifcDn {
         if (mkConn()) {
             return;
         }
-        String cntx = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + version.VerNam + "</version><device-id>" + version.getKernelName() + "</device-id><group-access>" + url.toURL(false, true) + "</group-access></config-auth>";
+        String cntx = extMrkLng.header + "<config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + version.VerNam + "</version><device-id>" + version.getKernelName() + "</device-id><group-access>" + url.toURL(false, true) + "</group-access></config-auth>";
         sendLine("POST " + url.toURL(false, false) + " HTTP/1.1");
         sendLine("user-agent: " + version.usrAgnt);
         sendLine("host: " + url.server);

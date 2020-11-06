@@ -11,6 +11,11 @@ import java.util.List;
 public class extMrkLng {
 
     /**
+     * header string
+     */
+    public final static String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+
+    /**
      * original string
      */
     public String orig;
