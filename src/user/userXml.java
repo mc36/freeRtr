@@ -130,7 +130,6 @@ public class userXml {
         }
         rep.data.add(new extMrkLngEntry("/Response/CLI", "", ""));
         rep.data.add(new extMrkLngEntry("/Response", "", ""));
-        rep.data.add(new extMrkLngEntry("", "", ""));
         return rep;
     }
 

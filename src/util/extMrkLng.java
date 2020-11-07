@@ -220,6 +220,7 @@ public class extMrkLng {
             lst.add(getMove(path, ntry.name, ntry.param) + ntry.value);
             path = ntry.name;
         }
+        lst.add(getMove(path, "", ""));
         return lst;
     }
 
