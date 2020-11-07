@@ -24,6 +24,16 @@ public class debugger {
     public static boolean userReaderEvnt = false;
 
     /**
+     * userNetconf commands
+     */
+    public static boolean userNetconfEvnt = false;
+
+    /**
+     * userXml commands
+     */
+    public static boolean userXmlEvnt = false;
+
+    /**
      * cfgInit hw commands
      */
     public static boolean cfgInitHw = false;
@@ -932,6 +942,8 @@ public class debugger {
         h.add("2 3      line                line specific protocols");
         h.add("3 .        config            configuration commands");
         h.add("3 .        reader            command line reader events");
+        h.add("3 .        netconf           netconf events");
+        h.add("3 .        xml               xml events");
         h.add("3 .        script            chat script handler");
         h.add("3 .        hwcfg             hardware config");
         h.add("3 .        swcfg             software config");
@@ -1176,6 +1188,14 @@ public class debugger {
             }
             if (s.equals("reader")) {
                 userReaderEvnt = v;
+                return false;
+            }
+            if (s.equals("netconf")) {
+                userNetconfEvnt = v;
+                return false;
+            }
+            if (s.equals("xml")) {
+                userXmlEvnt = v;
                 return false;
             }
             if (s.equals("hwcfg")) {

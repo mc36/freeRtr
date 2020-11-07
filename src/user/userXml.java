@@ -5,8 +5,10 @@ import java.util.List;
 import pipe.pipeLine;
 import pipe.pipeSide;
 import util.cmds;
+import util.debugger;
 import util.extMrkLng;
 import util.extMrkLngEntry;
+import util.logger;
 
 /**
  * xml handler
@@ -143,7 +145,10 @@ public class userXml {
                 return;
             }
             String a = conn.lineGet(echo ? 0x32 : 1);
-            if ((l.size() < 1) && (a.equals("exit"))) {
+            if (debugger.userXmlEvnt) {
+                logger.debug("rx: " + a);
+            }
+            if (a.equals("<exit/>")) {
                 return;
             }
             if (a.length() < 1) {
@@ -166,6 +171,9 @@ public class userXml {
                 conn.linePut(extMrkLng.header + "\n<Response MajorVersion=\"1\" MinorVersion=\"0\" ErrorCode=\"2\" ErrorMsg=\"request error\"><ResultSummary ErrorCount=\"0\"/></Response>");
                 conn.strPut(prompt);
                 continue;
+            }
+            if (debugger.userXmlEvnt) {
+                logger.debug("tx: " + x.toXMLstr());
             }
             if (!form) {
                 conn.linePut(extMrkLng.header + "\n" + x.toXMLstr());
