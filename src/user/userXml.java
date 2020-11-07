@@ -148,7 +148,7 @@ public class userXml {
             if (debugger.userXmlEvnt) {
                 logger.debug("rx: " + a);
             }
-            if (a.equals("<exit/>")) {
+            if (a.equals("<Exit/>")) {
                 return;
             }
             if (a.length() < 1) {
