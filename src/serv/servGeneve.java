@@ -25,7 +25,7 @@ import util.counter;
 import util.state;
 
 /**
- * generic network virtualization encapsulation (rfcXXXX) client
+ * generic network virtualization encapsulation (rfc8926) client
  *
  * @author matecsaba
  */

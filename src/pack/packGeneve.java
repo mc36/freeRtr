@@ -3,7 +3,7 @@ package pack;
 import ifc.ifcBridge;
 
 /**
- * generic network virtualization encapsulation (rfcXXXX) packet handler
+ * generic network virtualization encapsulation (rfc8926) packet handler
  *
  * @author matecsaba
  */
