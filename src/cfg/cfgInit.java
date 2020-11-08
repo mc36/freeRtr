@@ -168,6 +168,11 @@ public class cfgInit implements Runnable {
     public static final tabGen<userFilter> snmpMibs = new tabGen<userFilter>();
 
     /**
+     * loaded telemetry exports
+     */
+    public static final tabGen<cfgTlmtexp> tlmtryexp = new tabGen<cfgTlmtexp>();
+
+    /**
      * list of physical interfaces
      */
     public static final tabGen<cfgVdcIfc> ifaceLst = new tabGen<cfgVdcIfc>();
@@ -309,9 +314,9 @@ public class cfgInit implements Runnable {
      *
      * @param cmds commands
      * @param defs defaults
-     * @param mibs mibs
+     * @param inhs inheritables
      */
-    public static void executeHWcommands(List<String> cmds, List<String> defs, List<String> mibs) {
+    public static void executeHWcommands(List<String> cmds, List<String> defs, List<String> inhs) {
         if (cmds == null) {
             return;
         }
@@ -454,13 +459,47 @@ public class cfgInit implements Runnable {
                 lin.runner.setMon(true);
                 continue;
             }
+            if (s.equals("netconf")) {
+                s = cmd.getRemaining();
+                List<String> txt = httpGet(s);
+                if (txt == null) {
+                    continue;
+                }
+                inhs.add(cmd.getOriginal());
+                int bg = -1;
+                for (int p = 0; p < txt.size(); p++) {
+                    String a = txt.get(p);
+                    if (a.startsWith("table ")) {
+                        bg = p;
+                    }
+                    if (!a.equals(".")) {
+                        continue;
+                    }
+                    cmd = new cmds("", txt.get(bg + 0));
+                    cmd.word();
+                    cfgTlmtexp tl = new cfgTlmtexp();
+                    tl.name = cmd.getRemaining();
+                    tl.path = txt.get(bg + 1);
+                    tl.prefix = txt.get(bg + 2);
+                    tl.url = txt.get(bg + 3);
+                    for (int i = bg + 4; i < p; i++) {
+                        cmd = new cmds("", txt.get(i));
+                        tl.doCfgLine(cmd);
+                    }
+                    tlmtryexp.put(tl);
+                    if (debugger.cfgInitHw) {
+                        logger.debug("netconf " + tl.name);
+                    }
+                }
+                continue;
+            }
             if (s.equals("snmp")) {
                 s = cmd.getRemaining();
                 List<String> txt = httpGet(s);
                 if (txt == null) {
                     continue;
                 }
-                mibs.add(s);
+                inhs.add(cmd.getOriginal());
                 int bg = -1;
                 for (int p = 0; p < txt.size(); p++) {
                     String a = txt.get(p);
@@ -473,10 +512,9 @@ public class cfgInit implements Runnable {
                     cmd = new cmds("", txt.get(bg));
                     cmd.word();
                     a = cmd.word();
-                    userFilter sn = new userFilter(a, cmd.getRemaining(),
-                            new ArrayList<String>());
+                    userFilter sn = new userFilter(a, cmd.getRemaining(), new ArrayList<String>());
                     sn.listing.addAll(txt.subList(bg + 1, p));
-                    snmpMibs.add(sn);
+                    snmpMibs.put(sn);
                     if (debugger.cfgInitHw) {
                         logger.debug("snmp " + sn);
                     }
@@ -605,7 +643,6 @@ public class cfgInit implements Runnable {
         cfgLin.defaultF = createFilter(cfgLin.defaultL, cfgLin.linedefF);
         cfgSched.defaultF = createFilter(cfgSched.defaultL);
         cfgScrpt.defaultF = createFilter(cfgScrpt.defaultL);
-        cfgTlmtexp.defaultF = createFilter(cfgTlmtexp.defaultL);
         cfgTlmtdst.defaultF = createFilter(cfgTlmtdst.defaultL);
         cfgEvntmgr.defaultF = createFilter(cfgEvntmgr.defaultL);
         cfgTrack.defaultF = createFilter(cfgTrack.defaultL);
@@ -694,10 +731,10 @@ public class cfgInit implements Runnable {
                     needInit[i], cmds.tabulator + cmds.finish));
         }
         List<String> defs = new ArrayList<String>();
-        List<String> mibs = new ArrayList<String>();
+        List<String> inhs = new ArrayList<String>();
         try {
             logger.info("initializing hardware");
-            executeHWcommands(hw, defs, mibs);
+            executeHWcommands(hw, defs, inhs);
         } catch (Exception e) {
             logger.exception(e);
         }
@@ -732,7 +769,7 @@ public class cfgInit implements Runnable {
             cfgVdc ntry = cfgAll.vdcs.get(i).copyBytes();
             vdcLst.add(ntry);
             int o = (i * step) + vdcPortBeg;
-            ntry.startNow(defs, mibs, o, o + step);
+            ntry.startNow(defs, inhs, o, o + step);
         }
         try {
             prtRedun.doInit(cons);

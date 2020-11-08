@@ -189,11 +189,6 @@ public class cfgAll {
     public static final tabGen<cfgEvntmgr> eventmgrs = new tabGen<cfgEvntmgr>();
 
     /**
-     * list of telemetry exports
-     */
-    public static final tabGen<cfgTlmtexp> tlmtryexp = new tabGen<cfgTlmtexp>();
-
-    /**
      * list of telemetry destinations
      */
     public static final tabGen<cfgTlmtdst> tlmtrydst = new tabGen<cfgTlmtdst>();
@@ -2094,42 +2089,6 @@ public class cfgAll {
     }
 
     /**
-     * find one telemetry export
-     *
-     * @param nam name of entry
-     * @param create create new on this number if not found
-     * @return descriptor, null if not found
-     */
-    public static cfgTlmtexp tlmexFind(String nam, boolean create) {
-        nam = nam.trim();
-        if (nam.length() < 1) {
-            return null;
-        }
-        cfgTlmtexp ntry = new cfgTlmtexp();
-        ntry.name = nam;
-        if (!create) {
-            return tlmtryexp.find(ntry);
-        }
-        cfgTlmtexp old = tlmtryexp.add(ntry);
-        if (old != null) {
-            return old;
-        }
-        return ntry;
-    }
-
-    /**
-     * delete one telemetry export
-     *
-     * @param nam name of entry
-     * @return descriptor, null if not found
-     */
-    public static cfgTlmtexp tlmexDel(String nam) {
-        cfgTlmtexp ntry = new cfgTlmtexp();
-        ntry.name = nam;
-        return tlmtryexp.del(ntry);
-    }
-
-    /**
      * find one telemetry destination
      *
      * @param nam name of entry
@@ -3224,7 +3183,6 @@ public class cfgAll {
         servGenList.listGetRun(l, vpdns, filter);
         servGenList.listGetRun(l, trackers, filter);
         servGenList.listGetRun(l, mtrackers, filter);
-        servGenList.listGetRun(l, tlmtryexp, filter);
         servGenList.listGetRun(l, tlmtrydst, filter);
         servGenList.listGetRun(l, schedulers, filter);
         servGenList.listGetRun(l, scripts, filter);

@@ -26,7 +26,7 @@ public class debugger {
     /**
      * userNetconf commands
      */
-    public static boolean userNetconfEvnt = false;
+    public static boolean userNetconfEvnt = true;////////////////false;
 
     /**
      * userXml commands

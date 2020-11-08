@@ -358,6 +358,21 @@ public class servPrometheus extends servGeneric implements prtServS {
     }
 
     /**
+     * apply replaces
+     *
+     * @param a string
+     * @param reps replaces
+     * @return result
+     */
+    protected static String doReplaces(String a, tabGen<servPrometheusRep> reps) {
+        for (int i = 0; i < reps.size(); i++) {
+            servPrometheusRep rep = reps.get(i);
+            a = a.replaceAll(rep.src, rep.trg);
+        }
+        return a;
+    }
+
+    /**
      * get show
      *
      * @return result
@@ -512,12 +527,9 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                 }
                 nd = a + cl.get(acol);
             }
-            for (int i = 0; i < reps.size(); i++) {
-                servPrometheusRep rep = reps.get(i);
-                na = na.replaceAll(rep.src, rep.trg);
-                nc = nc.replaceAll(rep.src, rep.trg);
-                nd = nd.replaceAll(rep.src, rep.trg);
-            }
+            na = servPrometheus.doReplaces(na, reps);
+            nc = servPrometheus.doReplaces(nc, reps);
+            nd = servPrometheus.doReplaces(nd, reps);
             if (lab == null) {
                 na += nc;
                 na += nd;
@@ -555,11 +567,7 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                     lst.add("# TYPE " + nb + " " + cc.typ);
                     smt.add(nb);
                 }
-                String a = cl.get(cc.num);
-                for (int i = 0; i < cc.reps.size(); i++) {
-                    servPrometheusRep rep = cc.reps.get(i);
-                    a = a.replaceAll(rep.src, rep.trg);
-                }
+                String a = servPrometheus.doReplaces(cl.get(cc.num), cc.reps);
                 if (cc.splS == null) {
                     doMetric(lst, nb, labs, a);
                     continue;

@@ -1,0 +1,16 @@
+
+
+table ifaces
+infra-statistics/interfaces/interface/latest/generic-counters
+Cisco-IOS-XR-infra-statsd-oper
+http://cisco.com/ns/yang/
+command sho inter summ
+key 0 interface-name infra-statistics/interfaces/interface
+column 1 name st
+column 1 type string
+column 2 name tx
+column 3 name rx
+column 4 name dr
+.
+
+

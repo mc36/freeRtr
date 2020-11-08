@@ -934,7 +934,7 @@ public class userExec {
         hl.add("2 3      prometheus              prometheus protocol information");
         hl.add("3 4,.      <name>                server name");
         hl.add("4 .          <name>              metric name");
-        hl.add("2 3      telemetry               telemetry exporter information");
+        hl.add("2 3,.    telemetry               telemetry exporter information");
         hl.add("3 .        <name>                exporter name");
         hl.add("2 3      streamingmdt            streaming telemetry information");
         hl.add("3 4,.      <name>                server name");

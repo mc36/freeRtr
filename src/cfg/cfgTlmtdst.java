@@ -37,8 +37,8 @@ public class cfgTlmtdst implements Comparator<cfgTlmtdst>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "telemetry destination .*! port " + servStreamingMdt.port,
-        "telemetry destination .*! no description",};
+        "telemetry .*! port " + servStreamingMdt.port,
+        "telemetry .*! no description",};
 
     /**
      * defaults filter
@@ -77,7 +77,7 @@ public class cfgTlmtdst implements Comparator<cfgTlmtdst>, cfgGeneric {
 
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
-        l.add("telemetry destination " + name);
+        l.add("telemetry " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, worker.target == null, cmds.tabulator, "target", worker.target);
         l.add(cmds.tabulator + "port " + worker.port);

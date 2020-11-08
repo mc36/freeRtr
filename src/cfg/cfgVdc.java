@@ -887,11 +887,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      * start this vdc now
      *
      * @param defs defaults
-     * @param mibs snmp mibs
+     * @param inhs inheritables
      * @param beg vdc begin port
      * @param end vdc end port
      */
-    public void startNow(List<String> defs, List<String> mibs, int beg, int end) {
+    public void startNow(List<String> defs, List<String> inhs, int beg, int end) {
         need2run = true;
         cfgBase = cfgInit.cfgFileSw;
         int i = cfgBase.lastIndexOf("/");
@@ -914,8 +914,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         for (i = 0; i < defs.size(); i++) {
             l.add("def " + defs.get(i));
         }
-        for (i = 0; i < mibs.size(); i++) {
-            l.add("snmp " + mibs.get(i));
+        for (i = 0; i < inhs.size(); i++) {
+            l.add(inhs.get(i));
         }
         for (i = 0; i < tcps.size(); i++) {
             l.add("tcp2vrf " + tcps.get(i));

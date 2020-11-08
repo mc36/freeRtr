@@ -61,7 +61,7 @@ public class userXml {
                     if (cmd.size() < 1) {
                         break;
                     }
-                    String s = cmd.word("/").trim();
+                    String s = cmd.word("\n").trim();
                     if (s.length() < 1) {
                         continue;
                     }
@@ -107,7 +107,7 @@ public class userXml {
                     if (cmd.size() < 1) {
                         break;
                     }
-                    String s = cmd.word("/").trim();
+                    String s = cmd.word("\n").trim();
                     if (s.length() < 1) {
                         continue;
                     }
@@ -134,57 +134,77 @@ public class userXml {
     }
 
     /**
-     * do work
+     * read request
+     *
+     * @return request, null if error
      */
-    public void doWork() {
+    public extMrkLng doRead() {
         List<String> l = new ArrayList<String>();
-        conn.strPut(prompt);
         for (;;) {
             if (conn.isClosed() != 0) {
-                return;
+                return null;
             }
             String a = conn.lineGet(echo ? 0x32 : 1);
             if (debugger.userXmlEvnt) {
                 logger.debug("rx: " + a);
             }
             if (a.equals("<Exit/>")) {
-                return;
+                return null;
             }
             if (a.length() < 1) {
                 continue;
             }
             l.add(a);
-            if (a.indexOf("</Request>") < 0) {
-                continue;
+            if (a.indexOf("</Request>") >= 0) {
+                break;
             }
-            extMrkLng x = new extMrkLng();
-            boolean b = x.fromString(l, "/");
-            l.clear();
-            if (b) {
-                conn.linePut(extMrkLng.header + "\n<Response MajorVersion=\"1\" MinorVersion=\"0\" ErrorCode=\"1\" ErrorMsg=\"parse error\"><ResultSummary ErrorCount=\"0\"/></Response>");
-                conn.strPut(prompt);
-                continue;
+        }
+        extMrkLng x = new extMrkLng();
+        if (x.fromString(l, "\n")) {
+            return null;
+        }
+        return x;
+    }
+
+    /**
+     * send response
+     *
+     * @param x xml
+     */
+    public void doSend(extMrkLng x) {
+        if (debugger.userXmlEvnt) {
+            logger.debug("tx: " + x.toXMLstr());
+        }
+        if (!form) {
+            conn.linePut(extMrkLng.header + "\n" + x.toXMLstr());
+            conn.strPut(prompt);
+            return;
+        }
+        conn.linePut(extMrkLng.header);
+        List<String> r = x.toXMLlst();
+        for (int i = 0; i < r.size(); i++) {
+            conn.linePut(r.get(i));
+        }
+        conn.strPut(prompt);
+    }
+
+    /**
+     * do work
+     */
+    public void doWork() {
+        conn.strPut(prompt);
+        for (;;) {
+            extMrkLng x = doRead();
+            if (x == null) {
+                break;
             }
             x = doRequest(x);
             if (x == null) {
-                conn.linePut(extMrkLng.header + "\n<Response MajorVersion=\"1\" MinorVersion=\"0\" ErrorCode=\"2\" ErrorMsg=\"request error\"><ResultSummary ErrorCount=\"0\"/></Response>");
+                conn.linePut(extMrkLng.header + "\n<Response MajorVersion=\"1\" MinorVersion=\"0\" ErrorCode=\"1\" ErrorMsg=\"request error\"><ResultSummary ErrorCount=\"0\"/></Response>");
                 conn.strPut(prompt);
                 continue;
             }
-            if (debugger.userXmlEvnt) {
-                logger.debug("tx: " + x.toXMLstr());
-            }
-            if (!form) {
-                conn.linePut(extMrkLng.header + "\n" + x.toXMLstr());
-                conn.strPut(prompt);
-                continue;
-            }
-            conn.linePut(extMrkLng.header);
-            List<String> r = x.toXMLlst();
-            for (int i = 0; i < r.size(); i++) {
-                conn.linePut(r.get(i));
-            }
-            conn.strPut(prompt);
+            doSend(x);
         }
     }
 

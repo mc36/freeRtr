@@ -9,12 +9,12 @@ import pipe.pipeSide;
 import serv.servStreamingMdt;
 import tab.tabGen;
 import user.userExec;
-import user.userFilter;
 import user.userFormat;
-import user.userHelping;
 import user.userReader;
 import util.bits;
 import util.cmds;
+import util.extMrkLng;
+import util.extMrkLngEntry;
 import util.protoBuf;
 import util.protoBufEntry;
 
@@ -23,7 +23,7 @@ import util.protoBufEntry;
  *
  * @author matecsaba
  */
-public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
+public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
 
     /**
      * name of telemetry export
@@ -31,34 +31,43 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
     public String name;
 
     /**
-     * description
-     */
-    public String description;
-
-    /**
      * command
      */
     public String command;
 
     /**
+     * prefix
+     */
+    public String prefix;
+
+    /**
+     * url
+     */
+    public String url;
+
+    /**
      * path
      */
     public String path;
-
     /**
      * skip
      */
     public int skip;
 
     /**
-     * name column
+     * key column
      */
-    public int col;
+    public int keyC;
 
     /**
-     * name key
+     * key name
      */
-    public String key;
+    public String keyN;
+
+    /**
+     * key path
+     */
+    public String keyP;
 
     /**
      * columns
@@ -86,24 +95,6 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
     public int cnt;
 
     /**
-     * defaults text
-     */
-    public final static String[] defaultL = {
-        "telemetry exporter .*! no description",
-        "telemetry exporter .*! name 0 null",
-        "telemetry exporter .*! path null",
-        "telemetry exporter .*! command null",
-        "telemetry exporter .*! skip 1",
-        "telemetry exporter .*! column .* name null",
-        "telemetry exporter .*! column .* split null null null",
-        "telemetry exporter .*! column .* type sint64",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    /**
      * create new telemetry export
      */
     public cfgTlmtexp() {
@@ -116,127 +107,31 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
 
-    public String getPrompt() {
-        return "tlmtexp";
-    }
-
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
-        l.add("1  2,.    description              specify description");
-        l.add("2  2,.      <str>                  text");
-        l.add("1  2      command                  specify command to execute");
-        l.add("2  2,.      <str>                  command");
-        l.add("1  2      path                     specify sensor path");
-        l.add("2  2,.      <str>                  command");
-        l.add("1  2      name                     name column number");
-        l.add("2  3        <num>                  column number");
-        l.add("3  .          <str>                name of key");
-        l.add("1  2      skip                     rows to skip");
-        l.add("2  .        <num>                  lines to skip");
-        l.add("1  2      replace                  define replaces in name");
-        l.add("2  3        <str>                  string to replace");
-        l.add("3  .          <str>                replacement string");
-        l.add("1  2      column                   define column to export");
-        l.add("2  3        <num>                  number");
-        l.add("3  4          name                 set metric name");
-        l.add("4  .            <str>              metric name");
-        l.add("3  4          type                 set metric type");
-        l.add("4  .            bytes              bytes");
-        l.add("4  .            string             string");
-        l.add("4  .            bool               boolean");
-        l.add("4  .            uint32             unsigned 32bit integer");
-        l.add("4  .            uint64             unsigned 64bit integer");
-        l.add("4  .            sint32             signed 32bit integer");
-        l.add("4  .            sint64             signed 64bit integer");
-        l.add("4  .            float              32bit floating point number");
-        l.add("4  .            double             64bit floating point number");
-        l.add("3  4          replace              define replaces in value");
-        l.add("4  5            <str>              string to replace");
-        l.add("5  .              <str>            replacement string");
-        l.add("3  4          split                define split of value");
-        l.add("4  5            <str>              delimiter");
-        l.add("5  6              <str>            first label");
-        l.add("6  .                <str>          second label");
-        return l;
-    }
-
-    public List<String> getShRun(boolean filter) {
-        List<String> l = new ArrayList<String>();
-        l.add("telemetry exporter " + name);
-        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
-        l.add(cmds.tabulator + "command " + command);
-        l.add(cmds.tabulator + "path " + path);
-        l.add(cmds.tabulator + "skip " + skip);
-        l.add(cmds.tabulator + "name " + col + " " + key);
-        for (int i = 0; i < reps.size(); i++) {
-            cfgTlmtexpRep rep = reps.get(i);
-            l.add(cmds.tabulator + "replace " + rep.src + " " + rep.trg);
-        }
-        for (int o = 0; o < cols.size(); o++) {
-            cfgTlmtexpCol col = cols.get(o);
-            String cn = cmds.tabulator + "column " + col.num;
-            l.add(cn + " name " + col.nam);
-            l.add(cn + " type " + servStreamingMdt.type2string(col.typ));
-            l.add(cn + " split " + col.splS + " " + col.splL + " " + col.splR);
-            for (int i = 0; i < col.reps.size(); i++) {
-                cfgTlmtexpRep rep = col.reps.get(i);
-                l.add(cn + " replace " + rep.src + " " + rep.trg);
-            }
-        }
-        l.add(cmds.tabulator + cmds.finish);
-        l.add(cmds.comment);
-        if (!filter) {
-            return l;
-        }
-        return userFilter.filterText(l, defaultF);
-    }
-
-    public void doCfgStr(cmds cmd) {
+    /**
+     * do config line
+     *
+     * @param cmd line
+     */
+    public void doCfgLine(cmds cmd) {
         String s = cmd.word();
-        boolean negated = s.equals("no");
-        if (negated) {
-            s = cmd.word();
-        }
-        if (s.equals("description")) {
-            description = cmd.getRemaining();
-            if (negated) {
-                description = null;
-            }
-            return;
-        }
         if (s.equals("command")) {
-            if (negated) {
-                command = null;
-                return;
-            }
             command = cmd.getRemaining();
-            return;
-        }
-        if (s.equals("path")) {
-            if (negated) {
-                path = null;
-                return;
-            }
-            path = cmd.getRemaining();
             return;
         }
         if (s.equals("skip")) {
             skip = bits.str2num(cmd.word());
             return;
         }
-        if (s.equals("name")) {
-            col = bits.str2num(cmd.word());
-            key = cmd.word();
+        if (s.equals("key")) {
+            keyC = bits.str2num(cmd.word());
+            keyN = cmd.word();
+            keyP = cmd.word();
             return;
         }
         if (s.equals("replace")) {
             cfgTlmtexpRep rep = new cfgTlmtexpRep(cmd.word());
             rep.trg = cmd.word();
-            if (negated) {
-                reps.del(rep);
-            } else {
-                reps.add(rep);
-            }
+            reps.add(rep);
             return;
         }
         if (!s.equals("column")) {
@@ -250,10 +145,6 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
         }
         s = cmd.word();
         if (s.equals("name")) {
-            if (negated) {
-                cols.del(col);
-                return;
-            }
             col.nam = cmd.word();
             return;
         }
@@ -262,28 +153,17 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
             return;
         }
         if (s.equals("split")) {
-            if (negated) {
-                col.splS = null;
-                col.splL = null;
-                col.splR = null;
-            } else {
-                col.splS = cmd.word();
-                col.splL = cmd.word();
-                col.splR = cmd.word();
-            }
+            col.splS = cmd.word();
+            col.splL = cmd.word();
+            col.splR = cmd.word();
             return;
         }
         if (s.equals("replace")) {
             cfgTlmtexpRep rep = new cfgTlmtexpRep(cmd.word());
             rep.trg = cmd.word();
-            if (negated) {
-                col.reps.del(rep);
-            } else {
-                col.reps.add(rep);
-            }
+            col.reps.add(rep);
             return;
         }
-        cmd.badCmd();
     }
 
     /**
@@ -325,7 +205,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
         return lst;
     }
 
-    private void doMetric(packHolder pck2, packHolder pck3, int typ, String nam, String val) {
+    private void doMetricKvGpb(packHolder pck2, packHolder pck3, int typ, String nam, String val) {
         protoBuf pb2 = new protoBuf();
         pb2.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, nam.getBytes());
         switch (typ) {
@@ -375,8 +255,12 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
         pb2.clear();
     }
 
-    private packHolder doLine(String a) {
-        cmds cm = new cmds("prom", a);
+    private void doMetricNetConf(extMrkLng res, String nam, String val) {
+        res.data.add(new extMrkLngEntry(nam, "", val));
+    }
+
+    private List<String> doSplitLine(String a) {
+        cmds cm = new cmds("tele", a);
         List<String> cl = new ArrayList<String>();
         for (;;) {
             a = cm.word(";");
@@ -385,20 +269,29 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
             }
             cl.add(a);
         }
-        int cls = cl.size();
-        if (col >= cls) {
-            return null;
-        }
-        protoBuf pb = new protoBuf();
-        a = cl.get(col);
+        return cl;
+    }
+
+    private static String doReplaces(String a, tabGen<cfgTlmtexpRep> reps) {
         for (int i = 0; i < reps.size(); i++) {
             cfgTlmtexpRep rep = reps.get(i);
             a = a.replaceAll(rep.src, rep.trg);
         }
+        return a;
+    }
+
+    private packHolder doLineKvGpb(String a) {
+        List<String> cl = doSplitLine(a);
+        int cls = cl.size();
+        if (keyC >= cls) {
+            return null;
+        }
+        protoBuf pb = new protoBuf();
+        a = doReplaces(cl.get(keyC), reps);
         packHolder pck1 = new packHolder(true, true);
         packHolder pck2 = new packHolder(true, true);
         packHolder pck3 = new packHolder(true, true);
-        pb.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, key.getBytes());
+        pb.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, keyN.getBytes());
         pb.putField(servStreamingMdt.fnString, protoBufEntry.tpBuf, a.getBytes());
         pb.toPacket(pck1);
         pb.clear();
@@ -410,22 +303,18 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
             if (cl.size() <= cc.num) {
                 continue;
             }
-            a = cl.get(cc.num);
-            for (int i = 0; i < cc.reps.size(); i++) {
-                cfgTlmtexpRep rep = cc.reps.get(i);
-                a = a.replaceAll(rep.src, rep.trg);
-            }
+            a = doReplaces(cl.get(cc.num), cc.reps);
             if (cc.splS == null) {
-                doMetric(pck2, pck3, cc.typ, cc.nam, a);
+                doMetricKvGpb(pck2, pck3, cc.typ, cc.nam, a);
                 continue;
             }
             int i = a.indexOf(cc.splS);
             if (i < 0) {
-                doMetric(pck2, pck3, cc.typ, cc.nam, a);
+                doMetricKvGpb(pck2, pck3, cc.typ, cc.nam, a);
                 continue;
             }
-            doMetric(pck2, pck3, cc.typ, cc.nam + cc.splL, a.substring(0, i));
-            doMetric(pck2, pck3, cc.typ, cc.nam + cc.splR, a.substring(i + cc.splS.length(), a.length()));
+            doMetricKvGpb(pck2, pck3, cc.typ, cc.nam + cc.splL, a.substring(0, i));
+            doMetricKvGpb(pck2, pck3, cc.typ, cc.nam + cc.splR, a.substring(i + cc.splS.length(), a.length()));
         }
         protoBuf pb2 = new protoBuf();
         pb2.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, servStreamingMdt.nmKey.getBytes());
@@ -440,12 +329,40 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
         return pck3;
     }
 
+    private void doLineNetConf(extMrkLng res, String beg, String a) {
+        List<String> cl = doSplitLine(a);
+        int cls = cl.size();
+        if (keyC >= cls) {
+            return;
+        }
+        a = doReplaces(cl.get(keyC), reps);
+        res.data.add(new extMrkLngEntry(beg + keyN, "", a));
+        for (int o = 0; o < cols.size(); o++) {
+            cfgTlmtexpCol cc = cols.get(o);
+            if (cl.size() <= cc.num) {
+                continue;
+            }
+            a = doReplaces(cl.get(cc.num), cc.reps);
+            if (cc.splS == null) {
+                doMetricNetConf(res, beg + path + "/" + cc.nam, a);
+                continue;
+            }
+            int i = a.indexOf(cc.splS);
+            if (i < 0) {
+                doMetricNetConf(res, beg + path + "/" + cc.nam, a);
+                continue;
+            }
+            doMetricNetConf(res, beg + path + "/" + cc.nam + cc.splL, a.substring(0, i));
+            doMetricNetConf(res, beg + path + "/" + cc.nam + cc.splR, a.substring(i + cc.splS.length(), a.length()));
+        }
+    }
+
     /**
      * generate report
      *
      * @return report, null on error
      */
-    public packHolder getReport() {
+    public packHolder getReportKvGpb() {
         last = bits.getTime();
         List<String> res = getResult();
         for (int i = 0; i < skip; i++) {
@@ -459,11 +376,11 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
         pb.putField(servStreamingMdt.rpStart, protoBufEntry.tpInt, last);
         pb.putField(servStreamingMdt.rpNodeStr, protoBufEntry.tpBuf, cfgAll.hostName.getBytes());
         pb.putField(servStreamingMdt.rpSubsStr, protoBufEntry.tpBuf, name.getBytes());
-        pb.putField(servStreamingMdt.rpEnc, protoBufEntry.tpBuf, path.getBytes());
+        pb.putField(servStreamingMdt.rpEnc, protoBufEntry.tpBuf, (prefix + ":" + path).getBytes());
         pb.toPacket(pck);
         pb.clear();
         for (int i = 0; i < res.size(); i++) {
-            packHolder ln = doLine(res.get(i));
+            packHolder ln = doLineKvGpb(res.get(i));
             if (ln == null) {
                 continue;
             }
@@ -479,6 +396,25 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
     }
 
     /**
+     * generate report
+     *
+     * @param rep report
+     * @param beg beginning
+     */
+    public void getReportNetConf(extMrkLng rep, String beg) {
+        List<String> res = getResult();
+        for (int i = 0; i < skip; i++) {
+            if (res.size() < 1) {
+                break;
+            }
+            res.remove(0);
+        }
+        for (int i = 0; i < res.size(); i++) {
+            doLineNetConf(rep, beg, res.get(i));
+        }
+    }
+
+    /**
      * get show
      *
      * @return result
@@ -486,11 +422,14 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp>, cfgGeneric {
     public List<String> getShow() {
         List<String> res = new ArrayList<String>();
         res.add("command=" + command);
+        res.add("path=" + path);
+        res.add("prefix=" + prefix);
+        res.add("url=" + url);
         res.add("asked=" + cnt + " times");
         res.add("reply=" + time + " ms");
         res.add("output:");
         res.addAll(getResult());
-        res.add("result:" + getReport().dump());
+        res.add("result:" + getReportKvGpb().dump());
         return res;
     }
 

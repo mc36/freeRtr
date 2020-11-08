@@ -307,14 +307,15 @@ public class userClear {
             return null;
         }
         if (a.equals("telemetry")) {
-            a = cmd.word();
-            cfgTlmtexp exp = cfgAll.tlmexFind(a, false);
+            cfgTlmtexp exp = new cfgTlmtexp();
+            exp.name = cmd.word();
+            exp = cfgInit.tlmtryexp.find(exp);
             if (exp == null) {
                 cmd.error("no such exporter");
                 return null;
             }
             cmd.error("generating report");
-            packHolder rep = exp.getReport();
+            packHolder rep = exp.getReportKvGpb();
             if (rep == null) {
                 logger.warn("telemetry exporter " + a + " returned nothing");
                 return null;
