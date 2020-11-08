@@ -75,6 +75,8 @@ public class userNetconf {
 
     /**
      * do hello
+     *
+     * @return true on error, false on success
      */
     public boolean doHello() {
         currVer = 10;
@@ -338,8 +340,9 @@ public class userNetconf {
      * @param mod mode
      * @param path path
      * @param ns namespace
+     * @return true on error, false on success
      */
-    public void doClient(cmds cmd, String mod, String path, String ns) {
+    public boolean doClient(cmds cmd, String mod, String path, String ns) {
         extMrkLng x = new extMrkLng();
         x.data.add(new extMrkLngEntry("/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
         int i = path.indexOf("/");
@@ -349,8 +352,12 @@ public class userNetconf {
         dumpXml(cmd, x);
         doSend(x);
         x = doRead();
+        if (x == null) {
+            return true;
+        }
         cmd.error("reply");
         dumpXml(cmd, x);
+        return false;
     }
 
 }
