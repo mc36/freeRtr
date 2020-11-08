@@ -1,5 +1,6 @@
-package cfg;
+package user;
 
+import cfg.cfgAll;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -8,9 +9,6 @@ import pipe.pipeLine;
 import pipe.pipeSide;
 import serv.servStreamingMdt;
 import tab.tabGen;
-import user.userExec;
-import user.userFormat;
-import user.userReader;
 import util.bits;
 import util.cmds;
 import util.extMrkLng;
@@ -23,7 +21,7 @@ import util.protoBufEntry;
  *
  * @author matecsaba
  */
-public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
+public class userSensor implements Comparator<userSensor> {
 
     /**
      * name of telemetry export
@@ -49,6 +47,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
      * path
      */
     public String path;
+
     /**
      * skip
      */
@@ -72,12 +71,12 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
     /**
      * columns
      */
-    public tabGen<cfgTlmtexpCol> cols;
+    public tabGen<userSensorCol> cols;
 
     /**
      * replacers
      */
-    public tabGen<cfgTlmtexpRep> reps;
+    public tabGen<userSensorRep> reps;
 
     /**
      * last reported
@@ -97,13 +96,13 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
     /**
      * create new telemetry export
      */
-    public cfgTlmtexp() {
-        cols = new tabGen<cfgTlmtexpCol>();
-        reps = new tabGen<cfgTlmtexpRep>();
+    public userSensor() {
+        cols = new tabGen<userSensorCol>();
+        reps = new tabGen<userSensorRep>();
         skip = 1;
     }
-
-    public int compare(cfgTlmtexp o1, cfgTlmtexp o2) {
+    
+    public int compare(userSensor o1, userSensor o2) {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
 
@@ -129,7 +128,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
             return;
         }
         if (s.equals("replace")) {
-            cfgTlmtexpRep rep = new cfgTlmtexpRep(cmd.word());
+            userSensorRep rep = new userSensorRep(cmd.word());
             rep.trg = cmd.word();
             reps.add(rep);
             return;
@@ -138,8 +137,8 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
             cmd.badCmd();
             return;
         }
-        cfgTlmtexpCol col = new cfgTlmtexpCol(bits.str2num(cmd.word()));
-        cfgTlmtexpCol oldc = cols.add(col);
+        userSensorCol col = new userSensorCol(bits.str2num(cmd.word()));
+        userSensorCol oldc = cols.add(col);
         if (oldc != null) {
             col = oldc;
         }
@@ -159,7 +158,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
             return;
         }
         if (s.equals("replace")) {
-            cfgTlmtexpRep rep = new cfgTlmtexpRep(cmd.word());
+            userSensorRep rep = new userSensorRep(cmd.word());
             rep.trg = cmd.word();
             col.reps.add(rep);
             return;
@@ -204,7 +203,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
         }
         return lst;
     }
-
+    
     private void doMetricKvGpb(packHolder pck2, packHolder pck3, int typ, String nam, String val) {
         protoBuf pb2 = new protoBuf();
         pb2.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, nam.getBytes());
@@ -254,11 +253,11 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
         pb2.toPacket(pck2);
         pb2.clear();
     }
-
+    
     private void doMetricNetConf(extMrkLng res, String nam, String val) {
         res.data.add(new extMrkLngEntry(nam, "", val));
     }
-
+    
     private List<String> doSplitLine(String a) {
         cmds cm = new cmds("tele", a);
         List<String> cl = new ArrayList<String>();
@@ -271,15 +270,15 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
         }
         return cl;
     }
-
-    private static String doReplaces(String a, tabGen<cfgTlmtexpRep> reps) {
+    
+    private static String doReplaces(String a, tabGen<userSensorRep> reps) {
         for (int i = 0; i < reps.size(); i++) {
-            cfgTlmtexpRep rep = reps.get(i);
+            userSensorRep rep = reps.get(i);
             a = a.replaceAll(rep.src, rep.trg);
         }
         return a;
     }
-
+    
     private packHolder doLineKvGpb(String a) {
         List<String> cl = doSplitLine(a);
         int cls = cl.size();
@@ -299,7 +298,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
         pb.toPacket(pck2);
         pb.clear();
         for (int o = 0; o < cols.size(); o++) {
-            cfgTlmtexpCol cc = cols.get(o);
+            userSensorCol cc = cols.get(o);
             if (cl.size() <= cc.num) {
                 continue;
             }
@@ -328,7 +327,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
         pb.toPacket(pck3);
         return pck3;
     }
-
+    
     private void doLineNetConf(extMrkLng res, String beg, String a) {
         List<String> cl = doSplitLine(a);
         int cls = cl.size();
@@ -336,9 +335,9 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
             return;
         }
         a = doReplaces(cl.get(keyC), reps);
-        res.data.add(new extMrkLngEntry(beg + keyN, "", a));
+        res.data.add(new extMrkLngEntry(beg + keyP + "/" + keyN, "", a));
         for (int o = 0; o < cols.size(); o++) {
-            cfgTlmtexpCol cc = cols.get(o);
+            userSensorCol cc = cols.get(o);
             if (cl.size() <= cc.num) {
                 continue;
             }
@@ -355,6 +354,8 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
             doMetricNetConf(res, beg + path + "/" + cc.nam + cc.splL, a.substring(0, i));
             doMetricNetConf(res, beg + path + "/" + cc.nam + cc.splR, a.substring(i + cc.splS.length(), a.length()));
         }
+        int i = keyP.lastIndexOf("/");
+        res.data.add(new extMrkLngEntry(beg + keyP.substring(0, i), "", ""));
     }
 
     /**
@@ -364,6 +365,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
      */
     public packHolder getReportKvGpb() {
         last = bits.getTime();
+        cnt++;
         List<String> res = getResult();
         for (int i = 0; i < skip; i++) {
             if (res.size() < 1) {
@@ -402,6 +404,8 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
      * @param beg beginning
      */
     public void getReportNetConf(extMrkLng rep, String beg) {
+        last = bits.getTime();
+        cnt++;
         List<String> res = getResult();
         for (int i = 0; i < skip; i++) {
             if (res.size() < 1) {
@@ -412,6 +416,7 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
         for (int i = 0; i < res.size(); i++) {
             doLineNetConf(rep, beg, res.get(i));
         }
+        time = (int) (bits.getTime() - last);
     }
 
     /**
@@ -429,49 +434,53 @@ public class cfgTlmtexp implements Comparator<cfgTlmtexp> {
         res.add("reply=" + time + " ms");
         res.add("output:");
         res.addAll(getResult());
-        res.add("result:" + getReportKvGpb().dump());
+        res.add("netconf reply:");
+        extMrkLng x = new extMrkLng();
+        getReportNetConf(x, "/");
+        res.addAll(x.show());
+        res.add("kvgpb result:" + getReportKvGpb().dump());
         return res;
     }
-
+    
 }
 
-class cfgTlmtexpRep implements Comparator<cfgTlmtexpRep> {
-
+class userSensorRep implements Comparator<userSensorRep> {
+    
     public final String src;
-
+    
     public String trg;
-
-    public cfgTlmtexpRep(String n) {
+    
+    public userSensorRep(String n) {
         src = n;
     }
-
-    public int compare(cfgTlmtexpRep o1, cfgTlmtexpRep o2) {
+    
+    public int compare(userSensorRep o1, userSensorRep o2) {
         return o1.src.compareTo(o2.src);
     }
-
+    
 }
 
-class cfgTlmtexpCol implements Comparator<cfgTlmtexpCol> {
-
+class userSensorCol implements Comparator<userSensorCol> {
+    
     public final int num;
-
+    
     public String nam;
-
+    
     public String splS;
-
+    
     public String splL;
-
+    
     public String splR;
-
+    
     public int typ = servStreamingMdt.fnSint64;
-
-    public tabGen<cfgTlmtexpRep> reps = new tabGen<cfgTlmtexpRep>();
-
-    public cfgTlmtexpCol(int n) {
+    
+    public tabGen<userSensorRep> reps = new tabGen<userSensorRep>();
+    
+    public userSensorCol(int n) {
         num = n;
     }
-
-    public int compare(cfgTlmtexpCol o1, cfgTlmtexpCol o2) {
+    
+    public int compare(userSensorCol o1, userSensorCol o2) {
         if (o1.num < o2.num) {
             return -1;
         }
@@ -480,5 +489,5 @@ class cfgTlmtexpCol implements Comparator<cfgTlmtexpCol> {
         }
         return 0;
     }
-
+    
 }

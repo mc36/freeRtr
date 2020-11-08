@@ -191,7 +191,7 @@ public class cfgAll {
     /**
      * list of telemetry destinations
      */
-    public static final tabGen<cfgTlmtdst> tlmtrydst = new tabGen<cfgTlmtdst>();
+    public static final tabGen<cfgTlmtry> tlmtrydst = new tabGen<cfgTlmtry>();
 
     /**
      * list of vpdns
@@ -2095,17 +2095,17 @@ public class cfgAll {
      * @param create create new on this number if not found
      * @return descriptor, null if not found
      */
-    public static cfgTlmtdst tlmdsFind(String nam, boolean create) {
+    public static cfgTlmtry tlmdsFind(String nam, boolean create) {
         nam = nam.trim();
         if (nam.length() < 1) {
             return null;
         }
-        cfgTlmtdst ntry = new cfgTlmtdst();
+        cfgTlmtry ntry = new cfgTlmtry();
         ntry.name = nam;
         if (!create) {
             return tlmtrydst.find(ntry);
         }
-        cfgTlmtdst old = tlmtrydst.add(ntry);
+        cfgTlmtry old = tlmtrydst.add(ntry);
         if (old != null) {
             return old;
         }
@@ -2118,8 +2118,8 @@ public class cfgAll {
      * @param nam name of entry
      * @return descriptor, null if not found
      */
-    public static cfgTlmtdst tlmdsDel(String nam) {
-        cfgTlmtdst ntry = new cfgTlmtdst();
+    public static cfgTlmtry tlmdsDel(String nam) {
+        cfgTlmtry ntry = new cfgTlmtry();
         ntry.name = nam;
         return tlmtrydst.del(ntry);
     }

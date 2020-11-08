@@ -36,7 +36,7 @@ import cfg.cfgRtr;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
 import cfg.cfgTime;
-import cfg.cfgTlmtdst;
+import cfg.cfgTlmtry;
 import cfg.cfgTrack;
 import cfg.cfgTrnsltn;
 import cfg.cfgVdc;
@@ -1889,7 +1889,7 @@ public class userConfig {
             return;
         }
         if (a.equals("telemetry")) {
-            cfgTlmtdst prf = cfgAll.tlmdsDel(cmd.word());
+            cfgTlmtry prf = cfgAll.tlmdsDel(cmd.word());
             if (prf == null) {
                 cmd.error("no such destination");
                 return;

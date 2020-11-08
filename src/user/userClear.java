@@ -19,8 +19,7 @@ import cfg.cfgRouplc;
 import cfg.cfgRtr;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
-import cfg.cfgTlmtdst;
-import cfg.cfgTlmtexp;
+import cfg.cfgTlmtry;
 import cfg.cfgVdc;
 import cfg.cfgVpdn;
 import cfg.cfgVrf;
@@ -307,9 +306,9 @@ public class userClear {
             return null;
         }
         if (a.equals("telemetry")) {
-            cfgTlmtexp exp = new cfgTlmtexp();
+            userSensor exp = new userSensor();
             exp.name = cmd.word();
-            exp = cfgInit.tlmtryexp.find(exp);
+            exp = cfgInit.sensors.find(exp);
             if (exp == null) {
                 cmd.error("no such exporter");
                 return null;
@@ -317,7 +316,7 @@ public class userClear {
             cmd.error("generating report");
             packHolder rep = exp.getReportKvGpb();
             if (rep == null) {
-                logger.warn("telemetry exporter " + a + " returned nothing");
+                logger.warn("sensor " + a + " returned nothing");
                 return null;
             }
             for (;;) {
@@ -326,7 +325,7 @@ public class userClear {
                     break;
                 }
                 cmd.error("sending through " + a);
-                cfgTlmtdst dst = cfgAll.tlmdsFind(a, false);
+                cfgTlmtry dst = cfgAll.tlmdsFind(a, false);
                 if (dst == null) {
                     logger.warn("telemetry destination " + a + " not found");
                     continue;

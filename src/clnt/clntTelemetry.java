@@ -6,6 +6,8 @@ import pack.packStreamingMdt;
 import pipe.pipeSide;
 import serv.servGeneric;
 import serv.servStreamingMdt;
+import tab.tabGen;
+import user.userSensor;
 import user.userTerminal;
 import util.bits;
 import util.counter;
@@ -22,6 +24,16 @@ public class clntTelemetry implements Runnable {
      * target
      */
     public String target;
+
+    /**
+     * interval
+     */
+    public int interval = 5000;
+
+    /**
+     * sensors
+     */
+    public tabGen<userSensor> sensors = new tabGen<userSensor>();
 
     /**
      * port
@@ -91,12 +103,21 @@ public class clntTelemetry implements Runnable {
         }
         pipe.setTime(120000);
         for (;;) {
-            bits.sleep(1000);
+            bits.sleep(interval);
             if (!need2run) {
                 break;
             }
             if (pipe.isClosed() != 0) {
                 break;
+            }
+            for (int i = 0; i < sensors.size(); i++) {
+                userSensor ntry = sensors.get(i);
+                packHolder pck = ntry.getReportKvGpb();
+                if (pck == null) {
+                    logger.warn("sensor " + ntry.name + " returned nothing");
+                    continue;
+                }
+                sendReport(pck);
             }
         }
     }

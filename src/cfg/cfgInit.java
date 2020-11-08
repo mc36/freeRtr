@@ -96,6 +96,7 @@ import user.userFonts1;
 import user.userHelping;
 import user.userLine;
 import user.userReader;
+import user.userSensor;
 import util.bits;
 import util.cmds;
 import util.counter;
@@ -170,7 +171,7 @@ public class cfgInit implements Runnable {
     /**
      * loaded telemetry exports
      */
-    public static final tabGen<cfgTlmtexp> tlmtryexp = new tabGen<cfgTlmtexp>();
+    public static final tabGen<userSensor> sensors = new tabGen<userSensor>();
 
     /**
      * list of physical interfaces
@@ -477,7 +478,7 @@ public class cfgInit implements Runnable {
                     }
                     cmd = new cmds("", txt.get(bg + 0));
                     cmd.word();
-                    cfgTlmtexp tl = new cfgTlmtexp();
+                    userSensor tl = new userSensor();
                     tl.name = cmd.getRemaining();
                     tl.path = txt.get(bg + 1);
                     tl.prefix = txt.get(bg + 2);
@@ -486,7 +487,7 @@ public class cfgInit implements Runnable {
                         cmd = new cmds("", txt.get(i));
                         tl.doCfgLine(cmd);
                     }
-                    tlmtryexp.put(tl);
+                    sensors.put(tl);
                     if (debugger.cfgInitHw) {
                         logger.debug("netconf " + tl.name);
                     }
@@ -643,7 +644,7 @@ public class cfgInit implements Runnable {
         cfgLin.defaultF = createFilter(cfgLin.defaultL, cfgLin.linedefF);
         cfgSched.defaultF = createFilter(cfgSched.defaultL);
         cfgScrpt.defaultF = createFilter(cfgScrpt.defaultL);
-        cfgTlmtdst.defaultF = createFilter(cfgTlmtdst.defaultL);
+        cfgTlmtry.defaultF = createFilter(cfgTlmtry.defaultL);
         cfgEvntmgr.defaultF = createFilter(cfgEvntmgr.defaultL);
         cfgTrack.defaultF = createFilter(cfgTrack.defaultL);
         cfgMtrack.defaultF = createFilter(cfgMtrack.defaultL);

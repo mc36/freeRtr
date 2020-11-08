@@ -1,8 +1,6 @@
 package user;
 
 import cfg.cfgInit;
-import static cfg.cfgInit.tlmtryexp;
-import cfg.cfgTlmtexp;
 import java.util.List;
 import pipe.pipeSide;
 import util.bits;
@@ -122,7 +120,7 @@ public class userNetconf {
                 if (mod != 2) {
                     continue;
                 }
-                cfgTlmtexp tl = getLeaf(a.substring(getFilter.length(), a.length()));
+                userSensor tl = getLeaf(a.substring(getFilter.length(), a.length()));
                 if (tl == null) {
                     continue;
                 }
@@ -147,10 +145,10 @@ public class userNetconf {
         return rep;
     }
 
-    private cfgTlmtexp getLeaf(String a) {
+    private userSensor getLeaf(String a) {
         logger.debug("here " + a + "!!!");////////
-        for (int i = 0; i < cfgInit.tlmtryexp.size(); i++) {
-            cfgTlmtexp tl = cfgInit.tlmtryexp.get(i);
+        for (int i = 0; i < cfgInit.sensors.size(); i++) {
+            userSensor tl = cfgInit.sensors.get(i);
             if (a.startsWith(tl.path)) {
                 return tl;
             }
@@ -282,8 +280,8 @@ public class userNetconf {
         x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
         x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:startup:1.0"));
         x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        for (int i = 0; i < cfgInit.tlmtryexp.size(); i++) {
-            cfgTlmtexp ntry = tlmtryexp.get(i);
+        for (int i = 0; i < cfgInit.sensors.size(); i++) {
+            userSensor ntry = cfgInit.sensors.get(i);
             x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", ntry.url + ntry.prefix + "?module=" + ntry.prefix));
             x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
         }

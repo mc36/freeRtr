@@ -21,7 +21,6 @@ import cfg.cfgRouplc;
 import cfg.cfgRtr;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
-import cfg.cfgTlmtexp;
 import cfg.cfgTrack;
 import cfg.cfgVdc;
 import cfg.cfgVdcIfc;
@@ -452,17 +451,17 @@ public class userShow {
         if (a.equals("telemetry")) {
             a = cmd.word();
             if (a.length() < 1) {
-                userFormat l = new userFormat("name|rep|time|last", "|");
-                for (int i = 0; i < cfgInit.tlmtryexp.size(); i++) {
-                    cfgTlmtexp exp = cfgInit.tlmtryexp.get(i);
+                userFormat l = new userFormat("|", "name|rep|time|last");
+                for (int i = 0; i < cfgInit.sensors.size(); i++) {
+                    userSensor exp = cfgInit.sensors.get(i);
                     l.add(exp.name + "|" + exp.cnt + "|" + exp.time + "|" + bits.timePast(exp.last));
                 }
                 rdr.putStrTab(l);
                 return null;
             }
-            cfgTlmtexp exp = new cfgTlmtexp();
+            userSensor exp = new userSensor();
             exp.name = a;
-            exp = cfgInit.tlmtryexp.find(exp);
+            exp = cfgInit.sensors.find(exp);
             if (exp == null) {
                 cmd.error("no such exporter");
                 return null;

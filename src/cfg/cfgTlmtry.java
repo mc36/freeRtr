@@ -8,6 +8,7 @@ import serv.servStreamingMdt;
 import tab.tabGen;
 import user.userFilter;
 import user.userHelping;
+import user.userSensor;
 import util.bits;
 import util.cmds;
 
@@ -16,7 +17,7 @@ import util.cmds;
  *
  * @author matecsaba
  */
-public class cfgTlmtdst implements Comparator<cfgTlmtdst>, cfgGeneric {
+public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
 
     /**
      * name of telemetry export
@@ -38,6 +39,7 @@ public class cfgTlmtdst implements Comparator<cfgTlmtdst>, cfgGeneric {
      */
     public final static String[] defaultL = {
         "telemetry .*! port " + servStreamingMdt.port,
+        "telemetry .*! interval 5000",
         "telemetry .*! no description",};
 
     /**
@@ -48,11 +50,11 @@ public class cfgTlmtdst implements Comparator<cfgTlmtdst>, cfgGeneric {
     /**
      * create new telemetry export
      */
-    public cfgTlmtdst() {
+    public cfgTlmtry() {
         worker = new clntTelemetry();
     }
 
-    public int compare(cfgTlmtdst o1, cfgTlmtdst o2) {
+    public int compare(cfgTlmtry o1, cfgTlmtry o2) {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
 
@@ -68,6 +70,10 @@ public class cfgTlmtdst implements Comparator<cfgTlmtdst>, cfgGeneric {
         l.add("2  2,.      <str>                  name");
         l.add("1  2      port                     specify target port");
         l.add("2  .        <num>                  lines to skip");
+        l.add("1  2      sensor                   specify sensor to export");
+        l.add("2  .        <str>                  lines to skip");
+        l.add("1  2      interval                 specify interval");
+        l.add("2  .        <num>                  time in ms");
         l.add("1  2      proxy                    specify proxy profile to use");
         l.add("2  .        <str>                  name of profile");
         l.add("1  .      start                    start exporting");
@@ -81,7 +87,12 @@ public class cfgTlmtdst implements Comparator<cfgTlmtdst>, cfgGeneric {
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, worker.target == null, cmds.tabulator, "target", worker.target);
         l.add(cmds.tabulator + "port " + worker.port);
+        l.add(cmds.tabulator + "interval " + worker.interval);
         cmds.cfgLine(l, worker.proxy == null, cmds.tabulator, "proxy", "" + worker.proxy);
+        for (int i = 0; i < worker.sensors.size(); i++) {
+            userSensor ntry = worker.sensors.get(i);
+            l.add(cmds.tabulator + "sensor " + ntry.name);
+        }
         if (worker.need2run) {
             l.add(cmds.tabulator + "start");
         } else {
@@ -118,6 +129,25 @@ public class cfgTlmtdst implements Comparator<cfgTlmtdst>, cfgGeneric {
         }
         if (s.equals("port")) {
             worker.port = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("interval")) {
+            worker.interval = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("sensor")) {
+            userSensor ntry = new userSensor();
+            ntry.name = cmd.word();
+            if (negated) {
+                worker.sensors.del(ntry);
+                return;
+            }
+            ntry = cfgInit.sensors.find(ntry);
+            if (ntry == null) {
+                cmd.error("no such sensor");
+                return;
+            }
+            worker.sensors.put(ntry);
             return;
         }
         if (s.equals("proxy")) {
