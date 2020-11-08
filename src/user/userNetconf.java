@@ -4,6 +4,7 @@ import cfg.cfgInit;
 import java.util.List;
 import pipe.pipeSide;
 import util.bits;
+import util.cmds;
 import util.debugger;
 import util.extMrkLng;
 import util.extMrkLngEntry;
@@ -30,6 +31,11 @@ public class userNetconf {
      * reply-data
      */
     public final static String replyData = "/rpc-reply/data";
+
+    /**
+     * namespace
+     */
+    public final static String namespace = "xmlns:nc=\"urn:ietf:params:xml:ns:netconf:base:1.0\"";
 
     /**
      * port
@@ -113,7 +119,8 @@ public class userNetconf {
     }
 
     /**
-     * do request
+     * do request m
+     *
      *
      * @param req request
      * @return response, null if error
@@ -168,7 +175,7 @@ public class userNetconf {
         return rep;
     }
 
-    private userSensor getSensor(String a) {
+    private static userSensor getSensor(String a) {
         for (int i = 0; i < cfgInit.sensors.size(); i++) {
             userSensor tl = cfgInit.sensors.get(i);
             if (a.startsWith(tl.path)) {
@@ -178,8 +185,15 @@ public class userNetconf {
         return null;
     }
 
-    private String getName(extMrkLngEntry ntry) {
+    private static String getName(extMrkLngEntry ntry) {
         return ntry.name.replaceAll("/nc:", "/");
+    }
+
+    private static void dumpXml(cmds cmd, extMrkLng x) {
+        List<String> l = x.show();
+        for (int i = 0; i < l.size(); i++) {
+            cmd.error(l.get(i));
+        }
     }
 
     /**
@@ -289,7 +303,18 @@ public class userNetconf {
     /**
      * do work
      */
-    public void doWork() {
+    public void doClose() {
+        extMrkLng x = new extMrkLng();
+        x.data.add(new extMrkLngEntry("/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
+        x.data.add(new extMrkLngEntry("/rpc/close-session", "", ""));
+        doSend(x);
+        doRead();
+    }
+
+    /**
+     * do work
+     */
+    public void doServer() {
         if (doHello()) {
             return;
         }
@@ -304,6 +329,28 @@ public class userNetconf {
             x = doRequest(x);
             doSend(x);
         }
+    }
+
+    /**
+     * do work
+     *
+     * @param cmd console
+     * @param mod mode
+     * @param path path
+     * @param ns namespace
+     */
+    public void doClient(cmds cmd, String mod, String path, String ns) {
+        extMrkLng x = new extMrkLng();
+        x.data.add(new extMrkLngEntry("/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
+        int i = path.indexOf("/");
+        x.data.add(new extMrkLngEntry("/rpc/" + mod + "/filter/" + path.substring(0, i), "xmlns=\"" + ns + "\"", ""));
+        x.data.add(new extMrkLngEntry("/rpc/" + mod + "/filter/" + path, "", ""));
+        cmd.error("request");
+        dumpXml(cmd, x);
+        doSend(x);
+        x = doRead();
+        cmd.error("reply");
+        dumpXml(cmd, x);
     }
 
 }

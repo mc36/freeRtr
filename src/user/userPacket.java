@@ -1104,6 +1104,51 @@ public class userPacket {
             trm.doTerm();
             return;
         }
+        if (a.equals("netconf")) {
+            a = cmd.word();
+            String s = null;
+            if (a.equals("get")) {
+                s = "get";
+            }
+            if (a.equals("read")) {
+                s = "get-config";
+            }
+            if (a.equals("edit")) {
+                s = "edit-config";
+            }
+            if (a.equals("copy")) {
+                s = "copy-config";
+            }
+            if (a.equals("delete")) {
+                s = "delete-config";
+            }
+            if (s == null) {
+                cmd.error("invalid command");
+                return;
+            }
+            userTerminal trm = new userTerminal(new pipeProgress(cmd.pipe));
+            pipeSide conn = trm.resolvAndConn(servGeneric.protoTcp, cmd.word(), userNetconf.port, "netconf");
+            if (conn == null) {
+                cmd.error("error opening connection");
+                return;
+            }
+            a = cmd.word();
+            conn = trm.startSecurity(servGeneric.protoSsh, a, cmd.word());
+            if (conn == null) {
+                cmd.error("error securing connection");
+                return;
+            }
+            userNetconf nc = new userNetconf(conn, false, false, false);
+            if (nc.doHello()) {
+                cmd.error("error exchange hello");
+                return;
+            }
+            a = cmd.word();
+            nc.doClient(cmd, s, a, cmd.word());
+            nc.doClose();
+            conn.setClose();
+            return;
+        }
         if (a.equals("snmp")) {
             a = cmd.word();
             clntSnmp sn = new clntSnmp();

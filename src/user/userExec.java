@@ -1484,6 +1484,17 @@ public class userExec {
         hl.add("2 3      websock                 test websocket client");
         hl.add("3 4        <str>                 url of server");
         hl.add("4 4,.        <str>               protocols");
+        hl.add("2 3      netconf                 do netconf commands");
+        hl.add("3 4        get                   do a get request");
+        hl.add("3 4        read                  do a get-config request");
+        hl.add("3 4        edit                  do a edit-config request");
+        hl.add("3 4        copy                  do a copy-config request");
+        hl.add("3 4        delete                do a delete-config request");
+        hl.add("4 5          <addr>              server to query");
+        hl.add("5 6            <txt>             username to use");
+        hl.add("6 7              <txt>           password to use");
+        hl.add("7 8                <txt>         xml path");
+        hl.add("8 .                  <txt>       namespace of root");
         hl.add("2 3      snmp                    do snmp commands");
         hl.add("3 4        get                   do a get request");
         hl.add("3 4        next                  do a getnext request");
@@ -3570,7 +3581,7 @@ public class userExec {
         if (xml) {
             new userXml(pipe, privileged, frm, ech).doWork();
         } else {
-            new userNetconf(pipe, privileged, frm, ech).doWork();
+            new userNetconf(pipe, privileged, frm, ech).doServer();
         }
     }
 
