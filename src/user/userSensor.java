@@ -147,6 +147,10 @@ public class userSensor implements Comparator<userSensor> {
             col.nam = cmd.word();
             return;
         }
+        if (s.equals("help")) {
+            col.hlp = cmd.word();
+            return;
+        }
         if (s.equals("type")) {
             col.typ = servStreamingMdt.string2type(cmd.word());
             return;
@@ -465,6 +469,8 @@ class userSensorCol implements Comparator<userSensorCol> {
     public final int num;
     
     public String nam;
+
+    public String hlp;
     
     public String splS;
     

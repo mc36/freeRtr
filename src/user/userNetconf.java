@@ -69,12 +69,34 @@ public class userNetconf {
 
     /**
      * do hello
-     *
-     * @param req request
      */
-    public void doHello(extMrkLng req) {
-        for (int i = 0; i < req.data.size(); i++) {
-            extMrkLngEntry ntry = req.data.get(i);
+    public boolean doHello() {
+        currVer = 10;
+        extMrkLng x = new extMrkLng();
+        x.data.add(new extMrkLngEntry("/hello", "xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\"", ""));
+        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
+        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.0"));
+        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
+        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.1"));
+        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
+        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:writable-running:1.0"));
+        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
+        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:startup:1.0"));
+        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
+        for (int i = 0; i < cfgInit.sensors.size(); i++) {
+            userSensor ntry = cfgInit.sensors.get(i);
+            x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", ntry.url + ntry.prefix + "?module=" + ntry.prefix));
+            x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
+        }
+        x.data.add(new extMrkLngEntry("/hello/session-id", "", "" + sessId));
+        x.data.add(new extMrkLngEntry("/hello", "", ""));
+        doSend(x);
+        x = doRead();
+        if (x == null) {
+            return true;
+        }
+        for (int i = 0; i < x.data.size(); i++) {
+            extMrkLngEntry ntry = x.data.get(i);
             String a = getName(ntry);
             if (!a.equals("/?xml/hello/capabilities/capability")) {
                 continue;
@@ -87,6 +109,7 @@ public class userNetconf {
         if (debugger.userNetconfEvnt) {
             logger.debug("ver: " + currVer);
         }
+        return false;
     }
 
     /**
@@ -120,7 +143,7 @@ public class userNetconf {
                 if (mod != 2) {
                     continue;
                 }
-                userSensor tl = getLeaf(a.substring(getFilter.length(), a.length()));
+                userSensor tl = getSensor(a.substring(getFilter.length(), a.length()));
                 if (tl == null) {
                     continue;
                 }
@@ -145,8 +168,7 @@ public class userNetconf {
         return rep;
     }
 
-    private userSensor getLeaf(String a) {
-        logger.debug("here " + a + "!!!");////////
+    private userSensor getSensor(String a) {
         for (int i = 0; i < cfgInit.sensors.size(); i++) {
             userSensor tl = cfgInit.sensors.get(i);
             if (a.startsWith(tl.path)) {
@@ -268,36 +290,14 @@ public class userNetconf {
      * do work
      */
     public void doWork() {
-        currVer = 10;
-        extMrkLng x = new extMrkLng();
-        x.data.add(new extMrkLngEntry("/hello", "xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\"", ""));
-        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.0"));
-        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.1"));
-        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:writable-running:1.0"));
-        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:startup:1.0"));
-        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        for (int i = 0; i < cfgInit.sensors.size(); i++) {
-            userSensor ntry = cfgInit.sensors.get(i);
-            x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", ntry.url + ntry.prefix + "?module=" + ntry.prefix));
-            x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        }
-        x.data.add(new extMrkLngEntry("/hello/session-id", "", "" + sessId));
-        x.data.add(new extMrkLngEntry("/hello", "", ""));
-        doSend(x);
-        x = doRead();
-        if (x == null) {
+        if (doHello()) {
             return;
         }
-        doHello(x);
         for (;;) {
             if (!need2run) {
                 break;
             }
-            x = doRead();
+            extMrkLng x = doRead();
             if (x == null) {
                 break;
             }
