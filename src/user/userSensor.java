@@ -101,7 +101,7 @@ public class userSensor implements Comparator<userSensor> {
         reps = new tabGen<userSensorRep>();
         skip = 1;
     }
-    
+
     public int compare(userSensor o1, userSensor o2) {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
@@ -115,6 +115,18 @@ public class userSensor implements Comparator<userSensor> {
         String s = cmd.word();
         if (s.equals("command")) {
             command = cmd.getRemaining();
+            return;
+        }
+        if (s.equals("path")) {
+            path = cmd.getRemaining();
+            return;
+        }
+        if (s.equals("prefix")) {
+            prefix = cmd.getRemaining();
+            return;
+        }
+        if (s.equals("url")) {
+            url = cmd.getRemaining();
             return;
         }
         if (s.equals("skip")) {
@@ -207,7 +219,7 @@ public class userSensor implements Comparator<userSensor> {
         }
         return lst;
     }
-    
+
     private void doMetricKvGpb(packHolder pck2, packHolder pck3, int typ, String nam, String val) {
         protoBuf pb2 = new protoBuf();
         pb2.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, nam.getBytes());
@@ -257,11 +269,11 @@ public class userSensor implements Comparator<userSensor> {
         pb2.toPacket(pck2);
         pb2.clear();
     }
-    
+
     private void doMetricNetConf(extMrkLng res, String nam, String val) {
         res.data.add(new extMrkLngEntry(nam, "", val));
     }
-    
+
     private List<String> doSplitLine(String a) {
         cmds cm = new cmds("tele", a);
         List<String> cl = new ArrayList<String>();
@@ -274,7 +286,7 @@ public class userSensor implements Comparator<userSensor> {
         }
         return cl;
     }
-    
+
     private static String doReplaces(String a, tabGen<userSensorRep> reps) {
         for (int i = 0; i < reps.size(); i++) {
             userSensorRep rep = reps.get(i);
@@ -282,7 +294,7 @@ public class userSensor implements Comparator<userSensor> {
         }
         return a;
     }
-    
+
     private packHolder doLineKvGpb(String a) {
         List<String> cl = doSplitLine(a);
         int cls = cl.size();
@@ -331,7 +343,7 @@ public class userSensor implements Comparator<userSensor> {
         pb.toPacket(pck3);
         return pck3;
     }
-    
+
     private void doLineNetConf(extMrkLng res, String beg, String a) {
         List<String> cl = doSplitLine(a);
         int cls = cl.size();
@@ -424,6 +436,63 @@ public class userSensor implements Comparator<userSensor> {
     }
 
     /**
+     * get yang
+     *
+     * @return result
+     */
+    public List<String> getYang() {
+        List<String> res = new ArrayList<String>();
+        res.add("module " + prefix + " {");
+        res.add("  namespace \"" + url + prefix + "\";");
+        res.add("  prefix \"" + prefix + "\";");
+        cmds cp = new cmds("ya", path);
+        cmds ck = new cmds("ya", keyP);
+        String id = "  ";
+        boolean key = false;
+        for (;;) {
+            if (cp.size() < 1) {
+                break;
+            }
+            if (key) {
+                res.add(id + "key \"" + keyN + "\";");
+                res.add(id + "leaf " + keyN + " {");
+                res.add(id + "  type string;");
+                res.add(id + "}");
+                key = false;
+            }
+            String a = cp.word("/");
+            String s = ck.word("/");
+            String m = "container ";
+            if ((s.length() > 0) && (ck.size() < 1)) {
+                m = "list ";
+                key = true;
+            }
+            res.add(id + m + a + " {");
+            id += "  ";
+        }
+        for (int i = 0; i < cols.size(); i++) {
+            userSensorCol col = cols.get(i);
+            if (col.splS == null) {
+                res.add(id + "leaf " + col.nam + " {");
+                res.add(id + "  type " + servStreamingMdt.type2string(col.typ) + ";");
+                res.add(id + "}");
+                continue;
+            }
+            res.add(id + "leaf " + col.nam + col.splL + " {");
+            res.add(id + "  type " + servStreamingMdt.type2string(col.typ) + ";");
+            res.add(id + "}");
+            res.add(id + "leaf " + col.nam + col.splR + " {");
+            res.add(id + "  type " + servStreamingMdt.type2string(col.typ) + ";");
+            res.add(id + "}");
+        }
+        for (; id.length() > 0;) {
+            id = id.substring(0, id.length() - 2);
+            res.add(id + "}");
+        }
+        return res;
+    }
+
+    /**
      * get show
      *
      * @return result
@@ -438,54 +507,56 @@ public class userSensor implements Comparator<userSensor> {
         res.add("reply=" + time + " ms");
         res.add("output:");
         res.addAll(getResult());
-        res.add("netconf reply:");
+        res.add("yang:");
+        res.addAll(getYang());
+        res.add("netconf:");
         extMrkLng x = new extMrkLng();
         getReportNetConf(x, "/");
         res.addAll(x.show());
-        res.add("kvgpb result:" + getReportKvGpb().dump());
+        res.add("kvgpb:" + getReportKvGpb().dump());
         return res;
     }
-    
+
 }
 
 class userSensorRep implements Comparator<userSensorRep> {
-    
+
     public final String src;
-    
+
     public String trg;
-    
+
     public userSensorRep(String n) {
         src = n;
     }
-    
+
     public int compare(userSensorRep o1, userSensorRep o2) {
         return o1.src.compareTo(o2.src);
     }
-    
+
 }
 
 class userSensorCol implements Comparator<userSensorCol> {
-    
+
     public final int num;
-    
+
     public String nam;
 
     public String hlp;
-    
+
     public String splS;
-    
+
     public String splL;
-    
+
     public String splR;
-    
-    public int typ = servStreamingMdt.fnSint64;
-    
+
+    public int typ = servStreamingMdt.fnUint64;
+
     public tabGen<userSensorRep> reps = new tabGen<userSensorRep>();
-    
+
     public userSensorCol(int n) {
         num = n;
     }
-    
+
     public int compare(userSensorCol o1, userSensorCol o2) {
         if (o1.num < o2.num) {
             return -1;
@@ -495,5 +566,5 @@ class userSensorCol implements Comparator<userSensorCol> {
         }
         return 0;
     }
-    
+
 }

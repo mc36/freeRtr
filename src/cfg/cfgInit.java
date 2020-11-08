@@ -470,20 +470,17 @@ public class cfgInit implements Runnable {
                 int bg = -1;
                 for (int p = 0; p < txt.size(); p++) {
                     String a = txt.get(p);
-                    if (a.startsWith("table ")) {
+                    if (a.startsWith("sensor ")) {
                         bg = p;
                     }
                     if (!a.equals(".")) {
                         continue;
                     }
-                    cmd = new cmds("", txt.get(bg + 0));
+                    cmd = new cmds("", txt.get(bg));
                     cmd.word();
                     userSensor tl = new userSensor();
                     tl.name = cmd.getRemaining();
-                    tl.path = txt.get(bg + 1);
-                    tl.prefix = txt.get(bg + 2);
-                    tl.url = txt.get(bg + 3);
-                    for (int i = bg + 4; i < p; i++) {
+                    for (int i = bg + 1; i < p; i++) {
                         cmd = new cmds("", txt.get(i));
                         tl.doCfgLine(cmd);
                     }

@@ -110,6 +110,26 @@ public class userTest {
         if (alias != null) {
             return alias.getCommand(cmd);
         }
+        if (a.equals("yangsensor")) {
+            a = cmd.word();
+            List<String> l = bits.txt2buf(a);
+            if (l == null) {
+                cmd.error("error reading source");
+                return null;
+            }
+            String trg = cmd.word();
+            userSensor tl = new userSensor();
+            for (int i = 1; i < l.size() - 1; i++) {
+                tl.doCfgLine(new cmds("tl", l.get(i)));
+            }
+            l = tl.getYang();
+            if (bits.buf2txt(true, l, trg)) {
+                cmd.error("error writing target");
+                return null;
+            }
+            cmd.error("done");
+            return null;
+        }
         if (a.equals("acl")) {
             cfgAceslst cfg1 = cfgAll.aclsFind(cmd.word(), false);
             cfgAceslst cfg2 = cfgAll.aclsFind(cmd.word(), false);
