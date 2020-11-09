@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import util.bits;
 import util.cmds;
+import util.extMrkLng;
 import util.verCore;
 
 /**
@@ -497,6 +498,14 @@ public class userHelping {
         return fnd;
     }
 
+    /**
+     * find usage of a line
+     *
+     * @param dat data to append
+     * @param id indent string
+     * @param lin line to get
+     * @param lev current level
+     */
     protected void formatYang(List<String> dat, String id, int lin, int lev) {
         int fnd = 0;
         for (int o = lin; o < lines.size(); o++) {
@@ -543,7 +552,7 @@ public class userHelping {
                 dat.add(id + "container " + vn + " {");
                 dat.add(id + "  description \"" + ntry.description + "\";");
                 if (b) {
-                    dat.add(id + "  leaf " + userNetconf.specialIgnore + " {");
+                    dat.add(id + "  leaf " + extMrkLng.ignore + " {");
                     dat.add(id + "    description \"" + ntry.description + "\";");
                     dat.add(id + "    type empty;");
                     dat.add(id + "  }");
@@ -554,14 +563,14 @@ public class userHelping {
                 dat.add(id + "}");
                 continue;
             }
-            dat.add(id + "list " + userNetconf.specialIgnore + o + " {");
-            dat.add(id + "  key \"" + userNetconf.specialIgnore + o + "\";");
-            dat.add(id + "  leaf " + userNetconf.specialIgnore + o + " {");
+            dat.add(id + "list " + extMrkLng.ignore + o + " {");
+            dat.add(id + "  key \"" + extMrkLng.ignore + o + "\";");
+            dat.add(id + "  leaf " + extMrkLng.ignore + o + " {");
             dat.add(id + "    description \"" + ntry.description + "\";");
             dat.add(id + "    type string;");
             dat.add(id + "  }");
             if (b) {
-                dat.add(id + "  leaf " + userNetconf.specialIgnore + " {");
+                dat.add(id + "  leaf " + extMrkLng.ignore + " {");
                 dat.add(id + "    description \"" + ntry.description + "\";");
                 dat.add(id + "    type empty;");
                 dat.add(id + "  }");
@@ -650,9 +659,7 @@ public class userHelping {
                 break;
             }
             String a = cp.word("/");
-            if (a.equals("" + bits.str2num(a))) {
-                a = userNetconf.specialEscape + a;
-            }
+            a = extMrkLng.escId(a);
             res.add(id + "container " + a + " {");
             id += "  ";
         }

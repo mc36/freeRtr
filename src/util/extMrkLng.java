@@ -16,6 +16,16 @@ public class extMrkLng {
     public final static String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
     /**
+     * ignore
+     */
+    public final static String ignore = "identifier-ignore";
+
+    /**
+     * escapeds
+     */
+    public final static String escape = "identifier-escape";
+
+    /**
      * original string
      */
     public String orig;
@@ -35,6 +45,33 @@ public class extMrkLng {
      */
     public extMrkLng() {
         clear();
+    }
+
+    /**
+     * unescape identifier
+     *
+     * @param s identifier
+     * @return unescaped
+     */
+    public static String unescId(String s) {
+        return s.replaceAll(escape, "");
+    }
+
+    /**
+     * unescape identifier
+     *
+     * @param s identifier
+     * @return unescaped
+     */
+    public static String escId(String s) {
+        char c = s.charAt(0);
+        if ((c >= 'a') && (c <= 'z')) {
+            return s;
+        }
+        if ((c >= 'A') && (c <= 'Z')) {
+            return s;
+        }
+        return escape + s;
     }
 
     /**

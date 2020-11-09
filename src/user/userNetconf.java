@@ -1,6 +1,8 @@
 package user;
 
+import cfg.cfgAll;
 import cfg.cfgInit;
+import java.util.ArrayList;
 import java.util.List;
 import pipe.pipeSide;
 import util.bits;
@@ -17,16 +19,6 @@ import util.verCore;
  * @author matecsaba
  */
 public class userNetconf {
-
-    /**
-     * ignore
-     */
-    public final static String specialIgnore = "identifier-ignore";
-
-    /**
-     * escapeds
-     */
-    public final static String specialEscape = "identifier-escape";
 
     /**
      * header separator
@@ -147,18 +139,50 @@ public class userNetconf {
         extMrkLng rep = new extMrkLng();
         String rpc = "";
         int mod = 1;
-        for (int i = 0; i < req.data.size(); i++) {
-            extMrkLngEntry ntry = req.data.get(i);
+        for (int p = 0; p < req.data.size(); p++) {
+            extMrkLngEntry ntry = req.data.get(p);
             String a = getName(ntry);
             if (a.equals("/?xml/rpc")) {
                 rpc += ntry.param;
             }
             if (a.startsWith(getConfig)) {
-                logger.debug("here " + a);////
+                String n = getName(req.data.get(p + 1));
+                if (mod == 1) {
+                    if (n.length() > a.length()) {
+                        continue;
+                    }
+                } else {
+                    if (n.length() < a.length()) {
+                        continue;
+                    }
+                }
+                mod = 3 - mod;
+                if (mod != 2) {
+                    continue;
+                }
+                List<String> cfg = cfgAll.getShRun(false);
+                List<userFilter> sec = userFilter.text2section(cfg);
+                n = a.substring(getConfig.length(), a.length());
+                List<userFilter> res = new ArrayList<userFilter>();
+                for (; n.length() > 0;) {
+                    a = extMrkLng.unescId(n).replaceAll("/", " ");
+                    res = userFilter.getSection(sec, a.trim(), false);
+                    if (res.size() > 0) {
+                        break;
+                    }
+                    int i = n.lastIndexOf("/");
+                    if (i < 0) {
+                        n = "";
+                        break;
+                    }
+                    n = n.substring(0, i);
+                }
+                userFilter.section2xml(rep, "/rpc-reply/data" + n, res);
+                rep.data.add(new extMrkLngEntry("/rpc-reply", "", ""));
                 continue;
             }
             if (a.startsWith(getFilter)) {
-                String n = getName(req.data.get(i + 1));
+                String n = getName(req.data.get(p + 1));
                 if (mod == 1) {
                     if (n.length() > a.length()) {
                         continue;

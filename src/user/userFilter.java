@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import tab.tabGen;
 import util.cmds;
+import util.extMrkLng;
+import util.extMrkLngEntry;
 
 /**
  * config filter entry
@@ -127,6 +129,38 @@ public class userFilter implements Comparator<userFilter> {
             res.add(new userFilter(sec, a, null));
         }
         return res;
+    }
+
+    /**
+     * section to xml
+     *
+     * @param rep xml
+     * @param beg begin
+     * @param sec section
+     */
+    public static void section2xml(extMrkLng rep, String beg, List<userFilter> sec) {
+        for (int i = 0; i < sec.size(); i++) {
+            userFilter cur = sec.get(i);
+            String a = cur.command.trim();
+            if (a.length() < 1) {
+                continue;
+            }
+            if (a.equals(cmds.finish)) {
+                continue;
+            }
+            cmds cmd = new cmds("x", a);
+            String s = beg;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                a = "/" + extMrkLng.escId(a);
+                s += a;
+            }
+            rep.data.add(new extMrkLngEntry(s, "", ""));
+            rep.data.add(new extMrkLngEntry(beg, "", ""));
+        }
     }
 
     /**
