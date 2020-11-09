@@ -19,6 +19,16 @@ import util.verCore;
 public class userNetconf {
 
     /**
+     * ignore
+     */
+    public final static String specialIgnore = "identifier-ignore";
+
+    /**
+     * escapeds
+     */
+    public final static String specialEscape = "identifier-escape";
+
+    /**
      * header separator
      */
     public final static String headerEnd = "]]>]]>";
@@ -27,6 +37,11 @@ public class userNetconf {
      * get-filter
      */
     public final static String getFilter = "/?xml/rpc/get/filter/";
+
+    /**
+     * get-config
+     */
+    public final static String getConfig = "/?xml/rpc/get-config/filter/config";
 
     /**
      * reply-data
@@ -138,6 +153,10 @@ public class userNetconf {
             if (a.equals("/?xml/rpc")) {
                 rpc += ntry.param;
             }
+            if (a.startsWith(getConfig)) {
+                logger.debug("here " + a);////
+                continue;
+            }
             if (a.startsWith(getFilter)) {
                 String n = getName(req.data.get(i + 1));
                 if (mod == 1) {
@@ -160,7 +179,7 @@ public class userNetconf {
                 rep.data.add(new extMrkLngEntry(replyData, "", ""));
                 a = tl.path;
                 int o = a.indexOf("/");
-                rep.data.add(new extMrkLngEntry(replyData + "/" + a.substring(0, o), "xmlns=\"" + verCore.homeUrl + "yang/"  + tl.prefix + "\"", ""));
+                rep.data.add(new extMrkLngEntry(replyData + "/" + a.substring(0, o), "xmlns=\"" + verCore.homeUrl + "yang/" + tl.prefix + "\"", ""));
                 tl.getReportNetConf(rep, replyData + "/");
                 rep.data.add(new extMrkLngEntry(replyData, "", ""));
                 rep.data.add(new extMrkLngEntry("/rpc-reply", "", ""));

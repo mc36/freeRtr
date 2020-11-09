@@ -403,13 +403,28 @@ public class userShow {
                 rdr.putStrArr(cfgAll.getShRun(false));
                 return null;
             }
+            if (a.equals("router")) {
+                tabRouteAttr.routeType t = cfgRtr.name2num(cmd.word());
+                if (t == null) {
+                    cmd.error("bad router type");
+                    return null;
+                }
+                int i = bits.str2num(cmd.word());
+                cfgRtr r = cfgAll.rtrFind(t, i, false);
+                if (r == null) {
+                    cmd.error("no such process");
+                    return null;
+                }
+                rdr.putStrArr(r.getShRun(!cmd.word().equals("all")));
+                return null;
+            }
             if (a.equals("interface")) {
                 cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
                 }
-                rdr.putStrArr(ifc.getShRun(true));
+                rdr.putStrArr(ifc.getShRun(!cmd.word().equals("all")));
                 return null;
             }
             List<String> lst = cfgAll.getShRun(true);

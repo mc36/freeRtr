@@ -497,6 +497,82 @@ public class userHelping {
         return fnd;
     }
 
+    protected void formatYang(List<String> dat, String id, int lin, int lev) {
+        int fnd = 0;
+        for (int o = lin; o < lines.size(); o++) {
+            userHelpingData ntry = lines.get(o);
+            if ((fnd > 0) && (ntry.level < lev)) {
+                break;
+            }
+            if (ntry.level != lev) {
+                continue;
+            }
+            fnd++;
+            List<Integer> nxt = new ArrayList<Integer>();
+            boolean b = false;
+            for (int i = 0; i < ntry.after.num(); i++) {
+                int p = ntry.after.val(i);
+                if (p < 0) {
+                    b = true;
+                    continue;
+                }
+                if (p <= lev) {
+                    continue;
+                }
+                nxt.add(p);
+            }
+            String vn = ntry.command;
+            if (ntry.variable) {
+                vn = vn.substring(1, vn.length() - 1);
+            }
+            if (nxt.size() < 1) {
+                if (ntry.variable) {
+                    dat.add(id + "leaf " + vn + " {");
+                    dat.add(id + "  description \"" + ntry.description + "\";");
+                    dat.add(id + "  type string;");
+                    dat.add(id + "}");
+                    continue;
+                }
+                dat.add(id + "leaf " + vn + " {");
+                dat.add(id + "  description \"" + ntry.description + "\";");
+                dat.add(id + "  type empty;");
+                dat.add(id + "}");
+                continue;
+            }
+            if (!ntry.variable) {
+                dat.add(id + "container " + vn + " {");
+                dat.add(id + "  description \"" + ntry.description + "\";");
+                if (b) {
+                    dat.add(id + "  leaf " + userNetconf.specialIgnore + " {");
+                    dat.add(id + "    description \"" + ntry.description + "\";");
+                    dat.add(id + "    type empty;");
+                    dat.add(id + "  }");
+                }
+                for (int i = 0; i < nxt.size(); i++) {
+                    formatYang(dat, id + "  ", o + 1, nxt.get(i));
+                }
+                dat.add(id + "}");
+                continue;
+            }
+            dat.add(id + "list " + userNetconf.specialIgnore + o + " {");
+            dat.add(id + "  key \"" + userNetconf.specialIgnore + o + "\";");
+            dat.add(id + "  leaf " + userNetconf.specialIgnore + o + " {");
+            dat.add(id + "    description \"" + ntry.description + "\";");
+            dat.add(id + "    type string;");
+            dat.add(id + "  }");
+            if (b) {
+                dat.add(id + "  leaf " + userNetconf.specialIgnore + " {");
+                dat.add(id + "    description \"" + ntry.description + "\";");
+                dat.add(id + "    type empty;");
+                dat.add(id + "  }");
+            }
+            for (int i = 0; i < nxt.size(); i++) {
+                formatYang(dat, id + "  ", o + 1, nxt.get(i));
+            }
+            dat.add(id + "}");
+        }
+    }
+
     /**
      * get help text for a given command line
      *
@@ -574,10 +650,13 @@ public class userHelping {
                 break;
             }
             String a = cp.word("/");
+            if (a.equals("" + bits.str2num(a))) {
+                a = userNetconf.specialEscape + a;
+            }
             res.add(id + "container " + a + " {");
             id += "  ";
         }
-        ///////////
+        formatYang(res, id, 0, 1);
         for (; id.length() > 0;) {
             id = id.substring(0, id.length() - 2);
             res.add(id + "}");

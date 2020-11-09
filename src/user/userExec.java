@@ -893,7 +893,12 @@ public class userExec {
         hl.add("2 3,.    running-config          current operating configuration");
         hl.add("3 3,.      [name]                name of section");
         hl.add("3 4        interface             specified interface");
-        hl.add("4 .          <name>              name of interface");
+        hl.add("4 5,.        <name>              name of interface");
+        hl.add("5 .            all               do not hide defaults");
+        hl.add("3 4        router                specified router process");
+        cfgRtr.getRouterList(hl, 2, "");
+        hl.add("5 6,.          <num>             process id");
+        hl.add("6 .              all             do not hide defaults");
         hl.add("3 .        all                   do not hide defaults");
         hl.add("2 3      vrf                     virtual routing/forwarding information");
         hl.add("3 .        routing               routing information");
@@ -2289,7 +2294,7 @@ public class userExec {
         for (;;) {
             a = cmd.word();
             s = (s + " " + a).trim();
-            hlp = cfg.getHelping(false, false);
+            hlp = cfg.getHelping(true, true);
             reader.setContext(hlp, "");
             last = cmd.size() < 1;
             a = hlp.repairLine(s);
@@ -2310,7 +2315,7 @@ public class userExec {
             return;
         }
         s = cmd.getRemaining();
-        hlp = cfg.getHelping(false, false);
+        hlp = cfg.getHelping(true, true);
         reader.setContext(hlp, "");
         a = hlp.repairLine(s);
         if (hlp.endOfCmd(a)) {
