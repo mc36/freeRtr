@@ -1240,11 +1240,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
     /**
      * get help text
      *
-     * @param needShow need show
-     * @return help text
+     * @param l help text
      */
-    public userHelping getHelp(boolean needShow) {
-        userHelping l = userHelping.getGenCfg(needShow);
+    public void getHelp(userHelping l ) {
         l.add("1 2  vrf                    set vrf to use");
         l.add("2 .    <name>               name of vrf");
         l.add("1 2  port                   set port to listen on");
@@ -1304,7 +1302,6 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         l.add("2 3    ecdsacert            set ecdsa certificate");
         l.add("3 .      <name>             name of certificate");
         srvHelp(l);
-        return l;
     }
 
     /**

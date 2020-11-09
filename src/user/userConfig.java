@@ -199,13 +199,15 @@ public class userConfig {
      * @return helping instance
      */
     public userHelping getHelping(boolean needShow) {
+        userHelping l = userHelping.getGenCfg(needShow);
         switch (modeV) {
             case global:
-                return getHelpGlobal(needShow);
+                getHelpGlobal(l);
+                return l;
             case server:
-                return modeDserver.getHelp(needShow);
+                modeDserver.getHelp(l);
+                return l;
             case config:
-                userHelping l = userHelping.getGenCfg(needShow);
                 modeDconfig.getHelp(l);
                 return l;
             default:
@@ -324,8 +326,7 @@ public class userConfig {
         return executeCommand(s);
     }
 
-    private userHelping getHelpGlobal(boolean needShow) {
-        userHelping l = userHelping.getGenCfg(needShow);
+    private void getHelpGlobal(userHelping l) {
         l.add("1  2  hostname                       set name of system");
         l.add("2  .    <name>                       name of system");
         l.add("1  .  buggy                          enable dangerous things");
@@ -762,7 +763,6 @@ public class userConfig {
         l.add("3  .      <name>                     name of server");
         l.add("2  3    tacacs                       configure a tacacs server");
         l.add("3  .      <name>                     name of server");
-        return l;
     }
 
     private byte[] cmdGetRem() {
