@@ -177,7 +177,7 @@ public class userNetconf {
                     }
                     n = n.substring(0, i);
                 }
-                userFilter.section2xml(rep, "/rpc-reply/data" + n, res);
+                userFilter.section2xml(rep, "/rpc-reply/data/config" + n, res);
                 rep.data.add(new extMrkLngEntry("/rpc-reply", "", ""));
                 continue;
             }
