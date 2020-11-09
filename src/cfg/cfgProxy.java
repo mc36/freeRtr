@@ -76,8 +76,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         proxy = new clntProxy(nam);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 3,. description                   specify description");
         l.add("3 3,.   <str>                       text");
         l.add("1 2  protocol                       specify protocol to use");
@@ -109,7 +108,6 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         l.add("2 .    none                         default");
         l.add("2 .    ipv4                         ipv4");
         l.add("2 .    ipv6                         ipv6");
-        return l;
     }
 
     public String getPrompt() {

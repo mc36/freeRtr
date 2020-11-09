@@ -34,8 +34,7 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, c
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
 
-    public userHelping getHelp() {
-        return null;
+    public void getHelp(userHelping l) {
     }
 
     public String getPrompt() {

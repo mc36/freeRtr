@@ -14,9 +14,9 @@ public interface cfgGeneric {
     /**
      * get help text
      *
-     * @return help text
+     * @param l help text
      */
-    public userHelping getHelp();
+    public void getHelp(userHelping l);
 
     /**
      * get configuration of this item

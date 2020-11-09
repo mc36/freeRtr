@@ -5390,8 +5390,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         return userFilter.filterText(l, f);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 2,. description                   description of this interface");
         l.add("2 2,.   [text]                      text describing this interface");
         l.add("1 .   log-link-change               log link state changes");
@@ -5751,7 +5750,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 .     <name>                      name of policy map");
         l.add("1 2   service-policy-out            policy map to apply to egress packets");
         l.add("2 .     <name>                      name of policy map");
-        return l;
     }
 
     public synchronized void doCfgStr(cmds cmd) {

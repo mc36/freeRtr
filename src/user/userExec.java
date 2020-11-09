@@ -737,6 +737,7 @@ public class userExec {
     public static void getHelpShow(userHelping hl, boolean privi) {
         hl.add("2 3      macsec                  macsec information");
         hl.add("3 .        <name>                name of interface");
+        hl.add("2 .      parser                  parser information");
         hl.add("2 .      scheduler               scheduler information");
         hl.add("2 .      script                  script information");
         hl.add("2 3      vdc                     virtual device context");
@@ -1837,6 +1838,7 @@ public class userExec {
             cmd = reader.setFilter(cmd);
             s.cmd = cmd;
             s.rdr = reader;
+            s.hlp = getHelping();
             a = s.doer();
             if (a == null) {
                 return cmdRes.command;
@@ -2284,7 +2286,7 @@ public class userExec {
         for (;;) {
             a = cmd.word();
             s = (s + " " + a).trim();
-            hlp = cfg.getHelping();
+            hlp = cfg.getHelping(false);
             reader.setContext(hlp, "");
             last = cmd.size() < 1;
             a = hlp.repairLine(s);
@@ -2305,7 +2307,7 @@ public class userExec {
             return;
         }
         s = cmd.getRemaining();
-        hlp = cfg.getHelping();
+        hlp = cfg.getHelping(false);
         reader.setContext(hlp, "");
         a = hlp.repairLine(s);
         if (hlp.endOfCmd(a)) {

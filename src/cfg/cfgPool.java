@@ -54,8 +54,7 @@ public class cfgPool<T extends addrType> implements Comparator<cfgPool<T>>, cfgG
         return name;
     }
 
-    public userHelping getHelp() {
-        return null;
+    public void getHelp(userHelping l) {
     }
 
     public String getPrompt() {

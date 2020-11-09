@@ -144,8 +144,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 2   sequence              sequence number of an entry");
         l.add("2 1,.   <num>               sequence number");
         l.add("1 2,. reindex               reindex route map");
@@ -332,7 +331,6 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("3 .       <name>            name of route map");
         l.add("2 3     route-policy        set route policy");
         l.add("3 .       <name>            name of route policy");
-        return l;
     }
 
     public synchronized void doCfgStr(cmds cmd) {

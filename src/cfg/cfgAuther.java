@@ -216,8 +216,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 .    log-failure         log failure");
         l.add("1 .    log-success         log success");
         l.add("1 .    log-error           log error");
@@ -226,7 +225,6 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         if (aut != null) {
             aut.getHelp(l);
         }
-        return l;
     }
 
     public synchronized void doCfgStr(cmds cmd) {

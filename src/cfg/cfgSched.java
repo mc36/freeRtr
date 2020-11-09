@@ -134,8 +134,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         return "scheduler " + name;
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1  2,.    description                description of this scheduler");
         l.add("2  2,.      [text]                   text describing this scheduler");
         l.add("1  .      respawn                    restart on termination");
@@ -156,7 +155,6 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         l.add("1  .      start                      start working");
         l.add("1  .      runnow                     run one round now");
         l.add("1  .      hidden                     hide command");
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {

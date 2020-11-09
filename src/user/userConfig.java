@@ -195,19 +195,22 @@ public class userConfig {
     /**
      * get help text for exec commands
      *
+     * @param needShow need show
      * @return helping instance
      */
-    public userHelping getHelping() {
+    public userHelping getHelping(boolean needShow) {
         switch (modeV) {
             case global:
-                return getHelpGlobal();
+                return getHelpGlobal(needShow);
             case server:
-                return modeDserver.getHelp();
+                return modeDserver.getHelp(needShow);
             case config:
-                return modeDconfig.getHelp();
+                userHelping l = userHelping.getGenCfg(needShow);
+                modeDconfig.getHelp(l);
+                return l;
             default:
                 resetMode();
-                return userHelping.getGenCfg();
+                return userHelping.getGenCfg(needShow);
         }
     }
 
@@ -269,6 +272,7 @@ public class userConfig {
             cmd = reader.setFilter(cmd);
             s.cmd = cmd;
             s.rdr = reader;
+            s.hlp = getHelping(false);
             a = s.doer();
             if (a == null) {
                 return null;
@@ -305,7 +309,7 @@ public class userConfig {
      * @return status of operation, see at one command
      */
     public String doCommand() {
-        reader.setContext(getHelping(), cfgAll.hostName + getPrompt() + "#");
+        reader.setContext(getHelping(true), cfgAll.hostName + getPrompt() + "#");
         String s = reader.readLine(reader.deactive, "exit");
         if (s == null) {
             return "";
@@ -320,8 +324,8 @@ public class userConfig {
         return executeCommand(s);
     }
 
-    private userHelping getHelpGlobal() {
-        userHelping l = userHelping.getGenCfg();
+    private userHelping getHelpGlobal(boolean needShow) {
+        userHelping l = userHelping.getGenCfg(needShow);
         l.add("1  2  hostname                       set name of system");
         l.add("2  .    <name>                       name of system");
         l.add("1  .  buggy                          enable dangerous things");

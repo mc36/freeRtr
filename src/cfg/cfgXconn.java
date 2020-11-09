@@ -72,8 +72,7 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
         return "xconnect " + name;
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 3,. description                   specify description");
         l.add("3 3,.   <str>                       text");
         l.add("1 2  mtu                            specify vc mtu");
@@ -90,7 +89,6 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
         cfgXconnSide.getHelp(l, 2);
         l.add("1 2  side2                          specify seconds side of connection");
         cfgXconnSide.getHelp(l, 2);
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {

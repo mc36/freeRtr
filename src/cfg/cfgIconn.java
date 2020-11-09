@@ -64,15 +64,13 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
         l.add("2 .     <name>                      name of interface");
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 3,. description                   specify description");
         l.add("3 3,.   <str>                       text");
         l.add("1 2  side1                          specify first side of connection");
         getSideHelp(l);
         l.add("1 2  side2                          specify seconds side of connection");
         getSideHelp(l);
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {

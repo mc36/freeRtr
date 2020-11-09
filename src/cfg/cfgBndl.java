@@ -101,12 +101,10 @@ public class cfgBndl implements Comparator<cfgBndl>, cfgGeneric {
     /**
      * get help text
      *
-     * @return help
+     * @param l help text
      */
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         ifcBundle.getHelp(l);
-        return l;
     }
 
     /**

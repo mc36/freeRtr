@@ -48,8 +48,7 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
         return name;
     }
 
-    public userHelping getHelp() {
-        return null;
+    public void getHelp(userHelping l) {
     }
 
     public String getPrompt() {

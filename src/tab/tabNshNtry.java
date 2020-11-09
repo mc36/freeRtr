@@ -115,12 +115,11 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
     }
 
     /**
-     * get help
+     * get help text
      *
-     * @return help
+     * @param l help text
      */
-    public userHelping getHelp() {
-        return new userHelping();
+    public void getHelp(userHelping l) {
     }
 
     private String getCmd() {

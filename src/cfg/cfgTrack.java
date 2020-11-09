@@ -87,10 +87,9 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
     /**
      * get help text
      *
-     * @return help
+     * @param l help text
      */
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1  3,. description                   specify description");
         l.add("3  3,.   <str>                       text");
         l.add("1  2      mode                       specify mode of runs");
@@ -152,7 +151,6 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add("1  .      runnow                     run one round now");
         l.add("1  .      hidden                     hide exec commands");
         l.add("1  .      log                        log actions");
-        return l;
     }
 
     /**

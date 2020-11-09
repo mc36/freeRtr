@@ -682,8 +682,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 2,. description        description of this vrf");
         l.add("2 2,.   [text]           text describing this vrf");
         l.add("1 2  rename              rename this vrf");
@@ -760,7 +759,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("2 .    all-igp           label for all igp prefixes");
         l.add("2 .    host-route        label for host routes");
         l.add("2 .    per-vrf           common label for the vrf");
-        return l;
     }
 
     public synchronized void doCfgStr(cmds cmd) {

@@ -702,8 +702,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 2    description             specify description");
         l.add("2 2,.    <str>                 description");
         l.add("1 2    skip-peers-in           skip dial peers incoming");
@@ -773,7 +772,6 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         l.add("1 2    codec                   set codec to use");
         l.add("2 .      alaw                  g711 a law");
         l.add("2 .      ulaw                  g711 u law");
-        return l;
     }
 
     public void doCfgStr(cmds cmd) {

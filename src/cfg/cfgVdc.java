@@ -293,8 +293,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         ntry.peer.conns.del(ntry);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1  2,. description                   description of this vdc");
         l.add("2  2,.   [text]                      text describing this vdc");
         l.add("1  .  respawn                        restart on termination");
@@ -355,7 +354,6 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("2  .        <num>                    milliseconds between runs");
         l.add("1  2      random-delay               specify random initial delay");
         l.add("2  .        <num>                    milliseconds between start");
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {

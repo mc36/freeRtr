@@ -1606,8 +1606,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 3) + " " + (p + 3) + ",.     summary-only        filter more specific prefixes");
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 2   vrf                     specify vrf to use");
         l.add("2 .     <name>                name of table");
         l.add("1 2   automesh                specify auto mesh te tunnels");
@@ -1617,7 +1616,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (rtr != null) {
             rtr.routerGetHelp(l);
         }
-        return l;
     }
 
     public synchronized void doCfgStr(cmds cmd) {

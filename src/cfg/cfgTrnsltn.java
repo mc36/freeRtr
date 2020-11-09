@@ -142,8 +142,7 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 3,. description          specify description");
         l.add("3 3,.   <str>              text");
         l.add("1 2    remove              remove string");
@@ -165,7 +164,6 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
         l.add("2 2,.    <str>             variable name");
         l.add("1 .    log                 log translations");
         l.add("1 .    last                stop after translation");
-        return l;
     }
 
     public void doCfgStr(cmds cmd) {

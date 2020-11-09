@@ -153,8 +153,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         trans.getHelp(l);
         l.add("1 3,. description        specify description");
         l.add("3 3,.   <str>            text");
@@ -171,7 +170,6 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         l.add("2 .    <num>             version");
         l.add("1 2  replay              set replay window size");
         l.add("2 .    <num>             size in packets");
-        return l;
     }
 
     public void doCfgStr(cmds cmd) {

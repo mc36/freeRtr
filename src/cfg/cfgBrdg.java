@@ -103,10 +103,8 @@ public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         ifcBridge.getHelp(l);
-        return l;
     }
 
     public void doCfgStr(cmds cmd) {

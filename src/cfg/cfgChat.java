@@ -43,10 +43,8 @@ public class cfgChat implements Comparator<cfgChat>, cfgGeneric {
         script.scrName = name;
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         script.getHelp(l);
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {

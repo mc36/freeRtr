@@ -67,10 +67,8 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
         return l;
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         ifcHairpin.getHelp(l);
-        return l;
     }
 
     public void doCfgStr(cmds cmd) {

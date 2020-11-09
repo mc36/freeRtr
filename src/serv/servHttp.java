@@ -1440,7 +1440,7 @@ class servHttpConn implements Runnable {
                 if (s.length() < 1) {
                     break;
                 }
-                userHelping hlp = cfg.getHelping();
+                userHelping hlp = cfg.getHelping(false);
                 rdr.setContext(hlp, "");
                 String b = hlp.repairLine(s);
                 if (b.length() < 1) {

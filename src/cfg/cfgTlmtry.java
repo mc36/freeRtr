@@ -62,8 +62,7 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
         return "tlmtdst";
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1  2,.    description              specify description");
         l.add("2  2,.      <str>                  text");
         l.add("1  2      target                   specify target address");
@@ -78,7 +77,6 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
         l.add("2  .        <str>                  name of profile");
         l.add("1  .      start                    start exporting");
         l.add("1  .      stop                     stop exporting");
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {

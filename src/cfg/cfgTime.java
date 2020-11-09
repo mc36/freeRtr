@@ -111,8 +111,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 2   sequence              sequence number of an entry");
         l.add("2 1,.   <num>               sequence number");
         l.add("1 3,. description           specify description");
@@ -145,7 +144,6 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         l.add("2 3     second              match second");
         l.add("3 .       <num>             value");
         l.add("3 .       all               any value");
-        return l;
     }
 
     public synchronized void doCfgStr(cmds cmd) {

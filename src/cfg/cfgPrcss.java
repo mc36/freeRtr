@@ -162,8 +162,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         new Thread(this).start();
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1  2,.    description                description of this process");
         l.add("2  2,.      [text]                   text describing this process");
         l.add("1  .      respawn                    restart on termination");
@@ -184,7 +183,6 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add("1  .      stop                       stop working");
         l.add("1  .      start                      start working");
         l.add("1  .      runnow                     run one round now");
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {

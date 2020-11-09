@@ -60,8 +60,7 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1  3,. description                   specify description");
         l.add("3  3,.   <str>                       text");
         l.add("1  2      group                      specify group address");
@@ -87,7 +86,6 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
         l.add("1  .      logging                    log events");
         l.add("1  .      stop                       stop working");
         l.add("1  .      start                      start working");
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {

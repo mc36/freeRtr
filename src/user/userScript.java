@@ -612,7 +612,7 @@ public class userScript {
                 if (a.length() < 1) {
                     break;
                 }
-                userHelping hlp = cfg.getHelping();
+                userHelping hlp = cfg.getHelping(false);
                 rdr.setContext(hlp, "");
                 String b = hlp.repairLine(a);
                 if (b.length() < 1) {

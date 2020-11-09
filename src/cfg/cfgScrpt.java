@@ -130,8 +130,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         return "script " + name;
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1  2,.    description                description of this script");
         l.add("2  2,.      [text]                   text describing this script");
         l.add("1  .      respawn                    restart on termination");
@@ -156,7 +155,6 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         l.add("1  .      start                      start working");
         l.add("1  .      runnow                     run one round now");
         l.add("1  .      editor                     edit this script");
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {

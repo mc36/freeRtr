@@ -22,13 +22,16 @@ public class userHelping {
     /**
      * get generic config help
      *
+     * @param needShow need show
      * @return help string
      */
-    public static userHelping getGenCfg() {
+    public static userHelping getGenCfg(boolean needShow) {
         userHelping l = new userHelping();
-        l.add("1 2    show                running system information");
-        userExec.getHelpShow(l, true);
-        userExec.getHelpPipes(l, 110, true);
+        if (needShow) {
+            l.add("1 2    show                running system information");
+            userExec.getHelpShow(l, true);
+            userExec.getHelpPipes(l, 110, true);
+        }
         l.add("1 .    exit                go back to previous mode");
         l.add("1 2,.  end                 close this config session");
         l.add("2 2,.    <cmd>             parameters");
@@ -183,8 +186,8 @@ public class userHelping {
         }
         userHelpingList curNxt = lines.get(lin).after;
         int curLvl = lines.get(lin).level;
-        for (int i = 0; i < curNxt.num; i++) {
-            int req = curNxt.val[i];
+        for (int i = 0; i < curNxt.num(); i++) {
+            int req = curNxt.val(i);
             if (req < 0) {
                 d.add(req);
                 continue;
@@ -215,8 +218,8 @@ public class userHelping {
     private userHelpingList matchStr(userHelpingList lns, String s) {
         byte[] b1 = s.trim().toLowerCase().getBytes();
         userHelpingList d = new userHelpingList();
-        for (int o = 0; o < lns.num; o++) {
-            int i = lns.val[o];
+        for (int o = 0; o < lns.num(); o++) {
+            int i = lns.val(o);
             if (i < 0) {
                 d.add(0);
                 continue;
@@ -243,8 +246,8 @@ public class userHelping {
         int num = -4;
         int max = -1;
         int vld = -1;
-        for (int i = 0; i < d.num; i++) {
-            int cur = d.val[i];
+        for (int i = 0; i < d.num(); i++) {
+            int cur = d.val(i);
             if (cur < 0) {
                 vld = i;
                 continue;
@@ -279,8 +282,8 @@ public class userHelping {
     public String matchLong(userHelpingList lns, String s) {
         s = s.trim().toLowerCase();
         String m = null;
-        for (int o = 0; o < lns.num; o++) {
-            int i = lns.val[o];
+        for (int o = 0; o < lns.num(); o++) {
+            int i = lns.val(o);
             if (i < 0) {
                 continue;
             }
@@ -349,7 +352,7 @@ public class userHelping {
                 res.str = b + s;
                 return res;
             }
-            i = lns.val[sel.level];
+            i = lns.val(sel.level);
             res.add(i);
             if (lines.get(i).variable) {
                 b += a + " ";
@@ -399,8 +402,8 @@ public class userHelping {
             return true;
         }
         d = nextWords(d.level);
-        for (int i = 0; i < d.num; i++) {
-            if (d.val[i] == -1) {
+        for (int i = 0; i < d.num(); i++) {
+            if (d.val(i) == -1) {
                 return false;
             }
         }
@@ -419,8 +422,8 @@ public class userHelping {
         userHelpingList d = nextWords(lin);
         List<String> s = new ArrayList<String>();
         int max = -1;
-        for (int i = 0; i < d.num; i++) {
-            int o = d.val[i];
+        for (int i = 0; i < d.num(); i++) {
+            int o = d.val(i);
             if (o < 0) {
                 o = enter.length();
             } else {
@@ -430,8 +433,8 @@ public class userHelping {
                 max = o;
             }
         }
-        for (int i = 0; i < d.num; i++) {
-            int o = d.val[i];
+        for (int i = 0; i < d.num(); i++) {
+            int o = d.val(i);
             if (o < 0) {
                 s.add(begin + enter);
                 continue;
@@ -445,33 +448,49 @@ public class userHelping {
     /**
      * find usage of a line
      *
+     * @param dat data to append
+     * @param beg beginning
+     * @param hlp help text
      * @param lin line to get
-     * @param min minimum level
-     * @return usage of line
+     * @param lev current level
+     * @return found entries
      */
-    public userHelpingData formatUsage(int lin, int min) {
-        userHelpingData ntry = lines.get(lin);
-        userHelpingData r = new userHelpingData();
-        r.description = ntry.description;
-        r.level = ntry.level;
-        if (ntry.level > min) {
-            return null;
-        }
-        String s = "";
-        int max = -1;
-        for (int i = lin; i < lines.size(); i++) {
-            ntry = lines.get(i);
-            if (ntry.level <= max) {
+    protected int formatUsage(userHelping dat, String beg, String hlp, int lin, int lev) {
+        int fnd = 0;
+        for (int o = lin; o < lines.size(); o++) {
+            userHelpingData ntry = lines.get(o);
+            if ((fnd > 0) && (ntry.level < lev)) {
                 break;
             }
-            max = ntry.level;
-            s += " " + ntry.command;
+            if (ntry.level != lev) {
+                continue;
+            }
+            fnd++;
+            int q = 0;
+            boolean b = false;
+            for (int i = 0; i < ntry.after.num(); i++) {
+                int p = ntry.after.val(i);
+                if (p < 0) {
+                    b = true;
+                    continue;
+                }
+                if (p <= lev) {
+                    continue;
+                }
+                q += formatUsage(dat, beg + " " + ntry.command, hlp + ", " + ntry.description, o + 1, p);
+            }
+            if ((!b) && (q > 0)) {
+                continue;
+            }
+            userHelpingData res = new userHelpingData();
+            String a = hlp + ", " + ntry.description;
+            res.description = a.substring(2, a.length());
+            a = beg + " " + ntry.command;
+            res.command = a.substring(1, a.length());
+            res.level = 1;
+            dat.lines.add(res);
         }
-        if (s.length() > 0) {
-            s = s.substring(1, s.length());
-        }
-        r.command = s;
-        return r;
+        return fnd;
     }
 
     /**
@@ -484,8 +503,8 @@ public class userHelping {
     public List<String> getHelp(String s, boolean oneLine) {
         userHelpingList d = whereAm(s);
         String cmd = "";
-        for (int i = 0; i < d.num; i++) {
-            cmd += " " + lines.get(d.val[i]).command;
+        for (int i = 0; i < d.num(); i++) {
+            cmd += " " + lines.get(d.val(i)).command;
         }
         if (cmd.length() > 0) {
             cmd = cmd.substring(1, cmd.length());
@@ -529,13 +548,7 @@ public class userHelping {
      */
     public List<String> getUsage(int lev) {
         userHelping d = new userHelping();
-        for (int i = 0; i < lines.size(); i++) {
-            userHelpingData s = formatUsage(i, lev);
-            if (s == null) {
-                continue;
-            }
-            d.lines.add(s);
-        }
+        formatUsage(d, "", "", 0, lev);
         return d.formatHelp(-1);
     }
 
@@ -595,28 +608,31 @@ public class userHelping {
 
 class userHelpingList {
 
-    public int[] val = new int[128]; // values
-
-    public int num; // number of values
+    public List<Integer> data = new ArrayList<Integer>(); // values
 
     public int level; // which level we are on
 
     public String str; // repaired line
 
+    public int num() {
+        return data.size();
+    }
+
+    public int val(int i) {
+        return data.get(i);
+    }
+
     public void add(int i) {
-        val[num] = i;
-        num++;
+        data.add(i);
     }
 
     public void addMore(userHelpingList d) {
-        for (int i = 0; i < d.num; i++) {
-            add(d.val[i]);
-        }
+        data.addAll(d.data);
     }
 
     public int find(int lvl) {
-        for (int i = 0; i < num; i++) {
-            if (val[i] == lvl) {
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i) == lvl) {
                 return i;
             }
         }
@@ -625,17 +641,14 @@ class userHelpingList {
 
     public userHelpingList copyBytes() {
         userHelpingList n = new userHelpingList();
-        n.num = num;
-        for (int i = 0; i < num; i++) {
-            n.val[i] = val[i];
-        }
+        n.data.addAll(data);
         return n;
     }
 
     public String dump() {
         String s = level + "|";
-        for (int i = 0; i < num; i++) {
-            s += " " + val[i];
+        for (int i = 0; i < data.size(); i++) {
+            s += " " + data.get(i);
         }
         return s;
     }

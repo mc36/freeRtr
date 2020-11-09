@@ -595,8 +595,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 2  protocol                       specify protocol to use");
         l.add("2 .    l2f                          select l2f");
         l.add("2 .    l2tp2                        select l2tp v2");
@@ -671,7 +670,6 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add("2 .    atm-vcc                      atm vcc mode");
         l.add("2 .    atm-vpc                      atm vpc mode");
         l.add("2 .    atm-port                     atm port mode");
-        return l;
     }
 
     /**

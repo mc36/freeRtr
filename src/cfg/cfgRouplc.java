@@ -81,8 +81,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         return l;
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 2   sequence              sequence number of an entry");
         l.add("2 1,.   <num>               sequence number");
         l.add("1 2,. reindex               reindex route map");
@@ -272,7 +271,6 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("3 .       <name>            name of route map");
         l.add("2 3     route-policy        set route policy");
         l.add("3 .       <name>            name of route policy");
-        return l;
     }
 
     private void doIfStr(cmds cmd, tabRtrplcN ntry) {

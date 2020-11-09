@@ -104,6 +104,11 @@ public class userShow {
     public userReader rdr;
 
     /**
+     * current context
+     */
+    public userHelping hlp;
+
+    /**
      * do the work
      *
      * @return command to execute, null if nothing
@@ -121,6 +126,13 @@ public class userShow {
                 return null;
             }
             rdr.putStrArr(version.shLogo(0xe0));
+            return null;
+        }
+        if (a.equals("parser")) {
+            if (hlp == null) {
+                return null;
+            }
+            rdr.putStrArr(hlp.getUsage(1));
             return null;
         }
         if (a.equals("me-the")) {

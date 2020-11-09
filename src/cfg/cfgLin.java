@@ -156,8 +156,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         line.getHelp(l);
         l.add("1 .  log-monitor                    set as monitoring line");
         l.add("1 .  dedicated                      set as dedicated line");
@@ -169,7 +168,6 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         l.add("3 .      <name>                     name of script");
         l.add("2 3    hangup                       script to run on after session");
         l.add("3 .      <name>                     name of script");
-        return l;
     }
 
     public synchronized void doCfgStr(cmds cmd) {

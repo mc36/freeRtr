@@ -58,8 +58,7 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
         name = s;
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 3,. description                   specify description");
         l.add("3 3,.   <str>                       text");
         l.add("1 .  ignore-case                    ignore case on matching");
@@ -69,7 +68,6 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
         l.add("4 4,.      <name>                   command");
         l.add("3 4      text                       text to display");
         l.add("4 4,.      <name>                   text");
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {

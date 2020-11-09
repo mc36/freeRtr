@@ -110,8 +110,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         return name;
     }
 
-    public userHelping getHelp() {
-        userHelping l = userHelping.getGenCfg();
+    public void getHelp(userHelping l) {
         l.add("1 2   sequence              sequence number of an entry");
         l.add("2 1,.   <num>               sequence number");
         l.add("1 2,. reindex               reindex route map");
@@ -225,7 +224,6 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add("2 .     <num>               milliseconds");
         l.add("1 .   random-detect         set random drop on queue full");
         l.add("1 .   log                   set logging on match");
-        return l;
     }
 
     public List<String> getShRun(boolean filter) {
