@@ -3,6 +3,7 @@ package user;
 import java.util.ArrayList;
 import java.util.List;
 import util.bits;
+import util.cmds;
 import util.verCore;
 
 /**
@@ -543,13 +544,42 @@ public class userHelping {
     /**
      * get usage text for a given command
      *
-     * @param lev minimum level
      * @return usage text
      */
-    public List<String> getUsage(int lev) {
+    public List<String> getUsage() {
         userHelping d = new userHelping();
-        formatUsage(d, "", "", 0, lev);
+        formatUsage(d, "", "", 0, 1);
         return d.formatHelp(-1);
+    }
+
+    /**
+     * get yang for a given command
+     *
+     * @param path path
+     * @param prefix prefix
+     * @return yang
+     */
+    public List<String> getYang(String path, String prefix) {
+        List<String> res = new ArrayList<String>();
+        res.add("module " + prefix + " {");
+        res.add("  namespace \"" + verCore.homeUrl + "yang/" + prefix + "\";");
+        res.add("  prefix \"" + prefix + "\";");
+        cmds cp = new cmds("ya", path);
+        String id = "  ";
+        for (;;) {
+            if (cp.size() < 1) {
+                break;
+            }
+            String a = cp.word("/");
+            res.add(id + "container " + a + " {");
+            id += "  ";
+        }
+        ///////////
+        for (; id.length() > 0;) {
+            id = id.substring(0, id.length() - 2);
+            res.add(id + "}");
+        }
+        return res;
     }
 
     /**

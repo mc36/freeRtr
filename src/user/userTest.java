@@ -124,8 +124,6 @@ public class userTest {
             l.remove(0);
             String prefix = l.get(0);
             l.remove(0);
-            String url = l.get(0);
-            l.remove(0);
             pipeLine pl = new pipeLine(65535, false);
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
@@ -167,7 +165,7 @@ public class userTest {
             pl.setClose();
             a = pip.strGet(65535);
             cmd.error("result: " + a);
-            l = ned.getUsage(1);
+            l = ned.getYang(path, prefix);
             if (bits.buf2txt(true, l, trg)) {
                 cmd.error("error writing target");
                 return null;

@@ -997,7 +997,7 @@ public class cfgInit implements Runnable {
         hlp.add("2 .   <cmd>        command to execute");
         hlp.add("1 2 exec           execute exec command");
         hlp.add("2 .   <cmd>        command to execute");
-        List<String> res = hlp.getUsage(1);
+        List<String> res = hlp.getUsage();
         for (int i = 0; i < res.size(); i++) {
             putln(res.get(i));
         }

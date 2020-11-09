@@ -132,7 +132,7 @@ public class userShow {
             if (hlp == null) {
                 return null;
             }
-            rdr.putStrArr(hlp.getUsage(1));
+            rdr.putStrArr(hlp.getUsage());
             return null;
         }
         if (a.equals("me-the")) {

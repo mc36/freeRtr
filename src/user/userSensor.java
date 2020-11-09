@@ -15,6 +15,7 @@ import util.extMrkLng;
 import util.extMrkLngEntry;
 import util.protoBuf;
 import util.protoBufEntry;
+import util.verCore;
 
 /**
  * telemetry exporter
@@ -37,11 +38,6 @@ public class userSensor implements Comparator<userSensor> {
      * prefix
      */
     public String prefix;
-
-    /**
-     * url
-     */
-    public String url;
 
     /**
      * path
@@ -123,10 +119,6 @@ public class userSensor implements Comparator<userSensor> {
         }
         if (s.equals("prefix")) {
             prefix = cmd.getRemaining();
-            return;
-        }
-        if (s.equals("url")) {
-            url = cmd.getRemaining();
             return;
         }
         if (s.equals("skip")) {
@@ -443,7 +435,7 @@ public class userSensor implements Comparator<userSensor> {
     public List<String> getYang() {
         List<String> res = new ArrayList<String>();
         res.add("module " + prefix + " {");
-        res.add("  namespace \"" + url + prefix + "\";");
+        res.add("  namespace \"" + verCore.homeUrl + "yang/" + prefix + "\";");
         res.add("  prefix \"" + prefix + "\";");
         cmds cp = new cmds("ya", path);
         cmds ck = new cmds("ya", keyP);
@@ -511,7 +503,6 @@ public class userSensor implements Comparator<userSensor> {
         res.add("command=" + command);
         res.add("path=" + path);
         res.add("prefix=" + prefix);
-        res.add("url=" + url);
         res.add("asked=" + cnt + " times");
         res.add("reply=" + time + " ms");
         res.add("output:");

@@ -1,7 +1,6 @@
 sensor ifaces-sw
 path interfaces-sw/interface/counter
 prefix freertr-ifaces
-url http://freertr.net/yang/
 command sho inter summ
 key 0 name interfaces-sw/interface
 column 1 name st
