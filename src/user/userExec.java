@@ -1525,6 +1525,9 @@ public class userExec {
         hl.add("2 3      yangsensor              create yang from sensor");
         hl.add("3 4        <name>                source");
         hl.add("4 .          <name>              target");
+        hl.add("2 3      yangconfig              create yang from config");
+        hl.add("3 4        <name>                source");
+        hl.add("4 .          <name>              target");
         hl.add("2 3      dns                     dns zone creator");
         hl.add("3 .        <name>                name of zone");
         hl.add("2 3      translation             translation rule");

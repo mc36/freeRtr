@@ -110,6 +110,71 @@ public class userTest {
         if (alias != null) {
             return alias.getCommand(cmd);
         }
+        if (a.equals("yangconfig")) {
+            a = cmd.word();
+            List<String> l = bits.txt2buf(a);
+            if (l == null) {
+                cmd.error("error reading source");
+                return null;
+            }
+            String trg = cmd.word();
+            l.remove(0);
+            l.remove(l.size() - 1);
+            String path = l.get(0);
+            l.remove(0);
+            String prefix = l.get(0);
+            l.remove(0);
+            String url = l.get(0);
+            l.remove(0);
+            pipeLine pl = new pipeLine(65535, false);
+            pipeSide pip = pl.getSide();
+            pip.lineTx = pipeSide.modTyp.modeCRLF;
+            pip.lineRx = pipeSide.modTyp.modeCRorLF;
+            userReader rdr = new userReader(pip, null);
+            rdr.tabMod = userFormat.tableMode.raw;
+            rdr.height = 0;
+            userConfig cfg = new userConfig(pip, rdr);
+            pip.setTime(60000);
+            int pos;
+            for (pos = 0; pos < l.size(); pos++) {
+                a = l.get(pos);
+                if (a.equals("!")) {
+                    break;
+                }
+                userHelping hlp = cfg.getHelping(false);
+                rdr.setContext(hlp, "");
+                String b = hlp.repairLine(a);
+                if (b.length() < 1) {
+                    pip.linePut("bad: " + a);
+                    continue;
+                }
+                cfg.executeCommand(b);
+            }
+            pos++;
+            userHelping ned = cfg.getHelping(false);
+            for (; pos < l.size(); pos++) {
+                a = l.get(pos);
+                userHelping hlp = cfg.getHelping(false);
+                rdr.setContext(hlp, "");
+                String b = hlp.repairLine(a);
+                if (b.length() < 1) {
+                    pip.linePut("bad: " + a);
+                    continue;
+                }
+                cfg.executeCommand(b);
+            }
+            pip = pl.getSide();
+            pl.setClose();
+            a = pip.strGet(65535);
+            cmd.error("result: " + a);
+            l = ned.getUsage(1);
+            if (bits.buf2txt(true, l, trg)) {
+                cmd.error("error writing target");
+                return null;
+            }
+            cmd.error("done");
+            return null;
+        }
         if (a.equals("yangsensor")) {
             a = cmd.word();
             List<String> l = bits.txt2buf(a);
@@ -118,8 +183,10 @@ public class userTest {
                 return null;
             }
             String trg = cmd.word();
+            l.remove(0);
+            l.remove(l.size() - 1);
             userSensor tl = new userSensor();
-            for (int i = 1; i < l.size() - 1; i++) {
+            for (int i = 0; i < l.size(); i++) {
                 tl.doCfgLine(new cmds("tl", l.get(i)));
             }
             l = tl.getYang();

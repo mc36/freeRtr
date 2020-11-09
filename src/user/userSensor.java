@@ -475,14 +475,23 @@ public class userSensor implements Comparator<userSensor> {
             if (col.splS == null) {
                 res.add(id + "leaf " + col.nam + " {");
                 res.add(id + "  type " + servStreamingMdt.type2string(col.typ) + ";");
+                if (col.hlp != null) {
+                    res.add(id + "  description \"" + col.hlp + "\";");
+                }
                 res.add(id + "}");
                 continue;
             }
             res.add(id + "leaf " + col.nam + col.splL + " {");
             res.add(id + "  type " + servStreamingMdt.type2string(col.typ) + ";");
+            if (col.hlp != null) {
+                res.add(id + "  description \"" + col.hlp + "\";");
+            }
             res.add(id + "}");
             res.add(id + "leaf " + col.nam + col.splR + " {");
             res.add(id + "  type " + servStreamingMdt.type2string(col.typ) + ";");
+            if (col.hlp != null) {
+                res.add(id + "  description \"" + col.hlp + "\";");
+            }
             res.add(id + "}");
         }
         for (; id.length() > 0;) {

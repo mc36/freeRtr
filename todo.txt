@@ -15,7 +15,6 @@ bgp vpns with sr-policy
 pipeline properties, terminal autoresize
 temper: web access log
 changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
-yang over netconf, proto over grpc
 interface range command
 reenable which elliptic courves? sure? why that?
 https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
