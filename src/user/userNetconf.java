@@ -9,6 +9,7 @@ import util.debugger;
 import util.extMrkLng;
 import util.extMrkLngEntry;
 import util.logger;
+import util.verCore;
 
 /**
  * netconf (rfc6241) handler
@@ -93,7 +94,7 @@ public class userNetconf {
         x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
         for (int i = 0; i < cfgInit.sensors.size(); i++) {
             userSensor ntry = cfgInit.sensors.get(i);
-            x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", ntry.url + ntry.prefix + "?module=" + ntry.prefix));
+            x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", verCore.homeUrl + "yang/" + ntry.prefix + "?module=" + ntry.prefix));
             x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
         }
         x.data.add(new extMrkLngEntry("/hello/session-id", "", "" + sessId));
@@ -159,7 +160,7 @@ public class userNetconf {
                 rep.data.add(new extMrkLngEntry(replyData, "", ""));
                 a = tl.path;
                 int o = a.indexOf("/");
-                rep.data.add(new extMrkLngEntry(replyData + "/" + a.substring(0, o), "xmlns=\"" + tl.url + tl.prefix + "\"", ""));
+                rep.data.add(new extMrkLngEntry(replyData + "/" + a.substring(0, o), "xmlns=\"" + verCore.homeUrl + "yang/"  + tl.prefix + "\"", ""));
                 tl.getReportNetConf(rep, replyData + "/");
                 rep.data.add(new extMrkLngEntry(replyData, "", ""));
                 rep.data.add(new extMrkLngEntry("/rpc-reply", "", ""));

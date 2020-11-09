@@ -196,10 +196,17 @@ public class userConfig {
      * get help text for exec commands
      *
      * @param needShow need show
+     * @param needGen need generic
      * @return helping instance
      */
-    public userHelping getHelping(boolean needShow) {
-        userHelping l = userHelping.getGenCfg(needShow);
+    public userHelping getHelping(boolean needShow, boolean needGen) {
+        userHelping l = new userHelping();
+        if (needShow) {
+            userHelping.getCfgHelp(l);
+        }
+        if (needGen) {
+            userHelping.getCfgGen(l);
+        }
         switch (modeV) {
             case global:
                 getHelpGlobal(l);
@@ -212,7 +219,7 @@ public class userConfig {
                 return l;
             default:
                 resetMode();
-                return userHelping.getGenCfg(needShow);
+                return l;
         }
     }
 
@@ -274,7 +281,7 @@ public class userConfig {
             cmd = reader.setFilter(cmd);
             s.cmd = cmd;
             s.rdr = reader;
-            s.hlp = getHelping(false);
+            s.hlp = getHelping(false, false);
             a = s.doer();
             if (a == null) {
                 return null;
@@ -311,7 +318,7 @@ public class userConfig {
      * @return status of operation, see at one command
      */
     public String doCommand() {
-        reader.setContext(getHelping(true), cfgAll.hostName + getPrompt() + "#");
+        reader.setContext(getHelping(true, true), cfgAll.hostName + getPrompt() + "#");
         String s = reader.readLine(reader.deactive, "exit");
         if (s == null) {
             return "";

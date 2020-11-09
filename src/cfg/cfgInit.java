@@ -561,7 +561,7 @@ public class cfgInit implements Runnable {
                 logger.debug("cmd " + a);
             }
             String beg = (o + 1) + ":";
-            userHelping hl = uc.getHelping(false);
+            userHelping hl = uc.getHelping(true, true);
             rd.setContext(hl, "");
             String b = hl.repairLine(a);
             if (b.length() < 1) {

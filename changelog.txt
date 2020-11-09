@@ -9399,3 +9399,5 @@ qc pass: unicast+linkstate over bgp with additional path
 qc pass: isis with bgp linkstate
 qc pass: lsrp with bgp linkstate
 qc pass: ospf with bgp linkstate
+---------------------------------- 2020-11-09 13:32:15
+no todo: yang over netconf, proto over grpc

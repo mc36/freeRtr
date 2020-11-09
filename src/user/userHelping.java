@@ -23,23 +23,26 @@ public class userHelping {
     /**
      * get generic config help
      *
-     * @param needShow need show
-     * @return help string
+     * @param l help text
      */
-    public static userHelping getGenCfg(boolean needShow) {
-        userHelping l = new userHelping();
-        if (needShow) {
-            l.add("1 2    show                running system information");
-            userExec.getHelpShow(l, true);
-            userExec.getHelpPipes(l, 110, true);
-        }
+    protected static void getCfgGen(userHelping l) {
         l.add("1 .    exit                go back to previous mode");
         l.add("1 2,.  end                 close this config session");
         l.add("2 2,.    <cmd>             parameters");
         l.add("1 2    do                  execute one exec command");
         l.add("2 2,.    <cmd>             exec command");
         l.add("1 1    no                  negate a command");
-        return l;
+    }
+
+    /**
+     * get generic config help
+     *
+     * @param l help text
+     */
+    protected static void getCfgHelp(userHelping l) {
+        l.add("1 2    show                running system information");
+        userExec.getHelpShow(l, true);
+        userExec.getHelpPipes(l, 110, true);
     }
 
     /**

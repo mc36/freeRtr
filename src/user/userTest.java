@@ -139,7 +139,7 @@ public class userTest {
                 if (a.equals("!")) {
                     break;
                 }
-                userHelping hlp = cfg.getHelping(false);
+                userHelping hlp = cfg.getHelping(true, true);
                 rdr.setContext(hlp, "");
                 String b = hlp.repairLine(a);
                 if (b.length() < 1) {
@@ -149,10 +149,10 @@ public class userTest {
                 cfg.executeCommand(b);
             }
             pos++;
-            userHelping ned = cfg.getHelping(false);
+            userHelping ned = cfg.getHelping(false, false);
             for (; pos < l.size(); pos++) {
                 a = l.get(pos);
-                userHelping hlp = cfg.getHelping(false);
+                userHelping hlp = cfg.getHelping(true, true);
                 rdr.setContext(hlp, "");
                 String b = hlp.repairLine(a);
                 if (b.length() < 1) {
