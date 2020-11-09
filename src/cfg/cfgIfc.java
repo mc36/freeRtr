@@ -5490,9 +5490,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 2   bridge-group                  transparent bridging interface parameters");
         l.add("2 .     <num>                       number of bridge group");
         l.add("1 2   bridge-macsecurity            transparent bridging interface parameters");
-        l.add("2 2,.   <adr>                       address to allow");
+        l.add("2 2,.   <addr>                      address to allow");
         l.add("1 2   bridge-macrewrite             transparent bridging interface parameters");
-        l.add("2 .     <adr>                       address to use");
+        l.add("2 .     <addr>                      address to use");
         l.add("1 2   bridge-filter                 transparent bridging filtering parameters");
         l.add("2 3     ipv4in                      ipv4 ingress filter");
         l.add("3 .       <name>                    name of access list");

@@ -478,7 +478,7 @@ public class userConfig {
         l.add("3  3,.    chksum                     append chksum");
         l.add("3  3,.    none                       append nothing");
         l.add("2  3    whois-server                 set whois server");
-        l.add("3  .      <nam>                      server name");
+        l.add("3  .      <name>                     server name");
         l.add("2  .    password-stars               type stars in passwords");
         l.add("2  .    prefer-ipv6                  prefer ipv6 for domains");
         l.add("2  .    prefer-ipv4                  prefer ipv4 for domains");
