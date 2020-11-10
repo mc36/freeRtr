@@ -152,7 +152,7 @@ public class userSensor implements Comparator<userSensor> {
             return;
         }
         if (s.equals("help")) {
-            col.hlp = cmd.word();
+            col.hlp = cmd.getRemaining();
             return;
         }
         if (s.equals("type")) {

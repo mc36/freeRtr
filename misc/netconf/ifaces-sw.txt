@@ -5,6 +5,7 @@ command sho inter summ
 key 0 name interfaces-sw/interface
 column 1 name st
 column 1 type string
+column 1 help status of interface
 column 2 name tx
 column 3 name rx
 column 4 name dr
