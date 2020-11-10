@@ -552,7 +552,15 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
             return null;
         }
         protoBuf pb = new protoBuf();
-        a = doReplaces(cl.get(keyC), reps);
+        a = cl.get(keyC);
+        if ((acol >= 0) && (acol < cls)) {
+            a = asep;
+            if (asep.equals("*")) {
+                a = "";
+            }
+            a = a + cl.get(acol);
+        }
+        a = doReplaces(a, reps);
         packHolder pck1 = new packHolder(true, true);
         packHolder pck2 = new packHolder(true, true);
         packHolder pck3 = new packHolder(true, true);
@@ -600,7 +608,15 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         if (keyC >= cls) {
             return;
         }
-        a = doReplaces(cl.get(keyC), reps);
+        a = cl.get(keyC);
+        if ((acol >= 0) && (acol < cls)) {
+            a = asep;
+            if (asep.equals("*")) {
+                a = "";
+            }
+            a = a + cl.get(acol);
+        }
+        a = doReplaces(a, reps);
         res.data.add(new extMrkLngEntry(null, beg + keyP + "/" + keyN, "", a));
         for (int o = 0; o < cols.size(); o++) {
             cfgSensorCol cc = cols.get(o);

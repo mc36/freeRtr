@@ -1,0 +1,17 @@
+sensor bfd4
+path bfd4/peer/peer
+prefix freertr-bfd
+key 0 name bfd4/peer
+command sho bmp bmp
+prepend bmp_
+name 0 from=
+addname 1 * rpeer=
+replace \. _
+replace \: _
+column 2 name asn
+column 3 name state
+column 3 replace false 0
+column 3 replace true 1
+column 4 name flaps
+.
+exit

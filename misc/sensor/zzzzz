@@ -1,4 +1,0 @@
-sensor ifaces-sw
-path interfaces-sw/interface/counter
-prefix freertr-ifaces
-key 0 name interfaces-sw/interface

@@ -1,7 +1,7 @@
 sensor bfd4
 path bfd4/peer/peer
 prefix freertr-bfd
-key 0 name bfd4/peer
+key 1 name bfd4/peer
 command sho ipv4 bfd inet neighbor
 prepend bfd4_
 name 1 ip=
@@ -17,7 +17,7 @@ exit
 sensor bfd6
 path bfd6/peer/peer
 prefix freertr-bfd
-key 0 name bfd6/peer
+key 1 name bfd6/peer
 command sho ipv6 bfd inet neighbor
 prepend bfd6_
 name 1 ip=

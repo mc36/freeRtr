@@ -1,7 +1,7 @@
 sensor bgp4peer
 path bgp4/peer/peer
 prefix freertr-bfd
-key 0 name bgp4/peer
+key 4 name bgp4/peer
 command sho ipv4 bgp 65535 summ
 prepend bgp4_peer_
 name 4 peer=
@@ -17,7 +17,7 @@ exit
 sensor bgp4perf
 path bgp4/perf/perf
 prefix freertr-bfd
-key 0 name bgp4/perf
+key 4 name bgp4/perf
 command sho ipv4 bgp 65535 best | exc last
 prepend bgp4_perf_
 replace \s _
