@@ -590,7 +590,10 @@ public class userScript {
             }
             pip = pl.getSide();
             pl.setClose();
-            a = pip.strGet(65536);
+            a = pip.strGet(1024 * 1024);
+            if (a == null) {
+                a = "";
+            }
             return a;
         }
         if (a.equals("config")) {
@@ -624,6 +627,9 @@ public class userScript {
             pip = pl.getSide();
             pl.setClose();
             a = pip.strGet(65536);
+            if (a == null) {
+                a = "";
+            }
             return a;
         }
         if (a.equals("split")) {

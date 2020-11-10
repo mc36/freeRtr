@@ -118,54 +118,7 @@ public class userTest {
                 return null;
             }
             String trg = cmd.word();
-            l.remove(0);
-            l.remove(l.size() - 1);
-            String path = l.get(0);
-            l.remove(0);
-            String prefix = l.get(0);
-            l.remove(0);
-            pipeLine pl = new pipeLine(65535, false);
-            pipeSide pip = pl.getSide();
-            pip.lineTx = pipeSide.modTyp.modeCRLF;
-            pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, null);
-            rdr.tabMod = userFormat.tableMode.raw;
-            rdr.height = 0;
-            userConfig cfg = new userConfig(pip, rdr);
-            pip.setTime(60000);
-            int pos;
-            for (pos = 0; pos < l.size(); pos++) {
-                a = l.get(pos);
-                if (a.equals("!")) {
-                    break;
-                }
-                userHelping hlp = cfg.getHelping(true, true);
-                rdr.setContext(hlp, "");
-                String b = hlp.repairLine(a);
-                if (b.length() < 1) {
-                    pip.linePut("bad: " + a);
-                    continue;
-                }
-                cfg.executeCommand(b);
-            }
-            pos++;
-            userHelping ned = cfg.getHelping(false, false);
-            for (; pos < l.size(); pos++) {
-                a = l.get(pos);
-                userHelping hlp = cfg.getHelping(true, true);
-                rdr.setContext(hlp, "");
-                String b = hlp.repairLine(a);
-                if (b.length() < 1) {
-                    pip.linePut("bad: " + a);
-                    continue;
-                }
-                cfg.executeCommand(b);
-            }
-            pip = pl.getSide();
-            pl.setClose();
-            a = pip.strGet(65535);
-            cmd.error("result: " + a);
-            l = ned.getYang(path, prefix);
+            l = userNetconf.doConfig(l, 1, l.size() - 1);
             if (bits.buf2txt(true, l, trg)) {
                 cmd.error("error writing target");
                 return null;

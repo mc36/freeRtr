@@ -95,6 +95,7 @@ import user.userFilter;
 import user.userFonts1;
 import user.userHelping;
 import user.userLine;
+import user.userNetconf;
 import user.userReader;
 import user.userSensor;
 import util.bits;
@@ -468,26 +469,49 @@ public class cfgInit implements Runnable {
                 }
                 inhs.add(cmd.getOriginal());
                 int bg = -1;
+                int md = 0;
                 for (int p = 0; p < txt.size(); p++) {
                     String a = txt.get(p);
                     if (a.startsWith("sensor ")) {
                         bg = p;
+                        md = 1;
+                        continue;
+                    }
+                    if (a.startsWith("config ")) {
+                        bg = p;
+                        md = 2;
+                        continue;
                     }
                     if (!a.equals(".")) {
                         continue;
                     }
                     cmd = new cmds("", txt.get(bg));
                     cmd.word();
-                    userSensor tl = new userSensor();
-                    tl.name = cmd.getRemaining();
-                    for (int i = bg + 1; i < p; i++) {
-                        cmd = new cmds("", txt.get(i));
-                        tl.doCfgLine(cmd);
+                    switch (md) {
+                        case 1:
+                            userSensor tl = new userSensor();
+                            tl.name = cmd.getRemaining();
+                            for (int i = bg + 1; i < p; i++) {
+                                cmd = new cmds("", txt.get(i));
+                                tl.doCfgLine(cmd);
+                            }
+                            sensors.put(tl);
+                            if (debugger.cfgInitHw) {
+                                logger.debug("netconf sensor " + tl.name);
+                            }
+                            break;
+                        case 2:
+                            a = cmd.word();
+                            userNetconf.doConfig(txt, bg + 1, p);
+                            if (debugger.cfgInitHw) {
+                                logger.debug("netconf config " + a);
+                            }
+                            break;
+                        default:
+                            break;
                     }
-                    sensors.put(tl);
-                    if (debugger.cfgInitHw) {
-                        logger.debug("netconf " + tl.name);
-                    }
+                    md = 0;
+                    continue;
                 }
                 continue;
             }

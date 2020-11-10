@@ -1453,6 +1453,9 @@ class servHttpConn implements Runnable {
             pip = pl.getSide();
             pl.setClose();
             s = pip.strGet(65535);
+            if (s == null) {
+                s = "";
+            }
             sendTextHeader("200 ok", "text/plain", s.getBytes());
             return false;
         }

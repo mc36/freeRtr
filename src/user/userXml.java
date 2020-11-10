@@ -124,7 +124,10 @@ public class userXml {
                 pip = pl.getSide();
                 pl.setClose();
                 String a = pip.strGet(65535);
-                rep.data.add(new extMrkLngEntry("/Response/CLI/Configuration", "", "" + a));
+                if (a == null) {
+                    a = "";
+                }
+                rep.data.add(new extMrkLngEntry("/Response/CLI/Configuration", "", a));
                 continue;
             }
         }

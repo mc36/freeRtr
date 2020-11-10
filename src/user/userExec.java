@@ -3668,7 +3668,7 @@ public class userExec {
     private void doWatch() {
         reader.keyFlush();
         for (;;) {
-            String a = getShPipe(true).strGet(65536);
+            String a = getShPipe(true).strGet(1024 * 1024);
             userScreen.sendCur(pipe, 0, 0);
             userScreen.sendCls(pipe);
             if (reader.colorize) {

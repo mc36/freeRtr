@@ -4,6 +4,7 @@ import cfg.cfgAll;
 import cfg.cfgInit;
 import java.util.ArrayList;
 import java.util.List;
+import pipe.pipeLine;
 import pipe.pipeSide;
 import util.bits;
 import util.cmds;
@@ -82,6 +83,68 @@ public class userNetconf {
     }
 
     /**
+     * make config
+     *
+     * @param lst list to use
+     * @param beg beginning
+     * @param end ending
+     * @return help
+     */
+    public static List<String> doConfig(List<String> lst, int beg, int end) {
+        String path = lst.get(beg + 0);
+        String prefix = lst.get(beg + 1);
+        pipeLine pl = new pipeLine(65535, false);
+        pipeSide pip = pl.getSide();
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        userReader rdr = new userReader(pip, null);
+        rdr.tabMod = userFormat.tableMode.raw;
+        rdr.height = 0;
+        userConfig cfg = new userConfig(pip, rdr);
+        pip.setTime(60000);
+        int pos;
+        for (pos = beg + 2; pos < end; pos++) {
+            String a = lst.get(pos);
+            if (a.equals("!")) {
+                break;
+            }
+            userHelping hlp = cfg.getHelping(true, true);
+            rdr.setContext(hlp, "");
+            String b = hlp.repairLine(a);
+            if (b.length() < 1) {
+                pip.linePut("bad: " + a);
+                continue;
+            }
+            cfg.executeCommand(b);
+        }
+        pos++;
+        userHelping ned = cfg.getHelping(false, false);
+        for (; pos < end; pos++) {
+            String a = lst.get(pos);
+            userHelping hlp = cfg.getHelping(true, true);
+            rdr.setContext(hlp, "");
+            String b = hlp.repairLine(a);
+            if (b.length() < 1) {
+                pip.linePut("bad: " + a);
+                continue;
+            }
+            cfg.executeCommand(b);
+        }
+        pip = pl.getSide();
+        pl.setClose();
+        String a = pip.strGet(65535);
+        lst = ned.getYang(path, prefix);
+        if (a == null) {
+            return lst;
+        }
+        if (a.length() < 1) {
+            return lst;
+        }
+        logger.error("error happened: " + a);
+        return lst;
+    }
+
+    /**
      * do hello
      *
      * @return true on error, false on success
@@ -129,8 +192,7 @@ public class userNetconf {
     }
 
     /**
-     * do request m
-     *
+     * do request
      *
      * @param req request
      * @return response, null if error
@@ -139,27 +201,27 @@ public class userNetconf {
         extMrkLng rep = new extMrkLng();
         String rpc = "";
         int mod = 1;
-        for (int p = 0; p < req.data.size(); p++) {
+        for (int p = 0; p < (req.data.size() - 1); p++) {
             extMrkLngEntry ntry = req.data.get(p);
             String a = getName(ntry);
             if (a.equals("/?xml/rpc")) {
                 rpc += ntry.param;
             }
-            if (a.startsWith(getConfig)) {
-                String n = getName(req.data.get(p + 1));
-                if (mod == 1) {
-                    if (n.length() > a.length()) {
-                        continue;
-                    }
-                } else {
-                    if (n.length() < a.length()) {
-                        continue;
-                    }
-                }
-                mod = 3 - mod;
-                if (mod != 2) {
+            String n = getName(req.data.get(p + 1));
+            if (mod == 1) {
+                if (n.length() > a.length()) {
                     continue;
                 }
+            } else {
+                if (n.length() < a.length()) {
+                    continue;
+                }
+            }
+            mod = 3 - mod;
+            if (mod != 2) {
+                continue;
+            }
+            if (a.startsWith(getConfig)) {
                 List<String> cfg = cfgAll.getShRun(false);
                 List<userFilter> sec = userFilter.text2section(cfg);
                 n = a.substring(getConfig.length(), a.length());
@@ -182,20 +244,6 @@ public class userNetconf {
                 continue;
             }
             if (a.startsWith(getFilter)) {
-                String n = getName(req.data.get(p + 1));
-                if (mod == 1) {
-                    if (n.length() > a.length()) {
-                        continue;
-                    }
-                } else {
-                    if (n.length() < a.length()) {
-                        continue;
-                    }
-                }
-                mod = 3 - mod;
-                if (mod != 2) {
-                    continue;
-                }
                 userSensor tl = getSensor(a.substring(getFilter.length(), a.length()));
                 if (tl == null) {
                     continue;
@@ -205,11 +253,10 @@ public class userNetconf {
                 int o = a.indexOf("/");
                 rep.data.add(new extMrkLngEntry(replyData + "/" + a.substring(0, o), "xmlns=\"" + verCore.homeUrl + "yang/" + tl.prefix + "\"", ""));
                 tl.getReportNetConf(rep, replyData + "/");
-                rep.data.add(new extMrkLngEntry(replyData, "", ""));
                 rep.data.add(new extMrkLngEntry("/rpc-reply", "", ""));
                 continue;
             }
-            if (a.equals("/?xml/rpc/close-session")) {
+            if (a.startsWith("/?xml/rpc/close-session")) {
                 rep.data.add(new extMrkLngEntry("/rpc-reply/ok", "", ""));
                 rep.data.add(new extMrkLngEntry("/rpc-reply", "", ""));
                 need2run = false;
