@@ -17,6 +17,7 @@ import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgIfc;
 import cfg.cfgInit;
+import cfg.cfgSensor;
 import cfg.cfgTrnsltn;
 import cry.cryAsn1;
 import cry.cryBase64;
@@ -136,9 +137,9 @@ public class userTest {
             String trg = cmd.word();
             l.remove(0);
             l.remove(l.size() - 1);
-            userSensor tl = new userSensor();
+            cfgSensor tl = new cfgSensor("sen");
             for (int i = 0; i < l.size(); i++) {
-                tl.doCfgLine(new cmds("tl", l.get(i)));
+                tl.doCfgStr(new cmds("tl", l.get(i)));
             }
             l = tl.getYang();
             if (bits.buf2txt(true, l, trg)) {

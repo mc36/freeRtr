@@ -8,7 +8,6 @@ import serv.servStreamingMdt;
 import tab.tabGen;
 import user.userFilter;
 import user.userHelping;
-import user.userSensor;
 import util.bits;
 import util.cmds;
 
@@ -88,7 +87,7 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
         l.add(cmds.tabulator + "interval " + worker.interval);
         cmds.cfgLine(l, worker.proxy == null, cmds.tabulator, "proxy", "" + worker.proxy);
         for (int i = 0; i < worker.sensors.size(); i++) {
-            userSensor ntry = worker.sensors.get(i);
+            cfgSensor ntry = worker.sensors.get(i);
             l.add(cmds.tabulator + "sensor " + ntry.name);
         }
         if (worker.need2run) {
@@ -134,15 +133,13 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
             return;
         }
         if (s.equals("sensor")) {
-            userSensor ntry = new userSensor();
-            ntry.name = cmd.word();
-            if (negated) {
-                worker.sensors.del(ntry);
-                return;
-            }
-            ntry = cfgInit.sensors.find(ntry);
+            cfgSensor ntry = cfgAll.sensorFind(cmd.word(), false);
             if (ntry == null) {
                 cmd.error("no such sensor");
+                return;
+            }
+            if (negated) {
+                worker.sensors.del(ntry);
                 return;
             }
             worker.sensors.put(ntry);

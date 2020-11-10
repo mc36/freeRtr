@@ -1,13 +1,13 @@
 package clnt;
 
 import addr.addrIP;
+import cfg.cfgSensor;
 import pack.packHolder;
 import pack.packStreamingMdt;
 import pipe.pipeSide;
 import serv.servGeneric;
 import serv.servStreamingMdt;
 import tab.tabGen;
-import user.userSensor;
 import user.userTerminal;
 import util.bits;
 import util.counter;
@@ -33,7 +33,7 @@ public class clntTelemetry implements Runnable {
     /**
      * sensors
      */
-    public tabGen<userSensor> sensors = new tabGen<userSensor>();
+    public tabGen<cfgSensor> sensors = new tabGen<cfgSensor>();
 
     /**
      * port
@@ -111,7 +111,7 @@ public class clntTelemetry implements Runnable {
                 break;
             }
             for (int i = 0; i < sensors.size(); i++) {
-                userSensor ntry = sensors.get(i);
+                cfgSensor ntry = sensors.get(i);
                 packHolder pck = ntry.getReportKvGpb();
                 if (pck == null) {
                     logger.warn("sensor " + ntry.name + " returned nothing");

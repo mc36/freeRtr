@@ -35,6 +35,7 @@ import cfg.cfgRouplc;
 import cfg.cfgRtr;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
+import cfg.cfgSensor;
 import cfg.cfgTime;
 import cfg.cfgTlmtry;
 import cfg.cfgTrack;
@@ -436,6 +437,8 @@ public class userConfig {
         l.add("2  .    <num>                        number of bundle group");
         l.add("1  2  hairpin                        interface hairpin parameters");
         l.add("2  .    <num>                        number of hairpin group");
+        l.add("1  2  sensor                         sensor parameters");
+        l.add("2  .    <name>                       name of sensor");
         l.add("1  2  dial-peer                      dial peer parameters");
         l.add("2  .    <num>                        number of peer");
         l.add("1  2  translation-rule               translation rule parameters");
@@ -894,6 +897,15 @@ public class userConfig {
             modeDconfig = cfgAll.hrpnFind(cmd.word(), true);
             if (modeDconfig == null) {
                 cmd.error("invalid hairpin number");
+                return;
+            }
+            modeV = modes.config;
+            return;
+        }
+        if (a.equals("sensor")) {
+            modeDconfig = cfgAll.sensorFind(cmd.word(), true);
+            if (modeDconfig == null) {
+                cmd.error("invalid sensor name");
                 return;
             }
             modeV = modes.config;
@@ -1752,6 +1764,14 @@ public class userConfig {
             cfgHrpn ntry = cfgAll.hrpnDel(cmd.word());
             if (ntry == null) {
                 cmd.error("invalid bundle number");
+                return;
+            }
+            return;
+        }
+        if (a.equals("sensor")) {
+            cfgSensor ntry = cfgAll.sensorDel(cmd.word());
+            if (ntry == null) {
+                cmd.error("invalid sensor name");
                 return;
             }
             return;

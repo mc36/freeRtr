@@ -19,6 +19,7 @@ import cfg.cfgRouplc;
 import cfg.cfgRtr;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
+import cfg.cfgSensor;
 import cfg.cfgTlmtry;
 import cfg.cfgVdc;
 import cfg.cfgVpdn;
@@ -306,9 +307,7 @@ public class userClear {
             return null;
         }
         if (a.equals("telemetry")) {
-            userSensor exp = new userSensor();
-            exp.name = cmd.word();
-            exp = cfgInit.sensors.find(exp);
+            cfgSensor exp = cfgAll.sensorFind(cmd.word(), false);
             if (exp == null) {
                 cmd.error("no such exporter");
                 return null;

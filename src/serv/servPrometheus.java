@@ -104,23 +104,23 @@ public class servPrometheus extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst) {
+        lst.add(beg + "all-metrics " + allMets);
         for (int p = 0; p < mets.size(); p++) {
             servPrometheusMet met = mets.get(p);
             if (met == null) {
                 continue;
             }
-            lst.add(beg + "all-metrics " + allMets);
             String mn = beg + "metric " + met.nam;
             String nn = beg + "no metric " + met.nam;
             lst.add(mn + " command " + met.cmd);
             lst.add(mn + " prepend " + met.prep);
             String a = "";
-            if (met.lab != null) {
-                a = " " + met.lab;
+            if (met.namL != null) {
+                a = " " + met.namL;
             }
-            lst.add(mn + " name " + met.col + a);
-            if (met.slab != null) {
-                lst.add(mn + " labels " + met.slab);
+            lst.add(mn + " name " + met.namC + a);
+            if (met.namS != null) {
+                lst.add(mn + " labels " + met.namS);
             } else {
                 lst.add(nn + " labels");
             }
@@ -147,7 +147,7 @@ public class servPrometheus extends servGeneric implements prtServS {
                     a = " " + col.lab;
                 }
                 lst.add(cn + " name " + col.nam + a);
-                lst.add(cn + " type " + col.typ);
+                lst.add(cn + " type " + col.sty);
                 lst.add(cn + " help " + col.hlp);
                 lst.add(cn + " split " + col.splS + " " + col.splL + " " + col.splR);
                 for (int i = 0; i < col.reps.size(); i++) {
@@ -196,18 +196,18 @@ public class servPrometheus extends servGeneric implements prtServS {
         }
         if (s.equals("labels")) {
             if (negated) {
-                met.slab = null;
+                met.namS = null;
             } else {
-                met.slab = cmd.word();
+                met.namS = cmd.word();
             }
             return false;
         }
         if (s.equals("name")) {
-            met.col = bits.str2num(cmd.word());
+            met.namC = bits.str2num(cmd.word());
             if (cmd.size() < 1) {
-                met.lab = null;
+                met.namL = null;
             } else {
-                met.lab = cmd.word();
+                met.namL = cmd.word();
             }
             return false;
         }
@@ -269,9 +269,9 @@ public class servPrometheus extends servGeneric implements prtServS {
         }
         if (s.equals("type")) {
             if (negated) {
-                col.typ = "gauge";
+                col.sty = "gauge";
             } else {
-                col.typ = cmd.word();
+                col.sty = cmd.word();
             }
             return false;
         }
@@ -427,11 +427,11 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
 
     public String prep;
 
-    public int col;
+    public int namC;
 
-    public String slab;
+    public String namS;
 
-    public String lab;
+    public String namL;
 
     public int acol = -1;
 
@@ -514,11 +514,11 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                 cl.add(a);
             }
             int cls = cl.size();
-            if (col >= cls) {
+            if (namC >= cls) {
                 continue;
             }
             String na = prep;
-            String nc = cl.get(col);
+            String nc = cl.get(namC);
             String nd = "";
             if ((acol >= 0) && (acol < cls)) {
                 String a = asep;
@@ -530,7 +530,7 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
             na = servPrometheus.doReplaces(na, reps);
             nc = servPrometheus.doReplaces(nc, reps);
             nd = servPrometheus.doReplaces(nd, reps);
-            if (lab == null) {
+            if (namL == null) {
                 na += nc;
                 na += nd;
             }
@@ -544,11 +544,11 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                     nb += cc.nam;
                 }
                 String labs = "";
-                if (slab != null) {
-                    labs += "," + slab;
+                if (namS != null) {
+                    labs += "," + namS;
                 }
-                if (lab != null) {
-                    labs += "," + lab + "\"" + nc + "\"";
+                if (namL != null) {
+                    labs += "," + namL + "\"" + nc + "\"";
                 }
                 if (alab != null) {
                     labs += "," + alab + "\"" + nd + "\"";
@@ -564,7 +564,7 @@ class servPrometheusMet implements Comparator<servPrometheusMet> {
                         h = " " + cc.hlp;
                     }
                     lst.add("# HELP " + nb + h);
-                    lst.add("# TYPE " + nb + " " + cc.typ);
+                    lst.add("# TYPE " + nb + " " + cc.sty);
                     smt.add(nb);
                 }
                 String a = servPrometheus.doReplaces(cl.get(cc.num), cc.reps);
@@ -610,7 +610,7 @@ class servPrometheusCol implements Comparator<servPrometheusCol> {
 
     public String lab;
 
-    public String typ = "gauge";
+    public String sty = "gauge";
 
     public String hlp;
 

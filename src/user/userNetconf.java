@@ -2,6 +2,7 @@ package user;
 
 import cfg.cfgAll;
 import cfg.cfgInit;
+import cfg.cfgSensor;
 import java.util.ArrayList;
 import java.util.List;
 import pipe.pipeLine;
@@ -167,8 +168,8 @@ public class userNetconf {
         x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
         x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:startup:1.0"));
         x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
-        for (int i = 0; i < cfgInit.sensors.size(); i++) {
-            userSensor ntry = cfgInit.sensors.get(i);
+        for (int i = 0; i < cfgAll.sensors.size(); i++) {
+            cfgSensor ntry = cfgAll.sensors.get(i);
             x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", verCore.homeUrl + "yang/" + ntry.prefix + "?module=" + ntry.prefix));
             x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
         }
@@ -299,7 +300,7 @@ public class userNetconf {
                 continue;
             }
             if (a.startsWith(getFilter)) {
-                userSensor tl = getSensor(a.substring(getFilter.length(), a.length()));
+                cfgSensor tl = getSensor(a.substring(getFilter.length(), a.length()));
                 if (tl == null) {
                     addError(rep, a, "no such sensor");
                     continue;
@@ -327,9 +328,9 @@ public class userNetconf {
         return rep;
     }
 
-    private static userSensor getSensor(String a) {
-        for (int i = 0; i < cfgInit.sensors.size(); i++) {
-            userSensor tl = cfgInit.sensors.get(i);
+    private static cfgSensor getSensor(String a) {
+        for (int i = 0; i < cfgAll.sensors.size(); i++) {
+            cfgSensor tl = cfgAll.sensors.get(i);
             if (a.startsWith(tl.path)) {
                 return tl;
             }

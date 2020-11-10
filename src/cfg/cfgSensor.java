@@ -1,6 +1,5 @@
-package user;
+package cfg;
 
-import cfg.cfgAll;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -9,6 +8,11 @@ import pipe.pipeLine;
 import pipe.pipeSide;
 import serv.servStreamingMdt;
 import tab.tabGen;
+import user.userExec;
+import user.userFilter;
+import user.userFormat;
+import user.userHelping;
+import user.userReader;
 import util.bits;
 import util.cmds;
 import util.extMrkLng;
@@ -22,12 +26,17 @@ import util.verCore;
  *
  * @author matecsaba
  */
-public class userSensor implements Comparator<userSensor> {
+public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
 
     /**
-     * name of telemetry export
+     * name of sensor
      */
-    public String name;
+    public final String name;
+
+    /**
+     * hidden sensor
+     */
+    public boolean hidden;
 
     /**
      * command
@@ -38,6 +47,11 @@ public class userSensor implements Comparator<userSensor> {
      * prefix
      */
     public String prefix;
+
+    /**
+     * prepend
+     */
+    public String prepend;
 
     /**
      * path
@@ -65,14 +79,44 @@ public class userSensor implements Comparator<userSensor> {
     public String keyP;
 
     /**
+     * name column
+     */
+    public int namC;
+
+    /**
+     * name label
+     */
+    public String namL;
+
+    /**
+     * static labels
+     */
+    public String namS;
+
+    /**
+     * additional column
+     */
+    public int acol = -1;
+
+    /**
+     * additional separator
+     */
+    public String asep;
+
+    /**
+     * additional label
+     */
+    public String alab;
+
+    /**
      * columns
      */
-    public tabGen<userSensorCol> cols;
+    public tabGen<cfgSensorCol> cols;
 
     /**
      * replacers
      */
-    public tabGen<userSensorRep> reps;
+    public tabGen<cfgSensorRep> reps;
 
     /**
      * last reported
@@ -90,25 +134,154 @@ public class userSensor implements Comparator<userSensor> {
     public int cnt;
 
     /**
-     * create new telemetry export
+     * defaults text
      */
-    public userSensor() {
-        cols = new tabGen<userSensorCol>();
-        reps = new tabGen<userSensorRep>();
+    public final static String[] defaultL = {
+        "sensor .*! name 0",
+        "sensor .*! no labels",
+        "sensor .*! addname -1 null",
+        "sensor .*! skip 1",
+        "sensor .*! no excluded",
+        "sensor .*! column .* style gauge",
+        "sensor .*! column .* type uint64",
+        "sensor .*! column .* split null null null",
+        "sensor .*! column .* help null",};
+
+    /**
+     * defaults filter
+     */
+    public static tabGen<userFilter> defaultF;
+
+    /**
+     * create new sensor
+     *
+     * @param n name
+     */
+    public cfgSensor(String n) {
+        cols = new tabGen<cfgSensorCol>();
+        reps = new tabGen<cfgSensorRep>();
         skip = 1;
+        name = n;
+        path = n;
+        keyP = n;
+        prefix = n;
+        prepend = n;
     }
 
-    public int compare(userSensor o1, userSensor o2) {
+    public int compare(cfgSensor o1, cfgSensor o2) {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
 
-    /**
-     * do config line
-     *
-     * @param cmd line
-     */
-    public void doCfgLine(cmds cmd) {
+    public String getPrompt() {
+        return "sensor";
+    }
+
+    public void getHelp(userHelping l) {
+        l.add("1 2      command                  specify command to execute");
+        l.add("2 2,.      <str>                  command");
+        l.add("1 2      prepend                  specify prepend");
+        l.add("2 .        <str>                  name");
+        l.add("1 2      prefix                   specify prefix");
+        l.add("2 .        <str>                  name");
+        l.add("1 2      labels                   static labels");
+        l.add("2 .        <str>                  name");
+        l.add("1 2      name                     name column number");
+        l.add("2 3,.      <num>                  column number");
+        l.add("3 .          <str>                label");
+        l.add("1 2      addname                  add name column number");
+        l.add("2 3        <num>                  column number");
+        l.add("3 4,.        <str>                separator, * means empty");
+        l.add("4 .            <str>              label");
+        l.add("1 2      skip                     rows to skip");
+        l.add("2 .        <num>                  lines to skip");
+        l.add("1 2      replace                  define replaces in name");
+        l.add("2 3        <str>                  string to replace");
+        l.add("3 .          <str>                replacement string");
+        l.add("1 2      column                   define column to export");
+        l.add("2 3        <num>                  number");
+        l.add("3 4,.        name                 set name");
+        l.add("4 5,.          <str>              name, * means empty");
+        l.add("5 .              <str>            label");
+        l.add("3 4          type                 set type");
+        l.add("4 .            bytes              bytes");
+        l.add("4 .            string             string");
+        l.add("4 .            bool               boolean");
+        l.add("4 .            uint32             unsigned 32bit integer");
+        l.add("4 .            uint64             unsigned 64bit integer");
+        l.add("4 .            sint32             signed 32bit integer");
+        l.add("4 .            sint64             signed 64bit integer");
+        l.add("4 .            float              32bit floating point number");
+        l.add("4 .            double             64bit floating point number");
+        l.add("3 4          style                set style");
+        l.add("4 .            gauge              gauge");
+        l.add("4 .            counter            counter");
+        l.add("3 4          help                 set help");
+        l.add("4 4,.          <str>              help");
+        l.add("3 4          replace              define replaces in value");
+        l.add("4 5            <str>              string to replace");
+        l.add("5 .              <str>            replacement string");
+        l.add("3 4          split                define split of value");
+        l.add("4 5            <str>              delimiter");
+        l.add("5 6              <str>            first label");
+        l.add("6 .                <str>          second label");
+    }
+
+    public List<String> getShRun(boolean filter) {
+        List<String> l = new ArrayList<String>();
+        l.add("sensor " + name);
+        l.add(cmds.tabulator + "command " + command);
+        l.add(cmds.tabulator + "prepend " + prepend);
+        l.add(cmds.tabulator + "prefix " + prefix);
+        l.add(cmds.tabulator + "prepend " + prepend);
+        String a = "";
+        if (namL != null) {
+            a = " " + namL;
+        }
+        l.add(cmds.tabulator + "name " + namC + a);
+        if (namS != null) {
+            l.add(cmds.tabulator + "labels " + namS);
+        } else {
+            l.add(cmds.tabulator + "no labels");
+        }
+        a = "";
+        if (alab != null) {
+            a = " " + alab;
+        }
+        l.add(cmds.tabulator + "addname " + acol + " " + asep + a);
+        l.add(cmds.tabulator + "skip " + skip);
+        for (int i = 0; i < reps.size(); i++) {
+            cfgSensorRep rep = reps.get(i);
+            l.add(cmds.tabulator + "replace " + rep.src + " " + rep.trg);
+        }
+        for (int o = 0; o < cols.size(); o++) {
+            cfgSensorCol col = cols.get(o);
+            String cn = cmds.tabulator + "column " + col.num;
+            a = "";
+            if (col.lab != null) {
+                a = " " + col.lab;
+            }
+            l.add(cn + " name " + col.nam + a);
+            l.add(cn + " style " + col.sty);
+            l.add(cn + " type " + servStreamingMdt.type2string(col.typ));
+            l.add(cn + " help " + col.hlp);
+            l.add(cn + " split " + col.splS + " " + col.splL + " " + col.splR);
+            for (int i = 0; i < col.reps.size(); i++) {
+                cfgSensorRep rep = col.reps.get(i);
+                l.add(cn + " replace " + rep.src + " " + rep.trg);
+            }
+        }
+        if (!filter) {
+            return l;
+        }
+        return userFilter.filterText(l, defaultF);
+    }
+
+    public void doCfgStr(cmds cmd) {
         String s = cmd.word();
+        boolean negated = s.equals("no");
+        if (negated) {
+            s = cmd.word();
+        }
         if (s.equals("command")) {
             command = cmd.getRemaining();
             return;
@@ -121,8 +294,8 @@ public class userSensor implements Comparator<userSensor> {
             prefix = cmd.getRemaining();
             return;
         }
-        if (s.equals("skip")) {
-            skip = bits.str2num(cmd.word());
+        if (s.equals("prepend")) {
+            prepend = cmd.word();
             return;
         }
         if (s.equals("key")) {
@@ -131,18 +304,59 @@ public class userSensor implements Comparator<userSensor> {
             keyP = cmd.word();
             return;
         }
+        if (s.equals("name")) {
+            namC = bits.str2num(cmd.word());
+            if (cmd.size() < 1) {
+                namL = null;
+            } else {
+                namL = cmd.word();
+            }
+            return;
+        }
+        if (s.equals("labels")) {
+            if (negated) {
+                namS = null;
+            } else {
+                namS = cmd.word();
+            }
+            return;
+        }
+        if (s.equals("addname")) {
+            if (negated) {
+                acol = -1;
+                asep = null;
+                alab = null;
+                return;
+            }
+            acol = bits.str2num(cmd.word());
+            asep = cmd.word();
+            if (cmd.size() < 1) {
+                alab = null;
+            } else {
+                alab = cmd.word();
+            }
+            return;
+        }
+        if (s.equals("skip")) {
+            skip = bits.str2num(cmd.word());
+            return;
+        }
         if (s.equals("replace")) {
-            userSensorRep rep = new userSensorRep(cmd.word());
+            cfgSensorRep rep = new cfgSensorRep(cmd.word());
             rep.trg = cmd.word();
-            reps.add(rep);
+            if (negated) {
+                reps.del(rep);
+            } else {
+                reps.add(rep);
+            }
             return;
         }
         if (!s.equals("column")) {
             cmd.badCmd();
             return;
         }
-        userSensorCol col = new userSensorCol(bits.str2num(cmd.word()));
-        userSensorCol oldc = cols.add(col);
+        cfgSensorCol col = new cfgSensorCol(bits.str2num(cmd.word()));
+        cfgSensorCol oldc = cols.add(col);
         if (oldc != null) {
             col = oldc;
         }
@@ -159,6 +373,10 @@ public class userSensor implements Comparator<userSensor> {
             col.typ = servStreamingMdt.string2type(cmd.word());
             return;
         }
+        if (s.equals("style")) {
+            col.sty = cmd.word();
+            return;
+        }
         if (s.equals("split")) {
             col.splS = cmd.word();
             col.splL = cmd.word();
@@ -166,7 +384,7 @@ public class userSensor implements Comparator<userSensor> {
             return;
         }
         if (s.equals("replace")) {
-            userSensorRep rep = new userSensorRep(cmd.word());
+            cfgSensorRep rep = new cfgSensorRep(cmd.word());
             rep.trg = cmd.word();
             col.reps.add(rep);
             return;
@@ -180,7 +398,7 @@ public class userSensor implements Comparator<userSensor> {
      */
     public List<String> getResult() {
         if (command == null) {
-            return null;
+            return new ArrayList<String>();
         }
         pipeLine pl = new pipeLine(1024 * 1024, false);
         pipeSide pip = pl.getSide();
@@ -279,9 +497,9 @@ public class userSensor implements Comparator<userSensor> {
         return cl;
     }
 
-    private static String doReplaces(String a, tabGen<userSensorRep> reps) {
+    private static String doReplaces(String a, tabGen<cfgSensorRep> reps) {
         for (int i = 0; i < reps.size(); i++) {
-            userSensorRep rep = reps.get(i);
+            cfgSensorRep rep = reps.get(i);
             a = a.replaceAll(rep.src, rep.trg);
         }
         return a;
@@ -306,7 +524,7 @@ public class userSensor implements Comparator<userSensor> {
         pb.toPacket(pck2);
         pb.clear();
         for (int o = 0; o < cols.size(); o++) {
-            userSensorCol cc = cols.get(o);
+            cfgSensorCol cc = cols.get(o);
             if (cl.size() <= cc.num) {
                 continue;
             }
@@ -345,7 +563,7 @@ public class userSensor implements Comparator<userSensor> {
         a = doReplaces(cl.get(keyC), reps);
         res.data.add(new extMrkLngEntry(null, beg + keyP + "/" + keyN, "", a));
         for (int o = 0; o < cols.size(); o++) {
-            userSensorCol cc = cols.get(o);
+            cfgSensorCol cc = cols.get(o);
             if (cl.size() <= cc.num) {
                 continue;
             }
@@ -463,7 +681,7 @@ public class userSensor implements Comparator<userSensor> {
             id += "  ";
         }
         for (int i = 0; i < cols.size(); i++) {
-            userSensorCol col = cols.get(i);
+            cfgSensorCol col = cols.get(i);
             if (col.splS == null) {
                 res.add(id + "leaf " + col.nam + " {");
                 res.add(id + "  type " + servStreamingMdt.type2string(col.typ) + ";");
@@ -519,29 +737,31 @@ public class userSensor implements Comparator<userSensor> {
 
 }
 
-class userSensorRep implements Comparator<userSensorRep> {
+class cfgSensorRep implements Comparator<cfgSensorRep> {
 
     public final String src;
 
     public String trg;
 
-    public userSensorRep(String n) {
+    public cfgSensorRep(String n) {
         src = n;
     }
 
-    public int compare(userSensorRep o1, userSensorRep o2) {
+    public int compare(cfgSensorRep o1, cfgSensorRep o2) {
         return o1.src.compareTo(o2.src);
     }
 
 }
 
-class userSensorCol implements Comparator<userSensorCol> {
+class cfgSensorCol implements Comparator<cfgSensorCol> {
 
     public final int num;
 
     public String nam;
 
     public String hlp;
+
+    public String lab;
 
     public String splS;
 
@@ -551,13 +771,15 @@ class userSensorCol implements Comparator<userSensorCol> {
 
     public int typ = servStreamingMdt.fnUint64;
 
-    public tabGen<userSensorRep> reps = new tabGen<userSensorRep>();
+    public String sty = "gauge";
 
-    public userSensorCol(int n) {
+    public tabGen<cfgSensorRep> reps = new tabGen<cfgSensorRep>();
+
+    public cfgSensorCol(int n) {
         num = n;
     }
 
-    public int compare(userSensorCol o1, userSensorCol o2) {
+    public int compare(cfgSensorCol o1, cfgSensorCol o2) {
         if (o1.num < o2.num) {
             return -1;
         }

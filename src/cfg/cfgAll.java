@@ -164,6 +164,11 @@ public class cfgAll {
     public static final tabGen<cfgDial> dials = new tabGen<cfgDial>();
 
     /**
+     * list of sensors
+     */
+    public static final tabGen<cfgSensor> sensors = new tabGen<cfgSensor>();
+
+    /**
      * list of routers
      */
     public static final tabGen<cfgRtr> routers = new tabGen<cfgRtr>();
@@ -2816,6 +2821,44 @@ public class cfgAll {
     }
 
     /**
+     * find one sensor
+     *
+     * @param nam name of this
+     * @param create create new on this number if not found
+     * @return descriptor, null if not found
+     */
+    public static cfgSensor sensorFind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgSensor ntry = new cfgSensor(nam);
+        if (!create) {
+            return sensors.find(ntry);
+        }
+        cfgSensor old = sensors.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        return ntry;
+    }
+
+    /**
+     * delete one dial peer
+     *
+     * @param nam name of this
+     * @return descriptor, null if not found
+     */
+    public static cfgSensor sensorDel(String nam) {
+        cfgSensor ntry = new cfgSensor(nam);
+        ntry = sensors.del(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        return ntry;
+    }
+
+    /**
      * find one translation rule
      *
      * @param nam name of this
@@ -3192,6 +3235,7 @@ public class cfgAll {
         servGenList.listGetRun(l, xconnects, filter);
         servGenList.listGetRun(l, iconnects, filter);
         servGenList.listGetRun(l, tabNshNtry.services, filter);
+        servGenList.listGetRun(l, sensors, filter);
         servGenList.listGetRun(l, trnsltns, filter);
         servGenList.listGetRun(l, dials, filter);
         servGenList.listGetRun(l, aliases, filter);

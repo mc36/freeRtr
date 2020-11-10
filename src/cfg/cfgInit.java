@@ -97,7 +97,6 @@ import user.userHelping;
 import user.userLine;
 import user.userNetconf;
 import user.userReader;
-import user.userSensor;
 import util.bits;
 import util.cmds;
 import util.counter;
@@ -168,11 +167,6 @@ public class cfgInit implements Runnable {
      * loaded snmp mibs
      */
     public static final tabGen<userFilter> snmpMibs = new tabGen<userFilter>();
-
-    /**
-     * loaded telemetry exports
-     */
-    public static final tabGen<userSensor> sensors = new tabGen<userSensor>();
 
     /**
      * list of physical interfaces
@@ -489,13 +483,13 @@ public class cfgInit implements Runnable {
                     cmd.word();
                     switch (md) {
                         case 1:
-                            userSensor tl = new userSensor();
-                            tl.name = cmd.getRemaining();
+                            cfgSensor tl = new cfgSensor(cmd.getRemaining());
+                            tl.hidden = true;
                             for (int i = bg + 1; i < p; i++) {
                                 cmd = new cmds("", txt.get(i));
-                                tl.doCfgLine(cmd);
+                                tl.doCfgStr(cmd);
                             }
-                            sensors.put(tl);
+                            cfgAll.sensors.put(tl);
                             if (debugger.cfgInitHw) {
                                 logger.debug("netconf sensor " + tl.name);
                             }
@@ -657,6 +651,7 @@ public class cfgInit implements Runnable {
         cfgBrdg.defaultF = createFilter(cfgBrdg.defaultL);
         cfgTrnsltn.defaultF = createFilter(cfgTrnsltn.defaultL);
         cfgDial.defaultF = createFilter(cfgDial.defaultL);
+        cfgSensor.defaultF = createFilter(cfgSensor.defaultL);
         cfgRoump.defaultF = createFilter(cfgRoump.defaultL);
         cfgTime.defaultF = createFilter(cfgTime.defaultL);
         cfgPlymp.defaultF = createFilter(cfgPlymp.defaultL);
