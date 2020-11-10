@@ -1,0 +1,77 @@
+sensor lsigp4int
+path lsigp4int/peer/peer
+prefix freertr-lsigp4int
+key name lsigp4int/peer
+command sho ipv4 isis 1 interface
+prepend lsigp4_iface_
+name 0 proto="isis1",ifc=
+replace \. _
+column 1 name neighbors
+.
+exit
+
+sensor lsigp4peer
+path lsigp4peer/peer/peer
+prefix freertr-lsigp4peer
+key name lsigp4peer/peer
+command sho ipv4 isis 1 topology 2
+prepend lsigp4_peers_
+name 0 proto="isis1",node=
+replace \. _
+column 1 name reachable
+column 1 replace false 0
+column 1 replace true 1
+column 6 name neighbors
+.
+exit
+
+sensor lsigp4perf
+path lsigp4perf/peer/peer
+prefix freertr-lsigp4perf
+key name lsigp4perf/peer
+command sho ipv4 isis 1 spf 2 | inc reachable|fill|calc|run
+prepend lsigp4_perf_
+labels proto="isis1"
+skip 0
+column 1 name val
+.
+exit
+
+sensor lsigp6int
+path lsigp6int/peer/peer
+prefix freertr-lsigp6int
+key name lsigp6int/peer
+command sho ipv6 isis 1 interface
+prepend lsigp6_iface_
+name 0 proto="isis1",ifc=
+replace \. _
+column 1 name neighbors
+.
+exit
+
+sensor lsigp6peer
+path lsigp6peer/peer/peer
+prefix freertr-lsigp6peer
+key name lsigp6peer/peer
+command sho ipv6 isis 1 topology 2
+name 0 proto="isis1",node=
+prepend lsigp6_peers_
+replace \. _
+column 1 name reachable
+column 1 replace false 0
+column 1 replace true 1
+column 6 name neighbors
+.
+exit
+
+sensor lsigp6perf
+path lsigp6perf/peer/peer
+prefix freertr-lsigp6perf
+key name lsigp6perf/peer
+command sho ipv6 isis 1 spf 2 | inc reachable|fill|calc|run
+prepend lsigp6_perf_
+labels proto="isis1"
+skip 0
+column 1 name val
+.
+exit

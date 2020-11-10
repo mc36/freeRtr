@@ -1,0 +1,22 @@
+sensor vrf
+path vrf/peer/peer
+prefix freertr-vrf
+key name vrf/peer
+command sho vrf routing
+prepend vrf_
+name 0 name=
+skip 2
+column 2 name v4 type="ifc"
+column 3 name v6 type="ifc"
+column 4 name v4 type="uni"
+column 5 name v6 type="uni"
+column 6 name v4 type="multi"
+column 7 name v6 type="multi"
+column 8 name v4 type="flow"
+column 9 name v6 type="flow"
+column 10 name v4 type="label"
+column 11 name v6 type="label"
+column 12 name v4 type="conn"
+column 13 name v6 type="conn"
+.
+exit

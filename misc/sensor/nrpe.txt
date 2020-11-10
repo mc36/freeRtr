@@ -1,0 +1,17 @@
+sensor nrpe
+path nrpe/peer/peer
+prefix freertr-nrpe
+key name nrpe/peer
+command sho nrpe home
+prepend nrpe_
+name 0 name=
+skip 2
+column 1 name state
+column 1 replace false 0
+column 1 replace true 1
+column 2 name asked
+column 3 name time
+column 4 name passed
+column 6 name failed
+.
+exit

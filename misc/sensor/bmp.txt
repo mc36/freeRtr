@@ -1,7 +1,7 @@
-sensor bfd4
-path bfd4/peer/peer
-prefix freertr-bfd
-key 0 name bfd4/peer
+sensor bmp
+path bmp/peer/peer
+prefix freertr-bmp
+key name bmp/peer
 command sho bmp bmp
 prepend bmp_
 name 0 from=

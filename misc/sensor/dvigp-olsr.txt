@@ -1,0 +1,47 @@
+sensor dvigp4int
+path dvigp4int/peer/peer
+prefix freertr-dvigp4int
+key name dvigp4int/peer
+command sho ipv4 olsr 1 interface
+prepend dvigp4_iface_
+name 0 proto="olsr1",ifc=
+replace \. _
+column 1 name neighbors
+.
+exit
+
+sensor dvigp4peer
+path dvigp4peer/peer/peer
+prefix freertr-dvigp4peer
+key name dvigp4peer/peer
+command sho ipv4 olsr 1 summary
+prepend dvigp4_peers_
+name 2 proto="olsr1",ip=
+replace \. _
+column 1 name learn
+.
+exit
+
+sensor dvigp6int
+path dvigp6int/peer/peer
+prefix freertr-dvigp6int
+key name dvigp6int/peer
+command sho ipv6 olsr 1 interface
+prepend dvigp6_iface_
+name 0 proto="olsr1",ifc=
+replace \. _
+column 1 name neighbors
+.
+exit
+
+sensor dvigp6peer
+path dvigp6peer/peer/peer
+prefix freertr-dvigp6peer
+key name dvigp6peer/peer
+command sho ipv6 olsr 1 summary
+prepend dvigp6_peers_
+name 2 proto="olsr1",ip=
+replace \: _
+column 1 name learn
+.
+exit

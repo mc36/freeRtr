@@ -1,0 +1,23 @@
+sensor bridge
+path bridge/peer/peer
+prefix freertr-bridge
+key name bridge/peer
+command sho bridge 1 | beg addr
+prepend br_mac_
+name 0 mac=
+addname 1 * ifc=
+replace \. _
+column 3 name pack_tx
+column 3 split + typ="sw" typ="hw"
+column 4 name pack_rx
+column 4 split + typ="sw" typ="hw"
+column 5 name pack_dr
+column 5 split + typ="sw" typ="hw"
+column 6 name byte_tx
+column 6 split + typ="sw" typ="hw"
+column 7 name byte_rx
+column 7 split + typ="sw" typ="hw"
+column 8 name byte_dr
+column 8 split + typ="sw" typ="hw"
+.
+exit

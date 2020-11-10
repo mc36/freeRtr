@@ -1,4 +1,0 @@
- metric sys command sho watchdog sys | exc name
- metric sys prepend system_
- metric sys replace \s _
- metric sys column 1 name _val

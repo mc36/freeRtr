@@ -1,7 +1,7 @@
 sensor ifaces-hw
 path interfaces-hw/interface/counter
 prefix freertr-ifaces
-key 0 name interfaces-hw/interface
+key name interfaces-hw/interface
 command sho inter hwsumm
 prepend iface_hw_byte_
 name 0 ifc=
@@ -19,7 +19,7 @@ exit
 sensor ifaces-sw
 path interfaces-sw/interface/counter
 prefix freertr-ifaces
-key 0 name interfaces-sw/interface
+key name interfaces-sw/interface
 command sho inter summ
 prepend iface_sw_byte_
 name 0 ifc=

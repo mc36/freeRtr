@@ -64,11 +64,6 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
     public int skip;
 
     /**
-     * key column
-     */
-    public int keyC;
-
-    /**
      * key name
      */
     public String keyN;
@@ -188,9 +183,8 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         l.add("1 2      labels                   static labels");
         l.add("2 .        <str>                  name");
         l.add("1 2      key                      key column number");
-        l.add("2 3        <num>                  column number");
-        l.add("3 4          <str>                name");
-        l.add("4 .            <str>              path");
+        l.add("2 3          <str>                name");
+        l.add("3 .            <str>              path");
         l.add("1 2      name                     name column number");
         l.add("2 3,.      <num>                  column number");
         l.add("3 .          <str>                label");
@@ -247,7 +241,7 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
             a = " " + namL;
         }
         l.add(cmds.tabulator + "name " + namC + a);
-        l.add(cmds.tabulator + "key " + keyC + " " + keyN + " " + keyP);
+        l.add(cmds.tabulator + "key " + keyN + " " + keyP);
         if (namS != null) {
             l.add(cmds.tabulator + "labels " + namS);
         } else {
@@ -309,7 +303,6 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
             return;
         }
         if (s.equals("key")) {
-            keyC = bits.str2num(cmd.word());
             keyN = cmd.word();
             keyP = cmd.word();
             return;
@@ -548,11 +541,11 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
     private packHolder doLineKvGpb(String a) {
         List<String> cl = doSplitLine(a);
         int cls = cl.size();
-        if (keyC >= cls) {
+        if (namC >= cls) {
             return null;
         }
         protoBuf pb = new protoBuf();
-        a = cl.get(keyC);
+        a = cl.get(namC);
         if ((acol >= 0) && (acol < cls)) {
             a = asep;
             if (asep.equals("*")) {
@@ -605,10 +598,10 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
     private void doLineNetConf(extMrkLng res, String beg, String a) {
         List<String> cl = doSplitLine(a);
         int cls = cl.size();
-        if (keyC >= cls) {
+        if (namC >= cls) {
             return;
         }
-        a = cl.get(keyC);
+        a = cl.get(namC);
         if ((acol >= 0) && (acol < cls)) {
             a = asep;
             if (asep.equals("*")) {

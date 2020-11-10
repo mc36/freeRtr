@@ -1,0 +1,29 @@
+sensor ldp4nul
+path ldp4nul/peer/peer
+prefix freertr-ldp4nul
+key name ldp4nul/peer
+command sho ipv4 ldp inet nulled-summary
+prepend ldp4null_
+name 3 ip=
+skip 2
+replace \. _
+column 0 name prefix_learn
+column 1 name prefix_advert
+column 2 name prefix_nulled
+.
+exit
+
+sensor ldp6nul
+path ldp6nul/peer/peer
+prefix freertr-ldp6nul
+key name ldp6nul/peer
+command sho ipv6 ldp inet nulled-summary
+prepend ldp6null_
+name 3 ip=
+skip 2
+replace \: _
+column 0 name prefix_learn
+column 1 name prefix_advert
+column 2 name prefix_nulled
+.
+exit

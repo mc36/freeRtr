@@ -1,7 +1,7 @@
 sensor ifaces-hwp
 path interfaces-hwp/interface/counter
 prefix freertr-ifaces
-key 0 name interfaces-hwp/interface
+key name interfaces-hwp/interface
 command sho inter hwpsumm
 prepend iface_hw_pack_
 name 0 ifc=
@@ -19,7 +19,7 @@ exit
 sensor ifaces-swp
 path interfaces-swp/interface/counter
 prefix freertr-ifaces
-key 0 name interfaces-swp/interface
+key name interfaces-swp/interface
 command sho inter psumm
 prepend iface_sw_pack_
 name 0 ifc=
