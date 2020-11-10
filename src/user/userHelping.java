@@ -536,7 +536,7 @@ public class userHelping {
             }
             if (nxt.size() < 1) {
                 if (ntry.variable) {
-                    dat.add(id + "leaf " + vn + " {");
+                    dat.add(id + "leaf " + extMrkLng.value + vn + " {");
                     dat.add(id + "  description \"" + ntry.description + "\";");
                     dat.add(id + "  type string;");
                     dat.add(id + "}");
@@ -564,8 +564,8 @@ public class userHelping {
                 continue;
             }
             dat.add(id + "list " + extMrkLng.ignore + o + " {");
-            dat.add(id + "  key \"" + extMrkLng.ignore + o + "\";");
-            dat.add(id + "  leaf " + extMrkLng.ignore + o + " {");
+            dat.add(id + "  key \"" + extMrkLng.value + o + "\";");
+            dat.add(id + "  leaf " + extMrkLng.value + o + " {");
             dat.add(id + "    description \"" + ntry.description + "\";");
             dat.add(id + "    type string;");
             dat.add(id + "  }");

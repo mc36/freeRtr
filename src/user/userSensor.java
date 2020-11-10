@@ -263,7 +263,7 @@ public class userSensor implements Comparator<userSensor> {
     }
 
     private void doMetricNetConf(extMrkLng res, String nam, String val) {
-        res.data.add(new extMrkLngEntry(nam, "", val));
+        res.data.add(new extMrkLngEntry(null, nam, "", val));
     }
 
     private List<String> doSplitLine(String a) {
@@ -343,7 +343,7 @@ public class userSensor implements Comparator<userSensor> {
             return;
         }
         a = doReplaces(cl.get(keyC), reps);
-        res.data.add(new extMrkLngEntry(beg + keyP + "/" + keyN, "", a));
+        res.data.add(new extMrkLngEntry(null, beg + keyP + "/" + keyN, "", a));
         for (int o = 0; o < cols.size(); o++) {
             userSensorCol cc = cols.get(o);
             if (cl.size() <= cc.num) {
@@ -363,7 +363,7 @@ public class userSensor implements Comparator<userSensor> {
             doMetricNetConf(res, beg + path + "/" + cc.nam + cc.splR, a.substring(i + cc.splS.length(), a.length()));
         }
         int i = keyP.lastIndexOf("/");
-        res.data.add(new extMrkLngEntry(beg + keyP.substring(0, i), "", ""));
+        res.data.add(new extMrkLngEntry(null, beg + keyP.substring(0, i), "", ""));
     }
 
     /**

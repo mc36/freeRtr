@@ -158,8 +158,8 @@ public class userFilter implements Comparator<userFilter> {
                 a = "/" + extMrkLng.escId(a);
                 s += a;
             }
-            rep.data.add(new extMrkLngEntry(s, "", ""));
-            rep.data.add(new extMrkLngEntry(beg, "", ""));
+            rep.data.add(new extMrkLngEntry(null, s, "", ""));
+            rep.data.add(new extMrkLngEntry(null, beg, "", ""));
         }
     }
 

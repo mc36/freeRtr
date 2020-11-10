@@ -37,6 +37,11 @@ public class userNetconf {
     public final static String getConfig = "/?xml/rpc/get-config/filter/config";
 
     /**
+     * edit-config
+     */
+    public final static String editConfig = "/?xml/rpc/edit-config/config/config";
+
+    /**
      * reply-data
      */
     public final static String replyData = "/rpc-reply/data";
@@ -83,14 +88,14 @@ public class userNetconf {
     }
 
     /**
-     * make config
+     * make yang
      *
      * @param lst list to use
      * @param beg beginning
      * @param end ending
      * @return help
      */
-    public static List<String> doConfig(List<String> lst, int beg, int end) {
+    public static List<String> makeYang(List<String> lst, int beg, int end) {
         String path = lst.get(beg + 0);
         String prefix = lst.get(beg + 1);
         pipeLine pl = new pipeLine(65535, false);
@@ -152,23 +157,23 @@ public class userNetconf {
     public boolean doHello() {
         currVer = 10;
         extMrkLng x = new extMrkLng();
-        x.data.add(new extMrkLngEntry("/hello", "xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\"", ""));
-        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.0"));
-        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.1"));
-        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:writable-running:1.0"));
-        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:startup:1.0"));
-        x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
+        x.data.add(new extMrkLngEntry(null, "/hello", "xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\"", ""));
+        x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
+        x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.0"));
+        x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
+        x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.1"));
+        x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
+        x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:writable-running:1.0"));
+        x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
+        x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:startup:1.0"));
+        x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
         for (int i = 0; i < cfgInit.sensors.size(); i++) {
             userSensor ntry = cfgInit.sensors.get(i);
-            x.data.add(new extMrkLngEntry("/hello/capabilities/capability", "", verCore.homeUrl + "yang/" + ntry.prefix + "?module=" + ntry.prefix));
-            x.data.add(new extMrkLngEntry("/hello/capabilities", "", ""));
+            x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", verCore.homeUrl + "yang/" + ntry.prefix + "?module=" + ntry.prefix));
+            x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
         }
-        x.data.add(new extMrkLngEntry("/hello/session-id", "", "" + sessId));
-        x.data.add(new extMrkLngEntry("/hello", "", ""));
+        x.data.add(new extMrkLngEntry(null, "/hello/session-id", "", "" + sessId));
+        x.data.add(new extMrkLngEntry(null, "/hello", "", ""));
         doSend(x);
         x = doRead();
         if (x == null) {
@@ -176,7 +181,7 @@ public class userNetconf {
         }
         for (int i = 0; i < x.data.size(); i++) {
             extMrkLngEntry ntry = x.data.get(i);
-            String a = getName(ntry);
+            String a = getName(ntry, false);
             if (!a.equals("/?xml/hello/capabilities/capability")) {
                 continue;
             }
@@ -191,6 +196,15 @@ public class userNetconf {
         return false;
     }
 
+    private void addError(extMrkLng rep, String path, String msg) {
+        rep.data.add(new extMrkLngEntry(null, "/rpc-reply/rpc-error/error-type", "", "application"));
+        rep.data.add(new extMrkLngEntry(null, "/rpc-reply/rpc-error/error-tag", "", "invalid-value"));
+        rep.data.add(new extMrkLngEntry(null, "/rpc-reply/rpc-error/error-severity", "", "error"));
+        rep.data.add(new extMrkLngEntry(null, "/rpc-reply/rpc-error/error-path", "", path));
+        rep.data.add(new extMrkLngEntry(null, "/rpc-reply/rpc-error/error-message", "", msg));
+        rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
+    }
+
     /**
      * do request
      *
@@ -199,15 +213,15 @@ public class userNetconf {
      */
     public extMrkLng doRequest(extMrkLng req) {
         extMrkLng rep = new extMrkLng();
-        String rpc = "";
+        String rpc = null;
         int mod = 1;
         for (int p = 0; p < (req.data.size() - 1); p++) {
             extMrkLngEntry ntry = req.data.get(p);
-            String a = getName(ntry);
-            if (a.equals("/?xml/rpc")) {
-                rpc += ntry.param;
+            String a = getName(ntry, false);
+            if ((rpc == null) && (a.equals("/?xml/rpc"))) {
+                rpc = ntry.param;
             }
-            String n = getName(req.data.get(p + 1));
+            String n = getName(req.data.get(p + 1), false);
             if (mod == 1) {
                 if (n.length() > a.length()) {
                     continue;
@@ -219,6 +233,43 @@ public class userNetconf {
             }
             mod = 3 - mod;
             if (mod != 2) {
+                continue;
+            }
+            if (a.startsWith(editConfig)) {
+                if (!privi) {
+                    addError(rep, a, "not enough privileges");
+                    continue;
+                }
+                n = a;
+                a = getName(ntry, true);
+                if (!a.startsWith(editConfig)) {
+                    addError(rep, a, "error in encoding");
+                    continue;
+                }
+                a = a.substring(editConfig.length(), a.length());
+                a = a.replaceAll("/", " ").trim();
+                pipeLine pl = new pipeLine(65535, false);
+                pipeSide pip = pl.getSide();
+                pip.lineTx = pipeSide.modTyp.modeCRLF;
+                pip.lineRx = pipeSide.modTyp.modeCRorLF;
+                userReader rdr = new userReader(pip, null);
+                rdr.tabMod = userFormat.tableMode.raw;
+                rdr.height = 0;
+                pip.setTime(60000);
+                userExec.doSetUnset(pip, rdr, new cmds("cm", a), false);
+                pip = pl.getSide();
+                pl.setClose();
+                a = pip.strGet(65535);
+                if (a == null) {
+                    a = "";
+                }
+                a = a.trim();
+                if (a.length() > 0) {
+                    addError(rep, n, a);
+                    continue;
+                }
+                rep.data.add(new extMrkLngEntry(null, "/rpc-reply/ok", "", ""));
+                rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
                 continue;
             }
             if (a.startsWith(getConfig)) {
@@ -239,32 +290,40 @@ public class userNetconf {
                     }
                     n = n.substring(0, i);
                 }
+                if (res.size() < 1) {
+                    addError(rep, n, "got empty config");
+                    continue;
+                }
                 userFilter.section2xml(rep, "/rpc-reply/data/config" + n, res);
-                rep.data.add(new extMrkLngEntry("/rpc-reply", "", ""));
+                rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
                 continue;
             }
             if (a.startsWith(getFilter)) {
                 userSensor tl = getSensor(a.substring(getFilter.length(), a.length()));
                 if (tl == null) {
+                    addError(rep, a, "no such sensor");
                     continue;
                 }
-                rep.data.add(new extMrkLngEntry(replyData, "", ""));
+                rep.data.add(new extMrkLngEntry(null, replyData, "", ""));
                 a = tl.path;
                 int o = a.indexOf("/");
-                rep.data.add(new extMrkLngEntry(replyData + "/" + a.substring(0, o), "xmlns=\"" + verCore.homeUrl + "yang/" + tl.prefix + "\"", ""));
+                rep.data.add(new extMrkLngEntry(null, replyData + "/" + a.substring(0, o), "xmlns=\"" + verCore.homeUrl + "yang/" + tl.prefix + "\"", ""));
                 tl.getReportNetConf(rep, replyData + "/");
-                rep.data.add(new extMrkLngEntry("/rpc-reply", "", ""));
+                rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
                 continue;
             }
             if (a.startsWith("/?xml/rpc/close-session")) {
-                rep.data.add(new extMrkLngEntry("/rpc-reply/ok", "", ""));
-                rep.data.add(new extMrkLngEntry("/rpc-reply", "", ""));
+                rep.data.add(new extMrkLngEntry(null, "/rpc-reply/ok", "", ""));
+                rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
                 need2run = false;
                 continue;
             }
         }
-        rep.data.add(0, new extMrkLngEntry("/rpc-reply", rpc, ""));
-        rep.data.add(new extMrkLngEntry("/rpc-reply", "", ""));
+        if (rpc == null) {
+            rpc = "";
+        }
+        rep.data.add(0, new extMrkLngEntry(null, "/rpc-reply", rpc, ""));
+        rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
         return rep;
     }
 
@@ -278,8 +337,14 @@ public class userNetconf {
         return null;
     }
 
-    private static String getName(extMrkLngEntry ntry) {
-        return ntry.name.replaceAll("/nc:", "/");
+    private static String getName(extMrkLngEntry ntry, boolean unesc) {
+        String a;
+        if (unesc) {
+            a = ntry.getUnesc();
+        } else {
+            a = "" + ntry.name;
+        }
+        return a.replaceAll("/nc:", "/");
     }
 
     private static void dumpXml(cmds cmd, extMrkLng x) {
@@ -398,8 +463,8 @@ public class userNetconf {
      */
     public void doClose() {
         extMrkLng x = new extMrkLng();
-        x.data.add(new extMrkLngEntry("/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
-        x.data.add(new extMrkLngEntry("/rpc/close-session", "", ""));
+        x.data.add(new extMrkLngEntry(null, "/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
+        x.data.add(new extMrkLngEntry(null, "/rpc/close-session", "", ""));
         doSend(x);
         doRead();
     }
@@ -435,10 +500,10 @@ public class userNetconf {
      */
     public boolean doClient(cmds cmd, String mod, String path, String ns) {
         extMrkLng x = new extMrkLng();
-        x.data.add(new extMrkLngEntry("/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
+        x.data.add(new extMrkLngEntry(null, "/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
         int i = path.indexOf("/");
-        x.data.add(new extMrkLngEntry("/rpc/" + mod + "/filter/" + path.substring(0, i), "xmlns=\"" + ns + "\"", ""));
-        x.data.add(new extMrkLngEntry("/rpc/" + mod + "/filter/" + path, "", ""));
+        x.data.add(new extMrkLngEntry(null, "/rpc/" + mod + "/" + path.substring(0, i), "xmlns=\"" + ns + "\"", ""));
+        x.data.add(new extMrkLngEntry(null, "/rpc/" + mod + "/" + path, "", ""));
         cmd.error("request");
         dumpXml(cmd, x);
         doSend(x);

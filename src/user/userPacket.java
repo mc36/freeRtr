@@ -1108,13 +1108,13 @@ public class userPacket {
             a = cmd.word();
             String s = null;
             if (a.equals("get")) {
-                s = "get";
+                s = "get/filter";
             }
             if (a.equals("read")) {
-                s = "get-config";
+                s = "get-config/filter";
             }
             if (a.equals("edit")) {
-                s = "edit-config";
+                s = "edit-config/config";
             }
             if (a.equals("copy")) {
                 s = "copy-config";

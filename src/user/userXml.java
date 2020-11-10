@@ -50,8 +50,8 @@ public class userXml {
      */
     public extMrkLng doRequest(extMrkLng req) {
         extMrkLng rep = new extMrkLng();
-        rep.data.add(new extMrkLngEntry("/Response", "", ""));
-        rep.data.add(new extMrkLngEntry("/Response/CLI", "MajorVersion=\"1\" MinorVersion=\"0\"", ""));
+        rep.data.add(new extMrkLngEntry(null, "/Response", "", ""));
+        rep.data.add(new extMrkLngEntry(null, "/Response/CLI", "MajorVersion=\"1\" MinorVersion=\"0\"", ""));
         for (int i = 0; i < req.data.size(); i++) {
             extMrkLngEntry ntry = req.data.get(i);
             if (ntry.name.equals("/?xml/Request/CLI/Exec")) {
@@ -84,13 +84,13 @@ public class userXml {
                     if (s == null) {
                         continue;
                     }
-                    rep.data.add(new extMrkLngEntry("/Response/CLI/Exec", "", r + s));
+                    rep.data.add(new extMrkLngEntry(null, "/Response/CLI/Exec", "", r + s));
                 }
                 continue;
             }
             if (ntry.name.equals("/?xml/Request/CLI/Configuration")) {
                 if (!privi) {
-                    rep.data.add(new extMrkLngEntry("/Response/CLI/Configuration", "", "not enough privileges"));
+                    rep.data.add(new extMrkLngEntry(null, "/Response/CLI/Configuration", "", "not enough privileges"));
                     continue;
                 }
                 cmds cmd = new cmds("xml", ntry.value);
@@ -127,12 +127,12 @@ public class userXml {
                 if (a == null) {
                     a = "";
                 }
-                rep.data.add(new extMrkLngEntry("/Response/CLI/Configuration", "", a));
+                rep.data.add(new extMrkLngEntry(null, "/Response/CLI/Configuration", "", a));
                 continue;
             }
         }
-        rep.data.add(new extMrkLngEntry("/Response/CLI", "", ""));
-        rep.data.add(new extMrkLngEntry("/Response", "", ""));
+        rep.data.add(new extMrkLngEntry(null, "/Response/CLI", "", ""));
+        rep.data.add(new extMrkLngEntry(null, "/Response", "", ""));
         return rep;
     }
 

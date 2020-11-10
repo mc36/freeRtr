@@ -635,7 +635,7 @@ public class userBrowser {
             extMrkLngEntry rec;
             if (i < 0) {
                 b = "";
-                rec = new extMrkLngEntry("value", "", "");
+                rec = new extMrkLngEntry(null, "value", "", "");
                 lst.add(rec);
             } else {
                 rec = lst.get(i);

@@ -502,7 +502,7 @@ public class cfgInit implements Runnable {
                             break;
                         case 2:
                             a = cmd.word();
-                            userNetconf.doConfig(txt, bg + 1, p);
+                            userNetconf.makeYang(txt, bg + 1, p);
                             if (debugger.cfgInitHw) {
                                 logger.debug("netconf config " + a);
                             }

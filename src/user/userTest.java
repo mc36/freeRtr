@@ -118,7 +118,7 @@ public class userTest {
                 return null;
             }
             String trg = cmd.word();
-            l = userNetconf.doConfig(l, 1, l.size() - 1);
+            l = userNetconf.makeYang(l, 1, l.size() - 1);
             if (bits.buf2txt(true, l, trg)) {
                 cmd.error("error writing target");
                 return null;

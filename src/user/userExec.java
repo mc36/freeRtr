@@ -1898,11 +1898,11 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("set")) {
-            doSetUnset(false);
+            doSetUnset(pipe, reader, cmd, false);
             return cmdRes.command;
         }
         if (a.equals("delete")) {
-            doSetUnset(true);
+            doSetUnset(pipe, reader, cmd, true);
             return cmdRes.command;
         }
         if (a.equals("configure")) {
@@ -2285,8 +2285,17 @@ public class userExec {
         return brk;
     }
 
-    private void doSetUnset(boolean negated) {
+    /**
+     * do set unset command
+     *
+     * @param pipe pipe to use
+     * @param reader reader to use
+     * @param cmd command to execute
+     * @param negated true if unset
+     */
+    public static void doSetUnset(pipeSide pipe, userReader reader, cmds cmd, boolean negated) {
         userConfig cfg = new userConfig(pipe, reader);
+        reader.setFilter(null);
         userHelping hlp;
         String s = "";
         String a = "";

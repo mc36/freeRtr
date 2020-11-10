@@ -26,6 +26,11 @@ public class extMrkLng {
     public final static String escape = "identifier-escape";
 
     /**
+     * values
+     */
+    public final static String value = "identifier-value";
+
+    /**
      * original string
      */
     public String orig;
@@ -121,6 +126,7 @@ public class extMrkLng {
         orig = "" + s;
         s = bits.trimE(s);
         String path = "";
+        extMrkLngEntry prnt = null;
         for (;;) {
             s = bits.trimB(s);
             if (s.length() < 1) {
@@ -144,7 +150,7 @@ public class extMrkLng {
                         continue;
                     }
                 }
-                data.add(new extMrkLngEntry(path, "", a));
+                data.add(new extMrkLngEntry(prnt, path, "", a));
                 continue;
             }
             i = s.indexOf(">");
@@ -177,20 +183,38 @@ public class extMrkLng {
                     continue;
                 }
                 path = path.substring(0, i);
-                data.add(new extMrkLngEntry(path, "", ""));
+                for (; prnt != null;) {
+                    a = prnt.name;
+                    if (path.equals(a)) {
+                        break;
+                    }
+                    prnt = prnt.parent;
+                }
+                if (prnt == null) {
+                    data.add(new extMrkLngEntry(prnt, path, "", ""));
+                } else {
+                    data.add(prnt);
+                }
                 continue;
             }
             if (closed.indexOf("|" + a + "|") >= 0) {
                 nb = true;
             }
-            data.add(new extMrkLngEntry(path + "/" + a, b, ""));
+            extMrkLngEntry curr = new extMrkLngEntry(prnt, path + "/" + a, b, "");
+            data.add(curr);
             if (nb) {
-                data.add(new extMrkLngEntry(path, "", ""));
+                if (prnt == null) {
+                    curr = null;
+                } else {
+                    curr = prnt.parent;
+                }
+                data.add(new extMrkLngEntry(curr, path, "", ""));
                 continue;
             }
             path += "/" + a;
+            prnt = curr;
         }
-        data.add(new extMrkLngEntry("", "", ""));
+        data.add(new extMrkLngEntry(null, "", "", ""));
         return false;
     }
 
@@ -517,7 +541,7 @@ public class extMrkLng {
             String a = str.substring(0, i).trim();
             str = str.substring(i, str.length()).trim();
             if (!str.startsWith("=")) {
-                res.add(new extMrkLngEntry(a, "", ""));
+                res.add(new extMrkLngEntry(null, a, "", ""));
                 continue;
             }
             str = str.substring(1, str.length()).trim();
@@ -534,7 +558,7 @@ public class extMrkLng {
             str = str + " ";
             b = str.substring(0, i);
             str = str.substring(i + 1, str.length()).trim();
-            res.add(new extMrkLngEntry(a, "", b));
+            res.add(new extMrkLngEntry(null, a, "", b));
         }
         return res;
     }
