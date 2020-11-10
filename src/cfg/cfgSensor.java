@@ -274,6 +274,8 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
                 l.add(cn + " replace " + rep.src + " " + rep.trg);
             }
         }
+        l.add(cmds.tabulator + cmds.finish);
+        l.add(cmds.comment);
         if (!filter) {
             return l;
         }
