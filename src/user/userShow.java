@@ -516,19 +516,6 @@ public class userShow {
             rdr.putStrTab(srv.getShow(adr, p, k));
             return null;
         }
-        if (a.equals("prometheus")) {
-            servPrometheus srv = cfgAll.srvrFind(new servPrometheus(), cfgAll.dmnPrometheus, cmd.word());
-            if (srv == null) {
-                cmd.error("no such server");
-                return null;
-            }
-            if (cmd.size() < 1) {
-                rdr.putStrTab(srv.getShow());
-                return null;
-            }
-            rdr.putStrArr(srv.getShow(cmd.word()));
-            return null;
-        }
         if (a.equals("nrpe")) {
             servNrpe srv = cfgAll.srvrFind(new servNrpe(), cfgAll.dmnNrpe, cmd.word());
             if (srv == null) {

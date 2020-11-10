@@ -183,8 +183,14 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         l.add("2 .        <str>                  name");
         l.add("1 2      prefix                   specify prefix");
         l.add("2 .        <str>                  name");
+        l.add("1 2      path                     specify prefix");
+        l.add("2 .        <str>                  name");
         l.add("1 2      labels                   static labels");
         l.add("2 .        <str>                  name");
+        l.add("1 2      key                      key column number");
+        l.add("2 3        <num>                  column number");
+        l.add("3 4          <str>                name");
+        l.add("4 .            <str>              path");
         l.add("1 2      name                     name column number");
         l.add("2 3,.      <num>                  column number");
         l.add("3 .          <str>                label");
@@ -228,16 +234,20 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
 
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
+        if (hidden) {
+            return l;
+        }
         l.add("sensor " + name);
-        l.add(cmds.tabulator + "command " + command);
-        l.add(cmds.tabulator + "prepend " + prepend);
+        l.add(cmds.tabulator + "path " + path);
         l.add(cmds.tabulator + "prefix " + prefix);
         l.add(cmds.tabulator + "prepend " + prepend);
+        l.add(cmds.tabulator + "command " + command);
         String a = "";
         if (namL != null) {
             a = " " + namL;
         }
         l.add(cmds.tabulator + "name " + namC + a);
+        l.add(cmds.tabulator + "key " + keyC + " " + keyN + " " + keyP);
         if (namS != null) {
             l.add(cmds.tabulator + "labels " + namS);
         } else {
@@ -362,11 +372,24 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         }
         s = cmd.word();
         if (s.equals("name")) {
+            if (negated) {
+                cols.del(col);
+                return;
+            }
             col.nam = cmd.word();
+            if (cmd.size() < 1) {
+                col.lab = null;
+            } else {
+                col.lab = cmd.word();
+            }
             return;
         }
         if (s.equals("help")) {
-            col.hlp = cmd.getRemaining();
+            if (negated) {
+                col.hlp = null;
+            } else {
+                col.hlp = cmd.getRemaining();
+            }
             return;
         }
         if (s.equals("type")) {
@@ -378,15 +401,25 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
             return;
         }
         if (s.equals("split")) {
-            col.splS = cmd.word();
-            col.splL = cmd.word();
-            col.splR = cmd.word();
+            if (negated) {
+                col.splS = null;
+                col.splL = null;
+                col.splR = null;
+            } else {
+                col.splS = cmd.word();
+                col.splL = cmd.word();
+                col.splR = cmd.word();
+            }
             return;
         }
         if (s.equals("replace")) {
             cfgSensorRep rep = new cfgSensorRep(cmd.word());
             rep.trg = cmd.word();
-            col.reps.add(rep);
+            if (negated) {
+                col.reps.del(rep);
+            } else {
+                col.reps.add(rep);
+            }
             return;
         }
     }
@@ -497,6 +530,13 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         return cl;
     }
 
+    private void doMetricProm(List<String> lst, String nb, String labs, String val) {
+        if (labs.length() > 0) {
+            labs = "{" + labs.substring(1, labs.length()) + "}";
+        }
+        lst.add(nb + labs + " " + val);
+    }
+
     private static String doReplaces(String a, tabGen<cfgSensorRep> reps) {
         for (int i = 0; i < reps.size(); i++) {
             cfgSensorRep rep = reps.get(i);
@@ -584,6 +624,77 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         res.data.add(new extMrkLngEntry(null, beg + keyP.substring(0, i), "", ""));
     }
 
+    private void doLineProm(List<String> lst, List<String> smt, String a) {
+        List<String> cl = doSplitLine(a);
+        int cls = cl.size();
+        if (namC >= cls) {
+            return;
+        }
+        String na = prepend;
+        String nc = cl.get(namC);
+        String nd = "";
+        if ((acol >= 0) && (acol < cls)) {
+            a = asep;
+            if (asep.equals("*")) {
+                a = "";
+            }
+            nd = a + cl.get(acol);
+        }
+        na = doReplaces(na, reps);
+        nc = doReplaces(nc, reps);
+        nd = doReplaces(nd, reps);
+        if (namL == null) {
+            na += nc;
+            na += nd;
+        }
+        for (int o = 0; o < cols.size(); o++) {
+            cfgSensorCol cc = cols.get(o);
+            if (cl.size() <= cc.num) {
+                continue;
+            }
+            String nb = na;
+            if (!cc.nam.equals("*")) {
+                nb += cc.nam;
+            }
+            String labs = "";
+            if (namS != null) {
+                labs += "," + namS;
+            }
+            if (namL != null) {
+                labs += "," + namL + "\"" + nc + "\"";
+            }
+            if (alab != null) {
+                labs += "," + alab + "\"" + nd + "\"";
+            }
+            if (cc.lab != null) {
+                labs += "," + cc.lab;
+            }
+            if (smt.indexOf(nb) < 0) {
+                String h;
+                if (cc.hlp == null) {
+                    h = " column " + cc.num + " of " + command;
+                } else {
+                    h = " " + cc.hlp;
+                }
+                lst.add("# HELP " + nb + h);
+                lst.add("# TYPE " + nb + " " + cc.sty);
+                smt.add(nb);
+            }
+            a = doReplaces(cl.get(cc.num), cc.reps);
+            if (cc.splS == null) {
+                doMetricProm(lst, nb, labs, a);
+                continue;
+            }
+            int i = a.indexOf(cc.splS);
+            if (i < 0) {
+                doMetricProm(lst, nb, labs, a);
+                continue;
+            }
+            doMetricProm(lst, nb, labs + "," + cc.splL, a.substring(0, i));
+            doMetricProm(lst, nb, labs + "," + cc.splR, a.substring(i + cc.splS.length(), a.length()));
+        }
+    }
+
     /**
      * generate report
      *
@@ -643,6 +754,30 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
             doLineNetConf(rep, beg, res.get(i));
         }
         time = (int) (bits.getTime() - last);
+    }
+
+    /**
+     * generate report
+     *
+     * @return report
+     */
+    public List<String> getReportProm() {
+        last = bits.getTime();
+        cnt++;
+        List<String> lst = new ArrayList<String>();
+        List<String> res = getResult();
+        for (int i = 0; i < skip; i++) {
+            if (res.size() < 1) {
+                break;
+            }
+            res.remove(0);
+        }
+        List<String> smt = new ArrayList<String>();
+        for (int p = 0; p < res.size(); p++) {
+            doLineProm(lst, smt, res.get(p));
+        }
+        time = (int) (bits.getTime() - last);
+        return lst;
     }
 
     /**
@@ -727,6 +862,8 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         res.addAll(getResult());
         res.add("yang:");
         res.addAll(getYang());
+        res.add("prometheus:");
+        res.addAll(getReportProm());
         res.add("netconf:");
         extMrkLng x = new extMrkLng();
         getReportNetConf(x, "/");

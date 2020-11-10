@@ -1,0 +1,53 @@
+sensor bgp4peer
+path bgp4/peer/peer
+prefix freertr-bfd
+key 0 name bgp4/peer
+command sho ipv4 bgp 65535 summ
+prepend bgp4_peer_
+name 4 peer=
+replace \. _
+column 1 name learn
+column 2 name advert
+column 3 name state
+column 3 replace false 0
+column 3 replace true 1
+.
+exit
+
+sensor bgp4perf
+path bgp4/perf/perf
+prefix freertr-bfd
+key 0 name bgp4/perf
+command sho ipv4 bgp 65535 best | exc last
+prepend bgp4_perf_
+replace \s _
+column 1 name val
+.
+exit
+
+sensor bgp6peer
+path bgp6/peer/peer
+prefix freertr-bfd
+key 0 name bgp6/peer
+command sho ipv6 bgp 65535 summ
+prepend bgp6_peer_
+name 4 peer=
+replace \: _
+column 1 name learn
+column 2 name advert
+column 3 name state
+column 3 replace false 0
+column 3 replace true 1
+.
+exit
+
+sensor bgp6perf
+path bgp6/perf/perf
+prefix freertr-bfd
+key 0 name bgp6/perf
+command sho ipv6 bgp 65535 best | exc last
+prepend bgp6_perf_
+replace \s _
+column 1 name val
+.
+exit
