@@ -113,16 +113,32 @@ public class shrtPthFrstNode<Ta extends addrType> implements Comparator<shrtPthF
      * find connection
      *
      * @param peer node id
+     * @param met required metric
      * @return connection, null if not found
      */
-    protected shrtPthFrstConn<Ta> findConn(shrtPthFrstNode<Ta> peer) {
+    protected shrtPthFrstConn<Ta> findConn(shrtPthFrstNode<Ta> peer, int met) {
+        shrtPthFrstConn<Ta> best = null;
         for (int i = 0; i < conn.size(); i++) {
             shrtPthFrstConn<Ta> ntry = conn.get(i);
-            if (peer.compare(peer, ntry.target) == 0) {
+            if (peer.compare(peer, ntry.target) != 0) {
+                continue;
+            }
+            if (met < 0) {
                 return ntry;
             }
+            if (met == ntry.metric) {
+                return ntry;
+            }
+            if (best == null) {
+                best = ntry;
+                continue;
+            }
+            if (ntry.metric >= best.metric) {
+                continue;
+            }
+            best = ntry;
         }
-        return null;
+        return best;
     }
 
     public String toString() {

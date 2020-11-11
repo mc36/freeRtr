@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v20.11.11-rel, done by cs@nop.
--;-;-;2020-11-11 09:10:44, took 00:05:48, with 100 workers, on 2126 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2020-11-11 09:21:28, took 00:05:24, with 100 workers, on 2126 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect

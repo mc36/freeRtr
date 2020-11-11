@@ -476,7 +476,7 @@ public class shrtPthFrst<Ta extends addrType> {
                     if (cc == null) {
                         continue;
                     }
-                    shrtPthFrstConn<Ta> oc = on.findConn(cc.target);
+                    shrtPthFrstConn<Ta> oc = on.findConn(cc.target, cc.metric);
                     if (oc == null) {
                         logger.warn("node " + cn + " established connection to " + cc.target);
                         continue;
@@ -490,7 +490,7 @@ public class shrtPthFrst<Ta extends addrType> {
                     if (oc == null) {
                         continue;
                     }
-                    shrtPthFrstConn<Ta> cc = cn.findConn(oc.target);
+                    shrtPthFrstConn<Ta> cc = cn.findConn(oc.target, oc.metric);
                     if (cc == null) {
                         logger.warn("node " + on + " lost connection to " + oc.target);
                         continue;
@@ -555,7 +555,7 @@ public class shrtPthFrst<Ta extends addrType> {
                     continue;
                 }
                 if (bid) {
-                    if (c.target.findConn(ntry) == null) {
+                    if (c.target.findConn(ntry, -1) == null) {
                         continue;
                     }
                 }
