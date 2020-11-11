@@ -112,39 +112,56 @@ public class userTest {
             return alias.getCommand(cmd);
         }
         if (a.equals("yangconfig")) {
-            a = cmd.word();
-            List<String> l = bits.txt2buf(a);
+            String src = cmd.word();
+            cmd.error("reading " + src);
+            List<String> l = bits.txt2buf(src);
             if (l == null) {
-                cmd.error("error reading source");
+                cmd.error("error reading");
                 return null;
             }
             String trg = cmd.word();
             l = userNetconf.makeYang(l, 1, l.size() - 1);
-            if (bits.buf2txt(true, l, trg)) {
-                cmd.error("error writing target");
+            a = trg + src + ".yang";
+            cmd.error("writing " + a);
+            if (bits.buf2txt(true, l, a)) {
+                cmd.error("error writing");
                 return null;
             }
             cmd.error("done");
             return null;
         }
         if (a.equals("yangsensor")) {
-            a = cmd.word();
-            List<String> l = bits.txt2buf(a);
+            String src = cmd.word();
+            cmd.error("reading " + src);
+            List<String> l = bits.txt2buf(src);
             if (l == null) {
-                cmd.error("error reading source");
+                cmd.error("error reading");
                 return null;
             }
             String trg = cmd.word();
-            l.remove(0);
-            l.remove(l.size() - 1);
-            cfgSensor tl = new cfgSensor("sen");
-            for (int i = 0; i < l.size(); i++) {
-                tl.doCfgStr(new cmds("tl", l.get(i)));
-            }
-            l = tl.getYang();
-            if (bits.buf2txt(true, l, trg)) {
-                cmd.error("error writing target");
-                return null;
+            int pos;
+            for (pos = 0; pos < l.size(); pos++) {
+                a = l.get(pos);
+                if (!a.startsWith("sensor ")) {
+                    continue;
+                }
+                pos++;
+                int i = a.indexOf(" ");
+                cfgSensor tl = new cfgSensor(a.substring(i, a.length()).trim());
+                for (; pos < l.size(); pos++) {
+                    a = l.get(pos);
+                    if (a.equals(".")) {
+                        break;
+                    }
+                    tl.doCfgStr(new cmds("tl", a));
+                }
+                List<String> res = tl.getYang();
+                a = trg + src + "-" + tl.name + ".yang";
+                cmd.error("writing " + a);
+                if (bits.buf2txt(true, res, a)) {
+                    cmd.error("error writing");
+                    return null;
+                }
             }
             cmd.error("done");
             return null;

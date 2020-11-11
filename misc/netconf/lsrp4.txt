@@ -1,6 +1,6 @@
-config lsrp41
+config lsrp4
 config/router/lsrp4/1
-freertr-lsrp41
+freertr-lsrp4
 vrf def 187156390
  exit
 router lsrp4 187156390

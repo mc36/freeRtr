@@ -3,7 +3,7 @@ path sensor/peer/peer
 prefix freertr-sensor
 key name sensor/peer
 command sho sensor
-prepend prom_
+prepend sensor_
 name 0 met=
 column 1 name asked
 column 2 name time
