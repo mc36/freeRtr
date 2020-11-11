@@ -157,8 +157,9 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         reps = new tabGen<cfgSensorRep>();
         skip = 1;
         name = n;
-        path = n;
-        keyP = n;
+        path = n + "/" + n;
+        keyN = n;
+        keyP = n + "/" + n;
         prefix = n;
         prepend = n;
     }
