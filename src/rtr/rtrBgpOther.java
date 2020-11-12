@@ -24,6 +24,11 @@ import util.cmds;
 public class rtrBgpOther extends ipRtr {
 
     /**
+     * enabled
+     */
+    public boolean enabled;
+
+    /**
      * import distance
      */
     public int distance;
@@ -43,6 +48,10 @@ public class rtrBgpOther extends ipRtr {
      * unregister from ip
      */
     public void unregister2ip() {
+        if (!enabled) {
+            return;
+        }
+        enabled = false;
         fwd.routerDel(this);
     }
 
@@ -50,6 +59,10 @@ public class rtrBgpOther extends ipRtr {
      * register to ip
      */
     public void register2ip() {
+        if (enabled) {
+            return;
+        }
+        enabled = true;
         fwd.routerAdd(this, parent.rouTyp, parent.rtrNum);
     }
 
@@ -122,6 +135,9 @@ public class rtrBgpOther extends ipRtr {
      * @param nUni unicast table to update
      */
     public void doAdvertise(tabRoute<addrIP> nUni) {
+        if (!enabled) {
+            return;
+        }
         for (int i = 0; i < routerRedistedU.size(); i++) {
             doExportRoute(routerRedistedU.get(i), nUni);
         }
@@ -156,6 +172,9 @@ public class rtrBgpOther extends ipRtr {
      * @return other changes trigger full recomputation
      */
     public boolean doPeers(tabRoute<addrIP> cmpU) {
+        if (!enabled) {
+            return false;
+        }
         tabRoute<addrIP> tabU = new tabRoute<addrIP>("bgp");
         peers = new tabGen<addrIP>();
         for (int i = 0; i < cmpU.size(); i++) {
@@ -208,6 +227,11 @@ public class rtrBgpOther extends ipRtr {
      * @param beg beginning
      */
     public void getConfig(List<String> l, String beg) {
+        if (enabled) {
+            l.add(beg + "enable");
+        } else {
+            l.add(cmds.tabulator + "no" + beg + "enable");
+        }
         l.add(beg + "distance " + distance);
         if (srv6 != null) {
             l.add(beg + "srv6 " + srv6.name);
@@ -258,6 +282,9 @@ public class rtrBgpOther extends ipRtr {
      * @param tab list to append
      */
     public void getPeerList(tabRoute<addrIP> tab) {
+        if (!enabled) {
+            return;
+        }
         for (int i = 0; i < peers.size(); i++) {
             addrIP adr = peers.get(i);
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();

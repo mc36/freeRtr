@@ -24,6 +24,7 @@ router bgp4 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
  red conn
+ afi-other ena
  afi-other red conn
  exit
 !
@@ -52,6 +53,7 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  red conn
+ afi-other ena
  afi-other red conn
  exit
 !

@@ -26,6 +26,7 @@ router bgp4 1
  neigh 1.1.1.2 additional-path-rx uni other
  neigh 1.1.1.2 additional-path-tx uni other
  red conn
+ afi-other ena
  afi-other red conn
  exit
 !
@@ -56,6 +57,7 @@ router bgp4 1
  neigh 1.1.1.1 additional-path-rx uni other
  neigh 1.1.1.1 additional-path-tx uni other
  red conn
+ afi-other ena
  afi-other red conn
  exit
 !

@@ -34,6 +34,7 @@ router bgp4 1
  neigh 1.1.1.2 segrou
  neigh 1.1.1.2 additional-path-rx other
  neigh 1.1.1.2 additional-path-tx other
+ afi-other ena
  afi-other red conn
  afi-other srv6 tun1
  exit
@@ -46,6 +47,7 @@ router bgp6 1
  neigh 1234::2 segrou
  neigh 1234::2 additional-path-rx other
  neigh 1234::2 additional-path-tx other
+ afi-other ena
  afi-other red conn
  afi-other srv6 tun1
  exit
@@ -85,6 +87,7 @@ router bgp4 1
  neigh 1.1.1.1 segrou
  neigh 1.1.1.1 additional-path-rx other
  neigh 1.1.1.1 additional-path-tx other
+ afi-other ena
  afi-other red conn
  afi-other srv6 tun1
  exit
@@ -97,6 +100,7 @@ router bgp6 1
  neigh 1234::1 segrou
  neigh 1234::1 additional-path-rx other
  neigh 1234::1 additional-path-tx other
+ afi-other ena
  afi-other red conn
  afi-other srv6 tun1
  exit

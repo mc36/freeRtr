@@ -854,7 +854,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         need2run = true;
         new Thread(this).start();
         fwdCore.routerAdd(this, rouTyp, id);
-        other.register2ip();
     }
 
     /**
@@ -2177,10 +2176,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("4 5         <name>                hostname");
         l.add("5 .           <num>               port number");
         l.add("1 2   afi-other                   select other to advertise");
-        l.add("2 3       srv6                    srv6 advertisement");
-        l.add("3 .         <name>                select source to advertise");
-        l.add("2 3       distance                set import distance");
-        l.add("3 .         <num>                 distance");
+        l.add("2 .     enable                    enable processing");
+        l.add("2 3     srv6                      srv6 advertisement");
+        l.add("3 .       <name>                  select source to advertise");
+        l.add("2 3     distance                  set import distance");
+        l.add("3 .       <num>                   distance");
         cfgRtr.getRedistHelp(l, 1);
         l.add("1 2   afi-vrf                     select vrf to advertise");
         l.add("2 3     <vrf>                     name of routing table");
@@ -2515,6 +2515,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("afi-other")) {
             s = cmd.word();
+            if (s.equals("enable")) {
+                if (negated) {
+                    other.unregister2ip();
+                } else {
+                    other.register2ip();
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
             if (s.equals("distance")) {
                 other.distance = bits.str2num(cmd.word());
                 needFull.add(1);

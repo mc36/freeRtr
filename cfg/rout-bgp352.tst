@@ -25,6 +25,7 @@ router bgp4 1
  neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 confed
  red conn
+ afi-other ena
  afi-other red conn
  exit
 !
@@ -54,6 +55,7 @@ router bgp4 1
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 confed
  red conn
+ afi-other ena
  afi-other red conn
  exit
 !

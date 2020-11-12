@@ -33,6 +33,7 @@ router bgp4 1
  neigh 1.1.1.2 remote-as 1
  neigh 1.1.1.2 segrou
  neigh 1.1.1.2 soft-reconfig
+ afi-other ena
  afi-other red conn
  afi-other srv6 tun1
  exit
@@ -44,6 +45,7 @@ router bgp6 1
  neigh 1234::2 remote-as 1
  neigh 1234::2 segrou
  neigh 1234::2 soft-reconfig
+ afi-other ena
  afi-other red conn
  afi-other srv6 tun1
  exit
@@ -82,6 +84,7 @@ router bgp4 1
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 segrou
  neigh 1.1.1.1 soft-reconfig
+ afi-other ena
  afi-other red conn
  afi-other srv6 tun1
  exit
@@ -93,6 +96,7 @@ router bgp6 1
  neigh 1234::1 remote-as 1
  neigh 1234::1 segrou
  neigh 1234::1 soft-reconfig
+ afi-other ena
  afi-other red conn
  afi-other srv6 tun1
  exit
