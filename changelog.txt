@@ -9401,3 +9401,26 @@ qc pass: lsrp with bgp linkstate
 qc pass: ospf with bgp linkstate
 ---------------------------------- 2020-11-09 13:32:15
 no todo: yang over netconf, proto over grpc
+---------------------------------- 2020-11-12 20:34:44
+qc pass: integrated isis over ethernet
+qc pass: integrated isis over hdlc
+qc pass: integrated isis over gre
+qc pass: integrated isis narrow metric
+qc pass: integrated isis attached
+qc pass: integrated isis chain of broadcast nets
+qc pass: integrated isis broadcast subnet
+qc pass: integrated isis address suppression
+qc pass: integrated isis inter-level routes
+qc pass: integrated isis inter level ingress filtering with prefixlist
+qc pass: integrated isis inter level egress filtering with prefixlist
+qc pass: integrated isis inter level ingress filtering with routemap
+qc pass: integrated isis inter level egress filtering with routemap
+qc pass: integrated isis inter level ingress filtering with routepolicy
+qc pass: integrated isis inter level egress filtering with routepolicy
+qc pass: integrated isis default route
+qc pass: integrated isis multi-topology
+qc pass: integrated isis with sr
+qc pass: integrated isis inter-level with sr
+qc pass: integrated isis multi-topology with sr
+qc pass: integrated isis prefix withdraw
+qc pass: integrated isis change in metric
