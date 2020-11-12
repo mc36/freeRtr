@@ -11,6 +11,7 @@ import cfg.cfgAll;
 import cfg.cfgPrfxlst;
 import cfg.cfgRoump;
 import cfg.cfgRouplc;
+import cfg.cfgRtr;
 import ifc.ifcEthTyp;
 import ip.ipCor4;
 import ip.ipCor6;
@@ -59,6 +60,11 @@ public class rtrIsis extends ipRtr {
      * protocol discriminator
      */
     public static final int protDist = 0x83;
+
+    /**
+     * other afi router
+     */
+    protected rtrIsisOther other;
 
     /**
      * external distance
@@ -129,10 +135,21 @@ public class rtrIsis extends ipRtr {
      * bier maximum
      */
     public int bierMax = 0;
+
     /**
      * forwarding core
      */
     public final ipFwd fwdCore;
+
+    /**
+     * route type
+     */
+    protected final tabRouteAttr.routeType rouTyp;
+
+    /**
+     * router number
+     */
+    protected final int rtrNum;
 
     /**
      * list of interfaces
@@ -163,9 +180,10 @@ public class rtrIsis extends ipRtr {
      * create one isis process
      *
      * @param forwarder the ip protocol
+     * @param otherfwd the other ip protocol
      * @param id process id
      */
-    public rtrIsis(ipFwd forwarder, int id) {
+    public rtrIsis(ipFwd forwarder, ipFwd otherfwd, int id) {
         netEntTit.fromString("00.0000.0000.0000.00");
         fwdCore = forwarder;
         distantExt = 115;
@@ -174,7 +192,7 @@ public class rtrIsis extends ipRtr {
         maxAreaAddr = 3;
         metricWide = true;
         ifaces = new tabGen<rtrIsisIface>();
-        tabRouteAttr.routeType rouTyp = null;
+        rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
                 rouTyp = tabRouteAttr.routeType.isis4;
@@ -183,8 +201,10 @@ public class rtrIsis extends ipRtr {
                 rouTyp = tabRouteAttr.routeType.isis6;
                 break;
             default:
+                rouTyp = null;
                 break;
         }
+        other = new rtrIsisOther(this, otherfwd);
         level1 = new rtrIsisLevel(this, 1);
         level2 = new rtrIsisLevel(this, 2);
         routerCreateComputed();
@@ -1009,6 +1029,12 @@ public class rtrIsis extends ipRtr {
         l.add("2 .     level1                    station router");
         l.add("2 .     level2                    area router");
         l.add("2 .     both                      area and station router");
+        l.add("1 2   afi-other                   select other to advertise");
+        l.add("2 .     enable                    enable processing");
+        l.add("2 3   distance                    specify default distance");
+        l.add("3 4     <num>                     intra-area distance");
+        l.add("4 .       <num>                   external distance");
+        cfgRtr.getRedistHelp(l, 1);
         l.add("1 2   max-area-addrs              maximum area addresses");
         l.add("2 .     <num>                     number of addresses");
         l.add("1 2   distance                    specify default distance");
@@ -1087,6 +1113,7 @@ public class rtrIsis extends ipRtr {
         l.add(beg + "distance " + distantInt + " " + distantExt);
         getConfig(level2, l, beg);
         getConfig(level1, l, beg);
+        other.getConfig(l, beg + "afi-other ");
     }
 
     /**
@@ -1171,6 +1198,24 @@ public class rtrIsis extends ipRtr {
             boolean res = doConfig(level1, cmd, false);
             return res | doConfig(level2, c, false);
         }
+        if (s.equals("afi-other")) {
+            s = cmd.word();
+            if (s.equals("enable")) {
+                other.register2ip();
+                genLsps(3);
+                return false;
+            }
+            if (s.equals("distance")) {
+                other.distantInt = bits.str2num(cmd.word());
+                other.distantExt = bits.str2num(cmd.word());
+                return false;
+            }
+            if (cfgRtr.doCfgRedist(other, false, s, cmd)) {
+                cmd.badCmd();
+            }
+            genLsps(3);
+            return false;
+        }
         if (!s.equals("no")) {
             return true;
         }
@@ -1212,6 +1257,19 @@ public class rtrIsis extends ipRtr {
             cmds c = cmd.copyBytes(false);
             boolean res = doConfig(level1, cmd, true);
             return res | doConfig(level2, c, true);
+        }
+        if (s.equals("afi-other")) {
+            s = cmd.word();
+            if (s.equals("enable")) {
+                other.unregister2ip();
+                genLsps(3);
+                return false;
+            }
+            if (cfgRtr.doCfgRedist(other, true, s, cmd)) {
+                cmd.badCmd();
+            }
+            genLsps(3);
+            return false;
         }
         return true;
     }
@@ -1477,6 +1535,7 @@ public class rtrIsis extends ipRtr {
     public void routerCloseNow() {
         level1.stopNow();
         level2.stopNow();
+        other.unregister2ip();
         for (int i = 0; i < ifaces.size(); i++) {
             rtrIsisIface ntry = ifaces.get(i);
             if (ntry == null) {
@@ -1505,14 +1564,15 @@ public class rtrIsis extends ipRtr {
      * add isis interface
      *
      * @param iface forwarding interface
+     * @param otherifc other forwarding interface
      * @param eth ethertype interface
      * @return interface handler
      */
-    public rtrIsisIface addInterface(ipFwdIface iface, ifcEthTyp eth) {
+    public rtrIsisIface addInterface(ipFwdIface iface, ipFwdIface otherifc, ifcEthTyp eth) {
         if (iface == null) {
             return null;
         }
-        rtrIsisIface ifc = new rtrIsisIface(this, iface, eth);
+        rtrIsisIface ifc = new rtrIsisIface(this, iface, otherifc, eth);
         rtrIsisIface old = ifaces.add(ifc);
         if (old != null) {
             return old;
@@ -1527,9 +1587,10 @@ public class rtrIsis extends ipRtr {
      * delete isis interface
      *
      * @param iface forwarding interface
+     * @param otherifc other forwarding interface
      */
-    public void delInterface(ipFwdIface iface) {
-        rtrIsisIface ifc = new rtrIsisIface(this, iface, null);
+    public void delInterface(ipFwdIface iface, ipFwdIface otherifc) {
+        rtrIsisIface ifc = new rtrIsisIface(this, iface, otherifc, null);
         ifc = ifaces.del(ifc);
         if (ifc == null) {
             return;

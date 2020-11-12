@@ -1528,11 +1528,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no router eigrp[4|6] .* route-policy-out",
         // isis
         "interface .*! no router isis[4|6] .* passive",
+        "interface .*! no router isis[4|6] .* other-enable",
         "interface .*! no router isis[4|6] .* raw-encapsulation",
         "interface .*! router isis[4|6] .* network point2point",
         "interface .*! no router isis[4|6] .* bfd",
         "interface .*! router isis[4|6] .* suppress-address",
         "interface .*! no router isis[4|6] .* suppress-prefix",
+        "interface .*! router isis[4|6] .* other-suppress-address",
+        "interface .*! no router isis[4|6] .* other-suppress-prefix",
         "interface .*! no router isis[4|6] .* password",
         "interface .*! router isis[4|6] .* metric 10",
         "interface .*! router isis[4|6] .* priority 64",
@@ -1545,9 +1548,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router isis[4|6] .* traffeng affinity 0",
         "interface .*! router isis[4|6] .* traffeng srlg 0",
         "interface .*! no router isis[4|6] .* segrout index",
+        "interface .*! no router isis[4|6] .* segrout other-index",
         "interface .*! no router isis[4|6] .* segrout node",
         "interface .*! no router isis[4|6] .* segrout pop",
         "interface .*! no router isis[4|6] .* bier index",
+        "interface .*! no router isis[4|6] .* bier other-index",
         // qinqx
         "interface .*! qinqx ethertype fa52",
         // sep
@@ -2508,7 +2513,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (rtrIsisIfc != null) {
                     break;
                 }
-                rtrIsisIfc = rtr.isis.addInterface(fwdIf4, ethtyp);
+                rtrIsisIfc = rtr.isis.addInterface(fwdIf4, fwdIf6, ethtyp);
                 if (rtrIsisIfc == null) {
                     break;
                 }
@@ -2518,7 +2523,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (rtrIsisIfc != null) {
                     break;
                 }
-                rtrIsisIfc = rtr.isis.addInterface(fwdIf6, ethtyp);
+                rtrIsisIfc = rtr.isis.addInterface(fwdIf6, fwdIf4, ethtyp);
                 if (rtrIsisIfc == null) {
                     break;
                 }
@@ -2723,7 +2728,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 rtrIsisHnd = null;
                 rtrIsisIfc = null;
-                rtr.isis.delInterface(fwdIf4);
+                rtr.isis.delInterface(fwdIf4, fwdIf6);
                 return;
             case isis6:
                 if (rtrIsisHnd == null) {
@@ -2731,7 +2736,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 rtrIsisHnd = null;
                 rtrIsisIfc = null;
-                rtr.isis.delInterface(fwdIf6);
+                rtr.isis.delInterface(fwdIf6, fwdIf4);
                 return;
             case pvrp4:
                 if (rtrPvrp4hnd == null) {

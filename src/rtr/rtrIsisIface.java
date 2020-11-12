@@ -36,6 +36,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     protected final ipFwdIface iface;
 
     /**
+     * the other ip interface this works on
+     */
+    protected final ipFwdIface oiface;
+
+    /**
      * the l2 interface this works on
      */
     private final ifcEthTyp ethtyp;
@@ -54,6 +59,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * circuit id
      */
     public int circuitID;
+
+    /**
+     * other enabled
+     */
+    public boolean otherEna;
 
     /**
      * network type false=broadcast, true=point2point
@@ -88,6 +98,16 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * suppress interface address
      */
     public boolean suppressInt;
+
+    /**
+     * other suppress interface address
+     */
+    public boolean othSuppAddr;
+
+    /**
+     * other suppress interface address
+     */
+    public boolean othSuppInt;
 
     /**
      * passive interface
@@ -160,6 +180,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     public int srIndex;
 
     /**
+     * other segment rou index
+     */
+    public int srOthIdx;
+
+    /**
      * segment rou node
      */
     public boolean srNode;
@@ -173,6 +198,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * bier index
      */
     public int brIndex;
+
+    /**
+     * other bier index
+     */
+    public int brOthIdx;
 
     /**
      * neighbors
@@ -196,11 +226,13 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      *
      * @param parent the isis protocol
      * @param ifc the ip interface to work on
+     * @param oifc the other ip interface to work on
      * @param eth the eth interface to work on
      */
-    public rtrIsisIface(rtrIsis parent, ipFwdIface ifc, ifcEthTyp eth) {
+    public rtrIsisIface(rtrIsis parent, ipFwdIface ifc, ipFwdIface oifc, ifcEthTyp eth) {
         lower = parent;
         iface = ifc;
+        oiface = oifc;
         ethtyp = eth;
         netPnt2pnt = true;
         circuitID = lower.getCircuitId(netPnt2pnt);
@@ -211,6 +243,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         disPriority = 64;
         metric = 10;
         suppressInt = true;
+        othSuppInt = true;
         neighs = new tabGen<rtrIsisNeigh>();
         hwaddr = new addrMac();
         lev1disA = new addrIsis();
@@ -243,6 +276,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      */
     public void routerGetConfig(List<String> l, String beg) {
         l.add(cmds.tabulator + beg + "enable");
+        cmds.cfgLine(l, !otherEna, cmds.tabulator, beg + "other-enable", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !rawEncap, cmds.tabulator, beg + "raw-encapsulation", "");
         l.add(cmds.tabulator + beg + "circuit " + rtrIsis.level2string(circuitLevel));
@@ -256,6 +290,8 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !suppressInt, cmds.tabulator, beg + "suppress-address", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
+        cmds.cfgLine(l, !othSuppInt, cmds.tabulator, beg + "other-suppress-address", "");
+        cmds.cfgLine(l, !othSuppAddr, cmds.tabulator, beg + "other-suppress-prefix", "");
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication));
         l.add(cmds.tabulator + beg + "metric " + metric);
         l.add(cmds.tabulator + beg + "priority " + disPriority);
@@ -287,6 +323,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         if (b) {
             s = beg + "segrout ";
             cmds.cfgLine(l, srIndex < 1, cmds.tabulator, s + "index", "" + srIndex);
+            cmds.cfgLine(l, srOthIdx < 1, cmds.tabulator, s + "other-index", "" + srOthIdx);
             cmds.cfgLine(l, !srNode, cmds.tabulator, s + "node", "");
             cmds.cfgLine(l, !srPop, cmds.tabulator, s + "pop", "");
         }
@@ -300,6 +337,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         if (b) {
             s = beg + "bier ";
             cmds.cfgLine(l, brIndex < 1, cmds.tabulator, s + "index", "" + brIndex);
+            cmds.cfgLine(l, brOthIdx < 1, cmds.tabulator, s + "other-index", "" + brOthIdx);
         }
     }
 
@@ -356,6 +394,16 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             lower.genLsps(1);
             return;
         }
+        if (a.equals("other-suppress-prefix")) {
+            othSuppAddr = true;
+            lower.genLsps(1);
+            return;
+        }
+        if (a.equals("other-suppress-address")) {
+            othSuppInt = true;
+            lower.genLsps(1);
+            return;
+        }
         if (a.equals("hello-time")) {
             helloTimer = bits.str2num(cmd.word());
             restartTimer(false);
@@ -376,6 +424,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         if (a.equals("metric")) {
             metric = bits.str2num(cmd.word());
             lower.genLsps(3);
+            return;
+        }
+        if (a.equals("other-enable")) {
+            otherEna = oiface != null;
+            lower.genLsps(1);
             return;
         }
         if (a.equals("password")) {
@@ -419,6 +472,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
                 lower.genLsps(3);
                 return;
             }
+            if (a.equals("other-index")) {
+                srOthIdx = bits.str2num(cmd.word());
+                lower.genLsps(3);
+                return;
+            }
             if (a.equals("node")) {
                 srNode = true;
                 lower.genLsps(3);
@@ -436,6 +494,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             a = cmd.word();
             if (a.equals("index")) {
                 brIndex = bits.str2num(cmd.word());
+                lower.genLsps(3);
+                return;
+            }
+            if (a.equals("other-index")) {
+                brOthIdx = bits.str2num(cmd.word());
                 lower.genLsps(3);
                 return;
             }
@@ -476,6 +539,21 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             lower.genLsps(1);
             return;
         }
+        if (a.equals("other-enable")) {
+            otherEna = false;
+            lower.genLsps(1);
+            return;
+        }
+        if (a.equals("other-suppress-prefix")) {
+            othSuppAddr = false;
+            lower.genLsps(1);
+            return;
+        }
+        if (a.equals("other-suppress-address")) {
+            othSuppInt = false;
+            lower.genLsps(1);
+            return;
+        }
         if (a.equals("password")) {
             authentication = null;
             return;
@@ -494,6 +572,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             a = cmd.word();
             if (a.equals("index")) {
                 srIndex = 0;
+                lower.genLsps(3);
+                return;
+            }
+            if (a.equals("other-index")) {
+                srOthIdx = 0;
                 lower.genLsps(3);
                 return;
             }
@@ -517,6 +600,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
                 lower.genLsps(3);
                 return;
             }
+            if (a.equals("other-index")) {
+                brOthIdx = 0;
+                lower.genLsps(3);
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -530,6 +618,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      */
     public static void routerGetHelp(userHelping l) {
         l.add("4 .         enable                  enable protocol processing");
+        l.add("4 .         other-enable            enable other protocol processing");
         l.add("4 5         circuit                 set circuit type");
         l.add("5 .           level1                level-1 circuit");
         l.add("5 .           level2                level-2 circuit");
@@ -544,6 +633,8 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add("4 .         suppress-address        do not advertise interface");
         l.add("4 5         metric                  interface metric");
         l.add("5 .           <num>                 metric");
+        l.add("4 .         other-suppress-prefix   do not advertise other interface");
+        l.add("4 .         other-suppress-address  do not advertise other interface");
         l.add("4 5         priority                router priority");
         l.add("5 .           <num>                 priority 0=disable");
         l.add("4 5         hello-time              time between hellos");
@@ -567,10 +658,14 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add("4 5         segrout                 segment routing parameters");
         l.add("5 6           index                 set index");
         l.add("6 .             <num>               index");
+        l.add("5 6           other-index           set other index");
+        l.add("6 .             <num>               index");
         l.add("5 .           node                  set node flag");
         l.add("5 .           pop                   request php");
         l.add("4 5         bier                    bier parameters");
         l.add("5 6           index                 set index");
+        l.add("6 .             <num>               index");
+        l.add("5 6           other-index           set other index");
         l.add("6 .             <num>               index");
     }
 

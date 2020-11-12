@@ -192,7 +192,11 @@ public class rtrIsisDump {
                     dumpExtIsReach(l, tlv, 13);
                     break;
                 case rtrIsisLsp.tlvMultiTopo:
-                    l.add("mt id: " + bits.msbGetW(tlv.valDat, 0));
+                    a = "";
+                    for (int i = 0; i < tlv.valSiz; i += 2) {
+                        a += " " + bits.msbGetW(tlv.valDat, i);
+                    }
+                    l.add("mt id: " + a);
                     break;
                 case rtrIsisLsp.tlvIpv6addr:
                     a = "";

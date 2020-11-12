@@ -220,6 +220,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router isis
         "router isis[4|6] .*! max-area-addrs 3",
         "router isis[4|6] .*! distance 115 115",
+        "router isis[4|6] .*! no afi-other enable",
+        "router isis[4|6] .*! afi-other distance 115 115",
         "router isis[4|6] .*! metric-wide",
         "router isis[4|6] .*! no multi-topology",
         "router isis[4|6] .*! no segrout",
@@ -1336,10 +1338,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 ospf6 = new rtrOspf6(vrf.fwd6, number);
                 break;
             case isis4:
-                isis = new rtrIsis(vrf.fwd4, number);
+                isis = new rtrIsis(vrf.fwd4, vrf.fwd6, number);
                 break;
             case isis6:
-                isis = new rtrIsis(vrf.fwd6, number);
+                isis = new rtrIsis(vrf.fwd6, vrf.fwd4, number);
                 break;
             case pvrp4:
                 pvrp = new rtrPvrp(vrf.fwd4, vrf.udp4, vrf.tcp4, number);
