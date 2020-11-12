@@ -67,6 +67,16 @@ public class shrtPthFrstNode<Ta extends addrType> implements Comparator<shrtPthF
     protected tabRoute<addrIP> prfAdd = new tabRoute<addrIP>("prf");
 
     /**
+     * fixed metric other prefixes
+     */
+    protected tabRoute<addrIP> othFix = new tabRoute<addrIP>("prf");
+
+    /**
+     * cumulative metric other prefixes
+     */
+    protected tabRoute<addrIP> othAdd = new tabRoute<addrIP>("prf");
+
+    /**
      * metric
      */
     protected int metric;

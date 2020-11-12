@@ -1040,7 +1040,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 }
                 addrIP adr = new addrIP();
                 adr.fromIPv4addr(ifc.drAddr);
-                spf.addNextHop(ifc.metric, ifc.drAddr, adr, ifc.iface);
+                spf.addNextHop(ifc.metric, ifc.drAddr, adr, ifc.iface, null, null);
             }
             for (int o = 0; o < ifc.neighs.size(); o++) {
                 rtrOspf4neigh nei = ifc.neighs.get(o);
@@ -1055,7 +1055,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 }
                 addrIP adr = new addrIP();
                 adr.fromIPv4addr(nei.peer);
-                spf.addNextHop(ifc.metric, nei.rtrID, adr, ifc.iface);
+                spf.addNextHop(ifc.metric, nei.rtrID, adr, ifc.iface, null, null);
             }
         }
         tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 8, lower.segrouLab, segrouUsd);

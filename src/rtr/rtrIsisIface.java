@@ -38,7 +38,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     /**
      * the other ip interface this works on
      */
-    protected final ipFwdIface oiface;
+    protected final ipFwdIface oface;
 
     /**
      * the l2 interface this works on
@@ -232,7 +232,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     public rtrIsisIface(rtrIsis parent, ipFwdIface ifc, ipFwdIface oifc, ifcEthTyp eth) {
         lower = parent;
         iface = ifc;
-        oiface = oifc;
+        oface = oifc;
         ethtyp = eth;
         netPnt2pnt = true;
         circuitID = lower.getCircuitId(netPnt2pnt);
@@ -427,7 +427,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             return;
         }
         if (a.equals("other-enable")) {
-            otherEna = oiface != null;
+            otherEna = oface != null;
             lower.genLsps(1);
             return;
         }
@@ -1233,12 +1233,15 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
 
     private void writeHelloTlvs(packHolder pck) {
         typLenVal tlv = rtrIsis.getTlv();
-        tlv.putBytes(pck, rtrIsisLsp.tlvProtSupp, lower.getNLPIDlst());
+        tlv.putBytes(pck, rtrIsisLsp.tlvProtSupp, lower.getNLPIDlst(otherEna));
         if (lower.multiTopo) {
-            tlv.putBytes(pck, rtrIsisLsp.tlvMultiTopo, lower.getMTopoLst());
+            tlv.putBytes(pck, rtrIsisLsp.tlvMultiTopo, lower.getMTopoLst(otherEna, 0));
         }
         tlv.putBytes(pck, rtrIsisLsp.tlvAreaAddr, lower.areaID.getAddrDat(true));
-        lower.putAddrIface(iface.addr).putThis(pck);
+        lower.putAddrIface(false, iface.addr).putThis(pck);
+        if (otherEna) {
+            lower.putAddrIface(true, oface.addr).putThis(pck);
+        }
         if (authentication == null) {
             return;
         }

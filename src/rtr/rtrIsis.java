@@ -295,10 +295,11 @@ public class rtrIsis extends ipRtr {
     /**
      * get nlpid value
      *
+     * @param other other afi
      * @return nlpid
      */
-    protected int getNLPIDval() {
-        if (fwdCore.ipVersion == ipCor4.protocolVersion) {
+    protected int getNLPIDval(boolean other) {
+        if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
             return ipCor4.protocolNLPID;
         } else {
             return ipCor6.protocolNLPID;
@@ -308,21 +309,30 @@ public class rtrIsis extends ipRtr {
     /**
      * get nlpid list
      *
+     * @param other other afi also
      * @return nlpid
      */
-    protected byte[] getNLPIDlst() {
-        byte[] buf = new byte[1];
-        buf[0] = (byte) getNLPIDval();
+    protected byte[] getNLPIDlst(boolean other) {
+        byte[] buf;
+        if (!other) {
+            buf = new byte[1];
+            buf[0] = (byte) getNLPIDval(false);
+        } else {
+            buf = new byte[2];
+            buf[0] = (byte) getNLPIDval(false);
+            buf[1] = (byte) getNLPIDval(true);
+        }
         return buf;
     }
 
     /**
      * get multi topology value
      *
+     * @param other other afi
      * @return mt
      */
-    protected int getMTopoVal() {
-        if (fwdCore.ipVersion == ipCor4.protocolVersion) {
+    protected int getMTopoVal(boolean other) {
+        if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
             return 0;
         } else {
             return 2;
@@ -332,11 +342,20 @@ public class rtrIsis extends ipRtr {
     /**
      * get multi topology list
      *
+     * @param other other afi also
+     * @param flg flags
      * @return mt
      */
-    protected byte[] getMTopoLst() {
-        byte[] buf = new byte[2];
-        bits.msbPutW(buf, 0, getMTopoVal());
+    protected byte[] getMTopoLst(boolean other, int flg) {
+        byte[] buf;
+        if (!other) {
+            buf = new byte[2];
+            bits.msbPutW(buf, 0, getMTopoVal(false) | flg);
+        } else {
+            buf = new byte[4];
+            bits.msbPutW(buf, 0, getMTopoVal(false) | flg);
+            bits.msbPutW(buf, 2, getMTopoVal(true) | flg);
+        }
         return buf;
     }
 
@@ -414,10 +433,11 @@ public class rtrIsis extends ipRtr {
     /**
      * get default route
      *
+     * @param other other afi
      * @return prefix
      */
-    protected addrPrefix<addrIP> getDefaultRoute() {
-        if (fwdCore.ipVersion == ipCor4.protocolVersion) {
+    protected addrPrefix<addrIP> getDefaultRoute(boolean other) {
+        if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
             return addrPrefix.ip4toIP(addrPrefix.defaultRoute4());
         } else {
             return addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
@@ -427,13 +447,14 @@ public class rtrIsis extends ipRtr {
     /**
      * read interface addresses
      *
+     * @param other other afi
      * @param tlv tlv to read
      * @return addresses, null if nothing
      */
-    protected tabGen<addrIP> getAddrIface(typLenVal tlv) {
+    protected tabGen<addrIP> getAddrIface(boolean other, typLenVal tlv) {
         tabGen<addrIP> l = new tabGen<addrIP>();
         addrIP adr = new addrIP();
-        if (fwdCore.ipVersion == ipCor4.protocolVersion) {
+        if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
             if (tlv.valTyp != rtrIsisLsp.tlvIpv4addr) {
                 return null;
             }
@@ -462,11 +483,12 @@ public class rtrIsis extends ipRtr {
     /**
      * read interface address
      *
+     * @param other other afi
      * @param tlv tlv to read
      * @param trg where to save address
      */
-    protected void getAddrIface(typLenVal tlv, addrIP trg) {
-        tabGen<addrIP> lst = getAddrIface(tlv);
+    protected void getAddrIface(boolean other, typLenVal tlv, addrIP trg) {
+        tabGen<addrIP> lst = getAddrIface(other, tlv);
         if (lst == null) {
             return;
         }
@@ -480,12 +502,13 @@ public class rtrIsis extends ipRtr {
     /**
      * write interface address
      *
+     * @param other other afi
      * @param adr address to write
      * @return generated tlv
      */
-    protected typLenVal putAddrIface(addrIP adr) {
+    protected typLenVal putAddrIface(boolean other, addrIP adr) {
         typLenVal tlv = getTlv();
-        if (fwdCore.ipVersion == ipCor4.protocolVersion) {
+        if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
             addrIPv4 a = adr.toIPv4();
             tlv.valTyp = rtrIsisLsp.tlvIpv4addr;
             tlv.valSiz = addrIPv4.size;
@@ -580,14 +603,14 @@ public class rtrIsis extends ipRtr {
      * @param tlv tlv to read
      * @return addresses, null if nothing
      */
-    protected tabGen<tabRouteEntry<addrIP>> getAddrReach(typLenVal tlv) {
+    protected tabGen<tabRouteEntry<addrIP>> getAddrReach(boolean other, typLenVal tlv) {
         tabGen<tabRouteEntry<addrIP>> l = new tabGen<tabRouteEntry<addrIP>>();
-        if (fwdCore.ipVersion != ipCor4.protocolVersion) {
+        if (other ^ (fwdCore.ipVersion != ipCor4.protocolVersion)) {
             if (multiTopo) {
                 if (tlv.valTyp != rtrIsisLsp.tlvMtIpv6reach) {
                     return null;
                 }
-                if ((bits.msbGetW(tlv.valDat, 0) & 0xfff) != getMTopoVal()) {
+                if ((bits.msbGetW(tlv.valDat, 0) & 0xfff) != getMTopoVal(other)) {
                     return null;
                 }
                 for (int i = 2; i < tlv.valSiz;) {
@@ -611,7 +634,7 @@ public class rtrIsis extends ipRtr {
             if (tlv.valTyp != rtrIsisLsp.tlvMtIpv4reach) {
                 return null;
             }
-            if ((bits.msbGetW(tlv.valDat, 0) & 0xfff) != getMTopoVal()) {
+            if ((bits.msbGetW(tlv.valDat, 0) & 0xfff) != getMTopoVal(other)) {
                 return null;
             }
             for (int i = 2; i < tlv.valSiz;) {
@@ -726,19 +749,20 @@ public class rtrIsis extends ipRtr {
     /**
      * write reachable address
      *
+     * @param other other afi
      * @param pref address to write
      * @param flg flags, 1=ext, 2=updown
      * @param met metric
      * @param subs subtlvs
      * @return generated tlv
      */
-    protected typLenVal putAddrReach(addrPrefix<addrIP> pref, int flg, int met, byte[] subs) {
+    protected typLenVal putAddrReach(boolean other, addrPrefix<addrIP> pref, int flg, int met, byte[] subs) {
         final boolean down = (flg & 2) != 0;
         final boolean ext = (flg & 1) != 0;
         typLenVal tlv = getTlv();
-        if (fwdCore.ipVersion != ipCor4.protocolVersion) {
+        if (other ^ (fwdCore.ipVersion != ipCor4.protocolVersion)) {
             if (multiTopo) {
-                bits.msbPutW(tlv.valDat, 0, getMTopoVal());
+                bits.msbPutW(tlv.valDat, 0, getMTopoVal(other));
                 putAddrReach6(tlv, 2, addrPrefix.ip2ip6(pref), ext, down, met, subs);
                 tlv.valTyp = rtrIsisLsp.tlvMtIpv6reach;
                 return tlv;
@@ -748,7 +772,7 @@ public class rtrIsis extends ipRtr {
             return tlv;
         }
         if (multiTopo) {
-            bits.msbPutW(tlv.valDat, 0, getMTopoVal());
+            bits.msbPutW(tlv.valDat, 0, getMTopoVal(other));
             putAddrReach4(tlv, 2, addrPrefix.ip2ip4(pref), down, met, subs);
             tlv.valTyp = rtrIsisLsp.tlvMtIpv4reach;
             return tlv;
@@ -802,7 +826,7 @@ public class rtrIsis extends ipRtr {
                 default:
                     return null;
             }
-            if ((bits.msbGetW(tlv.valDat, 0) & 0xfff) != getMTopoVal()) {
+            if ((bits.msbGetW(tlv.valDat, 0) & 0xfff) != getMTopoVal(false)) {
                 return null;
             }
             for (int i = 2; i < tlv.valSiz;) {
@@ -861,7 +885,7 @@ public class rtrIsis extends ipRtr {
     protected typLenVal putISneigh(addrIsis nei, int nod, int met, byte[] subs) {
         typLenVal tlv = getTlv();
         if (multiTopo) {
-            bits.msbPutW(tlv.valDat, 0, getMTopoVal());
+            bits.msbPutW(tlv.valDat, 0, getMTopoVal(false));
             putISneighE(tlv, 2, nei, nod, met, subs);
             tlv.valTyp = rtrIsisLsp.tlvMtIsNeigh;
             return tlv;
@@ -1088,6 +1112,19 @@ public class rtrIsis extends ipRtr {
         l.add("3 .       <name>                  name of prefix list");
         l.add("2 3     prefix-list-into          filter prefixes into this level");
         l.add("3 .       <name>                  name of prefix list");
+        l.add("2 .     other-default-originate   advertise default route");
+        l.add("2 3     other-route-map-from      process prefixes from this level");
+        l.add("3 .       <name>                  name of route map");
+        l.add("2 3     other-route-map-into      process prefixes into this level");
+        l.add("3 .       <name>                  name of route map");
+        l.add("2 3     other-route-policy-from   process prefixes from this level");
+        l.add("3 .       <name>                  name of route policy");
+        l.add("2 3     other-route-policy-into   process prefixes into this level");
+        l.add("3 .       <name>                  name of route policy");
+        l.add("2 3     other-prefix-list-from    filter prefixes from this level");
+        l.add("3 .       <name>                  name of prefix list");
+        l.add("2 3     other-prefix-list-into    filter prefixes into this level");
+        l.add("3 .       <name>                  name of prefix list");
     }
 
     /**
@@ -1298,6 +1335,7 @@ public class rtrIsis extends ipRtr {
         cmds.cfgLine(l, !lev.hostname, beg, s + "hostname", "");
         cmds.cfgLine(l, !lev.interLevels, beg, s + "inter-level", "");
         cmds.cfgLine(l, !lev.defOrigin, beg, s + "default-originate", "");
+        cmds.cfgLine(l, !lev.odefOrigin, beg, s + "other-default-originate", "");
         l.add(beg + s + "lsp-mtu " + lev.maxLspSize);
         cmds.cfgLine(l, lev.lspPassword == null, beg, s + "lsp-password", authLocal.passwdEncode("" + lev.lspPassword));
         l.add(beg + s + "lsp-refresh " + lev.lspRefresh);
@@ -1308,6 +1346,12 @@ public class rtrIsis extends ipRtr {
         cmds.cfgLine(l, lev.roumapInto == null, beg, s + "route-map-into", "" + lev.roumapInto);
         cmds.cfgLine(l, lev.roupolFrom == null, beg, s + "route-policy-from", "" + lev.roupolFrom);
         cmds.cfgLine(l, lev.roupolInto == null, beg, s + "route-policy-into", "" + lev.roupolInto);
+        cmds.cfgLine(l, lev.oprflstFrom == null, beg, s + "other-prefix-list-from", "" + lev.oprflstFrom);
+        cmds.cfgLine(l, lev.oprflstInto == null, beg, s + "other-prefix-list-into", "" + lev.oprflstInto);
+        cmds.cfgLine(l, lev.oroumapFrom == null, beg, s + "other-route-map-from", "" + lev.oroumapFrom);
+        cmds.cfgLine(l, lev.oroumapInto == null, beg, s + "other-route-map-into", "" + lev.oroumapInto);
+        cmds.cfgLine(l, lev.oroupolFrom == null, beg, s + "other-route-policy-from", "" + lev.oroupolFrom);
+        cmds.cfgLine(l, lev.oroupolInto == null, beg, s + "other-route-policy-into", "" + lev.oroupolInto);
     }
 
     /**
@@ -1431,6 +1475,11 @@ public class rtrIsis extends ipRtr {
             lev.schedWork(3);
             return false;
         }
+        if (s.equals("other-default-originate")) {
+            lev.odefOrigin = !negated;
+            lev.schedWork(3);
+            return false;
+        }
         if (s.equals("inter-level")) {
             lev.interLevels = !negated;
             lev.schedWork(3);
@@ -1526,6 +1575,96 @@ public class rtrIsis extends ipRtr {
             lev.schedWork(3);
             return false;
         }
+        if (s.equals("other-prefix-list-from")) {
+            if (negated) {
+                lev.oprflstFrom = null;
+                lev.schedWork(7);
+                return false;
+            }
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return false;
+            }
+            lev.oprflstFrom = ntry.prflst;
+            lev.schedWork(7);
+            return false;
+        }
+        if (s.equals("other-prefix-list-into")) {
+            if (negated) {
+                lev.oprflstInto = null;
+                lev.schedWork(3);
+                return false;
+            }
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return false;
+            }
+            lev.oprflstInto = ntry.prflst;
+            lev.schedWork(3);
+            return false;
+        }
+        if (s.equals("other-route-map-from")) {
+            if (negated) {
+                lev.oroumapFrom = null;
+                lev.schedWork(7);
+                return false;
+            }
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            lev.oroumapFrom = ntry.roumap;
+            lev.schedWork(7);
+            return false;
+        }
+        if (s.equals("other-route-map-into")) {
+            if (negated) {
+                lev.oroumapInto = null;
+                lev.schedWork(3);
+                return false;
+            }
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            lev.oroumapInto = ntry.roumap;
+            lev.schedWork(3);
+            return false;
+        }
+        if (s.equals("other-route-policy-from")) {
+            if (negated) {
+                lev.oroupolFrom = null;
+                lev.schedWork(7);
+                return false;
+            }
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return false;
+            }
+            lev.oroupolFrom = ntry.rouplc;
+            lev.schedWork(7);
+            return false;
+        }
+        if (s.equals("other-route-policy-into")) {
+            if (negated) {
+                lev.oroupolInto = null;
+                lev.schedWork(3);
+                return false;
+            }
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return false;
+            }
+            lev.oroupolInto = ntry.rouplc;
+            lev.schedWork(3);
+            return false;
+        }
         return true;
     }
 
@@ -1607,7 +1746,7 @@ public class rtrIsis extends ipRtr {
      * @return list of neighbors
      */
     public userFormat showNeighs() {
-        userFormat l = new userFormat("|", "interface|mac address|level|routerid|ip address|state|uptime");
+        userFormat l = new userFormat("|", "interface|mac address|level|routerid|ip address|other address|state|uptime");
         for (int o = 0; o < ifaces.size(); o++) {
             rtrIsisIface ifc = ifaces.get(o);
             if (ifc == null) {
@@ -1618,7 +1757,7 @@ public class rtrIsis extends ipRtr {
                 if (nei == null) {
                     continue;
                 }
-                l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + nei.peerAdjState + "|" + bits.timePast(nei.upTime));
+                l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + nei.ofcAddr + "|" + nei.peerAdjState + "|" + bits.timePast(nei.upTime));
             }
         }
         return l;

@@ -726,7 +726,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (ifc.acceptMetric) {
                     met = nei.gotMet;
                 }
-                spf.addNextHop(met, nei.rtrId, nei.peer.copyBytes(), ifc.iface);
+                spf.addNextHop(met, nei.rtrId, nei.peer, ifc.iface, null, null);
             }
         }
         tabRoute<addrIP> tab1 = spf.getRoutes(fwdCore, 6, segrouLab, segrouUsd);

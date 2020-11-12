@@ -158,6 +158,12 @@ public class shrtPthFrst<Ta extends addrType> {
             for (int i = 0; i < nod.prfFix.size(); i++) {
                 res.addPref(nod.name, nod.prfFix.get(i), true);
             }
+            for (int i = 0; i < nod.othAdd.size(); i++) {
+                res.addOpref(nod.name, nod.othAdd.get(i), false);
+            }
+            for (int i = 0; i < nod.othFix.size(); i++) {
+                res.addOpref(nod.name, nod.othFix.get(i), true);
+            }
             res.addIdent(nod.name, nod.ident);
             res.addSegRouB(nod.name, nod.srBeg);
             res.addSegRouI(nod.name, nod.srIdx);
@@ -207,25 +213,34 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param nod node to add
      * @param hop hop to add
      * @param ifc interface number
-     * @return true on error, false on success
+     * @param ohop other hop to add
+     * @param oifc other interface number
      */
-    public boolean addNextHop(int met, Ta nod, addrIP hop, tabRouteIface ifc) {
+    public void addNextHop(int met, Ta nod, addrIP hop, tabRouteIface ifc, addrIP ohop, tabRouteIface oifc) {
         shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
         ntry = nodes.find(ntry);
         if (ntry == null) {
-            return true;
+            return;
         }
         if (ntry.uplinks == null) {
-            return true;
+            return;
+        }
+        if (hop != null) {
+            hop = hop.copyBytes();
+        }
+        if (ohop != null) {
+            ohop = ohop.copyBytes();
         }
         if (met > ntry.nxtMet) {
-            return false;
+            return;
         }
         if (met < ntry.nxtMet) {
             for (int i = 0; i < ntry.uplinks.size(); i++) {
                 shrtPthFrstRes<Ta> upl = ntry.uplinks.get(i);
                 upl.nxtHop = null;
                 upl.iface = null;
+                upl.othHop = null;
+                upl.oface = null;
             }
             ntry.nxtMet = met;
         }
@@ -239,9 +254,10 @@ public class shrtPthFrst<Ta extends addrType> {
             }
             upl.nxtHop = hop;
             upl.iface = ifc;
-            return false;
+            upl.othHop = ohop;
+            upl.oface = oifc;
+            return;
         }
-        return true;
     }
 
     /**
@@ -261,6 +277,26 @@ public class shrtPthFrst<Ta extends addrType> {
             ntry.prfFix.add(tabRoute.addType.ecmp, rou, false, false);
         } else {
             ntry.prfAdd.add(tabRoute.addType.ecmp, rou, false, false);
+        }
+    }
+
+    /**
+     * add other prefix
+     *
+     * @param nod node to add
+     * @param rou route
+     * @param fix fixed metric
+     */
+    public void addOpref(Ta nod, tabRouteEntry<addrIP> rou, boolean fix) {
+        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
+        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        if (fix) {
+            ntry.othFix.add(tabRoute.addType.ecmp, rou, false, false);
+        } else {
+            ntry.othAdd.add(tabRoute.addType.ecmp, rou, false, false);
         }
     }
 
@@ -350,6 +386,16 @@ public class shrtPthFrst<Ta extends addrType> {
             rou.best.segrouIdx = idx;
             rou.best.rouSrc |= src;
         }
+        rou = ntry.othFix.find(pref);
+        if (rou != null) {
+            rou.best.segrouIdx = idx;
+            rou.best.rouSrc |= src;
+        }
+        rou = ntry.othAdd.find(pref);
+        if (rou != null) {
+            rou.best.segrouIdx = idx;
+            rou.best.rouSrc |= src;
+        }
     }
 
     /**
@@ -418,6 +464,16 @@ public class shrtPthFrst<Ta extends addrType> {
             rou.best.bierHdr = hdr;
         }
         rou = ntry.prfAdd.find(pref);
+        if (rou != null) {
+            rou.best.bierIdx = idx;
+            rou.best.bierHdr = hdr;
+        }
+        rou = ntry.othFix.find(pref);
+        if (rou != null) {
+            rou.best.bierIdx = idx;
+            rou.best.bierHdr = hdr;
+        }
+        rou = ntry.othAdd.find(pref);
         if (rou != null) {
             rou.best.bierIdx = idx;
             rou.best.bierHdr = hdr;
@@ -498,6 +554,8 @@ public class shrtPthFrst<Ta extends addrType> {
                 }
                 diffPrefix(cn.name, cn.prfAdd, on.prfAdd);
                 diffPrefix(cn.name, cn.prfFix, on.prfFix);
+                diffPrefix(cn.name, cn.othAdd, on.othAdd);
+                diffPrefix(cn.name, cn.othFix, on.othFix);
             }
             prev = null;
         }
@@ -642,6 +700,8 @@ public class shrtPthFrst<Ta extends addrType> {
                 shrtPthFrstRes<Ta> out = new shrtPthFrstRes<Ta>(cur.nodeH, hops);
                 out.iface = upl.iface;
                 out.nxtHop = upl.nxtHop;
+                out.oface = upl.oface;
+                out.othHop = upl.othHop;
                 out.srBeg = cur.nodeH.srBeg;
                 out.brBeg = cur.nodeH.brBeg;
                 res.add(out);
@@ -739,6 +799,7 @@ public class shrtPthFrst<Ta extends addrType> {
             per.ned = msk.shiftRight(1);
             res.peers.add(per);
         }
+//////////////////////////////
         return res;
     }
 
@@ -934,6 +995,8 @@ public class shrtPthFrst<Ta extends addrType> {
                 res.add("reachhop|" + upl.hops);
                 res.add("reachvia|" + upl.nxtHop);
                 res.add("reachifc|" + upl.iface);
+                res.add("reachothvia|" + upl.othHop);
+                res.add("reachothifc|" + upl.oface);
             }
         }
         res.add("reachmet|" + ntry.metric);
@@ -1279,6 +1342,18 @@ public class shrtPthFrst<Ta extends addrType> {
             }
             for (int i = 0; i < nod.prfAdd.size(); i++) {
                 tabRouteEntry<addrIP> rou = nod.prfAdd.get(i);
+                listLinStateHdr(tlv, pck, prt, 3);
+                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                listLinStatePrf(tab, tlv, pck, hlp, rou);
+            }
+            for (int i = 0; i < nod.othFix.size(); i++) {
+                tabRouteEntry<addrIP> rou = nod.othFix.get(i);
+                listLinStateHdr(tlv, pck, prt, 3);
+                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                listLinStatePrf(tab, tlv, pck, hlp, rou);
+            }
+            for (int i = 0; i < nod.othAdd.size(); i++) {
+                tabRouteEntry<addrIP> rou = nod.othAdd.get(i);
                 listLinStateHdr(tlv, pck, prt, 3);
                 listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
                 listLinStatePrf(tab, tlv, pck, hlp, rou);

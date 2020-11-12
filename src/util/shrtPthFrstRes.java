@@ -34,9 +34,19 @@ public class shrtPthFrstRes<Ta extends addrType> implements Comparator<shrtPthFr
     public addrIP nxtHop;
 
     /**
+     * other nexthop address
+     */
+    public addrIP othHop;
+
+    /**
      * forwarding interface
      */
     public tabRouteIface iface;
+
+    /**
+     * other forwarding interface
+     */
+    public tabRouteIface oface;
 
     /**
      * segrou base

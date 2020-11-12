@@ -1151,7 +1151,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 if (ifc.drAddr.isEmpty()) {
                     continue;
                 }
-                spf.addNextHop(ifc.metric, new rtrOspf6areaSpf(ifc.drAddr, ifc.DRintId()), ifc.DRintAdr(), ifc.iface);
+                spf.addNextHop(ifc.metric, new rtrOspf6areaSpf(ifc.drAddr, ifc.DRintId()), ifc.DRintAdr(), ifc.iface, null, null);
             }
             for (int o = 0; o < ifc.neighs.size(); o++) {
                 rtrOspf6neigh nei = ifc.neighs.get(o);
@@ -1166,7 +1166,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 }
                 addrIP adr = new addrIP();
                 adr.fromIPv6addr(nei.peer);
-                spf.addNextHop(ifc.metric, new rtrOspf6areaSpf(nei.rtrID, 0), adr, ifc.iface);
+                spf.addNextHop(ifc.metric, new rtrOspf6areaSpf(nei.rtrID, 0), adr, ifc.iface, null, null);
             }
         }
         tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 9, lower.segrouLab, segrouUsd);

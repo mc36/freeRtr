@@ -32,9 +32,12 @@ public class rtrIsisOther extends ipRtr {
      */
     public int distantInt;
 
-    private final rtrIsis parent;
+    /**
+     * forwarding core
+     */
+    protected final ipFwd fwd;
 
-    private final ipFwd fwd;
+    private final rtrIsis parent;
 
     /**
      * unregister from ip

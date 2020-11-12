@@ -40,6 +40,11 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
     protected addrIP ifcAddr;
 
     /**
+     * peer interface other address
+     */
+    protected addrIP ofcAddr;
+
+    /**
      * hold time
      */
     protected int holdTime;
@@ -93,6 +98,11 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
      * segment routing label
      */
     protected tabLabelNtry segrouLab;
+
+    /**
+     * segment routing other label
+     */
+    protected tabLabelNtry segrouOth;
 
     /**
      * the level
@@ -310,6 +320,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         iface.iface.bfdDel(ifcAddr, this);
         peerAdjState = statDown;
         tabLabel.release(segrouLab, 15);
+        tabLabel.release(segrouOth, 15);
         level.schedWork(7);
         need2run = false;
         iface.neighs.del(this);
@@ -428,7 +439,9 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         foreignArea = false;
         peerExtCirc = 0;
         ifcAddr = new addrIP();
+        ofcAddr = new addrIP();
         boolean protoSupp = false;
+        boolean otherSupp = false;
         boolean areaAddr = false;
         boolean seenOwn = false;
         byte[] remAuth = null;
@@ -442,8 +455,12 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
                     peerExtCirc = bits.msbGetD(tlv.valDat, 1); // circuit id
                     break;
                 case rtrIsisLsp.tlvProtSupp:
+                    int protoId = lower.getNLPIDval(false);
+                    int otherId = lower.getNLPIDval(true);
                     for (int i = 0; i < tlv.valSiz; i++) {
-                        protoSupp |= bits.getByte(tlv.valDat, i) == lower.getNLPIDval();
+                        int currId = bits.getByte(tlv.valDat, i);
+                        protoSupp |= currId == protoId;
+                        otherSupp |= currId == otherId;
                     }
                     break;
                 case rtrIsisLsp.tlvAuthen:
@@ -462,7 +479,8 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
                     break;
                 case rtrIsisLsp.tlvIpv4addr:
                 case rtrIsisLsp.tlvIpv6addr:
-                    lower.getAddrIface(tlv, ifcAddr);
+                    lower.getAddrIface(false, tlv, ifcAddr);
+                    lower.getAddrIface(true, tlv, ofcAddr);
                     break;
                 case rtrIsisLsp.tlvLanNeigh:
                     for (int i = 0; i < tlv.valSiz;) {
@@ -500,7 +518,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         }
         if (!protoSupp) {
             peerAdjState = statDown;
-            logger.info("got bad protocol from l" + level.level + " " + ethAddr);
+            logger.info("got no protocol from l" + level.level + " " + ethAddr);
             iface.cntr.drop(pck, counter.reasons.badProto);
             return;
         }
@@ -513,6 +531,24 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         if (!iface.iface.network.matches(ifcAddr)) {
             logger.info("got from out of subnet peer " + ifcAddr);
             return;
+        }
+        if (iface.otherEna) {
+            if (!otherSupp) {
+                peerAdjState = statDown;
+                logger.info("got no other protocol from l" + level.level + " " + ethAddr);
+                iface.cntr.drop(pck, counter.reasons.badProto);
+                return;
+            }
+            if (ofcAddr.isFilled(0)) {
+                peerAdjState = statDown;
+                logger.info("got no other address from l" + level.level + " " + ethAddr);
+                iface.cntr.drop(pck, counter.reasons.badAddr);
+                return;
+            }
+            if (!iface.oface.network.matches(ofcAddr)) {
+                logger.info("got from out of subnet peer " + ofcAddr);
+                return;
+            }
         }
         if ((level.level == 1) && (!areaAddr)) {
             peerAdjState = statDown;
@@ -530,6 +566,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             logger.error("neighbor l" + level.level + " " + ifcAddr + " forgot us");
             iface.iface.bfdDel(ifcAddr, this);
             tabLabel.release(segrouLab, 15);
+            tabLabel.release(segrouOth, 15);
             peerAdjState = statDown;
             level.schedWork(7);
             return;
@@ -539,6 +576,10 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         if (lower.segrouLab != null) {
             segrouLab = tabLabel.allocate(15);
             segrouLab.setFwdMpls(15, lower.fwdCore, iface.iface, ifcAddr, tabLabel.int2labels(ipMpls.labelImp));
+            if (iface.otherEna) {
+                segrouOth = tabLabel.allocate(15);
+                segrouOth.setFwdMpls(15, lower.other.fwd, iface.oface, ofcAddr, tabLabel.int2labels(ipMpls.labelImp));
+            }
         }
         level.schedWork(7);
         if (iface.bfdTrigger) {

@@ -64,6 +64,9 @@ public class rtrIsisSr {
         } else {
             tlv.valDat[7] = (byte) 0x40; // flags
         }
+        if (lower.other.enabled) {
+            tlv.valDat[7] = (byte) 0xc0; // flags
+        }
         bits.msbPutD(tlv.valDat, 8, lower.segrouMax << 8); // range
         tlv.valDat[11] = 1; // type
         tlv.valDat[12] = 3; // length
