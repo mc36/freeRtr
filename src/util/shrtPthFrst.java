@@ -799,7 +799,6 @@ public class shrtPthFrst<Ta extends addrType> {
             per.ned = msk.shiftRight(1);
             res.peers.add(per);
         }
-//////////////////////////////
         return res;
     }
 

@@ -1521,15 +1521,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             int bsl = tabLabelBier.bsl2num(lab.bier.bsl);
             int sis = bsl * pck.BIERsi;
+            boolean nedLoc = false;
             int i = lab.bier.idx - 1 - sis;
-            boolean nedLoc;
             if ((i >= 0) && (i < bsl)) {
-                nedLoc = pck.BIERbs.testBit(i);
-                if (nedLoc) {
-                    pck.BIERbs = pck.BIERbs.clearBit(i);
-                }
-            } else {
-                nedLoc = false;
+                nedLoc |= pck.BIERbs.testBit(i);
+                pck.BIERbs = pck.BIERbs.clearBit(i);
+            }
+            i = lab.bier.idx2 - 1 - sis;
+            if ((i >= 0) && (i < bsl)) {
+                nedLoc |= pck.BIERbs.testBit(i);
+                pck.BIERbs = pck.BIERbs.clearBit(i);
             }
             for (i = 0; i < lab.bier.peers.size(); i++) {
                 tabLabelBierN ntry = lab.bier.peers.get(i);

@@ -748,7 +748,6 @@ public class rtrLsrp extends ipRtr implements Runnable {
         if (bierLab != null) {
             tabLabelBier res = spf.getBierI();
             res.base = bierLab[0].getValue();
-            res.fwdr = fwdCore;
             res.bsl = tabLabelBier.num2bsl(bierLen);
             res.idx = bierIdx;
             if (bierIdx < 1) {

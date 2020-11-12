@@ -28,9 +28,9 @@ public class tabLabelBier {
     public int idx;
 
     /**
-     * forwarder instance
+     * second own index
      */
-    public ipFwd fwdr = null;
+    public int idx2;
 
     /**
      * forwarder peers
@@ -100,10 +100,12 @@ public class tabLabelBier {
             }
             peers.add(ntry);
         }
-        if (idx != 0) {
-            return;
+        if (idx == 0) {
+            idx = src.idx;
         }
-        idx = src.idx;
+        if (idx2 == 0) {
+            idx2 = src.idx2;
+        }
     }
 
     /**
@@ -116,7 +118,7 @@ public class tabLabelBier {
         lst.add("bier base|" + base);
         lst.add("bier bsl|" + bsl + "-" + bsl2num(bsl));
         lst.add("bier idx|" + idx);
-        lst.add("bier fwdr|" + fwdr);
+        lst.add("bier idx2|" + idx2);
         for (int i = 0; i < peers.size(); i++) {
             lst.add("bier peer|" + peers.get(i));
         }

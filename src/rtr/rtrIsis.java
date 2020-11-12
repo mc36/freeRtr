@@ -1004,22 +1004,24 @@ public class rtrIsis extends ipRtr {
         }
         if (bierLab != null) {
             int o = 0;
-            for (int i = 0; i < ifaces.size(); i++) {
+            int p = 0;
+            for (int i = ifaces.size() - 1; i >= 0; i--) {
                 rtrIsisIface ifc = ifaces.get(i);
                 if (ifc == null) {
                     continue;
                 }
-                if (ifc.brIndex < 1) {
-                    continue;
+                if (ifc.brIndex > 0) {
+                    o = ifc.brIndex;
                 }
-                o = ifc.brIndex;
-                break;
+                if (ifc.brOthIdx > 0) {
+                    p = ifc.brOthIdx;
+                }
             }
             tabLabelBier res = new tabLabelBier();
             res.base = bierLab[0].getValue();
-            res.fwdr = fwdCore;
             res.bsl = tabLabelBier.num2bsl(bierLen);
             res.idx = o;
+            res.idx2 = p;
             res.mergeFrom(level1.bierRes);
             res.mergeFrom(level2.bierRes);
             for (int i = 0; i < bierLab.length; i++) {

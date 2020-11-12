@@ -198,7 +198,6 @@ public class rtrOspf4 extends ipRtr {
             }
             tabLabelBier res = new tabLabelBier();
             res.base = bierLab[0].getValue();
-            res.fwdr = fwdCore;
             res.bsl = tabLabelBier.num2bsl(bierLen);
             res.idx = o;
             for (int i = 0; i < areas.size(); i++) {
