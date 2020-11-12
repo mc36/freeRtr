@@ -95,13 +95,11 @@ int eth2.11
  vrf for v1
  ipv4 addr 1.1.1.5 255.255.255.252
  router isis4 1 ena
- router isis4 1 metric 50
  exit
 int eth2.12
  vrf for v1
  ipv6 addr 1234:2::1 ffff:ffff::
  router isis6 1 ena
- router isis6 1 metric 50
  exit
 !
 
@@ -142,10 +140,6 @@ int eth1.12
  vrf for v1
  ipv6 addr 1234:2::2 ffff:ffff::
  router isis6 1 ena
- exit
-server telnet tel
- vrf v1
- port 666
  exit
 !
 

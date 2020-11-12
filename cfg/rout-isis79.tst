@@ -1,4 +1,4 @@
-description isis inter level ingress filtering with prefixlist
+description integrated isis inter level ingress filtering with routepolicy
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -11,12 +11,8 @@ router isis4 1
  net 22.4444.0000.1111.00
  is-type level2
  red conn
- exit
-router isis6 1
- vrf v1
- net 22.6666.0000.1111.00
- is-type level2
- red conn
+ afi-other enable
+ afi-other red conn
  exit
 int lo1
  vrf for v1
@@ -28,15 +24,12 @@ int lo2
  ipv4 addr 2.2.2.11 255.255.255.255
  ipv6 addr 4321::11 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.11
+int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
- router isis4 1 ena
- exit
-int eth1.12
- vrf for v1
  ipv6 addr 1234:1::1 ffff:ffff::
- router isis6 1 ena
+ router isis4 1 ena
+ router isis4 1 other-ena
  exit
 !
 
@@ -47,25 +40,28 @@ int eth2 eth 0000.0000.2222 $2a$ $2b$
 vrf def v1
  rd 1:1
  exit
-prefix-list p4
- sequence 10 deny 2.2.2.8/29 le 32
- sequence 20 permit 0.0.0.0/0 le 32
+route-policy p4
+ if network 2.2.2.8/29 le 32
+  drop
+ else
+  pass
+ enif
  exit
-prefix-list p6
- sequence 10 deny 4321::10/124 le 128
- sequence 20 permit ::/0 le 128
- exit
-router isis4 1
- vrf v1
- net 22.4444.0000.2222.00
- red conn
- both prefix-list-from p4
+route-policy p6
+ if network 4321::10/124 le 128
+  drop
+ else
+  pass
+ enif
  exit
 router isis6 1
  vrf v1
  net 22.6666.0000.2222.00
  red conn
- both prefix-list-from p6
+ afi-other enable
+ afi-other red conn
+ both route-policy-from p6
+ both other-route-policy-from p4
  exit
 int lo1
  vrf for v1
@@ -77,25 +73,19 @@ int lo2
  ipv4 addr 2.2.2.12 255.255.255.255
  ipv6 addr 4321::12 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.11
+int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
- router isis4 1 ena
- exit
-int eth1.12
- vrf for v1
  ipv6 addr 1234:1::2 ffff:ffff::
  router isis6 1 ena
+ router isis6 1 other-ena
  exit
-int eth2.11
+int eth2
  vrf for v1
  ipv4 addr 1.1.1.5 255.255.255.252
- router isis4 1 ena
- exit
-int eth2.12
- vrf for v1
  ipv6 addr 1234:2::1 ffff:ffff::
  router isis6 1 ena
+ router isis6 1 other-ena
  exit
 !
 
@@ -110,12 +100,8 @@ router isis4 1
  net 22.4444.0000.3333.00
  is-type level1
  red conn
- exit
-router isis6 1
- vrf v1
- net 22.6666.0000.3333.00
- is-type level1
- red conn
+ afi-other enable
+ afi-other red conn
  exit
 int lo1
  vrf for v1
@@ -127,15 +113,12 @@ int lo2
  ipv4 addr 2.2.2.13 255.255.255.255
  ipv6 addr 4321::13 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.11
+int eth1
  vrf for v1
  ipv4 addr 1.1.1.6 255.255.255.252
- router isis4 1 ena
- exit
-int eth1.12
- vrf for v1
  ipv6 addr 1234:2::2 ffff:ffff::
- router isis6 1 ena
+ router isis4 1 ena
+ router isis4 1 other-ena
  exit
 !
 
