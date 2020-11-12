@@ -9424,3 +9424,12 @@ qc pass: integrated isis inter-level with sr
 qc pass: integrated isis multi-topology with sr
 qc pass: integrated isis prefix withdraw
 qc pass: integrated isis change in metric
+---------------------------------- 2020-11-12 21:20:31
+qc pass: integrated isis aggregate
+qc pass: integrated isis prefix movement
+qc pass: integrated isis with bier
+qc pass: integrated isis inter-level with bier
+qc pass: integrated isis multi-topology with bier
+qc pass: integrated isis change in tag
+qc pass: integrated isis over point2point ethernet
+qc pass: integrated isis ecmp connection
