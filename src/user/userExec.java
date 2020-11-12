@@ -478,6 +478,11 @@ public class userExec {
         hl.add("7 .                [addr]        prefix to view");
         hl.add("5 6,.          originate         list of routes originated locally");
         hl.add("6 .              [addr]          prefix to view");
+        hl.add("5 6            other-route       list of other routes in area");
+        hl.add("6 7,.            <num>           level number");
+        hl.add("7 .                [addr]        prefix to view");
+        hl.add("5 6,.          other-originate   list of other routes originated locally");
+        hl.add("6 .              [addr]          prefix to view");
         hl.add("3 4        bgp                   border gateway protocol");
         hl.add("4 5          <num>               process id");
         hl.add("5 6,.          group             list of groups");

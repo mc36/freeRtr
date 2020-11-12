@@ -62,11 +62,6 @@ public class rtrIsis extends ipRtr {
     public static final int protDist = 0x83;
 
     /**
-     * other afi router
-     */
-    protected rtrIsisOther other;
-
-    /**
      * external distance
      */
     public int distantExt;
@@ -140,6 +135,11 @@ public class rtrIsis extends ipRtr {
      * forwarding core
      */
     public final ipFwd fwdCore;
+
+    /**
+     * other afi router
+     */
+    public final rtrIsisOther other;
 
     /**
      * route type
@@ -600,6 +600,7 @@ public class rtrIsis extends ipRtr {
     /**
      * read reachable addresses
      *
+     * @param other other afi
      * @param tlv tlv to read
      * @return addresses, null if nothing
      */
@@ -979,9 +980,14 @@ public class rtrIsis extends ipRtr {
         if (debugger.rtrIsisEvnt) {
             logger.debug("create table");
         }
-        tabRoute<addrIP> tab = new tabRoute<addrIP>("isis");
-        tab.mergeFrom(tabRoute.addType.ecmp, level1.routes, null, true, tabRouteAttr.distanLim);
-        tab.mergeFrom(tabRoute.addType.ecmp, level2.routes, null, true, tabRouteAttr.distanLim);
+        tabRoute<addrIP> tab1 = new tabRoute<addrIP>("isis");
+        tabRoute<addrIP> tab2 = new tabRoute<addrIP>("isis");
+        tab1.mergeFrom(tabRoute.addType.ecmp, level1.routes, null, true, tabRouteAttr.distanLim);
+        tab1.mergeFrom(tabRoute.addType.ecmp, level2.routes, null, true, tabRouteAttr.distanLim);
+        if (other.enabled) {
+            tab2.mergeFrom(tabRoute.addType.ecmp, level1.oroutes, null, true, tabRouteAttr.distanLim);
+            tab2.mergeFrom(tabRoute.addType.ecmp, level2.oroutes, null, true, tabRouteAttr.distanLim);
+        }
         if (segrouLab != null) {
             for (int i = 0; i < segrouLab.length; i++) {
                 boolean b = false;
@@ -1020,10 +1026,14 @@ public class rtrIsis extends ipRtr {
                 bierLab[i].setBierMpls(19, fwdCore, res);
             }
         }
-        tab.setProto(routerProtoTyp, routerProcNum);
-        tab.preserveTime(routerComputedU);
-        routerComputedU = tab;
+        tab1.setProto(routerProtoTyp, routerProcNum);
+        tab1.preserveTime(routerComputedU);
+        routerComputedU = tab1;
         fwdCore.routerChg(this);
+        tab2.setProto(routerProtoTyp, routerProcNum);
+        tab2.preserveTime(other.routerComputedU);
+        other.routerComputedU = tab2;
+        other.fwd.routerChg(this);
     }
 
     /**
@@ -1864,6 +1874,17 @@ public class rtrIsis extends ipRtr {
     public tabRoute<addrIP> showRoute(int level) {
         rtrIsisLevel lev = getLevel(level);
         return lev.routes;
+    }
+
+    /**
+     * list other routes
+     *
+     * @param level level number
+     * @return list of routes
+     */
+    public tabRoute<addrIP> showOroute(int level) {
+        rtrIsisLevel lev = getLevel(level);
+        return lev.oroutes;
     }
 
     /**

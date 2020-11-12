@@ -668,7 +668,7 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param which node id
      * @return list of next hops
      */
-    public List<shrtPthFrstRes<Ta>> findNextHop(Ta which) {
+    protected List<shrtPthFrstRes<Ta>> findNextHop(Ta which) {
         List<shrtPthFrstRes<Ta>> res = new ArrayList<shrtPthFrstRes<Ta>>();
         shrtPthFrstNode<Ta> old = nodes.find(new shrtPthFrstNode<Ta>(which));
         if (old == null) {
@@ -1171,28 +1171,78 @@ public class shrtPthFrst<Ta extends addrType> {
                 rou.best.segrouOld = sro;
                 rou.best.bierOld = bro;
                 rou.best.metric += met;
-                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop);
+                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop, false);
             }
             for (int i = 0; i < ntry.prfFix.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.prfFix.get(i).copyBytes(tabRoute.addType.notyet);
                 rou.best.srcRtr = ntry.name.copyBytes();
                 rou.best.segrouOld = sro;
                 rou.best.bierOld = bro;
-                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop);
+                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop, false);
             }
         }
         return tab1;
     }
 
-    private void populateRoute(tabRoute<addrIP> tab1, ipFwd fwdCor, int fwdKey, tabLabelNtry[] segrouLab, boolean[] segrouUsd, tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop) {
+    /**
+     * get other routes
+     *
+     * @param fwdCor forwarding core
+     * @param fwdKey forwarder key
+     * @param segrouLab segment routing labels
+     * @param segrouUsd segment routing usage
+     * @return routes
+     */
+    public tabRoute<addrIP> getOroutes(ipFwd fwdCor, int fwdKey, tabLabelNtry[] segrouLab, boolean[] segrouUsd) {
+        tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
+        for (int o = 0; o < nodes.size(); o++) {
+            shrtPthFrstNode<Ta> ntry = nodes.get(o);
+            List<shrtPthFrstRes<Ta>> hop = findNextHop(ntry.name);
+            if (hop.size() < 1) {
+                continue;
+            }
+            int met = getMetric(ntry.name);
+            int sro = getSegRouB(ntry.name);
+            int bro = getBierB(ntry.name);
+            for (int i = 0; i < ntry.othAdd.size(); i++) {
+                tabRouteEntry<addrIP> rou = ntry.othAdd.get(i).copyBytes(tabRoute.addType.notyet);
+                rou.best.srcRtr = ntry.name.copyBytes();
+                rou.best.segrouOld = sro;
+                rou.best.bierOld = bro;
+                rou.best.metric += met;
+                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop, true);
+            }
+            for (int i = 0; i < ntry.othFix.size(); i++) {
+                tabRouteEntry<addrIP> rou = ntry.othFix.get(i).copyBytes(tabRoute.addType.notyet);
+                rou.best.srcRtr = ntry.name.copyBytes();
+                rou.best.segrouOld = sro;
+                rou.best.bierOld = bro;
+                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop, true);
+            }
+        }
+        return tab1;
+    }
+
+    private void populateRoute(tabRoute<addrIP> tab1, ipFwd fwdCor, int fwdKey, tabLabelNtry[] segrouLab, boolean[] segrouUsd, tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop, boolean other) {
         rou.alts.clear();
         boolean srPop = (rou.best.rouSrc & 16) != 0;
         for (int i = 0; i < hop.size(); i++) {
             shrtPthFrstRes<Ta> upl = hop.get(i);
             tabRouteAttr<addrIP> res = new tabRouteAttr<addrIP>();
             rou.best.copyBytes(res, false);
-            res.nextHop = upl.nxtHop.copyBytes();
-            res.iface = upl.iface;
+            if (!other) {
+                if (upl.nxtHop == null) {
+                    continue;
+                }
+                res.nextHop = upl.nxtHop.copyBytes();
+                res.iface = upl.iface;
+            } else {
+                if (upl.othHop == null) {
+                    continue;
+                }
+                res.nextHop = upl.othHop.copyBytes();
+                res.iface = upl.oface;
+            }
             res.hops = upl.hops;
             res.segrouBeg = upl.srBeg;
             res.bierBeg = upl.brBeg;

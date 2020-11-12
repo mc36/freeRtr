@@ -2033,6 +2033,14 @@ public class userShow {
             doShowRoutes(r.isis.fwdCore, r.isis.routerRedistedU, 1);
             return;
         }
+        if (a.equals("other-route")) {
+            doShowRoutes(r.isis.other.fwd, r.isis.showOroute(bits.str2num(cmd.word())), 1);
+            return;
+        }
+        if (a.equals("other-originate")) {
+            doShowRoutes(r.isis.other.fwd, r.isis.other.routerRedistedU, 1);
+            return;
+        }
         cmd.badCmd();
     }
 

@@ -788,6 +788,9 @@ public class rtrIsisLevel implements Runnable {
                         spf.addPref(src, pref, false);
                     }
                 }
+                if (!lower.other.enabled) {
+                    continue;
+                }
                 rou = lower.getAddrReach(true, tlv);
                 if (rou == null) {
                     continue;
@@ -843,6 +846,15 @@ public class rtrIsisLevel implements Runnable {
         routes.clear();
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.safiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);
+        if (lower.other.enabled) {
+            rs = spf.getOroutes(lower.fwdCore, 7, lower.segrouLab, segrouUsd);
+            oroutes.clear();
+            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.safiUnicast, 0, oroutes, rs, true, oroumapFrom, oroupolFrom, oprflstFrom);
+            lower.other.routerDoAggregates(rtrBgpUtil.safiUnicast, oroutes, null, lower.other.fwd.commonLabel, 0, null, 0);
+        } else {
+            oroutes.clear();
+        }
+///////////////
         if (bierEna) {
             bierRes = spf.getBierI();
         } else {

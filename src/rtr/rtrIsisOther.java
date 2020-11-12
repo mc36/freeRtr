@@ -35,7 +35,7 @@ public class rtrIsisOther extends ipRtr {
     /**
      * forwarding core
      */
-    protected final ipFwd fwd;
+    public final ipFwd fwd;
 
     private final rtrIsis parent;
 
