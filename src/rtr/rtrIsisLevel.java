@@ -854,7 +854,6 @@ public class rtrIsisLevel implements Runnable {
         } else {
             oroutes.clear();
         }
-///////////////
         if (bierEna) {
             bierRes = spf.getBierI();
         } else {
