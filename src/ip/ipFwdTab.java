@@ -1264,7 +1264,7 @@ public class ipFwdTab {
         pck.sbgrpId = ntry.subId;
         pck.styleVal = 18;
         pck.timeVal = lower.untriggeredRecomputation;
-        pck.ttl = 254;
+        pck.ttl = 255;
         return pck;
     }
 

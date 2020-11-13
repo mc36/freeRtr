@@ -240,7 +240,7 @@ public class rtrRsvpIface implements ipPrt {
                             pckRvp.updateRecRout(ntry.trgIfc.addr, true);
                         }
                         pckRvp.updateRecRout(ntry.srcIfc.addr, true);
-                        pckRvp.ttl = 254;
+                        pckRvp.ttl = 255;
                         pckBin.clear();
                         pckRvp.createHolder(pckBin);
                         pckBin.IPsrc.setAddr(ntry.srcIfc.addr);

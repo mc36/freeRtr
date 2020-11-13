@@ -340,7 +340,7 @@ public class packRsvp {
         pck.IPtrg.setAddr(getTrg());
         pck.IPsrc.setAddr(sndrAdr);
         pck.IPdf = false;
-        pck.IPttl = ttl + 1;
+        pck.IPttl = ttl;
         pck.IPtos = 0;
         pck.IPprt = proto;
         pck.IPalrt = 1;
