@@ -9440,3 +9440,5 @@ qc pass: interop8: integrated isis
 qc pass: interop9: integrated isis
 qc pass: integrated isis with php sr
 qc pass: asymmetric integrated isis
+---------------------------------- 2020-11-13 12:16:42
+no todo: bfd need to send with ttl=255

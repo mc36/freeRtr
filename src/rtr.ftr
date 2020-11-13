@@ -2182,7 +2182,6 @@ todo: reenable which elliptic courves? sure? why that?
 todo: https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 todo: parse privilege levels from tacacs
 todo: ldap client, server
-todo: bfd need to send with ttl=255
 todo: trustpoint for certificates
 todo: vdc name tabbing
 todo: interface name tabbing

@@ -280,6 +280,8 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         level = lev;
         ethAddr = adr.copyBytes();
         rtrID = new addrIsis();
+        ifcAddr = new addrIP();
+        ofcAddr = new addrIP();
         peerDisA = new addrIsis();
         peerAdjState = statDown;
         lastHeard = bits.getTime();
