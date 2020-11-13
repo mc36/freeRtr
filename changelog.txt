@@ -9433,3 +9433,10 @@ qc pass: integrated isis multi-topology with bier
 qc pass: integrated isis change in tag
 qc pass: integrated isis over point2point ethernet
 qc pass: integrated isis ecmp connection
+---------------------------------- 2020-11-13 03:37:49
+qc pass: interop1: integrated isis
+qc pass: interop2: integrated isis
+qc pass: interop8: integrated isis
+qc pass: interop9: integrated isis
+qc pass: integrated isis with php sr
+qc pass: asymmetric integrated isis
