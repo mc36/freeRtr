@@ -480,7 +480,7 @@ public class shrtPthFrst<Ta extends addrType> {
         }
     }
 
-    private void diffPrefix(Ta nod, tabRoute<addrIP> cl, tabRoute<addrIP> ol) {
+    private void diffPrefix(shrtPthFrstNode<Ta> nod, tabRoute<addrIP> cl, tabRoute<addrIP> ol) {
         for (int i = 0; i < cl.size(); i++) {
             tabRouteEntry<addrIP> cr = cl.get(i);
             tabRouteEntry<addrIP> or = ol.find(cr);
@@ -552,10 +552,10 @@ public class shrtPthFrst<Ta extends addrType> {
                         continue;
                     }
                 }
-                diffPrefix(cn.name, cn.prfAdd, on.prfAdd);
-                diffPrefix(cn.name, cn.prfFix, on.prfFix);
-                diffPrefix(cn.name, cn.othAdd, on.othAdd);
-                diffPrefix(cn.name, cn.othFix, on.othFix);
+                diffPrefix(cn, cn.prfAdd, on.prfAdd);
+                diffPrefix(cn, cn.prfFix, on.prfFix);
+                diffPrefix(cn, cn.othAdd, on.othAdd);
+                diffPrefix(cn, cn.othFix, on.othFix);
             }
             prev = null;
         }
