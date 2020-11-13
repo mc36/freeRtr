@@ -20,7 +20,6 @@ reenable which elliptic courves? sure? why that?
 https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 parse privilege levels from tacacs
 ldap client, server
-bfd need to send with ttl=255
 trustpoint for certificates
 vdc name tabbing
 interface name tabbing

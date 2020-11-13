@@ -1149,10 +1149,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         pck.INTupper = 0;
         ipMpls.beginMPLSfields(pck, (mplsPropTtl | lower.mplsPropTtlAlways) & lower.mplsPropTtlAllow);
-        if (doPbrFwd(lower.pbrCfg, true, false, lower, pck)) {
+        if (doPbrFwd(lower.pbrCfg, 1, lower, pck)) {
             return;
         }
-        forwardPacket(true, false, lower, pck);
+        forwardPacket(1, lower, pck);
     }
 
     /**
@@ -1348,7 +1348,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ipCore.testIPaddress(pck, pck.IPtrg);
         ipMpls.beginMPLSfields(pck, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
-        forwardPacket(false, false, iface, pck);
+        forwardPacket(4, iface, pck);
     }
 
     /**
@@ -1453,7 +1453,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         pck.INTupper = -1;
         ipMpls.beginMPLSfields(pck, (mplsPropTtl | lower.mplsPropTtlAlways) & lower.mplsPropTtlAllow);
-        forwardPacket(false, false, lower, pck);
+        forwardPacket(4, lower, pck);
     }
 
     private void doMpls(ipFwdIface ifc, addrIP hop, List<Integer> labs, packHolder pck) {
@@ -1600,7 +1600,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             cntrT.drop(pck, counter.reasons.noIface);
             return;
         }
-        forwardPacket(true, true, ifc, pck);
+        forwardPacket(3, ifc, pck);
     }
 
     /**
@@ -1641,13 +1641,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * forwards one parsed packet by policy routing
      *
      * @param cfg config
-     * @param fromIfc from interface
-     * @param fromMpls from mpls
+     * @param from source
      * @param rxIfc receiving interface
      * @param pck packet
      * @return true if sent, false if not
      */
-    private boolean doPbrFwd(tabListing<tabPbrN, addrIP> cfg, boolean fromIfc, boolean fromMpls, ipFwdIface rxIfc, packHolder pck) {
+    private boolean doPbrFwd(tabListing<tabPbrN, addrIP> cfg, int from, ipFwdIface rxIfc, packHolder pck) {
         if (cfg.size() < 1) {
             return false;
         }
@@ -1677,7 +1676,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (pbr.setHop == null) {
             pck.INTiface = -2;
-            pbr.setVrf.forwardPacket(fromIfc, fromMpls, rxIfc, pck);
+            pbr.setVrf.forwardPacket(from, rxIfc, pck);
             return true;
         }
         tabRouteEntry<addrIP> ntry = pbr.setVrf.actualU.route(pbr.setHop);
@@ -1695,12 +1694,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     /**
      * forwards one parsed packet
      *
+     * @param from source, 1=ifc, 2=mpls, 4=proto
      * @param fromIfc from interace
      * @param fromMpls from mpls
      * @param rxIfc receiving interface
      * @param pck packet
      */
-    private void forwardPacket(boolean fromIfc, boolean fromMpls, ipFwdIface rxIfc, packHolder pck) {
+    private void forwardPacket(int from, ipFwdIface rxIfc, packHolder pck) {
         cntrT.rx(pck);
         if (rxIfc == null) {
             cntrT.drop(pck, counter.reasons.noIface);
@@ -1754,13 +1754,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 }
             }
         }
-        if (doPbrFwd(pbrCfg, fromIfc, fromMpls, rxIfc, pck)) {
+        if (doPbrFwd(pbrCfg, from, rxIfc, pck)) {
             return;
         }
         boolean alerted = (pck.IPalrt != -1);
         pck.IPalrt = -1;
         if (pck.IPlnk) {
-            if (fromIfc) {
+            if ((from & 1) != 0) {
                 if (rxIfc.lower.checkMyAddress(pck.IPtrg)) {
                     protoSend(rxIfc, pck);
                     return;
@@ -1777,7 +1777,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (pck.IPmlt || pck.IPbrd) {
             if (pck.IPbrd || !pck.IPtrg.isRoutedMcast()) {
-                if (fromIfc) {
+                if ((from & 1) != 0) {
                     protoSend(rxIfc, pck);
                 } else {
                     ifaceProto(rxIfc, pck, null);
@@ -1788,14 +1788,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 cntrT.drop(pck, counter.reasons.ttlExceed);
                 return;
             }
-            ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1);
+            if (from != 4) {
+                ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1);
+            }
             ipFwdMcast grp = new ipFwdMcast(pck.IPtrg, pck.IPsrc);
             grp = groups.find(grp);
             if (grp == null) {
                 cntrT.drop(pck, counter.reasons.badNet);
                 return;
             }
-            if (fromIfc && (!fromMpls)) {
+            if ((from & 3) == 1) {
                 if (grp.iface == null) {
                     cntrT.drop(pck, counter.reasons.noRoute);
                     return;
@@ -1810,7 +1812,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 if (ifc == null) {
                     continue;
                 }
-                if (fromIfc && (!fromMpls)) {
+                if ((from & 3) == 1) {
                     if (grp.iface.ifwNum == ifc.ifwNum) {
                         continue;
                     }
@@ -1826,7 +1828,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             if (grp.bier != null) {
                 grp.bier.sendPack(pck);
             }
-            if (grp.local && fromIfc) {
+            if (grp.local && ((from & 1) != 0)) {
                 protoSend(rxIfc, pck);
             }
             return;
@@ -1848,7 +1850,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 pck.IPprt = ipCore.getProtocol();
                 prf.best.rouTab.createIPheader(pck);
                 ipMpls.beginMPLSfields(pck, false);
-                prf.best.rouTab.forwardPacket(fromIfc, fromMpls, rxIfc, pck);
+                prf.best.rouTab.forwardPacket(from, rxIfc, pck);
                 return;
             }
             if (prf.best.labelRem == null) {
@@ -1896,7 +1898,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             pck.INTupper = -3;
             ipCore.testIPaddress(pck, pck.IPtrg);
             ipMpls.beginMPLSfields(pck, (mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow);
-            forwardPacket(fromIfc, fromMpls, rxIfc, pck);
+            forwardPacket(from, rxIfc, pck);
             return;
         }
         if (txIfc.lower.checkMyAlias(pck.IPtrg) != null) {
@@ -1907,15 +1909,17 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             doDrop(pck, rxIfc, counter.reasons.ttlExceed);
             return;
         }
-        if (fromIfc && alerted) {
+        if (((from & 1) != 0) && alerted) {
             if (!protoAlert(rxIfc, pck)) {
                 return;
             }
         }
-        if ((mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow) {
-            ipCore.updateIPheader(pck, null, null, -1, pck.MPLSttl - 1, -1, -1);
-        } else {
-            ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1);
+        if (from != 4) {
+            if ((mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow) {
+                ipCore.updateIPheader(pck, null, null, -1, pck.MPLSttl - 1, -1, -1);
+            } else {
+                ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1);
+            }
         }
         if (prf.best.rouTyp == tabRouteAttr.routeType.conn) {
             ifaceProto(txIfc, pck, null);
@@ -1959,7 +1963,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             ipCore.createIPheader(pck);
             pck.INTupper = -1;
             ipMpls.beginMPLSfields(pck, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
-            forwardPacket(false, false, iface, pck);
+            forwardPacket(4, iface, pck);
             return;
         }
         if (debugger.ipFwdTraf) {
@@ -2047,7 +2051,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         ipMpls.beginMPLSfields(pck, (mplsPropTtl | ifc.mplsPropTtlAlways) & ifc.mplsPropTtlAllow);
-        forwardPacket(false, false, ifc, pck);
+        forwardPacket(4, ifc, pck);
         return ntry;
     }
 
