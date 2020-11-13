@@ -318,6 +318,9 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
     protected void stopNow() {
         logger.error("neighbor l" + level.level + " " + ifcAddr + " down");
         iface.iface.bfdDel(ifcAddr, this);
+        if (iface.oface != null) {
+            iface.oface.bfdDel(ofcAddr, this);
+        }
         peerAdjState = statDown;
         tabLabel.release(segrouLab, 15);
         tabLabel.release(segrouOth, 15);
@@ -565,6 +568,9 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             }
             logger.error("neighbor l" + level.level + " " + ifcAddr + " forgot us");
             iface.iface.bfdDel(ifcAddr, this);
+            if (iface.oface != null) {
+                iface.oface.bfdDel(ofcAddr, this);
+            }
             tabLabel.release(segrouLab, 15);
             tabLabel.release(segrouOth, 15);
             peerAdjState = statDown;
@@ -584,6 +590,9 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         level.schedWork(7);
         if (iface.bfdTrigger) {
             iface.iface.bfdAdd(ifcAddr, this, "isis");
+            if (iface.otherEna) {
+                iface.oface.bfdAdd(ofcAddr, this, "isis");
+            }
         }
     }
 
