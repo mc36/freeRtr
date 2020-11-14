@@ -29,8 +29,6 @@ public class userImage {
 
     private String arch = "amd64";
 
-    private String dist = "stable";
-
     private String mirror = "http://deb.debian.org/debian/";
 
     private userImageList allPkgs = new userImageList();
@@ -68,13 +66,13 @@ public class userImage {
         return exec("wget -O " + fil + " " + url) != 0;
     }
 
-    private boolean readUpCatalog(String pool) {
+    private boolean readUpCatalog(String dist, String pool) {
         String cat1 = tempDir + "/" + pool + ".txt";
-        String cat2 = downDir + "/" + arch + "--" + pool + ".gz";
+        String cat2 = downDir + "/" + arch + "--" + dist + "-" + pool + ".xz";
         delete(cat1);
-        download(mirror + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages.gz", cat2);
-        exec("cp " + cat2 + " " + cat1 + ".gz");
-        exec("gunzip -d " + cat1 + ".gz");
+        download(mirror + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages.xz", cat2);
+        exec("cp " + cat2 + " " + cat1 + ".xz");
+        exec("xz -d " + cat1 + ".xz");
         List<String> res = bits.txt2buf(cat1);
         if (res == null) {
             return true;
@@ -180,7 +178,6 @@ public class userImage {
             s = s.replaceAll("%dwn%", downDir);
             s = s.replaceAll("%img%", imgName);
             s = s.replaceAll("%arch%", arch);
-            s = s.replaceAll("%dist%", dist);
             s = s.replaceAll("%%", "%");
             s += "#";
             int i = s.indexOf("#");
@@ -215,10 +212,6 @@ public class userImage {
                 tempDir = s;
                 continue;
             }
-            if (a.equals("distro")) {
-                dist = s;
-                continue;
-            }
             if (a.equals("exit")) {
                 break;
             }
@@ -227,8 +220,11 @@ public class userImage {
                 continue;
             }
             if (a.equals("catalog-read")) {
-                cmd.error("reading " + s + " list");
-                if (readUpCatalog(s)) {
+                i = s.indexOf(" ");
+                a = s.substring(0, i).trim().trim();
+                s = s.substring(i, s.length()).trim();
+                cmd.error("reading " + s + " of " + a + " list");
+                if (readUpCatalog(a, s)) {
                     cmd.error("failed");
                 }
                 continue;

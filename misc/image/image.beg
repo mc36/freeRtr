@@ -1,6 +1,5 @@
 download 2
 arch amd64
-distro sid
 mirror http://ftp.at.debian.org/debian/
 
 del-alw %img%.*
@@ -33,9 +32,8 @@ exec cp ../binTmp/ttyLin.bin %tmp%/rtr/
 exec cp ../binTmp/rawInt.bin %tmp%/rtr/
 exec cp ../binTmp/tapInt.bin %tmp%/rtr/
 
-catalog-read main
-catalog-read contrib
-catalog-read non-free
+catalog-read sid main
+catalog-read experimental main
 
 catalog-sort
 
