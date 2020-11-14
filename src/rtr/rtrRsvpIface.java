@@ -194,12 +194,14 @@ public class rtrRsvpIface implements ipPrt {
     public void recvPack(ipFwdIface rxIfc, packHolder pckBin) {
         packRsvp pckRvp = new packRsvp();
         if (pckRvp.parseHeader(pckBin)) {
+            logger.info("got bad header from " + pckBin.IPsrc);
             return;
         }
         ipFwdTrfng ntry;
         switch (pckRvp.typ) {
             case packRsvp.typPathReq:
                 if (pckRvp.parseDatPatReq(pckBin)) {
+                    logger.info("got bad pathReq from " + pckBin.IPsrc);
                     return;
                 }
                 if (debugger.rtrRsvpTraf) {
@@ -275,6 +277,7 @@ public class rtrRsvpIface implements ipPrt {
                 return;
             case packRsvp.typResvReq:
                 if (pckRvp.parseDatResReq(pckBin)) {
+                    logger.info("got bad resvReq from " + pckBin.IPsrc);
                     return;
                 }
                 if (debugger.rtrRsvpTraf) {
@@ -323,6 +326,7 @@ public class rtrRsvpIface implements ipPrt {
                 return;
             case packRsvp.typPathTear:
                 if (pckRvp.parseDatPatTer(pckBin)) {
+                    logger.info("got bad pathTear from " + pckBin.IPsrc);
                     return;
                 }
                 if (debugger.rtrRsvpTraf) {
@@ -354,6 +358,7 @@ public class rtrRsvpIface implements ipPrt {
                 return;
             case packRsvp.typResvTear:
                 if (pckRvp.parseDatResTer(pckBin)) {
+                    logger.info("got bad resvTear from " + pckBin.IPsrc);
                     return;
                 }
                 if (debugger.rtrRsvpTraf) {
@@ -387,6 +392,7 @@ public class rtrRsvpIface implements ipPrt {
                 return;
             case packRsvp.typPathErr:
                 if (pckRvp.parseDatPatErr(pckBin)) {
+                    logger.info("got bad pathErr from " + pckBin.IPsrc);
                     return;
                 }
                 if (debugger.rtrRsvpTraf) {
@@ -418,6 +424,7 @@ public class rtrRsvpIface implements ipPrt {
                 return;
             case packRsvp.typResvErr:
                 if (pckRvp.parseDatResErr(pckBin)) {
+                    logger.info("got bad resvErr from " + pckBin.IPsrc);
                     return;
                 }
                 if (debugger.rtrRsvpTraf) {

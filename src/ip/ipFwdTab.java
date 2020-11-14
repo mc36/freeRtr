@@ -1185,6 +1185,9 @@ public class ipFwdTab {
                 continue;
             }
             if ((tim - ntry.created) < ntry.timeout) {
+                if (ntry.subId == 0) {
+                    continue;
+                }
                 ntry = ntry.getParent();
                 ntry = lower.trafEngs.find(ntry);
                 if (ntry == null) {

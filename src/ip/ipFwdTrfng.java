@@ -180,6 +180,9 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
         l.add("bandwidth = " + bits.bandwidth(((Float) (bwdt * 8)).longValue()));
         l.add("record route = " + recRou);
         l.add("description = " + descr);
+        l.add("timeout = " + timeout);
+        l.add("updated = " + bits.timePast(created));
+        l.add("local = " + srcLoc + " " + trgLoc);
         return l;
     }
 
