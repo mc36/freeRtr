@@ -225,6 +225,10 @@ public class rtrRsvpIface implements ipPrt {
                 ntry.bwdt = pckRvp.flwSpcPeak;
                 ntry.descr = pckRvp.sessNam;
                 ntry.recRou = pckRvp.recRout != null;
+                ntry.asocTyp = pckRvp.assocTyp;
+                ntry.asocId = pckRvp.assocId;
+                ntry.asocGlb = pckRvp.assocGlb;
+                ntry.asocAdr = pckRvp.assocAdr;
                 switch (getHop(pckRvp, ntry)) {
                     case 1: // forward
                         break;

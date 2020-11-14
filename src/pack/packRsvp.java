@@ -68,6 +68,26 @@ public class packRsvp {
     public addrIP sessAdr;
 
     /**
+     * association type
+     */
+    public int assocTyp;
+
+    /**
+     * association id
+     */
+    public int assocId;
+
+    /**
+     * association global id
+     */
+    public int assocGlb;
+
+    /**
+     * association address
+     */
+    public addrIP assocAdr;
+
+    /**
      * refresh time in ms
      */
     public int timeVal;
@@ -235,7 +255,7 @@ public class packRsvp {
     private typLenVal tlv = new typLenVal(16, 16, 0, 16, 1, 4, 4, 1, 0, 512, true);
 
     public String toString() {
-        return "ip4=" + isIP4 + " p2mp=" + isP2MP + " typ=" + type2string(typ) + " ttl=" + ttl + " hop=" + hopAdr + "/" + hopId + " sess=" + sessAdr + "/" + sessId + " time=" + timeVal + " send=" + sndrAdr + "/" + sndrId + " subgrp=" + sbgrpOrg + "/" + sbgrpId + " subdst=" + subAddr + " req=" + labReq + " flow=" + flwSpcRate + "/" + flwSpcSize + "/" + flwSpcPeak + "/" + flwSpcPlcd + "/" + flwSpcPcks + " prio=" + sessStp + "/" + sessHld + " flg=" + sessFlg + " nam=" + sessNam + " hops=" + adsHops + " bndwdth=" + adsBndwdt + " latency=" + adsLtncy + " mtu=" + adsCmtu + " expRou=" + tabHop.dumpList(expRout) + " recRou=" + tabHop.dumpList(recRout) + " err=" + errAdr + "/" + errCod + " style=" + styleVal + " label=" + labelVal;
+        return "ip4=" + isIP4 + " p2mp=" + isP2MP + " typ=" + type2string(typ) + " ttl=" + ttl + " hop=" + hopAdr + "/" + hopId + " sess=" + sessAdr + "/" + sessId + " assoc=" + assocTyp + "/" + assocAdr + "/" + assocId + "/" + assocGlb + " time=" + timeVal + " send=" + sndrAdr + "/" + sndrId + " subgrp=" + sbgrpOrg + "/" + sbgrpId + " subdst=" + subAddr + " req=" + labReq + " flow=" + flwSpcRate + "/" + flwSpcSize + "/" + flwSpcPeak + "/" + flwSpcPlcd + "/" + flwSpcPcks + " prio=" + sessStp + "/" + sessHld + " flg=" + sessFlg + " nam=" + sessNam + " hops=" + adsHops + " bndwdth=" + adsBndwdt + " latency=" + adsLtncy + " mtu=" + adsCmtu + " expRou=" + tabHop.dumpList(expRout) + " recRou=" + tabHop.dumpList(recRout) + " err=" + errAdr + "/" + errCod + " style=" + styleVal + " label=" + labelVal;
     }
 
     /**
@@ -1073,6 +1093,83 @@ public class packRsvp {
         tlv.putThis(pck);
     }
 
+    private int getTypAssoc(boolean ext) {
+        int i;
+        if (isIP4) {
+            i = 0xc701;
+        } else {
+            i = 0xc702;
+        }
+        if (ext) {
+            i += 2;
+        }
+        return i;
+    }
+
+    /**
+     * parse association option
+     *
+     * @param pck packet to use
+     * @return false on success, true on error
+     */
+    public boolean parseAssoc(packHolder pck) {
+        boolean ext = false;
+        if (findTlv(pck, getTypAssoc(false))) {
+            ext = true;
+            if (findTlv(pck, getTypAssoc(true))) {
+                return false;
+            }
+        }
+        assocTyp = bits.msbGetW(tlv.valDat, 0);
+        assocId = bits.msbGetW(tlv.valDat, 2);
+        assocAdr = new addrIP();
+        int pos = 4;
+        if (isIP4) {
+            addrIPv4 adr = new addrIPv4();
+            adr.fromBuf(tlv.valDat, pos);
+            assocAdr.fromIPv4addr(adr);
+            pos += addrIPv4.size;
+        } else {
+            addrIPv6 adr = new addrIPv6();
+            adr.fromBuf(tlv.valDat, pos);
+            assocAdr.fromIPv6addr(adr);
+            pos += addrIPv6.size;
+        }
+        if (!ext) {
+            return false;
+        }
+        assocGlb = bits.msbGetD(tlv.valDat, pos);
+        return false;
+    }
+
+    /**
+     * create association option
+     *
+     * @param pck packet to use
+     */
+    public void createAssoc(packHolder pck) {
+        if (assocAdr == null) {
+            return;
+        }
+        bits.msbPutW(tlv.valDat, 0, assocTyp);
+        bits.msbPutW(tlv.valDat, 2, assocId);
+        tlv.valSiz = 4;
+        if (isIP4) {
+            assocAdr.toIPv4().toBuffer(tlv.valDat, tlv.valSiz);
+            tlv.valSiz += addrIPv4.size;
+        } else {
+            assocAdr.toIPv6().toBuffer(tlv.valDat, tlv.valSiz);
+            tlv.valSiz += addrIPv6.size;
+        }
+        boolean ext = assocGlb != 0;
+        if (ext) {
+            bits.msbPutD(tlv.valDat, tlv.valSiz, assocGlb);
+            tlv.valSiz += 4;
+        }
+        tlv.valTyp = getTypAssoc(ext);
+        tlv.putThis(pck);
+    }
+
     /**
      * parse path request
      *
@@ -1113,6 +1210,9 @@ public class packRsvp {
         if (parseS2Lsub(pck)) {
             return true;
         }
+        if (parseAssoc(pck)) {
+            return true;
+        }
         parseRecRout(pck);
         return false;
     }
@@ -1130,6 +1230,7 @@ public class packRsvp {
         createExpRout(pck);
         createLabReq(pck);
         createSesAtr(pck);
+        createAssoc(pck);
         createSndrTmp(pck, false);
         createFlwSpc(pck, false);
         createAdSpec(pck);
@@ -1260,10 +1361,10 @@ public class packRsvp {
         if (parseLabel(pck)) {
             return true;
         }
-        parseRecRout(pck);
         if (parseS2Lsub(pck)) {
             return true;
         }
+        parseRecRout(pck);
         return false;
     }
 
@@ -1281,8 +1382,8 @@ public class packRsvp {
         createFlwSpc(pck, true);
         createSndrTmp(pck, true);
         createLabel(pck);
-        createRecRout(pck);
         createS2Lsub(pck);
+        createRecRout(pck);
     }
 
     /**
@@ -1397,6 +1498,7 @@ public class packRsvp {
         parseLabReq(pck);
         parseLabel(pck);
         parseSesAtr(pck);
+        parseAssoc(pck);
         parseStyle(pck);
         parseSndrTmp(pck, true);
         parseSndrTmp(pck, false);
