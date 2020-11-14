@@ -9442,3 +9442,8 @@ qc pass: integrated isis with php sr
 qc pass: asymmetric integrated isis
 ---------------------------------- 2020-11-13 12:16:42
 no todo: bfd need to send with ttl=255
+---------------------------------- 2020-11-14 13:55:57
+qc pass: interop2: isis bidir te
+qc pass: interop2: ospf bidir te
+qc pass: bidir te without global id
+qc pass: bidir te with global id
