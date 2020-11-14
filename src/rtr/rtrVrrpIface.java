@@ -73,6 +73,11 @@ public class rtrVrrpIface implements ipPrt {
     public int trackD;
 
     /**
+     * bfd enabled
+     */
+    public boolean bfdTrigger;
+
+    /**
      * used ip version
      */
     public final boolean ipv4;
@@ -149,8 +154,9 @@ public class rtrVrrpIface implements ipPrt {
      * @return entry
      */
     public rtrVrrpNeigh genLocalNeigh() {
-        rtrVrrpNeigh ntry = new rtrVrrpNeigh(fwdIfc.addr);
+        rtrVrrpNeigh ntry = new rtrVrrpNeigh(this, fwdIfc.addr);
         ntry.priority = priority;
+        ntry.upTime = started;
         if (trackD < 1) {
             return ntry;
         }
@@ -283,10 +289,19 @@ public class rtrVrrpIface implements ipPrt {
         if (hsr.group != group) {
             return;
         }
-        rtrVrrpNeigh nei = new rtrVrrpNeigh(pck.IPsrc);
+        rtrVrrpNeigh nei = new rtrVrrpNeigh(this, pck.IPsrc);
+        rtrVrrpNeigh old = neighs.add(nei);
+        if (old != null) {
+            nei = old;
+        } else {
+            nei.upTime = bits.getTime();
+            logger.warn("neighbor " + nei.peer + " up");
+            if (bfdTrigger) {
+                fwdIfc.bfdAdd(pck.IPsrc, nei, "vrrp");
+            }
+        }
         nei.time = bits.getTime();
         nei.priority = hsr.priority;
-        neighs.put(nei);
     }
 
     /**
@@ -317,7 +332,9 @@ public class rtrVrrpIface implements ipPrt {
         for (int i = neighs.size() - 1; i >= 0; i--) {
             rtrVrrpNeigh ntry = neighs.get(i);
             if ((tim - ntry.time) > hold) {
+                logger.error("neighbor " + ntry.peer + " down");
                 neighs.del(ntry);
+                fwdIfc.bfdDel(ntry.peer, ntry);
                 continue;
             }
             if (ntry.isWinner(actv) < 0) {
@@ -341,7 +358,7 @@ public class rtrVrrpIface implements ipPrt {
     /**
      * send advertisement
      */
-    protected void sendHello() {
+    protected synchronized void sendHello() {
         int currStat = getCurrStat();
         if (currStat != lastStat) {
             logger.warn("vrrp " + ip + " changed to " + state2string(currStat));
@@ -382,7 +399,12 @@ public class rtrVrrpIface implements ipPrt {
 
 }
 
-class rtrVrrpNeigh implements Comparator<rtrVrrpNeigh> {
+class rtrVrrpNeigh implements Comparator<rtrVrrpNeigh>, rtrBfdClnt {
+
+    /**
+     * parent
+     */
+    public final rtrVrrpIface lower;
 
     /**
      * address of peer
@@ -400,11 +422,17 @@ class rtrVrrpNeigh implements Comparator<rtrVrrpNeigh> {
     public long time;
 
     /**
+     * uptime
+     */
+    public long upTime;
+
+    /**
      * create one neighbor
      *
      * @param adr address of peer
      */
-    public rtrVrrpNeigh(addrIP adr) {
+    public rtrVrrpNeigh(rtrVrrpIface parent, addrIP adr) {
+        lower = parent;
         peer = adr.copyBytes();
     }
 
@@ -438,7 +466,12 @@ class rtrVrrpNeigh implements Comparator<rtrVrrpNeigh> {
      * @return result
      */
     public String getShSum() {
-        return peer + "|" + priority;
+        return peer + "|" + priority + "|" + bits.timePast(upTime);
+    }
+
+    public void bfdPeerDown() {
+        time = 0;
+        lower.sendHello();
     }
 
 }

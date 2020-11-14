@@ -1344,6 +1344,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! ipv[4|6] hsrp timer 3000 10000",
         "interface .*! ipv[4|6] hsrp priority 100",
         "interface .*! no ipv[4|6] hsrp preempt",
+        "interface .*! no ipv[4|6] hsrp bfd",
         "interface .*! no ipv[4|6] hsrp tracker",
         "interface .*! no ipv[4|6] vrrp address",
         "interface .*! ipv[4|6] vrrp group 0",
@@ -1353,6 +1354,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! ipv[4|6] vrrp timer 1000 3000",
         "interface .*! ipv[4|6] vrrp priority 100",
         "interface .*! no ipv[4|6] vrrp tracker",
+        "interface .*! no ipv[4|6] vrrp bfd",
         "interface .*! no ipv[4|6] pool",
         "interface .*! no ipv[4|6] inspect",
         "interface .*! no ipv[4|6] ptp enable",
@@ -1370,6 +1372,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         // multicast
         "interface .*! ipv[4|6] multicast ttl-threshold 0",
         "interface .*! no ipv[4|6] pim enable",
+        "interface .*! no ipv[4|6] pim bfd",
         "interface .*! no ipv[4|6] pim join-source",
         "interface .*! ipv[4|6] pim allow-rx",
         "interface .*! ipv[4|6] pim allow-tx",

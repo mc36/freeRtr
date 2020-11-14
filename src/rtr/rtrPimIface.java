@@ -7,6 +7,7 @@ import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdMcast;
 import ip.ipPrt;
+import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 import pack.packHolder;
@@ -62,6 +63,11 @@ public class rtrPimIface implements ipPrt {
      * allow transmit of routes
      */
     public boolean allowTx = true;
+
+    /**
+     * bfd enabled
+     */
+    public boolean bfdTrigger;
 
     private int generationId;
 
@@ -184,7 +190,7 @@ public class rtrPimIface implements ipPrt {
         if (debugger.rtrPimTraf) {
             logger.debug("rx " + pckPim + " from " + pckBin.IPsrc);
         }
-        rtrPimNeigh nei = new rtrPimNeigh();
+        rtrPimNeigh nei = new rtrPimNeigh(this, pckBin.IPsrc);
         switch (pckPim.typ) {
             case packPim.typJoin:
                 if (pckPim.upstream.compare(pckPim.upstream, iface.addr) != 0) {
@@ -221,13 +227,15 @@ public class rtrPimIface implements ipPrt {
                 }
                 break;
             case packPim.typHello:
-                nei.peer = pckBin.IPsrc.copyBytes();
                 rtrPimNeigh old = neighs.add(nei);
                 if (old != null) {
                     nei = old;
                 } else {
                     nei.upTime = bits.getTime();
                     logger.warn("neighbor " + nei.peer + " up");
+                    if (bfdTrigger) {
+                        iface.bfdAdd(pckBin.IPsrc, nei, "pim");
+                    }
                 }
                 nei.last = bits.getTime();
                 nei.hold = pckPim.valHoldTime * 1000;
@@ -261,7 +269,7 @@ public class rtrPimIface implements ipPrt {
     /**
      * purge neighbors
      */
-    public void purgeNeighs() {
+    public synchronized void purgeNeighs() {
         long tim = bits.getTime();
         for (int i = neighs.size(); i >= 0; i--) {
             rtrPimNeigh nei = neighs.get(i);
@@ -273,6 +281,7 @@ public class rtrPimIface implements ipPrt {
             }
             neighs.del(nei);
             logger.error("neighbor " + nei.peer + " down");
+            iface.bfdDel(nei.peer, nei);
         }
     }
 
@@ -401,6 +410,69 @@ public class rtrPimIface implements ipPrt {
      * @param stat state
      */
     public void setState(ipFwdIface iface, state.states stat) {
+    }
+
+}
+
+class rtrPimNeigh implements Comparator<rtrPimNeigh>, rtrBfdClnt {
+
+    /**
+     * parent
+     */
+    public final rtrPimIface lower;
+
+    /**
+     * address of peer
+     */
+    public final addrIP peer;
+
+    /**
+     * last hello
+     */
+    public long last;
+
+    /**
+     * hold time
+     */
+    public int hold;
+
+    /**
+     * dr priority
+     */
+    public int pri;
+
+    /**
+     * uptime
+     */
+    public long upTime;
+
+    /**
+     * create instance
+     *
+     * @param parent parent
+     * @param adr address
+     */
+    public rtrPimNeigh(rtrPimIface parent, addrIP adr) {
+        lower = parent;
+        peer = adr.copyBytes();
+    }
+
+    public int compare(rtrPimNeigh o1, rtrPimNeigh o2) {
+        return o1.peer.compare(o1.peer, o2.peer);
+    }
+
+    /**
+     * get neighbors line
+     *
+     * @return string
+     */
+    public String getShNeigh() {
+        return peer + "|" + pri + "|" + bits.timePast(upTime);
+    }
+
+    public void bfdPeerDown() {
+        last = 0;
+        lower.purgeNeighs();
     }
 
 }

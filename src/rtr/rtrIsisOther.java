@@ -61,6 +61,11 @@ public class rtrIsisOther extends ipRtr {
         fwd.routerAdd(this, parent.rouTyp, parent.rtrNum);
     }
 
+    /**
+     * create instance
+     * @param p parent
+     * @param f forwarder
+     */
     public rtrIsisOther(rtrIsis p, ipFwd f) {
         fwd = f;
         parent = p;

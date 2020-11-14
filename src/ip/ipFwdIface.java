@@ -440,6 +440,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add("6  .            <addr>              nexthop");
         l.add("2 3     pim                         pim configuration options");
         l.add("3 .       enable                    enable pim processing");
+        l.add("3 .       bfd                       enable bfd triggered down");
         l.add("3 .       allow-rx                  suppress processing routing updates");
         l.add("3 .       allow-tx                  suppress sending routing updates");
         l.add("3 4       bier-tunnel               use bier encapsulation");
@@ -457,6 +458,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add("4 .         <addr>                  address to use");
         l.add("3 4       mac-address               set virtual mac address");
         l.add("4 .         <addr>                  address to use");
+        l.add("3 .       bfd                       enable bfd triggered down");
         l.add("3 4       group                     set group number");
         l.add("4 .         <num>                   group");
         l.add("3 4       version                   set protocol version");
@@ -475,6 +477,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add("4 .         <addr>                  address to use");
         l.add("3 4       mac-address               set virtual mac address");
         l.add("4 .         <addr>                  address to use");
+        l.add("3 .       bfd                       enable bfd triggered down");
         l.add("3 4       group                     set group number");
         l.add("4 .         <num>                   group");
         l.add("3 4       version                   set protocol version");
@@ -482,7 +485,6 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 4       timer                     set protocol timers");
         l.add("4 5         <num>                   hello time in ms");
         l.add("5 .           <num>                 hold time in ms");
-        l.add("3 .       preempt                   overbid lower priority ones");
         l.add("3 4       priority                  set priority level");
         l.add("4 .         <num>                   priority");
         l.add("3 4       tracker                   set tracker to use");
@@ -585,6 +587,7 @@ public class ipFwdIface extends tabRouteIface {
             l.add(cmds.tabulator + beg + "pim packet-timer " + pimCfg.interPackTime);
             l.add(cmds.tabulator + beg + "pim priority " + pimCfg.drPriority);
             l.add(cmds.tabulator + beg + "pim hello-time " + pimCfg.helloInterval);
+            cmds.cfgLine(l, !pimCfg.bfdTrigger, cmds.tabulator, beg + "pim bfd", "");
         } else {
             l.add(cmds.tabulator + "no " + beg + "pim enable");
         }
@@ -605,6 +608,7 @@ public class ipFwdIface extends tabRouteIface {
             l.add(cmds.tabulator + beg + "hsrp priority " + hsrpCfg.priority);
             cmds.cfgLine(l, !hsrpCfg.preempt, cmds.tabulator, beg + "hsrp preempt", "");
             cmds.cfgLine(l, hsrpCfg.trackR == null, cmds.tabulator, beg + "hsrp tracker", hsrpCfg.trackR + " " + hsrpCfg.trackD);
+            cmds.cfgLine(l, !hsrpCfg.bfdTrigger, cmds.tabulator, beg + "hsrp bfd", "");
         } else {
             l.add(cmds.tabulator + "no " + beg + "hsrp address");
         }
@@ -616,6 +620,7 @@ public class ipFwdIface extends tabRouteIface {
             l.add(cmds.tabulator + beg + "vrrp timer " + vrrpCfg.hello + " " + vrrpCfg.hold);
             l.add(cmds.tabulator + beg + "vrrp priority " + vrrpCfg.priority);
             cmds.cfgLine(l, vrrpCfg.trackR == null, cmds.tabulator, beg + "vrrp tracker", vrrpCfg.trackR + " " + vrrpCfg.trackD);
+            cmds.cfgLine(l, !vrrpCfg.bfdTrigger, cmds.tabulator, beg + "vrrp bfd", "");
         } else {
             l.add(cmds.tabulator + "no " + beg + "vrrp address");
         }
@@ -890,6 +895,10 @@ public class ipFwdIface extends tabRouteIface {
                 cmd.error("protocol not running");
                 return false;
             }
+            if (a.equals("bfd")) {
+                pimCfg.bfdTrigger = true;
+                return false;
+            }
             if (a.equals("bier-tunnel")) {
                 pimCfg.bierTunnel = bits.str2num(cmd.word());
                 return false;
@@ -989,6 +998,10 @@ public class ipFwdIface extends tabRouteIface {
                 cmd.error("protocol not running");
                 return false;
             }
+            if (a.equals("bfd")) {
+                hsrpCfg.bfdTrigger = true;
+                return false;
+            }
             if (a.equals("group")) {
                 hsrpCfg.group = bits.str2num(cmd.word());
                 hsrpCfg.mac = hsrpCfg.genPackHolder().genMacAddr();
@@ -1051,6 +1064,10 @@ public class ipFwdIface extends tabRouteIface {
             }
             if (vrrpCfg == null) {
                 cmd.error("protocol not running");
+                return false;
+            }
+            if (a.equals("bfd")) {
+                vrrpCfg.bfdTrigger = true;
                 return false;
             }
             if (a.equals("group")) {
@@ -1287,6 +1304,10 @@ public class ipFwdIface extends tabRouteIface {
                 cmd.error("protocol not running");
                 return false;
             }
+            if (a.equals("bfd")) {
+                pimCfg.bfdTrigger = false;
+                return false;
+            }
             if (a.equals("bier-tunnel")) {
                 pimCfg.bierTunnel = 0;
                 return false;
@@ -1353,6 +1374,10 @@ public class ipFwdIface extends tabRouteIface {
                 cmd.error("protocol not running");
                 return false;
             }
+            if (a.equals("bfd")) {
+                hsrpCfg.bfdTrigger = false;
+                return false;
+            }
             if (a.equals("mac-address")) {
                 hsrpCfg.mac = hsrpCfg.genPackHolder().genMacAddr();
                 return false;
@@ -1381,6 +1406,10 @@ public class ipFwdIface extends tabRouteIface {
             }
             if (vrrpCfg == null) {
                 cmd.error("protocol not running");
+                return false;
+            }
+            if (a.equals("bfd")) {
+                vrrpCfg.bfdTrigger = false;
                 return false;
             }
             if (a.equals("mac-address")) {

@@ -91,6 +91,11 @@ public class rtrHsrpIface implements prtServP {
     public int trackD;
 
     /**
+     * bfd enabled
+     */
+    public boolean bfdTrigger;
+
+    /**
      * used ip version
      */
     public final boolean ipv4;
@@ -154,10 +159,11 @@ public class rtrHsrpIface implements prtServP {
      * @return entry
      */
     public rtrHsrpNeigh genLocalNeigh() {
-        rtrHsrpNeigh ntry = new rtrHsrpNeigh(ifc.addr);
+        rtrHsrpNeigh ntry = new rtrHsrpNeigh(this, ifc.addr);
         ntry.priority = priority;
         ntry.state = lastStat;
         ntry.opcode = lastOpcod;
+        ntry.upTime = started;
         if (trackD < 1) {
             return ntry;
         }
@@ -275,38 +281,7 @@ public class rtrHsrpIface implements prtServP {
         if (id.compare(id, conn) != 0) {
             return;
         }
-        int currStat = getCurrStat();
-        lastOpcod = packHsrp.opHello;
-        if (currStat != lastStat) {
-            logger.warn("hsrp " + ip + " changed to " + packHsrp.state2string(currStat));
-            if (currStat == packHsrp.staActv) {
-                lastOpcod = packHsrp.opCoup;
-                ifc.adrAdd(ip, mac);
-            }
-            if (lastStat == packHsrp.staActv) {
-                lastOpcod = packHsrp.opResign;
-                ifc.adrDel(ip);
-            }
-        }
-        lastStat = currStat;
-        conn.workInterval = hello;
-        packHsrp pckH = genPackHolder();
-        pckH.virtual = ip.copyBytes();
-        pckH.authen = "" + authen;
-        pckH.hello = hello;
-        pckH.hold = hold;
-        pckH.priority = priority;
-        pckH.ident = ident.copyBytes();
-        pckH.virtual = ip.copyBytes();
-        pckH.state = lastStat;
-        pckH.opcod = lastOpcod;
-        packHolder pckB = new packHolder(true, true);
-        pckH.createPacket(pckB);
-        pckB.merge2beg();
-        conn.send2net(pckB);
-        if (debugger.rtrHsrpTraf) {
-            logger.debug("tx " + pckH);
-        }
+        sendHello();
     }
 
     /**
@@ -349,13 +324,60 @@ public class rtrHsrpIface implements prtServP {
         if (!authen.equals(hsr.authen)) {
             return false;
         }
-        rtrHsrpNeigh nei = new rtrHsrpNeigh(id.peerAddr);
+        rtrHsrpNeigh nei = new rtrHsrpNeigh(this, id.peerAddr);
+        rtrHsrpNeigh old = neighs.add(nei);
+        if (old != null) {
+            nei = old;
+        } else {
+            nei.upTime = bits.getTime();
+            logger.warn("neighbor " + nei.peer + " up");
+            if (bfdTrigger) {
+                ifc.bfdAdd(id.peerAddr, nei, "hsrp");
+            }
+        }
         nei.time = bits.getTime();
         nei.state = hsr.state;
         nei.opcode = hsr.opcod;
         nei.priority = hsr.priority;
-        neighs.put(nei);
         return false;
+    }
+
+    /**
+     * send advertisement
+     */
+    protected synchronized void sendHello() {
+        int currStat = getCurrStat();
+        lastOpcod = packHsrp.opHello;
+        if (currStat != lastStat) {
+            logger.warn("hsrp " + ip + " changed to " + packHsrp.state2string(currStat));
+            if (currStat == packHsrp.staActv) {
+                lastOpcod = packHsrp.opCoup;
+                ifc.adrAdd(ip, mac);
+            }
+            if (lastStat == packHsrp.staActv) {
+                lastOpcod = packHsrp.opResign;
+                ifc.adrDel(ip);
+            }
+        }
+        lastStat = currStat;
+        conn.workInterval = hello;
+        packHsrp pckH = genPackHolder();
+        pckH.virtual = ip.copyBytes();
+        pckH.authen = "" + authen;
+        pckH.hello = hello;
+        pckH.hold = hold;
+        pckH.priority = priority;
+        pckH.ident = ident.copyBytes();
+        pckH.virtual = ip.copyBytes();
+        pckH.state = lastStat;
+        pckH.opcod = lastOpcod;
+        packHolder pckB = new packHolder(true, true);
+        pckH.createPacket(pckB);
+        pckB.merge2beg();
+        conn.send2net(pckB);
+        if (debugger.rtrHsrpTraf) {
+            logger.debug("tx " + pckH);
+        }
     }
 
     private int getCurrStat() {
@@ -365,7 +387,9 @@ public class rtrHsrpIface implements prtServP {
         for (int i = neighs.size() - 1; i >= 0; i--) {
             rtrHsrpNeigh ntry = neighs.get(i);
             if ((tim - ntry.time) > hold) {
+                logger.error("neighbor " + ntry.peer + " down");
                 neighs.del(ntry);
+                ifc.bfdDel(ntry.peer, ntry);
                 continue;
             }
             if (ntry.state == packHsrp.staActv) {
@@ -402,7 +426,12 @@ public class rtrHsrpIface implements prtServP {
 
 }
 
-class rtrHsrpNeigh implements Comparator<rtrHsrpNeigh> {
+class rtrHsrpNeigh implements Comparator<rtrHsrpNeigh>, rtrBfdClnt {
+
+    /**
+     * parent
+     */
+    public final rtrHsrpIface lower;
 
     /**
      * address of peer
@@ -430,11 +459,17 @@ class rtrHsrpNeigh implements Comparator<rtrHsrpNeigh> {
     public long time;
 
     /**
+     * uptime
+     */
+    public long upTime;
+
+    /**
      * create one neighbor
      *
      * @param adr address of peer
      */
-    public rtrHsrpNeigh(addrIP adr) {
+    public rtrHsrpNeigh(rtrHsrpIface parent, addrIP adr) {
+        lower = parent;
         peer = adr.copyBytes();
     }
 
@@ -468,7 +503,12 @@ class rtrHsrpNeigh implements Comparator<rtrHsrpNeigh> {
      * @return result
      */
     public String getShSum() {
-        return peer + "|" + packHsrp.state2string(state) + "|" + priority;
+        return peer + "|" + packHsrp.state2string(state) + "|" + priority + "|" + bits.timePast(upTime);
+    }
+
+    public void bfdPeerDown() {
+        time = 0;
+        lower.sendHello();
     }
 
 }

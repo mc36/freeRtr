@@ -248,7 +248,7 @@ public class ipFwdTab {
      * @return list of neighbors
      */
     public static userFormat hsrpNeighShow(ipFwd lower) {
-        userFormat l = new userFormat("|", "interface|address|state|priority");
+        userFormat l = new userFormat("|", "interface|address|state|priority|uptime");
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ntry = lower.ifaces.get(i);
             if (ntry == null) {
@@ -269,7 +269,7 @@ public class ipFwdTab {
      * @return list of neighbors
      */
     public static userFormat vrrpNeighShow(ipFwd lower) {
-        userFormat l = new userFormat("|", "interface|address|priority");
+        userFormat l = new userFormat("|", "interface|address|priority|uptime");
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ntry = lower.ifaces.get(i);
             if (ntry == null) {
