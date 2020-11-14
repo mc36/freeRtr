@@ -432,9 +432,13 @@ class servPop3doer implements Runnable {
                 doLine("-ERR read error");
                 return false;
             }
+            int siz = txt.size();
             packText pt = new packText(pipe);
-            doLine("+OK " + txt.size() + " lines");
+            doLine("+OK " + siz + " lines");
             int o = headSize(txt) + 1 + bits.str2num(cmd.word());
+            if (o > siz) {
+                o = siz;
+            }
             for (int i = 0; i < o; i++) {
                 pt.dottedSend(txt.get(i));
             }
