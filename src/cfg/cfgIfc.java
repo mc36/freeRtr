@@ -525,6 +525,21 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public boolean tunSeq = false;
 
     /**
+     * association id
+     */
+    public int tunAscId = 0;
+
+    /**
+     * association global id
+     */
+    public int tunAscId2 = 0;
+
+    /**
+     * association address
+     */
+    public addrIP tunAscAdr = null;
+
+    /**
      * tunnel priority
      */
     public int tunPri = 7;
@@ -1615,6 +1630,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! tunnel tos -1",
         "interface .*! tunnel ttl 255",
         "interface .*! tunnel priority 7",
+        "interface .*! no tunnel association",
         "interface .*! no tunnel protection",
         "interface .*! no tunnel domain-name"
     };
@@ -3473,6 +3489,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         tunSum = false;
         tunSeq = false;
         tunPri = 7;
+        tunAscId = 0;
+        tunAscId2 = 0;
+        tunAscAdr = null;
         tunVrf = null;
         tunTrg = null;
         tunSrc = null;
@@ -3918,6 +3937,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2p.pcep = tunFQDN;
                 tunTeP2p.expr = tunTOS;
                 tunTeP2p.ttl = tunTTL;
+                tunTeP2p.ascId = tunAscId;
+                tunTeP2p.ascId2 = tunAscId2;
+                tunTeP2p.ascAdr = tunAscAdr;
                 tunTeP2p.prioS = tunPri;
                 tunTeP2p.prioH = tunPri;
                 tunTeP2p.bndwdt = ethtyp.getBandwidth();
@@ -3934,6 +3956,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2p.descr = cfgAll.hostName + ":" + name;
                 tunTeP2p.expr = tunTOS;
                 tunTeP2p.ttl = tunTTL;
+                tunTeP2p.ascId = tunAscId;
+                tunTeP2p.ascId2 = tunAscId2;
+                tunTeP2p.ascAdr = tunAscAdr;
                 tunTeP2p.prioS = tunPri;
                 tunTeP2p.prioH = tunPri;
                 tunTeP2p.bndwdt = ethtyp.getBandwidth();
@@ -5100,6 +5125,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(cmds.tabulator + "tunnel tos " + tunTOS);
                 l.add(cmds.tabulator + "tunnel ttl " + tunTTL);
                 l.add(cmds.tabulator + "tunnel priority " + tunPri);
+                if (tunAscAdr == null) {
+                    l.add(cmds.tabulator + "no tunnel association");
+                } else {
+                    s = "";
+                    if (tunAscId2 != 0) {
+                        s = " " + tunAscId2;
+                    }
+                    l.add(cmds.tabulator + "tunnel association " + tunAscAdr + " " + tunAscId + s);
+                }
                 if (tunVrf == null) {
                     l.add(cmds.tabulator + "no tunnel vrf");
                 } else {
@@ -5610,6 +5644,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       <num>                     value of ttl field");
         l.add("2 3     priority                    set tunnel priority");
         l.add("3 .       <num>                     value of ttl field");
+        l.add("2 3     association                 set tunnel association");
+        l.add("3 4       <addr>                    source address");
+        l.add("4 5,.       <num>                   unique id");
+        l.add("5 .           <num>                 global id");
         l.add("2 3     key                         set security key, 0 to disable");
         l.add("3 4,.     <num>                     value of key field");
         l.add("4 .         <num>                   value of local key field");
@@ -7115,6 +7153,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             setup2tunnel();
             return;
         }
+        if (a.equals("association")) {
+            tunAscAdr = new addrIP();
+            tunAscAdr.fromString(cmd.word());
+            tunAscId = bits.str2num(cmd.word());
+            tunAscId2 = bits.str2num(cmd.word());
+            setup2tunnel();
+            return;
+        }
         if (a.equals("priority")) {
             tunPri = bits.str2num(cmd.word());
             setup2tunnel();
@@ -7211,6 +7257,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("sequence-datagrams")) {
             tunSeq = false;
+            setup2tunnel();
+            return;
+        }
+        if (a.equals("association")) {
+            tunAscAdr = null;
+            tunAscId = 0;
+            tunAscId2 = 0;
             setup2tunnel();
             return;
         }

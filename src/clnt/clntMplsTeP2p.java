@@ -72,6 +72,21 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
     public int prioH = 7;
 
     /**
+     * association id
+     */
+    public int ascId = 0;
+
+    /**
+     * association global id
+     */
+    public int ascId2 = 0;
+
+    /**
+     * association address
+     */
+    public addrIP ascAdr = null;
+
+    /**
      * experimental value, -1 means maps out
      */
     public int expr = -1;
@@ -327,6 +342,12 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         trfEng.bwdt = ((float) bndwdt) / 8;
         trfEng.descr = descr;
         trfEng.recRou = recRou;
+        if (ascAdr != null) {
+            trfEng.asocAdr = ascAdr.copyBytes();
+            trfEng.asocId = ascId;
+            trfEng.asocGlb = ascId2;
+            trfEng.asocTyp = 3;
+        }
         fwdCor.tetunAdd(trfEng, false);
         for (int cnt = 0;; cnt++) {
             if (!working) {

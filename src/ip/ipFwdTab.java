@@ -1254,6 +1254,12 @@ public class ipFwdTab {
         pck.sessAdr = ntry.trgAdr.copyBytes();
         pck.sessId = ntry.trgId;
         pck.subAddr = ntry.trgAdr.copyBytes();
+        if (ntry.asocAdr != null) {
+            pck.assocAdr = ntry.asocAdr.copyBytes();
+            pck.assocId = ntry.asocId;
+            pck.assocGlb = ntry.asocGlb;
+            pck.assocTyp = ntry.asocTyp;
+        }
         pck.sessHld = 7;
         pck.sessStp = 7;
         pck.sessFlg = 0x04; // se style
