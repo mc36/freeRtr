@@ -1,5 +1,5 @@
 #!/bin/sh
-apt-get install frr frr-rpki-rtrlib socat telnet tshark iperf
+apt-get install frr frr-rpki-rtrlib psmisc iproute2 net-tools socat telnet tshark iperf
 echo "mpls_router" >> /etc/modules-load.d/modules.conf
 echo "mpls_iptunnel" >> /etc/modules-load.d/modules.conf
 cp sysctl /etc/sysctl.d/00-frr.conf
