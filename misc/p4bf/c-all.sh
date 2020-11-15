@@ -7,6 +7,7 @@
 #update-rc.d rtr defaults
 #systemctl mask serial-getty@ttyS0
 #systemctl disable serial-getty@ttyS0
+#echo mc36 ALL=(ALL) NOPASSWD:ALL >> /etc/sudoers
 cd /home/mc36/rare/p4src
 export SDE=/home/mc36/bf-sde-9.3.0
 export SDE_INSTALL=/home/mc36/bf-sde-9.3.0/install
