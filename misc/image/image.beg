@@ -60,8 +60,8 @@ select-dis openssl
 select-dis systemd
 select-dis libasound
 select-dis libavahi
-select-dis libharfbuzz
 select-dis libcups
+select-dis libharfbuzz
 select-dis liblcms
 select-dis libfontconfig
 select-dis libjpeg
