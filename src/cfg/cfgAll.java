@@ -779,6 +779,21 @@ public class cfgAll {
     public static boolean upgradeOwnKey = false;
 
     /**
+     * redundancy keepalive time
+     */
+    public static int redundancyKeep = 1000;
+
+    /**
+     * redundancy hold time
+     */
+    public static int redundancyHold = 5 * 1000;
+
+    /**
+     * redundancy init time
+     */
+    public static int redundancyInit = 10 * 1000;
+
+    /**
      * passive mode ftp
      */
     public static boolean ftpPassive = true;
@@ -925,6 +940,7 @@ public class cfgAll {
         "!no password-encrypt",
         "!no enable",
         // client
+        "!client redundancy 1000 5000 10000",
         "!no client proxy",
         "!no client domain-name",
         "!no client name-proxy",
@@ -3111,6 +3127,7 @@ public class cfgAll {
 
     private static List<String> getGlobalRunEnd(boolean filter) {
         List<String> l = new ArrayList<String>();
+        l.add("client redundancy " + redundancyKeep + " " + redundancyHold + " " + redundancyInit);
         if (clientProxy == null) {
             l.add("no client proxy");
         } else {

@@ -458,6 +458,10 @@ public class userConfig {
         l.add("5  6          <num>                  new service path");
         l.add("6  4,.          <num>                new service index");
         l.add("1  2  client                         specify address of name server");
+        l.add("2  3    redundancy                   specify redundancy parameters");
+        l.add("3  4      <num>                      keepalive in ms");
+        l.add("4  5        <num>                    hold time in ms");
+        l.add("5  .          <num>                  init time in ms");
         l.add("2  3    proxy                        specify proxy profile");
         l.add("3  .      <name>                     name of profile");
         l.add("2  3    domain-name                  specify domain name");
@@ -1444,6 +1448,12 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("redundancy")) {
+                cfgAll.redundancyKeep = bits.str2num(cmd.word());
+                cfgAll.redundancyHold = bits.str2num(cmd.word());
+                cfgAll.redundancyInit = bits.str2num(cmd.word());
+                return;
+            }
             if (a.equals("whois-server")) {
                 cfgAll.whoisServer = cmd.getRemaining();
                 return;

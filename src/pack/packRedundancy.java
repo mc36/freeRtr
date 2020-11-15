@@ -5,7 +5,7 @@ package pack;
  *
  * @author matecsaba
  */
-public class packRedun {
+public class packRedundancy {
 
     /**
      * ethertype
@@ -76,21 +76,6 @@ public class packRedun {
      * active
      */
     public final static int statActive = 3;
-
-    /**
-     * keepalive time
-     */
-    public final static int timeKeep = 1000;
-
-    /**
-     * hold time
-     */
-    public final static int timeHold = timeKeep * 5;
-
-    /**
-     * init time
-     */
-    public final static int timeInit = timeHold * 2;
 
     /**
      * max size
