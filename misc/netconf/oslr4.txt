@@ -1,0 +1,12 @@
+config oslr4
+config/router/oslr4/1
+freertr-oslr4
+vrf def 187156390
+ exit
+router oslr4 187156390
+ vrf 187156390
+!
+ exit
+no router oslr4 187156390
+no vrf def 187156390
+.

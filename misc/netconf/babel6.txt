@@ -1,0 +1,12 @@
+config babel6
+config/router/babel6/1
+freertr-babel6
+vrf def 187156390
+ exit
+router babel6 187156390
+ vrf 187156390
+!
+ exit
+no router babel6 187156390
+no vrf def 187156390
+.
