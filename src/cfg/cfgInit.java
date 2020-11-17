@@ -743,9 +743,9 @@ public class cfgInit implements Runnable {
             sdefs.add(ntry.command);
         }
         List<String> inis = new ArrayList<String>();
+        List<userFilter> secs = userFilter.text2section(sw);
         for (int i = 0; i < needInit.length; i++) {
-            inis.addAll(userFilter.getSecList(userFilter.text2section(sw),
-                    needInit[i], cmds.tabulator + cmds.finish));
+            inis.addAll(userFilter.getSecList(secs, needInit[i], cmds.tabulator + cmds.finish));
         }
         List<String> defs = new ArrayList<String>();
         List<String> inhs = new ArrayList<String>();
@@ -763,17 +763,14 @@ public class cfgInit implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
-        for (int i = 0; i < 4; i++) {
-            logger.info("applying configuration");
-            int res = 0;
-            try {
-                res = executeSWcommands(sw, false);
-            } catch (Exception e) {
-                logger.traceback(e);
-            }
-            if (res < 1) {
-                break;
-            }
+        logger.info("applying configuration");
+        int res = 0;
+        try {
+            res = executeSWcommands(sw, false);
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        if (res > 0) {
             logger.error(res + " errors found");
         }
         int step = cfgAll.vdcs.size();
