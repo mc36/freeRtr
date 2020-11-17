@@ -578,12 +578,16 @@ public class cfgInit implements Runnable {
             if (debugger.cfgInitSw) {
                 logger.debug("cmd " + a);
             }
-            String beg = (o + 1) + ":";
+            String beg = "line " + (o + 1) + ": \"" + a + "\" : ";
             userHelping hl = uc.getHelping(true, true);
             rd.setContext(hl, "");
             String b = hl.repairLine(a);
             if (b.length() < 1) {
-                logger.info(beg + a);
+                err++;
+                if (quiet) {
+                    continue;
+                }
+                logger.info(beg + "no such command");
                 continue;
             }
             try {
@@ -591,24 +595,20 @@ public class cfgInit implements Runnable {
             } catch (Exception e) {
                 logger.info(beg + logger.dumpException(e));
             }
-            if (psS.ready2rx() < 1) {
+            i = psS.ready2rx();
+            if (i < 1) {
                 continue;
             }
             err++;
+            byte[] buf = new byte[i];
+            i = psS.nonBlockGet(buf, 0, buf.length);
+            b = new String(buf, 0, i);
+            b = b.replaceAll("\r", " ");
+            b = b.replaceAll("\n", " ");
             if (quiet) {
                 continue;
             }
-            logger.info(beg + a);
-            for (;;) {
-                if (psS.ready2rx() < 1) {
-                    break;
-                }
-                b = psS.lineGet(1);
-                if (b.length() < 1) {
-                    continue;
-                }
-                logger.info(b);
-            }
+            logger.info(beg + b);
         }
         return err;
     }
