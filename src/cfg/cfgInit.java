@@ -593,6 +593,7 @@ public class cfgInit implements Runnable {
             try {
                 uc.executeCommand(b);
             } catch (Exception e) {
+                err++;
                 logger.info(beg + logger.dumpException(e));
             }
             i = psS.ready2rx();
