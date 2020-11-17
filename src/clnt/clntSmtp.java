@@ -374,7 +374,7 @@ public class clntSmtp implements Runnable {
                 return false;
             }
             logger.warn("error sending email from " + from + ", result=" + lastS);
-            bits.sleep(bits.random(3000, 30000));
+            bits.sleep(bits.random(60 * 1000, 600 * 1000));
         }
         return true;
     }
@@ -391,7 +391,7 @@ public class clntSmtp implements Runnable {
             logger.debug("sending from " + from);
         }
         try {
-            boolean b = doSend(5);
+            boolean b = doSend(10);
             cleanUp();
             if (!b) {
                 return;
