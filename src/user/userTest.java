@@ -382,6 +382,7 @@ public class userTest {
             return null;
         }
         if (a.equals("routing")) {
+            int add = 100000;
             int fnd = 10000;
             int idx = 111;
             boolean dmp = false;
@@ -419,8 +420,12 @@ public class userTest {
                     msk |= 0xfff;
                     continue;
                 }
-                if (a.equals("len")) {
+                if (a.equals("find")) {
                     fnd = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("add")) {
+                    add = bits.str2num(cmd.word());
                     continue;
                 }
                 if (a.equals("idx")) {
@@ -428,14 +433,14 @@ public class userTest {
                     continue;
                 }
             }
-            doTestRouting(msk, new addrClns(), new tabRoute<addrClns>("test"), fnd, idx, dmp);
-            doTestRouting(msk, new addrIsis(), new tabRoute<addrIsis>("test"), fnd, idx, dmp);
-            doTestRouting(msk, new addrEui(), new tabRoute<addrEui>("test"), fnd, idx, dmp);
-            doTestRouting(msk, new addrMac(), new tabRoute<addrMac>("test"), fnd, idx, dmp);
-            doTestRouting(msk, new addrIpx(), new tabRoute<addrIpx>("test"), fnd, idx, dmp);
-            doTestRouting(msk, new addrIPv4(), new tabRoute<addrIPv4>("test"), fnd, idx, dmp);
-            doTestRouting(msk, new addrIPv6(), new tabRoute<addrIPv6>("test"), fnd, idx, dmp);
-            doTestRouting(msk, new addrIP(), new tabRoute<addrIP>("test"), fnd, idx, dmp);
+            doTestRouting(msk, new addrClns(), new tabRoute<addrClns>("test"), add, fnd, idx, dmp);
+            doTestRouting(msk, new addrIsis(), new tabRoute<addrIsis>("test"), add, fnd, idx, dmp);
+            doTestRouting(msk, new addrEui(), new tabRoute<addrEui>("test"), add, fnd, idx, dmp);
+            doTestRouting(msk, new addrMac(), new tabRoute<addrMac>("test"), add, fnd, idx, dmp);
+            doTestRouting(msk, new addrIpx(), new tabRoute<addrIpx>("test"), add, fnd, idx, dmp);
+            doTestRouting(msk, new addrIPv4(), new tabRoute<addrIPv4>("test"), add, fnd, idx, dmp);
+            doTestRouting(msk, new addrIPv6(), new tabRoute<addrIPv6>("test"), add, fnd, idx, dmp);
+            doTestRouting(msk, new addrIP(), new tabRoute<addrIP>("test"), add, fnd, idx, dmp);
             return null;
         }
         if (a.equals("pipeline")) {
@@ -656,10 +661,6 @@ public class userTest {
         }
     }
 
-    private final static int routingTim = 5000;
-
-    private final static int routingRnd = 3000;
-
     private <T extends addrType> void doTestRoutingChk(tabRoute<T> tab, boolean dmp) {
         int i = tab.checkConsistency();
         if (i >= 0) {
@@ -671,16 +672,13 @@ public class userTest {
         cmd.pipe.strPut("," + tab.getTableInfo() + "  ");
     }
 
-    private <T extends addrType> void doTestRoutingGet(tabRoute<T> tab, int idx, boolean dmp, String typ) {
+    private <T extends addrType> void doTestRoutingGet(tabRoute<T> tab, int idx, int add, boolean dmp, String typ) {
         for (int i = 0; i < tab.size(); i++) {
             tab.get(i).best.time = i;
         }
         long beg = bits.getTime();
         long rnd = 0;
-        for (;;) {
-            if ((bits.getTime() - beg) > routingTim) {
-                break;
-            }
+        for (int cur = 0; cur < (add / tab.size()); cur++) {
             for (int i = 0; i < tab.size(); i++) {
                 tab.get(i).best.time = rnd;
                 rnd++;
@@ -701,11 +699,8 @@ public class userTest {
         }
         beg = bits.getTime();
         rnd = 0;
-        for (;;) {
-            if ((bits.getTime() - beg) > routingTim) {
-                break;
-            }
-            for (int i = 0; i < routingRnd; i++) {
+        for (int cur = 0; cur < (add / tab.size()); cur++) {
+            for (int i = 0; i < tab.size(); i++) {
                 if (prf == null) {
                     tab.find(tab.get(bits.random(0, siz))).best.time = rnd;
                 } else {
@@ -718,11 +713,8 @@ public class userTest {
         cmd.pipe.strPut("  " + beg + " " + typ + "f");
         beg = bits.getTime();
         rnd = 0;
-        for (;;) {
-            if ((bits.getTime() - beg) > routingTim) {
-                break;
-            }
-            for (int i = 0; i < routingRnd; i++) {
+        for (int cur = 0; cur < (add / tab.size()); cur++) {
+            for (int i = 0; i < tab.size(); i++) {
                 if (adr == null) {
                     tab.route(tab.get(bits.random(0, siz)).prefix.network).best.time = rnd;
                 } else {
@@ -735,61 +727,43 @@ public class userTest {
         cmd.pipe.strPut("  " + beg + " " + typ + "l");
     }
 
-    private <T extends addrType> void doTestRoutingAdd(tabRoute<T> tab, T adr, int fill, userTestIfc mod, boolean dmp, String typ) {
+    private <T extends addrType> void doTestRoutingAdd(tabRoute<T> tab, T adr, int fill, int add, userTestIfc mod, boolean dmp, String typ) {
         tab.clear();
         byte[] buf = new byte[256];
         long beg = bits.getTime();
-        long rnd = 0;
-        for (;;) {
-            if ((bits.getTime() - beg) > routingTim) {
-                break;
-            }
-            for (int i = 0; i < routingRnd; i++) {
-                bits.msbPutD(buf, 0, mod.forAdd(rnd));
-                adr.fromBuf(buf, 0);
-                tab.add(tabRoute.addType.always, new addrPrefix<T>(adr, fill), adr);
-                rnd++;
-            }
+        for (int i = 0; i < add; i++) {
+            bits.msbPutD(buf, 0, mod.forAdd(i));
+            adr.fromBuf(buf, 0);
+            tab.add(tabRoute.addType.always, new addrPrefix<T>(adr, fill), adr);
         }
-        beg = (rnd * 1000) / (bits.getTime() - beg);
+        beg = (add * 1000) / (bits.getTime() - beg);
         cmd.pipe.strPut("  " + beg + " " + typ + "a");
         doTestRoutingChk(tab, dmp);
         beg = bits.getTime();
-        rnd = 0;
-        for (;;) {
-            if ((bits.getTime() - beg) > routingTim) {
-                break;
-            }
-            int o = tab.size();
-            if (o < 1) {
-                break;
-            }
-            for (int i = 0; i < routingRnd; i++) {
-                o = tab.size();
-                if (o < 1) {
-                    break;
-                }
-                tab.del(tab.get(mod.forDel(o)));
-                rnd++;
-            }
+        add = tab.size();
+        for (int i = add - 1; i >= 0; i--) {
+            tab.del(tab.get(mod.forDel(i + 1)));
         }
-        beg = (rnd * 1000) / (bits.getTime() - beg);
+        beg = (add * 1000) / (bits.getTime() - beg);
         cmd.pipe.strPut("  " + beg + " " + typ + "d");
         doTestRoutingChk(tab, dmp);
     }
 
-    private <T extends addrType> void doTestRouting(int msk, T adr, tabRoute<T> tab, int fnd, int idx, boolean dmp) {
+    private <T extends addrType> void doTestRouting(int msk, T adr, tabRoute<T> tab, int add, int fnd, int idx, boolean dmp) {
         int fill = adr.getSize() * 8;
         cmd.pipe.strPut("testing " + adr.getClass().getName() + "-" + fill + ":");
         byte[] buf = new byte[256];
         if ((msk & 1) != 0) {
-            doTestRoutingAdd(tab, adr, fill, new userTestFwd(), dmp, "f");
+            doTestRoutingAdd(tab, adr, fill, add, new userTestFwd(), dmp, "f");
         }
         if ((msk & 2) != 0) {
-            doTestRoutingAdd(tab, adr, fill, new userTestBwd(), dmp, "b");
+            doTestRoutingAdd(tab, adr, fill, add, new userTestBwd(), dmp, "b");
         }
         if ((msk & 4) != 0) {
-            doTestRoutingAdd(tab, adr, fill, new userTestRnd(), dmp, "r");
+            doTestRoutingAdd(tab, adr, fill, add, new userTestRnd(), dmp, "r");
+        }
+        if ((msk & 24) == 0) {
+            return;
         }
         tab.clear();
         fill = fill - 8;
@@ -800,13 +774,13 @@ public class userTest {
         }
         if ((msk & 8) != 0) {
             doTestRoutingChk(tab, dmp);
-            doTestRoutingGet(tab, idx, dmp, "r");
+            doTestRoutingGet(tab, idx, add, dmp, "r");
             doTestRoutingChk(tab, dmp);
         }
         tab.optimize4lookup();
         if ((msk & 16) != 0) {
             doTestRoutingChk(tab, dmp);
-            doTestRoutingGet(tab, idx, dmp, "o");
+            doTestRoutingGet(tab, idx, add, dmp, "o");
             doTestRoutingChk(tab, dmp);
         }
         cmd.pipe.linePut("");
@@ -829,10 +803,10 @@ public class userTest {
         long cur;
         for (;;) {
             cur = bits.getTime();
-            if ((cur - tim) > routingTim) {
+            if ((cur - tim) > 5000) {
                 break;
             }
-            for (int i = 0; i < routingRnd; i++) {
+            for (int i = 0; i < 3000; i++) {
                 tried++;
                 if (p1.blockingPut(b1, 0, b1.length) != b1.length) {
                     continue;
@@ -920,7 +894,7 @@ public class userTest {
 
 interface userTestIfc {
 
-    public int forAdd(long rnd);
+    public int forAdd(int rnd);
 
     public int forDel(int len);
 
@@ -928,8 +902,8 @@ interface userTestIfc {
 
 class userTestFwd implements userTestIfc {
 
-    public int forAdd(long rnd) {
-        return (int) rnd;
+    public int forAdd(int rnd) {
+        return rnd;
     }
 
     public int forDel(int len) {
@@ -940,8 +914,8 @@ class userTestFwd implements userTestIfc {
 
 class userTestBwd implements userTestIfc {
 
-    public int forAdd(long rnd) {
-        return (int) (-rnd);
+    public int forAdd(int rnd) {
+        return -rnd;
     }
 
     public int forDel(int len) {
@@ -952,7 +926,7 @@ class userTestBwd implements userTestIfc {
 
 class userTestRnd implements userTestIfc {
 
-    public int forAdd(long rnd) {
+    public int forAdd(int rnd) {
         return bits.randomD();
     }
 
