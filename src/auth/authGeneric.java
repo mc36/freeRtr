@@ -6,6 +6,7 @@ import java.util.List;
 import tab.tabListing;
 import tab.tabListingEntry;
 import tab.tabPrfxlstN;
+import user.userFormat;
 import user.userHelping;
 import util.cmds;
 
@@ -40,6 +41,21 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      * log password
      */
     public boolean logPass = false;
+
+    /**
+     * number of failure responses
+     */
+    public int sawFail;
+
+    /**
+     * number of error responses
+     */
+    public int sawErr;
+
+    /**
+     * number of ok responses
+     */
+    public int sawOk;
 
     /**
      * authenticate user by username/password
@@ -128,6 +144,19 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      */
     public int compare(authGeneric o1, authGeneric o2) {
         return o1.autName.toLowerCase().compareTo(o2.autName.toLowerCase());
+    }
+
+    /**
+     * get show
+     *
+     * @return show
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("ok|" + sawOk);
+        res.add("fail|" + sawFail);
+        res.add("error|" + sawErr);
+        return res;
     }
 
     /**

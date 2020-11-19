@@ -23,7 +23,6 @@ crypto certificate ecdsa import ecdsa ecdsa $w10$N3+SfSatxehCk71haWzGFUIUe3IHmkM
 crypto certificate rsa import rsa rsa $w10$N3+TUwGwweUGo7FmaVrKFUE7Tn8NmFEZ2FfPCnKV8Nqgw98owR6SxmbEmA3cOHomaSg1q70Lg3L6nTOmkcMkW2xawZ5xLTu3VY3QOz1BedDp69lXLdtZjfqUK3be0caXyO64c+Wm7AYIib/acwRh/DXKP/eFvGn8FKI2UxbK3NjJG01t2/UBF3RyGvSv5fQYnvcAbn2cwxhrCSzAcnzQBHh/ghLRnAEQlix60/Cl6PmOtUjrhkaaX5vcF/RwIEpaGuANKRn1mTwxv6rAD8y2ll6E4nQDCItdyaiKe2FSb5XumckwuYkE0A/u9WtqTNlD8WQx6o7KwgzUBJMoLOVoKzyQpp3PVYcUzuIUDCD1QytGM2/ctjPceAlRjU+Oi1H3ZgAM+sSxsWKhAHeoCGB+RxLgeUMpgf0yrfmyOC2MY1LFepiMSABGKnW1lpxaS/ZSVW/PkLvSoT6LjQK4U4bgw0yhhhWl/iLDA/urgdJvysq4/BR1kE9naCvFCFEsdt9g2zWZuKuX/fbdu2YBm/+fbwU+52a640TohirScLt+Ka53yxYt3Z1U0gx6syZnpbzaVCjJkMDTOEaT9e7f+atpqHJCU8XqFVTBp5wXRcVJ8ddFeVfH1gH7dPVNLivTI8fk4cRvszhmRfGiaxw5M4hmMSycTx4obcUI05KJ4LVonDJRl/MSDvr+IZf4HERwN/O//F67NotpU1nk7liIGe2n7A==
 !
 aaa userlist access
- no log-error
  username mc36
  username mc36 password $w10$HFepawSJgqct0vAiKD2PVg==
  allowed show .*
@@ -33,13 +32,11 @@ aaa userlist access
  exit
 !
 aaa radius rad
- no log-error
  secret $w10$GV+pcgTkgqct0vAiKD2PVg==
  server 10.10.10.227
  exit
 !
 aaa tacacs tac
- no log-error
  secret $w10$GV+pcgTkgqct0vAiKD2PVg==
  server 10.10.10.227
  exit
@@ -925,4 +922,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=72a29b203d0b0c837133366dc86ee7f29f20b80860a0fa510febcf2f652c95aaea4ca531d830726f89704d872d70c9f7969cd59e7669503e1f49623151d75b73-a0adbc641899746125c62f94ec18226160c7131395cd8a5dec1cb44622d8568c34a769b4518453bde3c187e8938c0750b11f5f4c9c4b7e25bd4fa1fe9bc2bd31
+end chksum=4d341db29f5f0da19175c06b206bfefaf8baab738e4f98dea897b35edd0bec562de36e951e0c139740cf5c1f637d3721252a84cd21ca07fa414d699d0f449ba6-875c445cf4a08ff0885b500fb8448a8559e8942ac409b4b4dc6e2d0b656c264eee5db4c12d48b0a926d1c7aeb845e232be358366834763a7f0923dfaf43b72d2

@@ -89,6 +89,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         "aaa radius .*! privilege 15",
         "aaa tacacs .*! no secret",
         "aaa tacacs .*! privilege 15",
+        "aaa .*! no log-error",
         "aaa .*! no log-failure",
         "aaa .*! no log-success",
         "aaa .*! no log-password"

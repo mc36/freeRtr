@@ -3,9 +3,11 @@ package user;
 import addr.addrIP;
 import addr.addrIpx;
 import addr.addrPrefix;
+import auth.authGeneric;
 import cfg.cfgAceslst;
 import cfg.cfgAlias;
 import cfg.cfgAll;
+import cfg.cfgAuther;
 import cfg.cfgBndl;
 import cfg.cfgBrdg;
 import cfg.cfgDial;
@@ -180,6 +182,20 @@ public class userShow {
                 a = "./";
             }
             rdr.putStrTab(userFlash.dir2txt(userFlash.dirList(a)));
+            return null;
+        }
+        if (a.equals("aaa")) {
+            cfgAuther aa = cfgAll.autherFind(cmd.word(), null);
+            if (aa == null) {
+                cmd.error("no such aaa");
+                return null;
+            }
+            authGeneric aaa = aa.getAuther();
+            if (aaa == null) {
+                cmd.error("no such aaa");
+                return null;
+            }
+            rdr.putStrTab(aaa.getShow());
             return null;
         }
         if (a.equals("macsec")) {

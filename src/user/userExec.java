@@ -740,6 +740,8 @@ public class userExec {
      * @param privi allow privileges
      */
     public static void getHelpShow(userHelping hl, boolean privi) {
+        hl.add("2 3      aaa                     aaa information");
+        hl.add("3 .        <str>                 aaa list");
         hl.add("2 3      macsec                  macsec information");
         hl.add("3 .        <name>                name of interface");
         hl.add("2 .      parser                  parser information");

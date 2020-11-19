@@ -106,14 +106,25 @@ public class authResult {
         if (lower.logPass) {
             nam = nam + "/" + pwd;
         }
-        if ((lower.logErr) && (res == authServerError)) {
-            logger.info("error while authenticating " + nam);
-        }
-        if ((lower.logFail) && (res == authBadUserPass)) {
-            logger.info("bad user/pass for " + nam);
-        }
-        if ((lower.logOk) && (res == authSuccessful)) {
-            logger.info("successful for " + nam);
+        switch (res) {
+            case authServerError:
+                if (lower.logErr) {
+                    logger.info("error while authenticating " + nam);
+                }
+                par.sawErr++;
+                break;
+            case authBadUserPass:
+                if (lower.logFail) {
+                    logger.info("bad user/pass for " + nam);
+                }
+                par.sawFail++;
+                break;
+            case authSuccessful:
+                if (lower.logOk) {
+                    logger.info("successful for " + nam);
+                }
+                par.sawOk++;
+                break;
         }
     }
 
