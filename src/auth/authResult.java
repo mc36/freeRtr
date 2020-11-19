@@ -3,6 +3,7 @@ package auth;
 import addr.addrEui;
 import addr.addrIPv4;
 import addr.addrIPv6;
+import util.bits;
 import util.logger;
 
 /**
@@ -103,6 +104,7 @@ public class authResult {
         if (lower == null) {
             return;
         }
+        par.sawLast = bits.getTime();
         if (lower.logPass) {
             nam = nam + "/" + pwd;
         }

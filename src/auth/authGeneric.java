@@ -1,6 +1,7 @@
 package auth;
 
 import addr.addrIP;
+import cfg.cfgAll;
 import java.util.Comparator;
 import java.util.List;
 import tab.tabListing;
@@ -8,6 +9,7 @@ import tab.tabListingEntry;
 import tab.tabPrfxlstN;
 import user.userFormat;
 import user.userHelping;
+import util.bits;
 import util.cmds;
 
 /**
@@ -56,6 +58,11 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      * number of ok responses
      */
     public int sawOk;
+
+    /**
+     * last response
+     */
+    public long sawLast;
 
     /**
      * authenticate user by username/password
@@ -156,6 +163,7 @@ public abstract class authGeneric implements Comparator<authGeneric> {
         res.add("ok|" + sawOk);
         res.add("fail|" + sawFail);
         res.add("error|" + sawErr);
+        res.add("last|" + bits.time2str(cfgAll.timeZoneName, sawLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(sawLast) + " ago)");
         return res;
     }
 
