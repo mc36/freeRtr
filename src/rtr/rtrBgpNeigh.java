@@ -1353,7 +1353,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             case 5:
                 return bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.addpathTx) + "|" + peerAddr;
             case 6:
-                return bits.num2str(remoteAs) + "|" + conn.peerRouterID + "|" + conn.peer32bitAS + "|" + conn.peerRefresh + "|" + peerAddr;
+                return bits.num2str(remoteAs) + "|" + conn.peerRouterID + "|" + conn.peer32bitAS + "|" + conn.peerRefresh + "|" + rtrBgpUtil.peerType2string(peerType) + "|" + peerAddr;
             case 7:
                 return bits.num2str(remoteAs) + "|" + pipeSide.getStatus(conn.pipe) + "|" + conn.buffFull + "|" + conn.adversion + "|" + incrCount + "|" + fullCount + "|" + conn.needFull + "|" + peerAddr;
             case 8:
@@ -1367,7 +1367,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             case 12:
                 clntDns clnt = new clntDns();
                 clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(peerAddr), false, packDnsRec.typePTR);
-                return bits.num2str(remoteAs) + "|" + peerAddr + "|" + clnt.getPTR() + "|" + bits.timePast(conn.upTime);
+                return bits.num2str(remoteAs) + "|" + peerAddr + "|" + clnt.getPTR();
             case 13:
                 return bits.num2str(remoteAs) + "|" + conn.getPrefixGot() + "|" + conn.getPrefixSent() + "|" + conn.ready2adv + "|" + peerAddr + "|" + bits.timePast(conn.upTime);
             default:
