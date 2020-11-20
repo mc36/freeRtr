@@ -391,7 +391,8 @@ public class ipMpls implements ifcUp {
      * @return false if succeed, true if error
      */
     public static boolean createError(packHolder pck, tabLabelNtry lab, counter.reasons res) {
-        if (lab.forwarder == null) {
+        ipFwd fwd = lab.forwarder;
+        if (fwd == null) {
             return true;
         }
         if (lab.duplicate != null) {
@@ -403,16 +404,16 @@ public class ipMpls implements ifcUp {
         if (lab.pweIfc != null) {
             return true;
         }
-        if (lab.forwarder.unreachInt > 0) {
+        if (fwd.unreachInt > 0) {
             long tim = bits.getTime();
-            if ((tim - lab.forwarder.unreachLst) < lab.forwarder.unreachInt) {
+            if ((tim - fwd.unreachLst) < fwd.unreachInt) {
                 return true;
             }
-            lab.forwarder.unreachLst = tim;
+            fwd.unreachLst = tim;
         }
         ipFwdIface ifc = lab.iface;
         if (ifc == null) {
-            ifc = ipFwdTab.findStableIface(lab.forwarder);
+            ifc = ipFwdTab.findStableIface(fwd);
             if (ifc == null) {
                 return true;
             }
@@ -436,18 +437,18 @@ public class ipMpls implements ifcUp {
             }
             pck.MPLSlabel = old;
         }
-        if (lab.forwarder.ipCore.parseIPheader(pck, true)) {
+        if (fwd.ipCore.parseIPheader(pck, true)) {
             return true;
         }
         if (debugger.ipFwdTraf) {
             logger.debug("drop " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " reason=" + counter.reason2string(res));
         }
-        if (lab.forwarder.icmpCore.createError(pck, res, src.copyBytes(), lab.forwarder.mplsExtRep)) {
+        if (fwd.icmpCore.createError(pck, res, src.copyBytes(), fwd.mplsExtRep)) {
             return true;
         }
-        lab.forwarder.ipCore.createIPheader(pck);
+        fwd.ipCore.createIPheader(pck);
         pck.INTupper = -1;
-        beginMPLSfields(pck, (lab.forwarder.mplsPropTtl | ifc.mplsPropTtlAlways) & ifc.mplsPropTtlAllow);
+        beginMPLSfields(pck, (fwd.mplsPropTtl | ifc.mplsPropTtlAlways) & ifc.mplsPropTtlAllow);
         if (labs != null) {
             createMPLSlabels(pck, labs);
         }
