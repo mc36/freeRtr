@@ -3019,6 +3019,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return;
         }
         nei.setParamCfg(new cmds("template", cmd), negated);
+        nei.updatePeer();
     }
 
     /**
