@@ -948,7 +948,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             return;
         }
         i = pck.getByte(3); // system id length
-        if (i != 0) {
+        if ((i != 0) && (i != addrIsis.size)) {
             logger.info("got bad sysid length from " + pck.ETHsrc);
             iface.cntr.drop(pck, counter.reasons.badVer);
             return;
