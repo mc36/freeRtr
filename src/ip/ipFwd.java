@@ -1578,11 +1578,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (pck.IPmlt || pck.IPbrd) {
             ifc = ipFwdTab.findStableIface(this);
         } else {
-            if (lab.forwarder == null) {
+            ipFwd fwd = lab.forwarder;
+            if (fwd == null) {
                 cntrT.drop(pck, counter.reasons.notInTab);
                 return;
             }
-            tabRouteEntry<addrIP> prf = lab.forwarder.actualU.route(pck.IPtrg);
+            tabRouteEntry<addrIP> prf = fwd.actualU.route(pck.IPtrg);
             if (prf == null) {
                 cntrT.drop(pck, counter.reasons.noRoute);
                 return;

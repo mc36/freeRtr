@@ -705,26 +705,27 @@ public class ipMpls implements ifcUp {
                 return;
             }
             ntry.cntr.rx(pck);
-            if (ntry.forwarder == null) {
+            ipFwd fwd = ntry.forwarder;
+            if (fwd == null) {
                 ntry.cntr.drop(pck, counter.reasons.noRoute);
                 return;
             }
-            if (ntry.forwarder.mplsPropTtl) {
+            if (fwd.mplsPropTtl) {
                 ttl = pck.MPLSttl;
             }
             if (secure) {
-                if ((ntry.forwarder != fwd4) && (ntry.forwarder != fwd6)) {
+                if ((fwd != fwd4) && (fwd != fwd6)) {
                     logger.info("received violating label " + pck.MPLSlabel + " on " + fwdE);
                     ntry.cntr.drop(pck, counter.reasons.denied);
                     return;
                 }
             }
             if (ntry.nextHop != null) {
-                ntry.forwarder.mplsRxPack(fwd4, fwd6, fwdE, ntry, pck);
+                fwd.mplsRxPack(fwd4, fwd6, fwdE, ntry, pck);
                 return;
             }
             if (pck.MPLSbottom) {
-                ntry.forwarder.mplsRxPack(fwd4, fwd6, fwdE, ntry, pck);
+                fwd.mplsRxPack(fwd4, fwd6, fwdE, ntry, pck);
                 return;
             }
         }
