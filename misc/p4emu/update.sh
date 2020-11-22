@@ -6,7 +6,7 @@ sudo apt-get autoremove
 sudo apt-get clean
 cd ~
 mkdir a
-wget -O a/rtr.zip http://src.nop.hu/rtr.zip
+wget -O a/rtr.zip http://src.mchome.nop.hu/rtr.zip
 unzip a/rtr.zip -d a/
 cd ~/a/misc/native
 mkdir ../../binTmp/
