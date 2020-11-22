@@ -75,6 +75,8 @@ public class userTester {
 
     private List<userTesterImg> others = new ArrayList<userTesterImg>();
 
+    private String other0;
+
     private List<userTesterCap> capture = new ArrayList<userTesterCap>();
 
     private boolean summary = false;
@@ -317,6 +319,31 @@ public class userTester {
             maxTry = 1;
             window = false;
         }
+        for (int i = 0; i < others.size(); i++) {
+            userTesterImg img = others.get(i);
+            img.otherD = bits.txt2buf(path + img.otherF);
+            img.otherP = " " + img.otherD.remove(0) + " ";
+            img.otherI = img.otherD.remove(0);
+            img.otherM = bits.str2num(img.otherD.remove(0));
+            img.otherC = bits.str2num(img.otherD.remove(0));
+            img.otherN = img.otherD.remove(0);
+            img.otherW = img.otherD.remove(0);
+            img.otherS = img.otherD.remove(0);
+        }
+        if (others.size() > 0) {
+            cmds cmd = new cmds("ftr", others.get(0).otherP.trim());
+            other0 = cmd.word();
+        }
+        if (remoteF != null) {
+            paralell = 0;
+            remoteD = bits.txt2buf(path + remoteF);
+            remoteA = new addrIP();
+            remoteA.fromString(remoteD.remove(0));
+            remoteP = bits.str2num(remoteD.remove(0));
+            remoteL = new addrIP();
+            remoteL.fromString(remoteD.remove(0));
+            remoteS = remoteD.remove(0);
+        }
         rdr.debugStat("slot=" + slot);
         rdr.debugStat("paralell=" + paralell);
         rdr.debugStat("jvm=" + jvn + jvp);
@@ -332,32 +359,11 @@ public class userTester {
         rdr.debugStat("reapply=" + reapply);
         rdr.debugStat("randord=" + randord);
         rdr.debugStat("retry=" + maxTry);
-        rdr.debugStat("other=" + others.size());
+        rdr.debugStat("other=" + others.size() + " " + other0);
         rdr.debugStat("remote=" + remoteF);
         rdr.debugStat("persist=" + persistF);
         rdr.debugStat("capture=" + capture.size());
         rdr.debugStat("files=" + needed.size());
-        for (int i = 0; i < others.size(); i++) {
-            userTesterImg img = others.get(i);
-            img.otherD = bits.txt2buf(path + img.otherF);
-            img.otherP = " " + img.otherD.remove(0) + " ";
-            img.otherI = img.otherD.remove(0);
-            img.otherM = bits.str2num(img.otherD.remove(0));
-            img.otherC = bits.str2num(img.otherD.remove(0));
-            img.otherN = img.otherD.remove(0);
-            img.otherW = img.otherD.remove(0);
-            img.otherS = img.otherD.remove(0);
-        }
-        if (remoteF != null) {
-            paralell = 0;
-            remoteD = bits.txt2buf(path + remoteF);
-            remoteA = new addrIP();
-            remoteA.fromString(remoteD.remove(0));
-            remoteP = bits.str2num(remoteD.remove(0));
-            remoteL = new addrIP();
-            remoteL.fromString(remoteD.remove(0));
-            remoteS = remoteD.remove(0);
-        }
         if (persistF != null) {
             paralell = 0;
             persistD = bits.txt2buf(path + persistF);
@@ -450,9 +456,8 @@ public class userTester {
             return;
         }
         rdr.debugStat("writing summary");
-        if (others.size() > 0) {
-            cmds cmd = new cmds("ftr", others.get(0).otherP.trim());
-            beg += cmd.word() + "-";
+        if (other0 != null) {
+            beg += other0 + "-";
         }
         List<String> txt = bits.txt2buf("../todo.txt");
         if (txt == null) {
