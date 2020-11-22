@@ -681,7 +681,7 @@ void initIface(int port, unsigned char *name) {
 }
 
 
-void initTables() {
+int initTables() {
     table_init(&mpls_table, sizeof(struct mpls_entry), &mpls_compare);
     table_init(&portvrf_table, sizeof(struct portvrf_entry), &portvrf_compare);
     table_init(&route4_table, sizeof(struct route4_entry), &route4_compare);
@@ -699,9 +699,12 @@ void initTables() {
     table_init(&tun6_table, sizeof(struct tun6_entry), &tun6_compare);
     table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
+//    if (OSSL_PROVIDER_load(NULL, "legacy") == NULL) return 1;
+//    if (OSSL_PROVIDER_load(NULL, "default") == NULL) return 1;
     OpenSSL_add_all_ciphers();
     OpenSSL_add_all_digests();
     OpenSSL_add_all_algorithms();
     RAND_get_rand_method();
     RAND_poll();
+    return 0;
 }

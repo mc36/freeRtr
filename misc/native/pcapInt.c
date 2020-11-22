@@ -8,8 +8,6 @@
 #include <unistd.h>
 
 
-#define use_pcap_v1 1
-
 
 unsigned char *ifaceName;
 pcap_t *ifacePcap;
@@ -182,22 +180,14 @@ help :
 
     ifaceName = malloc(1024);
     strcpy(ifaceName, argv[1]);
-    printf("opening interface %s", ifaceName);
+    printf("opening interface %s\n", ifaceName);
 
-#ifdef use_pcap_v1
-    printf(" with pcap1.x api\n");
     ifacePcap = pcap_create(ifaceName, errbuf);
     if (ifacePcap == NULL) err("unable to open interface");
     if (pcap_set_snaplen(ifacePcap, 65536) < 0) err("unable to set snaplen");
     if (pcap_set_promisc(ifacePcap, 1) < 0) err("unable to set promisc");
     if (pcap_set_immediate_mode(ifacePcap, 1) < 0) err("unable to set immediate");
     if (pcap_activate(ifacePcap) < 0) err("activation failed");
-#else
-    printf(" with pcap0.x api\n");
-    ifacePcap = pcap_open_live(ifaceName, 65536, 1, 2, errbuf);
-    if (ifacePcap == NULL) err("unable to open interface");
-#endif
-
     if (pcap_setdirection(ifacePcap, PCAP_D_IN) < 0) err("unable to set direction");
 
     printf("serving others\n");

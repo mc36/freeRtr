@@ -2,15 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <netinet/in.h>
-#include <pthread.h>
-#include <pcap.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <openssl/conf.h>
+//#include <openssl/provider.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <openssl/err.h>
-#include <string.h>
+#include <pcap.h>
 
 
 #include "p4cns.h"
@@ -141,17 +140,9 @@ int main(int argc, char **argv) {
         initIface(ports, argv[i]);
         ports++;
     }
-    cpuport = atoi(argv[3]);
-    printf("cpu port is #%i of %i...\n", cpuport, ports);
-
-    if (ports < 2) {
-        err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
-    }
-
+    if (ports < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
     printf("pcap version: %s\n", pcap_lib_version());
-
-    initTables();
-
+    if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof (addr));
@@ -162,9 +153,11 @@ int main(int argc, char **argv) {
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
     if (commandSock < 0) err("unable to open socket");
     if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
+    cpuport = atoi(argv[3]);
+    printf("cpu port is #%i of %i...\n", cpuport, ports);
 
     for (int i = 0; i < ports; i++) {
-        printf("opening interface %s.\n", ifaceName[i]);
+        printf("opening interface %s\n", ifaceName[i]);
         ifacePcap[i] = pcap_create(ifaceName[i], errbuf);
         if (ifacePcap[i] == NULL) err("unable to open interface");
         if (pcap_set_snaplen(ifacePcap[i], 65536) < 0) err("unable to set snaplen");

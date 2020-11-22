@@ -1,22 +1,21 @@
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
+#include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <inttypes.h>
-#include <rte_config.h>
-#include <rte_common.h>
-#include <rte_version.h>
-#include <rte_eal.h>
-#include <rte_ethdev.h>
-#include <rte_mbuf.h>
-#include <rte_ring.h>
 #include <openssl/conf.h>
+//#include <openssl/provider.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <openssl/err.h>
-#include <string.h>
+#include <dpdk/rte_config.h>
+#include <dpdk/rte_common.h>
+#include <dpdk/rte_version.h>
+#include <dpdk/rte_eal.h>
+#include <dpdk/rte_ethdev.h>
+#include <dpdk/rte_mbuf.h>
+#include <dpdk/rte_ring.h>
 
 
 #undef basicLoop
@@ -222,7 +221,8 @@ int main(int argc, char **argv) {
     if (ports < 2) rte_exit(EXIT_FAILURE, "at least 2 ports needed\n");
 
     if (argc < 4) rte_exit(EXIT_FAILURE, "using: dp <host> <rport> <cpuport> [port rxlcore txlcore] ...\n");
-    initTables();
+    printf("dpdk version: %s\n", rte_version());
+    if (initTables() != 0) rte_exit(EXIT_FAILURE, "error initializing tables");
     int port = atoi(argv[2]);
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof (addr));
@@ -235,8 +235,6 @@ int main(int argc, char **argv) {
     if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) rte_exit(EXIT_FAILURE, "failed to connect socket\n");
     cpuport = atoi(argv[3]);
     printf("cpu port is #%i of %i...\n", cpuport, ports);
-
-    printf("dpdk version: %s\n", rte_version());
 
     int port2rx[RTE_MAX_ETHPORTS];
     int port2tx[RTE_MAX_ETHPORTS];

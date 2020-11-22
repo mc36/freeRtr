@@ -14,7 +14,7 @@ for fn in p4emu p4pkt; do
   compileFile $fn "" "-lpthread -lpcap -lcrypto" "-O3"
   done
 
-for fn in pcapInt pcap2pcap; do
+for fn in pcapInt pcap2pcap sender; do
   compileFile $fn "" "-lpthread -lpcap" "-O3"
   done
 
