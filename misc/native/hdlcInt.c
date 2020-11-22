@@ -1,13 +1,12 @@
-#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <netinet/in.h>
+#include <pthread.h>
+#include <arpa/inet.h>
 #include <termios.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include <pthread.h>
 
 #define PPP_FLAG 0x7e
 #define PPP_ESCP 0x7d

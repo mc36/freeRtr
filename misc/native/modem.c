@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
+#include <arpa/inet.h>
 #include <termios.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>

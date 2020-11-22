@@ -1,10 +1,8 @@
-#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <netinet/in.h>
-#include <pcap.h>
 #include <unistd.h>
+#include <string.h>
+#include <pcap.h>
 
 unsigned char *ifaceName;
 pcap_t *ifacePcap;

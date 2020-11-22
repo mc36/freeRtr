@@ -1,15 +1,13 @@
-#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <netinet/in.h>
-#include <pthread.h>
 #include <unistd.h>
+#include <string.h>
+#include <pthread.h>
+#include <arpa/inet.h>
 #include "utils.h"
+#include "types.h"
 
 #define vlanMax 32
-
-#define vlanType 0x8100
 
 
 
@@ -50,7 +48,7 @@ void doLowerLoop() {
         if (bufS < 0) break;
         bufP = bufD;
         vln = 0;
-        if (get16msb(bufD, 12) == vlanType) {
+        if (get16msb(bufD, 12) == ETHERTYPE_VLAN) {
             vln = vlanHsh[get16msb(bufD, 14) & 0xfff];
             if (vln > 0) {
                 bufP += 4;
@@ -95,7 +93,7 @@ void doUpperLoop(void *arg) {
         if (bufS < 0) break;
         bufS += 4;
         memmove(bufD, bufD + 4, 12);
-        put16msb(bufD, 12, vlanType);
+        put16msb(bufD, 12, ETHERTYPE_VLAN);
         put16msb(bufD, 14, vlanVal[myVlan]);
         packRx++;
         byteRx += bufS;
