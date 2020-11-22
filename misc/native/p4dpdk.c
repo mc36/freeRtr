@@ -158,7 +158,7 @@ static int doPacketLoop(__rte_unused void *arg) {
     int i;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     if (encrCtx == NULL) rte_exit(EXIT_FAILURE, "error getting encr context");
-    EVP_MD_CTX *hashCtx = EVP_MD_CTX_create();
+    EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
     if (hashCtx == NULL) rte_exit(EXIT_FAILURE, "error getting hash context");
 
     int lcore = rte_lcore_id();

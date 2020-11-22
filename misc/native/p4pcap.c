@@ -59,7 +59,7 @@ void doIfaceLoop(int * param) {
     unsigned int addrLen;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     if (encrCtx == NULL) err("error getting encr context");
-    EVP_MD_CTX *hashCtx = EVP_MD_CTX_create();
+    EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
     if (hashCtx == NULL) err("error getting hash context");
     if (port == cpuport) {
         for (;;) {
