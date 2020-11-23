@@ -485,6 +485,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiOtrL) {
             return (val & rtrBgpParam.mskOtrL) != 0;
         }
+        if (safi == parent.afiOtrU) {
+            return (val & rtrBgpParam.mskOtrU) != 0;
+        }
         if (safi == parent.afiFlw) {
             return (val & rtrBgpParam.mskFlw) != 0;
         }
@@ -552,6 +555,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiOtrL) {
             return lrnOtr;
         }
+        if (safi == parent.afiOtrU) {
+            return lrnOtr;
+        }
         if (safi == parent.afiFlw) {
             return lrnFlw;
         }
@@ -617,6 +623,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return advMlt;
         }
         if (safi == parent.afiOtrL) {
+            return advOtr;
+        }
+        if (safi == parent.afiOtrU) {
             return advOtr;
         }
         if (safi == parent.afiFlw) {
@@ -1696,6 +1705,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribed(currUni, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currMlt, parent.afiMlt, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currOtr, parent.afiOtrL, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribed(currOtr, parent.afiOtrU, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currFlw, parent.afiFlw, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currVpnU, parent.afiVpnU, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currVpnM, parent.afiVpnM, ntry, neigh.voumapIn, neigh.voupolIn, null);
@@ -1886,6 +1896,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             trg = currMlt;
         }
         if (safi == parent.afiOtrL) {
+            trg = currOtr;
+        }
+        if (safi == parent.afiOtrU) {
             trg = currOtr;
         }
         if (safi == parent.afiFlw) {

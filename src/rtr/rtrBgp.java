@@ -213,6 +213,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected int afiOtrL;
 
     /**
+     * other unicast afi
+     */
+    protected int afiOtrU;
+
+    /**
      * flow specification afi
      */
     protected int afiFlw;
@@ -765,6 +770,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiLab = rtrBgpUtil.safiIp4lab;
                 afiMlt = rtrBgpUtil.safiIp4multi;
                 afiOtrL = rtrBgpUtil.safiIp6lab;
+                afiOtrU = rtrBgpUtil.safiIp6uni;
                 afiFlw = rtrBgpUtil.safiIp4flow;
                 afiVpnU = rtrBgpUtil.safiIp4vpnU;
                 afiVpnM = rtrBgpUtil.safiIp4vpnM;
@@ -788,6 +794,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiLab = rtrBgpUtil.safiIp6lab;
                 afiMlt = rtrBgpUtil.safiIp6multi;
                 afiOtrL = rtrBgpUtil.safiIp4lab;
+                afiOtrU = rtrBgpUtil.safiIp4uni;
                 afiFlw = rtrBgpUtil.safiIp6flow;
                 afiVpnU = rtrBgpUtil.safiIp6vpnU;
                 afiVpnM = rtrBgpUtil.safiIp6vpnM;
@@ -811,6 +818,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiLab = 0;
                 afiMlt = 0;
                 afiOtrL = 0;
+                afiOtrU = 0;
                 afiFlw = 0;
                 afiVpnU = 0;
                 afiVpnM = 0;
@@ -884,6 +892,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiOtrL) {
             return rtrBgpParam.mskOtrL;
         }
+        if (safi == afiOtrU) {
+            return rtrBgpParam.mskOtrU;
+        }
         if (safi == afiFlw) {
             return rtrBgpParam.mskFlw;
         }
@@ -948,6 +959,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return afiMlt;
             case rtrBgpParam.mskOtrL:
                 return afiOtrL;
+            case rtrBgpParam.mskOtrU:
+                return afiOtrU;
             case rtrBgpParam.mskFlw:
                 return afiFlw;
             case rtrBgpParam.mskVpnU:
@@ -1002,6 +1015,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if ((mask & rtrBgpParam.mskOtrL) != 0) {
             safis.add(afiOtrL);
+        }
+        if ((mask & rtrBgpParam.mskOtrU) != 0) {
+            safis.add(afiOtrU);
         }
         if ((mask & rtrBgpParam.mskFlw) != 0) {
             safis.add(afiFlw);
@@ -1070,6 +1086,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiOtrL) {
             return computedOtr;
         }
+        if (safi == afiOtrU) {
+            return computedOtr;
+        }
         if (safi == afiFlw) {
             return routerComputedF;
         }
@@ -1135,6 +1154,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return changedMlt;
         }
         if (safi == afiOtrL) {
+            return changedOtr;
+        }
+        if (safi == afiOtrU) {
             return changedOtr;
         }
         if (safi == afiFlw) {
@@ -1710,7 +1732,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             } else {
                 ntry = grp.readvertPrefix(afi, best);
             }
-            if ((afi == afiUni) || (afi == afiMlt) || (afi == afiOtrL)) {
+            if ((afi == afiUni) || (afi == afiMlt) || (afi == afiOtrU)) {
                 ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.roumapOut, grp.roupolOut, grp.prflstOut);
             } else {
                 ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.voumapOut, grp.voupolOut, null);
@@ -1840,7 +1862,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         computeIncrUpdate(afiUni, changedUni, routerComputedU, routerRedistedU);
         computeIncrUpdate(afiMlt, changedMlt, routerComputedM, routerRedistedM);
-        computeIncrUpdate(afiOtrL, changedOtr, computedOtr, origntedOtr);
+        computeIncrUpdate(afiOtrU, changedOtr, computedOtr, origntedOtr);
         computeIncrUpdate(afiFlw, changedFlw, routerComputedF, origntedFlw);
         computeIncrUpdate(afiVpnU, changedVpnU, computedVpnU, origntedVpnU);
         computeIncrUpdate(afiVpnM, changedVpnM, computedVpnM, origntedVpnM);
@@ -3686,7 +3708,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("rpki table|" + computedRpki.size());
         l.add("unicast table|" + routerComputedU.size() + "|" + changedUni.size());
         l.add("multicast table|" + routerComputedM.size() + "|" + changedMlt.size());
-        l.add("other table|" + computedOtr.size() + "|" + changedOtr.size());
+        l.add("ouni table|" + computedOtr.size() + "|" + changedOtr.size());
         l.add("flowspec table|" + routerComputedF.size() + "|" + changedFlw.size());
         l.add("vpnuni table|" + computedVpnU.size() + "|" + changedVpnU.size());
         l.add("vpnmlt table|" + computedVpnM.size() + "|" + changedVpnM.size());

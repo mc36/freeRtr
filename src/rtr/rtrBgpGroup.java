@@ -267,7 +267,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("local = " + localAddr);
         l.add("unicast advertise = " + wilUni.size() + ", list=" + chgUni.size());
         l.add("multicast advertise = " + wilMlt.size() + ", list=" + chgMlt.size());
-        l.add("other advertise = " + wilOtr.size() + ", list=" + chgOtr.size());
+        l.add("ouni advertise = " + wilOtr.size() + ", list=" + chgOtr.size());
         l.add("flowspec advertise = " + wilFlw.size() + ", list=" + chgFlw.size());
         l.add("vpnuni advertise = " + wilVpnU.size() + ", list=" + chgVpnU.size());
         l.add("vpnmlt advertise = " + wilVpnM.size() + ", list=" + chgVpnM.size());
@@ -303,6 +303,9 @@ public class rtrBgpGroup extends rtrBgpParam {
             return wilMlt;
         }
         if (safi == lower.afiOtrL) {
+            return wilOtr;
+        }
+        if (safi == lower.afiOtrU) {
             return wilOtr;
         }
         if (safi == lower.afiFlw) {
@@ -370,6 +373,9 @@ public class rtrBgpGroup extends rtrBgpParam {
             return chgMlt;
         }
         if (safi == lower.afiOtrL) {
+            return chgOtr;
+        }
+        if (safi == lower.afiOtrU) {
             return chgOtr;
         }
         if (safi == lower.afiFlw) {
@@ -822,7 +828,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         readvertTable(lower.afiUni, nUni, cUni);
         readvertTable(lower.afiMlt, nMlt, cMlt);
-        readvertTable(lower.afiOtrL, nOtr, cOtr);
+        readvertTable(lower.afiOtrU, nOtr, cOtr);
         importTable(lower.afiFlw, nFlw, cFlw);
         importTable(lower.afiVpnU, nVpnU, cVpnU);
         importTable(lower.afiVpnM, nVpnM, cVpnM);

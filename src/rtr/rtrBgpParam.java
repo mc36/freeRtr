@@ -671,6 +671,7 @@ public abstract class rtrBgpParam {
         hl.add(beg + "  unicast       address family to " + end);
         hl.add(beg + "  labeled       address family to " + end);
         hl.add(beg + "  olab          address family to " + end);
+        hl.add(beg + "  ouni          address family to " + end);
         hl.add(beg + "  multicast     address family to " + end);
         hl.add(beg + "  flowspec      address family to " + end);
         hl.add(beg + "  vpnuni        address family to " + end);
