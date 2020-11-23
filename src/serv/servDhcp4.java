@@ -554,7 +554,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         packDhcp4 rep = new packDhcp4();
         switch (req.dhcpOp) {
             case packDhcp4.dhcpOpDiscover:
-                ntry = findBinding(req.bootpChaddr, 1, req.dhcpRequested);
+                ntry = findBinding(req.bootpChaddr, 1, req.bootpCiaddr);
                 if (ntry == null) {
                     return null;
                 }
@@ -563,7 +563,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 sendPack(rep, ntry);
                 return rep;
             case packDhcp4.dhcpOpRequest:
-                ntry = findBinding(req.bootpChaddr, 1, req.dhcpRequested);
+                ntry = findBinding(req.bootpChaddr, 1, req.bootpCiaddr);
                 if (ntry == null) {
                     return null;
                 }
@@ -573,7 +573,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 sendPack(rep, ntry);
                 return rep;
             case packDhcp4.dhcpOpRelease:
-                ntry = findBinding(req.bootpChaddr, 3, req.dhcpRequested);
+                ntry = findBinding(req.bootpChaddr, 3, req.bootpCiaddr);
                 return null;
         }
         return null;
