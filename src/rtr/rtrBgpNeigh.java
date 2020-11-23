@@ -48,6 +48,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public addrIP localAddr = new addrIP();
 
     /**
+     * local other address
+     */
+    public addrIP localOddr = new addrIP();
+
+    /**
      * accepted unicast prefixes
      */
     public tabRoute<addrIP> accUni = new tabRoute<addrIP>("rx");
@@ -443,7 +448,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("update group = " + groupMember);
         l.add("type = " + rtrBgpUtil.peerType2string(peerType));
         l.add("safi = " + rtrBgpParam.mask2string(conn.peerAfis));
-        l.add("local = " + localAddr);
+        l.add("local = " + localAddr + " other = " + localOddr);
         l.add("router id = " + conn.peerRouterID);
         l.add("uptime = " + bits.timePast(conn.upTime) + " ago, at " + bits.time2str(cfgAll.timeZoneName, conn.upTime + cfgAll.timeServerOffset, 3));
         l.add("hold time = " + bits.timeDump(conn.peerHold / 1000));
@@ -1057,6 +1062,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 if (localAddr.compare(localAddr, ntry.localAddr) != 0) {
                     continue;
                 }
+                if (localAddr.compare(localOddr, ntry.localOddr) != 0) {
+                    continue;
+                }
             }
             if (ntry.sameOutput(this)) {
                 continue;
@@ -1069,6 +1077,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         ntry.copyFrom(this);
         ntry.peerType = peerType;
         ntry.localAddr = localAddr.copyBytes();
+        ntry.localOddr = localOddr.copyBytes();
         lower.groups.add(ntry);
     }
 
