@@ -370,6 +370,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
             servDhcp6bind ntry = new servDhcp6bind();
             Collections.sort(bindings, new servDhcp6bindMac());
             ntry.mac = mac.copyBytes();
+            ntry.ip = hint;
             int i = Collections.binarySearch(bindings, ntry, new servDhcp6bindMac());
             if (i < 0) {
                 if (create != 1) {
@@ -385,7 +386,6 @@ public class servDhcp6 extends servGeneric implements prtServS {
             if (create == 2) {
                 bindings.remove(i);
             }
-            ntry.ip = hint;
             return ntry;
         }
     }
