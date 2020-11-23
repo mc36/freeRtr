@@ -458,7 +458,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("addpath tx = " + rtrBgpParam.mask2string(conn.addpathTx));
         l.add("unicast advertised = " + conn.advUni.size() + " of " + wilUni.size() + ", list = " + chgUni.size() + ", accepted = " + accUni.size() + " of " + conn.lrnUni.size());
         l.add("multicast advertised = " + conn.advMlt.size() + " of " + wilMlt.size() + ", list = " + chgMlt.size() + ", accepted = " + accMlt.size() + " of " + conn.lrnMlt.size());
-        l.add("other advertised = " + conn.advOtr.size() + " of " + wilOtr.size() + ", list = " + chgOtr.size() + ", accepted = " + accOtr.size() + " of " + conn.lrnOtr.size());
+        l.add("ouni advertised = " + conn.advOtr.size() + " of " + wilOtr.size() + ", list = " + chgOtr.size() + ", accepted = " + accOtr.size() + " of " + conn.lrnOtr.size());
         l.add("flowspec advertised = " + conn.advFlw.size() + " of " + wilFlw.size() + ", list = " + chgFlw.size() + ", accepted = " + accFlw.size() + " of " + conn.lrnFlw.size());
         l.add("vpnuni advertised = " + conn.advVpnU.size() + " of " + wilVpnU.size() + ", list = " + chgVpnU.size() + ", accepted = " + accVpnU.size() + " of " + conn.lrnVpnU.size());
         l.add("vpnmlt advertised = " + conn.advVpnM.size() + " of " + wilVpnM.size() + ", list = " + chgVpnM.size() + ", accepted = " + accVpnM.size() + " of " + conn.lrnVpnM.size());
