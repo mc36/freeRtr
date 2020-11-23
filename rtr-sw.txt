@@ -458,14 +458,14 @@ router bgp4 65535
  vrf v1
  local-as 65535
  router-id 10.10.10.227
- address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt srte mvpn omvpn
  flapstat
  monitor bmp p1 10.10.10.227 17971
  dump mrt bgp4.log
  template r remote-as 65535
  no template r description
  template r local-as 65535
- template r address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt srte mvpn omvpn
+ template r address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt srte mvpn omvpn
  template r distance 200
  template r connection-mode active
  template r compression both
@@ -511,14 +511,14 @@ router bgp6 65535
  vrf v1
  local-as 65535
  router-id 10.10.10.227
- address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt mvpn omvpn
+ address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt srte mvpn omvpn
  flapstat
  monitor bmp p1 2001:db8:1101::227:227 17971
  dump mrt bgp6.log
  template r remote-as 65535
  no template r description
  template r local-as 65535
- template r address-family unicast multicast other flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt srte mvpn omvpn
+ template r address-family unicast multicast flowspec vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt srte mvpn omvpn
  template r distance 200
  template r connection-mode active
  template r compression both
@@ -922,4 +922,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=4d341db29f5f0da19175c06b206bfefaf8baab738e4f98dea897b35edd0bec562de36e951e0c139740cf5c1f637d3721252a84cd21ca07fa414d699d0f449ba6-875c445cf4a08ff0885b500fb8448a8559e8942ac409b4b4dc6e2d0b656c264eee5db4c12d48b0a926d1c7aeb845e232be358366834763a7f0923dfaf43b72d2
+end chksum=6b2087ea438b05d287962650833a59060d5420527cd67cd136c83f5ee3b3ea1cee29cacd68668d4fd6db52d2ada43528b4d0d2a1c48ada39db60e2545ed4f500-e89ba035b1eff7e5203a1cf7359743adba69d1953dff45d3bd3f853a4e99a2e30b29954427176b4607ecff1a9083bef884159d1983bfbbcb265be920bb1295cb
