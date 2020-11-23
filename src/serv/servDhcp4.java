@@ -277,7 +277,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
             if (ip.fromString(cmd.word())) {
                 return true;
             }
-            servDhcp4bind ntry = findBinding(mac, 1);
+            servDhcp4bind ntry = findBinding(mac, 1, ip);
             if (ntry == null) {
                 return true;
             }
@@ -341,7 +341,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
             if (mac.fromString(cmd.word())) {
                 return true;
             }
-            findBinding(mac, 2);
+            findBinding(mac, 2, null);
             return false;
         }
         if (a.equals("option")) {
@@ -421,7 +421,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         purgeTimer.schedule(task, 1000, 60000);
     }
 
-    private servDhcp4bind findBinding(addrMac mac, int create) {
+    private servDhcp4bind findBinding(addrMac mac, int create, addrIPv4 hint) {
         synchronized (bindings) {
             servDhcp4bind ntry = new servDhcp4bind();
             Collections.sort(bindings, new servDhcp4bindMac());
@@ -447,6 +447,21 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 return null;
             }
             Collections.sort(bindings, new servDhcp4bindIp());
+            if (hint != null) {
+                addrIPv4 a1 = new addrIPv4();
+                addrIPv4 a2 = new addrIPv4();
+                a1.setAdd(gateway, netmask);
+                a2.setAdd(hint, netmask);
+                if (a1.compare(a1, a2) == 0) {
+                    hint = hint.copyBytes();
+                    ntry.ip = hint;
+                    i = Collections.binarySearch(bindings, ntry, new servDhcp4bindIp());
+                    if (i < 0) {
+                        bindings.add(ntry);
+                        return ntry;
+                    }
+                }
+            }
             for (int cnt = 0; cnt < 64; cnt++) {
                 addrIPv4 ip = new addrIPv4();
                 ip.fillRandom();
@@ -539,7 +554,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         packDhcp4 rep = new packDhcp4();
         switch (req.dhcpOp) {
             case packDhcp4.dhcpOpDiscover:
-                ntry = findBinding(req.bootpChaddr, 1);
+                ntry = findBinding(req.bootpChaddr, 1, req.dhcpRequested);
                 if (ntry == null) {
                     return null;
                 }
@@ -548,7 +563,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 sendPack(rep, ntry);
                 return rep;
             case packDhcp4.dhcpOpRequest:
-                ntry = findBinding(req.bootpChaddr, 1);
+                ntry = findBinding(req.bootpChaddr, 1, req.dhcpRequested);
                 if (ntry == null) {
                     return null;
                 }
@@ -558,7 +573,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 sendPack(rep, ntry);
                 return rep;
             case packDhcp4.dhcpOpRelease:
-                ntry = findBinding(req.bootpChaddr, 3);
+                ntry = findBinding(req.bootpChaddr, 3, req.dhcpRequested);
                 return null;
         }
         return null;
@@ -570,7 +585,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
     protected void doPurging() {
         synchronized (bindings) {
             long cur = bits.getTime();
-            for (int i = bindings.size()-1; i >= 0; i--) {
+            for (int i = bindings.size() - 1; i >= 0; i--) {
                 servDhcp4bind ntry = bindings.get(i);
                 if (ntry == null) {
                     continue;

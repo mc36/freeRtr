@@ -224,7 +224,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
             if (ip.fromString(cmd.word())) {
                 return true;
             }
-            servDhcp6bind ntry = findBinding(mac, 1);
+            servDhcp6bind ntry = findBinding(mac, 1, ip);
             if (ntry == null) {
                 return true;
             }
@@ -277,7 +277,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
             if (mac.fromString(cmd.word())) {
                 return true;
             }
-            findBinding(mac, 2);
+            findBinding(mac, 2, null);
             return false;
         }
         if (a.equals("option")) {
@@ -354,7 +354,18 @@ public class servDhcp6 extends servGeneric implements prtServS {
         purgeTimer.schedule(task, 1000, 60000);
     }
 
-    private servDhcp6bind findBinding(addrMac mac, int create) {
+    private servDhcp6bind findBinding(addrMac mac, int create, addrIPv6 hint) {
+        if (hint != null) {
+            addrIPv6 a1 = new addrIPv6();
+            addrIPv6 a2 = new addrIPv6();
+            a1.setAdd(gateway, netmask);
+            a2.setAdd(hint, netmask);
+            if (a1.compare(a1, a2) == 0) {
+                hint = hint.copyBytes();
+            } else {
+                hint = null;
+            }
+        }
         synchronized (bindings) {
             servDhcp6bind ntry = new servDhcp6bind();
             Collections.sort(bindings, new servDhcp6bindMac());
@@ -374,6 +385,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
             if (create == 2) {
                 bindings.remove(i);
             }
+            ntry.ip = hint;
             return ntry;
         }
     }
@@ -455,7 +467,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
             rep.status = 1;
             return rep;
         }
-        servDhcp6bind ntry = findBinding(mac, crt);
+        servDhcp6bind ntry = findBinding(mac, crt, req.ipaddr);
         if (crt != 1) {
             rep.ipaddr = req.ipaddr;
             rep.ipsize = req.ipsize;
