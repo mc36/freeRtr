@@ -9447,3 +9447,32 @@ qc pass: interop2: isis bidir te
 qc pass: interop2: ospf bidir te
 qc pass: bidir te without global id
 qc pass: bidir te with global id
+---------------------------------- 2020-11-23 08:45:00
+no qc pass: other over srv6 over bgp additional path
+no qc pass: other over srv6 over bgp with soft-reconfig
+no qc pass: other over srv6 over bgp route server
+no qc pass: other over srv6 over confed bgp
+no qc pass: other over srv6 over ibgp rr
+no qc pass: other over srv6 over ebgp
+no qc pass: other over srv6 over ibgp
+no qc pass: unicast+other over bgp route server
+no qc pass: unicast+other over confed bgp
+no qc pass: unicast+other over ibgp rr
+no qc pass: unicast+other over ibgp
+no qc pass: unicast+other over bgp with additional path
+no qc pass: unicast+other over bgp with soft-reconfig
+no qc pass: unicast+other over ebgp
+qc pass: unicast+olab over ebgp
+qc pass: unicast+olab over bgp with soft-reconfig
+qc pass: unicast+olab over bgp with additional path
+qc pass: unicast+olab over ibgp
+qc pass: unicast+olab over ibgp rr
+qc pass: unicast+olab over confed bgp
+qc pass: unicast+olab over bgp route server
+qc pass: olab over srv6 over ibgp
+qc pass: olab over srv6 over ebgp
+qc pass: olab over srv6 over ibgp rr
+qc pass: olab over srv6 over confed bgp
+qc pass: olab over srv6 over bgp route server
+qc pass: olab over srv6 over bgp with soft-reconfig
+qc pass: olab over srv6 over bgp additional path

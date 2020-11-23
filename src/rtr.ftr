@@ -1638,9 +1638,9 @@ qc pass: unicast+multicast over bgp
 qc pass: unicast+multicast over bgp with soft-reconfig
 qc pass: unicast+multicast over bgp with additional path
 qc pass: bgp csc vpn
-qc pass: unicast+other over ebgp
-qc pass: unicast+other over bgp with soft-reconfig
-qc pass: unicast+other over bgp with additional path
+qc pass: unicast+olab over ebgp
+qc pass: unicast+olab over bgp with soft-reconfig
+qc pass: unicast+olab over bgp with additional path
 qc pass: ebgp prefix movement
 qc pass: confed bgp prefix movement
 qc pass: ibgp rr prefix movement
@@ -1708,35 +1708,35 @@ qc pass: bgp vpn with import policy
 qc pass: vpns over srv6 over ibgp
 qc pass: evpn/pbb over srv6 over ibgp
 qc pass: evpn/cmac over srv6 over ibgp
-qc pass: unicast+other over ibgp
-qc pass: unicast+other over ibgp rr
-qc pass: unicast+other over confed bgp
-qc pass: unicast+other over bgp route server
-qc pass: other over srv6 over ibgp
+qc pass: unicast+olab over ibgp
+qc pass: unicast+olab over ibgp rr
+qc pass: unicast+olab over confed bgp
+qc pass: unicast+olab over bgp route server
+qc pass: olab over srv6 over ibgp
 qc pass: vpns over srv6 over ebgp
 qc pass: evpn/pbb over srv6 over ebgp
 qc pass: evpn/cmac over srv6 over ebgp
-qc pass: other over srv6 over ebgp
+qc pass: olab over srv6 over ebgp
 qc pass: vpns over srv6 over ibgp rr
 qc pass: evpn/pbb over srv6 over ibgp rr
 qc pass: evpn/cmac over srv6 over ibgp rr
-qc pass: other over srv6 over ibgp rr
+qc pass: olab over srv6 over ibgp rr
 qc pass: vpns over srv6 over confed bgp
 qc pass: evpn/pbb over srv6 over confed bgp
 qc pass: evpn/cmac over srv6 over confed bgp
-qc pass: other over srv6 over confed bgp
+qc pass: olab over srv6 over confed bgp
 qc pass: vpns over srv6 over bgp route server
 qc pass: evpn/pbb over srv6 over bgp route server
 qc pass: evpn/cmac over srv6 over bgp route server
-qc pass: other over srv6 over bgp route server
+qc pass: olab over srv6 over bgp route server
 qc pass: vpns over srv6 over bgp with soft-reconfig
 qc pass: evpn/pbb over srv6 over bgp with soft-reconfig
 qc pass: evpn/cmac over srv6 over bgp with soft-reconfig
-qc pass: other over srv6 over bgp with soft-reconfig
+qc pass: olab over srv6 over bgp with soft-reconfig
 qc pass: vpns over srv6 over bgp additional path
 qc pass: evpn/pbb over srv6 over bgp additional path
 qc pass: evpn/cmac over srv6 over bgp additional path
-qc pass: other over srv6 over bgp additional path
+qc pass: olab over srv6 over bgp additional path
 qc pass: evpn/vpws over ebgp
 qc pass: evpn/vpws over ibgp
 qc pass: evpn/vpws over bgp additional path

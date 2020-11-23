@@ -21,7 +21,7 @@ int lo0
  exit
 router bgp4 1
  vrf v1
- address other
+ address olab
  local-as 1
  router-id 4.4.4.1
  neigh 2.2.2.2 remote-as 1

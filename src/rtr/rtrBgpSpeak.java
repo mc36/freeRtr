@@ -482,8 +482,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiMlt) {
             return (val & rtrBgpParam.mskMlt) != 0;
         }
-        if (safi == parent.afiOtr) {
-            return (val & rtrBgpParam.mskOtr) != 0;
+        if (safi == parent.afiOtrL) {
+            return (val & rtrBgpParam.mskOtrL) != 0;
         }
         if (safi == parent.afiFlw) {
             return (val & rtrBgpParam.mskFlw) != 0;
@@ -549,7 +549,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiMlt) {
             return lrnMlt;
         }
-        if (safi == parent.afiOtr) {
+        if (safi == parent.afiOtrL) {
             return lrnOtr;
         }
         if (safi == parent.afiFlw) {
@@ -616,7 +616,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiMlt) {
             return advMlt;
         }
-        if (safi == parent.afiOtr) {
+        if (safi == parent.afiOtrL) {
             return advOtr;
         }
         if (safi == parent.afiFlw) {
@@ -1695,7 +1695,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribed(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currUni, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currMlt, parent.afiMlt, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribed(currOtr, parent.afiOtr, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribed(currOtr, parent.afiOtrL, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currFlw, parent.afiFlw, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currVpnU, parent.afiVpnU, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currVpnM, parent.afiVpnM, ntry, neigh.voumapIn, neigh.voupolIn, null);
@@ -1885,7 +1885,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiMlt) {
             trg = currMlt;
         }
-        if (safi == parent.afiOtr) {
+        if (safi == parent.afiOtrL) {
             trg = currOtr;
         }
         if (safi == parent.afiFlw) {

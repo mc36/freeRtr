@@ -453,9 +453,9 @@ public abstract class rtrBgpParam {
     public final static int mskMvpo = 0x4000;
 
     /**
-     * other unicast
+     * other labeled unicast
      */
-    public final static int mskOtr = 0x8000;
+    public final static int mskOtrL = 0x8000;
 
     /**
      * mspw
@@ -473,9 +473,14 @@ public abstract class rtrBgpParam {
     public final static int mskLnks = 0x40000;
 
     /**
+     * other unicast
+     */
+    public final static int mskOtrU = 0x80000;
+
+    /**
      * all
      */
-    public final static int mskAll = mskUni | mskLab | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtr | mskMspw;
+    public final static int mskAll = mskUni | mskLab | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtrL | mskOtrU | mskMspw;
 
     /**
      * string to afi mask
@@ -561,13 +566,20 @@ public abstract class rtrBgpParam {
             if (a.equals("ovpnflw")) {
                 i |= mskVpoF;
             }
-            if (a.equals("other")) {
-                i |= mskOtr;
+            if (a.equals("olab")) {
+                i |= mskOtrL;
+            }
+            if (a.equals("ouni")) {
+                i |= mskOtrU;
             }
         }
-        final int bth = mskUni | mskLab;
+        int bth = mskUni | mskLab;
         if ((i & bth) == bth) {
             i -= rtrBgpParam.mskUni;
+        }
+        bth = mskOtrU | mskOtrL;
+        if ((i & bth) == bth) {
+            i -= rtrBgpParam.mskOtrU;
         }
         return i;
     }
@@ -589,8 +601,11 @@ public abstract class rtrBgpParam {
         if ((i & mskMlt) != 0) {
             a += " multicast";
         }
-        if ((i & mskOtr) != 0) {
-            a += " other";
+        if ((i & mskOtrL) != 0) {
+            a += " olab";
+        }
+        if ((i & mskOtrU) != 0) {
+            a += " ouni";
         }
         if ((i & mskFlw) != 0) {
             a += " flowspec";
@@ -655,7 +670,7 @@ public abstract class rtrBgpParam {
         }
         hl.add(beg + "  unicast       address family to " + end);
         hl.add(beg + "  labeled       address family to " + end);
-        hl.add(beg + "  other         address family to " + end);
+        hl.add(beg + "  olab          address family to " + end);
         hl.add(beg + "  multicast     address family to " + end);
         hl.add(beg + "  flowspec      address family to " + end);
         hl.add(beg + "  vpnuni        address family to " + end);

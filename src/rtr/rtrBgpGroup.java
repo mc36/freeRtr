@@ -302,7 +302,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiMlt) {
             return wilMlt;
         }
-        if (safi == lower.afiOtr) {
+        if (safi == lower.afiOtrL) {
             return wilOtr;
         }
         if (safi == lower.afiFlw) {
@@ -369,7 +369,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiMlt) {
             return chgMlt;
         }
-        if (safi == lower.afiOtr) {
+        if (safi == lower.afiOtrL) {
             return chgOtr;
         }
         if (safi == lower.afiFlw) {
@@ -822,7 +822,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         readvertTable(lower.afiUni, nUni, cUni);
         readvertTable(lower.afiMlt, nMlt, cMlt);
-        readvertTable(lower.afiOtr, nOtr, cOtr);
+        readvertTable(lower.afiOtrL, nOtr, cOtr);
         importTable(lower.afiFlw, nFlw, cFlw);
         importTable(lower.afiVpnU, nVpnU, cVpnU);
         importTable(lower.afiVpnM, nVpnM, cVpnM);

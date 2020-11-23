@@ -126,7 +126,7 @@ public class rtrBgpOther extends ipRtr {
             attr.rouSrc = rtrBgpUtil.peerOriginate;
         }
         ipMpls.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
-        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, parent.afiOtr, 0, ntry, true, null, null, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, parent.afiOtrL, 0, ntry, true, null, null, null);
     }
 
     /**

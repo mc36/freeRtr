@@ -665,7 +665,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertFullTable(lower.afiMlt, rtrBgpParam.mskMlt, wilMlt, conn.advMlt)) {
             return true;
         }
-        if (advertFullTable(lower.afiOtr, rtrBgpParam.mskOtr, wilOtr, conn.advOtr)) {
+        if (advertFullTable(lower.afiOtrL, rtrBgpParam.mskOtrL, wilOtr, conn.advOtr)) {
             return true;
         }
         if (advertFullTable(lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, conn.advFlw)) {
@@ -768,7 +768,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertIncrTable(lower.afiMlt, rtrBgpParam.mskMlt, wilMlt, chgMlt, conn.advMlt)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOtr, rtrBgpParam.mskOtr, wilOtr, chgOtr, conn.advOtr)) {
+        if (advertIncrTable(lower.afiOtrL, rtrBgpParam.mskOtrL, wilOtr, chgOtr, conn.advOtr)) {
             return true;
         }
         if (advertIncrTable(lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, chgFlw, conn.advFlw)) {
@@ -954,7 +954,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         }
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiUni, remoteAs, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMlt, remoteAs, accMlt, conn.lrnMlt, true, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtr, remoteAs, accOtr, conn.lrnOtr, true, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrL, remoteAs, accOtr, conn.lrnOtr, true, roumapIn, roupolIn, prflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiFlw, remoteAs, accFlw, conn.lrnFlw, true, voumapIn, voupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpnU, remoteAs, accVpnU, conn.lrnVpnU, true, voumapIn, voupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpnM, remoteAs, accVpnM, conn.lrnVpnM, true, voumapIn, voupolIn, null);
@@ -1199,7 +1199,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (safi == lower.afiMlt) {
             return accMlt;
         }
-        if (safi == lower.afiOtr) {
+        if (safi == lower.afiOtrL) {
             return accOtr;
         }
         if (safi == lower.afiFlw) {
@@ -1266,7 +1266,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (safi == lower.afiMlt) {
             return wilMlt;
         }
-        if (safi == lower.afiOtr) {
+        if (safi == lower.afiOtrL) {
             return wilOtr;
         }
         if (safi == lower.afiFlw) {
