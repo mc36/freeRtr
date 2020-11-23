@@ -432,7 +432,7 @@ public class rtrBgpGroup extends rtrBgpParam {
     }
 
     private void nextHopSelf(int afi, tabRouteAttr<addrIP> ntry, tabRouteEntry<addrIP> route) {
-        if ((afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskLab) == 0)) {
+        if ((afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskOtrL) == 0)) {
             ntry.nextHop = localOddr.copyBytes();
         } else {
             ntry.nextHop = localAddr.copyBytes();

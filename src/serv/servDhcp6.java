@@ -469,6 +469,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
         if (ntry == null) {
             return rep;
         }
+        ntry.reqd = bits.getTime();
         if (ntry.ip == null) {
             ntry.ip = addrIPv6.genPublic(mac, gateway);
         }
@@ -483,7 +484,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
     protected void doPurging() {
         synchronized (bindings) {
             long cur = bits.getTime();
-            for (int i = bindings.size()-1; i >= 0; i--) {
+            for (int i = bindings.size() - 1; i >= 0; i--) {
                 servDhcp6bind ntry = bindings.get(i);
                 if (ntry == null) {
                     continue;
