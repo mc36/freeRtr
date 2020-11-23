@@ -4,6 +4,7 @@ import addr.addrIP;
 import ip.ipCor4;
 import ip.ipCor6;
 import ip.ipFwd;
+import ip.ipFwdIface;
 import ip.ipFwdMcast;
 import ip.ipFwdRoute;
 import ip.ipFwdTab;
@@ -454,6 +455,39 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         } else {
             return sctp6;
         }
+    }
+
+    /**
+     * get other interface
+     *
+     * @param fwd forwarder
+     * @param ifc interface
+     * @return other interface, null if not found
+     */
+    public ipFwdIface getOtherIface(ipFwd fwd, ipFwdIface ifc) {
+        ipFwd of = null;
+        if (fwd == fwd4) {
+            of = fwd6;
+        }
+        if (fwd == fwd6) {
+            of = fwd4;
+        }
+        if (of == null) {
+            return null;
+        }
+        ifc = fwd.ifaces.find(ifc);
+        if (ifc == null) {
+            return null;
+        }
+        ifc = ifc.otherHandler;
+        if (ifc == null) {
+            return null;
+        }
+        ifc = of.ifaces.find(ifc);
+        if (ifc == null) {
+            return null;
+        }
+        return ifc;
     }
 
     public int compare(cfgVrf o1, cfgVrf o2) {

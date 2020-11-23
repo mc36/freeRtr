@@ -150,7 +150,9 @@ public class rtrBgpOther extends ipRtr {
         ntry = ntry.copyBytes(tabRoute.addType.ecmp);
         for (int i = 0; i < ntry.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-            attr.rouTab = parent.fwdCore;
+            if (attr.labelRem != null) {
+                attr.rouTab = parent.fwdCore;
+            }
             if (attr.segrouPrf != null) {
                 attr.rouTab = parent.vrfCore.fwd6;
             }
@@ -231,6 +233,11 @@ public class rtrBgpOther extends ipRtr {
             l.add(beg + "enable");
         } else {
             l.add(cmds.tabulator + "no" + beg + "enable");
+        }
+        if (routerVpn) {
+            l.add(beg + "vpn-mode");
+        } else {
+            l.add(cmds.tabulator + "no" + beg + "vpn-mode");
         }
         l.add(beg + "distance " + distance);
         if (srv6 != null) {

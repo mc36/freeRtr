@@ -284,6 +284,11 @@ public class ipFwdIface extends tabRouteIface {
      */
     public addrIP autRouHop;
 
+    /**
+     * other interface handler
+     */
+    public ipFwdIface otherHandler;
+    
     private final tabGen<ipFwdIfaceAddr> adrs = new tabGen<ipFwdIfaceAddr>();
 
     private final tabGen<ipFwdIfaceLdpas> ldpas = new tabGen<ipFwdIfaceLdpas>();

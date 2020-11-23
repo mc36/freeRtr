@@ -3291,6 +3291,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ethtyp.updateET(ipxIface.type, ipxIfc);
             ipxAddr.putMac(ipxIfc.hwaddr);
         }
+        if (fwdIf4 != null) {
+            fwdIf4.otherHandler = fwdIf6;
+        }
+        if (fwdIf6 != null) {
+            fwdIf6.otherHandler = fwdIf4;
+        }
         update2mpls();
     }
 

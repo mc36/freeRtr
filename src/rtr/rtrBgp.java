@@ -1259,6 +1259,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.peerAddr = id.peerAddr.copyBytes();
         ntry.localIfc = id.iface;
         ntry.localAddr = id.iface.addr.copyBytes();
+        ntry.updateOddr();
         if (neighs.find(ntry) != null) {
             return true;
         }
@@ -2198,6 +2199,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("5 .           <num>               port number");
         l.add("1 2   afi-other                   select other to advertise");
         l.add("2 .     enable                    enable processing");
+        l.add("2 .     vpn-mode                  enable vpn mode");
         l.add("2 3     srv6                      srv6 advertisement");
         l.add("3 .       <name>                  select source to advertise");
         l.add("2 3     distance                  set import distance");
@@ -2542,6 +2544,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 } else {
                     other.register2ip();
                 }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("vpn-mode")) {
+                other.routerVpn = !negated;
                 needFull.add(1);
                 compute.wakeup();
                 return false;

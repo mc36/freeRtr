@@ -399,6 +399,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! no template .* route-policy-vin",
         "router bgp[4|6].*! no template .* route-policy-vout",
         "router bgp[4|6].*! no afi-other enable",
+        "router bgp[4|6].*! afi-other vpn-mode",
         "router bgp[4|6].*! afi-other distance -1",
         "router bgp[4|6].*! afi-vrf .* distance -1",
         "router bgp[4|6].*! no afi-vrf .* flowspec-advert",

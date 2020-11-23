@@ -491,6 +491,18 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     /**
      * update peer structures
      */
+    public void updateOddr() {
+        ipFwdIface ifc = lower.vrfCore.getOtherIface(lower.fwdCore, localIfc);
+        if (ifc == null) {
+            localOddr = localAddr.copyBytes();
+        } else {
+            localOddr = ifc.addr.copyBytes();
+        }
+    }
+
+    /**
+     * update peer structures
+     */
     public void updatePeer() {
         if (localAs != remoteAs) {
             peerType = rtrBgpUtil.peerExtrn;
@@ -612,6 +624,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         }
         localIfc = ifc;
         localAddr = ifc.addr.copyBytes();
+        updateOddr();
         if (fallOver) {
             sendingIfc = ipFwdTab.findSendingIface(lower.fwdCore, peerAddr);
         }
