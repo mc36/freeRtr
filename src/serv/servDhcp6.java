@@ -358,8 +358,8 @@ public class servDhcp6 extends servGeneric implements prtServS {
         if (hint != null) {
             addrIPv6 a1 = new addrIPv6();
             addrIPv6 a2 = new addrIPv6();
-            a1.setAdd(gateway, netmask);
-            a2.setAdd(hint, netmask);
+            a1.setAnd(gateway, netmask);
+            a2.setAnd(hint, netmask);
             if (a1.compare(a1, a2) == 0) {
                 hint = hint.copyBytes();
             } else {

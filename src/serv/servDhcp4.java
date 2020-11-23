@@ -450,8 +450,8 @@ public class servDhcp4 extends servGeneric implements prtServS {
             if (hint != null) {
                 addrIPv4 a1 = new addrIPv4();
                 addrIPv4 a2 = new addrIPv4();
-                a1.setAdd(gateway, netmask);
-                a2.setAdd(hint, netmask);
+                a1.setAnd(gateway, netmask);
+                a2.setAnd(hint, netmask);
                 if (a1.compare(a1, a2) == 0) {
                     hint = hint.copyBytes();
                     ntry.ip = hint;
