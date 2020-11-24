@@ -740,13 +740,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertFullTable(lower.afiOtrM, rtrBgpParam.mskOtrM, wilOtrM, conn.advOtrM)) {
             return true;
         }
+        if (advertFullTable(lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, conn.advFlw)) {
+            return true;
+        }
         if (advertFullTable(lower.afiOtrF, rtrBgpParam.mskOtrF, wilOtrF, conn.advOtrF)) {
             return true;
         }
-        if (advertFullTable(lower.afiOtrS, rtrBgpParam.mskOtrS, wilOtrS, conn.advOtrS)) {
+        if (advertFullTable(lower.afiSrte, rtrBgpParam.mskSrte, wilSrte, conn.advSrte)) {
             return true;
         }
-        if (advertFullTable(lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, conn.advFlw)) {
+        if (advertFullTable(lower.afiOtrS, rtrBgpParam.mskOtrS, wilOtrS, conn.advOtrS)) {
             return true;
         }
         if (advertFullTable(lower.afiVpnU, rtrBgpParam.mskVpnU, wilVpnU, conn.advVpnU)) {
@@ -779,16 +782,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertFullTable(lower.afiMdt, rtrBgpParam.mskMdt, wilMdt, conn.advMdt)) {
             return true;
         }
-        if (advertFullTable(lower.afiSrte, rtrBgpParam.mskSrte, wilSrte, conn.advSrte)) {
-            return true;
-        }
-        if (advertFullTable(lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, conn.advLnks)) {
-            return true;
-        }
         if (advertFullTable(lower.afiMvpn, rtrBgpParam.mskMvpn, wilMvpn, conn.advMvpn)) {
             return true;
         }
         if (advertFullTable(lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, conn.advMvpo)) {
+            return true;
+        }
+        if (advertFullTable(lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, conn.advLnks)) {
             return true;
         }
         int ver = conn.needFull.ver();
@@ -855,13 +855,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertIncrTable(lower.afiOtrM, rtrBgpParam.mskOtrM, wilOtrM, chgOtrM, conn.advOtrM)) {
             return true;
         }
+        if (advertIncrTable(lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, chgFlw, conn.advFlw)) {
+            return true;
+        }
         if (advertIncrTable(lower.afiOtrF, rtrBgpParam.mskOtrF, wilOtrF, chgOtrF, conn.advOtrF)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOtrS, rtrBgpParam.mskOtrS, wilOtrS, chgOtrS, conn.advOtrS)) {
+        if (advertIncrTable(lower.afiSrte, rtrBgpParam.mskSrte, wilSrte, chgSrte, conn.advSrte)) {
             return true;
         }
-        if (advertIncrTable(lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, chgFlw, conn.advFlw)) {
+        if (advertIncrTable(lower.afiOtrS, rtrBgpParam.mskOtrS, wilOtrS, chgOtrS, conn.advOtrS)) {
             return true;
         }
         if (advertIncrTable(lower.afiVpnU, rtrBgpParam.mskVpnU, wilVpnU, chgVpnU, conn.advVpnU)) {
@@ -894,16 +897,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertIncrTable(lower.afiMdt, rtrBgpParam.mskMdt, wilMdt, chgMdt, conn.advMdt)) {
             return true;
         }
-        if (advertIncrTable(lower.afiSrte, rtrBgpParam.mskSrte, wilSrte, chgSrte, conn.advSrte)) {
-            return true;
-        }
-        if (advertIncrTable(lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, chgLnks, conn.advLnks)) {
-            return true;
-        }
         if (advertIncrTable(lower.afiMvpn, rtrBgpParam.mskMvpn, wilMvpn, chgMvpn, conn.advMvpn)) {
             return true;
         }
         if (advertIncrTable(lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, chgMvpo, conn.advMvpo)) {
+            return true;
+        }
+        if (advertIncrTable(lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, chgLnks, conn.advLnks)) {
             return true;
         }
         incrLast = bits.getTime();
