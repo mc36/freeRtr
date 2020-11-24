@@ -51,10 +51,13 @@ public class rtrBgpOther extends ipRtr {
      */
     public cfgIfc srv6;
 
+    /**
+     * forwarder to use
+     */
+    protected final ipFwd fwd;
+
     private final rtrBgp parent;
-
-    private final ipFwd fwd;
-
+    
     private tabGen<addrIP> peers = new tabGen<addrIP>();
 
     /**

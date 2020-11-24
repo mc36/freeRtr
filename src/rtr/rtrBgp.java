@@ -2273,6 +2273,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("3 .       <name>                  select source to advertise");
         l.add("2 3     distance                  set import distance");
         l.add("3 .       <num>                   distance");
+        l.add("2 .     flowspec-install          specify flowspec installation");
+        l.add("2 3     flowspec-advert           specify flowspec parameter");
+        l.add("3 .       <name>                  name of policy map");
         cfgRtr.getRedistHelp(l, 1);
         l.add("1 2   afi-vrf                     select vrf to advertise");
         l.add("2 3     <vrf>                     name of routing table");
@@ -2635,6 +2638,32 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 } else {
                     other.srv6 = cfgAll.ifcFind(cmd.word(), false);
                 }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("flowspec-install")) {
+                other.flowInst = !negated;
+                if (negated) {
+                    other.fwd.flowspec = null;
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("flowspec-advert")) {
+                if (negated) {
+                    other.flowSpec = null;
+                    needFull.add(1);
+                    compute.wakeup();
+                    return false;
+                }
+                cfgPlymp ntry = cfgAll.plmpFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such policy map");
+                    return false;
+                }
+                other.flowSpec = ntry.plcmap;
                 needFull.add(1);
                 compute.wakeup();
                 return false;
