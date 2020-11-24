@@ -9484,3 +9484,13 @@ qc pass: unicast+ouni over ibgp
 qc pass: unicast+ouni over ibgp rr
 qc pass: unicast+ouni over confed bgp
 qc pass: unicast+ouni over bgp route server
+---------------------------------- 2020-11-24 11:18:36
+qc pass: unicast+omul over bgp
+qc pass: unicast+omul over bgp with soft-reconfig
+qc pass: unicast+omul over bgp with additional path
+qc pass: unicast+oflw over bgp
+qc pass: unicast+oflw over bgp with soft-reconfig
+qc pass: unicast+oflw over bgp with additional path
+qc pass: unicast+osrt over bgp
+qc pass: unicast+osrt over bgp with soft-reconfig
+qc pass: unicast+osrt over bgp with additional path
