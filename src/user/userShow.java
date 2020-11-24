@@ -3413,6 +3413,7 @@ public class userShow {
             case rtrBgpParam.mskMvpn:
             case rtrBgpParam.mskMvpo:
             case rtrBgpParam.mskFlw:
+            case rtrBgpParam.mskOtrF:
             case rtrBgpParam.mskVpnF:
             case rtrBgpParam.mskVpoF:
                 return 5;

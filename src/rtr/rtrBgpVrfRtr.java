@@ -289,6 +289,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         routerDoAggregates(parent.afiUni, tabU, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
         routerDoAggregates(parent.afiMlt, tabM, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
+        if (flowSpec != null) {
+            rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), other ^ (parent.afiUni == rtrBgpUtil.safiIp6uni), parent.localAs);
+        }
         routerComputedU = tabU;
         routerComputedM = tabM;
         routerComputedF = tabF;

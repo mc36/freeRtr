@@ -57,7 +57,7 @@ public class rtrBgpOther extends ipRtr {
     protected final ipFwd fwd;
 
     private final rtrBgp parent;
-    
+
     private tabGen<addrIP> peers = new tabGen<addrIP>();
 
     /**
@@ -221,6 +221,9 @@ public class rtrBgpOther extends ipRtr {
         }
         routerDoAggregates(parent.afiUni, tabU, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
         routerDoAggregates(parent.afiMlt, tabM, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
+        if (flowSpec != null) {
+            rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), parent.afiUni != rtrBgpUtil.safiIp6uni, parent.localAs);
+        }
         routerComputedU = tabU;
         routerComputedM = tabM;
         routerComputedF = tabF;
@@ -283,8 +286,12 @@ public class rtrBgpOther extends ipRtr {
             l.add(cmds.tabulator + "no" + beg + "vpn-mode");
         }
         l.add(beg + "distance " + distance);
-        cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
-        cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
+        if (flowInst) {
+            l.add(beg + "flowspec-install");
+        }
+        if (flowSpec != null) {
+            l.add(beg + "flowspec-advert " + flowSpec);
+        }
         if (srv6 != null) {
             l.add(beg + "srv6 " + srv6.name);
         }
