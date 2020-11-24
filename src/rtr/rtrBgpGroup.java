@@ -40,9 +40,24 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRoute<addrIP> wilMlt = new tabRoute<addrIP>("tx");
 
     /**
-     * willing other prefixes
+     * willing other unicast prefixes
      */
     public tabRoute<addrIP> wilOtrU = new tabRoute<addrIP>("tx");
+
+    /**
+     * willing other multicast prefixes
+     */
+    public tabRoute<addrIP> wilOtrM = new tabRoute<addrIP>("tx");
+
+    /**
+     * willing other flowspec prefixes
+     */
+    public tabRoute<addrIP> wilOtrF = new tabRoute<addrIP>("tx");
+
+    /**
+     * willing other srte prefixes
+     */
+    public tabRoute<addrIP> wilOtrS = new tabRoute<addrIP>("tx");
 
     /**
      * willing flowspec prefixes
@@ -130,9 +145,24 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRoute<addrIP> chgMlt = new tabRoute<addrIP>("chg");
 
     /**
-     * changed other prefixes
+     * changed other unicast prefixes
      */
     public tabRoute<addrIP> chgOtrU = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed other multicast prefixes
+     */
+    public tabRoute<addrIP> chgOtrM = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed other flowspec prefixes
+     */
+    public tabRoute<addrIP> chgOtrF = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed other srte prefixes
+     */
+    public tabRoute<addrIP> chgOtrS = new tabRoute<addrIP>("chg");
 
     /**
      * changed flowspec prefixes
@@ -273,6 +303,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("unicast advertise = " + wilUni.size() + ", list=" + chgUni.size());
         l.add("multicast advertise = " + wilMlt.size() + ", list=" + chgMlt.size());
         l.add("ouni advertise = " + wilOtrU.size() + ", list=" + chgOtrU.size());
+        l.add("omlt advertise = " + wilOtrM.size() + ", list=" + chgOtrM.size());
+        l.add("oflw advertise = " + wilOtrF.size() + ", list=" + chgOtrF.size());
+        l.add("osrt advertise = " + wilOtrS.size() + ", list=" + chgOtrS.size());
         l.add("flowspec advertise = " + wilFlw.size() + ", list=" + chgFlw.size());
         l.add("vpnuni advertise = " + wilVpnU.size() + ", list=" + chgVpnU.size());
         l.add("vpnmlt advertise = " + wilVpnM.size() + ", list=" + chgVpnM.size());
@@ -770,7 +803,10 @@ public class rtrBgpGroup extends rtrBgpParam {
      *
      * @param cUni unicast
      * @param cMlt multicast
-     * @param cOtrU other
+     * @param cOtrU other uni
+     * @param cOtrM other multi
+     * @param cOtrF other flow
+     * @param cOtrS other srte
      * @param cFlw flowspec
      * @param cVpnU vpn uni
      * @param cVpnM vpn multi
@@ -787,7 +823,8 @@ public class rtrBgpGroup extends rtrBgpParam {
      * @param cMvpn mvpn
      * @param cMvpo omvpn
      */
-    public void createNeeded(tabRoute<addrIP> cUni, tabRoute<addrIP> cMlt, tabRoute<addrIP> cOtrU, tabRoute<addrIP> cFlw,
+    public void createNeeded(tabRoute<addrIP> cUni, tabRoute<addrIP> cMlt, tabRoute<addrIP> cOtrU,
+            tabRoute<addrIP> cOtrM, tabRoute<addrIP> cOtrF, tabRoute<addrIP> cOtrS, tabRoute<addrIP> cFlw,
             tabRoute<addrIP> cVpnU, tabRoute<addrIP> cVpnM, tabRoute<addrIP> cVpnF,
             tabRoute<addrIP> cVpoU, tabRoute<addrIP> cVpoM, tabRoute<addrIP> cVpoF,
             tabRoute<addrIP> cVpls, tabRoute<addrIP> cMspw, tabRoute<addrIP> cEvpn,
@@ -796,6 +833,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         tabRoute<addrIP> nUni = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMlt = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nOtrU = new tabRoute<addrIP>("bgp");
+        tabRoute<addrIP> nOtrM = new tabRoute<addrIP>("bgp");
+        tabRoute<addrIP> nOtrF = new tabRoute<addrIP>("bgp");
+        tabRoute<addrIP> nOtrS = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nFlw = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nVpnU = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nVpnM = new tabRoute<addrIP>("bgp");
@@ -877,6 +917,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         wilUni = nUni;
         wilMlt = nMlt;
         wilOtrU = nOtrU;
+        wilOtrM = nOtrM;
+        wilOtrF = nOtrF;
+        wilOtrS = nOtrS;
         wilFlw = nFlw;
         wilVpnU = nVpnU;
         wilVpnM = nVpnM;
