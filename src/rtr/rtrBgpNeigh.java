@@ -63,9 +63,24 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public tabRoute<addrIP> accMlt = new tabRoute<addrIP>("rx");
 
     /**
-     * accepted other prefixes
+     * accepted other unicast prefixes
      */
     public tabRoute<addrIP> accOtrU = new tabRoute<addrIP>("rx");
+
+    /**
+     * accepted other multicast prefixes
+     */
+    public tabRoute<addrIP> accOtrM = new tabRoute<addrIP>("rx");
+
+    /**
+     * accepted other flowspec prefixes
+     */
+    public tabRoute<addrIP> accOtrF = new tabRoute<addrIP>("rx");
+
+    /**
+     * accepted other srte prefixes
+     */
+    public tabRoute<addrIP> accOtrS = new tabRoute<addrIP>("rx");
 
     /**
      * accepted flowspec prefixes
@@ -153,9 +168,24 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public tabRoute<addrIP> wilMlt = new tabRoute<addrIP>("tx");
 
     /**
-     * willing other prefixes
+     * willing other unicast prefixes
      */
     public tabRoute<addrIP> wilOtrU = new tabRoute<addrIP>("tx");
+
+    /**
+     * willing other multicast prefixes
+     */
+    public tabRoute<addrIP> wilOtrM = new tabRoute<addrIP>("tx");
+
+    /**
+     * willing other flowspec prefixes
+     */
+    public tabRoute<addrIP> wilOtrF = new tabRoute<addrIP>("tx");
+
+    /**
+     * willing other srte prefixes
+     */
+    public tabRoute<addrIP> wilOtrS = new tabRoute<addrIP>("tx");
 
     /**
      * willing flowspec prefixes
@@ -243,9 +273,24 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public tabRoute<addrIP> chgMlt = new tabRoute<addrIP>("chg");
 
     /**
-     * changed other prefixes
+     * changed other unicast prefixes
      */
     public tabRoute<addrIP> chgOtrU = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed other multicast prefixes
+     */
+    public tabRoute<addrIP> chgOtrM = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed other flowspec prefixes
+     */
+    public tabRoute<addrIP> chgOtrF = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed other srte prefixes
+     */
+    public tabRoute<addrIP> chgOtrS = new tabRoute<addrIP>("chg");
 
     /**
      * changed flowspec prefixes
@@ -464,6 +509,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("unicast advertised = " + conn.advUni.size() + " of " + wilUni.size() + ", list = " + chgUni.size() + ", accepted = " + accUni.size() + " of " + conn.lrnUni.size());
         l.add("multicast advertised = " + conn.advMlt.size() + " of " + wilMlt.size() + ", list = " + chgMlt.size() + ", accepted = " + accMlt.size() + " of " + conn.lrnMlt.size());
         l.add("ouni advertised = " + conn.advOtrU.size() + " of " + wilOtrU.size() + ", list = " + chgOtrU.size() + ", accepted = " + accOtrU.size() + " of " + conn.lrnOtrU.size());
+        l.add("omlt advertised = " + conn.advOtrM.size() + " of " + wilOtrM.size() + ", list = " + chgOtrM.size() + ", accepted = " + accOtrM.size() + " of " + conn.lrnOtrM.size());
+        l.add("oflw advertised = " + conn.advOtrF.size() + " of " + wilOtrF.size() + ", list = " + chgOtrF.size() + ", accepted = " + accOtrF.size() + " of " + conn.lrnOtrf.size());
+        l.add("osrt advertised = " + conn.advOtrS.size() + " of " + wilOtrS.size() + ", list = " + chgOtrS.size() + ", accepted = " + accOtrS.size() + " of " + conn.lrnOtrS.size());
         l.add("flowspec advertised = " + conn.advFlw.size() + " of " + wilFlw.size() + ", list = " + chgFlw.size() + ", accepted = " + accFlw.size() + " of " + conn.lrnFlw.size());
         l.add("vpnuni advertised = " + conn.advVpnU.size() + " of " + wilVpnU.size() + ", list = " + chgVpnU.size() + ", accepted = " + accVpnU.size() + " of " + conn.lrnVpnU.size());
         l.add("vpnmlt advertised = " + conn.advVpnM.size() + " of " + wilVpnM.size() + ", list = " + chgVpnM.size() + ", accepted = " + accVpnM.size() + " of " + conn.lrnVpnM.size());
@@ -917,6 +965,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         accUni = new tabRoute<addrIP>("bgp");
         accMlt = new tabRoute<addrIP>("bgp");
         accOtrU = new tabRoute<addrIP>("bgp");
+        accOtrM = new tabRoute<addrIP>("bgp");
+        accOtrF = new tabRoute<addrIP>("bgp");
+        accOtrS = new tabRoute<addrIP>("bgp");
         accFlw = new tabRoute<addrIP>("bgp");
         accVpnU = new tabRoute<addrIP>("bgp");
         accVpnM = new tabRoute<addrIP>("bgp");
@@ -977,6 +1028,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             accUni = conn.lrnUni;
             accMlt = conn.lrnMlt;
             accOtrU = conn.lrnOtrU;
+            accOtrM = conn.lrnOtrM;
+            accOtrF = conn.lrnOtrF;
+            accOtrS = conn.lrnOtrS;
             accFlw = conn.lrnFlw;
             accVpnU = conn.lrnVpnU;
             accVpnM = conn.lrnVpnM;
@@ -1022,7 +1076,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      *
      * @param uni unicast
      * @param mlt multicast
-     * @param otrU other
+     * @param otrU other uni
+     * @param otrM other multi
+     * @param otrF other flow
+     * @param otrS other srte
      * @param flw flowspec
      * @param vpnU vpn uni
      * @param vpnM vpn multi
@@ -1039,7 +1096,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * @param mvpn mvpn
      * @param mvpo omvpn
      */
-    public void setMerge(tabRoute<addrIP> uni, tabRoute<addrIP> mlt, tabRoute<addrIP> otrU, tabRoute<addrIP> flw,
+    public void setMerge(tabRoute<addrIP> uni, tabRoute<addrIP> mlt, tabRoute<addrIP> otrU,
+            tabRoute<addrIP> otrM, tabRoute<addrIP> otrF, tabRoute<addrIP> otrS, tabRoute<addrIP> flw,
             tabRoute<addrIP> vpnU, tabRoute<addrIP> vpnM, tabRoute<addrIP> vpnF,
             tabRoute<addrIP> vpoU, tabRoute<addrIP> vpoM, tabRoute<addrIP> vpoF,
             tabRoute<addrIP> vpls, tabRoute<addrIP> mspw, tabRoute<addrIP> evpn,
@@ -1048,6 +1106,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         uni.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accUni), null, true, tabRouteAttr.distanLim);
         mlt.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accMlt), null, true, tabRouteAttr.distanLim);
         otrU.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accOtrU), null, true, tabRouteAttr.distanLim);
+        otrM.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accOtrM), null, true, tabRouteAttr.distanLim);
+        otrF.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accOtrF), null, true, tabRouteAttr.distanLim);
+        otrS.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accOtrS), null, true, tabRouteAttr.distanLim);
         flw.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accFlw), null, true, tabRouteAttr.distanLim);
         vpnU.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accVpnU), null, true, tabRouteAttr.distanLim);
         vpnM.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accVpnM), null, true, tabRouteAttr.distanLim);
@@ -1123,6 +1184,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             wilUni = new tabRoute<addrIP>("tx");
             wilMlt = new tabRoute<addrIP>("tx");
             wilOtrU = new tabRoute<addrIP>("tx");
+            wilOtrM = new tabRoute<addrIP>("tx");
+            wilOtrF = new tabRoute<addrIP>("tx");
+            wilOtrS = new tabRoute<addrIP>("tx");
             wilFlw = new tabRoute<addrIP>("tx");
             wilVpnU = new tabRoute<addrIP>("tx");
             wilVpnM = new tabRoute<addrIP>("tx");
@@ -1141,6 +1205,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             chgUni = new tabRoute<addrIP>("chg");
             chgMlt = new tabRoute<addrIP>("chg");
             chgOtrU = new tabRoute<addrIP>("chg");
+            chgOtrM = new tabRoute<addrIP>("chg");
+            chgOtrF = new tabRoute<addrIP>("chg");
+            chgOtrS = new tabRoute<addrIP>("chg");
             chgFlw = new tabRoute<addrIP>("chg");
             chgVpnU = new tabRoute<addrIP>("chg");
             chgVpnM = new tabRoute<addrIP>("chg");
@@ -1161,6 +1228,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             wilUni = grp.wilUni;
             wilMlt = grp.wilMlt;
             wilOtrU = grp.wilOtrU;
+            wilOtrM = grp.wilOtrM;
+            wilOtrF = grp.wilOtrF;
+            wilOtrS = grp.wilOtrS;
             wilFlw = grp.wilFlw;
             wilVpnU = grp.wilVpnU;
             wilVpnM = grp.wilVpnM;
@@ -1179,6 +1249,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             chgUni = grp.chgUni;
             chgMlt = grp.chgMlt;
             chgOtrU = grp.chgOtrU;
+            chgOtrM = grp.chgOtrM;
+            chgOtrF = grp.chgOtrF;
+            chgOtrS = grp.chgOtrS;
             chgFlw = grp.chgFlw;
             chgVpnU = grp.chgVpnU;
             chgVpnM = grp.chgVpnM;
