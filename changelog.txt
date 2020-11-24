@@ -9494,3 +9494,8 @@ qc pass: unicast+oflw over bgp with additional path
 qc pass: unicast+osrt over bgp
 qc pass: unicast+osrt over bgp with soft-reconfig
 qc pass: unicast+osrt over bgp with additional path
+---------------------------------- 2020-11-24 14:47:55
+qc pass: qos transmit otherflowspec
+qc pass: qos drop otherflowspec
+qc pass: qos policer otherflowspec
+qc pass: qos priority otherflowspec

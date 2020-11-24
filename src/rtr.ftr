@@ -1305,6 +1305,10 @@ qc pass: qos transmit flowspec
 qc pass: qos drop flowspec
 qc pass: qos policer flowspec
 qc pass: qos priority flowspec
+qc pass: qos transmit otherflowspec
+qc pass: qos drop otherflowspec
+qc pass: qos policer otherflowspec
+qc pass: qos priority otherflowspec
 qc pass: qos ingress length matcher
 qc pass: qos egress length matcher
 qc pass: qos ingress tos matcher

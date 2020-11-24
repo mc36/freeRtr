@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v20.11.24-rel, done by cs@nop.
--;-;-;2020-11-24 11:23:33, took 00:04:56, with 100 workers, on 2182 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2020-11-24 14:53:33, took 00:05:38, with 100 workers, on 2186 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -1309,6 +1309,10 @@ http://sources.nop.hu/cfg/qos-copp11.tst;qos-copp11.tst;success;qos transmit flo
 http://sources.nop.hu/cfg/qos-copp12.tst;qos-copp12.tst;success;qos drop flowspec
 http://sources.nop.hu/cfg/qos-copp13.tst;qos-copp13.tst;success;qos policer flowspec
 http://sources.nop.hu/cfg/qos-copp14.tst;qos-copp14.tst;success;qos priority flowspec
+http://sources.nop.hu/cfg/qos-copp15.tst;qos-copp15.tst;success;qos transmit otherflowspec
+http://sources.nop.hu/cfg/qos-copp16.tst;qos-copp16.tst;success;qos drop otherflowspec
+http://sources.nop.hu/cfg/qos-copp17.tst;qos-copp17.tst;success;qos policer otherflowspec
+http://sources.nop.hu/cfg/qos-copp18.tst;qos-copp18.tst;success;qos priority otherflowspec
 http://sources.nop.hu/cfg/qos-match01.tst;qos-match01.tst;success;qos ingress length matcher
 http://sources.nop.hu/cfg/qos-match02.tst;qos-match02.tst;success;qos egress length matcher
 http://sources.nop.hu/cfg/qos-match03.tst;qos-match03.tst;success;qos ingress tos matcher
