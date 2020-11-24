@@ -2138,8 +2138,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " start");
         }
-        int chg = changedUni.size() + changedMlt.size() + changedOtrU.size() + changedFlw.size()
-                + changedOtrM.size() + changedOtrF.size() + changedOtrS.size()
+        int chg = changedUni.size() + changedMlt.size() + changedOtrU.size()
+                + changedOtrM.size() + changedOtrF.size() + changedOtrS.size() + changedFlw.size()
                 + changedVpnU.size() + changedVpnM.size() + changedVpnF.size()
                 + changedVpoU.size() + changedVpoM.size() + changedVpoF.size()
                 + changedVpls.size() + changedMspw.size() + changedEvpn.size()
