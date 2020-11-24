@@ -689,6 +689,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertFullTable(lower.afiOtrU, rtrBgpParam.mskOtrU, wilOtrU, conn.advOtrU)) {
             return true;
         }
+        if (advertFullTable(lower.afiOtrM, rtrBgpParam.mskOtrM, wilOtrM, conn.advOtrM)) {
+            return true;
+        }
+        if (advertFullTable(lower.afiOtrF, rtrBgpParam.mskOtrF, wilOtrF, conn.advOtrF)) {
+            return true;
+        }
+        if (advertFullTable(lower.afiOtrS, rtrBgpParam.mskOtrS, wilOtrS, conn.advOtrS)) {
+            return true;
+        }
         if (advertFullTable(lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, conn.advFlw)) {
             return true;
         }
@@ -793,6 +802,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             return true;
         }
         if (advertIncrTable(lower.afiOtrU, rtrBgpParam.mskOtrU, wilOtrU, chgOtrU, conn.advOtrU)) {
+            return true;
+        }
+        if (advertIncrTable(lower.afiOtrM, rtrBgpParam.mskOtrM, wilOtrM, chgOtrM, conn.advOtrM)) {
+            return true;
+        }
+        if (advertIncrTable(lower.afiOtrF, rtrBgpParam.mskOtrF, wilOtrF, chgOtrF, conn.advOtrF)) {
+            return true;
+        }
+        if (advertIncrTable(lower.afiOtrS, rtrBgpParam.mskOtrS, wilOtrS, chgOtrS, conn.advOtrS)) {
             return true;
         }
         if (advertIncrTable(lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, chgFlw, conn.advFlw)) {
@@ -979,6 +997,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiUni, remoteAs, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMlt, remoteAs, accMlt, conn.lrnMlt, true, roumapIn, roupolIn, prflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrU, remoteAs, accOtrU, conn.lrnOtrU, true, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrM, remoteAs, accOtrM, conn.lrnOtrM, true, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrF, remoteAs, accOtrF, conn.lrnOtrF, true, roumapIn, roupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrS, remoteAs, accOtrS, conn.lrnOtrS, true, roumapIn, roupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiFlw, remoteAs, accFlw, conn.lrnFlw, true, voumapIn, voupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpnU, remoteAs, accVpnU, conn.lrnVpnU, true, voumapIn, voupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpnM, remoteAs, accVpnM, conn.lrnVpnM, true, voumapIn, voupolIn, null);
@@ -1233,6 +1254,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (safi == lower.afiOtrU) {
             return accOtrU;
         }
+        if (safi == lower.afiOtrM) {
+            return accOtrM;
+        }
+        if (safi == lower.afiOtrF) {
+            return accOtrF;
+        }
+        if (safi == lower.afiOtrS) {
+            return accOtrS;
+        }
         if (safi == lower.afiFlw) {
             return accFlw;
         }
@@ -1302,6 +1332,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         }
         if (safi == lower.afiOtrU) {
             return wilOtrU;
+        }
+        if (safi == lower.afiOtrM) {
+            return wilOtrM;
+        }
+        if (safi == lower.afiOtrF) {
+            return wilOtrF;
+        }
+        if (safi == lower.afiOtrS) {
+            return wilOtrS;
         }
         if (safi == lower.afiFlw) {
             return wilFlw;

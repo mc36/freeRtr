@@ -195,102 +195,117 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * unicast afi
      */
-    protected int afiUni;
+    protected final int afiUni;
 
     /**
      * labeled unicast afi
      */
-    protected int afiLab;
+    protected final int afiLab;
 
     /**
      * multicast afi
      */
-    protected int afiMlt;
+    protected final int afiMlt;
 
     /**
      * other labeled unicast afi
      */
-    protected int afiOtrL;
+    protected final int afiOtrL;
 
     /**
      * other unicast afi
      */
-    protected int afiOtrU;
+    protected final int afiOtrU;
+
+    /**
+     * other multicast afi
+     */
+    protected final int afiOtrM;
+
+    /**
+     * other flowspec afi
+     */
+    protected final int afiOtrF;
+
+    /**
+     * other srte afi
+     */
+    protected final int afiOtrS;
 
     /**
      * flow specification afi
      */
-    protected int afiFlw;
+    protected final int afiFlw;
 
     /**
      * unicast vpn afi
      */
-    protected int afiVpnU;
+    protected final int afiVpnU;
 
     /**
      * multicast vpn afi
      */
-    protected int afiVpnM;
+    protected final int afiVpnM;
 
     /**
      * flowspec vpn afi
      */
-    protected int afiVpnF;
+    protected final int afiVpnF;
 
     /**
      * other unicast vpn afi
      */
-    protected int afiVpoU;
+    protected final int afiVpoU;
 
     /**
      * other multicast vpn afi
      */
-    protected int afiVpoM;
+    protected final int afiVpoM;
 
     /**
      * other flowspec vpn afi
      */
-    protected int afiVpoF;
+    protected final int afiVpoF;
 
     /**
      * vpls afi
      */
-    protected int afiVpls;
+    protected final int afiVpls;
 
     /**
      * mspw afi
      */
-    protected int afiMspw;
+    protected final int afiMspw;
 
     /**
      * evpn afi
      */
-    protected int afiEvpn;
+    protected final int afiEvpn;
 
     /**
      * mdt afi
      */
-    protected int afiMdt;
+    protected final int afiMdt;
 
     /**
      * srte afi
      */
-    protected int afiSrte;
+    protected final int afiSrte;
 
     /**
      * linkstate afi
      */
-    protected int afiLnks;
+    protected final int afiLnks;
 
     /**
      * mvpn afi
      */
-    protected int afiMvpn;
+    protected final int afiMvpn;
 
     /**
      * other mvpn afi
      */
-    protected int afiMvpo;
+    protected final int afiMvpo;
 
     /**
      * router number
@@ -771,6 +786,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMlt = rtrBgpUtil.safiIp4multi;
                 afiOtrL = rtrBgpUtil.safiIp6lab;
                 afiOtrU = rtrBgpUtil.safiIp6uni;
+                afiOtrM = rtrBgpUtil.safiIp6multi;
+                afiOtrF = rtrBgpUtil.safiIp6flow;
+                afiOtrS = rtrBgpUtil.safiIp6srte;
                 afiFlw = rtrBgpUtil.safiIp4flow;
                 afiVpnU = rtrBgpUtil.safiIp4vpnU;
                 afiVpnM = rtrBgpUtil.safiIp4vpnM;
@@ -795,6 +813,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMlt = rtrBgpUtil.safiIp6multi;
                 afiOtrL = rtrBgpUtil.safiIp4lab;
                 afiOtrU = rtrBgpUtil.safiIp4uni;
+                afiOtrM = rtrBgpUtil.safiIp4multi;
+                afiOtrF = rtrBgpUtil.safiIp4flow;
+                afiOtrS = rtrBgpUtil.safiIp4srte;
                 afiFlw = rtrBgpUtil.safiIp6flow;
                 afiVpnU = rtrBgpUtil.safiIp6vpnU;
                 afiVpnM = rtrBgpUtil.safiIp6vpnM;
@@ -819,6 +840,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMlt = 0;
                 afiOtrL = 0;
                 afiOtrU = 0;
+                afiOtrM = 0;
+                afiOtrF = 0;
+                afiOtrS = 0;
                 afiFlw = 0;
                 afiVpnU = 0;
                 afiVpnM = 0;
@@ -895,6 +919,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiOtrU) {
             return rtrBgpParam.mskOtrU;
         }
+        if (safi == afiOtrM) {
+            return rtrBgpParam.mskOtrM;
+        }
+        if (safi == afiOtrF) {
+            return rtrBgpParam.mskOtrF;
+        }
+        if (safi == afiOtrS) {
+            return rtrBgpParam.mskOtrS;
+        }
         if (safi == afiFlw) {
             return rtrBgpParam.mskFlw;
         }
@@ -961,6 +994,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return afiOtrL;
             case rtrBgpParam.mskOtrU:
                 return afiOtrU;
+            case rtrBgpParam.mskOtrM:
+                return afiOtrM;
+            case rtrBgpParam.mskOtrF:
+                return afiOtrF;
+            case rtrBgpParam.mskOtrS:
+                return afiOtrS;
             case rtrBgpParam.mskFlw:
                 return afiFlw;
             case rtrBgpParam.mskVpnU:
@@ -1018,6 +1057,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if ((mask & rtrBgpParam.mskOtrU) != 0) {
             safis.add(afiOtrU);
+        }
+        if ((mask & rtrBgpParam.mskOtrM) != 0) {
+            safis.add(afiOtrM);
+        }
+        if ((mask & rtrBgpParam.mskOtrF) != 0) {
+            safis.add(afiOtrF);
+        }
+        if ((mask & rtrBgpParam.mskOtrS) != 0) {
+            safis.add(afiOtrS);
         }
         if ((mask & rtrBgpParam.mskFlw) != 0) {
             safis.add(afiFlw);
@@ -1089,6 +1137,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiOtrU) {
             return computedOtrU;
         }
+        if (safi == afiOtrM) {
+            return computedOtrM;
+        }
+        if (safi == afiOtrF) {
+            return computedOtrF;
+        }
+        if (safi == afiOtrS) {
+            return computedOtrS;
+        }
         if (safi == afiFlw) {
             return routerComputedF;
         }
@@ -1158,6 +1215,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (safi == afiOtrU) {
             return changedOtrU;
+        }
+        if (safi == afiOtrM) {
+            return changedOtrM;
+        }
+        if (safi == afiOtrF) {
+            return changedOtrF;
+        }
+        if (safi == afiOtrS) {
+            return changedOtrS;
         }
         if (safi == afiFlw) {
             return changedFlw;
@@ -1733,7 +1799,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             } else {
                 ntry = grp.readvertPrefix(afi, best);
             }
-            if ((afi == afiUni) || (afi == afiMlt) || (afi == afiOtrU)) {
+            if ((afi == afiUni) || (afi == afiMlt) || (afi == afiOtrU) || (afi == afiOtrM)) {
                 ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.roumapOut, grp.roupolOut, grp.prflstOut);
             } else {
                 ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.voumapOut, grp.voupolOut, null);
@@ -1864,6 +1930,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computeIncrUpdate(afiUni, changedUni, routerComputedU, routerRedistedU);
         computeIncrUpdate(afiMlt, changedMlt, routerComputedM, routerRedistedM);
         computeIncrUpdate(afiOtrU, changedOtrU, computedOtrU, origntedOtrU);
+        computeIncrUpdate(afiOtrM, changedOtrM, computedOtrM, origntedOtrM);
+        computeIncrUpdate(afiOtrF, changedOtrF, computedOtrF, origntedOtrF);
+        computeIncrUpdate(afiOtrS, changedOtrS, computedOtrS, origntedOtrS);
         computeIncrUpdate(afiFlw, changedFlw, routerComputedF, origntedFlw);
         computeIncrUpdate(afiVpnU, changedVpnU, computedVpnU, origntedVpnU);
         computeIncrUpdate(afiVpnM, changedVpnM, computedVpnM, origntedVpnM);

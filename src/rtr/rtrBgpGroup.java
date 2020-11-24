@@ -313,6 +313,15 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiOtrU) {
             return wilOtrU;
         }
+        if (safi == lower.afiOtrM) {
+            return wilOtrM;
+        }
+        if (safi == lower.afiOtrF) {
+            return wilOtrF;
+        }
+        if (safi == lower.afiOtrS) {
+            return wilOtrS;
+        }
         if (safi == lower.afiFlw) {
             return wilFlw;
         }
@@ -383,6 +392,15 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiOtrU) {
             return chgOtrU;
         }
+        if (safi == lower.afiOtrM) {
+            return chgOtrM;
+        }
+        if (safi == lower.afiOtrF) {
+            return chgOtrF;
+        }
+        if (safi == lower.afiOtrS) {
+            return chgOtrS;
+        }
         if (safi == lower.afiFlw) {
             return chgFlw;
         }
@@ -432,7 +450,7 @@ public class rtrBgpGroup extends rtrBgpParam {
     }
 
     private void nextHopSelf(int afi, tabRouteAttr<addrIP> ntry, tabRouteEntry<addrIP> route) {
-        if ((afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskOtrL) == 0)) {
+        if ((afi == lower.afiOtrM) || ((afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskOtrL) == 0))) {
             ntry.nextHop = localOddr.copyBytes();
         } else {
             ntry.nextHop = localAddr.copyBytes();
@@ -836,6 +854,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         readvertTable(lower.afiUni, nUni, cUni);
         readvertTable(lower.afiMlt, nMlt, cMlt);
         readvertTable(lower.afiOtrU, nOtrU, cOtrU);
+        readvertTable(lower.afiOtrM, nOtrM, cOtrM);
+        importTable(lower.afiOtrF, nOtrF, cOtrF);
+        importTable(lower.afiOtrS, nOtrS, cOtrS);
         importTable(lower.afiFlw, nFlw, cFlw);
         importTable(lower.afiVpnU, nVpnU, cVpnU);
         importTable(lower.afiVpnM, nVpnM, cVpnM);
