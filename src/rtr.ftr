@@ -1787,6 +1787,13 @@ qc pass: bgp routepolicy filtering with peer large community with soft-reconfig
 qc pass: unicast+linkstate over bgp
 qc pass: unicast+linkstate over bgp with soft-reconfig
 qc pass: unicast+linkstate over bgp with additional path
+qc pass: unicast+ouni over ebgp
+qc pass: unicast+ouni over bgp with soft-reconfig
+qc pass: unicast+ouni over bgp with additional path
+qc pass: unicast+ouni over ibgp
+qc pass: unicast+ouni over ibgp rr
+qc pass: unicast+ouni over confed bgp
+qc pass: unicast+ouni over bgp route server
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

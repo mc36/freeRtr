@@ -478,9 +478,24 @@ public abstract class rtrBgpParam {
     public final static int mskOtrU = 0x80000;
 
     /**
+     * other multicast
+     */
+    public final static int mskOtrM = 0x100000;
+
+    /**
+     * other flowspec
+     */
+    public final static int mskOtrF = 0x200000;
+
+    /**
+     * other srte
+     */
+    public final static int mskOtrS = 0x400000;
+
+    /**
      * all
      */
-    public final static int mskAll = mskUni | mskLab | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtrL | mskOtrU | mskMspw;
+    public final static int mskAll = mskUni | mskLab | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtrL | mskOtrU | mskOtrM | mskOtrF | mskOtrS | mskMspw;
 
     /**
      * string to afi mask
@@ -572,6 +587,15 @@ public abstract class rtrBgpParam {
             if (a.equals("ouni")) {
                 i |= mskOtrU;
             }
+            if (a.equals("omlt")) {
+                i |= mskOtrM;
+            }
+            if (a.equals("oflw")) {
+                i |= mskOtrF;
+            }
+            if (a.equals("osrt")) {
+                i |= mskOtrS;
+            }
         }
         int bth = mskUni | mskLab;
         if ((i & bth) == bth) {
@@ -607,8 +631,14 @@ public abstract class rtrBgpParam {
         if ((i & mskOtrU) != 0) {
             a += " ouni";
         }
+        if ((i & mskOtrM) != 0) {
+            a += " omlt";
+        }
         if ((i & mskFlw) != 0) {
             a += " flowspec";
+        }
+        if ((i & mskOtrF) != 0) {
+            a += " oflw";
         }
         if ((i & mskVpnU) != 0) {
             a += " vpnuni";
@@ -643,6 +673,9 @@ public abstract class rtrBgpParam {
         if ((i & mskSrte) != 0) {
             a += " srte";
         }
+        if ((i & mskOtrS) != 0) {
+            a += " osrt";
+        }
         if ((i & mskLnks) != 0) {
             a += " linkstate";
         }
@@ -672,6 +705,9 @@ public abstract class rtrBgpParam {
         hl.add(beg + "  labeled       address family to " + end);
         hl.add(beg + "  olab          address family to " + end);
         hl.add(beg + "  ouni          address family to " + end);
+        hl.add(beg + "  omlt          address family to " + end);
+        hl.add(beg + "  oflw          address family to " + end);
+        hl.add(beg + "  osrt          address family to " + end);
         hl.add(beg + "  multicast     address family to " + end);
         hl.add(beg + "  flowspec      address family to " + end);
         hl.add(beg + "  vpnuni        address family to " + end);

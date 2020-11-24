@@ -9476,3 +9476,11 @@ qc pass: olab over srv6 over confed bgp
 qc pass: olab over srv6 over bgp route server
 qc pass: olab over srv6 over bgp with soft-reconfig
 qc pass: olab over srv6 over bgp additional path
+---------------------------------- 2020-11-24 04:45:07
+qc pass: unicast+ouni over ebgp
+qc pass: unicast+ouni over bgp with soft-reconfig
+qc pass: unicast+ouni over bgp with additional path
+qc pass: unicast+ouni over ibgp
+qc pass: unicast+ouni over ibgp rr
+qc pass: unicast+ouni over confed bgp
+qc pass: unicast+ouni over bgp route server
