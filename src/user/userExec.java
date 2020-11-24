@@ -1235,7 +1235,7 @@ public class userExec {
         hl.add("2 3      prefix-list             prefix list statistics");
         hl.add("3 .        <name>                name of list");
         hl.add("2 3      errors                  error reporter");
-        hl.add("3 .        <str>                 email address");
+        hl.add("3 3,.      <str>                 email address");
         hl.add("2 3      bridge                  learnt mac address on a bridge");
         hl.add("3 4,.      <num>                 bridge number");
         hl.add("4 .          <name>              name of interface");
