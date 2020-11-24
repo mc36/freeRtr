@@ -96,9 +96,24 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public final tabRoute<addrIP> lrnMlt = new tabRoute<addrIP>("rx");
 
     /**
-     * learned other prefixes
+     * learned other unicast prefixes
      */
     public final tabRoute<addrIP> lrnOtrU = new tabRoute<addrIP>("rx");
+
+    /**
+     * learned other multicast prefixes
+     */
+    public final tabRoute<addrIP> lrnOtrM = new tabRoute<addrIP>("rx");
+
+    /**
+     * learned other flowspec prefixes
+     */
+    public final tabRoute<addrIP> lrnOtrF = new tabRoute<addrIP>("rx");
+
+    /**
+     * learned other srte prefixes
+     */
+    public final tabRoute<addrIP> lrnOtrS = new tabRoute<addrIP>("rx");
 
     /**
      * learned flowspec prefixes
@@ -186,9 +201,24 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public final tabRoute<addrIP> advMlt = new tabRoute<addrIP>("tx");
 
     /**
-     * advertised other prefixes
+     * advertised other unicast prefixes
      */
     public final tabRoute<addrIP> advOtrU = new tabRoute<addrIP>("tx");
+
+    /**
+     * advertised other multicast prefixes
+     */
+    public final tabRoute<addrIP> advOtrM = new tabRoute<addrIP>("tx");
+
+    /**
+     * advertised other flowspec prefixes
+     */
+    public final tabRoute<addrIP> advOtrF = new tabRoute<addrIP>("tx");
+
+    /**
+     * advertised other srte prefixes
+     */
+    public final tabRoute<addrIP> advOtrS = new tabRoute<addrIP>("tx");
 
     /**
      * advertised flowspec prefixes
@@ -276,9 +306,24 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     private List<tabRouteEntry<addrIP>> currMlt = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
-     * currently updating other prefixes
+     * currently updating other unicast prefixes
      */
     private List<tabRouteEntry<addrIP>> currOtrU = new ArrayList<tabRouteEntry<addrIP>>();
+
+    /**
+     * currently updating other multicast prefixes
+     */
+    private List<tabRouteEntry<addrIP>> currOtrM = new ArrayList<tabRouteEntry<addrIP>>();
+
+    /**
+     * currently updating other flowspec prefixes
+     */
+    private List<tabRouteEntry<addrIP>> currOtrF = new ArrayList<tabRouteEntry<addrIP>>();
+
+    /**
+     * currently updating other srte prefixes
+     */
+    private List<tabRouteEntry<addrIP>> currOtrS = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently updating flowspec prefixes
@@ -736,6 +781,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         lrnUni.clear();
         lrnMlt.clear();
         lrnOtrU.clear();
+        lrnOtrM.clear();
+        lrnOtrF.clear();
+        lrnOtrS.clear();
         lrnFlw.clear();
         lrnVpnU.clear();
         lrnVpnM.clear();
@@ -754,6 +802,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         advUni.clear();
         advMlt.clear();
         advOtrU.clear();
+        advOtrM.clear();
+        advOtrF.clear();
+        advOtrS.clear();
         advFlw.clear();
         advVpnU.clear();
         advVpnM.clear();
@@ -772,6 +823,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.accUni = new tabRoute<addrIP>("rx");
         neigh.accMlt = new tabRoute<addrIP>("rx");
         neigh.accOtrU = new tabRoute<addrIP>("rx");
+        neigh.accOtrM = new tabRoute<addrIP>("rx");
+        neigh.accOtrF = new tabRoute<addrIP>("rx");
+        neigh.accOtrS = new tabRoute<addrIP>("rx");
         neigh.accFlw = new tabRoute<addrIP>("rx");
         neigh.accVpnU = new tabRoute<addrIP>("rx");
         neigh.accVpnM = new tabRoute<addrIP>("rx");
@@ -790,6 +844,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.wilUni = new tabRoute<addrIP>("rx");
         neigh.wilMlt = new tabRoute<addrIP>("rx");
         neigh.wilOtrU = new tabRoute<addrIP>("rx");
+        neigh.wilOtrM = new tabRoute<addrIP>("rx");
+        neigh.wilOtrF = new tabRoute<addrIP>("rx");
+        neigh.wilOtrS = new tabRoute<addrIP>("rx");
         neigh.wilFlw = new tabRoute<addrIP>("rx");
         neigh.wilVpnU = new tabRoute<addrIP>("rx");
         neigh.wilVpnM = new tabRoute<addrIP>("rx");
@@ -808,6 +865,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.chgUni = new tabRoute<addrIP>("chg");
         neigh.chgMlt = new tabRoute<addrIP>("chg");
         neigh.chgOtrU = new tabRoute<addrIP>("chg");
+        neigh.chgOtrM = new tabRoute<addrIP>("chg");
+        neigh.chgOtrF = new tabRoute<addrIP>("chg");
+        neigh.chgOtrS = new tabRoute<addrIP>("chg");
         neigh.chgFlw = new tabRoute<addrIP>("chg");
         neigh.chgVpnU = new tabRoute<addrIP>("chg");
         neigh.chgVpnM = new tabRoute<addrIP>("chg");
@@ -926,6 +986,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         lrnUni.clear();
         lrnMlt.clear();
         lrnOtrU.clear();
+        lrnOtrM.clear();
+        lrnOtrF.clear();
+        lrnOtrS.clear();
         lrnFlw.clear();
         lrnVpnU.clear();
         lrnVpnM.clear();
@@ -944,6 +1007,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         advUni.clear();
         advMlt.clear();
         advOtrU.clear();
+        advOtrM.clear();
+        advOtrF.clear();
+        advOtrS.clear();
         advFlw.clear();
         advVpnU.clear();
         advVpnM.clear();
@@ -962,6 +1028,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.accUni = new tabRoute<addrIP>("rx");
         neigh.accMlt = new tabRoute<addrIP>("rx");
         neigh.accOtrU = new tabRoute<addrIP>("rx");
+        neigh.accOtrM = new tabRoute<addrIP>("rx");
+        neigh.accOtrF = new tabRoute<addrIP>("rx");
+        neigh.accOtrS = new tabRoute<addrIP>("rx");
         neigh.accFlw = new tabRoute<addrIP>("rx");
         neigh.accVpnU = new tabRoute<addrIP>("rx");
         neigh.accVpnM = new tabRoute<addrIP>("rx");
@@ -1524,7 +1593,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @return number
      */
     public int getPrefixGot() {
-        return lrnUni.size() + lrnMlt.size() + lrnOtrU.size() + lrnFlw.size()
+        return lrnUni.size() + lrnMlt.size() + lrnOtrU.size()
+                + lrnOtrM.size() + lrnOtrF.size() + lrnOtrS.size() + lrnFlw.size()
                 + lrnVpnU.size() + lrnVpnM.size() + lrnVpnF.size()
                 + lrnVpoU.size() + lrnVpoM.size() + lrnVpoF.size()
                 + lrnVpls.size() + lrnMspw.size() + lrnEvpn.size()
@@ -1538,7 +1608,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @return number
      */
     public int getPrefixSent() {
-        return advUni.size() + advMlt.size() + advOtrU.size() + advFlw.size()
+        return advUni.size() + advMlt.size() + advOtrU.size()
+                + advOtrM.size() + advOtrF.size() + advOtrS.size() + advFlw.size()
                 + advVpnU.size() + advVpnM.size() + advVpnF.size()
                 + advVpoU.size() + advVpoM.size() + advVpoF.size()
                 + advVpls.size() + advMspw.size() + advEvpn.size()
@@ -1657,6 +1728,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         currUni.clear();
         currMlt.clear();
         currOtrU.clear();
+        currOtrM.clear();
+        currOtrF.clear();
+        currOtrS.clear();
         currFlw.clear();
         currVpnU.clear();
         currVpnM.clear();
@@ -1734,9 +1808,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribed(currOtrU, parent.afiOtrL, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currOtrU, parent.afiOtrU, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribed(currOtrM, parent.afiOtrM, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribed(currOtrF, parent.afiOtrF, ntry, neigh.voumapIn, neigh.voupolIn, null);
-        addAttribed(currOtrS, parent.afiOtrS, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currFlw, parent.afiFlw, ntry, neigh.voumapIn, neigh.voupolIn, null);
+        addAttribed(currOtrF, parent.afiOtrF, ntry, neigh.voumapIn, neigh.voupolIn, null);
+        addAttribed(currSrte, parent.afiSrte, ntry, neigh.voumapIn, neigh.voupolIn, null);
+        addAttribed(currOtrS, parent.afiOtrS, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currVpnU, parent.afiVpnU, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currVpnM, parent.afiVpnM, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currVpnF, parent.afiVpnF, ntry, neigh.voumapIn, neigh.voupolIn, null);
@@ -1747,10 +1822,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribed(currMspw, parent.afiMspw, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currEvpn, parent.afiEvpn, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currMdt, parent.afiMdt, ntry, neigh.voumapIn, neigh.voupolIn, null);
-        addAttribed(currSrte, parent.afiSrte, ntry, neigh.voumapIn, neigh.voupolIn, null);
-        addAttribed(currLnks, parent.afiLnks, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currMvpn, parent.afiMvpn, ntry, neigh.voumapIn, neigh.voupolIn, null);
         addAttribed(currMvpo, parent.afiMvpo, ntry, neigh.voumapIn, neigh.voupolIn, null);
+        addAttribed(currLnks, parent.afiLnks, ntry, neigh.voumapIn, neigh.voupolIn, null);
         if ((currChg > 0) && (rxReady() < (neigh.bufferSize / 4))) {
             parent.compute.wakeup();
         }
