@@ -355,7 +355,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
     }
 
     private servDhcp6bind findBinding(addrMac mac, int create, addrIPv6 hint) {
-        if (hint != null) {
+        if ((hint != null) && (gateway != null) && (netmask != null)) {
             addrIPv6 a1 = new addrIPv6();
             addrIPv6 a2 = new addrIPv6();
             a1.setAnd(gateway, netmask);

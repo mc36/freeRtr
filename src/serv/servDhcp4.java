@@ -447,7 +447,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 return null;
             }
             Collections.sort(bindings, new servDhcp4bindIp());
-            if (hint != null) {
+            if ((hint != null) && (gateway != null) && (netmask != null)) {
                 addrIPv4 a1 = new addrIPv4();
                 addrIPv4 a2 = new addrIPv4();
                 a1.setAnd(gateway, netmask);
