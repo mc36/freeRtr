@@ -1018,6 +1018,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiMvpo) {
             return rtrBgpParam.mskMvpo;
         }
+        logger.info("unknown safi (" + safi + ") requested");
         return -1;
     }
 
@@ -1076,6 +1077,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             case rtrBgpParam.mskMvpo:
                 return afiMvpo;
             default:
+                logger.info("unknown safi (" + mask + ") requested");
                 return -1;
         }
     }
@@ -1236,6 +1238,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiMvpo) {
             return computedMvpo;
         }
+        logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
 
@@ -1315,6 +1318,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiMvpo) {
             return changedMvpo;
         }
+        logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
 

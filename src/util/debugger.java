@@ -349,6 +349,11 @@ public class debugger {
     public static boolean rtrBgpTraf = false;
 
     /**
+     * rtrBgp error
+     */
+    public static boolean rtrBgpError = false;
+
+    /**
      * rtrMsdp events
      */
     public static boolean rtrMsdpEvnt = false;
@@ -1017,6 +1022,7 @@ public class debugger {
         h.add("4 .          incremental     incremental events");
         h.add("4 .          event           table events");
         h.add("4 .          full            full events");
+        h.add("4 .          error           error events");
         h.add("4 .          traffic         interface packets");
         h.add("3 4        msdp              multicast source discovery protocol");
         h.add("4 .          event           table events");
@@ -1514,6 +1520,10 @@ public class debugger {
                 }
                 if (s.equals("full")) {
                     rtrBgpFull = v;
+                    return false;
+                }
+                if (s.equals("error")) {
+                    rtrBgpError = v;
                     return false;
                 }
                 if (s.equals("event")) {

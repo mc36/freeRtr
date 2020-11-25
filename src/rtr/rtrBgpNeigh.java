@@ -1390,6 +1390,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (safi == lower.afiMvpo) {
             return accMvpo;
         }
+        logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
 
@@ -1469,6 +1470,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (safi == lower.afiMvpo) {
             return wilMvpo;
         }
+        logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
 

@@ -681,6 +681,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiMvpo) {
             return lrnMvpo;
         }
+        logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
 
@@ -760,6 +761,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiMvpo) {
             return advMvpo;
         }
+        logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
 
@@ -1421,7 +1423,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 break;
             }
             if (tlv.valTyp != 2) {
-                if (debugger.rtrBgpTraf) {
+                if (debugger.rtrBgpError) {
                     logger.debug("unknown parameter " + tlv.dump());
                 }
                 continue;
@@ -1462,7 +1464,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                             int p = bits.msbGetD(tlv.valDat, i);
                             int o = parent.safi2mask(p);
                             if (o < 1) {
-                                if (debugger.rtrBgpTraf) {
+                                if (debugger.rtrBgpError) {
                                     logger.debug("unknown (" + p + ") afi");
                                 }
                                 continue;
@@ -1502,7 +1504,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         peerRefresh = true;
                         break;
                     default:
-                        if (debugger.rtrBgpTraf) {
+                        if (debugger.rtrBgpError) {
                             logger.debug("unknown capability " + tlv.dump());
                         }
                         break;
@@ -1568,6 +1570,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     public void gotRefresh(int safi) {
         if (!afiMsk(peerAfis, safi)) {
+            if (debugger.rtrBgpError) {
+                logger.debug("got unknown refresh from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+            }
             return;
         }
         refreshRx++;
@@ -1980,6 +1985,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
         }
         if (!afiMsk(peerAfis, safi)) {
+            if (debugger.rtrBgpError) {
+                logger.debug("got unknown withdraw from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+            }
             return;
         }
         if (parent.flaps != null) {
@@ -2016,6 +2024,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
         }
         if (!afiMsk(peerAfis, safi)) {
+            if (debugger.rtrBgpError) {
+                logger.debug("got unknown reachable from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+            }
             return;
         }
         List<tabRouteEntry<addrIP>> trg = null;

@@ -11,6 +11,7 @@ import tab.tabLabelNtry;
 import tab.tabRoute;
 import tab.tabRouteAttr;
 import tab.tabRouteEntry;
+import util.logger;
 
 /**
  * bgp4 update group
@@ -400,6 +401,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiMvpo) {
             return wilMvpo;
         }
+        logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
 
@@ -479,6 +481,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiMvpo) {
             return chgMvpo;
         }
+        logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
 

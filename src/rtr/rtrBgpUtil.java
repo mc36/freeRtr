@@ -2236,7 +2236,7 @@ public class rtrBgpUtil {
                 parseClustList(ntry, pck);
                 break;
             default:
-                if (debugger.rtrBgpTraf) {
+                if (debugger.rtrBgpError) {
                     logger.debug("unknown (" + pck.ETHtype + ") attrib " + pck.dump());
                 }
         }
