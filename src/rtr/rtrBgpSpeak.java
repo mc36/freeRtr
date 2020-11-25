@@ -1338,6 +1338,24 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaAdditionPath, buf);
         }
+        safis = parent.mask2list(neigh.extNextCur & neigh.addrFams);
+        if (safis.size() > 0) {
+            buf = new byte[safis.size() * 6];
+            for (int i = 0; i < safis.size(); i++) {
+                bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
+                bits.msbPutW(buf, (i * 6) + 4, parent.afiUni >>> 16);
+            }
+            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaExtNextHop, buf);
+        }
+        safis = parent.mask2list(neigh.extNextOdr & neigh.addrFams);
+        if (safis.size() > 0) {
+            buf = new byte[safis.size() * 6];
+            for (int i = 0; i < safis.size(); i++) {
+                bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
+                bits.msbPutW(buf, (i * 6) + 4, parent.afiOtrU >>> 16);
+            }
+            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaExtNextHop, buf);
+        }
         safis = parent.mask2list(neigh.graceRestart & neigh.addrFams);
         if (safis.size() > 0) {
             buf = new byte[2 + (safis.size() * 4)];

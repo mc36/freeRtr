@@ -2306,30 +2306,39 @@ public class rtrBgpUtil {
             pck.merge2beg();
             return;
         }
-        if (safi == safiIp4uni) {
-            placeNextHop(pck, hlp, ntry);
+        if (safi != safiIp4uni) {
+            placeReachable(safi, addpath, pck, hlp, lst);
             pck.merge2beg();
             pck.msbPutW(0, 0);
             pck.msbPutW(2, pck.dataSize());
             pck.putSkip(4);
             pck.merge2beg();
-            for (int i = 0; i < lst.size(); i++) {
-                ntry = lst.get(i);
-                if (addpath) {
-                    pck.msbPutD(0, ntry.best.ident);
-                    pck.putSkip(4);
-                }
-                writePrefix(safiIp4uni, pck, ntry);
-            }
-            pck.merge2end();
             return;
         }
-        placeReachable(safi, addpath, pck, hlp, lst);
+        if (!ntry.best.nextHop.isIPv4()) {
+            placeReachable(safi, addpath, pck, hlp, lst);
+            pck.merge2beg();
+            pck.msbPutW(0, 0);
+            pck.msbPutW(2, pck.dataSize());
+            pck.putSkip(4);
+            pck.merge2beg();
+            return;
+        }
+        placeNextHop(pck, hlp, ntry);
         pck.merge2beg();
         pck.msbPutW(0, 0);
         pck.msbPutW(2, pck.dataSize());
         pck.putSkip(4);
         pck.merge2beg();
+        for (int i = 0; i < lst.size(); i++) {
+            ntry = lst.get(i);
+            if (addpath) {
+                pck.msbPutD(0, ntry.best.ident);
+                pck.putSkip(4);
+            }
+            writePrefix(safiIp4uni, pck, ntry);
+        }
+        pck.merge2end();
     }
 
     /**
