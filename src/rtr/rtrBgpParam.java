@@ -193,6 +193,16 @@ public abstract class rtrBgpParam {
     public int graceRestart;
 
     /**
+     * extended nexthop current afi
+     */
+    public int extNextCur;
+
+    /**
+     * extended nexthop other afi
+     */
+    public int extNextOdr;
+
+    /**
      * hostname
      */
     public boolean hostname;
@@ -789,6 +799,8 @@ public abstract class rtrBgpParam {
         bfdTrigger = src.bfdTrigger;
         softReconfig = src.softReconfig;
         graceRestart = src.graceRestart;
+        extNextCur = src.extNextCur;
+        extNextOdr = src.extNextOdr;
         hostname = src.hostname;
         unidirection = src.unidirection;
         compressMode = src.compressMode;
@@ -987,116 +999,120 @@ public abstract class rtrBgpParam {
      * @param l list to append
      */
     public static void getParamHelp(userHelping l) {
-        l.add("3 4       remote-as               remote as number");
-        l.add("4 5,.       <num>                 autonomous system number");
-        l.add("5 .           shutdown            connection disabled for this peer");
-        l.add("3 4       password                set session password");
-        l.add("4 .         <text>                password to use");
-        l.add("3 .       shutdown                connection disabled for this peer");
-        l.add("3 4       description             describe this neighbor");
-        l.add("4 4,.       <name>                description of neighbor");
-        l.add("3 4       update-source           connection source for this peer");
-        l.add("4 .         <name>                name of interface");
-        l.add("3 4       address-family          specify address families");
+        l.add("3 4       remote-as                   remote as number");
+        l.add("4 5,.       <num>                     autonomous system number");
+        l.add("5 .           shutdown                connection disabled for this peer");
+        l.add("3 4       password                    set session password");
+        l.add("4 .         <text>                    password to use");
+        l.add("3 .       shutdown                    connection disabled for this peer");
+        l.add("3 4       description                 describe this neighbor");
+        l.add("4 4,.       <name>                    description of neighbor");
+        l.add("3 4       update-source               connection source for this peer");
+        l.add("4 .         <name>                    name of interface");
+        l.add("3 4       address-family              specify address families");
         getAfiList(l, "4 4,.", "use", true);
-        l.add("3 4       monitor                 bgp monitor protocol for this peer");
-        l.add("4 .         <name>                name of bmp");
-        l.add("3 4       dump                    bgp dump for this peer");
-        l.add("4 .         <name>                name of mrt");
-        l.add("3 4       buffer-size             size of buffer");
-        l.add("4 .         <num>                 bytes in buffer");
-        l.add("3 4       ttl-security            sending ttl value");
-        l.add("4 .         <num>                 ttl value");
-        l.add("3 4       egress-engineering      set egress engineering");
-        l.add("4 .         <num>                 index value");
-        l.add("3 .       capability-negotiation  perform capability negosiation");
-        l.add("3 .       track-next-hop          perform next hop tracking");
-        l.add("3 4       connection-mode         connection mode allowed");
-        l.add("4 .         active                this router will initiate session");
-        l.add("4 .         passive               remote router will initiate session");
-        l.add("4 .         both                  both modes allowed");
-        l.add("3 4       compression             compression mode allowed");
-        l.add("4 .         none                  not allowed");
-        l.add("4 .         receive               receive direction");
-        l.add("4 .         transmit              transmit direction");
-        l.add("4 .         both                  both directions");
-        l.add("3 4       additional-path-rx      additional path receive mode");
+        l.add("3 4       monitor                     bgp monitor protocol for this peer");
+        l.add("4 .         <name>                    name of bmp");
+        l.add("3 4       dump                        bgp dump for this peer");
+        l.add("4 .         <name>                    name of mrt");
+        l.add("3 4       buffer-size                 size of buffer");
+        l.add("4 .         <num>                     bytes in buffer");
+        l.add("3 4       ttl-security                sending ttl value");
+        l.add("4 .         <num>                         ttl value");
+        l.add("3 4       egress-engineering          set egress engineering");
+        l.add("4 .         <num>                     index value");
+        l.add("3 .       capability-negotiation      perform capability negosiation");
+        l.add("3 .       track-next-hop              perform next hop tracking");
+        l.add("3 4       connection-mode             connection mode allowed");
+        l.add("4 .         active                    this router will initiate session");
+        l.add("4 .         passive                   remote router will initiate session");
+        l.add("4 .         both                      both modes allowed");
+        l.add("3 4       compression                 compression mode allowed");
+        l.add("4 .         none                      not allowed");
+        l.add("4 .         receive                   receive direction");
+        l.add("4 .         transmit                  transmit direction");
+        l.add("4 .         both                      both directions");
+        l.add("3 4       additional-path-rx          additional path receive mode");
         getAfiList(l, "4 4,.", "use", true);
-        l.add("3 4       additional-path-tx      additional path transmit mode");
+        l.add("3 4       additional-path-tx          additional path transmit mode");
         getAfiList(l, "4 4,.", "use", true);
-        l.add("3 .       route-reflector-client  reflect routes to this client");
-        l.add("3 .       confederation-peer      confederation peer");
-        l.add("3 .       default-originate       send default route to peer");
-        l.add("3 .       aigp                    send accumulated igp attribute");
-        l.add("3 .       traffeng                send traffic engineering attribute");
-        l.add("3 .       pmsitun                 send provider multicast service interface tunnel attribute");
-        l.add("3 .       tunenc                  send tunnel encapsulation attribute");
-        l.add("3 .       linkstate               send link state attribute");
-        l.add("3 .       attribset               send attribute set attribute");
-        l.add("3 .       label-pop               advertise pop label");
-        l.add("3 .       segrout                 send segment routing attribute");
-        l.add("3 .       bier                    send bier attribute");
-        l.add("3 .       internal-vpn-client     preserve attributes from peer");
-        l.add("3 .       allow-as-in             allow my as to relearn from peer");
-        l.add("3 .       allow-as-out            allow peer as to advertised out");
-        l.add("3 .       enforce-first-as        discard unprepended aspath from peer");
-        l.add("3 .       route-server-client     unmodified attributes to this client");
-        l.add("3 .       remove-private-as-out   remove private as to peer");
-        l.add("3 .       ungroup-remoteas        consider remote asn while grouping peers");
-        l.add("3 .       remove-private-as-in    remove private as from peer");
-        l.add("3 .       override-peer-as-out    replace peer as to peer");
-        l.add("3 .       override-peer-as-in     replace peer as from peer");
-        l.add("3 .       next-hop-unchanged      send next hop unchanged to peer");
-        l.add("3 .       next-hop-self           send next hop myself to peer");
-        l.add("3 .       next-hop-peer           set next hop to peer address");
-        l.add("3 .       bfd                     enable bfd triggered down");
-        l.add("3 4       graceful-restart        advertise graceful restart capability");
+        l.add("3 .       route-reflector-client      reflect routes to this client");
+        l.add("3 .       confederation-peer          confederation peer");
+        l.add("3 .       default-originate           send default route to peer");
+        l.add("3 .       aigp                        send accumulated igp attribute");
+        l.add("3 .       traffeng                    send traffic engineering attribute");
+        l.add("3 .       pmsitun                     send provider multicast service interface tunnel attribute");
+        l.add("3 .       tunenc                      send tunnel encapsulation attribute");
+        l.add("3 .       linkstate                   send link state attribute");
+        l.add("3 .       attribset                   send attribute set attribute");
+        l.add("3 .       label-pop                   advertise pop label");
+        l.add("3 .       segrout                     send segment routing attribute");
+        l.add("3 .       bier                        send bier attribute");
+        l.add("3 .       internal-vpn-client         preserve attributes from peer");
+        l.add("3 .       allow-as-in                 allow my as to relearn from peer");
+        l.add("3 .       allow-as-out                allow peer as to advertised out");
+        l.add("3 .       enforce-first-as            discard unprepended aspath from peer");
+        l.add("3 .       route-server-client         unmodified attributes to this client");
+        l.add("3 .       remove-private-as-out       remove private as to peer");
+        l.add("3 .       ungroup-remoteas            consider remote asn while grouping peers");
+        l.add("3 .       remove-private-as-in        remove private as from peer");
+        l.add("3 .       override-peer-as-out        replace peer as to peer");
+        l.add("3 .       override-peer-as-in         replace peer as from peer");
+        l.add("3 .       next-hop-unchanged          send next hop unchanged to peer");
+        l.add("3 .       next-hop-self               send next hop myself to peer");
+        l.add("3 .       next-hop-peer               set next hop to peer address");
+        l.add("3 .       bfd                         enable bfd triggered down");
+        l.add("3 4       graceful-restart            advertise graceful restart capability");
         getAfiList(l, "4 4,.", "use", true);
-        l.add("3 .       hostname                advertise hostname capability");
-        l.add("3 .       unidirection            not advertise when receiving");
-        l.add("3 .       fall-over               track outgoing interface");
-        l.add("3 .       soft-reconfiguration    enable soft reconfiguration");
-        l.add("3 4       maximum-prefix          maximum number of accepted prefixes");
-        l.add("4 5         <num>                 prefix count");
-        l.add("5 .           <num>               warning percent");
-        l.add("3 4       send-community          send community to peer");
-        l.add("4 4,.       standard              send standard community");
-        l.add("4 4,.       extended              send extended community");
-        l.add("4 4,.       large                 send large community");
-        l.add("4 4,.       both                  send std+ext communities");
-        l.add("4 4,.       all                   send std+ext+lrg communities");
-        l.add("4 4,.       none                  send no community");
-        l.add("3 4       local-as                local as number");
-        l.add("4 .         <num>                 autonomous system number");
-        l.add("3 4       advertisement-interval  time between sending updates");
-        l.add("4 .         <num>                 interval in ms");
-        l.add("3 4       dmz-link-bw             set dmz link bandwidth");
-        l.add("4 .         <num>                 link bandwidth in kb");
-        l.add("3 4       timer                   neighbor keepalive times");
-        l.add("4 5         <num>                 keepalive in ms");
-        l.add("5 .           <num>               hold time in ms");
-        l.add("3 4       distance                administrative distance of routes");
-        l.add("4 .         <num>                 set administrative distance");
-        l.add("3 4       route-map-in            process prefixes in ingress updates");
-        l.add("4 .         <name>                name of route map");
-        l.add("3 4       route-map-out           process prefixes in egress updates");
-        l.add("4 .         <name>                name of route map");
-        l.add("3 4       route-policy-in         process prefixes in ingress updates");
-        l.add("4 .         <name>                name of route policy");
-        l.add("3 4       route-policy-out        process prefixes in egress updates");
-        l.add("4 .         <name>                name of route policy");
-        l.add("3 4       prefix-list-in          filter prefixes in ingress updates");
-        l.add("4 .         <name>                name of prefix list");
-        l.add("3 4       prefix-list-out         filter prefixes in egress updates");
-        l.add("4 .         <name>                name of prefix list");
-        l.add("3 4       route-map-vin           process vpn prefixes in ingress updates");
-        l.add("4 .         <name>                name of route map");
-        l.add("3 4       route-map-vout          process vpn prefixes in egress updates");
-        l.add("4 .         <name>                name of route map");
-        l.add("3 4       route-policy-vin        process vpn prefixes in ingress updates");
-        l.add("4 .         <name>                name of route policy");
-        l.add("3 4       route-policy-vout       process vpn prefixes in egress updates");
-        l.add("4 .         <name>                name of route policy");
+        l.add("3 4       extended-nexthop-current    advertise extended nexthop capability");
+        getAfiList(l, "4 4,.", "use", true);
+        l.add("3 4       extended-nexthop-other      advertise extended nexthop capability");
+        getAfiList(l, "4 4,.", "use", true);
+        l.add("3 .       hostname                    advertise hostname capability");
+        l.add("3 .       unidirection                not advertise when receiving");
+        l.add("3 .       fall-over                   track outgoing interface");
+        l.add("3 .       soft-reconfiguration        enable soft reconfiguration");
+        l.add("3 4       maximum-prefix              maximum number of accepted prefixes");
+        l.add("4 5         <num>                     prefix count");
+        l.add("5 .           <num>                   warning percent");
+        l.add("3 4       send-community              send community to peer");
+        l.add("4 4,.       standard                  send standard community");
+        l.add("4 4,.       extended                  send extended community");
+        l.add("4 4,.       large                     send large community");
+        l.add("4 4,.       both                      send std+ext communities");
+        l.add("4 4,.       all                       send std+ext+lrg communities");
+        l.add("4 4,.       none                      send no community");
+        l.add("3 4       local-as                    local as number");
+        l.add("4 .         <num>                     autonomous system number");
+        l.add("3 4       advertisement-interval      time between sending updates");
+        l.add("4 .         <num>                     interval in ms");
+        l.add("3 4       dmz-link-bw                 set dmz link bandwidth");
+        l.add("4 .         <num>                     link bandwidth in kb");
+        l.add("3 4       timer                       neighbor keepalive times");
+        l.add("4 5         <num>                     keepalive in ms");
+        l.add("5 .           <num>                   hold time in ms");
+        l.add("3 4       distance                    administrative distance of routes");
+        l.add("4 .         <num>                     set administrative distance");
+        l.add("3 4       route-map-in                process prefixes in ingress updates");
+        l.add("4 .         <name>                    name of route map");
+        l.add("3 4       route-map-out               process prefixes in egress updates");
+        l.add("4 .         <name>                    name of route map");
+        l.add("3 4       route-policy-in             process prefixes in ingress updates");
+        l.add("4 .         <name>                    name of route policy");
+        l.add("3 4       route-policy-out            process prefixes in egress updates");
+        l.add("4 .         <name>                    name of route policy");
+        l.add("3 4       prefix-list-in              filter prefixes in ingress updates");
+        l.add("4 .         <name>                    name of prefix list");
+        l.add("3 4       prefix-list-out             filter prefixes in egress updates");
+        l.add("4 .         <name>                    name of prefix list");
+        l.add("3 4       route-map-vin               process vpn prefixes in ingress updates");
+        l.add("4 .         <name>                    name of route map");
+        l.add("3 4       route-map-vout              process vpn prefixes in egress updates");
+        l.add("4 .         <name>                    name of route map");
+        l.add("3 4       route-policy-vin            process vpn prefixes in ingress updates");
+        l.add("4 .         <name>                    name of route policy");
+        l.add("3 4       route-policy-vout           process vpn prefixes in egress updates");
+        l.add("4 .         <name>                    name of route policy");
     }
 
     /**
@@ -1175,6 +1191,8 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !ungrpRemAs, beg, nei + "ungroup-remoteas", "");
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
         l.add(beg + nei + "graceful-restart" + mask2string(graceRestart));
+        l.add(beg + nei + "extended-nexthop-current" + mask2string(extNextCur));
+        l.add(beg + nei + "extended-nexthop-other" + mask2string(extNextOdr));
         cmds.cfgLine(l, !hostname, beg, nei + "hostname", "");
         cmds.cfgLine(l, !unidirection, beg, nei + "unidirection", "");
         cmds.cfgLine(l, !fallOver, beg, nei + "fall-over", "");
@@ -1416,6 +1434,20 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("soft-reconfiguration")) {
             softReconfig = !negated;
+            return false;
+        }
+        if (s.equals("extended-nexthop-current")) {
+            extNextCur = rtrBgpParam.string2mask(cmd);
+            if (negated) {
+                extNextCur = 0;
+            }
+            return false;
+        }
+        if (s.equals("extended-nexthop-other")) {
+            extNextOdr = rtrBgpParam.string2mask(cmd);
+            if (negated) {
+                extNextOdr = 0;
+            }
             return false;
         }
         if (s.equals("graceful-restart")) {

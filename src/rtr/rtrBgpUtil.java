@@ -1068,7 +1068,7 @@ public class rtrBgpUtil {
      * @return address read, null if nothing
      */
     public static tabRouteEntry<addrIP> readPrefix(int safi, boolean oneLab, packHolder pck) {
-        final int sfi = safi & safiMask;
+        int sfi = safi & safiMask;
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         int i;
         int p = 0;
@@ -1217,7 +1217,7 @@ public class rtrBgpUtil {
      * @param ntry prefix to write
      */
     public static void writePrefix(int safi, packHolder pck, tabRouteEntry<addrIP> ntry) {
-        final int sfi = safi & safiMask;
+        int sfi = safi & safiMask;
         byte[] buf2;
         int i;
         switch (safi & afiMask) {
@@ -1390,27 +1390,6 @@ public class rtrBgpUtil {
                 break;
             default:
                 break;
-        }
-    }
-
-    /**
-     * get size of address
-     *
-     * @param safi safi to use
-     * @return size of address
-     */
-    public static int addressSize(int safi) {
-        switch (safi & afiMask) {
-            case afiIpv4:
-            case afiL2vpn4:
-            case afiLnks4:
-                return addrIPv4.size;
-            case afiIpv6:
-            case afiL2vpn6:
-            case afiLnks6:
-                return addrIPv6.size;
-            default:
-                return 0;
         }
     }
 
@@ -1938,20 +1917,30 @@ public class rtrBgpUtil {
      */
     public static void parseReachable(rtrBgpSpeak lower, packHolder pck) {
         int safi = triplet2safi(pck.msbGetD(0));
+        int sfi = safi & safiMask;
         int len = pck.getByte(3);
+        boolean v6nh = len >= addrIPv6.size;
         pck.getSkip(4);
         len = pck.dataSize() - len;
         addrIP nextHop = null;
         for (; pck.dataSize() > len;) {
-            int sfi = safi & safiMask;
             if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM)) {
                 pck.getSkip(8); // rd
             }
-            addrIP adr = readAddress(safi, pck);
+            addrIP adr;
+            if (v6nh) {
+                adr = readAddress(afiIpv6, pck);
+            } else {
+                adr = readAddress(afiIpv4, pck);
+            }
             if (adr == null) {
                 continue;
             }
-            if (adr.isIPv4()) {
+            if (nextHop == null) {
+                nextHop = adr;
+                continue;
+            }
+            if (!v6nh) {
                 addrIPv4 adr4 = adr.toIPv4();
                 if (adr4.isFilled(0)) {
                     continue;
@@ -2800,20 +2789,30 @@ public class rtrBgpUtil {
      * @param lst list of table entries
      */
     public static void placeReachable(int safi, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
-        final int sfi = safi & safiMask;
-        int i = 0;
+        int afi = safi & afiMask;
+        int sfi = safi & safiMask;
+        addrIP nextHop = lst.get(0).best.nextHop;
+        boolean v6nh = (afi == afiIpv6) || (afi == afiL2vpn6) || (afi == afiLnks6);
+        if (!v6nh) {
+            v6nh = !nextHop.isIPv4();
+        }
+        int i = v6nh ? addrIPv6.size : addrIPv4.size;
         if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM)) {
-            i = 8;
+            i += 8;
         }
         hlp.clear();
         hlp.msbPutD(0, safi2triplet(safi));
-        hlp.putByte(3, addressSize(safi) + i);
+        hlp.putByte(3, i);
         hlp.putSkip(4);
         if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM)) {
             hlp.msbPutQ(0, 0); // rd
             hlp.putSkip(8);
         }
-        writeAddress(safi, hlp, lst.get(0).best.nextHop);
+        if (v6nh) {
+            writeAddress(afiIpv6, hlp, nextHop);
+        } else {
+            writeAddress(afiIpv4, hlp, nextHop);
+        }
         hlp.putByte(0, 0);
         hlp.putSkip(1);
         for (i = 0; i < lst.size(); i++) {
