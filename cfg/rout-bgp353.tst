@@ -14,8 +14,10 @@ int lo0
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
+ ipv6 addr 1234:1::1 ffff:ffff::
  mpls ena
  mpls ldp4
+ mpls ldp6
  exit
 router bgp4 1
  vrf v1
@@ -23,7 +25,15 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.3 remote-as 3
- red conn
+ afi-other ena
+ afi-other red conn
+ exit
+router bgp6 1
+ vrf v1
+ address uni olab
+ local-as 1
+ router-id 6.6.6.1
+ neigh 1234:1::3 remote-as 3
  afi-other ena
  afi-other red conn
  exit
@@ -43,8 +53,10 @@ int lo0
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
+ ipv6 addr 1234:1::2 ffff:ffff::
  mpls ena
  mpls ldp4
+ mpls ldp6
  exit
 router bgp4 1
  vrf v1
@@ -53,6 +65,15 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.3 remote-as 3
  red conn
+ afi-other ena
+ afi-other red conn
+ exit
+router bgp6 1
+ vrf v1
+ address uni olab
+ local-as 2
+ router-id 6.6.6.2
+ neigh 1234:1::3 remote-as 3
  afi-other ena
  afi-other red conn
  exit
@@ -77,6 +98,7 @@ int eth2
 int bvi1
  vrf for v1
  ipv4 addr 1.1.1.3 255.255.255.0
+ ipv6 addr 1234:1::3 ffff:ffff::
  exit
 router bgp4 1
  vrf v1
@@ -87,7 +109,18 @@ router bgp4 1
  neigh 1.1.1.1 route-server
  neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 route-server
- red conn
+ afi-other ena
+ afi-other red conn
+ exit
+router bgp6 1
+ vrf v1
+ address uni olab
+ local-as 3
+ router-id 6.6.6.3
+ neigh 1234:1::1 remote-as 1
+ neigh 1234:1::1 route-server
+ neigh 1234:1::2 remote-as 2
+ neigh 1234:1::2 route-server
  afi-other ena
  afi-other red conn
  exit
