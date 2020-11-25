@@ -492,7 +492,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("fallover = " + sendingIfc);
         l.add("update group = " + groupMember);
         l.add("type = " + rtrBgpUtil.peerType2string(peerType));
-        l.add("safi = " + rtrBgpParam.mask2string(conn.peerAfis));
+        l.add("safi open = " + rtrBgpParam.mask2string(conn.peerAfis));
+        l.add("safi got = " + rtrBgpParam.mask2string(conn.originalSafiList));
+        l.add("safi not remote = " + rtrBgpParam.mask2string(addrFams - conn.peerAfis));
+        l.add("safi not local = " + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis));
         l.add("local = " + localAddr + " other = " + localOddr);
         l.add("router id = " + conn.peerRouterID);
         l.add("uptime = " + bits.timePast(conn.upTime) + " ago, at " + bits.time2str(cfgAll.timeZoneName, conn.upTime + cfgAll.timeServerOffset, 3));
@@ -504,8 +507,14 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("hostname = " + conn.peerHostname);
         l.add("compression = rx=" + (conn.compressRx != null) + ", tx=" + (conn.compressTx != null));
         l.add("graceful = " + rtrBgpParam.mask2string(conn.peerGrace));
-        l.add("addpath rx = " + rtrBgpParam.mask2string(conn.addpathRx));
-        l.add("addpath tx = " + rtrBgpParam.mask2string(conn.addpathTx));
+        l.add("addpath rx open = " + rtrBgpParam.mask2string(conn.addpathRx));
+        l.add("addpath tx open = " + rtrBgpParam.mask2string(conn.addpathTx));
+        l.add("addpath rx got = " + rtrBgpParam.mask2string(conn.originalAddRlist));
+        l.add("addpath tx got = " + rtrBgpParam.mask2string(conn.originalAddTlist));
+        l.add("addpath rx not remote = " + rtrBgpParam.mask2string(addpathRmode - conn.addpathRx));
+        l.add("addpath tx not remote = " + rtrBgpParam.mask2string(addpathTmode - conn.addpathTx));
+        l.add("addpath rx not local = " + rtrBgpParam.mask2string(conn.originalAddRlist - conn.addpathRx));
+        l.add("addpath tx not local = " + rtrBgpParam.mask2string(conn.originalAddTlist - conn.addpathTx));
         l.add("unicast advertised = " + conn.advUni.size() + " of " + wilUni.size() + ", list = " + chgUni.size() + ", accepted = " + accUni.size() + " of " + conn.lrnUni.size());
         l.add("multicast advertised = " + conn.advMlt.size() + " of " + wilMlt.size() + ", list = " + chgMlt.size() + ", accepted = " + accMlt.size() + " of " + conn.lrnMlt.size());
         l.add("ouni advertised = " + conn.advOtrU.size() + " of " + wilOtrU.size() + ", list = " + chgOtrU.size() + ", accepted = " + accOtrU.size() + " of " + conn.lrnOtrU.size());
@@ -1489,7 +1498,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public String showSummary(int mod) {
         switch (mod) {
             case 1:
-                return bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerAfis) + "|" + peerAddr + "|" + bits.timePast(conn.upTime);
+                return bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerAfis) + "|" + rtrBgpParam.mask2string(addrFams - conn.peerAfis) + "|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis) + "|" + peerAddr;
             case 2:
                 return bits.num2str(remoteAs) + "|" + groupMember + "|" + peerAddr + "|" + bits.timePast(conn.upTime);
             case 3:
@@ -1497,7 +1506,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             case 4:
                 return bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerGrace) + "|" + rtrBgpParam.mask2string(graceRestart & addrFams) + "|" + peerAddr;
             case 5:
-                return bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.addpathTx) + "|" + peerAddr;
+                return bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.addpathTx) + "|" + rtrBgpParam.mask2string(addpathRmode - conn.addpathRx) + "|" + rtrBgpParam.mask2string(addpathTmode - conn.addpathTx) + "|" + rtrBgpParam.mask2string(conn.originalAddRlist - conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.originalAddTlist - conn.addpathTx) + "|" + peerAddr;
             case 6:
                 return bits.num2str(remoteAs) + "|" + conn.peerRouterID + "|" + conn.peer32bitAS + "|" + conn.peerRefresh + "|" + rtrBgpUtil.peerType2string(peerType) + "|" + peerAddr;
             case 7:

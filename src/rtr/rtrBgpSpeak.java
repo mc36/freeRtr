@@ -485,6 +485,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     public counter compressCntr = new counter();
 
+    /**
+     * safi list sent by the peer
+     */
+    public int originalSafiList;
+
+    /**
+     * addpath list sent by the peer
+     */
+    public int originalAddRlist;
+
+    /**
+     * addpath list sent by the peer
+     */
+    public int originalAddTlist;
+
     private packHolder pckRx = new packHolder(true, true);
 
     private packHolder pckRh = new packHolder(true, true);
@@ -1406,6 +1421,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 break;
             }
             if (tlv.valTyp != 2) {
+                if (debugger.rtrBgpTraf) {
+                    logger.debug("unknown parameter " + tlv.dump());
+                }
                 continue;
             }
             packHolder pck2 = new packHolder(true, true);
@@ -1441,9 +1459,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     case rtrBgpUtil.capaMultiProto:
                         mpGot = true;
                         for (i = 0; i < tlv.valSiz; i += 4) {
-                            int o = bits.msbGetD(tlv.valDat, i);
-                            o = parent.safi2mask(o);
+                            int p = bits.msbGetD(tlv.valDat, i);
+                            int o = parent.safi2mask(p);
                             if (o < 1) {
+                                if (debugger.rtrBgpTraf) {
+                                    logger.debug("unknown (" + p + ") afi");
+                                }
                                 continue;
                             }
                             peerAfis |= o;
@@ -1480,6 +1501,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     case rtrBgpUtil.capaRouteRefresh:
                         peerRefresh = true;
                         break;
+                    default:
+                        if (debugger.rtrBgpTraf) {
+                            logger.debug("unknown capability " + tlv.dump());
+                        }
+                        break;
                 }
             }
         }
@@ -1500,6 +1526,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 compressTx = new Deflater();
             }
         }
+        originalSafiList = peerAfis;
+        originalAddRlist = addpathRx;
+        originalAddTlist = addpathTx;
         peerAfis &= neigh.addrFams;
         if (peerAfis == 0) {
             logger.info("neighbor " + neigh.peerAddr + " in wrong safi");
