@@ -4916,7 +4916,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().getShBsum());
                 break;
             case 3:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + (vrfFor == null ? "n/a" : vrfFor.name));
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getBandwidth() + "|" + (vrfFor == null ? "n/a" : vrfFor.name));
                 break;
             case 4:
                 if (addr4 == null) {

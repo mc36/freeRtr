@@ -2974,7 +2974,7 @@ public class cfgAll {
                 l = new userFormat("|", "interface|state|tx|rx|drop");
                 break;
             case 3:
-                l = new userFormat("|", "interface|state|vrf");
+                l = new userFormat("|", "interface|state|bandwidth|vrf");
                 break;
             case 4:
             case 5:
