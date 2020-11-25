@@ -64,7 +64,6 @@ router bgp4 1
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.3 remote-as 3
- red conn
  afi-other ena
  afi-other red conn
  exit
