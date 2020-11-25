@@ -200,7 +200,7 @@ public abstract class rtrBgpParam {
     /**
      * extended nexthop other afi
      */
-    public int extNextOdr;
+    public int extNextOtr;
 
     /**
      * hostname
@@ -800,7 +800,7 @@ public abstract class rtrBgpParam {
         softReconfig = src.softReconfig;
         graceRestart = src.graceRestart;
         extNextCur = src.extNextCur;
-        extNextOdr = src.extNextOdr;
+        extNextOtr = src.extNextOtr;
         hostname = src.hostname;
         unidirection = src.unidirection;
         compressMode = src.compressMode;
@@ -1192,7 +1192,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
         l.add(beg + nei + "graceful-restart" + mask2string(graceRestart));
         l.add(beg + nei + "extended-nexthop-current" + mask2string(extNextCur));
-        l.add(beg + nei + "extended-nexthop-other" + mask2string(extNextOdr));
+        l.add(beg + nei + "extended-nexthop-other" + mask2string(extNextOtr));
         cmds.cfgLine(l, !hostname, beg, nei + "hostname", "");
         cmds.cfgLine(l, !unidirection, beg, nei + "unidirection", "");
         cmds.cfgLine(l, !fallOver, beg, nei + "fall-over", "");
@@ -1444,9 +1444,9 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("extended-nexthop-other")) {
-            extNextOdr = rtrBgpParam.string2mask(cmd);
+            extNextOtr = rtrBgpParam.string2mask(cmd);
             if (negated) {
-                extNextOdr = 0;
+                extNextOtr = 0;
             }
             return false;
         }

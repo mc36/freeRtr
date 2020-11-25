@@ -456,6 +456,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public int peerGrace;
 
     /**
+     * peer extended nexthop capability
+     */
+    public int peerExtNextCur;
+
+    /**
+     * peer extended nexthop capability
+     */
+    public int peerExtNextOtr;
+
+    /**
      * peer hostname capability
      */
     public String peerHostname;
@@ -1347,7 +1357,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaExtNextHop, buf);
         }
-        safis = parent.mask2list(neigh.extNextOdr & neigh.addrFams);
+        safis = parent.mask2list(neigh.extNextOtr & neigh.addrFams);
         if (safis.size() > 0) {
             buf = new byte[safis.size() * 6];
             for (int i = 0; i < safis.size(); i++) {
@@ -1501,6 +1511,22 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                             peerGrace |= o;
                         }
                         break;
+                    case rtrBgpUtil.capaExtNextHop:
+                        for (i = 0; i < tlv.valSiz; i += 6) {
+                            int o = bits.msbGetD(tlv.valDat, i + 0);
+                            int p = bits.msbGetW(tlv.valDat, i + 4);
+                            o = parent.safi2mask(o);
+                            if (o < 1) {
+                                continue;
+                            }
+                            if (p == (parent.afiUni >>> 16)) {
+                                peerExtNextCur |= o;
+                            }
+                            if (p == (parent.afiOtrU >>> 16)) {
+                                peerExtNextOtr |= o;
+                            }
+                        }
+                        break;
                     case rtrBgpUtil.capaAdditionPath:
                         for (i = 0; i < tlv.valSiz; i += 4) {
                             int o = bits.msbGetD(tlv.valDat, i);
@@ -1537,7 +1563,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (!neigh.capaNego) {
             peerAfis = neigh.addrFams;
-            peerGrace = neigh.addrFams;
+            peerGrace = neigh.graceRestart;
+            peerExtNextCur = neigh.extNextCur;
+            peerExtNextOtr = neigh.extNextOtr;
             addpathRx = neigh.addpathRmode;
             addpathTx = neigh.addpathTmode;
             peerRefresh = true;

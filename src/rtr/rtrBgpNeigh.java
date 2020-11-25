@@ -507,6 +507,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("hostname = " + conn.peerHostname);
         l.add("compression = rx=" + (conn.compressRx != null) + ", tx=" + (conn.compressTx != null));
         l.add("graceful = " + rtrBgpParam.mask2string(conn.peerGrace));
+        l.add("extnexthop cur = " + rtrBgpParam.mask2string(conn.peerExtNextCur));
+        l.add("extnexthop otr = " + rtrBgpParam.mask2string(conn.peerExtNextOtr));
         l.add("addpath rx open = " + rtrBgpParam.mask2string(conn.addpathRx));
         l.add("addpath tx open = " + rtrBgpParam.mask2string(conn.addpathTx));
         l.add("addpath rx got = " + rtrBgpParam.mask2string(conn.originalAddRlist));
