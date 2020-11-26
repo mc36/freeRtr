@@ -84,14 +84,9 @@ public class rtrBgpUtil {
     public final static int afiL2vpn6 = 0x07190000;
 
     /**
-     * linkstate4 address family
+     * linkstate address family
      */
-    public final static int afiLnks4 = 0x40040000;
-
-    /**
-     * linkstate6 address family
-     */
-    public final static int afiLnks6 = 0x47040000;
+    public final static int afiLnks = 0x40040000;
 
     /**
      * address family mask
@@ -294,24 +289,14 @@ public class rtrBgpUtil {
     public final static int safiIp6mdt = afiIpv6 | safiMdt;
 
     /**
-     * ipv4 link state address family
+     * ipv4/ipv6 link state address family
      */
-    public final static int safiIp4lnks = afiLnks4 | safiLnkSt;
+    public final static int safiIp46lnks = afiLnks | safiLnkSt;
 
     /**
-     * ipv6 link state address family
+     * ipv4/ipv6 vpn link state address family
      */
-    public final static int safiIp6lnks = afiLnks6 | safiLnkSt;
-
-    /**
-     * ipv4 vpn link state address family
-     */
-    public final static int safiIp4vpnL = afiLnks4 | safiVpnLnkSt;
-
-    /**
-     * ipv6 vpn link state address family
-     */
-    public final static int safiIp6vpnL = afiLnks6 | safiVpnLnkSt;
+    public final static int safiIp46vpnL = afiLnks | safiVpnLnkSt;
 
     /**
      * ipv4 srte address family
@@ -1233,8 +1218,7 @@ public class rtrBgpUtil {
                 i = a6.maskLen;
                 buf2 = a6.network.getBytes();
                 break;
-            case afiLnks4:
-            case afiLnks6:
+            case afiLnks:
                 buf2 = new byte[0];
                 i = 0;
                 break;
@@ -1346,7 +1330,6 @@ public class rtrBgpUtil {
         switch (safi & afiMask) {
             case afiIpv4:
             case afiL2vpn4:
-            case afiLnks4:
                 addrIPv4 a4 = new addrIPv4();
                 pck.getAddr(a4, 0);
                 pck.getSkip(addrIPv4.size);
@@ -1354,7 +1337,6 @@ public class rtrBgpUtil {
                 return ax;
             case afiIpv6:
             case afiL2vpn6:
-            case afiLnks6:
                 addrIPv6 a6 = new addrIPv6();
                 pck.getAddr(a6, 0);
                 pck.getSkip(addrIPv6.size);
@@ -1376,14 +1358,12 @@ public class rtrBgpUtil {
         switch (safi & afiMask) {
             case afiIpv4:
             case afiL2vpn4:
-            case afiLnks4:
                 addrIPv4 a4 = addr.toIPv4();
                 pck.putAddr(0, a4);
                 pck.putSkip(addrIPv4.size);
                 break;
             case afiIpv6:
             case afiL2vpn6:
-            case afiLnks6:
                 addrIPv6 a6 = addr.toIPv6();
                 pck.putAddr(0, a6);
                 pck.putSkip(addrIPv6.size);
@@ -1403,11 +1383,9 @@ public class rtrBgpUtil {
         switch (safi & afiMask) {
             case afiIpv4:
             case afiL2vpn4:
-            case afiLnks4:
                 return addrPrefix.ip4toIP(addrPrefix.defaultRoute4());
             case afiIpv6:
             case afiL2vpn6:
-            case afiLnks6:
                 return addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
             default:
                 return null;
@@ -1526,14 +1504,10 @@ public class rtrBgpUtil {
                 return "srte4";
             case safiIp6srte:
                 return "srte6";
-            case safiIp4lnks:
-                return "linkstate4";
-            case safiIp6lnks:
-                return "linkstate6";
-            case safiIp4vpnL:
-                return "ip4vpnL";
-            case safiIp6vpnL:
-                return "ip6vpnL";
+            case safiIp46lnks:
+                return "linkstate";
+            case safiIp46vpnL:
+                return "vpnLnkst";
             case safiIp4mvpn:
                 return "mvpn4";
             case safiIp6mvpn:
@@ -2801,7 +2775,7 @@ public class rtrBgpUtil {
         int afi = safi & afiMask;
         int sfi = safi & safiMask;
         addrIP nextHop = lst.get(0).best.nextHop;
-        boolean v6nh = (afi == afiIpv6) || (afi == afiL2vpn6) || (afi == afiLnks6);
+        boolean v6nh = (afi == afiIpv6) || (afi == afiL2vpn6);
         if (!v6nh) {
             v6nh = !nextHop.isIPv4();
         }
