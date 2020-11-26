@@ -1029,7 +1029,7 @@ public class rtrOspf6 extends ipRtr {
                 adr.fromIPv6addr(nei.peer);
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, 0, ntry, true, null, null, routerAutoMesh);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.sfiUnicast, 0, ntry, true, null, null, routerAutoMesh);
             }
         }
     }

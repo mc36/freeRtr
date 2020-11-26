@@ -124,7 +124,7 @@ public class rtrRip6 extends ipRtr implements prtServP {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.conn.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.safiUnicast, 0, ntry, true, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.sfiUnicast, 0, ntry, true, null, null, routerAutoMesh);
         }
     }
 
@@ -354,7 +354,7 @@ public class rtrRip6 extends ipRtr implements prtServP {
             }
             tab.mergeFrom(tabRoute.addType.ecmp, nei.learned, null, true, tabRouteAttr.distanLim);
         }
-        routerDoAggregates(rtrBgpUtil.safiUnicast, tab, null, fwdCore.commonLabel, 0, null, 0);
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab, null, fwdCore.commonLabel, 0, null, 0);
         tab.setProto(routerProtoTyp, routerProcNum);
         tab.preserveTime(routerComputedU);
         routerComputedU = tab;

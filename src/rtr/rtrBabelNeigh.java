@@ -152,9 +152,9 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
                         logger.debug("rxnet " + ntry);
                     }
                     if (ntry.best.metric >= 0xffff) {
-                        tabRoute.delUpdatedEntry(learned, rtrBgpUtil.safiUnicast, 0, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+                        tabRoute.delUpdatedEntry(learned, rtrBgpUtil.sfiUnicast, 0, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     } else {
-                        tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, 0, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+                        tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.sfiUnicast, 0, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     }
                     break;
                 case rtrBabel.tlvRouReq:

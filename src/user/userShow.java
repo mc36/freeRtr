@@ -2547,7 +2547,7 @@ public class userShow {
         for (int o = 0; o < nei1.size(); o++) {
             tabRouteEntry<addrIP> prf1 = nei1.get(o);
             if (flt != null) {
-                if (flt.matches(rtrBgpUtil.safiUnicast, 0, prf1)) {
+                if (flt.matches(rtrBgpUtil.sfiUnicast, 0, prf1)) {
                     continue;
                 }
             }
@@ -2558,7 +2558,7 @@ public class userShow {
                 continue;
             }
             if (flt != null) {
-                if (flt.matches(rtrBgpUtil.safiUnicast, 0, prf2)) {
+                if (flt.matches(rtrBgpUtil.sfiUnicast, 0, prf2)) {
                     continue;
                 }
             }

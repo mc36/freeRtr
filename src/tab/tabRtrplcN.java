@@ -622,7 +622,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case afi:
                 return intMatch.matches(afi & rtrBgpUtil.afiMask);
             case safi:
-                return intMatch.matches(afi & rtrBgpUtil.safiMask);
+                return intMatch.matches(afi & rtrBgpUtil.sfiMask);
             case nexthop:
                 if (net.best.nextHop == null) {
                     return false;
@@ -634,7 +634,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     }
 
     public boolean matches(packHolder pck) {
-        return matches(rtrBgpUtil.safiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
+        return matches(rtrBgpUtil.sfiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
     private void doUpdate(tabRouteAttr<addrIP> attr) {

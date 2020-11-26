@@ -641,7 +641,7 @@ public class userPacket {
             cmd.error("sending " + prf + " network with attrib " + bits.byteDump(buf, 0, -1));
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = prf.copyBytes();
-            rmp.roumap.update(rtrBgpUtil.safiUnicast, 0, ntry, false);
+            rmp.roumap.update(rtrBgpUtil.sfiUnicast, 0, ntry, false);
             ntry.best.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
             packHolder tmp = new packHolder(true, true);
             cmd.error("sending update");
@@ -744,7 +744,7 @@ public class userPacket {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             ntry.prefix = prf.copyBytes();
-            rmp.roumap.update(rtrBgpUtil.safiUnicast, 0, ntry, false);
+            rmp.roumap.update(rtrBgpUtil.sfiUnicast, 0, ntry, false);
             ntry.best.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
             packHolder tmp = new packHolder(true, true);
             for (int o = 0; o < num; o++) {

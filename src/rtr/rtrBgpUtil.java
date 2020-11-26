@@ -91,112 +91,112 @@ public class rtrBgpUtil {
     /**
      * sub address family mask
      */
-    public final static int safiMask = 0xffff;
+    public final static int sfiMask = 0xffff;
 
     /**
      * unicast address family
      */
-    public final static int safiUnicast = 0x01;
+    public final static int sfiUnicast = 0x01;
 
     /**
      * multicast address family
      */
-    public final static int safiMulticast = 0x02;
+    public final static int sfiMulticast = 0x02;
 
     /**
      * labeled address family
      */
-    public final static int safiLabeled = 0x04;
+    public final static int sfiLabeled = 0x04;
 
     /**
      * multicast vpn address family
      */
-    public final static int safiMvpn = 0x05;
+    public final static int sfiMvpn = 0x05;
 
     /**
      * dynamic multi segment pswudowires address family
      */
-    public final static int safiMspw = 0x06;
+    public final static int sfiMspw = 0x06;
 
     /**
      * tunnel encapsulation address family
      */
-    public final static int safiTunnel = 0x07;
+    public final static int sfiTunnel = 0x07;
 
     /**
      * multicast vpls address family
      */
-    public final static int safiMcastVpls = 0x08;
+    public final static int sfiMcastVpls = 0x08;
 
     /**
      * l2vpn address family
      */
-    public final static int safiVpls = 0x41;
+    public final static int sfiVpls = 0x41;
 
     /**
      * mdt address family
      */
-    public final static int safiMdt = 0x42;
+    public final static int sfiMdt = 0x42;
 
     /**
      * 4over6 address family
      */
-    public final static int safi4o6 = 0x43;
+    public final static int sfi4o6 = 0x43;
 
     /**
      * 6over4 address family
      */
-    public final static int safi6o4 = 0x44;
+    public final static int sfi6o4 = 0x44;
 
     /**
      * layer1 vpn address family
      */
-    public final static int safiL1vpn = 0x45;
+    public final static int sfiL1vpn = 0x45;
 
     /**
      * ethernet vpn address family
      */
-    public final static int safiEthVpn = 0x46;
+    public final static int sfiEthVpn = 0x46;
 
     /**
      * link state address family
      */
-    public final static int safiLnkSt = 0x47;
+    public final static int sfiLnkSt = 0x47;
 
     /**
      * link state vpn address family
      */
-    public final static int safiVpnLnkSt = 0x48;
+    public final static int sfiVpnLnkSt = 0x48;
 
     /**
      * segment routing traffic engineering address family
      */
-    public final static int safiSrTe = 0x49;
+    public final static int sfiSrTe = 0x49;
 
     /**
      * vpn unicast address family
      */
-    public final static int safiMplsVpnU = 0x80;
+    public final static int sfiMplsVpnU = 0x80;
 
     /**
      * vpn multicast address family
      */
-    public final static int safiMplsVpnM = 0x81;
+    public final static int sfiMplsVpnM = 0x81;
 
     /**
      * route target constrain
      */
-    public final static int safiRtCnst = 0x84;
+    public final static int sfiRtCnst = 0x84;
 
     /**
      * flow specification
      */
-    public final static int safiFlwSpc = 0x85;
+    public final static int sfiFlwSpc = 0x85;
 
     /**
      * mpls vpn flowspec
      */
-    public final static int safiVpnFlw = 0x86;
+    public final static int sfiVpnFlw = 0x86;
 
     /**
      * attributes dump
@@ -206,127 +206,127 @@ public class rtrBgpUtil {
     /**
      * ipv4 unicast address family
      */
-    public final static int safiIp4uni = afiIpv4 | safiUnicast;
+    public final static int safiIp4uni = afiIpv4 | sfiUnicast;
 
     /**
      * ipv6 unicast address family
      */
-    public final static int safiIp6uni = afiIpv6 | safiUnicast;
+    public final static int safiIp6uni = afiIpv6 | sfiUnicast;
 
     /**
      * ipv4 multicast address family
      */
-    public final static int safiIp4multi = afiIpv4 | safiMulticast;
+    public final static int safiIp4multi = afiIpv4 | sfiMulticast;
 
     /**
      * ipv6 multicast address family
      */
-    public final static int safiIp6multi = afiIpv6 | safiMulticast;
+    public final static int safiIp6multi = afiIpv6 | sfiMulticast;
 
     /**
      * ipv4 labeled address family
      */
-    public final static int safiIp4lab = afiIpv4 | safiLabeled;
+    public final static int safiIp4lab = afiIpv4 | sfiLabeled;
 
     /**
      * ipv6 labeled address family
      */
-    public final static int safiIp6lab = afiIpv6 | safiLabeled;
+    public final static int safiIp6lab = afiIpv6 | sfiLabeled;
 
     /**
      * ipv4 flowspec address family
      */
-    public final static int safiIp4flow = afiIpv4 | safiFlwSpc;
+    public final static int safiIp4flow = afiIpv4 | sfiFlwSpc;
 
     /**
      * ipv6 flowspec address family
      */
-    public final static int safiIp6flow = afiIpv6 | safiFlwSpc;
+    public final static int safiIp6flow = afiIpv6 | sfiFlwSpc;
 
     /**
      * ipv4 labeled vpn unicast address family
      */
-    public final static int safiIp4vpnU = afiIpv4 | safiMplsVpnU;
+    public final static int safiIp4vpnU = afiIpv4 | sfiMplsVpnU;
 
     /**
      * ipv6 labeled vpn unicast address family
      */
-    public final static int safiIp6vpnU = afiIpv6 | safiMplsVpnU;
+    public final static int safiIp6vpnU = afiIpv6 | sfiMplsVpnU;
 
     /**
      * ipv4 labeled vpn multicast address family
      */
-    public final static int safiIp4vpnM = afiIpv4 | safiMplsVpnM;
+    public final static int safiIp4vpnM = afiIpv4 | sfiMplsVpnM;
 
     /**
      * ipv6 labeled vpn multicast address family
      */
-    public final static int safiIp6vpnM = afiIpv6 | safiMplsVpnM;
+    public final static int safiIp6vpnM = afiIpv6 | sfiMplsVpnM;
 
     /**
      * ipv4 vpn flowspec address family
      */
-    public final static int safiIp4vpnF = afiIpv4 | safiVpnFlw;
+    public final static int safiIp4vpnF = afiIpv4 | sfiVpnFlw;
 
     /**
      * ipv6 vpn flowspec address family
      */
-    public final static int safiIp6vpnF = afiIpv6 | safiVpnFlw;
+    public final static int safiIp6vpnF = afiIpv6 | sfiVpnFlw;
 
     /**
      * ipv4 mdt address family
      */
-    public final static int safiIp4mdt = afiIpv4 | safiMdt;
+    public final static int safiIp4mdt = afiIpv4 | sfiMdt;
 
     /**
      * ipv6 mdt address family
      */
-    public final static int safiIp6mdt = afiIpv6 | safiMdt;
+    public final static int safiIp6mdt = afiIpv6 | sfiMdt;
 
     /**
      * ipv4/ipv6 link state address family
      */
-    public final static int safiIp46lnks = afiLnks | safiLnkSt;
+    public final static int safiIp46lnks = afiLnks | sfiLnkSt;
 
     /**
      * ipv4/ipv6 vpn link state address family
      */
-    public final static int safiIp46vpnL = afiLnks | safiVpnLnkSt;
+    public final static int safiIp46vpnL = afiLnks | sfiVpnLnkSt;
 
     /**
      * ipv4 srte address family
      */
-    public final static int safiIp4srte = afiIpv4 | safiSrTe;
+    public final static int safiIp4srte = afiIpv4 | sfiSrTe;
 
     /**
      * ipv6 srte address family
      */
-    public final static int safiIp6srte = afiIpv6 | safiSrTe;
+    public final static int safiIp6srte = afiIpv6 | sfiSrTe;
 
     /**
      * ipv4 mvpn address family
      */
-    public final static int safiIp4mvpn = afiIpv4 | safiMvpn;
+    public final static int safiIp4mvpn = afiIpv4 | sfiMvpn;
 
     /**
      * ipv6 mvpn address family
      */
-    public final static int safiIp6mvpn = afiIpv6 | safiMvpn;
+    public final static int safiIp6mvpn = afiIpv6 | sfiMvpn;
 
     /**
      * ipv4/ipv6 vpls address family
      */
-    public final static int safiVpls46 = afiL2vpn | safiVpls;
+    public final static int safiVpls46 = afiL2vpn | sfiVpls;
 
     /**
      * ipv4/ipv6 mspw address family
      */
-    public final static int safiMspw46 = afiL2vpn | safiMspw;
+    public final static int safiMspw46 = afiL2vpn | sfiMspw;
 
     /**
      * ipv4/ipv6 ethvpn address family
      */
-    public final static int safiEvpn46 = afiL2vpn | safiEthVpn;
+    public final static int safiEvpn46 = afiL2vpn | sfiEthVpn;
 
     /**
      * self originate
@@ -1033,12 +1033,12 @@ public class rtrBgpUtil {
      * @return address read, null if nothing
      */
     public static tabRouteEntry<addrIP> readPrefix(int safi, boolean oneLab, packHolder pck) {
-        int sfi = safi & safiMask;
+        int sfi = safi & sfiMask;
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         int i;
         int p = 0;
         switch (sfi) {
-            case safiLnkSt:
+            case sfiLnkSt:
                 p = pck.msbGetW(0);
                 i = pck.msbGetW(2);
                 pck.getSkip(4);
@@ -1050,7 +1050,7 @@ public class rtrBgpUtil {
                 adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), ntry.nlri), 0);
                 ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
                 return ntry;
-            case safiEthVpn:
+            case sfiEthVpn:
                 ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
                 p = pck.getByte(0);
                 i = pck.getByte(1);
@@ -1063,12 +1063,12 @@ public class rtrBgpUtil {
                 }
                 pck.setBytesLeft(i);
                 return ntry;
-            case safiVpls:
+            case sfiVpls:
                 i = pck.msbGetW(0) * 8;
                 pck.getSkip(2);
                 break;
-            case safiFlwSpc:
-            case safiVpnFlw:
+            case sfiFlwSpc:
+            case sfiVpnFlw:
                 i = pck.getByte(0);
                 if (i >= 0xf0) {
                     i = pck.msbGetW(0) & 0xfff;
@@ -1078,7 +1078,7 @@ public class rtrBgpUtil {
                 }
                 i *= 8;
                 break;
-            case safiMvpn:
+            case sfiMvpn:
                 p = pck.getByte(0);
                 i = pck.getByte(1) * 8;
                 pck.getSkip(2);
@@ -1088,7 +1088,7 @@ public class rtrBgpUtil {
                 pck.getSkip(1);
                 break;
         }
-        if ((sfi == safiLabeled) || (sfi == safiMplsVpnU)) {
+        if ((sfi == sfiLabeled) || (sfi == sfiMplsVpnU)) {
             ntry.best.labelRem = new ArrayList<Integer>();
             p = 0;
             for (;;) {
@@ -1107,7 +1107,7 @@ public class rtrBgpUtil {
                 }
             }
         }
-        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnLnkSt) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn)) {
             ntry.rouDst = pck.msbGetQ(0);
             pck.getSkip(8);
             i -= 64;
@@ -1117,12 +1117,12 @@ public class rtrBgpUtil {
         bits.byteFill(buf, 0, buf.length, 0);
         pck.getCopy(buf, 0, 0, o);
         pck.getSkip(o);
-        if (sfi == safiMvpn) {
+        if (sfi == sfiMvpn) {
             bits.byteCopy(buf, 0, buf, 1, o);
             buf[0] = (byte) p;
             o++;
         }
-        if ((sfi == safiFlwSpc) || (sfi == safiVpnFlw) || (sfi == safiMvpn) || (sfi == safiMspw)) {
+        if ((sfi == sfiFlwSpc) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn) || (sfi == sfiMspw)) {
             byte[] adr = new byte[addrIP.size];
             ntry.prefix = new addrPrefix<addrIP>(new addrIP(), adr.length * 8);
             adr[0] = (byte) o;
@@ -1136,7 +1136,7 @@ public class rtrBgpUtil {
             ntry.prefix.mask.fromBuf(adr, 0);
             return ntry;
         }
-        if ((sfi == safiVpls) && (o == 9)) {
+        if ((sfi == sfiVpls) && (o == 9)) {
             byte[] adr = new byte[addrIP.size];
             ntry.prefix = new addrPrefix<addrIP>(new addrIP(), adr.length * 8);
             bits.byteCopy(buf, 0, adr, 0, 4);
@@ -1146,7 +1146,7 @@ public class rtrBgpUtil {
             ntry.prefix.wildcard.fromBuf(adr, 0);
             return ntry;
         }
-        if (sfi == safiMdt) {
+        if (sfi == sfiMdt) {
             o = o / 2;
             byte[] adr = new byte[addrIP.size];
             ntry.prefix = new addrPrefix<addrIP>(new addrIP(), adr.length * 8);
@@ -1192,7 +1192,7 @@ public class rtrBgpUtil {
      * @param ntry prefix to write
      */
     public static void writePrefix(int safi, packHolder pck, tabRouteEntry<addrIP> ntry) {
-        int sfi = safi & safiMask;
+        int sfi = safi & sfiMask;
         byte[] buf2;
         int i;
         switch (safi & afiMask) {
@@ -1226,20 +1226,20 @@ public class rtrBgpUtil {
                 pck.putSkip(1);
                 return;
         }
-        if ((sfi == safiVpls) && (ntry.prefix.wildcard.getBytes()[0] == 5)) {
+        if ((sfi == sfiVpls) && (ntry.prefix.wildcard.getBytes()[0] == 5)) {
             buf2 = new byte[9];
             bits.byteCopy(ntry.prefix.network.getBytes(), 0, buf2, 0, 4);
             bits.byteCopy(ntry.prefix.wildcard.getBytes(), 1, buf2, 4, 5);
             i = buf2.length * 8;
         }
-        if (sfi == safiMdt) {
+        if (sfi == sfiMdt) {
             int as = buf2.length;
             buf2 = new byte[as * 2];
             bits.byteCopy(ntry.prefix.network.getBytes(), 0, buf2, 0, as);
             bits.byteCopy(ntry.prefix.broadcast.getBytes(), 0, buf2, as, as);
             i = buf2.length * 8;
         }
-        if ((sfi == safiFlwSpc) || (sfi == safiVpnFlw) || (sfi == safiMvpn) || (sfi == safiMspw)) {
+        if ((sfi == sfiFlwSpc) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn) || (sfi == sfiMspw)) {
             buf2 = new byte[addrIP.size * 4];
             bits.byteCopy(ntry.prefix.network.getBytes(), 1, buf2, 0, 15);
             bits.byteCopy(ntry.prefix.broadcast.getBytes(), 0, buf2, 15, 16);
@@ -1250,7 +1250,7 @@ public class rtrBgpUtil {
         int o = (i + 7) / 8;
         byte[] buf1 = new byte[128];
         int p = 0;
-        if ((sfi == safiLabeled) || (sfi == safiMplsVpnU)) {
+        if ((sfi == sfiLabeled) || (sfi == sfiMplsVpnU)) {
             for (int q = 0; q < ntry.best.labelRem.size(); q++) {
                 bits.msbPutD(buf1, p, ntry.best.labelRem.get(q) << 12);
                 p += 3;
@@ -1258,13 +1258,13 @@ public class rtrBgpUtil {
             }
             buf1[p - 1] |= 1;
         }
-        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM) || (sfi == safiVpls) || (sfi == safiMspw) || (sfi == safiMdt) || (sfi == safiSrTe) || (sfi == safiVpnLnkSt) || (sfi == safiVpnFlw) || (sfi == safiMvpn)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn)) {
             bits.msbPutQ(buf1, p, ntry.rouDst);
             p += 8;
             i += 64;
         }
         switch (sfi) {
-            case safiLnkSt:
+            case sfiLnkSt:
                 o = ntry.nlri.length - 2;
                 pck.putCopy(ntry.nlri, 0, 0, 2);
                 pck.msbPutW(2, o);
@@ -1272,7 +1272,7 @@ public class rtrBgpUtil {
                 pck.putCopy(ntry.nlri, 2, 0, o);
                 pck.putSkip(o);
                 return;
-            case safiEthVpn:
+            case sfiEthVpn:
                 o = ntry.prefix.network.getBytes()[0];
                 i = writeEvpn(buf1, ntry, o);
                 if (i < 1) {
@@ -1284,12 +1284,12 @@ public class rtrBgpUtil {
                 pck.putCopy(buf1, 0, 0, i);
                 pck.putSkip(i);
                 return;
-            case safiVpls:
+            case sfiVpls:
                 pck.msbPutW(0, o + p);
                 pck.putSkip(2);
                 break;
-            case safiFlwSpc:
-            case safiVpnFlw:
+            case sfiFlwSpc:
+            case sfiVpnFlw:
                 i = o + p;
                 if (i < 0xf0) {
                     pck.putByte(0, i);
@@ -1299,7 +1299,7 @@ public class rtrBgpUtil {
                     pck.putSkip(2);
                 }
                 break;
-            case safiMvpn:
+            case sfiMvpn:
                 o--;
                 pck.putByte(0, buf2[0]);
                 pck.putByte(1, o + p);
@@ -1878,14 +1878,14 @@ public class rtrBgpUtil {
      */
     public static void parseReachable(rtrBgpSpeak lower, packHolder pck) {
         int safi = triplet2safi(pck.msbGetD(0));
-        int sfi = safi & safiMask;
+        int sfi = safi & sfiMask;
         int len = pck.getByte(3);
         boolean v6nh = len >= addrIPv6.size;
         pck.getSkip(4);
         len = pck.dataSize() - len;
         addrIP nextHop = null;
         for (; pck.dataSize() > len;) {
-            if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM)) {
+            if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM)) {
                 pck.getSkip(8); // rd
             }
             addrIP adr;
@@ -2760,21 +2760,21 @@ public class rtrBgpUtil {
      */
     public static void placeReachable(int safi, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
         int afi = safi & afiMask;
-        int sfi = safi & safiMask;
+        int sfi = safi & sfiMask;
         addrIP nextHop = lst.get(0).best.nextHop;
         boolean v6nh = afi == afiIpv6;
         if (!v6nh) {
             v6nh = !nextHop.isIPv4();
         }
         int i = v6nh ? addrIPv6.size : addrIPv4.size;
-        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM)) {
             i += 8;
         }
         hlp.clear();
         hlp.msbPutD(0, safi2triplet(safi));
         hlp.putByte(3, i);
         hlp.putSkip(4);
-        if ((sfi == safiMplsVpnU) || (sfi == safiMplsVpnM)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM)) {
             hlp.msbPutQ(0, 0); // rd
             hlp.putSkip(8);
         }

@@ -122,8 +122,8 @@ public class rtrDeaggr extends ipRtr {
         for (int i = 0; i < routerRedistedM.size(); i++) {
             doPrefix(routerRedistedM.get(i), resM);
         }
-        routerDoAggregates(rtrBgpUtil.safiUnicast, resU, null, fwdCore.commonLabel, 0, null, 0);
-        routerDoAggregates(rtrBgpUtil.safiMulticast, resM, null, fwdCore.commonLabel, 0, null, 0);
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, resU, null, fwdCore.commonLabel, 0, null, 0);
+        routerDoAggregates(rtrBgpUtil.sfiMulticast, resM, null, fwdCore.commonLabel, 0, null, 0);
         resU.preserveTime(routerComputedU);
         resM.preserveTime(routerComputedM);
         routerComputedU = resU;

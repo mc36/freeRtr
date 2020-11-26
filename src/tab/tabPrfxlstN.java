@@ -208,7 +208,7 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
             }
             return res.matches(pck);
         }
-        return matches(rtrBgpUtil.safiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
+        return matches(rtrBgpUtil.sfiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
     /**

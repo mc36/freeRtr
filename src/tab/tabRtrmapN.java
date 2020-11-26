@@ -813,7 +813,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (!afiMatch.matches(afi & rtrBgpUtil.afiMask)) {
             return false;
         }
-        if (!safiMatch.matches(afi & rtrBgpUtil.safiMask)) {
+        if (!safiMatch.matches(afi & rtrBgpUtil.sfiMask)) {
             return false;
         }
         if (!peerasnMatch.matches(asn)) {
@@ -960,7 +960,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     }
 
     public boolean matches(packHolder pck) {
-        return matches(rtrBgpUtil.safiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
+        return matches(rtrBgpUtil.sfiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
     private void doUpdate(tabRouteAttr<addrIP> attr) {
@@ -1040,7 +1040,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         userScript t = new userScript(pip, "");
         t.allowExec = true;
         t.addLine("set afi " + (afi & rtrBgpUtil.afiMask));
-        t.addLine("set safi " + (afi & rtrBgpUtil.safiMask));
+        t.addLine("set safi " + (afi & rtrBgpUtil.sfiMask));
         t.addLine("set peerasn " + asn);
         t.addLine("set prefix " + addrPrefix.ip2str(net.prefix));
         t.addLine("set network " + net.prefix.network);

@@ -107,7 +107,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
     public synchronized void routerCreateComputed() {
         tabRoute<addrIP> res = new tabRoute<addrIP>("computed");
         res.mergeFrom(tabRoute.addType.better, entries, null, true, tabRouteAttr.distanLim);
-        routerDoAggregates(rtrBgpUtil.safiUnicast, res, null, fwdCore.commonLabel, 0, null, 0);
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, res, null, fwdCore.commonLabel, 0, null, 0);
         res.preserveTime(routerComputedU);
         routerComputedU = res;
         fwdCore.routerChg(this);
@@ -276,7 +276,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         if (whitelist == null) {
             return false;
         }
-        return whitelist.matches(rtrBgpUtil.safiUnicast, 0, new addrPrefix<addrIP>(adr, adr.maxBits()));
+        return whitelist.matches(rtrBgpUtil.sfiUnicast, 0, new addrPrefix<addrIP>(adr, adr.maxBits()));
     }
 
     /**

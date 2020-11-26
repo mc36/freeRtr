@@ -350,16 +350,16 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
                 case opcReply:
                 case opcSiaReply:
                     if (reach) {
-                        cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.safiUnicast, 0, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+                        cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, learned, rtrBgpUtil.sfiUnicast, 0, ntry, true, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     } else {
-                        cnt += tabRoute.delUpdatedEntry(learned, rtrBgpUtil.safiUnicast, 0, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+                        cnt += tabRoute.delUpdatedEntry(learned, rtrBgpUtil.sfiUnicast, 0, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     }
                     break;
                 case opcQuery:
                 case opcSiaQuery:
                     queryed.add(tabRoute.addType.always, ntry, true, true);
                     adverted.del(ntry.prefix);
-                    cnt += tabRoute.delUpdatedEntry(learned, rtrBgpUtil.safiUnicast, 0, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
+                    cnt += tabRoute.delUpdatedEntry(learned, rtrBgpUtil.sfiUnicast, 0, ntry, iface.roumapIn, iface.roupolIn, iface.prflstIn);
                     break;
                 default:
                     break;

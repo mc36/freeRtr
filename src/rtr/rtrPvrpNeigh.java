@@ -247,7 +247,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         if (lst == null) {
             return false;
         }
-        return !lst.matches(rtrBgpUtil.safiUnicast, 0, prf);
+        return !lst.matches(rtrBgpUtil.sfiUnicast, 0, prf);
     }
 
     private void doRun() {
@@ -630,7 +630,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                int cnt = tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.safiUnicast, 0, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
+                int cnt = tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.sfiUnicast, 0, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
                 addrIP adr = new addrIP();
                 adr.fromIPv4addr(lower.lower.routerID);
                 if (rtrBgpUtil.findAddrList(ntry.best.clustList, adr) >= 0) {
@@ -648,7 +648,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 ntry.best.distance = lower.iface.distance;
                 ntry.best.iface = lower.iface.iface;
                 ntry.best.srcRtr = lower.peer.copyBytes();
-                cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, lower.learned, rtrBgpUtil.safiUnicast, 0, ntry, true, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
+                cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, lower.learned, rtrBgpUtil.sfiUnicast, 0, ntry, true, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
                 if (cnt > 0) {
                     lower.lower.notif.wakeup();
                 }
@@ -659,7 +659,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 if (ntry == null) {
                     continue;
                 }
-                if (tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.safiUnicast, 0, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn) > 0) {
+                if (tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.sfiUnicast, 0, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn) > 0) {
                     lower.lower.notif.wakeup();
                 }
                 continue;

@@ -1030,7 +1030,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             return true;
         }
         if (srvPrfLst != null) {
-            if (!srvPrfLst.matches(rtrBgpUtil.safiUnicast, 0, ntry.prefix)) {
+            if (!srvPrfLst.matches(rtrBgpUtil.sfiUnicast, 0, ntry.prefix)) {
                 if (srvLogDrop) {
                     logger.info("access prefix list dropped " + adr + " " + prt);
                 }
@@ -1038,7 +1038,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             }
         }
         if (srvRouMap != null) {
-            if (!srvRouMap.matches(rtrBgpUtil.safiUnicast, 0, ntry)) {
+            if (!srvRouMap.matches(rtrBgpUtil.sfiUnicast, 0, ntry)) {
                 if (srvLogDrop) {
                     logger.info("access route map dropped " + adr + " " + prt);
                 }
@@ -1046,7 +1046,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             }
         }
         if (srvRouPol != null) {
-            ntry = tabRtrplc.doRpl(rtrBgpUtil.safiUnicast, 0, ntry, srvRouPol, true);
+            ntry = tabRtrplc.doRpl(rtrBgpUtil.sfiUnicast, 0, ntry, srvRouPol, true);
             if (ntry == null) {
                 if (srvLogDrop) {
                     logger.info("access route policy dropped " + adr + " " + prt);

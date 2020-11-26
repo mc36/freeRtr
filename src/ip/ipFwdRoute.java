@@ -369,7 +369,7 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
                 break;
         }
         prf.best.rouTyp = tabRouteAttr.routeType.staticRoute;
-        tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(rtrBgpUtil.safiUnicast, 0, prf, roumap, rouplc, null);
+        tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(rtrBgpUtil.sfiUnicast, 0, prf, roumap, rouplc, null);
         if (res == null) {
             return prf;
         } else {

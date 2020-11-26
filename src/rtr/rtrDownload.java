@@ -222,7 +222,7 @@ public class rtrDownload extends ipRtr {
             ntry.best.protoNum = rtrNum;
             res.add(tabRoute.addType.better, ntry, false, false);
         }
-        routerDoAggregates(rtrBgpUtil.safiUnicast, res, null, fwdCore.commonLabel, 0, null, 0);
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, res, null, fwdCore.commonLabel, 0, null, 0);
         res.preserveTime(routerComputedU);
         routerComputedU = res;
         fwdCore.routerChg(this);

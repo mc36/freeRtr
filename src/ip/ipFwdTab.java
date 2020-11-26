@@ -456,27 +456,27 @@ public class ipFwdTab {
                 if (ntry == null) {
                     continue;
                 }
-                ntry.filter(rtrBgpUtil.safiUnicast, tabU, lower.actualU);
-                ntry.filter(rtrBgpUtil.safiMulticast, tabM, lower.actualM);
-                ntry.filter(rtrBgpUtil.safiFlwSpc, tabF, lower.actualF);
+                ntry.filter(rtrBgpUtil.sfiUnicast, tabU, lower.actualU);
+                ntry.filter(rtrBgpUtil.sfiMulticast, tabM, lower.actualM);
+                ntry.filter(rtrBgpUtil.sfiFlwSpc, tabF, lower.actualF);
             }
             for (int o = 0; o < rtr.routerAdvInter.size(); o++) {
                 ipRtrInt ntry = rtr.routerAdvInter.get(o);
                 if (ntry == null) {
                     continue;
                 }
-                ntry.filter(rtrBgpUtil.safiUnicast, tabU, lower.actualU, lower);
-                ntry.filter(rtrBgpUtil.safiMulticast, tabM, lower.actualM, lower);
-                ntry.filter(rtrBgpUtil.safiFlwSpc, tabF, lower.actualF, lower);
+                ntry.filter(rtrBgpUtil.sfiUnicast, tabU, lower.actualU, lower);
+                ntry.filter(rtrBgpUtil.sfiMulticast, tabM, lower.actualM, lower);
+                ntry.filter(rtrBgpUtil.sfiFlwSpc, tabF, lower.actualF, lower);
             }
             for (int o = 0; o < rtr.routerAdverting.size(); o++) {
                 ipRtrAdv ntry = rtr.routerAdverting.get(o);
                 if (ntry == null) {
                     continue;
                 }
-                ntry.filter(rtrBgpUtil.safiUnicast, tabU, lower.actualU);
-                ntry.filter(rtrBgpUtil.safiMulticast, tabM, lower.actualM);
-                ntry.filter(rtrBgpUtil.safiFlwSpc, tabF, lower.actualF);
+                ntry.filter(rtrBgpUtil.sfiUnicast, tabU, lower.actualU);
+                ntry.filter(rtrBgpUtil.sfiMulticast, tabM, lower.actualM);
+                ntry.filter(rtrBgpUtil.sfiFlwSpc, tabF, lower.actualF);
             }
             boolean diff = tabU.differs(tabRoute.addType.alters, rtr.routerRedistedU) || tabM.differs(tabRoute.addType.alters, rtr.routerRedistedM) || tabF.differs(tabRoute.addType.alters, rtr.routerRedistedF);
             if (chg) {
@@ -630,7 +630,7 @@ public class ipFwdTab {
                 prf.best.nextHop = gtw.copyBytes();
                 prf.best.rouTyp = tabRouteAttr.routeType.defpref;
                 prf.best.iface = ifc;
-                tabRoute.addUpdatedEntry(tabRoute.addType.better, tabU, rtrBgpUtil.safiUnicast, 0, prf, true, ifc.gateRtmp, null, null);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tabU, rtrBgpUtil.sfiUnicast, 0, prf, true, ifc.gateRtmp, null, null);
             }
         }
         tabL.mergeFrom(tabRoute.addType.better, tabC, null, true, tabRouteAttr.distanLim);
@@ -755,7 +755,7 @@ public class ipFwdTab {
         if (lower.counterMap != null) {
             for (int i = 0; i < tabU.size(); i++) {
                 tabRouteEntry<addrIP> ntry = tabU.get(i);
-                if (!lower.counterMap.matches(rtrBgpUtil.safiUnicast, 0, ntry)) {
+                if (!lower.counterMap.matches(rtrBgpUtil.sfiUnicast, 0, ntry)) {
                     continue;
                 }
                 tabRouteEntry<addrIP> old = lower.actualU.find(ntry);
@@ -791,7 +791,7 @@ public class ipFwdTab {
                 tabL = new tabRoute<addrIP>("labeled");
                 break;
         }
-        tabRoute.filterTable(rtrBgpUtil.safiUnicast, 0, tabL, lower.labelFilter);
+        tabRoute.filterTable(rtrBgpUtil.sfiUnicast, 0, tabL, lower.labelFilter);
         for (int i = 0; i < lower.labeldR.size(); i++) {
             tabRouteEntry<addrIP> old = lower.labeldR.get(i);
             if (old == null) {

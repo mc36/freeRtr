@@ -530,7 +530,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 logger.debug("rx reachable prefix=" + ntry.prefix);
             }
             if (filterIn != null) {
-                if (!filterIn.matches(rtrBgpUtil.safiUnicast, 0, ntry.prefix)) {
+                if (!filterIn.matches(rtrBgpUtil.sfiUnicast, 0, ntry.prefix)) {
                     continue;
                 }
             }
@@ -677,7 +677,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 continue;
             }
             if (filterOut != null) {
-                if (!filterOut.matches(rtrBgpUtil.safiUnicast, 0, ntry)) {
+                if (!filterOut.matches(rtrBgpUtil.sfiUnicast, 0, ntry)) {
                     continue;
                 }
             }
@@ -891,7 +891,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 continue;
             }
             if (filterOut != null) {
-                if (!filterOut.matches(rtrBgpUtil.safiUnicast, 0, ntry.prefix)) {
+                if (!filterOut.matches(rtrBgpUtil.sfiUnicast, 0, ntry.prefix)) {
                     continue;
                 }
             }
