@@ -8,9 +8,13 @@ import java.util.List;
 import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelNtry;
+import tab.tabListing;
+import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteAttr;
 import tab.tabRouteEntry;
+import tab.tabRtrmapN;
+import tab.tabRtrplcN;
 import util.logger;
 
 /**
@@ -771,7 +775,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         return ntry;
     }
 
-    private void readvertTable(int afi, tabRoute<addrIP> tab, tabRoute<addrIP> cmp) {
+    private void readvertTable(int afi, tabRoute<addrIP> tab, tabRoute<addrIP> cmp, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
@@ -782,11 +786,11 @@ public class rtrBgpGroup extends rtrBgpParam {
             if (ntry == null) {
                 continue;
             }
-            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, tab, afi, remoteAs, ntry, false, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, tab, afi, remoteAs, ntry, false, rouMap, rouPlc, prfLst);
         }
     }
 
-    private void importTable(int afi, tabRoute<addrIP> tab, tabRoute<addrIP> imp) {
+    private void importTable(int afi, tabRoute<addrIP> tab, tabRoute<addrIP> imp, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
         for (int i = 0; i < imp.size(); i++) {
             tabRouteEntry<addrIP> ntry = imp.get(i);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
@@ -797,7 +801,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             if (ntry == null) {
                 continue;
             }
-            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, tab, afi, remoteAs, ntry, false, vroumapOut, vroupolOut, null);
+            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, tab, afi, remoteAs, ntry, false, rouMap, rouPlc, prfLst);
         }
     }
 
@@ -894,27 +898,27 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry = originatePrefix(lower.afiFlw, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, nFlw, lower.afiFlw, remoteAs, ntry, true, vroumapOut, vroupolOut, null);
         }
-        readvertTable(lower.afiUni, nUni, cUni);
-        readvertTable(lower.afiMlt, nMlt, cMlt);
-        readvertTable(lower.afiOtrU, nOtrU, cOtrU);
-        readvertTable(lower.afiOtrM, nOtrM, cOtrM);
-        importTable(lower.afiOtrF, nOtrF, cOtrF);
-        importTable(lower.afiOtrS, nOtrS, cOtrS);
-        importTable(lower.afiFlw, nFlw, cFlw);
-        importTable(lower.afiVpnU, nVpnU, cVpnU);
-        importTable(lower.afiVpnM, nVpnM, cVpnM);
-        importTable(lower.afiVpnF, nVpnF, cVpnF);
-        importTable(lower.afiVpoU, nVpoU, cVpoU);
-        importTable(lower.afiVpoM, nVpoM, cVpoM);
-        importTable(lower.afiVpoF, nVpoF, cVpoF);
-        importTable(lower.afiVpls, nVpls, cVpls);
-        importTable(lower.afiMspw, nMspw, cMspw);
-        importTable(lower.afiEvpn, nEvpn, cEvpn);
-        importTable(lower.afiMdt, nMdt, cMdt);
-        importTable(lower.afiSrte, nSrte, cSrte);
-        importTable(lower.afiLnks, nLnks, cLnks);
-        importTable(lower.afiMvpn, nMvpn, cMvpn);
-        importTable(lower.afiMvpo, nMvpo, cMvpo);
+        readvertTable(lower.afiUni, nUni, cUni, roumapOut, roupolOut, prflstOut);
+        readvertTable(lower.afiMlt, nMlt, cMlt, roumapOut, roupolOut, prflstOut);
+        readvertTable(lower.afiOtrU, nOtrU, cOtrU, oroumapOut, oroupolOut, oprflstOut);
+        readvertTable(lower.afiOtrM, nOtrM, cOtrM, oroumapOut, oroupolOut, oprflstOut);
+        importTable(lower.afiOtrF, nOtrF, cOtrF, wroumapOut, wroupolOut, null);
+        importTable(lower.afiOtrS, nOtrS, cOtrS, wroumapOut, wroupolOut, null);
+        importTable(lower.afiFlw, nFlw, cFlw, vroumapOut, vroupolOut, null);
+        importTable(lower.afiVpnU, nVpnU, cVpnU, vroumapOut, vroupolOut, null);
+        importTable(lower.afiVpnM, nVpnM, cVpnM, vroumapOut, vroupolOut, null);
+        importTable(lower.afiVpnF, nVpnF, cVpnF, vroumapOut, vroupolOut, null);
+        importTable(lower.afiVpoU, nVpoU, cVpoU, wroumapOut, wroupolOut, null);
+        importTable(lower.afiVpoM, nVpoM, cVpoM, wroumapOut, wroupolOut, null);
+        importTable(lower.afiVpoF, nVpoF, cVpoF, wroumapOut, wroupolOut, null);
+        importTable(lower.afiVpls, nVpls, cVpls, vroumapOut, vroupolOut, null);
+        importTable(lower.afiMspw, nMspw, cMspw, vroumapOut, vroupolOut, null);
+        importTable(lower.afiEvpn, nEvpn, cEvpn, vroumapOut, vroupolOut, null);
+        importTable(lower.afiMdt, nMdt, cMdt, vroumapOut, vroupolOut, null);
+        importTable(lower.afiSrte, nSrte, cSrte, vroumapOut, vroupolOut, null);
+        importTable(lower.afiLnks, nLnks, cLnks, vroumapOut, vroupolOut, null);
+        importTable(lower.afiMvpn, nMvpn, cMvpn, vroumapOut, vroupolOut, null);
+        importTable(lower.afiMvpo, nMvpo, cMvpo, wroumapOut, wroupolOut, null);
         lower.routerDoAggregates(lower.afiUni, nUni, localAddr, lower.fwdCore.commonLabel, rtrBgpUtil.peerOriginate, lower.routerID, lower.localAs);
         lower.routerDoAggregates(lower.afiMlt, nMlt, localAddr, lower.fwdCore.commonLabel, rtrBgpUtil.peerOriginate, lower.routerID, lower.localAs);
         wilUni = nUni;

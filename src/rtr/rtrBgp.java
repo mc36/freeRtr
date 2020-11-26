@@ -1863,8 +1863,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             } else {
                 ntry = grp.readvertPrefix(afi, best);
             }
-            if ((afi == afiUni) || (afi == afiMlt) || (afi == afiOtrU) || (afi == afiOtrM)) {
+            if ((afi == afiUni) || (afi == afiMlt)) {
                 ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.roumapOut, grp.roupolOut, grp.prflstOut);
+            } else if ((afi == afiOtrU) || (afi == afiOtrM)) {
+                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.oroumapOut, grp.oroupolOut, grp.oprflstOut);
+            } else if ((afi == afiOtrF) || (afi == afiOtrS) || (afi == afiMvpo) || (afi == afiVpoU) || (afi == afiVpoM) || (afi == afiVpoF)) {
+                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.wroumapOut, grp.wroupolOut, null);
             } else {
                 ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.vroumapOut, grp.vroupolOut, null);
             }
