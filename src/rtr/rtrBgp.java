@@ -841,9 +841,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiVpoU = rtrBgpUtil.safiIp6vpnU;
                 afiVpoM = rtrBgpUtil.safiIp6vpnM;
                 afiVpoF = rtrBgpUtil.safiIp6vpnF;
-                afiVpls = rtrBgpUtil.safiVpls4;
-                afiMspw = rtrBgpUtil.safiMspw4;
-                afiEvpn = rtrBgpUtil.safiEvpn4;
+                afiVpls = rtrBgpUtil.safiVpls46;
+                afiMspw = rtrBgpUtil.safiMspw46;
+                afiEvpn = rtrBgpUtil.safiEvpn46;
                 afiMdt = rtrBgpUtil.safiIp4mdt;
                 afiLnks = rtrBgpUtil.safiIp46lnks;
                 afiSrte = rtrBgpUtil.safiIp4srte;
@@ -868,9 +868,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiVpoU = rtrBgpUtil.safiIp4vpnU;
                 afiVpoM = rtrBgpUtil.safiIp4vpnM;
                 afiVpoF = rtrBgpUtil.safiIp4vpnF;
-                afiVpls = rtrBgpUtil.safiVpls6;
-                afiMspw = rtrBgpUtil.safiMspw6;
-                afiEvpn = rtrBgpUtil.safiEvpn6;
+                afiVpls = rtrBgpUtil.safiVpls46;
+                afiMspw = rtrBgpUtil.safiMspw46;
+                afiEvpn = rtrBgpUtil.safiEvpn46;
                 afiMdt = rtrBgpUtil.safiIp6mdt;
                 afiLnks = rtrBgpUtil.safiIp46lnks;
                 afiSrte = rtrBgpUtil.safiIp6srte;

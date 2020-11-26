@@ -74,14 +74,9 @@ public class rtrBgpUtil {
     public final static int afiBanyan = 0xe0000;
 
     /**
-     * l2vpn4 address family
+     * l2vpn address family
      */
-    public final static int afiL2vpn4 = 0x190000;
-
-    /**
-     * l2vpn6 address family
-     */
-    public final static int afiL2vpn6 = 0x07190000;
+    public final static int afiL2vpn = 0x190000;
 
     /**
      * linkstate address family
@@ -319,34 +314,19 @@ public class rtrBgpUtil {
     public final static int safiIp6mvpn = afiIpv6 | safiMvpn;
 
     /**
-     * ipv4 vpls address family
+     * ipv4/ipv6 vpls address family
      */
-    public final static int safiVpls4 = afiL2vpn4 | safiVpls;
+    public final static int safiVpls46 = afiL2vpn | safiVpls;
 
     /**
-     * ipv6 vpls address family
+     * ipv4/ipv6 mspw address family
      */
-    public final static int safiVpls6 = afiL2vpn6 | safiVpls;
+    public final static int safiMspw46 = afiL2vpn | safiMspw;
 
     /**
-     * ipv4 mspw address family
+     * ipv4/ipv6 ethvpn address family
      */
-    public final static int safiMspw4 = afiL2vpn4 | safiMspw;
-
-    /**
-     * ipv6 mspw address family
-     */
-    public final static int safiMspw6 = afiL2vpn6 | safiMspw;
-
-    /**
-     * ipv4 ethvpn address family
-     */
-    public final static int safiEvpn4 = afiL2vpn4 | safiEthVpn;
-
-    /**
-     * ipv6 ethvpn address family
-     */
-    public final static int safiEvpn6 = afiL2vpn6 | safiEthVpn;
+    public final static int safiEvpn46 = afiL2vpn | safiEthVpn;
 
     /**
      * self originate
@@ -1178,16 +1158,26 @@ public class rtrBgpUtil {
         }
         switch (safi & afiMask) {
             case afiIpv4:
-            case afiL2vpn4:
                 addrIPv4 a4 = new addrIPv4();
                 a4.fromBuf(buf, 0);
                 ntry.prefix = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a4, i));
                 return ntry;
             case afiIpv6:
-            case afiL2vpn6:
                 addrIPv6 a6 = new addrIPv6();
                 a6.fromBuf(buf, 0);
                 ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a6, i));
+                return ntry;
+            case afiL2vpn:
+                if (o >= addrIPv6.size) {
+                    a6 = new addrIPv6();
+                    a6.fromBuf(buf, 0);
+                    ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a6, i));
+                    return ntry;
+                } else {
+                    a4 = new addrIPv4();
+                    a4.fromBuf(buf, 0);
+                    ntry.prefix = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a4, i));
+                }
                 return ntry;
             default:
                 return null;
@@ -1207,16 +1197,25 @@ public class rtrBgpUtil {
         int i;
         switch (safi & afiMask) {
             case afiIpv4:
-            case afiL2vpn4:
                 addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
                 i = a4.maskLen;
                 buf2 = a4.network.getBytes();
                 break;
             case afiIpv6:
-            case afiL2vpn6:
                 addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
                 i = a6.maskLen;
                 buf2 = a6.network.getBytes();
+                break;
+            case afiL2vpn:
+                if (ntry.prefix.network.isIPv4()) {
+                    a4 = addrPrefix.ip2ip4(ntry.prefix);
+                    i = a4.maskLen;
+                    buf2 = a4.network.getBytes();
+                } else {
+                    a6 = addrPrefix.ip2ip6(ntry.prefix);
+                    i = a6.maskLen;
+                    buf2 = a6.network.getBytes();
+                }
                 break;
             case afiLnks:
                 buf2 = new byte[0];
@@ -1329,14 +1328,12 @@ public class rtrBgpUtil {
         addrIP ax = new addrIP();
         switch (safi & afiMask) {
             case afiIpv4:
-            case afiL2vpn4:
                 addrIPv4 a4 = new addrIPv4();
                 pck.getAddr(a4, 0);
                 pck.getSkip(addrIPv4.size);
                 ax.fromIPv4addr(a4);
                 return ax;
             case afiIpv6:
-            case afiL2vpn6:
                 addrIPv6 a6 = new addrIPv6();
                 pck.getAddr(a6, 0);
                 pck.getSkip(addrIPv6.size);
@@ -1357,13 +1354,11 @@ public class rtrBgpUtil {
     public static void writeAddress(int safi, packHolder pck, addrIP addr) {
         switch (safi & afiMask) {
             case afiIpv4:
-            case afiL2vpn4:
                 addrIPv4 a4 = addr.toIPv4();
                 pck.putAddr(0, a4);
                 pck.putSkip(addrIPv4.size);
                 break;
             case afiIpv6:
-            case afiL2vpn6:
                 addrIPv6 a6 = addr.toIPv6();
                 pck.putAddr(0, a6);
                 pck.putSkip(addrIPv6.size);
@@ -1382,10 +1377,8 @@ public class rtrBgpUtil {
     public static addrPrefix<addrIP> defaultRoute(int safi) {
         switch (safi & afiMask) {
             case afiIpv4:
-            case afiL2vpn4:
                 return addrPrefix.ip4toIP(addrPrefix.defaultRoute4());
             case afiIpv6:
-            case afiL2vpn6:
                 return addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
             default:
                 return null;
@@ -1512,18 +1505,12 @@ public class rtrBgpUtil {
                 return "mvpn4";
             case safiIp6mvpn:
                 return "mvpn6";
-            case safiVpls4:
-                return "vpls4";
-            case safiVpls6:
-                return "vpls6";
-            case safiMspw4:
-                return "mspw4";
-            case safiMspw6:
-                return "mspw6";
-            case safiEvpn4:
-                return "evpn4";
-            case safiEvpn6:
-                return "evpn6";
+            case safiVpls46:
+                return "vpls";
+            case safiMspw46:
+                return "mspw";
+            case safiEvpn46:
+                return "evpn";
             default:
                 return "unknown=" + i;
         }
@@ -2775,7 +2762,7 @@ public class rtrBgpUtil {
         int afi = safi & afiMask;
         int sfi = safi & safiMask;
         addrIP nextHop = lst.get(0).best.nextHop;
-        boolean v6nh = (afi == afiIpv6) || (afi == afiL2vpn6);
+        boolean v6nh = afi == afiIpv6;
         if (!v6nh) {
             v6nh = !nextHop.isIPv4();
         }
