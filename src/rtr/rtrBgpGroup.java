@@ -797,7 +797,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             if (ntry == null) {
                 continue;
             }
-            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, tab, afi, remoteAs, ntry, false, voumapOut, voupolOut, null);
+            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, tab, afi, remoteAs, ntry, false, vroumapOut, vroupolOut, null);
         }
     }
 
@@ -892,7 +892,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 continue;
             }
             ntry = originatePrefix(lower.afiFlw, ntry);
-            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, nFlw, lower.afiFlw, remoteAs, ntry, true, voumapOut, voupolOut, null);
+            tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, nFlw, lower.afiFlw, remoteAs, ntry, true, vroumapOut, vroupolOut, null);
         }
         readvertTable(lower.afiUni, nUni, cUni);
         readvertTable(lower.afiMlt, nMlt, cMlt);
