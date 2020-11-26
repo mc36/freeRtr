@@ -1823,6 +1823,22 @@ qc pass: ouni bgp default route
 qc pass: vpns with default route
 qc pass: olab bgp default route
 qc pass: othervpns with default route
+qc pass: vpns ingress route filtering with routemap
+qc pass: vpns egress route filtering with routemap
+qc pass: vpns ingress route filtering with routemap with soft-reconfig
+qc pass: vpns egress route filtering with routemap with soft-reconfig
+qc pass: vpns ingress route filtering with routepolicy
+qc pass: vpns egress route filtering with routepolicy
+qc pass: vpns ingress route filtering with routepolicy with soft-reconfig
+qc pass: vpns egress route filtering with routepolicy with soft-reconfig
+qc pass: othervpns ingress route filtering with routemap
+qc pass: othervpns egress route filtering with routemap
+qc pass: othervpns ingress route filtering with routemap with soft-reconfig
+qc pass: othervpns egress route filtering with routemap with soft-reconfig
+qc pass: othervpns ingress route filtering with routepolicy
+qc pass: othervpns egress route filtering with routepolicy
+qc pass: othervpns ingress route filtering with routepolicy with soft-reconfig
+qc pass: othervpns egress route filtering with routepolicy with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

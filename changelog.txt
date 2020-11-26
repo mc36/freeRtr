@@ -9519,3 +9519,20 @@ qc pass: vpns with default route
 ---------------------------------- 2020-11-26 20:13:11
 qc pass: olab bgp default route
 qc pass: othervpns with default route
+---------------------------------- 2020-11-26 22:02:52
+qc pass: vpns ingress route filtering with routemap
+qc pass: vpns egress route filtering with routemap
+qc pass: vpns ingress route filtering with routemap with soft-reconfig
+qc pass: vpns egress route filtering with routemap with soft-reconfig
+qc pass: vpns ingress route filtering with routepolicy
+qc pass: vpns egress route filtering with routepolicy
+qc pass: vpns ingress route filtering with routepolicy with soft-reconfig
+qc pass: vpns egress route filtering with routepolicy with soft-reconfig
+qc pass: othervpns ingress route filtering with routemap
+qc pass: othervpns egress route filtering with routemap
+qc pass: othervpns ingress route filtering with routemap with soft-reconfig
+qc pass: othervpns egress route filtering with routemap with soft-reconfig
+qc pass: othervpns ingress route filtering with routepolicy
+qc pass: othervpns egress route filtering with routepolicy
+qc pass: othervpns ingress route filtering with routepolicy with soft-reconfig
+qc pass: othervpns egress route filtering with routepolicy with soft-reconfig
