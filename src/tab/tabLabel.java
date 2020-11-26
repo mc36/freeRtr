@@ -87,7 +87,7 @@ public class tabLabel {
                 continue;
             }
             if (debugger.tabLabelEvnt) {
-                logger.debug("allocate " + ntry.getValue());
+                logger.debug("allocate " + ntry.label);
             }
             ntry.key = key;
             ntry.working = true;
@@ -106,7 +106,7 @@ public class tabLabel {
                 return null;
             }
             if (debugger.tabLabelEvnt) {
-                logger.debug("allocate " + ntry.getValue());
+                logger.debug("allocate " + ntry.label);
             }
             ntry.key = key;
             ntry.working = true;
@@ -178,7 +178,7 @@ public class tabLabel {
             return null;
         }
         if (debugger.tabLabelEvnt) {
-            logger.debug("release " + label.getValue());
+            logger.debug("release " + label.label);
         }
         label = labels.del(label);
         if (label == null) {

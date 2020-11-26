@@ -153,7 +153,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
     }
 
     private int convLab(tabLabelNtry label) {
-        return (label.getValue() << 4) | 1;
+        return (label.label << 4) | 1;
     }
 
     /**

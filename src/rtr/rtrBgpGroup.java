@@ -515,26 +515,28 @@ public class rtrBgpGroup extends rtrBgpParam {
                 loc = org.best.labelLoc;
             }
         }
-        int val = loc.getValue();
-        if (labelPop && (afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0)) {
-            if (val == lower.fwdCore.commonLabel.getValue()) {
-                val = ipMpls.labelImp;
+        int val = loc.label;
+        if (labelPop) {
+            if ((afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0)) {
+                if (val == lower.fwdCore.commonLabel.label) {
+                    val = ipMpls.labelImp;
+                }
             }
-        }
-        if (labelPop && (afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskOtrL) != 0)) {
-            if (val == lower.other.fwd.commonLabel.getValue()) {
-                val = ipMpls.labelImp;
+            if ((afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskOtrL) != 0)) {
+                if (val == lower.other.fwd.commonLabel.label) {
+                    val = ipMpls.labelImp;
+                }
             }
         }
         ntry.labelRem.add(val);
         if (lower.segrouLab != null) {
             ntry.segrouSiz = lower.segrouMax;
-            ntry.segrouBeg = lower.segrouLab[0].getValue();
+            ntry.segrouBeg = lower.segrouLab[0].label;
         }
         if (lower.bierLab != null) {
             ntry.bierHdr = tabLabelBier.num2bsl(lower.bierLen);
             ntry.bierSiz = lower.bierLab.length;
-            ntry.bierBeg = lower.bierLab[0].getValue();
+            ntry.bierBeg = lower.bierLab[0].label;
         }
     }
 

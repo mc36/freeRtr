@@ -1693,7 +1693,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 logger.debug("round " + compRound + " bier");
             }
             tabLabelBier res = new tabLabelBier();
-            res.base = bierLab[0].getValue();
+            res.base = bierLab[0].label;
             res.bsl = tabLabelBier.num2bsl(bierLen);
             res.idx = bierIdx;
             for (int i = 0; i < nUni.size(); i++) {

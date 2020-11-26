@@ -848,7 +848,7 @@ class servOpenflowTx implements Runnable {
             servOpenflowFlw ntry = new servOpenflowFlw();
             ntry.match = new byte[5];
             ntry.match[0] = 3;
-            bits.msbPutD(ntry.match, 1, lab.getValue());
+            bits.msbPutD(ntry.match, 1, lab.label);
             pckB.clear();
             for (int o = 0; o < lab.duplicate.size(); o++) {
                 tabLabelDup dup = lab.duplicate.get(o);
@@ -1380,7 +1380,7 @@ class servOpenflowTx implements Runnable {
     private void createMplsPunt(packHolder pckB, packOpenflow pckO, tabLabelNtry lab, servOpenflowFlw ntry) {
         pckB.clear();
         pckO.createMatchEthTyp(pckB, ipMpls.typeU);
-        pckO.createMatchMplsLab(pckB, lab.getValue());
+        pckO.createMatchMplsLab(pckB, lab.label);
         pckB.merge2beg();
         ntry.match = pckB.getCopy();
         List<typLenVal> tlvs = new ArrayList<typLenVal>();
@@ -1435,7 +1435,7 @@ class servOpenflowTx implements Runnable {
             if (lab.duplicate != null) {
                 ntry.match = new byte[5];
                 ntry.match[0] = 3;
-                bits.msbPutD(ntry.match, 1, lab.getValue());
+                bits.msbPutD(ntry.match, 1, lab.label);
                 ntry = tabGroup.find(ntry);
                 if (ntry == null) {
                     createMplsPunt(pckB, pckO, lab, ntry);
@@ -1446,7 +1446,7 @@ class servOpenflowTx implements Runnable {
                 ntry.prio = 1;
                 pckB.clear();
                 pckO.createMatchEthTyp(pckB, ipMpls.typeU);
-                pckO.createMatchMplsLab(pckB, lab.getValue());
+                pckO.createMatchMplsLab(pckB, lab.label);
                 pckB.merge2beg();
                 ntry.match = pckB.getCopy();
                 List<typLenVal> tlvs = new ArrayList<typLenVal>();
@@ -1460,7 +1460,7 @@ class servOpenflowTx implements Runnable {
             }
             if (lab.iface == null) {
                 if (lab.needLocal) {
-                    addTable(n, tabMpls, createMplsPop(pckB, pckO, lab.getValue(), true, tab, typ));
+                    addTable(n, tabMpls, createMplsPop(pckB, pckO, lab.label, true, tab, typ));
                     continue;
                 }
                 createMplsPunt(pckB, pckO, lab, ntry);
@@ -1494,7 +1494,7 @@ class servOpenflowTx implements Runnable {
             ntry.prio = 2;
             pckB.clear();
             pckO.createMatchEthTyp(pckB, ipMpls.typeU);
-            pckO.createMatchMplsLab(pckB, lab.getValue());
+            pckO.createMatchMplsLab(pckB, lab.label);
             pckO.createMatchMplsBos(pckB, true);
             pckB.merge2beg();
             ntry.match = pckB.getCopy();
@@ -1527,7 +1527,7 @@ class servOpenflowTx implements Runnable {
             ntry.prio = 1;
             pckB.clear();
             pckO.createMatchEthTyp(pckB, ipMpls.typeU);
-            pckO.createMatchMplsLab(pckB, lab.getValue());
+            pckO.createMatchMplsLab(pckB, lab.label);
             pckB.merge2beg();
             ntry.match = pckB.getCopy();
             tlvs = new ArrayList<typLenVal>();

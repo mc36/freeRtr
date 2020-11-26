@@ -50,7 +50,7 @@ public class rtrOspfBr {
         tlv.valTyp = typBierInfo;
         tlv.putThis(pck);
         tlv = rtrOspfTe.getTlvHandler();
-        bits.msbPutD(tlv.valDat, 0, lab[0].getValue()); // label
+        bits.msbPutD(tlv.valDat, 0, lab[0].label); // label
         tlv.valDat[0] = (byte) lab.length; // length
         tlv.valDat[4] = (byte) (tabLabelBier.num2bsl(bsl) << 4); // bsl
         tlv.valSiz = 8;

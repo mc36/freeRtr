@@ -630,7 +630,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 }
                 byte[] buf = new byte[0];
                 if (nei.segrouLab != null) {
-                    buf = rtrOspfSr.putAdj(nei.segrouLab.getValue());
+                    buf = rtrOspfSr.putAdj(nei.segrouLab.label);
                 }
                 putLink2ertrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.iface.ifwNum, nei.rtrInt, nei.rtrID, ifc.metric, buf);
             }

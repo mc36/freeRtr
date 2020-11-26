@@ -20,7 +20,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
     /**
      * label value
      */
-    private final int label;
+    public final int label;
 
     /**
      * key value
@@ -360,15 +360,6 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
             return +1;
         }
         return 0;
-    }
-
-    /**
-     * get label value
-     *
-     * @return label value
-     */
-    public int getValue() {
-        return label;
     }
 
     /**

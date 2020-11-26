@@ -152,7 +152,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             bits.msbPutW(buf, 2, 1);
             ntry.prefix.network.fromBuf(buf, 0);
             buf[0] = 5;
-            bits.msbPutD(buf, 2, (veLab[0].getValue() << 4) | 1);
+            bits.msbPutD(buf, 2, (veLab[0].label << 4) | 1);
             bits.msbPutW(buf, 1, veMax);
             ntry.prefix.wildcard.fromBuf(buf, 0);
             ntry.best.extComm.add(tabRtrmapN.l2info2comm(19, 0, bridge.bridgeHed.getMTUsize()));

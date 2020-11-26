@@ -293,8 +293,8 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
      * @param prf prefix to advertise
      */
     public void sendLabelMap(tabRouteEntry<addrIP> prf) {
-        int val = prf.best.labelLoc.getValue();
-        if (labelPop && (val == ip.commonLabel.getValue())) {
+        int val = prf.best.labelLoc.label;
+        if (labelPop && (val == ip.commonLabel.label)) {
             val = ipMpls.labelImp;
         }
         if (debugger.rtrLdpTraf) {

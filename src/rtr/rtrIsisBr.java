@@ -41,7 +41,7 @@ public class rtrIsisBr {
         bits.msbPutW(tlv.valDat, 3, idx); // bfr id
         tlv.valDat[5] = 1; // type: mpls encap
         tlv.valDat[6] = 4; // length
-        bits.msbPutD(tlv.valDat, 7, lower.bierLab[0].getValue() | (tabLabelBier.num2bsl(lower.bierLen) << 20)); // bsl, label
+        bits.msbPutD(tlv.valDat, 7, lower.bierLab[0].label | (tabLabelBier.num2bsl(lower.bierLen) << 20)); // bsl, label
         tlv.valDat[7] = (byte) lower.bierLab.length; // label range
         tlv.valSiz = 11;
         tlv.valTyp = typBier;

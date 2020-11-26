@@ -790,7 +790,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 if (nei.segrouLab == null) {
                     continue;
                 }
-                byte[] buf = rtrOspfSr.putAdj(nei.segrouLab.getValue());
+                byte[] buf = rtrOspfSr.putAdj(nei.segrouLab.label);
                 buf = bits.byteConcat(buf, rtrOspfSr.putRem(nei.peer));
                 createLnkLsa(seq++, rtrOspf4lsa.lnkP2p, nei.rtrID, ifc.iface.addr.toIPv4(), buf);
             }

@@ -70,7 +70,7 @@ public class rtrIsisSr {
         bits.msbPutD(tlv.valDat, 8, lower.segrouMax << 8); // range
         tlv.valDat[11] = 1; // type
         tlv.valDat[12] = 3; // length
-        bits.msbPutD(tlv.valDat, 13, lower.segrouLab[0].getValue() << 8); // base
+        bits.msbPutD(tlv.valDat, 13, lower.segrouLab[0].label << 8); // base
         tlv.valTyp = rtrIsisLsp.tlvRouterCapa;
         tlv.valSiz = 16;
         return tlv;

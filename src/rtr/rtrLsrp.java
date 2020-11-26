@@ -595,7 +595,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 }
                 int adj = 0;
                 if (nei.segrouLab != null) {
-                    adj = nei.segrouLab.getValue();
+                    adj = nei.segrouLab.label;
                 }
                 int met = ifc.metric;
                 if (ifc.acceptMetric) {
@@ -651,12 +651,12 @@ public class rtrLsrp extends ipRtr implements Runnable {
         dat.kernel = version.getKernelName().replaceAll(" ", "_");
         if (segrouLab != null) {
             dat.segrouMax = segrouMax;
-            dat.segrouBeg = segrouLab[0].getValue();
+            dat.segrouBeg = segrouLab[0].label;
         }
         if (bierLab != null) {
             dat.bierMax = bierMax;
             dat.bierLen = bierLen;
-            dat.bierBeg = bierLab[0].getValue();
+            dat.bierBeg = bierLab[0].label;
         }
         long tim = bits.getTime();
         dat.time = tim + lifetime;
@@ -747,7 +747,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, null, fwdCore.commonLabel, 0, null, 0);
         if (bierLab != null) {
             tabLabelBier res = spf.getBierI();
-            res.base = bierLab[0].getValue();
+            res.base = bierLab[0].label;
             res.bsl = tabLabelBier.num2bsl(bierLen);
             res.idx = bierIdx;
             if (bierIdx < 1) {

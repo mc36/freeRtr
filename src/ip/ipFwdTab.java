@@ -800,10 +800,10 @@ public class ipFwdTab {
             if (old.best.labelLoc == null) {
                 continue;
             }
-            if (old.best.labelLoc.getValue() == lower.commonLabel.getValue()) {
+            if (old.best.labelLoc.label == lower.commonLabel.label) {
                 continue;
             }
-            if (tabLabel.find(old.best.labelLoc.getValue()) == null) {
+            if (tabLabel.find(old.best.labelLoc.label) == null) {
                 continue;
             }
             tabRouteEntry<addrIP> cur = tabL.find(old);

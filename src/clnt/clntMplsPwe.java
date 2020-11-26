@@ -247,7 +247,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
         if (labelL == null) {
             return -1;
         }
-        return labelL.getValue();
+        return labelL.label;
     }
 
     /**
@@ -356,7 +356,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
         pweL.grp = 0;
         pweL.vcid = vcid;
         pweL.general = general;
-        pweL.label = labelL.getValue();
+        pweL.label = labelL.label;
         pweL.typ = pwType;
         pweL.ctrlWrd = ctrlWrd;
         pweL.mtu = pwMtu;

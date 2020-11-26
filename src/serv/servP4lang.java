@@ -1700,7 +1700,7 @@ class servP4langConn implements Runnable {
             if (vrf == null) {
                 return;
             }
-            lower.sendLine("cpulabel_del " + ntry.getValue());
+            lower.sendLine("cpulabel_del " + ntry.label);
             return;
         }
         if (ntry.nextHop == null) {
@@ -1708,7 +1708,7 @@ class servP4langConn implements Runnable {
             if (vrf == null) {
                 return;
             }
-            lower.sendLine("mylabel" + ntry.forwarder.ipVersion + "_del" + " " + ntry.getValue() + " " + vrf.id);
+            lower.sendLine("mylabel" + ntry.forwarder.ipVersion + "_del" + " " + ntry.label + " " + vrf.id);
             if (lower.expSrv6 == null) {
                 return;
             }
@@ -1720,7 +1720,7 @@ class servP4langConn implements Runnable {
                 return;
             }
             addrIPv6 adr = lower.expSrv6.addr6.copyBytes();
-            bits.msbPutD(adr.getBytes(), 12, ntry.getValue());
+            bits.msbPutD(adr.getBytes(), 12, ntry.label);
             lower.sendLine("mysrv" + ntry.forwarder.ipVersion + "_del " + vr.id + " " + adr + " " + vrf.id);
             return;
         }
@@ -1736,9 +1736,9 @@ class servP4langConn implements Runnable {
         }
         int lab = getLabel(ntry.remoteLab);
         if (lab < 0) {
-            lower.sendLine("unlabel" + afi + "_del " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop);
+            lower.sendLine("unlabel" + afi + "_del " + ntry.label + " " + hop.id + " " + ntry.nextHop);
         } else {
-            lower.sendLine("label" + afi + "_del " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop + " " + lab);
+            lower.sendLine("label" + afi + "_del " + ntry.label + " " + hop.id + " " + ntry.nextHop + " " + lab);
         }
     }
 
@@ -1761,7 +1761,7 @@ class servP4langConn implements Runnable {
                 act = "mod";
             }
             labels.put(ntry);
-            lower.sendLine("cpulabel_" + act + " " + ntry.getValue());
+            lower.sendLine("cpulabel_" + act + " " + ntry.label);
             return;
         }
         if (ntry.nextHop == null) {
@@ -1778,7 +1778,7 @@ class servP4langConn implements Runnable {
                 act = "mod";
             }
             labels.put(ntry);
-            lower.sendLine("mylabel" + ntry.forwarder.ipVersion + "_" + act + " " + ntry.getValue() + " " + vrf.id);
+            lower.sendLine("mylabel" + ntry.forwarder.ipVersion + "_" + act + " " + ntry.label + " " + vrf.id);
             if (lower.expSrv6 == null) {
                 return;
             }
@@ -1790,7 +1790,7 @@ class servP4langConn implements Runnable {
                 return;
             }
             addrIPv6 adr = lower.expSrv6.addr6.copyBytes();
-            bits.msbPutD(adr.getBytes(), 12, ntry.getValue());
+            bits.msbPutD(adr.getBytes(), 12, ntry.label);
             lower.sendLine("mysrv" + ntry.forwarder.ipVersion + "_" + act + " " + vr.id + " " + adr + " " + vrf.id);
             return;
         }
@@ -1815,9 +1815,9 @@ class servP4langConn implements Runnable {
         labels.put(ntry);
         int lab = getLabel(ntry.remoteLab);
         if (lab < 0) {
-            lower.sendLine("unlabel" + afi + "_" + act + " " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop);
+            lower.sendLine("unlabel" + afi + "_" + act + " " + ntry.label + " " + hop.id + " " + ntry.nextHop);
         } else {
-            lower.sendLine("label" + afi + "_" + act + " " + ntry.getValue() + " " + hop.id + " " + ntry.nextHop + " " + lab);
+            lower.sendLine("label" + afi + "_" + act + " " + ntry.label + " " + hop.id + " " + ntry.nextHop + " " + lab);
         }
     }
 

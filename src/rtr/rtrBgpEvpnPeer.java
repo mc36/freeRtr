@@ -201,7 +201,7 @@ public class rtrBgpEvpnPeer implements ifcDn, Comparator<rtrBgpEvpnPeer> {
      * @return label
      */
     public int getLabelLoc() {
-        return parent.label.getValue();
+        return parent.label.label;
     }
 
     /**

@@ -1018,7 +1018,7 @@ public class rtrIsis extends ipRtr {
                 }
             }
             tabLabelBier res = new tabLabelBier();
-            res.base = bierLab[0].getValue();
+            res.base = bierLab[0].label;
             res.bsl = tabLabelBier.num2bsl(bierLen);
             res.idx = o;
             res.idx2 = p;

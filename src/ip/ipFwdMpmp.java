@@ -404,7 +404,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         }
         packLdpMp res = getFec();
         res.typ = packLdpMp.getReverse(typ);
-        res.label = ntry.labelL.getValue();
+        res.label = ntry.labelL.label;
         return res;
     }
 

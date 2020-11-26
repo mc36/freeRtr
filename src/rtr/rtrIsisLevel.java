@@ -462,10 +462,10 @@ public class rtrIsisLevel implements Runnable {
                     buf = rtrIsisTe.putSubs(lower, ifc, nei);
                 }
                 if (nei.segrouLab != null) {
-                    buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion == ipCor4.protocolVersion, nei.segrouLab.getValue()));
+                    buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion == ipCor4.protocolVersion, nei.segrouLab.label));
                 }
                 if (nei.segrouOth != null) {
-                    buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion != ipCor4.protocolVersion, nei.segrouOth.getValue()));
+                    buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion != ipCor4.protocolVersion, nei.segrouOth.label));
                 }
                 advertiseTlv(pck, lower.putISneigh(nei.rtrID, 0, ifc.metric, buf));
                 if (subs) {

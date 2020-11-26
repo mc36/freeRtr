@@ -474,8 +474,8 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         }
         String a = "";
         if (lower.labels && (ntry.best.labelLoc != null)) {
-            int val = ntry.best.labelLoc.getValue();
-            if (iface.labelPop && (lower.fwdCore.commonLabel.getValue() == val)) {
+            int val = ntry.best.labelLoc.label;
+            if (iface.labelPop && (lower.fwdCore.commonLabel.label == val)) {
                 val = ipMpls.labelImp;
             }
             a = " label=" + val;

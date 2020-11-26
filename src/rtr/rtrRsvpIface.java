@@ -253,7 +253,7 @@ public class rtrRsvpIface implements ipPrt {
                         pckBin.IPtrg.setAddr(ntry.srcHop);
                         pckRvp.hopAdr = ntry.srcIfc.addr.copyBytes();
                         pckRvp.styleVal = 18;
-                        pckRvp.labelVal = ntry.locLab.getValue();
+                        pckRvp.labelVal = ntry.locLab.label;
                         pckRvp.createDatResReq(pckBin);
                         pckRvp.createHeader(pckBin);
                         fwdCore.protoPack(ntry.trgIfc, pckBin);
@@ -320,7 +320,7 @@ public class rtrRsvpIface implements ipPrt {
                 pckBin.IPsrc.setAddr(ntry.srcIfc.addr);
                 pckBin.IPtrg.setAddr(ntry.srcHop);
                 pckRvp.hopAdr = ntry.srcIfc.addr.copyBytes();
-                pckRvp.labelVal = ntry.locLab.getValue();
+                pckRvp.labelVal = ntry.locLab.label;
                 pckRvp.createDatResReq(pckBin);
                 pckRvp.createHeader(pckBin);
                 fwdCore.protoPack(ntry.trgIfc, pckBin);

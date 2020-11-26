@@ -488,7 +488,7 @@ public class ipMpls implements ifcUp {
         }
         addrIP adr = new addrIP();
         adr.fromIPv6addr(ifc.addr6);
-        bits.msbPutD(adr.getBytes(), 12, lab.getValue());
+        bits.msbPutD(adr.getBytes(), 12, lab.label);
         for (int i = 0; i < ntry.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
             attr.segrouPrf = adr.copyBytes();

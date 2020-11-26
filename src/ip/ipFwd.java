@@ -1483,7 +1483,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     protected void mplsRxPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, tabLabelNtry lab, packHolder pck) {
         if (debugger.ipFwdTraf) {
-            logger.debug("rx label=" + lab.getValue());
+            logger.debug("rx label=" + lab.label);
         }
         pck.MPLSttl--;
         if (pck.MPLSttl < 2) {
@@ -1493,7 +1493,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (lab.nextHop != null) {
             if ((lab.remoteLab == null) && (!pck.MPLSbottom)) {
-                logger.info("no label for " + lab.getValue());
+                logger.info("no label for " + lab.label);
                 cntrT.drop(pck, counter.reasons.notInTab);
                 return;
             }
@@ -1513,10 +1513,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         if (lab.bier != null) {
-            pck.BIERsi = lab.getValue() - lab.bier.base;
+            pck.BIERsi = lab.label - lab.bier.base;
             pck.BIERbsl = lab.bier.bsl;
             if (ipMpls.parseBIERheader(pck)) {
-                logger.info("received invalid bier header on label " + lab.getValue());
+                logger.info("received invalid bier header on label " + lab.label);
                 cntrT.drop(pck, counter.reasons.badHdr);
                 return;
             }
@@ -1550,7 +1550,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             if (nedLoc) {
                 if (ipMpls.gotBierPck(fwd4, fwd6, fwdE, pck)) {
-                    logger.info("received invalid bier protocol on label " + lab.getValue());
+                    logger.info("received invalid bier protocol on label " + lab.label);
                 }
             }
             return;

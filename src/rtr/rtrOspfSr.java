@@ -66,7 +66,7 @@ public class rtrOspfSr {
         bits.msbPutD(tlv.valDat, 0, lab.length << 8);
         bits.msbPutW(tlv.valDat, 4, 1); // type
         bits.msbPutW(tlv.valDat, 6, 3); // length
-        bits.msbPutD(tlv.valDat, 8, lab[0].getValue() << 8);
+        bits.msbPutD(tlv.valDat, 8, lab[0].label << 8);
         tlv.valTyp = rtrOspfRi.typSrBase;
         tlv.valSiz = 12;
         tlv.putThis(pck);
