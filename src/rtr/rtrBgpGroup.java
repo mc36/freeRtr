@@ -517,15 +517,11 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         int val = loc.label;
         if (labelPop) {
-            if ((afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0)) {
-                if (val == lower.fwdCore.commonLabel.label) {
-                    val = ipMpls.labelImp;
-                }
+            if ((afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0) && (val == lower.fwdCore.commonLabel.label)) {
+                val = ipMpls.labelImp;
             }
-            if ((afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskOtrL) != 0)) {
-                if (val == lower.other.fwd.commonLabel.label) {
-                    val = ipMpls.labelImp;
-                }
+            if ((afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskOtrL) != 0) && (val == lower.other.fwd.commonLabel.label)) {
+                val = ipMpls.labelImp;
             }
         }
         ntry.labelRem.add(val);
