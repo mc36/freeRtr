@@ -1894,10 +1894,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribed(currOtrS, parent.afiOtrS, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
         addAttribed(currVpnU, parent.afiVpnU, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         addAttribed(currVpnM, parent.afiVpnM, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currVpnF, parent.afiVpnF, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribed(currVpnF, parent.afiVpnF, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         addAttribed(currVpoU, parent.afiVpoU, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
         addAttribed(currVpoM, parent.afiVpoM, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribed(currVpoF, parent.afiVpoF, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribed(currVpoF, parent.afiVpoF, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
         addAttribed(currVpls, parent.afiVpls, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         addAttribed(currMspw, parent.afiMspw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         addAttribed(currEvpn, parent.afiEvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
