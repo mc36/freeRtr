@@ -363,15 +363,6 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
     }
 
     /**
-     * get working state
-     *
-     * @return true means working, false means not
-     */
-    public boolean getWorking() {
-        return working;
-    }
-
-    /**
      * set forwarding for drop
      *
      * @param ky key to use for deallocation
