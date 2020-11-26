@@ -1180,6 +1180,7 @@ public class rtrBgpUtil {
                 }
                 return ntry;
             default:
+                logger.info("unknown safi (" + safi + ") requested");
                 return null;
         }
     }
@@ -1309,6 +1310,7 @@ public class rtrBgpUtil {
             default:
                 pck.putByte(0, i);
                 pck.putSkip(1);
+                logger.info("unknown safi (" + safi + ") requested");
                 break;
         }
         pck.putCopy(buf1, 0, 0, p);
@@ -1340,6 +1342,7 @@ public class rtrBgpUtil {
                 ax.fromIPv6addr(a6);
                 return ax;
             default:
+                logger.info("unknown safi (" + safi + ") requested");
                 return null;
         }
     }
@@ -1364,6 +1367,7 @@ public class rtrBgpUtil {
                 pck.putSkip(addrIPv6.size);
                 break;
             default:
+                logger.info("unknown safi (" + safi + ") requested");
                 break;
         }
     }
@@ -1381,6 +1385,7 @@ public class rtrBgpUtil {
             case afiIpv6:
                 return addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
             default:
+                logger.info("unknown safi (" + safi + ") requested");
                 return null;
         }
     }
