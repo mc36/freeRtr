@@ -763,6 +763,7 @@ public class userTest {
             doTestRoutingAdd(tab, adr, fill, add, new userTestRnd(), dmp, "r");
         }
         if ((msk & 24) == 0) {
+            cmd.pipe.linePut("");
             return;
         }
         tab.clear();
