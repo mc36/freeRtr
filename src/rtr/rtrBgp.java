@@ -2358,6 +2358,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("4 .         <name>                select source to advertise");
         l.add("3 4       distance                set import distance");
         l.add("4 .         <num>                 distance");
+        l.add("3 .       default-originate       generate default route");
         l.add("3 .       flowspec-install        specify flowspec installation");
         l.add("3 4       flowspec-advert         specify flowspec parameter");
         l.add("4 .         <name>                name of policy map");
@@ -2371,6 +2372,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("4 .         <name>                select source to advertise");
         l.add("3 4       distance                set import distance");
         l.add("4 .         <num>                 distance");
+        l.add("3 .       default-originate       generate default route");
         l.add("3 .       flowspec-install        specify flowspec installation");
         l.add("3 4       flowspec-advert         specify flowspec parameter");
         l.add("4 .         <name>                name of policy map");
@@ -2804,6 +2806,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 compute.wakeup();
                 return false;
             }
+            if (s.equals("default-originate")) {
+                cur.doer.defRou = !negated;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
             if (s.equals("flowspec-install")) {
                 cur.doer.flowInst = !negated;
                 if (negated) {
@@ -2890,6 +2898,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 } else {
                     cur.doer.srv6 = cfgAll.ifcFind(cmd.word(), false);
                 }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("default-originate")) {
+                cur.doer.defRou = !negated;
                 needFull.add(1);
                 compute.wakeup();
                 return false;

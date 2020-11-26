@@ -58,6 +58,11 @@ public class rtrBgpVrfRtr extends ipRtr {
     public cfgIfc srv6;
 
     /**
+     * default information originate
+     */
+    public boolean defRou;
+
+    /**
      * forwarder to use
      */
     protected final ipFwd fwd;
@@ -352,6 +357,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         beg2 += vrf.name + " ";
         l.add(beg1 + beg2 + "enable");
         l.add(beg1 + beg2 + "distance " + distance);
+        cmds.cfgLine(l, !defRou, beg1, beg2 + "default-originate", "");
         cmds.cfgLine(l, !flowInst, beg1, beg2 + "flowspec-install", "");
         cmds.cfgLine(l, flowSpec == null, beg1, beg2 + "flowspec-advert", "" + flowSpec);
         if (mvpn != null) {
