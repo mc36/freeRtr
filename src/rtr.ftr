@@ -1820,6 +1820,7 @@ qc pass: ouni bgp egress route filtering with routepolicy
 qc pass: ouni bgp ingress route filtering with routepolicy with soft-reconfig
 qc pass: ouni bgp egress route filtering with routepolicy with soft-reconfig
 qc pass: ouni bgp default route
+qc pass: vpns with default route
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
