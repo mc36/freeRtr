@@ -1310,7 +1310,6 @@ public class rtrBgpUtil {
             default:
                 pck.putByte(0, i);
                 pck.putSkip(1);
-                logger.info("unknown safi (" + safi + ") requested");
                 break;
         }
         pck.putCopy(buf1, 0, 0, p);
