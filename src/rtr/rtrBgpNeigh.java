@@ -1061,17 +1061,17 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         }
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiUni, remoteAs, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMlt, remoteAs, accMlt, conn.lrnMlt, true, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrU, remoteAs, accOtrU, conn.lrnOtrU, true, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrM, remoteAs, accOtrM, conn.lrnOtrM, true, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrF, remoteAs, accOtrF, conn.lrnOtrF, true, roumapIn, roupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrS, remoteAs, accOtrS, conn.lrnOtrS, true, roumapIn, roupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrU, remoteAs, accOtrU, conn.lrnOtrU, true, oroumapIn, oroupolIn, oprflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrM, remoteAs, accOtrM, conn.lrnOtrM, true, oroumapIn, oroupolIn, oprflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrF, remoteAs, accOtrF, conn.lrnOtrF, true, wroumapIn, wroupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOtrS, remoteAs, accOtrS, conn.lrnOtrS, true, wroumapIn, wroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiFlw, remoteAs, accFlw, conn.lrnFlw, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpnU, remoteAs, accVpnU, conn.lrnVpnU, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpnM, remoteAs, accVpnM, conn.lrnVpnM, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpnF, remoteAs, accVpnF, conn.lrnVpnF, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpoU, remoteAs, accVpoU, conn.lrnVpoU, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpoM, remoteAs, accVpoM, conn.lrnVpoM, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpoF, remoteAs, accVpoF, conn.lrnVpoF, true, vroumapIn, vroupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpoU, remoteAs, accVpoU, conn.lrnVpoU, true, wroumapIn, wroupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpoM, remoteAs, accVpoM, conn.lrnVpoM, true, wroumapIn, wroupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpoF, remoteAs, accVpoF, conn.lrnVpoF, true, wroumapIn, wroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpls, remoteAs, accVpls, conn.lrnVpls, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMspw, remoteAs, accMspw, conn.lrnMspw, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiEvpn, remoteAs, accEvpn, conn.lrnEvpn, true, vroumapIn, vroupolIn, null);
@@ -1079,7 +1079,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiSrte, remoteAs, accSrte, conn.lrnSrte, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiLnks, remoteAs, accLnks, conn.lrnLnks, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpn, remoteAs, accMvpn, conn.lrnMvpn, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpo, remoteAs, accMvpo, conn.lrnMvpo, true, vroumapIn, vroupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpo, remoteAs, accMvpo, conn.lrnMvpo, true, wroumapIn, wroupolIn, null);
     }
 
     /**
