@@ -1095,7 +1095,7 @@ public class rtrBgpUtil {
                 if ((p & 1) != 0) {
                     break;
                 }
-                if (i <= 24) {
+                if (i < 24) {
                     return null;
                 }
                 p = pck.msbGetD(0) >>> 8;

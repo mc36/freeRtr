@@ -500,7 +500,11 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (loc == null) {
             ipFwd tab;
             if (ntry.rouTab == null) {
-                tab = lower.fwdCore;
+                if (afi == lower.afiOtrU) {
+                    tab = lower.other.fwd;
+                } else {
+                    tab = lower.fwdCore;
+                }
             } else {
                 tab = ntry.rouTab;
             }
@@ -512,8 +516,15 @@ public class rtrBgpGroup extends rtrBgpParam {
             }
         }
         int val = loc.getValue();
-        if (labelPop && (afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0) && (val == lower.fwdCore.commonLabel.getValue())) {
-            val = ipMpls.labelImp;
+        if (labelPop && (afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0)) {
+            if (val == lower.fwdCore.commonLabel.getValue()) {
+                val = ipMpls.labelImp;
+            }
+        }
+        if (labelPop && (afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskOtrL) != 0)) {
+            if (val == lower.other.fwd.commonLabel.getValue()) {
+                val = ipMpls.labelImp;
+            }
         }
         ntry.labelRem.add(val);
         if (lower.segrouLab != null) {
