@@ -183,6 +183,20 @@ public class rtrBgpVrfRtr extends ipRtr {
         for (int i = 0; i < vrf.rtExp.size(); i++) {
             rt.add(tabRtrmapN.rt2comm(vrf.rtExp.get(i)));
         }
+        if (defRou) {
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = rtrBgpUtil.defaultRoute(other ? parent.afiOtrU : parent.afiUni);
+            ntry.best.aggrRtr = new addrIP();
+            ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
+            ntry.best.aggrAs = parent.localAs;
+            doExportRoute(rtrBgpUtil.sfiUnicast, ntry, nUni, rt);
+            ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = rtrBgpUtil.defaultRoute(other ? parent.afiOtrU : parent.afiUni);
+            ntry.best.aggrRtr = new addrIP();
+            ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
+            ntry.best.aggrAs = parent.localAs;
+            doExportRoute(rtrBgpUtil.sfiMulticast, ntry, nMlt, rt);
+        }
         for (int i = 0; i < routerRedistedU.size(); i++) {
             doExportRoute(rtrBgpUtil.sfiUnicast, routerRedistedU.get(i), nUni, rt);
         }
