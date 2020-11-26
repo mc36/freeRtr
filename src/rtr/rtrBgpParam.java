@@ -248,6 +248,11 @@ public abstract class rtrBgpParam {
     public boolean sendDefRou;
 
     /**
+     * other default information originate
+     */
+    public boolean sendOtrDefRou;
+
+    /**
      * propagate next hop
      */
     public boolean nxtHopUnchgd;
@@ -860,6 +865,7 @@ public abstract class rtrBgpParam {
         addpathRmode = src.addpathRmode;
         addpathTmode = src.addpathTmode;
         sendDefRou = src.sendDefRou;
+        sendOtrDefRou = src.sendOtrDefRou;
         nxtHopUnchgd = src.nxtHopUnchgd;
         nxtHopPeer = src.nxtHopPeer;
         nxtHopSelf = src.nxtHopSelf;
@@ -967,6 +973,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (addpathTmode != src.addpathTmode) {
+            return true;
+        }
+        if (sendOtrDefRou != src.sendOtrDefRou) {
             return true;
         }
         if (sendDefRou != src.sendDefRou) {
@@ -1159,6 +1168,7 @@ public abstract class rtrBgpParam {
         l.add("3 .       route-reflector-client      reflect routes to this client");
         l.add("3 .       confederation-peer          confederation peer");
         l.add("3 .       default-originate           send default route to peer");
+        l.add("3 .       other-default-originate     send other default route to peer");
         l.add("3 .       aigp                        send accumulated igp attribute");
         l.add("3 .       traffeng                    send traffic engineering attribute");
         l.add("3 .       pmsitun                     send provider multicast service interface tunnel attribute");
@@ -1337,6 +1347,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !unidirection, beg, nei + "unidirection", "");
         cmds.cfgLine(l, !fallOver, beg, nei + "fall-over", "");
         cmds.cfgLine(l, !sendDefRou, beg, nei + "default-originate", "");
+        cmds.cfgLine(l, !sendOtrDefRou, beg, nei + "other-default-originate", "");
         cmds.cfgLine(l, !intVpnClnt, beg, nei + "internal-vpn-client", "");
         cmds.cfgLine(l, !allowAsIn, beg, nei + "allow-as-in", "");
         cmds.cfgLine(l, !allowAsOut, beg, nei + "allow-as-out", "");
@@ -1841,6 +1852,10 @@ public abstract class rtrBgpParam {
                     continue;
                 }
             }
+            return false;
+        }
+        if (s.equals("other-default-originate")) {
+            sendOtrDefRou = !negated;
             return false;
         }
         if (s.equals("default-originate")) {

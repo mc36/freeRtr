@@ -874,6 +874,22 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry = originatePrefix(lower.afiMlt, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, remoteAs, ntry, true, roumapOut, roupolOut, prflstOut);
         }
+        if (sendOtrDefRou) {
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = rtrBgpUtil.defaultRoute(lower.afiOtrU);
+            ntry.best.aggrRtr = new addrIP();
+            ntry.best.aggrRtr.fromIPv4addr(lower.routerID);
+            ntry.best.aggrAs = localAs;
+            ntry = originatePrefix(lower.afiOtrU, ntry);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nOtrU, lower.afiOtrU, remoteAs, ntry, true, oroumapOut, oroupolOut, oprflstOut);
+            ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = rtrBgpUtil.defaultRoute(lower.afiOtrU);
+            ntry.best.aggrRtr = new addrIP();
+            ntry.best.aggrRtr.fromIPv4addr(lower.routerID);
+            ntry.best.aggrAs = localAs;
+            ntry = originatePrefix(lower.afiOtrM, ntry);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nOtrM, lower.afiOtrM, remoteAs, ntry, true, oroumapOut, oroupolOut, oprflstOut);
+        }
         for (int i = 0; i < lower.routerRedistedU.size(); i++) {
             tabRouteEntry<addrIP> ntry = lower.routerRedistedU.get(i);
             if (ntry == null) {

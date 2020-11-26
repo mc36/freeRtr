@@ -9499,3 +9499,16 @@ qc pass: qos transmit otherflowspec
 qc pass: qos drop otherflowspec
 qc pass: qos policer otherflowspec
 qc pass: qos priority otherflowspec
+---------------------------------- 2020-11-26 18:37:43
+qc pass: ouni bgp ingress route filtering with prefixlist
+qc pass: ouni bgp egress route filtering with prefixlist
+qc pass: ouni bgp ingress route filtering with routemap
+qc pass: ouni bgp egress route filtering with routemap
+qc pass: ouni bgp ingress route filtering with prefixlist with soft-reconfig
+qc pass: ouni bgp egress route filtering with prefixlist with soft-reconfig
+qc pass: ouni bgp ingress route filtering with routemap with soft-reconfig
+qc pass: ouni bgp egress route filtering with routemap with soft-reconfig
+qc pass: ouni bgp ingress route filtering with routepolicy
+qc pass: ouni bgp egress route filtering with routepolicy
+qc pass: ouni bgp ingress route filtering with routepolicy with soft-reconfig
+qc pass: ouni bgp egress route filtering with routepolicy with soft-reconfig

@@ -1913,7 +1913,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < groups.size(); i++) {
             rtrBgpGroup grp = groups.get(i);
-            if (grp.sendDefRou) {
+            if (grp.sendDefRou || grp.sendOtrDefRou) {
                 return true;
             }
         }
