@@ -1313,7 +1313,11 @@ public class shrtPthFrst<Ta extends addrType> {
 
     private void listLinStatePrf(tabRoute<addrIP> tab, typLenVal tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
-        rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, hlp, ntry);
+        if (ntry.prefix.network.isIPv4()) {
+            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, hlp, ntry);
+        } else {
+            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp6uni, hlp, ntry);
+        }
         hlp.merge2end();
         tlv.putBytes(pck, 265, hlp.getCopy());
         pck.merge2end();

@@ -1035,7 +1035,7 @@ public class rtrIsis extends ipRtr {
         tab2.setProto(routerProtoTyp, routerProcNum);
         tab2.preserveTime(other.routerComputedU);
         other.routerComputedU = tab2;
-        other.fwd.routerChg(this);
+        other.fwd.routerChg(other);
     }
 
     /**

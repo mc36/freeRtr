@@ -359,13 +359,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
 
     private notifier triggerUpdate;
 
-    private static int nextVrfNumber = 10;
+    private static int nextVrfNumber = bits.randomD();
 
-    private int nextIfaceNumber = 10;
+    private static int nextRouterNumber = bits.randomD();
 
-    private int nextRouterNumber = 10;
+    private int nextIfaceNumber = bits.randomD();
 
-    private int nextEchoNumber = bits.randomW();
+    private int nextEchoNumber = bits.randomD();
 
     /**
      * label modes
@@ -421,10 +421,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param nam name of this vrf
      */
     public ipFwd(ipCor ipc, ipIcmp icc, ipMhost mhst, String cfg, String nam) {
-        nextVrfNumber++;
+        nextVrfNumber = (nextVrfNumber & 0x3fffffff) + 1;
         cfgName = cfg;
         vrfName = nam;
-        vrfNum = nextVrfNumber;
+        vrfNum = nextVrfNumber + 10000;
         ipCore = ipc;
         icmpCore = icc;
         mhostCore = mhst;
@@ -906,7 +906,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ipFwdIface ntry;
         for (;;) {
-            nextIfaceNumber = ((nextIfaceNumber + 1) & 0x3fffffff);
+            nextIfaceNumber = (nextIfaceNumber & 0x3fffffff) + 1;
             ntry = new ipFwdIface(nextIfaceNumber + 10000, lower);
             ntry.addr = new addrIP();
             ntry.network = new addrPrefix<addrIP>(ntry.addr, ntry.addr.maxBits());
@@ -1362,7 +1362,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (debugger.ipFwdEvnt) {
             logger.debug("add rtr " + rtr);
         }
-        rtr.routerProtoNum = nextRouterNumber++;
+        nextRouterNumber = (nextRouterNumber & 0x3fffffff) + 1;
+        rtr.routerProtoNum = nextRouterNumber + 10000;
         rtr.routerProtoTyp = typ;
         rtr.routerProcNum = id;
         routers.add(rtr);
@@ -2032,7 +2033,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ntry.src = src.copyBytes();
         ntry.trg = trg.copyBytes();
         for (;;) {
-            ntry.echoNum = nextEchoNumber++;
+            nextEchoNumber = (nextEchoNumber & 0x3fffffff) + 1;
+            ntry.echoNum = nextEchoNumber + 10000;
             if (echoes.add(ntry) == null) {
                 break;
             }
