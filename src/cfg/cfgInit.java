@@ -201,6 +201,7 @@ public class cfgInit implements Runnable {
 
     private final static String[] needInit = {
         "interface .*",
+        "access-list .*",
         "policy-map .*",
         "route-map .*",
         "route-policy .*",
