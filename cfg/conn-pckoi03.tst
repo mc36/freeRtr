@@ -10,7 +10,7 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  exit
-int tun2
+int tun1
  tunnel vrf v1
  tunnel key 123
  tunnel mode pckoip
@@ -19,11 +19,11 @@ int tun2
  vrf for v1
  ipv6 addr 1234::1 ffff::
  exit
-int tun1
+int tun2
  tunnel vrf v1
  tunnel key 123
  tunnel mode pckoip
- tunnel source tun2
+ tunnel source tun1
  tunnel destination 1234::2
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
@@ -41,7 +41,7 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  exit
-int tun2
+int tun1
  tunnel vrf v1
  tunnel key 123
  tunnel mode pckoip
@@ -50,11 +50,11 @@ int tun2
  vrf for v1
  ipv6 addr 1234::2 ffff::
  exit
-int tun1
+int tun2
  tunnel vrf v1
  tunnel key 123
  tunnel mode pckoip
- tunnel source tun2
+ tunnel source tun1
  tunnel destination 1234::1
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0

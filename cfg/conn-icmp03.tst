@@ -10,7 +10,7 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  exit
-int tun2
+int tun1
  tunnel vrf v1
  tunnel mode icmp
  tunnel source ethernet1
@@ -18,10 +18,10 @@ int tun2
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  exit
-int tun1
+int tun2
  tunnel vrf v1
  tunnel mode icmp
- tunnel source tun2
+ tunnel source tun1
  tunnel destination 2.2.2.2
  vrf for v1
  ipv4 addr 3.3.3.1 255.255.255.0
@@ -39,7 +39,7 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  exit
-int tun2
+int tun1
  tunnel vrf v1
  tunnel mode icmp
  tunnel source ethernet1
@@ -47,10 +47,10 @@ int tun2
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  exit
-int tun1
+int tun2
  tunnel vrf v1
  tunnel mode icmp
- tunnel source tun2
+ tunnel source tun1
  tunnel destination 2.2.2.1
  vrf for v1
  ipv4 addr 3.3.3.2 255.255.255.0
