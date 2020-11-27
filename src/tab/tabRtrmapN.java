@@ -1053,7 +1053,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         t.addLine("set distance " + attr.distance);
         t.addLine("set validity " + attr.validity);
         t.addLine("set locpref " + attr.locPref);
-        t.addLine("set accigp " + attr.accIgp);
+        t.addLine("set aigp " + attr.accIgp);
         t.addLine("set bandwidth " + attr.bandwidth);
         t.addLine("set origin " + attr.origin);
         t.addLine("set metric " + attr.metric);
@@ -1096,7 +1096,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 attr.locPref = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("accigp")) {
+            if (a.equals("aigp")) {
                 attr.accIgp = bits.str2num(cmd.word());
                 continue;
             }

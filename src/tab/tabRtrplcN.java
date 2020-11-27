@@ -488,7 +488,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case locpref:
                 return "locpref " + intMatch;
             case accigp:
-                return "accigp " + intMatch;
+                return "aigp " + intMatch;
             case validity:
                 return "validity " + intMatch;
             case pathlen:
