@@ -1839,6 +1839,38 @@ qc pass: othervpns ingress route filtering with routepolicy
 qc pass: othervpns egress route filtering with routepolicy
 qc pass: othervpns ingress route filtering with routepolicy with soft-reconfig
 qc pass: othervpns egress route filtering with routepolicy with soft-reconfig
+qc pass: labels bgp ingress route filtering with prefixlist
+qc pass: labels bgp egress route filtering with prefixlist
+qc pass: labels bgp ingress route filtering with routemap
+qc pass: labels bgp ingress route filtering with routemap
+qc pass: labels bgp egress route filtering with routemap
+qc pass: labels bgp ingress route filtering with prefixlist with soft-reconfig
+qc pass: labels bgp egress route filtering with prefixlist with soft-reconfig
+qc pass: labels bgp ingress route filtering with routemap with soft-reconfig
+qc pass: labels bgp egress route filtering with routemap with soft-reconfig
+qc pass: labels bgp ingress route filtering with routepolicy
+qc pass: labels bgp egress route filtering with routepolicy
+qc pass: labels bgp ingress route filtering with routepolicy with soft-reconfig
+qc pass: labels bgp egress route filtering with routepolicy with soft-reconfig
+qc pass: labels bgp default route
+qc pass: olab bgp ingress route filtering with prefixlist
+qc pass: olab bgp egress route filtering with prefixlist
+qc pass: olab bgp ingress route filtering with routemap
+qc pass: olab bgp ingress route filtering with routemap
+qc pass: olab bgp egress route filtering with routemap
+qc pass: olab bgp ingress route filtering with prefixlist with soft-reconfig
+qc pass: olab bgp egress route filtering with prefixlist with soft-reconfig
+qc pass: olab bgp ingress route filtering with routemap with soft-reconfig
+qc pass: olab bgp egress route filtering with routemap with soft-reconfig
+qc pass: olab bgp ingress route filtering with routepolicy
+qc pass: olab bgp egress route filtering with routepolicy
+qc pass: olab bgp ingress route filtering with routepolicy with soft-reconfig
+qc pass: olab bgp egress route filtering with routepolicy with soft-reconfig
+qc pass: labels bgp aggregation
+qc pass: olab bgp aggregation
+qc pass: ouni bgp aggregation
+qc pass: bgp vpns aggregation
+qc pass: bgp othervpns aggregation
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -2162,6 +2194,9 @@ qc pass: conditional redistribution with routepolicy
 qc pass: redistribution with interfaces
 qc pass: redistribution with metric
 qc pass: redistribution filtering with hierarchical prefixlist
+qc pass: redistribution with ouni bgp
+qc pass: redistribution with bgp labels
+qc pass: redistribution with olab bgp
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist

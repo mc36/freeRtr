@@ -845,12 +845,12 @@ public class rtrIsisLevel implements Runnable {
         tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 7, lower.segrouLab, segrouUsd);
         routes.clear();
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
-        lower.routerDoAggregates(rtrBgpUtil.sfiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);
+        lower.routerDoAggregates(rtrBgpUtil.sfiUnicast, routes, routes, lower.fwdCore.commonLabel, null, 0);
         if (lower.other.enabled) {
             rs = spf.getOroutes(lower.fwdCore, 7, lower.segrouLab, segrouUsd);
             oroutes.clear();
             tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, oroutes, rs, true, oroumapFrom, oroupolFrom, oprflstFrom);
-            lower.other.routerDoAggregates(rtrBgpUtil.sfiUnicast, oroutes, null, lower.other.fwd.commonLabel, 0, null, 0);
+            lower.other.routerDoAggregates(rtrBgpUtil.sfiUnicast, oroutes, oroutes, lower.other.fwd.commonLabel, null, 0);
         } else {
             oroutes.clear();
         }

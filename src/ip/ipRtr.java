@@ -188,20 +188,19 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      * do aggregates
      *
      * @param afi address family
-     * @param tab table to update
-     * @param hop next hop
+     * @param src source table
+     * @param trg target table
      * @param lab label to use
-     * @param src route source
      * @param agrR aggregator router
      * @param agrA aggregator as
      */
-    public void routerDoAggregates(int afi, tabRoute<addrIP> tab, addrIP hop, tabLabelNtry lab, int src, addrIPv4 agrR, int agrA) {
+    public void routerDoAggregates(int afi, tabRoute<addrIP> src, tabRoute<addrIP> trg, tabLabelNtry lab, addrIPv4 agrR, int agrA) {
         for (int i = 0; i < routerAggregating.size(); i++) {
             ipRtrAgr ntry = routerAggregating.get(i);
             if (ntry == null) {
                 continue;
             }
-            ntry.filter(afi, tab, hop, lab, src, agrR, agrA, routerProtoTyp, routerProcNum);
+            ntry.filter(afi, src, trg, lab, agrR, agrA, routerProtoTyp, routerProcNum);
         }
     }
 

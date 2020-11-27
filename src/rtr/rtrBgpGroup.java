@@ -923,6 +923,18 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry = originatePrefix(lower.afiFlw, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.altEcmp, nFlw, lower.afiFlw, remoteAs, ntry, true, vroumapOut, vroupolOut, null);
         }
+        tabRoute<addrIP> tab = new tabRoute<addrIP>("agg");
+        lower.routerDoAggregates(lower.afiUni, nUni, tab, lower.fwdCore.commonLabel, lower.routerID, lower.localAs);
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> ntry = originatePrefix(lower.afiUni, tab.get(i));
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nUni, lower.afiUni, remoteAs, ntry, true, roumapOut, roupolOut, prflstOut);
+        }
+        tab = new tabRoute<addrIP>("agg");
+        lower.routerDoAggregates(lower.afiMlt, nMlt, tab, lower.fwdCore.commonLabel, lower.routerID, lower.localAs);
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> ntry = originatePrefix(lower.afiMlt, tab.get(i));
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, remoteAs, ntry, true, roumapOut, roupolOut, prflstOut);
+        }
         readvertTable(lower.afiUni, nUni, cUni, roumapOut, roupolOut, prflstOut);
         readvertTable(lower.afiMlt, nMlt, cMlt, roumapOut, roupolOut, prflstOut);
         readvertTable(lower.afiOtrU, nOtrU, cOtrU, oroumapOut, oroupolOut, oprflstOut);
@@ -944,8 +956,6 @@ public class rtrBgpGroup extends rtrBgpParam {
         importTable(lower.afiLnks, nLnks, cLnks, vroumapOut, vroupolOut, null);
         importTable(lower.afiMvpn, nMvpn, cMvpn, vroumapOut, vroupolOut, null);
         importTable(lower.afiMvpo, nMvpo, cMvpo, wroumapOut, wroupolOut, null);
-        lower.routerDoAggregates(lower.afiUni, nUni, localAddr, lower.fwdCore.commonLabel, rtrBgpUtil.peerOriginate, lower.routerID, lower.localAs);
-        lower.routerDoAggregates(lower.afiMlt, nMlt, localAddr, lower.fwdCore.commonLabel, rtrBgpUtil.peerOriginate, lower.routerID, lower.localAs);
         wilUni = nUni;
         wilMlt = nMlt;
         wilOtrU = nOtrU;

@@ -2668,16 +2668,17 @@ public class userShow {
             return;
         }
         if (a.equals("group")) {
-            rtrBgpGroup grp = r.bgp.findGroup(bits.str2num(cmd.word()));
-            if (grp == null) {
-                cmd.error("no such group");
-                return;
-            }
             a = cmd.word();
             if (a.length() < 1) {
                 rdr.putStrTab(r.bgp.showSummary(2));
                 return;
             }
+            rtrBgpGroup grp = r.bgp.findGroup(bits.str2num(a));
+            if (grp == null) {
+                cmd.error("no such group");
+                return;
+            }
+            a = cmd.word();
             if (a.equals("config")) {
                 List<String> l = new ArrayList<String>();
                 grp.getConfig(l, "", false);

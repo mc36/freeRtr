@@ -16,8 +16,6 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
  mpls ena
- mpls ldp4
- mpls ldp6
  exit
 router bgp4 1
  vrf v1
@@ -37,6 +35,16 @@ router bgp6 1
  afi-other ena
  afi-other red conn
  exit
+int pweth1
+ vrf for v1
+ ipv4 addr 3.3.3.1 255.255.255.0
+ pseudo v1 lo0 pweompls 2.2.2.2 1234
+ exit
+int pweth2
+ vrf for v1
+ ipv4 addr 3.3.4.1 255.255.255.0
+ pseudo v1 lo0 pweompls 4321::2 1234
+ exit
 !
 
 addrouter r2
@@ -55,8 +63,6 @@ int eth1
  ipv4 addr 1.1.1.2 255.255.255.252
  ipv6 addr 1234:1::2 ffff:ffff::
  mpls ena
- mpls ldp4
- mpls ldp6
  exit
 router bgp4 1
  vrf v1
@@ -76,6 +82,16 @@ router bgp6 1
  afi-other ena
  afi-other red conn
  exit
+int pweth1
+ vrf for v1
+ ipv4 addr 3.3.3.2 255.255.255.0
+ pseudo v1 lo0 pweompls 2.2.2.1 1234
+ exit
+int pweth2
+ vrf for v1
+ ipv4 addr 3.3.4.2 255.255.255.0
+ pseudo v1 lo0 pweompls 4321::1 1234
+ exit
 !
 
 
@@ -87,3 +103,8 @@ r1 tping 100 60 4321::2 /vrf v1 /int lo0
 
 r2 tping 100 60 2.2.2.1 /vrf v1 /int lo0
 r2 tping 100 60 4321::1 /vrf v1 /int lo0
+
+r1 tping 100 40 3.3.3.2 /vrf v1
+r2 tping 100 40 3.3.3.1 /vrf v1
+r1 tping 100 40 3.3.4.2 /vrf v1
+r2 tping 100 40 3.3.4.1 /vrf v1

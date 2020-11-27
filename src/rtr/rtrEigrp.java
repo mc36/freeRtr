@@ -295,7 +295,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
                 tab1.mergeFrom(tabRoute.addType.ecmp, nei.learned, null, true, tabRouteAttr.distanLim);
             }
         }
-        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab1, null, fwdCore.commonLabel, 0, null, 0);
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab1, tab1, fwdCore.commonLabel, null, 0);
         tabRoute<addrIP> tab2 = tab1;
         tab1 = new tabRoute<addrIP>("ned2adv");
         tab1.mergeFrom(tabRoute.addType.ecmp, tab2, null, true, tabRouteAttr.distanLim);

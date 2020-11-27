@@ -744,7 +744,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("routes");
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
-        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, null, fwdCore.commonLabel, 0, null, 0);
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, fwdCore.commonLabel, null, 0);
         if (bierLab != null) {
             tabLabelBier res = spf.getBierI();
             res.base = bierLab[0].label;

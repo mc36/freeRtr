@@ -1061,7 +1061,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
         tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 8, lower.segrouLab, segrouUsd);
         routes.clear();
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
-        lower.routerDoAggregates(rtrBgpUtil.sfiUnicast, routes, null, lower.fwdCore.commonLabel, 0, null, 0);
+        lower.routerDoAggregates(rtrBgpUtil.sfiUnicast, routes, routes, lower.fwdCore.commonLabel, null, 0);
         if (bierEna) {
             bierRes = spf.getBierI();
         } else {

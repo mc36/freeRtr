@@ -16,8 +16,6 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  mpls ena
- mpls ldp4
- mpls ldp6
  exit
 router bgp4 1
  vrf v1
@@ -55,8 +53,6 @@ int eth1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
  mpls ena
- mpls ldp4
- mpls ldp6
  exit
 router bgp4 1
  vrf v1

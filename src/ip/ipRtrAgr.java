@@ -88,21 +88,20 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
      * filter by this aggregation
      *
      * @param afi address family
-     * @param tab table to update
-     * @param hop next hop
+     * @param src source table
+     * @param trg target table
      * @param lab label to use
-     * @param src route source
      * @param agrR aggregator router
      * @param agrA aggregator as
      * @param rtrT router type
      * @param rtrN router number
      */
-    public void filter(int afi, tabRoute<addrIP> tab, addrIP hop, tabLabelNtry lab, int src, addrIPv4 agrR, int agrA, tabRouteAttr.routeType rtrT, int rtrN) {
+    public void filter(int afi, tabRoute<addrIP> src, tabRoute<addrIP> trg, tabLabelNtry lab, addrIPv4 agrR, int agrA, tabRouteAttr.routeType rtrT, int rtrN) {
         int cnt = 0;
         List<Integer> pathSet = new ArrayList<Integer>();
         List<Integer> confSet = new ArrayList<Integer>();
-        for (int i = tab.size() - 1; i >= 0; i--) {
-            tabRouteEntry<addrIP> ntry = tab.get(i);
+        for (int i = src.size() - 1; i >= 0; i--) {
+            tabRouteEntry<addrIP> ntry = src.get(i);
             if (!prefix.supernet(ntry.prefix, true)) {
                 continue;
             }
@@ -118,7 +117,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
                 addAll(confSet, ntry.best.confSeq);
             }
             if (summary) {
-                tab.del(ntry);
+                src.del(ntry);
             }
             cnt++;
         }
@@ -133,20 +132,16 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
             adr.fromIPv4addr(agrR);
             ntry.best.aggrRtr = adr;
         }
-        if (hop != null) {
-            ntry.best.nextHop = hop.copyBytes();
-        }
         ntry.best.pathSet = pathSet;
         ntry.best.confSet = confSet;
         ntry.best.atomicAggr = !aspath;
         ntry.best.labelLoc = lab;
-        ntry.best.rouSrc = src;
         ntry.best.rouTyp = rtrT;
         ntry.best.protoNum = rtrN;
         if (metric != null) {
             ntry.best.metric = metric.update(ntry.best.metric);
         }
-        tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afi, 0, ntry, true, roumap, rouplc, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, 0, ntry, true, roumap, rouplc, null);
     }
 
 }

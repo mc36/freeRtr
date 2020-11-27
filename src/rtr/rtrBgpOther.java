@@ -165,6 +165,16 @@ public class rtrBgpOther extends ipRtr {
         for (int i = 0; i < routerRedistedF.size(); i++) {
             doExportRoute(rtrBgpUtil.sfiFlwSpc, routerRedistedF.get(i), nFlw);
         }
+        tabRoute<addrIP> tab = new tabRoute<addrIP>("agg");
+        routerDoAggregates(parent.afiUni, nUni, tab, fwd.commonLabel, parent.routerID, parent.localAs);
+        for (int i = 0; i < tab.size(); i++) {
+            doExportRoute(rtrBgpUtil.sfiUnicast, tab.get(i), nUni);
+        }
+        tab = new tabRoute<addrIP>("agg");
+        routerDoAggregates(parent.afiMlt, nMlt, tab, fwd.commonLabel, parent.routerID, parent.localAs);
+        for (int i = 0; i < tab.size(); i++) {
+            doExportRoute(rtrBgpUtil.sfiMulticast, tab.get(i), nMlt);
+        }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), parent.afiUni != rtrBgpUtil.safiIp6uni, parent.localAs);
         }
@@ -219,8 +229,6 @@ public class rtrBgpOther extends ipRtr {
         for (int i = 0; i < cmpF.size(); i++) {
             doImportRoute(rtrBgpUtil.sfiFlwSpc, cmpF.get(i), tabF);
         }
-        routerDoAggregates(parent.afiUni, tabU, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
-        routerDoAggregates(parent.afiMlt, tabM, null, fwd.commonLabel, rtrBgpUtil.peerOriginate, parent.routerID, parent.localAs);
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), parent.afiUni != rtrBgpUtil.safiIp6uni, parent.localAs);
         }

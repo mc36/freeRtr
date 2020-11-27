@@ -354,7 +354,7 @@ public class rtrRip6 extends ipRtr implements prtServP {
             }
             tab.mergeFrom(tabRoute.addType.ecmp, nei.learned, null, true, tabRouteAttr.distanLim);
         }
-        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab, null, fwdCore.commonLabel, 0, null, 0);
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab, tab, fwdCore.commonLabel, null, 0);
         tab.setProto(routerProtoTyp, routerProcNum);
         tab.preserveTime(routerComputedU);
         routerComputedU = tab;
