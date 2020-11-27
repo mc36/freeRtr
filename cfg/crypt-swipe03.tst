@@ -15,7 +15,7 @@ crypto ipsec ips
  hash md5
  key tester
  exit
-int tun2
+int tun1
  tunnel vrf v1
  tunnel prot ips
  tunnel mode swipe
@@ -24,11 +24,11 @@ int tun2
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  exit
-int tun1
+int tun2
  tunnel vrf v1
  tunnel prot ips
  tunnel mode swipe
- tunnel source tun2
+ tunnel source tun1
  tunnel destination 2.2.2.2
  vrf for v1
  ipv4 addr 3.3.3.1 255.255.255.0
@@ -51,7 +51,7 @@ crypto ipsec ips
  hash md5
  key tester
  exit
-int tun2
+int tun1
  tunnel vrf v1
  tunnel prot ips
  tunnel mode swipe
@@ -60,11 +60,11 @@ int tun2
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  exit
-int tun1
+int tun2
  tunnel vrf v1
  tunnel prot ips
  tunnel mode swipe
- tunnel source tun2
+ tunnel source tun1
  tunnel destination 2.2.2.1
  vrf for v1
  ipv4 addr 3.3.3.2 255.255.255.0

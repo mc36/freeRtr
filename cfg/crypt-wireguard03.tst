@@ -16,7 +16,7 @@ crypto ipsec ips1
 crypto ipsec ips2
  key $v10$RUZ3MnJKRWRxRkdEZ0M4MHVtM2Z3TW1BYWZ3cVhubytQc2JNSFBaMHVtTT1NNnZEVjhRZGlXRFFwcFZLaktmOHhqb0t0eUdBZVJLL1VlNDhrd0tJNVNzPQ==
  exit
-int tun2
+int tun1
  tunnel vrf v1
  tunnel prot ips2
  tunnel mode wireguard
@@ -25,11 +25,11 @@ int tun2
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  exit
-int tun1
+int tun2
  tunnel vrf v1
  tunnel prot ips1
  tunnel mode wireguard
- tunnel source tun2
+ tunnel source tun1
  tunnel destination 2.2.2.2
  vrf for v1
  ipv4 addr 3.3.3.1 255.255.255.0
@@ -53,7 +53,7 @@ crypto ipsec ips1
 crypto ipsec ips2
  key $v10$NkpoeXZLUHV0UTlETkx1cE9QbURuUUxSV3RVV2xVakk2UFRKL0laOWwxdz1iUU1tcENhR1Z5cTlmK3Y0OFhHbWZINURNTHl0a3F6aUlEK3JCSCtxUWljPQ==
  exit
-int tun2
+int tun1
  tunnel vrf v1
  tunnel prot ips2
  tunnel mode wireguard
@@ -62,11 +62,11 @@ int tun2
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  exit
-int tun1
+int tun2
  tunnel vrf v1
  tunnel prot ips1
  tunnel mode wireguard
- tunnel source tun2
+ tunnel source tun1
  tunnel destination 2.2.2.1
  vrf for v1
  ipv4 addr 3.3.3.2 255.255.255.0

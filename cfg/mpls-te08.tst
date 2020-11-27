@@ -18,7 +18,7 @@ int eth1
  vrf for v1
  ipv6 addr 1111::1 ffff::
  exit
-int tun9
+int tun1
  tunnel vrf v1
  tunnel mod gre
  tunnel sou eth1
@@ -32,16 +32,16 @@ int tun9
  mpls rsvp4
  mpls rsvp6
  exit
-int tun1
- tun sou tun9
+int tun2
+ tun sou tun1
  tun dest 1.1.1.2
  tun vrf v1
  tun mod p2pte
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.252
  exit
-int tun2
- tun sou tun9
+int tun3
+ tun sou tun1
  tun dest 1234::2
  tun vrf v1
  tun mod p2pte
@@ -68,7 +68,7 @@ int eth1
  vrf for v1
  ipv6 addr 1111::2 ffff::
  exit
-int tun9
+int tun1
  tunnel vrf v1
  tunnel mod gre
  tunnel sou eth1
@@ -82,16 +82,16 @@ int tun9
  mpls rsvp4
  mpls rsvp6
  exit
-int tun1
- tun sou tun9
+int tun2
+ tun sou tun1
  tun dest 1.1.1.1
  tun vrf v1
  tun mod p2pte
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.252
  exit
-int tun2
- tun sou tun9
+int tun3
+ tun sou tun1
  tun dest 1234::1
  tun vrf v1
  tun mod p2pte
