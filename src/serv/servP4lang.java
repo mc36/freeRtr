@@ -342,7 +342,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ntry.flowCtrl = bits.str2num(cmd.word());
             ntry.lower = this;
             boolean need = ifc.type == cfgIfc.ifaceType.sdn;
-            if (ifc.vlanNum > 0) {
+            if (ifc.vlanNum != 0) {
                 need = false;
                 for (int i = 0; i < expIfc.size(); i++) {
                     servP4langIfc old = expIfc.get(i);

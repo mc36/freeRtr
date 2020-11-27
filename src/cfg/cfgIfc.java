@@ -5086,6 +5086,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case serial:
             case dialer:
             case virtppp:
+                if (vlanNum != 0) {
+                    break;
+                }
                 s = "none";
                 if (hdlc != null) {
                     s = "hdlc";

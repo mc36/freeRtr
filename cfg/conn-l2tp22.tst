@@ -14,19 +14,19 @@ int eth1.111
 !
 
 addrouter r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
-int eth2 eth 0000.0000.2222 $2a$ $2b$
+int eth1 eth 0000.0000.2222 $2a$ $2b$
+int eth2 eth 0000.0000.2222 $1b$ $1a$
 !
 vrf def v1
  rd 1:1
  exit
-int eth2
+int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
  exit
-int eth1.111
- xconnect v1 eth2 l2tp3 1234::2 1234
+int eth2.111
+ xconnect v1 eth1 l2tp3 1234::2 1234
  exit
 !
 
