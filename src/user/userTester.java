@@ -97,6 +97,8 @@ public class userTester {
 
     private int reapply = 0;
 
+    private int restart = 0;
+
     private String jvn = "java";
 
     private String jvp = " XmxZZZm -jar " + version.getFileName();
@@ -157,6 +159,12 @@ public class userTester {
             }
             if (s.equals("noreapply")) {
                 reapply = 0;
+            }
+            if (s.equals("restart")) {
+                restart = bits.str2num(cmd.word());
+            }
+            if (s.equals("norestart")) {
+                restart = 0;
             }
             if (s.equals("config")) {
                 config = true;
@@ -357,6 +365,7 @@ public class userTester {
         rdr.debugStat("wait=" + wait);
         rdr.debugStat("config=" + config);
         rdr.debugStat("reapply=" + reapply);
+        rdr.debugStat("restart=" + restart);
         rdr.debugStat("randord=" + randord);
         rdr.debugStat("retry=" + maxTry);
         rdr.debugStat("other=" + others.size() + " " + other0);
@@ -567,6 +576,7 @@ public class userTester {
         lt.slot = slot + slt;
         lt.config = config;
         lt.reapply = reapply;
+        lt.restart = restart;
         lt.jvm = jvn + jvp;
         lt.others = others;
         lt.remoteD = remoteD;
@@ -763,6 +773,12 @@ class userTesterPrc {
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCR;
         rdr.debugStat(slot + "/" + name + ": starting process");
+    }
+
+    public void waitFor() {
+        rdr.debugStat(slot + "/" + name + ": stopping process");
+        shell.waitFor();
+        pipe.setClose();
     }
 
     public void stopNow() {
@@ -973,6 +989,8 @@ class userTesterOne {
     public boolean config;
 
     public int reapply;
+
+    public int restart;
 
     public String jvm;
 
@@ -1536,9 +1554,16 @@ class userTesterOne {
                 cfg.add(s);
             }
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
-            userTesterPrc p = new userTesterPrc(rdr, slot, rn, jvm + " router" + window + " " + prefix + slot + rn + "-");
-            procs.add(p);
+            s = jvm + " router" + window + " " + prefix + slot + rn + "-";
+            userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
+            for (int i = 0; i < restart; i++) {
+                p.putLine("write");
+                p.putLine("reload force");
+                p.waitFor();
+                p = new userTesterPrc(rdr, slot, rn, s);
+            }
+            procs.add(p);
             p.putLine("terminal no monitor");
             p.putLine("terminal length 0");
             for (int i = 0; i < capture.size(); i++) {
