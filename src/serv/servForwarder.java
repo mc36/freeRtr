@@ -76,7 +76,7 @@ public class servForwarder extends servGeneric implements prtServS {
     /**
      * timeout on connection
      */
-    public int timeOut = 60 * 1000;
+    public int timeOut = 5 * 60 * 1000;
 
     /**
      * buffer size
@@ -99,7 +99,7 @@ public class servForwarder extends servGeneric implements prtServS {
         "server forwarder .*! no target username",
         "server forwarder .*! no target password",
         "server forwarder .*! target protocol tcp",
-        "server forwarder .*! timeout 60000",
+        "server forwarder .*! timeout 300000",
         "server forwarder .*! buffer 65536",
         "server forwarder .*! no logging",};
 
