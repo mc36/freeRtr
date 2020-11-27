@@ -1,5 +1,5 @@
 #!/bin/sh
-#sudo apt-get install bf_sde psmisc iproute2 net-tools socat tshark iperf gcc telnet
+#sudo apt install bf_sde psmisc iproute2 net-tools socat tshark iperf gcc telnet
 #git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare.git
 #gcc -O3 -o cons.bin cons.c
 #cp initd /etc/init.d/rtr

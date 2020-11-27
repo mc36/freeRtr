@@ -2,7 +2,7 @@
 #sudo deb https://download.opensuse.org/repositories/home:/frederic-loui:/p4lang:/p4c:/master/Debian_10/ ./
 #wget https://download.opensuse.org/repositories/home:/frederic-loui:/p4lang:/p4c:/master/Debian_10/Release.key
 #sudo apt-key add ./Release.key
-#sudo apt-get install p4c bmv2 psmisc iproute2 net-tools tshark iperf gcc telnet
+#sudo apt install p4c bmv2 psmisc iproute2 net-tools tshark iperf gcc telnet
 #gcc -O3 -o cons.bin cons.c
 #cp initd /etc/init.d/rtr
 #chmod 755 /etc/init.d/rtr
