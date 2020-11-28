@@ -9573,3 +9573,10 @@ qc pass: redistribution with olab bgp
 ---------------------------------- 2020-11-27 08:26:00
 qc pass: bgp vpns aggregation
 qc pass: bgp othervpns aggregation
+---------------------------------- 2020-11-28 14:57:25
+no todo: multilink ppp, fr
+qc pass: ppp with short multilink fragmentation
+qc pass: ppp with long multilink fragmentation
+qc pass: ppp with asymmetric multilink fragmentation
+qc pass: ppp with asymmetric multilink
+qc pass: interop1: pppoe with long multilink fragmentation
