@@ -5123,6 +5123,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(cmds.tabulator + "encapsulation " + s);
                 break;
             case tunnel:
+                if (vlanNum != 0) {
+                    break;
+                }
                 cmds.cfgLine(l, !tunSeq, cmds.tabulator, "tunnel sequence-datagrams", "");
                 cmds.cfgLine(l, !tunSum, cmds.tabulator, "tunnel checksum", "");
                 cmds.cfgLine(l, !tunShut, cmds.tabulator, "tunnel shutdown", "");
