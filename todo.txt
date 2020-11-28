@@ -38,6 +38,5 @@ more clear commands
 more interactive tools
 more features with clean implementation
 igmp4/6 snoop, pim4/6 snoop for bridging
-multilink ppp, fr
 x25
 default vrf for show commands

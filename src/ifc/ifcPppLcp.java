@@ -4,6 +4,7 @@ import auth.autherChap;
 import auth.autherDoer;
 import auth.autherEap;
 import auth.autherPap;
+import cfg.cfgAll;
 import pack.packHolder;
 import util.bits;
 import util.debugger;
@@ -72,6 +73,21 @@ public class ifcPppLcp extends ifcPppNcp {
      * Address-and-Control-Field-Compression
      */
     public final static int optionACFC = 8;
+
+    /**
+     * Maximum-Receive-Reconstructed-Unit
+     */
+    public final static int optionMRRU = 17;
+
+    /**
+     * Short-Sequence-Number
+     */
+    public final static int optionSSN = 18;
+
+    /**
+     * Endpoint-Discriminator
+     */
+    public final static int optionEndp = 19;
 
     /**
      * local authentication type
@@ -166,6 +182,14 @@ public class ifcPppLcp extends ifcPppNcp {
         }
         cfg.mru = parent.sentMru;
         cfg.accm = parent.sentAccm;
+        if (parent.multilinkCfg < 1) {
+            return cfg;
+        }
+        cfg.mrru = parent.multilinkMrru;
+        cfg.ssn = parent.multilinkCfg == 1;
+        cfg.endp = new byte[1];
+        cfg.endp[0] = 1;
+        cfg.endp = bits.byteConcat(cfg.endp, cfgAll.hostName.getBytes());
         return cfg;
     }
 
@@ -261,6 +285,16 @@ public class ifcPppLcp extends ifcPppNcp {
             case optionACFC:
                 cfg.acfc = true;
                 return false;
+            case optionMRRU:
+                cfg.mrru = bits.msbGetW(tlv.valDat, 0);
+                return false;
+            case optionSSN:
+                cfg.ssn = true;
+                return false;
+            case optionEndp:
+                cfg.endp = new byte[tlv.valSiz];
+                bits.byteCopy(tlv.valDat, 0, cfg.endp, 0, cfg.endp.length);
+                return false;
             default:
                 return true;
         }
@@ -306,6 +340,16 @@ public class ifcPppLcp extends ifcPppNcp {
         }
         if (dat.acfc) {
             tlv.putBytes(pck, optionACFC, 0, buf);
+        }
+        if (dat.mrru > 0) {
+            bits.msbPutW(buf, 0, dat.mrru);
+            tlv.putBytes(pck, optionMRRU, 2, buf);
+        }
+        if (dat.ssn) {
+            tlv.putBytes(pck, optionSSN, 0, buf);
+        }
+        if (dat.endp != null) {
+            tlv.putBytes(pck, optionEndp, dat.endp.length, dat.endp);
         }
     }
 
@@ -361,6 +405,20 @@ public class ifcPppLcp extends ifcPppNcp {
             res.pfc = true;
             val = true;
         }
+        if (parent.multilinkCfg < 1) {
+            if (dat.mrru > 0) {
+                res.mrru = dat.mrru;
+                val = true;
+            }
+            if (dat.ssn) {
+                res.ssn = true;
+                val = true;
+            }
+            if (dat.endp != null) {
+                res.endp = dat.endp;
+                val = true;
+            }
+        }
         if (rej) {
             if (val) {
                 return res;
@@ -414,6 +472,15 @@ public class ifcPppLcp extends ifcPppNcp {
         if (dat.accm != 0) {
             cfg.accm = dat.accm;
         }
+        if (dat.mrru > 0) {
+            cfg.mrru = dat.mrru;
+        }
+        if (dat.ssn) {
+            cfg.ssn = true;
+        }
+        if (dat.endp != null) {
+            cfg.endp = dat.endp;
+        }
     }
 
     /**
@@ -444,6 +511,15 @@ public class ifcPppLcp extends ifcPppNcp {
         }
         if (dat.quality > 0) {
             cfg.quality = 0;
+        }
+        if (dat.mrru > 0) {
+            cfg.mrru = 0;
+        }
+        if (dat.ssn) {
+            cfg.ssn = false;
+        }
+        if (dat.endp != null) {
+            cfg.endp = null;
         }
     }
 
@@ -508,9 +584,15 @@ class ifcPppLcpConf {
 
     public int accm = 0;
 
+    public int mrru = 0;
+
+    public boolean ssn = false;
+
+    public byte[] endp = null;
+
     public String toString() {
         return "magic=" + magic + " mru=" + mru + " accm=" + accm + " auth=" + autherDoer.getName(auth) + " quality="
-                + quality + " pfc=" + pfc + " acfc=" + acfc;
+                + quality + " pfc=" + pfc + " acfc=" + acfc + " mrru=" + mrru + " ssn=" + ssn + " endp=" + bits.byteDump(endp, 0, -1);
     }
 
 }

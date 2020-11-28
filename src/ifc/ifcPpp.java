@@ -111,6 +111,51 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public boolean refuseEap;
 
     /**
+     * multilink configured, 0=off, 1=short, 1=long
+     */
+    public int multilinkCfg;
+
+    /**
+     * multilink mrru
+     */
+    public int multilinkMrru;
+
+    /**
+     * negotiated multilink rx
+     */
+    public int multilinkRx;
+
+    /**
+     * negotiated multilink tx
+     */
+    public int multilinkTx;
+
+    /**
+     * max payload size
+     */
+    public int fragLen = 0;
+
+    /**
+     * max payload delay
+     */
+    public int fragGap = 0;
+
+    /**
+     * tx sequence
+     */
+    public int fragSeqTx = 0;
+
+    /**
+     * rx sequence
+     */
+    public int fragSeqRx = -1;
+
+    /**
+     * reassembly buffer
+     */
+    public packHolder fragReasm = new packHolder(true, true);
+
+    /**
      * size of header
      */
     public final static int size = 4;
@@ -366,6 +411,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add("3 .       eap                       extensible authentication protocol");
         l.add("2 3     authentication              set peer authentication list");
         l.add("3 .       <text>                    name of list");
+        l.add("2 3     multilink                   multilink operation");
+        l.add("3 4       <num>                     mrru");
+        l.add("4 .         none                    disable operation");
+        l.add("4 .         short                   negotiate short header");
+        l.add("4 .         long                    negotiate long header");
         l.add("2 3     naktry                      nak retry limit");
         l.add("3 .       <num>                     number of tries");
         l.add("2 3     ip4cp                       ipv4 control protocol");
@@ -416,6 +466,19 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         cmds.cfgLine(l, authenRem == null, cmds.tabulator, "ppp authentication", "" + authenRem);
         cmds.cfgLine(l, sentUser == null, cmds.tabulator, "ppp username", sentUser);
         cmds.cfgLine(l, sentPass == null, cmds.tabulator, "ppp password", authLocal.passwdEncode(sentPass));
+        String a;
+        switch (multilinkCfg) {
+            case 1:
+                a = "short";
+                break;
+            case 2:
+                a = "long";
+                break;
+            default:
+                a = "none";
+                break;
+        }
+        l.add(beg + "multilink " + multilinkMrru + " " + a);
         cmds.cfgLine(l, !refusePap, cmds.tabulator, "ppp refuseauth pap", "");
         cmds.cfgLine(l, !refuseChap, cmds.tabulator, "ppp refuseauth chap", "");
         cmds.cfgLine(l, !refuseEap, cmds.tabulator, "ppp refuseauth eap", "");
@@ -641,6 +704,18 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             sentMru = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("multilink")) {
+            multilinkMrru = bits.str2num(cmd.word());
+            a = cmd.word();
+            multilinkCfg = 0;
+            if (a.equals("short")) {
+                multilinkCfg = 1;
+            }
+            if (a.equals("long")) {
+                multilinkCfg = 2;
+            }
+            return;
+        }
         if (a.equals("naktry")) {
             nakRetryLimit = bits.str2num(cmd.word());
             return;
@@ -813,6 +888,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         }
         if (a.equals("mru")) {
             sentMru = 0;
+            return;
+        }
+        if (a.equals("multilink")) {
+            multilinkMrru = 0;
+            multilinkCfg = 0;
             return;
         }
         if (a.equals("authentication")) {
