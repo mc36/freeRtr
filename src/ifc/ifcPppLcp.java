@@ -100,6 +100,16 @@ public class ifcPppLcp extends ifcPppNcp {
     public int authRem;
 
     /**
+     * local multilink type
+     */
+    public int multiLoc;
+
+    /**
+     * remote multilink type
+     */
+    public int multiRem;
+
+    /**
      * echoreqs sent
      */
     private int echoesSent;
@@ -162,6 +172,8 @@ public class ifcPppLcp extends ifcPppNcp {
         lastEchoId = -1;
         authLoc = 0;
         authRem = 0;
+        multiLoc = 0;
+        multiRem = 0;
         clearUpperState();
     }
 
@@ -382,6 +394,7 @@ public class ifcPppLcp extends ifcPppNcp {
     public boolean gotConfAck(Object data) {
         ifcPppLcpConf dat = (ifcPppLcpConf) data;
         authRem = dat.auth;
+        multiLoc = dat.getMulti();
         return false;
     }
 
@@ -427,6 +440,7 @@ public class ifcPppLcp extends ifcPppNcp {
             }
         }
         authLoc = dat.auth;
+        multiRem = dat.getMulti();
         if ((dat.magic == cfg.magic) && (cfg.magic != 0)) {
             res.magic = dat.magic;
             val = true;
@@ -589,6 +603,17 @@ class ifcPppLcpConf {
     public boolean ssn = false;
 
     public byte[] endp = null;
+
+    public int getMulti() {
+        if (mrru < 1) {
+            return 0;
+        }
+        if (ssn) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
 
     public String toString() {
         return "magic=" + magic + " mru=" + mru + " accm=" + accm + " auth=" + autherDoer.getName(auth) + " quality="

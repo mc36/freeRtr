@@ -161,6 +161,21 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public final static int size = 4;
 
     /**
+     * type of fragment header
+     */
+    public final static int fragType = 0x003d;
+
+    /**
+     * first fragment
+     */
+    public final static int fragBeg = 0x8000;
+
+    /**
+     * last fragment
+     */
+    public final static int fragEnd = 0x4000;
+
+    /**
      * last known state
      */
     public state.states lastState = state.states.down;
@@ -416,6 +431,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add("4 .         none                    disable operation");
         l.add("4 .         short                   negotiate short header");
         l.add("4 .         long                    negotiate long header");
+        l.add("2 3     fragment                    set payload size");
+        l.add("3 .       <num>                     number of bytes");
+        l.add("2 3     frgap                       inter fragment gap");
+        l.add("3 .       <num>                     milliseconds");
         l.add("2 3     naktry                      nak retry limit");
         l.add("3 .       <num>                     number of tries");
         l.add("2 3     ip4cp                       ipv4 control protocol");
@@ -479,6 +498,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 break;
         }
         l.add(beg + "multilink " + multilinkMrru + " " + a);
+        l.add(beg + "fragment " + fragLen);
+        l.add(beg + "frgap " + fragGap);
         cmds.cfgLine(l, !refusePap, cmds.tabulator, "ppp refuseauth pap", "");
         cmds.cfgLine(l, !refuseChap, cmds.tabulator, "ppp refuseauth chap", "");
         cmds.cfgLine(l, !refuseEap, cmds.tabulator, "ppp refuseauth eap", "");
@@ -716,6 +737,14 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             }
             return;
         }
+        if (a.equals("fragment")) {
+            fragLen = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("frgap")) {
+            fragGap = bits.str2num(cmd.word());
+            return;
+        }
         if (a.equals("naktry")) {
             nakRetryLimit = bits.str2num(cmd.word());
             return;
@@ -895,6 +924,14 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             multilinkCfg = 0;
             return;
         }
+        if (a.equals("fragment")) {
+            fragLen = 0;
+            return;
+        }
+        if (a.equals("frgap")) {
+            fragGap = 0;
+            return;
+        }
         if (a.equals("authentication")) {
             authenRem = null;
             return;
@@ -908,6 +945,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public void clearState() {
         ctrlAuth = null;
         curMode = modeLcp;
+        multilinkRx = 0;
+        multilinkTx = 0;
         ctrlLcp.clearState();
         ctrlIp4.clearState();
         ctrlIp6.clearState();
@@ -1164,6 +1203,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                     ctrlLcp.sendReq();
                     break;
                 }
+                multilinkTx = ctrlLcp.multiLoc;
+                multilinkRx = ctrlLcp.multiRem;
                 ctrlIp4.clearState();
                 ctrlIp6.clearState();
                 ctrlBrdg.clearState();
@@ -1234,6 +1275,42 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         // int ctrl = pck.getByte(1); // control
         int prot = pck.msbGetW(2); // protocol
         pck.getSkip(size);
+        if (prot == fragType) {
+            int i = pck.msbGetW(0);
+            pck.getSkip(2);
+            int seq;
+            if (multilinkRx == 1) {
+                seq = i & 0xfff;
+            } else {
+                seq = ((i & 0xff) << 16) | pck.msbGetW(0);
+                pck.getSkip(2);
+            }
+            if ((i & fragBeg) != 0) {
+                fragSeqRx = seq;
+                fragReasm.clear();
+            }
+            if (fragSeqRx != seq) {
+                cntr.drop(pck, counter.reasons.badRxSeq);
+                return;
+            }
+            fragSeqRx++;
+            if (multilinkRx == 1) {
+                fragSeqRx &= 0xfff;
+            } else {
+                fragSeqRx &= 0xffffff;
+            }
+            byte[] buf = pck.getCopy();
+            fragReasm.putCopy(buf, 0, 0, buf.length);
+            fragReasm.putSkip(buf.length);
+            fragReasm.merge2end();
+            if ((i & fragEnd) == 0) {
+                return;
+            }
+            fragSeqRx = -1;
+            pck.copyFrom(fragReasm, true, true);
+            prot = pck.msbGetW(0); // protocol
+            pck.getSkip(2);
+        }
         int newProt = -1;
         switch (prot) {
             case ifcPppMpls.pppDataU:
@@ -1399,8 +1476,55 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         if (curMode != modeUp) {
             return;
         }
-        putAddrCtrlProto(pck, newProt);
-        lower.sendPack(pck);
+        if (multilinkTx < 1) {
+            putAddrCtrlProto(pck, newProt);
+            lower.sendPack(pck);
+            return;
+        }
+        if ((fragLen < 1) || (pck.dataSize() < fragLen)) {
+            putAddrCtrlProto(pck, newProt);
+            lower.sendPack(pck);
+            return;
+        }
+        pck.msbPutW(0, newProt); // protocol
+        pck.putSkip(2);
+        pck.merge2beg();
+        byte[] buf = pck.getCopy();
+        for (int ofs = 0; ofs < buf.length;) {
+            int len = buf.length - ofs;
+            if (len > fragLen) {
+                len = fragLen;
+            }
+            pck.clear();
+            int i = 0;
+            if (ofs == 0) {
+                i |= fragBeg;
+            }
+            if ((ofs + len) >= buf.length) {
+                i |= fragEnd;
+            }
+            if (multilinkTx == 1) {
+                fragSeqTx &= 0xfff;
+                pck.msbPutW(0, i | fragSeqTx);
+                pck.putSkip(2);
+            } else {
+                fragSeqTx &= 0xffffff;
+                pck.msbPutW(0, i | (fragSeqTx >>> 16));
+                pck.msbPutW(2, fragSeqTx);
+                pck.putSkip(4);
+            }
+            fragSeqTx++;
+            pck.putCopy(buf, ofs, 0, len);
+            pck.putSkip(len);
+            pck.merge2beg();
+            putAddrCtrlProto(pck, fragType);
+            lower.sendPack(pck);
+            ofs += len;
+            if (fragGap < 1) {
+                continue;
+            }
+            bits.sleep(fragGap);
+        }
     }
 
 }
