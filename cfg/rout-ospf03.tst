@@ -32,18 +32,10 @@ int bvi1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
- ipv4 resend-packet
- ipv6 resend-packet
  router ospf4 1 ena
  router ospf4 1 net point2non
  router ospf6 1 ena
  router ospf6 1 net point2non
- router ospf4 1 neigh 1.1.1.2
- router ospf4 1 neigh 1.1.1.3
- router ospf4 1 neigh 1.1.1.4
- router ospf6 1 neigh 1234::2
- router ospf6 1 neigh 1234::3
- router ospf6 1 neigh 1234::4
  exit
 !
 
@@ -171,6 +163,14 @@ int bvi1
  router ospf4 1 net point2non
  router ospf6 1 ena
  router ospf6 1 net point2non
+ ipv4 resend-packet
+ ipv6 resend-packet
+ router ospf4 1 neigh 1.1.1.1
+ router ospf4 1 neigh 1.1.1.2
+ router ospf4 1 neigh 1.1.1.3
+ router ospf6 1 neigh 1234::1
+ router ospf6 1 neigh 1234::2
+ router ospf6 1 neigh 1234::3
  exit
 !
 
