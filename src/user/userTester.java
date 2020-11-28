@@ -1557,11 +1557,13 @@ class userTesterOne {
             s = jvm + " router" + window + " " + prefix + slot + rn + "-";
             userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
-            for (int i = 0; i < restart; i++) {
-                p.putLine("write");
-                p.putLine("reload force");
-                p.waitFor();
-                p = new userTesterPrc(rdr, slot, rn, s);
+            if (write) {
+                for (int i = 0; i < restart; i++) {
+                    p.putLine("write");
+                    p.putLine("reload force");
+                    p.waitFor();
+                    p = new userTesterPrc(rdr, slot, rn, s);
+                }
             }
             procs.add(p);
             p.putLine("terminal no monitor");
