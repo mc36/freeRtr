@@ -872,6 +872,9 @@ qc pass: interop9: ospf prefix withdraw
 qc pass: interop9: ospf p2mp te
 qc pass: interop9: ospf sr
 qc pass: interop9: ospf php sr
+qc pass: interop9: pppoe client
+qc pass: interop9: pppoe server
+qc pass: interop9: mpls over pppoe
 qc pass: interop9: rip
 qc pass: bier in chain
 qc pass: bier in star

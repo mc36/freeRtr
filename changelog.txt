@@ -9580,3 +9580,7 @@ qc pass: ppp with long multilink fragmentation
 qc pass: ppp with asymmetric multilink fragmentation
 qc pass: ppp with asymmetric multilink
 qc pass: interop1: pppoe with long multilink fragmentation
+---------------------------------- 2020-11-29 10:30:51
+qc pass: interop9: pppoe client
+qc pass: interop9: pppoe server
+qc pass: interop9: mpls over pppoe

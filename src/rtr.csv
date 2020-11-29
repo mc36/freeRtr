@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v20.11.29-rel, done by cs@nop.
--;-;-;2020-11-29 06:58:30, took 00:05:25, with 100 workers, on 2258 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2020-11-29 10:36:23, took 00:05:32, with 100 workers, on 2261 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -876,6 +876,9 @@ http://sources.nop.hu/cfg/intop9-ospf08.tst;intop9-ospf08.tst;success;interop9: 
 http://sources.nop.hu/cfg/intop9-ospf09.tst;intop9-ospf09.tst;success;interop9: ospf p2mp te
 http://sources.nop.hu/cfg/intop9-ospf10.tst;intop9-ospf10.tst;success;interop9: ospf sr
 http://sources.nop.hu/cfg/intop9-ospf11.tst;intop9-ospf11.tst;success;interop9: ospf php sr
+http://sources.nop.hu/cfg/intop9-pppoe01.tst;intop9-pppoe01.tst;success;interop9: pppoe client
+http://sources.nop.hu/cfg/intop9-pppoe02.tst;intop9-pppoe02.tst;success;interop9: pppoe server
+http://sources.nop.hu/cfg/intop9-pppoe03.tst;intop9-pppoe03.tst;success;interop9: mpls over pppoe
 http://sources.nop.hu/cfg/intop9-rip01.tst;intop9-rip01.tst;success;interop9: rip
 http://sources.nop.hu/cfg/mpls-bier01.tst;mpls-bier01.tst;success;bier in chain
 http://sources.nop.hu/cfg/mpls-bier02.tst;mpls-bier02.tst;success;bier in star
