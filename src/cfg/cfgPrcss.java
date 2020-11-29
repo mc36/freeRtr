@@ -43,6 +43,11 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public boolean respawn = true;
 
     /**
+     * action logging
+     */
+    public boolean logging = false;
+
+    /**
      * execute this binary
      */
     public String execName = null;
@@ -104,6 +109,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         "process definition .*! delay 1000",
         "process definition .*! random-time 0",
         "process definition .*! random-delay 0",
+        "process definition .*! no log",
         "process definition .*! no range"
     };
 
@@ -180,6 +186,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add("2  .        <num>                    milliseconds between start");
         l.add("1  2      range                      specify time range");
         l.add("2  .        <name>                   name of time map");
+        l.add("1  .      log                        log actions");
         l.add("1  .      stop                       stop working");
         l.add("1  .      start                      start working");
         l.add("1  .      runnow                     run one round now");
@@ -199,6 +206,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "random-time " + randInt);
         l.add(cmds.tabulator + "random-delay " + randIni);
         cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
+        cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
         if (need2run) {
             l.add(cmds.tabulator + "start");
         } else {
@@ -256,6 +264,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
             interval = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("log")) {
+            logging = true;
+            return;
+        }
         if (a.equals("stop")) {
             stopNow();
             return;
@@ -275,6 +287,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         a = cmd.word();
         if (a.equals("start")) {
             stopNow();
+            return;
+        }
+        if (a.equals("log")) {
+            logging = false;
             return;
         }
         if (a.equals("range")) {
@@ -333,7 +349,9 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
                 logger.traceback(e);
             }
         }
-        logger.info("stopped process " + name);
+        if (logging) {
+            logger.info("stopped process " + name);
+        }
     }
 
     private synchronized void doRound() {
@@ -345,7 +363,9 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         if (execName == null) {
             return;
         }
-        logger.info("restarting process " + name);
+        if (logging) {
+            logger.info("restarting process " + name);
+        }
         if (randInt > 0) {
             bits.sleep(bits.random(1, randInt));
         }
