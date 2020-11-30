@@ -3,6 +3,7 @@ package ifc;
 import addr.addrEmpty;
 import addr.addrEui;
 import addr.addrIPv4;
+import addr.addrIPv6;
 import addr.addrType;
 import auth.authGeneric;
 import auth.authLocal;
@@ -89,6 +90,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      * dns2 address, null=negotiated
      */
     public addrIPv4 dns2addrCfg;
+
+    /**
+     * keep ipv6 address
+     */
+    public boolean keepIpv6addr;
 
     /**
      * local address required
@@ -452,7 +458,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add("2 3     ip6cp                       ipv6 control protocol");
         l.add("3 .       open                      force to open state");
         l.add("3 .       close                     force to close state");
+        l.add("3 .       keep                      keet configured address");
         l.add("3 4       local                     set local address");
+        l.add("4 .         <text>                  address");
+        l.add("3 4       peer                      set peer address");
         l.add("4 .         <text>                  address");
         l.add("2 3     bcp                         bridge control protocol");
         l.add("3 .       open                      force to open state");
@@ -517,6 +526,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         cmds.cfgLine(l, !ctrlIp6.forced2open(), cmds.tabulator, "ppp ip6cp open", "");
         cmds.cfgLine(l, remIfIdCfg == null, cmds.tabulator, "ppp ip6cp peer", "" + remIfIdCfg);
         cmds.cfgLine(l, locIfIdCfg == null, cmds.tabulator, "ppp ip6cp local", "" + locIfIdCfg);
+        cmds.cfgLine(l, !keepIpv6addr, cmds.tabulator, "ppp ip6cp keep", "");
         cmds.cfgLine(l, !ctrlBrdg.forced2close(), cmds.tabulator, "ppp bcp close", "");
         cmds.cfgLine(l, !ctrlBrdg.forced2open(), cmds.tabulator, "ppp bcp open", "");
         cmds.cfgLine(l, !ctrlMpls.forced2close(), cmds.tabulator, "ppp mplscp close", "");
@@ -635,6 +645,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                     return;
                 }
                 remIfIdCfg = adr;
+                return;
+            }
+            if (a.equals("keep")) {
+                keepIpv6addr = true;
                 return;
             }
         }
@@ -834,6 +848,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             }
             if (a.equals("peer")) {
                 remIfIdCfg = null;
+                return;
+            }
+            if (a.equals("keep")) {
+                keepIpv6addr = false;
                 return;
             }
         }
@@ -1084,7 +1102,14 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 cfger.addr4changed(ctrlIp4.locAddrCur, cfger.mask4, ctrlIp4.remAddrCur);
                 break;
             case ifcPppIp6.pppCtrl:
+                addrIPv6 saved = null;
+                if (keepIpv6addr) {
+                    saved = cfger.addr6.copyBytes();
+                }
                 cfger.addr6changed(ctrlIp6.locAddrCur.toIPv6(), cfger.mask6, ctrlIp6.remAddrCur.toIPv6());
+                if (saved != null) {
+                    cfger.addr6changed(saved, cfger.mask6, ctrlIp6.remAddrCur.toIPv6());
+                }
                 break;
         }
         return true;
