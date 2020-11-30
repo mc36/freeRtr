@@ -226,7 +226,7 @@ public class clntSlaac implements Runnable, ipPrt {
             }
             switch (tlv.valTyp) {
                 case 3:
-                    pl = tlv.valDat[0];
+                    pl = tlv.valDat[0] & 0xff;
                     locAddr.fromBuf(tlv.valDat, 14);
                     break;
                 case 25:
