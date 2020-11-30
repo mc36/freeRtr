@@ -145,6 +145,16 @@ public class ipFwdIface extends tabRouteIface {
     public boolean ready = true;
 
     /**
+     * install local route
+     */
+    public boolean gateLoc = true;
+
+    /**
+     * install remote route
+     */
+    public boolean gateRem = true;
+
+    /**
      * gateway
      */
     public addrIP gateAddr;
@@ -288,7 +298,7 @@ public class ipFwdIface extends tabRouteIface {
      * other interface handler
      */
     public ipFwdIface otherHandler;
-    
+
     private final tabGen<ipFwdIfaceAddr> adrs = new tabGen<ipFwdIfaceAddr>();
 
     private final tabGen<ipFwdIfaceLdpas> ldpas = new tabGen<ipFwdIfaceLdpas>();
@@ -390,6 +400,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 .       any                       source is reachable via any interface");
         l.add("3 .       rx                        source is reachable via this interface");
         l.add("3 .       none                      disable per packet source checking");
+        l.add("2 .     gateway-local               install local route");
+        l.add("2 .     gateway-remote              install remote route");
         l.add("2 3     gateway-prefix              prefix list to install throught gateway");
         l.add("3 .       <name>                    name of prefix list");
         l.add("2 3     gateway-routemap            route map to set throught gateway");
@@ -537,6 +549,8 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, !verifySource, cmds.tabulator, beg + "verify-source", a);
         cmds.cfgLine(l, !answerNetReqs, cmds.tabulator, beg + "proxy-local", "");
         cmds.cfgLine(l, !answerDefReqs, cmds.tabulator, beg + "proxy-remote", "");
+        cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
+        cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
         cmds.cfgLine(l, gatePrfx == null, cmds.tabulator, beg + "gateway-prefix", "" + gatePrfx);
         cmds.cfgLine(l, gateRtmp == null, cmds.tabulator, beg + "gateway-routemap", "" + gateRtmp);
         cmds.cfgLine(l, cfilterIn == null, cmds.tabulator, beg + "access-group-common-in", "" + cfilterIn);
@@ -755,6 +769,16 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             cmd.error("invalid mode");
+            return false;
+        }
+        if (a.equals("gateway-local")) {
+            gateLoc = true;
+            fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("gateway-remote")) {
+            gateRem = true;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("gateway-prefix")) {
@@ -1210,6 +1234,16 @@ public class ipFwdIface extends tabRouteIface {
         if (a.equals("verify-source")) {
             verifySource = false;
             verifyStricht = false;
+            return false;
+        }
+        if (a.equals("gateway-local")) {
+            gateLoc = false;
+            fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("gateway-remote")) {
+            gateRem = false;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("gateway-prefix")) {

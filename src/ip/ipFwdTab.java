@@ -599,9 +599,11 @@ public class ipFwdTab {
             tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, ifc.network, null);
             prf.best.iface = ifc;
             prf.best.rouTyp = tabRouteAttr.routeType.conn;
-            prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(ifc.addr, ifc.addr.maxBits()), null);
-            prf.best.iface = ifc;
-            prf.best.rouTyp = tabRouteAttr.routeType.local;
+            if (ifc.gateLoc) {
+                prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(ifc.addr, ifc.addr.maxBits()), null);
+                prf.best.iface = ifc;
+                prf.best.rouTyp = tabRouteAttr.routeType.local;
+            }
             if (ifc.linkLocal) {
                 addrIPv6 adr6 = addrIPv6.genLinkLocal(new addrMac());
                 addrIP adr = new addrIP();
@@ -614,10 +616,12 @@ public class ipFwdTab {
             if (gtw == null) {
                 continue;
             }
-            prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
-            prf.best.iface = ifc;
-            prf.best.rouTyp = tabRouteAttr.routeType.remote;
-            prf.best.nextHop = gtw;
+            if (ifc.gateRem) {
+                prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
+                prf.best.iface = ifc;
+                prf.best.rouTyp = tabRouteAttr.routeType.remote;
+                prf.best.nextHop = gtw.copyBytes();
+            }
             tabListing<tabPrfxlstN, addrIP> pfl = ifc.gatePrfx;
             if (pfl == null) {
                 continue;
