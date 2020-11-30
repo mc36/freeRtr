@@ -9584,3 +9584,5 @@ qc pass: interop1: pppoe with long multilink fragmentation
 qc pass: interop9: pppoe client
 qc pass: interop9: pppoe server
 qc pass: interop9: mpls over pppoe
+---------------------------------- 2020-11-30 09:00:58
+qc pass: ppp address propagation

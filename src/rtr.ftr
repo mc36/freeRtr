@@ -274,6 +274,7 @@ qc pass: ppp with short multilink fragmentation
 qc pass: ppp with long multilink fragmentation
 qc pass: ppp with asymmetric multilink fragmentation
 qc pass: ppp with asymmetric multilink
+qc pass: ppp address propagation
 qc pass: pppoe over ethernet encapsulation
 qc pass: pppoe over bridge encapsulation
 qc pass: ppp relay over pppoe
