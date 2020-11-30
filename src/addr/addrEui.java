@@ -67,12 +67,18 @@ public class addrEui extends addrType {
     /**
      * convert to ipv6
      *
+     * @param prefix prefix to prepend, null if link local
      * @return ipv6 address
      */
-    public addrIPv6 toIPv6() {
-        addrIPv6 a = new addrIPv6();
-        a.addr[0] = (byte) 0xfe;
-        a.addr[1] = (byte) 0x80;
+    public addrIPv6 toIPv6(addrIPv6 prefix) {
+        addrIPv6 a;
+        if (prefix == null) {
+            a = new addrIPv6();
+            a.addr[0] = (byte) 0xfe;
+            a.addr[1] = (byte) 0x80;
+        } else {
+            a = prefix.copyBytes();
+        }
         bits.byteCopy(addr, 0, a.addr, size, size);
         return a;
     }

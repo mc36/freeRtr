@@ -131,7 +131,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
                 case rtrBabel.tlvRtrId:
                     addrEui ae = new addrEui();
                     ae.fromBuf(tlv.valDat, 2); // router id
-                    rtrid.fromIPv6addr(ae.toIPv6());
+                    rtrid.fromIPv6addr(ae.toIPv6(null));
                     break;
                 case rtrBabel.tlvUpdate:
                     tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();

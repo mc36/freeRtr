@@ -1106,9 +1106,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 if (keepIpv6addr) {
                     saved = cfger.addr6.copyBytes();
                 }
-                cfger.addr6changed(ctrlIp6.locAddrCur.toIPv6(), cfger.mask6, ctrlIp6.remAddrCur.toIPv6());
+                cfger.addr6changed(ctrlIp6.locAddrCur.toIPv6(null), cfger.mask6, ctrlIp6.remAddrCur.toIPv6(null));
                 if (saved != null) {
-                    cfger.addr6changed(saved, cfger.mask6, ctrlIp6.remAddrCur.toIPv6());
+                    cfger.addr6changed(saved, cfger.mask6, ctrlIp6.remAddrCur.toIPv6(saved));
                 }
                 break;
         }

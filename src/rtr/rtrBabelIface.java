@@ -446,7 +446,7 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
         typLenVal tlv = rtrBabel.getTlv();
         if (ntry.best.aggrRtr == null) {
             ntry.best.aggrRtr = new addrIP();
-            ntry.best.aggrRtr.fromIPv6addr(lower.routerID.toIPv6());
+            ntry.best.aggrRtr.fromIPv6addr(lower.routerID.toIPv6(null));
             ntry.best.aggrAs = lower.seqno;
         }
         addrEui ae = new addrEui();

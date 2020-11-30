@@ -146,6 +146,7 @@ public class clntSlaac implements Runnable, ipPrt {
             notif.sleep(10000);
         }
         lower.protoDel(this, iface, null);
+        ll = ipifc.getLinkLocalAddr().toIPv6();
         addrIPv6 wld = new addrIPv6();
         wld.setNot(locMask);
         ll.setAnd(ll, wld);
