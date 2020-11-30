@@ -550,7 +550,7 @@ public class tabRouteAttr<T extends addrType> {
             case local:
                 return "LOC";
             case remote:
-                return "RMT";
+                return "REM";
             case defpref:
                 return "DEF";
             case automesh:
