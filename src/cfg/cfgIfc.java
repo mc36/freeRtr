@@ -6407,6 +6407,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ifcUp upp = con.getSide2();
             switch (type) {
                 case serial:
+                case dialer:
                 case virtppp:
                     xconn.pwtype = packLdpPwe.pwtPpp;
                     break;
