@@ -953,7 +953,7 @@ public class userExec {
         hl.add("6 .              <name>          key");
         hl.add("2 3      bmp                     bgp monitoring protocol information");
         hl.add("3 4,.      <name>                server name");
-        hl.add("4 5          <addr>              from");
+        hl.add("4 5,.        <addr>              from");
         hl.add("5 .            <addr>            peer");
         hl.add("2 3      bridge                  bridging information");
         hl.add("3 .        <num>                 bridge number");

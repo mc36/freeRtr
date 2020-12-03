@@ -589,8 +589,13 @@ public class userShow {
             a = cmd.word();
             addrIP frm = new addrIP();
             frm.fromString(a);
+            if (cmd.size() < 1) {
+                rdr.putStrTab(srv.getShow(frm));
+                return null;
+            }
+            a = cmd.word();
             addrIP per = new addrIP();
-            per.fromString(cmd.word());
+            per.fromString(a);
             userFormat res = srv.getShow(frm, per);
             if (res == null) {
                 cmd.error("no such peer");

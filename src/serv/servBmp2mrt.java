@@ -31,6 +31,7 @@ import user.userHelping;
 import util.bits;
 import util.cmds;
 import util.logger;
+import util.typLenVal;
 
 /**
  * bgp monitoring (rfc7854) protocol to multi-threaded routing (rfc6396) toolkit
@@ -335,6 +336,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         servBmp2mrtStat res = new servBmp2mrtStat();
         res.from = from.copyBytes();
         res.peer = peer.copyBytes();
+        res.as = as;
         if (crt == 0) {
             return stats.find(res);
         }
@@ -371,7 +373,6 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      */
     public void gotState(int as, addrIP src, addrIP spk, boolean st) {
         servBmp2mrtStat stat = getStat(spk, src, 1, as);
-        stat.as = as;
         stat.state = st;
         stat.since = bits.getTime();
         stat.change++;
@@ -403,6 +404,59 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     /**
+     * got counters
+     *
+     * @param as as number
+     * @param src source of packet
+     * @param spk got from speaker
+     * @param dat tlvs
+     */
+    public void gotCounts(int as, addrIP src, addrIP spk, packHolder dat) {
+        servBmp2mrtStat stat = getStat(spk, src, 1, as);
+        typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+        stat.repPack++;
+        stat.repLast = bits.getTime();
+        for (;;) {
+            if (tlv.getBytes(dat)) {
+                break;
+            }
+            stat.repTlv++;
+            switch (tlv.valTyp) {
+                case 0: // policy rejected
+                    stat.repPolRej = bits.msbGetD(tlv.valDat, 0);
+                    break;
+                case 1: // duplicate advertisements
+                    stat.repDupAdv = bits.msbGetD(tlv.valDat, 0);
+                    break;
+                case 2: // duplicate withdraws
+                    stat.repDupWit = bits.msbGetD(tlv.valDat, 0);
+                    break;
+                case 3: // cluster list loop
+                    stat.repClstrL = bits.msbGetD(tlv.valDat, 0);
+                    break;
+                case 4: // as path loop
+                    stat.repAsPath = bits.msbGetD(tlv.valDat, 0);
+                    break;
+                case 5: // originator id
+                    stat.repOrgnId = bits.msbGetD(tlv.valDat, 0);
+                    break;
+                case 6: // as confed loop
+                    stat.repAsConf = bits.msbGetD(tlv.valDat, 0);
+                    break;
+                case 11: // withdraw threated updates
+                    stat.repWitUpd = bits.msbGetD(tlv.valDat, 0);
+                    break;
+                case 12: // withdraw threated prefixes
+                    stat.repWitPrf = bits.msbGetD(tlv.valDat, 0);
+                    break;
+                case 13: // duplicate updates
+                    stat.repDupUpd = bits.msbGetD(tlv.valDat, 0);
+                    break;
+            }
+        }
+    }
+
+    /**
      * got update
      *
      * @param as as number
@@ -413,7 +467,6 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      */
     public synchronized void gotMessage(int as, addrIP src, addrIP spk, boolean dir, byte[] dat) {
         servBmp2mrtStat stat = getStat(spk, src, 1, as);
-        stat.as = as;
         if (dir) {
             stat.packOut++;
             stat.byteOut += dat.length;
@@ -522,30 +575,34 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * get show
      *
      * @param frm from
+     * @return result
+     */
+    public userFormat getShow(addrIP frm) {
+        servBmp2mrtStat res = new servBmp2mrtStat();
+        res.from = frm.copyBytes();
+        for (int i = 0; i < stats.size(); i++) {
+            servBmp2mrtStat cur = stats.get(i);
+            if (frm.compare(frm, cur.from) != 0) {
+                continue;
+            }
+            res.addCnts(cur);
+        }
+        return res.getShow();
+    }
+
+    /**
+     * get show
+     *
+     * @param frm from
      * @param per peer
      * @return result
      */
     public userFormat getShow(addrIP frm, addrIP per) {
-        userFormat res = new userFormat("|", "category|value");
         servBmp2mrtStat stat = getStat(frm, per, 0, 0);
         if (stat == null) {
             return null;
         }
-        res.add("from|" + stat.from);
-        res.add("peer|" + stat.peer);
-        res.add("as|" + stat.as);
-        res.add("state|" + stat.state);
-        res.add("since|" + bits.time2str(cfgAll.timeZoneName, stat.since + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(stat.since) + " ago)");
-        res.add("change|" + stat.change);
-        res.add("pack in|" + stat.packIn);
-        res.add("pack out|" + stat.packOut);
-        res.add("byte in|" + stat.byteIn);
-        res.add("byte out|" + stat.byteOut);
-        res.add("pack last|" + bits.time2str(cfgAll.timeZoneName, stat.packLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(stat.packLast) + " ago)");
-        res.add("process|" + stat.rouT + " " + stat.rouI);
-        res.add("neighbor|" + stat.nei);
-        res.add("direction|" + stat.rouD);
-        return res;
+        return stat.getShow();
     }
 
 }
@@ -585,6 +642,32 @@ class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
     public rtrBgpNeigh nei;
 
     public boolean dyn;
+
+    public long repLast;
+
+    public int repPack;
+
+    public int repTlv;
+
+    public int repPolRej;
+
+    public int repDupAdv;
+
+    public int repDupWit;
+
+    public int repClstrL;
+
+    public int repAsPath;
+
+    public int repOrgnId;
+
+    public int repAsConf;
+
+    public int repWitUpd;
+
+    public int repWitPrf;
+
+    public int repDupUpd;
 
     public int compare(servBmp2mrtStat o1, servBmp2mrtStat o2) {
         int i = o1.from.compare(o1.from, o2.from);
@@ -642,6 +725,67 @@ class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
         }
     }
 
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("from|" + from);
+        res.add("peer|" + peer);
+        res.add("as|" + as);
+        res.add("state|" + state);
+        res.add("since|" + bits.time2str(cfgAll.timeZoneName, since + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(since) + " ago)");
+        res.add("change|" + change);
+        res.add("pack in|" + packIn);
+        res.add("pack out|" + packOut);
+        res.add("byte in|" + byteIn);
+        res.add("byte out|" + byteOut);
+        res.add("pack last|" + bits.time2str(cfgAll.timeZoneName, packLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(packLast) + " ago)");
+        res.add("rep pack|" + repPack);
+        res.add("rep tlv|" + repTlv);
+        res.add("rep last|" + bits.time2str(cfgAll.timeZoneName, repLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(repLast) + " ago)");
+        res.add("rep policy drp|" + repPolRej);
+        res.add("rep dup advert|" + repDupAdv);
+        res.add("rep dup withdrw|" + repDupWit);
+        res.add("rep dup update|" + repDupUpd);
+        res.add("rep cluster id|" + repClstrL);
+        res.add("rep as path|" + repAsPath);
+        res.add("rep originator|" + repOrgnId);
+        res.add("rep confed|" + repAsConf);
+        res.add("rep bad updt|" + repWitUpd);
+        res.add("rep bad prfx|" + repWitPrf);
+        res.add("process|" + rouT + " " + rouI);
+        res.add("neighbor|" + nei);
+        res.add("direction|" + rouD);
+        return res;
+    }
+
+    public void addCnts(servBmp2mrtStat oth) {
+        if (since < oth.since) {
+            since = oth.since;
+        }
+        if (packLast < oth.packLast) {
+            packLast = oth.packLast;
+        }
+        if (repLast < oth.repLast) {
+            repLast = oth.repLast;
+        }
+        change += oth.change;
+        packIn += oth.packIn;
+        packOut += oth.packOut;
+        byteIn += oth.byteIn;
+        byteOut += oth.byteOut;
+        repPack += oth.repPack;
+        repTlv += oth.repTlv;
+        repPolRej += oth.repPolRej;
+        repDupAdv += oth.repDupAdv;
+        repDupWit += oth.repDupWit;
+        repDupUpd += oth.repDupUpd;
+        repClstrL += oth.repClstrL;
+        repAsPath += oth.repAsPath;
+        repOrgnId += oth.repOrgnId;
+        repAsConf += oth.repAsConf;
+        repWitUpd += oth.repWitUpd;
+        repWitPrf += oth.repWitPrf;
+    }
+
 }
 
 class servBmp2mrtConn implements Runnable {
@@ -689,7 +833,7 @@ class servBmp2mrtConn implements Runnable {
             if (pck.pipeRecv(pipe, 0, len, 144) != len) {
                 break;
             }
-            // typ = pck.getByte(0); // type
+            // per = pck.getByte(0); // peer type
             int flg = pck.getByte(1); // flags
             // int rd = pck.msbGetQ(2); // distinguisher
             pck.getAddr(adr, 10);
@@ -712,6 +856,10 @@ class servBmp2mrtConn implements Runnable {
                     pck.getSkip(1);
                     lower.gotState(as, adr, peer, false);
                     break;
+                case rtrBgpMon.typStat:
+                    pck.getSkip(4);
+                    lower.gotCounts(as, adr, peer, pck);
+                    continue;
                 default:
                     continue;
             }
