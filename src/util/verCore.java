@@ -43,7 +43,7 @@ public class verCore {
     /**
      * compile day
      */
-    public final static int day = 2;
+    public final static int day = 3;
 
     /**
      * statement of release

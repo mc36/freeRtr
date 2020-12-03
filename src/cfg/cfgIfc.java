@@ -41,6 +41,7 @@ import ifc.ifcAtmSar;
 import ifc.ifcBridgeIfc;
 import ifc.ifcBundleIfc;
 import ifc.ifcCdp;
+import ifc.ifcConnect;
 import ifc.ifcDn;
 import ifc.ifcDot1ad;
 import ifc.ifcDot1ah;
@@ -6399,10 +6400,28 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("xconnect")) {
             clear2xconnect();
             ifcEther eth = new ifcEther(ifaceNeedMacs());
+            ifcConnect con = new ifcConnect();
             xconn = new cfgXconnSide();
-            xconn.upper = eth.getSideEth();
             xconn.name = description.length() > 0 ? description : name;
-            xconn.pwtype = packLdpPwe.pwtEthPort;
+            xconn.upper = con.getSide1();
+            ifcUp upp = con.getSide2();
+            switch (type) {
+                case serial:
+                case virtppp:
+                    xconn.pwtype = packLdpPwe.pwtPpp;
+                    break;
+                case tunnel:
+                    xconn.pwtype = packLdpPwe.pwtIp;
+                    break;
+                case atm:
+                    xconn.pwtype = packLdpPwe.pwtAtmAal5;
+                    break;
+                default:
+                    xconn.pwtype = packLdpPwe.pwtEthPort;
+                    xconn.upper = eth.getSideEth();
+                    upp = eth.getSideTyp();
+                    break;
+            }
             xconn.pwmtu = ethtyp.getMTUsize();
             xconn.doCfg(cmd);
             if (!xconn.ready2run()) {
@@ -6410,9 +6429,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             xconn.start2run();
-            ethtyp.addET(-1, "xconn", eth.getSideTyp());
-            ethtyp.updateET(-1, eth.getSideTyp());
+            ethtyp.addET(-1, "xconn", upp);
+            ethtyp.updateET(-1, upp);
             eth.setPromiscous(true);
+            con.setPromiscous(true);
             return;
         }
         if (a.equals("pseudowire")) {

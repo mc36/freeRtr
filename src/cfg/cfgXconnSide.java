@@ -331,7 +331,17 @@ public class cfgXconnSide {
      */
     public void start2run() {
         if (pwtVlan) {
-            pwtype = packLdpPwe.pwtEthVlan;
+            switch (pwtype) {
+                case packLdpPwe.pwtPpp:
+                    pwtype = packLdpPwe.pwtHdlc;
+                    break;
+                case packLdpPwe.pwtAtmAal5:
+                    pwtype = packLdpPwe.pwtAtmPort;
+                    break;
+                default:
+                    pwtype = packLdpPwe.pwtEthVlan;
+                    break;
+            }
         }
         switch (pwmod) {
             case prPou:

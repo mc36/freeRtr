@@ -28,8 +28,8 @@ int eth1
  ipv6 addr 1234::1 ffff::
  exit
 int ser1
- enc isdn
- xconnect v1 eth1 l2tp3 1.1.1.2 1234
+ enc raw
+ xconnect v1 eth1 l2tp3 1.1.1.2 1234 vlan
  exit
 !
 
@@ -46,8 +46,8 @@ int eth1
  ipv6 addr 1234::2 ffff:ffff::
  exit
 int ser1
- enc isdn
- xconnect v1 eth1 l2tp3 1.1.1.1 1234
+ enc raw
+ xconnect v1 eth1 l2tp3 1.1.1.1 1234 vlan
  exit
 !
 
@@ -59,7 +59,6 @@ vrf def v1
  exit
 int ser1
  enc isdn
- isdn mode dce
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  ipv6 addr 4321::2 ffff::

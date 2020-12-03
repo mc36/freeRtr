@@ -28,8 +28,8 @@ int eth1
  ipv6 addr 1234::1 ffff::
  exit
 int ser1
- enc lapb
- xconnect v1 eth1 l2tp3 1.1.1.2 1234
+ enc raw
+ xconnect v1 eth1 l2tp3 1.1.1.2 1234 vlan
  exit
 !
 
@@ -46,9 +46,8 @@ int eth1
  ipv6 addr 1234::2 ffff:ffff::
  exit
 int ser1
- enc lapb
- lapb mode dce
- xconnect v1 eth1 l2tp3 1.1.1.1 1234
+ enc raw
+ xconnect v1 eth1 l2tp3 1.1.1.1 1234 vlan
  exit
 !
 

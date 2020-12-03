@@ -30,10 +30,8 @@ int eth1
  ipv6 addr 1234::1 ffff::
  exit
 int ser1
- enc framerelay
- framerelay lmi ansi
- framerelay dlci 123
- xconnect v1 eth1 l2tp3 1.1.1.2 1234
+ enc raw
+ xconnect v1 eth1 l2tp3 1.1.1.2 1234 vlan
  exit
 !
 
@@ -50,11 +48,8 @@ int eth1
  ipv6 addr 1234::2 ffff:ffff::
  exit
 int ser1
- enc framerelay
- framerelay mode dce
- framerelay lmi ansi
- framerelay dlci 123
- xconnect v1 eth1 l2tp3 1.1.1.1 1234
+ enc raw
+ xconnect v1 eth1 l2tp3 1.1.1.1 1234 vlan
  exit
 !
 

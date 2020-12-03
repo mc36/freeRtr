@@ -39,8 +39,8 @@ int eth1
 ipv4 route v1 2.2.2.2 255.255.255.255 1.1.1.2
 ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::2
 int ser1
- enc lapb
- xconnect v1 lo0 pweompls 2.2.2.2 1234
+ enc raw
+ xconnect v1 lo0 pweompls 2.2.2.2 1234 vlan
  exit
 !
 
@@ -68,9 +68,8 @@ int eth1
 ipv4 route v1 2.2.2.1 255.255.255.255 1.1.1.1
 ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::1
 int ser1
- enc lapb
- lapb mode dce
- xconnect v1 lo0 pweompls 2.2.2.1 1234
+ enc raw
+ xconnect v1 lo0 pweompls 2.2.2.1 1234 vlan
  exit
 !
 
