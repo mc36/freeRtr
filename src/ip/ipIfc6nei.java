@@ -182,6 +182,16 @@ public class ipIfc6nei implements ifcUp {
             default:
                 return true;
         }
+        if (ipaddr.compare(adrI, ipaddr) == 0) {
+            cntr.drop(pck, counter.reasons.badSrcAddr);
+            logger.info("ipv6 address conflict at " + lower);
+            return true;
+        }
+        if (lladdr.compare(adrI, lladdr) == 0) {
+            cntr.drop(pck, counter.reasons.badSrcAddr);
+            logger.info("linklocal address conflict at " + lower);
+            return true;
+        }
         pck.getSkip(siz);
         for (;;) {
             if (tlv.getBytes(pck)) {
