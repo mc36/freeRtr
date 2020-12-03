@@ -60,8 +60,8 @@ vrf def v1
  exit
 int eth1
  vrf for v1
- ipv4 addr 2.2.2.1 255.255.255.0
- ipv6 addr 4321::2 ffff::
+ ipv4 addr 2.2.2.3 255.255.255.0
+ ipv6 addr 4321::3 ffff::
  exit
 int tun1
  tun vrf v1

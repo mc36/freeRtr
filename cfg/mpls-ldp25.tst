@@ -100,7 +100,7 @@ ipv6 route v1 4321::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::3
 !
 
 addrouter r3
-int eth1 eth 0000.0000.2222 $2b$ $2a$
+int eth1 eth 0000.0000.3333 $2b$ $2a$
 !
 vrf def v1
  rd 1:1

@@ -69,7 +69,7 @@ ipv6 route v1 :: :: 1234:2::1
 !
 
 addrouter r4
-int eth1 eth 0000.0000.3333 $3b$ $3a$
+int eth1 eth 0000.0000.4444 $3b$ $3a$
 !
 vrf def v1
  rd 1:1
@@ -84,7 +84,7 @@ ipv6 route v1 :: :: 1234:2::1
 !
 
 addrouter r5
-int eth1 eth 0000.0000.3333 $4b$ $4a$
+int eth1 eth 0000.0000.5555 $4b$ $4a$
 !
 vrf def v1
  rd 1:1

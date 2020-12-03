@@ -415,7 +415,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * @param dat tlvs
      */
     public void gotCounts(int as, addrIP src, addrIP spk, packHolder dat) {
-        servBmp2mrtStat stat = getStat(spk, src, 1, as);
+        servBmp2mrtStat stat = getStat(spk, src, 2, as);
         typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
         stat.repPack++;
         stat.repLast = bits.getTime();

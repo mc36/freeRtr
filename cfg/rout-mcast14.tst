@@ -2,7 +2,7 @@ description multicast between pim and pim over bier
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
-int eth2 eth 0000.0000.5555 $4a$ $4b$
+int eth2 eth 0000.0000.1111 $4a$ $4b$
 !
 vrf def v1
  rd 1:1
