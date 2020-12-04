@@ -20,6 +20,8 @@ import util.typLenVal;
  */
 public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
 
+    private rtrBgp parent;
+
     private pipeSide pipe;
 
     private boolean need2run;
@@ -79,6 +81,15 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
      */
     public static final int typTerm = 5;
 
+    /**
+     * create instance
+     *
+     * @param lower parent
+     */
+    public rtrBgpMon(rtrBgp lower) {
+        parent = lower;
+    }
+
     public String toString() {
         return monName;
     }
@@ -107,12 +118,13 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
 
     /**
      * get tlv handler
+     *
      * @return tlv
      */
     public static typLenVal getTlv() {
         return new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
     }
-    
+
     /**
      * get configuration
      *
@@ -134,6 +146,33 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
+    }
+
+    private void sendCounter(packHolder pck, rtrBgpNeigh nei) {
+        if (nei == null) {
+            return;
+        }
+        if (nei.monitor != this) {
+            return;
+        }
+        pck.clear();
+        pck.msbPutD(0, 5); // number of counters
+        pck.putSkip(4);
+        pck.merge2end();
+        typLenVal tlv = getTlv();
+        tlv.valSiz = 4;
+        bits.msbPutD(tlv.valDat, 0, nei.conn.repPolRej);
+        tlv.putBytes(pck, 0); // policy reject
+        bits.msbPutD(tlv.valDat, 0, nei.conn.repClstrL);
+        tlv.putBytes(pck, 3); // cluster list loop
+        bits.msbPutD(tlv.valDat, 0, nei.conn.repAsPath);
+        tlv.putBytes(pck, 4); // aspath loop
+        bits.msbPutD(tlv.valDat, 0, nei.conn.repOrgnId);
+        tlv.putBytes(pck, 5); // originator id loop
+        bits.msbPutD(tlv.valDat, 0, nei.conn.repAsConf);
+        tlv.putBytes(pck, 6); // as confed loop
+        pck.merge2end();
+        doSend(pipe, pck, false, typStat, nei.conn, nei);
     }
 
     private void doWork() {
@@ -168,13 +207,15 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
                 continue;
             }
             cnt = 0;
-            pck.clear();
-            pck.putByte(0, 3); // version
-            pck.msbPutD(1, 6); // length
-            pck.putByte(5, typStat); // type
-            pck.putSkip(6);
-            pck.merge2beg();
-            pck.pipeSend(pipe, 0, pck.dataSize(), 1);
+            if (pipe.ready2tx() < 1024) {
+                continue;
+            }
+            for (int i = 0; i < parent.neighs.size(); i++) {
+                sendCounter(pck, parent.neighs.get(i));
+            }
+            for (int i = 0; i < parent.lstnNei.size(); i++) {
+                sendCounter(pck, parent.lstnNei.get(i));
+            }
         }
         logger.error("monitor " + monName + " down");
         pipe.setClose();

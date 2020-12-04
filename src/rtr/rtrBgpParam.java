@@ -1549,7 +1549,7 @@ public abstract class rtrBgpParam {
                 monitor = null;
                 return false;
             }
-            rtrBgpMon mon = new rtrBgpMon();
+            rtrBgpMon mon = new rtrBgpMon(null);
             mon.monName = cmd.word();
             monitor = lower.mons.find(mon);
             if (monitor == null) {

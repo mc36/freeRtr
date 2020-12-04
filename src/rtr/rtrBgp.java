@@ -3089,7 +3089,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("monitor")) {
-            rtrBgpMon mon = new rtrBgpMon();
+            rtrBgpMon mon = new rtrBgpMon(this);
             mon.monName = cmd.word();
             if (negated) {
                 mon = mons.del(mon);
