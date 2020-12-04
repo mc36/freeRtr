@@ -545,6 +545,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("connection = " + conn.cntr.getShStat());
         l.add("uncompressed = " + conn.compressCntr.getShStat());
         l.add("buffer = " + pipeSide.getStatus(conn.pipe));
+        l.add("policy reject = " + conn.repPolRej);
+        l.add("aspath loop = " + conn.repAsPath);
+        l.add("confed loop = " + conn.repAsConf);
+        l.add("originator id = " + conn.repOrgnId);
+        l.add("cluster list = " + conn.repClstrL);
     }
 
     /**

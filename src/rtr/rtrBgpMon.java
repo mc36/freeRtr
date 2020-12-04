@@ -11,6 +11,7 @@ import serv.servGeneric;
 import user.userTerminal;
 import util.bits;
 import util.logger;
+import util.typLenVal;
 
 /**
  * bgp monitor protocol
@@ -104,6 +105,14 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         new Thread(this).start();
     }
 
+    /**
+     * get tlv handler
+     * @return tlv
+     */
+    public static typLenVal getTlv() {
+        return new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+    }
+    
     /**
      * get configuration
      *

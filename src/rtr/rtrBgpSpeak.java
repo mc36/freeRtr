@@ -496,6 +496,31 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public counter compressCntr = new counter();
 
     /**
+     * policy rejected prefixes
+     */
+    public int repPolRej;
+
+    /**
+     * aspath loop prefixes
+     */
+    public int repAsPath;
+
+    /**
+     * confed loop prefixes
+     */
+    public int repAsConf;
+
+    /**
+     * originator loop prefixes
+     */
+    public int repOrgnId;
+
+    /**
+     * cluster loop prefixes
+     */
+    public int repClstrL;
+
+    /**
      * safi list sent by the peer
      */
     public int originalSafiList;
@@ -1928,6 +1953,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!neigh.softReconfig) {
             tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, neigh.remoteAs, cur, roumap, roupol, prflst);
             if (res == null) {
+                repPolRej++;
                 if (doPrefDel(learned, addpath, cur)) {
                     return;
                 }
@@ -2163,11 +2189,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 case rtrBgpUtil.peerExtrn:
                 case rtrBgpUtil.peerServr:
                     if (rtrBgpUtil.firstIntList(ntry.best.pathSeq, neigh.remoteAs)) {
+                        repAsPath++;
                         return true;
                     }
                     break;
                 case rtrBgpUtil.peerCnfed:
                     if (rtrBgpUtil.firstIntList(ntry.best.confSeq, neigh.remoteAs)) {
+                        repAsConf++;
                         return true;
                     }
                     break;
@@ -2180,17 +2208,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 case rtrBgpUtil.peerExtrn:
                 case rtrBgpUtil.peerServr:
                     if (rtrBgpUtil.findIntList(ntry.best.pathSeq, neigh.localAs) >= 0) {
+                        repAsPath++;
                         return true;
                     }
                     if (rtrBgpUtil.findIntList(ntry.best.pathSet, neigh.localAs) >= 0) {
+                        repAsPath++;
                         return true;
                     }
                     break;
                 case rtrBgpUtil.peerCnfed:
                     if (rtrBgpUtil.findIntList(ntry.best.confSeq, neigh.localAs) >= 0) {
+                        repAsConf++;
                         return true;
                     }
                     if (rtrBgpUtil.findIntList(ntry.best.confSet, neigh.localAs) >= 0) {
+                        repAsConf++;
                         return true;
                     }
                     break;
@@ -2204,11 +2236,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 a.fromIPv4addr(parent.routerID);
                 if (ntry.best.originator != null) {
                     if (a.compare(ntry.best.originator, a) == 0) {
+                        repOrgnId++;
                         return true;
                     }
                 }
                 if (ntry.best.clustList != null) {
                     if (rtrBgpUtil.findAddrList(ntry.best.clustList, a) >= 0) {
+                        repClstrL++;
                         return true;
                     }
                 }
@@ -2222,12 +2256,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 a = new addrIP();
                 a.fromIPv4addr(parent.routerID);
                 if (a.compare(ntry.best.originator, a) == 0) {
+                    repOrgnId++;
                     return true;
                 }
                 if (ntry.best.clustList == null) {
                     ntry.best.clustList = new ArrayList<addrIP>();
                 }
                 if (rtrBgpUtil.findAddrList(ntry.best.clustList, a) >= 0) {
+                    repClstrL++;
                     return true;
                 }
                 ntry.best.clustList.add(a);
