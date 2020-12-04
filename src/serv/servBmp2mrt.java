@@ -342,7 +342,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         }
         servBmp2mrtStat old = stats.add(res);
         if (old != null) {
-            if (old.as == 0) {
+            if (as != 0) {
                 old.as = as;
             }
             return old;
