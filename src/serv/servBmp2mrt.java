@@ -418,12 +418,12 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         servBmp2mrtStat stat = getStat(spk, src, 2, as);
         typLenVal tlv = rtrBgpMon.getTlv();
         stat.repPack++;
+        stat.repByte += dat.dataSize();
         stat.repLast = bits.getTime();
         for (;;) {
             if (tlv.getBytes(dat)) {
                 break;
             }
-            stat.repTlv++;
             switch (tlv.valTyp) {
                 case 0: // policy rejected
                     stat.repPolRej = bits.msbGetD(tlv.valDat, 0);
@@ -650,7 +650,7 @@ class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
 
     public int repPack;
 
-    public int repTlv;
+    public int repByte;
 
     public int repPolRej;
 
@@ -742,7 +742,7 @@ class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
         res.add("byte out|" + byteOut);
         res.add("pack last|" + bits.time2str(cfgAll.timeZoneName, packLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(packLast) + " ago)");
         res.add("report pack|" + repPack);
-        res.add("report tlv|" + repTlv);
+        res.add("report byte|" + repByte);
         res.add("report last|" + bits.time2str(cfgAll.timeZoneName, repLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(repLast) + " ago)");
         res.add("rep policy drp|" + repPolRej);
         res.add("rep dup advert|" + repDupAdv);
@@ -776,7 +776,7 @@ class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
         byteIn += oth.byteIn;
         byteOut += oth.byteOut;
         repPack += oth.repPack;
-        repTlv += oth.repTlv;
+        repByte += oth.repByte;
         repPolRej += oth.repPolRej;
         repDupAdv += oth.repDupAdv;
         repDupWit += oth.repDupWit;
