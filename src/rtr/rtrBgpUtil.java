@@ -2307,6 +2307,26 @@ public class rtrBgpUtil {
     }
 
     /**
+     * create end of rib message
+     *
+     * @param pck packet to update
+     * @param hlp helper packet
+     * @param safi address family
+     */
+    public static void createEndOfRib(packHolder pck, packHolder hlp, int safi) {
+        if (safi != safiIp4uni) {
+            placeUnreach(safi, false, pck, hlp, new ArrayList<tabRouteEntry<addrIP>>());
+        }
+        pck.merge2beg();
+        pck.msbPutW(0, pck.dataSize());
+        pck.putSkip(2);
+        pck.merge2beg();
+        pck.msbPutW(0, 0);
+        pck.putSkip(2);
+        pck.merge2beg();
+    }
+
+    /**
      * place user defined attribute
      *
      * @param trg target packet

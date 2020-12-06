@@ -445,7 +445,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     /**
      * transmit sleeper
      */
-    protected notifier transmit = new notifier();
+    public notifier transmit = new notifier();
 
     private boolean need2run;
 
@@ -701,8 +701,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if ((conn.peerAfis & mask) == 0) {
             return false;
         }
+        boolean needEor = false;
         if (conn.needFull.get() < 2) {
             will = new tabRoute<addrIP>(will);
+            needEor = (conn.needEorAfis & mask) != 0;
         }
         for (int i = 0; i < will.size(); i++) {
             tabRouteEntry<addrIP> wil = will.get(i);
@@ -732,6 +734,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             if (conn.txFree() < 1024) {
                 return true;
             }
+        }
+        if (needEor) {
+            conn.sendEndOfRib(safi);
+            conn.needEorAfis &= ~mask;
         }
         return false;
     }

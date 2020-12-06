@@ -451,6 +451,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public int refreshRx;
 
     /**
+     * eor needs in address families
+     */
+    public int needEorAfis;
+
+    /**
      * peer graceful restart capability
      */
     public int peerGrace;
@@ -1028,6 +1033,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             closeNow();
             return;
         }
+        needEorAfis = peerAfis;
         logger.warn("neighbor " + neigh.peerAddr + " up");
         if (neigh.monitor != null) {
             neigh.monitor.gotEvent(true, this, neigh);
@@ -1720,6 +1726,20 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 + advVpls.size() + advMspw.size() + advEvpn.size()
                 + advMdt.size() + advSrte.size() + advLnks.size()
                 + advMvpn.size() + advMvpo.size();
+    }
+
+    /**
+     * send update packet
+     *
+     * @param safi safi to update
+     */
+    public void sendEndOfRib(int safi) {
+        if (debugger.rtrBgpTraf) {
+            logger.debug("eor to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+        }
+        pckTx.clear();
+        rtrBgpUtil.createEndOfRib(pckTx, pckTh, safi);
+        packSend(pckTx, rtrBgpUtil.msgUpdate);
     }
 
     /**
