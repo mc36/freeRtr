@@ -25,6 +25,7 @@ import clnt.clntProxy;
 import clnt.clntSrEth;
 import clnt.clntSstp;
 import clnt.clntStun;
+import clnt.clntTdmOudp;
 import clnt.clntTelnet;
 import clnt.clntUti;
 import clnt.clntVxlan;
@@ -173,6 +174,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
          */
         prStun,
         /**
+         * tdmoudp
+         */
+        prTdm,
+        /**
          * telnet
          */
         prTelnet,
@@ -289,6 +294,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
 
     private clntBstun bstun;
 
+    private clntTdmOudp tdm;
+
     private clntTelnet telnet;
 
     private clntGtp gtp;
@@ -383,6 +390,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 return "anyconn";
             case prStun:
                 return "stun";
+            case prTdm:
+                return "tdmoudp";
             case prTelnet:
                 return "telnet";
             case prTls:
@@ -461,6 +470,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("bstun")) {
             return protocolType.prBstun;
+        }
+        if (s.equals("tdmoudp")) {
+            return protocolType.prTdm;
         }
         if (s.equals("telnet")) {
             return protocolType.prTelnet;
@@ -604,6 +616,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add("2 .    anyconn                      select anyconnect");
         l.add("2 .    stun                         select stun");
         l.add("2 .    bstun                        select bstun");
+        l.add("2 .    tdmoudp                      select tdm over udp");
         l.add("2 .    telnet                       select telnet");
         l.add("2 .    tls                          select tls");
         l.add("2 .    ssh                          select ssh");
@@ -932,6 +945,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             bstun.workStop();
             bstun = null;
         }
+        if (tdm != null) {
+            tdm.workStop();
+            tdm = null;
+        }
         if (telnet != null) {
             telnet.workStop();
             telnet = null;
@@ -1137,6 +1154,27 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 bstun.setUpper(ifaceDialer.getEncapProto());
                 bstun.workStart();
                 lower = bstun;
+                break;
+            case prTdm:
+                if (ifaceDialer == null) {
+                    return;
+                }
+                tdm = new clntTdmOudp();
+                tdm.target = target;
+                tdm.chanMin = pwmtu / 1000;
+                tdm.chanMax = pwmtu % 1000;
+                tdm.prefer = prefer;
+                tdm.vrf = proxy.vrf;
+                tdm.srcIfc = proxy.srcIfc;
+                tdm.prtR = vcid;
+                if (ctrlWrd) {
+                    tdm.prtL = -1;
+                } else {
+                    tdm.prtL = vcid;
+                }
+                tdm.setUpper(ifaceDialer.getEncapProto());
+                tdm.workStart();
+                lower = tdm;
                 break;
             case prTelnet:
                 if (ifaceDialer == null) {

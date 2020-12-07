@@ -118,6 +118,7 @@ class pipeModemTx extends TimerTask {
             doer();
         } catch (Exception e) {
             logger.traceback(e);
+            pipe.setClose();
             rtp.setClose();
         }
     }
