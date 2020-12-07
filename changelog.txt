@@ -9590,3 +9590,12 @@ qc pass: ppp address propagation
 qc pass: ip over framerelay
 ---------------------------------- 2020-12-07 04:39:16
 qc pass: framerelay asymmetric fragmentation
+---------------------------------- 2020-12-07 21:33:32
+qc pass: tdmoudp with middle channels
+qc pass: ppp with tdmoudp
+qc pass: hdlc with tdmoudp
+qc pass: lapb with tdmoudp
+qc pass: framerelay with tdmoudp
+qc pass: atmdxi with tdmoudp
+qc pass: isdn with tdmoudp
+qc pass: sep with tdmoudp
