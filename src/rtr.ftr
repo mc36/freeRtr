@@ -97,6 +97,7 @@ qc pass: framerelay ansi
 qc pass: framerelay cisco
 qc pass: framerelay q933
 qc pass: framerelay fragmentation
+qc pass: framerelay asymmetric fragmentation
 qc pass: ppp over framerelay
 qc pass: ip over framerelay
 qc pass: geneve over ipv4

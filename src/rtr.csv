@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v20.12.6-rel, done by cs@nop.
--;-;-;2020-12-06 22:59:36, took 00:05:27, with 100 workers, on 2263 cases, 0 failed, 0 traces, 4 retries
+-;-;-;freeRouter v20.12.7-rel, done by cs@nop.
+-;-;-;2020-12-07 04:45:17, took 00:06:01, with 100 workers, on 2264 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -101,8 +101,9 @@ http://sources.nop.hu/cfg/conn-framerelay01.tst;conn-framerelay01.tst;success;fr
 http://sources.nop.hu/cfg/conn-framerelay02.tst;conn-framerelay02.tst;success;framerelay cisco
 http://sources.nop.hu/cfg/conn-framerelay03.tst;conn-framerelay03.tst;success;framerelay q933
 http://sources.nop.hu/cfg/conn-framerelay04.tst;conn-framerelay04.tst;success;framerelay fragmentation
-http://sources.nop.hu/cfg/conn-framerelay05.tst;conn-framerelay05.tst;success;ppp over framerelay
-http://sources.nop.hu/cfg/conn-framerelay06.tst;conn-framerelay06.tst;success;ip over framerelay
+http://sources.nop.hu/cfg/conn-framerelay05.tst;conn-framerelay05.tst;success;framerelay asymmetric fragmentation
+http://sources.nop.hu/cfg/conn-framerelay06.tst;conn-framerelay06.tst;success;ppp over framerelay
+http://sources.nop.hu/cfg/conn-framerelay07.tst;conn-framerelay07.tst;success;ip over framerelay
 http://sources.nop.hu/cfg/conn-geneve01.tst;conn-geneve01.tst;success;geneve over ipv4
 http://sources.nop.hu/cfg/conn-geneve02.tst;conn-geneve02.tst;success;geneve over ipv6
 http://sources.nop.hu/cfg/conn-geneve03.tst;conn-geneve03.tst;success;geneve over loopback

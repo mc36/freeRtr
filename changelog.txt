@@ -9588,3 +9588,5 @@ qc pass: interop9: mpls over pppoe
 qc pass: ppp address propagation
 ---------------------------------- 2020-12-06 22:54:09
 qc pass: ip over framerelay
+---------------------------------- 2020-12-07 04:39:16
+qc pass: framerelay asymmetric fragmentation
