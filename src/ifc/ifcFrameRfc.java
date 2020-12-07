@@ -2,26 +2,25 @@ package ifc;
 
 import addr.addrEmpty;
 import addr.addrType;
+import ip.ipCor4;
+import ip.ipCor6;
+import ip.ipIfc4;
+import ip.ipIfc6;
 import pack.packHolder;
 import util.counter;
 import util.state;
 
 /**
- * ppp over frame relay (rfc1973) encapsulation handler
+ * ip over frame relay (rfc2427) encapsulation handler
  *
  * @author matecsaba
  */
-public class ifcFramePpp implements ifcUp, ifcDn {
+public class ifcFrameRfc implements ifcUp, ifcDn {
 
     /**
      * type of framerelay header
      */
-    public final static int frmType = 0x3cf;
-
-    /**
-     * type of ppp header
-     */
-    public final static int pppType = 0xff03;
+    public final static int frmType = 0x3;
 
     /**
      * size of headers
@@ -156,7 +155,7 @@ public class ifcFramePpp implements ifcUp, ifcDn {
     }
 
     public String toString() {
-        return "frppp on " + lower;
+        return "frrfc on " + lower;
     }
 
     /**
@@ -170,13 +169,25 @@ public class ifcFramePpp implements ifcUp, ifcDn {
             cntr.drop(pck, counter.reasons.tooSmall);
             return;
         }
-        int i = pck.msbGetW(0);
-        pck.getSkip(size);
+        int i = pck.getByte(0);
         if (i != frmType) {
             cntr.drop(pck, counter.reasons.badHdr);
             return;
         }
-        pck.msbPutW(0, pppType);
+        i = pck.getByte(1);
+        pck.getSkip(size);
+        switch (i) {
+            case ipCor4.protocolNLPID:
+                i = ipIfc4.type;
+                break;
+            case ipCor6.protocolNLPID:
+                i = ipIfc6.type;
+                break;
+            default:
+                cntr.drop(pck, counter.reasons.badTyp);
+                return;
+        }
+        pck.msbPutW(0, i);
         pck.putSkip(size);
         pck.merge2beg();
         upper.recvPack(pck);
@@ -189,8 +200,21 @@ public class ifcFramePpp implements ifcUp, ifcDn {
      */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
+        int i = pck.msbGetW(0);
+        switch (i) {
+            case ipIfc4.type:
+                i = ipCor4.protocolNLPID;
+                break;
+            case ipIfc6.type:
+                i = ipCor6.protocolNLPID;
+                break;
+            default:
+                cntr.drop(pck, counter.reasons.badTyp);
+                return;
+        }
         pck.getSkip(size);
-        pck.msbPutW(0, frmType);
+        pck.putByte(0, frmType);
+        pck.putByte(1, i);
         pck.putSkip(size);
         pck.merge2beg();
         lower.sendPack(pck);

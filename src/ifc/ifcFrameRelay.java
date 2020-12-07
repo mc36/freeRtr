@@ -495,7 +495,7 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
             checkPeerState(state.states.up);
             return;
         }
-        if ((fragLen < 1) || (pck.msbGetW(0) != fragType)) {
+        if (pck.msbGetW(0) != fragType) {
             upper.recvPack(pck);
             return;
         }

@@ -9586,3 +9586,5 @@ qc pass: interop9: pppoe server
 qc pass: interop9: mpls over pppoe
 ---------------------------------- 2020-11-30 09:00:58
 qc pass: ppp address propagation
+---------------------------------- 2020-12-06 22:54:09
+qc pass: ip over framerelay

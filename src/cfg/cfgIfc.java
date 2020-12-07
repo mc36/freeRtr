@@ -52,6 +52,7 @@ import ifc.ifcEthTyp;
 import ifc.ifcEther;
 import ifc.ifcFramePpp;
 import ifc.ifcFrameRelay;
+import ifc.ifcFrameRfc;
 import ifc.ifcHdlc;
 import ifc.ifcIpOnly;
 import ifc.ifcIsdn;
@@ -254,6 +255,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * frame relay handler
      */
     public ifcFrameRelay frmrly;
+
+    /**
+     * ip over frame relay handler
+     */
+    public ifcFrameRfc frmrfc;
 
     /**
      * ppp over frame relay handler
@@ -2882,6 +2888,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("iponly")) {
             enc = 10;
         }
+        if (a.equals("frrfc")) {
+            enc = 11;
+        }
         if (a.equals("dot1q")) {
             initVlan(new ifcDot1q());
             return false;
@@ -2951,6 +2960,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (frmppp != null) {
             frmppp = null;
         }
+        if (frmrfc != null) {
+            frmrfc = null;
+        }
         if (atmdxi != null) {
             atmdxi = null;
         }
@@ -3011,6 +3023,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 ipOnly = new ifcIpOnly();
                 lower.setUpper(ipOnly);
                 ipOnly.setUpper(ethtyp);
+                break;
+            case 11:
+                frmrfc = new ifcFrameRfc();
+                frmrly = new ifcFrameRelay();
+                lower.setUpper(frmrly);
+                frmrly.setUpper(frmrfc);
+                frmrfc.setUpper(ethtyp);
                 break;
             default:
                 ifcNull nul = new ifcNull();
@@ -5124,6 +5143,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (frmppp != null) {
                     s = "frppp";
                 }
+                if (frmrfc != null) {
+                    s = "frrfc";
+                }
                 if (atmdxi != null) {
                     s = "atmdxi";
                 }
@@ -5493,6 +5515,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 .     lapb                        set to lapb encapsulation");
         l.add("2 .     framerelay                  set to frame relay encapsulation");
         l.add("2 .     frppp                       set to ppp over frame relay encapsulation");
+        l.add("2 .     frrfc                       set to ip over frame relay encapsulation");
         l.add("2 .     atmdxi                      set to atm dxi encapsulation");
         l.add("2 .     raw                         set to raw encapsulation");
         l.add("2 .     sep                         set to sep encapsulation");
