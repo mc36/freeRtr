@@ -41,11 +41,31 @@ class pipeSyncTx extends TimerTask {
 
     private Timer keepTimer = new Timer();
 
+    private int syncSrc;
+    
+    private int seq;
+
     private int chnPre;
 
     private int chnUse;
 
     private int chnApp;
+
+    private packHolder pck = new packHolder(true, true);
+
+    private packHolder resBuf = new packHolder(true, true);
+
+    private int resVal;
+
+    private int resLen;
+
+    private int resOne;
+
+    private int paySiz;
+
+    private int payInt;
+
+    private final static int payMax = 1280;
 
     public pipeSyncTx(pipeSide pipe, packRtp rtp, int pre, int use, int app) {
         upper = pipe;
@@ -53,9 +73,64 @@ class pipeSyncTx extends TimerTask {
         chnPre = pre;
         chnUse = use;
         chnApp = app;
-        int paySiz = 1280 / (pre + use + app);
-        int payInt = 1000 / (8000 / paySiz);
+        syncSrc = bits.randomD();
+        paySiz = payMax / (pre + use + app);
+        payInt = 1000 / (8000 / paySiz);
         keepTimer.scheduleAtFixedRate(this, 10, payInt);
+        paySiz = (paySiz + 1) * use;
+    }
+
+    public void placeBit(boolean val) {
+        if (!val) {
+            resLen++;
+            return;
+        }
+        resVal |= 1 << resLen;
+        resLen++;
+    }
+
+    public void placeBytes() {
+        for (; resLen >= 8;) {
+            resBuf.putByte(0, resVal);
+            resBuf.putSkip(1);
+            resBuf.merge2end();
+            resLen -= 8;
+            resVal = resVal >>> 8;
+        }
+    }
+
+    public void placeFlag() {
+        placeBit(false);
+        placeBit(true);
+        placeBit(true);
+        placeBit(true);
+        placeBit(true);
+        placeBit(true);
+        placeBit(true);
+        placeBit(false);
+        placeBytes();
+        resOne = 0;
+    }
+
+    public void encodeBit(boolean val) {
+        placeBit(val);
+        if (!val) {
+            resOne = 0;
+            return;
+        }
+        resOne++;
+        if (resOne < 5) {
+            return;
+        }
+        placeBit(false);
+        resOne = 0;
+    }
+
+    public void encodeByte(int val) {
+        for (int i = 0; i < 8; i++) {
+            encodeBit(((val >>> i) & 1) != 0);
+        }
+        placeBytes();
     }
 
     public void doer() {
@@ -69,7 +144,50 @@ class pipeSyncTx extends TimerTask {
             conn.setClose();
             return;
         }
-
+        if (resBuf.dataSize() < 1) {
+            resBuf.clear();
+        }
+        for (; resBuf.dataSize() <= paySiz;) {
+            pck.clear();
+            if (pck.pipeRecv(upper, 0, 8192, 142) < 1) {
+                break;
+            }
+            int siz = pck.dataSize();
+            cryHashFcs16 fcs = new cryHashFcs16();
+            fcs.init();
+            pck.hashData(fcs, 0, siz);
+            for (int i = 0; i < siz; i++) {
+                encodeByte(pck.getByte(i));
+            }
+            byte[] buf = fcs.finish();
+            encodeByte(buf[0]);
+            encodeByte(buf[1]);
+            placeFlag();
+        }
+        for (; resBuf.dataSize() <= paySiz;) {
+            placeFlag();
+        }
+        pck.clear();
+        byte[] buf = new byte[chnUse];
+        for (; pck.dataSize() < payMax;) {
+            pck.putFill(0, chnPre, 0x7e);
+            pck.putSkip(chnPre);
+            resBuf.getCopy(buf, 0, 0, chnUse);
+            resBuf.getSkip(chnUse);
+            pck.putCopy(buf, 0, 0, chnUse);
+            pck.putSkip(chnUse);
+            pck.putFill(0, chnApp, 0x7e);
+            pck.putSkip(chnApp);
+            pck.merge2end();
+        }
+        pck.msbPutW(0, 0);
+        pck.msbPutW(2, seq);
+        seq++;
+        pck.putSkip(pipeSync.size);
+        pck.merge2beg();
+        pck.RTPtyp = 0;
+        pck.RTPsrc = syncSrc;
+        conn.sendPack(pck);
     }
 
     public void run() {
@@ -96,7 +214,7 @@ class pipeSyncRx implements Runnable {
 
     private int chnApp;
 
-    private packHolder resBuf;
+    private packHolder resBuf = new packHolder(true, true);
 
     private int resVal;
 
@@ -110,7 +228,6 @@ class pipeSyncRx implements Runnable {
         chnPre = pre;
         chnUse = use;
         chnApp = app;
-        resBuf = new packHolder(true, true);
         new Thread(this).start();
     }
 
