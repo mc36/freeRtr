@@ -15,6 +15,9 @@ import util.logger;
  */
 public class pipeSync {
 
+    /**
+     * size of header
+     */
     public final static int size = 4;
 
     /**
@@ -42,7 +45,7 @@ class pipeSyncTx extends TimerTask {
     private Timer keepTimer = new Timer();
 
     private int syncSrc;
-    
+
     private int seq;
 
     private int chnPre;
