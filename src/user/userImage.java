@@ -2,11 +2,11 @@ package user;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import pipe.pipeShell;
 import pipe.pipeSide;
+import tab.tabGen;
 import util.bits;
 import util.cmds;
 
@@ -87,6 +87,7 @@ public class userImage {
             String b = a.substring(i + 1, a.length()).trim();
             a = a.substring(0, i).trim().toLowerCase();
             if (a.equals("package")) {
+                allPkgs.del(pkg);
                 allPkgs.update(pkg);
                 pkg = new userImageNtry();
                 pkg.name = b;
@@ -288,56 +289,40 @@ public class userImage {
 
 class userImageList {
 
-    private final List<userImageNtry> lst = new ArrayList<userImageNtry>();
+    private final tabGen<userImageNtry> lst = new tabGen<userImageNtry>();
 
     private boolean needSorting = false;
 
     public void setSorting(boolean sorted) {
         needSorting = sorted;
-        if (!needSorting) {
-            return;
-        }
-        synchronized (lst) {
-            userImageNtry pkg = new userImageNtry();
-            Collections.sort(lst, pkg);
-        }
     }
 
     public userImageNtry startsWith(String a) {
-        synchronized (lst) {
-            userImageNtry pkg;
-            for (int i = 0; i < lst.size(); i++) {
-                pkg = lst.get(i);
-                if (a.startsWith(pkg.name)) {
-                    return pkg;
-                }
+        userImageNtry pkg;
+        for (int i = 0; i < lst.size(); i++) {
+            pkg = lst.get(i);
+            if (a.startsWith(pkg.name)) {
+                return pkg;
             }
-            return null;
         }
+        return null;
     }
 
     public userImageNtry find(String a) {
-        synchronized (lst) {
-            userImageNtry pkg = new userImageNtry();
-            pkg.name = a;
-            int i = Collections.binarySearch(lst, pkg, pkg);
-            if (i < 0) {
-                return null;
-            }
-            return lst.get(i);
-        }
+        userImageNtry pkg = new userImageNtry();
+        pkg.name = a;
+        return lst.find(pkg);
+    }
+
+    public userImageNtry del(userImageNtry pkg) {
+        pkg.name = pkg.name.trim();
+        return lst.del(pkg);
     }
 
     public userImageNtry del(String a) {
-        synchronized (lst) {
-            userImageNtry pkg = new userImageNtry();
-            pkg.name = a;
-            int i = Collections.binarySearch(lst, pkg, pkg);
-            if (i < 0) {
-                return null;
-            }
-            return lst.remove(i);
-        }
+        userImageNtry pkg = new userImageNtry();
+        pkg.name = a;
+        return lst.del(pkg);
     }
 
     public userImageNtry add(String a) {
@@ -349,55 +334,27 @@ class userImageList {
 
     public boolean update(userImageNtry pkg) {
         pkg.name = pkg.name.trim();
-        synchronized (lst) {
-            if (!needSorting) {
-                lst.add(pkg);
-                return false;
-            }
-            int i = Collections.binarySearch(lst, pkg, pkg);
-            boolean b;
-            if (i < 0) {
-                lst.add(pkg);
-                b = false;
-            } else {
-                lst.set(i, pkg);
-                b = true;
-            }
-            Collections.sort(lst, pkg);
-            return b;
-        }
+        return lst.add(pkg) != null;
     }
 
     public userImageNtry get(int i) {
-        synchronized (lst) {
-            if (i < 0) {
-                return null;
-            }
-            if (i >= lst.size()) {
-                return null;
-            }
-            return lst.get(i);
-        }
+        return lst.get(i);
     }
 
     public int size() {
-        synchronized (lst) {
-            return lst.size();
-        }
+        return lst.size();
     }
 
     public String toString() {
-        synchronized (lst) {
-            String s = "";
-            long o = 0;
-            for (int i = 0; i < lst.size(); i++) {
-                userImageNtry pkg = lst.get(i);
-                o += pkg.size;
-                s += " " + pkg.name;
-            }
-            s += " - " + o / 1024 + " kb";
-            return s.substring(1, s.length());
+        String s = "";
+        long o = 0;
+        for (int i = 0; i < lst.size(); i++) {
+            userImageNtry pkg = lst.get(i);
+            o += pkg.size;
+            s += " " + pkg.name;
         }
+        s += " - " + o / 1024 + " kb";
+        return s.substring(1, s.length());
     }
 
 }

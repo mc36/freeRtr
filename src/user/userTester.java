@@ -276,6 +276,9 @@ public class userTester {
             if (s.equals("openjdk15")) {
                 jvn = "/usr/lib/jvm/java-15-openjdk-amd64/bin/java";
             }
+            if (s.equals("openjdk16")) {
+                jvn = "/usr/lib/jvm/java-16-openjdk-amd64/bin/java";
+            }
             if (s.equals("ikvm")) {
                 jvn = "/usr/bin/ikvm";
                 mem = 0;
