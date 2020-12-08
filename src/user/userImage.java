@@ -31,13 +31,41 @@ public class userImage {
 
     private String mirror = "http://deb.debian.org/debian/";
 
-    private userImageList allPkgs = new userImageList();
+    private tabGen<userImageNtry> allPkgs = new tabGen<userImageNtry>();
 
-    private userImageList missing = new userImageList();
+    private tabGen<userImageNtry> missing = new tabGen<userImageNtry>();
 
-    private userImageList selected = new userImageList();
+    private tabGen<userImageNtry> selected = new tabGen<userImageNtry>();
 
-    private userImageList forbidden = new userImageList();
+    private tabGen<userImageNtry> forbidden = new tabGen<userImageNtry>();
+
+    private userImageNtry startsWith(tabGen<userImageNtry> lst, String a) {
+        for (int i = 0; i < lst.size(); i++) {
+            userImageNtry pkg = lst.get(i);
+            if (a.startsWith(pkg.name)) {
+                return pkg;
+            }
+        }
+        return null;
+    }
+
+    private String dumpList(tabGen<userImageNtry> lst, boolean detail) {
+        String s = "";
+        long o = 0;
+        for (int i = 0; i < lst.size(); i++) {
+            userImageNtry pkg = lst.get(i);
+            o += pkg.size;
+            if (!detail) {
+                continue;
+            }
+            s += " " + pkg.name;
+        }
+        if (detail) {
+            s += " - ";
+        }
+        s += o / 1024 + " kb in " + lst.size() + " packages";
+        return s.substring(1, s.length());
+    }
 
     private int exec(String s) {
         pip.linePut("!" + s + ".");
@@ -77,7 +105,7 @@ public class userImage {
         if (res == null) {
             return true;
         }
-        userImageNtry pkg = new userImageNtry();
+        userImageNtry pkg = new userImageNtry("");
         for (int cnt = 0; cnt < res.size(); cnt++) {
             String a = res.get(cnt).trim();
             int i = a.indexOf(":");
@@ -87,10 +115,8 @@ public class userImage {
             String b = a.substring(i + 1, a.length()).trim();
             a = a.substring(0, i).trim().toLowerCase();
             if (a.equals("package")) {
-                allPkgs.del(pkg);
-                allPkgs.update(pkg);
-                pkg = new userImageNtry();
-                pkg.name = b;
+                allPkgs.put(pkg);
+                pkg = new userImageNtry(b);
                 continue;
             }
             if (a.equals("depends")) {
@@ -123,16 +149,17 @@ public class userImage {
         if (nam.length() < 1) {
             return;
         }
-        if (forbidden.startsWith(nam) != null) {
+        if (startsWith(forbidden, nam) != null) {
             return;
         }
-        userImageNtry pkt = allPkgs.find(nam);
+        userImageNtry pkt = new userImageNtry(nam);
+        pkt = allPkgs.find(pkt);
         if (pkt == null) {
-            missing.add(nam);
+            missing.add(new userImageNtry(nam));
             return;
         }
         pkt.added = by;
-        if (selected.update(pkt)) {
+        if (selected.add(pkt) != null) {
             return;
         }
         for (int i = 0; i < pkt.depend.size(); i++) {
@@ -170,9 +197,6 @@ public class userImage {
             cmd.error("no such file");
             return;
         }
-        missing.setSorting(true);
-        selected.setSorting(true);
-        forbidden.setSorting(true);
         for (int cnt = 0; cnt < res.size(); cnt++) {
             String s = res.get(cnt);
             s = s.replaceAll("%tmp%", tempDir);
@@ -230,21 +254,16 @@ public class userImage {
                 }
                 continue;
             }
-            if (a.equals("catalog-sort")) {
-                cmd.error("sorting " + allPkgs.size() + " entries");
-                allPkgs.setSorting(true);
-                continue;
-            }
             if (a.equals("select-one")) {
                 selectOnePackage(0, s, s);
                 continue;
             }
             if (a.equals("select-dis")) {
-                forbidden.add(s);
+                forbidden.add(new userImageNtry(s));
                 continue;
             }
             if (a.equals("select-del")) {
-                selected.del(s);
+                selected.del(new userImageNtry(s));
                 continue;
             }
             if (a.equals("select-lst")) {
@@ -255,11 +274,13 @@ public class userImage {
             }
             if (a.equals("select-sum")) {
                 cmd.error("");
-                cmd.error("forbidden: " + forbidden);
+                cmd.error("available: " + dumpList(allPkgs, false));
                 cmd.error("");
-                cmd.error("selected: " + selected);
+                cmd.error("forbidden: " + dumpList(forbidden, true));
                 cmd.error("");
-                cmd.error("missing: " + missing);
+                cmd.error("selected: " + dumpList(selected, true));
+                cmd.error("");
+                cmd.error("missing: " + dumpList(missing, true));
                 cmd.error("");
                 continue;
             }
@@ -287,78 +308,6 @@ public class userImage {
 
 }
 
-class userImageList {
-
-    private final tabGen<userImageNtry> lst = new tabGen<userImageNtry>();
-
-    private boolean needSorting = false;
-
-    public void setSorting(boolean sorted) {
-        needSorting = sorted;
-    }
-
-    public userImageNtry startsWith(String a) {
-        userImageNtry pkg;
-        for (int i = 0; i < lst.size(); i++) {
-            pkg = lst.get(i);
-            if (a.startsWith(pkg.name)) {
-                return pkg;
-            }
-        }
-        return null;
-    }
-
-    public userImageNtry find(String a) {
-        userImageNtry pkg = new userImageNtry();
-        pkg.name = a;
-        return lst.find(pkg);
-    }
-
-    public userImageNtry del(userImageNtry pkg) {
-        pkg.name = pkg.name.trim();
-        return lst.del(pkg);
-    }
-
-    public userImageNtry del(String a) {
-        userImageNtry pkg = new userImageNtry();
-        pkg.name = a;
-        return lst.del(pkg);
-    }
-
-    public userImageNtry add(String a) {
-        userImageNtry pkg = new userImageNtry();
-        pkg.name = a;
-        update(pkg);
-        return pkg;
-    }
-
-    public boolean update(userImageNtry pkg) {
-        pkg.name = pkg.name.trim();
-        return lst.add(pkg) != null;
-    }
-
-    public userImageNtry get(int i) {
-        return lst.get(i);
-    }
-
-    public int size() {
-        return lst.size();
-    }
-
-    public String toString() {
-        String s = "";
-        long o = 0;
-        for (int i = 0; i < lst.size(); i++) {
-            userImageNtry pkg = lst.get(i);
-            o += pkg.size;
-            s += " " + pkg.name;
-        }
-        s += " - " + o / 1024 + " kb";
-        return s.substring(1, s.length());
-    }
-
-}
-
 class userImageNtry implements Comparator<userImageNtry> {
 
     public String name = "";
@@ -374,6 +323,10 @@ class userImageNtry implements Comparator<userImageNtry> {
     public List<String> depend = new ArrayList<String>();
 
     public int level;
+
+    public userImageNtry(String n) {
+        name = n.trim();
+    }
 
     public int compare(userImageNtry o1, userImageNtry o2) {
         return o1.name.compareTo(o2.name);

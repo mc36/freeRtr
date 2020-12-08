@@ -35,8 +35,6 @@ exec cp ../binTmp/tapInt.bin %tmp%/rtr/
 catalog-read sid main
 catalog-read experimental main
 
-catalog-sort
-
 select-dis debconf
 select-dis adduser
 select-dis passwd
