@@ -3290,7 +3290,6 @@ public class userConfig {
             if (i < 1) {
                 i = 512;
             }
-            cmd.error("generating " + i + " bit long key");
             key.keyMake(i);
             if (key.keyVerify()) {
                 cmd.error("bad key generated");
@@ -3299,7 +3298,6 @@ public class userConfig {
             key.keyName = nam;
             cfgKey<T> cfg = cfgAll.keyFind(lst, nam, true);
             cfg.key = key;
-            cmd.error("done");
             return;
         }
     }
