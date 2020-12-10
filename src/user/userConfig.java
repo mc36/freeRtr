@@ -247,10 +247,9 @@ public class userConfig {
      * execute one command
      *
      * @param a the command to execute
-     * @return status of operation null - continue processing "x" - exec command
-     * requested "" - exec prompt requested
+     * @return status of operation, false to continue processing
      */
-    public String executeCommand(String a) {
+    public boolean executeCommand(String a) {
         if (a == null) {
             a = "";
         }
@@ -261,55 +260,85 @@ public class userConfig {
         }
         a = cmd.word();
         if (a.length() < 1) {
-            return null;
+            return false;
         }
         if (a.equals("exit")) {
             if (modeV == modes.global) {
-                return "";
+                return true;
             }
             resetMode();
-            return null;
+            return false;
         }
         if (a.equals("end")) {
             resetMode();
-            return "";
+            return true;
         }
         if (a.equals("show")) {
             if (reader.timeStamp) {
                 pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             }
-            userShow s = new userShow();
+            userShow shw = new userShow();
             cmd = reader.setFilter(cmd);
-            s.cmd = cmd;
-            s.rdr = reader;
-            s.hlp = getHelping(false, false);
-            a = s.doer();
+            shw.cmd = cmd;
+            shw.rdr = reader;
+            shw.hlp = getHelping(false, false);
+            if (authorization != null) {
+                authResult ntry = authorization.authUserCommand(username, cmd.getRemaining());
+                if (ntry.result != authResult.authSuccessful) {
+                    pipe.linePut("% not authorized to show that");
+                    return false;
+                }
+            }
+            a = shw.doer();
             if (a == null) {
-                return null;
+                return false;
             }
             userExec e = new userExec(pipe, reader);
             a = e.repairCommand(a);
+            if (authorization != null) {
+                authResult ntry = authorization.authUserCommand(username, a);
+                if (ntry.result != authResult.authSuccessful) {
+                    pipe.linePut("% not authorized to execute that");
+                    return false;
+                }
+            }
             e.executeCommand(a);
-            return null;
+            return false;
         }
         if (a.equals("do")) {
-            return cmd.getRemaining();
+            if (reader.timeStamp) {
+                pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+            }
+            userExec exe = new userExec(pipe, reader);
+            exe.privileged = true;
+            exe.authorization = authorization;
+            exe.username = username;
+            a = exe.repairCommand(cmd.getRemaining());
+            if (authorization != null) {
+                authResult ntry = authorization.authUserCommand(username, a);
+                if (ntry.result != authResult.authSuccessful) {
+                    pipe.linePut("% not authorized to do that");
+                    return false;
+                }
+            }
+            exe.executeCommand(a);
+            return false;
         }
         cmd = cmd.copyBytes(true);
         switch (modeV) {
             case global:
                 doGlobal();
-                return null;
+                return false;
             case server:
                 modeDserver.doCfgStr(cmd);
-                return null;
+                return false;
             case config:
                 modeDconfig.doCfgStr(cmd);
-                return null;
+                return false;
             default:
                 cmd.badCmd();
                 resetMode();
-                return null;
+                return false;
         }
     }
 
@@ -318,17 +347,17 @@ public class userConfig {
      *
      * @return status of operation, see at one command
      */
-    public String doCommand() {
+    public boolean doCommand() {
         reader.setContext(getHelping(true, true), cfgAll.hostName + getPrompt() + "#");
         String s = reader.readLine(reader.deactive, "exit");
         if (s == null) {
-            return "";
+            return true;
         }
         if (authorization != null) {
             authResult ntry = authorization.authUserCommand(username, s);
             if (ntry.result != authResult.authSuccessful) {
-                pipe.linePut("% not authorized to do that");
-                return null;
+                pipe.linePut("% not authorized to configure that");
+                return false;
             }
         }
         return executeCommand(s);

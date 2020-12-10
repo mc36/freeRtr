@@ -1660,7 +1660,7 @@ public class userExec {
             if (authorization != null) {
                 authResult ntry = authorization.authUserCommand(username, s);
                 if (ntry.result != authResult.authSuccessful) {
-                    pipe.linePut("% not authorized to do that");
+                    pipe.linePut("% not authorized to execute that");
                     continue;
                 }
             }

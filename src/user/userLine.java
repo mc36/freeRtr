@@ -667,25 +667,9 @@ class userLineHandler implements Runnable {
             }
             for (;;) {
                 last = bits.getTime();
-                s = cfg.doCommand();
-                if (s == null) {
-                    continue;
-                }
-                if (s.length() < 1) {
+                if (cfg.doCommand()) {
                     break;
                 }
-                if (rdr.timeStamp) {
-                    pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
-                }
-                s = exe.repairCommand(s);
-                if (exe.authorization != null) {
-                    authResult ntry = exe.authorization.authUserCommand(exe.username, s);
-                    if (ntry.result != authResult.authSuccessful) {
-                        pipe.linePut("% not authorized to do that");
-                        continue;
-                    }
-                }
-                exe.executeCommand(s);
             }
             if (pipe.isClosed() == 0) {
                 sesStart = null;
