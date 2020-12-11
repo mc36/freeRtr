@@ -10,6 +10,7 @@ import cfg.cfgAll;
 import cfg.cfgAuther;
 import cfg.cfgBndl;
 import cfg.cfgBrdg;
+import cfg.cfgCheck;
 import cfg.cfgDial;
 import cfg.cfgIfc;
 import cfg.cfgInit;
@@ -62,8 +63,6 @@ import rtr.rtrRip6neigh;
 import serv.servBmp2mrt;
 import serv.servDns;
 import serv.servHttp;
-import serv.servNrpe;
-import serv.servPrometheus;
 import serv.servStreamingMdt;
 import tab.tabGen;
 import tab.tabIntMatcher;
@@ -532,17 +531,23 @@ public class userShow {
             rdr.putStrTab(srv.getShow(adr, p, k));
             return null;
         }
-        if (a.equals("nrpe")) {
-            servNrpe srv = cfgAll.srvrFind(new servNrpe(), cfgAll.dmnNrpe, cmd.word());
+        if (a.equals("check")) {
+            a = cmd.word();
+            if (a.length() < 1) {
+                userFormat l = new userFormat("|", "name|state|asked|reply|times|last|times|last", "4|2pass|2fail");
+                for (int i = 0; i < cfgAll.checks.size(); i++) {
+                    cfgCheck ntry = cfgAll.checks.get(i);
+                    l.add(ntry.name + "|" + (ntry.doCheck().size() < 1) + "|" + (ntry.okNum + ntry.errNum) + "|" + ntry.tim + "|" + ntry.okNum + "|" + bits.timePast(ntry.okTim) + "|" + ntry.errNum + "|" + bits.timePast(ntry.errTim));
+                }
+                rdr.putStrTab(l);
+                return null;
+            }
+            cfgCheck srv = cfgAll.checkFind(a, false);
             if (srv == null) {
-                cmd.error("no such server");
+                cmd.error("no such check");
                 return null;
             }
-            if (cmd.size() < 1) {
-                rdr.putStrTab(srv.getShow());
-                return null;
-            }
-            rdr.putStrArr(srv.getShow(cmd.word()));
+            rdr.putStrArr(srv.getShow());
             return null;
         }
         if (a.equals("dashboard")) {

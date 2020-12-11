@@ -15,6 +15,7 @@ import cfg.cfgBndl;
 import cfg.cfgBrdg;
 import cfg.cfgCert;
 import cfg.cfgChat;
+import cfg.cfgCheck;
 import cfg.cfgDial;
 import cfg.cfgEvntmgr;
 import cfg.cfgGeneric;
@@ -466,6 +467,8 @@ public class userConfig {
         l.add("2  .    <num>                        number of bundle group");
         l.add("1  2  hairpin                        interface hairpin parameters");
         l.add("2  .    <num>                        number of hairpin group");
+        l.add("1  2  check                          check parameters");
+        l.add("2  .    <name>                       name of check");
         l.add("1  2  sensor                         sensor parameters");
         l.add("2  .    <name>                       name of sensor");
         l.add("1  2  dial-peer                      dial peer parameters");
@@ -930,6 +933,15 @@ public class userConfig {
             modeDconfig = cfgAll.hrpnFind(cmd.word(), true);
             if (modeDconfig == null) {
                 cmd.error("invalid hairpin number");
+                return;
+            }
+            modeV = modes.config;
+            return;
+        }
+        if (a.equals("check")) {
+            modeDconfig = cfgAll.checkFind(cmd.word(), true);
+            if (modeDconfig == null) {
+                cmd.error("invalid check name");
                 return;
             }
             modeV = modes.config;
@@ -1803,6 +1815,14 @@ public class userConfig {
             cfgHrpn ntry = cfgAll.hrpnDel(cmd.word());
             if (ntry == null) {
                 cmd.error("invalid bundle number");
+                return;
+            }
+            return;
+        }
+        if (a.equals("check")) {
+            cfgCheck ntry = cfgAll.checkDel(cmd.word());
+            if (ntry == null) {
+                cmd.error("invalid check name");
                 return;
             }
             return;

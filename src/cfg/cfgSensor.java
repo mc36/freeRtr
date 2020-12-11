@@ -163,6 +163,10 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         prefix = n;
         prepend = n;
     }
+    
+    public String toString() {
+        return name;
+    }
 
     public int compare(cfgSensor o1, cfgSensor o2) {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());

@@ -164,6 +164,11 @@ public class cfgAll {
     public static final tabGen<cfgDial> dials = new tabGen<cfgDial>();
 
     /**
+     * list of checks
+     */
+    public static final tabGen<cfgCheck> checks = new tabGen<cfgCheck>();
+
+    /**
      * list of sensors
      */
     public static final tabGen<cfgSensor> sensors = new tabGen<cfgSensor>();
@@ -2837,6 +2842,44 @@ public class cfgAll {
     }
 
     /**
+     * find one check
+     *
+     * @param nam name of this
+     * @param create create new on this number if not found
+     * @return descriptor, null if not found
+     */
+    public static cfgCheck checkFind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgCheck ntry = new cfgCheck(nam);
+        if (!create) {
+            return checks.find(ntry);
+        }
+        cfgCheck old = checks.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        return ntry;
+    }
+
+    /**
+     * delete one check
+     *
+     * @param nam name of this
+     * @return descriptor, null if not found
+     */
+    public static cfgCheck checkDel(String nam) {
+        cfgCheck ntry = new cfgCheck(nam);
+        ntry = checks.del(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        return ntry;
+    }
+
+    /**
      * find one sensor
      *
      * @param nam name of this
@@ -2860,7 +2903,7 @@ public class cfgAll {
     }
 
     /**
-     * delete one dial peer
+     * delete one sensor
      *
      * @param nam name of this
      * @return descriptor, null if not found
@@ -3252,6 +3295,7 @@ public class cfgAll {
         servGenList.listGetRun(l, xconnects, filter);
         servGenList.listGetRun(l, iconnects, filter);
         servGenList.listGetRun(l, tabNshNtry.services, filter);
+        servGenList.listGetRun(l, checks, filter);
         servGenList.listGetRun(l, sensors, filter);
         servGenList.listGetRun(l, trnsltns, filter);
         servGenList.listGetRun(l, dials, filter);

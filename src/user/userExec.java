@@ -941,9 +941,8 @@ public class userExec {
         hl.add("4 .          <name>              zone name");
         hl.add("2 3      http                    http protocol information");
         hl.add("3 .        <name>                server name");
-        hl.add("2 3      nrpe                    nrpe protocol information");
-        hl.add("3 4,.      <name>                server name");
-        hl.add("4 .          <name>              check name");
+        hl.add("2 3,.    check                   check information");
+        hl.add("3 .          <name>              check name");
         hl.add("2 3,.    sensor                  sensor information");
         hl.add("3 .        <name>                exporter name");
         hl.add("2 3      streamingmdt            streaming telemetry information");
