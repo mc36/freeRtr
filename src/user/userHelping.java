@@ -377,6 +377,9 @@ public class userHelping {
      * @return repaired line, variables preserved, empty if no guess
      */
     public String repairLine(String a) {
+        if (a == null) {
+            return "";
+        }
         userHelpingList d = whereAm(a);
         if (d.level < 0) {
             return "";
