@@ -512,8 +512,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         if (inherit == null) {
             return l;
         }
-        inherit.makeFancy(l);
-        return l;
+        return inherit.makeFancy(l);
     }
 
     private void doCheckMiss(List<String> lst, List<String> res) {
