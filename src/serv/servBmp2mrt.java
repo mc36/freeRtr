@@ -470,6 +470,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      */
     public synchronized void gotMessage(int as, addrIP src, addrIP spk, boolean dir, byte[] dat) {
         servBmp2mrtStat stat = getStat(spk, src, 1, as);
+        stat.state = true;
         if (dir) {
             stat.packOut++;
             stat.byteOut += dat.length;

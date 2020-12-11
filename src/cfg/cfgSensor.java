@@ -132,6 +132,7 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
+        "sensor .*! no command",
         "sensor .*! name 0",
         "sensor .*! no labels",
         "sensor .*! addname -1 null",
