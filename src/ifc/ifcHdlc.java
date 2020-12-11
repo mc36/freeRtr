@@ -285,7 +285,7 @@ public class ifcHdlc implements ifcUp, ifcDn {
             return;
         }
         sequenceRx = gotTsq;
-        if (gotRsq != sequenceTx) {
+        if ((gotRsq != sequenceTx) && (gotRsq != (sequenceTx - 1))) {
             cntr.drop(pck, counter.reasons.badRxSeq);
             return;
         }
