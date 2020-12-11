@@ -20,7 +20,7 @@ if {[string length $diff] > 3} {
  return
  }
 
-config "server nrpe hbone" "check $check train $part"
+config "check $check" "train $part"
 exec "write"
 exec "write network"
 

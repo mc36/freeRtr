@@ -228,46 +228,46 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     }
 
     public List<String> getShRun(boolean filter) {
-        List<String> lst = new ArrayList<String>();
-        lst.add("check " + name);
-        lst.add(cmds.tabulator + "command " + command);
-        cmds.cfgLine(lst, inherit == null, cmds.tabulator, "inherit", "" + inherit);
+        List<String> l = new ArrayList<String>();
+        l.add("check " + name);
+        cmds.cfgLine(l, command == null, cmds.tabulator, "command", "" + command);
+        cmds.cfgLine(l, inherit == null, cmds.tabulator, "inherit", "" + inherit);
         for (int i = 0; i < ress.size(); i++) {
-            lst.add(cmds.tabulator + "resolve " + ress.get(i));
+            l.add(cmds.tabulator + "resolve " + ress.get(i));
         }
         for (int i = 0; i < reps.size(); i++) {
-            lst.add(cmds.tabulator + "replace " + reps.get(i));
+            l.add(cmds.tabulator + "replace " + reps.get(i));
         }
-        cmds.cfgLine(lst, dsc == null, cmds.tabulator, "description", dsc);
-        cmds.cfgLine(lst, err == null, cmds.tabulator, "error-text", err);
-        cmds.cfgLine(lst, !alternate, cmds.tabulator, "alternate", "");
-        cmds.cfgLine(lst, !sendCmds, cmds.tabulator, "error-commands", "");
-        cmds.cfgLine(lst, !sendMyId, cmds.tabulator, "error-hostname", "");
-        cmds.cfgLine(lst, !noState, cmds.tabulator, "error-states", "");
+        cmds.cfgLine(l, dsc == null, cmds.tabulator, "description", dsc);
+        cmds.cfgLine(l, err == null, cmds.tabulator, "error-text", err);
+        cmds.cfgLine(l, !alternate, cmds.tabulator, "alternate", "");
+        cmds.cfgLine(l, !sendCmds, cmds.tabulator, "error-commands", "");
+        cmds.cfgLine(l, !sendMyId, cmds.tabulator, "error-hostname", "");
+        cmds.cfgLine(l, !noState, cmds.tabulator, "error-states", "");
         for (int i = 0; i < ignT.size(); i++) {
-            lst.add(cmds.tabulator + "ignore-text " + ignT.get(i));
+            l.add(cmds.tabulator + "ignore-text " + ignT.get(i));
         }
         for (int i = 0; i < allT.size(); i++) {
-            lst.add(cmds.tabulator + "ignorall-text " + allT.get(i));
+            l.add(cmds.tabulator + "ignorall-text " + allT.get(i));
         }
         for (int i = 0; i < ignR.size(); i++) {
-            lst.add(cmds.tabulator + "ignore-regexp " + ignR.get(i));
+            l.add(cmds.tabulator + "ignore-regexp " + ignR.get(i));
         }
         for (int i = 0; i < allR.size(); i++) {
-            lst.add(cmds.tabulator + "ignorall-regexp " + allR.get(i));
+            l.add(cmds.tabulator + "ignorall-regexp " + allR.get(i));
         }
         for (int i = 0; i < reqT.size(); i++) {
-            lst.add(cmds.tabulator + "require-text " + reqT.get(i));
+            l.add(cmds.tabulator + "require-text " + reqT.get(i));
         }
         for (int i = 0; i < reqR.size(); i++) {
-            lst.add(cmds.tabulator + "require-regexp " + reqR.get(i));
+            l.add(cmds.tabulator + "require-regexp " + reqR.get(i));
         }
-        lst.add(cmds.tabulator + cmds.finish);
-        lst.add(cmds.comment);
+        l.add(cmds.tabulator + cmds.finish);
+        l.add(cmds.comment);
         if (!filter) {
-            return lst;
+            return l;
         }
-        return userFilter.filterText(lst, defaultF);
+        return userFilter.filterText(l, defaultF);
     }
 
     public void doCfgStr(cmds cmd) {
@@ -297,6 +297,9 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         }
         if (s.equals("command")) {
             command = cmd.getRemaining();
+            if (negated) {
+                command = null;
+            }
             return;
         }
         if (s.equals("description")) {
@@ -624,6 +627,10 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
             pck.str = "OK";
             if (dsc != null) {
                 pck.str += " " + dsc;
+            } else if (inherit != null) {
+                if (inherit.dsc != null) {
+                    pck.str += " " + inherit.dsc;
+                }
             }
             return;
         }
@@ -635,7 +642,12 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
             pck.str += new String(pck.sep) + lst.get(i).trim();
         }
         if (!alternate) {
-            return;
+            if (inherit == null) {
+                return;
+            }
+            if (!inherit.alternate) {
+                return;
+            }
         }
         int i = pck.str.hashCode();
         if (i == lastHash) {

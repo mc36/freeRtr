@@ -1054,7 +1054,6 @@ public class userExec {
         hl.add("1 .    modememu                  start modem emulation session");
         hl.add("1 .    gpsemu                    start gps emulation session");
         hl.add("1 .    gpstime                   start gps session");
-        hl.add("1 .    nullemu                   start null session");
         hl.add("1 2    menu                      start menu session");
         hl.add("2 .      <name>                  name of menu");
         hl.add("1 2    terminal                  terminal specific parameters");
@@ -1729,10 +1728,6 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("gpstime")) {
-            new userGps(pipe).doWorkRx();
-            return cmdRes.command;
-        }
-        if (a.equals("nullemu")) {
             new userGps(pipe).doWorkRx();
             return cmdRes.command;
         }

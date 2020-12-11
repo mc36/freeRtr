@@ -240,7 +240,7 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         l.add(cmds.tabulator + "path " + path);
         l.add(cmds.tabulator + "prefix " + prefix);
         l.add(cmds.tabulator + "prepend " + prepend);
-        l.add(cmds.tabulator + "command " + command);
+        cmds.cfgLine(l, command == null, cmds.tabulator, "command", "" + command);
         String a = "";
         if (namL != null) {
             a = " " + namL;
@@ -295,6 +295,9 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         }
         if (s.equals("command")) {
             command = cmd.getRemaining();
+            if (negated) {
+                command = null;
+            }
             return;
         }
         if (s.equals("path")) {
