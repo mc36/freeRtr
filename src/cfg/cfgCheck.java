@@ -35,7 +35,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     /**
      * time to answer
      */
-    public int tim;
+    public int time;
 
     /**
      * ok answers
@@ -619,7 +619,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         pck.typ = packNrpe.tyRep;
         long tim = bits.getTime();
         List<String> lst = doCheck();
-        tim = (int) (bits.getTime() - tim);
+        time = (int) (bits.getTime() - tim);
         if (lst.size() < 1) {
             okNum++;
             okTim = tim;
@@ -724,7 +724,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         res.add("error=" + err);
         res.add("alternate=" + alternate);
         res.add("asked=" + (okNum + errNum) + " times");
-        res.add("reply=" + tim + " ms");
+        res.add("reply=" + time + " ms");
         res.add("passed=" + okNum + " times, last " + bits.time2str(cfgAll.timeZoneName, okTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(okTim) + " ago)");
         res.add("failed=" + errNum + " times, last " + bits.time2str(cfgAll.timeZoneName, errTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(errTim) + " ago)");
         res.add("output:");
