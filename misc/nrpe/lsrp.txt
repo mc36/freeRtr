@@ -1,9 +1,0 @@
- check lsrp4 command sho ipv4 lsrp 1 spf | include able
- check lsrp4 train
- check lsrp4 description ipv4 lsrp reachability
- check lsrp4 error nodes changed
-
- check lsrp6 command sho ipv6 lsrp 1 spf | include able
- check lsrp6 train
- check lsrp4 description ipv6 lsrp reachability
- check lsrp4 error nodes changed

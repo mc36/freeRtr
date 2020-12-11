@@ -1,9 +1,0 @@
- check isis4 command sho ipv4 isis 1 spf | include able
- check isis4 train
- check isis4 description ipv4 isis reachability
- check isis4 error nodes changed
-
- check isis6 command sho ipv6 isis 1 spf | include able
- check isis6 train
- check isis4 description ipv6 isis reachability
- check isis4 error nodes changed

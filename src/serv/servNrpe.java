@@ -26,7 +26,7 @@ public class servNrpe extends servGeneric implements prtServS {
     /**
      * truncate first line
      */
-    public int truncState = 0;
+    public int truncState = 12288;
 
     /**
      * defaults text
@@ -34,7 +34,7 @@ public class servNrpe extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server nrpe .*! port " + packNrpe.portNum,
         "server nrpe .*! protocol " + proto2string(protoAllStrm),
-        "server nrpe .*! truncate 0",};
+        "server nrpe .*! truncate 12288",};
 
     /**
      * defaults filter
@@ -142,13 +142,11 @@ class servNrpeConn implements Runnable {
                     continue;
                 }
                 ntry.getReportNrpe(pck);
-                if (lower.truncState > 0) {
-                    int i = pck.str.length();
-                    if (i > lower.truncState) {
-                        i = lower.truncState;
-                    }
-                    pck.str = pck.str.substring(0, i);
+                int i = pck.str.length();
+                if (i > lower.truncState) {
+                    i = lower.truncState;
                 }
+                pck.str = pck.str.substring(0, i);
                 pck.sendPack(conn);
                 if (debugger.servNrpeTraf) {
                     logger.debug("tx " + pck.dump());

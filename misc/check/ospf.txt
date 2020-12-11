@@ -1,0 +1,12 @@
+check ospf4
+ command sho ipv4 ospf 1 spf | include able
+ description ipv4 ospf reachability
+ error-text nodes changed
+ train
+ exit
+
+check ospf6
+ command sho ipv6 ospf 1 spf | include able
+ description ipv6 ospf reachability
+ inherit ospf4
+ exit

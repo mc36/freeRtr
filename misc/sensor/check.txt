@@ -1,9 +1,9 @@
-sensor nrpe
-path nrpe/peer/peer
-prefix freertr-nrpe
-key name nrpe/peer
-command sho nrpe home
-prepend nrpe_
+sensor check
+path check/peer/peer
+prefix freertr-check
+key name check/peer
+command sho check
+prepend check_
 name 0 name=
 skip 2
 column 1 name state
