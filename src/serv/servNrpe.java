@@ -34,7 +34,7 @@ public class servNrpe extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server nrpe .*! port " + packNrpe.portNum,
         "server nrpe .*! protocol " + proto2string(protoAllStrm),
-        "server nrpe .*! error-truncate 0",};
+        "server nrpe .*! truncate 0",};
 
     /**
      * defaults filter
@@ -66,7 +66,7 @@ public class servNrpe extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst) {
-        lst.add(beg + "error-truncate " + truncState);
+        lst.add(beg + "truncate " + truncState);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -75,7 +75,7 @@ public class servNrpe extends servGeneric implements prtServS {
         if (negated) {
             s = cmd.word();
         }
-        if (s.equals("error-truncate")) {
+        if (s.equals("truncate")) {
             truncState = bits.str2num(cmd.word());
             if (negated) {
                 truncState = 0;
@@ -86,7 +86,7 @@ public class servNrpe extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  error-truncate               truncate first line");
+        l.add("1 2  truncate                     truncate first line");
         l.add("2 .    <num>                      upper limit in characters");
     }
 
