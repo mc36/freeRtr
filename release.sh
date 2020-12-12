@@ -5,7 +5,7 @@ cd src
 cd ../misc/native/
 ./c.sh
 cd ../image/
-./c.sh
+./cj.sh
 cd ../native/
 ./p.sh
 cd ../img2ova/

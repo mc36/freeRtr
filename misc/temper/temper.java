@@ -134,6 +134,11 @@ public class temper implements Runnable {
     protected int doorTime = 300;
 
     /**
+     * door pin
+     */
+    protected int doorPin = 0x2;
+
+    /**
      * window min time
      */
     protected int windowMin = 15 * 60 * 1000;
@@ -169,11 +174,22 @@ public class temper implements Runnable {
     protected float tempTol = 1;
 
     /**
+     * temperature pin
+     */
+    protected int tempPin = 0x1;
+
+    /**
+     * relay pin
+     */
+    protected int relayPin = 0x0;
+
+    /**
      * last setter peer
      */
     protected String lastSetter = "nobody";
 
     private synchronized void setValue(int val) {
+        val &= (tempPin | doorPin | relayPin);
         if (currValue == val) {
             return;
         }
@@ -187,7 +203,7 @@ public class temper implements Runnable {
         } catch (Exception e) {
             return;
         }
-        if ((currValue & 1) != (val & 1)) {
+        if ((currValue & tempPin) != (val & tempPin)) {
             timeHeating = temperUtil.getTime();
             for (int i = 0; i < measDat.length; i++) {
                 measDat[i].setWindow();
@@ -222,7 +238,7 @@ public class temper implements Runnable {
             }
             measUse = i;
         }
-        int i = currValue & 2;
+        int i = currValue & (~tempPin);
         if (win) {
             return i;
         }
@@ -286,6 +302,10 @@ public class temper implements Runnable {
                 doorTime = (int) temperUtil.str2num(s);
                 continue;
             }
+            if (a.equals("door-pin")) {
+                doorPin = (int) temperUtil.str2num(s);
+                continue;
+            }
             if (a.equals("log-file")) {
                 logFile = s;
                 continue;
@@ -302,6 +322,10 @@ public class temper implements Runnable {
                 tempTol = temperUtil.str2num(s);
                 continue;
             }
+            if (a.equals("temp-pin")) {
+                tempPin = (int) temperUtil.str2num(s);
+                continue;
+            }
             if (a.equals("win-min")) {
                 windowMin = (int) (temperUtil.str2num(s) * 60 * 1000);
                 continue;
@@ -316,6 +340,10 @@ public class temper implements Runnable {
             }
             if (a.equals("timeout")) {
                 measTime = (int) (temperUtil.str2num(s) * 60 * 1000);
+                continue;
+            }
+            if (a.equals("relay-pin")) {
+                relayPin = (int) temperUtil.str2num(s);
                 continue;
             }
             if (a.equals("measure")) {
@@ -367,6 +395,16 @@ public class temper implements Runnable {
             lastSetter = peer;
             rangeCheck();
         }
+        if (cmd.equals("relay")) {
+            int i = ((int) temperUtil.str2num(tmp)) & relayPin;
+            setValue((currValue & (~relayPin)) | i);
+            writeLog(peer);
+            String a = "relay set to " + i + " from range " + relayPin;
+            buf.write("<html><head><title>relay</title><body>".getBytes());
+            buf.write(a.getBytes());
+            buf.write("</body></html>".getBytes());
+            return 1;
+        }
         if (cmd.equals("door")) {
             boolean b = false;
             for (int i = 0; i < doorCode.size(); i++) {
@@ -377,10 +415,10 @@ public class temper implements Runnable {
             }
             String a = "bad code";
             if (b) {
-                setValue((currValue & 1) | 2);
+                setValue(currValue | doorPin);
                 writeLog(peer);
                 temperUtil.sleep(doorTime);
-                setValue(currValue & 1);
+                setValue(currValue & (~doorPin));
                 writeLog(peer);
                 a = "door opened";
             }
@@ -389,123 +427,123 @@ public class temper implements Runnable {
             buf.write("</body></html>".getBytes());
             return 1;
         }
-        if (cmd.equals("graph")) {
-            File fi = new File(logFile);
-            FileReader fr = new FileReader(fi);
-            fr.skip(fi.length() - (long) (temperUtil.str2num(tmp) * 64000));
-            BufferedReader f = new BufferedReader(fr);
-            f.readLine();
-            List<temperHist> history = new ArrayList<temperHist>();
-            float tmpMin = 9999;
-            float tmpMax = -tmpMin;
-            while (f.ready()) {
-                String s = f.readLine();
-                temperHist l = new temperHist();
-                l.parseLine(s);
-                history.add(l);
-                tmpMin = Float.min(tmpMin, l.need);
-                tmpMax = Float.max(tmpMax, l.need);
-                for (int i = 0; i < l.meas.length; i++) {
-                    float v = l.meas[i];
-                    tmpMin = Float.min(tmpMin, v);
-                    tmpMax = Float.max(tmpMax, v);
-                }
-            }
-            f.close();
-            tmpMax -= tmpMin;
-            final int mx = 1400;
-            final int my = 700;
-            final int mx10 = mx - 10;
-            final int mx20 = mx - 20;
-            final int my1 = my - 1;
-            final int my10 = my - 10;
-            final int my20 = my - 20;
-            final int my30 = my - 30;
-            final int my40 = my - 40;
-            final int my50 = my - 50;
-            BufferedImage img = new BufferedImage(mx, my, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2d = img.createGraphics();
-            g2d.setBackground(Color.gray);
-            g2d.setFont(new Font("Serif", Font.BOLD, 20));
-            g2d.setPaint(Color.gray);
-            g2d.fillRect(0, 0, img.getWidth(), img.getHeight());
-            g2d.setPaint(Color.black);
-            Color colors[] = {
-                Color.blue,
-                Color.green,
-                Color.red,
-                Color.cyan,
-                Color.magenta,
-                Color.orange,
-                Color.pink,
-                Color.white,
-                Color.yellow,};
-            for (int i = 0; i < history.size(); i++) {
-                temperHist l = history.get(i);
-                int x = ((i * mx20) / history.size()) + 10;
-                g2d.setPaint(Color.black);
-                g2d.drawRect(x, my10 - (int) (((l.need - tmpMin) * my20) / tmpMax), 1, 1);
-                for (int o = 0; o < l.meas.length; o++) {
-                    g2d.setPaint(colors[o]);
-                    g2d.drawRect(x, my10 - (int) (((l.meas[o] - tmpMin) * my20) / tmpMax), 1, 1);
-                }
-            }
+        if (!cmd.equals("graph")) {
+            rangeCheck();
+            String a = "<html><head><title>temper</title>";
+            buf.write(a.getBytes());
+            a = "<meta http-equiv=refresh content=\"30;url=" + url + "\"></head>";
+            buf.write(a.getBytes());
+            a = "<body bgcolor=\"#000000\" text=\"#00FF00\" link=\"#00FFFF\" vlink=\"#00FFFF\" alink=\"#00FFFF\">";
+            buf.write(a.getBytes());
+            long tim = temperUtil.getTime();
             for (int i = 0; i < measDat.length; i++) {
-                g2d.setPaint(colors[i]);
-                drawRightAlighed(g2d, mx10, my50 - (i * 20), measDat[i].myNam);
+                a = measDat[i].getMeas() + "<br/>";
+                buf.write(a.getBytes());
             }
+            a = "tolerance: " + tempTol + " celsius, window: " + windowTol + " celsius, " + temperUtil.timePast(windowMin, 0) + "-" + temperUtil.timePast(windowMax, 0) + "<br/>";
+            buf.write(a.getBytes());
+            a = "needed: " + lastNeeded + " celsius, " + temperUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>";
+            buf.write(a.getBytes());
+            a = "heating: " + currValue + ", " + temperUtil.timePast(tim, timeHeating) + " ago, using #" + (measUse + 1) + " for " + temperUtil.timePast(measTime, 0) + "<br/>";
+            buf.write(a.getBytes());
+            a = "<form action=\"" + url + "\" method=get>wish: <input type=text name=temp value=\"" + lastNeeded + "\"> celsius (" + tempMin + "-" + tempMax + ")";
+            buf.write(a.getBytes());
+            buf.write("<input type=submit name=cmd value=\"heat\">".getBytes());
+            buf.write("<input type=submit name=cmd value=\"graph\">".getBytes());
+            buf.write("</form><br/>".getBytes());
+            for (int i = -3; i <= 3; i++) {
+                int o = i + (int) lastNeeded;
+                a = "((<a href=\"" + url + "?temp=" + o + ".0&cmd=heat\">" + o + ".0</a>))";
+                buf.write(a.getBytes());
+                a = "((<a href=\"" + url + "?temp=" + o + ".5&cmd=heat\">" + o + ".5</a>))";
+                buf.write(a.getBytes());
+            }
+            buf.write("</body></html>".getBytes());
+            return 1;
+        }
+        File fi = new File(logFile);
+        FileReader fr = new FileReader(fi);
+        fr.skip(fi.length() - (long) (temperUtil.str2num(tmp) * 64000));
+        BufferedReader f = new BufferedReader(fr);
+        f.readLine();
+        List<temperHist> history = new ArrayList<temperHist>();
+        float tmpMin = 9999;
+        float tmpMax = -tmpMin;
+        while (f.ready()) {
+            String s = f.readLine();
+            temperHist l = new temperHist();
+            l.parseLine(s);
+            history.add(l);
+            tmpMin = Float.min(tmpMin, l.need);
+            tmpMax = Float.max(tmpMax, l.need);
+            for (int i = 0; i < l.meas.length; i++) {
+                float v = l.meas[i];
+                tmpMin = Float.min(tmpMin, v);
+                tmpMax = Float.max(tmpMax, v);
+            }
+        }
+        f.close();
+        tmpMax -= tmpMin;
+        final int mx = 1400;
+        final int my = 700;
+        final int mx10 = mx - 10;
+        final int mx20 = mx - 20;
+        final int my1 = my - 1;
+        final int my10 = my - 10;
+        final int my20 = my - 20;
+        final int my30 = my - 30;
+        final int my40 = my - 40;
+        final int my50 = my - 50;
+        BufferedImage img = new BufferedImage(mx, my, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = img.createGraphics();
+        g2d.setBackground(Color.gray);
+        g2d.setFont(new Font("Serif", Font.BOLD, 20));
+        g2d.setPaint(Color.gray);
+        g2d.fillRect(0, 0, img.getWidth(), img.getHeight());
+        g2d.setPaint(Color.black);
+        Color colors[] = {
+            Color.blue,
+            Color.green,
+            Color.red,
+            Color.cyan,
+            Color.magenta,
+            Color.orange,
+            Color.pink,
+            Color.white,
+            Color.yellow,};
+        for (int i = 0; i < history.size(); i++) {
+            temperHist l = history.get(i);
+            int x = ((i * mx20) / history.size()) + 10;
             g2d.setPaint(Color.black);
-            drawRightAlighed(g2d, mx10, my30, "needed");
-            for (int i = 20; i < my20; i += 50) {
-                String a = (tmpMin + ((i * tmpMax) / my20)) + "       ";
-                g2d.drawString(a.substring(0, 6), 1, my10 - i);
+            g2d.drawRect(x, my10 - (int) (((l.need - tmpMin) * my20) / tmpMax), 1, 1);
+            for (int o = 0; o < l.meas.length; o++) {
+                g2d.setPaint(colors[o]);
+                g2d.drawRect(x, my10 - (int) (((l.meas[o] - tmpMin) * my20) / tmpMax), 1, 1);
             }
-            String a;
-            if ((history.get(history.size() - 1).time - history.get(0).time) < (86400 * 3000)) {
-                a = "HH:MM";
-            } else {
-                a = "MMMdd";
-            }
-            for (int i = 0; i < mx20; i += 100) {
-                temperHist l = history.get((i * history.size()) / mx20);
-                DateFormat dat = new SimpleDateFormat(a, Locale.US);
-                g2d.drawString(dat.format(new Date((long) l.time)), i + 10, my1);
-            }
-            ImageIO.write(img, "png", buf);
-            return 2;
         }
-        rangeCheck();
-        String a = "<html><head><title>temper</title>";
-        buf.write(a.getBytes());
-        a = "<meta http-equiv=refresh content=\"30;url=" + url + "\"></head>";
-        buf.write(a.getBytes());
-        a = "<body bgcolor=\"#000000\" text=\"#00FF00\" link=\"#00FFFF\" vlink=\"#00FFFF\" alink=\"#00FFFF\">";
-        buf.write(a.getBytes());
-        long tim = temperUtil.getTime();
         for (int i = 0; i < measDat.length; i++) {
-            a = measDat[i].getMeas() + "<br/>";
-            buf.write(a.getBytes());
+            g2d.setPaint(colors[i]);
+            drawRightAlighed(g2d, mx10, my50 - (i * 20), measDat[i].myNam);
         }
-        a = "tolerance: " + tempTol + " celsius, window: " + windowTol + " celsius, " + temperUtil.timePast(windowMin, 0) + "-" + temperUtil.timePast(windowMax, 0) + "<br/>";
-        buf.write(a.getBytes());
-        a = "needed: " + lastNeeded + " celsius, " + temperUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>";
-        buf.write(a.getBytes());
-        a = "heating: " + currValue + ", " + temperUtil.timePast(tim, timeHeating) + " ago, using #" + (measUse + 1) + " for " + temperUtil.timePast(measTime, 0) + "<br/>";
-        buf.write(a.getBytes());
-        a = "<form action=\"" + url + "\" method=get>wish: <input type=text name=temp value=\"" + lastNeeded + "\"> celsius (" + tempMin + "-" + tempMax + ")";
-        buf.write(a.getBytes());
-        buf.write("<input type=submit name=cmd value=\"heat\">".getBytes());
-        buf.write("<input type=submit name=cmd value=\"graph\">".getBytes());
-        buf.write("</form><br/>".getBytes());
-        for (int i = -3; i <= 3; i++) {
-            int o = i + (int) lastNeeded;
-            a = "((<a href=\"" + url + "?temp=" + o + ".0&cmd=heat\">" + o + ".0</a>))";
-            buf.write(a.getBytes());
-            a = "((<a href=\"" + url + "?temp=" + o + ".5&cmd=heat\">" + o + ".5</a>))";
-            buf.write(a.getBytes());
+        g2d.setPaint(Color.black);
+        drawRightAlighed(g2d, mx10, my30, "needed");
+        for (int i = 20; i < my20; i += 50) {
+            String a = (tmpMin + ((i * tmpMax) / my20)) + "       ";
+            g2d.drawString(a.substring(0, 6), 1, my10 - i);
         }
-        buf.write("</body></html>".getBytes());
-        return 1;
+        String a;
+        if ((history.get(history.size() - 1).time - history.get(0).time) < (86400 * 3000)) {
+            a = "HH:MM";
+        } else {
+            a = "MMMdd";
+        }
+        for (int i = 0; i < mx20; i += 100) {
+            temperHist l = history.get((i * history.size()) / mx20);
+            DateFormat dat = new SimpleDateFormat(a, Locale.US);
+            g2d.drawString(dat.format(new Date((long) l.time)), i + 10, my1);
+        }
+        ImageIO.write(img, "png", buf);
+        return 2;
     }
 
 }

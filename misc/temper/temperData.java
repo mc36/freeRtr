@@ -122,10 +122,10 @@ public class temperData {
         }
         isWorking = true;
         long tim = temperUtil.getTime();
-        lastCalc = cl.currValue & 1;
+        lastCalc = cl.currValue & cl.tempPin;
         int old = lastCalc;
         if (cl.lastNeeded > (lastMeasure + cl.tempTol)) {
-            lastCalc = 1;
+            lastCalc = cl.tempPin;
         }
         if (cl.lastNeeded < (lastMeasure - cl.tempTol)) {
             lastCalc = 0;
@@ -153,7 +153,7 @@ public class temperData {
             }
             return;
         }
-        if ((old == 1) && (lastMeasure < (lastWindow - cl.windowTol))) {
+        if ((old == cl.tempPin) && (lastMeasure < (lastWindow - cl.windowTol))) {
             isWindow = true;
             lastCalc = 0;
             timeWindow = tim;
