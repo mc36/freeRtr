@@ -52,6 +52,11 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      */
     protected int distance;
 
+    /**
+     * negate operation
+     */
+    protected boolean negate;
+
     private tabListing<tabPrfxlstN, addrIP> whitelist;
 
     private int penalty = 60 * 1000;
@@ -132,6 +137,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
+        l.add("1  .      negate                     negate operation on remote routes");
         l.add("1  2      distance                   specify default distance");
         l.add("2  .        <num>                    distance");
         l.add("1  2      penalty                    specify time between runs");
@@ -148,6 +154,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      * @param filter filter
      */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
+        cmds.cfgLine(l, !negate, beg, "negate", "");
         l.add(beg + "distance " + distance);
         l.add(beg + "penalty " + penalty);
         if (whitelist == null) {
@@ -185,6 +192,10 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         }
         if (s.equals("penalty")) {
             penalty = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("negate")) {
+            negate = !negated;
             return false;
         }
         if (s.equals("distance")) {
@@ -295,6 +306,9 @@ public class rtrBlackhole extends ipRtr implements Runnable {
             return true;
         }
         ntry = fwdCore.actualU.route(adr);
+        if (negate) {
+            return ntry == null;
+        }
         return ntry != null;
     }
 

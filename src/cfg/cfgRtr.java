@@ -463,6 +463,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router download[4|6] .*! delay 0",
         "router download[4|6] .*! time 0",
         // router blackhole
+        "router blackhole[4|6] .*! no negate",
         "router blackhole[4|6] .*! penalty 60000",
         "router blackhole[4|6] .*! distance 254",
         "router blackhole[4|6] .*! no whitelist",
