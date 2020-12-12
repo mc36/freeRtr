@@ -281,6 +281,9 @@ public class player implements Runnable {
         stopPlay("amixer");
     }
 
+    /**
+     * initialize
+     */
     public void doInit() {
         playlists = playerUtil.readup("/etc/asound.conf");
         int volDef = 50;

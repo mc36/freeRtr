@@ -183,7 +183,7 @@ public class temperData {
         if (isWindow) {
             s += ", window (" + lastWindow + " celsius, " + temperUtil.timePast(temperUtil.getTime(), timeWindow) + " ago)";
         }
-        return "measure #" + myNum + "-" + myNam + ": " + lastMeasure + " celsius, " + temperUtil.timePast(temperUtil.getTime(), timeMeasure) + " ago" + s;
+        return "measure #" + myNum + "-" + myNam + ": " + lastMeasure + " celsius, " + temperUtil.timePast(temperUtil.getTime(), timeMeasure) + " ago" + s + ", heating=" + lastCalc;
     }
 
 }

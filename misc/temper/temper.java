@@ -259,6 +259,9 @@ public class temper implements Runnable {
         temperUtil.append(logFile, temperUtil.getTime() + ";" + who + ";" + currValue + ";" + lastNeeded + ";" + measUse + a);
     }
 
+    /**
+     * initialize
+     */
     public void doInit() {
         readConfig();
         measDat[0].getValue();

@@ -249,7 +249,7 @@ public class playerUtil {
     /**
      * sleep some time without wakeups
      *
-     * @param msec
+     * @param msec time
      */
     public static void sleep(int msec) {
         if (msec < 1) {

@@ -80,6 +80,9 @@ public class mailer {
      */
     protected String mail = "";
 
+    /**
+     * initialize
+     */
     public void doInit() {
         readConfig();
     }
@@ -99,6 +102,7 @@ public class mailer {
      * @param par parameters
      * @param buf buffer to use
      * @param user username
+     * @throws Exception if something went wrong
      */
     public void doRequest(String[] par, ByteArrayOutputStream buf, String user) throws Exception {
         String id = "";
