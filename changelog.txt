@@ -9599,3 +9599,10 @@ qc pass: framerelay with tdmoudp
 qc pass: atmdxi with tdmoudp
 qc pass: isdn with tdmoudp
 qc pass: sep with tdmoudp
+---------------------------------- 2020-12-12 13:16:39
+qc pass: access class
+qc pass: access map
+qc pass: access policy
+qc pass: access subnet
+qc pass: remote triggered blackhole access
+qc pass: remote triggered whitelist access
