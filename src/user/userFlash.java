@@ -37,6 +37,9 @@ public class userFlash {
         RandomAccessFile fs;
         RandomAccessFile ft;
         try {
+            if (!new File(src).exists()) {
+                return true;
+            }
             new File(trg).createNewFile();
         } catch (Exception e) {
             return true;

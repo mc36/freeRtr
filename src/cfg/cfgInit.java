@@ -633,13 +633,13 @@ public class cfgInit implements Runnable {
         String s = bits.lst2str(bits.txt2buf(version.myReloadFile()), " ");
         int i = s.indexOf("#");
         if (i > 0) {
-            s = s.substring(i, s.length());
+            s = s.substring(i + 1, s.length());
         }
         i = s.indexOf("=");
         if (i > 0) {
             s = s.substring(0, i);
         }
-        lastReloadCode = i;
+        lastReloadCode = bits.str2num(s);
         if (hw == null) {
             logger.info("no hw config found");
             hw = new ArrayList<String>();
