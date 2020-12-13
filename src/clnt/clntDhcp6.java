@@ -455,6 +455,12 @@ public class clntDhcp6 implements prtServP {
                 sendRequest();
                 break;
             case 7: // allocated
+                if (cfger.addr6 != null) {
+                    if (locAddr.compare(locAddr, cfger.addr6) != 0) {
+                        clearState();
+                        break;
+                    }
+                }
                 if ((bits.getTime() - lastTime) < (leaseTime * 700)) {
                     break;
                 }

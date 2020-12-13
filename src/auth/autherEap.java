@@ -131,7 +131,7 @@ public class autherEap extends autherDoer {
         }
     }
 
-    public void recvPck(packHolder pck, int code, int id) {
+    protected void authenRecv(packHolder pck, int code, int id) {
         autherEapMsg msg = new autherEapMsg();
         msg.code = code;
         msg.id = id;
@@ -176,6 +176,7 @@ public class autherEap extends autherDoer {
                         break;
                     case typeChal:
                         if (sentId != msg.id) {
+                            parent.recvAuthPack("got bad id");
                             working = true;
                             return;
                         }
@@ -210,12 +211,12 @@ public class autherEap extends autherDoer {
         }
     }
 
-    public boolean sendPck(packHolder pck) {
+    protected void authenSend(packHolder pck) {
         if (!working) {
-            return true;
+            return;
         }
         if (isClient()) {
-            return true;
+            return;
         }
         sentId = bits.randomB();
         autherEapMsg msg = new autherEapMsg();
@@ -236,7 +237,7 @@ public class autherEap extends autherDoer {
         }
         msg.createPack(pck);
         parent.sendAuthPack(pck, pppCtrl, msg.code, msg.id, "" + msg);
-        return false;
+        return;
     }
 
 }

@@ -1,13 +1,15 @@
 package auth;
 
 import pack.packHolder;
+import util.logger;
+import util.notifier;
 
 /**
  * authentication worker
  *
  * @author matecsaba
  */
-public abstract class autherDoer {
+public abstract class autherDoer implements Runnable {
 
     /**
      * get worker
@@ -77,22 +79,30 @@ public abstract class autherDoer {
      */
     public authGeneric authenRem = null;
 
+    private notifier notif = null;
+
+    private packHolder pendPck = null;
+
+    private int pendCod;
+
+    private int pendId;
+
     /**
+     * 9
      * received one packet
      *
      * @param pck packet received
      * @param code code
      * @param id identification
      */
-    public abstract void recvPck(packHolder pck, int code, int id);
+    protected abstract void authenRecv(packHolder pck, int code, int id);
 
     /**
      * send one packet
      *
      * @param pck packet to send
-     * @return true to send packet, false to discard it
      */
-    public abstract boolean sendPck(packHolder pck);
+    protected abstract void authenSend(packHolder pck);
 
     /**
      * test if this a client or server side
@@ -108,7 +118,73 @@ public abstract class autherDoer {
      */
     public void sendReq() {
         packHolder pck = new packHolder(true, true);
-        sendPck(pck);
+        authenSend(pck);
+    }
+
+    /**
+     * received one packet
+     *
+     * @param pck packet received
+     * @param code code
+     * @param id identification
+     */
+    public void recvPck(packHolder pck, int code, int id) {
+        if (notif == null) {
+            authenRecv(pck, code, id);
+            return;
+        }
+        if (pendPck != null) {
+            return;
+        }
+        pendCod = code;
+        pendId = id;
+        pendPck = pck.copyBytes(true, true);
+        notif.wakeup();
+    }
+
+    /**
+     * start thread
+     */
+    public void startThread() {
+        if (notif != null) {
+            return;
+        }
+        notif = new notifier();
+        new Thread(this).start();
+    }
+
+    /**
+     * start thread
+     */
+    public void stopThread() {
+        notif = null;
+    }
+
+    private void doWork() {
+        for (;;) {
+            if (!working) {
+                return;
+            }
+            if (notif == null) {
+                return;
+            }
+            notif.sleep(1000);
+            if (pendPck == null) {
+                continue;
+            }
+            authenRecv(pendPck, pendCod, pendId);
+            pendPck = null;
+        }
+    }
+
+    public void run() {
+        try {
+            doWork();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        working = false;
+        notif = null;
     }
 
 }

@@ -117,7 +117,13 @@ public class clntSlaac implements Runnable, ipPrt {
     private boolean doWork() {
         if (gotAddr) {
             notif.sleep(10000);
-            return false;
+            if (cfger.addr6 == null) {
+                return false;
+            }
+            if (locAddr.compare(locAddr, cfger.addr6) == 0) {
+                return false;
+            }
+            clearState();
         }
         addrMac mac;
         try {

@@ -961,6 +961,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      * clear state info
      */
     public void clearState() {
+        try {
+            ctrlAuth.stopThread();
+        } catch (Exception e) {
+        }
         ctrlAuth = null;
         curMode = modeLcp;
         multilinkRx = 0;
@@ -1173,6 +1177,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             return;
         }
         boolean b = ctrlAuth.result.result == authResult.authSuccessful;
+        ctrlAuth.stopThread();
         if (debugger.ifcPppEvnt) {
             logger.debug("authentication passed=" + b);
         }
@@ -1252,6 +1257,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 if (authenRem != null) {
                     ctrlAuth = autherDoer.getWorker(this, ctrlLcp.authRem);
                     ctrlAuth.authenRem = authenRem;
+                    ctrlAuth.startThread();
                     curMode = modeAuth;
                     break;
                 }

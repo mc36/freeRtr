@@ -65,7 +65,7 @@ public class autherPap extends autherDoer {
         }
     }
 
-    public void recvPck(packHolder pck, int code, int id) {
+    protected void authenRecv(packHolder pck, int code, int id) {
         autherPapMsg msg = new autherPapMsg();
         msg.code = code;
         msg.id = id;
@@ -110,12 +110,12 @@ public class autherPap extends autherDoer {
         }
     }
 
-    public boolean sendPck(packHolder pck) {
+    protected void authenSend(packHolder pck) {
         if (!working) {
-            return true;
+            return;
         }
         if (!isClient()) {
-            return true;
+            return;
         }
         sentId = bits.randomB();
         autherPapMsg msg = new autherPapMsg();
@@ -125,7 +125,7 @@ public class autherPap extends autherDoer {
         msg.pass = sentPass;
         msg.createPack(pck);
         parent.sendAuthPack(pck, pppCtrl, msg.code, msg.id, "" + msg);
-        return false;
+        return;
     }
 
 }

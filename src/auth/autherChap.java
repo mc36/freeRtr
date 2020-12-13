@@ -92,7 +92,7 @@ public class autherChap extends autherDoer {
         }
     }
 
-    public void recvPck(packHolder pck, int code, int id) {
+    protected void authenRecv(packHolder pck, int code, int id) {
         autherChapMsg msg = new autherChapMsg();
         msg.code = code;
         msg.id = id;
@@ -121,6 +121,7 @@ public class autherChap extends autherDoer {
                     return;
                 }
                 if (sentId != msg.id) {
+                    parent.recvAuthPack("got bad id");
                     working = true;
                     return;
                 }
@@ -153,12 +154,12 @@ public class autherChap extends autherDoer {
         }
     }
 
-    public boolean sendPck(packHolder pck) {
+    protected void authenSend(packHolder pck) {
         if (!working) {
-            return true;
+            return;
         }
         if (isClient()) {
-            return true;
+            return;
         }
         sentId = bits.randomB();
         sentCh = new byte[16];
@@ -172,7 +173,7 @@ public class autherChap extends autherDoer {
         msg.value = sentCh;
         msg.createPack(pck);
         parent.sendAuthPack(pck, pppCtrl, msg.code, msg.id, "" + msg);
-        return false;
+        return;
     }
 
 }

@@ -428,6 +428,12 @@ public class clntDhcp4 implements prtServP {
                 sendRequest();
                 break;
             case 7: // allocated
+                if (cfger.addr4 != null) {
+                    if (locAddr.compare(locAddr, cfger.addr4) != 0) {
+                        clearState();
+                        break;
+                    }
+                }
                 if ((bits.getTime() - lastTime) < (leaseTime * 700)) {
                     break;
                 }
