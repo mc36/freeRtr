@@ -289,7 +289,7 @@ public class userFilman {
         if (b.length() < 1) {
             return;
         }
-        userFlash.copy(a, b);
+        userFlash.copy(a, b, false);
         pan[1 - act].readUp();
         doClear();
     }
