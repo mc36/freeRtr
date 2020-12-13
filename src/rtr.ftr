@@ -79,6 +79,8 @@ qc pass: proxy remote arp/nd
 qc pass: proxy local arp/nd
 qc pass: static arp/nd entry
 qc pass: loss detection
+qc pass: eapol
+qc pass: lacp
 qc pass: etherip over ipv4
 qc pass: etherip over ipv6
 qc pass: etherip over loopback

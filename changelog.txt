@@ -9606,3 +9606,6 @@ qc pass: access policy
 qc pass: access subnet
 qc pass: remote triggered blackhole access
 qc pass: remote triggered whitelist access
+---------------------------------- 2020-12-13 09:05:18
+qc pass: eapol
+qc pass: lacp
