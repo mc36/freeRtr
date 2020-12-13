@@ -774,6 +774,11 @@ public class cfgAll {
     public static boolean upgradeBackup = false;
 
     /**
+     * upgrade revert time
+     */
+    public static int upgradeRevert = 0;
+
+    /**
      * upgrade config save
      */
     public static boolean upgradeConfig = false;
@@ -958,6 +963,7 @@ public class cfgAll {
         "!client upgrade-server " + verCore.homeUrl,
         "!no client upgrade-config",
         "!no client upgrade-backup",
+        "!no client upgrade-revert",
         "!no client upgrade-script",
         "!no client upgrade-ownkey",
         "!no client whois-server",
@@ -3205,6 +3211,7 @@ public class cfgAll {
         cmds.cfgLine(l, upgradeServer == null, "", "client upgrade-server", "" + upgradeServer);
         cmds.cfgLine(l, !upgradeConfig, "", "client upgrade-config", "");
         cmds.cfgLine(l, !upgradeBackup, "", "client upgrade-backup", "");
+        cmds.cfgLine(l, upgradeRevert == 0, "", "client upgrade-revert", "" + upgradeRevert);
         cmds.cfgLine(l, !upgradeOwnKey, "", "client upgrade-ownkey", "");
         if (upgradeScript == null) {
             l.add("no client upgrade-script");
