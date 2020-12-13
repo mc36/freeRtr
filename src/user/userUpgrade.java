@@ -322,7 +322,7 @@ public class userUpgrade {
      * do auto-revert
      */
     protected static void doAutoRevert() {
-        logger.info("upgrade auto-revert checking");
+        logger.info("software auto-revert checking server");
         String tmp = version.myWorkDir() + "rev" + bits.randomD() + ".tmp";
         uniResLoc url = uniResLoc.parseOne(cfgAll.upgradeServer + myFileName());
         url.filExt = verExt;
@@ -330,9 +330,10 @@ public class userUpgrade {
         boolean dl = userFlash.doReceive(pipeDiscard.needAny(null), url, new File(tmp));
         userFlash.delete(tmp);
         if (!dl) {
-            logger.info("upgrade auto-revert reached server");
+            logger.info("software auto-revert reached server");
             return;
         }
+        logger.info("software auto-revert was unable to reach server");
         doRevert(false);
         cfgInit.stopRouter(true, 13, "auto-revert finished");
     }
@@ -652,7 +653,7 @@ class userUpgradeNtry {
     }
 
     public static userUpgradeNtry fromString(String s) {
-        cmds cmd = new cmds("upgrade", s);
+        cmds cmd = new cmds("upg", s);
         String h = cmd.word();
         int f = bits.str2num(cmd.word());
         return new userUpgradeNtry(h, f, cmd.getRemaining());
