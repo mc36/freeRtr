@@ -1644,6 +1644,7 @@ public class userConfig {
             }
             if (a.equals("upgrade-revert")) {
                 cfgAll.upgradeRevert = bits.str2num(cmd.word());
+                userUpgrade.startReverter();
                 return;
             }
             if (a.equals("upgrade-backup")) {

@@ -1356,6 +1356,7 @@ public class userExec {
         hl.add("3 .        <file>                filename");
         hl.add("2 .      verify                  verify routing software");
         hl.add("2 .      revert                  revert routing software");
+        hl.add("2 .      backup                  backup routing software");
         hl.add("2 3,.    upgrade                 upgrade routing software");
         hl.add("3 3,.      [url]                 parameter of process");
         hl.add("2 3,.    simulate                simulate upgrade process");
@@ -2266,7 +2267,13 @@ public class userExec {
         return cmdRes.command;
     }
 
-    private String doneFail(boolean b) {
+    /**
+     * get result text
+     *
+     * @param b status
+     * @return text
+     */
+    public static String doneFail(boolean b) {
         if (b) {
             return "failed";
         } else {
@@ -3541,6 +3548,11 @@ public class userExec {
         if (a.equals("simulate")) {
             userUpgrade u = new userUpgrade(cmd);
             u.doSimulate();
+            return;
+        }
+        if (a.equals("backup")) {
+            userUpgrade u = new userUpgrade(cmd);
+            u.doBackup();
             return;
         }
         if (a.equals("revert")) {

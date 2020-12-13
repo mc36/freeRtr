@@ -11,6 +11,7 @@ import cry.cryUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import pipe.pipeDiscard;
 import pipe.pipeLine;
 import pipe.pipeProgress;
 import pipe.pipeSide;
@@ -29,11 +30,18 @@ import util.version;
 public class userUpgrade {
 
     /**
-     * ver extension
+     * version extension
      */
     public static String verExt = ".ver";
+    /**
+     * backup extension
+     */
+    public static String bakExt = ".bak";
 
-    private static boolean inProgress = false;
+    /**
+     * update progress indicator
+     */
+    protected static boolean inProgress = false;
 
     private final static int justSimu = 0x1000000;
 
@@ -50,7 +58,7 @@ public class userUpgrade {
      */
     public userUpgrade(cmds c) {
         cmd = c;
-        cons = new pipeProgress(cmd.pipe);
+        cons = new pipeProgress(pipeDiscard.needAny(cmd.pipe));
     }
 
     /**
@@ -277,8 +285,11 @@ public class userUpgrade {
      * do software revert
      */
     public void doRevert() {
-        String a = version.getFileName();
-        String b = a + ".bak";
+        String a = "reverting to backup software";
+        logger.info(a);
+        cons.debugStat(a);
+        a = version.getFileName();
+        String b = a + bakExt;
         if (!new File(b).exists()) {
             a = "no backup software exists";
             logger.error(a);
@@ -287,6 +298,51 @@ public class userUpgrade {
         }
         userFlash.rename(b, a, true, true);
         cfgInit.stopRouter(true, 12, "revert finished");
+    }
+
+    /**
+     * do software backup
+     */
+    public void doBackup() {
+        String a = version.getFileName();
+        userFlash.copy(a, a + bakExt);
+        cons.debugStat(userExec.doneFail(userFlash.copy(a, a + bakExt)));
+    }
+
+    /**
+     * start auto-revert
+     */
+    public static void startReverter() {
+        new Thread(new userUpgradeReverter()).start();
+    }
+
+    /**
+     * do auto-revert
+     */
+    protected void doAutoRevert() {
+        for (;;) {
+            bits.sleep(1000);
+            if (!cfgInit.booting) {
+                break;
+            }
+        }
+        if (cfgAll.upgradeRevert < 1) {
+            return;
+        }
+        bits.sleep(cfgAll.upgradeRevert);
+        logger.info("upgrade auto-revert checking");
+        String tmp = version.myWorkDir() + "rev" + bits.randomD() + ".tmp";
+        uniResLoc url = uniResLoc.parseOne(cfgAll.upgradeServer + myFileName());
+        url.filExt = verExt;
+        userFlash.delete(tmp);
+        userFlash.doReceive(cmd.pipe, url, new File(tmp));
+        List<String> txt = bits.txt2buf(tmp);
+        userFlash.delete(tmp);
+        if (txt != null) {
+            logger.info("upgrade auto-revert reached server");
+            return;
+        }
+        doRevert();
     }
 
     /**
@@ -515,7 +571,7 @@ public class userUpgrade {
             return 0;
         }
         if (cfgAll.upgradeBackup) {
-            String a = loc + ".bak";
+            String a = loc + bakExt;
             cons.debugStat("backing up " + loc + " to " + a);
             userFlash.delete(a);
             userFlash.copy(loc, a);
@@ -543,6 +599,21 @@ public class userUpgrade {
             }
         }
         return 2;
+    }
+
+}
+
+class userUpgradeReverter implements Runnable {
+
+    public void run() {
+        userUpgrade u = new userUpgrade(new cmds("rev", ""));
+        userUpgrade.inProgress = true;
+        try {
+            u.doAutoRevert();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        userUpgrade.inProgress = false;
     }
 
 }
