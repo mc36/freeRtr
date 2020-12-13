@@ -315,7 +315,7 @@ public class userUpgrade {
      * start auto-revert
      */
     public static void startReverter() {
-        new Thread(new userUpgradeReverter()).start();
+        new Thread(new userUpgradeRevert()).start();
     }
 
     /**
@@ -596,7 +596,7 @@ public class userUpgrade {
 
 }
 
-class userUpgradeReverter implements Runnable {
+class userUpgradeRevert implements Runnable {
 
     public void run() {
         if (cfgInit.lastReloadCode != 2) {
