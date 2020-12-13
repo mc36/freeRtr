@@ -2676,7 +2676,7 @@ class servHttpConn implements Runnable {
             url.normalizePath();
             pipeLine pip = new pipeLine(32768, false);
             pipeDiscard.discard(pip.getSide());
-            if (userFlash.copy(gotHost.path + pn, gotHost.path + url.toPathName())) {
+            if (userFlash.copy(gotHost.path + pn, gotHost.path + url.toPathName(), false)) {
                 sendRespHeader("409 conflict", 0, null);
             } else {
                 sendRespHeader("201 created", 0, null);

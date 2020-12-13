@@ -446,7 +446,7 @@ public class logger {
         }
         logOneLine(logLev.msgExcp, "exception", a);
         if (userUpgrade.inProgress == 2) {
-            userUpgrade.doRevert(false);
+            userUpgrade.doRevert();
         }
         cfgInit.stopRouter(false, 8, "exception " + a);
     }

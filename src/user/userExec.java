@@ -3556,7 +3556,10 @@ public class userExec {
             return;
         }
         if (a.equals("revert")) {
-            userUpgrade.doRevert(true);
+            if (userUpgrade.doRevert()) {
+                return;
+            }
+            cfgInit.stopRouter(true, 12, "revert finished");
             return;
         }
         if (a.equals("verify")) {
@@ -3574,20 +3577,20 @@ public class userExec {
         }
         if (a.equals("copy")) {
             String s = cmd.word();
-            userFlash.copy(s, cmd.word());
+            cmd.error(doneFail(userFlash.copy(s, cmd.word(), false)));
             return;
         }
         if (a.equals("rename")) {
             String s = cmd.word();
-            userFlash.rename(s, cmd.word(), true, false);
+            cmd.error(doneFail(userFlash.rename(s, cmd.word(), false, false)));
             return;
         }
         if (a.equals("delete")) {
-            userFlash.delete(cmd.getRemaining());
+            cmd.error(doneFail(userFlash.delete(cmd.getRemaining())));
             return;
         }
         if (a.equals("mkdir")) {
-            userFlash.mkdir(cmd.word());
+            cmd.error(doneFail(userFlash.mkdir(cmd.word())));
             return;
         }
         if (a.equals("list")) {

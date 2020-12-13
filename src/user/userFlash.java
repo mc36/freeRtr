@@ -31,15 +31,23 @@ public class userFlash {
      *
      * @param src source file
      * @param trg target file
+     * @param overwrite delete target before
      * @return result code
      */
-    public static boolean copy(String src, String trg) {
+    public static boolean copy(String src, String trg, boolean overwrite) {
         RandomAccessFile fs;
         RandomAccessFile ft;
         try {
             if (!new File(src).exists()) {
                 return true;
             }
+        } catch (Exception e) {
+            return true;
+        }
+        if (overwrite) {
+            delete(trg);
+        }
+        try {
             new File(trg).createNewFile();
         } catch (Exception e) {
             return true;

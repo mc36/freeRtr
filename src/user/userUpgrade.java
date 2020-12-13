@@ -284,22 +284,15 @@ public class userUpgrade {
     /**
      * do software revert
      *
-     * @param reboot also reboot
+     * @return false on success, true on error
      */
-    public static void doRevert(boolean reboot) {
-        logger.info("reverting to backup software");
+    public static boolean doRevert() {
         String a = version.getFileName();
-        String b = a + bakExt;
-        if (!new File(b).exists()) {
-            a = "no backup software exists";
-            logger.error("no backup software exists");
-            return;
+        if (userFlash.rename(a + bakExt, a, true, false)) {
+            logger.error("unable to revert to backup");
+            return true;
         }
-        userFlash.rename(b, a, true, true);
-        if (!reboot) {
-            return;
-        }
-        cfgInit.stopRouter(true, 12, "revert finished");
+        return false;
     }
 
     /**
@@ -307,8 +300,7 @@ public class userUpgrade {
      */
     public void doBackup() {
         String a = version.getFileName();
-        userFlash.copy(a, a + bakExt);
-        cons.debugStat(userExec.doneFail(userFlash.copy(a, a + bakExt)));
+        cons.debugStat(userExec.doneFail(userFlash.copy(a, a + bakExt, true)));
     }
 
     /**
@@ -322,7 +314,6 @@ public class userUpgrade {
      * do auto-revert
      */
     protected static void doAutoRevert() {
-        logger.info("software auto-revert checking server");
         String tmp = version.myWorkDir() + "rev" + bits.randomD() + ".tmp";
         uniResLoc url = uniResLoc.parseOne(cfgAll.upgradeServer + myFileName());
         url.filExt = verExt;
@@ -330,11 +321,13 @@ public class userUpgrade {
         boolean dl = userFlash.doReceive(pipeDiscard.needAny(null), url, new File(tmp));
         userFlash.delete(tmp);
         if (!dl) {
-            logger.info("software auto-revert reached server");
+            logger.info("auto-revert cancelled");
             return;
         }
-        logger.info("software auto-revert was unable to reach server");
-        doRevert(false);
+        logger.info("auto-revert was unable to reach server");
+        if (doRevert()) {
+            return;
+        }
         cfgInit.stopRouter(true, 13, "auto-revert finished");
     }
 
@@ -564,10 +557,8 @@ public class userUpgrade {
             return 0;
         }
         if (cfgAll.upgradeBackup) {
-            String a = loc + bakExt;
-            cons.debugStat("backing up " + loc + " to " + a);
-            userFlash.delete(a);
-            userFlash.copy(loc, a);
+            cons.debugStat("backing up " + loc);
+            userFlash.copy(loc, loc + bakExt, true);
         }
         cons.debugStat("downloading " + loc);
         uniResLoc url = uniResLoc.parseOne(rem);
@@ -613,7 +604,7 @@ class userUpgradeRevert implements Runnable {
             }
         }
         if (!cfgAll.upgradeBackup) {
-            logger.warn("software auto-revert enabled without auto-backup");
+            logger.warn("auto-revert enabled without auto-backup");
         }
         bits.sleep(cfgAll.upgradeRevert);
         try {
