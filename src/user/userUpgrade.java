@@ -58,7 +58,7 @@ public class userUpgrade {
      */
     public userUpgrade(cmds c) {
         cmd = c;
-        cons = new pipeProgress(pipeDiscard.needAny(cmd.pipe));
+        cons = new pipeProgress(cmd.pipe);
     }
 
     /**
@@ -321,14 +321,13 @@ public class userUpgrade {
     /**
      * do auto-revert
      */
-    protected void doAutoRevert() {
-        bits.sleep(cfgAll.upgradeRevert);
+    protected static void doAutoRevert() {
         logger.info("upgrade auto-revert checking");
         String tmp = version.myWorkDir() + "rev" + bits.randomD() + ".tmp";
         uniResLoc url = uniResLoc.parseOne(cfgAll.upgradeServer + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
-        boolean dl = userFlash.doReceive(cmd.pipe, url, new File(tmp));
+        boolean dl = userFlash.doReceive(pipeDiscard.needAny(null), url, new File(tmp));
         userFlash.delete(tmp);
         if (!dl) {
             logger.info("upgrade auto-revert reached server");
@@ -606,15 +605,18 @@ class userUpgradeReverter implements Runnable {
             return;
         }
         userUpgrade.inProgress = 2;
-        userUpgrade u = new userUpgrade(new cmds("rev", ""));
-        try {
-            for (;;) {
-                bits.sleep(1000);
-                if (!cfgInit.booting) {
-                    break;
-                }
+        for (;;) {
+            bits.sleep(1000);
+            if (!cfgInit.booting) {
+                break;
             }
-            u.doAutoRevert();
+        }
+        if (!cfgAll.upgradeBackup) {
+            logger.warn("software auto-revert enabled without auto-backup");
+        }
+        bits.sleep(cfgAll.upgradeRevert);
+        try {
+            userUpgrade.doAutoRevert();
         } catch (Exception e) {
             logger.traceback(e);
         }
