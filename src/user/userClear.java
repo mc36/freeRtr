@@ -601,7 +601,7 @@ public class userClear {
         cmd.badCmd();
         return null;
     }
-    
+
     private void doClearIpXbgp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -658,7 +658,7 @@ public class userClear {
             }
         }
     }
-    
+
     private void doClearIpXbfd(int afi) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
@@ -683,7 +683,7 @@ public class userClear {
         }
         nei.stopNow();
     }
-    
+
     private void doClearIpXbabel(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -702,7 +702,7 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
     private void doClearIpXeigrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -721,7 +721,7 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
     private void doClearIpXisis(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -740,7 +740,7 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
     private void doClearIpXldp(int afi) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
@@ -765,7 +765,7 @@ public class userClear {
         }
         nei.stopPeer();
     }
-    
+
     private void doClearIpXlsrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -784,7 +784,7 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
     private void doClearIpXmsdp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -803,7 +803,7 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
     private void doClearIpXolsr(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -822,7 +822,7 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
     private void doClearIpXospf4() {
         cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.ospf4, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -842,7 +842,7 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
     private void doClearIpXospf6() {
         cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.ospf6, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -862,7 +862,7 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
     private void doClearIpXpvrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -881,7 +881,7 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
     private void doClearIpXrip4() {
         cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.rip4, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -900,7 +900,7 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
     private void doClearIpXrip6() {
         cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.rip6, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -919,5 +919,5 @@ public class userClear {
         }
         nei.bfdPeerDown();
     }
-    
+
 }

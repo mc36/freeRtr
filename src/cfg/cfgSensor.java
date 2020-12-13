@@ -164,7 +164,7 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         prefix = n;
         prepend = n;
     }
-    
+
     public String toString() {
         return name;
     }

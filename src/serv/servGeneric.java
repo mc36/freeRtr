@@ -1242,7 +1242,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      *
      * @param l help text
      */
-    public void getHelp(userHelping l ) {
+    public void getHelp(userHelping l) {
         l.add("1 2  vrf                    set vrf to use");
         l.add("2 .    <name>               name of vrf");
         l.add("1 2  port                   set port to listen on");
