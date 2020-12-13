@@ -134,6 +134,11 @@ public class cfgInit implements Runnable {
     public static long started = -1;
 
     /**
+     * last reload code
+     */
+    public static int lastReloadCode;
+
+    /**
      * hw config file in use
      */
     public static String cfgFileHw;
@@ -625,6 +630,16 @@ public class cfgInit implements Runnable {
         started = bits.getTime();
         logger.info("booting");
         setupJVM();
+        String s = bits.lst2str(bits.txt2buf(version.myReloadFile()), " ");
+        int i = s.indexOf("#");
+        if (i > 0) {
+            s = s.substring(i, s.length());
+        }
+        i = s.indexOf("=");
+        if (i > 0) {
+            s = s.substring(0, i);
+        }
+        lastReloadCode = i;
         if (hw == null) {
             logger.info("no hw config found");
             hw = new ArrayList<String>();
@@ -634,11 +649,11 @@ public class cfgInit implements Runnable {
             sw = new ArrayList<String>();
         }
         for (int o = 0; o < version.mimetypes.length; o++) {
-            String s = version.mimetypes[o];
-            int i = s.indexOf(" ");
-            String c = s.substring(i + 1, s.length()).trim();
+            s = version.mimetypes[o];
+            i = s.indexOf(" ");
+            String a = s.substring(i + 1, s.length()).trim();
             s = s.substring(0, i).trim();
-            types.add(new cfgInitMime(s, c));
+            types.add(new cfgInitMime(s, a));
         }
         cfgIfc.notemplF = createFilter(cfgIfc.notemplL);
         cfgIfc.nocloneF = createFilter(cfgIfc.nocloneL);
@@ -739,8 +754,8 @@ public class cfgInit implements Runnable {
         servTime.defaultF = createFilter(servTime.defaultL, srvdefsF);
         servUdptn.defaultF = createFilter(servUdptn.defaultL, srvdefsF, cfgLin.linedefF);
         List<String> sdefs = new ArrayList<String>();
-        for (int o = 0; o < cfgAll.defaultF.size(); o++) {
-            userFilter ntry = cfgAll.defaultF.get(o);
+        for (i = 0; i < cfgAll.defaultF.size(); i++) {
+            userFilter ntry = cfgAll.defaultF.get(i);
             if (ntry.section.length() > 0) {
                 continue;
             }
@@ -748,7 +763,7 @@ public class cfgInit implements Runnable {
         }
         List<String> inis = new ArrayList<String>();
         List<userFilter> secs = userFilter.text2section(sw);
-        for (int i = 0; i < needInit.length; i++) {
+        for (i = 0; i < needInit.length; i++) {
             inis.addAll(userFilter.getSecList(secs, needInit[i], cmds.tabulator + cmds.finish));
         }
         List<String> defs = new ArrayList<String>();
@@ -783,7 +798,7 @@ public class cfgInit implements Runnable {
         } else {
             step = 1024;
         }
-        for (int i = 0; i < cfgAll.vdcs.size(); i++) {
+        for (i = 0; i < cfgAll.vdcs.size(); i++) {
             cfgVdc ntry = cfgAll.vdcs.get(i).copyBytes();
             vdcLst.add(ntry);
             int o = (i * step) + vdcPortBeg;

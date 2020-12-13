@@ -3556,8 +3556,7 @@ public class userExec {
             return;
         }
         if (a.equals("revert")) {
-            userUpgrade u = new userUpgrade(cmd);
-            u.doRevert();
+            userUpgrade.doRevert(true);
             return;
         }
         if (a.equals("verify")) {

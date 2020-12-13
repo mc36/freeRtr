@@ -39,9 +39,9 @@ public class userUpgrade {
     public static String bakExt = ".bak";
 
     /**
-     * update progress indicator
+     * update progress indicator, 0=none, 1=upgrade, 2=auto-revert
      */
-    protected static boolean inProgress = false;
+    public static int inProgress = 0;
 
     private final static int justSimu = 0x1000000;
 
@@ -283,20 +283,22 @@ public class userUpgrade {
 
     /**
      * do software revert
+     *
+     * @param reboot also reboot
      */
-    public void doRevert() {
-        String a = "reverting to backup software";
-        logger.info(a);
-        cons.debugStat(a);
-        a = version.getFileName();
+    public static void doRevert(boolean reboot) {
+        logger.info("reverting to backup software");
+        String a = version.getFileName();
         String b = a + bakExt;
         if (!new File(b).exists()) {
             a = "no backup software exists";
-            logger.error(a);
-            cons.debugStat(a);
+            logger.error("no backup software exists");
             return;
         }
         userFlash.rename(b, a, true, true);
+        if (!reboot) {
+            return;
+        }
         cfgInit.stopRouter(true, 12, "revert finished");
     }
 
@@ -320,42 +322,33 @@ public class userUpgrade {
      * do auto-revert
      */
     protected void doAutoRevert() {
-        for (;;) {
-            bits.sleep(1000);
-            if (!cfgInit.booting) {
-                break;
-            }
-        }
-        if (cfgAll.upgradeRevert < 1) {
-            return;
-        }
         bits.sleep(cfgAll.upgradeRevert);
         logger.info("upgrade auto-revert checking");
         String tmp = version.myWorkDir() + "rev" + bits.randomD() + ".tmp";
         uniResLoc url = uniResLoc.parseOne(cfgAll.upgradeServer + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
-        userFlash.doReceive(cmd.pipe, url, new File(tmp));
-        List<String> txt = bits.txt2buf(tmp);
+        boolean dl = userFlash.doReceive(cmd.pipe, url, new File(tmp));
         userFlash.delete(tmp);
-        if (txt != null) {
+        if (!dl) {
             logger.info("upgrade auto-revert reached server");
             return;
         }
-        doRevert();
+        doRevert(false);
+        cfgInit.stopRouter(true, 13, "auto-revert finished");
     }
 
     /**
      * do software upgrade
      */
     public void doUpgrade() {
-        if (inProgress) {
+        if (inProgress != 0) {
             String s = "overlapping upgrades eliminated";
             logger.info(s);
             cons.debugStat(s);
             return;
         }
-        inProgress = true;
+        inProgress = 1;
         int oldf = forces;
         String s = cmd.word();
         forces = (oldf | bits.str2num(cmd.word())) ^ justSimu;
@@ -365,7 +358,7 @@ public class userUpgrade {
             logger.traceback(e);
         }
         forces = oldf;
-        inProgress = false;
+        inProgress = 0;
     }
 
     private boolean needStop(int i) {
@@ -606,14 +599,26 @@ public class userUpgrade {
 class userUpgradeReverter implements Runnable {
 
     public void run() {
+        if (cfgInit.lastReloadCode != 2) {
+            return;
+        }
+        if (cfgAll.upgradeRevert < 1) {
+            return;
+        }
+        userUpgrade.inProgress = 2;
         userUpgrade u = new userUpgrade(new cmds("rev", ""));
-        userUpgrade.inProgress = true;
         try {
+            for (;;) {
+                bits.sleep(1000);
+                if (!cfgInit.booting) {
+                    break;
+                }
+            }
             u.doAutoRevert();
         } catch (Exception e) {
             logger.traceback(e);
         }
-        userUpgrade.inProgress = false;
+        userUpgrade.inProgress = 0;
     }
 
 }

@@ -24,6 +24,7 @@ import pipe.pipeSide;
 import tab.tabGen;
 import user.userFlash;
 import user.userFormat;
+import user.userUpgrade;
 
 /**
  * logging features
@@ -444,6 +445,9 @@ public class logger {
         } catch (Exception ee) {
         }
         logOneLine(logLev.msgExcp, "exception", a);
+        if (userUpgrade.inProgress == 2) {
+            userUpgrade.doRevert(false);
+        }
         cfgInit.stopRouter(false, 8, "exception " + a);
     }
 
