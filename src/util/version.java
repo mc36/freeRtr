@@ -5,7 +5,6 @@ import cfg.cfgInit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import user.userUpgrade;
 
 /**
  * version utils
@@ -221,7 +220,6 @@ public class version {
         sa.add("hwid: " + cfgInit.hwIdNum);
         sa.add("uptime: since " + bits.time2str(cfgAll.timeZoneName, cfgInit.started + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(cfgInit.started));
         sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
-        sa.add("status: booting=" + cfgInit.booting + " lastcode=" + cfgInit.lastReloadCode + " upgrade=" + userUpgrade.inProgress);
         sa.add("hwcfg: " + cfgInit.cfgFileHw);
         sa.add("swcfg: " + cfgInit.cfgFileSw);
         sa.add("cpu: " + getCPUname());
