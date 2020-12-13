@@ -117,6 +117,9 @@ public abstract class autherDoer implements Runnable {
      * send one request
      */
     public void sendReq() {
+        if ((notif != null) && (pendPck != null)) {
+            return;
+        }
         packHolder pck = new packHolder(true, true);
         authenSend(pck);
     }

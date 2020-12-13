@@ -289,8 +289,7 @@ public class userFilman {
         if (b.length() < 1) {
             return;
         }
-        userFlash f = new userFlash(console.pipe);
-        f.copy(a, b);
+        userFlash.copy(a, b);
         pan[1 - act].readUp();
         doClear();
     }

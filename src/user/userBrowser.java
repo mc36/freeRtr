@@ -527,8 +527,7 @@ public class userBrowser {
             return;
         }
         doChg2txt();
-        userFlash f = new userFlash(console.pipe);
-        f.copy(tempFile, b);
+        userFlash.copy(tempFile, b);
         doClear();
     }
 

@@ -11,8 +11,6 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import pipe.pipeDiscard;
-import pipe.pipeProgress;
 import pipe.pipeSide;
 import tab.tabGen;
 import util.bits;
@@ -25,18 +23,7 @@ import util.uniResLoc;
  */
 public class userFlash {
 
-    /**
-     * message handler
-     */
-    public pipeProgress cons;
-
-    /**
-     * create new client
-     *
-     * @param console console to use
-     */
-    public userFlash(pipeSide console) {
-        cons = new pipeProgress(pipeDiscard.needAny(console));
+    private userFlash() {
     }
 
     /**
@@ -46,7 +33,7 @@ public class userFlash {
      * @param trg target file
      * @return result code
      */
-    public boolean copy(String src, String trg) {
+    public static boolean copy(String src, String trg) {
         RandomAccessFile fs;
         RandomAccessFile ft;
         try {
@@ -63,8 +50,6 @@ public class userFlash {
         } catch (Exception e) {
             return true;
         }
-        cons.setMax(siz);
-        cons.debugStat("copying " + cons.getMax() + " bytes");
         long pos = 0;
         for (; pos < siz;) {
             final int max = 8192;
@@ -85,7 +70,6 @@ public class userFlash {
             } catch (Exception ex) {
                 return true;
             }
-            cons.setCurr(pos);
         }
         try {
             fs.close();
@@ -95,7 +79,6 @@ public class userFlash {
             ft.close();
         } catch (Exception e) {
         }
-        cons.debugRes(pos + " bytes done");
         return false;
     }
 

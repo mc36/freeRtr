@@ -274,7 +274,7 @@ class prtRedunIfc implements ifcUp {
                     break;
                 }
                 if (uptime >= prtRedun.uptime) {
-                    cfgInit.stopRouter(true, 6, "dual active, peer older");
+                    cfgInit.stopRouter(true, 9, "dual active, peer older");
                 }
                 logger.warn("dual active, peer younger");
                 dualAct++;
@@ -288,7 +288,7 @@ class prtRedunIfc implements ifcUp {
                     break;
                 }
                 doAck(-4);
-                cfgInit.stopRouter(true, 6, "peer request");
+                cfgInit.stopRouter(true, 10, "peer request");
                 break;
             case packRedundancy.typAck:
                 ackRx = pck.msbGetD(0);

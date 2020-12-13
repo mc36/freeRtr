@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import pipe.pipeLine;
+import pipe.pipeProgress;
 import pipe.pipeSide;
 import util.bits;
 import util.cmds;
@@ -38,6 +39,8 @@ public class userUpgrade {
 
     private final cmds cmd;
 
+    private final pipeProgress cons;
+
     private int forces = 0;
 
     /**
@@ -47,6 +50,7 @@ public class userUpgrade {
      */
     public userUpgrade(cmds c) {
         cmd = c;
+        cons = new pipeProgress(cmd.pipe);
     }
 
     /**
@@ -270,14 +274,29 @@ public class userUpgrade {
     }
 
     /**
+     * do software revert
+     */
+    public void doRevert() {
+        String a = version.getFileName();
+        String b = a + ".bak";
+        if (!new File(b).exists()) {
+            a = "no backup software exists";
+            logger.error(a);
+            cons.debugStat(a);
+            return;
+        }
+        userFlash.rename(b, a, true, true);
+        cfgInit.stopRouter(true, 12, "revert finished");
+    }
+
+    /**
      * do software upgrade
      */
     public void doUpgrade() {
         if (inProgress) {
             String s = "overlapping upgrades eliminated";
             logger.info(s);
-            userFlash fl = new userFlash(cmd.pipe);
-            fl.cons.debugStat(s);
+            cons.debugStat(s);
             return;
         }
         inProgress = true;
@@ -301,8 +320,7 @@ public class userUpgrade {
         if (server.length() < 1) {
             server = cfgAll.upgradeServer;
         }
-        userFlash fl = new userFlash(cmd.pipe);
-        fl.cons.debugStat("downloading version info");
+        cons.debugStat("downloading version info");
         String tmp = version.myWorkDir() + "upg" + bits.randomD() + ".tmp";
         uniResLoc url = uniResLoc.parseOne(server + myFileName());
         url.filExt = verExt;
@@ -311,7 +329,7 @@ public class userUpgrade {
         List<String> txt = bits.txt2buf(tmp);
         userFlash.delete(tmp);
         if (txt == null) {
-            fl.cons.debugRes("failed to download version info!");
+            cons.debugRes("failed to download version info!");
             return;
         }
         userUpgradeBlob blb = new userUpgradeBlob();
@@ -319,24 +337,24 @@ public class userUpgrade {
         old.fromText(bits.txt2buf(myVerFile()), true);
         String a = blb.fromText(txt, false);
         if (a != null) {
-            fl.cons.debugRes("version info parser: " + a);
+            cons.debugRes("version info parser: " + a);
             if (needStop(0x1)) {
                 return;
             }
         }
-        fl.cons.debugRes("old release: " + old.head);
-        fl.cons.debugRes("new release: " + blb.head);
-        fl.cons.debugRes("diff/old/new time: " + bits.timeDump((blb.time - old.time) / 1000) + "/" + old.getTime() + "/" + blb.getTime());
-        fl.cons.debugRes("old files:" + old.getFilelist());
-        fl.cons.debugRes("new files:" + blb.getFilelist());
+        cons.debugRes("old release: " + old.head);
+        cons.debugRes("new release: " + blb.head);
+        cons.debugRes("diff/old/new time: " + bits.timeDump((blb.time - old.time) / 1000) + "/" + old.getTime() + "/" + blb.getTime());
+        cons.debugRes("old files:" + old.getFilelist());
+        cons.debugRes("new files:" + blb.getFilelist());
         if (old.time >= blb.time) {
-            fl.cons.debugRes("no upgrade needed!");
+            cons.debugRes("no upgrade needed!");
             if (needStop(0x2)) {
                 return;
             }
         }
         if (cfgAll.upgradeConfig) {
-            fl.cons.debugRes("saving configuration");
+            cons.debugRes("saving configuration");
             userReader rdr = new userReader(cmd.pipe, null);
             rdr.height = 0;
             userExec exe = new userExec(cmd.pipe, rdr);
@@ -353,14 +371,14 @@ public class userUpgrade {
         int i = upgradeFile(blb.jars, version.getFileName(), server + myFileName(), tmp);
         if (i == 2) {
             if (cfgAll.upgradeScript != null) {
-                fl.cons.debugRes("running upgrade script");
+                cons.debugRes("running upgrade script");
                 try {
                     cfgAll.upgradeScript.doRound();
                 } catch (Exception e) {
                     logger.traceback(e);
                 }
             }
-            fl.cons.debugRes("successfully finished, rebooting!");
+            cons.debugRes("successfully finished, rebooting!");
             cfgInit.stopRouter(true, 2, "upgrade finished");
             return;
         }
@@ -383,14 +401,13 @@ public class userUpgrade {
             return;
         }
         if (bits.buf2txt(true, blb.getText(2), myVerFile())) {
-            fl.cons.debugRes("failed to write version info!");
+            cons.debugRes("failed to write version info!");
         }
-        fl.cons.debugRes("successfully finished!");
+        cons.debugRes("successfully finished!");
         logger.info("upgrade finished!");
     }
 
     private boolean upgradeFiles(userUpgradeBlob blb, String server, String tmp, int flg) {
-        userFlash fl = new userFlash(cmd.pipe);
         boolean some = false;
         for (int o = 0; o < blb.files.size(); o++) {
             userUpgradeNtry ntry = blb.files.get(o);
@@ -409,7 +426,7 @@ public class userUpgrade {
             }
         }
         if (!some) {
-            fl.cons.debugRes("nothing done in this round");
+            cons.debugRes("nothing done in this round");
             return false;
         }
         List<String> scr = new ArrayList<String>();
@@ -428,13 +445,13 @@ public class userUpgrade {
             scr.addAll(res);
         }
         if (scr.size() < 1) {
-            fl.cons.debugRes("no script for this round");
+            cons.debugRes("no script for this round");
             return false;
         }
         if (needStop(justSimu)) {
             return false;
         }
-        fl.cons.debugRes("running upgrade script");
+        cons.debugRes("running upgrade script");
         pipeLine pl = new pipeLine(32768, false);
         pipeSide loc = pl.getSide();
         pipeSide pip = pl.getSide();
@@ -489,39 +506,38 @@ public class userUpgrade {
         if (sumO == null) {
             sumO = "doit";
         }
-        userFlash fl = new userFlash(cmd.pipe);
         if (sumN.equals(sumO)) {
-            fl.cons.debugStat("skipping " + loc + " since up to date!");
+            cons.debugStat("skipping " + loc + " since up to date!");
             return 0;
         }
         if (needStop(justSimu)) {
-            fl.cons.debugStat("skipping " + loc + " since just simulating!");
+            cons.debugStat("skipping " + loc + " since just simulating!");
             return 0;
         }
         if (cfgAll.upgradeBackup) {
             String a = loc + ".bak";
-            fl.cons.debugStat("backing up " + loc + " to " + a);
+            cons.debugStat("backing up " + loc + " to " + a);
             userFlash.delete(a);
-            fl.copy(loc, a);
+            userFlash.copy(loc, a);
         }
-        fl.cons.debugStat("downloading " + loc);
+        cons.debugStat("downloading " + loc);
         uniResLoc url = uniResLoc.parseOne(rem);
         userFlash.delete(tmp);
         userFlash.doReceive(cmd.pipe, url, new File(tmp));
-        fl.cons.debugStat("upgrading " + loc);
+        cons.debugStat("upgrading " + loc);
         if (!sumN.equals(calcFileHash(tmp))) {
-            fl.cons.debugRes("checksum mismatch, aborting!");
+            cons.debugRes("checksum mismatch, aborting!");
             if (needStop(0x20)) {
                 userFlash.delete(tmp);
                 return 1;
             }
         }
         if (userFlash.rename(tmp, loc, true, false)) {
-            fl.cons.debugRes("failed to rename!");
+            cons.debugRes("failed to rename!");
             return 1;
         }
         if (!sumN.equals(calcFileHash(loc))) {
-            fl.cons.debugRes("checksum mismatch after rename!");
+            cons.debugRes("checksum mismatch after rename!");
             if (needStop(0x20)) {
                 return 1;
             }

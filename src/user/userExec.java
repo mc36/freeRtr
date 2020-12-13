@@ -1355,6 +1355,7 @@ public class userExec {
         hl.add("2 3      mkdir                   make directory");
         hl.add("3 .        <file>                filename");
         hl.add("2 .      verify                  verify routing software");
+        hl.add("2 .      revert                  revert routing software");
         hl.add("2 3,.    upgrade                 upgrade routing software");
         hl.add("3 3,.      [url]                 parameter of process");
         hl.add("2 3,.    simulate                simulate upgrade process");
@@ -2233,7 +2234,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("force")) {
-                cfgInit.stopRouter(true, 3, "user requested");
+                cfgInit.stopRouter(true, 11, "user requested");
                 return cmdRes.command;
             }
             if (userFilter.doDiffer(cfgAll.getShRun(true), bits.txt2buf(cfgInit.cfgFileSw)) > 1) {
@@ -3542,6 +3543,11 @@ public class userExec {
             u.doSimulate();
             return;
         }
+        if (a.equals("revert")) {
+            userUpgrade u = new userUpgrade(cmd);
+            u.doRevert();
+            return;
+        }
         if (a.equals("verify")) {
             userUpgrade u = new userUpgrade(cmd);
             u.doVerify(null);
@@ -3555,10 +3561,9 @@ public class userExec {
             reader.putStrArr(userFlash.binRead(cmd.getRemaining()));
             return;
         }
-        userFlash fl = new userFlash(pipe);
         if (a.equals("copy")) {
             String s = cmd.word();
-            fl.copy(s, cmd.word());
+            userFlash.copy(s, cmd.word());
             return;
         }
         if (a.equals("rename")) {
