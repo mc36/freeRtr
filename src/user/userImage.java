@@ -78,10 +78,22 @@ public class userImage {
         return exec("rm -rf " + s) != 0;
     }
 
-    private boolean download(String url, String fil) {
+    private boolean download(String url, String fil, int siz) {
+        File f = new File(fil);
         switch (downMode) {
+            case 3:
+                if (!f.exists()) {
+                    break;
+                }
+                if (siz < 0) {
+                    return false;
+                }
+                if (f.length() == siz) {
+                    return false;
+                }
+                break;
             case 2:
-                if (new File(fil).exists()) {
+                if (f.exists()) {
                     return false;
                 }
                 break;
@@ -98,7 +110,7 @@ public class userImage {
         String cat1 = tempDir + "/" + pool + ".txt";
         String cat2 = downDir + "/" + arch + "--" + dist + "-" + pool + ".xz";
         delete(cat1);
-        download(mirror + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages.xz", cat2);
+        download(mirror + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages.xz", cat2, -1);
         exec("cp " + cat2 + " " + cat1 + ".xz");
         exec("xz -d " + cat1 + ".xz");
         List<String> res = bits.txt2buf(cat1);
@@ -170,7 +182,7 @@ public class userImage {
     private void downAllFiles() {
         for (int i = 0; i < selected.size(); i++) {
             userImageNtry pkg = selected.get(i);
-            download(mirror + pkg.file, downDir + "/" + arch + "-" + pkg.name + ".deb");
+            download(mirror + pkg.file, downDir + "/" + arch + "-" + pkg.name + ".deb", pkg.size);
         }
     }
 
