@@ -247,9 +247,10 @@ public class clntHttp {
         if (pipe != null) {
             pipe.setClose();
         }
+        userTerminal t = new userTerminal(cons);
         if (url.proto.equals("http2")) {
             url.proto = "http";
-            pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(new servHttp().srvPort()), "http");
+            pipe = t.resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(new servHttp().srvPort()), "http");
             if (pipe == null) {
                 return true;
             }
@@ -261,10 +262,9 @@ public class clntHttp {
             return false;
         }
         if (!url.proto.equals("https")) {
-            pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(new servHttp().srvPort()), "http");
+            pipe = t.resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(new servHttp().srvPort()), "http");
             return pipe == null;
         }
-        userTerminal t = new userTerminal(cons);
         pipe = t.resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(servHttp.securePort), "https");
         if (pipe == null) {
             return true;

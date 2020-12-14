@@ -280,7 +280,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
     public userFormat toUserStr(boolean stat) {
         String a = "";
         if (stat) {
-            a = "|hit|since";
+            a = "|hit|ttl|since";
         }
         userFormat res = new userFormat("|", "name|type|data" + a);
         for (int i = 0; i < recs.size(); i++) {

@@ -425,7 +425,7 @@ class servDnsDoer implements Runnable {
         }
         ntry = parent.resolvs.get(num);
         clntDns clnt = new clntDns();
-        if (clnt.doResolvOne(ntry.addr, nam, false, typ)) {
+        if (clnt.doResolvOne(ntry.addr, nam, false, typ) != 0) {
             return false;
         }
         if (typ == packDnsRec.typeANY) {
@@ -490,7 +490,7 @@ class servDnsDoer implements Runnable {
                 return false;
             }
             clnt = new clntDns();
-            if (clnt.doResolvList(cfgAll.nameServerAddr, old, false, packDnsRec.typeA)) {
+            if (clnt.doResolvList(cfgAll.nameServerAddr, old, false, packDnsRec.typeA) != 0) {
                 return false;
             }
             rr = clnt.findAnswer(packDnsRec.typeA);

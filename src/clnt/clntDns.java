@@ -25,13 +25,30 @@ import util.logger;
  */
 public class clntDns {
 
-    private cfgProxy curPrx; // working proxy
+    /**
+     * working proxy
+     */
+    private cfgProxy curPrx;
 
-    private packDns query; // dns question
+    /**
+     * dns question
+     */
+    private packDns query;
 
-    private packDns reply; // dns response
+    /**
+     * dns response
+     */
+    private packDns reply;
 
-    private static packDnsZone loCache = new packDnsZone(""); // local cache
+    /**
+     * local positive cache
+     */
+    private static packDnsZone loPcache = new packDnsZone("");
+
+    /**
+     * local negative cache
+     */
+    private static packDnsZone loNcache = new packDnsZone("");
 
     /**
      * setup instance
@@ -53,45 +70,64 @@ public class clntDns {
             if (debugger.clntDnsTraf) {
                 logger.debug("cleared");
             }
-            loCache.clear();
+            loPcache.clear();
+            loNcache.clear();
             return;
         }
-        long t = bits.getTime();
-        int del = 0;
-        for (int i = loCache.size() - 1; i >= 0; i--) {
-            packDnsRec ntry = loCache.get(i);
-            if (((t - ntry.added) / 1000) < ntry.ttl) {
-                continue;
-            }
-            loCache.delBin(ntry);
-            del++;
-        }
+        int del = purgeLocalCache(loPcache);
+        del += purgeLocalCache(loNcache);
         if (debugger.clntDnsTraf) {
             logger.debug(del + " purged");
         }
     }
 
+    private static int purgeLocalCache(packDnsZone loCache) {
+        long t = bits.getTime();
+        int del = 0;
+        for (int i = loCache.size() - 1; i >= 0; i--) {
+            packDnsRec ntry = loCache.get(i);
+            if ((t - ntry.added) < (ntry.ttl * 1000)) {
+                continue;
+            }
+            loCache.delBin(ntry);
+            del++;
+        }
+        return del;
+    }
+
     /**
      * display local cache
      *
+     * @param neg true if negative cache needed
      * @return cache content
      */
-    public static userFormat showLocalCache() {
-        return loCache.toUserStr(true);
+    public static userFormat showLocalCache(boolean neg) {
+        if (neg) {
+            return loNcache.toUserStr(true);
+        } else {
+            return loPcache.toUserStr(true);
+        }
     }
 
-    private boolean doResolv(addrIP srv, String nam, int typ) {
+    private int doResolv(addrIP srv, String nam, int typ) {
         reply = new packDns();
-        packDnsRec cac = loCache.findUser(nam, typ);
+        packDnsRec cac = loNcache.findUser(nam, typ);
+        if (cac != null) {
+            if (debugger.clntDnsTraf) {
+                logger.debug("negative hit " + cac);
+            }
+            return 2;
+        }
+        cac = loPcache.findUser(nam, typ);
         for (int lop = 0; lop < 32; lop++) {
             if (cac != null) {
                 if (debugger.clntDnsTraf) {
                     logger.debug("cache hit " + cac);
                 }
                 reply.answers.add(cac);
-                return false;
+                return 0;
             }
-            cac = loCache.findUser(nam, packDnsRec.typeCNAME);
+            cac = loPcache.findUser(nam, packDnsRec.typeCNAME);
             if (cac == null) {
                 break;
             }
@@ -99,19 +135,20 @@ public class clntDns {
                 logger.debug("cache redir " + cac);
             }
             nam = cac.target;
-            cac = loCache.findUser(nam, typ);
+            cac = loPcache.findUser(nam, typ);
         }
         if (curPrx == null) {
-            return true;
+            return 1;
         }
         if (srv == null) {
-            return true;
+            return 1;
         }
         query = new packDns();
         packHolder pck = new packHolder(true, true);
         packDnsRec rr = new packDnsRec();
         rr.name = nam;
         rr.typ = typ;
+        rr.ttl = 180;
         query.queries.add(rr);
         query.id = bits.randomW();
         query.opcode = packDns.opcodeQuery;
@@ -148,15 +185,23 @@ public class clntDns {
             if (debugger.clntDnsTraf) {
                 logger.debug("rx " + srv + " " + reply);
             }
-            if (reply.result != packDns.resultSuccess) {
-                return true;
+            loPcache.addList(reply.answers);
+            loPcache.addList(reply.addition);
+            loPcache.addList(reply.servers);
+            if (reply.result == packDns.resultName) {
+                loNcache.addBin(rr);
+                return 2;
             }
-            loCache.addList(reply.answers);
-            loCache.addList(reply.addition);
-            loCache.addList(reply.servers);
-            return false;
+            if (reply.result != packDns.resultSuccess) {
+                return 1;
+            }
+            if (findAnswer(typ) == null) {
+                loNcache.addBin(rr);
+                return 2;
+            }
+            return 0;
         }
-        return true;
+        return 1;
     }
 
     /**
@@ -166,17 +211,18 @@ public class clntDns {
      * @param nam name to query
      * @param dom try appending domain
      * @param typ type of record
-     * @return false on success, true on error
+     * @return 0 on success, 1 on error, 2 on notfound
      */
-    public boolean doResolvOne(addrIP srv, String nam, boolean dom, int typ) {
-        if (!doResolv(srv, nam, typ)) {
-            return false;
+    public int doResolvOne(addrIP srv, String nam, boolean dom, int typ) {
+        int i = doResolv(srv, nam, typ);
+        if (i == 0) {
+            return i;
         }
         if (!dom) {
-            return true;
+            return i;
         }
         if (cfgAll.domainName == null) {
-            return true;
+            return i;
         }
         return doResolv(srv, nam + "." + cfgAll.domainName, typ);
     }
@@ -210,7 +256,7 @@ public class clntDns {
             }
             dom = a + dom;
             int ned = (nam.length() > 0) ? packDnsRec.typeNS : typ;
-            if (doResolvList(srv, dom, false, ned)) {
+            if (doResolvList(srv, dom, false, ned) != 0) {
                 return null;
             }
             packDnsRec rec = findAnswer(ned);
@@ -326,19 +372,20 @@ public class clntDns {
      * @param nam name to query
      * @param dom try appending domain
      * @param typ type of query
-     * @return false on success, true on error
+     * @return 0 on success, 1 on error, 2 on notfound
      */
-    public boolean doResolvList(List<addrIP> srv, String nam, boolean dom, int typ) {
+    public int doResolvList(List<addrIP> srv, String nam, boolean dom, int typ) {
         if (srv == null) {
-            return true;
+            return 1;
         }
-        for (int i = 0; i < srv.size(); i++) {
-            if (doResolvOne(srv.get(i), nam, dom, typ) == true) {
+        for (int o = 0; o < srv.size(); o++) {
+            int i = doResolvOne(srv.get(o), nam, dom, typ);
+            if (i == 1) {
                 continue;
             }
-            return false;
+            return i;
         }
-        return true;
+        return 1;
     }
 
     private int getTypPri(int prefer) {
@@ -364,6 +411,16 @@ public class clntDns {
         }
     }
 
+    private boolean checkReply(int cod) {
+        if (cod != 0) {
+            return true;
+        }
+        if (reply == null) {
+            return true;
+        }
+        return reply.answers.size() < 1;
+    }
+
     /**
      * do one resolving work
      *
@@ -382,16 +439,15 @@ public class clntDns {
             reply.answers.add(rr);
             return false;
         }
-        if (doResolvList(srv, nam, true, getTypPri(prefer))) {
-            return doResolvList(srv, nam, true, getTypBck(prefer));
+        int i = doResolvList(srv, nam, true, getTypPri(prefer));
+        if (i == 1) {
+            return true;
         }
-        if (reply == null) {
-            return doResolvList(srv, nam, true, getTypBck(prefer));
+        if (!checkReply(i)) {
+            return false;
         }
-        if (reply.answers.size() < 1) {
-            return doResolvList(srv, nam, true, getTypBck(prefer));
-        }
-        return false;
+        i = doResolvList(srv, nam, true, getTypBck(prefer));
+        return checkReply(i);
     }
 
     /**

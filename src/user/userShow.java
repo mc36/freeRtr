@@ -343,7 +343,8 @@ public class userShow {
             return null;
         }
         if (a.equals("name-cache")) {
-            rdr.putStrTab(clntDns.showLocalCache());
+            rdr.putStrTab(clntDns.showLocalCache(false));
+            rdr.putStrTab(clntDns.showLocalCache(true));
             return null;
         }
         if (a.equals("whois")) {
