@@ -652,6 +652,7 @@ qc pass: interop1: dot1q encapsulation
 qc pass: interop1: spantree nonroot
 qc pass: interop1: spantree root
 qc pass: interop1: point2point ethernet encapsulation
+qc pass: interop1: lacp
 qc pass: interop1: ike1 with ipv4
 qc pass: interop1: ike1 with ipv6
 qc pass: interop1: ike1 with 3des
@@ -768,6 +769,7 @@ qc pass: interop2: ethernet encapsulation
 qc pass: interop2: dot1q encapsulation
 qc pass: interop2: dot1ad encapsulation
 qc pass: interop2: point2point ethernet encapsulation
+qc pass: interop2: ethernet encapsulation
 qc pass: interop2: point2point isis
 qc pass: interop2: isis dis
 qc pass: interop2: isis nondis

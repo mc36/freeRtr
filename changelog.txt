@@ -9609,3 +9609,6 @@ qc pass: remote triggered whitelist access
 ---------------------------------- 2020-12-13 09:05:18
 qc pass: eapol
 qc pass: lacp
+---------------------------------- 2020-12-14 06:18:12
+qc pass: interop1: lacp
+qc pass: interop2: ethernet encapsulation
