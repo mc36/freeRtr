@@ -176,7 +176,7 @@ help :
     addrRem.sin_family = AF_INET;
     addrRem.sin_port = htons(portRem);
 
-    if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
+    if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to udp open socket");
     if (bind(commSock, (struct sockaddr *) &addrLoc, sizeof (addrLoc)) < 0) err("failed to bind socket");
     printf("binded to local port %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc);
     if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
@@ -186,7 +186,7 @@ help :
     strcpy(ifaceName, argv[1]);
     printf("opening interface %s.\n", ifaceName);
 
-    if ((ifaceSock = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL))) < 0) err("unable to open socket");
+    if ((ifaceSock = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL))) < 0) err("unable to raw open socket");
     struct ifreq ifr;
     memset(&ifr, 0, sizeof (ifr));
     strcpy(ifr.ifr_name, ifaceName);

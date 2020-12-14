@@ -180,7 +180,9 @@ help :
     if (ioctl(ifaceSock, TUNSETIFF, &ifr) < 0) err("unable to create interface");
 
     unsigned char buf[1024];
-    sprintf(buf, "ip link set %s up address 00:00:%02x:%02x:%02x:%02x mtu 1500", ifaceName, portLoc >> 8, portLoc & 0xff, portRem >> 8, portRem & 0xff);
+    sprintf(buf, "ip link set %s address 00:00:%02x:%02x:%02x:%02x mtu 1500", ifaceName, portLoc >> 8, portLoc & 0xff, portRem >> 8, portRem & 0xff);
+    doCmd(buf);
+    sprintf(buf, "ip link set %s up", ifaceName);
     doCmd(buf);
     if (argc > 6) {
         sprintf(buf, "ip addr add %s dev %s", argv[6], ifaceName);

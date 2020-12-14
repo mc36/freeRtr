@@ -29,19 +29,19 @@ public class userImage {
 
     private String arch = "amd64";
 
-    private String mirror = "http://deb.debian.org/debian/";
+    private tabGen<userImageCat> catalogs = new tabGen<userImageCat>();
 
-    private tabGen<userImageNtry> allPkgs = new tabGen<userImageNtry>();
+    private tabGen<userImagePkg> allPkgs = new tabGen<userImagePkg>();
 
-    private tabGen<userImageNtry> missing = new tabGen<userImageNtry>();
+    private tabGen<userImagePkg> missing = new tabGen<userImagePkg>();
 
-    private tabGen<userImageNtry> selected = new tabGen<userImageNtry>();
+    private tabGen<userImagePkg> selected = new tabGen<userImagePkg>();
 
-    private tabGen<userImageNtry> forbidden = new tabGen<userImageNtry>();
+    private tabGen<userImagePkg> forbidden = new tabGen<userImagePkg>();
 
-    private userImageNtry startsWith(tabGen<userImageNtry> lst, String a) {
+    private userImagePkg startsWith(tabGen<userImagePkg> lst, String a) {
         for (int i = 0; i < lst.size(); i++) {
-            userImageNtry pkg = lst.get(i);
+            userImagePkg pkg = lst.get(i);
             if (a.startsWith(pkg.name)) {
                 return pkg;
             }
@@ -49,11 +49,11 @@ public class userImage {
         return null;
     }
 
-    private String dumpList(tabGen<userImageNtry> lst, boolean detail) {
+    private String dumpList(tabGen<userImagePkg> lst, boolean detail) {
         String s = "";
         long o = 0;
         for (int i = 0; i < lst.size(); i++) {
-            userImageNtry pkg = lst.get(i);
+            userImagePkg pkg = lst.get(i);
             o += pkg.size;
             if (!detail) {
                 continue;
@@ -106,18 +106,32 @@ public class userImage {
         return exec("wget -O " + fil + " " + url) != 0;
     }
 
-    private boolean readUpCatalog(String dist, String pool) {
+    private boolean readUpCatalog(cmds cmd) {
+        String name = cmd.word();
+        String comp = cmd.word();
+        String mirr = cmd.word();
+        String dist = cmd.word();
+        String pool = cmd.word();
+        userImageCat cat = new userImageCat(name);
+        cat.url = mirr;
+        cmd.error("reading " + name + " list");
         String cat1 = tempDir + "/" + pool + ".txt";
-        String cat2 = downDir + "/" + arch + "--" + dist + "-" + pool + ".xz";
+        String cat2 = downDir + "/" + arch + "--" + name + "." + comp;
         delete(cat1);
-        download(mirror + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages.xz", cat2, -1);
-        exec("cp " + cat2 + " " + cat1 + ".xz");
-        exec("xz -d " + cat1 + ".xz");
+        download(mirr + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages." + comp, cat2, -1);
+        if (comp.equals("xz")) {
+            exec("cp " + cat2 + " " + cat1 + ".xz");
+            exec("xz -d " + cat1 + ".xz");
+        }
+        if (comp.equals("gz")) {
+            exec("cp " + cat2 + " " + cat1 + ".gz");
+            exec("gzip -d " + cat1 + ".gz");
+        }
         List<String> res = bits.txt2buf(cat1);
         if (res == null) {
             return true;
         }
-        userImageNtry pkg = new userImageNtry("");
+        userImagePkg pkg = new userImagePkg("");
         for (int cnt = 0; cnt < res.size(); cnt++) {
             String a = res.get(cnt).trim();
             int i = a.indexOf(":");
@@ -127,8 +141,9 @@ public class userImage {
             String b = a.substring(i + 1, a.length()).trim();
             a = a.substring(0, i).trim().toLowerCase();
             if (a.equals("package")) {
+                pkg.cat = cat;
                 allPkgs.put(pkg);
-                pkg = new userImageNtry(b);
+                pkg = new userImagePkg(b);
                 continue;
             }
             if (a.equals("depends")) {
@@ -164,10 +179,10 @@ public class userImage {
         if (startsWith(forbidden, nam) != null) {
             return;
         }
-        userImageNtry pkt = new userImageNtry(nam);
+        userImagePkg pkt = new userImagePkg(nam);
         pkt = allPkgs.find(pkt);
         if (pkt == null) {
-            missing.add(new userImageNtry(nam));
+            missing.add(new userImagePkg(nam));
             return;
         }
         pkt.added = by;
@@ -181,8 +196,8 @@ public class userImage {
 
     private void downAllFiles() {
         for (int i = 0; i < selected.size(); i++) {
-            userImageNtry pkg = selected.get(i);
-            download(mirror + pkg.file, downDir + "/" + arch + "-" + pkg.name + ".deb", pkg.size);
+            userImagePkg pkg = selected.get(i);
+            download(pkg.cat.url + pkg.file, downDir + "/" + arch + "-" + pkg.name + ".deb", pkg.size);
         }
     }
 
@@ -192,7 +207,7 @@ public class userImage {
 
     private void instAllFiles() {
         for (int i = 0; i < selected.size(); i++) {
-            userImageNtry pkg = selected.get(i);
+            userImagePkg pkg = selected.get(i);
             install(downDir + "/" + arch + "-" + pkg.name + ".deb");
         }
     }
@@ -252,16 +267,10 @@ public class userImage {
             if (a.equals("exit")) {
                 break;
             }
-            if (a.equals("mirror")) {
-                mirror = s;
-                continue;
-            }
             if (a.equals("catalog-read")) {
-                i = s.indexOf(" ");
-                a = s.substring(0, i).trim().trim();
-                s = s.substring(i, s.length()).trim();
-                cmd.error("reading " + s + " of " + a + " list");
-                if (readUpCatalog(a, s)) {
+                cmds c = new cmds("", s);
+                c.pipe = pip;
+                if (readUpCatalog(c)) {
                     cmd.error("failed");
                 }
                 continue;
@@ -271,11 +280,11 @@ public class userImage {
                 continue;
             }
             if (a.equals("select-dis")) {
-                forbidden.add(new userImageNtry(s));
+                forbidden.add(new userImagePkg(s));
                 continue;
             }
             if (a.equals("select-del")) {
-                selected.del(new userImageNtry(s));
+                selected.del(new userImagePkg(s));
                 continue;
             }
             if (a.equals("select-lst")) {
@@ -320,9 +329,31 @@ public class userImage {
 
 }
 
-class userImageNtry implements Comparator<userImageNtry> {
+class userImageCat implements Comparator<userImageCat> {
 
-    public String name = "";
+    public final String name;
+
+    public String url;
+
+    public userImageCat(String n) {
+        name = n.trim();
+    }
+
+    public int compare(userImageCat o1, userImageCat o2) {
+        return o1.name.compareTo(o2.name);
+    }
+
+    public String toString() {
+        return name;
+    }
+
+}
+
+class userImagePkg implements Comparator<userImagePkg> {
+
+    public final String name;
+
+    public userImageCat cat;
 
     public String added = "";
 
@@ -336,16 +367,16 @@ class userImageNtry implements Comparator<userImageNtry> {
 
     public int level;
 
-    public userImageNtry(String n) {
+    public userImagePkg(String n) {
         name = n.trim();
     }
 
-    public int compare(userImageNtry o1, userImageNtry o2) {
+    public int compare(userImagePkg o1, userImagePkg o2) {
         return o1.name.compareTo(o2.name);
     }
 
     public String toString() {
-        String s = name + " " + vers + " " + added + " " + file + " " + size;
+        String s = name + " " + cat + " " + vers + " " + added + " " + file + " " + size;
         for (int i = 0; i < depend.size(); i++) {
             s += " " + depend.get(i);
         }

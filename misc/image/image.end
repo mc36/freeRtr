@@ -10,7 +10,10 @@ del-alw %tmp%/usr/share/doc
 del-alw %tmp%/usr/share/bug
 del-alw %tmp%/lib/modules/*/kernel/drivers/gpu
 del-alw %tmp%/lib/modules/*/kernel/drivers/media
+exec mv %tmp%/lib/modules/*/kernel/net/packet %tmp%/tmp/
 del-alw %tmp%/lib/modules/*/kernel/net
+exec mkdir %tmp%/lib/modules/*/kernel/net
+exec mv %tmp%/tmp/ %tmp%/lib/modules/*/kernel/net
 del-alw %tmp%/lib/modules/*/kernel/sound
 del-alw %tmp%/usr/lib/x86_64-linux-gnu/gconv
 

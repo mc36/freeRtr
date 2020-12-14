@@ -1,6 +1,5 @@
 download 3
 arch amd64
-mirror http://ftp.at.debian.org/debian/
 
 del-alw %img%.*
 del-ifdn %dwn%
@@ -32,8 +31,9 @@ exec cp ../binTmp/ttyLin.bin %tmp%/rtr/
 exec cp ../binTmp/rawInt.bin %tmp%/rtr/
 exec cp ../binTmp/tapInt.bin %tmp%/rtr/
 
-catalog-read sid main
-catalog-read experimental main
+catalog-read liquorix gz https://liquorix.net/debian/ sid main
+catalog-read deb-sid xz http://ftp.at.debian.org/debian/ sid main
+catalog-read deb-exp xz http://ftp.at.debian.org/debian/ experimental main
 
 select-dis debconf
 select-dis adduser
@@ -73,7 +73,8 @@ select-dis libxrender
 select-dis libxtst
 
 
-select-one linux-image-%arch%  #kernel
-select-one busybox             #small utils
-select-one udev                #bring up hw
-select-one ethtool             #disable hw chksum
+select-dis linux-image-%arch%             #kernel
+select-one linux-image-liquorix-%arch%    #kernel
+select-one busybox                        #small utils
+select-one udev                           #bring up hw
+select-one ethtool                        #disable hw chksum
