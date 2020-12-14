@@ -321,7 +321,9 @@ public class userUpgrade {
         boolean dl = userFlash.doReceive(pipeDiscard.needAny(null), url, new File(tmp));
         userFlash.delete(tmp);
         if (!dl) {
-            logger.info("auto-revert cancelled");
+            String a = "auto-revert cancelled";
+            logger.info(a);
+            cfgInit.stopRouter(true, -14, a);
             return;
         }
         logger.info("auto-revert was unable to reach server");

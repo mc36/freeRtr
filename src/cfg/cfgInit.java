@@ -854,13 +854,21 @@ public class cfgInit implements Runnable {
      * stop router
      *
      * @param clean clean exit
-     * @param code exit code
+     * @param code exit code, negative just updates reload file
      * @param reason reason string
      */
     public static void stopRouter(boolean clean, int code, String reason) {
+        boolean fake = code < 0;
+        if (fake) {
+            code = -code;
+        }
         try {
             bits.buf2txt(true, bits.str2lst("code#" + code + "=" + reason), version.myReloadFile());
         } catch (Exception e) {
+        }
+        if (fake) {
+            lastReloadCode = code;
+            return;
         }
         if (clean && cfgAll.graceReload) {
             for (int i = 0; i < cfgAll.vrfs.size(); i++) {
