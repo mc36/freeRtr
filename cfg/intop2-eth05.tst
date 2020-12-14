@@ -24,6 +24,7 @@ interface bundle-ether1
  exit
 interface gigabit0/0/0/0
  bundle id 1 mode active
+ lacp period short
  no shutdown
  exit
 root
