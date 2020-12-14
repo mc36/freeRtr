@@ -175,7 +175,7 @@ public class ifcLacp implements ifcUp, Runnable {
         bits.msbPutW(buf, 8, sysKey);
         bits.msbPutW(buf, 10, portPri);
         bits.msbPutW(buf, 12, portNum);
-        buf[14] = 0x3d; // state
+        buf[14] = 0x3f; // state
         return buf;
     }
 
