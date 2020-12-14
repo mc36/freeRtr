@@ -73,8 +73,9 @@ select-dis libxrender
 select-dis libxtst
 
 
-select-dis linux-image-%arch%             #kernel
-select-one linux-image-liquorix-%arch%    #kernel
+select-dis linux-image-liquorix-%arch%    #alternative kernel
+select-dis linux-image-cloud-%arch%       #cloud kernel
+select-one linux-image-%arch%             #regular kernel
 select-one busybox                        #small utils
 select-one udev                           #bring up hw
 select-one ethtool                        #disable hw chksum
