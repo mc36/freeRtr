@@ -9,14 +9,23 @@ del-alw %tmp%/usr/share/man
 del-alw %tmp%/usr/share/doc
 del-alw %tmp%/usr/share/bug
 del-alw %tmp%/usr/lib/x86_64-linux-gnu/gconv
+
 find-file %tmp%/lib/modules/ .*-%arch%
+del-alw %tmp%/lib/modules/%find%/kernel/sound
 del-alw %tmp%/lib/modules/%find%/kernel/drivers/gpu
 del-alw %tmp%/lib/modules/%find%/kernel/drivers/media
-del-alw %tmp%/lib/modules/%find%/kernel/sound
+del-alw %tmp%/lib/modules/%find%/kernel/drivers/infiniband
+del-alw %tmp%/lib/modules/%find%/kernel/drivers/net/wireless
+
 exec mv %tmp%/lib/modules/%find%/kernel/net/packet %tmp%/tmp/
 del-alw %tmp%/lib/modules/%find%/kernel/net
 exec mkdir %tmp%/lib/modules/%find%/kernel/net
 exec mv %tmp%/tmp/* %tmp%/lib/modules/%find%/kernel/net
+
+exec mv %tmp%/lib/modules/%find%/kernel/drivers/scsi/*.ko %tmp%/tmp/
+del-alw %tmp%/lib/modules/%find%/kernel/drivers/scsi
+exec mkdir %tmp%/lib/modules/%find%/kernel/drivers/scsi
+exec mv %tmp%/tmp/* %tmp%/lib/modules/%find%/kernel/drivers/scsi/
 
 exec chmod 755 %tmp%/init*
 exec touch %tmp%/rtr/rtr-hw.txt
