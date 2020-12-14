@@ -25,6 +25,8 @@ public class userImage {
 
     private String imgName = "../binImg/rtr";
 
+    private String found = "";
+
     private int downMode = 1;
 
     private String arch = "amd64";
@@ -38,6 +40,8 @@ public class userImage {
     private tabGen<userImagePkg> selected = new tabGen<userImagePkg>();
 
     private tabGen<userImagePkg> forbidden = new tabGen<userImagePkg>();
+
+    private tabGen<userImagePkg> discarded = new tabGen<userImagePkg>();
 
     private userImagePkg startsWith(tabGen<userImagePkg> lst, String a) {
         for (int i = 0; i < lst.size(); i++) {
@@ -176,9 +180,6 @@ public class userImage {
         if (nam.length() < 1) {
             return;
         }
-        if (startsWith(forbidden, nam) != null) {
-            return;
-        }
         userImagePkg pkt = new userImagePkg(nam);
         pkt = allPkgs.find(pkt);
         if (pkt == null) {
@@ -186,6 +187,10 @@ public class userImage {
             return;
         }
         pkt.added = by;
+        if (startsWith(forbidden, nam) != null) {
+            discarded.add(pkt);
+            return;
+        }
         if (selected.add(pkt) != null) {
             return;
         }
@@ -230,6 +235,7 @@ public class userImage {
             s = s.replaceAll("%dwn%", downDir);
             s = s.replaceAll("%img%", imgName);
             s = s.replaceAll("%arch%", arch);
+            s = s.replaceAll("%find%", found);
             s = s.replaceAll("%%", "%");
             s += "#";
             int i = s.indexOf("#");
@@ -267,6 +273,27 @@ public class userImage {
             if (a.equals("exit")) {
                 break;
             }
+            if (a.equals("find-file")) {
+                found = "";
+                i = s.indexOf(" ");
+                a = s.substring(0, i);
+                s = s.substring(i + 1, s.length());
+                File[] fl = userFlash.dirList(a);
+                if (fl == null) {
+                    cmd.error("error getting list");
+                    continue;
+                }
+                for (i = 0; i < fl.length; i++) {
+                    a = fl[i].getName();
+                    if (!a.matches(s)) {
+                        continue;
+                    }
+                    found = a;
+                    break;
+                }
+                cmd.error("result='" + found + "'");
+                continue;
+            }
             if (a.equals("catalog-read")) {
                 cmds c = new cmds("", s);
                 c.pipe = pip;
@@ -298,6 +325,8 @@ public class userImage {
                 cmd.error("available: " + dumpList(allPkgs, false));
                 cmd.error("");
                 cmd.error("forbidden: " + dumpList(forbidden, true));
+                cmd.error("");
+                cmd.error("discarded: " + dumpList(discarded, true));
                 cmd.error("");
                 cmd.error("selected: " + dumpList(selected, true));
                 cmd.error("");

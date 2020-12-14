@@ -23,7 +23,8 @@ select-sum
 package-down
 package-inst
 
-exec %tmp%/usr/lib/jvm/java-??-openjdk-%arch%/bin/jlink --output %tmp%/java --strip-debug --no-man-pages --no-header-files --add-modules java.base
+find-file %tmp%/usr/lib/jvm/ java-[0-9]+-openjdk-%arch%
+exec %tmp%/usr/lib/jvm/%find%/bin/jlink --output %tmp%/java --strip-debug --no-man-pages --no-header-files --add-modules java.base
 exec ln -s /java/bin/java %tmp%/bin/java
 del-alw %tmp%/usr/lib/jvm
 del-alw %tmp%/etc/java-*
