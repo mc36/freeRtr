@@ -53,6 +53,17 @@ public class userImage {
         return null;
     }
 
+    private void filterCat(tabGen<userImagePkg> trg, userImageCat cat, tabGen<userImagePkg> src) {
+        trg.clear();
+        for (int i = 0; i < src.size(); i++) {
+            userImagePkg cur = src.get(i);
+            if (cur.cat != cat) {
+                continue;
+            }
+            trg.add(cur);
+        }
+    }
+
     private String dumpList(tabGen<userImagePkg> lst, boolean detail) {
         String s = "";
         long o = 0;
@@ -118,6 +129,7 @@ public class userImage {
         String pool = cmd.word();
         userImageCat cat = new userImageCat(name);
         cat.url = mirr;
+        catalogs.add(cat);
         cmd.error("reading " + name + " list");
         String cat1 = tempDir + "/" + pool + ".txt";
         String cat2 = downDir + "/" + arch + "--" + name + "." + comp;
@@ -331,6 +343,13 @@ public class userImage {
                 cmd.error("selected: " + dumpList(selected, true));
                 cmd.error("");
                 cmd.error("missing: " + dumpList(missing, true));
+                tabGen<userImagePkg> lst = new tabGen<userImagePkg>();
+                for (i = 0; i < catalogs.size(); i++) {
+                    userImageCat cat = catalogs.get(i);
+                    filterCat(lst, cat, selected);
+                    cmd.error("");
+                    cmd.error("from " + cat + ": " + dumpList(lst, true));
+                }
                 cmd.error("");
                 continue;
             }
