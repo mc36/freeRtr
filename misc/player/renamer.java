@@ -1,5 +1,6 @@
 
 import java.io.File;
+import java.time.LocalDateTime;
 
 /**
  * rename files
@@ -9,11 +10,17 @@ import java.io.File;
 public class renamer {
 
     /**
+     * current year
+     */
+    public static int year;
+
+    /**
      * the main
      *
      * @param args arguments
      */
     public static void main(String[] args) {
+        year = LocalDateTime.now().getYear();
         String prepend = "";
         String remover = "";
         boolean really = true;
@@ -202,10 +209,10 @@ public class renamer {
         } catch (Exception e) {
             return false;
         }
-        if (i < 1970) {
+        if (i < (year - 20)) {
             return false;
         }
-        if (i > 2020) {
+        if (i > (year + 1)) {
             return false;
         }
         return true;
