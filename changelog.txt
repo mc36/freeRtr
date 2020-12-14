@@ -9612,3 +9612,6 @@ qc pass: lacp
 ---------------------------------- 2020-12-14 06:18:12
 qc pass: interop1: lacp
 qc pass: interop2: ethernet encapsulation
+---------------------------------- 2020-12-14 07:41:16
+no qc pass: interop2: ethernet encapsulation
+qc pass: interop2: lacp

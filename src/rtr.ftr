@@ -769,7 +769,7 @@ qc pass: interop2: ethernet encapsulation
 qc pass: interop2: dot1q encapsulation
 qc pass: interop2: dot1ad encapsulation
 qc pass: interop2: point2point ethernet encapsulation
-qc pass: interop2: ethernet encapsulation
+qc pass: interop2: lacp
 qc pass: interop2: point2point isis
 qc pass: interop2: isis dis
 qc pass: interop2: isis nondis
