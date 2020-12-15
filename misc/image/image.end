@@ -18,6 +18,8 @@ del-alw %tmp%/lib/modules/%find%/kernel/drivers/infiniband
 del-alw %tmp%/lib/modules/%find%/kernel/drivers/net/wireless
 
 exec mv %tmp%/lib/modules/%find%/kernel/net/packet %tmp%/tmp/
+exec mv %tmp%/lib/modules/%find%/kernel/net/core %tmp%/tmp/
+exec mv %tmp%/lib/modules/%find%/kernel/net/*.ko %tmp%/tmp/
 del-alw %tmp%/lib/modules/%find%/kernel/net
 exec mkdir %tmp%/lib/modules/%find%/kernel/net
 exec mv %tmp%/tmp/* %tmp%/lib/modules/%find%/kernel/net
