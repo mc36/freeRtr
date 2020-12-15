@@ -398,7 +398,22 @@ public class temper implements Runnable {
             lastSetter = peer;
             rangeCheck();
         }
-        if (cmd.equals("relay")) {
+        if (cmd.equals("relayor")) {
+            int i = ((int) temperUtil.str2num(tmp)) & relayPin;
+            tmp = "" + (currValue | i);
+            cmd = "relayset";
+        }
+        if (cmd.equals("relayand")) {
+            int i = ((int) temperUtil.str2num(tmp)) & relayPin;
+            tmp = "" + (currValue & i);
+            cmd = "relayset";
+        }
+        if (cmd.equals("relayxor")) {
+            int i = ((int) temperUtil.str2num(tmp)) & relayPin;
+            tmp = "" + (currValue ^ i);
+            cmd = "relayset";
+        }
+        if (cmd.equals("relayset")) {
             int i = ((int) temperUtil.str2num(tmp)) & relayPin;
             setValue((currValue & (~relayPin)) | i);
             writeLog(peer);
