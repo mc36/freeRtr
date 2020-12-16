@@ -13,6 +13,7 @@ del-alw %tmp%/usr/lib/x86_64-linux-gnu/gconv
 find-file %tmp%/lib/modules/ .*-%arch%
 del-alw %tmp%/lib/modules/%find%/kernel/sound
 del-alw %tmp%/lib/modules/%find%/kernel/drivers/gpu
+del-alw %tmp%/lib/modules/%find%/kernel/drivers/iio
 del-alw %tmp%/lib/modules/%find%/kernel/drivers/media
 del-alw %tmp%/lib/modules/%find%/kernel/drivers/infiniband
 del-alw %tmp%/lib/modules/%find%/kernel/drivers/net/wireless
