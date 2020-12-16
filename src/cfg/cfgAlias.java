@@ -1,5 +1,6 @@
 package cfg;
 
+import auth.authLocal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,6 +29,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
      * command to execute
      */
     public String command = "";
+
+    /**
+     * hide commands
+     */
+    public boolean hidden = false;
 
     /**
      * help description text
@@ -186,9 +192,18 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
         String a = "alias " + type2string(type) + " " + name;
-        l.add(a + " command " + command);
-        l.add(a + " description " + description);
-        l.add(a + " parameter " + param2string(parameter));
+        if (hidden) {
+            l.add(a + " command " + authLocal.passwdEncode(command));
+            l.add(a + " hidden");
+        } else {
+            l.add(a + " command " + command);
+        }
+        if (parameter != paraMode.allow) {
+            l.add(a + " parameter " + param2string(parameter));
+        }
+        if (description.length() > 0) {
+            l.add(a + " description " + description);
+        }
         l.add(cmds.comment);
         if (!filter) {
             return l;
@@ -199,7 +214,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
         if (a.equals("command")) {
-            command = cmd.getRemaining();
+            command = authLocal.passwdDecode(cmd.getRemaining());
             return;
         }
         if (a.equals("description")) {
@@ -208,6 +223,10 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         if (a.equals("parameter")) {
             parameter = string2param(cmd.word());
+            return;
+        }
+        if (a.equals("hidden")) {
+            hidden = true;
             return;
         }
         cmd.badCmd();
@@ -220,7 +239,6 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
      * @param lev starting level
      */
     public void getLines(userHelping l, int lev) {
-        String a = "" + description;
         String s = ".";
         switch (parameter) {
             case always:
@@ -233,6 +251,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
                 s = ".";
                 break;
         }
+        String a = "" + description;
         if (a.length() < 1) {
             a = "execute " + command;
         }

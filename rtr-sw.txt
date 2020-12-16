@@ -756,8 +756,6 @@ dial-peer 1
  direction both
  exit
 !
-alias test bash description 
-alias test bash parameter optional
 !
 server telnet ssh
  security protocol ssh
@@ -864,4 +862,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=3a87f201188c526e14f8be331b3e1b8d8b984024d7454282182d41fff75f8365a8cab4750091e4bb9db882f0815092552d238d4e3c54f8733c951013c8490c49-3d94828d77ae482c985713ab68f36df4a69be8085a7435927077850949199028aebe4e89c78a3937401b8cd2ac5ea279ccb7116a8886b27bb754fde22bca85d4
+end chksum=910e69213a6bf19078a6b9e5bbcc0a6bb88afffedc3a4120629dfaa749aefaf76fe4b057bb209e9705a37bdc82861bb4964842a7c7a1f110ba30ea2413ca5d89-22f0a0be5d2d4ae08828613d53732e948af0cd5f179bd285a754c9dea29bc7d0b21f172037759902244e388c911f6578b6ed7cd453ddcaefcdb747d6e88af0f2

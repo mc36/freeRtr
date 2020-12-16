@@ -589,6 +589,7 @@ public class userConfig {
         l.add("2  3    clear                        clear alias");
         l.add("2  3    test                         test alias");
         l.add("3  4      <name>                     name of new command");
+        l.add("4  .        hidden                   hide the command");
         l.add("4  5        command                  specify command to execute");
         l.add("5  5,.        <cmd>                  command");
         l.add("4  5        description              specify help description");
@@ -1032,8 +1033,7 @@ public class userConfig {
         }
         if (a.equals("alias")) {
             a = cmd.word();
-            cfgAlias ntry = cfgAll.aliasFind(cmd.word(),
-                    cfgAlias.string2type(a), true);
+            cfgAlias ntry = cfgAll.aliasFind(cmd.word(), cfgAlias.string2type(a), true);
             ntry.doCfgStr(cmd);
             return;
         }
