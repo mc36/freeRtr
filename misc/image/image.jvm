@@ -1,18 +1,18 @@
 include ../misc/image/image.beg
 
-select-dis java-common                   #commons
-select-dis default-jdk-                  #def jvm
-select-dis default-jre-                  #def jvm
-select-dis openjdk-6-                    #old jvm
-select-dis openjdk-7-                    #old jvm
-select-dis openjdk-8-                    #old jvm
-select-dis openjdk-9-                    #old jvm
-select-dis openjdk-10-                   #old jvm
-select-dis openjdk-11-                   #old jvm
-select-dis openjdk-12-                   #old jvm
-select-dis openjdk-13-                   #old jvm
-select-dis openjdk-14-                   #old jvm
-select-dis openjdk-15-                   #old jvm
+select-dis java-common.*                 #commons
+select-dis default-jdk-.*                #def jvm
+select-dis default-jre-.*                #def jvm
+select-dis openjdk-6-.*                  #old jvm
+select-dis openjdk-7-.*                  #old jvm
+select-dis openjdk-8-.*                  #old jvm
+select-dis openjdk-9-.*                  #old jvm
+select-dis openjdk-10-.*                 #old jvm
+select-dis openjdk-11-.*                 #old jvm
+select-dis openjdk-12-.*                 #old jvm
+select-dis openjdk-13-.*                 #old jvm
+select-dis openjdk-14-.*                 #old jvm
+select-dis openjdk-15-.*                 #old jvm
 select-one openjdk-16-jdk-headless       #new jvm
 
 exec cp ../misc/image/init.jvm %tmp%/init
@@ -24,7 +24,7 @@ package-down
 package-inst
 
 find-file %tmp%/usr/lib/jvm/ java-[0-9]+-openjdk-%arch%
-exec %tmp%/usr/lib/jvm/%find%/bin/jlink --output %tmp%/java --strip-debug --no-man-pages --no-header-files --add-modules java.base
+exec jlink --output %tmp%/java --strip-debug --no-man-pages --no-header-files --add-modules java.base
 exec ln -s /java/bin/java %tmp%/bin/java
 del-alw %tmp%/usr/lib/jvm
 del-alw %tmp%/etc/java-*

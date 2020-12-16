@@ -29,6 +29,8 @@ public class userImage {
 
     private int downMode = 1;
 
+    private long regeTim = bits.getTime() - Integer.MAX_VALUE;
+
     private String arch = "amd64";
 
     private tabGen<userImageCat> catalogs = new tabGen<userImageCat>();
@@ -43,10 +45,10 @@ public class userImage {
 
     private tabGen<userImagePkg> discarded = new tabGen<userImagePkg>();
 
-    private userImagePkg startsWith(tabGen<userImagePkg> lst, String a) {
+    private userImagePkg matchReg(tabGen<userImagePkg> lst, String a) {
         for (int i = 0; i < lst.size(); i++) {
             userImagePkg pkg = lst.get(i);
-            if (a.startsWith(pkg.name)) {
+            if (a.matches(pkg.name)) {
                 return pkg;
             }
         }
@@ -101,6 +103,9 @@ public class userImage {
                     break;
                 }
                 if (siz < 0) {
+                    if (f.lastModified() < regeTim) {
+                        break;
+                    }
                     return false;
                 }
                 if (f.length() == siz) {
@@ -117,33 +122,11 @@ public class userImage {
             case 0:
                 return false;
         }
-        delete(fil);
+        userFlash.rename(fil, fil + ".bak", true, true);
         return exec("wget -O " + fil + " " + url) != 0;
     }
 
-    private boolean readUpCatalog(cmds cmd) {
-        String name = cmd.word();
-        String comp = cmd.word();
-        String mirr = cmd.word();
-        String dist = cmd.word();
-        String pool = cmd.word();
-        userImageCat cat = new userImageCat(name);
-        cat.url = mirr;
-        catalogs.add(cat);
-        cmd.error("reading " + name + " list");
-        String cat1 = tempDir + "/" + pool + ".txt";
-        String cat2 = downDir + "/" + arch + "--" + name + "." + comp;
-        delete(cat1);
-        download(mirr + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages." + comp, cat2, -1);
-        if (comp.equals("xz")) {
-            exec("cp " + cat2 + " " + cat1 + ".xz");
-            exec("xz -d " + cat1 + ".xz");
-        }
-        if (comp.equals("gz")) {
-            exec("cp " + cat2 + " " + cat1 + ".gz");
-            exec("gzip -d " + cat1 + ".gz");
-        }
-        List<String> res = bits.txt2buf(cat1);
+    private boolean readUpCatalog(userImageCat cat, List<String> res) {
         if (res == null) {
             return true;
         }
@@ -183,7 +166,39 @@ public class userImage {
                 continue;
             }
         }
-        delete(cat1);
+        return false;
+    }
+
+    private boolean readUpCatalog(cmds cmd) {
+        String name = cmd.word();
+        String comp = cmd.word();
+        String mirr = cmd.word();
+        String dist = cmd.word();
+        for (;;) {
+            String pool = cmd.word();
+            if (pool.length() < 1) {
+                break;
+            }
+            userImageCat cat = new userImageCat(name + "-" + pool);
+            cat.url = mirr;
+            catalogs.add(cat);
+            cmd.error("reading " + name + " " + pool + " list");
+            String cat1 = tempDir + "/" + name + "-" + pool + ".txt";
+            String cat2 = downDir + "/" + arch + "--" + name + "-" + pool + "." + comp;
+            userFlash.delete(cat1);
+            download(mirr + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages." + comp, cat2, -1);
+            if (comp.equals("xz")) {
+                exec("cp " + cat2 + " " + cat1 + ".xz");
+                exec("xz -d " + cat1 + ".xz");
+            }
+            if (comp.equals("gz")) {
+                exec("cp " + cat2 + " " + cat1 + ".gz");
+                exec("gzip -d " + cat1 + ".gz");
+            }
+            List<String> res = bits.txt2buf(cat1);
+            userFlash.delete(cat1);
+            readUpCatalog(cat, res);
+        }
         return false;
     }
 
@@ -199,7 +214,7 @@ public class userImage {
             return;
         }
         pkt.added = by;
-        if (startsWith(forbidden, nam) != null) {
+        if (matchReg(forbidden, nam) != null) {
             discarded.add(pkt);
             return;
         }
@@ -270,6 +285,10 @@ public class userImage {
                 doer(c);
                 continue;
             }
+            if (a.equals("reget-time")) {
+                regeTim = bits.getTime() - (bits.str2num(s) * 3600 * 1000);
+                continue;
+            }
             if (a.equals("download")) {
                 downMode = bits.str2num(s);
                 continue;
@@ -285,8 +304,15 @@ public class userImage {
             if (a.equals("exit")) {
                 break;
             }
-            if (a.equals("find-file")) {
+            if (a.equals("find-clear")) {
                 found = "";
+                continue;
+            }
+            if (a.equals("find-result")) {
+                cmd.error("result='" + found + "'");
+                continue;
+            }
+            if (a.equals("find-file")) {
                 i = s.indexOf(" ");
                 a = s.substring(0, i);
                 s = s.substring(i + 1, s.length());
@@ -303,7 +329,6 @@ public class userImage {
                     found = a;
                     break;
                 }
-                cmd.error("result='" + found + "'");
                 continue;
             }
             if (a.equals("catalog-read")) {

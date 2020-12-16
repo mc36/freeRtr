@@ -1,4 +1,5 @@
 download 3
+reget-time 8
 arch amd64
 
 del-alw %img%.*
@@ -31,51 +32,55 @@ exec cp ../binTmp/ttyLin.bin %tmp%/rtr/
 exec cp ../binTmp/rawInt.bin %tmp%/rtr/
 exec cp ../binTmp/tapInt.bin %tmp%/rtr/
 
-catalog-read liquorix gz https://liquorix.net/debian/ sid main
-catalog-read deb-sid xz http://ftp.at.debian.org/debian/ sid main
-catalog-read deb-exp xz http://ftp.at.debian.org/debian/ experimental main
+#catalog-read dev xz http://at.archive.ubuntu.com/ubuntu/ devel main universe
+#catalog-read prop xz http://at.archive.ubuntu.com/ubuntu/ devel-proposed main universe
+catalog-read liq gz https://liquorix.net/debian/ sid main
+catalog-read sid xz http://ftp.at.debian.org/debian/ sid main
+catalog-read exp xz http://ftp.at.debian.org/debian/ experimental main
 
-select-dis debconf
-select-dis adduser
-select-dis passwd
-select-dis util-linux
-select-dis dpkg
-select-dis perl
-select-dis gcc
-select-dis init-system-helper
-select-dis initramfs-tool
-select-dis linux-initramfs-tool
-select-dis multiarch-support
-select-dis ucf
-select-dis fontconfig-config
-select-dis dmsetup
-select-dis ca-certificate
-select-dis mount
-select-dis x11
-select-dis lsb-base
-select-dis linux-base
-select-dis openssl
-select-dis systemd
-select-dis libasound
-select-dis libavahi
-select-dis libcups
-select-dis libharfbuzz
-select-dis liblcms
-select-dis libfontconfig
-select-dis libjpeg
-select-dis libnss
-select-dis libfreetype
-select-dis libpcsc
-select-dis libx11
-select-dis libxext
-select-dis libxi
-select-dis libxrender
-select-dis libxtst
+select-dis debconf.*
+select-dis adduser.*
+select-dis passwd.*
+select-dis util-linux.*
+select-dis dpkg.*
+select-dis perl.*
+select-dis gcc.*
+select-dis init-system-helper.*
+select-dis initramfs-tool.*
+select-dis linux-initramfs-tool.*
+select-dis multiarch-support.*
+select-dis ucf.*
+select-dis fontconfig-config.*
+select-dis dmsetup.*
+select-dis ca-certificate.*
+select-dis mount.*
+select-dis x11.*
+select-dis lsb-base.*
+select-dis linux-base.*
+select-dis openssl.*
+select-dis systemd.*
+select-dis libasound.*
+select-dis libavahi.*
+select-dis libcups.*
+select-dis libharfbuzz.*
+select-dis liblcms.*
+select-dis libfontconfig.*
+select-dis libjpeg.*
+select-dis libnss.*
+select-dis libfreetype.*
+select-dis libpcsc.*
+select-dis libx11.*
+select-dis libxext.*
+select-dis libxi.*
+select-dis libxrender.*
+select-dis libxtst.*
 
-
-select-dis linux-image-liquorix-%arch%    #alternative kernel
-select-dis linux-image-cloud-%arch%       #cloud kernel
-select-one linux-image-%arch%             #regular kernel
+#select-dis linux-image-generic            #ubuntu generic kernel
+#select-dis linux-image-virtual            #ubuntu virtual kernel
+#select-one linux-image-kvm                #ubuntu kvm kernel
+select-dis linux-image-liquorix-%arch%    #liquorix kernel
+select-dis linux-image-%arch%             #regular kernel
+select-one linux-image-cloud-%arch%       #cloud kernel
 select-one busybox                        #small utils
 select-one udev                           #bring up hw
 select-one ethtool                        #disable hw chksum

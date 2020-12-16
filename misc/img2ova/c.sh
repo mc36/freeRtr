@@ -27,9 +27,10 @@ cat > $IMG/rtr.gns3a << EOF
     "usage": "there is no default password. a default configuration is present.",
     "port_name_format": "ethernet{port1}",
     "qemu": {
-        "adapter_type": "e1000",
+        "adapter_type": "virtio-net-pci",
         "adapters": 8,
         "ram": 1024,
+        "hda_disk_interface": "ide",
         "arch": "x86_64",
         "console_type": "telnet",
         "kvm": "require"

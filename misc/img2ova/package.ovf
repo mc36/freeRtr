@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <Envelope ovf:version="1.0" xml:lang="en-US" xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vbox="http://www.virtualbox.org/ovf/machine">
   <References>
-    <File ovf:id="file1" ovf:href="rtr.vmdk"/>
+    <File ovf:id="file1" ovf:href="rtr-dsk-disk001.vmdk"/>
   </References>
   <DiskSection>
     <Info>List of the virtual disks used in the package</Info>
-    <Disk ovf:capacity="1073741824" ovf:diskId="vmdisk1" ovf:fileRef="file1" ovf:format="http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized" vbox:uuid="318feb5c-611a-4a0c-83a1-27201f9e480b"/>
+    <Disk ovf:capacity="2147483648" ovf:diskId="vmdisk1" ovf:fileRef="file1" ovf:format="http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized" vbox:uuid="2ff74630-0377-4198-89e8-c8f3236029f5"/>
   </DiskSection>
   <NetworkSection>
     <Info>Logical networks used in the package</Info>
@@ -13,11 +13,16 @@
       <Description>Logical network used by this appliance.</Description>
     </Network>
   </NetworkSection>
-  <VirtualSystem ovf:id="rtr-dsk">
+  <VirtualSystem ovf:id="rtr">
     <Info>A virtual machine</Info>
+    <ProductSection>
+      <Info>Meta-information about the installed software</Info>
+      <Product>freeRouter</Product>
+      <ProductUrl>http://www.freertr.net/</ProductUrl>
+    </ProductSection>
     <AnnotationSection>
       <Info>A human-readable annotation</Info>
-      <Annotation>rtros distribution
+      <Annotation>freeRouter distribution
 more info at http://www.freertr.net/
 </Annotation>
     </AnnotationSection>
@@ -31,7 +36,7 @@ more info at http://www.freertr.net/
       <System>
         <vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
         <vssd:InstanceID>0</vssd:InstanceID>
-        <vssd:VirtualSystemIdentifier>rtr-dsk</vssd:VirtualSystemIdentifier>
+        <vssd:VirtualSystemIdentifier>rtr</vssd:VirtualSystemIdentifier>
         <vssd:VirtualSystemType>virtualbox-2.2</vssd:VirtualSystemType>
       </System>
       <Item>
@@ -93,7 +98,6 @@ more info at http://www.freertr.net/
         <rasd:Connection>NAT</rasd:Connection>
         <rasd:ElementName>Ethernet adapter on 'NAT'</rasd:ElementName>
         <rasd:InstanceID>7</rasd:InstanceID>
-        <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
         <rasd:ResourceType>10</rasd:ResourceType>
       </Item>
       <Item>
@@ -102,7 +106,6 @@ more info at http://www.freertr.net/
         <rasd:Connection>NAT</rasd:Connection>
         <rasd:ElementName>Ethernet adapter on 'NAT'</rasd:ElementName>
         <rasd:InstanceID>8</rasd:InstanceID>
-        <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
         <rasd:ResourceType>10</rasd:ResourceType>
       </Item>
       <Item>
@@ -111,7 +114,6 @@ more info at http://www.freertr.net/
         <rasd:Connection>NAT</rasd:Connection>
         <rasd:ElementName>Ethernet adapter on 'NAT'</rasd:ElementName>
         <rasd:InstanceID>9</rasd:InstanceID>
-        <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
         <rasd:ResourceType>10</rasd:ResourceType>
       </Item>
       <Item>
@@ -120,11 +122,10 @@ more info at http://www.freertr.net/
         <rasd:Connection>NAT</rasd:Connection>
         <rasd:ElementName>Ethernet adapter on 'NAT'</rasd:ElementName>
         <rasd:InstanceID>10</rasd:InstanceID>
-        <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
         <rasd:ResourceType>10</rasd:ResourceType>
       </Item>
     </VirtualHardwareSection>
-    <vbox:Machine ovf:required="false" version="1.15-linux" uuid="{def38c53-aac5-477c-9f7d-b2c22c298aac}" name="rtr-dsk" OSType="Debian" snapshotFolder="Snapshots" lastStateChange="2018-03-02T06:02:55Z">
+    <vbox:Machine ovf:required="false" version="1.15-linux" uuid="{61722d0c-5197-4d81-b9c4-99e656182c6e}" name="rtr" OSType="Debian" snapshotFolder="Snapshots" lastStateChange="2018-03-02T06:02:55Z">
       <ovf:Info>Complete VirtualBox machine configuration in VirtualBox format</ovf:Info>
       <Description>rtros distribution
 more info at http://www.freertr.net/
@@ -155,7 +156,7 @@ more info at http://www.freertr.net/
           <Order position="4" device="None"/>
         </Boot>
         <Display VRAMSize="5"/>
-        <VideoCapture fps="25" options="ac_enabled=false"/>
+        <VideoCapture screens="1" options="ac_enabled=false" file="." fps="25"/>
         <RemoteDisplay enabled="false">
           <VRDEProperties>
             <Property name="TCP/Ports" value="3389"/>
@@ -170,38 +171,38 @@ more info at http://www.freertr.net/
           </Controllers>
         </USB>
         <Network>
-          <Adapter slot="0" enabled="true" MACAddress="08002758633D" cable="true" type="82540EM">
+          <Adapter slot="0" enabled="true" MACAddress="080027EB7AA1" cable="true" type="virtio">
             <DisabledModes>
               <InternalNetwork name="intnet"/>
               <NATNetwork name="NatNetwork"/>
             </DisabledModes>
             <NAT/>
           </Adapter>
-          <Adapter slot="1" enabled="true" MACAddress="0800276B1CF9" cable="true" type="82540EM">
+          <Adapter slot="1" enabled="true" MACAddress="080027BA27D4" cable="true" type="virtio">
             <DisabledModes>
               <InternalNetwork name="intnet"/>
               <NATNetwork name="NatNetwork"/>
             </DisabledModes>
             <NAT/>
           </Adapter>
-          <Adapter slot="2" enabled="true" MACAddress="080027228918" cable="true" type="82540EM">
+          <Adapter slot="2" enabled="true" MACAddress="0800274F3DF3" cable="true" type="virtio">
             <DisabledModes>
               <InternalNetwork name="intnet"/>
               <NATNetwork name="NatNetwork"/>
             </DisabledModes>
             <NAT/>
           </Adapter>
-          <Adapter slot="3" enabled="true" MACAddress="08002795FC08" cable="true" type="82540EM">
+          <Adapter slot="3" enabled="true" MACAddress="080027907D6D" cable="true" type="virtio">
             <DisabledModes>
               <InternalNetwork name="intnet"/>
               <NATNetwork name="NatNetwork"/>
             </DisabledModes>
             <NAT/>
           </Adapter>
-          <Adapter slot="4" MACAddress="080027914D1F" cable="true" type="82540EM"/>
-          <Adapter slot="5" MACAddress="0800272B681E" cable="true" type="82540EM"/>
-          <Adapter slot="6" MACAddress="0800272ABFFE" cable="true" type="82540EM"/>
-          <Adapter slot="7" MACAddress="0800270EC020" cable="true" type="82540EM"/>
+          <Adapter slot="4" cable="true" type="virtio"/>
+          <Adapter slot="5" cable="true" type="virtio"/>
+          <Adapter slot="6" cable="true" type="virtio"/>
+          <Adapter slot="7" cable="true" type="virtio"/>
         </Network>
         <UART>
           <Port slot="0" enabled="true" IOBase="0x3f8" IRQ="4" server="true" path="/tmp/rtr-dsk" hostMode="HostPipe"/>
@@ -211,6 +212,7 @@ more info at http://www.freertr.net/
         </LPT>
         <AudioAdapter driver="Pulse" enabled="false"/>
         <RTC localOrUTC="UTC"/>
+        <Clipboard/>
         <GuestProperties>
           <GuestProperty name="/VirtualBox/GuestAdd/Revision" value="78361" timestamp="1395308999147819000" flags=""/>
           <GuestProperty name="/VirtualBox/GuestAdd/Version" value="4.1.18" timestamp="1395308999146644000" flags=""/>
@@ -230,7 +232,7 @@ more info at http://www.freertr.net/
       <StorageControllers>
         <StorageController name="IDE" type="PIIX4" PortCount="2" useHostIOCache="true" Bootable="true">
           <AttachedDevice type="HardDisk" hotpluggable="false" port="0" device="0">
-            <Image uuid="{318feb5c-611a-4a0c-83a1-27201f9e480b}"/>
+            <Image uuid="{2ff74630-0377-4198-89e8-c8f3236029f5}"/>
           </AttachedDevice>
         </StorageController>
       </StorageControllers>
