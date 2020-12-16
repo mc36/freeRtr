@@ -34,7 +34,7 @@ exec cp ../binTmp/tapInt.bin %tmp%/rtr/
 
 #catalog-read dev xz http://at.archive.ubuntu.com/ubuntu/ devel main universe
 #catalog-read prop xz http://at.archive.ubuntu.com/ubuntu/ devel-proposed main universe
-catalog-read liq gz https://liquorix.net/debian/ sid main
+#catalog-read liq gz https://liquorix.net/debian/ sid main
 catalog-read sid xz http://ftp.at.debian.org/debian/ sid main
 catalog-read exp xz http://ftp.at.debian.org/debian/ experimental main
 
@@ -78,7 +78,7 @@ select-dis libxtst.*
 #select-dis linux-image-generic            #ubuntu generic kernel
 #select-dis linux-image-virtual            #ubuntu virtual kernel
 #select-one linux-image-kvm                #ubuntu kvm kernel
-select-dis linux-image-liquorix-%arch%    #liquorix kernel
+#select-dis linux-image-liquorix-%arch%    #liquorix kernel
 select-dis linux-image-%arch%             #regular kernel
 select-one linux-image-cloud-%arch%       #cloud kernel
 select-one busybox                        #small utils

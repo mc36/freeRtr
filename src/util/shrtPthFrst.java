@@ -60,7 +60,7 @@ public class shrtPthFrst<Ta extends addrType> {
 
     private final tabGen<shrtPthFrstNode<Ta>> nodes;
 
-    private final List<shrtPthFrstLog> log;
+    private final List<shrtPthFrstLog> log = new ArrayList<shrtPthFrstLog>();
 
     private final int count;
 
@@ -108,7 +108,6 @@ public class shrtPthFrst<Ta extends addrType> {
         nodes = new tabGen<shrtPthFrstNode<Ta>>();
         tim1 = bits.getTime();
         if (old == null) {
-            log = new ArrayList<shrtPthFrstLog>();
             count = 1;
             logSize = new syncInt(0);
             topoLog = new syncInt(0);
@@ -117,7 +116,7 @@ public class shrtPthFrst<Ta extends addrType> {
             ecmp = new syncInt(0);
             return;
         }
-        log = old.log;
+        log.addAll(old.log);
         logSize = old.logSize;
         topoLog = old.topoLog;
         bidir = old.bidir;
