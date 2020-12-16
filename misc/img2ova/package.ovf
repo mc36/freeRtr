@@ -205,7 +205,7 @@ more info at http://www.freertr.net/
           <Adapter slot="7" cable="true" type="virtio"/>
         </Network>
         <UART>
-          <Port slot="0" enabled="true" IOBase="0x3f8" IRQ="4" server="true" path="/tmp/rtr-dsk" hostMode="HostPipe"/>
+          <Port slot="0" enabled="true" IOBase="0x3f8" IRQ="4" server="true" path="/tmp/rtr-con" hostMode="HostPipe"/>
         </UART>
         <LPT>
           <Port slot="1" enabled="false" IOBase="0x378" IRQ="7"/>

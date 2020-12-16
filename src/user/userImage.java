@@ -1,5 +1,8 @@
 package user;
 
+import cry.cryHashGeneric;
+import cry.cryHashSha2256;
+import cry.cryUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -84,18 +87,26 @@ public class userImage {
         return s.substring(1, s.length());
     }
 
-    private int exec(String s) {
+    private String getPackageName(userImagePkg pkg) {
+        return downDir + "/" + arch + "-" + pkg.name + ".deb";
+    }
+
+    private int execCmd(String s) {
         pip.linePut("!" + s + ".");
         pipeShell sh = pipeShell.exec(pip, "sh -c", s, false, true);
         sh.waitFor();
         return sh.resultNum();
     }
 
-    private boolean delete(String s) {
-        return exec("rm -rf " + s) != 0;
+    private boolean delFiles(String s) {
+        return execCmd("rm -rf " + s) != 0;
     }
 
-    private boolean download(String url, String fil, int siz) {
+    private boolean installPackage(String name) {
+        return execCmd("dpkg-deb -x " + name + " " + tempDir + "/") != 0;
+    }
+
+    private boolean downloadFile(String url, String fil, int siz) {
         File f = new File(fil);
         switch (downMode) {
             case 3:
@@ -123,7 +134,27 @@ public class userImage {
                 return false;
         }
         userFlash.rename(fil, fil + ".bak", true, true);
-        return exec("wget -O " + fil + " " + url) != 0;
+        if (execCmd("wget -O " + fil + " " + url) != 0) {
+            userFlash.delete(fil);
+            pip.linePut("error downloading " + fil);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean verifyPackage(String fil, String sum) {
+        cryHashGeneric h = new cryHashSha2256();
+        h.init();
+        if (cryUtils.hashFile(h, new File(fil))) {
+            pip.linePut("error reading " + fil);
+            return true;
+        }
+        if (!sum.equals(cryUtils.hash2hex(h))) {
+            pip.linePut("checksum mismatch on " + fil);
+            return true;
+        }
+        pip.linePut(fil + " verified");
+        return false;
     }
 
     private boolean readUpCatalog(userImageCat cat, List<String> res) {
@@ -151,6 +182,10 @@ public class userImage {
             }
             if (a.equals("pre-depends")) {
                 pkg.addDepends(b);
+                continue;
+            }
+            if (a.equals("sha256")) {
+                pkg.sum = b;
                 continue;
             }
             if (a.equals("filename")) {
@@ -186,18 +221,23 @@ public class userImage {
             String cat1 = tempDir + "/" + name + "-" + pool + ".txt";
             String cat2 = downDir + "/" + arch + "--" + name + "-" + pool + "." + comp;
             userFlash.delete(cat1);
-            download(mirr + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages." + comp, cat2, -1);
+            if (downloadFile(mirr + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages." + comp, cat2, -1)) {
+                return true;
+            }
             if (comp.equals("xz")) {
-                exec("cp " + cat2 + " " + cat1 + ".xz");
-                exec("xz -d " + cat1 + ".xz");
+                execCmd("cp " + cat2 + " " + cat1 + ".xz");
+                execCmd("xz -d " + cat1 + ".xz");
             }
             if (comp.equals("gz")) {
-                exec("cp " + cat2 + " " + cat1 + ".gz");
-                exec("gzip -d " + cat1 + ".gz");
+                execCmd("cp " + cat2 + " " + cat1 + ".gz");
+                execCmd("gzip -d " + cat1 + ".gz");
             }
             List<String> res = bits.txt2buf(cat1);
             userFlash.delete(cat1);
-            readUpCatalog(cat, res);
+            if (readUpCatalog(cat, res)) {
+                cmd.error("parse failed");
+                return true;
+            }
         }
         return false;
     }
@@ -226,22 +266,27 @@ public class userImage {
         }
     }
 
-    private void downAllFiles() {
+    private boolean downAllFiles() {
         for (int i = 0; i < selected.size(); i++) {
             userImagePkg pkg = selected.get(i);
-            download(pkg.cat.url + pkg.file, downDir + "/" + arch + "-" + pkg.name + ".deb", pkg.size);
+            if (downloadFile(pkg.cat.url + pkg.file, getPackageName(pkg), pkg.size)) {
+                return true;
+            }
+            if (verifyPackage(getPackageName(pkg), pkg.sum)) {
+                return true;
+            }
         }
+        return false;
     }
 
-    private void install(String name) {
-        exec("dpkg-deb -x " + name + " " + tempDir + "/");
-    }
-
-    private void instAllFiles() {
+    private boolean instAllFiles() {
         for (int i = 0; i < selected.size(); i++) {
             userImagePkg pkg = selected.get(i);
-            install(downDir + "/" + arch + "-" + pkg.name + ".deb");
+            if (installPackage(getPackageName(pkg))) {
+                return true;
+            }
         }
+        return false;
     }
 
     /**
@@ -275,7 +320,7 @@ public class userImage {
                 continue;
             }
             if (a.equals("exec")) {
-                exec(s);
+                execCmd(s);
                 continue;
             }
             cmd.error("--> " + a + " " + s + " <--");
@@ -335,7 +380,7 @@ public class userImage {
                 cmds c = new cmds("", s);
                 c.pipe = pip;
                 if (readUpCatalog(c)) {
-                    cmd.error("failed");
+                    return;
                 }
                 continue;
             }
@@ -379,24 +424,29 @@ public class userImage {
                 continue;
             }
             if (a.equals("package-down")) {
-                downAllFiles();
+                if (downAllFiles()) {
+                    return;
+                }
                 continue;
             }
             if (a.equals("package-inst")) {
-                instAllFiles();
+                if (instAllFiles()) {
+                    return;
+                }
                 continue;
             }
             if (a.equals("del-ifdn")) {
                 if (downMode == 1) {
-                    delete(s);
+                    delFiles(s);
                 }
                 continue;
             }
             if (a.equals("del-alw")) {
-                delete(s);
+                delFiles(s);
                 continue;
             }
             cmd.error("unknown command: " + a + " " + s);
+            return;
         }
     }
 
@@ -429,6 +479,8 @@ class userImagePkg implements Comparator<userImagePkg> {
     public userImageCat cat;
 
     public String added = "";
+
+    public String sum = "";
 
     public String file = "";
 
