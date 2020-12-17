@@ -741,6 +741,24 @@ translation-rule 2
  text "96" <sip:97@10.10.10.10>
  exit
 !
+translation-rule 3
+ match ^http://(?<d>.*)\.dn42.sid.mchome.nop.hu/(?<p>.*)$
+ text http://
+ variable d
+ text .dn42/
+ variable p
+ log
+ exit
+!
+translation-rule 4
+ match ^http://(?<d>.*)\.inet.sid.mchome.nop.hu/(?<p>.*)$
+ text http://
+ variable d
+ text /
+ variable p
+ log
+ exit
+!
 dial-peer 1
  match-calling .*
  match-called .*
@@ -815,8 +833,10 @@ server http web
  host * redir http://sid.mchome.nop.hu/
  host *.dn42.sid.mchome.nop.hu path /nfs2/own/web/
  host *.dn42.sid.mchome.nop.hu reconn dn42 http://www.nop.dn42/
+ host *.dn42.sid.mchome.nop.hu translate 3
  host *.inet.sid.mchome.nop.hu path /nfs2/own/web/
  host *.inet.sid.mchome.nop.hu reconn p1 http://www.nop.hu/
+ host *.inet.sid.mchome.nop.hu translate 4
  host sid.mchome.nop.hu path /nfs2/own/web/
  host sid.mchome.nop.hu style table, th, td { border: 1px solid }
  host sid.mchome.nop.hu logging
@@ -876,4 +896,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=d42c498d19792ca2c623b30f3be7afe8bb9c7950eaed993d9d22ca6494ca60cf476c8ddbd24cbf7ed1791cde3c060a50e7d1ceec0eae556bf390de19cb931001-ffd20615368056f395318b2c6e8b3a2d79d7569b47339d8b3cfa44b0a9df03427bc57c2dadff9eaafe56f4b41fa389a0b2e1a089b6d3c14c165de728fcca9416
+end chksum=157118f463f465059a7850fbc96a04086092a92a2d25c89a6edc9d5198e6ab3084306847522a8ec12f68cde4c22600b39b5e72a7a137c1acde41fb2868228f3e-f3ab04af9326eca87bcee0f458e7a48cdb1e2c0f0c3237ed6b2a26c3b4ba3e01a9f773a233b2921c5a2b6b82f863f6f170bad8fd50118ff10bcb2387334ab7a6

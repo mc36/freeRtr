@@ -10,6 +10,7 @@ import cfg.cfgAuther;
 import cfg.cfgIfc;
 import cfg.cfgInit;
 import cfg.cfgProxy;
+import cfg.cfgTrnsltn;
 import clnt.clntProxy;
 import cry.cryBase64;
 import cry.cryHashCrc32;
@@ -115,6 +116,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! host .* noreconn",
         "server http .*! host .* nologging",
         "server http .*! host .* nosubconn",
+        "server http .*! host .* notranslate",
         "server http .*! host .* noimagemap",
         "server http .*! host .* nowebsock",
         "server http .*! host .* nomediastream",
@@ -269,6 +271,15 @@ public class servHttp extends servGeneric implements prtServS {
                 l.add(a + " reconn " + ntry.reconnP.name + " " + ntry.reconnT);
             } else {
                 l.add(a + " noreconn");
+            }
+            if (ntry.translate != null) {
+                String s = "";
+                for (int i = 0; i < ntry.translate.size(); i++) {
+                    s += ' ' + ntry.translate.get(i).name;
+                }
+                l.add(a + " translate" + s);
+            } else {
+                l.add(a + " notranslate");
             }
             if (ntry.subconn != 0) {
                 l.add(a + " subconn " + ntry.subconn);
@@ -495,6 +506,26 @@ public class servHttp extends servGeneric implements prtServS {
         if (a.equals("noreconn")) {
             ntry.reconnP = null;
             ntry.reconnT = null;
+            return false;
+        }
+        if (a.equals("translate")) {
+            ntry.translate = new ArrayList<cfgTrnsltn>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                cfgTrnsltn trn = cfgAll.trnsltnFind(a, false);
+                if (trn == null) {
+                    cmd.error("no such rule");
+                    continue;
+                }
+                ntry.translate.add(trn);
+            }
+            return false;
+        }
+        if (a.equals("notranslate")) {
+            ntry.translate = null;
             return false;
         }
         if (a.equals("subconn")) {
@@ -771,6 +802,9 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("4 5        <name>                   proxy profile");
         l.add("5 .          <name>                 server to redirect to");
         l.add("3 .      noreconn                   disable reconnect");
+        l.add("3 4      translate                  translate the url");
+        l.add("4 4,.      <num>                    translation rule to use");
+        l.add("3 .      notranslate                disable url translation");
         l.add("3 4      subconn                    reconnect only to the url");
         l.add("4 .        <num>                    bitmask what to revert");
         l.add("3 .      nosubconn                  allow anything");
@@ -946,6 +980,11 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      * restrict url
      */
     public int subconn;
+
+    /**
+     * translate url
+     */
+    public List<cfgTrnsltn> translate;
 
     /**
      * proxy for stream
@@ -2266,9 +2305,13 @@ class servHttpConn implements Runnable {
     }
 
     private void doTranslate(uniResLoc srvUrl) {
-//////////////        
+        if (gotHost.translate == null) {
+            return;
+        }
+        String a = cfgTrnsltn.doTranslate(gotHost.translate, gotUrl.toURL(true, true));
+        srvUrl.fromString(a);
     }
-    
+
     private void doSubconn(uniResLoc srvUrl) {
         if ((gotHost.subconn & 0x1) == 0) {
             srvUrl.filPath = gotUrl.filPath;
@@ -2457,6 +2500,7 @@ class servHttpConn implements Runnable {
                     break;
                 }
                 uniResLoc srvUrl = uniResLoc.parseOne(a);
+                doTranslate(srvUrl);
                 doSubconn(srvUrl);
                 urls.add(srvUrl);
             }
@@ -2509,6 +2553,7 @@ class servHttpConn implements Runnable {
         }
         if (gotHost.reconnT != null) {
             uniResLoc srvUrl = uniResLoc.parseOne(gotHost.reconnT);
+            doTranslate(srvUrl);
             doSubconn(srvUrl);
             addrIP adr = userTerminal.justResolv(srvUrl.server, gotHost.reconnP.prefer);
             if (adr == null) {
@@ -2546,6 +2591,7 @@ class servHttpConn implements Runnable {
         }
         if (gotHost.redir != null) {
             uniResLoc srvUrl = uniResLoc.parseOne(gotHost.redir);
+            doTranslate(srvUrl);
             doSubconn(srvUrl);
             sendFoundAt(srvUrl.toURL(true, true));
             return;
