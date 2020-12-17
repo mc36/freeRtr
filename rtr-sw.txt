@@ -560,6 +560,10 @@ router bgp6 65535
  ecmp
  exit
 !
+proxy-profile dn42
+ vrf dn42
+ exit
+!
 proxy-profile p1
  vrf v1
  source loopback0
@@ -808,16 +812,22 @@ server http web
  access-total 128
  access-peer 16
  host * path /nfs2/own/web/
- host * style table, th, td { border: 1px solid }
- host * logging
- host * dirlist readme
- host * markdown
- host * noindex
- host * script exec config
- host * api exec config
- host * websock
- host * webdav
- host * class
+ host * redir http://sid.mchome.nop.hu/
+ host *.dn42.sid.mchome.nop.hu path /nfs2/own/web/
+ host *.dn42.sid.mchome.nop.hu reconn dn42 http://www.nop.dn42/
+ host *.inet.sid.mchome.nop.hu path /nfs2/own/web/
+ host *.inet.sid.mchome.nop.hu reconn p1 http://www.nop.hu/
+ host sid.mchome.nop.hu path /nfs2/own/web/
+ host sid.mchome.nop.hu style table, th, td { border: 1px solid }
+ host sid.mchome.nop.hu logging
+ host sid.mchome.nop.hu dirlist readme
+ host sid.mchome.nop.hu markdown
+ host sid.mchome.nop.hu noindex
+ host sid.mchome.nop.hu script exec config
+ host sid.mchome.nop.hu api exec config
+ host sid.mchome.nop.hu websock
+ host sid.mchome.nop.hu webdav
+ host sid.mchome.nop.hu class
  vrf v1
  exit
 !
@@ -829,6 +839,10 @@ server bmp2mrt bmp
 !
 server dns ns
  recursion enable
+ zone sid.mchome.nop.hu defttl 600
+ zone sid.mchome.nop.hu rr sid.mchome.nop.hu ip4a 10.10.10.227
+ zone sid.mchome.nop.hu rr *.sid.mchome.nop.hu cname sid.mchome.nop.hu
+ zone sid.mchome.nop.hu rr sid.mchome.nop.hu ip6a 2001:db8:1101::227:227
  vrf v1
  exit
 !
@@ -862,4 +876,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=910e69213a6bf19078a6b9e5bbcc0a6bb88afffedc3a4120629dfaa749aefaf76fe4b057bb209e9705a37bdc82861bb4964842a7c7a1f110ba30ea2413ca5d89-22f0a0be5d2d4ae08828613d53732e948af0cd5f179bd285a754c9dea29bc7d0b21f172037759902244e388c911f6578b6ed7cd453ddcaefcdb747d6e88af0f2
+end chksum=d42c498d19792ca2c623b30f3be7afe8bb9c7950eaed993d9d22ca6494ca60cf476c8ddbd24cbf7ed1791cde3c060a50e7d1ceec0eae556bf390de19cb931001-ffd20615368056f395318b2c6e8b3a2d79d7569b47339d8b3cfa44b0a9df03427bc57c2dadff9eaafe56f4b41fa389a0b2e1a089b6d3c14c165de728fcca9416

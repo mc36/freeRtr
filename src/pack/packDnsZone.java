@@ -223,6 +223,27 @@ public class packDnsZone implements Comparator<packDnsZone> {
         return findBin(ntry);
     }
 
+    /**
+     * find one wildcard
+     *
+     * @param nam name of entry
+     * @param org original name
+     * @param typ type of entry
+     * @return record, null if not found
+     */
+    public packDnsRec findWild(String nam, String org, int typ) {
+        packDnsRec ntry = new packDnsRec();
+        ntry.name = nam;
+        ntry.typ = typ;
+        ntry = findBin(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        ntry = ntry.copyBytes();
+        ntry.name = org;
+        return ntry;
+    }
+
     private String unComment(String lin) {
         if (lin == null) {
             return "";

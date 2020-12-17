@@ -197,9 +197,17 @@ public class servHttp extends servGeneric implements prtServS {
         if (ntry != null) {
             return ntry;
         }
-        ntry = new servHttpServ();
-        ntry.host = "*";
-        return hosts.find(ntry);
+        for (int i = hosts.size() - 1; i >= 0; i--) {
+            ntry = hosts.get(i);
+            if (!ntry.host.startsWith("*")) {
+                continue;
+            }
+            if (!s.endsWith(ntry.host.substring(1, ntry.host.length()))) {
+                continue;
+            }
+            return ntry;
+        }
+        return null;
     }
 
     /**

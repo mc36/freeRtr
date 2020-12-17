@@ -514,22 +514,22 @@ class servDnsDoer implements Runnable {
             rep = zon.findUser(old, packDnsRec.typeCNAME);
         }
         if (rep == null) {
-            rep = zon.findUser("*." + zon.name, typ);
+            rep = zon.findWild("*." + zon.name, old, typ);
         }
         if (rep == null) {
-            rep = zon.findUser("*." + zon.name, packDnsRec.typeCNAME);
+            rep = zon.findWild("*." + zon.name, old, packDnsRec.typeCNAME);
         }
         if (rep == null) {
             rep = zon.findUser(nam, packDnsRec.typeSOA);
         }
         if (rep == null) {
-            rep = zon.findUser("*." + zon.name, packDnsRec.typeSOA);
+            rep = zon.findWild("*." + zon.name, old, packDnsRec.typeSOA);
         }
         if (rep == null) {
             rep = zon.findUser(nam, packDnsRec.typeNS);
         }
         if (rep == null) {
-            rep = zon.findUser("*." + zon.name, packDnsRec.typeNS);
+            rep = zon.findWild("*." + zon.name, old, packDnsRec.typeNS);
         }
         if (rep == null) {
             rep = zon.findUser(zon.name, packDnsRec.typeSOA);
