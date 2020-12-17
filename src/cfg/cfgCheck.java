@@ -194,12 +194,10 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
 
     public void getHelp(userHelping l) {
         l.add("1 2      resolve                  resolve the regexp group a to hostname");
-        l.add("2 3        <name>                 regexp of checks");
-        l.add("3 3,.    <str>                    text to resolve");
+        l.add("2 2,.      <str>                  text to resolv");
         l.add("1 2      replace                  replace from one string to another");
-        l.add("2 3        <name>                 regexp of checks");
-        l.add("3 4          <str>                source string");
-        l.add("4 4,.          <str>              target string");
+        l.add("2 3        <str>                  source string");
+        l.add("3 3,.        <str>                target string");
         l.add("1 2,.    train                    train command to current result");
         l.add("2 2,.      <str>                  text");
         l.add("1 .      alternate                alternate reported state on diff change");

@@ -2265,6 +2265,10 @@ class servHttpConn implements Runnable {
         return false;
     }
 
+    private void doTranslate(uniResLoc srvUrl) {
+//////////////        
+    }
+    
     private void doSubconn(uniResLoc srvUrl) {
         if ((gotHost.subconn & 0x1) == 0) {
             srvUrl.filPath = gotUrl.filPath;
