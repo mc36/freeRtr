@@ -2497,6 +2497,7 @@ class servHttpConn implements Runnable {
         }
         if (gotHost.reconnT != null) {
             uniResLoc srvUrl = uniResLoc.parseOne(gotHost.reconnT);
+            doSubconn(srvUrl);
             addrIP adr = userTerminal.justResolv(srvUrl.server, gotHost.reconnP.prefer);
             if (adr == null) {
                 sendRespError(502, "bad gateway");
@@ -2507,7 +2508,6 @@ class servHttpConn implements Runnable {
                 sendRespError(504, "gateway timeout");
                 return;
             }
-            doSubconn(srvUrl);
             if (debugger.servHttpTraf) {
                 logger.debug("reconnect " + srvUrl.toURL(false, true));
             }
