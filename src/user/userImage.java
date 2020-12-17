@@ -134,12 +134,12 @@ public class userImage {
                 return false;
         }
         userFlash.rename(fil, fil + ".bak", true, true);
-        if (execCmd("wget -O " + fil + " " + url) != 0) {
-            userFlash.delete(fil);
-            pip.linePut("error downloading " + fil);
-            return true;
+        if (execCmd("wget -O " + fil + " " + url) == 0) {
+            return false;
         }
-        return false;
+        userFlash.delete(fil);
+        pip.linePut("error downloading " + fil);
+        return true;
     }
 
     private boolean verifyPackage(String fil, String sum) {
