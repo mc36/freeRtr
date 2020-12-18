@@ -257,6 +257,25 @@ public class userUpgrade {
         return err;
     }
 
+    /**
+     * check installation
+     *
+     * @param blb blob to use, null if read from disk
+     * @return error count
+     */
+    public int doMissing(userUpgradeBlob blb) {
+        int err = 0;
+        for (int i = 0; i < blb.files.size(); i++) {
+            userUpgradeNtry ntry = blb.files.get(i);
+            if (new File(version.myWorkDir() + ntry.name).exists()) {
+                continue;
+            }
+            cmd.error(ntry.name + " is missing!");
+            err++;
+        }
+        return err;
+    }
+
     private int verifyFile(String fn, String sum) {
         cmd.pipe.strPut(fn);
         String calc = calcFileHash(fn);
@@ -268,7 +287,7 @@ public class userUpgrade {
             cmd.pipe.linePut(" is corrupted!");
             return 2;
         } else {
-            cmd.pipe.linePut(" ok!");
+            cmd.pipe.linePut(" is ok!");
             return 0;
         }
     }
@@ -391,10 +410,18 @@ public class userUpgrade {
         cons.debugRes("diff/old/new time: " + bits.timeDump((blb.time - old.time) / 1000) + "/" + old.getTime() + "/" + blb.getTime());
         cons.debugRes("old files:" + old.getFilelist());
         cons.debugRes("new files:" + blb.getFilelist());
-        if (old.time >= blb.time) {
-            cons.debugRes("no upgrade needed!");
-            if (needStop(0x2)) {
+        if (old.time > blb.time) {
+            cons.debugRes("no downgrade allowed!");
+            if (needStop(0x200)) {
                 return;
+            }
+        }
+        if (old.time == blb.time) {
+            if (doMissing(blb) < 1) {
+                cons.debugRes("no upgrade needed!");
+                if (needStop(0x2)) {
+                    return;
+                }
             }
         }
         if (cfgAll.upgradeConfig) {
@@ -580,7 +607,7 @@ public class userUpgrade {
         }
         if (!sumN.equals(calcFileHash(loc))) {
             cons.debugRes("checksum mismatch after rename!");
-            if (needStop(0x20)) {
+            if (needStop(0x100)) {
                 return 1;
             }
         }
