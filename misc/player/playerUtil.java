@@ -1,10 +1,12 @@
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -354,47 +356,18 @@ public class playerUtil {
     /**
      * read up stream
      *
-     * @param reader stream to read
+     * @param is stream to read
      * @return text
      */
-    public static playerLyric doRead(InputStream reader) {
+    public static playerLyric doRead(InputStream is) {
         playerLyric res = new playerLyric();
-        String ln = "";
-        int pr = -1;
-        for (;;) {
-            int i;
-            try {
-                i = reader.read();
-            } catch (Exception e) {
-                break;
-            }
-            if (i < 0) {
-                break;
-            }
-            int prv = pr;
-            pr = i;
-            switch (i) {
-                case 10:
-                case 13:
-                    if (prv == (23 - i)) {
-                        pr = -1;
-                        break;
-                    }
-                    res.add(ln);
-                    ln = "";
-                    break;
-                default:
-                    byte[] buf = new byte[1];
-                    buf[0] = (byte) i;
-                    ln += new String(buf);
-                    break;
-            }
-        }
-        if (ln.length() > 0) {
-            res.add(ln);
-        }
         try {
-            reader.close();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            while (rd.ready()) {
+                res.add(rd.readLine());
+            }
+            rd.close();
+            is.close();
         } catch (Exception e) {
         }
         return res;
