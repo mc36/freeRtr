@@ -3305,6 +3305,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (ip6 && (addr6 != null)) {
             ipIf6 = new ipIfc6(ifaceNeedArp(), ifaceNeedType());
             fwdIf6 = vrfFor.fwd6.ifaceAdd(ipIf6);
+            if (addr6.isLinkLocal()) {
+                ipIf6.getLinkLocalAddr().fromIPv6addr(addr6);
+            }
             ipIf6.setIPv6addr(addr6, mask6.toNetmask());
             ethtyp.addET(ipIfc6.type, "ip6", ipIf6);
             ethtyp.updateET(ipIfc6.type, ipIf6);
