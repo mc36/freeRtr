@@ -2349,7 +2349,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         addr6 = adr.copyBytes();
         mask6 = msk.copyBytes();
         if (adr.isLinkLocal()) {
-            ipIf6.getLinkLocalAddr().fromIPv6addr(adr);
+            addrIP ad = new addrIP();
+            ad.fromIPv6addr(adr);
+            ipIf6.setLinkLocalAddr(ad);
         }
         if (gw != null) {
             if (gw.isEmpty()) {
@@ -3305,12 +3307,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (ip6 && (addr6 != null)) {
             ipIf6 = new ipIfc6(ifaceNeedArp(), ifaceNeedType());
             fwdIf6 = vrfFor.fwd6.ifaceAdd(ipIf6);
-            if (addr6.isLinkLocal()) {
-                ipIf6.getLinkLocalAddr().fromIPv6addr(addr6);
-            }
             ipIf6.setIPv6addr(addr6, mask6.toNetmask());
             ethtyp.addET(ipIfc6.type, "ip6", ipIf6);
             ethtyp.updateET(ipIfc6.type, ipIf6);
+            if (addr6.isLinkLocal()) {
+                addrIP ad = new addrIP();
+                ad.fromIPv6addr(addr6);
+                ipIf6.setLinkLocalAddr(ad);
+            }
             vrfFor.fwd6.routerStaticChg();
         }
         if (ipx && (ipxAddr != null)) {

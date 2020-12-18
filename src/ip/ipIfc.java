@@ -159,6 +159,13 @@ public interface ipIfc {
     public addrIP getLinkLocalAddr();
 
     /**
+     * set link local address
+     *
+     * @param adr address to set
+     */
+    public void setLinkLocalAddr(addrIP adr);
+
+    /**
      * get cache in text
      *
      * @return result

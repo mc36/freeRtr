@@ -98,6 +98,15 @@ public class ipIfc6nei implements ifcUp {
         resetTimer(true);
     }
 
+    /**
+     * set ll address
+     *
+     * @param adr address
+     */
+    public void setLinkLocalAddr(addrIP adr) {
+        lladdr = adr.toIPv6();
+    }
+
     private void resetTimer(boolean needRun) {
         try {
             timer.cancel();

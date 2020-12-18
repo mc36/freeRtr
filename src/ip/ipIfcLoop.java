@@ -151,6 +151,9 @@ public class ipIfcLoop implements ipIfc {
         return null;
     }
 
+    public void setLinkLocalAddr(addrIP adr) {
+    }
+
     public userFormat getShCache() {
         return null;
     }

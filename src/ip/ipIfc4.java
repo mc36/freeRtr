@@ -70,6 +70,9 @@ public class ipIfc4 implements ipIfc, ifcUp {
         return null;
     }
 
+    public void setLinkLocalAddr(addrIP adr) {
+    }
+
     /**
      * set upper layer
      *

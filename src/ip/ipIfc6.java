@@ -99,6 +99,13 @@ public class ipIfc6 implements ipIfc, ifcUp {
         return lladdr;
     }
 
+    public void setLinkLocalAddr(addrIP adr) {
+        lladdr = adr.copyBytes();
+        if (neiCache != null) {
+            neiCache.setLinkLocalAddr(adr);
+        }
+    }
+
     /**
      * set upper layer
      *
