@@ -4,7 +4,6 @@ import cfg.cfgAll;
 import java.util.ArrayList;
 import java.util.List;
 import pipe.pipeSetting;
-import static pipe.pipeSetting.userName;
 import pipe.pipeSide;
 import util.bits;
 
@@ -50,7 +49,7 @@ public class userChat implements Runnable {
             if (a.trim().toLowerCase().equals("/exit")) {
                 break;
             }
-            cfgAll.chat.send("" + pipe.settingsGet(userName, "?"), a);
+            cfgAll.chat.send("" + pipe.settingsGet(pipeSetting.userName, "?"), a);
         }
         need2run = false;
     }

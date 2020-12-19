@@ -69,6 +69,21 @@ public class packSshChan {
     public final static String reqSubsys = "subsystem";
 
     /**
+     * window size
+     */
+    public final static String reqWindow = "window-change";
+
+    /**
+     * flow control
+     */
+    public final static String reqFlwCtr = "xon-xoff";
+
+    /**
+     * signal
+     */
+    public final static String reqSignal = "signal";
+
+    /**
      * environment request
      */
     public final static String reqEnv = "env";
@@ -204,6 +219,7 @@ public class packSshChan {
         lower.pckDat.getSkip(4);
         type = lower.stringRead();
         needReply = lower.pckDat.getByte(0) != 0;
+        lower.pckDat.getSkip(1);
         if (debugger.secSshTraf) {
             chanReqDump("rx");
         }

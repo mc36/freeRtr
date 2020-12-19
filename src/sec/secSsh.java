@@ -12,6 +12,7 @@ import pack.packSshChan;
 import pack.packSshInit;
 import pack.packSshKex;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import util.bits;
 import util.debugger;
@@ -262,6 +263,18 @@ public class secSsh implements Runnable {
                     if (pc.chanReqParse()) {
                         return;
                     }
+                    pc.chanRem = chanRem;
+                    if (!processChanReq(p, pc)) {
+                        if (pc.needReply) {
+                            pc.chanFailCreate();
+                            p.packSend();
+                        }
+                        break;
+                    }
+                    if (pc.needReply) {
+                        pc.chanSuccCreate();
+                        p.packSend();
+                    }
                     break;
                 case packSsh.typeChanWin:
                     if (pc.chanWindowParse()) {
@@ -315,6 +328,21 @@ public class secSsh implements Runnable {
             pc.chanDataCreate();
             p.packSend();
         }
+    }
+
+    private boolean processChanReq(packSsh p, packSshChan pc) {
+        if (pc.type.equals(packSshChan.reqFlwCtr)) {
+            return true;
+        }
+        if (pc.type.equals(packSshChan.reqSignal)) {
+            return true;
+        }
+        if (pc.type.equals(packSshChan.reqWindow)) {
+            userS.settingsPut(pipeSetting.termWid, p.pckDat.msbGetD(0));
+            userS.settingsPut(pipeSetting.termHei, p.pckDat.msbGetD(4));
+            return true;
+        }
+        return false;
     }
 
     private void workerServer() {
@@ -413,6 +441,7 @@ public class secSsh implements Runnable {
             pa.authFailCreate();
             p.packSend();
         }
+        userS.settingsPut(pipeSetting.userName, servUser);
         pa.authSuccCreate();
         p.packSend();
         doPackRecv(p);
@@ -430,33 +459,52 @@ public class secSsh implements Runnable {
                 return;
             }
             pc.chanRem = chanRem;
+            if (processChanReq(p, pc)) {
+                if (pc.needReply) {
+                    pc.chanSuccCreate();
+                    p.packSend();
+                }
+                continue;
+            }
             if (pc.type.equals(packSshChan.reqShell)) {
-                pc.chanSuccCreate();
-                p.packSend();
+                if (pc.needReply) {
+                    pc.chanSuccCreate();
+                    p.packSend();
+                }
                 break;
             }
             if (pc.type.equals(packSshChan.reqExec)) {
-                pc.chanSuccCreate();
-                p.packSend();
+                if (pc.needReply) {
+                    pc.chanSuccCreate();
+                    p.packSend();
+                }
                 break;
             }
             if (pc.type.equals(packSshChan.reqSubsys)) {
-                pc.chanSuccCreate();
-                p.packSend();
+                if (pc.needReply) {
+                    pc.chanSuccCreate();
+                    p.packSend();
+                }
                 break;
             }
             if (pc.type.equals(packSshChan.reqPtyReq)) {
-                pc.chanSuccCreate();
-                p.packSend();
+                if (pc.needReply) {
+                    pc.chanSuccCreate();
+                    p.packSend();
+                }
                 continue;
             }
             if (pc.type.equals(packSshChan.reqEnv)) {
-                pc.chanSuccCreate();
-                p.packSend();
+                if (pc.needReply) {
+                    pc.chanSuccCreate();
+                    p.packSend();
+                }
                 continue;
             }
-            pc.chanFailCreate();
-            p.packSend();
+            if (pc.needReply) {
+                pc.chanFailCreate();
+                p.packSend();
+            }
         }
         workerThreads(p);
     }

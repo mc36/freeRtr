@@ -530,6 +530,11 @@ class userLineHandler implements Runnable {
         physical = phys;
         user = new authResult();
         user.privilege = parent.promptPrivilege;
+        try {
+            user = (authResult) pip.settingsGet(pipeSetting.userName, user);
+        } catch (Exception e) {
+        }
+        pip.settingsPut(pipeSetting.userName, null);
         pipe.setTime(parent.execTimeOut);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
@@ -606,10 +611,8 @@ class userLineHandler implements Runnable {
         exe.physicalLin = physical != 0;
         exe.authorization = parent.authorizeList;
         cfg.authorization = parent.authorizeList;
-        if (user != null) {
-            exe.username = user.user;
-            cfg.username = user.user;
-        }
+        exe.username = user.user;
+        cfg.username = user.user;
         String s = parent.autoCommand;
         if (s.length() > 0) {
             s = exe.repairCommand(s);
