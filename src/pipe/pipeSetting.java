@@ -30,12 +30,12 @@ public class pipeSetting {
     /**
      * name of the setting
      */
-    public final int name;
+    protected final int name;
 
     /**
      * value of the object
      */
-    public Object value;
+    protected Object value;
 
     /**
      * create instance

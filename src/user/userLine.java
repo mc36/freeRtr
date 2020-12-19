@@ -598,7 +598,7 @@ class userLineHandler implements Runnable {
         pipe.setTime(parent.execTimeOut);
         userReader rdr = new userReader(pipe, parent);
         pipe.settingsPut(pipeSetting.userFrom, remote);
-        rdr.user = user.user;
+        pipe.settingsPut(pipeSetting.userName, user.user);
         userExec exe = new userExec(pipe, rdr);
         userConfig cfg = new userConfig(pipe, rdr);
         exe.privileged = user.privilege >= 15;

@@ -19,11 +19,6 @@ import util.logger;
 public class userReader implements Comparator<String> {
 
     /**
-     * user name
-     */
-    public String user;
-
-    /**
      * width of terminal screen
      */
     public int width;
