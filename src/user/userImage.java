@@ -81,10 +81,10 @@ public class userImage {
             s += " " + pkg.name;
         }
         if (detail) {
-            s += " - ";
+            s += " -";
         }
-        s += o / 1024 + " kb in " + lst.size() + " packages";
-        return s.substring(1, s.length());
+        s += " " + (o / 1024) + " kb in " + lst.size() + " packages";
+        return s;
     }
 
     private String getPackageName(userImagePkg pkg) {
@@ -405,21 +405,21 @@ public class userImage {
             }
             if (a.equals("select-sum")) {
                 cmd.error("");
-                cmd.error("available: " + dumpList(allPkgs, false));
+                cmd.error("available:" + dumpList(allPkgs, false));
                 cmd.error("");
-                cmd.error("forbidden: " + dumpList(forbidden, true));
+                cmd.error("forbidden:" + dumpList(forbidden, true));
                 cmd.error("");
-                cmd.error("discarded: " + dumpList(discarded, true));
+                cmd.error("discarded:" + dumpList(discarded, true));
                 cmd.error("");
-                cmd.error("selected: " + dumpList(selected, true));
+                cmd.error("selected:" + dumpList(selected, true));
                 cmd.error("");
-                cmd.error("missing: " + dumpList(missing, true));
+                cmd.error("missing:" + dumpList(missing, true));
                 tabGen<userImagePkg> lst = new tabGen<userImagePkg>();
                 for (i = 0; i < catalogs.size(); i++) {
                     userImageCat cat = catalogs.get(i);
                     filterCat(lst, cat, selected);
                     cmd.error("");
-                    cmd.error("from " + cat + ": " + dumpList(lst, true));
+                    cmd.error("from " + cat + ":" + dumpList(lst, true));
                 }
                 cmd.error("");
                 continue;
