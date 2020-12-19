@@ -2294,7 +2294,6 @@ todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
 todo: optimal route reflection
 todo: bgp vpns with sr-policy
-todo: pipeline properties, terminal autoresize
 todo: temper: web access log
 todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 todo: interface range command

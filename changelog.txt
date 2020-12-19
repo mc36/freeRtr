@@ -9615,3 +9615,5 @@ qc pass: interop2: ethernet encapsulation
 ---------------------------------- 2020-12-14 07:41:16
 no qc pass: interop2: ethernet encapsulation
 qc pass: interop2: lacp
+---------------------------------- 2020-12-19 15:13:44
+no todo: pipeline properties, terminal autoresize
