@@ -3402,7 +3402,7 @@ public class userExec {
             return;
         }
         if (a.equals("spacetab")) {
-            reader.spacetab = true;
+            pipe.settingsPut(pipeSetting.spactab, true);
             return;
         }
         if (a.equals("length")) {
@@ -3439,7 +3439,7 @@ public class userExec {
             return;
         }
         if (a.equals("spacetab")) {
-            reader.spacetab = false;
+            pipe.settingsPut(pipeSetting.spactab, false);
             return;
         }
         cmd.badCmd();

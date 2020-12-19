@@ -38,6 +38,11 @@ public class pipeSetting {
     public final static int colors = 6;
 
     /**
+     * spacetab
+     */
+    public final static int spactab = 7;
+
+    /**
      * name of the setting
      */
     protected final int name;
