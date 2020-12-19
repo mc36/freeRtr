@@ -3418,7 +3418,7 @@ public class userExec {
             return;
         }
         if (a.equals("deactivate")) {
-            pipe.settingsPut(pipeSetting.deact, bits.str2num(cmd.word()));
+            pipe.settingsPut(pipeSetting.deactive, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("tablemode")) {

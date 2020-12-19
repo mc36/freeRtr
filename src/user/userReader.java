@@ -151,7 +151,7 @@ public class userReader implements Comparator<String> {
         pipe.settingsPut(pipeSetting.termWid, 79);
         pipe.settingsPut(pipeSetting.termHei, 24);
         pipe.settingsPut(pipeSetting.tabMod, userFormat.tableMode.normal);
-        pipe.settingsPut(pipeSetting.deact, 256);
+        pipe.settingsPut(pipeSetting.deactive, 256);
         escape = 256;
         clip = "";
         filterS = "";
@@ -165,7 +165,7 @@ public class userReader implements Comparator<String> {
         pipe.settingsPut(pipeSetting.termWid, parent.execWidth);
         pipe.settingsPut(pipeSetting.termHei, parent.execHeight);
         pipe.settingsPut(pipeSetting.tabMod, parent.execTables);
-        pipe.settingsPut(pipeSetting.deact, parent.promptDeActive);
+        pipe.settingsPut(pipeSetting.deactive, parent.promptDeActive);
         escape = parent.promptEscape;
     }
 
@@ -1000,7 +1000,7 @@ public class userReader implements Comparator<String> {
      * @return string readed, null if error happened
      */
     public String readLine(String exit) {
-        final int deactivate = (int) pipe.settingsGet(pipeSetting.deact, 256);
+        final int deactivate = (int) pipe.settingsGet(pipeSetting.deactive, 256);
         final boolean spacetab = (boolean) pipe.settingsGet(pipeSetting.spacTab, false);
         setFilter(null);
         if (debugger.userReaderEvnt) {

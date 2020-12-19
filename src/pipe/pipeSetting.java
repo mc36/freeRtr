@@ -53,9 +53,14 @@ public class pipeSetting {
     public final static int tabMod = 9;
 
     /**
-     * table mode
+     * deactivation character
      */
-    public final static int deact = 10;
+    public final static int deactive = 10;
+
+    /**
+     * escape character
+     */
+    public final static int escape = 11;
 
     /**
      * name of the setting
