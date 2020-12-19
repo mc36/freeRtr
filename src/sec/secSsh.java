@@ -488,6 +488,9 @@ public class secSsh implements Runnable {
                 break;
             }
             if (pc.type.equals(packSshChan.reqPtyReq)) {
+                p.stringRead();
+                userS.settingsPut(pipeSetting.width, p.pckDat.msbGetD(0));
+                userS.settingsPut(pipeSetting.height, p.pckDat.msbGetD(4));
                 if (pc.needReply) {
                     pc.chanSuccCreate();
                     p.packSend();
