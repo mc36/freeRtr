@@ -1651,7 +1651,7 @@ public class userExec {
         rollback = false;
         for (;;) {
             reader.setContext(getHelping(), cfgAll.hostName + (privileged ? "#" : ">"));
-            String s = reader.readLine(reader.deactive, null);
+            String s = reader.readLine(null);
             if (s == null) {
                 return cmdRes.logout;
             }
@@ -3418,7 +3418,7 @@ public class userExec {
             return;
         }
         if (a.equals("deactivate")) {
-            reader.deactive = bits.str2num(cmd.word());
+            pipe.settingsPut(pipeSetting.deact, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("tablemode")) {

@@ -19,11 +19,6 @@ import util.logger;
 public class userReader implements Comparator<String> {
 
     /**
-     * deactivation character
-     */
-    public int deactive;
-
-    /**
      * escape character
      */
     public int escape;
@@ -156,7 +151,7 @@ public class userReader implements Comparator<String> {
         pipe.settingsPut(pipeSetting.termWid, 79);
         pipe.settingsPut(pipeSetting.termHei, 24);
         pipe.settingsPut(pipeSetting.tabMod, userFormat.tableMode.normal);
-        deactive = 256;
+        pipe.settingsPut(pipeSetting.deact, 256);
         escape = 256;
         clip = "";
         filterS = "";
@@ -170,7 +165,7 @@ public class userReader implements Comparator<String> {
         pipe.settingsPut(pipeSetting.termWid, parent.execWidth);
         pipe.settingsPut(pipeSetting.termHei, parent.execHeight);
         pipe.settingsPut(pipeSetting.tabMod, parent.execTables);
-        deactive = parent.promptDeActive;
+        pipe.settingsPut(pipeSetting.deact, parent.promptDeActive);
         escape = parent.promptEscape;
     }
 
@@ -268,7 +263,7 @@ public class userReader implements Comparator<String> {
             }
             chr += o;
         }
-        userFormat.tableMode tabMod = (userFormat.tableMode) pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
+        final userFormat.tableMode tabMod = (userFormat.tableMode) pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
         if (tabMod == userFormat.tableMode.normal) {
             return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
         }
@@ -899,7 +894,7 @@ public class userReader implements Comparator<String> {
         }
     }
 
-    private String cmdOneChar(int ch, String exit) {
+    private String cmdOneChar(int ch, boolean spacetab, String exit) {
         len = curr.length();
         switch (ch) {
             case 1: // ctrl + a
@@ -974,7 +969,7 @@ public class userReader implements Comparator<String> {
                 cmdEscape();
                 break;
             case 32: // space
-                if ((boolean) pipe.settingsGet(pipeSetting.spacTab, false) && (pos >= len)) {
+                if (spacetab && (pos >= len)) {
                     cmdTabulator();
                 } else {
                     cmdInsChr(ch);
@@ -1001,11 +996,12 @@ public class userReader implements Comparator<String> {
     /**
      * read up one line
      *
-     * @param deactivate deactivation character
      * @param exit exit command to return
      * @return string readed, null if error happened
      */
-    public String readLine(int deactivate, String exit) {
+    public String readLine(String exit) {
+        final int deactivate = (int) pipe.settingsGet(pipeSetting.deact, 256);
+        final boolean spacetab = (boolean) pipe.settingsGet(pipeSetting.spacTab, false);
         setFilter(null);
         if (debugger.userReaderEvnt) {
             logger.debug("reading");
@@ -1027,7 +1023,7 @@ public class userReader implements Comparator<String> {
                     }
                     return null;
                 }
-                String s = cmdOneChar(ch, exit);
+                String s = cmdOneChar(ch, spacetab, exit);
                 if (s != null) {
                     return s;
                 }

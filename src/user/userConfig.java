@@ -351,7 +351,7 @@ public class userConfig {
      */
     public boolean doCommand() {
         reader.setContext(getHelping(true, true), cfgAll.hostName + getPrompt() + "#");
-        String s = reader.readLine(reader.deactive, "exit");
+        String s = reader.readLine("exit");
         if (s == null) {
             return true;
         }
