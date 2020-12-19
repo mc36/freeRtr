@@ -3402,7 +3402,7 @@ public class userExec {
             return;
         }
         if (a.equals("spacetab")) {
-            pipe.settingsPut(pipeSetting.spactab, true);
+            pipe.settingsPut(pipeSetting.spacTab, true);
             return;
         }
         if (a.equals("length")) {
@@ -3443,7 +3443,7 @@ public class userExec {
             return;
         }
         if (a.equals("spacetab")) {
-            pipe.settingsPut(pipeSetting.spactab, false);
+            pipe.settingsPut(pipeSetting.spacTab, false);
             return;
         }
         cmd.badCmd();

@@ -40,7 +40,7 @@ public class pipeSetting {
     /**
      * spacetab
      */
-    public final static int spactab = 7;
+    public final static int spacTab = 7;
 
     /**
      * logging

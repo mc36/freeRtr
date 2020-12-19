@@ -167,7 +167,7 @@ public class userReader implements Comparator<String> {
         if (parent == null) {
             return;
         }
-        pipe.settingsPut(pipeSetting.spactab, parent.execSpace);
+        pipe.settingsPut(pipeSetting.spacTab, parent.execSpace);
         pipe.settingsPut(pipeSetting.logging, parent.execLogging);
         pipe.settingsPut(pipeSetting.times, parent.execTimes);
         pipe.settingsPut(pipeSetting.colors, parent.execColor);
@@ -977,7 +977,7 @@ public class userReader implements Comparator<String> {
                 cmdEscape();
                 break;
             case 32: // space
-                if ((boolean) pipe.settingsGet(pipeSetting.spactab, false) && (pos >= len)) {
+                if ((boolean) pipe.settingsGet(pipeSetting.spacTab, false) && (pos >= len)) {
                     cmdTabulator();
                 } else {
                     cmdInsChr(ch);
