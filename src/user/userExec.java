@@ -3043,7 +3043,7 @@ public class userExec {
             cmd.error("timed out");
             return;
         }
-        pipeTerm trm = new pipeTerm(pipe, conn, reader.escape);
+        pipeTerm trm = new pipeTerm(pipe, conn);
         trm.doTerm();
     }
 
@@ -3168,7 +3168,7 @@ public class userExec {
         if (cht != null) {
             cht.script.doScript(strm);
         }
-        pipeTerm trm = new pipeTerm(pipe, strm, reader.escape);
+        pipeTerm trm = new pipeTerm(pipe, strm);
         trm.doTerm();
     }
 
@@ -3191,7 +3191,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), reader.escape);
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
             trm.doTerm();
             return;
         }
@@ -3206,7 +3206,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), reader.escape);
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
             trm.doTerm();
             return;
         }
@@ -3221,7 +3221,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), reader.escape);
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
             trm.doTerm();
             return;
         }
@@ -3236,7 +3236,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), reader.escape);
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
             trm.doTerm();
             return;
         }
@@ -3258,7 +3258,7 @@ public class userExec {
                 cmd.error("no such line");
                 return;
             }
-            pipeTerm trm = new pipeTerm(pipe, lin.runner.doAttach(), reader.escape);
+            pipeTerm trm = new pipeTerm(pipe, lin.runner.doAttach());
             trm.doTerm();
             return;
         }
@@ -3414,7 +3414,7 @@ public class userExec {
             return;
         }
         if (a.equals("escape")) {
-            reader.escape = bits.str2num(cmd.word());
+            pipe.settingsPut(pipeSetting.escape, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("deactivate")) {

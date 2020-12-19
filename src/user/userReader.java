@@ -18,11 +18,6 @@ import util.logger;
  */
 public class userReader implements Comparator<String> {
 
-    /**
-     * escape character
-     */
-    public int escape;
-
     private pipeSide pipe; // pipe to use
 
     private String prompt; // current prompt
@@ -152,7 +147,7 @@ public class userReader implements Comparator<String> {
         pipe.settingsPut(pipeSetting.termHei, 24);
         pipe.settingsPut(pipeSetting.tabMod, userFormat.tableMode.normal);
         pipe.settingsPut(pipeSetting.deactive, 256);
-        escape = 256;
+        pipe.settingsPut(pipeSetting.escape, 256);
         clip = "";
         filterS = "";
         if (parent == null) {
@@ -166,7 +161,7 @@ public class userReader implements Comparator<String> {
         pipe.settingsPut(pipeSetting.termHei, parent.execHeight);
         pipe.settingsPut(pipeSetting.tabMod, parent.execTables);
         pipe.settingsPut(pipeSetting.deactive, parent.promptDeActive);
-        escape = parent.promptEscape;
+        pipe.settingsPut(pipeSetting.escape, parent.promptEscape);
     }
 
     /**

@@ -57,12 +57,11 @@ public class pipeTerm {
      *
      * @param con console to use
      * @param strm stream to use
-     * @param esc escape character
      */
-    public pipeTerm(pipeSide con, pipeSide strm, int esc) {
+    public pipeTerm(pipeSide con, pipeSide strm) {
         console = con;
         stream = strm;
-        escChr = esc;
+        escChr = (int) con.settingsGet(pipeSetting.escape, 256);
     }
 
     /**
