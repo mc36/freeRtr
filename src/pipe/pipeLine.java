@@ -1,5 +1,7 @@
 package pipe;
 
+import java.util.ArrayList;
+
 /**
  * pipeline handler
  *
@@ -38,6 +40,8 @@ public class pipeLine {
         serv2clnt = new pipeSide(bufferSize, blockMode);
         clnt2serv.peerSideOfPipeLine = serv2clnt;
         serv2clnt.peerSideOfPipeLine = clnt2serv;
+        clnt2serv.settings = new ArrayList<pipeSetting>();
+        serv2clnt.settings = clnt2serv.settings;
         clnt2serv.doInact(true);
         serv2clnt.doInact(true);
         nextEntry = 0;

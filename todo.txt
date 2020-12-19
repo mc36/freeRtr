@@ -12,7 +12,6 @@ terminal mode resolve
 hostwatch to execute script on acl match
 optimal route reflection
 bgp vpns with sr-policy
-pipeline properties, terminal autoresize
 temper: web access log
 changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 interface range command

@@ -1,5 +1,6 @@
 package pipe;
 
+import java.util.List;
 import pack.packHolder;
 import util.bits;
 import util.notifier;
@@ -20,6 +21,11 @@ public class pipeSide {
      * peer side of pipeline
      */
     protected pipeSide peerSideOfPipeLine;
+
+    /**
+     * pipeline settings
+     */
+    protected List<pipeSetting> settings;
 
     /**
      * notifier of this side
@@ -937,6 +943,49 @@ public class pipeSide {
      */
     public packHolder readPacket(boolean blocking) {
         return readPacket(new packHolder(true, true), 0, blocking);
+    }
+
+    private int findSetting(String nam) {
+        for (int i = 0; i < settings.size(); i++) {
+            if (nam.equals(settings.get(i).name)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * put one setting
+     *
+     * @param nam name
+     * @param val value
+     */
+    public void putSetting(String nam, Object val) {
+        pipeSetting ntry = new pipeSetting(nam);
+        ntry.value = val;
+        synchronized (lck) {
+            int i = findSetting(nam);
+            if (i >= 0) {
+                settings.remove(i);
+            }
+            settings.add(ntry);
+        }
+    }
+
+    /**
+     * get one setting
+     *
+     * @param nam name
+     * @return value, null if not found
+     */
+    public Object getSetting(String nam) {
+        synchronized (lck) {
+            int i = findSetting(nam);
+            if (i < 0) {
+                return null;
+            }
+            return settings.get(i);
+        }
     }
 
 }
