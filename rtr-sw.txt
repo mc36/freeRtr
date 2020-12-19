@@ -801,8 +801,6 @@ server telnet tel
  access-subnet 16
  access-blackhole4 1
  access-blackhole6 1
- exec width 100
- exec height 28
  exec timestamp
  exec colorized
  exec spacetab
@@ -896,4 +894,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=157118f463f465059a7850fbc96a04086092a92a2d25c89a6edc9d5198e6ab3084306847522a8ec12f68cde4c22600b39b5e72a7a137c1acde41fb2868228f3e-f3ab04af9326eca87bcee0f458e7a48cdb1e2c0f0c3237ed6b2a26c3b4ba3e01a9f773a233b2921c5a2b6b82f863f6f170bad8fd50118ff10bcb2387334ab7a6
+end chksum=003362073947bac29baccecbf4cbf2518e6e843cd5cbeb9e3a5dae392831f99f8c7107d2d684bedef73516da910985df9e200531916ffe9aeadb9130720a33d0-e6a1db6ac3a38825efd73a8c89b90411569c5f20a513a74722bdfcfdedf4ba14cb2ef02aa933a71b42bb742a05750589e3041f1e2409b78552f9347a40e7e485

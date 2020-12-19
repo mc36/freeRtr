@@ -1,6 +1,7 @@
 package sec;
 
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import util.debugger;
 import util.logger;
@@ -131,6 +132,11 @@ public class secTelnet {
      * suppress gaoptEcho
      */
     public static final int optSuppGA = 3;
+
+    /**
+     * window size
+     */
+    public static final int optWinSiz = 31;
 
     /**
      * convert command to string
@@ -279,6 +285,14 @@ public class secTelnet {
         return buf[0] & 0xff;
     }
 
+    private int netEsc() {
+        int i = netRx();
+        if (i != secTelnet.cmdIAC) {
+            return i;
+        }
+        return netRx();
+    }
+
     private void netTx(int cmd, int opt) {
         if (debugger.secTelnetTraf) {
             logger.debug("tx cmd=" + command2string(cmd) + " opt=" + option2string(opt));
@@ -301,17 +315,21 @@ public class secTelnet {
         netTx(cmdDO, optBin);
         int i;
         int o;
+        int p;
         if (client) {
             i = cmdWONT;
             o = cmdDO;
+            p = cmdWILL;
         } else {
             i = cmdWILL;
             o = cmdDONT;
+            p = cmdDO;
         }
         netTx(i, optEcho);
         netTx(o, optEcho);
         netTx(i, optSuppGA);
         netTx(o, optSuppGA);
+        netTx(p, optWinSiz);
         for (;;) {
             i = netRx();
             if (i < 0) {
@@ -335,6 +353,17 @@ public class secTelnet {
                     userS.blockingPut(buf, 0, buf.length);
                     continue;
                 case secTelnet.cmdSB:
+                    i = netRx();
+                    switch (i) {
+                        case secTelnet.optWinSiz:
+                            i = netEsc() << 8;
+                            i |= netEsc();
+                            userS.settingsPut(pipeSetting.termWid, i);
+                            i = netEsc() << 8;
+                            i |= netEsc();
+                            userS.settingsPut(pipeSetting.termHei, i);
+                            break;
+                    }
                     for (;;) {
                         i = netRx();
                         if (i < 0) {
@@ -370,6 +399,7 @@ public class secTelnet {
                 case optBin:
                 case optEcho:
                 case optSuppGA:
+                case optWinSiz:
                     continue;
             }
             if (o < 0) {

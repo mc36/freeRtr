@@ -955,7 +955,7 @@ public class pipeSide {
     }
 
     /**
-     * put one setting
+     * put one setting, overwrite if already exists
      *
      * @param nam name
      * @param val value, null to remove
@@ -969,6 +969,27 @@ public class pipeSide {
                 settings.remove(i);
             }
             if (val == null) {
+                return;
+            }
+            settings.add(ntry);
+        }
+    }
+
+    /**
+     * add one setting, do nothing if already exists
+     *
+     * @param nam name
+     * @param val value
+     */
+    public void settingsAdd(int nam, Object val) {
+        if (val == null) {
+            return;
+        }
+        pipeSetting ntry = new pipeSetting(nam);
+        ntry.value = val;
+        synchronized (lck) {
+            int i = settingsFind(nam);
+            if (i >= 0) {
                 return;
             }
             settings.add(ntry);

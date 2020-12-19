@@ -143,25 +143,29 @@ public class userReader implements Comparator<String> {
     public userReader(pipeSide pip, userLine parent) {
         pipe = pip;
         setHistory(64);
-        pipe.settingsPut(pipeSetting.termWid, 79);
-        pipe.settingsPut(pipeSetting.termHei, 24);
-        pipe.settingsPut(pipeSetting.tabMod, userFormat.tableMode.normal);
-        pipe.settingsPut(pipeSetting.deactive, 256);
-        pipe.settingsPut(pipeSetting.escape, 256);
         clip = "";
         filterS = "";
         if (parent == null) {
+            pipe.settingsAdd(pipeSetting.spacTab, false);
+            pipe.settingsAdd(pipeSetting.logging, false);
+            pipe.settingsAdd(pipeSetting.times, false);
+            pipe.settingsAdd(pipeSetting.colors, false);
+            pipe.settingsAdd(pipeSetting.termWid, 79);
+            pipe.settingsAdd(pipeSetting.termHei, 24);
+            pipe.settingsAdd(pipeSetting.tabMod, userFormat.tableMode.normal);
+            pipe.settingsAdd(pipeSetting.deactive, 256);
+            pipe.settingsAdd(pipeSetting.escape, 256);
             return;
         }
-        pipe.settingsPut(pipeSetting.spacTab, parent.execSpace);
-        pipe.settingsPut(pipeSetting.logging, parent.execLogging);
-        pipe.settingsPut(pipeSetting.times, parent.execTimes);
-        pipe.settingsPut(pipeSetting.colors, parent.execColor);
-        pipe.settingsPut(pipeSetting.termWid, parent.execWidth);
-        pipe.settingsPut(pipeSetting.termHei, parent.execHeight);
-        pipe.settingsPut(pipeSetting.tabMod, parent.execTables);
-        pipe.settingsPut(pipeSetting.deactive, parent.promptDeActive);
-        pipe.settingsPut(pipeSetting.escape, parent.promptEscape);
+        pipe.settingsAdd(pipeSetting.spacTab, parent.execSpace);
+        pipe.settingsAdd(pipeSetting.logging, parent.execLogging);
+        pipe.settingsAdd(pipeSetting.times, parent.execTimes);
+        pipe.settingsAdd(pipeSetting.colors, parent.execColor);
+        pipe.settingsAdd(pipeSetting.termWid, parent.execWidth);
+        pipe.settingsAdd(pipeSetting.termHei, parent.execHeight);
+        pipe.settingsAdd(pipeSetting.tabMod, parent.execTables);
+        pipe.settingsAdd(pipeSetting.deactive, parent.promptDeActive);
+        pipe.settingsAdd(pipeSetting.escape, parent.promptEscape);
     }
 
     /**
