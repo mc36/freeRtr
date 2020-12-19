@@ -3,6 +3,7 @@ package user;
 import java.util.ArrayList;
 import java.util.List;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import util.cmds;
 import util.debugger;
@@ -71,7 +72,7 @@ public class userXml {
                     pip.lineRx = pipeSide.modTyp.modeCRorLF;
                     userReader rdr = new userReader(pip, null);
                     rdr.tabMod = userFormat.tableMode.raw;
-                    rdr.height = 0;
+                    pip.settingsPut(pipeSetting.termHei, 0);
                     userExec exe = new userExec(pip, rdr);
                     exe.privileged = privi;
                     pip.setTime(60000);
@@ -100,7 +101,7 @@ public class userXml {
                 pip.lineRx = pipeSide.modTyp.modeCRorLF;
                 userReader rdr = new userReader(pip, null);
                 rdr.tabMod = userFormat.tableMode.raw;
-                rdr.height = 0;
+                pip.settingsPut(pipeSetting.termHei, 0);
                 userConfig cfg = new userConfig(pip, rdr);
                 pip.setTime(60000);
                 for (;;) {

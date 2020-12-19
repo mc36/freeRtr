@@ -2030,7 +2030,7 @@ public class userExec {
                     a = a + new String(buf);
                 }
                 txt.add(a);
-                userEditor e = new userEditor(new userScreen(cmd.pipe, reader.width, reader.height), txt, "banner", false);
+                userEditor e = new userEditor(new userScreen(pipe), txt, "banner", false);
                 if (e.doEdit()) {
                     return null;
                 }
@@ -2053,7 +2053,7 @@ public class userExec {
                     return cmdRes.command;
                 }
                 c2.addAll(c1);
-                userEditor e = new userEditor(new userScreen(pipe, reader.width, reader.height), c2, "section '" + a + "'", false);
+                userEditor e = new userEditor(new userScreen(pipe), c2, "section '" + a + "'", false);
                 if (e.doEdit()) {
                     return cmdRes.command;
                 }
@@ -2073,7 +2073,7 @@ public class userExec {
                 }
                 List<String> c2 = new ArrayList<String>();
                 c2.addAll(c1);
-                userEditor e = new userEditor(new userScreen(pipe, reader.width, reader.height), c2, "section '" + a + "'", false);
+                userEditor e = new userEditor(new userScreen(pipe), c2, "section '" + a + "'", false);
                 if (e.doEdit()) {
                     return cmdRes.command;
                 }
@@ -2090,7 +2090,7 @@ public class userExec {
                 if (cmd.size() > 0) {
                     c1 = userFilter.getSection(c1, userReader.filter2reg(cmd.getRemaining()));
                 }
-                userEditor v = new userEditor(new userScreen(pipe, reader.width, reader.height), c1, "section '" + a + "'", false);
+                userEditor v = new userEditor(new userScreen(pipe), c1, "section '" + a + "'", false);
                 v.doView();
                 return cmdRes.command;
             }
@@ -3386,11 +3386,11 @@ public class userExec {
             return;
         }
         if (a.equals("width")) {
-            reader.width = bits.str2num(cmd.word());
-            final int min = 20;
-            if (reader.width < min) {
-                reader.width = min;
+            int i = bits.str2num(cmd.word());
+            if (i < 20) {
+                i = 20;
             }
+            pipe.settingsPut(pipeSetting.termWid, i);
             return;
         }
         if (a.equals("timestamps")) {
@@ -3406,7 +3406,11 @@ public class userExec {
             return;
         }
         if (a.equals("length")) {
-            reader.height = bits.str2num(cmd.word());
+            int i = bits.str2num(cmd.word());
+            if (i < 0) {
+                i = 0;
+            }
+            pipe.settingsPut(pipeSetting.termHei, i);
             return;
         }
         if (a.equals("escape")) {
@@ -3462,7 +3466,7 @@ public class userExec {
             if (b == null) {
                 b = new ArrayList<String>();
             }
-            userEditor e = new userEditor(new userScreen(pipe, reader.width, reader.height), b, a, false);
+            userEditor e = new userEditor(new userScreen(pipe), b, a, false);
             if (e.doEdit()) {
                 return;
             }
@@ -3472,24 +3476,24 @@ public class userExec {
         if (a.equals("viewer")) {
             a = cmd.getRemaining();
             List<String> b = bits.txt2buf(a);
-            userEditor v = new userEditor(new userScreen(pipe, reader.width, reader.height), b, a, false);
+            userEditor v = new userEditor(new userScreen(pipe), b, a, false);
             v.doView();
             return;
         }
         if (a.equals("commander")) {
-            userFilman f = new userFilman(new userScreen(pipe, reader.width, reader.height));
+            userFilman f = new userFilman(new userScreen(pipe));
             f.doWork();
             return;
         }
         if (a.equals("browser")) {
-            userBrowser f = new userBrowser(new userScreen(pipe, reader.width, reader.height), cmd.getRemaining());
+            userBrowser f = new userBrowser(new userScreen(pipe), cmd.getRemaining());
             f.doWork();
             return;
         }
         if (a.equals("binviewer")) {
             a = cmd.getRemaining();
             List<String> b = userFlash.binRead(a);
-            userEditor v = new userEditor(new userScreen(pipe, reader.width, reader.height), b, a, false);
+            userEditor v = new userEditor(new userScreen(pipe), b, a, false);
             v.doView();
             return;
         }
@@ -3666,8 +3670,8 @@ public class userExec {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
-        rdr.width = reader.width;
-        rdr.height = 0;
+        pip.settingsPut(pipeSetting.termWid, pipe.settingsGet(pipeSetting.termWid, 80));
+        pip.settingsPut(pipeSetting.termHei, 0);
         rdr.tabMod = reader.tabMod;
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
         pip.settingsPut(pipeSetting.colors, (boolean) pipe.settingsGet(pipeSetting.colors, false) & col);
@@ -3688,7 +3692,7 @@ public class userExec {
         List<String> lst = new ArrayList<String>();
         packText pt = new packText(getShPipe(false));
         pt.recvAll(lst);
-        userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#show " + cmd.getRemaining(), false);
+        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#show " + cmd.getRemaining(), false);
         edtr.doView();
     }
 
@@ -3721,7 +3725,7 @@ public class userExec {
     private void doDisplay() {
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), (boolean) pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), (boolean) pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             lst.clear();
             packText pt = new packText(getShPipe(false));
@@ -3738,13 +3742,13 @@ public class userExec {
         List<String> r1 = new packText(getShPipe(false)).recvAll();
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new userScreen(pipe, reader.width, reader.height), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), (boolean) pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), (boolean) pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             List<String> r2 = new packText(getShPipe(false)).recvAll();
             differ df = new differ();
             df.calc(r1, r2);
             lst.clear();
-            lst.addAll(df.getText(reader.width, edtr.getOfs()));
+            lst.addAll(df.getText((int) pipe.settingsGet(pipeSetting.termWid, 80), edtr.getOfs()));
             if (edtr.doTimed(1000, true)) {
                 break;
             }

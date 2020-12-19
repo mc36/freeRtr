@@ -14,6 +14,7 @@ import java.util.List;
 import pipe.pipeDiscard;
 import pipe.pipeLine;
 import pipe.pipeProgress;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import util.bits;
 import util.cmds;
@@ -427,7 +428,7 @@ public class userUpgrade {
         if (cfgAll.upgradeConfig) {
             cons.debugRes("saving configuration");
             userReader rdr = new userReader(cmd.pipe, null);
-            rdr.height = 0;
+            cmd.pipe.settingsPut(pipeSetting.termHei, 0);
             userExec exe = new userExec(cmd.pipe, rdr);
             exe.privileged = true;
             String s = exe.repairCommand("write");

@@ -371,7 +371,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             if (ntry.script != null) {
                 txt.addAll(ntry.script);
             }
-            userEditor e = new userEditor(new userScreen(cmd.pipe, 80, 25), txt, "route-map", false);
+            userEditor e = new userEditor(new userScreen(cmd.pipe), txt, "route-map", false);
             if (e.doEdit()) {
                 return;
             }

@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import pipe.pipeConnect;
 import pipe.pipeDiscard;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import tab.tabGen;
 import user.userExec;
@@ -347,7 +348,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         new Thread(this).start();
         pipeSide pip = pipe.getSide();
         userReader rdr = new userReader(pip, null);
-        rdr.height = 0;
+        pip.settingsPut(pipeSetting.termHei, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
         pip.setTime(120000);

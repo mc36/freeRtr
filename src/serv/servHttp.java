@@ -34,6 +34,7 @@ import pack.packSstp;
 import pipe.pipeConnect;
 import pipe.pipeDiscard;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import prt.prtGenConn;
 import prt.prtServS;
@@ -1454,7 +1455,7 @@ class servHttpConn implements Runnable {
                 pip.lineRx = pipeSide.modTyp.modeCRorLF;
                 userReader rdr = new userReader(pip, null);
                 rdr.tabMod = userFormat.tableMode.raw;
-                rdr.height = 0;
+                pip.settingsPut(pipeSetting.termHei, 0);
                 userExec exe = new userExec(pip, rdr);
                 exe.privileged = (gotHost.allowApi & 4) != 0;
                 pip.setTime(60000);
@@ -1479,7 +1480,7 @@ class servHttpConn implements Runnable {
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
             userReader rdr = new userReader(pip, null);
             rdr.tabMod = userFormat.tableMode.raw;
-            rdr.height = 0;
+            pip.settingsPut(pipeSetting.termHei, 0);
             userConfig cfg = new userConfig(pip, rdr);
             pip.setTime(60000);
             for (;;) {

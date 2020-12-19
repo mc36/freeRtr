@@ -19,16 +19,6 @@ import util.logger;
 public class userReader implements Comparator<String> {
 
     /**
-     * width of terminal screen
-     */
-    public int width;
-
-    /**
-     * height of terminal screen
-     */
-    public int height;
-
-    /**
      * deactivation character
      */
     public int deactive;
@@ -168,8 +158,8 @@ public class userReader implements Comparator<String> {
     public userReader(pipeSide pip, userLine parent) {
         pipe = pip;
         setHistory(64);
-        width = 79;
-        height = 24;
+        pipe.settingsPut(pipeSetting.termWid, 79);
+        pipe.settingsPut(pipeSetting.termHei, 24);
         deactive = 256;
         escape = 256;
         clip = "";
@@ -181,8 +171,8 @@ public class userReader implements Comparator<String> {
         pipe.settingsPut(pipeSetting.logging, parent.execLogging);
         pipe.settingsPut(pipeSetting.times, parent.execTimes);
         pipe.settingsPut(pipeSetting.colors, parent.execColor);
-        width = parent.execWidth;
-        height = parent.execHeight;
+        pipe.settingsPut(pipeSetting.termWid, parent.execWidth);
+        pipe.settingsPut(pipeSetting.termHei, parent.execHeight);
         tabMod = parent.execTables;
         deactive = parent.promptDeActive;
         escape = parent.promptEscape;
@@ -421,7 +411,7 @@ public class userReader implements Comparator<String> {
                 }
                 return lst;
             case viewer:
-                userEditor edtr = new userEditor(new userScreen(pipe, width, height), lst, "result", false);
+                userEditor edtr = new userEditor(new userScreen(pipe), lst, "result", false);
                 edtr.doView();
                 return new ArrayList<String>();
             case level:
@@ -472,6 +462,7 @@ public class userReader implements Comparator<String> {
             return;
         }
         need2color &= (boolean) pipe.settingsGet(pipeSetting.colors, false);
+        final int height = (int) pipe.settingsGet(pipeSetting.termHei, 25);
         int o = 0;
         for (int i = 0; i < lst.size(); i++) {
             if ((i == 0) && need2color) {
@@ -532,6 +523,7 @@ public class userReader implements Comparator<String> {
     public synchronized void putCurrLine(boolean clr) {
         final String trncd = "..";
         final boolean color = (boolean) pipe.settingsGet(pipeSetting.colors, false);
+        final int width = (int) pipe.settingsGet(pipeSetting.termWid, 80);
         clr |= rangeCheck();
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         String s = curr.substring(beg, curr.length());
@@ -564,6 +556,7 @@ public class userReader implements Comparator<String> {
     private boolean rangeCheck() {
         len = curr.length();
         int old = beg;
+        final int width = (int) pipe.settingsGet(pipeSetting.termWid, 80);
         final int mov = width / 10;
         if (pos < 0) {
             pos = 0;

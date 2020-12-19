@@ -6,6 +6,7 @@ import cfg.cfgSensor;
 import java.util.ArrayList;
 import java.util.List;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import util.bits;
 import util.cmds;
@@ -105,7 +106,7 @@ public class userNetconf {
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
         rdr.tabMod = userFormat.tableMode.raw;
-        rdr.height = 0;
+        pip.settingsPut(pipeSetting.termHei, 0);
         userConfig cfg = new userConfig(pip, rdr);
         pip.setTime(60000);
         int pos;
@@ -255,7 +256,7 @@ public class userNetconf {
                 pip.lineRx = pipeSide.modTyp.modeCRorLF;
                 userReader rdr = new userReader(pip, null);
                 rdr.tabMod = userFormat.tableMode.raw;
-                rdr.height = 0;
+                pip.settingsPut(pipeSetting.termHei, 0);
                 pip.setTime(60000);
                 userExec.doSetUnset(pip, rdr, new cmds("cm", a), false);
                 pip = pl.getSide();

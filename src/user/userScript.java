@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import pipe.pipeDiscard;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import tab.tabGen;
 import util.bits;
@@ -553,7 +554,7 @@ public class userScript {
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
             userReader rdr = new userReader(pip, null);
-            rdr.height = 0;
+            pip.settingsPut(pipeSetting.termHei, 0);
             userExec exe = new userExec(pip, rdr);
             exe.privileged = allowConfig;
             pip.setTime(60000);
@@ -576,7 +577,7 @@ public class userScript {
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
             userReader rdr = new userReader(pip, null);
-            rdr.height = 0;
+            pip.settingsPut(pipeSetting.termHei, 0);
             userExec exe = new userExec(pip, rdr);
             exe.privileged = allowConfig;
             pip.setTime(60000);
@@ -607,7 +608,7 @@ public class userScript {
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
             userReader rdr = new userReader(pip, null);
-            rdr.height = 0;
+            pip.settingsPut(pipeSetting.termHei, 0);
             userConfig cfg = new userConfig(pip, rdr);
             pip.setTime(60000);
             for (;;) {

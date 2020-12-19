@@ -40,7 +40,10 @@ public class pipeScreen {
      */
     public pipeScreen(pipeSide pip, int x, int y) {
         pipe = pip;
-        scr = new userScreen(pipeDiscard.needAny(null), x, y);
+        pipeSide ps = pipeDiscard.needAny(null);
+        pipe.settingsPut(pipeSetting.termWid, x);
+        pipe.settingsPut(pipeSetting.termHei, y);
+        scr = new userScreen(ps);
     }
 
     private void putChar(int ch) {

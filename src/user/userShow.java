@@ -46,6 +46,7 @@ import java.util.List;
 import pack.packDnsZone;
 import pack.packLdpMp;
 import pack.packLdpPwe;
+import pipe.pipeSetting;
 import prt.prtRedun;
 import prt.prtWatch;
 import rtr.rtrBabelNeigh;
@@ -2944,7 +2945,7 @@ public class userShow {
             List<String> dump2 = ntry2.fullDump(r.bgp.fwdCore);
             differ df = new differ();
             df.calc(dump1, dump2);
-            rdr.putStrArr(df.getText(rdr.width, 0));
+            rdr.putStrArr(df.getText((int) cmd.pipe.settingsGet(pipeSetting.termWid, 80), 0));
             return;
         }
         if (a.equals("compare")) {

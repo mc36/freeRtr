@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import pack.packDnsRec;
 import pack.packNrpe;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import tab.tabGen;
 import user.userExec;
@@ -415,7 +416,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
         rdr.tabMod = userFormat.tableMode.raw;
-        rdr.height = 0;
+        pip.settingsPut(pipeSetting.termHei, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
         pip.setTime(120000);

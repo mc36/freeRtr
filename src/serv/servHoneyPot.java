@@ -6,6 +6,7 @@ import clnt.clntDns;
 import java.util.List;
 import pack.packDnsRec;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import prt.prtGenConn;
 import prt.prtServS;
@@ -156,7 +157,7 @@ class servHoneyPotConn implements Runnable {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
-        rdr.height = 0;
+        pip.settingsPut(pipeSetting.termHei, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
         pip.setTime(60000);

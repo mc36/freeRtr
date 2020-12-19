@@ -2,6 +2,7 @@ package user;
 
 import java.util.ArrayList;
 import java.util.List;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 
 /**
@@ -155,10 +156,10 @@ public class userScreen {
      * create one screen
      *
      * @param p connection to use
-     * @param x screen x size
-     * @param y screen y size
      */
-    public userScreen(pipeSide p, int x, int y) {
+    public userScreen(pipeSide p) {
+        int x = (int) p.settingsGet(pipeSetting.termWid, 80);
+        int y = (int) p.settingsGet(pipeSetting.termHei, 25);
         if (x < 10) {
             x = 80;
         }

@@ -605,7 +605,7 @@ public class userTest {
         }
         if (a.equals("screen")) {
             rdr.keyFlush();
-            userScreenTest t = new userScreenTest(new userScreen(pip, rdr.width, rdr.height));
+            userScreenTest t = new userScreenTest(new userScreen(pip));
             t.doStart();
             t.doCommand(cmd);
             t.doFinish();

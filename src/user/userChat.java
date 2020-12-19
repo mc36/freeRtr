@@ -62,14 +62,16 @@ public class userChat implements Runnable {
             if (!need2run) {
                 break;
             }
+            final int width = (int) pipe.settingsGet(pipeSetting.termWid, 80);
+            final int height = (int) pipe.settingsGet(pipeSetting.termHei, 25);
             List<String> l = new ArrayList<String>();
-            old = cfgAll.chat.read(l, old, read.height - 5);
+            old = cfgAll.chat.read(l, old, height - 5);
             if (l.size() < 1) {
                 continue;
             }
             for (int i = 0; i < l.size(); i++) {
                 pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
-                pipe.linePut(bits.padEnd("" + l.get(i), read.width, " "));
+                pipe.linePut(bits.padEnd("" + l.get(i), width, " "));
             }
             read.putCurrLine(true);
         }

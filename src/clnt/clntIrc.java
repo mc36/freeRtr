@@ -3,6 +3,7 @@ package clnt;
 import addr.addrIP;
 import cfg.cfgAll;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import serv.servGeneric;
 import serv.servIrc;
@@ -154,7 +155,7 @@ public class clntIrc implements Runnable {
         pipeLine pipE = new pipeLine(32768, false);
         pipeSide pip = pipE.getSide();
         userReader rdr = new userReader(pip, null);
-        rdr.height = 0;
+        pip.settingsPut(pipeSetting.termHei, 0);
         userExec exe = new userExec(pip, rdr);
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRtryLF;

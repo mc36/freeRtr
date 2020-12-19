@@ -18,12 +18,12 @@ public class pipeSetting {
     public final static int userName = 2;
 
     /**
-     * terminal length
+     * terminal height (y)
      */
-    public final static int termLen = 3;
+    public final static int termHei = 3;
 
     /**
-     * terminal width
+     * terminal width (x)
      */
     public final static int termWid = 4;
 

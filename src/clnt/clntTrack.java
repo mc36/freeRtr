@@ -17,6 +17,7 @@ import java.util.TimerTask;
 import line.lineScript;
 import pipe.pipeDiscard;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import prt.prtGen;
 import rtr.rtrBfdClnt;
@@ -739,7 +740,7 @@ public class clntTrack implements rtrBfdClnt {
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
         userReader rdr = new userReader(pip, null);
-        rdr.height = 0;
+        pip.settingsPut(pipeSetting.termHei, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
         pip.setTime(120000);
