@@ -410,6 +410,9 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     }
 
     private List<String> getResult() {
+        if (command == null) {
+            return new ArrayList<String>();
+        }
         pipeLine pl = new pipeLine(1024 * 1024, false);
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
