@@ -2438,10 +2438,10 @@ if __name__ == '__main__':
             default="../build/router.json")
     parser.add_argument('--p4runtime_address', help='p4 runtime address',
             type=str, action="store", required=False,
-            default="127.0.0.1:50051")
+            default="127.0.0.1:9559")
     parser.add_argument('--freerouter_address', help='freerouter address',
             type=str, action="store", required=False,
-            default="10.10.10.227")
+            default="127.0.0.1")
     parser.add_argument('--freerouter_port', help='freerouter port',
             type=str, action="store", required=False,
             default="9080")
