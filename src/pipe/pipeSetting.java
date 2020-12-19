@@ -33,6 +33,11 @@ public class pipeSetting {
     public final static int times = 5;
 
     /**
+     * colorize
+     */
+    public final static int colors = 6;
+
+    /**
      * name of the setting
      */
     protected final int name;

@@ -3398,7 +3398,7 @@ public class userExec {
             return;
         }
         if (a.equals("colorized")) {
-            reader.colorize = true;
+            pipe.settingsPut(pipeSetting.colors, true);
             return;
         }
         if (a.equals("spacetab")) {
@@ -3435,7 +3435,7 @@ public class userExec {
             return;
         }
         if (a.equals("colorized")) {
-            reader.colorize = false;
+            pipe.settingsPut(pipeSetting.colors, false);
             return;
         }
         if (a.equals("spacetab")) {
@@ -3670,7 +3670,7 @@ public class userExec {
         rdr.height = 0;
         rdr.tabMod = reader.tabMod;
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
-        rdr.colorize = reader.colorize & col;
+        pip.settingsPut(pipeSetting.colors, (boolean) pipe.settingsGet(pipeSetting.colors, false) & col);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = privileged;
         pip.setTime(60000);
@@ -3694,15 +3694,16 @@ public class userExec {
 
     private void doWatch() {
         reader.keyFlush();
+        final boolean color = (boolean) pipe.settingsGet(pipeSetting.colors, false);
         for (;;) {
             String a = getShPipe(true).strGet(1024 * 1024);
             userScreen.sendCur(pipe, 0, 0);
             userScreen.sendCls(pipe);
-            if (reader.colorize) {
+            if (color) {
                 userScreen.sendCol(pipe, userScreen.colBrGreen);
             }
             pipe.linePut(cfgAll.hostName + "#show " + cmd.getRemaining());
-            if (reader.colorize) {
+            if (color) {
                 userScreen.sendCol(pipe, userScreen.colWhite);
             }
             if ((boolean) pipe.settingsGet(pipeSetting.times, false)) {

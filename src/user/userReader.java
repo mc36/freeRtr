@@ -34,11 +34,6 @@ public class userReader implements Comparator<String> {
     public boolean logging;
 
     /**
-     * colorize
-     */
-    public boolean colorize;
-
-    /**
      * space as tab
      */
     public boolean spacetab;
@@ -196,7 +191,7 @@ public class userReader implements Comparator<String> {
         width = parent.execWidth;
         height = parent.execHeight;
         pipe.settingsPut(pipeSetting.times, parent.execTimes);
-        colorize = parent.execColor;
+        pipe.settingsPut(pipeSetting.colors, parent.execColor);
         spacetab = parent.execSpace;
         tabMod = parent.execTables;
         deactive = parent.promptDeActive;
@@ -486,13 +481,14 @@ public class userReader implements Comparator<String> {
             pipe.linePut("");
             return;
         }
+        need2color &= (boolean) pipe.settingsGet(pipeSetting.colors, false);
         int o = 0;
         for (int i = 0; i < lst.size(); i++) {
-            if ((i == 0) && colorize && need2color) {
+            if ((i == 0) && need2color) {
                 userScreen.sendCol(pipe, userScreen.colBrYellow);
             }
             pipe.linePut(lst.get(i));
-            if ((i == 0) && colorize && need2color) {
+            if ((i == 0) && need2color) {
                 userScreen.sendCol(pipe, userScreen.colWhite);
             }
             o++;
@@ -545,6 +541,7 @@ public class userReader implements Comparator<String> {
      */
     public synchronized void putCurrLine(boolean clr) {
         final String trncd = "..";
+        final boolean color = (boolean) pipe.settingsGet(pipeSetting.colors, false);
         clr |= rangeCheck();
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         String s = curr.substring(beg, curr.length());
@@ -565,11 +562,11 @@ public class userReader implements Comparator<String> {
             pipe.strPut(s);
         }
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
-        if (colorize) {
+        if (color) {
             userScreen.sendCol(pipe, userScreen.colBrGreen);
         }
         pipe.strPut(s.substring(0, crsr));
-        if (colorize) {
+        if (color) {
             userScreen.sendCol(pipe, userScreen.colWhite);
         }
     }
