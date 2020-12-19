@@ -28,6 +28,11 @@ public class pipeSetting {
     public final static int termWid = 4;
 
     /**
+     * timestamps
+     */
+    public final static int times = 5;
+
+    /**
      * name of the setting
      */
     protected final int name;

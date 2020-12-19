@@ -59,6 +59,7 @@ import ip.ipFwd;
 import ip.ipFwdRoute;
 import ipx.ipxFwd;
 import java.util.ArrayList;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import serv.servBmp2mrt;
 import serv.servBstun;
@@ -275,7 +276,7 @@ public class userConfig {
             return true;
         }
         if (a.equals("show")) {
-            if (reader.timeStamp) {
+            if ((boolean) pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             }
             userShow shw = new userShow();
@@ -307,7 +308,7 @@ public class userConfig {
             return false;
         }
         if (a.equals("do")) {
-            if (reader.timeStamp) {
+            if ((boolean) pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             }
             userExec exe = new userExec(pipe, reader);

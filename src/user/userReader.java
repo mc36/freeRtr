@@ -34,11 +34,6 @@ public class userReader implements Comparator<String> {
     public boolean logging;
 
     /**
-     * show timestamps
-     */
-    public boolean timeStamp;
-
-    /**
      * colorize
      */
     public boolean colorize;
@@ -200,7 +195,7 @@ public class userReader implements Comparator<String> {
         logging = parent.execLogging;
         width = parent.execWidth;
         height = parent.execHeight;
-        timeStamp = parent.execTimes;
+        pipe.settingsPut(pipeSetting.times, parent.execTimes);
         colorize = parent.execColor;
         spacetab = parent.execSpace;
         tabMod = parent.execTables;
