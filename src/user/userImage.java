@@ -133,13 +133,14 @@ public class userImage {
             case 0:
                 return false;
         }
-        userFlash.rename(fil, fil + ".bak", true, true);
-        if (execCmd("wget -O " + fil + " " + url) == 0) {
-            return false;
+        userFlash.delete(fil + ".tmp");
+        if (execCmd("wget -O " + fil + ".tmp " + url) != 0) {
+            pip.linePut("error downloading " + fil);
+            return true;
         }
-        userFlash.delete(fil);
-        pip.linePut("error downloading " + fil);
-        return true;
+        userFlash.rename(fil, fil + ".bak", true, true);
+        userFlash.rename(fil + ".tmp", fil, true, true);
+        return false;
     }
 
     private boolean verifyPackage(String fil, String sum) {
