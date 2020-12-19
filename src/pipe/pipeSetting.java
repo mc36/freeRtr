@@ -43,6 +43,11 @@ public class pipeSetting {
     public final static int spactab = 7;
 
     /**
+     * logging
+     */
+    public final static int logging = 8;
+
+    /**
      * name of the setting
      */
     protected final int name;

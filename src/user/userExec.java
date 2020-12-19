@@ -2364,7 +2364,7 @@ public class userExec {
         exe.privileged = privileged;
         s = exe.repairCommand(s);
         cmd.pipe.linePut(a + " - " + s);
-        if (reader.logging) {
+        if ((boolean) pipe.settingsGet(pipeSetting.logging, false)) {
             logger.info("command menu:" + s + " from " + pipe.settingsGet(pipeSetting.userFrom, "?"));
         }
         exe.executeCommand(s);

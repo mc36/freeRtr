@@ -29,11 +29,6 @@ public class userReader implements Comparator<String> {
     public int height;
 
     /**
-     * show commands
-     */
-    public boolean logging;
-
-    /**
      * deactivation character
      */
     public int deactive;
@@ -182,12 +177,12 @@ public class userReader implements Comparator<String> {
         if (parent == null) {
             return;
         }
-        logging = parent.execLogging;
-        width = parent.execWidth;
-        height = parent.execHeight;
+        pipe.settingsPut(pipeSetting.spactab, parent.execSpace);
+        pipe.settingsPut(pipeSetting.logging, parent.execLogging);
         pipe.settingsPut(pipeSetting.times, parent.execTimes);
         pipe.settingsPut(pipeSetting.colors, parent.execColor);
-        pipe.settingsPut(pipeSetting.spactab, parent.execSpace);
+        width = parent.execWidth;
+        height = parent.execHeight;
         tabMod = parent.execTables;
         deactive = parent.promptDeActive;
         escape = parent.promptEscape;
@@ -733,7 +728,7 @@ public class userReader implements Comparator<String> {
             if (debugger.userReaderEvnt) {
                 logger.debug("got " + prompt + b);
             }
-            if (logging) {
+            if ((boolean) pipe.settingsGet(pipeSetting.logging, false)) {
                 logger.info("command " + prompt + b + " from " + pipe.settingsGet(pipeSetting.userFrom, "?"));
             }
             return b;
