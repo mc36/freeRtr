@@ -416,7 +416,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
         pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
-        pip.settingsPut(pipeSetting.termHei, 0);
+        pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
         pip.setTime(120000);

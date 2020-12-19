@@ -554,7 +554,7 @@ public class userScript {
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
             userReader rdr = new userReader(pip, null);
-            pip.settingsPut(pipeSetting.termHei, 0);
+            pip.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(pip, rdr);
             exe.privileged = allowConfig;
             pip.setTime(60000);
@@ -577,7 +577,7 @@ public class userScript {
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
             userReader rdr = new userReader(pip, null);
-            pip.settingsPut(pipeSetting.termHei, 0);
+            pip.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(pip, rdr);
             exe.privileged = allowConfig;
             pip.setTime(60000);
@@ -608,7 +608,7 @@ public class userScript {
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
             userReader rdr = new userReader(pip, null);
-            pip.settingsPut(pipeSetting.termHei, 0);
+            pip.settingsPut(pipeSetting.height, 0);
             userConfig cfg = new userConfig(pip, rdr);
             pip.setTime(60000);
             for (;;) {

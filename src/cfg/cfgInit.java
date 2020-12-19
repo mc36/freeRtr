@@ -568,7 +568,7 @@ public class cfgInit implements Runnable {
         pipeSide psS = pl.getSide();
         pipeSide psC = pl.getSide();
         userReader rd = new userReader(psC, null);
-        psC.settingsPut(pipeSetting.termHei, 0);
+        psC.settingsPut(pipeSetting.height, 0);
         userConfig uc = new userConfig(psC, rd);
         psS.lineRx = pipeSide.modTyp.modeCRorLF;
         psC.lineTx = pipeSide.modTyp.modeCRLF;
@@ -1007,7 +1007,7 @@ public class cfgInit implements Runnable {
             pipeSide pip = pipeConsole.create();
             logger.pipeStart(pip);
             userReader rdr = new userReader(pip, null);
-            pip.settingsPut(pipeSetting.termHei, 0);
+            pip.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;
             s = exe.repairCommand(s);

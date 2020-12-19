@@ -1455,7 +1455,7 @@ class servHttpConn implements Runnable {
                 pip.lineRx = pipeSide.modTyp.modeCRorLF;
                 userReader rdr = new userReader(pip, null);
                 pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
-                pip.settingsPut(pipeSetting.termHei, 0);
+                pip.settingsPut(pipeSetting.height, 0);
                 userExec exe = new userExec(pip, rdr);
                 exe.privileged = (gotHost.allowApi & 4) != 0;
                 pip.setTime(60000);
@@ -1480,7 +1480,7 @@ class servHttpConn implements Runnable {
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
             userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
-            pip.settingsPut(pipeSetting.termHei, 0);
+            pip.settingsPut(pipeSetting.height, 0);
             userConfig cfg = new userConfig(pip, rdr);
             pip.setTime(60000);
             for (;;) {

@@ -2945,7 +2945,7 @@ public class userShow {
             List<String> dump2 = ntry2.fullDump(r.bgp.fwdCore);
             differ df = new differ();
             df.calc(dump1, dump2);
-            rdr.putStrArr(df.getText((int) cmd.pipe.settingsGet(pipeSetting.termWid, 80), 0));
+            rdr.putStrArr(df.getText((int) cmd.pipe.settingsGet(pipeSetting.width, 80), 0));
             return;
         }
         if (a.equals("compare")) {

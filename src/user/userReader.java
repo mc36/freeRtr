@@ -150,8 +150,8 @@ public class userReader implements Comparator<String> {
             pipe.settingsAdd(pipeSetting.logging, false);
             pipe.settingsAdd(pipeSetting.times, false);
             pipe.settingsAdd(pipeSetting.colors, false);
-            pipe.settingsAdd(pipeSetting.termWid, 79);
-            pipe.settingsAdd(pipeSetting.termHei, 24);
+            pipe.settingsAdd(pipeSetting.width, 79);
+            pipe.settingsAdd(pipeSetting.height, 24);
             pipe.settingsAdd(pipeSetting.tabMod, userFormat.tableMode.normal);
             pipe.settingsAdd(pipeSetting.deactive, 256);
             pipe.settingsAdd(pipeSetting.escape, 256);
@@ -161,8 +161,8 @@ public class userReader implements Comparator<String> {
         pipe.settingsAdd(pipeSetting.logging, parent.execLogging);
         pipe.settingsAdd(pipeSetting.times, parent.execTimes);
         pipe.settingsAdd(pipeSetting.colors, parent.execColor);
-        pipe.settingsAdd(pipeSetting.termWid, parent.execWidth);
-        pipe.settingsAdd(pipeSetting.termHei, parent.execHeight);
+        pipe.settingsAdd(pipeSetting.width, parent.execWidth);
+        pipe.settingsAdd(pipeSetting.height, parent.execHeight);
         pipe.settingsAdd(pipeSetting.tabMod, parent.execTables);
         pipe.settingsAdd(pipeSetting.deactive, parent.promptDeActive);
         pipe.settingsAdd(pipeSetting.escape, parent.promptEscape);
@@ -453,7 +453,7 @@ public class userReader implements Comparator<String> {
             return;
         }
         need2color &= (boolean) pipe.settingsGet(pipeSetting.colors, false);
-        final int height = (int) pipe.settingsGet(pipeSetting.termHei, 25);
+        final int height = (int) pipe.settingsGet(pipeSetting.height, 25);
         int o = 0;
         for (int i = 0; i < lst.size(); i++) {
             if ((i == 0) && need2color) {
@@ -514,7 +514,7 @@ public class userReader implements Comparator<String> {
     public synchronized void putCurrLine(boolean clr) {
         final String trncd = "..";
         final boolean color = (boolean) pipe.settingsGet(pipeSetting.colors, false);
-        final int width = (int) pipe.settingsGet(pipeSetting.termWid, 80);
+        final int width = (int) pipe.settingsGet(pipeSetting.width, 80);
         clr |= rangeCheck();
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         String s = curr.substring(beg, curr.length());
@@ -547,7 +547,7 @@ public class userReader implements Comparator<String> {
     private boolean rangeCheck() {
         len = curr.length();
         int old = beg;
-        final int width = (int) pipe.settingsGet(pipeSetting.termWid, 80);
+        final int width = (int) pipe.settingsGet(pipeSetting.width, 80);
         final int mov = width / 10;
         if (pos < 0) {
             pos = 0;
@@ -713,7 +713,7 @@ public class userReader implements Comparator<String> {
                 logger.debug("got " + prompt + b);
             }
             if ((boolean) pipe.settingsGet(pipeSetting.logging, false)) {
-                logger.info("command " + prompt + b + " from " + pipe.settingsGet(pipeSetting.userFrom, "?"));
+                logger.info("command " + prompt + b + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
             }
             return b;
         }

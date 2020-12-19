@@ -8,24 +8,24 @@ package pipe;
 public class pipeSetting {
 
     /**
-     * user origin
+     * origin address
      */
-    public final static int userFrom = 1;
+    public final static int origin = 1;
 
     /**
-     * user name
+     * authentication result
      */
-    public final static int userName = 2;
+    public final static int authed = 2;
 
     /**
      * terminal height (y)
      */
-    public final static int termHei = 3;
+    public final static int height = 3;
 
     /**
      * terminal width (x)
      */
-    public final static int termWid = 4;
+    public final static int width = 4;
 
     /**
      * timestamps

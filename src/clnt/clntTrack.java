@@ -740,7 +740,7 @@ public class clntTrack implements rtrBfdClnt {
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
         userReader rdr = new userReader(pip, null);
-        pip.settingsPut(pipeSetting.termHei, 0);
+        pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
         pip.setTime(120000);

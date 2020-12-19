@@ -106,7 +106,7 @@ public class userNetconf {
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
         pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
-        pip.settingsPut(pipeSetting.termHei, 0);
+        pip.settingsPut(pipeSetting.height, 0);
         userConfig cfg = new userConfig(pip, rdr);
         pip.setTime(60000);
         int pos;
@@ -256,7 +256,7 @@ public class userNetconf {
                 pip.lineRx = pipeSide.modTyp.modeCRorLF;
                 userReader rdr = new userReader(pip, null);
                 pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
-                pip.settingsPut(pipeSetting.termHei, 0);
+                pip.settingsPut(pipeSetting.height, 0);
                 pip.setTime(60000);
                 userExec.doSetUnset(pip, rdr, new cmds("cm", a), false);
                 pip = pl.getSide();

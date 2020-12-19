@@ -41,8 +41,8 @@ public class pipeScreen {
     public pipeScreen(pipeSide pip, int x, int y) {
         pipe = pip;
         pipeSide ps = pipeDiscard.needAny(null);
-        pipe.settingsPut(pipeSetting.termWid, x);
-        pipe.settingsPut(pipeSetting.termHei, y);
+        pipe.settingsPut(pipeSetting.width, x);
+        pipe.settingsPut(pipeSetting.height, y);
         scr = new userScreen(ps);
     }
 

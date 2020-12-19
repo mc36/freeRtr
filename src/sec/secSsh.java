@@ -338,8 +338,8 @@ public class secSsh implements Runnable {
             return true;
         }
         if (pc.type.equals(packSshChan.reqWindow)) {
-            userS.settingsPut(pipeSetting.termWid, p.pckDat.msbGetD(0));
-            userS.settingsPut(pipeSetting.termHei, p.pckDat.msbGetD(4));
+            userS.settingsPut(pipeSetting.width, p.pckDat.msbGetD(0));
+            userS.settingsPut(pipeSetting.height, p.pckDat.msbGetD(4));
             return true;
         }
         return false;
@@ -441,7 +441,7 @@ public class secSsh implements Runnable {
             pa.authFailCreate();
             p.packSend();
         }
-        userS.settingsPut(pipeSetting.userName, servUser);
+        userS.settingsPut(pipeSetting.authed, servUser);
         pa.authSuccCreate();
         p.packSend();
         doPackRecv(p);

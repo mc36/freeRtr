@@ -348,7 +348,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         new Thread(this).start();
         pipeSide pip = pipe.getSide();
         userReader rdr = new userReader(pip, null);
-        pip.settingsPut(pipeSetting.termHei, 0);
+        pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
         pip.setTime(120000);

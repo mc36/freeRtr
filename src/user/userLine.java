@@ -528,20 +528,24 @@ class userLineHandler implements Runnable {
         pipe = pip;
         remote = rem;
         physical = phys;
-        user = new authResult();
-        user.privilege = parent.promptPrivilege;
-        try {
-            user = (authResult) pip.settingsGet(pipeSetting.userName, user);
-        } catch (Exception e) {
-        }
-        pip.settingsPut(pipeSetting.userName, null);
         pipe.setTime(parent.execTimeOut);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         new Thread(this).start();
     }
 
+    private void doInit() {
+        user = new authResult();
+        user.privilege = parent.promptPrivilege;
+        pipe.settingsAdd(pipeSetting.authed, user);
+        pipe.wait4ready(0);
+        user = (authResult) pipe.settingsGet(pipeSetting.authed, user);
+    }
+    
     private void doAuth() {
+        if (pipe.isClosed() != 0) {
+            return;
+        }
         pipe.setTime(parent.promptTimeout);
         last = bits.getTime();
         if (parent.banner) {
@@ -594,6 +598,9 @@ class userLineHandler implements Runnable {
         if (pipe.isClosed() != 0) {
             return;
         }
+        if (user.privilege > parent.promptPrivilege) {
+            user.privilege = parent.promptPrivilege;
+        }
         if (parent.loginLogging) {
             logger.info(user.user + " logged in from " + remote);
         }
@@ -602,8 +609,8 @@ class userLineHandler implements Runnable {
         }
         pipe.setTime(parent.execTimeOut);
         userReader rdr = new userReader(pipe, parent);
-        pipe.settingsPut(pipeSetting.userFrom, remote);
-        pipe.settingsPut(pipeSetting.userName, user.user);
+        pipe.settingsPut(pipeSetting.origin, remote);
+        pipe.settingsPut(pipeSetting.authed, user);
         userExec exe = new userExec(pipe, rdr);
         userConfig cfg = new userConfig(pipe, rdr);
         exe.privileged = user.privilege >= 15;
@@ -712,6 +719,7 @@ class userLineHandler implements Runnable {
 
     public void run() {
         try {
+            doInit();
             doAuth();
             doExec();
             if (parent.banner) {

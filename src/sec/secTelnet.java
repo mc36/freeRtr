@@ -358,10 +358,10 @@ public class secTelnet {
                         case secTelnet.optWinSiz:
                             i = netEsc() << 8;
                             i |= netEsc();
-                            userS.settingsPut(pipeSetting.termWid, i);
+                            userS.settingsPut(pipeSetting.width, i);
                             i = netEsc() << 8;
                             i |= netEsc();
-                            userS.settingsPut(pipeSetting.termHei, i);
+                            userS.settingsPut(pipeSetting.height, i);
                             break;
                     }
                     for (;;) {

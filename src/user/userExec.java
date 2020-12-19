@@ -2365,7 +2365,7 @@ public class userExec {
         s = exe.repairCommand(s);
         cmd.pipe.linePut(a + " - " + s);
         if ((boolean) pipe.settingsGet(pipeSetting.logging, false)) {
-            logger.info("command menu:" + s + " from " + pipe.settingsGet(pipeSetting.userFrom, "?"));
+            logger.info("command menu:" + s + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
         }
         exe.executeCommand(s);
     }
@@ -3390,7 +3390,7 @@ public class userExec {
             if (i < 20) {
                 i = 20;
             }
-            pipe.settingsPut(pipeSetting.termWid, i);
+            pipe.settingsPut(pipeSetting.width, i);
             return;
         }
         if (a.equals("timestamps")) {
@@ -3410,7 +3410,7 @@ public class userExec {
             if (i < 0) {
                 i = 0;
             }
-            pipe.settingsPut(pipeSetting.termHei, i);
+            pipe.settingsPut(pipeSetting.height, i);
             return;
         }
         if (a.equals("escape")) {
@@ -3670,8 +3670,8 @@ public class userExec {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
-        pip.settingsPut(pipeSetting.termWid, pipe.settingsGet(pipeSetting.termWid, 80));
-        pip.settingsPut(pipeSetting.termHei, 0);
+        pip.settingsPut(pipeSetting.width, pipe.settingsGet(pipeSetting.width, 80));
+        pip.settingsPut(pipeSetting.height, 0);
         pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
         pip.settingsPut(pipeSetting.colors, (boolean) pipe.settingsGet(pipeSetting.colors, false) & col);
@@ -3748,7 +3748,7 @@ public class userExec {
             differ df = new differ();
             df.calc(r1, r2);
             lst.clear();
-            lst.addAll(df.getText((int) pipe.settingsGet(pipeSetting.termWid, 80), edtr.getOfs()));
+            lst.addAll(df.getText((int) pipe.settingsGet(pipeSetting.width, 80), edtr.getOfs()));
             if (edtr.doTimed(1000, true)) {
                 break;
             }
