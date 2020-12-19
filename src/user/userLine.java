@@ -499,7 +499,7 @@ public class userLine {
      *
      * @param pip pipeline to work on
      * @param nam name of remote
-     * @param phys set true for physical lines
+     * @param phys physical lines, 0=no, 1=yes, 2=console
      */
     public void createHandler(pipeSide pip, String nam, int phys) {
         new userLineHandler(this, pip, nam, phys);

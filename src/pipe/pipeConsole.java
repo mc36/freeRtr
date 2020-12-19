@@ -51,7 +51,9 @@ public class pipeConsole implements Runnable {
                 if (i < 0) {
                     break;
                 }
-                pipe.blockingPut(buf, 0, i);
+                if (pipe.blockingPut(buf, 0, i) != i) {
+                    break;
+                }
             }
         } catch (Exception e) {
             logger.traceback(e);
@@ -72,6 +74,7 @@ class pipeConsoleDisp implements Runnable {
 
     public void run() {
         try {
+            pipe.setReady();
             for (;;) {
                 byte[] buf = new byte[1024];
                 int siz = pipe.blockingGet(buf, 0, buf.length);

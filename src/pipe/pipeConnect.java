@@ -77,6 +77,7 @@ class pipeConnectDoer implements Runnable {
 
     public void run() {
         try {
+            rx.setReady();
             for (;;) {
                 byte[] buf = new byte[siz];
                 int i = rx.blockingGet(buf, 0, buf.length);

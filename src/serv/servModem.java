@@ -301,6 +301,7 @@ class servModemConn implements Runnable, Comparator<servModemConn> {
         pipeS = pip.getSide();
         pipeC = pip.getSide();
         pipeC.setReady();
+        pipeS.setReady();
         new Thread(this).start();
     }
 

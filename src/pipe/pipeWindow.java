@@ -63,6 +63,7 @@ public class pipeWindow extends JPanel {
         ps.lineTx = pipeSide.modTyp.modeCRLF;
         ps.lineRx = pipeSide.modTyp.modeCRorLF;
         ps.timeout = 0;
+        ps.setReady();
         return ps;
     }
 

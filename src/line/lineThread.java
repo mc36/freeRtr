@@ -119,6 +119,7 @@ public abstract class lineThread {
         pipe = new pipeLine(65536, false);
         pipS = pipe.getSide();
         pipC = pipe.getSide();
+        pipS.setReady();
         rxtxOpen();
         return pipC;
     }
