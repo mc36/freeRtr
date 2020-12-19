@@ -945,9 +945,9 @@ public class pipeSide {
         return readPacket(new packHolder(true, true), 0, blocking);
     }
 
-    private int findSetting(String nam) {
+    private int settingsFind(int nam) {
         for (int i = 0; i < settings.size(); i++) {
-            if (nam.equals(settings.get(i).name)) {
+            if (nam == settings.get(i).name) {
                 return i;
             }
         }
@@ -958,15 +958,18 @@ public class pipeSide {
      * put one setting
      *
      * @param nam name
-     * @param val value
+     * @param val value, null to remove
      */
-    public void putSetting(String nam, Object val) {
+    public void settingsPut(int nam, Object val) {
         pipeSetting ntry = new pipeSetting(nam);
         ntry.value = val;
         synchronized (lck) {
-            int i = findSetting(nam);
+            int i = settingsFind(nam);
             if (i >= 0) {
                 settings.remove(i);
+            }
+            if (val == null) {
+                return;
             }
             settings.add(ntry);
         }
@@ -976,15 +979,16 @@ public class pipeSide {
      * get one setting
      *
      * @param nam name
-     * @return value, null if not found
+     * @param def default
+     * @return value, default if not found
      */
-    public Object getSetting(String nam) {
+    public Object settingsGet(int nam, Object def) {
         synchronized (lck) {
-            int i = findSetting(nam);
+            int i = settingsFind(nam);
             if (i < 0) {
-                return null;
+                return def;
             }
-            return settings.get(i);
+            return settings.get(i).value;
         }
     }
 

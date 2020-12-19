@@ -8,9 +8,29 @@ package pipe;
 public class pipeSetting {
 
     /**
+     * user origin
+     */
+    public final static int userFrom = 1;
+
+    /**
+     * user name
+     */
+    public final static int userName = 2;
+
+    /**
+     * terminal length
+     */
+    public final static int termLen = 3;
+
+    /**
+     * terminal width
+     */
+    public final static int termWid = 4;
+
+    /**
      * name of the setting
      */
-    public final String name;
+    public final int name;
 
     /**
      * value of the object
@@ -22,7 +42,7 @@ public class pipeSetting {
      *
      * @param nam name
      */
-    public pipeSetting(String nam) {
+    public pipeSetting(int nam) {
         name = nam;
     }
 

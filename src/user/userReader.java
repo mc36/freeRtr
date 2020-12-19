@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import util.bits;
 import util.cmds;
@@ -16,11 +17,6 @@ import util.logger;
  * @author matecsaba
  */
 public class userReader implements Comparator<String> {
-
-    /**
-     * user origin
-     */
-    public String from;
 
     /**
      * user name
@@ -756,7 +752,7 @@ public class userReader implements Comparator<String> {
                 logger.debug("got " + prompt + b);
             }
             if (logging) {
-                logger.info("command " + prompt + b + " from " + from);
+                logger.info("command " + prompt + b + " from " + pipe.settingsGet(pipeSetting.userFrom, "?"));
             }
             return b;
         }

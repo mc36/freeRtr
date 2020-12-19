@@ -9,6 +9,7 @@ import cfg.cfgInit;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import util.bits;
 import util.cmds;
@@ -596,7 +597,7 @@ class userLineHandler implements Runnable {
         }
         pipe.setTime(parent.execTimeOut);
         userReader rdr = new userReader(pipe, parent);
-        rdr.from = remote;
+        pipe.settingsPut(pipeSetting.userFrom, remote);
         rdr.user = user.user;
         userExec exe = new userExec(pipe, rdr);
         userConfig cfg = new userConfig(pipe, rdr);

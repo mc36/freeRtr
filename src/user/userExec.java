@@ -50,6 +50,7 @@ import pack.packDnsZone;
 import pack.packText;
 import pipe.pipeLine;
 import pipe.pipeProgress;
+import pipe.pipeSetting;
 import pipe.pipeShell;
 import pipe.pipeSide;
 import pipe.pipeTerm;
@@ -2364,7 +2365,7 @@ public class userExec {
         s = exe.repairCommand(s);
         cmd.pipe.linePut(a + " - " + s);
         if (reader.logging) {
-            logger.info("command menu:" + s + " from " + reader.from);
+            logger.info("command menu:" + s + " from " + pipe.settingsGet(pipeSetting.userFrom, "?"));
         }
         exe.executeCommand(s);
     }
