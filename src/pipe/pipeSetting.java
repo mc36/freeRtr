@@ -48,6 +48,11 @@ public class pipeSetting {
     public final static int logging = 8;
 
     /**
+     * table mode
+     */
+    public final static int tabMod = 9;
+
+    /**
      * name of the setting
      */
     protected final int name;

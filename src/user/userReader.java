@@ -28,11 +28,6 @@ public class userReader implements Comparator<String> {
      */
     public int escape;
 
-    /**
-     * table mode
-     */
-    public userFormat.tableMode tabMod = userFormat.tableMode.normal;
-
     private pipeSide pipe; // pipe to use
 
     private String prompt; // current prompt
@@ -160,6 +155,7 @@ public class userReader implements Comparator<String> {
         setHistory(64);
         pipe.settingsPut(pipeSetting.termWid, 79);
         pipe.settingsPut(pipeSetting.termHei, 24);
+        pipe.settingsPut(pipeSetting.tabMod, userFormat.tableMode.normal);
         deactive = 256;
         escape = 256;
         clip = "";
@@ -173,7 +169,7 @@ public class userReader implements Comparator<String> {
         pipe.settingsPut(pipeSetting.colors, parent.execColor);
         pipe.settingsPut(pipeSetting.termWid, parent.execWidth);
         pipe.settingsPut(pipeSetting.termHei, parent.execHeight);
-        tabMod = parent.execTables;
+        pipe.settingsPut(pipeSetting.tabMod, parent.execTables);
         deactive = parent.promptDeActive;
         escape = parent.promptEscape;
     }
@@ -272,6 +268,7 @@ public class userReader implements Comparator<String> {
             }
             chr += o;
         }
+        userFormat.tableMode tabMod = (userFormat.tableMode) pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
         if (tabMod == userFormat.tableMode.normal) {
             return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
         }
@@ -512,7 +509,7 @@ public class userReader implements Comparator<String> {
             pipe.linePut("");
             return;
         }
-        doPutArr(lst.formatAll(tabMod), true);
+        doPutArr(lst.formatAll((userFormat.tableMode) pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)), true);
     }
 
     /**

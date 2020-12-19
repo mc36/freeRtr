@@ -3422,7 +3422,7 @@ public class userExec {
             return;
         }
         if (a.equals("tablemode")) {
-            reader.tabMod = userFormat.str2tabmod(cmd.word());
+            pipe.settingsPut(pipeSetting.tabMod, userFormat.str2tabmod(cmd.word()));
             return;
         }
         if (!a.equals("no")) {
@@ -3672,7 +3672,7 @@ public class userExec {
         userReader rdr = new userReader(pip, null);
         pip.settingsPut(pipeSetting.termWid, pipe.settingsGet(pipeSetting.termWid, 80));
         pip.settingsPut(pipeSetting.termHei, 0);
-        rdr.tabMod = reader.tabMod;
+        pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
         pip.settingsPut(pipeSetting.colors, (boolean) pipe.settingsGet(pipeSetting.colors, false) & col);
         userExec exe = new userExec(pip, rdr);

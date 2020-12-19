@@ -443,7 +443,7 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
-        rdr.tabMod = userFormat.tableMode.raw;
+        pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
         pip.settingsPut(pipeSetting.termHei, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;
