@@ -320,7 +320,7 @@ public class userBrowser {
         l.add("ctrl+d - download link");
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
-        userScreenTest.helpWin(console, userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+        userScreen.helpWin(console, userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
     }
 
     private void doKeyRead() {
@@ -522,7 +522,7 @@ public class userBrowser {
     }
 
     private void doKeyF2() {
-        String b = userScreenTest.askUser(console, "enter name of file to save:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        String b = userScreen.askUser(console, "enter name of file to save:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
         if (b.length() < 1) {
             return;
         }
@@ -536,7 +536,7 @@ public class userBrowser {
         if (s == null) {
             return;
         }
-        String b = userScreenTest.askUser(console, "enter name of file to download:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        String b = userScreen.askUser(console, "enter name of file to download:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
         if (b.length() < 1) {
             return;
         }
@@ -549,7 +549,7 @@ public class userBrowser {
     }
 
     private void doKeyF7() {
-        String b = userScreenTest.askUser(console, "enter text to find:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        String b = userScreen.askUser(console, "enter text to find:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
         if (b.length() < 1) {
             return;
         }
@@ -567,7 +567,7 @@ public class userBrowser {
     }
 
     private void doKeyF5() {
-        String b = userScreenTest.askUser(console, "enter url to go to:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, url);
+        String b = userScreen.askUser(console, "enter url to go to:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, url);
         if (b.length() < 1) {
             return;
         }
@@ -605,7 +605,7 @@ public class userBrowser {
             } else {
                 a = lst.get(i).value;
             }
-            String b = userScreenTest.askUser(console, "enter value of " + a + ":", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, ntry.value);
+            String b = userScreen.askUser(console, "enter value of " + a + ":", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, ntry.value);
             if (b.length() < 1) {
                 return;
             }
@@ -639,7 +639,7 @@ public class userBrowser {
             } else {
                 rec = lst.get(i);
             }
-            b = userScreenTest.askUser(console, "enter value of " + a + ":", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, rec.value);
+            b = userScreen.askUser(console, "enter value of " + a + ":", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, rec.value);
             if (b.length() < 1) {
                 return;
             }

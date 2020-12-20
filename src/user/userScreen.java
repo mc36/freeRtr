@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pipe.pipeSetting;
 import pipe.pipeSide;
+import util.bits;
 
 /**
  * screen handler
@@ -553,6 +554,227 @@ public class userScreen {
             curY = sizY - 1;
             scrollUp(cl);
         }
+    }
+
+    /**
+     * put one window
+     *
+     * @param pip screen to use
+     * @param bg background color
+     * @param fg foreground color
+     * @param bx beginning x
+     * @param by beginning y
+     * @param sx size x
+     * @param sy size y
+     */
+    public static void putWindow(userScreen pip, int bg, int fg, int bx, int by, int sx, int sy) {
+        for (int i = 0; i < sy; i++) {
+            pip.putStr(bx - 1, by + i, bg, fg, false, "|");
+            pip.putStr(bx + sx, by + i, bg, fg, false, "|");
+            pip.putCols(bx + sx + 1, by + i + 1, userScreen.colBlack, userScreen.colBrBlack, 2);
+        }
+        for (int o = 0; o < sx; o++) {
+            for (int i = 0; i < sy; i++) {
+                pip.putStr(bx + o, by + i, bg, fg, false, " ");
+            }
+            pip.putStr(bx + o, by, bg, fg, false, "-");
+            pip.putStr(bx + o, by + sy, bg, fg, false, "-");
+        }
+        pip.putCols(bx + 1, by + sy + 1, userScreen.colBlack, userScreen.colBrBlack, sx + 2);
+        pip.putStr(bx - 1, by, bg, fg, false, "+");
+        pip.putStr(bx + sx, by, bg, fg, false, "+");
+        pip.putStr(bx - 1, by + sy, bg, fg, false, "+");
+        pip.putStr(bx + sx, by + sy, bg, fg, false, "+");
+    }
+
+    /**
+     * ask user line
+     *
+     * @param pip screen to use
+     * @param bg background color
+     * @param fg foreground color
+     * @param sx screen x
+     * @param sy screen y
+     * @param siz size of line
+     * @param ln original line
+     * @return edited line
+     */
+    public static String readLine(userScreen pip, int bg, int fg, int sx, int sy, int siz, String ln) {
+        if (ln == null) {
+            ln = "";
+        }
+        int beg = 0;
+        int cur = ln.length();
+        for (;;) {
+            if (cur < 0) {
+                cur = 0;
+            }
+            if (cur > ln.length()) {
+                cur = ln.length();
+            }
+            int i = cur - siz;
+            if (beg < i) {
+                beg = i;
+            }
+            if (beg > cur) {
+                beg = cur;
+            }
+            pip.putStr(sx, sy, bg, fg, false, bits.padEnd(ln.substring(beg, ln.length()), siz, " ").substring(0, siz));
+            pip.putCur(sx + cur - beg, sy);
+            pip.refresh();
+            i = userVM.getKey(pip.pipe);
+            switch (i) {
+                case -1: // end
+                    return ln;
+                case 0x8004: // enter
+                    return ln;
+                case 0x0261: // ctrl+a
+                case 0x8008: // home
+                    cur = 0;
+                    break;
+                case 0x0265: // ctrl+e
+                case 0x8009: // end
+                    cur = ln.length();
+                    break;
+                case 0x8003: // backspace
+                    cur--;
+                    if (cur < 0) {
+                        break;
+                    }
+                    if (cur >= ln.length()) {
+                        break;
+                    }
+                    ln = ln.substring(0, cur) + ln.substring(cur + 1, ln.length());
+                    break;
+                case 0x8007: // delete
+                    if (cur >= ln.length()) {
+                        break;
+                    }
+                    ln = ln.substring(0, cur) + ln.substring(cur + 1, ln.length());
+                    break;
+                case 0x800e: // left
+                    cur--;
+                    break;
+                case 0x800f: // right
+                    cur++;
+                    break;
+                default:
+                    if (i < 0x20) {
+                        break;
+                    }
+                    if (i > 0x7f) {
+                        break;
+                    }
+                    ln = ln.substring(0, cur) + (char) i + ln.substring(cur, ln.length());
+                    cur++;
+                    break;
+            }
+        }
+    }
+
+    /**
+     * help window
+     *
+     * @param pip screen to use
+     * @param bg background color
+     * @param win window color
+     * @param txt text color
+     * @param bx screen x
+     * @param by screen y
+     * @param sx size x
+     * @param sy size y
+     * @param msg message
+     */
+    public static void helpWin(userScreen pip, int bg, int win, int txt, int bx, int by, int sx, int sy, List<String> msg) {
+        if (bx < 0) {
+            bx = 4;
+        }
+        if (by < 0) {
+            by = 2;
+        }
+        if (sx < 0) {
+            sx = pip.sizX - 8;
+        }
+        if (sy < 0) {
+            sy = pip.sizY - 6;
+        }
+        int cur = 0;
+        for (;;) {
+            int i = msg.size() - sy;
+            if (cur >= i) {
+                cur = i;
+            }
+            if (cur < 0) {
+                cur = 0;
+            }
+            putWindow(pip, bg, win, bx, by, sx, sy);
+            for (i = 0; i < sy - 1; i++) {
+                String a;
+                if ((cur + i) < msg.size()) {
+                    a = msg.get(cur + i);
+                } else {
+                    a = "";
+                }
+                pip.putStr(bx, by + i + 1, bg, txt, false, bits.padEnd(a, sx, " ").substring(0, sx));
+            }
+            pip.putCur(bx, by + 1);
+            pip.refresh();
+            i = userVM.getKey(pip.pipe);
+            switch (i) {
+                case -1: // end
+                    return;
+                case 0x800c: // up
+                    cur--;
+                    break;
+                case 0x800d: // down
+                    cur++;
+                    break;
+                case 0x800a: // pgup
+                    cur -= sy / 2;
+                    break;
+                case 0x800b: // pgdn
+                    cur += sy / 2;
+                    break;
+                case 0x0271: // ctrl+q
+                    return;
+                case 0x0278: // ctrl+x
+                    return;
+                case 0x8014: // f1
+                    return;
+                case 0x801d: // f10
+                    return;
+            }
+        }
+    }
+
+    /**
+     * ask user
+     *
+     * @param pip screen to use
+     * @param que question to ask
+     * @param bg background color
+     * @param win window color
+     * @param tit title color
+     * @param txt text color
+     * @param sx screen x
+     * @param sy screen y
+     * @param siz size of window
+     * @param ln original line
+     * @return edited line
+     */
+    public static String askUser(userScreen pip, String que, int bg, int win, int tit, int txt, int sx, int sy, int siz, String ln) {
+        if (sx < 0) {
+            sx = 4;
+        }
+        if (sy < 0) {
+            sy = (pip.sizY / 2) - 2;
+        }
+        if (siz < 0) {
+            siz = pip.sizX - 8;
+        }
+        putWindow(pip, bg, win, sx, sy, siz, 3);
+        pip.putStr(sx, sy + 1, bg, tit, false, que);
+        return readLine(pip, bg, txt, sx, sy + 2, siz, ln);
     }
 
     /**
