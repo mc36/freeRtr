@@ -757,8 +757,10 @@ public class userExec {
         hl.add("2 .      users                   list of interactive users");
         hl.add("2 3,.    logo                    logo of product");
         hl.add("3 3,.      [text]                text to print");
-        hl.add("2 3,.    flash                   list of flash");
-        hl.add("3 3,.      [text]                directory to print");
+        if (privi) {
+            hl.add("2 3,.    flash                   list of flash");
+            hl.add("3 3,.      [text]                directory to print");
+        }
         hl.add("2 3      whois                   query whois server");
         hl.add("3 3,.      [text]                directory to print");
         hl.add("2 3      transproxy              transparent proxy connections");
@@ -1206,8 +1208,10 @@ public class userExec {
         hl.add("3 3,.      [str]                 text");
         hl.add("2 3,.    logo                    view demo");
         hl.add("3 3,.      [str]                 text");
-        hl.add("2 3      image                   view image");
-        hl.add("3 .        <file>                filename");
+        if (privileged) {
+            hl.add("2 3      image                   view image");
+            hl.add("3 .        <file>                filename");
+        }
         hl.add("1 2    listen                    start listen session");
         hl.add("2 3,.    <port>                  port number");
         hl.add("3 3,.        /tcp                transmission control protocol");
@@ -1827,7 +1831,6 @@ public class userExec {
         if (a.equals("game")) {
             reader.keyFlush();
             userGame t = new userGame(new userScreen(pipe));
-            t.privileged = privileged;
             t.doStart();
             t.doCommand(cmd);
             t.doFinish();

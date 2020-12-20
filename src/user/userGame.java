@@ -19,11 +19,6 @@ public class userGame {
     private final userScreen console;
 
     /**
-     * privileged commands allowed
-     */
-    public boolean privileged;
-
-    /**
      * screen tester
      *
      * @param conn connection to use
@@ -392,10 +387,6 @@ public class userGame {
         }
         if (a.equals("antball")) {
             doAntBall();
-            return;
-        }
-        if (!privileged) {
-            cmd.badCmd();
             return;
         }
         if (a.equals("image")) {
