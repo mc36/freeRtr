@@ -87,10 +87,12 @@ public class pipeWindow extends JPanel {
      * @return converted text
      */
     public static List<String> imageText(File fil, int maxX, int maxY, final String[] chrs) {
-        BufferedImage img1;
+        BufferedImage img1 = null;
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
+        }
+        if (img1 == null) {
             return new ArrayList<String>();
         }
         return imageText(img1, maxX, maxY, chrs);
