@@ -155,6 +155,14 @@ public class userShow {
             }
             return null;
         }
+        if (a.equals("users")) {
+            userFormat res = new userFormat("|", "user|from|since");
+            for (int i = 0; i < userLine.users.size(); i++) {
+                res.add("" + userLine.users.get(i));
+            }
+            rdr.putStrTab(res);
+            return null;
+        }
         if (a.equals("privilege")) {
             authResult usr = (authResult) cmd.pipe.settingsGet(pipeSetting.authed, new authResult());
             userFormat lst = usr.dump();

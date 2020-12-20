@@ -753,7 +753,8 @@ public class userExec {
         hl.add("3 .        device                list of running devices");
         hl.add("2 .      reload                  scheduled reload");
         hl.add("2 .      banner                  logo of device");
-        hl.add("2 .      privilege               your privileges");
+        hl.add("2 .      privilege               list of your aaa details");
+        hl.add("2 .      users                   list of interactive users");
         hl.add("2 3,.    logo                    logo of product");
         hl.add("3 3,.      [text]                text to print");
         hl.add("2 3,.    flash                   list of flash");

@@ -6,11 +6,13 @@ import cfg.cfgAll;
 import cfg.cfgAuther;
 import cfg.cfgIfc;
 import cfg.cfgInit;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import pipe.pipeSetting;
 import pipe.pipeSide;
+import tab.tabGen;
 import util.bits;
 import util.cmds;
 import util.logger;
@@ -166,6 +168,11 @@ public class userLine {
      * prompt privilege
      */
     public int promptPrivilege = 15;
+
+    /**
+     * list of users
+     */
+    protected static final tabGen<userLineHandler> users = new tabGen<userLineHandler>();
 
     /**
      * get running configuration
@@ -507,11 +514,9 @@ public class userLine {
 
 }
 
-class userLineHandler implements Runnable {
+class userLineHandler implements Runnable, Comparator<userLineHandler> {
 
-    public authResult user;
-
-    public long last;
+    public final int hsh;
 
     public final pipeSide pipe;
 
@@ -520,6 +525,12 @@ class userLineHandler implements Runnable {
     public final String remote;
 
     public final int physical;
+
+    public final long since;
+
+    public long last;
+
+    public authResult user;
 
     public Timer expTim;
 
@@ -531,7 +542,13 @@ class userLineHandler implements Runnable {
         pipe.setTime(parent.execTimeOut);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        hsh = pip.hashCode();
+        since = bits.getTime();
         new Thread(this).start();
+    }
+
+    public String toString() {
+        return user.user + "|" + remote + "|" + bits.timePast(since);
     }
 
     private void doInit() {
@@ -541,7 +558,7 @@ class userLineHandler implements Runnable {
         pipe.wait4ready(0);
         user = (authResult) pipe.settingsGet(pipeSetting.authed, user);
     }
-    
+
     private void doAuth() {
         if (pipe.isClosed() != 0) {
             return;
@@ -718,6 +735,7 @@ class userLineHandler implements Runnable {
     }
 
     public void run() {
+        userLine.users.put(this);
         try {
             doInit();
             doAuth();
@@ -733,6 +751,17 @@ class userLineHandler implements Runnable {
         } catch (Exception e) {
         }
         pipe.setClose();
+        userLine.users.del(this);
+    }
+
+    public int compare(userLineHandler o1, userLineHandler o2) {
+        if (o1.hsh < o2.hsh) {
+            return -1;
+        }
+        if (o1.hsh > o2.hsh) {
+            return +1;
+        }
+        return 0;
     }
 
 }
