@@ -10,7 +10,7 @@ import util.cmds;
 import util.version;
 
 /**
- * screen tester
+ * screen games
  *
  * @author matecsaba
  */
