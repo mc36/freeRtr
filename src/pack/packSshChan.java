@@ -236,7 +236,7 @@ public class packSshChan {
             chanReqDump("tx");
         }
         chanReqCreate();
-        lower.stringWrite("vt100");
+        lower.stringWrite("ansi");
         lower.pckDat.msbPutD(0, 80);
         lower.pckDat.msbPutD(4, 25);
         lower.pckDat.msbPutD(8, 640);

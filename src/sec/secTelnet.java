@@ -1,8 +1,11 @@
 package sec;
 
+import java.util.ArrayList;
+import java.util.List;
 import pipe.pipeLine;
 import pipe.pipeSetting;
 import pipe.pipeSide;
+import util.bits;
 import util.debugger;
 import util.logger;
 
@@ -134,6 +137,11 @@ public class secTelnet {
     public static final int optSuppGA = 3;
 
     /**
+     * terminal type
+     */
+    public static final int optTerTyp = 24;
+
+    /**
      * window size
      */
     public static final int optWinSiz = 31;
@@ -196,9 +204,11 @@ public class secTelnet {
             case optEcho:
                 return "echo";
             case optSuppGA:
-                return "suppgaope";
+                return "suppGa";
+            case optTerTyp:
+                return "termTyp";
             case optWinSiz:
-                return "winsiz";
+                return "winSiz";
             default:
                 return "unknown=" + i;
         }
@@ -293,12 +303,30 @@ public class secTelnet {
         return buf[0] & 0xff;
     }
 
-    private int netEsc() {
-        int i = netRx();
-        if (i != secTelnet.cmdIAC) {
-            return i;
+    private void netTx(int opt, byte[] val) {
+        if (debugger.secTelnetTraf) {
+            logger.debug("tx opt=" + option2string(opt) + " buf=" + bits.byteDump(val, 0, -1));
         }
-        return netRx();
+        byte[] buf = new byte[3];
+        buf[0] = (byte) cmdIAC;
+        buf[1] = (byte) cmdSB;
+        buf[2] = (byte) opt;
+        lower.blockingPut(buf, 0, buf.length);
+        for (int o = 0; o < val.length; o++) {
+            int i = val[o];
+            if (i != cmdIAC) {
+                lower.blockingPut(val, o, 1);
+                continue;
+            }
+            buf = new byte[2];
+            buf[0] = (byte) cmdIAC;
+            buf[1] = (byte) cmdIAC;
+            lower.blockingPut(buf, 0, buf.length);
+        }
+        buf = new byte[2];
+        buf[0] = (byte) cmdIAC;
+        buf[1] = (byte) cmdSE;
+        lower.blockingPut(buf, 0, buf.length);
     }
 
     private void netTx(int cmd, int opt) {
@@ -326,6 +354,7 @@ public class secTelnet {
         if (client) {
             i = cmdWONT;
             o = cmdDO;
+            netTx(cmdWILL, optTerTyp);
         } else {
             i = cmdWILL;
             o = cmdDONT;
@@ -358,35 +387,58 @@ public class secTelnet {
                     userS.blockingPut(buf, 0, buf.length);
                     continue;
                 case secTelnet.cmdSB:
-                    i = netRx();
-                    switch (i) {
-                        case secTelnet.optWinSiz:
-                            i = netEsc() << 8;
-                            i |= netEsc();
-                            userS.settingsPut(pipeSetting.width, i);
-                            i = netEsc() << 8;
-                            i |= netEsc();
-                            userS.settingsPut(pipeSetting.height, i);
-                            break;
+                    o = netRx();
+                    if (debugger.secTelnetTraf) {
+                        logger.debug("rx opt=" + option2string(o));
                     }
+                    List<Integer> lst = new ArrayList<Integer>();
                     for (;;) {
                         i = netRx();
                         if (i < 0) {
                             return;
                         }
                         if (i != secTelnet.cmdIAC) {
+                            lst.add(i);
                             continue;
                         }
                         i = netRx();
                         if (i == secTelnet.cmdSE) {
                             break;
                         }
+                        lst.add(i);
+                    }
+                    switch (o) {
+                        case secTelnet.optTerTyp:
+                            if (lst.size() < 1) {
+                                break;
+                            }
+                            if (lst.get(0) != 1) {
+                                break;
+                            }
+                            buf = new byte[5];
+                            buf[0] = 0;
+                            buf[1] = 0x61;
+                            buf[2] = 0x6e;
+                            buf[3] = 0x73;
+                            buf[4] = 0x69;
+                            netTx(secTelnet.optTerTyp, buf);
+                            break;
+                        case secTelnet.optWinSiz:
+                            if (lst.size() < 4) {
+                                break;
+                            }
+                            i = (lst.get(0) << 8) | lst.get(1);
+                            userS.settingsPut(pipeSetting.width, i);
+                            i = (lst.get(2) << 8) | lst.get(3);
+                            userS.settingsPut(pipeSetting.height, i);
+                            break;
                     }
                     continue;
                 case secTelnet.cmdDO:
                     o = cmdWONT;
                     break;
                 case secTelnet.cmdDONT:
+                    o = secTelnet.cmdWONT;
                     break;
                 case secTelnet.cmdWILL:
                     o = cmdDONT;
@@ -404,6 +456,11 @@ public class secTelnet {
                 case optBin:
                 case optEcho:
                 case optSuppGA:
+                    continue;
+                case optTerTyp:
+                    if (!client) {
+                        break;
+                    }
                     continue;
                 case optWinSiz:
                     if (client) {
