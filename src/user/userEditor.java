@@ -149,7 +149,7 @@ public class userEditor {
         }
         boolean b = readOnly;
         if (changed) {
-            String a = userScreen.askUser(console, "save changes? (y/n)", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "n");
+            String a = console.askUser("save changes? (y/n)", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "n");
             a = a.trim().toLowerCase();
             b = !a.equals("y");
         }
@@ -468,11 +468,11 @@ public class userEditor {
         l.add("ctrl+y - delete line");
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
-        userScreen.helpWin(console, userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+        console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
     }
 
     private void doKeyF6() {
-        String a = userScreen.askUser(console, "line number:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, -1, -1, "" + curY);
+        String a = console.askUser("line number:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, -1, -1, "" + curY);
         if (a.length() < 1) {
             return;
         }
@@ -480,7 +480,7 @@ public class userEditor {
     }
 
     private void doKeyF7() {
-        String a = userScreen.askUser(console, "text to find:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, -1, -1, lastFind);
+        String a = console.askUser("text to find:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, -1, -1, lastFind);
         if (a.length() < 1) {
             return;
         }

@@ -211,7 +211,7 @@ public class userFilman {
     }
 
     private void doKeyFind() {
-        String b = userScreen.askUser(console, "enter name to find:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        String b = console.askUser("enter name to find:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
         if (b.length() < 1) {
             return;
         }
@@ -254,7 +254,7 @@ public class userFilman {
         l.add("ctrl+d - erase entry");
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
-        userScreen.helpWin(console, userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+        console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
     }
 
     private void doKeyF2() {
@@ -285,7 +285,7 @@ public class userFilman {
         String a = pan[act].getFn();
         int i = a.lastIndexOf("/");
         String b = pan[1 - act].path + a.substring(i + 1, a.length());
-        b = userScreen.askUser(console, "enter target name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, b);
+        b = console.askUser("enter target name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, b);
         if (b.length() < 1) {
             return;
         }
@@ -296,7 +296,7 @@ public class userFilman {
 
     private void doKeyF6() {
         String a = pan[act].getFn();
-        String b = userScreen.askUser(console, "enter new name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, a);
+        String b = console.askUser("enter new name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, a);
         if (b.length() < 1) {
             return;
         }
@@ -305,7 +305,7 @@ public class userFilman {
     }
 
     private void doKeyF7() {
-        String b = userScreen.askUser(console, "enter name of new directory:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, pan[act].path);
+        String b = console.askUser("enter name of new directory:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, pan[act].path);
         if (b.length() < 1) {
             return;
         }
@@ -318,7 +318,7 @@ public class userFilman {
         if (a.endsWith("/")) {
             a = a.substring(0, a.length() - 1);
         }
-        String b = userScreen.askUser(console, "really delete " + a + "? (y/n)", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "n");
+        String b = console.askUser("really delete " + a + "? (y/n)", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "n");
         b = b.trim().toLowerCase();
         if (!b.equals("y")) {
             return;

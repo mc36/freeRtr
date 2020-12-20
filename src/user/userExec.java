@@ -1827,6 +1827,7 @@ public class userExec {
         if (a.equals("game")) {
             reader.keyFlush();
             userGame t = new userGame(new userScreen(pipe));
+            t.privileged = privileged;
             t.doStart();
             t.doCommand(cmd);
             t.doFinish();

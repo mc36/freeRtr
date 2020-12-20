@@ -16,7 +16,12 @@ import util.version;
  */
 public class userGame {
 
-    private userScreen scr;
+    private final userScreen console;
+
+    /**
+     * privileged commands allowed
+     */
+    public boolean privileged;
 
     /**
      * screen tester
@@ -24,41 +29,41 @@ public class userGame {
      * @param conn connection to use
      */
     public userGame(userScreen conn) {
-        scr = conn;
+        console = conn;
     }
 
     /**
      * start screen
      */
     public void doStart() {
-        scr.putCls();
+        console.putCls();
     }
 
     /**
      * finish screen
      */
     public void doFinish() {
-        scr.putCls();
-        scr.refresh();
+        console.putCls();
+        console.refresh();
     }
 
     /**
      * palette test
      */
     public void doPalette() {
-        scr.putCls();
+        console.putCls();
         for (int i = 0; i < 16; i++) {
             int o = 15 - i;
             String a = bits.padEnd("  bg=" + o, 10, " ");
             String b = bits.padEnd("  fg=" + i, 10, " ");
-            scr.putStr(10, i + 1, o, i, false, a + b);
-            scr.putStr(40, i + 1, 0, i, false, b);
-            scr.putStr(60, i + 1, o, 0, false, a);
+            console.putStr(10, i + 1, o, i, false, a + b);
+            console.putStr(40, i + 1, 0, i, false, b);
+            console.putStr(60, i + 1, o, 0, false, a);
         }
-        scr.putCur(0, 0);
-        scr.refresh();
+        console.putCur(0, 0);
+        console.refresh();
         for (;;) {
-            if (scr.keyPress()) {
+            if (console.keyPress()) {
                 break;
             }
             bits.sleep(1000);
@@ -69,18 +74,18 @@ public class userGame {
      * ascii table
      */
     public void doAscTab() {
-        scr.putCls();
+        console.putCls();
         for (int o = 0; o < 16; o++) {
-            scr.putStr(7, 2 + o, userScreen.colBlack, userScreen.colGreen, true, "" + o);
-            scr.putStr(10 + (o * 3), 1, userScreen.colBlack, userScreen.colGreen, true, "" + o);
+            console.putStr(7, 2 + o, userScreen.colBlack, userScreen.colGreen, true, "" + o);
+            console.putStr(10 + (o * 3), 1, userScreen.colBlack, userScreen.colGreen, true, "" + o);
             for (int i = 0; i < 16; i++) {
-                scr.putInt(10 + (i * 3), 2 + o, userScreen.colBlack, userScreen.colWhite, true, (o * 16) + i);
+                console.putInt(10 + (i * 3), 2 + o, userScreen.colBlack, userScreen.colWhite, true, (o * 16) + i);
             }
         }
-        scr.putCur(0, 0);
-        scr.refresh();
+        console.putCur(0, 0);
+        console.refresh();
         for (;;) {
-            if (scr.keyPress()) {
+            if (console.keyPress()) {
                 break;
             }
             bits.sleep(1000);
@@ -93,7 +98,7 @@ public class userGame {
      * @param s text to use
      */
     public void doText(List<String> s) {
-        int maxY = scr.sizY - s.size();
+        int maxY = console.sizY - s.size();
         if (maxY < 1) {
             return;
         }
@@ -104,17 +109,17 @@ public class userGame {
                 maxX = o;
             }
         }
-        maxX = scr.sizX - maxX;
+        maxX = console.sizX - maxX;
         if (maxX < 1) {
             return;
         }
         for (;;) {
-            if (scr.keyPress()) {
+            if (console.keyPress()) {
                 break;
             }
-            scr.putCls();
-            scr.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, s);
-            scr.refresh();
+            console.putCls();
+            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, s);
+            console.refresh();
             bits.sleep(5000);
         }
     }
@@ -125,17 +130,17 @@ public class userGame {
      * @param font font to use
      */
     public void doClock(byte[][][] font) {
-        int maxX = scr.sizX - (font[0][0].length * 5);
-        int maxY = scr.sizY - font[0].length;
+        int maxX = console.sizX - (font[0][0].length * 5);
+        int maxY = console.sizY - font[0].length;
         for (;;) {
-            if (scr.keyPress()) {
+            if (console.keyPress()) {
                 break;
             }
             String s = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 2);
             s = s.substring(0, 5);
-            scr.putCls();
-            scr.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, userScreen.fontText(s, " ", userFonts1.fontFiller, font));
-            scr.refresh();
+            console.putCls();
+            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, userScreen.fontText(s, " ", userFonts1.fontFiller, font));
+            console.refresh();
             bits.sleep(5000);
         }
     }
@@ -151,7 +156,7 @@ public class userGame {
         int movY = -1;
         int movC = 1;
         for (;;) {
-            if (scr.keyPress()) {
+            if (console.keyPress()) {
                 break;
             }
             for (int i = chars.length - 1; i > 0; i--) {
@@ -160,11 +165,11 @@ public class userGame {
             }
             posX[0] += movX;
             posY[0] += movY;
-            if ((posX[0] / 10) >= scr.sizX) {
+            if ((posX[0] / 10) >= console.sizX) {
                 movX = -bits.random(1, 10);
                 movC = bits.random(1, 16);
             }
-            if ((posY[0] / 10) >= scr.sizY) {
+            if ((posY[0] / 10) >= console.sizY) {
                 movY = -bits.random(1, 10);
                 movC = bits.random(1, 16);
             }
@@ -176,15 +181,15 @@ public class userGame {
                 movY = bits.random(1, 10);
                 movC = bits.random(1, 16);
             }
-            scr.putCls();
+            console.putCls();
             for (int i = 0; i < chars.length; i++) {
                 int x = posX[i] / 10;
                 int y = posY[i] / 10;
                 int c = chars[i];
-                scr.putInt(x + 0, y, 0, movC, false, c);
-                scr.putInt(x + 1, y, 0, movC, false, c);
+                console.putInt(x + 0, y, 0, movC, false, c);
+                console.putInt(x + 1, y, 0, movC, false, c);
             }
-            scr.refresh();
+            console.refresh();
             bits.sleep(500);
         }
     }
@@ -193,25 +198,25 @@ public class userGame {
      * burning fire
      */
     public void doFire() {
-        int[][] buf = new int[scr.sizY + 10][scr.sizX + 10];
+        int[][] buf = new int[console.sizY + 10][console.sizX + 10];
         for (;;) {
-            if (scr.keyPress()) {
+            if (console.keyPress()) {
                 break;
             }
             int[][] old = buf;
-            buf = new int[scr.sizY + 10][scr.sizX + 10];
-            for (int y = 0; y < scr.sizY; y++) {
-                for (int x = 0; x < scr.sizX; x++) {
+            buf = new int[console.sizY + 10][console.sizX + 10];
+            for (int y = 0; y < console.sizY; y++) {
+                for (int x = 0; x < console.sizX; x++) {
                     int i = old[y + 4][x + 4] + old[y + 4][x + 5] + old[y + 4][x + 3] + old[y + 5][x + 4];
                     buf[y + 3][x + 4] = (i * 4) / 18;
                 }
             }
-            for (int i = 0; i < scr.sizX; i++) {
-                buf[scr.sizY + 3][i + 4] = bits.random(0, 2) * 82;
+            for (int i = 0; i < console.sizX; i++) {
+                buf[console.sizY + 3][i + 4] = bits.random(0, 2) * 82;
             }
-            scr.putCls();
-            for (int y = 0; y < scr.sizY; y++) {
-                for (int x = 0; x < scr.sizX; x++) {
+            console.putCls();
+            for (int y = 0; y < console.sizY; y++) {
+                for (int x = 0; x < console.sizX; x++) {
                     int i = buf[y + 4][x + 4];
                     int o = userScreen.colBlack;
                     if (i > 3) {
@@ -229,10 +234,10 @@ public class userGame {
                     if (i > 70) {
                         o = userScreen.colBrWhite;
                     }
-                    scr.putInt(x, y, userScreen.colBlack, o, false, 88);
+                    console.putInt(x, y, userScreen.colBlack, o, false, 88);
                 }
             }
-            scr.refresh();
+            console.refresh();
             bits.sleep(500);
         }
     }
@@ -242,9 +247,9 @@ public class userGame {
      * has 3 neighbors, then a new one borns
      */
     public void doLife() {
-        int[][] buf = new int[scr.sizY + 10][scr.sizX + 10];
-        for (int y = 0; y < scr.sizY; y++) {
-            for (int x = 0; x < scr.sizX; x++) {
+        int[][] buf = new int[console.sizY + 10][console.sizX + 10];
+        for (int y = 0; y < console.sizY; y++) {
+            for (int x = 0; x < console.sizX; x++) {
                 int i = 0;
                 if (bits.randomB() < 80) {
                     i = 1;
@@ -253,13 +258,13 @@ public class userGame {
             }
         }
         for (;;) {
-            if (scr.keyPress()) {
+            if (console.keyPress()) {
                 break;
             }
             int[][] old = buf;
-            buf = new int[scr.sizY + 10][scr.sizX + 10];
-            for (int y = 0; y < scr.sizY; y++) {
-                for (int x = 0; x < scr.sizX; x++) {
+            buf = new int[console.sizY + 10][console.sizX + 10];
+            for (int y = 0; y < console.sizY; y++) {
+                for (int x = 0; x < console.sizX; x++) {
                     int p = old[y + 3][x + 3] + old[y + 3][x + 4] + old[y + 3][x + 5] + old[y + 4][x + 3] + old[y + 4][x + 5] + old[y + 5][x + 3] + old[y + 5][x + 4] + old[y + 5][x + 5];
                     int o = old[y + 4][x + 4];
                     int i = 0;
@@ -272,41 +277,41 @@ public class userGame {
                     buf[y + 4][x + 4] = i;
                 }
             }
-            scr.putCls();
-            for (int y = 0; y < scr.sizY; y++) {
-                for (int x = 0; x < scr.sizX; x++) {
+            console.putCls();
+            for (int y = 0; y < console.sizY; y++) {
+                for (int x = 0; x < console.sizX; x++) {
                     int i = buf[y + 4][x + 4];
                     if (i == 0) {
                         i = 32;
                     } else {
                         i = 88;
                     }
-                    scr.putInt(x, y, userScreen.colBlack, userScreen.colWhite, false, i);
+                    console.putInt(x, y, userScreen.colBlack, userScreen.colWhite, false, i);
                 }
             }
-            scr.refresh();
+            console.refresh();
             bits.sleep(500);
         }
     }
 
     private void doAntBall() {
-        scr.putCls();
+        console.putCls();
         for (;;) {
-            if (scr.keyPress()) {
+            if (console.keyPress()) {
                 return;
             }
-            for (int o = 0; o < scr.sizY; o++) {
-                for (int i = 0; i < scr.sizX; i++) {
+            for (int o = 0; o < console.sizY; o++) {
+                for (int i = 0; i < console.sizX; i++) {
                     int p;
                     if ((bits.randomB() & 1) == 0) {
                         p = userScreen.colBlack;
                     } else {
                         p = userScreen.colWhite;
                     }
-                    scr.putStr(i, o, p, 0, false, " ");
+                    console.putStr(i, o, p, 0, false, " ");
                 }
             }
-            scr.refresh();
+            console.refresh();
             bits.sleep(500);
         }
     }
@@ -319,21 +324,21 @@ public class userGame {
     public void doCommand(cmds cmd) {
         String a = cmd.word();
         if (a.equals("gomoku")) {
-            userGameGomoku t = new userGameGomoku(scr);
+            userGameGomoku t = new userGameGomoku(console);
             t.doStart();
             t.doGame();
             t.doFinish();
             return;
         }
         if (a.equals("tetris")) {
-            userGameTetris t = new userGameTetris(scr);
+            userGameTetris t = new userGameTetris(console);
             t.doStart();
             t.doGame();
             t.doFinish();
             return;
         }
         if (a.equals("minesweep")) {
-            userGameMinesweep t = new userGameMinesweep(scr);
+            userGameMinesweep t = new userGameMinesweep(console);
             t.doStart();
             t.doGame();
             t.doFinish();
@@ -369,10 +374,6 @@ public class userGame {
             doText(txt);
             return;
         }
-        if (a.equals("image")) {
-            doText(pipeWindow.imageText(new File(cmd.getRemaining()), scr.sizX, scr.sizY, userFonts1.imageData));
-            return;
-        }
         if (a.equals("clock")) {
             doClock(userFonts1.fontDefault());
             return;
@@ -391,6 +392,14 @@ public class userGame {
         }
         if (a.equals("antball")) {
             doAntBall();
+            return;
+        }
+        if (!privileged) {
+            cmd.badCmd();
+            return;
+        }
+        if (a.equals("image")) {
+            doText(pipeWindow.imageText(new File(cmd.getRemaining()), console.sizX, console.sizY, userFonts1.imageData));
             return;
         }
         cmd.badCmd();
@@ -801,9 +810,6 @@ class userGameGomoku {
     }
 
 }
-
-
-
 
 class userGameTetris implements Runnable {
 

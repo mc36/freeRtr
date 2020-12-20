@@ -41,7 +41,7 @@ public class userScreen {
     /**
      * cursor color
      */
-    public int col = userScreen.colWhite;
+    public int col = colWhite;
 
     /**
      * cursor wraps
@@ -559,7 +559,6 @@ public class userScreen {
     /**
      * put one window
      *
-     * @param pip screen to use
      * @param bg background color
      * @param fg foreground color
      * @param bx beginning x
@@ -567,30 +566,29 @@ public class userScreen {
      * @param sx size x
      * @param sy size y
      */
-    public static void putWindow(userScreen pip, int bg, int fg, int bx, int by, int sx, int sy) {
+    public void putWindow(int bg, int fg, int bx, int by, int sx, int sy) {
         for (int i = 0; i < sy; i++) {
-            pip.putStr(bx - 1, by + i, bg, fg, false, "|");
-            pip.putStr(bx + sx, by + i, bg, fg, false, "|");
-            pip.putCols(bx + sx + 1, by + i + 1, userScreen.colBlack, userScreen.colBrBlack, 2);
+            putStr(bx - 1, by + i, bg, fg, false, "|");
+            putStr(bx + sx, by + i, bg, fg, false, "|");
+            putCols(bx + sx + 1, by + i + 1, colBlack, colBrBlack, 2);
         }
         for (int o = 0; o < sx; o++) {
             for (int i = 0; i < sy; i++) {
-                pip.putStr(bx + o, by + i, bg, fg, false, " ");
+                putStr(bx + o, by + i, bg, fg, false, " ");
             }
-            pip.putStr(bx + o, by, bg, fg, false, "-");
-            pip.putStr(bx + o, by + sy, bg, fg, false, "-");
+            putStr(bx + o, by, bg, fg, false, "-");
+            putStr(bx + o, by + sy, bg, fg, false, "-");
         }
-        pip.putCols(bx + 1, by + sy + 1, userScreen.colBlack, userScreen.colBrBlack, sx + 2);
-        pip.putStr(bx - 1, by, bg, fg, false, "+");
-        pip.putStr(bx + sx, by, bg, fg, false, "+");
-        pip.putStr(bx - 1, by + sy, bg, fg, false, "+");
-        pip.putStr(bx + sx, by + sy, bg, fg, false, "+");
+        putCols(bx + 1, by + sy + 1, colBlack, colBrBlack, sx + 2);
+        putStr(bx - 1, by, bg, fg, false, "+");
+        putStr(bx + sx, by, bg, fg, false, "+");
+        putStr(bx - 1, by + sy, bg, fg, false, "+");
+        putStr(bx + sx, by + sy, bg, fg, false, "+");
     }
 
     /**
      * ask user line
      *
-     * @param pip screen to use
      * @param bg background color
      * @param fg foreground color
      * @param sx screen x
@@ -599,7 +597,7 @@ public class userScreen {
      * @param ln original line
      * @return edited line
      */
-    public static String readLine(userScreen pip, int bg, int fg, int sx, int sy, int siz, String ln) {
+    public String readLine(int bg, int fg, int sx, int sy, int siz, String ln) {
         if (ln == null) {
             ln = "";
         }
@@ -619,10 +617,10 @@ public class userScreen {
             if (beg > cur) {
                 beg = cur;
             }
-            pip.putStr(sx, sy, bg, fg, false, bits.padEnd(ln.substring(beg, ln.length()), siz, " ").substring(0, siz));
-            pip.putCur(sx + cur - beg, sy);
-            pip.refresh();
-            i = userVM.getKey(pip.pipe);
+            putStr(sx, sy, bg, fg, false, bits.padEnd(ln.substring(beg, ln.length()), siz, " ").substring(0, siz));
+            putCur(sx + cur - beg, sy);
+            refresh();
+            i = userVM.getKey(pipe);
             switch (i) {
                 case -1: // end
                     return ln;
@@ -675,7 +673,6 @@ public class userScreen {
     /**
      * help window
      *
-     * @param pip screen to use
      * @param bg background color
      * @param win window color
      * @param txt text color
@@ -685,7 +682,7 @@ public class userScreen {
      * @param sy size y
      * @param msg message
      */
-    public static void helpWin(userScreen pip, int bg, int win, int txt, int bx, int by, int sx, int sy, List<String> msg) {
+    public void helpWin(int bg, int win, int txt, int bx, int by, int sx, int sy, List<String> msg) {
         if (bx < 0) {
             bx = 4;
         }
@@ -693,10 +690,10 @@ public class userScreen {
             by = 2;
         }
         if (sx < 0) {
-            sx = pip.sizX - 8;
+            sx = sizX - 8;
         }
         if (sy < 0) {
-            sy = pip.sizY - 6;
+            sy = sizY - 6;
         }
         int cur = 0;
         for (;;) {
@@ -707,7 +704,7 @@ public class userScreen {
             if (cur < 0) {
                 cur = 0;
             }
-            putWindow(pip, bg, win, bx, by, sx, sy);
+            putWindow(bg, win, bx, by, sx, sy);
             for (i = 0; i < sy - 1; i++) {
                 String a;
                 if ((cur + i) < msg.size()) {
@@ -715,11 +712,11 @@ public class userScreen {
                 } else {
                     a = "";
                 }
-                pip.putStr(bx, by + i + 1, bg, txt, false, bits.padEnd(a, sx, " ").substring(0, sx));
+                putStr(bx, by + i + 1, bg, txt, false, bits.padEnd(a, sx, " ").substring(0, sx));
             }
-            pip.putCur(bx, by + 1);
-            pip.refresh();
-            i = userVM.getKey(pip.pipe);
+            putCur(bx, by + 1);
+            refresh();
+            i = userVM.getKey(pipe);
             switch (i) {
                 case -1: // end
                     return;
@@ -750,7 +747,6 @@ public class userScreen {
     /**
      * ask user
      *
-     * @param pip screen to use
      * @param que question to ask
      * @param bg background color
      * @param win window color
@@ -762,19 +758,19 @@ public class userScreen {
      * @param ln original line
      * @return edited line
      */
-    public static String askUser(userScreen pip, String que, int bg, int win, int tit, int txt, int sx, int sy, int siz, String ln) {
+    public String askUser(String que, int bg, int win, int tit, int txt, int sx, int sy, int siz, String ln) {
         if (sx < 0) {
             sx = 4;
         }
         if (sy < 0) {
-            sy = (pip.sizY / 2) - 2;
+            sy = (sizY / 2) - 2;
         }
         if (siz < 0) {
-            siz = pip.sizX - 8;
+            siz = sizX - 8;
         }
-        putWindow(pip, bg, win, sx, sy, siz, 3);
-        pip.putStr(sx, sy + 1, bg, tit, false, que);
-        return readLine(pip, bg, txt, sx, sy + 2, siz, ln);
+        putWindow(bg, win, sx, sy, siz, 3);
+        putStr(sx, sy + 1, bg, tit, false, que);
+        return readLine(bg, txt, sx, sy + 2, siz, ln);
     }
 
     /**
