@@ -254,7 +254,7 @@ public class userScreen {
     private void sendChr(int ch) {
         byte[] buf = new byte[1];
         buf[0] = (byte) ch;
-        pipe.strPut(new String(buf));
+        pipe.blockingPut(buf, 0, buf.length);
         remC[remY][remX] = ch;
         remB[remY][remX] = remP;
         remX++;
