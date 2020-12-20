@@ -415,12 +415,7 @@ public class secTelnet {
                             if (lst.get(0) != 1) {
                                 break;
                             }
-                            buf = new byte[5];
-                            buf[0] = 0;
-                            buf[1] = 0x61;
-                            buf[2] = 0x6e;
-                            buf[3] = 0x73;
-                            buf[4] = 0x69;
+                            buf = "\000ansi".getBytes();
                             netTx(secTelnet.optTerTyp, buf);
                             break;
                         case secTelnet.optWinSiz:
