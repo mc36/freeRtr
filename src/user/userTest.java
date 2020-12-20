@@ -601,15 +601,6 @@ public class userTest {
             doTestTls(false, 0x303);
             return null;
         }
-        if (a.equals("screen")) {
-            rdr.keyFlush();
-            userScreenTest t = new userScreenTest(new userScreen(pip));
-            t.doStart();
-            t.doCommand(cmd);
-            t.doFinish();
-            rdr.keyFlush();
-            return null;
-        }
         if (a.equals("verfile")) {
             userUpgrade u = new userUpgrade(cmd);
             u.doRelease();

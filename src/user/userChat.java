@@ -50,7 +50,7 @@ public class userChat implements Runnable {
             if (a.trim().toLowerCase().equals("/exit")) {
                 break;
             }
-            cfgAll.chat.send(((authResult) pipe.settingsGet(pipeSetting.authed, new authResult())).user, a);
+            cfgAll.chat.send((pipe.settingsGet(pipeSetting.authed, new authResult())).user, a);
         }
         need2run = false;
     }
@@ -62,8 +62,8 @@ public class userChat implements Runnable {
             if (!need2run) {
                 break;
             }
-            final int width = (int) pipe.settingsGet(pipeSetting.width, 80);
-            final int height = (int) pipe.settingsGet(pipeSetting.height, 25);
+            final int width = pipe.settingsGet(pipeSetting.width, 80);
+            final int height = pipe.settingsGet(pipeSetting.height, 25);
             List<String> l = new ArrayList<String>();
             old = cfgAll.chat.read(l, old, height - 5);
             if (l.size() < 1) {

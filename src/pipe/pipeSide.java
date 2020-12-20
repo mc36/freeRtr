@@ -999,17 +999,26 @@ public class pipeSide {
     /**
      * get one setting
      *
+     * @param <T> type of object
      * @param nam name
      * @param def default
      * @return value, default if not found
      */
-    public Object settingsGet(int nam, Object def) {
+    @SuppressWarnings("unchecked")
+    public <T extends Object> T settingsGet(int nam, T def) {
+        Object res;
         synchronized (lck) {
             int i = settingsFind(nam);
             if (i < 0) {
                 return def;
             }
-            return settings.get(i).value;
+            res = settings.get(i).value;
+        }
+        try {
+            T fin = (T) res;
+            return fin;
+        } catch (Exception e) {
+            return def;
         }
     }
 

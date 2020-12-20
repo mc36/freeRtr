@@ -158,8 +158,8 @@ public class userScreen {
      * @param p connection to use
      */
     public userScreen(pipeSide p) {
-        int x = (int) p.settingsGet(pipeSetting.width, 80);
-        int y = (int) p.settingsGet(pipeSetting.height, 25);
+        int x = p.settingsGet(pipeSetting.width, 80);
+        int y = p.settingsGet(pipeSetting.height, 25);
         if (x < 10) {
             x = 80;
         }

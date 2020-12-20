@@ -172,7 +172,7 @@ public class userLine {
     /**
      * list of users
      */
-    protected static final tabGen<userLineHandler> users = new tabGen<userLineHandler>();
+    protected static final tabGen<userLineHandler> loggedUsers = new tabGen<userLineHandler>();
 
     /**
      * get running configuration
@@ -556,7 +556,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         user.privilege = parent.promptPrivilege;
         pipe.settingsAdd(pipeSetting.authed, user);
         pipe.wait4ready(0);
-        user = (authResult) pipe.settingsGet(pipeSetting.authed, user);
+        user = pipe.settingsGet(pipeSetting.authed, user);
     }
 
     private void doAuth() {
@@ -735,7 +735,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
     }
 
     public void run() {
-        userLine.users.put(this);
+        userLine.loggedUsers.put(this);
         try {
             doInit();
             doAuth();
@@ -751,7 +751,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         } catch (Exception e) {
         }
         pipe.setClose();
-        userLine.users.del(this);
+        userLine.loggedUsers.del(this);
     }
 
     public int compare(userLineHandler o1, userLineHandler o2) {

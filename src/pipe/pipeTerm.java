@@ -61,7 +61,7 @@ public class pipeTerm {
     public pipeTerm(pipeSide con, pipeSide strm) {
         console = con;
         stream = strm;
-        escChr = (int) con.settingsGet(pipeSetting.escape, 256);
+        escChr = con.settingsGet(pipeSetting.escape, 256);
     }
 
     /**

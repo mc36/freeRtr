@@ -262,7 +262,7 @@ public class userReader implements Comparator<String> {
             }
             chr += o;
         }
-        final userFormat.tableMode tabMod = (userFormat.tableMode) pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
+        final userFormat.tableMode tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
         if (tabMod == userFormat.tableMode.normal) {
             return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
         }
@@ -452,8 +452,8 @@ public class userReader implements Comparator<String> {
             pipe.linePut("");
             return;
         }
-        need2color &= (boolean) pipe.settingsGet(pipeSetting.colors, false);
-        final int height = (int) pipe.settingsGet(pipeSetting.height, 25);
+        need2color &= pipe.settingsGet(pipeSetting.colors, false);
+        final int height = pipe.settingsGet(pipeSetting.height, 25);
         int o = 0;
         for (int i = 0; i < lst.size(); i++) {
             if ((i == 0) && need2color) {
@@ -503,7 +503,7 @@ public class userReader implements Comparator<String> {
             pipe.linePut("");
             return;
         }
-        doPutArr(lst.formatAll((userFormat.tableMode) pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)), true);
+        doPutArr(lst.formatAll(pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)), true);
     }
 
     /**
@@ -513,8 +513,8 @@ public class userReader implements Comparator<String> {
      */
     public synchronized void putCurrLine(boolean clr) {
         final String trncd = "..";
-        final boolean color = (boolean) pipe.settingsGet(pipeSetting.colors, false);
-        final int width = (int) pipe.settingsGet(pipeSetting.width, 80);
+        final boolean color = pipe.settingsGet(pipeSetting.colors, false);
+        final int width = pipe.settingsGet(pipeSetting.width, 80);
         clr |= rangeCheck();
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         String s = curr.substring(beg, curr.length());
@@ -547,7 +547,7 @@ public class userReader implements Comparator<String> {
     private boolean rangeCheck() {
         len = curr.length();
         int old = beg;
-        final int width = (int) pipe.settingsGet(pipeSetting.width, 80);
+        final int width = pipe.settingsGet(pipeSetting.width, 80);
         final int mov = width / 10;
         if (pos < 0) {
             pos = 0;
@@ -712,7 +712,7 @@ public class userReader implements Comparator<String> {
             if (debugger.userReaderEvnt) {
                 logger.debug("got " + prompt + b);
             }
-            if ((boolean) pipe.settingsGet(pipeSetting.logging, false)) {
+            if (pipe.settingsGet(pipeSetting.logging, false)) {
                 logger.info("command " + prompt + b + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
             }
             return b;
@@ -999,8 +999,8 @@ public class userReader implements Comparator<String> {
      * @return string readed, null if error happened
      */
     public String readLine(String exit) {
-        final int deactivate = (int) pipe.settingsGet(pipeSetting.deactive, 256);
-        final boolean spacetab = (boolean) pipe.settingsGet(pipeSetting.spacTab, false);
+        final int deactivate = pipe.settingsGet(pipeSetting.deactive, 256);
+        final boolean spacetab = pipe.settingsGet(pipeSetting.spacTab, false);
         setFilter(null);
         if (debugger.userReaderEvnt) {
             logger.debug("reading");

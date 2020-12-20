@@ -1190,6 +1190,24 @@ public class userExec {
         hl.add("1 2    whois                     perform whois query");
         hl.add("2 3      <host>                  name of host to query");
         hl.add("3 3,.      <text>                query string");
+        hl.add("1 2    game                      play games or watch screen savers");
+        hl.add("2 .      gomoku                  play game");
+        hl.add("2 .      tetris                  play game");
+        hl.add("2 .      minesweep               play game");
+        hl.add("2 .      clear                   clear screen");
+        hl.add("2 .      color                   view demo");
+        hl.add("2 .      ascii                   view demo");
+        hl.add("2 .      clock                   view demo");
+        hl.add("2 .      snake                   view demo");
+        hl.add("2 .      fire                    view demo");
+        hl.add("2 .      life                    view demo");
+        hl.add("2 .      antball                 view demo");
+        hl.add("2 3,.    text                    view demo");
+        hl.add("3 3,.      [str]                 text");
+        hl.add("2 3,.    logo                    view demo");
+        hl.add("3 3,.      [str]                 text");
+        hl.add("2 3      image                   view image");
+        hl.add("3 .        <file>                filename");
         hl.add("1 2    listen                    start listen session");
         hl.add("2 3,.    <port>                  port number");
         hl.add("3 3,.        /tcp                transmission control protocol");
@@ -1594,24 +1612,6 @@ public class userExec {
         hl.add("2 3      verfile                 test version updater");
         hl.add("3 4,.      <key>                 key file to use");
         hl.add("4 4,.        [str]               file to include in release");
-        hl.add("2 3,.    screen                  test screen handler");
-        hl.add("3 .        gomoku                play game");
-        hl.add("3 .        tetris                play game");
-        hl.add("3 .        minesweep             play game");
-        hl.add("3 .        clear                 clear screen");
-        hl.add("3 .        color                 view demo");
-        hl.add("3 .        ascii                 view demo");
-        hl.add("3 .        clock                 view demo");
-        hl.add("3 .        snake                 view demo");
-        hl.add("3 .        fire                  view demo");
-        hl.add("3 .        life                  view demo");
-        hl.add("3 .        antball               view demo");
-        hl.add("3 4,.      text                  view demo");
-        hl.add("4 4,.        [str]               text");
-        hl.add("3 4,.      logo                  view demo");
-        hl.add("4 4,.        [str]               text");
-        hl.add("3 4        image                 view image");
-        hl.add("4 4,.        [str]               file");
         hl.add("2 3,.    hwext                   perform hw externalization");
         hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    hwdet                   perform hw detection");
@@ -1657,7 +1657,7 @@ public class userExec {
             if (s == null) {
                 return cmdRes.logout;
             }
-            if ((boolean) pipe.settingsGet(pipeSetting.times, false)) {
+            if (pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             }
             if (authorization != null) {
@@ -1822,6 +1822,15 @@ public class userExec {
         }
         if (a.equals("disable")) {
             privileged = false;
+            return cmdRes.command;
+        }
+        if (a.equals("game")) {
+            reader.keyFlush();
+            userScreenTest t = new userScreenTest(new userScreen(pipe));
+            t.doStart();
+            t.doCommand(cmd);
+            t.doFinish();
+            reader.keyFlush();
             return cmdRes.command;
         }
         if (a.equals("tclsh")) {
@@ -2285,6 +2294,9 @@ public class userExec {
     }
 
     private boolean need2stop() {
+        if (pipe.isClosed() != 0) {
+            return true;
+        }
         boolean brk = false;
         for (; pipe.ready2rx() > 0;) {
             byte[] buf = new byte[1];
@@ -2366,7 +2378,7 @@ public class userExec {
         exe.privileged = privileged;
         s = exe.repairCommand(s);
         cmd.pipe.linePut(a + " - " + s);
-        if ((boolean) pipe.settingsGet(pipeSetting.logging, false)) {
+        if (pipe.settingsGet(pipeSetting.logging, false)) {
             logger.info("command menu:" + s + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
         }
         exe.executeCommand(s);
@@ -3676,7 +3688,7 @@ public class userExec {
         pip.settingsPut(pipeSetting.height, 0);
         pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
-        pip.settingsPut(pipeSetting.colors, (boolean) pipe.settingsGet(pipeSetting.colors, false) & col);
+        pip.settingsPut(pipeSetting.colors, pipe.settingsGet(pipeSetting.colors, false) & col);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = privileged;
         pip.setTime(60000);
@@ -3700,8 +3712,11 @@ public class userExec {
 
     private void doWatch() {
         reader.keyFlush();
-        final boolean color = (boolean) pipe.settingsGet(pipeSetting.colors, false);
+        final boolean color = pipe.settingsGet(pipeSetting.colors, false);
         for (;;) {
+            if (pipe.isClosed() != 0) {
+                break;
+            }
             String a = getShPipe(true).strGet(1024 * 1024);
             userScreen.sendCur(pipe, 0, 0);
             userScreen.sendCls(pipe);
@@ -3712,7 +3727,7 @@ public class userExec {
             if (color) {
                 userScreen.sendCol(pipe, userScreen.colWhite);
             }
-            if ((boolean) pipe.settingsGet(pipeSetting.times, false)) {
+            if (pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             }
             pipe.strPut(a);
@@ -3727,7 +3742,7 @@ public class userExec {
     private void doDisplay() {
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), (boolean) pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             lst.clear();
             packText pt = new packText(getShPipe(false));
@@ -3744,13 +3759,13 @@ public class userExec {
         List<String> r1 = new packText(getShPipe(false)).recvAll();
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), (boolean) pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             List<String> r2 = new packText(getShPipe(false)).recvAll();
             differ df = new differ();
             df.calc(r1, r2);
             lst.clear();
-            lst.addAll(df.getText((int) pipe.settingsGet(pipeSetting.width, 80), edtr.getOfs()));
+            lst.addAll(df.getText(pipe.settingsGet(pipeSetting.width, 80), edtr.getOfs()));
             if (edtr.doTimed(1000, true)) {
                 break;
             }

@@ -157,14 +157,14 @@ public class userShow {
         }
         if (a.equals("users")) {
             userFormat res = new userFormat("|", "user|from|since");
-            for (int i = 0; i < userLine.users.size(); i++) {
-                res.add("" + userLine.users.get(i));
+            for (int i = 0; i < userLine.loggedUsers.size(); i++) {
+                res.add("" + userLine.loggedUsers.get(i));
             }
             rdr.putStrTab(res);
             return null;
         }
         if (a.equals("privilege")) {
-            authResult usr = (authResult) cmd.pipe.settingsGet(pipeSetting.authed, new authResult());
+            authResult usr = cmd.pipe.settingsGet(pipeSetting.authed, new authResult());
             userFormat lst = usr.dump();
             lst.add("origin|" + cmd.pipe.settingsGet(pipeSetting.origin, "?"));
             rdr.putStrTab(lst);
@@ -2961,7 +2961,7 @@ public class userShow {
             List<String> dump2 = ntry2.fullDump(r.bgp.fwdCore);
             differ df = new differ();
             df.calc(dump1, dump2);
-            rdr.putStrArr(df.getText((int) cmd.pipe.settingsGet(pipeSetting.width, 80), 0));
+            rdr.putStrArr(df.getText(cmd.pipe.settingsGet(pipeSetting.width, 80), 0));
             return;
         }
         if (a.equals("compare")) {

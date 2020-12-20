@@ -27,6 +27,9 @@ public class userGps {
      */
     public void doWorkTx() {
         for (;;) {
+            if (pipe.isClosed() != 0) {
+                break;
+            }
             if (pipe.ready2rx() > 0) {
                 break;
             }

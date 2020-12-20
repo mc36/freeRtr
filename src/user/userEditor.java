@@ -116,6 +116,9 @@ public class userEditor {
         readOnly = true;
         long beg = bits.getTime();
         for (;;) {
+            if (console.pipe.isClosed() != 0) {
+                return true;
+            }
             if ((bits.getTime() - beg) > tim) {
                 return false;
             }

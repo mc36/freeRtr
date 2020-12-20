@@ -333,7 +333,7 @@ public class userScreenTest {
                 break;
             }
             scr.putCls();
-            scr.putMaps(bits.random(0, maxX), bits.random(0, maxY), 0, bits.random(1, 16), false, s);
+            scr.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, s);
             scr.refresh();
             bits.sleep(5000);
         }
@@ -354,7 +354,7 @@ public class userScreenTest {
             String s = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 2);
             s = s.substring(0, 5);
             scr.putCls();
-            scr.putMaps(bits.random(0, maxX), bits.random(0, maxY), 0, bits.random(1, 16), false, userScreen.fontText(s, " ", userFonts1.fontFiller, font));
+            scr.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, userScreen.fontText(s, " ", userFonts1.fontFiller, font));
             scr.refresh();
             bits.sleep(5000);
         }

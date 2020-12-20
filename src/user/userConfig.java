@@ -276,7 +276,7 @@ public class userConfig {
             return true;
         }
         if (a.equals("show")) {
-            if ((boolean) pipe.settingsGet(pipeSetting.times, false)) {
+            if (pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             }
             userShow shw = new userShow();
@@ -308,7 +308,7 @@ public class userConfig {
             return false;
         }
         if (a.equals("do")) {
-            if ((boolean) pipe.settingsGet(pipeSetting.times, false)) {
+            if (pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             }
             userExec exe = new userExec(pipe, reader);
