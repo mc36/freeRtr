@@ -1219,7 +1219,7 @@ public class userPacket {
             }
             String pwd = cmd.pipe.lineGet(i);
             authResult res = aaa.authUserPass(usr, pwd);
-            cmd.error("result=" + res);
+            rdr.putStrTab(res.dump());
             return;
         }
         if (a.equals("nrpe")) {

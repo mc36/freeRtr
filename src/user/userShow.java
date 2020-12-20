@@ -4,6 +4,7 @@ import addr.addrIP;
 import addr.addrIpx;
 import addr.addrPrefix;
 import auth.authGeneric;
+import auth.authResult;
 import cfg.cfgAceslst;
 import cfg.cfgAlias;
 import cfg.cfgAll;
@@ -152,6 +153,13 @@ public class userShow {
                 rdr.putStrArr(version.shSecret(3));
                 return null;
             }
+            return null;
+        }
+        if (a.equals("privilege")) {
+            authResult usr = (authResult) cmd.pipe.settingsGet(pipeSetting.authed, new authResult());
+            userFormat lst = usr.dump();
+            lst.add("origin|" + cmd.pipe.settingsGet(pipeSetting.origin, "?"));
+            rdr.putStrTab(lst);
             return null;
         }
         if (a.equals("banner")) {

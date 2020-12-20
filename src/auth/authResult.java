@@ -3,6 +3,7 @@ package auth;
 import addr.addrEui;
 import addr.addrIPv4;
 import addr.addrIPv6;
+import user.userFormat;
 import util.bits;
 import util.logger;
 
@@ -78,7 +79,24 @@ public class authResult {
      */
     public String ipv6route;
 
-    private final authGeneric lower;
+    /**
+     * convert result to string
+     *
+     * @param i result
+     * @return string
+     */
+    public static String result2string(int i) {
+        switch (i) {
+            case authSuccessful:
+                return "success";
+            case authBadUserPass:
+                return "badCredentinals";
+            case authServerError:
+                return "serverError";
+            default:
+                return "unknown=" + i;
+        }
+    }
 
     /**
      * create new result
@@ -86,25 +104,23 @@ public class authResult {
     public authResult() {
         result = authServerError;
         user = "<nobody>";
-        lower = null;
     }
 
     /**
      * create new result
      *
-     * @param par authenticator
+     * @param lower authenticator
      * @param res result
      * @param nam username
      * @param pwd password
      */
-    public authResult(authGeneric par, int res, String nam, String pwd) {
+    public authResult(authGeneric lower, int res, String nam, String pwd) {
         result = res;
         user = nam;
-        lower = par;
         if (lower == null) {
             return;
         }
-        par.sawLast = bits.getTime();
+        lower.sawLast = bits.getTime();
         if (lower.logPass) {
             nam = nam + "/" + pwd;
         }
@@ -113,40 +129,45 @@ public class authResult {
                 if (lower.logErr) {
                     logger.info("error while authenticating " + nam);
                 }
-                par.sawErr++;
+                lower.sawErr++;
                 break;
             case authBadUserPass:
                 if (lower.logFail) {
                     logger.info("bad user/pass for " + nam);
                 }
-                par.sawFail++;
+                lower.sawFail++;
                 break;
             case authSuccessful:
                 if (lower.logOk) {
                     logger.info("successful for " + nam);
                 }
-                par.sawOk++;
+                lower.sawOk++;
                 break;
         }
     }
 
     public String toString() {
-        String s;
-        switch (result) {
-            case authSuccessful:
-                s = "success";
-                break;
-            case authBadUserPass:
-                s = "badCredentinals";
-                break;
-            case authServerError:
-                s = "serverError";
-                break;
-            default:
-                s = "unknown=" + result;
-                break;
-        }
-        return s + " privi=" + privilege + " user=" + user;
+        return result2string(result) + " privi=" + privilege + " user=" + user;
+    }
+
+    /**
+     * dump result
+     *
+     * @return result
+     */
+    public userFormat dump() {
+        userFormat lst = new userFormat("|", "category|value");
+        lst.add("result|" + result2string(result));
+        lst.add("username|" + user);
+        lst.add("command|" + autoCommand);
+        lst.add("hangup|" + autoHangup);
+        lst.add("privilege|" + privilege);
+        lst.add("ipv4 addr|" + ipv4addr);
+        lst.add("ipv4 route|" + ipv4route);
+        lst.add("ipv6 addr|" + ipv6addr);
+        lst.add("ipv6 route|" + ipv6route);
+        lst.add("ipv6 ifid|" + ipv6ifid);
+        return lst;
     }
 
 }
