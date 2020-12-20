@@ -523,14 +523,14 @@ public class userReader implements Comparator<String> {
             s = trncd + s;
             crsr += trncd.length();
         }
-        int left = width - prompt.length();
+        int left = width - prompt.length() - 1;
         if (s.length() > left) {
             s = s.substring(0, left - trncd.length()) + trncd;
         }
         s = prompt + s;
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         if (clr) {
-            pipe.strPut(bits.padEnd(s, width, " "));
+            pipe.strPut(bits.padEnd(s, width - 1, " "));
         } else {
             pipe.strPut(s);
         }

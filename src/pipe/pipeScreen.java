@@ -38,16 +38,16 @@ public class pipeScreen {
      * @param x x size
      * @param y y size
      */
-    public pipeScreen(pipeSide pip, int x, int y) {
+    protected pipeScreen(pipeSide pip, int x, int y) {
         pipe = pip;
         pipeSide ps = pipeDiscard.needAny(null);
-        pipe.settingsPut(pipeSetting.width, x);
-        pipe.settingsPut(pipeSetting.height, y);
+        ps.settingsPut(pipeSetting.width, x);
+        ps.settingsPut(pipeSetting.height, y);
         scr = new userScreen(ps);
     }
 
-    private void putChar(int ch) {
-        scr.putInt(scr.curX, scr.curY, true, scr.col, ch);
+    private void putChar(int ch, boolean cr) {
+        scr.putInt(scr.curX, scr.curY, cr, scr.col, ch);
     }
 
     private static int getParam(cmds cmd) {
@@ -219,9 +219,6 @@ public class pipeScreen {
                 scr.curRange(scr.col);
                 return;
             default:
-                buf = new byte[1];
-                buf[0] = (byte) ch;
-                doChar("\033[" + cmd.getRemaining() + new String(buf));
                 return;
         }
     }
@@ -254,26 +251,32 @@ public class pipeScreen {
             scr.curRange(scr.col);
             return;
         }
-        scr.curRange(scr.col);
         switch (ch) {
-            case 8: // backspace
-                putChar(32);
-                scr.curX -= 2;
-                scr.curRange(scr.col);
+            case 7: // bell
                 return;
-            case 13: // cr
-                scr.curX = 0;
+            case 8: // backspace
+                scr.curX -= 1;
+                scr.curRange(scr.col);
+                putChar(32, false);
+                return;
+            case 9: // tab
+                scr.curX = (scr.curX + 8) & 0xfff8;
                 scr.curRange(scr.col);
                 return;
             case 10: // lf
                 scr.curY++;
                 scr.curRange(scr.col);
                 return;
+            case 13: // cr
+                scr.curX = 0;
+                scr.curRange(scr.col);
+                return;
             case 27: // esc
                 escBuf = new ArrayList<Integer>();
                 return;
         }
-        putChar(ch);
+        scr.curRange(scr.col);
+        putChar(ch, true);
         scr.curRange(scr.col);
     }
 

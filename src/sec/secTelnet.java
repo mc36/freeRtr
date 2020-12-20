@@ -191,6 +191,14 @@ public class secTelnet {
      */
     public static String option2string(int i) {
         switch (i) {
+            case optBin:
+                return "binary";
+            case optEcho:
+                return "echo";
+            case optSuppGA:
+                return "suppgaope";
+            case optWinSiz:
+                return "winsiz";
             default:
                 return "unknown=" + i;
         }
@@ -315,21 +323,18 @@ public class secTelnet {
         netTx(cmdDO, optBin);
         int i;
         int o;
-        int p;
         if (client) {
             i = cmdWONT;
             o = cmdDO;
-            p = cmdWILL;
         } else {
             i = cmdWILL;
             o = cmdDONT;
-            p = cmdDO;
+            netTx(cmdDO, optWinSiz);
         }
         netTx(i, optEcho);
         netTx(o, optEcho);
         netTx(i, optSuppGA);
         netTx(o, optSuppGA);
-        netTx(p, optWinSiz);
         for (;;) {
             i = netRx();
             if (i < 0) {
@@ -399,7 +404,11 @@ public class secTelnet {
                 case optBin:
                 case optEcho:
                 case optSuppGA:
+                    continue;
                 case optWinSiz:
+                    if (client) {
+                        break;
+                    }
                     continue;
             }
             if (o < 0) {

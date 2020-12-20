@@ -238,8 +238,6 @@ public class userTest {
             }
             userLine lin = new userLine();
             lin.execTimeOut = 0;
-            lin.execWidth = x - 1;
-            lin.execHeight = y - 1;
             lin.createHandler(pipWin, "window", 2);
             return null;
         }

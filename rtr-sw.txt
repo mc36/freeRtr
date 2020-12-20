@@ -788,9 +788,19 @@ server telnet ssh
  security rsacert rsa
  security dsacert dsa
  security ecdsacert ecdsa
+ access-log
+ access-total 128
+ access-subnet 16
+ access-blackhole4 1
+ access-blackhole6 1
  port 22
+ exec timestamp
+ exec colorized
+ exec spacetab
+ exec tablemode table
  no exec authorization
  no login authentication
+ login logging
  vrf v1
  exit
 !
@@ -807,18 +817,21 @@ server telnet tel
  exec tablemode table
  no exec authorization
  login authentication access
+ login logging
  vrf v1
  exit
 !
 server udptn ut
  no exec authorization
  no login authentication
+ login logging
  vrf v1
  exit
 !
 server rfb vnc
  no exec authorization
  no login authentication
+ login logging
  vrf v1
  exit
 !
@@ -894,4 +907,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=003362073947bac29baccecbf4cbf2518e6e843cd5cbeb9e3a5dae392831f99f8c7107d2d684bedef73516da910985df9e200531916ffe9aeadb9130720a33d0-e6a1db6ac3a38825efd73a8c89b90411569c5f20a513a74722bdfcfdedf4ba14cb2ef02aa933a71b42bb742a05750589e3041f1e2409b78552f9347a40e7e485
+end chksum=6f76ab6b40d58e24829ed67b41f0e4206ddbfe4fc8710899d307cc5585fbce36d910325cfbab6afb78623b24f0bebdc687962c512941ab189ff772fc4a7ddc24-e6014c2bba1b54762ee5e9e189a44073cbee042ade54fc903c6f94427a18dda722eaa4d0a6f7d1c16e96b8a0de26b2566c408b0c38891cb3f7d6d6d3c30bb57c

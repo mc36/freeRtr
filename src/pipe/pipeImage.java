@@ -30,7 +30,7 @@ public class pipeImage {
     /**
      * current pipe
      */
-    public final pipeSide pipe;
+    protected final pipeSide pipe;
 
     private final byte[][][] font;
 
@@ -50,6 +50,8 @@ public class pipeImage {
     public pipeImage(pipeSide pip, int x, int y, byte[][][] fnt, int[] plt) {
         pipe = pip;
         pipe.setReady();
+        pipe.settingsPut(pipeSetting.width, x);
+        pipe.settingsPut(pipeSetting.height, y);
         font = fnt;
         pal = plt;
         fntY = font[0].length;
@@ -183,6 +185,15 @@ public class pipeImage {
      */
     public void setClose() {
         pipe.setClose();
+    }
+
+    /**
+     * check if closed
+     *
+     * @return status
+     */
+    public int isClosed() {
+        return pipe.isClosed();
     }
 
     /**

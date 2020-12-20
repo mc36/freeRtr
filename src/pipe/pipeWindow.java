@@ -243,7 +243,7 @@ class pipeWindowDoer implements Runnable {
         new Thread(this).start();
     }
 
-    public void run() {
+    private void doer() {
         for (;;) {
             boolean b = lower.img.doRound(true);
             lower.img.doImage();
@@ -253,6 +253,14 @@ class pipeWindowDoer implements Runnable {
             }
         }
         lower.win.setVisible(false);
+    }
+
+    public void run() {
+        try {
+            doer();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
     }
 
 }
