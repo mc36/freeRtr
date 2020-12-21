@@ -158,7 +158,7 @@ public class userEditor {
     }
 
     private boolean doKey() {
-        int i = userVM.getKey(console.pipe);
+        int i = userScreen.getKey(console.pipe);
         switch (i) {
             case -1: // end
                 return true;

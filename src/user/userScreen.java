@@ -181,6 +181,215 @@ public class userScreen {
     }
 
     /**
+     * get one key
+     *
+     * @param pipe pipeline to use
+     * @return key readed
+     */
+    public static int getKey(pipeSide pipe) {
+        byte[] buf = new byte[1];
+        if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
+            return -1;
+        }
+        int i = buf[0] & 0xff;
+        switch (i) {
+            case 127: // delete
+                return 0x8003;
+            case 8: // backspace
+                return 0x8003;
+            case 9: // tabulator
+                return 0x8002;
+            case 13: // enter
+                return 0x8004;
+            case 10: // ctrl+enter
+                return 0x8004;
+            case 27: // escape
+                break;
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 11:
+            case 12:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+            case 22:
+            case 23:
+            case 24:
+            case 25:
+            case 26:
+            case 28:
+            case 29:
+            case 30:
+            case 31:
+                return 0x0260 | i;
+            default: // any key
+                return i;
+        }
+        if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
+            return -1;
+        }
+        i = buf[0] & 0xff;
+        switch (i) {
+            case 8: // backspace
+                return 0x8403;
+            case 9: // tabulator
+                return 0x8402;
+            case 13: // enter
+                return 0x8404;
+            case 27: // escape
+                return 0x8005;
+            case 91: // [
+                break;
+            case 79: // O
+                if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
+                    return -1;
+                }
+                i = buf[0] & 0xff;
+                final int[] keys1 = {20, 21, 22, 23, 24};
+                switch (i) {
+                    case 80:
+                    case 81:
+                    case 82:
+                    case 83:
+                    case 84:
+                        return keys1[i - 80] | 0x8000;
+                    default:
+                        break;
+                }
+                return i;
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 10:
+            case 11:
+            case 12:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+            case 22:
+            case 23:
+            case 24:
+            case 25:
+            case 26:
+            case 28:
+            case 29:
+            case 30:
+            case 31:
+                return 0x0660 | i;
+            default: // any key
+                return i | 0x0400;
+        }
+        String s = "";
+        for (;;) {
+            if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
+                return -1;
+            }
+            i = buf[0] & 0xff;
+            boolean need2stop = false;
+            switch (i) {
+                case 0x30:
+                case 0x31:
+                case 0x32:
+                case 0x33:
+                case 0x34:
+                case 0x35:
+                case 0x36:
+                case 0x37:
+                case 0x38:
+                case 0x39:
+                    break;
+                case 91: // [
+                    break;
+                default:
+                    need2stop = true;
+                    break;
+            }
+            if (need2stop) {
+                break;
+            }
+            s += new String(buf);
+        }
+        if (s.startsWith("[")) {
+            final int[] keys2 = {20, 21, 22, 23, 24};
+            switch (i) {
+                case 65:
+                case 66:
+                case 67:
+                case 68:
+                case 69:
+                    return keys2[i - 65] | 0x8000;
+                default:
+                    return i;
+            }
+        }
+        final int[] keys3 = {12, 13, 15, 14, 0, 9, 0, 8};
+        final int[] keys4 = {8, 6, 7, 9, 10, 11};
+        final int[] keys5 = {20, 21, 22, 23, 24, 0, 25, 26, 27, 28, 29, 0, 30, 31};
+        switch (i) {
+            case 65:
+            case 66:
+            case 67:
+            case 68:
+            case 69:
+            case 70:
+            case 71:
+            case 72:
+                return keys3[i - 65] | 0x8000;
+            case 126:
+                i = bits.str2num(s);
+                switch (i) {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                        return keys4[i - 1] | 0x8000;
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 14:
+                    case 15:
+                    case 16:
+                    case 17:
+                    case 18:
+                    case 19:
+                    case 20:
+                    case 21:
+                    case 22:
+                    case 23:
+                    case 24:
+                        return keys5[i - 11] | 0x8000;
+                    default:
+                        return 126;
+                }
+            default:
+                return i;
+        }
+    }
+
+    /**
      * send clear screen
      *
      * @param pip pipeline to use
@@ -620,7 +829,7 @@ public class userScreen {
             putStr(sx, sy, bg, fg, false, bits.padEnd(ln.substring(beg, ln.length()), siz, " ").substring(0, siz));
             putCur(sx + cur - beg, sy);
             refresh();
-            i = userVM.getKey(pipe);
+            i = getKey(pipe);
             switch (i) {
                 case -1: // end
                     return ln;
@@ -716,7 +925,7 @@ public class userScreen {
             }
             putCur(bx, by + 1);
             refresh();
-            i = userVM.getKey(pipe);
+            i = getKey(pipe);
             switch (i) {
                 case -1: // end
                     return;

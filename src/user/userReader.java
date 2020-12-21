@@ -750,7 +750,7 @@ public class userReader implements Comparator<String> {
     }
 
     private void cmdSpecChr() {
-        int i = userVM.getKey(pipe);
+        int i = userScreen.getKey(pipe);
         if ((i & 0x8000) != 0) { // special
             return;
         }
@@ -843,7 +843,7 @@ public class userReader implements Comparator<String> {
             int oldP = pos;
             for (;;) {
                 len = curr.length();
-                int ch = userVM.getKey(pipe);
+                int ch = userScreen.getKey(pipe);
                 if (ch == deactivate) {
                     return null;
                 }

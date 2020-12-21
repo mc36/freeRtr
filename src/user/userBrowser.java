@@ -84,7 +84,7 @@ public class userBrowser {
     }
 
     private boolean doKey() {
-        int i = userVM.getKey(console.pipe);
+        int i = userScreen.getKey(console.pipe);
         switch (i) {
             case -1: // end
                 return true;
@@ -330,7 +330,7 @@ public class userBrowser {
             return;
         }
         console.pipe.linePut(a);
-        userVM.getKey(console.pipe);
+        userScreen.getKey(console.pipe);
         doClear();
     }
 
@@ -543,7 +543,7 @@ public class userBrowser {
         doChg2txt();
         if (userFlash.doReceive(console.pipe, uniResLoc.parseOne(s), new File(b))) {
             console.pipe.linePut("error downloading");
-            userVM.getKey(console.pipe);
+            userScreen.getKey(console.pipe);
         }
         doClear();
     }

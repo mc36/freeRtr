@@ -95,7 +95,7 @@ public class userGame {
         console.putCur(0, 0);
         console.refresh();
         for (;;) {
-            int i = userVM.getKey(console.pipe);
+            int i = userScreen.getKey(console.pipe);
             console.putStr(console.sizX / 2, console.sizY / 2, userScreen.colBlack, userScreen.colWhite, false, bits.toHexW(i) + " " + (i & 0xff) + "       ");
             console.putCur(0, 0);
             console.refresh();
@@ -504,7 +504,7 @@ class userGameMinesweep {
     public void doGame() {
         for (;;) {
             doPrint();
-            int i = userVM.getKey(scr.pipe);
+            int i = userScreen.getKey(scr.pipe);
             switch (i) {
                 case -1: // end
                     return;
@@ -690,7 +690,7 @@ class userGameGomoku {
     public void doGame() {
         for (;;) {
             doPrint();
-            int i = userVM.getKey(scr.pipe);
+            int i = userScreen.getKey(scr.pipe);
             switch (i) {
                 case -1: // end
                     return;
@@ -956,7 +956,7 @@ class userGameTetris implements Runnable {
     public void doGame() {
         for (;;) {
             doPrint();
-            int i = userVM.getKey(scr.pipe);
+            int i = userScreen.getKey(scr.pipe);
             if (!need2run) {
                 return;
             }
