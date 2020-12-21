@@ -79,9 +79,9 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     public boolean noState;
 
     /**
-     * inherit parameters
+     * template parameters
      */
-    public cfgCheck inherit;
+    public cfgCheck template;
 
     /**
      * description
@@ -154,7 +154,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     public final static String[] defaultL = {
         "check .*! no command",
         "check .*! no description",
-        "check .*! no inherit",
+        "check .*! no template",
         "check .*! no error-text",
         "check .*! no alternate",
         "check .*! no error-states",
@@ -202,7 +202,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         l.add("1 2,.    train                    train command to current result");
         l.add("2 2,.      <str>                  text");
         l.add("1 .      alternate                alternate reported state on diff change");
-        l.add("1 2      inherit                  inherit parameters");
+        l.add("1 2      template                 template arameters");
         l.add("2 .        <str>                  name of check");
         l.add("1 2      command                  specify command to execute");
         l.add("2 2,.      <str>                  command");
@@ -231,7 +231,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("check " + name);
         cmds.cfgLine(l, command == null, cmds.tabulator, "command", "" + command);
-        cmds.cfgLine(l, inherit == null, cmds.tabulator, "inherit", "" + inherit);
+        cmds.cfgLine(l, template == null, cmds.tabulator, "template", "" + template);
         for (int i = 0; i < ress.size(); i++) {
             l.add(cmds.tabulator + "resolve " + ress.get(i));
         }
@@ -386,14 +386,14 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
             }
             return;
         }
-        if (s.equals("inherit")) {
-            inherit = cfgAll.checkFind(cmd.word(), false);
-            if (inherit == null) {
+        if (s.equals("template")) {
+            template = cfgAll.checkFind(cmd.word(), false);
+            if (template == null) {
                 cmd.error("no such check");
                 return;
             }
             if (negated) {
-                inherit = null;
+                template = null;
             }
             return;
         }
@@ -512,10 +512,10 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
             }
             l = l.replaceAll(r.src, r.trg);
         }
-        if (inherit == null) {
+        if (template == null) {
             return l;
         }
-        return inherit.makeFancy(l);
+        return template.makeFancy(l);
     }
 
     private void doCheckMiss(List<String> lst, List<String> res) {
@@ -562,31 +562,31 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     private String getHeadLine(List<String> lst) {
         String s = "";
         boolean b = noState;
-        if (inherit != null) {
-            b |= inherit.noState;
+        if (template != null) {
+            b |= template.noState;
         }
         if (!b) {
             s += "ERROR ";
         }
         s += lst.size() + " ";
         String a = err;
-        if ((a == null) && (inherit != null)) {
-            a = inherit.err;
+        if ((a == null) && (template != null)) {
+            a = template.err;
         }
         if (a == null) {
             a = "lines(s) changed";
         }
         s += a + " ";
         b = sendMyId;
-        if (inherit != null) {
-            b |= inherit.sendMyId;
+        if (template != null) {
+            b |= template.sendMyId;
         }
         if (b) {
             s += " - " + cfgAll.hostName + "#";
         }
         b = sendCmds;
-        if (inherit != null) {
-            b |= inherit.sendCmds;
+        if (template != null) {
+            b |= template.sendCmds;
         }
         if (b) {
             s += command + " ";
@@ -603,9 +603,9 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         List<String> lst = getResult();
         List<String> res = new ArrayList<String>();
         delIgn(lst);
-        if (inherit != null) {
-            inherit.delIgn(lst);
-            inherit.doCheckMiss(lst, res);
+        if (template != null) {
+            template.delIgn(lst);
+            template.doCheckMiss(lst, res);
         }
         doCheckMiss(lst, res);
         doCheckExtra(lst, res);
@@ -629,9 +629,9 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
             pck.str = "OK";
             if (dsc != null) {
                 pck.str += " " + dsc;
-            } else if (inherit != null) {
-                if (inherit.dsc != null) {
-                    pck.str += " " + inherit.dsc;
+            } else if (template != null) {
+                if (template.dsc != null) {
+                    pck.str += " " + template.dsc;
                 }
             }
             return;
@@ -644,10 +644,10 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
             pck.str += new String(pck.sep) + lst.get(i).trim();
         }
         if (!alternate) {
-            if (inherit == null) {
+            if (template == null) {
                 return;
             }
-            if (!inherit.alternate) {
+            if (!template.alternate) {
                 return;
             }
         }
@@ -675,10 +675,10 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         List<String> lst = getResult();
         delIgn(lst);
         delReg(lst);
-        if (inherit != null) {
-            inherit.delIgn(lst);
-            inherit.delReg(lst);
-            inherit.doCheckMiss(lst, new ArrayList<String>());
+        if (template != null) {
+            template.delIgn(lst);
+            template.delReg(lst);
+            template.doCheckMiss(lst, new ArrayList<String>());
         }
         for (int i = reqT.size() - 1; i >= 0; i--) {
             if (reqT.get(i).indexOf(ned) >= 0) {
@@ -701,10 +701,10 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         List<String> lst = getResult();
         delIgn(lst);
         delReg(lst);
-        if (inherit != null) {
-            inherit.delIgn(lst);
-            inherit.delReg(lst);
-            inherit.doCheckMiss(lst, new ArrayList<String>());
+        if (template != null) {
+            template.delIgn(lst);
+            template.delReg(lst);
+            template.doCheckMiss(lst, new ArrayList<String>());
         }
         reqT.clear();
         for (int i = 0; i < lst.size(); i++) {
@@ -720,7 +720,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     public List<String> getShow() {
         List<String> res = new ArrayList<String>();
         res.add("name=" + name);
-        res.add("inherit=" + inherit);
+        res.add("template=" + template);
         res.add("description=" + dsc);
         res.add("command=" + command);
         res.add("error=" + err);
