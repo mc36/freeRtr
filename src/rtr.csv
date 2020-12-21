@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v20.12.21-rel, done by cs@nop.
--;-;-;2020-12-21 19:16:22, took 00:05:24, with 100 workers, on 2282 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2020-12-21 19:59:32, took 00:05:04, with 100 workers, on 2284 cases, 0 failed, 1 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -1042,6 +1042,8 @@ http://sources.nop.hu/cfg/mpls-te15.tst;mpls-te15.tst;success;te with pcep
 http://sources.nop.hu/cfg/mpls-te16.tst;mpls-te16.tst;success;te over point2point ethernet
 http://sources.nop.hu/cfg/mpls-te17.tst;mpls-te17.tst;success;bidir te without global id
 http://sources.nop.hu/cfg/mpls-te18.tst;mpls-te18.tst;success;bidir te with global id
+http://sources.nop.hu/cfg/mpls-te19.tst;mpls-te19.tst;success;te explicit path
+http://sources.nop.hu/cfg/mpls-te20.tst;mpls-te20.tst;success;bgp over te
 http://sources.nop.hu/cfg/mpls-xconn01.tst;mpls-xconn01.tst;success;cross connect with pwe over mpls
 http://sources.nop.hu/cfg/mpls-xconn02.tst;mpls-xconn02.tst;success;cross connect with packet over udp
 http://sources.nop.hu/cfg/mpls-xconn03.tst;mpls-xconn03.tst;success;cross connect with vxlan

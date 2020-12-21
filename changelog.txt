@@ -9617,3 +9617,6 @@ no qc pass: interop2: ethernet encapsulation
 qc pass: interop2: lacp
 ---------------------------------- 2020-12-19 15:13:44
 no todo: pipeline properties, terminal autoresize
+---------------------------------- 2020-12-21 19:54:27
+qc pass: te explicit path
+qc pass: bgp over te
