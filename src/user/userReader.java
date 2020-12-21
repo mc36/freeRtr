@@ -153,8 +153,8 @@ public class userReader implements Comparator<String> {
             pipe.settingsAdd(pipeSetting.width, 79);
             pipe.settingsAdd(pipeSetting.height, 24);
             pipe.settingsAdd(pipeSetting.tabMod, userFormat.tableMode.normal);
-            pipe.settingsAdd(pipeSetting.deactive, 256);
-            pipe.settingsAdd(pipeSetting.escape, 256);
+            pipe.settingsAdd(pipeSetting.deactive, 65536);
+            pipe.settingsAdd(pipeSetting.escape, 65536);
             return;
         }
         pipe.settingsAdd(pipeSetting.spacTab, parent.execSpace);
@@ -829,7 +829,7 @@ public class userReader implements Comparator<String> {
      * @return string readed, null if error happened
      */
     public String readLine(String exit) {
-        final int deactivate = pipe.settingsGet(pipeSetting.deactive, 256);
+        final int deactivate = pipe.settingsGet(pipeSetting.deactive, 65536);
         final boolean spacetab = pipe.settingsGet(pipeSetting.spacTab, false);
         setFilter(null);
         if (debugger.userReaderEvnt) {

@@ -152,7 +152,7 @@ public class userLine {
     /**
      * deactivation character
      */
-    public int promptDeActive = 256;
+    public int promptDeActive = 65536;
 
     /**
      * prompt delay

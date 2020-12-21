@@ -66,7 +66,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         ".*! login pass password:",
         ".*! login fail authentication failed",
         ".*! login activate 13",
-        ".*! login deactivate 256",
+        ".*! login deactivate 65536",
         ".*! login escape 3",
         ".*! no login logging"
     };
