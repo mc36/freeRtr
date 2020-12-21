@@ -303,7 +303,7 @@ public class rtrPimIface implements ipPrt {
             logger.debug("tx " + pckPim);
         }
         pckPim.createHeader(pckBin, iface, null);
-        fwdCore.protoPack(iface, pckBin);
+        fwdCore.protoPack(iface, null, pckBin);
     }
 
     /**
@@ -345,7 +345,7 @@ public class rtrPimIface implements ipPrt {
             pckPim.createHeader(pckBin, iface, ups);
         }
         if (bierTunnel < 1) {
-            fwdCore.protoPack(iface, pckBin);
+            fwdCore.protoPack(iface, null, pckBin);
             return;
         }
         fwdCore.createIPheader(pckBin);

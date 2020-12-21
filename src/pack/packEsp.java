@@ -360,7 +360,7 @@ public class packEsp implements ipPrt {
             pck.IPtos = sendingTOS;
         }
         pck.IPprt = protoNum;
-        forwarder.protoPack(fwdIface, pck);
+        forwarder.protoPack(fwdIface, null, pck);
     }
 
     /**

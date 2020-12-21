@@ -267,7 +267,7 @@ public class prtIcmp implements ipPrt, ifcDn {
         if (sendingTOS >= 0) {
             pck.IPtos = sendingTOS;
         }
-        lower.protoPack(sendingIfc, pck);
+        lower.protoPack(sendingIfc, null, pck);
     }
 
     /**

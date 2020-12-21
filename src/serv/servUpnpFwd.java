@@ -220,7 +220,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         pck.UDPsrc = pckF.port;
         pck.UDPtrg = srvPort;
         prtUdp.createUDPheader(pck);
-        fwd.protoPack(ifc, pck);
+        fwd.protoPack(ifc, null, pck);
     }
 
 }

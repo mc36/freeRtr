@@ -347,7 +347,7 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
                 pck.msbPutD(4, pck.msbGetD(4)); // id
                 pck.getSkip(size);
                 createICMPheader(pck);
-                fwdCore.protoPack(rxIfc, pck);
+                fwdCore.protoPack(rxIfc, null, pck);
                 break;
             case icmpEchoRep:
                 int id = pck.msbGetD(4);

@@ -195,7 +195,7 @@ public class clntErspan implements Runnable, ipPrt, ifcDn {
         pckBin.IPprt = packErspan.prot;
         pckBin.IPsrc.setAddr(fwdIfc.addr);
         pckBin.IPtrg.setAddr(fwdTrg);
-        fwdCor.protoPack(fwdIfc, pckBin);
+        fwdCor.protoPack(fwdIfc, null, pckBin);
     }
 
     /**

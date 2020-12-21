@@ -273,7 +273,7 @@ public class prtSwipe implements ipPrt, ifcDn {
         pck.IPprt = prot;
         pck.IPsrc.setAddr(sendingIfc.addr);
         pck.IPtrg.setAddr(remote);
-        lower.protoPack(sendingIfc, pck);
+        lower.protoPack(sendingIfc, null, pck);
     }
 
     /**

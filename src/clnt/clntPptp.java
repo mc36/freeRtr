@@ -214,7 +214,7 @@ public class clntPptp implements Runnable, ipPrt, ifcDn {
         pckBin.IPprt = packPptp.prot;
         pckBin.IPsrc.setAddr(fwdIfc.addr);
         pckBin.IPtrg.setAddr(fwdTrg);
-        fwdCor.protoPack(fwdIfc, pckBin);
+        fwdCor.protoPack(fwdIfc, null, pckBin);
     }
 
     /**

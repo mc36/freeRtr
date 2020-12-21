@@ -163,7 +163,7 @@ public class clntTrace implements prtServP, ipPrt {
         pck.IPsrc.setAddr(ifc2.addr);
         pck.IPtrg.setAddr(trg);
         if (proto > 0) {
-            fwd.protoPack(ifc2, pck);
+            fwd.protoPack(ifc2, null, pck);
         } else {
             con.send2net(pck);
         }

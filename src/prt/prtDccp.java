@@ -320,7 +320,7 @@ public class prtDccp extends prtGen {
         pck.IPttl = -1;
         pck.IPtos = -1;
         createDCCPheader(pck);
-        fwdCore.protoPack(ifc, pck);
+        fwdCore.protoPack(ifc, null, pck);
     }
 
     protected void connectionClose(prtGenConn clnt) {
@@ -435,7 +435,7 @@ public class prtDccp extends prtGen {
         pr.setSeq(pck);
         pck.TCPflg = typDatAck << 1;
         createDCCPheader(pck);
-        fwdCore.protoPack(clnt.iface, pck);
+        fwdCore.protoPack(clnt.iface, null, pck);
         return false;
     }
 
@@ -500,7 +500,7 @@ public class prtDccp extends prtGen {
         pck.IPtrg.setAddr(clnt.peerAddr);
         pck.IPsrc.setAddr(clnt.iface.addr);
         createDCCPheader(pck);
-        fwdCore.protoPack(clnt.iface, pck);
+        fwdCore.protoPack(clnt.iface, null, pck);
     }
 
     /**

@@ -847,7 +847,7 @@ public class userPacket {
                 if (i < 0) {
                     break;
                 }
-                fwd.protoPack(ifc, pck.copyBytes(true, true));
+                fwd.protoPack(ifc, null, pck.copyBytes(true, true));
             }
             return;
         }

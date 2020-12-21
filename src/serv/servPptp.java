@@ -481,7 +481,7 @@ class servPptpConn implements Runnable, Comparator<servPptpConn> {
         pck.IPprt = packPptp.prot;
         pck.IPsrc.setAddr(iface.addr);
         pck.IPtrg.setAddr(peer);
-        fwdCor.protoPack(iface, pck);
+        fwdCor.protoPack(iface, null, pck);
     }
 
     public boolean sendKeep() {

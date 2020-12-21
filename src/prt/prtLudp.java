@@ -252,7 +252,7 @@ public class prtLudp extends prtGen {
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
         createLUDPheader(pck);
-        fwdCore.protoPack(clnt.iface, pck);
+        fwdCore.protoPack(clnt.iface, null, pck);
         return false;
     }
 

@@ -147,13 +147,12 @@ public class rtrRsvpIface implements ipPrt {
                     }
                     ntry.trgHop.setAddr(hp.adr);
                     return 1;
-                case remote:
-                case defpref:
-                case automesh:
-                    ntry.trgHop.setAddr(hp.adr);
-                    return 1;
                 default:
-                    ntry.trgHop.setAddr(rt.best.nextHop);
+                    if (rt.best.nextHop != null) {
+                        ntry.trgHop.setAddr(rt.best.nextHop);
+                    } else {
+                        ntry.trgHop.setAddr(hp.adr);
+                    }
                     return 1;
             }
         }
@@ -256,7 +255,7 @@ public class rtrRsvpIface implements ipPrt {
                         pckRvp.labelVal = ntry.locLab.label;
                         pckRvp.createDatResReq(pckBin);
                         pckRvp.createHeader(pckBin);
-                        fwdCore.protoPack(ntry.trgIfc, pckBin);
+                        fwdCore.protoPack(ntry.srcIfc, ntry.srcHop, pckBin);
                         if (debugger.rtrRsvpTraf) {
                             logger.debug("tx " + pckRvp);
                         }
@@ -264,17 +263,18 @@ public class rtrRsvpIface implements ipPrt {
                     default:
                         return;
                 }
+                ntry.midAdrs = pckRvp.expRout;
                 pckRvp.updateRecRout(ntry.srcIfc.addr, true);
                 pckRvp.updateRecRout(ntry.trgIfc.addr, true);
                 pckRvp.ttl--;
                 pckRvp.adsHops++;
                 pckBin.clear();
-                ipFwdTab.fillRsvpFrst(fwdCore, pckRvp);
+                ipFwdTab.fillRsvpFrst(fwdCore, ntry, pckRvp);
                 pckRvp.createHolder(pckBin);
                 pckRvp.hopAdr = ntry.trgIfc.addr.copyBytes();
                 pckRvp.createDatPatReq(pckBin);
                 pckRvp.createHeader(pckBin);
-                fwdCore.protoPack(ntry.trgIfc, pckBin);
+                fwdCore.protoPack(ntry.trgIfc, ntry.trgHop, pckBin);
                 if (debugger.rtrRsvpTraf) {
                     logger.debug("tx " + pckRvp);
                 }
@@ -299,7 +299,6 @@ public class rtrRsvpIface implements ipPrt {
                 ntry.created = bits.getTime();
                 ntry.timeout = pckRvp.timeVal * 4;
                 if (ntry.srcLoc > 0) {
-                    ntry.trgHop = pckRvp.hopAdr.copyBytes();
                     return;
                 }
                 if (allocLabel(ntry)) {
@@ -323,7 +322,7 @@ public class rtrRsvpIface implements ipPrt {
                 pckRvp.labelVal = ntry.locLab.label;
                 pckRvp.createDatResReq(pckBin);
                 pckRvp.createHeader(pckBin);
-                fwdCore.protoPack(ntry.trgIfc, pckBin);
+                fwdCore.protoPack(ntry.srcIfc, ntry.srcHop, pckBin);
                 if (debugger.rtrRsvpTraf) {
                     logger.debug("tx " + pckRvp);
                 }
@@ -355,7 +354,7 @@ public class rtrRsvpIface implements ipPrt {
                 pckRvp.hopAdr = ntry.trgIfc.addr.copyBytes();
                 pckRvp.createDatPatTer(pckBin);
                 pckRvp.createHeader(pckBin);
-                fwdCore.protoPack(ntry.trgIfc, pckBin);
+                fwdCore.protoPack(ntry.trgIfc, ntry.trgHop, pckBin);
                 if (debugger.rtrRsvpTraf) {
                     logger.debug("tx " + pckRvp);
                 }
@@ -389,7 +388,7 @@ public class rtrRsvpIface implements ipPrt {
                 pckRvp.hopAdr = ntry.srcIfc.addr.copyBytes();
                 pckRvp.createDatResTer(pckBin);
                 pckRvp.createHeader(pckBin);
-                fwdCore.protoPack(ntry.trgIfc, pckBin);
+                fwdCore.protoPack(ntry.srcIfc, ntry.srcHop, pckBin);
                 if (debugger.rtrRsvpTraf) {
                     logger.debug("tx " + pckRvp);
                 }
@@ -421,7 +420,7 @@ public class rtrRsvpIface implements ipPrt {
                 pckRvp.hopAdr = ntry.srcIfc.addr.copyBytes();
                 pckRvp.createDatPatErr(pckBin);
                 pckRvp.createHeader(pckBin);
-                fwdCore.protoPack(ntry.trgIfc, pckBin);
+                fwdCore.protoPack(ntry.srcIfc, ntry.srcHop, pckBin);
                 if (debugger.rtrRsvpTraf) {
                     logger.debug("tx " + pckRvp);
                 }
@@ -452,7 +451,7 @@ public class rtrRsvpIface implements ipPrt {
                 pckRvp.hopAdr = ntry.trgIfc.addr.copyBytes();
                 pckRvp.createDatResErr(pckBin);
                 pckRvp.createHeader(pckBin);
-                fwdCore.protoPack(ntry.trgIfc, pckBin);
+                fwdCore.protoPack(ntry.trgIfc, ntry.trgHop, pckBin);
                 if (debugger.rtrRsvpTraf) {
                     logger.debug("tx " + pckRvp);
                 }

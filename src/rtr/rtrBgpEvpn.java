@@ -644,7 +644,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         pck.IPsrc.setAddr(srv);
         pck.IPprt = clntSrEth.prot;
         ipMpls.beginMPLSfields(pck, false);
-        parent.vrfCore.fwd6.protoPack(iface.getFwdIfc(srv), pck);
+        parent.vrfCore.fwd6.protoPack(iface.fwdIf6, null, pck);
     }
 
     /**

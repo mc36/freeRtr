@@ -259,7 +259,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         pck.IPsrc.setAddr(iface.iface.addr);
         pck.IPtrg.fromIPv4addr(peer);
         iface.mkPackHead(pck, area, typ);
-        lower.fwdCore.protoPack(iface.iface, pck);
+        lower.fwdCore.protoPack(iface.iface, null, pck);
     }
 
     /**

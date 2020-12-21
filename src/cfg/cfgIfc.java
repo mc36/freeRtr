@@ -3992,6 +3992,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2p.fwdCor = tunVrf.getFwd(tunTrg);
                 tunTeP2p.fwdIfc = tunSrc.getFwdIfc(tunTrg);
                 tunTeP2p.target = tunTrg.copyBytes();
+                tunTeP2p.setMiddles(tunFQDN);
                 tunTeP2p.descr = cfgAll.hostName + ":" + name;
                 tunTeP2p.expr = tunTOS;
                 tunTeP2p.ttl = tunTTL;

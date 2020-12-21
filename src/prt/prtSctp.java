@@ -247,7 +247,7 @@ public class prtSctp extends prtGen {
         pck.IPdf = false;
         pck.IPttl = -1;
         pck.IPtos = -1;
-        fwdCore.protoPack(ifc, pck);
+        fwdCore.protoPack(ifc, null, pck);
     }
 
     /**
@@ -551,7 +551,7 @@ public class prtSctp extends prtGen {
         pck.IPdf = false;
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
-        fwdCore.protoPack(clnt.iface, pck);
+        fwdCore.protoPack(clnt.iface, null, pck);
     }
 
     /**

@@ -487,7 +487,7 @@ public class prtTcp extends prtGen {
             pck.TCPack++;
         }
         createTCPheader(pck, null);
-        fwdCore.protoPack(ifc, pck);
+        fwdCore.protoPack(ifc, null, pck);
     }
 
     private int sendMyPacket(prtGenConn clnt, int flg, int datSiz) {
@@ -534,7 +534,7 @@ public class prtTcp extends prtGen {
             pr.netOut += datSiz;
         }
         createTCPheader(pck, clnt.passwd);
-        fwdCore.protoPack(clnt.iface, pck);
+        fwdCore.protoPack(clnt.iface, null, pck);
         return datSiz;
     }
 

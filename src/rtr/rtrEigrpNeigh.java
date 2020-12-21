@@ -209,7 +209,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         pck.IPprt = rtrEigrp.protoNum;
         pck.IPsrc.setAddr(iface.iface.addr);
         pck.IPtrg.setAddr(peer);
-        lower.fwdCore.protoPack(iface.iface, pck);
+        lower.fwdCore.protoPack(iface.iface, null, pck);
     }
 
     /**

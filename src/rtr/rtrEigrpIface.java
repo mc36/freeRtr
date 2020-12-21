@@ -633,7 +633,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         } else {
             pck.IPtrg.fromString("ff02::a");
         }
-        lower.fwdCore.protoPack(iface, pck);
+        lower.fwdCore.protoPack(iface, null, pck);
     }
 
     /**

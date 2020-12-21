@@ -215,4 +215,18 @@ public class tabHop {
         return s;
     }
 
+    /**
+     * copy data
+     *
+     * @return copy
+     */
+    public tabHop copyBytes() {
+        tabHop res = new tabHop();
+        res.adr = adr.copyBytes();
+        res.strict = strict;
+        res.index = index;
+        res.label = label;
+        return res;
+    }
+
 }

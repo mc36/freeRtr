@@ -262,7 +262,7 @@ public class prtPipe implements ipPrt, ifcDn {
         pck.IPprt = proto;
         pck.IPtrg.setAddr(remote);
         pck.IPsrc.setAddr(sendingIfc.addr);
-        lower.protoPack(sendingIfc, pck);
+        lower.protoPack(sendingIfc, null, pck);
     }
 
     public String toString() {

@@ -1152,7 +1152,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (doPbrFwd(lower.pbrCfg, 1, lower, pck)) {
             return;
         }
-        forwardPacket(1, lower, pck);
+        forwardPacket(1, lower, null, pck);
     }
 
     /**
@@ -1321,9 +1321,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * protocol wants to send one packet
      *
      * @param iface interface to use for source address
+     * @param hop forced nexthop
      * @param pck packet to send
      */
-    public void protoPack(ipFwdIface iface, packHolder pck) {
+    public void protoPack(ipFwdIface iface, addrIP hop, packHolder pck) {
         cntrL.tx(pck);
         if (iface == null) {
             cntrL.drop(pck, counter.reasons.noIface);
@@ -1348,7 +1349,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ipCore.testIPaddress(pck, pck.IPtrg);
         ipMpls.beginMPLSfields(pck, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
-        forwardPacket(4, iface, pck);
+        forwardPacket(4, iface, hop, pck);
     }
 
     /**
@@ -1454,7 +1455,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         pck.INTupper = -1;
         ipMpls.beginMPLSfields(pck, (mplsPropTtl | lower.mplsPropTtlAlways) & lower.mplsPropTtlAllow);
-        forwardPacket(4, lower, pck);
+        forwardPacket(4, lower, null, pck);
     }
 
     private void doMpls(ipFwdIface ifc, addrIP hop, List<Integer> labs, packHolder pck) {
@@ -1602,7 +1603,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             cntrT.drop(pck, counter.reasons.noIface);
             return;
         }
-        forwardPacket(3, ifc, pck);
+        forwardPacket(3, ifc, null, pck);
     }
 
     /**
@@ -1678,7 +1679,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (pbr.setHop == null) {
             pck.INTiface = -2;
-            pbr.setVrf.forwardPacket(from, rxIfc, pck);
+            pbr.setVrf.forwardPacket(from, rxIfc, null, pck);
             return true;
         }
         tabRouteEntry<addrIP> ntry = pbr.setVrf.actualU.route(pbr.setHop);
@@ -1700,9 +1701,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param fromIfc from interace
      * @param fromMpls from mpls
      * @param rxIfc receiving interface
+     * @param hop target hop
      * @param pck packet
      */
-    private void forwardPacket(int from, ipFwdIface rxIfc, packHolder pck) {
+    private void forwardPacket(int from, ipFwdIface rxIfc, addrIP hop, packHolder pck) {
         cntrT.rx(pck);
         if (rxIfc == null) {
             cntrT.drop(pck, counter.reasons.noIface);
@@ -1756,11 +1758,15 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 }
             }
         }
+        boolean alerted = (pck.IPalrt != -1);
+        pck.IPalrt = -1;
         if (doPbrFwd(pbrCfg, from, rxIfc, pck)) {
             return;
         }
-        boolean alerted = (pck.IPalrt != -1);
-        pck.IPalrt = -1;
+        if (hop != null) {
+            ifaceProto(rxIfc, pck, hop);
+            return;
+        }
         if (pck.IPlnk) {
             if ((from & 1) != 0) {
                 if (rxIfc.lower.checkMyAddress(pck.IPtrg)) {
@@ -1852,7 +1858,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 pck.IPprt = ipCore.getProtocol();
                 prf.best.rouTab.createIPheader(pck);
                 ipMpls.beginMPLSfields(pck, false);
-                prf.best.rouTab.forwardPacket(from, rxIfc, pck);
+                prf.best.rouTab.forwardPacket(from, rxIfc, null, pck);
                 return;
             }
             if (prf.best.labelRem == null) {
@@ -1900,7 +1906,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             pck.INTupper = -3;
             ipCore.testIPaddress(pck, pck.IPtrg);
             ipMpls.beginMPLSfields(pck, (mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow);
-            forwardPacket(from, rxIfc, pck);
+            forwardPacket(from, rxIfc, null, pck);
             return;
         }
         if (txIfc.lower.checkMyAlias(pck.IPtrg) != null) {
@@ -1965,7 +1971,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             ipCore.createIPheader(pck);
             pck.INTupper = -1;
             ipMpls.beginMPLSfields(pck, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
-            forwardPacket(4, iface, pck);
+            forwardPacket(4, iface, null, pck);
             return;
         }
         if (debugger.ipFwdTraf) {
@@ -2054,7 +2060,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         ipMpls.beginMPLSfields(pck, (mplsPropTtl | ifc.mplsPropTtlAlways) & ifc.mplsPropTtlAllow);
-        forwardPacket(4, ifc, pck);
+        forwardPacket(4, ifc, null, pck);
         return ntry;
     }
 

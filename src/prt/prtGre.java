@@ -346,7 +346,7 @@ public class prtGre implements ipPrt, ifcDn {
         pck.IPprt = protoNum;
         pck.IPsrc.setAddr(sendingIfc.addr);
         pck.IPtrg.setAddr(remote);
-        lower.protoPack(sendingIfc, pck);
+        lower.protoPack(sendingIfc, null, pck);
     }
 
     public String toString() {

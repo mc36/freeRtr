@@ -249,7 +249,7 @@ public abstract class ipMhost implements ipPrt {
         }
         packHolder pck = new packHolder(true, true);
         createQuery(rxIfc, tim, pck, grp, src);
-        lower.protoPack(rxIfc, pck);
+        lower.protoPack(rxIfc, null, pck);
     }
 
     /**
@@ -266,7 +266,7 @@ public abstract class ipMhost implements ipPrt {
         }
         packHolder pck = new packHolder(true, true);
         createReport(rxIfc, pck, grp, src, need);
-        lower.protoPack(rxIfc, pck);
+        lower.protoPack(rxIfc, null, pck);
     }
 
 }

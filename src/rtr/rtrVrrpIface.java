@@ -382,7 +382,7 @@ public class rtrVrrpIface implements ipPrt {
         packHolder pckB = new packHolder(true, true);
         pckH.createPacket(pckB, fwdIfc);
         pckB.merge2beg();
-        fwdCore.protoPack(fwdIfc, pckB);
+        fwdCore.protoPack(fwdIfc, null, pckB);
         if (debugger.rtrVrrpTraf) {
             logger.debug("tx " + pckH);
         }

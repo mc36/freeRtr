@@ -11,6 +11,7 @@ import ip.ipFwdIface;
 import ip.ipFwdTab;
 import ip.ipFwdTrfng;
 import ip.ipMpls;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import pack.packHolder;
@@ -19,6 +20,7 @@ import tab.tabLabel;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import util.bits;
+import util.cmds;
 import util.counter;
 import util.debugger;
 import util.logger;
@@ -50,6 +52,11 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
      * source interface
      */
     public ipFwdIface fwdIfc = null;
+
+    /**
+     * middle targets
+     */
+    public List<addrIP> middles;
 
     /**
      * pcep config to use
@@ -203,6 +210,30 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
     }
 
     /**
+     * set middle targets
+     *
+     * @param s targets
+     */
+    public void setMiddles(String s) {
+        if (s == null) {
+            return;
+        }
+        middles = new ArrayList<addrIP>();
+        cmds c = new cmds("adrs", s);
+        for (;;) {
+            s = c.word();
+            if (s.length() < 1) {
+                break;
+            }
+            addrIP a = new addrIP();
+            if (a.fromString(s)) {
+                continue;
+            }
+            middles.add(a);
+        }
+    }
+
+    /**
      * get traffeng handler
      *
      * @return handler
@@ -211,7 +242,7 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         if (trfEng == null) {
             return null;
         }
-        if (trfEng.trgHop == null) {
+        if (trfEng.trgLab < 1) {
             return null;
         }
         if (trfEng.srcLoc != 1) {
@@ -229,7 +260,7 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         if (trfEng == null) {
             return;
         }
-        if (trfEng.trgHop == null) {
+        if (trfEng.trgLab < 1) {
             return;
         }
         if (trfEng.srcLoc != 1) {
@@ -258,7 +289,7 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         if (trfEng == null) {
             return null;
         }
-        if (trfEng.trgHop == null) {
+        if (trfEng.trgLab < 1) {
             return null;
         }
         if (trfEng.srcLoc != 1) {
@@ -338,6 +369,14 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         trfEng.srcIfc = ifc;
         trfEng.srcAdr = ifc.addr.copyBytes();
         trfEng.trgAdr = target.copyBytes();
+        if (middles != null) {
+            for (int i = 0; i < middles.size(); i++) {
+                tabHop hop = new tabHop();
+                hop.adr = middles.get(i).copyBytes();
+                hop.strict = false;
+                trfEng.midAdrs.add(hop);
+            }
+        }
         trfEng.trgId = bits.randomD();
         trfEng.bwdt = ((float) bndwdt) / 8;
         trfEng.descr = descr;
@@ -357,7 +396,7 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
             if (trfEng == null) {
                 return;
             }
-            if (trfEng.trgHop != null) {
+            if (trfEng.trgLab > 1) {
                 break;
             }
             if (cnt > 5) {

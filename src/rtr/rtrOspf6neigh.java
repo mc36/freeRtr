@@ -265,7 +265,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
         pck.IPsrc.setAddr(iface.iface.addr);
         pck.IPtrg.fromIPv6addr(peer);
         iface.mkPackHead(pck, area, typ);
-        lower.fwdCore.protoPack(iface.iface, pck);
+        lower.fwdCore.protoPack(iface.iface, null, pck);
     }
 
     /**

@@ -207,7 +207,7 @@ public class clntEtherIp implements Runnable, ipPrt, ifcDn {
         pck.IPprt = prot;
         pck.IPsrc.setAddr(fwdIfc.addr);
         pck.IPtrg.setAddr(fwdTrg);
-        fwdCor.protoPack(fwdIfc, pck);
+        fwdCor.protoPack(fwdIfc, null, pck);
     }
 
     /**

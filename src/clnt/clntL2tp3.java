@@ -489,7 +489,7 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
         pck.IPprt = packL2tp3.prot;
         pck.IPsrc.setAddr(fwdIfc.addr);
         pck.IPtrg.setAddr(fwdTrg);
-        fwdCor.protoPack(fwdIfc, pck);
+        fwdCor.protoPack(fwdIfc, null, pck);
     }
 
     /**

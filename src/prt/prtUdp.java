@@ -273,7 +273,7 @@ public class prtUdp extends prtGen {
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
         createUDPheader(pck);
-        fwdCore.protoPack(clnt.iface, pck);
+        fwdCore.protoPack(clnt.iface, null, pck);
         return false;
     }
 

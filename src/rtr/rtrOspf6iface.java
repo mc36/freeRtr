@@ -956,7 +956,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             pck.IPtrg.fromString("ff02::5");
         }
         mkPackHead(pck, area, typ);
-        lower.fwdCore.protoPack(iface, pck);
+        lower.fwdCore.protoPack(iface, null, pck);
     }
 
     /**

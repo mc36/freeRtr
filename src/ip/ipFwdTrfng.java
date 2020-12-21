@@ -4,6 +4,7 @@ import addr.addrIP;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import tab.tabHop;
 import tab.tabLabel;
 import tab.tabLabelNtry;
 import util.bits;
@@ -69,6 +70,11 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
      * target id
      */
     public long trgId;
+
+    /**
+     * middle targets
+     */
+    public List<tabHop> midAdrs = new ArrayList<tabHop>();
 
     /**
      * target way next hop
@@ -191,6 +197,11 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
         l.add("subgroup id = " + subId);
         l.add("target address = " + trgAdr);
         l.add("target id = " + trgId);
+        String a = "";
+        for (int i = 0; i < midAdrs.size(); i++) {
+            a += " " + midAdrs.get(i);
+        }
+        l.add("midpoints = " + a);
         l.add("ingress interface= " + srcIfc);
         l.add("ingress hop = " + srcHop);
         l.add("ingress label = " + locLab);
@@ -201,7 +212,7 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
         l.add("record route = " + recRou);
         l.add("description = " + descr);
         l.add("association = " + asocTyp + " " + asocAdr + " " + asocId + " " + asocGlb);
-        l.add("timeout = " + timeout);
+        l.add("timeout = " + bits.timeDump(timeout / 1000));
         l.add("updated = " + bits.timePast(created));
         l.add("local = " + srcLoc + " " + trgLoc);
         return l;

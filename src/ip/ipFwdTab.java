@@ -1209,16 +1209,13 @@ public class ipFwdTab {
      * fill strict first hop
      *
      * @param lower forwarder to use
+     * @param ntry traffeng entry
      * @param pck packet to update
      * @return false on success, true on error
      */
-    public static boolean fillRsvpFrst(ipFwd lower, packRsvp pck) {
-        tabRouteEntry<addrIP> ntry = lower.actualU.route(pck.getTrg());
-        if (ntry == null) {
+    public static boolean fillRsvpFrst(ipFwd lower, ipFwdTrfng ntry, packRsvp pck) {
+        if (ntry.trgHop == null) {
             return true;
-        }
-        if (ntry.best.nextHop == null) {
-            return false;
         }
         if (pck.expRout.size() > 0) {
             tabHop hop = pck.expRout.get(0);
@@ -1227,16 +1224,42 @@ public class ipFwdTab {
             }
         }
         tabHop hop = new tabHop();
-        hop.adr = ntry.best.nextHop.copyBytes();
+        hop.adr = ntry.trgHop.copyBytes();
         hop.strict = true;
         pck.expRout.add(0, hop);
         return false;
     }
 
     private static packRsvp fillRsvpPack(ipFwd lower, ipFwdTrfng ntry) {
-        ntry.trgIfc = findSendingIface(lower, ntry.trgAdr);
-        if (ntry.trgIfc == null) {
+        addrIP trg = ntry.trgAdr;
+        if (ntry.midAdrs.size() > 0) {
+            trg = ntry.midAdrs.get(0).adr;
+        }
+        tabRouteEntry<addrIP> rt = lower.actualU.route(trg);
+        if (rt == null) {
+            ntry.trgLab = -1;
+            ntry.srcLoc = 2;
             return null;
+        }
+        ntry.trgIfc = (ipFwdIface) rt.best.iface;
+        if (ntry.trgIfc == null) {
+            ntry.trgLab = -1;
+            ntry.srcLoc = 2;
+            return null;
+        }
+        addrIP oldHop = ntry.trgHop;
+        ntry.trgHop = new addrIP();
+        if (rt.best.nextHop != null) {
+            ntry.trgHop.setAddr(rt.best.nextHop);
+        } else {
+            ntry.trgHop.setAddr(trg);
+        }
+        if (oldHop != null) {
+            if (oldHop.compare(oldHop, ntry.trgHop) != 0) {
+                ntry.trgLab = -1;
+                ntry.srcLoc = 2;
+                return null;
+            }
         }
         packRsvp pck = new packRsvp();
         pck.adsBndwdt = ntry.bwdt;
@@ -1244,6 +1267,9 @@ public class ipFwdTab {
         pck.adsHops = 1;
         pck.adsLtncy = 0;
         pck.expRout = new ArrayList<tabHop>();
+        for (int i = 0; i < ntry.midAdrs.size(); i++) {
+            pck.expRout.add(ntry.midAdrs.get(i).copyBytes());
+        }
         tabHop hop = new tabHop();
         hop.adr = ntry.trgAdr.copyBytes();
         hop.strict = false;
@@ -1292,13 +1318,13 @@ public class ipFwdTab {
         if (pckRrp == null) {
             return;
         }
-        fillRsvpFrst(lower, pckRrp);
+        fillRsvpFrst(lower, ntry, pckRrp);
         packHolder pckBin = new packHolder(true, true);
         pckRrp.createHolder(pckBin);
         pckRrp.fillLabReq();
         pckRrp.createDatPatReq(pckBin);
         pckRrp.createHeader(pckBin);
-        lower.protoPack(ntry.trgIfc, pckBin);
+        lower.protoPack(ntry.trgIfc, ntry.trgHop, pckBin);
         if (debugger.rtrRsvpTraf) {
             logger.debug("tx " + pckRrp);
         }
@@ -1320,7 +1346,7 @@ public class ipFwdTab {
         pckRrp.createHolder(pckBin);
         pckRrp.createDatPatTer(pckBin);
         pckRrp.createHeader(pckBin);
-        lower.protoPack(ntry.trgIfc, pckBin);
+        lower.protoPack(ntry.trgIfc, ntry.trgHop, pckBin);
         if (debugger.rtrRsvpTraf) {
             logger.debug("tx " + pckRrp);
         }
