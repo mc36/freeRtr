@@ -4,6 +4,7 @@ select-one zlib1g
 
 exec cp ../misc/image/init.nat %tmp%/init
 exec cp rtr.bin %tmp%/rtr/
+exec cp rtr.ver %tmp%/rtr/
 
 select-lst
 select-sum

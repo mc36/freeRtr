@@ -17,6 +17,7 @@ select-one openjdk-16-jdk-headless       #new jvm
 
 exec cp ../misc/image/init.jvm %tmp%/init
 exec cp rtr.jar %tmp%/rtr/
+exec cp rtr.ver %tmp%/rtr/
 
 select-lst
 select-sum
