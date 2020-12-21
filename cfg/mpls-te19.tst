@@ -96,9 +96,9 @@ int eth1
  mpls rsvp4
  mpls rsvp6
  router pvrp4 1 ena
- router pvrp4 1 metric 100
+ router pvrp4 1 metric-out 100
  router pvrp6 1 ena
- router pvrp6 1 metric 100
+ router pvrp6 1 metric-out 100
  exit
 int eth2
  vrf for v1
@@ -108,9 +108,9 @@ int eth2
  mpls rsvp4
  mpls rsvp6
  router pvrp4 1 ena
- router pvrp4 1 metric 100
+ router pvrp4 1 metric-out 100
  router pvrp6 1 ena
- router pvrp6 1 metric 100
+ router pvrp6 1 metric-out 100
  exit
 !
 
