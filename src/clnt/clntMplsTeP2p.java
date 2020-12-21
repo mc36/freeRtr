@@ -56,7 +56,7 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
     /**
      * middle targets
      */
-    public List<addrIP> middles;
+    public List<addrIP> middles = new ArrayList<addrIP>();
 
     /**
      * pcep config to use
@@ -369,13 +369,11 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         trfEng.srcIfc = ifc;
         trfEng.srcAdr = ifc.addr.copyBytes();
         trfEng.trgAdr = target.copyBytes();
-        if (middles != null) {
-            for (int i = 0; i < middles.size(); i++) {
-                tabHop hop = new tabHop();
-                hop.adr = middles.get(i).copyBytes();
-                hop.strict = false;
-                trfEng.midAdrs.add(hop);
-            }
+        for (int i = 0; i < middles.size(); i++) {
+            tabHop hop = new tabHop();
+            hop.adr = middles.get(i).copyBytes();
+            hop.strict = false;
+            trfEng.midAdrs.add(hop);
         }
         trfEng.trgId = bits.randomD();
         trfEng.bwdt = ((float) bndwdt) / 8;
