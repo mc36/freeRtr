@@ -470,6 +470,23 @@ public class userVM {
                 return 0x8005;
             case 91: // [
                 break;
+            case 79: // O
+                if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
+                    return -1;
+                }
+                i = buf[0] & 0xff;
+                final int[] keys1 = {20, 21, 22, 23, 24};
+                switch (i) {
+                    case 80:
+                    case 81:
+                    case 82:
+                    case 83:
+                    case 84:
+                        return keys1[i - 80] | 0x8000;
+                    default:
+                        break;
+                }
+                return i;
             case 0:
             case 1:
             case 2:
@@ -533,28 +550,27 @@ public class userVM {
             s += new String(buf);
         }
         if (s.startsWith("[")) {
-            final int[] keys1 = {20, 21, 22, 23, 24};
+            final int[] keys2 = {20, 21, 22, 23, 24};
             switch (i) {
                 case 65:
                 case 66:
                 case 67:
                 case 68:
                 case 69:
-                    return keys1[i - 65] | 0x8000;
+                    return keys2[i - 65] | 0x8000;
                 default:
                     return i;
             }
         }
-        final int[] keys1 = {12, 13, 15, 14};
-        final int[] keys2 = {8, 6, 7, 9, 10, 11};
-        final int[] keys3 = {20, 21, 22, 23, 24, 0, 25, 26, 27, 28, 29, 0, 30,
-            31};
+        final int[] keys3 = {12, 13, 15, 14};
+        final int[] keys4 = {8, 6, 7, 9, 10, 11};
+        final int[] keys5 = {20, 21, 22, 23, 24, 0, 25, 26, 27, 28, 29, 0, 30, 31};
         switch (i) {
             case 65:
             case 66:
             case 67:
             case 68:
-                return keys1[i - 65] | 0x8000;
+                return keys3[i - 65] | 0x8000;
             case 126:
                 i = bits.str2num(s);
                 switch (i) {
@@ -564,7 +580,7 @@ public class userVM {
                     case 4:
                     case 5:
                     case 6:
-                        return keys2[i - 1] | 0x8000;
+                        return keys4[i - 1] | 0x8000;
                     case 11:
                     case 12:
                     case 13:
@@ -579,7 +595,7 @@ public class userVM {
                     case 22:
                     case 23:
                     case 24:
-                        return keys3[i - 11] | 0x8000;
+                        return keys5[i - 11] | 0x8000;
                     default:
                         return 126;
                 }

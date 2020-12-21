@@ -1193,12 +1193,13 @@ public class userExec {
         hl.add("2 3      <host>                  name of host to query");
         hl.add("3 3,.      <text>                query string");
         hl.add("1 2    game                      play games or watch screen savers");
+        hl.add("2 .      color                   take test");
+        hl.add("2 .      ascii                   take test");
+        hl.add("2 .      keys                    take test");
+        hl.add("2 .      clear                   clear screen");
         hl.add("2 .      gomoku                  play game");
         hl.add("2 .      tetris                  play game");
         hl.add("2 .      minesweep               play game");
-        hl.add("2 .      clear                   clear screen");
-        hl.add("2 .      color                   view demo");
-        hl.add("2 .      ascii                   view demo");
         hl.add("2 .      clock                   view demo");
         hl.add("2 .      snake                   view demo");
         hl.add("2 .      fire                    view demo");

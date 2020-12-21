@@ -88,6 +88,33 @@ public class userGame {
     }
 
     /**
+     * keyboard codes
+     */
+    public void doKeys() {
+        console.putCls();
+        console.putCur(0, 0);
+        console.refresh();
+        for (;;) {
+            int i = userVM.getKey(console.pipe);
+            console.putStr(console.sizX / 2, console.sizY / 2, userScreen.colBlack, userScreen.colWhite, false, bits.toHexD(i) + " " + (i & 0xff) + "       ");
+            console.putCur(0, 0);
+            console.refresh();
+            switch (i) {
+                case -1: // end
+                    return;
+                case 0x0271: // ctrl+q
+                    return;
+                case 0x0278: // ctrl+x
+                    return;
+                case 0x801d: // f10
+                    return;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
      * flying text
      *
      * @param s text to use
@@ -348,6 +375,10 @@ public class userGame {
         }
         if (a.equals("ascii")) {
             doAscTab();
+            return;
+        }
+        if (a.equals("keys")) {
+            doKeys();
             return;
         }
         if (a.equals("text")) {
