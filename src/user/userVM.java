@@ -421,6 +421,8 @@ public class userVM {
                 return 0x8002;
             case 13: // enter
                 return 0x8004;
+            case 10: // ctrl+enter
+                return 0x8004;
             case 27: // escape
                 break;
             case 0:
@@ -431,7 +433,6 @@ public class userVM {
             case 5:
             case 6:
             case 7:
-            case 10:
             case 11:
             case 12:
             case 14:
@@ -562,7 +563,7 @@ public class userVM {
                     return i;
             }
         }
-        final int[] keys3 = {12, 13, 15, 14};
+        final int[] keys3 = {12, 13, 15, 14, 0, 9, 0, 8};
         final int[] keys4 = {8, 6, 7, 9, 10, 11};
         final int[] keys5 = {20, 21, 22, 23, 24, 0, 25, 26, 27, 28, 29, 0, 30, 31};
         switch (i) {
@@ -570,6 +571,10 @@ public class userVM {
             case 66:
             case 67:
             case 68:
+            case 69:
+            case 70:
+            case 71:
+            case 72:
                 return keys3[i - 65] | 0x8000;
             case 126:
                 i = bits.str2num(s);

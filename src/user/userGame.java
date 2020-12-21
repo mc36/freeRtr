@@ -96,7 +96,7 @@ public class userGame {
         console.refresh();
         for (;;) {
             int i = userVM.getKey(console.pipe);
-            console.putStr(console.sizX / 2, console.sizY / 2, userScreen.colBlack, userScreen.colWhite, false, bits.toHexD(i) + " " + (i & 0xff) + "       ");
+            console.putStr(console.sizX / 2, console.sizY / 2, userScreen.colBlack, userScreen.colWhite, false, bits.toHexW(i) + " " + (i & 0xff) + "       ");
             console.putCur(0, 0);
             console.refresh();
             switch (i) {

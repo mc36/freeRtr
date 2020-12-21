@@ -583,15 +583,6 @@ public class userReader implements Comparator<String> {
         return curr.substring(beg, end);
     }
 
-    private int readChar() {
-        byte[] buf = new byte[1];
-        int i = pipe.blockingGet(buf, 0, buf.length);
-        if (i != buf.length) {
-            return -1;
-        }
-        return buf[0] & 0xff;
-    }
-
     private boolean moreChars() {
         return pipe.ready2rx() > 0;
     }
@@ -759,11 +750,14 @@ public class userReader implements Comparator<String> {
     }
 
     private void cmdSpecChr() {
-        int i = readChar();
-        if (i < 0) {
+        int i = userVM.getKey(pipe);
+        if ((i & 0x8000) != 0) { // special
             return;
         }
-        cmdInsChr(i);
+        if ((i & 0x200) != 0) { // ctrl
+            i &= 0x1f;
+        }
+        cmdInsChr(i & 0xff);
     }
 
     private void cmdEraseBack() {
@@ -828,170 +822,6 @@ public class userReader implements Comparator<String> {
         pos = i;
     }
 
-    private void cmdEscape() {
-        String s = "";
-        for (;;) {
-            int ch = readChar();
-            if ((ch < 32) || (ch > 127)) {
-                break;
-            }
-            s += (char) ch;
-            if (ch == 91) {
-                continue;
-            }
-            if ((ch > 48) && (ch < 57)) {
-                continue;
-            }
-            break;
-        }
-        if (debugger.userReaderEvnt) {
-            logger.debug("escaped " + s);
-        }
-        if (s.equals("[D")) { // left
-            cmdLeft();
-            return;
-        }
-        if (s.equals("[C")) { // right
-            cmdRight();
-            return;
-        }
-        if (s.equals("[A")) { // up
-            cmdHistPrev();
-            return;
-        }
-        if (s.equals("[B")) { // down
-            cmdHistNext();
-            return;
-        }
-        if (s.equals("b")) {
-            cmdBackward();
-            return;
-        }
-        if (s.equals("c")) {
-            cmdCapitalize();
-            return;
-        }
-        if (s.equals("d")) {
-            cmdEraseFwrd();
-            return;
-        }
-        if (s.equals("f")) {
-            cmdForward();
-            return;
-        }
-        if (s.equals("l")) {
-            cmdLowercase();
-            return;
-        }
-        if (s.equals("q")) {
-            cmdSpecChr();
-            return;
-        }
-        if (s.equals("u")) {
-            cmdUppercase();
-            return;
-        }
-    }
-
-    private String cmdOneChar(int ch, boolean spacetab, String exit) {
-        len = curr.length();
-        switch (ch) {
-            case 1: // ctrl + a
-                cmdHome();
-                break;
-            case 2: // ctrl + b
-                cmdLeft();
-                break;
-            case 3: // ctrl + c
-                cmdClear();
-                break;
-            case 4: // ctrl + d
-                cmdDelChr();
-                break;
-            case 5: // ctrl + e
-                cmdEnd();
-                break;
-            case 6: // ctrl + f
-                cmdRight();
-                break;
-            case 8: // ctrl + h - backspace
-                cmdBackspace();
-                break;
-            case 9: // ctrl + i - tabulator
-                cmdTabulator();
-                break;
-            case 11: // ctrl + k
-                cmdErase2end();
-                break;
-            case 12: // ctrl + l
-                cmdRefreshLine();
-                break;
-            case 10: // ctrl + j - ctrl+enter
-            case 13: // ctrl + m - enter
-                String s = cmdEnter();
-                if (s == null) {
-                    break;
-                }
-                return s;
-            case 14: // ctrl + n
-                cmdHistNext();
-                break;
-            case 16: // ctrl + p
-                cmdHistPrev();
-                break;
-            case 18: // ctrl + r
-                cmdRefreshLine();
-                break;
-            case 20: // ctrl + t
-                cmdSwapLetters();
-                break;
-            case 21: // ctrl + u
-                cmdErase2beg();
-                break;
-            case 22: // ctrl + v
-                cmdSpecChr();
-                break;
-            case 23: // ctrl + w
-                cmdEraseBack();
-                break;
-            case 24: // ctrl + x
-                cmdErase2beg();
-                break;
-            case 25: // ctrl + y
-                cmdInsStr(clip);
-                break;
-            case 26: // ctrl + z
-                cmdRefreshLine();
-                cmdClear();
-                return exit;
-            case 27: // escape
-                cmdEscape();
-                break;
-            case 32: // space
-                if (spacetab && (pos >= len)) {
-                    cmdTabulator();
-                } else {
-                    cmdInsChr(ch);
-                }
-                break;
-            case 63: // ? question mark
-                cmdShowHelp();
-                break;
-            case 7: // ctrl + g
-            case 15: // ctrl + o
-            case 17: // ctrl + q
-            case 19: // ctrl + s
-                break;
-            case 127: // delete character
-                cmdBackspace();
-                break;
-            default:
-                cmdInsChr(ch);
-                break;
-        }
-        return null;
-    }
-
     /**
      * read up one line
      *
@@ -1012,19 +842,145 @@ public class userReader implements Comparator<String> {
             String oldS = "" + curr;
             int oldP = pos;
             for (;;) {
-                int ch = readChar();
+                len = curr.length();
+                int ch = userVM.getKey(pipe);
                 if (ch == deactivate) {
                     return null;
                 }
-                if (ch < 0) {
-                    if (debugger.userReaderEvnt) {
-                        logger.debug("closed");
-                    }
-                    return null;
-                }
-                String s = cmdOneChar(ch, spacetab, exit);
-                if (s != null) {
-                    return s;
+                switch (ch) {
+                    case -1:
+                        if (debugger.userReaderEvnt) {
+                            logger.debug("closed");
+                        }
+                        return null;
+                    case 0x8003: // backspace
+                        cmdBackspace();
+                        break;
+                    case 0x8002: // tabulator
+                        cmdTabulator();
+                        break;
+                    case 0x8004: // enter
+                        String s = cmdEnter();
+                        if (s == null) {
+                            break;
+                        }
+                        return s;
+                    case 0x800e: // left
+                        cmdLeft();
+                        break;
+                    case 0x800f: // right
+                        cmdRight();
+                        break;
+                    case 0x800c: // up
+                        cmdHistPrev();
+                        break;
+                    case 0x800d: // down
+                        cmdHistNext();
+                        break;
+                    case 0x8008: // home                
+                        cmdHome();
+                        break;
+                    case 0x8009: // end
+                        cmdEnd();
+                        break;
+                    case 0x8007: // delete
+                        cmdDelChr();
+                        break;
+                    case 0x261: // ctrl + a
+                        cmdHome();
+                        break;
+                    case 0x262: // ctrl + b
+                        cmdLeft();
+                        break;
+                    case 0x263: // ctrl + c
+                        cmdClear();
+                        break;
+                    case 0x264: // ctrl + d
+                        cmdDelChr();
+                        break;
+                    case 0x265: // ctrl + e
+                        cmdEnd();
+                        break;
+                    case 0x266: // ctrl + f
+                        cmdRight();
+                        break;
+                    case 0x26b: // ctrl + k
+                        cmdErase2end();
+                        break;
+                    case 0x26c: // ctrl + l
+                        cmdRefreshLine();
+                        break;
+                    case 0x26e: // ctrl + n
+                        cmdHistNext();
+                        break;
+                    case 0x270: // ctrl + p
+                        cmdHistPrev();
+                        break;
+                    case 0x271: // ctrl + q
+                        cmdSpecChr();
+                        break;
+                    case 0x272: // ctrl + r
+                        cmdRefreshLine();
+                        break;
+                    case 0x274: // ctrl + t
+                        cmdSwapLetters();
+                        break;
+                    case 0x275: // ctrl + u
+                        cmdErase2beg();
+                        break;
+                    case 0x276: // ctrl + v
+                        cmdSpecChr();
+                        break;
+                    case 0x277: // ctrl + w
+                        cmdEraseBack();
+                        break;
+                    case 0x278: // ctrl + x
+                        cmdErase2beg();
+                        break;
+                    case 0x279: // ctrl + y
+                        cmdInsStr(clip);
+                        break;
+                    case 0x27a: // ctrl + z
+                        cmdRefreshLine();
+                        cmdClear();
+                        return exit;
+                    case 0x462: // alt + b
+                        cmdBackward();
+                        break;
+                    case 0x463: // alt + c
+                        cmdCapitalize();
+                        break;
+                    case 0x464: // alt + d
+                        cmdEraseFwrd();
+                        break;
+                    case 0x466: // alt + f
+                        cmdForward();
+                        break;
+                    case 0x46c: // alt + l
+                        cmdLowercase();
+                        break;
+                    case 0x471: // alt + q
+                        cmdSpecChr();
+                        break;
+                    case 0x475: // alt + u
+                        cmdUppercase();
+                        break;
+                    case 32: // space
+                        if (spacetab && (pos >= len)) {
+                            cmdTabulator();
+                        } else {
+                            cmdInsChr(ch);
+                        }
+                        break;
+                    case 63: // ? question mark
+                        cmdShowHelp();
+                        break;
+                    default:
+                        if ((ch & 0xff) != ch) {
+                            break;
+                        }
+                        cmdInsChr(ch);
+                        break;
                 }
                 if (!moreChars()) {
                     break;
