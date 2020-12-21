@@ -264,7 +264,7 @@ public class userConfig {
         if (a.length() < 1) {
             return false;
         }
-        if (a.equals("exit")) {
+        if (a.equals(cmds.finish)) {
             if (modeV == modes.global) {
                 return true;
             }
@@ -351,7 +351,7 @@ public class userConfig {
      */
     public boolean doCommand() {
         reader.setContext(getHelping(true, true), cfgAll.hostName + getPrompt() + "#");
-        String s = reader.readLine("exit");
+        String s = reader.readLine(cmds.finish);
         if (s == null) {
             return true;
         }

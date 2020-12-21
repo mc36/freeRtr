@@ -943,6 +943,9 @@ public class userReader implements Comparator<String> {
                     case 0x27a: // ctrl + z
                         cmdRefreshLine();
                         cmdClear();
+                        if (exit == null) {
+                            break;
+                        }
                         return exit;
                     case 0x462: // alt + b
                         cmdBackward();
