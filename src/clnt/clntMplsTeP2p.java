@@ -215,10 +215,10 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
      * @param s targets
      */
     public void setMiddles(String s) {
+        middles = new ArrayList<addrIP>();
         if (s == null) {
             return;
         }
-        middles = new ArrayList<addrIP>();
         cmds c = new cmds("adrs", s);
         for (;;) {
             s = c.word();
@@ -392,6 +392,9 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
             }
             trfEng = fwdCor.trafEngs.find(trfEng);
             if (trfEng == null) {
+                return;
+            }
+            if (trfEng.srcLoc != 1) {
                 return;
             }
             if (trfEng.trgLab > 1) {

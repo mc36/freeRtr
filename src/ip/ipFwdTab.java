@@ -1237,14 +1237,12 @@ public class ipFwdTab {
         }
         tabRouteEntry<addrIP> rt = lower.actualU.route(trg);
         if (rt == null) {
-            ntry.trgLab = -1;
-            ntry.srcLoc = 2;
+            ntry.srcLoc = 4;
             return null;
         }
         ntry.trgIfc = (ipFwdIface) rt.best.iface;
         if (ntry.trgIfc == null) {
-            ntry.trgLab = -1;
-            ntry.srcLoc = 2;
+            ntry.srcLoc = 4;
             return null;
         }
         addrIP oldHop = ntry.trgHop;
@@ -1256,8 +1254,7 @@ public class ipFwdTab {
         }
         if (oldHop != null) {
             if (oldHop.compare(oldHop, ntry.trgHop) != 0) {
-                ntry.trgLab = -1;
-                ntry.srcLoc = 2;
+                ntry.srcLoc = 4;
                 return null;
             }
         }

@@ -211,6 +211,10 @@ public class rtrRsvpIface implements ipPrt {
                 if (old != null) {
                     ntry = old;
                 }
+                if (ntry.srcLoc > 0) {
+                    ntry.srcLoc = 5;
+                    return;
+                }
                 ntry.srcHop = pckRvp.hopAdr.copyBytes();
                 ntry.srcIfc = ipFwdTab.findSendingIface(fwdCore, ntry.srcHop);
                 if (ntry.srcIfc == null) {

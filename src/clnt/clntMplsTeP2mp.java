@@ -378,13 +378,13 @@ public class clntMplsTeP2mp implements Runnable, ifcDn {
                 fwdCor.tetunAdd(trfEng, true);
                 trfEngs[cur] = trfEng;
             }
-            if (trfEng.trgLab < 1) {
-                fwdCor.tetunSignal(trfEng);
-                continue;
-            }
             if (trfEng.srcLoc != 1) {
                 fwdCor.tetunDel(trfEng);
                 trfEngs[cur] = null;
+                continue;
+            }
+            if (trfEng.trgLab < 1) {
+                fwdCor.tetunSignal(trfEng);
                 continue;
             }
             if (rnd == 0) {
