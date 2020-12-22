@@ -6,11 +6,11 @@ import addr.addrType;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
-import ip.ipCorSrh;
 import ip.ipFwd;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
+import rtr.rtrSrhIface;
 import util.cmds;
 import util.counter;
 import util.state;
@@ -147,7 +147,7 @@ public class clntSrExt implements ifcDn {
         if (tos >= 0) {
             pck.IPtos = tos;
         }
-        ipCorSrh.createHeader(pck, targets);
+        rtrSrhIface.createHeader(pck, targets);
         fwdCor.updateIPheader(pck, pck.IPsrc, pck.IPtrg, pck.IPprt, pck.IPttl, pck.IPtos, pck.dataSize() - pck.IPsiz);
         fwdCor.mplsTxPack(pck.IPtrg, pck, false);
     }

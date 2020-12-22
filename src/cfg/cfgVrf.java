@@ -275,16 +275,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public cfgAceslst packet6fltr = null;
 
     /**
-     * ipv4 source route
-     */
-    public cfgAceslst source4rtr = null;
-
-    /**
-     * ipv6 source route
-     */
-    public cfgAceslst source6rtr = null;
-
-    /**
      * ipv4 counter map
      */
     public cfgRoump counter4map = null;
@@ -361,8 +351,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no copp6out",
         "vrf definition .*! no packet4filter",
         "vrf definition .*! no packet6filter",
-        "vrf definition .*! no source4route",
-        "vrf definition .*! no source6route",
         "vrf definition .*! no counter4map",
         "vrf definition .*! no counter6map",
         "!ipv[4|6] nat .* sequence .* timeout 300000"
@@ -662,8 +650,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, copp6out == null, cmds.tabulator, "copp6out", "" + copp6out);
         cmds.cfgLine(l, packet4fltr == null, cmds.tabulator, "packet4filter", "" + packet4fltr);
         cmds.cfgLine(l, packet6fltr == null, cmds.tabulator, "packet6filter", "" + packet6fltr);
-        cmds.cfgLine(l, source4rtr == null, cmds.tabulator, "source4route", "" + source4rtr);
-        cmds.cfgLine(l, source6rtr == null, cmds.tabulator, "source6route", "" + source6rtr);
         cmds.cfgLine(l, counter4map == null, cmds.tabulator, "counter4map", "" + counter4map);
         cmds.cfgLine(l, counter6map == null, cmds.tabulator, "counter6map", "" + counter6map);
         cmds.cfgLine(l, !mdt4, cmds.tabulator, "mdt4", "");
@@ -775,10 +761,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("1 2  packet4filter       specify ipv4 packet filter");
         l.add("2 .    <name>            name of access list");
         l.add("1 2  packet6filter       specify ipv6 packet filter");
-        l.add("2 .    <name>            name of access list");
-        l.add("1 2  source4route        specify ipv4 source route");
-        l.add("2 .    <name>            name of access list");
-        l.add("1 2  source6route        specify ipv6 source route");
         l.add("2 .    <name>            name of access list");
         l.add("1 2  counter4map         specify ipv4 traffic counter");
         l.add("2 .    <name>            name of route map");
@@ -1152,28 +1134,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.packetFilter = packet6fltr.aceslst;
             return;
         }
-        if (a.equals("source4route")) {
-            source4rtr = cfgAll.aclsFind(cmd.word(), false);
-            if (source4rtr == null) {
-                cmd.error("no such access list");
-                return;
-            }
-            source4rtr.aceslst.myCor = core4;
-            source4rtr.aceslst.myIcmp = icmp4;
-            fwd4.sourceRoute = source4rtr.aceslst;
-            return;
-        }
-        if (a.equals("source6route")) {
-            source6rtr = cfgAll.aclsFind(cmd.word(), false);
-            if (source6rtr == null) {
-                cmd.error("no such access list");
-                return;
-            }
-            source6rtr.aceslst.myCor = core4;
-            source6rtr.aceslst.myIcmp = icmp4;
-            fwd6.sourceRoute = source6rtr.aceslst;
-            return;
-        }
         if (a.equals("counter4map")) {
             counter4map = cfgAll.rtmpFind(cmd.word(), false);
             if (counter4map == null) {
@@ -1370,16 +1330,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("packet6filter")) {
             packet6fltr = null;
             fwd6.packetFilter = null;
-            return;
-        }
-        if (a.equals("source4route")) {
-            source4rtr = null;
-            fwd4.sourceRoute = null;
-            return;
-        }
-        if (a.equals("source6route")) {
-            source6rtr = null;
-            fwd6.sourceRoute = null;
             return;
         }
         if (a.equals("counter4map")) {

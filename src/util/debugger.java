@@ -429,6 +429,11 @@ public class debugger {
     public static boolean rtrPimTraf = false;
 
     /**
+     * srh traffic
+     */
+    public static boolean rtrSrhTraf = false;
+
+    /**
      * bfd event
      */
     public static boolean rtrBfdEvnt = false;
@@ -692,11 +697,6 @@ public class debugger {
      * ipCor6 traffic
      */
     public static boolean ipCor6traf = false;
-
-    /**
-     * ipCorSrh traffic
-     */
-    public static boolean ipCorSrhTraf = false;
 
     /**
      * ipMpls label traffic
@@ -1927,7 +1927,7 @@ public class debugger {
                 return false;
             }
             if (s.equals("srh")) {
-                ipCorSrhTraf = v;
+                rtrSrhTraf = v;
                 return false;
             }
             return true;

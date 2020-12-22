@@ -22,6 +22,7 @@ import rtr.rtrBfdNeigh;
 import rtr.rtrHsrpIface;
 import rtr.rtrPimIface;
 import rtr.rtrPtpIface;
+import rtr.rtrSrhIface;
 import rtr.rtrVrrpIface;
 import tab.tabAceslstN;
 import tab.tabGen;
@@ -240,6 +241,11 @@ public class ipFwdIface extends tabRouteIface {
     public boolean point2point;
 
     /**
+     * srh interface handler
+     */
+    public rtrSrhIface srhCfg;
+
+    /**
      * minimal multicast ttl
      */
     public int mcastTtl;
@@ -422,6 +428,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 4       <num>                     tx interval in ms");
         l.add("4 5         <num>                   rx interval in ms");
         l.add("5 .           <num>                 multiplier");
+        l.add("2 3     srh                         segment routing header commands");
+        l.add("3 .       enable                    enable/disable processing");
         l.add("2 3     ptp                         precision time protococol commands");
         l.add("3 .       enable                    enable/disable processing");
         l.add("3 .       receive                   allow clock adjustment");
@@ -566,6 +574,11 @@ public class ipFwdIface extends tabRouteIface {
         for (int i = 0; i < pbrCfg.size(); i++) {
             tabPbrN pbr = pbrCfg.get(i);
             l.addAll(pbr.usrString(cmds.tabulator + beg + "pbr "));
+        }
+        if (srhCfg == null) {
+            l.add(cmds.tabulator + "no " + beg + "srh enable");
+        } else {
+            l.add(cmds.tabulator + beg + "srh enable");
         }
         if (ptpCfg == null) {
             l.add(cmds.tabulator + "no " + beg + "ptp enable");
@@ -988,6 +1001,11 @@ public class ipFwdIface extends tabRouteIface {
             bfdCfg.multiplier = bits.str2num(cmd.word());
             return false;
         }
+        if (a.equals("srh")) {
+            srhCfg = new rtrSrhIface(fwd, this);
+            srhCfg.register2ip();
+            return false;
+        }
         if (a.equals("ptp")) {
             a = cmd.word();
             if (a.equals("enable")) {
@@ -999,6 +1017,7 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             if (ptpCfg == null) {
+                cmd.error("protocol not running");
                 return true;
             }
             if (a.equals("receive")) {
@@ -1380,6 +1399,14 @@ public class ipFwdIface extends tabRouteIface {
             bfdCfg = null;
             return false;
         }
+        if (a.equals("srh")) {
+            if (srhCfg == null) {
+                return false;
+            }
+            srhCfg.unregister2ip();
+            srhCfg = null;
+            return false;
+        }
         if (a.equals("ptp")) {
             a = cmd.word();
             if (a.equals("enable")) {
@@ -1391,6 +1418,7 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             if (ptpCfg == null) {
+                cmd.error("protocol not running");
                 return true;
             }
             if (a.equals("receive")) {

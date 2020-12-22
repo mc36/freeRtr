@@ -134,8 +134,6 @@ vrf definition dn42
  rd 65535:42
  rt-import 65535:42
  rt-export 65535:42
- source4route all4
- source6route all6
  mdt4
  mdt6
  exit
@@ -150,8 +148,6 @@ vrf definition v1
  rd 1:1
  rt-import 1:1
  rt-export 1:1
- source4route all4
- source6route all6
  counter4map count4
  counter6map count6
  exit
@@ -161,8 +157,6 @@ vrf definition v2
  rt-import 1:2
  rt-export 1:2
  label-mode per-prefix
- source4route all4
- source6route all6
  exit
 !
 vrf definition v3
@@ -170,8 +164,6 @@ vrf definition v3
  rt-import 1:3
  rt-export 1:3
  label-mode per-prefix
- source4route all4
- source6route all6
  exit
 !
 vrf definition v4
@@ -179,8 +171,6 @@ vrf definition v4
  rt-import 1:4
  rt-export 1:4
  label-mode per-prefix
- source4route all4
- source6route all6
  exit
 !
 vrf definition v5
@@ -188,8 +178,6 @@ vrf definition v5
  rt-import 1:5
  rt-export 1:5
  label-mode per-prefix
- source4route all4
- source6route all6
  exit
 !
 vrf definition v6
@@ -197,8 +185,6 @@ vrf definition v6
  rt-import 1:6
  rt-export 1:6
  label-mode per-prefix
- source4route all4
- source6route all6
  exit
 !
 vrf definition vpn
@@ -331,6 +317,7 @@ interface template1
  ipv4 address dynamic 255.255.255.252
  ipv4 inspect mac
  ipv4 host-watch
+ ipv4 srh enable
  ipv4 ptp enable
  ipv4 ptp receive
  ipv4 bfd 1000 3000 3
@@ -340,6 +327,7 @@ interface template1
  ipv6 address dynamic ffff:ffff:ffff:ffff::
  ipv6 inspect mac
  ipv6 host-watch
+ ipv6 srh enable
  ipv6 ptp enable
  ipv6 ptp receive
  ipv6 bfd 1000 3000 3
@@ -910,4 +898,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=19b469c8520dd0309824f85131aba4a0b61f990317758a1017a045bd707c425a334711a6027d0476cf36042552f8b0acb968ac2234663a007ea4c2b97a8f6b1a-bf57f58c8406de6421b9cb641a1b1e77082365f01d5a4fd679692ffaff67d5678f41952aa26a2b0c9b2e1fc651059d6734166f413f3d4fb5fc3ef42a5a00f8c0
+end chksum=1b19099cf05a5219d81d6ee181729b0defeba9a6bfc97797170f5a0e7ba65f4191f0c4fa9ac4f51bf9dee1c8ce6feb4bbdc5f514d7b1ae16ab618ce131508bf9-7283a9cae2959192b703333eca434eeaeac06a889703a086ec54109071305d3bccfe641040132f3ea162e46bcc0b1a8ee09a8de279cfa849ba70753eb0fe86e6

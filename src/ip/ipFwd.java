@@ -288,11 +288,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public tabQos coppOut;
 
     /**
-     * source routing filter
-     */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sourceRoute;
-
-    /**
      * traffic counter filter
      */
     public tabListing<tabRtrmapN, addrIP> counterMap;
@@ -1440,9 +1435,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (src == null) {
             return;
         }
-        if (pck.IPprt == ipCorSrh.protoNum) {
-            ipCorSrh.skipHeader(pck);
-        }
         if (icmpCore.createError(pck, reason, src.copyBytes(), mplsExtRep)) {
             return;
         }
@@ -1875,38 +1867,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ipFwdIface txIfc = (ipFwdIface) prf.best.iface;
         if (txIfc.lower.checkMyAddress(pck.IPtrg)) {
-            if (pck.IPprt != ipCorSrh.protoNum) {
-                protoSend(txIfc, pck);
-                return;
-            }
-            int res = ipCorSrh.parseHeader(pck);
-            switch (res) {
-                case 2:
-                    protoSend(txIfc, pck);
-                    return;
-                case 1:
-                    cntrT.drop(pck, counter.reasons.badHdr);
-                    return;
-                default:
-                    break;
-            }
-            if ((mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow) {
-                pck.IPttl = pck.MPLSttl;
-            }
-            ipCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, pck.IPprt, pck.IPttl, pck.IPtos, pck.dataSize() - pck.IPsiz);
-            if (sourceRoute == null) {
-                doDrop(pck, rxIfc, counter.reasons.denied);
-                return;
-            }
-            if (!sourceRoute.matches(false, true, pck)) {
-                doDrop(pck, rxIfc, counter.reasons.denied);
-                return;
-            }
-            pck.INTiface = -3;
-            pck.INTupper = -3;
-            ipCore.testIPaddress(pck, pck.IPtrg);
-            ipMpls.beginMPLSfields(pck, (mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow);
-            forwardPacket(from, rxIfc, null, pck);
+            protoSend(txIfc, pck);
             return;
         }
         if (txIfc.lower.checkMyAlias(pck.IPtrg) != null) {
@@ -1952,9 +1913,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (ipCore.parseIPheader(pck, false)) {
             iface.cntr.drop(pck, counter.reasons.badHdr);
             return;
-        }
-        if (pck.IPprt == ipCorSrh.protoNum) {
-            ipCorSrh.skipHeader(pck);
         }
         natCfg.packParse(false, true, false, pck);
         tabNatTraN natT = tabNatTraN.fromError(pck);

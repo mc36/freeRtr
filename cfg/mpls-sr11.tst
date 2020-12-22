@@ -8,13 +8,13 @@ access-list all
  exit
 vrf def v1
  rd 1:1
- source4route all
- source6route all
  exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
+ ipv4 srh enable
+ ipv6 srh enable
  exit
 interface tun1
  tunnel vrf v1
@@ -45,18 +45,20 @@ access-list all
  exit
 vrf def v1
  rd 1:1
- source4route all
- source6route all
  exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
+ ipv4 srh enable
+ ipv6 srh enable
  exit
 int eth2
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1235::2 ffff::
+ ipv4 srh enable
+ ipv6 srh enable
  exit
 !
 
@@ -68,13 +70,13 @@ access-list all
  exit
 vrf def v1
  rd 1:1
- source4route all
- source6route all
  exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.2.3 255.255.255.0
  ipv6 addr 1235::3 ffff::
+ ipv4 srh enable
+ ipv6 srh enable
  exit
 interface tun1
  tunnel vrf v1

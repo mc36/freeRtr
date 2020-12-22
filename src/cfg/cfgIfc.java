@@ -1343,6 +1343,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[4|6] directed-broadcast",
         "interface .*! no ipv[4|6] broadcast-multicast",
         "interface .*! no ipv[4|6] verify-source",
+        "interface .*! no ipv[4|6] srh enable",
         "interface .*! ipv[4|6] gateway-local",
         "interface .*! ipv[4|6] gateway-remote",
         "interface .*! no ipv[4|6] gateway-prefix",
