@@ -5,6 +5,8 @@ import java.util.List;
 import pipe.pipeSetting;
 import pipe.pipeSide;
 import util.bits;
+import util.debugger;
+import util.logger;
 
 /**
  * screen handler
@@ -252,22 +254,7 @@ public class userScreen {
             case 91: // [
                 break;
             case 79: // O
-                if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
-                    return -1;
-                }
-                i = buf[0] & 0xff;
-                final int[] keys1 = {20, 21, 22, 23, 24};
-                switch (i) {
-                    case 80:
-                    case 81:
-                    case 82:
-                    case 83:
-                    case 84:
-                        return keys1[i - 80] | 0x8000;
-                    default:
-                        break;
-                }
-                return i;
+                break;
             case 0:
             case 1:
             case 2:
@@ -300,7 +287,7 @@ public class userScreen {
             default: // any key
                 return i | 0x0400;
         }
-        String s = "";
+        String s = new String(buf);
         for (;;) {
             if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
                 return -1;
@@ -321,6 +308,8 @@ public class userScreen {
                     break;
                 case 91: // [
                     break;
+                case 59: // ;
+                    break;
                 default:
                     need2stop = true;
                     break;
@@ -330,7 +319,58 @@ public class userScreen {
             }
             s += new String(buf);
         }
-        if (s.startsWith("[")) {
+        if (debugger.userScreenEvnt) {
+            logger.debug("got " + s + (char) i + " from client");
+        }
+        int ctr = s.indexOf(";");
+        if (ctr < 0) {
+            ctr = 0;
+        } else {
+            String a = s.substring(ctr + 1, s.length());
+            s = s.substring(0, ctr);
+            ctr = bits.str2num(a);
+            switch (ctr) {
+                case 2: // shift
+                    ctr = 0x100;
+                    break;
+                case 3: // alt
+                    ctr = 0x400;
+                    break;
+                case 4: // alt+shift
+                    ctr = 0x500;
+                    break;
+                case 5: // ctrl
+                    ctr = 0x200;
+                    break;
+                case 6: // ctrl+shift
+                    ctr = 0x300;
+                    break;
+                case 7: // ctrl+alt
+                    ctr = 0x600;
+                    break;
+                case 8: // cltr+alt+shift
+                    ctr = 0x700;
+                    break;
+                default:
+                    ctr = 0;
+                    break;
+            }
+        }
+        if (s.startsWith("O")) {
+            final int[] keys1 = {20, 21, 22, 23, 24};
+            switch (i) {
+                case 80:
+                case 81:
+                case 82:
+                case 83:
+                case 84:
+                    return keys1[i - 80] | 0x8000 | ctr;
+                default:
+                    break;
+            }
+            return i;
+        }
+        if (s.startsWith("[[")) {
             final int[] keys2 = {20, 21, 22, 23, 24};
             switch (i) {
                 case 65:
@@ -338,14 +378,16 @@ public class userScreen {
                 case 67:
                 case 68:
                 case 69:
-                    return keys2[i - 65] | 0x8000;
+                    return keys2[i - 65] | 0x8000 | ctr;
                 default:
                     return i;
             }
         }
+        if (!s.startsWith("[")) {
+            return i;
+        }
         final int[] keys3 = {12, 13, 15, 14, 0, 9, 0, 8};
-        final int[] keys4 = {8, 6, 7, 9, 10, 11};
-        final int[] keys5 = {20, 21, 22, 23, 24, 0, 25, 26, 27, 28, 29, 0, 30, 31};
+        final int[] keys4 = {20, 21, 22, 23, 24};
         switch (i) {
             case 65:
             case 66:
@@ -355,37 +397,46 @@ public class userScreen {
             case 70:
             case 71:
             case 72:
-                return keys3[i - 65] | 0x8000;
+                return keys3[i - 65] | 0x8000 | ctr;
+            case 80:
+            case 81:
+            case 82:
+            case 83:
+            case 84:
+                return keys4[i - 80] | 0x8000 | ctr;
             case 126:
-                i = bits.str2num(s);
-                switch (i) {
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                        return keys4[i - 1] | 0x8000;
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
-                    case 15:
-                    case 16:
-                    case 17:
-                    case 18:
-                    case 19:
-                    case 20:
-                    case 21:
-                    case 22:
-                    case 23:
-                    case 24:
-                        return keys5[i - 11] | 0x8000;
-                    default:
-                        return 126;
-                }
+                break;
             default:
                 return i;
+        }
+        i = bits.str2num(s.substring(1, s.length()));
+        final int[] keys5 = {8, 6, 7, 9, 10, 11};
+        final int[] keys6 = {20, 21, 22, 23, 24, 0, 25, 26, 27, 28, 29, 0, 30, 31};
+        switch (i) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                return keys5[i - 1] | 0x8000 | ctr;
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+            case 22:
+            case 23:
+            case 24:
+                return keys6[i - 11] | 0x8000 | ctr;
+            default:
+                return 126;
         }
     }
 

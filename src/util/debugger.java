@@ -24,6 +24,11 @@ public class debugger {
     public static boolean userReaderEvnt = false;
 
     /**
+     * userScreen commands
+     */
+    public static boolean userScreenEvnt = false;
+
+    /**
      * userNetconf commands
      */
     public static boolean userNetconfEvnt = false;
@@ -947,6 +952,7 @@ public class debugger {
         h.add("2 3      line                line specific protocols");
         h.add("3 .        config            configuration commands");
         h.add("3 .        reader            command line reader events");
+        h.add("3 .        screen            terminal screen events");
         h.add("3 .        netconf           netconf events");
         h.add("3 .        xml               xml events");
         h.add("3 .        script            chat script handler");
@@ -1194,6 +1200,10 @@ public class debugger {
             }
             if (s.equals("reader")) {
                 userReaderEvnt = v;
+                return false;
+            }
+            if (s.equals("screen")) {
+                userScreenEvnt = v;
                 return false;
             }
             if (s.equals("netconf")) {
