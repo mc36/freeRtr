@@ -894,7 +894,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
         if (!stat) {
             return s;
         }
-        s += sep + asked + sep + bits.timeDump(ttl)+ sep + bits.timePast(added);
+        s += sep + asked + sep + bits.timeDump(ttl) + sep + bits.timePast(added);
         return s;
     }
 
