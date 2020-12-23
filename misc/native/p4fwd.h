@@ -650,7 +650,10 @@ mpls_rx:
         case 1: // route
             route4_ntry.vrf = mpls_res->vrf;
             route6_ntry.vrf = mpls_res->vrf;
-            if ((label & 0x100) == 0) goto mpls_rx;
+            if ((label & 0x100) == 0) {
+                bufD[bufP + 3] = ttl + 1;
+                goto mpls_rx;
+            }
             switch (mpls_res->ver) {
             case 4:
                 ethtyp = ETHERTYPE_IPV4;
@@ -665,20 +668,22 @@ mpls_rx:
             goto drop;
         case 2: // pop
             neigh_ntry.id = mpls_res->nexthop;
-            if ((label & 0x100) == 0) goto ethtyp_tx;
+            if ((label & 0x100) == 0) {
+                bufD[bufP + 3] = ttl;
+                goto ethtyp_tx;
+            }
             switch (mpls_res->ver) {
             case 4:
                 ethtyp = ETHERTYPE_IPV4;
-                break;
+                goto ethtyp_tx;
             case 6:
                 ethtyp = ETHERTYPE_IPV6;
-                break;
+                goto ethtyp_tx;
             default:
                 ethtyp = 0;
                 break;
             }
-            goto ethtyp_tx;
-            return;
+            goto drop;
         case 3: // swap
             bufP -= 4;
             label = (label & 0xf00) | ttl | (mpls_res->swap << 12);
