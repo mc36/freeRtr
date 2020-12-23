@@ -561,6 +561,7 @@ public class prtSctp extends prtGen {
      * @param stat state
      */
     public void setState(ipFwdIface iface, states stat) {
+        connectionSimpleState(iface,stat);
     }
 
 }

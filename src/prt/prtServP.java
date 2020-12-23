@@ -4,6 +4,7 @@ import addr.addrIP;
 import ip.ipFwdIface;
 import pack.packHolder;
 import util.counter;
+import util.state;
 
 /**
  * datagram servers have to use this to able to work with protocols
@@ -22,7 +23,7 @@ public interface prtServP {
     /**
      * called by protocol handler when connection coming
      *
-     * @param id id nomber to reference connection
+     * @param id id number to reference connection
      * @return false to accept connection, true to refuse it
      */
     public boolean datagramAccept(prtGenConn id);
@@ -30,28 +31,28 @@ public interface prtServP {
     /**
      * called by protocol handler when connection ready
      *
-     * @param id id nomber to reference connection
+     * @param id id number to reference connection
      */
     public void datagramReady(prtGenConn id);
 
     /**
      * notified that connectoin closed
      *
-     * @param id id nomber to reference connection
+     * @param id id number to reference connection
      */
     public void datagramClosed(prtGenConn id);
 
     /**
      * notified that periodic work have to done
      *
-     * @param id id nomber to reference connection
+     * @param id id number to reference connection
      */
     public void datagramWork(prtGenConn id);
 
     /**
      * notified that packet arrived
      *
-     * @param id id nomber to reference connection
+     * @param id id number to reference connection
      * @param pck the packet
      * @return return false if successful, true if error happened
      */
@@ -60,7 +61,7 @@ public interface prtServP {
     /**
      * notified that error arrived
      *
-     * @param id id nomber to reference connection
+     * @param id id number to reference connection
      * @param pck the packet
      * @param rtr reporting router
      * @param err error happened
@@ -68,5 +69,14 @@ public interface prtServP {
      * @return return false if successful, true if error happened
      */
     public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab);
+
+    /**
+     * notified that state changed
+     *
+     * @param id id number to reference connection
+     * @param stat state
+     * @return return false if successful, true if error happened
+     */
+    public boolean datagramState(prtGenConn id, state.states stat);
 
 }

@@ -11,6 +11,7 @@ import user.userFilter;
 import user.userHelping;
 import util.cmds;
 import util.counter;
+import util.state;
 
 /**
  * echo (rfc862) server - packet mode
@@ -76,6 +77,17 @@ public class servEchoP extends servGeneric implements prtServP {
      * @return false on success, true on error
      */
     public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        return false;
+    }
+
+    /**
+     * notified that state changed
+     *
+     * @param id id number to reference connection
+     * @param stat state
+     * @return return false if successful, true if error happened
+     */
+    public boolean datagramState(prtGenConn id, state.states stat) {
         return false;
     }
 

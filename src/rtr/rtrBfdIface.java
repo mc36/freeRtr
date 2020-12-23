@@ -12,6 +12,7 @@ import user.userFormat;
 import util.counter;
 import util.debugger;
 import util.logger;
+import util.state;
 
 /**
  * bidirectional forwarding detection protocol (rfc5880) interface
@@ -234,6 +235,26 @@ public class rtrBfdIface implements prtServP {
      * @return false on success, true on error
      */
     public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        return false;
+    }
+
+    /**
+     * notified that state changed
+     *
+     * @param id id number to reference connection
+     * @param stat state
+     * @return return false if successful, true if error happened
+     */
+    public boolean datagramState(prtGenConn id, state.states stat) {
+        if (stat == state.states.up) {
+            return false;
+        }
+        rtrBfdNeigh nei = neighs.find(new rtrBfdNeigh(this, id.peerAddr));
+        if (nei == null) {
+            id.setClosing();
+            return false;
+        }
+        nei.stopNow();
         return false;
     }
 

@@ -384,6 +384,27 @@ public class rtrBabel extends ipRtr implements prtServP {
     }
 
     /**
+     * notified that state changed
+     *
+     * @param id id number to reference connection
+     * @param stat state
+     * @return return false if successful, true if error happened
+     */
+    public boolean datagramState(prtGenConn id, state.states stat) {
+        if (stat == state.states.up) {
+            return false;
+        }
+        rtrBabelNeigh ntry = new rtrBabelNeigh(id);
+        ntry = neighs.find(ntry);
+        if (ntry == null) {
+            id.setClosing();
+            return false;
+        }
+        ntry.bfdPeerDown();
+        return false;
+    }
+
+    /**
      * received packet
      *
      * @param id connection

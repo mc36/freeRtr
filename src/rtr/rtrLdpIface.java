@@ -17,6 +17,7 @@ import util.cmds;
 import util.counter;
 import util.debugger;
 import util.logger;
+import util.state;
 
 /**
  * label distribution protocol (rfc5036) interface
@@ -236,6 +237,25 @@ public class rtrLdpIface implements prtServP {
      * @return false on success, true on error
      */
     public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        return false;
+    }
+
+    /**
+     * notified that state changed
+     *
+     * @param id id number to reference connection
+     * @param stat state
+     * @return return false if successful, true if error happened
+     */
+    public boolean datagramState(prtGenConn id, state.states stat) {
+        if (stat == state.states.up) {
+            return false;
+        }
+        rtrLdpNeigh ntry = ip.ldpNeighFind(src, id.peerAddr, false);
+        if (ntry == null) {
+            return false;
+        }
+        ntry.stopPeer();
         return false;
     }
 

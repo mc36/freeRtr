@@ -281,7 +281,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
         if (ntry == null) {
             return;
         }
-        ntry.routerCloseNow();
+        ntry.unregister2udp();
+        ntry.closeNeighbors();
         routerCreateComputed();
     }
 
@@ -817,7 +818,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ifc == null) {
                 continue;
             }
-            ifc.routerCloseNow();
+            ifc.unregister2udp();
+            ifc.closeNeighbors();
         }
         tabLabel.release(segrouLab, 6);
         tabLabel.release(bierLab, 18);

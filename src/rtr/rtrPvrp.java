@@ -166,7 +166,8 @@ public class rtrPvrp extends ipRtr implements Runnable {
         if (ntry == null) {
             return;
         }
-        ntry.routerCloseNow();
+        ntry.unregister2udp();
+        ntry.closeNeighbors();
         routerCreateComputed();
     }
 
@@ -374,7 +375,8 @@ public class rtrPvrp extends ipRtr implements Runnable {
             if (ifc == null) {
                 continue;
             }
-            ifc.routerCloseNow();
+            ifc.unregister2udp();
+            ifc.closeNeighbors();
         }
     }
 

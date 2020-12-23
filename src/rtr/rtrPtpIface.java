@@ -12,6 +12,7 @@ import util.bits;
 import util.counter;
 import util.debugger;
 import util.logger;
+import util.state;
 
 /**
  * precision time protocol (ieee1588) interface
@@ -150,6 +151,17 @@ public class rtrPtpIface implements Runnable, prtServP {
      * @return false on success, true on error
      */
     public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        return false;
+    }
+
+    /**
+     * notified that state changed
+     *
+     * @param id id number to reference connection
+     * @param stat state
+     * @return return false if successful, true if error happened
+     */
+    public boolean datagramState(prtGenConn id, state.states stat) {
         return false;
     }
 

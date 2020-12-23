@@ -223,6 +223,17 @@ public class servMplsUdp extends servGeneric implements prtServP {
     }
 
     /**
+     * notified that state changed
+     *
+     * @param id id number to reference connection
+     * @param stat state
+     * @return return false if successful, true if error happened
+     */
+    public boolean datagramState(prtGenConn id, state.states stat) {
+        return false;
+    }
+
+    /**
      * received packet
      *
      * @param id connection

@@ -12,6 +12,7 @@ import util.counter;
 import util.debugger;
 import util.logger;
 import util.notifier;
+import util.state;
 
 /**
  * one packet connection handler
@@ -300,6 +301,25 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         if (!stream) {
             upperP.datagramError(this, pck, rtr, err, lab);
         }
+    }
+
+    /**
+     * send state to server
+     *
+     * @param stat state
+     */
+    protected void state2server(state.states stat) {
+        if (closing) {
+            return;
+        }
+        if (!stream) {
+            upperP.datagramState(this, stat);
+            return;
+        }
+        if (stat == state.states.up) {
+            return;
+        }
+        pipeNetwork.setClose();
     }
 
     /**

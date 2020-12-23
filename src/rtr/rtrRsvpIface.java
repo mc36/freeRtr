@@ -475,6 +475,18 @@ public class rtrRsvpIface implements ipPrt {
      * @param stat state
      */
     public void setState(ipFwdIface iface, state.states stat) {
+        if (stat == state.states.up) {
+            return;
+        }
+        for (int i = fwdCore.trafEngs.size(); i >= 0; i--) {
+            ipFwdTrfng ntry = fwdCore.trafEngs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if ((ntry.srcIfc == iface) || (ntry.trgIfc == iface)) {
+                fwdCore.tetunDel(ntry);
+            }
+        }
     }
 
 }

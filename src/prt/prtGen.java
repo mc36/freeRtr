@@ -16,6 +16,7 @@ import util.bits;
 import util.counter;
 import util.debugger;
 import util.logger;
+import util.state;
 
 /**
  * protocols have to use this to be able to serve servers
@@ -486,6 +487,25 @@ public abstract class prtGen implements ipPrt {
             return;
         }
         cntr.drop(pck, counter.reasons.badTrgPort);
+    }
+
+    /**
+     * do simple state processing work
+     *
+     * @param iface interface
+     * @param stat state
+     */
+    protected void connectionSimpleState(ipFwdIface iface, state.states stat) {
+        for (int i = 0; i < clnts.size(); i++) {
+            prtGenConn ntry = clnts.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.iface != iface) {
+                continue;
+            }
+            ntry.state2server(stat);
+        }
     }
 
     /**

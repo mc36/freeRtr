@@ -35,6 +35,7 @@ import util.cmds;
 import util.counter;
 import util.debugger;
 import util.logger;
+import util.state;
 
 /**
  * pvrp interface
@@ -885,6 +886,21 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     }
 
     /**
+     * notified that state changed
+     *
+     * @param id id number to reference connection
+     * @param stat state
+     * @return return false if successful, true if error happened
+     */
+    public boolean datagramState(prtGenConn id, state.states stat) {
+        if (stat == state.states.up) {
+            return false;
+        }
+        closeNeighbors();
+        return false;
+    }
+
+    /**
      * received packet
      *
      * @param id connection
@@ -940,10 +956,9 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     }
 
     /**
-     * close this interface
+     * close all neighbors
      */
-    public void routerCloseNow() {
-        unregister2udp();
+    public void closeNeighbors() {
         for (int i = neighs.size(); i >= 0; i--) {
             rtrPvrpNeigh nei = neighs.get(i);
             if (nei == null) {
