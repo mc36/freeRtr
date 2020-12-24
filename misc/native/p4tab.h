@@ -72,7 +72,7 @@ struct route4_entry {
     int vrf;
     int mask;
     int addr;
-    int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls2, 5=srv6
+    int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls2, 5=srv6, 6=mysrv4, 7=mysrv6
     int nexthop;
     int label1;
     int label2;
@@ -107,7 +107,7 @@ struct route6_entry {
     int addr2;
     int addr3;
     int addr4;
-    int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls2, 5=srv6
+    int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls2, 5=srv6, 6=mysrv4, 7=mysrv6
     int nexthop;
     int label1;
     int label2;

@@ -630,6 +630,34 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&neigh_table, &neigh_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "mysrv4") == 0) {
+        inet_pton(AF_INET6, arg[3], buf2);
+        route6_ntry.addr1 = get32msb(buf2, 0);
+        route6_ntry.addr2 = get32msb(buf2, 4);
+        route6_ntry.addr3 = get32msb(buf2, 8);
+        route6_ntry.addr4 = get32msb(buf2, 12);
+        route6_ntry.mask = 128;
+        route6_ntry.vrf = atoi(arg[2]);
+        route6_ntry.srv1 = atoi(arg[4]);
+        route6_ntry.command = 6;
+        if (del == 0) table_del(&route6_table, &route6_ntry);
+        else table_add(&route6_table, &route6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "mysrv6") == 0) {
+        inet_pton(AF_INET6, arg[3], buf2);
+        route6_ntry.addr1 = get32msb(buf2, 0);
+        route6_ntry.addr2 = get32msb(buf2, 4);
+        route6_ntry.addr3 = get32msb(buf2, 8);
+        route6_ntry.addr4 = get32msb(buf2, 12);
+        route6_ntry.mask = 128;
+        route6_ntry.vrf = atoi(arg[2]);
+        route6_ntry.srv1 = atoi(arg[4]);
+        route6_ntry.command = 7;
+        if (del == 0) table_del(&route6_table, &route6_ntry);
+        else table_add(&route6_table, &route6_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "inacl4") == 0) {
         acls_ntry.dir = 1;
         acls_ntry.ver = 4;
@@ -1549,21 +1577,21 @@ int doConsoleCommand(unsigned char*buf) {
         printf("            addr msk        vrf cmd    nexthop     label1     label2\n");
         for (int i=0; i<route4_table.size; i++) {
             struct route4_entry *ntry = table_get(&route4_table, i);
-            put32msb(buf2, 0, ntry->addr);
-            inet_ntop(AF_INET, &buf2[0], &buf[0], sizeof(buf));
-            printf("%16s %3i %10i %3i %10i %10i %10i\n", &buf, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+            put32msb(buf, 0, ntry->addr);
+            inet_ntop(AF_INET, &buf[0], &buf2[0], sizeof(buf2));
+            printf("%16s %3i %10i %3i %10i %10i %10i\n", &buf2, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
         }
         break;
     case '6':
         printf("                                    addr msk        vrf cmd    nexthop     label1     label2\n");
         for (int i=0; i<route6_table.size; i++) {
             struct route6_entry *ntry = table_get(&route6_table, i);
-            put32msb(buf2, 0, ntry->addr1);
-            put32msb(buf2, 4, ntry->addr2);
-            put32msb(buf2, 8, ntry->addr3);
-            put32msb(buf2, 12, ntry->addr4);
-            inet_ntop(AF_INET6, &buf2[0], &buf[0], sizeof(buf));
-            printf("%40s %3i %10i %3i %10i %10i %10i\n", &buf, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+            put32msb(buf, 0, ntry->addr1);
+            put32msb(buf, 4, ntry->addr2);
+            put32msb(buf, 8, ntry->addr3);
+            put32msb(buf, 12, ntry->addr4);
+            inet_ntop(AF_INET6, &buf[0], &buf2[0], sizeof(buf2));
+            printf("%40s %3i %10i %3i %10i %10i %10i\n", &buf2, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
         }
         break;
     default:
