@@ -440,6 +440,35 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&tun6_table, &tun6_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "bridgesrv4") == 0) {
+        bridge_ntry.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        inet_pton(AF_INET, arg[6], buf2);
+        bridge_ntry.srcAddr1 = bridge_ntry.trgAddr1 = get32msb(buf2, 0);
+        bridge_ntry.nexthop = atoi(arg[5]);
+        bridge_ntry.command = 8;
+        if (del == 0) table_del(&bridge_table, &bridge_ntry);
+        else table_add(&bridge_table, &bridge_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgesrv6") == 0) {
+        bridge_ntry.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        inet_pton(AF_INET6, arg[6], buf2);
+        bridge_ntry.srcAddr1 = bridge_ntry.trgAddr1 = get32msb(buf2, 0);
+        bridge_ntry.srcAddr2 = bridge_ntry.trgAddr2 = get32msb(buf2, 4);
+        bridge_ntry.srcAddr3 = bridge_ntry.trgAddr3 = get32msb(buf2, 8);
+        bridge_ntry.srcAddr4 = bridge_ntry.trgAddr4 = get32msb(buf2, 12);
+        bridge_ntry.nexthop = atoi(arg[5]);
+        bridge_ntry.command = 9;
+        if (del == 0) table_del(&bridge_table, &bridge_ntry);
+        else table_add(&bridge_table, &bridge_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "portvlan") == 0) {
         vlan_ntry.id = atoi(arg[2]);
         vlan_ntry.port = atoi(arg[3]);
@@ -654,6 +683,20 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.vrf = atoi(arg[2]);
         route6_ntry.srv1 = atoi(arg[4]);
         route6_ntry.command = 7;
+        if (del == 0) table_del(&route6_table, &route6_ntry);
+        else table_add(&route6_table, &route6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgesrv") == 0) {
+        inet_pton(AF_INET6, arg[4], buf2);
+        route6_ntry.addr1 = get32msb(buf2, 0);
+        route6_ntry.addr2 = get32msb(buf2, 4);
+        route6_ntry.addr3 = get32msb(buf2, 8);
+        route6_ntry.addr4 = get32msb(buf2, 12);
+        route6_ntry.mask = 128;
+        route6_ntry.vrf = atoi(arg[3]);
+        route6_ntry.srv1 = atoi(arg[2]);
+        route6_ntry.command = 8;
         if (del == 0) table_del(&route6_table, &route6_ntry);
         else table_add(&route6_table, &route6_ntry);
         return 0;

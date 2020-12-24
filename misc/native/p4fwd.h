@@ -1026,6 +1026,13 @@ ipv4_rou:
                 bufP = bufT;
                 ethtyp = ETHERTYPE_IPV6;
                 goto ipv6_rx;
+            case 8: // brsrv
+                bridge_ntry.id = route4_res->srv1;
+                bufP = bufT;
+                memmove(&buf2[0], &bufD[bufP], 12);
+                bufP += 12;
+                bufP += 2;
+                goto bridgevpls_rx;
             }
         }
         goto punt;
@@ -1259,6 +1266,13 @@ ipv6_hit:
                 bufP = bufT;
                 ethtyp = ETHERTYPE_IPV6;
                 goto ipv6_rx;
+            case 8: // brsrv
+                bridge_ntry.id = route6_res->srv1;
+                bufP = bufT;
+                memmove(&buf2[0], &bufD[bufP], 12);
+                bufP += 12;
+                bufP += 2;
+                goto bridgevpls_rx;
             }
         }
         goto punt;
@@ -1373,6 +1387,16 @@ bridgevpls_rx:
             putPckoudpHeader;
             putUdpHeader(bridge_res->srcPort, bridge_res->trgPort, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
             putIpv6header(17, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            neigh_ntry.id = bridge_res->nexthop;
+            goto nethtyp_tx;
+        case 8: // srv4
+            putPckoudpHeader;
+            putIpv4header(143, bridge_res->srcAddr1, bridge_res->trgAddr1);
+            neigh_ntry.id = bridge_res->nexthop;
+            goto nethtyp_tx;
+        case 9: // srv6
+            putPckoudpHeader;
+            putIpv6header(143, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
         default:
