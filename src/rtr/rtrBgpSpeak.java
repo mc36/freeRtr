@@ -1892,7 +1892,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, false, pck);
+            tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
             if (res == null) {
                 continue;
             }
@@ -1919,7 +1919,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, false, pck);
+            tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
             if (res == null) {
                 continue;
             }

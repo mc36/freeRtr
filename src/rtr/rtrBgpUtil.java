@@ -1090,11 +1090,7 @@ public class rtrBgpUtil {
         }
         if ((sfi == sfiLabeled) || (sfi == sfiMplsVpnU)) {
             ntry.best.labelRem = new ArrayList<Integer>();
-            p = 0;
             for (;;) {
-                if ((p & 1) != 0) {
-                    break;
-                }
                 if (i < 24) {
                     return null;
                 }
@@ -1103,6 +1099,9 @@ public class rtrBgpUtil {
                 i -= 24;
                 ntry.best.labelRem.add(p >>> 4);
                 if (oneLab) {
+                    break;
+                }
+                if ((p & 1) != 0) {
                     break;
                 }
             }
@@ -1827,6 +1826,16 @@ public class rtrBgpUtil {
                     adr6.fromBuf(tlv.valDat, 3);
                     ntry.best.segrouPrf.fromIPv6addr(adr6);
                     break;
+                case 5: // layer3 service
+                case 6: // layer2 service
+                    if (tlv.valDat[1] != 1) { // subtlv
+                        break;
+                    }
+                    adr6 = new addrIPv6();
+                    ntry.best.segrouPrf = new addrIP();
+                    adr6.fromBuf(tlv.valDat, 5);
+                    ntry.best.segrouPrf.fromIPv6addr(adr6);
+                    break;
             }
         }
     }
@@ -1934,7 +1943,7 @@ public class rtrBgpUtil {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = readPrefix(safi, false, pck);
+            tabRouteEntry<addrIP> res = readPrefix(safi, true, pck);
             if (res == null) {
                 continue;
             }
@@ -2264,7 +2273,7 @@ public class rtrBgpUtil {
         placePmsiTun(pck, hlp, ntry);
         placeTunEnc(pck, hlp, ntry);
         placeLnkSta(pck, hlp, ntry);
-        placePrefSid(pck, hlp, ntry);
+        placePrefSid(safi, pck, hlp, ntry);
         placeBier(pck, hlp, ntry);
         placeAttribSet(pck, hlp, ntry);
         if (safi == safiAttrib) {
@@ -2697,11 +2706,14 @@ public class rtrBgpUtil {
     /**
      * place prefix sid attribute
      *
+     * @param safi sub address family
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placePrefSid(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placePrefSid(int safi, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        int afi = safi & afiMask;
+        int sfi = safi & sfiMask;
         hlp.clear();
         typLenVal tlv = getPrefSidTlv();
         if (ntry.best.segrouIdx != 0) {
@@ -2717,10 +2729,35 @@ public class rtrBgpUtil {
             tlv.putBytes(hlp, 3, 8, tlv.valDat);
         }
         if (ntry.best.segrouPrf != null) {
+            int i;
+            int o;
+            switch (afi) {
+                case afiIpv4:
+                    i = 0x13;
+                    o = 5;
+                    break;
+                case afiIpv6:
+                    i = 0x12;
+                    o = 5;
+                    break;
+                case afiL2vpn:
+                    i = 0x15;
+                    o = 6;
+                    break;
+                default:
+                    i = 0xffff;
+                    o = 4;
+                    break;
+            }
             tlv.valDat[0] = 0; // reserved
-            bits.msbPutW(tlv.valDat, 1, 0x100); // flags
-            ntry.best.segrouPrf.toIPv6().toBuffer(tlv.valDat, 3);
-            tlv.putBytes(hlp, 4, addrIPv6.size + 3, tlv.valDat);
+            tlv.valDat[1] = 1; // subtlv type
+            bits.msbPutW(tlv.valDat, 2, 21); // size
+            tlv.valDat[4] = 0; // reserved
+            ntry.best.segrouPrf.toIPv6().toBuffer(tlv.valDat, 5);
+            tlv.valDat[21] = 0; // sid flags
+            bits.msbPutW(tlv.valDat, 22, i); // behavior
+            tlv.valDat[24] = 0; // reserved
+            tlv.putBytes(hlp, o, 25, tlv.valDat);
         }
         if (hlp.headSize() < 1) {
             return;

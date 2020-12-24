@@ -793,7 +793,7 @@ public class packLdp {
     private addrPrefix<addrIP> getFECaddr(packHolder pck) {
         int i = pck.msbGetW(0) << 16; // afi
         pck.getSkip(2);
-        tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(i, false, pck);
+        tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(i, true, pck);
         return res.prefix;
     }
 

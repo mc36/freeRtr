@@ -303,7 +303,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
             switch (tlv.valTyp) {
                 case 0x102: // ipv4 int
                     pck2.getSkip(20);
-                    ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.afiIpv4, false, pck2);
+                    ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.afiIpv4, true, pck2);
                     if (ntry == null) {
                         continue;
                     }
@@ -311,7 +311,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
                     break;
                 case 0x103: // ipv4 ext
                     pck2.getSkip(40);
-                    ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.afiIpv4, false, pck2);
+                    ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.afiIpv4, true, pck2);
                     if (ntry == null) {
                         continue;
                     }
@@ -320,7 +320,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
                     break;
                 case 0x402: // ipv6 int
                     pck2.getSkip(32);
-                    ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.afiIpv6, false, pck2);
+                    ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.afiIpv6, true, pck2);
                     if (ntry == null) {
                         continue;
                     }
@@ -328,7 +328,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
                     break;
                 case 0x403: // ipv6 ext
                     pck2.getSkip(52);
-                    ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.afiIpv6, false, pck2);
+                    ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.afiIpv6, true, pck2);
                     if (ntry == null) {
                         continue;
                     }

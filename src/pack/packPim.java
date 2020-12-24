@@ -271,7 +271,7 @@ public class packPim {
         if (enc != 0) {
             return null;
         }
-        tabRouteEntry<addrIP> prf = rtrBgpUtil.readPrefix(afi, false, pck);
+        tabRouteEntry<addrIP> prf = rtrBgpUtil.readPrefix(afi, true, pck);
         return prf.prefix;
     }
 
