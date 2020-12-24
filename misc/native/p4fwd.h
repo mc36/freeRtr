@@ -1012,6 +1012,10 @@ ipv4_rou:
                 put32msb(bufD, bufP, label);
                 neigh_ntry.id = route4_res->nexthop;
                 goto ethtyp_tx;
+            case 5: // srv6
+                putIpv6header(4, route4_res->srv1, route4_res->srv2, route4_res->srv3, route4_res->srv4, route4_res->srv1, route4_res->srv2, route4_res->srv3, route4_res->srv4);
+                neigh_ntry.id = route4_res->nexthop;
+                goto nethtyp_tx;
             }
         }
         goto punt;
@@ -1231,6 +1235,10 @@ ipv6_hit:
                 put32msb(bufD, bufP, label);
                 neigh_ntry.id = route6_res->nexthop;
                 goto ethtyp_tx;
+            case 5: // srv6
+                putIpv6header(41, route6_res->srv1, route6_res->srv2, route6_res->srv3, route6_res->srv4, route6_res->srv1, route6_res->srv2, route6_res->srv3, route6_res->srv4);
+                neigh_ntry.id = route6_res->nexthop;
+                goto nethtyp_tx;
             }
         }
         goto punt;
