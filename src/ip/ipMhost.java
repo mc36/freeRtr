@@ -13,12 +13,22 @@ import util.state.states;
  *
  * @author matecsaba
  */
-public abstract class ipMhost implements ipPrt {
+public abstract class ipMhost implements ipPrt, ipMhostHndl {
 
     /**
      * forwarder
      */
-    protected ipFwd lower;
+    protected ipFwd fwdCore;
+
+    /**
+     * icmp
+     */
+    protected ipIcmp icmpCore;
+
+    /**
+     * uses icmp
+     */
+    protected boolean usesIcmp;
 
     private counter cntr = new counter();
 
@@ -29,8 +39,10 @@ public abstract class ipMhost implements ipPrt {
      * @param icc icmp to use
      */
     public void setForwarder(ipFwd ifw, ipIcmp icc) {
-        lower = ifw;
-        if (icc.getProtoNum() == getProtoNum()) {
+        fwdCore = ifw;
+        icmpCore = icc;
+        usesIcmp = icc.getProtoNum() == getProtoNum();
+        if (usesIcmp) {
             return;
         }
         ifw.protoAdd(this, null, null);
@@ -170,37 +182,36 @@ public abstract class ipMhost implements ipPrt {
     public abstract boolean parsePacket(ipFwdIface rxIfc, packHolder pck);
 
     /**
-     * create packet
+     * create header
      *
      * @param rxIfc receiving interface
+     * @param pck packet to parse
+     */
+    public abstract void updateHeader(ipFwdIface rxIfc, packHolder pck);
+
+    /**
+     * create query
+     *
      * @param tim query interval
      * @param pck packet to use
      * @param grp group queryed, null if generic
      * @param src source, null if generic
      */
-    public abstract void createQuery(ipFwdIface rxIfc, int tim, packHolder pck, addrIP grp, addrIP src);
+    public abstract void createQuery(int tim, packHolder pck, addrIP grp, addrIP src);
 
     /**
      * create report
      *
-     * @param rxIfc receiving interface
      * @param pck packet to use
      * @param grp group reported, null if generic
      * @param src source, null if generic
      * @param need true if report, false if leaved
      */
-    public abstract void createReport(ipFwdIface rxIfc, packHolder pck, addrIP grp, addrIP src, boolean need);
+    public abstract void createReport(packHolder pck, addrIP grp, addrIP src, boolean need);
 
-    /**
-     * process query message
-     *
-     * @param rxIfc receiving interface
-     * @param grp group queryed, null if generic
-     * @param src source, null if generic
-     */
-    protected void gotQuery(ipFwdIface rxIfc, addrIP grp, addrIP src) {
+    public void gotQuery(Object ifc, addrIP grp, addrIP src) {
         if (debugger.ipMhostTraf) {
-            logger.debug("rx query src=" + src + " grp=" + grp + " ifc=" + rxIfc);
+            logger.debug("rx query src=" + src + " grp=" + grp + " ifc=" + ifc);
         }
         if (src == null) {
             return;
@@ -210,17 +221,9 @@ public abstract class ipMhost implements ipPrt {
         }
     }
 
-    /**
-     * process report message
-     *
-     * @param rxIfc receiving interface
-     * @param grp group reported, null if generic
-     * @param src source, null if generic
-     * @param need true if report, false if leaved
-     */
-    protected void gotReport(ipFwdIface rxIfc, addrIP grp, addrIP src, boolean need) {
+    public void gotReport(Object ifc, addrIP grp, addrIP src, boolean need) {
         if (debugger.ipMhostTraf) {
-            logger.debug("rx report need=" + need + " src=" + src + " grp=" + grp);
+            logger.debug("rx report need=" + need + " src=" + src + " grp=" + grp + " ifc=" + ifc);
         }
         if (src == null) {
             return;
@@ -228,10 +231,11 @@ public abstract class ipMhost implements ipPrt {
         if (grp == null) {
             return;
         }
+        ipFwdIface rxIfc = (ipFwdIface) ifc;
         if (need) {
-            lower.mcastAddFloodIfc(grp, src, rxIfc, rxIfc.mhostCfg.queryInterval * 3);
+            fwdCore.mcastAddFloodIfc(grp, src, rxIfc, rxIfc.mhostCfg.queryInterval * 3);
         } else {
-            lower.mcastDelFloodIfc(grp, src, rxIfc);
+            fwdCore.mcastDelFloodIfc(grp, src, rxIfc);
         }
     }
 
@@ -248,8 +252,12 @@ public abstract class ipMhost implements ipPrt {
             logger.debug("tx query src=" + src + " grp=" + grp);
         }
         packHolder pck = new packHolder(true, true);
-        createQuery(rxIfc, tim, pck, grp, src);
-        lower.protoPack(rxIfc, null, pck);
+        createQuery(tim, pck, grp, src);
+        updateHeader(rxIfc, pck);
+        if (usesIcmp) {
+            icmpCore.createICMPheader(pck);
+        }
+        fwdCore.protoPack(rxIfc, null, pck);
     }
 
     /**
@@ -265,8 +273,12 @@ public abstract class ipMhost implements ipPrt {
             logger.debug("tx report need=" + need + " src=" + src + " grp=" + grp);
         }
         packHolder pck = new packHolder(true, true);
-        createReport(rxIfc, pck, grp, src, need);
-        lower.protoPack(rxIfc, null, pck);
+        createReport(pck, grp, src, need);
+        updateHeader(rxIfc, pck);
+        if (usesIcmp) {
+            icmpCore.createICMPheader(pck);
+        }
+        fwdCore.protoPack(rxIfc, null, pck);
     }
 
 }

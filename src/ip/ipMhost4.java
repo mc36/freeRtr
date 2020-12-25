@@ -12,6 +12,11 @@ import pack.packHolder;
 public class ipMhost4 extends ipMhost {
 
     /**
+     * protocol number
+     */
+    public final static int protoNum = 2;
+
+    /**
      * group membership query, v1, v2, v3
      */
     public final static int typQuery = 0x11;
@@ -42,7 +47,7 @@ public class ipMhost4 extends ipMhost {
      * @return string
      */
     public String toString() {
-        return "igmp on " + lower;
+        return "igmp on " + fwdCore;
     }
 
     /**
@@ -51,17 +56,18 @@ public class ipMhost4 extends ipMhost {
      * @return number
      */
     public int getProtoNum() {
-        return 2;
+        return protoNum;
     }
 
     /**
      * parse header
      *
-     * @param rxIfc interface
+     * @param hnd handler to use
+     * @param ifc interface
      * @param pck packet
      * @return false on success, true on error
      */
-    public boolean parsePacket(ipFwdIface rxIfc, packHolder pck) {
+    public static boolean parsePacket(ipMhostHndl hnd, Object ifc, packHolder pck) {
         if (pck.getIPsum(0, pck.dataSize(), 0) != 0xffff) {
             return true;
         }
@@ -81,7 +87,7 @@ public class ipMhost4 extends ipMhost {
         switch (typ) {
             case typQuery:
                 if (pck.dataSize() < 1) {
-                    gotQuery(rxIfc, grp, null);
+                    hnd.gotQuery(ifc, grp, null);
                     return false;
                 }
                 int cnt = pck.msbGetW(2); // number of sources
@@ -91,15 +97,15 @@ public class ipMhost4 extends ipMhost {
                     pck.getSkip(addrIPv4.size);
                     addrIP adr = new addrIP();
                     adr.fromIPv4addr(a4);
-                    gotQuery(rxIfc, grp, adr);
+                    hnd.gotQuery(ifc, grp, adr);
                 }
                 return false;
             case typReport1:
             case typReport2:
-                gotReport(rxIfc, grp, null, true);
+                hnd.gotReport(ifc, grp, null, true);
                 return false;
             case typLeave:
-                gotReport(rxIfc, grp, null, false);
+                hnd.gotReport(ifc, grp, null, false);
                 return false;
             case typReport3:
                 cnt = pck.msbGetW(-2); // number of groups
@@ -116,7 +122,7 @@ public class ipMhost4 extends ipMhost {
                         pck.getSkip(addrIPv4.size);
                         addrIP adr = new addrIP();
                         adr.fromIPv4addr(a4);
-                        gotReport(rxIfc, grp, adr, (typ & 1) != 0);
+                        hnd.gotReport(ifc, grp, adr, (typ & 1) != 0);
                     }
                     pck.getSkip(aux);
                 }
@@ -126,7 +132,11 @@ public class ipMhost4 extends ipMhost {
         }
     }
 
-    private void updateHeader(ipFwdIface rxIfc, packHolder pck) {
+    public boolean parsePacket(ipFwdIface ifc, packHolder pck) {
+        return parsePacket(this, ifc, pck);
+    }
+
+    public void updateHeader(ipFwdIface rxIfc, packHolder pck) {
         int siz = pck.headSize();
         pck.putSkip(-siz);
         pck.lsbPutW(2, 0xffff - pck.putIPsum(0, siz, 0)); // checksum
@@ -140,16 +150,7 @@ public class ipMhost4 extends ipMhost {
         pck.IPtrg.fromString("224.0.0.1");
     }
 
-    /**
-     * create query
-     *
-     * @param rxIfc interface
-     * @param tim time
-     * @param pck packet
-     * @param grp group
-     * @param src source
-     */
-    public void createQuery(ipFwdIface rxIfc, int tim, packHolder pck, addrIP grp, addrIP src) {
+    public void createQuery(int tim, packHolder pck, addrIP grp, addrIP src) {
         if (grp == null) {
             grp = new addrIP();
         }
@@ -167,19 +168,9 @@ public class ipMhost4 extends ipMhost {
             pck.putAddr(0, src.toIPv4());
             pck.putSkip(addrIPv4.size);
         }
-        updateHeader(rxIfc, pck);
     }
 
-    /**
-     * create report
-     *
-     * @param rxIfc interface
-     * @param pck packet
-     * @param grp group
-     * @param src source
-     * @param need needed
-     */
-    public void createReport(ipFwdIface rxIfc, packHolder pck, addrIP grp, addrIP src, boolean need) {
+    public void createReport(packHolder pck, addrIP grp, addrIP src, boolean need) {
         pck.putByte(0, typReport3); // type
         pck.putByte(1, 0); // reserved
         pck.msbPutW(2, 0); // checksum
@@ -196,7 +187,6 @@ public class ipMhost4 extends ipMhost {
             pck.putAddr(0, src.toIPv4());
             pck.putSkip(addrIPv4.size);
         }
-        updateHeader(rxIfc, pck);
     }
 
 }

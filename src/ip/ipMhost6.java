@@ -12,14 +12,22 @@ import pack.packHolder;
 public class ipMhost6 extends ipMhost {
 
     public String toString() {
-        return "mld on " + lower;
+        return "mld on " + fwdCore;
     }
 
     public int getProtoNum() {
         return ipIcmp6.protoNum;
     }
 
-    public boolean parsePacket(ipFwdIface rxIfc, packHolder pck) {
+    /**
+     * parse header
+     *
+     * @param hnd handler to use
+     * @param ifc interface
+     * @param pck packet
+     * @return false on success, true on error
+     */
+    public static boolean parsePacket(ipMhostHndl hnd, Object ifc, packHolder pck) {
         addrIPv6 a6 = new addrIPv6();
 //  int tim = pck.msbGetW(-4); // time
         pck.getAddr(a6, 0); // group
@@ -34,7 +42,7 @@ public class ipMhost6 extends ipMhost {
         switch (pck.ICMPtc) {
             case ipIcmp6.icmpMcastQuery:
                 if (pck.dataSize() < 1) {
-                    gotQuery(rxIfc, grp, null);
+                    hnd.gotQuery(ifc, grp, null);
                     return false;
                 }
                 int cnt = pck.msbGetW(2); // number of sources
@@ -44,14 +52,14 @@ public class ipMhost6 extends ipMhost {
                     pck.getSkip(addrIPv6.size);
                     addrIP adr = new addrIP();
                     adr.fromIPv6addr(a6);
-                    gotQuery(rxIfc, grp, adr);
+                    hnd.gotQuery(ifc, grp, adr);
                 }
                 return false;
             case ipIcmp6.icmpMcastDone:
-                gotReport(rxIfc, grp, null, false);
+                hnd.gotReport(ifc, grp, null, false);
                 return false;
             case ipIcmp6.icmpMcastRprt1:
-                gotReport(rxIfc, grp, null, true);
+                hnd.gotReport(ifc, grp, null, true);
                 return false;
             case ipIcmp6.icmpMcastRprt2:
                 pck.getSkip(-addrIPv6.size);
@@ -69,7 +77,7 @@ public class ipMhost6 extends ipMhost {
                         pck.getSkip(addrIPv6.size);
                         addrIP adr = new addrIP();
                         adr.fromIPv6addr(a6);
-                        gotReport(rxIfc, grp, adr, (typ & 1) != 0);
+                        hnd.gotReport(ifc, grp, adr, (typ & 1) != 0);
                     }
                     pck.getSkip(aux);
                 }
@@ -79,16 +87,19 @@ public class ipMhost6 extends ipMhost {
         }
     }
 
-    private void updateHeader(ipFwdIface rxIfc, packHolder pck) {
+    public boolean parsePacket(ipFwdIface ifc, packHolder pck) {
+        return parsePacket(this, ifc, pck);
+    }
+
+    public void updateHeader(ipFwdIface rxIfc, packHolder pck) {
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
         pck.IPsrc.setAddr(rxIfc.addr);
         pck.IPtrg.fromString("ff02::16");
-        lower.icmpCore.createICMPheader(pck);
     }
 
-    public void createQuery(ipFwdIface rxIfc, int tim, packHolder pck, addrIP grp, addrIP src) {
+    public void createQuery(int tim, packHolder pck, addrIP grp, addrIP src) {
         if (grp == null) {
             grp = new addrIP();
         }
@@ -106,10 +117,9 @@ public class ipMhost6 extends ipMhost {
         pck.msbPutW(4, 1000); // max response code
         pck.msbPutW(6, 0); // reserved
         pck.ICMPtc = ipIcmp6.icmpMcastQuery;
-        updateHeader(rxIfc, pck);
     }
 
-    public void createReport(ipFwdIface rxIfc, packHolder pck, addrIP grp, addrIP src, boolean need) {
+    public void createReport(packHolder pck, addrIP grp, addrIP src, boolean need) {
         pck.putByte(0, need ? 5 : 6); // type
         pck.putByte(1, 0); // aux size
         pck.msbPutW(2, src == null ? 0 : 1); // source count
@@ -124,7 +134,6 @@ public class ipMhost6 extends ipMhost {
         pck.msbPutW(4, 0); // reserved
         pck.msbPutW(6, 1); // groups
         pck.ICMPtc = ipIcmp6.icmpMcastRprt2;
-        updateHeader(rxIfc, pck);
     }
 
 }
