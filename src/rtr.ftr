@@ -2075,6 +2075,8 @@ qc pass: multicast routing decoupled from unicast
 qc pass: multicast routing with pim join source
 qc pass: multicast routing with pim over bier
 qc pass: multicast between pim and pim over bier
+qc pass: multicast routing with pim snooping
+qc pass: multicast routing with igmp/mld snooping
 qc pass: olsr on one subnet
 qc pass: olsr in chain
 qc pass: olsr ingress route filtering with prefixlist
