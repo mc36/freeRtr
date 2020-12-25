@@ -2320,6 +2320,5 @@ todo: more show commands
 todo: more clear commands
 todo: more interactive tools
 todo: more features with clean implementation
-todo: igmp4/6 snoop, pim4/6 snoop for bridging
 todo: x25
 todo: default vrf for show commands

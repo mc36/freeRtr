@@ -4,12 +4,14 @@ import addr.addrIP;
 import addr.addrMac;
 import ip.ipIfc4;
 import ip.ipIfc6;
+import ip.ipMhostHndl;
 import java.util.Comparator;
 import pack.packHolder;
 import pack.packStp;
 import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabListing;
+import util.bits;
 import util.counter;
 import util.state;
 
@@ -18,7 +20,7 @@ import util.state;
  *
  * @author matecsaba
  */
-public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
+public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc> {
 
     /**
      * bridging interface number
@@ -94,6 +96,11 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
      * ipv6 egress acl
      */
     public tabListing<tabAceslstN<addrIP>, addrIP> filter6out;
+
+    /**
+     * joined groups
+     */
+    public tabGen<ifcBridgeGrp> groups;
 
     private counter cntr = new counter();
 
@@ -271,8 +278,32 @@ public class ifcBridgeIfc implements ifcUp, Comparator<ifcBridgeIfc> {
         }
     }
 
+    public void mhostQuery(Object ifc, addrIP grp, addrIP src) {
+    }
+
+    public void mhostReport(Object ifc, addrIP grp, addrIP src, boolean need) {
+        if (!need) {
+            return;
+        }
+        if (groups == null) {
+            groups = new tabGen<ifcBridgeGrp>();
+        }
+        ifcBridgeGrp group = new ifcBridgeGrp(grp);
+        ifcBridgeGrp old = groups.add(group);
+        if (old != null) {
+            group = old;
+        }
+        group.time = bits.getTime();
+    }
+
     public String toString() {
-        return getIfcName() + "|" + (!blocked) + "|" + physical + "|" + cntr.getShPsum() + "|" + cntr.getShBsum();
+        String a = "";
+        if (groups != null) {
+            for (int i = 0; i < groups.size(); i++) {
+                a += " " + groups.get(i);
+            }
+        }
+        return getIfcName() + "|" + (!blocked) + "|" + physical + "|" + cntr.getShPsum() + "|" + cntr.getShBsum() + "|" + a;
     }
 
 }

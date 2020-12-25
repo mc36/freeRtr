@@ -1776,7 +1776,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         if (pck.IPmlt || pck.IPbrd) {
-            if (pck.IPbrd || !pck.IPtrg.isRoutedMcast()) {
+            if (pck.IPbrd || !pck.IPmlr) {
                 if ((from & 1) != 0) {
                     protoSend(rxIfc, pck);
                 } else {

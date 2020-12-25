@@ -6,13 +6,19 @@ import addr.addrType;
 import ip.ipCor;
 import ip.ipCor4;
 import ip.ipCor6;
+import ip.ipIcmp6;
 import ip.ipIfc4;
+import ip.ipIfc4arp;
 import ip.ipIfc6;
+import ip.ipMhost4;
+import ip.ipMhost6;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import pack.packHolder;
+import pack.packPim;
+import pack.packPimGrp;
 import pack.packStp;
 import tab.tabGen;
 import tab.tabRtrmapN;
@@ -74,6 +80,11 @@ public class ifcBridge implements ifcDn {
     public int macAgeTime = 10 * 60 * 1000;
 
     /**
+     * group aging time
+     */
+    public int grpAgeTime = 3 * 60 * 1000;
+
+    /**
      * log mac movements
      */
     public boolean macMove;
@@ -82,6 +93,11 @@ public class ifcBridge implements ifcDn {
      * block unicast with unknown destination
      */
     public boolean blockUnicast;
+
+    /**
+     * block multicast with unknown destination
+     */
+    public boolean blockMulticast;
 
     /**
      * disable peer communication
@@ -221,7 +237,7 @@ public class ifcBridge implements ifcDn {
      * @return list of interface
      */
     public userFormat getShowIfc() {
-        userFormat lst = new userFormat("|", "iface|fwd|phys|tx|rx|drop|tx|rx|drop", "3|3packet|3byte");
+        userFormat lst = new userFormat("|", "iface|fwd|phys|tx|rx|drop|tx|rx|drop|grp", "3|3packet|3byte|1");
         lst.add("" + upNtry);
         for (int i = 0; i < ifaces.size(); i++) {
             lst.add("" + ifaces.get(i));
@@ -338,6 +354,7 @@ public class ifcBridge implements ifcDn {
         l.add("1 .     mac-move                    enable mac move logging");
         l.add("1 .     private-bridge              disable peer communication");
         l.add("1 .     block-unicast               block unknown destination unicast");
+        l.add("1 .     block-multicast             block unwanted destination multicast");
         l.add("1 .     padup-small                 pad up small packets");
         l.add("1 2     mac-age                     set mac aging time");
         l.add("2 .       <num>                     time in ms");
@@ -372,6 +389,7 @@ public class ifcBridge implements ifcDn {
         cmds.cfgLine(l, !macMove, beg, "mac-move", "");
         cmds.cfgLine(l, !privateBridge, beg, "private-bridge", "");
         cmds.cfgLine(l, !blockUnicast, beg, "block-unicast", "");
+        cmds.cfgLine(l, !blockMulticast, beg, "block-multicast", "");
         cmds.cfgLine(l, !padupSmall, beg, "padup-small", "");
         l.add(beg + "mac-age " + macAgeTime);
         l.add(beg + "stp-priority " + stpPrio);
@@ -449,6 +467,10 @@ public class ifcBridge implements ifcDn {
         }
         if (a.equals("block-unicast")) {
             blockUnicast = true;
+            return;
+        }
+        if (a.equals("block-multicast")) {
+            blockMulticast = true;
             return;
         }
         if (a.equals("mac-age")) {
@@ -529,6 +551,10 @@ public class ifcBridge implements ifcDn {
         }
         if (a.equals("block-unicast")) {
             blockUnicast = false;
+            return;
+        }
+        if (a.equals("block-multicast")) {
+            blockMulticast = false;
             return;
         }
         if (a.equals("mac-address")) {
@@ -693,15 +719,49 @@ public class ifcBridge implements ifcDn {
     }
 
     /**
+     * purge group addresses
+     *
+     * @param rnd round number
+     */
+    protected void doGroupPurge(int rnd) {
+        if ((rnd % 60) != 0) {
+            return;
+        }
+        currTim = bits.getTime();
+        if (debugger.ifcBridgeTraf) {
+            logger.debug("purge");
+        }
+        for (int o = 0; o < ifaces.size(); o++) {
+            ifcBridgeIfc ifc = ifaces.get(o);
+            if (ifc == null) {
+                continue;
+            }
+            if (ifc.groups == null) {
+                continue;
+            }
+            for (int i = ifc.groups.size() - 1; i >= 0; i--) {
+                ifcBridgeGrp grp = ifc.groups.get(i);
+                if (grp == null) {
+                    continue;
+                }
+                if ((currTim - grp.time) < grpAgeTime) {
+                    continue;
+                }
+                ifc.groups.del(grp);
+            }
+        }
+    }
+
+    /**
      * purge mac address cache
      *
      * @param rnd round number
      */
     protected void doCachePurge(int rnd) {
-        currTim = bits.getTime();
         if ((rnd % 60) != 0) {
             return;
         }
+        currTim = bits.getTime();
         if (debugger.ifcBridgeTraf) {
             logger.debug("purge");
         }
@@ -862,7 +922,103 @@ public class ifcBridge implements ifcDn {
         lrn.time = currTim;
         lrn.cntr.rx(pck);
         if (pck.ETHtrg.isFloodable()) {
-            floodPack(ifc.ifcNum, ifc.physical, pck);
+            if (!blockMulticast) {
+                floodPack(ifc.ifcNum, ifc.physical, pck);
+                return;
+            }
+            int i = pck.dataSize();
+            pck.getSkip(2);
+            boolean b = false;
+            switch (pck.ETHtype) {
+                case ipIfc4arp.type:
+                    b = true;
+                    break;
+                case ipIfc4.type:
+                    if (core4.parseIPheader(pck, false)) {
+                        return;
+                    }
+                    pck.getSkip(pck.IPsiz);
+                    if (pck.IPprt == ipMhost4.protoNum) {
+                        b = !ipMhost4.parsePacket(ifc, ifc, pck);
+                    }
+                    break;
+                case ipIfc6.type:
+                    if (core6.parseIPheader(pck, false)) {
+                        return;
+                    }
+                    pck.getSkip(pck.IPsiz);
+                    if (pck.IPprt == ipIcmp6.protoNum) {
+                        ipIcmp6.parseICMPports(pck);
+                        pck.getSkip(ipIcmp6.size);
+                        b = !ipMhost6.parsePacket(ifc, ifc, pck);
+                    }
+                    break;
+                default:
+                    return;
+            }
+            if (pck.IPprt == packPim.proto) {
+                packPim pckPim = new packPim();
+                if (!pckPim.parseHeader(pck)) {
+                    pckPim.parsePayload(pck);
+                }
+                if (pckPim.groups != null) {
+                    for (int o = 0; o < pckPim.groups.size(); o++) {
+                        packPimGrp grp = pckPim.groups.get(o);
+                        for (int p = 0; p < grp.joins.size(); p++) {
+                            ifc.mhostReport(ifc, grp.group.network, grp.joins.get(p).network, true);
+                        }
+                        for (int p = 0; p < grp.prunes.size(); p++) {
+                            ifc.mhostReport(ifc, grp.group.network, grp.prunes.get(p).network, false);
+                        }
+                    }
+                }
+                b = true;
+            }
+            int o = pck.dataSize();
+            pck.getSkip(o - i);
+            if (b) {
+                floodPack(ifc.ifcNum, ifc.physical, pck);
+                return;
+            }
+            if (pck.IPbrd) {
+                floodPack(ifc.ifcNum, ifc.physical, pck);
+                return;
+            }
+            if (!pck.IPmlt) {
+                return;
+            }
+            if (!pck.IPmlr) {
+                floodPack(ifc.ifcNum, ifc.physical, pck);
+                return;
+            }
+            ifcBridgeGrp grp = new ifcBridgeGrp(pck.IPtrg);
+            if (privateBridge && (ifc.ifcNum != 0)) {
+                send2upper(ifc.ifcNum, pck);
+                return;
+            }
+            for (i = 0; i < ifaces.size(); i++) {
+                ifcBridgeIfc ntry = ifaces.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ifc.ifcNum == ntry.ifcNum) {
+                    continue;
+                }
+                if (ntry.blocked) {
+                    continue;
+                }
+                if (!(ifc.physical | ntry.physical)) {
+                    continue;
+                }
+                if (ntry.groups == null) {
+                    continue;
+                }
+                if (ntry.groups.find(grp) == null) {
+                    continue;
+                }
+                ntry.doTxPack(pck.copyBytes(true, true));
+            }
+            send2upper(ifc.ifcNum, pck);
             return;
         }
         lrn = new ifcBridgeAdr(pck.ETHtrg.copyBytes());
@@ -1002,6 +1158,7 @@ class ifcBridgeTimer extends TimerTask {
     public void run() {
         try {
             cntr = (cntr + 1) & 0xffff;
+            lower.doGroupPurge(cntr);
             lower.doCachePurge(cntr);
             lower.doStpFloop(cntr);
         } catch (Exception e) {

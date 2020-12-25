@@ -114,6 +114,7 @@ public class ipCor6 implements ipCor {
         pck.IPtrg.fromIPv6addr(adr);
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
+        pck.IPmlr = adr.isRoutedMcast();
         pck.IPlnk = adr.isLinkLocal();
         pck.IPsiz = size;
         pck.IPver = protocolVersion;
@@ -149,6 +150,7 @@ public class ipCor6 implements ipCor {
         addrIPv6 adr = test.toIPv6();
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
+        pck.IPmlr = adr.isRoutedMcast();
         pck.IPlnk = adr.isLinkLocal();
     }
 
@@ -184,6 +186,8 @@ public class ipCor6 implements ipCor {
         pck.putAddr(24, adr); // destination address
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
+        pck.IPmlr = adr.isRoutedMcast();
+        pck.IPlnk = adr.isLinkLocal();
         pck.IPver = protocolVersion;
         pck.IPmf = false;
         pck.IPfrg = 0;

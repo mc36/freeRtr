@@ -9620,3 +9620,5 @@ no todo: pipeline properties, terminal autoresize
 ---------------------------------- 2020-12-21 19:54:27
 qc pass: te explicit path
 qc pass: bgp over te
+---------------------------------- 2020-12-25 14:34:56
+no todo: igmp4/6 snoop, pim4/6 snoop for bridging

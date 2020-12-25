@@ -219,6 +219,11 @@ public class packHolder {
     public boolean IPmlt;
 
     /**
+     * routed multicast destination
+     */
+    public boolean IPmlr;
+
+    /**
      * broadcast destination
      */
     public boolean IPbrd;
@@ -358,6 +363,7 @@ public class packHolder {
         IPfrg = 0;
         IPalrt = -1;
         IPmlt = false;
+        IPmlr = false;
         IPbrd = false;
         IPlnk = false;
         INTupper = 0;
@@ -426,6 +432,7 @@ public class packHolder {
         IPfrg = src.IPfrg;
         IPalrt = src.IPalrt;
         IPmlt = src.IPmlt;
+        IPmlr = src.IPmlr;
         IPbrd = src.IPbrd;
         IPlnk = src.IPlnk;
         INTupper = src.INTupper;
@@ -1132,6 +1139,7 @@ public class packHolder {
         IPtos = -1;
         IPdf = false;
         IPmlt = false;
+        IPmlr = false;
         IPbrd = false;
         IPlnk = false;
         IPdf = false;
