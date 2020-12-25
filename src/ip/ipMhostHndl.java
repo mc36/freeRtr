@@ -16,7 +16,7 @@ public interface ipMhostHndl {
      * @param grp group queryed, null if generic
      * @param src source, null if generic
      */
-    public abstract void gotQuery(Object ifc, addrIP grp, addrIP src);
+    public abstract void mhostQuery(Object ifc, addrIP grp, addrIP src);
 
     /**
      * process report message
@@ -26,6 +26,6 @@ public interface ipMhostHndl {
      * @param src source, null if generic
      * @param need true if report, false if leaved
      */
-    public abstract void gotReport(Object ifc, addrIP grp, addrIP src, boolean need);
+    public abstract void mhostReport(Object ifc, addrIP grp, addrIP src, boolean need);
 
 }

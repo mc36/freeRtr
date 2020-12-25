@@ -42,7 +42,7 @@ public class ipMhost6 extends ipMhost {
         switch (pck.ICMPtc) {
             case ipIcmp6.icmpMcastQuery:
                 if (pck.dataSize() < 1) {
-                    hnd.gotQuery(ifc, grp, null);
+                    hnd.mhostQuery(ifc, grp, null);
                     return false;
                 }
                 int cnt = pck.msbGetW(2); // number of sources
@@ -52,14 +52,14 @@ public class ipMhost6 extends ipMhost {
                     pck.getSkip(addrIPv6.size);
                     addrIP adr = new addrIP();
                     adr.fromIPv6addr(a6);
-                    hnd.gotQuery(ifc, grp, adr);
+                    hnd.mhostQuery(ifc, grp, adr);
                 }
                 return false;
             case ipIcmp6.icmpMcastDone:
-                hnd.gotReport(ifc, grp, null, false);
+                hnd.mhostReport(ifc, grp, null, false);
                 return false;
             case ipIcmp6.icmpMcastRprt1:
-                hnd.gotReport(ifc, grp, null, true);
+                hnd.mhostReport(ifc, grp, null, true);
                 return false;
             case ipIcmp6.icmpMcastRprt2:
                 pck.getSkip(-addrIPv6.size);
@@ -77,7 +77,7 @@ public class ipMhost6 extends ipMhost {
                         pck.getSkip(addrIPv6.size);
                         addrIP adr = new addrIP();
                         adr.fromIPv6addr(a6);
-                        hnd.gotReport(ifc, grp, adr, (typ & 1) != 0);
+                        hnd.mhostReport(ifc, grp, adr, (typ & 1) != 0);
                     }
                     pck.getSkip(aux);
                 }

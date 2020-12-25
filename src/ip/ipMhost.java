@@ -209,7 +209,7 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
      */
     public abstract void createReport(packHolder pck, addrIP grp, addrIP src, boolean need);
 
-    public void gotQuery(Object ifc, addrIP grp, addrIP src) {
+    public void mhostQuery(Object ifc, addrIP grp, addrIP src) {
         if (debugger.ipMhostTraf) {
             logger.debug("rx query src=" + src + " grp=" + grp + " ifc=" + ifc);
         }
@@ -221,7 +221,7 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
         }
     }
 
-    public void gotReport(Object ifc, addrIP grp, addrIP src, boolean need) {
+    public void mhostReport(Object ifc, addrIP grp, addrIP src, boolean need) {
         if (debugger.ipMhostTraf) {
             logger.debug("rx report need=" + need + " src=" + src + " grp=" + grp + " ifc=" + ifc);
         }

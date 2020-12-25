@@ -87,7 +87,7 @@ public class ipMhost4 extends ipMhost {
         switch (typ) {
             case typQuery:
                 if (pck.dataSize() < 1) {
-                    hnd.gotQuery(ifc, grp, null);
+                    hnd.mhostQuery(ifc, grp, null);
                     return false;
                 }
                 int cnt = pck.msbGetW(2); // number of sources
@@ -97,15 +97,15 @@ public class ipMhost4 extends ipMhost {
                     pck.getSkip(addrIPv4.size);
                     addrIP adr = new addrIP();
                     adr.fromIPv4addr(a4);
-                    hnd.gotQuery(ifc, grp, adr);
+                    hnd.mhostQuery(ifc, grp, adr);
                 }
                 return false;
             case typReport1:
             case typReport2:
-                hnd.gotReport(ifc, grp, null, true);
+                hnd.mhostReport(ifc, grp, null, true);
                 return false;
             case typLeave:
-                hnd.gotReport(ifc, grp, null, false);
+                hnd.mhostReport(ifc, grp, null, false);
                 return false;
             case typReport3:
                 cnt = pck.msbGetW(-2); // number of groups
@@ -122,7 +122,7 @@ public class ipMhost4 extends ipMhost {
                         pck.getSkip(addrIPv4.size);
                         addrIP adr = new addrIP();
                         adr.fromIPv4addr(a4);
-                        hnd.gotReport(ifc, grp, adr, (typ & 1) != 0);
+                        hnd.mhostReport(ifc, grp, adr, (typ & 1) != 0);
                     }
                     pck.getSkip(aux);
                 }
