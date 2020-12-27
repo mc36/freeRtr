@@ -859,7 +859,9 @@ ipv4_rx:
         if (ttl <= 1) goto punt;
         bufD[bufP + 8] = ttl;
         update_chksum(bufP + 10, -1);
-        bufT = bufP + 20;
+        bufT = bufD[bufP + 0] & 0xf;
+        if (bufT < 5) bufT = 5;
+        bufT = bufP + (bufT << 2);
         extract_layer4(acl4_ntry, portvrf_res->tcpmss4);
         acls_ntry.ver = 4;
         acls_ntry.dir = 1;
