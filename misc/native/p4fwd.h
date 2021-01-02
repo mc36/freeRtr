@@ -859,6 +859,7 @@ ipv4_rx:
         if (ttl <= 1) goto punt;
         bufD[bufP + 8] = ttl;
         update_chksum(bufP + 10, -1);
+        if ((bufD[bufP + 0] & 0xf0) != 0x40) goto drop;
         bufT = bufD[bufP + 0] & 0xf;
         if (bufT < 5) goto drop;
         bufT = bufP + (bufT << 2);
@@ -1056,6 +1057,7 @@ ipv6_rx:
         ttl = bufD[bufP + 7] - 1;
         if (ttl <= 1) goto punt;
         bufD[bufP + 7] = ttl;
+        if ((bufD[bufP + 0] & 0xf0) != 0x60) goto drop;
         bufT = bufP + 40;
         extract_layer4(acl6_ntry, portvrf_res->tcpmss6);
         acls_ntry.ver = 6;
