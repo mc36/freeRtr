@@ -105,6 +105,10 @@ public class secSsh implements Runnable {
      */
     public static final int portNum = 22;
 
+    private packSsh pckRx;
+
+    private packSsh pckTx;
+
     /**
      * start ssh on a session
      *
@@ -194,8 +198,10 @@ public class secSsh implements Runnable {
 
     private void workerThreads(packSsh p) {
         userS.setReady();
-        new secSshRx(this, p.copyBytes());
-        new secSshTx(this, p.copyBytes());
+        pckRx = p.copyBytes();
+        pckTx = p.copyBytes();
+        new secSshRx(this);
+        new secSshTx(this);
         for (;;) {
             bits.sleep(1000);
             if (userS.isClosed() != 0) {
@@ -236,14 +242,12 @@ public class secSsh implements Runnable {
 
     /**
      * receiver worker
-     *
-     * @param p packet to use
      */
-    protected void workerRx(packSsh p) {
-        packSshChan pc = new packSshChan(p);
+    protected void workerRx() {
+        packSshChan pc = new packSshChan(pckRx);
         for (;;) {
-            p.packRecv();
-            switch (p.pckTyp) {
+            pckRx.packRecv();
+            switch (pckRx.pckTyp) {
                 case packSsh.typeChanData:
                 case packSsh.typeChanExtDat:
                     if (pc.chanDataParse()) {
@@ -256,25 +260,36 @@ public class secSsh implements Runnable {
                     if (pc.chanOpenParse()) {
                         return;
                     }
+                    int tmp = pc.chanRem;
+                    pc = new packSshChan(pckTx);
+                    pc.chanRem = tmp;
                     pc.openFailCreate();
-                    p.packSend();
+                    pckTx.packSend();
+                    pc = new packSshChan(pckRx);
                     break;
                 case packSsh.typeChanReq:
                     if (pc.chanReqParse()) {
                         return;
                     }
-                    pc.chanRem = chanRem;
-                    if (!processChanReq(p, pc)) {
-                        if (pc.needReply) {
-                            pc.chanFailCreate();
-                            p.packSend();
+                    if (!processChanReq(pckRx, pc)) {
+                        if (!pc.needReply) {
+                            break;
                         }
+                        pc = new packSshChan(pckTx);
+                        pc.chanRem = chanRem;
+                        pc.chanFailCreate();
+                        pckTx.packSend();
+                        pc = new packSshChan(pckRx);
                         break;
                     }
-                    if (pc.needReply) {
-                        pc.chanSuccCreate();
-                        p.packSend();
+                    if (!pc.needReply) {
+                        break;
                     }
+                    pc = new packSshChan(pckTx);
+                    pc.chanRem = chanRem;
+                    pc.chanSuccCreate();
+                    pckTx.packSend();
+                    pc = new packSshChan(pckRx);
                     break;
                 case packSsh.typeChanWin:
                     if (pc.chanWindowParse()) {
@@ -294,18 +309,16 @@ public class secSsh implements Runnable {
 
     /**
      * sender worker
-     *
-     * @param p packet to use
      */
-    protected void workerTx(packSsh p) {
-        packSshChan pc = new packSshChan(p);
+    protected void workerTx() {
+        packSshChan pc = new packSshChan(pckTx);
         for (;;) {
-            p.pipe.setTime(userS.getTime());
+            pckTx.pipe.setTime(userS.getTime());
             if (chanBytes > 1024) {
                 pc.chanRem = chanRem;
                 pc.window = chanBytes;
                 pc.chanWindowCreate();
-                p.packSend();
+                pckTx.packSend();
                 chanBytes -= pc.window;
             }
             byte[] buf = new byte[1024];
@@ -326,7 +339,7 @@ public class secSsh implements Runnable {
             }
             pc.chanRem = chanRem;
             pc.chanDataCreate();
-            p.packSend();
+            pckTx.packSend();
         }
     }
 
@@ -627,17 +640,14 @@ class secSshRx implements Runnable {
 
     private secSsh lower;
 
-    private packSsh pack;
-
-    public secSshRx(secSsh parent, packSsh p) {
+    public secSshRx(secSsh parent) {
         lower = parent;
-        pack = p;
         new Thread(this).start();
     }
 
     public void run() {
         try {
-            lower.workerRx(pack);
+            lower.workerRx();
         } catch (Exception e) {
             logger.traceback(e);
         }
@@ -653,17 +663,14 @@ class secSshTx implements Runnable {
 
     private secSsh lower;
 
-    private packSsh pack;
-
-    public secSshTx(secSsh parent, packSsh p) {
+    public secSshTx(secSsh parent) {
         lower = parent;
-        pack = p;
         new Thread(this).start();
     }
 
     public void run() {
         try {
-            lower.workerTx(pack);
+            lower.workerTx();
         } catch (Exception e) {
             logger.traceback(e);
         }
