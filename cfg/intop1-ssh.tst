@@ -78,7 +78,7 @@ r1 send usr
 r1 send pwd
 sleep 5000
 r1 char 13
-r1 read csr1k>
+r1 read vxe>
 r1 send telnet 2.2.2.2
 sleep 5000
 r1 tping 100 10 3.3.3.3 /vrf v1
