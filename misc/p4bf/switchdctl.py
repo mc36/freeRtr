@@ -25,7 +25,7 @@ SDE = os.environ.get("SDE", "/opt/bf-sde-9.3.0")
 SDE_INSTALL = os.environ.get("SDE_INSTALL", SDE + "/install")
 BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python2.7/site-packages/tofino/"
 BSP_FILE_PATH = SDE_INSTALL + "/lib/libpltfm_mgr.so"
-P4_BASE="%s/share/tofinopd/" % SDE_INSTALL 
+P4_BASE="%s/share/tofinopd/" % SDE_INSTALL
 
 # set our lib path
 sys.path.append(
@@ -48,12 +48,12 @@ logger.warn("SDE=%s" % SDE)
 
 SINGLE = 1
 DUAL = 2
-QUAD = 4 
+QUAD = 4
 
 def logException(location, e):
     logger.error("%s: %s error: %s at line number %s" % (location,
                                                          type(e).__name__,
-                                                         e, 
+                                                         e,
                                                          format(sys.exc_info()[-1].tb_lineno)))
 
 class BfRuntimeGrpcClient:
@@ -76,7 +76,7 @@ class BfRuntimeGrpcClient:
         logger.warn("PROFILE_NAME: %s" % self.profile_name)
 
         try:
-            cfg_list = [] 
+            cfg_list = []
             self.setUpGrpcClient()
             cfg_list = self.setP4ProgramList()
             self.sendP4ProgramList(cfg_list)
@@ -109,7 +109,7 @@ class BfRuntimeGrpcClient:
         cfg_list = []
         # By default program is loaded on all TOFINO pipelines
         pipe_id_list = [0,1,2,3]
-        
+
         try:
             if len(self.p4_name_list) == SINGLE:
                 p4_name = self.p4_name_list[0]
@@ -139,7 +139,7 @@ class BfRuntimeGrpcClient:
                     pipe_index = pipe_index + 1
 
             return cfg_list
-   
+
         except Exception as e:
             logException(sys._getframe().f_code.co_name,e)
 
@@ -147,7 +147,7 @@ class BfRuntimeGrpcClient:
 
         try:
             logger.warn("Sending VERIFY, VERIFY_AND_WARM_INIT_BEGIN and WARM_INIT_END")
-        
+
             action = bfruntime_pb2.SetForwardingPipelineConfigRequest.VERIFY_AND_WARM_INIT_BEGIN_AND_END
 
             success = self.interface.send_set_forwarding_pipeline_config_request(
@@ -198,24 +198,6 @@ if __name__ == "__main__":
         choices=["dual","quad"],
         required=False,
         default="",
-    )
-    """
-    group.add_argument(
-        "--multi",
-        help="Load multiple p4 programs on the entire switch based on number of pipes available",
-        action="store_true",
-        required=False,
-        default=False,
-    )
-    """
-    parser.add_argument(
-        "--number-of-pipe",
-        help="Number of pipe available (depends on TOFINO NPU model)",
-        type=str,
-        action="store",
-        choices=["dual","quad"],
-        required=False,
-        default="dual",
     )
     parser.add_argument(
         "--bfruntime-address",
@@ -294,8 +276,8 @@ if __name__ == "__main__":
     p4_program_list = []
 
     try:
-        DUAL_PIPE = "dual" 
-        QUAD_PIPE = "quad" 
+        DUAL_PIPE = "dual"
+        QUAD_PIPE = "quad"
         pipe_list = None
 
 

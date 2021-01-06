@@ -560,7 +560,7 @@ class BfIfSnmpClient(Thread):
         self.die=True
 
 class BfForwarder(Thread):
-    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, tun, poe):
+    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe):
         self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
@@ -572,6 +572,7 @@ class BfForwarder(Thread):
         self.mpls = mpls
         self.srv6 = srv6
         self.nat = nat
+        self.pbr = pbr
         self.tun = tun
         self.poe = poe
         self.die=False
@@ -2442,6 +2443,233 @@ class BfForwarder(Thread):
         )
 
 
+
+    def writePbrNormRules4(
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        if self.pbr == False:
+            return
+        tbl_global_path = "ig_ctl.ig_ctl_pbr"
+        tbl_name = "%s.tbl_ipv4_pbr" % (tbl_global_path)
+        tbl_action_name = "%s.act_normal" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
+            gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = []
+        key_annotation_fields = {
+            "hdr.ipv4.src_addr": "ipv4",
+            "hdr.ipv4.dst_addr": "ipv4",
+        }
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+
+    def writePbrNormRules6(
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        if self.pbr == False:
+            return
+        tbl_global_path = "ig_ctl.ig_ctl_pbr"
+        tbl_name = "%s.tbl_ipv6_pbr" % (tbl_global_path)
+        tbl_action_name = "%s.act_normal" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
+            gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = []
+        key_annotation_fields = {
+            "hdr.ipv6.src_addr": "ipv6",
+            "hdr.ipv6.dst_addr": "ipv6",
+        }
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+
+
+
+
+    def writePbrVrfRules4(
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        if self.pbr == False:
+            return
+        tbl_global_path = "ig_ctl.ig_ctl_pbr"
+        tbl_name = "%s.tbl_ipv4_pbr" % (tbl_global_path)
+        tbl_action_name = "%s.act_setvrf" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
+            gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = [
+            gc.DataTuple("vrf_id", tvrf),
+        ]
+        key_annotation_fields = {
+            "hdr.ipv4.src_addr": "ipv4",
+            "hdr.ipv4.dst_addr": "ipv4",
+        }
+        data_annotation_fields = {
+        }
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+
+    def writePbrVrfRules6(
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        if self.pbr == False:
+            return
+        tbl_global_path = "ig_ctl.ig_ctl_pbr"
+        tbl_name = "%s.tbl_ipv6_pbr" % (tbl_global_path)
+        tbl_action_name = "%s.act_setvrf" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
+            gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = [
+            gc.DataTuple("vrf_id", tvrf),
+        ]
+        key_annotation_fields = {
+            "hdr.ipv6.src_addr": "ipv6",
+            "hdr.ipv6.dst_addr": "ipv6",
+        }
+        data_annotation_fields = {
+        }
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+
+
+
+
+    def writePbrHopRules4(
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        if self.pbr == False:
+            return
+        tbl_global_path = "ig_ctl.ig_ctl_pbr"
+        tbl_name = "%s.tbl_ipv4_pbr" % (tbl_global_path)
+        tbl_action_name = "%s.act_sethop" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
+            gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = [
+            gc.DataTuple("vrf_id", tvrf),
+            gc.DataTuple("nexthop_id", thop),
+        ]
+        key_annotation_fields = {
+            "hdr.ipv4.src_addr": "ipv4",
+            "hdr.ipv4.dst_addr": "ipv4",
+        }
+        data_annotation_fields = {
+        }
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+
+    def writePbrHopRules6(
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        if self.pbr == False:
+            return
+        tbl_global_path = "ig_ctl.ig_ctl_pbr"
+        tbl_name = "%s.tbl_ipv6_pbr" % (tbl_global_path)
+        tbl_action_name = "%s.act_sethop" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
+            gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = [
+            gc.DataTuple("vrf_id", tvrf),
+            gc.DataTuple("nexthop_id", thop),
+        ]
+        key_annotation_fields = {
+            "hdr.ipv6.src_addr": "ipv6",
+            "hdr.ipv6.dst_addr": "ipv6",
+        }
+        data_annotation_fields = {
+        }
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+
+
+
     def writeGre4rules(
         self, op_type, nexthop, port, phport, sip, dip, dmac, vrf, smac
     ):
@@ -4250,6 +4478,357 @@ class BfForwarder(Thread):
                 continue
 
 
+
+            if splt[0] == "pbr4norm_add":
+                self.writePbrNormRules4(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr4norm_mod":
+                self.writePbrNormRules4(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr4norm_del":
+                self.writePbrNormRules4(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+
+            if splt[0] == "pbr6norm_add":
+                self.writePbrNormRules6(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr6norm_mod":
+                self.writePbrNormRules6(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr6norm_del":
+                self.writePbrNormRules6(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+
+            if splt[0] == "pbr4vrf_add":
+                self.writePbrVrfRules4(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr4vrf_mod":
+                self.writePbrVrfRules4(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr4vrf_del":
+                self.writePbrVrfRules4(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+
+            if splt[0] == "pbr6vrf_add":
+                self.writePbrVrfRules6(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr6vrf_mod":
+                self.writePbrVrfRules6(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr6vrf_del":
+                self.writePbrVrfRules6(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+
+            if splt[0] == "pbr4hop_add":
+                self.writePbrHopRules4(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr4hop_mod":
+                self.writePbrHopRules4(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr4hop_del":
+                self.writePbrHopRules4(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+
+            if splt[0] == "pbr6hop_add":
+                self.writePbrHopRules6(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr6hop_mod":
+                self.writePbrHopRules6(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "pbr6hop_del":
+                self.writePbrHopRules6(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+
+
+
             if splt[0] == "gre4_add":
                 self.writeGre4rules(
                     1,
@@ -5077,6 +5656,16 @@ if __name__ == "__main__":
         default=True,
     )
     parser.add_argument(
+        "--pbr",
+        help="enable pbr",
+        type=str2bool,
+        nargs='?',
+        const=True,
+        action="store",
+        required=False,
+        default=True,
+    )
+    parser.add_argument(
         "--tun",
         help="enable tunnel",
         type=str2bool,
@@ -5202,6 +5791,7 @@ if __name__ == "__main__":
                                args.mpls,
                                args.srv6,
                                args.nat,
+                               args.pbr,
                                args.tun,
                                args.poe,
                                )

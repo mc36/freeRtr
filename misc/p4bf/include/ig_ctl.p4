@@ -81,6 +81,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_NAT
     IngressControlNAT() ig_ctl_nat;
 #endif
+#ifdef HAVE_PBR
+    IngressControlPBR() ig_ctl_pbr;
+#endif
 
     Counter< bit<64>, SubIntId_t> ((MAX_PORT+1), CounterType_t.PACKETS_AND_BYTES) pkt_out_stats;
 
@@ -120,6 +123,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #endif
 #ifdef HAVE_NAT
             ig_ctl_nat.apply(hdr,ig_md,ig_intr_md);
+#endif
+#ifdef HAVE_PBR
+            ig_ctl_pbr.apply(hdr,ig_md,ig_intr_md);
 #endif
 #ifdef HAVE_BRIDGE
             ig_ctl_bridge.apply(hdr, ig_md, ig_intr_md);

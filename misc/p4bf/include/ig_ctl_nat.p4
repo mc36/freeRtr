@@ -175,8 +175,7 @@ ig_md.layer4_dstprt:
             if (!tbl_ipv4_nat_trns.apply().hit) {
                 tbl_ipv4_nat_cfg.apply();
             }
-        }
-        if (ig_md.ipv6_valid==1)  {
+        } else if (ig_md.ipv6_valid==1)  {
             if (!tbl_ipv6_nat_trns.apply().hit) {
                 tbl_ipv6_nat_cfg.apply();
             }

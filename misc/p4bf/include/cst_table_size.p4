@@ -47,6 +47,8 @@ on routing only profile we can have this
 #define IPV6_NATTRNS_TABLE_SIZE                512
 #define IPV4_NATACL_TABLE_SIZE                 512
 #define IPV6_NATACL_TABLE_SIZE                 512
+#define IPV4_PBRACL_TABLE_SIZE                 512
+#define IPV6_PBRACL_TABLE_SIZE                 512
 
 #define IPV4_COPP_TABLE_SIZE                   512
 #define IPV6_COPP_TABLE_SIZE                   512
