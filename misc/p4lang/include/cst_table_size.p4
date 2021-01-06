@@ -36,6 +36,8 @@
 #define IPV6_NATTRNS_TABLE_SIZE                2048
 #define IPV4_NATACL_TABLE_SIZE                 2048
 #define IPV6_NATACL_TABLE_SIZE                 2048
+#define IPV4_PBRACL_TABLE_SIZE                 2048
+#define IPV6_PBRACL_TABLE_SIZE                 2048
 
 #define IPV4_COPP_TABLE_SIZE                   2048
 #define IPV6_COPP_TABLE_SIZE                   2048

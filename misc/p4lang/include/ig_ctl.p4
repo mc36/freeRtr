@@ -44,6 +44,7 @@ control ig_ctl(inout headers hdr,
     IngressControlAclIn() ig_ctl_acl_in;
     IngressControlAclOut() ig_ctl_acl_out;
     IngressControlNAT() ig_ctl_nat;
+    IngressControlPBR() ig_ctl_pbr;
 
 
     apply {
@@ -81,6 +82,7 @@ control ig_ctl(inout headers hdr,
             ig_md.punting = 1;
             return;
         }
+        ig_ctl_pbr.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_ipv4.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_ipv6.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_bridge.apply(hdr,ig_md,ig_intr_md);

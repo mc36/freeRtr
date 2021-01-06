@@ -187,6 +187,27 @@ vrf definition v6
  label-mode per-prefix
  exit
 !
+vrf definition v7
+ rd 1:7
+ rt-import 1:7
+ rt-export 1:7
+ label-mode per-prefix
+ exit
+!
+vrf definition v8
+ rd 1:8
+ rt-import 1:8
+ rt-export 1:8
+ label-mode per-prefix
+ exit
+!
+vrf definition v9
+ rd 1:9
+ rt-import 1:9
+ rt-export 1:9
+ label-mode per-prefix
+ exit
+!
 vrf definition vpn
  rd 65535:1
  rt-import 65535:1
@@ -708,6 +729,45 @@ ipv6 flow v1 collect
 !
 !
 !
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
 translation-rule 1
  remove %20
  remove -
@@ -898,4 +958,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=1b19099cf05a5219d81d6ee181729b0defeba9a6bfc97797170f5a0e7ba65f4191f0c4fa9ac4f51bf9dee1c8ce6feb4bbdc5f514d7b1ae16ab618ce131508bf9-7283a9cae2959192b703333eca434eeaeac06a889703a086ec54109071305d3bccfe641040132f3ea162e46bcc0b1a8ee09a8de279cfa849ba70753eb0fe86e6
+end chksum=fbaaa57ca2f47f8f201416dc4106897eb1bd46094619dd09884e602908c9baa73dbae5777567b848604660c97585544adc55aab827cec87bee1196b3700a59a9-9db3acba42f226abeee30c19f63edbea6e9b3eae7150e2eebf6b1e31553885138cce45fa7a49afe84357b2022b30ee157b660b455bd4965257549eacc526b9af

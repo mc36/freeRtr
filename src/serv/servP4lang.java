@@ -54,6 +54,7 @@ import tab.tabListing;
 import tab.tabListingEntry;
 import tab.tabNatCfgN;
 import tab.tabNatTraN;
+import tab.tabPbrN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRouteIface;
@@ -771,6 +772,14 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
     public tabListing<tabAceslstN<addrIP>, addrIP> natCfg6f;
 
+    public tabListing<tabAceslstN<addrIP>, addrIP> pbrCfg4;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> pbrCfg6;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> pbrCfg4f;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> pbrCfg6f;
+
     public tabGen<tabNatTraN> natTrns4 = new tabGen<tabNatTraN>();
 
     public tabGen<tabNatTraN> natTrns6 = new tabGen<tabNatTraN>();
@@ -795,6 +804,10 @@ class servP4langVrf implements Comparator<servP4langVrf> {
         natCfg6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
         natTrns4 = new tabGen<tabNatTraN>();
         natTrns6 = new tabGen<tabNatTraN>();
+        pbrCfg4 = null;
+        pbrCfg4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        pbrCfg6 = null;
+        pbrCfg6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
     }
 
 }
@@ -1278,6 +1291,32 @@ class servP4langConn implements Runnable {
                 updateAcl(cmd, vrf.natCfg6f);
                 return false;
             }
+            if (s.equals("pbracl4_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateAcl(cmd, vrf.pbrCfg4f);
+                return false;
+            }
+            if (s.equals("pbracl6_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateAcl(cmd, vrf.pbrCfg6f);
+                return false;
+            }
             if (s.equals("coppacl4_cnt")) {
                 updateAcl(cmd, copp4f);
                 return false;
@@ -1425,14 +1464,14 @@ class servP4langConn implements Runnable {
             keepalive = 0;
         }
         if (copp4 != lower.expCopp4) {
-            sendAcl("copp4_del ", true, copp4f, null, null);
+            sendAcl("copp4_del ", "", "", "", true, copp4f, null, null);
             copp4 = lower.expCopp4;
-            sendAcl("copp4_add ", true, copp4, null, copp4f);
+            sendAcl("copp4_add ", "", "", "", true, copp4, null, copp4f);
         }
         if (copp6 != lower.expCopp6) {
-            sendAcl("copp6_del ", false, copp6f, null, null);
+            sendAcl("copp6_del ", "", "", "", false, copp6f, null, null);
             copp6 = lower.expCopp6;
-            sendAcl("copp6_add ", false, copp6, null, copp6f);
+            sendAcl("copp6_add ", "", "", "", false, copp6, null, copp6f);
         }
         for (int i = 0; i < lower.expBr.size(); i++) {
             doBrdg(lower.expBr.get(i));
@@ -1453,6 +1492,8 @@ class servP4langConn implements Runnable {
             vrf.natCfg6 = doNatCfg(false, vrf.id, vrf.vrf.fwd6.natCfg, vrf.natCfg6, vrf.natCfg6f);
             doNatTrns(true, vrf.id, vrf.vrf.fwd4.natTrns, vrf.natTrns4);
             doNatTrns(false, vrf.id, vrf.vrf.fwd6.natTrns, vrf.natTrns6);
+            vrf.pbrCfg4 = doPbrCfg(true, vrf, vrf.vrf.fwd4, vrf.pbrCfg4, vrf.pbrCfg4f);
+            vrf.pbrCfg6 = doPbrCfg(false, vrf, vrf.vrf.fwd6, vrf.pbrCfg6, vrf.pbrCfg6f);
         }
         for (int i = 0; i < tabLabel.labels.size(); i++) {
             doLab1(tabLabel.labels.get(i));
@@ -2417,28 +2458,28 @@ class servP4langConn implements Runnable {
             }
             if (!br.routed) {
                 if (ifc.sentAcl4in1 != ifc.ifc.bridgeIfc.filter4in) {
-                    sendAcl("inacl4_del " + ifc.id + " ", true, ifc.sentAcl4inF, null, null);
+                    sendAcl("inacl4_del " + ifc.id + " ", "", "", "", true, ifc.sentAcl4inF, null, null);
                     ifc.sentAcl4in1 = ifc.ifc.bridgeIfc.filter4in;
                     ifc.sentAcl4in2 = null;
-                    sendAcl("inacl4_add " + ifc.id + " ", true, ifc.sentAcl4in1, null, ifc.sentAcl4inF);
+                    sendAcl("inacl4_add " + ifc.id + " ", "", "", "", true, ifc.sentAcl4in1, null, ifc.sentAcl4inF);
                 }
                 if (ifc.sentAcl4out1 != ifc.ifc.bridgeIfc.filter4out) {
-                    sendAcl("outacl4_del " + ifc.id + " ", true, ifc.sentAcl4outF, null, null);
+                    sendAcl("outacl4_del " + ifc.id + " ", "", "", "", true, ifc.sentAcl4outF, null, null);
                     ifc.sentAcl4out1 = ifc.ifc.bridgeIfc.filter4out;
                     ifc.sentAcl4out2 = null;
-                    sendAcl("outacl4_add " + ifc.id + " ", true, ifc.sentAcl4out1, null, ifc.sentAcl4outF);
+                    sendAcl("outacl4_add " + ifc.id + " ", "", "", "", true, ifc.sentAcl4out1, null, ifc.sentAcl4outF);
                 }
                 if (ifc.sentAcl6in1 != ifc.ifc.bridgeIfc.filter6in) {
-                    sendAcl("inacl6_del " + ifc.id + " ", false, ifc.sentAcl6inF, null, null);
+                    sendAcl("inacl6_del " + ifc.id + " ", "", "", "", false, ifc.sentAcl6inF, null, null);
                     ifc.sentAcl6in1 = ifc.ifc.bridgeIfc.filter6in;
                     ifc.sentAcl6in2 = null;
-                    sendAcl("inacl6_add " + ifc.id + " ", false, ifc.sentAcl6in1, null, ifc.sentAcl6inF);
+                    sendAcl("inacl6_add " + ifc.id + " ", "", "", "", false, ifc.sentAcl6in1, null, ifc.sentAcl6inF);
                 }
                 if (ifc.sentAcl6out1 != ifc.ifc.bridgeIfc.filter6out) {
-                    sendAcl("outacl6_del " + ifc.id + " ", false, ifc.sentAcl6outF, null, null);
+                    sendAcl("outacl6_del " + ifc.id + " ", "", "", "", false, ifc.sentAcl6outF, null, null);
                     ifc.sentAcl6out1 = ifc.ifc.bridgeIfc.filter6out;
                     ifc.sentAcl6out2 = null;
-                    sendAcl("outacl6_add " + ifc.id + " ", false, ifc.sentAcl6out1, null, ifc.sentAcl6outF);
+                    sendAcl("outacl6_add " + ifc.id + " ", "", "", "", false, ifc.sentAcl6out1, null, ifc.sentAcl6outF);
                 }
                 if (ifc.sentVrf == -2) {
                     return;
@@ -2499,30 +2540,30 @@ class servP4langConn implements Runnable {
         }
         if (mstr.ifc.fwdIf4 != null) {
             if ((ifc.sentAcl4in1 != mstr.ifc.fwdIf4.filterIn) || (ifc.sentAcl4in2 != mstr.ifc.fwdIf4.cfilterIn)) {
-                sendAcl("inacl4_del " + ifc.id + " ", true, ifc.sentAcl4inF, null, null);
+                sendAcl("inacl4_del " + ifc.id + " ", "", "", "", true, ifc.sentAcl4inF, null, null);
                 ifc.sentAcl4in1 = mstr.ifc.fwdIf4.filterIn;
                 ifc.sentAcl4in2 = mstr.ifc.fwdIf4.cfilterIn;
-                sendAcl("inacl4_add " + ifc.id + " ", true, ifc.sentAcl4in1, ifc.sentAcl4in2, ifc.sentAcl4inF);
+                sendAcl("inacl4_add " + ifc.id + " ", "", "", "", true, ifc.sentAcl4in1, ifc.sentAcl4in2, ifc.sentAcl4inF);
             }
             if ((ifc.sentAcl4out1 != mstr.ifc.fwdIf4.filterOut) || (ifc.sentAcl4out2 != mstr.ifc.fwdIf4.cfilterOut)) {
-                sendAcl("outacl4_del " + ifc.id + " ", true, ifc.sentAcl4outF, null, null);
+                sendAcl("outacl4_del " + ifc.id + " ", "", "", "", true, ifc.sentAcl4outF, null, null);
                 ifc.sentAcl4out1 = mstr.ifc.fwdIf4.filterOut;
                 ifc.sentAcl4out2 = mstr.ifc.fwdIf4.cfilterOut;
-                sendAcl("outacl4_add " + ifc.id + " ", true, ifc.sentAcl4out1, ifc.sentAcl4out2, ifc.sentAcl4outF);
+                sendAcl("outacl4_add " + ifc.id + " ", "", "", "", true, ifc.sentAcl4out1, ifc.sentAcl4out2, ifc.sentAcl4outF);
             }
         }
         if (mstr.ifc.fwdIf6 != null) {
             if ((ifc.sentAcl6in1 != mstr.ifc.fwdIf6.filterIn) || (ifc.sentAcl6in2 != mstr.ifc.fwdIf6.cfilterIn)) {
-                sendAcl("inacl6_del " + ifc.id + " ", false, ifc.sentAcl6inF, null, null);
+                sendAcl("inacl6_del " + ifc.id + " ", "", "", "", false, ifc.sentAcl6inF, null, null);
                 ifc.sentAcl6in1 = mstr.ifc.fwdIf6.filterIn;
                 ifc.sentAcl6in2 = mstr.ifc.fwdIf6.cfilterIn;
-                sendAcl("inacl6_add " + ifc.id + " ", false, ifc.sentAcl6in1, ifc.sentAcl6in2, ifc.sentAcl6inF);
+                sendAcl("inacl6_add " + ifc.id + " ", "", "", "", false, ifc.sentAcl6in1, ifc.sentAcl6in2, ifc.sentAcl6inF);
             }
             if ((ifc.sentAcl6out1 != mstr.ifc.fwdIf6.filterOut) || (ifc.sentAcl6out2 != mstr.ifc.fwdIf6.cfilterOut)) {
-                sendAcl("outacl6_del " + ifc.id + " ", false, ifc.sentAcl6outF, null, null);
+                sendAcl("outacl6_del " + ifc.id + " ", "", "", "", false, ifc.sentAcl6outF, null, null);
                 ifc.sentAcl6out1 = mstr.ifc.fwdIf6.filterOut;
                 ifc.sentAcl6out2 = mstr.ifc.fwdIf6.cfilterOut;
-                sendAcl("outacl6_add " + ifc.id + " ", false, ifc.sentAcl6out1, ifc.sentAcl6out2, ifc.sentAcl6outF);
+                sendAcl("outacl6_add " + ifc.id + " ", "", "", "", false, ifc.sentAcl6out1, ifc.sentAcl6out2, ifc.sentAcl6outF);
             }
         }
         if (vrf.id == ifc.sentVrf) {
@@ -3013,8 +3054,60 @@ class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        sendAcl("natcfg" + afi + "_del " + vrf + " ", ipv4, res, null, null);
-        sendAcl("natcfg" + afi + "_add " + vrf + " ", ipv4, need, null, res);
+        sendAcl("natcfg" + afi + "_del " + vrf + " ", "", "", "", ipv4, res, null, null);
+        sendAcl("natcfg" + afi + "_add " + vrf + " ", "", "", "", ipv4, need, null, res);
+        return need;
+    }
+
+    private tabListing<tabAceslstN<addrIP>, addrIP> doPbrCfg(boolean ipv4, servP4langVrf vrf, ipFwd fwd, tabListing<tabAceslstN<addrIP>, addrIP> old, tabListing<tabAceslstN<addrIP>, addrIP> res) {
+        tabListing<tabAceslstN<addrIP>, addrIP> need;
+        tabPbrN ntry;
+        if (fwd.pbrCfg.size() < 1) {
+            ntry = null;
+            need = null;
+        } else {
+            ntry = fwd.pbrCfg.get(0);
+            need = ntry.matcher;
+        }
+        String cmd = "norm";
+        String par = "0 0 ";
+        if (ntry != null) {
+            servP4langVrf tvrf = findVrf(ntry.setVrf);
+            if (tvrf == null) {
+                return old;
+            }
+            if (ntry.setHop == null) {
+                cmd = "vrf";
+                par = tvrf.id + " 0 ";
+            } else {
+                servP4langNei hop;
+                if (ntry.setIfc != null) {
+                    hop = findIfc(ntry.setIfc, ntry.setHop);
+                } else {
+                    if (ipv4) {
+                        hop = findHop(tvrf.vrf.fwd4, ntry.setHop);
+                    } else {
+                        hop = findHop(tvrf.vrf.fwd6, ntry.setHop);
+                    }
+                }
+                if (hop == null) {
+                    return old;
+                }
+                cmd = "hop";
+                par = tvrf.id + " " + hop.id + " ";
+            }
+        }
+        if (old == need) {
+            return old;
+        }
+        String afi;
+        if (ipv4) {
+            afi = "4";
+        } else {
+            afi = "6";
+        }
+        sendAcl("pbr" + afi, "norm", "norm", "_del " + vrf.id + " " + par, ipv4, res, null, null);
+        sendAcl("pbr" + afi, cmd, "norm", "_add " + vrf.id + " " + par, ipv4, need, null, res);
         return need;
     }
 
@@ -3182,7 +3275,7 @@ class servP4langConn implements Runnable {
         return seq + " " + tabListingEntry.action2string(ace.action) + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535);
     }
 
-    public void sendAcl(String pre, boolean ipv4, tabListing<tabAceslstN<addrIP>, addrIP> iface, tabListing<tabAceslstN<addrIP>, addrIP> infra, tabListing<tabAceslstN<addrIP>, addrIP> res) {
+    public void sendAcl(String pre1, String perm, String deny, String pre2, boolean ipv4, tabListing<tabAceslstN<addrIP>, addrIP> iface, tabListing<tabAceslstN<addrIP>, addrIP> infra, tabListing<tabAceslstN<addrIP>, addrIP> res) {
         if (res == null) {
             res = new tabListing<tabAceslstN<addrIP>, addrIP>();
         }
@@ -3195,7 +3288,8 @@ class servP4langConn implements Runnable {
         }
         res.mergeTwo(infra, iface);
         for (int i = 0; i < res.size(); i++) {
-            lower.sendLine(pre + ace2str(res.size() - i, ipv4, res.get(i)));
+            tabAceslstN<addrIP> ace = res.get(i);
+            lower.sendLine(pre1 + (ace.action == tabListingEntry.actionType.actPermit ? perm : deny) + pre2 + ace2str(res.size() - i, ipv4, ace));
         }
     }
 

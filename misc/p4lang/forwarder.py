@@ -1487,6 +1487,144 @@ def writeNatTrnsRules6(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
+def writePbrNormRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
+    add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
+    add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
+        match_fields=matches,
+        action_name="ig_ctl.ig_ctl_pbr.act_normal",
+        priority=pri,
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writePbrNormRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
+    add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
+    add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
+        match_fields=matches,
+        action_name="ig_ctl.ig_ctl_pbr.act_normal",
+        priority=pri,
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writePbrVrfRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
+    add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
+    add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
+        match_fields=matches,
+        action_name="ig_ctl.ig_ctl_pbr.act_setvrf",
+        priority=pri,
+        action_params={
+            "vrf_id": tvrf,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writePbrVrfRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
+    add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
+    add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
+        match_fields=matches,
+        action_name="ig_ctl.ig_ctl_pbr.act_setvrf",
+        priority=pri,
+        action_params={
+            "vrf_id": tvrf,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writePbrHopRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
+    add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
+    add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
+        match_fields=matches,
+        action_name="ig_ctl.ig_ctl_pbr.act_sethop",
+        priority=pri,
+        action_params={
+            "vrf_id": tvrf,
+            "nexthop_id": thop,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writePbrHopRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
+    add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
+    add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
+        match_fields=matches,
+        action_name="ig_ctl.ig_ctl_pbr.act_sethop",
+        priority=pri,
+        action_params={
+            "vrf_id": tvrf,
+            "nexthop_id": thop,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
 def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
@@ -1995,6 +2133,66 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "nattrns6_del":
             writeNatTrnsRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11],int(splt[12]))
+            continue
+
+        if splt[0] == "pbr4norm_add":
+            writePbrNormRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr4norm_mod":
+            writePbrNormRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr4norm_del":
+            writePbrNormRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+
+        if splt[0] == "pbr6norm_add":
+            writePbrNormRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr6norm_mod":
+            writePbrNormRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr6norm_del":
+            writePbrNormRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+
+        if splt[0] == "pbr4vrf_add":
+            writePbrVrfRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr4vrf_mod":
+            writePbrVrfRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr4vrf_del":
+            writePbrVrfRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+
+        if splt[0] == "pbr6vrf_add":
+            writePbrVrfRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr6vrf_mod":
+            writePbrVrfRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr6vrf_del":
+            writePbrVrfRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+
+        if splt[0] == "pbr4hop_add":
+            writePbrHopRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr4hop_mod":
+            writePbrHopRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr4hop_del":
+            writePbrHopRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+
+        if splt[0] == "pbr6hop_add":
+            writePbrHopRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr6hop_mod":
+            writePbrHopRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "pbr6hop_del":
+            writePbrHopRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
             continue
 
         if splt[0] == "cpulabel_add":
