@@ -908,30 +908,29 @@ ipv4_natted:
             acls_res = table_get(&acls_table, index);
             if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto ipv4_pbred;
             switch (acls_res->cmd) {
-                case 1: // normal
-                    break;
-                case 2: // setvrf
-                    route4_ntry.vrf = acls_res->vrf;
-                    break;
-                case 3: // sethop
-                    route4_ntry.vrf = acls_res->vrf;
-                    neigh_ntry.id = acls_res->hop;
-                    bufP -= 2;
-                    put16msb(bufD, bufP, ethtyp);
-                    index = table_find(&neigh_table, &neigh_ntry);
-                    if (index < 0) goto drop;
-                    neigh_res = table_get(&neigh_table, index);
-                    acls_ntry.dir = 2;
-                    acls_ntry.port = neigh_res->aclport;
-                    index = table_find(&acls_table, &acls_ntry);
-                    if (index >= 0) {
-                        acls_res = table_get(&acls_table, index);
-                        if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto punt;
-                    }
-                    goto neigh_tx;
-                    goto neigh_tx;
-                default:
-                    goto drop;
+            case 1: // normal
+                break;
+            case 2: // setvrf
+                route4_ntry.vrf = acls_res->vrf;
+                break;
+            case 3: // sethop
+                route4_ntry.vrf = acls_res->vrf;
+                neigh_ntry.id = acls_res->hop;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                index = table_find(&neigh_table, &neigh_ntry);
+                if (index < 0) goto drop;
+                neigh_res = table_get(&neigh_table, index);
+                acls_ntry.dir = 2;
+                acls_ntry.port = neigh_res->aclport;
+                index = table_find(&acls_table, &acls_ntry);
+                if (index >= 0) {
+                    acls_res = table_get(&acls_table, index);
+                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto punt;
+                }
+                goto neigh_tx;
+            default:
+                goto drop;
             }
         }
 ipv4_pbred:
@@ -1155,30 +1154,29 @@ ipv6_natted:
             acls_res = table_get(&acls_table, index);
             if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto ipv6_pbred;
             switch (acls_res->cmd) {
-                case 1: // normal
-                    break;
-                case 2: // setvrf
-                    route6_ntry.vrf = acls_res->vrf;
-                    break;
-                case 3: // sethop
-                    route6_ntry.vrf = acls_res->vrf;
-                    neigh_ntry.id = acls_res->hop;
-                    bufP -= 2;
-                    put16msb(bufD, bufP, ethtyp);
-                    index = table_find(&neigh_table, &neigh_ntry);
-                    if (index < 0) goto drop;
-                    neigh_res = table_get(&neigh_table, index);
-                    acls_ntry.dir = 2;
-                    acls_ntry.port = neigh_res->aclport;
-                    index = table_find(&acls_table, &acls_ntry);
-                    if (index >= 0) {
-                        acls_res = table_get(&acls_table, index);
-                        if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto punt;
-                    }
-                    goto neigh_tx;
-                    goto neigh_tx;
-                default:
-                    goto drop;
+            case 1: // normal
+                break;
+            case 2: // setvrf
+                route6_ntry.vrf = acls_res->vrf;
+                break;
+            case 3: // sethop
+                route6_ntry.vrf = acls_res->vrf;
+                neigh_ntry.id = acls_res->hop;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                index = table_find(&neigh_table, &neigh_ntry);
+                if (index < 0) goto drop;
+                neigh_res = table_get(&neigh_table, index);
+                acls_ntry.dir = 2;
+                acls_ntry.port = neigh_res->aclport;
+                index = table_find(&acls_table, &acls_ntry);
+                if (index >= 0) {
+                    acls_res = table_get(&acls_table, index);
+                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto punt;
+                }
+                goto neigh_tx;
+            default:
+                goto drop;
             }
         }
 ipv6_pbred:
