@@ -642,6 +642,7 @@ qc pass: interop1: evpn/cmac over bgp
 qc pass: interop1: bgp 6pe
 qc pass: interop1: bgp aigp
 qc pass: interop1: bgp with php labels
+qc pass: interop1: bgp large community
 qc pass: interop1: dhcp server
 qc pass: interop1: dhcp client
 qc pass: interop1: dns
@@ -1308,6 +1309,9 @@ qc pass: p4lang: p2p te tail+head
 qc pass: p4lang: p2p te mid
 qc pass: p4lang: sr te over mpls tail+head
 qc pass: p4lang: sr te over mpls mid
+qc pass: p4lang: policy routing between vrfs
+qc pass: p4lang: policy routing with nexthop
+qc pass: p4lang: policy routing with interface and nexthop
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
