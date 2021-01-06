@@ -886,7 +886,7 @@ ipv4_rx:
             index = table_find(&nat4_table, &nat4_ntry);
             if (index < 0) {
                 if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) goto cpu;
-                goto ipv4_rou;
+                goto ipv4_natted;
             }
             nat4_res = table_get(&nat4_table, index);
             nat4_res->pack++;
@@ -900,7 +900,41 @@ ipv4_rx:
             update_chksum(bufP + 10, nat4_res->sum3);
             update_layer4(nat4_res);
         }
-ipv4_rou:
+ipv4_natted:
+        acls_ntry.dir = 5;
+        acls_ntry.port = route4_ntry.vrf;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index >= 0) {
+            acls_res = table_get(&acls_table, index);
+            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto ipv4_pbred;
+            switch (acls_res->cmd) {
+                case 1: // normal
+                    break;
+                case 2: // setvrf
+                    route4_ntry.vrf = acls_res->vrf;
+                    break;
+                case 3: // sethop
+                    route4_ntry.vrf = acls_res->vrf;
+                    neigh_ntry.id = acls_res->hop;
+                    bufP -= 2;
+                    put16msb(bufD, bufP, ethtyp);
+                    index = table_find(&neigh_table, &neigh_ntry);
+                    if (index < 0) goto drop;
+                    neigh_res = table_get(&neigh_table, index);
+                    acls_ntry.dir = 2;
+                    acls_ntry.port = neigh_res->aclport;
+                    index = table_find(&acls_table, &acls_ntry);
+                    if (index >= 0) {
+                        acls_res = table_get(&acls_table, index);
+                        if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto punt;
+                    }
+                    goto neigh_tx;
+                    goto neigh_tx;
+                default:
+                    goto drop;
+            }
+        }
+ipv4_pbred:
         if (acl4_ntry.protV == 46) goto cpu;
         for (int i = 32; i >= 0; i--) {
             route4_ntry.mask = i;
@@ -1088,7 +1122,7 @@ ipv6_rx:
             index = table_find(&nat6_table, &nat6_ntry);
             if (index < 0) {
                 if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) goto cpu;
-                goto ipv6_rou;
+                goto ipv6_natted;
             }
             nat6_res = table_get(&nat6_table, index);
             nat6_res->pack++;
@@ -1113,7 +1147,41 @@ ipv6_rx:
             put32msb(bufD, bufP + 36, acl6_ntry.trgAddr4);
             update_layer4(nat6_res);
         }
-ipv6_rou:
+ipv6_natted:
+        acls_ntry.dir = 5;
+        acls_ntry.port = route6_ntry.vrf;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index >= 0) {
+            acls_res = table_get(&acls_table, index);
+            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto ipv6_pbred;
+            switch (acls_res->cmd) {
+                case 1: // normal
+                    break;
+                case 2: // setvrf
+                    route6_ntry.vrf = acls_res->vrf;
+                    break;
+                case 3: // sethop
+                    route6_ntry.vrf = acls_res->vrf;
+                    neigh_ntry.id = acls_res->hop;
+                    bufP -= 2;
+                    put16msb(bufD, bufP, ethtyp);
+                    index = table_find(&neigh_table, &neigh_ntry);
+                    if (index < 0) goto drop;
+                    neigh_res = table_get(&neigh_table, index);
+                    acls_ntry.dir = 2;
+                    acls_ntry.port = neigh_res->aclport;
+                    index = table_find(&acls_table, &acls_ntry);
+                    if (index >= 0) {
+                        acls_res = table_get(&acls_table, index);
+                        if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto punt;
+                    }
+                    goto neigh_tx;
+                    goto neigh_tx;
+                default:
+                    goto drop;
+            }
+        }
+ipv6_pbred:
         if (acl6_ntry.protV == 0) goto cpu;
         for (int i = 32; i >= 0; i--) {
             route6_ntry.mask = 96 + i;

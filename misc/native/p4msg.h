@@ -919,6 +919,120 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&nat6_table, &nat6_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "pbr4norm") == 0) {
+        acls_ntry.dir = 5;
+        acls_ntry.ver = 4;
+        acls_ntry.port = atoi(arg[2]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        acls_res->cmd = 1;
+        readAcl4(&acl4_ntry, &arg[2]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "pbr6norm") == 0) {
+        acls_ntry.dir = 5;
+        acls_ntry.ver = 6;
+        acls_ntry.port = atoi(arg[2]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        acls_res->cmd = 1;
+        readAcl6(&acl6_ntry, &arg[2]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "pbr4vrf") == 0) {
+        acls_ntry.dir = 5;
+        acls_ntry.ver = 4;
+        acls_ntry.port = atoi(arg[2]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        acls_res->cmd = 2;
+        acls_res->vrf = atoi(arg[3]);
+        readAcl4(&acl4_ntry, &arg[2]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "pbr6vrf") == 0) {
+        acls_ntry.dir = 5;
+        acls_ntry.ver = 6;
+        acls_ntry.port = atoi(arg[2]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        acls_res->cmd = 2;
+        acls_res->vrf = atoi(arg[3]);
+        readAcl6(&acl6_ntry, &arg[2]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "pbr4hop") == 0) {
+        acls_ntry.dir = 5;
+        acls_ntry.ver = 4;
+        acls_ntry.port = atoi(arg[2]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        acls_res->cmd = 3;
+        acls_res->vrf = atoi(arg[3]);
+        acls_res->hop = atoi(arg[4]);
+        readAcl4(&acl4_ntry, &arg[2]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "pbr6hop") == 0) {
+        acls_ntry.dir = 5;
+        acls_ntry.ver = 6;
+        acls_ntry.port = atoi(arg[2]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        acls_res->cmd = 3;
+        acls_res->vrf = atoi(arg[3]);
+        acls_res->hop = atoi(arg[4]);
+        readAcl6(&acl6_ntry, &arg[2]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "hairpin") == 0) {
         bundle_ntry.id = atoi(arg[2]);
         bundle_ntry.command = 2;
@@ -1384,7 +1498,7 @@ int doOneCommand(unsigned char* buf) {
 
 
 
-void doReportRount(FILE *commands) {
+void doReportRound(FILE *commands) {
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
@@ -1481,6 +1595,9 @@ void doReportRount(FILE *commands) {
         case 4:
             snprintf(&buf2[0], 128, "coppacl%i_cnt", ntry1->ver);
             break;
+        case 5:
+            snprintf(&buf2[0], 128, "pbracl%i_cnt %i", ntry1->ver, ntry1->port);
+            break;
         default:
             continue;
         }
@@ -1494,7 +1611,7 @@ void doReportRount(FILE *commands) {
 
 
 
-void doStatRount(FILE *commands) {
+void doStatRound(FILE *commands) {
     punts = 10;
     for (int i = 0; i < ports; i++) {
         fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);

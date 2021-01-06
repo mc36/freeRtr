@@ -101,9 +101,9 @@ void doStatLoop() {
     if (commands == NULL) err("failed to open file");
     int rnd = 0;
     for (;;) {
-        doStatRount(commands);
+        doStatRound(commands);
         rnd++;
-        if ((rnd % 15) == 0) doReportRount(commands);
+        if ((rnd % 15) == 0) doReportRound(commands);
         sleep(1);
     }
     err("stat thread exited");

@@ -260,9 +260,12 @@ int vlanout_compare(void *ptr1, void *ptr2) {
 
 struct acls_entry {
     int ver;
-    int dir; // 1=in, 2=out, 3=nat, 4=copp
+    int dir; // 1=in, 2=out, 3=nat, 4=copp, 5=pbr
     int port;
     struct table_head aces;
+    int cmd; // 1=normal, 2=setvrf, 3=sethop
+    int vrf;
+    int hop;
 };
 
 struct table_head acls_table;
