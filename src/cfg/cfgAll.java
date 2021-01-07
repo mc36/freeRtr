@@ -3076,7 +3076,7 @@ public class cfgAll {
      * @return text to display
      */
     public static userFormat getShTracker() {
-        userFormat l = new userFormat("|", "name|type|mode|target|state|changed");
+        userFormat l = new userFormat("|", "name|type|mode|target|state|changes|changed");
         for (int i = 0; i < trackers.size(); i++) {
             cfgTrack trck = trackers.get(i);
             if (trck == null) {

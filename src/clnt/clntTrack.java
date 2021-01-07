@@ -372,7 +372,7 @@ public class clntTrack implements rtrBfdClnt {
      * @return string
      */
     public String getShSum() {
-        return name + "|" + force2string(force) + "|" + mode2string(mode) + "|" + target + "|" + (getStatus() ? "up" : "down") + "|" + bits.timePast(finalTime);
+        return name + "|" + force2string(force) + "|" + mode2string(mode) + "|" + target + "|" + (getStatus() ? "up" : "down") + "|" + totalChng + "|" + bits.timePast(finalTime);
     }
 
     /**

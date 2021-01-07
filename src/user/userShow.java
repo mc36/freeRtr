@@ -48,6 +48,7 @@ import pack.packDnsZone;
 import pack.packLdpMp;
 import pack.packLdpPwe;
 import pipe.pipeSetting;
+import pipe.pipeSide;
 import prt.prtRedun;
 import prt.prtWatch;
 import rtr.rtrBabelNeigh;
@@ -901,6 +902,10 @@ public class userShow {
                 return null;
             }
             rdr.putStrArr(prfx.prflst.getStats());
+            return null;
+        }
+        if (a.equals("terminal")) {
+            rdr.putStrTab(getPipeInfo(cmd.pipe));
             return null;
         }
         if (a.equals("tracker")) {
@@ -3858,6 +3863,21 @@ public class userShow {
             l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + ct.packRx + "|" + ct.byteRx + "|" + cl.packRx + "|" + cl.byteRx + "|" + cf.packRx + "|" + cf.byteRx);
         }
         rdr.putStrTab(l);
+    }
+
+    private userFormat getPipeInfo(pipeSide pip) {
+        userFormat l = new userFormat("|", "category|value");
+        l.add("monitor|" + pip.settingsGet(pipeSetting.logging, false));
+        l.add("colorized|" + pip.settingsGet(pipeSetting.colors, false));
+        l.add("space tab|" + pip.settingsGet(pipeSetting.spacTab, false));
+        l.add("timestamps|" + pip.settingsGet(pipeSetting.times, false));
+        l.add("deactivate|" + pip.settingsGet(pipeSetting.deactive, 65536));
+        l.add("escape|" + pip.settingsGet(pipeSetting.escape, 65536));
+        l.add("table mode|" + pip.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
+        l.add("height|" + pip.settingsGet(pipeSetting.height, 25));
+        l.add("width|" + pip.settingsGet(pipeSetting.width, 80));
+        l.add("origin|" + pip.settingsGet(pipeSetting.origin, "?"));
+        return l;
     }
 
 }
