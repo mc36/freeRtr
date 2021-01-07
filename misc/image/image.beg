@@ -35,6 +35,7 @@ exec cp ../binTmp/tapInt.bin %tmp%/rtr/
 #catalog-read dev xz http://at.archive.ubuntu.com/ubuntu/ devel main universe
 #catalog-read prop xz http://at.archive.ubuntu.com/ubuntu/ devel-proposed main universe
 #catalog-read liq gz https://liquorix.net/debian/ sid main
+#catalog-read xan gz http://deb.xanmod.org/ releases main
 catalog-read sid xz http://ftp.at.debian.org/debian/ sid main
 catalog-read exp xz http://ftp.at.debian.org/debian/ experimental main
 
@@ -48,6 +49,7 @@ select-dis gcc.*
 select-dis init-system-helper.*
 select-dis initramfs-tool.*
 select-dis linux-initramfs-tool.*
+select-dis linux-headers.*
 select-dis multiarch-support.*
 select-dis ucf.*
 select-dis fontconfig-config.*
@@ -79,6 +81,7 @@ select-dis libxtst.*
 #select-dis linux-image-virtual            #ubuntu virtual kernel
 #select-one linux-image-kvm                #ubuntu kvm kernel
 #select-dis linux-image-liquorix-%arch%    #liquorix kernel
+#select-dis linux-xanmod                   #xanmod kernel
 select-dis linux-image-%arch%             #regular kernel
 select-one linux-image-cloud-%arch%       #cloud kernel
 select-one busybox                        #small utils
