@@ -6,6 +6,7 @@ global e
 global f
 global g
 global h
+global i
 
 proc getword {} {
 global b
@@ -28,6 +29,7 @@ set e [getword]
 set f [getword]
 set g [getword]
 set h [getword]
+set i [getword]
 }
 
 
@@ -50,6 +52,10 @@ for {} {[string length $b] > 0} {} {
   set a "$a&$c-$g"
   }
 puts "<a href=trackMap.imgmap><img alt=map src=$a ismap></a><br/>"
+puts "<a href=lookup.tcl>domain lookup</a><br/>"
+puts "<a href=iface.tcl>interface monitor</a><br/>"
+puts "<a href=arp.tcl>arp monitor</a><br/>"
+puts "<a href=vrf.tcl>vrf monitor</a><br/>"
 set a [exec "term tab html" "show tracker"]
 puts "<table border=1>$a</table>"
 puts "</body></html>"
