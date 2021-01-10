@@ -320,7 +320,7 @@ int main(int argc, char **argv) {
     pthread_t threadStat;
     if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) rte_exit(EXIT_FAILURE, "error creating status thread\n");
 
-    rte_eal_mp_remote_launch(&doPacketLoop, NULL, CALL_MASTER);
+    rte_eal_mp_remote_launch(&doPacketLoop, NULL, CALL_MAIN);
 
     doMainLoop();
 
