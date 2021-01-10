@@ -141,18 +141,22 @@ public class ipMhost4 extends ipMhost {
         return parsePacket(this, ifc, pck);
     }
 
-    public void updateHeader(ipFwdIface rxIfc, packHolder pck) {
+    public void updateHeader(ipFwdIface rxIfc, packHolder pck, boolean query) {
         int siz = pck.headSize();
         pck.putSkip(-siz);
         pck.lsbPutW(2, 0xffff - pck.putIPsum(0, siz, 0)); // checksum
         pck.putSkip(siz);
         pck.merge2beg();
         pck.IPdf = false;
-        pck.IPttl = 255;
+        pck.IPttl = 1;
         pck.IPtos = 0;
         pck.IPprt = getProtoNum();
         pck.IPsrc.setAddr(rxIfc.addr);
-        pck.IPtrg.fromString("224.0.0.1");
+        if (query) {
+            pck.IPtrg.fromString("224.0.0.1");
+        } else {
+            pck.IPtrg.fromString("224.0.0.22");
+        }
     }
 
     public void createQuery(int tim, packHolder pck, addrIP grp, addrIP src) {
@@ -175,10 +179,10 @@ public class ipMhost4 extends ipMhost {
         }
     }
 
-    public void createReport(packHolder pck, addrIP grp, addrIP src, boolean need) {
+    public void createReport(packHolder pck, addrIP grp, addrIP source, boolean need) {
         addrIPv4 sa = null;
-        if (src != null) {
-            sa = src.toIPv4();
+        if (source != null) {
+            sa = source.toIPv4();
         }
         if (sa.isEmpty()) {
             sa = null;

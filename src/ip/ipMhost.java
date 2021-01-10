@@ -186,8 +186,9 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
      *
      * @param rxIfc receiving interface
      * @param pck packet to parse
+     * @param query whether query or report
      */
-    public abstract void updateHeader(ipFwdIface rxIfc, packHolder pck);
+    public abstract void updateHeader(ipFwdIface rxIfc, packHolder pck, boolean query);
 
     /**
      * create query
@@ -225,13 +226,16 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
         if (debugger.ipMhostTraf) {
             logger.debug("rx report need=" + need + " src=" + src + " grp=" + grp + " ifc=" + ifc);
         }
+        ipFwdIface rxIfc = (ipFwdIface) ifc;
+        if (rxIfc.mcastSrcIn != null) {
+            src = rxIfc.mcastSrcIn.copyBytes();
+        }
         if (src == null) {
             return;
         }
         if (grp == null) {
             return;
         }
-        ipFwdIface rxIfc = (ipFwdIface) ifc;
         if (need) {
             fwdCore.mcastAddFloodIfc(grp, src, rxIfc, rxIfc.mhostCfg.queryInterval * 3);
         } else {
@@ -253,7 +257,7 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
         }
         packHolder pck = new packHolder(true, true);
         createQuery(tim, pck, grp, src);
-        updateHeader(rxIfc, pck);
+        updateHeader(rxIfc, pck, true);
         if (usesIcmp) {
             icmpCore.createICMPheader(pck);
         }
@@ -272,9 +276,12 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
         if (debugger.ipMhostTraf) {
             logger.debug("tx report need=" + need + " src=" + src + " grp=" + grp);
         }
+        if (rxIfc.mcastSrcOut != null) {
+            src = rxIfc.mcastSrcOut.copyBytes();
+        }
         packHolder pck = new packHolder(true, true);
         createReport(pck, grp, src, need);
-        updateHeader(rxIfc, pck);
+        updateHeader(rxIfc, pck, false);
         if (usesIcmp) {
             icmpCore.createICMPheader(pck);
         }

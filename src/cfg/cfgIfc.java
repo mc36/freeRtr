@@ -1395,6 +1395,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv6 prefix-dns",
         "interface .*! ipv6 prefix-interval 120000",
         // multicast
+        "interface .*! no ipv[4|6] multicast source-override-in",
+        "interface .*! no ipv[4|6] multicast source-override-out",
         "interface .*! ipv[4|6] multicast ttl-threshold 0",
         "interface .*! no ipv[4|6] pim enable",
         "interface .*! no ipv[4|6] pim bfd",

@@ -246,6 +246,16 @@ public class ipFwdIface extends tabRouteIface {
     public rtrSrhIface srhCfg;
 
     /**
+     * multicast source override in
+     */
+    public addrIP mcastSrcIn;
+
+    /**
+     * multicast source override out
+     */
+    public addrIP mcastSrcOut;
+
+    /**
      * minimal multicast ttl
      */
     public int mcastTtl;
@@ -453,6 +463,10 @@ public class ipFwdIface extends tabRouteIface {
         l.add("4 .         <num>                   time in ms");
         l.add("3 4       ttl-threshold             ttl threshold for multicast packets");
         l.add("4 .         <num>                   ttl");
+        l.add("3 4       source-override-in        override received source for groups");
+        l.add("4 .         <addr>                  source");
+        l.add("3 4       source-override-out       override sent source for groups");
+        l.add("4 .         <addr>                  source");
         l.add("3 4       static-group              unconditional flooding");
         l.add("4 5         <addr>                  group address");
         l.add("5 .           <addr>                source address");
@@ -610,6 +624,8 @@ public class ipFwdIface extends tabRouteIface {
             }
         }
         l.add(cmds.tabulator + beg + "multicast ttl-threshold " + mcastTtl);
+        cmds.cfgLine(l, mcastSrcIn == null, cmds.tabulator, beg + "multicast source-override-in", "" + mcastSrcIn);
+        cmds.cfgLine(l, mcastSrcOut == null, cmds.tabulator, beg + "multicast source-override-out", "" + mcastSrcOut);
         if (pimCfg != null) {
             l.add(cmds.tabulator + beg + "pim enable");
             l.add(cmds.tabulator + beg + "pim bier-tunnel " + pimCfg.bierTunnel);
@@ -880,6 +896,16 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("multicast")) {
             a = cmd.word();
+            if (a.equals("source-override-in")) {
+                mcastSrcIn = new addrIP();
+                mcastSrcIn.fromString(cmd.word());
+                return false;
+            }
+            if (a.equals("source-override-out")) {
+                mcastSrcOut = new addrIP();
+                mcastSrcOut.fromString(cmd.word());
+                return false;
+            }
             if (a.equals("ttl-threshold")) {
                 mcastTtl = bits.str2num(cmd.word());
                 return false;
@@ -1310,6 +1336,14 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("multicast")) {
             a = cmd.word();
+            if (a.equals("source-override-in")) {
+                mcastSrcIn = null;
+                return false;
+            }
+            if (a.equals("source-override-out")) {
+                mcastSrcOut = null;
+                return false;
+            }
             if (a.equals("ttl-threshold")) {
                 mcastTtl = 0;
                 return false;

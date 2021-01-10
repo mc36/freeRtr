@@ -96,12 +96,16 @@ public class ipMhost6 extends ipMhost {
         return parsePacket(this, ifc, pck);
     }
 
-    public void updateHeader(ipFwdIface rxIfc, packHolder pck) {
+    public void updateHeader(ipFwdIface rxIfc, packHolder pck, boolean query) {
         pck.IPdf = false;
-        pck.IPttl = 255;
+        pck.IPttl = 1;
         pck.IPtos = 0;
         pck.IPsrc.setAddr(rxIfc.addr);
-        pck.IPtrg.fromString("ff02::16");
+        if (query) {
+            pck.IPtrg.fromString("ff02::1");
+        } else {
+            pck.IPtrg.fromString("ff02::16");
+        }
     }
 
     public void createQuery(int tim, packHolder pck, addrIP grp, addrIP src) {
@@ -124,10 +128,10 @@ public class ipMhost6 extends ipMhost {
         pck.ICMPtc = ipIcmp6.icmpMcastQuery;
     }
 
-    public void createReport(packHolder pck, addrIP grp, addrIP src, boolean need) {
+    public void createReport(packHolder pck, addrIP grp, addrIP source, boolean need) {
         addrIPv6 sa = null;
-        if (src != null) {
-            sa = src.toIPv6();
+        if (source != null) {
+            sa = source.toIPv6();
         }
         if (sa.isEmpty()) {
             sa = null;
