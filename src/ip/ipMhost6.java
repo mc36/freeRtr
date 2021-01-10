@@ -72,6 +72,11 @@ public class ipMhost6 extends ipMhost {
                     pck.getAddr(a6, 0); // group
                     pck.getSkip(addrIPv6.size);
                     grp.fromIPv6addr(a6);
+                    if (src < 1) {
+                        hnd.mhostReport(ifc, grp, null, (typ & 1) == 0);
+                        pck.getSkip(aux);
+                        continue;
+                    }
                     for (int o = 0; o < src; o++) {
                         pck.getAddr(a6, 0); // source address
                         pck.getSkip(addrIPv6.size);
@@ -120,14 +125,21 @@ public class ipMhost6 extends ipMhost {
     }
 
     public void createReport(packHolder pck, addrIP grp, addrIP src, boolean need) {
-        pck.putByte(0, need ? 5 : 6); // type
+        addrIPv6 sa = null;
+        if (src != null) {
+            sa = src.toIPv6();
+        }
+        if (sa.isEmpty()) {
+            sa = null;
+        }
+        pck.putByte(0, need ^ (sa == null) ? 1 : 2); // type
         pck.putByte(1, 0); // aux size
-        pck.msbPutW(2, src == null ? 0 : 1); // source count
+        pck.msbPutW(2, sa == null ? 0 : 1); // source count
         pck.putSkip(4);
         pck.putAddr(0, grp.toIPv6());
         pck.putSkip(addrIPv6.size);
-        if (src != null) {
-            pck.putAddr(0, src.toIPv6());
+        if (sa != null) {
+            pck.putAddr(0, sa);
             pck.putSkip(addrIPv6.size);
         }
         pck.merge2beg();

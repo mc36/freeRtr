@@ -117,6 +117,11 @@ public class ipMhost4 extends ipMhost {
                     pck.getAddr(a4, 0); // group
                     grp.fromIPv4addr(a4);
                     pck.getSkip(addrIPv4.size);
+                    if (src < 1) {
+                        hnd.mhostReport(ifc, grp, null, (typ & 1) == 0);
+                        pck.getSkip(aux);
+                        continue;
+                    }
                     for (int o = 0; o < src; o++) {
                         pck.getAddr(a4, 0); // source address
                         pck.getSkip(addrIPv4.size);
@@ -171,20 +176,27 @@ public class ipMhost4 extends ipMhost {
     }
 
     public void createReport(packHolder pck, addrIP grp, addrIP src, boolean need) {
+        addrIPv4 sa = null;
+        if (src != null) {
+            sa = src.toIPv4();
+        }
+        if (sa.isEmpty()) {
+            sa = null;
+        }
         pck.putByte(0, typReport3); // type
         pck.putByte(1, 0); // reserved
         pck.msbPutW(2, 0); // checksum
         pck.msbPutW(4, 0); // reserved
         pck.msbPutW(6, 1); // groups
         pck.putSkip(8);
-        pck.putByte(0, need ? 5 : 6); // type
+        pck.putByte(0, need ^ (sa == null) ? 1 : 2); // type
         pck.putByte(1, 0); // aux size
-        pck.msbPutW(2, src == null ? 0 : 1); // source count
+        pck.msbPutW(2, sa == null ? 0 : 1); // source count
         pck.putSkip(4);
         pck.putAddr(0, grp.toIPv4());
         pck.putSkip(addrIPv4.size);
-        if (src != null) {
-            pck.putAddr(0, src.toIPv4());
+        if (sa != null) {
+            pck.putAddr(0, sa);
             pck.putSkip(addrIPv4.size);
         }
     }
