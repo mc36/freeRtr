@@ -190,7 +190,7 @@ public class userGame {
                 c = userScreen.colBrGreen;
             }
             if (i >= (len - 1)) {
-                c = userScreen.colWhite;
+                c = userScreen.colBrWhite;
             }
             console.putInt(x, o, userScreen.colBlack, c, false, str[i]);
         }
