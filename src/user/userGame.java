@@ -167,6 +167,66 @@ public class userGame {
         }
     }
 
+    private byte[] getMatrixStr() {
+        byte[] res = new byte[bits.random(4, console.curY * 3)];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = (byte) bits.random(32, 127);
+        }
+        return res;
+    }
+
+    private boolean doMatrix(int x, int pos, byte[] str) {
+        int len = str.length;
+        for (int o = 0; o < console.sizY; o++) {
+            int i = o + pos;
+            if (i < 0) {
+                continue;
+            }
+            if (i >= len) {
+                continue;
+            }
+            int c = userScreen.colGreen;
+            if (i >= (len - 2)) {
+                c = userScreen.colBrGreen;
+            }
+            if (i >= (len - 1)) {
+                c = userScreen.colWhite;
+            }
+            console.putInt(x, o, userScreen.colBlack, c, false, str[i]);
+        }
+        return pos > -len;
+    }
+
+    /**
+     * falling columns
+     */
+    public void doMatrix() {
+        int[] poss = new int[console.sizX / 2];
+        byte[][] strs = new byte[poss.length][];
+        for (int i = 0; i < strs.length; i++) {
+            strs[i] = getMatrixStr();
+            int len = strs[i].length;
+            poss[i] = bits.random(-len, +len);
+        }
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            console.putCls();
+            for (int i = 0; i < poss.length; i++) {
+                poss[i]--;
+                if (doMatrix(i * 2, poss[i], strs[i])) {
+                    continue;
+                }
+                strs[i] = getMatrixStr();
+                int len = strs[i].length;
+                poss[i] = bits.random(-len, +len);
+            }
+            console.refresh();
+            bits.sleep(500);
+        }
+    }
+
     /**
      * moving snake
      */
@@ -406,6 +466,10 @@ public class userGame {
         }
         if (a.equals("snake")) {
             doSnake();
+            return;
+        }
+        if (a.equals("matrix")) {
+            doMatrix();
             return;
         }
         if (a.equals("fire")) {

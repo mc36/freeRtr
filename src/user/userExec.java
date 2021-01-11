@@ -1203,6 +1203,7 @@ public class userExec {
         hl.add("2 .      minesweep               play game");
         hl.add("2 .      clock                   view demo");
         hl.add("2 .      snake                   view demo");
+        hl.add("2 .      matrix                  view demo");
         hl.add("2 .      fire                    view demo");
         hl.add("2 .      life                    view demo");
         hl.add("2 .      antball                 view demo");
