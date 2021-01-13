@@ -1690,8 +1690,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * forwards one parsed packet
      *
      * @param from source, 1=ifc, 2=mpls, 4=proto
-     * @param fromIfc from interace
-     * @param fromMpls from mpls
      * @param rxIfc receiving interface
      * @param hop target hop
      * @param pck packet
