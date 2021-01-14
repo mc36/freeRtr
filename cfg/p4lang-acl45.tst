@@ -335,10 +335,10 @@ r6 tping 100 10 4321::105 /vrf v1 /int lo0
 r6 tping 100 10 2.2.2.106 /vrf v1 /int lo0
 r6 tping 100 10 4321::106 /vrf v1 /int lo0
 
-r4 tping 100 10 2.2.2.105 /vrf v1 /int lo0 /rep 100 /tim 500 /siz 1000
-r4 tping 100 10 4321::105 /vrf v1 /int lo0 /rep 100 /tim 500 /siz 1000
-r4 tping 70-95 10 2.2.2.106 /vrf v1 /int lo0 /rep 100 /tim 500 /siz 1000
-r4 tping 70-95 10 4321::106 /vrf v1 /int lo0 /rep 100 /tim 500 /siz 1000
+r4 tping 100 10 2.2.2.105 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
+r4 tping 100 10 4321::105 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
+r4 tping 75-95 10 2.2.2.106 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
+r4 tping 75-95 10 4321::106 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
 
 r1 output sho inter summ
 r1 output sho inter hwsumm
