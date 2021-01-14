@@ -996,7 +996,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "inqos") == 0) {
         policer_ntry.meter = atoi(arg[2]);
         policer_ntry.dir = 1;
-        float res = atof(arg[3]) * 1000.0 / atof(arg[4]);
+        float res = atof(arg[3]) * 100.0 / atof(arg[4]);
         policer_ntry.allow = res;
         if (del == 0) table_del(&policer_table, &policer_ntry);
         else table_add(&policer_table, &policer_ntry);
@@ -1005,7 +1005,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "outqos") == 0) {
         policer_ntry.meter = atoi(arg[2]);
         policer_ntry.dir = 2;
-        float res = atof(arg[3]) * 1000.0 / atof(arg[4]);
+        float res = atof(arg[3]) * 100.0 / atof(arg[4]);
         policer_ntry.allow = res;
         if (del == 0) table_del(&policer_table, &policer_ntry);
         else table_add(&policer_table, &policer_ntry);
@@ -1590,7 +1590,46 @@ int doOneCommand(unsigned char* buf) {
 
 
 
-void doReportRound(FILE *commands) {
+
+void doStatRound(FILE *commands, int round) {
+    punts = 3;
+    for (int i = 0; i < policer_table.size; i++) {
+        struct policer_entry *ntry = table_get(&policer_table, i);
+        ntry->avail = ntry->allow;
+    }
+    if ((round % 10) != 0) return;
+    for (int i = 0; i < ports; i++) {
+        fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
+        int o = getState(i);
+        fprintf(commands, "state %i %i\r\n", i, o);
+    }
+    for (int i=0; i<bundle_table.size; i++) {
+        struct bundle_entry *ntry = table_get(&bundle_table, i);
+        fprintf(commands, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<pppoe_table.size; i++) {
+        struct pppoe_entry *ntry = table_get(&pppoe_table, i);
+        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<tun4_table.size; i++) {
+        struct tun4_entry *ntry = table_get(&tun4_table, i);
+        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<tun6_table.size; i++) {
+        struct tun6_entry *ntry = table_get(&tun6_table, i);
+        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<vlanout_table.size; i++) {
+        struct vlan_entry *ontry = table_get(&vlanout_table, i);
+        int o = table_find(&vlanin_table, ontry);
+        if (o < 0) continue;
+        struct vlan_entry *intry = table_get(&vlanin_table, o);
+        fprintf(commands, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
+    }
+    if ((round % 150) != 0) {
+        fflush(commands);
+        return;
+    }
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
@@ -1703,45 +1742,6 @@ void doReportRound(FILE *commands) {
             struct aclH_entry *ntry2 = table_get(&ntry1->aces, o);
             fprintf(commands, "%s %i %li %li\r\n", &buf2[0], ntry2->pri, ntry2->pack, ntry2->byte);
         }
-    }
-    fflush(commands);
-}
-
-
-
-void doStatRound(FILE *commands) {
-    punts = 10;
-    for (int i = 0; i < ports; i++) {
-        fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
-        int o = getState(i);
-        fprintf(commands, "state %i %i\r\n", i, o);
-    }
-    for (int i=0; i<policer_table.size; i++) {
-        struct policer_entry *ntry = table_get(&policer_table, i);
-        ntry->avail = ntry->allow;
-    }
-    for (int i=0; i<bundle_table.size; i++) {
-        struct bundle_entry *ntry = table_get(&bundle_table, i);
-        fprintf(commands, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<pppoe_table.size; i++) {
-        struct pppoe_entry *ntry = table_get(&pppoe_table, i);
-        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<tun4_table.size; i++) {
-        struct tun4_entry *ntry = table_get(&tun4_table, i);
-        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<tun6_table.size; i++) {
-        struct tun6_entry *ntry = table_get(&tun6_table, i);
-        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<vlanout_table.size; i++) {
-        struct vlan_entry *ontry = table_get(&vlanout_table, i);
-        int o = table_find(&vlanin_table, ontry);
-        if (o < 0) continue;
-        struct vlan_entry *intry = table_get(&vlanin_table, o);
-        fprintf(commands, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
     }
     fflush(commands);
 }
