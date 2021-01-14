@@ -1,5 +1,6 @@
 package tab;
 
+import addr.addrIP;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
@@ -81,11 +82,20 @@ public class tabQosN {
     }
 
     /**
+     * get access list
+     *
+     * @return acl
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> getAccessList() {
+        return entry.aclMatch;
+    }
+
+    /**
      * get interval in ms
      *
      * @return interval
      */
-    protected int getInterval() {
+    public int getInterval() {
         int i = entry.interval;
         if (i < 1) {
             return 100;
@@ -99,7 +109,7 @@ public class tabQosN {
      *
      * @return bytes/int
      */
-    protected long getBytePerInt() {
+    public long getBytePerInt() {
         int i = getInterval();
         if (i > 1000) {
             return entry.accessRate * (i / 1000);

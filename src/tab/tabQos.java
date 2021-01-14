@@ -61,6 +61,16 @@ public class tabQos {
     }
 
     /**
+     * get one class
+     *
+     * @param i index
+     * @return class
+     */
+    public tabQosN getClass(int i) {
+        return classesD.get(i);
+    }
+
+    /**
      * get statistics
      *
      * @param dump dump entries

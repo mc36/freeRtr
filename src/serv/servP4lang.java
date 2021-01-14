@@ -55,6 +55,7 @@ import tab.tabListingEntry;
 import tab.tabNatCfgN;
 import tab.tabNatTraN;
 import tab.tabPbrN;
+import tab.tabQosN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
 import tab.tabRouteIface;
@@ -868,6 +869,22 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6outF;
 
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos4in;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos4out;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos6in;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos6out;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos4inF;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos4outF;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos6inF;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos6outF;
+
     public servP4langIfc master;
 
     public servP4langIfc pppoe;
@@ -962,6 +979,14 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentAcl6out1 = null;
         sentAcl6out2 = null;
         sentAcl6outF = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        sentQos4in = null;
+        sentQos4inF = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        sentQos4out = null;
+        sentQos4outF = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        sentQos6in = null;
+        sentQos6inF = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        sentQos6out = null;
+        sentQos6outF = new tabListing<tabAceslstN<addrIP>, addrIP>();
     }
 
 }
@@ -2293,6 +2318,42 @@ class servP4langConn implements Runnable {
     }
 
     private void doIface(servP4langIfc ifc) {
+        tabListing<tabAceslstN<addrIP>, addrIP> acl = null;
+        String a = null;
+        if (ifc.ifc.ethtyp.qosIn != null) {
+            tabQosN qos = ifc.ifc.ethtyp.qosIn.getClass(0);
+            acl = qos.getAccessList();
+            a = qos.getBytePerInt() + " " + qos.getInterval();
+        }
+        if (ifc.sentQos4in != acl) {
+            lower.sendLine("inqos_add " + ifc.id + " " + a);
+            sendAcl("inqos4_del " + ifc.id + " " + ifc.id + " ", "", "", "", true, ifc.sentQos4inF, null, null);
+            ifc.sentQos4in = acl;
+            sendAcl("inqos4_add " + ifc.id + " " + ifc.id + " ", "", "", "", true, ifc.sentQos4in, null, ifc.sentQos4inF);
+        }
+        if (ifc.sentQos6in != acl) {
+            sendAcl("inqos6_del " + ifc.id + " " + ifc.id + " ", "", "", "", false, ifc.sentQos6inF, null, null);
+            ifc.sentQos6in = acl;
+            sendAcl("inqos6_add " + ifc.id + " " + ifc.id + " ", "", "", "", false, ifc.sentQos6in, null, ifc.sentQos6inF);
+        }
+        acl = null;
+        a = null;
+        if (ifc.ifc.ethtyp.qosOut != null) {
+            tabQosN qos = ifc.ifc.ethtyp.qosOut.getClass(0);
+            acl = qos.getAccessList();
+            a = qos.getBytePerInt() + " " + qos.getInterval();
+        }
+        if (ifc.sentQos4out != acl) {
+            lower.sendLine("outqos_add " + ifc.id + " " + a);
+            sendAcl("outqos4_del " + ifc.id + " ", "", "", "", true, ifc.sentQos4outF, null, null);
+            ifc.sentQos4out = acl;
+            sendAcl("outqos4_add " + ifc.id + " ", "", "", "", true, ifc.sentQos4out, null, ifc.sentQos4outF);
+        }
+        if (ifc.sentQos6out != acl) {
+            sendAcl("outqos6_del " + ifc.id + " ", "", "", "", false, ifc.sentQos6outF, null, null);
+            ifc.sentQos6out = acl;
+            sendAcl("outqos6_add " + ifc.id + " ", "", "", "", false, ifc.sentQos6out, null, ifc.sentQos6outF);
+        }
         if (ifc.ifc.ethtyp.macSec == null) {
             if (ifc.sentMacsec != null) {
                 lower.sendLine("macsec_del " + ifc.id + " " + ifc.sentMacsec);
@@ -2341,7 +2402,6 @@ class servP4langConn implements Runnable {
             ifc.sentState = sta;
             ifc.sentMtu = i;
         }
-        String a;
         if (ifc.sentState != sta) {
             if (sta == state.states.up) {
                 a = "1";
@@ -3272,6 +3332,16 @@ class servP4langConn implements Runnable {
     }
 
     public String ace2str(int seq, boolean ipv4, tabAceslstN<addrIP> ace) {
+        if (!ace.srcMask.isFilled(0)) {
+            if (ace.srcMask.isIPv4() != ipv4) {
+                return null;
+            }
+        }
+        if (!ace.trgMask.isFilled(0)) {
+            if (ace.trgMask.isIPv4() != ipv4) {
+                return null;
+            }
+        }
         return seq + " " + tabListingEntry.action2string(ace.action) + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535);
     }
 
@@ -3289,7 +3359,11 @@ class servP4langConn implements Runnable {
         res.mergeTwo(infra, iface);
         for (int i = 0; i < res.size(); i++) {
             tabAceslstN<addrIP> ace = res.get(i);
-            lower.sendLine(pre1 + (ace.action == tabListingEntry.actionType.actPermit ? perm : deny) + pre2 + ace2str(res.size() - i, ipv4, ace));
+            String a = ace2str(res.size() - i, ipv4, ace);
+            if (a == null) {
+                continue;
+            }
+            lower.sendLine(pre1 + (ace.action == tabListingEntry.actionType.actPermit ? perm : deny) + pre2 + a);
         }
     }
 
