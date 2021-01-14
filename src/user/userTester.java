@@ -15,6 +15,7 @@ import pipe.pipeShell;
 import pipe.pipeSide;
 import serv.servHttp;
 import tab.tabGen;
+import tab.tabIntMatcher;
 import util.bits;
 import util.cmds;
 import util.logger;
@@ -868,7 +869,7 @@ class userTesterPrc {
         return bits.str2num(s);
     }
 
-    public boolean morePings(String s, int need, int round) {
+    public boolean morePings(String s, tabIntMatcher need, int round) {
         rdr.debugStat(slot + "/" + name + ": pinging " + s + ".");
         rdr.setMax(round);
         int i = -1;
@@ -878,7 +879,7 @@ class userTesterPrc {
             if (i < 0) {
                 return true;
             }
-            if (i == need) {
+            if (need.matches(i)) {
                 return false;
             }
             bits.sleep(1000);
@@ -1657,7 +1658,8 @@ class userTesterOne {
     }
 
     private void pingTest(userTesterPrc p, boolean chk) {
-        int ned = bits.str2num(cmd.word());
+        tabIntMatcher ned = new tabIntMatcher();
+        ned.fromString(cmd.word());
         int rnd = bits.str2num(cmd.word());
         if (!chk) {
             p.morePings(cmd.getRemaining(), ned, rnd);
