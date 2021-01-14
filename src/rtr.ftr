@@ -1111,6 +1111,10 @@ qc pass: p4lang: ingress hibryd access list
 qc pass: p4lang: egress hibryd access list
 qc pass: p4lang: ingress hierarchical access list
 qc pass: p4lang: egress hierarchical access list
+qc pass: p4lang: ingress policer
+qc pass: p4lang: egress policer
+qc pass: p4lang: vlan ingress policer
+qc pass: p4lang: vlan egress policer
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128

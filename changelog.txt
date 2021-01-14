@@ -9630,3 +9630,8 @@ qc pass: interop1: bgp large community
 qc pass: p4lang: policy routing between vrfs
 qc pass: p4lang: policy routing with nexthop
 qc pass: p4lang: policy routing with interface and nexthop
+---------------------------------- 2021-01-14 20:08:27
+qc pass: p4lang: ingress policer
+qc pass: p4lang: egress policer
+qc pass: p4lang: vlan ingress policer
+qc pass: p4lang: vlan egress policer
