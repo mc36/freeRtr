@@ -562,6 +562,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
     struct tun4_entry tun4_ntry;
     struct tun6_entry tun6_ntry;
     struct macsec_entry macsec_ntry;
+    struct policer_entry policer_ntry;
     struct mpls_entry *mpls_res;
     struct portvrf_entry *portvrf_res;
     struct route4_entry *route4_res;
@@ -577,6 +578,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
     struct tun4_entry *tun4_res;
     struct tun6_entry *tun6_res;
     struct macsec_entry *macsec_res;
+    struct policer_entry *policer_res;
     int index;
     int label;
     int sum;
@@ -872,6 +874,20 @@ ipv4_rx:
             acls_res = table_get(&acls_table, index);
             if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto punt;
         }
+        acls_ntry.dir = 6;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index >= 0) {
+            acls_res = table_get(&acls_table, index);
+            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto ipv4_qosed;
+            policer_ntry.meter = acls_res->hop;
+            policer_ntry.dir = 1;
+            index = table_find(&policer_table, &policer_ntry);
+            if (index < 0) goto drop;
+            policer_res = table_get(&policer_table, index);
+            if (policer_res->avail < 1) goto drop;
+            policer_res->avail -= bufS - bufP + preBuff;
+        }
+ipv4_qosed:
         acls_ntry.dir = 3;
         acls_ntry.port = route4_ntry.vrf;
         index = table_find(&acls_table, &acls_ntry);
@@ -921,14 +937,7 @@ ipv4_natted:
                 index = table_find(&neigh_table, &neigh_ntry);
                 if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
-                acls_ntry.dir = 2;
-                acls_ntry.port = neigh_res->aclport;
-                index = table_find(&acls_table, &acls_ntry);
-                if (index >= 0) {
-                    acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto punt;
-                }
-                goto neigh_tx;
+                goto ipv4_tx;
             default:
                 goto drop;
             }
@@ -951,6 +960,7 @@ ipv4_pbred:
                 index = table_find(&neigh_table, &neigh_ntry);
                 if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
+ipv4_tx:
                 acls_ntry.dir = 2;
                 acls_ntry.port = neigh_res->aclport;
                 index = table_find(&acls_table, &acls_ntry);
@@ -958,6 +968,18 @@ ipv4_pbred:
                     acls_res = table_get(&acls_table, index);
                     if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto punt;
                 }
+                acls_ntry.dir = 7;
+                index = table_find(&acls_table, &acls_ntry);
+                if (index < 0) goto neigh_tx;
+                acls_res = table_get(&acls_table, index);
+                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto neigh_tx;
+                policer_ntry.meter = acls_res->hop;
+                policer_ntry.dir = 2;
+                index = table_find(&policer_table, &policer_ntry);
+                if (index < 0) goto drop;
+                policer_res = table_get(&policer_table, index);
+                if (policer_res->avail < 1) goto drop;
+                policer_res->avail -= bufS - bufP + preBuff;
                 goto neigh_tx;
             case 2: // punt
                 tun4_ntry.vrf = route4_ntry.vrf;
@@ -1101,6 +1123,20 @@ ipv6_rx:
             acls_res = table_get(&acls_table, index);
             if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto punt;
         }
+        acls_ntry.dir = 6;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index >= 0) {
+            acls_res = table_get(&acls_table, index);
+            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto ipv6_qosed;
+            policer_ntry.meter = acls_res->hop;
+            policer_ntry.dir = 1;
+            index = table_find(&policer_table, &policer_ntry);
+            if (index < 0) goto drop;
+            policer_res = table_get(&policer_table, index);
+            if (policer_res->avail < 1) goto drop;
+            policer_res->avail -= bufS - bufP + preBuff;
+        }
+ipv6_qosed:
         acls_ntry.dir = 3;
         acls_ntry.port = route6_ntry.vrf;
         index = table_find(&acls_table, &acls_ntry);
@@ -1167,14 +1203,7 @@ ipv6_natted:
                 index = table_find(&neigh_table, &neigh_ntry);
                 if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
-                acls_ntry.dir = 2;
-                acls_ntry.port = neigh_res->aclport;
-                index = table_find(&acls_table, &acls_ntry);
-                if (index >= 0) {
-                    acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto punt;
-                }
-                goto neigh_tx;
+                goto ipv6_tx;
             default:
                 goto drop;
             }
@@ -1219,6 +1248,7 @@ ipv6_hit:
                 index = table_find(&neigh_table, &neigh_ntry);
                 if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
+ipv6_tx:
                 acls_ntry.dir = 2;
                 acls_ntry.port = neigh_res->aclport;
                 index = table_find(&acls_table, &acls_ntry);
@@ -1226,6 +1256,18 @@ ipv6_hit:
                     acls_res = table_get(&acls_table, index);
                     if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto punt;
                 }
+                acls_ntry.dir = 7;
+                index = table_find(&acls_table, &acls_ntry);
+                if (index < 0) goto neigh_tx;
+                acls_res = table_get(&acls_table, index);
+                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto neigh_tx;
+                policer_ntry.meter = acls_res->hop;
+                policer_ntry.dir = 2;
+                index = table_find(&policer_table, &policer_ntry);
+                if (index < 0) goto drop;
+                policer_res = table_get(&policer_table, index);
+                if (policer_res->avail < 1) goto drop;
+                policer_res->avail -= bufS - bufP + preBuff;
                 goto neigh_tx;
             case 2: // punt
                 tun6_ntry.vrf = route6_ntry.vrf;

@@ -1350,6 +1350,50 @@ class servP4langConn implements Runnable {
                 updateAcl(cmd, copp6f);
                 return false;
             }
+            if (s.equals("inqos4_cnt")) {
+                servP4langIfc ntry = findIfc(bits.str2num(cmd.word()));
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateAcl(cmd, ntry.sentQos4inF);
+                return false;
+            }
+            if (s.equals("inqos6_cnt")) {
+                servP4langIfc ntry = findIfc(bits.str2num(cmd.word()));
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateAcl(cmd, ntry.sentQos6inF);
+                return false;
+            }
+            if (s.equals("outqos4_cnt")) {
+                servP4langIfc ntry = findIfc(bits.str2num(cmd.word()));
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateAcl(cmd, ntry.sentQos4outF);
+                return false;
+            }
+            if (s.equals("outqos6_cnt")) {
+                servP4langIfc ntry = findIfc(bits.str2num(cmd.word()));
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateAcl(cmd, ntry.sentQos6outF);
+                return false;
+            }
             if (s.equals("route4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf();
                 vrf.id = bits.str2num(cmd.word());
@@ -2345,14 +2389,14 @@ class servP4langConn implements Runnable {
         }
         if (ifc.sentQos4out != acl) {
             lower.sendLine("outqos_add " + ifc.id + " " + a);
-            sendAcl("outqos4_del " + ifc.id + " ", "", "", "", true, ifc.sentQos4outF, null, null);
+            sendAcl("outqos4_del " + ifc.id + " " + ifc.id + " ", "", "", "", true, ifc.sentQos4outF, null, null);
             ifc.sentQos4out = acl;
-            sendAcl("outqos4_add " + ifc.id + " ", "", "", "", true, ifc.sentQos4out, null, ifc.sentQos4outF);
+            sendAcl("outqos4_add " + ifc.id + " " + ifc.id + " ", "", "", "", true, ifc.sentQos4out, null, ifc.sentQos4outF);
         }
         if (ifc.sentQos6out != acl) {
-            sendAcl("outqos6_del " + ifc.id + " ", "", "", "", false, ifc.sentQos6outF, null, null);
+            sendAcl("outqos6_del " + ifc.id + " " + ifc.id + " ", "", "", "", false, ifc.sentQos6outF, null, null);
             ifc.sentQos6out = acl;
-            sendAcl("outqos6_add " + ifc.id + " ", "", "", "", false, ifc.sentQos6out, null, ifc.sentQos6outF);
+            sendAcl("outqos6_add " + ifc.id + " " + ifc.id + " ", "", "", "", false, ifc.sentQos6out, null, ifc.sentQos6outF);
         }
         if (ifc.ifc.ethtyp.macSec == null) {
             if (ifc.sentMacsec != null) {

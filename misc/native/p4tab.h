@@ -260,7 +260,7 @@ int vlanout_compare(void *ptr1, void *ptr2) {
 
 struct acls_entry {
     int ver;
-    int dir; // 1=in, 2=out, 3=nat, 4=copp, 5=pbr
+    int dir; // 1=inacl, 2=outacl, 3=nat, 4=copp, 5=pbr, 6=inqos, 7=outqos
     int port;
     struct table_head aces;
     int cmd; // 1=normal, 2=setvrf, 3=sethop
@@ -674,6 +674,26 @@ int macsec_compare(void *ptr1, void *ptr2) {
 }
 
 
+struct policer_entry {
+    int meter;
+    int dir; // 1=in, 2=out
+    long allow;
+    long avail;
+};
+
+struct table_head policer_table;
+
+int policer_compare(void *ptr1, void *ptr2) {
+    struct policer_entry *ntry1 = ptr1;
+    struct policer_entry *ntry2 = ptr2;
+    if (ntry1->dir < ntry2->dir) return -1;
+    if (ntry1->dir > ntry2->dir) return +1;
+    if (ntry1->meter < ntry2->meter) return -1;
+    if (ntry1->meter > ntry2->meter) return +1;
+    return 0;
+}
+
+
 
 
 
@@ -709,6 +729,7 @@ int initTables() {
     table_init(&tun4_table, sizeof(struct tun4_entry), &tun4_compare);
     table_init(&tun6_table, sizeof(struct tun6_entry), &tun6_compare);
     table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
+    table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 //    if (OSSL_PROVIDER_load(NULL, "legacy") == NULL) return 1;
 //    if (OSSL_PROVIDER_load(NULL, "default") == NULL) return 1;

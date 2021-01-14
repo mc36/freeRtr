@@ -170,6 +170,8 @@ int doOneCommand(unsigned char* buf) {
     memset(&tun6_ntry, 0, sizeof(tun6_ntry));
     struct macsec_entry macsec_ntry;
     memset(&macsec_ntry, 0, sizeof(macsec_ntry));
+    struct policer_entry policer_ntry;
+    memset(&policer_ntry, 0, sizeof(policer_ntry));
     int index = 0;
     if (strcmp(arg[0], "quit") == 0) {
         return 1;
@@ -735,7 +737,43 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
-    if (strcmp(arg[0], "natcfg4") == 0) {
+    if (strcmp(arg[0], "inqos4") == 0) {
+        acls_ntry.dir = 6;
+        acls_ntry.ver = 4;
+        acls_ntry.port = atoi(arg[2]);
+        acls_ntry.hop = atoi(arg[3]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        readAcl4(&acl4_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "outqos4") == 0) {
+        acls_ntry.dir = 7;
+        acls_ntry.ver = 4;
+        acls_ntry.port = atoi(arg[2]);
+        acls_ntry.hop = atoi(arg[3]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        readAcl4(&acl4_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
+     if (strcmp(arg[0], "natcfg4") == 0) {
         acls_ntry.dir = 3;
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
@@ -799,6 +837,42 @@ int doOneCommand(unsigned char* buf) {
             acls_res = table_get(&acls_table, index);
         }
         readAcl6(&acl6_ntry, &arg[0]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "inqos6") == 0) {
+        acls_ntry.dir = 6;
+        acls_ntry.ver = 6;
+        acls_ntry.port = atoi(arg[2]);
+        acls_ntry.hop = atoi(arg[3]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        readAcl6(&acl6_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "outqos6") == 0) {
+        acls_ntry.dir = 7;
+        acls_ntry.ver = 6;
+        acls_ntry.port = atoi(arg[2]);
+        acls_ntry.hop = atoi(arg[3]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        readAcl6(&acl6_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -917,6 +991,24 @@ int doOneCommand(unsigned char* buf) {
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nTrgPort, +1);
         if (del == 0) table_del(&nat6_table, &nat6_ntry);
         else table_add(&nat6_table, &nat6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "inqos") == 0) {
+        policer_ntry.meter = atoi(arg[2]);
+        policer_ntry.dir = 1;
+        float res = atof(arg[3]) * 1000.0 / atof(arg[4]);
+        policer_ntry.allow = res;
+        if (del == 0) table_del(&policer_table, &policer_ntry);
+        else table_add(&policer_table, &policer_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "outqos") == 0) {
+        policer_ntry.meter = atoi(arg[2]);
+        policer_ntry.dir = 2;
+        float res = atof(arg[3]) * 1000.0 / atof(arg[4]);
+        policer_ntry.allow = res;
+        if (del == 0) table_del(&policer_table, &policer_ntry);
+        else table_add(&policer_table, &policer_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pbr4norm") == 0) {
@@ -1598,6 +1690,12 @@ void doReportRound(FILE *commands) {
         case 5:
             snprintf(&buf2[0], 128, "pbracl%i_cnt %i", ntry1->ver, ntry1->port);
             break;
+        case 6:
+            snprintf(&buf2[0], 128, "inqos%i_cnt %i", ntry1->ver, ntry1->port);
+            break;
+        case 7:
+            snprintf(&buf2[0], 128, "outqos%i_cnt %i", ntry1->ver, ntry1->port);
+            break;
         default:
             continue;
         }
@@ -1617,6 +1715,10 @@ void doStatRound(FILE *commands) {
         fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
         int o = getState(i);
         fprintf(commands, "state %i %i\r\n", i, o);
+    }
+    for (int i=0; i<policer_table.size; i++) {
+        struct policer_entry *ntry = table_get(&policer_table, i);
+        ntry->avail = ntry->allow;
     }
     for (int i=0; i<bundle_table.size; i++) {
         struct bundle_entry *ntry = table_get(&bundle_table, i);
