@@ -773,7 +773,7 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
-     if (strcmp(arg[0], "natcfg4") == 0) {
+    if (strcmp(arg[0], "natcfg4") == 0) {
         acls_ntry.dir = 3;
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
