@@ -84,6 +84,12 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_PBR
     IngressControlPBR() ig_ctl_pbr;
 #endif
+#ifdef HAVE_INQOS
+    IngressControlQosIn() ig_ctl_qos_in;
+#endif
+#ifdef HAVE_OUTQOS
+    IngressControlQosOut() ig_ctl_qos_out;
+#endif
 
     Counter< bit<64>, SubIntId_t> ((MAX_PORT+1), CounterType_t.PACKETS_AND_BYTES) pkt_out_stats;
 
@@ -116,6 +122,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 
 #ifdef HAVE_INACL
             ig_ctl_acl_in.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
+#ifdef HAVE_INQOS
+            ig_ctl_qos_in.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
             ig_ctl_vrf.apply(hdr, ig_md);
 #ifdef HAVE_MPLS
@@ -161,6 +170,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
                 ig_ctl_nexthop.apply(hdr, ig_md, ig_dprsr_md);
 #ifdef HAVE_OUTACL
                 ig_ctl_acl_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
+#ifdef HAVE_OUTQOS
+                ig_ctl_qos_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
                 ig_ctl_vlan_out.apply(hdr, ig_md, ig_tm_md);
                 ig_ctl_bundle.apply (hdr, ig_md, ig_dprsr_md, ig_tm_md);

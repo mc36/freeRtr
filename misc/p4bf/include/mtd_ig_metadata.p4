@@ -70,6 +70,14 @@ struct ingress_metadata_t {
     bit <1> saw_rsvp;
     bit <1> mpls0_remove;
     bit <1> mpls1_remove;
+#ifdef HAVE_INQOS
+    SubIntId_t inqos_id;
+    bit <8> inqos_res;
+#endif
+#ifdef HAVE_OUTQOS
+    SubIntId_t outqos_id;
+    bit <8> outqos_res;
+#endif
 #ifdef HAVE_PPPOE
     bit<1>  pppoe_ctrl_valid;
     bit<1>  pppoe_data_valid;

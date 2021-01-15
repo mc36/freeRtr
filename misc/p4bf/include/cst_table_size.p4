@@ -57,4 +57,9 @@ on routing only profile we can have this
 #define IPV4_OUTACL_TABLE_SIZE                 512
 #define IPV6_OUTACL_TABLE_SIZE                 512
 
+#define IPV4_INQOS_TABLE_SIZE                  512
+#define IPV6_INQOS_TABLE_SIZE                  512
+#define IPV4_OUTQOS_TABLE_SIZE                 512
+#define IPV6_OUTQOS_TABLE_SIZE                 512
+
 #endif // _TABLE_SIZE_P4_
