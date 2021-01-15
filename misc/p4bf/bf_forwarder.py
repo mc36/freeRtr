@@ -3693,6 +3693,141 @@ class BfForwarder(Thread):
 
 
 
+    def writeInQos4Rules(
+        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        tbl_global_path = "ig_ctl.ig_ctl_qos_in"
+        tbl_name = "%s.tbl_ipv4_qos" % (tbl_global_path)
+        tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
+        key_field_list = [
+            gc.KeyTuple("ig_md.source_id", port),
+            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
+            gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = [
+             "metid": meter,
+        ]
+        key_annotation_fields = {
+            "hdr.ipv4.src_addr": "ipv4",
+            "hdr.ipv4.dst_addr": "ipv4",
+        }
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+    def writeOutQos4Rules(
+        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        tbl_global_path = "ig_ctl.ig_ctl_qos_out"
+        tbl_name = "%s.tbl_ipv4_qos" % (tbl_global_path)
+        tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
+        key_field_list = [
+            gc.KeyTuple("ig_md.aclport_id", port),
+            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
+            gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = [
+             "metid": meter,
+        ]
+        key_annotation_fields = {
+            "hdr.ipv4.src_addr": "ipv4",
+            "hdr.ipv4.dst_addr": "ipv4",
+        }
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+    def writeInQos6Rules(
+        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        tbl_global_path = "ig_ctl.ig_ctl_qos_in"
+        tbl_name = "%s.tbl_ipv6_qos" % (tbl_global_path)
+        tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
+        key_field_list = [
+            gc.KeyTuple("ig_md.source_id", port),
+            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
+            gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = [
+             "metid": meter,
+        ]
+        key_annotation_fields = {
+            "hdr.ipv6.src_addr": "ipv6",
+            "hdr.ipv6.dst_addr": "ipv6",
+        }
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+    def writeOutQos6Rules(
+        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        tbl_global_path = "ig_ctl.ig_ctl_qos_out"
+        tbl_name = "%s.tbl_ipv6_qos" % (tbl_global_path)
+        tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
+        key_field_list = [
+            gc.KeyTuple("ig_md.aclport_id", port),
+            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
+            gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = [
+             "metid": meter,
+        ]
+        key_annotation_fields = {
+            "hdr.ipv6.src_addr": "ipv6",
+            "hdr.ipv6.dst_addr": "ipv6",
+        }
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+
+
+
 
     def run(self):
         logger.warn("BfForwarder - Main")
@@ -5302,6 +5437,236 @@ class BfForwarder(Thread):
                 )
                 continue
 
+
+
+            if splt[0] == "inqos4_add":
+                self.writeInQos4Rules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "inqos4_mod":
+                self.writeInQos4Rules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "inqos4_del":
+                self.writeInQos4Rules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "outqos4_add":
+                self.writeOutQos4Rules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "outqos4_mod":
+                self.writeOutQosRules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "outqos4_del":
+                self.writeOutQos4Rules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "inqos6_add":
+                self.writeInQos6Rules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "inqos6_mod":
+                self.writeInQos6Rules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "inqos6_del":
+                self.writeInQos6Rules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "outqos6_add":
+                self.writeOutQos6Rules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "outqos6_mod":
+                self.writeOutQos6Rules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
+            if splt[0] == "outqos6_del":
+                self.writeOutQos6Rules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    splt[7],
+                    splt[8],
+                    splt[9],
+                    splt[10],
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                )
+                continue
 
 
 
