@@ -20,9 +20,9 @@
 #ifdef HAVE_OUTQOS
 
 control IngressControlQosOut(inout headers hdr, inout ingress_metadata_t ig_md,
-                            in ingress_intrinsic_metadata_t ig_intr_md,
-                            inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
-                            inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
+                             in ingress_intrinsic_metadata_t ig_intr_md,
+                             inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
+                             inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
     Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) policer;

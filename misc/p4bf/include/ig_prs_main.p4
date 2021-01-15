@@ -37,12 +37,12 @@ parser ig_prs_main(packet_in pkt,
         pkt.advance(PORT_METADATA_SIZE);
         ig_md.always_zero = 0;
 #ifdef HAVE_INQOS
-    ig_md.inqos_id = 0;
-    ig_md.inqos_res = MeterColor_t.GREEN;
+        ig_md.inqos_id = 0;
+        ig_md.inqos_res = MeterColor_t.GREEN;
 #endif
 #ifdef HAVE_OUTQOS
-    ig_md.outqos_id = 0;
-    ig_md.outqos_res = MeterColor_t.GREEN;
+        ig_md.outqos_id = 0;
+        ig_md.outqos_res = MeterColor_t.GREEN;
 #endif
 #ifdef HAVE_PPPOE
         ig_md.pppoe_ctrl_valid = 0;
