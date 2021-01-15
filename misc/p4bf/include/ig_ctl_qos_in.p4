@@ -90,11 +90,9 @@ ig_md.layer4_dstprt:
         } else if (ig_md.ipv6_valid==1)  {
             tbl_ipv6_qos.apply();
         }
-        if (ig_md.inqos_id != 0) {
-            ig_md.inqos_res = policer.execute(ig_md.inqos_id);
-            if (ig_md.inqos_res != MeterColor_t.GREEN) {
-                ig_dprsr_md.drop_ctl = 1;
-            }
+        ig_md.inqos_res = policer.execute(ig_md.inqos_id);
+        if ((ig_md.inqos_id != 0) && (ig_md.inqos_res != MeterColor_t.GREEN)) {
+            ig_dprsr_md.drop_ctl = 1;
         }
     }
 }

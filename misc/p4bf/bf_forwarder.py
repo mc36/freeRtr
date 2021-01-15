@@ -635,6 +635,51 @@ class BfForwarder(Thread):
         except Exception as e:
             logger.warn("Error cleaning up: {}".format(e))
 
+    def _processMeterFromControlPlane(
+        self,
+        op_type,
+        tbl_name,
+        index,
+        bytes,
+        interval,
+    ):
+        kbps = bytes * 8 / interval
+        try:
+            tbl = self.bfgc.bfrt_info.table_get(tbl_name)
+            key_field_list = [
+                gc.KeyTuple("$METER_INDEX", index),
+            ]
+            data_field_list = [
+                gc.DataTuple("$METER_SPEC_CIR_KBPS", kbps),
+                gc.DataTuple("$METER_SPEC_PIR_KBPS", kbps),
+                gc.DataTuple("$METER_SPEC_CBS_KBITS", 1),
+                gc.DataTuple("$METER_SPEC_PBS_KBITS", 1),
+            ]
+            key_list = [tbl.make_key(key_field_list)]
+            data_list = [tbl.make_data(data_field_list)]
+        except KeyError as e:
+            print("Error preparing entry to control plane: {}".format(e))
+            return
+
+        try:
+
+            tbl.entry_mod(self.bfgc.target, key_list, data_list)
+            logger.debug(
+                "Updating entry in table:%s keys:%s act_param:%s",
+                tbl_name,
+                key_list,
+                data_list,
+            )
+
+        except gc.BfruntimeRpcException as e:
+            print("Error processing entry from control plane: {}".format(e))
+
+        except grpc.RpcError as e:
+            print(
+                "Grpc channel error "
+                "while processing entry from control plane: {}".format(e)
+            )
+
     def _processEntryFromControlPlane(
         self,
         op_type,
@@ -3829,17 +3874,31 @@ class BfForwarder(Thread):
         )
 
 
-
     def writeInQosRules(
         self, op_type, meter, bytes, interval
     ):
-        return
+        tbl_global_path = "ig_ctl.ig_ctl_qos_in"
+        tbl_name = "%s.policer" % (tbl_global_path)
+        self._processMeterFromControlPlane(
+            op_type,
+            tbl_name,
+            meter,
+            bytes,
+            interval
+        )
 
     def writeOutQosRules(
         self, op_type, meter, bytes, interval
     ):
-        return
-
+        tbl_global_path = "ig_ctl.ig_ctl_qos_out"
+        tbl_name = "%s.policer" % (tbl_global_path)
+        self._processMeterFromControlPlane(
+            op_type,
+            tbl_name,
+            meter,
+            bytes,
+            interval
+        )
 
 
 
@@ -5458,7 +5517,7 @@ class BfForwarder(Thread):
                 self.writeInQosRules(
                     1,
                     int(splt[1]),
-                    int(splt[2]),
+                    long(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -5466,7 +5525,7 @@ class BfForwarder(Thread):
                 self.writeInQosRules(
                     2,
                     int(splt[1]),
-                    int(splt[2]),
+                    long(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -5474,7 +5533,7 @@ class BfForwarder(Thread):
                 self.writeInQosRules(
                     3,
                     int(splt[1]),
-                    int(splt[2]),
+                    long(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -5482,7 +5541,7 @@ class BfForwarder(Thread):
                 self.writeOutQosRules(
                     1,
                     int(splt[1]),
-                    int(splt[2]),
+                    long(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -5490,7 +5549,7 @@ class BfForwarder(Thread):
                 self.writeOutQosRules(
                     2,
                     int(splt[1]),
-                    int(splt[2]),
+                    long(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -5498,7 +5557,7 @@ class BfForwarder(Thread):
                 self.writeOutQosRules(
                     3,
                     int(splt[1]),
-                    int(splt[2]),
+                    long(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -5583,7 +5642,7 @@ class BfForwarder(Thread):
                 )
                 continue
             if splt[0] == "outqos4_mod":
-                self.writeOutQosRules(
+                self.writeOutQos4Rules(
                     2,
                     int(splt[1]),
                     int(splt[2]),

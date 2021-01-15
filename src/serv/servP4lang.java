@@ -2370,7 +2370,9 @@ class servP4langConn implements Runnable {
             a = qos.getBytePerInt() + " " + qos.getInterval();
         }
         if (ifc.sentQos4in != acl) {
-            lower.sendLine("inqos_add " + ifc.id + " " + a);
+            if (a != null) {
+                lower.sendLine("inqos_add " + ifc.id + " " + a);
+            }
             sendAcl("inqos4_del " + ifc.id + " " + ifc.id + " ", "", "", "", true, ifc.sentQos4inF, null, null);
             ifc.sentQos4in = acl;
             sendAcl("inqos4_add " + ifc.id + " " + ifc.id + " ", "", "", "", true, ifc.sentQos4in, null, ifc.sentQos4inF);
@@ -2388,7 +2390,9 @@ class servP4langConn implements Runnable {
             a = qos.getBytePerInt() + " " + qos.getInterval();
         }
         if (ifc.sentQos4out != acl) {
-            lower.sendLine("outqos_add " + ifc.id + " " + a);
+            if (a != null) {
+                lower.sendLine("outqos_add " + ifc.id + " " + a);
+            }
             sendAcl("outqos4_del " + ifc.id + " " + ifc.id + " ", "", "", "", true, ifc.sentQos4outF, null, null);
             ifc.sentQos4out = acl;
             sendAcl("outqos4_add " + ifc.id + " " + ifc.id + " ", "", "", "", true, ifc.sentQos4out, null, ifc.sentQos4outF);
