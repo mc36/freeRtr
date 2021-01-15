@@ -90,12 +90,10 @@ public class tabLabelBier {
      *
      * @param src bit string
      * @param bsl bs length
-     * @param shr shifted
      * @param idx index to check
      * @return true if bit was set
      */
-    public static boolean untestMine(byte[] src, int bsl, int shr, int idx) {
-        idx = idx - 1 - shr;
+    public static boolean untestMine(byte[] src, int bsl, int idx) {
         if (idx < 0) {
             return false;
         }

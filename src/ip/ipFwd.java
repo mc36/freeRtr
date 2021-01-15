@@ -1515,8 +1515,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             int bsl = tabLabelBier.bsl2num(lab.bier.bsl);
             int sis = bsl * pck.BIERsi;
-            boolean nedLoc = tabLabelBier.untestMine(pck.BIERbs, bsl, sis, lab.bier.idx);
-            nedLoc |= tabLabelBier.untestMine(pck.BIERbs, bsl, sis, lab.bier.idx2);
+            boolean nedLoc = tabLabelBier.untestMine(pck.BIERbs, bsl, lab.bier.idx - 1 - sis);
+            nedLoc |= tabLabelBier.untestMine(pck.BIERbs, bsl, lab.bier.idx2 - 1 - sis);
             for (int i = 0; i < lab.bier.peers.size(); i++) {
                 tabLabelBierN ntry = lab.bier.peers.get(i);
                 if (ntry == null) {
