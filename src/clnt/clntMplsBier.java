@@ -12,6 +12,8 @@ import ip.ipIfc4;
 import ip.ipIfc6;
 import ip.ipMpls;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabLabelBier;
@@ -66,6 +68,8 @@ public class clntMplsBier implements Runnable, ifcDn {
     private tabGen<addrIP> targets = new tabGen<addrIP>();
 
     private tabGen<tabLabelBierN> fwdDups = new tabGen<tabLabelBierN>();
+
+    private List<BigInteger> fwdMsks = new ArrayList<BigInteger>();
 
     private notifier notif1 = new notifier();
 
@@ -186,15 +190,17 @@ public class clntMplsBier implements Runnable, ifcDn {
             orig.MPLSttl = ttl;
         }
         tabGen<tabLabelBierN> trgs = fwdDups;
+        List<BigInteger> msks = fwdMsks;
         for (int i = 0; i < trgs.size(); i++) {
             tabLabelBierN trg = trgs.get(i);
+            BigInteger msk = msks.get(i);
             BigInteger ned = trg.ned;
             int sft = tabLabelBier.bsl2num(trg.len);
             for (int o = 0;; o++) {
                 if (ned.bitCount() < 1) {
                     break;
                 }
-                BigInteger cur = ned.and(trg.msk);
+                BigInteger cur = ned.and(msk);
                 ned = ned.shiftRight(sft);
                 if (cur.bitCount() < 1) {
                     continue;
@@ -367,11 +373,13 @@ public class clntMplsBier implements Runnable, ifcDn {
             ntry.len = rou.best.bierHdr;
             ntry.ned = ntry.ned.setBit(rou.best.bierIdx - 1);
         }
+        List<BigInteger> msks = new ArrayList<BigInteger>();
         for (int i = 0; i < trgs.size(); i++) {
             tabLabelBierN ntry = trgs.get(i);
-            ntry.msk = tabLabelBier.bsl2msk(ntry.len);
+            msks.add(tabLabelBier.bsl2msk(ntry.len));
         }
         fwdDups = trgs;
+        fwdMsks = msks;
         notif2.wakeup();
     }
 

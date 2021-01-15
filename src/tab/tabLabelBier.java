@@ -1,6 +1,5 @@
 package tab;
 
-import ip.ipFwd;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;

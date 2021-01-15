@@ -33,11 +33,6 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
     public int len;
 
     /**
-     * bsl mask
-     */
-    public BigInteger msk;
-
-    /**
      * needed indexes
      */
     public BigInteger ned;
@@ -56,6 +51,12 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
     }
 
     public int compare(tabLabelBierN o1, tabLabelBierN o2) {
+        if (o1.ifc.ifwNum < o2.ifc.ifwNum) {
+            return -1;
+        }
+        if (o1.ifc.ifwNum > o2.ifc.ifwNum) {
+            return +1;
+        }
         return o1.hop.compare(o1.hop, o2.hop);
     }
 
