@@ -1515,25 +1515,19 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             int bsl = tabLabelBier.bsl2num(lab.bier.bsl);
             int sis = bsl * pck.BIERsi;
-            boolean nedLoc = false;
-            int i = lab.bier.idx - 1 - sis;
-            if ((i >= 0) && (i < bsl)) {
-                nedLoc |= pck.BIERbs.testBit(i);
-                pck.BIERbs = pck.BIERbs.clearBit(i);
-            }
-            i = lab.bier.idx2 - 1 - sis;
-            if ((i >= 0) && (i < bsl)) {
-                nedLoc |= pck.BIERbs.testBit(i);
-                pck.BIERbs = pck.BIERbs.clearBit(i);
-            }
-            for (i = 0; i < lab.bier.peers.size(); i++) {
+            boolean nedLoc = tabLabelBier.untestMine(pck.BIERbs, bsl, sis, lab.bier.idx);
+            nedLoc |= tabLabelBier.untestMine(pck.BIERbs, bsl, sis, lab.bier.idx2);
+            for (int i = 0; i < lab.bier.peers.size(); i++) {
                 tabLabelBierN ntry = lab.bier.peers.get(i);
                 if (ntry == null) {
                     continue;
                 }
                 packHolder p = pck.copyBytes(true, true);
-                p.BIERbs = pck.BIERbs.and(ntry.ned.shiftRight(sis));
-                if (p.BIERbs.bitCount() < 1) {
+                p.BIERbs = ntry.getAndShr(pck.BIERbs, sis);
+                if (p.BIERbs == null) {
+                    continue;
+                }
+                if (p.BIERbs.length < 1) {
                     continue;
                 }
                 ipMpls.createBIERheader(p);

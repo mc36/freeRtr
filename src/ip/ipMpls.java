@@ -8,7 +8,6 @@ import ifc.ifcEther;
 import ifc.ifcNshFwd;
 import ifc.ifcNull;
 import ifc.ifcUp;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
@@ -334,16 +333,15 @@ public class ipMpls implements ifcUp {
         pck.BIERoam = i >>> 28; // oam, rsv
         pck.getSkip(sizeB);
         i = tabLabelBier.bsl2num(pck.BIERbsl);
-        byte[] buf = new byte[(i / 8) + 1];
-        if (pck.dataSize() < buf.length) {
+        byte[] buf = new byte[(i / 8)];
+        if (pck.dataSize() <= buf.length) {
             return true;
         }
-        buf[0] = 0;
-        pck.getCopy(buf, 1, 0, buf.length - 1); // bitstring
-        pck.getSkip(buf.length - 1);
-        pck.BIERbs = new BigInteger(buf);
+        pck.getCopy(buf, 0, 0, buf.length); // bitstring
+        pck.getSkip(buf.length);
+        pck.BIERbs = buf;
         if (debugger.ipMPLStrafB) {
-            logger.debug("rx bfir=" + pck.BIERid + " si=" + pck.BIERsi + " prt=" + pck.IPprt + " bs=" + pck.BIERbs.toString(16));
+            logger.debug("rx bfir=" + pck.BIERid + " si=" + pck.BIERsi + " prt=" + pck.IPprt + " bs=" + bits.byteDump(pck.BIERbs, 0, -1));
         }
         return false;
     }
@@ -356,7 +354,7 @@ public class ipMpls implements ifcUp {
     public static void createBIERheader(packHolder pck) {
         pck.merge2beg();
         if (debugger.ipMPLStrafB) {
-            logger.debug("tx bfir=" + pck.BIERid + " si=" + pck.BIERsi + " prt=" + pck.IPprt + " bs=" + pck.BIERbs.toString(16));
+            logger.debug("tx bfir=" + pck.BIERid + " si=" + pck.BIERsi + " prt=" + pck.IPprt + " bs=" + bits.byteDump(pck.BIERbs, 0, -1));
         }
         int i = pck.MPLSrnd & 0xfffff; // entropy
         i |= (pck.BIERbsl & 0x7) << 20; // bsl
@@ -368,7 +366,7 @@ public class ipMpls implements ifcUp {
         i |= pck.BIERoam << 28; // oam
         pck.msbPutD(4, i);
         pck.putSkip(sizeB);
-        byte[] buf = pck.BIERbs.toByteArray(); // bitstring
+        byte[] buf = pck.BIERbs; // bitstring
         i = tabLabelBier.bsl2num(pck.BIERbsl) / 8;
         if (buf.length >= i) {
             pck.putCopy(buf, buf.length - i, 0, i);

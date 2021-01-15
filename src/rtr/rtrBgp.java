@@ -21,7 +21,6 @@ import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdTab;
 import ip.ipRtr;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import pipe.pipeLine;
@@ -1712,16 +1711,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     continue;
                 }
                 tabLabelBierN per = new tabLabelBierN(nei.localIfc, nei.peerAddr, ntry.best.bierBeg);
-                per.ned = BigInteger.ZERO;
                 tabLabelBierN old = res.peers.add(per);
                 if (old != null) {
                     per = old;
                 }
-                per.ned = per.ned.setBit(ntry.best.bierIdx);
-            }
-            for (int i = 0; i < res.peers.size(); i++) {
-                tabLabelBierN ntry = res.peers.get(i);
-                ntry.ned = ntry.ned.shiftRight(1);
+                per.setBit(ntry.best.bierIdx - 1);
             }
             for (int i = 0; i < bierLab.length; i++) {
                 bierLab[i].setBierMpls(22, fwdCore, res);

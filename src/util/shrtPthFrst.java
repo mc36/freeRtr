@@ -9,7 +9,6 @@ import cry.cryHashMd5;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipMpls;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
@@ -790,12 +789,10 @@ public class shrtPthFrst<Ta extends addrType> {
             if (ntry.brBeg <= 0) {
                 continue;
             }
-            BigInteger msk = BigInteger.ZERO;
-            for (int o = 0; o < ntry.brLst.size(); o++) {
-                msk = msk.setBit(ntry.brLst.get(o).get());
-            }
             tabLabelBierN per = new tabLabelBierN(ntry.uplink.iface, ntry.uplink.nxtHop, ntry.brBeg);
-            per.ned = msk.shiftRight(1);
+            for (int o = 0; o < ntry.brLst.size(); o++) {
+                per.setBit(ntry.brLst.get(o).get() - 1);
+            }
             res.peers.add(per);
         }
         return res;

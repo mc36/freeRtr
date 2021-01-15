@@ -6,7 +6,6 @@ import addr.addrType;
 import cry.cryEnchGeneric;
 import cry.cryEncrGeneric;
 import cry.cryHashGeneric;
-import java.math.BigInteger;
 import pipe.pipeSide;
 import util.bits;
 
@@ -131,7 +130,7 @@ public class packHolder {
     /**
      * bier bitstring
      */
-    public BigInteger BIERbs;
+    public byte[] BIERbs;
 
     /**
      * bier oam

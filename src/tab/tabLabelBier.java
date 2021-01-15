@@ -1,8 +1,8 @@
 package tab;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import util.bits;
 
 /**
  * bier forwarder
@@ -79,8 +79,36 @@ public class tabLabelBier {
      * @param i bsl
      * @return mask
      */
-    public static BigInteger bsl2msk(int i) {
-        return BigInteger.ONE.shiftLeft(bsl2num(i)).subtract(BigInteger.ONE);
+    public static byte[] bsl2msk(int i) {
+        byte[] res = new byte[bsl2num(i) / 8];
+        bits.byteFill(res, 0, res.length, 0xff);
+        return res;
+    }
+
+    /**
+     * unset and test own bit
+     *
+     * @param src bit string
+     * @param bsl bs length
+     * @param shr shifted
+     * @param idx index to check
+     * @return true if bit was set
+     */
+    public static boolean untestMine(byte[] src, int bsl, int shr, int idx) {
+        idx = idx - 1 - shr;
+        if (idx < 0) {
+            return false;
+        }
+        if (idx >= bsl) {
+            return false;
+        }
+        int ofs = src.length - 1 - (idx / 8);
+        int bit = idx & 7;
+        if ((src[ofs] & bits.bitVals[bit]) == 0) {
+            return false;
+        }
+        src[ofs] &= ~bits.bitVals[bit];
+        return true;
     }
 
     /**

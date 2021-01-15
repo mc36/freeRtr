@@ -11,7 +11,6 @@ import ip.ipFwd;
 import ip.ipIfc4;
 import ip.ipIfc6;
 import ip.ipMpls;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
@@ -69,7 +68,7 @@ public class clntMplsBier implements Runnable, ifcDn {
 
     private tabGen<tabLabelBierN> fwdDups = new tabGen<tabLabelBierN>();
 
-    private List<BigInteger> fwdMsks = new ArrayList<BigInteger>();
+    private List<byte[]> fwdMsks = new ArrayList<byte[]>();
 
     private notifier notif1 = new notifier();
 
@@ -190,25 +189,22 @@ public class clntMplsBier implements Runnable, ifcDn {
             orig.MPLSttl = ttl;
         }
         tabGen<tabLabelBierN> trgs = fwdDups;
-        List<BigInteger> msks = fwdMsks;
+        List<byte[]> msks = fwdMsks;
         for (int i = 0; i < trgs.size(); i++) {
             tabLabelBierN trg = trgs.get(i);
-            BigInteger msk = msks.get(i);
-            BigInteger ned = trg.ned;
             int sft = tabLabelBier.bsl2num(trg.len);
             for (int o = 0;; o++) {
-                if (ned.bitCount() < 1) {
+                byte[] ned = trg.getAndShr(msks.get(i), sft * o);
+                if (ned == null) {
                     break;
                 }
-                BigInteger cur = ned.and(msk);
-                ned = ned.shiftRight(sft);
-                if (cur.bitCount() < 1) {
+                if (ned.length < 1) {
                     continue;
                 }
                 packHolder pck = orig.copyBytes(true, true);
                 pck.BIERsi = o;
                 pck.BIERbsl = trg.len;
-                pck.BIERbs = cur;
+                pck.BIERbs = ned;
                 ipMpls.createBIERheader(pck);
                 pck.MPLSlabel = trg.lab + o;
                 ipMpls.createMPLSheader(pck);
@@ -367,13 +363,11 @@ public class clntMplsBier implements Runnable, ifcDn {
             tabLabelBierN old = trgs.add(ntry);
             if (old != null) {
                 ntry = old;
-            } else {
-                ntry.ned = BigInteger.ZERO;
             }
             ntry.len = rou.best.bierHdr;
-            ntry.ned = ntry.ned.setBit(rou.best.bierIdx - 1);
+            ntry.setBit(rou.best.bierIdx - 1);
         }
-        List<BigInteger> msks = new ArrayList<BigInteger>();
+        List<byte[]> msks = new ArrayList<byte[]>();
         for (int i = 0; i < trgs.size(); i++) {
             tabLabelBierN ntry = trgs.get(i);
             msks.add(tabLabelBier.bsl2msk(ntry.len));
