@@ -1592,7 +1592,7 @@ int doOneCommand(unsigned char* buf) {
 
 
 void doStatRound(FILE *commands, int round) {
-    punts = 3;
+    punts = 10;
     for (int i = 0; i < policer_table.size; i++) {
         struct policer_entry *ntry = table_get(&policer_table, i);
         ntry->avail = ntry->allow;
