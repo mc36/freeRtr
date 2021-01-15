@@ -198,3 +198,15 @@ class P4InfoHelper(object):
             r.instance = replica['instance']
             mc_entry.multicast_group_entry.replicas.extend([r])
         return mc_entry
+
+    def buildCloneSessionEntry(self, clone_session_id, replicas, packet_length_bytes=0):
+        clone_entry = p4runtime_pb2.PacketReplicationEngineEntry()
+        clone_entry.clone_session_entry.session_id = clone_session_id
+        clone_entry.clone_session_entry.packet_length_bytes = packet_length_bytes
+        clone_entry.clone_session_entry.class_of_service = 0  # PI currently supports only CoS=0 for clone session entry
+        for replica in replicas:
+            r = p4runtime_pb2.Replica()
+            r.egress_port = replica['egress_port']
+            r.instance = replica['instance']
+            clone_entry.clone_session_entry.replicas.extend([r])
+        return clone_entry

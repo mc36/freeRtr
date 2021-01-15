@@ -21,6 +21,8 @@ control IngressControlVlanOut(inout headers hdr,
                               inout ingress_metadata_t ig_md,
                               inout standard_metadata_t ig_intr_md) {
 
+    counter((MAX_PORT+1), CounterType.packets_and_bytes) stats;
+
     action act_set_vlan_port(SubIntId_t port, vlan_id_t vlan) {
         ig_md.outport_id = port;
         hdr.vlan.setValid();
@@ -48,6 +50,7 @@ ig_md.target_id:
     }
 
     apply {
+        stats.count((bit<32>)ig_md.target_id);
         tbl_vlan_out.apply();
     }
 }

@@ -21,6 +21,8 @@ control IngressControlVlanIn(inout headers hdr,
                              inout ingress_metadata_t ig_md,
                              in standard_metadata_t  ig_intr_md) {
 
+    counter((MAX_PORT+1), CounterType.packets_and_bytes) stats;
+
     action act_set_iface(SubIntId_t src) {
         ig_md.source_id = src;
         ig_md.ethertype = hdr.vlan.ethertype;
@@ -49,6 +51,7 @@ hdr.vlan.vid:
 
     apply {
         tbl_vlan_in.apply();
+        stats.count((bit<32>)ig_md.source_id);
     }
 }
 

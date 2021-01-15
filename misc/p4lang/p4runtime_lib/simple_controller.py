@@ -135,6 +135,13 @@ def program_switch(addr, device_id, sw_conf_file, workdir, proto_dump_fpath):
                 info(groupEntryToString(entry))
                 insertMulticastGroupEntry(sw, entry, p4info_helper)
 
+        if 'clone_session_entries' in sw_conf:
+            clone_entries = sw_conf['clone_session_entries']
+            info("Inserting %d clone entries..." % len(clone_entries))
+            for entry in clone_entries:
+                info(cloneEntryToString(entry))
+                insertCloneGroupEntry(sw, entry, p4info_helper)
+
     finally:
         sw.shutdown()
 
@@ -205,9 +212,24 @@ def groupEntryToString(rule):
     ports_str = ', '.join(replicas)
     return 'Group {0} => ({1})'.format(group_id, ports_str)
 
+def cloneEntryToString(rule):
+    clone_id = rule["clone_session_id"]
+    if "packet_length_bytes" in rule:
+        packet_length_bytes = str(rule["packet_length_bytes"])+"B"
+    else:
+        packet_length_bytes = "NO_TRUNCATION"
+    replicas = ['%d' % replica["egress_port"] for replica in rule['replicas']]
+    ports_str = ', '.join(replicas)
+    return 'Clone Session {0} => ({1}) ({2})'.format(clone_id, ports_str, packet_length_bytes)
+
 def insertMulticastGroupEntry(sw, rule, p4info_helper):
     mc_entry = p4info_helper.buildMulticastGroupEntry(rule["multicast_group_id"], rule['replicas'])
-    sw.WriteMulticastGroupEntry(mc_entry)
+    sw.WritePREEntry(mc_entry)
+
+def insertCloneGroupEntry(sw, rule, p4info_helper):
+    clone_entry = p4info_helper.buildCloneSessionEntry(rule['clone_session_id'], rule['replicas'],
+                                                       rule.get('packet_length_bytes', 0))
+    sw.WritePREEntry(clone_entry)
 
 
 if __name__ == '__main__':
