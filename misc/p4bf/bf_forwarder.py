@@ -598,6 +598,9 @@ class BfForwarder(Thread):
                     continue
                 if "ig_ctl_bundle" in table_name_key:
                     continue
+                # IN/OUT meters cannot be cleared
+                if "policer" in table_name_key:
+                    continue
                 # IN/OUT counters cannot be cleared
                 if "stats" in table_name_key:
                     continue
@@ -3709,7 +3712,7 @@ class BfForwarder(Thread):
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = [
-             "metid": meter,
+             gc.DataTuple("metid", meter),
         ]
         key_annotation_fields = {
             "hdr.ipv4.src_addr": "ipv4",
@@ -3742,7 +3745,7 @@ class BfForwarder(Thread):
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = [
-             "metid": meter,
+             gc.DataTuple("metid", meter),
         ]
         key_annotation_fields = {
             "hdr.ipv4.src_addr": "ipv4",
@@ -3775,7 +3778,7 @@ class BfForwarder(Thread):
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = [
-             "metid": meter,
+             gc.DataTuple("metid", meter),
         ]
         key_annotation_fields = {
             "hdr.ipv6.src_addr": "ipv6",
@@ -3808,7 +3811,7 @@ class BfForwarder(Thread):
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = [
-             "metid": meter,
+             gc.DataTuple("metid", meter),
         ]
         key_annotation_fields = {
             "hdr.ipv6.src_addr": "ipv6",
@@ -3824,6 +3827,18 @@ class BfForwarder(Thread):
             key_annotation_fields,
             data_annotation_fields,
         )
+
+
+
+    def writeInQosRules(
+        self, op_type, meter, bytes, interval
+    ):
+        return
+
+    def writeOutQosRules(
+        self, op_type, meter, bytes, interval
+    ):
+        return
 
 
 
@@ -5436,6 +5451,58 @@ class BfForwarder(Thread):
                     int(splt[9]),
                 )
                 continue
+
+
+
+            if splt[0] == "inqos_add":
+                self.writeInQosRules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                )
+                continue
+            if splt[0] == "inqos_mod":
+                self.writeInQosRules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                )
+                continue
+            if splt[0] == "inqos_del":
+                self.writeInQosRules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                )
+                continue
+            if splt[0] == "outqos_add":
+                self.writeOutQosRules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                )
+                continue
+            if splt[0] == "outqos_mod":
+                self.writeOutQosRules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                )
+                continue
+            if splt[0] == "outqos_del":
+                self.writeOutQosRules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                )
+                continue
+
 
 
 
