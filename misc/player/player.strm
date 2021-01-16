@@ -1,0 +1,1 @@
+vlc -I dummy --sout '#rtp{access=udp,mux=ts,dst=232.2.3.2,port=1234,ttl=255}' file:///"$1"
