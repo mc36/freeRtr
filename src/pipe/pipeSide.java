@@ -922,16 +922,14 @@ public class pipeSide {
         pck.putStart();
         int i;
         if (blocking) {
-            i = 3;
+            i = 143;
         } else {
-            i = 2;
+            i = 142;
         }
         i = pck.pipeRecv(this, 0, len, i);
         if (i < 1) {
             return null;
         }
-        pck.putSkip(i);
-        pck.merge2beg();
         return pck;
     }
 

@@ -166,13 +166,11 @@ public class clntDns {
             if (debugger.clntDnsTraf) {
                 logger.debug("tx " + srv + " " + query);
             }
-            int i = pck.pipeRecv(conn, 0, 0, 3);
+            int i = pck.pipeRecv(conn, 0, 0, 143);
             conn.setClose();
             if (i < 1) {
                 continue;
             }
-            pck.putSkip(i);
-            pck.merge2beg();
             if (reply.parseHeader(pck)) {
                 continue;
             }
