@@ -1,0 +1,2 @@
+#!/bin/sh
+su mc36 -c "cvlc --audio --no-video --aout=alsa rtp://10.8.255.1@232.2.3.2:1234/"

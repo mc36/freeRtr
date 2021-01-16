@@ -133,7 +133,7 @@ public class player implements Runnable {
         return sng.file + "\"" + sng.title + s.substring(i, s.length());
     }
 
-    private synchronized void startPlay() {
+    private synchronized void startPlay1() {
         currSong = 0;
         currTime = new Date().getTime();
         currLyrc = new playerLyric();
@@ -151,6 +151,27 @@ public class player implements Runnable {
             cmd[2] = "--gstout-videosink=appsink";
             cmd[3] = "--friendly-name=" + urlF;
             cmd[4] = "--uuid=00001234-1234-1234-" + rndSeed.nextInt();
+            currProc = rtm.exec(cmd);
+        } catch (Exception e) {
+        }
+    }
+
+    private synchronized void startPlay2() {
+        currSong = 0;
+        currTime = new Date().getTime();
+        currLyrc = new playerLyric();
+        currLyrc.add("multicast receiver");
+        try {
+            currProc.destroy();
+        } catch (Exception e) {
+        }
+        currProc = null;
+        try {
+            Runtime rtm = Runtime.getRuntime();
+            String[] cmd = new String[3];
+            cmd[0] = "sh";
+            cmd[1] = "-c";
+            cmd[2] = path + ".rcvr";
             currProc = rtm.exec(cmd);
         } catch (Exception e) {
         }
@@ -277,6 +298,8 @@ public class player implements Runnable {
     private synchronized void stopPlay() {
         stopPlay("gmediarender");
         stopPlay("mplayer");
+        stopPlay("cvlc");
+        stopPlay("vlc");
         stopPlay("youtube-dl");
         stopPlay("amixer");
     }
@@ -777,9 +800,11 @@ public class player implements Runnable {
                 String a = "<a href=\"" + urlR + "?cmd=list&song=" + (i + 1) + "\">" + playlists.get(i) + "</a><br/>";
                 buf.write(a.getBytes());
             }
-            String a = "mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/>";
+            String a = "mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/><br/>";
             buf.write(a.getBytes());
-            a = "<br/><a href=\"" + urlR + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
+            a = "<a href=\"" + urlR + "?cmd=mcast\">!multicast!</a><br/>";
+            buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=unlock\">!unlock!</a><br/>";
             buf.write(a.getBytes());
@@ -814,7 +839,15 @@ public class player implements Runnable {
             putMenu(buf);
             String a = "<br/>starting dlna server.<br/>";
             buf.write(a.getBytes());
-            startPlay();
+            startPlay1();
+            return -1;
+        }
+        if (cmd.equals("mcast")) {
+            putStart(buf, 5);
+            putMenu(buf);
+            String a = "<br/>starting multicast receiver.<br/>";
+            buf.write(a.getBytes());
+            startPlay2();
             return -1;
         }
         if (cmd.equals("download")) {
