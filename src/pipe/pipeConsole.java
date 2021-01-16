@@ -20,7 +20,7 @@ public class pipeConsole implements Runnable {
         pipe = pip;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        pipe.timeout = 0;
+        pipe.setTime(0);
         new pipeConsoleDisp(pipe);
         new Thread(this).start();
     }
@@ -36,7 +36,7 @@ public class pipeConsole implements Runnable {
         pipeSide ps = p.getSide();
         ps.lineTx = pipeSide.modTyp.modeCRLF;
         ps.lineRx = pipeSide.modTyp.modeCRorLF;
-        ps.timeout = 0;
+        ps.setTime(0);
         return ps;
     }
 

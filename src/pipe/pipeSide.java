@@ -13,26 +13,6 @@ import util.notifier;
 public class pipeSide {
 
     /**
-     * timeout in milliseconds
-     */
-    protected int timeout = 0;
-
-    /**
-     * peer side of pipeline
-     */
-    protected pipeSide peerSideOfPipeLine;
-
-    /**
-     * pipeline settings
-     */
-    protected List<pipeSetting> settings;
-
-    /**
-     * notifier of this side
-     */
-    public final notifier notif;
-
-    /**
      * line mode type
      */
     public enum modTyp {
@@ -162,6 +142,23 @@ public class pipeSide {
      */
     public modTyp lineTx = modTyp.modeNone;
 
+    /**
+     * notifier of this side
+     */
+    public final notifier notif;
+
+    /**
+     * peer side of pipeline
+     */
+    protected pipeSide peerSideOfPipeLine;
+
+    /**
+     * pipeline settings
+     */
+    protected List<pipeSetting> settings;
+
+    private int timeout = 0; // timeout in milliseconds
+
     private long activity; // time ot last activity
 
     private final int headSize; // packet boundary size
@@ -279,9 +276,6 @@ public class pipeSide {
 
     private int bufPut(byte[] buf, int ofs, int len) {
         synchronized (lck) {
-            if (isClosed() != 0) {
-                return pipeLine.wontWork;
-            }
             if (len < 0) {
                 return pipeLine.wontWork;
             }
@@ -289,6 +283,9 @@ public class pipeSide {
                 return pipeLine.wontWork;
             }
             if ((bufS - bufU - headSize) < len) {
+                if (isClosed() != 0) {
+                    return pipeLine.wontWork;
+                }
                 return pipeLine.tryLater;
             }
             if (headSize != 0) {
@@ -347,21 +344,23 @@ public class pipeSide {
      * @param active set true if activity happened, false otherwise
      */
     protected void doInact(boolean active) {
-        synchronized (lck) {
-            long tim = bits.getTime();
-            if (active) {
+        long tim = bits.getTime();
+        if (active) {
+            synchronized (lck) {
                 activity = tim;
                 peerSideOfPipeLine.activity = tim;
-                return;
             }
-            boolean b = false;
+            return;
+        }
+        boolean b = false;
+        synchronized (lck) {
             b |= (timeout > 0) && ((tim - activity > timeout));
             b |= (peerSideOfPipeLine.timeout > 0) && ((tim - activity > peerSideOfPipeLine.timeout));
-            if (!b) {
-                return;
-            }
-            setClose();
         }
+        if (!b) {
+            return;
+        }
+        setClose();
     }
 
     /**
@@ -519,10 +518,10 @@ public class pipeSide {
      */
     public int nonBlockPut(byte[] buf, int ofs, int len) {
         int i = peerSideOfPipeLine.bufPut(buf, ofs, len);
+        doInact(i >= 0);
         if (i > 0) {
             peerSideOfPipeLine.notif.wakeup();
         }
-        doInact(i >= 0);
         return i;
     }
 
@@ -547,10 +546,10 @@ public class pipeSide {
     public int nonBlockSkip(int len) {
         byte[] buf = new byte[len + 16];
         int i = bufGet(buf, 0, len, false);
+        doInact(i >= 0);
         if (i > 0) {
             peerSideOfPipeLine.notif.wakeup();
         }
-        doInact(i >= 0);
         return i;
     }
 
@@ -564,10 +563,10 @@ public class pipeSide {
      */
     public int nonBlockGet(byte[] buf, int ofs, int len) {
         int i = bufGet(buf, ofs, len, false);
+        doInact(i >= 0);
         if (i > 0) {
             peerSideOfPipeLine.notif.wakeup();
         }
-        doInact(i >= 0);
         return i;
     }
 

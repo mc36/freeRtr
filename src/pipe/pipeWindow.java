@@ -62,7 +62,7 @@ public class pipeWindow extends JPanel {
         pipeSide ps = pip.getSide();
         ps.lineTx = pipeSide.modTyp.modeCRLF;
         ps.lineRx = pipeSide.modTyp.modeCRorLF;
-        ps.timeout = 0;
+        ps.setTime(0);
         ps.setReady();
         return ps;
     }
@@ -208,7 +208,7 @@ public class pipeWindow extends JPanel {
     public pipeWindow(pipeSide pip, int x, int y, byte[][][] fnt, int[] plt) {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        pip.timeout = 0;
+        pip.setTime(0);
         img = new pipeImage(pip, x, y, fnt, plt);
         img3 = createImage(img);
         win = new JFrame("console");
