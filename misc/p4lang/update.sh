@@ -12,9 +12,8 @@ cd ~/a/misc/p4lang
 ./c.sh
 mv router.json ~/
 mv router.txt ~/
-cp r.sh ~/
-cp f.sh ~/
-cp forwarder.py ~/
+cp *.sh ~/
+cp *.py ~/
 cp -r p4runtime_lib ~/
 cd ~
 rm -rf a/
