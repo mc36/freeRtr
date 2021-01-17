@@ -2848,6 +2848,7 @@ public class userExec {
         int sent = 0;
         int recv = 0;
         int lost = 0;
+        int errs = 0;
         int tiMin = timeout * 10;
         int tiMax = 0;
         int tiSum = 0;
@@ -2894,6 +2895,7 @@ public class userExec {
             for (int o = 0; o < ping.res.size(); o++) {
                 ipFwdEchod res = ping.res.get(o);
                 if (res.err != null) {
+                    errs++;
                     if (detail) {
                         pipe.strPut(res.err + "@" + res.rtr + " ");
                         continue;
@@ -2960,9 +2962,9 @@ public class userExec {
         if (sent > 0) {
             perc = (recv * 100) / sent;
         }
-        pipe.linePut("result=" + perc + "%, recv/sent/lost=" + recv + "/"
-                + sent + "/" + lost + ", rtt min/avg/max/total=" + tiMin
-                + "/" + tiSum + "/" + tiMax + "/" + (bits.getTime() - beg));
+        pipe.linePut("result=" + perc + "%, recv/sent/lost/err=" + recv + "/"
+                + sent + "/" + lost + "/" + errs + ", rtt min/avg/max/total="
+                + tiMin + "/" + tiSum + "/" + tiMax + "/" + (bits.getTime() - beg));
     }
 
     private void doListen() {
