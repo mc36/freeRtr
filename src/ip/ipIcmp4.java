@@ -336,6 +336,7 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         }
         switch (pck.ICMPtc) {
             case icmpEchoReq:
+                fwdCore.echoRcvd++;
                 int i = pck.IPtos;
                 pck.ICMPtc = icmpEchoRep;
                 addrIP adr = pck.IPsrc.copyBytes();

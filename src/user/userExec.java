@@ -916,6 +916,7 @@ public class userExec {
         hl.add("3 .        all                   do not hide defaults");
         hl.add("2 3      vrf                     virtual routing/forwarding information");
         hl.add("3 .        routing               routing information");
+        hl.add("3 .        icmp                  icmp information");
         hl.add("3 4,.      traffic               traffic information");
         hl.add("4 5          [name]              name of vrf");
         hl.add("5 .            full              full listing");

@@ -173,9 +173,34 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public final tabGen<tabNatTraN> natTrns;
 
     /**
-     * current icmp sessions
+     * current echo sessions
      */
     public final tabGen<ipFwdEcho> echoes;
+
+    /**
+     * echo packets sent
+     */
+    public int echoSent;
+
+    /**
+     * echo responses got
+     */
+    public int echoRply;
+
+    /**
+     * echo packets got
+     */
+    public int echoRcvd;
+
+    /**
+     * echo packets sent
+     */
+    public int errorSent;
+
+    /**
+     * echo responses got
+     */
+    public int errorRcvd;
 
     /**
      * traffic engineering tunnels
@@ -1438,6 +1463,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (icmpCore.createError(pck, reason, src.copyBytes(), mplsExtRep)) {
             return;
         }
+        errorSent++;
         ipCore.createIPheader(pck);
         if (coppOut != null) {
             if (coppOut.checkPacket(bits.getTime(), pck)) {
@@ -1901,6 +1927,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param pck protocol packet
      */
     public void errorReport(counter.reasons err, ipFwdIface iface, packHolder pck) {
+        errorRcvd++;
         addrIP rtr = pck.IPsrc.copyBytes();
         if (ipCore.parseIPheader(pck, false)) {
             iface.cntr.drop(pck, counter.reasons.badHdr);
@@ -1997,6 +2024,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 break;
             }
         }
+        echoSent++;
         ntry.created = bits.getTime();
         if (icmpCore.createEcho(pck, src, trg, ntry.echoNum)) {
             return null;
@@ -2024,6 +2052,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void echoRecvRep(packHolder pck, int id) {
         ipFwdEcho ntry = new ipFwdEcho();
+        echoRply++;
         ntry.echoNum = id;
         ntry = echoes.find(ntry);
         if (ntry == null) {

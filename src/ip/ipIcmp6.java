@@ -441,6 +441,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 ifc.gotIcmpPack(pck);
                 break;
             case icmpEchoReq:
+                fwdCore.echoRcvd++;
                 int i = pck.IPtos;
                 pck.ICMPtc = icmpEchoRep;
                 adr = pck.IPsrc.copyBytes();

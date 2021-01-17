@@ -479,6 +479,10 @@ public class userShow {
                 doShowVrfTraff();
                 return null;
             }
+            if (a.equals("icmp")) {
+                doShowVrfIcmp();
+                return null;
+            }
             if (a.equals("routing")) {
                 doShowVrfRout();
                 return null;
@@ -3840,6 +3844,15 @@ public class userShow {
         for (int o = 0; o < cfgAll.vrfs.size(); o++) {
             cfgVrf v = cfgAll.vrfs.get(o);
             l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + v.fwd4.ifaces.size() + "|" + v.fwd6.ifaces.size() + "|" + v.fwd4.actualU.size() + "|" + v.fwd6.actualU.size() + "|" + v.fwd4.actualM.size() + "|" + v.fwd6.actualM.size() + "|" + v.fwd4.actualF.size() + "|" + v.fwd6.actualF.size() + "|" + v.fwd4.labeldR.size() + "|" + v.fwd6.labeldR.size() + "|" + v.fwd4.connedR.size() + "|" + v.fwd6.connedR.size());
+        }
+        rdr.putStrTab(l);
+    }
+
+    private void doShowVrfIcmp() {
+        userFormat l = new userFormat("|", "name|rd|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6", "2|2echSnt|2echGot|2echOk|2echPnd|2errSnt|2errGot");
+        for (int o = 0; o < cfgAll.vrfs.size(); o++) {
+            cfgVrf v = cfgAll.vrfs.get(o);
+            l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + v.fwd4.echoSent + "|" + v.fwd6.echoSent + "|" + v.fwd4.echoRcvd + "|" + v.fwd6.echoRcvd + "|" + v.fwd4.echoRply + "|" + v.fwd6.echoRply + "|" + v.fwd4.echoes.size() + "|" + v.fwd6.echoes.size() + "|" + v.fwd4.errorSent + "|" + v.fwd6.errorSent + "|" + v.fwd4.errorRcvd + "|" + v.fwd6.errorRcvd);
         }
         rdr.putStrTab(l);
     }
