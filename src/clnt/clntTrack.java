@@ -607,7 +607,7 @@ public class clntTrack implements rtrBfdClnt {
         }
         switch (mode) {
             case icmp:
-                ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, typOsrv, 0);
+                ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, typOsrv, 0, false);
                 if (ping == null) {
                     haveResult(false, false);
                     break;
@@ -617,7 +617,11 @@ public class clntTrack implements rtrBfdClnt {
                     haveResult(false, false);
                     break;
                 }
-                haveResult(ping.err == null, false);
+                if (ping.res.size() < 1) {
+                    haveResult(false, false);
+                    break;
+                }
+                haveResult(ping.res.get(0).err == null, false);
                 break;
             case tcp:
                 prtGen tcp = vrf.getTcp(fwdTrg);

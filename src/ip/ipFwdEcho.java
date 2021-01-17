@@ -1,9 +1,10 @@
 package ip;
 
 import addr.addrIP;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import pack.packHolder;
-import util.counter;
 import util.notifier;
 
 /**
@@ -34,24 +35,19 @@ public class ipFwdEcho implements Comparator<ipFwdEcho> {
     public addrIP trg;
 
     /**
-     * reported error
+     * accept multiple responses
      */
-    public counter.reasons err;
-
-    /**
-     * reporting router
-     */
-    public addrIP rtr;
-
-    /**
-     * reported label
-     */
-    public int lab;
+    public boolean multi;
 
     /**
      * time when entry created
      */
     public long created;
+
+    /**
+     * reports
+     */
+    public final List<ipFwdEchod> res = new ArrayList<ipFwdEchod>();
 
     public int compare(ipFwdEcho o1, ipFwdEcho o2) {
         if (o1.echoNum < o2.echoNum) {

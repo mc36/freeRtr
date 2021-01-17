@@ -37,6 +37,7 @@ import ip.ipCor4;
 import ip.ipCor6;
 import ip.ipFwd;
 import ip.ipFwdEcho;
+import ip.ipFwdEchod;
 import ip.ipFwdIface;
 import ip.ipIcmp4;
 import ip.ipIcmp6;
@@ -1166,6 +1167,7 @@ public class userExec {
         hl.add("1 2    ping                      send echo request");
         hl.add("2 3,.    <host>                  name of host");
         hl.add("3 3,.      /flood                specify flood mode");
+        hl.add("3 3,.      /multi                wait for multiple responses");
         hl.add("3 3,.      /detail               specify detail mode");
         hl.add("3 4        /data                 specify data to send");
         hl.add("4 3,.        <num>               payload byte");
@@ -2719,7 +2721,7 @@ public class userExec {
                 continue;
             }
             ipFwd fwd = vrf.getFwd(strt);
-            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, ttl, tos, 0);
+            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, ttl, tos, 0, false);
             if (ping == null) {
                 continue;
             }
@@ -2727,10 +2729,14 @@ public class userExec {
             if (ping.notif.totalNotifies() < 1) {
                 continue;
             }
-            if (ping.err == null) {
+            if (ping.res.size() < 1) {
+                continue;
+            }
+            ipFwdEchod res = ping.res.get(0);
+            if (res.err == null) {
                 pipe.linePut(strt + a + " is alive.");
             } else {
-                pipe.linePut(strt + a + " is " + ping.err + " at " + ping.rtr);
+                pipe.linePut(strt + a + " is " + res.err + " at " + res.rtr);
             }
         }
     }
@@ -2751,10 +2757,15 @@ public class userExec {
         boolean flood = false;
         boolean detail = false;
         boolean sweep = false;
+        boolean multi = false;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
                 break;
+            }
+            if (a.equals("/multi")) {
+                multi = true;
+                continue;
             }
             if (a.equals("/sweep")) {
                 sweep = true;
@@ -2836,9 +2847,10 @@ public class userExec {
         }
         int sent = 0;
         int recv = 0;
-        long tiMin = timeout * 10;
-        long tiMax = 0;
-        long tiSum = 0;
+        int lost = 0;
+        int tiMin = timeout * 10;
+        int tiMax = 0;
+        int tiSum = 0;
         pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", ttl=" + ttl + ", tos=" + tos + ", sweep=" + sweep);
         size -= adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
@@ -2852,79 +2864,93 @@ public class userExec {
                 pipe.strPut("*");
                 break;
             }
-            long tiBeg = bits.getTime();
             if (flood) {
                 pipe.strPut(".");
                 continue;
             }
             sent++;
-            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, ttl, tos, data);
+            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, ttl, tos, data, multi);
             if (ping == null) {
-                pipe.strPut("R");
+                pipe.strPut("N");
                 continue;
             }
-            if (ping.notif.totalNotifies() < 1) {
-                ping.notif.sleep(timeout);
+            if (multi) {
+                bits.sleep(timeout);
+            } else {
+                if (ping.notif.totalNotifies() < 1) {
+                    ping.notif.sleep(timeout);
+                }
             }
-            tiBeg = bits.getTime() - tiBeg;
             if (ping.notif.totalNotifies() < 1) {
+                lost++;
                 pipe.strPut(".");
                 continue;
             }
-            if (ping.err != null) {
-                if (detail) {
-                    pipe.strPut(ping.err + "@" + ping.rtr + " ");
+            if (ping.res.size() < 1) {
+                lost++;
+                pipe.strPut(".");
+                continue;
+            }
+            for (int o = 0; o < ping.res.size(); o++) {
+                ipFwdEchod res = ping.res.get(o);
+                if (res.err != null) {
+                    if (detail) {
+                        pipe.strPut(res.err + "@" + res.rtr + " ");
+                        continue;
+                    }
+                    String a;
+                    switch (res.err) {
+                        case noRoute:
+                            a = "R";
+                            break;
+                        case denied:
+                            a = "D";
+                            break;
+                        case notInTab:
+                            a = "H";
+                            break;
+                        case fragment:
+                            a = "F";
+                            break;
+                        case ttlExceed:
+                            a = "T";
+                            break;
+                        case badProto:
+                            a = "P";
+                            break;
+                        case badPort:
+                            a = "p";
+                            break;
+                        default:
+                            a = "?";
+                            break;
+                    }
+                    pipe.strPut(a);
                     continue;
                 }
-                String a;
-                switch (ping.err) {
-                    case noRoute:
-                        a = "R";
-                        break;
-                    case denied:
-                        a = "D";
-                        break;
-                    case notInTab:
-                        a = "H";
-                        break;
-                    case fragment:
-                        a = "F";
-                        break;
-                    case ttlExceed:
-                        a = "T";
-                        break;
-                    case badProto:
-                        a = "P";
-                        break;
-                    case badPort:
-                        a = "p";
-                        break;
-                    default:
-                        a = "?";
-                        break;
+                recv++;
+                tiSum += res.tim;
+                if (res.tim < tiMin) {
+                    tiMin = res.tim;
                 }
-                pipe.strPut(a);
-                continue;
+                if (res.tim > tiMax) {
+                    tiMax = res.tim;
+                }
+                if (detail) {
+                    pipe.strPut(res.tim + "ms" + "@" + res.rtr + " ");
+                    continue;
+                }
+                if (!flood) {
+                    pipe.strPut("!");
+                    continue;
+                }
+                byte[] buf = new byte[1];
+                buf[0] = 8;
+                pipe.blockingPut(buf, 0, 1);
             }
-            recv++;
-            tiSum += tiBeg;
-            if (tiBeg < tiMin) {
-                tiMin = tiBeg;
+            if (detail && multi) {
+                pipe.linePut("");
             }
-            if (tiBeg > tiMax) {
-                tiMax = tiBeg;
-            }
-            if (detail) {
-                pipe.strPut(tiBeg + "ms  ");
-                continue;
-            }
-            if (!flood) {
-                pipe.strPut("!");
-                continue;
-            }
-            byte[] buf = new byte[1];
-            buf[0] = 8;
-            pipe.blockingPut(buf, 0, 1);
         }
         pipe.linePut("");
         int perc = 0;
@@ -2935,7 +2961,7 @@ public class userExec {
             perc = (recv * 100) / sent;
         }
         pipe.linePut("result=" + perc + "%, recv/sent/lost=" + recv + "/"
-                + sent + "/" + (sent - recv) + ", rtt min/avg/max/total=" + tiMin
+                + sent + "/" + lost + ", rtt min/avg/max/total=" + tiMin
                 + "/" + tiSum + "/" + tiMax + "/" + (bits.getTime() - beg));
     }
 

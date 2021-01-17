@@ -1956,9 +1956,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param ttl ttl to use
      * @param tos tos to use
      * @param dat filler byte
+     * @param mul multiple responses
      * @return notifier notified on reply
      */
-    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, int size, int ttl, int tos, int dat) {
+    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, int size, int ttl, int tos, int dat, boolean mul) {
         final int maxSize = 8192;
         final int minSize = 16;
         if (size < minSize) {
@@ -1988,6 +1989,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ntry.src = src.copyBytes();
         ntry.trg = trg.copyBytes();
+        ntry.multi = mul;
         for (;;) {
             nextEchoNumber = (nextEchoNumber & 0x3fffffff) + 1;
             ntry.echoNum = nextEchoNumber + 10000;
@@ -2027,18 +2029,18 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (ntry == null) {
             return;
         }
-        if (!ntry.trg.isMulticast()) {
-            if (ntry.trg.compare(ntry.trg, pck.IPsrc) != 0) {
-                return;
-            }
-        }
         if (ntry.src.compare(ntry.src, pck.IPtrg) != 0) {
             return;
         }
-        echoes.del(ntry);
-        ntry.err = null;
-        ntry.rtr = pck.IPsrc.copyBytes();
-        ntry.lab = -1;
+        if (!ntry.multi) {
+            echoes.del(ntry);
+        }
+        ipFwdEchod res = new ipFwdEchod();
+        res.tim = (int) (bits.getTime() - ntry.created);
+        res.err = null;
+        res.rtr = pck.IPsrc.copyBytes();
+        res.lab = -1;
+        ntry.res.add(res);
         ntry.notif.wakeup();
     }
 
@@ -2063,10 +2065,15 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (ntry.src.compare(ntry.src, pck.IPsrc) != 0) {
             return;
         }
-        echoes.del(ntry);
-        ntry.err = err;
-        ntry.rtr = rtr.copyBytes();
-        ntry.lab = ipFwdEcho.getMplsExt(pck);
+        if (!ntry.multi) {
+            echoes.del(ntry);
+        }
+        ipFwdEchod res = new ipFwdEchod();
+        res.tim = (int) (bits.getTime() - ntry.created);
+        res.err = err;
+        res.rtr = rtr.copyBytes();
+        res.lab = ipFwdEcho.getMplsExt(pck);
+        ntry.res.add(res);
         ntry.notif.wakeup();
     }
 
