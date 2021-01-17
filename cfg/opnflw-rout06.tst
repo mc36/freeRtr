@@ -361,8 +361,8 @@ r6 tping 100 10 4321::105 /vrf v1 /int lo0
 r6 tping 100 10 2.2.2.106 /vrf v1 /int lo0
 r6 tping 100 10 4321::106 /vrf v1 /int lo0
 
-r3 tping 100 10 232.2.2.2 /vrf v1 /int lo0
-r3 tping 100 10 ff06::1 /vrf v1 /int lo0
+r3 tping 300 10 232.2.2.2 /vrf v1 /int lo0 /multi
+r3 tping 300 10 ff06::1 /vrf v1 /int lo0 /multi
 
 
 r1 send tclsh
