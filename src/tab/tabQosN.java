@@ -4,6 +4,7 @@ import addr.addrIP;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
+import tab.tabListingEntry.actionType;
 import util.bits;
 import util.counter;
 
@@ -115,6 +116,15 @@ public class tabQosN {
             return entry.accessRate * (i / 1000);
         }
         return entry.accessRate / (1000 / i);
+    }
+
+    /**
+     * get action
+     *
+     * @return action
+     */
+    public actionType getAction() {
+        return entry.action;
     }
 
     /**

@@ -95,6 +95,7 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
         if (ntry == null) {
             return null;
         }
+        ntry.hits++;
         return ntry.data;
     }
 

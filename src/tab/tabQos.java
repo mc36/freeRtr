@@ -64,9 +64,12 @@ public class tabQos {
      * get one class
      *
      * @param i index
-     * @return class
+     * @return class, null if not found
      */
     public tabQosN getClass(int i) {
+        if (i >= classesD.size()) {
+            return null;
+        }
         return classesD.get(i);
     }
 

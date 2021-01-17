@@ -781,6 +781,10 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
     public tabListing<tabAceslstN<addrIP>, addrIP> pbrCfg6f;
 
+    public tabListing<tabAceslstN<addrIP>, addrIP> flwSpc4;
+
+    public tabListing<tabAceslstN<addrIP>, addrIP> flwSpc6;
+
     public tabGen<tabNatTraN> natTrns4 = new tabGen<tabNatTraN>();
 
     public tabGen<tabNatTraN> natTrns6 = new tabGen<tabNatTraN>();
@@ -809,6 +813,8 @@ class servP4langVrf implements Comparator<servP4langVrf> {
         pbrCfg4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
         pbrCfg6 = null;
         pbrCfg6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        flwSpc4 = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        flwSpc6 = new tabListing<tabAceslstN<addrIP>, addrIP>();
     }
 
 }
@@ -1394,6 +1400,32 @@ class servP4langConn implements Runnable {
                 updateAcl(cmd, ntry.sentQos6outF);
                 return false;
             }
+            if (s.equals("flowspec4_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateAcl(cmd, vrf.flwSpc4);
+                return false;
+            }
+            if (s.equals("flowspec6_cnt")) {
+                servP4langVrf vrf = new servP4langVrf();
+                vrf.id = bits.str2num(cmd.word());
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateAcl(cmd, vrf.flwSpc6);
+                return false;
+            }
             if (s.equals("route4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf();
                 vrf.id = bits.str2num(cmd.word());
@@ -1563,6 +1595,8 @@ class servP4langConn implements Runnable {
             doNatTrns(false, vrf.id, vrf.vrf.fwd6.natTrns, vrf.natTrns6);
             vrf.pbrCfg4 = doPbrCfg(true, vrf, vrf.vrf.fwd4, vrf.pbrCfg4, vrf.pbrCfg4f);
             vrf.pbrCfg6 = doPbrCfg(false, vrf, vrf.vrf.fwd6, vrf.pbrCfg6, vrf.pbrCfg6f);
+            doFlwSpc(true, vrf, vrf.vrf.fwd4, vrf.flwSpc4);
+            doFlwSpc(false, vrf, vrf.vrf.fwd6, vrf.flwSpc6);
         }
         for (int i = 0; i < tabLabel.labels.size(); i++) {
             doLab1(tabLabel.labels.get(i));
@@ -3167,6 +3201,56 @@ class servP4langConn implements Runnable {
         return need;
     }
 
+    private void doFlwSpc(boolean ipv4, servP4langVrf vrf, ipFwd fwd, tabListing<tabAceslstN<addrIP>, addrIP> res) {
+        String afi;
+        if (ipv4) {
+            afi = "4";
+        } else {
+            afi = "6";
+        }
+        int pos = 0;
+        for (;;) {
+            if (fwd.flowspec == null) {
+                break;
+            }
+            if (fwd.flowspec.getClass(pos + 1) == null) {
+                break;
+            }
+            tabQosN curQ = fwd.flowspec.getClass(pos);
+            if (curQ == null) {
+                break;
+            }
+            tabListing<tabAceslstN<addrIP>, addrIP> curA = curQ.getAccessList();
+            tabAceslstN<addrIP> curE = null;
+            if (curA != null) {
+                curE = curA.get(0);
+            }
+            if (curE == null) {
+                curE = new tabAceslstN<addrIP>(new addrIP());
+                curE.action = tabListingEntry.actionType.actPermit;
+            }
+            tabAceslstN<addrIP> old = res.get(pos);
+            pos++;
+            if (curE == old) {
+                continue;
+            }
+            String a;
+            if (old == null) {
+                a = "_add";
+            } else {
+                a = "_mod";
+            }
+            lower.sendLine("flowspec" + afi + a + " " + vrf.id + " " + pos + " " + curQ.getBytePerInt() + " " + curQ.getInterval() + " " + ace2str(pos, ipv4, curE, curQ.getAction() == tabListingEntry.actionType.actPermit));
+            curE.sequence = pos;
+            res.add(curE);
+        }
+        for (int i = res.size() - 1; i >= pos; i--) {
+            tabAceslstN<addrIP> curA = res.get(i);
+            lower.sendLine("flowspec" + afi + "_del " + vrf.id + " " + i + " 0 0 " + ace2str(pos, ipv4, curA, false));
+            res.del(curA);
+        }
+    }
+
     private tabListing<tabAceslstN<addrIP>, addrIP> doPbrCfg(boolean ipv4, servP4langVrf vrf, ipFwd fwd, tabListing<tabAceslstN<addrIP>, addrIP> old, tabListing<tabAceslstN<addrIP>, addrIP> res) {
         tabListing<tabAceslstN<addrIP>, addrIP> need;
         tabPbrN ntry;
@@ -3366,9 +3450,14 @@ class servP4langConn implements Runnable {
     public String numat2str(tabIntMatcher mat, int max) {
         if (mat.action == tabIntMatcher.actionType.xact) {
             return mat.rangeMin + " " + max;
-        } else {
+        }
+        if (mat.action != tabIntMatcher.actionType.range) {
             return "0 0";
         }
+        if (mat.rangeMin == mat.rangeMax) {
+            return mat.rangeMin + " " + max;
+        }
+        return "0 0";
     }
 
     public String ip2str(boolean ipv4, addrIP adr) {
@@ -3379,7 +3468,7 @@ class servP4langConn implements Runnable {
         }
     }
 
-    public String ace2str(int seq, boolean ipv4, tabAceslstN<addrIP> ace) {
+    public String ace2str(int seq, boolean ipv4, tabAceslstN<addrIP> ace, boolean negate) {
         if (!ace.srcMask.isFilled(0)) {
             if (ace.srcMask.isIPv4() != ipv4) {
                 return null;
@@ -3390,7 +3479,13 @@ class servP4langConn implements Runnable {
                 return null;
             }
         }
-        return seq + " " + tabListingEntry.action2string(ace.action) + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535);
+        String cmd;
+        if (negate ^ (ace.action == tabListingEntry.actionType.actPermit)) {
+            cmd = tabListingEntry.action2string(tabListingEntry.actionType.actPermit);
+        } else {
+            cmd = tabListingEntry.action2string(tabListingEntry.actionType.actDeny);
+        }
+        return seq + " " + cmd + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535);
     }
 
     public void sendAcl(String pre1, String perm, String deny, String pre2, boolean ipv4, tabListing<tabAceslstN<addrIP>, addrIP> iface, tabListing<tabAceslstN<addrIP>, addrIP> infra, tabListing<tabAceslstN<addrIP>, addrIP> res) {
@@ -3407,7 +3502,7 @@ class servP4langConn implements Runnable {
         res.mergeTwo(infra, iface);
         for (int i = 0; i < res.size(); i++) {
             tabAceslstN<addrIP> ace = res.get(i);
-            String a = ace2str(res.size() - i, ipv4, ace);
+            String a = ace2str(res.size() - i, ipv4, ace, false);
             if (a == null) {
                 continue;
             }

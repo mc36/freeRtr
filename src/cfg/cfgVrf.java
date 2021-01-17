@@ -1377,7 +1377,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             sctp = sctp6;
             tcp = tcp6;
         }
-        userFormat l = new userFormat("|", "lower|name|state|iface|local|remote|address");
+        userFormat l = new userFormat("|", "lower|name|hit|state|iface|local|remote|address");
         ipFwdTab.listProtocols(fwd, l, "ipPrt");
         udp.listServers(fwd, l, "udpSrv");
         ludp.listServers(fwd, l, "ludpSrv");

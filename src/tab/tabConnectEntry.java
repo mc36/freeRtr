@@ -40,6 +40,11 @@ public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> im
     public int remote;
 
     /**
+     * hit count
+     */
+    public int hits;
+
+    /**
      * connection name
      */
     public String name;
@@ -103,7 +108,7 @@ public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> im
         } else {
             a = data.dumper();
         }
-        return name + "|" + a + "|" + ipFwdTab.iface2name(f, iface) + "|" + local + "|" + remote + "|" + peer;
+        return name + "|" + hits + "|" + a + "|" + ipFwdTab.iface2name(f, iface) + "|" + local + "|" + remote + "|" + peer;
     }
 
 }
