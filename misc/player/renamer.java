@@ -209,7 +209,7 @@ public class renamer {
         } catch (Exception e) {
             return false;
         }
-        if (i < (year - 20)) {
+        if (i < (year - 40)) {
             return false;
         }
         if (i > (year + 1)) {

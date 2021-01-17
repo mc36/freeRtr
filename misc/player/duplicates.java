@@ -28,9 +28,10 @@ public class duplicates implements Comparator<String> {
         Collections.sort(lst, new duplicates());
         s = "<null>";
         for (int i = 0; i < lst.size(); i++) {
-            String a = lst.get(i).toLowerCase();
+            String o = lst.get(i);
+            String a = o.toLowerCase();
             if (a.startsWith(s)) {
-                playerUtil.put(s);
+                playerUtil.put(o);
             }
             s = a;
         }
