@@ -44,14 +44,6 @@ aaa tacacs tac
  server 10.10.10.227
  exit
 !
-access-list all4
- sequence 10 permit all any all any all
- exit
-!
-access-list all6
- sequence 10 permit all any all any all
- exit
-!
 prefix-list all
  sequence 10 permit 0.0.0.0/0 ge 0 le 32
  sequence 20 permit ::/0 ge 0 le 128
@@ -958,4 +950,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=fbaaa57ca2f47f8f201416dc4106897eb1bd46094619dd09884e602908c9baa73dbae5777567b848604660c97585544adc55aab827cec87bee1196b3700a59a9-9db3acba42f226abeee30c19f63edbea6e9b3eae7150e2eebf6b1e31553885138cce45fa7a49afe84357b2022b30ee157b660b455bd4965257549eacc526b9af
+end chksum=df1b37db086a18ff78331473ad2ef25f27c020a7b5ef3aeb532f71d254545b8f614948eaf89cf54069c6f67b746e4175b9c730a1f5a0dd3d236a3ed0546cc1b9-5cd2c8523244ac56769078c242ab0a5bf1f4f99bc2873142e85ed5e3e44e5f940308c553b826c93b6432035e44afee7efff70e4d42dd15b2f2c6c26c431992f1

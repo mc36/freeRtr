@@ -382,15 +382,21 @@ struct aclH_entry {
     long byte;
 };
 
-int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *),int siz) {
+struct aclH_entry* search_ace(struct table_head *tab, void *ntry, int matcher(void *, void *),int siz) {
     for (int i=tab->size-1; i>=0; i--) {
         struct aclH_entry *res = table_get(tab, i);
         if (matcher(ntry, res) != 0) continue;
         res->pack++;
         res->byte += siz;
-        return res->act;
+        return res;
     }
-    return 1;
+    return NULL;
+}
+
+int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *),int siz) {
+    struct aclH_entry *res = search_ace(tab, ntry, matcher, siz);
+    if (res == NULL) return 1;
+    return res->act;
 }
 
 
