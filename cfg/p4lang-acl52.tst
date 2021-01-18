@@ -1,4 +1,4 @@
-description p4lang: transmit flowspec
+description p4lang: priority flowspec
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -42,11 +42,13 @@ access-list a6
  permit 58 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all
  exit
 policy-map p4
- seq 10 act trans
+ seq 10 act pri
+  access-rate 81920
   match access-group a4
  exit
 policy-map p6
- seq 10 act trans
+ seq 10 act pri
+  access-rate 81920
   match access-group a6
  exit
 router bgp4 1
@@ -350,8 +352,8 @@ r6 tping 100 10 4321::106 /vrf v1 /int lo0
 
 r4 tping 100 10 2.2.2.105 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
 r4 tping 100 10 4321::105 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
-r4 tping 100 10 2.2.2.106 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
-r4 tping 100 10 4321::106 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
+r4 tping 5-95 10 2.2.2.106 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
+r4 tping 5-95 10 4321::106 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
 
 r1 output sho inter summ
 r1 output sho inter hwsumm
