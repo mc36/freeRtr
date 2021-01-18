@@ -78,6 +78,10 @@ struct ingress_metadata_t {
     SubIntId_t outqos_id;
     bit <8> outqos_res;
 #endif
+#ifdef HAVE_FLOWSPEC
+    SubIntId_t flowspec_id;
+    bit <8> flowspec_res;
+#endif
 #ifdef HAVE_PPPOE
     bit<1>  pppoe_ctrl_valid;
     bit<1>  pppoe_data_valid;

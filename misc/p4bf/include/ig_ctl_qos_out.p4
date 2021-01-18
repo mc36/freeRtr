@@ -28,7 +28,6 @@ control IngressControlQosOut(inout headers hdr, inout ingress_metadata_t ig_md,
     Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) policer;
 
     action act_deny(SubIntId_t metid) {
-        ig_md.outqos_id = metid;
     }
 
     action act_permit(SubIntId_t metid) {

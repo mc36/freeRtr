@@ -73,6 +73,7 @@
 #include "include/ig_ctl_pbr.p4"
 #include "include/ig_ctl_qos_in.p4"
 #include "include/ig_ctl_qos_out.p4"
+#include "include/ig_ctl_flowspec.p4"
 #include "include/ig_ctl_tunnel.p4"
 #include "include/ig_ctl_pppoe.p4"
 #include "include/ig_ctl_copp.p4"

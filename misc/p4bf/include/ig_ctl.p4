@@ -90,6 +90,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_OUTQOS
     IngressControlQosOut() ig_ctl_qos_out;
 #endif
+#ifdef HAVE_FLOWSPEC
+    IngressControlFlowspec() ig_ctl_flowspec;
+#endif
 
     Counter< bit<64>, SubIntId_t> ((MAX_PORT+1), CounterType_t.PACKETS_AND_BYTES) pkt_out_stats;
 
@@ -129,6 +132,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             ig_ctl_vrf.apply(hdr, ig_md);
 #ifdef HAVE_MPLS
             ig_ctl_mpls.apply(hdr, ig_md, ig_intr_md);
+#endif
+#ifdef HAVE_FLOWSPEC
+            ig_ctl_flowspec.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 #ifdef HAVE_NAT
             ig_ctl_nat.apply(hdr,ig_md,ig_intr_md);

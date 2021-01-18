@@ -14,30 +14,38 @@
  * limitations under the License.
  */
 
-#ifndef _IG_CTL_Qos_in_P4_
-#define _IG_CTL_Qos_in_P4_
+#ifndef _IG_CTL_Flowspec_P4_
+#define _IG_CTL_Flowspec_P4_
 
-#ifdef HAVE_INQOS
+#ifdef HAVE_FLOWSPEC
 
-control IngressControlQosIn(inout headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlFlowspec(inout headers hdr, inout ingress_metadata_t ig_md,
                             in ingress_intrinsic_metadata_t ig_intr_md,
                             inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
                             inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
-    Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) policer;
+    Meter<SubIntId_t>((IPV4_FLOWSPEC_TABLE_SIZE), MeterType_t.BYTES) policer4;
+    Meter<SubIntId_t>((IPV6_FLOWSPEC_TABLE_SIZE), MeterType_t.BYTES) policer6;
 
-    action act_deny(SubIntId_t metid) {
+    action act4_deny(SubIntId_t metid) {
     }
 
-    action act_permit(SubIntId_t metid) {
-        ig_md.inqos_id = metid;
+    action act4_permit(SubIntId_t metid) {
+        ig_md.flowspec_id = metid;
+    }
+
+    action act6_deny(SubIntId_t metid) {
+    }
+
+    action act6_permit(SubIntId_t metid) {
+        ig_md.flowspec_id = metid;
     }
 
 
-    table tbl_ipv4_qos {
+    table tbl_ipv4_flowspec {
         key = {
-ig_md.source_id:
+ig_md.vrf:
             exact;
 hdr.ipv4.protocol:
             ternary;
@@ -51,17 +59,17 @@ ig_md.layer4_dstprt:
             ternary;
         }
         actions = {
-            act_permit;
-            act_deny;
+            act4_permit;
+            act4_deny;
             @defaultonly NoAction;
         }
-        size = IPV4_INQOS_TABLE_SIZE;
+        size = IPV4_FLOWSPEC_TABLE_SIZE;
         const default_action = NoAction();
     }
 
-    table tbl_ipv6_qos {
+    table tbl_ipv6_flowspec {
         key = {
-ig_md.source_id:
+ig_md.vrf:
             exact;
 hdr.ipv6.next_hdr:
             ternary;
@@ -75,22 +83,23 @@ ig_md.layer4_dstprt:
             ternary;
         }
         actions = {
-            act_permit;
-            act_deny;
+            act6_permit;
+            act6_deny;
             @defaultonly NoAction;
         }
-        size = IPV6_INQOS_TABLE_SIZE;
+        size = IPV6_FLOWSPEC_TABLE_SIZE;
         const default_action = NoAction();
     }
 
     apply {
         if (ig_md.ipv4_valid==1)  {
-            tbl_ipv4_qos.apply();
+            tbl_ipv4_flowspec.apply();
+            ig_md.flowspec_res = policer4.execute(metid);
         } else if (ig_md.ipv6_valid==1)  {
-            tbl_ipv6_qos.apply();
+            tbl_ipv6_flowspec.apply();
+            ig_md.flowspec_res = policer6.execute(metid);
         }
-        ig_md.inqos_res = policer.execute(ig_md.inqos_id);
-        if ((ig_md.inqos_id != 0) && (ig_md.inqos_res != MeterColor_t.GREEN)) {
+        if ((ig_md.flowspec_id != 0) && (ig_md.flowspec_res != MeterColor_t.GREEN)) {
             ig_dprsr_md.drop_ctl = 1;
         }
     }
@@ -98,5 +107,5 @@ ig_md.layer4_dstprt:
 
 #endif
 
-#endif // _IG_CTL_Qos_in_P4_
+#endif // _IG_CTL_Flowspec_P4_
 

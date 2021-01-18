@@ -44,6 +44,10 @@ parser ig_prs_main(packet_in pkt,
         ig_md.outqos_id = 0;
         ig_md.outqos_res = MeterColor_t.GREEN;
 #endif
+#ifdef HAVE_FLOWSPEC
+        ig_md.flowspec_id = 0;
+        ig_md.flowspec_res = MeterColor_t.GREEN;
+#endif
 #ifdef HAVE_PPPOE
         ig_md.pppoe_ctrl_valid = 0;
         ig_md.pppoe_data_valid = 0;
