@@ -50,5 +50,7 @@
 #define IPV6_INQOS_TABLE_SIZE                  2048
 #define IPV4_OUTQOS_TABLE_SIZE                 2048
 #define IPV6_OUTQOS_TABLE_SIZE                 2048
+#define IPV4_FLOWSPEC_TABLE_SIZE               2048
+#define IPV6_FLOWSPEC_TABLE_SIZE               2048
 
 #endif // _TABLE_SIZE_P4_

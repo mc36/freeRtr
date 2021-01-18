@@ -47,6 +47,7 @@ control ig_ctl(inout headers hdr,
     IngressControlPBR() ig_ctl_pbr;
     IngressControlQosIn() ig_ctl_qos_in;
     IngressControlQosOut() ig_ctl_qos_out;
+    IngressControlFlowspec() ig_ctl_flowspec;
 
     counter((MAX_PORT+1), CounterType.packets_and_bytes) pkt_out_stats;
 
@@ -82,6 +83,10 @@ control ig_ctl(inout headers hdr,
         ig_ctl_arp.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_llc.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_mpls.apply(hdr,ig_md,ig_intr_md);
+        ig_ctl_flowspec.apply(hdr,ig_md,ig_intr_md);
+        if (ig_md.dropping == 1) {
+            return;
+        }
         ig_ctl_nat.apply(hdr,ig_md,ig_intr_md);
         if ( ig_md.dropping == 1) {
             hdr.cpu.setValid();

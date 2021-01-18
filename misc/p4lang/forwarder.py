@@ -1724,6 +1724,55 @@ def writeOutQosRules(delete, p4info_helper, ingress_sw, meter, bytes, interval):
     return
 
 
+
+
+def writeFlowspecRules4(delete, p4info_helper, ingress_sw, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
+    add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
+    add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_flowspec.tbl_ipv4_flowspec",
+        match_fields=matches,
+        action_name="ig_ctl.ig_ctl_flowspec.act4_"+act,
+        priority=65535-pri,
+        action_params={
+            "metid": meter,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeFlowspecRules6(delete, p4info_helper, ingress_sw, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
+    add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
+    add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_flowspec.tbl_ipv6_flowspec",
+        match_fields=matches,
+        action_name="ig_ctl.ig_ctl_flowspec.act6_"+act,
+        priority=65535-pri,
+        action_params={
+            "metid": meter,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+
 def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
@@ -2352,6 +2401,26 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "outqos_del":
             writeOutQosRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if splt[0] == "flowspec4_add":
+            writeFlowspecRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+        if splt[0] == "flowspec4_mod":
+            writeFlowspecRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+        if splt[0] == "flowspec4_del":
+            writeFlowspecRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+
+        if splt[0] == "flowspec6_add":
+            writeFlowspecRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+        if splt[0] == "flowspec6_mod":
+            writeFlowspecRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+        if splt[0] == "flowspec6_del":
+            writeFlowspecRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
             continue
 
         if splt[0] == "cpulabel_add":
