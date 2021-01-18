@@ -643,7 +643,10 @@ class BfForwarder(Thread):
         bytes,
         interval,
     ):
-        kbps = bytes * 8 / interval
+        if interval == 0:
+            kbps = 0
+        else:
+            kbps = bytes * 8 / interval
         try:
             tbl = self.bfgc.bfrt_info.table_get(tbl_name)
             key_field_list = [
@@ -3901,6 +3904,90 @@ class BfForwarder(Thread):
         )
 
 
+    def writeFlowspec4Rules(
+        self, op_type, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        tbl_global_path = "ig_ctl.ig_ctl_flowspec"
+        tbl_name = "%s.tbl_ipv4_flowspec" % (tbl_global_path)
+        tbl_action_name = "%s.act4_%s" % (tbl_global_path, act)
+        key_field_list = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
+            gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
+            gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = [
+             gc.DataTuple("metid", (meter+1)),
+        ]
+        key_annotation_fields = {
+            "hdr.ipv4.src_addr": "ipv4",
+            "hdr.ipv4.dst_addr": "ipv4",
+        }
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+        tbl_global_path = "ig_ctl.ig_ctl_flowspec"
+        tbl_name = "%s.policer4" % (tbl_global_path)
+        self._processMeterFromControlPlane(
+            op_type,
+            tbl_name,
+            (meter+1),
+            bytes,
+            interval
+        )
+
+    def writeFlowspec6Rules(
+        self, op_type, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+    ):
+        tbl_global_path = "ig_ctl.ig_ctl_flowspec"
+        tbl_name = "%s.tbl_ipv6_flowspec" % (tbl_global_path)
+        tbl_action_name = "%s.act6_%s" % (tbl_global_path, act)
+        key_field_list = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
+            gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
+            gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
+            gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+        ]
+        data_field_list = [
+             gc.DataTuple("metid", (meter+1)),
+        ]
+        key_annotation_fields = {
+            "hdr.ipv6.src_addr": "ipv6",
+            "hdr.ipv6.dst_addr": "ipv6",
+        }
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+        tbl_global_path = "ig_ctl.ig_ctl_flowspec"
+        tbl_name = "%s.policer6" % (tbl_global_path)
+        self._processMeterFromControlPlane(
+            op_type,
+            tbl_name,
+            (meter+1),
+            bytes,
+            interval
+        )
+
 
 
     def run(self):
@@ -5791,6 +5878,134 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                )
+                continue
+
+
+            if splt[0] == "flowspec4_add":
+                self.writeFlowspec4Rules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    splt[6],
+                    int(splt[7]),
+                    int(splt[8]),
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    splt[12],
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                )
+                continue
+            if splt[0] == "flowspec4_mod":
+                self.writeFlowspec4Rules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    splt[6],
+                    int(splt[7]),
+                    int(splt[8]),
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    splt[12],
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                )
+                continue
+            if splt[0] == "flowspec4_del":
+                self.writeFlowspec4Rules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    splt[6],
+                    int(splt[7]),
+                    int(splt[8]),
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    splt[12],
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                )
+                continue
+            if splt[0] == "flowspec6_add":
+                self.writeFlowspec6Rules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    splt[6],
+                    int(splt[7]),
+                    int(splt[8]),
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    splt[12],
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                )
+                continue
+            if splt[0] == "flowspec6_mod":
+                self.writeFlowspec6Rules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    splt[6],
+                    int(splt[7]),
+                    int(splt[8]),
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    splt[12],
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                )
+                continue
+            if splt[0] == "flowspec6_del":
+                self.writeFlowspec6Rules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    splt[6],
+                    int(splt[7]),
+                    int(splt[8]),
+                    splt[9],
+                    splt[10],
+                    splt[11],
+                    splt[12],
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
                 )
                 continue
 

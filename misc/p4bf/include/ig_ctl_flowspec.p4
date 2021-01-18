@@ -94,10 +94,10 @@ ig_md.layer4_dstprt:
     apply {
         if (ig_md.ipv4_valid==1)  {
             tbl_ipv4_flowspec.apply();
-            ig_md.flowspec_res = policer4.execute(metid);
+            ig_md.flowspec_res = policer4.execute(ig_md.flowspec_id);
         } else if (ig_md.ipv6_valid==1)  {
             tbl_ipv6_flowspec.apply();
-            ig_md.flowspec_res = policer6.execute(metid);
+            ig_md.flowspec_res = policer6.execute(ig_md.flowspec_id);
         }
         if ((ig_md.flowspec_id != 0) && (ig_md.flowspec_res != MeterColor_t.GREEN)) {
             ig_dprsr_md.drop_ctl = 1;
