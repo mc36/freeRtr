@@ -58,6 +58,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no match lrgcomm",
         "route-map .*! sequence .* no match privateas",
         "route-map .*! sequence .* no match tracker",
+        "route-map .*! sequence .* no match interface",
         "route-map .*! sequence .* no match nexthop",
         "route-map .*! sequence .* match peerasn all",
         "route-map .*! sequence .* match distance all",
@@ -173,6 +174,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("3 3,.     <str>             community");
         l.add("2 3     lrgcomm             match large community");
         l.add("3 3,.     <str>             community");
+        l.add("2 3     interface           match interface");
+        l.add("3 .       <str>             interface");
         l.add("2 3     nexthop             match next hop");
         l.add("3 .       <addr>            address");
         l.add("2 3     peerasn             match peer asn");
@@ -386,6 +389,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         if (a.equals("match")) {
             a = cmd.word();
             tabRtrmapN ntry = getCurr();
+            if (a.equals("interface")) {
+                ntry.ifaceMatch = cfgAll.ifcFind(cmd.word(), false);
+                return;
+            }
             if (a.equals("nexthop")) {
                 ntry.nexthopMatch = new addrIP();
                 ntry.nexthopMatch.fromString(cmd.getRemaining());
@@ -738,6 +745,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         if (a.equals("match")) {
             a = cmd.word();
             tabRtrmapN ntry = getCurr();
+            if (a.equals("interface")) {
+                ntry.ifaceMatch = null;
+                return;
+            }
             if (a.equals("nexthop")) {
                 ntry.nexthopMatch = null;
                 return;

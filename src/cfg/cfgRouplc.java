@@ -94,6 +94,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("1 2   elsif                 match values from source routing protocol");
         l.add("2 .     always              match always");
         l.add("2 .     never               match never");
+        l.add("2 3     interface           match interface");
+        l.add("3 .       <str>             interface");
         l.add("2 3     nexthop             match next hop");
         l.add("3 .       <addr>            address");
         l.add("2 3     aspath              match as path");
@@ -487,6 +489,15 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         if (a.equals("safi")) {
             ntry.ifMode = tabRtrplcN.ifType.safi;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("interface")) {
+            ntry.ifMode = tabRtrplcN.ifType.iface;
+            ntry.ifaceMatch = cfgAll.ifcFind(cmd.getRemaining(), false);
+            if (ntry.ifaceMatch == null) {
                 cmd.error("invalid action");
                 return;
             }

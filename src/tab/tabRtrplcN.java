@@ -3,6 +3,7 @@ package tab;
 import addr.addrIP;
 import addr.addrPrefix;
 import cfg.cfgAll;
+import cfg.cfgIfc;
 import cfg.cfgTrack;
 import java.util.ArrayList;
 import java.util.List;
@@ -282,7 +283,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
         /**
          * nexthop
          */
-        nexthop
+        nexthop,
+        /**
+         * interface
+         */
+        iface
     }
 
     /**
@@ -359,6 +364,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
      * next hop updater
      */
     public addrIP nexthopSet;
+
+    /**
+     * interface matcher
+     */
+    public cfgIfc ifaceMatch;
 
     public List<String> usrString(String beg) {
         beg += "sequence " + sequence + " ";
@@ -507,6 +517,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "safi " + intMatch;
             case nexthop:
                 return "nexthop " + nexthopSet;
+            case iface:
+                return "interface " + ifaceMatch.name;
             default:
                 return "unknown=" + ifMode;
         }
@@ -628,6 +640,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                     return false;
                 }
                 return nexthopSet.compare(nexthopSet, net.best.nextHop) == 0;
+            case iface:
+                if (net.best.iface == null) {
+                    return false;
+                }
+                return ((net.best.iface == ifaceMatch.fwdIf4) || (net.best.iface == ifaceMatch.fwdIf6));
             default:
                 return true;
         }

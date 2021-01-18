@@ -3,6 +3,7 @@ package tab;
 import addr.addrIP;
 import addr.addrPrefix;
 import cfg.cfgAll;
+import cfg.cfgIfc;
 import cfg.cfgTrack;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,6 +176,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * next hop updater
      */
     public addrIP nexthopSet;
+
+    /**
+     * interface matcher
+     */
+    public cfgIfc ifaceMatch;
 
     /**
      * tracker matcher
@@ -705,6 +711,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         } else {
             l.add(beg + "match network " + networkMatch);
         }
+        if (ifaceMatch == null) {
+            l.add(beg + "no match interface");
+        } else {
+            l.add(beg + "match interface " + ifaceMatch.name);
+        }
         if (nexthopMatch == null) {
             l.add(beg + "no match nexthop");
         } else {
@@ -886,6 +897,14 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             int i = rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
             i += rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
             if (i < 1) {
+                return false;
+            }
+        }
+        if (ifaceMatch != null) {
+            if (net.best.iface == null) {
+                return false;
+            }
+            if ((net.best.iface != ifaceMatch.fwdIf4) && (net.best.iface != ifaceMatch.fwdIf6)) {
                 return false;
             }
         }
