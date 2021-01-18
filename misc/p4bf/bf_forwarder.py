@@ -2284,7 +2284,7 @@ class BfForwarder(Thread):
         tbl_name = "%s.tbl_ipv4_copp" % (tbl_global_path)
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
@@ -2314,7 +2314,7 @@ class BfForwarder(Thread):
         tbl_name = "%s.tbl_ipv6_copp" % (tbl_global_path)
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
@@ -2351,7 +2351,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
             gc.KeyTuple("ig_md.vrf", vrf),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
@@ -2385,7 +2385,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
             gc.KeyTuple("ig_md.vrf", vrf),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
@@ -2502,7 +2502,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_normal" % (tbl_global_path)
         key_field_list = [
             gc.KeyTuple("ig_md.vrf", vrf),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
@@ -2536,7 +2536,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_normal" % (tbl_global_path)
         key_field_list = [
             gc.KeyTuple("ig_md.vrf", vrf),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
@@ -2573,7 +2573,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_setvrf" % (tbl_global_path)
         key_field_list = [
             gc.KeyTuple("ig_md.vrf", vrf),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
@@ -2610,7 +2610,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_setvrf" % (tbl_global_path)
         key_field_list = [
             gc.KeyTuple("ig_md.vrf", vrf),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
@@ -2650,7 +2650,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_sethop" % (tbl_global_path)
         key_field_list = [
             gc.KeyTuple("ig_md.vrf", vrf),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
@@ -2688,7 +2688,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_sethop" % (tbl_global_path)
         key_field_list = [
             gc.KeyTuple("ig_md.vrf", vrf),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
@@ -3622,7 +3622,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
             gc.KeyTuple("ig_md.source_id", port),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
@@ -3653,7 +3653,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
             gc.KeyTuple("ig_md.aclport_id", port),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
@@ -3684,7 +3684,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
             gc.KeyTuple("ig_md.source_id", port),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
@@ -3715,7 +3715,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
             gc.KeyTuple("ig_md.aclport_id", port),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
@@ -3749,7 +3749,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
             gc.KeyTuple("ig_md.source_id", port),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
@@ -3782,7 +3782,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
             gc.KeyTuple("ig_md.aclport_id", port),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
@@ -3815,7 +3815,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
             gc.KeyTuple("ig_md.source_id", port),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
@@ -3848,7 +3848,7 @@ class BfForwarder(Thread):
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
             gc.KeyTuple("ig_md.aclport_id", port),
-            gc.KeyTuple("$MATCH_PRIORITY", 65535-pri),
+            gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),

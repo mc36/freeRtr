@@ -1270,7 +1270,7 @@ def writeCoppRules4(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sa
         table_name="ig_ctl.ig_ctl_copp.tbl_ipv4_copp",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_copp.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
         })
     if delete == 1:
@@ -1292,7 +1292,7 @@ def writeCoppRules6(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sa
         table_name="ig_ctl.ig_ctl_copp.tbl_ipv6_copp",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_copp.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
         })
     if delete == 1:
@@ -1314,7 +1314,7 @@ def writeInAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm,
         table_name="ig_ctl.ig_ctl_acl_in.tbl_ipv4_acl",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_acl_in.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
         })
     if delete == 1:
@@ -1336,7 +1336,7 @@ def writeInAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm,
         table_name="ig_ctl.ig_ctl_acl_in.tbl_ipv6_acl",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_acl_in.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
         })
     if delete == 1:
@@ -1358,7 +1358,7 @@ def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm
         table_name="ig_ctl.ig_ctl_acl_out.tbl_ipv4_acl",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_acl_out.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
         })
     if delete == 1:
@@ -1380,7 +1380,7 @@ def writeOutAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm
         table_name="ig_ctl.ig_ctl_acl_out.tbl_ipv6_acl",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_acl_out.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
         })
     if delete == 1:
@@ -1402,7 +1402,7 @@ def writeNatCfgRules4(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm,
         table_name="ig_ctl.ig_ctl_nat.tbl_ipv4_nat_cfg",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_nat.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
         })
     if delete == 1:
@@ -1424,7 +1424,7 @@ def writeNatCfgRules6(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm,
         table_name="ig_ctl.ig_ctl_nat.tbl_ipv6_nat_cfg",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_nat.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
         })
     if delete == 1:
@@ -1498,7 +1498,7 @@ def writePbrNormRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, 
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_pbr.act_normal",
-        priority=pri,
+        priority=65535-pri,
         action_params={
         })
     if delete == 1:
@@ -1520,7 +1520,7 @@ def writePbrNormRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, 
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_pbr.act_normal",
-        priority=pri,
+        priority=65535-pri,
         action_params={
         })
     if delete == 1:
@@ -1542,7 +1542,7 @@ def writePbrVrfRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, p
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_pbr.act_setvrf",
-        priority=pri,
+        priority=65535-pri,
         action_params={
             "vrf_id": tvrf,
         })
@@ -1565,7 +1565,7 @@ def writePbrVrfRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, p
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_pbr.act_setvrf",
-        priority=pri,
+        priority=65535-pri,
         action_params={
             "vrf_id": tvrf,
         })
@@ -1588,7 +1588,7 @@ def writePbrHopRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, p
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_pbr.act_sethop",
-        priority=pri,
+        priority=65535-pri,
         action_params={
             "vrf_id": tvrf,
             "nexthop_id": thop,
@@ -1612,7 +1612,7 @@ def writePbrHopRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, p
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_pbr.act_sethop",
-        priority=pri,
+        priority=65535-pri,
         action_params={
             "vrf_id": tvrf,
             "nexthop_id": thop,
@@ -1636,7 +1636,7 @@ def writeInQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, p
         table_name="ig_ctl.ig_ctl_qos_in.tbl_ipv4_qos",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_qos_in.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
             "metid": meter,
         })
@@ -1659,7 +1659,7 @@ def writeInQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, p
         table_name="ig_ctl.ig_ctl_qos_in.tbl_ipv6_qos",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_qos_in.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
             "metid": meter,
         })
@@ -1682,7 +1682,7 @@ def writeOutQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, 
         table_name="ig_ctl.ig_ctl_qos_out.tbl_ipv4_qos",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_qos_out.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
             "metid": meter,
         })
@@ -1705,7 +1705,7 @@ def writeOutQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, 
         table_name="ig_ctl.ig_ctl_qos_out.tbl_ipv6_qos",
         match_fields=matches,
         action_name="ig_ctl.ig_ctl_qos_out.act_"+act,
-        priority=pri,
+        priority=65535-pri,
         action_params={
             "metid": meter,
         })

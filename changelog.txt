@@ -9635,3 +9635,8 @@ qc pass: p4lang: ingress policer
 qc pass: p4lang: egress policer
 qc pass: p4lang: vlan ingress policer
 qc pass: p4lang: vlan egress policer
+---------------------------------- 2021-01-18 10:45:56
+qc pass: p4lang: transmit flowspec
+qc pass: p4lang: drop flowspec
+qc pass: p4lang: policer flowspec
+qc pass: p4lang: priority flowspec

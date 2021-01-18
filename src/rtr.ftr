@@ -1115,6 +1115,10 @@ qc pass: p4lang: ingress policer
 qc pass: p4lang: egress policer
 qc pass: p4lang: vlan ingress policer
 qc pass: p4lang: vlan egress policer
+qc pass: p4lang: transmit flowspec
+qc pass: p4lang: drop flowspec
+qc pass: p4lang: policer flowspec
+qc pass: p4lang: priority flowspec
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128
