@@ -41,10 +41,17 @@ const EVP_MD* getHashAlg(unsigned char *buf) {
 }
 
 
+long readRate(unsigned char**arg) {
+    float res = atof(arg[3]) * 100.0 / atof(arg[4]);
+    return res;
+}
+
+
 void readAcl4(struct acl4_entry *acl4_ntry, unsigned char**arg) {
     unsigned char buf2[1024];
     acl4_ntry->pri = atoi(arg[3]);
     acl4_ntry->act = strcmp(arg[4], "permit");
+    if (acl4_ntry->act != 0) acl4_ntry->act = 1;
     acl4_ntry->protV = atoi(arg[5]);
     acl4_ntry->protM = atoi(arg[6]);
     inet_pton(AF_INET, arg[7], buf2);
@@ -67,6 +74,7 @@ void readAcl6(struct acl6_entry *acl6_ntry, unsigned char**arg) {
     unsigned char buf2[1024];
     acl6_ntry->pri = atoi(arg[3]);
     acl6_ntry->act = strcmp(arg[4], "permit");
+    if (acl6_ntry->act != 0) acl6_ntry->act = 1;
     acl6_ntry->protV = atoi(arg[5]);
     acl6_ntry->protM = atoi(arg[6]);
     inet_pton(AF_INET6, arg[7], buf2);
@@ -996,8 +1004,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "inqos") == 0) {
         policer_ntry.meter = atoi(arg[2]);
         policer_ntry.dir = 1;
-        float res = atof(arg[3]) * 100.0 / atof(arg[4]);
-        policer_ntry.allow = res;
+        policer_ntry.allow = readRate(&arg[0]);
         if (del == 0) table_del(&policer_table, &policer_ntry);
         else table_add(&policer_table, &policer_ntry);
         return 0;
@@ -1005,8 +1012,51 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "outqos") == 0) {
         policer_ntry.meter = atoi(arg[2]);
         policer_ntry.dir = 2;
-        float res = atof(arg[3]) * 100.0 / atof(arg[4]);
-        policer_ntry.allow = res;
+        policer_ntry.allow = readRate(&arg[0]);
+        if (del == 0) table_del(&policer_table, &policer_ntry);
+        else table_add(&policer_table, &policer_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "flowspec4") == 0) {
+        acls_ntry.dir = 8;
+        acls_ntry.ver = 4;
+        policer_ntry.dir = 3;
+        policer_ntry.vrf = acls_ntry.port = atoi(arg[2]);
+        policer_ntry.allow = readRate(&arg[1]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        readAcl4(&acl4_ntry, &arg[3]);
+        policer_ntry.meter = acl4_ntry.pri;
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&policer_table, &policer_ntry);
+        else table_add(&policer_table, &policer_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "flowspec6") == 0) {
+        acls_ntry.dir = 8;
+        acls_ntry.ver = 6;
+        policer_ntry.dir = 4;
+        policer_ntry.vrf = acls_ntry.port = atoi(arg[2]);
+        policer_ntry.allow = readRate(&arg[1]);
+        index = table_find(&acls_table, &acls_ntry);
+        if (index < 0) {
+            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
+            table_add(&acls_table, &acls_ntry);
+            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
+        } else {
+            acls_res = table_get(&acls_table, index);
+        }
+        readAcl6(&acl6_ntry, &arg[3]);
+        policer_ntry.meter = acl6_ntry.pri;
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         if (del == 0) table_del(&policer_table, &policer_ntry);
         else table_add(&policer_table, &policer_ntry);
         return 0;
@@ -1735,6 +1785,9 @@ void doStatRound(FILE *commands, int round) {
         case 7:
             snprintf(&buf2[0], 128, "outqos%i_cnt %i", ntry1->ver, ntry1->port);
             break;
+        case 8:
+            snprintf(&buf2[0], 128, "flowspec%i_cnt %i", ntry1->ver, ntry1->port);
+            break;
         default:
             continue;
         }
@@ -1760,7 +1813,7 @@ int doConsoleCommand(unsigned char*buf) {
     case '?':
         printf("commands:\n");
         printf("h - this help\n");
-        printf("q - exit process\n");
+        printf("x - exit process\n");
         printf("i - interface counters\n");
         printf("p - display portvrf table\n");
         printf("b - display bridge table\n");
@@ -1769,10 +1822,11 @@ int doConsoleCommand(unsigned char*buf) {
         printf("6 - display ipv6 table\n");
         printf("n - display nexthop table\n");
         printf("a - display acl table\n");
+        printf("q - display qos table\n");
         printf("v - display vlan table\n");
         break;
-    case 'Q':
-    case 'q':
+    case 'x':
+    case 'X':
         return 1;
         break;
     case 'i':
@@ -1825,6 +1879,14 @@ int doConsoleCommand(unsigned char*buf) {
             put32msb(buf2, 2, ntry->mac2);
             mac2str(buf2, buf);
             printf("%10i %s %10i %10i\n", ntry->id, buf, ntry->port, ntry->nexthop);
+        }
+        break;
+    case 'q':
+    case 'Q':
+        printf("       vrf      meter dir       rate\n");
+        for (int i=0; i<policer_table.size; i++) {
+            struct policer_entry *ntry = table_get(&policer_table, i);
+            printf("%10i %10i %3i %10li\n", ntry->vrf, ntry->meter, ntry->dir, ntry->allow);
         }
         break;
     case 'v':

@@ -571,6 +571,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
     struct vlan_entry *vlan_res;
     struct bridge_entry *bridge_res;
     struct acls_entry *acls_res;
+    struct aclH_entry *aceh_res;
     struct nat4_entry *nat4_res;
     struct nat6_entry *nat6_res;
     struct bundle_entry *bundle_res;
@@ -879,6 +880,7 @@ ipv4_rx:
         if (index >= 0) {
             acls_res = table_get(&acls_table, index);
             if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto ipv4_qosed;
+            policer_ntry.vrf = 0;
             policer_ntry.meter = acls_res->hop;
             policer_ntry.dir = 1;
             index = table_find(&policer_table, &policer_ntry);
@@ -888,6 +890,24 @@ ipv4_rx:
             policer_res->avail -= bufS - bufP + preBuff;
         }
 ipv4_qosed:
+        acls_ntry.dir = 8;
+        acls_ntry.port = route4_ntry.vrf;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index >= 0) {
+            acls_res = table_get(&acls_table, index);
+            aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+            if (aceh_res == NULL) goto ipv4_flwed;
+            if (aceh_res->act != 0) goto ipv4_flwed;
+            policer_ntry.vrf = route4_ntry.vrf;
+            policer_ntry.meter = aceh_res->pri;
+            policer_ntry.dir = 3;
+            index = table_find(&policer_table, &policer_ntry);
+            if (index < 0) goto drop;
+            policer_res = table_get(&policer_table, index);
+            if (policer_res->avail < 1) goto drop;
+            policer_res->avail -= bufS - bufP + preBuff;
+        }
+ipv4_flwed:
         acls_ntry.dir = 3;
         acls_ntry.port = route4_ntry.vrf;
         index = table_find(&acls_table, &acls_ntry);
@@ -973,6 +993,7 @@ ipv4_tx:
                 if (index < 0) goto neigh_tx;
                 acls_res = table_get(&acls_table, index);
                 if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto neigh_tx;
+                policer_ntry.vrf = 0;
                 policer_ntry.meter = acls_res->hop;
                 policer_ntry.dir = 2;
                 index = table_find(&policer_table, &policer_ntry);
@@ -1128,6 +1149,7 @@ ipv6_rx:
         if (index >= 0) {
             acls_res = table_get(&acls_table, index);
             if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto ipv6_qosed;
+            policer_ntry.vrf = 0;
             policer_ntry.meter = acls_res->hop;
             policer_ntry.dir = 1;
             index = table_find(&policer_table, &policer_ntry);
@@ -1137,6 +1159,24 @@ ipv6_rx:
             policer_res->avail -= bufS - bufP + preBuff;
         }
 ipv6_qosed:
+        acls_ntry.dir = 8;
+        acls_ntry.port = route6_ntry.vrf;
+        index = table_find(&acls_table, &acls_ntry);
+        if (index >= 0) {
+            acls_res = table_get(&acls_table, index);
+            aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+            if (aceh_res == NULL) goto ipv6_flwed;
+            if (aceh_res->act != 0) goto ipv6_flwed;
+            policer_ntry.vrf = route6_ntry.vrf;
+            policer_ntry.meter = aceh_res->pri;
+            policer_ntry.dir = 4;
+            index = table_find(&policer_table, &policer_ntry);
+            if (index < 0) goto drop;
+            policer_res = table_get(&policer_table, index);
+            if (policer_res->avail < 1) goto drop;
+            policer_res->avail -= bufS - bufP + preBuff;
+        }
+ipv6_flwed:
         acls_ntry.dir = 3;
         acls_ntry.port = route6_ntry.vrf;
         index = table_find(&acls_table, &acls_ntry);
@@ -1261,6 +1301,7 @@ ipv6_tx:
                 if (index < 0) goto neigh_tx;
                 acls_res = table_get(&acls_table, index);
                 if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto neigh_tx;
+                policer_ntry.vrf = 0;
                 policer_ntry.meter = acls_res->hop;
                 policer_ntry.dir = 2;
                 index = table_find(&policer_table, &policer_ntry);

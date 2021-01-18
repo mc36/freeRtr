@@ -128,6 +128,15 @@ public class tabQosN {
     }
 
     /**
+     * set hardware counter
+     *
+     * @param cntr counter
+     */
+    public void setHwCounter(counter cntr) {
+        entry.hwCntr = cntr;
+    }
+
+    /**
      * get queue size
      *
      * @return queue size

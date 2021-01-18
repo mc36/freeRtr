@@ -260,7 +260,7 @@ int vlanout_compare(void *ptr1, void *ptr2) {
 
 struct acls_entry {
     int ver;
-    int dir; // 1=inacl, 2=outacl, 3=nat, 4=copp, 5=pbr, 6=inqos, 7=outqos
+    int dir; // 1=inacl, 2=outacl, 3=nat, 4=copp, 5=pbr, 6=inqos, 7=outqos, 8=flwspc
     int port;
     struct table_head aces;
     int cmd; // 1=normal, 2=setvrf, 3=sethop
@@ -383,7 +383,7 @@ struct aclH_entry {
 };
 
 struct aclH_entry* search_ace(struct table_head *tab, void *ntry, int matcher(void *, void *),int siz) {
-    for (int i=tab->size-1; i>=0; i--) {
+    for (int i=0; i<tab->size; i++) {
         struct aclH_entry *res = table_get(tab, i);
         if (matcher(ntry, res) != 0) continue;
         res->pack++;
@@ -681,8 +681,9 @@ int macsec_compare(void *ptr1, void *ptr2) {
 
 
 struct policer_entry {
+    int vrf;
     int meter;
-    int dir; // 1=in, 2=out
+    int dir; // 1=in, 2=out, 3=flwspc4, 4=flwspc6
     long allow;
     long avail;
 };
@@ -692,6 +693,8 @@ struct table_head policer_table;
 int policer_compare(void *ptr1, void *ptr2) {
     struct policer_entry *ntry1 = ptr1;
     struct policer_entry *ntry2 = ptr2;
+    if (ntry1->vrf < ntry2->vrf) return -1;
+    if (ntry1->vrf > ntry2->vrf) return +1;
     if (ntry1->dir < ntry2->dir) return -1;
     if (ntry1->dir > ntry2->dir) return +1;
     if (ntry1->meter < ntry2->meter) return -1;
