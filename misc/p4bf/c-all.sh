@@ -12,4 +12,4 @@
 cd /home/mc36/rare/p4src
 export SDE=/home/mc36/bf-sde-9.3.0
 export SDE_INSTALL=/home/mc36/bf-sde-9.3.0/install
-sudo -E $SDE/tools/p4_build.sh -I. $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15 $16 $17 $18 $19 ./bf_router.p4
+sudo -E $SDE/tools/p4_build.sh -I. $@ ./bf_router.p4

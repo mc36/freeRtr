@@ -247,38 +247,8 @@ public class userTester {
             if (s.equals("nocapture")) {
                 capture.clear();
             }
-            if (s.equals("openjdk6")) {
-                jvn = "/usr/lib/jvm/java-6-openjdk-amd64/bin/java";
-            }
-            if (s.equals("openjdk7")) {
-                jvn = "/usr/lib/jvm/java-7-openjdk-amd64/bin/java";
-            }
-            if (s.equals("openjdk8")) {
-                jvn = "/usr/lib/jvm/java-8-openjdk-amd64/bin/java";
-            }
-            if (s.equals("openjdk9")) {
-                jvn = "/usr/lib/jvm/java-9-openjdk-amd64/bin/java";
-            }
-            if (s.equals("openjdk10")) {
-                jvn = "/usr/lib/jvm/java-10-openjdk-amd64/bin/java";
-            }
-            if (s.equals("openjdk11")) {
-                jvn = "/usr/lib/jvm/java-11-openjdk-amd64/bin/java";
-            }
-            if (s.equals("openjdk12")) {
-                jvn = "/usr/lib/jvm/java-12-openjdk-amd64/bin/java";
-            }
-            if (s.equals("openjdk13")) {
-                jvn = "/usr/lib/jvm/java-13-openjdk-amd64/bin/java";
-            }
-            if (s.equals("openjdk14")) {
-                jvn = "/usr/lib/jvm/java-14-openjdk-amd64/bin/java";
-            }
-            if (s.equals("openjdk15")) {
-                jvn = "/usr/lib/jvm/java-15-openjdk-amd64/bin/java";
-            }
-            if (s.equals("openjdk16")) {
-                jvn = "/usr/lib/jvm/java-16-openjdk-amd64/bin/java";
+            if (s.startsWith("openjdk")) {
+                jvn = "/usr/lib/jvm/java-" + s.substring(7, s.length()) + "-openjdk-amd64/bin/java";
             }
             if (s.equals("ikvm")) {
                 jvn = "/usr/bin/ikvm";
