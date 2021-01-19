@@ -126,6 +126,24 @@ class SwitchConnection(object):
         else:
             self.client_stub.Write(request)
 
+    def WriteMeter(self, meter_id, index, cir, pir, dry_run=False):
+        request = p4runtime_pb2.WriteRequest()
+        request.device_id = self.device_id
+        request.election_id.low = 1
+        update = request.updates.add()
+        update.type = p4runtime_pb2.Update.MODIFY
+        meter_entry = update.entity.meter_entry
+        meter_entry.meter_id = meter_id
+        meter_entry.index.index = index
+        meter_entry.config.cir = cir*10
+        meter_entry.config.pir = pir*10
+        meter_entry.config.cburst = 1500
+        meter_entry.config.pburst = 1500
+        if dry_run:
+            print "P4Runtime Write:", request
+        else:
+            self.client_stub.Write(request)
+
     def ReadTableEntries(self, table_id=None, dry_run=False):
         request = p4runtime_pb2.ReadRequest()
         request.device_id = self.device_id

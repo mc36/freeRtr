@@ -1638,7 +1638,7 @@ def writeInQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, p
         action_name="ig_ctl.ig_ctl_qos_in.act_"+act,
         priority=65535-pri,
         action_params={
-            "metid": meter,
+            "metid": (meter+1),
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry, False)
@@ -1661,7 +1661,7 @@ def writeInQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, p
         action_name="ig_ctl.ig_ctl_qos_in.act_"+act,
         priority=65535-pri,
         action_params={
-            "metid": meter,
+            "metid": (meter+1),
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry, False)
@@ -1684,7 +1684,7 @@ def writeOutQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, 
         action_name="ig_ctl.ig_ctl_qos_out.act_"+act,
         priority=65535-pri,
         action_params={
-            "metid": meter,
+            "metid": (meter+1),
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry, False)
@@ -1707,7 +1707,7 @@ def writeOutQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, 
         action_name="ig_ctl.ig_ctl_qos_out.act_"+act,
         priority=65535-pri,
         action_params={
-            "metid": meter,
+            "metid": (meter+1),
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry, False)
@@ -1718,10 +1718,14 @@ def writeOutQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, 
 
 
 def writeInQosRules(delete, p4info_helper, ingress_sw, meter, bytes, interval):
-    return
+    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_qos_in.policer")
+    if delete != 3:
+        ingress_sw.WriteMeter(metid, (meter+1), bytes, bytes)
 
 def writeOutQosRules(delete, p4info_helper, ingress_sw, meter, bytes, interval):
-    return
+    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_qos_out.policer")
+    if delete != 3:
+        ingress_sw.WriteMeter(metid, (meter+1), bytes, bytes)
 
 
 
@@ -1739,7 +1743,7 @@ def writeFlowspecRules4(delete, p4info_helper, ingress_sw, vrf, meter, bytes, in
         action_name="ig_ctl.ig_ctl_flowspec.act4_"+act,
         priority=65535-pri,
         action_params={
-            "metid": meter,
+            "metid": (meter+1),
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry, False)
@@ -1747,6 +1751,9 @@ def writeFlowspecRules4(delete, p4info_helper, ingress_sw, vrf, meter, bytes, in
         ingress_sw.ModifyTableEntry(table_entry, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
+    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_flowspec.policer4")
+    if delete != 3:
+        ingress_sw.WriteMeter(metid, (meter+1), bytes, bytes)
 
 
 def writeFlowspecRules6(delete, p4info_helper, ingress_sw, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
@@ -1762,7 +1769,7 @@ def writeFlowspecRules6(delete, p4info_helper, ingress_sw, vrf, meter, bytes, in
         action_name="ig_ctl.ig_ctl_flowspec.act6_"+act,
         priority=65535-pri,
         action_params={
-            "metid": meter,
+            "metid": (meter+1),
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry, False)
@@ -1770,6 +1777,9 @@ def writeFlowspecRules6(delete, p4info_helper, ingress_sw, vrf, meter, bytes, in
         ingress_sw.ModifyTableEntry(table_entry, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
+    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_flowspec.policer6")
+    if delete != 3:
+        ingress_sw.WriteMeter(metid, (meter+1), bytes, bytes)
 
 
 
