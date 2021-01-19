@@ -64,7 +64,7 @@ public class temperHist {
         need = temperUtil.str2num(getWord());
         getWord(); // meas
         List<Float> res = new ArrayList<Float>();
-        for (;line.length()>0;) {
+        for (; line.length() > 0;) {
             getWord(); // time
             getWord(); // wintime
             getWord(); // win

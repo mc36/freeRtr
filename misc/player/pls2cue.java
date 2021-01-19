@@ -1,7 +1,6 @@
 
 import java.util.List;
 
-
 /**
  * convert playlist
  *
@@ -30,6 +29,5 @@ public class pls2cue {
         playerUtil.put("writing " + txt.size() + " lines to " + args[1]);
         playerUtil.saveas(txt, args[1]);
     }
-
 
 }

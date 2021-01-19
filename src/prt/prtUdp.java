@@ -329,7 +329,7 @@ public class prtUdp extends prtGen {
      * @param stat state
      */
     public void setState(ipFwdIface iface, state.states stat) {
-        connectionSimpleState(iface,stat);
+        connectionSimpleState(iface, stat);
     }
 
 }
