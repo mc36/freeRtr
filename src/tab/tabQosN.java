@@ -18,7 +18,7 @@ public class tabQosN {
     /**
      * traffic class entry
      */
-    protected tabPlcmapN entry;
+    public tabPlcmapN entry;
 
     /**
      * parent of this node (common bandwidth pool)
@@ -83,15 +83,6 @@ public class tabQosN {
     }
 
     /**
-     * get access list
-     *
-     * @return acl
-     */
-    public tabListing<tabAceslstN<addrIP>, addrIP> getAccessList() {
-        return entry.aclMatch;
-    }
-
-    /**
      * get interval in ms
      *
      * @return interval
@@ -116,24 +107,6 @@ public class tabQosN {
             return entry.accessRate * (i / 1000);
         }
         return entry.accessRate / (1000 / i);
-    }
-
-    /**
-     * get action
-     *
-     * @return action
-     */
-    public actionType getAction() {
-        return entry.action;
-    }
-
-    /**
-     * set hardware counter
-     *
-     * @param cntr counter
-     */
-    public void setHwCounter(counter cntr) {
-        entry.hwCntr = cntr;
     }
 
     /**

@@ -2403,7 +2403,7 @@ class servP4langConn implements Runnable {
         String a = null;
         if (ifc.ifc.ethtyp.qosIn != null) {
             tabQosN qos = ifc.ifc.ethtyp.qosIn.getClass(0);
-            acl = qos.getAccessList();
+            acl = qos.entry.aclMatch;
             a = qos.getBytePerInt() + " " + qos.getInterval();
         }
         if (ifc.sentQos4in != acl) {
@@ -2423,7 +2423,7 @@ class servP4langConn implements Runnable {
         a = null;
         if (ifc.ifc.ethtyp.qosOut != null) {
             tabQosN qos = ifc.ifc.ethtyp.qosOut.getClass(0);
-            acl = qos.getAccessList();
+            acl = qos.entry.aclMatch;
             a = qos.getBytePerInt() + " " + qos.getInterval();
         }
         if (ifc.sentQos4out != acl) {
@@ -3224,7 +3224,7 @@ class servP4langConn implements Runnable {
             if (curQ == null) {
                 break;
             }
-            tabListing<tabAceslstN<addrIP>, addrIP> curA = curQ.getAccessList();
+            tabListing<tabAceslstN<addrIP>, addrIP> curA = curQ.entry.aclMatch;
             tabAceslstN<addrIP> curE = null;
             if (curA != null) {
                 curE = curA.get(0);
@@ -3248,7 +3248,7 @@ class servP4langConn implements Runnable {
             curE.sequence = i + 1;
             res.add(curE);
             if (old != null) {
-                curQ.setHwCounter(old.hwCntr);
+                curQ.entry.hwCntr = old.hwCntr;
             }
             if (curE == old) {
                 continue;
@@ -3259,7 +3259,7 @@ class servP4langConn implements Runnable {
             } else {
                 a = "_mod";
             }
-            lower.sendLine("flowspec" + afi + a + " " + vrf.id + " " + i + " " + curQ.getBytePerInt() + " " + curQ.getInterval() + " " + ace2str(i, ipv4, curE, false, curQ.getAction() == tabListingEntry.actionType.actPermit));
+            lower.sendLine("flowspec" + afi + a + " " + vrf.id + " " + i + " " + curQ.getBytePerInt() + " " + curQ.getInterval() + " " + ace2str(i, ipv4, curE, false, curQ.entry.action == tabListingEntry.actionType.actPermit));
         }
         return res;
     }
