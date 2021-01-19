@@ -1462,6 +1462,7 @@ class userTesterOne {
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
+            p.pipe.setTime(5 * 60000);
             p.syncr = img.otherS;
             procs.add(p);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
