@@ -161,6 +161,8 @@ public abstract class ipRtr implements Comparator<ipRtr> {
             case download6:
             case deaggr4:
             case deaggr6:
+            case aggreg4:
+            case aggreg6:
             case mobile4:
             case mobile6:
                 return 1;

@@ -10,6 +10,7 @@ import ip.ipRtrRed;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import rtr.rtrAggreg;
 import rtr.rtrBabel;
 import rtr.rtrBgp;
 import rtr.rtrBlackhole;
@@ -154,6 +155,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * deaggregate handler
      */
     public rtrDeaggr deaggr;
+
+    /**
+     * aggregate handler
+     */
+    public rtrAggreg aggreg;
 
     /**
      * mobile handler
@@ -450,6 +456,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router uni2multi[4|6] .*! distance 254",
         // router deaggr
         "router deaggr[4|6] .*! distance 254 254",
+        "router deaggr[4|6] .*! nexthop :: ::",
+        // router aggreg
+        "router aggreg[4|6] .*! distance 254",
+        "router aggreg[4|6] .*! nexthop ::",
+        "router aggreg[4|6] .*! netmask 0",
         // router uni2flow
         "router uni2flow[4|6] .*! distance 254",
         "router uni2flow[4|6] .*! direction target",
@@ -602,6 +613,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (a.equals("deaggr6")) {
             return tabRouteAttr.routeType.deaggr6;
         }
+        if (a.equals("aggreg4")) {
+            return tabRouteAttr.routeType.aggreg4;
+        }
+        if (a.equals("aggreg6")) {
+            return tabRouteAttr.routeType.aggreg6;
+        }
         if (a.equals("mobile4")) {
             return tabRouteAttr.routeType.mobile4;
         }
@@ -687,6 +704,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "deaggr4";
             case deaggr6:
                 return "deaggr6";
+            case aggreg4:
+                return "aggreg4";
+            case aggreg6:
+                return "aggreg6";
             case mobile4:
                 return "mobile4";
             case mobile6:
@@ -1271,6 +1292,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             deaggr.routerCloseNow();
             deaggr = null;
         }
+        if (aggreg != null) {
+            aggreg.routerCloseNow();
+            aggreg = null;
+        }
         if (mobile != null) {
             mobile.routerCloseNow();
             mobile = null;
@@ -1337,6 +1362,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case deaggr4:
             case deaggr6:
                 return deaggr;
+            case aggreg4:
+            case aggreg6:
+                return aggreg;
             case mobile4:
             case mobile6:
                 return mobile;
@@ -1457,6 +1485,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 break;
             case deaggr6:
                 deaggr = new rtrDeaggr(vrf.fwd6, number);
+                break;
+            case aggreg4:
+                aggreg = new rtrAggreg(vrf.fwd4, number);
+                break;
+            case aggreg6:
+                aggreg = new rtrAggreg(vrf.fwd6, number);
                 break;
             case mobile4:
                 mobile = new rtrMobile(vrf.fwd4, number);
@@ -1580,6 +1614,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add((p + 2) + " " + (p + 3) + "     download6             route download" + e);
         l.add((p + 2) + " " + (p + 3) + "     deaggr4               deaggregate creator" + e);
         l.add((p + 2) + " " + (p + 3) + "     deaggr6               deaggregate creator" + e);
+        l.add((p + 2) + " " + (p + 3) + "     aggreg4               auto aggregate creator" + e);
+        l.add((p + 2) + " " + (p + 3) + "     aggreg6               auto aggregate creator" + e);
         l.add((p + 2) + " " + (p + 3) + "     mobile4               mobile route creator" + e);
         l.add((p + 2) + " " + (p + 3) + "     mobile6               mobile route creator" + e);
     }

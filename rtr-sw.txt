@@ -269,16 +269,6 @@ router logger6 65535
  redistribute bgp6 65535
  exit
 !
-router deaggr4 1
- vrf v1
- justadvert bundle9
- exit
-!
-router deaggr6 1
- vrf v1
- justadvert bundle9
- exit
-!
 router mobile4 1
  vrf v1
  justadvert bundle9
@@ -950,4 +940,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=df1b37db086a18ff78331473ad2ef25f27c020a7b5ef3aeb532f71d254545b8f614948eaf89cf54069c6f67b746e4175b9c730a1f5a0dd3d236a3ed0546cc1b9-5cd2c8523244ac56769078c242ab0a5bf1f4f99bc2873142e85ed5e3e44e5f940308c553b826c93b6432035e44afee7efff70e4d42dd15b2f2c6c26c431992f1
+end chksum=b9b2d7632249b7ea43c880e52e2bb75a0721427269e1cc7677e04b97fbfb137988ff8069fa65a7f18fc512be5229fa8d7c1821a110958fb8b8a155fce6366bb3-7023fb83e7ca681008ce0e8188032fff00883a71dfddacb3e4858b6ecc4b2510ecd3f1731c9c2d5bf425141cc75f7dd9dbafe54c09644f24299fd16c2b03ea11

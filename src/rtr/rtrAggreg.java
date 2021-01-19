@@ -2,7 +2,7 @@ package rtr;
 
 import addr.addrIP;
 import addr.addrIPv4;
-import addr.addrPrefix;
+import addr.addrIPv6;
 import ip.ipCor4;
 import ip.ipCor6;
 import ip.ipFwd;
@@ -16,31 +16,31 @@ import util.bits;
 import util.cmds;
 
 /**
- * deaggregation creator
+ * auto aggregate creator
  *
  * @author matecsaba
  */
-public class rtrDeaggr extends ipRtr {
+public class rtrAggreg extends ipRtr {
 
     /**
-     * lower half distance
+     * distance
      */
-    public int distance1;
+    public int distance;
 
     /**
-     * upper half distance
+     * nexthop
      */
-    public int distance2;
+    public addrIP nextHop;
 
     /**
-     * lower half nexthop
+     * netmask
      */
-    public addrIP nextHop1;
+    public int netMask;
 
     /**
-     * upper half nexthop
+     * netmask addition
      */
-    public addrIP nextHop2;
+    public final int maskAdd;
 
     /**
      * the forwarder protocol
@@ -58,32 +58,34 @@ public class rtrDeaggr extends ipRtr {
     protected final int rtrNum;
 
     /**
-     * create deaggregator process
+     * create aggregator process
      *
      * @param forwarder forwarder to update
      * @param id process id
      */
-    public rtrDeaggr(ipFwd forwarder, int id) {
+    public rtrAggreg(ipFwd forwarder, int id) {
         fwdCore = forwarder;
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
-                rouTyp = tabRouteAttr.routeType.deaggr4;
+                rouTyp = tabRouteAttr.routeType.aggreg4;
+                maskAdd = new addrIP().maxBits() - new addrIPv4().maxBits();
                 break;
             case ipCor6.protocolVersion:
-                rouTyp = tabRouteAttr.routeType.deaggr6;
+                rouTyp = tabRouteAttr.routeType.aggreg6;
+                maskAdd = new addrIP().maxBits() - new addrIPv6().maxBits();
                 break;
             default:
                 rouTyp = null;
+                maskAdd = 0;
                 break;
         }
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
-        distance1 = 254;
-        distance2 = 254;
-        nextHop1 = new addrIP();
-        nextHop2 = new addrIP();
+        distance = 254;
+        nextHop = new addrIP();
+        netMask = 0;
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
     }
@@ -94,36 +96,25 @@ public class rtrDeaggr extends ipRtr {
      * @return string
      */
     public String toString() {
-        return "deaggr on " + fwdCore;
+        return "aggreg on " + fwdCore;
     }
 
     private void doPrefix(tabRouteEntry<addrIP> ntry, tabRoute<addrIP> tab) {
         if (ntry == null) {
             return;
         }
-        if (ntry.prefix.maskLen >= ntry.prefix.network.maxBits()) {
+        if (ntry.prefix.maskLen <= (maskAdd + netMask)) {
             return;
         }
         ntry = ntry.copyBytes(tabRoute.addType.notyet);
         ntry.best.rouTyp = rouTyp;
         ntry.best.protoNum = rtrNum;
-        ntry.prefix.setMask(ntry.prefix.maskLen + 1);
-        if (distance1 > 0) {
-            ntry.best.distance = distance1;
+        ntry.prefix.setMask(maskAdd + netMask);
+        if (distance > 0) {
+            ntry.best.distance = distance;
         }
-        if (!nextHop1.isEmpty()) {
-            ntry.best.nextHop = nextHop1.copyBytes();
-        }
-        tab.add(tabRoute.addType.better, ntry, true, false);
-        addrIP adr = new addrIP();
-        adr.bitSet(ntry.prefix.maskLen - 1);
-        adr.setOr(adr, ntry.prefix.network);
-        ntry.prefix = new addrPrefix<addrIP>(adr, ntry.prefix.maskLen);
-        if (distance2 > 0) {
-            ntry.best.distance = distance2;
-        }
-        if (!nextHop2.isEmpty()) {
-            ntry.best.nextHop = nextHop2.copyBytes();
+        if (!nextHop.isEmpty()) {
+            ntry.best.nextHop = nextHop.copyBytes();
         }
         tab.add(tabRoute.addType.better, ntry, true, false);
     }
@@ -169,11 +160,11 @@ public class rtrDeaggr extends ipRtr {
      */
     public void routerGetHelp(userHelping l) {
         l.add("1 2   distance                    specify default distance");
-        l.add("2 3     <num>                     lower half distance");
-        l.add("3 .       <num>                   upper half distance");
+        l.add("2 .     <num>                     distance");
         l.add("1 2   nexthop                     specify default nexthop");
-        l.add("2 3     <addr>                    lower half nexthop");
-        l.add("3 .       <addr>                  upper half nexthop");
+        l.add("2 .     <addr>                    nexthop");
+        l.add("1 2   netmask                     specify netmask to use");
+        l.add("2 .     <num>                     mask bits");
     }
 
     /**
@@ -184,8 +175,9 @@ public class rtrDeaggr extends ipRtr {
      * @param filter filter
      */
     public void routerGetConfig(List<String> l, String beg, boolean filter) {
-        l.add(beg + "distance " + distance1 + " " + distance2);
-        l.add(beg + "nexthop " + nextHop1 + " " + nextHop2);
+        l.add(beg + "netmask " + netMask);
+        l.add(beg + "distance " + distance);
+        l.add(beg + "nexthop " + nextHop);
     }
 
     /**
@@ -202,18 +194,19 @@ public class rtrDeaggr extends ipRtr {
             negated = true;
         }
         if (s.equals("distance")) {
-            distance1 = bits.str2num(cmd.word());
-            distance2 = bits.str2num(cmd.word());
+            distance = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("nexthop")) {
-            nextHop1 = new addrIP();
-            nextHop2 = new addrIP();
+            nextHop = new addrIP();
             if (negated) {
                 return false;
             }
-            nextHop1.fromString(cmd.word());
-            nextHop2.fromString(cmd.word());
+            nextHop.fromString(cmd.word());
+            return false;
+        }
+        if (s.equals("netmask")) {
+            netMask = bits.str2num(cmd.word());
             return false;
         }
         return true;

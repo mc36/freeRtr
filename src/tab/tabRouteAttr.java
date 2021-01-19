@@ -181,6 +181,14 @@ public class tabRouteAttr<T extends addrType> {
          */
         deaggr6,
         /**
+         * ipv4 aggregation
+         */
+        aggreg4,
+        /**
+         * ipv6 aggregation
+         */
+        aggreg6,
+        /**
          * ipv4 mobile
          */
         mobile4,
@@ -576,6 +584,9 @@ public class tabRouteAttr<T extends addrType> {
             case deaggr4:
             case deaggr6:
                 return "DEA";
+            case aggreg4:
+            case aggreg6:
+                return "AGR";
             case mobile4:
             case mobile6:
                 return "MOB";
