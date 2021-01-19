@@ -741,6 +741,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             exp += bits.getTime();
         }
         ipFwdMcast g = new ipFwdMcast(grp, src);
+        g.local = ifc == null;
         ipFwdMcast og = groups.add(g);
         if (og != null) {
             g = og;
