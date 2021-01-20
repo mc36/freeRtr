@@ -63,6 +63,9 @@ public class clntSpeed {
         }
         cmd.error("       rxpps       rxbps       txpps       txbps");
         for (;;) {
+            if (cmd.pipe.isClosed() != 0) {
+                break;
+            }
             if (cmd.pipe.ready2rx() != 0) {
                 break;
             }
@@ -96,6 +99,9 @@ public class clntSpeed {
         new Thread(new clntSpeedTx(s)).start();
         cmd.error("       rxbps       txbps");
         for (;;) {
+            if (cmd.pipe.isClosed() != 0) {
+                break;
+            }
             if (cmd.pipe.ready2rx() != 0) {
                 break;
             }

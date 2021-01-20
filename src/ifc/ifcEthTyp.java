@@ -111,9 +111,14 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public int monTrnc = 0;
 
     /**
-     * monitor sample
+     * monitor sample need
      */
-    public int monSmpl = 0;
+    public int monSmpN = 0;
+
+    /**
+     * monitor sample packet
+     */
+    public int monSmpP = 0;
 
     /**
      * monitor session target

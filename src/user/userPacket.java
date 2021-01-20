@@ -80,6 +80,18 @@ public class userPacket {
      */
     public userReader rdr;
 
+    private boolean need2stop() {
+        if (cmd.pipe.isClosed() != 0) {
+            return true;
+        }
+        int i = cmd.pipe.ready2rx();
+        if (i != 0) {
+            cmd.pipe.moreSkip(i);
+            return true;
+        }
+        return false;
+    }
+
     private static int readMrt(packHolder pck, RandomAccessFile f) {
         pck.clear();
         byte[] buf = new byte[12];
@@ -308,7 +320,7 @@ public class userPacket {
                 if (tip.compare(tip, pck.IPtrg) != 0) {
                     continue;
                 }
-                if (cmd.pipe.ready2rx() > 0) {
+                if (need2stop()) {
                     break;
                 }
                 nei.conn.currChg = 0;
@@ -404,7 +416,7 @@ public class userPacket {
                 if (tip.compare(tip, pck.IPtrg) != 0) {
                     continue;
                 }
-                if (cmd.pipe.ready2rx() > 0) {
+                if (need2stop()) {
                     break;
                 }
                 switch (typ) {
@@ -472,7 +484,7 @@ public class userPacket {
                     break;
                 }
                 bits.sleep(1000);
-                if (cmd.pipe.ready2rx() > 0) {
+                if (need2stop()) {
                     break;
                 }
             }
@@ -527,7 +539,7 @@ public class userPacket {
                 }
                 spk.packSend(pck, rtrBgpUtil.msgUpdate);
                 cmd.pipe.strPut(".");
-                if (cmd.pipe.ready2rx() > 0) {
+                if (need2stop()) {
                     break;
                 }
                 snt++;
@@ -553,7 +565,7 @@ public class userPacket {
                     break;
                 }
                 bits.sleep(1000);
-                if (cmd.pipe.ready2rx() > 0) {
+                if (need2stop()) {
                     break;
                 }
             }
@@ -597,7 +609,7 @@ public class userPacket {
                     break;
                 }
                 bits.sleep(1000);
-                if (cmd.pipe.ready2rx() > 0) {
+                if (need2stop()) {
                     break;
                 }
             }
@@ -666,7 +678,7 @@ public class userPacket {
                     break;
                 }
                 bits.sleep(1000);
-                if (cmd.pipe.ready2rx() > 0) {
+                if (need2stop()) {
                     break;
                 }
             }
@@ -703,7 +715,7 @@ public class userPacket {
                     break;
                 }
                 bits.sleep(1000);
-                if (cmd.pipe.ready2rx() > 0) {
+                if (need2stop()) {
                     break;
                 }
             }
@@ -770,7 +782,7 @@ public class userPacket {
                 rtrBgpUtil.createReachable(pck, tmp, safi, false, true, lst, null);
                 spk.packSend(pck, rtrBgpUtil.msgUpdate);
                 cmd.pipe.strPut(".");
-                if (cmd.pipe.ready2rx() > 0) {
+                if (need2stop()) {
                     break;
                 }
             }
@@ -791,7 +803,7 @@ public class userPacket {
                     break;
                 }
                 bits.sleep(1000);
-                if (cmd.pipe.ready2rx() > 0) {
+                if (need2stop()) {
                     break;
                 }
             }
@@ -838,13 +850,7 @@ public class userPacket {
             cmd.error("flooding " + pck.IPsrc + " " + pck.UDPsrc + " -> " + pck.IPtrg + " " + pck.UDPtrg);
             for (;;) {
                 cmd.pipe.strPut(".");
-                int i = cmd.pipe.ready2rx();
-                if (i > 0) {
-                    cmd.pipe.moreSkip(i);
-                    break;
-                }
-                i = cmd.pipe.ready2tx();
-                if (i < 0) {
+                if (need2stop()) {
                     break;
                 }
                 fwd.protoPack(ifc, null, pck.copyBytes(true, true));
@@ -1032,18 +1038,12 @@ public class userPacket {
             }
             for (;;) {
                 cmd.pipe.strPut(".");
-                int i = cmd.pipe.ready2rx();
-                if (i > 0) {
-                    cmd.pipe.moreSkip(i);
-                    break;
-                }
-                i = cmd.pipe.ready2tx();
-                if (i < 0) {
+                if (need2stop()) {
                     break;
                 }
                 bits.sleep(100);
                 packHolder res = pck.copyBytes(true, true);
-                for (i = 0; i < 64; i++) {
+                for (int i = 0; i < 64; i++) {
                     res.putByte(0, bits.randomB());
                     res.putSkip(1);
                 }

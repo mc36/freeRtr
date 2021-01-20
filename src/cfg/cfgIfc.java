@@ -5107,7 +5107,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         l.add(cmds.tabulator + "monitor-direction " + s);
         l.add(cmds.tabulator + "monitor-truncate " + ethtyp.monTrnc);
-        l.add(cmds.tabulator + "monitor-sample " + ethtyp.monSmpl);
+        l.add(cmds.tabulator + "monitor-sample " + ethtyp.monSmpN);
         cmds.cfgLine(l, ethtyp.monSes == null, cmds.tabulator, "monitor-session", "" + ethtyp.monSes);
         cmds.cfgLine(l, ethtyp.monBufD == null, cmds.tabulator, "monitor-buffer", "" + ethtyp.getMonBufSize());
         cmds.cfgLine(l, lldp == null, cmds.tabulator, "lldp enable", "");
@@ -5963,7 +5963,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("monitor-sample")) {
-            ethtyp.monSmpl = bits.str2num(cmd.word());
+            ethtyp.monSmpN = bits.str2num(cmd.word());
+            ethtyp.monSmpP = 0;
             return;
         }
         if (a.equals("monitor-session")) {
@@ -6634,7 +6635,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("monitor-sample")) {
-            ethtyp.monSmpl = 0;
+            ethtyp.monSmpN = 0;
+            ethtyp.monSmpP = 0;
             return;
         }
         if (a.equals("monitor-session")) {
