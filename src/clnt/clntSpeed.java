@@ -1,8 +1,5 @@
 package clnt;
 
-import cfg.cfgAll;
-import cfg.cfgIfc;
-import ifc.ifcEthTyp;
 import pipe.pipeProgress;
 import pipe.pipeSide;
 import serv.servCharGen;
@@ -11,7 +8,6 @@ import serv.servGeneric;
 import user.userTerminal;
 import util.bits;
 import util.cmds;
-import util.counter;
 
 /**
  *
@@ -38,44 +34,6 @@ public class clntSpeed {
      * tx counter
      */
     protected int txc;
-
-    /**
-     * monitor interface
-     *
-     * @param cmd command to use
-     */
-    public static void monInt(cmds cmd) {
-        String a = cmd.word();
-        cfgIfc ifc = cfgAll.ifcFind(a, false);
-        if (ifc == null) {
-            cmd.error("no such interface");
-            return;
-        }
-        ifcEthTyp old = ifc.ethtyp.monSes;
-        a = cmd.word();
-        if (a.length() > 0) {
-            cfgIfc trg = cfgAll.ifcFind(a, false);
-            if (trg == null) {
-                cmd.error("no such interface");
-                return;
-            }
-            ifc.ethtyp.monSes = trg.ethtyp;
-        }
-        cmd.error("       rxpps       rxbps       txpps       txbps");
-        for (;;) {
-            if (cmd.pipe.isClosed() != 0) {
-                break;
-            }
-            if (cmd.pipe.ready2rx() != 0) {
-                break;
-            }
-            counter cntr = ifc.ethtyp.getCounter().copyBytes();
-            bits.sleep(1000);
-            cntr = ifc.ethtyp.getCounter().copyBytes().minus(cntr);
-            cmd.error(bits.padBeg(bits.toUser(cntr.packRx), 12, " ") + bits.padBeg(bits.toUser(cntr.byteRx * 8), 12, " ") + bits.padBeg(bits.toUser(cntr.packTx), 12, " ") + bits.padBeg(bits.toUser(cntr.byteTx * 8), 12, " "));
-        }
-        ifc.ethtyp.monSes = old;
-    }
 
     /**
      * small servers client

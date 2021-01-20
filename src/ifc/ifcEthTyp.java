@@ -509,6 +509,29 @@ public class ifcEthTyp implements Runnable, ifcUp {
         snapTyps = new tabGen<ifcEthTypSNAP>();
     }
 
+    private packHolder applyMonitor(packHolder pck, boolean copy) {
+        if (monSmpN > 0) {
+            monSmpP++;
+            if ((monSmpP % monSmpN) != 0) {
+                return null;
+            }
+        }
+        if (copy) {
+            pck = pck.copyBytes(true, true);
+        }
+        if (monTrnc < 1) {
+            return pck;
+        }
+        if (pck.dataSize() < monTrnc) {
+            return pck;
+        }
+        if (!copy) {
+            pck = pck.copyBytes(true, true);
+        }
+        pck.setDataSize(monTrnc);
+        return pck;
+    }
+
     private void doRxPack(packHolder pck) {
         int typ = pck.msbGetW(0); // ether type
         pck.ETHtype = typ;
@@ -631,10 +654,16 @@ public class ifcEthTyp implements Runnable, ifcUp {
             }
         }
         if (monBufD != null) {
-            putMonBufPck(pck.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, true));
+            packHolder mon = applyMonitor(pck, false);
+            if (mon != null) {
+                putMonBufPck(mon.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, true));
+            }
         }
         if (monSes != null) {
-            monSes.doTxPack(pck.copyBytes(true, true));
+            packHolder mon = applyMonitor(pck, true);
+            if (mon != null) {
+                monSes.doTxPack(mon);
+            }
         }
         if (lossDet != null) {
             if (lossDet.doEncode(pck)) {
@@ -705,10 +734,16 @@ public class ifcEthTyp implements Runnable, ifcUp {
             }
         }
         if (monBufD != null) {
-            putMonBufPck(pck.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, true));
+            packHolder mon = applyMonitor(pck, false);
+            if (mon != null) {
+                putMonBufPck(mon.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, true));
+            }
         }
         if (monSes != null) {
-            monSes.doTxPack(pck.copyBytes(true, true));
+            packHolder mon = applyMonitor(pck, true);
+            if (mon != null) {
+                monSes.doTxPack(mon);
+            }
         }
         if (qosIn == null) {
             doRxPack(pck);

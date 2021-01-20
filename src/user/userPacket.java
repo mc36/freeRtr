@@ -21,6 +21,7 @@ import clnt.clntSnmp;
 import clnt.clntSpeed;
 import clnt.clntVconf;
 import clnt.clntVoice;
+import ifc.ifcEthTyp;
 import ifc.ifcEther;
 import ip.ipCor4;
 import ip.ipCor6;
@@ -56,6 +57,7 @@ import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.cmds;
+import util.counter;
 import util.uniResLoc;
 
 /**
@@ -955,9 +957,33 @@ public class userPacket {
             return;
         }
         if (a.equals("monitor")) {
-            rdr.keyFlush();
-            clntSpeed.monInt(cmd);
-            rdr.keyFlush();
+            a = cmd.word();
+            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return;
+            }
+            ifcEthTyp old = ifc.ethtyp.monSes;
+            a = cmd.word();
+            if (a.length() > 0) {
+                cfgIfc trg = cfgAll.ifcFind(a, false);
+                if (trg == null) {
+                    cmd.error("no such interface");
+                    return;
+                }
+                ifc.ethtyp.monSes = trg.ethtyp;
+            }
+            cmd.error("       rxpps       rxbps       txpps       txbps");
+            for (;;) {
+                if (need2stop()) {
+                    break;
+                }
+                counter cntr = ifc.ethtyp.getCounter().copyBytes();
+                bits.sleep(1000);
+                cntr = ifc.ethtyp.getCounter().copyBytes().minus(cntr);
+                cmd.error(bits.padBeg(bits.toUser(cntr.packRx), 12, " ") + bits.padBeg(bits.toUser(cntr.byteRx * 8), 12, " ") + bits.padBeg(bits.toUser(cntr.packTx), 12, " ") + bits.padBeg(bits.toUser(cntr.byteTx * 8), 12, " "));
+            }
+            ifc.ethtyp.monSes = old;
             return;
         }
         if (a.equals("buffer")) {
