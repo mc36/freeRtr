@@ -1289,6 +1289,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! enforce-mtu none",
         "interface .*! no macsec",
         "interface .*! no loss-detection",
+        "interface .*! monitor-direction both",
+        "interface .*! monitor-truncate 0",
+        "interface .*! monitor-sample 0",
         "interface .*! no monitor-session",
         "interface .*! no monitor-buffer",
         "interface .*! no eapol client",
@@ -5084,6 +5087,27 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         cmds.cfgLine(l, ethtyp.forcedMac == null, cmds.tabulator, "macaddr", "" + ethtyp.forcedMac);
         l.add(cmds.tabulator + "padup " + ethtyp.padupMin + " " + ethtyp.padupMod);
+        String s;
+        switch (ethtyp.monDir) {
+            case 0x0:
+                s = "none";
+                break;
+            case 0x1:
+                s = "rx";
+                break;
+            case 0x2:
+                s = "tx";
+                break;
+            case 0x3:
+                s = "both";
+                break;
+            default:
+                s = "unknown";
+                break;
+        }
+        l.add(cmds.tabulator + "monitor-direction " + s);
+        l.add(cmds.tabulator + "monitor-truncate " + ethtyp.monTrnc);
+        l.add(cmds.tabulator + "monitor-sample " + ethtyp.monSmpl);
         cmds.cfgLine(l, ethtyp.monSes == null, cmds.tabulator, "monitor-session", "" + ethtyp.monSes);
         cmds.cfgLine(l, ethtyp.monBufD == null, cmds.tabulator, "monitor-buffer", "" + ethtyp.getMonBufSize());
         cmds.cfgLine(l, lldp == null, cmds.tabulator, "lldp enable", "");
@@ -5110,7 +5134,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             cmds.cfgLine(l, nhrp.ip4 == null, cmds.tabulator, "nhrp ipv4", "" + nhrp.ip4);
             cmds.cfgLine(l, nhrp.ip6 == null, cmds.tabulator, "nhrp ipv6", "" + nhrp.ip6);
         }
-        String s = null;
+        s = null;
         if (vlanHed != null) {
             s = "" + vlanHed;
             int i = s.indexOf(" ");
@@ -5514,6 +5538,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("4 .         hour-maximum            last hour maximum");
         l.add("1 2   template                      get configuration from template");
         l.add("2 .     <name>                      name of source interface");
+        l.add("1 2   monitor-direction             specify monitored direction");
+        l.add("2 .     rx                          only received packets");
+        l.add("2 .     tx                          only transmitted packets");
+        l.add("2 .     both                        both directions");
+        l.add("2 .     none                        pause packet mirroring");
+        l.add("1 2   monitor-truncate              truncate monitored packets");
+        l.add("2 .     <num>                       maximum packet size");
+        l.add("1 2   monitor-sample                specify sampled monitoring");
+        l.add("2 .     <num>                       one of every n packet");
         l.add("1 2   monitor-session               set monitor session");
         l.add("2 .     <name>                      name of target interface");
         l.add("1 2   monitor-buffer                set monitor buffer");
@@ -5909,6 +5942,28 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             ethtyp.monBufP = 0;
             ethtyp.monBufD = new byte[i];
+            return;
+        }
+        if (a.equals("monitor-direction")) {
+            a = cmd.word();
+            ethtyp.monDir = 0;
+            if (a.equals("rx")) {
+                ethtyp.monDir = 1;
+            }
+            if (a.equals("tx")) {
+                ethtyp.monDir = 2;
+            }
+            if (a.equals("both")) {
+                ethtyp.monDir = 3;
+            }
+            return;
+        }
+        if (a.equals("monitor-truncate")) {
+            ethtyp.monTrnc = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("monitor-sample")) {
+            ethtyp.monSmpl = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("monitor-session")) {
@@ -6568,6 +6623,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("monitor-buffer")) {
             ethtyp.monBufD = null;
+            return;
+        }
+        if (a.equals("monitor-direction")) {
+            ethtyp.monDir = 3;
+            return;
+        }
+        if (a.equals("monitor-truncate")) {
+            ethtyp.monTrnc = 0;
+            return;
+        }
+        if (a.equals("monitor-sample")) {
+            ethtyp.monSmpl = 0;
             return;
         }
         if (a.equals("monitor-session")) {

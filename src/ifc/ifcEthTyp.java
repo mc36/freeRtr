@@ -101,6 +101,21 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public ifcNshFwd nshFwd;
 
     /**
+     * monitor direction, 1=rx, 2=tx
+     */
+    public int monDir = 3;
+
+    /**
+     * monitor truncate
+     */
+    public int monTrnc = 0;
+
+    /**
+     * monitor sample
+     */
+    public int monSmpl = 0;
+
+    /**
      * monitor session target
      */
     public ifcEthTyp monSes = null;
