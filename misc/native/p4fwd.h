@@ -173,12 +173,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     }
 
 
-#define reduce_hash                                             \
-    hash = ((hash >> 16) ^ hash) & 0xffff;                      \
-    hash = ((hash >> 8) ^ hash) & 0xff;                         \
-    hash = ((hash >> 4) ^ hash) & 0xf;
-
-
 
 #define ethtyp2ppptyp                                           \
     switch (ethtyp) {                                           \
@@ -540,6 +534,96 @@ int masks[] = {
     }
 
 
+int layer2tx(int prt, int hash, unsigned char *bufD, int *bufP, int *bufS, unsigned char *buf2) {
+    struct vlan_entry vlan_ntry;
+    struct bundle_entry bundle_ntry;
+    struct vlan_entry *vlan_res;
+    struct bundle_entry *bundle_res;
+    vlan_ntry.id = prt;
+    int index = table_find(&vlanout_table, &vlan_ntry);
+    if (index >= 0) {
+        vlan_res = table_get(&vlanout_table, index);
+        *bufP -= 2;
+        put16msb(bufD, *bufP, vlan_res->vlan);
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ETHERTYPE_VLAN);
+        prt = vlan_res->port;
+        vlan_res->pack++;
+        vlan_res->byte += *bufS;
+        // macsec should be applied
+    }
+    *bufP -= 12;
+    memmove(&bufD[*bufP], &buf2[0], 12);
+    bundle_ntry.id = prt;
+    index = table_find(&bundle_table, &bundle_ntry);
+    if (index >= 0) {
+        bundle_res = table_get(&bundle_table, index);
+        hash = ((hash >> 16) ^ hash) & 0xffff;
+        hash = ((hash >> 8) ^ hash) & 0xff;
+        hash = ((hash >> 4) ^ hash) & 0xf;
+        prt = bundle_res->out[hash];
+        bundle_res->pack++;
+        bundle_res->byte += *bufS;
+        if (bundle_res->command == 2) {
+            *bufS = *bufS - *bufP + preBuff;
+            memmove(&bufD[preBuff], &bufD[*bufP], *bufS);
+            return prt;
+        }
+    }
+    if (prt >= ports) return -2;
+    send2port(&bufD[*bufP], *bufS - *bufP + preBuff, prt);
+    return -1;
+}
+
+
+
+int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *buf2, int *ethtyp) {
+    struct macsec_entry macsec_ntry;
+    struct macsec_entry *macsec_res;
+    size_t sizt;
+    macsec_ntry.port = prt;
+    int index = table_find(&macsec_table, &macsec_ntry);
+    if (index < 0) return 0;
+    macsec_res = table_get(&macsec_table, index);
+    macsec_res->packTx++;
+    macsec_res->byteTx += *bufS;
+    int tmp = *bufS - *bufP + preBuff;
+    int tmp2 = tmp % macsec_res->encrBlkLen;
+    if (tmp2 != 0) {
+        tmp2 = macsec_res->encrBlkLen - tmp2;
+        RAND_bytes(&bufD[*bufP + tmp], tmp2);
+        *bufS += tmp2;
+    }
+    *bufP -= macsec_res->encrBlkLen;
+    RAND_bytes(&bufD[*bufP], macsec_res->encrBlkLen);
+    tmp = *bufS - *bufP + preBuff;
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
+    if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) return 1;
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
+    if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+    if (EVP_MD_CTX_reset(hashCtx) != 1) return 1;
+    if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) return 1;
+    if (macsec_res->needMacs != 0) {
+        if (EVP_DigestSignUpdate(hashCtx, &buf2[6], 6) != 1) return 1;
+        if (EVP_DigestSignUpdate(hashCtx, &buf2[0], 6) != 1) return 1;
+    }
+    if (EVP_DigestSignUpdate(hashCtx, &bufD[*bufP], tmp) != 1) return 1;
+    if (EVP_DigestSignFinal(hashCtx, &bufD[*bufP + tmp], &sizt) != 1) return 1;
+    *bufS += macsec_res->hashBlkLen;
+    *bufP -= 8;
+    *ethtyp = macsec_res->ethtyp;
+    put16msb(bufD, *bufP + 0, macsec_res->ethtyp);
+    bufD[*bufP + 2] = 0x08; // tci=v,e
+    bufD[*bufP + 3] = 0; // sl
+    put32msb(bufD, *bufP + 4, macsec_res->seqTx);
+    macsec_res->seqTx++;
+    return 0;
+}
+
+
+
+
+
 
 void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
@@ -705,43 +789,7 @@ neigh_tx:
             prt = neigh_res->port;
             memmove(&buf2[0], &neigh_res->dmac, 6);
             memmove(&buf2[6], &neigh_res->smac, 6);
-            macsec_ntry.port = neigh_res->aclport;
-            index = table_find(&macsec_table, &macsec_ntry);
-            if (index >= 0) {
-                macsec_res = table_get(&macsec_table, index);
-                macsec_res->packTx++;
-                macsec_res->byteTx += bufS;
-                tmp = bufS - bufP + preBuff;
-                tmp2 = tmp % macsec_res->encrBlkLen;
-                if (tmp2 != 0) {
-                    tmp2 = macsec_res->encrBlkLen - tmp2;
-                    RAND_bytes(&bufD[bufP + tmp], tmp2);
-                    bufS += tmp2;
-                }
-                bufP -= macsec_res->encrBlkLen;
-                RAND_bytes(&bufD[bufP], macsec_res->encrBlkLen);
-                tmp = bufS - bufP + preBuff;
-                if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;
-                if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) goto drop;
-                if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop;
-                if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;
-                if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;
-                if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) goto drop;
-                if (macsec_res->needMacs != 0) {
-                    if (EVP_DigestSignUpdate(hashCtx, &buf2[6], 6) != 1) goto drop;
-                    if (EVP_DigestSignUpdate(hashCtx, &buf2[0], 6) != 1) goto drop;
-                }
-                if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;
-                if (EVP_DigestSignFinal(hashCtx, &bufD[bufP + tmp], &sizt) != 1) goto drop;
-                bufS += macsec_res->hashBlkLen;
-                bufP -= 8;
-                ethtyp = macsec_res->ethtyp;
-                put16msb(bufD, bufP + 0, macsec_res->ethtyp);
-                bufD[bufP + 2] = 0x08; // tci=v,e
-                bufD[bufP + 3] = 0; // sl
-                put32msb(bufD, bufP + 4, macsec_res->seqTx);
-                macsec_res->seqTx++;
-            }
+            if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &bufP, &bufS, buf2, &ethtyp) != 0) goto drop;
             switch (neigh_res->command) {
             case 1: // raw ip
                 break;
@@ -1557,37 +1605,8 @@ bridgevpls_rx:
         }
         prt = bridge_res->port;
 layer2_tx:
-        vlan_ntry.id = prt;
-        index = table_find(&vlanout_table, &vlan_ntry);
-        if (index >= 0) {
-            vlan_res = table_get(&vlanout_table, index);
-            bufP -= 2;
-            put16msb(bufD, bufP, vlan_res->vlan);
-            bufP -= 2;
-            put16msb(bufD, bufP, ETHERTYPE_VLAN);
-            prt = vlan_res->port;
-            vlan_res->pack++;
-            vlan_res->byte += bufS;
-        }
-        bufP -= 12;
-        memmove(&bufD[bufP], &buf2[0], 12);
-        bundle_ntry.id = prt;
-        index = table_find(&bundle_table, &bundle_ntry);
-        if (index >= 0) {
-            bundle_res = table_get(&bundle_table, index);
-            reduce_hash;
-            prt = bundle_res->out[hash];
-            bundle_res->pack++;
-            bundle_res->byte += bufS;
-            if (bundle_res->command == 2) {
-                bufS = bufS - bufP + preBuff;
-                memmove(&bufD[preBuff], &bufD[bufP], bufS);
-                prt2 = prt;
-                goto ether_rx;
-            }
-        }
-        if (prt >= ports) goto drop;
-        send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
+        prt2 = prt = layer2tx(prt, hash, bufD, &bufP, &bufS, buf2);
+        if (prt2 >= 0) goto ether_rx;
         return;
     case ETHERTYPE_ARP: // arp
         checkLayer2;
