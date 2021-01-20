@@ -354,8 +354,8 @@ int masks[] = {
     if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;              \
     if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) goto drop; \
     if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;    \
-    if (EVP_DigestSignFinal(hashCtx, &buf2[0], &sizt) != 1) goto drop;      \
-    if (memcmp(&buf2[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) goto drop;   \
+    if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) goto drop;      \
+    if (memcmp(&bufH[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) goto drop;   \
     bufS -= tun_res->hashBlkLen;                                \
     bufP += 8;                                                  \
     tmp -= 8;                                                   \
@@ -379,8 +379,8 @@ int masks[] = {
     put16msb(bufD, bufP + 2, dprt);                                         \
     put16msb(bufD, bufP + 4, bufS - bufP + preBuff);                        \
     put16msb(bufD, bufP + 6, 0);                                            \
-    putPseudoSum(buf2, 16, 17, bufS - bufP + preBuff, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4);      \
-    tmp = calcIPsum(buf2, 16, 36, 0);                                       \
+    putPseudoSum(bufH, 16, 17, bufS - bufP + preBuff, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4);      \
+    tmp = calcIPsum(bufH, 16, 36, 0);                                       \
     tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);                \
     put16lsb(bufD, bufP + 6, 0xffff - tmp);
 
@@ -397,7 +397,7 @@ int masks[] = {
 
 #define putVxlanHeader                                          \
     bufP -= 12;                                                 \
-    memmove(&bufD[bufP], &buf2[0], 12);                         \
+    memmove(&bufD[bufP], &bufH[0], 12);                         \
     bufP -= 8;                                                  \
     put16msb(bufD, bufP + 0, 0x800);                            \
     put16msb(bufD, bufP + 2, 0);                                \
@@ -406,7 +406,7 @@ int masks[] = {
 
 #define putPckoudpHeader                                        \
     bufP -= 12;                                                 \
-    memmove(&bufD[bufP], &buf2[0], 12);
+    memmove(&bufD[bufP], &bufH[0], 12);
 
 
 #define putOpenvpnHeader(bufP, bufS)                            \
@@ -457,8 +457,8 @@ int masks[] = {
     if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;              \
     if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) goto drop; \
     if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;    \
-    if (EVP_DigestSignFinal(hashCtx, &buf2[0], &sizt) != 1) goto drop;      \
-    if (memcmp(&buf2[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) goto drop;    \
+    if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) goto drop;      \
+    if (memcmp(&bufH[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) goto drop;    \
     if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
     if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) goto drop;   \
     if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
@@ -480,11 +480,11 @@ int masks[] = {
     }                                                           \
     tmp += tmp2;                                                \
     bufS += tmp2;                                               \
-    put32lsb(buf2, 16, 0);                                      \
-    put32lsb(buf2, 20, neigh_res->seq);                         \
-    put32lsb(buf2, 24, 0);                                      \
+    put32lsb(bufH, 16, 0);                                      \
+    put32lsb(bufH, 20, neigh_res->seq);                         \
+    put32lsb(bufH, 24, 0);                                      \
     if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
-    if (EVP_EncryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &buf2[16]) != 1) goto drop;   \
+    if (EVP_EncryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &bufH[16]) != 1) goto drop;   \
     if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
     if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
     if (EVP_EncryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) goto drop; \
@@ -534,7 +534,7 @@ int masks[] = {
     }
 
 
-int send2subif(int prt, int hash, unsigned char *bufD, int *bufP, int *bufS, unsigned char *buf2) {
+int send2subif(int prt, int hash, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH) {
     struct vlan_entry vlan_ntry;
     struct bundle_entry bundle_ntry;
     struct vlan_entry *vlan_res;
@@ -553,7 +553,7 @@ int send2subif(int prt, int hash, unsigned char *bufD, int *bufP, int *bufS, uns
         // macsec should be applied
     }
     *bufP -= 12;
-    memmove(&bufD[*bufP], &buf2[0], 12);
+    memmove(&bufD[*bufP], &bufH[0], 12);
     bundle_ntry.id = prt;
     index = table_find(&bundle_table, &bundle_ntry);
     if (index >= 0) {
@@ -577,7 +577,7 @@ int send2subif(int prt, int hash, unsigned char *bufD, int *bufP, int *bufS, uns
 
 
 
-int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *buf2, int *ethtyp) {
+int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp) {
     struct macsec_entry macsec_ntry;
     struct macsec_entry *macsec_res;
     size_t sizt;
@@ -604,8 +604,8 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     if (EVP_MD_CTX_reset(hashCtx) != 1) return 1;
     if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) return 1;
     if (macsec_res->needMacs != 0) {
-        if (EVP_DigestSignUpdate(hashCtx, &buf2[6], 6) != 1) return 1;
-        if (EVP_DigestSignUpdate(hashCtx, &buf2[0], 6) != 1) return 1;
+        if (EVP_DigestSignUpdate(hashCtx, &bufH[6], 6) != 1) return 1;
+        if (EVP_DigestSignUpdate(hashCtx, &bufH[0], 6) != 1) return 1;
     }
     if (EVP_DigestSignUpdate(hashCtx, &bufD[*bufP], tmp) != 1) return 1;
     if (EVP_DigestSignFinal(hashCtx, &bufD[*bufP + tmp], &sizt) != 1) return 1;
@@ -622,16 +622,16 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 
 
 
-int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *buf2, int *ethtyp) {
+int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp) {
     int tmp;
     int tmp2;
     size_t sizt;
     neigh_res->pack++;
     neigh_res->byte += *bufS;
     int prt = neigh_res->port;
-    memmove(&buf2[0], &neigh_res->dmac, 6);
-    memmove(&buf2[6], &neigh_res->smac, 6);
-    if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &*bufP, &*bufS, buf2, &*ethtyp) != 0) goto drop;
+    memmove(&bufH[0], &neigh_res->dmac, 6);
+    memmove(&bufH[6], &neigh_res->smac, 6);
+    if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp) != 0) goto drop;
     switch (neigh_res->command) {
     case 1: // raw ip
         break;
@@ -709,7 +709,7 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         goto drop;
     }
     if (neigh_res->aclport != prt) {
-        if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, buf2, &*ethtyp) != 0) goto drop;
+        if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp) != 0) goto drop;
     }
     return prt;
 drop:
@@ -724,7 +724,7 @@ drop:
 void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
     byteRx[port] += bufS;
-    unsigned char buf2[preBuff];
+    unsigned char bufH[preBuff];
     struct mpls_entry mpls_ntry;
     struct portvrf_entry portvrf_ntry;
     struct route4_entry route4_ntry;
@@ -798,8 +798,8 @@ ethtyp_rx:
             if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 0], 6) != 1) goto drop;
         }
         if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;
-        if (EVP_DigestSignFinal(hashCtx, &buf2[0], &sizt) != 1) goto drop;
-        if (memcmp(&buf2[0], &bufD[bufP + tmp], macsec_res->hashBlkLen) !=0) goto drop;
+        if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) goto drop;
+        if (memcmp(&bufH[0], &bufD[bufP + tmp], macsec_res->hashBlkLen) !=0) goto drop;
         bufS -= macsec_res->hashBlkLen;
         if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;
         if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) goto drop;
@@ -880,21 +880,21 @@ nethtyp_tx:
             if (index < 0) goto drop;
             neigh_res = table_get(&neigh_table, index);
 neigh_tx:
-            prt = send2neigh(neigh_res, encrCtx, hashCtx, bufD, &bufP, &bufS, buf2, &ethtyp);
+            prt = send2neigh(neigh_res, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp);
             if (prt < 0) goto drop;
-            prt2 = prt = send2subif(prt, hash, bufD, &bufP, &bufS, buf2);
+            prt2 = prt = send2subif(prt, hash, bufD, &bufP, &bufS, bufH);
             if (prt2 >= 0) goto ether_rx;
             return;
         case 4: // xconn
-            memmove(&buf2[0], &bufD[bufP], 12);
+            memmove(&bufH[0], &bufD[bufP], 12);
             bufP += 12;
             prt = mpls_res->port;
-            if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, buf2, &ethtyp) != 0) goto drop;
-            prt2 = prt = send2subif(prt, hash, bufD, &bufP, &bufS, buf2);
+            if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp) != 0) goto drop;
+            prt2 = prt = send2subif(prt, hash, bufD, &bufP, &bufS, bufH);
             if (prt2 >= 0) goto ether_rx;
             return;
         case 5: // vpls
-            memmove(&buf2[0], &bufD[bufP], 12);
+            memmove(&bufH[0], &bufD[bufP], 12);
             bufP += 12;
             bufP += 2;
             bridge_ntry.id = mpls_ntry.bridge;
@@ -1177,7 +1177,7 @@ ipv4_tx:
             case 8: // brsrv
                 bridge_ntry.id = route4_res->srv1;
                 bufP = bufT;
-                memmove(&buf2[0], &bufD[bufP], 12);
+                memmove(&bufH[0], &bufD[bufP], 12);
                 bufP += 12;
                 bufP += 2;
                 goto bridgevpls_rx;
@@ -1491,7 +1491,7 @@ ipv6_tx:
             case 8: // brsrv
                 bridge_ntry.id = route6_res->srv1;
                 bufP = bufT;
-                memmove(&buf2[0], &bufD[bufP], 12);
+                memmove(&bufH[0], &bufD[bufP], 12);
                 bufP += 12;
                 bufP += 2;
                 goto bridgevpls_rx;
@@ -1526,15 +1526,15 @@ ipv6_tx:
         portvrf_res = table_get(&portvrf_table, index);
         if (portvrf_res->command != 2) goto drop;
         bridge_ntry.id = portvrf_res->bridge;
-        memmove(&buf2[0], &bufD[bufP], 12);
+        memmove(&bufH[0], &bufD[bufP], 12);
         bufP += 12;
         bufP += 2;
         goto bridgevpls_rx;
 xconn_rx:
-        memmove(&buf2[0], &bufD[preBuff], 12);
+        memmove(&bufH[0], &bufD[preBuff], 12);
         bufP -= 2;
         bufP -= 12;
-        memmove(&bufD[bufP], &buf2[0], 12);
+        memmove(&bufD[bufP], &bufH[0], 12);
         ethtyp = ETHERTYPE_MPLS_UCAST;
         bufP -= 4;
         label = 0x1ff | (portvrf_res->label2 << 12);
@@ -1546,19 +1546,19 @@ xconn_rx:
         goto ethtyp_tx;
 bridge_rx:
         bridge_ntry.id = portvrf_res->bridge;
-        memmove(&buf2[0], &bufD[preBuff], 12);
+        memmove(&bufH[0], &bufD[preBuff], 12);
         goto bridgevpls_rx;
 bridgevpls_rx:
-        bridge_ntry.mac1 = get16msb(buf2, 6);
-        bridge_ntry.mac2 = get32msb(buf2, 8);
+        bridge_ntry.mac1 = get16msb(bufH, 6);
+        bridge_ntry.mac2 = get32msb(bufH, 8);
         hash ^= bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
         if (index < 0) goto cpu;
         bridge_res = table_get(&bridge_table, index);
         bridge_res->packRx++;
         bridge_res->byteRx += bufS;
-        bridge_ntry.mac1 = get16msb(buf2, 0);
-        bridge_ntry.mac2 = get32msb(buf2, 2);
+        bridge_ntry.mac1 = get16msb(bufH, 0);
+        bridge_ntry.mac2 = get32msb(bufH, 2);
         hash ^= bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
         if (index < 0) goto cpu;
@@ -1571,7 +1571,7 @@ bridgevpls_rx:
             break;
         case 2: // vpls
             bufP -= 12;
-            memmove(&bufD[bufP], &buf2[0], 12);
+            memmove(&bufD[bufP], &bufH[0], 12);
             ethtyp = ETHERTYPE_MPLS_UCAST;
             bufP -= 4;
             label = 0x1ff | (bridge_res->label2 << 12);
@@ -1583,7 +1583,7 @@ bridgevpls_rx:
             goto ethtyp_tx;
         case 3: // routed
             bufP -= 12;
-            memmove(&bufD[bufP], &buf2[0], 12);
+            memmove(&bufD[bufP], &bufH[0], 12);
             ethtyp = ETHERTYPE_ROUTEDMAC;
             neigh_ntry.id = bridge_res->nexthop;
             goto ethtyp_tx;
@@ -1625,8 +1625,8 @@ bridgevpls_rx:
             return;
         }
         prt = bridge_res->port;
-        if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, buf2, &ethtyp) != 0) goto drop;
-        prt2 = prt = send2subif(prt, hash, bufD, &bufP, &bufS, buf2);
+        if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp) != 0) goto drop;
+        prt2 = prt = send2subif(prt, hash, bufD, &bufP, &bufS, bufH);
         if (prt2 >= 0) goto ether_rx;
         return;
     case ETHERTYPE_ARP: // arp
