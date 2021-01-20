@@ -5964,7 +5964,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("monitor-sample")) {
             ethtyp.monSmpN = bits.str2num(cmd.word());
-            ethtyp.monSmpP = 0;
             return;
         }
         if (a.equals("monitor-session")) {
@@ -6636,7 +6635,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("monitor-sample")) {
             ethtyp.monSmpN = 0;
-            ethtyp.monSmpP = 0;
             return;
         }
         if (a.equals("monitor-session")) {

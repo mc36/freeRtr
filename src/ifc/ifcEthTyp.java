@@ -511,8 +511,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
 
     private packHolder applyMonitor(packHolder pck, boolean copy) {
         if (monSmpN > 0) {
-            monSmpP++;
-            if ((monSmpP % monSmpN) != 0) {
+            if ((monSmpP++ % monSmpN) != 0) {
                 return null;
             }
         }
