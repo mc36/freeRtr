@@ -180,6 +180,8 @@ int doOneCommand(unsigned char* buf) {
     memset(&macsec_ntry, 0, sizeof(macsec_ntry));
     struct policer_entry policer_ntry;
     memset(&policer_ntry, 0, sizeof(policer_ntry));
+    struct monitor_entry monitor_ntry;
+    memset(&monitor_ntry, 0, sizeof(monitor_ntry));
     int index = 0;
     if (strcmp(arg[0], "quit") == 0) {
         return 1;
@@ -1630,6 +1632,15 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&tun6_table, &tun6_ntry);
         else table_add(&tun6_table, &tun6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "monitor") == 0) {
+        monitor_ntry.port = atoi(arg[2]);
+        monitor_ntry.target = atoi(arg[3]);
+        monitor_ntry.sample = atoi(arg[5]);
+        monitor_ntry.truncate = atoi(arg[6]);
+        if (del == 0) table_del(&monitor_table, &monitor_ntry);
+        else table_add(&monitor_table, &monitor_ntry);
         return 0;
     }
     return 0;

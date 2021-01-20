@@ -41,7 +41,7 @@ void processCpuPack(unsigned char* bufD, int bufS) {
 #ifdef basicLoop
 
 
-void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processDataPacket(unsigned char *bufC, unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     struct vlan_entry vlan_ntry;
     struct vlan_entry *vlan_res;
     int index;
@@ -721,7 +721,7 @@ drop:
 
 
 
-void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processDataPacket(unsigned char *bufC, unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
     byteRx[port] += bufS;
     unsigned char bufH[preBuff];
@@ -743,6 +743,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
     struct tun6_entry tun6_ntry;
     struct macsec_entry macsec_ntry;
     struct policer_entry policer_ntry;
+    struct monitor_entry monitor_ntry;
     struct mpls_entry *mpls_res;
     struct portvrf_entry *portvrf_res;
     struct route4_entry *route4_res;
@@ -760,6 +761,7 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
     struct tun6_entry *tun6_res;
     struct macsec_entry *macsec_res;
     struct policer_entry *policer_res;
+    struct monitor_entry *monitor_res;
     int index;
     int label;
     int sum;
@@ -770,7 +772,8 @@ void processDataPacket(unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *
     int ethtyp;
     int prt = port;
     int prt2 = port;
-    int tmp, tmp2;
+    int tmp;
+    int tmp2;
     size_t sizt;
 ether_rx:
     bufP = preBuff;
@@ -813,6 +816,19 @@ ethtyp_rx:
         prt2 = prt;
         ethtyp = get16msb(bufD, bufP);
         bufP += 2;
+    }
+    monitor_ntry.port = prt;
+    index = table_find(&monitor_table, &monitor_ntry);
+    if (index >= 0) {
+        monitor_res = table_get(&monitor_table, index);
+        if ((monitor_res->packets++%monitor_res->sample) == 0) {
+            tmp2 = bufS - bufP + preBuff + 2;
+            if (tmp2 > monitor_res->truncate) tmp2 = monitor_res->truncate;
+            memmove(&bufC[preBuff], &bufD[bufP - 2], tmp2);
+            memmove(&bufH[0], &bufD[preBuff], 12);
+            tmp = preBuff;
+            send2subif(monitor_res->target, hash, bufC, &tmp, &tmp2, bufH);
+        }
     }
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST: // mpls

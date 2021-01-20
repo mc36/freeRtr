@@ -51,6 +51,7 @@ void err(unsigned char*buf) {
 
 void doIfaceLoop(int * param) {
     int port = *param;
+    unsigned char bufC[16384];
     unsigned char bufD[16384];
     struct pcap_pkthdr head;
     const unsigned char *pack;
@@ -74,7 +75,7 @@ void doIfaceLoop(int * param) {
             bufS = head.caplen;
             if (bufS < 0) break;
             memmove(&bufD[preBuff], pack, bufS);
-            processDataPacket(&bufD[0], bufS, port, encrCtx, hashCtx);
+            processDataPacket(&bufC[0], &bufD[0], bufS, port, encrCtx, hashCtx);
         }
     }
     err("port thread exited");

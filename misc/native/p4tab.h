@@ -703,6 +703,25 @@ int policer_compare(void *ptr1, void *ptr2) {
 }
 
 
+struct monitor_entry {
+    int port;
+    int target;
+    int sample;
+    int truncate;
+    int packets;
+};
+
+struct table_head monitor_table;
+
+int monitor_compare(void *ptr1, void *ptr2) {
+    struct monitor_entry *ntry1 = ptr1;
+    struct monitor_entry *ntry2 = ptr2;
+    if (ntry1->port < ntry2->port) return -1;
+    if (ntry1->port > ntry2->port) return +1;
+    return 0;
+}
+
+
 
 
 
@@ -739,6 +758,7 @@ int initTables() {
     table_init(&tun6_table, sizeof(struct tun6_entry), &tun6_compare);
     table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
     table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
+    table_init(&monitor_table, sizeof(struct monitor_entry), &monitor_compare);
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 //    if (OSSL_PROVIDER_load(NULL, "legacy") == NULL) return 1;
 //    if (OSSL_PROVIDER_load(NULL, "default") == NULL) return 1;
