@@ -509,7 +509,10 @@ public class ifcEthTyp implements Runnable, ifcUp {
         snapTyps = new tabGen<ifcEthTypSNAP>();
     }
 
-    private packHolder applyMonitor(packHolder pck, boolean copy) {
+    private packHolder applyMonitor(packHolder pck, int dir, boolean copy) {
+        if ((dir & monDir) == 0) {
+            return null;
+        }
         if (monSmpN > 0) {
             if ((monSmpP++ % monSmpN) != 0) {
                 return null;
@@ -653,13 +656,13 @@ public class ifcEthTyp implements Runnable, ifcUp {
             }
         }
         if (monBufD != null) {
-            packHolder mon = applyMonitor(pck, false);
+            packHolder mon = applyMonitor(pck, 2, false);
             if (mon != null) {
                 putMonBufPck(mon.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, true));
             }
         }
         if (monSes != null) {
-            packHolder mon = applyMonitor(pck, true);
+            packHolder mon = applyMonitor(pck, 2, true);
             if (mon != null) {
                 monSes.doTxPack(mon);
             }
@@ -733,13 +736,13 @@ public class ifcEthTyp implements Runnable, ifcUp {
             }
         }
         if (monBufD != null) {
-            packHolder mon = applyMonitor(pck, false);
+            packHolder mon = applyMonitor(pck, 1, false);
             if (mon != null) {
                 putMonBufPck(mon.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, true));
             }
         }
         if (monSes != null) {
-            packHolder mon = applyMonitor(pck, true);
+            packHolder mon = applyMonitor(pck, 1, true);
             if (mon != null) {
                 monSes.doTxPack(mon);
             }
