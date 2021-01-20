@@ -2431,6 +2431,7 @@ class servP4langConn implements Runnable {
             }
         }
         if (i != ifc.sentMon) {
+            int o = i;
             String a;
             if (ifc.sentMon < 0) {
                 a = "add";
@@ -2438,9 +2439,18 @@ class servP4langConn implements Runnable {
                 a = "mod";
             }
             if (i < 0) {
+                o = ifc.sentMon;
                 a = "del";
             }
-            lower.sendLine("monitor_" + a + " " + ifc.id + " " + ifc.ifc.ethtyp.monDir + " " + ifc.ifc.ethtyp.monSmpN + ifc.ifc.ethtyp.monTrnc);
+            int smp = ifc.ifc.ethtyp.monSmpN;
+            if (smp < 1) {
+                smp = 1;
+            }
+            int trn = ifc.ifc.ethtyp.monTrnc;
+            if (trn < 1) {
+                trn = ifc.ifc.ethtyp.getMTUsize();
+            }
+            lower.sendLine("monitor_" + a + " " + ifc.id + " " + o + " " + ifc.ifc.ethtyp.monDir + " " + smp + " " + trn);
             ifc.sentMon = i;
         }
         tabListing<tabAceslstN<addrIP>, addrIP> acl = null;
