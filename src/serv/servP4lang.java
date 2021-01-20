@@ -835,6 +835,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public int sentVrf;
 
+    public int sentMon;
+
     public int sentVlan;
 
     public int sentBundle;
@@ -970,6 +972,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentPppoe = -1;
         sentMacsec = null;
         sentVrf = 0;
+        sentMon = -1;
         sentState = state.states.close;
         sentMtu = 0;
         sentLabel = -1;
@@ -1645,6 +1648,27 @@ class servP4langConn implements Runnable {
         servP4langIfc ntry = new servP4langIfc();
         ntry.id = id;
         return lower.expIfc.find(ntry);
+    }
+
+    private servP4langIfc findIfc(ifcEthTyp ifc) {
+        for (int i = 0; i < lower.expIfc.size(); i++) {
+            servP4langIfc ntry = lower.expIfc.get(i);
+            if (ntry.ifc.ethtyp == ifc) {
+                return ntry;
+            }
+        }
+        if (lower.expDynAccIfc == null) {
+            return null;
+        }
+        for (int i = 0; i < lower.expDynAccIfc.length; i++) {
+            if (lower.expDynAccIfc[i] == null) {
+                continue;
+            }
+            if (lower.expDynAccIfc[i].ifc.ethtyp == ifc) {
+                return lower.expDynAccIfc[i];
+            }
+        }
+        return null;
     }
 
     private servP4langIfc findIfc(cfgIfc ifc) {
@@ -2399,6 +2423,26 @@ class servP4langConn implements Runnable {
     }
 
     private void doIface(servP4langIfc ifc) {
+        int i = -1;
+        if (ifc.ifc.ethtyp.monSes != null) {
+            servP4langIfc res = findIfc(ifc.ifc.ethtyp.monSes);
+            if (res != null) {
+                i = res.id;
+            }
+        }
+        if (i != ifc.sentMon) {
+            String a;
+            if (ifc.sentMon < 0) {
+                a = "add";
+            } else {
+                a = "mod";
+            }
+            if (i < 0) {
+                a = "del";
+            }
+            lower.sendLine("monitor_" + a + " " + ifc.id + " " + ifc.ifc.ethtyp.monDir + " " + ifc.ifc.ethtyp.monSmpN + ifc.ifc.ethtyp.monTrnc);
+            ifc.sentMon = i;
+        }
         tabListing<tabAceslstN<addrIP>, addrIP> acl = null;
         String a = null;
         if (ifc.ifc.ethtyp.qosIn != null) {
@@ -2482,7 +2526,7 @@ class servP4langConn implements Runnable {
         } else {
             sta = state.states.up;
         }
-        int i = ifc.ifc.ethtyp.getMTUsize();
+        i = ifc.ifc.ethtyp.getMTUsize();
         if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge) || (ifc.ifc.type == cfgIfc.ifaceType.dialer) || (ifc.ifc.type == cfgIfc.ifaceType.hairpin) || (ifc.ifc.type == cfgIfc.ifaceType.tunnel) || (ifc.ifc.type == cfgIfc.ifaceType.virtppp)) {
             ifc.sentState = sta;
             ifc.sentMtu = i;

@@ -1003,12 +1003,13 @@ public class userPacket {
                 return;
             }
             cmd.error("saving " + buf.length + " bytes");
+            int pos = ifc.ethtyp.monBufP;
             try {
                 RandomAccessFile f = new RandomAccessFile(new File(a), "rw");
                 f.setLength(0);
                 f.write(packHolder.getPcapHeader(1));
-                f.write(buf, ifc.ethtyp.monBufP, buf.length - ifc.ethtyp.monBufP);
-                f.write(buf, 0, ifc.ethtyp.monBufP);
+                f.write(buf, pos, buf.length - pos);
+                f.write(buf, 0, pos);
                 f.close();
             } catch (Exception e) {
             }
