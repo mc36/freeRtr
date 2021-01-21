@@ -1,5 +1,6 @@
 #!/bin/sh
-#sudo deb https://download.opensuse.org/repositories/home:/frederic-loui:/p4lang:/p4c:/master/Debian_10/ ./
+#deb http://download.opensuse.org/repositories/home:/frederic-loui:/p4lang:/p4c:/master/Debian_10/ ./
+#wget https://download.opensuse.org/repositories/openSUSE:/Tools/Debian_10/Release.key
 #wget https://download.opensuse.org/repositories/home:/frederic-loui:/p4lang:/p4c:/master/Debian_10/Release.key
 #sudo apt-key add ./Release.key
 #sudo apt install p4c bmv2 psmisc iproute2 net-tools tshark iperf gcc telnet
