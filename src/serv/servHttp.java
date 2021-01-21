@@ -276,7 +276,7 @@ public class servHttp extends servGeneric implements prtServS {
             if (ntry.translate != null) {
                 String s = "";
                 for (int i = 0; i < ntry.translate.size(); i++) {
-                    s += ' ' + ntry.translate.get(i).name;
+                    s += " " + ntry.translate.get(i).name;
                 }
                 l.add(a + " translate" + s);
             } else {

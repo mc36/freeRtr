@@ -3379,22 +3379,58 @@ class servP4langConn implements Runnable {
         return need;
     }
 
-    private void doMroutes(String afi, int vrf, ipFwdMcast ntry, ipFwdMcast old) {
-        int gid = ntry.group.getHashW() ^ ntry.source.getHashW();
-        if (ntry.local != old.local) {
+    private boolean doMroutes(String afi, int vrf, ipFwdMcast need, ipFwdMcast done) {
+        int gid = need.group.getHashW() ^ need.source.getHashW();
+        servP4langIfc ingr = findIfc(need.iface);
+        if (ingr == null) {
+            return true;
+        }
+        if (need.local != done.local) {
             String act;
-            if (ntry.local) {
+            if (need.local) {
                 act = "add";
             } else {
                 act = "del";
             }
-            lower.sendLine("mlocal" + afi + "_" + act + " " + vrf + " " + gid + " " + ntry.group + " " + ntry.source);
+            lower.sendLine("mlocal" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id);
         }
-        if (ntry.local) {
-            ntry.flood.clear();
-            ntry.label = null;
-            ntry.bier = null;
+        if (need.local) {
+            need.flood.clear();
+            need.label = null;
+            need.bier = null;
         }
+        addrMac mac = need.group.conv2multiMac();
+        for (int i = 0; i < need.flood.size(); i++) {
+            ipFwdIface ntry = need.flood.get(i);
+            if (done.flood.find(ntry) != null) {
+                continue;
+            }
+            servP4langIfc ifc = findIfc(ntry);
+            if (ifc == null) {
+                continue;
+            }
+            servP4langIfc mst = ifc.master;
+            if (mst == null) {
+                mst = ifc;
+            }
+            lower.sendLine("mroute" + afi + "_add " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + mst.id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
+        }
+        for (int i = 0; i < done.flood.size(); i++) {
+            ipFwdIface ntry = done.flood.get(i);
+            if (need.flood.find(ntry) != null) {
+                continue;
+            }
+            servP4langIfc ifc = findIfc(ntry);
+            if (ifc == null) {
+                continue;
+            }
+            servP4langIfc mst = ifc.master;
+            if (mst == null) {
+                mst = ifc;
+            }
+            lower.sendLine("mroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + mst.id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
+        }
+        return false;
     }
 
     private void doMroutes(boolean ipv4, int vrf, tabGen<ipFwdMcast> need, tabGen<ipFwdMcast> done) {
@@ -3415,7 +3451,9 @@ class servP4langConn implements Runnable {
             } else {
                 old = new ipFwdMcast(ntry.group, ntry.source);
             }
-            doMroutes(afi, vrf, ntry, old);
+            if (doMroutes(afi, vrf, ntry, old)) {
+                continue;
+            }
             done.put(ntry);
         }
         for (int i = done.size() - 1; i >= 0; i--) {
@@ -3423,7 +3461,11 @@ class servP4langConn implements Runnable {
             if (need.find(ntry) != null) {
                 continue;
             }
-            doMroutes(afi, vrf, new ipFwdMcast(ntry.group, ntry.source), ntry);
+            ipFwdMcast empty = new ipFwdMcast(ntry.group, ntry.source);
+            empty.iface = ntry.iface;
+            if (doMroutes(afi, vrf, empty, ntry)) {
+                continue;
+            }
             done.del(ntry);
         }
     }
