@@ -724,6 +724,8 @@ int monitor_compare(void *ptr1, void *ptr2) {
 
 struct flood_entry {
     int trg;
+    unsigned char smac[6];
+    unsigned char dmac[6];
 };
 
 int flood_compare(void *ptr1, void *ptr2) {

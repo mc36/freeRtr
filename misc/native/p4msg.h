@@ -183,6 +183,8 @@ int doOneCommand(unsigned char* buf) {
     memset(&policer_ntry, 0, sizeof(policer_ntry));
     struct monitor_entry monitor_ntry;
     memset(&monitor_ntry, 0, sizeof(monitor_ntry));
+    struct flood_entry flood_ntry;
+    memset(&flood_ntry, 0, sizeof(flood_ntry));
     struct mroute4_entry *mroute4_res;
     struct mroute4_entry mroute4_ntry;
     memset(&mroute4_ntry, 0, sizeof(mroute4_ntry));
@@ -1669,6 +1671,28 @@ int doOneCommand(unsigned char* buf) {
         mroute4_res->local = del;
         return 0;
     }
+    if (strcmp(arg[0], "mroute4") == 0) {
+        mroute4_ntry.vrf = atoi(arg[2]);
+        inet_pton(AF_INET, arg[4], buf2);
+        mroute4_ntry.grp = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[5], buf2);
+        mroute4_ntry.src = get32msb(buf2, 0);
+        index = table_find(&mroute4_table, &mroute4_ntry);
+        if (index < 0) {
+            table_init(&mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+            table_add(&mroute4_table, &mroute4_ntry);
+            mroute4_res = table_get(&mroute4_table, table_find(&mroute4_table, &mroute4_ntry));
+        } else {
+            mroute4_res = table_get(&mroute4_table, index);
+        }
+        mroute4_res->ingr = atoi(arg[6]);
+        flood_ntry.trg = atoi(arg[8]);
+        str2mac(flood_ntry.smac, arg[9]);
+        str2mac(flood_ntry.dmac, arg[10]);
+        if (del == 0) table_del(&mroute4_res->flood, &flood_ntry);
+        else table_add(&mroute4_res->flood, &flood_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "mlocal6") == 0) {
         mroute6_ntry.vrf = atoi(arg[2]);
         inet_pton(AF_INET6, arg[4], buf2);
@@ -1691,6 +1715,34 @@ int doOneCommand(unsigned char* buf) {
         }
         mroute6_res->ingr = atoi(arg[6]);
         mroute6_res->local = del;
+        return 0;
+    }
+    if (strcmp(arg[0], "mroute6") == 0) {
+        mroute6_ntry.vrf = atoi(arg[2]);
+        inet_pton(AF_INET6, arg[4], buf2);
+        mroute6_ntry.grp1 = get32msb(buf2, 0);
+        mroute6_ntry.grp2 = get32msb(buf2, 4);
+        mroute6_ntry.grp3 = get32msb(buf2, 8);
+        mroute6_ntry.grp4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[5], buf2);
+        mroute6_ntry.src1 = get32msb(buf2, 0);
+        mroute6_ntry.src2 = get32msb(buf2, 4);
+        mroute6_ntry.src3 = get32msb(buf2, 8);
+        mroute6_ntry.src4 = get32msb(buf2, 12);
+        index = table_find(&mroute6_table, &mroute6_ntry);
+        if (index < 0) {
+            table_init(&mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+            table_add(&mroute6_table, &mroute6_ntry);
+            mroute6_res = table_get(&mroute6_table, table_find(&mroute6_table, &mroute6_ntry));
+        } else {
+            mroute6_res = table_get(&mroute6_table, index);
+        }
+        mroute6_res->ingr = atoi(arg[6]);
+        flood_ntry.trg = atoi(arg[8]);
+        str2mac(flood_ntry.smac, arg[9]);
+        str2mac(flood_ntry.dmac, arg[10]);
+        if (del == 0) table_del(&mroute6_res->flood, &flood_ntry);
+        else table_add(&mroute6_res->flood, &flood_ntry);
         return 0;
     }
     return 0;
