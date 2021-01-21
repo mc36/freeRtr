@@ -722,6 +722,90 @@ int monitor_compare(void *ptr1, void *ptr2) {
 }
 
 
+struct flood_entry {
+    int trg;
+};
+
+int flood_compare(void *ptr1, void *ptr2) {
+    struct flood_entry *ntry1 = ptr1;
+    struct flood_entry *ntry2 = ptr2;
+    if (ntry1->trg < ntry2->trg) return -1;
+    if (ntry1->trg > ntry2->trg) return +1;
+    return 0;
+}
+
+
+struct mroute4_entry {
+    int vrf;
+    int grp;
+    int src;
+    int ingr;
+    int local;
+    struct table_head flood;
+    long pack;
+    long byte;
+};
+
+struct table_head mroute4_table;
+
+int mroute4_compare(void *ptr1, void *ptr2) {
+    struct mroute4_entry *ntry1 = ptr1;
+    struct mroute4_entry *ntry2 = ptr2;
+    if (ntry1->vrf < ntry2->vrf) return -1;
+    if (ntry1->vrf > ntry2->vrf) return +1;
+    if (ntry1->grp < ntry2->grp) return -1;
+    if (ntry1->grp > ntry2->grp) return +1;
+    if (ntry1->src < ntry2->src) return -1;
+    if (ntry1->src > ntry2->src) return +1;
+    return 0;
+}
+
+
+
+struct mroute6_entry {
+    int vrf;
+    int grp1;
+    int grp2;
+    int grp3;
+    int grp4;
+    int src1;
+    int src2;
+    int src3;
+    int src4;
+    int ingr;
+    int local;
+    struct table_head flood;
+    long pack;
+    long byte;
+};
+
+struct table_head mroute6_table;
+
+int mroute6_compare(void *ptr1, void *ptr2) {
+    struct mroute6_entry *ntry1 = ptr1;
+    struct mroute6_entry *ntry2 = ptr2;
+    if (ntry1->vrf < ntry2->vrf) return -1;
+    if (ntry1->vrf > ntry2->vrf) return +1;
+    if (ntry1->grp1 < ntry2->grp1) return -1;
+    if (ntry1->grp1 > ntry2->grp1) return +1;
+    if (ntry1->grp2 < ntry2->grp2) return -1;
+    if (ntry1->grp2 > ntry2->grp2) return +1;
+    if (ntry1->grp3 < ntry2->grp3) return -1;
+    if (ntry1->grp3 > ntry2->grp3) return +1;
+    if (ntry1->grp4 < ntry2->grp4) return -1;
+    if (ntry1->grp4 > ntry2->grp4) return +1;
+    if (ntry1->src1 < ntry2->src1) return -1;
+    if (ntry1->src1 > ntry2->src1) return +1;
+    if (ntry1->src2 < ntry2->src2) return -1;
+    if (ntry1->src2 > ntry2->src2) return +1;
+    if (ntry1->src3 < ntry2->src3) return -1;
+    if (ntry1->src3 > ntry2->src3) return +1;
+    if (ntry1->src4 < ntry2->src4) return -1;
+    if (ntry1->src4 > ntry2->src4) return +1;
+    return 0;
+}
+
+
 
 
 
@@ -759,6 +843,8 @@ int initTables() {
     table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
     table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
     table_init(&monitor_table, sizeof(struct monitor_entry), &monitor_compare);
+    table_init(&mroute4_table, sizeof(struct mroute4_entry), &mroute4_compare);
+    table_init(&mroute6_table, sizeof(struct mroute6_entry), &mroute6_compare);
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 //    if (OSSL_PROVIDER_load(NULL, "legacy") == NULL) return 1;
 //    if (OSSL_PROVIDER_load(NULL, "default") == NULL) return 1;

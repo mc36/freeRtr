@@ -744,6 +744,8 @@ void processDataPacket(unsigned char *bufC, unsigned char *bufD, int bufS, int p
     struct macsec_entry macsec_ntry;
     struct policer_entry policer_ntry;
     struct monitor_entry monitor_ntry;
+    struct mroute4_entry mroute4_ntry;
+    struct mroute6_entry mroute6_ntry;
     struct mpls_entry *mpls_res;
     struct portvrf_entry *portvrf_res;
     struct route4_entry *route4_res;
@@ -762,6 +764,8 @@ void processDataPacket(unsigned char *bufC, unsigned char *bufD, int bufS, int p
     struct macsec_entry *macsec_res;
     struct policer_entry *policer_res;
     struct monitor_entry *monitor_res;
+    struct mroute4_entry *mroute4_res;
+    struct mroute6_entry *mroute6_res;
     int index;
     int label;
     int sum;
