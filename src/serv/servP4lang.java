@@ -1142,6 +1142,9 @@ class servP4langConn implements Runnable {
     }
 
     private boolean doRound() {
+        if (pipe.isClosed() != 0) {
+            return true;
+        }
         if (pipe.ready2rx() > 0) {
             String s = pipe.lineGet(0x11).trim();
             if (s.length() < 1) {
@@ -1564,9 +1567,6 @@ class servP4langConn implements Runnable {
             }
             lower.gotCpuPack(id, pck);
             return false;
-        }
-        if (pipe.isClosed() != 0) {
-            return true;
         }
         for (int i = 0; i < neighs.size(); i++) {
             neighs.get(i).need = 0;
@@ -3379,6 +3379,24 @@ class servP4langConn implements Runnable {
         return need;
     }
 
+    private void doMroutes(String afi, int vrf, ipFwdMcast ntry, ipFwdMcast old) {
+        int gid = ntry.group.getHashW() ^ ntry.source.getHashW();
+        if (ntry.local != old.local) {
+            String act;
+            if (ntry.local) {
+                act = "add";
+            } else {
+                act = "del";
+            }
+            lower.sendLine("mlocal" + afi + "_" + act + " " + vrf + " " + gid + " " + ntry.group + " " + ntry.source);
+        }
+        if (ntry.local) {
+            ntry.flood.clear();
+            ntry.label = null;
+            ntry.bier = null;
+        }
+    }
+
     private void doMroutes(boolean ipv4, int vrf, tabGen<ipFwdMcast> need, tabGen<ipFwdMcast> done) {
         String afi;
         if (ipv4) {
@@ -3390,14 +3408,23 @@ class servP4langConn implements Runnable {
             ipFwdMcast ntry = need.get(i);
             ntry = ntry.copyBytes();
             ipFwdMcast old = done.find(ntry);
-            String act = "add";
             if (old != null) {
                 if (!ntry.differs(old)) {
                     continue;
                 }
-                act = "mod";
+            } else {
+                old = new ipFwdMcast(ntry.group, ntry.source);
             }
-            ////////
+            doMroutes(afi, vrf, ntry, old);
+            done.put(ntry);
+        }
+        for (int i = done.size() - 1; i >= 0; i--) {
+            ipFwdMcast ntry = done.get(i);
+            if (need.find(ntry) != null) {
+                continue;
+            }
+            doMroutes(afi, vrf, new ipFwdMcast(ntry.group, ntry.source), ntry);
+            done.del(ntry);
         }
     }
 

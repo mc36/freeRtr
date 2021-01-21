@@ -104,7 +104,7 @@ public class packMtrack {
         buf[13] = 0;
         buf[14] = 0;
         buf[15] = 0;
-        int i = cfg.getHash() ^ grp.getHash();
+        int i = cfg.getHashB() ^ grp.getHashB();
         buf[12] = (byte) i;
         buf[13] = (byte) (0xff - i);
     }
@@ -130,7 +130,7 @@ public class packMtrack {
         }
         buf[12] = 0;
         buf[13] = 0;
-        return i != (cfg.getHash() ^ grp.getHash());
+        return i != (cfg.getHashB() ^ grp.getHashB());
     }
 
 }

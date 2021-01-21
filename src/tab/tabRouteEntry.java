@@ -84,7 +84,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * select best route
      */
     public void hashBest() {
-        best = alts.get(prefix.network.getHash() % alts.size());
+        best = alts.get(prefix.network.getHashB() % alts.size());
     }
 
     /**

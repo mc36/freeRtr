@@ -335,10 +335,24 @@ public abstract class addrType implements Comparator<addrType> {
      *
      * @return xor value
      */
-    public int getHash() {
+    public int getHashB() {
         int o = 0;
         for (int i = 0; i < addr.length; i++) {
             o ^= addr[i] & 0xff;
+        }
+        return o;
+    }
+
+    /**
+     * get address hash
+     *
+     * @return xor value
+     */
+    public int getHashW() {
+        int o = 0;
+        for (int i = 0; i < addr.length; i += 2) {
+            o ^= addr[i + 0] & 0xff;
+            o ^= (addr[i + 1] & 0xff) << 8;
         }
         return o;
     }

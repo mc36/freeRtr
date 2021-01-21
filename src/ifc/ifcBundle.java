@@ -638,19 +638,19 @@ public class ifcBundle implements Runnable, ifcDn {
         if (loadbalance > 0) {
             switch (loadbalance) {
                 case 2:
-                    nextSender = pck.ETHsrc.getHash() ^ pck.ETHtrg.getHash();
+                    nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB();
                     break;
                 case 3:
-                    nextSender = pck.IPsrc.getHash() ^ pck.IPtrg.getHash();
+                    nextSender = pck.IPsrc.getHashB() ^ pck.IPtrg.getHashB();
                     break;
                 case 4:
                     nextSender = getHash(pck.UDPsrc ^ pck.UDPtrg);
                     break;
                 case 5:
-                    nextSender = pck.ETHsrc.getHash() ^ pck.ETHtrg.getHash() ^ pck.IPsrc.getHash() ^ pck.IPtrg.getHash();
+                    nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB() ^ pck.IPsrc.getHashB() ^ pck.IPtrg.getHashB();
                     break;
                 case 7:
-                    nextSender = pck.ETHsrc.getHash() ^ pck.ETHtrg.getHash() ^ pck.IPsrc.getHash() ^ pck.IPtrg.getHash() ^ getHash(pck.UDPsrc ^ pck.UDPtrg);
+                    nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB() ^ pck.IPsrc.getHashB() ^ pck.IPtrg.getHashB() ^ getHash(pck.UDPsrc ^ pck.UDPtrg);
                     break;
             }
             nextSender %= ifaces.size();
