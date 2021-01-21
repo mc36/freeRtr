@@ -17,6 +17,15 @@ void table_init(struct table_head *tab, int reclen, int comparer(void *, void *)
 }
 
 
+void table_deinit(struct table_head *tab) {
+    tab->reclen = 0;
+    tab->comparer = NULL;
+    tab->size = 0;
+    free(tab->buffer);
+    tab->buffer = NULL;
+}
+
+
 int table_find(struct table_head *tab, void *ntry) {
     int lower = 0;
     int upper = tab->size - 1;
