@@ -122,4 +122,37 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
         return res;
     }
 
+    /**
+     * compare this entry
+     *
+     * @param o other
+     * @return false if equals, true if differs
+     */
+    public boolean differs(ipFwdMcast o) {
+        if (local != o.local) {
+            return true;
+        }
+        if (rd != o.rd) {
+            return true;
+        }
+        if (iface != o.iface) {
+            return true;
+        }
+        if (group.compare(group, o.group) != 0) {
+            return true;
+        }
+        if (source.compare(source, o.source) != 0) {
+            return true;
+        }
+        if (flood.size() != o.flood.size()) {
+            return true;
+        }
+        for (int i = 0; i < flood.size(); i++) {
+            if (flood.get(i) != o.flood.get(i)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

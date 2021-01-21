@@ -625,7 +625,7 @@ public class ifcBridge implements ifcDn {
             if (mac == null) {
                 continue;
             }
-            if (ifc.compare(ifc, mac.ifc) != 0) {
+            if (ifc != mac.ifc) {
                 continue;
             }
             learned.del(mac);
@@ -905,7 +905,7 @@ public class ifcBridge implements ifcDn {
         ifcBridgeAdr old = learned.add(lrn);
         if (old != null) {
             if (macMove) {
-                if (ifc.compare(ifc, old.ifc) != 0) {
+                if (ifc != old.ifc) {
                     logger.info(pck.ETHsrc + " moved from " + old.ifc.getIfcName() + " to " + ifc.getIfcName());
                 }
             }

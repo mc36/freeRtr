@@ -26,6 +26,7 @@ import ifc.ifcP2pOEservSess;
 import ifc.ifcUp;
 import ip.ipFwd;
 import ip.ipFwdIface;
+import ip.ipFwdMcast;
 import ip.ipIfc;
 import ip.ipMpls;
 import java.util.ArrayList;
@@ -765,6 +766,10 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
     public tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
 
+    public tabGen<ipFwdMcast> mroutes4 = new tabGen<ipFwdMcast>();
+
+    public tabGen<ipFwdMcast> mroutes6 = new tabGen<ipFwdMcast>();
+
     public tabListing<tabAceslstN<addrIP>, addrIP> natCfg4;
 
     public tabListing<tabAceslstN<addrIP>, addrIP> natCfg6;
@@ -802,6 +807,8 @@ class servP4langVrf implements Comparator<servP4langVrf> {
     public void doClear() {
         routes4 = new tabRoute<addrIP>("sent");
         routes6 = new tabRoute<addrIP>("sent");
+        mroutes4 = new tabGen<ipFwdMcast>();
+        mroutes6 = new tabGen<ipFwdMcast>();
         sentMcast = false;
         natCfg4 = null;
         natCfg4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
@@ -1595,6 +1602,8 @@ class servP4langConn implements Runnable {
             doVrf(vrf);
             doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4);
             doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6);
+            doMroutes(true, vrf.id, vrf.vrf.fwd4.groups, vrf.mroutes4);
+            doMroutes(false, vrf.id, vrf.vrf.fwd6.groups, vrf.mroutes6);
             vrf.natCfg4 = doNatCfg(true, vrf.id, vrf.vrf.fwd4.natCfg, vrf.natCfg4, vrf.natCfg4f);
             vrf.natCfg6 = doNatCfg(false, vrf.id, vrf.vrf.fwd6.natCfg, vrf.natCfg6, vrf.natCfg6f);
             doNatTrns(true, vrf.id, vrf.vrf.fwd4.natTrns, vrf.natTrns4);
@@ -3370,6 +3379,28 @@ class servP4langConn implements Runnable {
         return need;
     }
 
+    private void doMroutes(boolean ipv4, int vrf, tabGen<ipFwdMcast> need, tabGen<ipFwdMcast> done) {
+        String afi;
+        if (ipv4) {
+            afi = "4";
+        } else {
+            afi = "6";
+        }
+        for (int i = 0; i < need.size(); i++) {
+            ipFwdMcast ntry = need.get(i);
+            ntry = ntry.copyBytes();
+            ipFwdMcast old = done.find(ntry);
+            String act = "add";
+            if (old != null) {
+                if (!ntry.differs(old)) {
+                    continue;
+                }
+                act = "mod";
+            }
+            ////////
+        }
+    }
+
     private void doRoutes(boolean ipv4, int vrf, tabRoute<addrIP> need, tabRoute<addrIP> done) {
         String afi;
         if (ipv4) {
@@ -3380,8 +3411,8 @@ class servP4langConn implements Runnable {
         for (int i = 0; i < need.size(); i++) {
             tabRouteEntry<addrIP> ntry = need.get(i);
             ntry = ntry.copyBytes(tabRoute.addType.notyet);
+            tabRouteEntry<addrIP> old = done.find(ntry);
             if ((ntry.best.iface == null) && (ntry.best.rouTab != null)) {
-                tabRouteEntry<addrIP> old = done.find(ntry);
                 String act = "add";
                 if (old != null) {
                     if (!ntry.differs(tabRoute.addType.notyet, old)) {
@@ -3416,7 +3447,6 @@ class servP4langConn implements Runnable {
                 }
                 continue;
             }
-            tabRouteEntry<addrIP> old = done.find(ntry);
             String act = "add";
             if (old != null) {
                 if (ntry.best.nextHop != null) {
