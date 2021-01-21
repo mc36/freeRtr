@@ -1324,6 +1324,8 @@ qc pass: p4lang: sr te over mpls mid
 qc pass: p4lang: policy routing between vrfs
 qc pass: p4lang: policy routing with nexthop
 qc pass: p4lang: policy routing with interface and nexthop
+qc pass: p4lang: multicast routing
+qc pass: p4lang: multicast vlan routing
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
