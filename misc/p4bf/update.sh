@@ -14,5 +14,6 @@ mv ~/a/misc/p4bf/*.py ~/rare/bfrt_python/
 mv ~/a/misc/p4bf/*.sh ~/
 cd ~
 rm -rf a/
+sudo rm -rf `find . -name *.log*`
 sudo dd if=/dev/zero of=/zzz bs=1M
 sudo rm /zzz

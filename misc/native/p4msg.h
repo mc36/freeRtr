@@ -189,6 +189,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "state") == 0) {
         i = atoi(arg[1]);
         o = atoi(arg[2]);
+        if (i < 0) return 0;
         if (i >= ports) return 0;
         setState(i, o);
         return 0;

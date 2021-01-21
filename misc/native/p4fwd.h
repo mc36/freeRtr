@@ -1,4 +1,6 @@
 void send2port(unsigned char *bufD, int bufS, int port) {
+    if (port < 0) return;
+    if (port >= ports) return;
     sendpack(bufD, bufS, port);
     packTx[port]++;
     byteTx[port] += bufS;
@@ -22,7 +24,6 @@ void processCpuPack(unsigned char* bufD, int bufS) {
     packRx[cpuport]++;
     byteRx[cpuport] += bufS;
     prt = get16msb(bufD, preBuff);
-    if (prt >= ports) return;
     send2port(&bufD[preBuff + 2], bufS - 2, prt);
     if (get16msb(bufD, preBuff + 14) != ETHERTYPE_VLAN) return;
     vlan_ntry.port = prt;
@@ -570,7 +571,6 @@ int send2subif(int prt, int hash, unsigned char *bufD, int *bufP, int *bufS, uns
             return prt;
         }
     }
-    if (prt >= ports) return -2;
     send2port(&bufD[*bufP], *bufS - *bufP + preBuff, prt);
     return -1;
 }
