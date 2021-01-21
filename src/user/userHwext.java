@@ -249,7 +249,11 @@ public class userHwext {
                         hwd.add("ip link add veth0a type veth peer name veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
-                        hwc.add("proc p4emu " + path + "p4dpdk.bin --vdev=net_af_packet0,iface=veth1b --vdev=net_af_packet1,iface=veth0b 127.0.0.1 " + servP4lang.port + " " + ifl.size());
+                        String a = "";
+                        for (i = 0; i < ifp.size(); i++) {
+                            a += " --vdev=net_af_packet" + i + ",iface=" + ifp.get(i);
+                        }
+                        hwc.add("proc p4emu " + path + "p4dpdk.bin" + a + " --vdev=net_af_packet" + ifl.size() + ",iface=veth0b 127.0.0.1 " + servP4lang.port + " " + ifl.size());
                         res = ", please enable nic bindings in " + hwdn;
                         break;
                     case p4emu:
@@ -257,7 +261,7 @@ public class userHwext {
                         hwd.add("ip link add veth0a type veth peer name veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
-                        String a = "";
+                        a = "";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);
                         }
