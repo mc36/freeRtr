@@ -1189,6 +1189,8 @@ qc pass: p4lang: wireguard over vlan
 qc pass: p4lang: wireguard over asymmetric ports
 qc pass: p4lang: wireguard with ingress access list
 qc pass: p4lang: wireguard with egress access list
+qc pass: p4lang: multicast routing over macsec
+qc pass: p4lang: multicast routing over vlan macsec
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -1326,6 +1328,10 @@ qc pass: p4lang: policy routing with nexthop
 qc pass: p4lang: policy routing with interface and nexthop
 qc pass: p4lang: multicast routing
 qc pass: p4lang: multicast vlan routing
+qc pass: p4lang: multicast bundle routing
+qc pass: p4lang: multicast bundle vlan routing
+qc pass: p4lang: hairpin multicast routing
+qc pass: p4lang: hairpin vlan multicast routing
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

@@ -9648,3 +9648,10 @@ qc pass: monitor session truncated
 ---------------------------------- 2021-01-21 20:44:02
 qc pass: p4lang: multicast routing
 qc pass: p4lang: multicast vlan routing
+---------------------------------- 2021-01-22 08:22:36
+qc pass: p4lang: multicast routing over macsec
+qc pass: p4lang: multicast routing over vlan macsec
+qc pass: p4lang: multicast bundle routing
+qc pass: p4lang: multicast bundle vlan routing
+qc pass: p4lang: hairpin multicast routing
+qc pass: p4lang: hairpin vlan multicast routing
