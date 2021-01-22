@@ -854,7 +854,8 @@ ethtyp_rx:
             memmove(&bufC[preBuff], &bufD[bufP - 2], tmp2);
             memmove(&bufH[0], &bufD[preBuff], 12);
             tmp = preBuff;
-            send2subif(monitor_res->target, encrCtx, hashCtx, hash, bufC, &tmp, &tmp2, bufH, &ethtyp);
+            int tmpE = ethtyp;
+            send2subif(monitor_res->target, encrCtx, hashCtx, hash, bufC, &tmp, &tmp2, bufH, &tmpE);
         }
     }
     switch (ethtyp) {
