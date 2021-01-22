@@ -849,13 +849,13 @@ ethtyp_rx:
     if (index >= 0) {
         monitor_res = table_get(&monitor_table, index);
         if ((monitor_res->packets++%monitor_res->sample) == 0) {
-            tmp2 = bufS - bufP + preBuff + 2;
-            if (tmp2 > monitor_res->truncate) tmp2 = monitor_res->truncate;
-            memmove(&bufC[preBuff], &bufD[bufP - 2], tmp2);
+            int tmpS = bufS - bufP + preBuff + 2;
+            if (tmpS > monitor_res->truncate) tmpS = monitor_res->truncate;
+            memmove(&bufC[preBuff], &bufD[bufP - 2], tmpS);
             memmove(&bufH[0], &bufD[preBuff], 12);
-            tmp = preBuff;
+            int tmpP = preBuff;
             int tmpE = ethtyp;
-            send2subif(monitor_res->target, encrCtx, hashCtx, hash, bufC, &tmp, &tmp2, bufH, &tmpE);
+            send2subif(monitor_res->target, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE);
         }
     }
     switch (ethtyp) {
