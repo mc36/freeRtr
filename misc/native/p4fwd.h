@@ -591,6 +591,7 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
     int index = table_find(&vlanout_table, &vlan_ntry);
     if (index >= 0) {
         vlan_res = table_get(&vlanout_table, index);
+        hash ^= vlan_res->vlan;
         *bufP -= 2;
         put16msb(bufD, *bufP, vlan_res->vlan);
         *bufP -= 2;
