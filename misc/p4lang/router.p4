@@ -80,11 +80,12 @@
 #include "include/ig_ctl_qos_in.p4"
 #include "include/ig_ctl_qos_out.p4"
 #include "include/ig_ctl_flowspec.p4"
+#include "include/ig_ctl_mcast.p4"
 #include "include/ig_ctl.p4"
 
 
 /*------------------ E G R E S S  H E A D E R S ----------------------------- */
-#include "include/hdr_eg_headers.p4"
+#include "include/hdr_recir_headers.p4"
 
 /*------------------ E G R E S S - M A T C H - A C T I O N ------------------ */
 #include "include/eg_ctl.p4"

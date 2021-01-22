@@ -39,6 +39,8 @@ struct ingress_metadata_t {
     bit<1>  punting;
     bit<1>  natted;
     bit<1>  need_recir;
+    bit<1>  need_clone;
+    bit<16> clone_session;
     bit<3>  mpls_op_type;
     bit<3>  srv_op_type;
     bit<16> vlan_size;

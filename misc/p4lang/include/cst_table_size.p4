@@ -21,6 +21,9 @@
 #define IPV6_LPM_TABLE_SIZE                    2048
 #define IPV4_HOST_TABLE_SIZE                   2048
 #define IPV6_HOST_TABLE_SIZE                   2048
+#define IPV4_MCAST_TABLE_SIZE                  2048
+#define IPV6_MCAST_TABLE_SIZE                  2048
+
 #define MPLS_TABLE_SIZE                        2048
 #define PORT_TABLE_SIZE                        2048
 #define MAC_TABLE_SIZE                         2048

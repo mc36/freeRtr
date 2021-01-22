@@ -27,8 +27,11 @@ control eg_ctl(
     inout standard_metadata_t ig_intr_md)
 {
     apply {
-        egress_headers_t eg_hdr;
-        if (ig_md.need_recir == 1) recirculate<egress_headers_t>(eg_hdr);
+        recir_headers_t eg_hdr;
+        if (ig_md.need_recir == 1) {
+            recirculate<recir_headers_t>(eg_hdr);
+            return;
+        }
     }
 }
 

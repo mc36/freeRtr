@@ -2095,6 +2095,49 @@ def writeMySrv6rules(delete, p4info_helper, ingress_sw, glob, dst_addr, vrf):
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
+def writeMlocal4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mcast.tbl_mcast4",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv4.src_addr": dip,
+            "hdr.ipv4.dst_addr": sip,
+        },
+        action_name="ig_ctl.ig_ctl_mcast.act_local",
+        action_params={
+            "ingr": ingr
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeMlocal6rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mcast.tbl_mcast6",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv6.src_addr": dip,
+            "hdr.ipv6.dst_addr": sip,
+        },
+        action_name="ig_ctl.ig_ctl_mcast.act_local",
+        action_params={
+            "ingr": ingr
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+
+
+
 def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address, freerouter_port):
     p4info_helper = p4runtime_lib.helper.P4InfoHelper(p4info_file_path)
 
@@ -2857,6 +2900,27 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeNexthopRules(3,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
             writeNeighborRules6(3,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
+
+        if splt[0] == "mlocal4_add":
+            writeMlocal4rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            continue
+        if splt[0] == "mlocal4_mod":
+            writeMlocal4rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            continue
+        if splt[0] == "mlocal4_del":
+            writeMlocal4rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            continue
+
+        if splt[0] == "mlocal6_add":
+            writeMlocal6rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            continue
+        if splt[0] == "mlocal6_mod":
+            writeMlocal6rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            continue
+        if splt[0] == "mlocal6_del":
+            writeMlocal6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            continue
+
 
 
 

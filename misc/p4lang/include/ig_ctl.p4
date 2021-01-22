@@ -48,6 +48,7 @@ control ig_ctl(inout headers hdr,
     IngressControlQosIn() ig_ctl_qos_in;
     IngressControlQosOut() ig_ctl_qos_out;
     IngressControlFlowspec() ig_ctl_flowspec;
+    IngressControlMcast() ig_ctl_mcast;
 
     counter((MAX_PORT+1), CounterType.packets_and_bytes) pkt_out_stats;
 
@@ -108,6 +109,13 @@ control ig_ctl(inout headers hdr,
                 if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
                 if (hdr.pppoeB.isValid()) hdr.pppoeB.setInvalid();
                 if (hdr.l2tpbr.isValid()) hdr.l2tpbr.setInvalid();
+                return;
+            }
+            ig_ctl_mcast.apply(hdr,ig_md,ig_intr_md);
+            if (ig_md.dropping == 1) {
+                return;
+            }
+            if (ig_md.need_clone == 1) {
                 return;
             }
             ig_ctl_copp.apply(hdr,ig_md,ig_intr_md);
