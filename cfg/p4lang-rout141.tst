@@ -1,4 +1,4 @@
-description p4lang: hairpin multicast routing
+description p4lang: hairpin vlan multicast routing
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -77,6 +77,8 @@ int sdn4
  ipv6 ena
  exit
 int hair11
+ exit
+int hair11.111
  vrf for v1
  ipv4 addr 1.1.5.1 255.255.255.0
  ipv6 addr 1234:5::1 ffff:ffff::
@@ -85,6 +87,8 @@ int hair11
  ipv6 multi static ff06::1 1234:4::2
  exit
 int hair12
+ exit
+int hair12.111
  vrf for v2
  ipv4 addr 1.1.5.2 255.255.255.0
  ipv6 addr 1234:5::2 ffff:ffff::
@@ -102,6 +106,8 @@ server p4lang p4
  export-port sdn4 4
  export-port hair11 11
  export-port hair12 12
+ export-port hair11.111 111
+ export-port hair12.111 112
  vrf v9
  exit
 ipv4 route v1 1.1.3.0 255.255.255.0 1.1.5.2
@@ -134,7 +140,7 @@ ipv6 route v2 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
 ipv6 route v2 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:5::1
 !
 
-addother r2 feature hairpin route mroute
+addother r2 feature hairpin vlan route mroute
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
