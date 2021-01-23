@@ -116,6 +116,10 @@ control ig_ctl(inout headers hdr,
                 return;
             }
             if (ig_md.need_clone == 1) {
+                if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
+                if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
+                if (hdr.pppoeB.isValid()) hdr.pppoeB.setInvalid();
+                if (hdr.l2tpbr.isValid()) hdr.l2tpbr.setInvalid();
                 return;
             }
             ig_ctl_copp.apply(hdr,ig_md,ig_intr_md);

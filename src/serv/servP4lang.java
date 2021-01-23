@@ -902,6 +902,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public servP4langIfc master;
 
+    public List<servP4langIfc> members;
+
     public servP4langIfc pppoe;
 
     public servP4langIfc cloned;
@@ -2610,6 +2612,7 @@ class servP4langConn implements Runnable {
                 }
                 prt.add(ntry);
             }
+            ifc.members = prt;
             List<servP4langIfc> vln = new ArrayList<servP4langIfc>();
             for (i = 0; i < lower.expIfc.size(); i++) {
                 servP4langIfc ntry = lower.expIfc.get(i);
@@ -3380,7 +3383,7 @@ class servP4langConn implements Runnable {
     }
 
     private boolean doMroutes(String afi, int vrf, ipFwdMcast need, ipFwdMcast done) {
-        int gid = need.group.getHashW() ^ need.source.getHashW();
+        int gid = need.group.getHashW() ^ need.source.getHashW() ^ vrf;
         servP4langIfc ingr = findIfc(need.iface);
         if (ingr == null) {
             return true;
@@ -3413,6 +3416,11 @@ class servP4langConn implements Runnable {
             if (mst == null) {
                 mst = ifc;
             }
+            if (mst.members != null) {
+                if (mst.members.size() > 0) {
+                    mst = mst.members.get(gid % mst.members.size());
+                }
+            }
             lower.sendLine("mroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + mst.id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
         }
         String act;
@@ -3430,6 +3438,11 @@ class servP4langConn implements Runnable {
             servP4langIfc mst = ifc.master;
             if (mst == null) {
                 mst = ifc;
+            }
+            if (mst.members != null) {
+                if (mst.members.size() > 0) {
+                    mst = mst.members.get(gid % mst.members.size());
+                }
             }
             lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + mst.id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
             now++;
