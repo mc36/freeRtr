@@ -21,18 +21,37 @@
 
 control eg_ctl(
     /* User */
-    inout headers ig_hdr,
+    inout headers hdr,
     inout ingress_metadata_t ig_md,
     /* Intrinsic */
     inout standard_metadata_t ig_intr_md)
 {
+
+    EgressControlMcast() eg_ctl_mcast;
+    IngressControlVlanOut() eg_ctl_vlan_out;
+    IngressControlBundle() eg_ctl_bundle;
+
     apply {
-        recir_headers_t eg_hdr;
+
         if (ig_md.need_recir == 1) {
-            recirculate<recir_headers_t>(eg_hdr);
+            recir_headers_t rec_hdr;
+            recirculate<recir_headers_t>(rec_hdr);
             return;
         }
+
+        if (ig_md.need_clone == 0) return;
+
+        eg_ctl_mcast.apply(hdr,ig_md,ig_intr_md);
+        eg_ctl_vlan_out.apply(hdr,ig_md,ig_intr_md);
+        eg_ctl_bundle.apply(hdr,ig_md,ig_intr_md);
+
+        if (ig_md.need_recir == 1) {
+            recir_headers_t rec_hdr;
+            recirculate<recir_headers_t>(rec_hdr);
+            return;
+        }
+
     }
 }
 
-#endif // _EGRESS_CONTROL_P4_                                                    
+#endif // _EGRESS_CONTROL_P4_

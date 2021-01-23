@@ -3385,39 +3385,24 @@ class servP4langConn implements Runnable {
         if (ingr == null) {
             return true;
         }
-        if (need.local != done.local) {
-            String act;
-            if (need.local) {
-                act = "add";
-            } else {
-                act = "del";
-            }
-            lower.sendLine("mlocal" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id);
-        }
+        tabGen<ipFwdIface> nflood = need.flood;
+        tabGen<ipFwdIface> dflood = done.flood;
+        int now = 0;
         if (need.local) {
-            need.flood.clear();
+            nflood = new tabGen<ipFwdIface>();
             need.label = null;
             need.bier = null;
+            now++;
+        }
+        int bef = dflood.size();
+        if (done.local) {
+            dflood = new tabGen<ipFwdIface>();
+            bef++;
         }
         addrMac mac = need.group.conv2multiMac();
-        for (int i = 0; i < need.flood.size(); i++) {
-            ipFwdIface ntry = need.flood.get(i);
-            if (done.flood.find(ntry) != null) {
-                continue;
-            }
-            servP4langIfc ifc = findIfc(ntry);
-            if (ifc == null) {
-                continue;
-            }
-            servP4langIfc mst = ifc.master;
-            if (mst == null) {
-                mst = ifc;
-            }
-            lower.sendLine("mroute" + afi + "_add " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + mst.id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
-        }
-        for (int i = 0; i < done.flood.size(); i++) {
-            ipFwdIface ntry = done.flood.get(i);
-            if (need.flood.find(ntry) != null) {
+        for (int i = 0; i < dflood.size(); i++) {
+            ipFwdIface ntry = dflood.get(i);
+            if (nflood.find(ntry) != null) {
                 continue;
             }
             servP4langIfc ifc = findIfc(ntry);
@@ -3430,6 +3415,34 @@ class servP4langConn implements Runnable {
             }
             lower.sendLine("mroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + mst.id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
         }
+        String act;
+        for (int i = 0; i < nflood.size(); i++) {
+            ipFwdIface ntry = nflood.get(i);
+            servP4langIfc ifc = findIfc(ntry);
+            if (ifc == null) {
+                continue;
+            }
+            if (dflood.find(ntry) != null) {
+                act = "mod";
+            } else {
+                act = "add";
+            }
+            servP4langIfc mst = ifc.master;
+            if (mst == null) {
+                mst = ifc;
+            }
+            lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + mst.id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
+            now++;
+        }
+        if (bef > 0) {
+            act = "mod";
+            if (now < 1) {
+                act = "del";
+            }
+        } else {
+            act = "add";
+        }
+        lower.sendLine("mlocal" + afi + "_" + (need.local ? "add " : "del ") + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + act);
         return false;
     }
 

@@ -81,6 +81,7 @@
 #include "include/ig_ctl_qos_out.p4"
 #include "include/ig_ctl_flowspec.p4"
 #include "include/ig_ctl_mcast.p4"
+#include "include/eg_ctl_mcast.p4"
 #include "include/ig_ctl.p4"
 
 

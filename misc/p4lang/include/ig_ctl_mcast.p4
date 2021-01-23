@@ -23,7 +23,8 @@ control IngressControlMcast(inout headers hdr,
                              inout standard_metadata_t ig_intr_md) {
 
 
-    action act_local(SubIntId_t ingr) {
+    action act_local(SubIntId_t ingr, bit<16> sess) {
+        ig_md.clone_session = sess;
         ig_md.need_clone = 0;
         if (ingr != ig_md.source_id) {
             ig_md.dropping = 1;
@@ -31,14 +32,14 @@ control IngressControlMcast(inout headers hdr,
         }
     }
 
-    action act_flood(SubIntId_t ingr, bit<16> sessid) {
+    action act_flood(SubIntId_t ingr, bit<16> sess) {
+        ig_md.clone_session = sess;
         if (ingr != ig_md.source_id) {
             ig_md.need_clone = 0;
             ig_md.dropping = 1;
             return;
         }
         ig_md.need_clone = 1;
-        ig_md.clone_session = sessid;
     }
 
 
@@ -93,7 +94,8 @@ hdr.ipv6.dst_addr:
 
         if (ig_md.need_clone == 0) return;
 
-        clone(CloneType.I2E, (bit<32>)ig_md.clone_session);
+        ig_intr_md.mcast_grp = ig_md.clone_session;
+//        clone(CloneType.I2E, (bit<32>)ig_md.clone_session);
 
     }
 

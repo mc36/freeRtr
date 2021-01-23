@@ -31,6 +31,9 @@ import p4runtime_lib.bmv2
 import p4runtime_lib.helper
 
 
+mcast = []
+
+
 def writeVrfRules(delete, p4info_helper, ingress_sw, port, vrf):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
@@ -82,6 +85,22 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
         ingress_sw.ModifyTableEntry(table_entry2, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry2, False)
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_vlan_out.tbl_vlan_out",
+        match_fields={
+            "ig_md.target_id": port,
+        },
+        action_name="eg_ctl.eg_ctl_vlan_out.act_set_vlan_port",
+        action_params={
+            "port": main,
+            "vlan": vlan
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeBunVlanRules(delete, p4info_helper, ingress_sw, main, vlan, port):
@@ -124,7 +143,7 @@ def writeBundleRules(delete, p4info_helper, ingress_sw, port, hsh, trg):
 
 def writeHairpinRules(delete, p4info_helper, ingress_sw, port, trg):
     for hsh in range(0, 16):
-        table_entry = p4info_helper.buildTableEntry(
+        table_entry1 = p4info_helper.buildTableEntry(
             table_name="ig_ctl.ig_ctl_bundle.tbl_bundle",
             match_fields={
                 "ig_md.outport_id": port,
@@ -134,12 +153,25 @@ def writeHairpinRules(delete, p4info_helper, ingress_sw, port, trg):
             action_params={
                 "port": trg
             })
+        table_entry2 = p4info_helper.buildTableEntry(
+            table_name="eg_ctl.eg_ctl_bundle.tbl_bundle",
+            match_fields={
+                "eg_md.outport_id": port,
+                "eg_md.hash_id": hsh
+            },
+            action_name="eg_ctl.eg_ctl_bundle.act_set_recir",
+            action_params={
+                "port": trg
+            })
         if delete == 1:
-            ingress_sw.WriteTableEntry(table_entry, False)
+            ingress_sw.WriteTableEntry(table_entry1, False)
+            ingress_sw.WriteTableEntry(table_entry2, False)
         elif delete == 2:
-            ingress_sw.ModifyTableEntry(table_entry, False)
+            ingress_sw.ModifyTableEntry(table_entry1, False)
+            ingress_sw.ModifyTableEntry(table_entry2, False)
         else:
-            ingress_sw.DeleteTableEntry(table_entry, False)
+            ingress_sw.DeleteTableEntry(table_entry1, False)
+            ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
 def writeGre4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip, dip, dmac, vrf, smac):
@@ -2095,18 +2127,83 @@ def writeMySrv6rules(delete, p4info_helper, ingress_sw, glob, dst_addr, vrf):
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeMlocal4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr):
-    table_entry = p4info_helper.buildTableEntry(
+def writeMlocal4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr, delete2):
+    global mcast
+    if delete == 1:
+        act = "act_local"
+    else:
+        act = "act_flood"
+    table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mcast.tbl_mcast4",
         match_fields={
             "ig_md.vrf": vrf,
             "hdr.ipv4.src_addr": dip,
             "hdr.ipv4.dst_addr": sip,
         },
-        action_name="ig_ctl.ig_ctl_mcast.act_local",
+        action_name="ig_ctl.ig_ctl_mcast."+act,
         action_params={
-            "ingr": ingr
+            "ingr": ingr,
+            "sess": sess
         })
+    table_entry2 = p4info_helper.buildMulticastGroupEntry(sess, mcast)
+    if delete2 == "add":
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WritePREEntry(table_entry2, False)
+    elif delete2 == "mod":
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyPREEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeletePREEntry(table_entry2, False)
+    mcast = []
+
+
+def writeMlocal6rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr, delete2):
+    global mcast
+    if delete == 1:
+        act = "act_local"
+    else:
+        act = "act_flood"
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mcast.tbl_mcast6",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv6.src_addr": dip,
+            "hdr.ipv6.dst_addr": sip,
+        },
+        action_name="ig_ctl.ig_ctl_mcast."+act,
+        action_params={
+            "ingr": ingr,
+            "sess": sess
+        })
+    table_entry2 = p4info_helper.buildMulticastGroupEntry(sess, mcast)
+    if delete2 == "add":
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WritePREEntry(table_entry2, False)
+    elif delete2 == "mod":
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyPREEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeletePREEntry(table_entry2, False)
+    mcast = []
+
+
+def writeMroute4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr, port, subif, smac, dmac):
+    if delete != 3:
+        mcast.append({"egress_port":port, "instance":subif})
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
+        match_fields={
+            "ig_md.clone_session": sess,
+            "ig_intr_md.egress_rid": subif
+        },
+        action_name="eg_ctl.eg_ctl_mcast.act_macs",
+        action_params={
+            "src_mac_addr": smac,
+            "dst_mac_addr": dmac
+        }
+    )
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry, False)
     elif delete == 2:
@@ -2115,18 +2212,21 @@ def writeMlocal4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, in
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeMlocal6rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr):
+def writeMroute6rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr, port, subif, smac, dmac):
+    if delete != 3:
+        mcast.append({"egress_port":port, "instance":subif})
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ig_ctl.ig_ctl_mcast.tbl_mcast6",
+        table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
         match_fields={
-            "ig_md.vrf": vrf,
-            "hdr.ipv6.src_addr": dip,
-            "hdr.ipv6.dst_addr": sip,
+            "ig_md.clone_session": sess,
+            "ig_intr_md.egress_rid": subif
         },
-        action_name="ig_ctl.ig_ctl_mcast.act_local",
+        action_name="eg_ctl.eg_ctl_mcast.act_macs",
         action_params={
-            "ingr": ingr
-        })
+            "src_mac_addr": smac,
+            "dst_mac_addr": dmac
+        }
+    )
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry, False)
     elif delete == 2:
@@ -2902,25 +3002,44 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
 
         if splt[0] == "mlocal4_add":
-            writeMlocal4rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            writeMlocal4rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
             continue
         if splt[0] == "mlocal4_mod":
-            writeMlocal4rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            writeMlocal4rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
             continue
         if splt[0] == "mlocal4_del":
-            writeMlocal4rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            writeMlocal4rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
             continue
 
         if splt[0] == "mlocal6_add":
-            writeMlocal6rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            writeMlocal6rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
             continue
         if splt[0] == "mlocal6_mod":
-            writeMlocal6rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            writeMlocal6rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
             continue
         if splt[0] == "mlocal6_del":
-            writeMlocal6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]))
+            writeMlocal6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
             continue
 
+        if splt[0] == "mroute4_add":
+            writeMroute4rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
+            continue
+        if splt[0] == "mroute4_mod":
+            writeMroute4rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
+            continue
+        if splt[0] == "mroute4_del":
+            writeMroute4rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
+            continue
+
+        if splt[0] == "mroute6_add":
+            writeMroute6rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
+            continue
+        if splt[0] == "mroute6_mod":
+            writeMroute6rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
+            continue
+        if splt[0] == "mroute6_del":
+            writeMroute6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
+            continue
 
 
 
