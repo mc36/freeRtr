@@ -19,8 +19,8 @@
 
 
 control EgressControlMcast(inout headers hdr,
-                             inout ingress_metadata_t ig_md,
-                             inout standard_metadata_t ig_intr_md) {
+                           inout ingress_metadata_t ig_md,
+                           inout standard_metadata_t ig_intr_md) {
 
 
     action act_rawip(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr) {
@@ -41,7 +41,7 @@ ig_intr_md.egress_rid:
             act_rawip;
             @defaultonly NoAction;
         }
-        size = VLAN_TABLE_SIZE;
+        size = IPV4_MCAST_TABLE_SIZE + IPV6_MCAST_TABLE_SIZE;
         const default_action = NoAction();
     }
 

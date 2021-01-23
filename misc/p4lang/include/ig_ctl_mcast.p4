@@ -19,8 +19,8 @@
 
 
 control IngressControlMcast(inout headers hdr,
-                             inout ingress_metadata_t ig_md,
-                             inout standard_metadata_t ig_intr_md) {
+                            inout ingress_metadata_t ig_md,
+                            inout standard_metadata_t ig_intr_md) {
 
 
     action act_local(SubIntId_t ingr, bit<16> sess) {

@@ -18,8 +18,8 @@
 #define _IG_CTL_Flowspec_P4_
 
 control IngressControlFlowspec(inout headers hdr,
-                            inout ingress_metadata_t ig_md,
-                            inout standard_metadata_t ig_intr_md) {
+                               inout ingress_metadata_t ig_md,
+                               inout standard_metadata_t ig_intr_md) {
 
     meter((IPV4_FLOWSPEC_TABLE_SIZE), MeterType.bytes) policer4;
     meter((IPV6_FLOWSPEC_TABLE_SIZE), MeterType.bytes) policer6;
