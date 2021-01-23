@@ -156,8 +156,8 @@ def writeHairpinRules(delete, p4info_helper, ingress_sw, port, trg):
         table_entry2 = p4info_helper.buildTableEntry(
             table_name="eg_ctl.eg_ctl_bundle.tbl_bundle",
             match_fields={
-                "eg_md.outport_id": port,
-                "eg_md.hash_id": hsh
+                "ig_md.outport_id": port,
+                "ig_md.hash_id": hsh
             },
             action_name="eg_ctl.eg_ctl_bundle.act_set_recir",
             action_params={
