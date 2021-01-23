@@ -23,7 +23,7 @@ control EgressControlMcast(inout headers hdr,
                              inout standard_metadata_t ig_intr_md) {
 
 
-    action act_macs(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr) {
+    action act_rawip(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr) {
         hdr.ethernet.src_mac_addr = src_mac_addr;
         hdr.ethernet.dst_mac_addr = dst_mac_addr;
         ig_md.target_id = (SubIntId_t)ig_intr_md.egress_rid;
@@ -38,7 +38,7 @@ ig_intr_md.egress_rid:
             exact;
         }
         actions = {
-            act_macs;
+            act_rawip;
             @defaultonly NoAction;
         }
         size = VLAN_TABLE_SIZE;

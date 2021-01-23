@@ -2198,7 +2198,7 @@ def writeMroute4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, in
             "ig_md.clone_session": sess,
             "ig_intr_md.egress_rid": subif
         },
-        action_name="eg_ctl.eg_ctl_mcast.act_macs",
+        action_name="eg_ctl.eg_ctl_mcast.act_rawip",
         action_params={
             "src_mac_addr": smac,
             "dst_mac_addr": dmac
@@ -2221,7 +2221,7 @@ def writeMroute6rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, in
             "ig_md.clone_session": sess,
             "ig_intr_md.egress_rid": subif
         },
-        action_name="eg_ctl.eg_ctl_mcast.act_macs",
+        action_name="eg_ctl.eg_ctl_mcast.act_rawip",
         action_params={
             "src_mac_addr": smac,
             "dst_mac_addr": dmac
