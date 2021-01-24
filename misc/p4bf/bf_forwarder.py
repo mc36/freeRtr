@@ -32,6 +32,7 @@ sys.path.append(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "./", BF_RUNTIME_LIB)
 )
 import bfrt_grpc.client as gc
+import bfrt_grpc.bfruntime_pb2 as bfrt_pb2
 
 PROGRAM_NAME = os.path.basename(sys.argv[0])
 
@@ -560,7 +561,7 @@ class BfIfSnmpClient(Thread):
         self.die=True
 
 class BfForwarder(Thread):
-    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe, mc):
+    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe, mcast):
         self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
@@ -575,9 +576,10 @@ class BfForwarder(Thread):
         self.pbr = pbr
         self.tun = tun
         self.poe = poe
-        self.mc = mc
+        self.mcast = mcast
         self.die=False
-        self.mcast = []
+        self.mcast_nid = []
+        self.mcast_xid = []
         self.file = sck_file
         self._clearTable()
 
@@ -639,6 +641,139 @@ class BfForwarder(Thread):
             apr_bundle_name,
         ]:
             self._clearOneTable(table_name_key, table_dict)
+
+        logger.warn("Multicast specific clearing: (Order matters)")
+
+        for table_name_key in [
+            "$pre.mgid",
+            "$pre.node",
+        ]:
+            self._clearOneTable(table_name_key, table_dict)
+
+
+
+    def _processMcastMgidFromControlPlane(
+        self,
+        op_type,
+        mgid,
+        nodes,
+        exclud,
+    ):
+        try:
+            tbl_name = "$pre.mgid"
+            tbl = self.bfgc.bfrt_info.table_get(tbl_name)
+            key_field_list = [
+                gc.KeyTuple('$MGID', mgid)
+            ]
+            data_field_list = [
+                gc.DataTuple("$MULTICAST_NODE_ID", int_arr_val=nodes),
+                gc.DataTuple("$MULTICAST_NODE_L1_XID_VALID", bool_arr_val=exclud),
+                gc.DataTuple("$MULTICAST_NODE_L1_XID", int_arr_val=exclud),
+            ]
+            key_list = [tbl.make_key(key_field_list)]
+            data_list = [tbl.make_data(data_field_list)]
+        except KeyError as e:
+            print("Error preparing entry to control plane: {}".format(e))
+            return
+
+        try:
+            if op_type == WRITE:
+                tbl.entry_add(self.bfgc.target, key_list, data_list)
+                #### tbl.entry_mod_inc(self.bfgc.target, key_list, data_list, bfrt_pb2.TableModIncFlag.MOD_INC_ADD)
+                logger.debug(
+                    "Writing entry in table:%s keys:%s act_param:%s",
+                    tbl_name,
+                    key_list,
+                    data_list,
+                )
+            elif op_type == UPDATE:
+                tbl.entry_mod(self.bfgc.target, key_list, data_list)
+                logger.debug(
+                    "Updating entry in table:%s keys:%s act_param:%s",
+                    tbl_name,
+                    key_list,
+                    data_list,
+                )
+            elif op_type == DELETE:
+                tbl.entry_del(self.bfgc.target, key_list)
+                logger.debug(
+                    "Deleting entry in table:%s keys:%s act_param:%s",
+                    tbl_name,
+                    key_list,
+                    data_list,
+                )
+            else:
+                print("Error op_type unknown")
+
+        except gc.BfruntimeRpcException as e:
+            print("Error processing entry from control plane: {}".format(e))
+
+        except grpc.RpcError as e:
+            print(
+                "Grpc channel error "
+                "while processing entry from control plane: {}".format(e)
+            )
+
+
+    def _processMcastNodeFromControlPlane(
+        self,
+        op_type,
+        nodeid,
+        port,
+    ):
+        try:
+            tbl_name = "$pre.node"
+            tbl = self.bfgc.bfrt_info.table_get(tbl_name)
+            key_field_list = [
+                gc.KeyTuple('$MULTICAST_NODE_ID', nodeid)
+            ]
+            data_field_list = [
+                gc.DataTuple("$MULTICAST_RID", nodeid),
+                gc.DataTuple("$DEV_PORT", int_arr_val=[port]),
+            ]
+            key_list = [tbl.make_key(key_field_list)]
+            data_list = [tbl.make_data(data_field_list)]
+        except KeyError as e:
+            print("Error preparing entry to control plane: {}".format(e))
+            return
+
+        try:
+            if op_type == WRITE:
+                tbl.entry_add(self.bfgc.target, key_list, data_list)
+                logger.debug(
+                    "Writing entry in table:%s keys:%s act_param:%s",
+                    tbl_name,
+                    key_list,
+                    data_list,
+                )
+            elif op_type == UPDATE:
+                tbl.entry_mod(self.bfgc.target, key_list, data_list)
+                logger.debug(
+                    "Updating entry in table:%s keys:%s act_param:%s",
+                    tbl_name,
+                    key_list,
+                    data_list,
+                )
+            elif op_type == DELETE:
+                tbl.entry_del(self.bfgc.target, key_list)
+                logger.debug(
+                    "Deleting entry in table:%s keys:%s act_param:%s",
+                    tbl_name,
+                    key_list,
+                    data_list,
+                )
+            else:
+                print("Error op_type unknown")
+
+        except gc.BfruntimeRpcException as e:
+            print("Error processing entry from control plane: {}".format(e))
+
+        except grpc.RpcError as e:
+            print(
+                "Grpc channel error "
+                "while processing entry from control plane: {}".format(e)
+            )
+
 
 
     def _processMeterFromControlPlane(
@@ -4018,7 +4153,7 @@ class BfForwarder(Thread):
         self, op_type, vrf, sess, dip, sip, ingr, delete2
     ):
         print "here"
-        if self.mc == False:
+        if self.mcast == False:
             return
         if op_type == 1:
             act = "act_local"
@@ -4056,12 +4191,20 @@ class BfForwarder(Thread):
             key_annotation_fields,
             data_annotation_fields,
         )
+        self._processMcastMgidFromControlPlane(
+            op_type2,
+            sess,
+            self.mcast_nid,
+            self.mcast_xid,
+        )
+        self.mcast_nid = []
+        self.mcast_xid = []
 
 
     def writeMlocal6rules(
         self, op_type, vrf, sess, dip, sip, ingr, delete2
     ):
-        if self.mc == False:
+        if self.mcast == False:
             return
         tbl_global_path = "ig_ctl.ig_ctl_mcast"
         tbl_name = "%s.tbl_mcast6" % (tbl_global_path)
@@ -4095,15 +4238,24 @@ class BfForwarder(Thread):
             key_annotation_fields,
             data_annotation_fields,
         )
+        self._processMcastMgidFromControlPlane(
+            op_type2,
+            sess,
+            self.mcast_nid,
+            self.mcast_xid,
+        )
+        self.mcast_nid = []
+        self.mcast_xid = []
 
 
     def writeMroute4rules(
         self, op_type, vrf, sess, dip, sip, ingr, port, subif, smac, dmac
     ):
-        if self.mc == False:
+        if self.mcast == False:
             return
         if op_type != 3:
-            self.mcast.append({"egress_port":port, "instance":subif})
+            self.mcast_nid.append(subif)
+            self.mcast_xid.append(0)
         tbl_global_path = "eg_ctl.eg_ctl_mcast"
         tbl_name = "%s.tbl_mcast" % (tbl_global_path)
         tbl_action_name = "%s.act_rawip" % (tbl_global_path)
@@ -4126,15 +4278,22 @@ class BfForwarder(Thread):
             key_annotation_fields,
             data_annotation_fields,
         )
+        self._processMcastNodeFromControlPlane(
+            op_type,
+            subif,
+            port,
+        )
+
 
 
     def writeMroute6rules(
         self, op_type, vrf, sess, dip, sip, ingr, port, subif, smac, dmac
     ):
-        if self.mc == False:
+        if self.mcast == False:
             return
         if op_type != 3:
-            self.mcast.append({"egress_port":port, "instance":subif})
+            self.mcast_nid.append(subif)
+            self.mcast_xid.append(0)
         tbl_global_path = "eg_ctl.eg_ctl_mcast"
         tbl_name = "%s.tbl_mcast" % (tbl_global_path)
         tbl_action_name = "%s.act_rawip" % (tbl_global_path)
@@ -4156,6 +4315,11 @@ class BfForwarder(Thread):
             tbl_action_name,
             key_annotation_fields,
             data_annotation_fields,
+        )
+        self._processMcastNodeFromControlPlane(
+            op_type,
+            subif,
+            port,
         )
 
 
@@ -6717,7 +6881,7 @@ if __name__ == "__main__":
         default=True,
     )
     parser.add_argument(
-        "--mc",
+        "--mcast",
         help="enable multicast",
         type=str2bool,
         nargs='?',
@@ -6835,7 +6999,7 @@ if __name__ == "__main__":
                                args.pbr,
                                args.tun,
                                args.poe,
-                               args.mc,
+                               args.mcast,
                                )
 
         bf_forwarder.daemon=True
