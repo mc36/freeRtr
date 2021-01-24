@@ -4286,7 +4286,7 @@ class BfForwarder(Thread):
         self._processMcastNodeFromControlPlane(
             op_type,
             nodid,
-            rid,
+            subif,
             port,
         )
 
@@ -4326,7 +4326,7 @@ class BfForwarder(Thread):
         self._processMcastNodeFromControlPlane(
             op_type,
             nodid,
-            rid,
+            subif,
             port,
         )
 
