@@ -719,6 +719,7 @@ class BfForwarder(Thread):
         self,
         op_type,
         nodeid,
+        rid,
         port,
     ):
         try:
@@ -728,7 +729,7 @@ class BfForwarder(Thread):
                 gc.KeyTuple('$MULTICAST_NODE_ID', nodeid)
             ]
             data_field_list = [
-                gc.DataTuple("$MULTICAST_RID", nodeid),
+                gc.DataTuple("$MULTICAST_RID", rid),
                 gc.DataTuple("$DEV_PORT", int_arr_val=[port]),
             ]
             key_list = [tbl.make_key(key_field_list)]
@@ -4285,6 +4286,7 @@ class BfForwarder(Thread):
         self._processMcastNodeFromControlPlane(
             op_type,
             nodid,
+            rid,
             port,
         )
 
@@ -4324,6 +4326,7 @@ class BfForwarder(Thread):
         self._processMcastNodeFromControlPlane(
             op_type,
             nodid,
+            rid,
             port,
         )
 
