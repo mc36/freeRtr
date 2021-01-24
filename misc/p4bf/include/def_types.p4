@@ -59,8 +59,8 @@ typedef bit <12> vlan_id_t;
 typedef bit <16> switch_vrf_t;
 //typedef bit<9> PortId_t;
 typedef bit<16> NextHopId_t;
-typedef bit<9> SubIntId_t;
-#define MAX_PORT 511
+typedef bit<10> SubIntId_t;
+#define MAX_PORT 1023
 
 
 #endif // _TYPES_P4_
