@@ -4256,8 +4256,9 @@ class BfForwarder(Thread):
     ):
         if self.mcast == False:
             return
+        nodid = (sess << 16 ) | subif;
         if op_type != 3:
-            self.mcast_nid.append(subif)
+            self.mcast_nid.append(nodid)
             self.mcast_xid.append(0)
         tbl_global_path = "eg_ctl.eg_ctl_mcast"
         tbl_name = "%s.tbl_mcast" % (tbl_global_path)
@@ -4283,7 +4284,7 @@ class BfForwarder(Thread):
         )
         self._processMcastNodeFromControlPlane(
             op_type,
-            subif,
+            nodid,
             port,
         )
 
@@ -4294,8 +4295,9 @@ class BfForwarder(Thread):
     ):
         if self.mcast == False:
             return
+        nodid = (sess << 16 ) | subif;
         if op_type != 3:
-            self.mcast_nid.append(subif)
+            self.mcast_nid.append(nodid)
             self.mcast_xid.append(0)
         tbl_global_path = "eg_ctl.eg_ctl_mcast"
         tbl_name = "%s.tbl_mcast" % (tbl_global_path)
@@ -4321,7 +4323,7 @@ class BfForwarder(Thread):
         )
         self._processMcastNodeFromControlPlane(
             op_type,
-            subif,
+            nodid,
             port,
         )
 
