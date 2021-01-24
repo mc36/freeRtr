@@ -25,7 +25,9 @@ control eg_ctl(
     inout egress_intrinsic_metadata_for_output_port_t eg_oport_md)
 {
 
+#ifdef HAVE_MCAST
     EgressControlMcast() eg_ctl_mcast;
+#endif
     EggressControlVlanOut() eg_ctl_vlan_out;
 
     apply {
